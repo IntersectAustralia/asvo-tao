@@ -1,7 +1,6 @@
-#include <libhpc/containers/vector.hh>
 #include "sed.hh"
 
-using hpc::vector;
+using namespace hpc;
 
 namespace tao {
 
@@ -15,9 +14,12 @@ namespace tao {
 
       // TODO: Get access to all required datasets.
 
-      mpi::lindex num_galaxies;
+      _disk_sfh.reallocate( _num_times );
+      _disk_metals.reallocate( _num_times );
+      _bulge_sfh.reallocate( _num_times );
+      _bulge_metals.reallocate( _num_times );
 
-      for( mpi::lindex ii = 0; ii < num_galaxies; ++ii )
+      for( mpi::lindex ii = 0; ii < _num_galaxies; ++ii )
       {
          _process_galaxy();
       }
@@ -30,24 +32,21 @@ namespace tao {
    {
       MPI_LOG_ENTER();
 
-      vector<real_type> disk_sfh( num_times ), disk_metals( num_times );
-      vector<real_type> bulge_sfh( num_times ), bulge_metals( num_times );
-
-      for( mpi::lindex ii = 0; ii < num_times; ++ii )
+      for( mpi::lindex ii = 0; ii < _num_times; ++ii )
       {
-         _process_time();
+         _process_time( ii );
       }
 
       MPI_LOG_EXIT();
    }
 
    void
-   sed::_process_time()
+   sed::_process_time( mpi::lindex time_idx )
    {
       MPI_LOG_ENTER();
 
-      _sum_spectra( time_idx, disk_metals[time_idx], disk_sfh[time_idx], disk_spectra );
-      _sum_spectra( time_idx, bulge_metals[time_idx], bulge_sfh[time_idx], bulge_spectra );
+      _sum_spectra( time_idx, _disk_metals[time_idx], _disk_sfh[time_idx], _disk_spectra );
+      _sum_spectra( time_idx, _bulge_metals[time_idx], _bulge_sfh[time_idx], _bulge_spectra );
 
       MPI_LOG_EXIT();
    }
