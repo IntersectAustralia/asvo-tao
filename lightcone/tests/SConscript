@@ -9,7 +9,7 @@ Import('env')
 #
 # The support sources are optional, as is the MPI rank range.
 suites = [
-    # ('', '', '', range(1, 5)),
+    ('lightcone_suite.t.hh', 'lightcone.cc'),
 ]
 
 # Define libraries to link against.
