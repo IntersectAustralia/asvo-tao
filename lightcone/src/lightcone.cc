@@ -4,11 +4,72 @@
 using namespace hpc;
 using boost::format;
 using boost::str;
+using boost::lexical_cast;
 
 namespace tao {
 
    lightcone::lightcone()
+      : _box_side( 1.0 ),
+        _unique( false ),
+        _unique_offs_x( 0.0 ),
+        _unique_offs_y( 0.0 ),
+        _unique_offs_z( 0.0 )
    {
+      _query_template = "";
+      for( auto& field : _include )
+      {
+         if( _output_fields.has( field ) )
+         {
+            _query_template += (_query_template ? ", " : "") + _output_fields.get( field ) + " as " + field;
+         }
+         // else
+         // {
+         //    for ($i = 0; $i < count($this->include); $i++) {
+         //       if (isset($this->include[$i]) && $this->include[$i] == $field) {
+         //          echo $this->include[$i] . " = $field\n";
+         //          unset($this->include[$i]);
+         //          break;
+         //       }
+         //    }
+         // }
+      }
+
+      _query_template = "select " + _query_template + " from " + _table_name + " where ";
+    
+      if( _type != "box" && _box_side > 0.0 )
+      {
+         if( in_array("halo_pos1",array_keys($this->output_fields)) && in_array("halo_pos2",array_keys($this->output_fields)) && in_array("halo_pos3",array_keys($this->output_fields))) {
+            $this->query_template .= " -halo_pos1- < -halo_pos1_max- and -halo_pos1- > -halo_pos1_min- ";
+            $this->query_template .= " and -halo_pos2- < -halo_pos2_max- and -halo_pos2- > -halo_pos2_min- ";
+            $this->query_template .= " and -halo_pos3- < -halo_pos3_max- and -halo_pos3- > -halo_pos3_min- ";
+            $this->query_template .= " and sqrt(pow(-halo_pos1-,2)+pow(-halo_pos2-,2)+pow(-halo_pos3-,2)) < -max_dist- ";
+            $this->query_template .= " and sqrt(pow(-halo_pos1-,2)+pow(-halo_pos2-,2)+pow(-halo_pos3-,2)) >= -last_dist- ";
+         } else {
+            $this->query_template .= " -pos1- < -pos1_max- and -pos1- > -pos1_min- ";
+            $this->query_template .= " and -pos2- < -pos2_max- and -pos2- > -pos2_min- ";
+            $this->query_template .= " and -pos3- < -pos3_max- and -pos3- > -pos3_min- ";
+            $this->query_template .= " and sqrt(pow(-pos1-,2)+pow(-pos2-,2)+pow(-pos3-,2)) < -max_dist- ";
+            $this->query_template .= " and sqrt(pow(-pos1-,2)+pow(-pos2-,2)+pow(-pos3-,2)) >= -last_dist- ";
+         }
+         $this->query_template .= " and sqrt(pow(-pos1-,2)+pow(-pos2-,2)+pow(-pos3-,2)) < " . $this->redshiftToDistance($this->z_max);
+         $this->query_template .= " and -pos1-/(sqrt(pow(-pos1-,2)+pow(-pos2-,2))) > " . cos($ra_max);
+         $this->query_template .= " and -pos1-/(sqrt(pow(-pos1-,2)+pow(-pos2-,2))) < " . cos($ra_min);
+         $this->query_template .= " and sqrt(pow(-pos1-,2)+pow(-pos2-,2))/(sqrt(pow(-pos1-,2)+pow(-pos2-,2)+pow(-pos3-,2))) > " . cos($dec_max);
+         $this->query_template .= " and sqrt(pow(-pos1-,2)+pow(-pos2-,2))/(sqrt(pow(-pos1-,2)+pow(-pos2-,2)+pow(-pos3-,2))) < " . cos($dec_min);
+      } else {
+         if ($this->box_side > 0) {
+            $this->query_template .= " -pos1- < {$this->output_box_size} and -pos2- < {$this->output_box_size} and -pos3- < {$this->output_box_size} ";
+         } else {
+            $this->query_template .= " redshift_real > " . $this->z_min . " and redshift_real < " . $this->z_max;
+         }
+      }
+        
+      if ($this->filter != "" && $this->filter_min != '' && is_numeric($this->filter_min)) {
+         $this->query_template .= " and {$this->output_fields[$this->filter]} >= {$this->filter_min}";
+      }
+      if ($this->filter != "" && $this->filter_max != '' && is_numeric($this->filter_max)) {
+         $this->query_template .= " and {$this->output_fields[$this->filter]} <= {$this->filter_max}";
+      }
    }
 
    lightcone::~lightcone()
@@ -21,7 +82,7 @@ namespace tao {
    void
    lightcone::run()
    {
-      MPI_LOG_ENTER();
+      LOG_ENTER();
 
       // TODO: Check that any output databases have been created,
       //       or create them now.
@@ -68,7 +129,7 @@ namespace tao {
 
       // TODO: If we outputted to a binary format, close that off too.
 
-      MPI_LOG_EXIT();
+      LOG_EXIT();
    }
 
    ///
@@ -103,79 +164,79 @@ namespace tao {
 
       vector<std::string> ops;
       _random_rotation_and_shifting( ops );
-//       real_type pos1 = rotation_array[0]['p'];
-//       real_type pos2 = rotation_array[1]['p'];
-//       real_type pos3 = rotation_array[2]['p'];
-//       real_type halo_pos1 = rotation_array[0]['h'];
-//       real_type halo_pos2 = rotation_array[1]['h'];
-//       real_type halo_pos3 = rotation_array[2]['h'];
-//       real_type vel1 = rotation_array[0]['v'];
-//       real_type vel2 = rotation_array[1]['v'];
-//       real_type vel3 = rotation_array[2]['v'];
-//       real_type spin1 = rotation_array[0]['s'];
-//       real_type spin2 = rotation_array[1]['s'];
-//       real_type spin3 = rotation_array[2]['s'];
+      std::string& pos1 = ops[0];
+      std::string& pos2 = ops[4];
+      std::string& pos3 = ops[8];
+      std::string& halo_pos1 = ops[1];
+      std::string& halo_pos2 = ops[5];
+      std::string& halo_pos3 = ops[9];
+      std::string& vel1 = ops[2];
+      std::string& vel2 = ops[6];
+      std::string& vel3 = ops[10];
+      std::string& spin1 = ops[3];
+      std::string& spin2 = ops[7];
+      std::string& spin3 = ops[11];
 
-//       std::string pos1 = str( format( "(%1% + %2% - %3%)" ) % offs_x % pos1 % _x0 );
-//       std::string pos2 = str( format( "(%1% + %2% - %3%)" ) % offs_y % pos2 % _y0 );
-//       std::string pos3 = str( format( "(%1% + %2% - %3%)" ) % offs_z % pos3 % _z0 );
-//       std::string halo_pos1 = str( format( "(%1% + %2% - %3%)" ) % offs_x % halo_pos1 % _x0 );
-//       std::string halo_pos2 = str( format( "(%1% + %2% - %3%)" ) % offs_y % halo_pos2 % _y0 );
-//       std::string halo_pos3 = str( format( "(%1% + %2% - %3%)" ) % offs_z % halo_pos3 % _z0 );
+      pos1 = str( format( "(%1% + %2% - %3%)" ) % offs_x % pos1 % _x0 );
+      pos2 = str( format( "(%1% + %2% - %3%)" ) % offs_y % pos2 % _y0 );
+      pos3 = str( format( "(%1% + %2% - %3%)" ) % offs_z % pos3 % _z0 );
+      halo_pos1 = str( format( "(%1% + %2% - %3%)" ) % offs_x % halo_pos1 % _x0 );
+      halo_pos2 = str( format( "(%1% + %2% - %3%)" ) % offs_y % halo_pos2 % _y0 );
+      halo_pos3 = str( format( "(%1% + %2% - %3%)" ) % offs_z % halo_pos3 % _z0 );
 
-//       auto z_max = _z_max;
-//       if( next_snap_idx && _box_side > 0.0 )
-//          z_max = std::min( z_max, _snaps[*next_snap_idx] );
-//       auto max_dist = _redshift_to_distance( z_max );
+      auto z_max = _z_max;
+      if( next_snap_idx && _box_side > 0.0 )
+         z_max = std::min( z_max, _snaps[*next_snap_idx] );
+      auto max_dist = _redshift_to_distance( z_max );
 
-//       real_type halo_pos1_max = max_dist*cos( ra_min )*cos( dec_min );
-//       real_type halo_pos2_max = max_dist*sin( ra_max )*cos( dec_min );
-//       real_type halo_pos3_max = max_dist*sin( dec_max );
-//       real_type halo_pos1_min = _last_max_dist_processed*cos( ra_max )*cos( dec_max );
-//       real_type halo_pos2_min = _last_max_dist_processed*sin( ra_min )*cos( dec_max );
-//       real_type halo_pos3_min = _last_max_dist_processed*sin( dec_min );
+      real_type halo_pos1_max = max_dist*cos( ra_min )*cos( dec_min );
+      real_type halo_pos2_max = max_dist*sin( ra_max )*cos( dec_min );
+      real_type halo_pos3_max = max_dist*sin( dec_max );
+      real_type halo_pos1_min = _last_max_dist_processed*cos( ra_max )*cos( dec_max );
+      real_type halo_pos2_min = _last_max_dist_processed*sin( ra_min )*cos( dec_max );
+      real_type halo_pos3_min = _last_max_dist_processed*sin( dec_min );
 
-//       // Apply all my current values to the query template to build up
-//       // the final SQL query string.
-//       std::string query = _query_template;
-//       replace_first( query, "-z1-", lexical_cast<std::string>( _snaps[cur_snap_idx] ) );
-//       replace_first( query, "-z2-", lexical_cast<std::string>( z_max ) );
-//       replace_first( query, "-dec_min-", lexical_cast<std::string>( _dec_min ) );
-//       replace_first( query, "-pos1-", pos1 );
-//       replace_first( query, "-pos2-", pos2 );
-//       replace_first( query, "-pos3-", pos3 );
-//       replace_first( query, "-pos1_max-", lexical_cast<std::string>( halo_pos1_max ) );
-//       replace_first( query, "-pos2_max-", lexical_cast<std::string>( halo_pos2_max ) );
-//       replace_first( query, "-pos3_max-", lexical_cast<std::string>( halo_pos3_max ) );
-//       replace_first( query, "-pos1_min-", lexical_cast<std::string>( halo_pos1_min ) );
-//       replace_first( query, "-pos2_min-", lexical_cast<std::string>( halo_pos2_min ) );
-//       replace_first( query, "-pos3_min-", lexical_cast<std::string>( halo_pos3_min ) );
-//       replace_first( query, "-halo_pos1-", halo_pos1 );
-//       replace_first( query, "-halo_pos2-", halo_pos2 );
-//       replace_first( query, "-halo_pos3-", halo_pos3 );
-//       replace_first( query, "-halo_pos1_max-", lexical_cast<std::string>( halo_pos1_max ) );
-//       replace_first( query, "-halo_pos2_max-", lexical_cast<std::string>( halo_pos2_max ) );
-//       replace_first( query, "-halo_pos3_max-", lexical_cast<std::string>( halo_pos3_max ) );
-//       replace_first( query, "-halo_pos1_min-", lexical_cast<std::string>( halo_pos1_min ) );
-//       replace_first( query, "-halo_pos2_min-", lexical_cast<std::string>( halo_pos2_min ) );
-//       replace_first( query, "-halo_pos3_min-", lexical_cast<std::string>( halo_pos3_min ) );
-//       replace_first( query, "-vel1-", lexical_cast<std::string>( vel1 ) );
-//       replace_first( query, "-vel2-", lexical_cast<std::string>( vel2 ) );
-//       replace_first( query, "-vel3-", lexical_cast<std::string>( vel3 ) );
-//       replace_first( query, "snapshot_", str( format( "snapshot_%1$03d" ) % cur_snap_idx ) );
-//       replace_first( query, "-max_dist-", lexical_cast<std::string>( max_dist ) );
-//       replace_first( query, "-last_dist-", lexical_cast<std::string>( _last_max_dist_processed ) );
+      // Apply all my current values to the query template to build up
+      // the final SQL query string.
+      std::string query = _query_template;
+      replace_first( query, "-z1-", lexical_cast<std::string>( _snaps[cur_snap_idx] ) );
+      replace_first( query, "-z2-", lexical_cast<std::string>( z_max ) );
+      replace_first( query, "-dec_min-", lexical_cast<std::string>( _dec_min ) );
+      replace_first( query, "-pos1-", pos1 );
+      replace_first( query, "-pos2-", pos2 );
+      replace_first( query, "-pos3-", pos3 );
+      replace_first( query, "-pos1_max-", lexical_cast<std::string>( halo_pos1_max ) );
+      replace_first( query, "-pos2_max-", lexical_cast<std::string>( halo_pos2_max ) );
+      replace_first( query, "-pos3_max-", lexical_cast<std::string>( halo_pos3_max ) );
+      replace_first( query, "-pos1_min-", lexical_cast<std::string>( halo_pos1_min ) );
+      replace_first( query, "-pos2_min-", lexical_cast<std::string>( halo_pos2_min ) );
+      replace_first( query, "-pos3_min-", lexical_cast<std::string>( halo_pos3_min ) );
+      replace_first( query, "-halo_pos1-", halo_pos1 );
+      replace_first( query, "-halo_pos2-", halo_pos2 );
+      replace_first( query, "-halo_pos3-", halo_pos3 );
+      replace_first( query, "-halo_pos1_max-", lexical_cast<std::string>( halo_pos1_max ) );
+      replace_first( query, "-halo_pos2_max-", lexical_cast<std::string>( halo_pos2_max ) );
+      replace_first( query, "-halo_pos3_max-", lexical_cast<std::string>( halo_pos3_max ) );
+      replace_first( query, "-halo_pos1_min-", lexical_cast<std::string>( halo_pos1_min ) );
+      replace_first( query, "-halo_pos2_min-", lexical_cast<std::string>( halo_pos2_min ) );
+      replace_first( query, "-halo_pos3_min-", lexical_cast<std::string>( halo_pos3_min ) );
+      replace_first( query, "-vel1-", lexical_cast<std::string>( vel1 ) );
+      replace_first( query, "-vel2-", lexical_cast<std::string>( vel2 ) );
+      replace_first( query, "-vel3-", lexical_cast<std::string>( vel3 ) );
+      replace_first( query, "snapshot_", str( format( "snapshot_%1$03d" ) % cur_snap_idx ) );
+      replace_first( query, "-max_dist-", lexical_cast<std::string>( max_dist ) );
+      replace_first( query, "-last_dist-", lexical_cast<std::string>( _last_max_dist_processed ) );
 
-// #ifndef NDEBUG
-//       // TODO:: Dump the SQL query string to a debug file.
-// #endif
+#ifndef NDEBUG
+      // TODO:: Dump the SQL query string to a debug file.
+#endif
 
-//       // TODO: Submit the query using whatever C++ database library
-//       //       we decide upon. I think perhaps SOCI might be a
-//       //       good choice.
+      // TODO: Submit the query using whatever C++ database library
+      //       we decide upon. I think perhaps SOCI might be a
+      //       good choice.
 
-//       // Return the parsed query object.
-//       return result;
+      // Return the parsed query object.
+      return result;
    }
 
    ///
@@ -218,6 +279,9 @@ namespace tao {
          }
          else
          {
+            // A zero box side length causes a hang.
+            ASSERT( _box_side > 0.0 );
+
             offs1 = generate_uniform( 0.0, _box_side*1000.0 )/1000.0;
             offs2 = generate_uniform( 0.0, _box_side*1000.0 )/1000.0;
             offs3 = generate_uniform( 0.0, _box_side*1000.0 )/1000.0;

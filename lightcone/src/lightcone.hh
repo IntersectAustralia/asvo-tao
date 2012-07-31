@@ -5,6 +5,8 @@
 #include <libhpc/containers/vector.hh>
 #include <libhpc/hpcmpi/mpi.hh>
 
+class lightcone_suite;
+
 namespace tao {
 
    ///
@@ -57,11 +59,16 @@ namespace tao {
       real_type _box_side;
       hpc::vector<real_type> _snaps;
       hpc::vector<hpc::mpi::lindex> _snap_idxs;
+      real_type _x0, _y0, _z0;
       real_type _z_max;
       real_type _ra_min, _ra_max;
       real_type _dec_min, _dec_max;
       bool _unique;
       real_type _unique_offs_x, _unique_offs_y, _unique_offs_z;
+      real_type _last_max_dist_processed;
+      real_type _query_template;
+
+      friend class ::lightcone_suite;
    };
 }
 

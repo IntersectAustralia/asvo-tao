@@ -35,6 +35,9 @@ public:
    void test_random_rotation_and_shifting()
    {
       lightcone lc;
+      vector<std::string> ops;
+      lc._random_rotation_and_shifting( ops );
+      std::cout << ops << "\n";
    }
 
    void setUp()
