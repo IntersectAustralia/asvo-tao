@@ -5,6 +5,7 @@ config.select(
     config.packages.boost(required=True),
     config.packages.MPI(required=True),
     config.packages.HDF5(required=True),
+    config.packages.SOCI(required=True),
     config.packages.libhpc(required=True),
     # config.packages.NLopt(required=True),
     # config.packages.PTScotch(required=False),
