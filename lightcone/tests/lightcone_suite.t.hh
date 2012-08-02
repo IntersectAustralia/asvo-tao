@@ -10,6 +10,58 @@ using namespace tao;
 #include "mpi_fixture.hh"
 
 ///
+/// Database preparation fixture.
+///
+class db_setup_fixture : public CxxTest::GlobalFixture
+{
+public:
+
+   bool setUp()
+   {
+      return true;
+   }
+
+   bool tearDown()
+   {
+      return true;
+   }
+
+   bool setUpWorld()
+   {
+      // Create the database file.
+      filename = tmpnam( NULL );
+      {
+         std::ofstream file( filename, std::fstream::out | std::fstream::app );
+      }
+
+      // Open it using SOCI, create a table.
+      try
+      {
+         soci::session sql( soci::sqlite3, filename );
+         sql << "create table halo (pos_x double precision, pos_y double precision, pos_z double precision, redshift)";
+         sql << "insert into halo values (1.0, 1.0, 1.0, 0.01)";
+      }
+      catch( const std::exception& ex )
+      {
+         std::cout << "\n" << ex.what() << "\n";
+         exit( 1 );
+      }
+
+      return true;
+   }
+
+   bool tearDownWorld()
+   {
+      remove( filename.c_str() );
+      return true;
+   }
+
+   std::string filename;
+};
+
+static db_setup_fixture db_setup;
+
+///
 /// Lightcone class test suite.
 ///
 class lightcone_suite : public CxxTest::TestSuite
@@ -66,25 +118,13 @@ public:
 
       this->num_ranks = mpi::comm::world.size();
       this->my_rank = mpi::comm::world.rank();
-
-      // Create the database file.
-      filename = tmpnam( NULL );
-      {
-         std::ofstream file( filename, std::fstream::out | std::fstream::app );
-      }
-
-      // Open it using SOCI.
-      soci::session sql( soci::sqlite3, filename );
-      sql << ;
    }
 
    void tearDown()
    {
-      remove( filename.c_str() );
    }
 
 private:
 
-   std::string filename;
    int num_ranks, my_rank;
 };

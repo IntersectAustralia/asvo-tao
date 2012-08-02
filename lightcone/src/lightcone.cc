@@ -1,3 +1,4 @@
+#include <fstream>
 #include <boost/range.hpp>
 #include <boost/algorithm/string/replace.hpp>
 #include <soci/sqlite3/soci-sqlite3.h>
@@ -40,8 +41,7 @@ namespace tao {
       // TODO: Check that any output databases have been created,
       //       or create them now.
 
-      // TODO: Same as above, but for binary output file. Probably
-      //       will be HDF5.
+      _open_bin_file();
 
       // TODO: Figure what alternatives there are to a "box".
       if( _type != "box" && _box_side > 0.0 )
@@ -54,18 +54,27 @@ namespace tao {
             if( _snaps[_snap_idxs[ii]] > _z_max )
                break;
 
-            auto z_max = _z_max;
+            
+            real_type z_max = _z_max;
             mpi::lindex cur_snap_idx = _snap_idxs[ii];
+            optional<mpi::lindex> next_snap_idx;
             if( ii != _snap_idxs.size() - 1 )
             {
-               auto next_snap_idx = _snap_idxs[ii + 1];
-               z_max = std::min( z_max, _snaps[next_snap_idx] );
-               auto max_dist = _redshift_to_distance( _snaps[next_snap_idx] );
+               next_snap_idx = _snap_idxs[ii + 1];
+               z_max = std::min( z_max, _snaps[*next_snap_idx] );
+               auto max_dist = _redshift_to_distance( _snaps[*next_snap_idx] );
             }
 
-            // auto cur_boxes = _get_boxes( z_max );
-            // for( auto& box : cur_boxes )
-            //    _build_pixels( cur_snap_idx, next_snap_idx, _x0 + box.x, _y0 + box.y, _z0 + box.z );
+            list<array<real_type,3>> boxes;
+            _get_boxes( z_max, boxes );
+            for( auto& box : boxes )
+               _build_pixels( cur_snap_idx, next_snap_idx, _x0 + box[0], _y0 + box[1], _z0 + box[2] );
+
+            if( next_snap_idx )
+            {
+               real_type dist = _redshift_to_distance( _snaps[*next_snap_idx] );
+               _last_max_dist_processed = _last_max_dist_processed < dist ? dist : _last_max_dist_processed;
+            }
          }
       }
       else if( _box_side > 0.0 )
@@ -95,20 +104,68 @@ namespace tao {
                              real_type offs_y,
                              real_type offs_z )
    {
-      auto query = _build_query( cur_snap_idx, next_snap_idx, offs_x, offs_y, offs_z );
+      // Produce the SQL query text.
+      std::string query;
+      _build_query( cur_snap_idx, next_snap_idx, offs_x, offs_y, offs_z, query );
 
-      // TODO: Fetch the query and output each row.
+      // Execute the query and retrieve the rows.
+      soci::rowset<soci::row> rowset = (_sql.prepare << query);
+
+      // Iterate over each returned row.
+      mpi::gindex num_galaxies = 0;
+      for( soci::rowset<soci::row>::const_iterator it = rowset.begin(); it != rowset.end(); ++it )
+      {
+         const soci::row& row = *it;
+         for( std::size_t ii = 0; ii < row.size(); ++ii )
+         {
+            // Writing each column is a bit annoying. I've not assumed that
+            // all fields will be double, which was assumed in the original
+            // lightcone module.
+            soci::data_type dt = row.get_properties( ii ).data_type();
+            if( dt == dt_double )
+            {
+               double val = it.get( ii );
+               _bin_file.write( (char*)&val, sizeof(double) );
+            }
+            else if( dt == dt_integer )
+            {
+               int val = it.get( ii );
+               _bin_file.write( (char*)&val, sizeof(int) );
+            }
+            else if( dt == dt_unsigned_long )
+            {
+               unsigned long val = it.get( ii );
+               _bin_file.write( (char*)&val, sizeof(unsigned long) );
+            }
+            else if( dt == dt_long_long )
+            {
+               long long val = it.get( ii );
+               _bin_file.write( (char*)&val, sizeof(long long) );
+            }
+            else if( dt == dt_string )
+            {
+               std::string val = it.get( ii );
+               _bin_file.write( (char*)val.c_str(), sizeof(char)*val.size() );
+            }
+#ifndef NDEBUG
+            else
+               ASSERT( 0 );
+#endif
+         }
+         ++num_galaxies;
+      }
    }
 
    ///
    ///
    ///
-   std::string
+   void
    lightcone::_build_query( mpi::lindex cur_snap_idx,
                             optional<mpi::lindex> next_snap_idx,
                             real_type offs_x,
                             real_type offs_y,
-                            real_type offs_z )
+                            real_type offs_z,
+                            std::string& query )
    {
       real_type ra_min = to_radians( _ra_min );
       real_type ra_max = to_radians( _ra_max );
@@ -151,7 +208,7 @@ namespace tao {
 
       // Apply all my current values to the query template to build up
       // the final SQL query string.
-      std::string query = _query_template;
+      query = _query_template;
       replace_first( query, "-z1-", to_string( _snaps[cur_snap_idx] ) );
       replace_first( query, "-z2-", to_string( z_max ) );
       replace_first( query, "-dec_min-", to_string( _dec_min ) );
@@ -183,13 +240,6 @@ namespace tao {
 #ifndef NDEBUG
       // TODO:: Dump the SQL query string to a debug file.
 #endif
-
-      // TODO: Submit the query using whatever C++ database library
-      //       we decide upon. I think perhaps SOCI might be a
-      //       good choice.
-
-      // Return the parsed query object.
-      return query;
    }
 
    ///
@@ -296,10 +346,46 @@ namespace tao {
    ///
    ///
    ///
-   // void
-   // _get_boxes()
-   // {
-   // }
+   void
+   lightcone::_get_boxes( real_type redshift,
+                          list<array<real_type,3>>& boxes )
+   {
+      boxes.clear();
+
+      real_type _max_dist = _redshift_to_distance( redshift );
+      real_type _min_dist = _last_max_dist_processed;
+
+      if( _max_dist < _min_dist )
+         return;
+
+      if( _max_dist > _box_side )
+      {
+         for( real_type ii = 0.0; ii <= _max_dist + _box_side; ii += _box_side )
+         {
+            for( real_type jj = 0.0; jj <= _max_dist + _box_side; jj += _box_side )
+            {
+               for( real_type kk = 0.0; kk <= _max_dist + _box_side; kk += _box_side )
+               {
+                  if( (sqrt( pow( ii + _box_side + _unique_offs_x, 2.0 ) + 
+                             pow( jj + _box_side + _unique_offs_y, 2.0 ) + 
+                             pow( kk + _box_side + _unique_offs_z, 2.0 ) ) > _min_dist - _box_side) &&
+                      ((ii + _box_side + _unique_offs_x)/sqrt( pow( ii + _box_side + _unique_offs_x, 2.0) + 
+                                                               pow( jj, 2.0 )) > cos( _ra_max*M_PI/180.0 )) &&
+                      (ii/sqrt( pow( ii, 2.0 ) + pow( jj + _box_side + _offset_y, 2.0 ) ) < cos( _ra_min*M_PI/180.0 )) &&
+                      ((sqrt( pow( ii + _box_side + _unique_offs_x, 2.0 ) + pow( jj + _box_side + _unique_offs_y, 2.0 )))/sqrt( pow( ii + _box_side + _unique_offs_x, 2.0 ) + pow( jj + _box_side + _unique_offs_y, 2.0 ) + pow( kk, 2.0 ) ) > cos( _dec_max*M_PI/180.0 )) &&
+                      ((sqrt( pow( ii, 2.0 ) + pow( jj, 2.0 )))/sqrt( pow( ii, 2.0 ) + pow( jj, 2.0 ) + pow( kk + _box_side + _unique_offs_z, 2.0 ) ) < cos( _dec_min*M_PI/180.0 )) )
+                  {
+                     boxes.push_back( array<real_type,3>( ii, jj, kk ) );
+                  }
+               }
+            }
+         }
+      }
+      else
+      {
+         boxes.push_back( array<real_type,3>( ii, jj, kk ) );
+      }
+   }
 
    ///
    ///
@@ -454,5 +540,12 @@ namespace tao {
          // TODO: Handle database errors.
          ASSERT( 0 );
       }
+   }
+
+   void
+   lightcone::_open_bin_file()
+   {
+      _bin_filename = tmpnam( NULL );
+      _bin_file.open( _bin_filename, std::ios::out | std::ios::binary );
    }
 }

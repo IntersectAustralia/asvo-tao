@@ -38,15 +38,20 @@ namespace tao {
                      real_type offs_y,
                      real_type offs_z );
 
-      std::string
+      void
       _build_query( hpc::mpi::lindex cur_snap_idx,
                     optional<hpc::mpi::lindex> next_snap_idx,
                     real_type offs_x,
                     real_type offs_y,
-                    real_type offs_z );
+                    real_type offs_z,
+                    std::string& query );
 
       void
       _random_rotation_and_shifting( hpc::vector<std::string>& ops );
+
+      void
+      _get_boxes( real_type redshift,
+                  hpc::list<hpc::array<real_type,3>>& boxes );
 
       real_type
       _redshift_to_distance( real_type redshift );
@@ -59,6 +64,9 @@ namespace tao {
 
       void
       _db_connect( soci::session& sql );
+
+      void
+      _open_bin_file();
 
    protected:
 
@@ -85,6 +93,9 @@ namespace tao {
       std::string _filter_min, _filter_max;
       std::string _query_template;
       real_type _H0;
+
+      std::string _bin_filename;
+      std::ofstream _bin_file;
 
       friend class ::lightcone_suite;
    };
