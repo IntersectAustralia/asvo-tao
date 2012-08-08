@@ -33,6 +33,10 @@ Dependencies
   HDF5
     Hierarchical Data Format libraries. Currently tested with version 1.8.7.
 
+  libhpc
+    A collection of wrappers and structures to help high-performance
+    programming, <http://github.com/furious-luke/libhpc>.
+
 Installation
 ============
 
