@@ -2,6 +2,7 @@
 #include <soci/sqlite3/soci-sqlite3.h>
 #include <cxxtest/TestSuite.h>
 #include <cxxtest/GlobalFixture.h>
+#include <libhpc/logging/logging.hh>
 #include "tao/lightcone/lightcone.hh"
 
 using namespace hpc;
@@ -81,12 +82,20 @@ public:
    ///
    void test_run()
    {
+      LOG_PUSH( new logging::file( "log" ) );
+
+#ifndef NDEBUG
       lightcone lc;
       lc._snaps.resize( 2 );
       lc._snaps[0] = 1.0;
       lc._snaps[1] = 2.0;
-      lc._setup_query_template();
-      std::string query = lc._build_query( 0, 1, 0.0, 0.0, 0.0 );
+      lc._sqlite_filename = tmpnam( NULL );
+      lc.initialise();
+      lc.run();
+      remove( lc._sqlite_filename.c_str() );
+#endif
+
+      LOG_POP();
    }
 
    ///
@@ -99,7 +108,8 @@ public:
       lc._snaps[0] = 1.0;
       lc._snaps[1] = 2.0;
       lc._setup_query_template();
-      std::string query = lc._build_query( 0, 1, 0.0, 0.0, 0.0 );
+      std::string query;
+      lc._build_query( 0, 1, 0.0, 0.0, 0.0, query );
    }
 
    ///

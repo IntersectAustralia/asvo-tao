@@ -24,6 +24,12 @@ namespace tao {
       ~lightcone();
 
       ///
+      ///
+      ///
+      void
+      initialise();
+
+      ///
       /// Run the module.
       ///
       void
@@ -72,7 +78,9 @@ namespace tao {
 
       soci::session _sql;
       std::string _dbhost, _dbname, _dbuser, _dbpass;
+#ifndef NDEBUG
       std::string _sqlite_filename;
+#endif
 
       std::string _type;
       real_type _box_side;

@@ -28,6 +28,20 @@ namespace tao {
    }
 
    ///
+   /// Initialise the module.
+   ///
+   void
+   lightcone::initialise()
+   {
+      LOG_ENTER();
+
+      _setup_params();
+      _setup_query_template();
+
+      LOG_EXIT();
+   }
+
+   ///
    /// Run the module.
    ///
    void
@@ -121,30 +135,30 @@ namespace tao {
             // Writing each column is a bit annoying. I've not assumed that
             // all fields will be double, which was assumed in the original
             // lightcone module.
-            soci::data_type dt = row.get_properties( ii ).data_type();
-            if( dt == dt_double )
+            soci::data_type dt = row.get_properties( ii ).get_data_type();
+            if( dt == soci::dt_double )
             {
-               double val = it.get( ii );
+               double val = row.get<double>( ii );
                _bin_file.write( (char*)&val, sizeof(double) );
             }
-            else if( dt == dt_integer )
+            else if( dt == soci::dt_integer )
             {
-               int val = it.get( ii );
+               int val = row.get<int>( ii );
                _bin_file.write( (char*)&val, sizeof(int) );
             }
-            else if( dt == dt_unsigned_long )
+            else if( dt == soci::dt_unsigned_long )
             {
-               unsigned long val = it.get( ii );
+               unsigned long val = row.get<unsigned long>( ii );
                _bin_file.write( (char*)&val, sizeof(unsigned long) );
             }
-            else if( dt == dt_long_long )
+            else if( dt == soci::dt_long_long )
             {
-               long long val = it.get( ii );
+               long long val = row.get<long long>( ii );
                _bin_file.write( (char*)&val, sizeof(long long) );
             }
-            else if( dt == dt_string )
+            else if( dt == soci::dt_string )
             {
-               std::string val = it.get( ii );
+               std::string val = row.get<std::string>( ii );
                _bin_file.write( (char*)val.c_str(), sizeof(char)*val.size() );
             }
 #ifndef NDEBUG
@@ -371,7 +385,7 @@ namespace tao {
                              pow( kk + _box_side + _unique_offs_z, 2.0 ) ) > _min_dist - _box_side) &&
                       ((ii + _box_side + _unique_offs_x)/sqrt( pow( ii + _box_side + _unique_offs_x, 2.0) + 
                                                                pow( jj, 2.0 )) > cos( _ra_max*M_PI/180.0 )) &&
-                      (ii/sqrt( pow( ii, 2.0 ) + pow( jj + _box_side + _offset_y, 2.0 ) ) < cos( _ra_min*M_PI/180.0 )) &&
+                      (ii/sqrt( pow( ii, 2.0 ) + pow( jj + _box_side + _unique_offs_y, 2.0 ) ) < cos( _ra_min*M_PI/180.0 )) &&
                       ((sqrt( pow( ii + _box_side + _unique_offs_x, 2.0 ) + pow( jj + _box_side + _unique_offs_y, 2.0 )))/sqrt( pow( ii + _box_side + _unique_offs_x, 2.0 ) + pow( jj + _box_side + _unique_offs_y, 2.0 ) + pow( kk, 2.0 ) ) > cos( _dec_max*M_PI/180.0 )) &&
                       ((sqrt( pow( ii, 2.0 ) + pow( jj, 2.0 )))/sqrt( pow( ii, 2.0 ) + pow( jj, 2.0 ) + pow( kk + _box_side + _unique_offs_z, 2.0 ) ) < cos( _dec_min*M_PI/180.0 )) )
                   {
@@ -383,7 +397,7 @@ namespace tao {
       }
       else
       {
-         boxes.push_back( array<real_type,3>( ii, jj, kk ) );
+         boxes.push_back( array<real_type,3>( 0.0, 0.0, 0.0 ) );
       }
    }
 
@@ -429,6 +443,8 @@ namespace tao {
    void
    lightcone::_setup_params()
    {
+      LOG_ENTER();
+
       // // Get the parameter dictionary.
       // parameters& param = _parameters();
 
@@ -444,6 +460,8 @@ namespace tao {
       // _z_max = std::min( param.get( "z_max" ), _snaps.get( _snap_idxs[_snap_idxs.size() - 1] ) );
 
       _H0 = 100.0;
+
+      LOG_EXIT();
    }
 
    ///
@@ -452,6 +470,8 @@ namespace tao {
    void
    lightcone::_setup_query_template()
    {
+      LOG_ENTER();
+
       _query_template = "";
       for( auto& field : _include )
       {
@@ -518,34 +538,52 @@ namespace tao {
             _query_template += str( format( " and %1% <= %2%" ) % _output_fields.get( _filter ) % _filter_max );
          }
       }
+
+      LOG_EXIT();
    }
 
    void
    lightcone::_db_connect( soci::session& sql )
    {
+      LOG_ENTER();
+
       try
       {
+#ifndef NDEBUG
          if( !_sqlite_filename.empty() )
          {
+            LOG( "Using sqlite database: ", _sqlite_filename, "yo", logging::endl );
             sql.open( soci::sqlite3, _sqlite_filename );
          }
          else
          {
+#endif
             ASSERT( 0 );
             // sql.open( soci::mysql, str( format( "host=%1% db=%2% user=%3% password='%4'" ) % _dbhost % _dbname % _dbuser % _dbpass ) );
+#ifndef NDEBUG
          }
+#endif
       }
       catch( const std::exception& ex )
       {
          // TODO: Handle database errors.
+         LOG( "Error opening database connection: ", ex.what(), logging::endl );
          ASSERT( 0 );
       }
+
+      LOG_EXIT();
    }
 
    void
    lightcone::_open_bin_file()
    {
-      _bin_filename = tmpnam( NULL );
-      _bin_file.open( _bin_filename, std::ios::out | std::ios::binary );
+      LOG_ENTER();
+
+      if( !_bin_filename.empty() )
+      {
+         _bin_file.open( _bin_filename, std::ios::out | std::ios::binary );
+      }
+
+      LOG_EXIT();
    }
 }
