@@ -57,16 +57,16 @@ to install:
 The remaining dependencies (Boost, MPI, HDF5, etc) can either be installed
 manually, or can be automatically downloaded and installed specifically for
 use by the science modules by building the science modules source with the
-command:
+command::
 
-  `scons DOWNLOAD_ALL=yes`
+  scons DOWNLOAD_ALL=yes
 
 If you want to install the dependencies manually, then once they are ready you
-may build the science modules with the command:
+may build the science modules with the command::
 
-  `scons`
+  scons
 
 You may need to specify the locations of some of the dependencies. To see a
-list of options for doing so, along with various other build options, run:
+list of options for doing so, along with various other build options, run::
 
-  `scons -h`
+  scons -h
