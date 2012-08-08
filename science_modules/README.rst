@@ -41,6 +41,9 @@ Dependencies
     A collection of wrappers and structures to help high-performance
     programming, <http://github.com/furious-luke/libhpc>.
 
+  sqlite3 (optional)
+    A simple SQL database implementation, used for testing only.
+
 Installation
 ============
 
