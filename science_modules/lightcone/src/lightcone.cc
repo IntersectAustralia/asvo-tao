@@ -60,21 +60,28 @@ namespace tao {
       // TODO: Figure what alternatives there are to a "box".
       if( _type != "box" && _box_side > 0.0 )
       {
+         LOGLN( "Have a box type, with side length: ", _box_side );
+
          // Iterate over the reversed snapshot indices.
-         for( mpi::lindex ii = 0; ii < _snap_idxs.size(); ++ii )
+         LOGLN( "Iterating over ", _snaps.size(), " snapshots." );
+         for( mpi::lindex ii = 0; ii < _snaps.size(); ++ii )
          {
+            LOGLN( "Snapshot ", ii, ", redshift ", _snaps[ii], setindent( 2 ) );
+
             // Terminate the loop if the redshift is outside our maximum.
             // This is why we reversed the snapshots.
-            if( _snaps[_snap_idxs[ii]] > _z_max )
-               break;
-
-            
-            real_type z_max = _z_max;
-            mpi::lindex cur_snap_idx = _snap_idxs[ii];
-            optional<mpi::lindex> next_snap_idx;
-            if( ii != _snap_idxs.size() - 1 )
+            if( _snaps[ii] > _z_max )
             {
-               next_snap_idx = _snap_idxs[ii + 1];
+               LOGLN( "Exceeded maximum redshift of ", _z_max, setindent( -2 ) );
+               break;
+            }
+
+            real_type z_max = _z_max;
+            mpi::lindex cur_snap_idx = ii;
+            optional<mpi::lindex> next_snap_idx;
+            if( ii != _snaps.size() - 1 )
+            {
+               next_snap_idx = ii + 1;
                z_max = std::min( z_max, _snaps[*next_snap_idx] );
                auto max_dist = _redshift_to_distance( _snaps[*next_snap_idx] );
             }
@@ -89,14 +96,18 @@ namespace tao {
                real_type dist = _redshift_to_distance( _snaps[*next_snap_idx] );
                _last_max_dist_processed = _last_max_dist_processed < dist ? dist : _last_max_dist_processed;
             }
+
+            LOG( setindent( -2 ) );
          }
       }
       else if( _box_side > 0.0 )
       {
+         LOGLN( "Have irregular shape, with side length: ", _box_side );
          // _build_pixels( ?, ?, _x0, _y0, _z0 );
       }
       else
       {
+         LOGLN( "Have an empty domain." );
          // TODO: Zero sized box, should report an error?
          // _build_pixels( 0, 0, 0, 0, 0 );
       }
@@ -445,21 +456,38 @@ namespace tao {
    {
       LOG_ENTER();
 
-      // // Get the parameter dictionary.
-      // parameters& param = _parameters();
+      // Define our options.
+      options::dictionary dict;
+      dict.add_options(
+         new options::string( "type", none, "box type" ),
+         new options::real( "box_side", 62.5, "box side length" )
+         new options::real( "z_max", "maximum redshift" ),
+         new options::real( "H0", 100.0, "Hubble constant" )
+         );
 
-      // // Box type and size.
-      // _type = param.get( "box" );
-      // _box_side = 62.5; // for mini-mi TODO: Fix this hard-coding.
+      // Parse options from source.
+      // TODO
+      // parser.parse( dict );
 
-      // // Snapshots. Also store the reversed set of keys.
+      // Box type and size.
+      _type = dict.get<string>( "type" );
+      _box_side = dict.get<real_type>( "box_side" );
+
+      // Snapshots. Also store the reversed set of keys.
       // param.get( std::inserter( _snaps, _snaps.begin() ) );
       // boost::reverse_copy( _snaps | boost::adaptors::map_keys, std::inserter( _snap_idxs, _snap_idxs.begin() ) );
+      std::reverse( _snaps.begin(), _snaps.end() );
+      LOGLN( "Snapshots: ", _snaps );
+      // LOG( "Snapshot indices: ", _snap_idxs, logging::endl );
 
-      // // Redshift ranges.
-      // _z_max = std::min( param.get( "z_max" ), _snaps.get( _snap_idxs[_snap_idxs.size() - 1] ) );
+      // Redshift ranges.
+      real_type snap_z_max = _snaps[_snaps.size() - 1];
+      _z_max = dict.get<real_type>( "z_max", snap_z_max );
+      _z_max = std::min( _z_max, snap_z_max );
 
-      _H0 = 100.0;
+      // Astronomical values.
+      _H0 = dict.get<real_type>( "H0" );
+      LOGLN( "Using H0 = ", _H0 );
 
       LOG_EXIT();
    }

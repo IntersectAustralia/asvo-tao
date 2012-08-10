@@ -85,7 +85,7 @@ namespace tao {
       std::string _type;
       real_type _box_side;
       hpc::vector<real_type> _snaps;
-      hpc::vector<hpc::mpi::lindex> _snap_idxs;
+      // hpc::vector<hpc::mpi::lindex> _snap_idxs;
       real_type _x0, _y0, _z0;
       real_type _z_min, _z_max;
       real_type _ra_min, _ra_max;
