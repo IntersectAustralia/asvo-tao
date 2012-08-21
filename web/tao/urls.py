@@ -9,6 +9,8 @@ admin.autodiscover()
 
 from django.contrib.auth.views import login, logout
 
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+
 tao_patterns = patterns('',
     # Example:
     # (r'^{{ project_name }}/', include('{{ project_name }}.foo.urls')),
@@ -40,3 +42,4 @@ if settings.DEBUG:
         (r'^media/(?P<path>.*)$', 'django.views.static.serve',
          {'document_root': settings.MEDIA_ROOT}),
     )
+    urlpatterns += staticfiles_urlpatterns()

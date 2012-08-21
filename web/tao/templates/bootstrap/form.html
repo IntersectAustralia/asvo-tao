@@ -1,0 +1,18 @@
+{% if form.non_field_errors %}
+  <div class="alert-message block-message error">
+    <p>
+      <strong>{{ form_error_title }}</strong>
+        <ul>
+	  {{ form.non_field_errors|unordered_list }}
+	</ul>
+    </p>
+  </div>
+{% endif %}
+<fieldset>
+  {% for field in form %}
+    {% include "bootstrap/field.html" %}
+  {% endfor %}
+</fieldset>
+<div class="form-actions">
+  <button type="submit" class="btn btn-primary">Submit</button>
+</div>
