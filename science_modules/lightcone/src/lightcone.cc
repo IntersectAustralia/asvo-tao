@@ -28,14 +28,26 @@ namespace tao {
    }
 
    ///
+   ///
+   ///
+   void
+   lightcone::setup_options( options::dictionary& dict )
+   {
+      dict.add_option( new options::string( "type" ) );
+      dict.add_option( new options::real( "box_side", 62.5 ) );
+      dict.add_option( new options::real( "z_max" ) );
+      dict.add_option( new options::real( "H0", 100.0 ) );
+   }
+
+   ///
    /// Initialise the module.
    ///
    void
-   lightcone::initialise()
+   lightcone::initialise( const options::dictionary& dict )
    {
       LOG_ENTER();
 
-      _setup_params();
+      _setup_params( dict );
       _setup_query_template();
 
       LOG_EXIT();
@@ -452,18 +464,9 @@ namespace tao {
    /// from the parameter dictionary.
    ///
    void
-   lightcone::_setup_params()
+   lightcone::_setup_params( const options::dictionary& dict )
    {
       LOG_ENTER();
-
-      // Define our options.
-      options::dictionary dict;
-      dict.add_options(
-         new options::string( "type", none, "box type" ),
-         new options::real( "box_side", 62.5, "box side length" )
-         new options::real( "z_max", "maximum redshift" ),
-         new options::real( "H0", 100.0, "Hubble constant" )
-         );
 
       // Parse options from source.
       // TODO

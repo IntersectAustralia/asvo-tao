@@ -3,8 +3,7 @@
 
 #include <string>
 #include <soci/soci.h>
-#include <libhpc/containers/vector.hh>
-#include <libhpc/hpcmpi/mpi.hh>
+#include <libhpc/libhpc.hh>
 
 class lightcone_suite;
 
@@ -15,6 +14,8 @@ namespace tao {
    ///
    class lightcone
    {
+      friend class ::lightcone_suite;
+
    public:
 
       typedef double real_type;
@@ -27,7 +28,13 @@ namespace tao {
       ///
       ///
       void
-      initialise();
+      setup_options( hpc::options::dictionary& dict );
+
+      ///
+      ///
+      ///
+      void
+      initialise( const hpc::options::dictionary& dict );
 
       ///
       /// Run the module.
@@ -63,7 +70,7 @@ namespace tao {
       _redshift_to_distance( real_type redshift );
 
       void
-      _setup_params();
+      _setup_params( const hpc::options::dictionary& dict );
 
       void
       _setup_query_template();
@@ -104,8 +111,6 @@ namespace tao {
 
       std::string _bin_filename;
       std::ofstream _bin_file;
-
-      friend class ::lightcone_suite;
    };
 }
 

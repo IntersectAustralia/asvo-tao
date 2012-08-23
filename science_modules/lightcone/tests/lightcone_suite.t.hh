@@ -84,16 +84,16 @@ public:
    {
       LOG_PUSH( new logging::file( "log" ) );
 
-#ifndef NDEBUG
-      lightcone lc;
-      lc._snaps.resize( 2 );
-      lc._snaps[0] = 1.0;
-      lc._snaps[1] = 2.0;
-      lc._sqlite_filename = tmpnam( NULL );
-      lc.initialise();
-      lc.run();
-      remove( lc._sqlite_filename.c_str() );
-#endif
+// #ifndef NDEBUG
+//       lightcone lc;
+//       lc._snaps.resize( 2 );
+//       lc._snaps[0] = 1.0;
+//       lc._snaps[1] = 2.0;
+//       lc._sqlite_filename = tmpnam( NULL );
+//       lc.initialise();
+//       lc.run();
+//       remove( lc._sqlite_filename.c_str() );
+// #endif
 
       LOG_POP();
    }
