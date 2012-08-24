@@ -148,3 +148,5 @@ LOGGING = {
 
 from django.core.urlresolvers import reverse_lazy
 LOGIN_REDIRECT_URL = reverse_lazy('tao.views.home')
+
+AUTH_PROFILE_MODULE = 'tao.UserProfile'  # appname.modelname
