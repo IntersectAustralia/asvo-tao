@@ -20,6 +20,7 @@ tao_patterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^mock_galaxy_factory/', 'tao.views.mock_galaxy_factory', name='mock_galaxy_factory'),
     url(r'^$', 'tao.views.home', name='home'),
 )
 

@@ -1,4 +1,5 @@
 from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.template import RequestContext
@@ -22,3 +23,7 @@ def register(request):
     return render(request, "register.html", {
         'form': form,
     })
+
+@login_required
+def mock_galaxy_factory(request):
+    return render(request, 'mock_galaxy_factory.html')

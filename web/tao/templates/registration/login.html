@@ -4,6 +4,9 @@
     Login
 {% endblock %}
 {% block content %}
+    {% if next %}
+        You need to login to continue.
+    {% endif %}
     <h1>
         Login
     </h1>
