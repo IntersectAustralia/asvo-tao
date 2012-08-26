@@ -1,7 +1,6 @@
 #ifndef tao_lightcone_lightcone_hh
 #define tao_lightcone_lightcone_hh
 
-#include <string>
 #include <soci/soci.h>
 #include <libhpc/libhpc.hh>
 
@@ -57,10 +56,10 @@ namespace tao {
                     real_type offs_x,
                     real_type offs_y,
                     real_type offs_z,
-                    std::string& query );
+                    hpc::string& query );
 
       void
-      _random_rotation_and_shifting( hpc::vector<std::string>& ops );
+      _random_rotation_and_shifting( hpc::vector<hpc::string>& ops );
 
       void
       _get_boxes( real_type redshift,
@@ -84,12 +83,9 @@ namespace tao {
    protected:
 
       soci::session _sql;
-      std::string _dbhost, _dbname, _dbuser, _dbpass;
-#ifndef NDEBUG
-      std::string _sqlite_filename;
-#endif
+      hpc::string _dbtype, _dbname, _dbhost, _dbuser, _dbpass;
 
-      std::string _type;
+      hpc::string _box_type;
       real_type _box_side;
       hpc::vector<real_type> _snaps;
       // hpc::vector<hpc::mpi::lindex> _snap_idxs;
@@ -97,19 +93,19 @@ namespace tao {
       real_type _z_min, _z_max;
       real_type _ra_min, _ra_max;
       real_type _dec_min, _dec_max;
+      real_type _z_snap, _box_size;
       bool _unique;
       real_type _unique_offs_x, _unique_offs_y, _unique_offs_z;
       real_type _last_max_dist_processed;
-      real_type _output_box_size;
-      std::string _table_name;
-      hpc::vector<std::string> _include;
-      hpc::map<std::string, std::string> _output_fields;
-      std::string _filter;
-      std::string _filter_min, _filter_max;
-      std::string _query_template;
+      hpc::string _table_name;
+      hpc::vector<hpc::string> _include;
+      hpc::map<hpc::string, hpc::string> _output_fields;
+      hpc::string _filter;
+      hpc::string _filter_min, _filter_max;
+      hpc::string _query_template;
       real_type _H0;
 
-      std::string _bin_filename;
+      hpc::string _bin_filename;
       std::ofstream _bin_file;
    };
 }

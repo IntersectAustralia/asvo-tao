@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <libhpc/libhpc.hh>
 #include <tao/base/application.hh>
 #include <tao/lightcone/lightcone.hh>
 
@@ -35,6 +36,7 @@ int
 main( int argc,
       char* argv[] )
 {
+   LOG_PUSH( new hpc::logging::file( "lightcone.log" ) );
    tao::application<pipeline> app( argc, argv );
    app.run();
    return EXIT_SUCCESS;
