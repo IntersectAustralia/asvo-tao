@@ -18,6 +18,9 @@ namespace tao {
    public:
 
       typedef double real_type;
+      typedef soci::row row_type;
+
+   public:
 
       lightcone();
 
@@ -41,7 +44,37 @@ namespace tao {
       void
       run();
 
+      ///
+      /// Begin iterating over galaxies.
+      ///
+      void
+      begin();
+
+      ///
+      /// Check for completed iteration.
+      ///
+      bool
+      done() const;
+
+      ///
+      /// Advance to next galaxy.
+      ///
+      void
+      operator++();
+
+      ///
+      /// Get current galaxy.
+      ///
+      const row_type&
+      operator*() const;
+
    protected:
+
+      void
+      _settle_snap();
+
+      void
+      _settle_box();
 
       void
       _build_pixels( hpc::mpi::lindex cur_snap_idx,
@@ -107,6 +140,14 @@ namespace tao {
 
       hpc::string _bin_filename;
       std::ofstream _bin_file;
+
+      hpc::mpi::lindex _cur_snap;
+      optional<hpc::mpi::lindex> _next_snap;
+      hpc::list<hpc::array<real_type,3>> _boxes;
+      hpc::list<hpc::array<real_type,3>>::const_iterator _cur_box;
+      hpc::scoped_ptr<soci::statement> _st;
+      hpc::scoped_ptr<soci::rowset<soci::row>> _rows;
+      soci::rowset<soci::row>::const_iterator _cur_row;
    };
 }
 

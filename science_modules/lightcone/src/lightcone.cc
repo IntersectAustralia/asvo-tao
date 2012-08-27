@@ -165,6 +165,151 @@ namespace tao {
    }
 
    ///
+   /// Begin iterating over galaxies.
+   ///
+   void
+   lightcone::begin()
+   {
+      LOG_ENTER();
+
+      // Connect to the database.
+      _db_connect( _sql );
+
+      // Prepare the last max distance processed value.
+      _last_max_dist_processed = (_z_min > 0.0) ? _redshift_to_distance( _z_min ) : 0.0;
+
+      if( _box_type != "box" && _box_side > 0.0 )
+      {
+         LOGLN( "Build cone, simulation box side length: ", _box_side );
+
+         // Iterate over the reversed snapshot indices.
+         LOGLN( "Iterating over ", _snaps.size(), " snapshots." );
+         _cur_snap = 0;
+         if( _cur_snap < _snaps.size() )
+            _settle_snap();
+      }
+      else if( _box_side > 0.0 )
+      {
+         LOGLN( "Selecting box, with side length: ", _box_side );
+         auto it = std::find( _snaps.begin(), _snaps.end(), _z_snap );
+         ASSERT( it != _snaps.end() );
+         mpi::lindex idx = it - _snaps.begin();
+         _build_pixels( idx, idx, _x0, _y0, _z0 );
+
+         // Set the current snapshot to the end to be sure we will
+         // terminate as expected.
+         _cur_snap = _snaps.size();
+      }
+      else
+      {
+         LOGLN( "Have an empty domain." );
+         _cur_snap = _snaps.size();
+      }
+
+      LOG_EXIT();
+   }
+
+   ///
+   /// Check for completed iteration.
+   ///
+   bool
+   lightcone::done() const
+   {
+      // We need botht the row check and the snapshot check to catch
+      // the box and cone versions.
+      return (_cur_row == _rows->end() && _cur_snap == _snaps.size());
+   }
+
+   ///
+   /// Advance to next galaxy.
+   ///
+   void
+   lightcone::operator++()
+   {
+      if( ++_cur_row == _rows->end() )
+      {
+         if( _box_type != "box" )
+         {
+            if( ++_cur_box == _boxes.end() ||
+                (_settle_box(), _cur_box == _boxes.end()) )
+            {
+               while( ++_cur_snap < _snaps.size() )
+                  _settle_snap();
+            }
+         }
+      }
+   }
+
+   ///
+   /// Get current galaxy.
+   ///
+   const lightcone::row_type&
+   lightcone::operator*() const
+   {
+      return *_cur_row;
+   }
+
+   void
+   lightcone::_settle_snap()
+   {
+      do
+      {
+         // Update the last max dist processed from previous snapshot,
+         // if we have the next snap index.
+         if( _next_snap )
+         {
+            real_type dist = _redshift_to_distance( _snaps[*_next_snap] );
+            _last_max_dist_processed = _last_max_dist_processed < dist ? dist : _last_max_dist_processed;
+         }
+
+         // Terminate the loop if the redshift is outside our maximum.
+         // This is why we reversed the snapshots.
+         if( _snaps[_cur_snap] > _z_max )
+         {
+            LOGLN( "Exceeded maximum redshift of ", _z_max, setindent( -2 ) );
+            _cur_snap = _snaps.size();
+            break;
+         }
+         else
+         {
+            real_type z_max = _z_max;
+            if( _cur_snap != _snaps.size() - 1 )
+            {
+               _next_snap = _cur_snap + 1;
+               z_max = std::min( z_max, _snaps[*_next_snap] );
+            }
+            LOGLN( "Current snapshot index: ", cur_snap_idx );
+#ifndef NLOG
+            if( _next_snap )
+               LOGLN( "Next snapshot index: ", *_next_snap );
+            else
+               LOGLN( "No next snapshot." );
+#endif
+            LOGLN( "Max redshift: ", z_max );
+            LOGLN( "Last max distance: ", _last_max_dist_processed );
+
+            _get_boxes( z_max, _boxes );
+            LOGLN( "Boxes: ", _boxes );
+            _cur_box = _boxes.begin();
+            _settle_box();
+
+            LOG( setindent( -2 ) );
+         }
+      }
+      while( _cur_box == _boxes.end() && _cur_snap < _snaps.size() );
+   }
+
+   void
+   lightcone::_settle_box()
+   {
+      do
+      {
+         const array<real_type,3>& box = *_cur_box;
+         _build_pixels( _cur_snap, _next_snap, _x0 + box[0], _y0 + box[1], _z0 + box[2] );
+      } while( _cur_row == _rows->end() && ++_cur_box != _boxes.end() );
+   }
+
+   ///
    ///
    ///
    void
@@ -181,8 +326,8 @@ namespace tao {
       _build_query( cur_snap_idx, next_snap_idx, offs_x, offs_y, offs_z, query );
 
       // Execute the query and retrieve the rows.
-      std::cout << "\n" << query << "\n";
-      soci::rowset<soci::row> rowset = (_sql.prepare << query);
+      _rows = new soci::rowset<soci::row>( (_sql.prepare << query) );
+      _cur_row = _rows->begin();
 
 //       // Iterate over each returned row.
 //       mpi::gindex num_galaxies = 0;
