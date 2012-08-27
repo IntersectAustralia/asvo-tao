@@ -1,5 +1,7 @@
+from django.contrib.auth.models import User
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.template import RequestContext
@@ -27,3 +29,13 @@ def register(request):
 @login_required
 def mock_galaxy_factory(request):
     return render(request, 'mock_galaxy_factory.html')
+
+@staff_member_required
+def admin_index(request):
+    return render(request, 'admin_index.html')
+
+@staff_member_required
+def access_requests(request):
+    return render(request, 'access_requests.html', {
+        'users': User.objects.all()
+    })

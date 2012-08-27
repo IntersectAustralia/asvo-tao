@@ -1,0 +1,36 @@
+{% extends '_base.html' %}
+{% block subtitle %}Access Requests{% endblock %}
+{% block content %}
+    <style>
+        /* TODO remove me */
+        td {
+            padding: 8px;
+        }
+    </style>
+    <h1>
+        Access Requests
+    </h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <td> Username </td>
+                <td> Email </td>
+                <td> First Name </td>
+                <td> Last Name </td>
+                <td> Approve/Reject </td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                <tr>
+                    <td> {{ user.username }} </td>
+                    <td> {{ user.email }} </td>
+                    <td> {{ user.first_name}} </td>
+                    <td> {{ user.last_name}} </td>
+                    <td><button>Approve</button><button>Reject</button></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock content %}
+
