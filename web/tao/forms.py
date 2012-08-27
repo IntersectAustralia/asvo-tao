@@ -19,6 +19,7 @@ class UserCreationForm(auth_forms.UserCreationForm):
                                     max_length=30)
     institution = forms.CharField(label=_("Institution"), max_length=100)
     scientific_interests = forms.CharField(label=_("Scientific Interests"),
+                                            help_text = _("e.g. your area of expertise, how you hope to use the data, team memberships and collaborations"),
                                             max_length=500,
                                             widget=forms.Textarea(attrs={'rows':
                                             3}), required=False)
@@ -34,8 +35,7 @@ class UserCreationForm(auth_forms.UserCreationForm):
     def clean_password1(self):
         password = self.cleaned_data.get('password1')
         if len(password) < 8:
-# TODO internationalize
-            raise ValidationError('Password must be at least 8 characters long')
+            raise ValidationError(_('Password must be at least 8 characters long'))
         return password
 
 
@@ -45,6 +45,7 @@ class UserCreationForm(auth_forms.UserCreationForm):
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
         user.email = self.cleaned_data['email']
+        user.is_active = False
         user.save()
 
         up = UserProfile(user=user)
