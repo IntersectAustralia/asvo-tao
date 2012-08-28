@@ -22,6 +22,8 @@ tao_patterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^mock_galaxy_factory/', 'tao.views.mock_galaxy_factory', name='mock_galaxy_factory'),
     url(r'^$', 'tao.views.home', name='home'),
+    url(r'^admininistration/$', 'tao.views.admin_index', name='admin_index'),
+    url(r'^admininistration/access_requests$', 'tao.views.access_requests', name='access_requests'),
 )
 
 account_patterns = patterns('',
