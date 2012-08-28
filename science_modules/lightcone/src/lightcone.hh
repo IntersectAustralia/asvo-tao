@@ -54,7 +54,7 @@ namespace tao {
       /// Check for completed iteration.
       ///
       bool
-      done() const;
+      done();
 
       ///
       /// Advance to next galaxy.
@@ -111,10 +111,14 @@ namespace tao {
       _db_connect( soci::session& sql );
 
       void
+      _db_disconnect();
+
+      void
       _open_bin_file();
 
    protected:
 
+      bool _connected;
       soci::session _sql;
       hpc::string _dbtype, _dbname, _dbhost, _dbuser, _dbpass;
 
@@ -145,7 +149,6 @@ namespace tao {
       optional<hpc::mpi::lindex> _next_snap;
       hpc::list<hpc::array<real_type,3>> _boxes;
       hpc::list<hpc::array<real_type,3>>::const_iterator _cur_box;
-      hpc::scoped_ptr<soci::statement> _st;
       hpc::scoped_ptr<soci::rowset<soci::row>> _rows;
       soci::rowset<soci::row>::const_iterator _cur_row;
    };

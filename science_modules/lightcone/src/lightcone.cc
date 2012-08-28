@@ -15,7 +15,8 @@ using boost::algorithm::replace_all;
 namespace tao {
 
    lightcone::lightcone()
-      : _box_side( 1.0 ),
+      : _connected( false ),
+        _box_side( 1.0 ),
         _z_min( 0.0 ),
         _z_max( 0.0 ),
         _unique( false ),
@@ -52,8 +53,10 @@ namespace tao {
       dict.add_option( new options::real( "z_min" ) );
       dict.add_option( new options::real( "z_snap" ) );
       dict.add_option( new options::real( "box_size" ) );
-      dict.add_option( new options::real( "rasc", 90.0 ) );
-      dict.add_option( new options::real( "decl", 90.0 ) );
+      dict.add_option( new options::real( "rasc_min", 0.0 ) );
+      dict.add_option( new options::real( "rasc_max", 90.0 ) );
+      dict.add_option( new options::real( "decl_min", 0.0 ) );
+      dict.add_option( new options::real( "decl_max", 90.0 ) );
       dict.add_option( new options::real( "H0", 100.0 ) );
    }
 
@@ -178,6 +181,9 @@ namespace tao {
       // Prepare the last max distance processed value.
       _last_max_dist_processed = (_z_min > 0.0) ? _redshift_to_distance( _z_min ) : 0.0;
 
+      // Clear out the next snap shot index.
+      _next_snap = none;
+
       if( _box_type != "box" && _box_side > 0.0 )
       {
          LOGLN( "Build cone, simulation box side length: ", _box_side );
@@ -213,11 +219,22 @@ namespace tao {
    /// Check for completed iteration.
    ///
    bool
-   lightcone::done() const
+   lightcone::done()
    {
+      LOG_ENTER();
+
       // We need botht the row check and the snapshot check to catch
       // the box and cone versions.
-      return (_cur_row == _rows->end() && _cur_snap == _snaps.size());
+      LOGLN( "Current snapshot ", _cur_snap, "/", _snaps.size() );
+      bool result = (_cur_row == _rows->end() && _cur_snap == _snaps.size());
+      LOGLN( "Finished: ", result );
+
+      // If we are done, close the database.
+      if( result )
+         _db_disconnect();
+
+      LOG_EXIT();
+      return result;
    }
 
    ///
@@ -226,18 +243,27 @@ namespace tao {
    void
    lightcone::operator++()
    {
+      LOG_ENTER();
+
       if( ++_cur_row == _rows->end() )
       {
+         LOGLN( "Finished iterating over current rowset." );
          if( _box_type != "box" )
          {
             if( ++_cur_box == _boxes.end() ||
                 (_settle_box(), _cur_box == _boxes.end()) )
             {
-               while( ++_cur_snap < _snaps.size() )
-                  _settle_snap();
+               LOGLN( "Finished iterating over current boxes." );
+               if( ++_cur_snap != _snaps.size() )
+               {
+                  while( _cur_snap < _snaps.size() )
+                     _settle_snap();
+               }
             }
          }
       }
+
+      LOG_EXIT();
    }
 
    ///
@@ -252,6 +278,8 @@ namespace tao {
    void
    lightcone::_settle_snap()
    {
+      LOG_ENTER();
+
       do
       {
          // Update the last max dist processed from previous snapshot,
@@ -266,7 +294,7 @@ namespace tao {
          // This is why we reversed the snapshots.
          if( _snaps[_cur_snap] > _z_max )
          {
-            LOGLN( "Exceeded maximum redshift of ", _z_max, setindent( -2 ) );
+            LOGLN( "Exceeded maximum redshift of ", _z_max );
             _cur_snap = _snaps.size();
             break;
          }
@@ -278,7 +306,7 @@ namespace tao {
                _next_snap = _cur_snap + 1;
                z_max = std::min( z_max, _snaps[*_next_snap] );
             }
-            LOGLN( "Current snapshot index: ", cur_snap_idx );
+            LOGLN( "Current snapshot index: ", _cur_snap );
 #ifndef NLOG
             if( _next_snap )
                LOGLN( "Next snapshot index: ", *_next_snap );
@@ -292,21 +320,30 @@ namespace tao {
             LOGLN( "Boxes: ", _boxes );
             _cur_box = _boxes.begin();
             _settle_box();
-
-            LOG( setindent( -2 ) );
          }
       }
-      while( _cur_box == _boxes.end() && _cur_snap < _snaps.size() );
+      while( _cur_box == _boxes.end() && ++_cur_snap < _snaps.size() );
+
+      LOG_EXIT();
    }
 
    void
    lightcone::_settle_box()
    {
+      LOG_ENTER();
+
       do
       {
          const array<real_type,3>& box = *_cur_box;
+         LOGLN( "Using box ", box );
          _build_pixels( _cur_snap, _next_snap, _x0 + box[0], _y0 + box[1], _z0 + box[2] );
+#ifndef NLOG
+         if( _cur_row == _rows->end() )
+            LOGLN( "There are no objects in this box." );
+#endif
       } while( _cur_row == _rows->end() && ++_cur_box != _boxes.end() );
+
+      LOG_EXIT();
    }
 
    ///
@@ -427,13 +464,15 @@ namespace tao {
       real_type halo_pos1_min = _last_max_dist_processed*cos( ra_max )*cos( dec_max );
       real_type halo_pos2_min = _last_max_dist_processed*sin( ra_min )*cos( dec_max );
       real_type halo_pos3_min = _last_max_dist_processed*sin( dec_min );
+      LOG( "Halo position range: (", halo_pos1_min, ", ", halo_pos2_min, ", ", halo_pos3_min, ")" );
+      LOGLN( " - (", halo_pos1_max, ", ", halo_pos2_max, ", ", halo_pos3_max, ")" );
 
       // Apply all my current values to the query template to build up
       // the final SQL query string.
       query = _query_template;
       replace_all( query, "-z1-", to_string( _snaps[cur_snap_idx] ) );
       replace_all( query, "-z2-", to_string( z_max ) );
-      replace_all( query, "-dec_min-", to_string( _dec_min ) );
+      replace_all( query, "-dec_min-", to_string( dec_min ) ); // TODO: Is this okay as radians?
       replace_all( query, "-pos1-", pos1 );
       replace_all( query, "-pos2-", pos2 );
       replace_all( query, "-pos3-", pos3 );
@@ -605,6 +644,7 @@ namespace tao {
 
       real_type _max_dist = _redshift_to_distance( redshift );
       real_type _min_dist = _last_max_dist_processed;
+      LOGLN( "Using redshift of ", redshift );
       LOGLN( "Distance range (", _max_dist, ", ", _min_dist, ")" );
 
       if( _max_dist < _min_dist )
@@ -616,7 +656,7 @@ namespace tao {
 
       if( _max_dist > _box_side )
       {
-         LOGLN( "Maximum distance greater than box side of ", _box_side );
+         LOGLN( "Maximum distance greater than box side of ", _box_side, ", calculating boxes." );
          for( real_type ii = 0.0; ii <= _max_dist + _box_side; ii += _box_side )
          {
             for( real_type jj = 0.0; jj <= _max_dist + _box_side; jj += _box_side )
@@ -640,7 +680,7 @@ namespace tao {
       }
       else
       {
-         LOGLN( "Maximum distance less than box side of ", _box_side );
+         LOGLN( "Maximum distance less than box side of ", _box_side, ", using single box." );
          boxes.push_back( array<real_type,3>( 0.0, 0.0, 0.0 ) );
       }
 
@@ -725,15 +765,27 @@ namespace tao {
       _z_min = dict.get<real_type>( "z_min" );
       LOGLN( "Redshift range: (", _z_min, ", ", _z_max, ")" );
 
-      // Viewing angles.
-      _ra_min = 0.0;
-      _ra_max = dict.get<real_type>( "rasc" )/60.0;
+      // Right ascension.
+      _ra_min = dict.get<real_type>( "rasc_min" );
+      if( _ra_min < 0.0 )
+         _ra_min = 0.0;
+      _ra_max = dict.get<real_type>( "rasc_max" ); // TODO divide by 60.0?
       if( _ra_max >= 89.9999999 )
          _ra_max = 89.9999999;
-      _dec_min = 0.0;
-      _dec_max = dict.get<real_type>( "decl" )/60.0;
+      if( _ra_min > _ra_max )
+         _ra_min = _ra_max;
+      LOGLN( "Have right ascension range ", _ra_min, " - ", _ra_max );
+
+      // Declination.
+      _dec_min = dict.get<real_type>( "decl_min" );
+      if( _dec_min < 0.0 )
+         _dec_min = 0.0;
+      _dec_max = dict.get<real_type>( "decl_max" ); // TODO divide by 60.0?
       if( _dec_max >= 89.9999999 )
          _dec_max = 89.9999999;
+      if( _dec_min > _dec_max )
+         _dec_min = _dec_max;
+      LOGLN( "Have declination range ", _dec_min, " - ", _dec_max );
 
       // For the box type.
       if( _box_type == "box" )
@@ -784,23 +836,23 @@ namespace tao {
       {
          if( _output_fields.has( "halo_pos1" ) && _output_fields.has( "halo_pos2" ) && _output_fields.has( "halo_pos3" ) )
          {
-            _query_template += " -halo_pos1- < -halo_pos1_max- and -halo_pos1- > -halo_pos1_min-";
-            _query_template += " and -halo_pos2- < -halo_pos2_max- and -halo_pos2- > -halo_pos2_min-";
-            _query_template += " and -halo_pos3- < -halo_pos3_max- and -halo_pos3- > -halo_pos3_min-";
+            _query_template += " -halo_pos1- < -halo_pos1_max- and -halo_pos1- >= -halo_pos1_min-";
+            _query_template += " and -halo_pos2- < -halo_pos2_max- and -halo_pos2- >= -halo_pos2_min-";
+            _query_template += " and -halo_pos3- < -halo_pos3_max- and -halo_pos3- >= -halo_pos3_min-";
             _query_template += " and sqrt(pow(-halo_pos1-,2)+pow(-halo_pos2-,2)+pow(-halo_pos3-,2)) < -max_dist-";
             _query_template += " and sqrt(pow(-halo_pos1-,2)+pow(-halo_pos2-,2)+pow(-halo_pos3-,2)) >= -last_dist-";
          } else {
-            _query_template += " -pos1- < -pos1_max- and -pos1- > -pos1_min-";
-            _query_template += " and -pos2- < -pos2_max- and -pos2- > -pos2_min-";
-            _query_template += " and -pos3- < -pos3_max- and -pos3- > -pos3_min-";
+            _query_template += " -pos1- < -pos1_max- and -pos1- >= -pos1_min-";
+            _query_template += " and -pos2- < -pos2_max- and -pos2- >= -pos2_min-";
+            _query_template += " and -pos3- < -pos3_max- and -pos3- >= -pos3_min-";
             _query_template += " and sqrt(pow(-pos1-,2)+pow(-pos2-,2)+pow(-pos3-,2)) < -max_dist-";
             _query_template += " and sqrt(pow(-pos1-,2)+pow(-pos2-,2)+pow(-pos3-,2)) >= -last_dist-";
          }
          _query_template += " and sqrt(pow(-pos1-,2)+pow(-pos2-,2)+pow(-pos3-,2)) < " + to_string( _redshift_to_distance( _z_max ) );
-         _query_template += " and -pos1-/(sqrt(pow(-pos1-,2)+pow(-pos2-,2))) > " + to_string( cos( _ra_max ) );
-         _query_template += " and -pos1-/(sqrt(pow(-pos1-,2)+pow(-pos2-,2))) < " + to_string( cos( _ra_min ) );
-         _query_template += " and sqrt(pow(-pos1-,2)+pow(-pos2-,2))/(sqrt(pow(-pos1-,2)+pow(-pos2-,2)+pow(-pos3-,2))) > " + to_string( cos( _dec_max ) );
-         _query_template += " and sqrt(pow(-pos1-,2)+pow(-pos2-,2))/(sqrt(pow(-pos1-,2)+pow(-pos2-,2)+pow(-pos3-,2))) < " + to_string( cos( _dec_min ) );
+         _query_template += " and -pos1-/(sqrt(pow(-pos1-,2)+pow(-pos2-,2))) > " + to_string( cos( to_radians( _ra_max ) ) );
+         _query_template += " and -pos1-/(sqrt(pow(-pos1-,2)+pow(-pos2-,2))) < " + to_string( cos( to_radians( _ra_min ) ) );
+         _query_template += " and sqrt(pow(-pos1-,2)+pow(-pos2-,2))/(sqrt(pow(-pos1-,2)+pow(-pos2-,2)+pow(-pos3-,2))) > " + to_string( cos( to_radians( _dec_max ) ) );
+         _query_template += " and sqrt(pow(-pos1-,2)+pow(-pos2-,2))/(sqrt(pow(-pos1-,2)+pow(-pos2-,2)+pow(-pos3-,2))) < " + to_string( cos( to_radians( _dec_min ) ) );
       }
       else
       {
@@ -835,8 +887,11 @@ namespace tao {
          
    {
       LOG_ENTER();
-      LOGLN( "Connecting to ", _dbtype, " database: ", _dbname );
 
+      // First check if the database is already open, and close if so.
+      _db_disconnect();
+
+      LOGLN( "Connecting to ", _dbtype, " database: ", _dbname );
       try
       {
          if( _dbtype == "sqlite" )
@@ -854,7 +909,21 @@ namespace tao {
          ASSERT( 0 );
       }
 
+      // Mark connection.
+      _connected = true;
+
       LOG_EXIT();
+   }
+
+   void
+   lightcone::_db_disconnect()
+   {
+      if( _connected )
+      {
+         LOGLN( "Disconnecting from database." );
+         _sql.close();
+         _connected = false;
+      }
    }
 
    void
