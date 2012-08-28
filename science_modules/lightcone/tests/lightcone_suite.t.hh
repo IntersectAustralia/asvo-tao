@@ -114,6 +114,8 @@ public:
    ///
    void test_ra_minmax()
    {
+      LOG_PUSH( new logging::file( "test.log" ) );
+
       lightcone lc;
 
       // Insert some values.
@@ -208,8 +210,6 @@ public:
    ///
    void test_dec_minmax()
    {
-      LOG_PUSH( new logging::file( "test.log" ) );
-
       lightcone lc;
 
       // Insert some values.
@@ -228,6 +228,103 @@ public:
       dict["box_type"] = "cone";
       dict["box_side"] = "100";
       dict["snapshots"] = "0.01";
+      dict["z_min"] = "0";
+      dict["rasc_min"] = "0";
+      dict["rasc_max"] = "90";
+
+      // Place to store row IDs.
+      vector<int> ids;
+
+      // Only row 0.
+      dict["decl_min"] = "0.0";
+      dict["decl_max"] = "0.1";
+      db_setup.xml.write( db_setup.xml_filename, dict );
+      setup_lightcone( lc );
+      ids.resize( 0 );
+      for( lc.begin(); !lc.done(); ++lc )
+      {
+         const lightcone::row_type& row = *lc;
+         ids.push_back( row.get<int>( "id" ) );
+      }
+      TS_ASSERT_EQUALS( ids.size(), 1 );
+      TS_ASSERT_EQUALS( ids[0], 0 );
+
+      // Only row 1.
+      dict["decl_min"] = "29.9";
+      dict["decl_max"] = "30.1";
+      db_setup.xml.write( db_setup.xml_filename, dict );
+      setup_lightcone( lc );
+      ids.resize( 0 );
+      for( lc.begin(); !lc.done(); ++lc )
+      {
+         const lightcone::row_type& row = *lc;
+         ids.push_back( row.get<int>( "id" ) );
+      }
+      TS_ASSERT_EQUALS( ids.size(), 1 );
+      TS_ASSERT_EQUALS( ids[0], 1 );
+
+      // Only row 2.
+      dict["decl_min"] = "59.9";
+      dict["decl_max"] = "60.1";
+      db_setup.xml.write( db_setup.xml_filename, dict );
+      setup_lightcone( lc );
+      ids.resize( 0 );
+      for( lc.begin(); !lc.done(); ++lc )
+      {
+         const lightcone::row_type& row = *lc;
+         ids.push_back( row.get<int>( "id" ) );
+      }
+      TS_ASSERT_EQUALS( ids.size(), 1 );
+      TS_ASSERT_EQUALS( ids[0], 2 );
+
+      // Only row 3.
+      dict["decl_min"] = "89.9";
+      dict["decl_max"] = "90.0";
+      db_setup.xml.write( db_setup.xml_filename, dict );
+      setup_lightcone( lc );
+
+      ids.resize( 0 );
+      for( lc.begin(); !lc.done(); ++lc )
+      {
+         const lightcone::row_type& row = *lc;
+         ids.push_back( row.get<int>( "id" ) );
+      }
+      TS_ASSERT_EQUALS( ids.size(), 1 );
+      TS_ASSERT_EQUALS( ids[0], 3 );
+
+      // Erase the table data.
+      {
+         soci::session sql( soci::sqlite3, db_setup.db_filename );
+         sql << "delete from snapshot_000";
+      }
+   }
+
+   ///
+   ///
+   ///
+   void test_extended_box_generation()
+   {
+      lightcone lc;
+
+      // Set the lightcone module to use unique offsets.
+      lc._unique = true;
+
+      // Insert some values. Place the points on the lower walls
+      // to get picked up by the neighboring boxes.
+      {
+         soci::session sql( soci::sqlite3, db_setup.db_filename );
+         sql << "insert into snapshot_000 values (1, 14, 14, 0)";
+         sql << "insert into snapshot_000 values (14, 1, 14, 1)";
+         sql << "insert into snapshot_000 values (14, 14, 1, 1)";
+      }
+
+      // Prepare base dictionary.
+      options::dictionary& dict = db_setup.dict;
+      dict["database_type"] = "sqlite";
+      dict["database_name"] = db_setup.db_filename;
+      dict["box_type"] = "cone";
+      dict["box_side"] = "100";
+      dict["snapshots"] = "0.04";
       dict["z_min"] = "0";
       dict["rasc_min"] = "0";
       dict["rasc_max"] = "90";

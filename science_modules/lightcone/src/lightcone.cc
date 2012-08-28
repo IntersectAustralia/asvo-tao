@@ -521,7 +521,7 @@ namespace tao {
       ops[10] = "Vel3";
       ops[11] = "Spin3";
 
-      if( _box_type != "box" ) // SHOULD BE ==
+      if( _box_type == "box" )
       {
          ops[0] = "Pos1";
          ops[1] = "halo_pos1";
