@@ -10,7 +10,7 @@ Import('env')
 # The support sources are optional, as is the MPI rank range.
 suites = [
     ('lightcone_suite.t.hh', 'lightcone.cc'),
-    ('sed_suite.t.hh', 'sed.cc'),
+    ('sed_suite.t.hh', 'sed.cc', 'lightcone.cc'),
 ]
 
 # Define libraries to link against.

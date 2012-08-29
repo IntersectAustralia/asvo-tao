@@ -29,7 +29,8 @@ namespace tao {
       ///
       ///
       void
-      setup_options( hpc::options::dictionary& dict );
+      setup_options( hpc::options::dictionary& dict,
+                     hpc::optional<const hpc::string&> prefix=hpc::optional<const hpc::string&>() );
 
       ///
       ///

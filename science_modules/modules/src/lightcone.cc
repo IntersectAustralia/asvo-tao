@@ -39,26 +39,27 @@ namespace tao {
    ///
    ///
    void
-   lightcone::setup_options( options::dictionary& dict )
+   lightcone::setup_options( options::dictionary& dict,
+                             optional<const string&> prefix )
    {
-      dict.add_option( new options::string( "database_type" ) );
-      dict.add_option( new options::string( "database_name" ) );
-      dict.add_option( new options::string( "database_host", string() ) );
-      dict.add_option( new options::string( "database_user", string() ) );
-      dict.add_option( new options::string( "database_pass", string() ) );
-      dict.add_option( new options::string( "table_name_template", "snapshot_" ) );
-      dict.add_option( new options::string( "box_type" ) );
-      dict.add_option( new options::real( "box_side" ) );
-      dict.add_option( new options::string( "snapshots" ) );
-      dict.add_option( new options::real( "z_max" ) );
-      dict.add_option( new options::real( "z_min" ) );
-      dict.add_option( new options::real( "z_snap" ) );
-      dict.add_option( new options::real( "box_size" ) );
-      dict.add_option( new options::real( "rasc_min", 0.0 ) );
-      dict.add_option( new options::real( "rasc_max", 90.0 ) );
-      dict.add_option( new options::real( "decl_min", 0.0 ) );
-      dict.add_option( new options::real( "decl_max", 90.0 ) );
-      dict.add_option( new options::real( "H0", 100.0 ) );
+      dict.add_option( new options::string( "database_type" ), prefix );
+      dict.add_option( new options::string( "database_name" ), prefix );
+      dict.add_option( new options::string( "database_host", string() ), prefix );
+      dict.add_option( new options::string( "database_user", string() ), prefix );
+      dict.add_option( new options::string( "database_pass", string() ), prefix );
+      dict.add_option( new options::string( "table_name_template", "snapshot_" ), prefix );
+      dict.add_option( new options::string( "box_type" ), prefix );
+      dict.add_option( new options::real( "box_side" ), prefix );
+      dict.add_option( new options::string( "snapshots" ), prefix );
+      dict.add_option( new options::real( "z_max" ), prefix );
+      dict.add_option( new options::real( "z_min" ), prefix );
+      dict.add_option( new options::real( "z_snap" ), prefix );
+      dict.add_option( new options::real( "box_size" ), prefix );
+      dict.add_option( new options::real( "rasc_min", 0.0 ), prefix );
+      dict.add_option( new options::real( "rasc_max", 90.0 ), prefix );
+      dict.add_option( new options::real( "decl_min", 0.0 ), prefix );
+      dict.add_option( new options::real( "decl_max", 90.0 ), prefix );
+      dict.add_option( new options::real( "H0", 100.0 ), prefix );
    }
 
    ///

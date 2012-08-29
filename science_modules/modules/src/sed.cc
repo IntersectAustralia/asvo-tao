@@ -20,12 +20,13 @@ namespace tao {
    ///
    ///
    void
-   sed::setup_options( options::dictionary& dict )
+   sed::setup_options( options::dictionary& dict,
+                       optional<const string&> prefix )
    {
-      dict.add_option( new options::string( "ssp_filename" ) );
-      dict.add_option( new options::integer( "num_times" ) );
-      dict.add_option( new options::integer( "num_spectra" ) );
-      dict.add_option( new options::integer( "num_metals" ) );
+      dict.add_option( new options::string( "ssp_filename" ), prefix );
+      dict.add_option( new options::integer( "num_times" ), prefix );
+      dict.add_option( new options::integer( "num_spectra" ), prefix );
+      dict.add_option( new options::integer( "num_metals" ), prefix );
    }
 
    ///
