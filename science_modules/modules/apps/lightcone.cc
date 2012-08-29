@@ -1,7 +1,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <libhpc/libhpc.hh>
-#include <tao/lightcone/lightcone.hh>
+#include <tao/modules/lightcone.hh>
 
 using namespace tao;
 

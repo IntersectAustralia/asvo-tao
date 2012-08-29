@@ -28,7 +28,7 @@ if not env['LOG']:
     env.MergeFlags('-DNLOG')
 
 project.build(
-    ['base', 'lightcone'],
+    ['base', 'modules'],
     proj_name='tao',
     env=env,
     vars=vars

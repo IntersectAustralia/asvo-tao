@@ -3,7 +3,7 @@
 #include <cxxtest/TestSuite.h>
 #include <cxxtest/GlobalFixture.h>
 #include <libhpc/logging/logging.hh>
-#include "tao/lightcone/lightcone.hh"
+#include "tao/modules/lightcone.hh"
 
 using namespace hpc;
 using namespace tao;

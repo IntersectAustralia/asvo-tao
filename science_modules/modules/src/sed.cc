@@ -10,7 +10,7 @@ namespace tao {
    void
    sed::run()
    {
-      MPI_LOG_ENTER();
+      LOG_ENTER();
 
       // TODO: Get access to all required datasets.
 
@@ -24,31 +24,31 @@ namespace tao {
          _process_galaxy();
       }
 
-      MPI_LOG_EXIT();
+      LOG_EXIT();
    }
 
    void
    sed::_process_galaxy()
    {
-      MPI_LOG_ENTER();
+      LOG_ENTER();
 
       for( mpi::lindex ii = 0; ii < _num_times; ++ii )
       {
          _process_time( ii );
       }
 
-      MPI_LOG_EXIT();
+      LOG_EXIT();
    }
 
    void
    sed::_process_time( mpi::lindex time_idx )
    {
-      MPI_LOG_ENTER();
+      LOG_ENTER();
 
-      _sum_spectra( time_idx, _disk_metals[time_idx], _disk_sfh[time_idx], _disk_spectra );
-      _sum_spectra( time_idx, _bulge_metals[time_idx], _bulge_sfh[time_idx], _bulge_spectra );
+      // _sum_spectra( time_idx, _disk_metals[time_idx], _disk_sfh[time_idx], _disk_spectra );
+      // _sum_spectra( time_idx, _bulge_metals[time_idx], _bulge_sfh[time_idx], _bulge_spectra );
 
-      MPI_LOG_EXIT();
+      LOG_EXIT();
    }
 
    void
@@ -57,22 +57,22 @@ namespace tao {
                       real_type sfh,
                       vector<real_type>::view galaxy_spectra )
    {
-      MPI_LOG_ENTER();
+      LOG_ENTER();
 
       // Interpolate the metallicity to an index.
       unsigned metal_idx = _interp_metal( metal );
 
-      // Index the single stellar population spectra table.
-      vector<real_type>::view ssp_spectra = _spectra_lookup( time_idx, metal_idx );
+      // // Index the single stellar population spectra table.
+      // vector<real_type>::view ssp_spectra = _spectra_lookup( time_idx, metal_idx );
 
-      for( unsigned ii = 0; ii < _num_spectra; ++ii )
-      {
-         // TODO: Why using 1e10?
-         // TODO: Explain the sfh (star formation history) part.
-         galaxy_spectra[ii] += (ssp_spectra[ii]/1e10)*sfh;
-      }
+      // for( unsigned ii = 0; ii < _num_spectra; ++ii )
+      // {
+      //    // TODO: Why using 1e10?
+      //    // TODO: Explain the sfh (star formation history) part.
+      //    galaxy_spectra[ii] += (ssp_spectra[ii]/1e10)*sfh;
+      // }
 
-      MPI_LOG_EXIT();
+      LOG_EXIT();
    }
 
    unsigned

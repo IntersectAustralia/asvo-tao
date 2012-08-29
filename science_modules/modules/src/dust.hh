@@ -13,6 +13,10 @@ namespace tao {
    {
    public:
 
+      typedef double real_type;
+
+   public:
+
       dust();
 
       ~dust();
@@ -22,6 +26,11 @@ namespace tao {
       ///
       void
       run();
+
+   protected:
+
+      void
+      _read_wavelengths();
 
    protected:
    };

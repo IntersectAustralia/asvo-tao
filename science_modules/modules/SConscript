@@ -4,7 +4,7 @@ from sconsproject import helpers
 Import('env')
 
 # Set the project name. This is passed on to sub-scripts.
-env['SUBPROJ'] = 'lightcone'
+env['SUBPROJ'] = 'modules'
 
 # Call the helper script.
 execfile(helpers.get_build_sub_project_script(), globals())

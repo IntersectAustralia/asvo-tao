@@ -21,6 +21,11 @@ namespace tao {
       run();
 
    protected:
+
+      void
+      _process_filter();
+
+   protected:
    };
 }
 

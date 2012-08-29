@@ -1,8 +1,7 @@
 #ifndef tao_sed_sed_hh
 #define tao_sed_sed_hh
 
-#include <libhpc/containers/vector.hh>
-#include <libhpc/hpcmpi/mpi.hh>
+#include <libhpc/libhpc.hh>
 
 namespace tao {
 

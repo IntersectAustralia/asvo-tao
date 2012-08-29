@@ -1,4 +1,7 @@
+#include <libhpc/libhpc.hh>
 #include "filter.hh"
+
+using namespace hpc;
 
 namespace tao {
 
@@ -8,14 +11,15 @@ namespace tao {
    void
    filter::run()
    {
-      MPI_LOG_ENTER();
+      LOG_ENTER();
 
       // TODO: Read filters.
 
+      mpi::lindex num_filters = 0;
       for( mpi::lindex ii = 0; ii < num_filters; ++ii )
          _process_filter();
 
-      MPI_LOG_EXIT();
+      LOG_EXIT();
    }
 
    void
