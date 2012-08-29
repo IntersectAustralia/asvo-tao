@@ -1,8 +1,62 @@
+#include <fstream>
 #include "sed.hh"
 
 using namespace hpc;
 
 namespace tao {
+
+   sed::sed()
+   {
+   }
+
+   ///
+   ///
+   ///
+   sed::~sed()
+   {
+   }
+
+   ///
+   ///
+   ///
+   void
+   sed::setup_options( options::dictionary& dict )
+   {
+      dict.add_option( new options::string( "ssp_filename" ) );
+      dict.add_option( new options::integer( "num_times" ) );
+      dict.add_option( new options::integer( "num_spectra" ) );
+      dict.add_option( new options::integer( "num_metals" ) );
+   }
+
+   ///
+   /// Initialise the module.
+   ///
+   void
+   sed::initialise( const options::dictionary& dict )
+   {
+      LOG_ENTER();
+
+      _read_options( dict );
+
+      // Allocate for storing star-formation histories and
+      // metallicities.
+      _disk_sfh.resize( _num_times );
+      _disk_metals.resize( _num_times );
+      _bulge_sfh.resize( _num_times );
+      _bulge_metals.resize( _num_times );
+
+      // Allocate for output spectra.
+      _disk_spectra.reallocate( _num_spectra );
+      _bulge_spectra.reallocate( _num_spectra );
+
+      // Open the star-formation histories file.
+      _db_connect( _sql, _dbtype, _dbfile );
+
+      // Read the SSP data all at once.
+      _read_ssp();
+
+      LOG_EXIT();
+   }
 
    ///
    /// Run the module.
@@ -12,41 +66,62 @@ namespace tao {
    {
       LOG_ENTER();
 
-      // TODO: Get access to all required datasets.
-
-      _disk_sfh.reallocate( _num_times );
-      _disk_metals.reallocate( _num_times );
-      _bulge_sfh.reallocate( _num_times );
-      _bulge_metals.reallocate( _num_times );
-
-      for( mpi::lindex ii = 0; ii < _num_galaxies; ++ii )
-      {
-         _process_galaxy();
-      }
+      // for( mpi::lindex ii = 0; ii < _num_galaxies; ++ii )
+      //    _process_galaxy();
 
       LOG_EXIT();
    }
 
    void
-   sed::_process_galaxy()
+   sed::process_galaxy( const soci::row& galaxy )
    {
       LOG_ENTER();
 
+      // Cache the galaxy ID.
+      _gal_id = galaxy.get<unsigned long>( "id" );
+      LOGLN( "Processing galaxy with ID ", _gal_id );
+
+      // Cache the galaxy on the SED object so we don't have
+      // to pass it around.
+      _gal = &galaxy;
+
+      // Read the star-formation histories for this galaxy.
+      _sql << "select rate, metal from disk_star_formation where galaxy_id=:id order by age",
+         soci::into( _disk_sfh ), soci::into( _disk_metals ), soci::use( _gal_id );
+      _sql << "select rate, metal from bulge_star_formation where galaxy_id=:id order by age",
+         soci::into( _bulge_sfh ), soci::into( _bulge_metals ), soci::use( _gal_id );
+
+      // Clear disk and bulge output spectrums.
+      std::fill( _disk_spectra.begin(), _disk_spectra.end(), 0.0 );
+      std::fill( _bulge_spectra.begin(), _bulge_spectra.end(), 0.0 );
+
+      // Process each time.
       for( mpi::lindex ii = 0; ii < _num_times; ++ii )
-      {
          _process_time( ii );
-      }
 
       LOG_EXIT();
+   }
+
+   vector<sed::real_type>::view
+   sed::disk_spectra()
+   {
+      return _disk_spectra;
+   }
+
+   vector<sed::real_type>::view
+   sed::bulge_spectra()
+   {
+      return _bulge_spectra;
    }
 
    void
    sed::_process_time( mpi::lindex time_idx )
    {
       LOG_ENTER();
+      LOGLN( "Processing time ", time_idx );
 
-      // _sum_spectra( time_idx, _disk_metals[time_idx], _disk_sfh[time_idx], _disk_spectra );
-      // _sum_spectra( time_idx, _bulge_metals[time_idx], _bulge_sfh[time_idx], _bulge_spectra );
+      _sum_spectra( time_idx, _disk_metals[time_idx], _disk_sfh[time_idx], _disk_spectra );
+      _sum_spectra( time_idx, _bulge_metals[time_idx], _bulge_sfh[time_idx], _bulge_spectra );
 
       LOG_EXIT();
    }
@@ -61,16 +136,17 @@ namespace tao {
 
       // Interpolate the metallicity to an index.
       unsigned metal_idx = _interp_metal( metal );
+      ASSERT( metal_idx < _num_metals );
 
-      // // Index the single stellar population spectra table.
-      // vector<real_type>::view ssp_spectra = _spectra_lookup( time_idx, metal_idx );
+      // Calculate the base index for the ssp table.
+      size_t base = time_idx*_num_spectra*_num_metals + metal_idx;
 
-      // for( unsigned ii = 0; ii < _num_spectra; ++ii )
-      // {
-      //    // TODO: Why using 1e10?
-      //    // TODO: Explain the sfh (star formation history) part.
-      //    galaxy_spectra[ii] += (ssp_spectra[ii]/1e10)*sfh;
-      // }
+      for( unsigned ii = 0; ii < _num_spectra; ++ii )
+      {
+         // TODO: Why using 1e10?
+         // TODO: Explain the sfh (star formation history) part.
+         galaxy_spectra[ii] += (_ssp[base + ii*_num_metals]/1e10)*sfh;
+      }
 
       LOG_EXIT();
    }
@@ -92,5 +168,28 @@ namespace tao {
          return 5;
       else
          return 6;
+   }
+
+   void
+   sed::_read_ssp()
+   {
+      LOG_ENTER();
+
+      // Allocate. Note that the ordering goes time,spectra,metals.
+      _ssp.reallocate( _num_times*_num_spectra*_num_metals );
+
+      // Read in the file in one big go.
+      std::ifstream file( _ssp_filename, std::ios::in );
+      for( unsigned ii = 0; ii < _ssp.size(); ++ii )
+         file >> _ssp[ii];
+
+      LOG_EXIT();
+   }
+
+   void
+   sed::_read_options( const options::dictionary& dict )
+   {
+      _num_times = dict.get<unsigned>( "num_times" );
+      LOGLN( "Number of times: ", _num_times );
    }
 }

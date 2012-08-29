@@ -1,6 +1,6 @@
 #include <cxxtest/TestSuite.h>
 #include <cxxtest/GlobalFixture.h>
-#include "tao/sed.hh"
+#include "tao/modules/sed.hh"
 
 using namespace hpc;
 using namespace tao;
@@ -19,20 +19,13 @@ public:
    ///
    void test_ctor()
    {
-     sed mod;
+      tao::sed sed;
    }
 
    ///
    /// Test no galaxies.
    ///
    void test_no_galaxies()
-   {
-   }
-
-   ///
-   /// Test no time-points.
-   ///
-   void test_no_timepoints()
    {
    }
 

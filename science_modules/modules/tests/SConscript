@@ -10,10 +10,11 @@ Import('env')
 # The support sources are optional, as is the MPI rank range.
 suites = [
     ('lightcone_suite.t.hh', 'lightcone.cc'),
+    ('sed_suite.t.hh', 'sed.cc'),
 ]
 
 # Define libraries to link against.
-libs = [] + env.get('LIBS', [])
+libs = ['base'] + env.get('LIBS', [])
 
 # Call the helper.
 execfile(helpers.get_build_tests_script(), globals())

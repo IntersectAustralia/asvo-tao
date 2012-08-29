@@ -1,7 +1,7 @@
 #ifndef tao_sed_sed_hh
 #define tao_sed_sed_hh
 
-#include <libhpc/libhpc.hh>
+#include "tao/base/module.hh"
 
 namespace tao {
 
@@ -12,6 +12,7 @@ namespace tao {
    /// energy spectra of each galaxy.
    ///
    class sed
+      : public module
    {
    public:
 
@@ -22,15 +23,33 @@ namespace tao {
       ~sed();
 
       ///
+      ///
+      ///
+      void
+      setup_options( hpc::options::dictionary& dict );
+
+      ///
+      /// Initialise the module.
+      ///
+      void
+      initialise( const hpc::options::dictionary& dict );
+
+      ///
       /// Run the module.
       ///
       void
       run();
 
-   protected:
-
       void
-      _process_galaxy();
+      process_galaxy( const soci::row& galaxy );
+
+      hpc::vector<real_type>::view
+      disk_spectra();
+
+      hpc::vector<real_type>::view
+      bulge_spectra();
+
+   protected:
 
       void
       _process_time( hpc::mpi::lindex time_idx );
@@ -44,12 +63,27 @@ namespace tao {
       unsigned
       _interp_metal( real_type metal );
 
+      void
+      _read_ssp();
+
+      void
+      _read_options( const hpc::options::dictionary& dict );
+
    protected:
 
-      hpc::mpi::lindex _num_galaxies;
-      hpc::mpi::lindex _num_times;
-      hpc::vector<real_type> _disk_sfh, _disk_metals;
-      hpc::vector<real_type> _bulge_sfh, _bulge_metals;
+      const soci::row* _gal;
+      unsigned long _gal_id;
+
+      hpc::mpi::lindex _num_times, _num_spectra, _num_metals;
+      hpc::string _ssp_filename;
+
+      soci::session _sql;
+      hpc::string _dbtype, _dbfile;
+
+      std::vector<real_type> _disk_sfh, _disk_metals; // soci needs std
+      std::vector<real_type> _bulge_sfh, _bulge_metals; // soci needs std
+      hpc::vector<real_type> _disk_spectra, _bulge_spectra;
+      hpc::vector<real_type> _ssp;
    };
 }
 
