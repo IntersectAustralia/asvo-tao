@@ -2,3 +2,4 @@ bin/
 eggs/
 develop-eggs/
 .installed.cfg
+parts/
