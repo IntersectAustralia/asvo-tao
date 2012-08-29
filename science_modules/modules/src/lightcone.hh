@@ -1,8 +1,7 @@
 #ifndef tao_lightcone_lightcone_hh
 #define tao_lightcone_lightcone_hh
 
-#include <soci/soci.h>
-#include <libhpc/libhpc.hh>
+#include "tao/base/module.hh"
 
 class lightcone_suite;
 
