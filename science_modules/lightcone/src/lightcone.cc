@@ -19,6 +19,7 @@ namespace tao {
         _box_side( 1.0 ),
         _z_min( 0.0 ),
         _z_max( 0.0 ),
+        _use_random( true ),
         _unique( false ),
         _unique_offs_x( 0.0 ),
         _unique_offs_y( 0.0 ),
@@ -82,87 +83,88 @@ namespace tao {
    {
       LOG_ENTER();
 
-      // Connect to the database.
-      _db_connect( _sql );
+//       // Connect to the database.
+//       _db_connect( _sql );
 
-      // TODO: Check that any output databases have been created,
-      //       or create them now.
+//       // TODO: Check that any output databases have been created,
+//       //       or create them now.
 
-      // _open_bin_file();
+//       // _open_bin_file();
 
-      // Prepare the last max distance processed value.
-      _last_max_dist_processed = (_z_min > 0.0) ? _redshift_to_distance( _z_min ) : 0.0;
+//       // Prepare the last max distance processed value.
+//       _last_max_dist_processed = (_z_min > 0.0) ? _redshift_to_distance( _z_min ) : 0.0;
 
-      if( _box_type != "box" && _box_side > 0.0 )
-      {
-         LOGLN( "Build cone, simulation box side length: ", _box_side );
+//       if( _box_type != "box" && _box_side > 0.0 )
+//       {
+//          LOGLN( "Build cone, simulation box side length: ", _box_side );
 
-         // Iterate over the reversed snapshot indices.
-         LOGLN( "Iterating over ", _snaps.size(), " snapshots." );
-         for( mpi::lindex ii = 0; ii < _snaps.size(); ++ii )
-         {
-            LOGLN( "Snapshot ", ii, ", redshift ", _snaps[ii], setindent( 2 ) );
+//          // Iterate over the reversed snapshot indices.
+//          LOGLN( "Iterating over ", _snaps.size(), " snapshots." );
+//          for( mpi::lindex ii = 0; ii < _snaps.size(); ++ii )
+//          {
+//             LOGLN( "Snapshot ", ii, ", redshift ", _snaps[ii], setindent( 2 ) );
 
-            // Terminate the loop if the redshift is outside our maximum.
-            // This is why we reversed the snapshots.
-            if( _snaps[ii] > _z_max )
-            {
-               LOGLN( "Exceeded maximum redshift of ", _z_max, setindent( -2 ) );
-               break;
-            }
+//             // Terminate the loop if the redshift is outside our maximum.
+//             // This is why we reversed the snapshots.
+//             if( _snaps[ii] > _z_max )
+//             {
+//                LOGLN( "Exceeded maximum redshift of ", _z_max, setindent( -2 ) );
+//                break;
+//             }
 
-            real_type z_max = _z_max;
-            mpi::lindex cur_snap_idx = ii;
-            optional<mpi::lindex> next_snap_idx;
-            if( ii != _snaps.size() - 1 )
-            {
-               next_snap_idx = ii + 1;
-               z_max = std::min( z_max, _snaps[*next_snap_idx] );
-               // auto max_dist = _redshift_to_distance( _snaps[*next_snap_idx] );
-            }
-            LOGLN( "Current snapshot index: ", cur_snap_idx );
-#ifndef NLOG
-            if( next_snap_idx )
-               LOGLN( "Next snapshot index: ", *next_snap_idx );
-            else
-               LOGLN( "No next snapshot." );
-#endif
-            LOGLN( "Max redshift: ", z_max );
-            LOGLN( "Last max distance: ", _last_max_dist_processed );
+//             real_type z_max = _z_max;
+//             mpi::lindex cur_snap_idx = ii;
+//             optional<mpi::lindex> next_snap_idx;
+//             if( ii != _snaps.size() - 1 )
+//             {
+//                next_snap_idx = ii + 1;
+//                z_max = std::min( z_max, _snaps[*next_snap_idx] );
+//                // auto max_dist = _redshift_to_distance( _snaps[*next_snap_idx] );
+//             }
+//             LOGLN( "Current snapshot index: ", cur_snap_idx );
+// #ifndef NLOG
+//             if( next_snap_idx )
+//                LOGLN( "Next snapshot index: ", *next_snap_idx );
+//             else
+//                LOGLN( "No next snapshot." );
+// #endif
+//             LOGLN( "Max redshift: ", z_max );
+//             LOGLN( "Max distance: ", _redshift_to_distance( z_max ) );
+//             LOGLN( "Last max distance: ", _last_max_dist_processed );
 
-            list<array<real_type,3>> boxes;
-            _get_boxes( z_max, boxes );
-            LOGLN( "Boxes: ", boxes );
-            for( auto& box : boxes )
-               _build_pixels( cur_snap_idx, next_snap_idx, _x0 + box[0], _y0 + box[1], _z0 + box[2] );
+//             list<array<real_type,3>> boxes;
+//             _get_boxes( z_max, boxes );
+//             LOGLN( "Boxes: ", boxes );
+//             for( auto& box : boxes )
+//                _build_pixels( cur_snap_idx, next_snap_idx, _x0 + box[0], _y0 + box[1], _z0 + box[2] );
 
-            if( next_snap_idx )
-            {
-               real_type dist = _redshift_to_distance( _snaps[*next_snap_idx] );
-               _last_max_dist_processed = _last_max_dist_processed < dist ? dist : _last_max_dist_processed;
-            }
+//             if( next_snap_idx )
+//             {
+//                real_type dist = _redshift_to_distance( _snaps[*next_snap_idx] );
+//                _last_max_dist_processed = _last_max_dist_processed < dist ? dist : _last_max_dist_processed;
+//             }
 
-            LOG( setindent( -2 ) );
-         }
-      }
-      else if( _box_side > 0.0 )
-      {
-         LOGLN( "Selecting box, with side length: ", _box_side );
-         auto it = std::find( _snaps.begin(), _snaps.end(), _z_snap );
-         ASSERT( it != _snaps.end() );
-         mpi::lindex idx = it - _snaps.begin();
-         _build_pixels( idx, idx, _x0, _y0, _z0 );
-      }
-      else
-      {
-         LOGLN( "Have an empty domain." );
-         // TODO: Zero sized box, should report an error?
-         // _build_pixels( 0, 0, 0, 0, 0 );
-      }
+//             LOG( setindent( -2 ) );
+//          }
+//       }
+//       else if( _box_side > 0.0 )
+//       {
+//          LOGLN( "Selecting box, with side length: ", _box_side );
+//          auto it = std::find( _snaps.begin(), _snaps.end(), _z_snap );
+//          ASSERT( it != _snaps.end() );
+//          mpi::lindex idx = it - _snaps.begin();
+//          _build_pixels( idx, idx, _x0, _y0, _z0 );
+//       }
+//       else
+//       {
+//          LOGLN( "Have an empty domain." );
+//          // TODO: Zero sized box, should report an error?
+//          // _build_pixels( 0, 0, 0, 0, 0 );
+//       }
 
-      // TODO: If we outputted to a database, close it off.
+//       // TODO: If we outputted to a database, close it off.
 
-      // TODO: If we outputted to a binary format, close that off too.
+//       // TODO: If we outputted to a binary format, close that off too.
 
       LOG_EXIT();
    }
@@ -177,12 +179,6 @@ namespace tao {
 
       // Connect to the database.
       _db_connect( _sql );
-
-      // Prepare the last max distance processed value.
-      _last_max_dist_processed = (_z_min > 0.0) ? _redshift_to_distance( _z_min ) : 0.0;
-
-      // Clear out the next snap shot index.
-      _next_snap = none;
 
       if( _box_type != "box" && _box_side > 0.0 )
       {
@@ -200,7 +196,8 @@ namespace tao {
          auto it = std::find( _snaps.begin(), _snaps.end(), _z_snap );
          ASSERT( it != _snaps.end() );
          mpi::lindex idx = it - _snaps.begin();
-         _build_pixels( idx, idx, _x0, _y0, _z0 );
+         // TODO: Setup ranges.
+         _build_pixels( _x0, _y0, _z0 );
 
          // Set the current snapshot to the end to be sure we will
          // terminate as expected.
@@ -255,10 +252,7 @@ namespace tao {
             {
                LOGLN( "Finished iterating over current boxes." );
                if( ++_cur_snap != _snaps.size() )
-               {
-                  while( _cur_snap < _snaps.size() )
-                     _settle_snap();
-               }
+                  _settle_snap();
             }
          }
       }
@@ -282,41 +276,51 @@ namespace tao {
 
       do
       {
-         // Update the last max dist processed from previous snapshot,
-         // if we have the next snap index.
-         if( _next_snap )
-         {
-            real_type dist = _redshift_to_distance( _snaps[*_next_snap] );
-            _last_max_dist_processed = _last_max_dist_processed < dist ? dist : _last_max_dist_processed;
-         }
+         LOGLN( "Current snapshot index: ", _cur_snap );
 
-         // Terminate the loop if the redshift is outside our maximum.
-         // This is why we reversed the snapshots.
-         if( _snaps[_cur_snap] > _z_max )
+         // Prepare my redshift range for this snapshot.
+         if( _cur_snap == 0 )
+         {
+            // For the first snapshot use +1/2.
+            _z_range.set( _snaps[_cur_snap], _snaps[_cur_snap + 1] );
+            _z_range.set_finish( _z_range.finish() - 0.5*_z_range.length() );
+         }
+         else if( _cur_snap == _snaps.size() - 1 )
+         {
+            // For the last snapshot use -1/2.
+            _z_range.set( _snaps[_cur_snap - 1], _snaps[_cur_snap] );
+            _z_range.set_start( _z_range.start() + 0.5*_z_range.length() );
+         }
+         else
+         {
+            // For internal snapshots use (+/-)1/2. Assumes _z_range.finish
+            // is set to the previous snapshot's finish point.
+            _z_range.set_start( _z_range.finish() );
+            _z_range.set_finish( _snaps[_cur_snap] + 0.5*(_snaps[_cur_snap + 1] - _snaps[_cur_snap]) );
+         }
+         LOGLN( "Unlimited redshift range: ", _z_range );
+
+         // If we have moved beyond the maximum range we can finish now.
+         if( _z_range.start() > _z_max )
          {
             LOGLN( "Exceeded maximum redshift of ", _z_max );
             _cur_snap = _snaps.size();
             break;
          }
-         else
-         {
-            real_type z_max = _z_max;
-            if( _cur_snap != _snaps.size() - 1 )
-            {
-               _next_snap = _cur_snap + 1;
-               z_max = std::min( z_max, _snaps[*_next_snap] );
-            }
-            LOGLN( "Current snapshot index: ", _cur_snap );
-#ifndef NLOG
-            if( _next_snap )
-               LOGLN( "Next snapshot index: ", *_next_snap );
-            else
-               LOGLN( "No next snapshot." );
-#endif
-            LOGLN( "Max redshift: ", z_max );
-            LOGLN( "Last max distance: ", _last_max_dist_processed );
 
-            _get_boxes( z_max, _boxes );
+         // Only proceed to use this range if it exists somewhere within
+         // the cutoff points.
+         if( _z_range.finish() >= _z_min )
+         {
+            // Limit the redshift range.
+            _z_range.set_start( std::max( _z_range.start(), _z_min ) );
+            _z_range.set_finish( std::min( _z_range.finish(), _z_max ) );
+            LOGLN( "Final redshift range: ", _z_range );
+
+            _dist_range.set( _redshift_to_distance( _z_range.start() ), _redshift_to_distance( _z_range.finish() ) );
+            LOGLN( "Distance range: ", _dist_range );
+
+            _get_boxes( _boxes );
             LOGLN( "Boxes: ", _boxes );
             _cur_box = _boxes.begin();
             _settle_box();
@@ -336,7 +340,7 @@ namespace tao {
       {
          const array<real_type,3>& box = *_cur_box;
          LOGLN( "Using box ", box );
-         _build_pixels( _cur_snap, _next_snap, _x0 + box[0], _y0 + box[1], _z0 + box[2] );
+         _build_pixels( _x0 + box[0], _y0 + box[1], _z0 + box[2] );
 #ifndef NLOG
          if( _cur_row == _rows->end() )
             LOGLN( "There are no objects in this box." );
@@ -350,9 +354,7 @@ namespace tao {
    ///
    ///
    void
-   lightcone::_build_pixels( mpi::lindex cur_snap_idx,
-                             optional<mpi::lindex> next_snap_idx,
-                             real_type offs_x,
+   lightcone::_build_pixels( real_type offs_x,
                              real_type offs_y,
                              real_type offs_z )
    {
@@ -360,7 +362,7 @@ namespace tao {
 
       // Produce the SQL query text.
       std::string query;
-      _build_query( cur_snap_idx, next_snap_idx, offs_x, offs_y, offs_z, query );
+      _build_query( offs_x, offs_y, offs_z, query );
 
       // Execute the query and retrieve the rows.
       _rows = new soci::rowset<soci::row>( (_sql.prepare << query) );
@@ -417,9 +419,7 @@ namespace tao {
    ///
    ///
    void
-   lightcone::_build_query( mpi::lindex cur_snap_idx,
-                            optional<mpi::lindex> next_snap_idx,
-                            real_type offs_x,
+   lightcone::_build_query( real_type offs_x,
                             real_type offs_y,
                             real_type offs_z,
                             std::string& query )
@@ -453,24 +453,25 @@ namespace tao {
       halo_pos2 = str( format( "(%1% + %2% - %3%)" ) % offs_y % halo_pos2 % _y0 );
       halo_pos3 = str( format( "(%1% + %2% - %3%)" ) % offs_z % halo_pos3 % _z0 );
 
-      auto z_max = _z_max;
-      if( next_snap_idx && _box_side > 0.0 )
-         z_max = std::min( z_max, _snaps[*next_snap_idx] );
-      auto max_dist = _redshift_to_distance( z_max );
+      // Cache some values.
+      real_type z_min = _z_range.start();
+      real_type z_max = _z_range.finish();
+      real_type max_dist = _dist_range.finish();
+      real_type min_dist = _dist_range.start();
 
       real_type halo_pos1_max = max_dist*cos( ra_min )*cos( dec_min );
       real_type halo_pos2_max = max_dist*sin( ra_max )*cos( dec_min );
       real_type halo_pos3_max = max_dist*sin( dec_max );
-      real_type halo_pos1_min = _last_max_dist_processed*cos( ra_max )*cos( dec_max );
-      real_type halo_pos2_min = _last_max_dist_processed*sin( ra_min )*cos( dec_max );
-      real_type halo_pos3_min = _last_max_dist_processed*sin( dec_min );
+      real_type halo_pos1_min = min_dist*cos( ra_max )*cos( dec_max );
+      real_type halo_pos2_min = min_dist*sin( ra_min )*cos( dec_max );
+      real_type halo_pos3_min = min_dist*sin( dec_min );
       LOG( "Halo position range: (", halo_pos1_min, ", ", halo_pos2_min, ", ", halo_pos3_min, ")" );
       LOGLN( " - (", halo_pos1_max, ", ", halo_pos2_max, ", ", halo_pos3_max, ")" );
 
       // Apply all my current values to the query template to build up
       // the final SQL query string.
       query = _query_template;
-      replace_all( query, "-z1-", to_string( _snaps[cur_snap_idx] ) );
+      replace_all( query, "-z1-", to_string( z_min ) );
       replace_all( query, "-z2-", to_string( z_max ) );
       replace_all( query, "-dec_min-", to_string( dec_min ) ); // TODO: Is this okay as radians?
       replace_all( query, "-pos1-", pos1 );
@@ -494,9 +495,9 @@ namespace tao {
       replace_all( query, "-vel1-", to_string( vel1 ) );
       replace_all( query, "-vel2-", to_string( vel2 ) );
       replace_all( query, "-vel3-", to_string( vel3 ) );
-      replace_all( query, "snapshot_", str( format( "snapshot_%1$03d" ) % cur_snap_idx ) );
+      replace_all( query, "snapshot_", str( format( "snapshot_%1$03d" ) % _cur_snap ) );
       replace_all( query, "-max_dist-", to_string( max_dist ) );
-      replace_all( query, "-last_dist-", to_string( _last_max_dist_processed ) );
+      replace_all( query, "-last_dist-", to_string( min_dist ) );
 
       LOGLN( "Query: ", query );
       LOG_EXIT();
@@ -521,7 +522,7 @@ namespace tao {
       ops[10] = "Vel3";
       ops[11] = "Spin3";
 
-      if( _box_type == "box" )
+      if( _box_type == "box" || !_use_random )
       {
          ops[0] = "Pos1";
          ops[1] = "halo_pos1";
@@ -556,8 +557,8 @@ namespace tao {
          // Rotation 1.
          if( _dbtype == "sqlite" )
          {
-            ops[0] = str( format( "(case sign(%1%+Pos1-%2%) when 1 then %3%+Pos1 else Pos1+%4%-%5%)" ) % offs1 % _box_side % offs1 % offs1 % _box_side );
-            ops[1] = str( format( "(case sign(%1%+halo_pos1-%2%) when 1 then %3%+halo_pos1 else halo_pos1+%4%-%5%)" ) % offs1 % _box_side % offs1 % offs1 % _box_side );
+            ops[0] = str( format( "(case sign(%1%+Pos1-%2%) when 1 then %3%+Pos1 else Pos1+%4%-%5% end)" ) % offs1 % _box_side % offs1 % offs1 % _box_side );
+            ops[1] = str( format( "(case sign(%1%+halo_pos1-%2%) when 1 then %3%+halo_pos1 else halo_pos1+%4%-%5% end)" ) % offs1 % _box_side % offs1 % offs1 % _box_side );
          }
          else
          {
@@ -570,8 +571,8 @@ namespace tao {
          // Rotation 2.
          if( _dbtype == "sqlite" )
          {
-            ops[4] = str( format( "(case sign(%1%+Pos2-%2%) when 1 then %3%+Pos2 else Pos2+%4%-%5%)" ) % offs2 % _box_side % offs2 % offs2 % _box_side );
-            ops[5] = str( format( "(case sign(%1%+halo_pos2-%2%) when 1 then %3%+halo_pos2 else halo_pos2+%4%-%5%)" ) % offs2 % _box_side % offs2 % offs2 % _box_side );
+            ops[4] = str( format( "(case sign(%1%+Pos2-%2%) when 1 then %3%+Pos2 else Pos2+%4%-%5% end)" ) % offs2 % _box_side % offs2 % offs2 % _box_side );
+            ops[5] = str( format( "(case sign(%1%+halo_pos2-%2%) when 1 then %3%+halo_pos2 else halo_pos2+%4%-%5% end)" ) % offs2 % _box_side % offs2 % offs2 % _box_side );
          }
          else
          {
@@ -584,8 +585,8 @@ namespace tao {
          // Rotation 3.
          if( _dbtype == "sqlite" )
          {
-            ops[8] = str( format( "(case sign(%1%+Pos3-%2%) when 1 then %3%+Pos3 else Pos3+%4%-%5%)" ) % offs3 % _box_side % offs3 % offs3 % _box_side );
-            ops[9] = str( format( "(case sign(%1%+halo_pos3-%2%) when 1 then %3%+halo_pos3 else halo_pos3+%4%-%5%)" ) % offs3 % _box_side % offs3 % offs3 % _box_side );
+            ops[8] = str( format( "(case sign(%1%+Pos3-%2%) when 1 then %3%+Pos3 else Pos3+%4%-%5% end)" ) % offs3 % _box_side % offs3 % offs3 % _box_side );
+            ops[9] = str( format( "(case sign(%1%+halo_pos3-%2%) when 1 then %3%+halo_pos3 else halo_pos3+%4%-%5% end)" ) % offs3 % _box_side % offs3 % offs3 % _box_side );
          }
          else
          {
@@ -635,37 +636,30 @@ namespace tao {
    ///
    ///
    void
-   lightcone::_get_boxes( real_type redshift,
-                          list<array<real_type,3>>& boxes )
+   lightcone::_get_boxes( list<array<real_type,3>>& boxes )
    {
       LOG_ENTER();
 
+      // Start fresh.
       boxes.clear();
 
-      real_type _max_dist = _redshift_to_distance( redshift );
-      real_type _min_dist = _last_max_dist_processed;
-      LOGLN( "Using redshift of ", redshift );
-      LOGLN( "Distance range (", _max_dist, ", ", _min_dist, ")" );
-
-      if( _max_dist < _min_dist )
+      // Only run the loop if the distance is greater than the box side length.
+      if( _dist_range.finish() > _box_side )
       {
-         LOGLN( "Below minimum distance of ", _min_dist );
-         LOG_EXIT();
-         return;
-      }
+         LOGLN( "Maximum distanceof ", _dist_range.finish(), " greater than box side of ", _box_side, ", calculating boxes." );
 
-      if( _max_dist > _box_side )
-      {
-         LOGLN( "Maximum distance greater than box side of ", _box_side, ", calculating boxes." );
-         for( real_type ii = 0.0; ii <= _max_dist + _box_side; ii += _box_side )
+         // TODO: Removed the " + _box_side" from each conditional, it seems
+         // to me that keeping it in just adds one extra useless iteration
+         // per loop.
+         for( real_type ii = 0.0; ii <= _dist_range.finish(); ii += _box_side )
          {
-            for( real_type jj = 0.0; jj <= _max_dist + _box_side; jj += _box_side )
+            for( real_type jj = 0.0; jj <= _dist_range.finish(); jj += _box_side )
             {
-               for( real_type kk = 0.0; kk <= _max_dist + _box_side; kk += _box_side )
+               for( real_type kk = 0.0; kk <= _dist_range.finish(); kk += _box_side )
                {
                   if( (sqrt( pow( ii + _box_side + _unique_offs_x, 2.0 ) + 
                              pow( jj + _box_side + _unique_offs_y, 2.0 ) + 
-                             pow( kk + _box_side + _unique_offs_z, 2.0 ) ) > (_min_dist - _box_side)) &&
+                             pow( kk + _box_side + _unique_offs_z, 2.0 ) ) > (_dist_range.start() - _box_side)) &&
                       (((ii + _box_side + _unique_offs_x)/sqrt( pow( ii + _box_side + _unique_offs_x, 2.0) + 
                                                                 pow( jj, 2.0 ) )) > cos( to_radians( _ra_max ) )) &&
                       (ii/sqrt( pow( ii, 2.0 ) + pow( jj + _box_side + _unique_offs_y, 2.0 ) ) < cos( to_radians( _ra_min ) )) &&
@@ -680,7 +674,7 @@ namespace tao {
       }
       else
       {
-         LOGLN( "Maximum distance less than box side of ", _box_side, ", using single box." );
+         LOGLN( "Maximum distance of ", _dist_range.finish(), " less than box side of ", _box_side, ", using single box." );
          boxes.push_back( array<real_type,3>( 0.0, 0.0, 0.0 ) );
       }
 
@@ -749,6 +743,7 @@ namespace tao {
       LOGLN( "Read box type '", _box_type, "' and side length ", _box_side );
 
       // Extract and parse the snapshot redshifts.
+      _snaps.clear();
       string snaps_str = dict.get<string>( "snapshots" );
       boost::tokenizer<boost::char_separator<char> > tokens( snaps_str, boost::char_separator<char>( "," ) );
       for( const auto& redshift : tokens )
@@ -757,6 +752,9 @@ namespace tao {
       // Reverse the snapshots to start most recent (lowest redshift to highest).
       std::reverse( _snaps.begin(), _snaps.end() );
       LOGLN( "Snapshots: ", _snaps );
+
+      // If not doing a simple box we need at least two snapshots.
+      ASSERT( _box_type == "box" || _snaps.size() > 1 );
 
       // Redshift ranges.
       real_type snap_z_max = _snaps.back();

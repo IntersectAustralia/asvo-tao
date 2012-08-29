@@ -45,21 +45,6 @@ public:
          sql << "create table snapshot_001 (Pos1 double precision, Pos2 double precision, Pos3 double precision, id integer)";
          sql << "create table snapshot_002 (Pos1 double precision, Pos2 double precision, Pos3 double precision, id integer)";
          sql << "create table snapshot_003 (Pos1 double precision, Pos2 double precision, Pos3 double precision, id integer)";
-
-         // // Add some values to test distances.
-         // sql << "insert into snapshot_000 values (1, 1, 1, 0)";
-         // sql << "insert into snapshot_001 values (14.43, 14.43, 14.43, 0)";
-         // sql << "insert into snapshot_002 values (3, 3, 3, 0)";
-         // sql << "insert into snapshot_003 values (4, 4, 4, 0)";
-
-         // // Add some values to test RA.
-
-
-         // // Add some values to test dec.
-         // sql << "insert into snapshot_000 values (1, 0, 0, 5)";
-         // sql << "insert into snapshot_000 values (0.866, 0.5, 0, 6)";
-         // sql << "insert into snapshot_000 values (0.5, 0.866, 0, 7)";
-         // sql << "insert into snapshot_000 values (1, 0, 0, 8)";
       }
 
       // Create the XML file by calling the lightcone options setup and filling in the
@@ -114,9 +99,10 @@ public:
    ///
    void test_ra_minmax()
    {
-      LOG_PUSH( new logging::file( "test.log" ) );
-
       lightcone lc;
+
+      // Turn off random rotation and shifting.
+      lc._use_random = false;
 
       // Insert some values.
       {
@@ -125,6 +111,10 @@ public:
          sql << "insert into snapshot_000 values (0.866, 0.5, 0.001, 1)";
          sql << "insert into snapshot_000 values (0.5, 0.866, 0.001, 2)";
          sql << "insert into snapshot_000 values (0.001, 1, 0.001, 3)";
+         sql << "insert into snapshot_001 values (1, 0.001, 0.001, 0)";
+         sql << "insert into snapshot_001 values (0.866, 0.5, 0.001, 1)";
+         sql << "insert into snapshot_001 values (0.5, 0.866, 0.001, 2)";
+         sql << "insert into snapshot_001 values (0.001, 1, 0.001, 3)";
       }
 
       // Prepare base dictionary.
@@ -133,7 +123,7 @@ public:
       dict["database_name"] = db_setup.db_filename;
       dict["box_type"] = "cone";
       dict["box_side"] = "100";
-      dict["snapshots"] = "0.01";
+      dict["snapshots"] = "0.01,0";
       dict["z_min"] = "0";
       dict["decl_min"] = "0";
       dict["decl_max"] = "90";
@@ -202,6 +192,7 @@ public:
       {
          soci::session sql( soci::sqlite3, db_setup.db_filename );
          sql << "delete from snapshot_000";
+         sql << "delete from snapshot_001";
       }
    }
 
@@ -212,6 +203,9 @@ public:
    {
       lightcone lc;
 
+      // Turn off random rotation and shifting.
+      lc._use_random = false;
+
       // Insert some values.
       {
          soci::session sql( soci::sqlite3, db_setup.db_filename );
@@ -219,6 +213,10 @@ public:
          sql << "insert into snapshot_000 values (0.612, 0.612, 0.5, 1)";
          sql << "insert into snapshot_000 values (0.354, 0.354, 0.866, 2)";
          sql << "insert into snapshot_000 values (0.001, 0.001, 1, 3)";
+         sql << "insert into snapshot_001 values (0.707, 0.707, 0.001, 0)";
+         sql << "insert into snapshot_001 values (0.612, 0.612, 0.5, 1)";
+         sql << "insert into snapshot_001 values (0.354, 0.354, 0.866, 2)";
+         sql << "insert into snapshot_001 values (0.001, 0.001, 1, 3)";
       }
 
       // Prepare base dictionary.
@@ -227,7 +225,7 @@ public:
       dict["database_name"] = db_setup.db_filename;
       dict["box_type"] = "cone";
       dict["box_side"] = "100";
-      dict["snapshots"] = "0.01";
+      dict["snapshots"] = "0.01,0";
       dict["z_min"] = "0";
       dict["rasc_min"] = "0";
       dict["rasc_max"] = "90";
@@ -296,6 +294,7 @@ public:
       {
          soci::session sql( soci::sqlite3, db_setup.db_filename );
          sql << "delete from snapshot_000";
+         sql << "delete from snapshot_001";
       }
    }
 
@@ -306,8 +305,8 @@ public:
    {
       lightcone lc;
 
-      // Set the lightcone module to use unique offsets.
-      lc._unique = true;
+      // Turn off random rotation and shifting.
+      lc._use_random = false;
 
       // Insert some values. Place the points on the lower walls
       // to get picked up by the neighboring boxes.
@@ -315,7 +314,10 @@ public:
          soci::session sql( soci::sqlite3, db_setup.db_filename );
          sql << "insert into snapshot_000 values (1, 14, 14, 0)";
          sql << "insert into snapshot_000 values (14, 1, 14, 1)";
-         sql << "insert into snapshot_000 values (14, 14, 1, 1)";
+         sql << "insert into snapshot_000 values (14, 14, 1, 2)";
+         sql << "insert into snapshot_001 values (1, 14, 14, 0)";
+         sql << "insert into snapshot_001 values (14, 1, 14, 1)";
+         sql << "insert into snapshot_001 values (14, 14, 1, 2)";
       }
 
       // Prepare base dictionary.
@@ -324,17 +326,76 @@ public:
       dict["database_name"] = db_setup.db_filename;
       dict["box_type"] = "cone";
       dict["box_side"] = "100";
-      dict["snapshots"] = "0.04";
+      dict["snapshots"] = "0.05,0";
       dict["z_min"] = "0";
       dict["rasc_min"] = "0";
       dict["rasc_max"] = "90";
+      dict["decl_min"] = "0";
+      dict["decl_max"] = "90";
 
       // Place to store row IDs.
       vector<int> ids;
 
-      // Only row 0.
-      dict["decl_min"] = "0.0";
-      dict["decl_max"] = "0.1";
+      // Generate all results.
+      db_setup.xml.write( db_setup.xml_filename, dict );
+      setup_lightcone( lc );
+      ids.resize( 0 );
+      for( lc.begin(); !lc.done(); ++lc )
+      {
+         const lightcone::row_type& row = *lc;
+         ids.push_back( row.get<int>( "id" ) );
+      }
+      TS_ASSERT_EQUALS( ids.size(), 12 );
+      for( unsigned ii = 0; ii < 12; ++ii )
+         TS_ASSERT_EQUALS( ids[ii], ii%3 );
+
+      // Erase the table data.
+      {
+         soci::session sql( soci::sqlite3, db_setup.db_filename );
+         sql << "delete from snapshot_000";
+         sql << "delete from snapshot_001";
+      }
+   }
+
+   ///
+   ///
+   ///
+   void test_distances()
+   {
+      lightcone lc;
+
+      // Turn off random rotation and shifting.
+      lc._use_random = false;
+
+      // Insert some values. Place the points on the lower walls
+      // to get picked up by the neighboring boxes.
+      {
+         soci::session sql( soci::sqlite3, db_setup.db_filename );
+         sql << "insert into snapshot_000 values (5.77, 5.77, 5.77, 0)";
+         sql << "insert into snapshot_000 values (11.55, 11.55, 11.55, 1)";
+         sql << "insert into snapshot_000 values (17.32, 17.32, 17.32, 2)";
+         sql << "insert into snapshot_001 values (5.77, 5.77, 5.77, 0)";
+         sql << "insert into snapshot_001 values (11.55, 11.55, 11.55, 1)";
+         sql << "insert into snapshot_001 values (17.32, 17.32, 17.32, 2)";
+      }
+
+      // Prepare base dictionary.
+      options::dictionary& dict = db_setup.dict;
+      dict["database_type"] = "sqlite";
+      dict["database_name"] = db_setup.db_filename;
+      dict["box_type"] = "cone";
+      dict["box_side"] = "100";
+      dict["z_min"] = "0";
+      dict["rasc_min"] = "0";
+      dict["rasc_max"] = "90";
+      dict["decl_min"] = "0";
+      dict["decl_max"] = "90";
+
+      // Place to store row IDs.
+      vector<int> ids;
+
+      // Capture first point.
+      dict["snapshots"] = "0.005,0";
       db_setup.xml.write( db_setup.xml_filename, dict );
       setup_lightcone( lc );
       ids.resize( 0 );
@@ -346,9 +407,97 @@ public:
       TS_ASSERT_EQUALS( ids.size(), 1 );
       TS_ASSERT_EQUALS( ids[0], 0 );
 
-      // Only row 1.
-      dict["decl_min"] = "29.9";
-      dict["decl_max"] = "30.1";
+      // Capture first and second.
+      dict["snapshots"] = "0.008,0";
+      db_setup.xml.write( db_setup.xml_filename, dict );
+      setup_lightcone( lc );
+      ids.resize( 0 );
+      for( lc.begin(); !lc.done(); ++lc )
+      {
+         const lightcone::row_type& row = *lc;
+         ids.push_back( row.get<int>( "id" ) );
+      }
+      TS_ASSERT_EQUALS( ids.size(), 2 );
+      TS_ASSERT_EQUALS( ids[0], 0 );
+      TS_ASSERT_EQUALS( ids[1], 1 );
+
+      // Capture all three.
+      dict["snapshots"] = "0.011,0";
+      db_setup.xml.write( db_setup.xml_filename, dict );
+      setup_lightcone( lc );
+      ids.resize( 0 );
+      for( lc.begin(); !lc.done(); ++lc )
+      {
+         const lightcone::row_type& row = *lc;
+         ids.push_back( row.get<int>( "id" ) );
+      }
+      TS_ASSERT_EQUALS( ids.size(), 3 );
+      TS_ASSERT_EQUALS( ids[0], 0 );
+      TS_ASSERT_EQUALS( ids[1], 1 );
+      TS_ASSERT_EQUALS( ids[2], 2 );
+
+      // Erase the table data.
+      {
+         soci::session sql( soci::sqlite3, db_setup.db_filename );
+         sql << "delete from snapshot_000";
+         sql << "delete from snapshot_001";
+      }
+   }
+
+   ///
+   ///
+   ///
+   void test_redshift_minmax()
+   {
+      lightcone lc;
+
+      // Turn off random rotation and shifting.
+      lc._use_random = false;
+
+      // Insert some values. Place the points on the lower walls
+      // to get picked up by the neighboring boxes.
+      {
+         soci::session sql( soci::sqlite3, db_setup.db_filename );
+         sql << "insert into snapshot_000 values (5.77, 5.77, 5.77, 0)";
+         sql << "insert into snapshot_000 values (11.55, 11.55, 11.55, 1)";
+         sql << "insert into snapshot_000 values (17.32, 17.32, 17.32, 2)";
+         sql << "insert into snapshot_001 values (5.77, 5.77, 5.77, 0)";
+         sql << "insert into snapshot_001 values (11.55, 11.55, 11.55, 1)";
+         sql << "insert into snapshot_001 values (17.32, 17.32, 17.32, 2)";
+      }
+
+      // Prepare base dictionary.
+      options::dictionary& dict = db_setup.dict;
+      dict["database_type"] = "sqlite";
+      dict["database_name"] = db_setup.db_filename;
+      dict["box_type"] = "cone";
+      dict["box_side"] = "100";
+      dict["snapshots"] = "1,0";
+      dict["rasc_min"] = "0";
+      dict["rasc_max"] = "90";
+      dict["decl_min"] = "0";
+      dict["decl_max"] = "90";
+
+      // Place to store row IDs.
+      vector<int> ids;
+
+      // Capture first point.
+      dict["z_min"] = "0.003";
+      dict["z_max"] = "0.004";
+      db_setup.xml.write( db_setup.xml_filename, dict );
+      setup_lightcone( lc );
+      ids.resize( 0 );
+      for( lc.begin(); !lc.done(); ++lc )
+      {
+         const lightcone::row_type& row = *lc;
+         ids.push_back( row.get<int>( "id" ) );
+      }
+      TS_ASSERT_EQUALS( ids.size(), 1 );
+      TS_ASSERT_EQUALS( ids[0], 0 );
+
+      // Capture first and second.
+      dict["z_min"] = "0.006";
+      dict["z_max"] = "0.007";
       db_setup.xml.write( db_setup.xml_filename, dict );
       setup_lightcone( lc );
       ids.resize( 0 );
@@ -360,9 +509,9 @@ public:
       TS_ASSERT_EQUALS( ids.size(), 1 );
       TS_ASSERT_EQUALS( ids[0], 1 );
 
-      // Only row 2.
-      dict["decl_min"] = "59.9";
-      dict["decl_max"] = "60.1";
+      // Capture all three.
+      dict["z_min"] = "0.010";
+      dict["z_max"] = "0.011";
       db_setup.xml.write( db_setup.xml_filename, dict );
       setup_lightcone( lc );
       ids.resize( 0 );
@@ -374,25 +523,79 @@ public:
       TS_ASSERT_EQUALS( ids.size(), 1 );
       TS_ASSERT_EQUALS( ids[0], 2 );
 
-      // Only row 3.
-      dict["decl_min"] = "89.9";
-      dict["decl_max"] = "90.0";
+      // Erase the table data.
+      {
+         soci::session sql( soci::sqlite3, db_setup.db_filename );
+         sql << "delete from snapshot_000";
+         sql << "delete from snapshot_001";
+      }
+   }
+
+   ///
+   ///
+   ///
+   void test_snapshots()
+   {
+      lightcone lc;
+
+      // Turn off random rotation and shifting.
+      lc._use_random = false;
+
+      // Insert some values. Place the points on the lower walls
+      // to get picked up by the neighboring boxes.
+      {
+         soci::session sql( soci::sqlite3, db_setup.db_filename );
+         sql << "insert into snapshot_000 values (5.77, 5.77, 5.77, 0)";
+         sql << "insert into snapshot_000 values (11.55, 11.55, 11.55, 1)";
+         sql << "insert into snapshot_000 values (17.32, 17.32, 17.32, 2)";
+         sql << "insert into snapshot_001 values (5.77, 5.77, 5.77, 3)";
+         sql << "insert into snapshot_001 values (11.55, 11.55, 11.55, 4)";
+         sql << "insert into snapshot_001 values (17.32, 17.32, 17.32, 5)";
+         sql << "insert into snapshot_002 values (5.77, 5.77, 5.77, 6)";
+         sql << "insert into snapshot_002 values (11.55, 11.55, 11.55, 7)";
+         sql << "insert into snapshot_002 values (17.32, 17.32, 17.32, 8)";
+      }
+
+      // Prepare base dictionary.
+      options::dictionary& dict = db_setup.dict;
+      dict["database_type"] = "sqlite";
+      dict["database_name"] = db_setup.db_filename;
+      dict["box_type"] = "cone";
+      dict["box_side"] = "100";
+      dict["snapshots"] = "0.011,0.007,0.003";
+      dict["rasc_min"] = "0";
+      dict["rasc_max"] = "90";
+      dict["decl_min"] = "0";
+      dict["decl_max"] = "90";
+      dict["z_min"] = "0";
+      dict["z_max"] = "1";
+
+      // Place to store row IDs.
+      vector<int> ids;
+
+      LOG_PUSH( new logging::file( "test.log" ) );
+
+      // Should encounter each point from each snapshot in a
+      // unique order.
       db_setup.xml.write( db_setup.xml_filename, dict );
       setup_lightcone( lc );
-
       ids.resize( 0 );
       for( lc.begin(); !lc.done(); ++lc )
       {
          const lightcone::row_type& row = *lc;
          ids.push_back( row.get<int>( "id" ) );
       }
-      TS_ASSERT_EQUALS( ids.size(), 1 );
-      TS_ASSERT_EQUALS( ids[0], 3 );
+      TS_ASSERT_EQUALS( ids.size(), 3 );
+      TS_ASSERT_EQUALS( ids[0], 0 );
+      TS_ASSERT_EQUALS( ids[1], 4 );
+      TS_ASSERT_EQUALS( ids[2], 8 );
 
       // Erase the table data.
       {
          soci::session sql( soci::sqlite3, db_setup.db_filename );
          sql << "delete from snapshot_000";
+         sql << "delete from snapshot_001";
+         sql << "delete from snapshot_002";
       }
    }
 

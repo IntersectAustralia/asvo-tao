@@ -77,16 +77,12 @@ namespace tao {
       _settle_box();
 
       void
-      _build_pixels( hpc::mpi::lindex cur_snap_idx,
-                     optional<hpc::mpi::lindex> next_snap_idx,
-                     real_type offs_x,
+      _build_pixels( real_type offs_x,
                      real_type offs_y,
                      real_type offs_z );
 
       void
-      _build_query( hpc::mpi::lindex cur_snap_idx,
-                    optional<hpc::mpi::lindex> next_snap_idx,
-                    real_type offs_x,
+      _build_query( real_type offs_x,
                     real_type offs_y,
                     real_type offs_z,
                     hpc::string& query );
@@ -95,8 +91,7 @@ namespace tao {
       _random_rotation_and_shifting( hpc::vector<hpc::string>& ops );
 
       void
-      _get_boxes( real_type redshift,
-                  hpc::list<hpc::array<real_type,3>>& boxes );
+      _get_boxes( hpc::list<hpc::array<real_type,3>>& boxes );
 
       real_type
       _redshift_to_distance( real_type redshift );
@@ -125,15 +120,15 @@ namespace tao {
       hpc::string _box_type;
       real_type _box_side;
       hpc::vector<real_type> _snaps;
-      // hpc::vector<hpc::mpi::lindex> _snap_idxs;
       real_type _x0, _y0, _z0;
       real_type _z_min, _z_max;
       real_type _ra_min, _ra_max;
       real_type _dec_min, _dec_max;
       real_type _z_snap, _box_size;
+      bool _use_random;
       bool _unique;
       real_type _unique_offs_x, _unique_offs_y, _unique_offs_z;
-      real_type _last_max_dist_processed;
+      hpc::range<real_type> _z_range, _dist_range;
       hpc::string _table_name;
       hpc::vector<hpc::string> _include;
       hpc::map<hpc::string, hpc::string> _output_fields;
@@ -146,7 +141,6 @@ namespace tao {
       std::ofstream _bin_file;
 
       hpc::mpi::lindex _cur_snap;
-      optional<hpc::mpi::lindex> _next_snap;
       hpc::list<hpc::array<real_type,3>> _boxes;
       hpc::list<hpc::array<real_type,3>>::const_iterator _cur_box;
       hpc::scoped_ptr<soci::rowset<soci::row>> _rows;
