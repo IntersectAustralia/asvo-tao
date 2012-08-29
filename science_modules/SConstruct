@@ -7,6 +7,7 @@ config.select(
     config.packages.HDF5(),
     config.packages.SOCI(),
     config.packages.rapidxml(),
+    config.packages.sqlite3(required=False),
     config.packages.libhpc(),
 )
 
