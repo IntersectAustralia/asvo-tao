@@ -65,6 +65,7 @@ namespace tao {
       // Allocate for output spectra.
       _disk_spectra.reallocate( _num_spectra );
       _bulge_spectra.reallocate( _num_spectra );
+      _total_spectra.reallocate( _num_spectra );
 
       // Open the star-formation histories file.
       _db_connect( _sql, _dbtype, _dbname );
@@ -130,6 +131,10 @@ namespace tao {
       for( mpi::lindex ii = 0; ii < _num_times; ++ii )
          _process_time( ii );
 
+      // Create total spectra.
+      for( unsigned ii = 0; ii < _num_spectra; ++ii )
+         _total_spectra[ii] = _disk_spectra[ii] + _bulge_spectra[ii];
+
       LOG_EXIT();
    }
 
@@ -143,6 +148,12 @@ namespace tao {
    sed::bulge_spectra()
    {
       return _bulge_spectra;
+   }
+
+   vector<sed::real_type>::view
+   sed::total_spectra()
+   {
+      return _total_spectra;
    }
 
    void

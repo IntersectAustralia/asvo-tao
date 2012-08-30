@@ -65,6 +65,9 @@ namespace tao {
       hpc::vector<real_type>::view
       bulge_spectra();
 
+      hpc::vector<real_type>::view
+      total_spectra();
+
    protected:
 
       void
@@ -99,7 +102,7 @@ namespace tao {
 
       hpc::vector<real_type> _disk_sfh, _disk_metals;
       hpc::vector<real_type> _bulge_sfh, _bulge_metals;
-      hpc::vector<real_type> _disk_spectra, _bulge_spectra;
+      hpc::vector<real_type> _disk_spectra, _bulge_spectra, _total_spectra;
       hpc::vector<real_type> _ssp;
    };
 }
