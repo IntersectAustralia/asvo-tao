@@ -244,8 +244,6 @@ public:
 
    void setup_sed( tao::lightcone& lc, tao::sed& sed )
    {
-      LOG_PUSH( new logging::file( "test.log" ) );
-
       // Setup the dictionary.
       options::dictionary dict;
       lc.setup_options( dict, "lightcone" );
