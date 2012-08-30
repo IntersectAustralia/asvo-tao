@@ -4,6 +4,7 @@
 #include "tao/base/module.hh"
 
 class lightcone_suite;
+class sed_suite;
 
 namespace tao {
 
@@ -13,6 +14,7 @@ namespace tao {
    class lightcone
    {
       friend class ::lightcone_suite;
+      friend class ::sed_suite;
 
    public:
 
@@ -36,7 +38,22 @@ namespace tao {
       ///
       ///
       void
-      initialise( const hpc::options::dictionary& dict );
+      setup_options( hpc::options::dictionary& dict,
+                     const char* prefix );
+
+      ///
+      ///
+      ///
+      void
+      initialise( const hpc::options::dictionary& dict,
+                  hpc::optional<const hpc::string&> prefix=hpc::optional<const hpc::string&>() );
+
+      ///
+      ///
+      ///
+      void
+      initialise( hpc::options::dictionary& dict,
+                  const char* prefix );
 
       ///
       /// Run the module.
@@ -97,7 +114,8 @@ namespace tao {
       _redshift_to_distance( real_type redshift );
 
       void
-      _setup_params( const hpc::options::dictionary& dict );
+      _setup_params( const hpc::options::dictionary& dict,
+                     hpc::optional<const hpc::string&> prefix=hpc::optional<const hpc::string&>() );
 
       void
       _setup_query_template();

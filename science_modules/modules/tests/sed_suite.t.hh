@@ -43,44 +43,43 @@ public:
       sql << "insert into snapshot_000 values (1, 0.001, 0.001, 0)";
       sql << "insert into snapshot_000 values (0.866, 0.5, 0.001, 1)";
       sql << "insert into snapshot_000 values (0.5, 0.866, 0.001, 2)";
-      sql << "insert into snapshot_000 values (0.001, 1, 0.001, 3)";
       sql << "insert into snapshot_001 values (1, 0.001, 0.001, 0)";
       sql << "insert into snapshot_001 values (0.866, 0.5, 0.001, 1)";
       sql << "insert into snapshot_001 values (0.5, 0.866, 0.001, 2)";
-      sql << "insert into snapshot_001 values (0.001, 1, 0.001, 3)";
 
       // Write a sample set of star formation histories/metallicities.
       sql << "create table disk_star_formation (galaxy_id integer, history double precision, "
          "metal double precision, age double precision)";
       sql << "create table bulge_star_formation (galaxy_id integer, history double precision, "
          "metal double precision, age double precision)";
-      sql << "insert into disk_star_formation values (0, 1, 0, 3)";
+      sql << "insert into disk_star_formation values (0, 1, 0.00, 3)";
       sql << "insert into disk_star_formation values (0, 2, 0.01, 2)";
       sql << "insert into disk_star_formation values (0, 3, 0.02, 1)";
-      sql << "insert into disk_star_formation values (1, 1, 0, 3)";
-      sql << "insert into disk_star_formation values (1, 2, 0.01, 2)";
-      sql << "insert into disk_star_formation values (1, 3, 0.02, 1)";
-      sql << "insert into disk_star_formation values (2, 1, 0, 3)";
-      sql << "insert into disk_star_formation values (2, 2, 0.01, 2)";
-      sql << "insert into disk_star_formation values (2, 3, 0.02, 1)";
-      sql << "insert into bulge_star_formation values (0, 1, 0, 3)";
-      sql << "insert into bulge_star_formation values (0, 2, 0.01, 2)";
-      sql << "insert into bulge_star_formation values (0, 3, 0.02, 1)";
-      sql << "insert into bulge_star_formation values (1, 1, 0, 3)";
-      sql << "insert into bulge_star_formation values (1, 2, 0.01, 2)";
-      sql << "insert into bulge_star_formation values (1, 3, 0.02, 1)";
-      sql << "insert into bulge_star_formation values (2, 1, 0, 3)";
-      sql << "insert into bulge_star_formation values (2, 2, 0.01, 2)";
-      sql << "insert into bulge_star_formation values (2, 3, 0.02, 1)";
+      sql << "insert into disk_star_formation values (1, 4, 0.00, 3)";
+      sql << "insert into disk_star_formation values (1, 5, 0.01, 2)";
+      sql << "insert into disk_star_formation values (1, 6, 0.02, 1)";
+      sql << "insert into disk_star_formation values (2, 7, 0.00, 3)";
+      sql << "insert into disk_star_formation values (2, 8, 0.01, 2)";
+      sql << "insert into disk_star_formation values (2, 9, 0.02, 1)";
+      sql << "insert into bulge_star_formation values (0, 10, 0.00, 3)";
+      sql << "insert into bulge_star_formation values (0, 11, 0.01, 2)";
+      sql << "insert into bulge_star_formation values (0, 12, 0.02, 1)";
+      sql << "insert into bulge_star_formation values (1, 13, 0.00, 3)";
+      sql << "insert into bulge_star_formation values (1, 14, 0.01, 2)";
+      sql << "insert into bulge_star_formation values (1, 15, 0.02, 1)";
+      sql << "insert into bulge_star_formation values (2, 16, 0.00, 3)";
+      sql << "insert into bulge_star_formation values (2, 17, 0.01, 2)";
+      sql << "insert into bulge_star_formation values (2, 18, 0.02, 1)";
 
       // Write a sample SSP file, assuming num_times=3, num_spectra=2, num_metals=7.
       std::ofstream file( ssp_filename, std::ios::out );
+      unsigned val = 0;
       for( unsigned ii = 0; ii < 3; ++ii )
       {
          for( unsigned jj = 0; jj < 2; ++jj )
          {
             for( unsigned kk = 0; kk < 7; ++kk )
-               file << to_string( jj*7 + kk ) << " ";
+               file << to_string( val++ ) << " ";
             file << "\n";
          }
       }
@@ -102,8 +101,10 @@ public:
       dict["lightcone-database_name"] = db_filename;
       dict["lightcone-box_type"] = "cone";
       dict["lightcone-box_side"] = "100";
-      dict["lightcone-snapshots"] = "0.01";
+      dict["lightcone-snapshots"] = "0.01,0";
 
+      dict["sed-database_type"] = "sqlite";
+      dict["sed-database_name"] = db_filename;
       dict["sed-ssp_filename"] = ssp_filename;
       dict["sed-num_times"] = "3";
       dict["sed-num_spectra"] = "2";
@@ -120,7 +121,6 @@ public:
       remove( db_filename.c_str() );
       remove( xml_filename.c_str() );
       remove( ssp_filename.c_str() );
-      dict.clear();
       return true;
    }
 
@@ -221,23 +221,44 @@ public:
       tao::sed sed;
       setup_sed( lc, sed );
 
-      for( lc.begin(); !lc.done(); ++lc )
+      unsigned galaxy = 0;
+      for( lc.begin(); !lc.done(); ++lc, ++galaxy )
       {
          sed.process_galaxy( *lc );
+
+         // Each galaxy will have a different set of values.
+         if( galaxy == 0 )
+         {
+            TS_ASSERT( num::approx( sed.disk_spectra()[0]*1e10, 130.0, 1e-8 ) );
+            TS_ASSERT( num::approx( sed.disk_spectra()[1]*1e10, 172.0, 1e-8 ) );
+            TS_ASSERT( num::approx( sed.bulge_spectra()[0]*1e10, 571.0, 1e-8 ) );
+            TS_ASSERT( num::approx( sed.bulge_spectra()[1]*1e10, 802.0, 1e-8 ) );
+         }
+         else if( galaxy == 1 )
+         {
+            TS_ASSERT( num::approx( sed.disk_spectra()[0]*1e10, 277.0, 1e-8 ) );
+            // TODO: Finish the galaxies.
+         }
       }
    }
 
    void setup_sed( tao::lightcone& lc, tao::sed& sed )
    {
+      LOG_PUSH( new logging::file( "test.log" ) );
+
       // Setup the dictionary.
       options::dictionary dict;
       lc.setup_options( dict, "lightcone" );
       sed.setup_options( dict, "sed" );
       dict.compile();
+      db_setup.xml.read( db_setup.xml_filename, dict );
 
       // Initialise modules.
       lc.initialise( dict, "lightcone" );
       sed.initialise( dict, "sed" );
+
+      // Switch off random rotation and shifting.
+      lc._use_random = false;
    }
 
    void setUp()

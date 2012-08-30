@@ -30,10 +30,25 @@ namespace tao {
                      hpc::optional<const hpc::string&> prefix=hpc::optional<const hpc::string&>() );
 
       ///
+      ///
+      ///
+      void
+      setup_options( hpc::options::dictionary& dict,
+                     const char* prefix );
+
+      ///
       /// Initialise the module.
       ///
       void
-      initialise( const hpc::options::dictionary& dict );
+      initialise( const hpc::options::dictionary& dict,
+                  hpc::optional<const hpc::string&> prefix=hpc::optional<const hpc::string&>() );
+
+      ///
+      ///
+      ///
+      void
+      initialise( hpc::options::dictionary& dict,
+                  const char* prefix );
 
       ///
       /// Run the module.
@@ -68,7 +83,8 @@ namespace tao {
       _read_ssp();
 
       void
-      _read_options( const hpc::options::dictionary& dict );
+      _read_options( const hpc::options::dictionary& dict,
+                     hpc::optional<const hpc::string&> prefix=hpc::optional<const hpc::string&>() );
 
    protected:
 
@@ -79,10 +95,10 @@ namespace tao {
       hpc::string _ssp_filename;
 
       soci::session _sql;
-      hpc::string _dbtype, _dbfile;
+      hpc::string _dbtype, _dbname, _dbhost, _dbuser, _dbpass;
 
-      std::vector<real_type> _disk_sfh, _disk_metals; // soci needs std
-      std::vector<real_type> _bulge_sfh, _bulge_metals; // soci needs std
+      hpc::vector<real_type> _disk_sfh, _disk_metals;
+      hpc::vector<real_type> _bulge_sfh, _bulge_metals;
       hpc::vector<real_type> _disk_spectra, _bulge_spectra;
       hpc::vector<real_type> _ssp;
    };

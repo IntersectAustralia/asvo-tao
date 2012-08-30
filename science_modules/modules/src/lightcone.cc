@@ -63,17 +63,38 @@ namespace tao {
    }
 
    ///
+   ///
+   ///
+   void
+   lightcone::setup_options( hpc::options::dictionary& dict,
+                             const char* prefix )
+   {
+      setup_options( dict, string( prefix ) );
+   }
+
+   ///
    /// Initialise the module.
    ///
    void
-   lightcone::initialise( const options::dictionary& dict )
+   lightcone::initialise( const options::dictionary& dict,
+                          optional<const string&> prefix )
    {
       LOG_ENTER();
 
-      _setup_params( dict );
+      _setup_params( dict, prefix );
       _setup_query_template();
 
       LOG_EXIT();
+   }
+
+   ///
+   ///
+   ///
+   void
+   lightcone::initialise( hpc::options::dictionary& dict,
+                          const char* prefix )
+   {
+      initialise( dict, string( prefix ) );
    }
 
    ///
@@ -726,26 +747,30 @@ namespace tao {
    /// from the parameter dictionary.
    ///
    void
-   lightcone::_setup_params( const options::dictionary& dict )
+   lightcone::_setup_params( const options::dictionary& dict,
+                             optional<const string&> prefix )
    {
       LOG_ENTER();
 
+      // Get the sub dictionary, if it exists.
+      const options::dictionary& sub = prefix ? dict.sub( *prefix ) : dict;
+
       // Extract database details.
-      _dbtype = dict.get<string>( "database_type" );
-      _dbname = dict.get<string>( "database_name" );
-      _dbhost = dict.get<string>( "database_host" );
-      _dbuser = dict.get<string>( "database_user" );
-      _dbpass = dict.get<string>( "database_pass" );
-      _table_name = dict.get<string>( "table_name_template" );
+      _dbtype = sub.get<string>( "database_type" );
+      _dbname = sub.get<string>( "database_name" );
+      _dbhost = sub.get<string>( "database_host" );
+      _dbuser = sub.get<string>( "database_user" );
+      _dbpass = sub.get<string>( "database_pass" );
+      _table_name = sub.get<string>( "table_name_template" );
 
       // Get box type and side length.
-      _box_type = dict.get<string>( "box_type" );
-      _box_side = dict.get<real_type>( "box_side" );
+      _box_type = sub.get<string>( "box_type" );
+      _box_side = sub.get<real_type>( "box_side" );
       LOGLN( "Read box type '", _box_type, "' and side length ", _box_side );
 
       // Extract and parse the snapshot redshifts.
       _snaps.clear();
-      string snaps_str = dict.get<string>( "snapshots" );
+      string snaps_str = sub.get<string>( "snapshots" );
       boost::tokenizer<boost::char_separator<char> > tokens( snaps_str, boost::char_separator<char>( "," ) );
       for( const auto& redshift : tokens )
          _snaps.push_back( boost::lexical_cast<double>( boost::trim_copy( redshift ) ) );
@@ -758,17 +783,17 @@ namespace tao {
       ASSERT( _box_type == "box" || _snaps.size() > 1 );
 
       // Redshift ranges.
-      real_type snap_z_max = _snaps.back();
-      _z_max = dict.get<real_type>( "z_max", snap_z_max );
+      real_type snap_z_max = _snaps.back(), snap_z_min = _snaps.front();
+      _z_max = sub.get<real_type>( "z_max", snap_z_max );
       _z_max = std::min( _z_max, snap_z_max );
-      _z_min = dict.get<real_type>( "z_min" );
+      _z_min = sub.get<real_type>( "z_min", snap_z_min );
       LOGLN( "Redshift range: (", _z_min, ", ", _z_max, ")" );
 
       // Right ascension.
-      _ra_min = dict.get<real_type>( "rasc_min" );
+      _ra_min = sub.get<real_type>( "rasc_min" );
       if( _ra_min < 0.0 )
          _ra_min = 0.0;
-      _ra_max = dict.get<real_type>( "rasc_max" ); // TODO divide by 60.0?
+      _ra_max = sub.get<real_type>( "rasc_max" ); // TODO divide by 60.0?
       if( _ra_max >= 89.9999999 )
          _ra_max = 89.9999999;
       if( _ra_min > _ra_max )
@@ -776,10 +801,10 @@ namespace tao {
       LOGLN( "Have right ascension range ", _ra_min, " - ", _ra_max );
 
       // Declination.
-      _dec_min = dict.get<real_type>( "decl_min" );
+      _dec_min = sub.get<real_type>( "decl_min" );
       if( _dec_min < 0.0 )
          _dec_min = 0.0;
-      _dec_max = dict.get<real_type>( "decl_max" ); // TODO divide by 60.0?
+      _dec_max = sub.get<real_type>( "decl_max" ); // TODO divide by 60.0?
       if( _dec_max >= 89.9999999 )
          _dec_max = 89.9999999;
       if( _dec_min > _dec_max )
@@ -789,12 +814,12 @@ namespace tao {
       // For the box type.
       if( _box_type == "box" )
       {
-         _z_snap = dict.get<real_type>( "z_snap" );
-         _box_size = dict.get<real_type>( "box_size" );
+         _z_snap = sub.get<real_type>( "z_snap" );
+         _box_size = sub.get<real_type>( "box_size" );
       }
 
       // Astronomical values.
-      _H0 = dict.get<real_type>( "H0" );
+      _H0 = sub.get<real_type>( "H0" );
       LOGLN( "Using H0 = ", _H0 );
 
       LOG_EXIT();
