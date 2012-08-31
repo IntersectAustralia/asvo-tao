@@ -23,6 +23,11 @@ namespace tao {
    sed::setup_options( options::dictionary& dict,
                        optional<const string&> prefix )
    {
+      dict.add_option( new options::string( "database_type" ), prefix );
+      dict.add_option( new options::string( "database_name" ), prefix );
+      dict.add_option( new options::string( "database_host", string() ), prefix );
+      dict.add_option( new options::string( "database_user", string() ), prefix );
+      dict.add_option( new options::string( "database_pass", string() ), prefix );
       dict.add_option( new options::string( "ssp_filename" ), prefix );
       dict.add_option( new options::integer( "num_times" ), prefix );
       dict.add_option( new options::integer( "num_spectra" ), prefix );
@@ -30,14 +35,25 @@ namespace tao {
    }
 
    ///
+   ///
+   ///
+   void
+   sed::setup_options( hpc::options::dictionary& dict,
+                       const char* prefix )
+   {
+      setup_options( dict, string( prefix ) );
+   }
+
+   ///
    /// Initialise the module.
    ///
    void
-   sed::initialise( const options::dictionary& dict )
+   sed::initialise( const options::dictionary& dict,
+                    optional<const string&> prefix )
    {
       LOG_ENTER();
 
-      _read_options( dict );
+      _read_options( dict, prefix );
 
       // Allocate for storing star-formation histories and
       // metallicities.
@@ -49,14 +65,25 @@ namespace tao {
       // Allocate for output spectra.
       _disk_spectra.reallocate( _num_spectra );
       _bulge_spectra.reallocate( _num_spectra );
+      _total_spectra.reallocate( _num_spectra );
 
       // Open the star-formation histories file.
-      _db_connect( _sql, _dbtype, _dbfile );
+      _db_connect( _sql, _dbtype, _dbname );
 
       // Read the SSP data all at once.
       _read_ssp();
 
       LOG_EXIT();
+   }
+
+   ///
+   ///
+   ///
+   void
+   sed::initialise( hpc::options::dictionary& dict,
+                    const char* prefix )
+   {
+      initialise( dict, string( prefix ) );
    }
 
    ///
@@ -79,7 +106,7 @@ namespace tao {
       LOG_ENTER();
 
       // Cache the galaxy ID.
-      _gal_id = galaxy.get<unsigned long>( "id" );
+      _gal_id = galaxy.get<int>( "id" );
       LOGLN( "Processing galaxy with ID ", _gal_id );
 
       // Cache the galaxy on the SED object so we don't have
@@ -87,10 +114,14 @@ namespace tao {
       _gal = &galaxy;
 
       // Read the star-formation histories for this galaxy.
-      _sql << "select rate, metal from disk_star_formation where galaxy_id=:id order by age",
-         soci::into( _disk_sfh ), soci::into( _disk_metals ), soci::use( _gal_id );
-      _sql << "select rate, metal from bulge_star_formation where galaxy_id=:id order by age",
-         soci::into( _bulge_sfh ), soci::into( _bulge_metals ), soci::use( _gal_id );
+      _sql << "select history, metal from disk_star_formation where galaxy_id=:id order by -age",
+         soci::into( (std::vector<real_type>&)_disk_sfh ), soci::into( (std::vector<real_type>&)_disk_metals ), soci::use( _gal_id );
+      _sql << "select history, metal from bulge_star_formation where galaxy_id=:id order by -age",
+         soci::into( (std::vector<real_type>&)_bulge_sfh ), soci::into( (std::vector<real_type>&)_bulge_metals ), soci::use( _gal_id );
+      LOGLN( "Disk SFH: ", _disk_sfh );
+      LOGLN( "Disk metals: ", _disk_metals );
+      LOGLN( "Bulge SFH: ", _bulge_sfh );
+      LOGLN( "Bulge metals: ", _bulge_metals );
 
       // Clear disk and bulge output spectrums.
       std::fill( _disk_spectra.begin(), _disk_spectra.end(), 0.0 );
@@ -99,6 +130,10 @@ namespace tao {
       // Process each time.
       for( mpi::lindex ii = 0; ii < _num_times; ++ii )
          _process_time( ii );
+
+      // Create total spectra.
+      for( unsigned ii = 0; ii < _num_spectra; ++ii )
+         _total_spectra[ii] = _disk_spectra[ii] + _bulge_spectra[ii];
 
       LOG_EXIT();
    }
@@ -113,6 +148,12 @@ namespace tao {
    sed::bulge_spectra()
    {
       return _bulge_spectra;
+   }
+
+   vector<sed::real_type>::view
+   sed::total_spectra()
+   {
+      return _total_spectra;
    }
 
    void
@@ -138,6 +179,7 @@ namespace tao {
       // Interpolate the metallicity to an index.
       unsigned metal_idx = _interp_metal( metal );
       ASSERT( metal_idx < _num_metals );
+      LOGLN( "Found metal index: ", metal_idx );
 
       // Calculate the base index for the ssp table.
       size_t base = time_idx*_num_spectra*_num_metals + metal_idx;
@@ -148,6 +190,7 @@ namespace tao {
          // TODO: Explain the sfh (star formation history) part.
          galaxy_spectra[ii] += (_ssp[base + ii*_num_metals]/1e10)*sfh;
       }
+      LOGLN( "New spectra: ", galaxy_spectra );
 
       LOG_EXIT();
    }
@@ -178,6 +221,7 @@ namespace tao {
 
       // Allocate. Note that the ordering goes time,spectra,metals.
       _ssp.reallocate( _num_times*_num_spectra*_num_metals );
+      LOGLN( "Reallocated SSP array to ", _ssp.size() );
 
       // Read in the file in one big go.
       std::ifstream file( _ssp_filename, std::ios::in );
@@ -188,9 +232,28 @@ namespace tao {
    }
 
    void
-   sed::_read_options( const options::dictionary& dict )
+   sed::_read_options( const options::dictionary& dict,
+                       optional<const string&> prefix )
    {
-      _num_times = dict.get<unsigned>( "num_times" );
+      // Get the sub dictionary, if it exists.
+      const options::dictionary& sub = prefix ? dict.sub( *prefix ) : dict;
+
+      // Extract database details.
+      _dbtype = sub.get<string>( "database_type" );
+      _dbname = sub.get<string>( "database_name" );
+      _dbhost = sub.get<string>( "database_host" );
+      _dbuser = sub.get<string>( "database_user" );
+      _dbpass = sub.get<string>( "database_pass" );
+
+      // Get the SSP filename.
+      _ssp_filename = sub.get<string>( "ssp_filename" );
+
+      // Extract the counts.
+      _num_times = sub.get<unsigned>( "num_times" );
+      _num_spectra = sub.get<unsigned>( "num_spectra" );
+      _num_metals = sub.get<unsigned>( "num_metals" );
       LOGLN( "Number of times: ", _num_times );
+      LOGLN( "Number of spectra: ", _num_spectra );
+      LOGLN( "Number of metals: ", _num_metals );
    }
 }

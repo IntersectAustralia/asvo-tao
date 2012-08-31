@@ -4,6 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import forms as auth_forms
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from captcha.fields import ReCaptchaField
 
 from tao.models import UserProfile
 
@@ -22,6 +23,7 @@ class UserCreationForm(auth_forms.UserCreationForm):
                                             widget=forms.Textarea(attrs={'rows':
                                             3}), required=False)
     email = forms.EmailField(label=_("Email"), max_length=75)
+    captcha = ReCaptchaField()
 
 
     class Meta:

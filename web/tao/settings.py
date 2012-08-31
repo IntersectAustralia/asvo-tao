@@ -119,6 +119,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'south',
     'tao',
+    'captcha',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
@@ -159,3 +160,7 @@ EMAIL_PORT= '1025'
 EMAIL_ACCEPT_SUBJECT = 'Welcome to ASVO TAO'
 EMAIL_REJECT_SUBJECT = 'Your request for access to ASVO TAO has been rejected'
 EMAIL_FROM_ADDRESS = 'admin@asvo-tao.org.au'
+
+RECAPTCHA_PUBLIC_KEY = '6Le-6tUSAAAAANY2atxpkcNZyPcLQSM7n2Lf8rUT'
+RECAPTCHA_PRIVATE_KEY = '6Le-6tUSAAAAAPKhcTQI_Ecjff3Vw1Jn0Iu7u3kE'
+RECAPTCHA_USE_SSL = True
