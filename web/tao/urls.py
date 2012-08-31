@@ -2,7 +2,7 @@ import tao.views
 
 from django.conf.urls.defaults import patterns, url, include
 from django.conf import settings
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.core.urlresolvers import reverse_lazy
 
 from django.contrib import admin
 admin.autodiscover()
@@ -25,6 +25,7 @@ tao_patterns = patterns('',
     url(r'^admininistration/$', 'tao.views.admin_index', name='admin_index'),
     url(r'^admininistration/access_requests$', 'tao.views.access_requests', name='access_requests'),
     url(r'^admininistration/approve_user/(?P<user_id>\d+)$', 'tao.views.approve_user', name='approve_user'),
+    url(r'^admininistration/reject_user/(?P<user_id>\d+)$', 'tao.views.reject_user', name='reject_user'),
 )
 
 account_patterns = patterns('',

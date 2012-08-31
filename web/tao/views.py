@@ -1,17 +1,16 @@
-from django.contrib.auth.models import User
-from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
-from django.template import RequestContext
 from django.views.decorators.http import require_POST
-import inspect
 
-
-from .forms import UserCreationForm
 from . import models
 
+from .forms import UserCreationForm, RejectForm
+from django.template.loader import get_template
+from django.template.context import Context
+from django.core.mail.message import EmailMultiAlternatives
+from django.conf import settings
 
 def home(request):
     return render(request, 'home.html')
@@ -43,14 +42,49 @@ def admin_index(request):
 @staff_member_required
 def access_requests(request):
     return render(request, 'access_requests.html', {
-        'users': models.User.objects.all()
+        'users': models.User.objects.filter(is_active=False, userprofile__rejected=False).order_by('-id'),
+        'reject_form': RejectForm(),                                                    
     })
 
 
 @staff_member_required
 @require_POST
 def approve_user(request, user_id):
-    u = User.objects.get(pk=user_id)
+    u = models.User.objects.get(pk=user_id)
     u.is_active = True
     u.save()
+    profile = u.get_profile()
+
+    # Send an email
+    plaintext = get_template('emails/approve.txt')
+    html = get_template('emails/approve.html')
+    d = Context({ 'title': profile.title, 'first_name': u.first_name, 'last_name': u.last_name })
+    plaintext_content = plaintext.render(d)
+    html_content = html.render(d)
+    msg = EmailMultiAlternatives(settings.EMAIL_ACCEPT_SUBJECT, plaintext_content, settings.EMAIL_FROM_ADDRESS, [u.email])
+    msg.attach_alternative(html_content, 'text/html')
+    msg.send(False);
+
     return redirect(access_requests)
+
+@staff_member_required
+@require_POST
+def reject_user(request, user_id):
+    u = models.User.objects.get(pk=user_id)
+    profile = u.get_profile()
+    profile.rejected = True
+    profile.save()
+
+    # Send an email
+    reason = request.POST.__getitem__('reason')
+    plaintext = get_template('emails/reject.txt')
+    html = get_template('emails/reject.html')
+    d = Context({ 'title': profile.title, 'first_name': u.first_name, 'last_name': u.last_name, 'reason': reason })
+    plaintext_content = plaintext.render(d)
+    html_content = html.render(d)
+    msg = EmailMultiAlternatives(settings.EMAIL_REJECT_SUBJECT, plaintext_content, settings.EMAIL_FROM_ADDRESS, [u.email])
+    msg.attach_alternative(html_content, 'text/html')
+    msg.send(False);
+
+    return redirect(access_requests)
+    

@@ -1,8 +1,6 @@
 
 # Django settings for tao project.
 
-import os
-
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
@@ -152,3 +150,12 @@ from django.core.urlresolvers import reverse_lazy
 LOGIN_REDIRECT_URL = reverse_lazy('tao.views.home')
 
 AUTH_PROFILE_MODULE = 'tao.UserProfile'  # appname.modelname
+
+# Configure SMTP Server.
+# See https://docs.djangoproject.com/en/dev/topics/email/
+EMAIL_HOST = 'localhost'
+EMAIL_PORT= '1025'
+
+EMAIL_ACCEPT_SUBJECT = 'Welcome to ASVO TAO'
+EMAIL_REJECT_SUBJECT = 'Your request for access to ASVO TAO has been rejected'
+EMAIL_FROM_ADDRESS = 'admin@asvo-tao.org.au'

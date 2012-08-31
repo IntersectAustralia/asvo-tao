@@ -1,4 +1,5 @@
 {% extends '_base.html' %}
+{% load bootstrap_tags %}
 {% block subtitle %}Access Requests{% endblock %}
 {% block content %}
     <style>
@@ -13,7 +14,7 @@
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
-                <th> Username </th>
+                <th> Title </th>
                 <th> Username </th>
                 <th> Email </th>
                 <th> First Name </th>
@@ -30,21 +31,36 @@
                     <td> {{ user.first_name}} </td>
                     <td> {{ user.last_name}} </td>
                     <td>
-                        <form action="{% url approve_user user.id %}" method="POST" style="display:inline;">
-                            <input type="hidden" name="user_id" value="{{ user.id }}" />
-                            {% csrf_token %}
-                            <input class="btn btn-primary" type="submit" value="Approve" />
-                        </form>
-                        <button class="btn reject">Reject</button>
+	                    <form action="{% url approve_user user.id %}" method="POST" style="display:inline;">
+	                        <input type="hidden" name="user_id" value="{{ user.id }}" />
+	                        {% csrf_token %}
+	                        <input class="btn btn-primary" type="submit" value="Approve" />
+	                    </form>
+
+	                    <a href="#rejectedModal" role="button" class="btn" data-toggle="modal">Reject</a>
+	                    <div class="modal" id="rejectedModal" tabindex="-1" role="dialog" aria-labelledby="rejectedModalLabel" aria-hidden="true" style="display:none;">
+	                        <div class="modal-header">
+	                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+	                            <h3 id="rejectedModalLabel">Reason</h3>
+	                        </div>
+	                        <form action="{% url reject_user user.id %}" method="POST" style="display:inline;">
+		                        <div class="modal-body">
+								  {% for field in reject_form %}
+								    {% include "bootstrap/field.html" %}
+								  {% endfor %}
+		                        </div>
+		                        <div class="modal-footer">
+		                            <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+		                            <input type="hidden" name="user_id" value="{{ user.id }}" />
+		                            {% csrf_token %}
+		                            <input class="btn btn-primary" type="submit" value="Reject" />
+		                        </div>
+                            </form>
+                        </div>
+
                     </td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
-    <script>
-        $('table').on('click', 'button.reject', function(){
-            alert('not implemented');
-            return false;
-        });
-    </script>
 {% endblock content %}

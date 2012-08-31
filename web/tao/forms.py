@@ -1,11 +1,9 @@
-import inspect
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
 from django.contrib.auth import forms as auth_forms
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-from django.db import models, transaction
 
 from tao.models import UserProfile
 
@@ -55,3 +53,6 @@ class UserCreationForm(auth_forms.UserCreationForm):
         up.save()
 
         return user
+
+class RejectForm(forms.Form):
+    reason = forms.CharField(widget=forms.Textarea(attrs={'rows': 3}), required=False)

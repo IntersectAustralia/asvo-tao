@@ -7,6 +7,7 @@ class UserProfile(models.Model):
     institution = models.CharField(max_length=100)
     scientific_interests = models.CharField(max_length=500)
     title = models.CharField(max_length=5)
+    rejected = models.BooleanField(default=False)
 
 
 class User(auth_models.User):
