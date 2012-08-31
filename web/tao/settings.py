@@ -121,6 +121,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'south',
     'tao',
+    'captcha',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
@@ -152,3 +153,7 @@ from django.core.urlresolvers import reverse_lazy
 LOGIN_REDIRECT_URL = reverse_lazy('tao.views.home')
 
 AUTH_PROFILE_MODULE = 'tao.UserProfile'  # appname.modelname
+
+RECAPTCHA_PUBLIC_KEY = '6Le-6tUSAAAAANY2atxpkcNZyPcLQSM7n2Lf8rUT'
+RECAPTCHA_PRIVATE_KEY = '6Le-6tUSAAAAAPKhcTQI_Ecjff3Vw1Jn0Iu7u3kE'
+RECAPTCHA_USE_SSL = True
