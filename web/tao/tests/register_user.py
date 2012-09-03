@@ -25,11 +25,12 @@ class RegisterUserTestCase(TestCase):
 
         self.assertTrue(self.client.login(username='superman', password='superman'))
 
-        self.assertEqual(0, len(mail.outbox))
+        outbox = mail.outbox #@UndefinedVariable
+        self.assertEqual(0, len(outbox)) 
 
         response = self.client.post("/admininistration/approve_user/%d" % new_user.id)
 
-        self.assertEqual(1, len(mail.outbox))
+        self.assertEqual(1, len(outbox))
         
         self.assertEqual(302, response.status_code)
         self.assertTrue(User.objects.get(pk=new_user.id).is_active)
@@ -47,13 +48,14 @@ class RegisterUserTestCase(TestCase):
 
         self.assertTrue(self.client.login(username='superman', password='superman'))
 
-        self.assertEqual(0, len(mail.outbox))
+        outbox = mail.outbox #@UndefinedVariable
+        self.assertEqual(0, len(outbox))
 
         reject_reason = 'Superman cannot use the system.'
         response = self.client.post("/admininistration/reject_user/%d" % new_user.id, {'reason':reject_reason})
 
-        self.assertEqual(1, len(mail.outbox))
-        email_content = str(mail.outbox[0].body)
+        self.assertEqual(1, len(outbox))
+        email_content = str(outbox[0].body)
         self.assertTrue(reject_reason in email_content)
 
         self.assertEqual(302, response.status_code)
