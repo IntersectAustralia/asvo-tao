@@ -8,6 +8,6 @@ if [ -z "$WORKSPACE" ]; then
 fi
 
 cd $WORKSPACE/web/
-/usr/bin/env python bootstrap.py
+/usr/bin/env python26 bootstrap.py
 bin/buildout
 bin/django test tao --settings=tao.test
