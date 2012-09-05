@@ -5,6 +5,7 @@
 
 class lightcone_suite;
 class sed_suite;
+class filter_suite;
 
 namespace tao {
 
@@ -15,6 +16,7 @@ namespace tao {
    {
       friend class ::lightcone_suite;
       friend class ::sed_suite;
+      friend class ::filter_suite;
 
    public:
 

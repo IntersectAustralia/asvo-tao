@@ -149,12 +149,38 @@ static db_setup_fixture db_setup;
 ///
 /// SED class test suite.
 ///
-class sed_suite : public CxxTest::TestSuite
+class filter_suite : public CxxTest::TestSuite
 {
 public:
 
    ///
-   /// Test reddening.
+   ///
+   ///
+   void test_integral()
+   {
+      tao::lightcone lc;
+      tao::sed sed;
+      tao::filter filter;
+      setup_filter( lc, sed, filter );
+
+      fibre<double> one_knots( 2, 3 ), two_knots( 2, 5 );
+      one_knots(0,0) = 0.0; one_knots(0,1) = 0.0;
+      one_knots(1,0) = 1.0; one_knots(1,1) = 1.0;
+      one_knots(2,0) = 2.0; one_knots(2,1) = 0.0;
+      two_knots(0,0) = -1.0; two_knots(0,1) = 2.0;
+      two_knots(1,0) = 0.0; two_knots(1,1) = 2.0;
+      two_knots(2,0) = 0.9; two_knots(2,1) = 2.0;
+      two_knots(3,0) = 1.9; two_knots(3,1) = 2.0;
+      two_knots(4,0) = 3.0; two_knots(4,1) = 2.0;
+      numerics::spline<double> one, two;
+      one.set_knots( one_knots );
+      two.set_knots( two_knots );
+
+      TS_ASSERT( num::approx<double>( filter._integrate( one, two ), 2.5, 1e-8 ) );
+   }
+
+   ///
+   ///
    ///
    void test_sepctral_sum()
    {
