@@ -11,13 +11,14 @@ sub_dirs = []
 dst_dir = '#' + env['BUILD'] + '/bin/'
 
 # Define libraries to use.
-libs = ['modules'] + env.get('LIBS', [])
+libs = ['modules', 'base'] + env.get('LIBS', [])
 
 # Declare local sources. Format is:
 #
 #   ('<binary name>', '<source 0>', '<source 1>', ...)
 sources = [
     ('lightcone', 'lightcone.cc',),
+    ('filter', 'filter.cc',),
 ]
 
 # Call the helper.

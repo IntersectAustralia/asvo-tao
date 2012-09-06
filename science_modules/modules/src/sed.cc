@@ -80,7 +80,7 @@ namespace tao {
    ///
    ///
    void
-   sed::initialise( hpc::options::dictionary& dict,
+   sed::initialise( const hpc::options::dictionary& dict,
                     const char* prefix )
    {
       initialise( dict, string( prefix ) );

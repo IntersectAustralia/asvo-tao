@@ -56,7 +56,7 @@ namespace tao {
    ///
    ///
    void
-   dust::initialise( hpc::options::dictionary& dict,
+   dust::initialise( const hpc::options::dictionary& dict,
                      const char* prefix )
    {
       initialise( dict, string( prefix ) );

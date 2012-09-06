@@ -123,7 +123,8 @@ public:
       dict["sed-num_spectra"] = "2";
       dict["sed-num_metals"] = "7";
 
-      dict["filter-filter_filenames"] = "A.dat,B.dat";
+      dict["filter-filter_filenames"] = "bbv.dat,bub.dat";
+      dict["filter-vega_filename"] = "A0V_KUR_BB.SED";
 
       xml_filename = tmpnam( NULL );
       xml.write( xml_filename, dict );
@@ -182,7 +183,18 @@ public:
    ///
    ///
    ///
-   void test_sepctral_sum()
+   // void test_process_vega()
+   // {
+   //    tao::lightcone lc;
+   //    tao::sed sed;
+   //    tao::filter filter;
+   //    setup_filter( lc, sed, filter );
+   // }
+
+   ///
+   ///
+   ///
+   void test_filters()
    {
       tao::lightcone lc;
       tao::sed sed;

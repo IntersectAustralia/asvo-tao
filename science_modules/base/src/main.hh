@@ -15,7 +15,7 @@ int
 main( int argc,
       char* argv[] )
 {
-   LOG_PUSH( new hpc::logging::file( "lightcone.log" ) );
+   LOG_PUSH( new hpc::logging::file( "tao.log", hpc::logging::info ) );
    tao::application<pipeline> app( argc, argv );
    app.run();
    return EXIT_SUCCESS;

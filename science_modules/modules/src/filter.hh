@@ -50,7 +50,7 @@ namespace tao {
       ///
       ///
       void
-      initialise( hpc::options::dictionary& dict,
+      initialise( const hpc::options::dictionary& dict,
                   const char* prefix );
 
       ///
@@ -69,7 +69,20 @@ namespace tao {
    protected:
 
       void
-      _process_filter( const hpc::vector<real_type>& filter );
+      _process_filter( const hpc::numerics::spline<real_type>& spectra,
+                       const hpc::numerics::spline<real_type>& filter,
+                       real_type filter_int,
+                       real_type vega_int );
+
+      real_type
+      _apparant_magnitude( real_type spectra,
+                           real_type filter,
+                           real_type vega,
+                           real_type distance );
+
+      void
+      _prepare_spectra( const hpc::vector<real_type>::view& spectra,
+                        hpc::numerics::spline<real_type>& spline );
 
       real_type
       _integrate( const hpc::numerics::spline<real_type>& filter,
@@ -84,14 +97,21 @@ namespace tao {
                      hpc::optional<const hpc::string&> prefix=hpc::optional<const hpc::string&>() );
 
       void
+      _read_wavelengths( const hpc::string& filename );
+
+      void
       _load_filter( const hpc::string& filename );
+
+      void
+      _process_vega( const hpc::string& filename );
 
    protected:
 
+      hpc::vector<real_type> _waves;
       hpc::vector<real_type>::view _spec;
       hpc::vector<hpc::numerics::spline<real_type>> _filters;
-      hpc::vector<real_type> _filt;
-      hpc::vector<real_type> _filt_vega;
+      hpc::vector<real_type> _filt_int;
+      hpc::vector<real_type> _vega_int;
    };
 }
 

@@ -91,7 +91,7 @@ namespace tao {
    ///
    ///
    void
-   lightcone::initialise( hpc::options::dictionary& dict,
+   lightcone::initialise( const hpc::options::dictionary& dict,
                           const char* prefix )
    {
       initialise( dict, string( prefix ) );

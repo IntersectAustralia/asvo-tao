@@ -3,6 +3,9 @@
 #include <boost/tokenizer.hpp>
 #include "filter.hh"
 
+// Define the speed of light (m/s).
+#define M_C 299792458.0
+
 using namespace hpc;
 
 namespace tao {
@@ -22,7 +25,9 @@ namespace tao {
    filter::setup_options( options::dictionary& dict,
                           optional<const string&> prefix )
    {
+      dict.add_option( new options::string( "waves_filename" ), prefix );
       dict.add_option( new options::string( "filter_filenames" ), prefix );
+      dict.add_option( new options::string( "vega_filename" ), prefix );
    }
 
    ///
@@ -53,7 +58,7 @@ namespace tao {
    ///
    ///
    void
-   filter::initialise( hpc::options::dictionary& dict,
+   filter::initialise( const hpc::options::dictionary& dict,
                        const char* prefix )
    {
       initialise( dict, string( prefix ) );
@@ -84,15 +89,16 @@ namespace tao {
                             real_type vega_int )
    {
       real_type spec_int = _integrate( spectra, filter );
-      _apparant_magnitude( spec, filter_int, vega_int );
+      _apparant_magnitude( spec_int, filter_int, vega_int, 1.0 ); // TODO: distance
    }
 
-   real_type
+   filter::real_type
    filter::_apparant_magnitude( real_type spectra,
                                 real_type filter,
-                                real_type vega )
+                                real_type vega,
+                                real_type distance )
    {
-      real_type area = log10( 4.0*M_PI ) + 2.0*log10( dist*3.08568025e24 );
+      real_type area = log10( 4.0*M_PI ) + 2.0*log10( distance*3.08568025e24 );
       real_type spec_filt = -2.5*(log10( spectra ) + 20.0 - area - log10( filter )) - 48.6;
       real_type spec_vega = -2.5*(log10( spectra ) + 20.0 - area - log10( vega ));
       real_type vega_filt = -2.5*(log10( vega ) - log10( filter )) - 48.6;
@@ -149,49 +155,38 @@ namespace tao {
          for( unsigned ii = 0; ii < 4; ++ii )
          {
             real_type x = low + w*0.5*(1.0 + crds[ii]);
-            sum += weights[ii]*filter( x, fi_poly )*spectra( x, sp_poly )*jac_det;
+            sum += jac_det*weights[ii]*filter( x, fi_poly )*spectra( x, sp_poly )*x*x/(M_C*1e10); // TODO: generalise
+            std::cout << x << ": " << filter( x, fi_poly )*spectra( x, sp_poly ) << "\n";
          }
          low = *it;
       }
 
+      exit( 1 );
+
       return sum;
    }
 
-   // void
-   // filter::_poly_2nd_coefs( const vector<real_type>::view& crds,
-   //                          const vector<real_type>::view& vals,
-   //                          vector<real_type>::view coefs )
+   // filter::real_type
+   // filter::_integrate( const numerics::spline<real_type>& spectra )
    // {
-   //    // Need a 3x3 matrix to calculate interpolating
-   //    // 2nd order polynomial coefficients.
-   //    numerics::matrix<real_type,3,3> mat;
-   //    numerics::vector<real_type,3> rhs, sol;
+   //    vector<real_type> crds( 4 ), weights( 4 );
+   //    _gauss_quad( crds, weights );
 
-   //    // Fill matrix and RHS with values.
-   //    for( unsigned ii = 0; ii < 3; ++ii )
+   //    real_type sum = 0.0;
+
+   //    for( unsigned ii = 0; ii < spectra.num_segments(); ++ii )
    //    {
-   //       for( unsigned jj = 0; jj < 3; ++jj )
-   //          mat(ii,jj) = pow( crds[ii], (real_type)(2 - jj) );
-   //       rhs(ii) = vals[ii];
+   //       real_type low = spectra.segment_start( ii );
+   //       real_type w = spectra.segment_width( ii );
+   //       real_type jac_det = 0.5*w;
+   //       for( unsigned ii = 0; ii < 4; ++ii )
+   //       {
+   //          real_type x = low + w*0.5*(1.0 + crds[ii]);
+   //          sum += weights[ii]*spectra( x, ii )*jac_det;
+   //       }
    //    }
 
-   //    // Solve for the coefficients.
-   //    mat.solve( vals, sol );
-   //    for( unsigned ii = 0; ii < 3; ++ii )
-   //       coefs[ii] = sol(ii);
-   // }
-
-   // void
-   // filter::_poly_2nd_interp( const vector<real_type>::view& coefs,
-   //                           const vector<real_type>::view& crds,
-   //                           vector<real_type>::view vals )
-   // {
-   //    for( unsigned ii = 0; ii < crds.size(); ++ii )
-   //    {
-   //       vals[ii] = 0.0;
-   //       for( unsigned jj = 0; jj < 3; ++jj )
-   //          vals[ii] += coefs[jj]*pow( crds[ii], (real_type)(2 - jj) );
-   //    }
+   //    return sum;
    // }
 
    void
@@ -217,31 +212,75 @@ namespace tao {
       // Get the sub dictionary, if it exists.
       const options::dictionary& sub = prefix ? dict.sub( *prefix ) : dict;
 
-      // Split out the filter filenames.
-      list<string> filenames;
       {
-         string filters_str = sub.get<string>( "filter_filenames" );
-         boost::tokenizer<boost::char_separator<char> > tokens( filters_str, boost::char_separator<char>( "," ) );
-         for( const auto& fn : tokens )
-            filenames.push_back( boost::trim_copy( fn ) );
+         // Get the wavelengths filename.
+         string filename = sub.get<string>( "waves_filename" );
+         LOGLN( "Using wavelengths filename \"", filename, "\"" );
+
+         // Load the wavelengths.
+         _read_wavelengths( filename );
       }
 
-      // Allocate room for the filters.
-      _filters.reallocate( filenames.size() );
-      _filters.resize( 0 );
+      {
+         // Split out the filter filenames.
+         list<string> filenames;
+         {
+            string filters_str = sub.get<string>( "filter_filenames" );
+            boost::tokenizer<boost::char_separator<char> > tokens( filters_str, boost::char_separator<char>( "," ) );
+            for( const auto& fn : tokens )
+               filenames.push_back( boost::trim_copy( fn ) );
+         }
 
-      // Load each filter into memory.
-      for( const auto& fn : filenames )
-         _load_filter( fn );
+         // Allocate room for the filters.
+         _filters.reallocate( filenames.size() );
+         _filters.resize( 0 );
 
-      // Get rid of the filenames now.
-      filenames.clear();
+         // Load each filter into memory.
+         for( const auto& fn : filenames )
+            _load_filter( fn );
+      }
+
+      // Get the Vega filename and perform processing.
+      _process_vega( sub.get<string>( "vega_filename" ) );
+   }
+
+   void
+   filter::_read_wavelengths( const string& filename )
+   {
+      LOG_ENTER();
+
+      // Open the file.
+      std::ifstream file( filename );
+      ASSERT( file.is_open() );
+
+      // Need to get number of lines in file first.
+      unsigned num_waves = 0;
+      {
+         string line;
+         while( !file.eof() )
+         {
+            std::getline( file, line );
+            if( boost::trim_copy( line ).length() )
+               ++num_waves;
+         }
+      }
+
+      // Allocate. Note that the ordering goes time,spectra,metals.
+      _waves.reallocate( num_waves );
+
+      // Read in the file in one big go.
+      file.seekg( 0 );
+      for( unsigned ii = 0; ii < _waves.size(); ++ii )
+         file >> _waves[ii];
+
+      LOG_EXIT();
    }
 
    void
    filter::_load_filter( const string& filename )
    {
       std::ifstream file( filename, std::ios::in );
+      ASSERT( file.is_open() );
 
       // First entry is number of spectral bands.
       unsigned num_spectra;
@@ -262,5 +301,51 @@ namespace tao {
 
       // Setup the spline.
       filter.set_knots( knots );
+   }
+
+   void
+   filter::_process_vega( const string& filename )
+   {
+      std::ifstream file( filename );
+      ASSERT( file.is_open() );
+
+      // The Vega file is a spectrum. First column is wavelength and
+      // second column is flux (?).
+      unsigned num_waves = 0;
+      while( !file.eof() )
+      {
+         string line;
+         std::getline( file, line );
+         if( boost::trim_copy( line ).length() )
+            ++num_waves;
+      }
+
+      // Allocate.
+      _vega_int.reallocate( _filters.size() );
+      fibre<real_type> knots( 2, num_waves );
+
+      // Reset the file position and go again.
+      file.clear();
+      file.seekg( 0, std::ios_base::beg );
+      for( unsigned ii = 0; ii < num_waves; ++ii )
+      {
+         file >> knots(ii,0);
+         file >> knots(ii,1);
+
+         // Scale the values by 2e-17.
+         knots(ii,1) *= 2e-17;
+      }
+
+      // Convert the spectrum to a spline and convolve with each
+      // filter.
+      numerics::spline<real_type> spline;
+      spline.set_knots( knots );
+      LOGLN( "Calculating vega integrals with respect to filters.", setindent( 2 ) );
+      for( unsigned ii = 0; ii < _filters.size(); ++ii )
+      {
+         _vega_int[ii] = _integrate( spline, _filters[ii] );
+         LOGLN( indent, ii, ": ", _vega_int[ii] );
+      }
+      LOG( setindent( -2 ) );
    }
 }

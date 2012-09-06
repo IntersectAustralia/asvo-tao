@@ -54,7 +54,7 @@ namespace tao {
       ///
       ///
       void
-      initialise( hpc::options::dictionary& dict,
+      initialise( const hpc::options::dictionary& dict,
                   const char* prefix );
 
       ///
