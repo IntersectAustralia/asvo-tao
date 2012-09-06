@@ -1,0 +1,60 @@
+[
+    {
+        "pk": 1,
+        "model": "auth.user",
+        "fields": {
+            "username": "ryan",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": true,
+            "is_staff": true,
+            "last_login": "2012-09-06T09:46:27",
+            "groups": [],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$10000$8EG3F4twtHOz$f70I65h9eUH9l9NWqwrXZZ8TbBfYvGK1+dAUeW5x1hI=",
+            "email": "ryan@ryan.ryan",
+            "date_joined": "2012-09-06T09:46:20"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "auth.user",
+        "fields": {
+            "username": "kali",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": true,
+            "is_staff": true,
+            "last_login": "2012-09-06T09:47:26",
+            "groups": [],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$10000$iKpyI3XQEbc4$f/IjceX5E1v0hh3b78Jymv2v2C8g10cM0cxrzct7DQo=",
+            "email": "kali@intersect.org.au",
+            "date_joined": "2012-09-06T09:47:26"
+        }
+    },
+    {
+        "pk": 1,
+        "model": "tao.userprofile",
+        "fields": {
+            "title": "Mr",
+            "scientific_interests": "Ryan",
+            "user": 1,
+            "rejected": false,
+            "institution": "Ryan Inst"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "tao.userprofile",
+        "fields": {
+            "title": "Ms",
+            "scientific_interests": "Kali's interests",
+            "user": 2,
+            "rejected": false,
+            "institution": "Intersect"
+        }
+    }
+]

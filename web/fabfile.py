@@ -62,3 +62,7 @@ def update():
         run("bin/django migrate")
         sudo("cp deploy/httpd/tao_{target_env}_httpd.conf /etc/httpd/conf.d/tao_httpd.conf".format(target_env=env.target_env))
         sudo("service httpd restart")
+
+def create_test_admin_users():
+    with cd("asvo-tao/web"):
+        run("bin/django loaddata test_data/test_users.json")
