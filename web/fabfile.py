@@ -36,10 +36,12 @@ def _create_mysql_user_and_database():
     run("""echo "create database tao;" | mysql -utao --password=tao""")
 
 def initial_deploy():
-    sudo("yum install -y git mod_fcgid mysql-server mysql-devel gcc python-devel")
+    sudo("yum install -y git mod_fcgid mysql-server mysql-devel gcc python-devel postfix")
     sudo("chkconfig mysqld on")
     sudo("chkconfig httpd on")
+    sudo("chkconfig postfix on")
     sudo("service mysqld start")
+    sudo("service postfix start")
     _create_mysql_user_and_database()
     run("git clone git@github.com:IntersectAustralia/asvo-tao.git")
     run("chmod o+rx /home/{user}".format(user=env.user))
