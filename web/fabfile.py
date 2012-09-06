@@ -36,10 +36,12 @@ def _create_mysql_user_and_database():
     run("""echo "create database tao;" | mysql -utao --password=tao""")
 
 def initial_deploy():
-    sudo("yum install -y git mod_fcgid mysql-server mysql-devel gcc python-devel")
+    sudo("yum install -y git mod_fcgid mysql-server mysql-devel gcc python-devel postfix")
     sudo("chkconfig mysqld on")
     sudo("chkconfig httpd on")
+    sudo("chkconfig postfix on")
     sudo("service mysqld start")
+    sudo("service postfix start")
     _create_mysql_user_and_database()
     run("git clone git@github.com:IntersectAustralia/asvo-tao.git")
     run("chmod o+rx /home/{user}".format(user=env.user))
@@ -62,3 +64,7 @@ def update():
         run("bin/django migrate")
         sudo("cp deploy/httpd/tao_{target_env}_httpd.conf /etc/httpd/conf.d/tao_httpd.conf".format(target_env=env.target_env))
         sudo("service httpd restart")
+
+def create_test_admin_users():
+    with cd("asvo-tao/web"):
+        run("bin/django loaddata test_data/test_users.json")
