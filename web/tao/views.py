@@ -13,6 +13,10 @@ from django.template.context import Context
 from django.core.mail.message import EmailMultiAlternatives
 from django.conf import settings
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 def home(request):
     return render(request, 'home.html')
