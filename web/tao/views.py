@@ -1,4 +1,6 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.utils.translation import ugettext_lazy as _
 import django.contrib.auth.views as auth_views
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render, redirect
@@ -27,6 +29,7 @@ def register(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.info(request, _("You will receive an email when your request has been approved."))
             return redirect(home)
     else:
         form = UserCreationForm()
