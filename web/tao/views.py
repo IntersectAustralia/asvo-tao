@@ -13,6 +13,8 @@ from django.template.context import Context
 from django.core.mail.message import EmailMultiAlternatives
 from django.conf import settings
 
+from .pagination import paginate
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -55,8 +57,11 @@ def admin_index(request):
 
 @admin_required
 def access_requests(request):
+    user_list = models.User.objects.filter(is_active=False, userprofile__rejected=False).order_by('-id')
+    users = paginate(user_list, request.GET.get('page'))
+
     return render(request, 'access_requests.html', {
-        'users': models.User.objects.filter(is_active=False, userprofile__rejected=False).order_by('-id'),
+        'users': users,
         'reject_form': RejectForm(),
     })
 
