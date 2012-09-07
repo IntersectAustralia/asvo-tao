@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.contrib import admin
 admin.autodiscover()
 
-from django.contrib.auth.views import login, logout
+from django.contrib.auth.views import logout
 
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
@@ -29,7 +29,7 @@ tao_patterns = patterns('',
 )
 
 account_patterns = patterns('',
-    url(r'login/$', login, name='login'),
+    url(r'login/$', 'tao.views.login', name='login'),
     url(r'logout/$', logout, {'next_page': reverse_lazy('home')}, name='logout'),
     url(r'register/$', tao.views.register, name='register'),
 )

@@ -8,6 +8,9 @@ from captcha.fields import ReCaptchaField
 
 from tao.models import UserProfile
 
+class LoginForm(auth_forms.AuthenticationForm):
+    remember_me = forms.BooleanField(label=_("Remember Me"), required=False)
+
 
 class UserCreationForm(auth_forms.UserCreationForm):
     title = forms.CharField(label=_("Title"),

@@ -1,11 +1,12 @@
 from django.contrib.auth.decorators import login_required
+import django.contrib.auth.views as auth_views
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_POST
 
 from . import models
 
-from .forms import UserCreationForm, RejectForm
+from .forms import UserCreationForm, RejectForm, LoginForm
 from django.template.loader import get_template
 from django.template.context import Context
 from django.core.mail.message import EmailMultiAlternatives
@@ -14,6 +15,12 @@ from django.conf import settings
 def home(request):
     return render(request, 'home.html')
 
+
+def login(request):
+    if request.method == 'POST':
+        if not request.POST.get('remember_me', None):
+            request.session.set_expiry(0)  # expires on browser close
+    return auth_views.login(request, authentication_form=LoginForm)
 
 def register(request):
     if request.method == 'POST':
