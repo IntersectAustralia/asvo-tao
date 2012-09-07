@@ -1,12 +1,11 @@
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 import django.contrib.auth.views as auth_views
-from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_POST
 
 from . import models
+from .decorators import researcher_required, admin_required
 
 from .forms import UserCreationForm, RejectForm, LoginForm
 from django.template.loader import get_template
@@ -40,17 +39,17 @@ def register(request):
     })
 
 
-@login_required
+@researcher_required
 def mock_galaxy_factory(request):
     return render(request, 'mock_galaxy_factory.html')
 
 
-@staff_member_required
+@admin_required
 def admin_index(request):
     return render(request, 'admin_index.html')
 
 
-@staff_member_required
+@admin_required
 def access_requests(request):
     return render(request, 'access_requests.html', {
         'users': models.User.objects.filter(is_active=False, userprofile__rejected=False).order_by('-id'),
@@ -58,7 +57,7 @@ def access_requests(request):
     })
 
 
-@staff_member_required
+@admin_required
 @require_POST
 def approve_user(request, user_id):
     u = models.User.objects.get(pk=user_id)
@@ -79,7 +78,7 @@ def approve_user(request, user_id):
     return redirect(access_requests)
 
 
-@staff_member_required
+@admin_required
 @require_POST
 def reject_user(request, user_id):
     u = models.User.objects.get(pk=user_id)
