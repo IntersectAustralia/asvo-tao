@@ -62,6 +62,14 @@
         </div>
     </div>
     <div class="container">
+        {% block messages %}
+            {% for message in messages %}
+                <div class="{{ message.tags }}" data-dismiss="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert">×</button>
+                </div>
+            {% endfor %}
+        {% endblock messages %}
         {% block content %}
             overwrite this content in templates...
         {% endblock content %}

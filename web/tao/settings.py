@@ -100,6 +100,26 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
 )
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "django.core.context_processors.static",
+    "django.core.context_processors.tz",
+    "django.contrib.messages.context_processors.messages",
+)
+
+from django.contrib import messages
+# to match twitter bootstrap's css tags
+MESSAGE_TAGS = {
+    messages.DEBUG: 'debug',  # not used so don't bother customising
+    messages.INFO: 'alert alert-info',
+    messages.SUCCESS: 'alert alert-success',
+    messages.WARNING: 'alert',  # warning styling is the default
+    messages.ERROR: 'alert alert-error',
+}
+
 ROOT_URLCONF = 'tao.urls'
 
 TEMPLATE_DIRS = (
@@ -133,15 +153,21 @@ LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'handlers': {
-        'mail_admins': {
-            'level': 'ERROR',
-            'class': 'django.utils.log.AdminEmailHandler'
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(os.path.dirname(__file__), 'django.log'),
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
         }
+
     },
     'loggers': {
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
+        'tao': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
             'propagate': True,
         },
     }
@@ -149,7 +175,7 @@ LOGGING = {
 
 from django.core.urlresolvers import reverse_lazy
 LOGIN_REDIRECT_URL = reverse_lazy('tao.views.home')
-LOGIN_URL = reverse_lazy('django.contrib.auth.views.login')
+LOGIN_URL = reverse_lazy('tao.views.login')
 
 AUTH_PROFILE_MODULE = 'tao.UserProfile'  # appname.modelname
 
@@ -165,3 +191,5 @@ EMAIL_FROM_ADDRESS = 'admin@asvo-tao.org.au'
 RECAPTCHA_PUBLIC_KEY = '6Le-6tUSAAAAANY2atxpkcNZyPcLQSM7n2Lf8rUT'
 RECAPTCHA_PRIVATE_KEY = '6Le-6tUSAAAAAPKhcTQI_Ecjff3Vw1Jn0Iu7u3kE'
 RECAPTCHA_USE_SSL = True
+
+NUM_RECORDS_PER_PAGE = 10
