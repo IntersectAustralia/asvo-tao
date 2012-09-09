@@ -114,9 +114,9 @@ namespace tao {
       _gal = &galaxy;
 
       // Read the star-formation histories for this galaxy.
-      _sql << "select history, metal from disk_star_formation where galaxy_id=:id order by -age",
+      _sql << "select mass, metal from disk_star_formation where galaxy_id=:id order by -age",
          soci::into( (std::vector<real_type>&)_disk_sfh ), soci::into( (std::vector<real_type>&)_disk_metals ), soci::use( _gal_id );
-      _sql << "select history, metal from bulge_star_formation where galaxy_id=:id order by -age",
+      _sql << "select mass, metal from bulge_star_formation where galaxy_id=:id order by -age",
          soci::into( (std::vector<real_type>&)_bulge_sfh ), soci::into( (std::vector<real_type>&)_bulge_metals ), soci::use( _gal_id );
       LOGLN( "Disk SFH: ", _disk_sfh );
       LOGLN( "Disk metals: ", _disk_metals );
@@ -135,6 +135,9 @@ namespace tao {
       for( unsigned ii = 0; ii < _num_spectra; ++ii )
          _total_spectra[ii] = _disk_spectra[ii] + _bulge_spectra[ii];
 
+      LOGLN( "Disk: ", _disk_spectra );
+      LOGLN( "Bulge: ", _bulge_spectra );
+      LOGLN( "Total: ", _total_spectra );
       LOG_EXIT();
    }
 
@@ -188,9 +191,8 @@ namespace tao {
       {
          // TODO: Why using 1e10?
          // TODO: Explain the sfh (star formation history) part.
-         galaxy_spectra[ii] += (_ssp[base + ii*_num_metals]/1e10)*sfh;
+         galaxy_spectra[ii] += (_ssp[base + ii*_num_metals])*sfh;
       }
-      LOGLN( "New spectra: ", galaxy_spectra );
 
       LOG_EXIT();
    }
@@ -226,7 +228,13 @@ namespace tao {
       // Read in the file in one big go.
       std::ifstream file( _ssp_filename, std::ios::in );
       for( unsigned ii = 0; ii < _ssp.size(); ++ii )
+      {
+         // TODO: Need to know the units of these values.
          file >> _ssp[ii];
+
+         // // Scale for some reason...
+         // _ssp[ii] *= 3e-34;
+      }
 
       LOG_EXIT();
    }

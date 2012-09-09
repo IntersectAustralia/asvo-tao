@@ -205,7 +205,7 @@ public:
       for( lc.begin(); !lc.done(); ++lc, ++galaxy )
       {
          sed.process_galaxy( *lc );
-         double mag = filter.process_galaxy( *lc, sed.total_spectra() );
+         filter.process_galaxy( *lc, sed.total_spectra() );
       }
    }
 

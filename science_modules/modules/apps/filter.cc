@@ -49,15 +49,18 @@ struct pipeline
       {
          // Cache the database row.
          const lightcone::row_type& row = *lc;
+         LOGLN( "Processing galaxy: ", row.get<int>( "id" ), setindent( 2 ) );
 
          // Calculate the SED and cache results.
          sed.process_galaxy( row );
          vector<real_type>::view spectra = sed.total_spectra();
 
          // Perform filtering.
-         real_type mag = filter.process_galaxy( row, spectra );
+         filter.process_galaxy( row, spectra );
 
          // Dump?
+
+         LOG( setindent( -2 ) );
       }
    }
 

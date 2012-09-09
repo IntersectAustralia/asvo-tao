@@ -62,17 +62,17 @@ namespace tao {
       ///
       ///
       ///
-      real_type
+      void
       process_galaxy( const soci::row& galaxy,
                       hpc::vector<real_type>::view spectra );
 
-   protected:
+      ///
+      ///
+      ///
+      const hpc::vector<real_type>::view
+      magnitudes() const;
 
-      void
-      _process_filter( const hpc::numerics::spline<real_type>& spectra,
-                       const hpc::numerics::spline<real_type>& filter,
-                       real_type filter_int,
-                       real_type vega_int );
+   protected:
 
       real_type
       _apparant_magnitude( real_type spectra,
@@ -87,6 +87,9 @@ namespace tao {
       real_type
       _integrate( const hpc::numerics::spline<real_type>& filter,
                   const hpc::numerics::spline<real_type>& spectra );
+
+      real_type
+      _integrate( const hpc::numerics::spline<real_type>& spectra );
 
       void
       _gauss_quad( hpc::vector<real_type>::view crds,
@@ -112,6 +115,8 @@ namespace tao {
       hpc::vector<hpc::numerics::spline<real_type>> _filters;
       hpc::vector<real_type> _filt_int;
       hpc::vector<real_type> _vega_int;
+      hpc::vector<real_type> _vega_mag;
+      hpc::vector<real_type> _mags;
    };
 }
 

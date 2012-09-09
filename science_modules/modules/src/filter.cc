@@ -4,7 +4,8 @@
 #include "filter.hh"
 
 // Define the speed of light (m/s).
-#define M_C 299792458.0
+//#define M_C 2.99792458e8
+#define M_C 2.99792458e18 // AA/s
 
 using namespace hpc;
 
@@ -69,7 +70,7 @@ namespace tao {
    {
    }
 
-   filter::real_type
+   void
    filter::process_galaxy( const soci::row& galaxy,
                            vector<real_type>::view spectra )
    {
@@ -77,19 +78,26 @@ namespace tao {
       numerics::spline<real_type> spectra_spline;
       _prepare_spectra( spectra, spectra_spline );
 
+      // Calculate the distance/area for this galaxy.
+      real_type dist = 87.018;
+      real_type area = log10( 4.0*M_PI ) + 2.0*log10( dist*3.08568025e24 );
+
       // Loop over each filter band.
       for( unsigned ii = 0; ii < _filters.size(); ++ii )
-         _process_filter( spectra_spline, _filters[ii], _filt_int[ii], _vega_int[ii] );
+      {
+         real_type spec_int = _integrate( spectra, _filters[ii] );
+         _mags[ii] = -2.5*(log10( spec_int/_filt_int[ii] ) - area) - 48.6;
+      }
+      LOGLN( "Band magnitudes: ", _mags );
    }
 
-   void
-   filter::_process_filter( const numerics::spline<real_type>& spectra,
-                            const numerics::spline<real_type>& filter,
-                            real_type filter_int,
-                            real_type vega_int )
+   ///
+   ///
+   ///
+   const hpc::vector<filter::real_type>::view
+   filter::magnitudes() const
    {
-      real_type spec_int = _integrate( spectra, filter );
-      _apparant_magnitude( spec_int, filter_int, vega_int, 1.0 ); // TODO: distance
+      return _mags;
    }
 
    filter::real_type
@@ -125,6 +133,12 @@ namespace tao {
    {
       typedef vector<real_type>::view array_type;
       element<array_type> take_first( 0 );
+
+      range<real_type> fi_rng( filter.knots().front()[0], filter.knots().back()[0] );
+      range<real_type> sp_rng( spectra.knots().front()[0], spectra.knots().back()[0] );
+      real_type low = std::max( fi_rng.start(), sp_rng.start() );
+      real_type upp = std::min( fi_rng.finish(), sp_rng.finish() );
+
       auto it = make_interp_iterator(
          boost::make_transform_iterator( filter.knots().begin(), take_first ),
          boost::make_transform_iterator( filter.knots().end(), take_first ),
@@ -132,11 +146,6 @@ namespace tao {
          boost::make_transform_iterator( spectra.knots().end(), take_first ),
          1e-7
          );
-
-      range<real_type> fi_rng( filter.knots().front()[0], filter.knots().back()[0] );
-      range<real_type> sp_rng( spectra.knots().front()[0], spectra.knots().back()[0] );
-      real_type low = std::max( fi_rng.start(), sp_rng.start() );
-      real_type upp = std::min( fi_rng.finish(), sp_rng.finish() );
 
       while( !num::approx( *it, low, 1e-7 ) )
          ++it;
@@ -149,45 +158,48 @@ namespace tao {
       while( !num::approx( *it++, upp, 1e-7 ) )
       {
          real_type w = *it - low;
-         real_type jac_det = 0.5*w;
+         real_type jac_det = 0.5*(M_C/low - M_C/(*it));
          unsigned fi_poly = it.indices()[0] - 1;
          unsigned sp_poly = it.indices()[1] - 1;
          for( unsigned ii = 0; ii < 4; ++ii )
          {
             real_type x = low + w*0.5*(1.0 + crds[ii]);
-            sum += jac_det*weights[ii]*filter( x, fi_poly )*spectra( x, sp_poly )*x*x/(M_C*1e10); // TODO: generalise
-            std::cout << x << ": " << filter( x, fi_poly )*spectra( x, sp_poly ) << "\n";
+
+            // This integral looks like this because of a change of variable
+            // frome wavelength to frequency. Do the math!
+            // sum += jac_det*weights[ii]*filter( x, fi_poly )*spectra( x, sp_poly )*x*x*x*x*2.0/(2.9979*M_C);
+            sum += jac_det*weights[ii]*filter( x, fi_poly )*spectra( x, sp_poly )*2e-17*x*x*x*x/(M_C*M_C);
          }
          low = *it;
       }
 
-      exit( 1 );
-
       return sum;
    }
 
-   // filter::real_type
-   // filter::_integrate( const numerics::spline<real_type>& spectra )
-   // {
-   //    vector<real_type> crds( 4 ), weights( 4 );
-   //    _gauss_quad( crds, weights );
+   filter::real_type
+   filter::_integrate( const numerics::spline<real_type>& spectra )
+   {
+      vector<real_type> crds( 4 ), weights( 4 );
+      _gauss_quad( crds, weights );
 
-   //    real_type sum = 0.0;
+      real_type sum = 0.0;
+      for( unsigned ii = 0; ii < spectra.num_segments(); ++ii )
+      {
+         real_type low = spectra.segment_start( ii );
+         real_type w = spectra.segment_width( ii );
+         real_type jac_det = 0.5*w;
+         for( unsigned jj = 0; jj < 4; ++jj )
+         {
+            real_type x = low + w*0.5*(1.0 + crds[jj]);
 
-   //    for( unsigned ii = 0; ii < spectra.num_segments(); ++ii )
-   //    {
-   //       real_type low = spectra.segment_start( ii );
-   //       real_type w = spectra.segment_width( ii );
-   //       real_type jac_det = 0.5*w;
-   //       for( unsigned ii = 0; ii < 4; ++ii )
-   //       {
-   //          real_type x = low + w*0.5*(1.0 + crds[ii]);
-   //          sum += weights[ii]*spectra( x, ii )*jac_det;
-   //       }
-   //    }
+            // Note that this integral does not require a change of
+            // variable, as it is not a convolution.
+            sum += jac_det*weights[jj]*spectra( x, ii );
+         }
+      }
 
-   //    return sum;
-   // }
+      return sum;
+   }
 
    void
    filter::_gauss_quad( vector<real_type>::view crds,
@@ -234,11 +246,15 @@ namespace tao {
          // Allocate room for the filters.
          _filters.reallocate( filenames.size() );
          _filters.resize( 0 );
+         _filt_int.reallocate( filenames.size() );
+         _filt_int.resize( 0 );
+         _mags.reallocate( filenames.size() );
 
          // Load each filter into memory.
          for( const auto& fn : filenames )
             _load_filter( fn );
       }
+      LOGLN( "Filter integrals: ", _filt_int );
 
       // Get the Vega filename and perform processing.
       _process_vega( sub.get<string>( "vega_filename" ) );
@@ -269,6 +285,7 @@ namespace tao {
       _waves.reallocate( num_waves );
 
       // Read in the file in one big go.
+      file.clear();
       file.seekg( 0 );
       for( unsigned ii = 0; ii < _waves.size(); ++ii )
          file >> _waves[ii];
@@ -301,6 +318,10 @@ namespace tao {
 
       // Setup the spline.
       filter.set_knots( knots );
+
+      // Integrate the filter and cache the result.
+      _filt_int.resize( _filt_int.size() + 1 );
+      _filt_int.back() = _integrate( filter );
    }
 
    void
@@ -331,21 +352,20 @@ namespace tao {
       {
          file >> knots(ii,0);
          file >> knots(ii,1);
-
-         // Scale the values by 2e-17.
-         knots(ii,1) *= 2e-17;
       }
 
       // Convert the spectrum to a spline and convolve with each
       // filter.
       numerics::spline<real_type> spline;
       spline.set_knots( knots );
-      LOGLN( "Calculating vega integrals with respect to filters.", setindent( 2 ) );
       for( unsigned ii = 0; ii < _filters.size(); ++ii )
-      {
          _vega_int[ii] = _integrate( spline, _filters[ii] );
-         LOGLN( indent, ii, ": ", _vega_int[ii] );
-      }
-      LOG( setindent( -2 ) );
+      LOGLN( "Vega integrals: ", _vega_int );
+
+      // Calculate the Vega magnitudes.
+      _vega_mag.reallocate( _filters.size() );
+      for( unsigned ii = 0; ii < _filters.size(); ++ii )
+         _vega_mag[ii] = -2.5*log10( _vega_int[ii]/_filt_int[ii] ) - 48.6;
+      LOGLN( "Vega magnitudes: ", _vega_mag );
    }
 }
