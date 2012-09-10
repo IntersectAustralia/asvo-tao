@@ -60,7 +60,7 @@ namespace tao {
       run();
 
       void
-      add_galaxy( soci::row& galaxy,
+      add_galaxy( const soci::row& galaxy,
                   real_type magnitude );
 
    protected:

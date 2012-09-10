@@ -44,6 +44,7 @@ namespace tao {
       LOG_ENTER();
 
       _read_options( dict, prefix );
+      _setup_params();
 
       LOG_EXIT();
    }
@@ -70,16 +71,36 @@ namespace tao {
    }
 
    void
-   skymaker::add_galaxy( soci::row& galaxy,
+   skymaker::add_galaxy( const soci::row& galaxy,
                          real_type magnitude )
    {
-      _params_file << "200" << " "; // 100 = star, 200 = galaxy
+      _params_file << "100" << " "; // 100 = star, 200 = galaxy
 
-      // TODO: Convert to FITS coordinates (?).
-      _params_file << galaxy.get<string>( "Pos0" ) << " ";
-      _params_file << galaxy.get<string>( "Pos1" ) << " ";
+      // Convert the cartesian coordiantes to right-ascension and
+      // declination.
+      real_type ra, dec;
+      numerics::cartesian_to_ecs( galaxy.get<real_type>( "Pos1" ),
+                                  galaxy.get<real_type>( "Pos2" ),
+                                  galaxy.get<real_type>( "Pos3" ),
+                                  ra, dec );
+      LOGLN( "Converted to (", ra, ", ", dec, ")" );
 
-      _params_file << magnitude << "\n";
+      // Now convert to pixel coordinates.
+      real_type x, y;
+      numerics::gnomonic_projection( ra, dec,
+                                     0.25*M_PI, 0.25*M_PI,
+                                     x, y );
+      LOGLN( "Now to (", x, ", ", y, ")" );
+
+      // Now, convert to pixel coordinates.
+      // TODO: Do this properly.
+      x *= 1024.0;
+      x += 512.0;
+      y *= 1024.0;
+      y += 512.0;
+
+      // Write to file.
+      _params_file << x << " " << y << " " << magnitude << "\n";
 
       // TODO: Include all the disk/bulge information.
    }
@@ -96,6 +117,7 @@ namespace tao {
    skymaker::_setup_params()
    {
       _params_filename = tmpnam( NULL );
+      LOGLN( "Opening parameter file: ", _params_filename );
       _params_file.open( _params_filename, std::ios::out );
    }
 }
