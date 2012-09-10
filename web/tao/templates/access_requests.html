@@ -31,33 +31,33 @@
                     <td> {{ user.username }} </td>
                     <td> {{ user.email }} </td>
                     <td>
-	                    <form action="{% url approve_user user.id %}" method="POST" style="display:inline;">
-	                        <input type="hidden" name="user_id" value="{{ user.id }}" />
-	                        {% csrf_token %}
-	                        <input class="btn btn-primary" type="submit" value="Approve" />
-	                    </form>
+                        <form action="{% url approve_user user.id %}" method="POST" style="display:inline;">
+                            <input type="hidden" name="user_id" value="{{ user.id }}" />
+                            {% csrf_token %}
+                            <input class="btn btn-primary" type="submit" value="Approve" />
+                        </form>
 
-	                    <a href="#rejectedModal" role="button" class="btn" data-toggle="modal">Reject</a>
-	                    <div class="modal" id="rejectedModal" tabindex="-1" role="dialog" aria-labelledby="rejectedModalLabel" aria-hidden="true" style="display:none;">
-	                        <div class="modal-header">
-	                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-	                            <h3 id="rejectedModalLabel">Reason</h3>
-	                        </div>
-	                        <form action="{% url reject_user user.id %}" method="POST" style="display:inline;">
-		                        <div class="modal-body">
-								  {% for field in reject_form %}
-								    {% include "bootstrap/field.html" %}
-								  {% endfor %}
-		                        </div>
-		                        <div class="modal-footer">
-		                            <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-		                            <input type="hidden" name="user_id" value="{{ user.id }}" />
-		                            {% csrf_token %}
-		                            <input class="btn btn-primary" type="submit" value="Reject" />
-		                        </div>
+                        <a href="#rejectedModal_{{ user.id }}" role="button" class="btn" data-toggle="modal">Reject</a>
+                        <div class="modal" id="rejectedModal_{{ user.id }}" tabindex="-1" role="dialog" aria-labelledby="rejectedModalLabel" aria-hidden="true" style="display:none;">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                                <h3 id="rejectedModalLabel">Reason</h3>
+                            </div>
+                            <form action="{% url reject_user user.id %}" method="POST" style="display:inline;">
+                                <div class="modal-body">
+                                    {% for field in reject_form %}
+                                        {% include "bootstrap/field.html" %}
+                                    {% endfor %}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                                        <input type="hidden" name="user_id" value="{{ user.id }}" />
+                                        {% csrf_token %}
+                                        <input class="btn btn-primary" type="submit" value="Reject" />
+                                    </div>
+                                </div>
                             </form>
                         </div>
-
                     </td>
                 </tr>
             {% endfor %}
@@ -67,7 +67,7 @@
         <ul>
             {% for page in users.paginator.page_range %}
                 {% if page == users.number %}
-                    <li class="active"><a href="#">{{ page }}</a></li>
+                    <li class="active"><span class="">{{ page }}</span></li>
                 {% else %}
                     <li><a href="?page={{ page }}">{{ page }}</a></li>
                 {% endif %}
