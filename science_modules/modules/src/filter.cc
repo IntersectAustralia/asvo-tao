@@ -3,9 +3,9 @@
 #include <boost/tokenizer.hpp>
 #include "filter.hh"
 
-// Define the speed of light (m/s).
-//#define M_C 2.99792458e8
-#define M_C 2.99792458e18 // AA/s
+// Define the speed of light
+// #define M_C 2.99792458e8 // m/s
+#define M_C 2.99792458e18 // angstrom/s
 
 using namespace hpc;
 
@@ -78,15 +78,16 @@ namespace tao {
       numerics::spline<real_type> spectra_spline;
       _prepare_spectra( spectra, spectra_spline );
 
-      // Calculate the distance/area for this galaxy.
-      real_type dist = 87.018;
+      // Calculate the distance/area for this galaxy. Use 10000
+      // points.
+      real_type dist = numerics::redshift_to_distance( 0.02, 10000 )*1e-3;
       real_type area = log10( 4.0*M_PI ) + 2.0*log10( dist*3.08568025e24 );
 
       // Loop over each filter band.
       for( unsigned ii = 0; ii < _filters.size(); ++ii )
       {
          real_type spec_int = _integrate( spectra_spline, _filters[ii] );
-         _mags[ii] = -2.5*(log10( spec_int/_filt_int[ii] ) - area) - 48.6;
+         _mags[ii] = -2.5*(log10( spec_int ) - area - log10( _filt_int[ii] )) - 48.6;
       }
       LOGLN( "Band magnitudes: ", _mags );
    }
@@ -168,7 +169,7 @@ namespace tao {
             // This integral looks like this because of a change of variable
             // frome wavelength to frequency. Do the math!
             // sum += jac_det*weights[ii]*filter( x, fi_poly )*spectra( x, sp_poly )*x*x*x*x*2.0/(2.9979*M_C);
-            sum += jac_det*weights[ii]*filter( x, fi_poly )*spectra( x, sp_poly )*2e-17*x*x*x*x/(M_C*M_C);
+            sum += jac_det*weights[ii]*filter( x, fi_poly )*spectra( x, sp_poly )*x*x*x*x/(M_C*M_C);
          }
          low = *it;
       }
@@ -331,7 +332,7 @@ namespace tao {
       ASSERT( file.is_open() );
 
       // The Vega file is a spectrum. First column is wavelength and
-      // second column is flux (?).
+      // second column is luminosity density.
       unsigned num_waves = 0;
       while( !file.eof() )
       {
@@ -350,8 +351,11 @@ namespace tao {
       file.seekg( 0, std::ios_base::beg );
       for( unsigned ii = 0; ii < num_waves; ++ii )
       {
-         file >> knots(ii,0);
-         file >> knots(ii,1);
+         file >> knots(ii,0); // angstroms
+         file >> knots(ii,1); // 2e17*erg/s/angstrom
+
+         // I first need to multiply by 2e-17 to get to erg/s/angstrom.
+         knots(ii,1) *= 2e-17;
       }
 
       // Convert the spectrum to a spline and convolve with each

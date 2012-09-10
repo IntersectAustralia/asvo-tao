@@ -189,9 +189,11 @@ namespace tao {
 
       for( unsigned ii = 0; ii < _num_spectra; ++ii )
       {
-         // TODO: Why using 1e10?
-         // TODO: Explain the sfh (star formation history) part.
-         galaxy_spectra[ii] += (_ssp[base + ii*_num_metals])*sfh;
+         // The star formation histories read from the file are in
+         // solar masses/1e10. The values in SSP are luminosity densities
+         // in erg/s/angstrom, and they're really big. Scale them down
+         // by 1e10 to make it more manageable.
+         galaxy_spectra[ii] += _ssp[base + ii*_num_metals]*sfh;
       }
 
       LOG_EXIT();
@@ -229,11 +231,8 @@ namespace tao {
       std::ifstream file( _ssp_filename, std::ios::in );
       for( unsigned ii = 0; ii < _ssp.size(); ++ii )
       {
-         // TODO: Need to know the units of these values.
+         // These values are luminosity densities, in erg/s/angstrom.
          file >> _ssp[ii];
-
-         // // Scale for some reason...
-         // _ssp[ii] *= 3e-34;
       }
 
       LOG_EXIT();
