@@ -4,6 +4,7 @@
 #include <tao/modules/lightcone.hh>
 #include <tao/modules/sed.hh>
 #include <tao/modules/filter.hh>
+#include <tao/modules/skymaker.hh>
 
 using namespace tao;
 using namespace hpc;
@@ -57,11 +58,13 @@ struct pipeline
          sed.process_galaxy( row );
          vector<real_type>::view spectra = sed.total_spectra();
 
-         // Perform filtering.
+         // Perform filtering and cache the particular
+         // band we're interested in.
          filter.process_galaxy( row, spectra );
+         real_type v_mag = filter.magnitudes()[3]; // V band
 
          // Add to the skymaker object list.
-         skymaker.add_galaxy( row );
+         skymaker.add_galaxy( row, v_mag );
 
          LOG( setindent( -2 ) );
       }

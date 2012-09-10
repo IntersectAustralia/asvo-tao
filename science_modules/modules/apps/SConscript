@@ -19,6 +19,7 @@ libs = ['modules', 'base'] + env.get('LIBS', [])
 sources = [
     ('lightcone', 'lightcone.cc',),
     ('filter', 'filter.cc',),
+    ('skymaker', 'skymaker.cc',),
 ]
 
 # Call the helper.
