@@ -85,7 +85,7 @@ namespace tao {
       // Loop over each filter band.
       for( unsigned ii = 0; ii < _filters.size(); ++ii )
       {
-         real_type spec_int = _integrate( spectra, _filters[ii] );
+         real_type spec_int = _integrate( spectra_spline, _filters[ii] );
          _mags[ii] = -2.5*(log10( spec_int/_filt_int[ii] ) - area) - 48.6;
       }
       LOGLN( "Band magnitudes: ", _mags );

@@ -1,4 +1,5 @@
 #include <cmath>
+#include <fstream>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/tokenizer.hpp>
 #include "skymaker.hh"
@@ -69,11 +70,18 @@ namespace tao {
    }
 
    void
-   skymaker::add_galaxy( soci::row& galaxy )
+   skymaker::add_galaxy( soci::row& galaxy,
+                         real_type magnitude )
    {
+      _params_file << "200" << " "; // 100 = star, 200 = galaxy
+
+      // TODO: Convert to FITS coordinates (?).
       _params_file << galaxy.get<string>( "Pos0" ) << " ";
       _params_file << galaxy.get<string>( "Pos1" ) << " ";
-      _params_file << galaxy.get<string>( "Pos2" ) << "\n";
+
+      _params_file << magnitude << "\n";
+
+      // TODO: Include all the disk/bulge information.
    }
 
    void
@@ -82,5 +90,12 @@ namespace tao {
    {
       // Get the sub dictionary, if it exists.
       const options::dictionary& sub = prefix ? dict.sub( *prefix ) : dict;
+   }
+
+   void
+   skymaker::_setup_params()
+   {
+      _params_filename = tmpnam( NULL );
+      _params_file.open( _params_filename, std::ios::out );
    }
 }

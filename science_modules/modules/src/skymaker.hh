@@ -59,11 +59,18 @@ namespace tao {
       void
       run();
 
+      void
+      add_galaxy( soci::row& galaxy,
+                  real_type magnitude );
+
    protected:
 
       void
-      _read_options( const options::dictionary& dict,
-                     optional<const string&> prefix );
+      _read_options( const hpc::options::dictionary& dict,
+                     hpc::optional<const hpc::string&> prefix );
+
+      void
+      _setup_params();
 
    protected:
 
