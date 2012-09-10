@@ -77,11 +77,16 @@ main( int argc,
       std::fill( gal_ids.begin(), gal_ids.end(), gal_id );
       std::fill( ages.begin(), ages.end(), age );
 
+      // Generate some randomized coordinates.
+      double x = generate_uniform<double>( 5.0, 20.0 );
+      double y = generate_uniform<double>( 5.0, 20.0 );
+      double z = generate_uniform<double>( 5.0, 20.0 );
+
       // Insert galaxy object position information.
-      sql << "insert into snapshot_000 values(1.0, 1.0, 1.0, :id)",
-         soci::use( gal_id );
-      sql << "insert into snapshot_001 values(1.0, 1.0, 1.0, :id)",
-         soci::use( gal_id );
+      sql << "insert into snapshot_000 values(:x, :y, :z, :id)",
+         soci::use( x ), soci::use( y ), soci::use( z ), soci::use( gal_id );
+      sql << "insert into snapshot_001 values(:x, :y, :z, :id)",
+         soci::use( x ), soci::use( y ), soci::use( z ), soci::use( gal_id );
 
       // Insert star formation histories.
       sfhd_st.execute( true );
