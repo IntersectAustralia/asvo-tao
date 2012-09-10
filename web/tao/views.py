@@ -8,12 +8,12 @@ from . import models
 from .decorators import researcher_required, admin_required
 
 from .forms import UserCreationForm, RejectForm, LoginForm
-from django.template.loader import get_template
 from django.template.context import Context
-from django.core.mail.message import EmailMultiAlternatives
 from django.conf import settings
 
 from .pagination import paginate
+
+from .mail import send_mail
 
 import logging
 
@@ -74,15 +74,12 @@ def approve_user(request, user_id):
     u.save()
     profile = u.get_profile()
 
-    # Send an email
-    plaintext = get_template('emails/approve.txt')
-    html = get_template('emails/approve.html')
-    d = Context({'title': profile.title, 'first_name': u.first_name, 'last_name': u.last_name})
-    plaintext_content = plaintext.render(d)
-    html_content = html.render(d)
-    msg = EmailMultiAlternatives(settings.EMAIL_ACCEPT_SUBJECT, plaintext_content, settings.EMAIL_FROM_ADDRESS, [u.email])
-    msg.attach_alternative(html_content, 'text/html')
-    msg.send(False)
+    template_name = 'approve'
+    subject = settings.EMAIL_ACCEPT_SUBJECT
+    to_addrs = [u.email]
+    context = Context({'title': profile.title, 'first_name': u.first_name, 'last_name': u.last_name})
+
+    send_mail(template_name, context, subject, to_addrs)
 
     return redirect(access_requests)
 
@@ -95,15 +92,13 @@ def reject_user(request, user_id):
     profile.rejected = True
     profile.save()
 
-    # Send an email
-    reason = request.POST.__getitem__('reason')
-    plaintext = get_template('emails/reject.txt')
-    html = get_template('emails/reject.html')
-    d = Context({'title': profile.title, 'first_name': u.first_name, 'last_name': u.last_name, 'reason': reason})
-    plaintext_content = plaintext.render(d)
-    html_content = html.render(d)
-    msg = EmailMultiAlternatives(settings.EMAIL_REJECT_SUBJECT, plaintext_content, settings.EMAIL_FROM_ADDRESS, [u.email])
-    msg.attach_alternative(html_content, 'text/html')
-    msg.send(False)
+    reason = request.POST['reason']
+
+    template_name = 'reject'
+    context = Context({'title': profile.title, 'first_name': u.first_name, 'last_name': u.last_name, 'reason': reason})
+    subject = settings.EMAIL_REJECT_SUBJECT
+    to_addrs = [u.email]
+
+    send_mail(template_name, context, subject, to_addrs)
 
     return redirect(access_requests)
