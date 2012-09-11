@@ -55,10 +55,10 @@ namespace tao {
       dict.add_option( new options::real( "z_min" ), prefix );
       dict.add_option( new options::real( "z_snap" ), prefix );
       dict.add_option( new options::real( "box_size" ), prefix );
-      dict.add_option( new options::real( "rasc_min", 0.0 ), prefix );
-      dict.add_option( new options::real( "rasc_max", 90.0 ), prefix );
-      dict.add_option( new options::real( "decl_min", 0.0 ), prefix );
-      dict.add_option( new options::real( "decl_max", 90.0 ), prefix );
+      dict.add_option( new options::real( "ra_min", 0.0 ), prefix );
+      dict.add_option( new options::real( "ra_max", 90.0 ), prefix );
+      dict.add_option( new options::real( "dec_min", 0.0 ), prefix );
+      dict.add_option( new options::real( "dec_max", 90.0 ), prefix );
       dict.add_option( new options::real( "H0", 100.0 ), prefix );
    }
 
@@ -285,10 +285,27 @@ namespace tao {
    ///
    /// Get current galaxy.
    ///
-   const lightcone::row_type&
+   const galaxy
    lightcone::operator*() const
    {
-      return *_cur_row;
+#ifndef NDEBUG
+      {
+      // Check that the row actually belongs in this range.
+         galaxy gal( *_cur_row, *_cur_box );
+         real_type dist = sqrt( pow( gal.x(), 2.0 ) + pow( gal.y(), 2.0 ) + pow( gal.z(), 2.0 ) );
+         ASSERT( dist >= _dist_range.start() && dist < _dist_range.finish() );
+      }
+#endif
+      return galaxy( *_cur_row, *_cur_box );
+   }
+
+   ///
+   /// Get current redshift.
+   ///
+   lightcone::real_type
+   lightcone::redshift() const
+   {
+      return _snaps[_cur_snap];
    }
 
    void
@@ -348,7 +365,7 @@ namespace tao {
             _settle_box();
          }
       }
-      while( _cur_box == _boxes.end() && ++_cur_snap < _snaps.size() );
+      while( (_z_range.finish() < _z_min || _cur_box == _boxes.end()) && ++_cur_snap < _snaps.size() );
 
       LOG_EXIT();
    }
@@ -790,10 +807,10 @@ namespace tao {
       LOGLN( "Redshift range: (", _z_min, ", ", _z_max, ")" );
 
       // Right ascension.
-      _ra_min = sub.get<real_type>( "rasc_min" );
+      _ra_min = sub.get<real_type>( "ra_min" );
       if( _ra_min < 0.0 )
          _ra_min = 0.0;
-      _ra_max = sub.get<real_type>( "rasc_max" ); // TODO divide by 60.0?
+      _ra_max = sub.get<real_type>( "ra_max" ); // TODO divide by 60.0?
       if( _ra_max >= 89.9999999 )
          _ra_max = 89.9999999;
       if( _ra_min > _ra_max )
@@ -801,10 +818,10 @@ namespace tao {
       LOGLN( "Have right ascension range ", _ra_min, " - ", _ra_max );
 
       // Declination.
-      _dec_min = sub.get<real_type>( "decl_min" );
+      _dec_min = sub.get<real_type>( "dec_min" );
       if( _dec_min < 0.0 )
          _dec_min = 0.0;
-      _dec_max = sub.get<real_type>( "decl_max" ); // TODO divide by 60.0?
+      _dec_max = sub.get<real_type>( "dec_max" ); // TODO divide by 60.0?
       if( _dec_max >= 89.9999999 )
          _dec_max = 89.9999999;
       if( _dec_min > _dec_max )

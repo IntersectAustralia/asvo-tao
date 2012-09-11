@@ -71,7 +71,8 @@ namespace tao {
    }
 
    void
-   filter::process_galaxy( const soci::row& galaxy,
+   filter::process_galaxy( const tao::galaxy& galaxy,
+                           real_type redshift,
                            vector<real_type>::view spectra )
    {
       // Prepare the spectra.
@@ -80,8 +81,9 @@ namespace tao {
 
       // Calculate the distance/area for this galaxy. Use 10000
       // points.
-      real_type dist = numerics::redshift_to_distance( 0.02, 10000 )*1e-3;
+      real_type dist = numerics::redshift_to_distance( redshift, 10000 )*1e-3;
       real_type area = log10( 4.0*M_PI ) + 2.0*log10( dist*3.08568025e24 );
+      LOGLN( "Distance: ", dist );
 
       // Loop over each filter band.
       for( unsigned ii = 0; ii < _filters.size(); ++ii )

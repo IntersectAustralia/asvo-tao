@@ -59,7 +59,7 @@ namespace tao {
       ///
       ///
       void
-      process_galaxy( const soci::row& galaxy,
+      process_galaxy( const tao::galaxy& galaxy,
                       hpc::vector<real_type>::view spectra );
 
    protected:

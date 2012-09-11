@@ -84,8 +84,14 @@ namespace tao {
       ///
       /// Get current galaxy.
       ///
-      const row_type&
+      const galaxy
       operator*() const;
+
+      ///
+      /// Get current redshift.
+      ///
+      real_type
+      redshift() const;
 
    protected:
 

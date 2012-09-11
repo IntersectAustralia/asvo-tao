@@ -57,7 +57,7 @@ namespace tao {
       run();
 
       void
-      process_galaxy( const soci::row& galaxy );
+      process_galaxy( const tao::galaxy& galaxy );
 
       hpc::vector<real_type>::view
       disk_spectra();
@@ -91,7 +91,6 @@ namespace tao {
 
    protected:
 
-      const soci::row* _gal;
       unsigned long _gal_id;
 
       hpc::mpi::lindex _num_times, _num_spectra, _num_metals;

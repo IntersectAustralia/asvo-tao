@@ -60,7 +60,7 @@ namespace tao {
       run();
 
       void
-      add_galaxy( const soci::row& galaxy,
+      add_galaxy( const tao::galaxy& galaxy,
                   real_type magnitude );
 
    protected:
@@ -70,12 +70,19 @@ namespace tao {
                      hpc::optional<const hpc::string&> prefix );
 
       void
-      _setup_params();
+      _setup_list();
+
+      void
+      _setup_conf();
 
    protected:
 
-      hpc::string _params_filename;
-      std::ofstream _params_file;
+      hpc::string _list_filename, _conf_filename;
+      std::ofstream _list_file;
+      unsigned _img_w, _img_h;
+      real_type _pix_w, _pix_h;
+      real_type _img_x, _img_y;
+      real_type _foc_x, _foc_y;
    };
 }
 

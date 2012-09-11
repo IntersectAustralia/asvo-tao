@@ -101,17 +101,13 @@ namespace tao {
    }
 
    void
-   sed::process_galaxy( const soci::row& galaxy )
+   sed::process_galaxy( const tao::galaxy& galaxy )
    {
       LOG_ENTER();
 
       // Cache the galaxy ID.
-      _gal_id = galaxy.get<int>( "id" );
+      _gal_id = galaxy.id();
       LOGLN( "Processing galaxy with ID ", _gal_id );
-
-      // Cache the galaxy on the SED object so we don't have
-      // to pass it around.
-      _gal = &galaxy;
 
       // Read the star-formation histories for this galaxy.
       _sql << "select mass, metal from disk_star_formation where galaxy_id=:id order by -age",

@@ -3,6 +3,7 @@
 
 #include <soci/soci.h>
 #include <libhpc/libhpc.hh>
+#include "galaxy.hh"
 
 namespace tao {
 

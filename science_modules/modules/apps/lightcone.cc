@@ -38,8 +38,7 @@ struct pipeline
       for( lc.begin(); !lc.done(); ++lc )
       {
          // Just print them out for now.
-         const lightcone::row_type& row = *lc;
-         std::cout << row.get<double>( "Pos0" ) << "\n";
+         const galaxy gal = *lc;
       }
    }
 

@@ -51,20 +51,20 @@ struct pipeline
       for( lc.begin(); !lc.done(); ++lc )
       {
          // Cache the database row.
-         const lightcone::row_type& row = *lc;
-         LOGLN( "Processing galaxy: ", row.get<int>( "id" ), setindent( 2 ) );
+         const galaxy gal = *lc;
+         LOGLN( "Processing galaxy: ", gal.id(), setindent( 2 ) );
 
          // Calculate the SED and cache results.
-         sed.process_galaxy( row );
+         sed.process_galaxy( gal );
          vector<real_type>::view spectra = sed.total_spectra();
 
          // Perform filtering and cache the particular
          // band we're interested in.
-         filter.process_galaxy( row, spectra );
+         filter.process_galaxy( gal, lc.redshift(), spectra );
          real_type v_mag = filter.magnitudes()[3]; // V band
 
          // Add to the skymaker object list.
-         skymaker.add_galaxy( row, v_mag );
+         skymaker.add_galaxy( gal, v_mag );
 
          LOG( setindent( -2 ) );
       }

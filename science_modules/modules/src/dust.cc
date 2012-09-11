@@ -68,14 +68,14 @@ namespace tao {
    }
 
    void
-   dust::process_galaxy( const soci::row& galaxy,
+   dust::process_galaxy( const tao::galaxy& galaxy,
                          vector<real_type>::view spectra )
    {
       ASSERT( spectra.size() == _num_spectra );
 
       // Cache star formation rates.
-      real_type disk_sfr = galaxy.get<real_type>( "disk_sfr" );
-      real_type bulge_sfr = galaxy.get<real_type>( "bulge_sfr" );
+      real_type disk_sfr = 0.0; //galaxy.get<real_type>( "disk_sfr" );
+      real_type bulge_sfr = 0.0; //galaxy.get<real_type>( "bulge_sfr" );
       real_type sfr = disk_sfr + bulge_sfr;
 
       // Calculate "adust", whatever that is...

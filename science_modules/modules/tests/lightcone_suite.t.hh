@@ -139,8 +139,8 @@ public:
       ids.resize( 0 );
       for( lc.begin(); !lc.done(); ++lc )
       {
-         const lightcone::row_type& row = *lc;
-         ids.push_back( row.get<int>( "id" ) );
+         const galaxy& gal = *lc;
+         ids.push_back( gal.id() );
       }
       TS_ASSERT_EQUALS( ids.size(), 1 );
       TS_ASSERT_EQUALS( ids[0], 0 );
@@ -153,8 +153,8 @@ public:
       ids.resize( 0 );
       for( lc.begin(); !lc.done(); ++lc )
       {
-         const lightcone::row_type& row = *lc;
-         ids.push_back( row.get<int>( "id" ) );
+         const galaxy& gal = *lc;
+         ids.push_back( gal.id() );
       }
       TS_ASSERT_EQUALS( ids.size(), 1 );
       TS_ASSERT_EQUALS( ids[0], 1 );
@@ -167,8 +167,8 @@ public:
       ids.resize( 0 );
       for( lc.begin(); !lc.done(); ++lc )
       {
-         const lightcone::row_type& row = *lc;
-         ids.push_back( row.get<int>( "id" ) );
+         const galaxy& gal = *lc;
+         ids.push_back( gal.id() );
       }
       TS_ASSERT_EQUALS( ids.size(), 1 );
       TS_ASSERT_EQUALS( ids[0], 2 );
@@ -182,8 +182,8 @@ public:
       ids.resize( 0 );
       for( lc.begin(); !lc.done(); ++lc )
       {
-         const lightcone::row_type& row = *lc;
-         ids.push_back( row.get<int>( "id" ) );
+         const galaxy& gal = *lc;
+         ids.push_back( gal.id() );
       }
       TS_ASSERT_EQUALS( ids.size(), 1 );
       TS_ASSERT_EQUALS( ids[0], 3 );
@@ -241,8 +241,8 @@ public:
       ids.resize( 0 );
       for( lc.begin(); !lc.done(); ++lc )
       {
-         const lightcone::row_type& row = *lc;
-         ids.push_back( row.get<int>( "id" ) );
+         const galaxy& gal = *lc;
+         ids.push_back( gal.id() );
       }
       TS_ASSERT_EQUALS( ids.size(), 1 );
       TS_ASSERT_EQUALS( ids[0], 0 );
@@ -255,8 +255,8 @@ public:
       ids.resize( 0 );
       for( lc.begin(); !lc.done(); ++lc )
       {
-         const lightcone::row_type& row = *lc;
-         ids.push_back( row.get<int>( "id" ) );
+         const galaxy& gal = *lc;
+         ids.push_back( gal.id() );
       }
       TS_ASSERT_EQUALS( ids.size(), 1 );
       TS_ASSERT_EQUALS( ids[0], 1 );
@@ -269,8 +269,8 @@ public:
       ids.resize( 0 );
       for( lc.begin(); !lc.done(); ++lc )
       {
-         const lightcone::row_type& row = *lc;
-         ids.push_back( row.get<int>( "id" ) );
+         const galaxy& gal = *lc;
+         ids.push_back( gal.id() );
       }
       TS_ASSERT_EQUALS( ids.size(), 1 );
       TS_ASSERT_EQUALS( ids[0], 2 );
@@ -284,8 +284,8 @@ public:
       ids.resize( 0 );
       for( lc.begin(); !lc.done(); ++lc )
       {
-         const lightcone::row_type& row = *lc;
-         ids.push_back( row.get<int>( "id" ) );
+         const galaxy& gal = *lc;
+         ids.push_back( gal.id() );
       }
       TS_ASSERT_EQUALS( ids.size(), 1 );
       TS_ASSERT_EQUALS( ids[0], 3 );
@@ -342,8 +342,8 @@ public:
       ids.resize( 0 );
       for( lc.begin(); !lc.done(); ++lc )
       {
-         const lightcone::row_type& row = *lc;
-         ids.push_back( row.get<int>( "id" ) );
+         const galaxy& gal = *lc;
+         ids.push_back( gal.id() );
       }
       TS_ASSERT_EQUALS( ids.size(), 12 );
       for( unsigned ii = 0; ii < 12; ++ii )
@@ -401,8 +401,8 @@ public:
       ids.resize( 0 );
       for( lc.begin(); !lc.done(); ++lc )
       {
-         const lightcone::row_type& row = *lc;
-         ids.push_back( row.get<int>( "id" ) );
+         const galaxy& gal = *lc;
+         ids.push_back( gal.id() );
       }
       TS_ASSERT_EQUALS( ids.size(), 1 );
       TS_ASSERT_EQUALS( ids[0], 0 );
@@ -414,8 +414,8 @@ public:
       ids.resize( 0 );
       for( lc.begin(); !lc.done(); ++lc )
       {
-         const lightcone::row_type& row = *lc;
-         ids.push_back( row.get<int>( "id" ) );
+         const galaxy& gal = *lc;
+         ids.push_back( gal.id() );
       }
       TS_ASSERT_EQUALS( ids.size(), 2 );
       TS_ASSERT_EQUALS( ids[0], 0 );
@@ -428,8 +428,8 @@ public:
       ids.resize( 0 );
       for( lc.begin(); !lc.done(); ++lc )
       {
-         const lightcone::row_type& row = *lc;
-         ids.push_back( row.get<int>( "id" ) );
+         const galaxy& gal = *lc;
+         ids.push_back( gal.id() );
       }
       TS_ASSERT_EQUALS( ids.size(), 3 );
       TS_ASSERT_EQUALS( ids[0], 0 );
@@ -489,8 +489,8 @@ public:
       ids.resize( 0 );
       for( lc.begin(); !lc.done(); ++lc )
       {
-         const lightcone::row_type& row = *lc;
-         ids.push_back( row.get<int>( "id" ) );
+         const galaxy& gal = *lc;
+         ids.push_back( gal.id() );
       }
       TS_ASSERT_EQUALS( ids.size(), 1 );
       TS_ASSERT_EQUALS( ids[0], 0 );
@@ -503,8 +503,8 @@ public:
       ids.resize( 0 );
       for( lc.begin(); !lc.done(); ++lc )
       {
-         const lightcone::row_type& row = *lc;
-         ids.push_back( row.get<int>( "id" ) );
+         const galaxy& gal = *lc;
+         ids.push_back( gal.id() );
       }
       TS_ASSERT_EQUALS( ids.size(), 1 );
       TS_ASSERT_EQUALS( ids[0], 1 );
@@ -517,8 +517,8 @@ public:
       ids.resize( 0 );
       for( lc.begin(); !lc.done(); ++lc )
       {
-         const lightcone::row_type& row = *lc;
-         ids.push_back( row.get<int>( "id" ) );
+         const galaxy& gal = *lc;
+         ids.push_back( gal.id() );
       }
       TS_ASSERT_EQUALS( ids.size(), 1 );
       TS_ASSERT_EQUALS( ids[0], 2 );
@@ -573,8 +573,6 @@ public:
       // Place to store row IDs.
       vector<int> ids;
 
-      LOG_PUSH( new logging::file( "test.log" ) );
-
       // Should encounter each point from each snapshot in a
       // unique order.
       db_setup.xml.write( db_setup.xml_filename, dict );
@@ -582,8 +580,8 @@ public:
       ids.resize( 0 );
       for( lc.begin(); !lc.done(); ++lc )
       {
-         const lightcone::row_type& row = *lc;
-         ids.push_back( row.get<int>( "id" ) );
+         const galaxy& gal = *lc;
+         ids.push_back( gal.id() );
       }
       TS_ASSERT_EQUALS( ids.size(), 3 );
       TS_ASSERT_EQUALS( ids[0], 0 );
