@@ -4,16 +4,15 @@ import django.contrib.auth.views as auth_views
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_POST
 
-from . import models
-from .decorators import researcher_required, admin_required
+from tao.decorators import researcher_required, admin_required
 
-from .forms import UserCreationForm, RejectForm, LoginForm
+from tao.forms import UserCreationForm, RejectForm, LoginForm
 from django.template.context import Context
 from django.conf import settings
 
-from .pagination import paginate
+from tao.pagination import paginate
 
-from .mail import send_mail
+from tao.mail import send_mail
 
 import logging
 
@@ -43,11 +42,6 @@ def register(request):
     return render(request, "register.html", {
         'form': form,
     })
-
-
-@researcher_required
-def mock_galaxy_factory(request):
-    return render(request, 'mock_galaxy_factory.html')
 
 
 @admin_required
