@@ -91,8 +91,6 @@ namespace tao {
 
    protected:
 
-      unsigned long _gal_id;
-
       hpc::mpi::lindex _num_times, _num_spectra, _num_metals;
       hpc::string _ssp_filename;
 

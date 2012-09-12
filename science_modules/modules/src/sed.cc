@@ -106,14 +106,14 @@ namespace tao {
       LOG_ENTER();
 
       // Cache the galaxy ID.
-      _gal_id = galaxy.id();
-      LOGLN( "Processing galaxy with ID ", _gal_id );
+      unsigned gal_id = galaxy.id();
+      LOGLN( "Processing galaxy with ID ", gal_id );
 
       // Read the star-formation histories for this galaxy.
       _sql << "select mass, metal from disk_star_formation where galaxy_id=:id order by -age",
-         soci::into( (std::vector<real_type>&)_disk_sfh ), soci::into( (std::vector<real_type>&)_disk_metals ), soci::use( _gal_id );
+         soci::into( (std::vector<real_type>&)_disk_sfh ), soci::into( (std::vector<real_type>&)_disk_metals ), soci::use( gal_id );
       _sql << "select mass, metal from bulge_star_formation where galaxy_id=:id order by -age",
-         soci::into( (std::vector<real_type>&)_bulge_sfh ), soci::into( (std::vector<real_type>&)_bulge_metals ), soci::use( _gal_id );
+         soci::into( (std::vector<real_type>&)_bulge_sfh ), soci::into( (std::vector<real_type>&)_bulge_metals ), soci::use( gal_id );
       LOGLN( "Disk SFH: ", _disk_sfh );
       LOGLN( "Disk metals: ", _disk_metals );
       LOGLN( "Bulge SFH: ", _bulge_sfh );

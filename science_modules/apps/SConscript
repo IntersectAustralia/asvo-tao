@@ -18,6 +18,7 @@ libs = [] + env.get('LIBS', [])
 #   ('<binary name>', '<source 0>', '<source 1>', ...)
 sources = [
     ('chiara', 'chiara.cc'),
+    ('generate', 'generate.cc'),
 ]
 
 # Call the helper.
