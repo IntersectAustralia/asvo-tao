@@ -9,8 +9,6 @@ admin.autodiscover()
 
 from django.contrib.auth.views import logout
 
-from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-
 simple_view = lambda request, template_name: render(request, template_name)
 
 administration_patterns = patterns('',
@@ -28,6 +26,7 @@ account_patterns = patterns('',
 
 mock_galaxy_factory_patterns = patterns('tao.views.mock_galaxy_factory',
     url(r'^$', 'index', name='mock_galaxy_factory'),
+    url(r'^submitted_jobs$', 'submitted_jobs', name='submitted_jobs'),
 )
 
 tao_patterns = patterns('',

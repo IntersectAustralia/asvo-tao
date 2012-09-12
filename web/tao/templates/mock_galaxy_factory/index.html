@@ -26,19 +26,20 @@
     </h1>
 
     <form action="" method="POST">
+        {% csrf_token %}
         <fieldset>
             <legend>Light Cone</legend>
             <div class="row-fluid">
                 <div class="boxed span4">
-                    o hai there
+                    Model and Simulation information goes here
                 </div>
                 <div class="boxed span8">
                     <div class="control-group{% if field.errors %} error{% endif %}">
                         <label class="control-label" for="{{ field.auto_id }}">Dark Matter Simulation{{ field.label|safe }}{% if field.field.required %}*{% endif %} </label>
                         <div class="controls">
-                            <select>
+                            <select name="something">
                                 {% for dms in dark_matter_simulations %}
-                                    <option>{{ dms }}</option>
+                                    <option value="{{ dms }}">{{ dms }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -47,7 +48,7 @@
             </div>
         </fieldset>
         <fieldset>
-            <input type="submit" value="Submit" />
+            <input type="submit" value="Submit" class="btn btn-primary" />
         </fieldset>
     </form>
 

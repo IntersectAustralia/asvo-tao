@@ -27,3 +27,12 @@ class Simulation(models.Model):
 
     def __unicode__(self):
         return self.name
+
+
+class Job(models.Model):
+    user = models.ForeignKey(User)
+    created_time = models.DateTimeField(auto_now_add=True)
+    description = models.TextField(max_length=500)
+
+    def __unicode__(self):
+        return "%s %s %s" % (self.user, self.created_time, self.description)
