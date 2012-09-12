@@ -1,8 +1,8 @@
-import tao.views
-
 from django.conf.urls.defaults import patterns, url, include
 from django.conf import settings
 from django.core.urlresolvers import reverse_lazy
+
+from django.shortcuts import render
 
 from django.contrib import admin
 admin.autodiscover()
@@ -11,18 +11,7 @@ from django.contrib.auth.views import logout
 
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
-tao_patterns = patterns('',
-    # Example:
-    # (r'^{{ project_name }}/', include('{{ project_name }}.foo.urls')),
-
-    # Uncomment the admin/doc line below to enable admin documentation:
-    # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
-    # Uncomment the next line to enable the admin:
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'^mock_galaxy_factory/', 'tao.views.mock_galaxy_factory', name='mock_galaxy_factory'),
-    url(r'^$', 'tao.views.home', name='home'),
-)
+simple_view = lambda request, template_name: render(request, template_name)
 
 administration_patterns = patterns('',
     url(r'^$', 'tao.views.admin_index', name='admin_index'),
@@ -34,21 +23,26 @@ administration_patterns = patterns('',
 account_patterns = patterns('',
     url(r'login/$', 'tao.views.login', name='login'),
     url(r'logout/$', logout, {'next_page': reverse_lazy('home')}, name='logout'),
-    url(r'register/$', tao.views.register, name='register'),
+    url(r'register/$', 'tao.views.register', name='register'),
 )
 
-tao_patterns += patterns('',
+mock_galaxy_factory_patterns = patterns('tao.views.mock_galaxy_factory',
+    url(r'^$', 'index', name='mock_galaxy_factory'),
+)
+
+tao_patterns = patterns('',
+    ('^admin/', include(admin.site.urls)),
     ('^accounts/', include(account_patterns)),
     ('^administration/', include(administration_patterns)),
+    ('^mock_galaxy_factory/', include(mock_galaxy_factory_patterns)),
+
+    url(r'^mgf/$', simple_view, {'template_name': 'mgf.html'}),
+    url(r'^$', 'tao.views.home', name='home'),
+
+    # Uncomment the admin/doc line below to enable admin documentation:
+    # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
 )
 
 urlpatterns = patterns('',
     ('', include(tao_patterns)),
 )
-
-if settings.DEBUG:
-    urlpatterns += patterns('',
-        (r'^media/(?P<path>.*)$', 'django.views.static.serve',
-         {'document_root': settings.MEDIA_ROOT}),
-    )
-    urlpatterns += staticfiles_urlpatterns()

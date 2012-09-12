@@ -20,3 +20,10 @@ class User(auth_models.User):
 
     class Meta:
         proxy = True
+
+
+class Simulation(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __unicode__(self):
+        return self.name
