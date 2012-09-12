@@ -1,18 +1,16 @@
+from django.conf import settings
 from django.contrib import messages
-from django.utils.translation import ugettext_lazy as _
-import django.contrib.auth.views as auth_views
+from django.contrib.auth import views as auth_views
 from django.shortcuts import render, redirect
+from django.template.context import Context
+from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
 
+from tao import models
 from tao.decorators import researcher_required, admin_required
-
 from tao.forms import UserCreationForm, RejectForm, LoginForm
-from django.template.context import Context
-from django.conf import settings
-
-from tao.pagination import paginate
-
 from tao.mail import send_mail
+from tao.pagination import paginate
 
 import logging
 
