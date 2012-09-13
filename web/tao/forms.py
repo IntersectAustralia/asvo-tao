@@ -6,6 +6,9 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from captcha.fields import ReCaptchaField
 
+from form_utils.forms import BetterForm
+
+from tao import datasets
 from tao.models import UserProfile
 
 class LoginForm(auth_forms.AuthenticationForm):
@@ -61,3 +64,17 @@ class UserCreationForm(auth_forms.UserCreationForm):
 
 class RejectForm(forms.Form):
     reason = forms.CharField(widget=forms.Textarea(attrs={'rows': 3}), required=False)
+
+
+class MockGalaxyFactoryForm(BetterForm):
+    dark_matter_simulation = forms.ChoiceField(choices=[(x, x) for x in datasets.dark_matter_simulations()])
+    somethingelse = forms.ChoiceField(choices=[('a', 'a1'), ('b', 'b1'), ('c', 'c1')])
+
+    class Meta:
+        fieldsets = [('primary', {
+            'legend': 'primary',
+            'fields': ['dark_matter_simulation'],
+        }), ('secondary', {
+            'legend': 'secondary',
+            'fields': ['somethingelse'],
+        }),]
