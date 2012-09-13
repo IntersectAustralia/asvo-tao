@@ -1,6 +1,7 @@
 {% extends '_base.html' %}
 
 {% load staticfiles %}
+{% load bootstrap_tags %}
 
 {% block subtitle %}Mock Galaxy Factory{% endblock %}
 
@@ -12,6 +13,9 @@
         .boxed {
             padding: 20px;
             border: 1px solid #ccc;
+        }
+        fieldset fieldset legend {
+            font-size: medium;
         }
     </style>
 {% endblock extracss %}
@@ -26,29 +30,23 @@
     </h1>
 
     <form action="" method="POST">
+        {% csrf_token %}
         <fieldset>
             <legend>Light Cone</legend>
             <div class="row-fluid">
                 <div class="boxed span4">
-                    o hai there
+                    Model and Simulation information goes here
                 </div>
                 <div class="boxed span8">
-                    <div class="control-group{% if field.errors %} error{% endif %}">
-                        <label class="control-label" for="{{ field.auto_id }}">Dark Matter Simulation{{ field.label|safe }}{% if field.field.required %}*{% endif %} </label>
-                        <div class="controls">
-                            <select>
-                                {% for dms in dark_matter_simulations %}
-                                    <option>{{ dms }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
+                    {% for fieldset in form.fieldsets %}
+                        {{ fieldset|as_bootstrap_fieldset }}
+                    {% endfor %}
                 </div>
             </div>
         </fieldset>
-        <fieldset>
-            <input type="submit" value="Submit" />
-        </fieldset>
+        <div class="form-actions">
+            <input type="submit" value="Submit Job" class="btn btn-primary" />
+        </div>
     </form>
 
 {% endblock content %}

@@ -108,6 +108,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.static",
     "django.core.context_processors.tz",
     "django.contrib.messages.context_processors.messages",
+    "tao.context_processors.add_tab_to_context",
 )
 
 from django.contrib import messages
