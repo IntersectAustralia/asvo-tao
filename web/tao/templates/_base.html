@@ -29,8 +29,8 @@
                 <a class="brand" href="{% url home %}">Theoretical Astrophysical Observatory</a>
                 <div class="nav-collapse collapse">
                     <ul class="nav">
-                        <li><a href="{% url home %}">Home</a></li>
-                        <li class="active"><a href="{% url mock_galaxy_factory %}">MGF</a></li>
+                        <li class="{% if tab == 'home' %}active{% endif %}"><a href="{% url home %}">Home</a></li>
+                        <li class="{% if tab == 'mgf' %}active{% endif %}"><a href="{% url mock_galaxy_factory %}">MGF</a></li>
                         {% if user.is_staff %}
                             <li><a href="{% url admin_index %}">Admin</a></li>
                         {% endif %}

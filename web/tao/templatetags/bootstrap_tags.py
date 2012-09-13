@@ -18,3 +18,10 @@ def as_bootstrap_field(field):
     template = get_template('bootstrap/field.html')
     ctx = Context({'field': field})
     return template.render(ctx)
+
+
+@register.filter
+def as_bootstrap_fieldset(fieldset):
+    template = get_template('bootstrap/fieldset.html')
+    ctx = Context({'fieldset': fieldset})
+    return template.render(ctx)

@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
 
 from tao import models
-from tao.decorators import researcher_required, admin_required
+from tao.decorators import researcher_required, admin_required, set_tab
 from tao.forms import UserCreationForm, RejectForm, LoginForm
 from tao.mail import send_mail
 from tao.pagination import paginate
@@ -17,6 +17,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+@set_tab('home')
 def home(request):
     return render(request, 'home.html')
 
