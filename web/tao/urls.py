@@ -2,12 +2,12 @@ from django.conf.urls.defaults import patterns, url, include
 from django.conf import settings
 from django.core.urlresolvers import reverse_lazy
 
-from django.shortcuts import render
-
 from django.contrib import admin
 admin.autodiscover()
 
 from django.contrib.auth.views import logout
+
+from django.shortcuts import render
 
 simple_view = lambda request, template_name: render(request, template_name)
 
@@ -29,7 +29,7 @@ mock_galaxy_factory_patterns = patterns('tao.views.mock_galaxy_factory',
     url(r'^submitted_jobs$', 'submitted_jobs', name='submitted_jobs'),
 )
 
-tao_patterns = patterns('',
+urlpatterns = patterns('',
     ('^admin/', include(admin.site.urls)),
     ('^accounts/', include(account_patterns)),
     ('^administration/', include(administration_patterns)),
@@ -40,8 +40,4 @@ tao_patterns = patterns('',
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
-)
-
-urlpatterns = patterns('',
-    ('', include(tao_patterns)),
 )
