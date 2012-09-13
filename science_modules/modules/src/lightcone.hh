@@ -13,6 +13,7 @@ namespace tao {
    /// Lightcone science module.
    ///
    class lightcone
+      : public module
    {
       friend class ::lightcone_suite;
       friend class ::sed_suite;
@@ -21,7 +22,6 @@ namespace tao {
    public:
 
       typedef double real_type;
-      typedef soci::row row_type;
 
    public:
 
@@ -122,30 +122,21 @@ namespace tao {
       _redshift_to_distance( real_type redshift );
 
       void
-      _setup_params( const hpc::options::dictionary& dict,
+      _read_options( const hpc::options::dictionary& dict,
                      hpc::optional<const hpc::string&> prefix=hpc::optional<const hpc::string&>() );
 
       void
       _setup_query_template();
 
       void
-      _db_connect( soci::session& sql );
-
-      void
-      _db_disconnect();
-
-      void
-      _open_bin_file();
+      _read_snapshots();
 
    protected:
 
-      bool _connected;
-      soci::session _sql;
-      hpc::string _dbtype, _dbname, _dbhost, _dbuser, _dbpass;
-
       hpc::string _box_type;
-      real_type _box_side;
-      hpc::vector<real_type> _snaps;
+      hpc::vector<unsigned> _snap_idxs;
+      hpc::vector<real_type> _snap_redshifts;
+      hpc::vector<real_type> _snap_box_sizes;
       real_type _x0, _y0, _z0;
       real_type _z_min, _z_max;
       real_type _ra_min, _ra_max;
@@ -160,8 +151,10 @@ namespace tao {
       hpc::map<hpc::string, hpc::string> _output_fields;
       hpc::string _filter;
       hpc::string _filter_min, _filter_max;
-      hpc::string _query_template;
       real_type _H0;
+
+      hpc::string _query_template;
+      hpc::string _crd_strs[3];
 
       hpc::string _bin_filename;
       std::ofstream _bin_file;

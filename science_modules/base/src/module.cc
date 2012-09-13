@@ -5,6 +5,11 @@ using namespace hpc;
 
 namespace tao {
 
+   module::module()
+      : _connected( false )
+   {
+   }
+
    void
    module::_db_connect( soci::session& sql,
                         const string& type,
@@ -30,6 +35,20 @@ namespace tao {
          ASSERT( 0 );
       }
 
+      // Flag as connected.
+      _connected = true;
+
       LOG_EXIT();
+   }
+
+   void
+   module::_db_disconnect()
+   {
+      if( _connected )
+      {
+         LOGLN( "Disconnecting from database." );
+         _sql.close();
+         _connected = false;
+      }
    }
 }

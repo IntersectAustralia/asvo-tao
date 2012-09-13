@@ -1,7 +1,10 @@
 #include <fstream>
+#include <boost/lexical_cast.hpp>
 #include "sed.hh"
 
 using namespace hpc;
+using boost::format;
+using boost::str;
 
 namespace tao {
 
@@ -67,12 +70,6 @@ namespace tao {
       _bulge_spectra.reallocate( _num_spectra );
       _total_spectra.reallocate( _num_spectra );
 
-      // Open the star-formation histories file.
-      _db_connect( _sql, _dbtype, _dbname );
-
-      // Read the SSP data all at once.
-      _read_ssp();
-
       LOG_EXIT();
    }
 
@@ -110,6 +107,8 @@ namespace tao {
       LOGLN( "Processing galaxy with ID ", gal_id );
 
       // Read the star-formation histories for this galaxy.
+
+
       _sql << "select mass, metal from disk_star_formation where galaxy_id=:id order by -age",
          soci::into( (std::vector<real_type>&)_disk_sfh ), soci::into( (std::vector<real_type>&)_disk_metals ), soci::use( gal_id );
       _sql << "select mass, metal from bulge_star_formation where galaxy_id=:id order by -age",
@@ -215,26 +214,6 @@ namespace tao {
    }
 
    void
-   sed::_read_ssp()
-   {
-      LOG_ENTER();
-
-      // Allocate. Note that the ordering goes time,spectra,metals.
-      _ssp.reallocate( _num_times*_num_spectra*_num_metals );
-      LOGLN( "Reallocated SSP array to ", _ssp.size() );
-
-      // Read in the file in one big go.
-      std::ifstream file( _ssp_filename, std::ios::in );
-      for( unsigned ii = 0; ii < _ssp.size(); ++ii )
-      {
-         // These values are luminosity densities, in erg/s/angstrom.
-         file >> _ssp[ii];
-      }
-
-      LOG_EXIT();
-   }
-
-   void
    sed::_read_options( const options::dictionary& dict,
                        optional<const string&> prefix )
    {
@@ -247,9 +226,7 @@ namespace tao {
       _dbhost = sub.get<string>( "database_host" );
       _dbuser = sub.get<string>( "database_user" );
       _dbpass = sub.get<string>( "database_pass" );
-
-      // Get the SSP filename.
-      _ssp_filename = sub.get<string>( "ssp_filename" );
+      _db_connect( _sql, _dbtype, _dbname );
 
       // Extract the counts.
       _num_times = sub.get<unsigned>( "num_times" );
@@ -258,5 +235,36 @@ namespace tao {
       LOGLN( "Number of times: ", _num_times );
       LOGLN( "Number of spectra: ", _num_spectra );
       LOGLN( "Number of metals: ", _num_metals );
+
+      // Get the SSP filename.
+      _read_ssp( sub.get<string>( "ssp_filename" ) );
+   }
+
+   void
+   sed::_read_ssp( const string& filename )
+   {
+      LOG_ENTER();
+
+      // Allocate. Note that the ordering goes time,spectra,metals.
+      _ssp.reallocate( _num_times*_num_spectra*_num_metals );
+      LOGLN( "Reallocated SSP array to ", _ssp.size() );
+
+      // Read in the file in one big go.
+      std::ifstream file( filename, std::ios::in );
+      for( unsigned ii = 0; ii < _ssp.size(); ++ii )
+      {
+         // These values are luminosity densities, in erg/s/angstrom.
+         file >> _ssp[ii];
+         ASSERT( file.good() );
+      }
+
+      LOG_EXIT();
+   }
+
+   void
+   sed::_setup_query_template()
+   {
+      _query_tmpl = str( format( "SELECT disk_mass, bulge_mass, disk_rate, bulge_rate FROM %1% " ) % galaxy.table() );
+      query += str( format( "WHERE %1%.left < -left- AND %1%.right > -right-" ) % galaxy.table() );
    }
 }

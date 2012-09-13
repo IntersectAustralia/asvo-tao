@@ -9,75 +9,7 @@ using namespace hpc;
 using namespace tao;
 
 #include "mpi_fixture.hh"
-
-///
-/// Database preparation fixture.
-///
-class db_setup_fixture : public CxxTest::GlobalFixture
-{
-public:
-
-   bool setUp()
-   {
-      return true;
-   }
-
-   bool tearDown()
-   {
-      return true;
-   }
-
-   bool setUpWorld()
-   {
-      // Create the database file.
-      db_filename = tmpnam( NULL );
-      {
-         std::ofstream file( db_filename, std::fstream::out | std::fstream::app );
-      }
-
-      // Open it using SOCI, create a table.
-      {
-         // Open our sqlite connection.
-         soci::session sql( soci::sqlite3, db_filename );
-
-         // Add tables.
-         sql << "create table snapshot_000 (Pos1 double precision, Pos2 double precision, Pos3 double precision, id integer)";
-         sql << "create table snapshot_001 (Pos1 double precision, Pos2 double precision, Pos3 double precision, id integer)";
-         sql << "create table snapshot_002 (Pos1 double precision, Pos2 double precision, Pos3 double precision, id integer)";
-         sql << "create table snapshot_003 (Pos1 double precision, Pos2 double precision, Pos3 double precision, id integer)";
-      }
-
-      // Create the XML file by calling the lightcone options setup and filling in the
-      // details, then dumping to file.
-      lightcone lc;
-      lc.setup_options( dict );
-      dict.compile();
-      dict["database_type"] = "sqlite";
-      dict["database_name"] = db_filename;
-      dict["box_type"] = "cone";
-      dict["box_side"] = "100";
-      dict["snapshots"] = "0.01, 0.009, 0.008, 0";
-      dict["z_min"] = "0";
-      xml_filename = tmpnam( NULL );
-      xml.write( xml_filename, dict );
-
-      return true;
-   }
-
-   bool tearDownWorld()
-   {
-      remove( db_filename.c_str() );
-      remove( xml_filename.c_str() );
-      dict.clear();
-      return true;
-   }
-
-   options::dictionary dict;
-   options::xml xml;
-   std::string db_filename, xml_filename;
-};
-
-static db_setup_fixture db_setup;
+#include "db_fixture.hh"
 
 ///
 /// Lightcone class test suite.
@@ -107,33 +39,32 @@ public:
       // Insert some values.
       {
          soci::session sql( soci::sqlite3, db_setup.db_filename );
-         sql << "insert into snapshot_000 values (1, 0.001, 0.001, 0)";
-         sql << "insert into snapshot_000 values (0.866, 0.5, 0.001, 1)";
-         sql << "insert into snapshot_000 values (0.5, 0.866, 0.001, 2)";
-         sql << "insert into snapshot_000 values (0.001, 1, 0.001, 3)";
-         sql << "insert into snapshot_001 values (1, 0.001, 0.001, 0)";
-         sql << "insert into snapshot_001 values (0.866, 0.5, 0.001, 1)";
-         sql << "insert into snapshot_001 values (0.5, 0.866, 0.001, 2)";
-         sql << "insert into snapshot_001 values (0.001, 1, 0.001, 3)";
+         sql << "INSERT INTO meta VALUES(0, 0, 100)";
+         sql << "INSERT INTO meta VALUES(1, 0.01, 100)";
+         sql << "INSERT INTO snapshot_000 VALUES(1, 0.001, 0.001, 0)";
+         sql << "INSERT INTO snapshot_000 VALUES(0.866, 0.5, 0.001, 1)";
+         sql << "INSERT INTO snapshot_000 VALUES(0.5, 0.866, 0.001, 2)";
+         sql << "INSERT INTO snapshot_000 VALUES(0.001, 1, 0.001, 3)";
+         sql << "INSERT INTO snapshot_001 VALUES(1, 0.001, 0.001, 0)";
+         sql << "INSERT INTO snapshot_001 VALUES(0.866, 0.5, 0.001, 1)";
+         sql << "INSERT INTO snapshot_001 VALUES(0.5, 0.866, 0.001, 2)";
+         sql << "INSERT INTO snapshot_001 VALUES(0.001, 1, 0.001, 3)";
       }
 
       // Prepare base dictionary.
       options::dictionary& dict = db_setup.dict;
-      dict["database_type"] = "sqlite";
-      dict["database_name"] = db_setup.db_filename;
-      dict["box_type"] = "cone";
-      dict["box_side"] = "100";
-      dict["snapshots"] = "0.01,0";
       dict["z_min"] = "0";
-      dict["decl_min"] = "0";
-      dict["decl_max"] = "90";
+      dict["dec_min"] = "0";
+      dict["dec_max"] = "90";
 
       // Place to store row IDs.
       vector<int> ids;
 
+      LOG_FILE( "test.log" );
+
       // Only row 0.
-      dict["rasc_min"] = "0.0";
-      dict["rasc_max"] = "0.1";
+      dict["ra_min"] = "0.0";
+      dict["ra_max"] = "0.1";
       db_setup.xml.write( db_setup.xml_filename, dict );
       setup_lightcone( lc );
       ids.resize( 0 );
@@ -146,8 +77,8 @@ public:
       TS_ASSERT_EQUALS( ids[0], 0 );
 
       // Only row 1.
-      dict["rasc_min"] = "29.9";
-      dict["rasc_max"] = "30.1";
+      dict["ra_min"] = "29.9";
+      dict["ra_max"] = "30.1";
       db_setup.xml.write( db_setup.xml_filename, dict );
       setup_lightcone( lc );
       ids.resize( 0 );
@@ -160,8 +91,8 @@ public:
       TS_ASSERT_EQUALS( ids[0], 1 );
 
       // Only row 2.
-      dict["rasc_min"] = "59.9";
-      dict["rasc_max"] = "60.1";
+      dict["ra_min"] = "59.9";
+      dict["ra_max"] = "60.1";
       db_setup.xml.write( db_setup.xml_filename, dict );
       setup_lightcone( lc );
       ids.resize( 0 );
@@ -174,8 +105,8 @@ public:
       TS_ASSERT_EQUALS( ids[0], 2 );
 
       // Only row 3.
-      dict["rasc_min"] = "89.9";
-      dict["rasc_max"] = "90.0";
+      dict["ra_min"] = "89.9";
+      dict["ra_max"] = "90.0";
       db_setup.xml.write( db_setup.xml_filename, dict );
       setup_lightcone( lc );
 
@@ -191,8 +122,9 @@ public:
       // Erase the table data.
       {
          soci::session sql( soci::sqlite3, db_setup.db_filename );
-         sql << "delete from snapshot_000";
-         sql << "delete from snapshot_001";
+         sql << "DELETE FROM meta";
+         sql << "DELETE FROM snapshot_000";
+         sql << "DELETE FROM snapshot_001";
       }
    }
 
@@ -209,33 +141,30 @@ public:
       // Insert some values.
       {
          soci::session sql( soci::sqlite3, db_setup.db_filename );
-         sql << "insert into snapshot_000 values (0.707, 0.707, 0.001, 0)";
-         sql << "insert into snapshot_000 values (0.612, 0.612, 0.5, 1)";
-         sql << "insert into snapshot_000 values (0.354, 0.354, 0.866, 2)";
-         sql << "insert into snapshot_000 values (0.001, 0.001, 1, 3)";
-         sql << "insert into snapshot_001 values (0.707, 0.707, 0.001, 0)";
-         sql << "insert into snapshot_001 values (0.612, 0.612, 0.5, 1)";
-         sql << "insert into snapshot_001 values (0.354, 0.354, 0.866, 2)";
-         sql << "insert into snapshot_001 values (0.001, 0.001, 1, 3)";
+         sql << "INSERT INTO meta VALUES(0, 0, 100)";
+         sql << "INSERT INTO meta VALUES(1, 0.01, 100)";
+         sql << "INSERT INTO snapshot_000 VALUES(0.707, 0.707, 0.001, 0)";
+         sql << "INSERT INTO snapshot_000 VALUES(0.612, 0.612, 0.5, 1)";
+         sql << "INSERT INTO snapshot_000 VALUES(0.354, 0.354, 0.866, 2)";
+         sql << "INSERT INTO snapshot_000 VALUES(0.001, 0.001, 1, 3)";
+         sql << "INSERT INTO snapshot_001 VALUES(0.707, 0.707, 0.001, 0)";
+         sql << "INSERT INTO snapshot_001 VALUES(0.612, 0.612, 0.5, 1)";
+         sql << "INSERT INTO snapshot_001 VALUES(0.354, 0.354, 0.866, 2)";
+         sql << "INSERT INTO snapshot_001 VALUES(0.001, 0.001, 1, 3)";
       }
 
       // Prepare base dictionary.
       options::dictionary& dict = db_setup.dict;
-      dict["database_type"] = "sqlite";
-      dict["database_name"] = db_setup.db_filename;
-      dict["box_type"] = "cone";
-      dict["box_side"] = "100";
-      dict["snapshots"] = "0.01,0";
       dict["z_min"] = "0";
-      dict["rasc_min"] = "0";
-      dict["rasc_max"] = "90";
+      dict["ra_min"] = "0";
+      dict["ra_max"] = "90";
 
       // Place to store row IDs.
       vector<int> ids;
 
       // Only row 0.
-      dict["decl_min"] = "0.0";
-      dict["decl_max"] = "0.1";
+      dict["dec_min"] = "0.0";
+      dict["dec_max"] = "0.1";
       db_setup.xml.write( db_setup.xml_filename, dict );
       setup_lightcone( lc );
       ids.resize( 0 );
@@ -248,8 +177,8 @@ public:
       TS_ASSERT_EQUALS( ids[0], 0 );
 
       // Only row 1.
-      dict["decl_min"] = "29.9";
-      dict["decl_max"] = "30.1";
+      dict["dec_min"] = "29.9";
+      dict["dec_max"] = "30.1";
       db_setup.xml.write( db_setup.xml_filename, dict );
       setup_lightcone( lc );
       ids.resize( 0 );
@@ -262,8 +191,8 @@ public:
       TS_ASSERT_EQUALS( ids[0], 1 );
 
       // Only row 2.
-      dict["decl_min"] = "59.9";
-      dict["decl_max"] = "60.1";
+      dict["dec_min"] = "59.9";
+      dict["dec_max"] = "60.1";
       db_setup.xml.write( db_setup.xml_filename, dict );
       setup_lightcone( lc );
       ids.resize( 0 );
@@ -276,8 +205,8 @@ public:
       TS_ASSERT_EQUALS( ids[0], 2 );
 
       // Only row 3.
-      dict["decl_min"] = "89.9";
-      dict["decl_max"] = "90.0";
+      dict["dec_min"] = "89.9";
+      dict["dec_max"] = "90.0";
       db_setup.xml.write( db_setup.xml_filename, dict );
       setup_lightcone( lc );
 
@@ -293,8 +222,9 @@ public:
       // Erase the table data.
       {
          soci::session sql( soci::sqlite3, db_setup.db_filename );
-         sql << "delete from snapshot_000";
-         sql << "delete from snapshot_001";
+         sql << "DELETE FROM meta";
+         sql << "DELETE FROM snapshot_000";
+         sql << "DELETE FROM snapshot_001";
       }
    }
 
@@ -312,26 +242,23 @@ public:
       // to get picked up by the neighboring boxes.
       {
          soci::session sql( soci::sqlite3, db_setup.db_filename );
-         sql << "insert into snapshot_000 values (1, 14, 14, 0)";
-         sql << "insert into snapshot_000 values (14, 1, 14, 1)";
-         sql << "insert into snapshot_000 values (14, 14, 1, 2)";
-         sql << "insert into snapshot_001 values (1, 14, 14, 0)";
-         sql << "insert into snapshot_001 values (14, 1, 14, 1)";
-         sql << "insert into snapshot_001 values (14, 14, 1, 2)";
+         sql << "INSERT INTO meta VALUES(0, 0, 100)";
+         sql << "INSERT INTO meta VALUES(1, 0.05, 100)";
+         sql << "INSERT INTO snapshot_000 VALUES(1, 14, 14, 0)";
+         sql << "INSERT INTO snapshot_000 VALUES(14, 1, 14, 1)";
+         sql << "INSERT INTO snapshot_000 VALUES(14, 14, 1, 2)";
+         sql << "INSERT INTO snapshot_001 VALUES(1, 14, 14, 0)";
+         sql << "INSERT INTO snapshot_001 VALUES(14, 1, 14, 1)";
+         sql << "INSERT INTO snapshot_001 VALUES(14, 14, 1, 2)";
       }
 
       // Prepare base dictionary.
       options::dictionary& dict = db_setup.dict;
-      dict["database_type"] = "sqlite";
-      dict["database_name"] = db_setup.db_filename;
-      dict["box_type"] = "cone";
-      dict["box_side"] = "100";
-      dict["snapshots"] = "0.05,0";
       dict["z_min"] = "0";
-      dict["rasc_min"] = "0";
-      dict["rasc_max"] = "90";
-      dict["decl_min"] = "0";
-      dict["decl_max"] = "90";
+      dict["ra_min"] = "0";
+      dict["ra_max"] = "90";
+      dict["dec_min"] = "0";
+      dict["dec_max"] = "90";
 
       // Place to store row IDs.
       vector<int> ids;
@@ -352,8 +279,9 @@ public:
       // Erase the table data.
       {
          soci::session sql( soci::sqlite3, db_setup.db_filename );
-         sql << "delete from snapshot_000";
-         sql << "delete from snapshot_001";
+         sql << "DELETE FROM meta";
+         sql << "DELETE FROM snapshot_000";
+         sql << "DELETE FROM snapshot_001";
       }
    }
 
@@ -369,33 +297,28 @@ public:
 
       // Insert some values. Place the points on the lower walls
       // to get picked up by the neighboring boxes.
-      {
-         soci::session sql( soci::sqlite3, db_setup.db_filename );
-         sql << "insert into snapshot_000 values (5.77, 5.77, 5.77, 0)";
-         sql << "insert into snapshot_000 values (11.55, 11.55, 11.55, 1)";
-         sql << "insert into snapshot_000 values (17.32, 17.32, 17.32, 2)";
-         sql << "insert into snapshot_001 values (5.77, 5.77, 5.77, 0)";
-         sql << "insert into snapshot_001 values (11.55, 11.55, 11.55, 1)";
-         sql << "insert into snapshot_001 values (17.32, 17.32, 17.32, 2)";
-      }
+      soci::session sql( soci::sqlite3, db_setup.db_filename );
+      sql << "INSERT INTO snapshot_000 VALUES(5.77, 5.77, 5.77, 0)";
+      sql << "INSERT INTO snapshot_000 VALUES(11.55, 11.55, 11.55, 1)";
+      sql << "INSERT INTO snapshot_000 VALUES(17.32, 17.32, 17.32, 2)";
+      sql << "INSERT INTO snapshot_001 VALUES(5.77, 5.77, 5.77, 0)";
+      sql << "INSERT INTO snapshot_001 VALUES(11.55, 11.55, 11.55, 1)";
+      sql << "INSERT INTO snapshot_001 VALUES(17.32, 17.32, 17.32, 2)";
 
       // Prepare base dictionary.
       options::dictionary& dict = db_setup.dict;
-      dict["database_type"] = "sqlite";
-      dict["database_name"] = db_setup.db_filename;
-      dict["box_type"] = "cone";
-      dict["box_side"] = "100";
       dict["z_min"] = "0";
-      dict["rasc_min"] = "0";
-      dict["rasc_max"] = "90";
-      dict["decl_min"] = "0";
-      dict["decl_max"] = "90";
+      dict["ra_min"] = "0";
+      dict["ra_max"] = "90";
+      dict["dec_min"] = "0";
+      dict["dec_max"] = "90";
 
       // Place to store row IDs.
       vector<int> ids;
 
       // Capture first point.
-      dict["snapshots"] = "0.005,0";
+      sql << "INSERT INTO meta VALUES(0, 0, 100)";
+      sql << "INSERT INTO meta VALUES(1, 0.005, 100)";
       db_setup.xml.write( db_setup.xml_filename, dict );
       setup_lightcone( lc );
       ids.resize( 0 );
@@ -408,7 +331,9 @@ public:
       TS_ASSERT_EQUALS( ids[0], 0 );
 
       // Capture first and second.
-      dict["snapshots"] = "0.008,0";
+      sql << "DELETE FROM meta";
+      sql << "INSERT INTO meta VALUES(0, 0, 100)";
+      sql << "INSERT INTO meta VALUES(1, 0.008, 100)";
       db_setup.xml.write( db_setup.xml_filename, dict );
       setup_lightcone( lc );
       ids.resize( 0 );
@@ -422,7 +347,9 @@ public:
       TS_ASSERT_EQUALS( ids[1], 1 );
 
       // Capture all three.
-      dict["snapshots"] = "0.011,0";
+      sql << "DELETE FROM meta";
+      sql << "INSERT INTO meta VALUES(0, 0, 100)";
+      sql << "INSERT INTO meta VALUES(1, 0.011, 100)";
       db_setup.xml.write( db_setup.xml_filename, dict );
       setup_lightcone( lc );
       ids.resize( 0 );
@@ -439,8 +366,9 @@ public:
       // Erase the table data.
       {
          soci::session sql( soci::sqlite3, db_setup.db_filename );
-         sql << "delete from snapshot_000";
-         sql << "delete from snapshot_001";
+         sql << "DELETE FROM meta";
+         sql << "DELETE FROM snapshot_000";
+         sql << "DELETE FROM snapshot_001";
       }
    }
 
@@ -458,25 +386,22 @@ public:
       // to get picked up by the neighboring boxes.
       {
          soci::session sql( soci::sqlite3, db_setup.db_filename );
-         sql << "insert into snapshot_000 values (5.77, 5.77, 5.77, 0)";
-         sql << "insert into snapshot_000 values (11.55, 11.55, 11.55, 1)";
-         sql << "insert into snapshot_000 values (17.32, 17.32, 17.32, 2)";
-         sql << "insert into snapshot_001 values (5.77, 5.77, 5.77, 0)";
-         sql << "insert into snapshot_001 values (11.55, 11.55, 11.55, 1)";
-         sql << "insert into snapshot_001 values (17.32, 17.32, 17.32, 2)";
+         sql << "INSERT INTO meta VALUES(0, 0, 100)";
+         sql << "INSERT INTO meta VALUES(1, 1, 100)";
+         sql << "INSERT INTO snapshot_000 VALUES(5.77, 5.77, 5.77, 0)";
+         sql << "INSERT INTO snapshot_000 VALUES(11.55, 11.55, 11.55, 1)";
+         sql << "INSERT INTO snapshot_000 VALUES(17.32, 17.32, 17.32, 2)";
+         sql << "INSERT INTO snapshot_001 VALUES(5.77, 5.77, 5.77, 0)";
+         sql << "INSERT INTO snapshot_001 VALUES(11.55, 11.55, 11.55, 1)";
+         sql << "INSERT INTO snapshot_001 VALUES(17.32, 17.32, 17.32, 2)";
       }
 
       // Prepare base dictionary.
       options::dictionary& dict = db_setup.dict;
-      dict["database_type"] = "sqlite";
-      dict["database_name"] = db_setup.db_filename;
-      dict["box_type"] = "cone";
-      dict["box_side"] = "100";
-      dict["snapshots"] = "1,0";
-      dict["rasc_min"] = "0";
-      dict["rasc_max"] = "90";
-      dict["decl_min"] = "0";
-      dict["decl_max"] = "90";
+      dict["ra_min"] = "0";
+      dict["ra_max"] = "90";
+      dict["dec_min"] = "0";
+      dict["dec_max"] = "90";
 
       // Place to store row IDs.
       vector<int> ids;
@@ -526,8 +451,9 @@ public:
       // Erase the table data.
       {
          soci::session sql( soci::sqlite3, db_setup.db_filename );
-         sql << "delete from snapshot_000";
-         sql << "delete from snapshot_001";
+         sql << "DELETE FROM meta";
+         sql << "DELETE FROM snapshot_000";
+         sql << "DELETE FROM snapshot_001";
       }
    }
 
@@ -545,28 +471,26 @@ public:
       // to get picked up by the neighboring boxes.
       {
          soci::session sql( soci::sqlite3, db_setup.db_filename );
-         sql << "insert into snapshot_000 values (5.77, 5.77, 5.77, 0)";
-         sql << "insert into snapshot_000 values (11.55, 11.55, 11.55, 1)";
-         sql << "insert into snapshot_000 values (17.32, 17.32, 17.32, 2)";
-         sql << "insert into snapshot_001 values (5.77, 5.77, 5.77, 3)";
-         sql << "insert into snapshot_001 values (11.55, 11.55, 11.55, 4)";
-         sql << "insert into snapshot_001 values (17.32, 17.32, 17.32, 5)";
-         sql << "insert into snapshot_002 values (5.77, 5.77, 5.77, 6)";
-         sql << "insert into snapshot_002 values (11.55, 11.55, 11.55, 7)";
-         sql << "insert into snapshot_002 values (17.32, 17.32, 17.32, 8)";
+         sql << "INSERT INTO meta VALUES(0, 0.003, 100)";
+         sql << "INSERT INTO meta VALUES(1, 0.007, 100)";
+         sql << "INSERT INTO meta VALUES(2, 0.011, 100)";
+         sql << "INSERT INTO snapshot_000 VALUES(5.77, 5.77, 5.77, 0)";
+         sql << "INSERT INTO snapshot_000 VALUES(11.55, 11.55, 11.55, 1)";
+         sql << "INSERT INTO snapshot_000 VALUES(17.32, 17.32, 17.32, 2)";
+         sql << "INSERT INTO snapshot_001 VALUES(5.77, 5.77, 5.77, 3)";
+         sql << "INSERT INTO snapshot_001 VALUES(11.55, 11.55, 11.55, 4)";
+         sql << "INSERT INTO snapshot_001 VALUES(17.32, 17.32, 17.32, 5)";
+         sql << "INSERT INTO snapshot_002 VALUES(5.77, 5.77, 5.77, 6)";
+         sql << "INSERT INTO snapshot_002 VALUES(11.55, 11.55, 11.55, 7)";
+         sql << "INSERT INTO snapshot_002 VALUES(17.32, 17.32, 17.32, 8)";
       }
 
       // Prepare base dictionary.
       options::dictionary& dict = db_setup.dict;
-      dict["database_type"] = "sqlite";
-      dict["database_name"] = db_setup.db_filename;
-      dict["box_type"] = "cone";
-      dict["box_side"] = "100";
-      dict["snapshots"] = "0.011,0.007,0.003";
-      dict["rasc_min"] = "0";
-      dict["rasc_max"] = "90";
-      dict["decl_min"] = "0";
-      dict["decl_max"] = "90";
+      dict["ra_min"] = "0";
+      dict["ra_max"] = "90";
+      dict["dec_min"] = "0";
+      dict["dec_max"] = "90";
       dict["z_min"] = "0";
       dict["z_max"] = "1";
 
@@ -591,14 +515,18 @@ public:
       // Erase the table data.
       {
          soci::session sql( soci::sqlite3, db_setup.db_filename );
-         sql << "delete from snapshot_000";
-         sql << "delete from snapshot_001";
-         sql << "delete from snapshot_002";
+         sql << "DELETE FROM meta";
+         sql << "DELETE FROM snapshot_000";
+         sql << "DELETE FROM snapshot_001";
+         sql << "DELETE FROM snapshot_002";
       }
    }
 
    void setup_lightcone( lightcone& lc )
    {
+      // If we are already connected, disconnect.
+      lc._db_disconnect();
+
       options::dictionary dict;
       lc.setup_options( dict );
       dict.compile();

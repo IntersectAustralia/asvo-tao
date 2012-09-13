@@ -92,11 +92,6 @@ namespace tao {
    protected:
 
       hpc::mpi::lindex _num_times, _num_spectra, _num_metals;
-      hpc::string _ssp_filename;
-
-      soci::session _sql;
-      hpc::string _dbtype, _dbname, _dbhost, _dbuser, _dbpass;
-
       hpc::vector<real_type> _disk_sfh, _disk_metals;
       hpc::vector<real_type> _bulge_sfh, _bulge_metals;
       hpc::vector<real_type> _disk_spectra, _bulge_spectra, _total_spectra;

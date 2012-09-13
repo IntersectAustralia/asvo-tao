@@ -15,8 +15,7 @@ using boost::algorithm::replace_all;
 namespace tao {
 
    lightcone::lightcone()
-      : _connected( false ),
-        _box_side( 1.0 ),
+      : module(),
         _z_min( 0.0 ),
         _z_max( 0.0 ),
         _use_random( false ),
@@ -49,7 +48,6 @@ namespace tao {
       dict.add_option( new options::string( "database_pass", string() ), prefix );
       dict.add_option( new options::string( "table_name_template", "snapshot_" ), prefix );
       dict.add_option( new options::string( "box_type" ), prefix );
-      dict.add_option( new options::real( "box_side" ), prefix );
       dict.add_option( new options::string( "snapshots" ), prefix );
       dict.add_option( new options::real( "z_max" ), prefix );
       dict.add_option( new options::real( "z_min" ), prefix );
@@ -81,7 +79,7 @@ namespace tao {
    {
       LOG_ENTER();
 
-      _setup_params( dict, prefix );
+      _read_options( dict, prefix );
       _setup_query_template();
 
       LOG_EXIT();
@@ -199,36 +197,25 @@ namespace tao {
    {
       LOG_ENTER();
 
-      // Connect to the database.
-      _db_connect( _sql );
-
-      if( _box_type != "box" && _box_side > 0.0 )
+      if( _box_type != "box" )
       {
-         LOGLN( "Build cone, simulation box side length: ", _box_side );
-
          // Iterate over the reversed snapshot indices.
-         LOGLN( "Iterating over ", _snaps.size(), " snapshots." );
+         LOGLN( "Iterating over ", _snap_idxs.size(), " snapshots." );
          _cur_snap = 0;
-         if( _cur_snap < _snaps.size() )
+         if( _cur_snap < _snap_idxs.size() )
             _settle_snap();
       }
-      else if( _box_side > 0.0 )
+      else
       {
-         LOGLN( "Selecting box, with side length: ", _box_side );
-         auto it = std::find( _snaps.begin(), _snaps.end(), _z_snap );
-         ASSERT( it != _snaps.end() );
-         mpi::lindex idx = it - _snaps.begin();
+         auto it = std::find( _snap_redshifts.begin(), _snap_redshifts.end(), _z_snap );
+         ASSERT( it != _snap_redshifts.end() );
+         mpi::lindex idx = it - _snap_redshifts.begin();
          // TODO: Setup ranges.
          _build_pixels( _x0, _y0, _z0 );
 
          // Set the current snapshot to the end to be sure we will
          // terminate as expected.
-         _cur_snap = _snaps.size();
-      }
-      else
-      {
-         LOGLN( "Have an empty domain." );
-         _cur_snap = _snaps.size();
+         _cur_snap = _snap_idxs.size();
       }
 
       LOG_EXIT();
@@ -244,8 +231,8 @@ namespace tao {
 
       // We need botht the row check and the snapshot check to catch
       // the box and cone versions.
-      LOGLN( "Current snapshot ", _cur_snap, "/", _snaps.size() );
-      bool result = (_cur_row == _rows->end() && _cur_snap == _snaps.size());
+      LOGLN( "Current snapshot ", _cur_snap, "/", _snap_idxs.size() );
+      bool result = (_cur_row == _rows->end() && _cur_snap == _snap_idxs.size());
       LOGLN( "Finished: ", result );
 
       // If we are done, close the database.
@@ -273,7 +260,7 @@ namespace tao {
                 (_settle_box(), _cur_box == _boxes.end()) )
             {
                LOGLN( "Finished iterating over current boxes." );
-               if( ++_cur_snap != _snaps.size() )
+               if( ++_cur_snap != _snap_idxs.size() )
                   _settle_snap();
             }
          }
@@ -305,7 +292,7 @@ namespace tao {
    lightcone::real_type
    lightcone::redshift() const
    {
-      return _snaps[_cur_snap];
+      return _snap_redshifts[_cur_snap];
    }
 
    void
@@ -321,13 +308,13 @@ namespace tao {
          if( _cur_snap == 0 )
          {
             // For the first snapshot use +1/2.
-            _z_range.set( _snaps[_cur_snap], _snaps[_cur_snap + 1] );
+            _z_range.set( _snap_redshifts[_cur_snap], _snap_redshifts[_cur_snap + 1] );
             _z_range.set_finish( _z_range.finish() - 0.5*_z_range.length() );
          }
-         else if( _cur_snap == _snaps.size() - 1 )
+         else if( _cur_snap == _snap_idxs.size() - 1 )
          {
             // For the last snapshot use -1/2.
-            _z_range.set( _snaps[_cur_snap - 1], _snaps[_cur_snap] );
+            _z_range.set( _snap_redshifts[_cur_snap - 1], _snap_redshifts[_cur_snap] );
             _z_range.set_start( _z_range.start() + 0.5*_z_range.length() );
          }
          else
@@ -335,7 +322,7 @@ namespace tao {
             // For internal snapshots use (+/-)1/2. Assumes _z_range.finish
             // is set to the previous snapshot's finish point.
             _z_range.set_start( _z_range.finish() );
-            _z_range.set_finish( _snaps[_cur_snap] + 0.5*(_snaps[_cur_snap + 1] - _snaps[_cur_snap]) );
+            _z_range.set_finish( _snap_redshifts[_cur_snap] + 0.5*(_snap_redshifts[_cur_snap + 1] - _snap_redshifts[_cur_snap]) );
          }
          LOGLN( "Unlimited redshift range: ", _z_range );
 
@@ -343,7 +330,7 @@ namespace tao {
          if( _z_range.start() > _z_max )
          {
             LOGLN( "Exceeded maximum redshift of ", _z_max );
-            _cur_snap = _snaps.size();
+            _cur_snap = _snap_idxs.size();
             break;
          }
 
@@ -365,7 +352,7 @@ namespace tao {
             _settle_box();
          }
       }
-      while( (_z_range.finish() < _z_min || _cur_box == _boxes.end()) && ++_cur_snap < _snaps.size() );
+      while( (_z_range.finish() < _z_min || _cur_box == _boxes.end()) && ++_cur_snap < _snap_idxs.size() );
 
       LOG_EXIT();
    }
@@ -534,9 +521,14 @@ namespace tao {
       replace_all( query, "-vel1-", to_string( vel1 ) );
       replace_all( query, "-vel2-", to_string( vel2 ) );
       replace_all( query, "-vel3-", to_string( vel3 ) );
-      replace_all( query, "snapshot_", str( format( "snapshot_%1$03d" ) % _cur_snap ) );
+      replace_all( query, "snapshot_", str( format( "snapshot_%1$03d" ) % _snap_idxs[_cur_snap] ) );
       replace_all( query, "-max_dist-", to_string( max_dist ) );
       replace_all( query, "-last_dist-", to_string( min_dist ) );
+
+      // Replace references to the Posx coordinates.
+      replace_all( query, "Pos1", _crd_strs[0] );
+      replace_all( query, "Pos2", _crd_strs[1] );
+      replace_all( query, "Pos3", _crd_strs[2] );
 
       LOGLN( "Query: ", query );
       LOG_EXIT();
@@ -549,6 +541,9 @@ namespace tao {
    lightcone::_random_rotation_and_shifting( vector<std::string>& ops )
    {
       LOG_ENTER();
+
+      // Cache the current box size.
+      real_type box_size = _snap_box_sizes[_cur_snap];
 
       // Four values (p, h, v, s) in three groups.
       ops.resize( 12 );
@@ -585,24 +580,24 @@ namespace tao {
          else
          {
             // A zero box side length causes a hang.
-            ASSERT( _box_side > 0.0 );
+            ASSERT( box_size > 0.0 );
 
-            offs1 = generate_uniform( 0.0, _box_side*1000.0 )/1000.0;
-            offs2 = generate_uniform( 0.0, _box_side*1000.0 )/1000.0;
-            offs3 = generate_uniform( 0.0, _box_side*1000.0 )/1000.0;
+            offs1 = generate_uniform( 0.0, box_size*1000.0 )/1000.0;
+            offs2 = generate_uniform( 0.0, box_size*1000.0 )/1000.0;
+            offs3 = generate_uniform( 0.0, box_size*1000.0 )/1000.0;
             rnd = generate_uniform<int>( 1, 6 );
          }
 
          // Rotation 1.
          if( _dbtype == "sqlite" )
          {
-            ops[0] = str( format( "(case sign(%1%+Pos1-%2%) when 1 then %3%+Pos1 else Pos1+%4%-%5% end)" ) % offs1 % _box_side % offs1 % offs1 % _box_side );
-            ops[1] = str( format( "(case sign(%1%+halo_pos1-%2%) when 1 then %3%+halo_pos1 else halo_pos1+%4%-%5% end)" ) % offs1 % _box_side % offs1 % offs1 % _box_side );
+            ops[0] = str( format( "(case sign(%1%+Pos1-%2%) when 1 then %3%+Pos1 else Pos1+%4%-%5% end)" ) % offs1 % box_size % offs1 % offs1 % box_size );
+            ops[1] = str( format( "(case sign(%1%+halo_pos1-%2%) when 1 then %3%+halo_pos1 else halo_pos1+%4%-%5% end)" ) % offs1 % box_size % offs1 % offs1 % box_size );
          }
          else
          {
-            ops[0] = str( format( "if(%1%+Pos1<%2%,%3%+Pos1,Pos1+%4%-%5%)" ) % offs1 % _box_side % offs1 % offs1 % _box_side );
-            ops[1] = str( format( "if(%1%+halo_pos1<%2%,%3%+halo_pos1,halo_pos1+%4%-%5%)" ) % offs1 % _box_side % offs1 % offs1 % _box_side );
+            ops[0] = str( format( "if(%1%+Pos1<%2%,%3%+Pos1,Pos1+%4%-%5%)" ) % offs1 % box_size % offs1 % offs1 % box_size );
+            ops[1] = str( format( "if(%1%+halo_pos1<%2%,%3%+halo_pos1,halo_pos1+%4%-%5%)" ) % offs1 % box_size % offs1 % offs1 % box_size );
          }
          ops[2] = "Vel1";
          ops[3] = "Spin1";
@@ -610,13 +605,13 @@ namespace tao {
          // Rotation 2.
          if( _dbtype == "sqlite" )
          {
-            ops[4] = str( format( "(case sign(%1%+Pos2-%2%) when 1 then %3%+Pos2 else Pos2+%4%-%5% end)" ) % offs2 % _box_side % offs2 % offs2 % _box_side );
-            ops[5] = str( format( "(case sign(%1%+halo_pos2-%2%) when 1 then %3%+halo_pos2 else halo_pos2+%4%-%5% end)" ) % offs2 % _box_side % offs2 % offs2 % _box_side );
+            ops[4] = str( format( "(case sign(%1%+Pos2-%2%) when 1 then %3%+Pos2 else Pos2+%4%-%5% end)" ) % offs2 % box_size % offs2 % offs2 % box_size );
+            ops[5] = str( format( "(case sign(%1%+halo_pos2-%2%) when 1 then %3%+halo_pos2 else halo_pos2+%4%-%5% end)" ) % offs2 % box_size % offs2 % offs2 % box_size );
          }
          else
          {
-            ops[4] = str( format( "if(%1%+Pos2<%2%,%3%+Pos2,Pos2+%4%-%5%)" ) % offs2 % _box_side % offs2 % offs2 % _box_side );
-            ops[5] = str( format( "if(%1%+halo_pos2<%2%,%3%+halo_pos2,halo_pos2+%4%-%5%)" ) % offs2 % _box_side % offs2 % offs2 % _box_side );
+            ops[4] = str( format( "if(%1%+Pos2<%2%,%3%+Pos2,Pos2+%4%-%5%)" ) % offs2 % box_size % offs2 % offs2 % box_size );
+            ops[5] = str( format( "if(%1%+halo_pos2<%2%,%3%+halo_pos2,halo_pos2+%4%-%5%)" ) % offs2 % box_size % offs2 % offs2 % box_size );
          }
          ops[6] = "Vel2";
          ops[7] = "Spin2";
@@ -624,13 +619,13 @@ namespace tao {
          // Rotation 3.
          if( _dbtype == "sqlite" )
          {
-            ops[8] = str( format( "(case sign(%1%+Pos3-%2%) when 1 then %3%+Pos3 else Pos3+%4%-%5% end)" ) % offs3 % _box_side % offs3 % offs3 % _box_side );
-            ops[9] = str( format( "(case sign(%1%+halo_pos3-%2%) when 1 then %3%+halo_pos3 else halo_pos3+%4%-%5% end)" ) % offs3 % _box_side % offs3 % offs3 % _box_side );
+            ops[8] = str( format( "(case sign(%1%+Pos3-%2%) when 1 then %3%+Pos3 else Pos3+%4%-%5% end)" ) % offs3 % box_size % offs3 % offs3 % box_size );
+            ops[9] = str( format( "(case sign(%1%+halo_pos3-%2%) when 1 then %3%+halo_pos3 else halo_pos3+%4%-%5% end)" ) % offs3 % box_size % offs3 % offs3 % box_size );
          }
          else
          {
-            ops[8] = str( format( "if(%1%+Pos3<%2%,%3%+Pos3,Pos3+%4%-%5%)" ) % offs3 % _box_side % offs3 % offs3 % _box_side );
-            ops[9] = str( format( "if(%1%+halo_pos3<%2%,%3%+halo_pos3,halo_pos3+%4%-%5%)" ) % offs3 % _box_side % offs3 % offs3 % _box_side );
+            ops[8] = str( format( "if(%1%+Pos3<%2%,%3%+Pos3,Pos3+%4%-%5%)" ) % offs3 % box_size % offs3 % offs3 % box_size );
+            ops[9] = str( format( "if(%1%+halo_pos3<%2%,%3%+halo_pos3,halo_pos3+%4%-%5%)" ) % offs3 % box_size % offs3 % offs3 % box_size );
          }
          ops[10] = "Vel3";
          ops[11] = "Spin3";
@@ -679,31 +674,34 @@ namespace tao {
    {
       LOG_ENTER();
 
+      // Cache the current box size.
+      real_type box_size = _snap_box_sizes[_cur_snap];
+
       // Start fresh.
       boxes.clear();
 
       // Only run the loop if the distance is greater than the box side length.
-      if( _dist_range.finish() > _box_side )
+      if( _dist_range.finish() > box_size )
       {
-         LOGLN( "Maximum distanceof ", _dist_range.finish(), " greater than box side of ", _box_side, ", calculating boxes." );
+         LOGLN( "Maximum distanceof ", _dist_range.finish(), " greater than box side of ", box_size, ", calculating boxes." );
 
-         // TODO: Removed the " + _box_side" from each conditional, it seems
+         // TODO: Removed the " + box_size" from each conditional, it seems
          // to me that keeping it in just adds one extra useless iteration
          // per loop.
-         for( real_type ii = 0.0; ii <= _dist_range.finish(); ii += _box_side )
+         for( real_type ii = 0.0; ii <= _dist_range.finish(); ii += box_size )
          {
-            for( real_type jj = 0.0; jj <= _dist_range.finish(); jj += _box_side )
+            for( real_type jj = 0.0; jj <= _dist_range.finish(); jj += box_size )
             {
-               for( real_type kk = 0.0; kk <= _dist_range.finish(); kk += _box_side )
+               for( real_type kk = 0.0; kk <= _dist_range.finish(); kk += box_size )
                {
-                  if( (sqrt( pow( ii + _box_side + _unique_offs_x, 2.0 ) + 
-                             pow( jj + _box_side + _unique_offs_y, 2.0 ) + 
-                             pow( kk + _box_side + _unique_offs_z, 2.0 ) ) > (_dist_range.start() - _box_side)) &&
-                      (((ii + _box_side + _unique_offs_x)/sqrt( pow( ii + _box_side + _unique_offs_x, 2.0) + 
+                  if( (sqrt( pow( ii + box_size + _unique_offs_x, 2.0 ) + 
+                             pow( jj + box_size + _unique_offs_y, 2.0 ) + 
+                             pow( kk + box_size + _unique_offs_z, 2.0 ) ) > (_dist_range.start() - box_size)) &&
+                      (((ii + box_size + _unique_offs_x)/sqrt( pow( ii + box_size + _unique_offs_x, 2.0) + 
                                                                 pow( jj, 2.0 ) )) > cos( to_radians( _ra_max ) )) &&
-                      (ii/sqrt( pow( ii, 2.0 ) + pow( jj + _box_side + _unique_offs_y, 2.0 ) ) < cos( to_radians( _ra_min ) )) &&
-                      ((sqrt( pow( ii + _box_side + _unique_offs_x, 2.0 ) + pow( jj + _box_side + _unique_offs_y, 2.0 )))/sqrt( pow( ii + _box_side + _unique_offs_x, 2.0 ) + pow( jj + _box_side + _unique_offs_y, 2.0 ) + pow( kk, 2.0 ) ) > cos( to_radians( _dec_max ) )) &&
-                      ((sqrt( pow( ii, 2.0 ) + pow( jj, 2.0 )))/sqrt( pow( ii, 2.0 ) + pow( jj, 2.0 ) + pow( kk + _box_side + _unique_offs_z, 2.0 ) ) < cos( to_radians( _dec_min ) )) )
+                      (ii/sqrt( pow( ii, 2.0 ) + pow( jj + box_size + _unique_offs_y, 2.0 ) ) < cos( to_radians( _ra_min ) )) &&
+                      ((sqrt( pow( ii + box_size + _unique_offs_x, 2.0 ) + pow( jj + box_size + _unique_offs_y, 2.0 )))/sqrt( pow( ii + box_size + _unique_offs_x, 2.0 ) + pow( jj + box_size + _unique_offs_y, 2.0 ) + pow( kk, 2.0 ) ) > cos( to_radians( _dec_max ) )) &&
+                      ((sqrt( pow( ii, 2.0 ) + pow( jj, 2.0 )))/sqrt( pow( ii, 2.0 ) + pow( jj, 2.0 ) + pow( kk + box_size + _unique_offs_z, 2.0 ) ) < cos( to_radians( _dec_min ) )) )
                   {
                      boxes.push_back( array<real_type,3>( ii, jj, kk ) );
                   }
@@ -713,7 +711,7 @@ namespace tao {
       }
       else
       {
-         LOGLN( "Maximum distance of ", _dist_range.finish(), " less than box side of ", _box_side, ", using single box." );
+         LOGLN( "Maximum distance of ", _dist_range.finish(), " less than box side of ", box_size, ", using single box." );
          boxes.push_back( array<real_type,3>( 0.0, 0.0, 0.0 ) );
       }
 
@@ -764,7 +762,7 @@ namespace tao {
    /// from the parameter dictionary.
    ///
    void
-   lightcone::_setup_params( const options::dictionary& dict,
+   lightcone::_read_options( const options::dictionary& dict,
                              optional<const string&> prefix )
    {
       LOG_ENTER();
@@ -780,27 +778,21 @@ namespace tao {
       _dbpass = sub.get<string>( "database_pass" );
       _table_name = sub.get<string>( "table_name_template" );
 
-      // Get box type and side length.
+      // Connect to the database.
+      _db_connect( _sql, _dbtype, _dbname );
+
+      // Get box type.
       _box_type = sub.get<string>( "box_type" );
-      _box_side = sub.get<real_type>( "box_side" );
-      LOGLN( "Read box type '", _box_type, "' and side length ", _box_side );
+      LOGLN( "Box type '", _box_type );
 
       // Extract and parse the snapshot redshifts.
-      _snaps.clear();
-      string snaps_str = sub.get<string>( "snapshots" );
-      boost::tokenizer<boost::char_separator<char> > tokens( snaps_str, boost::char_separator<char>( "," ) );
-      for( const auto& redshift : tokens )
-         _snaps.push_back( boost::lexical_cast<double>( boost::trim_copy( redshift ) ) );
-
-      // Reverse the snapshots to start most recent (lowest redshift to highest).
-      std::reverse( _snaps.begin(), _snaps.end() );
-      LOGLN( "Snapshots: ", _snaps );
+      _read_snapshots();
 
       // If not doing a simple box we need at least two snapshots.
-      ASSERT( _box_type == "box" || _snaps.size() > 1 );
+      ASSERT( _box_type == "box" || _snap_idxs.size() > 1 );
 
       // Redshift ranges.
-      real_type snap_z_max = _snaps.back(), snap_z_min = _snaps.front();
+      real_type snap_z_max = _snap_redshifts.back(), snap_z_min = _snap_redshifts.front();
       _z_max = sub.get<real_type>( "z_max", snap_z_max );
       _z_max = std::min( _z_max, snap_z_max );
       _z_min = sub.get<real_type>( "z_min", snap_z_min );
@@ -850,6 +842,11 @@ namespace tao {
    {
       LOG_ENTER();
 
+      // Set the coordinate strings we want to use.
+      _crd_strs[0] = "x";
+      _crd_strs[1] = "y";
+      _crd_strs[2] = "z";
+
       _query_template = "";
       for( auto& field : _include )
       {
@@ -873,7 +870,7 @@ namespace tao {
 
       _query_template = "select " + _query_template + " from " + _table_name + " where";
     
-      if( _box_type != "box" && _box_side > 0.0 )
+      if( _box_type != "box" )
       {
          if( _output_fields.has( "halo_pos1" ) && _output_fields.has( "halo_pos2" ) && _output_fields.has( "halo_pos3" ) )
          {
@@ -897,14 +894,14 @@ namespace tao {
       }
       else
       {
-         if( _box_side > 0.0 )
-         {
+         // if( _box_side > 0.0 )
+         // {
             _query_template += str( format( " -pos1- < %1%  and -pos2- < %2% and -pos3- < %3% " ) % _box_size % _box_size % _box_size );
-         }
-         else
-         {
-            _query_template += str( format( " redshift_real > %1% and redshift_real < %2%" ) % _z_min % _z_max );
-         }
+         // }
+         // else
+         // {
+         //    _query_template += str( format( " redshift_real > %1% and redshift_real < %2%" ) % _z_min % _z_max );
+         // }
       }
 
       if( _filter != "" )
@@ -923,60 +920,35 @@ namespace tao {
       LOG_EXIT();
    }
 
+   ///
+   ///
+   ///
    void
-   lightcone::_db_connect( soci::session& sql )
-         
+   lightcone::_read_snapshots()
    {
-      LOG_ENTER();
+      // Find number of snapshots and resize the containers.
+      unsigned num_snaps;
+      _sql << "SELECT count(*) FROM meta", soci::into( num_snaps );
+      _snap_idxs.reallocate( num_snaps );
+      _snap_redshifts.reallocate( num_snaps );
+      _snap_box_sizes.reallocate( num_snaps );
 
-      // First check if the database is already open, and close if so.
-      _db_disconnect();
-
-      LOGLN( "Connecting to ", _dbtype, " database: ", _dbname );
-      try
+      // Read meta data.
+      _sql << "SELECT snap_table, redshift, box_size FROM meta ORDER BY redshift",
+         soci::into( (std::vector<unsigned>&)_snap_idxs ),
+         soci::into( (std::vector<real_type>&)_snap_redshifts ),
+         soci::into( (std::vector<real_type>&)_snap_box_sizes );
+#ifndef NLOG
+      LOGLN( "Snapshots:", setindent( 2 ) );
+      if( num_snaps )
       {
-         if( _dbtype == "sqlite" )
-            sql.open( soci::sqlite3, _dbname );
-         else
-         {
-            ASSERT( 0 );
-            // sql.open( soci::mysql, str( format( "host=%1% db=%2% user=%3% password='%4'" ) % _dbhost % _dbname % _dbuser % _dbpass ) );
-         }
+         LOG( indent );
+         for( unsigned ii = 0; ii < num_snaps; ++ii )
+            LOGLN( _snap_idxs[ii], ", ", _snap_redshifts[ii], ", ", _snap_box_sizes[ii] );
       }
-      catch( const std::exception& ex )
-      {
-         // TODO: Handle database errors.
-         LOGLN( "Error opening database connection: ", ex.what() );
-         ASSERT( 0 );
-      }
-
-      // Mark connection.
-      _connected = true;
-
-      LOG_EXIT();
-   }
-
-   void
-   lightcone::_db_disconnect()
-   {
-      if( _connected )
-      {
-         LOGLN( "Disconnecting from database." );
-         _sql.close();
-         _connected = false;
-      }
-   }
-
-   void
-   lightcone::_open_bin_file()
-   {
-      LOG_ENTER();
-
-      if( !_bin_filename.empty() )
-      {
-         _bin_file.open( _bin_filename, std::ios::out | std::ios::binary );
-      }
-
-      LOG_EXIT();
+      else
+         LOGLN( indent, "none" );
+      LOG( setindent( -2 ) );
+#endif
    }
 }
