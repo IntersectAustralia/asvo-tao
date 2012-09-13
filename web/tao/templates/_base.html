@@ -64,7 +64,7 @@
     <div class="container">
         {% block messages %}
             {% for message in messages %}
-                <div class="{{ message.tags }}" data-dismiss="alert">
+                <div class="{{ message.tags }}">
                     {{ message }}
                     <button type="button" class="close" data-dismiss="alert">×</button>
                 </div>
