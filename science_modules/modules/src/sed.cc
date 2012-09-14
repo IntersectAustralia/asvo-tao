@@ -260,11 +260,4 @@ namespace tao {
 
       LOG_EXIT();
    }
-
-   void
-   sed::_setup_query_template()
-   {
-      _query_tmpl = str( format( "SELECT disk_mass, bulge_mass, disk_rate, bulge_rate FROM %1% " ) % galaxy.table() );
-      query += str( format( "WHERE %1%.left < -left- AND %1%.right > -right-" ) % galaxy.table() );
-   }
 }

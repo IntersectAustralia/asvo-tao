@@ -83,7 +83,7 @@ namespace tao {
       _interp_metal( real_type metal );
 
       void
-      _read_ssp();
+      _read_ssp( const hpc::string& filename );
 
       void
       _read_options( const hpc::options::dictionary& dict,
