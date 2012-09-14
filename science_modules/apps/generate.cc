@@ -4,8 +4,10 @@
 #include <soci/soci.h>
 #include <soci/sqlite3/soci-sqlite3.h>
 #include <libhpc/libhpc.hh>
+#include <tao/base/flat.hh>
 
 using namespace hpc;
+using namespace tao;
 using soci::use;
 using soci::into;
 
@@ -28,16 +30,20 @@ void
 write_flat_file( soci::session& sql,
                  const string& filename )
 {
-   // Open the file.
-   std::ofstream file( filename, std::ios::out );
-   ASSERT( file.good() );
+   // // Open the file.
+   // std::ofstream file( filename, std::ios::out );
+   // ASSERT( file.good() );
 
    // Need to create two datatypes, one for memory and the other for file.
    h5::datatype mem_type, file_type;
-   make_flat_types<double>( mem_type, file_type );
+   make_hdf5_types<double>( mem_type, file_type );
 
    // Create new file for writing.
-   h5::file( filename, H5F_ACC_TRUNC );
+   h5::file file( filename, H5F_ACC_TRUNC );
+
+   // Get the number of snapshots we're dealing with.
+   unsigned num_snaps;
+   sql << "SELECT count(*) FROM meta", into( num_snaps );
 
    // How many galaxies are in all the snapshots?
    unsigned net_gals = 0;
@@ -51,38 +57,49 @@ write_flat_file( soci::session& sql,
 
    // Create a file dataset of the appropriate size.
    h5::dataspace file_space;
-   file_space.create( num_flat_gals );
+   file_space.create( net_gals );
    h5::dataset file_set;
-   flat_set.create( file, "flat_trees", file_type, file_space );
+   file_set.create( file, "flat_trees", file_type, file_space );
 
    // Create a memory space of a single elements size.
    h5::dataspace mem_space;
    mem_space.create( 1 );
 
    // Iterate over all flat objects, in order, to write them.
-   unsigned cur_gal = 0;
-   soci::rowset<soci::row> rowset( (sql.prepare << string( "SELECT * FROM " ) + snapshot) );
    vector<hsize_t> count( 1 ), start( 1 );
-   for( soci::rowset<soci::row>::const_iterator it = rowset.begin(); it != rowset.end(); ++it )
+   soci::rowset<soci::row> snap_rowset( (sql.prepare << "SELECT * FROM meta ORDER BY -redshift") );
+   for( soci::rowset<soci::row>::const_iterator snap_it = snap_rowset.begin(); snap_it != snap_rowset.end(); ++snap_it )
    {
-      // Prepare the data.
-      flat_info<double> info;
-      info.disk_mass = row.get<double>( "disk_mass" );
-      info.bulge_mass = row.get<double>( "bulge_mass" );
-      info.disk_rate = row.get<double>( "disk_rate" );
-      info.bulge_rate = row.get<double>( "bulge_rate" );
-      info.disk_metal = row.get<double>( "disk_metal" );
-      info.bulge_metal = row.get<double>( "bulge_metal" );
-      info.redshift = redshift;
+      // Cache the table name and the redshift.
+      string table = snap_it->get<string>( "snap_table" );
+      double redshift = snap_it->get<double>( "redshift" );
 
-      // Select the appropriate element in the file based on the row. Note that
-      // we only write this particular galaxy.
-      start[0] = row.get<int>( "flat_offset" );
-      count[0] = 1;
-      file_space.select_hyperslab( H5S_SELECT_SET, count, start );
+      // Iterate over the entries in the snapshot table.
+      soci::rowset<soci::row> rowset( (sql.prepare << string( "SELECT * FROM " ) + table) );
+      for( soci::rowset<soci::row>::const_iterator it = rowset.begin(); it != rowset.end(); ++it )
+      {
+         // Cache the row.
+         const soci::row& row = *it;
 
-      // Transfer each element, in order, to the file.
-      file_set.write( &info, mem_type, mem_space, file_space );
+         // Prepare the data.
+         flat_info<double> info;
+         info.disk_mass = row.get<double>( "disk_mass" );
+         info.bulge_mass = row.get<double>( "bulge_mass" );
+         info.disk_rate = row.get<double>( "disk_rate" );
+         info.bulge_rate = row.get<double>( "bulge_rate" );
+         info.disk_metal = row.get<double>( "disk_metal" );
+         info.bulge_metal = row.get<double>( "bulge_metal" );
+         info.redshift = redshift;
+
+         // Select the appropriate element in the file based on the row. Note that
+         // we only write this particular galaxy.
+         start[0] = row.get<int>( "flat_offset" );
+         count[0] = 1;
+         file_space.select_hyperslab( H5S_SELECT_SET, count, start );
+
+         // Transfer each element, in order, to the file.
+         file_set.write( &info, mem_type, mem_space, file_space );
+      }
    }
 }
 
@@ -90,11 +107,17 @@ int
 main( int argc,
       char* argv[] )
 {
+   mpi::initialise( argc, argv );
+
    ASSERT( argc > 1 );
    LOG_CONSOLE();
 
+   // Setup the filenames.
+   string db_filename = string( argv[1] ) + ".db";
+   string flat_filename = string( argv[1] ) + ".flat";
+
    // Open database session.
-   soci::session sql( soci::sqlite3, argv[1] );
+   soci::session sql( soci::sqlite3, db_filename );
 
    // Define some values.
    unsigned num_snapshots = 12;
@@ -144,7 +167,7 @@ main( int argc,
    std::vector<double> sfhd( chunk_size ), sfhb( chunk_size );
    std::vector<double> metd( chunk_size ), metb( chunk_size );
    std::vector<unsigned> gal_ids( chunk_size );
-   unsigned flat = 0;
+   unsigned flat_offs = 0;
 
    // Produce as many galaxies as requested.
    LOGLN( "Generating galaxies...", setindent( 2 ) );
@@ -176,7 +199,7 @@ main( int argc,
          bmetal = generate_uniform<double>( min_bulge_metal, max_bulge_metal );
 
          // Generate a zero-depth hierarchy.
-         unsigned flat_offset = flat++, flat_length = 1;
+         unsigned flat_length = 1;
 
          // Insert galaxy object position information.
          for( unsigned jj = 0; jj < num_snapshots; ++jj )
@@ -190,7 +213,7 @@ main( int argc,
                use( dmass ), use( bmass ),
                use( drate ), use( brate ),
                use( dmetal ), use( bmetal ),
-               use( flat_offset ), use( flat_length );
+               use( flat_offs++ ), use( flat_length );
          }
 
          // Update.
@@ -205,5 +228,9 @@ main( int argc,
       trn.commit();
    }
 
+   // Now that the database in order, dump the flat file.
+   write_flat_file( sql, flat_filename );
+
+   mpi::finalise();
    return EXIT_SUCCESS;
 }
