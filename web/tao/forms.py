@@ -67,8 +67,8 @@ class RejectForm(forms.Form):
 
 
 class MockGalaxyFactoryForm(BetterForm):
-    dark_matter_simulation = forms.ChoiceField(choices=[(x, x) for x in datasets.dark_matter_simulations()])
-    somethingelse = forms.ChoiceField(choices=[('a', 'a1'), ('b', 'b1'), ('c', 'c1')])
+    dark_matter_simulation = forms.ChoiceField(choices=datasets.dark_matter_simulation_choices())
+    galaxy_model = forms.ChoiceField(choices=datasets.galaxy_model_choices())
 
     class Meta:
         fieldsets = [('primary', {
@@ -76,5 +76,5 @@ class MockGalaxyFactoryForm(BetterForm):
             'fields': ['dark_matter_simulation'],
         }), ('secondary', {
             'legend': 'secondary',
-            'fields': ['somethingelse'],
+            'fields': ['galaxy_model'],
         }),]

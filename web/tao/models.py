@@ -1,6 +1,7 @@
 import django.contrib.auth.models as auth_models
 from django.db import models
 
+
 class UserProfile(models.Model):
     user = models.OneToOneField(auth_models.User)
 
@@ -23,6 +24,15 @@ class User(auth_models.User):
 
 
 class Simulation(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __unicode__(self):
+        return self.name
+
+
+class GalaxyModel(models.Model):
+    simulation = models.ForeignKey(Simulation)
+
     name = models.CharField(max_length=100)
 
     def __unicode__(self):
