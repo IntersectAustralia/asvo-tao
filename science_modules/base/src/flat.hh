@@ -41,7 +41,7 @@ namespace tao {
       file_type.insert( hpc::h5::datatype::ieee_f64be, "bulge star formation rate", 3*8 );
       file_type.insert( hpc::h5::datatype::ieee_f64be, "disk metallicity", 4*8 );
       file_type.insert( hpc::h5::datatype::ieee_f64be, "bulge metallicity", 5*8 );
-      file_type.insert( hpc::h5::datatype::ieee_f64be, "bulge metallicity", 6*8 );
+      file_type.insert( hpc::h5::datatype::ieee_f64be, "redshift", 6*8 );
    }
 }
 
