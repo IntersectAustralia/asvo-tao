@@ -66,9 +66,12 @@ class RejectForm(forms.Form):
     reason = forms.CharField(widget=forms.Textarea(attrs={'rows': 3}), required=False)
 
 
+from tao.widgets import ChoiceFieldWithOtherAttrs
+
 class MockGalaxyFactoryForm(BetterForm):
     dark_matter_simulation = forms.ChoiceField(choices=datasets.dark_matter_simulation_choices())
     galaxy_model = forms.ChoiceField(choices=datasets.galaxy_model_choices())
+    somethingelse = ChoiceFieldWithOtherAttrs(choices=[(1,2,{'a': 'b'}), (2,3,{'c': 'd'})])
 
     class Meta:
         fieldsets = [('primary', {
@@ -76,5 +79,5 @@ class MockGalaxyFactoryForm(BetterForm):
             'fields': ['dark_matter_simulation'],
         }), ('secondary', {
             'legend': 'secondary',
-            'fields': ['galaxy_model'],
+            'fields': ['galaxy_model', 'somethingelse'],
         }),]
