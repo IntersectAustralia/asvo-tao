@@ -49,15 +49,40 @@ write_flat_file( soci::session& sql,
       net_gals += num_in_this;
    }
 
-   // Create a file dataset of the appropraite size.
-   h5::
+   // Create a file dataset of the appropriate size.
+   h5::dataspace file_space;
+   file_space.create( num_flat_gals );
+   h5::dataset file_set;
+   flat_set.create( file, "flat_trees", file_type, file_space );
 
-   //
-   double dmass, bmass, drate, brate;
-   sql << string( "SELECT * FROM " ) + snapshot;
-   for( rowset.blah() )
+   // Create a memory space of a single elements size.
+   h5::dataspace mem_space;
+   mem_space.create( 1 );
+
+   // Iterate over all flat objects, in order, to write them.
+   unsigned cur_gal = 0;
+   soci::rowset<soci::row> rowset( (sql.prepare << string( "SELECT * FROM " ) + snapshot) );
+   vector<hsize_t> count( 1 ), start( 1 );
+   for( soci::rowset<soci::row>::const_iterator it = rowset.begin(); it != rowset.end(); ++it )
    {
-      
+      // Prepare the data.
+      flat_info<double> info;
+      info.disk_mass = row.get<double>( "disk_mass" );
+      info.bulge_mass = row.get<double>( "bulge_mass" );
+      info.disk_rate = row.get<double>( "disk_rate" );
+      info.bulge_rate = row.get<double>( "bulge_rate" );
+      info.disk_metal = row.get<double>( "disk_metal" );
+      info.bulge_metal = row.get<double>( "bulge_metal" );
+      info.redshift = redshift;
+
+      // Select the appropriate element in the file based on the row. Note that
+      // we only write this particular galaxy.
+      start[0] = row.get<int>( "flat_offset" );
+      count[0] = 1;
+      file_space.select_hyperslab( H5S_SELECT_SET, count, start );
+
+      // Transfer each element, in order, to the file.
+      file_set.write( &info, mem_type, mem_space, file_space );
    }
 }
 
