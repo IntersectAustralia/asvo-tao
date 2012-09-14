@@ -6,6 +6,7 @@
         <thead>
             <tr>
                 <th>Submitted at</th>
+                <th>Description</th>
             </tr>
         </thead>
         <tbody>
@@ -13,6 +14,9 @@
                 <tr>
                     <td>
                         {{ job }}
+                    </td>
+                    <td>
+                        {{ job.description }}
                     </td>
                 </tr>
             {% endfor %}
