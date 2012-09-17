@@ -71,7 +71,7 @@ write_flat_file( soci::session& sql,
    for( soci::rowset<soci::row>::const_iterator snap_it = snap_rowset.begin(); snap_it != snap_rowset.end(); ++snap_it )
    {
       // Cache the table name and the redshift.
-      string table = snap_it->get<string>( "snap_table" );
+      string table = table_name( snap_it->get<int>( "snap_table" ) );
       double redshift = snap_it->get<double>( "redshift" );
 
       // Iterate over the entries in the snapshot table.
@@ -114,7 +114,7 @@ main( int argc,
 
    // Setup the filenames.
    string db_filename = string( argv[1] ) + ".db";
-   string flat_filename = string( argv[1] ) + ".flat";
+   string flat_filename = string( argv[1] ) + ".flat.0";
 
    // Open database session.
    soci::session sql( soci::sqlite3, db_filename );
@@ -136,11 +136,11 @@ main( int argc,
 
    // Create the metadata table.
    LOGLN( "Creating metadata table..." );
-   sql << "CREATE TABLE meta (snap_table TEXT, redshift DOUBLE PRECISION, box_size DOUBLE PRECISION)";
+   sql << "CREATE TABLE meta (snap_table INTEGER, redshift DOUBLE PRECISION, box_size DOUBLE PRECISION)";
    for( unsigned ii = 0; ii < num_snapshots; ++ii )
    {
       sql << "INSERT INTO meta VALUES(:table, :z, :box)",
-         use( table_name( ii ) ), use( start_z + ii*dz ),
+         use( ii ), use( start_z + ii*dz ),
          use( box_size );
    }
    LOGLN( "done." );
@@ -155,7 +155,7 @@ main( int argc,
          "disk_mass DOUBLE PRECISION, bulge_mass DOUBLE PRECISION, "
          "disk_rate DOUBLE PRECISION, bulge_rate DOUBLE PRECISION, "
          "disk_metal DOUBLE PRECISION, bulge_metal DOUBLE PRECISION, "
-         "flat_offset INTEGER, flat_length INTEGER)";
+         "flat_file INTEGER, flat_offset INTEGER, flat_length INTEGER)";
       sql << query;
    }
    LOGLN( "done." );
@@ -167,7 +167,7 @@ main( int argc,
    std::vector<double> sfhd( chunk_size ), sfhb( chunk_size );
    std::vector<double> metd( chunk_size ), metb( chunk_size );
    std::vector<unsigned> gal_ids( chunk_size );
-   unsigned flat_offs = 0;
+   unsigned flat_offs = 0, flat_file = 0;
 
    // Produce as many galaxies as requested.
    LOGLN( "Generating galaxies...", setindent( 2 ) );
@@ -207,13 +207,13 @@ main( int argc,
             string query = "INSERT INTO ";
             query += table_name( jj );
             query += " VALUES(:x, :y, :z, :id, :dm, :bm, "
-               ":dr, :br, :dme, :bme, :fi, :fl)";
+               ":dr, :br, :dme, :bme, :ff, :fi, :fl)";
             sql << query,
                use( x ), use( y ), use( z ), use( gal_id ),
                use( dmass ), use( bmass ),
                use( drate ), use( brate ),
                use( dmetal ), use( bmetal ),
-               use( flat_offs++ ), use( flat_length );
+               use( flat_file ), use( flat_offs++ ), use( flat_length );
          }
 
          // Update.

@@ -9,6 +9,7 @@ using boost::str;
 namespace tao {
 
    sed::sed()
+      : _cur_flat_file( -1 )
    {
    }
 
@@ -55,6 +56,9 @@ namespace tao {
                     optional<const string&> prefix )
    {
       LOG_ENTER();
+
+      // Create flat HDF5 types.
+      make_hdf5_types( _flat_mem_type, _flat_file_type );
 
       _read_options( dict, prefix );
 
@@ -214,6 +218,52 @@ namespace tao {
    }
 
    void
+   sed::_rebin_info( unsigned flat_file,
+                     unsigned flat_offset,
+                     unsigned flat_length )
+   {
+      // Be sure we have the correct flat information available.
+      _update_flat_info( flat_file );
+
+      // Create the knots for disk/bulge star formation rates.
+      fibre<real_type> dknots( 2, flat_length ), bknots( 2, flat_length );
+      for( unsigned ii = 0; ii < flat_length; ++ii )
+      {
+         dknots(ii,0) = _flat_data[flat_offset + ii].redshift;
+         bknots(ii,0) = _flat_data[flat_offset + ii].redshift;
+         dknots(ii,1) = _flat_data[flat_offset + ii].disk_rate;
+         bknots(ii,1) = _flat_data[flat_offset + ii].bulge_rate;
+      }
+
+      // Prepare splines.
+      numerics::spline dspline, bspline;
+      dspline.set_knots( dknots );
+      bspline.set_knots( bknots );
+
+      // Integrate
+
+      // Iterate over new time points, interpolating.
+      for( unsigned ii = 0; ii < _age_points; ++ii )
+      {
+         _disk_sfr[ii] = dspline( _age_points[ii] );
+         _bulge_sfr[ii] = bspline( _age_points[ii] );
+      }
+   }
+
+   void
+   sed::_update_flat_info( unsigned flat_file )
+   {
+      if( flat_file != _flat_file )
+      {
+         // For now I force continually increasing flat files. This may
+         // change in the future.
+         ASSERT( flat_file > _flat_file );
+
+         _read_flat_file( "trees", flat_file );
+      }
+   }
+
+   void
    sed::_read_options( const options::dictionary& dict,
                        optional<const string&> prefix )
    {
@@ -259,5 +309,15 @@ namespace tao {
       }
 
       LOG_EXIT();
+   }
+
+   void
+   sed::_read_flat_file( const string& base_filename,
+                         unsigned flat_file )
+   {
+      string filename = base_filename + string( ".flat." ) + to_string( flat_file );
+      h5::file file( filename, H5_ACC_RONLY );
+      _flat_data.reallocate( file.read_data_size( "flat_trees" ) );
+      file.read( "flat_trees", _flat_mem_type, _flat_data, _flat_file_type );
    }
 }

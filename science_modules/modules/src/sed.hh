@@ -96,6 +96,10 @@ namespace tao {
       hpc::vector<real_type> _bulge_sfh, _bulge_metals;
       hpc::vector<real_type> _disk_spectra, _bulge_spectra, _total_spectra;
       hpc::vector<real_type> _ssp;
+
+      hpc::h5::datatype _flat_mem_type, _flat_file_type;
+      hpc::vector<flat_info> _flat_data;
+      int _cur_flat_file;
    };
 }
 
