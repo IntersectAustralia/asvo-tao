@@ -1,5 +1,7 @@
 #include <fstream>
+#include <boost/algorithm/string/trim.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/tokenizer.hpp>
 #include "sed.hh"
 
 using namespace hpc;
@@ -27,13 +29,12 @@ namespace tao {
    sed::setup_options( options::dictionary& dict,
                        optional<const string&> prefix )
    {
-      dict.add_option( new options::string( "database_type" ), prefix );
-      dict.add_option( new options::string( "database_name" ), prefix );
-      dict.add_option( new options::string( "database_host", string() ), prefix );
-      dict.add_option( new options::string( "database_user", string() ), prefix );
-      dict.add_option( new options::string( "database_pass", string() ), prefix );
+      // dict.add_option( new options::string( "database_type" ), prefix );
+      // dict.add_option( new options::string( "database_name" ), prefix );
+      // dict.add_option( new options::string( "database_host", string() ), prefix );
+      // dict.add_option( new options::string( "database_user", string() ), prefix );
+      // dict.add_option( new options::string( "database_pass", string() ), prefix );
       dict.add_option( new options::string( "ssp_filename" ), prefix );
-      dict.add_option( new options::integer( "num_times" ), prefix );
       dict.add_option( new options::integer( "num_spectra" ), prefix );
       dict.add_option( new options::integer( "num_metals" ), prefix );
    }
@@ -58,16 +59,16 @@ namespace tao {
       LOG_ENTER();
 
       // Create flat HDF5 types.
-      make_hdf5_types( _flat_mem_type, _flat_file_type );
+      make_hdf5_types<real_type>( _flat_mem_type, _flat_file_type );
 
       _read_options( dict, prefix );
 
       // Allocate for storing star-formation histories and
       // metallicities.
-      _disk_sfh.resize( _num_times );
-      _disk_metals.resize( _num_times );
-      _bulge_sfh.resize( _num_times );
-      _bulge_metals.resize( _num_times );
+      _disk_sfh.resize( _ages.size() );
+      _disk_metals.resize( _ages.size() );
+      _bulge_sfh.resize( _ages.size() );
+      _bulge_metals.resize( _ages.size() );
 
       // Allocate for output spectra.
       _disk_spectra.reallocate( _num_spectra );
@@ -111,23 +112,14 @@ namespace tao {
       LOGLN( "Processing galaxy with ID ", gal_id );
 
       // Read the star-formation histories for this galaxy.
-
-
-      _sql << "select mass, metal from disk_star_formation where galaxy_id=:id order by -age",
-         soci::into( (std::vector<real_type>&)_disk_sfh ), soci::into( (std::vector<real_type>&)_disk_metals ), soci::use( gal_id );
-      _sql << "select mass, metal from bulge_star_formation where galaxy_id=:id order by -age",
-         soci::into( (std::vector<real_type>&)_bulge_sfh ), soci::into( (std::vector<real_type>&)_bulge_metals ), soci::use( gal_id );
-      LOGLN( "Disk SFH: ", _disk_sfh );
-      LOGLN( "Disk metals: ", _disk_metals );
-      LOGLN( "Bulge SFH: ", _bulge_sfh );
-      LOGLN( "Bulge metals: ", _bulge_metals );
+      _rebin_info( galaxy.flat_file(), galaxy.flat_offset(), galaxy.flat_length() );
 
       // Clear disk and bulge output spectrums.
       std::fill( _disk_spectra.begin(), _disk_spectra.end(), 0.0 );
       std::fill( _bulge_spectra.begin(), _bulge_spectra.end(), 0.0 );
 
       // Process each time.
-      for( mpi::lindex ii = 0; ii < _num_times; ++ii )
+      for( mpi::lindex ii = 0; ii < _ages.size(); ++ii )
          _process_time( ii );
 
       // Create total spectra.
@@ -164,8 +156,8 @@ namespace tao {
       LOG_ENTER();
       LOGLN( "Processing time ", time_idx );
 
-      _sum_spectra( time_idx, _disk_metals[time_idx], _disk_sfh[time_idx], _disk_spectra );
-      _sum_spectra( time_idx, _bulge_metals[time_idx], _bulge_sfh[time_idx], _bulge_spectra );
+      _sum_spectra( time_idx, _disk_metals[time_idx], _disk_age_masses[time_idx], _disk_spectra );
+      _sum_spectra( time_idx, _bulge_metals[time_idx], _bulge_age_masses[time_idx], _bulge_spectra );
 
       LOG_EXIT();
    }
@@ -173,7 +165,7 @@ namespace tao {
    void
    sed::_sum_spectra( mpi::lindex time_idx,
                       real_type metal,
-                      real_type sfh,
+                      real_type age_mass,
                       vector<real_type>::view galaxy_spectra )
    {
       LOG_ENTER();
@@ -192,7 +184,7 @@ namespace tao {
          // solar masses/1e10. The values in SSP are luminosity densities
          // in erg/s/angstrom, and they're really big. Scale them down
          // by 1e10 to make it more manageable.
-         galaxy_spectra[ii] += _ssp[base + ii*_num_metals]*sfh;
+         galaxy_spectra[ii] += _ssp[base + ii*_num_metals]*age_mass;
       }
 
       LOG_EXIT();
@@ -222,45 +214,126 @@ namespace tao {
                      unsigned flat_offset,
                      unsigned flat_length )
    {
+      LOG_ENTER();
+
       // Be sure we have the correct flat information available.
       _update_flat_info( flat_file );
 
-      // Create the knots for disk/bulge star formation rates.
-      fibre<real_type> dknots( 2, flat_length ), bknots( 2, flat_length );
-      for( unsigned ii = 0; ii < flat_length; ++ii )
+      // If there is only one item to rebin, don't try to build the cubic splines.
+      if( flat_length > 1 )
       {
-         dknots(ii,0) = _flat_data[flat_offset + ii].redshift;
-         bknots(ii,0) = _flat_data[flat_offset + ii].redshift;
-         dknots(ii,1) = _flat_data[flat_offset + ii].disk_rate;
-         bknots(ii,1) = _flat_data[flat_offset + ii].bulge_rate;
+         LOGLN( "Flat length greater than one." );
+
+         // Create the knots for disk/bulge star formation rates.
+         fibre<real_type> dknots( 2, flat_length ), bknots( 2, flat_length );
+         for( unsigned ii = 0; ii < flat_length; ++ii )
+         {
+            dknots(ii,0) = _flat_data[flat_offset + ii].redshift;
+            bknots(ii,0) = _flat_data[flat_offset + ii].redshift;
+            dknots(ii,1) = _flat_data[flat_offset + ii].disk_rate;
+            bknots(ii,1) = _flat_data[flat_offset + ii].bulge_rate;
+         }
+
+         // Prepare splines.
+         numerics::spline<real_type> dspline, bspline;
+         dspline.set_knots( dknots );
+         bspline.set_knots( bknots );
+
+         // Clear out values.
+         std::fill( _disk_age_masses.begin(), _disk_age_masses.end(), 0.0 );
+         std::fill( _bulge_age_masses.begin(), _bulge_age_masses.end(), 0.0 );
+
+         // Integrate.
+         typedef vector<real_type>::view array_type;
+         element<array_type> take_first( 0 );
+         range<real_type> old_rng( dspline.knots().front()[0], dspline.knots().back()[0] );
+         range<real_type> new_rng( _ages.front(), _ages.back() );
+         real_type low = old_rng.start();
+         real_type upp = old_rng.finish();
+         auto it = make_interp_iterator(
+            boost::make_transform_iterator( dspline.knots().begin(), take_first ),
+            boost::make_transform_iterator( dspline.knots().end(), take_first ),
+            _ages.begin(),
+            _ages.end(),
+            1e-7
+            );
+         while( !num::approx( *it, low, 1e-7 ) )
+            ++it;
+         vector<real_type> crds( 4 ), weights( 4 );
+         _gauss_quad( crds, weights );
+         while( !num::approx( *it++, upp, 1e-7 ) )
+         {
+            real_type w = *it - low;
+            real_type jac_det = 0.5*(low - *it);
+            unsigned old_poly = it.indices()[0] - 1;
+            unsigned new_poly = it.indices()[1] - 1;
+            for( unsigned ii = 0; ii < 4; ++ii )
+            {
+               real_type x = low + w*0.5*(1.0 + crds[ii]);
+
+               // This integral looks like this because of a change of variable
+               // frome wavelength to frequency. Do the math!
+               _disk_age_masses[new_poly] += jac_det*weights[ii]*dspline( x, old_poly );
+               _bulge_age_masses[new_poly] += jac_det*weights[ii]*bspline( x, old_poly );
+            }
+            low = *it;
+         }
+      }
+      else
+      {
+         LOGLN( "Flat length equal to one." );
+
+         // Locate the correct bin.
+         auto it = std::lower_bound( _ages.begin(), _ages.end(), _flat_data[flat_offset].redshift );
+         unsigned bin;
+         if( it == _ages.end() )
+            bin = _ages.size() - 1;
+         else
+            bin = *it;
+         LOGLN( "Redshift ", _flat_data[flat_offset].redshift, " correlates to bin ", bin );
+         _disk_age_masses[bin] = _flat_data[flat_offset].disk_mass;
+         _bulge_age_masses[bin] = _flat_data[flat_offset].bulge_mass;
       }
 
-      // Prepare splines.
-      numerics::spline dspline, bspline;
-      dspline.set_knots( dknots );
-      bspline.set_knots( bknots );
+      LOGLN( "Disk masses: ", _disk_age_masses );
+      LOGLN( "Bulge masses: ", _bulge_age_masses );
+      LOG_EXIT();
+   }
 
-      // Integrate
-
-      // Iterate over new time points, interpolating.
-      for( unsigned ii = 0; ii < _age_points; ++ii )
-      {
-         _disk_sfr[ii] = dspline( _age_points[ii] );
-         _bulge_sfr[ii] = bspline( _age_points[ii] );
-      }
+   void
+   sed::_gauss_quad( vector<real_type>::view crds,
+                     vector<real_type>::view weights )
+   {
+      real_type v0 = sqrt( (3.0 - 2.0*sqrt( 6.0/5.0 ))/7.0 );
+      real_type v1 = sqrt( (3.0 + 2.0*sqrt( 6.0/5.0 ))/7.0 );
+      crds[0] = -v1;
+      crds[1] = -v0;
+      crds[2] = v0;
+      crds[3] = v1;
+      weights[0] = (18.0 - sqrt( 30.0 ))/36.0;
+      weights[1] = (18.0 + sqrt( 30.0 ))/36.0;
+      weights[2] = (18.0 + sqrt( 30.0 ))/36.0;
+      weights[3] = (18.0 - sqrt( 30.0 ))/36.0;
    }
 
    void
    sed::_update_flat_info( unsigned flat_file )
    {
-      if( flat_file != _flat_file )
+      LOG_ENTER();
+
+      if( flat_file != _cur_flat_file )
       {
+         LOGLN( "Need to change flat file." );
+
          // For now I force continually increasing flat files. This may
          // change in the future.
-         ASSERT( flat_file > _flat_file );
+         ASSERT( (int)flat_file > _cur_flat_file );
 
          _read_flat_file( "trees", flat_file );
+         _cur_flat_file = flat_file;
       }
+
+      LOG_EXIT();
    }
 
    void
@@ -270,19 +343,18 @@ namespace tao {
       // Get the sub dictionary, if it exists.
       const options::dictionary& sub = prefix ? dict.sub( *prefix ) : dict;
 
-      // Extract database details.
-      _dbtype = sub.get<string>( "database_type" );
-      _dbname = sub.get<string>( "database_name" );
-      _dbhost = sub.get<string>( "database_host" );
-      _dbuser = sub.get<string>( "database_user" );
-      _dbpass = sub.get<string>( "database_pass" );
-      _db_connect( _sql, _dbtype, _dbname );
+      // // Extract database details.
+      // _dbtype = sub.get<string>( "database_type" );
+      // _dbname = sub.get<string>( "database_name" );
+      // _dbhost = sub.get<string>( "database_host" );
+      // _dbuser = sub.get<string>( "database_user" );
+      // _dbpass = sub.get<string>( "database_pass" );
+      // _db_connect( _sql, _dbtype, _dbname );
 
       // Extract the counts.
-      _num_times = sub.get<unsigned>( "num_times" );
       _num_spectra = sub.get<unsigned>( "num_spectra" );
       _num_metals = sub.get<unsigned>( "num_metals" );
-      LOGLN( "Number of times: ", _num_times );
+      LOGLN( "Number of times: ", _ages.size() );
       LOGLN( "Number of spectra: ", _num_spectra );
       LOGLN( "Number of metals: ", _num_metals );
 
@@ -295,12 +367,33 @@ namespace tao {
    {
       LOG_ENTER();
 
+      // The SSP file contains the age grid information first.
+      std::ifstream file( filename, std::ios::in );
+      unsigned num_ages;
+      file >> num_ages;
+      ASSERT( file.good() );
+      _ages.reallocate( num_ages );
+      _disk_age_masses.reallocate( num_ages );
+      _bulge_age_masses.reallocate( num_ages );
+      for( unsigned ii = 0; ii < num_ages; ++ii )
+      {
+         file >> _ages[ii];
+         ASSERT( file.good() );
+      }
+
+      // Must be ordered.
+      std::sort( _ages.begin(), _ages.end() );
+
+      // Take the dual.
+      for( unsigned ii = 0; ii < _ages.size() - 1; ++ii )
+         _ages[ii] = 0.5*(_ages[ii] + _ages[ii + 1]);
+      _ages.resize( _ages.size() - 1 );
+
       // Allocate. Note that the ordering goes time,spectra,metals.
-      _ssp.reallocate( _num_times*_num_spectra*_num_metals );
+      _ssp.reallocate( _ages.size()*_num_spectra*_num_metals );
       LOGLN( "Reallocated SSP array to ", _ssp.size() );
 
       // Read in the file in one big go.
-      std::ifstream file( filename, std::ios::in );
       for( unsigned ii = 0; ii < _ssp.size(); ++ii )
       {
          // These values are luminosity densities, in erg/s/angstrom.
@@ -316,8 +409,8 @@ namespace tao {
                          unsigned flat_file )
    {
       string filename = base_filename + string( ".flat." ) + to_string( flat_file );
-      h5::file file( filename, H5_ACC_RONLY );
+      h5::file file( filename, H5F_ACC_RDONLY );
       _flat_data.reallocate( file.read_data_size( "flat_trees" ) );
-      file.read( "flat_trees", _flat_mem_type, _flat_data, _flat_file_type );
-   }
+      file.read<flat_info<real_type>>( "flat_trees", _flat_mem_type, _flat_data );
+         }
 }

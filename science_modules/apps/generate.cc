@@ -198,9 +198,6 @@ main( int argc,
          dmetal = generate_uniform<double>( min_disk_metal, max_disk_metal );
          bmetal = generate_uniform<double>( min_bulge_metal, max_bulge_metal );
 
-         // Generate a zero-depth hierarchy.
-         unsigned flat_length = 1;
-
          // Insert galaxy object position information.
          for( unsigned jj = 0; jj < num_snapshots; ++jj )
          {
@@ -213,7 +210,7 @@ main( int argc,
                use( dmass ), use( bmass ),
                use( drate ), use( brate ),
                use( dmetal ), use( bmetal ),
-               use( flat_file ), use( flat_offs++ ), use( flat_length );
+               use( flat_file ), use( flat_offs++ ), use( jj + 1 );
          }
 
          // Update.

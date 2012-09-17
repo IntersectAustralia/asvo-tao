@@ -34,4 +34,22 @@ namespace tao {
    {
       return _row.get<real_type>( "z" ) + _box[2];
    }
+
+   unsigned
+   galaxy::flat_file() const
+   {
+      return _row.get<int>( "flat_file" );
+   }
+
+   unsigned
+   galaxy::flat_offset() const
+   {
+      return _row.get<int>( "flat_offset" );
+   }
+
+   unsigned
+   galaxy::flat_length() const
+   {
+      return _row.get<int>( "flat_length" );
+   }
 }

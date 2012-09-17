@@ -29,6 +29,15 @@ namespace tao {
       real_type
       z() const;
 
+      unsigned
+      flat_file() const;
+
+      unsigned
+      flat_offset() const;
+
+      unsigned
+      flat_length() const;
+
    protected:
 
       const soci::row& _row;

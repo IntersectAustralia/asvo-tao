@@ -15,9 +15,11 @@ int
 main( int argc,
       char* argv[] )
 {
-   LOG_PUSH( new hpc::logging::file( "tao.log", hpc::logging::info ) );
+   hpc::mpi::initialise( argc, argv );
+   LOG_PUSH( new hpc::logging::file( "tao.log" ) );
    tao::application<pipeline> app( argc, argv );
    app.run();
+   hpc::mpi::finalise();
    return EXIT_SUCCESS;
 }
 

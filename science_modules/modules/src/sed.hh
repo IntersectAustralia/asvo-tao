@@ -83,22 +83,40 @@ namespace tao {
       _interp_metal( real_type metal );
 
       void
+      _rebin_info( unsigned flat_file,
+                   unsigned flat_offset,
+                   unsigned flat_length );
+
+      void
+      _gauss_quad( hpc::vector<real_type>::view crds,
+                   hpc::vector<real_type>::view weights );
+
+      void
+      _update_flat_info( unsigned flat_file );
+
+      void
       _read_ssp( const hpc::string& filename );
 
       void
       _read_options( const hpc::options::dictionary& dict,
                      hpc::optional<const hpc::string&> prefix=hpc::optional<const hpc::string&>() );
 
+      void
+      _read_flat_file( const hpc::string& base_filename,
+                       unsigned flat_file );
+
    protected:
 
-      hpc::mpi::lindex _num_times, _num_spectra, _num_metals;
+      hpc::vector<real_type> _ages;
+      hpc::vector<real_type> _disk_age_masses, _bulge_age_masses;
+      hpc::mpi::lindex _num_spectra, _num_metals;
       hpc::vector<real_type> _disk_sfh, _disk_metals;
       hpc::vector<real_type> _bulge_sfh, _bulge_metals;
       hpc::vector<real_type> _disk_spectra, _bulge_spectra, _total_spectra;
       hpc::vector<real_type> _ssp;
 
       hpc::h5::datatype _flat_mem_type, _flat_file_type;
-      hpc::vector<flat_info> _flat_data;
+      hpc::vector<flat_info<real_type>> _flat_data;
       int _cur_flat_file;
    };
 }

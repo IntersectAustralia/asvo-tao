@@ -89,7 +89,12 @@ namespace tao {
       for( unsigned ii = 0; ii < _filters.size(); ++ii )
       {
          real_type spec_int = _integrate( spectra_spline, _filters[ii] );
-         _mags[ii] = -2.5*(log10( spec_int ) - area - log10( _filt_int[ii] )) - 48.6;
+
+         // Need to check that there is in fact a spectra.
+         if( !num::approx( spec_int, 0.0, 1e-12 ) )
+            _mags[ii] = -2.5*(log10( spec_int ) - area - log10( _filt_int[ii] )) - 48.6;
+         else
+            _mags[ii] = 0.0;
       }
       LOGLN( "Band magnitudes: ", _mags );
    }

@@ -61,7 +61,8 @@ struct pipeline
          // Perform filtering and cache the particular
          // band we're interested in.
          filter.process_galaxy( gal, lc.redshift(), spectra );
-         real_type v_mag = filter.magnitudes()[3]; // V band
+         real_type v_mag = filter.magnitudes()[1]; // V band
+         std::cout << "Adding galaxy: " << v_mag << "\n";
 
          // Add to the skymaker object list.
          skymaker.add_galaxy( gal, v_mag );
