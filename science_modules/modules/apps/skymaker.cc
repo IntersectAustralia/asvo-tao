@@ -52,7 +52,7 @@ struct pipeline
       {
          // Cache the database row.
          const galaxy gal = *lc;
-         LOGLN( "Processing galaxy: ", gal.id(), setindent( 2 ) );
+         LOGLN( "Processing galaxy: ", gal, setindent( 2 ) );
 
          // Calculate the SED and cache results.
          sed.process_galaxy( gal );
@@ -62,7 +62,6 @@ struct pipeline
          // band we're interested in.
          filter.process_galaxy( gal, lc.redshift(), spectra );
          real_type v_mag = filter.magnitudes()[1]; // V band
-         std::cout << "Adding galaxy: " << v_mag << "\n";
 
          // Add to the skymaker object list.
          skymaker.add_galaxy( gal, v_mag );
