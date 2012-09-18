@@ -16,7 +16,7 @@ main( int argc,
       char* argv[] )
 {
    hpc::mpi::initialise( argc, argv );
-   LOG_PUSH( new hpc::logging::file( "tao.log" ) );
+   LOG_PUSH( new hpc::mpi::logger( "tao.log." ) );
    tao::application<pipeline> app( argc, argv );
    app.run();
    hpc::mpi::finalise();
