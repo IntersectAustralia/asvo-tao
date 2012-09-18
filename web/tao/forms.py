@@ -67,17 +67,31 @@ class RejectForm(forms.Form):
 
 
 from tao.widgets import ChoiceFieldWithOtherAttrs
+from django.utils.functional import lazy
 
 class MockGalaxyFactoryForm(BetterForm):
-    dark_matter_simulation = forms.ChoiceField(choices=datasets.dark_matter_simulation_choices())
-    galaxy_model = forms.ChoiceField(choices=datasets.galaxy_model_choices())
+# todo these only populate on server start
+    dark_matter_simulation = ChoiceFieldWithOtherAttrs(choices=lazy(datasets.dark_matter_simulation_choices, list)())
+    dummy_galaxy_model = ChoiceFieldWithOtherAttrs(choices=datasets.galaxy_model_choices(), required=False)
+    galaxy_model = ChoiceFieldWithOtherAttrs(choices=datasets.galaxy_model_choices())
     somethingelse = ChoiceFieldWithOtherAttrs(choices=[(1,2,{'a': 'b'}), (2,3,{'c': 'd'})])
 
     class Meta:
         fieldsets = [('primary', {
-            'legend': 'primary',
-            'fields': ['dark_matter_simulation'],
+            'legend': 'General',
+            'fields': ['dark_matter_simulation', 'dummy_galaxy_model', 'galaxy_model'],
         }), ('secondary', {
-            'legend': 'secondary',
-            'fields': ['galaxy_model', 'somethingelse'],
+            'legend': 'Parameters',
+            'fields': ['somethingelse'],
+        }), ('third', {
+            'legend': 'Output properties',
+            'fields': [],
+        }), ('fourth', {
+            'legend': 'Miscellaneous',
+            'fields': [],
         }),]
+        row_attrs = {'dummy_galaxy_model': {'style': 'display: none'}}
+
+    def __init__(self):
+        super(self).__init__()
+        self.fields['dark_matter_simulation'].choices
