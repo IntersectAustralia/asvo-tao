@@ -21,6 +21,8 @@ class SelectWithOtherAttrs(forms.Select):
         return u'<option value="%s"%s%s>%s</option>' % (option_value, other_attrs_html, selected_html, option_label)
 
 
+from django.utils.functional import lazy
+
 class ChoiceFieldWithOtherAttrs(forms.ChoiceField):
     """
         Field that accepts custom HTML attrs per option
@@ -29,6 +31,7 @@ class ChoiceFieldWithOtherAttrs(forms.ChoiceField):
     widget = SelectWithOtherAttrs
 
     def __init__(self, choices=(), *args, **kwargs):
-        choice_pairs = [(c[0], c[1]) for c in choices]
-        super(ChoiceFieldWithOtherAttrs, self).__init__(choices=choice_pairs, *args, **kwargs)
+        def choice_pairs():
+            return [(c[0], c[1]) for c in choices]
+        super(ChoiceFieldWithOtherAttrs, self).__init__(choices=lazy(choice_pairs, list)(), *args, **kwargs)
         self.widget.other_attrs = dict([(c[1], c[2]) for c in choices])
