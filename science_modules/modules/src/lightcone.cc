@@ -807,6 +807,9 @@ namespace tao {
          _ra_max = 89.9999999;
       if( _ra_min > _ra_max )
          _ra_min = _ra_max;
+      real_type width = _ra_max - _ra_min;
+      _ra_max = _ra_min + (width*(mpi::comm::world.rank() + 1))/mpi::comm::world.size();
+      _ra_min += (width*mpi::comm::world.rank())/mpi::comm::world.size();
       LOGLN( "Have right ascension range ", _ra_min, " - ", _ra_max );
 
       // Declination.
