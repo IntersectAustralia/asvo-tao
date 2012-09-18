@@ -67,7 +67,7 @@ write_flat_file( soci::session& sql,
 
    // Iterate over all flat objects, in order, to write them.
    vector<hsize_t> count( 1 ), start( 1 );
-   soci::rowset<soci::row> snap_rowset( (sql.prepare << "SELECT * FROM meta ORDER BY -redshift") );
+   soci::rowset<soci::row> snap_rowset( (sql.prepare << "SELECT * FROM meta ORDER BY redshift") );
    for( soci::rowset<soci::row>::const_iterator snap_it = snap_rowset.begin(); snap_it != snap_rowset.end(); ++snap_it )
    {
       // Cache the table name and the redshift.
@@ -76,24 +76,24 @@ write_flat_file( soci::session& sql,
 
       // Iterate over the entries in the snapshot table.
       soci::rowset<soci::row> rowset( (sql.prepare << string( "SELECT * FROM " ) + table) );
-      for( soci::rowset<soci::row>::const_iterator it = rowset.begin(); it != rowset.end(); ++it )
+      for( soci::rowset<soci::row>::const_iterator gal_it = rowset.begin(); gal_it != rowset.end(); ++gal_it )
       {
          // Cache the row.
-         const soci::row& row = *it;
+         const soci::row& gal = *gal_it;
 
          // Prepare the data.
          flat_info<double> info;
-         info.disk_mass = row.get<double>( "disk_mass" );
-         info.bulge_mass = row.get<double>( "bulge_mass" );
-         info.disk_rate = row.get<double>( "disk_rate" );
-         info.bulge_rate = row.get<double>( "bulge_rate" );
-         info.disk_metal = row.get<double>( "disk_metal" );
-         info.bulge_metal = row.get<double>( "bulge_metal" );
+         info.disk_mass = gal.get<double>( "disk_mass" );
+         info.bulge_mass = gal.get<double>( "bulge_mass" );
+         info.disk_rate = gal.get<double>( "disk_rate" );
+         info.bulge_rate = gal.get<double>( "bulge_rate" );
+         info.disk_metal = gal.get<double>( "disk_metal" );
+         info.bulge_metal = gal.get<double>( "bulge_metal" );
          info.redshift = redshift;
 
          // Select the appropriate element in the file based on the row. Note that
          // we only write this particular galaxy.
-         start[0] = row.get<int>( "flat_offset" );
+         start[0] = gal.get<int>( "flat_offset" );
          count[0] = 1;
          file_space.select_hyperslab( H5S_SELECT_SET, count, start );
 
@@ -131,8 +131,8 @@ main( int argc,
    double min_bulge_mass = 0.0, max_bulge_mass = 1e11;
    double min_disk_rate = 0.2, max_disk_rate = 6.0;
    double min_bulge_rate = 0.0, max_bulge_rate = 8e-8;
-   double min_disk_metal = 0.0, max_disk_metal = 1e-1;
-   double min_bulge_metal = 0.0, max_bulge_metal = 1e-1;
+   double min_disk_metal = 0.0, max_disk_metal = 0.06;
+   double min_bulge_metal = 0.0, max_bulge_metal = 0.06;
 
    // Create the metadata table.
    LOGLN( "Creating metadata table..." );
@@ -140,7 +140,7 @@ main( int argc,
    for( unsigned ii = 0; ii < num_snapshots; ++ii )
    {
       sql << "INSERT INTO meta VALUES(:table, :z, :box)",
-         use( ii ), use( start_z + ii*dz ),
+         use( ii ), use( start_z + (num_snapshots - ii - 1)*dz ),
          use( box_size );
    }
    LOGLN( "done." );
@@ -199,10 +199,10 @@ main( int argc,
          bmetal = generate_uniform<double>( min_bulge_metal, max_bulge_metal );
 
          // Insert galaxy object position information.
-         for( unsigned jj = 0; jj < num_snapshots; ++jj )
+         for( unsigned jj = num_snapshots; jj > 0; --jj )
          {
             string query = "INSERT INTO ";
-            query += table_name( jj );
+            query += table_name( jj - 1 );
             query += " VALUES(:x, :y, :z, :id, :dm, :bm, "
                ":dr, :br, :dme, :bme, :ff, :fi, :fl)";
             sql << query,
@@ -210,7 +210,7 @@ main( int argc,
                use( dmass ), use( bmass ),
                use( drate ), use( brate ),
                use( dmetal ), use( bmetal ),
-               use( flat_file ), use( flat_offs++ ), use( jj + 1 );
+               use( flat_file ), use( flat_offs++ ), use( jj );
          }
 
          // Update.
