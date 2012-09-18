@@ -29,6 +29,12 @@ namespace tao {
       real_type
       z() const;
 
+      real_type
+      disk_metallicity() const;
+
+      real_type
+      bulge_metallicity() const;
+
       unsigned
       flat_file() const;
 
@@ -37,6 +43,10 @@ namespace tao {
 
       unsigned
       flat_length() const;
+
+      friend std::ostream&
+      operator<<( std::ostream& strm,
+                  const galaxy& obj );
 
    protected:
 

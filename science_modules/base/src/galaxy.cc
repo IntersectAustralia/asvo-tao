@@ -35,6 +35,18 @@ namespace tao {
       return _row.get<real_type>( "z" ) + _box[2];
    }
 
+   galaxy::real_type
+   galaxy::disk_metallicity() const
+   {
+      return _row.get<real_type>( "disk_metal" );
+   }
+
+   galaxy::real_type
+   galaxy::bulge_metallicity() const
+   {
+      return _row.get<real_type>( "bulge_metal" );
+   }
+
    unsigned
    galaxy::flat_file() const
    {
@@ -51,5 +63,14 @@ namespace tao {
    galaxy::flat_length() const
    {
       return _row.get<int>( "flat_length" );
+   }
+
+   std::ostream&
+   operator<<( std::ostream& strm,
+               const galaxy& obj )
+   {
+      strm << obj.id() << ": ";
+      strm << "(" << obj.x() << ", " << obj.y() << ", " << obj.z() << ")";
+      return strm;
    }
 }
