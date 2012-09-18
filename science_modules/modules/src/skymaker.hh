@@ -80,9 +80,12 @@ namespace tao {
       hpc::string _list_filename, _conf_filename;
       std::ofstream _list_file;
       unsigned _img_w, _img_h;
+      real_type _ra0, _dec0;
       real_type _pix_w, _pix_h;
       real_type _img_x, _img_y;
       real_type _foc_x, _foc_y;
+      real_type _min_mag, _max_mag;
+      unsigned _cnt;
    };
 }
 

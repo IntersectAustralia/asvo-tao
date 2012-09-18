@@ -63,13 +63,6 @@ namespace tao {
 
       _read_options( dict, prefix );
 
-      // Allocate for storing star-formation histories and
-      // metallicities.
-      _disk_sfh.resize( _ages.size() );
-      _disk_metals.resize( _ages.size() );
-      _bulge_sfh.resize( _ages.size() );
-      _bulge_metals.resize( _ages.size() );
-
       // Allocate for output spectra.
       _disk_spectra.reallocate( _num_spectra );
       _bulge_spectra.reallocate( _num_spectra );
@@ -156,8 +149,8 @@ namespace tao {
       LOG_ENTER();
       LOGLN( "Processing time ", time_idx );
 
-      _sum_spectra( time_idx, _disk_metals[time_idx], _disk_age_masses[time_idx], _disk_spectra );
-      _sum_spectra( time_idx, _bulge_metals[time_idx], _bulge_age_masses[time_idx], _bulge_spectra );
+      _sum_spectra( time_idx, _disk_age_metals[time_idx], _disk_age_masses[time_idx], _disk_spectra );
+      _sum_spectra( time_idx, _bulge_age_metals[time_idx], _bulge_age_masses[time_idx], _bulge_spectra );
 
       LOG_EXIT();
    }
@@ -173,7 +166,7 @@ namespace tao {
       // Interpolate the metallicity to an index.
       unsigned metal_idx = _interp_metal( metal );
       ASSERT( metal_idx < _num_metals );
-      LOGLN( "Found metal index: ", metal_idx );
+      LOGLN( "Found metal index ", metal_idx, " from metallicity of ", metal );
 
       // Calculate the base index for the ssp table.
       size_t base = time_idx*_num_spectra*_num_metals + metal_idx;
@@ -225,34 +218,48 @@ namespace tao {
          LOGLN( "Flat length greater than one." );
 
          // Create the knots for disk/bulge star formation rates.
-         fibre<real_type> dknots( 2, flat_length ), bknots( 2, flat_length );
+         fibre<real_type> dmassknots( 2, flat_length ), bmassknots( 2, flat_length );
+         fibre<real_type> dmetknots( 2, flat_length ), bmetknots( 2, flat_length );
          for( unsigned ii = 0; ii < flat_length; ++ii )
          {
-            dknots(ii,0) = _flat_data[flat_offset + ii].redshift;
-            bknots(ii,0) = _flat_data[flat_offset + ii].redshift;
-            dknots(ii,1) = _flat_data[flat_offset + ii].disk_rate;
-            bknots(ii,1) = _flat_data[flat_offset + ii].bulge_rate;
+            dmassknots(ii,0) = _flat_data[flat_offset + ii].redshift;
+            bmassknots(ii,0) = _flat_data[flat_offset + ii].redshift;
+            dmetknots(ii,0) = _flat_data[flat_offset + ii].redshift;
+            bmetknots(ii,0) = _flat_data[flat_offset + ii].redshift;
+            dmassknots(ii,1) = _flat_data[flat_offset + ii].disk_rate;
+            bmassknots(ii,1) = _flat_data[flat_offset + ii].bulge_rate;
+            dmetknots(ii,1) = _flat_data[flat_offset + ii].disk_metal;
+            bmetknots(ii,1) = _flat_data[flat_offset + ii].bulge_metal;
          }
+         LOGLN( "Disk knots: ", dmassknots );
+         LOGLN( "Bulge knots: ", bmassknots );
 
          // Prepare splines.
-         numerics::spline<real_type> dspline, bspline;
-         dspline.set_knots( dknots );
-         bspline.set_knots( bknots );
+         numerics::spline<real_type> dmassspline, bmassspline;
+         numerics::spline<real_type> dmetspline, bmetspline;
+         dmassspline.set_knots( dmassknots );
+         bmassspline.set_knots( bmassknots );
+         dmetspline.set_knots( dmetknots );
+         bmetspline.set_knots( bmetknots );
 
          // Clear out values.
          std::fill( _disk_age_masses.begin(), _disk_age_masses.end(), 0.0 );
          std::fill( _bulge_age_masses.begin(), _bulge_age_masses.end(), 0.0 );
+         std::fill( _disk_age_metals.begin(), _disk_age_metals.end(), 0.0 );
+         std::fill( _bulge_age_metals.begin(), _bulge_age_metals.end(), 0.0 );
 
          // Integrate.
          typedef vector<real_type>::view array_type;
          element<array_type> take_first( 0 );
-         range<real_type> old_rng( dspline.knots().front()[0], dspline.knots().back()[0] );
+         range<real_type> old_rng( dmassspline.knots().front()[0], dmassspline.knots().back()[0] );
          range<real_type> new_rng( _ages.front(), _ages.back() );
+         LOGLN( "Age range: ", new_rng );
+         LOGLN( "Galaxy redshift range: ", old_rng );
          real_type low = old_rng.start();
          real_type upp = old_rng.finish();
          auto it = make_interp_iterator(
-            boost::make_transform_iterator( dspline.knots().begin(), take_first ),
-            boost::make_transform_iterator( dspline.knots().end(), take_first ),
+            boost::make_transform_iterator( dmassspline.knots().begin(), take_first ),
+            boost::make_transform_iterator( dmassspline.knots().end(), take_first ),
             _ages.begin(),
             _ages.end(),
             1e-7
@@ -263,19 +270,27 @@ namespace tao {
          _gauss_quad( crds, weights );
          while( !num::approx( *it++, upp, 1e-7 ) )
          {
+            LOGLN( "Integrating range: (", low, ", ", *it, ")" );
             real_type w = *it - low;
-            real_type jac_det = 0.5*(low - *it);
+            real_type jac_det = 0.5*w;
             unsigned old_poly = it.indices()[0] - 1;
             unsigned new_poly = it.indices()[1] - 1;
+            LOGLN( "Galaxy/age indices: ", old_poly, ", ", new_poly );
             for( unsigned ii = 0; ii < 4; ++ii )
             {
                real_type x = low + w*0.5*(1.0 + crds[ii]);
 
                // This integral looks like this because of a change of variable
                // frome wavelength to frequency. Do the math!
-               _disk_age_masses[new_poly] += jac_det*weights[ii]*dspline( x, old_poly );
-               _bulge_age_masses[new_poly] += jac_det*weights[ii]*bspline( x, old_poly );
+               _disk_age_masses[new_poly] += jac_det*weights[ii]*dmassspline( x, old_poly )*1e10;
+               _bulge_age_masses[new_poly] += jac_det*weights[ii]*bmassspline( x, old_poly )*1e10;
             }
+
+            // Interpolate metallicity.
+            _disk_age_metals[new_poly] = dmetspline( low, old_poly );
+            _bulge_age_metals[new_poly] = bmetspline( low, old_poly );
+
+            // Advance.
             low = *it;
          }
       }
@@ -293,10 +308,14 @@ namespace tao {
          LOGLN( "Redshift ", _flat_data[flat_offset].redshift, " correlates to bin ", bin );
          _disk_age_masses[bin] = _flat_data[flat_offset].disk_mass;
          _bulge_age_masses[bin] = _flat_data[flat_offset].bulge_mass;
+         _disk_age_metals[bin] = _flat_data[flat_offset].disk_metal;
+         _bulge_age_metals[bin] = _flat_data[flat_offset].bulge_metal;
       }
 
       LOGLN( "Disk masses: ", _disk_age_masses );
       LOGLN( "Bulge masses: ", _bulge_age_masses );
+      LOGLN( "Disk metals: ", _disk_age_metals );
+      LOGLN( "Bulge metals: ", _bulge_age_metals );
       LOG_EXIT();
    }
 
@@ -375,6 +394,8 @@ namespace tao {
       _ages.reallocate( num_ages );
       _disk_age_masses.reallocate( num_ages );
       _bulge_age_masses.reallocate( num_ages );
+      _disk_age_metals.reallocate( num_ages );
+      _bulge_age_metals.reallocate( num_ages );
       for( unsigned ii = 0; ii < num_ages; ++ii )
       {
          file >> _ages[ii];
@@ -412,5 +433,5 @@ namespace tao {
       h5::file file( filename, H5F_ACC_RDONLY );
       _flat_data.reallocate( file.read_data_size( "flat_trees" ) );
       file.read<flat_info<real_type>>( "flat_trees", _flat_mem_type, _flat_data );
-         }
+   }
 }

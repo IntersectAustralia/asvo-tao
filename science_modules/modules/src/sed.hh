@@ -109,9 +109,8 @@ namespace tao {
 
       hpc::vector<real_type> _ages;
       hpc::vector<real_type> _disk_age_masses, _bulge_age_masses;
+      hpc::vector<real_type> _disk_age_metals, _bulge_age_metals;
       hpc::mpi::lindex _num_spectra, _num_metals;
-      hpc::vector<real_type> _disk_sfh, _disk_metals;
-      hpc::vector<real_type> _bulge_sfh, _bulge_metals;
       hpc::vector<real_type> _disk_spectra, _bulge_spectra, _total_spectra;
       hpc::vector<real_type> _ssp;
 
