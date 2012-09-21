@@ -19,6 +19,7 @@ def index(request):
     else:
         return render(request, 'mock_galaxy_factory/index.html', {
             'form': MockGalaxyFactoryForm(),
+            'simulations': models.Simulation.objects.all(),
         })
 
 

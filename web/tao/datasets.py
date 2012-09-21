@@ -21,4 +21,4 @@ def galaxy_model_choices():
         return tuples of galaxy model choices suitable for use in a
         tao.widgets.ChoiceFieldWithOtherAttrs
     """
-    return [(x.id, x.name, {'data-sim': unicode(x.simulation_id)}) for x in models.GalaxyModel.objects.order_by('name')]
+    return [(x.id, x.name, {'data-simulation_id': unicode(x.simulation_id)}) for x in models.GalaxyModel.objects.order_by('name')]

@@ -33,8 +33,8 @@ class DatasetTestCase(TestCase):
         GalaxyModel(simulation=s1, id=3, name='coo').save()
 
         self.assertEqual([
-               (2, u'aoo', {'data-sim': u'2'}),
-               (1, u'boo', {'data-sim': u'1'}),
-               (3, u'coo', {'data-sim': u'1'})
+               (2, u'aoo', {'data-simulation_id': u'2'}),
+               (1, u'boo', {'data-simulation_id': u'1'}),
+               (3, u'coo', {'data-simulation_id': u'1'})
            ],
            galaxy_model_choices())

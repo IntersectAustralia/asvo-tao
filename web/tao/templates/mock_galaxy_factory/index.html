@@ -7,9 +7,6 @@
 
 {% block extracss %}
     <style>
-        .span4, .span3, .span5, .span8, .span9, .span10, .span11, .span12 {
-            border: 1px solid #ccc;
-        }
         .boxed {
             padding: 20px;
             border: 1px solid #ccc;
@@ -34,8 +31,38 @@
         <fieldset>
             <legend>Light Cone</legend>
             <div class="row-fluid">
-                <div class="boxed span4">
-                    Model and Simulation information goes here
+                <div class="span4">
+                    <div class="boxed">
+                        {% for simulation in simulations %}
+                            <div class="simulation-info" data-simulation_id="{{ simulation.id }}">
+                                <div> Selected simulation details </div>
+                                <div>
+                                    <p>
+                                        <strong>{{ simulation.name }}</strong>
+                                    </p>
+                                    <p>
+                                        Paper: <a target="_blank" href="{{ simulation.paper_url }}">{{ simulation.paper_title }}</a>
+                                    </p>
+                                    <p>
+                                        External link: <a target="_blank" href="{{ simulation.external_link_url }}">{{ simulation.external_link_url }}</a>
+                                    </p>
+                                    <p>
+                                        Cosmology: {{ simulation.cosmology }}
+                                    </p>
+                                    <p>
+                                        Cosmological parameters: {{ simulation.cosmological_parameters }}
+                                    </p>
+                                    <p>
+                                        Box size: {{ simulation.box_size }}
+                                    </p>
+                                    <p>
+                                        Web site: <a target="_blank" href="{{ simulation.web_site }}">{{ simulation.web_site }}</a>
+                                    </p>
+                                </div>
+                            </div>
+                        {% endfor %}
+
+                    </div>
                 </div>
                 <div class="boxed span8">
                     {% for fieldset in form.fieldsets %}
