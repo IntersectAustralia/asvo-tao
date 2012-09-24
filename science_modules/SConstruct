@@ -5,10 +5,10 @@ config.select(
     config.packages.boost(),
     config.packages.MPI(),
     config.packages.HDF5(),
+    config.packages.sqlite3(required=False),
     config.packages.SOCI(),
     config.packages.rapidxml(),
     config.packages.Eigen(required=False),
-    config.packages.sqlite3(required=False),
     config.packages.libhpc(),
 )
 
