@@ -52,9 +52,22 @@ class GalaxyModel(models.Model):
 
 
 class Job(models.Model):
+    SUBMITTED = 'SUBMITTED'
+    IN_PROGRESS = 'IN_PROGRESS'
+    COMPLETED = 'COMPLETED'
+    STATUS_CHOICES = (
+        (SUBMITTED, 'Submitted'),
+        (IN_PROGRESS, 'In progress'),
+        (COMPLETED, 'Completed'),
+    )
+
     user = models.ForeignKey(User)
     created_time = models.DateTimeField(auto_now_add=True)
     description = models.TextField(max_length=500)
+
+    status = models.CharField(choices=STATUS_CHOICES, default=SUBMITTED, max_length=20)
+    parameters = models.TextField(blank=True, max_length=1000000)
+    output_path = models.TextField(blank=True)
 
     def __unicode__(self):
         return "%s %s %s" % (self.user, self.created_time, self.description)
