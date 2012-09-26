@@ -43,6 +43,10 @@ class GalaxyModel(models.Model):
 
     name = models.CharField(max_length=100)
 
+    kind = models.CharField(max_length=100, default='')
+    paper_title = models.CharField(max_length=100, default='')
+    paper_url = models.URLField(max_length=200, default='')
+
     def __unicode__(self):
         return self.name
 
