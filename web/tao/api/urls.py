@@ -9,6 +9,7 @@ from tao.api.handlers import JobHandler
 job_handler = Resource(JobHandler)
 
 urlpatterns = (
+    url(r'jobs/status/(?P<status>.+)$', job_handler),
     url(r'jobs/(?P<id>\d+)$', job_handler),
     url(r'jobs/$', job_handler),
 )
