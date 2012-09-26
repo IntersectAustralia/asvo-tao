@@ -37,6 +37,8 @@ urlpatterns = patterns('',
 
     url(r'^mgf/$', simple_view, {'template_name': 'mgf.html'}),
     url(r'^$', 'tao.views.home', name='home'),
+    url(r'^api/', include('tao.api.urls')),
+
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
