@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import shlex, subprocess
 import requests
 import torque
 
@@ -17,11 +18,32 @@ auth = ('user', 'pass')
 def json_handler(resp):
     json = resp.json
 
+    path = os.path.join('jobs', json['user'], json['id'])
+    os.makedirs(path)
+    old_dir = os.getcwd()
+    os.chdir(path)
+
+    with open('params.xml', 'w') as file:
+        file.write(json['xml'])
+
+    params = default_params()
+    params['name'] = json['name']
+    params['pipeline'] = json['pipeline']
+    if 'nodes' in json:
+        params['nodes'] = json['nodes']
+    if 'ppn' in json:
+        params['ppn'] = json['ppn']
+    pbs_id = submit(params)
+
+    os.chdir(old_dir)
+    dbase.add_job(path, pbs_id, json['id'])
+
 ##
 ##
 ##
 def xml_handler(resp):
     xml = resp.xml
+    assert 0
 
 # Define content handler mapping.
 content_handlers = {
