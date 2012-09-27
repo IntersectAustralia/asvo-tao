@@ -31,6 +31,8 @@ mock_galaxy_factory_patterns = patterns('tao.views.mock_galaxy_factory',
     url(r'^my_jobs_with_status/$', 'my_jobs_with_status', name='all_jobs'),
     url(r'^my_jobs_with_status/SUBMITTED$', 'my_jobs_with_status', {'status': Job.SUBMITTED}, name='submitted_jobs'),
     url(r'^my_jobs_with_status/IN_PROGRESS$', 'my_jobs_with_status', {'status': Job.IN_PROGRESS}, name='in_progress_jobs'),
+    url(r'^my_jobs_with_status/QUEUED', 'my_jobs_with_status', {'status': Job.QUEUED}, name='queued_jobs'),
+    url(r'^my_jobs_with_status/COMPLETED', 'my_jobs_with_status', {'status': Job.QUEUED}, name='completed_jobs'),
 
     url(r'^fake_a_job$', 'fake_a_job', name='fake_a_job'),
 )
