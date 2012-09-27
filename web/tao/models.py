@@ -55,8 +55,10 @@ class Job(models.Model):
     SUBMITTED = 'SUBMITTED'
     IN_PROGRESS = 'IN_PROGRESS'
     COMPLETED = 'COMPLETED'
+    QUEUED = 'QUEUED'
     STATUS_CHOICES = (
         (SUBMITTED, 'Submitted'),
+        (QUEUED, 'Queued'),
         (IN_PROGRESS, 'In progress'),
         (COMPLETED, 'Completed'),
     )
