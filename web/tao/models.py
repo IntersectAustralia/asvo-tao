@@ -69,7 +69,10 @@ class Job(models.Model):
 
     status = models.CharField(choices=STATUS_CHOICES, default=SUBMITTED, max_length=20)
     parameters = models.TextField(blank=True, max_length=1000000)
-    output_path = models.TextField(blank=True)
+    output_path = models.TextField(blank=True)  # without a trailing slash, please
 
     def __unicode__(self):
         return "%s %s %s" % (self.user, self.created_time, self.description)
+
+    def is_completed(self):
+        return self.status == Job.COMPLETED
