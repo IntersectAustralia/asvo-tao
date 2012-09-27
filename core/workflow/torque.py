@@ -1,13 +1,20 @@
+##
+## @package torque
+## Routines to simplify interaction with the PBS server.
+##
+
 import os, shlex, subprocess
 import PBSPy.capi as pbs
 import dbase
 
-server_address = 'pbs.hpc.swin.edu.au'
-script_filename = 'pbs_script'
-queue = 'gstar'
+server_address = 'pbs.hpc.swin.edu.au'  # The location of the PBS server.
+script_filename = 'pbs_script'          # What to call the generated PBS script.
+queue = 'gstar'                         # Which queue to submit to.
 
 ##
+## Connect to the PBS server.
 ##
+## @returns PBSPy Server class.
 ##
 def connect():
     server = pbs.Server(server_address)
@@ -15,7 +22,9 @@ def connect():
     return server
 
 ##
+## Generate a dictionary of default parameters.
 ##
+## @returns Dictionary of default parameters.
 ##
 def default_params():
     params = {
@@ -28,7 +37,10 @@ def default_params():
     return params
 
 ##
+## Write a PBS script from a parameters dictionary.
 ##
+## @param[IN]  params  Dictionary of parameters.
+## @param[IN]  path    Where to write PBS script.
 ##
 def write_script(params, path='.'):
     filename = os.path.join(path, script_filename)
@@ -45,16 +57,27 @@ mpiexec %(pipeline)s params.xml
     return filename
 
 ##
+## Submit a PBS job.
 ##
+## @param[IN]  params  Parameter dictionary.
+## @returns PBS job identifier.
 ##
-def submit(params, queue=None):
+def submit(params):
     script = write_script(params)
     stdout = subprocess.check_output(shlex.split('qsub ' + script))
     pbs_id = stdout[:-1] # remove trailing \n
     return pbs_id
 
 ##
+## Query a PBS job.
 ##
+## The character returned indicates the job state as follows:
+##  Q = queued
+##  R = running
+##  C = complete
+##
+## @param[IN]  pbs_id  PBS job identifier.
+## @returns A character representing the job state.
 ##
 def query(pds_id):
     server = connect()
