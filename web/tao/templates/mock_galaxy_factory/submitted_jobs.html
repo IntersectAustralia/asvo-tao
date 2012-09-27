@@ -1,23 +1,54 @@
 {% extends "_base.html" %}
-{% block subtitle %}Submitted Jobs{% endblock %}
+{% block subtitle %}My Jobs ({{ status }}){% endblock %}
+{% block extracss %}
+    <style>
+        /* TODO remove description completely */
+        td:nth-child(2), th:nth-child(2) {
+            display:none;
+        }
+    </style>
+{% endblock extracss %}
 {% block content %}
-    <h1>Submitted Jobs</h1>
+    <h1>My Jobs ({{ status }})</h1>
+    <div>
+        <ul>
+            <li>
+                <a href="{% url submitted_jobs %}">Submitted Jobs</a>
+            </li>
+            <li>
+                <a href="{% url in_progress_jobs %}">In Progress Jobs</a>
+            </li>
+            <li>
+                <a href="{% url all_jobs %}">All Jobs</a>
+            </li>
+        </ul>
+    </div>
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
                 <th>Submitted at</th>
                 <th>Description</th>
+                <th>id</th>
+                <th>user</th>
+                <th>status</th>
+                <th>parameters</th>
+                <th>output_path</th>
             </tr>
         </thead>
         <tbody>
             {% for job in jobs %}
                 <tr>
                     <td>
-                        {{ job }}
+                        {{ job.created_time }}
                     </td>
                     <td>
                         {{ job.description }}
                     </td>
+                    <td>{{ job.id }}</td>
+                    <td>{{ job.user }}</td>
+                    <td>{{ job.status }}</td>
+                    <td>{{ job.parameters|linebreaks }}</td>
+                    <td>{{ job.output_path }}</td>
                 </tr>
             {% endfor %}
         </tbody>

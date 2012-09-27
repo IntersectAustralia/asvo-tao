@@ -7,8 +7,16 @@
         Homepage
     </h1>
     <div>
-        <div>
-            <a href="{% url mock_galaxy_factory %}">Mock Galaxy Factory</a>
-        </div>
+        <ul>
+            <li>
+                <a href="{% url mock_galaxy_factory %}">Mock Galaxy Factory</a>
+            </li>
+            <li>
+                <a href="{% url submitted_jobs %}">Submitted Jobs</a>
+            </li>
+            <li>
+                <a href="{% url in_progress_jobs %}">In Progress Jobs</a>
+            </li>
+        </ul>
     </div>
 {% endblock %}
