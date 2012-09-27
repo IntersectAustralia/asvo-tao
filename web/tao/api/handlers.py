@@ -4,6 +4,9 @@ from tao.models import Job
 class JobHandler(BaseHandler):
     allowed_methods = ('GET', 'PUT',)
     model = Job
+
+    exclude = ()  # We want to show id - the BaseHandler excludes it by default
+
     def read(self, request, id=None, status=None):
         base = Job.objects
 
