@@ -19,3 +19,6 @@ def add_job(path, pbs_id, tao_id):
 def get_job(tao_id):
     assert tao_id in jobs
     return jobs[tao_id]
+
+def iter_active():
+    pass
