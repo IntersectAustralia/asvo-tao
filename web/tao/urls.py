@@ -23,10 +23,16 @@ account_patterns = patterns('',
     url(r'logout/$', logout, {'next_page': reverse_lazy('home')}, name='logout'),
     url(r'register/$', 'tao.views.register', name='register'),
 )
+from tao.models import Job
 
 mock_galaxy_factory_patterns = patterns('tao.views.mock_galaxy_factory',
     url(r'^$', 'index', name='mock_galaxy_factory'),
-    url(r'^submitted_jobs$', 'submitted_jobs', name='submitted_jobs'),
+    url(r'^my_jobs_with_status/(?P<status>.*)$', 'my_jobs_with_status'),
+    url(r'^my_jobs_with_status/$', 'my_jobs_with_status', name='all_jobs'),
+    url(r'^my_jobs_with_status/SUBMITTED$', 'my_jobs_with_status', {'status': Job.SUBMITTED}, name='submitted_jobs'),
+    url(r'^my_jobs_with_status/IN_PROGRESS$', 'my_jobs_with_status', {'status': Job.IN_PROGRESS}, name='in_progress_jobs'),
+
+    url(r'^fake_a_job$', 'fake_a_job', name='fake_a_job'),
 )
 
 urlpatterns = patterns('',
