@@ -37,11 +37,17 @@ mock_galaxy_factory_patterns = patterns('tao.views.mock_galaxy_factory',
     url(r'^fake_a_job$', 'fake_a_job', name='fake_a_job'),
 )
 
+job_patterns = patterns('tao.views.jobs',
+    url(r'^(?P<id>\d+)$', 'view_job', name='view_job'),
+    url(r'^(?P<id>\d+)/file/(?P<filepath>.+)$', 'get_file', name='get_file'),
+)
+
 urlpatterns = patterns('',
     ('^admin/', include(admin.site.urls)),
     ('^accounts/', include(account_patterns)),
     ('^administration/', include(administration_patterns)),
     ('^mock_galaxy_factory/', include(mock_galaxy_factory_patterns)),
+    ('^jobs/', include(job_patterns)),
 
     url(r'^mgf/$', simple_view, {'template_name': 'mgf.html'}),
     url(r'^$', 'tao.views.home', name='home'),

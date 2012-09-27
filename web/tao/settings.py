@@ -194,3 +194,5 @@ RECAPTCHA_PRIVATE_KEY = '6Le-6tUSAAAAAPKhcTQI_Ecjff3Vw1Jn0Iu7u3kE'
 RECAPTCHA_USE_SSL = True
 
 NUM_RECORDS_PER_PAGE = 10
+
+FILES_BASE = '/tmp/'  # please include a trailing slash
