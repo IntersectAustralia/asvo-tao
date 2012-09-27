@@ -2,21 +2,32 @@
 {% block content %}
     <div>
         <h1>Viewing Job</h1>
-        {{ job.description }}
-        {{ job.parameters }}
-        {{ job.user }}
-        {% if job.is_completed %}
-            <ul>
-                {% for file in files %}
-                    <li>
-                        <a href="{% url get_file job.id, file %}">
-                            {{ file }}
-                        </a>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            not completed
-        {% endif %}
+        <div>
+            <div>
+                <strong>Parameters</strong>
+                <span>
+                    {{ job.parameters|linebreaks }}
+                </span>
+            </div>
+            <div>
+                <strong>Files</strong>
+
+                {% if job.is_completed %}
+                    <ul>
+                        {% for file in files %}
+                            <li>
+                                <a href="{% url get_file job.id, file %}">
+                                    {{ file }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>
+                        This job has not completed (and hence has no output).
+                    </p>
+                {% endif %}
+            </div>
+        </div>
     </div>
 {% endblock content %}
