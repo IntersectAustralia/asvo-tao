@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 
-import shlex, subprocess, time
+import os, shlex, subprocess, time
 import requests
-import torque
+from torque import *
+import dbase
 
 # Define the request API.
-url_base = 'https://tao.swin.edu.au/taodemo/api/'
+url_base = 'http://tao.asvo.org.au/taodemo/api/'
 api = {
     'get': url_base + 'jobs/status/submitted',
-    'update': url_base + 'jobs/update',
+    'update': url_base + 'jobs/%d',
 }
 auth = ('user', 'pass')
 
@@ -19,27 +20,31 @@ sleep_time = 10
 ##
 ##
 def json_handler(resp):
-    json = resp.json
+    for json in resp.json:
+        path = os.path.join('jobs', json['user']['username'], str(json['id']))
+        os.makedirs(path)
+        old_dir = os.getcwd()
+        os.chdir(path)
 
-    path = os.path.join('jobs', json['user']['username'], json['id'])
-    os.makedirs(path)
-    old_dir = os.getcwd()
-    os.chdir(path)
+        with open('params.xml', 'w') as file:
+            file.write(json['parameters'])
 
-    with open('params.xml', 'w') as file:
-        file.write(json['parameters'])
+        params = default_params()
+        params['name'] = json.get('name', 'tao_' + json['user']['username'] + '_' + str(json['id']))
+        params['pipeline'] = 'skymaker' #json['pipeline']
+        if 'nodes' in json:
+            params['nodes'] = json['nodes']
+        if 'ppn' in json:
+            params['ppn'] = json['ppn']
+        # pbs_id = submit(params)
 
-    params = default_params()
-    params['name'] = json['name']
-    params['pipeline'] = 'skymaker' #json['pipeline']
-    if 'nodes' in json:
-        params['nodes'] = json['nodes']
-    if 'ppn' in json:
-        params['ppn'] = json['ppn']
-    pbs_id = submit(params)
+        os.chdir(old_dir)
+        # dbase.add_job(path, pbs_id, json['id'])
 
-    os.chdir(old_dir)
-    dbase.add_job(path, pbs_id, json['id'])
+        # Mark job as queued.
+        requests.put(api['update']%json['id'], data={'status': 'QUEUED'})
+
+    return len(resp.json)
 
 ##
 ##
@@ -56,22 +61,38 @@ content_handlers = {
 
 # Entry point for the main workflow system.
 if __name__ == '__main__':
-    import pdb
-    pdb.set_trace()
+
+    # Load any existing database information.
+    dbase.load_jobs()
 
     # Repeat forever.
     while 1:
 
         # Check for any newly submitted jobs.
+        print 'Checking for new jobs.'
+        new_jobs = 0
         resp = requests.get(api['get'])
         content_type = resp.headers['content-type']
-        for k,v in content_handlers:
+        for k, v in content_handlers.iteritems():
             if content_type[:len(k)] == k:
-                v(resp)
+                new_jobs = v(resp)
+        if new_jobs:
+            print '  ' + str(new_jobs) + ' new jobs.'
 
         # Check for changes in status of running jobs.
-        for tao_id, pbs_id in dbase.iter_active():
-            pass
+        print 'Checking existing jobs.'
+        for tao_id, info in dbase.iter_active():
+            state = query(info[0])
+            if state != info[2]:
+                info[2] = state
+                dbase.save()
+                if state == 'R':
+                    state = 'IN_PROGRESS'
+                else:
+                    state = 'COMPLETED'
+                    dbase.delete_job(tao_id)
+                requests.put(api['update']%tao_id, data={'status': state})
 
         # Sleep for a period.
+        print 'Sleeping.'
         time.sleep(sleep_time)
