@@ -1,13 +1,14 @@
 from django.conf.urls.defaults import patterns, url, include
 from django.conf import settings
+from django.contrib.auth.views import logout
 from django.core.urlresolvers import reverse_lazy
 
 from django.contrib import admin
 admin.autodiscover()
 
-from django.contrib.auth.views import logout
-
 from django.shortcuts import render
+
+from tao.models import Job
 
 simple_view = lambda request, template_name: render(request, template_name)
 
@@ -23,7 +24,6 @@ account_patterns = patterns('',
     url(r'logout/$', logout, {'next_page': reverse_lazy('home')}, name='logout'),
     url(r'register/$', 'tao.views.register', name='register'),
 )
-from tao.models import Job
 
 mock_galaxy_factory_patterns = patterns('tao.views.mock_galaxy_factory',
     url(r'^$', 'index', name='mock_galaxy_factory'),
