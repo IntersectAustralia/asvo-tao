@@ -8,7 +8,7 @@ import dbase
 # Configuration.
 work_dir = '/lustre/projects/p014_swin/FTP'
 log_path = '/lustre/projects/p014_swin/logs/workflow.log'
-sleep_time = 120
+sleep_time = 180
 
 # Setup the logger.
 def setup_logging():
