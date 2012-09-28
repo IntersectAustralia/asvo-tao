@@ -11,23 +11,7 @@
 {% block content %}
     <h1>My Jobs ({{ status }})</h1>
     <div>
-        <ul>
-            <li>
-                <a href="{% url submitted_jobs %}">Submitted Jobs</a>
-            </li>
-            <li>
-                <a href="{% url queued_jobs %}">Queued Jobs</a>
-            </li>
-            <li>
-                <a href="{% url in_progress_jobs %}">In Progress Jobs</a>
-            </li>
-            <li>
-                <a href="{% url completed_jobs %}">Completed Jobs</a>
-            </li>
-            <li>
-                <a href="{% url all_jobs %}">All Jobs</a>
-            </li>
-        </ul>
+        {% include 'jobs/_status_links.html' %}
     </div>
     <table class="table table-bordered table-striped">
         <thead>

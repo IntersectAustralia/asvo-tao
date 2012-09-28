@@ -3,11 +3,13 @@ from django.core.servers.basehttp import FileWrapper  # TODO use sendfile
 from django.http import HttpResponse
 from django.shortcuts import render
 
+from tao.decorators import set_tab
 from tao.models import Job
 
 import os
 
 
+@set_tab('jobs')
 def view_job(request, id):
     # TODO security
     job = Job.objects.get(id=id)
@@ -37,3 +39,8 @@ def get_file(request, id, filepath):
     # TODO sanitise filename
     response['Content-Disposition'] = 'attachment; filename="%s"' % basename
     return response
+
+
+@set_tab('jobs')
+def index(request):
+    return render(request, 'jobs/index.html')
