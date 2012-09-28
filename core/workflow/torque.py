@@ -56,7 +56,7 @@ def write_script(params, path='.'):
 #PBS -l walltime=%(wt_hours)02d:%(wt_minutes)02d:%(wt_seconds)02d
 #PBS -d .
 source /usr/local/modules/init/bash
-module load mpich2 hdf5/x86_76/gnu/1.8.9-mpich2 boost
+module load gcc/4.6.2 mpich2 hdf5/x86_76/gnu/1.8.9-mpich2 boost
 export PATH=/home/lhodkins/workspace/asvo-tao/science_modules/build-debug/bin:$PATH
 export LD_LIBRARY_PATH=/home/lhodkins/workspace/asvo-tao/science_modules/build-debug/lib:$LD_LIBRARY_PATH
 mpiexec %(pipeline)s params.xml
