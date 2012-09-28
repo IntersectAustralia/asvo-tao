@@ -3,6 +3,7 @@
 #include <boost/lexical_cast.hpp>
 #include <soci/soci.h>
 #include <soci/sqlite3/soci-sqlite3.h>
+#include <soci/mysql/soci-mysql.h>
 #include <libhpc/libhpc.hh>
 #include <tao/base/flat.hh>
 
@@ -117,7 +118,7 @@ main( int argc,
    string flat_filename = string( argv[1] ) + ".flat.0";
 
    // Open database session.
-   soci::session sql( soci::sqlite3, db_filename );
+   soci::session sql( soci::mysql, "db=random unix_socket='/var/lib/mysql/mysql.sock' user=root pass='la di da'" );
 
    // Define some values.
    unsigned num_snapshots = 12;
@@ -136,6 +137,7 @@ main( int argc,
 
    // Create the metadata table.
    LOGLN( "Creating metadata table..." );
+   sql << "DROP TABLE IF EXISTS meta";
    sql << "CREATE TABLE meta (snap_table INTEGER, redshift DOUBLE PRECISION, box_size DOUBLE PRECISION)";
    for( unsigned ii = 0; ii < num_snapshots; ++ii )
    {
@@ -149,6 +151,7 @@ main( int argc,
    LOGLN( "Creating snapshots tables..." );
    for( unsigned ii = 0; ii < num_snapshots; ++ii )
    {
+      sql << (string("DROP TABLE IF EXISTS ") + table_name( ii ));
       string query = "CREATE TABLE ";
       query += table_name( ii );
       query += " (x DOUBLE PRECISION, y DOUBLE PRECISION, z DOUBLE PRECISION, id INTEGER, "
