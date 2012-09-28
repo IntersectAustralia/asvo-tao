@@ -3,44 +3,46 @@
 {% block extracss %}
     <style>
         /* TODO remove description completely */
-        td:nth-child(2), th:nth-child(2) {
+        td:nth-child(3), th:nth-child(3) {
             display:none;
         }
     </style>
 {% endblock extracss %}
 {% block content %}
     <h1>My Jobs ({{ status }})</h1>
-    <div>
-        {% include 'jobs/_status_links.html' %}
-    </div>
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>Submitted at</th>
-                <th>Description</th>
-                <th>id</th>
-                <th>user</th>
-                <th>status</th>
-                <th>parameters</th>
-                <th>output_path</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for job in jobs %}
+    <div id="tabbed">
+        {% with "some_string_that_is_non_empty" as job_tabs %}
+            {% include 'jobs/_status_links.html' %}
+        {% endwith %}
+        <table class="table table-bordered table-striped">
+            <thead>
                 <tr>
-                    <td>
-                        {{ job.created_time }}
-                    </td>
-                    <td>
-                        {{ job.description }}
-                    </td>
-                    <td><a href="{% url view_job job.id %}">{{ job.id }}</a></td>
-                    <td>{{ job.user }}</td>
-                    <td>{{ job.status }}</td>
-                    <td>{{ job.parameters|linebreaks }}</td>
-                    <td>{{ job.output_path }}</td>
+                    <th></th>
+                    <th>Submitted at</th>
+                    <th>Description</th>
+                    <th>User</th>
+                    <th>Status</th>
+                    <th>Parameters</th>
+                    <th>Output Path</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for job in jobs %}
+                    <tr>
+                        <td><a href="{% url view_job job.id %}">View</a></td>
+                        <td>
+                            {{ job.created_time }}
+                        </td>
+                        <td>
+                            {{ job.description }}
+                        </td>
+                        <td>{{ job.user }}</td>
+                        <td>{{ job.status }}</td>
+                        <td>{{ job.parameters|linebreaks }}</td>
+                        <td>{{ job.output_path }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock content %}
