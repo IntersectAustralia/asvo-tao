@@ -17,13 +17,14 @@ class SAGEDataReader:
                    'long long':'q'                   
                    }
     
-    def __init__(self,CurrentSAGEStruct,Options):
+    def __init__(self,CurrentSAGEStruct,Options,MySQL):
         
         
         #Initialize the Class to handle a specific file path        
         self.CurrentFolderPath=Options['RunningSettings:InputDir']
         self.CurrentSAGEStruct=CurrentSAGEStruct
         self.Options=Options
+        self.MySQL=MySQL
         # Just in case the folder path contain additional '/' Remove it
         if self.CurrentFolderPath.endswith("/"):
             self.CurrentFolderPath=self.CurrentFolderPath[:-1] 
@@ -45,8 +46,7 @@ class SAGEDataReader:
             
     def GetNonEmptyFilesList(self):
         
-        #Get List of Files where the file size is greater than zero
-        
+        #Get List of Files where the file size is greater than zero        
         
         dirList=os.listdir(self.CurrentFolderPath)
         fullPathArray=[]
@@ -57,23 +57,24 @@ class SAGEDataReader:
                 fullPathArray.append([self.CurrentFolderPath+'/'+fname,statinfo.st_size])
         return fullPathArray
     
-    def ReadTreeField(self,CurrentFile,FieldSize,FieldFormat,CurrentFileGalaxyID,TreeID):
+    def ProcessAllFiles(self):
         
-        #Read a single Galaxy information based on the pre-defined struct
+        #Process All the Non-Empty Files
         
-        GalaxiesField= struct.unpack(FieldFormat, CurrentFile.read(FieldSize))
-        FieldData={}
-        FieldsIndex=0;
-        for Field in self.CurrentSAGEStruct:            
-            FieldData[Field[0]]=GalaxiesField[FieldsIndex]
-            FieldsIndex=FieldsIndex+1
-        FieldData['FileGalaxyID']=CurrentFileGalaxyID
-        FieldData['TreeID']=TreeID
+        [self.FormatStr,self.FieldSize]=self.GetStructSizeAndFormat()
         
-        return FieldData
+        
+        for fobject in self.NonEmptyFiles:
+            # Updating the user with what is going on
+            print('Processing File:'+fobject[0])
+            print('\t File Size:'+str(fobject[1]/1024)+' KB')
+            
+            self.ProcessFile(fobject[0])
+            
+            raw_input("Press Any Key to Continue")
         
     
-    def ProcessFile(self,FilePath,FormatStr,FieldSize):
+    def ProcessFile(self,FilePath):
         CurrentFile=open(FilePath,"rb")
         CurrentFileGalaxyID=0
         Log = open(self.Options['RunningSettings:OutputDir']+'Debug_'+str(self.CurrentGlobalTreeID)+'.csv', 'wt')
@@ -98,27 +99,8 @@ class SAGEDataReader:
         
             for i in range(0,NumberofTrees):
                 NumberofGalaxiesInTree=TreeLengthList[i]
-                print NumberofGalaxiesInTree
-                TreeFields=[]
-                
-                Log.write('SnapNum,FOFHaloIndex,Type,CentralMvir,Mvir,StellarMass,GalaxyIndex,TreeIndexss,Descendant,FileGalaxyID,TreeID\n')    
-                for j in range(0,NumberofGalaxiesInTree):
-                    #read the fields of this tree
-                    FieldData=self.ReadTreeField(CurrentFile, FieldSize, FormatStr,CurrentFileGalaxyID,self.CurrentGlobalTreeID)
-                    TreeFields.append(FieldData)
-                    CurrentFileGalaxyID=CurrentFileGalaxyID+1
-                    Log.write(str(FieldData['SnapNum'])+','
-                          +str(FieldData['FOFHaloIndex'])+','    
-                          +str(FieldData['Type'])+','
-                          +str(FieldData['CentralMvir'])+','
-                          +str(FieldData['Mvir'])+','
-                          +str(FieldData['StellarMass'])+','
-                          +str(FieldData['GalaxyIndex'])
-                          +','+str(FieldData['TreeIndex'])                          
-                          +','+str(FieldData['Descendant'])
-                          +','+str(FieldData['FileGalaxyID'])
-                          +','+str(FieldData['TreeID'])+'\n')
-                    
+                print('\t Number of Galaxies in Tree ('+str(i)+')='+str(NumberofGalaxiesInTree))
+                self.ProcessTree(NumberofGalaxiesInTree,CurrentFile,Log,CurrentFileGalaxyID)    
                         
                 raw_input("Press Any Key to Continue")
                 self.CurrentGlobalTreeID=self.CurrentGlobalTreeID+1
@@ -133,22 +115,43 @@ class SAGEDataReader:
         finally:
             CurrentFile.close()
             Log.close()
-            
-    def ProcessAllFiles(self):
+    
+    def ProcessTree(self,NumberofGalaxiesInTree,CurrentFile,Log,CurrentFileGalaxyID):
+                
+        TreeFields=[]        
+        Log.write('SnapNum,FOFHaloIndex,Type,CentralMvir,Mvir,StellarMass,GalaxyIndex,TreeIndexss,Descendant,FileGalaxyID,TreeID\n')    
+        for j in range(0,NumberofGalaxiesInTree):
+            #read the fields of this tree
+            FieldData=self.ReadTreeField(CurrentFile,CurrentFileGalaxyID,self.CurrentGlobalTreeID)
+            TreeFields.append(FieldData)
+            CurrentFileGalaxyID=CurrentFileGalaxyID+1
+            Log.write(str(FieldData['SnapNum'])+','
+                  +str(FieldData['FOFHaloIndex'])+','    
+                  +str(FieldData['Type'])+','
+                  +str(FieldData['CentralMvir'])+','
+                  +str(FieldData['Mvir'])+','
+                  +str(FieldData['StellarMass'])+','
+                  +str(FieldData['GalaxyIndex'])
+                  +','+str(FieldData['TreeIndex'])                          
+                  +','+str(FieldData['Descendant'])
+                  +','+str(FieldData['FileGalaxyID'])
+                  +','+str(FieldData['TreeID'])+'\n')
+    
+    def ReadTreeField(self,CurrentFile,CurrentFileGalaxyID,TreeID):
         
-        #Process All the Non-Empty Files
+        #Read a single Galaxy information based on the pre-defined struct
         
-        [FormatStr,FieldSize]=self.GetStructSizeAndFormat()
+        GalaxiesField= struct.unpack(self.FormatStr, CurrentFile.read(self.FieldSize))
+        FieldData={}
+        FieldsIndex=0;
+        for Field in self.CurrentSAGEStruct:            
+            FieldData[Field[0]]=GalaxiesField[FieldsIndex]
+            FieldsIndex=FieldsIndex+1
+        FieldData['FileGalaxyID']=CurrentFileGalaxyID
+        FieldData['TreeID']=TreeID
         
-        
-        for fobject in self.NonEmptyFiles:
-            # Updating the user with what is going on
-            print('Processing File:'+fobject[0])
-            print('\t File Size:'+str(fobject[1]/1024)+' KB')
-            
-            self.ProcessFile(fobject[0],FormatStr,FieldSize)
-            
-            raw_input("Press Any Key to Continue")
+        return FieldData        
+    
             
                 
         
