@@ -6,71 +6,24 @@ Created on 28/09/2012
 import os
 import sys
 import struct
-import MySQlDBInterface.MySQlDBInterface
 
-class SAGEDataReader:
-    '''
-    The Module handles the data reading from SAGE output to a memory data structure.
-    '''
+class SAGEDataReader:    
+    #The Module handles the data reading from SAGE output to a memory data structure.
+    
     CurrentFolderPath=""
     CurrentGlobalTreeID=0
     FormatMapping={'int':'i',
                    'float':'f',
-                   'long long':'q',
-                   'float3':'3f'
+                   'long long':'q'                   
                    }
-    CurrentSAGEStruct=[
-                      ['Type' ,'int'],
-                      ['GalaxyIndex' ,'long long'],                      
-                      ['HaloIndex' ,'int'],
-                      ['FOFHaloIndex','int'],
-                      ['TreeIndex','int'],
-                      ['Descendant','int'],
-                      ['SnapNum','int'],
-                      ['CentralGal','int'],
-                      ['CentralMvir','float'],
-                      ['PosX','float'],
-                      ['PosY','float'],
-                      ['PosZ','float'],
-                      ['VelX','float'],
-                      ['VelY','float'],
-                      ['VelZ','float'],
-                      ['SpinX','float'],
-                      ['SpinY','float'],
-                      ['SpinZ','float'],
-                      ['Len','int'],
-                      ['Mvir','float'],
-                      ['Rvir','float'],
-                      ['Vvir','float'],
-                      ['Vmax','float'],
-                      ['VelDisp','float'],
-                      ['ColdGas','float'],
-                      ['StellarMass','float'],
-                      ['BulgeMass','float'],
-                      ['HotGas','float'],
-                      ['EjectedMass','float'],
-                      ['BlackHoleMass','float'],
-                      ['ICS','float'],
-                      ['MetalsColdGas','float'],
-                      ['MetalsStellarMass','float'],
-                      ['MetalsBulgeMass','float'],
-                      ['MetalsHotGas','float'],
-                      ['MetalsEjectedMass','float'],
-                      ['MetalsICS','float'],
-                      ['Sfr','float'],
-                      ['SfrBulge','float'],
-                      ['SfrICS','float'],
-                      ['DiskScaleRadius','float'],
-                      ['Cooling','float'],
-                      ['Heating','float'],
-                      ['Dummy' ,'int'] 
-                      ]
-    def __init__(self,FolderPath):
-        '''
-        Initialize the Class to handle a specific file path
-        '''
-        self.CurrentFolderPath=FolderPath
+    
+    def __init__(self,CurrentSAGEStruct,Options):
         
+        
+        #Initialize the Class to handle a specific file path        
+        self.CurrentFolderPath=Options['RunningSettings:InputDir']
+        self.CurrentSAGEStruct=CurrentSAGEStruct
+        self.Options=Options
         # Just in case the folder path contain additional '/' Remove it
         if self.CurrentFolderPath.endswith("/"):
             self.CurrentFolderPath=self.CurrentFolderPath[:-1] 
@@ -79,10 +32,10 @@ class SAGEDataReader:
         self.NonEmptyFiles=self.GetNonEmptyFilesList()
   
     def GetStructSizeAndFormat(self):
-        '''
-        Use the struct definition and the data mapping schema defined to return the expected field size
-        in Bytes
-        '''
+        
+        #Use the struct definition and the data mapping schema defined to return the expected field size
+        #in Bytes
+        
         FormatStr=''
         for field in self.CurrentSAGEStruct:
             FormatStr=FormatStr+self.FormatMapping[field[1]]
@@ -91,9 +44,9 @@ class SAGEDataReader:
         
             
     def GetNonEmptyFilesList(self):
-        '''
-        Get List of Files where the file size is greater than zero
-        '''
+        
+        #Get List of Files where the file size is greater than zero
+        
         
         dirList=os.listdir(self.CurrentFolderPath)
         fullPathArray=[]
@@ -105,9 +58,9 @@ class SAGEDataReader:
         return fullPathArray
     
     def ReadTreeField(self,CurrentFile,FieldSize,FieldFormat,CurrentFileGalaxyID,TreeID):
-        '''
-        Read a single Galaxy information based on the pre-defined struct
-        '''
+        
+        #Read a single Galaxy information based on the pre-defined struct
+        
         GalaxiesField= struct.unpack(FieldFormat, CurrentFile.read(FieldSize))
         FieldData={}
         FieldsIndex=0;
@@ -123,7 +76,7 @@ class SAGEDataReader:
     def ProcessFile(self,FilePath,FormatStr,FieldSize):
         CurrentFile=open(FilePath,"rb")
         CurrentFileGalaxyID=0
-        Log = open('/home/amr/TempOutput/'+str(self.CurrentGlobalTreeID)+'.csv', 'wt')
+        Log = open(self.Options['RunningSettings:OutputDir']+'Debug_'+str(self.CurrentGlobalTreeID)+'.csv', 'wt')
         try:
             NumberofTrees= struct.unpack('i', CurrentFile.read(4))[0]
             TotalNumberOfGalaxies= struct.unpack('i', CurrentFile.read(4))[0]
@@ -142,7 +95,7 @@ class SAGEDataReader:
             
             # Verify the total number of galaxies 
             if not SumOfAllGalaxies==TotalNumberOfGalaxies: raise AssertionError
-            #TypeZeroCount=0
+        
             for i in range(0,NumberofTrees):
                 NumberofGalaxiesInTree=TreeLengthList[i]
                 print NumberofGalaxiesInTree
@@ -165,14 +118,12 @@ class SAGEDataReader:
                           +','+str(FieldData['Descendant'])
                           +','+str(FieldData['FileGalaxyID'])
                           +','+str(FieldData['TreeID'])+'\n')
-                    #print FieldData
-                    #if FieldData['Type']==0:
-                    #    TypeZeroCount=TypeZeroCount+1
+                    
                         
                 raw_input("Press Any Key to Continue")
                 self.CurrentGlobalTreeID=self.CurrentGlobalTreeID+1
              
-            #print TypeZeroCount
+        
         except:
             print('\t Error happen while processing file')
             print('\t File Name: '+FilePath)
@@ -184,9 +135,9 @@ class SAGEDataReader:
             Log.close()
             
     def ProcessAllFiles(self):
-        '''
-        Process All the Non-Empty Files
-        '''
+        
+        #Process All the Non-Empty Files
+        
         [FormatStr,FieldSize]=self.GetStructSizeAndFormat()
         
         

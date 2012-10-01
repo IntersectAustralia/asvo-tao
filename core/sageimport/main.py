@@ -4,12 +4,13 @@ Created on 28/09/2012
 @author: Amr Hassan
 '''
 import SAGEReader
+import settingReader
 
 if __name__ == '__main__':
     print('Starting Files Loading')
     
 
-    
-    Reader=SAGEReader.SAGEDataReader('/lustre/projects/p014_swin/raw_data/millennium/full/sage_output/')
+    [CurrentSAGEStruct,Options]=settingReader.ParseParams("settings.xml")
+    Reader=SAGEReader.SAGEDataReader(CurrentSAGEStruct,Options)
     Reader.ProcessAllFiles()
     print('Processing Done')

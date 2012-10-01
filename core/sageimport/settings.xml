@@ -1,0 +1,58 @@
+<settings>
+	<sageinput>
+		<Field Type="int">Type</Field>
+		<Field Type="long long">GalaxyIndex</Field>                     
+		<Field Type="int">HaloIndex</Field>
+		<Field Type="int">FOFHaloIndex</Field>
+		<Field Type="int">TreeIndex</Field>
+		<Field Type="int">Descendant</Field>
+		<Field Type="int">SnapNum</Field>
+		<Field Type="int">CentralGal</Field>
+		<Field Type="float">CentralMvir</Field>
+		<Field Type="float">PosX</Field>
+		<Field Type="float">PosY</Field>
+		<Field Type="float">PosZ</Field>
+		<Field Type="float">VelX</Field>
+		<Field Type="float">VelY</Field>
+		<Field Type="float">VelZ</Field>
+		<Field Type="float">SpinX</Field>
+		<Field Type="float">SpinY</Field>
+		<Field Type="float">SpinZ</Field>
+		<Field Type="int">Len</Field>
+		<Field Type="float">Mvir</Field>
+		<Field Type="float">Rvir</Field>
+		<Field Type="float">Vvir</Field>
+		<Field Type="float">Vmax</Field>
+		<Field Type="float">VelDisp</Field>
+		<Field Type="float">ColdGas</Field>
+		<Field Type="float">StellarMass</Field>
+		<Field Type="float">BulgeMass</Field>
+		<Field Type="float">HotGas</Field>
+		<Field Type="float">EjectedMass</Field>
+		<Field Type="float">BlackHoleMass</Field>
+		<Field Type="float">ICS</Field>
+		<Field Type="float">MetalsColdGas</Field>
+		<Field Type="float">MetalsStellarMass</Field>
+		<Field Type="float">MetalsBulgeMass</Field>
+		<Field Type="float">MetalsHotGas</Field>
+		<Field Type="float">MetalsEjectedMass</Field>
+		<Field Type="float">MetalsICS</Field>
+		<Field Type="float">Sfr</Field>
+		<Field Type="float">SfrBulge</Field>
+		<Field Type="float">SfrICS</Field>
+		<Field Type="float">DiskScaleRadius</Field>
+		<Field Type="float">Cooling</Field>
+		<Field Type="float">Heating</Field>
+		<Field Type="int">Dummy</Field>
+	</sageinput>
+	<MySQLDB>
+		<serverip>tao01.hpc.swin.edu.au</serverip>
+		<user>taoadmin</user>
+		<password></password>		
+	</MySQLDB>
+	<RunningSettings>
+		<OutputDir>/home/amr/TempOutput/</OutputDir>
+		<InputDir>/lustre/projects/p014_swin/raw_data/millennium/full/sage_output/</InputDir>
+		
+	</RunningSettings>
+</settings>	

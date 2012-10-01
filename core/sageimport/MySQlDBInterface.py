@@ -1,5 +1,6 @@
 '''
 Created on 01/10/2012
+sudo apt-get install python-mysqldb
 
 @author: Amr Hassan
 '''
