@@ -48,7 +48,8 @@
 	<MySQLDB>
 		<serverip>tao01.hpc.swin.edu.au</serverip>
 		<user>taoadmin</user>
-		<password></password>		
+		<password></password>
+		<NewDBName>Millennium_Full</NewDBName>		
 	</MySQLDB>
 	<RunningSettings>
 		<OutputDir>/home/amr/TempOutput/</OutputDir>
