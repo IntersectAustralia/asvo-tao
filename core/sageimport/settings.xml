@@ -1,7 +1,7 @@
 <settings>
 	<sageinput>
-		<Field Type="int">Type</Field>
-		<Field Type="long long">GalaxyIndex</Field>                     
+		<Field Type="int" DBFieldName="ObjectType">Type</Field>
+		<Field Type="long long" DBFieldName="GlobalGalaxyID">GalaxyIndex</Field>                     
 		<Field Type="int">HaloIndex</Field>
 		<Field Type="int">FOFHaloIndex</Field>
 		<Field Type="int">TreeIndex</Field>
@@ -43,7 +43,7 @@
 		<Field Type="float">DiskScaleRadius</Field>
 		<Field Type="float">Cooling</Field>
 		<Field Type="float">Heating</Field>
-		<Field Type="int">Dummy</Field>
+		<Field Type="int" DBExport="0">Dummy</Field>
 	</sageinput>
 	<MySQLDB>
 		<serverip>tao01.hpc.swin.edu.au</serverip>
@@ -55,6 +55,6 @@
 	<RunningSettings>
 		<OutputDir>/home/amr/TempOutput/</OutputDir>
 		<InputDir>/lustre/projects/p014_swin/raw_data/millennium/full/sage_output/</InputDir>
-		<TreePerTable>50</TreePerTable>
+		<TreePerTable>10000</TreePerTable>
 	</RunningSettings>
 </settings>	

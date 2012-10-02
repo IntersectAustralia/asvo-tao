@@ -6,10 +6,11 @@ Created on 28/09/2012
 import os
 import sys
 import struct
+import MySQlDBInterface
 
 class SAGEDataReader:    
     #The Module handles the data reading from SAGE output to a memory data structure.
-    
+    DebugToFile=False
     CurrentFolderPath=""
     CurrentGlobalTreeID=0
     FormatMapping={'int':'i',
@@ -77,12 +78,14 @@ class SAGEDataReader:
     def ProcessFile(self,FilePath):
         CurrentFile=open(FilePath,"rb")
         CurrentFileGalaxyID=0
-        Log = open(self.Options['RunningSettings:OutputDir']+'Debug_'+str(self.CurrentGlobalTreeID)+'.csv', 'wt')
+        if self.DebugToFile==True:
+            self.Log = open(self.Options['RunningSettings:OutputDir']+'Debug_'+str(self.CurrentGlobalTreeID)+'.csv', 'wt')
         try:
             NumberofTrees= struct.unpack('i', CurrentFile.read(4))[0]
             TotalNumberOfGalaxies= struct.unpack('i', CurrentFile.read(4))[0]
-            Log.write('\t Trees Count= '+str(NumberofTrees)+'\n')
-            Log.write('\t Total Number of Galaxies = '+str(TotalNumberOfGalaxies)+'\n')
+            if self.DebugToFile==True:
+                self.Log.write('\t Trees Count= '+str(NumberofTrees)+'\n')
+                self.Log.write('\t Total Number of Galaxies = '+str(TotalNumberOfGalaxies)+'\n')
             
             
             # Read the number of Galaxies per each tree
@@ -100,9 +103,9 @@ class SAGEDataReader:
             for i in range(0,NumberofTrees):
                 NumberofGalaxiesInTree=TreeLengthList[i]
                 print('\t Number of Galaxies in Tree ('+str(i)+')='+str(NumberofGalaxiesInTree))
-                self.ProcessTree(NumberofGalaxiesInTree,CurrentFile,Log,CurrentFileGalaxyID)    
-                        
-                raw_input("Press Any Key to Continue")
+                TreeData=self.ProcessTree(NumberofGalaxiesInTree,CurrentFile,CurrentFileGalaxyID)    
+                self.MySQL.CreateNewTree(TreeData)        
+                
                 self.CurrentGlobalTreeID=self.CurrentGlobalTreeID+1
              
         
@@ -114,28 +117,35 @@ class SAGEDataReader:
             
         finally:
             CurrentFile.close()
-            Log.close()
+            if self.DebugToFile==True:
+                Log.close()
     
-    def ProcessTree(self,NumberofGalaxiesInTree,CurrentFile,Log,CurrentFileGalaxyID):
+    def ProcessTree(self,NumberofGalaxiesInTree,CurrentFile,CurrentFileGalaxyID):    
                 
+        
+                
+        if self.DebugToFile==True:
+            self.Log.write('SnapNum,FOFHaloIndex,Type,CentralMvir,Mvir,StellarMass,GalaxyIndex,TreeIndexss,Descendant,FileGalaxyID,TreeID\n')
+        
         TreeFields=[]        
-        Log.write('SnapNum,FOFHaloIndex,Type,CentralMvir,Mvir,StellarMass,GalaxyIndex,TreeIndexss,Descendant,FileGalaxyID,TreeID\n')    
         for j in range(0,NumberofGalaxiesInTree):
             #read the fields of this tree
             FieldData=self.ReadTreeField(CurrentFile,CurrentFileGalaxyID,self.CurrentGlobalTreeID)
             TreeFields.append(FieldData)
             CurrentFileGalaxyID=CurrentFileGalaxyID+1
-            Log.write(str(FieldData['SnapNum'])+','
-                  +str(FieldData['FOFHaloIndex'])+','    
-                  +str(FieldData['Type'])+','
-                  +str(FieldData['CentralMvir'])+','
-                  +str(FieldData['Mvir'])+','
-                  +str(FieldData['StellarMass'])+','
-                  +str(FieldData['GalaxyIndex'])
-                  +','+str(FieldData['TreeIndex'])                          
-                  +','+str(FieldData['Descendant'])
-                  +','+str(FieldData['FileGalaxyID'])
-                  +','+str(FieldData['TreeID'])+'\n')
+            if self.DebugToFile==True:
+                self.Log.write(str(FieldData['SnapNum'])+','+
+                          str(FieldData['FOFHaloIndex'])+','+
+                          str(FieldData['Type'])+','+
+                          str(FieldData['CentralMvir'])+','+
+                          str(FieldData['Mvir'])+','+
+                          str(FieldData['StellarMass'])+','+
+                          str(FieldData['GalaxyIndex'])+','+
+                          str(FieldData['TreeIndex'])+','+
+                          str(FieldData['Descendant'])+','+
+                          str(FieldData['FileGalaxyID'])+','+
+                          str(FieldData['TreeID'])+'\n')
+        return TreeFields    
     
     def ReadTreeField(self,CurrentFile,CurrentFileGalaxyID,TreeID):
         

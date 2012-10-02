@@ -13,9 +13,14 @@ def ParseParams(FilePath):
     #### The first Node contain the sage fields and their data type mapping
     #### Load them into tuple list (ordered list- The order is important)
     sageFieldsNode=SettingsNode[0]
-    for sagefield in sageFieldsNode:        
-        CurrentSAGEStruct.append([sagefield.text,sagefield.attrib['Type']])
-    
+    for sagefield in sageFieldsNode:  
+        ExportInDB=True
+        if sagefield.attrib.has_key('DBExport') ==True:
+            ExportInDB=(sagefield.attrib['DBExport']=="1")
+        if sagefield.attrib.has_key('DBFieldName') ==False:     
+            CurrentSAGEStruct.append([sagefield.text,sagefield.attrib['Type'],sagefield.text,ExportInDB])
+        else:
+            CurrentSAGEStruct.append([sagefield.text,sagefield.attrib['Type'],sagefield.attrib['DBFieldName'],ExportInDB])    
     ##################################################################################
     ##### Load mysql information
     mysqlNode=SettingsNode[1]
@@ -27,7 +32,7 @@ def ParseParams(FilePath):
     for settingfield in RunningSettingsNode:
        RunningOptions[RunningSettingsNode.tag+':'+settingfield.tag]= settingfield.text
        
-    print RunningOptions
+    
     
     
     return [CurrentSAGEStruct,RunningOptions]
