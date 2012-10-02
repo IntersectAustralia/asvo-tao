@@ -5,40 +5,66 @@
 
 using namespace hpc;
 
-struct halo_type
+struct galaxy_type
 {
-   // merger tree pointers 
-   int descendant;
-   int first_progenitor;
-   int next_progenitor;
-   int first_halo_in_fof_group;
-   int next_halo_in_fof_group;
+  int   Type;
+  long long   GalaxyIndex;
+  int   HaloIndex;
+  int   FOFHaloIndex;
+  int   TreeIndex;
 
-   // properties of halo 
-   int Len;
-   float M_Mean200, Mvir, M_TopHat;  // Mean 200 values (Mvir=M_Crit200)
-   float Pos[3];
-   float Vel[3];
-   float VelDisp;
-   float Vmax;
-   float Spin[3];
-   long long MostBoundID;
+  // LUKE: See struct GALAXY.
+  int   descendant;
+  
+  int   SnapNum;
+  int   CentralGal;
+  float CentralMvir;
 
-   // original position in subfind output 
-   int SnapNum;
-   int FileNr;
-   int SubhaloIndex;
-   float SubHalfMass;
+  // properties of subhalo at the last time this galaxy was a central galaaxy 
+  float Pos[3];
+  float Vel[3];
+  float Spin[3];
+  int   Len;   
+  float Mvir;
+  float Rvir;
+  float Vvir;
+  float Vmax;
+  float VelDisp;
+
+  // baryonic reservoirs 
+  float ColdGas;
+  float StellarMass;
+  float BulgeMass;
+  float HotGas;
+  float EjectedMass;
+  float BlackHoleMass;
+  float ICS;
+
+  // metals
+  float MetalsColdGas;
+  float MetalsStellarMass;
+  float MetalsBulgeMass;
+  float MetalsHotGas;
+  float MetalsEjectedMass;
+  float MetalsICS;
+
+  // misc 
+  float Sfr;
+  float SfrBulge;
+  float SfrICS;
+  float DiskScaleRadius;
+  float Cooling;
+  float Heating;
 };
 
 std::ostream&
 operator<<( std::ostream& strm,
-            const halo_type& obj )
+            const galaxy_type& obj )
 {
-   strm << "descendant: " << obj.descendant << "\n";
-   strm << "first progenitor: " << obj.first_progenitor << "\n";
-   strm << "first in fof group: " << obj.first_halo_in_fof_group << "\n";
-   strm << "next in fof group: " << obj.next_halo_in_fof_group << "\n";
+   // strm << "descendant: " << obj.descendant << "\n";
+   // strm << "first progenitor: " << obj.first_progenitor << "\n";
+   // strm << "first in fof group: " << obj.first_halo_in_fof_group << "\n";
+   // strm << "next in fof group: " << obj.next_halo_in_fof_group << "\n";
 }
 
 int
@@ -62,8 +88,8 @@ main( int argc,
    file.read( (char*)num_tree_halos.data(), sizeof(int)*num_trees );
 
    // Read first tree.
-   vector<halo_type> halos( num_tree_halos[0] );
-   file.read( (char*)halos.data(), num_tree_halos[0]*sizeof(halo_type) );
+   vector<galaxy_type> halos( num_tree_halos[0] );
+   file.read( (char*)halos.data(), num_tree_halos[0]*sizeof(galaxy_type) );
 
    // Write out some details.
    std::cout << "Number of trees: " << num_trees << "\n";
@@ -71,26 +97,23 @@ main( int argc,
    std::cout << "Number of halos per tree: " << num_tree_halos[0] << "\n";
 
 
+
+   unsigned num_prim = 0;
+   for( unsigned ii = 0; ii < num_tree_halos[0]; ++ii )
+   {
+      if( halos[ii].Type == 0 )
+         ++num_prim;
+   }
+   std::cout << num_prim << "\n";
+
    // {
-   //    int cur = 1626;
+   //    int cur = 0;
    //    while( cur != -1 )
    //    {
-   //       std::cout << cur << "\n";
-   //       cur = halos[cur].first_progenitor;
+   //       std::cout << cur << ", " << halos[cur].Type << "\n";
+   //       cur = halos[cur].next_halo_in_fof_group;
    //    }
    // }
-
-   // // Hunt down all the primary halos at the last snapshot.
-   // unsigned num_prim = 0;
-   // for( unsigned ii = 0; ii < num_tree_halos[0]; ++ii )
-   // {
-   //    if( halos[ii].SnapNum == 63 && halos[ii].first_halo_in_fof_group == ii )
-   //    {
-   //       std::cout << ii << ", " << halos[ii].first_halo_in_fof_group << "\n";
-   //       ++num_prim;
-   //    }
-   // }
-   // std::cout << num_prim << "\n";
 
    // {
    //    int cur = 1;
