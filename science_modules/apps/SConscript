@@ -19,6 +19,8 @@ libs = [] + env.get('LIBS', [])
 sources = [
     ('chiara', 'chiara.cc'),
     ('generate', 'generate.cc'),
+    ('milreader', 'milreader.cc'),
+    ('sagereader', 'sagereader.cc'),
 ]
 
 # Call the helper.
