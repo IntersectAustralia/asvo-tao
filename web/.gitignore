@@ -4,3 +4,4 @@ develop-eggs/
 .installed.cfg
 parts/
 /static/
+/.coverage
