@@ -73,7 +73,7 @@ class SAGEDataReader:
             self.ProcessFile(fobject[0])
             
             raw_input("Press Any Key to Continue")
-        
+        self.MySQL.Close()
     
     def ProcessFile(self,FilePath):
         CurrentFile=open(FilePath,"rb")
@@ -93,18 +93,22 @@ class SAGEDataReader:
             TreeLengthList=[]                
             for i in range(0,NumberofTrees):
                 GalaxiesperTree= struct.unpack('i', CurrentFile.read(4))[0]
+                
                 TreeLengthList.append(GalaxiesperTree)     
                 SumOfAllGalaxies=SumOfAllGalaxies+ GalaxiesperTree    
                 
             
             # Verify the total number of galaxies 
-            if not SumOfAllGalaxies==TotalNumberOfGalaxies: raise AssertionError
+            if not SumOfAllGalaxies==TotalNumberOfGalaxies:
+                print("Error In Header File "+str(SumOfAllGalaxies)+"/"+str(TotalNumberOfGalaxies)) 
+                raise AssertionError
         
             for i in range(0,NumberofTrees):
                 NumberofGalaxiesInTree=TreeLengthList[i]
                 print('\t Number of Galaxies in Tree ('+str(i)+')='+str(NumberofGalaxiesInTree))
-                TreeData=self.ProcessTree(NumberofGalaxiesInTree,CurrentFile,CurrentFileGalaxyID)    
-                self.MySQL.CreateNewTree(TreeData)        
+                if NumberofGalaxiesInTree>0:
+                    TreeData=self.ProcessTree(NumberofGalaxiesInTree,CurrentFile,CurrentFileGalaxyID)    
+                    self.MySQL.CreateNewTree(TreeData)        
                 
                 self.CurrentGlobalTreeID=self.CurrentGlobalTreeID+1
              
@@ -113,10 +117,10 @@ class SAGEDataReader:
             print('\t Error happen while processing file')
             print('\t File Name: '+FilePath)
             print('\t Error:'+  str(sys.exc_info()))   
-                        
+            self.MySQL.Close()            
             
         finally:
-            CurrentFile.close()
+            CurrentFile.close()            
             if self.DebugToFile==True:
                 Log.close()
     
@@ -130,6 +134,7 @@ class SAGEDataReader:
         TreeFields=[]        
         for j in range(0,NumberofGalaxiesInTree):
             #read the fields of this tree
+            #print(str(j)+"/"+str(NumberofGalaxiesInTree))
             FieldData=self.ReadTreeField(CurrentFile,CurrentFileGalaxyID,self.CurrentGlobalTreeID)
             TreeFields.append(FieldData)
             CurrentFileGalaxyID=CurrentFileGalaxyID+1

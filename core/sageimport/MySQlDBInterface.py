@@ -8,6 +8,7 @@ import MySQLdb
 import getpass
 import math
 import string
+import sys
 
 class MySQlDBInterface(object):
     '''
@@ -20,7 +21,8 @@ class MySQlDBInterface(object):
     
     CurrentTableID=0
     CurrentTreesCounter=0
-
+    DebugToFile=False
+    
     def __init__(self,CurrentSAGEStruct,Options):
         '''
         Constructor
@@ -31,7 +33,8 @@ class MySQlDBInterface(object):
         self.CreateInsertTemplate()
         self.InitMySQLConnection()        
         self.CreateDB()
-        
+        if self.DebugToFile==True:
+            self.Log = open(self.Options['RunningSettings:OutputDir']+'Debug_sql.txt', 'wt')
         
     
     def CreateNewTableTemplate(self):
@@ -54,7 +57,7 @@ class MySQlDBInterface(object):
                 FieldName=field[2]
                 self.INSERTTemplate=self.INSERTTemplate+ FieldName+","
         self.INSERTTemplate=self.INSERTTemplate+"GlobalTreeID)" 
-        print self.INSERTTemplate        
+                
     def InitMySQLConnection(self):
         
         self.serverip=self.Options['MySQLDB:serverip']
@@ -95,7 +98,7 @@ class MySQlDBInterface(object):
        self.cursor.execute("create database "+self.DBName+";") 
        print("Database "+self.DBName+" Created")
        ### Close the current Connection and open a new one on the new DB
-       self.Close()       
+       self.CurrentConnection.close()      
        self.CurrentConnection=MySQLdb.connect(host=self.serverip,user=self.username,passwd=self.password,db=self.DBName)
        self.cursor=self.CurrentConnection.cursor()
        print("Connection to Database "+self.DBName+" is opened and ready")
@@ -118,17 +121,29 @@ class MySQlDBInterface(object):
             print("Creating New Table ...New Table ID "+str(self.CurrentTableID))            
             self.CreateNewTable(self.CurrentTableID)
             
-        
-        self.PrepareInsertStatement(TreeData)
+        if len(TreeData)>1000:
+            for c in range(0,(len(TreeData)/1000)+1):
+                start=c*1000
+                end=min((c+1)*1000,len(TreeData))
+                sys.stdout.write("\033[0;33m"+str(start)+":"+str(end)+" from "+str(len(TreeData))+"\033[0m\r")
+                sys.stdout.flush()
+                self.PrepareInsertStatement(TreeData[start:end])
+        else:            
+            self.PrepareInsertStatement(TreeData) 
+            print("Tree Processing .. Done")   
         
         self.CurrentTreesCounter=self.CurrentTreesCounter+1
-        
+        print("\n")
     def PrepareInsertStatement(self,TreeData):
         TablePrefix=self.Options['MySQLDB:TreeTablePrefix']
         NewTableName=TablePrefix+str(self.CurrentTableID)  
         InsertStatment= string.replace(self.INSERTTemplate,"@TABLEName",NewTableName)  
         InsertStatment=InsertStatment+" VALUES "
+        Location=0
         for TreeField in TreeData:
+            #sys.stdout.write(str(Location)+"/"+str(len(TreeData))+"\r")
+            #sys.stdout.flush()
+            Location=Location+1
             InsertStatment=InsertStatment+"("
             for field in self.CurrentSAGEStruct:                
                 if field[3]==1:                
@@ -137,11 +152,14 @@ class MySQlDBInterface(object):
             InsertStatment=InsertStatment+str(self.CurrentTreesCounter)+"),"
             #print InsertStatment
         InsertStatment=InsertStatment[:-1]
-        
+        if self.DebugToFile==True:
+            self.Log.write(InsertStatment+"\n\n")
+            self.Log.flush()
         self.cursor.execute(InsertStatment)
         self.CurrentConnection.commit()     
     def Close(self):
         self.CurrentConnection.close()
-        
+        if self.DebugToFile==True:
+            self.Log.close()
             
         
