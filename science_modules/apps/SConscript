@@ -21,6 +21,7 @@ sources = [
     ('generate', 'generate.cc'),
     ('milreader', 'milreader.cc'),
     ('sagereader', 'sagereader.cc'),
+    ('sagecheck', 'sagecheck.cc'),
 ]
 
 # Call the helper.
