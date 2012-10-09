@@ -18,7 +18,7 @@ struct galaxy_type
    int   descendant;
   
    int   snap;
-   int   CentralGal;
+   int   central_gal;
    float CentralMvir;
 
    // properties of subhalo at the last time this galaxy was a central galaaxy 
@@ -103,7 +103,7 @@ main( int argc,
    unsigned file_idx = 0, chunk_idx = 0;
    while( 1 )
    {
-      // Try and open the file with current cunk index.
+      // Try and open the file with current chunk index.
       string filename = boost::str( boost::format( "model_%1%_%2%" ) % file_idx % chunk_idx );
       LOGILN( "Trying to open file \"", filename, "\"" );
       std::ifstream file( filename, std::ios::in | std::ios::binary );

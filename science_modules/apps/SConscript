@@ -22,6 +22,7 @@ sources = [
     ('milreader', 'milreader.cc'),
     ('sagereader', 'sagereader.cc'),
     ('sagecheck', 'sagecheck.cc'),
+    ('dbcheck', 'dbcheck.cc'),
 ]
 
 # Call the helper.
