@@ -15,7 +15,9 @@ struct galaxy_type
    int   tree_idx;
 
    // LUKE: See struct GALAXY.
-   int   descendant;
+   long long  global_index;
+   int        descendant;
+   long long  global_descendant;
   
    int   snap;
    int   central_gal;
@@ -147,6 +149,7 @@ main( int argc,
          multimap<int,int> parents;
          list<int> bases;
          multimap<int,int> fof_groups;
+         multimap<long long,int> global_to_local;
 
          // Iterate over each galaxy, checking some values.
          for( unsigned jj = 0; jj < halos.size(); ++jj )
@@ -175,6 +178,10 @@ main( int argc,
 
             // Insert the FOF group details.
             fof_groups.insert( halos[jj].fof_idx, jj );
+
+            // Insert global to local mapping.
+            ASSERT( !global_to_local.has( halos[jj].global_index ) );
+            global_to_local.insert( halos[jj].global_index, jj );
          }
 
          // Starting from the bases, walk up the tree to compute some
@@ -187,9 +194,16 @@ main( int argc,
             ++tree_idx;
          }
 
-         // Process each FOF group and check that the galaxy types are okay.
+         // Need another loop over halos to check things.
          for( unsigned jj = 0; jj < halos.size(); ++jj )
          {
+            // Check global descandant.
+            if( halos[jj].descendant != -1 )
+               ASSERT( global_to_local.get( halos[jj].global_descendant ) == halos[jj].descendant );
+            else
+               ASSERT( halos[jj].global_descendant == -1 );
+
+            // Check FOF groups.
             bool have_primary = false;
             auto rng = fof_groups.equal_range( jj );
             while( rng.first != rng.second )
