@@ -20,17 +20,11 @@ def interact(locals):
 
 class JobTest(LiveServerTestCase):
 
-    @classmethod
-    def setUpClass(cls):
-        cls.selenium = WebDriver()
-        super(JobTest, cls).setUpClass()
-
-    @classmethod
-    def tearDownClass(cls):
-        cls.selenium.quit()
-        super(JobTest, cls).tearDownClass()
 
     def setUp(self):
+        super(JobTest, self).setUp()
+        self.selenium = WebDriver()
+
         username = 'user'
         password = 'password'
 
@@ -40,6 +34,10 @@ class JobTest(LiveServerTestCase):
 
         self.job = JobFactory.create(user=self.user)
         self._login(username, password)
+
+    def tearDown(self):
+        super(JobTest, self).tearDown()
+        self.selenium.quit()
 
     def test_view_job_without_files(self):
         self._visit('submitted_jobs')
