@@ -76,3 +76,7 @@ class Job(models.Model):
 
     def is_completed(self):
         return self.status == Job.COMPLETED
+
+    def files(self):
+        if not self.is_completed():
+            raise Exception("can't look at files of job that is not completed")
