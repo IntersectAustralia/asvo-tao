@@ -11,7 +11,7 @@ struct galaxy_type
    int   type;
    long long   GalaxyIndex;
    int   HaloIndex;
-   int   FOFHaloIndex;
+   int   fof_idx;
    int   tree_idx;
 
    // LUKE: See struct GALAXY.
@@ -130,21 +130,23 @@ main( int argc,
       vector<int> num_tree_halos( num_trees );
       file.read( (char*)num_tree_halos.data(), sizeof(int)*num_trees );
       ASSERT( !file.fail() );
-      LOGILN( num_trees, " in file." );
+      LOGDLN( num_trees, " in file." );
 
       // Iterate over trees.
       vector<galaxy_type> halos;
       for( unsigned ii = 0; ii < num_trees; ++ii )
       {
-         LOGILN( "Reading tree ", ii, ".", setindent( 2 ) );
+         LOGDLN( "Reading tree ", ii, ".", setindent( 2 ) );
          halos.resize( num_tree_halos[ii] );
          file.read( (char*)halos.data(), halos.size()*sizeof(galaxy_type) );
          ASSERT( !file.fail() );
 
          // Need to represent the parents of each galaxy, and also
-         // the bases of each tree.
+         // the bases of each tree. We also need to store the FOF
+         // groups to check galaxy types.
          multimap<int,int> parents;
          list<int> bases;
+         multimap<int,int> fof_groups;
 
          // Iterate over each galaxy, checking some values.
          for( unsigned jj = 0; jj < halos.size(); ++jj )
@@ -170,6 +172,9 @@ main( int argc,
 
             // Clear the tree index to a dummy value.
             halos[jj].tree_idx = -1;
+
+            // Insert the FOF group details.
+            fof_groups.insert( halos[jj].fof_idx, jj );
          }
 
          // Starting from the bases, walk up the tree to compute some
@@ -177,12 +182,29 @@ main( int argc,
          int tree_idx = 0;
          for( auto idx : bases )
          {
-            LOGILN( "Walking tree with base at ", idx, "." );
+            LOGDLN( "Walking tree with base at ", idx, "." );
             walk_tree( idx, tree_idx, halos, parents );
             ++tree_idx;
          }
 
-         LOG( setindent( -2 ) );
+         // Process each FOF group and check that the galaxy types are okay.
+         for( unsigned jj = 0; jj < halos.size(); ++jj )
+         {
+            bool have_primary = false;
+            auto rng = fof_groups.equal_range( jj );
+            while( rng.first != rng.second )
+            {
+               unsigned idx = (*rng.first).second;
+               if( halos[idx].type == 0 )
+               {
+                  ASSERT( !have_primary, "Multiple primary galaxies in FOF group." );
+                  have_primary = true;
+               }
+               ++rng.first;
+            }
+         }
+
+         LOGD( setindent( -2 ) );
       }
 
       // Advance the chunk.
