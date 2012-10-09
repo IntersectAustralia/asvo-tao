@@ -114,7 +114,7 @@ main( int argc,
          chunk_idx = 0;
          filename = boost::str( boost::format( "model_%1%_%2%" ) % file_idx % chunk_idx );
          LOGILN( "Trying to open file \"", filename, "\"" );
-         std::ifstream file( filename, std::ios::in | std::ios::binary );
+         file.open( filename, std::ios::in | std::ios::binary );
          if( !file )
          {
             LOGILN( "Failed, terminating loop." );
