@@ -72,7 +72,7 @@ class SAGEDataReader:
             
             self.ProcessFile(fobject[0])
             
-            raw_input("Press Any Key to Continue")
+            #raw_input("Press Any Key to Continue")
         self.MySQL.Close()
     
     def ProcessFile(self,FilePath):
@@ -150,8 +150,21 @@ class SAGEDataReader:
                           str(FieldData['Descendant'])+','+
                           str(FieldData['FileGalaxyID'])+','+
                           str(FieldData['TreeID'])+'\n')
-        return TreeFields    
+        return self.ComputeFields(TreeFields)    
     
+    def ComputeFields(self,TreeData):
+        for TreeField in TreeData:
+            CentralGalaxyLocalID=TreeField['CentralGal']
+            DescGalaxyLocalID=TreeField['Descendant']
+            CentralGalaxy=TreeData[CentralGalaxyLocalID]
+            TreeField['CentralGalaxyGlobalID']=CentralGalaxy['GalaxyIndex']
+            DescGalaxy=TreeData[DescGalaxyLocalID]
+            TreeField['DescendantGlobalID']=DescGalaxy['GalaxyIndex']
+            TreeField['CentralGalaxyX']=CentralGalaxy['PosX']
+            TreeField['CentralGalaxyY']=CentralGalaxy['PosY']
+            TreeField['CentralGalaxyZ']=CentralGalaxy['PosZ']
+            
+        return TreeData
     def ReadTreeField(self,CurrentFile,CurrentFileGalaxyID,TreeID):
         
         #Read a single Galaxy information based on the pre-defined struct

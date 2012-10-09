@@ -21,6 +21,7 @@ class MySQlDBInterface(object):
     
     CurrentTableID=0
     CurrentTreesCounter=0
+    
     DebugToFile=False
     
     def __init__(self,CurrentSAGEStruct,Options):
@@ -35,7 +36,7 @@ class MySQlDBInterface(object):
         self.CreateDB()
         if self.DebugToFile==True:
             self.Log = open(self.Options['RunningSettings:OutputDir']+'Debug_sql.txt', 'wt')
-        
+        self.CurrentGalaxiesCounter=int(Options['RunningSettings:GalaxiesPerTable'])+1 # To Create the First Table
     
     def CreateNewTableTemplate(self):
         self.CreateTableTemplate="CREATE TABLE @TABLEName ("
@@ -45,7 +46,13 @@ class MySQlDBInterface(object):
                 FieldName=field[2]
                 self.CreateTableTemplate=self.CreateTableTemplate+ FieldName +' '+FieldDT+","
         #self.CreateTableTemplate=self.CreateTableTemplate[:-1]
-        self.CreateTableTemplate=self.CreateTableTemplate+"GlobalTreeID BIGINT"    
+        self.CreateTableTemplate=self.CreateTableTemplate+"GlobalTreeID BIGINT,"
+        self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyGlobalID BIGINT,"     
+        self.CreateTableTemplate=self.CreateTableTemplate+"DescendantGlobalID BIGINT,"
+        self.CreateTableTemplate=self.CreateTableTemplate+"LocalGalaxyID INT,"
+        self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyX FLOAT,"
+        self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyY FLOAT,"
+        self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyZ FLOAT"
         self.CreateTableTemplate=self.CreateTableTemplate+ ") ENGINE=NDBCLUSTER"     
             
     
@@ -56,8 +63,13 @@ class MySQlDBInterface(object):
             if field[3]==1:                
                 FieldName=field[2]
                 self.INSERTTemplate=self.INSERTTemplate+ FieldName+","
-        self.INSERTTemplate=self.INSERTTemplate+"GlobalTreeID)" 
-                
+        self.INSERTTemplate=self.INSERTTemplate+"GlobalTreeID," 
+        self.INSERTTemplate=self.INSERTTemplate+"CentralGalaxyGlobalID,"
+        self.INSERTTemplate=self.INSERTTemplate+"DescendantGlobalID,"
+        self.INSERTTemplate=self.INSERTTemplate+"LocalGalaxyID,"
+        self.INSERTTemplate=self.INSERTTemplate+"CentralGalaxyX,"
+        self.INSERTTemplate=self.INSERTTemplate+"CentralGalaxyY,"
+        self.INSERTTemplate=self.INSERTTemplate+"CentralGalaxyZ)"
     def InitMySQLConnection(self):
         
         self.serverip=self.Options['MySQLDB:serverip']
@@ -114,12 +126,13 @@ class MySQlDBInterface(object):
           
     def CreateNewTree(self,TreeData):
         print('Starting a New Tree')
-        
-        if(self.CurrentTreesCounter%int(self.Options['RunningSettings:TreePerTable'])==0):
+        self.LocalGalaxyID=0
+        if(self.CurrentGalaxiesCounter>=int(self.Options['RunningSettings:GalaxiesPerTable'])):
             print("Changing Table ID....Current Table ID "+str(self.CurrentTableID))
             self.CurrentTableID=self.CurrentTableID+1
             print("Creating New Table ...New Table ID "+str(self.CurrentTableID))            
             self.CreateNewTable(self.CurrentTableID)
+            self.CurrentGalaxiesCounter=0
             
         if len(TreeData)>1000:
             for c in range(0,(len(TreeData)/1000)+1):
@@ -131,6 +144,8 @@ class MySQlDBInterface(object):
         else:            
             self.PrepareInsertStatement(TreeData) 
             print("Tree Processing .. Done")   
+        
+        self.CurrentGalaxiesCounter=self.CurrentGalaxiesCounter+len(TreeData)
         
         self.CurrentTreesCounter=self.CurrentTreesCounter+1
         print("\n")
@@ -149,12 +164,21 @@ class MySQlDBInterface(object):
                 if field[3]==1:                
                     FieldName=field[0]
                     InsertStatment=InsertStatment+ str(TreeField[FieldName])+","
-            InsertStatment=InsertStatment+str(self.CurrentTreesCounter)+"),"
+            InsertStatment=InsertStatment+str(self.CurrentTreesCounter)+","
+            InsertStatment=InsertStatment+str(TreeField['CentralGalaxyGlobalID'])+","
+            InsertStatment=InsertStatment+str(TreeField['DescendantGlobalID'])+","
+            InsertStatment=InsertStatment+str(self.LocalGalaxyID)+","
+            
+            InsertStatment=InsertStatment+str(TreeField['CentralGalaxyX'])+","
+            InsertStatment=InsertStatment+str(TreeField['CentralGalaxyY'])+","
+            InsertStatment=InsertStatment+str(TreeField['CentralGalaxyZ'])+"),"
+            self.LocalGalaxyID=self.LocalGalaxyID+1
             #print InsertStatment
         InsertStatment=InsertStatment[:-1]
         if self.DebugToFile==True:
             self.Log.write(InsertStatment+"\n\n")
             self.Log.flush()
+        #print(InsertStatment)    
         self.cursor.execute(InsertStatment)
         self.CurrentConnection.commit()     
     def Close(self):
