@@ -4,12 +4,12 @@ from selenium.webdriver.firefox.webdriver import WebDriver
 class MockGalaxyFactoryTest(LiveServerTestCase):
 
     def setUp(self):
-        super(MockGalaxyFactoryTest, self).setUp()
         self.selenium = WebDriver()
+        super(MockGalaxyFactoryTest, self).setUp()
 
     def tearDown(self):
-        super(MockGalaxyFactoryTest, self).tearDownClass()
         self.selenium.quit()
+        super(MockGalaxyFactoryTest, self).tearDown()
 
     def test_basic(self):
         self.selenium.get("%s%s" % (self.live_server_url, '/accounts/login/'))

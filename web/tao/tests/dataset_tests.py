@@ -1,11 +1,12 @@
-from django.test.testcases import TestCase
+from django.test.testcases import TransactionTestCase
 
-from tao.datasets import dark_matter_simulation_choices, galaxy_model_choices
 from tao.models import GalaxyModel, Simulation
 
+class DatasetTestCase(TransactionTestCase):
 
-class DatasetTestCase(TestCase):
+
     def test_dark_matter_simulation_choices(self):
+        from tao.datasets import dark_matter_simulation_choices, galaxy_model_choices
         self.assertEqual([], dark_matter_simulation_choices())
 
         Simulation(id=1, name='sim').save()
@@ -20,6 +21,7 @@ class DatasetTestCase(TestCase):
         )
 
     def test_galaxy_model_choices(self):
+        from tao.datasets import dark_matter_simulation_choices, galaxy_model_choices
         self.assertEqual(0, len(galaxy_model_choices()))
 
         s1 = Simulation(id=1, name='sim')

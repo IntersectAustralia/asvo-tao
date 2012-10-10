@@ -16,3 +16,12 @@ DATABASES = {
 }
 
 FILES_BASE = '/tmp/'  # please include a trailing slash
+
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
+
+INSTALLED_APPS += (
+    'django_nose',
+)
+
+NOSE_ARGS = ['--with-xunit']

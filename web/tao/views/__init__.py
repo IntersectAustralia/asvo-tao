@@ -8,7 +8,6 @@ from django.views.decorators.http import require_POST
 
 from tao import models
 from tao.decorators import researcher_required, admin_required, set_tab
-from tao.forms import UserCreationForm, RejectForm, LoginForm
 from tao.mail import send_mail
 from tao.pagination import paginate
 
@@ -23,6 +22,7 @@ def home(request):
 
 
 def login(request):
+    from tao.forms import LoginForm
     if request.method == 'POST':
         if not request.POST.get('remember_me', None):
             request.session.set_expiry(0)  # expires on browser close
@@ -30,6 +30,7 @@ def login(request):
 
 
 def register(request):
+    from tao.forms import UserCreationForm
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
@@ -50,6 +51,7 @@ def admin_index(request):
 
 @admin_required
 def access_requests(request):
+    from tao.forms import RejectForm
     user_list = models.User.objects.filter(is_active=False, userprofile__rejected=False).order_by('-id')
     users = paginate(user_list, request.GET.get('page'))
 
