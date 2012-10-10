@@ -10,4 +10,4 @@ fi
 cd $WORKSPACE/web/
 /usr/bin/env python26 bootstrap.py
 bin/buildout
-bin/django test tao --settings=tao.test
+bin/django test tao --settings=tao.test -v2
