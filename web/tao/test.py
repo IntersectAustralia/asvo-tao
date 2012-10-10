@@ -24,4 +24,4 @@ INSTALLED_APPS += (
     'django_nose',
 )
 
-NOSE_ARGS = ['--with-xunit']
+NOSE_ARGS = ['--with-xunit', '--nocapture']
