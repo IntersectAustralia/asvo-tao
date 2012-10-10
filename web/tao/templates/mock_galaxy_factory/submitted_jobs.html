@@ -1,4 +1,7 @@
 {% extends "_base.html" %}
+
+{% load url from future %}
+
 {% block subtitle %}My Jobs ({{ status }}){% endblock %}
 {% block extracss %}
     <style>
@@ -29,7 +32,7 @@
             <tbody>
                 {% for job in jobs %}
                     <tr>
-                        <td><a id="view_job_{{ job.id }}" href="{% url view_job job.id %}">View</a></td>
+                        <td><a id="view_job_{{ job.id }}" href="{% url 'view_job' job.id %}">View</a></td>
                         <td>
                             {{ job.created_time }}
                         </td>

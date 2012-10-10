@@ -1,4 +1,7 @@
 {% extends '_base.html' %}
+
+{% load url from future %}
+
 {% block subtitle %}
     Home
 {% endblock %}
@@ -9,7 +12,7 @@
     <div>
         <ul>
             <li>
-                <a href="{% url mock_galaxy_factory %}">Mock Galaxy Factory</a>
+                <a href="{% url 'mock_galaxy_factory' %}">Mock Galaxy Factory</a>
             </li>
         </ul>
         {% include 'jobs/_status_links.html' %}
