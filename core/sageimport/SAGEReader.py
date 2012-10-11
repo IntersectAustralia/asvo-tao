@@ -31,7 +31,7 @@ class SAGEDataReader:
             self.CurrentFolderPath=self.CurrentFolderPath[:-1] 
             
         # Get a list of Non-Empty Files
-        self.NonEmptyFiles=self.GetNonEmptyFilesList()
+        #self.NonEmptyFiles=self.GetNonEmptyFilesList()
   
     def GetStructSizeAndFormat(self):
         
@@ -61,16 +61,17 @@ class SAGEDataReader:
     def ProcessAllFiles(self):
         
         #Process All the Non-Empty Files
-        
         [self.FormatStr,self.FieldSize]=self.GetStructSizeAndFormat()
+        self.ProcessFile('/lustre/projects/p014_swin/raw_data/millennium/full/sage_output/model_271_7')
         
         
-        for fobject in self.NonEmptyFiles:
+        
+        #for fobject in self.NonEmptyFiles:
             # Updating the user with what is going on
-            print('Processing File:'+fobject[0])
-            print('\t File Size:'+str(fobject[1]/1024)+' KB')
+        #    print('Processing File:'+fobject[0])
+        #    print('\t File Size:'+str(fobject[1]/1024)+' KB')
             
-            self.ProcessFile(fobject[0])
+        #    self.ProcessFile(fobject[0])
             
             #raw_input("Press Any Key to Continue")
         self.MySQL.Close()
@@ -80,49 +81,49 @@ class SAGEDataReader:
         CurrentFileGalaxyID=0
         if self.DebugToFile==True:
             self.Log = open(self.Options['RunningSettings:OutputDir']+'Debug_'+str(self.CurrentGlobalTreeID)+'.csv', 'wt')
-        try:
-            NumberofTrees= struct.unpack('i', CurrentFile.read(4))[0]
-            TotalNumberOfGalaxies= struct.unpack('i', CurrentFile.read(4))[0]
-            if self.DebugToFile==True:
-                self.Log.write('\t Trees Count= '+str(NumberofTrees)+'\n')
-                self.Log.write('\t Total Number of Galaxies = '+str(TotalNumberOfGalaxies)+'\n')
-            
-            
-            # Read the number of Galaxies per each tree
-            SumOfAllGalaxies=0                
-            TreeLengthList=[]                
-            for i in range(0,NumberofTrees):
-                GalaxiesperTree= struct.unpack('i', CurrentFile.read(4))[0]
-                
-                TreeLengthList.append(GalaxiesperTree)     
-                SumOfAllGalaxies=SumOfAllGalaxies+ GalaxiesperTree    
-                
-            
-            # Verify the total number of galaxies 
-            if not SumOfAllGalaxies==TotalNumberOfGalaxies:
-                print("Error In Header File "+str(SumOfAllGalaxies)+"/"+str(TotalNumberOfGalaxies)) 
-                raise AssertionError
+    #try:
+        NumberofTrees= struct.unpack('i', CurrentFile.read(4))[0]
+        TotalNumberOfGalaxies= struct.unpack('i', CurrentFile.read(4))[0]
+        if self.DebugToFile==True:
+            self.Log.write('\t Trees Count= '+str(NumberofTrees)+'\n')
+            self.Log.write('\t Total Number of Galaxies = '+str(TotalNumberOfGalaxies)+'\n')
         
-            for i in range(0,NumberofTrees):
-                NumberofGalaxiesInTree=TreeLengthList[i]
-                print('\t Number of Galaxies in Tree ('+str(i)+')='+str(NumberofGalaxiesInTree))
-                if NumberofGalaxiesInTree>0:
-                    TreeData=self.ProcessTree(NumberofGalaxiesInTree,CurrentFile,CurrentFileGalaxyID)    
-                    self.MySQL.CreateNewTree(TreeData)        
-                
-                self.CurrentGlobalTreeID=self.CurrentGlobalTreeID+1
-             
         
-        except:
-            print('\t Error happen while processing file')
-            print('\t File Name: '+FilePath)
-            print('\t Error:'+  str(sys.exc_info()))   
-            self.MySQL.Close()            
+        # Read the number of Galaxies per each tree
+        SumOfAllGalaxies=0                
+        TreeLengthList=[]                
+        for i in range(0,NumberofTrees):
+            GalaxiesperTree= struct.unpack('i', CurrentFile.read(4))[0]
             
-        finally:
-            CurrentFile.close()            
-            if self.DebugToFile==True:
-                Log.close()
+            TreeLengthList.append(GalaxiesperTree)     
+            SumOfAllGalaxies=SumOfAllGalaxies+ GalaxiesperTree    
+            
+        
+        # Verify the total number of galaxies 
+        if not SumOfAllGalaxies==TotalNumberOfGalaxies:
+            print("Error In Header File "+str(SumOfAllGalaxies)+"/"+str(TotalNumberOfGalaxies)) 
+            raise AssertionError
+    
+        for i in range(0,NumberofTrees):
+            NumberofGalaxiesInTree=TreeLengthList[i]
+            print('\t Number of Galaxies in Tree ('+str(i)+')='+str(NumberofGalaxiesInTree))
+            if NumberofGalaxiesInTree>0:
+                TreeData=self.ProcessTree(NumberofGalaxiesInTree,CurrentFile,CurrentFileGalaxyID)    
+                self.MySQL.CreateNewTree(TreeData)        
+            
+            self.CurrentGlobalTreeID=self.CurrentGlobalTreeID+1
+         
+    
+    #except:
+    #    print('\t Error happen while processing file')
+    #    print('\t File Name: '+FilePath)
+    #    print('\t Error:'+  str(sys.exc_info()))   
+    #    self.MySQL.Close()            
+        
+    #finally:
+        CurrentFile.close()            
+        if self.DebugToFile==True:
+            Log.close()
     
     def ProcessTree(self,NumberofGalaxiesInTree,CurrentFile,CurrentFileGalaxyID):    
                 
@@ -157,9 +158,9 @@ class SAGEDataReader:
             CentralGalaxyLocalID=TreeField['CentralGal']
             DescGalaxyLocalID=TreeField['Descendant']
             CentralGalaxy=TreeData[CentralGalaxyLocalID]
-            TreeField['CentralGalaxyGlobalID']=CentralGalaxy['GalaxyIndex']
+            TreeField['CentralGalaxyGlobalID']=CentralGalaxy['GlobalIndex']
             DescGalaxy=TreeData[DescGalaxyLocalID]
-            TreeField['DescendantGlobalID']=DescGalaxy['GalaxyIndex']
+            #TreeField['DescendantGlobalID']=DescGalaxy['GalaxyIndex']
             TreeField['CentralGalaxyX']=CentralGalaxy['PosX']
             TreeField['CentralGalaxyY']=CentralGalaxy['PosY']
             TreeField['CentralGalaxyZ']=CentralGalaxy['PosZ']

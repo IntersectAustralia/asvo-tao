@@ -48,13 +48,14 @@ class MySQlDBInterface(object):
         #self.CreateTableTemplate=self.CreateTableTemplate[:-1]
         self.CreateTableTemplate=self.CreateTableTemplate+"GlobalTreeID BIGINT,"
         self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyGlobalID BIGINT,"     
-        self.CreateTableTemplate=self.CreateTableTemplate+"DescendantGlobalID BIGINT,"
+        #self.CreateTableTemplate=self.CreateTableTemplate+"DescendantGlobalID BIGINT,"
         self.CreateTableTemplate=self.CreateTableTemplate+"LocalGalaxyID INT,"
         self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyX FLOAT,"
         self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyY FLOAT,"
         self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyZ FLOAT"
         self.CreateTableTemplate=self.CreateTableTemplate+ ") ENGINE=NDBCLUSTER"     
             
+        
     
     
     def CreateInsertTemplate(self):
@@ -65,7 +66,7 @@ class MySQlDBInterface(object):
                 self.INSERTTemplate=self.INSERTTemplate+ FieldName+","
         self.INSERTTemplate=self.INSERTTemplate+"GlobalTreeID," 
         self.INSERTTemplate=self.INSERTTemplate+"CentralGalaxyGlobalID,"
-        self.INSERTTemplate=self.INSERTTemplate+"DescendantGlobalID,"
+        #self.INSERTTemplate=self.INSERTTemplate+"DescendantGlobalID,"
         self.INSERTTemplate=self.INSERTTemplate+"LocalGalaxyID,"
         self.INSERTTemplate=self.INSERTTemplate+"CentralGalaxyX,"
         self.INSERTTemplate=self.INSERTTemplate+"CentralGalaxyY,"
@@ -92,11 +93,11 @@ class MySQlDBInterface(object):
     def DropDatabase(self):
         ## Check if the database already exists
         self.cursor=self.CurrentConnection.cursor()
-        self.cursor.execute("Show databases Like 'Millennium_Full'")
+        self.cursor.execute("Show databases Like '"+self.DBName+"'")
         data=self.cursor.fetchone()  
         ## If the database already exists - give the user the option to drop it
         if data!=None:
-            Response=raw_input("Database with the same name already exists!\nIf you Choose to Continue it will be dropped. Do you want to Drop it?(y/n)")
+            Response=raw_input("Database "+self.DBName+" with the same name already exists!\nIf you Choose to Continue it will be dropped. Do you want to Drop it?(y/n)")
             if Response=='y':
                 ## Drop the database
                 self.cursor.execute("Drop database "+self.DBName+";")
@@ -120,8 +121,25 @@ class MySQlDBInterface(object):
         NewTableName=TablePrefix+str(TableIndex)
         CreateTableStatment= string.replace(self.CreateTableTemplate,"@TABLEName",NewTableName)        
         
-        self.cursor.execute(CreateTableStatment)        
-        print("Table "+NewTableName+" Created ...")
+        self.cursor.execute(CreateTableStatment)
+        
+        
+        CreateIndexStatment="Create Index GlobalIndex_Index on  "+NewTableName+" (GlobalIndex);"
+        self.cursor.execute(CreateIndexStatment)
+        CreateIndexStatment="Create Index SnapNum_Index on  "+NewTableName+" (SnapNum);"
+        self.cursor.execute(CreateIndexStatment)
+        CreateIndexStatment="Create Index GlobalTreeID_Index on  "+NewTableName+" (GlobalTreeID);"
+        self.cursor.execute(CreateIndexStatment)
+        CreateIndexStatment="Create Index CentralGalaxyX_Index on  "+NewTableName+" (CentralGalaxyX);"
+        self.cursor.execute(CreateIndexStatment)
+        CreateIndexStatment="Create Index CentralGalaxyY_Index on  "+NewTableName+" (CentralGalaxyY);"
+        self.cursor.execute(CreateIndexStatment)
+        CreateIndexStatment="Create Index CentralGalaxyZ_Index on  "+NewTableName+" (CentralGalaxyZ);"
+        self.cursor.execute(CreateIndexStatment)
+        #CreatePartitionStatment="ALTER TABLE "+NewTableName+" PARTITION BY KEY(GlobalTreeID) PARTITIONS 2;"    
+        #self.cursor.execute(CreatePartitionStatment)
+        self.CurrentConnection.commit()   
+        print("Table "+NewTableName+" Created With Index ...")
     
           
     def CreateNewTree(self,TreeData):
@@ -166,7 +184,7 @@ class MySQlDBInterface(object):
                     InsertStatment=InsertStatment+ str(TreeField[FieldName])+","
             InsertStatment=InsertStatment+str(self.CurrentTreesCounter)+","
             InsertStatment=InsertStatment+str(TreeField['CentralGalaxyGlobalID'])+","
-            InsertStatment=InsertStatment+str(TreeField['DescendantGlobalID'])+","
+            #InsertStatment=InsertStatment+str(TreeField['DescendantGlobalID'])+","
             InsertStatment=InsertStatment+str(self.LocalGalaxyID)+","
             
             InsertStatment=InsertStatment+str(TreeField['CentralGalaxyX'])+","
