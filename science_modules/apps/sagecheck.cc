@@ -99,7 +99,11 @@ main( int argc,
    mpi::initialise( argc, argv );
 
    // ASSERT( argc > 1 );
-   LOG_CONSOLE();
+   // LOG_CONSOLE();
+   LOG_PUSH( new logging::stdout() );
+
+   // Need a global range.
+   long long global_upp = -1;
 
    // Keep processing files from 0 onwards until we cannot open a file.
    unsigned file_idx = 0, chunk_idx = 0;
@@ -149,7 +153,7 @@ main( int argc,
          multimap<int,int> parents;
          list<int> bases;
          multimap<int,int> fof_groups;
-         multimap<long long,int> global_to_local;
+         map<long long,int> global_to_local;
 
          // Iterate over each galaxy, checking some values.
          for( unsigned jj = 0; jj < halos.size(); ++jj )
@@ -179,9 +183,11 @@ main( int argc,
             // Insert the FOF group details.
             fof_groups.insert( halos[jj].fof_idx, jj );
 
-            // Insert global to local mapping.
+            // Insert global to local mapping and range.
             ASSERT( !global_to_local.has( halos[jj].global_index ) );
             global_to_local.insert( halos[jj].global_index, jj );
+	    ASSERT( halos[jj].global_index > global_upp );
+	    global_upp = halos[jj].global_index;
          }
 
          // Starting from the bases, walk up the tree to compute some
