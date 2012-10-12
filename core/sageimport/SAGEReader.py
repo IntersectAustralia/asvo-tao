@@ -31,7 +31,7 @@ class SAGEDataReader:
             self.CurrentFolderPath=self.CurrentFolderPath[:-1] 
             
         # Get a list of Non-Empty Files
-        #self.NonEmptyFiles=self.GetNonEmptyFilesList()
+        self.NonEmptyFiles=self.GetNonEmptyFilesList()
   
     def GetStructSizeAndFormat(self):
         
@@ -61,17 +61,16 @@ class SAGEDataReader:
     def ProcessAllFiles(self):
         
         #Process All the Non-Empty Files
+        #self.ProcessFile('/lustre/projects/p014_swin/raw_data/millennium/full/sage_output/model_271_7')
         [self.FormatStr,self.FieldSize]=self.GetStructSizeAndFormat()
-        self.ProcessFile('/lustre/projects/p014_swin/raw_data/millennium/full/sage_output/model_271_7')
         
         
-        
-        #for fobject in self.NonEmptyFiles:
+        for fobject in self.NonEmptyFiles:
             # Updating the user with what is going on
-        #    print('Processing File:'+fobject[0])
-        #    print('\t File Size:'+str(fobject[1]/1024)+' KB')
+            print('Processing File:'+fobject[0])
+            print('\t File Size:'+str(fobject[1]/1024)+' KB')
             
-        #    self.ProcessFile(fobject[0])
+            self.ProcessFile(fobject[0])
             
             #raw_input("Press Any Key to Continue")
         self.MySQL.Close()

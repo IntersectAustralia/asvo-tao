@@ -53,7 +53,7 @@ class MySQlDBInterface(object):
         self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyX FLOAT,"
         self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyY FLOAT,"
         self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyZ FLOAT"
-        self.CreateTableTemplate=self.CreateTableTemplate+ ") ENGINE=NDBCLUSTER"     
+        self.CreateTableTemplate=self.CreateTableTemplate+ ") ENGINE=NDBCLUSTER MAX_ROWS="+str(int(self.Options['RunningSettings:GalaxiesPerTable'])*5)     
             
         
     
@@ -120,7 +120,7 @@ class MySQlDBInterface(object):
         TablePrefix=self.Options['MySQLDB:TreeTablePrefix']
         NewTableName=TablePrefix+str(TableIndex)
         CreateTableStatment= string.replace(self.CreateTableTemplate,"@TABLEName",NewTableName)        
-        
+        #print CreateTableStatment
         self.cursor.execute(CreateTableStatment)
         
         
