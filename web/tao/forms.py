@@ -44,7 +44,12 @@ class UserCreationForm(auth_forms.UserCreationForm):
             raise ValidationError(_('Password must be at least 8 characters long'))
         return password
 
-
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).count() > 0:
+            raise ValidationError(_('That email is already taken.'))
+	return email
+		
     def save(self):  # what about transactions?
         user = super(auth_forms.UserCreationForm, self).save(commit=False)
         user.set_password(self.cleaned_data['password1'])  # FIXME shouldn't have to do this ??
