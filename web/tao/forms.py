@@ -70,10 +70,6 @@ from tao.widgets import ChoiceFieldWithOtherAttrs
 from django.utils.functional import lazy
 
 class MockGalaxyFactoryForm(BetterForm):
-# todo these only populate on server start
-    dark_matter_simulation = ChoiceFieldWithOtherAttrs(choices=lazy(datasets.dark_matter_simulation_choices, list)())
-    dummy_galaxy_model = ChoiceFieldWithOtherAttrs(choices=datasets.galaxy_model_choices(), required=False)
-    galaxy_model = ChoiceFieldWithOtherAttrs(choices=datasets.galaxy_model_choices())
     somethingelse = ChoiceFieldWithOtherAttrs(choices=[(1,2,{'a': 'b'}), (2,3,{'c': 'd'})])
 
     class Meta:
@@ -94,4 +90,6 @@ class MockGalaxyFactoryForm(BetterForm):
 
     def __init__(self):
         super(MockGalaxyFactoryForm, self).__init__()
-        self.fields['dark_matter_simulation'].choices
+        self.fields['dark_matter_simulation'] = ChoiceFieldWithOtherAttrs(choices=lazy(datasets.dark_matter_simulation_choices, list)())
+        self.fields['dummy_galaxy_model'] = ChoiceFieldWithOtherAttrs(choices=datasets.galaxy_model_choices(), required=False)
+        self.fields['galaxy_model'] = ChoiceFieldWithOtherAttrs(choices=datasets.galaxy_model_choices())
