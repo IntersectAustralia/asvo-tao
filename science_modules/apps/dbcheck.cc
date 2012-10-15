@@ -45,7 +45,7 @@ main( int argc,
 
    // Open database session.
    #include "credentials.hh"
-   string connect = "db=Millennium_Full host=tao01.hpc.swin.edu.au port=3307 user=" + user + " pass='" + password + "'";
+   string connect = "db=Millennium_Full host=tao01.hpc.swin.edu.au port=3306 user=" + user + " pass='" + password + "'";
    soci::session sql( soci::mysql, connect );
 
    // Get a complete list of tables.

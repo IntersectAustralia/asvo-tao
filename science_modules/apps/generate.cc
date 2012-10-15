@@ -4,6 +4,7 @@
 #include <soci/soci.h>
 #include <soci/sqlite3/soci-sqlite3.h>
 // #include <soci/mysql/soci-mysql.h>
+// #include <soci/postgresql/soci-postgresql.h>
 #include <libhpc/libhpc.hh>
 #include <tao/base/flat.hh>
 
