@@ -52,7 +52,10 @@
 		<user>taoadmin</user>
 		<password></password>
 		<NewDBName>Millennium_Full2</NewDBName>	
-		<TreeTablePrefix>Tree_</TreeTablePrefix>	
+		<TreeTablePrefix>Tree_</TreeTablePrefix>
+		<LOGFileLocation>/lustre/projects/p014_swin/SQLDataBases/MySQL_Log/</LOGFileLocation>
+		<TableSpaceLocation>/lustre/projects/p014_swin/SQLDataBases/MySQL_TableSpace/</TableSpaceLocation>
+			
 	</MySQLDB>
 	<RunningSettings>
 		<OutputDir>/home/amr/TempOutput/</OutputDir>
