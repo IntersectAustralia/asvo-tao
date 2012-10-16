@@ -48,8 +48,9 @@ class SAGEDataReader:
     def GetNonEmptyFilesList(self):
         
         #Get List of Files where the file size is greater than zero        
-        
+        print("Get list of files to be processed ....")
         dirList=os.listdir(self.CurrentFolderPath)
+        print("Current Files Count="+str(len(dirList)))
         fullPathArray=[]
         for fname in dirList:
             statinfo = os.stat(self.CurrentFolderPath+'/'+fname)                
@@ -80,7 +81,7 @@ class SAGEDataReader:
         CurrentFileGalaxyID=0
         if self.DebugToFile==True:
             self.Log = open(self.Options['RunningSettings:OutputDir']+'Debug_'+str(self.CurrentGlobalTreeID)+'.csv', 'wt')
-    #try:
+    
         NumberofTrees= struct.unpack('i', CurrentFile.read(4))[0]
         TotalNumberOfGalaxies= struct.unpack('i', CurrentFile.read(4))[0]
         if self.DebugToFile==True:
@@ -113,13 +114,6 @@ class SAGEDataReader:
             self.CurrentGlobalTreeID=self.CurrentGlobalTreeID+1
          
     
-    #except:
-    #    print('\t Error happen while processing file')
-    #    print('\t File Name: '+FilePath)
-    #    print('\t Error:'+  str(sys.exc_info()))   
-    #    self.MySQL.Close()            
-        
-    #finally:
         CurrentFile.close()            
         if self.DebugToFile==True:
             Log.close()
