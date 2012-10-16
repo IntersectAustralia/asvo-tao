@@ -53,7 +53,7 @@ def initial_deploy():
         run("bin/django migrate")
         run("touch tao/django.log && chmod o+w tao/django.log")
         sudo("cp deploy/httpd/tao_{target_env}_httpd.conf /etc/httpd/conf.d/tao_httpd.conf".format(target_env=env.target_env))
-        sudo("service httpd restart")
+        sudo("service httpd graceful")
         sudo("service httpd start")
 
 
@@ -64,7 +64,7 @@ def update():
         run("bin/django collectstatic --noinput")
         run("bin/django migrate")
         sudo("cp deploy/httpd/tao_{target_env}_httpd.conf /etc/httpd/conf.d/tao_httpd.conf".format(target_env=env.target_env))
-        sudo("service httpd restart")
+        sudo("service httpd graceful")
 
 def create_test_admin_users():
     with cd("asvo-tao/web"):
