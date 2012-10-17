@@ -72,7 +72,6 @@ class RejectForm(forms.Form):
 
 
 from tao.widgets import ChoiceFieldWithOtherAttrs
-from django.utils.functional import lazy
 
 class MockGalaxyFactoryForm(BetterForm):
     somethingelse = ChoiceFieldWithOtherAttrs(choices=[(1,2,{'a': 'b'}), (2,3,{'c': 'd'})])
@@ -95,6 +94,6 @@ class MockGalaxyFactoryForm(BetterForm):
 
     def __init__(self):
         super(MockGalaxyFactoryForm, self).__init__()
-        self.fields['dark_matter_simulation'] = ChoiceFieldWithOtherAttrs(choices=lazy(datasets.dark_matter_simulation_choices, list)())
+        self.fields['dark_matter_simulation'] = ChoiceFieldWithOtherAttrs(choices=datasets.dark_matter_simulation_choices())
         self.fields['dummy_galaxy_model'] = ChoiceFieldWithOtherAttrs(choices=datasets.galaxy_model_choices(), required=False)
         self.fields['galaxy_model'] = ChoiceFieldWithOtherAttrs(choices=datasets.galaxy_model_choices())
