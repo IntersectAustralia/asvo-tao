@@ -8,3 +8,5 @@ class JobFactory(factory.Factory):
 
 class UserFactory(factory.Factory):
     FACTORY_FOR = User
+    username = factory.Sequence(lambda n: 'username' + n)
+    email = factory.Sequence(lambda n: 'email' + n + '@example.com')

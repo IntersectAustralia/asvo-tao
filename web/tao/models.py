@@ -11,10 +11,15 @@ class UserProfile(models.Model):
     rejected = models.BooleanField(default=False)
 
 
+class UserManager(auth_models.UserManager):
+    def admin_emails(self):
+        return [x[0] for x in User.objects.filter(is_active=True, is_staff=True).values_list('email')]
+        
 class User(auth_models.User):
     """
         Wrapper to make methods on user_profile one call
     """
+    objects = UserManager()
     def title(self):
         # TODO This probably makes too many SQL queries by default?
         return self.get_profile().title

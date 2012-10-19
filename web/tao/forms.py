@@ -1,6 +1,7 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
+from django.conf import settings
 from django.contrib.auth import forms as auth_forms
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
@@ -29,8 +30,12 @@ class UserCreationForm(auth_forms.UserCreationForm):
                                             widget=forms.Textarea(attrs={'rows':
                                             3}), required=False)
     email = forms.EmailField(label=_("Email"), max_length=75)
+    
     captcha = ReCaptchaField()
-
+    def __init__(self, *args, **kwargs):
+        super(UserCreationForm, self).__init__(*args, **kwargs)
+        if not getattr(settings, 'USE_CAPTCHA', True):    
+            del self.fields['captcha']
 
     class Meta:
         model = User
