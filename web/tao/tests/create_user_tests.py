@@ -16,6 +16,6 @@ class CreateUserTest (TestCase):
                                                             'username' : 'myUserName', 'email' : 'myEmail@email.com', 'password1' : "password1",
                                                             'password2' : 'password1', 'institution' : 'Intersect', 'scientific_interests' : 'Black Holes',
                                                             'recaptcha_response_field' : 'PASSED' })
-        self.assertEquals(302, response.status_code)
+        self.assertEquals(200, response.status_code, redirect=True)
         self.assertEquals(1, len(User.objects.all()))
         # TODO test fields are saved properly
