@@ -13,7 +13,7 @@ if __name__ == '__main__':
     ### Read Running Settings
     [CurrentSAGEStruct,Options]=settingReader.ParseParams("settings.xml")
     ## Open Connection to MySQL
-    CurrentMySQlDB=MySQlDBInterface.MySQlDBInterface(CurrentSAGEStruct,Options)
+    CurrentMySQlDB=MySQlDBInterface.DBInterface(CurrentSAGEStruct,Options)
     ## Init files reader
     Reader=SAGEReader.SAGEDataReader(CurrentSAGEStruct,Options,CurrentMySQlDB)
     ## Start Processing the files

@@ -7,6 +7,7 @@ import os
 import sys
 import struct
 import MySQlDBInterface
+import string
 
 class SAGEDataReader:    
     #The Module handles the data reading from SAGE output to a memory data structure.
@@ -55,8 +56,11 @@ class SAGEDataReader:
         for fname in dirList:
             statinfo = os.stat(self.CurrentFolderPath+'/'+fname)                
             #print(fname+'\t'+str(statinfo.st_size/1024)+' KB')
-            if(statinfo.st_size>0):
+            
+            if(statinfo.st_size>0 and string.find(fname,'model_')==0):
                 fullPathArray.append([self.CurrentFolderPath+'/'+fname,statinfo.st_size])
+            elif(statinfo.st_size>0):
+                print("File Not Included:"+fname)
         return fullPathArray
     
     def ProcessAllFiles(self):

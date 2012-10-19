@@ -22,13 +22,17 @@ def ParseParams(FilePath):
         else:
             CurrentSAGEStruct.append([sagefield.text,sagefield.attrib['Type'],sagefield.attrib['DBFieldName'],ExportInDB])    
     ##################################################################################
-    ##### Load mysql information
+    ##### Load PostGres information
     mysqlNode=SettingsNode[1]
     for mysqlfield in mysqlNode:
        RunningOptions[mysqlNode.tag+':'+mysqlfield.tag]= mysqlfield.text    
     ##################################################################################
-    
-    RunningSettingsNode=SettingsNode[2]
+    ##### Load PostGres System information
+    mysqlNode=SettingsNode[2]
+    for mysqlfield in mysqlNode:
+       RunningOptions[mysqlNode.tag+':'+mysqlfield.tag]= mysqlfield.text 
+    ##########################################################################   
+    RunningSettingsNode=SettingsNode[3]
     for settingfield in RunningSettingsNode:
        RunningOptions[RunningSettingsNode.tag+':'+settingfield.tag]= settingfield.text
        

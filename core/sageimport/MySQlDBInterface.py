@@ -4,15 +4,16 @@ sudo apt-get install python-mysqldb
 
 @author: Amr Hassan
 '''
-import MySQLdb
+import pg
 import getpass
 import math
 import string
 import sys
+import subprocess
 
-class MySQlDBInterface(object):
+class DBInterface(object):
     '''
-    This class will handle the interface with the MySQLDB
+    This class will handle the interface with the DB
     '''
     FormatMapping={'int':'INT',
                    'float':'FLOAT',
@@ -33,10 +34,11 @@ class MySQlDBInterface(object):
         
         self.CurrentSAGEStruct=CurrentSAGEStruct
         
-        self.InitMySQLConnection()
+        self.InitDBConnection()
         self.CreateNewTableTemplate()
         self.CreateInsertTemplate()
-                
+        self.CreatePartitionFunction()
+        #self.SetSystemPgPoolConfig(1,5)        
         self.CreateDB()
         
         self.CurrentGalaxiesCounter=int(Options['RunningSettings:GalaxiesPerTable'])+1 # To Create the First Table
@@ -55,8 +57,8 @@ class MySQlDBInterface(object):
         self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyY FLOAT,"
         self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyZ FLOAT)"
         #self.CreateTableTemplate=self.CreateTableTemplate+ "PRIMARY KEY @TABLEName_PK (GlobalIndex)) "     
-        self.CreateTableTemplate=self.CreateTableTemplate+ " TABLESPACE "+self.DBName+"_TS STORAGE DISK "
-        self.CreateTableTemplate=self.CreateTableTemplate+" ENGINE=NDBCLUSTER" #MAX_ROWS="+str(int(self.Options['RunningSettings:GalaxiesPerTable'])*5)    
+        #self.CreateTableTemplate=self.CreateTableTemplate+ " TABLESPACE "+self.DBName+"_TS STORAGE DISK "
+        #self.CreateTableTemplate=self.CreateTableTemplate+" ENGINE=NDBCLUSTER" #MAX_ROWS="+str(int(self.Options['RunningSettings:GalaxiesPerTable'])*5)    
         
     
     
@@ -72,113 +74,135 @@ class MySQlDBInterface(object):
         self.INSERTTemplate=self.INSERTTemplate+"CentralGalaxyX,"
         self.INSERTTemplate=self.INSERTTemplate+"CentralGalaxyY,"
         self.INSERTTemplate=self.INSERTTemplate+"CentralGalaxyZ)"
-    def InitMySQLConnection(self):
+    def InitDBConnection(self):
         
-        self.serverip=self.Options['MySQLDB:serverip']
-        self.username=self.Options['MySQLDB:user']
-        self.password=self.Options['MySQLDB:password']
-        self.DBName=self.Options['MySQLDB:NewDBName']
+        ####### PostgreSQL Simulation DB ################# 
+        self.serverip=self.Options['PGDB:serverip']
+        self.username=self.Options['PGDB:user']
+        self.password=self.Options['PGDB:password']
+        self.port=int(self.Options['PGDB:port'])
+        self.DBName=self.Options['PGDB:NewDBName']
         
         if self.password==None:
             print('Password for user:'+username+' is not defined')
-            password=getpass.getpass('Please enter password:')
+            self.password=getpass.getpass('Please enter password:')
+        
+        ########## PgPool System DB ##########################    
+        self.Systemserverip=self.Options['PGSystemDB:serverip']
+        self.Systemusername=self.Options['PGSystemDB:user']
+        self.Systempassword=self.Options['PGSystemDB:password']
+        self.Systemport=int(self.Options['PGSystemDB:port'])
+        self.SystemDBName=self.Options['PGSystemDB:SystemDBName']
+        
+        if self.Systempassword==None:
+            print('System Password for user:'+username+' is not defined')
+            self.Systempassword=getpass.getpass('Please enter password:')    
         
         
-        self.CurrentConnection=MySQLdb.connect(host=self.serverip,user=self.username,passwd=self.password)
+        self.CurrentSystemConnection=pg.connect(host=self.Systemserverip,user=self.Systemusername,passwd=self.Systempassword,port=self.Systemport,dbname=self.SystemDBName)
+        print('Connection to System DB is open...')
+        self.CurrentConnection=pg.connect(host=self.serverip,user=self.username,passwd=self.password,port=self.port,dbname='master')
         print('Connection to DB is open...')
-        self.cursor=self.CurrentConnection.cursor()
-        self.ExecuteNoQuerySQLStatment("SELECT VERSION()")
-        data=self.cursor.fetchone()        
-        print ("Current MYSQL DB Version : "+data[0])
+    
+    def DeletePartitionEntry(self,DBName,TableName):
+        DeleteStat="DELETE FROM pgpool_catalog.dist_def where dbname=\'"+DBName+"\' and table_name=\'"+TableName+"\';"
+        DeleteStat=string.lower(DeleteStat)
+        self.CurrentSystemConnection.query(DeleteStat)
+    def CreatePartitionFunction(self):
+        
+        ##### Create pgpool partition function
+        ##### Even Numbers go to TAO01 and Odd Number to TAO02
+        PartitionFunction="CREATE OR REPLACE FUNCTION pgpool_catalog.dist_globaltree (val ANYELEMENT) RETURNS INTEGER AS $$"
+        PartitionFunction=PartitionFunction+"SELECT CASE "
+        PartitionFunction=PartitionFunction+" WHEN $1%2 = 0  THEN 0"
+        PartitionFunction=PartitionFunction+" ELSE 1 END;$$ LANGUAGE sql;"
 
+        self.CurrentSystemConnection.query(PartitionFunction) 
+           
+    def SetSystemPgPoolConfig(self,TableIndex):       
+        
+        ##### Insert Table Definition in pgpool 
+        ##### 
+        PartitionStat="INSERT INTO pgpool_catalog.dist_def VALUES "
+        PartitionStat=PartitionStat+"(\'"+self.DBName+"\',\'public\',\'@TableName\',\'globaltreeid\',"
+        PartitionStat=PartitionStat+ "ARRAY[@FIELDS], ARRAY[@FIELDSTYPE],\'pgpool_catalog.dist_globaltree\');"
+
+        
+
+        FieldsStr=""
+        FieldsTypeStr=""
+        for field in self.CurrentSAGEStruct:
+            if field[3]==1:
+                FieldsTypeStr=FieldsTypeStr+"\'"+self.FormatMapping[field[1]]+"\',"
+                FieldsStr=FieldsStr+"\'"+field[2]+"\',"
+                
+        FieldsStr=FieldsStr+"\'GlobalTreeID\',"
+        FieldsTypeStr=FieldsTypeStr+"\'BIGINT\',"        
+        
+        FieldsStr=FieldsStr+"\'CentralGalaxyGlobalID\',"
+        FieldsTypeStr=FieldsTypeStr+"\'BIGINT\',"
+        
+        FieldsStr=FieldsStr+"\'LocalGalaxyID\',"
+        FieldsTypeStr=FieldsTypeStr+"\'INT\',"
+        
+        FieldsStr=FieldsStr+"\'CentralGalaxyX\',"
+        FieldsTypeStr=FieldsTypeStr+"\'FLOAT\',"
+        
+        FieldsStr=FieldsStr+"\'CentralGalaxyY\',"
+        FieldsTypeStr=FieldsTypeStr+"\'FLOAT\',"
+        
+        FieldsStr=FieldsStr+"\'CentralGalaxyZ\'"
+        FieldsTypeStr=FieldsTypeStr+"\'FLOAT\'"
+        
+        
+        PartitionStat= string.replace(PartitionStat,"@FIELDSTYPE",FieldsTypeStr)
+        PartitionStat= string.replace(PartitionStat,"@FIELDS",FieldsStr)
+        
+        
+        
+        TablePrefix=self.Options['PGDB:TreeTablePrefix']
+        NewTableName=TablePrefix+str(TableIndex)
+        TempPartitionStat= string.replace(PartitionStat,"@TableName",NewTableName)
+        
+        self.DeletePartitionEntry(self.DBName,NewTableName);   
+        TempPartitionStat=string.lower(TempPartitionStat)         
+        self.CurrentSystemConnection.query(TempPartitionStat)
+        print("Restarting pgPool...")
+        subprocess.Popen('cd /lustre/projects/p014_swin/pgpool/')
+        print subprocess.Popen('which pgpool')
+        print subprocess.Popen('pgpool -f  /lustre/projects/p014_swin/pgpool/pgpool.conf -F /lustre/projects/p014_swin/pgpool/pcp.conf -a /lustre/projects/p014_swin/pgpool/pool_hba.conf stop')
+        print ("Server Closed .... ")
+        print subprocess.Popen('pgpool -f  /lustre/projects/p014_swin/pgpool/pgpool.conf -F /lustre/projects/p014_swin/pgpool/pcp.conf -a /lustre/projects/p014_swin/pgpool/pool_hba.conf')
+        
+        print("Restarting pgPool... Done")    
+        raw_input("Press Any Key to Cont.")
     def DropDatabase(self):
         ## Check if the database already exists
-        self.cursor=self.CurrentConnection.cursor()
-        self.ExecuteNoQuerySQLStatment("Show databases Like '"+self.DBName+"'")
-        data=self.cursor.fetchone()  
+        
+        ResultsList=self.ExecuteQuerySQLStatment("SELECT datname FROM pg_database where datistemplate=false and datname=\'"+self.DBName+"\'")
+          
         ## If the database already exists - give the user the option to drop it
-        if data!=None:
+        if len(ResultsList)>0:
             Response=raw_input("Database "+self.DBName+" with the same name already exists!\nIf you Choose to Continue it will be dropped. Do you want to Drop it?(y/n)")
             if Response=='y':
                 ## Drop the database
-                self.ExecuteNoQuerySQLStatment("Drop database "+self.DBName+";")
-                #self.ExecuteNoQuerySQLStatment("Drop TABLESPACE "+self.DBName+"_LOGFILEGROUP ENGINE NDBCLUSTER;")
-                #self.ExecuteNoQuerySQLStatment("Drop LOGFILE "+self.DBName+"_TS ENGINE NDBCLUSTER;")
+                self.ExecuteNoQuerySQLStatment("Drop database "+self.DBName+";")                
                 print("Database "+self.DBName+" Dropped")
     
                 
-    def CreateTableSpace(self):
-        ####### Create a Log File Group ###################
-        ###### Table space allow MYSQL to store Non-Index Columns into the secondary storage instead of Memory #####
-        ####### See http://dev.mysql.com/doc/refman/5.1/en/mysql-cluster-disk-data.html for Details #####
-        
-        ############### LOGFILE #####################################################################################
-        print(">>> Creating LogFile Space ..... (This will take sometime .... Please be patient)")
-        CreateLogFileStatement="CREATE LOGFILE GROUP "+self.DBName+"_LOGFILEGROUP "
-        CreateLogFileStatement=CreateLogFileStatement+" ADD UNDOFILE \'"+self.DBName+"_LOGFILEGROUP_1"+".log\'"
-        CreateLogFileStatement=CreateLogFileStatement+" INITIAL_SIZE 1073741824"
-        CreateLogFileStatement=CreateLogFileStatement+" UNDO_BUFFER_SIZE 8388608"
-        CreateLogFileStatement=CreateLogFileStatement+" ENGINE NDBCLUSTER;"
-        
-        self.ExecuteNoQuerySQLStatment(CreateLogFileStatement);
-        
-        print("\t\t Creating LogFile Space ..... Adding another file")
-        CreateLogFileStatement="ALTER LOGFILE GROUP "+self.DBName+"_LOGFILEGROUP "
-        CreateLogFileStatement=CreateLogFileStatement+" ADD UNDOFILE \'"+self.DBName+"_LOGFILEGROUP_2"+".log\'"
-        CreateLogFileStatement=CreateLogFileStatement+" INITIAL_SIZE 1073741824"        
-        CreateLogFileStatement=CreateLogFileStatement+" ENGINE NDBCLUSTER;"
-        self.ExecuteNoQuerySQLStatment(CreateLogFileStatement);
-        
-        print("\t\t Creating LogFile Space ..... Adding another file")
-        CreateLogFileStatement="ALTER LOGFILE GROUP "+self.DBName+"_LOGFILEGROUP "
-        CreateLogFileStatement=CreateLogFileStatement+" ADD UNDOFILE \'"+self.DBName+"_LOGFILEGROUP_3"+".log\'"
-        CreateLogFileStatement=CreateLogFileStatement+" INITIAL_SIZE 1073741824"        
-        CreateLogFileStatement=CreateLogFileStatement+" ENGINE NDBCLUSTER;"
-        self.ExecuteNoQuerySQLStatment(CreateLogFileStatement);
-        
-        print("\t\t LOGFILE Creation .... Done")
-        
-        
-        ################################### TABLESPACE ##########################################################
-        print(">>> Creating TableSpace ..... (This will take sometime .... Please be patient)")
-        CreateTableSapceFileStatement="CREATE TABLESPACE "+self.DBName+"_TS ";
-        CreateTableSapceFileStatement=CreateTableSapceFileStatement+" ADD DATAFILE \'"+self.DBName+"_TS_1.dat\'"
-        CreateTableSapceFileStatement=CreateTableSapceFileStatement+" USE LOGFILE GROUP "+self.DBName+"_LOGFILEGROUP "
-        CreateTableSapceFileStatement=CreateTableSapceFileStatement+" INITIAL_SIZE 1073741824"
-        CreateTableSapceFileStatement=CreateTableSapceFileStatement+" ENGINE NDBCLUSTER;"
-        self.ExecuteNoQuerySQLStatment(CreateTableSapceFileStatement);
-        
-        print("\t\t Creating TableSpace ..... Adding another file")
-        
-        CreateTableSapceFileStatement="ALTER TABLESPACE "+self.DBName+"_TS ";
-        CreateTableSapceFileStatement=CreateTableSapceFileStatement+" ADD DATAFILE \'"+self.DBName+"_TS_2.dat\'"        
-        CreateTableSapceFileStatement=CreateTableSapceFileStatement+" INITIAL_SIZE 1073741824"
-        CreateTableSapceFileStatement=CreateTableSapceFileStatement+" ENGINE NDBCLUSTER;"
-        self.ExecuteNoQuerySQLStatment(CreateTableSapceFileStatement);
-        
-        print("\t\t Creating TableSpace ..... Adding another file")
-        
-        CreateTableSapceFileStatement="ALTER TABLESPACE "+self.DBName+"_TS ";
-        CreateTableSapceFileStatement=CreateTableSapceFileStatement+" ADD DATAFILE \'"+self.DBName+"_TS_3.dat\'"        
-        CreateTableSapceFileStatement=CreateTableSapceFileStatement+" INITIAL_SIZE 1073741824"
-        CreateTableSapceFileStatement=CreateTableSapceFileStatement+" ENGINE NDBCLUSTER;"
-        self.ExecuteNoQuerySQLStatment(CreateTableSapceFileStatement);
-        
-        
-        
-        
-        print("\t\t TableSpace Creation .... Done")
+    
     def CreateDB(self):
        ## Check if the database already exist and give the user the option to Drop it 
        self.DropDatabase()        
-       #self.CreateTableSpace()
+       
        ## Create New DB 
        self.ExecuteNoQuerySQLStatment("create database "+self.DBName+";") 
        print("Database "+self.DBName+" Created")
        ### Close the current Connection and open a new one on the new DB
-       self.CurrentConnection.close()      
-       self.CurrentConnection=MySQLdb.connect(host=self.serverip,user=self.username,passwd=self.password,db=self.DBName)
-       self.cursor=self.CurrentConnection.cursor()
+       self.CurrentConnection.close()
+       self.CurrentConnection=pg.connect(host=self.serverip,user=self.username,passwd=self.password,port=self.port,dbname=self.DBName)      
+       
+       
        print("Connection to Database "+self.DBName+" is opened and ready")
    
     def ExecuteNoQuerySQLStatment(self,SQLStatment):
@@ -187,8 +211,10 @@ class MySQlDBInterface(object):
             if self.DebugToFile==True:
                 self.Log.write(SQLStatment+"\n\n")
                 self.Log.flush()
-            self.cursor.execute(SQLStatment)
-            self.CurrentConnection.commit()  
+            #self.cursor.execute(SQLStatment)
+            SQLStatment=string.lower(SQLStatment)  
+            self.CurrentConnection.query(SQLStatment)
+              
         except Exception as Exp:
             print(">>>>>Error While creating New Table")
             print(type(Exp))
@@ -196,11 +222,29 @@ class MySQlDBInterface(object):
             print(Exp)            
             print("Current SQL Statement =\n"+SQLStatment)
             raw_input("PLease press enter to continue.....")
+    def ExecuteQuerySQLStatment(self,SQLStatment):
+        try:
+            
+            if self.DebugToFile==True:
+                self.Log.write(SQLStatment+"\n\n")
+                self.Log.flush()
+            
+            resultsList=self.CurrentConnection.query(SQLStatment).getresult()
+            
+            return resultsList  
+        except Exception as Exp:
+            print(">>>>>Error While creating New Table")
+            print(type(Exp))
+            print(Exp.args)
+            print(Exp)            
+            print("Current SQL Statement =\n"+SQLStatment)
+            raw_input("PLease press enter to continue.....")
+            
     def CreateNewTable(self,TableIndex):       
         CreateTableStatment=""
         try:
                 
-            TablePrefix=self.Options['MySQLDB:TreeTablePrefix']
+            TablePrefix=self.Options['PGDB:TreeTablePrefix']
             NewTableName=TablePrefix+str(TableIndex)
             CreateTableStatment= string.replace(self.CreateTableTemplate,"@TABLEName",NewTableName)
             if self.DebugToFile==True:
@@ -209,24 +253,27 @@ class MySQlDBInterface(object):
                 self.Log = open(self.Options['RunningSettings:OutputDir']+NewTableName+'_sql.txt', 'wt')
                         
             #print CreateTableStatment
+            CreateTableStatment=string.lower(CreateTableStatment)
             self.ExecuteNoQuerySQLStatment(CreateTableStatment)
             
             
-            CreateIndexStatment="Create Index GlobalIndex_Index on  "+NewTableName+" (GlobalIndex);"
+            CreateIndexStatment="Create Index GlobalIndex_Index_"+NewTableName+" on  "+NewTableName+" (GlobalIndex);"
             self.ExecuteNoQuerySQLStatment(CreateIndexStatment)
-            CreateIndexStatment="Create Index SnapNum_Index on  "+NewTableName+" (SnapNum);"
+            CreateIndexStatment="Create Index SnapNum_Index_"+NewTableName+" on  "+NewTableName+" (SnapNum);"
             self.ExecuteNoQuerySQLStatment(CreateIndexStatment)
-            CreateIndexStatment="Create Index GlobalTreeID_Index on  "+NewTableName+" (GlobalTreeID);"
+            CreateIndexStatment="Create Index GlobalTreeID_Index_"+NewTableName+" on  "+NewTableName+" (GlobalTreeID);"
             self.ExecuteNoQuerySQLStatment(CreateIndexStatment)
-            CreateIndexStatment="Create Index CentralGalaxyX_Index on  "+NewTableName+" (CentralGalaxyX);"
+            CreateIndexStatment="Create Index CentralGalaxyX_Index_"+NewTableName+" on  "+NewTableName+" (CentralGalaxyX);"
             self.ExecuteNoQuerySQLStatment(CreateIndexStatment)
-            CreateIndexStatment="Create Index CentralGalaxyY_Index on  "+NewTableName+" (CentralGalaxyY);"
+            CreateIndexStatment="Create Index CentralGalaxyY_Index_"+NewTableName+" on  "+NewTableName+" (CentralGalaxyY);"
             self.ExecuteNoQuerySQLStatment(CreateIndexStatment)
-            CreateIndexStatment="Create Index CentralGalaxyZ_Index on  "+NewTableName+" (CentralGalaxyZ);"
+            CreateIndexStatment="Create Index CentralGalaxyZ_Index_"+NewTableName+" on  "+NewTableName+" (CentralGalaxyZ);"
             self.ExecuteNoQuerySQLStatment(CreateIndexStatment)
             
              
             print("Table "+NewTableName+" Created With Index ...")
+            
+            self.SetSystemPgPoolConfig(TableIndex)
             
         except Exception as Exp:
             print(">>>>>Error While creating New Table")
@@ -265,12 +312,13 @@ class MySQlDBInterface(object):
     def PrepareInsertStatement(self,TreeData):
         InsertStatment=""
         try:            
-            TablePrefix=self.Options['MySQLDB:TreeTablePrefix']
+            TablePrefix=self.Options['PGDB:TreeTablePrefix']
             NewTableName=TablePrefix+str(self.CurrentTableID)  
-            InsertStatment= string.replace(self.INSERTTemplate,"@TABLEName",NewTableName)  
-            InsertStatment=InsertStatment+" VALUES "
-            Location=0
             for TreeField in TreeData:
+                InsertStatment= string.replace(self.INSERTTemplate,"@TABLEName",NewTableName)  
+                InsertStatment=InsertStatment+" VALUES "
+                Location=0
+            
                 #sys.stdout.write(str(Location)+"/"+str(len(TreeData))+"\r")
                 #sys.stdout.flush()
                 Location=Location+1
@@ -288,12 +336,12 @@ class MySQlDBInterface(object):
                 InsertStatment=InsertStatment+str(TreeField['CentralGalaxyZ'])+"),"
                 self.LocalGalaxyID=self.LocalGalaxyID+1
                 
-            InsertStatment=InsertStatment[:-1]
-            if self.DebugToFile==True:
-                self.Log.write(InsertStatment+"\n\n")
-                self.Log.flush()
+                InsertStatment=InsertStatment[:-1]
+                if self.DebugToFile==True:
+                    self.Log.write(InsertStatment+"\n\n")
+                    self.Log.flush()
                 
-            self.ExecuteNoQuerySQLStatment(InsertStatment)
+                self.ExecuteNoQuerySQLStatment(InsertStatment)
         except Exception as Exp:
             print(">>>>>Error While Processing Tree")
             print(type(Exp))
