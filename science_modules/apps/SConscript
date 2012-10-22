@@ -23,6 +23,7 @@ sources = [
     ('sagereader', 'sagereader.cc'),
     ('sagecheck', 'sagecheck.cc'),
     ('dbcheck', 'dbcheck.cc'),
+    ('sageimport', 'sageimport.cc'),
 ]
 
 # Call the helper.
