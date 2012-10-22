@@ -5,7 +5,9 @@
 		<Field Type="int">HaloIndex</Field>
 		<Field Type="int">FOFHaloIndex</Field>
 		<Field Type="int">TreeIndex</Field>
+		<Field Type="long long">GlobalIndex</Field> 
 		<Field Type="int">Descendant</Field>
+		<Field Type="long long">GlobalDescendant</Field> 
 		<Field Type="int">SnapNum</Field>
 		<Field Type="int">CentralGal</Field>
 		<Field Type="float">CentralMvir</Field>
@@ -45,16 +47,19 @@
 		<Field Type="float">Heating</Field>
 		<Field Type="int" DBExport="0">Dummy</Field>
 	</sageinput>
-	<MySQLDB>
+	<PGDB>
 		<serverip>tao01.hpc.swin.edu.au</serverip>
+		<port>3306</port>
 		<user>taoadmin</user>
 		<password></password>
-		<NewDBName>Millennium_Full</NewDBName>	
-		<TreeTablePrefix>Tree_</TreeTablePrefix>	
-	</MySQLDB>
+		<NewDBName>millennium_full2</NewDBName>	
+		<TreeTablePrefix>tree_</TreeTablePrefix>				
+	</PGDB>
+	
+		
 	<RunningSettings>
 		<OutputDir>/home/amr/TempOutput/</OutputDir>
 		<InputDir>/lustre/projects/p014_swin/raw_data/millennium/full/sage_output/</InputDir>
-		<TreePerTable>10000</TreePerTable>
+		<GalaxiesPerTable>100000</GalaxiesPerTable>
 	</RunningSettings>
 </settings>	

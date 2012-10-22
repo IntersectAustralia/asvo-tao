@@ -7,6 +7,7 @@ import os
 import sys
 import struct
 import MySQlDBInterface
+import string
 
 class SAGEDataReader:    
     #The Module handles the data reading from SAGE output to a memory data structure.
@@ -48,20 +49,24 @@ class SAGEDataReader:
     def GetNonEmptyFilesList(self):
         
         #Get List of Files where the file size is greater than zero        
-        
+        print("Get list of files to be processed ....")
         dirList=os.listdir(self.CurrentFolderPath)
+        print("Current Files Count="+str(len(dirList)))
         fullPathArray=[]
         for fname in dirList:
             statinfo = os.stat(self.CurrentFolderPath+'/'+fname)                
             #print(fname+'\t'+str(statinfo.st_size/1024)+' KB')
-            if(statinfo.st_size>0):
+            
+            if(statinfo.st_size>0 and string.find(fname,'model_')==0):
                 fullPathArray.append([self.CurrentFolderPath+'/'+fname,statinfo.st_size])
+            elif(statinfo.st_size>0):
+                print("File Not Included:"+fname)
         return fullPathArray
     
     def ProcessAllFiles(self):
         
         #Process All the Non-Empty Files
-        
+        #self.ProcessFile('/lustre/projects/p014_swin/raw_data/millennium/full/sage_output/model_271_7')
         [self.FormatStr,self.FieldSize]=self.GetStructSizeAndFormat()
         
         
@@ -72,53 +77,50 @@ class SAGEDataReader:
             
             self.ProcessFile(fobject[0])
             
-            raw_input("Press Any Key to Continue")
-        
+            #raw_input("Press Any Key to Continue")
+        self.MySQL.Close()
     
     def ProcessFile(self,FilePath):
         CurrentFile=open(FilePath,"rb")
         CurrentFileGalaxyID=0
         if self.DebugToFile==True:
             self.Log = open(self.Options['RunningSettings:OutputDir']+'Debug_'+str(self.CurrentGlobalTreeID)+'.csv', 'wt')
-        try:
-            NumberofTrees= struct.unpack('i', CurrentFile.read(4))[0]
-            TotalNumberOfGalaxies= struct.unpack('i', CurrentFile.read(4))[0]
-            if self.DebugToFile==True:
-                self.Log.write('\t Trees Count= '+str(NumberofTrees)+'\n')
-                self.Log.write('\t Total Number of Galaxies = '+str(TotalNumberOfGalaxies)+'\n')
-            
-            
-            # Read the number of Galaxies per each tree
-            SumOfAllGalaxies=0                
-            TreeLengthList=[]                
-            for i in range(0,NumberofTrees):
-                GalaxiesperTree= struct.unpack('i', CurrentFile.read(4))[0]
-                TreeLengthList.append(GalaxiesperTree)     
-                SumOfAllGalaxies=SumOfAllGalaxies+ GalaxiesperTree    
-                
-            
-            # Verify the total number of galaxies 
-            if not SumOfAllGalaxies==TotalNumberOfGalaxies: raise AssertionError
+    
+        NumberofTrees= struct.unpack('i', CurrentFile.read(4))[0]
+        TotalNumberOfGalaxies= struct.unpack('i', CurrentFile.read(4))[0]
+        if self.DebugToFile==True:
+            self.Log.write('\t Trees Count= '+str(NumberofTrees)+'\n')
+            self.Log.write('\t Total Number of Galaxies = '+str(TotalNumberOfGalaxies)+'\n')
         
-            for i in range(0,NumberofTrees):
-                NumberofGalaxiesInTree=TreeLengthList[i]
-                print('\t Number of Galaxies in Tree ('+str(i)+')='+str(NumberofGalaxiesInTree))
+        
+        # Read the number of Galaxies per each tree
+        SumOfAllGalaxies=0                
+        TreeLengthList=[]                
+        for i in range(0,NumberofTrees):
+            GalaxiesperTree= struct.unpack('i', CurrentFile.read(4))[0]
+            
+            TreeLengthList.append(GalaxiesperTree)     
+            SumOfAllGalaxies=SumOfAllGalaxies+ GalaxiesperTree    
+            
+        
+        # Verify the total number of galaxies 
+        if not SumOfAllGalaxies==TotalNumberOfGalaxies:
+            print("Error In Header File "+str(SumOfAllGalaxies)+"/"+str(TotalNumberOfGalaxies)) 
+            raise AssertionError
+    
+        for i in range(0,NumberofTrees):
+            NumberofGalaxiesInTree=TreeLengthList[i]
+            print('\t Number of Galaxies in Tree ('+str(i)+')='+str(NumberofGalaxiesInTree))
+            if NumberofGalaxiesInTree>0:
                 TreeData=self.ProcessTree(NumberofGalaxiesInTree,CurrentFile,CurrentFileGalaxyID)    
                 self.MySQL.CreateNewTree(TreeData)        
-                
-                self.CurrentGlobalTreeID=self.CurrentGlobalTreeID+1
-             
-        
-        except:
-            print('\t Error happen while processing file')
-            print('\t File Name: '+FilePath)
-            print('\t Error:'+  str(sys.exc_info()))   
-                        
             
-        finally:
-            CurrentFile.close()
-            if self.DebugToFile==True:
-                Log.close()
+            self.CurrentGlobalTreeID=self.CurrentGlobalTreeID+1
+         
+    
+        CurrentFile.close()            
+        if self.DebugToFile==True:
+            Log.close()
     
     def ProcessTree(self,NumberofGalaxiesInTree,CurrentFile,CurrentFileGalaxyID):    
                 
@@ -130,6 +132,7 @@ class SAGEDataReader:
         TreeFields=[]        
         for j in range(0,NumberofGalaxiesInTree):
             #read the fields of this tree
+            #print(str(j)+"/"+str(NumberofGalaxiesInTree))
             FieldData=self.ReadTreeField(CurrentFile,CurrentFileGalaxyID,self.CurrentGlobalTreeID)
             TreeFields.append(FieldData)
             CurrentFileGalaxyID=CurrentFileGalaxyID+1
@@ -145,8 +148,21 @@ class SAGEDataReader:
                           str(FieldData['Descendant'])+','+
                           str(FieldData['FileGalaxyID'])+','+
                           str(FieldData['TreeID'])+'\n')
-        return TreeFields    
+        return self.ComputeFields(TreeFields)    
     
+    def ComputeFields(self,TreeData):
+        for TreeField in TreeData:
+            CentralGalaxyLocalID=TreeField['CentralGal']
+            DescGalaxyLocalID=TreeField['Descendant']
+            CentralGalaxy=TreeData[CentralGalaxyLocalID]
+            TreeField['CentralGalaxyGlobalID']=CentralGalaxy['GlobalIndex']
+            DescGalaxy=TreeData[DescGalaxyLocalID]
+            #TreeField['DescendantGlobalID']=DescGalaxy['GalaxyIndex']
+            TreeField['CentralGalaxyX']=CentralGalaxy['PosX']
+            TreeField['CentralGalaxyY']=CentralGalaxy['PosY']
+            TreeField['CentralGalaxyZ']=CentralGalaxy['PosZ']
+            
+        return TreeData
     def ReadTreeField(self,CurrentFile,CurrentFileGalaxyID,TreeID):
         
         #Read a single Galaxy information based on the pre-defined struct

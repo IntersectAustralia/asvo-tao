@@ -24,6 +24,7 @@ sources = [
     ('sagecheck', 'sagecheck.cc'),
     ('dbcheck', 'dbcheck.cc'),
     ('sageimport', 'sageimport.cc'),
+    ('bolshoi_conv', 'bolshoi_conv.cc'),
 ]
 
 # Call the helper.
