@@ -18,6 +18,6 @@ if __name__ == '__main__':
     Reader=SAGEReader.SAGEDataReader(CurrentSAGEStruct,Options,CurrentMySQlDB)
     ## Start Processing the files
     Reader.ProcessAllFiles()
-    CurrentMySQlDB.Close()
+    CurrentMySQlDB.CloseConnections()
     ## All data imported ... Processing done 
     print('Processing Done')

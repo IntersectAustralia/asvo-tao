@@ -1,7 +1,5 @@
 '''
 Created on 01/10/2012
-sudo apt-get install python-mysqldb
-
 @author: Amr Hassan
 '''
 import pg
@@ -10,6 +8,7 @@ import math
 import string
 import sys
 import subprocess
+import time
 
 class DBInterface(object):
     '''
@@ -37,8 +36,7 @@ class DBInterface(object):
         self.InitDBConnection()
         self.CreateNewTableTemplate()
         self.CreateInsertTemplate()
-        self.CreatePartitionFunction()
-        #self.SetSystemPgPoolConfig(1,5)        
+        self.CreatePartitionFunction()                
         self.CreateDB()
         
         self.CurrentGalaxiesCounter=int(Options['RunningSettings:GalaxiesPerTable'])+1 # To Create the First Table
@@ -56,9 +54,7 @@ class DBInterface(object):
         self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyX FLOAT,"
         self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyY FLOAT,"
         self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyZ FLOAT)"
-        #self.CreateTableTemplate=self.CreateTableTemplate+ "PRIMARY KEY @TABLEName_PK (GlobalIndex)) "     
-        #self.CreateTableTemplate=self.CreateTableTemplate+ " TABLESPACE "+self.DBName+"_TS STORAGE DISK "
-        #self.CreateTableTemplate=self.CreateTableTemplate+" ENGINE=NDBCLUSTER" #MAX_ROWS="+str(int(self.Options['RunningSettings:GalaxiesPerTable'])*5)    
+            
         
     
     
@@ -98,12 +94,28 @@ class DBInterface(object):
             print('System Password for user:'+username+' is not defined')
             self.Systempassword=getpass.getpass('Please enter password:')    
         
+        # Open Connection to the pgpool system Database
+        # this will be used to register distribution rules
         
         self.CurrentSystemConnection=pg.connect(host=self.Systemserverip,user=self.Systemusername,passwd=self.Systempassword,port=self.Systemport,dbname=self.SystemDBName)
         print('Connection to System DB is open...')
+        # Take care that the connection will be opened to standard DB 'master'
+        # This is temp. until the actual database is created
         self.CurrentConnection=pg.connect(host=self.serverip,user=self.username,passwd=self.password,port=self.port,dbname='master')
         print('Connection to DB is open...')
     
+    def CloseConnections(self):
+        self.CurrentSystemConnection.close()
+        self.CurrentConnection.close()
+        self.CloseDebugFile()
+        print('Connection to DB is Closed...')
+    
+    def OpenConnections(self):
+        self.CurrentSystemConnection=pg.connect(host=self.Systemserverip,user=self.Systemusername,passwd=self.Systempassword,port=self.Systemport,dbname=self.SystemDBName)
+        print('Connection to System DB is open...')
+        self.CurrentConnection=pg.connect(host=self.serverip,user=self.username,passwd=self.password,port=self.port,dbname=self.DBName)
+        print('Connection to DB is open...')    
+        
     def DeletePartitionEntry(self,DBName,TableName):
         DeleteStat="DELETE FROM pgpool_catalog.dist_def where dbname=\'"+DBName+"\' and table_name=\'"+TableName+"\';"
         DeleteStat=string.lower(DeleteStat)
@@ -121,12 +133,14 @@ class DBInterface(object):
            
     def SetSystemPgPoolConfig(self,TableIndex):       
         
-        ##### Insert Table Definition in pgpool 
-        ##### 
+        print("Updating Distribution Rules ....")
+        
+        TablesCount=int(self.Options['PGSystemDB:UpdateDatabaseTablesLimit'])
+        
+        ##### Build Table Definition Template       
         PartitionStat="INSERT INTO pgpool_catalog.dist_def VALUES "
         PartitionStat=PartitionStat+"(\'"+self.DBName+"\',\'public\',\'@TableName\',\'globaltreeid\',"
         PartitionStat=PartitionStat+ "ARRAY[@FIELDS], ARRAY[@FIELDSTYPE],\'pgpool_catalog.dist_globaltree\');"
-
         
 
         FieldsStr=""
@@ -157,25 +171,39 @@ class DBInterface(object):
         
         PartitionStat= string.replace(PartitionStat,"@FIELDSTYPE",FieldsTypeStr)
         PartitionStat= string.replace(PartitionStat,"@FIELDS",FieldsStr)
+
+
+        ### Execute it for the next $TablesCount$ Tables       
         
         
+        for TIndex in range(0,TablesCount):
+            TablePrefix=self.Options['PGDB:TreeTablePrefix']
+            NewTableName=TablePrefix+str(TableIndex+TIndex)
+            TempPartitionStat= string.replace(PartitionStat,"@TableName",NewTableName)
+            
+            self.DeletePartitionEntry(self.DBName,NewTableName);   
+            TempPartitionStat=string.lower(TempPartitionStat)         
+            self.CurrentSystemConnection.query(TempPartitionStat)
         
-        TablePrefix=self.Options['PGDB:TreeTablePrefix']
-        NewTableName=TablePrefix+str(TableIndex)
-        TempPartitionStat= string.replace(PartitionStat,"@TableName",NewTableName)
+        ### Restart Pgpool 
+        print("Restarting pgPool...")        
+        self.RestartPgPool()
         
-        self.DeletePartitionEntry(self.DBName,NewTableName);   
-        TempPartitionStat=string.lower(TempPartitionStat)         
-        self.CurrentSystemConnection.query(TempPartitionStat)
-        print("Restarting pgPool...")
-        subprocess.Popen('cd /lustre/projects/p014_swin/pgpool/')
-        print subprocess.Popen('which pgpool')
-        print subprocess.Popen('pgpool -f  /lustre/projects/p014_swin/pgpool/pgpool.conf -F /lustre/projects/p014_swin/pgpool/pcp.conf -a /lustre/projects/p014_swin/pgpool/pool_hba.conf stop')
-        print ("Server Closed .... ")
-        print subprocess.Popen('pgpool -f  /lustre/projects/p014_swin/pgpool/pgpool.conf -F /lustre/projects/p014_swin/pgpool/pcp.conf -a /lustre/projects/p014_swin/pgpool/pool_hba.conf')
+        print("End Updating Distribution Rules ....")
+    
+    def RestartPgPool(self):
+        ### 1- Close all current DB connection or pgpool will wait for ever
+        self.CloseConnections()
+        ### 2- Close pgpool using shell command (shell=True is a must)
+        print subprocess.call('pgpool -f  /lustre/projects/p014_swin/pgpool/pgpool.conf -F /lustre/projects/p014_swin/pgpool/pcp.conf -a /lustre/projects/p014_swin/pgpool/pool_hba.conf stop',shell=True)
+        ### 3- Start pgpool again  (shell=True is a must)
+        print subprocess.call('pgpool -f  /lustre/projects/p014_swin/pgpool/pgpool.conf -F /lustre/projects/p014_swin/pgpool/pcp.conf -a /lustre/projects/p014_swin/pgpool/pool_hba.conf',shell=True)
+        print("Restarting pgPool... Done") 
+        ### 4- Sleep 2 seconds until all pgpool services is up and running (if you didn't do so it will give you error!)
+        time.sleep(3) 
+        ### 5- Open the connections again so the system can continue
+        self.OpenConnections()       
         
-        print("Restarting pgPool... Done")    
-        raw_input("Press Any Key to Cont.")
     def DropDatabase(self):
         ## Check if the database already exists
         
@@ -273,7 +301,9 @@ class DBInterface(object):
              
             print("Table "+NewTableName+" Created With Index ...")
             
-            self.SetSystemPgPoolConfig(TableIndex)
+            ## Updating pgpool System DB will happen every 10 tables
+            if ((TableIndex-1)%int(self.Options['PGSystemDB:UpdateDatabaseTablesLimit'])==0):
+                self.SetSystemPgPoolConfig(TableIndex)
             
         except Exception as Exp:
             print(">>>>>Error While creating New Table")
@@ -336,7 +366,7 @@ class DBInterface(object):
                 InsertStatment=InsertStatment+str(TreeField['CentralGalaxyZ'])+"),"
                 self.LocalGalaxyID=self.LocalGalaxyID+1
                 
-                InsertStatment=InsertStatment[:-1]
+                InsertStatment=InsertStatment[:-1]+";"
                 if self.DebugToFile==True:
                     self.Log.write(InsertStatment+"\n\n")
                     self.Log.flush()
@@ -351,8 +381,7 @@ class DBInterface(object):
             raw_input("PLease press enter to continue.....")
             
                 
-    def Close(self):
-        self.CurrentConnection.close()
+    def CloseDebugFile(self):        
         if self.DebugToFile==True and self.Log!=None:
             self.Log.close()
             
