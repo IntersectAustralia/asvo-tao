@@ -23,9 +23,9 @@ def ParseParams(FilePath):
             CurrentSAGEStruct.append([sagefield.text,sagefield.attrib['Type'],sagefield.attrib['DBFieldName'],ExportInDB])    
     ##################################################################################
     ##### Load mysql information
-    mysqlNode=SettingsNode[1]
-    for mysqlfield in mysqlNode:
-       RunningOptions[mysqlNode.tag+':'+mysqlfield.tag]= mysqlfield.text    
+    PGNode=SettingsNode[1]
+    for mysqlfield in PGNode:
+       RunningOptions[PGNode.tag+':'+PGNode.tag]= PGNode.text    
     ##################################################################################
     
     RunningSettingsNode=SettingsNode[2]
