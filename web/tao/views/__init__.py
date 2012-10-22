@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import views as auth_views
+from django.core import mail
+from django.core.urlresolvers import reverse
 from django.shortcuts import render, redirect
 from django.template.context import Context
 from django.utils.translation import ugettext_lazy as _
@@ -8,9 +10,9 @@ from django.views.decorators.http import require_POST
 
 from tao import models
 from tao.decorators import researcher_required, admin_required, set_tab
-from tao.forms import UserCreationForm, RejectForm, LoginForm
 from tao.mail import send_mail
 from tao.pagination import paginate
+from tao.models import User
 
 import logging
 
@@ -23,6 +25,7 @@ def home(request):
 
 
 def login(request):
+    from tao.forms import LoginForm
     if request.method == 'POST':
         if not request.POST.get('remember_me', None):
             request.session.set_expiry(0)  # expires on browser close
@@ -30,10 +33,18 @@ def login(request):
 
 
 def register(request):
+    from tao.forms import UserCreationForm
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
             form.save()
+            
+            admin_emails = User.objects.admin_emails()
+            context = Context({
+                          'pending_requests_url': request.build_absolute_uri(reverse('access_requests'))
+                      })
+            send_mail("registration", context, "Registration submitted", admin_emails)
+            
             messages.info(request, _("You will receive an email when your request has been approved."))
             return redirect(home)
     else:
@@ -50,6 +61,7 @@ def admin_index(request):
 
 @admin_required
 def access_requests(request):
+    from tao.forms import RejectForm
     user_list = models.User.objects.filter(is_active=False, userprofile__rejected=False).order_by('-id')
     users = paginate(user_list, request.GET.get('page'))
 

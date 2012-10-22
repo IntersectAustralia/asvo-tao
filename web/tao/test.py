@@ -14,3 +14,14 @@ DATABASES = {
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
 }
+
+FILES_BASE = '/tmp/'  # please include a trailing slash
+
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
+
+INSTALLED_APPS += (
+    'django_nose',
+)
+
+NOSE_ARGS = ['--with-xunit', '--nocapture']

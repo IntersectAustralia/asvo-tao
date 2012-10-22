@@ -3,7 +3,8 @@
 #include <boost/lexical_cast.hpp>
 #include <soci/soci.h>
 #include <soci/sqlite3/soci-sqlite3.h>
-#include <soci/mysql/soci-mysql.h>
+// #include <soci/mysql/soci-mysql.h>
+// #include <soci/postgresql/soci-postgresql.h>
 #include <libhpc/libhpc.hh>
 #include <tao/base/flat.hh>
 
@@ -118,7 +119,7 @@ main( int argc,
    string flat_filename = string( argv[1] ) + ".flat.0";
 
    // Open database session.
-   soci::session sql( soci::mysql, "db=random unix_socket='/var/lib/mysql/mysql.sock' user=root pass='la di da'" );
+   soci::session sql( soci::sqlite3, "db=random unix_socket='/var/lib/mysql/mysql.sock' user=root pass='la di da'" );
 
    // Define some values.
    unsigned num_snapshots = 12;

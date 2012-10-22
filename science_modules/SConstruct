@@ -8,6 +8,7 @@ config.select(
     config.packages.MySQL(),
     config.packages.sqlite3(required=False),
     config.packages.SOCI(backends=['mysql']),
+    # config.packages.SOCI(),
     config.packages.rapidxml(),
     config.packages.Eigen(required=False),
     config.packages.libhpc(),

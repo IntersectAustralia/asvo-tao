@@ -1,9 +1,9 @@
-from django.test.testcases import TestCase
+from django.test.testcases import TransactionTestCase
 
 from tao.pagination import paginate
 
 
-class PaginationTest(TestCase):
+class PaginationTest(TransactionTestCase):
     def testPaginationBasic(self):
         nums = [x for x in range(10)]
         paginated = paginate(nums, 1, per_page=3)

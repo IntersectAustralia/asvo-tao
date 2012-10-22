@@ -1,4 +1,7 @@
 {% extends '_base.html' %}
+
+{% load url from future %}
+
 {% block subtitle %}Admin{% endblock %}
 {% block content %}
     <h1> Administration </h1>
@@ -7,7 +10,7 @@
     </p>
     <ul>
         <li>
-            <a href="{% url access_requests %}">Approve and Reject users</a>
+            <a href="{% url 'access_requests' %}">Approve and Reject users</a>
         </li>
     </ul>
 {% endblock content %}

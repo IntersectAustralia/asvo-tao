@@ -4,3 +4,6 @@ develop-eggs/
 .installed.cfg
 parts/
 /static/
+/.coverage
+/nosetests.xml
+/TAOENV/

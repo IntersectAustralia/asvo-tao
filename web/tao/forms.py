@@ -1,6 +1,7 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
+from django.conf import settings
 from django.contrib.auth import forms as auth_forms
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
@@ -29,8 +30,12 @@ class UserCreationForm(auth_forms.UserCreationForm):
                                             widget=forms.Textarea(attrs={'rows':
                                             3}), required=False)
     email = forms.EmailField(label=_("Email"), max_length=75)
+    
     captcha = ReCaptchaField()
-
+    def __init__(self, *args, **kwargs):
+        super(UserCreationForm, self).__init__(*args, **kwargs)
+        if not getattr(settings, 'USE_CAPTCHA', True):    
+            del self.fields['captcha']
 
     class Meta:
         model = User
@@ -44,7 +49,12 @@ class UserCreationForm(auth_forms.UserCreationForm):
             raise ValidationError(_('Password must be at least 8 characters long'))
         return password
 
-
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).count() > 0:
+            raise ValidationError(_('That email is already taken.'))
+	return email
+		
     def save(self):  # what about transactions?
         user = super(auth_forms.UserCreationForm, self).save(commit=False)
         user.set_password(self.cleaned_data['password1'])  # FIXME shouldn't have to do this ??
@@ -67,13 +77,8 @@ class RejectForm(forms.Form):
 
 
 from tao.widgets import ChoiceFieldWithOtherAttrs
-from django.utils.functional import lazy
 
 class MockGalaxyFactoryForm(BetterForm):
-# todo these only populate on server start
-    dark_matter_simulation = ChoiceFieldWithOtherAttrs(choices=lazy(datasets.dark_matter_simulation_choices, list)())
-    dummy_galaxy_model = ChoiceFieldWithOtherAttrs(choices=datasets.galaxy_model_choices(), required=False)
-    galaxy_model = ChoiceFieldWithOtherAttrs(choices=datasets.galaxy_model_choices())
     somethingelse = ChoiceFieldWithOtherAttrs(choices=[(1,2,{'a': 'b'}), (2,3,{'c': 'd'})])
 
     class Meta:
@@ -94,4 +99,6 @@ class MockGalaxyFactoryForm(BetterForm):
 
     def __init__(self):
         super(MockGalaxyFactoryForm, self).__init__()
-        self.fields['dark_matter_simulation'].choices
+        self.fields['dark_matter_simulation'] = ChoiceFieldWithOtherAttrs(choices=datasets.dark_matter_simulation_choices())
+        self.fields['dummy_galaxy_model'] = ChoiceFieldWithOtherAttrs(choices=datasets.galaxy_model_choices(), required=False)
+        self.fields['galaxy_model'] = ChoiceFieldWithOtherAttrs(choices=datasets.galaxy_model_choices())

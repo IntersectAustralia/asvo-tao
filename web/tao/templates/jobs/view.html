@@ -1,4 +1,7 @@
 {% extends '_base.html' %}
+
+{% load url from future %}
+
 {% block content %}
     <div>
         <h1>Viewing Job</h1>
@@ -16,7 +19,7 @@
                     <ul>
                         {% for file in files %}
                             <li>
-                                <a href="{% url get_file job.id, file %}">
+                                <a href="{% url 'get_file' job.id file %}">
                                     {{ file }}
                                 </a>
                             </li>
