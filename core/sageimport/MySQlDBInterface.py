@@ -7,8 +7,7 @@ import getpass
 import math
 import string
 import sys
-import subprocess
-import time
+
 
 class DBInterface(object):
     '''
@@ -36,7 +35,7 @@ class DBInterface(object):
         self.InitDBConnection()
         self.CreateNewTableTemplate()
         self.CreateInsertTemplate()
-        self.CreatePartitionFunction()                
+                        
         self.CreateDB()
         
         self.CurrentGalaxiesCounter=int(Options['RunningSettings:GalaxiesPerTable'])+1 # To Create the First Table
@@ -83,127 +82,17 @@ class DBInterface(object):
             print('Password for user:'+username+' is not defined')
             self.password=getpass.getpass('Please enter password:')
         
-        ########## PgPool System DB ##########################    
-        self.Systemserverip=self.Options['PGSystemDB:serverip']
-        self.Systemusername=self.Options['PGSystemDB:user']
-        self.Systempassword=self.Options['PGSystemDB:password']
-        self.Systemport=int(self.Options['PGSystemDB:port'])
-        self.SystemDBName=self.Options['PGSystemDB:SystemDBName']
-        
-        if self.Systempassword==None:
-            print('System Password for user:'+username+' is not defined')
-            self.Systempassword=getpass.getpass('Please enter password:')    
-        
-        # Open Connection to the pgpool system Database
-        # this will be used to register distribution rules
-        
-        self.CurrentSystemConnection=pg.connect(host=self.Systemserverip,user=self.Systemusername,passwd=self.Systempassword,port=self.Systemport,dbname=self.SystemDBName)
-        print('Connection to System DB is open...')
         # Take care that the connection will be opened to standard DB 'master'
         # This is temp. until the actual database is created
         self.CurrentConnection=pg.connect(host=self.serverip,user=self.username,passwd=self.password,port=self.port,dbname='master')
         print('Connection to DB is open...')
     
-    def CloseConnections(self):
-        self.CurrentSystemConnection.close()
+    def CloseConnections(self):        
         self.CurrentConnection.close()
         self.CloseDebugFile()
-        print('Connection to DB is Closed...')
-    
-    def OpenConnections(self):
-        self.CurrentSystemConnection=pg.connect(host=self.Systemserverip,user=self.Systemusername,passwd=self.Systempassword,port=self.Systemport,dbname=self.SystemDBName)
-        print('Connection to System DB is open...')
-        self.CurrentConnection=pg.connect(host=self.serverip,user=self.username,passwd=self.password,port=self.port,dbname=self.DBName)
-        print('Connection to DB is open...')    
-        
-    def DeletePartitionEntry(self,DBName,TableName):
-        DeleteStat="DELETE FROM pgpool_catalog.dist_def where dbname=\'"+DBName+"\' and table_name=\'"+TableName+"\';"
-        DeleteStat=string.lower(DeleteStat)
-        self.CurrentSystemConnection.query(DeleteStat)
-    def CreatePartitionFunction(self):
-        
-        ##### Create pgpool partition function
-        ##### Even Numbers go to TAO01 and Odd Number to TAO02
-        PartitionFunction="CREATE OR REPLACE FUNCTION pgpool_catalog.dist_globaltree (val ANYELEMENT) RETURNS INTEGER AS $$"
-        PartitionFunction=PartitionFunction+"SELECT CASE "
-        PartitionFunction=PartitionFunction+" WHEN $1%2 = 0  THEN 0"
-        PartitionFunction=PartitionFunction+" ELSE 1 END;$$ LANGUAGE sql;"
-
-        self.CurrentSystemConnection.query(PartitionFunction) 
+        print('Connection to DB is Closed...')        
            
-    def SetSystemPgPoolConfig(self,TableIndex):       
-        
-        print("Updating Distribution Rules ....")
-        
-        TablesCount=int(self.Options['PGSystemDB:UpdateDatabaseTablesLimit'])
-        
-        ##### Build Table Definition Template       
-        PartitionStat="INSERT INTO pgpool_catalog.dist_def VALUES "
-        PartitionStat=PartitionStat+"(\'"+self.DBName+"\',\'public\',\'@TableName\',\'globaltreeid\',"
-        PartitionStat=PartitionStat+ "ARRAY[@FIELDS], ARRAY[@FIELDSTYPE],\'pgpool_catalog.dist_globaltree\');"
-        
-
-        FieldsStr=""
-        FieldsTypeStr=""
-        for field in self.CurrentSAGEStruct:
-            if field[3]==1:
-                FieldsTypeStr=FieldsTypeStr+"\'"+self.FormatMapping[field[1]]+"\',"
-                FieldsStr=FieldsStr+"\'"+field[2]+"\',"
-                
-        FieldsStr=FieldsStr+"\'GlobalTreeID\',"
-        FieldsTypeStr=FieldsTypeStr+"\'BIGINT\',"        
-        
-        FieldsStr=FieldsStr+"\'CentralGalaxyGlobalID\',"
-        FieldsTypeStr=FieldsTypeStr+"\'BIGINT\',"
-        
-        FieldsStr=FieldsStr+"\'LocalGalaxyID\',"
-        FieldsTypeStr=FieldsTypeStr+"\'INT\',"
-        
-        FieldsStr=FieldsStr+"\'CentralGalaxyX\',"
-        FieldsTypeStr=FieldsTypeStr+"\'FLOAT\',"
-        
-        FieldsStr=FieldsStr+"\'CentralGalaxyY\',"
-        FieldsTypeStr=FieldsTypeStr+"\'FLOAT\',"
-        
-        FieldsStr=FieldsStr+"\'CentralGalaxyZ\'"
-        FieldsTypeStr=FieldsTypeStr+"\'FLOAT\'"
-        
-        
-        PartitionStat= string.replace(PartitionStat,"@FIELDSTYPE",FieldsTypeStr)
-        PartitionStat= string.replace(PartitionStat,"@FIELDS",FieldsStr)
-
-
-        ### Execute it for the next $TablesCount$ Tables       
-        
-        
-        for TIndex in range(0,TablesCount):
-            TablePrefix=self.Options['PGDB:TreeTablePrefix']
-            NewTableName=TablePrefix+str(TableIndex+TIndex)
-            TempPartitionStat= string.replace(PartitionStat,"@TableName",NewTableName)
             
-            self.DeletePartitionEntry(self.DBName,NewTableName);   
-            TempPartitionStat=string.lower(TempPartitionStat)         
-            self.CurrentSystemConnection.query(TempPartitionStat)
-        
-        ### Restart Pgpool 
-        print("Restarting pgPool...")        
-        self.RestartPgPool()
-        
-        print("End Updating Distribution Rules ....")
-    
-    def RestartPgPool(self):
-        ### 1- Close all current DB connection or pgpool will wait for ever
-        self.CloseConnections()
-        ### 2- Close pgpool using shell command (shell=True is a must)
-        print subprocess.call('pgpool -f  /lustre/projects/p014_swin/pgpool/pgpool.conf -F /lustre/projects/p014_swin/pgpool/pcp.conf -a /lustre/projects/p014_swin/pgpool/pool_hba.conf stop',shell=True)
-        ### 3- Start pgpool again  (shell=True is a must)
-        print subprocess.call('pgpool -f  /lustre/projects/p014_swin/pgpool/pgpool.conf -F /lustre/projects/p014_swin/pgpool/pcp.conf -a /lustre/projects/p014_swin/pgpool/pool_hba.conf',shell=True)
-        print("Restarting pgPool... Done") 
-        ### 4- Sleep 2 seconds until all pgpool services is up and running (if you didn't do so it will give you error!)
-        time.sleep(3) 
-        ### 5- Open the connections again so the system can continue
-        self.OpenConnections()       
-        
     def DropDatabase(self):
         ## Check if the database already exists
         
@@ -301,9 +190,6 @@ class DBInterface(object):
              
             print("Table "+NewTableName+" Created With Index ...")
             
-            ## Updating pgpool System DB will happen every 10 tables
-            if ((TableIndex-1)%int(self.Options['PGSystemDB:UpdateDatabaseTablesLimit'])==0):
-                self.SetSystemPgPoolConfig(TableIndex)
             
         except Exception as Exp:
             print(">>>>>Error While creating New Table")
@@ -330,7 +216,8 @@ class DBInterface(object):
                 end=min((c+1)*1000,len(TreeData))
                 sys.stdout.write("\033[0;33m"+str(start)+":"+str(end)+" from "+str(len(TreeData))+"\033[0m\r")
                 sys.stdout.flush()
-                self.PrepareInsertStatement(TreeData[start:end])
+                if start!=end:                    
+                    self.PrepareInsertStatement(TreeData[start:end])
         else:            
             self.PrepareInsertStatement(TreeData) 
             print("Tree Processing .. Done")   
@@ -343,20 +230,19 @@ class DBInterface(object):
         InsertStatment=""
         try:            
             TablePrefix=self.Options['PGDB:TreeTablePrefix']
-            NewTableName=TablePrefix+str(self.CurrentTableID)  
-            for TreeField in TreeData:
-                InsertStatment= string.replace(self.INSERTTemplate,"@TABLEName",NewTableName)  
-                InsertStatment=InsertStatment+" VALUES "
-                Location=0
+            NewTableName=TablePrefix+str(self.CurrentTableID)
+            InsertStatment= string.replace(self.INSERTTemplate,"@TABLEName",NewTableName)
+            InsertStatment=InsertStatment+" VALUES "            
             
-                #sys.stdout.write(str(Location)+"/"+str(len(TreeData))+"\r")
-                #sys.stdout.flush()
-                Location=Location+1
+            
+            for TreeField in TreeData:
+                    
                 InsertStatment=InsertStatment+"("
                 for field in self.CurrentSAGEStruct:                
                     if field[3]==1:                
                         FieldName=field[0]
                         InsertStatment=InsertStatment+ str(TreeField[FieldName])+","
+                
                 InsertStatment=InsertStatment+str(self.CurrentTreesCounter)+","
                 InsertStatment=InsertStatment+str(TreeField['CentralGalaxyGlobalID'])+","                
                 InsertStatment=InsertStatment+str(self.LocalGalaxyID)+","
@@ -366,12 +252,14 @@ class DBInterface(object):
                 InsertStatment=InsertStatment+str(TreeField['CentralGalaxyZ'])+"),"
                 self.LocalGalaxyID=self.LocalGalaxyID+1
                 
-                InsertStatment=InsertStatment[:-1]+";"
-                if self.DebugToFile==True:
-                    self.Log.write(InsertStatment+"\n\n")
-                    self.Log.flush()
+            InsertStatment=InsertStatment[:-1]+";"
+            
+            
+            if self.DebugToFile==True:
+                self.Log.write(InsertStatment+"\n\n")
+                self.Log.flush()
                 
-                self.ExecuteNoQuerySQLStatment(InsertStatment)
+            self.ExecuteNoQuerySQLStatment(InsertStatment)
         except Exception as Exp:
             print(">>>>>Error While Processing Tree")
             print(type(Exp))
