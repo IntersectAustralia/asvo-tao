@@ -14,7 +14,8 @@ class UserProfile(models.Model):
 class UserManager(auth_models.UserManager):
     def admin_emails(self):
         return [x[0] for x in User.objects.filter(is_active=True, is_staff=True).values_list('email')]
-        
+    
+    
 class User(auth_models.User):
     """
         Wrapper to make methods on user_profile one call
@@ -28,7 +29,7 @@ class User(auth_models.User):
         proxy = True
 
 
-class Simulation(models.Model):
+class Simulation(models.Model):        
     name = models.CharField(max_length=100)
 
     paper_title = models.CharField(max_length=100, default='')
@@ -41,9 +42,11 @@ class Simulation(models.Model):
 
     def __unicode__(self):
         return self.name
+    
+    class Meta:
+        ordering = ['name']
 
-
-class GalaxyModel(models.Model):
+class GalaxyModel(models.Model):   
     simulation = models.ForeignKey(Simulation)
 
     name = models.CharField(max_length=100)
@@ -54,7 +57,9 @@ class GalaxyModel(models.Model):
 
     def __unicode__(self):
         return self.name
-
+    
+    class Meta:
+        ordering = ['name']
 
 class Job(models.Model):
     SUBMITTED = 'SUBMITTED'
