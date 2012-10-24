@@ -34,7 +34,23 @@ class LiveServerTest(django.test.LiveServerTestCase):
 
         pattern = re.escape(string)
         self.assertTrue(re.search(pattern, page_source), "page source did not contain %s" % pattern)
+        
+    def assert_element_text_equals(self, selector, expected_value):
+        element = self.find_visible_element(selector)
+        self.assertEqual(expected_value, element.text)
 
+    def assert_selector_texts_equals_expected_values(self, selector_value):
+        # selector_value is a dict of selectors to expected text values
+        for selector, expected_value in selector_value.items():
+            self.assert_element_text_equals(selector, expected_value)
+    
+    def assert_attribute_equals(self, attribute, selector_values):
+        # selector_values is a dict of selectors to attribute values
+        for selector, expected_value in selector_values.items():
+            element = self.find_visible_element(selector)
+            actual_value = element.get_attribute(attribute)
+            self.assertEqual(expected_value, actual_value)
+            
     def fill_in_fields(self, field_data):
         for field_id, text_to_input in field_data.items():
             self.selenium.find_element_by_id(field_id).send_keys(text_to_input)
@@ -58,3 +74,18 @@ class LiveServerTest(django.test.LiveServerTestCase):
     def get_full_url(self, url_name):
         from django.core.urlresolvers import reverse
         return "%s%s" % (self.live_server_url, reverse(url_name))
+    
+    def select(self, selector, value):
+        options = self.selenium.find_element_by_css_selector(selector).find_elements_by_css_selector('option')
+        [option.click() for option in options if option.text == value]
+        
+    def find_visible_elements(self, css_selector):
+        elements = self.selenium.find_elements_by_css_selector(css_selector)
+        return [elem for elem in elements if elem.is_displayed()]
+    
+    def find_visible_element(self, css_selector):
+        elements = self.find_visible_elements(css_selector)
+        num_elements = len(elements)
+        if num_elements != 1:
+            raise Exception("Found %s elements for selector %s" % (num_elements, css_selector))
+        return elements[0]

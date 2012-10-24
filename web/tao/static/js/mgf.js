@@ -1,16 +1,27 @@
 var show_simulation_info;
+var show_galaxy_model_info;
 
 (function($){
-  show_simulation_info = function(simulation_id) {
-    $('div.simulation-info').each(function() {
-      var $sim_div = $(this);
-      if ($sim_div.attr('data-simulation_id') === simulation_id) {
-        $sim_div.show();
-      } else {
-        $sim_div.hide();
-      }
-    });
-  };
+	show_simulation_info = function(simulation_id) {
+	  $('div.simulation-info').each(function() {
+		  var $sim_div = $(this);
+		  if ($sim_div.attr('data-simulation_id') === simulation_id) {
+			  $sim_div.show();
+		  } else {
+			  $sim_div.hide();
+		  }
+	  });
+	};
+	show_galaxy_model_info = function(galaxy_model_id) {
+	  $('div.galaxy-model-info').each(function() {
+		  var $galaxy_model_div = $(this);
+		  if ($galaxy_model_div.attr('data-galaxy-model-id') === galaxy_model_id) {
+			  $galaxy_model_div.show();
+		  } else {
+			  $galaxy_model_div.hide();
+		  }
+	  });
+	};
 })(jQuery);
 
 jQuery(document).ready(function($) {
@@ -38,11 +49,21 @@ jQuery(document).ready(function($) {
 
     show_simulation_info(sim_id);
     update_galaxy_options(sim_id);
+    $('#id_galaxy_model').change();
   });
-
+  
+  $('#id_galaxy_model').change(function(evt){
+	  var $this = $(this);
+	  var galaxy_model_id = $this.val();
+	  
+	  show_galaxy_model_info(galaxy_model_id);
+  });
+  
   (function(){
     var initial_simulation_id = $('#id_dark_matter_simulation').val();
     show_simulation_info(initial_simulation_id);
     update_galaxy_options(initial_simulation_id);
+    var initial_galaxy_model_id = $('#id_galaxy_model').val();
+    show_galaxy_model_info(initial_galaxy_model_id);
   })();
 });
