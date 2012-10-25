@@ -84,7 +84,7 @@ class MockGalaxyFactoryForm(BetterForm):
     class Meta:
         fieldsets = [('primary', {
             'legend': 'General',
-            'fields': ['dark_matter_simulation', 'dummy_galaxy_model', 'galaxy_model'],
+            'fields': ['dark_matter_simulation', 'galaxy_model'],
         }), ('secondary', {
             'legend': 'Parameters',
             'fields': ['somethingelse'],
@@ -95,10 +95,8 @@ class MockGalaxyFactoryForm(BetterForm):
             'legend': 'Miscellaneous',
             'fields': [],
         }),]
-        row_attrs = {'dummy_galaxy_model': {'style': 'display: none'}}
 
     def __init__(self):
         super(MockGalaxyFactoryForm, self).__init__()
         self.fields['dark_matter_simulation'] = ChoiceFieldWithOtherAttrs(choices=datasets.dark_matter_simulation_choices())
-        self.fields['dummy_galaxy_model'] = ChoiceFieldWithOtherAttrs(choices=datasets.galaxy_model_choices(), required=False)
         self.fields['galaxy_model'] = ChoiceFieldWithOtherAttrs(choices=datasets.galaxy_model_choices())

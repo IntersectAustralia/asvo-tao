@@ -27,9 +27,8 @@ var show_galaxy_model_info;
 jQuery(document).ready(function($) {
 
   var update_galaxy_options = (function(){
-    var options_html = $('#id_dummy_galaxy_model').remove();
+    var options_html = $('#id_galaxy_model');
     options_html = '<select>' + options_html.html() + '</select>';
-    $('#id_dummy_galaxy_model').remove();
 
     return function(simulation_id) {
       var $applicable_options = $(options_html);
