@@ -115,15 +115,20 @@ class DBInterface(object):
             print(Exp)            
             print("Current SQL Statement =\n"+SQLStatment)
             raw_input("PLease press enter to continue.....")
-    def GetListofUnProcessedFiles(self):
-        return self.ExecuteQuerySQLStatment("SELECT * FROM datafiles where Processed=FALSE;")        
+    def GetListofUnProcessedFiles(self,CommSize,CommRank):
+        return self.ExecuteQuerySQLStatment("SELECT * FROM datafiles where Processed=FALSE and fileid%"+str(CommSize)+"="+str(CommRank)+" order by fileid;")        
     
     def SetFileAsProcessed(self,FileID):
         self.ExecuteNoQuerySQLStatment("UPDATE datafiles set Processed=TRUE where fileid= "+str(FileID))
-            
-          
+    
+        
+                
+    def StartTransaction(self):
+        self.ExecuteNoQuerySQLStatment("BEGIN;")
+    def CommintTransaction(self):
+        self.ExecuteNoQuerySQLStatment("COMMIT;")
     def CreateNewTree(self,TableID,TreeData):
-        print('Starting a New Tree')
+        
         self.LocalGalaxyID=0
         
           
@@ -131,18 +136,18 @@ class DBInterface(object):
             for c in range(0,(len(TreeData)/1000)+1):
                 start=c*1000
                 end=min((c+1)*1000,len(TreeData))
-                sys.stdout.write("\033[0;33m"+str(start)+":"+str(end)+" from "+str(len(TreeData))+"\033[0m\r")
-                sys.stdout.flush()
+                #sys.stdout.write("\033[0;33m"+str(start)+":"+str(end)+" from "+str(len(TreeData))+"\033[0m\r")
+                #sys.stdout.flush()
                 if start!=end:                    
                     self.PrepareInsertStatement(TableID,TreeData[start:end])
         else:            
             self.PrepareInsertStatement(TableID,TreeData) 
-            print("Tree Processing .. Done")   
+               
         
         self.CurrentGalaxiesCounter=self.CurrentGalaxiesCounter+len(TreeData)
         
 
-        print("\n")
+        #print("\n")
     
     def PrepareInsertStatement(self,TableID,TreeData):
         InsertStatment=""

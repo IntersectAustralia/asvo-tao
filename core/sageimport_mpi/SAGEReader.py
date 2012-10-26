@@ -19,7 +19,7 @@ class SAGEDataReader:
                    'long long':'q'                   
                    }
     
-    def __init__(self,CurrentSAGEStruct,Options,PGDB):
+    def __init__(self,CurrentSAGEStruct,Options,PGDB,CommSize,CommRank):
         
         
         #Initialize the Class to handle a specific file path        
@@ -27,6 +27,8 @@ class SAGEDataReader:
         self.CurrentSAGEStruct=CurrentSAGEStruct
         self.Options=Options
         self.PGDB=PGDB
+        self.CommSize=CommSize
+        self.CommRank=CommRank
         # Just in case the folder path contain additional '/' Remove it
         if self.CurrentFolderPath.endswith("/"):
             self.CurrentFolderPath=self.CurrentFolderPath[:-1] 
@@ -55,16 +57,19 @@ class SAGEDataReader:
         #Process All the Non-Empty Files
         
         [self.FormatStr,self.FieldSize]=self.GetStructSizeAndFormat()
-        ListOfUpProcessedFile=self.PGDB.GetListofUnProcessedFiles()
+        ListOfUpProcessedFile=self.PGDB.GetListofUnProcessedFiles(self.CommSize,self.CommRank)
         TotalNumberofUnPrcoessedFiles=len(ListOfUpProcessedFile)
         FileCounter=0
         for UnProcessedFile in ListOfUpProcessedFile:
             # Updating the user with what is going on
-            print("Processing File ("+str(FileCounter)+"/"+str(TotalNumberofUnPrcoessedFiles)+":"+UnProcessedFile[1])
+            print(str(self.CommRank)+":Processing File ("+str(FileCounter)+"/"+str(TotalNumberofUnPrcoessedFiles)+"):"+UnProcessedFile[1])
             print('\t File Size:'+str(UnProcessedFile[2]/1024)+' KB')
             
+            self.PGDB.StartTransaction()
             self.ProcessFile(UnProcessedFile)
-            self.PGDB.SetFileAsProcessed(UnProcessedFile[0])
+            self.PGDB.SetFileAsProcessed(UnProcessedFile[0])            
+            self.PGDB.CommintTransaction()
+            FileCounter=FileCounter+1
             
         
     
@@ -102,7 +107,7 @@ class SAGEDataReader:
     
         for i in range(0,NumberofTrees):
             NumberofGalaxiesInTree=TreeLengthList[i]
-            print('\t Number of Galaxies in Tree ('+str(i)+')='+str(NumberofGalaxiesInTree))
+            #print('\t '+str(self.CommRank)+': Number of Galaxies in Tree ('+str(i)+')='+str(NumberofGalaxiesInTree))
             if NumberofGalaxiesInTree>0:
                 TreeData=self.ProcessTree(TreeIDStart+i,NumberofGalaxiesInTree,CurrentFile,CurrentFileGalaxyID)  
                 if len(TreeData)>0:  

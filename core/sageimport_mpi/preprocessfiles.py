@@ -116,6 +116,9 @@ class PreprocessFiles(object):
     def GenerateAllTables(self): 
         self.CreateNewTableTemplate()
         print("WARNING ALL DATA TABLES WILL BE RECREATED .....")
+        ## Ensure that there is no Files marked as processed
+        self.ExecuteNoQuerySQLStatment("UPDATE datafiles set Processed=FALSE;")
+        ## Get List of all tables expected
         TableIDs=self.ExecuteQuerySQLStatment("select distinct tableid from datafiles order by tableid;")
         for TableID in TableIDs:
             print("Creating Table ("+str(TableID[0])+")")
