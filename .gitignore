@@ -9,3 +9,7 @@ build/*
 dist/*
 *.egg-info
 credentials.hh
+core/sageimport/SQLStatments.txt
+core/sageimport/TestMySQlConnection.py
+.project
+.pydevproject
