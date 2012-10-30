@@ -48,11 +48,11 @@
 		<Field Type="int" DBExport="0">Dummy</Field>
 	</sageinput>
 	<PGDB>
-		<serverip>tao01.hpc.swin.edu.au</serverip>
+		<serverip>tao02.hpc.swin.edu.au</serverip>
 		<port>3306</port>
 		<user>taoadmin</user>
-		<password></password>
-		<NewDBName>millennium_full2</NewDBName>	
+		<password>tao_admin_password_##</password>
+		<NewDBName>millennium_full_mpi</NewDBName>	
 		<TreeTablePrefix>tree_</TreeTablePrefix>				
 	</PGDB>
 	
