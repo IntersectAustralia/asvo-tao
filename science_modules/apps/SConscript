@@ -23,6 +23,7 @@ sources = [
     ('sagereader', 'sagereader.cc'),
     ('sagecheck', 'sagecheck.cc'),
     ('dbcheck', 'dbcheck.cc'),
+    ('bolshoi_conv', 'bolshoi_conv.cc'),
 ]
 
 # Call the helper.

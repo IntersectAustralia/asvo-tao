@@ -23,7 +23,7 @@ class UserCreationFormTest(TransactionTestCase):
         """
         
         test_email = 'cindy@intersect.org.au'
-        user = UserFactory.create(email=test_email)
+        UserFactory.create(email=test_email)
         
         from tao.models import User
         self.assertEqual(1, User.objects.count())

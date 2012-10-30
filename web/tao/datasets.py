@@ -22,3 +22,10 @@ def galaxy_model_choices():
         tao.widgets.ChoiceFieldWithOtherAttrs
     """
     return [(x.id, x.name, {'data-simulation_id': unicode(x.simulation_id)}) for x in models.GalaxyModel.objects.order_by('name')]
+
+def filter_choices():
+    return [('no_filter', 'No Filter', {})] + [(x.id, x.name, {
+                            'data-simulation_id': unicode(x.dataset.simulation_id),
+                            'data-galaxy_model_id': unicode(x.dataset.galaxy_model_id)
+                            })
+            for x in models.DataSetParameter.objects.order_by('name')]
