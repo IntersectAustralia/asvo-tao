@@ -51,7 +51,7 @@
 		<serverip>tao02.hpc.swin.edu.au</serverip>
 		<port>3306</port>
 		<user>taoadmin</user>
-		<password>tao_admin_password_##</password>
+		<password></password>
 		<NewDBName>millennium_full_mpi</NewDBName>	
 		<TreeTablePrefix>tree_</TreeTablePrefix>				
 	</PGDB>
