@@ -27,8 +27,7 @@ class User(auth_models.User):
 
     class Meta:
         proxy = True
-
-
+    
 class Simulation(models.Model):        
     name = models.CharField(max_length=100)
 
@@ -60,6 +59,20 @@ class GalaxyModel(models.Model):
     
     class Meta:
         ordering = ['name']
+    
+class DataSet(models.Model):
+    simulation = models.ForeignKey(Simulation)
+    galaxy_model = models.ForeignKey(GalaxyModel)
+    
+    def __unicode__(self):
+        return "%s : %s" % (self.simulation.name, self.galaxy_model.name)
+    
+class DataSetParameter(models.Model):
+    name = models.CharField(max_length=200)
+    dataset = models.ForeignKey(DataSet)
+    
+    def __unicode__(self):
+        return self.name
 
 class Job(models.Model):
     SUBMITTED = 'SUBMITTED'

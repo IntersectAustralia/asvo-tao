@@ -1,5 +1,16 @@
 from django.contrib import admin
-from tao.models import Job, UserProfile, Simulation, GalaxyModel
+from tao.models import Job, UserProfile, Simulation, GalaxyModel, DataSet, DataSetParameter
 
-for model in (UserProfile, Simulation, Job, GalaxyModel):
+for model in (UserProfile, Simulation, Job, GalaxyModel, DataSetParameter):
     admin.site.register(model)
+
+
+class DataSetParameterInline(admin.TabularInline):
+    model = DataSetParameter
+    extra = 3
+    
+    
+class DataSetAdmin(admin.ModelAdmin):
+    inlines = [DataSetParameterInline]
+admin.site.register(DataSet, DataSetAdmin)
+

@@ -9,7 +9,7 @@ from captcha.fields import ReCaptchaField
 
 from form_utils.forms import BetterForm
 
-from tao import datasets
+from tao import datasets, models
 from tao.models import UserProfile
 
 class LoginForm(auth_forms.AuthenticationForm):
@@ -53,8 +53,8 @@ class UserCreationForm(auth_forms.UserCreationForm):
         email = self.cleaned_data.get('email')
         if User.objects.filter(email=email).count() > 0:
             raise ValidationError(_('That email is already taken.'))
-	return email
-		
+        return email
+
     def save(self):  # what about transactions?
         user = super(auth_forms.UserCreationForm, self).save(commit=False)
         user.set_password(self.cleaned_data['password1'])  # FIXME shouldn't have to do this ??
@@ -79,7 +79,8 @@ class RejectForm(forms.Form):
 from tao.widgets import ChoiceFieldWithOtherAttrs
 
 class MockGalaxyFactoryForm(BetterForm):
-    somethingelse = ChoiceFieldWithOtherAttrs(choices=[(1,2,{'a': 'b'}), (2,3,{'c': 'd'})])
+    max = forms.DecimalField(required=False, label=_('Max/Faintest'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
+    min = forms.DecimalField(required=False, label=_('Min/Brightest'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
 
     class Meta:
         fieldsets = [('primary', {
@@ -87,7 +88,7 @@ class MockGalaxyFactoryForm(BetterForm):
             'fields': ['dark_matter_simulation', 'galaxy_model'],
         }), ('secondary', {
             'legend': 'Parameters',
-            'fields': ['somethingelse'],
+            'fields': ['filter', 'max', 'min'],
         }), ('third', {
             'legend': 'Output properties',
             'fields': [],
@@ -96,7 +97,23 @@ class MockGalaxyFactoryForm(BetterForm):
             'fields': [],
         }),]
 
-    def __init__(self):
-        super(MockGalaxyFactoryForm, self).__init__()
+    def __init__(self, *args, **kwargs):
+        super(MockGalaxyFactoryForm, self).__init__(*args, **kwargs)
         self.fields['dark_matter_simulation'] = ChoiceFieldWithOtherAttrs(choices=datasets.dark_matter_simulation_choices())
         self.fields['galaxy_model'] = ChoiceFieldWithOtherAttrs(choices=datasets.galaxy_model_choices())
+        self.fields['filter'] = ChoiceFieldWithOtherAttrs(choices=datasets.filter_choices())
+        
+    def check_min_less_than_max(self):
+        min_field = self.cleaned_data.get('min')
+        max_field = self.cleaned_data.get('max')
+        if min_field is not None and max_field is not None and min_field >= max_field:
+            raise ValidationError(_('The "min" field must be less than the "max" field.'))
+    
+    def clean(self):
+        self.check_min_less_than_max()
+        return self.cleaned_data
+        
+    def save(self, user):
+        job = models.Job(user=user)
+        job.save()
+        return job

@@ -34,7 +34,7 @@
     </form>
     <!-- TODO end remove me -->
 
-    <form action="" method="POST">
+    <form id="mgf-form" action="" method="POST">
         {% csrf_token %}
         <fieldset>
             <legend>Light Cone</legend>
@@ -96,6 +96,16 @@
                 </div>
                 -->
                 <div class="boxed span8">
+                    {% if form.non_field_errors %}
+  <div class="alert-message block-message error">
+    <p>
+      <strong>{{ form_error_title }}</strong>
+        <ul>
+      {{ form.non_field_errors|unordered_list }}
+    </ul>
+    </p>
+  </div>
+{% endif %}
                     {% for fieldset in form.fieldsets %}
                         {{ fieldset|as_bootstrap_fieldset }}
                     {% endfor %}
