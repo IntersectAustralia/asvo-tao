@@ -7,18 +7,13 @@ import string
 import pg
 
 class PreprocessFiles(object):
-    
-    FormatMapping={'int':'INT',
-                   'float':'FLOAT',
-                   'long long':'BIGINT'                   
-                   }
+    ## Mapping between SAGE (C/C++) data types to Database data types 
+    FormatMapping={'int':'INT','float':'FLOAT4','long long':'BIGINT'}
     
     
-    
-    def __init__(self,CurrentSAGEStruct,Options):
-        '''
-        Constructor
-        '''
+    ## Init the class with XML Options 
+    def __init__(self,CurrentSAGEStruct,Options):       
+        
         self.CurrentFolderPath=Options['RunningSettings:InputDir']
         self.CurrentSAGEStruct=CurrentSAGEStruct
         self.Options=Options
@@ -74,91 +69,111 @@ class PreprocessFiles(object):
        ## Create New DB 
        self.ExecuteNoQuerySQLStatment("create database "+self.DBName+";") 
        print("Database "+self.DBName+" Created")
-       ### Close the current Connection and open a new one on the new DB
+       ### Close the current Connection (To a Default DB) and open a new one on the new DB
        self.CurrentConnection.close()
        self.CurrentConnection=pg.connect(host=self.serverip,user=self.username,passwd=self.password,port=self.port,dbname=self.DBName)      
        
        
        print("Connection to Database "+self.DBName+" is opened and ready")
    
+   
+    # Execute SQL Statement with no return (DDL Statements and some DML statements )
     def ExecuteNoQuerySQLStatment(self,SQLStatment):
-        try:
-            
-           
-            #self.cursor.execute(SQLStatment)
+        try:    
+            ### All Names will be converted to lower case
+            ### If the execution fails the catch part will work - But the program will not abort 
             SQLStatment=string.lower(SQLStatment)  
             self.CurrentConnection.query(SQLStatment)
               
         except Exception as Exp:
-            print(">>>>>Error While creating New Table")
+            ## Display the error Information and the SQL statement that caused it
+            print(">>>>>Error While Executing NonQuery Statement")
             print(type(Exp))
             print(Exp.args)
             print(Exp)            
             print("Current SQL Statement =\n"+SQLStatment)
+            ## Pause the execution until the user acknowledge the error
             raw_input("PLease press enter to continue.....")
     
+    ## Execute SQL statement with return data
+    ## The results is returned as an array of tuples
     def ExecuteQuerySQLStatment(self,SQLStatment):
         try:
-            
-            
-            
-            resultsList=self.CurrentConnection.query(SQLStatment).getresult()
-            
+            ### All Names will be converted to lower case
+            ### If the execution fails the catch part will work - But the program will not abort
+                     
+            SQLStatment=string.lower(SQLStatment)
+            resultsList=self.CurrentConnection.query(SQLStatment).getresult()            
             return resultsList  
+        
         except Exception as Exp:
-            print(">>>>>Error While creating New Table")
+            ## Display the error Information and the SQL statement that caused it
+            print(">>>>>Error While executing Query SQL ")
             print(type(Exp))
             print(Exp.args)
             print(Exp)            
             print("Current SQL Statement =\n"+SQLStatment)
+            ## Pause the execution until the user acknowledge the error
             raw_input("PLease press enter to continue.....")
     
+    
+    ## Generate All the tables required for the data importing process
     def GenerateAllTables(self): 
+        ## Create Table template statement 
         self.CreateNewTableTemplate()
+        
         print("WARNING ALL DATA TABLES WILL BE RECREATED .....")
-        ## Ensure that there is no Files marked as processed
+        
+        ## Ensure that there is no Files marked as processed..
+        ## This may happen if the user drop the table and forget to update the datafiles table
+        ## This execution is just a pre-caution
         self.ExecuteNoQuerySQLStatment("UPDATE datafiles set Processed=FALSE;")
-        ## Get List of all tables expected
+        
+        ## Get List of all tables expected from "datafiles" table
         TableIDs=self.ExecuteQuerySQLStatment("select distinct tableid from datafiles order by tableid;")
+        ## for each tableID create New Table 
         for TableID in TableIDs:
             print("Creating Table ("+str(TableID[0])+")")
             self.CreateNewTable(TableID[0])
     
+    ## Use Statement concatination and the  CurrentSAGEStrcuture loaded from the XML settings to create a new table template
     def CreateNewTableTemplate(self):
         self.CreateTableTemplate="CREATE TABLE @TABLEName ("
         for field in self.CurrentSAGEStruct:
             if field[3]==1:
+                ## Mapping SAGE (C/C++) to DB data types
                 FieldDT=self.FormatMapping[field[1]]
                 FieldName=field[2]
                 self.CreateTableTemplate=self.CreateTableTemplate+ FieldName +' '+FieldDT+","
         self.CreateTableTemplate=self.CreateTableTemplate+"GlobalTreeID BIGINT,"
         self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyGlobalID BIGINT,"     
         self.CreateTableTemplate=self.CreateTableTemplate+"LocalGalaxyID INT,"
-        self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyX FLOAT,"
-        self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyY FLOAT,"
-        self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyZ FLOAT, PRIMARY KEY (GlobalIndex))"
+        self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyX FLOAT$,"
+        self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyY FLOAT$,"
+        self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyZ FLOAT$, PRIMARY KEY (GlobalIndex))"
                 
-    def CreateNewTable(self,TableIndex):
-        
+    ## Perform create table for a specific TableIndex            
+    def CreateNewTable(self,TableIndex):        
         
                
         CreateTableStatment=""
         try:
-                
+            
+            ## The Table name is defined using the TreeTablePrefix from the XML config file
             TablePrefix=self.Options['PGDB:TreeTablePrefix']
             NewTableName=TablePrefix+str(TableIndex)
+            ## If the table exists drop it 
             DropSt="DROP TABLE IF EXISTS "+NewTableName+";"
             self.ExecuteNoQuerySQLStatment(DropSt)
             CreateTableStatment= string.replace(self.CreateTableTemplate,"@TABLEName",NewTableName)
             
                         
-            #print CreateTableStatment
+            
             CreateTableStatment=string.lower(CreateTableStatment)
             self.ExecuteNoQuerySQLStatment(CreateTableStatment)
             
+            ## Create Table indices             
             
-            #CreateIndexStatment="Create Index GlobalIndex_Index_"+NewTableName+" on  "+NewTableName+" (GlobalIndex);"
-            #self.ExecuteNoQuerySQLStatment(CreateIndexStatment)
             CreateIndexStatment="Create Index SnapNum_Index_"+NewTableName+" on  "+NewTableName+" (SnapNum);"
             self.ExecuteNoQuerySQLStatment(CreateIndexStatment)
             CreateIndexStatment="Create Index GlobalTreeID_Index_"+NewTableName+" on  "+NewTableName+" (GlobalTreeID);"
@@ -175,12 +190,14 @@ class PreprocessFiles(object):
             
             
         except Exception as Exp:
+            ## If an error happen catch it and let the user know
             print(">>>>>Error While creating New Table")
             print(type(Exp))
             print(Exp.args)
             print(Exp)            
             print("Current SQL Statement =\n"+CreateTableStatment)
             raw_input("PLease press enter to continue.....")       
+    
     def GetNonEmptyFilesList(self):
         
         #Get List of Files where the file size is greater than zero        
@@ -189,6 +206,8 @@ class PreprocessFiles(object):
         print("Current Files Count="+str(len(dirList)))
         fullPathArray=[]
         for fname in dirList:
+            ## Get file information (for getting the file size)  
+            ## Some files are zero length and might cause a problem in loading so the code will exclude them before processing
             statinfo = os.stat(self.CurrentFolderPath+'/'+fname)                
             
             
@@ -198,22 +217,28 @@ class PreprocessFiles(object):
                 print("File Not Included:"+fname)
         self.NonEmptyFiles=fullPathArray
      
+     
     def ProcessAllFiles(self):
         
-        #Process All the Non-Empty Files         
-        #SettingFile = open(self.Options['RunningSettings:OutputDir']+'SettingFile.xml', 'wt')
-        
+        #Process All the Non-Empty Files 
+        ## The table "DataFiles" will work as a record keeper for which files has been processed and which has not been processed 
+        ## It will be use to support continue in case of error
         CreateTableSt="CREATE TABLE DataFiles "
         CreateTableSt=CreateTableSt+"(FileID INT, FileName varchar(500),FileSize BIGINT, "
         CreateTableSt=CreateTableSt+" NumberofTrees INT, TotalNumberOfGalaxies BIGINT, TreeIDFrom INT,TreeIDTo INT,TableID INT, Processed boolean);"
         
         self.ExecuteNoQuerySQLStatment(CreateTableSt)
         
+        ## Generate insert template for the Datafiles table
         InsertTemplate="INSERT INTO DataFiles (FileID,FileName,FileSize,NumberofTrees,TotalNumberOfGalaxies, TreeIDFrom,TreeIDTo,TableID,Processed) VALUES "
+        
+        
         StartFrom=1
         TableID=1
         CurrentGalaxiesCounter=0
         TotalGalaxiesCount=0
+        
+        ## Used for reporting only (X out of Y)
         FileID=0
         TotalFilesCount=len(self.NonEmptyFiles)
         
@@ -252,17 +277,20 @@ class PreprocessFiles(object):
         
         #SettingFile.close()
         print ("Total Number of Galaxies="+str(TotalGalaxiesCount))
-            
+    
+    ## Read file header and get the information associated        
     def ProcessFile(self,FilePath):
         
+        ## Open the file for reading
         CurrentFile=open(FilePath,"rb")
         CurrentFileGalaxyID=0        
-    
+        ## Read the Number of trees and galaxies 
         NumberofTrees= struct.unpack('i', CurrentFile.read(4))[0]
         TotalNumberOfGalaxies= struct.unpack('i', CurrentFile.read(4))[0]
-                
+        ## Close the file        
         CurrentFile.close()
-        return [NumberofTrees,TotalNumberOfGalaxies]        
+        return [NumberofTrees,TotalNumberOfGalaxies]
+    ## Close DB connection        
     def CloseConnections(self):        
         self.CurrentConnection.close()
        

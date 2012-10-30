@@ -6,8 +6,9 @@ Created on 28/09/2012
 import os
 import sys
 import struct
-import PGDBInterface
 import string
+
+import PGDBInterface
 
 class SAGEDataReader:    
     #The Module handles the data reading from SAGE output to a memory data structure.

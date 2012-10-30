@@ -1,6 +1,8 @@
 import xml.etree.ElementTree as ET
 
+## Helps reading XML setting file into a Hash Table of Running options and Tuples array which describes the SAGE fields and their data types
 def ParseParams(FilePath):
+    ## Init Return value
     CurrentSAGEStruct=[]
     RunningOptions=dict()
     
@@ -22,7 +24,8 @@ def ParseParams(FilePath):
         else:
             CurrentSAGEStruct.append([sagefield.text,sagefield.attrib['Type'],sagefield.attrib['DBFieldName'],ExportInDB])    
     ##################################################################################
-    ##### Load PostGres information
+    ## Load PostGres information
+    ## Running Options and PostgreSQL DB information will take the form of ["Header"."Child"]
     pgNode=SettingsNode[1]
     for pgfield in pgNode:
        RunningOptions[pgNode.tag+':'+pgfield.tag]= pgfield.text     

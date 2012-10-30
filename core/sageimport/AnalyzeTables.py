@@ -29,8 +29,8 @@ class ProcessTables(object):
         # This is temp. until the actual database is created
         self.CurrentConnection=pg.connect(host=self.serverip,user=self.username,passwd=self.password,port=self.port,dbname=self.DBName)
         print('Connection to DB is open...')
-        #self.CreateSummaryTable()
-        #self.CreateTreeSummaryTable()
+        self.CreateSummaryTable()
+        self.CreateTreeSummaryTable()
         self.CreateTreeMappingTable()
         print('Summary Table Created ...')
     
@@ -78,12 +78,12 @@ class ProcessTables(object):
         CreateTable=CreateTable+"TableName varchar(100),"
         CreateTable=CreateTable+"MinTreeID BIGINT,"     
         CreateTable=CreateTable+"MaxTreeID BIGINT,"
-        CreateTable=CreateTable+"MinX FLOAT,"
-        CreateTable=CreateTable+"MinY FLOAT,"
-        CreateTable=CreateTable+"MinZ FLOAT,"
-        CreateTable=CreateTable+"MaxX FLOAT,"
-        CreateTable=CreateTable+"MaxY FLOAT,"
-        CreateTable=CreateTable+"MaxZ FLOAT,"        
+        CreateTable=CreateTable+"MinX FLOAT4,"
+        CreateTable=CreateTable+"MinY FLOAT4,"
+        CreateTable=CreateTable+"MinZ FLOAT4,"
+        CreateTable=CreateTable+"MaxX FLOAT4,"
+        CreateTable=CreateTable+"MaxY FLOAT4,"
+        CreateTable=CreateTable+"MaxZ FLOAT4,"        
         CreateTable=CreateTable+"GalaxyCount BIGINT)"
         
         self.ExecuteNoQuerySQLStatment(CreateTable)
@@ -94,12 +94,12 @@ class ProcessTables(object):
         
         CreateTable="CREATE TABLE TreeSummary ("        
         CreateTable=CreateTable+"GlobalTreeID BIGINT,"       
-        CreateTable=CreateTable+"MinX FLOAT,"
-        CreateTable=CreateTable+"MinY FLOAT,"
-        CreateTable=CreateTable+"MinZ FLOAT,"
-        CreateTable=CreateTable+"MaxX FLOAT,"
-        CreateTable=CreateTable+"MaxY FLOAT,"
-        CreateTable=CreateTable+"MaxZ FLOAT,"        
+        CreateTable=CreateTable+"MinX FLOAT4,"
+        CreateTable=CreateTable+"MinY FLOAT4,"
+        CreateTable=CreateTable+"MinZ FLOAT4,"
+        CreateTable=CreateTable+"MaxX FLOAT4,"
+        CreateTable=CreateTable+"MaxY FLOAT4,"
+        CreateTable=CreateTable+"MaxZ FLOAT4,"        
         CreateTable=CreateTable+"GalaxyCount BIGINT)"
         
         self.ExecuteNoQuerySQLStatment(CreateTable)
@@ -121,7 +121,11 @@ class ProcessTables(object):
         print("Processing Table: "+TableName)
         GetSummarySQL="select min(PosX),max(PosX),min(PosY),max(PosY),min(PosZ),max(PosZ),min(GlobalTreeID),max(GlobalTreeID),count(*) from @TABLEName;"
         GetSummarySQL= string.replace(GetSummarySQL,"@TABLEName",TableName)
-        SummaryList=self.ExecuteQuerySQLStatment(GetSummarySQL)[0]
+        SummaryListArr=self.ExecuteQuerySQLStatment(GetSummarySQL)
+        if len(SummaryListArr)==0:
+            return
+        SummaryList=SummaryListArr[0]
+        
         MinPosX= SummaryList[0]
         MaxPosX= SummaryList[1]
         MinPosY= SummaryList[2]
@@ -141,7 +145,7 @@ class ProcessTables(object):
         InsertSummaryRecord=InsertSummaryRecord+str(MinPosX)+","+str(MinPosY)+","+str(MinPosZ)+","
         InsertSummaryRecord=InsertSummaryRecord+str(MaxPosX)+","+str(MaxPosY)+","+str(MaxPosZ)
         InsertSummaryRecord=InsertSummaryRecord+")"
-        
+        InsertSummaryRecord= string.replace(InsertSummaryRecord,"none","0")
         self.ExecuteNoQuerySQLStatment(InsertSummaryRecord)
         
         print("End Processing Table: "+TableName)
@@ -203,13 +207,13 @@ class ProcessTables(object):
         #########################################################################################
         
         GridData=self.ExecuteQuerySQLStatment("select gridx,gridy,count(*) from TreeMapping  group by  gridx,gridy;")
-        Arr=numpy.zeros((25,25))
-        for GridPoint in GridData:
-           Arr[GridPoint[0],GridPoint[1]]=GridPoint[2] 
-        print Arr
-        plt.contourf(Arr)
-        plt.colorbar()
-        plt.show()
+        #Arr=numpy.zeros((25,25))
+        #for GridPoint in GridData:
+        #   Arr[GridPoint[0],GridPoint[1]]=GridPoint[2] 
+        #print Arr
+        #plt.contourf(Arr)
+        #plt.colorbar()
+        #plt.show()
         
         
     def GetTablesList(self):
@@ -226,7 +230,7 @@ if __name__ == '__main__':
     print('Starting DB processing')
     [CurrentSAGEStruct,Options]=settingReader.ParseParams("settings.xml") 
     ProcessTablesObj=ProcessTables(Options)
-    #ProcessTablesObj.GetTablesList()
+    ProcessTablesObj.GetTablesList()
     ProcessTablesObj.BuildTreeMapping()
     ProcessTablesObj.SummarizeLocationInfo()              
         
