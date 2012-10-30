@@ -1,7 +1,7 @@
 import factory
 # http://factoryboy.readthedocs.org/en/latest/index.html
 
-from tao.models import Job, User, Simulation, GalaxyModel
+from tao.models import Job, User, Simulation, GalaxyModel, DataSet, DataSetParameter
 
 class JobFactory(factory.Factory):
     FACTORY_FOR = Job
@@ -38,3 +38,10 @@ class GalaxyModelFactory(factory.Factory):
     kind = factory.Sequence(lambda n: "sometype" + n) 
     paper_title = factory.Sequence(lambda n: "xyz" + n)
     paper_url = factory.Sequence(lambda n: "http://www.xyz" + n + ".com/")
+    
+class DataSetFactory(factory.Factory):
+    FACTORY_FOR = DataSet
+    
+class DataSetParameterFactory(factory.Factory):
+    FACTORY_FOR = DataSetParameter
+    name = factory.Sequence(lambda n: 'parameter_%03d' % int(n))

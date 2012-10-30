@@ -13,17 +13,21 @@ from tao.forms import MockGalaxyFactoryForm
 @researcher_required
 def index(request):
     if request.method == 'POST':
-        u = models.User.objects.get(username=request.user)
-        j = models.Job(user=u, description=str(request.POST))
-        j.save()
-        messages.info(request, _("Your job was submitted successfully."))
-        return redirect(my_jobs_with_status)
+        form = MockGalaxyFactoryForm(request.POST)
+        if form.is_valid():
+            u = models.User.objects.get(username=request.user)
+            j = form.save(u)
+            
+            messages.info(request, _("Your job was submitted successfully."))
+            return redirect(my_jobs_with_status)
     else:
-        return render(request, 'mock_galaxy_factory/index.html', {
-            'form': MockGalaxyFactoryForm(),
-            'simulations': models.Simulation.objects.all(),
-            'galaxy_models': models.GalaxyModel.objects.all(),
-        })
+        form = MockGalaxyFactoryForm()
+        
+    return render(request, 'mock_galaxy_factory/index.html', {
+        'form': form,
+        'simulations': models.Simulation.objects.all(),
+        'galaxy_models': models.GalaxyModel.objects.all(),
+    })
 
 
 @set_tab('mgf')

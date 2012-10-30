@@ -82,9 +82,3 @@ class MockGalaxyFactoryTest(LiveServerTest):
         actual_galaxy_model_names = [x.text for x in self.selenium.find_elements_by_css_selector('#id_galaxy_model option')]
         
         self.assertEqual(expected_galaxy_model_names, actual_galaxy_model_names)
-        
-    def select_dark_matter_simulation(self, simulation):
-        self.select('#id_dark_matter_simulation', simulation.name)
-        
-    def select_galaxy_model(self, galaxy_model):
-        self.select('#id_galaxy_model', galaxy_model.name)
