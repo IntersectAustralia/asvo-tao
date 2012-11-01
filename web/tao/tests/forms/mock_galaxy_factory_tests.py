@@ -29,21 +29,47 @@ class MockGalaxyFactoryTests(TransactionTestCase):
         self.assertEqual({}, mock_galaxy_factory_form.errors)
         self.assertTrue(mock_galaxy_factory_form.is_valid())
         
+    def test_rmin_less_than_rmax_passes(self):
+        mock_galaxy_factory_form = self.make_form({'rmax': '2', 'rmin': '1.5'})
+        mock_galaxy_factory_form.is_valid()
+        
+        self.assertEqual({}, mock_galaxy_factory_form.errors)
+        self.assertTrue(mock_galaxy_factory_form.is_valid())
+        
     def test_min_equal_max_fails(self):
         mock_galaxy_factory_form = self.make_form({'max': '3', 'min': '3'})
         
         self.assertFalse(mock_galaxy_factory_form.is_valid())
-        self.assertEqual(['The "min" field must be less than the "max" field.'], mock_galaxy_factory_form.non_field_errors())
+        self.assertEqual(['The "min" field must be less than the "max" field.'], mock_galaxy_factory_form.errors['min'])
+        
+    def test_rmin_equal_rmax_fails(self):
+        mock_galaxy_factory_form = self.make_form({'rmax': '3', 'rmin': '3'})
+        
+        self.assertFalse(mock_galaxy_factory_form.is_valid())
+        self.assertEqual(['The "Rmin" field must be less than the "Rmax" field.'], mock_galaxy_factory_form.errors['rmin'])
         
     def test_min_greater_than_max_fails(self):
         mock_galaxy_factory_form = self.make_form({'max': '3', 'min': '9'})
         
         self.assertFalse(mock_galaxy_factory_form.is_valid())
-        self.assertEqual(['The "min" field must be less than the "max" field.'], mock_galaxy_factory_form.non_field_errors())
+        self.assertEqual(['The "min" field must be less than the "max" field.'], mock_galaxy_factory_form.errors['min'])
+        
+    def test_rmin_greater_than_rmax_fails(self):
+        mock_galaxy_factory_form = self.make_form({'rmax': '3', 'rmin': '9'})
+        
+        self.assertFalse(mock_galaxy_factory_form.is_valid())
+        self.assertEqual(['The "Rmin" field must be less than the "Rmax" field.'], mock_galaxy_factory_form.errors['rmin'])
         
     def test_max_or_min_empty_passes(self):
         form_no_min = self.make_form({'max': '3', 'min': ''})
         form_no_max = self.make_form({'max': '', 'min': '9'})
+        
+        self.assertTrue(form_no_min.is_valid())
+        self.assertTrue(form_no_max.is_valid())
+        
+    def test_rmax_or_rmin_empty_passes(self):
+        form_no_min = self.make_form({'rmax': '3', 'rmin': ''})
+        form_no_max = self.make_form({'rmax': '', 'rmin': '9'})
         
         self.assertTrue(form_no_min.is_valid())
         self.assertTrue(form_no_max.is_valid())
@@ -57,3 +83,12 @@ class MockGalaxyFactoryTests(TransactionTestCase):
         min_overflow_form = self.make_form({'max': '2', 'min': '1.000000000000000000001'})
         self.assertFalse(min_overflow_form.is_valid())
         self.assertEqual(['Ensure that there are no more than 20 digits in total.'], min_overflow_form.errors['min'])
+        
+    def test_rmax_rmin_length(self):
+        rmax_overflow_form = self.make_form({'rmax': '123456789012345678901', 'rmin': '7'})
+        self.assertFalse(rmax_overflow_form.is_valid())
+        self.assertEqual(['Ensure that there are no more than 20 digits in total.'], rmax_overflow_form.errors['rmax'])
+        
+        rmin_overflow_form = self.make_form({'rmax': '2', 'rmin': '1.0000000000000000000001'})
+        self.assertFalse(rmin_overflow_form.is_valid())
+        self.assertEqual(['Ensure that there are no more than 20 digits in total.'], rmin_overflow_form.errors['rmin'])

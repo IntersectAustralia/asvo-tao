@@ -1,6 +1,6 @@
 from tao.tests.integration_tests.helper import LiveServerTest
 from tao.tests.support.factories import SimulationFactory, GalaxyModelFactory, UserFactory, DataSetFactory, DataSetParameterFactory
-from tao.models import Simulation, DataSet, DataSetParameter
+from tao.models import Simulation, DataSet
 
 class FilterTests(LiveServerTest):
     
@@ -52,7 +52,7 @@ class FilterTests(LiveServerTest):
         
         actual_filter_options = self.get_actual_filter_options()
         self.assertEqual(expected_filter_options, actual_filter_options)
-
+        
     def test_max_min_fields(self):
         self.assert_is_disabled('#id_max') 
         self.assert_is_disabled('#id_min')
@@ -94,6 +94,16 @@ class FilterTests(LiveServerTest):
         self.assertEqual(dataset_parameter.name, self.get_selected_option_text('#id_filter'))
         self.assertEqual(max_input, self.get_selector_value('#id_max'))
         self.assertEqual(min_input, self.get_selector_value('#id_min'))
+    
+    def test_rmax_rmin_fields_after_failed_submit(self):
+        rmax_input = "bad number"
+        rmin_input = "73"
+        self.fill_in_fields({'id_rmax': rmax_input, 'id_rmin': rmin_input})
+        
+        self.submit_form()
+        
+        self.assertEqual(rmax_input, self.get_selector_value('#id_rmax'))
+        self.assertEqual(rmin_input, self.get_selector_value('#id_rmin'))
         
     def submit_form(self):
         submit_button = self.selenium.find_element_by_css_selector('#mgf-form input[type="submit"]')

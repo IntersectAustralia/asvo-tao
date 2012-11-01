@@ -81,14 +81,16 @@ from tao.widgets import ChoiceFieldWithOtherAttrs
 class MockGalaxyFactoryForm(BetterForm):
     max = forms.DecimalField(required=False, label=_('Max/Faintest'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
     min = forms.DecimalField(required=False, label=_('Min/Brightest'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
-
+    rmax = forms.DecimalField(required=False, label=_('Rmax'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
+    rmin = forms.DecimalField(required=False, label=_('Rmin'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
+    
     class Meta:
         fieldsets = [('primary', {
             'legend': 'General',
             'fields': ['dark_matter_simulation', 'galaxy_model'],
         }), ('secondary', {
             'legend': 'Parameters',
-            'fields': ['filter', 'max', 'min'],
+            'fields': ['filter', 'max', 'min', 'rmax', 'rmin'],
         }), ('third', {
             'legend': 'Output properties',
             'fields': [],
@@ -107,10 +109,23 @@ class MockGalaxyFactoryForm(BetterForm):
         min_field = self.cleaned_data.get('min')
         max_field = self.cleaned_data.get('max')
         if min_field is not None and max_field is not None and min_field >= max_field:
-            raise ValidationError(_('The "min" field must be less than the "max" field.'))
+            msg = _('The "min" field must be less than the "max" field.')
+            self._errors["min"] = self.error_class([msg])
+            del self.cleaned_data["min"]
     
+    def check_rmin_less_than_rmax(self):
+        rmin_field = self.cleaned_data.get('rmin')
+        rmax_field = self.cleaned_data.get('rmax')
+        if rmin_field is not None and rmax_field is not None and rmin_field >= rmax_field:
+            msg = _('The "Rmin" field must be less than the "Rmax" field.')
+            self._errors["rmin"] = self.error_class([msg])
+            del self.cleaned_data["rmin"]
+        
     def clean(self):
+        self.cleaned_data = super(MockGalaxyFactoryForm, self).clean()
         self.check_min_less_than_max()
+        self.check_rmin_less_than_rmax()
+        
         return self.cleaned_data
         
     def save(self, user):
