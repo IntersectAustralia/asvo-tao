@@ -5,7 +5,7 @@ class JobHandler(BaseHandler):
     allowed_methods = ('GET', 'PUT',)
     model = Job
 
-    exclude = ()  # We want to show id - the BaseHandler excludes it by default
+    fields = ('id', 'username', 'parameters')
 
     def read(self, request, id=None, status=None):
         base = Job.objects
