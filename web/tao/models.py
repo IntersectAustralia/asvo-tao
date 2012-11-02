@@ -103,3 +103,7 @@ class Job(models.Model):
     def files(self):
         if not self.is_completed():
             raise Exception("can't look at files of job that is not completed")
+
+    def username(self):
+        """ used by api """
+        return self.user.username

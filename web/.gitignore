@@ -5,5 +5,7 @@ develop-eggs/
 parts/
 /static/
 /.coverage
+/coverage.xml
 /nosetests.xml
 /TAOENV/
+/tao/django.log

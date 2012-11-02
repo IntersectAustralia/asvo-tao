@@ -1,0 +1,8 @@
+# /web/vhost/tao.asvo.org.au/taodemo/.htaccess
+RewriteEngine On
+RewriteBase /taodemo/
+
+AddHandler fcgid-script .fcgi
+RewriteRule ^static/(.*) /web/vhost/tao.asvo.org.au/taodemo/asvo-tao/web/static/$1 [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ /web/vhost/tao.asvo.org.au/taodemo/asvo-tao/web/deploy/django_production.fcgi/$1 [QSA,L]
