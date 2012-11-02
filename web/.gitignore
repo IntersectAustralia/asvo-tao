@@ -8,3 +8,4 @@ parts/
 /coverage.xml
 /nosetests.xml
 /TAOENV/
+/tao/django.log
