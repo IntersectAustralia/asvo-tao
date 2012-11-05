@@ -1,14 +1,12 @@
 from django.conf.urls.defaults import patterns, url, include
-from django.conf import settings
 from django.contrib.auth.views import logout
 from django.core.urlresolvers import reverse_lazy
-
-from django.contrib import admin
-admin.autodiscover()
-
 from django.shortcuts import render
 
 from tao.models import Job
+
+from django.contrib import admin
+admin.autodiscover()
 
 simple_view = lambda request, template_name: render(request, template_name)
 
