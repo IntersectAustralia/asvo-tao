@@ -99,34 +99,19 @@ class WorkFlow(object):
     
     def ProcessJobs(self):
         
-        CurrentJobs=self.dbaseobj.GetCurrentActiveJobs()
-        for job in CurrentJobs:
-            print job[0]
-    
-        # Check for changes in status of running jobs.
-        #logger.info('Checking existing jobs.')
-        #ids = dbase.get_job_ids()
-        #rids = dict([(v, k) for k, v in ids.iteritems()])
-        #states = query(ids.values())
-        #for pbs_id, state in states.iteritems():
-        #    tao_id = rids[pbs_id]
-        #    info = dbase.get_job(tao_id)
-        #    if state != info[2]:
-        #        logger.info('Job %d\'s state changed to %s.'%(tao_id, state))
-        #        info[2] = state
-        #        dbase.save_jobs()
-        #        data = {}
-        #        if state == 'R':
-        #            state = 'IN_PROGRESS'
-        #        else:
-        #            logger.info('Job complete, deleting from dbase.')
-        #            state = 'COMPLETED'
-        #            data['output_path'] = info[1]
-        #            dbase.delete_job(tao_id)
-        #        data['status'] =  state
-        #        logger.info('Updating server.')
-        #        requests.put(self.api['update']%tao_id, data=data)
-
+        CurrentJobs_PBSID=self.dbaseobj.GetCurrentActiveJobs_pbsID()
+        
+        
+        JobsStatus=self.TorqueObj.QueryPBSJob(CurrentJobs_PBSID)    
+        
+        for job in JobsStatus:
+            data = {}            
+            data['status']=job[1]            
+            if job[1]=='COMPLETED':
+                path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], 'jobs', job[2], str(job[0]))
+                data['output_path'] = path
+            requests.put(self.api['update']%job[0], data=data)
+        
         
 
     

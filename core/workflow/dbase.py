@@ -39,7 +39,7 @@ class DBInterface(object):
     
     def ExecuteNoQuerySQLStatment(self,SQLStatment):
         try:           
-            SQLStatment=string.lower(SQLStatment)  
+            #SQLStatment=string.lower(SQLStatment)  
             self.CurrentConnection.query(SQLStatment)              
         except Exception as Exp:
             print(">>>>>Error While Executing Non-Query SQL Statement")
@@ -68,6 +68,25 @@ class DBInterface(object):
         SELECTActive="SELECT * From Jobs where JobStatus<"+str(EnumerationLookup.JobState.Completed)
         return self.ExecuteQuerySQLStatment(SELECTActive)
 
+    def GetCurrentActiveJobs_pbsID(self):
+        SELECTActive="SELECT jobid,pbsreferenceid,JobStatus,uireferenceid,username From Jobs where JobStatus<"+str(EnumerationLookup.JobState.Completed)
+        return self.ExecuteQuerySQLStatment(SELECTActive)
+    
+    def SetJobComplete(self,JobID,NewStatus,Comment):
+        print Comment
+        Updatest="UPDATE Jobs set JobStatus="+str(EnumerationLookup.JobState.Completed)+",compeletedate=now(),jobstatuscomment='"+Comment+"' where JobID="+str(JobID)+";"
+        Updatest=Updatest+"INSERT INTO JobHistory(JobID,NewStatus) VALUES("+str(JobID)+","+str(EnumerationLookup.JobState.Completed)+");"
+        self.ExecuteNoQuerySQLStatment(Updatest)
+            
+    def SetJobRunning(self,JobID,OldStatus):        
+        if EnumerationLookup.JobState.Running!=OldStatus:
+            Updatest="UPDATE Jobs set JobStatus="+str(EnumerationLookup.JobState.Running)+" where JobID="+str(JobID)+";"
+            Updatest=Updatest+"INSERT INTO JobHistory(JobID,NewStatus) VALUES("+str(JobID)+","+str(EnumerationLookup.JobState.Running)+");"
+            self.ExecuteNoQuerySQLStatment(Updatest)
+            print (str(JobID)+" Updated")
+        else:
+            print (str(JobID)+" Keep as it is")
+        
     def AddNewJob(self,UIReferenceID,JobType,XMLParams,UserName):
         
         if self.GetJobbyUIReference(UIReferenceID)!=None:

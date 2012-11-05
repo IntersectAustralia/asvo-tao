@@ -31,7 +31,7 @@ if __name__ == '__main__':
     
     
     dbaseObj.AddNewEvent(0,0,"WorkFlow Started")
-    print dbaseObj.GetCurrentActiveJobs()
+    
     
     
     

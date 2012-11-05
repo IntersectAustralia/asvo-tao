@@ -3,7 +3,7 @@
 ## Routines to simplify interaction with the PBS server.
 ##
 
-import os, shlex, subprocess
+import os, shlex, subprocess,string
 import PBSPy.capi as pbs
 import dbase
 import EnumerationLookup
@@ -111,36 +111,31 @@ class TorqueInterface(object):
     ## @param[IN]  pbs_id  PBS job identifier.
     ## @returns A character representing the job state.
     ##
-    def query(pbs_ids):
-        #logger.info('Searching for jobs %s.'%str(pbs_ids))
+    def QueryPBSJob(self,pbsIDs):        
         states = {}
-        all_jobs = subprocess.check_output(shlex.split('ssh g2 qstat'))
+        all_jobs = subprocess.check_output(shlex.split('ssh g2 qstat'))        
         lines = all_jobs.splitlines()[2:]
+        
+        CurrentJobs={} # Build dictionary with our jobs only
         for line in lines:
-            words = line.split()
-            if words[0].find('.') == -1:
-                continue
-            for pbs_id in pbs_ids:
-                if words[0][:words[0].find('.')] == pbs_id[:pbs_id.find('.')]:
-                    states[pbs_id] = words[4]
-        if len(states) != len(pbs_ids):
-            #logger.info('Dropped jobs, flagging as complete.')
-            for pbs_id in pbs_ids:
-                if pbs_id not in states:
-                    logger.info('  %s dropped.'%pbs_id)
-                    states[pbs_id] = 'C'
-        #logger.info('Found states %s.'%str(states))
-        return states
+            LineParts=shlex.split(line)
+            JobName=LineParts[1]            
+            if JobName.find('tao_')==0:
+                JobID=LineParts[0].split('.')[0]
+                CurrentJobs[JobID]=LineParts[4]
+        JobsStatus=[]
+        for PBsID in pbsIDs:
+            PID=PBsID[1].split('.')[0]
+            if  PID in CurrentJobs and CurrentJobs[PID]=='R': 
+                self.dbaseobj.SetJobRunning(PBsID[0],PBsID[2])
+                JobsStatus.append([PBsID[3],'IN_PROGRESS',PBsID[4]])       
+            else:
+                path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], 'jobs', PBsID[4], str(PBsID[3]))
+                self.dbaseobj.SetJobComplete(PBsID[0],PBsID[2],path)
+                JobsStatus.append([PBsID[3],'COMPLETED',PBsID[4]])
+            
+         
+        
+        return JobsStatus
     
-        # server = connect()
-        # status = server.statjob(pbs_id)
-        # assert len(status) == 1
-    
-        # job_state = None
-        # for attr in status[0].attribs:
-        #     if attr.name == 'job_state':
-        #         job_state = attr.value
-        #         break
-        # assert job_state is not None
-    
-        # return job_state
+        
