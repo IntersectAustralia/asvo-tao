@@ -15,8 +15,7 @@ def interact(local):
     """
     import code
     code.interact(local=local)
-
-
+    
 class LiveServerTest(django.test.LiveServerTestCase):
     def setUp(self):
         self.selenium = WebDriver()
@@ -58,6 +57,9 @@ class LiveServerTest(django.test.LiveServerTestCase):
     def assert_is_disabled(self, selector):
         field = self.selenium.find_element_by_css_selector(selector)
         self.assertEqual('true', field.get_attribute('disabled'))
+        
+    def assert_on_page(self, url_name):
+        self.assertEqual(self.selenium.current_url, self.get_full_url(url_name))
         
     def fill_in_fields(self, field_data):
         for field_id, text_to_input in field_data.items():
@@ -115,3 +117,15 @@ class LiveServerTest(django.test.LiveServerTestCase):
         
     def select_galaxy_model(self, galaxy_model):
         self.select('#id_galaxy_model', galaxy_model.name)
+        
+    #a function to make a list of list of text inside the table
+    def table_as_text_rows(self, selector):
+        table = self.selenium.find_element_by_css_selector(selector)
+        rows = table.find_elements_by_css_selector('tr')
+        cells = [[cell.text for cell in row.find_elements_by_css_selector('th, td')] for row in rows]
+        return cells
+        
+class LiveServerMGFTest(LiveServerTest):
+    def submit_mgf_form(self):
+        submit_button = self.selenium.find_element_by_css_selector('#mgf-form input[type="submit"]')
+        submit_button.submit()

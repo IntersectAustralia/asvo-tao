@@ -5,6 +5,16 @@ from tao.models import Job, User, Simulation, GalaxyModel, DataSet, DataSetParam
 
 class JobFactory(factory.Factory):
     FACTORY_FOR = Job
+    
+    @classmethod
+    def _prepare(cls, create, **kwargs):
+        created_time = kwargs.pop('created_time', None)
+        job = super(JobFactory, cls)._prepare(create, **kwargs)
+        if created_time:
+            job.created_time = created_time
+            if create:
+                job.save()
+        return job
 
 class UserFactory(factory.Factory):
     FACTORY_FOR = User
