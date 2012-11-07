@@ -84,6 +84,8 @@ class ProcessTables(object):
         CreateTable=CreateTable+"MaxX FLOAT4,"
         CreateTable=CreateTable+"MaxY FLOAT4,"
         CreateTable=CreateTable+"MaxZ FLOAT4,"        
+        CreateTable=CreateTable+"MinSnap INT4,"
+        CreateTable=CreateTable+"MaxSnap INT4,"
         CreateTable=CreateTable+"GalaxyCount BIGINT)"
         
         self.ExecuteNoQuerySQLStatment(CreateTable)
@@ -119,7 +121,7 @@ class ProcessTables(object):
             
     def GetTableSummary(self,TableName):
         print("Processing Table: "+TableName)
-        GetSummarySQL="select min(PosX),max(PosX),min(PosY),max(PosY),min(PosZ),max(PosZ),min(GlobalTreeID),max(GlobalTreeID),count(*) from @TABLEName;"
+        GetSummarySQL="select min(PosX),max(PosX),min(PosY),max(PosY),min(PosZ),max(PosZ),min(GlobalTreeID),max(GlobalTreeID),min(snapnum),max(snapnum),count(*) from @TABLEName;"
         GetSummarySQL= string.replace(GetSummarySQL,"@TABLEName",TableName)
         SummaryListArr=self.ExecuteQuerySQLStatment(GetSummarySQL)
         if len(SummaryListArr)==0:
@@ -134,16 +136,18 @@ class ProcessTables(object):
         MaxPosZ= SummaryList[5]
         MinTreeID= SummaryList[6]
         MaxTreeID= SummaryList[7]
-        GalaxyCount=SummaryList[8]
+        MinSnap= SummaryList[8]
+        MaxSnap= SummaryList[9]
+        GalaxyCount=SummaryList[10]
         
         
         InsertSummaryRecord="INSERT INTO Summary ("
         InsertSummaryRecord=InsertSummaryRecord+"TableName, MinTreeID, MaxTreeID, GalaxyCount, "
         InsertSummaryRecord=InsertSummaryRecord+"MinX, MinY, MinZ, "
-        InsertSummaryRecord=InsertSummaryRecord+"MaxX, MaxY, MaxZ) Values ("
+        InsertSummaryRecord=InsertSummaryRecord+"MaxX, MaxY, MaxZ,MinSnap,MaxSnap) Values ("
         InsertSummaryRecord=InsertSummaryRecord+"\'"+TableName+"\',"+str(MinTreeID)+","+str(MaxTreeID)+","+str(GalaxyCount)+","
         InsertSummaryRecord=InsertSummaryRecord+str(MinPosX)+","+str(MinPosY)+","+str(MinPosZ)+","
-        InsertSummaryRecord=InsertSummaryRecord+str(MaxPosX)+","+str(MaxPosY)+","+str(MaxPosZ)
+        InsertSummaryRecord=InsertSummaryRecord+str(MaxPosX)+","+str(MaxPosY)+","+str(MaxPosZ)+","+str(MinSnap)+","+str(MaxSnap)
         InsertSummaryRecord=InsertSummaryRecord+")"
         InsertSummaryRecord= string.replace(InsertSummaryRecord,"none","0")
         self.ExecuteNoQuerySQLStatment(InsertSummaryRecord)
