@@ -92,14 +92,26 @@ class LiveServerTest(django.test.LiveServerTestCase):
         return "%s%s" % (self.live_server_url, reverse(url_name))
     
     def get_selected_option_text(self, id_of_select):
-        return self.selenium.find_element_by_css_selector(id_of_select).find_element_by_css_selector('option[selected="selected"]').text      
+        select = self.selenium.find_element_by_css_selector(id_of_select)
+        options = select.find_elements_by_css_selector('option')
+        selected_option = None
+        for option in options:
+            if option.get_attribute('selected'):
+                selected_option = option
+        return selected_option.text      
         
     def get_selector_value(self, selector): 
         return self.selenium.find_element_by_css_selector(selector).get_attribute('value')
     
     def select(self, selector, value):
         options = self.selenium.find_element_by_css_selector(selector).find_elements_by_css_selector('option')
-        [option.click() for option in options if option.text == value]
+        option_found = False
+        for option in options:
+            if option.text == value:
+                option.click()
+                option_found = True
+        if not option_found:
+            self.fail("No option found for %s in %s" % (value, selector))
         
     def find_visible_elements(self, css_selector):
         elements = self.selenium.find_elements_by_css_selector(css_selector)

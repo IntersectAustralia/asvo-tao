@@ -23,6 +23,15 @@ class MockGalaxyFactoryTest(LiveServerTest):
         
         self.visit('mock_galaxy_factory')
         
+    def test_box_type_selction(self):
+        self.select('#id_box_type', 'Box')
+        actual_selection = self.get_selected_option_text('#id_box_type')
+        self.assertEqual('Box', actual_selection)
+        
+        self.select('#id_box_type', 'Cone')
+        actual_selection = self.get_selected_option_text('#id_box_type')
+        self.assertEqual('Cone', actual_selection)
+        
     def test_sidebar_text_on_initial_load(self):    
         first_simulation = Simulation.objects.all()[0]
         first_galaxy_model = first_simulation.galaxymodel_set.all()[0]

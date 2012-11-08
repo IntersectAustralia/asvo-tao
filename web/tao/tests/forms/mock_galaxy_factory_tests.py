@@ -15,6 +15,7 @@ class MockGalaxyFactoryTests(TransactionTestCase):
         
     def make_form(self, values):
         default_values = {
+                          'box_type': 'cone',
                           'dark_matter_simulation': 1,
                           'galaxy_model': '1',
                           'filter': '1',
