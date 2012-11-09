@@ -29,7 +29,7 @@ class User(auth_models.User):
         proxy = True
     
 class Simulation(models.Model):        
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
 
     paper_title = models.CharField(max_length=100, default='')
     paper_url = models.URLField(max_length=200, default='')
@@ -48,7 +48,7 @@ class Simulation(models.Model):
 class GalaxyModel(models.Model):   
     simulation = models.ForeignKey(Simulation)
 
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
 
     kind = models.CharField(max_length=100, default='')
     paper_title = models.CharField(max_length=100, default='')
