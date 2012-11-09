@@ -45,6 +45,11 @@ class Simulation(models.Model):
     class Meta:
         ordering = ['name']
 
+    def save(self, *args, **kwargs):
+        if self.name:
+            self.name = self.name.strip()
+        super(Simulation, self).save(*args, **kwargs)
+
 class GalaxyModel(models.Model):   
     simulation = models.ForeignKey(Simulation)
 
@@ -59,6 +64,11 @@ class GalaxyModel(models.Model):
     
     class Meta:
         ordering = ['name']
+
+    def save(self, *args, **kwargs):
+        if self.name:
+            self.name = self.name.strip()
+        super(GalaxyModel, self).save(*args, **kwargs)
     
 class DataSet(models.Model):
     simulation = models.ForeignKey(Simulation)
