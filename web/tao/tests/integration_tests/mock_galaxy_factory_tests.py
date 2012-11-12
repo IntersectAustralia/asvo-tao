@@ -28,9 +28,9 @@ class MockGalaxyFactoryTest(LiveServerTest):
         actual_selection = self.get_selected_option_text('#id_box_type')
         self.assertEqual('Box', actual_selection)
         
-        self.select('#id_box_type', 'Cone')
+        self.select('#id_box_type', 'Light-Cone')
         actual_selection = self.get_selected_option_text('#id_box_type')
-        self.assertEqual('Cone', actual_selection)
+        self.assertEqual('Light-Cone', actual_selection)
         
     def test_sidebar_text_on_initial_load(self):    
         first_simulation = Simulation.objects.all()[0]
