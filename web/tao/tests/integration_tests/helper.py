@@ -2,7 +2,7 @@ from selenium.webdriver.firefox.webdriver import WebDriver
 
 import django.test
 
-import re
+import re, os
 
 def wait():
     import time
@@ -17,12 +17,30 @@ def interact(local):
     code.interact(local=local)
     
 class LiveServerTest(django.test.LiveServerTestCase):
+    DOWNLOAD_DIRECTORY = '/tmp/work/downloads'
     def setUp(self):
-        self.selenium = WebDriver()
+        from selenium.webdriver.firefox.webdriver import FirefoxProfile
+        fp = FirefoxProfile()
+        fp.set_preference("browser.download.folderList", 2)
+        #fp.set_preference("browser.download.manager.showWhenStarting", False)
+        fp.set_preference("browser.download.dir", self.DOWNLOAD_DIRECTORY)
+        #fp.set_preference("browser.helperApps.neverAsk.saveToDisk", "text/csv")
+        fp.set_preference("browser.helperApps.neverAsk.saveToDisk", "text/html")
         
+        self.selenium = WebDriver(firefox_profile=fp)
+        # create the download dir
+        if not os.path.exists(self.DOWNLOAD_DIRECTORY):
+            os.makedirs(self.DOWNLOAD_DIRECTORY)
+
     def tearDown(self):
         self.selenium.quit()
-        
+        # remove the download dir
+        for root, dirs, files in os.walk(self.DOWNLOAD_DIRECTORY, topdown=False):
+            for name in files:
+                os.remove(os.path.join(root, name))
+            for name in dirs:
+                os.rmdir(os.path.join(root, name))
+            
     def assert_email_body_contains(self, email, text):
         pattern = re.escape(text)
         matches = re.search(pattern, email.body)
@@ -58,9 +76,14 @@ class LiveServerTest(django.test.LiveServerTestCase):
         field = self.selenium.find_element_by_css_selector(selector)
         self.assertEqual('true', field.get_attribute('disabled'))
         
-    def assert_on_page(self, url_name):
-        self.assertEqual(self.selenium.current_url, self.get_full_url(url_name))
-        
+    def assert_on_page(self, url_name, ignore_query_string=False):
+        if not ignore_query_string:
+            self.assertEqual(self.selenium.current_url, self.get_full_url(url_name))
+        else:
+            split_url = self.selenium.current_url.split('?')
+            url = split_url[0]
+            self.assertEqual(url, self.get_full_url(url_name))
+            
     def fill_in_fields(self, field_data):
         for field_id, text_to_input in field_data.items():
             self.selenium.find_element_by_id(field_id).send_keys(text_to_input)
@@ -77,9 +100,9 @@ class LiveServerTest(django.test.LiveServerTestCase):
 
         submit_button.submit()
         
-    def visit(self, url_name):
+    def visit(self, url_name, *args, **kwargs):
         """ self.visit(name_of_url_as_defined_in_your_urlconf) """
-        self.selenium.get(self.get_full_url(url_name))
+        self.selenium.get(self.get_full_url(url_name, *args, **kwargs))
         
     def get_actual_filter_options(self): 
         return [x.text for x in self.selenium.find_elements_by_css_selector('#id_filter option')]
@@ -87,9 +110,9 @@ class LiveServerTest(django.test.LiveServerTestCase):
     def get_expected_filter_options(self, dataset_parameters): 
         return ['No Filter'] + [x[0] for x in dataset_parameters.values_list('name')]
         
-    def get_full_url(self, url_name):
+    def get_full_url(self, url_name, *args, **kwargs):
         from django.core.urlresolvers import reverse
-        return "%s%s" % (self.live_server_url, reverse(url_name))
+        return "%s%s" % (self.live_server_url, reverse(url_name, args=args, kwargs=kwargs))
     
     def get_selected_option_text(self, id_of_select):
         select = self.selenium.find_element_by_css_selector(id_of_select)

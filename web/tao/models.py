@@ -1,6 +1,8 @@
 import django.contrib.auth.models as auth_models
+from django.conf import settings
 from django.db import models
 
+import os
 
 class UserProfile(models.Model):
     user = models.OneToOneField(auth_models.User)
@@ -113,7 +115,19 @@ class Job(models.Model):
     def files(self):
         if not self.is_completed():
             raise Exception("can't look at files of job that is not completed")
+        
+        all_files = []
+        job_base_dir = os.path.join(settings.FILES_BASE, self.output_path)
+        for root, dirs, files in os.walk(job_base_dir):
+            all_files += [os.path.join(root, filename)[len(job_base_dir)+1:] for filename in files]
+        return sorted(all_files)
 
     def username(self):
         """ used by api """
         return self.user.username
+
+    def can_read_job(self, user):
+        """
+        Checks if the given user is the user of this job
+        """
+        return self.user.id == user.id

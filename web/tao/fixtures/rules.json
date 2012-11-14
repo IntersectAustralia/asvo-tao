@@ -1,0 +1,1 @@
+[{"pk": "can_read_job", "model": "django_rules.rulepermission", "fields": {"view_param_pk": "id", "field_name": "can_read_job", "description": "", "content_type": ["tao", "job"]}}]

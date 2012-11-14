@@ -47,6 +47,8 @@ urlpatterns = patterns('',
     ('^administration/', include(administration_patterns)),
     ('^mock_galaxy_factory/', include(mock_galaxy_factory_patterns)),
     ('^jobs/', include(job_patterns)),
+    
+    ('^403.html$', 'tao.views.handle_403'),
 
     url(r'^mgf/$', simple_view, {'template_name': 'mgf.html'}),
     url(r'^$', 'tao.views.home', name='home'),

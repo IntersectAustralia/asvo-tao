@@ -136,6 +136,7 @@ INSTALLED_APPS = (
     'south',
     'tao',
     'captcha',
+    'django_rules',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
@@ -193,3 +194,8 @@ RECAPTCHA_USE_SSL = True
 NUM_RECORDS_PER_PAGE = 10
 
 FILES_BASE = '/tmp/'  # please include a trailing slash
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'django_rules.backends.ObjectPermissionBackend',
+)

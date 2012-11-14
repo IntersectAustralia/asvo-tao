@@ -16,7 +16,7 @@
                 <strong>Files</strong>
 
                 {% if job.is_completed %}
-                    <ul>
+                    <ul id='id_completed_jobs'>
                         {% for file in files %}
                             <li>
                                 <a href="{% url 'get_file' job.id file %}">
