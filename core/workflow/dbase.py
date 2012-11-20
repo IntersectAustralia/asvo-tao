@@ -75,17 +75,17 @@ class DBInterface(object):
     def SetJobComplete(self,JobID,NewStatus,Comment):
         print Comment
         Updatest="UPDATE Jobs set JobStatus="+str(EnumerationLookup.JobState.Completed)+",compeletedate=now(),jobstatuscomment='"+Comment+"' where JobID="+str(JobID)+";"
-        Updatest=Updatest+"INSERT INTO JobHistory(JobID,NewStatus) VALUES("+str(JobID)+","+str(EnumerationLookup.JobState.Completed)+");"
+        Updatest=Updatest+"INSERT INTO JobHistory(JobID,NewStatus,Comments) VALUES("+str(JobID)+","+str(EnumerationLookup.JobState.Completed)+",'JobCompleted');"
         self.ExecuteNoQuerySQLStatment(Updatest)
             
-    def SetJobRunning(self,JobID,OldStatus):        
+    def SetJobRunning(self,JobID,OldStatus,Comment):        
         if EnumerationLookup.JobState.Running!=OldStatus:
-            Updatest="UPDATE Jobs set JobStatus="+str(EnumerationLookup.JobState.Running)+" where JobID="+str(JobID)+";"
-            Updatest=Updatest+"INSERT INTO JobHistory(JobID,NewStatus) VALUES("+str(JobID)+","+str(EnumerationLookup.JobState.Running)+");"
+            Updatest="UPDATE Jobs set JobStatus="+str(EnumerationLookup.JobState.Running)+",jobstatuscomment='"+Comment+"' where JobID="+str(JobID)+";"
+            Updatest=Updatest+"INSERT INTO JobHistory(JobID,NewStatus,Comments) VALUES("+str(JobID)+","+str(EnumerationLookup.JobState.Running)+",'JobRunning');"
             self.ExecuteNoQuerySQLStatment(Updatest)
             print (str(JobID)+" Updated")
         else:
-            print (str(JobID)+" Keep as it is")
+            print (str(JobID)+" Keep as it is (no change in the current Job Status)")
         
     def AddNewJob(self,UIReferenceID,JobType,XMLParams,UserName):
         

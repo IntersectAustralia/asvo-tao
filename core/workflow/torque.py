@@ -95,7 +95,7 @@ class TorqueInterface(object):
     def Submit(self,UserName,JobID, nodes=1,ppn=1, path='.'):
         ScriptFileName = self.WritePBSScriptFile(UserName,JobID, nodes,ppn, path)
     
-        stdout = subprocess.check_output(shlex.split('ssh g2 \"cd %s; qsub %s\"'%(os.getcwd(), ScriptFileName)))
+        stdout = subprocess.check_output(shlex.split('ssh g2 \"cd %s; qsub -q tao %s\"'%(os.getcwd(), ScriptFileName)))
         pbs_id = stdout[:-1] # remove trailing \n
     
         return pbs_id
@@ -127,7 +127,7 @@ class TorqueInterface(object):
         for PBsID in pbsIDs:
             PID=PBsID[1].split('.')[0]
             if  PID in CurrentJobs and CurrentJobs[PID]=='R': 
-                self.dbaseobj.SetJobRunning(PBsID[0],PBsID[2])
+                self.dbaseobj.SetJobRunning(PBsID[0],PBsID[2],"Job Running- PBSID"+PID)
                 JobsStatus.append([PBsID[3],'IN_PROGRESS',PBsID[4]])       
             else:
                 path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], 'jobs', PBsID[4], str(PBsID[3]))
