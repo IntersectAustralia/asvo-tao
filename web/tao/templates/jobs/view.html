@@ -25,6 +25,13 @@
                             </li>
                         {% endfor %}
                     </ul>
+                    {% if job.can_download_zip_file %}
+                        <a id='id_download_as_zip' href="{% url 'get_zip_file' job.id %}">
+                            Download zip file
+                        </a>
+                    {% else %}
+                        (Zip file exceeds maximum download size.)
+                    {% endif %}
                 {% else %}
                     <p>
                         This job has not completed (and hence has no output).

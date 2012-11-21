@@ -15,7 +15,7 @@ DATABASES = {
     }
 }
 
-FILES_BASE = '/tmp/'  # please include a trailing slash
+FILES_BASE = '/tmp/tao_test_files/'  # please include a trailing slash
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 

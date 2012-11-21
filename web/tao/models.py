@@ -131,3 +131,11 @@ class Job(models.Model):
         Checks if the given user is the user of this job
         """
         return self.user.id == user.id
+
+    def can_download_zip_file(self):
+        sum_size = 0
+        job_base_dir = os.path.join(settings.FILES_BASE, self.output_path)
+        for file in self.files():
+            file_path = os.path.join(job_base_dir, file)
+            sum_size += os.path.getsize(file_path)
+        return sum_size < settings.MAX_DOWNLOAD_SIZE

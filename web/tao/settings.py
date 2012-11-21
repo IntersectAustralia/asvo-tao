@@ -199,3 +199,5 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'django_rules.backends.ObjectPermissionBackend',
 )
+
+MAX_DOWNLOAD_SIZE = 512 * 2**20

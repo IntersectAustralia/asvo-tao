@@ -25,7 +25,7 @@ class LiveServerTest(django.test.LiveServerTestCase):
         #fp.set_preference("browser.download.manager.showWhenStarting", False)
         fp.set_preference("browser.download.dir", self.DOWNLOAD_DIRECTORY)
         #fp.set_preference("browser.helperApps.neverAsk.saveToDisk", "text/csv")
-        fp.set_preference("browser.helperApps.neverAsk.saveToDisk", "text/html")
+        fp.set_preference("browser.helperApps.neverAsk.saveToDisk", "text/html, application/zip")
         
         self.selenium = WebDriver(firefox_profile=fp)
         # create the download dir
@@ -51,6 +51,12 @@ class LiveServerTest(django.test.LiveServerTestCase):
 
         pattern = re.escape(string)
         self.assertTrue(re.search(pattern, page_source), "page source did not contain %s" % pattern)
+        
+    def assert_page_does_not_contain(self, string):
+        page_source = self.selenium.page_source
+        
+        pattern = re.escape(string)
+        self.assertFalse(re.search(pattern, page_source), "page source contained %s" % pattern)
         
     def assert_element_text_equals(self, selector, expected_value):
         element = self.find_visible_element(selector)
