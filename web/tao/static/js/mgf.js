@@ -91,6 +91,18 @@ jQuery(document).ready(function($) {
 	  }
   });
   
+  $('#id_box_type').change(function(evt){
+	  var $this = $(this);
+	  var box_type_value = $this.val();
+	  var box_size_group = $('#id_box_size').closest('div.control-group');
+	  
+	  if (box_type_value == "box") {
+		  box_size_group.show();
+	  } else {
+		  box_size_group.hide();
+	  }
+  });
+  
   (function(){
     var initial_simulation_id = $('#id_dark_matter_simulation').val();
     show_simulation_info(initial_simulation_id);
@@ -99,5 +111,6 @@ jQuery(document).ready(function($) {
     show_galaxy_model_info(initial_galaxy_model_id);
     update_filter_options(initial_simulation_id, initial_galaxy_model_id);
     $('#id_filter').change();
+    $('#id_box_type').change();
   })();
 });

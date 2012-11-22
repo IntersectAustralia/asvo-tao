@@ -23,6 +23,12 @@ class MockGalaxyFactoryTests(TransactionTestCase):
         default_values.update(values)
         return MockGalaxyFactoryForm(default_values)
                 
+    def test_box_size_required_for_box(self):
+        mock_galaxy_factory_form = self.make_form({'box_type': 'box'})
+        
+        self.assertFalse(mock_galaxy_factory_form.is_valid())
+        self.assertEqual(['The "Box Size" field is required when "Box" is selected'], mock_galaxy_factory_form.errors['box_size'])
+        
     def test_min_less_than_max_passes(self):
         mock_galaxy_factory_form = self.make_form({'max': '127', 'min': '3'})
         mock_galaxy_factory_form.is_valid()
