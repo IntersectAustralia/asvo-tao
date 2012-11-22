@@ -31,7 +31,11 @@ class SubmitLightConeTests(LiveServerMGFTest):
     def test_redirect_to_submitted_jobs_list_after_submit(self):
         self.visit('mock_galaxy_factory')
         
-        ## fill in form (correctly) using default values
+        ## fill in form (correctly)
+        self.fill_in_fields({
+            'id_ra': '1',
+            'id_dec': '1',
+        })
         self.submit_mgf_form()
 
         self.assert_on_page('submitted_jobs')

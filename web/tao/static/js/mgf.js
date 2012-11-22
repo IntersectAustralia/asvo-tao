@@ -95,11 +95,15 @@ jQuery(document).ready(function($) {
 	  var $this = $(this);
 	  var box_type_value = $this.val();
 	  var box_size_group = $('#id_box_size').closest('div.control-group');
+
+    var light_cone_fields = $('.light_cone_field').closest('div.control-group');
 	  
 	  if (box_type_value == "box") {
 		  box_size_group.show();
+      light_cone_fields.hide();
 	  } else {
 		  box_size_group.hide();
+      light_cone_fields.show();
 	  }
   });
   

@@ -19,10 +19,31 @@ class MockGalaxyFactoryTests(TransactionTestCase):
                           'dark_matter_simulation': 1,
                           'galaxy_model': '1',
                           'filter': '1',
+                          'ra': '1',
+                          'dec': '1',
                           }
         default_values.update(values)
         return MockGalaxyFactoryForm(default_values)
-                
+
+    def test_ra_dec_min_max(self):
+        mock_galaxy_factory_form = self.make_form({'box_type': 'cone', 'ra': '-1', 'dec': '-1'})
+        self.assertEqual({'ra': ['Ensure this value is greater than or equal to 0.'], 'dec': ['Ensure this value is greater than or equal to 0.']}, mock_galaxy_factory_form.errors)
+
+        mock_galaxy_factory_form = self.make_form({'box_type': 'cone', 'ra': '5401', 'dec': '5401'})
+        self.assertEqual({'ra': ['Ensure this value is less than or equal to 5400.'], 'dec': ['Ensure this value is less than or equal to 5400.']}, mock_galaxy_factory_form.errors)
+
+    def test_ra_dec_required_for_light_cone(self):
+        mock_galaxy_factory_form = self.make_form({'box_type': 'cone', 'ra': '', 'dec': ''})
+        mock_galaxy_factory_form.is_valid()
+
+        self.assertEqual({'ra': ['This field is required.'], 'dec': ['This field is required.']}, mock_galaxy_factory_form.errors)
+
+    def test_ra_dec_not_required_for_light_box(self):
+        mock_galaxy_factory_form = self.make_form({'box_type': 'box', 'box_size': 1, 'ra': '', 'dec': ''})
+        mock_galaxy_factory_form.is_valid()
+
+        self.assertEqual({}, mock_galaxy_factory_form.errors)
+
     def test_box_size_required_for_box(self):
         mock_galaxy_factory_form = self.make_form({'box_type': 'box'})
         
@@ -86,16 +107,16 @@ class MockGalaxyFactoryTests(TransactionTestCase):
         max_overflow_form = self.make_form({'max': '100000000000000000000', 'min': '7'})
         self.assertFalse(max_overflow_form.is_valid())
         self.assertEqual(['Ensure that there are no more than 20 digits in total.'], max_overflow_form.errors['max'])
-        
+
         min_overflow_form = self.make_form({'max': '2', 'min': '1.000000000000000000001'})
         self.assertFalse(min_overflow_form.is_valid())
         self.assertEqual(['Ensure that there are no more than 20 digits in total.'], min_overflow_form.errors['min'])
-        
+
     def test_rmax_rmin_length(self):
         rmax_overflow_form = self.make_form({'rmax': '123456789012345678901', 'rmin': '7'})
         self.assertFalse(rmax_overflow_form.is_valid())
         self.assertEqual(['Ensure that there are no more than 20 digits in total.'], rmax_overflow_form.errors['rmax'])
-        
+
         rmin_overflow_form = self.make_form({'rmax': '2', 'rmin': '1.0000000000000000000001'})
         self.assertFalse(rmin_overflow_form.is_valid())
         self.assertEqual(['Ensure that there are no more than 20 digits in total.'], rmin_overflow_form.errors['rmin'])
