@@ -23,15 +23,6 @@ class MockGalaxyFactoryTest(LiveServerTest):
         
         self.visit('mock_galaxy_factory')
         
-    def test_box_type_selction(self):
-        self.select('#id_box_type', 'Box')
-        actual_selection = self.get_selected_option_text('#id_box_type')
-        self.assertEqual('Box', actual_selection)
-        
-        self.select('#id_box_type', 'Light-Cone')
-        actual_selection = self.get_selected_option_text('#id_box_type')
-        self.assertEqual('Light-Cone', actual_selection)
-        
     def test_box_size_field_on_initial_load(self):
         initial_selection = self.get_selected_option_text('#id_box_type')
         self.assertEqual('Light-Cone', initial_selection)
