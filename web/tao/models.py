@@ -119,8 +119,8 @@ class Job(models.Model):
         all_files = []
         job_base_dir = os.path.join(settings.FILES_BASE, self.output_path)
         for root, dirs, files in os.walk(job_base_dir):
-            all_files += [os.path.join(root, filename)[len(job_base_dir)+1:] for filename in files]
-        return sorted(all_files)
+            all_files += [JobFile(job_base_dir, os.path.join(root, filename)) for filename in files]
+        return sorted(all_files, key=lambda job_file: job_file.file_name)
 
     def username(self):
         """ used by api """
@@ -134,8 +134,16 @@ class Job(models.Model):
 
     def can_download_zip_file(self):
         sum_size = 0
-        job_base_dir = os.path.join(settings.FILES_BASE, self.output_path)
         for file in self.files():
-            file_path = os.path.join(job_base_dir, file)
+            file_path = file.file_path 
             sum_size += os.path.getsize(file_path)
         return sum_size < settings.MAX_DOWNLOAD_SIZE
+    
+class JobFile(object):
+    def __init__(self, job_dir, file_name):
+        self.file_name = file_name[len(job_dir)+1:]
+        self.file_path = os.path.join(job_dir, file_name)
+        self.file_size = os.path.getsize(self.file_path)
+    
+    def can_be_downloaded(self):
+        return self.file_size <= settings.MAX_DOWNLOAD_SIZE

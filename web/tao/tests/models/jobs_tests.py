@@ -58,5 +58,5 @@ class JobTestCase(TestCase):
         merged_file_names_to_contents = {}
         merged_file_names_to_contents.update(file_names_to_contents)
         merged_file_names_to_contents.update(file_names_to_contents2)
-        self.assertEqual(sorted(merged_file_names_to_contents.keys()), j.files())
+        self.assertEqual(sorted(merged_file_names_to_contents.keys()), sorted([job_file.file_name for job_file in j.files()]))
 

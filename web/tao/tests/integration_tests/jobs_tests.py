@@ -65,7 +65,7 @@ class JobTest(LiveServerTest):
 
         self.assert_page_has_content(completed_job.parameters)
         li_elements = self.selenium.find_elements_by_css_selector('#id_completed_jobs li')
-        self.assertEqual(sorted(self.file_names_to_contents.keys()), [li.text for li in li_elements])
+        self.assertEqual(sorted(self.file_names_to_contents.keys()), sorted([li.text for li in li_elements]))
         
         # test files download 
         for li in li_elements:
@@ -159,6 +159,36 @@ class JobTest(LiveServerTest):
         
         self.assert_page_does_not_contain('Download zip file')
         self.assert_page_has_content('Zip file exceeds maximum download size.')
+    
+    @override_settings(MAX_DOWNLOAD_SIZE=10)
+    def test_large_file_not_downloadable(self):
+        """ Job output files larger than the download limit gets displayed, but are not downloadable.
+        """
+        self.login(self.username, self.password)
+        large_completed_job = JobFactory.create(user=self.user, status=Job.COMPLETED, output_path=self.output_paths[1])
+        self.visit('view_job', large_completed_job.id)
+        
+        for file_name in self.file_names_to_contents2.keys():
+            self.assert_page_has_content(file_name + " (File size exceeds download limit.)")
+            
+        for file_name in self.file_names_to_contents2.keys():
+            self.visit('get_file', large_completed_job.id, file_name)
+            self.assert_page_has_content('Forbidden')
+
+    @override_settings(MAX_DOWNLOAD_SIZE=10)
+    def test_small_file_downloads(self):
+        self.login(self.username, self.password)
+        small_completed_job = JobFactory.create(user=self.user, status=Job.COMPLETED, output_path=self.output_paths[0])
+        self.visit('view_job', small_completed_job.id)
+        
+        for file_name in self.file_names_to_contents.keys():
+            self.assert_page_has_content(file_name)
+            self.assert_page_does_not_contain("(File size exceeds download limit.)")
+        
+        for file_name in self.file_names_to_contents.keys():
+            self.visit('get_file', small_completed_job.id, file_name)
+            download_path = os.path.join(self.DOWNLOAD_DIRECTORY, os.path.basename(file_name))
+            self.assertTrue(os.path.exists(download_path))
         
     def _extract_zipfile_to_dir(self, download_path, dirname):
         fullpathhandle = open(download_path, 'r')

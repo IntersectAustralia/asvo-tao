@@ -17,11 +17,15 @@
 
                 {% if job.is_completed %}
                     <ul id='id_completed_jobs'>
-                        {% for file in files %}
+                        {% for file in job.files %}
                             <li>
-                                <a href="{% url 'get_file' job.id file %}">
-                                    {{ file }}
+                            {% if file.can_be_downloaded %}
+                                <a href="{% url 'get_file' job.id file.file_name %}">
+                                    {{ file.file_name }}
                                 </a>
+                            {% else %}
+                                {{ file.file_name }} (File size exceeds download limit.)
+                            {% endif %}
                             </li>
                         {% endfor %}
                     </ul>
