@@ -28,6 +28,7 @@ class LiveServerTest(django.test.LiveServerTestCase):
         fp.set_preference("browser.helperApps.neverAsk.saveToDisk", "text/html, application/zip")
         
         self.selenium = WebDriver(firefox_profile=fp)
+        self.selenium.implicitly_wait(1) # wait one second before failing to find
         # create the download dir
         if not os.path.exists(self.DOWNLOAD_DIRECTORY):
             os.makedirs(self.DOWNLOAD_DIRECTORY)
@@ -141,14 +142,12 @@ class LiveServerTest(django.test.LiveServerTestCase):
         return self.selenium.find_element_by_css_selector(selector).get_attribute('value')
     
     def select(self, selector, value):
-        options = self.selenium.find_element_by_css_selector(selector).find_elements_by_css_selector('option')
-        option_found = False
-        for option in options:
-            if option.text == value:
-                option.click()
-                option_found = True
-        if not option_found:
-            self.fail("No option found for %s in %s" % (value, selector))
+        from selenium.webdriver.support.ui import Select
+
+        elem = self.selenium.find_element_by_css_selector(selector)
+        select = Select(elem)
+
+        select.select_by_visible_text(value)
         
     def find_visible_elements(self, css_selector):
         elements = self.selenium.find_elements_by_css_selector(css_selector)
