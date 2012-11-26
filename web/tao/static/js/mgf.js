@@ -106,6 +106,12 @@ jQuery(document).ready(function($) {
       light_cone_fields.show();
 	  }
   });
+  $('#mgf-form').submit(function(){
+    var $form = $(this);
+    $form.find('#id_ra, #id_dec, #id_box_size').not(':visible').each(function(){
+      $(this).val('');
+    });
+  });
   
   (function(){
     var initial_simulation_id = $('#id_dark_matter_simulation').val();

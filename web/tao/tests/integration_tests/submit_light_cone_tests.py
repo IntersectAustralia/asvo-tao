@@ -2,6 +2,8 @@ from tao.models import Job
 from tao.tests.integration_tests.helper import LiveServerMGFTest
 from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetParameterFactory, JobFactory
 
+from tao.forms import MockGalaxyFactoryForm
+
 class SubmitLightConeTests(LiveServerMGFTest):
     def setUp(self):
         super(SubmitLightConeTests, self).setUp()
@@ -69,6 +71,47 @@ class SubmitLightConeTests(LiveServerMGFTest):
         
         expected_jobs = [self.completed_job, self.in_progress_job, self.queued_job, self.submitted_job]
         self.assert_job_table_equals(expected_jobs, 'All')
+
+    def test_invalid_box_options_allow_light_cone_submit(self):
+        self.visit('mock_galaxy_factory')
+
+        ## fill in box fields (incorrectly)
+        self.select('#id_box_type', 'Box')
+        self.fill_in_fields({
+            'id_box_size': 'bad_input',
+        })
+
+        ## fill in light-cone fields (correctly)
+        self.select('#id_box_type', 'Light-Cone')
+        self.fill_in_fields({
+            'id_ra': '1',
+            'id_dec': '1',
+        })
+
+        self.submit_mgf_form()
+
+        self.assert_on_page('submitted_jobs')  # The form is valid because the invalid box size field is hidden
+
+    def test_invalid_cone_options_allow_box_submit(self):
+        self.visit('mock_galaxy_factory')
+
+        ## fill in light-cone fields (incorrectly)
+        self.select('#id_box_type', 'Light-Cone')
+        self.fill_in_fields({
+            'id_ra': 'not_valid',
+            'id_dec': 'not_valid',
+        })
+
+        ## fill in box fields (correctly)
+        self.select('#id_box_type', 'Box')
+        self.fill_in_fields({
+            'id_box_size': '1',
+        })
+
+
+        self.submit_mgf_form()
+
+        self.assert_on_page('submitted_jobs')  # The form is valid because the invalid light cone fields hidden
         
     def clean_parameter_lines(self, job):
         parameter_lines = job.parameters.split("\n")
