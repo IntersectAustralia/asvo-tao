@@ -131,12 +131,11 @@ class MockGalaxyFactoryForm(BetterForm):
     def check_light_cone_required_fields(self):
         box_type = self.cleaned_data.get('box_type')
         if box_type == 'cone':
-            ra = self.cleaned_data.get('ra')
-            dec = self.cleaned_data.get('dec')
-            if ra is None and 'ra' not in self._errors:
-                self._errors['ra'] = self.error_class(['This field is required.'])
-            if dec is None and 'dec' not in self._errors:
-                self._errors['dec'] = self.error_class(['This field is required.'])
+            required_fields = ('ra', 'dec')
+            for field_name in required_fields:
+                field = self.cleaned_data.get(field_name)
+                if field is None and field_name not in self._errors:
+                    self.errors[field_name] = self.error_class(['This field is required.'])
         
     def check_box_size_required_for_box(self):
         box_type_field = self.cleaned_data.get('box_type')
