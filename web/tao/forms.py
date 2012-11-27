@@ -85,13 +85,18 @@ class MockGalaxyFactoryForm(BetterForm):
     rmin = forms.DecimalField(required=False, label=_('Rmin'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
     box_size = forms.DecimalField(required=False, label=_('Box Size'))
 
-    ra = forms.DecimalField(required=False, label=_('RA'), min_value=0, max_value=5400, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
-    dec = forms.DecimalField(required=False, label=_('dec'), min_value=0, max_value=5400, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
+    ra_min = forms.DecimalField(required=False, label=_('RA min'), min_value=0, max_value=90, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
+    ra_max = forms.DecimalField(required=False, label=_('RA max'), min_value=0, max_value=90, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
+    dec_min = forms.DecimalField(required=False, label=_('dec min'), min_value=0, max_value=90, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
+    dec_max = forms.DecimalField(required=False, label=_('dec max'), min_value=0, max_value=90, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
+
+    LIGHT_CONE_REQUIRED_FIELDS = ('ra_min', 'ra_max', 'dec_min', 'dec_max')
     
     class Meta:
         fieldsets = [('primary', {
             'legend': 'General',
-            'fields': ['box_type', 'dark_matter_simulation', 'galaxy_model', 'ra', 'dec', 'box_size'],
+            'fields': ['box_type', 'dark_matter_simulation', 'galaxy_model',
+            'ra_min', 'ra_max', 'dec_min', 'dec_max', 'box_size'],
         }), ('secondary', {
             'legend': 'Parameters',
             'fields': ['filter', 'max', 'min', 'rmax', 'rmin'],
@@ -109,7 +114,7 @@ class MockGalaxyFactoryForm(BetterForm):
         self.fields['dark_matter_simulation'] = ChoiceFieldWithOtherAttrs(choices=datasets.dark_matter_simulation_choices())
         self.fields['galaxy_model'] = ChoiceFieldWithOtherAttrs(choices=datasets.galaxy_model_choices())
         self.fields['filter'] = ChoiceFieldWithOtherAttrs(choices=datasets.filter_choices())
-        for field_name in ['ra', 'dec', 'box_size']:
+        for field_name in ['ra_min', 'ra_max', 'dec_min', 'dec_max', 'box_size']:
             self.fields[field_name].semirequired = True
         
     def check_min_less_than_max(self):
@@ -119,6 +124,21 @@ class MockGalaxyFactoryForm(BetterForm):
             msg = _('The "min" field must be less than the "max" field.')
             self._errors["min"] = self.error_class([msg])
             del self.cleaned_data["min"]
+
+    def check_light_cone_min_max_fields(self):
+        ra_min_field = self.cleaned_data.get('ra_min')
+        ra_max_field = self.cleaned_data.get('ra_max')
+        dec_min_field = self.cleaned_data.get('dec_min')
+        dec_max_field = self.cleaned_data.get('dec_max')
+        if ra_max_field is not None and ra_min_field is not None and ra_min_field >= ra_max_field:
+            msg = _('The "RA min" field must be less than the "RA max" field.')
+            self._errors["ra_min"] = self.error_class([msg])
+            del self.cleaned_data["ra_min"]
+
+        if dec_max_field is not None and dec_min_field is not None and dec_min_field >= dec_max_field:
+            msg = _('The "dec min" field must be less than the "dec max" field.')
+            self._errors["dec_min"] = self.error_class([msg])
+            del self.cleaned_data["dec_min"]
     
     def check_rmin_less_than_rmax(self):
         rmin_field = self.cleaned_data.get('rmin')
@@ -131,8 +151,7 @@ class MockGalaxyFactoryForm(BetterForm):
     def check_light_cone_required_fields(self):
         box_type = self.cleaned_data.get('box_type')
         if box_type == 'cone':
-            required_fields = ('ra', 'dec')
-            for field_name in required_fields:
+            for field_name in self.LIGHT_CONE_REQUIRED_FIELDS:
                 field = self.cleaned_data.get(field_name)
                 if field is None and field_name not in self._errors:
                     self.errors[field_name] = self.error_class(['This field is required.'])
@@ -151,6 +170,7 @@ class MockGalaxyFactoryForm(BetterForm):
         self.check_rmin_less_than_rmax()
         self.check_box_size_required_for_box()
         self.check_light_cone_required_fields()
+        self.check_light_cone_min_max_fields()
         
         return self.cleaned_data
         

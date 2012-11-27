@@ -19,27 +19,83 @@ class MockGalaxyFactoryTests(TransactionTestCase):
                           'dark_matter_simulation': 1,
                           'galaxy_model': '1',
                           'filter': '1',
-                          'ra': '1',
-                          'dec': '1',
+                          'ra_min': '1',
+                          'ra_max': '2',
+                          'dec_min': '1',
+                          'dec_max': '2',
                           }
         default_values.update(values)
         return MockGalaxyFactoryForm(default_values)
 
     def test_ra_dec_min_max(self):
-        mock_galaxy_factory_form = self.make_form({'box_type': 'cone', 'ra': '-1', 'dec': '-1'})
-        self.assertEqual({'ra': ['Ensure this value is greater than or equal to 0.'], 'dec': ['Ensure this value is greater than or equal to 0.']}, mock_galaxy_factory_form.errors)
+        mock_galaxy_factory_form = self.make_form({
+            'box_type': 'cone',
+            'ra_min': '-1',
+            'dec_min': '-1',
+            'ra_max': '-1',
+            'dec_max': '-1',
+        })
+        self.assertEqual({
+            'ra_min': ['Ensure this value is greater than or equal to 0.'],
+            'dec_min': ['Ensure this value is greater than or equal to 0.'],
+            'ra_max': ['Ensure this value is greater than or equal to 0.'],
+            'dec_max': ['Ensure this value is greater than or equal to 0.'],
+        }, mock_galaxy_factory_form.errors)
 
-        mock_galaxy_factory_form = self.make_form({'box_type': 'cone', 'ra': '5401', 'dec': '5401'})
-        self.assertEqual({'ra': ['Ensure this value is less than or equal to 5400.'], 'dec': ['Ensure this value is less than or equal to 5400.']}, mock_galaxy_factory_form.errors)
+        mock_galaxy_factory_form = self.make_form({
+            'box_type': 'cone',
+            'ra_min': '91',
+            'dec_min': '91',
+            'ra_max': '91',
+            'dec_max': '91',
+        })
+        self.assertEqual({
+            'ra_min': ['Ensure this value is less than or equal to 90.'],
+            'dec_min': ['Ensure this value is less than or equal to 90.'],
+            'ra_max': ['Ensure this value is less than or equal to 90.'],
+            'dec_max': ['Ensure this value is less than or equal to 90.'],
+        }, mock_galaxy_factory_form.errors)
+
+    def test_ra_and_dec_min_max(self):
+        mock_galaxy_factory_form = self.make_form({
+            'box_type': 'cone',
+            'ra_min': '2',
+            'dec_min': '1',
+            'ra_max': '2',
+            'dec_max': '1'
+        })
+        mock_galaxy_factory_form.is_valid()
+        self.assertEqual({
+            'ra_min': ['The "RA min" field must be less than the "RA max" field.'],
+            'dec_min': ['The "dec min" field must be less than the "dec max" field.'],
+        }, mock_galaxy_factory_form.errors)
 
     def test_ra_dec_required_for_light_cone(self):
-        mock_galaxy_factory_form = self.make_form({'box_type': 'cone', 'ra': '', 'dec': ''})
+        mock_galaxy_factory_form = self.make_form({
+            'box_type': 'cone',
+            'ra_min': '',
+            'dec_min': '',
+            'ra_max': '',
+            'dec_max': ''
+        })
         mock_galaxy_factory_form.is_valid()
 
-        self.assertEqual({'ra': ['This field is required.'], 'dec': ['This field is required.']}, mock_galaxy_factory_form.errors)
+        self.assertEqual({
+            'ra_min': ['This field is required.'],
+            'ra_max': ['This field is required.'],
+            'dec_min': ['This field is required.'],
+            'dec_max': ['This field is required.'],
+        }, mock_galaxy_factory_form.errors)
 
     def test_ra_dec_not_required_for_light_box(self):
-        mock_galaxy_factory_form = self.make_form({'box_type': 'box', 'box_size': 1, 'ra': '', 'dec': ''})
+        mock_galaxy_factory_form = self.make_form({
+            'box_type': 'box',
+            'box_size': 1,
+            'ra_min': '',
+            'dec_min': '',
+            'ra_max': '',
+            'dec_max': '',
+        })
         mock_galaxy_factory_form.is_valid()
 
         self.assertEqual({}, mock_galaxy_factory_form.errors)

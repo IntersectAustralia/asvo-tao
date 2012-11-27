@@ -108,7 +108,7 @@ jQuery(document).ready(function($) {
   });
   $('#mgf-form').submit(function(){
     var $form = $(this);
-    $form.find('#id_ra, #id_dec, #id_box_size').not(':visible').each(function(){
+    $form.find('#id_ra_min, #id_dec_min, #id_ra_max, #id_dec_max, #id_box_size').not(':visible').each(function(){
       $(this).val('');
     });
   });
