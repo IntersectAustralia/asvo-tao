@@ -1,9 +1,10 @@
+{% load bootstrap_tags %}
 {% if field.is_hidden %}
   {{ field }}
 {% else %}
   <div class="control-group{% if field.errors %} error{% endif %}" {{ field.row_attrs }}>
     {% if field.label %}
-      <label class="control-label" for="{{ field.auto_id }}">{{ field.label|safe }}{% if field.field.required %}*{% endif %} </label>
+      <label class="control-label" for="{{ field.auto_id }}">{{ field.label|safe }}{% if field.field.required or field.field.semirequired %}*{% endif %}</label>
     {% endif %}
     <div class="controls">
       {{ field }}

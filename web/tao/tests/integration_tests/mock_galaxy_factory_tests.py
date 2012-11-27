@@ -23,6 +23,18 @@ class MockGalaxyFactoryTest(LiveServerTest):
         
         self.visit('mock_galaxy_factory')
         
+    def test_box_size_field_on_initial_load(self):
+        initial_selection = self.get_selected_option_text('#id_box_type')
+        self.assertEqual('Light-Cone', initial_selection)
+        self.assert_not_displayed('#id_box_size')
+    
+    def test_box_size_field_on_box_type_change(self):
+        self.select('#id_box_type', 'Box')
+        self.assert_is_displayed('#id_box_size')
+        
+        self.select('#id_box_type', 'Light-Cone')
+        self.assert_not_displayed('#id_box_size')
+        
     def test_sidebar_text_on_initial_load(self):    
         first_simulation = Simulation.objects.all()[0]
         first_galaxy_model = first_simulation.galaxymodel_set.all()[0]

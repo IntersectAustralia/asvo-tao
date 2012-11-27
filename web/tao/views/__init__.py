@@ -108,3 +108,6 @@ def reject_user(request, user_id):
     send_mail(template_name, context, subject, to_addrs)
 
     return redirect(access_requests)
+
+def handle_403(request):
+    return render(request, '403.html', status=403)

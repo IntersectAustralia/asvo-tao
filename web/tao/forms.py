@@ -83,11 +83,15 @@ class MockGalaxyFactoryForm(BetterForm):
     min = forms.DecimalField(required=False, label=_('Min/Brightest'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
     rmax = forms.DecimalField(required=False, label=_('Rmax'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
     rmin = forms.DecimalField(required=False, label=_('Rmin'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
+    box_size = forms.DecimalField(required=False, label=_('Box Size'))
+
+    ra = forms.DecimalField(required=False, label=_('RA'), min_value=0, max_value=5400, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
+    dec = forms.DecimalField(required=False, label=_('dec'), min_value=0, max_value=5400, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
     
     class Meta:
         fieldsets = [('primary', {
             'legend': 'General',
-            'fields': ['dark_matter_simulation', 'galaxy_model'],
+            'fields': ['box_type', 'dark_matter_simulation', 'galaxy_model', 'ra', 'dec', 'box_size'],
         }), ('secondary', {
             'legend': 'Parameters',
             'fields': ['filter', 'max', 'min', 'rmax', 'rmin'],
@@ -101,9 +105,12 @@ class MockGalaxyFactoryForm(BetterForm):
 
     def __init__(self, *args, **kwargs):
         super(MockGalaxyFactoryForm, self).__init__(*args, **kwargs)
+        self.fields['box_type'] = ChoiceFieldWithOtherAttrs(choices=[('cone', 'Light-Cone', {}), ('box', 'Box', {})])
         self.fields['dark_matter_simulation'] = ChoiceFieldWithOtherAttrs(choices=datasets.dark_matter_simulation_choices())
         self.fields['galaxy_model'] = ChoiceFieldWithOtherAttrs(choices=datasets.galaxy_model_choices())
         self.fields['filter'] = ChoiceFieldWithOtherAttrs(choices=datasets.filter_choices())
+        for field_name in ['ra', 'dec', 'box_size']:
+            self.fields[field_name].semirequired = True
         
     def check_min_less_than_max(self):
         min_field = self.cleaned_data.get('min')
@@ -120,11 +127,31 @@ class MockGalaxyFactoryForm(BetterForm):
             msg = _('The "Rmin" field must be less than the "Rmax" field.')
             self._errors["rmin"] = self.error_class([msg])
             del self.cleaned_data["rmin"]
+
+    def check_light_cone_required_fields(self):
+        box_type = self.cleaned_data.get('box_type')
+        if box_type == 'cone':
+            ra = self.cleaned_data.get('ra')
+            dec = self.cleaned_data.get('dec')
+            if ra is None and 'ra' not in self._errors:
+                self._errors['ra'] = self.error_class(['This field is required.'])
+            if dec is None and 'dec' not in self._errors:
+                self._errors['dec'] = self.error_class(['This field is required.'])
+        
+    def check_box_size_required_for_box(self):
+        box_type_field = self.cleaned_data.get('box_type')
+        box_size_field = self.cleaned_data.get('box_size')
+        if box_type_field == 'box' and box_size_field is None:
+            msg = _('The "Box Size" field is required when "Box" is selected')
+            self._errors["box_size"] = self.error_class([msg])
+            del self.cleaned_data['box_type']
         
     def clean(self):
         self.cleaned_data = super(MockGalaxyFactoryForm, self).clean()
         self.check_min_less_than_max()
         self.check_rmin_less_than_rmax()
+        self.check_box_size_required_for_box()
+        self.check_light_cone_required_fields()
         
         return self.cleaned_data
         

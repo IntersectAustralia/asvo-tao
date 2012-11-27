@@ -1,7 +1,15 @@
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
-
+from django.core.urlresolvers import reverse_lazy
 from functools import wraps
+
+from django_rules.decorators import object_permission_required as django_rules_object_permission_required
+
+
+def object_permission_required(*args, **kwargs):
+    new_kwargs = {'redirect_url': reverse_lazy('tao.views.handle_403')}
+    new_kwargs.update(kwargs)
+    return django_rules_object_permission_required(*args, **new_kwargs)
 
 
 def researcher_required(func):

@@ -16,15 +16,26 @@
                 <strong>Files</strong>
 
                 {% if job.is_completed %}
-                    <ul>
-                        {% for file in files %}
+                    <ul id='id_completed_jobs'>
+                        {% for file in job.files %}
                             <li>
-                                <a href="{% url 'get_file' job.id file %}">
-                                    {{ file }}
+                            {% if file.can_be_downloaded %}
+                                <a href="{% url 'get_file' job.id file.file_name %}">
+                                    {{ file.file_name }}
                                 </a>
+                            {% else %}
+                                {{ file.file_name }} (File size exceeds download limit.)
+                            {% endif %}
                             </li>
                         {% endfor %}
                     </ul>
+                    {% if job.can_download_zip_file %}
+                        <a id='id_download_as_zip' href="{% url 'get_zip_file' job.id %}">
+                            Download zip file
+                        </a>
+                    {% else %}
+                        (Zip file exceeds maximum download size.)
+                    {% endif %}
                 {% else %}
                     <p>
                         This job has not completed (and hence has no output).

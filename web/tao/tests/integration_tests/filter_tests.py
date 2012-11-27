@@ -1,8 +1,8 @@
-from tao.tests.integration_tests.helper import LiveServerTest
+from tao.tests.integration_tests.helper import LiveServerMGFTest
 from tao.tests.support.factories import SimulationFactory, GalaxyModelFactory, UserFactory, DataSetFactory, DataSetParameterFactory
 from tao.models import Simulation, DataSet
 
-class FilterTests(LiveServerTest):
+class FilterTests(LiveServerMGFTest):
     
     def setUp(self):
         super(FilterTests, self).setUp()
@@ -82,7 +82,7 @@ class FilterTests(LiveServerTest):
         min_input = "73"
         self.fill_in_fields({'id_max': max_input, 'id_min': min_input})
         
-        self.submit_form()
+        self.submit_mgf_form()
         
         # check after failed submit, max/min fields are both still enabled
         self.assert_is_enabled('#id_max')
@@ -100,11 +100,8 @@ class FilterTests(LiveServerTest):
         rmin_input = "73"
         self.fill_in_fields({'id_rmax': rmax_input, 'id_rmin': rmin_input})
         
-        self.submit_form()
+        self.submit_mgf_form()
         
         self.assertEqual(rmax_input, self.get_selector_value('#id_rmax'))
         self.assertEqual(rmin_input, self.get_selector_value('#id_rmin'))
         
-    def submit_form(self):
-        submit_button = self.selenium.find_element_by_css_selector('#mgf-form input[type="submit"]')
-        submit_button.submit()
