@@ -1,3 +1,5 @@
+from django.core.urlresolvers import reverse
+
 from selenium.webdriver.firefox.webdriver import WebDriver
 
 import django.test
@@ -15,6 +17,9 @@ def interact(local):
     """
     import code
     code.interact(local=local)
+    
+def visit(client, view_name, *args, **kwargs):
+    return client.get(reverse(view_name, args=args), follow=True)
     
 class LiveServerTest(django.test.LiveServerTestCase):
     DOWNLOAD_DIRECTORY = '/tmp/work/downloads'
@@ -126,7 +131,6 @@ class LiveServerTest(django.test.LiveServerTestCase):
         return ['No Filter'] + [x[0] for x in dataset_parameters.values_list('name')]
         
     def get_full_url(self, url_name, *args, **kwargs):
-        from django.core.urlresolvers import reverse
         return "%s%s" % (self.live_server_url, reverse(url_name, args=args, kwargs=kwargs))
     
     def get_selected_option_text(self, id_of_select):

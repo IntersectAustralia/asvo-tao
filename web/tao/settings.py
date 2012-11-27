@@ -201,3 +201,7 @@ AUTHENTICATION_BACKENDS = (
 )
 
 MAX_DOWNLOAD_SIZE = 512 * 2**20
+
+API_ALLOWED_IPS = (
+                   '127.0.0.1',
+                   )
