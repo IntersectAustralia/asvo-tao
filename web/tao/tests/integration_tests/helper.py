@@ -71,7 +71,7 @@ class LiveServerTest(django.test.LiveServerTestCase):
     def assert_selector_texts_equals_expected_values(self, selector_value):
         # selector_value is a dict of selectors to expected text values
         for selector, expected_value in selector_value.items():
-            self.assert_element_text_equals(selector, expected_value)
+            self.assert_element_text_equals(selector, unicode(expected_value))
     
     def assert_attribute_equals(self, attribute, selector_values):
         # selector_values is a dict of selectors to attribute values
