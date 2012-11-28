@@ -78,6 +78,17 @@ class RejectForm(forms.Form):
 
 from tao.widgets import ChoiceFieldWithOtherAttrs
 
+class SEDForm(BetterForm):
+    class Meta:
+        fieldsets = [('primary', {
+            'legend': 'Model',
+            'fields': ['single_stellar_population_model'],
+        }),]
+        
+    def __init__(self, *args, **kwargs):
+        super(SEDForm, self).__init__(*args, **kwargs)
+        self.fields['single_stellar_population_model'] = ChoiceFieldWithOtherAttrs(choices=datasets.stellar_model_choices())
+        
 class MockGalaxyFactoryForm(BetterForm):
     max = forms.DecimalField(required=False, label=_('Max/Faintest'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
     min = forms.DecimalField(required=False, label=_('Min/Brightest'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))

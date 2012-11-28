@@ -86,6 +86,12 @@ class DataSetParameter(models.Model):
     def __unicode__(self):
         return self.name
 
+class StellarModel(models.Model):
+    name = models.CharField(max_length=200)
+    
+    def __unicode__(self):
+        return self.name
+    
 class Job(models.Model):
     SUBMITTED = 'SUBMITTED'
     IN_PROGRESS = 'IN_PROGRESS'

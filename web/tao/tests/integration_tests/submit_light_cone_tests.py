@@ -1,6 +1,6 @@
 from tao.models import Job
 from tao.tests.integration_tests.helper import LiveServerMGFTest
-from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetParameterFactory, JobFactory
+from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetParameterFactory, JobFactory, StellarModelFactory
 
 from tao.forms import MockGalaxyFactoryForm
 
@@ -12,6 +12,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
         galaxy_model = GalaxyModelFactory.create(simulation=simulation)
         dataset = DataSetFactory.create(simulation=simulation, galaxy_model=galaxy_model)
         DataSetParameterFactory.create(dataset=dataset)
+        StellarModelFactory.create()
         
         self.username = "user"
         password = "password"

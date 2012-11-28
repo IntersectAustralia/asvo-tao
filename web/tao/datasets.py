@@ -29,3 +29,9 @@ def filter_choices():
                             'data-galaxy_model_id': unicode(x.dataset.galaxy_model_id)
                             })
             for x in models.DataSetParameter.objects.order_by('name')]
+    
+def stellar_model_choices():
+    """
+        for now the SED has a single selection value, which is still TBD.
+    """
+    return [(x.id, x.name, {}) for x in models.StellarModel.objects.order_by('name')]

@@ -1,7 +1,7 @@
 import factory
 # http://factoryboy.readthedocs.org/en/latest/index.html
 
-from tao.models import Job, User, Simulation, GalaxyModel, DataSet, DataSetParameter
+from tao.models import Job, User, Simulation, GalaxyModel, DataSet, DataSetParameter, StellarModel
 
 class JobFactory(factory.Factory):
     FACTORY_FOR = Job
@@ -58,3 +58,6 @@ class DataSetFactory(factory.Factory):
 class DataSetParameterFactory(factory.Factory):
     FACTORY_FOR = DataSetParameter
     name = factory.Sequence(lambda n: 'parameter_%03d' % int(n))
+
+class StellarModelFactory(factory.Factory):
+    FACTORY_FOR = StellarModel
