@@ -30,30 +30,30 @@ class MockGalaxyFactoryTests(TransactionTestCase):
     def test_ra_dec_min_max(self):
         mock_galaxy_factory_form = self.make_form({
             'box_type': 'cone',
-            'ra_min': '-92',
-            'dec_min': '-182',
-            'ra_max': '-91',
-            'dec_max': '-181',
+            'ra_min': '-182',
+            'dec_min': '-92',
+            'ra_max': '-181',
+            'dec_max': '-91',
         })
         self.assertEqual({
-            'ra_min': ['Ensure this value is greater than or equal to -90.'],
-            'dec_min': ['Ensure this value is greater than or equal to -180.'],
-            'ra_max': ['Ensure this value is greater than or equal to -90.'],
-            'dec_max': ['Ensure this value is greater than or equal to -180.'],
+            'ra_min': ['Ensure this value is greater than or equal to -180.'],
+            'dec_min': ['Ensure this value is greater than or equal to -90.'],
+            'ra_max': ['Ensure this value is greater than or equal to -180.'],
+            'dec_max': ['Ensure this value is greater than or equal to -90.'],
         }, mock_galaxy_factory_form.errors)
 
         mock_galaxy_factory_form = self.make_form({
             'box_type': 'cone',
-            'ra_min': '91',
-            'dec_min': '181',
-            'ra_max': '92',
-            'dec_max': '182',
+            'ra_min': '181',
+            'dec_min': '91',
+            'ra_max': '182',
+            'dec_max': '92',
         })
         self.assertEqual({
-            'ra_min': ['Ensure this value is less than or equal to 90.'],
-            'dec_min': ['Ensure this value is less than or equal to 180.'],
-            'ra_max': ['Ensure this value is less than or equal to 90.'],
-            'dec_max': ['Ensure this value is less than or equal to 180.'],
+            'ra_min': ['Ensure this value is less than or equal to 180.'],
+            'dec_min': ['Ensure this value is less than or equal to 90.'],
+            'ra_max': ['Ensure this value is less than or equal to 180.'],
+            'dec_max': ['Ensure this value is less than or equal to 90.'],
         }, mock_galaxy_factory_form.errors)
 
     def test_ra_and_dec_min_max(self):
