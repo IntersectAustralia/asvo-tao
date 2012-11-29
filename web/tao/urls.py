@@ -1,14 +1,12 @@
 from django.conf.urls.defaults import patterns, url, include
-from django.conf import settings
 from django.contrib.auth.views import logout
 from django.core.urlresolvers import reverse_lazy
-
-from django.contrib import admin
-admin.autodiscover()
-
 from django.shortcuts import render
 
 from tao.models import Job
+
+from django.contrib import admin
+admin.autodiscover()
 
 simple_view = lambda request, template_name: render(request, template_name)
 
@@ -41,6 +39,7 @@ job_patterns = patterns('tao.views.jobs',
     url(r'^$', 'index', name='job_index'),
     url(r'^(?P<id>\d+)$', 'view_job', name='view_job'),
     url(r'^(?P<id>\d+)/file/(?P<filepath>.+)$', 'get_file', name='get_file'),
+    url(r'^(?P<id>\d+)/download_zip$', 'get_zip_file', name='get_zip_file'),
 )
 
 urlpatterns = patterns('',
@@ -49,6 +48,8 @@ urlpatterns = patterns('',
     ('^administration/', include(administration_patterns)),
     ('^mock_galaxy_factory/', include(mock_galaxy_factory_patterns)),
     ('^jobs/', include(job_patterns)),
+    
+    ('^403.html$', 'tao.views.handle_403'),
 
     url(r'^mgf/$', simple_view, {'template_name': 'mgf.html'}),
     url(r'^$', 'tao.views.home', name='home'),

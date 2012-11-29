@@ -15,7 +15,7 @@ DATABASES = {
     }
 }
 
-FILES_BASE = '/tmp/'  # please include a trailing slash
+FILES_BASE = '/tmp/tao_test_files/'  # please include a trailing slash
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
@@ -24,4 +24,4 @@ INSTALLED_APPS += (
     'django_nose',
 )
 
-NOSE_ARGS = ['--with-xunit', '--nocapture']
+NOSE_ARGS = ['--with-xunit', '--nocapture', '--with-xcoverage', '--cover-package=tao', '--xcoverage-file=coverage.xml']

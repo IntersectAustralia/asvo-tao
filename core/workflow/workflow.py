@@ -1,128 +1,118 @@
 #!/usr/bin/env python
 
-import os, shlex, subprocess, time, logging
+# logging --- http://docs.python.org/2/library/logging.html -- Event Logging
+# shlex --- http://docs.python.org/2/library/shlex.html -- Lexical analyzer
+# PBSPy --- http://code.google.com/p/py-pbs/ -- Python extension for OpenPBS/Torque
+
+
+import os, shlex, subprocess, time, string
 import requests
 from torque import *
 import dbase
+import EnumerationLookup
 
-# Configuration.
-work_dir = '/lustre/projects/p014_swin/FTP'
-log_path = '/lustre/projects/p014_swin/logs/workflow.log'
-sleep_time = 180
+class WorkFlow(object):
 
-# Setup the logger.
-def setup_logging():
-    logger = logging.getLogger('tao-workflow')
-    file_handler = logging.FileHandler(log_path)
-    formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
-    file_handler.setFormatter(formatter)
-    logger.addHandler(file_handler)
-    # console_handler = logging.StreamHandler()
-    # console_handler.setFormatter(formatter)
-    # logger.addHandler(console_handler)
-    logger.setLevel(logging.DEBUG)
-    return logger
-logger = setup_logging()
+    
 
-# Define the request API.
-url_base = 'http://tao.asvo.org.au/taodemo/api/'
-api = {
-    'get': url_base + 'jobs/status/submitted',
-    'update': url_base + 'jobs/%d',
-}
-auth = ('user', 'pass')
+    def __init__(self,Options,dbaseobj,TorqueObj):
+        
+        self.Options=Options
+        self.dbaseobj=dbaseobj
+        self.TorqueObj=TorqueObj
 
+        # Define the request API.
+        
+        self.CALLBackBase = Options['WorkFlowSettings:CallbackURL']
+        self.api = {
+               'get': self.CALLBackBase + 'jobs/status/submitted',
+               'update': self.CALLBackBase + 'jobs/%d'}
+        
 
-##
-##
-##
-def json_handler(resp):
-    for json in resp.json:
-        path = os.path.join('jobs', json['user']['username'], str(json['id']))
+      
+        
+    def json_handler(self,resp):
+        JobsCounter=0
+        for json in resp.json:
+            
+            
+            UIJobReference=json['id']
+            JobParams=json['parameters']
+            JobUserName=json['username']
+            
+            
+            JobID=self.dbaseobj.AddNewJob(UIJobReference,0,JobParams,JobUserName)
+            
+            if JobID!=-1:     
+                           
+                JobsCounter=JobsCounter+1
+                
+                PBSJobID=self.SubmitJobToPBS(JobID,JobParams,JobUserName,UIJobReference)  
+                self.dbaseobj.UpdateJob_PBSID(JobID,PBSJobID)
+                
+            
+                self.UpdateMasterDB(UIJobReference, 'QUEUED')
+            
+    
+        return JobsCounter
+    
+    def SubmitJobToPBS(self,JobID,JobParams,JobUserName,UIJobReference):
+        
+        
+        path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], 'jobs', JobUserName, str(UIJobReference))
+        
+        
         os.makedirs(path)
         old_dir = os.getcwd()
         os.chdir(path)
 
         with open('params.xml', 'w') as file:
-            file.write(json['parameters'])
+            file.write(JobParams)
 
-        params = default_params()
-        params['name'] = json.get('name', 'tao_' + json['user']['username'] + '_' + str(json['id']))
-        params['pipeline'] = 'skymaker' #json['pipeline']
-        if 'nodes' in json:
-            params['nodes'] = json['nodes']
-        if 'ppn' in json:
-            params['ppn'] = json['ppn']
-        pbs_id = submit(params)
-
+        PBSJobID=self.TorqueObj.Submit(JobUserName,JobID)
+            
         os.chdir(old_dir)
-        dbase.add_job(path, pbs_id, json['id'])
-
-        # Mark job as queued.
-        requests.put(api['update']%json['id'], data={'status': 'QUEUED'})
-
-    return len(resp.json)
-
-##
-##
-##
-def xml_handler(resp):
-    xml = resp.xml
-    assert 0
-
-# Define content handler mapping.
-content_handlers = {
-    'application/json': json_handler,
-    'application/xml': xml_handler,
-}
-
-# Entry point for the main workflow system.
-if __name__ == '__main__':
-
-    # Change location to the working directory.
-    os.chdir(work_dir)
-
-    # Load any existing database information.
-    dbase.load_jobs()
-
-    # Repeat forever.
-    logger.info('Entering main loop.')
-    while 1:
-
+        
+        return PBSJobID
+                
+    def UpdateMasterDB(self,UIJobID,Status):
+        requests.put(self.api['update']%UIJobID, data={'status': Status})
+   
+    def xml_handler(self,resp):
+        xml = resp.xml
+        self.dbaseobj.AddNewEvent(0,EnumerationLookup.EventType.Error,"XML Response Handler is not supported: "+xml)
+        
+        
+    def GetNewJobsFromMasterDB(self):
+        
+        content_handlers = {'application/json': self.json_handler,'application/xml': self.xml_handler}
         # Check for any newly submitted jobs.
-        logger.info('Checking for new jobs.')
+        self.dbaseobj.AddNewEvent(0,EnumerationLookup.EventType.Normal,'Checking for new jobs.')
         new_jobs = 0
-        resp = requests.get(api['get'])
-        content_type = resp.headers['content-type']
-        for k, v in content_handlers.iteritems():
-            if content_type[:len(k)] == k:
-                new_jobs = v(resp)
-        logger.info('Found %d new jobs.'%new_jobs)
+        WebserviceResponse = requests.get(self.api['get'])
+        ResponseType = string.replace(WebserviceResponse.headers['content-type'],"; charset=utf-8","")
+        
+        CallBackFunction=content_handlers[ResponseType]
+        new_jobs_count = CallBackFunction(WebserviceResponse)
+        
+        self.dbaseobj.AddNewEvent(0,EnumerationLookup.EventType.Normal,'Found '+str(new_jobs_count)+' New Jobs ')            
+    
+    def ProcessJobs(self):
+        
+        CurrentJobs_PBSID=self.dbaseobj.GetCurrentActiveJobs_pbsID()
+        
+        
+        JobsStatus=self.TorqueObj.QueryPBSJob(CurrentJobs_PBSID)    
+        
+        for job in JobsStatus:
+            data = {}            
+            data['status']=job[1]            
+            if job[1]=='COMPLETED':
+                path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], 'jobs', job[2], str(job[0]))
+                data['output_path'] = path
+            requests.put(self.api['update']%job[0], data=data)
+        
+        
 
-        # Check for changes in status of running jobs.
-        logger.info('Checking existing jobs.')
-        ids = dbase.get_job_ids()
-        rids = dict([(v, k) for k, v in ids.iteritems()])
-        states = query(ids.values())
-        for pbs_id, state in states.iteritems():
-            tao_id = rids[pbs_id]
-            info = dbase.get_job(tao_id)
-            if state != info[2]:
-                logger.info('Job %d\'s state changed to %s.'%(tao_id, state))
-                info[2] = state
-                dbase.save_jobs()
-                data = {}
-                if state == 'R':
-                    state = 'IN_PROGRESS'
-                else:
-                    logger.info('Job complete, deleting from dbase.')
-                    state = 'COMPLETED'
-                    data['output_path'] = info[1]
-                    dbase.delete_job(tao_id)
-                data['status'] =  state
-                logger.info('Updating server.')
-                requests.put(api['update']%tao_id, data=data)
+    
 
-        # Sleep for a period.
-        logger.info('Going to sleep for %d seconds.'%sleep_time)
-        time.sleep(sleep_time)

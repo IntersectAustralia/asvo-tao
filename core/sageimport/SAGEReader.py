@@ -19,14 +19,14 @@ class SAGEDataReader:
                    'long long':'q'                   
                    }
     
-    def __init__(self,CurrentSAGEStruct,Options,MySQL):
+    def __init__(self,CurrentSAGEStruct,Options,PGDB):
         
         
         #Initialize the Class to handle a specific file path        
         self.CurrentFolderPath=Options['RunningSettings:InputDir']
         self.CurrentSAGEStruct=CurrentSAGEStruct
         self.Options=Options
-        self.MySQL=MySQL
+        self.PGDB=PGDB
         # Just in case the folder path contain additional '/' Remove it
         if self.CurrentFolderPath.endswith("/"):
             self.CurrentFolderPath=self.CurrentFolderPath[:-1] 
@@ -66,10 +66,10 @@ class SAGEDataReader:
     def ProcessAllFiles(self):
         
         #Process All the Non-Empty Files
-        #self.ProcessFile('/lustre/projects/p014_swin/raw_data/millennium/full/sage_output/model_271_7')
+        
         [self.FormatStr,self.FieldSize]=self.GetStructSizeAndFormat()
         
-        
+        #self.ProcessFile('/lustre/projects/p014_swin/raw_data/millennium/full/sage_output/model_307_0')
         for fobject in self.NonEmptyFiles:
             # Updating the user with what is going on
             print('Processing File:'+fobject[0])
@@ -78,7 +78,7 @@ class SAGEDataReader:
             self.ProcessFile(fobject[0])
             
             #raw_input("Press Any Key to Continue")
-        self.MySQL.Close()
+        self.PGDB.Close()
     
     def ProcessFile(self,FilePath):
         CurrentFile=open(FilePath,"rb")
@@ -112,8 +112,9 @@ class SAGEDataReader:
             NumberofGalaxiesInTree=TreeLengthList[i]
             print('\t Number of Galaxies in Tree ('+str(i)+')='+str(NumberofGalaxiesInTree))
             if NumberofGalaxiesInTree>0:
-                TreeData=self.ProcessTree(NumberofGalaxiesInTree,CurrentFile,CurrentFileGalaxyID)    
-                self.MySQL.CreateNewTree(TreeData)        
+                TreeData=self.ProcessTree(NumberofGalaxiesInTree,CurrentFile,CurrentFileGalaxyID)  
+                if len(TreeData)>0:  
+                    self.PGDB.CreateNewTree(TreeData)        
             
             self.CurrentGlobalTreeID=self.CurrentGlobalTreeID+1
          

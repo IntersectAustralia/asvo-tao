@@ -136,6 +136,7 @@ INSTALLED_APPS = (
     'south',
     'tao',
     'captcha',
+    'django_rules',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
@@ -154,14 +155,12 @@ LOGGING = {
         'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
-        }
-
+        },
     },
     'loggers': {
         'tao': {
             'handlers': ['console', 'file'],
             'level': 'DEBUG',
-            'propagate': True,
         },
         'django.request': {
             'handlers': ['console', 'file'],
@@ -179,12 +178,14 @@ AUTH_PROFILE_MODULE = 'tao.UserProfile'  # appname.modelname
 
 # Configure SMTP Server.
 # See https://docs.djangoproject.com/en/dev/topics/email/
-EMAIL_HOST = 'localhost'
-EMAIL_PORT= '1025'
+#EMAIL_HOST = 'localhost'
+#EMAIL_PORT= '1025'
+EMAIL_HOST = 'gpo.swin.edu.au'
+EMAIL_PORT = '25'
 
 EMAIL_ACCEPT_SUBJECT = 'Welcome to ASVO TAO'
 EMAIL_REJECT_SUBJECT = 'Your request for access to ASVO TAO has been rejected'
-EMAIL_FROM_ADDRESS = 'admin@asvo-tao.org.au'
+EMAIL_FROM_ADDRESS = 'admin@asvo.org.au'
 
 RECAPTCHA_PUBLIC_KEY = '6Le-6tUSAAAAANY2atxpkcNZyPcLQSM7n2Lf8rUT'
 RECAPTCHA_PRIVATE_KEY = '6Le-6tUSAAAAAPKhcTQI_Ecjff3Vw1Jn0Iu7u3kE'
@@ -193,3 +194,14 @@ RECAPTCHA_USE_SSL = True
 NUM_RECORDS_PER_PAGE = 10
 
 FILES_BASE = '/tmp/'  # please include a trailing slash
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'django_rules.backends.ObjectPermissionBackend',
+)
+
+MAX_DOWNLOAD_SIZE = 512 * 2**20
+
+API_ALLOWED_IPS = (
+                   '127.0.0.1',
+                   )

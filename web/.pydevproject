@@ -31,6 +31,7 @@
 <path>/asvo-tao/eggs/Django-1.4.1-py2.6.egg</path>
 <path>/asvo-tao/eggs/nose-1.2.1-py2.6.egg</path>
 <path>/asvo-tao/eggs/South-0.7.6-py2.6.egg</path>
+<path>/asvo-tao/eggs/django_rules-0.2-py2.6.egg</path>
 </pydev_pathproperty>
 <pydev_property name="org.python.pydev.PYTHON_PROJECT_VERSION">python 2.6</pydev_property>
 <pydev_property name="org.python.pydev.PYTHON_PROJECT_INTERPRETER">Default</pydev_property>

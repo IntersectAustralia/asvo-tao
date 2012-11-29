@@ -9,7 +9,7 @@ from captcha.fields import ReCaptchaField
 
 from form_utils.forms import BetterForm
 
-from tao import datasets
+from tao import datasets, models, workflow
 from tao.models import UserProfile
 
 class LoginForm(auth_forms.AuthenticationForm):
@@ -30,7 +30,7 @@ class UserCreationForm(auth_forms.UserCreationForm):
                                             widget=forms.Textarea(attrs={'rows':
                                             3}), required=False)
     email = forms.EmailField(label=_("Email"), max_length=75)
-    
+
     captcha = ReCaptchaField()
     def __init__(self, *args, **kwargs):
         super(UserCreationForm, self).__init__(*args, **kwargs)
@@ -53,8 +53,8 @@ class UserCreationForm(auth_forms.UserCreationForm):
         email = self.cleaned_data.get('email')
         if User.objects.filter(email=email).count() > 0:
             raise ValidationError(_('That email is already taken.'))
-	return email
-		
+        return email
+
     def save(self):  # what about transactions?
         user = super(auth_forms.UserCreationForm, self).save(commit=False)
         user.set_password(self.cleaned_data['password1'])  # FIXME shouldn't have to do this ??
@@ -78,16 +78,45 @@ class RejectForm(forms.Form):
 
 from tao.widgets import ChoiceFieldWithOtherAttrs
 
+class SEDForm(BetterForm):
+    class Meta:
+        fieldsets = [('primary', {
+            'legend': 'Model',
+            'fields': ['single_stellar_population_model'],
+        }),]
+
+    def __init__(self, *args, **kwargs):
+        super(SEDForm, self).__init__(*args, **kwargs)
+        self.fields['single_stellar_population_model'] = ChoiceFieldWithOtherAttrs(choices=datasets.stellar_model_choices())
+
+
 class MockGalaxyFactoryForm(BetterForm):
-    somethingelse = ChoiceFieldWithOtherAttrs(choices=[(1,2,{'a': 'b'}), (2,3,{'c': 'd'})])
+    CONE = 'cone'
+    BOX = 'box'
+
+    box_type = forms.ChoiceField(choices=[(CONE, 'Light-Cone'), (BOX, 'Box')])
+
+    max = forms.DecimalField(required=False, label=_('Max/Faintest'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
+    min = forms.DecimalField(required=False, label=_('Min/Brightest'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
+    rmax = forms.DecimalField(required=False, label=_('Rmax'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
+    rmin = forms.DecimalField(required=False, label=_('Rmin'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
+    box_size = forms.DecimalField(required=False, label=_('Box Size'))
+
+    ra_min = forms.DecimalField(required=False, label=_('RA min'), min_value=-180, max_value=180, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
+    ra_max = forms.DecimalField(required=False, label=_('RA max'), min_value=-180, max_value=180, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
+    dec_min = forms.DecimalField(required=False, label=_('dec min'), min_value=-90, max_value=90, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
+    dec_max = forms.DecimalField(required=False, label=_('dec max'), min_value=-90, max_value=90, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
+
+    LIGHT_CONE_REQUIRED_FIELDS = ('ra_min', 'ra_max', 'dec_min', 'dec_max')
 
     class Meta:
         fieldsets = [('primary', {
             'legend': 'General',
-            'fields': ['dark_matter_simulation', 'dummy_galaxy_model', 'galaxy_model'],
+            'fields': ['box_type', 'dark_matter_simulation', 'galaxy_model',
+            'ra_min', 'ra_max', 'dec_min', 'dec_max', 'box_size'],
         }), ('secondary', {
             'legend': 'Parameters',
-            'fields': ['somethingelse'],
+            'fields': ['filter', 'max', 'min', 'rmax', 'rmin'],
         }), ('third', {
             'legend': 'Output properties',
             'fields': [],
@@ -95,10 +124,107 @@ class MockGalaxyFactoryForm(BetterForm):
             'legend': 'Miscellaneous',
             'fields': [],
         }),]
-        row_attrs = {'dummy_galaxy_model': {'style': 'display: none'}}
 
-    def __init__(self):
-        super(MockGalaxyFactoryForm, self).__init__()
+    def __init__(self, *args, **kwargs):
+        super(MockGalaxyFactoryForm, self).__init__(*args, **kwargs)
         self.fields['dark_matter_simulation'] = ChoiceFieldWithOtherAttrs(choices=datasets.dark_matter_simulation_choices())
-        self.fields['dummy_galaxy_model'] = ChoiceFieldWithOtherAttrs(choices=datasets.galaxy_model_choices(), required=False)
         self.fields['galaxy_model'] = ChoiceFieldWithOtherAttrs(choices=datasets.galaxy_model_choices())
+        self.fields['filter'] = ChoiceFieldWithOtherAttrs(choices=datasets.filter_choices())
+        for field_name in ['ra_min', 'ra_max', 'dec_min', 'dec_max', 'box_size']:
+            self.fields[field_name].semirequired = True
+
+    def check_min_less_than_max(self):
+        min_field = self.cleaned_data.get('min')
+        max_field = self.cleaned_data.get('max')
+        if min_field is not None and max_field is not None and min_field >= max_field:
+            msg = _('The "min" field must be less than the "max" field.')
+            self._errors["min"] = self.error_class([msg])
+            del self.cleaned_data["min"]
+
+    def check_light_cone_min_max_fields(self):
+        ra_min_field = self.cleaned_data.get('ra_min')
+        ra_max_field = self.cleaned_data.get('ra_max')
+        dec_min_field = self.cleaned_data.get('dec_min')
+        dec_max_field = self.cleaned_data.get('dec_max')
+        if ra_max_field is not None and ra_min_field is not None and ra_min_field >= ra_max_field:
+            msg = _('The "RA min" field must be less than the "RA max" field.')
+            self._errors["ra_min"] = self.error_class([msg])
+            del self.cleaned_data["ra_min"]
+
+        if dec_max_field is not None and dec_min_field is not None and dec_min_field >= dec_max_field:
+            msg = _('The "dec min" field must be less than the "dec max" field.')
+            self._errors["dec_min"] = self.error_class([msg])
+            del self.cleaned_data["dec_min"]
+
+    def check_rmin_less_than_rmax(self):
+        rmin_field = self.cleaned_data.get('rmin')
+        rmax_field = self.cleaned_data.get('rmax')
+        if rmin_field is not None and rmax_field is not None and rmin_field >= rmax_field:
+            msg = _('The "Rmin" field must be less than the "Rmax" field.')
+            self._errors["rmin"] = self.error_class([msg])
+            del self.cleaned_data["rmin"]
+
+    def check_light_cone_required_fields(self):
+        box_type = self.cleaned_data.get('box_type')
+        if box_type == 'cone':
+            for field_name in self.LIGHT_CONE_REQUIRED_FIELDS:
+                field = self.cleaned_data.get(field_name)
+                if field is None and field_name not in self._errors:
+                    self.errors[field_name] = self.error_class(['This field is required.'])
+
+    def check_box_size_required_for_box(self):
+        box_type_field = self.cleaned_data.get('box_type')
+        box_size_field = self.cleaned_data.get('box_size')
+        if box_type_field == 'box' and box_size_field is None:
+            msg = _('The "Box Size" field is required when "Box" is selected')
+            self._errors["box_size"] = self.error_class([msg])
+            del self.cleaned_data['box_type']
+
+    def clean(self):
+        self.cleaned_data = super(MockGalaxyFactoryForm, self).clean()
+        self.check_min_less_than_max()
+        self.check_rmin_less_than_rmax()
+        self.check_box_size_required_for_box()
+        self.check_light_cone_required_fields()
+        self.check_light_cone_min_max_fields()
+
+        return self.cleaned_data
+
+    def save(self, user):
+        job = models.Job(user=user, parameters=self._make_parameters())
+        job.save()
+        return job
+
+    def _make_parameters(self):
+        from tao.datasets import NO_FILTER
+        galaxy_model = models.GalaxyModel.objects.get(pk=self.cleaned_data['galaxy_model'])
+        simulation = models.Simulation.objects.get(pk=self.cleaned_data['dark_matter_simulation'])
+
+        data_set = models.DataSet.objects.get(galaxy_model=galaxy_model, simulation=simulation)
+
+        selected_filter = self.cleaned_data['filter']
+        if selected_filter != NO_FILTER:
+            filter_parameter = models.DataSetParameter.objects.get(pk=selected_filter)
+        else:
+            filter_parameter = None
+
+        light_cone_parameters = [
+            workflow.param('database', 'sqlite://sfh_bcgs200_full_z0.db'),
+            workflow.param('schema-version', '1.0'),
+            workflow.param('query-type', self.cleaned_data['box_type']),
+            workflow.param('simulation-box-size', simulation.box_size, units=simulation.box_size_units),
+            workflow.param('ra-min', self.cleaned_data['ra_min'], units='deg'),
+            workflow.param('ra-max', self.cleaned_data['ra_max'], units='deg'),
+            workflow.param('dec-min', self.cleaned_data['dec_min'], units='deg'),
+            workflow.param('dec-max', self.cleaned_data['dec_max'], units='deg'),
+        ]
+        if filter_parameter is not None:
+            light_cone_parameters.append(workflow.param('filter-type', filter_parameter.name))
+            filter_min = self.cleaned_data['min']
+            filter_max = self.cleaned_data['max']
+            if filter_min != '':
+                light_cone_parameters.append(workflow.param('filter-min', filter_min, units='Mpc'))
+            if filter_max != '':
+                light_cone_parameters.append(workflow.param('filter-max', filter_max, units='Mpc'))
+
+        return workflow.to_xml(light_cone_parameters)
