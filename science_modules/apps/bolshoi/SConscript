@@ -4,7 +4,7 @@ from sconsproject import helpers
 Import('env')
 
 # Declare subdirectories.
-sub_dirs = ['bolshoi']
+sub_dirs = []
 
 # Define destination subdirectory, i.e. where these binaries will
 # be placed.
@@ -13,17 +13,17 @@ dst_dir = '#' + env['BUILD'] + '/bin/'
 # Define libraries to use.
 libs = [] + env.get('LIBS', [])
 
+# Need to build some intermediates.
+utils_o = env.Object('utils.cc')
+
 # Declare local sources. Format is:
 #
 #   ('<binary name>', '<source 0>', '<source 1>', ...)
 sources = [
-    ('chiara', 'chiara.cc'),
-    ('generate', 'generate.cc'),
-    ('milreader', 'milreader.cc'),
-    ('sagereader', 'sagereader.cc'),
-    ('sagecheck', 'sagecheck.cc'),
-    ('dbcheck', 'dbcheck.cc'),
-    ('sageimport', 'sageimport.cc'),
+    ('bolshoi_forest_sizes', 'bolshoi_forest_sizes.cc', utils_o),
+    ('bolshoi_preprocess', 'bolshoi_preprocess.cc', utils_o),
+    ('bolshoi_convert', 'bolshoi_convert.cc'),
+    ('bolshoi_convert2', 'bolshoi_convert2.cc', 'exporter.cc'),
 ]
 
 # Call the helper.

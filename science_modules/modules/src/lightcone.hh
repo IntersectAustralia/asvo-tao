@@ -3,11 +3,14 @@
 
 #include "tao/base/module.hh"
 
+// Forward declaration of test suites to allow direct
+// access to the lightcone module.
 class lightcone_suite;
 class sed_suite;
 class filter_suite;
 
 namespace tao {
+   using namespace hpc;
 
    ///
    /// Lightcone science module.
@@ -21,10 +24,6 @@ namespace tao {
 
    public:
 
-      typedef double real_type;
-
-   public:
-
       lightcone();
 
       ~lightcone();
@@ -33,28 +32,28 @@ namespace tao {
       ///
       ///
       void
-      setup_options( hpc::options::dictionary& dict,
-                     hpc::optional<const hpc::string&> prefix=hpc::optional<const hpc::string&>() );
+      setup_options( options::dictionary& dict,
+                     optional<const string&> prefix=optional<const string&>() );
 
       ///
       ///
       ///
       void
-      setup_options( hpc::options::dictionary& dict,
+      setup_options( options::dictionary& dict,
                      const char* prefix );
 
       ///
       ///
       ///
       void
-      initialise( const hpc::options::dictionary& dict,
-                  hpc::optional<const hpc::string&> prefix=hpc::optional<const hpc::string&>() );
+      initialise( const options::dictionary& dict,
+                  optional<const string&> prefix=optional<const string&>() );
 
       ///
       ///
       ///
       void
-      initialise( const hpc::options::dictionary& dict,
+      initialise( const options::dictionary& dict,
                   const char* prefix );
 
       ///
@@ -95,8 +94,14 @@ namespace tao {
 
    protected:
 
+      ///
+      /// Get a list of tree table names to search.
+      ///
       void
-      _settle_snap();
+      _query_table_names( vector<string>& table_names );
+
+      void
+      _settle_table();
 
       void
       _settle_box();
@@ -110,20 +115,20 @@ namespace tao {
       _build_query( real_type offs_x,
                     real_type offs_y,
                     real_type offs_z,
-                    hpc::string& query );
+                    string& query );
 
       void
-      _random_rotation_and_shifting( hpc::vector<hpc::string>& ops );
+      _random_rotation_and_shifting( vector<string>& ops );
 
       void
-      _get_boxes( hpc::list<hpc::array<real_type,3>>& boxes );
+      _get_boxes( list<array<real_type,3>>& boxes );
 
       real_type
       _redshift_to_distance( real_type redshift );
 
       void
-      _read_options( const hpc::options::dictionary& dict,
-                     hpc::optional<const hpc::string&> prefix=hpc::optional<const hpc::string&>() );
+      _read_options( const options::dictionary& dict,
+                     optional<const string&> prefix=optional<const string&>() );
 
       void
       _setup_query_template();
@@ -133,10 +138,10 @@ namespace tao {
 
    protected:
 
-      hpc::string _box_type;
-      hpc::vector<unsigned> _snap_idxs;
-      hpc::vector<real_type> _snap_redshifts;
-      hpc::vector<real_type> _snap_box_sizes;
+      string _box_type;
+      vector<string> _table_names;
+      vector<real_type> _snap_redshifts;
+      real_type _domain_size;
       real_type _x0, _y0, _z0;
       real_type _z_min, _z_max;
       real_type _ra_min, _ra_max;
@@ -145,24 +150,23 @@ namespace tao {
       bool _use_random;
       bool _unique;
       real_type _unique_offs_x, _unique_offs_y, _unique_offs_z;
-      hpc::range<real_type> _z_range, _dist_range;
-      hpc::string _table_name;
-      hpc::vector<hpc::string> _include;
-      hpc::map<hpc::string, hpc::string> _output_fields;
-      hpc::string _filter;
-      hpc::string _filter_min, _filter_max;
+      range<real_type> _z_range, _dist_range;
+      vector<string> _include;
+      map<string, string> _output_fields;
+      string _filter;
+      string _filter_min, _filter_max;
       real_type _H0;
 
-      hpc::string _query_template;
-      hpc::string _crd_strs[3];
+      string _query_template;
+      string _crd_strs[3];
 
-      hpc::string _bin_filename;
+      string _bin_filename;
       std::ofstream _bin_file;
 
-      hpc::mpi::lindex _cur_snap;
-      hpc::list<hpc::array<real_type,3>> _boxes;
-      hpc::list<hpc::array<real_type,3>>::const_iterator _cur_box;
-      hpc::scoped_ptr<soci::rowset<soci::row>> _rows;
+      size_t _cur_table;
+      list<array<real_type,3>> _boxes;
+      list<array<real_type,3>>::const_iterator _cur_box;
+      scoped_ptr<soci::rowset<soci::row>> _rows;
       soci::rowset<soci::row>::const_iterator _cur_row;
    };
 }

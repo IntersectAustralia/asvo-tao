@@ -8,7 +8,12 @@
 
 namespace tao {
 
-   class module {
+   class module
+   {
+   public:
+
+      typedef double real_type;
+
    public:
 
       module();

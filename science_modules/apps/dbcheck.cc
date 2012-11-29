@@ -4,7 +4,8 @@
 #include <boost/lexical_cast.hpp>
 #include <soci/soci.h>
 // #include <soci/sqlite3/soci-sqlite3.h>
-#include <soci/mysql/soci-mysql.h>
+// #include <soci/mysql/soci-mysql.h>
+#include <soci/postgresql/soci-postgresql.h>
 #include <libhpc/libhpc.hh>
 
 using namespace hpc;
@@ -45,12 +46,13 @@ main( int argc,
 
    // Open database session.
    #include "credentials.hh"
-   string connect = "db=Millennium_Full host=tao01.hpc.swin.edu.au port=3306 user=" + user + " pass='" + password + "'";
-   soci::session sql( soci::mysql, connect );
+   string connect = "dbname=millennium_full_mpi host=tao02.hpc.swin.edu.au port=3306 user=" + user + " password='" + password + "'";
+   soci::session sql( soci::postgresql, connect );
 
    // Get a complete list of tables.
    sql_timer.start();
-   soci::rowset<std::string> tables = (sql.prepare << "SHOW TABLES FROM Millennium_Full");
+   string query = "SELECT c.relname FROM pg_catalog.pg_class c LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace WHERE c.relkind IN ('r','') AND n.nspname <> 'pg_catalog' AND n.nspname <> 'information_schema' AND n.nspname !~ '^pg_toast' AND pg_catalog.pg_table_is_visible(c.oid)";
+   soci::rowset<std::string> tables = (sql.prepare << query);
    sql_timer.stop();
 
    // Loop over all the tables in the database.
@@ -63,7 +65,7 @@ main( int argc,
       LOGILN( "Looking at table \"", table, "\".", setindent( 2 ) );
 
       // How many trees are in this table?
-      string query = "SELECT DISTINCT GlobalTreeID FROM " + table + " ORDER BY GlobalTreeID";
+      query = "SELECT DISTINCT globaltreeid FROM " + table + " ORDER BY globaltreeid";
       sql_timer.start();
       soci::rowset<long long> tree_ids = (sql.prepare << query);
       sql_timer.stop();
@@ -78,7 +80,7 @@ main( int argc,
 	 LOGILN( "Looking at tree ", tree_id, ".", setindent( 2 ) );
 
          // Prepare a row iterator for the galaxies in this tree.
-         query = "SELECT * FROM " + table + " WHERE GlobalTreeID=" + to_string( tree_id );
+         query = "SELECT * FROM " + table + " WHERE globaltreeid=" + to_string( tree_id );
 	 LOGDLN( "Query: ", query );
 	 sql_timer.start();
          soci::rowset<soci::row> galaxies = (sql.prepare << query);
@@ -100,19 +102,19 @@ main( int argc,
 	    sql_timer.stop_tally();
 
             // Cache some information from the galaxy row.
-            long long id = gal.get<long long>( "GlobalIndex" );
-            int type = gal.get<int>( "ObjectType" );
-            int fof_idx = gal.get<int>( "FOFHaloIndex" );
-            long long desc = gal.get<long long>( "GlobalDescendant" );
-            int snap = gal.get<int>( "SnapNum" );
+            long long id = gal.get<long long>( "globalindex" );
+            int type = gal.get<int>( "objecttype" );
+            int fof_idx = gal.get<int>( "fofhaloindex" );
+            long long desc = gal.get<long long>( "globaldescendant" );
+            int snap = gal.get<int>( "snapnum" );
 	    LOGDLN( "Looking at galaxy with ID ", id, "." );
 
             // All descendants must be local to the tree. They can also
             // be -1, indicating no descendant.
 	    if( desc != -1 )
 	    {
-	       query = "SELECT COUNT(*) FROM " + table + " WHERE GlobalTreeID=" + to_string( tree_id );
-	       query += " AND GlobalIndex=" + to_string( desc );
+	       query = "SELECT COUNT(*) FROM " + table + " WHERE globaltreeid=" + to_string( tree_id );
+	       query += " AND globalindex=" + to_string( desc );
 	       LOGDLN( "Query: ", query );
 	       int num_matches;
 	       sql_timer.start();

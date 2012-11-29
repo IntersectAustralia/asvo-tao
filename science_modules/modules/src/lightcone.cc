@@ -64,7 +64,7 @@ namespace tao {
    ///
    ///
    void
-   lightcone::setup_options( hpc::options::dictionary& dict,
+   lightcone::setup_options( options::dictionary& dict,
                              const char* prefix )
    {
       setup_options( dict, string( prefix ) );
@@ -89,7 +89,7 @@ namespace tao {
    ///
    ///
    void
-   lightcone::initialise( const hpc::options::dictionary& dict,
+   lightcone::initialise( const options::dictionary& dict,
                           const char* prefix )
    {
       initialise( dict, string( prefix ) );
@@ -102,90 +102,6 @@ namespace tao {
    lightcone::run()
    {
       LOG_ENTER();
-
-//       // Connect to the database.
-//       _db_connect( _sql );
-
-//       // TODO: Check that any output databases have been created,
-//       //       or create them now.
-
-//       // _open_bin_file();
-
-//       // Prepare the last max distance processed value.
-//       _last_max_dist_processed = (_z_min > 0.0) ? _redshift_to_distance( _z_min ) : 0.0;
-
-//       if( _box_type != "box" && _box_side > 0.0 )
-//       {
-//          LOGLN( "Build cone, simulation box side length: ", _box_side );
-
-//          // Iterate over the reversed snapshot indices.
-//          LOGLN( "Iterating over ", _snaps.size(), " snapshots." );
-//          for( mpi::lindex ii = 0; ii < _snaps.size(); ++ii )
-//          {
-//             LOGLN( "Snapshot ", ii, ", redshift ", _snaps[ii], setindent( 2 ) );
-
-//             // Terminate the loop if the redshift is outside our maximum.
-//             // This is why we reversed the snapshots.
-//             if( _snaps[ii] > _z_max )
-//             {
-//                LOGLN( "Exceeded maximum redshift of ", _z_max, setindent( -2 ) );
-//                break;
-//             }
-
-//             real_type z_max = _z_max;
-//             mpi::lindex cur_snap_idx = ii;
-//             optional<mpi::lindex> next_snap_idx;
-//             if( ii != _snaps.size() - 1 )
-//             {
-//                next_snap_idx = ii + 1;
-//                z_max = std::min( z_max, _snaps[*next_snap_idx] );
-//                // auto max_dist = _redshift_to_distance( _snaps[*next_snap_idx] );
-//             }
-//             LOGLN( "Current snapshot index: ", cur_snap_idx );
-// #ifndef NLOG
-//             if( next_snap_idx )
-//                LOGLN( "Next snapshot index: ", *next_snap_idx );
-//             else
-//                LOGLN( "No next snapshot." );
-// #endif
-//             LOGLN( "Max redshift: ", z_max );
-//             LOGLN( "Max distance: ", _redshift_to_distance( z_max ) );
-//             LOGLN( "Last max distance: ", _last_max_dist_processed );
-
-//             list<array<real_type,3>> boxes;
-//             _get_boxes( z_max, boxes );
-//             LOGLN( "Boxes: ", boxes );
-//             for( auto& box : boxes )
-//                _build_pixels( cur_snap_idx, next_snap_idx, _x0 + box[0], _y0 + box[1], _z0 + box[2] );
-
-//             if( next_snap_idx )
-//             {
-//                real_type dist = _redshift_to_distance( _snaps[*next_snap_idx] );
-//                _last_max_dist_processed = _last_max_dist_processed < dist ? dist : _last_max_dist_processed;
-//             }
-
-//             LOG( setindent( -2 ) );
-//          }
-//       }
-//       else if( _box_side > 0.0 )
-//       {
-//          LOGLN( "Selecting box, with side length: ", _box_side );
-//          auto it = std::find( _snaps.begin(), _snaps.end(), _z_snap );
-//          ASSERT( it != _snaps.end() );
-//          mpi::lindex idx = it - _snaps.begin();
-//          _build_pixels( idx, idx, _x0, _y0, _z0 );
-//       }
-//       else
-//       {
-//          LOGLN( "Have an empty domain." );
-//          // TODO: Zero sized box, should report an error?
-//          // _build_pixels( 0, 0, 0, 0, 0 );
-//       }
-
-//       // TODO: If we outputted to a database, close it off.
-
-//       // TODO: If we outputted to a binary format, close that off too.
-
       LOG_EXIT();
    }
 
@@ -199,23 +115,23 @@ namespace tao {
 
       if( _box_type != "box" )
       {
-         // Iterate over the reversed snapshot indices.
-         LOGLN( "Iterating over ", _snap_idxs.size(), " snapshots." );
-         _cur_snap = 0;
-         if( _cur_snap < _snap_idxs.size() )
-            _settle_snap();
+	 // The outer loop is over the tree tables.
+         LOGDLN( "Iterating over ", _table_names.size(), " tables." );
+         _cur_table = 0;
+         if( _cur_table < _table_names.size() )
+            _settle_table();
       }
       else
       {
-         auto it = std::find( _snap_redshifts.begin(), _snap_redshifts.end(), _z_snap );
-         ASSERT( it != _snap_redshifts.end() );
-         mpi::lindex idx = it - _snap_redshifts.begin();
-         // TODO: Setup ranges.
-         _build_pixels( _x0, _y0, _z0 );
+         // auto it = std::find( _snap_redshifts.begin(), _snap_redshifts.end(), _z_snap );
+         // ASSERT( it != _snap_redshifts.end() );
+         // mpi::lindex idx = it - _snap_redshifts.begin();
+         // // TODO: Setup ranges.
+         // _build_pixels( _x0, _y0, _z0 );
 
-         // Set the current snapshot to the end to be sure we will
-         // terminate as expected.
-         _cur_snap = _snap_idxs.size();
+         // // Set the current snapshot to the end to be sure we will
+         // // terminate as expected.
+         // _cur_snap = _snap_idxs.size();
       }
 
       LOG_EXIT();
@@ -229,11 +145,9 @@ namespace tao {
    {
       LOG_ENTER();
 
-      // We need botht the row check and the snapshot check to catch
-      // the box and cone versions.
-      LOGLN( "Current snapshot ", _cur_snap, "/", _snap_idxs.size() );
-      bool result = (_cur_row == _rows->end() && _cur_snap == _snap_idxs.size());
-      LOGLN( "Finished: ", result );
+      // We are done when we are out of tables.
+      bool result = (_cur_table == _table_names.size());
+      LOGDLN( "Finished: ", result );
 
       // If we are done, close the database.
       if( result )
@@ -253,15 +167,15 @@ namespace tao {
 
       if( ++_cur_row == _rows->end() )
       {
-         LOGLN( "Finished iterating over current rowset." );
+         LOGDLN( "Finished iterating over current rowset." );
          if( _box_type != "box" )
          {
             if( ++_cur_box == _boxes.end() ||
                 (_settle_box(), _cur_box == _boxes.end()) )
             {
-               LOGLN( "Finished iterating over current boxes." );
-               if( ++_cur_snap != _snap_idxs.size() )
-                  _settle_snap();
+               LOGDLN( "Finished iterating over current boxes." );
+               if( ++_cur_table != _table_names.size() )
+                  _settle_table();
             }
          }
       }
@@ -292,67 +206,56 @@ namespace tao {
    lightcone::real_type
    lightcone::redshift() const
    {
-      return _snap_redshifts[_cur_snap];
+      ASSERT( _cur_row != _rows->end() );
+      return _snap_redshifts[_cur_row->get<int>( "snapnum" )];
    }
 
+   ///
+   /// Get a list of tree table names to search.
+   ///
    void
-   lightcone::_settle_snap()
+   lightcone::_query_table_names( vector<string>& table_names )
    {
       LOG_ENTER();
 
+      // Get the number of tables.
+      unsigned num_tables;
+      string query = "SELECT COUNT(table_name) FROM information_schema.tables"
+	 " WHERE table_schema='public' AND LEFT(table_name,5)='tree_'";
+      LOGDLN( "Query for number of table names: ", query );
+      _sql << query, soci::into( num_tables );
+      LOGDLN( "Number of tables: ", num_tables );
+
+      // Retrieve all the table names.
+      table_names.reallocate( num_tables );
+      query = "SELECT table_name FROM information_schema.tables"
+	 " WHERE table_schema='public' AND LEFT(table_name,5)='tree_'";
+      LOGDLN( "Query for table names: ", query );
+      _sql << query, soci::into( (std::vector<std::string>&)table_names );
+      LOGDLN( "Table names: ", table_names );
+
+      LOG_EXIT();
+   }
+
+   void
+   lightcone::_settle_table()
+   {
+      LOG_ENTER();
+
+      // Keep moving over tables until we find one that
+      // returns boxes or we run out of tables.
       do
       {
-         LOGLN( "Current snapshot index: ", _cur_snap );
+         LOGDLN( "Current table index: ", _cur_table );
+	 LOGDLN( "Current table name: ", _table_names[_cur_table] );
 
-         // Prepare my redshift range for this snapshot.
-         if( _cur_snap == 0 )
-         {
-            // For the first snapshot use +1/2.
-            _z_range.set( _snap_redshifts[_cur_snap], _snap_redshifts[_cur_snap + 1] );
-            _z_range.set_finish( _z_range.finish() - 0.5*_z_range.length() );
-         }
-         else if( _cur_snap == _snap_idxs.size() - 1 )
-         {
-            // For the last snapshot use -1/2.
-            _z_range.set( _snap_redshifts[_cur_snap - 1], _snap_redshifts[_cur_snap] );
-            _z_range.set_start( _z_range.start() + 0.5*_z_range.length() );
-         }
-         else
-         {
-            // For internal snapshots use (+/-)1/2. Assumes _z_range.finish
-            // is set to the previous snapshot's finish point.
-            _z_range.set_start( _z_range.finish() );
-            _z_range.set_finish( _snap_redshifts[_cur_snap] + 0.5*(_snap_redshifts[_cur_snap + 1] - _snap_redshifts[_cur_snap]) );
-         }
-         LOGLN( "Unlimited redshift range: ", _z_range );
-
-         // If we have moved beyond the maximum range we can finish now.
-         if( _z_range.start() > _z_max )
-         {
-            LOGLN( "Exceeded maximum redshift of ", _z_max );
-            _cur_snap = _snap_idxs.size();
-            break;
-         }
-
-         // Only proceed to use this range if it exists somewhere within
-         // the cutoff points.
-         if( _z_range.finish() >= _z_min )
-         {
-            // Limit the redshift range.
-            _z_range.set_start( std::max( _z_range.start(), _z_min ) );
-            _z_range.set_finish( std::min( _z_range.finish(), _z_max ) );
-            LOGLN( "Final redshift range: ", _z_range );
-
-            _dist_range.set( _redshift_to_distance( _z_range.start() ), _redshift_to_distance( _z_range.finish() ) );
-            LOGLN( "Distance range: ", _dist_range );
-
-            _get_boxes( _boxes );
-            LOGLN( "Boxes: ", _boxes );
-            _cur_box = _boxes.begin();
-            _settle_box();
-         }
+	 // Calculate the repeating boxes to use.
+	 _get_boxes( _boxes );
+	 LOGDLN( "Boxes: ", _boxes );
+	 _cur_box = _boxes.begin();
+	 _settle_box();
       }
-      while( (_z_range.finish() < _z_min || _cur_box == _boxes.end()) && ++_cur_snap < _snap_idxs.size() );
+      while( _cur_box == _boxes.end() && ++_cur_table < _table_names.size() );
 
       LOG_EXIT();
    }
@@ -365,12 +268,9 @@ namespace tao {
       do
       {
          const array<real_type,3>& box = *_cur_box;
-         LOGLN( "Using box ", box );
+         LOGDLN( "Using box ", box );
          _build_pixels( _x0 + box[0], _y0 + box[1], _z0 + box[2] );
-#ifndef NLOG
-         if( _cur_row == _rows->end() )
-            LOGLN( "There are no objects in this box." );
-#endif
+	 LOGDLN( "Objects in this box: ", _cur_row != _rows->end() );
       } while( _cur_row == _rows->end() && ++_cur_box != _boxes.end() );
 
       LOG_EXIT();
@@ -387,56 +287,12 @@ namespace tao {
       LOG_ENTER();
 
       // Produce the SQL query text.
-      std::string query;
+      string query;
       _build_query( offs_x, offs_y, offs_z, query );
 
       // Execute the query and retrieve the rows.
       _rows = new soci::rowset<soci::row>( (_sql.prepare << query) );
       _cur_row = _rows->begin();
-
-//       // Iterate over each returned row.
-//       mpi::gindex num_galaxies = 0;
-//       for( soci::rowset<soci::row>::const_iterator it = rowset.begin(); it != rowset.end(); ++it )
-//       {
-//          const soci::row& row = *it;
-//          for( std::size_t ii = 0; ii < row.size(); ++ii )
-//          {
-//             // Writing each column is a bit annoying. I've not assumed that
-//             // all fields will be double, which was assumed in the original
-//             // lightcone module.
-//             soci::data_type dt = row.get_properties( ii ).get_data_type();
-//             if( dt == soci::dt_double )
-//             {
-//                double val = row.get<double>( ii );
-//                _bin_file.write( (char*)&val, sizeof(double) );
-//             }
-//             else if( dt == soci::dt_integer )
-//             {
-//                int val = row.get<int>( ii );
-//                _bin_file.write( (char*)&val, sizeof(int) );
-//             }
-//             else if( dt == soci::dt_unsigned_long )
-//             {
-//                unsigned long val = row.get<unsigned long>( ii );
-//                _bin_file.write( (char*)&val, sizeof(unsigned long) );
-//             }
-//             else if( dt == soci::dt_long_long )
-//             {
-//                long long val = row.get<long long>( ii );
-//                _bin_file.write( (char*)&val, sizeof(long long) );
-//             }
-//             else if( dt == soci::dt_string )
-//             {
-//                std::string val = row.get<std::string>( ii );
-//                _bin_file.write( (char*)val.c_str(), sizeof(char)*val.size() );
-//             }
-// #ifndef NDEBUG
-//             else
-//                ASSERT( 0 );
-// #endif
-//          }
-//          ++num_galaxies;
-//       }
 
       LOG_EXIT();
    }
@@ -448,7 +304,7 @@ namespace tao {
    lightcone::_build_query( real_type offs_x,
                             real_type offs_y,
                             real_type offs_z,
-                            std::string& query )
+                            string& query )
    {
       LOG_ENTER();
 
@@ -457,20 +313,20 @@ namespace tao {
       real_type dec_min = to_radians( _dec_min );
       real_type dec_max = to_radians( _dec_max );
 
-      vector<std::string> ops;
+      vector<string> ops;
       _random_rotation_and_shifting( ops );
-      std::string& pos1 = ops[0];
-      std::string& pos2 = ops[4];
-      std::string& pos3 = ops[8];
-      std::string& halo_pos1 = ops[1];
-      std::string& halo_pos2 = ops[5];
-      std::string& halo_pos3 = ops[9];
-      std::string& vel1 = ops[2];
-      std::string& vel2 = ops[6];
-      std::string& vel3 = ops[10];
-      std::string& spin1 = ops[3];
-      std::string& spin2 = ops[7];
-      std::string& spin3 = ops[11];
+      string& pos1 = ops[0];
+      string& pos2 = ops[4];
+      string& pos3 = ops[8];
+      string& halo_pos1 = ops[1];
+      string& halo_pos2 = ops[5];
+      string& halo_pos3 = ops[9];
+      string& vel1 = ops[2];
+      string& vel2 = ops[6];
+      string& vel3 = ops[10];
+      string& spin1 = ops[3];
+      string& spin2 = ops[7];
+      string& spin3 = ops[11];
 
       pos1 = str( format( "(%1% + %2% - %3%)" ) % offs_x % pos1 % _x0 );
       pos2 = str( format( "(%1% + %2% - %3%)" ) % offs_y % pos2 % _y0 );
@@ -491,8 +347,8 @@ namespace tao {
       real_type halo_pos1_min = min_dist*cos( ra_max )*cos( dec_max );
       real_type halo_pos2_min = min_dist*sin( ra_min )*cos( dec_max );
       real_type halo_pos3_min = min_dist*sin( dec_min );
-      LOG( "Halo position range: (", halo_pos1_min, ", ", halo_pos2_min, ", ", halo_pos3_min, ")" );
-      LOGLN( " - (", halo_pos1_max, ", ", halo_pos2_max, ", ", halo_pos3_max, ")" );
+      LOGD( "Halo position range: (", halo_pos1_min, ", ", halo_pos2_min, ", ", halo_pos3_min, ")" );
+      LOGDLN( " - (", halo_pos1_max, ", ", halo_pos2_max, ", ", halo_pos3_max, ")" );
 
       // Apply all my current values to the query template to build up
       // the final SQL query string.
@@ -509,19 +365,9 @@ namespace tao {
       replace_all( query, "-pos1_min-", to_string( halo_pos1_min ) );
       replace_all( query, "-pos2_min-", to_string( halo_pos2_min ) );
       replace_all( query, "-pos3_min-", to_string( halo_pos3_min ) );
-      replace_all( query, "-halo_pos1-", halo_pos1 );
-      replace_all( query, "-halo_pos2-", halo_pos2 );
-      replace_all( query, "-halo_pos3-", halo_pos3 );
-      replace_all( query, "-halo_pos1_max-", to_string( halo_pos1_max ) );
-      replace_all( query, "-halo_pos2_max-", to_string( halo_pos2_max ) );
-      replace_all( query, "-halo_pos3_max-", to_string( halo_pos3_max ) );
-      replace_all( query, "-halo_pos1_min-", to_string( halo_pos1_min ) );
-      replace_all( query, "-halo_pos2_min-", to_string( halo_pos2_min ) );
-      replace_all( query, "-halo_pos3_min-", to_string( halo_pos3_min ) );
       replace_all( query, "-vel1-", to_string( vel1 ) );
       replace_all( query, "-vel2-", to_string( vel2 ) );
       replace_all( query, "-vel3-", to_string( vel3 ) );
-      replace_all( query, "snapshot_", str( format( "snapshot_%1$03d" ) % _snap_idxs[_cur_snap] ) );
       replace_all( query, "-max_dist-", to_string( max_dist ) );
       replace_all( query, "-last_dist-", to_string( min_dist ) );
 
@@ -530,7 +376,7 @@ namespace tao {
       replace_all( query, "Pos2", _crd_strs[1] );
       replace_all( query, "Pos3", _crd_strs[2] );
 
-      LOGLN( "Query: ", query );
+      LOGDLN( "Query: ", query );
       LOG_EXIT();
    }
 
@@ -538,12 +384,12 @@ namespace tao {
    ///
    ///
    void
-   lightcone::_random_rotation_and_shifting( vector<std::string>& ops )
+   lightcone::_random_rotation_and_shifting( vector<string>& ops )
    {
       LOG_ENTER();
 
       // Cache the current box size.
-      real_type box_size = _snap_box_sizes[_cur_snap];
+      real_type domain_size = _domain_size;
 
       // Four values (p, h, v, s) in three groups.
       ops.resize( 12 );
@@ -580,24 +426,24 @@ namespace tao {
          else
          {
             // A zero box side length causes a hang.
-            ASSERT( box_size > 0.0 );
+            ASSERT( domain_size > 0.0 );
 
-            offs1 = generate_uniform( 0.0, box_size*1000.0 )/1000.0;
-            offs2 = generate_uniform( 0.0, box_size*1000.0 )/1000.0;
-            offs3 = generate_uniform( 0.0, box_size*1000.0 )/1000.0;
+            offs1 = generate_uniform( 0.0, domain_size*1000.0 )/1000.0;
+            offs2 = generate_uniform( 0.0, domain_size*1000.0 )/1000.0;
+            offs3 = generate_uniform( 0.0, domain_size*1000.0 )/1000.0;
             rnd = generate_uniform<int>( 1, 6 );
          }
 
          // Rotation 1.
          if( _dbtype == "sqlite" )
          {
-            ops[0] = str( format( "(case sign(%1%+Pos1-%2%) when 1 then %3%+Pos1 else Pos1+%4%-%5% end)" ) % offs1 % box_size % offs1 % offs1 % box_size );
-            ops[1] = str( format( "(case sign(%1%+halo_pos1-%2%) when 1 then %3%+halo_pos1 else halo_pos1+%4%-%5% end)" ) % offs1 % box_size % offs1 % offs1 % box_size );
+            ops[0] = str( format( "(case sign(%1%+Pos1-%2%) when 1 then %3%+Pos1 else Pos1+%4%-%5% end)" ) % offs1 % domain_size % offs1 % offs1 % domain_size );
+            ops[1] = str( format( "(case sign(%1%+halo_pos1-%2%) when 1 then %3%+halo_pos1 else halo_pos1+%4%-%5% end)" ) % offs1 % domain_size % offs1 % offs1 % domain_size );
          }
          else
          {
-            ops[0] = str( format( "if(%1%+Pos1<%2%,%3%+Pos1,Pos1+%4%-%5%)" ) % offs1 % box_size % offs1 % offs1 % box_size );
-            ops[1] = str( format( "if(%1%+halo_pos1<%2%,%3%+halo_pos1,halo_pos1+%4%-%5%)" ) % offs1 % box_size % offs1 % offs1 % box_size );
+            ops[0] = str( format( "IF(%1% + Pos1 < %2%,%3%+Pos1,Pos1+%4%-%5%)" ) % offs1 % domain_size % offs1 % offs1 % domain_size );
+            ops[1] = str( format( "IF(%1% + halo_pos1 < %2%,%3%+halo_pos1,halo_pos1+%4%-%5%)" ) % offs1 % domain_size % offs1 % offs1 % domain_size );
          }
          ops[2] = "Vel1";
          ops[3] = "Spin1";
@@ -605,13 +451,13 @@ namespace tao {
          // Rotation 2.
          if( _dbtype == "sqlite" )
          {
-            ops[4] = str( format( "(case sign(%1%+Pos2-%2%) when 1 then %3%+Pos2 else Pos2+%4%-%5% end)" ) % offs2 % box_size % offs2 % offs2 % box_size );
-            ops[5] = str( format( "(case sign(%1%+halo_pos2-%2%) when 1 then %3%+halo_pos2 else halo_pos2+%4%-%5% end)" ) % offs2 % box_size % offs2 % offs2 % box_size );
+            ops[4] = str( format( "(case sign(%1%+Pos2-%2%) when 1 then %3%+Pos2 else Pos2+%4%-%5% end)" ) % offs2 % domain_size % offs2 % offs2 % domain_size );
+            ops[5] = str( format( "(case sign(%1%+halo_pos2-%2%) when 1 then %3%+halo_pos2 else halo_pos2+%4%-%5% end)" ) % offs2 % domain_size % offs2 % offs2 % domain_size );
          }
          else
          {
-            ops[4] = str( format( "if(%1%+Pos2<%2%,%3%+Pos2,Pos2+%4%-%5%)" ) % offs2 % box_size % offs2 % offs2 % box_size );
-            ops[5] = str( format( "if(%1%+halo_pos2<%2%,%3%+halo_pos2,halo_pos2+%4%-%5%)" ) % offs2 % box_size % offs2 % offs2 % box_size );
+            ops[4] = str( format( "if(%1%+Pos2<%2%,%3%+Pos2,Pos2+%4%-%5%)" ) % offs2 % domain_size % offs2 % offs2 % domain_size );
+            ops[5] = str( format( "if(%1%+halo_pos2<%2%,%3%+halo_pos2,halo_pos2+%4%-%5%)" ) % offs2 % domain_size % offs2 % offs2 % domain_size );
          }
          ops[6] = "Vel2";
          ops[7] = "Spin2";
@@ -619,13 +465,13 @@ namespace tao {
          // Rotation 3.
          if( _dbtype == "sqlite" )
          {
-            ops[8] = str( format( "(case sign(%1%+Pos3-%2%) when 1 then %3%+Pos3 else Pos3+%4%-%5% end)" ) % offs3 % box_size % offs3 % offs3 % box_size );
-            ops[9] = str( format( "(case sign(%1%+halo_pos3-%2%) when 1 then %3%+halo_pos3 else halo_pos3+%4%-%5% end)" ) % offs3 % box_size % offs3 % offs3 % box_size );
+            ops[8] = str( format( "(case sign(%1%+Pos3-%2%) when 1 then %3%+Pos3 else Pos3+%4%-%5% end)" ) % offs3 % domain_size % offs3 % offs3 % domain_size );
+            ops[9] = str( format( "(case sign(%1%+halo_pos3-%2%) when 1 then %3%+halo_pos3 else halo_pos3+%4%-%5% end)" ) % offs3 % domain_size % offs3 % offs3 % domain_size );
          }
          else
          {
-            ops[8] = str( format( "if(%1%+Pos3<%2%,%3%+Pos3,Pos3+%4%-%5%)" ) % offs3 % box_size % offs3 % offs3 % box_size );
-            ops[9] = str( format( "if(%1%+halo_pos3<%2%,%3%+halo_pos3,halo_pos3+%4%-%5%)" ) % offs3 % box_size % offs3 % offs3 % box_size );
+            ops[8] = str( format( "if(%1%+Pos3<%2%,%3%+Pos3,Pos3+%4%-%5%)" ) % offs3 % domain_size % offs3 % offs3 % domain_size );
+            ops[9] = str( format( "if(%1%+halo_pos3<%2%,%3%+halo_pos3,halo_pos3+%4%-%5%)" ) % offs3 % domain_size % offs3 % offs3 % domain_size );
          }
          ops[10] = "Vel3";
          ops[11] = "Spin3";
@@ -675,33 +521,33 @@ namespace tao {
       LOG_ENTER();
 
       // Cache the current box size.
-      real_type box_size = _snap_box_sizes[_cur_snap];
+      real_type domain_size = _domain_size;
 
       // Start fresh.
       boxes.clear();
 
       // Only run the loop if the distance is greater than the box side length.
-      if( _dist_range.finish() > box_size )
+      if( _dist_range.finish() > domain_size )
       {
-         LOGLN( "Maximum distanceof ", _dist_range.finish(), " greater than box side of ", box_size, ", calculating boxes." );
+         LOGDLN( "Maximum distanceof ", _dist_range.finish(), " greater than box side of ", domain_size, ", calculating boxes." );
 
-         // TODO: Removed the " + box_size" from each conditional, it seems
+         // TODO: Removed the " + domain_size" from each conditional, it seems
          // to me that keeping it in just adds one extra useless iteration
          // per loop.
-         for( real_type ii = 0.0; ii <= _dist_range.finish(); ii += box_size )
+         for( real_type ii = 0.0; ii <= _dist_range.finish(); ii += domain_size )
          {
-            for( real_type jj = 0.0; jj <= _dist_range.finish(); jj += box_size )
+            for( real_type jj = 0.0; jj <= _dist_range.finish(); jj += domain_size )
             {
-               for( real_type kk = 0.0; kk <= _dist_range.finish(); kk += box_size )
+               for( real_type kk = 0.0; kk <= _dist_range.finish(); kk += domain_size )
                {
-                  if( (sqrt( pow( ii + box_size + _unique_offs_x, 2.0 ) + 
-                             pow( jj + box_size + _unique_offs_y, 2.0 ) + 
-                             pow( kk + box_size + _unique_offs_z, 2.0 ) ) > (_dist_range.start() - box_size)) &&
-                      (((ii + box_size + _unique_offs_x)/sqrt( pow( ii + box_size + _unique_offs_x, 2.0) + 
+                  if( (sqrt( pow( ii + domain_size + _unique_offs_x, 2.0 ) + 
+                             pow( jj + domain_size + _unique_offs_y, 2.0 ) + 
+                             pow( kk + domain_size + _unique_offs_z, 2.0 ) ) > (_dist_range.start() - domain_size)) &&
+                      (((ii + domain_size + _unique_offs_x)/sqrt( pow( ii + domain_size + _unique_offs_x, 2.0) + 
                                                                 pow( jj, 2.0 ) )) > cos( to_radians( _ra_max ) )) &&
-                      (ii/sqrt( pow( ii, 2.0 ) + pow( jj + box_size + _unique_offs_y, 2.0 ) ) < cos( to_radians( _ra_min ) )) &&
-                      ((sqrt( pow( ii + box_size + _unique_offs_x, 2.0 ) + pow( jj + box_size + _unique_offs_y, 2.0 )))/sqrt( pow( ii + box_size + _unique_offs_x, 2.0 ) + pow( jj + box_size + _unique_offs_y, 2.0 ) + pow( kk, 2.0 ) ) > cos( to_radians( _dec_max ) )) &&
-                      ((sqrt( pow( ii, 2.0 ) + pow( jj, 2.0 )))/sqrt( pow( ii, 2.0 ) + pow( jj, 2.0 ) + pow( kk + box_size + _unique_offs_z, 2.0 ) ) < cos( to_radians( _dec_min ) )) )
+                      (ii/sqrt( pow( ii, 2.0 ) + pow( jj + domain_size + _unique_offs_y, 2.0 ) ) < cos( to_radians( _ra_min ) )) &&
+                      ((sqrt( pow( ii + domain_size + _unique_offs_x, 2.0 ) + pow( jj + domain_size + _unique_offs_y, 2.0 )))/sqrt( pow( ii + domain_size + _unique_offs_x, 2.0 ) + pow( jj + domain_size + _unique_offs_y, 2.0 ) + pow( kk, 2.0 ) ) > cos( to_radians( _dec_max ) )) &&
+                      ((sqrt( pow( ii, 2.0 ) + pow( jj, 2.0 )))/sqrt( pow( ii, 2.0 ) + pow( jj, 2.0 ) + pow( kk + domain_size + _unique_offs_z, 2.0 ) ) < cos( to_radians( _dec_min ) )) )
                   {
                      boxes.push_back( array<real_type,3>( ii, jj, kk ) );
                   }
@@ -711,7 +557,7 @@ namespace tao {
       }
       else
       {
-         LOGLN( "Maximum distance of ", _dist_range.finish(), " less than box side of ", box_size, ", using single box." );
+         LOGDLN( "Maximum distance of ", _dist_range.finish(), " less than box side of ", domain_size, ", using single box." );
          boxes.push_back( array<real_type,3>( 0.0, 0.0, 0.0 ) );
       }
 
@@ -776,27 +622,31 @@ namespace tao {
       _dbhost = sub.get<string>( "database_host" );
       _dbuser = sub.get<string>( "database_user" );
       _dbpass = sub.get<string>( "database_pass" );
-      _table_name = sub.get<string>( "table_name_template" );
 
       // Connect to the database.
       _db_connect( _sql, _dbtype, _dbname );
 
       // Get box type.
       _box_type = sub.get<string>( "box_type" );
-      LOGLN( "Box type '", _box_type );
+      LOGDLN( "Box type '", _box_type );
+
+      // Get the domain size.
+      {
+	 double size;
+	 _sql << "SELECT domain_size FROM summary", soci::into( size );
+	 _domain_size = size;
+	 LOGDLN( "Simulation domain size: ", _domain_size );
+      }
 
       // Extract and parse the snapshot redshifts.
       _read_snapshots();
-
-      // If not doing a simple box we need at least two snapshots.
-      ASSERT( _box_type == "box" || _snap_idxs.size() > 1 );
 
       // Redshift ranges.
       real_type snap_z_max = _snap_redshifts.back(), snap_z_min = _snap_redshifts.front();
       _z_max = sub.get<real_type>( "z_max", snap_z_max );
       _z_max = std::min( _z_max, snap_z_max );
       _z_min = sub.get<real_type>( "z_min", snap_z_min );
-      LOGLN( "Redshift range: (", _z_min, ", ", _z_max, ")" );
+      LOGDLN( "Redshift range: (", _z_min, ", ", _z_max, ")" );
 
       // Right ascension.
       _ra_min = sub.get<real_type>( "ra_min" );
@@ -810,7 +660,7 @@ namespace tao {
       real_type width = _ra_max - _ra_min;
       _ra_max = _ra_min + (width*(mpi::comm::world.rank() + 1))/mpi::comm::world.size();
       _ra_min += (width*mpi::comm::world.rank())/mpi::comm::world.size();
-      LOGLN( "Have right ascension range ", _ra_min, " - ", _ra_max );
+      LOGDLN( "Have right ascension range ", _ra_min, " - ", _ra_max );
 
       // Declination.
       _dec_min = sub.get<real_type>( "dec_min" );
@@ -821,7 +671,7 @@ namespace tao {
          _dec_max = 89.9999999;
       if( _dec_min > _dec_max )
          _dec_min = _dec_max;
-      LOGLN( "Have declination range ", _dec_min, " - ", _dec_max );
+      LOGDLN( "Have declination range ", _dec_min, " - ", _dec_max );
 
       // For the box type.
       if( _box_type == "box" )
@@ -832,7 +682,7 @@ namespace tao {
 
       // Astronomical values.
       _H0 = sub.get<real_type>( "H0" );
-      LOGLN( "Using H0 = ", _H0 );
+      LOGDLN( "Using H0 = ", _H0 );
 
       LOG_EXIT();
    }
@@ -846,9 +696,9 @@ namespace tao {
       LOG_ENTER();
 
       // Set the coordinate strings we want to use.
-      _crd_strs[0] = "x";
-      _crd_strs[1] = "y";
-      _crd_strs[2] = "z";
+      _crd_strs[0] = "posx";
+      _crd_strs[1] = "posy";
+      _crd_strs[2] = "posz";
 
       _query_template = "";
       for( auto& field : _include )
@@ -871,39 +721,35 @@ namespace tao {
       if( _query_template == "" )
          _query_template = "*";
 
-      _query_template = "select " + _query_template + " from " + _table_name + " where";
-    
+      _query_template = "SELECT " + _query_template + " FROM -table- WHERE";
+
       if( _box_type != "box" )
       {
-         if( _output_fields.has( "halo_pos1" ) && _output_fields.has( "halo_pos2" ) && _output_fields.has( "halo_pos3" ) )
-         {
-            _query_template += " -halo_pos1- < -halo_pos1_max- and -halo_pos1- >= -halo_pos1_min-";
-            _query_template += " and -halo_pos2- < -halo_pos2_max- and -halo_pos2- >= -halo_pos2_min-";
-            _query_template += " and -halo_pos3- < -halo_pos3_max- and -halo_pos3- >= -halo_pos3_min-";
-            _query_template += " and sqrt(pow(-halo_pos1-,2)+pow(-halo_pos2-,2)+pow(-halo_pos3-,2)) < -max_dist-";
-            _query_template += " and sqrt(pow(-halo_pos1-,2)+pow(-halo_pos2-,2)+pow(-halo_pos3-,2)) >= -last_dist-";
-         } else {
-            _query_template += " -pos1- < -pos1_max- and -pos1- >= -pos1_min-";
-            _query_template += " and -pos2- < -pos2_max- and -pos2- >= -pos2_min-";
-            _query_template += " and -pos3- < -pos3_max- and -pos3- >= -pos3_min-";
-            _query_template += " and sqrt(pow(-pos1-,2)+pow(-pos2-,2)+pow(-pos3-,2)) < -max_dist-";
-            _query_template += " and sqrt(pow(-pos1-,2)+pow(-pos2-,2)+pow(-pos3-,2)) >= -last_dist-";
-         }
-         _query_template += " and sqrt(pow(-pos1-,2)+pow(-pos2-,2)+pow(-pos3-,2)) < " + to_string( _redshift_to_distance( _z_max ) );
-         _query_template += " and -pos1-/(sqrt(pow(-pos1-,2)+pow(-pos2-,2))) > " + to_string( cos( to_radians( _ra_max ) ) );
-         _query_template += " and -pos1-/(sqrt(pow(-pos1-,2)+pow(-pos2-,2))) < " + to_string( cos( to_radians( _ra_min ) ) );
-         _query_template += " and sqrt(pow(-pos1-,2)+pow(-pos2-,2))/(sqrt(pow(-pos1-,2)+pow(-pos2-,2)+pow(-pos3-,2))) > " + to_string( cos( to_radians( _dec_max ) ) );
-         _query_template += " and sqrt(pow(-pos1-,2)+pow(-pos2-,2))/(sqrt(pow(-pos1-,2)+pow(-pos2-,2)+pow(-pos3-,2))) < " + to_string( cos( to_radians( _dec_min ) ) );
+	 _query_template += " -pos1- < -pos1_max- AND -pos1- >= -pos1_min-";
+	 _query_template += " AND -pos2- < -pos2_max- AND -pos2- >= -pos2_min-";
+	 _query_template += " AND -pos3- < -pos3_max- AND -pos3- >= -pos3_min-";
+         _query_template += " AND SQRT(POW(-pos1-,2) + POW(-pos2-,2)+POW(-pos3-,2)) < "
+	    + to_string( _redshift_to_distance( _z_max ) );
+	 _query_template += " AND SQRT(POW(-pos1-,2) + POW(-pos2-,2) + POW(-pos3-,2)) >= "
+	    + to_string( _redshift_to_distance( _z_min ) );
+         _query_template += " AND -pos1-/(SQRT(POW(-pos1-,2) + POW(-pos2-,2))) > "
+	    + to_string( cos( to_radians( _ra_max ) ) );
+         _query_template += " AND -pos1-/(SQRT(POW(-pos1-,2) + POW(-pos2-,2))) < "
+	    + to_string( cos( to_radians( _ra_min ) ) );
+         _query_template += " AND SQRT(POW(-pos1-,2) + POW(-pos2-,2))/(SQRT(POW(-pos1-,2) + POW(-pos2-,2) + POW(-pos3-,2))) > "
+	    + to_string( cos( to_radians( _dec_max ) ) );
+         _query_template += " AND SQRT(POW(-pos1-,2) + POW(-pos2-,2))/(SQRT(POW(-pos1-,2) + POW(-pos2-,2) + POW(-pos3-,2))) < "
+	    + to_string( cos( to_radians( _dec_min ) ) );
       }
       else
       {
          // if( _box_side > 0.0 )
          // {
-            _query_template += str( format( " -pos1- < %1%  and -pos2- < %2% and -pos3- < %3% " ) % _box_size % _box_size % _box_size );
+            _query_template += str( format( " -pos1- < %1%  AND -pos2- < %2% AND -pos3- < %3% " ) % _box_size % _box_size % _box_size );
          // }
          // else
          // {
-         //    _query_template += str( format( " redshift_real > %1% and redshift_real < %2%" ) % _z_min % _z_max );
+         //    _query_template += str( format( " redshift_real > %1% AND redshift_real < %2%" ) % _z_min % _z_max );
          // }
       }
 
@@ -911,15 +757,15 @@ namespace tao {
       {
          if( _filter_min != "" )
          {
-            _query_template += str( format( " and %1% >= %2%" ) % _output_fields.get( _filter ) % _filter_min );
+            _query_template += str( format( " AND %1% >= %2%" ) % _output_fields.get( _filter ) % _filter_min );
          }
          if( _filter_max != "" )
          {
-            _query_template += str( format( " and %1% <= %2%" ) % _output_fields.get( _filter ) % _filter_max );
+            _query_template += str( format( " AND %1% <= %2%" ) % _output_fields.get( _filter ) % _filter_max );
          }
       }
 
-      LOGLN( "Query template: ", _query_template );
+      LOGDLN( "Query template: ", _query_template );
       LOG_EXIT();
    }
 
@@ -929,29 +775,19 @@ namespace tao {
    void
    lightcone::_read_snapshots()
    {
+      LOG_ENTER();
+
       // Find number of snapshots and resize the containers.
       unsigned num_snaps;
-      _sql << "SELECT count(*) FROM meta", soci::into( num_snaps );
-      _snap_idxs.reallocate( num_snaps );
+      _sql << "SELECT COUNT(*) FROM snap_redshift", soci::into( num_snaps );
+      LOGDLN( num_snaps, " snapshots." );
       _snap_redshifts.reallocate( num_snaps );
-      _snap_box_sizes.reallocate( num_snaps );
 
       // Read meta data.
-      _sql << "SELECT snap_table, redshift, box_size FROM meta ORDER BY redshift",
-         soci::into( (std::vector<unsigned>&)_snap_idxs ),
-         soci::into( (std::vector<real_type>&)_snap_redshifts ),
-         soci::into( (std::vector<real_type>&)_snap_box_sizes );
-#ifndef NLOG
-      LOGLN( "Snapshots:", setindent( 2 ) );
-      if( num_snaps )
-      {
-         LOG( indent );
-         for( unsigned ii = 0; ii < num_snaps; ++ii )
-            LOGLN( _snap_idxs[ii], ", ", _snap_redshifts[ii], ", ", _snap_box_sizes[ii] );
-      }
-      else
-         LOGLN( indent, "none" );
-      LOG( setindent( -2 ) );
-#endif
+      _sql << "SELECT redshift FROM snap_redshift ORDER BY snapnum",
+         soci::into( (std::vector<real_type>&)_snap_redshifts );
+      LOGDLN( "Redshifts: ", _snap_redshifts );
+
+      LOG_EXIT();
    }
 }
