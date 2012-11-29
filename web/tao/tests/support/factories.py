@@ -1,7 +1,7 @@
 import factory
 # http://factoryboy.readthedocs.org/en/latest/index.html
 
-from tao.models import Job, User, Simulation, GalaxyModel, DataSet, DataSetParameter
+from tao.models import Job, User, Simulation, GalaxyModel, DataSet, DataSetParameter, StellarModel
 
 class JobFactory(factory.Factory):
     FACTORY_FOR = Job
@@ -39,7 +39,7 @@ class SimulationFactory(factory.Factory):
     external_link_url = factory.Sequence(lambda n: "http://www.defg" + n + ".org/")
     cosmology = factory.Sequence(lambda n: "fairy" + n)
     cosmological_parameters = factory.Sequence(lambda n: "dust" + n)
-    box_size = factory.Sequence(lambda n: "waybig" + n)
+    box_size = factory.Sequence(lambda n: n)
     web_site = factory.Sequence(lambda n: "http://mysite" + n + ".edu/")
     
 class GalaxyModelFactory(factory.Factory):
@@ -54,7 +54,11 @@ class GalaxyModelFactory(factory.Factory):
     
 class DataSetFactory(factory.Factory):
     FACTORY_FOR = DataSet
+    box_size = 123
     
 class DataSetParameterFactory(factory.Factory):
     FACTORY_FOR = DataSetParameter
     name = factory.Sequence(lambda n: 'parameter_%03d' % int(n))
+
+class StellarModelFactory(factory.Factory):
+    FACTORY_FOR = StellarModel

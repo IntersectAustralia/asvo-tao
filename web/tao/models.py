@@ -38,7 +38,8 @@ class Simulation(models.Model):
     external_link_url = models.URLField(max_length=200, default='')
     cosmology = models.CharField(max_length=100, default='')
     cosmological_parameters = models.CharField(max_length=100, default='')
-    box_size = models.CharField(max_length=100, default='')
+    box_size_units = models.CharField(max_length=10, default='Mpc')
+    box_size = models.DecimalField(max_digits=10, decimal_places=3)
     web_site = models.URLField(max_length=200, default='')
 
     def __unicode__(self):
@@ -75,17 +76,26 @@ class GalaxyModel(models.Model):
 class DataSet(models.Model):
     simulation = models.ForeignKey(Simulation)
     galaxy_model = models.ForeignKey(GalaxyModel)
+    database = models.CharField(max_length=200)
+    box_size = models.IntegerField()
     
     def __unicode__(self):
         return "%s : %s" % (self.simulation.name, self.galaxy_model.name)
     
 class DataSetParameter(models.Model):
     name = models.CharField(max_length=200)
+    units = models.CharField(max_length=20)
     dataset = models.ForeignKey(DataSet)
     
     def __unicode__(self):
         return self.name
 
+class StellarModel(models.Model):
+    name = models.CharField(max_length=200)
+    
+    def __unicode__(self):
+        return self.name
+    
 class Job(models.Model):
     SUBMITTED = 'SUBMITTED'
     IN_PROGRESS = 'IN_PROGRESS'

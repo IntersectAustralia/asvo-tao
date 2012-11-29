@@ -8,27 +8,32 @@ from django.views.decorators.http import require_POST
 
 from tao import models
 from tao.decorators import researcher_required, set_tab
-from tao.forms import MockGalaxyFactoryForm
+from tao.forms import MockGalaxyFactoryForm, SEDForm
 
 
 @set_tab('mgf')
 @researcher_required
 def index(request):
     if request.method == 'POST':
-        form = MockGalaxyFactoryForm(request.POST)
-        if form.is_valid():
+        form = MockGalaxyFactoryForm(request.POST) 
+        sed_form = SEDForm(request.POST)
+
+        if form.is_valid() and sed_form.is_valid():
             u = models.User.objects.get(username=request.user)
             form.save(u)
-            
+
             messages.info(request, _("Your job was submitted successfully."))
             return redirect(reverse('submitted_jobs'))
+
     else:
         form = MockGalaxyFactoryForm()
-        
+        sed_form = SEDForm()
+
     return render(request, 'mock_galaxy_factory/index.html', {
         'form': form,
         'simulations': models.Simulation.objects.all(),
         'galaxy_models': models.GalaxyModel.objects.all(),
+        'sed_form': sed_form,
     })
 
 @set_tab('mgf')
@@ -39,7 +44,7 @@ def my_jobs_with_status(request, status=None):
         filtered_jobs = user_jobs.filter(status=status)
     else:
         filtered_jobs = user_jobs
-        
+
     if status in [models.Job.SUBMITTED, models.Job.QUEUED, models.Job.IN_PROGRESS]:
         show_field = {
                       'submitted_at': True,

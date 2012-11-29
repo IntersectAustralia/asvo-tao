@@ -94,26 +94,31 @@
                 		  {% endfor %}
                 	</div>
                 </div>
-                <!--
-                <div class="span4">
-
-                </div>
-                -->
                 <div class="boxed span8">
                     {% if form.non_field_errors %}
-  <div class="alert-message block-message error">
-    <p>
-      <strong>{{ form_error_title }}</strong>
-        <ul>
-      {{ form.non_field_errors|unordered_list }}
-    </ul>
-    </p>
-  </div>
-{% endif %}
+                        <div class="alert-message block-message error">
+                            <p>
+                                <strong>{{ form_error_title }}</strong>
+                                <ul>
+                                    {{ form.non_field_errors|unordered_list }}
+                                </ul>
+                            </p>
+                        </div>
+                    {% endif %}
                     {% for fieldset in form.fieldsets %}
                         {{ fieldset|as_bootstrap_fieldset }}
                     {% endfor %}
                 </div>
+                
+                <legend>Spectral Energy Distribution</legend>
+                <div class="row-fluid">
+                    <div class="boxed span8 offset4">
+                        <form id="sed-form" action="" method="POST">
+                        {% for fieldset in sed_form.fieldsets %}
+                            {{ fieldset|as_bootstrap_fieldset }}
+                        {% endfor %}
+                    </div>
+                </div>  
             </div>
         </fieldset>
         <div class="form-actions">

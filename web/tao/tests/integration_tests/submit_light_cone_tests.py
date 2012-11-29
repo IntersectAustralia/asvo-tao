@@ -1,6 +1,6 @@
 from tao.models import Job
 from tao.tests.integration_tests.helper import LiveServerMGFTest
-from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetParameterFactory, JobFactory
+from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetParameterFactory, JobFactory, StellarModelFactory
 
 from tao.forms import MockGalaxyFactoryForm
 
@@ -12,6 +12,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
         galaxy_model = GalaxyModelFactory.create(simulation=simulation)
         dataset = DataSetFactory.create(simulation=simulation, galaxy_model=galaxy_model)
         DataSetParameterFactory.create(dataset=dataset)
+        StellarModelFactory.create()
         
         self.username = "user"
         password = "password"
@@ -35,8 +36,10 @@ class SubmitLightConeTests(LiveServerMGFTest):
         
         ## fill in form (correctly)
         self.fill_in_fields({
-            'id_ra': '1',
-            'id_dec': '1',
+            'id_ra_min': '1',
+            'id_dec_min': '1',
+            'id_ra_max': '2',
+            'id_dec_max': '2',
         })
         self.submit_mgf_form()
 
@@ -84,8 +87,10 @@ class SubmitLightConeTests(LiveServerMGFTest):
         ## fill in light-cone fields (correctly)
         self.select('#id_box_type', 'Light-Cone')
         self.fill_in_fields({
-            'id_ra': '1',
-            'id_dec': '1',
+            'id_ra_min': '1',
+            'id_ra_max': '2',
+            'id_dec_min': '1',
+            'id_dec_max': '2',
         })
 
         self.submit_mgf_form()
@@ -98,8 +103,10 @@ class SubmitLightConeTests(LiveServerMGFTest):
         ## fill in light-cone fields (incorrectly)
         self.select('#id_box_type', 'Light-Cone')
         self.fill_in_fields({
-            'id_ra': 'not_valid',
-            'id_dec': 'not_valid',
+            'id_ra_min': 'not_valid',
+            'id_ra_max': 'not_valid',
+            'id_dec_min': 'not_valid',
+            'id_dec_max': 'not_valid',
         })
 
         ## fill in box fields (correctly)

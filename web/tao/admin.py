@@ -1,7 +1,7 @@
 from django.contrib import admin
-from tao.models import Job, UserProfile, Simulation, GalaxyModel, DataSet, DataSetParameter
+from tao.models import Job, UserProfile, Simulation, GalaxyModel, DataSet, DataSetParameter, StellarModel
 
-for model in (UserProfile, Simulation, Job, GalaxyModel, DataSetParameter):
+for model in (UserProfile, Simulation, Job, GalaxyModel, DataSetParameter, StellarModel):
     admin.site.register(model)
 
 
