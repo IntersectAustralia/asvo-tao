@@ -25,14 +25,22 @@ public:
          // Open our sqlite connection.
          soci::session sql( soci::sqlite3, db_filename );
 
-         // Add meta table.
-         sql << "CREATE TABLE meta (snap_table INTEGER, redshift DOUBLE PRECISION, box_size DOUBLE PRECISION)";
+	 // Add a snapshot to redshift table.
+         sql << "CREATE TABLE snap_redshift (snapnum INTEGER, redshift DOUBLE PRECISION)";
+
+	 // Add a summary table and insert a value.
+         sql << "CREATE TABLE summary (domain_size DOUBLE PRECISION)";
+	 sql << "INSERT INTO summary VALUES(1000)";
 
          // Add snapshot tables.
-         sql << "CREATE TABLE snapshot_000 (x DOUBLE PRECISION, y DOUBLE PRECISION, z DOUBLE PRECISION, id INTEGER)";
-         sql << "CREATE TABLE snapshot_001 (x DOUBLE PRECISION, y DOUBLE PRECISION, z DOUBLE PRECISION, id INTEGER)";
-         sql << "CREATE TABLE snapshot_002 (x DOUBLE PRECISION, y DOUBLE PRECISION, z DOUBLE PRECISION, id INTEGER)";
-         sql << "CREATE TABLE snapshot_003 (x DOUBLE PRECISION, y DOUBLE PRECISION, z DOUBLE PRECISION, id INTEGER)";
+         sql << "CREATE TABLE tree_1 (posx DOUBLE PRECISION, posy DOUBLE PRECISION, posz DOUBLE PRECISION, "
+	   "globalindex INTEGER, snapnum INTEGER)";
+         sql << "CREATE TABLE tree_2 (posx DOUBLE PRECISION, posy DOUBLE PRECISION, posz DOUBLE PRECISION, "
+	   "globalindex INTEGER, snapnum INTEGER)";
+         sql << "CREATE TABLE tree_3 (posx DOUBLE PRECISION, posy DOUBLE PRECISION, posz DOUBLE PRECISION, "
+	   "globalindex INTEGER, snapnum INTEGER)";
+         sql << "CREATE TABLE tree_4 (posx DOUBLE PRECISION, posy DOUBLE PRECISION, posz DOUBLE PRECISION, "
+	   "globalindex INTEGER, snapnum INTEGER)";
       }
 
       // Create the XML file by calling the lightcone options setup and filling in the
