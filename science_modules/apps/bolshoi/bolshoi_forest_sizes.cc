@@ -67,7 +67,9 @@ main( int argc,
 
    // Start our workers.
    LOGILN( "Launching ", num_threads, " threads." );
+#ifdef _OPENMP
    omp_set_num_threads( num_threads );
+#endif
 #pragma omp parallel
    {
       // Enter the loop.
