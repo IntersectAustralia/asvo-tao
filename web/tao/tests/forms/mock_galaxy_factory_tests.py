@@ -189,7 +189,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
 
         simulation = SimulationFactory.create(box_size=database_box_size, box_size_units='Mpc')
         galaxy_model = GalaxyModelFactory.create()
-        dataset = DataSetFactory.create(database=database_name, simulation=simulation, galaxy_model=galaxy_model, box_size=database_box_size)
+        dataset = DataSetFactory.create(database=database_name, simulation=simulation, galaxy_model=galaxy_model)
 
         filter_parameter = DataSetParameterFactory.create(dataset=dataset)
         filter_min = '0.93'
@@ -263,7 +263,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
 
         simulation = SimulationFactory.create(box_size=database_box_size, box_size_units='Mpc')
         galaxy_model = GalaxyModelFactory.create()
-        dataset = DataSetFactory.create(database=database_name, simulation=simulation, galaxy_model=galaxy_model, box_size=database_box_size)
+        dataset = DataSetFactory.create(database=database_name, simulation=simulation, galaxy_model=galaxy_model)
 
         ra_min = '1.23'
         ra_max = '2.34'
