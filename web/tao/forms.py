@@ -117,12 +117,6 @@ class MockGalaxyFactoryForm(BetterForm):
         }), ('secondary', {
             'legend': 'Parameters',
             'fields': ['filter', 'max', 'min', 'rmax', 'rmin'],
-        }), ('third', {
-            'legend': 'Output properties',
-            'fields': [],
-        }), ('fourth', {
-            'legend': 'Miscellaneous',
-            'fields': [],
         }),]
 
     def __init__(self, *args, **kwargs):
