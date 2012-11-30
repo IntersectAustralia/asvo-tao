@@ -660,8 +660,10 @@ main( int argc,
    LOGILN( "Have ", num_forests, " forests to process." );
 
    // Setup the number of threads to use.
+#ifdef _OPENMP
    omp_set_num_threads( num_threads );
    LOGILN( "Running with ", num_threads, " threads." );
+#endif
 
    // Calculate for each thread the start and finish offsets. I will
    // do this by balancing the number of halos (approximately) each
