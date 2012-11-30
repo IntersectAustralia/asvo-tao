@@ -1,0 +1,54 @@
+[
+    {
+        "pk": 1, 
+        "model": "tao.datasetparameter", 
+        "fields": {
+            "units": "unit", 
+            "name": "parama", 
+            "dataset": 1
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "tao.dataset", 
+        "fields": {
+            "box_size": 123, 
+            "galaxy_model": 1, 
+            "database": "mydb", 
+            "simulation": 1
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "tao.galaxymodel", 
+        "fields": {
+            "paper_url": "http://myurl.com/", 
+            "kind": "my kind", 
+            "name": "my model", 
+            "paper_title": "my title", 
+            "simulation": 1
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "tao.simulation", 
+        "fields": {
+            "name": "my sim", 
+            "web_site": "http://web.com/", 
+            "cosmological_parameters": "cosmo params", 
+            "cosmology": "cosmology", 
+            "box_size": "123.000", 
+            "paper_url": "http://url.com/", 
+            "external_link_url": "http://ext.com/", 
+            "paper_title": "my tit", 
+            "box_size_units": "Mpc"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "tao.stellarmodel", 
+        "fields": {
+            "name": "My stellar model"
+        }
+    }
+]
