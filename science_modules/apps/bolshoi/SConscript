@@ -22,7 +22,6 @@ utils_o = env.Object('utils.cc')
 sources = [
     ('bolshoi_forest_sizes', 'bolshoi_forest_sizes.cc', utils_o),
     ('bolshoi_preprocess', 'bolshoi_preprocess.cc', utils_o),
-    ('bolshoi_convert', 'bolshoi_convert.cc'),
     ('bolshoi_convert2', 'bolshoi_convert2.cc', 'exporter.cc'),
 ]
 
