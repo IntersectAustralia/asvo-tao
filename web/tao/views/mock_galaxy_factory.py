@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 
 from django.views.decorators.http import require_POST
 
-from tao import models, job_xml
+from tao import models, workflow
 from tao.decorators import researcher_required, set_tab
 from tao.forms import LightConeForm, SEDForm
 
@@ -20,7 +20,7 @@ def index(request):
 
         if light_cone_form.is_valid() and sed_form.is_valid():
             u = models.User.objects.get(username=request.user)
-            job_xml.save(u, light_cone_form, sed_form)
+            workflow.save(u, light_cone_form, sed_form)
 
             messages.info(request, _("Your job was submitted successfully."))
             return redirect(reverse('submitted_jobs'))

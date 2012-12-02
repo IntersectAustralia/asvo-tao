@@ -1,6 +1,6 @@
 from django.test.testcases import TransactionTestCase
 
-from tao import job_xml
+from tao import workflow
 from tao.forms import LightConeForm, SEDForm
 from tao.tests.support import stripped_joined_lines
 from tao.tests.support.factories import SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetParameterFactory, UserFactory, StellarModelFactory
@@ -221,7 +221,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         sed_form = SEDForm({'single_stellar_population_model': stellar_model.id})
         sed_form.is_valid()
         
-        job = job_xml.save(self.user, lc_form, sed_form)
+        job = workflow.save(self.user, lc_form, sed_form)
 
         expected_parameter_xml = stripped_joined_lines("""
             <?xml version="1.0" encoding="utf-8"?>
@@ -297,7 +297,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         sed_form = SEDForm({'single_stellar_population_model': stellar_model.id})
         sed_form.is_valid()
         
-        job = job_xml.save(self.user, lc_form, sed_form)
+        job = workflow.save(self.user, lc_form, sed_form)
 
         expected_parameter_xml = stripped_joined_lines("""
             <?xml version="1.0" encoding="utf-8"?>

@@ -5,6 +5,7 @@
 from lxml import etree
 
 from tao import models
+from tao.models import StellarModel
 
 def param(name, value, **attrs):
     attrs['name'] = name
@@ -78,8 +79,9 @@ def _make_parameters(light_cone_form, sed_form):
         if filter_max != '':
             light_cone_parameters.append(param('filter-max', filter_max, units='Mpc'))
 
+    single_stellar_population_model = StellarModel.objects.get(pk=sed_form.cleaned_data['single_stellar_population_model'])
     sed_parameters = [
-        param('single-stellar-population-model', sed_form.cleaned_data['single_stellar_population_model']),
+        param('single-stellar-population-model', single_stellar_population_model.name),
     ]
     
     return to_xml(light_cone_parameters, sed_parameters)
