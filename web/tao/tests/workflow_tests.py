@@ -24,10 +24,22 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                         <param name="filter-min" units="Mpc">0.1</param>
                         <param name="filter-max" units="Mpc">0.2</param>
                     </module>
+                    <module name="sed">
+                        <param name="single-stellar-population-model">Stella</param>
+                    </module>
                 </workflow>
             </tao>
         """)
-
+        
+        sed_parameters = [
+            {
+                'attrs': {
+                    'name': 'single-stellar-population-model',
+                },
+                'value': 'Stella'
+            },
+        ]
+        
         light_cone_parameters = [
             {
                 'attrs': {
@@ -104,6 +116,6 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             },
         ]
 
-        actual_parameter_xml = workflow.to_xml(light_cone_parameters)
+        actual_parameter_xml = workflow.to_xml(light_cone_parameters, sed_parameters)
 
         self.assertXmlEqual(expected_parameter_xml, actual_parameter_xml)

@@ -77,7 +77,6 @@ class DataSet(models.Model):
     simulation = models.ForeignKey(Simulation)
     galaxy_model = models.ForeignKey(GalaxyModel)
     database = models.CharField(max_length=200)
-    box_size = models.IntegerField()
     
     def __unicode__(self):
         return "%s : %s" % (self.simulation.name, self.galaxy_model.name)
@@ -91,7 +90,8 @@ class DataSetParameter(models.Model):
         return self.name
 
 class StellarModel(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, unique=True)
+    label = models.CharField(max_length=200, unique=True)
     
     def __unicode__(self):
         return self.name
