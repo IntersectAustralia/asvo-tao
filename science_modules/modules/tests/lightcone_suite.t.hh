@@ -33,6 +33,8 @@ public:
    {
       lightcone lc;
 
+      LOG_PUSH( new logging::file( "test.log", 0 ) );
+
       // Turn off random rotation and shifting.
       lc._use_random = false;
 
@@ -218,62 +220,54 @@ public:
    //    }
    // }
 
-   // ///
-   // ///
-   // ///
-   // void test_extended_box_generation()
-   // {
-   //    lightcone lc;
+   ///
+   ///
+   ///
+   void test_extended_box_generation()
+   {
+      lightcone lc;
 
-   //    // Turn off random rotation and shifting.
-   //    lc._use_random = false;
+      // Turn off random rotation and shifting.
+      lc._use_random = false;
 
-   //    // Insert some values. Place the points on the lower walls
-   //    // to get picked up by the neighboring boxes.
-   //    {
-   //       soci::session sql( soci::sqlite3, db_setup.db_filename );
-   //       sql << "INSERT INTO meta VALUES(0, 0, 100)";
-   //       sql << "INSERT INTO meta VALUES(1, 0.05, 100)";
-   //       sql << "INSERT INTO snapshot_000 VALUES(1, 14, 14, 0)";
-   //       sql << "INSERT INTO snapshot_000 VALUES(14, 1, 14, 1)";
-   //       sql << "INSERT INTO snapshot_000 VALUES(14, 14, 1, 2)";
-   //       sql << "INSERT INTO snapshot_001 VALUES(1, 14, 14, 0)";
-   //       sql << "INSERT INTO snapshot_001 VALUES(14, 1, 14, 1)";
-   //       sql << "INSERT INTO snapshot_001 VALUES(14, 14, 1, 2)";
-   //    }
+      // Insert some values. Place the points on the lower walls
+      // to get picked up by the neighboring boxes.
+      {
+         soci::session sql( soci::sqlite3, db_setup.db_filename );
+         sql << "INSERT INTO snap_redshift VALUES(0, 0)";
+         sql << "INSERT INTO snap_redshift VALUES(1, 0.05)";
+	 sql << "INSERT INTO tree_1 VALUES(1, 14, 14, 0, 0)";
+         sql << "INSERT INTO tree_2 VALUES(14, 1, 14, 1, 0)";
+         sql << "INSERT INTO tree_3 VALUES(14, 14, 1, 2, 0)";
+         sql << "INSERT INTO tree_1 VALUES(1, 14, 14, 3, 1)";
+         sql << "INSERT INTO tree_2 VALUES(14, 1, 14, 4, 1)";
+         sql << "INSERT INTO tree_3 VALUES(14, 14, 1, 5, 1)";
+      }
 
-   //    // Prepare base dictionary.
-   //    options::dictionary& dict = db_setup.dict;
-   //    dict["z_min"] = "0";
-   //    dict["ra_min"] = "0";
-   //    dict["ra_max"] = "90";
-   //    dict["dec_min"] = "0";
-   //    dict["dec_max"] = "90";
+      // Prepare base dictionary.
+      options::dictionary& dict = db_setup.dict;
+      dict["z_min"] = "0";
+      dict["ra_min"] = "0";
+      dict["ra_max"] = "90";
+      dict["dec_min"] = "0";
+      dict["dec_max"] = "90";
 
-   //    // Place to store row IDs.
-   //    vector<int> ids;
+      // Place to store row IDs.
+      vector<int> ids;
 
-   //    // Generate all results.
-   //    db_setup.xml.write( db_setup.xml_filename, dict );
-   //    setup_lightcone( lc );
-   //    ids.resize( 0 );
-   //    for( lc.begin(); !lc.done(); ++lc )
-   //    {
-   //       const galaxy& gal = *lc;
-   //       ids.push_back( gal.id() );
-   //    }
-   //    TS_ASSERT_EQUALS( ids.size(), 12 );
-   //    for( unsigned ii = 0; ii < 12; ++ii )
-   //       TS_ASSERT_EQUALS( ids[ii], ii%3 );
-
-   //    // Erase the table data.
-   //    {
-   //       soci::session sql( soci::sqlite3, db_setup.db_filename );
-   //       sql << "DELETE FROM meta";
-   //       sql << "DELETE FROM snapshot_000";
-   //       sql << "DELETE FROM snapshot_001";
-   //    }
-   // }
+      // Generate all results.
+      db_setup.xml.write( db_setup.xml_filename, dict );
+      setup_lightcone( lc );
+      ids.resize( 0 );
+      for( lc.begin(); !lc.done(); ++lc )
+      {
+         const galaxy& gal = *lc;
+         ids.push_back( gal.id() );
+      }
+      TS_ASSERT_EQUALS( ids.size(), 12 );
+      for( unsigned ii = 0; ii < 12; ++ii )
+         TS_ASSERT_EQUALS( ids[ii], ii%3 );
+   }
 
    // ///
    // ///
