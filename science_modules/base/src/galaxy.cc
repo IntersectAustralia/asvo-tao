@@ -14,25 +14,31 @@ namespace tao {
    int
    galaxy::id() const
    {
-      return _row.get<int>( "id" );
+      return _row.get<int>( "globalindex" );
    }
 
    galaxy::real_type
    galaxy::x() const
    {
-      return _row.get<real_type>( "x" ) + _box[0];
+      return _row.get<real_type>( "posx" ) + _box[0];
    }
 
    galaxy::real_type
    galaxy::y() const
    {
-      return _row.get<real_type>( "y" ) + _box[1];
+      return _row.get<real_type>( "posy" ) + _box[1];
    }
 
    galaxy::real_type
    galaxy::z() const
    {
-      return _row.get<real_type>( "z" ) + _box[2];
+      return _row.get<real_type>( "posz" ) + _box[2];
+   }
+
+   galaxy::real_type
+   galaxy::redshift() const
+   {
+      return _row.get<real_type>( "redshift" );
    }
 
    galaxy::real_type
