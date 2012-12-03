@@ -9,7 +9,7 @@ from captcha.fields import ReCaptchaField
 
 from form_utils.forms import BetterForm
 
-from tao import datasets, models, workflow
+from tao import datasets
 from tao.models import UserProfile
 
 class LoginForm(auth_forms.AuthenticationForm):
@@ -90,7 +90,7 @@ class SEDForm(BetterForm):
         self.fields['single_stellar_population_model'] = ChoiceFieldWithOtherAttrs(choices=datasets.stellar_model_choices())
 
 
-class MockGalaxyFactoryForm(BetterForm):
+class LightConeForm(BetterForm):
     CONE = 'cone'
     BOX = 'box'
 
@@ -102,10 +102,10 @@ class MockGalaxyFactoryForm(BetterForm):
     rmin = forms.DecimalField(required=False, label=_('Rmin'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
     box_size = forms.DecimalField(required=False, label=_('Box Size'))
 
-    ra_min = forms.DecimalField(required=False, label=_('RA min'), min_value=-180, max_value=180, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
-    ra_max = forms.DecimalField(required=False, label=_('RA max'), min_value=-180, max_value=180, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
-    dec_min = forms.DecimalField(required=False, label=_('dec min'), min_value=-90, max_value=90, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
-    dec_max = forms.DecimalField(required=False, label=_('dec max'), min_value=-90, max_value=90, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
+    ra_min = forms.DecimalField(required=False, label=_('RA min (degrees)'), min_value=0, max_value=360, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
+    ra_max = forms.DecimalField(required=False, label=_('RA max (degrees)'), min_value=0, max_value=360, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
+    dec_min = forms.DecimalField(required=False, label=_('dec min (degrees)'), min_value=0, max_value=360, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
+    dec_max = forms.DecimalField(required=False, label=_('dec max (degrees)'), min_value=0, max_value=360, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
 
     LIGHT_CONE_REQUIRED_FIELDS = ('ra_min', 'ra_max', 'dec_min', 'dec_max')
 
@@ -120,7 +120,7 @@ class MockGalaxyFactoryForm(BetterForm):
         }),]
 
     def __init__(self, *args, **kwargs):
-        super(MockGalaxyFactoryForm, self).__init__(*args, **kwargs)
+        super(LightConeForm, self).__init__(*args, **kwargs)
         self.fields['dark_matter_simulation'] = ChoiceFieldWithOtherAttrs(choices=datasets.dark_matter_simulation_choices())
         self.fields['galaxy_model'] = ChoiceFieldWithOtherAttrs(choices=datasets.galaxy_model_choices())
         self.fields['filter'] = ChoiceFieldWithOtherAttrs(choices=datasets.filter_choices())
@@ -175,7 +175,7 @@ class MockGalaxyFactoryForm(BetterForm):
             del self.cleaned_data['box_type']
 
     def clean(self):
-        self.cleaned_data = super(MockGalaxyFactoryForm, self).clean()
+        self.cleaned_data = super(LightConeForm, self).clean()
         self.check_min_less_than_max()
         self.check_rmin_less_than_rmax()
         self.check_box_size_required_for_box()
@@ -183,42 +183,3 @@ class MockGalaxyFactoryForm(BetterForm):
         self.check_light_cone_min_max_fields()
 
         return self.cleaned_data
-
-    def save(self, user):
-        job = models.Job(user=user, parameters=self._make_parameters())
-        job.save()
-        return job
-
-    def _make_parameters(self):
-        from tao.datasets import NO_FILTER
-        galaxy_model = models.GalaxyModel.objects.get(pk=self.cleaned_data['galaxy_model'])
-        simulation = models.Simulation.objects.get(pk=self.cleaned_data['dark_matter_simulation'])
-
-        data_set = models.DataSet.objects.get(galaxy_model=galaxy_model, simulation=simulation)
-
-        selected_filter = self.cleaned_data['filter']
-        if selected_filter != NO_FILTER:
-            filter_parameter = models.DataSetParameter.objects.get(pk=selected_filter)
-        else:
-            filter_parameter = None
-
-        light_cone_parameters = [
-            workflow.param('database', 'sqlite://sfh_bcgs200_full_z0.db'),
-            workflow.param('schema-version', '1.0'),
-            workflow.param('query-type', self.cleaned_data['box_type']),
-            workflow.param('simulation-box-size', simulation.box_size, units=simulation.box_size_units),
-            workflow.param('ra-min', self.cleaned_data['ra_min'], units='deg'),
-            workflow.param('ra-max', self.cleaned_data['ra_max'], units='deg'),
-            workflow.param('dec-min', self.cleaned_data['dec_min'], units='deg'),
-            workflow.param('dec-max', self.cleaned_data['dec_max'], units='deg'),
-        ]
-        if filter_parameter is not None:
-            light_cone_parameters.append(workflow.param('filter-type', filter_parameter.name))
-            filter_min = self.cleaned_data['min']
-            filter_max = self.cleaned_data['max']
-            if filter_min != '':
-                light_cone_parameters.append(workflow.param('filter-min', filter_min, units='Mpc'))
-            if filter_max != '':
-                light_cone_parameters.append(workflow.param('filter-max', filter_max, units='Mpc'))
-
-        return workflow.to_xml(light_cone_parameters)

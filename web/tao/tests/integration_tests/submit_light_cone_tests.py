@@ -2,8 +2,6 @@ from tao.models import Job
 from tao.tests.integration_tests.helper import LiveServerMGFTest
 from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetParameterFactory, JobFactory, StellarModelFactory
 
-from tao.forms import MockGalaxyFactoryForm
-
 class SubmitLightConeTests(LiveServerMGFTest):
     def setUp(self):
         super(SubmitLightConeTests, self).setUp()

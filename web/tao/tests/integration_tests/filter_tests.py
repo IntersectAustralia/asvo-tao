@@ -64,7 +64,7 @@ class FilterTests(LiveServerMGFTest):
         
         self.select_dark_matter_simulation(simulation)
         self.select_galaxy_model(galaxy_model)
-        self.select('#id_filter', dataset_parameter.name)
+        self.choose_filter(dataset_parameter)
 
         self.assert_is_enabled('#id_max')
         self.assert_is_enabled('#id_min')
@@ -76,7 +76,7 @@ class FilterTests(LiveServerMGFTest):
         self.select_galaxy_model(galaxy_model)
         dataset = DataSet.objects.get(simulation=simulation, galaxy_model=galaxy_model)
         dataset_parameter = dataset.datasetparameter_set.all()[0]
-        self.select('#id_filter', dataset_parameter.name)
+        self.choose_filter(dataset_parameter)
         
         max_input = "bad number"
         min_input = "73"
@@ -91,7 +91,7 @@ class FilterTests(LiveServerMGFTest):
         # check values are the same in the form as user previously selected      
         self.assertEqual(simulation.name, self.get_selected_option_text('#id_dark_matter_simulation'))
         self.assertEqual(galaxy_model.name, self.get_selected_option_text('#id_galaxy_model'))
-        self.assertEqual(dataset_parameter.name, self.get_selected_option_text('#id_filter'))
+        self.assertEqual(dataset_parameter.label(), self.get_selected_option_text('#id_filter'))
         self.assertEqual(max_input, self.get_selector_value('#id_max'))
         self.assertEqual(min_input, self.get_selector_value('#id_min'))
     
@@ -104,4 +104,6 @@ class FilterTests(LiveServerMGFTest):
         
         self.assertEqual(rmax_input, self.get_selector_value('#id_rmax'))
         self.assertEqual(rmin_input, self.get_selector_value('#id_rmin'))
-        
+
+    def choose_filter(self, dataset_parameter):
+        self.select('#id_filter', dataset_parameter.label())

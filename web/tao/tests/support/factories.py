@@ -54,7 +54,6 @@ class GalaxyModelFactory(factory.Factory):
     
 class DataSetFactory(factory.Factory):
     FACTORY_FOR = DataSet
-    box_size = 123
     
 class DataSetParameterFactory(factory.Factory):
     FACTORY_FOR = DataSetParameter

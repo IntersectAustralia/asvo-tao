@@ -128,7 +128,8 @@ class LiveServerTest(django.test.LiveServerTestCase):
         return [x.text for x in self.selenium.find_elements_by_css_selector('#id_filter option')]
     
     def get_expected_filter_options(self, dataset_parameters): 
-        return ['No Filter'] + [x[0] for x in dataset_parameters.values_list('name')]
+        normal_parameters = [x.label() for x in dataset_parameters]
+        return ['No Filter'] + normal_parameters
         
     def get_full_url(self, url_name, *args, **kwargs):
         return "%s%s" % (self.live_server_url, reverse(url_name, args=args, kwargs=kwargs))
