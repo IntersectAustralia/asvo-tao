@@ -53,14 +53,14 @@ class DatasetTestCase(TransactionTestCase):
         d2 = DataSetFactory.create(simulation=s2, galaxy_model=g1)
         d3 = DataSetFactory.create(simulation=s2, galaxy_model=g2)
         
-        dp1 = DataSetParameterFactory.create(dataset=d1)
-        dp2 = DataSetParameterFactory.create(dataset=d2)
-        dp3 = DataSetParameterFactory.create(dataset=d3)
+        dp1 = DataSetParameterFactory.create(dataset=d1, units='dp1u')
+        dp2 = DataSetParameterFactory.create(dataset=d2, units='dp2u')
+        dp3 = DataSetParameterFactory.create(dataset=d3, units='dp3u')
         
         self.assertEqual([
                           ('no_filter', 'No Filter', {}),
-                          (dp1.id, dp1.name, {'data-simulation_id': unicode(s1.id), 'data-galaxy_model_id': unicode(g3.id)}),
-                          (dp2.id, dp2.name, {'data-simulation_id': unicode(s2.id), 'data-galaxy_model_id': unicode(g1.id)}),
-                          (dp3.id, dp3.name, {'data-simulation_id': unicode(s2.id), 'data-galaxy_model_id': unicode(g2.id)})
+                          (dp1.id, '%s (%s)' % (dp1.name, dp1.units), {'data-simulation_id': str(s1.id), 'data-galaxy_model_id': str(g3.id)}),
+                          (dp2.id, '%s (%s)' % (dp2.name, dp2.units), {'data-simulation_id': str(s2.id), 'data-galaxy_model_id': str(g1.id)}),
+                          (dp3.id, '%s (%s)' % (dp3.name, dp3.units), {'data-simulation_id': str(s2.id), 'data-galaxy_model_id': str(g2.id)})
                           ], 
                          filter_choices())

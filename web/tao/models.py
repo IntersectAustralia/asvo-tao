@@ -89,6 +89,9 @@ class DataSetParameter(models.Model):
     def __unicode__(self):
         return self.name
 
+    def label(self):
+        return "%s (%s)" % (self.name, self.units)
+
 class StellarModel(models.Model):
     name = models.CharField(max_length=200, unique=True)
     label = models.CharField(max_length=200, unique=True)

@@ -30,7 +30,7 @@ public:
 
 	 // Add a summary table and insert a value.
          sql << "CREATE TABLE summary (domain_size DOUBLE PRECISION)";
-	 sql << "INSERT INTO summary VALUES(1000)";
+	 sql << "INSERT INTO summary VALUES(100)";
 
          // Add snapshot tables.
          sql << "CREATE TABLE tree_1 (posx DOUBLE PRECISION, posy DOUBLE PRECISION, posz DOUBLE PRECISION, "

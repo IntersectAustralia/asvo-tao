@@ -102,10 +102,10 @@ class LightConeForm(BetterForm):
     rmin = forms.DecimalField(required=False, label=_('Rmin'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
     box_size = forms.DecimalField(required=False, label=_('Box Size'))
 
-    ra_min = forms.DecimalField(required=False, label=_('RA min'), min_value=-180, max_value=180, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
-    ra_max = forms.DecimalField(required=False, label=_('RA max'), min_value=-180, max_value=180, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
-    dec_min = forms.DecimalField(required=False, label=_('dec min'), min_value=-90, max_value=90, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
-    dec_max = forms.DecimalField(required=False, label=_('dec max'), min_value=-90, max_value=90, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
+    ra_min = forms.DecimalField(required=False, label=_('RA min (degrees)'), min_value=0, max_value=360, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
+    ra_max = forms.DecimalField(required=False, label=_('RA max (degrees)'), min_value=0, max_value=360, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
+    dec_min = forms.DecimalField(required=False, label=_('dec min (degrees)'), min_value=0, max_value=360, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
+    dec_max = forms.DecimalField(required=False, label=_('dec max (degrees)'), min_value=0, max_value=360, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
 
     LIGHT_CONE_REQUIRED_FIELDS = ('ra_min', 'ra_max', 'dec_min', 'dec_max')
 

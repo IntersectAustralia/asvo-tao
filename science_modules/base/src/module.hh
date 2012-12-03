@@ -21,9 +21,7 @@ namespace tao {
    protected:
 
       void
-      _db_connect( soci::session& sql,
-                   const hpc::string& type,
-                   const hpc::string& name );
+      _db_connect( soci::session& sql );
 
       void
       _db_disconnect();
@@ -32,7 +30,7 @@ namespace tao {
 
       bool _connected;
       soci::session _sql;
-      hpc::string _dbtype, _dbname, _dbhost, _dbuser, _dbpass;
+      hpc::string _dbtype, _dbname, _dbhost, _dbport, _dbuser, _dbpass;
    };
 }
 

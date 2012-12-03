@@ -30,6 +30,9 @@ namespace tao {
       z() const;
 
       real_type
+      redshift() const;
+
+      real_type
       disk_metallicity() const;
 
       real_type

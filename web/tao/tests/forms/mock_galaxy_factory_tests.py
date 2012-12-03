@@ -34,30 +34,30 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
     def test_ra_dec_min_max(self):
         light_cone_form = self.make_light_cone_form({
             'box_type': LightConeForm.CONE,
-            'ra_min': '-182',
-            'dec_min': '-92',
-            'ra_max': '-181',
-            'dec_max': '-91',
+            'ra_min': '-2',
+            'dec_min': '-2',
+            'ra_max': '-1',
+            'dec_max': '-1',
         })
         self.assertEqual({
-            'ra_min': ['Ensure this value is greater than or equal to -180.'],
-            'dec_min': ['Ensure this value is greater than or equal to -90.'],
-            'ra_max': ['Ensure this value is greater than or equal to -180.'],
-            'dec_max': ['Ensure this value is greater than or equal to -90.'],
+            'ra_min': ['Ensure this value is greater than or equal to 0.'],
+            'dec_min': ['Ensure this value is greater than or equal to 0.'],
+            'ra_max': ['Ensure this value is greater than or equal to 0.'],
+            'dec_max': ['Ensure this value is greater than or equal to 0.'],
         }, light_cone_form.errors)
 
         light_cone_form = self.make_light_cone_form({
             'box_type': LightConeForm.CONE,
-            'ra_min': '181',
-            'dec_min': '91',
-            'ra_max': '182',
-            'dec_max': '92',
+            'ra_min': '361',
+            'dec_min': '361',
+            'ra_max': '362',
+            'dec_max': '362',
         })
         self.assertEqual({
-            'ra_min': ['Ensure this value is less than or equal to 180.'],
-            'dec_min': ['Ensure this value is less than or equal to 90.'],
-            'ra_max': ['Ensure this value is less than or equal to 180.'],
-            'dec_max': ['Ensure this value is less than or equal to 90.'],
+            'ra_min': ['Ensure this value is less than or equal to 360.'],
+            'dec_min': ['Ensure this value is less than or equal to 360.'],
+            'ra_max': ['Ensure this value is less than or equal to 360.'],
+            'dec_max': ['Ensure this value is less than or equal to 360.'],
         }, light_cone_form.errors)
 
     def test_ra_and_dec_min_max(self):

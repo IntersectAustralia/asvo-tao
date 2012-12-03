@@ -136,6 +136,12 @@ namespace tao {
       void
       _read_snapshots();
 
+      ///
+      ///
+      ///
+      void
+      _setup_redshift_ranges();
+
    protected:
 
       string _box_type;
@@ -147,10 +153,11 @@ namespace tao {
       real_type _ra_min, _ra_max;
       real_type _dec_min, _dec_max;
       real_type _z_snap, _box_size;
+      unsigned _min_snap, _max_snap;
       bool _use_random;
       bool _unique;
       real_type _unique_offs_x, _unique_offs_y, _unique_offs_z;
-      range<real_type> _z_range, _dist_range;
+      range<real_type> _dist_range;
       vector<string> _include;
       map<string, string> _output_fields;
       string _filter;
