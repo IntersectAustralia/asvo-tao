@@ -2,6 +2,7 @@
 #include <iostream>
 #include <libhpc/libhpc.hh>
 #include <tao/modules/lightcone.hh>
+#include <tao/modules/csv.hh>
 
 using namespace tao;
 
@@ -37,12 +38,16 @@ struct pipeline
       // Iterate over the galaxies.
       for( lc.begin(); !lc.done(); ++lc )
       {
-         // Just print them out for now.
+	 // Cache the galaxy.
          const galaxy gal = *lc;
+
+	 // Dump out.
+	 dump.process_galaxy( gal );
       }
    }
 
    lightcone lc;
+   csv dump;
 };
 
 // Need to include this last to have a complete pipeline type.
