@@ -1,10 +1,15 @@
 from django.test.testcases import TransactionTestCase
 
-from tao import workflow
+import datetime
+
+from tao import workflow, time
 from tao.forms import LightConeForm, SEDForm
 from tao.tests.support import stripped_joined_lines
 from tao.tests.support.factories import SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetParameterFactory, UserFactory, StellarModelFactory
 from tao.tests.support.xml import XmlDiffMixin
+
+from tao.tests.support import UtcPlusTen
+
 
 class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
 
@@ -16,6 +21,12 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         dataset = DataSetFactory.create(simulation=simulation, galaxy_model=galaxy_model)
         DataSetParameterFactory.create(dataset=dataset)
         self.user = UserFactory.create()
+        #expected_timestamp = "2012-11-13 13:45:32+1000"
+        time.frozen_time = datetime.datetime(2012, 11, 13, 13, 45, 32, 0, UtcPlusTen())
+
+    def tearDown(self):
+        super(MockGalaxyFactoryTests, self).tearDown()
+        time.frozen_time = None
 
     def make_light_cone_form(self, values):
         default_values = {
@@ -189,7 +200,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         galaxy_model = GalaxyModelFactory.create()
         dataset = DataSetFactory.create(database=database_name, simulation=simulation, galaxy_model=galaxy_model)
 
-        filter_parameter = DataSetParameterFactory.create(dataset=dataset)
+        filter_parameter = DataSetParameterFactory.create(dataset=dataset, units='blah')
         filter_min = '0.93'
         filter_max = '3.345'
 
@@ -226,12 +237,12 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
 
         expected_parameter_xml = stripped_joined_lines("""
             <?xml version="1.0" encoding="utf-8"?>
-            <tao timestamp="2012-11-13 13:45:32+1000" version="1.0">
+            <tao xmlns="http://tao.asvo.org.au/schema/module-parameters-v1" timestamp="2012-11-13T13:45:32+1000">
 
                 <workflow name="alpha-light-cone-image">
+                    <param name="database">%(database_name)s</param>
+                    <param name="schema-version">1.0</param>
                     <module name="light-cone">
-                        <param name="database">%(database_name)s</param>
-                        <param name="schema-version">1.0</param>
                         <param name="query-type">%(light_cone)s</param>
                         <param name="simulation-box-size" units="Mpc">500</param>
                         <param name="redshift-min">0.1</param>
@@ -241,8 +252,8 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
                         <param name="dec-min" units="deg">%(dec_min)s</param>
                         <param name="dec-max" units="deg">%(dec_max)s</param>
                         <param name="filter-type">%(filter_type)s</param>
-                        <param name="filter-min" units="Mpc">%(filter_min)s</param>
-                        <param name="filter-max" units="Mpc">%(filter_max)s</param>
+                        <param name="filter-min" units="%(filter_units)s">%(filter_min)s</param>
+                        <param name="filter-max" units="%(filter_units)s">%(filter_max)s</param>
                     </module>
                     <module name="sed">
                         <param name="single-stellar-population-model">%(model_id)s</param>
@@ -261,13 +272,14 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
             'filter_min': filter_min,
             'filter_max': filter_max,
             'model_id': stellar_model.name,
+            'filter_units': filter_parameter.units,
         })
 
         self.assertXmlEqual(expected_parameter_xml, job.parameters)
 
     def test_xml_parameters_without_filter(self):
         from tao.datasets import NO_FILTER
-        database_name = 'sqlite://sfh_bcgs200_full_z0.db'
+        database_name = 'some database'
         database_box_size = 500
 
         simulation = SimulationFactory.create(box_size=database_box_size, box_size_units='Mpc')
@@ -307,12 +319,12 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
 
         expected_parameter_xml = stripped_joined_lines("""
             <?xml version="1.0" encoding="utf-8"?>
-            <tao timestamp="2012-11-13 13:45:32+1000" version="1.0">
+            <tao xmlns="http://tao.asvo.org.au/schema/module-parameters-v1" timestamp="2012-11-13T13:45:32+1000">
 
                 <workflow name="alpha-light-cone-image">
+                    <param name="database">%(database_name)s</param>
+                    <param name="schema-version">1.0</param>
                     <module name="light-cone">
-                        <param name="database">%(database_name)s</param>
-                        <param name="schema-version">1.0</param>
                         <param name="query-type">%(light_cone)s</param>
                         <param name="simulation-box-size" units="Mpc">500</param>
                         <param name="redshift-min">%(rmin)s</param>
@@ -356,6 +368,8 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
             max_snapshot=1,
         )
 
+        expected_timestamp = "2012-11-13T13:45:32+1000"
+
         ra_min = '1.23'
         ra_max = '2.34'
 
@@ -385,12 +399,14 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
 
         expected_parameter_xml = stripped_joined_lines("""
             <?xml version="1.0" encoding="utf-8"?>
-            <tao timestamp="2012-11-13 13:45:32+1000" version="1.0">
+            <tao xmlns="http://tao.asvo.org.au/schema/module-parameters-v1" timestamp="%(expected_timestamp)s">
 
                 <workflow name="alpha-light-cone-image">
+
+                    <param name="database">%(database_name)s</param>
+                    <param name="schema-version">1.0</param>
+
                     <module name="light-cone">
-                        <param name="database">%(database_name)s</param>
-                        <param name="schema-version">1.0</param>
                         <param name="query-type">%(light_cone)s</param>
                         <param name="simulation-box-size" units="Mpc">500</param>
                         <param name="redshift-min">%(rmin)s</param>
@@ -415,6 +431,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
             'rmin': 0,
             'rmax': 1,
             'model_id': stellar_model.name,
+            'expected_timestamp': expected_timestamp
         })
 
         self.assertXmlEqual(expected_parameter_xml, job.parameters)

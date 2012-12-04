@@ -1,27 +1,38 @@
+import datetime
+
 from decimal import Decimal
 
 from django.test import TestCase
 
-from tao import workflow
+from tao import workflow, time
 from tao.tests.support.xml import XmlDiffMixin
-from tao.tests.support import stripped_joined_lines
+from tao.tests.support import stripped_joined_lines, UtcPlusTen
 
 
 class WorkflowTests(TestCase, XmlDiffMixin):
     
+    def setUp(self):
+        super(WorkflowTests, self).setUp()
+        # "2012-11-14T13:45:36+10:00"
+        time.frozen_time = datetime.datetime(2012, 11, 14, 13, 45, 36, 0, UtcPlusTen())
+
+    def tearDown(self):
+        super(WorkflowTests, self).tearDown()
+        time.frozen_time = None
+
     def test_normalizes_decimals(self):
         param = workflow.param("name", Decimal('0E9'))
         self.assertEqual('0', str(param['value']))
-        
+
     def test_basic(self):
         expected_parameter_xml = stripped_joined_lines("""
             <?xml version="1.0" encoding="utf-8"?>
-            <tao timestamp="2012-11-13 13:45:32+1000" version="1.0">
+            <tao xmlns="http://tao.asvo.org.au/schema/module-parameters-v1" timestamp="2012-11-14T13:45:36+1000">
              
                 <workflow name="alpha-light-cone-image">
+                    <param name="database">sqlite://sfh_bcgs200_full_z0.db</param>
+                    <param name="schema-version">1.0</param>
                     <module name="light-cone">
-                        <param name="database">sqlite://sfh_bcgs200_full_z0.db</param>
-                        <param name="schema-version">1.0</param>
                         <param name="query-type">light-cone</param>
                         <param name="simulation-box-size" units="Mpc">500</param>
                         <param name="redshift-min">0.2</param>
@@ -49,8 +60,8 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                 'value': 'Stella'
             },
         ]
-        
-        light_cone_parameters = [
+
+        common_parameters = [
             {
                 'attrs': {
                     'name': 'database',
@@ -63,6 +74,9 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                 },
                 'value': '1.0',
             },
+        ]
+
+        light_cone_parameters = [
             {
                 'attrs': {
                     'name': 'query-type'
@@ -138,6 +152,6 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             },
         ]
 
-        actual_parameter_xml = workflow.to_xml(light_cone_parameters, sed_parameters)
+        actual_parameter_xml = workflow.to_xml(common_parameters, light_cone_parameters, sed_parameters)
 
         self.assertXmlEqual(expected_parameter_xml, actual_parameter_xml)

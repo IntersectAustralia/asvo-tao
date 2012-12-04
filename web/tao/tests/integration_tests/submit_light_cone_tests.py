@@ -141,10 +141,11 @@ class SubmitLightConeTests(LiveServerMGFTest):
             return ['', 'Submitted at', 'User', 'Status', 'Parameters', 'Output Path']
         
     def get_job_table_body(self, job, status):
-        body = ['View', job.created_time.strftime('%a %d %b %Y %H:%m'), self.clean_parameter_lines(job)]
+        from django.utils.timezone import get_default_timezone
+        body = ['View', job.created_time.astimezone(get_default_timezone()).strftime('%a %d %b %Y %H:%m'), self.clean_parameter_lines(job)]
         if status in [Job.SUBMITTED, Job.QUEUED, Job.IN_PROGRESS]:
             return body
         elif status == Job.COMPLETED:
             return body + [job.output_path]
         else:
-            return ['View', job.created_time.strftime('%a %d %b %Y %H:%m'), job.username(), job.status, self.clean_parameter_lines(job), job.output_path]
+            return ['View', job.created_time.astimezone(get_default_timezone()).strftime('%a %d %b %Y %H:%m'), job.username(), job.status, self.clean_parameter_lines(job), job.output_path]

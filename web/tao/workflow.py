@@ -4,7 +4,7 @@
 
 from lxml import etree
 
-from tao import models
+from tao import models, time
 from tao.models import StellarModel
 
 from decimal import Decimal
@@ -20,7 +20,7 @@ def param(name, value, **attrs):
     }
 
 
-def to_xml(light_cone_params, sed_params):
+def to_xml(common_params, light_cone_params, sed_params):
     """
         takes a list of dicts:
             {
@@ -30,14 +30,16 @@ def to_xml(light_cone_params, sed_params):
                 'value': 'sqlite://sfh_bcgs200_full_z0.db',
             },
     """
-    root = etree.Element('tao', timestamp='2012-11-13 13:45:32+1000', version='1.0')
+    root = etree.Element('tao', xmlns='http://tao.asvo.org.au/schema/module-parameters-v1', timestamp=time.timestamp())
 
     workflow = etree.SubElement(root, 'workflow', name='alpha-light-cone-image')
+
+    _add_parameters(workflow, common_params)
 
     light_cone_module = etree.SubElement(workflow, 'module', name='light-cone')
 
     _add_parameters(light_cone_module, light_cone_params)
-    
+
     sed_module = etree.SubElement(workflow, 'module', name='sed')
     
     _add_parameters(sed_module, sed_params)
@@ -76,9 +78,12 @@ def _make_parameters(light_cone_form, sed_form):
     if redshift_max is None:
         redshift_max = dataset.max_snapshot
 
-    light_cone_parameters = [
-        param('database', 'sqlite://sfh_bcgs200_full_z0.db'),
+    common_parameters = [
+        param('database', dataset.database),
         param('schema-version', '1.0'),
+    ]
+
+    light_cone_parameters = [
         param('query-type', light_cone_form.cleaned_data['box_type']),
         param('simulation-box-size', simulation.box_size, units=simulation.box_size_units),
         param('redshift-min', redshift_min),
@@ -93,13 +98,13 @@ def _make_parameters(light_cone_form, sed_form):
         filter_min = light_cone_form.cleaned_data['min']
         filter_max = light_cone_form.cleaned_data['max']
         if filter_min != '':
-            light_cone_parameters.append(param('filter-min', filter_min, units='Mpc'))
+            light_cone_parameters.append(param('filter-min', filter_min, units=filter_parameter.units))
         if filter_max != '':
-            light_cone_parameters.append(param('filter-max', filter_max, units='Mpc'))
+            light_cone_parameters.append(param('filter-max', filter_max, units=filter_parameter.units))
 
     single_stellar_population_model = StellarModel.objects.get(pk=sed_form.cleaned_data['single_stellar_population_model'])
     sed_parameters = [
         param('single-stellar-population-model', single_stellar_population_model.name),
     ]
     
-    return to_xml(light_cone_parameters, sed_parameters)
+    return to_xml(common_parameters, light_cone_parameters, sed_parameters)
