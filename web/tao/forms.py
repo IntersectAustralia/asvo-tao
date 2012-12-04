@@ -14,6 +14,10 @@ from tao.models import UserProfile
 
 class LoginForm(auth_forms.AuthenticationForm):
     remember_me = forms.BooleanField(label=_("Remember Me"), required=False)
+    
+    def __init__(self, *args, **kwargs):
+        super(LoginForm, self).__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs['autofocus'] = 'autofocus'
 
 
 class UserCreationForm(auth_forms.UserCreationForm):
