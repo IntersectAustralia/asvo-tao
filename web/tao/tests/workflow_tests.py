@@ -16,6 +16,8 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                         <param name="schema-version">1.0</param>
                         <param name="query-type">light-cone</param>
                         <param name="simulation-box-size" units="Mpc">500</param>
+                        <param name="redshift-min">0.2</param>
+                        <param name="redshift-max">0.3</param>
                         <param name="ra-min" units="deg">18.434</param>
                         <param name="ra-max" units="deg">71.565</param>
                         <param name="dec-min" units="deg">0</param>
@@ -65,6 +67,18 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                     'units': 'Mpc',
                 },
                 'value': '500',
+            },
+            {
+                'attrs': {
+                    'name': 'redshift-min',
+                },
+                'value': '0.2',
+            },
+            {
+                'attrs': {
+                    'name': 'redshift-max',
+                },
+                'value': '0.3',
             },
             {
                 'attrs': {
