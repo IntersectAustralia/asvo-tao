@@ -55,7 +55,7 @@ def _make_parameters(light_cone_form, sed_form):
     from tao.datasets import NO_FILTER
 
     simulation = models.Simulation.objects.get(pk=light_cone_form.cleaned_data['dark_matter_simulation'])
-    galaxy_model = models.Simulation.objects.get(pk=light_cone_form.cleaned_data['galaxy_model'])
+    galaxy_model = models.GalaxyModel.objects.get(pk=light_cone_form.cleaned_data['galaxy_model'])
     dataset = models.DataSet.objects.get(simulation=simulation, galaxy_model=galaxy_model)
 
     selected_filter = light_cone_form.cleaned_data['filter']
