@@ -345,7 +345,7 @@ main( int argc,
 {
    // ASSERT( argc > 1 );
    // LOG_CONSOLE();
-   LOG_PUSH( new logging::omp::file( "taoimport.log." ) );
+   // LOG_PUSH( new logging::omp::file( "taoimport.log." ) );
 
    // Setup the number of threads to use.
 #ifdef _OPENMP
