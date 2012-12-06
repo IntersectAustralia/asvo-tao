@@ -11,10 +11,16 @@ namespace tao {
    {
    }
 
-   int
+   long long
    galaxy::id() const
    {
       return _row.get<int>( "globalindex" );
+   }
+
+   int
+   galaxy::local_id() const
+   {
+      return _row.get<int>( "localid" );
    }
 
    galaxy::real_type

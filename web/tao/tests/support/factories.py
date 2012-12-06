@@ -1,6 +1,8 @@
 import factory
 # http://factoryboy.readthedocs.org/en/latest/index.html
 
+from decimal import Decimal
+
 from tao.models import Job, User, Simulation, GalaxyModel, DataSet, DataSetParameter, StellarModel
 
 class JobFactory(factory.Factory):
@@ -54,6 +56,8 @@ class GalaxyModelFactory(factory.Factory):
     
 class DataSetFactory(factory.Factory):
     FACTORY_FOR = DataSet
+    min_snapshot = Decimal('0')
+    max_snapshot = Decimal('1')
     
 class DataSetParameterFactory(factory.Factory):
     FACTORY_FOR = DataSetParameter

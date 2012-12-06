@@ -7,8 +7,13 @@ from lxml import etree
 from tao import models
 from tao.models import StellarModel
 
+from decimal import Decimal
+
 def param(name, value, **attrs):
     attrs['name'] = name
+    if isinstance(value, Decimal):
+        if 'E' in str(value):
+            value = "%.20g" % value
     return {
         'attrs': attrs,
         'value': value,
@@ -45,14 +50,18 @@ def _add_parameters(parameter_root, params):
         parameter.text = unicode(param['value'])
 
 def save(user, light_cone_form, sed_form):
-        job = models.Job(user=user, parameters=_make_parameters(light_cone_form, sed_form))
-        job.save()
-        return job
+    job = models.Job(user=user, parameters=_make_parameters(light_cone_form, sed_form))
+    job.save()
+    return job
 
 def _make_parameters(light_cone_form, sed_form):
+    # precondition: forms are valid
+
     from tao.datasets import NO_FILTER
 
     simulation = models.Simulation.objects.get(pk=light_cone_form.cleaned_data['dark_matter_simulation'])
+    galaxy_model = models.GalaxyModel.objects.get(pk=light_cone_form.cleaned_data['galaxy_model'])
+    dataset = models.DataSet.objects.get(simulation=simulation, galaxy_model=galaxy_model)
 
     selected_filter = light_cone_form.cleaned_data['filter']
     if selected_filter != NO_FILTER:
@@ -60,11 +69,20 @@ def _make_parameters(light_cone_form, sed_form):
     else:
         filter_parameter = None
 
+    redshift_min = light_cone_form.cleaned_data['rmin']
+    if redshift_min is None:
+        redshift_min = dataset.min_snapshot
+    redshift_max = light_cone_form.cleaned_data['rmax']
+    if redshift_max is None:
+        redshift_max = dataset.max_snapshot
+
     light_cone_parameters = [
         param('database', 'sqlite://sfh_bcgs200_full_z0.db'),
         param('schema-version', '1.0'),
         param('query-type', light_cone_form.cleaned_data['box_type']),
         param('simulation-box-size', simulation.box_size, units=simulation.box_size_units),
+        param('redshift-min', redshift_min),
+        param('redshift-max', redshift_max),
         param('ra-min', light_cone_form.cleaned_data['ra_min'], units='deg'),
         param('ra-max', light_cone_form.cleaned_data['ra_max'], units='deg'),
         param('dec-min', light_cone_form.cleaned_data['dec_min'], units='deg'),

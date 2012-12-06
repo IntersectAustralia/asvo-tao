@@ -4,6 +4,7 @@
 #include "tao/base/module.hh"
 
 namespace tao {
+   using namespace hpc;
 
    ///
    /// SED science module.
@@ -26,28 +27,28 @@ namespace tao {
       ///
       ///
       void
-      setup_options( hpc::options::dictionary& dict,
-                     hpc::optional<const hpc::string&> prefix=hpc::optional<const hpc::string&>() );
+      setup_options( options::dictionary& dict,
+                     optional<const string&> prefix=optional<const string&>() );
 
       ///
       ///
       ///
       void
-      setup_options( hpc::options::dictionary& dict,
+      setup_options( options::dictionary& dict,
                      const char* prefix );
 
       ///
       /// Initialise the module.
       ///
       void
-      initialise( const hpc::options::dictionary& dict,
-                  hpc::optional<const hpc::string&> prefix=hpc::optional<const hpc::string&>() );
+      initialise( const options::dictionary& dict,
+                  optional<const string&> prefix=optional<const string&>() );
 
       ///
       ///
       ///
       void
-      initialise( const hpc::options::dictionary& dict,
+      initialise( const options::dictionary& dict,
                   const char* prefix );
 
       ///
@@ -59,64 +60,70 @@ namespace tao {
       void
       process_galaxy( const tao::galaxy& galaxy );
 
-      hpc::vector<real_type>::view
+      vector<real_type>::view
       disk_spectra();
 
-      hpc::vector<real_type>::view
+      vector<real_type>::view
       bulge_spectra();
 
-      hpc::vector<real_type>::view
+      vector<real_type>::view
       total_spectra();
 
    protected:
 
       void
-      _process_time( hpc::mpi::lindex time_idx );
+      _process_time( mpi::lindex time_idx );
 
       void
-      _sum_spectra( hpc::mpi::lindex time_idx,
+      _sum_spectra( mpi::lindex time_idx,
                     real_type metal,
                     real_type sfh,
-                    hpc::vector<real_type>::view galaxy_spectra );
+                    vector<real_type>::view galaxy_spectra );
 
       unsigned
       _interp_metal( real_type metal );
 
       void
-      _rebin_info( unsigned flat_file,
-                   unsigned flat_offset,
-                   unsigned flat_length );
+      _rebin_info( const tao::galaxy& galaxy );
 
       void
-      _gauss_quad( hpc::vector<real_type>::view crds,
-                   hpc::vector<real_type>::view weights );
+      _rebin_parents( unsigned id,
+		      unsigned root_id );
 
       void
-      _update_flat_info( unsigned flat_file );
+      _update_bin( unsigned bin,
+		   unsigned id,
+		   real_type dt );
+
+      unsigned
+      _find_bin( unsigned parent );
+
+      real_type
+      _calc_age( unsigned id,
+		 unsigned root_id );
 
       void
-      _read_ssp( const hpc::string& filename );
+      _read_ssp( const string& filename );
 
       void
-      _read_options( const hpc::options::dictionary& dict,
-                     hpc::optional<const hpc::string&> prefix=hpc::optional<const hpc::string&>() );
+      _read_options( const options::dictionary& dict,
+                     optional<const string&> prefix=optional<const string&>() );
 
       void
-      _read_flat_file( const hpc::string& base_filename,
-                       unsigned flat_file );
+      _load_table( const string& table );
 
    protected:
 
-      hpc::vector<real_type> _ages;
-      hpc::vector<real_type> _disk_age_masses, _bulge_age_masses;
-      hpc::vector<real_type> _disk_age_metals, _bulge_age_metals;
-      hpc::mpi::lindex _num_spectra, _num_metals;
-      hpc::vector<real_type> _disk_spectra, _bulge_spectra, _total_spectra;
-      hpc::vector<real_type> _ssp;
+      vector<real_type> _ages, _dual_ages;
+      vector<real_type> _disk_age_masses, _bulge_age_masses;
+      vector<real_type> _disk_age_metals, _bulge_age_metals;
+      mpi::lindex _num_spectra, _num_metals;
+      vector<real_type> _disk_spectra, _bulge_spectra, _total_spectra;
+      vector<real_type> _ssp;
 
-      hpc::h5::datatype _flat_mem_type, _flat_file_type;
-      hpc::vector<flat_info<real_type>> _flat_data;
-      int _cur_flat_file;
+      multimap<unsigned,unsigned> _parents;
+      vector<int> _descs;
+      vector<real_type> _sfrs, _bulge_sfrs, _metals, _bulge_metals, _redshifts;
    };
 }
 

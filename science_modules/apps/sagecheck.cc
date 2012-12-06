@@ -163,6 +163,9 @@ main( int argc,
             ASSERT( halos[jj].descendant < (int)halos.size(),
                     "Descendant index outside viable range." );
 
+	    // Descendants cannot point to themselves.
+	    ASSERT( halos[jj].descendant != jj );
+
             // All types must be 0, 1 or 2.
             ASSERT( halos[jj].type >= 0 && halos[jj].type <= 2,
                     "Bad galaxy type." );

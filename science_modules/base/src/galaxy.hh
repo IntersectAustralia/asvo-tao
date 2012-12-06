@@ -17,8 +17,11 @@ namespace tao {
       galaxy( const soci::row& row,
               const hpc::array<real_type,3>& box );
 
-      int
+      long long
       id() const;
+
+      int
+      local_id() const;
 
       real_type
       x() const;
