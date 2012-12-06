@@ -877,7 +877,7 @@ namespace tao {
 
       // Create a temporary table to hold values.
       _sql << "CREATE TEMPORARY TABLE redshift_ranges (snapnum INTEGER, "
-	 "redshift DOUBLE PRECISION, min DOUBLE PRECISION, max DOUBLE PRECISION)";
+      	 "redshift DOUBLE PRECISION, min DOUBLE PRECISION, max DOUBLE PRECISION)";
 
       // Insert the first redshift range.
       real_type low = _redshift_to_distance( _snap_redshifts[0] ),
