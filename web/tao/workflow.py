@@ -44,6 +44,15 @@ def to_xml(common_params, light_cone_params, sed_params):
     
     _add_parameters(sed_module, sed_params)
 
+    filter_module = etree.SubElement(workflow, 'module', name='filter')
+    filter_inner = etree.SubElement(filter_module, 'filter')
+    waves_filename = etree.SubElement(filter_inner, 'waves_filename')
+    waves_filename.text = 'wavelengths.dat'
+    filter_filenames = etree.SubElement(filter_inner, 'filter_filenames')
+    filter_filenames.text = 'u.dat,v.dat,zpv.dat,k.dat,zpk.dat'
+    vega_filename = etree.SubElement(filter_inner, 'vega_filename')
+    vega_filename.text = 'A0V_KUR_BB.SED'
+
     return etree.tostring(root, pretty_print=True)
 
 def _add_parameters(parameter_root, params):
@@ -79,7 +88,12 @@ def _make_parameters(light_cone_form, sed_form):
         redshift_max = dataset.max_snapshot
 
     common_parameters = [
-        param('database', dataset.database),
+        param('database-type', 'postgresql'),
+        param('database-host', 'tao02.hpc.swin.edu.au'),
+        param('database-name', 'millennium_full_mpi'),
+        param('database-port', '3306'),
+        param('database-user', ''),
+        param('database-pass', ''),
         param('schema-version', '1.0'),
     ]
 

@@ -240,7 +240,12 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
             <tao xmlns="http://tao.asvo.org.au/schema/module-parameters-v1" timestamp="2012-11-13T13:45:32+1000">
 
                 <workflow name="alpha-light-cone-image">
-                    <param name="database">%(database_name)s</param>
+                    <param name="database-type">postgresql</param>
+                    <param name="database-host">tao02.hpc.swin.edu.au</param>
+                    <param name="database-name">millennium_full_mpi</param>
+                    <param name="database-port">3306</param>
+                    <param name="database-user"></param>
+                    <param name="database-pass"></param>
                     <param name="schema-version">1.0</param>
                     <module name="light-cone">
                         <param name="query-type">%(light_cone)s</param>
@@ -257,6 +262,13 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
                     </module>
                     <module name="sed">
                         <param name="single-stellar-population-model">%(model_id)s</param>
+                    </module>
+                    <module name="filter">
+                    <filter>
+                    <waves_filename>wavelengths.dat</waves_filename>
+                    <filter_filenames>u.dat,v.dat,zpv.dat,k.dat,zpk.dat</filter_filenames>
+                    <vega_filename>A0V_KUR_BB.SED</vega_filename>
+                    </filter>
                     </module>
                 </workflow>
             </tao>
@@ -322,7 +334,12 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
             <tao xmlns="http://tao.asvo.org.au/schema/module-parameters-v1" timestamp="2012-11-13T13:45:32+1000">
 
                 <workflow name="alpha-light-cone-image">
-                    <param name="database">%(database_name)s</param>
+                    <param name="database-type">postgresql</param>
+                    <param name="database-host">tao02.hpc.swin.edu.au</param>
+                    <param name="database-name">millennium_full_mpi</param>
+                    <param name="database-port">3306</param>
+                    <param name="database-user"></param>
+                    <param name="database-pass"></param>
                     <param name="schema-version">1.0</param>
                     <module name="light-cone">
                         <param name="query-type">%(light_cone)s</param>
@@ -336,6 +353,13 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
                     </module>
                     <module name="sed">
                         <param name="single-stellar-population-model">%(model_id)s</param>
+                    </module>
+                    <module name="filter">
+                    <filter>
+                    <waves_filename>wavelengths.dat</waves_filename>
+                    <filter_filenames>u.dat,v.dat,zpv.dat,k.dat,zpk.dat</filter_filenames>
+                    <vega_filename>A0V_KUR_BB.SED</vega_filename>
+                    </filter>
                     </module>
                 </workflow>
             </tao>
@@ -403,7 +427,12 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
 
                 <workflow name="alpha-light-cone-image">
 
-                    <param name="database">%(database_name)s</param>
+                    <param name="database-type">postgresql</param>
+                    <param name="database-host">tao02.hpc.swin.edu.au</param>
+                    <param name="database-name">millennium_full_mpi</param>
+                    <param name="database-port">3306</param>
+                    <param name="database-user"></param>
+                    <param name="database-pass"></param>
                     <param name="schema-version">1.0</param>
 
                     <module name="light-cone">
@@ -418,6 +447,13 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
                     </module>
                     <module name="sed">
                         <param name="single-stellar-population-model">%(model_id)s</param>
+                    </module>
+                    <module name="filter">
+                    <filter>
+                    <waves_filename>wavelengths.dat</waves_filename>
+                    <filter_filenames>u.dat,v.dat,zpv.dat,k.dat,zpk.dat</filter_filenames>
+                    <vega_filename>A0V_KUR_BB.SED</vega_filename>
+                    </filter>
                     </module>
                 </workflow>
             </tao>

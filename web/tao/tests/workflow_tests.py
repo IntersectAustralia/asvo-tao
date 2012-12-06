@@ -30,7 +30,12 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             <tao xmlns="http://tao.asvo.org.au/schema/module-parameters-v1" timestamp="2012-11-14T13:45:36+1000">
              
                 <workflow name="alpha-light-cone-image">
-                    <param name="database">sqlite://sfh_bcgs200_full_z0.db</param>
+                    <param name="database-type">postgresql</param>
+                    <param name="database-host">tao02.hpc.swin.edu.au</param>
+                    <param name="database-name">millennium_full_mpi</param>
+                    <param name="database-port">3306</param>
+                    <param name="database-user"></param>
+                    <param name="database-pass"></param>
                     <param name="schema-version">1.0</param>
                     <module name="light-cone">
                         <param name="query-type">light-cone</param>
@@ -48,6 +53,13 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                     <module name="sed">
                         <param name="single-stellar-population-model">Stella</param>
                     </module>
+                    <module name="filter">
+                    <filter>
+                    <waves_filename>wavelengths.dat</waves_filename>
+                    <filter_filenames>u.dat,v.dat,zpv.dat,k.dat,zpk.dat</filter_filenames>
+                    <vega_filename>A0V_KUR_BB.SED</vega_filename>
+                    </filter>
+                    </module>
                 </workflow>
             </tao>
         """)
@@ -62,12 +74,12 @@ class WorkflowTests(TestCase, XmlDiffMixin):
         ]
 
         common_parameters = [
-            {
-                'attrs': {
-                    'name': 'database',
-                },
-                'value': 'sqlite://sfh_bcgs200_full_z0.db',
-            },
+            {'attrs': {'name': 'database-type'}, 'value': 'postgresql'},
+            {'attrs': {'name': 'database-host'}, 'value': 'tao02.hpc.swin.edu.au'},
+            {'attrs': {'name': 'database-name'}, 'value': 'millennium_full_mpi'},
+            {'attrs': {'name': 'database-port'}, 'value': '3306'},
+            {'attrs': {'name': 'database-user'}, 'value': ''},
+            {'attrs': {'name': 'database-pass'}, 'value': ''},
             {
                 'attrs': {
                     'name': 'schema-version'
