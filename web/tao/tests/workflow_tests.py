@@ -1,10 +1,18 @@
+from decimal import Decimal
+
 from django.test import TestCase
+
 from tao import workflow
 from tao.tests.support.xml import XmlDiffMixin
 from tao.tests.support import stripped_joined_lines
 
 
 class WorkflowTests(TestCase, XmlDiffMixin):
+    
+    def test_normalizes_decimals(self):
+        param = workflow.param("name", Decimal('0E9'))
+        self.assertEqual('0', str(param['value']))
+        
     def test_basic(self):
         expected_parameter_xml = stripped_joined_lines("""
             <?xml version="1.0" encoding="utf-8"?>

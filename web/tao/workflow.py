@@ -7,8 +7,13 @@ from lxml import etree
 from tao import models
 from tao.models import StellarModel
 
+from decimal import Decimal
+
 def param(name, value, **attrs):
     attrs['name'] = name
+    if isinstance(value, Decimal):
+        if 'E' in str(value):
+            value = "%.20g" % value
     return {
         'attrs': attrs,
         'value': value,
