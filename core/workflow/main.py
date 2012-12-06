@@ -39,7 +39,7 @@ if __name__ == '__main__':
     while 1:
         workflowObj.GetNewJobsFromMasterDB()
         workflowObj.ProcessJobs()
-        print("Sleeping for "+str(SleepTime))
+        print("Sleeping for "+str(SleepTime)+" Seconds")
         time.sleep(SleepTime)
 
     dbaseObj.CloseConnections()

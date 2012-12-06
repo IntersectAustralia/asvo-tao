@@ -58,6 +58,7 @@
 	
 		
 	<RunningSettings>
+		<SnpshottoRedshiftMapping>millennium.a_list</SnpshottoRedshiftMapping>
 		<OutputDir>/home/amr/TempOutput/</OutputDir>
 		<InputDir>/lustre/projects/p014_swin/raw_data/millennium/full/sage_output/</InputDir>
 		<GalaxiesPerTable>100000</GalaxiesPerTable>

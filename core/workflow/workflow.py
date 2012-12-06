@@ -5,11 +5,12 @@
 # PBSPy --- http://code.google.com/p/py-pbs/ -- Python extension for OpenPBS/Torque
 
 
-import os, shlex, subprocess, time, string
+import os, shlex, subprocess, time, string,datetime
 import requests
 from torque import *
 import dbase
 import EnumerationLookup
+
 
 class WorkFlow(object):
 
@@ -99,8 +100,12 @@ class WorkFlow(object):
     
     def ProcessJobs(self):
         
-        CurrentJobs_PBSID=self.dbaseobj.GetCurrentActiveJobs_pbsID()
+        now=datetime.datetime.now()
+        print("Checking Current Jobs: "+str(now))
         
+        CurrentJobs_PBSID=self.dbaseobj.GetCurrentActiveJobs_pbsID()
+        print(str(len(CurrentJobs_PBSID))+" Jobs Found in the current watch list")
+        self.dbaseobj.AddNewEvent(0,EnumerationLookup.EventType.Normal,'Checking for Current Jobs. Jobs Count='+str(len(CurrentJobs_PBSID)))
         
         JobsStatus=self.TorqueObj.QueryPBSJob(CurrentJobs_PBSID)    
         
@@ -111,6 +116,7 @@ class WorkFlow(object):
                 path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], 'jobs', job[2], str(job[0]))
                 data['output_path'] = path
             requests.put(self.api['update']%job[0], data=data)
+            self.dbaseobj.AddNewEvent(0,EnumerationLookup.EventType.Normal,'Updating Job (UI ID:'+str(job[0])+', Status:'+job[1]+')')
         
         
 
