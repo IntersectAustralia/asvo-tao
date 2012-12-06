@@ -28,7 +28,7 @@ class ProcessTables(object):
         # Take care that the connection will be opened to standard DB 'master'
         # This is temp. until the actual database is created
         self.CurrentConnection=pg.connect(host=self.serverip,user=self.username,passwd=self.password,port=self.port,dbname=self.DBName)
-        print('Connection to DB is open...')
+        print('Connection to DB is open...Start Creating Tables')
         self.CreateSummaryTable()
         self.CreateTreeSummaryTable()
         self.CreateTreeMappingTable()
@@ -102,7 +102,8 @@ class ProcessTables(object):
         CreateTable=CreateTable+"MaxX FLOAT4,"
         CreateTable=CreateTable+"MaxY FLOAT4,"
         CreateTable=CreateTable+"MaxZ FLOAT4,"        
-        CreateTable=CreateTable+"GalaxyCount BIGINT)"
+        CreateTable=CreateTable+"GalaxyCount BIGINT,"
+        CreateTable=CreateTable+"TABLENAME VARCHAR(200))"
         
         self.ExecuteNoQuerySQLStatment(CreateTable)
     
@@ -120,7 +121,7 @@ class ProcessTables(object):
         self.ExecuteNoQuerySQLStatment(CreateTable)
             
     def GetTableSummary(self,TableName):
-        print("Processing Table: "+TableName)
+        
         GetSummarySQL="select min(PosX),max(PosX),min(PosY),max(PosY),min(PosZ),max(PosZ),min(GlobalTreeID),max(GlobalTreeID),min(snapnum),max(snapnum),count(*) from @TABLEName;"
         GetSummarySQL= string.replace(GetSummarySQL,"@TABLEName",TableName)
         SummaryListArr=self.ExecuteQuerySQLStatment(GetSummarySQL)
@@ -152,16 +153,16 @@ class ProcessTables(object):
         InsertSummaryRecord= string.replace(InsertSummaryRecord,"none","0")
         self.ExecuteNoQuerySQLStatment(InsertSummaryRecord)
         
-        print("End Processing Table: "+TableName)
-        print("********************************************************************************")
+        
+        #print("********************************************************************************")
     def GetTreeSummary(self,TableName):
-        print("Processing Table: "+TableName)
-        GetSummarySQL="INSERT INTO TreeSummary select GlobalTreeID,min(PosX),min(PosY),min(PosZ),max(PosX),max(PosY),max(PosZ),count(*) from @TABLEName group by GlobalTreeID order by GlobalTreeID;"
+        #print("Processing Table: "+TableName)
+        GetSummarySQL="INSERT INTO TreeSummary select GlobalTreeID,min(PosX),min(PosY),min(PosZ),max(PosX),max(PosY),max(PosZ),count(*),'"+TableName+"' from @TABLEName group by GlobalTreeID order by GlobalTreeID;"
         GetSummarySQL= string.replace(GetSummarySQL,"@TABLEName",TableName)        
         self.ExecuteNoQuerySQLStatment(GetSummarySQL)
         
-        print("End Processing Table: "+TableName)
-        print("********************************************************************************")    
+        #print("End Processing Table: "+TableName)
+        #print("********************************************************************************")    
     
     def BuildTreeMapping(self):
         
@@ -222,13 +223,18 @@ class ProcessTables(object):
         
     def GetTablesList(self):
         
-        GetTablesListSt="select table_name from information_schema.tables where table_schema='public';"
+        GetTablesListSt="select table_name from information_schema.tables where table_schema='public' order by table_name;"
         TablesList=self.ExecuteQuerySQLStatment(GetTablesListSt)
+        Count=0
         for Table in TablesList:
             TableName=Table[0]
+            
             if string.find(TableName,self.Options['PGDB:TreeTablePrefix'])==0:
+                print("Processing Table: "+TableName+ "\t "+str(Count)+"/"+str(len(TablesList)))
                 self.GetTableSummary(TableName)
                 self.GetTreeSummary(TableName)
+            Count=Count+1
+                
                  
 if __name__ == '__main__':
     print('Starting DB processing')
