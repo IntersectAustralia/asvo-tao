@@ -2,13 +2,14 @@ import sconsproject as project
 from sconsproject import config
 
 config.select(
+    config.packages.clock(),
     config.packages.boost(),
     config.packages.MPI(),
     config.packages.HDF5(),
     config.packages.PostgreSQL(),
     config.packages.sqlite3(required=False),
     config.packages.SOCI(backends=['postgres']),
-    config.packages.rapidxml(),
+    config.packages.pugixml(),
     config.packages.Eigen(required=False),
     config.packages.libhpc(),
 )

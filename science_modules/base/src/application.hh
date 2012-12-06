@@ -65,11 +65,14 @@ namespace tao {
 
    protected:
 
+      ///
+      /// Read the XML file into a dictionary.
+      ///
       void
       _read_xml( hpc::options::dictionary& dict ) const
       {
          hpc::options::xml xml;
-         xml.read( _xml_file, dict );
+         xml.read( _xml_file, dict, "/tao/workflow/*" );
       }
 
    protected:

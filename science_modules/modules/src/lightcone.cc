@@ -41,21 +41,21 @@ namespace tao {
    lightcone::setup_options( options::dictionary& dict,
                              optional<const string&> prefix )
    {
-      dict.add_option( new options::string( "database_type" ), prefix );
-      dict.add_option( new options::string( "database_name" ), prefix );
-      dict.add_option( new options::string( "database_host", string() ), prefix );
-      dict.add_option( new options::string( "database_port", string() ), prefix );
-      dict.add_option( new options::string( "database_user", string() ), prefix );
-      dict.add_option( new options::string( "database_pass", string() ), prefix );
-      dict.add_option( new options::string( "box_type" ), prefix );
-      dict.add_option( new options::real( "z_max" ), prefix );
-      dict.add_option( new options::real( "z_min" ), prefix );
+      dict.add_option( new options::string( "database-type", "postgresql" ), prefix );
+      dict.add_option( new options::string( "database-name", "millennium_full_mpi" ), prefix );
+      dict.add_option( new options::string( "database-host", "tao02.hpc.swin.edu.au" ), prefix );
+      dict.add_option( new options::string( "database-port", "3306" ), prefix );
+      dict.add_option( new options::string( "database-user", string() ), prefix );
+      dict.add_option( new options::string( "database-pass", string() ), prefix );
+      dict.add_option( new options::string( "query-type", "light-cone" ), prefix );
+      dict.add_option( new options::real( "redshift-max" ), prefix );
+      dict.add_option( new options::real( "redshift-min" ), prefix );
       dict.add_option( new options::real( "z_snap" ), prefix );
       dict.add_option( new options::real( "box_size" ), prefix );
-      dict.add_option( new options::real( "ra_min", 0.0 ), prefix );
-      dict.add_option( new options::real( "ra_max", 90.0 ), prefix );
-      dict.add_option( new options::real( "dec_min", 0.0 ), prefix );
-      dict.add_option( new options::real( "dec_max", 90.0 ), prefix );
+      dict.add_option( new options::real( "ra-min", 0.0 ), prefix );
+      dict.add_option( new options::real( "ra-max", 90.0 ), prefix );
+      dict.add_option( new options::real( "dec-min", 0.0 ), prefix );
+      dict.add_option( new options::real( "dec-max", 90.0 ), prefix );
       dict.add_option( new options::real( "H0", 100.0 ), prefix );
    }
 
@@ -678,12 +678,12 @@ namespace tao {
       const options::dictionary& sub = prefix ? dict.sub( *prefix ) : dict;
 
       // Extract database details.
-      _dbtype = sub.get<string>( "database_type" );
-      _dbname = sub.get<string>( "database_name" );
-      _dbhost = sub.get<string>( "database_host" );
-      _dbport = sub.get<string>( "database_port" );
-      _dbuser = sub.get<string>( "database_user" );
-      _dbpass = sub.get<string>( "database_pass" );
+      _dbtype = sub.get<string>( "database-type" );
+      _dbname = sub.get<string>( "database-name" );
+      _dbhost = sub.get<string>( "database-host" );
+      _dbport = sub.get<string>( "database-port" );
+      _dbuser = sub.get<string>( "database-user" );
+      _dbpass = sub.get<string>( "database-pass" );
 
       // Connect to the database.
       _db_connect( _sql );
