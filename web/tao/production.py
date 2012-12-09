@@ -29,7 +29,7 @@ EMAIL_PORT = '25'
 EMAIL_FROM_ADDRESS = 'tao.admin@asvo.org.au'
 
 API_ALLOWED_IPS = (
-                   '127.0.0.1',
                    '136.186.55.225', # tao01
                    '136.186.55.226', # tao02
+                   '136.186.24.174', # Amr
                    )
