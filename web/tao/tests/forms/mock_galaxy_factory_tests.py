@@ -242,7 +242,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
                 <workflow name="alpha-light-cone-image">
                     <param name="database-type">postgresql</param>
                     <param name="database-host">tao02.hpc.swin.edu.au</param>
-                    <param name="database-name">millennium_full_mpi</param>
+                    <param name="database-name">millennium_full</param>
                     <param name="database-port">3306</param>
                     <param name="database-user"></param>
                     <param name="database-pass"></param>
@@ -336,7 +336,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
                 <workflow name="alpha-light-cone-image">
                     <param name="database-type">postgresql</param>
                     <param name="database-host">tao02.hpc.swin.edu.au</param>
-                    <param name="database-name">millennium_full_mpi</param>
+                    <param name="database-name">millennium_full</param>
                     <param name="database-port">3306</param>
                     <param name="database-user"></param>
                     <param name="database-pass"></param>
@@ -429,7 +429,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
 
                     <param name="database-type">postgresql</param>
                     <param name="database-host">tao02.hpc.swin.edu.au</param>
-                    <param name="database-name">millennium_full_mpi</param>
+                    <param name="database-name">millennium_full</param>
                     <param name="database-port">3306</param>
                     <param name="database-user"></param>
                     <param name="database-pass"></param>
