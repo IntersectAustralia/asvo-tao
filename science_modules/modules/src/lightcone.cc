@@ -41,12 +41,6 @@ namespace tao {
    lightcone::setup_options( options::dictionary& dict,
                              optional<const string&> prefix )
    {
-      dict.add_option( new options::string( "database-type", "postgresql" ), prefix );
-      dict.add_option( new options::string( "database-name", "millennium_full_mpi" ), prefix );
-      dict.add_option( new options::string( "database-host", "tao02.hpc.swin.edu.au" ), prefix );
-      dict.add_option( new options::string( "database-port", "3306" ), prefix );
-      dict.add_option( new options::string( "database-user", string() ), prefix );
-      dict.add_option( new options::string( "database-pass", string() ), prefix );
       dict.add_option( new options::string( "query-type", "light-cone" ), prefix );
       dict.add_option( new options::real( "redshift-max" ), prefix );
       dict.add_option( new options::real( "redshift-min" ), prefix );
@@ -678,12 +672,12 @@ namespace tao {
       const options::dictionary& sub = prefix ? dict.sub( *prefix ) : dict;
 
       // Extract database details.
-      _dbtype = sub.get<string>( "database-type" );
-      _dbname = sub.get<string>( "database-name" );
-      _dbhost = sub.get<string>( "database-host" );
-      _dbport = sub.get<string>( "database-port" );
-      _dbuser = sub.get<string>( "database-user" );
-      _dbpass = sub.get<string>( "database-pass" );
+      _dbtype = dict.get<string>( "database-type" );
+      _dbname = dict.get<string>( "database-name" );
+      _dbhost = dict.get<string>( "database-host" );
+      _dbport = dict.get<string>( "database-port" );
+      _dbuser = dict.get<string>( "database-user" );
+      _dbpass = dict.get<string>( "database-pass" );
 
       // Connect to the database.
       _db_connect( _sql );
