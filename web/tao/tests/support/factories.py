@@ -61,7 +61,7 @@ class DataSetFactory(factory.Factory):
     
 class DataSetParameterFactory(factory.Factory):
     FACTORY_FOR = DataSetParameter
-    name = factory.Sequence(lambda n: 'parameter_%03d' % int(n))
+    label = factory.Sequence(lambda n: 'parameter_%03d' % int(n))
 
 class StellarModelFactory(factory.Factory):
     FACTORY_FOR = StellarModel
