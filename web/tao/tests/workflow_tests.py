@@ -32,7 +32,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                 <workflow name="alpha-light-cone-image">
                     <param name="database-type">postgresql</param>
                     <param name="database-host">tao02.hpc.swin.edu.au</param>
-                    <param name="database-name">millennium_full_mpi</param>
+                    <param name="database-name">millennium_full</param>
                     <param name="database-port">3306</param>
                     <param name="database-user"></param>
                     <param name="database-pass"></param>
@@ -76,7 +76,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
         common_parameters = [
             {'attrs': {'name': 'database-type'}, 'value': 'postgresql'},
             {'attrs': {'name': 'database-host'}, 'value': 'tao02.hpc.swin.edu.au'},
-            {'attrs': {'name': 'database-name'}, 'value': 'millennium_full_mpi'},
+            {'attrs': {'name': 'database-name'}, 'value': 'millennium_full'},
             {'attrs': {'name': 'database-port'}, 'value': '3306'},
             {'attrs': {'name': 'database-user'}, 'value': ''},
             {'attrs': {'name': 'database-pass'}, 'value': ''},

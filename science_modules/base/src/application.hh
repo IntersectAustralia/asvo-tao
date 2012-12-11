@@ -56,6 +56,7 @@ namespace tao {
       run()
       {
          hpc::options::dictionary dict;
+         _setup_common_options( dict );
          _pl.setup_options( dict );
          dict.compile();
          _read_xml( dict );
@@ -64,6 +65,20 @@ namespace tao {
       }
 
    protected:
+
+      ///
+      /// Insert common options.
+      ///
+      void
+      _setup_common_options( hpc::options::dictionary& dict )
+      {
+         dict.add_option( new options::string( "database-type", "postgresql" ) );
+         dict.add_option( new options::string( "database-name", "millennium_full_mpi" ) );
+         dict.add_option( new options::string( "database-host", "tao02.hpc.swin.edu.au" ) );
+         dict.add_option( new options::string( "database-port", "3306" ) );
+         dict.add_option( new options::string( "database-user", string() ) );
+         dict.add_option( new options::string( "database-pass", string() ) );
+      }
 
       ///
       /// Read the XML file into a dictionary.
