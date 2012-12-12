@@ -177,10 +177,6 @@ LOGIN_URL = reverse_lazy('tao.views.login')
 
 AUTH_PROFILE_MODULE = 'tao.UserProfile'  # appname.modelname
 
-# Configure SMTP Server.
-# See https://docs.djangoproject.com/en/dev/topics/email/
-#EMAIL_HOST = 'localhost'
-#EMAIL_PORT= '1025'
 EMAIL_HOST = 'gpo.swin.edu.au'
 EMAIL_PORT = '25'
 

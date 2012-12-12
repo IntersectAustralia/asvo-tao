@@ -1,5 +1,10 @@
 from tao.settings import *
 
+# Configure SMTP Server.
+# See https://docs.djangoproject.com/en/dev/topics/email/
+EMAIL_HOST = 'localhost'
+EMAIL_PORT= '1025'
+
 DEBUG=True
 TEMPLATE_DEBUG=DEBUG
 
