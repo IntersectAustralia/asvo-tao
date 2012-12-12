@@ -15,7 +15,8 @@ namespace tao {
       csv( const string& filename="tao.output" );
 
       void
-      process_galaxy( const tao::galaxy& galaxy );
+      process_galaxy( const tao::galaxy& galaxy,
+		      double app_mag=0.0 );
 
    protected:
 
