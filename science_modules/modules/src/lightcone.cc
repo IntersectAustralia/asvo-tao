@@ -23,7 +23,7 @@ namespace tao {
         _unique_offs_x( 0.0 ),
         _unique_offs_y( 0.0 ),
         _unique_offs_z( 0.0 ),
-        _H0( 100.0 ),
+        _h0( 0.73 ),
         _x0( 0.0 ),
         _y0( 0.0 ),
         _z0( 0.0 )
@@ -50,7 +50,7 @@ namespace tao {
       dict.add_option( new options::real( "ra-max", 90.0 ), prefix );
       dict.add_option( new options::real( "dec-min", 0.0 ), prefix );
       dict.add_option( new options::real( "dec-max", 90.0 ), prefix );
-      dict.add_option( new options::real( "H0", 100.0 ), prefix );
+      dict.add_option( new options::real( "H0", 0.73 ), prefix );
    }
 
    ///
@@ -184,12 +184,12 @@ namespace tao {
 #ifndef NDEBUG
       {
 	 // Check that the row actually belongs in this range.
-         galaxy gal( *_cur_row, *_cur_box );
+         galaxy gal( *_cur_row, *_cur_box, _table_names[_cur_table] );
          real_type dist = sqrt( pow( gal.x(), 2.0 ) + pow( gal.y(), 2.0 ) + pow( gal.z(), 2.0 ) );
          ASSERT( dist >= _dist_range.start() && dist < _dist_range.finish() );
       }
 #endif
-      return galaxy( *_cur_row, *_cur_box );
+      return galaxy( *_cur_row, *_cur_box, _table_names[_cur_table] );
    }
 
    ///
@@ -287,28 +287,37 @@ namespace tao {
 	    real_type max_len = sqrt( (box[0] + _domain_size)*(box[0] + _domain_size) + 
 				      (box[1] + _domain_size)*(box[1] + _domain_size) + 
 				      (box[2] + _domain_size)*(box[2] + _domain_size) );
+	    min_len = std::max( min_len, _dist_range.start() );
+	    max_len = std::min( max_len, _dist_range.finish() );
 	    LOGDLN( "Length range is from ", min_len, " to ", max_len );
 
 	    // Find the first redshift that is greater than my minimum.
 	    for( unsigned ii = 0; ii < _snap_redshifts.size(); ++ii )
 	    {
-	       if( _redshift_to_distance( _snap_redshifts[ii] ) < max_len )
+	       if( _redshift_to_distance( _snap_redshifts[ii] ) == max_len )
+	       {
+		  _min_snap = ii;
+		  break;
+	       }
+	       else if( _redshift_to_distance( _snap_redshifts[ii] ) < max_len )
 	       {
 		  if( ii > 0 )
 		     _min_snap = ii - 1;
 		  else
 		     _min_snap = 0;
-		  LOGDLN( "Minimum snapshot is ", _min_snap, " with length of ",
-			  _redshift_to_distance( _snap_redshifts[_min_snap] ) );
 		  break;
 	       }
 	    }
+	    LOGDLN( "Minimum snapshot is ", _min_snap, " with length of ",
+		    _redshift_to_distance( _snap_redshifts[_min_snap] ),
+		    " and redshift of ", _snap_redshifts[_min_snap] );
 
 	    // Find the first redshift greater than my maximum.
 	    unsigned ii;
 	    for( ii = _min_snap + 1; ii < _snap_redshifts.size(); ++ii )
 	    {
-	       if( _redshift_to_distance( _snap_redshifts[ii] ) < min_len )
+	       if( _snap_redshifts[ii] == _z_min ||
+			_redshift_to_distance( _snap_redshifts[ii] ) <= min_len )
 	       {
 		  _max_snap = ii;
 		  break;
@@ -317,7 +326,8 @@ namespace tao {
 	    if( ii == _snap_redshifts.size() )
 	       _max_snap = _snap_redshifts.size() - 1;
 	    LOGDLN( "Maximum snapshot is ", _max_snap, " with length of ",
-		    _redshift_to_distance( _snap_redshifts[_max_snap] ) );
+		    _redshift_to_distance( _snap_redshifts[_max_snap] ),
+		    " and redshift of ", _snap_redshifts[_max_snap] );
 
 	    // Now prepare tables.
             _settle_table();
@@ -632,10 +642,10 @@ namespace tao {
       real_type integral = 0.0;
 	
       real_type c = 299792.458;
-      real_type H0 = _H0;
-      real_type h = _H0/100.0;
+      real_type h0 = _h0;
+      real_type h = _h0/100.0;
       real_type WM = 0.25;
-      real_type WV = 1.0 - WM - 0.4165/(H0*H0);
+      real_type WV = 1.0 - WM - 0.4165/(h0*h0);
       real_type WR = 4.165e-5/(h*h);
       real_type WK = 1.0 - WM - WR - WV;
       real_type az = 1.0/(1.0 + 1.0*redshift);
@@ -650,7 +660,7 @@ namespace tao {
       }
       DTT = (1.0 - az)*DTT/(real_type)n;
       DCMR = (1.0 - az)*DCMR/(real_type)n;
-      real_type d = (c/H0)*DCMR;
+      real_type d = (c/h0)*DCMR;
 
       LOG_EXIT();
       return d;
@@ -683,7 +693,7 @@ namespace tao {
       _db_connect( _sql );
 
       // Get box type.
-      _box_type = sub.get<string>( "box_type" );
+      _box_type = sub.get<string>( "query-type" );
       LOGDLN( "Box type '", _box_type );
 
       // Get the domain size.
@@ -707,9 +717,9 @@ namespace tao {
 
       // Redshift ranges.
       real_type snap_z_max = _snap_redshifts.front(), snap_z_min = _snap_redshifts.back();
-      _z_max = sub.get<real_type>( "z_max", snap_z_max );
+      _z_max = sub.get<real_type>( "redshift-max", snap_z_max );
       _z_max = std::min( _z_max, snap_z_max );
-      _z_min = sub.get<real_type>( "z_min", snap_z_min );
+      _z_min = sub.get<real_type>( "redshift-min", snap_z_min );
       LOGDLN( "Redshift range: (", _z_min, ", ", _z_max, ")" );
 
       // Create distance range.
@@ -717,10 +727,10 @@ namespace tao {
       LOGDLN( "Distance range: (", _dist_range.start(), ", ", _dist_range.finish(), ")" );
 
       // Right ascension.
-      _ra_min = sub.get<real_type>( "ra_min" );
+      _ra_min = sub.get<real_type>( "ra-min" );
       if( _ra_min < 0.0 )
          _ra_min = 0.0;
-      _ra_max = sub.get<real_type>( "ra_max" ); // TODO divide by 60.0?
+      _ra_max = sub.get<real_type>( "ra-max" ); // TODO divide by 60.0?
       if( _ra_max >= 89.9999999 )
          _ra_max = 89.9999999;
       if( _ra_min > _ra_max )
@@ -731,10 +741,10 @@ namespace tao {
       LOGDLN( "Have right ascension range ", _ra_min, " - ", _ra_max );
 
       // Declination.
-      _dec_min = sub.get<real_type>( "dec_min" );
+      _dec_min = sub.get<real_type>( "dec-min" );
       if( _dec_min < 0.0 )
          _dec_min = 0.0;
-      _dec_max = sub.get<real_type>( "dec_max" ); // TODO divide by 60.0?
+      _dec_max = sub.get<real_type>( "dec-max" ); // TODO divide by 60.0?
       if( _dec_max >= 89.9999999 )
          _dec_max = 89.9999999;
       if( _dec_min > _dec_max )
@@ -749,8 +759,8 @@ namespace tao {
       }
 
       // Astronomical values.
-      _H0 = sub.get<real_type>( "H0" );
-      LOGDLN( "Using H0 = ", _H0 );
+      _h0 = sub.get<real_type>( "H0" );
+      LOGDLN( "Using h0 = ", _h0 );
 
       LOG_EXIT();
    }
@@ -787,7 +797,7 @@ namespace tao {
          // }
       }
       if( _query_template == "" )
-         _query_template = "posx, posy, posz, redshift";
+         _query_template = "posx, posy, posz, redshift, globalindex, localgalaxyid, globaltreeid";
 
       _query_template = "SELECT " + _query_template + " FROM -table-";
       _query_template += " INNER JOIN redshift_ranges ON (-table-.snapnum = redshift_ranges.snapnum)";
@@ -796,6 +806,10 @@ namespace tao {
       if( _box_type != "box" )
       {
 	 _query_template += " -table-.snapnum >= -min_snap- AND -table-.snapnum <= -max_snap-";
+	 _query_template += " AND (POW(-pos1-,2) + POW(-pos2-,2) + POW(-pos3-,2)) >= "
+	    + to_string( pow( _dist_range.start(), 2 ) );
+	 _query_template += " AND (POW(-pos1-,2) + POW(-pos2-,2) + POW(-pos3-,2)) < "
+	    + to_string( pow( _dist_range.finish(), 2 ) );
 	 _query_template += " AND (POW(-pos1-,2) + POW(-pos2-,2) + POW(-pos3-,2)) >= "
 	    "redshift_ranges.min";
 	 _query_template += " AND (POW(-pos1-,2) + POW(-pos2-,2) + POW(-pos3-,2)) < "
