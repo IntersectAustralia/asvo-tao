@@ -3,7 +3,7 @@
 #include <libhpc/libhpc.hh>
 #include <tao/modules/lightcone.hh>
 #include <tao/modules/sed.hh>
-#include <tao/modules/filter.hh>
+// #include <tao/modules/filter.hh>
 
 using namespace tao;
 using namespace hpc;
@@ -22,9 +22,9 @@ struct pipeline
    void
    setup_options( options::dictionary& dict )
    {
-      lc.setup_options( dict, "lightcone" );
+      lc.setup_options( dict, "light-cone" );
       sed.setup_options( dict, "sed" );
-      filter.setup_options( dict, "filter" );
+      // filter.setup_options( dict, "filter" );
    }
 
    ///
@@ -33,9 +33,9 @@ struct pipeline
    void
    initialise( const options::dictionary& dict )
    {
-      lc.initialise( dict, "lightcone" );
+      lc.initialise( dict, "light-cone" );
       sed.initialise( dict, "sed" );
-      filter.initialise( dict, "filter" );
+      // filter.initialise( dict, "filter" );
    }
 
    ///
@@ -53,20 +53,19 @@ struct pipeline
 
          // Calculate the SED and cache results.
          sed.process_galaxy( gal );
-         vector<real_type>::view spectra = sed.total_spectra();
+         // vector<real_type>::view spectra = sed.total_spectra();
 
-         // Perform filtering.
-         filter.process_galaxy( gal, lc.redshift(), spectra );
+         // // Perform filtering.
+         // filter.process_galaxy( gal, lc.redshift(), spectra );
 
          // Dump?
-
          LOG( setindent( -2 ) );
       }
    }
 
    tao::lightcone lc;
    tao::sed sed;
-   tao::filter filter;
+   // tao::filter filter;
 };
 
 // Need to include this last to have a complete pipeline type.
