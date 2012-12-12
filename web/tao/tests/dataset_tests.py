@@ -59,8 +59,8 @@ class DatasetTestCase(TransactionTestCase):
         
         self.assertEqual([
                           ('no_filter', 'No Filter', {}),
-                          (dp1.id, '%s (%s)' % (dp1.name, dp1.units), {'data-simulation_id': str(s1.id), 'data-galaxy_model_id': str(g3.id)}),
-                          (dp2.id, '%s (%s)' % (dp2.name, dp2.units), {'data-simulation_id': str(s2.id), 'data-galaxy_model_id': str(g1.id)}),
-                          (dp3.id, '%s (%s)' % (dp3.name, dp3.units), {'data-simulation_id': str(s2.id), 'data-galaxy_model_id': str(g2.id)})
+                          (dp1.id, '%s (%s)' % (dp1.label, dp1.units), {'data-simulation_id': str(s1.id), 'data-galaxy_model_id': str(g3.id)}),
+                          (dp2.id, '%s (%s)' % (dp2.label, dp2.units), {'data-simulation_id': str(s2.id), 'data-galaxy_model_id': str(g1.id)}),
+                          (dp3.id, '%s (%s)' % (dp3.label, dp3.units), {'data-simulation_id': str(s2.id), 'data-galaxy_model_id': str(g2.id)})
                           ], 
                          filter_choices())

@@ -1,5 +1,6 @@
 {% extends '_base.html' %}
 
+{% load url from future %}
 {% load staticfiles %}
 
 {% block subtitle %}static MGF{% endblock %}
@@ -111,4 +112,11 @@
             </div>
         </fieldset>
     </form>
+
+    <!-- begin fake job -->
+    <form action="{% url 'fake_a_job' %}" method="POST">
+        {% csrf_token %}
+        <input type="submit" value="Submit a Fake Job" class="btn btn-primary" />
+    </form>
+    <!-- end fake job -->
 {% endblock content %}

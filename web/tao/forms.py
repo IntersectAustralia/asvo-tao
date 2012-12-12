@@ -120,7 +120,7 @@ class LightConeForm(BetterForm):
             'ra_min', 'ra_max', 'dec_min', 'dec_max', 'box_size'],
         }), ('secondary', {
             'legend': 'Parameters',
-            'fields': ['filter', 'max', 'min', 'rmax', 'rmin'],
+            'fields': ['filter', 'min', 'max', 'rmin', 'rmax'],
         }),]
 
     def __init__(self, *args, **kwargs):

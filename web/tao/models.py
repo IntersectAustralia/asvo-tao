@@ -86,13 +86,14 @@ class DataSet(models.Model):
 class DataSetParameter(models.Model):
     name = models.CharField(max_length=200)
     units = models.CharField(max_length=20)
+    label = models.CharField(max_length=40)
     dataset = models.ForeignKey(DataSet)
     
     def __unicode__(self):
-        return self.name
+        return self.label
 
-    def label(self):
-        return "%s (%s)" % (self.name, self.units)
+    def option_label(self):
+        return "%s (%s)" % (self.label, self.units)
 
 class StellarModel(models.Model):
     name = models.CharField(max_length=200, unique=True)

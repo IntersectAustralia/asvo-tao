@@ -90,7 +90,7 @@ def _make_parameters(light_cone_form, sed_form):
     common_parameters = [
         param('database-type', 'postgresql'),
         param('database-host', 'tao02.hpc.swin.edu.au'),
-        param('database-name', 'millennium_full_mpi'),
+        param('database-name', 'millennium_full'),
         param('database-port', '3306'),
         param('database-user', ''),
         param('database-pass', ''),

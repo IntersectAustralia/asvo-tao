@@ -91,7 +91,7 @@ class FilterTests(LiveServerMGFTest):
         # check values are the same in the form as user previously selected      
         self.assertEqual(simulation.name, self.get_selected_option_text('#id_dark_matter_simulation'))
         self.assertEqual(galaxy_model.name, self.get_selected_option_text('#id_galaxy_model'))
-        self.assertEqual(dataset_parameter.label(), self.get_selected_option_text('#id_filter'))
+        self.assertEqual(dataset_parameter.option_label(), self.get_selected_option_text('#id_filter'))
         self.assertEqual(max_input, self.get_selector_value('#id_max'))
         self.assertEqual(min_input, self.get_selector_value('#id_min'))
     
@@ -106,4 +106,4 @@ class FilterTests(LiveServerMGFTest):
         self.assertEqual(rmin_input, self.get_selector_value('#id_rmin'))
 
     def choose_filter(self, dataset_parameter):
-        self.select('#id_filter', dataset_parameter.label())
+        self.select('#id_filter', dataset_parameter.option_label())
