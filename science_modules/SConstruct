@@ -6,6 +6,7 @@ config.select(
     config.packages.boost(),
     config.packages.MPI(),
     config.packages.HDF5(),
+    config.packages.GSL(),
     config.packages.PostgreSQL(),
     config.packages.sqlite3(required=False),
     config.packages.SOCI(backends=['postgres']),
