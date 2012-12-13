@@ -69,7 +69,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
                                                            '.simulation-info .simulation-paper': simulation.paper_title,
                                                            '.simulation-info .simulation-cosmology': simulation.cosmology,
                                                            '.simulation-info .simulation-cosmological-parameters': simulation.cosmological_parameters,
-                                                           '.simulation-info .simulation-box-size': simulation.box_size,
+                                                           '.simulation-info .simulation-box-size': simulation.box_size_with_units(),
                                                            })
         self.assert_attribute_equals('href', {
                                               '.simulation-info .simulation-paper': simulation.paper_url,

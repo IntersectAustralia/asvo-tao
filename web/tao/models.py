@@ -53,6 +53,9 @@ class Simulation(models.Model):
             self.name = self.name.strip()
         super(Simulation, self).save(*args, **kwargs)
 
+    def box_size_with_units(self):
+        return "%s %s" % (self.box_size, self.box_size_units)
+
 class GalaxyModel(models.Model):   
     simulation = models.ForeignKey(Simulation)
 
