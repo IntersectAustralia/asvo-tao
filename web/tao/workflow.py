@@ -98,7 +98,7 @@ def _make_parameters(light_cone_form, sed_form):
     ]
 
     light_cone_parameters = [
-        param('query-type', light_cone_form.cleaned_data['box_type']),
+        param('query-type', light_cone_form.cleaned_data['catalogue_geometry']),
         param('simulation-box-size', simulation.box_size, units=simulation.box_size_units),
         param('redshift-min', redshift_min),
         param('redshift-max', redshift_max),

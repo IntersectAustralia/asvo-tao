@@ -75,7 +75,7 @@ def fake_a_job(request):
 <lightcone>
   <database_type>sqlite</database_type>
   <database_name>random.db</database_name>
-  <box_type>cone</box_type>
+  <catalogue_geometry>cone</catalogue_geometry>
 </lightcone>
 
 <sed>

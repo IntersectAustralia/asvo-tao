@@ -19,7 +19,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
         self.parameters = """<lightcone>
                         <database_type>sqlite</database_type>
                         <database_name>random.db</database_name>
-                        <box_type>cone</box_type>
+                        <catalogue_geometry>cone</catalogue_geometry>
                         </lightcone>
                     """
         self.submitted_job = JobFactory.create(user=self.user, parameters=self.parameters)
@@ -77,13 +77,13 @@ class SubmitLightConeTests(LiveServerMGFTest):
         self.visit('mock_galaxy_factory')
 
         ## fill in box fields (incorrectly)
-        self.select('#id_box_type', 'Box')
+        self.select('#id_catalogue_geometry', 'Box')
         self.fill_in_fields({
             'id_box_size': 'bad_input',
         })
 
         ## fill in light-cone fields (correctly)
-        self.select('#id_box_type', 'Light-Cone')
+        self.select('#id_catalogue_geometry', 'Light-Cone')
         self.fill_in_fields({
             'id_ra_min': '1',
             'id_ra_max': '2',
@@ -99,7 +99,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
         self.visit('mock_galaxy_factory')
 
         ## fill in light-cone fields (incorrectly)
-        self.select('#id_box_type', 'Light-Cone')
+        self.select('#id_catalogue_geometry', 'Light-Cone')
         self.fill_in_fields({
             'id_ra_min': 'not_valid',
             'id_ra_max': 'not_valid',
@@ -108,7 +108,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
         })
 
         ## fill in box fields (correctly)
-        self.select('#id_box_type', 'Box')
+        self.select('#id_catalogue_geometry', 'Box')
         self.fill_in_fields({
             'id_box_size': '1',
         })

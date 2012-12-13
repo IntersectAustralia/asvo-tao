@@ -30,7 +30,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
 
     def make_light_cone_form(self, values):
         default_values = {
-                          'box_type': LightConeForm.CONE,
+                          'catalogue_geometry': LightConeForm.CONE,
                           'dark_matter_simulation': 1,
                           'galaxy_model': '1',
                           'filter': '1',
@@ -44,7 +44,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
 
     def test_ra_dec_min_max(self):
         light_cone_form = self.make_light_cone_form({
-            'box_type': LightConeForm.CONE,
+            'catalogue_geometry': LightConeForm.CONE,
             'ra_min': '-2',
             'dec_min': '-2',
             'ra_max': '-1',
@@ -58,7 +58,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         }, light_cone_form.errors)
 
         light_cone_form = self.make_light_cone_form({
-            'box_type': LightConeForm.CONE,
+            'catalogue_geometry': LightConeForm.CONE,
             'ra_min': '361',
             'dec_min': '361',
             'ra_max': '362',
@@ -73,7 +73,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
 
     def test_ra_and_dec_min_max(self):
         light_cone_form = self.make_light_cone_form({
-            'box_type': LightConeForm.CONE,
+            'catalogue_geometry': LightConeForm.CONE,
             'ra_min': '2',
             'dec_min': '1',
             'ra_max': '2',
@@ -87,7 +87,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
 
     def test_ra_dec_required_for_light_cone(self):
         light_cone_form = self.make_light_cone_form({
-            'box_type': LightConeForm.CONE,
+            'catalogue_geometry': LightConeForm.CONE,
             'ra_min': '',
             'dec_min': '',
             'ra_max': '',
@@ -104,7 +104,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
 
     def test_ra_dec_not_required_for_light_box(self):
         light_cone_form = self.make_light_cone_form({
-            'box_type': LightConeForm.BOX,
+            'catalogue_geometry': LightConeForm.BOX,
             'box_size': 1,
             'ra_min': '',
             'dec_min': '',
@@ -116,7 +116,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         self.assertEqual({}, light_cone_form.errors)
 
     def test_box_size_required_for_box(self):
-        light_cone_form = self.make_light_cone_form({'box_type': LightConeForm.BOX})
+        light_cone_form = self.make_light_cone_form({'catalogue_geometry': LightConeForm.BOX})
 
         self.assertFalse(light_cone_form.is_valid())
         self.assertEqual(['The "Box Size" field is required when "Box" is selected'], light_cone_form.errors['box_size'])
@@ -213,7 +213,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         rmax = '0.2'
 
         lc_form = self.make_light_cone_form({
-                                   'box_type': LightConeForm.CONE,
+                                   'catalogue_geometry': LightConeForm.CONE,
                                    'dark_matter_simulation': simulation.id,
                                    'galaxy_model': galaxy_model.id,
                                    'filter': filter_parameter.id,
@@ -307,7 +307,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         rmax = '0.2'
 
         lc_form = self.make_light_cone_form({
-                                   'box_type': LightConeForm.CONE,
+                                   'catalogue_geometry': LightConeForm.CONE,
                                    'dark_matter_simulation': simulation.id,
                                    'galaxy_model': galaxy_model.id,
                                    'filter': NO_FILTER,
@@ -401,7 +401,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         dec_max = '32.56'
 
         lc_form = self.make_light_cone_form({
-                                   'box_type': LightConeForm.CONE,
+                                   'catalogue_geometry': LightConeForm.CONE,
                                    'dark_matter_simulation': simulation.id,
                                    'galaxy_model': galaxy_model.id,
                                    'filter': NO_FILTER,

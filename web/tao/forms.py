@@ -98,7 +98,7 @@ class LightConeForm(BetterForm):
     CONE = 'cone'
     BOX = 'box'
 
-    box_type = forms.ChoiceField(choices=[(CONE, 'Light-Cone'), (BOX, 'Box')])
+    catalogue_geometry = forms.ChoiceField(choices=[(CONE, 'Light-Cone'), (BOX, 'Box')])
 
     max = forms.DecimalField(required=False, label=_('Max/Faintest'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
     min = forms.DecimalField(required=False, label=_('Min/Brightest'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
@@ -116,7 +116,7 @@ class LightConeForm(BetterForm):
     class Meta:
         fieldsets = [('primary', {
             'legend': 'General',
-            'fields': ['box_type', 'dark_matter_simulation', 'galaxy_model',
+            'fields': ['catalogue_geometry', 'dark_matter_simulation', 'galaxy_model',
             'ra_min', 'ra_max', 'dec_min', 'dec_max', 'box_size'],
         }), ('secondary', {
             'legend': 'Parameters',
@@ -163,20 +163,20 @@ class LightConeForm(BetterForm):
             del self.cleaned_data["rmin"]
 
     def check_light_cone_required_fields(self):
-        box_type = self.cleaned_data.get('box_type')
-        if box_type == 'cone':
+        catalogue_geometry = self.cleaned_data.get('catalogue_geometry')
+        if catalogue_geometry == 'cone':
             for field_name in self.LIGHT_CONE_REQUIRED_FIELDS:
                 field = self.cleaned_data.get(field_name)
                 if field is None and field_name not in self._errors:
                     self.errors[field_name] = self.error_class(['This field is required.'])
 
     def check_box_size_required_for_box(self):
-        box_type_field = self.cleaned_data.get('box_type')
+        catalogue_geometry_field = self.cleaned_data.get('catalogue_geometry')
         box_size_field = self.cleaned_data.get('box_size')
-        if box_type_field == 'box' and box_size_field is None:
+        if catalogue_geometry_field == 'box' and box_size_field is None:
             msg = _('The "Box Size" field is required when "Box" is selected')
             self._errors["box_size"] = self.error_class([msg])
-            del self.cleaned_data['box_type']
+            del self.cleaned_data['catalogue_geometry']
 
     def clean(self):
         self.cleaned_data = super(LightConeForm, self).clean()

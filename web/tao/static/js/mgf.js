@@ -91,14 +91,14 @@ jQuery(document).ready(function($) {
         }
     });
 
-    $('#id_box_type').change(function(evt){
+    $('#id_catalogue_geometry').change(function(evt){
         var $this = $(this);
-        var box_type_value = $this.val();
+        var catalogue_geometry_value = $this.val();
         var box_size_group = $('#id_box_size').closest('div.control-group');
 
         var light_cone_fields = $('.light_cone_field').closest('div.control-group');
 
-        if (box_type_value == "box") {
+        if (catalogue_geometry_value == "box") {
             box_size_group.show();
             light_cone_fields.hide();
         } else {
@@ -122,6 +122,6 @@ jQuery(document).ready(function($) {
         show_galaxy_model_info(initial_galaxy_model_id);
         update_filter_options(initial_simulation_id, initial_galaxy_model_id);
         $('#id_filter').change();
-        $('#id_box_type').change();
+        $('#id_catalogue_geometry').change();
     })();
 });
