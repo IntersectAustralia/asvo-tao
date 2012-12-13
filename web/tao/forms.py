@@ -102,8 +102,8 @@ class LightConeForm(BetterForm):
 
     max = forms.DecimalField(required=False, label=_('Max/Faintest'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
     min = forms.DecimalField(required=False, label=_('Min/Brightest'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
-    rmax = forms.DecimalField(required=False, label=_('Rmax'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
-    rmin = forms.DecimalField(required=False, label=_('Rmin'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
+    redshift_max = forms.DecimalField(required=False, label=_('Redshift Max'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
+    redshift_min = forms.DecimalField(required=False, label=_('Redshift Min'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
     box_size = forms.DecimalField(required=False, label=_('Box Size'))
 
     ra_min = forms.DecimalField(required=False, label=_('RA min (degrees)'), min_value=0, max_value=360, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
@@ -117,10 +117,10 @@ class LightConeForm(BetterForm):
         fieldsets = [('primary', {
             'legend': 'General',
             'fields': ['catalogue_geometry', 'dark_matter_simulation', 'galaxy_model',
-            'ra_min', 'ra_max', 'dec_min', 'dec_max', 'box_size'],
+            'ra_min', 'ra_max', 'dec_min', 'dec_max', 'box_size', 'redshift_min', 'redshift_max',],
         }), ('secondary', {
             'legend': 'Parameters',
-            'fields': ['filter', 'min', 'max', 'rmin', 'rmax'],
+            'fields': ['filter', 'min', 'max',],
         }),]
 
     def __init__(self, *args, **kwargs):
@@ -154,13 +154,13 @@ class LightConeForm(BetterForm):
             self._errors["dec_min"] = self.error_class([msg])
             del self.cleaned_data["dec_min"]
 
-    def check_rmin_less_than_rmax(self):
-        rmin_field = self.cleaned_data.get('rmin')
-        rmax_field = self.cleaned_data.get('rmax')
-        if rmin_field is not None and rmax_field is not None and rmin_field >= rmax_field:
+    def check_redshift_min_less_than_redshift_max(self):
+        redshift_min_field = self.cleaned_data.get('redshift_min')
+        redshift_max_field = self.cleaned_data.get('redshift_max')
+        if redshift_min_field is not None and redshift_max_field is not None and redshift_min_field >= redshift_max_field:
             msg = _('The "Rmin" field must be less than the "Rmax" field.')
-            self._errors["rmin"] = self.error_class([msg])
-            del self.cleaned_data["rmin"]
+            self._errors["redshift_min"] = self.error_class([msg])
+            del self.cleaned_data["redshift_min"]
 
     def check_light_cone_required_fields(self):
         catalogue_geometry = self.cleaned_data.get('catalogue_geometry')
@@ -181,7 +181,7 @@ class LightConeForm(BetterForm):
     def clean(self):
         self.cleaned_data = super(LightConeForm, self).clean()
         self.check_min_less_than_max()
-        self.check_rmin_less_than_rmax()
+        self.check_redshift_min_less_than_redshift_max()
         self.check_box_size_required_for_box()
         self.check_light_cone_required_fields()
         self.check_light_cone_min_max_fields()

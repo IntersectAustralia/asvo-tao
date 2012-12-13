@@ -95,15 +95,15 @@ class FilterTests(LiveServerMGFTest):
         self.assertEqual(max_input, self.get_selector_value('#id_max'))
         self.assertEqual(min_input, self.get_selector_value('#id_min'))
     
-    def test_rmax_rmin_fields_after_failed_submit(self):
-        rmax_input = "bad number"
-        rmin_input = "73"
-        self.fill_in_fields({'id_rmax': rmax_input, 'id_rmin': rmin_input})
+    def test_redshift_max_redshift_min_fields_after_failed_submit(self):
+        redshift_max_input = "bad number"
+        redshift_min_input = "73"
+        self.fill_in_fields({'id_redshift_max': redshift_max_input, 'id_redshift_min': redshift_min_input})
         
         self.submit_mgf_form()
         
-        self.assertEqual(rmax_input, self.get_selector_value('#id_rmax'))
-        self.assertEqual(rmin_input, self.get_selector_value('#id_rmin'))
+        self.assertEqual(redshift_max_input, self.get_selector_value('#id_redshift_max'))
+        self.assertEqual(redshift_min_input, self.get_selector_value('#id_redshift_min'))
 
     def choose_filter(self, dataset_parameter):
         self.select('#id_filter', dataset_parameter.option_label())

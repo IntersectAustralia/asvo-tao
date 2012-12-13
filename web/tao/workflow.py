@@ -80,10 +80,10 @@ def _make_parameters(light_cone_form, sed_form):
     else:
         filter_parameter = None
 
-    redshift_min = light_cone_form.cleaned_data['rmin']
+    redshift_min = light_cone_form.cleaned_data['redshift_min']
     if redshift_min is None:
         redshift_min = dataset.min_snapshot
-    redshift_max = light_cone_form.cleaned_data['rmax']
+    redshift_max = light_cone_form.cleaned_data['redshift_max']
     if redshift_max is None:
         redshift_max = dataset.max_snapshot
 

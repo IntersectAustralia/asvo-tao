@@ -128,8 +128,8 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         self.assertEqual({}, light_cone_form.errors)
         self.assertTrue(light_cone_form.is_valid())
 
-    def test_rmin_less_than_rmax_passes(self):
-        light_cone_form = self.make_light_cone_form({'rmax': '2', 'rmin': '1.5'})
+    def test_redshift_min_less_than_redshift_max_passes(self):
+        light_cone_form = self.make_light_cone_form({'redshift_max': '2', 'redshift_min': '1.5'})
         light_cone_form.is_valid()
 
         self.assertEqual({}, light_cone_form.errors)
@@ -141,11 +141,11 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         self.assertFalse(light_cone_form.is_valid())
         self.assertEqual(['The "min" field must be less than the "max" field.'], light_cone_form.errors['min'])
 
-    def test_rmin_equal_rmax_fails(self):
-        light_cone_form = self.make_light_cone_form({'rmax': '3', 'rmin': '3'})
+    def test_redshift_min_equal_redshift_max_fails(self):
+        light_cone_form = self.make_light_cone_form({'redshift_max': '3', 'redshift_min': '3'})
 
         self.assertFalse(light_cone_form.is_valid())
-        self.assertEqual(['The "Rmin" field must be less than the "Rmax" field.'], light_cone_form.errors['rmin'])
+        self.assertEqual(['The "Rmin" field must be less than the "Rmax" field.'], light_cone_form.errors['redshift_min'])
 
     def test_min_greater_than_max_fails(self):
         light_cone_form = self.make_light_cone_form({'max': '3', 'min': '9'})
@@ -153,11 +153,11 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         self.assertFalse(light_cone_form.is_valid())
         self.assertEqual(['The "min" field must be less than the "max" field.'], light_cone_form.errors['min'])
 
-    def test_rmin_greater_than_rmax_fails(self):
-        light_cone_form = self.make_light_cone_form({'rmax': '3', 'rmin': '9'})
+    def test_redshift_min_greater_than_redshift_max_fails(self):
+        light_cone_form = self.make_light_cone_form({'redshift_max': '3', 'redshift_min': '9'})
 
         self.assertFalse(light_cone_form.is_valid())
-        self.assertEqual(['The "Rmin" field must be less than the "Rmax" field.'], light_cone_form.errors['rmin'])
+        self.assertEqual(['The "Rmin" field must be less than the "Rmax" field.'], light_cone_form.errors['redshift_min'])
 
     def test_max_or_min_empty_passes(self):
         form_no_min = self.make_light_cone_form({'max': '3', 'min': ''})
@@ -166,9 +166,9 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         self.assertTrue(form_no_min.is_valid())
         self.assertTrue(form_no_max.is_valid())
 
-    def test_rmax_or_rmin_empty_passes(self):
-        form_no_min = self.make_light_cone_form({'rmax': '3', 'rmin': ''})
-        form_no_max = self.make_light_cone_form({'rmax': '', 'rmin': '9'})
+    def test_redshift_max_or_redshift_min_empty_passes(self):
+        form_no_min = self.make_light_cone_form({'redshift_max': '3', 'redshift_min': ''})
+        form_no_max = self.make_light_cone_form({'redshift_max': '', 'redshift_min': '9'})
 
         self.assertTrue(form_no_min.is_valid())
         self.assertTrue(form_no_max.is_valid())
@@ -183,14 +183,14 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         self.assertFalse(min_overflow_form.is_valid())
         self.assertEqual(['Ensure that there are no more than 20 digits in total.'], min_overflow_form.errors['min'])
 
-    def test_rmax_rmin_length(self):
-        rmax_overflow_form = self.make_light_cone_form({'rmax': '123456789012345678901', 'rmin': '7'})
-        self.assertFalse(rmax_overflow_form.is_valid())
-        self.assertEqual(['Ensure that there are no more than 20 digits in total.'], rmax_overflow_form.errors['rmax'])
+    def test_redshift_max_redshift_min_length(self):
+        redshift_max_overflow_form = self.make_light_cone_form({'redshift_max': '123456789012345678901', 'redshift_min': '7'})
+        self.assertFalse(redshift_max_overflow_form.is_valid())
+        self.assertEqual(['Ensure that there are no more than 20 digits in total.'], redshift_max_overflow_form.errors['redshift_max'])
 
-        rmin_overflow_form = self.make_light_cone_form({'rmax': '2', 'rmin': '1.0000000000000000000001'})
-        self.assertFalse(rmin_overflow_form.is_valid())
-        self.assertEqual(['Ensure that there are no more than 20 digits in total.'], rmin_overflow_form.errors['rmin'])
+        redshift_min_overflow_form = self.make_light_cone_form({'redshift_max': '2', 'redshift_min': '1.0000000000000000000001'})
+        self.assertFalse(redshift_min_overflow_form.is_valid())
+        self.assertEqual(['Ensure that there are no more than 20 digits in total.'], redshift_min_overflow_form.errors['redshift_min'])
 
     def test_xml_parameters(self):
         database_name = 'sqlite://sfh_bcgs200_full_z0.db'
@@ -209,8 +209,8 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
 
         dec_min = '12.34'
         dec_max = '32.56'
-        rmin = '0.1'
-        rmax = '0.2'
+        redshift_min = '0.1'
+        redshift_max = '0.2'
 
         lc_form = self.make_light_cone_form({
                                    'catalogue_geometry': LightConeForm.CONE,
@@ -223,8 +223,8 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
                                    'ra_max': ra_max,
                                    'dec_min': dec_min,
                                    'dec_max': dec_max,
-                                   'rmax': rmax,
-                                   'rmin': rmin,
+                                   'redshift_max': redshift_max,
+                                   'redshift_min': redshift_min,
                                 })
 
         lc_form.is_valid()  # trigger validation
@@ -279,7 +279,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
             'ra_max': ra_max,
             'dec_min': dec_min,
             'dec_max': dec_max,
-            'rmin': rmin,
+            'redshift_min': redshift_min,
             'filter_type': filter_parameter.name,
             'filter_min': filter_min,
             'filter_max': filter_max,
@@ -303,22 +303,22 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
 
         dec_min = '12.34'
         dec_max = '32.56'
-        rmin = '0.1'
-        rmax = '0.2'
+        redshift_min = '0.1'
+        redshift_max = '0.2'
 
         lc_form = self.make_light_cone_form({
                                    'catalogue_geometry': LightConeForm.CONE,
                                    'dark_matter_simulation': simulation.id,
                                    'galaxy_model': galaxy_model.id,
                                    'filter': NO_FILTER,
-                                   'rmin': rmin,
-                                   'rmax': rmax,
+                                   'redshift_min': redshift_min,
+                                   'redshift_max': redshift_max,
                                    'ra_min': ra_min,
                                    'ra_max': ra_max,
                                    'dec_min': dec_min,
                                    'dec_max': dec_max,
-                                   'rmax': rmax,
-                                   'rmin': rmin,
+                                   'redshift_max': redshift_max,
+                                   'redshift_min': redshift_min,
                                 })
 
         lc_form.is_valid()  # trigger validation
@@ -344,8 +344,8 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
                     <module name="light-cone">
                         <param name="query-type">%(light_cone)s</param>
                         <param name="simulation-box-size" units="Mpc">500</param>
-                        <param name="redshift-min">%(rmin)s</param>
-                        <param name="redshift-max">%(rmax)s</param>
+                        <param name="redshift-min">%(redshift_min)s</param>
+                        <param name="redshift-max">%(redshift_max)s</param>
                         <param name="ra-min" units="deg">%(ra_min)s</param>
                         <param name="ra-max" units="deg">%(ra_max)s</param>
                         <param name="dec-min" units="deg">%(dec_min)s</param>
@@ -370,8 +370,8 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
             'ra_max': ra_max,
             'dec_min': dec_min,
             'dec_max': dec_max,
-            'rmin': rmin,
-            'rmax': rmax,
+            'redshift_min': redshift_min,
+            'redshift_max': redshift_max,
             'model_id': stellar_model.name,
         })
 
@@ -409,8 +409,8 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
                                    'ra_max': ra_max,
                                    'dec_min': dec_min,
                                    'dec_max': dec_max,
-                                   'rmax': '',
-                                   'rmin': '',
+                                   'redshift_max': '',
+                                   'redshift_min': '',
                                 })
 
         lc_form.is_valid()  # trigger validation
@@ -438,8 +438,8 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
                     <module name="light-cone">
                         <param name="query-type">%(light_cone)s</param>
                         <param name="simulation-box-size" units="Mpc">500</param>
-                        <param name="redshift-min">%(rmin)s</param>
-                        <param name="redshift-max">%(rmax)s</param>
+                        <param name="redshift-min">%(redshift_min)s</param>
+                        <param name="redshift-max">%(redshift_max)s</param>
                         <param name="ra-min" units="deg">%(ra_min)s</param>
                         <param name="ra-max" units="deg">%(ra_max)s</param>
                         <param name="dec-min" units="deg">%(dec_min)s</param>
@@ -464,8 +464,8 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
             'ra_max': ra_max,
             'dec_min': dec_min,
             'dec_max': dec_max,
-            'rmin': 0,
-            'rmax': 1,
+            'redshift_min': 0,
+            'redshift_max': 1,
             'model_id': stellar_model.name,
             'expected_timestamp': expected_timestamp
         })
