@@ -111,7 +111,7 @@ class LightConeForm(BetterForm):
     dec_min = forms.DecimalField(required=False, label=_('dec min (degrees)'), min_value=0, max_value=360, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
     dec_max = forms.DecimalField(required=False, label=_('dec max (degrees)'), min_value=0, max_value=360, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
 
-    LIGHT_CONE_REQUIRED_FIELDS = ('ra_min', 'ra_max', 'dec_min', 'dec_max')
+    LIGHT_CONE_REQUIRED_FIELDS = ('ra_min', 'ra_max', 'dec_min', 'dec_max', 'redshift_min', 'redshift_max')
 
     class Meta:
         fieldsets = [('primary', {

@@ -38,6 +38,8 @@ class SubmitLightConeTests(LiveServerMGFTest):
             'id_dec_min': '1',
             'id_ra_max': '2',
             'id_dec_max': '2',
+            'id_redshift_min': '1',
+            'id_redshift_max': '2',
         })
         self.submit_mgf_form()
 
@@ -89,6 +91,8 @@ class SubmitLightConeTests(LiveServerMGFTest):
             'id_ra_max': '2',
             'id_dec_min': '1',
             'id_dec_max': '2',
+            'id_redshift_min': '1',
+            'id_redshift_max': '2',
         })
 
         self.submit_mgf_form()

@@ -38,6 +38,8 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
                           'ra_max': '2',
                           'dec_min': '1',
                           'dec_max': '2',
+                          'redshift_min': '1',
+                          'redshift_max': '2',
                           }
         default_values.update(values)
         return LightConeForm(default_values)
@@ -162,13 +164,6 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
     def test_max_or_min_empty_passes(self):
         form_no_min = self.make_light_cone_form({'max': '3', 'min': ''})
         form_no_max = self.make_light_cone_form({'max': '', 'min': '9'})
-
-        self.assertTrue(form_no_min.is_valid())
-        self.assertTrue(form_no_max.is_valid())
-
-    def test_redshift_max_or_redshift_min_empty_passes(self):
-        form_no_min = self.make_light_cone_form({'redshift_max': '3', 'redshift_min': ''})
-        form_no_max = self.make_light_cone_form({'redshift_max': '', 'redshift_min': '9'})
 
         self.assertTrue(form_no_min.is_valid())
         self.assertTrue(form_no_max.is_valid())
@@ -373,101 +368,6 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
             'redshift_min': redshift_min,
             'redshift_max': redshift_max,
             'model_id': stellar_model.name,
-        })
-
-        self.assertXmlEqual(expected_parameter_xml, job.parameters)
-
-    def test_redshift_defaults_to_dataset_limits(self):
-        from tao.datasets import NO_FILTER
-        database_name = 'sqlite://sfh_bcgs200_full_z0.db'
-        database_box_size = 500
-
-        simulation = SimulationFactory.create(box_size=database_box_size, box_size_units='Mpc')
-        galaxy_model = GalaxyModelFactory.create()
-        dataset = DataSetFactory.create(
-            database=database_name,
-            simulation=simulation,
-            galaxy_model=galaxy_model,
-            min_snapshot=0,
-            max_snapshot=1,
-        )
-
-        expected_timestamp = "2012-11-13T13:45:32+1000"
-
-        ra_min = '1.23'
-        ra_max = '2.34'
-
-        dec_min = '12.34'
-        dec_max = '32.56'
-
-        lc_form = self.make_light_cone_form({
-                                   'catalogue_geometry': LightConeForm.CONE,
-                                   'dark_matter_simulation': simulation.id,
-                                   'galaxy_model': galaxy_model.id,
-                                   'filter': NO_FILTER,
-                                   'ra_min': ra_min,
-                                   'ra_max': ra_max,
-                                   'dec_min': dec_min,
-                                   'dec_max': dec_max,
-                                   'redshift_max': '',
-                                   'redshift_min': '',
-                                })
-
-        lc_form.is_valid()  # trigger validation
-
-        stellar_model = StellarModelFactory.create()
-        sed_form = SEDForm({'single_stellar_population_model': stellar_model.id})
-        sed_form.is_valid()
-
-        job = workflow.save(self.user, lc_form, sed_form)
-
-        expected_parameter_xml = stripped_joined_lines("""
-            <?xml version="1.0" encoding="utf-8"?>
-            <tao xmlns="http://tao.asvo.org.au/schema/module-parameters-v1" timestamp="%(expected_timestamp)s">
-
-                <workflow name="alpha-light-cone-image">
-
-                    <param name="database-type">postgresql</param>
-                    <param name="database-host">tao02.hpc.swin.edu.au</param>
-                    <param name="database-name">millennium_full</param>
-                    <param name="database-port">3306</param>
-                    <param name="database-user"></param>
-                    <param name="database-pass"></param>
-                    <param name="schema-version">1.0</param>
-
-                    <module name="light-cone">
-                        <param name="query-type">%(light_cone)s</param>
-                        <param name="simulation-box-size" units="Mpc">500</param>
-                        <param name="redshift-min">%(redshift_min)s</param>
-                        <param name="redshift-max">%(redshift_max)s</param>
-                        <param name="ra-min" units="deg">%(ra_min)s</param>
-                        <param name="ra-max" units="deg">%(ra_max)s</param>
-                        <param name="dec-min" units="deg">%(dec_min)s</param>
-                        <param name="dec-max" units="deg">%(dec_max)s</param>
-                    </module>
-                    <module name="sed">
-                        <param name="single-stellar-population-model">%(model_id)s</param>
-                    </module>
-                    <module name="filter">
-                    <filter>
-                    <waves_filename>wavelengths.dat</waves_filename>
-                    <filter_filenames>u.dat,v.dat,zpv.dat,k.dat,zpk.dat</filter_filenames>
-                    <vega_filename>A0V_KUR_BB.SED</vega_filename>
-                    </filter>
-                    </module>
-                </workflow>
-            </tao>
-        """ % {
-            'database_name': database_name,
-            'light_cone': LightConeForm.CONE,
-            'ra_min': ra_min,
-            'ra_max': ra_max,
-            'dec_min': dec_min,
-            'dec_max': dec_max,
-            'redshift_min': 0,
-            'redshift_max': 1,
-            'model_id': stellar_model.name,
-            'expected_timestamp': expected_timestamp
         })
 
         self.assertXmlEqual(expected_parameter_xml, job.parameters)
