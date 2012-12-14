@@ -119,7 +119,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         light_cone_form = self.make_light_cone_form({'redshift_max': '3', 'redshift_min': '3'})
 
         self.assertFalse(light_cone_form.is_valid())
-        self.assertEqual(['The "Rmin" field must be less than the "Rmax" field.'], light_cone_form.errors['redshift_min'])
+        self.assertEqual(['The minimum redshift must be less than the maximum redshift.'], light_cone_form.errors['redshift_min'])
 
     def test_min_greater_than_max_fails(self):
         light_cone_form = self.make_light_cone_form({'max': '3', 'min': '9'})
@@ -131,7 +131,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         light_cone_form = self.make_light_cone_form({'redshift_max': '3', 'redshift_min': '9'})
 
         self.assertFalse(light_cone_form.is_valid())
-        self.assertEqual(['The "Rmin" field must be less than the "Rmax" field.'], light_cone_form.errors['redshift_min'])
+        self.assertEqual(['The minimum redshift must be less than the maximum redshift.'], light_cone_form.errors['redshift_min'])
 
     def test_max_or_min_empty_passes(self):
         form_no_min = self.make_light_cone_form({'max': '3', 'min': ''})

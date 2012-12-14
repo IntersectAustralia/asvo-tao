@@ -143,7 +143,7 @@ class LightConeForm(BetterForm):
         redshift_min_field = self.cleaned_data.get('redshift_min')
         redshift_max_field = self.cleaned_data.get('redshift_max')
         if redshift_min_field is not None and redshift_max_field is not None and redshift_min_field >= redshift_max_field:
-            msg = _('The "Rmin" field must be less than the "Rmax" field.')
+            msg = _('The minimum redshift must be less than the maximum redshift.')
             self._errors["redshift_min"] = self.error_class([msg])
             del self.cleaned_data["redshift_min"]
 
