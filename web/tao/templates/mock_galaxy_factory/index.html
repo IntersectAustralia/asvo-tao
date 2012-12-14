@@ -3,6 +3,7 @@
 
 {% load staticfiles %}
 {% load bootstrap_tags %}
+{% load assets %}
 
 {% block subtitle %}Mock Galaxy Factory{% endblock %}
 
@@ -23,7 +24,7 @@
 {% endblock extracss %}
 
 {% block extrajs %}
-    <script src="{% static "js/mgf.js" %}"></script>
+    {% js_asset 'mgf.js' %}
 {% endblock extrajs %}
 
 {% block content %}

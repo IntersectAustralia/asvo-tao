@@ -102,14 +102,16 @@ class LightConeForm(BetterForm):
 
     max = forms.DecimalField(required=False, label=_('Max'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
     min = forms.DecimalField(required=False, label=_('Min'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
-    redshift_max = forms.DecimalField(required=False, label=_('Redshift Max'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
-    redshift_min = forms.DecimalField(required=False, label=_('Redshift Min'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
+    redshift_max = forms.DecimalField(required=False, label=_('Redshift Max'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
+    redshift_min = forms.DecimalField(required=False, label=_('Redshift Min'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
     box_size = forms.DecimalField(required=False, label=_('Box Size'))
 
     ra_max = forms.DecimalField(required=False, label=_('RA max (degrees)'), min_value=0, max_value=360, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
     dec_max = forms.DecimalField(required=False, label=_('dec max (degrees)'), min_value=0, max_value=360, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
 
-    LIGHT_CONE_REQUIRED_FIELDS = ('ra_max', 'dec_max', 'redshift_min', 'redshift_max')
+    LIGHT_CONE_REQUIRED_FIELDS = ('ra_max', 'dec_max', 'redshift_min', 'redshift_max',)  # Ensure these fields have a class of 'light_cone_field'
+    BOX_REQUIRED_FIELDS = ('box_size',)
+    SEMIREQUIRED_FIELDS = LIGHT_CONE_REQUIRED_FIELDS + BOX_REQUIRED_FIELDS
 
     class Meta:
         fieldsets = [('primary', {
@@ -126,7 +128,7 @@ class LightConeForm(BetterForm):
         self.fields['dark_matter_simulation'] = ChoiceFieldWithOtherAttrs(choices=datasets.dark_matter_simulation_choices())
         self.fields['galaxy_model'] = ChoiceFieldWithOtherAttrs(choices=datasets.galaxy_model_choices())
         self.fields['filter'] = ChoiceFieldWithOtherAttrs(choices=datasets.filter_choices())
-        for field_name in ['ra_max', 'dec_max', 'box_size']:
+        for field_name in LightConeForm.SEMIREQUIRED_FIELDS:
             self.fields[field_name].semirequired = True
 
     def check_min_less_than_max(self):

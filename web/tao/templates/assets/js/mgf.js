@@ -1,3 +1,5 @@
+{% load mgf %}
+
 var show_simulation_info;
 var show_galaxy_model_info;
 
@@ -109,7 +111,7 @@ jQuery(document).ready(function($) {
 
     $('#mgf-form').submit(function(){
         var $form = $(this);
-        $form.find('#id_ra_max, #id_dec_max, #id_box_size').not(':visible').each(function(){
+        $form.find('{% semirequired_field_ids %}').not(':visible').each(function(){
             $(this).val('');
         });
     });

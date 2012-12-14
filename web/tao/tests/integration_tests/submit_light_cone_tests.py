@@ -103,6 +103,8 @@ class SubmitLightConeTests(LiveServerMGFTest):
         self.fill_in_fields({
             'id_ra_max': 'not_valid',
             'id_dec_max': 'not_valid',
+            'id_redshift_min': 'not_valid',
+            'id_redshift_max': 'not_valid',
         })
 
         ## fill in box fields (correctly)
