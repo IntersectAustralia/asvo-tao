@@ -102,9 +102,9 @@ def _make_parameters(light_cone_form, sed_form):
         param('simulation-box-size', simulation.box_size, units=simulation.box_size_units),
         param('redshift-min', redshift_min),
         param('redshift-max', redshift_max),
-        param('ra-min', light_cone_form.cleaned_data['ra_min'], units='deg'),
+        param('ra-min', 0, units='deg'),
         param('ra-max', light_cone_form.cleaned_data['ra_max'], units='deg'),
-        param('dec-min', light_cone_form.cleaned_data['dec_min'], units='deg'),
+        param('dec-min', 0, units='deg'),
         param('dec-max', light_cone_form.cleaned_data['dec_max'], units='deg'),
     ]
     if filter_parameter is not None:

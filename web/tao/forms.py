@@ -106,18 +106,16 @@ class LightConeForm(BetterForm):
     redshift_min = forms.DecimalField(required=False, label=_('Redshift Min'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
     box_size = forms.DecimalField(required=False, label=_('Box Size'))
 
-    ra_min = forms.DecimalField(required=False, label=_('RA min (degrees)'), min_value=0, max_value=360, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
     ra_max = forms.DecimalField(required=False, label=_('RA max (degrees)'), min_value=0, max_value=360, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
-    dec_min = forms.DecimalField(required=False, label=_('dec min (degrees)'), min_value=0, max_value=360, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
     dec_max = forms.DecimalField(required=False, label=_('dec max (degrees)'), min_value=0, max_value=360, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
 
-    LIGHT_CONE_REQUIRED_FIELDS = ('ra_min', 'ra_max', 'dec_min', 'dec_max', 'redshift_min', 'redshift_max')
+    LIGHT_CONE_REQUIRED_FIELDS = ('ra_max', 'dec_max', 'redshift_min', 'redshift_max')
 
     class Meta:
         fieldsets = [('primary', {
             'legend': 'General',
             'fields': ['catalogue_geometry', 'dark_matter_simulation', 'galaxy_model',
-            'ra_min', 'ra_max', 'dec_min', 'dec_max', 'box_size', 'redshift_min', 'redshift_max',],
+            'ra_max', 'dec_max', 'box_size', 'redshift_min', 'redshift_max',],
         }), ('secondary', {
             'legend': 'Parameters',
             'fields': ['filter', 'min', 'max',],
@@ -128,7 +126,7 @@ class LightConeForm(BetterForm):
         self.fields['dark_matter_simulation'] = ChoiceFieldWithOtherAttrs(choices=datasets.dark_matter_simulation_choices())
         self.fields['galaxy_model'] = ChoiceFieldWithOtherAttrs(choices=datasets.galaxy_model_choices())
         self.fields['filter'] = ChoiceFieldWithOtherAttrs(choices=datasets.filter_choices())
-        for field_name in ['ra_min', 'ra_max', 'dec_min', 'dec_max', 'box_size']:
+        for field_name in ['ra_max', 'dec_max', 'box_size']:
             self.fields[field_name].semirequired = True
 
     def check_min_less_than_max(self):
@@ -138,21 +136,6 @@ class LightConeForm(BetterForm):
             msg = _('The "min" field must be less than the "max" field.')
             self._errors["min"] = self.error_class([msg])
             del self.cleaned_data["min"]
-
-    def check_light_cone_min_max_fields(self):
-        ra_min_field = self.cleaned_data.get('ra_min')
-        ra_max_field = self.cleaned_data.get('ra_max')
-        dec_min_field = self.cleaned_data.get('dec_min')
-        dec_max_field = self.cleaned_data.get('dec_max')
-        if ra_max_field is not None and ra_min_field is not None and ra_min_field >= ra_max_field:
-            msg = _('The "RA min" field must be less than the "RA max" field.')
-            self._errors["ra_min"] = self.error_class([msg])
-            del self.cleaned_data["ra_min"]
-
-        if dec_max_field is not None and dec_min_field is not None and dec_min_field >= dec_max_field:
-            msg = _('The "dec min" field must be less than the "dec max" field.')
-            self._errors["dec_min"] = self.error_class([msg])
-            del self.cleaned_data["dec_min"]
 
     def check_redshift_min_less_than_redshift_max(self):
         redshift_min_field = self.cleaned_data.get('redshift_min')
@@ -184,6 +167,5 @@ class LightConeForm(BetterForm):
         self.check_redshift_min_less_than_redshift_max()
         self.check_box_size_required_for_box()
         self.check_light_cone_required_fields()
-        self.check_light_cone_min_max_fields()
 
         return self.cleaned_data

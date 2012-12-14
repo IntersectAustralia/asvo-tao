@@ -34,9 +34,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
                           'dark_matter_simulation': 1,
                           'galaxy_model': '1',
                           'filter': '1',
-                          'ra_min': '1',
                           'ra_max': '2',
-                          'dec_min': '1',
                           'dec_max': '2',
                           'redshift_min': '1',
                           'redshift_max': '2',
@@ -47,60 +45,34 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
     def test_ra_dec_min_max(self):
         light_cone_form = self.make_light_cone_form({
             'catalogue_geometry': LightConeForm.CONE,
-            'ra_min': '-2',
-            'dec_min': '-2',
             'ra_max': '-1',
             'dec_max': '-1',
         })
         self.assertEqual({
-            'ra_min': ['Ensure this value is greater than or equal to 0.'],
-            'dec_min': ['Ensure this value is greater than or equal to 0.'],
             'ra_max': ['Ensure this value is greater than or equal to 0.'],
             'dec_max': ['Ensure this value is greater than or equal to 0.'],
         }, light_cone_form.errors)
 
         light_cone_form = self.make_light_cone_form({
             'catalogue_geometry': LightConeForm.CONE,
-            'ra_min': '361',
-            'dec_min': '361',
             'ra_max': '362',
             'dec_max': '362',
         })
         self.assertEqual({
-            'ra_min': ['Ensure this value is less than or equal to 360.'],
-            'dec_min': ['Ensure this value is less than or equal to 360.'],
             'ra_max': ['Ensure this value is less than or equal to 360.'],
             'dec_max': ['Ensure this value is less than or equal to 360.'],
-        }, light_cone_form.errors)
-
-    def test_ra_and_dec_min_max(self):
-        light_cone_form = self.make_light_cone_form({
-            'catalogue_geometry': LightConeForm.CONE,
-            'ra_min': '2',
-            'dec_min': '1',
-            'ra_max': '2',
-            'dec_max': '1'
-        })
-        light_cone_form.is_valid()
-        self.assertEqual({
-            'ra_min': ['The "RA min" field must be less than the "RA max" field.'],
-            'dec_min': ['The "dec min" field must be less than the "dec max" field.'],
         }, light_cone_form.errors)
 
     def test_ra_dec_required_for_light_cone(self):
         light_cone_form = self.make_light_cone_form({
             'catalogue_geometry': LightConeForm.CONE,
-            'ra_min': '',
-            'dec_min': '',
             'ra_max': '',
             'dec_max': ''
         })
         light_cone_form.is_valid()
 
         self.assertEqual({
-            'ra_min': ['This field is required.'],
             'ra_max': ['This field is required.'],
-            'dec_min': ['This field is required.'],
             'dec_max': ['This field is required.'],
         }, light_cone_form.errors)
 
@@ -199,11 +171,10 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         filter_min = '0.93'
         filter_max = '3.345'
 
-        ra_min = '1.23'
         ra_max = '2.34'
 
-        dec_min = '12.34'
         dec_max = '32.56'
+
         redshift_min = '0.1'
         redshift_max = '0.2'
 
@@ -214,9 +185,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
                                    'filter': filter_parameter.id,
                                    'min': filter_min,
                                    'max': filter_max,
-                                   'ra_min': ra_min,
                                    'ra_max': ra_max,
-                                   'dec_min': dec_min,
                                    'dec_max': dec_max,
                                    'redshift_max': redshift_max,
                                    'redshift_min': redshift_min,
@@ -247,9 +216,9 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
                         <param name="simulation-box-size" units="Mpc">500</param>
                         <param name="redshift-min">0.1</param>
                         <param name="redshift-max">0.2</param>
-                        <param name="ra-min" units="deg">%(ra_min)s</param>
+                        <param name="ra-min" units="deg">0</param>
                         <param name="ra-max" units="deg">%(ra_max)s</param>
-                        <param name="dec-min" units="deg">%(dec_min)s</param>
+                        <param name="dec-min" units="deg">0</param>
                         <param name="dec-max" units="deg">%(dec_max)s</param>
                         <param name="filter-type">%(filter_type)s</param>
                         <param name="filter-min" units="%(filter_units)s">%(filter_min)s</param>
@@ -270,9 +239,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         """ % {
             'database_name': database_name,
             'light_cone': LightConeForm.CONE,
-            'ra_min': ra_min,
             'ra_max': ra_max,
-            'dec_min': dec_min,
             'dec_max': dec_max,
             'redshift_min': redshift_min,
             'filter_type': filter_parameter.name,
@@ -293,10 +260,8 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         galaxy_model = GalaxyModelFactory.create()
         dataset = DataSetFactory.create(database=database_name, simulation=simulation, galaxy_model=galaxy_model)
 
-        ra_min = '1.23'
         ra_max = '2.34'
 
-        dec_min = '12.34'
         dec_max = '32.56'
         redshift_min = '0.1'
         redshift_max = '0.2'
@@ -308,9 +273,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
                                    'filter': NO_FILTER,
                                    'redshift_min': redshift_min,
                                    'redshift_max': redshift_max,
-                                   'ra_min': ra_min,
                                    'ra_max': ra_max,
-                                   'dec_min': dec_min,
                                    'dec_max': dec_max,
                                    'redshift_max': redshift_max,
                                    'redshift_min': redshift_min,
@@ -341,9 +304,9 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
                         <param name="simulation-box-size" units="Mpc">500</param>
                         <param name="redshift-min">%(redshift_min)s</param>
                         <param name="redshift-max">%(redshift_max)s</param>
-                        <param name="ra-min" units="deg">%(ra_min)s</param>
+                        <param name="ra-min" units="deg">0</param>
                         <param name="ra-max" units="deg">%(ra_max)s</param>
-                        <param name="dec-min" units="deg">%(dec_min)s</param>
+                        <param name="dec-min" units="deg">0</param>
                         <param name="dec-max" units="deg">%(dec_max)s</param>
                     </module>
                     <module name="sed">
@@ -361,9 +324,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         """ % {
             'database_name': database_name,
             'light_cone': LightConeForm.CONE,
-            'ra_min': ra_min,
             'ra_max': ra_max,
-            'dec_min': dec_min,
             'dec_max': dec_max,
             'redshift_min': redshift_min,
             'redshift_max': redshift_max,
