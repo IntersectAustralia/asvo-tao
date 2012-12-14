@@ -106,10 +106,10 @@ class LightConeForm(BetterForm):
     redshift_min = forms.DecimalField(required=False, label=_('Redshift Min'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
     box_size = forms.DecimalField(required=False, label=_('Box Size'))
 
-    ra_max = forms.DecimalField(required=False, label=_('RA max (degrees)'), min_value=0, max_value=360, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
-    dec_max = forms.DecimalField(required=False, label=_('dec max (degrees)'), min_value=0, max_value=360, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
+    ra_opening_angle = forms.DecimalField(required=False, label=_('Right Ascension Opening Angle (degrees)'), min_value=0, max_value=360, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
+    dec_opening_angle = forms.DecimalField(required=False, label=_('Declination Opening Angle (degrees)'), min_value=0, max_value=360, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
 
-    LIGHT_CONE_REQUIRED_FIELDS = ('ra_max', 'dec_max', 'redshift_min', 'redshift_max',)  # Ensure these fields have a class of 'light_cone_field'
+    LIGHT_CONE_REQUIRED_FIELDS = ('ra_opening_angle', 'dec_opening_angle', 'redshift_min', 'redshift_max',)  # Ensure these fields have a class of 'light_cone_field'
     BOX_REQUIRED_FIELDS = ('box_size',)
     SEMIREQUIRED_FIELDS = LIGHT_CONE_REQUIRED_FIELDS + BOX_REQUIRED_FIELDS
 
@@ -117,7 +117,7 @@ class LightConeForm(BetterForm):
         fieldsets = [('primary', {
             'legend': 'General',
             'fields': ['catalogue_geometry', 'dark_matter_simulation', 'galaxy_model',
-            'ra_max', 'dec_max', 'box_size', 'redshift_min', 'redshift_max',],
+            'ra_opening_angle', 'dec_opening_angle', 'box_size', 'redshift_min', 'redshift_max',],
         }), ('secondary', {
             'legend': 'Parameters',
             'fields': ['filter', 'min', 'max',],

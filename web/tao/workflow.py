@@ -103,9 +103,9 @@ def _make_parameters(light_cone_form, sed_form):
         param('redshift-min', redshift_min),
         param('redshift-max', redshift_max),
         param('ra-min', 0, units='deg'),
-        param('ra-max', light_cone_form.cleaned_data['ra_max'], units='deg'),
+        param('ra-max', light_cone_form.cleaned_data['ra_opening_angle'], units='deg'),
         param('dec-min', 0, units='deg'),
-        param('dec-max', light_cone_form.cleaned_data['dec_max'], units='deg'),
+        param('dec-max', light_cone_form.cleaned_data['dec_opening_angle'], units='deg'),
     ]
     if filter_parameter is not None:
         light_cone_parameters.append(param('filter-type', filter_parameter.name))

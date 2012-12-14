@@ -34,8 +34,8 @@ class SubmitLightConeTests(LiveServerMGFTest):
         
         ## fill in form (correctly)
         self.fill_in_fields({
-            'id_ra_max': '2',
-            'id_dec_max': '2',
+            'id_ra_opening_angle': '2',
+            'id_dec_opening_angle': '2',
             'id_redshift_min': '1',
             'id_redshift_max': '2',
         })
@@ -85,8 +85,8 @@ class SubmitLightConeTests(LiveServerMGFTest):
         ## fill in light-cone fields (correctly)
         self.select('#id_catalogue_geometry', 'Light-Cone')
         self.fill_in_fields({
-            'id_ra_max': '2',
-            'id_dec_max': '2',
+            'id_ra_opening_angle': '2',
+            'id_dec_opening_angle': '2',
             'id_redshift_min': '1',
             'id_redshift_max': '2',
         })
@@ -101,8 +101,8 @@ class SubmitLightConeTests(LiveServerMGFTest):
         ## fill in light-cone fields (incorrectly)
         self.select('#id_catalogue_geometry', 'Light-Cone')
         self.fill_in_fields({
-            'id_ra_max': 'not_valid',
-            'id_dec_max': 'not_valid',
+            'id_ra_opening_angle': 'not_valid',
+            'id_dec_opening_angle': 'not_valid',
             'id_redshift_min': 'not_valid',
             'id_redshift_max': 'not_valid',
         })
