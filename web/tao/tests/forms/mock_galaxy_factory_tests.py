@@ -17,7 +17,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         super(MockGalaxyFactoryTests, self).setUp()
 
         simulation = SimulationFactory.create()
-        galaxy_model = GalaxyModelFactory.create(simulation=simulation)
+        galaxy_model = GalaxyModelFactory.create()
         dataset = DataSetFactory.create(simulation=simulation, galaxy_model=galaxy_model)
         DataSetParameterFactory.create(dataset=dataset)
         self.user = UserFactory.create()

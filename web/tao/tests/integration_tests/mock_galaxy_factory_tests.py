@@ -1,6 +1,6 @@
 from tao.tests.integration_tests.helper import LiveServerTest
-from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory
-from tao.models import Simulation
+from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory
+from tao.models import Simulation, GalaxyModel
 
 class MockGalaxyFactoryTest(LiveServerTest):
 
@@ -11,10 +11,12 @@ class MockGalaxyFactoryTest(LiveServerTest):
         simulation2 = SimulationFactory.create()
 
         for unused in range(3):
-            GalaxyModelFactory.create(simulation=simulation)
+            g = GalaxyModelFactory.create()
+            DataSetFactory.create(simulation=simulation, galaxy_model=g)
             
         for unused in range(4):
-            GalaxyModelFactory.create(simulation=simulation2)
+            g = GalaxyModelFactory.create()
+            DataSetFactory.create(simulation=simulation2, galaxy_model=g)
         
         username = "person"
         password = "funnyfish"

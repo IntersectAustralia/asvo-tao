@@ -47,8 +47,6 @@ class SimulationFactory(factory.Factory):
 class GalaxyModelFactory(factory.Factory):
     FACTORY_FOR = GalaxyModel
 
-    simulation = factory.SubFactory(SimulationFactory)
-
     name = factory.Sequence(lambda n: 'galaxy_model_%03d' % int(n))
     kind = factory.Sequence(lambda n: "sometype" + n) 
     paper_title = factory.Sequence(lambda n: "xyz" + n)

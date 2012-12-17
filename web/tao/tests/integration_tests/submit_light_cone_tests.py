@@ -7,7 +7,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
         super(SubmitLightConeTests, self).setUp()
         
         simulation = SimulationFactory.create()
-        galaxy_model = GalaxyModelFactory.create(simulation=simulation)
+        galaxy_model = GalaxyModelFactory.create()
         dataset = DataSetFactory.create(simulation=simulation, galaxy_model=galaxy_model)
         DataSetParameterFactory.create(dataset=dataset)
         StellarModelFactory.create()

@@ -1,6 +1,6 @@
 from tao.tests.integration_tests.helper import LiveServerMGFTest
 from tao.tests.support.factories import SimulationFactory, GalaxyModelFactory, UserFactory, DataSetFactory, DataSetParameterFactory
-from tao.models import Simulation, DataSet
+from tao.models import Simulation, DataSet, GalaxyModel
 
 class FilterTests(LiveServerMGFTest):
     
@@ -11,12 +11,12 @@ class FilterTests(LiveServerMGFTest):
         simulation2 = SimulationFactory.create()
         
         for unused in range(4):
-            galaxy_model = GalaxyModelFactory.create(simulation=simulation1)
+            galaxy_model = GalaxyModelFactory.create()
             dataset = DataSetFactory.create(simulation=simulation1, galaxy_model=galaxy_model)
             DataSetParameterFactory.create(dataset=dataset)
             
         for unused in range(5):
-            galaxy_model = GalaxyModelFactory.create(simulation=simulation2)
+            galaxy_model = GalaxyModelFactory.create()
             dataset = DataSetFactory.create(simulation=simulation2, galaxy_model=galaxy_model)
             DataSetParameterFactory.create(dataset=dataset)
             

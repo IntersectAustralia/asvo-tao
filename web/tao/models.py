@@ -31,6 +31,7 @@ class User(auth_models.User):
         proxy = True
     
 class Simulation(models.Model):        
+
     name = models.CharField(max_length=100, unique=True)
 
     paper_title = models.CharField(max_length=100, default='')
@@ -57,10 +58,9 @@ class Simulation(models.Model):
         return "%s %s" % (self.box_size, self.box_size_units)
 
 class GalaxyModel(models.Model):   
-    simulation = models.ForeignKey(Simulation)
+    simulation_set = models.ManyToManyField(Simulation, through='DataSet')
 
     name = models.CharField(max_length=100, unique=True)
-
     kind = models.CharField(max_length=100, default='')
     paper_title = models.CharField(max_length=100, default='')
     paper_url = models.URLField(max_length=200, default='')
