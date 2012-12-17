@@ -83,6 +83,9 @@ class DataSet(models.Model):
     min_snapshot = models.DecimalField(max_digits=10, decimal_places=9)
     max_snapshot = models.DecimalField(max_digits=10, decimal_places=9)
     
+    class Meta:
+        unique_together = ('simulation', 'galaxy_model')
+
     def __unicode__(self):
         return "%s : %s" % (self.simulation.name, self.galaxy_model.name)
     
