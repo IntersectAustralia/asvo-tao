@@ -106,7 +106,11 @@ class LiveServerTest(django.test.LiveServerTestCase):
             
     def fill_in_fields(self, field_data):
         for field_id, text_to_input in field_data.items():
-            self.selenium.find_element_by_id(field_id).send_keys(text_to_input)
+            elem = self.selenium.find_element_by_id(field_id)
+            if elem.tag_name == 'select':
+                self.select('#%s' % field_id, str(text_to_input))
+            else:
+                elem.send_keys(str(text_to_input))
             
     def login(self, username, password):
         self.visit('login')
@@ -124,12 +128,18 @@ class LiveServerTest(django.test.LiveServerTestCase):
         """ self.visit(name_of_url_as_defined_in_your_urlconf) """
         self.selenium.get(self.get_full_url(url_name, *args, **kwargs))
         
-    def get_actual_filter_options(self): 
+    def get_actual_filter_options(self):
         return [x.text for x in self.selenium.find_elements_by_css_selector('#id_filter option')]
     
-    def get_expected_filter_options(self, dataset_parameters): 
+    def get_expected_filter_options(self, dataset_parameters):
         normal_parameters = [x.option_label() for x in dataset_parameters]
         return ['No Filter'] + normal_parameters
+
+    def get_actual_snapshot_options(self):
+        return [x.text for x in self.selenium.find_elements_by_css_selector('#id_snapshot option')]
+
+    def get_expected_snapshot_options(self, snapshots):
+        return [str(snapshot.redshift) for snapshot in snapshots]
         
     def get_full_url(self, url_name, *args, **kwargs):
         return "%s%s" % (self.live_server_url, reverse(url_name, args=args, kwargs=kwargs))

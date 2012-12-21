@@ -100,24 +100,26 @@ class LightConeForm(BetterForm):
 
     catalogue_geometry = forms.ChoiceField(choices=[(CONE, 'Light-Cone'), (BOX, 'Box')])
 
-    max = forms.DecimalField(required=False, label=_('Max'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
-    min = forms.DecimalField(required=False, label=_('Min'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
     redshift_max = forms.DecimalField(required=False, label=_('Redshift Max'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
     redshift_min = forms.DecimalField(required=False, label=_('Redshift Min'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
+
     box_size = forms.DecimalField(required=False, label=_('Box Size'))
 
     ra_opening_angle = forms.DecimalField(required=False, label=_('Right Ascension Opening Angle (degrees)'), min_value=0, max_value=360, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
     dec_opening_angle = forms.DecimalField(required=False, label=_('Declination Opening Angle (degrees)'), min_value=0, max_value=360, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
 
+    max = forms.DecimalField(required=False, label=_('Max'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
+    min = forms.DecimalField(required=False, label=_('Min'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
+
     LIGHT_CONE_REQUIRED_FIELDS = ('ra_opening_angle', 'dec_opening_angle', 'redshift_min', 'redshift_max',)  # Ensure these fields have a class of 'light_cone_field'
-    BOX_REQUIRED_FIELDS = ('box_size',)
+    BOX_REQUIRED_FIELDS = ('box_size', 'snapshot',)
     SEMIREQUIRED_FIELDS = LIGHT_CONE_REQUIRED_FIELDS + BOX_REQUIRED_FIELDS
 
     class Meta:
         fieldsets = [('primary', {
             'legend': 'General',
             'fields': ['catalogue_geometry', 'dark_matter_simulation', 'galaxy_model',
-            'ra_opening_angle', 'dec_opening_angle', 'box_size', 'redshift_min', 'redshift_max',],
+            'ra_opening_angle', 'dec_opening_angle', 'box_size', 'snapshot', 'redshift_min', 'redshift_max',],
         }), ('secondary', {
             'legend': 'Parameters',
             'fields': ['filter', 'min', 'max',],
@@ -125,9 +127,12 @@ class LightConeForm(BetterForm):
 
     def __init__(self, *args, **kwargs):
         super(LightConeForm, self).__init__(*args, **kwargs)
+
         self.fields['dark_matter_simulation'] = ChoiceFieldWithOtherAttrs(choices=datasets.dark_matter_simulation_choices())
         self.fields['galaxy_model'] = ChoiceFieldWithOtherAttrs(choices=datasets.galaxy_model_choices())
         self.fields['filter'] = ChoiceFieldWithOtherAttrs(choices=datasets.filter_choices())
+        self.fields['snapshot'] = ChoiceFieldWithOtherAttrs(required=False, choices=datasets.snapshot_choices())
+
         for field_name in LightConeForm.SEMIREQUIRED_FIELDS:
             self.fields[field_name].semirequired = True
 
@@ -155,19 +160,20 @@ class LightConeForm(BetterForm):
                 if field is None and field_name not in self._errors:
                     self.errors[field_name] = self.error_class(['This field is required.'])
 
-    def check_box_size_required_for_box(self):
-        catalogue_geometry_field = self.cleaned_data.get('catalogue_geometry')
-        box_size_field = self.cleaned_data.get('box_size')
-        if catalogue_geometry_field == 'box' and box_size_field is None:
-            msg = _('The "Box Size" field is required when "Box" is selected')
-            self._errors["box_size"] = self.error_class([msg])
-            del self.cleaned_data['catalogue_geometry']
+    def check_box_size_required_fields(self):
+        catalogue_geometry = self.cleaned_data.get('catalogue_geometry')
+
+        if catalogue_geometry == 'box':
+            for field_name in self.BOX_REQUIRED_FIELDS:
+                field = self.cleaned_data.get(field_name)
+                if (field is None or field == '') and field_name not in self._errors:
+                    self.errors[field_name] = self.error_class(['This field is required.'])
 
     def clean(self):
         self.cleaned_data = super(LightConeForm, self).clean()
         self.check_min_less_than_max()
         self.check_redshift_min_less_than_redshift_max()
-        self.check_box_size_required_for_box()
+        self.check_box_size_required_fields()
         self.check_light_cone_required_fields()
 
         return self.cleaned_data

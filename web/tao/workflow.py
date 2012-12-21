@@ -69,7 +69,8 @@ def _make_parameters(light_cone_form, sed_form):
     # precondition: forms are valid
 
     from tao.datasets import NO_FILTER
-
+    from tao.forms import LightConeForm
+     
     simulation = models.Simulation.objects.get(pk=light_cone_form.cleaned_data['dark_matter_simulation'])
     galaxy_model = models.GalaxyModel.objects.get(pk=light_cone_form.cleaned_data['galaxy_model'])
     dataset = models.DataSet.objects.get(simulation=simulation, galaxy_model=galaxy_model)
@@ -80,12 +81,16 @@ def _make_parameters(light_cone_form, sed_form):
     else:
         filter_parameter = None
 
-    redshift_min = light_cone_form.cleaned_data['redshift_min']
-    if redshift_min is None:
-        redshift_min = dataset.min_snapshot
-    redshift_max = light_cone_form.cleaned_data['redshift_max']
-    if redshift_max is None:
-        redshift_max = dataset.max_snapshot
+    if light_cone_form.cleaned_data['catalogue_geometry'] == LightConeForm.BOX:
+        redshift_min = light_cone_form.cleaned_data['snapshot']
+        redshift_max = light_cone_form.cleaned_data['snapshot']
+    else:
+        redshift_min = light_cone_form.cleaned_data['redshift_min']
+        if redshift_min is None:
+            redshift_min = dataset.min_snapshot
+        redshift_max = light_cone_form.cleaned_data['redshift_max']
+        if redshift_max is None:
+            redshift_max = dataset.max_snapshot
 
     common_parameters = [
         param('database-type', 'postgresql'),
@@ -102,11 +107,19 @@ def _make_parameters(light_cone_form, sed_form):
         param('simulation-box-size', simulation.box_size, units=simulation.box_size_units),
         param('redshift-min', redshift_min),
         param('redshift-max', redshift_max),
-        param('ra-min', 0, units='deg'),
-        param('ra-max', light_cone_form.cleaned_data['ra_opening_angle'], units='deg'),
-        param('dec-min', 0, units='deg'),
-        param('dec-max', light_cone_form.cleaned_data['dec_opening_angle'], units='deg'),
     ]
+    if light_cone_form.cleaned_data['catalogue_geometry'] == LightConeForm.CONE:
+        light_cone_parameters += [
+            param('ra-min', 0, units='deg'),
+            param('ra-max', light_cone_form.cleaned_data['ra_opening_angle'], units='deg'),
+            param('dec-min', 0, units='deg'),
+            param('dec-max', light_cone_form.cleaned_data['dec_opening_angle'], units='deg'),
+        ]
+    elif light_cone_form.cleaned_data['catalogue_geometry'] == LightConeForm.BOX:
+        light_cone_parameters += [
+            param('query-box-size', light_cone_form.cleaned_data['box_size']),
+        ]
+        
     if filter_parameter is not None:
         light_cone_parameters.append(param('filter-type', filter_parameter.name))
         filter_min = light_cone_form.cleaned_data['min']

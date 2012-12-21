@@ -101,6 +101,13 @@ class DataSetParameter(models.Model):
     def option_label(self):
         return "%s (%s)" % (self.label, self.units)
 
+class Snapshot(models.Model):
+    dataset = models.ForeignKey(DataSet)
+    redshift = models.DecimalField(max_digits=10, decimal_places=5)
+
+    class Meta:
+        unique_together = ('dataset', 'redshift')
+
 class StellarModel(models.Model):
     name = models.CharField(max_length=200, unique=True)
     label = models.CharField(max_length=200, unique=True)

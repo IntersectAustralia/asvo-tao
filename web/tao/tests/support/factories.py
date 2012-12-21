@@ -3,7 +3,7 @@ import factory
 
 from decimal import Decimal
 
-from tao.models import Job, User, Simulation, GalaxyModel, DataSet, DataSetParameter, StellarModel
+from tao.models import Job, User, Simulation, GalaxyModel, DataSet, DataSetParameter, StellarModel, Snapshot
 
 class JobFactory(factory.Factory):
     FACTORY_FOR = Job
@@ -63,3 +63,8 @@ class DataSetParameterFactory(factory.Factory):
 
 class StellarModelFactory(factory.Factory):
     FACTORY_FOR = StellarModel
+
+class SnapshotFactory(factory.Factory):
+    FACTORY_FOR = Snapshot
+
+    redshift = factory.Sequence(lambda n: n)

@@ -61,6 +61,22 @@ jQuery(document).ready(function($) {
         };
     })();
 
+    var update_snapshot_options = (function(){
+        var options_html = $('#id_snapshot');
+        options_html = '<select>' + options_html.html() + '</select>';
+
+        return function(simulation_id, galaxy_model_id) {
+            var $applicable_options = $(options_html);
+            $applicable_options.find('option').each(function(){
+                var $option = $(this);
+                if ($option.attr('data-simulation_id') != simulation_id || $option.attr('data-galaxy_model_id') != galaxy_model_id) {
+                    $option.remove();
+                }
+            });
+            $('#id_snapshot').html($applicable_options.html());
+        };
+    })();
+
     $('#id_dark_matter_simulation').change(function(evt){
         var $this = $(this);
         var sim_id = $this.val();
@@ -78,6 +94,7 @@ jQuery(document).ready(function($) {
 
         var simulation_id = $this.find('option').attr('data-simulation_id');
         update_filter_options(simulation_id, galaxy_model_id);
+        update_snapshot_options(simulation_id, galaxy_model_id);
     });
 
     $('#id_filter').change(function(evt){
@@ -123,6 +140,7 @@ jQuery(document).ready(function($) {
         var initial_galaxy_model_id = $('#id_galaxy_model').val();
         show_galaxy_model_info(initial_galaxy_model_id);
         update_filter_options(initial_simulation_id, initial_galaxy_model_id);
+        update_snapshot_options(initial_simulation_id, initial_galaxy_model_id);
         $('#id_filter').change();
         $('#id_catalogue_geometry').change();
     })();

@@ -3,9 +3,10 @@ from django.test.testcases import TransactionTestCase
 import datetime
 
 from tao import workflow, time
+from tao.models import Snapshot
 from tao.forms import LightConeForm, SEDForm
 from tao.tests.support import stripped_joined_lines
-from tao.tests.support.factories import SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetParameterFactory, UserFactory, StellarModelFactory
+from tao.tests.support.factories import SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetParameterFactory, UserFactory, StellarModelFactory, SnapshotFactory
 from tao.tests.support.xml import XmlDiffMixin
 
 from tao.tests.support import UtcPlusTen
@@ -20,6 +21,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         galaxy_model = GalaxyModelFactory.create()
         dataset = DataSetFactory.create(simulation=simulation, galaxy_model=galaxy_model)
         DataSetParameterFactory.create(dataset=dataset)
+        SnapshotFactory.create(dataset=dataset)
         self.user = UserFactory.create()
         #expected_timestamp = "2012-11-13 13:45:32+1000"
         time.frozen_time = datetime.datetime(2012, 11, 13, 13, 45, 32, 0, UtcPlusTen())
@@ -80,6 +82,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         light_cone_form = self.make_light_cone_form({
             'catalogue_geometry': LightConeForm.BOX,
             'box_size': 1,
+            'snapshot': Snapshot.objects.all()[0].redshift,
             'ra_min': '',
             'dec_min': '',
             'ra_opening_angle': '',
@@ -93,7 +96,10 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         light_cone_form = self.make_light_cone_form({'catalogue_geometry': LightConeForm.BOX})
 
         self.assertFalse(light_cone_form.is_valid())
-        self.assertEqual(['The "Box Size" field is required when "Box" is selected'], light_cone_form.errors['box_size'])
+        self.assertEqual(light_cone_form.errors, {
+            'box_size': ['This field is required.'],
+            'snapshot': ['This field is required.'],
+        })
 
     def test_min_less_than_max_passes(self):
         light_cone_form = self.make_light_cone_form({'max': '127', 'min': '3'})
