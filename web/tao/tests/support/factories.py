@@ -54,8 +54,6 @@ class GalaxyModelFactory(factory.Factory):
     
 class DataSetFactory(factory.Factory):
     FACTORY_FOR = DataSet
-    min_snapshot = Decimal('0')
-    max_snapshot = Decimal('1')
     
 class DataSetParameterFactory(factory.Factory):
     FACTORY_FOR = DataSetParameter

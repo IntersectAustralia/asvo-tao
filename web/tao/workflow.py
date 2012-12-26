@@ -86,11 +86,7 @@ def _make_parameters(light_cone_form, sed_form):
         redshift_max = light_cone_form.cleaned_data['snapshot']
     else:
         redshift_min = light_cone_form.cleaned_data['redshift_min']
-        if redshift_min is None:
-            redshift_min = dataset.min_snapshot
         redshift_max = light_cone_form.cleaned_data['redshift_max']
-        if redshift_max is None:
-            redshift_max = dataset.max_snapshot
 
     common_parameters = [
         param('database-type', 'postgresql'),

@@ -173,6 +173,8 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         galaxy_model = GalaxyModelFactory.create()
         dataset = DataSetFactory.create(database=database_name, simulation=simulation, galaxy_model=galaxy_model)
 
+        stellar_model = StellarModelFactory.create(name='some_name')
+
         filter_parameter = DataSetParameterFactory.create(dataset=dataset, units='blah')
         filter_min = '0.93'
         filter_max = '3.345'
@@ -197,9 +199,9 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
                                    'redshift_min': redshift_min,
                                 })
 
-        lc_form.is_valid()  # trigger validation
+        lc_form.is_valid()
+        self.assertEqual({}, lc_form.errors)
 
-        stellar_model = StellarModelFactory.create(name='some_name')
         sed_form = SEDForm({'single_stellar_population_model': stellar_model.id})
         sed_form.is_valid()
 
