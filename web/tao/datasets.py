@@ -22,7 +22,7 @@ def galaxy_model_choices():
         return tuples of galaxy model choices suitable for use in a
         tao.widgets.ChoiceFieldWithOtherAttrs
     """
-    return [(x.galaxy_model_id, x.galaxy_model.name, {'data-simulation_id': str(x.simulation_id)}) for x in models.DataSet.objects.all().select_related('galaxy_model').order_by('galaxy_model__name')]
+    return [(x.id, x.galaxy_model.name, {'data-simulation_id': str(x.simulation_id)}) for x in models.DataSet.objects.all().select_related('galaxy_model').order_by('galaxy_model__name')]
 
 def filter_choices():
     return [(NO_FILTER, 'No Filter', {})] + [(x.id, x.option_label(), {

@@ -202,3 +202,10 @@ MAX_DOWNLOAD_SIZE = 512 * 2**20
 API_ALLOWED_IPS = (
                    '127.0.0.1',
                    )
+
+MODULES = (
+    'light_cone',
+    'sed',
+)
+
+INSTALLED_APPS += tuple(('taoui_' + module_name for module_name in MODULES))

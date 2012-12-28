@@ -4,7 +4,8 @@ import datetime
 
 from tao import workflow, time
 from tao.models import Snapshot
-from tao.forms import LightConeForm, SEDForm
+from taoui_light_cone.forms import Form as LightConeForm
+from taoui_sed.forms import Form as SEDForm
 from tao.tests.support import stripped_joined_lines
 from tao.tests.support.factories import SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetParameterFactory, UserFactory, StellarModelFactory, SnapshotFactory
 from tao.tests.support.xml import XmlDiffMixin
@@ -205,7 +206,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         sed_form = SEDForm({'single_stellar_population_model': stellar_model.id})
         sed_form.is_valid()
 
-        job = workflow.save(self.user, lc_form, sed_form)
+        job = workflow.save(self.user, [lc_form, sed_form])
 
         expected_parameter_xml = stripped_joined_lines("""
             <?xml version="1.0" encoding="utf-8"?>
@@ -293,7 +294,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         sed_form = SEDForm({'single_stellar_population_model': stellar_model.id})
         sed_form.is_valid()
 
-        job = workflow.save(self.user, lc_form, sed_form)
+        job = workflow.save(self.user, [lc_form, sed_form])
 
         expected_parameter_xml = stripped_joined_lines("""
             <?xml version="1.0" encoding="utf-8"?>

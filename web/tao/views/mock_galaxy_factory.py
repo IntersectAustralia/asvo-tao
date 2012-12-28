@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.utils.translation import ugettext_lazy as _
@@ -8,32 +9,29 @@ from django.views.decorators.http import require_POST
 
 from tao import models, workflow
 from tao.decorators import researcher_required, set_tab
-from tao.forms import LightConeForm, SEDForm
+from tao.ui_modules import form_classes_and_prefixes
 
 
 @set_tab('mgf')
 @researcher_required
 def index(request):
-    if request.method == 'POST':
-        light_cone_form = LightConeForm(request.POST) 
-        sed_form = SEDForm(request.POST)
+    forms = form_classes_and_prefixes()
 
-        if light_cone_form.is_valid() and sed_form.is_valid():
-            u = models.User.objects.get(username=request.user)
-            workflow.save(u, light_cone_form, sed_form)
+    if request.method == 'POST':
+        form_objs = [klass(request.POST) for (klass, prefix) in forms]
+
+        if all(form.is_valid() for form in form_objs):
+            user = models.User.objects.get(username=request.user)
+            workflow.save(user, form_objs)
 
             messages.info(request, _("Your job was submitted successfully."))
             return redirect(reverse('submitted_jobs'))
 
     else:
-        light_cone_form = LightConeForm()
-        sed_form = SEDForm()
+        form_objs = [klass() for (klass, prefix) in forms]
 
     return render(request, 'mock_galaxy_factory/index.html', {
-        'form': light_cone_form,
-        'simulations': models.Simulation.objects.all(),
-        'galaxy_models': models.GalaxyModel.objects.all(),
-        'sed_form': sed_form,
+        'forms': form_objs,
     })
 
 @set_tab('mgf')
