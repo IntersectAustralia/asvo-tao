@@ -68,8 +68,8 @@ class FilterTests(LiveServerMGFTest):
         self.assertEqual(expected_snapshot_options, actual_snapshot_options)
 
     def test_max_min_fields(self):
-        self.assert_is_disabled('#id_max') 
-        self.assert_is_disabled('#id_min')
+        self.assert_is_disabled(self.lc_id('max'))
+        self.assert_is_disabled(self.lc_id('min'))
 
         simulation = Simulation.objects.all()[1]
         galaxy_model = simulation.galaxymodel_set.all()[4]
@@ -80,8 +80,8 @@ class FilterTests(LiveServerMGFTest):
         self.select_galaxy_model(galaxy_model)
         self.choose_filter(dataset_parameter)
 
-        self.assert_is_enabled('#id_max')
-        self.assert_is_enabled('#id_min')
+        self.assert_is_enabled(self.lc_id('max'))
+        self.assert_is_enabled(self.lc_id('min'))
 
     def test_max_min_fields_after_failed_submit(self):
         simulation = Simulation.objects.all()[1]
@@ -94,30 +94,30 @@ class FilterTests(LiveServerMGFTest):
 
         max_input = "bad number"
         min_input = "73"
-        self.fill_in_fields({'id_max': max_input, 'id_min': min_input})
+        self.fill_in_fields({'max': max_input, 'min': min_input}, id_wrap=self.lc_id)
 
         self.submit_mgf_form()
 
         # check after failed submit, max/min fields are both still enabled
-        self.assert_is_enabled('#id_max')
-        self.assert_is_enabled('#id_min')
+        self.assert_is_enabled(self.lc_id('max'))
+        self.assert_is_enabled(self.lc_id('min'))
 
         # check values are the same in the form as user previously selected      
-        self.assertEqual(simulation.name, self.get_selected_option_text('#id_dark_matter_simulation'))
-        self.assertEqual(galaxy_model.name, self.get_selected_option_text('#id_galaxy_model'))
-        self.assertEqual(dataset_parameter.option_label(), self.get_selected_option_text('#id_filter'))
-        self.assertEqual(max_input, self.get_selector_value('#id_max'))
-        self.assertEqual(min_input, self.get_selector_value('#id_min'))
+        self.assertEqual(simulation.name, self.get_selected_option_text(self.lc_id('dark_matter_simulation')))
+        self.assertEqual(galaxy_model.name, self.get_selected_option_text(self.lc_id('galaxy_model')))
+        self.assertEqual(dataset_parameter.option_label(), self.get_selected_option_text(self.lc_id('filter')))
+        self.assertEqual(max_input, self.get_selector_value(self.lc_id('max')))
+        self.assertEqual(min_input, self.get_selector_value(self.lc_id('min')))
 
     def test_redshift_max_redshift_min_fields_after_failed_submit(self):
         redshift_max_input = "bad number"
         redshift_min_input = "73"
-        self.fill_in_fields({'id_redshift_max': redshift_max_input, 'id_redshift_min': redshift_min_input})
+        self.fill_in_fields({'redshift_max': redshift_max_input, 'redshift_min': redshift_min_input}, id_wrap=self.lc_id)
 
         self.submit_mgf_form()
 
-        self.assertEqual(redshift_max_input, self.get_selector_value('#id_redshift_max'))
-        self.assertEqual(redshift_min_input, self.get_selector_value('#id_redshift_min'))
+        self.assertEqual(redshift_max_input, self.get_selector_value(self.lc_id('redshift_max')))
+        self.assertEqual(redshift_min_input, self.get_selector_value(self.lc_id('redshift_min')))
 
     def choose_filter(self, dataset_parameter):
-        self.select('#id_filter', dataset_parameter.option_label())
+        self.select(self.lc_id('filter'), dataset_parameter.option_label())

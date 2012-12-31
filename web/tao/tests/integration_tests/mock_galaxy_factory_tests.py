@@ -26,16 +26,16 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.visit('mock_galaxy_factory')
         
     def test_box_size_field_on_initial_load(self):
-        initial_selection = self.get_selected_option_text('#id_catalogue_geometry')
+        initial_selection = self.get_selected_option_text(self.lc_id('catalogue_geometry'))
         self.assertEqual('Light-Cone', initial_selection)
-        self.assert_not_displayed('#id_box_size')
+        self.assert_not_displayed(self.lc_id('box_size'))
     
     def test_box_size_field_on_catalogue_geometry_change(self):
-        self.select('#id_catalogue_geometry', 'Box')
-        self.assert_is_displayed('#id_box_size')
+        self.select(self.lc_id('catalogue_geometry'), 'Box')
+        self.assert_is_displayed(self.lc_id('box_size'))
         
-        self.select('#id_catalogue_geometry', 'Light-Cone')
-        self.assert_not_displayed('#id_box_size')
+        self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
+        self.assert_not_displayed(self.lc_id('box_size'))
         
     def test_sidebar_text_on_initial_load(self):    
         first_simulation = Simulation.objects.all()[0]
@@ -93,6 +93,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
         
     def assert_galaxy_model_options_correct_for_a_simulation(self, simulation):
         expected_galaxy_model_names = [x[0] for x in simulation.galaxymodel_set.values_list('name')]
-        actual_galaxy_model_names = [x.text for x in self.selenium.find_elements_by_css_selector('#id_galaxy_model option')]
+        selector = '%s option' % self.lc_id('galaxy_model')
+        actual_galaxy_model_names = [x.text for x in self.selenium.find_elements_by_css_selector(selector)]
         
         self.assertEqual(expected_galaxy_model_names, actual_galaxy_model_names)

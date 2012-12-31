@@ -37,13 +37,13 @@ class SubmitLightConeTests(LiveServerMGFTest):
         self.visit('mock_galaxy_factory')
         
         ## fill in form (correctly)
-        self.select('#id_catalogue_geometry', 'Light-Cone')
+        self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
         self.fill_in_fields({
-            'id_ra_opening_angle': '2',
-            'id_dec_opening_angle': '2',
-            'id_redshift_min': '1',
-            'id_redshift_max': '2',
-        })
+            'ra_opening_angle': '2',
+            'dec_opening_angle': '2',
+            'redshift_min': '1',
+            'redshift_max': '2',
+        }, id_wrap=self.lc_id)
         self.submit_mgf_form()
 
         self.assert_on_page('submitted_jobs')
@@ -52,11 +52,11 @@ class SubmitLightConeTests(LiveServerMGFTest):
         self.visit('mock_galaxy_factory')
         
         ## fill in form (correctly)
-        self.select('#id_catalogue_geometry', 'Box')
+        self.select(self.lc_id('catalogue_geometry'), 'Box')
         self.fill_in_fields({
-            'id_box_size': '234',
-            'id_snapshot': self.redshifts[0],
-        })
+            'box_size': '234',
+            'snapshot': self.redshifts[0],
+        }, id_wrap=self.lc_id)
         self.submit_mgf_form()
 
         self.assert_on_page('submitted_jobs')
@@ -66,19 +66,19 @@ class SubmitLightConeTests(LiveServerMGFTest):
         self.visit('mock_galaxy_factory')
 
         ## fill in box fields (incorrectly)
-        self.select('#id_catalogue_geometry', 'Box')
+        self.select(self.lc_id('catalogue_geometry'), 'Box')
         self.fill_in_fields({
-            'id_box_size': 'bad_input',
-        })
+            'box_size': 'bad_input',
+        }, id_wrap=self.lc_id)
 
         ## fill in light-cone fields (correctly)
-        self.select('#id_catalogue_geometry', 'Light-Cone')
+        self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
         self.fill_in_fields({
-            'id_ra_opening_angle': '2',
-            'id_dec_opening_angle': '2',
-            'id_redshift_min': '1',
-            'id_redshift_max': '2',
-        })
+            'ra_opening_angle': '2',
+            'dec_opening_angle': '2',
+            'redshift_min': '1',
+            'redshift_max': '2',
+        }, id_wrap=self.lc_id)
 
         self.submit_mgf_form()
 
@@ -88,20 +88,20 @@ class SubmitLightConeTests(LiveServerMGFTest):
         self.visit('mock_galaxy_factory')
 
         ## fill in light-cone fields (incorrectly)
-        self.select('#id_catalogue_geometry', 'Light-Cone')
+        self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
         self.fill_in_fields({
-            'id_ra_opening_angle': 'not_valid',
-            'id_dec_opening_angle': 'not_valid',
-            'id_redshift_min': 'not_valid',
-            'id_redshift_max': 'not_valid',
-        })
+            'ra_opening_angle': 'not_valid',
+            'dec_opening_angle': 'not_valid',
+            'redshift_min': 'not_valid',
+            'redshift_max': 'not_valid',
+        }, id_wrap=self.lc_id)
 
         ## fill in box fields (correctly)
-        self.select('#id_catalogue_geometry', 'Box')
+        self.select(self.lc_id('catalogue_geometry'), 'Box')
         self.fill_in_fields({
-            'id_box_size': '1',
-            'id_snapshot': self.redshifts[0],
-        })
+            'box_size': '1',
+            'snapshot': self.redshifts[0],
+        }, id_wrap=self.lc_id)
 
 
         self.submit_mgf_form()

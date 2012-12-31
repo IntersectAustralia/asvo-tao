@@ -18,7 +18,7 @@ def index(request):
     forms = form_classes_and_prefixes()
 
     if request.method == 'POST':
-        form_objs = [klass(request.POST) for (klass, prefix) in forms]
+        form_objs = [klass(request.POST, prefix=prefix) for (klass, prefix) in forms]
 
         if all(form.is_valid() for form in form_objs):
             user = models.User.objects.get(username=request.user)
@@ -28,7 +28,7 @@ def index(request):
             return redirect(reverse('submitted_jobs'))
 
     else:
-        form_objs = [klass() for (klass, prefix) in forms]
+        form_objs = [klass(prefix=prefix) for (klass, prefix) in forms]
 
     return render(request, 'mock_galaxy_factory/index.html', {
         'forms': form_objs,
