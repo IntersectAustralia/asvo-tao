@@ -42,6 +42,7 @@ namespace tao {
                              optional<const string&> prefix )
    {
       dict.add_option( new options::string( "query-type", "light-cone" ), prefix );
+      dict.add_option( new options::real( "domain-size", 500 ), prefix );
       dict.add_option( new options::real( "redshift-max" ), prefix );
       dict.add_option( new options::real( "redshift-min" ), prefix );
       dict.add_option( new options::real( "z_snap" ), prefix );
@@ -700,7 +701,7 @@ namespace tao {
       {
 	 double size;
 	 // _sql << "SELECT domain_size FROM summary", soci::into( size );
-	 size = 500;
+	 size = sub.get<real_type>( "domain-size" );
 	 _domain_size = size;
 	 LOGDLN( "Simulation domain size: ", _domain_size );
       }
