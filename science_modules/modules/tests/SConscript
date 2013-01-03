@@ -13,6 +13,7 @@ suites = [
     ('sed_suite.t.hh', 'sed.cc', 'lightcone.cc'),
     ('dust_suite.t.hh', 'dust.cc', 'sed.cc', 'lightcone.cc'),
     ('filter_suite.t.hh', 'filter.cc', 'sed.cc', 'lightcone.cc'),
+    ('BSPTree_Test.hh', 'BSPTree.cc'),
 ]
 
 # Define libraries to link against.

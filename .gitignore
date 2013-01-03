@@ -13,3 +13,7 @@ core/sageimport/SQLStatments.txt
 core/sageimport/TestMySQlConnection.py
 .project
 .pydevproject
+core/sageimport_mpi/Redshift.txt
+core/workflow/DummyScript.py
+science_modules/apps/credentials.hh
+core/sageimport_mpi/settings.xml

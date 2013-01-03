@@ -49,7 +49,7 @@ class TorqueInterface(object):
     ##
     def InitDefaultparams(self):
         self.DefaultParams = {'nodes': 1,'ppn': 1,
-                              'wt_hours': 0,'wt_minutes': 30,'wt_seconds': 0}
+                              'wt_hours': 12,'wt_minutes': 0,'wt_seconds': 0}
 
     def GetJobParams(self,UserName,JobID,nodes=1,ppn=1):    
             
@@ -130,7 +130,8 @@ class TorqueInterface(object):
                 self.dbaseobj.SetJobRunning(PBsID[0],PBsID[2],"Job Running- PBSID"+PID)
                 JobsStatus.append([PBsID[3],'IN_PROGRESS',PBsID[4]])       
             else:
-                path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], 'jobs', PBsID[4], str(PBsID[3]))
+                #path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], 'jobs', PBsID[4], str(PBsID[3]))
+                path = os.path.join('jobs', PBsID[4], str(PBsID[3]))
                 self.dbaseobj.SetJobComplete(PBsID[0],PBsID[2],path)
                 JobsStatus.append([PBsID[3],'COMPLETED',PBsID[4]])
             
