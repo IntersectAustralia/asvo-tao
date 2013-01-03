@@ -31,6 +31,7 @@ class User(auth_models.User):
         proxy = True
     
 class Simulation(models.Model):        
+
     name = models.CharField(max_length=100, unique=True)
 
     paper_title = models.CharField(max_length=100, default='')
@@ -53,11 +54,13 @@ class Simulation(models.Model):
             self.name = self.name.strip()
         super(Simulation, self).save(*args, **kwargs)
 
+    def box_size_with_units(self):
+        return "%s %s" % (self.box_size, self.box_size_units)
+
 class GalaxyModel(models.Model):   
-    simulation = models.ForeignKey(Simulation)
+    simulation_set = models.ManyToManyField(Simulation, through='DataSet')
 
     name = models.CharField(max_length=100, unique=True)
-
     kind = models.CharField(max_length=100, default='')
     paper_title = models.CharField(max_length=100, default='')
     paper_url = models.URLField(max_length=200, default='')
@@ -77,9 +80,10 @@ class DataSet(models.Model):
     simulation = models.ForeignKey(Simulation)
     galaxy_model = models.ForeignKey(GalaxyModel)
     database = models.CharField(max_length=200)
-    min_snapshot = models.DecimalField(max_digits=10, decimal_places=9)
-    max_snapshot = models.DecimalField(max_digits=10, decimal_places=9)
     
+    class Meta:
+        unique_together = ('simulation', 'galaxy_model')
+
     def __unicode__(self):
         return "%s : %s" % (self.simulation.name, self.galaxy_model.name)
     
@@ -94,6 +98,13 @@ class DataSetParameter(models.Model):
 
     def option_label(self):
         return "%s (%s)" % (self.label, self.units)
+
+class Snapshot(models.Model):
+    dataset = models.ForeignKey(DataSet)
+    redshift = models.DecimalField(max_digits=10, decimal_places=5)
+
+    class Meta:
+        unique_together = ('dataset', 'redshift')
 
 class StellarModel(models.Model):
     name = models.CharField(max_length=200, unique=True)

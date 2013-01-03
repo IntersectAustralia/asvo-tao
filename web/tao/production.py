@@ -18,7 +18,7 @@ DATABASES = {
 }
 
 SECRET_KEY = ''
-from tao.secrets import *
+from taosecrets import *
 
 STATIC_URL = '/taodemo/static/'
 FILES_BASE = '/mnt/TAOAdmin/'  # please include a trailing slash

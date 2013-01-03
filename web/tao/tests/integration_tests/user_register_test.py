@@ -18,14 +18,14 @@ class UserRegisterTest(helper.LiveServerTest):
     def test_email_admin(self):
         self.visit('register')
 
-        field_data = {'id_title': 'a', 
-                      'id_first_name': 'b', 
-                      'id_last_name': 'c',
-                      'id_username': 'd',
-                      'id_email': 'me@meeee.com',
-                      'id_password1': 'funnyfish',
-                      'id_password2': 'funnyfish',
-                      'id_institution': 'g'}
+        field_data = {'#id_title': 'a',
+                      '#id_first_name': 'b',
+                      '#id_last_name': 'c',
+                      '#id_username': 'd',
+                      '#id_email': 'me@meeee.com',
+                      '#id_password1': 'funnyfish',
+                      '#id_password2': 'funnyfish',
+                      '#id_institution': 'g'}
         self.fill_in_fields(field_data)
       
         submit_button = self.selenium.find_element_by_tag_name('button')
@@ -38,4 +38,3 @@ class UserRegisterTest(helper.LiveServerTest):
         
         expected_url = self.get_full_url('access_requests')
         self.assert_email_body_contains(email, expected_url)
-        

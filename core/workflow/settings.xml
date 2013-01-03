@@ -3,7 +3,7 @@
 		<serverip>tao02.hpc.swin.edu.au</serverip>
 		<port>3306</port>
 		<user>taoadmin</user>
-		<password></password>
+		<password>tao_admin_password_##</password>
 		<NewDBName>master</NewDBName>					
 	</PGDB>
 	
@@ -11,7 +11,7 @@
 		<CallbackURL>http://tao.asvo.org.au/taodemo/api/</CallbackURL>
 		<WorkingDir>/lustre/projects/p014_swin/FTP</WorkingDir>
 		<LogDir>/lustre/projects/p014_swin/logs/workflow.log</LogDir>
-		<SleepTime>180</SleepTime>
+		<SleepTime>30</SleepTime>
 	</WorkFlowSettings>
 	<Torque>
 		<ServerAddress>pbs.hpc.swin.edu.au</ServerAddress>
@@ -20,7 +20,8 @@
 		<LargeJobsQueue>gstar</LargeJobsQueue>
 		<UserName>taoadmin</UserName>
 		<password>********</password>
-		<ExecutableName>/home/lhodkins/workspace/asvo-tao/science_modules/build-debug/bin/skymaker</ExecutableName>
+		<ExecutableName>/lustre/projects/p014_swin/programs/ScienceModules/bin/filter</ExecutableName>
+		<AuxInputData>/lustre/projects/p014_swin/programs/ScienceModules/data</AuxInputData>
 	</Torque>
 	
 </settings>	

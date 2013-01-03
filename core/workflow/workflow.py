@@ -10,7 +10,7 @@ import requests
 from torque import *
 import dbase
 import EnumerationLookup
-
+import shutil
 
 class WorkFlow(object):
 
@@ -61,15 +61,27 @@ class WorkFlow(object):
         
         
         path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], 'jobs', JobUserName, str(UIJobReference))
-        
+        AudDataPath=os.path.join(self.Options['Torque:AuxInputData'])
         
         os.makedirs(path)
         old_dir = os.getcwd()
         os.chdir(path)
+        
+        
 
+        JobParams=string.replace(JobParams,'<param name="database-user"></param>','<param name="database-user">'+self.Options['PGDB:user']+'</param>')
+        JobParams=string.replace(JobParams,'<param name="database-pass"></param>','<param name="database-pass">'+self.Options['PGDB:password']+'</param>')
+        JobParams=string.replace(JobParams,'Maraston 2005','ssp.ssz')
         with open('params.xml', 'w') as file:
             file.write(JobParams)
-
+        
+        
+        src_files = os.listdir(AudDataPath)
+        for file_name in src_files:
+            full_file_name = os.path.join(AudDataPath, file_name)
+            if (os.path.isfile(full_file_name)):
+                shutil.copy(full_file_name, path)
+        
         PBSJobID=self.TorqueObj.Submit(JobUserName,JobID)
             
         os.chdir(old_dir)
@@ -105,7 +117,8 @@ class WorkFlow(object):
         
         CurrentJobs_PBSID=self.dbaseobj.GetCurrentActiveJobs_pbsID()
         print(str(len(CurrentJobs_PBSID))+" Jobs Found in the current watch list")
-        self.dbaseobj.AddNewEvent(0,EnumerationLookup.EventType.Normal,'Checking for Current Jobs. Jobs Count='+str(len(CurrentJobs_PBSID)))
+        if len(CurrentJobs_PBSID)>0:
+            self.dbaseobj.AddNewEvent(0,EnumerationLookup.EventType.Normal,'Checking for Current Jobs. Jobs Count='+str(len(CurrentJobs_PBSID)))
         
         JobsStatus=self.TorqueObj.QueryPBSJob(CurrentJobs_PBSID)    
         
@@ -113,7 +126,8 @@ class WorkFlow(object):
             data = {}            
             data['status']=job[1]            
             if job[1]=='COMPLETED':
-                path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], 'jobs', job[2], str(job[0]))
+                #path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], 'jobs', job[2], str(job[0]))
+                path = os.path.join('jobs', job[2], str(job[0]))
                 data['output_path'] = path
             requests.put(self.api['update']%job[0], data=data)
             self.dbaseobj.AddNewEvent(0,EnumerationLookup.EventType.Normal,'Updating Job (UI ID:'+str(job[0])+', Status:'+job[1]+')')

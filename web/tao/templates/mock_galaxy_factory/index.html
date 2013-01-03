@@ -3,6 +3,7 @@
 
 {% load staticfiles %}
 {% load bootstrap_tags %}
+{% load assets %}
 
 {% block subtitle %}Mock Galaxy Factory{% endblock %}
 
@@ -22,10 +23,6 @@
     </style>
 {% endblock extracss %}
 
-{% block extrajs %}
-    <script src="{% static "js/mgf.js" %}"></script>
-{% endblock extrajs %}
-
 {% block content %}
     <h1>
         Mock Galaxy Factory
@@ -38,89 +35,14 @@
     <form id="mgf-form" action="" method="POST">
         {% csrf_token %}
         <fieldset>
-            <legend>Light Cone</legend>
-            <div class="row-fluid">
-                <div class="span4">
-                    <div class="boxed">
-                        {% for simulation in simulations %}
-                            <div class="simulation-info" data-simulation_id="{{ simulation.id }}">
-                                <div> Selected simulation details </div>
-                                <div>
-                                    <p>
-                                        <strong class="simulation-name">{{ simulation.name }}</strong>
-                                    </p>
-                                    <p>
-                                        Paper: <a class="simulation-paper" target="_blank" href="{{ simulation.paper_url }}">{{ simulation.paper_title }}</a>
-                                    </p>
-                                    <p>
-                                        External link: <a class="simulation-link" target="_blank" href="{{ simulation.external_link_url }}">{{ simulation.external_link_url }}</a>
-                                    </p>
-                                    <p>
-                                        Cosmology: <span class="simulation-cosmology">{{ simulation.cosmology }}</span>
-                                    </p>
-                                    <p>
-                                        Cosmological parameters: <span class="simulation-cosmological-parameters">{{ simulation.cosmological_parameters }}</span>
-                                    </p>
-                                    <p>
-                                        Box size: <span class="simulation-box-size">{{ simulation.box_size }}</span>
-                                    </p>
-                                    <p>
-                                        Web site: <a class="simulation-web-site" target="_blank" href="{{ simulation.web_site }}">{{ simulation.web_site }}</a>
-                                    </p>
-                                </div>
-                            </div>
-                        {% endfor %}
-
-                    </div>
-                    <div class="boxed">
-                        {% for galaxy_model in galaxy_models %}
-                		  <div class="galaxy-model-info" data-galaxy-model-id="{{ galaxy_model.id }}">
-                		      <div> Selected galaxy model details </div>
-                		      <div>
-                		          <p>
-                		              <strong class="galaxy-model-name">{{ galaxy_model.name }}</strong>
-                		          </p>
-                		          <p>
-                		              Kind: <span class="galaxy-model-kind">{{ galaxy_model.kind }}</span>
-                		          </p>
-                		          <p>
-                		              Paper: <a class="galaxy-model-paper" target="_blank" href="{{ galaxy_model.paper_url }}">{{ galaxy_model.paper_title }}</a> 
-                		          </p> 
-                		      </div>
-                		  </div>
-                		  {% endfor %}
-                	</div>
-                </div>
-                <div class="boxed span8">
-                    {% if form.non_field_errors %}
-                        <div class="alert-message block-message error">
-                            <p>
-                                <strong>{{ form_error_title }}</strong>
-                                <ul>
-                                    {{ form.non_field_errors|unordered_list }}
-                                </ul>
-                            </p>
-                        </div>
-                    {% endif %}
-                    {% for fieldset in form.fieldsets %}
-                        {{ fieldset|as_bootstrap_fieldset }}
-                    {% endfor %}
-                </div>
-                
-                <legend>Spectral Energy Distribution</legend>
-                <div class="row-fluid">
-                    <div class="boxed span8 offset4">
-                        <form id="sed-form" action="" method="POST">
-                        {% for fieldset in sed_form.fieldsets %}
-                            {{ fieldset|as_bootstrap_fieldset }}
-                        {% endfor %}
-                    </div>
-                </div>  
-            </div>
+        {% for form in forms %}
+          {% include form.EDIT_TEMPLATE %}
+        {% endfor %}
         </fieldset>
         <div class="form-actions">
             <input type="submit" value="Submit Job" class="btn btn-primary" />
         </div>
     </form>
+
 
 {% endblock content %}

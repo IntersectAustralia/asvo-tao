@@ -3,7 +3,7 @@ import factory
 
 from decimal import Decimal
 
-from tao.models import Job, User, Simulation, GalaxyModel, DataSet, DataSetParameter, StellarModel
+from tao.models import Job, User, Simulation, GalaxyModel, DataSet, DataSetParameter, StellarModel, Snapshot
 
 class JobFactory(factory.Factory):
     FACTORY_FOR = Job
@@ -47,8 +47,6 @@ class SimulationFactory(factory.Factory):
 class GalaxyModelFactory(factory.Factory):
     FACTORY_FOR = GalaxyModel
 
-    simulation = factory.SubFactory(SimulationFactory)
-
     name = factory.Sequence(lambda n: 'galaxy_model_%03d' % int(n))
     kind = factory.Sequence(lambda n: "sometype" + n) 
     paper_title = factory.Sequence(lambda n: "xyz" + n)
@@ -56,8 +54,6 @@ class GalaxyModelFactory(factory.Factory):
     
 class DataSetFactory(factory.Factory):
     FACTORY_FOR = DataSet
-    min_snapshot = Decimal('0')
-    max_snapshot = Decimal('1')
     
 class DataSetParameterFactory(factory.Factory):
     FACTORY_FOR = DataSetParameter
@@ -65,3 +61,8 @@ class DataSetParameterFactory(factory.Factory):
 
 class StellarModelFactory(factory.Factory):
     FACTORY_FOR = StellarModel
+
+class SnapshotFactory(factory.Factory):
+    FACTORY_FOR = Snapshot
+
+    redshift = factory.Sequence(lambda n: n)

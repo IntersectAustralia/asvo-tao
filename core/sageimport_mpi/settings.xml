@@ -51,16 +51,17 @@
 		<serverip>tao02.hpc.swin.edu.au</serverip>
 		<port>3306</port>
 		<user>taoadmin</user>
-		<password></password>
+		<password>tao_admin_password_##</password>
 		<NewDBName>millennium_full_mpi</NewDBName>	
 		<TreeTablePrefix>tree_</TreeTablePrefix>				
+		<ReArrangedTreeTablePrefix>rearrangetree_</ReArrangedTreeTablePrefix>
 	</PGDB>
 	
 		
 	<RunningSettings>
 		<SnpshottoRedshiftMapping>millennium.a_list</SnpshottoRedshiftMapping>
-		<OutputDir>/home/amr/TempOutput/</OutputDir>
-		<InputDir>/lustre/projects/p014_swin/raw_data/millennium/full/sage_output/</InputDir>
-		<GalaxiesPerTable>100000</GalaxiesPerTable>
+		<OutputDir>/lustre/projects/p014_swin/programs/sageimport/sequential/reports/</OutputDir>
+		<InputDir>/lustre/projects/p014_swin/raw_data/millennium/full/sage_output2/</InputDir>
+		<GalaxiesPerTable>500000</GalaxiesPerTable>
 	</RunningSettings>
 </settings>	

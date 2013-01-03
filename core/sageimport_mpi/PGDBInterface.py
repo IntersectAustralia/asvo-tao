@@ -23,12 +23,12 @@ class DBInterface(object):
     
     DebugToFile=False
     
-    def __init__(self,CurrentSAGEStruct,Options):
+    def __init__(self,CurrentSAGEStruct,Options,CommRank):
         '''
         Constructor
         '''
         self.Options=Options
-        self.Log = open(self.Options['RunningSettings:OutputDir']+'DBCreation_sql.txt', 'wt')
+        self.Log = open(self.Options['RunningSettings:OutputDir']+'DBCreation_sql'+str(CommRank)+'.txt', 'wt')
         
         self.CurrentSAGEStruct=CurrentSAGEStruct
         
@@ -56,6 +56,7 @@ class DBInterface(object):
         self.INSERTTemplate=self.INSERTTemplate+"CentralGalaxyX,"
         self.INSERTTemplate=self.INSERTTemplate+"CentralGalaxyY,"
         self.INSERTTemplate=self.INSERTTemplate+"CentralGalaxyZ)"
+    
     def InitDBConnection(self):
         
         ####### PostgreSQL Simulation DB ################# 
