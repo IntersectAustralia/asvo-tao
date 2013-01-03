@@ -41,14 +41,15 @@ if __name__ == '__main__':
     if CommRank==0:
         
         print("Server: Start Pre-processing files ...")
-        sys.stdout.write("Do you want me to re-generate the files list and the DB (y/n)")
+        sys.stdout.write("Do you want me to re-generate the files list and the DB (y/n)\n")
         sys.stdout.flush()
-        RegenerateFileList=string.lower(sys.stdin.readline())
+        RegenerateFileList=string.lower(sys.stdin.readline()).strip()
         
         #################### Preprocessing data files for the first time #####################################
         ################### This will import the files metadata into a DB table and create the new DB ######## 
         if RegenerateFileList=='y':
-            print("Pre-processing data")
+            sys.stdout.write("Pre-processing data\n")
+            sys.stdout.flush()
             ## 1) Init the class with DB option 
             PreprocessFilesObj=preprocessfiles.PreprocessFiles(CurrentSAGEStruct,Options)
             ## 2) Open connection to the DB (ToMasterDB=True - Open connection to a default DB before creating the new DB)
@@ -67,9 +68,9 @@ if __name__ == '__main__':
         ######################################################################################################
         if RegenerateFileList!='y':
             # Ask Him only if he refuse to re-generate the files list.            
-            sys.stdout.write("Do you want me to re-generate all the tables (y/n)")
+            sys.stdout.write("Do you want me to re-generate all the tables (y/n)\n")
             sys.stdout.flush()
-            RegenerateFileList=string.lower(sys.stdin.readline())
+            RegenerateFileList=string.lower(sys.stdin.readline()).strip()
             
         if RegenerateFileList=='y':
             ## 1) Init Class
@@ -100,7 +101,7 @@ if __name__ == '__main__':
     sys.stdout.flush()
         
     ## Open Connection to Postgres
-    CurrentPGDB=PGDBInterface.DBInterface(CurrentSAGEStruct,Options)
+    CurrentPGDB=PGDBInterface.DBInterface(CurrentSAGEStruct,Options,CommRank)
     ## Init files reader
     Reader=SAGEReader.SAGEDataReader(CurrentSAGEStruct,Options,CurrentPGDB,CommSize,CommRank)
     ## Start Processing the files

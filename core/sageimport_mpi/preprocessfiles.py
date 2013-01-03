@@ -39,6 +39,7 @@ class PreprocessFiles(object):
             print('Password for user:'+username+' is not defined')
             self.password=getpass.getpass('Please enter password:')
         
+        
         # Take care that the connection will be opened to standard DB 'master'
         # This is temp. until the actual database is created
         if ToMasterDB==True:
@@ -136,7 +137,7 @@ class PreprocessFiles(object):
             print("Creating Table ("+str(TableID[0])+")")
             self.CreateNewTable(TableID[0])
     
-    ## Use Statement concatination and the  CurrentSAGEStrcuture loaded from the XML settings to create a new table template
+    ## Use Statement concatenation and the  CurrentSAGEStrcuture loaded from the XML settings to create a new table template
     def CreateNewTableTemplate(self):
         self.CreateTableTemplate="CREATE TABLE @TABLEName ("
         for field in self.CurrentSAGEStruct:
@@ -148,9 +149,9 @@ class PreprocessFiles(object):
         self.CreateTableTemplate=self.CreateTableTemplate+"GlobalTreeID BIGINT,"
         self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyGlobalID BIGINT,"     
         self.CreateTableTemplate=self.CreateTableTemplate+"LocalGalaxyID INT,"
-        self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyX FLOAT$,"
-        self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyY FLOAT$,"
-        self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyZ FLOAT$, PRIMARY KEY (GlobalIndex))"
+        self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyX FLOAT4,"
+        self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyY FLOAT4,"
+        self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyZ FLOAT4, PRIMARY KEY (GlobalIndex))"
                 
     ## Perform create table for a specific TableIndex            
     def CreateNewTable(self,TableIndex):        
