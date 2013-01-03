@@ -162,7 +162,7 @@ namespace tao {
       map<string, string> _output_fields;
       string _filter;
       string _filter_min, _filter_max;
-      real_type _H0;
+      real_type _h0;
 
       string _query_template;
       string _crd_strs[3];

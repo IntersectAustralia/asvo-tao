@@ -136,6 +136,7 @@ class JobTest(LiveServerTest):
         
         download_path = os.path.join(self.DOWNLOAD_DIRECTORY, 'tao_output.zip')
 
+        from .helper import wait; wait()
         self.assertTrue(os.path.exists(download_path))
         
         # extract the files

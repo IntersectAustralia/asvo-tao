@@ -12,7 +12,7 @@ class GalaxyModelTest(TestCase):
 
         model = GalaxyModelFactory.create(name=name)
 
-        model_with_duplicate_name = GalaxyModelFactory.build(name=name, simulation=model.simulation)
+        model_with_duplicate_name = GalaxyModelFactory.build(name=name)
 
         try:
             model_with_duplicate_name.save()
@@ -27,7 +27,7 @@ class GalaxyModelTest(TestCase):
 
         model = GalaxyModelFactory.create(name=name)
 
-        model_with_duplicate_spaced_name = GalaxyModelFactory.build(name=spaced_name, simulation=model.simulation)
+        model_with_duplicate_spaced_name = GalaxyModelFactory.build(name=spaced_name)
 
         try:
             model_with_duplicate_spaced_name.save()

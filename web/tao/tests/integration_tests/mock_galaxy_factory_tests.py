@@ -1,6 +1,6 @@
 from tao.tests.integration_tests.helper import LiveServerTest
-from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory
-from tao.models import Simulation
+from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory
+from tao.models import Simulation, GalaxyModel
 
 class MockGalaxyFactoryTest(LiveServerTest):
 
@@ -11,10 +11,12 @@ class MockGalaxyFactoryTest(LiveServerTest):
         simulation2 = SimulationFactory.create()
 
         for unused in range(3):
-            GalaxyModelFactory.create(simulation=simulation)
+            g = GalaxyModelFactory.create()
+            DataSetFactory.create(simulation=simulation, galaxy_model=g)
             
         for unused in range(4):
-            GalaxyModelFactory.create(simulation=simulation2)
+            g = GalaxyModelFactory.create()
+            DataSetFactory.create(simulation=simulation2, galaxy_model=g)
         
         username = "person"
         password = "funnyfish"
@@ -24,16 +26,16 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.visit('mock_galaxy_factory')
         
     def test_box_size_field_on_initial_load(self):
-        initial_selection = self.get_selected_option_text('#id_box_type')
+        initial_selection = self.get_selected_option_text(self.lc_id('catalogue_geometry'))
         self.assertEqual('Light-Cone', initial_selection)
-        self.assert_not_displayed('#id_box_size')
+        self.assert_not_displayed(self.lc_id('box_size'))
     
-    def test_box_size_field_on_box_type_change(self):
-        self.select('#id_box_type', 'Box')
-        self.assert_is_displayed('#id_box_size')
+    def test_box_size_field_on_catalogue_geometry_change(self):
+        self.select(self.lc_id('catalogue_geometry'), 'Box')
+        self.assert_is_displayed(self.lc_id('box_size'))
         
-        self.select('#id_box_type', 'Light-Cone')
-        self.assert_not_displayed('#id_box_size')
+        self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
+        self.assert_not_displayed(self.lc_id('box_size'))
         
     def test_sidebar_text_on_initial_load(self):    
         first_simulation = Simulation.objects.all()[0]
@@ -69,7 +71,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
                                                            '.simulation-info .simulation-paper': simulation.paper_title,
                                                            '.simulation-info .simulation-cosmology': simulation.cosmology,
                                                            '.simulation-info .simulation-cosmological-parameters': simulation.cosmological_parameters,
-                                                           '.simulation-info .simulation-box-size': simulation.box_size,
+                                                           '.simulation-info .simulation-box-size': simulation.box_size_with_units(),
                                                            })
         self.assert_attribute_equals('href', {
                                               '.simulation-info .simulation-paper': simulation.paper_url,
@@ -91,6 +93,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
         
     def assert_galaxy_model_options_correct_for_a_simulation(self, simulation):
         expected_galaxy_model_names = [x[0] for x in simulation.galaxymodel_set.values_list('name')]
-        actual_galaxy_model_names = [x.text for x in self.selenium.find_elements_by_css_selector('#id_galaxy_model option')]
+        selector = '%s option' % self.lc_id('galaxy_model')
+        actual_galaxy_model_names = [x.text for x in self.selenium.find_elements_by_css_selector(selector)]
         
         self.assertEqual(expected_galaxy_model_names, actual_galaxy_model_names)

@@ -51,7 +51,8 @@ main( int argc,
 
    // Get a complete list of tables.
    sql_timer.start();
-   string query = "SELECT c.relname FROM pg_catalog.pg_class c LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace WHERE c.relkind IN ('r','') AND n.nspname <> 'pg_catalog' AND n.nspname <> 'information_schema' AND n.nspname !~ '^pg_toast' AND pg_catalog.pg_table_is_visible(c.oid)";
+   string query = "SELECT table_name FROM information_schema.tables"
+     " WHERE table_schema='public' AND SUBSTR(table_name,1,5)='tree_'";
    soci::rowset<std::string> tables = (sql.prepare << query);
    sql_timer.stop();
 

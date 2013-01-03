@@ -18,7 +18,7 @@ DATABASES = {
 }
 
 SECRET_KEY = ''
-from tao.secrets import *
+from taosecrets import *
 
 STATIC_URL = '/taodemo/static/'
 FILES_BASE = '/mnt/TAOAdmin/'  # please include a trailing slash
@@ -26,7 +26,7 @@ FILES_BASE = '/mnt/TAOAdmin/'  # please include a trailing slash
 EMAIL_HOST = 'gpo.swin.edu.au'
 EMAIL_PORT = '25'
 
-EMAIL_FROM_ADDRESS = 'tao.admin@asvo.org.au'
+EMAIL_FROM_ADDRESS = 'admin@asvo.org.au'
 
 API_ALLOWED_IPS = (
                    '136.186.55.225', # tao01

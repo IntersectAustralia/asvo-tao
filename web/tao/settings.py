@@ -177,10 +177,6 @@ LOGIN_URL = reverse_lazy('tao.views.login')
 
 AUTH_PROFILE_MODULE = 'tao.UserProfile'  # appname.modelname
 
-# Configure SMTP Server.
-# See https://docs.djangoproject.com/en/dev/topics/email/
-#EMAIL_HOST = 'localhost'
-#EMAIL_PORT= '1025'
 EMAIL_HOST = 'gpo.swin.edu.au'
 EMAIL_PORT = '25'
 
@@ -206,3 +202,10 @@ MAX_DOWNLOAD_SIZE = 512 * 2**20
 API_ALLOWED_IPS = (
                    '127.0.0.1',
                    )
+
+MODULES = (
+    'light_cone',
+    'sed',
+)
+
+INSTALLED_APPS += tuple(('taoui_' + module_name for module_name in MODULES))

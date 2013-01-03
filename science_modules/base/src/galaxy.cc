@@ -5,22 +5,36 @@ using namespace hpc;
 namespace tao {
 
    galaxy::galaxy( const soci::row& row,
-                   const array<real_type,3>& box )
+                   const array<real_type,3>& box,
+		   const string& table )
       : _row( row ),
-        _box( box )
+        _box( box ),
+	_table( table )
    {
+   }
+
+   const string&
+   galaxy::table() const
+   {
+      return _table;
    }
 
    long long
    galaxy::id() const
    {
-      return _row.get<int>( "globalindex" );
+      return _row.get<long long>( "globalindex" );
    }
 
    int
    galaxy::local_id() const
    {
-      return _row.get<int>( "localid" );
+      return _row.get<int>( "localgalaxyid" );
+   }
+
+   long long
+   galaxy::tree_id() const
+   {
+      return _row.get<long long>( "globaltreeid" );
    }
 
    galaxy::real_type

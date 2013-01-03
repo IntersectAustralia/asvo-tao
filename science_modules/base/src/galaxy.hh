@@ -15,13 +15,20 @@ namespace tao {
    public:
 
       galaxy( const soci::row& row,
-              const hpc::array<real_type,3>& box );
+              const hpc::array<real_type,3>& box,
+	      const hpc::string& table );
+
+      const hpc::string&
+      table() const;
 
       long long
       id() const;
 
       int
       local_id() const;
+
+      long long
+      tree_id() const;
 
       real_type
       x() const;
@@ -58,6 +65,7 @@ namespace tao {
 
       const soci::row& _row;
       const hpc::array<real_type,3>& _box;
+      const hpc::string& _table;
    };
 }
 

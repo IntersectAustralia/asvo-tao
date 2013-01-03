@@ -14,14 +14,12 @@ class SelectWithOtherAttrs(forms.Select):
         self.other_attrs = {}
 
     def render_option(self, selected_choices, option_value, option_label):
-        other_attrs_html = ' '.join('%s="%s"' % (escape(force_unicode(name)), escape(force_unicode(val))) for name, val in self.other_attrs[option_label].items())
+        other_attrs_html = ' '.join('%s="%s"' % (escape(force_unicode(name)), escape(force_unicode(val))) for name, val in self.other_attrs[option_value].items())
         option_value = escape(force_unicode(option_value))
         selected_html = u' selected="selected"' if (option_value in selected_choices) else ''
         option_label = conditional_escape(force_unicode(option_label))
         return u'<option value="%s"%s%s>%s</option>' % (option_value, other_attrs_html, selected_html, option_label)
 
-
-from django.utils.functional import lazy
 
 class ChoiceFieldWithOtherAttrs(forms.ChoiceField):
     """
@@ -31,7 +29,6 @@ class ChoiceFieldWithOtherAttrs(forms.ChoiceField):
     widget = SelectWithOtherAttrs
 
     def __init__(self, choices=(), *args, **kwargs):
-        def choice_pairs():
-            return [(c[0], c[1]) for c in choices]
-        super(ChoiceFieldWithOtherAttrs, self).__init__(choices=lazy(choice_pairs, list)(), *args, **kwargs)
-        self.widget.other_attrs = dict([(c[1], c[2]) for c in choices])
+        choice_pairs = [(c[0], c[1]) for c in choices]
+        super(ChoiceFieldWithOtherAttrs, self).__init__(choices=choice_pairs, *args, **kwargs)
+        self.widget.other_attrs = dict([(c[0], c[2]) for c in choices])

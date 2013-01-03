@@ -1,6 +1,6 @@
 from django.test.testcases import TransactionTestCase
 
-from tao.tests.support.factories import SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetParameterFactory
+from tao.tests.support.factories import SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetParameterFactory, SnapshotFactory
 
 class DatasetTestCase(TransactionTestCase):
 
@@ -27,9 +27,13 @@ class DatasetTestCase(TransactionTestCase):
         s1 = SimulationFactory.create()
         s2 = SimulationFactory.create()
 
-        GalaxyModelFactory.create(simulation=s1, id=1, name='boo')
-        GalaxyModelFactory.create(simulation=s2, id=2, name='aoo')
-        GalaxyModelFactory.create(simulation=s1, id=3, name='coo')
+        g1 = GalaxyModelFactory.create(id=1, name='boo')
+        g2 = GalaxyModelFactory.create(id=2, name='aoo')
+        g3 = GalaxyModelFactory.create(id=3, name='coo')
+
+        DataSetFactory.create(simulation=s1, galaxy_model=g1)
+        DataSetFactory.create(simulation=s2, galaxy_model=g2)
+        DataSetFactory.create(simulation=s1, galaxy_model=g3)
 
         self.assertEqual([
                (2, u'aoo', {'data-simulation_id': u'2'}),
@@ -45,9 +49,9 @@ class DatasetTestCase(TransactionTestCase):
         s1 = SimulationFactory.create()
         s2 = SimulationFactory.create()
         
-        g1 = GalaxyModelFactory.create(simulation=s1)
-        g2 = GalaxyModelFactory.create(simulation=s2)
-        g3 = GalaxyModelFactory.create(simulation=s1)
+        g1 = GalaxyModelFactory.create()
+        g2 = GalaxyModelFactory.create()
+        g3 = GalaxyModelFactory.create()
         
         d1 = DataSetFactory.create(simulation=s1, galaxy_model=g3)
         d2 = DataSetFactory.create(simulation=s2, galaxy_model=g1)
@@ -59,8 +63,33 @@ class DatasetTestCase(TransactionTestCase):
         
         self.assertEqual([
                           ('no_filter', 'No Filter', {}),
-                          (dp1.id, '%s (%s)' % (dp1.name, dp1.units), {'data-simulation_id': str(s1.id), 'data-galaxy_model_id': str(g3.id)}),
-                          (dp2.id, '%s (%s)' % (dp2.name, dp2.units), {'data-simulation_id': str(s2.id), 'data-galaxy_model_id': str(g1.id)}),
-                          (dp3.id, '%s (%s)' % (dp3.name, dp3.units), {'data-simulation_id': str(s2.id), 'data-galaxy_model_id': str(g2.id)})
+                          (dp1.id, '%s (%s)' % (dp1.label, dp1.units), {'data-simulation_id': str(s1.id), 'data-galaxy_model_id': str(g3.id)}),
+                          (dp2.id, '%s (%s)' % (dp2.label, dp2.units), {'data-simulation_id': str(s2.id), 'data-galaxy_model_id': str(g1.id)}),
+                          (dp3.id, '%s (%s)' % (dp3.label, dp3.units), {'data-simulation_id': str(s2.id), 'data-galaxy_model_id': str(g2.id)})
                           ], 
                          filter_choices())
+
+    def test_snapshot_choices(self):
+        from tao.datasets import snapshot_choices
+
+        s1 = SimulationFactory.create()
+        s2 = SimulationFactory.create()
+
+        g1 = GalaxyModelFactory.create()
+        g2 = GalaxyModelFactory.create()
+        g3 = GalaxyModelFactory.create()
+
+        d1 = DataSetFactory.create(simulation=s1, galaxy_model=g3)
+        d2 = DataSetFactory.create(simulation=s2, galaxy_model=g1)
+        d3 = DataSetFactory.create(simulation=s2, galaxy_model=g2)
+
+        snapshot1 = SnapshotFactory.create(dataset=d1, redshift='0.123')
+        snapshot2 = SnapshotFactory.create(dataset=d2, redshift='0.012')
+        snapshot3 = SnapshotFactory.create(dataset=d3, redshift='0.3')
+
+        self.assertEqual([
+                          (snapshot2.redshift, snapshot2.redshift, {'data-simulation_id': str(s2.id), 'data-galaxy_model_id': str(g1.id)}),
+                          (snapshot1.redshift, snapshot1.redshift, {'data-simulation_id': str(s1.id), 'data-galaxy_model_id': str(g3.id)}),
+                          (snapshot3.redshift, snapshot3.redshift, {'data-simulation_id': str(s2.id), 'data-galaxy_model_id': str(g2.id)})
+                          ],
+                         snapshot_choices())

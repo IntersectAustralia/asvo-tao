@@ -11,10 +11,12 @@ namespace tao {
    }
 
    void
-   csv::process_galaxy( const tao::galaxy& galaxy )
+   csv::process_galaxy( const tao::galaxy& galaxy,
+			double app_mag )
    {
       _file << galaxy.x() << ", " << galaxy.y() << ", " << galaxy.z();
       _file << ", " << galaxy.redshift();
+      _file << ", " << app_mag;
       _file << "\n";
    }
 }

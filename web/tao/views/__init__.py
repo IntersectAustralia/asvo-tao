@@ -83,7 +83,12 @@ def approve_user(request, user_id):
     template_name = 'approve'
     subject = settings.EMAIL_ACCEPT_SUBJECT
     to_addrs = [u.email]
-    context = Context({'title': profile.title, 'first_name': u.first_name, 'last_name': u.last_name})
+    context = Context({
+        'title': profile.title,
+        'first_name': u.first_name,
+        'last_name': u.last_name,
+        'login_url': request.build_absolute_uri(reverse('login')),
+    })
 
     send_mail(template_name, context, subject, to_addrs)
 

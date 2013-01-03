@@ -9,3 +9,5 @@ parts/
 /nosetests.xml
 /TAOENV/
 /tao/django.log
+/.mr.developer.cfg
+/src/

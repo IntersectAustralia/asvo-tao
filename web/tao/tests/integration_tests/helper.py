@@ -27,25 +27,28 @@ class LiveServerTest(django.test.LiveServerTestCase):
         from selenium.webdriver.firefox.webdriver import FirefoxProfile
         fp = FirefoxProfile()
         fp.set_preference("browser.download.folderList", 2)
-        #fp.set_preference("browser.download.manager.showWhenStarting", False)
         fp.set_preference("browser.download.dir", self.DOWNLOAD_DIRECTORY)
-        #fp.set_preference("browser.helperApps.neverAsk.saveToDisk", "text/csv")
         fp.set_preference("browser.helperApps.neverAsk.saveToDisk", "text/html, application/zip")
         
         self.selenium = WebDriver(firefox_profile=fp)
         self.selenium.implicitly_wait(1) # wait one second before failing to find
+
         # create the download dir
         if not os.path.exists(self.DOWNLOAD_DIRECTORY):
             os.makedirs(self.DOWNLOAD_DIRECTORY)
 
     def tearDown(self):
         self.selenium.quit()
+
         # remove the download dir
         for root, dirs, files in os.walk(self.DOWNLOAD_DIRECTORY, topdown=False):
             for name in files:
                 os.remove(os.path.join(root, name))
             for name in dirs:
                 os.rmdir(os.path.join(root, name))
+
+    def lc_id(self, bare_field):
+        return '#id_light_cone-%s' % bare_field
             
     def assert_email_body_contains(self, email, text):
         pattern = re.escape(text)
@@ -104,9 +107,15 @@ class LiveServerTest(django.test.LiveServerTestCase):
             url = split_url[0]
             self.assertEqual(url, self.get_full_url(url_name))
             
-    def fill_in_fields(self, field_data):
-        for field_id, text_to_input in field_data.items():
-            self.selenium.find_element_by_id(field_id).send_keys(text_to_input)
+    def fill_in_fields(self, field_data, id_wrap=None):
+        for selector, text_to_input in field_data.items():
+            if id_wrap:
+                selector = id_wrap(selector)
+            elem = self.selenium.find_element_by_css_selector(selector)
+            if elem.tag_name == 'select':
+                self.select(selector, str(text_to_input))
+            else:
+                elem.send_keys(str(text_to_input))
             
     def login(self, username, password):
         self.visit('login')
@@ -124,12 +133,20 @@ class LiveServerTest(django.test.LiveServerTestCase):
         """ self.visit(name_of_url_as_defined_in_your_urlconf) """
         self.selenium.get(self.get_full_url(url_name, *args, **kwargs))
         
-    def get_actual_filter_options(self): 
-        return [x.text for x in self.selenium.find_elements_by_css_selector('#id_filter option')]
+    def get_actual_filter_options(self):
+        option_selector = '%s option' % self.lc_id('filter')
+        return [x.text for x in self.selenium.find_elements_by_css_selector(option_selector)]
     
-    def get_expected_filter_options(self, dataset_parameters): 
-        normal_parameters = [x.label() for x in dataset_parameters]
+    def get_expected_filter_options(self, dataset_parameters):
+        normal_parameters = [x.option_label() for x in dataset_parameters]
         return ['No Filter'] + normal_parameters
+
+    def get_actual_snapshot_options(self):
+        option_selector = '%s option' % self.lc_id('option')
+        return [x.text for x in self.selenium.find_elements_by_css_selector(option_selector)]
+
+    def get_expected_snapshot_options(self, snapshots):
+        return [str(snapshot.redshift) for snapshot in snapshots]
         
     def get_full_url(self, url_name, *args, **kwargs):
         return "%s%s" % (self.live_server_url, reverse(url_name, args=args, kwargs=kwargs))
@@ -166,10 +183,10 @@ class LiveServerTest(django.test.LiveServerTestCase):
         return elements[0]
     
     def select_dark_matter_simulation(self, simulation):
-        self.select('#id_dark_matter_simulation', simulation.name)
+        self.select(self.lc_id('dark_matter_simulation'), simulation.name)
         
     def select_galaxy_model(self, galaxy_model):
-        self.select('#id_galaxy_model', galaxy_model.name)
+        self.select(self.lc_id('galaxy_model'), galaxy_model.name)
         
     #a function to make a list of list of text inside the table
     def table_as_text_rows(self, selector):
