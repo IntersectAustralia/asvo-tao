@@ -8,6 +8,15 @@
 
 namespace tao {
 
+   ///
+   ///
+   ///
+   void
+   setup_common_options( hpc::options::dictionary& dict );
+
+   ///
+   ///
+   ///
    template< class Pipeline >
    class application
    {
@@ -72,12 +81,7 @@ namespace tao {
       void
       _setup_common_options( hpc::options::dictionary& dict )
       {
-         dict.add_option( new options::string( "database-type", "postgresql" ) );
-         dict.add_option( new options::string( "database-name", "millennium_full_mpi" ) );
-         dict.add_option( new options::string( "database-host", "tao02.hpc.swin.edu.au" ) );
-         dict.add_option( new options::string( "database-port", "3306" ) );
-         dict.add_option( new options::string( "database-user", string() ) );
-         dict.add_option( new options::string( "database-pass", string() ) );
+	 setup_common_options( dict );
       }
 
       ///
