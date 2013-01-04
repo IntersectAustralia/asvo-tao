@@ -31,7 +31,7 @@ class ProcessTables(object):
         print('Connection to DB is open...Start Creating Tables')
         self.CreateSummaryTable()
         self.CreateTreeSummaryTable()
-        self.CreateTreeMappingTable()
+        
         print('Summary Table Created ...')
     
     
@@ -75,9 +75,7 @@ class ProcessTables(object):
         self.ExecuteNoQuerySQLStatment(DropTable)
         
         CreateTable="CREATE TABLE Summary ("
-        CreateTable=CreateTable+"TableName varchar(100),"
-        CreateTable=CreateTable+"MinTreeID BIGINT,"     
-        CreateTable=CreateTable+"MaxTreeID BIGINT,"
+        CreateTable=CreateTable+"TableName varchar(100),"        
         CreateTable=CreateTable+"MinX FLOAT4,"
         CreateTable=CreateTable+"MinY FLOAT4,"
         CreateTable=CreateTable+"MinZ FLOAT4,"
@@ -107,46 +105,35 @@ class ProcessTables(object):
         
         self.ExecuteNoQuerySQLStatment(CreateTable)
     
-    def CreateTreeMappingTable(self):
-        
-        DropTable="DROP TABLE IF EXISTS TreeMapping;"
-        self.ExecuteNoQuerySQLStatment(DropTable)
-        
-        CreateTable="CREATE TABLE TreeMapping ("        
-        CreateTable=CreateTable+"GlobalTreeID BIGINT,"       
-        CreateTable=CreateTable+"GridX INT,"
-        CreateTable=CreateTable+"GridY INT)"                
-        
-        
-        self.ExecuteNoQuerySQLStatment(CreateTable)
+    
             
     def GetTableSummary(self,TableName):
         
-        GetSummarySQL="select min(PosX),max(PosX),min(PosY),max(PosY),min(PosZ),max(PosZ),min(GlobalTreeID),max(GlobalTreeID),min(snapnum),max(snapnum),count(*) from @TABLEName;"
+        GetSummarySQL="select min(PosX),max(PosX),min(PosY),max(PosY),min(PosZ),max(PosZ),min(snapnum),max(snapnum),count(*) from @TABLEName;"
         GetSummarySQL= string.replace(GetSummarySQL,"@TABLEName",TableName)
         SummaryListArr=self.ExecuteQuerySQLStatment(GetSummarySQL)
         if len(SummaryListArr)==0:
             return
         SummaryList=SummaryListArr[0]
         
+        if SummaryList[0]==None:
+            return
         MinPosX= SummaryList[0]
         MaxPosX= SummaryList[1]
         MinPosY= SummaryList[2]
         MaxPosY= SummaryList[3]
         MinPosZ= SummaryList[4]
-        MaxPosZ= SummaryList[5]
-        MinTreeID= SummaryList[6]
-        MaxTreeID= SummaryList[7]
-        MinSnap= SummaryList[8]
-        MaxSnap= SummaryList[9]
-        GalaxyCount=SummaryList[10]
+        MaxPosZ= SummaryList[5]        
+        MinSnap= SummaryList[6]
+        MaxSnap= SummaryList[7]
+        GalaxyCount=SummaryList[8]
         
         
         InsertSummaryRecord="INSERT INTO Summary ("
-        InsertSummaryRecord=InsertSummaryRecord+"TableName, MinTreeID, MaxTreeID, GalaxyCount, "
+        InsertSummaryRecord=InsertSummaryRecord+"TableName, GalaxyCount, "
         InsertSummaryRecord=InsertSummaryRecord+"MinX, MinY, MinZ, "
         InsertSummaryRecord=InsertSummaryRecord+"MaxX, MaxY, MaxZ,MinSnap,MaxSnap) Values ("
-        InsertSummaryRecord=InsertSummaryRecord+"\'"+TableName+"\',"+str(MinTreeID)+","+str(MaxTreeID)+","+str(GalaxyCount)+","
+        InsertSummaryRecord=InsertSummaryRecord+"\'"+TableName+"\',"+str(GalaxyCount)+","
         InsertSummaryRecord=InsertSummaryRecord+str(MinPosX)+","+str(MinPosY)+","+str(MinPosZ)+","
         InsertSummaryRecord=InsertSummaryRecord+str(MaxPosX)+","+str(MaxPosY)+","+str(MaxPosZ)+","+str(MinSnap)+","+str(MaxSnap)
         InsertSummaryRecord=InsertSummaryRecord+")"
@@ -164,43 +151,7 @@ class ProcessTables(object):
         #print("End Processing Table: "+TableName)
         #print("********************************************************************************")    
     
-    def BuildTreeMapping(self):
-        
-        self.ExecuteNoQuerySQLStatment("DELETE FROM TreeMapping;")
-        
-        
-        GetBoundryBox="select min(MinX), min(MinY), min(MinZ), max(MaxX), max(MaxY), max(MaxZ) from TreeSummary;"
-        GlobalSummary=self.ExecuteQuerySQLStatment(GetBoundryBox)[0]
-        
-        MinX=int(math.floor(GlobalSummary[0]))
-        MinY=int(math.floor(GlobalSummary[1]))
-        MinZ=int(math.floor(GlobalSummary[2]))
-        
-        MaxX=int(math.ceil(GlobalSummary[3]))
-        MaxY=int(math.ceil(GlobalSummary[4]))
-        MaxZ=int(math.ceil(GlobalSummary[5]))
-        
-        XLocation=-1
-        YLocation=-1
-        StepSize=20
-        ### Intersection between two Rectangles 
-        ### http://silentmatt.com/rectangle-intersection/
-        for X in range(MinX,MaxX,StepSize):
-            XLocation=XLocation+1
-            YLocation=-1
-            for Y in range(MinY,MaxY,StepSize):
-                
-                YLocation=YLocation+1
-                BX1=X;
-                BX2=X+StepSize
-                BY1=Y
-                BY2=Y+StepSize
-                
-                GetIntersectionWithCurrentBoundingRect="INSERT INTO TreeMapping select GlobalTreeID,"+str(XLocation)+","+str(YLocation)+" from TreeSummary Where MinX<"+str(BX2)+" and MaxX>"+str(BX1)+" and MinY<"+str(BY2)+" and MaxY>"+str(BY1)+";"
-                
-                
-                self.ExecuteNoQuerySQLStatment(GetIntersectionWithCurrentBoundingRect)
-                print("("+str(XLocation)+","+str(YLocation)+")")
+    
                 
            
         
@@ -241,7 +192,7 @@ if __name__ == '__main__':
     [CurrentSAGEStruct,Options]=settingReader.ParseParams("settings.xml") 
     ProcessTablesObj=ProcessTables(Options)
     ProcessTablesObj.GetTablesList()
-    ProcessTablesObj.BuildTreeMapping()
+    
     ProcessTablesObj.SummarizeLocationInfo()              
         
         

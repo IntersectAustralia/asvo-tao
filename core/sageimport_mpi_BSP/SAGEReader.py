@@ -7,6 +7,9 @@ import os
 import sys
 import struct
 import string
+import math
+import numpy
+from random import randrange
 
 import PGDBInterface
 
@@ -55,7 +58,22 @@ class SAGEDataReader:
     
     def ProcessAllFiles(self):
         
+               
+        self.SimulationBoxX=float(self.Options['RunningSettings:SimulationBoxX'])
+        self.SimulationBoxY=float(self.Options['RunningSettings:SimulationBoxX'])
+        self.BSPCellSize=float(self.Options['RunningSettings:BSPCellSize'])
+        
+        
+        
+        self.CellsInX=int(math.ceil(self.SimulationBoxX/self.BSPCellSize))
+        self.CellsInY=int(math.ceil(self.SimulationBoxY/self.BSPCellSize))
+        
+        
+        
+        
+        
         #Process All the Non-Empty Files
+        
         
         [self.FormatStr,self.FieldSize]=self.GetStructSizeAndFormat()
         ListOfUpProcessedFile=self.PGDB.GetListofUnProcessedFiles(self.CommSize,self.CommRank)
@@ -80,7 +98,7 @@ class SAGEDataReader:
         CurrentFile=open(UnProcessedFile[1],"rb")
         CurrentFileGalaxyID=0
         
-        TableID=UnProcessedFile[7]
+        
         TreeIDStart=UnProcessedFile[5]
         
     
@@ -111,7 +129,8 @@ class SAGEDataReader:
             #print('\t '+str(self.CommRank)+': Number of Galaxies in Tree ('+str(i)+')='+str(NumberofGalaxiesInTree))
             if NumberofGalaxiesInTree>0:
                 TreeData=self.ProcessTree(TreeIDStart+i,NumberofGalaxiesInTree,CurrentFile,CurrentFileGalaxyID)  
-                if len(TreeData)>0:  
+                if len(TreeData)>0: 
+                    TableID=self.MapTreetoTableID(TreeData) 
                     self.PGDB.CreateNewTree(TableID,TreeData)        
             
             
@@ -121,6 +140,81 @@ class SAGEDataReader:
                   
         if self.DebugToFile==True:
             Log.close()
+    
+    
+        
+    
+    def IntersectTwoRect(self,RectA,RectB):
+        ## Rect=[X1,X2,Y1,Y2]
+        if (RectA[0] < RectB[1] and RectA[1] > RectB[0] and RectA[2] < RectB[3] and RectA[3] > RectB[2]): 
+            return True;
+        else:
+            return False;
+        
+    def MapTreetoTableID(self,TreeData):
+        
+        
+        #self.SimulationBoxX=float(self.Options['RunningSettings:SimulationBoxX'])
+        #self.SimulationBoxY=float(self.Options['RunningSettings:SimulationBoxX'])
+        #self.BSPCellSize=float(self.Options['RunningSettings:BSPCellSize'])              
+        #self.CellsInX=int(math.ceil(self.SimulationBoxX/self.BSPCellSize))
+        #self.CellsInY=int(math.ceil(self.SimulationBoxY/self.BSPCellSize))
+        
+        ## Get Tree Bounding Rectangle
+        MinX=TreeData[0]['PosX']
+        MaxX=TreeData[0]['PosX']
+        
+        MinY=TreeData[0]['PosY']
+        MaxY=TreeData[0]['PosY']
+        
+        for TreeItem in TreeData:
+            MinX=min(MinX,TreeItem['PosX'])
+            MaxX=max(MaxX,TreeItem['PosX'])
+            MinY=min(MinY,TreeItem['PosY'])
+            MaxY=max(MaxY,TreeItem['PosY'])
+        
+        Rect1=[MinX,MaxX,MinY,MaxY]
+        
+        XLocation=-1
+        YLocation=-1
+        StepSize=self.BSPCellSize
+        
+        PossibleTables=[]
+        
+        ### Intersection between two Rectangles 
+        ### http://silentmatt.com/rectangle-intersection/
+        for X in numpy.arange(0,self.SimulationBoxX,StepSize):
+            XLocation=XLocation+1
+            YLocation=-1
+            for Y in numpy.arange(0,self.SimulationBoxY,StepSize):
+                
+                YLocation=YLocation+1
+                BX1=X;
+                BX2=X+StepSize
+                BY1=Y
+                BY2=Y+StepSize
+                
+                Rect2=[BX1,BX2,BY1,BY2]
+                
+                if self.IntersectTwoRect(Rect1, Rect2)==True:
+                    GetIntersectionWithCurrentBoundingRect="INSERT INTO TreeMapping VALUES("+str(TreeData[0]['TreeID'])+","+str(XLocation)+","+str(YLocation)+"); "                
+                
+                    self.PGDB.ExecuteNoQuerySQLStatment(GetIntersectionWithCurrentBoundingRect)
+                    PTableID=int((XLocation*self.CellsInX)+YLocation)
+                    #print("("+str(XLocation)+","+str(YLocation)+")="+str(PTableID))
+                    PossibleTables=numpy.hstack([PossibleTables,PTableID])
+        FinalTableID=-1
+        
+        if len(PossibleTables)==1:
+            FinalTableID=int(PossibleTables[0])
+        elif len(PossibleTables)<=10:
+            FinalTableID=int(PossibleTables[randrange(len(PossibleTables))])
+        else: 
+                       
+            FinalTableID=self.CellsInX*self.CellsInY
+                        
+        return FinalTableID
+        
     
     def ProcessTree(self,TreeID,NumberofGalaxiesInTree,CurrentFile,CurrentFileGalaxyID):    
                 

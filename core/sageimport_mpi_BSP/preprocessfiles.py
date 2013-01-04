@@ -56,6 +56,7 @@ class PreprocessFiles(object):
         ## If the database already exists - give the user the option to drop it
         if len(ResultsList)>0:
             Response=raw_input("Database "+self.DBName+" with the same name already exists!\nIf you Choose to Continue it will be dropped. Do you want to Drop it?(y/n)")
+            sys.stdout.flush()
             if Response=='y':
                 ## Drop the database
                 self.ExecuteNoQuerySQLStatment("Drop database "+self.DBName+";")                
@@ -118,8 +119,40 @@ class PreprocessFiles(object):
             raw_input("PLease press enter to continue.....")
     
     
+    def CreateTreeMappingTable(self):
+        
+        DropTable="DROP TABLE IF EXISTS TreeMapping;"
+        self.ExecuteNoQuerySQLStatment(DropTable)
+        
+        CreateTable="CREATE TABLE TreeMapping ("        
+        CreateTable=CreateTable+"GlobalTreeID BIGINT,"       
+        CreateTable=CreateTable+"GridX INT,"
+        CreateTable=CreateTable+"GridY INT)"                
+        
+        
+        self.ExecuteNoQuerySQLStatment(CreateTable)
+    
     ## Generate All the tables required for the data importing process
     def GenerateAllTables(self): 
+        
+        
+        SimulationBoxX=float(self.Options['RunningSettings:SimulationBoxX'])
+        SimulationBoxY=float(self.Options['RunningSettings:SimulationBoxX'])
+        BSPCellSize=float(self.Options['RunningSettings:BSPCellSize'])
+        
+        print("Processing BOX ("+str(SimulationBoxX)+"x"+str(SimulationBoxY)+") With Cell Size="+str(BSPCellSize))
+        
+        CellsInX=int(math.ceil(SimulationBoxX/BSPCellSize))
+        CellsInY=int(math.ceil(SimulationBoxY/BSPCellSize))
+        
+        print("Cells In X="+str(CellsInX))
+        print("Cells In Y="+str(CellsInY))
+        
+        
+        NumberofTables=CellsInX*CellsInY
+        
+        
+        
         ## Create Table template statement 
         self.CreateNewTableTemplate()
         
@@ -130,12 +163,18 @@ class PreprocessFiles(object):
         ## This execution is just a pre-caution
         self.ExecuteNoQuerySQLStatment("UPDATE datafiles set Processed=FALSE;")
         
+        setWarningOff="set client_min_messages='warning'; "
+        self.ExecuteNoQuerySQLStatment(setWarningOff)
+        
         ## Get List of all tables expected from "datafiles" table
-        TableIDs=self.ExecuteQuerySQLStatment("select distinct tableid from datafiles order by tableid;")
+        #TableIDs=self.ExecuteQuerySQLStatment("select distinct tableid from datafiles order by tableid;")
+        TableIDs=range(0,NumberofTables)
         ## for each tableID create New Table 
         for TableID in TableIDs:
-            print("Creating Table ("+str(TableID[0])+")")
-            self.CreateNewTable(TableID[0])
+            print("Creating Table ("+str(TableID)+")")
+            self.CreateNewTable(TableID)
+        
+        self.CreateNewTable(NumberofTables)
     
     ## Use Statement concatenation and the  CurrentSAGEStrcuture loaded from the XML settings to create a new table template
     def CreateNewTableTemplate(self):
@@ -221,21 +260,24 @@ class PreprocessFiles(object):
      
     def ProcessAllFiles(self):
         
+        
+        self.CreateTreeMappingTable()
+        
+              
         #Process All the Non-Empty Files 
         ## The table "DataFiles" will work as a record keeper for which files has been processed and which has not been processed 
         ## It will be use to support continue in case of error
         CreateTableSt="CREATE TABLE DataFiles "
         CreateTableSt=CreateTableSt+"(FileID INT, FileName varchar(500),FileSize BIGINT, "
-        CreateTableSt=CreateTableSt+" NumberofTrees INT, TotalNumberOfGalaxies BIGINT, TreeIDFrom INT,TreeIDTo INT,TableID INT, Processed boolean);"
+        CreateTableSt=CreateTableSt+" NumberofTrees INT, TotalNumberOfGalaxies BIGINT, TreeIDFrom INT,TreeIDTo INT,Processed boolean);"
         
         self.ExecuteNoQuerySQLStatment(CreateTableSt)
         
         ## Generate insert template for the Datafiles table
-        InsertTemplate="INSERT INTO DataFiles (FileID,FileName,FileSize,NumberofTrees,TotalNumberOfGalaxies, TreeIDFrom,TreeIDTo,TableID,Processed) VALUES "
+        InsertTemplate="INSERT INTO DataFiles (FileID,FileName,FileSize,NumberofTrees,TotalNumberOfGalaxies, TreeIDFrom,TreeIDTo,Processed) VALUES "
         
         
-        StartFrom=1
-        TableID=1
+        StartFrom=1        
         CurrentGalaxiesCounter=0
         TotalGalaxiesCount=0
         
@@ -264,14 +306,13 @@ class PreprocessFiles(object):
             CurrentInsertSt=CurrentInsertSt+str(TotalNumberOfGalaxies)+","
             CurrentInsertSt=CurrentInsertSt+str(StartFrom)+","
             CurrentInsertSt=CurrentInsertSt+str(StartFrom+NumberofTrees-1)+","
-            CurrentInsertSt=CurrentInsertSt+str(TableID)+", FALSE)"
+            CurrentInsertSt=CurrentInsertSt+"FALSE)"
             self.ExecuteNoQuerySQLStatment(CurrentInsertSt)
             ##############################################################################
             
             FileID=FileID+1
             CurrentGalaxiesCounter=CurrentGalaxiesCounter+TotalNumberOfGalaxies
-            if(CurrentGalaxiesCounter>=int(self.Options['RunningSettings:GalaxiesPerTable'])):
-                TableID=TableID+1                
+            if(CurrentGalaxiesCounter>=int(self.Options['RunningSettings:GalaxiesPerTable'])):                                
                 CurrentGalaxiesCounter=0
             
             StartFrom=StartFrom+NumberofTrees

@@ -77,7 +77,7 @@ class BSPTree(object):
         
         XLocation=-1
         YLocation=-1
-        StepSize=20
+        StepSize=float(self.Options['RunningSettings:BSPCellSize'])
         
         self.RectArr=numpy.zeros((0,6))
         
@@ -85,10 +85,10 @@ class BSPTree(object):
         
         ### Intersection between two Rectangles 
         ### http://silentmatt.com/rectangle-intersection/
-        for X in range(MinX,MaxX,StepSize):
+        for X in numpy.arange(MinX,MaxX,StepSize):
             XLocation=XLocation+1
             YLocation=-1
-            for Y in range(MinY,MaxY,StepSize):
+            for Y in numpy.arange(MinY,MaxY,StepSize):
                 
                 YLocation=YLocation+1
                 BX1=X;
@@ -219,7 +219,7 @@ if __name__ == '__main__':
     BSPTreeObj=BSPTree(Options)
     BSPTreeObj.GenerateRectangles()
     #PolyPoints=[(250,90),(400,300),(250,400),(150,250)]
-    PolyPoints=[(0,0),(500,0),(500,50)]
+    PolyPoints=[(0,0),(62,0),(62,10)]
     LocationsMatrix=BSPTreeObj.GetRectIds(PolyPoints)
     
     GridXLocationsstr=''
@@ -238,7 +238,7 @@ if __name__ == '__main__':
     Query='select distinct tablename from TreeSummary  where globaltreeid in (Select globaltreeid from TreeMapping where gridx in ('+GridXLocationsstr+') and gridy in ('+GridYLocationsstr+'));'
     print Query
     TablesList=BSPTreeObj.ExecuteQuerySQLStatment(Query)
-    
+    print len(TablesList)
     for table in TablesList:
         print(table)
     #GridData=BSPTreeObj.ExecuteQuerySQLStatment("select gridx,gridy,count(*) from TreeMapping  group by  gridx,gridy;")
