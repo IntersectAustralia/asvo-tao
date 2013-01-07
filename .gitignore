@@ -18,3 +18,4 @@ core/workflow/DummyScript.py
 science_modules/apps/credentials.hh
 core/sageimport_mpi/settings.xml
 core/sageimport_mpi_BSP/settings.xml
+web/build
