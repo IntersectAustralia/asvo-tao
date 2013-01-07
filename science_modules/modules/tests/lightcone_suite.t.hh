@@ -213,7 +213,7 @@ public:
    ///
    ///
    ///
-   void test_extended_box_generation()
+   void test_redshift_minmax()
    {
       lightcone lc;
 
@@ -226,9 +226,86 @@ public:
       // to get picked up by the neighboring boxes.
       {
          soci::session sql( soci::sqlite3, db_setup.db_filename );
+         sql << "INSERT INTO snap_redshift VALUES(0, 0.001)";
+         sql << "INSERT INTO snap_redshift VALUES(1, 0)";
+         sql << "INSERT INTO tree_1 VALUES(34, 34, 34, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_2 VALUES(57, 57, 57, 1, 0, 0, 1)";
+         sql << "INSERT INTO tree_3 VALUES(230, 230, 230, 2, 0, 0, 2)";
+         sql << "INSERT INTO tree_1 VALUES(34, 34, 34, 3, 1, 1, 0)";
+         sql << "INSERT INTO tree_2 VALUES(57, 57, 57, 4, 1, 1, 1)";
+         sql << "INSERT INTO tree_3 VALUES(230, 230, 230, 5, 1, 1, 2)";
+      }
+
+      // Prepare base dictionary.
+      options::dictionary& dict = db_setup.dict.sub( "light-cone" );
+      dict["ra-min"] = "0";
+      dict["ra-max"] = "90";
+      dict["dec-min"] = "0";
+      dict["dec-max"] = "90";
+
+      // Place to store row IDs.
+      vector<int> ids;
+
+      // Capture first point.
+      dict["redshift-min"] = "0.0001";
+      dict["redshift-max"] = "0.0002";
+      db_setup.xml.write( db_setup.xml_filename, db_setup.dict );
+      setup_lightcone( lc );
+      ids.resize( 0 );
+      for( lc.begin(); !lc.done(); ++lc )
+      {
+         const galaxy& gal = *lc;
+         ids.push_back( gal.id() );
+      }
+      TS_ASSERT_EQUALS( ids.size(), 1 );
+      TS_ASSERT_EQUALS( ids[0], 3 );
+
+      // Capture first and second.
+      dict["redshift-min"] = "0.0002";
+      dict["redshift-max"] = "0.0003";
+      db_setup.xml.write( db_setup.xml_filename, db_setup.dict );
+      setup_lightcone( lc );
+      ids.resize( 0 );
+      for( lc.begin(); !lc.done(); ++lc )
+      {
+         const galaxy& gal = *lc;
+         ids.push_back( gal.id() );
+      }
+      TS_ASSERT_EQUALS( ids.size(), 1 );
+      TS_ASSERT_EQUALS( ids[0], 4 );
+
+      // Capture all three.
+      dict["redshift-min"] = "0.0009";
+      dict["redshift-max"] = "0.001";
+      db_setup.xml.write( db_setup.xml_filename, db_setup.dict );
+      setup_lightcone( lc );
+      ids.resize( 0 );
+      for( lc.begin(); !lc.done(); ++lc )
+      {
+         const galaxy& gal = *lc;
+         ids.push_back( gal.id() );
+      }
+      TS_ASSERT_EQUALS( ids.size(), 1 );
+      TS_ASSERT_EQUALS( ids[0], 2 );
+   }
+
+   ///
+   ///
+   ///
+   void test_extended_box_generation()
+   {
+      lightcone lc;
+
+      // Turn off random rotation and shifting.
+      lc._use_random = false;
+
+      // Insert some values. Place the points on the lower walls
+      // to get picked up by the neighboring boxes.
+      {
+         soci::session sql( soci::sqlite3, db_setup.db_filename );
          sql << "INSERT INTO snap_redshift VALUES(0, 0.0001)";
          sql << "INSERT INTO snap_redshift VALUES(1, 0)";
-	 sql << "INSERT INTO tree_1 VALUES(10, 10, 10, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_1 VALUES(10, 10, 10, 0, 0, 0, 0)";
          sql << "INSERT INTO tree_2 VALUES(10, 10, 10, 1, 0, 0, 1)";
          sql << "INSERT INTO tree_3 VALUES(10, 10, 10, 2, 0, 0, 2)";
          sql << "INSERT INTO tree_1 VALUES(10, 10, 10, 3, 1, 1, 0)";
@@ -262,245 +339,8 @@ public:
       TS_ASSERT_EQUALS( ids[1], 4 );
       TS_ASSERT_EQUALS( ids[2], 5 );
       for( unsigned ii = 0; ii < 9; ++ii )
-	 TS_ASSERT_EQUALS( ids[3 + ii], ii%3 );
+         TS_ASSERT_EQUALS( ids[3 + ii], ii%3 );
    }
-
-   // ///
-   // ///
-   // ///
-   // void test_distances()
-   // {
-   //    lightcone lc;
-
-   //    // Turn off random rotation and shifting.
-   //    lc._use_random = false;
-
-   //    // Insert some values. Place the points on the lower walls
-   //    // to get picked up by the neighboring boxes.
-   //    soci::session sql( soci::sqlite3, db_setup.db_filename );
-   //    sql << "INSERT INTO snapshot_000 VALUES(5.77, 5.77, 5.77, 0)";
-   //    sql << "INSERT INTO snapshot_000 VALUES(11.55, 11.55, 11.55, 1)";
-   //    sql << "INSERT INTO snapshot_000 VALUES(17.32, 17.32, 17.32, 2)";
-   //    sql << "INSERT INTO snapshot_001 VALUES(5.77, 5.77, 5.77, 0)";
-   //    sql << "INSERT INTO snapshot_001 VALUES(11.55, 11.55, 11.55, 1)";
-   //    sql << "INSERT INTO snapshot_001 VALUES(17.32, 17.32, 17.32, 2)";
-
-   //    // Prepare base dictionary.
-   //    options::dictionary& dict = db_setup.dict;
-   //    dict["redshift-min"] = "0";
-   //    dict["ra-min"] = "0";
-   //    dict["ra-max"] = "90";
-   //    dict["dec-min"] = "0";
-   //    dict["dec-max"] = "90";
-
-   //    // Place to store row IDs.
-   //    vector<int> ids;
-
-   //    // Capture first point.
-   //    sql << "INSERT INTO meta VALUES(0, 0, 100)";
-   //    sql << "INSERT INTO meta VALUES(1, 0.005, 100)";
-   //    db_setup.xml.write( db_setup.xml_filename, dict );
-   //    setup_lightcone( lc );
-   //    ids.resize( 0 );
-   //    for( lc.begin(); !lc.done(); ++lc )
-   //    {
-   //       const galaxy& gal = *lc;
-   //       ids.push_back( gal.id() );
-   //    }
-   //    TS_ASSERT_EQUALS( ids.size(), 1 );
-   //    TS_ASSERT_EQUALS( ids[0], 0 );
-
-   //    // Capture first and second.
-   //    sql << "DELETE FROM meta";
-   //    sql << "INSERT INTO meta VALUES(0, 0, 100)";
-   //    sql << "INSERT INTO meta VALUES(1, 0.008, 100)";
-   //    db_setup.xml.write( db_setup.xml_filename, dict );
-   //    setup_lightcone( lc );
-   //    ids.resize( 0 );
-   //    for( lc.begin(); !lc.done(); ++lc )
-   //    {
-   //       const galaxy& gal = *lc;
-   //       ids.push_back( gal.id() );
-   //    }
-   //    TS_ASSERT_EQUALS( ids.size(), 2 );
-   //    TS_ASSERT_EQUALS( ids[0], 0 );
-   //    TS_ASSERT_EQUALS( ids[1], 1 );
-
-   //    // Capture all three.
-   //    sql << "DELETE FROM meta";
-   //    sql << "INSERT INTO meta VALUES(0, 0, 100)";
-   //    sql << "INSERT INTO meta VALUES(1, 0.011, 100)";
-   //    db_setup.xml.write( db_setup.xml_filename, dict );
-   //    setup_lightcone( lc );
-   //    ids.resize( 0 );
-   //    for( lc.begin(); !lc.done(); ++lc )
-   //    {
-   //       const galaxy& gal = *lc;
-   //       ids.push_back( gal.id() );
-   //    }
-   //    TS_ASSERT_EQUALS( ids.size(), 3 );
-   //    TS_ASSERT_EQUALS( ids[0], 0 );
-   //    TS_ASSERT_EQUALS( ids[1], 1 );
-   //    TS_ASSERT_EQUALS( ids[2], 2 );
-
-   //    // Erase the table data.
-   //    {
-   //       soci::session sql( soci::sqlite3, db_setup.db_filename );
-   //       sql << "DELETE FROM meta";
-   //       sql << "DELETE FROM snapshot_000";
-   //       sql << "DELETE FROM snapshot_001";
-   //    }
-   // }
-
-   // ///
-   // ///
-   // ///
-   // void test_redshift_minmax()
-   // {
-   //    lightcone lc;
-
-   //    // Turn off random rotation and shifting.
-   //    lc._use_random = false;
-
-   //    // Insert some values. Place the points on the lower walls
-   //    // to get picked up by the neighboring boxes.
-   //    {
-   //       soci::session sql( soci::sqlite3, db_setup.db_filename );
-   //       sql << "INSERT INTO meta VALUES(0, 0, 100)";
-   //       sql << "INSERT INTO meta VALUES(1, 1, 100)";
-   //       sql << "INSERT INTO snapshot_000 VALUES(5.77, 5.77, 5.77, 0)";
-   //       sql << "INSERT INTO snapshot_000 VALUES(11.55, 11.55, 11.55, 1)";
-   //       sql << "INSERT INTO snapshot_000 VALUES(17.32, 17.32, 17.32, 2)";
-   //       sql << "INSERT INTO snapshot_001 VALUES(5.77, 5.77, 5.77, 0)";
-   //       sql << "INSERT INTO snapshot_001 VALUES(11.55, 11.55, 11.55, 1)";
-   //       sql << "INSERT INTO snapshot_001 VALUES(17.32, 17.32, 17.32, 2)";
-   //    }
-
-   //    // Prepare base dictionary.
-   //    options::dictionary& dict = db_setup.dict;
-   //    dict["ra-min"] = "0";
-   //    dict["ra-max"] = "90";
-   //    dict["dec-min"] = "0";
-   //    dict["dec-max"] = "90";
-
-   //    // Place to store row IDs.
-   //    vector<int> ids;
-
-   //    // Capture first point.
-   //    dict["redshift-min"] = "0.003";
-   //    dict["redshift-max"] = "0.004";
-   //    db_setup.xml.write( db_setup.xml_filename, dict );
-   //    setup_lightcone( lc );
-   //    ids.resize( 0 );
-   //    for( lc.begin(); !lc.done(); ++lc )
-   //    {
-   //       const galaxy& gal = *lc;
-   //       ids.push_back( gal.id() );
-   //    }
-   //    TS_ASSERT_EQUALS( ids.size(), 1 );
-   //    TS_ASSERT_EQUALS( ids[0], 0 );
-
-   //    // Capture first and second.
-   //    dict["redshift-min"] = "0.006";
-   //    dict["redshift-max"] = "0.007";
-   //    db_setup.xml.write( db_setup.xml_filename, dict );
-   //    setup_lightcone( lc );
-   //    ids.resize( 0 );
-   //    for( lc.begin(); !lc.done(); ++lc )
-   //    {
-   //       const galaxy& gal = *lc;
-   //       ids.push_back( gal.id() );
-   //    }
-   //    TS_ASSERT_EQUALS( ids.size(), 1 );
-   //    TS_ASSERT_EQUALS( ids[0], 1 );
-
-   //    // Capture all three.
-   //    dict["redshift-min"] = "0.010";
-   //    dict["redshift-max"] = "0.011";
-   //    db_setup.xml.write( db_setup.xml_filename, dict );
-   //    setup_lightcone( lc );
-   //    ids.resize( 0 );
-   //    for( lc.begin(); !lc.done(); ++lc )
-   //    {
-   //       const galaxy& gal = *lc;
-   //       ids.push_back( gal.id() );
-   //    }
-   //    TS_ASSERT_EQUALS( ids.size(), 1 );
-   //    TS_ASSERT_EQUALS( ids[0], 2 );
-
-   //    // Erase the table data.
-   //    {
-   //       soci::session sql( soci::sqlite3, db_setup.db_filename );
-   //       sql << "DELETE FROM meta";
-   //       sql << "DELETE FROM snapshot_000";
-   //       sql << "DELETE FROM snapshot_001";
-   //    }
-   // }
-
-   // ///
-   // ///
-   // ///
-   // void test_snapshots()
-   // {
-   //    lightcone lc;
-
-   //    // Turn off random rotation and shifting.
-   //    lc._use_random = false;
-
-   //    // Insert some values. Place the points on the lower walls
-   //    // to get picked up by the neighboring boxes.
-   //    {
-   //       soci::session sql( soci::sqlite3, db_setup.db_filename );
-   //       sql << "INSERT INTO meta VALUES(0, 0.003, 100)";
-   //       sql << "INSERT INTO meta VALUES(1, 0.007, 100)";
-   //       sql << "INSERT INTO meta VALUES(2, 0.011, 100)";
-   //       sql << "INSERT INTO snapshot_000 VALUES(5.77, 5.77, 5.77, 0)";
-   //       sql << "INSERT INTO snapshot_000 VALUES(11.55, 11.55, 11.55, 1)";
-   //       sql << "INSERT INTO snapshot_000 VALUES(17.32, 17.32, 17.32, 2)";
-   //       sql << "INSERT INTO snapshot_001 VALUES(5.77, 5.77, 5.77, 3)";
-   //       sql << "INSERT INTO snapshot_001 VALUES(11.55, 11.55, 11.55, 4)";
-   //       sql << "INSERT INTO snapshot_001 VALUES(17.32, 17.32, 17.32, 5)";
-   //       sql << "INSERT INTO snapshot_002 VALUES(5.77, 5.77, 5.77, 6)";
-   //       sql << "INSERT INTO snapshot_002 VALUES(11.55, 11.55, 11.55, 7)";
-   //       sql << "INSERT INTO snapshot_002 VALUES(17.32, 17.32, 17.32, 8)";
-   //    }
-
-   //    // Prepare base dictionary.
-   //    options::dictionary& dict = db_setup.dict;
-   //    dict["ra-min"] = "0";
-   //    dict["ra-max"] = "90";
-   //    dict["dec-min"] = "0";
-   //    dict["dec-max"] = "90";
-   //    dict["redshift-min"] = "0";
-   //    dict["redshift-max"] = "1";
-
-   //    // Place to store row IDs.
-   //    vector<int> ids;
-
-   //    // Should encounter each point from each snapshot in a
-   //    // unique order.
-   //    db_setup.xml.write( db_setup.xml_filename, dict );
-   //    setup_lightcone( lc );
-   //    ids.resize( 0 );
-   //    for( lc.begin(); !lc.done(); ++lc )
-   //    {
-   //       const galaxy& gal = *lc;
-   //       ids.push_back( gal.id() );
-   //    }
-   //    TS_ASSERT_EQUALS( ids.size(), 3 );
-   //    TS_ASSERT_EQUALS( ids[0], 0 );
-   //    TS_ASSERT_EQUALS( ids[1], 4 );
-   //    TS_ASSERT_EQUALS( ids[2], 8 );
-
-   //    // Erase the table data.
-   //    {
-   //       soci::session sql( soci::sqlite3, db_setup.db_filename );
-   //       sql << "DELETE FROM meta";
-   //       sql << "DELETE FROM snapshot_000";
-   //       sql << "DELETE FROM snapshot_001";
-   //       sql << "DELETE FROM snapshot_002";
-   //    }
-   // }
 
    void setup_lightcone( lightcone& lc )
    {
