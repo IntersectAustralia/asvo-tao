@@ -13,6 +13,12 @@ namespace tao {
    {
    }
 
+   const soci::row&
+   galaxy::row() const
+   {
+      return _row;
+   }
+
    const string&
    galaxy::table() const
    {

@@ -45,13 +45,17 @@ namespace tao {
       dict.add_option( new options::real( "domain-size", 500 ), prefix );
       dict.add_option( new options::real( "redshift-max" ), prefix );
       dict.add_option( new options::real( "redshift-min" ), prefix );
-      dict.add_option( new options::real( "z_snap" ), prefix );
-      dict.add_option( new options::real( "box_size" ), prefix );
+      dict.add_option( new options::real( "z-snap" ), prefix );
+      dict.add_option( new options::real( "box-size" ), prefix );
       dict.add_option( new options::real( "ra-min", 0.0 ), prefix );
       dict.add_option( new options::real( "ra-max", 90.0 ), prefix );
       dict.add_option( new options::real( "dec-min", 0.0 ), prefix );
       dict.add_option( new options::real( "dec-max", 90.0 ), prefix );
       dict.add_option( new options::real( "H0", 0.73 ), prefix );
+      dict.add_option( new options::string( "filter", "" ), prefix );
+      dict.add_option( new options::real( "filter-min", 0.0 ), prefix );
+      dict.add_option( new options::real( "filter-max", 0.0 ), prefix );
+      dict.add_option( new options::string( "output-fields", "" ), prefix );
    }
 
    ///
@@ -117,15 +121,15 @@ namespace tao {
       }
       else
       {
-         // auto it = std::find( _snap_redshifts.begin(), _snap_redshifts.end(), _z_snap );
-         // ASSERT( it != _snap_redshifts.end() );
-         // mpi::lindex idx = it - _snap_redshifts.begin();
-         // // TODO: Setup ranges.
-         // _build_pixels( _x0, _y0, _z0 );
+         auto it = std::find( _snap_redshifts.begin(), _snap_redshifts.end(), _z_snap );
+         ASSERT( it != _snap_redshifts.end(), "Invalid redshift." );
+         _z_snap_idx = it - _snap_redshifts.begin();
 
-         // // Set the current snapshot to the end to be sure we will
-         // // terminate as expected.
-         // _cur_snap = _snap_idxs.size();
+	 // The outer loop is over the boxes.
+	 _get_boxes( _boxes );
+	 LOGDLN( "Boxes: ", _boxes );
+	 _cur_box = _boxes.begin();
+	 _settle_box();
       }
 
       LOG_EXIT();
@@ -161,15 +165,12 @@ namespace tao {
       if( ++_cur_row == _rows->end() )
       {
          LOGDLN( "Finished iterating over current rowset." );
-         if( _box_type != "box" )
+         if( ++_cur_table == _table_names.size() ||
+             (_settle_table(), _cur_table == _table_names.size()) )
          {
-	    if( ++_cur_table == _table_names.size() ||
-		(_settle_table(), _cur_table == _table_names.size()) )
-            {
-               LOGDLN( "Finished iterating over current boxes." );
-               if( ++_cur_box != _boxes.end() )
-                  _settle_box();
-            }
+            LOGDLN( "Finished iterating over current boxes." );
+            if( ++_cur_box != _boxes.end() )
+               _settle_box();
          }
       }
 
@@ -279,56 +280,59 @@ namespace tao {
          _cur_table = 0;
          if( _cur_table < _table_names.size() )
 	 {
-	    // Calculate the minimum and maximum snapshots
-	    // that can fall within this box.
-	    const array<real_type,3>& box = *_cur_box;
+            if( _box_type != "box" )
+            {
+               // Calculate the minimum and maximum snapshots
+               // that can fall within this box.
+               const array<real_type,3>& box = *_cur_box;
 
-	    // Calculate the minimum and maximum length in this box.
-	    real_type min_len = sqrt( box[0]*box[0] + box[1]*box[1] + box[2]*box[2] );
-	    real_type max_len = sqrt( (box[0] + _domain_size)*(box[0] + _domain_size) + 
-				      (box[1] + _domain_size)*(box[1] + _domain_size) + 
-				      (box[2] + _domain_size)*(box[2] + _domain_size) );
-	    min_len = std::max( min_len, _dist_range.start() );
-	    max_len = std::min( max_len, _dist_range.finish() );
-	    LOGDLN( "Length range is from ", min_len, " to ", max_len );
+               // Calculate the minimum and maximum length in this box.
+               real_type min_len = sqrt( box[0]*box[0] + box[1]*box[1] + box[2]*box[2] );
+               real_type max_len = sqrt( (box[0] + _domain_size)*(box[0] + _domain_size) + 
+                                         (box[1] + _domain_size)*(box[1] + _domain_size) + 
+                                         (box[2] + _domain_size)*(box[2] + _domain_size) );
+               min_len = std::max( min_len, _dist_range.start() );
+               max_len = std::min( max_len, _dist_range.finish() );
+               LOGDLN( "Length range is from ", min_len, " to ", max_len );
 
-	    // Find the first redshift that is greater than my minimum.
-	    for( unsigned ii = 0; ii < _snap_redshifts.size(); ++ii )
-	    {
-	       if( _redshift_to_distance( _snap_redshifts[ii] ) == max_len )
-	       {
-		  _min_snap = ii;
-		  break;
-	       }
-	       else if( _redshift_to_distance( _snap_redshifts[ii] ) < max_len )
-	       {
-		  if( ii > 0 )
-		     _min_snap = ii - 1;
-		  else
-		     _min_snap = 0;
-		  break;
-	       }
-	    }
-	    LOGDLN( "Minimum snapshot is ", _min_snap, " with length of ",
-		    _redshift_to_distance( _snap_redshifts[_min_snap] ),
-		    " and redshift of ", _snap_redshifts[_min_snap] );
+               // Find the first redshift that is greater than my minimum.
+               for( unsigned ii = 0; ii < _snap_redshifts.size(); ++ii )
+               {
+                  if( _redshift_to_distance( _snap_redshifts[ii] ) == max_len )
+                  {
+                     _min_snap = ii;
+                     break;
+                  }
+                  else if( _redshift_to_distance( _snap_redshifts[ii] ) < max_len )
+                  {
+                     if( ii > 0 )
+                        _min_snap = ii - 1;
+                     else
+                        _min_snap = 0;
+                     break;
+                  }
+               }
+               LOGDLN( "Minimum snapshot is ", _min_snap, " with length of ",
+                       _redshift_to_distance( _snap_redshifts[_min_snap] ),
+                       " and redshift of ", _snap_redshifts[_min_snap] );
 
-	    // Find the first redshift greater than my maximum.
-	    unsigned ii;
-	    for( ii = _min_snap + 1; ii < _snap_redshifts.size(); ++ii )
-	    {
-	       if( _snap_redshifts[ii] == _z_min ||
-			_redshift_to_distance( _snap_redshifts[ii] ) <= min_len )
-	       {
-		  _max_snap = ii;
-		  break;
-	       }
-	    }
-	    if( ii == _snap_redshifts.size() )
-	       _max_snap = _snap_redshifts.size() - 1;
-	    LOGDLN( "Maximum snapshot is ", _max_snap, " with length of ",
-		    _redshift_to_distance( _snap_redshifts[_max_snap] ),
-		    " and redshift of ", _snap_redshifts[_max_snap] );
+               // Find the first redshift greater than my maximum.
+               unsigned ii;
+               for( ii = _min_snap + 1; ii < _snap_redshifts.size(); ++ii )
+               {
+                  if( _snap_redshifts[ii] == _z_min ||
+                      _redshift_to_distance( _snap_redshifts[ii] ) <= min_len )
+                  {
+                     _max_snap = ii;
+                     break;
+                  }
+               }
+               if( ii == _snap_redshifts.size() )
+                  _max_snap = _snap_redshifts.size() - 1;
+               LOGDLN( "Maximum snapshot is ", _max_snap, " with length of ",
+                       _redshift_to_distance( _snap_redshifts[_max_snap] ),
+                       " and redshift of ", _snap_redshifts[_max_snap] );
+            }
 
 	    // Now prepare tables.
             _settle_table();
@@ -436,6 +440,7 @@ namespace tao {
       replace_all( query, "-last_dist-", to_string( min_dist ) );
       replace_all( query, "-min_snap-", to_string( _min_snap ) );
       replace_all( query, "-max_snap-", to_string( _max_snap ) );
+      replace_all( query, "-z_snap-", to_string( _z_snap_idx ) );
 
       // Replace references to the Posx coordinates.
       replace_all( query, "Pos1", _crd_strs[0] );
@@ -593,7 +598,7 @@ namespace tao {
       boxes.clear();
 
       // Only run the loop if the distance is greater than the box side length.
-      if( _dist_range.finish() > domain_size )
+      if( _box_type != "box" && _dist_range.finish() > domain_size )
       {
          LOGDLN( "Maximum distanceof ", _dist_range.finish(), " greater than box side of ", domain_size, ", calculating boxes." );
 
@@ -710,8 +715,7 @@ namespace tao {
       _read_snapshots();
 
       // Setup the redshifts table if we are building a cone.
-      if( _box_type != "box" )
-	 _setup_redshift_ranges();
+      _setup_redshift_ranges();
 
       // Query the table names we'll be using.
       _query_table_names( _table_names );
@@ -755,13 +759,37 @@ namespace tao {
       // For the box type.
       if( _box_type == "box" )
       {
-         _z_snap = sub.get<real_type>( "z_snap" );
-         _box_size = sub.get<real_type>( "box_size" );
+         _z_snap = sub.get<real_type>( "z-snap" );
+         _box_size = sub.get<real_type>( "box-size" );
       }
 
       // Astronomical values.
       _h0 = sub.get<real_type>( "H0" );
       LOGDLN( "Using h0 = ", _h0 );
+
+      // Filter information.
+      _filter = sub.get<string>( "filter" );
+      _filter_min = sub.get<real_type>( "filter-min" );
+      _filter_max = sub.get<real_type>( "filter-max" );
+
+      // Output field information.
+      {
+         string fields_str = sub.get<string>( "output-fields" );
+         boost::tokenizer<boost::char_separator<char> > tokens( fields_str, boost::char_separator<char>( "," ) );
+         for( const auto& field : tokens )
+            _output_fields.insert( boost::trim_copy( field ) );
+
+         // Make sure there are certain basic fields in the output
+         // set.
+         _output_fields.insert( "posx" );
+         _output_fields.insert( "posy" );
+         _output_fields.insert( "posz" );
+         _output_fields.insert( "redshift" );
+         _output_fields.insert( "globalindex" );
+         _output_fields.insert( "localgalaxyid" );
+         _output_fields.insert( "globaltreeid" );
+      }
+      LOGDLN( "Outputting fields: ", _output_fields );
 
       LOG_EXIT();
    }
@@ -780,25 +808,13 @@ namespace tao {
       _crd_strs[2] = "posz";
 
       _query_template = "";
-      for( auto& field : _include )
+      for( auto& field : _output_fields )
       {
-         if( _output_fields.has( field ) )
-         {
-            _query_template += (_query_template.empty() ? "" : ", ") + _output_fields.get( field ) + " as " + field;
-         }
-         // else
-         // {
-         //    for ($i = 0; $i < count($this->include); $i++) {
-         //       if (isset($this->include[$i]) && $this->include[$i] == $field) {
-         //          echo $this->include[$i] . " = $field\n";
-         //          unset($this->include[$i]);
-         //          break;
-         //       }
-         //    }
-         // }
+         if( field != "redshift" )
+            _query_template += (_query_template.empty() ? "" : ", ") + string( "-table-." ) + field;
+         else
+            _query_template += (_query_template.empty() ? "" : ", ") + field;
       }
-      if( _query_template == "" )
-         _query_template = "posx, posy, posz, redshift, globalindex, localgalaxyid, globaltreeid";
 
       _query_template = "SELECT " + _query_template + " FROM -table-";
       _query_template += " INNER JOIN redshift_ranges ON (-table-.snapnum = redshift_ranges.snapnum)";
@@ -826,26 +842,16 @@ namespace tao {
       }
       else
       {
-	 // if( _box_side > 0.0 )
-	 // {
-	 _query_template += str( format( " -pos1- < %1%  AND -pos2- < %2% AND -pos3- < %3% " ) % _box_size % _box_size % _box_size );
-	 // }
-	 // else
-	 // {
-	 //    _query_template += str( format( " redshift_real > %1% AND redshift_real < %2%" ) % _z_min % _z_max );
-	 // }
+         _query_template += " -table-.snapnum = -z_snap-";
+	 _query_template += str( format( " AND -pos1- < %1%  AND -pos2- < %2% AND -pos3- < %3% " )
+                                 % _box_size % _box_size % _box_size );
       }
 
+      // Prepare the filter part of the query.
       if( _filter != "" )
       {
-         if( _filter_min != "" )
-         {
-            _query_template += str( format( " AND %1% >= %2%" ) % _output_fields.get( _filter ) % _filter_min );
-         }
-         if( _filter_max != "" )
-         {
-            _query_template += str( format( " AND %1% <= %2%" ) % _output_fields.get( _filter ) % _filter_max );
-         }
+         _query_template += str( format( " AND %1% >= %2%" ) % _filter % _filter_min );
+         _query_template += str( format( " AND %1% <= %2%" ) % _filter % _filter_max );
       }
 
       LOGDLN( "Query template: ", _query_template );
