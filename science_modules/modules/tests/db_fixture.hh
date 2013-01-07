@@ -1,3 +1,5 @@
+#include "tao/base/application.hh"
+
 ///
 /// Database preparation fixture.
 ///
@@ -33,25 +35,23 @@ public:
 	 sql << "INSERT INTO summary VALUES(100)";
 
          // Add snapshot tables.
-         sql << "CREATE TABLE tree_1 (posx DOUBLE PRECISION, posy DOUBLE PRECISION, posz DOUBLE PRECISION, "
-	   "globalindex INTEGER, snapnum INTEGER)";
-         sql << "CREATE TABLE tree_2 (posx DOUBLE PRECISION, posy DOUBLE PRECISION, posz DOUBLE PRECISION, "
-	   "globalindex INTEGER, snapnum INTEGER)";
-         sql << "CREATE TABLE tree_3 (posx DOUBLE PRECISION, posy DOUBLE PRECISION, posz DOUBLE PRECISION, "
-	   "globalindex INTEGER, snapnum INTEGER)";
-         sql << "CREATE TABLE tree_4 (posx DOUBLE PRECISION, posy DOUBLE PRECISION, posz DOUBLE PRECISION, "
-	   "globalindex INTEGER, snapnum INTEGER)";
+	 for( unsigned ii = 0; ii < 4; ++ii )
+	 {
+	    sql << "CREATE TABLE tree_" + to_string( ii + 1 ) + " (posx DOUBLE PRECISION, posy DOUBLE PRECISION, posz DOUBLE PRECISION, "
+	       "globalindex BIGINT, snapnum INTEGER, localgalaxyid INTEGER, globaltreeid BIGINT)";
+	 }
       }
 
       // Create the XML file by calling the lightcone options setup and filling in the
       // details, then dumping to file.
       lightcone lc;
-      lc.setup_options( dict );
+      setup_common_options( dict );
+      lc.setup_options( dict, "light-cone" );
       dict.compile();
-      dict["database_type"] = "sqlite";
-      dict["database_name"] = db_filename;
-      dict["box_type"] = "cone";
-      dict["z_min"] = "0";
+      dict["database-type"] = "sqlite";
+      dict["database-name"] = db_filename;
+      dict["light-cone:query-type"] = "cone";
+      dict["light-cone:redshift-min"] = "0";
       xml_filename = tmpnam( NULL );
       xml.write( xml_filename, dict );
 

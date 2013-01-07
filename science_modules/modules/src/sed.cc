@@ -501,7 +501,7 @@ namespace tao {
 
       // Extract the table.
       string query = "SELECT descendant, sfr, sfrbulge, "
-	 "metalsstellarmass, metalsbulgemass, snapnum FROM  " + table + 
+	 "metalsstellarmass, metalsbulgemass, snapnum, stellarmass FROM  " + table + 
 	 " WHERE globaltreeid = :id"
 	 " ORDER BY localgalaxyid";
       _sql << query, soci::into( (std::vector<int>&)_descs ),

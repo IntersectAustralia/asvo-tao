@@ -11,8 +11,10 @@ import settingReader # Read the XML settings
 # Entry point for the main workflow system.
 if __name__ == '__main__':
 
+    ## Read Running Setting from XML File
     [Options]=settingReader.ParseParams("settings.xml")
     
+    ## Define Working Directory and the Sleep time between each Run
     WorkDirectory=Options['WorkFlowSettings:WorkingDir']
     SleepTime=int(Options['WorkFlowSettings:SleepTime'])
     
