@@ -29,6 +29,129 @@ public:
    ///
    ///
    ///
+   void test_box_size()
+   {
+      lightcone lc;
+
+      // Turn off random rotation and shifting.
+      lc._use_random = false;
+
+      // Insert some values.
+      {
+         soci::session sql( soci::sqlite3, db_setup.db_filename );
+         sql << "INSERT INTO snap_redshift VALUES(0, 0.001)";
+         sql << "INSERT INTO snap_redshift VALUES(1, 0)";
+         sql << "INSERT INTO tree_1 VALUES(1, 1, 1, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_2 VALUES(2, 2, 2, 1, 0, 0, 1)";
+         sql << "INSERT INTO tree_3 VALUES(3, 3, 3, 2, 0, 0, 2)";
+         sql << "INSERT INTO tree_4 VALUES(4, 4, 4, 3, 0, 0, 3)";
+         sql << "INSERT INTO tree_1 VALUES(1, 1, 1, 4, 1, 1, 0)";
+         sql << "INSERT INTO tree_2 VALUES(2, 2, 2, 5, 1, 1, 1)";
+         sql << "INSERT INTO tree_3 VALUES(3, 3, 3, 6, 1, 1, 2)";
+         sql << "INSERT INTO tree_4 VALUES(4, 4, 4, 7, 1, 1, 3)";
+      }
+
+      // Prepare base dictionary.
+      options::dictionary& dict = db_setup.dict.sub( "light-cone" );
+      dict["query-type"] = "box";
+      dict["z-snap"] = "0.001";
+
+      // Place to store row IDs.
+      vector<int> ids;
+
+      // Only row 0.
+      dict["box-size"] = "1.5";
+      db_setup.xml.write( db_setup.xml_filename, db_setup.dict );
+      setup_lightcone( lc );
+      ids.resize( 0 );
+      for( lc.begin(); !lc.done(); ++lc )
+      {
+         const galaxy& gal = *lc;
+         ids.push_back( gal.id() );
+      }
+      TS_ASSERT_EQUALS( ids.size(), 1 );
+      TS_ASSERT_EQUALS( ids[0], 0 );
+
+      // Only row 1.
+      dict["box-size"] = "2.5";
+      db_setup.xml.write( db_setup.xml_filename, db_setup.dict );
+      setup_lightcone( lc );
+      ids.resize( 0 );
+      for( lc.begin(); !lc.done(); ++lc )
+      {
+         const galaxy& gal = *lc;
+         ids.push_back( gal.id() );
+      }
+      TS_ASSERT_EQUALS( ids.size(), 2 );
+      TS_ASSERT_EQUALS( ids[0], 0 );
+      TS_ASSERT_EQUALS( ids[1], 1 );
+   }
+
+   ///
+   ///
+   ///
+   void test_box_z_snap()
+   {
+      lightcone lc;
+
+      // Turn off random rotation and shifting.
+      lc._use_random = false;
+
+      // Insert some values.
+      {
+         soci::session sql( soci::sqlite3, db_setup.db_filename );
+         sql << "INSERT INTO snap_redshift VALUES(0, 0.001)";
+         sql << "INSERT INTO snap_redshift VALUES(1, 0)";
+         sql << "INSERT INTO tree_1 VALUES(1, 1, 1, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_2 VALUES(2, 2, 2, 1, 0, 0, 1)";
+         sql << "INSERT INTO tree_3 VALUES(3, 3, 3, 2, 0, 0, 2)";
+         sql << "INSERT INTO tree_4 VALUES(4, 4, 4, 3, 0, 0, 3)";
+         sql << "INSERT INTO tree_1 VALUES(1, 1, 1, 4, 1, 1, 0)";
+         sql << "INSERT INTO tree_2 VALUES(2, 2, 2, 5, 1, 1, 1)";
+         sql << "INSERT INTO tree_3 VALUES(3, 3, 3, 6, 1, 1, 2)";
+         sql << "INSERT INTO tree_4 VALUES(4, 4, 4, 7, 1, 1, 3)";
+      }
+
+      // Prepare base dictionary.
+      options::dictionary& dict = db_setup.dict.sub( "light-cone" );
+      dict["query-type"] = "box";
+      dict["box-size"] = "4.5";
+
+      // Place to store row IDs.
+      vector<int> ids;
+
+      // Only row 0.
+      dict["z-snap"] = "0.001";
+      db_setup.xml.write( db_setup.xml_filename, db_setup.dict );
+      setup_lightcone( lc );
+      ids.resize( 0 );
+      for( lc.begin(); !lc.done(); ++lc )
+      {
+         const galaxy& gal = *lc;
+         ids.push_back( gal.id() );
+      }
+      TS_ASSERT_EQUALS( ids.size(), 4 );
+      for( unsigned ii = 0; ii < 4; ++ii )
+         TS_ASSERT_EQUALS( ids[ii], ii );
+
+      // Only row 1.
+      dict["z-snap"] = "0";
+      db_setup.xml.write( db_setup.xml_filename, db_setup.dict );
+      setup_lightcone( lc );
+      ids.resize( 0 );
+      for( lc.begin(); !lc.done(); ++lc )
+      {
+         const galaxy& gal = *lc;
+         ids.push_back( gal.id() );
+      }
+      TS_ASSERT_EQUALS( ids.size(), 4 );
+      for( unsigned ii = 0; ii < 4; ++ii )
+         TS_ASSERT_EQUALS( ids[ii], 4 + ii );
+   }
+
+   ///
+   ///
+   ///
    void test_ra_minmax()
    {
       lightcone lc;
@@ -53,6 +176,7 @@ public:
 
       // Prepare base dictionary.
       options::dictionary& dict = db_setup.dict.sub( "light-cone" );
+      dict["query-type"] = "light-cone";
       dict["redshift-min"] = "0";
       dict["dec-min"] = "0";
       dict["dec-max"] = "90";
@@ -217,8 +341,6 @@ public:
    {
       lightcone lc;
 
-      LOG_PUSH( new logging::file( "test.log", 0 ) );
-
       // Turn off random rotation and shifting.
       lc._use_random = false;
 
@@ -340,6 +462,112 @@ public:
       TS_ASSERT_EQUALS( ids[2], 5 );
       for( unsigned ii = 0; ii < 9; ++ii )
          TS_ASSERT_EQUALS( ids[3 + ii], ii%3 );
+   }
+
+   ///
+   ///
+   ///
+   void test_filter()
+   {
+      lightcone lc;
+
+      // Turn off random rotation and shifting.
+      lc._use_random = false;
+
+      // Insert some values.
+      {
+         soci::session sql( soci::sqlite3, db_setup.db_filename );
+         sql << "INSERT INTO snap_redshift VALUES(0, 0.001)";
+         sql << "INSERT INTO snap_redshift VALUES(1, 0)";
+         sql << "INSERT INTO tree_1 VALUES(1, 1, 1, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_2 VALUES(2, 2, 2, 1, 0, 0, 1)";
+         sql << "INSERT INTO tree_3 VALUES(3, 3, 3, 2, 0, 0, 2)";
+         sql << "INSERT INTO tree_4 VALUES(4, 4, 4, 3, 0, 0, 3)";
+         sql << "INSERT INTO tree_1 VALUES(1, 1, 1, 4, 1, 1, 0)";
+         sql << "INSERT INTO tree_2 VALUES(2, 2, 2, 5, 1, 1, 1)";
+         sql << "INSERT INTO tree_3 VALUES(3, 3, 3, 6, 1, 1, 2)";
+         sql << "INSERT INTO tree_4 VALUES(4, 4, 4, 7, 1, 1, 3)";
+      }
+
+      // Prepare base dictionary.
+      options::dictionary& dict = db_setup.dict.sub( "light-cone" );
+      dict["query-type"] = "box";
+      dict["z-snap"] = "0.001";
+      dict["filter"] = "posx";
+      dict["filter-min"] = "1.5";
+      dict["filter-max"] = "2.5";
+
+      // Place to store row IDs.
+      vector<int> ids;
+
+      // Only row 0.
+      dict["box-size"] = "1.5";
+      db_setup.xml.write( db_setup.xml_filename, db_setup.dict );
+      setup_lightcone( lc );
+      ids.resize( 0 );
+      for( lc.begin(); !lc.done(); ++lc )
+      {
+         const galaxy& gal = *lc;
+         ids.push_back( gal.id() );
+      }
+      TS_ASSERT_EQUALS( ids.size(), 0 );
+
+      // Only row 1.
+      dict["box-size"] = "4.5";
+      db_setup.xml.write( db_setup.xml_filename, db_setup.dict );
+      setup_lightcone( lc );
+      ids.resize( 0 );
+      for( lc.begin(); !lc.done(); ++lc )
+      {
+         const galaxy& gal = *lc;
+         ids.push_back( gal.id() );
+      }
+      TS_ASSERT_EQUALS( ids.size(), 1 );
+      TS_ASSERT_EQUALS( ids[0], 1 );
+   }
+
+   ///
+   ///
+   ///
+   void test_output_fields()
+   {
+      lightcone lc;
+
+      LOG_PUSH( new logging::file( "test.log", 0 ) );
+
+      // Turn off random rotation and shifting.
+      lc._use_random = false;
+
+      // Insert some values.
+      {
+         soci::session sql( soci::sqlite3, db_setup.db_filename );
+         sql << "INSERT INTO snap_redshift VALUES(0, 0.001)";
+         sql << "INSERT INTO snap_redshift VALUES(1, 0)";
+         sql << "INSERT INTO tree_1 VALUES(1, 1, 1, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_2 VALUES(2, 2, 2, 1, 0, 0, 1)";
+         sql << "INSERT INTO tree_3 VALUES(3, 3, 3, 2, 0, 0, 2)";
+         sql << "INSERT INTO tree_4 VALUES(4, 4, 4, 3, 0, 0, 3)";
+         sql << "INSERT INTO tree_1 VALUES(1, 1, 1, 4, 1, 1, 0)";
+         sql << "INSERT INTO tree_2 VALUES(2, 2, 2, 5, 1, 1, 1)";
+         sql << "INSERT INTO tree_3 VALUES(3, 3, 3, 6, 1, 1, 2)";
+         sql << "INSERT INTO tree_4 VALUES(4, 4, 4, 7, 1, 1, 3)";
+      }
+
+      // Prepare base dictionary.
+      options::dictionary& dict = db_setup.dict.sub( "light-cone" );
+      dict["query-type"] = "box";
+      dict["z-snap"] = "0.001";
+      dict["output-fields"] = "snapnum";
+
+      // Only row 1.
+      dict["box-size"] = "4.5";
+      db_setup.xml.write( db_setup.xml_filename, db_setup.dict );
+      setup_lightcone( lc );
+      for( lc.begin(); !lc.done(); ++lc )
+      {
+         const galaxy& gal = *lc;
+         TS_ASSERT_EQUALS( gal.row().get<int>( "snapnum" ), 0 );
+      }
    }
 
    void setup_lightcone( lightcone& lc )
