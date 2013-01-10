@@ -55,8 +55,9 @@ class PreprocessFiles(object):
           
         ## If the database already exists - give the user the option to drop it
         if len(ResultsList)>0:
-            Response=raw_input("Database "+self.DBName+" with the same name already exists!\nIf you Choose to Continue it will be dropped. Do you want to Drop it?(y/n)")
+            sys.stdout.write("\033[0;33m"+"Database "+self.DBName+" with the same name already exists!\nIf you Choose to Continue it will be dropped. Do you want to Drop it?(y/n)\033[0m\n")
             sys.stdout.flush()
+            Response=raw_input("")
             if Response=='y':
                 ## Drop the database
                 self.ExecuteNoQuerySQLStatment("Drop database "+self.DBName+";")                
@@ -289,7 +290,7 @@ class PreprocessFiles(object):
             
             
             CurrentInsertSt=InsertTemplate+"("
-            print('Processing File ('+str(FileID)+"/"+str(TotalFilesCount)+"):"+fobject[0])                       
+            print('Processing File ('+str(FileID)+"/"+str(TotalFilesCount-1)+"):"+fobject[0])                       
             
             
             ########## Get File data from the header #########################            
