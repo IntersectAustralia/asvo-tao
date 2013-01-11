@@ -33,15 +33,9 @@ class User(auth_models.User):
 class Simulation(models.Model):        
 
     name = models.CharField(max_length=100, unique=True)
-
-    paper_title = models.CharField(max_length=100, default='')
-    paper_url = models.URLField(max_length=200, default='')
-    external_link_url = models.URLField(max_length=200, default='')
-    cosmology = models.CharField(max_length=100, default='')
-    cosmological_parameters = models.CharField(max_length=100, default='')
     box_size_units = models.CharField(max_length=10, default='Mpc')
     box_size = models.DecimalField(max_digits=10, decimal_places=3)
-    web_site = models.URLField(max_length=200, default='')
+    details = models.TextField(default='')
 
     def __unicode__(self):
         return self.name
@@ -57,13 +51,11 @@ class Simulation(models.Model):
     def box_size_with_units(self):
         return "%s %s" % (self.box_size, self.box_size_units)
 
-class GalaxyModel(models.Model):   
-    simulation_set = models.ManyToManyField(Simulation, through='DataSet')
+class GalaxyModel(models.Model):
 
+    simulation_set = models.ManyToManyField(Simulation, through='DataSet')
     name = models.CharField(max_length=100, unique=True)
-    kind = models.CharField(max_length=100, default='')
-    paper_title = models.CharField(max_length=100, default='')
-    paper_url = models.URLField(max_length=200, default='')
+    details = models.TextField(default='')
 
     def __unicode__(self):
         return self.name

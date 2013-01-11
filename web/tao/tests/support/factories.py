@@ -36,22 +36,26 @@ class UserFactory(factory.Factory):
 class SimulationFactory(factory.Factory):
     FACTORY_FOR = Simulation
     name = factory.Sequence(lambda n: 'simulation_%03d' % int(n))
-    paper_title = factory.Sequence(lambda n: "abcd" + n) 
-    paper_url = factory.Sequence(lambda n: "http://www.abcd" + n + ".com/")
-    external_link_url = factory.Sequence(lambda n: "http://www.defg" + n + ".org/")
-    cosmology = factory.Sequence(lambda n: "fairy" + n)
-    cosmological_parameters = factory.Sequence(lambda n: "dust" + n)
     box_size = factory.Sequence(lambda n: n)
-    web_site = factory.Sequence(lambda n: "http://mysite" + n + ".edu/")
+
+    details = factory.Sequence(lambda n:
+                                '<a class="simulation-paper" target="_blank" href="http://www.abcd' + n + '.com/">abcd' + n + '</a>' +
+                                '<a class="simulation-link" target="_blank" href="http://www.defg' + n + '.org/">http://www.defg' + n + '.org/</a>' +
+                                '<span class="simulation-cosmology">fairy' + n + '</span>' +
+                                '<span class="simulation-cosmological-parameters">dust' + n + '</span>' +
+                                '<span class="simulation-box-size">' + n + '</span>' +
+                                '<a class="simulation-web-site" target="_blank" href="http://mysite' + n + '.edu/">http://mysite' + n + '.edu/</a>'
+                                )
     
 class GalaxyModelFactory(factory.Factory):
     FACTORY_FOR = GalaxyModel
 
     name = factory.Sequence(lambda n: 'galaxy_model_%03d' % int(n))
-    kind = factory.Sequence(lambda n: "sometype" + n) 
-    paper_title = factory.Sequence(lambda n: "xyz" + n)
-    paper_url = factory.Sequence(lambda n: "http://www.xyz" + n + ".com/")
-    
+    details = factory.Sequence(lambda n:
+                                'Kind: <span class="galaxy-model-kind">' + 'sometype' + n + '</span>' +
+                                'Paper: <a class="galaxy-model-paper" target="_blank" href="' + 'http://www.xyz' + n + '.com/' + '">' + 'xyz' + n + '</a>'
+                                )
+
 class DataSetFactory(factory.Factory):
     FACTORY_FOR = DataSet
     
