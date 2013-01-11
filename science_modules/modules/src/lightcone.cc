@@ -18,7 +18,7 @@ namespace tao {
       : module(),
         _z_min( 0.0 ),
         _z_max( 0.0 ),
-        _use_random( false ),
+        _use_random( true ),
         _unique( false ),
         _unique_offs_x( 0.0 ),
         _unique_offs_y( 0.0 ),
