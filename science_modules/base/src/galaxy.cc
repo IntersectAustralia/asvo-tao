@@ -46,19 +46,19 @@ namespace tao {
    galaxy::real_type
    galaxy::x() const
    {
-      return _row.get<real_type>( "posx" ) + _box[0];
+      return _row.get<real_type>( "newx" );
    }
 
    galaxy::real_type
    galaxy::y() const
    {
-      return _row.get<real_type>( "posy" ) + _box[1];
+      return _row.get<real_type>( "newy" );
    }
 
    galaxy::real_type
    galaxy::z() const
    {
-      return _row.get<real_type>( "posz" ) + _box[2];
+      return _row.get<real_type>( "newz" );
    }
 
    galaxy::real_type
