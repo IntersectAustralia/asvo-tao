@@ -1,3 +1,5 @@
+from django.utils.html import strip_tags
+
 from tao.tests.integration_tests.helper import LiveServerTest
 from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory
 from tao.models import Simulation, GalaxyModel
@@ -6,7 +8,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
 
     def setUp(self):
         super(MockGalaxyFactoryTest, self).setUp()
-        
+
         simulation = SimulationFactory.create()
         simulation2 = SimulationFactory.create()
 
@@ -66,30 +68,18 @@ class MockGalaxyFactoryTest(LiveServerTest):
         """  check the name of the simulation in the sidebar is the same as simulation_name
              check the values in the side bar correspond to that simulation
         """
-        self.assert_selector_texts_equals_expected_values({
-                                                           '.simulation-info .simulation-name': simulation.name,
-                                                           '.simulation-info .simulation-paper': simulation.paper_title,
-                                                           '.simulation-info .simulation-cosmology': simulation.cosmology,
-                                                           '.simulation-info .simulation-cosmological-parameters': simulation.cosmological_parameters,
-                                                           '.simulation-info .simulation-box-size': simulation.box_size_with_units(),
-                                                           })
-        self.assert_attribute_equals('href', {
-                                              '.simulation-info .simulation-paper': simulation.paper_url,
-                                              '.simulation-info .simulation-link': simulation.external_link_url,
-                                              '.simulation-info .simulation-web-site': simulation.web_site,
-                                              })
+        simulation_selector_value = {
+                            '.simulation-info .simulation-name': simulation.name,
+                            '.simulation-info .simulation-details': strip_tags(simulation.details),
+                            }
+        self.assert_selector_texts_equals_expected_values(simulation_selector_value)
         
     def assert_galaxy_model_info_shown(self, galaxy_model):
         galaxy_model_selector_value = {
                              '.galaxy-model-info .galaxy-model-name': galaxy_model.name,
-                             '.galaxy-model-info .galaxy-model-kind': galaxy_model.kind,
-                             '.galaxy-model-info .galaxy-model-paper': galaxy_model.paper_title
+                             '.galaxy-model-info .galaxy-model-details': strip_tags(galaxy_model.details),
                              }
         self.assert_selector_texts_equals_expected_values(galaxy_model_selector_value)
-        
-        galaxy_model_paper_url = self.find_visible_element('.galaxy-model-info .galaxy-model-paper').get_attribute('href')
-        
-        self.assertEqual(galaxy_model.paper_url, galaxy_model_paper_url)
         
     def assert_galaxy_model_options_correct_for_a_simulation(self, simulation):
         expected_galaxy_model_names = [x[0] for x in simulation.galaxymodel_set.values_list('name')]

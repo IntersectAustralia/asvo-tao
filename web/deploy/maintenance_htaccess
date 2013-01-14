@@ -1,0 +1,5 @@
+# /web/vhost/tao.asvo.org.au/taodemo/.htaccess
+RewriteEngine Off
+Options -Indexes
+
+ErrorDocument 404 /taodemo/index.html

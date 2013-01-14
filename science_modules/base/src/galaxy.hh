@@ -18,6 +18,9 @@ namespace tao {
               const hpc::array<real_type,3>& box,
 	      const hpc::string& table );
 
+      const soci::row&
+      row() const;
+
       const hpc::string&
       table() const;
 
