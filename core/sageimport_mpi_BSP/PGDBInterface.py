@@ -78,7 +78,7 @@ class DBInterface(object):
     def CloseConnections(self):        
         self.CurrentConnection.close()
         self.CloseDebugFile()
-        print('Connection to DB is Closed...')        
+        #print('Connection to DB is Closed...')        
            
             
     

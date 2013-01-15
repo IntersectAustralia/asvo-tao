@@ -81,7 +81,7 @@ class SAGEDataReader:
         FileCounter=0
         for UnProcessedFile in ListOfUpProcessedFile:
             # Updating the user with what is going on
-            print(str(self.CommRank)+":Processing File ("+str(FileCounter)+"/"+str(TotalNumberofUnPrcoessedFiles)+"):"+UnProcessedFile[1])
+            print(str(self.CommRank)+":Processing File ("+str(FileCounter)+"/"+str(TotalNumberofUnPrcoessedFiles-1)+"):"+UnProcessedFile[1])
             print('\t File Size:'+str(UnProcessedFile[2]/1024)+' KB')
             
             self.PGDB.StartTransaction()

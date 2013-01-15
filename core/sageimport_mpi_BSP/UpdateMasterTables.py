@@ -12,7 +12,21 @@ class MasterTablesUpdate:
     def CreateRedshiftTable(self):
         CreatTBSt="CREATE TABLE Snap_redshift (SnapNum Int4,redshift float4);"
         self.PGDB.ExecuteNoQuerySQLStatment(CreatTBSt)
+    def CreateMetadataTable(self):
+        CreatTBSt="CREATE TABLE metadata (Metakey varchar(500),MetaValue varchar(5000));"        
+        self.PGDB.ExecuteNoQuerySQLStatment(CreatTBSt)
+    
+    def AddMetaDataValue(self,Key,Value):
+        InsertVSt="INSERT  INTO metadata values ('"+str(Key)+"','"+str(Value)+"');"        
+        self.PGDB.ExecuteNoQuerySQLStatment(InsertVSt)
         
+    def FillMetadataTable(self):
+        self.AddMetaDataValue("BoxSize", self.Options['RunningSettings:SimulationBoxX'])
+        self.AddMetaDataValue("BSPCellSize", self.Options['RunningSettings:BSPCellSize'])
+        self.AddMetaDataValue("TreeTablePrefix", self.Options['PGDB:TreeTablePrefix'])
+        
+        
+            
     def FillRedshiftData(self):
         SnapshotFile=self.Options['RunningSettings:SnpshottoRedshiftMapping']
         f = open(SnapshotFile, 'rt')
@@ -29,9 +43,11 @@ class MasterTablesUpdate:
         
         
         
-if __name__ == '__main__':
-    [CurrentSAGEStruct,Options]=settingReader.ParseParams("settings.xml")
-    CurrentPGDB=PGDBInterface.DBInterface(CurrentSAGEStruct,Options)
-    MasterTablesUpdateObj=MasterTablesUpdate(Options,CurrentPGDB)
-    MasterTablesUpdateObj.CreateRedshiftTable()
-    MasterTablesUpdateObj.FillRedshiftData()
+#if __name__ == '__main__':
+#    [CurrentSAGEStruct,Options]=settingReader.ParseParams("settings.xml")
+#    CurrentPGDB=PGDBInterface.DBInterface(CurrentSAGEStruct,Options,0)
+#    MasterTablesUpdateObj=MasterTablesUpdate(Options,CurrentPGDB)
+#    MasterTablesUpdateObj.CreateMetadataTable()
+#    MasterTablesUpdateObj.FillMetadataTable()
+#    MasterTablesUpdateObj.CreateRedshiftTable()
+#    MasterTablesUpdateObj.FillRedshiftData()
