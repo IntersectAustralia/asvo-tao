@@ -78,23 +78,23 @@ namespace tao
 	LightConeParams SettingReader::LoadLightCone()
 	{
 		LightConeParams Params;
-		Params.ModuleVersion=_GetNodeWithAssert(ParamsDoc,"/tao/workflow/lightcone/moduleversion").child_value();
-		Params.Geometry=_GetNodeWithAssert(ParamsDoc,"/tao/workflow/lightcone/geometry").child_value();
-		Params.Simultation=_GetNodeWithAssert(ParamsDoc,"/tao/workflow/lightcone/simulation").child_value();
-		Params.GalaxyModel=_GetNodeWithAssert(ParamsDoc,"/tao/workflow/lightcone/galaxymodel").child_value();
-		Params.BoxRepetition=_GetNodeWithAssert(ParamsDoc,"/tao/workflow/lightcone/boxrepetition").child_value();
+		Params.ModuleVersion=_GetNodeWithAssert(ParamsDoc,"/tao/workflow/light-cone/module-version").child_value();
+		Params.Geometry=_GetNodeWithAssert(ParamsDoc,"/tao/workflow/light-cone/geometry").child_value();
+		Params.Simultation=_GetNodeWithAssert(ParamsDoc,"/tao/workflow/light-cone/simulation").child_value();
+		Params.GalaxyModel=_GetNodeWithAssert(ParamsDoc,"/tao/workflow/light-cone/galaxy-model").child_value();
+		Params.BoxRepetition=_GetNodeWithAssert(ParamsDoc,"/tao/workflow/light-cone/box-repetition").child_value();
 
-		Params.NumberofCones=_GetNodeWithAssert(ParamsDoc,"/tao/workflow/lightcone/numcones").text().as_int();
+		Params.NumberofCones=_GetNodeWithAssert(ParamsDoc,"/tao/workflow/light-cone/num-cones").text().as_int();
 
-		Params.redshiftmin=_GetNodeWithAssert(ParamsDoc,"/tao/workflow/lightcone/redshiftmin").text().as_float();
-		Params.redshiftmax=_GetNodeWithAssert(ParamsDoc,"/tao/workflow/lightcone/redshiftmax").text().as_float();
+		Params.redshiftmin=_GetNodeWithAssert(ParamsDoc,"/tao/workflow/light-cone/redshift-min").text().as_float();
+		Params.redshiftmax=_GetNodeWithAssert(ParamsDoc,"/tao/workflow/light-cone/redshift-max").text().as_float();
 
-		Params.ramin=_GetNodeWithAssert(ParamsDoc,"/tao/workflow/lightcone/ramin").text().as_float();
-		Params.ramax=_GetNodeWithAssert(ParamsDoc,"/tao/workflow/lightcone/ramax").text().as_float();
-		Params.decmin=_GetNodeWithAssert(ParamsDoc,"/tao/workflow/lightcone/decmin").text().as_float();
-		Params.decmax=_GetNodeWithAssert(ParamsDoc,"/tao/workflow/lightcone/decmax").text().as_float();
+		Params.ramin=_GetNodeWithAssert(ParamsDoc,"/tao/workflow/light-cone/ra-min").text().as_float();
+		Params.ramax=_GetNodeWithAssert(ParamsDoc,"/tao/workflow/light-cone/ra-max").text().as_float();
+		Params.decmin=_GetNodeWithAssert(ParamsDoc,"/tao/workflow/light-cone/dec-min").text().as_float();
+		Params.decmax=_GetNodeWithAssert(ParamsDoc,"/tao/workflow/light-cone/dec-max").text().as_float();
 
-		xml_node OutputNodes=_GetNodeWithAssert(ParamsDoc,"/tao/workflow/lightcone/outputfields");
+		xml_node OutputNodes=_GetNodeWithAssert(ParamsDoc,"/tao/workflow/light-cone/output-fields");
 
 		for (pugi::xml_node OutputNode = OutputNodes.child("item"); OutputNode; OutputNode = OutputNode.next_sibling("item"))
 		{
@@ -106,7 +106,7 @@ namespace tao
 
 
 
-	    string rngseed=_GetNodeWithAssert(ParamsDoc,"/tao/workflow/lightcone/rngseed").child_value();
+	    string rngseed=_GetNodeWithAssert(ParamsDoc,"/tao/workflow/light-cone/rng-seed").child_value();
 
 	    return Params;
 
