@@ -25,6 +25,8 @@ namespace tao
 	   string TablePrefix;
 	   string CurrentUserName;
 	   string CurrentDB;
+	   string WorkingFolder;
+	   string LogFolder;
    };
 
    struct OutputField

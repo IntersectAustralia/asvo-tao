@@ -21,7 +21,7 @@
 		<UserName>taoadmin</UserName>
 		<password>********</password>
 		<ExecutableName>/lustre/projects/p014_swin/programs/ScienceModules/bin/filter</ExecutableName>
-		<AuxInputData>/lustre/projects/p014_swin/programs/ScienceModules/data</AuxInputData>
+		<AuxInputData>/lustre/projects/p014_swin/programs/ScienceModules/data</AuxInputData>		
 	</Torque>
 	
 </settings>	
