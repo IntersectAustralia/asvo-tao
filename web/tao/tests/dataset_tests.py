@@ -36,9 +36,9 @@ class DatasetTestCase(TransactionTestCase):
         DataSetFactory.create(simulation=s1, galaxy_model=g3)
 
         self.assertEqual([
-               (2, u'aoo', {'data-simulation_id': u'2'}),
-               (1, u'boo', {'data-simulation_id': u'1'}),
-               (3, u'coo', {'data-simulation_id': u'1'})
+               (2, u'aoo', {'data-galaxy_model_id': u'2'}),
+               (1, u'boo', {'data-galaxy_model_id': u'1'}),
+               (3, u'coo', {'data-galaxy_model_id': u'3'})
            ],
            galaxy_model_choices())
 
@@ -88,8 +88,8 @@ class DatasetTestCase(TransactionTestCase):
         snapshot3 = SnapshotFactory.create(dataset=d3, redshift='0.3')
 
         self.assertEqual([
-                          (snapshot2.redshift, snapshot2.redshift, {'data-simulation_id': str(s2.id), 'data-galaxy_model_id': str(g1.id)}),
-                          (snapshot1.redshift, snapshot1.redshift, {'data-simulation_id': str(s1.id), 'data-galaxy_model_id': str(g3.id)}),
-                          (snapshot3.redshift, snapshot3.redshift, {'data-simulation_id': str(s2.id), 'data-galaxy_model_id': str(g2.id)})
+                          (snapshot2.id, snapshot2.redshift, {'data-simulation_id': str(s2.id), 'data-galaxy_model_id': str(g1.id)}),
+                          (snapshot1.id, snapshot1.redshift, {'data-simulation_id': str(s1.id), 'data-galaxy_model_id': str(g3.id)}),
+                          (snapshot3.id, snapshot3.redshift, {'data-simulation_id': str(s2.id), 'data-galaxy_model_id': str(g2.id)})
                           ],
                          snapshot_choices())

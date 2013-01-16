@@ -78,7 +78,7 @@ class DataSet(models.Model):
 
     def __unicode__(self):
         return "%s : %s" % (self.simulation.name, self.galaxy_model.name)
-    
+
 class DataSetParameter(models.Model):
     name = models.CharField(max_length=200)
     units = models.CharField(max_length=20)

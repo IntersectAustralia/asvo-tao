@@ -1,0 +1,140 @@
+[
+    {
+        "model" : "tao.Simulation",
+        "pk" : 1,
+        "fields" : {
+            "name": "Millenium",
+            "paper_title": "Paper",
+            "paper_url" : "http://www.example.com/paper.html",
+            "external_link_url" : "http://www.another-example.com/url.html",
+            "cosmology" : "Special cosmology",
+            "cosmological_parameters" : "G=42",
+            "box_size_units" : "kP",
+            "box_size" : 1234567,
+            "web_site" : "http://www.example.com/"
+        }
+    },
+    {
+        "model" : "tao.Simulation",
+        "pk" : 2,
+        "fields" : {
+            "name": "Century",
+            "paper_title": "100 papers",
+            "paper_url" : "http://www.example.com/papers.html",
+            "external_link_url" : "http://www.another-example.com/urls.html",
+            "cosmology" : "Special multivariate cosmology",
+            "cosmological_parameters" : "G=Pi",
+            "box_size_units" : "kP",
+            "box_size" : 3141592,
+            "web_site" : "http://www.example.com/"
+        }
+    },
+    {
+        "model" : "tao.GalaxyModel",
+        "pk" : 1,
+        "fields" : {
+            "name": "Ridge model",
+            "kind": "Ridge solution",
+            "paper_title": "Galaxy ridge model",
+            "paper_url" : "http://www.example.com/papers.html"
+        }
+    },
+    {
+        "model" : "tao.GalaxyModel",
+        "pk" : 2,
+        "fields" : {
+            "name": "Scattered model",
+            "kind": "Scattered solution",
+            "paper_title": "Galaxy scattered model",
+            "paper_url" : "http://www.example.com/papers.html"
+        }
+    },
+    {
+        "model" : "tao.GalaxyModel",
+        "pk" : 3,
+        "fields" : {
+            "name": "Sphere",
+            "kind": "Spherical solution",
+            "paper_title": "Galaxy spherical model",
+            "paper_url" : "http://www.example.com/papers.html"
+        }
+    },
+    {
+        "model" : "tao.DataSet",
+        "pk" : 1,
+        "fields" : {
+            "galaxy_model": 1,
+            "simulation" : 1,
+            "database": "Millenium - ridge"
+        }
+    },
+    {
+        "model" : "tao.DataSet",
+        "pk" : 2,
+        "fields" : {
+            "galaxy_model": 2,
+            "simulation" : 1,
+            "database": "Millenium - scattered"
+        }
+    },
+    {
+        "model" : "tao.DataSet",
+        "pk" : 3,
+        "fields" : {
+            "galaxy_model": 3,
+            "simulation" : 1,
+            "database": "Millenium - sphere"
+        }
+    },
+    {
+        "model" : "tao.DataSet",
+        "pk" : 4,
+        "fields" : {
+            "galaxy_model": 2,
+            "simulation" : 2,
+            "database": "Century - scattered"
+        }
+    },
+    {
+        "model" : "tao.DataSet",
+        "pk" : 5,
+        "fields" : {
+            "galaxy_model": 3,
+            "simulation" : 2,
+            "database": "Century - sphere"
+        }
+    },
+    {
+        "model" : "tao.DataSet",
+        "pk" : 5,
+        "fields" : {
+            "galaxy_model": 3,
+            "simulation" : 2,
+            "database": "Century - sphere"
+        }
+    },
+    {
+        "model" : "tao.Snapshot",
+        "pk" : 1,
+        "fields" : {
+            "dataset": 5,
+            "redshift" : "100.000"
+        }
+    },
+    {
+        "model" : "tao.Snapshot",
+        "pk" : 2,
+        "fields" : {
+            "dataset": 5,
+            "redshift" : "3.14159"
+        }
+    },
+    {
+        "model" : "tao.Snapshot",
+        "pk" : 3,
+        "fields" : {
+            "dataset": 5,
+            "redshift" : "2.71828"
+        }
+    }
+]
