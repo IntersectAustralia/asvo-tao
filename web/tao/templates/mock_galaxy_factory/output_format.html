@@ -1,0 +1,10 @@
+{% load bootstrap_tags %}
+
+<legend>Output Format</legend>
+<div class="row-fluid">
+    <div class="boxed span8 offset4">
+        {% for fieldset in form.fieldsets %}
+            {{ fieldset|as_bootstrap_fieldset }}
+        {% endfor %}
+    </div>
+</div>
