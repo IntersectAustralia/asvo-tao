@@ -9,7 +9,7 @@ from captcha.fields import ReCaptchaField
 
 from form_utils.forms import BetterForm
 
-from tao import datasets
+import tao.settings as tao_settings
 from tao.models import UserProfile
 from tao.widgets import ChoiceFieldWithOtherAttrs
 
@@ -35,8 +35,8 @@ class UserCreationForm(auth_forms.UserCreationForm):
                                             widget=forms.Textarea(attrs={'rows':
                                             3}), required=False)
     email = forms.EmailField(label=_("Email"), max_length=75)
-
     captcha = ReCaptchaField()
+
     def __init__(self, *args, **kwargs):
         super(UserCreationForm, self).__init__(*args, **kwargs)
         if not getattr(settings, 'USE_CAPTCHA', True):    
@@ -79,3 +79,29 @@ class UserCreationForm(auth_forms.UserCreationForm):
 
 class RejectForm(forms.Form):
     reason = forms.CharField(widget=forms.Textarea(attrs={'rows': 3}), required=False)
+
+class OutputFormatForm(BetterForm):
+    EDIT_TEMPLATE = 'mock_galaxy_factory/output_format.html'
+
+    class Meta:
+        fieldsets = [('primary', {
+            'legend': '',
+            'fields': ['supported_formats']
+        }),]
+
+    def __init__(self, *args, **kwargs):
+        super(OutputFormatForm, self).__init__(*args, **kwargs)
+        self.fields['supported_formats'] = forms.ChoiceField(choices=[(x['value'], x['text']) for x in tao_settings.OUTPUT_FORMATS])
+
+    def to_xml(self, parent_xml_element):
+        output_format_form = self
+        from tao.workflow import param, add_parameters
+        from lxml import etree
+
+        selected_output_format = output_format_form.cleaned_data['supported_formats']
+        output_parameter = [
+            param('format', selected_output_format)
+        ]
+
+        output_module = etree.SubElement(parent_xml_element, 'module', name='output-file')
+        add_parameters(output_module, output_parameter)
