@@ -8,28 +8,30 @@ Execute the importing code
 import string
 import sys # for listing directory contents
 from mpi4py import MPI # MPI Implementation
-
+import time
 
 import SAGEReader # Read the SAGE Files into memory
 import settingReader # Read the XML settings
 import PGDBInterface # Interaction with the postgreSQL DB
 import preprocessfiles # Perform necessary pre-processing (e.g. Create Tables)
-
+import AnalyzeTables
+import UpdateMasterTables
 
 
 if __name__ == '__main__':
     
     ## MPI already initiated in the import statement
     ## Get The current Process Rank and the total number of processes
-    
+    start= time.clock()  
     comm = MPI.COMM_WORLD
     CommRank = comm.Get_rank()
     
     CommSize= comm.Get_size()
     
-    print('SAGE Data Importing Tool ( MPI version)')
+    if CommRank==0:
+        print('SAGE Data Importing Tool ( MPI version)')
     
-    print("MPI Starting .... My Rank is: "+str(CommRank)+"/"+str(CommSize))
+    #print("MPI Starting .... My Rank is: "+str(CommRank)+"/"+str(CommSize))
     
     
     ##$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Serial Section $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
@@ -41,7 +43,7 @@ if __name__ == '__main__':
     if CommRank==0:
         
         print("Server: Start Pre-processing files ...")
-        sys.stdout.write("Do you want me to re-generate the files list and the DB (y/n)\n")
+        sys.stdout.write("\033[0;33m"+"Do you want me to re-generate the files list and the DB (y/n)?\033[0m\n")
         sys.stdout.flush()
         RegenerateFileList=string.lower(sys.stdin.readline()).strip()
         
@@ -91,10 +93,10 @@ if __name__ == '__main__':
         ## Wait for the server to finish - 
         #The server will send the message only if he did all the needed pre-processing or if the user don't want re-generate the files list
         
-        print(str(CommRank)+":Waiting for the Server to finish pre-processing the files .... ")
-        sys.stdout.flush()
+        #print(str(CommRank)+":Waiting for the Server to finish pre-processing the files .... ")
+        #sys.stdout.flush()
         Mesg=comm.recv(source=0)
-        print(str(CommRank)+": Message Recieved ....")
+        #print(str(CommRank)+": Message Recieved ....")
         
         
     
@@ -107,6 +109,41 @@ if __name__ == '__main__':
     ## Start Processing the files
     ## This will get all unprocessed file and distribute them using Modulus operator
     Reader.ProcessAllFiles()
-    CurrentPGDB.CloseConnections()
+    
     ## All data imported ... Processing done 
-    print('Processing Done')
+    
+    if CommRank!=0:
+        Mesg={"ImportProcessingDone":True}
+        comm.send(Mesg,dest=0)
+    
+    
+    ## Analyze Tables Batch processing to Complete BSP missing Information
+    if CommRank==0:
+        print("Process (Server): Waiting for other Nodes to Finish ...")
+        for i in range(1,CommSize):
+            Mesg=comm.recv(source=i)
+             
+        print("Process (Server): All Nodes Finish ...")
+            
+        print('Starting PostProcessing: Generate Tables Statistics and BSP Tree Information')
+        ProcessTablesObj=AnalyzeTables.ProcessTables(Options)
+        ProcessTablesObj.GetTablesList()
+    
+        ProcessTablesObj.SummarizeLocationInfo()  
+        ProcessTablesObj.ValidateImportProcess()       
+        ProcessTablesObj.CloseConnections()
+    
+        MasterTablesUpdateObj=UpdateMasterTables.MasterTablesUpdate(Options,CurrentPGDB)
+        MasterTablesUpdateObj.CreateRedshiftTable()
+        MasterTablesUpdateObj.FillRedshiftData()
+        MasterTablesUpdateObj.CreateMetadataTable()
+        MasterTablesUpdateObj.FillMetadataTable()
+        end= time.clock()
+        sys.stdout.write("\033[0;33m"+str(CommRank)+": Total Processing Time="+str((end-start))+" seconds\033[0m\n")
+        sys.stdout.flush()
+        
+    
+    
+    
+    CurrentPGDB.CloseConnections()
+    print(str(CommRank)+':Processing Done')

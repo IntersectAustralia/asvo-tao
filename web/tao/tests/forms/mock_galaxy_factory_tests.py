@@ -3,7 +3,9 @@ from django.test.testcases import TransactionTestCase
 import datetime
 
 from tao import workflow, time
+from tao.forms import OutputFormatForm
 from tao.models import Snapshot
+from tao.settings import OUTPUT_FORMATS
 from taoui_light_cone.forms import Form as LightConeForm
 from taoui_sed.forms import Form as SEDForm
 from tao.tests.support import stripped_joined_lines
@@ -26,6 +28,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         self.user = UserFactory.create()
         #expected_timestamp = "2012-11-13 13:45:32+1000"
         time.frozen_time = datetime.datetime(2012, 11, 13, 13, 45, 32, 0, UtcPlusTen())
+        self.output_format = OUTPUT_FORMATS[0]['value']
 
     def tearDown(self):
         super(MockGalaxyFactoryTests, self).tearDown()
@@ -206,7 +209,10 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         sed_form = SEDForm({'single_stellar_population_model': stellar_model.id})
         sed_form.is_valid()
 
-        job = workflow.save(self.user, [lc_form, sed_form])
+        output_format_form = OutputFormatForm({'supported_formats': self.output_format})
+        output_format_form.is_valid()
+
+        job = workflow.save(self.user, [lc_form, sed_form, output_format_form])
 
         expected_parameter_xml = stripped_joined_lines("""
             <?xml version="1.0" encoding="utf-8"?>
@@ -243,6 +249,9 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
                     <vega_filename>A0V_KUR_BB.SED</vega_filename>
                     </filter>
                     </module>
+                    <module name="output-file">
+                        <param name="format">%(output_format)s</param>
+                    </module>
                 </workflow>
             </tao>
         """ % {
@@ -256,6 +265,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
             'filter_max': filter_max,
             'model_id': stellar_model.name,
             'filter_units': filter_parameter.units,
+            'output_format': self.output_format,
         })
 
         self.assertXmlEqual(expected_parameter_xml, job.parameters)
@@ -294,7 +304,10 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         sed_form = SEDForm({'single_stellar_population_model': stellar_model.id})
         sed_form.is_valid()
 
-        job = workflow.save(self.user, [lc_form, sed_form])
+        output_format_form = OutputFormatForm({'supported_formats': self.output_format})
+        output_format_form.is_valid()
+
+        job = workflow.save(self.user, [lc_form, sed_form, output_format_form])
 
         expected_parameter_xml = stripped_joined_lines("""
             <?xml version="1.0" encoding="utf-8"?>
@@ -328,6 +341,9 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
                     <vega_filename>A0V_KUR_BB.SED</vega_filename>
                     </filter>
                     </module>
+                    <module name="output-file">
+                        <param name="format">%(output_format)s</param>
+                    </module>
                 </workflow>
             </tao>
         """ % {
@@ -338,6 +354,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
             'redshift_min': redshift_min,
             'redshift_max': redshift_max,
             'model_id': stellar_model.name,
+            'output_format': self.output_format,
         })
 
         self.assertXmlEqual(expected_parameter_xml, job.parameters)

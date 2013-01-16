@@ -5,7 +5,7 @@ import string
 import sys
 import settingReader
 import numpy
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 
 class ProcessTables(object):
@@ -171,6 +171,31 @@ class ProcessTables(object):
         #plt.colorbar()
         #plt.show()
         
+    def ValidateImportProcess(self):
+        DataFileSummarySt="select sum(totalnumberofgalaxies),max(treeidto) from datafiles;"
+        DataFilesSummary=self.ExecuteQuerySQLStatment(DataFileSummarySt)[0]
+        ETotalNumberofExpectedGalaxies=DataFilesSummary[0]
+        EMaxTreeID=DataFilesSummary[1]
+        
+        
+        TreeSummarySt="select sum(galaxycount),max(globaltreeid) from treesummary;"
+        TreeSummaryInfo=self.ExecuteQuerySQLStatment(TreeSummarySt)[0]
+        CTotalNumberofExpectedGalaxies=TreeSummaryInfo[0]
+        CMaxTreeID=TreeSummaryInfo[1]
+        
+        print("----------------------------------------------------------------")
+        print("Validate Importing Process")
+        print("Total Number of Galaxies = "+str(CTotalNumberofExpectedGalaxies)+"\nExpected Number of Galaxies (Header Info)="+str(ETotalNumberofExpectedGalaxies))
+        print("Total Number of Trees = "+str(CMaxTreeID)+"\nExpected Number of Trees (Header Info)="+str(EMaxTreeID))
+        
+        if CMaxTreeID==EMaxTreeID and CTotalNumberofExpectedGalaxies==ETotalNumberofExpectedGalaxies:
+            print("Data Validation Completed")
+        else:
+            print("Error in the Import Process. Please revise the imported data!")
+        
+        
+        
+        
         
     def GetTablesList(self):
         
@@ -187,13 +212,14 @@ class ProcessTables(object):
             Count=Count+1
                 
                  
-if __name__ == '__main__':
-    print('Starting DB processing')
-    [CurrentSAGEStruct,Options]=settingReader.ParseParams("settings.xml") 
-    ProcessTablesObj=ProcessTables(Options)
-    ProcessTablesObj.GetTablesList()
+#if __name__ == '__main__':
+#    print('Starting DB processing')
+#    [CurrentSAGEStruct,Options]=settingReader.ParseParams("settings.xml") 
+#    ProcessTablesObj=ProcessTables(Options)
+#    ProcessTablesObj.GetTablesList()
     
-    ProcessTablesObj.SummarizeLocationInfo()              
+#    ProcessTablesObj.SummarizeLocationInfo()  
+#    ProcessTablesObj.ValidateImportProcess()            
         
         
         
