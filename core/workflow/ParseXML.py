@@ -39,17 +39,18 @@ class ParseXMLParameters(object):
                 if Param.attrib.get('name') !=None:
                     print (Param.attrib['name']+":"+Param.text)
     def GetDatabase(self):
-        FModules=self.tree.xpath("ns:workflow/ns:module[@name='light-cone']",namespaces={'ns':self.NameSpace})
+        FModules=self.tree.xpath("ns:workflow/ns:lightcone",namespaces={'ns':self.NameSpace})
         if len(FModules)>0:
             self.LightConeModule=FModules[0]
         else:
             raise Exception('Error In Getting Database information','Light Cone module cannot be found!')
-        self.Simulation=self.LightConeModule.xpath("ns:*[@name='simulation']",namespaces={'ns':self.NameSpace})[0].text
-        self.GalaxyModel=self.LightConeModule.xpath("ns:*[@name='galaxymodel']",namespaces={'ns':self.NameSpace})[0].text
-        DBElement=ET.Element("param")
-        DBElement.attrib['name']='database'
+        self.Simulation=self.LightConeModule.xpath("ns:simulation",namespaces={'ns':self.NameSpace})[0].text
+        self.GalaxyModel=self.LightConeModule.xpath("ns:galaxymodel",namespaces={'ns':self.NameSpace})[0].text
+        DBElement=ET.Element("database")        
         DBElement.text=self.Simulation+":"+self.GalaxyModel
-        self.LightConeModule.append(DBElement)
+        print self.tree.xpath("/ns:tao",namespaces={'ns':self.NameSpace})
+        self.tree.xpath("/ns:tao",namespaces={'ns':self.NameSpace})[0].append(DBElement)
+        
         
         
         

@@ -78,7 +78,7 @@ namespace tao
 	LightConeParams SettingReader::LoadLightCone()
 	{
 		LightConeParams Params;
-		Params.ModuleVersion=_GetNodeWithAssert(ParamsDoc,"/tao/workflow/lightcone/module-version").child_value();
+		Params.ModuleVersion=_GetNodeWithAssert(ParamsDoc,"/tao/workflow/lightcone/moduleversion").child_value();
 		Params.Geometry=_GetNodeWithAssert(ParamsDoc,"/tao/workflow/lightcone/geometry").child_value();
 		Params.Simultation=_GetNodeWithAssert(ParamsDoc,"/tao/workflow/lightcone/simulation").child_value();
 		Params.GalaxyModel=_GetNodeWithAssert(ParamsDoc,"/tao/workflow/lightcone/galaxymodel").child_value();
