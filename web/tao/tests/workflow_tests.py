@@ -221,7 +221,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
         light_cone_parameters = {
             'catalogue_geometry': 'box',
             'box_size': 20,
-            'snapshot': snapshot.redshift,
+            'snapshot': snapshot.id,
             'dark_matter_simulation': simulation.id,
             'filter': filter.id,
             'galaxy_model': galaxy_model.id,

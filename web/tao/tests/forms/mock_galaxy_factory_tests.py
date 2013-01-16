@@ -83,7 +83,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         light_cone_form = self.make_light_cone_form({
             'catalogue_geometry': LightConeForm.BOX,
             'box_size': 1,
-            'snapshot': Snapshot.objects.all()[0].redshift,
+            'snapshot': Snapshot.objects.all()[0].id,
             'ra_min': '',
             'dec_min': '',
             'ra_opening_angle': '',

@@ -2,6 +2,7 @@ from django.conf.urls.defaults import patterns, url, include
 from django.contrib.auth.views import logout
 from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import render
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 from tao.models import Job
 
@@ -42,13 +43,23 @@ job_patterns = patterns('tao.views.jobs',
     url(r'^(?P<id>\d+)/download_zip$', 'get_zip_file', name='get_zip_file'),
 )
 
+json_patterns = patterns('tao.json.views',
+    url(r'^snapshots/(?P<sid>\d+),(?P<gid>\d+)$', 'snapshots', name='json_snapshots'),
+    url(r'^simulation/(?P<id>\d+)$', 'simulation', name='json_simulation'),
+    url(r'^galaxy_model/(?P<id>\d+)$', 'galaxy_model', name='json_galaxy_model'),
+    url(r'^galaxy_models/(?P<id>\d+)$', 'galaxy_models', name='json_galaxy_models'),
+    url(r'^filters/(?P<sid>\d+),(?P<gid>\d+)$', 'filters', name='json_galaxy_models'),
+    url('^$', 'bad_request', name='json_ctx'),
+)
+
 urlpatterns = patterns('',
     ('^admin/', include(admin.site.urls)),
     ('^accounts/', include(account_patterns)),
     ('^administration/', include(administration_patterns)),
     ('^mock_galaxy_factory/', include(mock_galaxy_factory_patterns)),
     ('^jobs/', include(job_patterns)),
-    
+    ('^json/', include(json_patterns)),
+
     ('^403.html$', 'tao.views.handle_403'),
 
     url(r'^mgf/$', simple_view, {'template_name': 'mgf.html'}),
@@ -60,3 +71,5 @@ urlpatterns = patterns('',
     # Uncomment the admin/doc line below to enable admin documentation:
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
 )
+
+urlpatterns += staticfiles_urlpatterns()

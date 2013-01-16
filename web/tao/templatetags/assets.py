@@ -11,3 +11,7 @@ def js_asset(path):
     asset_path = reverse('asset', args=[js_path])
 
     return "<script src='%s'></script>" % asset_path
+
+@register.simple_tag
+def json_ctx():
+    return reverse('json_ctx')

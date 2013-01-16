@@ -6,9 +6,9 @@ import django.test
 
 import re, os
 
-def wait():
+def wait(secs=1):
     import time
-    time.sleep(1)
+    time.sleep(secs)
 
 def interact(local):
     """
