@@ -16,12 +16,19 @@ class ListJobsTests(LiveServerMGFTest):
                         <catalogue_geometry>cone</catalogue_geometry>
                         </lightcone>
                     """
-        self.submitted_job = JobFactory.create(user=self.user, parameters=parameters)
+        self.held_job = JobFactory.create(user=self.user, parameters=parameters, status=Job.HELD)
+        self.submitted_job = JobFactory.create(user=self.user, parameters=parameters, status=Job.SUBMITTED)
         self.queued_job = JobFactory.create(user=self.user, parameters=parameters, status=Job.QUEUED)
         self.in_progress_job = JobFactory.create(user=self.user, parameters=parameters, status=Job.IN_PROGRESS)
         self.completed_job = JobFactory.create(user=self.user, parameters=parameters, status=Job.COMPLETED)
 
         self.login(username, password)
+
+    def test_held_jobs_table_contains_held_job(self):
+        self.visit('held_jobs')
+
+        expected_jobs = [self.held_job]
+        self.assert_job_table_equals(expected_jobs, Job.HELD)
 
     def test_submitted_jobs_table_contains_submitted_job(self):
         self.visit('submitted_jobs')
@@ -50,7 +57,7 @@ class ListJobsTests(LiveServerMGFTest):
     def test_all_jobs_table_contains_all_jobs(self):
         self.visit('all_jobs')
 
-        expected_jobs = [self.completed_job, self.in_progress_job, self.queued_job, self.submitted_job]
+        expected_jobs = [self.completed_job, self.in_progress_job, self.queued_job, self.submitted_job, self.held_job]
         self.assert_job_table_equals(expected_jobs, 'All')
 
     def assert_job_table_equals(self, expected_jobs, status):
@@ -63,7 +70,7 @@ class ListJobsTests(LiveServerMGFTest):
 
     def _get_job_tableheader(self, status):
         header = ['', 'Submitted at', 'Parameters']
-        if status in [Job.SUBMITTED, Job.QUEUED, Job.IN_PROGRESS]:
+        if status in [Job.HELD, Job.SUBMITTED, Job.QUEUED, Job.IN_PROGRESS]:
             return header
         elif status == Job.COMPLETED:
             return header + ['Output Path']
@@ -73,7 +80,7 @@ class ListJobsTests(LiveServerMGFTest):
     def _get_job_tablebody(self, job, status):
         from django.utils.timezone import get_default_timezone
         body = ['View', job.created_time.astimezone(get_default_timezone()).strftime('%a %d %b %Y %H:%m'), self._clean_parameter_lines(job)]
-        if status in [Job.SUBMITTED, Job.QUEUED, Job.IN_PROGRESS]:
+        if status in [Job.HELD, Job.SUBMITTED, Job.QUEUED, Job.IN_PROGRESS]:
             return body
         elif status == Job.COMPLETED:
             return body + [job.output_path]

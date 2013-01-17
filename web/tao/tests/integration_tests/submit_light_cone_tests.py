@@ -46,7 +46,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
         }, id_wrap=self.lc_id)
         self.submit_mgf_form()
 
-        self.assert_on_page('submitted_jobs')
+        self.assert_on_page('held_jobs')
 
     def test_submit_valid_box_job(self):
         self.visit('mock_galaxy_factory')
@@ -59,7 +59,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
         }, id_wrap=self.lc_id)
         self.submit_mgf_form()
 
-        self.assert_on_page('submitted_jobs')
+        self.assert_on_page('held_jobs')
         
 
     def test_invalid_box_options_allow_light_cone_submit(self):
@@ -82,7 +82,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
 
         self.submit_mgf_form()
 
-        self.assert_on_page('submitted_jobs')  # The form is valid because the invalid box size field is hidden
+        self.assert_on_page('held_jobs')  # The form is valid because the invalid box size field is hidden
 
     def test_invalid_cone_options_allow_box_submit(self):
         self.visit('mock_galaxy_factory')
@@ -106,4 +106,4 @@ class SubmitLightConeTests(LiveServerMGFTest):
 
         self.submit_mgf_form()
 
-        self.assert_on_page('submitted_jobs')  # The form is valid because the invalid light cone fields hidden
+        self.assert_on_page('held_jobs')  # The form is valid because the invalid light cone fields hidden

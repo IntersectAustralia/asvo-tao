@@ -165,6 +165,7 @@ class Job(models.Model):
     status = models.CharField(choices=STATUS_CHOICES, default=HELD, max_length=20)
     parameters = models.TextField(blank=True, max_length=1000000)
     output_path = models.TextField(blank=True)  # without a trailing slash, please
+    database = models.CharField(max_length=200)
 
     def __unicode__(self):
         return "%s %s %s" % (self.user, self.created_time, self.description)
