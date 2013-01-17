@@ -49,12 +49,22 @@ namespace tao {
             exit( 1 );
          }
 
-         // Check that the file exists.
-         std::ifstream file( argv[1] );
-         if( !file )
+         // Check that the files exists.
          {
-            std::cout << "Could not open XML file.\n";
-            exit( 1 );
+            std::ifstream file( argv[1] );
+            if( !file )
+            {
+               std::cout << "Could not open XML file.\n";
+               exit( 1 );
+            }
+         }
+         {
+            std::ifstream file( argv[2] );
+            if( !file )
+            {
+               std::cout << "Could not open DB config file.\n";
+               exit( 1 );
+            }
          }
 
          // Cache the filename.
