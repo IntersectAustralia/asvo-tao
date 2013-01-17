@@ -9,7 +9,7 @@ from tao.settings import OUTPUT_FORMATS
 from taoui_light_cone.forms import Form as LightConeForm
 from taoui_sed.forms import Form as SEDForm
 from tao.tests.support import stripped_joined_lines
-from tao.tests.support.factories import SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetParameterFactory, UserFactory, StellarModelFactory, SnapshotFactory
+from tao.tests.support.factories import SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, UserFactory, StellarModelFactory, SnapshotFactory
 from tao.tests.support.xml import XmlDiffMixin
 
 from tao.tests.support import UtcPlusTen
@@ -23,7 +23,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         simulation = SimulationFactory.create()
         galaxy_model = GalaxyModelFactory.create()
         dataset = DataSetFactory.create(simulation=simulation, galaxy_model=galaxy_model)
-        DataSetParameterFactory.create(dataset=dataset)
+        DataSetPropertyFactory.create(dataset=dataset)
         SnapshotFactory.create(dataset=dataset)
         self.user = UserFactory.create()
         #expected_timestamp = "2012-11-13 13:45:32+1000"
@@ -178,7 +178,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
 
         stellar_model = StellarModelFactory.create(name='some_name')
 
-        filter_parameter = DataSetParameterFactory.create(dataset=dataset, units='blah')
+        filter_parameter = DataSetPropertyFactory.create(dataset=dataset, units='blah')
         filter_min = '0.93'
         filter_max = '3.345'
 

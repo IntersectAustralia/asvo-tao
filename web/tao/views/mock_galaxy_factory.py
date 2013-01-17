@@ -24,8 +24,8 @@ def index(request):
             user = models.User.objects.get(username=request.user)
             workflow.save(user, form_objs)
 
-            messages.info(request, _("Your job was submitted successfully."))
-            return redirect(reverse('submitted_jobs'))
+            messages.info(request, _("Your job was held successfully."))
+            return redirect(reverse('held_jobs'))
 
     else:
         form_objs = [klass(prefix=prefix) for (klass, prefix) in forms]
@@ -43,7 +43,7 @@ def my_jobs_with_status(request, status=None):
     else:
         filtered_jobs = user_jobs
 
-    if status in [models.Job.SUBMITTED, models.Job.QUEUED, models.Job.IN_PROGRESS]:
+    if status in [models.Job.HELD, models.Job.SUBMITTED, models.Job.QUEUED, models.Job.IN_PROGRESS]:
         show_field = {
                       'submitted_at': True,
                       'parameters': True,
@@ -98,4 +98,4 @@ def fake_a_job(request):
     j.save()
 
     messages.info(request, _("You submitted a fake job successfully."))
-    return redirect(my_jobs_with_status, status='')  # TODO shouldn't need an empty string for status?
+    return redirect(my_jobs_with_status, status='HELD')  # TODO shouldn't need an empty string for status?

@@ -1,6 +1,6 @@
 from django.test.testcases import TransactionTestCase
 
-from tao.tests.support.factories import SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetParameterFactory, SnapshotFactory
+from tao.tests.support.factories import SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, SnapshotFactory
 
 class DatasetTestCase(TransactionTestCase):
 
@@ -57,9 +57,9 @@ class DatasetTestCase(TransactionTestCase):
         d2 = DataSetFactory.create(simulation=s2, galaxy_model=g1)
         d3 = DataSetFactory.create(simulation=s2, galaxy_model=g2)
         
-        dp1 = DataSetParameterFactory.create(dataset=d1, units='dp1u')
-        dp2 = DataSetParameterFactory.create(dataset=d2, units='dp2u')
-        dp3 = DataSetParameterFactory.create(dataset=d3, units='dp3u')
+        dp1 = DataSetPropertyFactory.create(dataset=d1, units='dp1u')
+        dp2 = DataSetPropertyFactory.create(dataset=d2, units='dp2u')
+        dp3 = DataSetPropertyFactory.create(dataset=d3, units='dp3u')
         
         self.assertEqual([
                           ('no_filter', 'No Filter', {}),

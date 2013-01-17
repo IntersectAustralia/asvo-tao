@@ -1,5 +1,8 @@
 {% load url from future %}
 <ul {% if job_tabs %}class="nav nav-tabs"{% endif %}>
+    <li {% if status == 'HELD' %}class="active"{% endif %}>
+        <a href="{% url 'held_jobs' %}">Held Jobs</a>
+    </li>
     <li {% if status == 'SUBMITTED' %}class="active"{% endif %}>
         <a href="{% url 'submitted_jobs' %}">Submitted Jobs</a>
     </li>

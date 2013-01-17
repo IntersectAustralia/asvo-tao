@@ -29,7 +29,7 @@ def filter_choices():
                             'data-simulation_id': unicode(x.dataset.simulation_id),
                             'data-galaxy_model_id': unicode(x.dataset.galaxy_model_id)
                             })
-            for x in models.DataSetParameter.objects.order_by('name')]
+            for x in models.DataSetProperty.objects.order_by('name')]
 
 def stellar_model_choices():
     """

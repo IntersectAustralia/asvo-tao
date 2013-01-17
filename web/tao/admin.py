@@ -2,14 +2,14 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as AuthUserAdmin
 from django.contrib.auth.models import User
 
-from tao.models import Job, UserProfile, Simulation, GalaxyModel, DataSet, DataSetParameter, StellarModel, Snapshot
+from tao.models import Job, UserProfile, Simulation, GalaxyModel, DataSet, DataSetProperty, StellarModel, Snapshot
 
-for model in (Simulation, Job, GalaxyModel, DataSetParameter, StellarModel):
+for model in (Simulation, Job, GalaxyModel, DataSetProperty, StellarModel):
     admin.site.register(model)
 
 
-class DataSetParameterInline(admin.TabularInline):
-    model = DataSetParameter
+class DataSetPropertyInline(admin.TabularInline):
+    model = DataSetProperty
     extra = 3
 
 class SnapshotInline(admin.TabularInline):
@@ -17,7 +17,7 @@ class SnapshotInline(admin.TabularInline):
     
     
 class DataSetAdmin(admin.ModelAdmin):
-    inlines = [DataSetParameterInline, SnapshotInline]
+    inlines = [DataSetPropertyInline, SnapshotInline]
 admin.site.register(DataSet, DataSetAdmin)
 
 

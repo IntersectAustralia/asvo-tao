@@ -1,5 +1,5 @@
 from tao.tests.integration_tests.helper import LiveServerMGFTest, wait
-from tao.tests.support.factories import SimulationFactory, GalaxyModelFactory, UserFactory, DataSetFactory, DataSetParameterFactory
+from tao.tests.support.factories import SimulationFactory, GalaxyModelFactory, UserFactory, DataSetFactory, DataSetPropertyFactory
 from tao.models import Simulation, DataSet, GalaxyModel
 
 class FilterTests(LiveServerMGFTest):
@@ -13,12 +13,12 @@ class FilterTests(LiveServerMGFTest):
         for unused in range(4):
             galaxy_model = GalaxyModelFactory.create()
             dataset = DataSetFactory.create(simulation=simulation1, galaxy_model=galaxy_model)
-            DataSetParameterFactory.create(dataset=dataset)
+            DataSetPropertyFactory.create(dataset=dataset)
 
         for unused in range(5):
             galaxy_model = GalaxyModelFactory.create()
             dataset = DataSetFactory.create(simulation=simulation2, galaxy_model=galaxy_model)
-            DataSetParameterFactory.create(dataset=dataset)
+            DataSetPropertyFactory.create(dataset=dataset)
 
         username = "user"
         password = "password"
@@ -33,7 +33,7 @@ class FilterTests(LiveServerMGFTest):
         initial_simulation = Simulation.objects.all()[0]
         initial_galaxy_model = initial_simulation.galaxymodel_set.all()[0]
         dataset = DataSet.objects.get(simulation=initial_simulation, galaxy_model=initial_galaxy_model)
-        dataset_parameters = dataset.datasetparameter_set.all()
+        dataset_parameters = dataset.datasetproperty_set.all()
 
         expected_filter_options = self.get_expected_filter_options(dataset_parameters)
         actual_filter_options = self.get_actual_filter_options()
@@ -45,7 +45,7 @@ class FilterTests(LiveServerMGFTest):
         simulation = Simulation.objects.all()[1]
         galaxy_model = simulation.galaxymodel_set.all()[4]
         dataset = DataSet.objects.get(simulation=simulation, galaxy_model=galaxy_model)
-        dataset_parameters = dataset.datasetparameter_set.all()
+        dataset_parameters = dataset.datasetproperty_set.all()
         expected_filter_options = self.get_expected_filter_options(dataset_parameters)
 
         self.select_dark_matter_simulation(simulation)
@@ -75,7 +75,7 @@ class FilterTests(LiveServerMGFTest):
         simulation = Simulation.objects.all()[1]
         galaxy_model = simulation.galaxymodel_set.all()[4]
         dataset = DataSet.objects.get(simulation=simulation, galaxy_model=galaxy_model)
-        dataset_parameter = dataset.datasetparameter_set.all()[0]
+        dataset_parameter = dataset.datasetproperty_set.all()[0]
 
         self.select_dark_matter_simulation(simulation)
         self.select_galaxy_model(galaxy_model)
@@ -90,7 +90,7 @@ class FilterTests(LiveServerMGFTest):
         galaxy_model = simulation.galaxymodel_set.all()[4]
         self.select_galaxy_model(galaxy_model)
         dataset = DataSet.objects.get(simulation=simulation, galaxy_model=galaxy_model)
-        dataset_parameter = dataset.datasetparameter_set.all()[0]
+        dataset_parameter = dataset.datasetproperty_set.all()[0]
         self.choose_filter(dataset_parameter)
 
         max_input = "bad number"
