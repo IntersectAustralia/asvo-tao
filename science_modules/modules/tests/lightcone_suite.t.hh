@@ -33,6 +33,8 @@ public:
    {
       lightcone lc;
 
+      SET_ABORT( true );
+
       // Turn off random rotation and shifting.
       lc._use_random = false;
 
@@ -557,10 +559,19 @@ public:
       options::dictionary& dict = db_setup.dict.sub( "light-cone" );
       dict["query-type"] = "box";
       dict["z-snap"] = "0.001";
-      dict["output-fields"] = "snapnum";
-
-      // Only row 1.
       dict["box-size"] = "4.5";
+
+      // Try without snapshot.
+      db_setup.xml.write( db_setup.xml_filename, db_setup.dict );
+      setup_lightcone( lc );
+      for( lc.begin(); !lc.done(); ++lc )
+      {
+         const galaxy& gal = *lc;
+         TS_ASSERT_THROWS_ANYTHING( gal.row().get<int>( "snapnum" ) );
+      }
+
+      // Now with snapshot.
+      dict["output-fields"] = "snapnum";;
       db_setup.xml.write( db_setup.xml_filename, db_setup.dict );
       setup_lightcone( lc );
       for( lc.begin(); !lc.done(); ++lc )

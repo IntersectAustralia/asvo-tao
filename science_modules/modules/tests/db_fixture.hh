@@ -37,7 +37,8 @@ public:
          // Add snapshot tables.
 	 for( unsigned ii = 0; ii < 4; ++ii )
 	 {
-	    sql << "CREATE TABLE tree_" + to_string( ii + 1 ) + " (posx DOUBLE PRECISION, posy DOUBLE PRECISION, posz DOUBLE PRECISION, "
+	    sql << "CREATE TABLE tree_" + to_string( ii + 1 ) +
+               " (posx DOUBLE PRECISION, posy DOUBLE PRECISION, posz DOUBLE PRECISION, "
 	       "globalindex BIGINT, snapnum INTEGER, localgalaxyid INTEGER, globaltreeid BIGINT)";
 	 }
       }
@@ -48,11 +49,11 @@ public:
       setup_common_options( dict );
       lc.setup_options( dict, "light-cone" );
       dict.compile();
-      dict["database-type"] = "sqlite";
-      dict["database-name"] = db_filename;
+      dict["database:type"] = "sqlite";
+      dict["database:name"] = db_filename;
       dict["light-cone:query-type"] = "cone";
       dict["light-cone:redshift-min"] = "0";
-      xml_filename = tmpnam( NULL );
+      xml_filename = "test.xml"; //tmpnam( NULL );
       xml.write( xml_filename, dict );
 
       return true;
@@ -61,7 +62,7 @@ public:
    bool tearDownWorld()
    {
       remove( db_filename.c_str() );
-      remove( xml_filename.c_str() );
+      // remove( xml_filename.c_str() );
       dict.clear();
       return true;
    }
