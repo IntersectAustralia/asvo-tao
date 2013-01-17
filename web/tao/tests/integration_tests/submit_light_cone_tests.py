@@ -1,5 +1,5 @@
 from tao.models import Job
-from tao.tests.integration_tests.helper import LiveServerMGFTest
+from tao.tests.integration_tests.helper import LiveServerMGFTest, wait, interact
 from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetParameterFactory, JobFactory, StellarModelFactory, SnapshotFactory
 
 from taoui_light_cone.forms import Form as LightConeForm
@@ -54,7 +54,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
         ## fill in form (correctly)
         self.select(self.lc_id('catalogue_geometry'), 'Box')
         self.fill_in_fields({
-            'box_size': '234',
+            'box_size': '9',
             'snapshot': self.redshifts[0],
         }, id_wrap=self.lc_id)
         self.submit_mgf_form()

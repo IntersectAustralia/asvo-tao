@@ -96,14 +96,13 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
 
         self.assertEqual({}, light_cone_form.errors)
 
-    def test_box_size_required_for_box(self):
-        light_cone_form = self.make_light_cone_form({'catalogue_geometry': LightConeForm.BOX})
+    def test_box_size_is_not_required_for_box(self):
+        light_cone_form = self.make_light_cone_form({
+            'catalogue_geometry': LightConeForm.BOX,
+            'snapshot': Snapshot.objects.all()[0].id,
+            })
 
-        self.assertFalse(light_cone_form.is_valid())
-        self.assertEqual(light_cone_form.errors, {
-            'box_size': ['This field is required.'],
-            'snapshot': ['This field is required.'],
-        })
+        self.assertTrue(light_cone_form.is_valid())
 
     def test_min_less_than_max_passes(self):
         light_cone_form = self.make_light_cone_form({'max': '127', 'min': '3'})
