@@ -51,6 +51,9 @@ namespace tao
 			//Get The Current UserName
 			CurrentBasicSettings.CurrentUserName=_GetNodeWithAssert(ParamsDoc,"/tao/username").child_value();
 			CurrentBasicSettings.CurrentDB=_GetNodeWithAssert(ParamsDoc,"/tao/database").child_value();
+			CurrentBasicSettings.WorkingFolder=_GetNodeWithAssert(ParamsDoc,"/tao/OutputDir").child_value();
+			CurrentBasicSettings.LogFolder=_GetNodeWithAssert(ParamsDoc,"/tao/LogDir").child_value();
+
 
 
 		}
