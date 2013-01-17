@@ -53,7 +53,7 @@ public:
       dict["database:name"] = db_filename;
       dict["light-cone:query-type"] = "cone";
       dict["light-cone:redshift-min"] = "0";
-      xml_filename = "test.xml"; //tmpnam( NULL );
+      xml_filename = tmpnam( NULL );
       xml.write( xml_filename, dict );
 
       return true;
@@ -62,7 +62,7 @@ public:
    bool tearDownWorld()
    {
       remove( db_filename.c_str() );
-      // remove( xml_filename.c_str() );
+      remove( xml_filename.c_str() );
       dict.clear();
       return true;
    }

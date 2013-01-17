@@ -33,8 +33,6 @@ public:
    {
       lightcone lc;
 
-      SET_ABORT( true );
-
       // Turn off random rotation and shifting.
       lc._use_random = false;
 
@@ -534,8 +532,6 @@ public:
    void test_output_fields()
    {
       lightcone lc;
-
-      LOG_PUSH( new logging::file( "test.log", 0 ) );
 
       // Turn off random rotation and shifting.
       lc._use_random = false;
