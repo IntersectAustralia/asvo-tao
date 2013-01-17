@@ -69,9 +69,23 @@ class GalaxyModel(models.Model):
         super(GalaxyModel, self).save(*args, **kwargs)
     
 class DataSet(models.Model):
+    """A DataSet is the stored output of running a GalaxyModel over a Simulation.
+    
+    Fields:
+        database: The name of the database storing the DataSet.
+                    This must match the name used by the back-end workflow.
+        version: The DataSet version.  Not currently used.
+        import_date: The date the DataSet metadata was first imported.
+                    As this will typically be created by the back-end dataset
+                    import script, it will match the DataSet import date.
+        available: Flag whether to allow use of the DataSet from the web UI.
+                    Not currently used."""
     simulation = models.ForeignKey(Simulation)
     galaxy_model = models.ForeignKey(GalaxyModel)
     database = models.CharField(max_length=200)
+    version = models.DecimalField(max_digits=10, decimal_places=2, default='1.00')
+    import_date = models.DateField(auto_now_add=True)
+    available = models.BooleanField(default=True)
     
     class Meta:
         unique_together = ('simulation', 'galaxy_model')
@@ -79,11 +93,28 @@ class DataSet(models.Model):
     def __unicode__(self):
         return "%s : %s" % (self.simulation.name, self.galaxy_model.name)
 
-class DataSetParameter(models.Model):
+class DataSetProperty(models.Model):
+    TYPE_INT = 0
+    TYPE_FLOAT = 1
+    TYPE_LONG_LONG = 2
+    TYPE_STRING = 3
+    # Note: The values listed below are used by the import code,
+    # and thus must match.
+    DATA_TYPES = (
+                  (TYPE_INT, 'int'),
+                  (TYPE_FLOAT, 'float'),
+                  (TYPE_LONG_LONG, 'long long'),
+                  (TYPE_STRING, 'string'),
+                  )
     name = models.CharField(max_length=200)
-    units = models.CharField(max_length=20)
+    units = models.CharField(max_length=20, default='', blank=True)
     label = models.CharField(max_length=40)
     dataset = models.ForeignKey(DataSet)
+    data_type = models.IntegerField(choices=DATA_TYPES)
+    is_computed = models.BooleanField(default=False)
+    is_filter = models.BooleanField(default=True)
+    is_output = models.BooleanField(default=True)
+    description = models.TextField(default='', blank=True)
     
     def __unicode__(self):
         return self.label
@@ -91,9 +122,17 @@ class DataSetParameter(models.Model):
     def option_label(self):
         return "%s (%s)" % (self.label, self.units)
 
+    @classmethod
+    def data_type_enum(cls, val):
+        for dtype in cls.DATA_TYPES:
+            if dtype[1] == val:
+                return dtype[0]
+        raise ValueError('Unknown data type')
+
+
 class Snapshot(models.Model):
     dataset = models.ForeignKey(DataSet)
-    redshift = models.DecimalField(max_digits=10, decimal_places=5)
+    redshift = models.DecimalField(max_digits=20, decimal_places=10)
 
     class Meta:
         unique_together = ('dataset', 'redshift')
@@ -110,18 +149,20 @@ class Job(models.Model):
     IN_PROGRESS = 'IN_PROGRESS'
     COMPLETED = 'COMPLETED'
     QUEUED = 'QUEUED'
+    HELD = 'HELD'
     STATUS_CHOICES = (
         (SUBMITTED, 'Submitted'),
         (QUEUED, 'Queued'),
         (IN_PROGRESS, 'In progress'),
         (COMPLETED, 'Completed'),
+        (HELD, 'Held'),
     )
 
     user = models.ForeignKey(User)
     created_time = models.DateTimeField(auto_now_add=True)
     description = models.TextField(max_length=500)
 
-    status = models.CharField(choices=STATUS_CHOICES, default=SUBMITTED, max_length=20)
+    status = models.CharField(choices=STATUS_CHOICES, default=HELD, max_length=20)
     parameters = models.TextField(blank=True, max_length=1000000)
     output_path = models.TextField(blank=True)  # without a trailing slash, please
 

@@ -10,7 +10,7 @@ from tao.settings import OUTPUT_FORMATS
 from taoui_light_cone.forms import Form as LightConeForm
 from taoui_sed.forms import Form as SEDForm
 from tao.tests.support import stripped_joined_lines, UtcPlusTen
-from tao.tests.support.factories import UserFactory, StellarModelFactory, SnapshotFactory, DataSetFactory, SimulationFactory, GalaxyModelFactory, DataSetParameterFactory
+from tao.tests.support.factories import UserFactory, StellarModelFactory, SnapshotFactory, DataSetFactory, SimulationFactory, GalaxyModelFactory, DataSetPropertyFactory
 from tao.tests.support.xml import XmlDiffMixin
 
 
@@ -39,7 +39,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
         self.simulation = SimulationFactory.create(box_size=500)
         self.galaxy_model = GalaxyModelFactory.create()
         self.dataset = DataSetFactory.create(simulation=self.simulation, galaxy_model=self.galaxy_model)
-        self.filter = DataSetParameterFactory.create(name='disc-radius', units="Mpc", dataset=self.dataset)
+        self.filter = DataSetPropertyFactory.create(name='disc-radius', units="Mpc", dataset=self.dataset)
         stellar_model = StellarModelFactory.create(name='Stella')
         self.sed_parameters = {'single_stellar_population_model': stellar_model.id}
         self.output_format = OUTPUT_FORMATS[0]['value']

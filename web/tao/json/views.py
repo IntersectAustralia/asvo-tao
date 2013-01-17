@@ -2,7 +2,7 @@ from django.core import serializers
 from django.utils import simplejson
 from django.http import HttpResponse
 
-from tao.models import Snapshot, Simulation, GalaxyModel, DataSet, DataSetParameter
+from tao.models import Snapshot, Simulation, GalaxyModel, DataSet, DataSetProperty
 from tao.decorators import researcher_required
 
 @researcher_required
@@ -62,7 +62,7 @@ def filters(request, sid, gid):
     :return: HttpResponse in json format
     """
     data_set = DataSet.objects.get(simulation_id=sid, galaxy_model_id=gid)
-    objects = DataSetParameter.objects.filter(dataset_id = data_set.id).order_by('name')
+    objects = DataSetProperty.objects.filter(dataset_id = data_set.id).order_by('name')
     str = serializers.serialize('json', objects)
     return HttpResponse(str, mimetype="application/json")
 

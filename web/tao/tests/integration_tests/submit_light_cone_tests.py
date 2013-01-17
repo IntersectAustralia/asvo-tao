@@ -1,6 +1,6 @@
 from tao.models import Job
 from tao.tests.integration_tests.helper import LiveServerMGFTest, wait, interact
-from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetParameterFactory, JobFactory, StellarModelFactory, SnapshotFactory
+from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, JobFactory, StellarModelFactory, SnapshotFactory
 
 from taoui_light_cone.forms import Form as LightConeForm
 
@@ -17,7 +17,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
         for redshift in self.redshifts:
             SnapshotFactory.create(dataset=dataset, redshift=redshift)
 
-        DataSetParameterFactory.create(dataset=dataset)
+        DataSetPropertyFactory.create(dataset=dataset)
         StellarModelFactory.create()
         
         self.username = "user"

@@ -3,7 +3,7 @@ import factory
 
 from decimal import Decimal
 
-from tao.models import Job, User, Simulation, GalaxyModel, DataSet, DataSetParameter, StellarModel, Snapshot
+from tao.models import Job, User, Simulation, GalaxyModel, DataSet, DataSetProperty, StellarModel, Snapshot
 
 class JobFactory(factory.Factory):
     FACTORY_FOR = Job
@@ -59,9 +59,10 @@ class GalaxyModelFactory(factory.Factory):
 class DataSetFactory(factory.Factory):
     FACTORY_FOR = DataSet
     
-class DataSetParameterFactory(factory.Factory):
-    FACTORY_FOR = DataSetParameter
+class DataSetPropertyFactory(factory.Factory):
+    FACTORY_FOR = DataSetProperty
     label = factory.Sequence(lambda n: 'parameter_%03d' % int(n))
+    data_type = DataSetProperty.TYPE_STRING
 
 class StellarModelFactory(factory.Factory):
     FACTORY_FOR = StellarModel
