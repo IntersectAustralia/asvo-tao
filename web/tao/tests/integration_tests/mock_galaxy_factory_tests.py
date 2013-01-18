@@ -69,15 +69,15 @@ class MockGalaxyFactoryTest(LiveServerTest):
              check the values in the side bar correspond to that simulation
         """
         simulation_selector_value = {
-                            '.simulation-info .simulation-name': simulation.name,
-                            '.simulation-info .simulation-details': strip_tags(simulation.details),
+                            '.simulation-info .name': simulation.name,
+                            '.simulation-info .details': strip_tags(simulation.details),
                             }
         self.assert_selector_texts_equals_expected_values(simulation_selector_value)
         
     def assert_galaxy_model_info_shown(self, galaxy_model):
         galaxy_model_selector_value = {
-                             '.galaxy-model-info .galaxy-model-name': galaxy_model.name,
-                             '.galaxy-model-info .galaxy-model-details': strip_tags(galaxy_model.details),
+                             '.galaxy-model-info .name': galaxy_model.name,
+                             '.galaxy-model-info .details': strip_tags(galaxy_model.details),
                              }
         self.assert_selector_texts_equals_expected_values(galaxy_model_selector_value)
         

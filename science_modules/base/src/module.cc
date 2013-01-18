@@ -12,6 +12,25 @@ namespace tao {
    }
 
    void
+   module::_read_db_options( const options::dictionary& dict )
+   {
+      LOG_ENTER();
+
+      // Extract database details.
+      _dbtype = dict.get<string>( "database:type" );
+      _dbname = dict.get<string>( "database:name" );
+      if( _dbtype != "sqlite" )
+      {
+         _dbhost = dict.get<string>( "database:host" );
+         _dbport = dict.get<string>( "database:port" );
+         _dbuser = dict.get<string>( "database:user" );
+         _dbpass = dict.get<string>( "database:password" );
+      }
+
+      LOG_EXIT();
+   }
+
+   void
    module::_db_connect( soci::session& sql )
    {
       LOG_ENTER();

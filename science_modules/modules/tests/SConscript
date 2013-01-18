@@ -15,6 +15,7 @@ suites = [
     ('filter_suite.t.hh', 'filter.cc', 'sed.cc', 'lightcone.cc'),
     ('BSPTree_Test.hh', 'BSPTree.cc'),
     ('clip_suite.t.hh',),
+    ('SettingReader_Test.hh', 'settingReader.cc'),
 ]
 
 # Define libraries to link against.

@@ -1,21 +1,22 @@
 import re
 import lxml.etree as ET
-
+import settingReader # Read the XML settings
 
 
 class ParseXMLParameters(object):
 
     
 
-    def __init__(self,FileName):        
+    def __init__(self,FileName,Options):        
         self.tree = ET.parse(FileName)
         self.NameSpace=re.findall('\{.*\}',self.tree.xpath('.')[0].tag)[0]
         self.NameSpace=self.NameSpace[1:-1]
-    def ParseFile(self):
+        self.Options=Options
+        self.WorkDirectory=Options['WorkFlowSettings:WorkingDir']
+    def ParseFile(self,JobID):
         self.GetCurrentUser()
-        self.GetDocumentSignature()
-        #self.FindModules()
-        self.GetDatabase()
+        self.GetDocumentSignature()        
+        self.GetDatabase(JobID)
         
         
         
@@ -38,26 +39,36 @@ class ParseXMLParameters(object):
             for Param in ModuleParams:
                 if Param.attrib.get('name') !=None:
                     print (Param.attrib['name']+":"+Param.text)
-    def GetDatabase(self):
-        FModules=self.tree.xpath("ns:workflow/ns:module[@name='light-cone']",namespaces={'ns':self.NameSpace})
+    def GetDatabase(self,JobID):
+        FModules=self.tree.xpath("ns:workflow/ns:light-cone",namespaces={'ns':self.NameSpace})
         if len(FModules)>0:
             self.LightConeModule=FModules[0]
         else:
             raise Exception('Error In Getting Database information','Light Cone module cannot be found!')
-        self.Simulation=self.LightConeModule.xpath("ns:*[@name='simulation']",namespaces={'ns':self.NameSpace})[0].text
-        self.GalaxyModel=self.LightConeModule.xpath("ns:*[@name='galaxymodel']",namespaces={'ns':self.NameSpace})[0].text
-        DBElement=ET.Element("param")
-        DBElement.attrib['name']='database'
-        DBElement.text=self.Simulation+":"+self.GalaxyModel
-        self.LightConeModule.append(DBElement)
+        self.Simulation=self.LightConeModule.xpath("ns:simulation",namespaces={'ns':self.NameSpace})[0].text
+        self.GalaxyModel=self.LightConeModule.xpath("ns:galaxy-model",namespaces={'ns':self.NameSpace})[0].text
+        DBElement=ET.Element("database")        
+        DBElement.text=self.Simulation+":"+self.GalaxyModel        
+        self.tree.xpath("/ns:tao",namespaces={'ns':self.NameSpace})[0].append(DBElement)
+        
+        DBElement=ET.Element("OutputDir")        
+        DBElement.text=self.WorkDirectory+"/"+self.UserName+"/"+str(JobID)+"/output/"        
+        self.tree.xpath("/ns:tao",namespaces={'ns':self.NameSpace})[0].append(DBElement)
+        
+        DBElement=ET.Element("LogDir")        
+        DBElement.text=self.WorkDirectory+"/"+self.UserName+"/"+str(JobID)+"/log/"        
+        self.tree.xpath("/ns:tao",namespaces={'ns':self.NameSpace})[0].append(DBElement)
+        
         
         
         
 if __name__ == '__main__':
     
     
-    ParseXMLParametersObj=ParseXMLParameters('/home/amr/tao.xml')
-    ParseXMLParametersObj.ParseFile()
+    [Options]=settingReader.ParseParams("settings.xml")
+    
+    ParseXMLParametersObj=ParseXMLParameters('/home/amr/tao.xml',Options)
+    ParseXMLParametersObj.ParseFile(101)
     ParseXMLParametersObj.ExportTree("/home/amr/tao01.xml")
 
     

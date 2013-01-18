@@ -5,10 +5,12 @@ from decimal import Decimal
 from django.test import TestCase
 
 from tao import workflow, time
+from tao.forms import OutputFormatForm
+from tao.settings import OUTPUT_FORMATS
 from taoui_light_cone.forms import Form as LightConeForm
 from taoui_sed.forms import Form as SEDForm
 from tao.tests.support import stripped_joined_lines, UtcPlusTen
-from tao.tests.support.factories import UserFactory, StellarModelFactory, SnapshotFactory, DataSetFactory, SimulationFactory, GalaxyModelFactory, DataSetParameterFactory
+from tao.tests.support.factories import UserFactory, StellarModelFactory, SnapshotFactory, DataSetFactory, SimulationFactory, GalaxyModelFactory, DataSetPropertyFactory
 from tao.tests.support.xml import XmlDiffMixin
 
 
@@ -19,7 +21,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
         # "2012-11-14T13:45:36+10:00"
         time.frozen_time = datetime.datetime(2012, 11, 14, 13, 45, 36, 0, UtcPlusTen())
         self.user = UserFactory.create()
-        
+
         self.common_parameters = [
             {'attrs': {'name': 'database-type'}, 'value': 'postgresql'},
             {'attrs': {'name': 'database-host'}, 'value': 'tao02.hpc.swin.edu.au'},
@@ -34,6 +36,14 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                 'value': '1.0',
             },
         ]
+        self.simulation = SimulationFactory.create(box_size=500)
+        self.galaxy_model = GalaxyModelFactory.create()
+        self.dataset = DataSetFactory.create(simulation=self.simulation, galaxy_model=self.galaxy_model)
+        self.filter = DataSetPropertyFactory.create(name='disc-radius', units="Mpc", dataset=self.dataset)
+        stellar_model = StellarModelFactory.create(name='Stella')
+        self.sed_parameters = {'single_stellar_population_model': stellar_model.id}
+        self.output_format = OUTPUT_FORMATS[0]['value']
+        self.output_format_parameters = {'supported_formats': self.output_format}
 
     def tearDown(self):
         super(WorkflowTests, self).tearDown()
@@ -82,94 +92,32 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                 </workflow>
             </tao>
         """)
-        
-        sed_parameters = [
-            {
-                'attrs': {
-                    'name': 'single-stellar-population-model',
-                },
-                'value': 'Stella'
-            },
-        ]
 
-        light_cone_parameters = [
-            {
-                'attrs': {
-                    'name': 'query-type'
-                },
-                'value': 'light-cone',
-            },
-            {
-                'attrs': {
-                    'name': 'simulation-box-size',
-                    'units': 'Mpc',
-                },
-                'value': '500',
-            },
-            {
-                'attrs': {
-                    'name': 'redshift-min',
-                },
-                'value': '0.2',
-            },
-            {
-                'attrs': {
-                    'name': 'redshift-max',
-                },
-                'value': '0.3',
-            },
-            {
-                'attrs': {
-                    'name': 'ra-min',
-                    'units': 'deg',
-                },
-                'value': '18.434',
-            },
-            {
-                'attrs': {
-                    'name': 'ra-max',
-                    'units': 'deg',
-                },
-                'value': '71.565',
-            },
-            {
-                'attrs': {
-                    'name': 'dec-min',
-                    'units': 'deg',
-                },
-                'value': '0',
-            },
-            {
-                'attrs': {
-                    'name': 'dec-max',
-                    'units': 'deg',
-                },
-                'value': '41.810',
-            },
-            {
-                'attrs': {
-                    'name': 'filter-type',
-                },
-                'value': 'disc-radius',
-            },
-            {
-                'attrs': {
-                    'name': 'filter-min',
-                    'units': 'Mpc',
-                },
-                'value': '0.1',
-            },
-            {
-                'attrs': {
-                    'name': 'filter-max',
-                    'units': 'Mpc',
-                },
-                'value': '0.2',
-            },
-        ]
+        light_cone_parameters = {
+            'catalogue_geometry': 'light-cone',
+            'dark_matter_simulation': self.simulation.id,
+            'galaxy_model': self.galaxy_model.id,
+            'redshift_min': 0.2,
+            'redshift_max': 0.3,
+            'ra_min': 18.434,
+            'ra_max': 71.565,
+            'dec_min': 0,
+            'dec_max': 41.810,
+            'ra_opening_angle': 9,
+            'dec_opening_angle': 10,
+            'filter': self.filter.id,
+            'max': 0.2,
+            'min': 0.1,
+            }
 
         print "TODO convert this test to use save"
-        #actual_parameter_xml = workflow.to_xml(self.common_parameters, light_cone_parameters, sed_parameters)
+        light_cone_form = LightConeForm(light_cone_parameters)
+        sed_form = SEDForm(self.sed_parameters)
+        self.assertEqual({}, light_cone_form.errors)
+        self.assertEqual({}, sed_form.errors)
+
+        job = workflow.save(self.user, [light_cone_form, sed_form])
+        actual_parameter_xml = job.parameters
 
         #self.assertXmlEqual(expected_parameter_xml, actual_parameter_xml)
 
@@ -206,34 +154,33 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                     <vega_filename>A0V_KUR_BB.SED</vega_filename>
                     </filter>
                     </module>
+                    <module name="output-file">
+                        <param name="format">%(output_format)s</param>
+                    </module>
                 </workflow>
             </tao>
-        """)
-        
-        stellar_model = StellarModelFactory.create(name='Stella')
-        sed_parameters = {'single_stellar_population_model': stellar_model.id}
+        """ % {
+            'output_format': self.output_format,
+        })
 
-        simulation = SimulationFactory.create(box_size=500)
-        galaxy_model = GalaxyModelFactory.create()
-        dataset = DataSetFactory.create(simulation=simulation, galaxy_model=galaxy_model)
-        snapshot = SnapshotFactory.create(redshift='0.3', dataset=dataset)
-        filter = DataSetParameterFactory.create(name='disc-radius', units="Mpc", dataset=dataset)
+        snapshot = SnapshotFactory.create(redshift='0.3', dataset=self.dataset)
         light_cone_parameters = {
             'catalogue_geometry': 'box',
             'box_size': 20,
-            'snapshot': snapshot.redshift,
-            'dark_matter_simulation': simulation.id,
-            'filter': filter.id,
-            'galaxy_model': galaxy_model.id,
+            'snapshot': snapshot.id,
+            'dark_matter_simulation': self.simulation.id,
+            'filter': self.filter.id,
+            'galaxy_model': self.galaxy_model.id,
             'max': 0.2,
             'min': 0.1,
             }
-
         light_cone_form = LightConeForm(light_cone_parameters)
-        sed_form = SEDForm(sed_parameters)
+        sed_form = SEDForm(self.sed_parameters)
+        output_format_form = OutputFormatForm(self.output_format_parameters)
         self.assertEqual({}, light_cone_form.errors)
         self.assertEqual({}, sed_form.errors)
-        job = workflow.save(self.user, [light_cone_form, sed_form])
+        self.assertEqual({}, output_format_form.errors)
+        job = workflow.save(self.user, [light_cone_form, sed_form, output_format_form])
         actual_parameter_xml = job.parameters
 
         self.assertXmlEqual(expected_parameter_xml, actual_parameter_xml)

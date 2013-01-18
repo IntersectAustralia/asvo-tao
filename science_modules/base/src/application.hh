@@ -41,24 +41,35 @@ namespace tao {
                  char* argv[] )
       {
          // Check for insufficient arguments.
-         if( argc != 2 ||
-             !argv[1] )
+         if( argc != 3 || !argv[1] || !argv[2] )
          {
             std::cout << "Insufficient arguments.\n";
-            std::cout << "Please supply a path to an input XML.\n";
+            std::cout << "Please supply a path to an input XML and a database\n";
+            std::cout << "configuration XML.\n";
             exit( 1 );
          }
 
-         // Check that the file exists.
-         std::ifstream file( argv[1] );
-         if( !file )
+         // Check that the files exists.
          {
-            std::cout << "Could not open XML file.\n";
-            exit( 1 );
+            std::ifstream file( argv[1] );
+            if( !file )
+            {
+               std::cout << "Could not open XML file.\n";
+               exit( 1 );
+            }
+         }
+         {
+            std::ifstream file( argv[2] );
+            if( !file )
+            {
+               std::cout << "Could not open DB config file.\n";
+               exit( 1 );
+            }
          }
 
          // Cache the filename.
          _xml_file = argv[1];
+         _dbcfg_file = argv[2];
       }
 
       void
@@ -92,12 +103,14 @@ namespace tao {
       {
          hpc::options::xml xml;
          xml.read( _xml_file, dict, "/tao/workflow/*" );
+         xml.read( _dbcfg_file, dict, "/settings/*" );
       }
 
    protected:
 
       pipeline_type _pl;
       hpc::string _xml_file;
+      hpc::string _dbcfg_file;
    };
 }
 

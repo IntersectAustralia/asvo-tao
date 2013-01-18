@@ -1,6 +1,6 @@
 from tao.models import Job
-from tao.tests.integration_tests.helper import LiveServerMGFTest
-from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetParameterFactory, JobFactory, StellarModelFactory, SnapshotFactory
+from tao.tests.integration_tests.helper import LiveServerMGFTest, wait, interact
+from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, JobFactory, StellarModelFactory, SnapshotFactory
 
 from taoui_light_cone.forms import Form as LightConeForm
 
@@ -17,7 +17,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
         for redshift in self.redshifts:
             SnapshotFactory.create(dataset=dataset, redshift=redshift)
 
-        DataSetParameterFactory.create(dataset=dataset)
+        DataSetPropertyFactory.create(dataset=dataset)
         StellarModelFactory.create()
         
         self.username = "user"
@@ -46,7 +46,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
         }, id_wrap=self.lc_id)
         self.submit_mgf_form()
 
-        self.assert_on_page('submitted_jobs')
+        self.assert_on_page('held_jobs')
 
     def test_submit_valid_box_job(self):
         self.visit('mock_galaxy_factory')
@@ -54,12 +54,12 @@ class SubmitLightConeTests(LiveServerMGFTest):
         ## fill in form (correctly)
         self.select(self.lc_id('catalogue_geometry'), 'Box')
         self.fill_in_fields({
-            'box_size': '234',
+            'box_size': '9',
             'snapshot': self.redshifts[0],
         }, id_wrap=self.lc_id)
         self.submit_mgf_form()
 
-        self.assert_on_page('submitted_jobs')
+        self.assert_on_page('held_jobs')
         
 
     def test_invalid_box_options_allow_light_cone_submit(self):
@@ -82,7 +82,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
 
         self.submit_mgf_form()
 
-        self.assert_on_page('submitted_jobs')  # The form is valid because the invalid box size field is hidden
+        self.assert_on_page('held_jobs')  # The form is valid because the invalid box size field is hidden
 
     def test_invalid_cone_options_allow_box_submit(self):
         self.visit('mock_galaxy_factory')
@@ -106,4 +106,4 @@ class SubmitLightConeTests(LiveServerMGFTest):
 
         self.submit_mgf_form()
 
-        self.assert_on_page('submitted_jobs')  # The form is valid because the invalid light cone fields hidden
+        self.assert_on_page('held_jobs')  # The form is valid because the invalid light cone fields hidden

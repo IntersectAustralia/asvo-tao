@@ -121,7 +121,7 @@ class JobTest(LiveServerTest):
     def test_view_job_without_files(self):
         self.login(self.username, self.password)
         
-        self.visit('submitted_jobs')
+        self.visit('held_jobs')
         self._click_view_job(self.job)
         self.assert_page_has_content("This job has not completed (and hence has no output).")
 

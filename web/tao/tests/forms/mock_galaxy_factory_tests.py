@@ -3,11 +3,13 @@ from django.test.testcases import TransactionTestCase
 import datetime
 
 from tao import workflow, time
+from tao.forms import OutputFormatForm
 from tao.models import Snapshot
+from tao.settings import OUTPUT_FORMATS
 from taoui_light_cone.forms import Form as LightConeForm
 from taoui_sed.forms import Form as SEDForm
 from tao.tests.support import stripped_joined_lines
-from tao.tests.support.factories import SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetParameterFactory, UserFactory, StellarModelFactory, SnapshotFactory
+from tao.tests.support.factories import SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, UserFactory, StellarModelFactory, SnapshotFactory
 from tao.tests.support.xml import XmlDiffMixin
 
 from tao.tests.support import UtcPlusTen
@@ -21,11 +23,12 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         simulation = SimulationFactory.create()
         galaxy_model = GalaxyModelFactory.create()
         dataset = DataSetFactory.create(simulation=simulation, galaxy_model=galaxy_model)
-        DataSetParameterFactory.create(dataset=dataset)
+        DataSetPropertyFactory.create(dataset=dataset)
         SnapshotFactory.create(dataset=dataset)
         self.user = UserFactory.create()
         #expected_timestamp = "2012-11-13 13:45:32+1000"
         time.frozen_time = datetime.datetime(2012, 11, 13, 13, 45, 32, 0, UtcPlusTen())
+        self.output_format = OUTPUT_FORMATS[0]['value']
 
     def tearDown(self):
         super(MockGalaxyFactoryTests, self).tearDown()
@@ -83,7 +86,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         light_cone_form = self.make_light_cone_form({
             'catalogue_geometry': LightConeForm.BOX,
             'box_size': 1,
-            'snapshot': Snapshot.objects.all()[0].redshift,
+            'snapshot': Snapshot.objects.all()[0].id,
             'ra_min': '',
             'dec_min': '',
             'ra_opening_angle': '',
@@ -93,14 +96,13 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
 
         self.assertEqual({}, light_cone_form.errors)
 
-    def test_box_size_required_for_box(self):
-        light_cone_form = self.make_light_cone_form({'catalogue_geometry': LightConeForm.BOX})
+    def test_box_size_is_not_required_for_box(self):
+        light_cone_form = self.make_light_cone_form({
+            'catalogue_geometry': LightConeForm.BOX,
+            'snapshot': Snapshot.objects.all()[0].id,
+            })
 
-        self.assertFalse(light_cone_form.is_valid())
-        self.assertEqual(light_cone_form.errors, {
-            'box_size': ['This field is required.'],
-            'snapshot': ['This field is required.'],
-        })
+        self.assertTrue(light_cone_form.is_valid())
 
     def test_min_less_than_max_passes(self):
         light_cone_form = self.make_light_cone_form({'max': '127', 'min': '3'})
@@ -176,7 +178,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
 
         stellar_model = StellarModelFactory.create(name='some_name')
 
-        filter_parameter = DataSetParameterFactory.create(dataset=dataset, units='blah')
+        filter_parameter = DataSetPropertyFactory.create(dataset=dataset, units='blah')
         filter_min = '0.93'
         filter_max = '3.345'
 
@@ -206,7 +208,10 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         sed_form = SEDForm({'single_stellar_population_model': stellar_model.id})
         sed_form.is_valid()
 
-        job = workflow.save(self.user, [lc_form, sed_form])
+        output_format_form = OutputFormatForm({'supported_formats': self.output_format})
+        output_format_form.is_valid()
+
+        job = workflow.save(self.user, [lc_form, sed_form, output_format_form])
 
         expected_parameter_xml = stripped_joined_lines("""
             <?xml version="1.0" encoding="utf-8"?>
@@ -243,6 +248,9 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
                     <vega_filename>A0V_KUR_BB.SED</vega_filename>
                     </filter>
                     </module>
+                    <module name="output-file">
+                        <param name="format">%(output_format)s</param>
+                    </module>
                 </workflow>
             </tao>
         """ % {
@@ -256,6 +264,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
             'filter_max': filter_max,
             'model_id': stellar_model.name,
             'filter_units': filter_parameter.units,
+            'output_format': self.output_format,
         })
 
         self.assertXmlEqual(expected_parameter_xml, job.parameters)
@@ -294,7 +303,10 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         sed_form = SEDForm({'single_stellar_population_model': stellar_model.id})
         sed_form.is_valid()
 
-        job = workflow.save(self.user, [lc_form, sed_form])
+        output_format_form = OutputFormatForm({'supported_formats': self.output_format})
+        output_format_form.is_valid()
+
+        job = workflow.save(self.user, [lc_form, sed_form, output_format_form])
 
         expected_parameter_xml = stripped_joined_lines("""
             <?xml version="1.0" encoding="utf-8"?>
@@ -328,6 +340,9 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
                     <vega_filename>A0V_KUR_BB.SED</vega_filename>
                     </filter>
                     </module>
+                    <module name="output-file">
+                        <param name="format">%(output_format)s</param>
+                    </module>
                 </workflow>
             </tao>
         """ % {
@@ -338,6 +353,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
             'redshift_min': redshift_min,
             'redshift_max': redshift_max,
             'model_id': stellar_model.name,
+            'output_format': self.output_format,
         })
 
         self.assertXmlEqual(expected_parameter_xml, job.parameters)
