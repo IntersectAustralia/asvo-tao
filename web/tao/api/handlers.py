@@ -5,7 +5,7 @@ class JobHandler(BaseHandler):
     allowed_methods = ('GET', 'PUT',)
     model = Job
 
-    fields = ('id', 'username', 'parameters')
+    fields = ('id', 'username', 'database', 'parameters')
 
     def read(self, request, id=None, status=None):
         base = Job.objects
