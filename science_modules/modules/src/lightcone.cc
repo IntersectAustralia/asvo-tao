@@ -186,6 +186,8 @@ namespace tao {
    const galaxy
    lightcone::operator*() const
    {
+      LOG_ENTER();
+
 #ifndef NDEBUG
       {
 	 // Check that the row actually belongs in this range.
@@ -194,6 +196,8 @@ namespace tao {
          ASSERT( dist >= _dist_range.start() && dist < _dist_range.finish() );
       }
 #endif
+
+      LOG_EXIT();
       return galaxy( *_cur_row, *_cur_box, _table_names[_cur_table] );
    }
 
@@ -221,16 +225,17 @@ namespace tao {
       // Are we using the BSP tree system?
       if( _use_bsp )
       {
-	 // Prepare a BSP tree.
-	 BSPtree bsp( 20, _dbname, _dbhost, _dbport, _dbuser, _dbpass );
+	 ASSERT( 0 );
+	 // // Prepare a BSP tree.
+	 // BSPtree bsp( 20, _dbname, _dbhost, _dbport, _dbuser, _dbpass );
 
-	 // Loop over all polygons.
-	 for( geometry_iterator it; !it.done(); ++it )
-	 {
-	    // Extract table names.
-	    auto names = bsp.GetTablesList( *it );
-	    table_names.insert( table_names.end(), name.begin(), names.end() );
-	 }
+	 // // Loop over all polygons.
+	 // for( geometry_iterator it; !it.done(); ++it )
+	 // {
+	 //    // Extract table names.
+	 //    auto names = bsp.GetTablesList( *it );
+	 //    table_names.insert( table_names.end(), name.begin(), names.end() );
+	 // }
       }
       else
       {
@@ -474,9 +479,9 @@ namespace tao {
       replace_all( query, "-z_snap-", to_string( _z_snap_idx ) );
 
       // Replace references to the Posx coordinates.
-      replace_all( query, "Pos1", _crd_strs[0] );
-      replace_all( query, "Pos2", _crd_strs[1] );
-      replace_all( query, "Pos3", _crd_strs[2] );
+      replace_all( query, "Pos1", "posx" );
+      replace_all( query, "Pos2", "posy" );
+      replace_all( query, "Pos3", "posz" );
 
       LOGDLN( "Query: ", query );
       LOG_EXIT();
@@ -836,12 +841,10 @@ namespace tao {
    {
       LOG_ENTER();
 
-      // Set the coordinate strings we want to use.
-      _crd_strs[0] = "posx";
-      _crd_strs[1] = "posy";
-      _crd_strs[2] = "posz";
-
+      // Select basic positions.
       _query_template = "-pos1- AS newx, -pos2- AS newy, -pos3- AS newz";
+
+      // Add the output fields.
       for( auto& field : _output_fields )
       {
 	 if( field != "redshift" && field != "posx" && field != "posy" && field != "posz" )

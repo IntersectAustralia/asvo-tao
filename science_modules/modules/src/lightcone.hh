@@ -164,7 +164,6 @@ namespace tao {
       real_type _h0;
 
       string _query_template;
-      string _crd_strs[3];
       vector<string> _ops;
 
       string _bin_filename;

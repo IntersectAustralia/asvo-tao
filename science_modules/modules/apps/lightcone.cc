@@ -17,7 +17,7 @@ struct pipeline
    void
    setup_options( hpc::options::dictionary& dict )
    {
-      lc.setup_options( dict, "light-cone" );
+      lc.setup_options( dict, "workflow:light-cone" );
    }
 
    ///
@@ -26,7 +26,7 @@ struct pipeline
    void
    initialise( const hpc::options::dictionary& dict )
    {
-      lc.initialise( dict, "light-cone" );
+      lc.initialise( dict, "workflow:light-cone" );
    }
 
    ///
