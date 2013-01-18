@@ -7,6 +7,7 @@
 #include "flat.hh"
 
 namespace tao {
+   using namespace hpc;
 
    class module
    {
@@ -21,6 +22,9 @@ namespace tao {
    protected:
 
       void
+      _read_db_options( const options::dictionary& dict );
+
+      void
       _db_connect( soci::session& sql );
 
       void
@@ -30,7 +34,7 @@ namespace tao {
 
       bool _connected;
       soci::session _sql;
-      hpc::string _dbtype, _dbname, _dbhost, _dbport, _dbuser, _dbpass;
+      string _dbtype, _dbname, _dbhost, _dbport, _dbuser, _dbpass;
    };
 }
 

@@ -55,7 +55,7 @@ namespace tao {
       dict.add_option( new options::string( "filter", "" ), prefix );
       dict.add_option( new options::real( "filter-min", 0.0 ), prefix );
       dict.add_option( new options::real( "filter-max", 0.0 ), prefix );
-      dict.add_option( new options::string( "output-fields", "" ), prefix );
+      dict.add_option( new options::list<options::string>( "output-fields" ), prefix );
    }
 
    ///
@@ -688,12 +688,7 @@ namespace tao {
       const options::dictionary& sub = prefix ? dict.sub( *prefix ) : dict;
 
       // Extract database details.
-      _dbtype = dict.get<string>( "database-type" );
-      _dbname = dict.get<string>( "database-name" );
-      _dbhost = dict.get<string>( "database-host" );
-      _dbport = dict.get<string>( "database-port" );
-      _dbuser = dict.get<string>( "database-user" );
-      _dbpass = dict.get<string>( "database-pass" );
+      _read_db_options( dict );
 
       // Connect to the database.
       _db_connect( _sql );
@@ -774,10 +769,11 @@ namespace tao {
 
       // Output field information.
       {
-         string fields_str = sub.get<string>( "output-fields" );
-         boost::tokenizer<boost::char_separator<char> > tokens( fields_str, boost::char_separator<char>( "," ) );
-         for( const auto& field : tokens )
-            _output_fields.insert( boost::trim_copy( field ) );
+         list<string> fields = sub.get_list<string>( "output-fields" );
+         std::copy(
+            fields.begin(), fields.end(),
+            std::insert_iterator<set<string>>( _output_fields, _output_fields.begin() )
+            );
 
          // Make sure there are certain basic fields in the output
          // set.
