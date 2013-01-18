@@ -88,6 +88,8 @@ main( int argc,
          // Iterate over each galaxy, checking some values.
          for( unsigned jj = 0; jj < halos.size(); ++jj )
          {
+	    std::cout << halos[jj].sx << ", " << halos[jj].sy << ", " << halos[jj].sz << "\n";
+
             // All descendants, progenitors and FoFs must be local to the tree.
 	    // They can also be -1, indicating no descendant.
             ASSERT( halos[jj].descendant >= -1 && halos[jj].descendant < (int)halos.size(),

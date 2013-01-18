@@ -6,6 +6,7 @@
 #include <boost/tokenizer.hpp>
 #include <soci/sqlite3/soci-sqlite3.h>
 #include "lightcone.hh"
+#include "BSPTree.hh"
 
 using namespace hpc;
 using boost::format;
@@ -23,10 +24,11 @@ namespace tao {
         _unique_offs_x( 0.0 ),
         _unique_offs_y( 0.0 ),
         _unique_offs_z( 0.0 ),
-        _h0( 0.73 ),
+        _h0( 73.0 ),
         _x0( 0.0 ),
         _y0( 0.0 ),
-        _z0( 0.0 )
+        _z0( 0.0 ),
+	_use_bsp( false )
    {
    }
 
@@ -42,6 +44,7 @@ namespace tao {
                              optional<const string&> prefix )
    {
       dict.add_option( new options::string( "query-type", "light-cone" ), prefix );
+      dict.add_option( new options::boolean( "use-bsp", false ), prefix );
       dict.add_option( new options::real( "domain-size", 500 ), prefix );
       dict.add_option( new options::real( "redshift-max" ), prefix );
       dict.add_option( new options::real( "redshift-min" ), prefix );
@@ -51,7 +54,7 @@ namespace tao {
       dict.add_option( new options::real( "ra-max", 90.0 ), prefix );
       dict.add_option( new options::real( "dec-min", 0.0 ), prefix );
       dict.add_option( new options::real( "dec-max", 90.0 ), prefix );
-      dict.add_option( new options::real( "H0", 0.73 ), prefix );
+      dict.add_option( new options::real( "H0", 73.0 ), prefix );
       dict.add_option( new options::string( "filter", "" ), prefix );
       dict.add_option( new options::real( "filter-min", 0.0 ), prefix );
       dict.add_option( new options::real( "filter-max", 0.0 ), prefix );
@@ -212,37 +215,57 @@ namespace tao {
    {
       LOG_ENTER();
 
-      // Get the number of tables.
-      unsigned num_tables;
-      string query;
-      if( _dbtype == "sqlite" )
-      {
-	 query = "SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND SUBSTR(name,1,5)='tree_'";
-      }
-      else
-      {
-	 query = "SELECT COUNT(table_name) FROM information_schema.tables"
-	    " WHERE table_schema='public' AND SUBSTR(table_name,1,5)='tree_'";
-      }
-      LOGDLN( "Query for number of table names: ", query );
-      _sql << query, soci::into( num_tables );
-      LOGDLN( "Number of tables: ", num_tables );
+      // Clear existing.
+      table_names.deallocate();
 
-      // Retrieve all the table names.
-      table_names.reallocate( num_tables );
-      if( _dbtype == "sqlite" )
+      // Are we using the BSP tree system?
+      if( _use_bsp )
       {
-	 query = "SELECT name FROM sqlite_master WHERE type='table' AND SUBSTR(name,1,5)='tree_'";
+	 // Prepare a BSP tree.
+	 BSPtree bsp( 20, _dbname, _dbhost, _dbport, _dbuser, _dbpass );
+
+	 // Loop over all polygons.
+	 for( geometry_iterator it; !it.done(); ++it )
+	 {
+	    // Extract table names.
+	    auto names = bsp.GetTablesList( *it );
+	    table_names.insert( table_names.end(), name.begin(), names.end() );
+	 }
       }
       else
       {
-	 query = "SELECT table_name FROM information_schema.tables"
-	    " WHERE table_schema='public' AND SUBSTR(table_name,1,5)='tree_'";
+	 // Get the number of tables.
+	 unsigned num_tables;
+	 string query;
+	 if( _dbtype == "sqlite" )
+	 {
+	    query = "SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND SUBSTR(name,1,5)='tree_'";
+	 }
+	 else
+	 {
+	    query = "SELECT COUNT(table_name) FROM information_schema.tables"
+	       " WHERE table_schema='public' AND SUBSTR(table_name,1,5)='tree_'";
+	 }
+	 LOGDLN( "Query for number of table names: ", query );
+	 _sql << query, soci::into( num_tables );
+	 LOGDLN( "Number of tables: ", num_tables );
+
+	 // Retrieve all the table names.
+	 table_names.reallocate( num_tables );
+	 if( _dbtype == "sqlite" )
+	 {
+	    query = "SELECT name FROM sqlite_master WHERE type='table' AND SUBSTR(name,1,5)='tree_'";
+	 }
+	 else
+	 {
+	    query = "SELECT table_name FROM information_schema.tables"
+	       " WHERE table_schema='public' AND SUBSTR(table_name,1,5)='tree_'";
+	 }
+	 LOGDLN( "Query for table names: ", query );
+	 _sql << query, soci::into( (std::vector<std::string>&)table_names );
       }
-      LOGDLN( "Query for table names: ", query );
-      _sql << query, soci::into( (std::vector<std::string>&)table_names );
+
       LOGDLN( "Table names: ", table_names );
-
       LOG_EXIT();
    }
 
@@ -334,6 +357,15 @@ namespace tao {
                        " and redshift of ", _snap_redshifts[_max_snap] );
             }
 
+	    // Prepare the random rotation and shifting for this box.
+	    _random_rotation_and_shifting( _ops );
+
+	    // If we are using the light-cone geometry and also have requested
+	    // the use of the BSP system, then we need to update the set of
+	    // tables to use.
+	    if( _use_bsp && _box_type != "box" )
+	       _query_table_names( _table_names );
+
 	    // Now prepare tables.
             _settle_table();
 	 }
@@ -380,20 +412,19 @@ namespace tao {
       real_type dec_min = to_radians( _dec_min );
       real_type dec_max = to_radians( _dec_max );
 
-      vector<string> ops;
-      _random_rotation_and_shifting( ops );
-      string& pos1 = ops[0];
-      string& pos2 = ops[4];
-      string& pos3 = ops[8];
-      string& halo_pos1 = ops[1];
-      string& halo_pos2 = ops[5];
-      string& halo_pos3 = ops[9];
-      string& vel1 = ops[2];
-      string& vel2 = ops[6];
-      string& vel3 = ops[10];
-      string& spin1 = ops[3];
-      string& spin2 = ops[7];
-      string& spin3 = ops[11];
+      vector<string>& ops = _ops;
+      string pos1 = ops[0];
+      string pos2 = ops[4];
+      string pos3 = ops[8];
+      string halo_pos1 = ops[1];
+      string halo_pos2 = ops[5];
+      string halo_pos3 = ops[9];
+      string vel1 = ops[2];
+      string vel2 = ops[6];
+      string vel3 = ops[10];
+      string spin1 = ops[3];
+      string spin2 = ops[7];
+      string spin3 = ops[11];
 
       pos1 = str( format( "(%1% + %2% - %3%)" ) % offs_x % pos1 % _x0 );
       pos2 = str( format( "(%1% + %2% - %3%)" ) % offs_y % pos2 % _y0 );
@@ -463,7 +494,7 @@ namespace tao {
       real_type domain_size = _domain_size;
 
       // Four values (p, h, v, s) in three groups.
-      ops.resize( 12 );
+      ops.reallocate( 12 );
 
       // Common values.
       ops[2] = "Vel1";
@@ -513,8 +544,8 @@ namespace tao {
          }
          else
          {
-            ops[0] = str( format( "IF(%1% + Pos1 < %2%,%3%+Pos1,Pos1+%4%-%5%)" ) % offs1 % domain_size % offs1 % offs1 % domain_size );
-            ops[1] = str( format( "IF(%1% + halo_pos1 < %2%,%3%+halo_pos1,halo_pos1+%4%-%5%)" ) % offs1 % domain_size % offs1 % offs1 % domain_size );
+            ops[0] = str( format( "CASE WHEN %1% + Pos1 < %2% THEN %3% + Pos1 ELSE Pos1 + %4% - %5% END" ) % offs1 % domain_size % offs1 % offs1 % domain_size );
+            ops[1] = str( format( "CASE WHEN %1% + halo_pos1 < %2% THEN %3% + halo_pos1 ELSE halo_pos1 + %4% - %5% END" ) % offs1 % domain_size % offs1 % offs1 % domain_size );
          }
          ops[2] = "Vel1";
          ops[3] = "Spin1";
@@ -527,8 +558,8 @@ namespace tao {
          }
          else
          {
-            ops[4] = str( format( "if(%1%+Pos2<%2%,%3%+Pos2,Pos2+%4%-%5%)" ) % offs2 % domain_size % offs2 % offs2 % domain_size );
-            ops[5] = str( format( "if(%1%+halo_pos2<%2%,%3%+halo_pos2,halo_pos2+%4%-%5%)" ) % offs2 % domain_size % offs2 % offs2 % domain_size );
+            ops[4] = str( format( "CASE WHEN %1% + Pos2 < %2% THEN %3% + Pos2 ELSE Pos2 + %4% - %5% END" ) % offs2 % domain_size % offs2 % offs2 % domain_size );
+            ops[5] = str( format( "CASE WHEN %1% + halo_pos2 < %2% THEN %3% + halo_pos2 ELSE halo_pos2 + %4% - %5% END" ) % offs2 % domain_size % offs2 % offs2 % domain_size );
          }
          ops[6] = "Vel2";
          ops[7] = "Spin2";
@@ -541,8 +572,8 @@ namespace tao {
          }
          else
          {
-            ops[8] = str( format( "if(%1%+Pos3<%2%,%3%+Pos3,Pos3+%4%-%5%)" ) % offs3 % domain_size % offs3 % offs3 % domain_size );
-            ops[9] = str( format( "if(%1%+halo_pos3<%2%,%3%+halo_pos3,halo_pos3+%4%-%5%)" ) % offs3 % domain_size % offs3 % offs3 % domain_size );
+            ops[8] = str( format( "CASE WHEN %1% + Pos3 < %2% THEN %3% + Pos3 ELSE Pos3 + %4% - %5% END" ) % offs3 % domain_size % offs3 % offs3 % domain_size );
+            ops[9] = str( format( "CASE WHEN %1% + halo_pos3 < %2% THEN %3% + halo_pos3 ELSE halo_pos3 + %4% - %5% END" ) % offs3 % domain_size % offs3 % offs3 % domain_size );
          }
          ops[10] = "Vel3";
          ops[11] = "Spin3";
@@ -687,6 +718,15 @@ namespace tao {
       // Get the sub dictionary, if it exists.
       const options::dictionary& sub = prefix ? dict.sub( *prefix ) : dict;
 
+      // Astronomical values. Get these first just in case
+      // we do any redshift calculations in here.
+      _h0 = sub.get<real_type>( "H0" );
+      LOGDLN( "Using h0 = ", _h0 );
+
+      // Should we use the BSP tree system?
+      _use_bsp = sub.get<bool>( "use-bsp" );
+      LOGDLN( "Use BSP: ", _use_bsp );
+
       // Extract database details.
       _dbtype = dict.get<string>( "database-type" );
       _dbname = dict.get<string>( "database-name" );
@@ -717,8 +757,10 @@ namespace tao {
       // Setup the redshifts table if we are building a cone.
       _setup_redshift_ranges();
 
-      // Query the table names we'll be using.
-      _query_table_names( _table_names );
+      // Query the table names we'll be using. Only need to do
+      // this here if we are not using the BSP system.
+      if( !_use_bsp )
+	 _query_table_names( _table_names );
 
       // Redshift ranges.
       real_type snap_z_max = _snap_redshifts.front(), snap_z_min = _snap_redshifts.back();
@@ -763,10 +805,6 @@ namespace tao {
          _box_size = sub.get<real_type>( "box-size" );
       }
 
-      // Astronomical values.
-      _h0 = sub.get<real_type>( "H0" );
-      LOGDLN( "Using h0 = ", _h0 );
-
       // Filter information.
       _filter = sub.get<string>( "filter" );
       _filter_min = sub.get<real_type>( "filter-min" );
@@ -807,13 +845,13 @@ namespace tao {
       _crd_strs[1] = "posy";
       _crd_strs[2] = "posz";
 
-      _query_template = "";
+      _query_template = "-pos1- AS newx, -pos2- AS newy, -pos3- AS newz";
       for( auto& field : _output_fields )
       {
-         if( field != "redshift" )
-            _query_template += (_query_template.empty() ? "" : ", ") + string( "-table-." ) + field;
-         else
-            _query_template += (_query_template.empty() ? "" : ", ") + field;
+	 if( field != "redshift" && field != "posx" && field != "posy" && field != "posz" )
+            _query_template += ", " + string( "-table-." ) + field;
+         else if ( field != "posx" && field != "posy" && field != "posz" )
+            _query_template += ", " + field;
       }
 
       _query_template = "SELECT " + _query_template + " FROM -table-";
