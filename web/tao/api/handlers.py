@@ -5,7 +5,7 @@ class JobHandler(BaseHandler):
     allowed_methods = ('GET', 'PUT',)
     model = Job
 
-    fields = ('id', 'username', 'database', 'parameters')
+    fields = ('id', 'username', 'database', 'status', 'parameters')
 
     def read(self, request, id=None, status=None):
         base = Job.objects
@@ -13,6 +13,6 @@ class JobHandler(BaseHandler):
         if id:
             return base.get(pk=id)
         elif status:
-            return base.filter(status=status)
+            return base.filter(status__iexact=status)
         else:
             return base.all()
