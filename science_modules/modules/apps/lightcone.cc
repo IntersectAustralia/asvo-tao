@@ -27,6 +27,9 @@ struct pipeline
    initialise( const hpc::options::dictionary& dict )
    {
       lc.initialise( dict, "workflow:light-cone" );
+      dump.initialise( dict, lc );
+      dump.set_filename( dict.get<string>( "outputdir" ) + "/tao.output" );
+      dump.open();
    }
 
    ///

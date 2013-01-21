@@ -287,56 +287,69 @@ create_table( session& sql )
    sql << "SELECT COUNT(table_name) FROM information_schema.tables"
       " WHERE table_schema='public' AND table_name='galaxies'",
       into( exists );
-   if( exists )
+   if( !exists )
    {
-      std::cout << "Table already exists.\n";
-      exit( 1 );
+      LOGDLN( "Creating galaxy table." );
+
+      // Create the table.
+      sql << "CREATE TABLE galaxies ("
+	 "type SMALLINT, "
+	 "global_index BIGINT, global_descendant BIGINT, "
+	 "tree_local_index INTEGER, tree_local_descendant INTEGER, "
+	 "tree INTEGER, "
+	 "snapshot INTEGER, "
+	 "central_mvir DOUBLE PRECISION, "
+	 "pos_x DOUBLE PRECISION, pos_y DOUBLE PRECISION, pos_z DOUBLE PRECISION, "
+	 "vel_x DOUBLE PRECISION, vel_y DOUBLE PRECISION, vel_z DOUBLE PRECISION, "
+	 "spin_x DOUBLE PRECISION, spin_y DOUBLE PRECISION, spin_z DOUBLE PRECISION, "
+	 "length INTEGER, "
+	 "mvir DOUBLE PRECISION, "
+	 "rvir DOUBLE PRECISION, "
+	 "vvir DOUBLE PRECISION, "
+	 "vmax DOUBLE PRECISION, "
+	 "vel_disp DOUBLE PRECISION, "
+	 "cold_gas DOUBLE PRECISION, "
+	 "stellar_mass DOUBLE PRECISION, "
+	 "bulge_mass DOUBLE PRECISION, "
+	 "hot_gas DOUBLE PRECISION, "
+	 "ejected_mass DOUBLE PRECISION, "
+	 "black_hole_mass DOUBLE PRECISION, "
+	 "ics DOUBLE PRECISION, "
+	 "metals_cold_gas DOUBLE PRECISION, "
+	 "metals_stellar_mass DOUBLE PRECISION, "
+	 "metals_bulge_mass DOUBLE PRECISION, "
+	 "metals_hot_gas DOUBLE PRECISION, "
+	 "metals_ejected_mass DOUBLE PRECISION, "
+	 "metals_ics DOUBLE PRECISION, "
+	 "sfr DOUBLE PRECISION, "
+	 "bulge_sfr DOUBLE PRECISION, "
+	 "ics_sfr DOUBLE PRECISION, "
+	 "disk_scale_radius DOUBLE PRECISION, "
+	 "cooling DOUBLE PRECISION, "
+	 "heating DOUBLE PRECISION"
+	 ")";
+
+      // Create indices.
+      sql << "CREATE INDEX ON galaxies (tree)";
+      sql << "CREATE INDEX ON galaxies (snapshot)";
+      sql << "CREATE INDEX ON galaxies (pos_x)";
+      sql << "CREATE INDEX ON galaxies (pos_y)";
+      sql << "CREATE INDEX ON galaxies (pos_z)";
    }
 
-   // Create the table.
-   sql << "CREATE TABLE galaxies ("
-      "type SMALLINT, "
-      "global_index BIGINT, global_descendant BIGINT, "
-      "tree_local_index INTEGER, tree_local_descendant INTEGER, "
-      "tree INTEGER, "
-      "snapshot INTEGER, "
-      "central_mvir DOUBLE PRECISION, "
-      "pos_x DOUBLE PRECISION, pos_y DOUBLE PRECISION, pos_z DOUBLE PRECISION, "
-      "vel_x DOUBLE PRECISION, vel_y DOUBLE PRECISION, vel_z DOUBLE PRECISION, "
-      "spin_x DOUBLE PRECISION, spin_y DOUBLE PRECISION, spin_z DOUBLE PRECISION, "
-      "length INTEGER, "
-      "mvir DOUBLE PRECISION, "
-      "rvir DOUBLE PRECISION, "
-      "vvir DOUBLE PRECISION, "
-      "vmax DOUBLE PRECISION, "
-      "vel_disp DOUBLE PRECISION, "
-      "cold_gas DOUBLE PRECISION, "
-      "stellar_mass DOUBLE PRECISION, "
-      "bulge_mass DOUBLE PRECISION, "
-      "hot_gas DOUBLE PRECISION, "
-      "ejected_mass DOUBLE PRECISION, "
-      "black_hole_mass DOUBLE PRECISION, "
-      "ics DOUBLE PRECISION, "
-      "metals_cold_gas DOUBLE PRECISION, "
-      "metals_stellar_mass DOUBLE PRECISION, "
-      "metals_bulge_mass DOUBLE PRECISION, "
-      "metals_hot_gas DOUBLE PRECISION, "
-      "metals_ejected_mass DOUBLE PRECISION, "
-      "metals_ics DOUBLE PRECISION, "
-      "sfr DOUBLE PRECISION, "
-      "bulge_sfr DOUBLE PRECISION, "
-      "ics_sfr DOUBLE PRECISION, "
-      "disk_scale_radius DOUBLE PRECISION, "
-      "cooling DOUBLE PRECISION, "
-      "heating DOUBLE PRECISION"
-      ")";
+   sql << "SELECT COUNT(table_name) FROM information_schema.tables"
+      " WHERE table_schema='public' AND table_name='snapshot_redshift'",
+      into( exists );
+   if( !exists )
+   {
+      LOGDLN( "Creating redshift table." );
 
-   // Create indices.
-   sql << "CREATE INDEX ON galaxies (tree)";
-   sql << "CREATE INDEX ON galaxies (snapshot)";
-   sql << "CREATE INDEX ON galaxies (pos_x)";
-   sql << "CREATE INDEX ON galaxies (pos_y)";
-   sql << "CREATE INDEX ON galaxies (pos_z)";
+      // Create the snapshot to redshift table.
+      sql << "CREATE TABLE snapshot_redshift("
+	 "snapshot INTEGER, "
+	 "redshift DOUBLE PRECISION"
+	 ")";
+   }
 }
 
 int

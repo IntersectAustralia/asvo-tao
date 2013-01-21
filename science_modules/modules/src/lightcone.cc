@@ -45,7 +45,7 @@ namespace tao {
    {
       dict.add_option( new options::string( "query-type", "light-cone" ), prefix );
       dict.add_option( new options::boolean( "use-bsp", false ), prefix );
-      dict.add_option( new options::real( "domain-size", 500 ), prefix );
+      dict.add_option( new options::string( "box-repetition", "unique" ), prefix );
       dict.add_option( new options::real( "redshift-max" ), prefix );
       dict.add_option( new options::real( "redshift-min" ), prefix );
       dict.add_option( new options::real( "z-snap" ), prefix );
@@ -55,10 +55,19 @@ namespace tao {
       dict.add_option( new options::real( "dec-min", 0.0 ), prefix );
       dict.add_option( new options::real( "dec-max", 90.0 ), prefix );
       dict.add_option( new options::real( "H0", 73.0 ), prefix );
-      dict.add_option( new options::string( "filter", "" ), prefix );
-      dict.add_option( new options::real( "filter-min", 0.0 ), prefix );
-      dict.add_option( new options::real( "filter-max", 0.0 ), prefix );
       dict.add_option( new options::list<options::string>( "output-fields" ), prefix );
+
+      // Setup table names.
+      dict.add_option( new options::string( "snapshot-redshift-table", "snap_redshift" ), prefix );
+
+      // Setup the field mappings we might need to use.
+      dict.add_option( new options::string( "pos_x", "posx" ), prefix );
+      dict.add_option( new options::string( "pos_y", "posy" ), prefix );
+      dict.add_option( new options::string( "pos_z", "posz" ), prefix );
+      dict.add_option( new options::string( "global_id", "globalindex" ), prefix );
+      dict.add_option( new options::string( "local_id", "localgalaxyid" ), prefix );
+      dict.add_option( new options::string( "tree_id", "globaltreeid" ), prefix );
+      dict.add_option( new options::string( "snapshot", "snapnum" ), prefix );
    }
 
    ///
@@ -211,6 +220,12 @@ namespace tao {
       return _snap_redshifts[_cur_row->get<int>( "snapnum" )];
    }
 
+   const set<string>&
+   lightcone::output_fields() const
+   {
+      return _output_fields;
+   }
+
    ///
    /// Get a list of tree table names to search.
    ///
@@ -244,12 +259,15 @@ namespace tao {
 	 string query;
 	 if( _dbtype == "sqlite" )
 	 {
-	    query = "SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND SUBSTR(name,1,5)='tree_'";
+	    query = "SELECT COUNT(name) FROM sqlite_master WHERE type='table' "
+	       "AND SUBSTR(name,1," + to_string( _tree_pre.length() ) + ")='" + 
+	       _tree_pre + "'";
 	 }
 	 else
 	 {
 	    query = "SELECT COUNT(table_name) FROM information_schema.tables"
-	       " WHERE table_schema='public' AND SUBSTR(table_name,1,5)='tree_'";
+	       " WHERE table_schema='public' AND SUBSTR(table_name,1," + 
+	       to_string( _tree_pre.length() ) + ")='" + _tree_pre + "'";
 	 }
 	 LOGDLN( "Query for number of table names: ", query );
 	 _sql << query, soci::into( num_tables );
@@ -259,12 +277,14 @@ namespace tao {
 	 table_names.reallocate( num_tables );
 	 if( _dbtype == "sqlite" )
 	 {
-	    query = "SELECT name FROM sqlite_master WHERE type='table' AND SUBSTR(name,1,5)='tree_'";
+	    query = "SELECT name FROM sqlite_master WHERE type='table' AND SUBSTR(name,1," + 
+	       to_string( _tree_pre.length() ) + ")='" + _tree_pre + "'";
 	 }
 	 else
 	 {
-	    query = "SELECT table_name FROM information_schema.tables"
-	       " WHERE table_schema='public' AND SUBSTR(table_name,1,5)='tree_'";
+	    query = string( "SELECT table_name FROM information_schema.tables"
+			    " WHERE table_schema='public' AND SUBSTR(table_name,1," + 
+			    to_string( _tree_pre.length() ) + ")='" ) + _tree_pre + string( "'" );
 	 }
 	 LOGDLN( "Query for table names: ", query );
 	 _sql << query, soci::into( (std::vector<std::string>&)table_names );
@@ -479,9 +499,9 @@ namespace tao {
       replace_all( query, "-z_snap-", to_string( _z_snap_idx ) );
 
       // Replace references to the Posx coordinates.
-      replace_all( query, "Pos1", "posx" );
-      replace_all( query, "Pos2", "posy" );
-      replace_all( query, "Pos3", "posz" );
+      replace_all( query, "Pos1", _field_map.get( "pos_x" ) );
+      replace_all( query, "Pos2", _field_map.get( "pos_y" ) );
+      replace_all( query, "Pos3", _field_map.get( "pos_z" ) );
 
       LOGDLN( "Query: ", query );
       LOG_EXIT();
@@ -723,6 +743,18 @@ namespace tao {
       // Get the sub dictionary, if it exists.
       const options::dictionary& sub = prefix ? dict.sub( *prefix ) : dict;
 
+      // Extract table names.
+      _snap_red_table = sub.get<string>( "snapshot-redshift-table" );
+
+      // Read all the field mappings.
+      _field_map.insert( "pos_x", sub.get<string>( "pos_x" ) );
+      _field_map.insert( "pos_y", sub.get<string>( "pos_y" ) );
+      _field_map.insert( "pos_z", sub.get<string>( "pos_z" ) );
+      _field_map.insert( "global_id", sub.get<string>( "global_id" ) );
+      _field_map.insert( "local_id", sub.get<string>( "local_id" ) );
+      _field_map.insert( "tree_id", sub.get<string>( "tree_id" ) );
+      _field_map.insert( "snapshot", sub.get<string>( "snapshot" ) );
+
       // Astronomical values. Get these first just in case
       // we do any redshift calculations in here.
       _h0 = sub.get<real_type>( "H0" );
@@ -742,12 +774,17 @@ namespace tao {
       _box_type = sub.get<string>( "query-type" );
       LOGDLN( "Box type '", _box_type );
 
+      // Get box repetition type.
+      _box_repeat = sub.get<string>( "box-repetition" );
+      std::transform( _box_repeat.begin(), _box_repeat.end(), _box_repeat.begin(), ::tolower );
+      LOGDLN( "Box repetition type '", _box_repeat, "'" );
+      _unique = (_box_repeat == "unique");
+
       // Get the domain size.
       {
-	 double size;
-	 // _sql << "SELECT domain_size FROM summary", soci::into( size );
-	 size = sub.get<real_type>( "domain-size" );
-	 _domain_size = size;
+	 string size;
+	 _sql << "SELECT metavalue FROM metadata WHERE metakey='boxsize'", soci::into( size );
+	 _domain_size = atof( size.c_str() );
 	 LOGDLN( "Simulation domain size: ", _domain_size );
       }
 
@@ -806,27 +843,33 @@ namespace tao {
       }
 
       // Filter information.
-      _filter = sub.get<string>( "filter" );
-      _filter_min = sub.get<real_type>( "filter-min" );
-      _filter_max = sub.get<real_type>( "filter-max" );
+      _filter = dict.get<string>( "workflow:record-filter:filter-type" );
+      std::transform( _filter.begin(), _filter.end(), _filter.begin(), ::tolower );
+      _filter_min = dict.get<string>( "workflow:record-filter:filter-min" );
+      _filter_max = dict.get<string>( "workflow:record-filter:filter-max" );
+      LOGDLN( "Read filter name of: ", _filter );
+      LOGDLN( "Read filter range of: ", _filter_min, " to ", _filter_max );
 
       // Output field information.
       {
          list<string> fields = sub.get_list<string>( "output-fields" );
-         std::copy(
-            fields.begin(), fields.end(),
-            std::insert_iterator<set<string>>( _output_fields, _output_fields.begin() )
-            );
+	 for( const auto& field : fields )
+	 {
+	    string low = field;
+	    std::transform( low.begin(), low.end(), low.begin(), ::tolower );
+	    _output_fields.insert( low );
+	 }
 
          // Make sure there are certain basic fields in the output
          // set.
-         _output_fields.insert( "posx" );
-         _output_fields.insert( "posy" );
-         _output_fields.insert( "posz" );
+         _output_fields.insert( "pos_x" );
+         _output_fields.insert( "pos_y" );
+         _output_fields.insert( "pos_z" );
          _output_fields.insert( "redshift" );
-         _output_fields.insert( "globalindex" );
-         _output_fields.insert( "localgalaxyid" );
-         _output_fields.insert( "globaltreeid" );
+         _output_fields.insert( _field_map.get( "global_id" ) );
+         _output_fields.insert( _field_map.get( "local_id" ) );
+         _output_fields.insert( _field_map.get( "tree_id" ) );
+
       }
       LOGDLN( "Outputting fields: ", _output_fields );
 
@@ -842,24 +885,36 @@ namespace tao {
       LOG_ENTER();
 
       // Select basic positions.
-      _query_template = "-pos1- AS newx, -pos2- AS newy, -pos3- AS newz";
+      _query_template = "-pos1- AS pos_x, -pos2- AS pos_y, -pos3- AS pos_z";
 
       // Add the output fields.
       for( auto& field : _output_fields )
       {
-	 if( field != "redshift" && field != "posx" && field != "posy" && field != "posz" )
-            _query_template += ", " + string( "-table-." ) + field;
-         else if ( field != "posx" && field != "posy" && field != "posz" )
+	 if( field != "redshift" &&
+	     field != "pos_x" &&
+	     field != "pos_y" &&
+	     field != "pos_z" )
+	 {
+	    _query_template += ", " + string( "-table-." ) + field;
+	 }
+         else if ( field != "pos_x" &&
+		   field != "pos_y" &&
+		   field != "pos_z" )
+	 {
             _query_template += ", " + field;
+	 }
       }
 
       _query_template = "SELECT " + _query_template + " FROM -table-";
-      _query_template += " INNER JOIN redshift_ranges ON (-table-.snapnum = redshift_ranges.snapnum)";
+      _query_template += " INNER JOIN redshift_ranges ON (-table-." + _field_map.get( "snapshot" ) + 
+	 " = redshift_ranges.snapshot)";
       _query_template += " WHERE";
 
       if( _box_type != "box" )
       {
-	 _query_template += " -table-.snapnum >= -min_snap- AND -table-.snapnum <= -max_snap-";
+	 _query_template += " -table-." + _field_map.get( "snapshot" ) + 
+	    " >= -min_snap- AND -table-." + _field_map.get( "snapshot" ) +
+	    " <= -max_snap-";
 	 _query_template += " AND (POW(-pos1-,2) + POW(-pos2-,2) + POW(-pos3-,2)) >= "
 	    + to_string( pow( _dist_range.start(), 2 ) );
 	 _query_template += " AND (POW(-pos1-,2) + POW(-pos2-,2) + POW(-pos3-,2)) < "
@@ -879,7 +934,7 @@ namespace tao {
       }
       else
       {
-         _query_template += " -table-.snapnum = -z_snap-";
+         _query_template += " -table-." + _field_map.get( "snapshot" ) + " = -z_snap-";
 	 _query_template += str( format( " AND -pos1- < %1%  AND -pos2- < %2% AND -pos3- < %3% " )
                                  % _box_size % _box_size % _box_size );
       }
@@ -887,8 +942,10 @@ namespace tao {
       // Prepare the filter part of the query.
       if( _filter != "" )
       {
-         _query_template += str( format( " AND %1% >= %2%" ) % _filter % _filter_min );
-         _query_template += str( format( " AND %1% <= %2%" ) % _filter % _filter_max );
+	 if( _filter_min != "None" && _filter_min != "none" )
+	    _query_template += str( format( " AND %1% >= %2%" ) % _filter % _filter_min );
+	 if( _filter_max != "None" && _filter_max != "none" )
+	    _query_template += str( format( " AND %1% <= %2%" ) % _filter % _filter_max );
       }
 
       LOGDLN( "Query template: ", _query_template );
@@ -905,12 +962,12 @@ namespace tao {
 
       // Find number of snapshots and resize the containers.
       unsigned num_snaps;
-      _sql << "SELECT COUNT(*) FROM snap_redshift", soci::into( num_snaps );
+      _sql << "SELECT COUNT(*) FROM " + _snap_red_table, soci::into( num_snaps );
       LOGDLN( num_snaps, " snapshots." );
       _snap_redshifts.reallocate( num_snaps );
 
       // Read meta data.
-      _sql << "SELECT redshift FROM snap_redshift ORDER BY snapnum",
+      _sql << "SELECT redshift FROM " + _snap_red_table + " ORDER BY " + _field_map.get( "snapshot" ),
          soci::into( (std::vector<real_type>&)_snap_redshifts );
       LOGDLN( "Redshifts: ", _snap_redshifts );
 
@@ -928,7 +985,7 @@ namespace tao {
       ASSERT( _snap_redshifts.size() >= 2, "Must be at least two snapshots." );
 
       // Create a temporary table to hold values.
-      _sql << "CREATE TEMPORARY TABLE redshift_ranges (snapnum INTEGER, "
+      _sql << "CREATE TEMPORARY TABLE redshift_ranges (snapshot INTEGER, "
       	 "redshift DOUBLE PRECISION, min DOUBLE PRECISION, max DOUBLE PRECISION)";
 
       // Insert the first redshift range.
@@ -937,7 +994,7 @@ namespace tao {
 	 mid = upp + 0.5*(low - upp);
       _sql << "INSERT INTO redshift_ranges VALUES(0, :z, :min, :max)",
 	 soci::use( _snap_redshifts[0] ), soci::use( mid*mid ), soci::use( low*low );
-      LOGDLN( "Redshift range for snapshot 0: ", mid, " - ", low );
+      LOGDLN( "Distance range for snapshot 0 with redshift ", _snap_redshifts[0], ": ", mid, " - ", low );
 
       // Walk over snapshots creating distances.
       for( unsigned ii = 1; ii < _snap_redshifts.size() - 1; ++ii )
@@ -945,15 +1002,15 @@ namespace tao {
 	 low = upp;
 	 upp = _redshift_to_distance( _snap_redshifts[ii + 1] );
 	 real_type new_mid = upp + 0.5*(low - upp);
-	 _sql << "INSERT INTO redshift_ranges VALUES(:snapnum, :z, :min, :max)",
+	 _sql << "INSERT INTO redshift_ranges VALUES(:snapshot, :z, :min, :max)",
 	    soci::use( ii ), soci::use( _snap_redshifts[ii] ),
 	    soci::use( new_mid*new_mid ), soci::use( mid*mid );
-	 LOGDLN( "Redshift range for snapshot ", ii, ": ", new_mid, " - ", mid );
+	 LOGDLN( "Distance range for snapshot ", ii, " with redshift ", _snap_redshifts[ii], ": ", new_mid, " - ", mid );
 	 mid = new_mid;
       }
 
       // Insert the last redshift range.
-      _sql << "INSERT INTO redshift_ranges VALUES(:snapnum, :z, :min, :max)",
+      _sql << "INSERT INTO redshift_ranges VALUES(:snapshot, :z, :min, :max)",
 	 soci::use( _snap_redshifts.size() - 1 ), soci::use( _snap_redshifts.back() ),
 	 soci::use( upp*upp ), soci::use( mid*mid );
       LOGDLN( "Redshift range for snapshot ", _snap_redshifts.size() - 1, ": ", upp, " - ", mid );

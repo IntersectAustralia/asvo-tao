@@ -30,9 +30,9 @@ public:
 	 // Add a snapshot to redshift table.
          sql << "CREATE TABLE snap_redshift (snapnum INTEGER, redshift DOUBLE PRECISION)";
 
-	 // Add a summary table and insert a value.
-         sql << "CREATE TABLE summary (domain_size DOUBLE PRECISION)";
-	 sql << "INSERT INTO summary VALUES(100)";
+	 // Add a metadata table and insert a value.
+         sql << "CREATE TABLE metadata (metakey CHARACTER VARYING, metavalue CHARACTER VARYING)";
+	 sql << "INSERT INTO metadata VALUES('boxsize', '500')";
 
          // Add snapshot tables.
 	 for( unsigned ii = 0; ii < 4; ++ii )

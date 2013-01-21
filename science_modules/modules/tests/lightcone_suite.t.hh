@@ -433,11 +433,13 @@ public:
          sql << "INSERT INTO tree_1 VALUES(10, 10, 10, 3, 1, 1, 0)";
          sql << "INSERT INTO tree_2 VALUES(10, 10, 10, 4, 1, 1, 1)";
          sql << "INSERT INTO tree_3 VALUES(10, 10, 10, 5, 1, 1, 2)";
+
+	 // Update the domain size.
+	 sql << "UPDATE metadata SET metavalue='21' WHERE metakey='boxsize'";
       }
 
       // Prepare base dictionary.
       options::dictionary& dict = db_setup.dict.sub( "light-cone" );
-      dict["domain-size"] = "21";
       dict["redshift-min"] = "0";
       dict["ra-min"] = "0";
       dict["ra-max"] = "90";
@@ -493,9 +495,9 @@ public:
       options::dictionary& dict = db_setup.dict.sub( "light-cone" );
       dict["query-type"] = "box";
       dict["z-snap"] = "0.001";
-      dict["filter"] = "posx";
-      dict["filter-min"] = "1.5";
-      dict["filter-max"] = "2.5";
+      db_setup.dict["workflow:record-filter:filter-type"] = "pos_x";
+      db_setup.dict["workflow:record-filter:filter-min"] = "1.5";
+      db_setup.dict["workflow:record-filter:filter-max"] = "2.5";
 
       // Place to store row IDs.
       vector<int> ids;

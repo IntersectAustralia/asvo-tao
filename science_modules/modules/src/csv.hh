@@ -3,16 +3,29 @@
 
 #include <fstream>
 #include <libhpc/libhpc.hh>
+#include "tao/base/module.hh"
 #include "tao/base/galaxy.hh"
+#include "lightcone.hh"
 
 namespace tao {
    using namespace hpc;
 
    class csv
+      : public module
    {
    public:
 
       csv( const string& filename="tao.output" );
+
+      void
+      initialise( const options::dictionary& dict,
+		  const lightcone& lc );
+
+      void
+      set_filename( const string& filename );
+
+      void
+      open();
 
       void
       process_galaxy( const tao::galaxy& galaxy,
@@ -20,7 +33,15 @@ namespace tao {
 
    protected:
 
+      void
+      _write_field( const tao::galaxy& galaxy,
+		    const string& field );
+
+   protected:
+
       std::ofstream _file;
+      string _fn;
+      const lightcone* _lc;
    };
 }
 

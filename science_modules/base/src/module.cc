@@ -26,6 +26,7 @@ namespace tao {
          _dbuser = dict.get<string>( "settings:database:user" );
          _dbpass = dict.get<string>( "settings:database:password" );
       }
+      _tree_pre = dict.get<string>( "settings:database:treetableprefix" );
 
       LOG_EXIT();
    }

@@ -24,6 +24,7 @@ sources = [
     ('sagecheck', 'sagecheck.cc'),
     ('dbcheck', 'dbcheck.cc'),
     ('sageimport', 'sageimport.cc'),
+    ('sage_import_ages', 'sage_import_ages.cc'),
 ]
 
 # Call the helper.
