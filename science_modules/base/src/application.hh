@@ -102,8 +102,8 @@ namespace tao {
       _read_xml( hpc::options::dictionary& dict ) const
       {
          hpc::options::xml xml;
-         xml.read( _xml_file, dict, "/tao/workflow/*" );
-         xml.read( _dbcfg_file, dict, "/settings/*" );
+         xml.read( _xml_file, dict, "/tao/*" );
+         xml.read( _dbcfg_file, dict );
       }
 
    protected:

@@ -14,10 +14,12 @@ struct galaxy_type
    int   fof_idx;
    int   tree_idx;
 
+#ifndef NLUKE
    // LUKE: See struct GALAXY.
    long long  global_index;
    int        descendant;
    long long  global_descendant;
+#endif
   
    int   snap;
    int   central_gal;
@@ -70,6 +72,8 @@ operator<<( std::ostream& strm,
    // strm << "next in fof group: " << obj.next_halo_in_fof_group << "\n";
 }
 
+#ifndef NLUKE
+
 void
 walk_tree( int idx,
            int tree_idx,
@@ -92,6 +96,8 @@ walk_tree( int idx,
    }
 }
 
+#endif
+
 int
 main( int argc,
       char* argv[] )
@@ -102,8 +108,10 @@ main( int argc,
    // LOG_CONSOLE();
    LOG_PUSH( new logging::stdout() );
 
+#ifndef NLUKE
    // Need a global range.
    long long global_upp = -1;
+#endif
 
    // Keep processing files from 0 onwards until we cannot open a file.
    unsigned file_idx = 0, chunk_idx = 0;

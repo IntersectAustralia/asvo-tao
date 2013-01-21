@@ -49,8 +49,9 @@ public:
       setup_common_options( dict );
       lc.setup_options( dict, "light-cone" );
       dict.compile();
-      dict["database:type"] = "sqlite";
-      dict["database:name"] = db_filename;
+      dict["settings:database:type"] = "sqlite";
+      dict["database"] = db_filename;
+      dict["light-cone:H0"] = "0.73"; // Need this because I'm an idiot.
       dict["light-cone:query-type"] = "cone";
       dict["light-cone:redshift-min"] = "0";
       xml_filename = tmpnam( NULL );

@@ -164,7 +164,7 @@ namespace tao {
       real_type _h0;
 
       string _query_template;
-      string _crd_strs[3];
+      vector<string> _ops;
 
       string _bin_filename;
       std::ofstream _bin_file;
@@ -174,6 +174,8 @@ namespace tao {
       list<array<real_type,3>>::const_iterator _cur_box;
       scoped_ptr<soci::rowset<soci::row>> _rows;
       soci::rowset<soci::row>::const_iterator _cur_row;
+
+      bool _use_bsp;
    };
 }
 

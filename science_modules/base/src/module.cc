@@ -17,14 +17,14 @@ namespace tao {
       LOG_ENTER();
 
       // Extract database details.
-      _dbtype = dict.get<string>( "database:type" );
-      _dbname = dict.get<string>( "database:name" );
+      _dbtype = dict.get<string>( "settings:database:type" );
+      _dbname = dict.get<string>( "database" );
       if( _dbtype != "sqlite" )
       {
-         _dbhost = dict.get<string>( "database:host" );
-         _dbport = dict.get<string>( "database:port" );
-         _dbuser = dict.get<string>( "database:user" );
-         _dbpass = dict.get<string>( "database:password" );
+         _dbhost = dict.get<string>( "settings:database:host" );
+         _dbport = dict.get<string>( "settings:database:port" );
+         _dbuser = dict.get<string>( "settings:database:user" );
+         _dbpass = dict.get<string>( "settings:database:password" );
       }
 
       LOG_EXIT();

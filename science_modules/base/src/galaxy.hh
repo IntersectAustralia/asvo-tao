@@ -64,7 +64,7 @@ namespace tao {
       operator<<( std::ostream& strm,
                   const galaxy& obj );
 
-   protected:
+   public:
 
       const soci::row& _row;
       const hpc::array<real_type,3>& _box;

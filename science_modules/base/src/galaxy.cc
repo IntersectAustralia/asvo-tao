@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "galaxy.hh"
 
 using namespace hpc;
@@ -46,19 +47,55 @@ namespace tao {
    galaxy::real_type
    galaxy::x() const
    {
-      return _row.get<real_type>( "posx" ) + _box[0];
+      // This is ridiculous, but it seems sqlite represents
+      // modified aliases, (0 + posx + 0) AS newx, as strings.
+      // "Surely not!?" you say, but indeed it is so. This
+      // means sqlite databases won't have the correct rotated/
+      // translated values used as newx, newy, newz.
+#ifndef NDEBUG
+      if( _row.get_properties( "newx" ).get_data_type() == soci::dt_string )
+	 return atof( _row.get<std::string>( "newx" ).c_str() );
+      else
+	 return _row.get<real_type>( "newx" );
+#else
+      return _row.get<real_type>( "newx" );
+#endif
    }
 
    galaxy::real_type
    galaxy::y() const
    {
-      return _row.get<real_type>( "posy" ) + _box[1];
+      // This is ridiculous, but it seems sqlite represents
+      // modified aliases, (0 + posx + 0) AS newx, as strings.
+      // "Surely not!?" you say, but indeed it is so. This
+      // means sqlite databases won't have the correct rotated/
+      // translated values used as newx, newy, newz.
+#ifndef NDEBUG
+      if( _row.get_properties( "newy" ).get_data_type() == soci::dt_string )
+	 return atof( _row.get<std::string>( "newy" ).c_str() );
+      else
+	 return _row.get<real_type>( "newy" );
+#else
+      return _row.get<real_type>( "newy" );
+#endif
    }
 
    galaxy::real_type
    galaxy::z() const
    {
-      return _row.get<real_type>( "posz" ) + _box[2];
+      // This is ridiculous, but it seems sqlite represents
+      // modified aliases, (0 + posx + 0) AS newx, as strings.
+      // "Surely not!?" you say, but indeed it is so. This
+      // means sqlite databases won't have the correct rotated/
+      // translated values used as newx, newy, newz.
+#ifndef NDEBUG
+      if( _row.get_properties( "newz" ).get_data_type() == soci::dt_string )
+	 return atof( _row.get<std::string>( "newz" ).c_str() );
+      else
+	 return _row.get<real_type>( "newz" );
+#else
+      return _row.get<real_type>( "newz" );
+#endif
    }
 
    galaxy::real_type
