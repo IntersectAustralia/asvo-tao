@@ -44,30 +44,22 @@ class DatasetTestCase(TransactionTestCase):
 
     def test_filter_choices(self):
         from tao.datasets import filter_choices
-        self.assertEqual(1, len(filter_choices()))
-        
+
         s1 = SimulationFactory.create()
         s2 = SimulationFactory.create()
         
         g1 = GalaxyModelFactory.create()
-        g2 = GalaxyModelFactory.create()
         g3 = GalaxyModelFactory.create()
         
         d1 = DataSetFactory.create(simulation=s1, galaxy_model=g3)
         d2 = DataSetFactory.create(simulation=s2, galaxy_model=g1)
-        d3 = DataSetFactory.create(simulation=s2, galaxy_model=g2)
-        
+
         dp1 = DataSetPropertyFactory.create(dataset=d1, units='dp1u')
         dp2 = DataSetPropertyFactory.create(dataset=d2, units='dp2u')
-        dp3 = DataSetPropertyFactory.create(dataset=d3, units='dp3u')
+        dp3 = DataSetPropertyFactory.create(dataset=d2, units='dp3u')
         
-        self.assertEqual([
-                          ('no_filter', 'No Filter', {}),
-                          (dp1.id, '%s (%s)' % (dp1.label, dp1.units), {'data-simulation_id': str(s1.id), 'data-galaxy_model_id': str(g3.id)}),
-                          (dp2.id, '%s (%s)' % (dp2.label, dp2.units), {'data-simulation_id': str(s2.id), 'data-galaxy_model_id': str(g1.id)}),
-                          (dp3.id, '%s (%s)' % (dp3.label, dp3.units), {'data-simulation_id': str(s2.id), 'data-galaxy_model_id': str(g2.id)})
-                          ], 
-                         filter_choices())
+        self.assertEqual([dp1.id],[x.id for x in filter_choices(d1.id)])
+        self.assertEqual([dp2.id,dp3.id],[x.id for x in filter_choices(d2.id)])
 
     def test_snapshot_choices(self):
         from tao.datasets import snapshot_choices

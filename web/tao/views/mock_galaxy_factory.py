@@ -9,29 +9,24 @@ from django.views.decorators.http import require_POST
 
 from tao import models, workflow
 from tao.decorators import researcher_required, set_tab
-from tao.ui_modules import form_classes_and_prefixes
+from tao.ui_modules import UIModulesHolder
 
 
 @set_tab('mgf')
 @researcher_required
 def index(request):
-    forms = form_classes_and_prefixes()
-
     if request.method == 'POST':
-        form_objs = [klass(request.POST, prefix=prefix) for (klass, prefix) in forms]
-
-        if all(form.is_valid() for form in form_objs):
+        ui_holder = UIModulesHolder(request.POST)
+        if ui_holder.validate():
             user = models.User.objects.get(username=request.user)
-            workflow.save(user, form_objs)
-
+            workflow.save(user, ui_holder.forms())
             messages.info(request, _("Your job was held successfully."))
             return redirect(reverse('held_jobs'))
-
     else:
-        form_objs = [klass(prefix=prefix) for (klass, prefix) in forms]
+        ui_holder = UIModulesHolder()
 
     return render(request, 'mock_galaxy_factory/index.html', {
-        'forms': form_objs,
+        'forms': ui_holder.forms(),
     })
 
 @set_tab('mgf')

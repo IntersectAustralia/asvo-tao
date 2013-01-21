@@ -10,8 +10,10 @@ from captcha.fields import ReCaptchaField
 from form_utils.forms import BetterForm
 
 import tao.settings as tao_settings
-from tao.models import UserProfile
-from tao.widgets import ChoiceFieldWithOtherAttrs
+from tao import datasets
+from tao.models import UserProfile, DataSetProperty
+
+NO_FILTER = 'no_filter'
 
 class LoginForm(auth_forms.AuthenticationForm):
     remember_me = forms.BooleanField(label=_("Remember Me"), required=False)
@@ -90,7 +92,7 @@ class OutputFormatForm(BetterForm):
         }),]
 
     def __init__(self, *args, **kwargs):
-        super(OutputFormatForm, self).__init__(*args, **kwargs)
+        super(OutputFormatForm, self).__init__(*args[1:], **kwargs)
         self.fields['supported_formats'] = forms.ChoiceField(choices=[(x['value'], x['text']) for x in tao_settings.OUTPUT_FORMATS])
 
     def to_xml(self, parent_xml_element):
@@ -105,3 +107,65 @@ class OutputFormatForm(BetterForm):
 
         output_module = etree.SubElement(parent_xml_element, 'module', name='output-file')
         add_parameters(output_module, output_parameter)
+
+class RecordFilterForm(BetterForm):
+    EDIT_TEMPLATE = 'mock_galaxy_factory/record_filter.html'
+
+    max = forms.DecimalField(required=False, label=_('Max'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
+    min = forms.DecimalField(required=False, label=_('Min'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
+
+
+    class Meta:
+        fieldsets = [('primary', {
+            'legend': '',
+            'fields': ['filter', 'min', 'max',],
+        }),]
+
+    def __init__(self, *args, **kwargs):
+        self.ui_holder = args[0]
+        super(RecordFilterForm, self).__init__(*args[1:], **kwargs)
+        if self.ui_holder.is_bound('light_cone'):
+            objs = datasets.filter_choices(self.ui_holder.raw_data('light_cone', 'galaxy_model'))
+            choices = [(NO_FILTER, 'No Filter')] + [(x.id, '') for x in objs]
+        else:
+            choices = [(NO_FILTER, 'No Filter')]
+        self.fields['filter'] = forms.ChoiceField(required=True, choices=choices)
+
+    def check_min_less_than_max(self):
+        min_field = self.cleaned_data.get('min')
+        max_field = self.cleaned_data.get('max')
+        if min_field is not None and max_field is not None and min_field >= max_field:
+            msg = _('The "min" field must be less than the "max" field.')
+            self._errors["min"] = self.error_class([msg])
+            del self.cleaned_data["min"]
+
+    def clean(self):
+        super(RecordFilterForm, self).clean()
+        self.check_min_less_than_max()
+        return self.cleaned_data
+
+    def to_xml(self, parent_xml_element):
+        from tao.workflow import param, add_parameters
+        from lxml import etree
+
+        selected_filter = self.cleaned_data['filter']
+        if selected_filter != NO_FILTER:
+            filter_parameter = DataSetProperty.objects.get(pk=selected_filter)
+        else:
+            filter_parameter = None
+        filter_parameters = []
+        if filter_parameter is not None:
+            filter_parameters.append(param('filter-type', filter_parameter.name))
+            filter_min = self.cleaned_data['min']
+            filter_max = self.cleaned_data['max']
+            if filter_min != '':
+                filter_parameters.append(param('filter-min', filter_min, units=filter_parameter.units))
+            if filter_max != '':
+                filter_parameters.append(param('filter-max', filter_max, units=filter_parameter.units))
+
+        record_filter_module = etree.SubElement(parent_xml_element, 'module', name='record-filter')
+        add_parameters(record_filter_module, filter_parameters)
+
+
+
+
