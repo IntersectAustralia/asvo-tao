@@ -19,6 +19,7 @@ class FilterTests(LiveServerMGFTest):
             galaxy_model = GalaxyModelFactory.create()
             dataset = DataSetFactory.create(simulation=simulation2, galaxy_model=galaxy_model)
             DataSetPropertyFactory.create(dataset=dataset)
+            DataSetPropertyFactory.create(dataset=dataset, is_filter=False)
 
         username = "user"
         password = "password"
@@ -26,16 +27,30 @@ class FilterTests(LiveServerMGFTest):
         self.login(username, password)
 
         self.visit('mock_galaxy_factory')
-        wait(2)
+        self.select_dark_matter_simulation(simulation1)
+        self.select_galaxy_model(simulation1.galaxymodel_set.all().order_by('id')[0])
 
     def test_filter_options(self):
         # check drop-down list correspond to properties of the currently selected simulation and galaxy model
-        initial_simulation = Simulation.objects.all()[0]
-        initial_galaxy_model = initial_simulation.galaxymodel_set.all()[0]
+        initial_simulation = Simulation.objects.all().order_by('id')[0]
+        initial_galaxy_model = initial_simulation.galaxymodel_set.all().order_by('id')[0]
         dataset = DataSet.objects.get(simulation=initial_simulation, galaxy_model=initial_galaxy_model)
-        dataset_parameters = dataset.datasetproperty_set.all()
 
-        expected_filter_options = self.get_expected_filter_options(dataset_parameters)
+        expected_filter_options = self.get_expected_filter_options(dataset.id)
+        actual_filter_options = self.get_actual_filter_options()
+
+        self.assertEqual(expected_filter_options, actual_filter_options)
+
+    def test_filter_options_and_is_filter(self):
+        # check drop-down list correspond to properties of the currently selected simulation and galaxy model
+        simulation = Simulation.objects.all().order_by('id')[1]
+        galaxy_model = simulation.galaxymodel_set.all().order_by('id')[0]
+        dataset = DataSet.objects.get(simulation=simulation, galaxy_model=galaxy_model)
+
+        self.select_dark_matter_simulation(simulation)
+        self.select_galaxy_model(galaxy_model)
+
+        expected_filter_options = self.get_expected_filter_options(dataset.id)
         actual_filter_options = self.get_actual_filter_options()
 
         self.assertEqual(expected_filter_options, actual_filter_options)
@@ -45,8 +60,7 @@ class FilterTests(LiveServerMGFTest):
         simulation = Simulation.objects.all()[1]
         galaxy_model = simulation.galaxymodel_set.all()[4]
         dataset = DataSet.objects.get(simulation=simulation, galaxy_model=galaxy_model)
-        dataset_parameters = dataset.datasetproperty_set.all()
-        expected_filter_options = self.get_expected_filter_options(dataset_parameters)
+        expected_filter_options = self.get_expected_filter_options(dataset.id)
 
         self.select_dark_matter_simulation(simulation)
         self.select_galaxy_model(galaxy_model)
@@ -69,8 +83,8 @@ class FilterTests(LiveServerMGFTest):
         self.assertEqual(expected_snapshot_options, actual_snapshot_options)
 
     def test_max_min_fields(self):
-        self.assert_is_disabled(self.lc_id('max'))
-        self.assert_is_disabled(self.lc_id('min'))
+        self.assert_is_disabled(self.rf_id('max'))
+        self.assert_is_disabled(self.rf_id('min'))
 
         simulation = Simulation.objects.all()[1]
         galaxy_model = simulation.galaxymodel_set.all()[4]
@@ -81,8 +95,8 @@ class FilterTests(LiveServerMGFTest):
         self.select_galaxy_model(galaxy_model)
         self.choose_filter(dataset_parameter)
 
-        self.assert_is_enabled(self.lc_id('max'))
-        self.assert_is_enabled(self.lc_id('min'))
+        self.assert_is_enabled(self.rf_id('max'))
+        self.assert_is_enabled(self.rf_id('min'))
 
     def test_max_min_fields_after_failed_submit(self):
         simulation = Simulation.objects.all()[1]
@@ -95,21 +109,21 @@ class FilterTests(LiveServerMGFTest):
 
         max_input = "bad number"
         min_input = "73"
-        self.fill_in_fields({'max': max_input, 'min': min_input}, id_wrap=self.lc_id)
+        self.fill_in_fields({'max': max_input, 'min': min_input}, id_wrap=self.rf_id)
 
         self.submit_mgf_form()
         wait(2)
 
         # check after failed submit, max/min fields are both still enabled
-        self.assert_is_enabled(self.lc_id('max'))
-        self.assert_is_enabled(self.lc_id('min'))
+        self.assert_is_enabled(self.rf_id('max'))
+        self.assert_is_enabled(self.rf_id('min'))
 
         # check values are the same in the form as user previously selected      
         self.assertEqual(simulation.name, self.get_selected_option_text(self.lc_id('dark_matter_simulation')))
         self.assertEqual(galaxy_model.name, self.get_selected_option_text(self.lc_id('galaxy_model')))
-        self.assertEqual(dataset_parameter.option_label(), self.get_selected_option_text(self.lc_id('filter')))
-        self.assertEqual(max_input, self.get_selector_value(self.lc_id('max')))
-        self.assertEqual(min_input, self.get_selector_value(self.lc_id('min')))
+        self.assertEqual(dataset_parameter.option_label(), self.get_selected_option_text(self.rf_id('filter')))
+        self.assertEqual(max_input, self.get_selector_value(self.rf_id('max')))
+        self.assertEqual(min_input, self.get_selector_value(self.rf_id('min')))
 
     def test_redshift_max_redshift_min_fields_after_failed_submit(self):
         redshift_max_input = "bad number"
@@ -123,4 +137,4 @@ class FilterTests(LiveServerMGFTest):
         self.assertEqual(redshift_min_input, self.get_selector_value(self.lc_id('redshift_min')))
 
     def choose_filter(self, dataset_parameter):
-        self.select(self.lc_id('filter'), dataset_parameter.option_label())
+        self.select(self.rf_id('filter'), dataset_parameter.option_label())

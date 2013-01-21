@@ -5,6 +5,8 @@ from selenium.webdriver.firefox.webdriver import WebDriver
 import django.test
 
 import re, os
+import tao.datasets as datasets
+from tao.forms import NO_FILTER
 
 def wait(secs=1):
     import time
@@ -13,7 +15,7 @@ def wait(secs=1):
 def interact(local):
     """
         drop into an interactive shell - can be helpful for debugging
-        call like interact(locals())
+        call like interact(local=locals())
     """
     import code
     code.interact(local=local)
@@ -49,7 +51,10 @@ class LiveServerTest(django.test.LiveServerTestCase):
 
     def lc_id(self, bare_field):
         return '#id_light_cone-%s' % bare_field
-            
+
+    def rf_id(self, bare_field):
+        return '#id_record_filter-%s' % bare_field
+
     def assert_email_body_contains(self, email, text):
         pattern = re.escape(text)
         matches = re.search(pattern, email.body)
@@ -134,12 +139,12 @@ class LiveServerTest(django.test.LiveServerTestCase):
         self.selenium.get(self.get_full_url(url_name, *args, **kwargs))
         
     def get_actual_filter_options(self):
-        option_selector = '%s option' % self.lc_id('filter')
-        return [x.text for x in self.selenium.find_elements_by_css_selector(option_selector)]
+        option_selector = '%s option' % self.rf_id('filter')
+        return [x.get_attribute('value').encode('ascii') for x in self.selenium.find_elements_by_css_selector(option_selector)]
     
-    def get_expected_filter_options(self, dataset_parameters):
-        normal_parameters = [x.option_label() for x in dataset_parameters]
-        return ['No Filter'] + normal_parameters
+    def get_expected_filter_options(self, data_set_id):
+        normal_parameters = datasets.filter_choices(data_set_id)
+        return [NO_FILTER] + [str(x.id) for x in normal_parameters]
 
     def get_actual_snapshot_options(self):
         option_selector = '%s option' % self.lc_id('option')
@@ -184,9 +189,11 @@ class LiveServerTest(django.test.LiveServerTestCase):
     
     def select_dark_matter_simulation(self, simulation):
         self.select(self.lc_id('dark_matter_simulation'), simulation.name)
+        wait(0.5)
         
     def select_galaxy_model(self, galaxy_model):
         self.select(self.lc_id('galaxy_model'), galaxy_model.name)
+        wait(0.5)
         
     #a function to make a list of list of text inside the table
     def table_as_text_rows(self, selector):
