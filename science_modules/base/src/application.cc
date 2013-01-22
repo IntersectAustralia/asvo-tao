@@ -17,5 +17,14 @@ namespace tao {
 
       // Add database name.
       dict.add_option( new options::string( "database" ) );
+
+      // Output options.
+      dict.add_option( new options::string( "outputdir", "." ) );
+      dict.add_option( new options::string( "logdir", "." ) );
+
+      // Record filter.
+      dict.add_option( new options::string( "filter-type", "" ), "workflow:record-filter" );
+      dict.add_option( new options::string( "filter-min", "" ), "workflow:record-filter" );
+      dict.add_option( new options::string( "filter-max", "" ), "workflow:record-filter" );
    }
 }

@@ -92,6 +92,9 @@ namespace tao {
       real_type
       redshift() const;
 
+      const set<string>&
+      output_fields() const;
+
    protected:
 
       ///
@@ -145,6 +148,7 @@ namespace tao {
    protected:
 
       string _box_type;
+      string _box_repeat;
       vector<string> _table_names;
       vector<real_type> _snap_redshifts;
       real_type _domain_size;
@@ -160,7 +164,7 @@ namespace tao {
       range<real_type> _dist_range;
       set<string> _output_fields;
       string _filter;
-      real_type _filter_min, _filter_max;
+      string _filter_min, _filter_max;
       real_type _h0;
 
       string _query_template;
@@ -176,6 +180,8 @@ namespace tao {
       soci::rowset<soci::row>::const_iterator _cur_row;
 
       bool _use_bsp;
+      string _snap_red_table;
+      map<string,string> _field_map;
    };
 }
 

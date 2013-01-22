@@ -35,6 +35,7 @@ namespace tao {
       bool _connected;
       soci::session _sql;
       string _dbtype, _dbname, _dbhost, _dbport, _dbuser, _dbpass;
+      string _tree_pre;
    };
 }
 

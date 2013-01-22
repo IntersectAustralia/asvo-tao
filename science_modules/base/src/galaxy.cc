@@ -48,17 +48,17 @@ namespace tao {
    galaxy::x() const
    {
       // This is ridiculous, but it seems sqlite represents
-      // modified aliases, (0 + posx + 0) AS newx, as strings.
+      // modified aliases, (0 + posx + 0) AS pos_x, as strings.
       // "Surely not!?" you say, but indeed it is so. This
       // means sqlite databases won't have the correct rotated/
-      // translated values used as newx, newy, newz.
+      // translated values used as pos_x, pos_y, pos_z.
 #ifndef NDEBUG
-      if( _row.get_properties( "newx" ).get_data_type() == soci::dt_string )
-	 return atof( _row.get<std::string>( "newx" ).c_str() );
+      if( _row.get_properties( "pos_x" ).get_data_type() == soci::dt_string )
+	 return atof( _row.get<std::string>( "pos_x" ).c_str() );
       else
-	 return _row.get<real_type>( "newx" );
+	 return _row.get<real_type>( "pos_x" );
 #else
-      return _row.get<real_type>( "newx" );
+      return _row.get<real_type>( "pos_x" );
 #endif
    }
 
@@ -66,17 +66,17 @@ namespace tao {
    galaxy::y() const
    {
       // This is ridiculous, but it seems sqlite represents
-      // modified aliases, (0 + posx + 0) AS newx, as strings.
+      // modified aliases, (0 + posx + 0) AS pos_x, as strings.
       // "Surely not!?" you say, but indeed it is so. This
       // means sqlite databases won't have the correct rotated/
-      // translated values used as newx, newy, newz.
+      // translated values used as pos_x, pos_y, pos_z.
 #ifndef NDEBUG
-      if( _row.get_properties( "newy" ).get_data_type() == soci::dt_string )
-	 return atof( _row.get<std::string>( "newy" ).c_str() );
+      if( _row.get_properties( "pos_y" ).get_data_type() == soci::dt_string )
+	 return atof( _row.get<std::string>( "pos_y" ).c_str() );
       else
-	 return _row.get<real_type>( "newy" );
+	 return _row.get<real_type>( "pos_y" );
 #else
-      return _row.get<real_type>( "newy" );
+      return _row.get<real_type>( "pos_y" );
 #endif
    }
 
@@ -84,17 +84,17 @@ namespace tao {
    galaxy::z() const
    {
       // This is ridiculous, but it seems sqlite represents
-      // modified aliases, (0 + posx + 0) AS newx, as strings.
+      // modified aliases, (0 + posx + 0) AS pos_x, as strings.
       // "Surely not!?" you say, but indeed it is so. This
       // means sqlite databases won't have the correct rotated/
-      // translated values used as newx, newy, newz.
+      // translated values used as pos_x, pos_y, pos_z.
 #ifndef NDEBUG
-      if( _row.get_properties( "newz" ).get_data_type() == soci::dt_string )
-	 return atof( _row.get<std::string>( "newz" ).c_str() );
+      if( _row.get_properties( "pos_z" ).get_data_type() == soci::dt_string )
+	 return atof( _row.get<std::string>( "pos_z" ).c_str() );
       else
-	 return _row.get<real_type>( "newz" );
+	 return _row.get<real_type>( "pos_z" );
 #else
-      return _row.get<real_type>( "newz" );
+      return _row.get<real_type>( "pos_z" );
 #endif
    }
 
