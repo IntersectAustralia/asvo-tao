@@ -188,19 +188,21 @@ class WorkflowTests(TestCase, XmlDiffMixin):
         """) % xml_parameters
 
         light_cone_form = make_form({}, LightConeForm, form_parameters, prefix='light_cone')
+        mock_ui_holder = MockUIHolder(light_cone_form)
         sed_form = make_form({}, SEDForm, self.sed_parameters, prefix='sed')
-        record_filter_form = make_form({}, RecordFilterForm, {'filter':self.filter.id,'min':str(10E+11)}, ui_holder=MockUIHolder(light_cone_form), prefix='record_filter')
+        record_filter_form = make_form({}, RecordFilterForm, {'filter':self.filter.id,'min':str(10E+11)}, ui_holder=mock_ui_holder, prefix='record_filter')
         output_form = make_form({}, OutputFormatForm, {'supported_formats': 'csv'}, prefix='output_format')
         self.assertEqual({}, light_cone_form.errors)
         self.assertEqual({}, sed_form.errors)
         self.assertEqual({}, record_filter_form.errors)
         self.assertEqual({}, output_form.errors)
 
-        job = workflow.save(self.user, [light_cone_form, sed_form, record_filter_form, output_form])
+        mock_ui_holder.set_forms([light_cone_form, sed_form, record_filter_form, output_form])
+        job = workflow.save(self.user, mock_ui_holder)
         actual_parameter_xml = job.parameters
 
-        print actual_parameter_xml
         self.assertXmlEqual(expected_parameter_xml, actual_parameter_xml)
+        self.assertEqual(self.dataset.database, job.database)
 
     def test_box(self):
         form_parameters = {
@@ -333,16 +335,18 @@ class WorkflowTests(TestCase, XmlDiffMixin):
         """) % xml_parameters
 
         light_cone_form = make_form({}, LightConeForm, form_parameters, prefix='light_cone')
+        mock_ui_holder = MockUIHolder(light_cone_form)
         sed_form = make_form({}, SEDForm, self.sed_parameters, prefix='sed')
-        record_filter_form = make_form({}, RecordFilterForm, {'filter':self.filter.id,'max':str(10E+11)}, ui_holder=MockUIHolder(light_cone_form), prefix='record_filter')
+        record_filter_form = make_form({}, RecordFilterForm, {'filter':self.filter.id,'max':str(10E+11)}, ui_holder=mock_ui_holder, prefix='record_filter')
         output_form = make_form({}, OutputFormatForm, {'supported_formats': 'csv'}, prefix='output_format')
         self.assertEqual({}, light_cone_form.errors)
         self.assertEqual({}, sed_form.errors)
         self.assertEqual({}, record_filter_form.errors)
         self.assertEqual({}, output_form.errors)
 
-        job = workflow.save(self.user, [light_cone_form, sed_form, record_filter_form, output_form])
+        mock_ui_holder.set_forms([light_cone_form, sed_form, record_filter_form, output_form])
+        job = workflow.save(self.user, mock_ui_holder)
         actual_parameter_xml = job.parameters
 
-        print actual_parameter_xml
         self.assertXmlEqual(expected_parameter_xml, actual_parameter_xml)
+        self.assertEqual(self.dataset.database, job.database)

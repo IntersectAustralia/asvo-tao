@@ -27,8 +27,8 @@ class UIModulesHolder:
     def raw_data(self, module_name, var_name):
         return self._dict[module_name].data[module_name + '-' + var_name]
 
-#    def __getitem__(self, module_name):
-#        return self._dict.get(module_name)
+    def cleaned_data(self, module_name, var_name):
+        return self._dict[module_name].cleaned_data[var_name]
 
     def validate(self):
         vals = [v.is_valid() for v in self._forms]

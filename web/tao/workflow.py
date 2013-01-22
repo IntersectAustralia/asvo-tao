@@ -2,14 +2,15 @@
     module responsible for constructing the parameters
 """
 
-from tao.xml_util import create_root, find_or_create, child_element, xml_print
 
 from tao import models, time
+from tao.datasets import dataset_get
+from tao.xml_util import create_root, find_or_create, child_element, xml_print
 
-from decimal import Decimal
 
-def save(user, forms):
-    job = models.Job(user=user, parameters=_make_parameters(user, forms))
+def save(user, ui_holder):
+    dataset = dataset_get(ui_holder.cleaned_data('light_cone', 'galaxy_model'))
+    job = models.Job(user=user, parameters=_make_parameters(user, ui_holder.forms()), database=dataset.database)
     job.save()
     return job
 

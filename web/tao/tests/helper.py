@@ -40,3 +40,13 @@ class MockUIHolder:
     def raw_data(self, module_name, var_name):
         if module_name != 'light_cone': raise Exception("I am mock!")
         return self.light_cone_form.data[module_name + '-' + var_name]
+
+    def cleaned_data(self, module_name, var_name):
+        if module_name != 'light_cone': raise Exception("I am mock!")
+        return self.light_cone_form.cleaned_data[var_name]
+
+    def forms(self):
+        return self._forms
+
+    def set_forms(self, forms):
+        self._forms = forms
