@@ -19,7 +19,7 @@ def index(request):
         ui_holder = UIModulesHolder(request.POST)
         if ui_holder.validate():
             user = models.User.objects.get(username=request.user)
-            workflow.save(user, ui_holder.forms())
+            workflow.save(user, ui_holder)
             messages.info(request, _("Your job was held successfully."))
             return redirect(reverse('held_jobs'))
     else:

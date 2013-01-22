@@ -84,6 +84,7 @@ class RejectForm(forms.Form):
 
 class OutputFormatForm(BetterForm):
     EDIT_TEMPLATE = 'mock_galaxy_factory/output_format.html'
+    MODULE_VERSION = 1
 
     class Meta:
         fieldsets = [('primary', {
@@ -96,20 +97,15 @@ class OutputFormatForm(BetterForm):
         self.fields['supported_formats'] = forms.ChoiceField(choices=[(x['value'], x['text']) for x in tao_settings.OUTPUT_FORMATS])
 
     def to_xml(self, parent_xml_element):
-        output_format_form = self
-        from tao.workflow import param, add_parameters
-        from lxml import etree
+        from tao.xml_util import find_or_create, child_element
 
-        selected_output_format = output_format_form.cleaned_data['supported_formats']
-        output_parameter = [
-            param('format', selected_output_format)
-        ]
-
-        output_module = etree.SubElement(parent_xml_element, 'module', name='output-file')
-        add_parameters(output_module, output_parameter)
+        of_elem = find_or_create(parent_xml_element, 'output-file')
+        child_element(of_elem, 'module-version', text=OutputFormatForm.MODULE_VERSION)
+        child_element(of_elem, 'format', text=self.cleaned_data['supported_formats'])
 
 class RecordFilterForm(BetterForm):
     EDIT_TEMPLATE = 'mock_galaxy_factory/record_filter.html'
+    MODULE_VERSION = 1
 
     max = forms.DecimalField(required=False, label=_('Max'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
     min = forms.DecimalField(required=False, label=_('Min'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
@@ -145,26 +141,21 @@ class RecordFilterForm(BetterForm):
         return self.cleaned_data
 
     def to_xml(self, parent_xml_element):
-        from tao.workflow import param, add_parameters
-        from lxml import etree
+        from tao.xml_util import find_or_create, child_element
 
         selected_filter = self.cleaned_data['filter']
-        if selected_filter != NO_FILTER:
-            filter_parameter = DataSetProperty.objects.get(pk=selected_filter)
-        else:
-            filter_parameter = None
-        filter_parameters = []
-        if filter_parameter is not None:
-            filter_parameters.append(param('filter-type', filter_parameter.name))
-            filter_min = self.cleaned_data['min']
-            filter_max = self.cleaned_data['max']
-            if filter_min != '':
-                filter_parameters.append(param('filter-min', filter_min, units=filter_parameter.units))
-            if filter_max != '':
-                filter_parameters.append(param('filter-max', filter_max, units=filter_parameter.units))
+        if selected_filter == NO_FILTER:
+            return
 
-        record_filter_module = etree.SubElement(parent_xml_element, 'module', name='record-filter')
-        add_parameters(record_filter_module, filter_parameters)
+        filter_parameter = DataSetProperty.objects.get(pk=selected_filter)
+
+        rf_elem = find_or_create(parent_xml_element, 'record-filter')
+        child_element(rf_elem, 'module-version', text=RecordFilterForm.MODULE_VERSION)
+        child_element(rf_elem, 'filter-type', filter_parameter.name)
+        filter_min = self.cleaned_data['min']
+        filter_max = self.cleaned_data['max']
+        child_element(rf_elem, 'filter-min', text=str(filter_min), units=filter_parameter.units)
+        child_element(rf_elem, 'filter-max', text=str(filter_max), units=filter_parameter.units)
 
 
 

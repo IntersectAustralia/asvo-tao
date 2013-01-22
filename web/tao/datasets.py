@@ -5,7 +5,10 @@
         * stellar models
 """
 
-from . import models
+from tao import models
+
+def dataset_get(dataset_id):
+    return models.DataSet.objects.get(pk=dataset_id)
 
 def dataset_for_simulation_and_galaxy_model(simulation_id, galaxy_model_id):
     """
