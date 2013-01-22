@@ -71,4 +71,4 @@ class StellarModelFactory(factory.Factory):
 class SnapshotFactory(factory.Factory):
     FACTORY_FOR = Snapshot
 
-    redshift = factory.Sequence(lambda n: n)
+    redshift = factory.Sequence(lambda n: str(int(n)/10.))
