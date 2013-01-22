@@ -121,6 +121,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
             'snapshot': Snapshot.objects.all()[0].id,
             },prefix='light_cone')
 
+        self.assertEqual({}, light_cone_form.errors)
         self.assertTrue(light_cone_form.is_valid())
 
     def test_min_less_than_max_passes(self):

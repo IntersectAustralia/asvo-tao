@@ -63,7 +63,27 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.select_galaxy_model(second_galaxy_model)
         
         self.assert_galaxy_model_info_shown(second_galaxy_model)
-            
+
+    def get_field_by_value_in_control_group(self, value, name):
+        control_group = self.selenium.find_elements_by_name(name)
+        for field in control_group:
+            if field.get_attribute('value') == value:
+                return field
+        raise ValueError(value + 'not in ' + name + '_list')
+
+    def test_unique_light_cone_selected_on_initial_load(self):
+        initial_selection = self.get_selected_option_text(self.lc_id('catalogue_geometry'))
+        self.assertEqual('Light-Cone', initial_selection)
+        self.assert_are_displayed('light_cone-light_cone_type')
+        self.assertTrue(self.get_field_by_value_in_control_group('unique', 'light_cone-light_cone_type').is_selected())
+
+    def test_unique_random_display_on_geometry_change(self):
+        self.select(self.lc_id('catalogue_geometry'), 'Box')
+        self.assert_are_not_displayed('light_cone-light_cone_type')
+
+        self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
+        self.assert_are_displayed('light_cone-light_cone_type')
+
     def assert_simulation_info_shown(self, simulation):
         """  check the name of the simulation in the sidebar is the same as simulation_name
              check the values in the side bar correspond to that simulation

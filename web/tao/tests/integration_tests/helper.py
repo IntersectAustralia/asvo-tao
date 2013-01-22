@@ -95,7 +95,15 @@ class LiveServerTest(django.test.LiveServerTestCase):
     def assert_is_disabled(self, selector):
         field = self.selenium.find_element_by_css_selector(selector)
         self.assertEqual('true', field.get_attribute('disabled'))
-    
+
+    def assert_are_displayed(self, name):
+        fields = self.selenium.find_elements_by_name(name)
+        self.assertTrue([field.is_displayed() for field in fields])
+
+    def assert_are_not_displayed(self, name):
+        fields = self.selenium.find_elements_by_name(name)
+        self.assertFalse(all([field.is_displayed() for field in fields]))
+
     def assert_is_displayed(self, selector):
         field = self.selenium.find_element_by_css_selector(selector)
         self.assertTrue(field.is_displayed())
