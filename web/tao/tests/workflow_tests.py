@@ -61,6 +61,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'redshift_max': 0.3,
             'ra_opening_angle': 71.565,
             'dec_opening_angle': 41.811,
+            'light_cone_type': 'unique',
             }
         xml_parameters = form_parameters.copy()
         xml_parameters.update({
@@ -106,9 +107,9 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                         <!-- Selected Galaxy Model -->
                         <galaxy-model>%(galaxy_model)s</galaxy-model>
 
-                        <!-- The number of light-cones to generate
-                        <box-repetition>unique | random</box-repetition>
-                        <num-cones>1</num-cones> -->
+                        <!-- The number of light-cones to generate  -->
+                        <box-repetition>unique</box-repetition>
+                        <num-cones>1</num-cones>
 
                         <!-- The min and max redshifts to filter by -->
                         <redshift-min>%(redshift_min).1f</redshift-min>
