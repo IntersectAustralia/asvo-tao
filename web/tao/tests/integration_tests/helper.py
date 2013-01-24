@@ -129,6 +129,11 @@ class LiveServerTest(django.test.LiveServerTestCase):
                 self.select(selector, str(text_to_input))
             else:
                 elem.send_keys(str(text_to_input))
+
+    def click(self, elem_id):
+        elem = self.selenium.find_element_by_id(elem_id)
+        elem.click()
+        wait(0.5)
             
     def login(self, username, password):
         self.visit('login')

@@ -23,7 +23,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         simulation = SimulationFactory.create()
         galaxy_model = GalaxyModelFactory.create()
         self.dataset = DataSetFactory.create(simulation=simulation, galaxy_model=galaxy_model)
-        DataSetPropertyFactory.create(dataset=self.dataset)
+        self.filter = DataSetPropertyFactory.create(dataset=self.dataset)
         SnapshotFactory.create(dataset=self.dataset)
         self.user = UserFactory.create()
         #expected_timestamp = "2012-11-13 13:45:32+1000"
@@ -34,6 +34,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
             'catalogue_geometry': LightConeForm.CONE,
             'dark_matter_simulation': 1,
             'galaxy_model': self.dataset.id,
+            'output_properties': [str(self.filter.id)],
             'ra_opening_angle': '2',
             'dec_opening_angle': '2',
             'redshift_min': '1',
@@ -44,6 +45,14 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
     def tearDown(self):
         super(MockGalaxyFactoryTests, self).tearDown()
         time.frozen_time = None
+
+    def test_output_properties_is_required(self):
+        light_cone_form = make_form(self.default_form_values,LightConeForm,{
+            'output_properties': [],
+            },prefix='light_cone')
+        self.assertEqual({
+            'output_properties': [u'This field is required.'],
+            }, light_cone_form.errors)
 
     def test_ra_dec_min_max(self):
         light_cone_form = make_form(self.default_form_values,LightConeForm,{

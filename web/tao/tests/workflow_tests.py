@@ -42,6 +42,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
         self.galaxy_model = GalaxyModelFactory.create()
         self.dataset = DataSetFactory.create(simulation=self.simulation, galaxy_model=self.galaxy_model)
         self.filter = DataSetPropertyFactory.create(name='CentralMvir', units="Msun/h", dataset=self.dataset)
+        self.output_prop = DataSetPropertyFactory.create(name='CentralMvir', dataset=self.dataset, is_filter=False)
         self.snapshot = SnapshotFactory.create(dataset=self.dataset, redshift='0.1')
         stellar_model = StellarModelFactory.create(name='Stella')
         self.sed_parameters = {'single_stellar_population_model': stellar_model.id}
@@ -61,6 +62,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'redshift_max': 0.3,
             'ra_opening_angle': 71.565,
             'dec_opening_angle': 41.811,
+            'output_properties' : [self.filter.id, self.output_prop.id],
             'light_cone_type': 'unique',
             }
         xml_parameters = form_parameters.copy()
@@ -68,6 +70,11 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'username' : self.user.username,
             'dark_matter_simulation': self.simulation.name,
             'galaxy_model': self.galaxy_model.name,
+            'output_properties_1_name' : self.filter.name,
+            'output_properties_1_label' : self.filter.label,
+            'output_properties_1_units' : self.filter.units,
+            'output_properties_2_name' : self.output_prop.name,
+            'output_properties_2_label' : self.output_prop.label,
             })
         xml_parameters.update({
             'filter': self.filter.name,
@@ -121,13 +128,11 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                         <dec-min units="deg">0.0</dec-min>
                         <dec-max units="deg">%(dec_opening_angle).3f</dec-max>
 
-                        <!-- List of fields to be included in the output file
+                        <!-- List of fields to be included in the output file -->
                         <output-fields>
-                            <item label="Coordinates (x,y,z)">coordinates</item>
-                            <item label="Velocity (Vx,Vy,Vz)">velocity</item>
-                            <item label="Disc Radius" units="Mpc">disc-radius</item>
-                            <item label="Bulge mass" units="10^10 M☉/h">bulge-mass</item>
-                        </output-fields> -->
+                            <item label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
+                            <item label="%(output_properties_2_label)s">%(output_properties_2_name)s</item>
+                        </output-fields>
 
                         <!-- RNG Seed -->
                         <!-- This will be added by the workflow after the job has been completed
@@ -210,6 +215,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'catalogue_geometry': 'box',
             'dark_matter_simulation': self.simulation.id,
             'galaxy_model': self.galaxy_model.id,
+            'output_properties' : [self.filter.id],
             'snapshot': self.snapshot.id,
             'box_size': 20,
             }
@@ -218,6 +224,9 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'username' : self.user.username,
             'dark_matter_simulation': self.simulation.name,
             'galaxy_model': self.galaxy_model.name,
+            'output_properties_1_name' : self.filter.name,
+            'output_properties_1_label' : self.filter.label,
+            'output_properties_1_units' : self.filter.units,
             'redshift' : float(self.snapshot.redshift),
             })
         xml_parameters.update({
@@ -268,13 +277,11 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                         <!-- Size of box to return -->
                         <query-box-size units="Mpc">%(box_size)d</query-box-size>
 
-                        <!-- List of fields to be included in the output file
+                        <!-- List of fields to be included in the output file -->
                         <output-fields>
-                            <item label="Coordinates (x,y,z)">coordinates</item>
-                            <item label="Velocity (Vx,Vy,Vz)">velocity</item>
-                            <item label="Disc Radius" units="Mpc">disc-radius</item>
-                            <item label="Bulge mass" units="10^10 M☉/h">bulge-mass</item>
-                        </output-fields> -->
+                            <item label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
+                        </output-fields>
+
 
                         <!-- RNG Seed -->
                         <!-- This will be added by the workflow after the job has been completed
