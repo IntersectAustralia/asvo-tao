@@ -67,6 +67,18 @@ def filters(request, sid, gid):
     str = serializers.serialize('json', objects)
     return HttpResponse(str, mimetype="application/json")
 
+@researcher_required
+def output_choices(request, id):
+    """
+    returns output choices for given dataset id
+    :param request:
+    :param id: data set id
+    :return: HttpResponse in json format
+    """
+    objects = datasets.output_choices(id)
+    str = serializers.serialize('json', objects)
+    return HttpResponse(str, mimetype="application/json")
+
 
 def bad_request(request):
     """

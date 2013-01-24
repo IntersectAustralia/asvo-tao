@@ -20,10 +20,10 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
     def setUp(self):
         super(MockGalaxyFactoryTests, self).setUp()
 
-        simulation = SimulationFactory.create()
+        self.simulation = SimulationFactory.create()
         galaxy_model = GalaxyModelFactory.create()
-        self.dataset = DataSetFactory.create(simulation=simulation, galaxy_model=galaxy_model)
-        DataSetPropertyFactory.create(dataset=self.dataset)
+        self.dataset = DataSetFactory.create(simulation=self.simulation, galaxy_model=galaxy_model)
+        self.filter = DataSetPropertyFactory.create(dataset=self.dataset)
         SnapshotFactory.create(dataset=self.dataset)
         self.user = UserFactory.create()
         #expected_timestamp = "2012-11-13 13:45:32+1000"
@@ -34,6 +34,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
             'catalogue_geometry': LightConeForm.CONE,
             'dark_matter_simulation': 1,
             'galaxy_model': self.dataset.id,
+            'output_properties': [str(self.filter.id)],
             'ra_opening_angle': '2',
             'dec_opening_angle': '2',
             'redshift_min': '1',
@@ -44,6 +45,14 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
     def tearDown(self):
         super(MockGalaxyFactoryTests, self).tearDown()
         time.frozen_time = None
+
+    def test_output_properties_is_required(self):
+        light_cone_form = make_form(self.default_form_values,LightConeForm,{
+            'output_properties': [],
+            },prefix='light_cone')
+        self.assertEqual({
+            'output_properties': [u'This field is required.'],
+            }, light_cone_form.errors)
 
     def test_ra_dec_min_max(self):
         light_cone_form = make_form(self.default_form_values,LightConeForm,{
@@ -82,7 +91,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
     def test_ra_dec_not_required_for_light_box(self):
         light_cone_form = make_form(self.default_form_values,LightConeForm,{
             'catalogue_geometry': LightConeForm.BOX,
-            'box_size': 1,
+            'box_size': self.simulation.box_size,
             'snapshot': Snapshot.objects.all()[0].id,
             'ra_min': '',
             'dec_min': '',
@@ -92,6 +101,26 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         light_cone_form.is_valid()
 
         self.assertEqual({}, light_cone_form.errors)
+
+    def test_box_size_greater_than_zero(self):
+        light_cone_form = make_form(self.default_form_values,LightConeForm,{
+            'catalogue_geometry': LightConeForm.BOX,
+            'box_size': -10,
+            'snapshot': Snapshot.objects.all()[0].id,
+            },prefix='light_cone')
+
+        self.assertFalse(light_cone_form.is_valid())
+        self.assertTrue('box_size' in light_cone_form.errors)
+
+    def test_box_size_small_or_equal_to_simulation(self):
+        light_cone_form = make_form(self.default_form_values,LightConeForm,{
+            'catalogue_geometry': LightConeForm.BOX,
+            'box_size': self.simulation.box_size + 1,
+            'snapshot': Snapshot.objects.all()[0].id,
+            },prefix='light_cone')
+
+        self.assertFalse(light_cone_form.is_valid())
+        self.assertTrue('box_size' in light_cone_form.errors)
 
     def test_box_size_is_not_required_for_box(self):
         light_cone_form = make_form(self.default_form_values,LightConeForm,{
