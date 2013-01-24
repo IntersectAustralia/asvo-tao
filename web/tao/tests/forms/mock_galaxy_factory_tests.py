@@ -20,9 +20,9 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
     def setUp(self):
         super(MockGalaxyFactoryTests, self).setUp()
 
-        simulation = SimulationFactory.create()
+        self.simulation = SimulationFactory.create()
         galaxy_model = GalaxyModelFactory.create()
-        self.dataset = DataSetFactory.create(simulation=simulation, galaxy_model=galaxy_model)
+        self.dataset = DataSetFactory.create(simulation=self.simulation, galaxy_model=galaxy_model)
         self.filter = DataSetPropertyFactory.create(dataset=self.dataset)
         SnapshotFactory.create(dataset=self.dataset)
         self.user = UserFactory.create()
@@ -91,7 +91,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
     def test_ra_dec_not_required_for_light_box(self):
         light_cone_form = make_form(self.default_form_values,LightConeForm,{
             'catalogue_geometry': LightConeForm.BOX,
-            'box_size': 1,
+            'box_size': self.simulation.box_size,
             'snapshot': Snapshot.objects.all()[0].id,
             'ra_min': '',
             'dec_min': '',
@@ -101,6 +101,26 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         light_cone_form.is_valid()
 
         self.assertEqual({}, light_cone_form.errors)
+
+    def test_box_size_greater_than_zero(self):
+        light_cone_form = make_form(self.default_form_values,LightConeForm,{
+            'catalogue_geometry': LightConeForm.BOX,
+            'box_size': -10,
+            'snapshot': Snapshot.objects.all()[0].id,
+            },prefix='light_cone')
+
+        self.assertFalse(light_cone_form.is_valid())
+        self.assertTrue('box_size' in light_cone_form.errors)
+
+    def test_box_size_small_or_equal_to_simulation(self):
+        light_cone_form = make_form(self.default_form_values,LightConeForm,{
+            'catalogue_geometry': LightConeForm.BOX,
+            'box_size': self.simulation.box_size + 1,
+            'snapshot': Snapshot.objects.all()[0].id,
+            },prefix='light_cone')
+
+        self.assertFalse(light_cone_form.is_valid())
+        self.assertTrue('box_size' in light_cone_form.errors)
 
     def test_box_size_is_not_required_for_box(self):
         light_cone_form = make_form(self.default_form_values,LightConeForm,{
