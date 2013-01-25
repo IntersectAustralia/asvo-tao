@@ -20,7 +20,7 @@
                     {% if show_field.status %}
                         <th>Status</th>
                     {% endif %}
-                        <th>Parameters</th>
+                        <th>Description</th>
                     {% if show_field.output_path %}
                         <th>Output Path</th>
                     {% endif %}
@@ -39,7 +39,7 @@
                         {% if show_field.status %}
                             <td>{{ job.status }}</td>
                         {% endif %}
-                        <td>{{ job.parameters|linebreaks }}</td>
+                        <td>{{ job.description|linebreaks }}</td>
                         {% if show_field.output_path %}
                             <td>{{ job.output_path }}</td>
                         {% endif %}

@@ -1,8 +1,8 @@
 from django.utils.html import strip_tags
 
 from tao.tests.integration_tests.helper import LiveServerTest
-from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory
-from tao.models import Simulation, GalaxyModel
+from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, JobFactory
+from tao.models import Simulation, GalaxyModel, Job
 
 class MockGalaxyFactoryTest(LiveServerTest):
 
@@ -22,11 +22,11 @@ class MockGalaxyFactoryTest(LiveServerTest):
         
         username = "person"
         password = "funnyfish"
-        UserFactory.create(username=username, password=password)
+        self.user = UserFactory.create(username=username, password=password)
         self.login(username, password)
         
         self.visit('mock_galaxy_factory')
-        
+
     def test_box_size_field_on_initial_load(self):
         initial_selection = self.get_selected_option_text(self.lc_id('catalogue_geometry'))
         self.assertEqual('Light-Cone', initial_selection)
@@ -83,6 +83,14 @@ class MockGalaxyFactoryTest(LiveServerTest):
 
         self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
         self.assert_are_displayed('light_cone-light_cone_type')
+
+    def test_description_displayed_in_listing(self):
+        from tao.tests.integration_tests.helper import wait
+        job = JobFactory.create(user=self.user)
+        wait(1)
+        self.visit('held_jobs')
+        self.assert_page_has_content(job.description)
+
 
     def assert_simulation_info_shown(self, simulation):
         """  check the name of the simulation in the sidebar is the same as simulation_name

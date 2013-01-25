@@ -8,6 +8,7 @@ from tao.models import Job, User, Simulation, GalaxyModel, DataSet, DataSetPrope
 class JobFactory(factory.Factory):
     FACTORY_FOR = Job
     database = factory.Sequence(lambda n: 'database_' + n)
+    description = factory.Sequence(lambda n: 'description job ' + n)
     
     @classmethod
     def _prepare(cls, create, **kwargs):
