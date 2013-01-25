@@ -5,7 +5,10 @@
         * stellar models
 """
 
-from . import models
+from tao import models
+
+def dataset_get(dataset_id):
+    return models.DataSet.objects.get(pk=dataset_id)
 
 def dataset_for_simulation_and_galaxy_model(simulation_id, galaxy_model_id):
     """
@@ -38,10 +41,6 @@ def galaxy_model_choices():
     """
     return [(x.id, x.galaxy_model.name, {'data-galaxy_model_id': str(x.galaxy_model_id)}) for x in models.DataSet.objects.all().select_related('galaxy_model').order_by('galaxy_model__name')]
 
-def filter_choices(data_set_id):
-    dataset = models.DataSet.objects.get(id=data_set_id)
-    return models.DataSetProperty.objects.filter(dataset_id = dataset.id, is_filter = True).order_by('name')
-
 def stellar_model_choices():
     """
         for now the SED has a single selection value, which is still TBD.
@@ -51,3 +50,15 @@ def stellar_model_choices():
 def snapshot_choices():
     return [(x.id, str(x.redshift), {'data-galaxy_model_id': str(x.dataset.galaxy_model_id), 'data-simulation_id': str(x.dataset.simulation_id)})
             for x in models.Snapshot.objects.order_by('redshift')]
+
+def filter_choices(data_set_id):
+    dataset = models.DataSet.objects.get(id=data_set_id)
+    return models.DataSetProperty.objects.filter(dataset_id = dataset.id, is_filter = True).order_by('name')
+
+def output_choices(data_set_id):
+    dataset = models.DataSet.objects.get(id=data_set_id)
+    return models.DataSetProperty.objects.filter(dataset_id = dataset.id, is_output = True).order_by('name')
+
+def output_property(id):
+    return models.DataSetProperty.objects.get(pk=id, is_output=True)
+

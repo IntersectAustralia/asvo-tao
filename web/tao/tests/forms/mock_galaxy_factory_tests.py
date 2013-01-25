@@ -13,31 +13,17 @@ from tao.tests.support.factories import SimulationFactory, GalaxyModelFactory, D
 from tao.tests.support.xml import XmlDiffMixin
 
 from tao.tests.support import UtcPlusTen
-
-class MockUIHolder:
-    """
-    Just a very simple mock of the UI Holder to make sure the RecordFilterForm works
-    """
-    def __init__(self, light_cone_form):
-        self.light_cone_form = light_cone_form
-
-    def is_bound(self, module_name):
-        if module_name != 'light_cone': raise Exception("I am mock!")
-        return self.light_cone_form.is_bound
-
-    def raw_data(self, module_name, var_name):
-        if module_name != 'light_cone': raise Exception("I am mock!")
-        return self.light_cone_form.data[module_name + '-' + var_name]
+from tao.tests.helper import MockUIHolder, make_form
 
 class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
 
     def setUp(self):
         super(MockGalaxyFactoryTests, self).setUp()
 
-        simulation = SimulationFactory.create()
+        self.simulation = SimulationFactory.create()
         galaxy_model = GalaxyModelFactory.create()
-        self.dataset = DataSetFactory.create(simulation=simulation, galaxy_model=galaxy_model)
-        DataSetPropertyFactory.create(dataset=self.dataset)
+        self.dataset = DataSetFactory.create(simulation=self.simulation, galaxy_model=galaxy_model)
+        self.filter = DataSetPropertyFactory.create(dataset=self.dataset)
         SnapshotFactory.create(dataset=self.dataset)
         self.user = UserFactory.create()
         #expected_timestamp = "2012-11-13 13:45:32+1000"
@@ -48,6 +34,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
             'catalogue_geometry': LightConeForm.CONE,
             'dark_matter_simulation': 1,
             'galaxy_model': self.dataset.id,
+            'output_properties': [str(self.filter.id)],
             'ra_opening_angle': '2',
             'dec_opening_angle': '2',
             'redshift_min': '1',
@@ -59,37 +46,37 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         super(MockGalaxyFactoryTests, self).tearDown()
         time.frozen_time = None
 
-    def make_form(self, form_class, values, prefix=None, ui_holder=None):
-        if prefix in self.default_form_values:
-            default_values = self.default_form_values[prefix]
-        else:
-            default_values = {}
-        default_values.update(values)
-        return form_class(ui_holder, dict([(prefix + '-'+ k,v) for k,v in default_values.iteritems()]), prefix=prefix)
+    def test_output_properties_is_required(self):
+        light_cone_form = make_form(self.default_form_values,LightConeForm,{
+            'output_properties': [],
+            },prefix='light_cone')
+        self.assertEqual({
+            'output_properties': [u'This field is required.'],
+            }, light_cone_form.errors)
 
     def test_ra_dec_min_max(self):
-        light_cone_form = self.make_form(LightConeForm,{
+        light_cone_form = make_form(self.default_form_values,LightConeForm,{
             'catalogue_geometry': LightConeForm.CONE,
             'ra_opening_angle': '-1',
             'dec_opening_angle': '-1',
-        },'light_cone')
+        }, prefix='light_cone')
         self.assertEqual({
             'ra_opening_angle': ['Ensure this value is greater than or equal to 0.'],
             'dec_opening_angle': ['Ensure this value is greater than or equal to 0.'],
         }, light_cone_form.errors)
 
-        light_cone_form = self.make_form(LightConeForm,{
+        light_cone_form = make_form(self.default_form_values,LightConeForm,{
             'catalogue_geometry': LightConeForm.CONE,
             'ra_opening_angle': '362',
             'dec_opening_angle': '362',
-        },prefix='light_cone')
+        }, prefix='light_cone')
         self.assertEqual({
             'ra_opening_angle': ['Ensure this value is less than or equal to 360.'],
             'dec_opening_angle': ['Ensure this value is less than or equal to 360.'],
         }, light_cone_form.errors)
 
     def test_ra_dec_required_for_light_cone(self):
-        light_cone_form = self.make_form(LightConeForm,{
+        light_cone_form = make_form(self.default_form_values,LightConeForm,{
             'catalogue_geometry': LightConeForm.CONE,
             'ra_opening_angle': '',
             'dec_opening_angle': ''
@@ -102,9 +89,9 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         }, light_cone_form.errors)
 
     def test_ra_dec_not_required_for_light_box(self):
-        light_cone_form = self.make_form(LightConeForm,{
+        light_cone_form = make_form(self.default_form_values,LightConeForm,{
             'catalogue_geometry': LightConeForm.BOX,
-            'box_size': 1,
+            'box_size': self.simulation.box_size,
             'snapshot': Snapshot.objects.all()[0].id,
             'ra_min': '',
             'dec_min': '',
@@ -115,283 +102,103 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
 
         self.assertEqual({}, light_cone_form.errors)
 
+    def test_box_size_greater_than_zero(self):
+        light_cone_form = make_form(self.default_form_values,LightConeForm,{
+            'catalogue_geometry': LightConeForm.BOX,
+            'box_size': -10,
+            'snapshot': Snapshot.objects.all()[0].id,
+            },prefix='light_cone')
+
+        self.assertFalse(light_cone_form.is_valid())
+        self.assertTrue('box_size' in light_cone_form.errors)
+
+    def test_box_size_small_or_equal_to_simulation(self):
+        light_cone_form = make_form(self.default_form_values,LightConeForm,{
+            'catalogue_geometry': LightConeForm.BOX,
+            'box_size': self.simulation.box_size + 1,
+            'snapshot': Snapshot.objects.all()[0].id,
+            },prefix='light_cone')
+
+        self.assertFalse(light_cone_form.is_valid())
+        self.assertTrue('box_size' in light_cone_form.errors)
+
     def test_box_size_is_not_required_for_box(self):
-        light_cone_form = self.make_form(LightConeForm,{
+        light_cone_form = make_form(self.default_form_values,LightConeForm,{
             'catalogue_geometry': LightConeForm.BOX,
             'snapshot': Snapshot.objects.all()[0].id,
             },prefix='light_cone')
 
+        self.assertEqual({}, light_cone_form.errors)
         self.assertTrue(light_cone_form.is_valid())
 
     def test_min_less_than_max_passes(self):
-        light_cone_form = self.make_form(LightConeForm,{'max': '127', 'min': '3'},prefix='light_cone')
+        light_cone_form = make_form(self.default_form_values,LightConeForm,{'max': '127', 'min': '3'},prefix='light_cone')
         light_cone_form.is_valid()
 
         self.assertEqual({}, light_cone_form.errors)
         self.assertTrue(light_cone_form.is_valid())
 
     def test_redshift_min_less_than_redshift_max_passes(self):
-        light_cone_form = self.make_form(LightConeForm,{'redshift_max': '2', 'redshift_min': '1.5'},prefix='light_cone')
+        light_cone_form = make_form(self.default_form_values,LightConeForm,{'redshift_max': '2', 'redshift_min': '1.5'},prefix='light_cone')
         light_cone_form.is_valid()
 
         self.assertEqual({}, light_cone_form.errors)
         self.assertTrue(light_cone_form.is_valid())
 
     def test_min_equal_max_fails(self):
-        light_cone_form = self.make_form(LightConeForm,{},prefix='light_cone')
+        light_cone_form = make_form(self.default_form_values,LightConeForm,{},prefix='light_cone')
 
-        record_filter_form = self.make_form(RecordFilterForm,{'max': '3', 'min': '3'}, prefix='record_filter',ui_holder=MockUIHolder(light_cone_form))
+        record_filter_form = make_form(self.default_form_values,RecordFilterForm,{'max': '3', 'min': '3'}, prefix='record_filter',ui_holder=MockUIHolder(light_cone_form))
 
         self.assertFalse(record_filter_form.is_valid())
         self.assertEqual(['The "min" field must be less than the "max" field.'], record_filter_form.errors['min'])
 
     def test_redshift_min_equal_redshift_max_fails(self):
-        light_cone_form = self.make_form(LightConeForm,{'redshift_max': '3', 'redshift_min': '3'},prefix='light_cone')
+        light_cone_form = make_form(self.default_form_values,LightConeForm,{'redshift_max': '3', 'redshift_min': '3'},prefix='light_cone')
 
         self.assertFalse(light_cone_form.is_valid())
         self.assertEqual(['The minimum redshift must be less than the maximum redshift.'], light_cone_form.errors['redshift_min'])
 
     def test_min_greater_than_max_fails(self):
-        light_cone_form = self.make_form(LightConeForm,{},prefix='light_cone')
+        light_cone_form = make_form(self.default_form_values,LightConeForm,{},prefix='light_cone')
 
-        record_filter_form = self.make_form(RecordFilterForm,{'max': '3', 'min': '9'}, prefix='record_filter',ui_holder=MockUIHolder(light_cone_form))
+        record_filter_form = make_form(self.default_form_values,RecordFilterForm,{'max': '3', 'min': '9'}, prefix='record_filter',ui_holder=MockUIHolder(light_cone_form))
 
         self.assertFalse(record_filter_form.is_valid())
         self.assertEqual(['The "min" field must be less than the "max" field.'], record_filter_form.errors['min'])
 
     def test_redshift_min_greater_than_redshift_max_fails(self):
-        light_cone_form = self.make_form(LightConeForm,{'redshift_max': '3', 'redshift_min': '9'},prefix='light_cone')
+        light_cone_form = make_form(self.default_form_values,LightConeForm,{'redshift_max': '3', 'redshift_min': '9'},prefix='light_cone')
 
         self.assertFalse(light_cone_form.is_valid())
         self.assertEqual(['The minimum redshift must be less than the maximum redshift.'], light_cone_form.errors['redshift_min'])
 
     def test_max_or_min_empty_passes(self):
-        lc_form = self.make_form(LightConeForm,{},prefix='light_cone')
+        lc_form = make_form(self.default_form_values,LightConeForm,{},prefix='light_cone')
 
-        rf_form_no_min = self.make_form(RecordFilterForm,{'max': '3', 'min': ''}, prefix='record_filter',ui_holder=MockUIHolder(lc_form))
-        rf_form_no_max = self.make_form(RecordFilterForm,{'max': '', 'min': '9'}, prefix='record_filter',ui_holder=MockUIHolder(lc_form))
+        rf_form_no_min = make_form(self.default_form_values,RecordFilterForm,{'max': '3', 'min': ''}, prefix='record_filter',ui_holder=MockUIHolder(lc_form))
+        rf_form_no_max = make_form(self.default_form_values,RecordFilterForm,{'max': '', 'min': '9'}, prefix='record_filter',ui_holder=MockUIHolder(lc_form))
 
         self.assertTrue(rf_form_no_min.is_valid())
         self.assertTrue(rf_form_no_max.is_valid())
 
     # check length of any min/max input is less than or equal to 20 characters
     def test_max_min_length(self):
-        lc_form = self.make_form(LightConeForm,{},prefix='light_cone')
-        max_overflow_form = self.make_form(RecordFilterForm,{'max': '100000000000000000000', 'min': '7'}, prefix='record_filter',ui_holder=MockUIHolder(lc_form))
+        lc_form = make_form(self.default_form_values,LightConeForm,{},prefix='light_cone')
+        max_overflow_form = make_form(self.default_form_values,RecordFilterForm,{'max': '100000000000000000000', 'min': '7'}, prefix='record_filter',ui_holder=MockUIHolder(lc_form))
         self.assertFalse(max_overflow_form.is_valid())
         self.assertEqual(['Ensure that there are no more than 20 digits in total.'], max_overflow_form.errors['max'])
 
-        min_overflow_form = self.make_form(RecordFilterForm,{'max': '2', 'min': '1.000000000000000000001'}, prefix='record_filter',ui_holder=MockUIHolder(lc_form))
+        min_overflow_form = make_form(self.default_form_values,RecordFilterForm,{'max': '2', 'min': '1.000000000000000000001'}, prefix='record_filter',ui_holder=MockUIHolder(lc_form))
         self.assertFalse(min_overflow_form.is_valid())
         self.assertEqual(['Ensure that there are no more than 20 digits in total.'], min_overflow_form.errors['min'])
 
     def test_redshift_max_redshift_min_length(self):
-        redshift_max_overflow_form = self.make_form(LightConeForm,{'redshift_max': '123456789012345678901', 'redshift_min': '7'},prefix='light_cone')
+        redshift_max_overflow_form = make_form(self.default_form_values,LightConeForm,{'redshift_max': '123456789012345678901', 'redshift_min': '7'},prefix='light_cone')
         self.assertFalse(redshift_max_overflow_form.is_valid())
         self.assertEqual(['Ensure that there are no more than 20 digits in total.'], redshift_max_overflow_form.errors['redshift_max'])
 
-        redshift_min_overflow_form = self.make_form(LightConeForm,{'redshift_max': '2', 'redshift_min': '1.0000000000000000000001'},prefix='light_cone')
+        redshift_min_overflow_form = make_form(self.default_form_values,LightConeForm,{'redshift_max': '2', 'redshift_min': '1.0000000000000000000001'},prefix='light_cone')
         self.assertFalse(redshift_min_overflow_form.is_valid())
         self.assertEqual(['Ensure that there are no more than 20 digits in total.'], redshift_min_overflow_form.errors['redshift_min'])
 
-#
-#   TODO: THIS TESTS TO BE REWRITTEN AGAINST NEW XML FORMAT
-#
-#    def test_xml_parameters(self):
-#        database_name = 'sqlite://sfh_bcgs200_full_z0.db'
-#        database_box_size = 500
-#
-#        simulation = SimulationFactory.create(box_size=database_box_size, box_size_units='Mpc')
-#        galaxy_model = GalaxyModelFactory.create()
-#        dataset = DataSetFactory.create(database=database_name, simulation=simulation, galaxy_model=galaxy_model)
-#
-#        stellar_model = StellarModelFactory.create(name='some_name')
-#
-#        filter_parameter = DataSetPropertyFactory.create(dataset=dataset, units='blah')
-#        filter_min = '0.93'
-#        filter_max = '3.345'
-#
-#        ra_opening_angle = '2.34'
-#
-#        dec_opening_angle = '32.56'
-#
-#        redshift_min = '0.1'
-#        redshift_max = '0.2'
-#
-#        lc_form = self.make_form(LightConeForm,{
-#                                   'catalogue_geometry': LightConeForm.CONE,
-#                                   'dark_matter_simulation': simulation.id,
-#                                   'galaxy_model': dataset.id,
-#                                   'ra_opening_angle': ra_opening_angle,
-#                                   'dec_opening_angle': dec_opening_angle,
-#                                   'redshift_max': redshift_max,
-#                                   'redshift_min': redshift_min,
-#                                },prefix='light_cone')
-#
-#        lc_form.is_valid()
-#        self.assertEqual({}, lc_form.errors)
-#
-#        sed_form = self.make_form(SEDForm,{'single_stellar_population_model': stellar_model.id}, prefix='sed')
-#        sed_form.is_valid()
-#
-#        record_filter_form = self.make_form(RecordFilterForm,{
-#            'filter': filter_parameter.id,
-#            'min': filter_min,
-#            'max': filter_max,
-#            }, prefix='record_filter',ui_holder=MockUIHolder(lc_form))
-#        record_filter_form.is_valid()
-#
-#        output_format_form = self.make_form(OutputFormatForm,{'supported_formats': self.output_format}, prefix='output_format')
-#        output_format_form.is_valid()
-#
-#        job = workflow.save(self.user, [lc_form, sed_form, record_filter_form, output_format_form])
-#
-#        expected_parameter_xml = stripped_joined_lines("""
-#            <?xml version="1.0" encoding="utf-8"?>
-#            <tao xmlns="http://tao.asvo.org.au/schema/module-parameters-v1" timestamp="2012-11-13T13:45:32+1000">
-#
-#                <workflow name="alpha-light-cone-image">
-#                    <param name="database-type">postgresql</param>
-#                    <param name="database-host">tao02.hpc.swin.edu.au</param>
-#                    <param name="database-name">millennium_full</param>
-#                    <param name="database-port">3306</param>
-#                    <param name="database-user"></param>
-#                    <param name="database-pass"></param>
-#                    <param name="schema-version">1.0</param>
-#                    <module name="light-cone">
-#                        <param name="query-type">%(light_cone)s</param>
-#                        <param name="simulation-box-size" units="Mpc">500</param>
-#                        <param name="redshift-min">0.1</param>
-#                        <param name="redshift-max">0.2</param>
-#                        <param name="ra-min" units="deg">0</param>
-#                        <param name="ra-max" units="deg">%(ra_opening_angle)s</param>
-#                        <param name="dec-min" units="deg">0</param>
-#                        <param name="dec-max" units="deg">%(dec_opening_angle)s</param>
-#                        <param name="filter-type">%(filter_type)s</param>
-#                        <param name="filter-min" units="%(filter_units)s">%(filter_min)s</param>
-#                        <param name="filter-max" units="%(filter_units)s">%(filter_max)s</param>
-#                    </module>
-#                    <module name="sed">
-#                        <param name="single-stellar-population-model">%(model_id)s</param>
-#                    </module>
-#                    <module name="filter">
-#                    <filter>
-#                    <waves_filename>wavelengths.dat</waves_filename>
-#                    <filter_filenames>u.dat,v.dat,zpv.dat,k.dat,zpk.dat</filter_filenames>
-#                    <vega_filename>A0V_KUR_BB.SED</vega_filename>
-#                    </filter>
-#                    </module>
-#                    <module name="output-file">
-#                        <param name="format">%(output_format)s</param>
-#                    </module>
-#                </workflow>
-#            </tao>
-#        """ % {
-#            'database_name': database_name,
-#            'light_cone': LightConeForm.CONE,
-#            'ra_opening_angle': ra_opening_angle,
-#            'dec_opening_angle': dec_opening_angle,
-#            'redshift_min': redshift_min,
-#            'filter_type': filter_parameter.name,
-#            'filter_min': filter_min,
-#            'filter_max': filter_max,
-#            'model_id': stellar_model.name,
-#            'filter_units': filter_parameter.units,
-#            'output_format': self.output_format,
-#        })
-#
-#        from lxml import etree
-#        print "EXPECTED >>", expected_parameter_xml
-#        print "ACTUAL >>", job.parameters
-#        self.assertXmlEqual(expected_parameter_xml, job.parameters)
-#
-#    def test_xml_parameters_without_filter(self):
-#        database_name = 'some database'
-#        database_box_size = 500
-#
-#        simulation = SimulationFactory.create(box_size=database_box_size, box_size_units='Mpc')
-#        galaxy_model = GalaxyModelFactory.create()
-#        dataset = DataSetFactory.create(database=database_name, simulation=simulation, galaxy_model=galaxy_model)
-#
-#        ra_opening_angle = '2.34'
-#
-#        dec_opening_angle = '32.56'
-#        redshift_min = '0.1'
-#        redshift_max = '0.2'
-#
-#        lc_form = self.make_form(LightConeForm,{
-#                                   'catalogue_geometry': LightConeForm.CONE,
-#                                   'dark_matter_simulation': simulation.id,
-#                                   'galaxy_model': dataset.id,
-#                                   'redshift_min': redshift_min,
-#                                   'redshift_max': redshift_max,
-#                                   'ra_opening_angle': ra_opening_angle,
-#                                   'dec_opening_angle': dec_opening_angle,
-#                                   'redshift_max': redshift_max,
-#                                   'redshift_min': redshift_min,
-#                                },prefix='light_cone')
-#
-#        lc_form.is_valid()  # trigger validation
-#
-#        stellar_model = StellarModelFactory.create()
-#        sed_form = self.make_form(SEDForm,{'single_stellar_population_model': stellar_model.id}, prefix='sed')
-#        sed_form.is_valid()
-#
-#        record_filter_form = self.make_form(RecordFilterForm,{'filter': NO_FILTER}, prefix='record_filter',ui_holder=MockUIHolder(lc_form))
-#        record_filter_form.is_valid()
-#
-#        output_format_form = self.make_form(OutputFormatForm,{'supported_formats': self.output_format}, prefix='output_format')
-#        output_format_form.is_valid()
-#
-#        job = workflow.save(self.user, [lc_form, sed_form, record_filter_form, output_format_form])
-#
-#        expected_parameter_xml = stripped_joined_lines("""
-#            <?xml version="1.0" encoding="utf-8"?>
-#            <tao xmlns="http://tao.asvo.org.au/schema/module-parameters-v1" timestamp="2012-11-13T13:45:32+1000">
-#
-#                <workflow name="alpha-light-cone-image">
-#                    <param name="database-type">postgresql</param>
-#                    <param name="database-host">tao02.hpc.swin.edu.au</param>
-#                    <param name="database-name">millennium_full</param>
-#                    <param name="database-port">3306</param>
-#                    <param name="database-user"></param>
-#                    <param name="database-pass"></param>
-#                    <param name="schema-version">1.0</param>
-#                    <module name="light-cone">
-#                        <param name="query-type">%(light_cone)s</param>
-#                        <param name="simulation-box-size" units="Mpc">500</param>
-#                        <param name="redshift-min">%(redshift_min)s</param>
-#                        <param name="redshift-max">%(redshift_max)s</param>
-#                        <param name="ra-min" units="deg">0</param>
-#                        <param name="ra-max" units="deg">%(ra_opening_angle)s</param>
-#                        <param name="dec-min" units="deg">0</param>
-#                        <param name="dec-max" units="deg">%(dec_opening_angle)s</param>
-#                    </module>
-#                    <module name="sed">
-#                        <param name="single-stellar-population-model">%(model_id)s</param>
-#                    </module>
-#                    <module name="filter">
-#                    <filter>
-#                    <waves_filename>wavelengths.dat</waves_filename>
-#                    <filter_filenames>u.dat,v.dat,zpv.dat,k.dat,zpk.dat</filter_filenames>
-#                    <vega_filename>A0V_KUR_BB.SED</vega_filename>
-#                    </filter>
-#                    </module>
-#                    <module name="output-file">
-#                        <param name="format">%(output_format)s</param>
-#                    </module>
-#                </workflow>
-#            </tao>
-#        """ % {
-#            'database_name': database_name,
-#            'light_cone': LightConeForm.CONE,
-#            'ra_opening_angle': ra_opening_angle,
-#            'dec_opening_angle': dec_opening_angle,
-#            'redshift_min': redshift_min,
-#            'redshift_max': redshift_max,
-#            'model_id': stellar_model.name,
-#            'output_format': self.output_format,
-#        })
-#
-#        self.assertXmlEqual(expected_parameter_xml, job.parameters)
-#

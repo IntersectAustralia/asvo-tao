@@ -9,4 +9,5 @@ def timestamp():
         time = now().astimezone(get_default_timezone())
     else:
         time = frozen_time
-    return time.strftime(TIMESTAMP_FORMAT)
+    str = time.strftime(TIMESTAMP_FORMAT)
+    return str[:-2] + ':' + str[-2:]

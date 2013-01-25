@@ -32,7 +32,22 @@ class SubmitLightConeTests(LiveServerMGFTest):
                     """
         
         self.login(self.username, password)
-        
+
+    def test_submit_invalid_output_properties(self):
+        self.visit('mock_galaxy_factory')
+
+        ## fill in form (correctly)
+        self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
+        self.fill_in_fields({
+            'ra_opening_angle': '2',
+            'dec_opening_angle': '2',
+            'redshift_min': '1',
+            'redshift_max': '2',
+            }, id_wrap=self.lc_id)
+        self.submit_mgf_form()
+
+        self.assert_on_page('mock_galaxy_factory')
+
     def test_submit_valid_cone_job(self):
         self.visit('mock_galaxy_factory')
         
@@ -44,6 +59,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
             'redshift_min': '1',
             'redshift_max': '2',
         }, id_wrap=self.lc_id)
+        self.click('op_add_all')
         self.submit_mgf_form()
 
         self.assert_on_page('held_jobs')
@@ -57,6 +73,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
             'box_size': '9',
             'snapshot': self.redshifts[0],
         }, id_wrap=self.lc_id)
+        self.click('op_add_all')
         self.submit_mgf_form()
 
         self.assert_on_page('held_jobs')
@@ -79,7 +96,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
             'redshift_min': '1',
             'redshift_max': '2',
         }, id_wrap=self.lc_id)
-
+        self.click('op_add_all')
         self.submit_mgf_form()
 
         self.assert_on_page('held_jobs')  # The form is valid because the invalid box size field is hidden
@@ -102,6 +119,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
             'box_size': '1',
             'snapshot': self.redshifts[0],
         }, id_wrap=self.lc_id)
+        self.click('op_add_all')
 
 
         self.submit_mgf_form()
