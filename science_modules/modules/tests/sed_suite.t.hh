@@ -256,7 +256,7 @@ public:
       sed.initialise( dict, "sed" );
 
       // Switch off random rotation and shifting.
-      lc._use_random = false;
+      lc._unique = true;
    }
 
    void setUp()

@@ -158,7 +158,6 @@ namespace tao {
       real_type _dec_min, _dec_max;
       real_type _z_snap, _box_size;
       unsigned _min_snap, _max_snap, _z_snap_idx;
-      bool _use_random;
       bool _unique;
       real_type _unique_offs_x, _unique_offs_y, _unique_offs_z;
       range<real_type> _dist_range;
@@ -169,6 +168,11 @@ namespace tao {
 
       string _query_template;
       vector<string> _ops;
+      array<real_type,3> _rrs_offs;
+      array<int,3> _rrs_axis;
+      uniform_generator<real_type> _real_rng;
+      uniform_generator<int> _int_rng;
+      int _rng_seed;
 
       string _bin_filename;
       std::ofstream _bin_file;
@@ -176,12 +180,16 @@ namespace tao {
       size_t _cur_table;
       list<array<real_type,3>> _boxes;
       list<array<real_type,3>>::const_iterator _cur_box;
-      scoped_ptr<soci::rowset<soci::row>> _rows;
+      // scoped_ptr<soci::rowset<soci::row>> _rows; // TODO: Latest SOCI doesn't like being destructed!
+      soci::rowset<soci::row>* _rows;
       soci::rowset<soci::row>::const_iterator _cur_row;
 
       bool _use_bsp;
       string _snap_red_table;
       map<string,string> _field_map;
+
+      profile::progress _prog;
+      profile::timer _per_box;
    };
 }
 

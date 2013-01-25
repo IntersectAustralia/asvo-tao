@@ -34,7 +34,7 @@ public:
       lightcone lc;
 
       // Turn off random rotation and shifting.
-      lc._use_random = false;
+      lc._unique = true;
 
       // Insert some values.
       {
@@ -53,14 +53,14 @@ public:
 
       // Prepare base dictionary.
       options::dictionary& dict = db_setup.dict.sub( "light-cone" );
-      dict["query-type"] = "box";
-      dict["z-snap"] = "0.001";
+      dict["geometry"] = "box";
+      dict["redshift"] = "0.001";
 
       // Place to store row IDs.
       vector<int> ids;
 
       // Only row 0.
-      dict["box-size"] = "1.5";
+      dict["query-box-size"] = "1.5";
       db_setup.xml.write( db_setup.xml_filename, db_setup.dict );
       setup_lightcone( lc );
       ids.resize( 0 );
@@ -73,7 +73,7 @@ public:
       TS_ASSERT_EQUALS( ids[0], 0 );
 
       // Only row 1.
-      dict["box-size"] = "2.5";
+      dict["query-box-size"] = "2.5";
       db_setup.xml.write( db_setup.xml_filename, db_setup.dict );
       setup_lightcone( lc );
       ids.resize( 0 );
@@ -95,7 +95,7 @@ public:
       lightcone lc;
 
       // Turn off random rotation and shifting.
-      lc._use_random = false;
+      lc._unique = true;
 
       // Insert some values.
       {
@@ -114,14 +114,14 @@ public:
 
       // Prepare base dictionary.
       options::dictionary& dict = db_setup.dict.sub( "light-cone" );
-      dict["query-type"] = "box";
-      dict["box-size"] = "4.5";
+      dict["geometry"] = "box";
+      dict["query-box-size"] = "4.5";
 
       // Place to store row IDs.
       vector<int> ids;
 
       // Only row 0.
-      dict["z-snap"] = "0.001";
+      dict["redshift"] = "0.001";
       db_setup.xml.write( db_setup.xml_filename, db_setup.dict );
       setup_lightcone( lc );
       ids.resize( 0 );
@@ -135,7 +135,7 @@ public:
          TS_ASSERT_EQUALS( ids[ii], ii );
 
       // Only row 1.
-      dict["z-snap"] = "0";
+      dict["redshift"] = "0";
       db_setup.xml.write( db_setup.xml_filename, db_setup.dict );
       setup_lightcone( lc );
       ids.resize( 0 );
@@ -157,7 +157,7 @@ public:
       lightcone lc;
 
       // Turn off random rotation and shifting.
-      lc._use_random = false;
+      lc._unique = true;
 
       // Insert some values.
       {
@@ -176,7 +176,7 @@ public:
 
       // Prepare base dictionary.
       options::dictionary& dict = db_setup.dict.sub( "light-cone" );
-      dict["query-type"] = "light-cone";
+      dict["geometry"] = "light-cone";
       dict["redshift-min"] = "0";
       dict["dec-min"] = "0";
       dict["dec-max"] = "90";
@@ -250,7 +250,7 @@ public:
       lightcone lc;
 
       // Turn off random rotation and shifting.
-      lc._use_random = false;
+      lc._unique = true;
 
       // Insert some values.
       {
@@ -342,7 +342,7 @@ public:
       lightcone lc;
 
       // Turn off random rotation and shifting.
-      lc._use_random = false;
+      lc._unique = true;
 
       // Insert some values. Place the points on the lower walls
       // to get picked up by the neighboring boxes.
@@ -419,7 +419,7 @@ public:
       lightcone lc;
 
       // Turn off random rotation and shifting.
-      lc._use_random = false;
+      lc._unique = true;
 
       // Insert some values. Place the points on the lower walls
       // to get picked up by the neighboring boxes.
@@ -474,7 +474,7 @@ public:
       lightcone lc;
 
       // Turn off random rotation and shifting.
-      lc._use_random = false;
+      lc._unique = true;
 
       // Insert some values.
       {
@@ -493,8 +493,8 @@ public:
 
       // Prepare base dictionary.
       options::dictionary& dict = db_setup.dict.sub( "light-cone" );
-      dict["query-type"] = "box";
-      dict["z-snap"] = "0.001";
+      dict["geometry"] = "box";
+      dict["redshift"] = "0.001";
       db_setup.dict["workflow:record-filter:filter-type"] = "pos_x";
       db_setup.dict["workflow:record-filter:filter-min"] = "1.5";
       db_setup.dict["workflow:record-filter:filter-max"] = "2.5";
@@ -503,7 +503,7 @@ public:
       vector<int> ids;
 
       // Only row 0.
-      dict["box-size"] = "1.5";
+      dict["query-box-size"] = "1.5";
       db_setup.xml.write( db_setup.xml_filename, db_setup.dict );
       setup_lightcone( lc );
       ids.resize( 0 );
@@ -515,7 +515,7 @@ public:
       TS_ASSERT_EQUALS( ids.size(), 0 );
 
       // Only row 1.
-      dict["box-size"] = "4.5";
+      dict["query-box-size"] = "4.5";
       db_setup.xml.write( db_setup.xml_filename, db_setup.dict );
       setup_lightcone( lc );
       ids.resize( 0 );
@@ -536,7 +536,7 @@ public:
       lightcone lc;
 
       // Turn off random rotation and shifting.
-      lc._use_random = false;
+      lc._unique = true;
 
       // Insert some values.
       {
@@ -555,9 +555,9 @@ public:
 
       // Prepare base dictionary.
       options::dictionary& dict = db_setup.dict.sub( "light-cone" );
-      dict["query-type"] = "box";
-      dict["z-snap"] = "0.001";
-      dict["box-size"] = "4.5";
+      dict["geometry"] = "box";
+      dict["redshift"] = "0.001";
+      dict["query-box-size"] = "4.5";
 
       // Try without snapshot.
       db_setup.xml.write( db_setup.xml_filename, db_setup.dict );

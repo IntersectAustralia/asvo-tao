@@ -57,6 +57,20 @@ public:
    ///
    ///
    ///
+   void test_polygon_area()
+   {
+      list<array<double,2> > shape;
+      shape.emplace_back( 0.0, 0.0 );
+      shape.emplace_back( 2.0, 0.0 );
+      shape.emplace_back( 2.0, 2.0 );
+      shape.emplace_back( 0.0, 2.0 );
+      auto area = polygon_area( shape.begin(), shape.end() );
+      TS_ASSERT_DELTA( area, 4.0, 1e-6 );
+   }
+
+   ///
+   ///
+   ///
    void test_clip_edge()
    {
       list<array<double,2> > shape, result;

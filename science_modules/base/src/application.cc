@@ -4,6 +4,14 @@ using namespace hpc;
 
 namespace tao {
 
+   unix::time_type tao_start_time;
+
+   double
+   runtime()
+   {
+      return unix::seconds( unix::timer() - tao::tao_start_time );
+   }
+
    void
    setup_common_options( options::dictionary& dict )
    {

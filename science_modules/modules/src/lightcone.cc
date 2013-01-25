@@ -5,8 +5,10 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/tokenizer.hpp>
 #include <soci/sqlite3/soci-sqlite3.h>
+#include "tao/base/application.hh"
 #include "lightcone.hh"
 #include "BSPTree.hh"
+#include "geometry_iterator.hh"
 
 using namespace hpc;
 using boost::format;
@@ -19,7 +21,6 @@ namespace tao {
       : module(),
         _z_min( 0.0 ),
         _z_max( 0.0 ),
-        _use_random( true ),
         _unique( false ),
         _unique_offs_x( 0.0 ),
         _unique_offs_y( 0.0 ),
@@ -43,19 +44,20 @@ namespace tao {
    lightcone::setup_options( options::dictionary& dict,
                              optional<const string&> prefix )
    {
-      dict.add_option( new options::string( "query-type", "light-cone" ), prefix );
+      dict.add_option( new options::string( "geometry", "light-cone" ), prefix );
       dict.add_option( new options::boolean( "use-bsp", false ), prefix );
       dict.add_option( new options::string( "box-repetition", "unique" ), prefix );
       dict.add_option( new options::real( "redshift-max" ), prefix );
       dict.add_option( new options::real( "redshift-min" ), prefix );
-      dict.add_option( new options::real( "z-snap" ), prefix );
-      dict.add_option( new options::real( "box-size" ), prefix );
+      dict.add_option( new options::real( "redshift" ), prefix );
+      dict.add_option( new options::real( "query-box-size" ), prefix );
       dict.add_option( new options::real( "ra-min", 0.0 ), prefix );
       dict.add_option( new options::real( "ra-max", 90.0 ), prefix );
       dict.add_option( new options::real( "dec-min", 0.0 ), prefix );
       dict.add_option( new options::real( "dec-max", 90.0 ), prefix );
       dict.add_option( new options::real( "H0", 73.0 ), prefix );
       dict.add_option( new options::list<options::string>( "output-fields" ), prefix );
+      dict.add_option( new options::integer( "rng-seed" ), prefix );
 
       // Setup table names.
       dict.add_option( new options::string( "snapshot-redshift-table", "snap_redshift" ), prefix );
@@ -123,23 +125,40 @@ namespace tao {
    {
       LOG_ENTER();
 
+      // Reset the timers.
+      _per_box.reset();
+
       if( _box_type != "box" )
       {
 	 // The outer loop is over the boxes.
 	 _get_boxes( _boxes );
 	 LOGDLN( "Boxes: ", _boxes );
+
+	 // Setup progress indicator.
+	 _prog.set_local_size( _boxes.size() );
+
 	 _cur_box = _boxes.begin();
 	 _settle_box();
       }
       else
       {
-         auto it = std::find( _snap_redshifts.begin(), _snap_redshifts.end(), _z_snap );
+	 auto it = _snap_redshifts.begin();
+	 while( it != _snap_redshifts.end() )
+	 {
+	    if( num::approx( *it, _z_snap, 1e-4 ) )
+	       break;
+	    ++it;
+	 }
          ASSERT( it != _snap_redshifts.end(), "Invalid redshift." );
          _z_snap_idx = it - _snap_redshifts.begin();
 
 	 // The outer loop is over the boxes.
 	 _get_boxes( _boxes );
 	 LOGDLN( "Boxes: ", _boxes );
+
+	 // Setup progress indicator.
+	 _prog.set_local_size( _boxes.size() );
+
 	 _cur_box = _boxes.begin();
 	 _settle_box();
       }
@@ -240,17 +259,35 @@ namespace tao {
       // Are we using the BSP tree system?
       if( _use_bsp )
       {
-	 ASSERT( 0 );
-	 // // Prepare a BSP tree.
-	 // BSPtree bsp( 20, _dbname, _dbhost, _dbport, _dbuser, _dbpass );
+	 // Prepare a BSP tree.
+	 BSPtree bsp( 20, _dbname, _dbhost, _dbport, _dbuser, _dbpass );
 
-	 // // Loop over all polygons.
-	 // for( geometry_iterator it; !it.done(); ++it )
-	 // {
-	 //    // Extract table names.
-	 //    auto names = bsp.GetTablesList( *it );
-	 //    table_names.insert( table_names.end(), name.begin(), names.end() );
-	 // }
+	 // Loop over all polygons.
+	 geometry_iterator<double> it(
+	    _domain_size,
+	    *_cur_box,
+	    _rrs_offs,
+	    _rrs_axis,
+	    _ra_min, _ra_max,
+	    _dec_min, _dec_max,
+	    _dist_range.finish()
+	    );
+	 for( ; !it.done(); ++it )
+	 {
+	    LOGDLN( "Using geometry to lookup tables: ", *it );
+
+	    // Need to convert to appropriate data type.
+	    std::vector<BSP2DPoint> shape;
+	    {
+	       for( const auto& pnt : *it )
+		  shape.push_back( BSP2DPoint( pnt[0], pnt[1] ) );
+	    }
+
+	    // Extract table names.
+	    auto names = bsp.GetTablesList( shape );
+	    table_names.insert( table_names.end(), names.begin(), names.end() );
+	 }
+	 LOGDLN( "BSP table names: ", table_names );
       }
       else
       {
@@ -305,7 +342,6 @@ namespace tao {
       {
          LOGDLN( "Current table index: ", _cur_table );
 	 LOGDLN( "Current table name: ", _table_names[_cur_table] );
-	 LOGILN( "Table ", _cur_table, " of ", _table_names.size() );
 
 	 const array<real_type,3>& box = *_cur_box;
          _build_pixels( _x0 + box[0], _y0 + box[1], _z0 + box[2] );
@@ -324,7 +360,25 @@ namespace tao {
       do
       {
          LOGDLN( "Using box ", *_cur_box );
+
+	 // Update the box timings.
+	 if( _per_box.running() )
+	 {
+	    _per_box.stop_tally();
+	    LOGDLN( "Time per box: ", _per_box.mean() );
+	 }
+	 _per_box.start();
+
+	 // Prepare the random rotation and shifting for this box.
+	 _random_rotation_and_shifting( _ops );
+
+	 // If we are using the light-cone geometry and also have requested
+	 // the use of the BSP system, then we need to update the set of
+	 // tables to use.
+	 if( _use_bsp && _box_type != "box" )
+	    _query_table_names( _table_names );
          LOGDLN( "Iterating over ", _table_names.size(), " tables." );
+
          _cur_table = 0;
          if( _cur_table < _table_names.size() )
 	 {
@@ -382,20 +436,24 @@ namespace tao {
                        " and redshift of ", _snap_redshifts[_max_snap] );
             }
 
-	    // Prepare the random rotation and shifting for this box.
-	    _random_rotation_and_shifting( _ops );
-
-	    // If we are using the light-cone geometry and also have requested
-	    // the use of the BSP system, then we need to update the set of
-	    // tables to use.
-	    if( _use_bsp && _box_type != "box" )
-	       _query_table_names( _table_names );
-
 	    // Now prepare tables.
             _settle_table();
 	 }
+
+	 // Update the log file with the progress.
+	 _prog.set_local_complete_delta( 1 );
+	 _prog.update();
+	 if( mpi::comm::world.rank() == 0 )
+	    LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
       }
       while( _cur_table == _table_names.size() && ++_cur_box != _boxes.end() );
+
+      // If we've finished the boxes, stop the timer.
+      if( _cur_box == _boxes.end() )
+      {
+	 _per_box.stop_tally();
+	 LOGDLN( "Time per box: ", _per_box.mean() );
+      }
 
       LOG_EXIT();
    }
@@ -529,7 +587,15 @@ namespace tao {
       ops[10] = "Vel3";
       ops[11] = "Spin3";
 
-      if( _box_type == "box" || !_use_random )
+      // Set identity to start with.
+      _rrs_offs[0] = 0.0;
+      _rrs_offs[1] = 0.0;
+      _rrs_offs[2] = 0.0;
+      _rrs_axis[0] = 0;
+      _rrs_axis[1] = 1;
+      _rrs_axis[2] = 2;
+
+      if( _box_type == "box" || _unique )
       {
          ops[0] = "Pos1";
          ops[1] = "halo_pos1";
@@ -559,6 +625,11 @@ namespace tao {
             offs2 = generate_uniform( 0.0, domain_size*1000.0 )/1000.0;
             offs3 = generate_uniform( 0.0, domain_size*1000.0 )/1000.0;
             rnd = generate_uniform<int>( 1, 6 );
+
+	    // Save offsets for the BSP tree stuff.
+	    _rrs_offs[0] = offs1;
+	    _rrs_offs[1] = offs2;
+	    _rrs_offs[2] = offs3;
          }
 
          // Rotation 1.
@@ -606,32 +677,55 @@ namespace tao {
          switch( rnd )
          {
             case 1:
+	       _rrs_axis[0] = 0;
+	       _rrs_axis[1] = 1;
+	       _rrs_axis[2] = 2;
                break;
+
             case 2:
                for( int ii = 0; ii < 4; ++ii )
                {
                   ops[ii].swap( ops[ii + 4] ); // 1->2, 2->1
                   ops[ii].swap( ops[ii + 8] ); // 2->1->3, 3->1
                }
+	       _rrs_axis[0] = 2;
+	       _rrs_axis[1] = 0;
+	       _rrs_axis[2] = 1;
                break;
+
             case 3:
                for( int ii = 0; ii < 4; ++ii )
                {
                   ops[ii].swap( ops[ii + 8] ); // 1->3, 3->1
                   ops[ii].swap( ops[ii + 4] ); // 3->1->2, 2->1
                }
+	       _rrs_axis[0] = 1;
+	       _rrs_axis[1] = 2;
+	       _rrs_axis[2] = 0;
                break;
+
             case 4:
                for( int ii = 0; ii < 4; ++ii )
-                  ops[ii + 4].swap( ops[ii + 8] );
+                  ops[ii + 4].swap( ops[ii + 8] ); // 2->3, 3->2
+	       _rrs_axis[0] = 0;
+	       _rrs_axis[1] = 2;
+	       _rrs_axis[2] = 1;
                break;
+
             case 5:
                for( int ii = 0; ii < 4; ++ii )
-                  ops[ii].swap( ops[ii + 4] );
+                  ops[ii].swap( ops[ii + 4] ); // 1->2, 2->1
+	       _rrs_axis[0] = 1;
+	       _rrs_axis[1] = 0;
+	       _rrs_axis[2] = 2;
                break;
+
             case 6:
                for( int ii = 0; ii < 4; ++ii )
-                  ops[ii].swap( ops[ii + 8] );
+                  ops[ii].swap( ops[ii + 8] ); // 1->3, 3->1
+	       _rrs_axis[0] = 2;
+	       _rrs_axis[1] = 1;
+	       _rrs_axis[2] = 0;
                break;
          }
       }
@@ -771,7 +865,7 @@ namespace tao {
       _db_connect( _sql );
 
       // Get box type.
-      _box_type = sub.get<string>( "query-type" );
+      _box_type = sub.get<string>( "geometry" );
       LOGDLN( "Box type '", _box_type );
 
       // Get box repetition type.
@@ -779,6 +873,7 @@ namespace tao {
       std::transform( _box_repeat.begin(), _box_repeat.end(), _box_repeat.begin(), ::tolower );
       LOGDLN( "Box repetition type '", _box_repeat, "'" );
       _unique = (_box_repeat == "unique");
+      LOGDLN( "Internal unique flag set to: ", _unique );
 
       // Get the domain size.
       {
@@ -786,6 +881,18 @@ namespace tao {
 	 _sql << "SELECT metavalue FROM metadata WHERE metakey='boxsize'", soci::into( size );
 	 _domain_size = atof( size.c_str() );
 	 LOGDLN( "Simulation domain size: ", _domain_size );
+      }
+
+      // Extract the random number generator seed and set it.
+      _real_rng.set_range( 0, _domain_size );
+      _int_rng.set_range( 1, 6 );
+      auto rng_seed = sub.opt<int>( "rng-seed" );
+      if( rng_seed )
+      {
+	 _rng_seed = *rng_seed;
+	 _real_rng.set_seed( _rng_seed );
+	 _int_rng.reset();
+	 LOGDLN( "Random number generator seed: ", _rng_seed );
       }
 
       // Extract and parse the snapshot redshifts.
@@ -838,8 +945,8 @@ namespace tao {
       // For the box type.
       if( _box_type == "box" )
       {
-         _z_snap = sub.get<real_type>( "z-snap" );
-         _box_size = sub.get<real_type>( "box-size" );
+         _z_snap = sub.get<real_type>( "redshift" );
+         _box_size = sub.get<real_type>( "query-box-size" );
       }
 
       // Filter information.
@@ -942,9 +1049,9 @@ namespace tao {
       // Prepare the filter part of the query.
       if( _filter != "" )
       {
-	 if( _filter_min != "None" && _filter_min != "none" )
+	 if( _filter_min != "None" && _filter_min != "none" && !_filter_min.empty() )
 	    _query_template += str( format( " AND %1% >= %2%" ) % _filter % _filter_min );
-	 if( _filter_max != "None" && _filter_max != "none" )
+	 if( _filter_max != "None" && _filter_max != "none" && !_filter_max.empty() )
 	    _query_template += str( format( " AND %1% <= %2%" ) % _filter % _filter_max );
       }
 

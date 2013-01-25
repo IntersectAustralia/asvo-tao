@@ -84,8 +84,8 @@ namespace tao {
 	    _file << row.get<int>( field );
 	    break;
 
-	 case soci::dt_unsigned_long:
-	    _file << row.get<unsigned long>( field );
+	 case soci::dt_unsigned_long_long:
+	    _file << row.get<unsigned long long>( field );
 	    break;
 
 	 case soci::dt_long_long:
