@@ -25,6 +25,10 @@ def visit(client, view_name, *args, **kwargs):
     
 class LiveServerTest(django.test.LiveServerTestCase):
     DOWNLOAD_DIRECTORY = '/tmp/work/downloads'
+
+    ## List all ajax enabled pages that have initialization code and must wait
+    AJAX_WAIT = ['mock_galaxy_factory']
+
     def setUp(self):
         from selenium.webdriver.firefox.webdriver import FirefoxProfile
         fp = FirefoxProfile()
@@ -54,6 +58,13 @@ class LiveServerTest(django.test.LiveServerTestCase):
 
     def rf_id(self, bare_field):
         return '#id_record_filter-%s' % bare_field
+
+    def get_summary_field(self, form_name, field_name):
+        summary_selector = 'div.summary_%s .%s' % (form_name, field_name)
+        return self.selenium.find_element_by_css_selector(summary_selector)
+
+    def get_summary_field_text(self, form_name, field_name):
+        return self.get_summary_field(form_name, field_name).text
 
     def assert_email_body_contains(self, email, text):
         pattern = re.escape(text)
@@ -150,6 +161,8 @@ class LiveServerTest(django.test.LiveServerTestCase):
     def visit(self, url_name, *args, **kwargs):
         """ self.visit(name_of_url_as_defined_in_your_urlconf) """
         self.selenium.get(self.get_full_url(url_name, *args, **kwargs))
+        if url_name in LiveServerTest.AJAX_WAIT:
+            wait(1)
         
     def get_actual_filter_options(self):
         option_selector = '%s option' % self.rf_id('filter')
@@ -207,6 +220,9 @@ class LiveServerTest(django.test.LiveServerTestCase):
     def select_galaxy_model(self, galaxy_model):
         self.select(self.lc_id('galaxy_model'), galaxy_model.name)
         wait(0.5)
+
+    def select_record_filter(self, filter):
+        self.select(self.rf_id('filter'), filter.label + ' (' + filter.units + ')')
         
     #a function to make a list of list of text inside the table
     def table_as_text_rows(self, selector):
@@ -219,3 +235,4 @@ class LiveServerMGFTest(LiveServerTest):
     def submit_mgf_form(self):
         submit_button = self.selenium.find_element_by_css_selector('#mgf-form input[type="submit"]')
         submit_button.submit()
+        wait(1)

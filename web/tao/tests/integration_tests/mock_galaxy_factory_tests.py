@@ -1,7 +1,7 @@
 from django.utils.html import strip_tags
 
 from tao.tests.integration_tests.helper import LiveServerTest
-from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory
+from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory
 from tao.models import Simulation, GalaxyModel
 
 class MockGalaxyFactoryTest(LiveServerTest):
@@ -14,11 +14,13 @@ class MockGalaxyFactoryTest(LiveServerTest):
 
         for unused in range(3):
             g = GalaxyModelFactory.create()
-            DataSetFactory.create(simulation=simulation, galaxy_model=g)
+            ds = DataSetFactory.create(simulation=simulation, galaxy_model=g)
+            DataSetPropertyFactory.create(dataset=ds)
             
         for unused in range(4):
             g = GalaxyModelFactory.create()
-            DataSetFactory.create(simulation=simulation2, galaxy_model=g)
+            ds = DataSetFactory.create(simulation=simulation2, galaxy_model=g)
+            DataSetPropertyFactory.create(dataset=ds)
         
         username = "person"
         password = "funnyfish"
@@ -63,6 +65,50 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.select_galaxy_model(second_galaxy_model)
         
         self.assert_galaxy_model_info_shown(second_galaxy_model)
+
+    def test_summary_on_initial_load(self):
+        geometry_displayed = self.get_summary_field_text('light_cone', 'geometry_type')
+        init_simulation = Simulation.objects.all()[0]
+        simulation_displayed = self.get_summary_field_text('light_cone', 'simulation')
+        init_galaxy_model = init_simulation.galaxymodel_set.all()[0]
+        galaxy_model_displayed = self.get_summary_field_text('light_cone', 'galaxy_model')
+        type_displayed = self.get_summary_field_text('light_cone', 'light_cone_type')
+        filter_displayed = self.get_summary_field_text('record_filter', 'record_filter')
+
+        self.assertEqual('Light-Cone', geometry_displayed)
+        self.assertEqual(init_simulation.name, simulation_displayed)
+        self.assertEqual(init_galaxy_model.name, galaxy_model_displayed)
+        self.assertEqual('unique', type_displayed)
+        self.assertEqual('No Filter', filter_displayed)
+        self.assert_not_displayed('div.summary_light_cone .box_fields')
+
+    def test_summary_on_geometry_change(self):
+        self.select(self.lc_id('catalogue_geometry'), 'Box')
+        geometry_displayed = self.get_summary_field_text('light_cone', 'geometry_type')
+
+        self.assertEqual('Box', geometry_displayed)
+        self.assert_is_displayed('div.summary_light_cone .box_fields')
+        self.assert_not_displayed('div.summary_light_cone .light_cone_fields')
+
+    def test_summary_on_simulation_change(self):
+        second_simulation = Simulation.objects.all()[1]
+        self.select_dark_matter_simulation(second_simulation)
+        simulation_displayed = self.get_summary_field_text('light_cone', 'simulation')
+        init_galaxy_model_of_second_simulation = second_simulation.galaxymodel_set.all()[0]
+        galaxy_model_displayed = self.get_summary_field_text('light_cone', 'galaxy_model')
+        dataset = init_galaxy_model_of_second_simulation.dataset_set.all()[0]
+        filter = dataset.datasetproperty_set.all()[0]
+        self.select_record_filter(filter)
+        max_input = "99"
+        min_input = "9"
+        self.fill_in_fields({'max': max_input, 'min': min_input}, id_wrap=self.rf_id)
+        self.fill_in_fields({'ra_opening_angle': 1}, id_wrap=self.lc_id)
+        expected_filter_display = min_input + ' < ' + filter.label + ' (' + filter.units + ') < ' + max_input
+        filter_displayed = self.get_summary_field_text('record_filter', 'record_filter')
+
+        self.assertEqual(second_simulation.name, simulation_displayed)
+        self.assertEqual(init_galaxy_model_of_second_simulation.name, galaxy_model_displayed)
+        self.assertEqual(expected_filter_display, filter_displayed)
 
     def get_field_by_value_in_control_group(self, value, name):
         control_group = self.selenium.find_elements_by_name(name)
