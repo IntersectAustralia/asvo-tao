@@ -9,12 +9,13 @@ Import('env')
 #
 # The support sources are optional, as is the MPI rank range.
 suites = [
-    ('lightcone_suite.t.hh', 'lightcone.cc'),
-    ('sed_suite.t.hh', 'sed.cc', 'lightcone.cc'),
-    ('dust_suite.t.hh', 'dust.cc', 'sed.cc', 'lightcone.cc'),
-    ('filter_suite.t.hh', 'filter.cc', 'sed.cc', 'lightcone.cc'),
+    ('lightcone_suite.t.hh', 'lightcone.cc', 'BSPTree.cc', 'GrahamScanConvexHull.cpp'),
+    ('sed_suite.t.hh', 'sed.cc', 'lightcone.cc', 'BSPTree.cc', 'GrahamScanConvexHull.cpp'),
+    ('dust_suite.t.hh', 'dust.cc', 'sed.cc', 'lightcone.cc', 'BSPTree.cc', 'GrahamScanConvexHull.cpp'),
+    ('filter_suite.t.hh', 'filter.cc', 'sed.cc', 'lightcone.cc', 'BSPTree.cc', 'GrahamScanConvexHull.cpp'),
     ('BSPTree_Test.hh', 'BSPTree.cc'),
     ('clip_suite.t.hh',),
+    ('geometry_iterator.t.hh', 'GrahamScanConvexHull.cpp'),
     ('SettingReader_Test.hh', 'settingReader.cc'),
 ]
 

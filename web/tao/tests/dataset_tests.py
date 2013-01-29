@@ -1,6 +1,7 @@
 from django.test.testcases import TransactionTestCase
 
 from tao.tests.support.factories import SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, SnapshotFactory
+from tao.models import DataSetProperty
 
 class DatasetTestCase(TransactionTestCase):
 
@@ -57,7 +58,8 @@ class DatasetTestCase(TransactionTestCase):
         dp1 = DataSetPropertyFactory.create(dataset=d1, units='dp1u')
         dp2 = DataSetPropertyFactory.create(dataset=d2, units='dp2u')
         dp3 = DataSetPropertyFactory.create(dataset=d2, units='dp3u')
-        
+        DataSetPropertyFactory.create(dataset=d2, units='', data_type = DataSetProperty.TYPE_STRING)
+
         self.assertEqual([dp1.id],[x.id for x in filter_choices(d1.id)])
         self.assertEqual([dp2.id,dp3.id],[x.id for x in filter_choices(d2.id)])
 

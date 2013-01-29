@@ -92,6 +92,30 @@ namespace tao {
       }
    }
 
+   template< class PointIterator >
+   typename PointIterator::value_type::value_type
+   polygon_area( PointIterator point_first,
+		 const PointIterator& point_last )
+   {
+      typename PointIterator::value_type::value_type sum = 0.0;
+      if( point_first != point_last )
+      {
+	 auto it_a = point_first++;
+	 auto first = it_a;
+	 while( point_first != point_last )
+	 {
+	    const auto& pnt_a = *it_a;
+	    const auto& pnt_b = *point_first;
+	    sum += pnt_a[0]*pnt_b[1] - pnt_b[0]*pnt_a[1];
+	    it_a = point_first++;
+	 }
+	 const auto& pnt_a = *it_a;
+	 const auto& pnt_b = *first;
+	 sum += pnt_a[0]*pnt_b[1] - pnt_b[0]*pnt_a[1];
+      }
+      return 0.5*abs( sum );
+   }
+
    template< class HalfSpaceIterator,
 	     class PointIterator,
 	     class ResultIterator >
@@ -250,7 +274,14 @@ namespace tao {
 		 std::insert_iterator<list<point_type> >( tmp[0], tmp[0].begin() ) );
       hsp[dim - 1] = -1;
       hsp[dim] = -box_size;
-      clip_edge( hsp.begin(), tmp[0].begin(), tmp[0].end(), result );
+      tmp[1].clear();
+      clip_edge( hsp.begin(), tmp[0].begin(), tmp[0].end(),
+		 std::insert_iterator<list<point_type> >( tmp[1], tmp[1].begin() ) );
+
+      // Finally, check if the area is zero (or close to). If so,
+      // discard the new polygon.
+      if( !num::approx( polygon_area( tmp[1].begin(), tmp[1].end() ), 0.0, 1e-8 ) )
+	 std::copy( tmp[1].begin(), tmp[1].end(), result );
    }
 }
 

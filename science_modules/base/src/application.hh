@@ -8,6 +8,11 @@
 namespace tao {
    using namespace hpc;
 
+   extern unix::time_type tao_start_time;
+
+   double
+   runtime();
+
    ///
    ///
    ///
@@ -28,11 +33,13 @@ namespace tao {
 
       application()
       {
+	 tao_start_time = unix::timer();
       }
 
       application( int argc,
                    char* argv[] )
       {
+	 tao_start_time = unix::timer();
          arguments( argc, argv );
       }
 
@@ -82,7 +89,15 @@ namespace tao {
          _read_xml( dict );
 	 _setup_log( dict.get<string>( "logdir" ) + "/tao.log" );
          _pl.initialise( dict );
+
+	 // Mark the beginning of the run.
+	 LOGILN( runtime(), ",start" );
+
+	 // Run.
          _pl.run();
+
+	 // Mark the conclusion of the run.
+	 LOGILN( runtime(), ",end,successful" );
       }
 
    protected:

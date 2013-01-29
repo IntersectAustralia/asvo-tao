@@ -53,7 +53,7 @@ def snapshot_choices():
 
 def filter_choices(data_set_id):
     dataset = models.DataSet.objects.get(id=data_set_id)
-    return models.DataSetProperty.objects.filter(dataset_id = dataset.id, is_filter = True).order_by('name')
+    return models.DataSetProperty.objects.filter(dataset_id = dataset.id, is_filter = True).exclude(data_type = models.DataSetProperty.TYPE_STRING).order_by('name')
 
 def output_choices(data_set_id):
     dataset = models.DataSet.objects.get(id=data_set_id)
