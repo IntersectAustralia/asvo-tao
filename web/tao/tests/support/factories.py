@@ -8,6 +8,7 @@ from tao.models import Job, User, Simulation, GalaxyModel, DataSet, DataSetPrope
 class JobFactory(factory.Factory):
     FACTORY_FOR = Job
     database = factory.Sequence(lambda n: 'database_' + n)
+    description = factory.Sequence(lambda n: 'description job ' + n)
     
     @classmethod
     def _prepare(cls, create, **kwargs):
@@ -63,7 +64,7 @@ class DataSetPropertyFactory(factory.Factory):
     FACTORY_FOR = DataSetProperty
     label = factory.Sequence(lambda n: 'parameter_%03d' % int(n))
     name = factory.Sequence(lambda n: 'name_%03d' % int(n))
-    data_type = DataSetProperty.TYPE_STRING
+    data_type = DataSetProperty.TYPE_INT
 
 class StellarModelFactory(factory.Factory):
     FACTORY_FOR = StellarModel

@@ -112,7 +112,6 @@ class FilterTests(LiveServerMGFTest):
         self.fill_in_fields({'max': max_input, 'min': min_input}, id_wrap=self.rf_id)
 
         self.submit_mgf_form()
-        wait(2)
 
         # check after failed submit, max/min fields are both still enabled
         self.assert_is_enabled(self.rf_id('max'))
@@ -131,7 +130,6 @@ class FilterTests(LiveServerMGFTest):
         self.fill_in_fields({'redshift_max': redshift_max_input, 'redshift_min': redshift_min_input}, id_wrap=self.lc_id)
 
         self.submit_mgf_form()
-        wait(2)
 
         self.assertEqual(redshift_max_input, self.get_selector_value(self.lc_id('redshift_max')))
         self.assertEqual(redshift_min_input, self.get_selector_value(self.lc_id('redshift_min')))

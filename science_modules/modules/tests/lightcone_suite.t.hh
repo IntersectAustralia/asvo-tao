@@ -596,9 +596,6 @@ public:
 
    void setUp()
    {
-      CLEAR_STACK_TRACE();
-      num_ranks = mpi::comm::world.size();
-      my_rank = mpi::comm::world.rank();
    }
 
    void tearDown()
@@ -611,8 +608,4 @@ public:
       sql << "DELETE FROM tree_3";
       sql << "DELETE FROM tree_4";
    }
-
-private:
-
-   int num_ranks, my_rank;
 };

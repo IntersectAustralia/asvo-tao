@@ -1,10 +1,12 @@
-{% load bootstrap_tags %}
-
 <legend>Output Format</legend>
 <div class="row-fluid">
     <div class="boxed span6">
         {% for fieldset in form.fieldsets %}
-            {{ fieldset|as_bootstrap_fieldset }}
+            <fieldset>
+                {% for field in fieldset %}
+                    {% include "bootstrap/field.html" %}
+                {% endfor %}
+            </fieldset>
         {% endfor %}
     </div>
 </div>

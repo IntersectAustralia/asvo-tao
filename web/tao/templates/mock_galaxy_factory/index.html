@@ -39,6 +39,12 @@
           {% include form.EDIT_TEMPLATE %}
         {% endfor %}
         </fieldset>
+        <legend>Summary</legend>
+        <div class="row-fluid">
+            {% for form in forms %}
+                {% include form.SUMMARY_TEMPLATE %}
+            {% endfor %}
+        </div>
         <div class="form-actions">
             <input type="submit" value="Submit Job" class="btn btn-primary" />
         </div>
