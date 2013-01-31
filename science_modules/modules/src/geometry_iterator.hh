@@ -135,10 +135,11 @@ namespace tao {
 	 }
 
 	 // Because of the way I've defined my x,y,z system,
-	 // I need to clip out y.
+	 // I need to clip out y. Actually, that's not true.
+	 // I need to clip Z to match Amr's method.
 	 list<array<real_type,2>> pg;
 	 for( const auto& pnt : _ph )
-	    pg.emplace_back( pnt[0], pnt[2] );
+	    pg.emplace_back( pnt[0], pnt[1] );
 
 	 // Now compute the convex hull.
 	 list<array<real_type,2>> hull;

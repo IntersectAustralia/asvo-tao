@@ -370,7 +370,7 @@ namespace tao {
       _dbport = dict.get<string>( "database-port" );
       _dbuser = dict.get<string>( "database-user" );
       _dbpass = dict.get<string>( "database-pass" );
-      _db_connect( _sql );
+      _db_connect();
 
       // Extract the counts.
       _num_spectra = sub.get<unsigned>( "num_spectra" );

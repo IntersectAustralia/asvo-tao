@@ -3,6 +3,7 @@
 
 #include <boost/iterator/zip_iterator.hpp>
 #include <libhpc/libhpc.hh>
+#include <libhpc/containers/combination.hpp>
 
 namespace tao {
    using namespace hpc;
@@ -26,13 +27,14 @@ namespace tao {
    bool
    inside( PointIterator point_first,
 	   const PointIterator& point_last,
-	   HalfSpaceIterator half_space_first )
+	   HalfSpaceIterator half_space_first,
+	   typename std::iterator_traits<PointIterator>::value_type epsilon = 1e-8 )
    {
       typedef typename std::iterator_traits<PointIterator>::value_type real_type;
       real_type sum = 0.0;
       while( point_first != point_last )
 	 sum += (*half_space_first++)*(*point_first++);
-      return sum >= *half_space_first;
+      return sum >= *half_space_first + epsilon;
    }
 
    template< class PointIterator,
@@ -90,6 +92,155 @@ namespace tao {
 	 ++point1_first;
 	 ++point2_first;
       }
+   }
+
+   template< class MinIterator,
+	     class MaxIterator,
+	     class HalfSpaceIterator >
+   bool
+   box_half_space_overlap( MinIterator min_first,
+			   const MinIterator& min_last,
+			   MaxIterator max_first,
+			   HalfSpaceIterator half_space_first,
+			   typename std::iterator_traits<MinIterator>::value_type epsilon = 1e-8 )
+   {
+      typedef typename std::iterator_traits<MinIterator>::value_type real1_type;
+      typedef typename std::iterator_traits<MaxIterator>::value_type real2_type;
+      unsigned size = min_last - min_first;
+      vector<real1_type> perms( 2*size );
+      for( unsigned ii = 0; ii < size; ++ii )
+      {
+	 perms[ii] = 0;
+	 perms[ii + size] = 1;
+      }
+      array<real1_type,3> point;
+      do
+      {
+	 MinIterator min_it = min_first;
+	 MaxIterator max_it = max_first;
+	 auto perms_it = perms.cbegin();
+	 auto point_it = point.begin();
+	 {
+	    while( min_it != min_last )
+	    {
+	       *point_it = (*perms_it) ? *max_it : *min_it;
+	       ++point_it;
+	       ++perms_it;
+	       ++min_it;
+	       ++max_it;
+	    }
+	 }
+	 if( inside( point.begin(), point.end(), half_space_first, epsilon ) )
+	    return true;
+      }
+      while( boost::next_partial_permutation( perms.begin(), perms.begin() + 3, perms.end() ) );
+      return false;
+   }
+
+   template< class MinIterator,
+	     class MaxIterator,
+	     class HalfSpaceIterator >
+   bool
+   box_half_space_intersection( MinIterator min_first,
+				const MinIterator& min_last,
+				MaxIterator max_first,
+				HalfSpaceIterator half_space_first )
+   {
+      typedef typename std::iterator_traits<MinIterator>::value_type real1_type;
+      typedef typename std::iterator_traits<MaxIterator>::value_type real2_type;
+      unsigned size = min_last - min_first;
+      vector<real1_type> perms( 2*size );
+      for( unsigned ii = 0; ii < size; ++ii )
+      {
+	 perms[ii] = 0;
+	 perms[ii + size] = 1;
+      }
+      array<real1_type,3> point;
+      bool in = false, out = false;
+      do
+      {
+	 MinIterator min_it = min_first;
+	 MaxIterator max_it = max_first;
+	 auto perms_it = perms.cbegin();
+	 auto point_it = point.begin();
+	 {
+	    while( min_it != min_last )
+	    {
+	       *point_it = (*perms_it) ? *max_it : *min_it;
+	       ++point_it;
+	       ++perms_it;
+	       ++min_it;
+	       ++max_it;
+	    }
+	 }
+	 if( inside( point.begin(), point.end(), half_space_first ) )
+	 {
+	    if( out )
+	       return true;
+	    else
+	       in = true;
+	 }
+	 else
+	 {
+	    if( in )
+	       return true;
+	    else
+	       out = true;
+	 }
+      }
+      while( boost::next_partial_permutation( perms.begin(), perms.begin() + 3, perms.end() ) );
+      return false;
+   }
+
+   template< class MinIterator,
+	     class MaxIterator,
+	     class MinBndIterator,
+	     class MaxBndIterator,
+	     class ResultMinIterator,
+	     class ResultMaxIterator >
+   void
+   box_box_clip( MinIterator min_first,
+		 const MinIterator& min_last,
+		 MaxIterator max_first,
+		 MinBndIterator bnd_min_first,
+		 MaxBndIterator bnd_max_first,
+		 ResultMinIterator min_result,
+		 ResultMaxIterator max_result )
+   {
+      while( min_first != min_last )
+      {
+	 if( *min_first < *bnd_min_first )
+	    *min_result = *bnd_min_first;
+	 else if( *min_first > *bnd_max_first )
+	    *min_result = *bnd_max_first;
+	 else
+	    *min_result = *min_first;
+	 if( *max_first < *bnd_min_first )
+	    *max_result = *bnd_min_first;
+	 else if( *max_first > *bnd_max_first )
+	    *max_result = *bnd_max_first;
+	 else
+	    *max_result = *max_first;
+	 ++min_first;
+	 ++max_first;
+	 ++bnd_min_first;
+	 ++bnd_max_first;
+	 ++min_result;
+	 ++max_result;
+      }
+   }
+
+   template< class MinIterator,
+	     class MaxIterator >
+   typename std::iterator_traits<MinIterator>::value_type
+   box_volume( MinIterator min_first,
+	       const MinIterator& min_last,
+	       MaxIterator max_first )
+   {
+      typename std::iterator_traits<MinIterator>::value_type vol = 1.0;
+      while( min_first != min_last )
+	 vol *= *max_first++ - *min_first++;
+      return vol;
    }
 
    template< class PointIterator >

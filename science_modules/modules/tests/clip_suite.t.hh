@@ -51,7 +51,79 @@ public:
       array<double,4> hsp( 1.0/sqrt( 3.0 ), 1/sqrt( 3.0 ), 1/sqrt( 3.0 ), 2 );
       line_half_space_intersection( vec1.begin(), vec1.end(), vec2.begin(), vec2.end(), hsp.begin(), vec3.begin() );
       for( auto x : vec3 )
-	TS_ASSERT_DELTA( x, 1.1547, 1e-3 );
+   	TS_ASSERT_DELTA( x, 1.1547, 1e-3 );
+   }
+
+   ///
+   ///
+   ///
+   void test_box_half_space_overlap()
+   {
+      array<double,3> min( -1, -1, -1 ), max( 1, 1, 1 );
+      array<double,4> hsp( 1.0/sqrt( 3.0 ), 1/sqrt( 3.0 ), 1/sqrt( 3.0 ), 2 );
+      bool res = box_half_space_overlap(
+	 min.begin(), min.end(),
+	 max.begin(),
+	 hsp.begin()
+	 );
+      TS_ASSERT( !res );
+      hsp[3] = 1;
+      res = box_half_space_overlap(
+	 min.begin(), min.end(),
+	 max.begin(),
+	 hsp.begin()
+	 );
+      TS_ASSERT( res );
+      hsp[3] = -2;
+      res = box_half_space_overlap(
+	 min.begin(), min.end(),
+	 max.begin(),
+	 hsp.begin()
+	 );
+      TS_ASSERT( res );
+      hsp[3] = -1;
+      res = box_half_space_overlap(
+	 min.begin(), min.end(),
+	 max.begin(),
+	 hsp.begin()
+	 );
+      TS_ASSERT( res );
+   }
+
+   ///
+   ///
+   ///
+   void test_box_half_space_intersection()
+   {
+      array<double,3> min( -1, -1, -1 ), max( 1, 1, 1 );
+      array<double,4> hsp( 1.0/sqrt( 3.0 ), 1/sqrt( 3.0 ), 1/sqrt( 3.0 ), 2 );
+      bool res = box_half_space_intersection(
+	 min.begin(), min.end(),
+	 max.begin(),
+	 hsp.begin()
+	 );
+      TS_ASSERT( !res );
+      hsp[3] = 1;
+      res = box_half_space_intersection(
+	 min.begin(), min.end(),
+	 max.begin(),
+	 hsp.begin()
+	 );
+      TS_ASSERT( res );
+      hsp[3] = -2;
+      res = box_half_space_intersection(
+	 min.begin(), min.end(),
+	 max.begin(),
+	 hsp.begin()
+	 );
+      TS_ASSERT( !res );
+      hsp[3] = -1;
+      res = box_half_space_intersection(
+	 min.begin(), min.end(),
+	 max.begin(),
+	 hsp.begin()
+	 );
+      TS_ASSERT( res );
    }
 
    ///
@@ -80,10 +152,10 @@ public:
       shape.emplace_back( 1.0, 2.0 );
       shape.emplace_back( -1.0, 2.0 );
       clip_edge(
-	 left_edge.begin(),
-	 shape.begin(), shape.end(),
-	 std::insert_iterator<list<array<double,2> > >( result, result.begin() )
-	 );
+   	 left_edge.begin(),
+   	 shape.begin(), shape.end(),
+   	 std::insert_iterator<list<array<double,2> > >( result, result.begin() )
+   	 );
    }
 
    ///
@@ -98,10 +170,10 @@ public:
       shape.emplace_back( -1.0, 2.0 );
       shape.emplace_back( -1.0, 0.0 );
       clip_edge(
-	 left_edge.begin(),
-	 shape.begin(), shape.end(),
-	 std::insert_iterator<list<array<double,2> > >( result, result.begin() )
-	 );
+   	 left_edge.begin(),
+   	 shape.begin(), shape.end(),
+   	 std::insert_iterator<list<array<double,2> > >( result, result.begin() )
+   	 );
    }
 
    ///
@@ -115,10 +187,10 @@ public:
       poly.emplace_back( -1.0, 2.0 );
       poly.emplace_back( -1.0, 0.0 );
       clip_polygon(
-	 1.0,
-	 poly.begin(), poly.end(),
-	 std::insert_iterator<list<array<double,2> > >( result, result.begin() )
-	 );
+   	 1.0,
+   	 poly.begin(), poly.end(),
+   	 std::insert_iterator<list<array<double,2> > >( result, result.begin() )
+   	 );
    }
 
    ///
@@ -132,22 +204,9 @@ public:
       poly.emplace_back( 10.0, 10.0 );
       poly.emplace_back( -10.0, 10.0 );
       clip_polygon(
-	 1.0,
-	 poly.begin(), poly.end(),
-	 std::insert_iterator<list<array<double,2> > >( result, result.begin() )
-	 );
+   	 1.0,
+   	 poly.begin(), poly.end(),
+   	 std::insert_iterator<list<array<double,2> > >( result, result.begin() )
+   	 );
    }
-
-   void setUp()
-   {
-      CLEAR_STACK_TRACE();
-   }
-
-   void tearDown()
-   {
-   }
-
-private:
-
-   int num_ranks, my_rank;
 };

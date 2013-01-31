@@ -184,7 +184,8 @@ namespace tao {
       soci::rowset<soci::row>* _rows;
       soci::rowset<soci::row>::const_iterator _cur_row;
 
-      bool _use_bsp;
+      string _accel_method;
+      int _bsp_step;
       string _snap_red_table;
       map<string,string> _field_map;
 
