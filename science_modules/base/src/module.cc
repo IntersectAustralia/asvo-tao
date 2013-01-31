@@ -7,7 +7,9 @@ using namespace hpc;
 namespace tao {
 
    module::module()
-      : _connected( false )
+      : _connected( false ),
+	_num_restart_its( 10 ),
+	_cur_restart_it( 0 )
    {
    }
 
@@ -32,7 +34,7 @@ namespace tao {
    }
 
    void
-   module::_db_connect( soci::session& sql )
+   module::_db_connect()
    {
       LOG_ENTER();
 
@@ -40,7 +42,7 @@ namespace tao {
       try
       {
          if( _dbtype == "sqlite" )
-            sql.open( soci::sqlite3, _dbname );
+            _sql.open( soci::sqlite3, _dbname );
          else
          {
 	    string connect = "dbname=" + _dbname;
@@ -49,7 +51,7 @@ namespace tao {
 	    connect += " user=" + _dbuser;
 	    connect += " password='" + _dbpass + "'";
 	    LOGDLN( "Connect string: ", connect );
-	    sql.open( soci::postgresql, connect );
+	    _sql.open( soci::postgresql, connect );
          }
       }
       catch( const std::exception& ex )
@@ -74,5 +76,20 @@ namespace tao {
          _sql.close();
          _connected = false;
       }
+   }
+
+   bool
+   module::_db_cycle()
+   {
+      if( ++_cur_restart_it == _num_restart_its )
+      {
+	 LOGDLN( "Reconnecting to database." );
+	 _cur_restart_it = 0;
+	 _db_disconnect();
+	 _db_connect();
+	 return true;
+      }
+      else
+	 return false;
    }
 }
