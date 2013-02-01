@@ -7,6 +7,11 @@
 
 {% block subtitle %}Mock Galaxy Factory{% endblock %}
 
+{% block extrajs %}
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" />
+    <script src="http://code.jquery.com/ui/1.10.0/jquery-ui.js"></script>
+{% endblock extrajs %}
+
 {% block extracss %}
     <style>
         .boxed {
@@ -19,6 +24,38 @@
         }
         fieldset fieldset legend {
             font-size: medium;
+        }
+        .ui-tabs-vertical {
+            width: 90em;
+        }
+        .ui-tabs-vertical .ui-tabs-nav {
+            padding: .2em 1.1em 1.2em .2em;
+            float: left;
+            width: 16em;
+        }
+        .ui-tabs-vertical .ui-tabs-nav li {
+            clear: left;
+            width: 100%;
+            border-bottom-width: 1px !important;
+            border-right-width: 0 !important;
+            margin: 0 -1px .2em 0;
+        }
+        .ui-tabs-vertical .ui-tabs-nav li a {
+            display:block;
+        }
+        .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active {
+            padding-bottom: 0;
+            padding-right: .1em;
+            border-right-width: 1px;
+            border-right-width: 1px;
+        }
+        .ui-tabs-vertical .ui-tabs-panel {
+            padding: 1em;
+            float: right;
+            width: 70em;
+        }
+        .ui-tabs-vertical .ui-tabs-nav li #tao-tabs-2{
+            color: #aaaaaa;
         }
     </style>
 {% endblock extracss %}
@@ -33,21 +70,47 @@
     </p>
 
     <form id="mgf-form" action="" method="POST">
-        {% csrf_token %}
         <fieldset>
-        {% for form in forms %}
-          {% include form.EDIT_TEMPLATE %}
-        {% endfor %}
-        </fieldset>
-        <legend>Summary</legend>
-        <div class="row-fluid">
+        {% csrf_token %}
+        <div id="tabs">
+            <ul>
+                {% for form in forms %}
+                <li><a href="#tabs-{{ forloop.counter }}" id="tao-tabs-{{ forloop.counter }}">{{ form.LABEL }}</a></li>
+                {%  endfor %}
+                <li><a href="#tabs-{{ forms_size }}" id="tao-tabs-{{ forms_size }}">Summary and Submit</a></li>
+            </ul>
             {% for form in forms %}
-                {% include form.SUMMARY_TEMPLATE %}
+                <div id="tabs-{{ forloop.counter }}" class="tao-tab" tao-number="{{ forloop.counter }}">
+
+                    <input type="button" value="Next &gt;" class="btn tao-next" style="float: right;"/>
+                    {% if forloop.counter > 1 %}
+                        <input type="button" value="&lt; Previous" class="btn tao-prev" style="float: right;"/>
+                    {% endif %}
+
+                    {% include form.EDIT_TEMPLATE %}
+
+                    {% if forloop.counter > 1 %}
+                        <input type="button" value="&lt; Previous" class="btn tao-prev" style="float: left;"/>
+                    {% endif %}
+                    <input type="button" value="Next &gt;" class="btn tao-next" style="float: left;"/>
+
+                </div>
             {% endfor %}
+            <div id="tabs-{{ forms_size }}" class="tao-tab" tao-number="{{ forms_size }}">
+                <input type="button" value="&lt; Previous" class="btn tao-prev" style="float: right;" />
+                <legend>Summary</legend>
+                <div class="row-fluid">
+                    {% for form in forms %}
+                        {% include form.SUMMARY_TEMPLATE %}
+                    {% endfor %}
+                </div>
+                <div class="form-actions">
+                    <input type="button" value="&lt; Previous" class="btn tao-prev" style="float: left;" />
+                    <input type="submit" value="Submit Job" class="btn btn-primary" style="float: right;"/>
+                </div>
+            </div>
         </div>
-        <div class="form-actions">
-            <input type="submit" value="Submit Job" class="btn btn-primary" />
-        </div>
+        </fieldset>
     </form>
 
 
