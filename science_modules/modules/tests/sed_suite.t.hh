@@ -258,20 +258,4 @@ public:
       // Switch off random rotation and shifting.
       lc._unique = true;
    }
-
-   void setUp()
-   {
-      CLEAR_STACK_TRACE();
-
-      num_ranks = mpi::comm::world.size();
-      my_rank = mpi::comm::world.rank();
-   }
-
-   void tearDown()
-   {
-   }
-
-private:
-
-   int num_ranks, my_rank;
 };

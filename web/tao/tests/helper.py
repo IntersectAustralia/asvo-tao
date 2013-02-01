@@ -5,7 +5,17 @@ def create_file(dir_path, filename, filenames_to_contents):
     mkdir_p(os.path.dirname(file_path))
     with open(file_path, 'w') as f:
         f.write(filenames_to_contents[filename])
-        
+
+def get_file_size(dir_path, file_name):
+    file_path = os.path.join(dir_path, file_name)
+    size = os.path.getsize(file_path)
+    units = ['B', 'kB', 'MB']
+    for x in units:
+        if size < 1000:
+            return '%3.1f%s' % (size, x)
+        size /= 1000
+    return '%3.1f%s' % (size, 'GB')
+
 def mkdir_p(path):
     try:
         os.makedirs(path)

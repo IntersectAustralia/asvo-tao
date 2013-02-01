@@ -208,3 +208,12 @@ class JobFile(object):
     
     def can_be_downloaded(self):
         return self.file_size <= settings.MAX_DOWNLOAD_SIZE
+
+    def get_file_size(self):
+        size = self.file_size
+        units = ['B', 'kB', 'MB']
+        for x in units:
+            if size < 1000:
+                return '%3.1f%s' % (size, x)
+            size /= 1000
+        return '%3.1f%s' % (size, 'GB')

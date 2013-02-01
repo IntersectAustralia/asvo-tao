@@ -137,17 +137,4 @@ public:
 	 std::insert_iterator<list<array<double,2> > >( result, result.begin() )
 	 );
    }
-
-   void setUp()
-   {
-      CLEAR_STACK_TRACE();
-   }
-
-   void tearDown()
-   {
-   }
-
-private:
-
-   int num_ranks, my_rank;
 };

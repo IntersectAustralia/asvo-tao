@@ -65,18 +65,21 @@ class JobTest(LiveServerTest):
 
         self.assert_page_has_content(completed_job.parameters)
         li_elements = self.selenium.find_elements_by_css_selector('#id_completed_jobs li')
-        self.assertEqual(sorted(self.file_names_to_contents.keys()), sorted([li.text for li in li_elements]))
+        filenames_with_sizes = []
+        for file_name in self.file_names_to_contents:
+            file_size = helper.get_file_size(self.dir_paths[0],file_name)
+            filenames_with_sizes.append(file_name + " (" + file_size + ")")
+        self.assertEqual(sorted(filenames_with_sizes), sorted([li.text for li in li_elements]))
         
         # test files download 
         for li in li_elements:
             li.find_element_by_css_selector('a').click()
-            
-            split_name = li.text.split('/')
-            file_name = split_name[-1]
+            split_name = li.text.split(' (')
+            file_name = os.path.basename(split_name[0])
             download_path = os.path.join(self.DOWNLOAD_DIRECTORY, file_name)
             self.assertTrue(os.path.exists(download_path))
             f = open(download_path)
-            self.assertEqual(self.file_names_to_contents[li.text], f.read())
+            self.assertEqual(self.file_names_to_contents[split_name[0]], f.read())
             f.close()
             
     # test that anonymous user cannot view job or download files
@@ -170,7 +173,8 @@ class JobTest(LiveServerTest):
         self.visit('view_job', large_completed_job.id)
         
         for file_name in self.file_names_to_contents2.keys():
-            self.assert_page_has_content(file_name + " (File size exceeds download limit.)")
+            file_size = helper.get_file_size(self.dir_paths[1], file_name)
+            self.assert_page_has_content(file_name + " (" + file_size + ". File size exceeds download limit.)")
             
         for file_name in self.file_names_to_contents2.keys():
             self.visit('get_file', large_completed_job.id, file_name)
