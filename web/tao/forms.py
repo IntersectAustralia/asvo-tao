@@ -86,6 +86,7 @@ class OutputFormatForm(BetterForm):
     EDIT_TEMPLATE = 'mock_galaxy_factory/output_format.html'
     MODULE_VERSION = 1
     SUMMARY_TEMPLATE = 'mock_galaxy_factory/output_format_summary.html'
+    LABEL = 'Output format'
 
     class Meta:
         fieldsets = [('primary', {
@@ -108,6 +109,7 @@ class RecordFilterForm(BetterForm):
     EDIT_TEMPLATE = 'mock_galaxy_factory/record_filter.html'
     MODULE_VERSION = 1
     SUMMARY_TEMPLATE = 'mock_galaxy_factory/record_filter_summary.html'
+    LABEL = 'Record filter'
 
     class Meta:
         fieldsets = [('primary', {

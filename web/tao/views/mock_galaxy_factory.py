@@ -27,6 +27,7 @@ def index(request):
 
     return render(request, 'mock_galaxy_factory/index.html', {
         'forms': ui_holder.forms(),
+        'forms_size' : len(ui_holder.forms())+1,
     })
 
 @set_tab('mgf')

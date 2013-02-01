@@ -4,6 +4,7 @@ from tao.tests.integration_tests.helper import LiveServerTest
 
 from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, JobFactory, DataSetPropertyFactory
 from tao.models import Simulation, GalaxyModel, Job
+from tao.settings import MODULE_INDICES
 
 class MockGalaxyFactoryTest(LiveServerTest):
 
@@ -68,6 +69,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.assert_galaxy_model_info_shown(second_galaxy_model)
 
     def test_summary_on_initial_load(self):
+        self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
         geometry_displayed = self.get_summary_field_text('light_cone', 'geometry_type')
         init_simulation = Simulation.objects.all()[0]
         simulation_displayed = self.get_summary_field_text('light_cone', 'simulation')
@@ -85,6 +87,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
 
     def test_summary_on_geometry_change(self):
         self.select(self.lc_id('catalogue_geometry'), 'Box')
+        self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
         geometry_displayed = self.get_summary_field_text('light_cone', 'geometry_type')
 
         self.assertEqual('Box', geometry_displayed)
@@ -94,17 +97,18 @@ class MockGalaxyFactoryTest(LiveServerTest):
     def test_summary_on_simulation_change(self):
         second_simulation = Simulation.objects.all()[1]
         self.select_dark_matter_simulation(second_simulation)
-        simulation_displayed = self.get_summary_field_text('light_cone', 'simulation')
         init_galaxy_model_of_second_simulation = second_simulation.galaxymodel_set.all()[0]
-        galaxy_model_displayed = self.get_summary_field_text('light_cone', 'galaxy_model')
         dataset = init_galaxy_model_of_second_simulation.dataset_set.all()[0]
         filter = dataset.datasetproperty_set.all()[0]
+        self.click('tao-tabs-' + MODULE_INDICES['record_filter'])
         self.select_record_filter(filter)
         max_input = "99"
         min_input = "9"
         self.fill_in_fields({'max': max_input, 'min': min_input}, id_wrap=self.rf_id)
-        self.fill_in_fields({'ra_opening_angle': 1}, id_wrap=self.lc_id)
+        self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
         expected_filter_display = min_input + ' < ' + filter.label + ' (' + filter.units + ') < ' + max_input
+        simulation_displayed = self.get_summary_field_text('light_cone', 'simulation')
+        galaxy_model_displayed = self.get_summary_field_text('light_cone', 'galaxy_model')
         filter_displayed = self.get_summary_field_text('record_filter', 'record_filter')
 
         self.assertEqual(second_simulation.name, simulation_displayed)

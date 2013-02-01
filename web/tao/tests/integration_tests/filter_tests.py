@@ -1,6 +1,7 @@
 from tao.tests.integration_tests.helper import LiveServerMGFTest, wait
 from tao.tests.support.factories import SimulationFactory, GalaxyModelFactory, UserFactory, DataSetFactory, DataSetPropertyFactory
 from tao.models import Simulation, DataSet, GalaxyModel
+from tao.settings import MODULE_INDICES
 
 class FilterTests(LiveServerMGFTest):
 
@@ -83,18 +84,18 @@ class FilterTests(LiveServerMGFTest):
         self.assertEqual(expected_snapshot_options, actual_snapshot_options)
 
     def test_max_min_fields(self):
-        self.assert_is_disabled(self.rf_id('max'))
-        self.assert_is_disabled(self.rf_id('min'))
-
         simulation = Simulation.objects.all()[1]
         galaxy_model = simulation.galaxymodel_set.all()[4]
         dataset = DataSet.objects.get(simulation=simulation, galaxy_model=galaxy_model)
         dataset_parameter = dataset.datasetproperty_set.all()[0]
-
         self.select_dark_matter_simulation(simulation)
         self.select_galaxy_model(galaxy_model)
-        self.choose_filter(dataset_parameter)
 
+        self.click('tao-tabs-' + MODULE_INDICES['record_filter'])
+        self.assert_is_disabled(self.rf_id('max'))
+        self.assert_is_disabled(self.rf_id('min'))
+
+        self.choose_filter(dataset_parameter)
         self.assert_is_enabled(self.rf_id('max'))
         self.assert_is_enabled(self.rf_id('min'))
 
@@ -105,21 +106,24 @@ class FilterTests(LiveServerMGFTest):
         self.select_galaxy_model(galaxy_model)
         dataset = DataSet.objects.get(simulation=simulation, galaxy_model=galaxy_model)
         dataset_parameter = dataset.datasetproperty_set.all()[0]
-        self.choose_filter(dataset_parameter)
 
+        self.click('tao-tabs-' + MODULE_INDICES['record_filter'])
+        self.choose_filter(dataset_parameter)
         max_input = "bad number"
         min_input = "73"
         self.fill_in_fields({'max': max_input, 'min': min_input}, id_wrap=self.rf_id)
 
         self.submit_mgf_form()
 
-        # check after failed submit, max/min fields are both still enabled
-        self.assert_is_enabled(self.rf_id('max'))
-        self.assert_is_enabled(self.rf_id('min'))
-
-        # check values are the same in the form as user previously selected      
+        # check values are the same in the form as user previously selected
+        self.click('tao-tabs-' + MODULE_INDICES['light_cone'])
         self.assertEqual(simulation.name, self.get_selected_option_text(self.lc_id('dark_matter_simulation')))
         self.assertEqual(galaxy_model.name, self.get_selected_option_text(self.lc_id('galaxy_model')))
+
+        # check after failed submit, max/min fields are both still enabled
+        self.click('tao-tabs-' + MODULE_INDICES['record_filter'])
+        self.assert_is_enabled(self.rf_id('max'))
+        self.assert_is_enabled(self.rf_id('min'))
         self.assertEqual(dataset_parameter.option_label(), self.get_selected_option_text(self.rf_id('filter')))
         self.assertEqual(max_input, self.get_selector_value(self.rf_id('max')))
         self.assertEqual(min_input, self.get_selector_value(self.rf_id('min')))

@@ -7,6 +7,7 @@ import django.test
 import re, os
 import tao.datasets as datasets
 from tao.forms import NO_FILTER
+from tao.settings import MODULE_INDICES
 
 def wait(secs=1):
     import time
@@ -28,6 +29,7 @@ class LiveServerTest(django.test.LiveServerTestCase):
 
     ## List all ajax enabled pages that have initialization code and must wait
     AJAX_WAIT = ['mock_galaxy_factory']
+    SUMMARY_INDEX = str(len(MODULE_INDICES)+1)
 
     def setUp(self):
         from selenium.webdriver.firefox.webdriver import FirefoxProfile
