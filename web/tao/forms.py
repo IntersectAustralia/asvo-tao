@@ -109,10 +109,6 @@ class RecordFilterForm(BetterForm):
     MODULE_VERSION = 1
     SUMMARY_TEMPLATE = 'mock_galaxy_factory/record_filter_summary.html'
 
-    max = forms.DecimalField(required=False, label=_('Max'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
-    min = forms.DecimalField(required=False, label=_('Min'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
-
-
     class Meta:
         fieldsets = [('primary', {
             'legend': '',
@@ -125,9 +121,17 @@ class RecordFilterForm(BetterForm):
         if self.ui_holder.is_bound('light_cone'):
             objs = datasets.filter_choices(self.ui_holder.raw_data('light_cone', 'galaxy_model'))
             choices = [(NO_FILTER, 'No Filter')] + [(x.id, '') for x in objs]
+            record_filter = args[1]['record_filter-filter']
+            dec_places = 19
+            if record_filter != NO_FILTER:
+                obj = DataSetProperty.objects.get(pk = record_filter)
+                if obj.data_type == DataSetProperty.TYPE_INT: dec_places = 0
         else:
             choices = [(NO_FILTER, 'No Filter')]
+            dec_places = 0  ## not used now
         self.fields['filter'] = forms.ChoiceField(required=True, choices=choices)
+        self.fields['max'] = forms.DecimalField(required=False, label=_('Max'), decimal_places=dec_places, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
+        self.fields['min'] = forms.DecimalField(required=False, label=_('Min'), decimal_places=dec_places, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
 
     def check_min_less_than_max(self):
         min_field = self.cleaned_data.get('min')
