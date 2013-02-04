@@ -120,20 +120,25 @@ class RecordFilterForm(BetterForm):
     def __init__(self, *args, **kwargs):
         self.ui_holder = args[0]
         super(RecordFilterForm, self).__init__(*args[1:], **kwargs)
+        is_int = False
         if self.ui_holder.is_bound('light_cone'):
             objs = datasets.filter_choices(self.ui_holder.raw_data('light_cone', 'galaxy_model'))
             choices = [(NO_FILTER, 'No Filter')] + [(x.id, '') for x in objs]
             record_filter = args[1]['record_filter-filter']
-            dec_places = 19
             if record_filter != NO_FILTER:
                 obj = DataSetProperty.objects.get(pk = record_filter)
-                if obj.data_type == DataSetProperty.TYPE_INT: dec_places = 0
+                if obj.data_type == DataSetProperty.TYPE_INT: is_int = True
         else:
             choices = [(NO_FILTER, 'No Filter')]
-            dec_places = 0  ## not used now
+        if is_int:
+            args = {'required': False,  'decimal_places': 0, 'max_digits': 20, 'widget': forms.TextInput(attrs={'maxlength': '20'})}
+            val_class = forms.DecimalField
+        else:
+            args = {'required': False,  'widget': forms.TextInput(attrs={'maxlength': '20'})}
+            val_class = forms.FloatField
         self.fields['filter'] = forms.ChoiceField(required=True, choices=choices)
-        self.fields['max'] = forms.DecimalField(required=False, label=_('Max'), decimal_places=dec_places, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
-        self.fields['min'] = forms.DecimalField(required=False, label=_('Min'), decimal_places=dec_places, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
+        self.fields['max'] = val_class(**dict(args.items()+{'label':_('Max'),}.items()))
+        self.fields['min'] = val_class(**dict(args.items()+{'label':_('Min'),}.items()))
 
     def check_min_or_max_or_both(self):
         selected_filter = self.cleaned_data['filter']
@@ -145,8 +150,6 @@ class RecordFilterForm(BetterForm):
             msg = _('Either "min", "max" or both to be provided.')
             self._errors["min"] = self.error_class([msg])
             self._errors["max"] = self.error_class([msg])
-            del self.cleaned_data["min"]
-            del self.cleaned_data["max"]
 
     def check_min_less_than_max(self):
         min_field = self.cleaned_data.get('min')
@@ -158,8 +161,8 @@ class RecordFilterForm(BetterForm):
 
     def clean(self):
         super(RecordFilterForm, self).clean()
-        self.check_min_less_than_max()
         self.check_min_or_max_or_both()
+        self.check_min_less_than_max()
         return self.cleaned_data
 
     def to_xml(self, parent_xml_element):

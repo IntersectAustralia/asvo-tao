@@ -185,11 +185,11 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
     # check length of any min/max input is less than or equal to 20 characters
     def test_max_min_length(self):
         lc_form = make_form(self.default_form_values,LightConeForm,{},prefix='light_cone')
-        max_overflow_form = make_form(self.default_form_values,RecordFilterForm,{'max': '100000000000000000000', 'min': '7'}, prefix='record_filter',ui_holder=MockUIHolder(lc_form))
+        max_overflow_form = make_form(self.default_form_values,RecordFilterForm,{'filter':str(self.filter.id), 'max': '100000000000000000000', 'min': '7'}, prefix='record_filter',ui_holder=MockUIHolder(lc_form))
         self.assertFalse(max_overflow_form.is_valid())
         self.assertEqual(['Ensure that there are no more than 20 digits in total.'], max_overflow_form.errors['max'])
 
-        min_overflow_form = make_form(self.default_form_values,RecordFilterForm,{'max': '2', 'min': '1.000000000000000000001'}, prefix='record_filter',ui_holder=MockUIHolder(lc_form))
+        min_overflow_form = make_form(self.default_form_values,RecordFilterForm,{'filter':str(self.filter.id), 'max': '2', 'min': '1.000000000000000000001'}, prefix='record_filter',ui_holder=MockUIHolder(lc_form))
         self.assertFalse(min_overflow_form.is_valid())
         self.assertEqual(['Ensure that there are no more than 20 digits in total.'], min_overflow_form.errors['min'])
 

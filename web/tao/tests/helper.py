@@ -30,7 +30,7 @@ def write_file_from_zip(zipfile_obj, filename, fullpath):
 
 def make_form(defaults, form_class, values, prefix=None, ui_holder=None):
     if prefix in defaults:
-        default_values = defaults[prefix]
+        default_values = defaults[prefix].copy()
     else:
         default_values = {}
     default_values.update(values)
