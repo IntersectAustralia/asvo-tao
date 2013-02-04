@@ -135,6 +135,19 @@ class RecordFilterForm(BetterForm):
         self.fields['max'] = forms.DecimalField(required=False, label=_('Max'), decimal_places=dec_places, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
         self.fields['min'] = forms.DecimalField(required=False, label=_('Min'), decimal_places=dec_places, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
 
+    def check_min_or_max_or_both(self):
+        selected_filter = self.cleaned_data['filter']
+        if selected_filter == NO_FILTER:
+            return
+        min_field = self.cleaned_data.get('min')
+        max_field = self.cleaned_data.get('max')
+        if min_field is None and max_field is None:
+            msg = _('Either "min", "max" or both to be provided.')
+            self._errors["min"] = self.error_class([msg])
+            self._errors["max"] = self.error_class([msg])
+            del self.cleaned_data["min"]
+            del self.cleaned_data["max"]
+
     def check_min_less_than_max(self):
         min_field = self.cleaned_data.get('min')
         max_field = self.cleaned_data.get('max')
@@ -146,6 +159,7 @@ class RecordFilterForm(BetterForm):
     def clean(self):
         super(RecordFilterForm, self).clean()
         self.check_min_less_than_max()
+        self.check_min_or_max_or_both()
         return self.cleaned_data
 
     def to_xml(self, parent_xml_element):
