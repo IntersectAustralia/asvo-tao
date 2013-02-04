@@ -86,6 +86,9 @@ class DataSet(models.Model):
     version = models.DecimalField(max_digits=10, decimal_places=2, default='1.00')
     import_date = models.DateField(auto_now_add=True)
     available = models.BooleanField(default=True)
+    default_filter_field = models.ForeignKey('DataSetProperty', related_name='DataSetProperty', null=True)
+    default_filter_min = models.FloatField(null=True)
+    default_filter_max = models.FloatField(null=True)
     
     class Meta:
         unique_together = ('simulation', 'galaxy_model')
