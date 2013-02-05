@@ -127,7 +127,7 @@ class RecordFilterForm(BetterForm):
             record_filter = args[1]['record_filter-filter']
             if record_filter != NO_FILTER:
                 obj = DataSetProperty.objects.get(pk = record_filter)
-                if obj.data_type == DataSetProperty.TYPE_INT: is_int = True
+                is_int = obj.data_type == DataSetProperty.TYPE_INT or obj.data_type == DataSetProperty.TYPE_LONG_LONG
         else:
             choices = [(NO_FILTER, 'No Filter')]
         if is_int:
