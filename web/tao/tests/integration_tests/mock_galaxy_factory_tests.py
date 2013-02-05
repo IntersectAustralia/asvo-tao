@@ -22,7 +22,9 @@ class MockGalaxyFactoryTest(LiveServerTest):
         for unused in range(4):
             g = GalaxyModelFactory.create()
             ds = DataSetFactory.create(simulation=simulation2, galaxy_model=g)
-            DataSetPropertyFactory.create(dataset=ds)
+            dsp = DataSetPropertyFactory.create(dataset=ds)
+            ds.default_filter_field = dsp
+            ds.save()
         
         username = "person"
         password = "funnyfish"

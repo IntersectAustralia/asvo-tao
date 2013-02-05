@@ -26,6 +26,9 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         self.filter = DataSetPropertyFactory.create(dataset=self.dataset)
         self.filter_long = DataSetPropertyFactory.create(dataset=self.dataset, data_type=DataSetProperty.TYPE_LONG_LONG)
         self.filter_float = DataSetPropertyFactory.create(dataset=self.dataset, data_type=DataSetProperty.TYPE_FLOAT)
+        self.dataset.default_filter_field = self.filter
+        self.dataset.save()
+
         SnapshotFactory.create(dataset=self.dataset)
         self.user = UserFactory.create()
         #expected_timestamp = "2012-11-13 13:45:32+1000"
@@ -132,6 +135,35 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
 
         self.assertEqual({}, light_cone_form.errors)
         self.assertTrue(light_cone_form.is_valid())
+
+    def test_min_and_max_optional_for_default_filter(self):
+        light_cone_form = make_form(self.default_form_values,LightConeForm,{},prefix='light_cone')
+        record_filter_form = make_form(self.default_form_values,RecordFilterForm,{'filter':str(self.filter.id),}, prefix='record_filter',ui_holder=MockUIHolder(light_cone_form))
+
+        self.assertTrue(record_filter_form.is_valid())
+
+    def test_min_or_max_required_for_other_filter(self):
+        light_cone_form = make_form(self.default_form_values,LightConeForm,{},prefix='light_cone')
+        record_filter_form = make_form(self.default_form_values,RecordFilterForm,{'filter':str(self.filter_long.id)}, prefix='record_filter',ui_holder=MockUIHolder(light_cone_form))
+
+        self.assertFalse(record_filter_form.is_valid())
+
+    def test_min_or_max_provided_is_valid(self):
+        light_cone_form = make_form(self.default_form_values,LightConeForm,{},prefix='light_cone')
+        # test on default
+        record_filter_form = make_form(self.default_form_values,RecordFilterForm,{'filter':str(self.filter.id),'min':'10'}, prefix='record_filter',ui_holder=MockUIHolder(light_cone_form))
+        self.assertTrue(record_filter_form.is_valid())
+        # test on other
+        record_filter_form = make_form(self.default_form_values,RecordFilterForm,{'filter':str(self.filter_long.id),'min':'10'}, prefix='record_filter',ui_holder=MockUIHolder(light_cone_form))
+        self.assertTrue(record_filter_form.is_valid())
+
+    def test_min_or_max_required_when_no_default(self):
+        data_set_no_default = DataSetFactory.create(simulation=self.simulation, galaxy_model=GalaxyModelFactory.create())
+        new_filter = DataSetPropertyFactory.create(dataset=data_set_no_default)
+        light_cone_form = make_form(self.default_form_values,LightConeForm,{'galaxy_model': data_set_no_default.id, 'output_properties': [str(new_filter.id)],},prefix='light_cone')
+        record_filter_form = make_form(self.default_form_values,RecordFilterForm,{'filter':str(new_filter.id)}, prefix='record_filter',ui_holder=MockUIHolder(light_cone_form))
+
+        self.assertFalse(record_filter_form.is_valid())
 
     def test_min_less_than_max_passes(self):
         light_cone_form = make_form(self.default_form_values,LightConeForm,{},prefix='light_cone')

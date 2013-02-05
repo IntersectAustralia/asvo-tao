@@ -20,7 +20,9 @@ class FilterTests(LiveServerMGFTest):
             galaxy_model = GalaxyModelFactory.create()
             dataset = DataSetFactory.create(simulation=simulation2, galaxy_model=galaxy_model)
             DataSetPropertyFactory.create(dataset=dataset)
-            DataSetPropertyFactory.create(dataset=dataset, is_filter=False)
+            dsp =DataSetPropertyFactory.create(dataset=dataset, is_filter=False)
+            dataset.default_filter_field = dsp
+            dataset.save()
 
         username = "user"
         password = "password"
@@ -127,6 +129,40 @@ class FilterTests(LiveServerMGFTest):
         self.assertEqual(dataset_parameter.option_label(), self.get_selected_option_text(self.rf_id('filter')))
         self.assertEqual(max_input, self.get_selector_value(self.rf_id('max')))
         self.assertEqual(min_input, self.get_selector_value(self.rf_id('min')))
+
+    def test_max_min_required_for_data_sets_with_no_default(self):
+        simulation = Simulation.objects.all()[0]
+        self.select_dark_matter_simulation(simulation)
+        galaxy_model = simulation.galaxymodel_set.all()[3]
+        self.select_galaxy_model(galaxy_model)
+        dataset = DataSet.objects.get(simulation=simulation, galaxy_model=galaxy_model)
+        dataset_parameter = dataset.datasetproperty_set.all()[0]
+
+        self.click('tao-tabs-' + MODULE_INDICES['record_filter'])
+        self.choose_filter(dataset_parameter)
+        self.fill_in_fields({'max': '', 'min': ''}, id_wrap=self.rf_id)
+
+        self.submit_mgf_form()
+
+        self.assert_errors_on_field(True, self.rf_id('min'))
+        self.assert_errors_on_field(True, self.rf_id('max'))
+
+    def test_max_min_not_required_for_data_sets_with_a_default(self):
+        simulation = Simulation.objects.all()[1]
+        self.select_dark_matter_simulation(simulation)
+        galaxy_model = simulation.galaxymodel_set.all()[4]
+        self.select_galaxy_model(galaxy_model)
+        dataset = DataSet.objects.get(simulation=simulation, galaxy_model=galaxy_model)
+        dataset_parameter = dataset.default_filter_field
+
+        self.click('tao-tabs-' + MODULE_INDICES['record_filter'])
+        self.choose_filter(dataset_parameter)
+        self.fill_in_fields({'max': '', 'min': ''}, id_wrap=self.rf_id)
+
+        self.submit_mgf_form()
+
+        self.assert_errors_on_field(False, self.rf_id('min'))
+        self.assert_errors_on_field(False, self.rf_id('max'))
 
     def test_redshift_max_redshift_min_fields_after_failed_submit(self):
         redshift_max_input = "bad number"
