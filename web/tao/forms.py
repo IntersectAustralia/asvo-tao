@@ -146,8 +146,7 @@ class RecordFilterForm(BetterForm):
             return
         min_field = self.cleaned_data.get('min')
         max_field = self.cleaned_data.get('max')
-        default_filter = datasets.default_filter_choice(self.ui_holder.raw_data('light_cone', 'galaxy_model'))
-        if min_field is None and max_field is None and (default_filter is None or DataSetProperty.objects.get(pk=selected_filter) != default_filter):
+        if min_field is None and max_field is None:
             msg = _('Either "min", "max" or both to be provided.')
             self._errors["min"] = self.error_class([msg])
             self._errors["max"] = self.error_class([msg])

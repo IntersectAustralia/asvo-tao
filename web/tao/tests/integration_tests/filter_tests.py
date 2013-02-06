@@ -94,12 +94,13 @@ class FilterTests(LiveServerMGFTest):
         self.select_galaxy_model(galaxy_model)
 
         self.click('tao-tabs-' + MODULE_INDICES['record_filter'])
-        self.assert_is_disabled(self.rf_id('max'))
-        self.assert_is_disabled(self.rf_id('min'))
 
         self.choose_filter(dataset_parameter)
         self.assert_is_enabled(self.rf_id('max'))
         self.assert_is_enabled(self.rf_id('min'))
+        self.choose_no_filter()
+        self.assert_is_disabled(self.rf_id('max'))
+        self.assert_is_disabled(self.rf_id('min'))
 
     def test_max_min_fields_after_failed_submit(self):
         simulation = Simulation.objects.all()[1]
@@ -147,7 +148,7 @@ class FilterTests(LiveServerMGFTest):
         self.assert_errors_on_field(True, self.rf_id('min'))
         self.assert_errors_on_field(True, self.rf_id('max'))
 
-    def test_max_min_not_required_for_data_sets_with_a_default(self):
+    def test_max_min_required_for_data_sets_with_a_default(self):
         simulation = Simulation.objects.all()[1]
         self.select_dark_matter_simulation(simulation)
         galaxy_model = simulation.galaxymodel_set.all()[4]
@@ -161,8 +162,8 @@ class FilterTests(LiveServerMGFTest):
 
         self.submit_mgf_form()
 
-        self.assert_errors_on_field(False, self.rf_id('min'))
-        self.assert_errors_on_field(False, self.rf_id('max'))
+        self.assert_errors_on_field(True, self.rf_id('min'))
+        self.assert_errors_on_field(True, self.rf_id('max'))
 
     def test_max_min_for_no_filter(self):
         self.click('tao-tabs-' + MODULE_INDICES['record_filter'])
