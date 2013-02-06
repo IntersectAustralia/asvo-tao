@@ -142,6 +142,13 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
 
         self.assertTrue(record_filter_form.is_valid())
 
+    def test_min_and_max_not_used_for_no_filter(self):
+        from tao.forms import NO_FILTER
+        light_cone_form = make_form(self.default_form_values, LightConeForm, {}, prefix='light_cone')
+        record_filter_form = make_form(self.default_form_values, RecordFilterForm, {'filter': NO_FILTER}, prefix='record_filter', ui_holder=MockUIHolder(light_cone_form))
+
+        self.assertTrue(record_filter_form.is_valid())
+
     def test_min_or_max_required_for_other_filter(self):
         light_cone_form = make_form(self.default_form_values,LightConeForm,{},prefix='light_cone')
         record_filter_form = make_form(self.default_form_values,RecordFilterForm,{'filter':str(self.filter_long.id)}, prefix='record_filter',ui_holder=MockUIHolder(light_cone_form))

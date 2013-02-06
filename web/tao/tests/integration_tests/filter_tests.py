@@ -20,7 +20,7 @@ class FilterTests(LiveServerMGFTest):
             galaxy_model = GalaxyModelFactory.create()
             dataset = DataSetFactory.create(simulation=simulation2, galaxy_model=galaxy_model)
             DataSetPropertyFactory.create(dataset=dataset)
-            dsp =DataSetPropertyFactory.create(dataset=dataset, is_filter=False)
+            dsp = DataSetPropertyFactory.create(dataset=dataset, is_filter=False)
             dataset.default_filter_field = dsp
             dataset.save()
 
@@ -33,13 +33,13 @@ class FilterTests(LiveServerMGFTest):
         self.select_dark_matter_simulation(simulation1)
         self.select_galaxy_model(simulation1.galaxymodel_set.all().order_by('id')[0])
 
-    def test_filter_options(self):
-        # check drop-down list correspond to properties of the currently selected simulation and galaxy model
         initial_simulation = Simulation.objects.all().order_by('id')[0]
         initial_galaxy_model = initial_simulation.galaxymodel_set.all().order_by('id')[0]
-        dataset = DataSet.objects.get(simulation=initial_simulation, galaxy_model=initial_galaxy_model)
+        self.initial_dataset = DataSet.objects.get(simulation=initial_simulation, galaxy_model=initial_galaxy_model)
 
-        expected_filter_options = self.get_expected_filter_options(dataset.id)
+    def test_filter_options(self):
+        # check drop-down list correspond to properties of the currently selected simulation and galaxy model
+        expected_filter_options = self.get_expected_filter_options(self.initial_dataset.id)
         actual_filter_options = self.get_actual_filter_options()
 
         self.assertEqual(expected_filter_options, actual_filter_options)
@@ -164,6 +164,20 @@ class FilterTests(LiveServerMGFTest):
         self.assert_errors_on_field(False, self.rf_id('min'))
         self.assert_errors_on_field(False, self.rf_id('max'))
 
+    def test_max_min_for_no_filter(self):
+        self.click('tao-tabs-' + MODULE_INDICES['record_filter'])
+        dataset_parameter = self.initial_dataset.datasetproperty_set.all()[0]
+        self.choose_filter(dataset_parameter)
+        self.assert_is_enabled(self.rf_id('max'))
+        self.assert_is_enabled(self.rf_id('min'))
+
+        self.choose_no_filter()
+        self.assert_is_disabled(self.rf_id('max'))
+        self.assert_is_disabled(self.rf_id('min'))
+        self.submit_mgf_form()
+        self.assert_errors_on_field(False, self.rf_id('min'))
+        self.assert_errors_on_field(False, self.rf_id('max'))
+
     def test_redshift_max_redshift_min_fields_after_failed_submit(self):
         redshift_max_input = "bad number"
         redshift_min_input = "73"
@@ -176,3 +190,6 @@ class FilterTests(LiveServerMGFTest):
 
     def choose_filter(self, dataset_parameter):
         self.select(self.rf_id('filter'), dataset_parameter.option_label())
+
+    def choose_no_filter(self):
+        self.select(self.rf_id('filter'), 'No Filter')
