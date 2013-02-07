@@ -5,3 +5,8 @@ body {
 ul {
     list-style-type:none;
 }
+
+a.ui-tabs-anchor:focus {
+    outline: 0px none black;
+    outline: 0px none -webkit-focus-ring-color;
+}

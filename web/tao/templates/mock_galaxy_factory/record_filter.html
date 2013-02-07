@@ -6,6 +6,7 @@
                 {% for field in fieldset %}
                     {% include "bootstrap/field.html" %}
                 {% endfor %}
+                <input type="hidden" value="{{ form.is_bound }}" id="RF_BOUND" />
             </fieldset>
         {% endfor %}
     </div>
