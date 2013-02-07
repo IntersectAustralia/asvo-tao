@@ -54,16 +54,15 @@ def galaxy_models(request, id):
     return HttpResponse(resp, mimetype="application/json")
 
 @researcher_required
-def filters(request, sid, gid):
+def filters(request, id):
     """
     returns filters for given simulation and galaxy_model
     :param request:
-    :param sid: simulation id
-    :param gid: galaxy model id
+    :param id: data set id
     :return: HttpResponse in json format
     """
-    data_set = DataSet.objects.get(simulation_id=sid, galaxy_model_id=gid)
-    objects = datasets.filter_choices(data_set.id)
+    data_set = DataSet.objects.get(pk=id)
+    objects = datasets.filter_choices(id)
     default_filter = data_set.default_filter_field
     if default_filter is None:
         default_id = ''
