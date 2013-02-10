@@ -211,3 +211,5 @@ MODULES = (
 INSTALLED_APPS += tuple(('taoui_' + module_name for module_name in MODULES))
 
 OUTPUT_FORMATS = [{'value':'csv', 'text':'CSV'}, {'value':'hdf5', 'text':'HDF5'}]
+
+MODULE_INDICES = {'light_cone': '1', 'sed': '2', 'record_filter': '3', 'output_format': '4'}

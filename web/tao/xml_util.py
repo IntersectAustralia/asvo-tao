@@ -17,7 +17,7 @@ def child_element(parent, tag, text=None, **attrs):
     return elem
 
 def xml_print(root):
-    return etree.tostring(root, pretty_print=True)
+    return etree.tostring(root, pretty_print=True, encoding='utf-8', xml_declaration=True)
 
 def remove_comments(root):
     comments = root.xpath('//comment()')

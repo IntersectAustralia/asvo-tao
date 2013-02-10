@@ -4,7 +4,7 @@
         * galaxy models
         * stellar models
 """
-
+from django.db.models import Q
 from tao import models
 
 def dataset_get(dataset_id):
@@ -53,7 +53,21 @@ def snapshot_choices():
 
 def filter_choices(data_set_id):
     dataset = models.DataSet.objects.get(id=data_set_id)
-    return models.DataSetProperty.objects.filter(dataset_id = dataset.id, is_filter = True).exclude(data_type = models.DataSetProperty.TYPE_STRING).order_by('name')
+    q = Q(dataset_id = dataset.id, is_filter=True)
+    if dataset.default_filter_field is not None: q = q | Q(pk=dataset.default_filter_field.id)
+    return models.DataSetProperty.objects.filter(q).exclude(data_type = models.DataSetProperty.TYPE_STRING).order_by('name')
+
+def default_filter_choice(data_set_id):
+    dataset = models.DataSet.objects.get(id=data_set_id)
+    return dataset.default_filter_field
+
+def default_filter_min(data_set_id):
+    dataset = models.DataSet.objects.get(id=data_set_id)
+    return dataset.default_filter_min
+
+def default_filter_max(data_set_id):
+    dataset = models.DataSet.objects.get(id=data_set_id)
+    return dataset.default_filter_max
 
 def output_choices(data_set_id):
     dataset = models.DataSet.objects.get(id=data_set_id)

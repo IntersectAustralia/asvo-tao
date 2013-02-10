@@ -7,6 +7,7 @@ import django.test
 import re, os
 import tao.datasets as datasets
 from tao.forms import NO_FILTER
+from tao.settings import MODULE_INDICES
 
 def wait(secs=1):
     import time
@@ -28,6 +29,7 @@ class LiveServerTest(django.test.LiveServerTestCase):
 
     ## List all ajax enabled pages that have initialization code and must wait
     AJAX_WAIT = ['mock_galaxy_factory']
+    SUMMARY_INDEX = str(len(MODULE_INDICES)+1)
 
     def setUp(self):
         from selenium.webdriver.firefox.webdriver import FirefoxProfile
@@ -58,6 +60,20 @@ class LiveServerTest(django.test.LiveServerTestCase):
 
     def rf_id(self, bare_field):
         return '#id_record_filter-%s' % bare_field
+
+    def get_parent_element(self, element):
+        return self.selenium.execute_script('return arguments[0].parentNode;', element)
+
+    def get_element_css_classes(self, element):
+        list = []
+        found = element.get_attribute('class')
+        if found is not None: list = found.split()
+        return list
+
+    def get_closest_by_class(self, element, css_class):
+        while css_class not in self.get_element_css_classes(element):
+            element = self.get_parent_element(element)
+        return element
 
     def get_summary_field(self, form_name, field_name):
         summary_selector = 'div.summary_%s .%s' % (form_name, field_name)
@@ -236,3 +252,9 @@ class LiveServerMGFTest(LiveServerTest):
         submit_button = self.selenium.find_element_by_css_selector('#mgf-form input[type="submit"]')
         submit_button.submit()
         wait(1)
+
+    def assert_errors_on_field(self, what, field_id):
+        field_elem = self.selenium.find_element_by_css_selector(field_id)
+        div_container = self.get_closest_by_class(field_elem, 'control-group')
+        self.assertEquals(what, 'error' in self.get_element_css_classes(div_container))
+

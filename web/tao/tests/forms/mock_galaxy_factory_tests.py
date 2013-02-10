@@ -4,7 +4,7 @@ import datetime
 
 from tao import workflow, time
 from tao.forms import OutputFormatForm, RecordFilterForm, NO_FILTER
-from tao.models import Snapshot
+from tao.models import Snapshot, DataSetProperty
 from tao.settings import OUTPUT_FORMATS
 from taoui_light_cone.forms import Form as LightConeForm
 from taoui_sed.forms import Form as SEDForm
@@ -24,6 +24,11 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         galaxy_model = GalaxyModelFactory.create()
         self.dataset = DataSetFactory.create(simulation=self.simulation, galaxy_model=galaxy_model)
         self.filter = DataSetPropertyFactory.create(dataset=self.dataset)
+        self.filter_long = DataSetPropertyFactory.create(dataset=self.dataset, data_type=DataSetProperty.TYPE_LONG_LONG)
+        self.filter_float = DataSetPropertyFactory.create(dataset=self.dataset, data_type=DataSetProperty.TYPE_FLOAT)
+        self.dataset.default_filter_field = self.filter
+        self.dataset.save()
+
         SnapshotFactory.create(dataset=self.dataset)
         self.user = UserFactory.create()
         #expected_timestamp = "2012-11-13 13:45:32+1000"
@@ -131,12 +136,60 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         self.assertEqual({}, light_cone_form.errors)
         self.assertTrue(light_cone_form.is_valid())
 
-    def test_min_less_than_max_passes(self):
-        light_cone_form = make_form(self.default_form_values,LightConeForm,{'max': '127', 'min': '3'},prefix='light_cone')
-        light_cone_form.is_valid()
+    def test_min_and_max_not_optional_for_default_filter(self):
+        light_cone_form = make_form(self.default_form_values,LightConeForm,{},prefix='light_cone')
+        record_filter_form = make_form(self.default_form_values,RecordFilterForm,{'filter':str(self.filter.id),}, prefix='record_filter',ui_holder=MockUIHolder(light_cone_form))
 
-        self.assertEqual({}, light_cone_form.errors)
-        self.assertTrue(light_cone_form.is_valid())
+        self.assertFalse(record_filter_form.is_valid())
+
+    def test_min_and_max_not_used_for_no_filter(self):
+        from tao.forms import NO_FILTER
+        light_cone_form = make_form(self.default_form_values, LightConeForm, {}, prefix='light_cone')
+        record_filter_form = make_form(self.default_form_values, RecordFilterForm, {'filter': NO_FILTER}, prefix='record_filter', ui_holder=MockUIHolder(light_cone_form))
+
+        self.assertTrue(record_filter_form.is_valid())
+
+    def test_min_or_max_required_for_other_filter(self):
+        light_cone_form = make_form(self.default_form_values,LightConeForm,{},prefix='light_cone')
+        record_filter_form = make_form(self.default_form_values,RecordFilterForm,{'filter':str(self.filter_long.id)}, prefix='record_filter',ui_holder=MockUIHolder(light_cone_form))
+
+        self.assertFalse(record_filter_form.is_valid())
+
+    def test_min_or_max_provided_is_valid(self):
+        light_cone_form = make_form(self.default_form_values,LightConeForm,{},prefix='light_cone')
+        # test on default
+        record_filter_form = make_form(self.default_form_values,RecordFilterForm,{'filter':str(self.filter.id),'min':'10'}, prefix='record_filter',ui_holder=MockUIHolder(light_cone_form))
+        self.assertTrue(record_filter_form.is_valid())
+        # test on other
+        record_filter_form = make_form(self.default_form_values,RecordFilterForm,{'filter':str(self.filter_long.id),'min':'10'}, prefix='record_filter',ui_holder=MockUIHolder(light_cone_form))
+        self.assertTrue(record_filter_form.is_valid())
+
+    def test_min_or_max_required_when_no_default(self):
+        data_set_no_default = DataSetFactory.create(simulation=self.simulation, galaxy_model=GalaxyModelFactory.create())
+        new_filter = DataSetPropertyFactory.create(dataset=data_set_no_default)
+        light_cone_form = make_form(self.default_form_values,LightConeForm,{'galaxy_model': data_set_no_default.id, 'output_properties': [str(new_filter.id)],},prefix='light_cone')
+        record_filter_form = make_form(self.default_form_values,RecordFilterForm,{'filter':str(new_filter.id)}, prefix='record_filter',ui_holder=MockUIHolder(light_cone_form))
+
+        self.assertFalse(record_filter_form.is_valid())
+
+    def test_min_less_than_max_passes(self):
+        light_cone_form = make_form(self.default_form_values,LightConeForm,{},prefix='light_cone')
+        record_filter_form = make_form(self.default_form_values,RecordFilterForm,{'filter':str(self.filter.id),'max': '30', 'min': '3'}, prefix='record_filter',ui_holder=MockUIHolder(light_cone_form))
+
+        self.assertTrue(record_filter_form.is_valid())
+
+    def test_min_right_type_passes(self):
+        light_cone_form = make_form(self.default_form_values,LightConeForm,{},prefix='light_cone')
+        for filter_obj, val in [(self.filter, '3'), (self.filter_float, '3.0'), (self.filter_long, '3')]:
+            record_filter_form = make_form(self.default_form_values,RecordFilterForm,{'filter':str(filter_obj.id),'min': val}, prefix='record_filter',ui_holder=MockUIHolder(light_cone_form))
+            self.assertTrue(record_filter_form.is_valid())
+
+    def test_min_wrong_type_fails(self):
+        light_cone_form = make_form(self.default_form_values,LightConeForm,{},prefix='light_cone')
+        light_cone_form = make_form(self.default_form_values,LightConeForm,{},prefix='light_cone')
+        for filter_obj, val in [(self.filter, '3.0'), (self.filter_float, 'a'), (self.filter_long, '3.0')]:
+            record_filter_form = make_form(self.default_form_values,RecordFilterForm,{'filter':str(filter_obj.id),'min': val}, prefix='record_filter',ui_holder=MockUIHolder(light_cone_form))
+            self.assertFalse(record_filter_form.is_valid())
 
     def test_redshift_min_less_than_redshift_max_passes(self):
         light_cone_form = make_form(self.default_form_values,LightConeForm,{'redshift_max': '2', 'redshift_min': '1.5'},prefix='light_cone')
@@ -185,11 +238,11 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
     # check length of any min/max input is less than or equal to 20 characters
     def test_max_min_length(self):
         lc_form = make_form(self.default_form_values,LightConeForm,{},prefix='light_cone')
-        max_overflow_form = make_form(self.default_form_values,RecordFilterForm,{'max': '100000000000000000000', 'min': '7'}, prefix='record_filter',ui_holder=MockUIHolder(lc_form))
+        max_overflow_form = make_form(self.default_form_values,RecordFilterForm,{'filter':str(self.filter.id), 'max': '100000000000000000000', 'min': '7'}, prefix='record_filter',ui_holder=MockUIHolder(lc_form))
         self.assertFalse(max_overflow_form.is_valid())
         self.assertEqual(['Ensure that there are no more than 20 digits in total.'], max_overflow_form.errors['max'])
 
-        min_overflow_form = make_form(self.default_form_values,RecordFilterForm,{'max': '2', 'min': '1.000000000000000000001'}, prefix='record_filter',ui_holder=MockUIHolder(lc_form))
+        min_overflow_form = make_form(self.default_form_values,RecordFilterForm,{'filter':str(self.filter.id), 'max': '2', 'min': '1.000000000000000000001'}, prefix='record_filter',ui_holder=MockUIHolder(lc_form))
         self.assertFalse(min_overflow_form.is_valid())
         self.assertEqual(['Ensure that there are no more than 20 digits in total.'], min_overflow_form.errors['min'])
 

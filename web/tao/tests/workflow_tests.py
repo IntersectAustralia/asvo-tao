@@ -78,7 +78,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             })
         xml_parameters.update({
             'filter': self.filter.name,
-            'filter_min' : '1E+12',
+            'filter_min' : '1000000',
             'filter_max' : 'None',
         })
 
@@ -196,7 +196,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
         light_cone_form = make_form({}, LightConeForm, form_parameters, prefix='light_cone')
         mock_ui_holder = MockUIHolder(light_cone_form)
         sed_form = make_form({}, SEDForm, self.sed_parameters, prefix='sed')
-        record_filter_form = make_form({}, RecordFilterForm, {'filter':self.filter.id,'min':str(10E+11)}, ui_holder=mock_ui_holder, prefix='record_filter')
+        record_filter_form = make_form({}, RecordFilterForm, {'filter':self.filter.id,'min':str(1000000)}, ui_holder=mock_ui_holder, prefix='record_filter')
         output_form = make_form({}, OutputFormatForm, {'supported_formats': 'csv'}, prefix='output_format')
         self.assertEqual({}, light_cone_form.errors)
         self.assertEqual({}, sed_form.errors)
@@ -214,7 +214,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
         form_parameters = {
             'catalogue_geometry': 'box',
             'dark_matter_simulation': self.simulation.id,
-            'galaxy_model': self.galaxy_model.id,
+            'galaxy_model': self.dataset.id,
             'output_properties' : [self.filter.id],
             'snapshot': self.snapshot.id,
             'box_size': 20,
@@ -232,7 +232,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
         xml_parameters.update({
             'filter': self.filter.name,
             'filter_min' : 'None',
-            'filter_max' : '1E+12',
+            'filter_max' : '1000000',
             })
 
         # TODO: there are commented out elements which are not implemented yet
@@ -345,7 +345,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
         light_cone_form = make_form({}, LightConeForm, form_parameters, prefix='light_cone')
         mock_ui_holder = MockUIHolder(light_cone_form)
         sed_form = make_form({}, SEDForm, self.sed_parameters, prefix='sed')
-        record_filter_form = make_form({}, RecordFilterForm, {'filter':self.filter.id,'max':str(10E+11)}, ui_holder=mock_ui_holder, prefix='record_filter')
+        record_filter_form = make_form({}, RecordFilterForm, {'filter':str(self.filter.id),'max':str(1000000)}, ui_holder=mock_ui_holder, prefix='record_filter')
         output_form = make_form({}, OutputFormatForm, {'supported_formats': 'csv'}, prefix='output_format')
         self.assertEqual({}, light_cone_form.errors)
         self.assertEqual({}, sed_form.errors)

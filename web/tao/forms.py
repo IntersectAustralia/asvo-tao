@@ -86,6 +86,7 @@ class OutputFormatForm(BetterForm):
     EDIT_TEMPLATE = 'mock_galaxy_factory/output_format.html'
     MODULE_VERSION = 1
     SUMMARY_TEMPLATE = 'mock_galaxy_factory/output_format_summary.html'
+    LABEL = 'Output format'
 
     class Meta:
         fieldsets = [('primary', {
@@ -108,10 +109,7 @@ class RecordFilterForm(BetterForm):
     EDIT_TEMPLATE = 'mock_galaxy_factory/record_filter.html'
     MODULE_VERSION = 1
     SUMMARY_TEMPLATE = 'mock_galaxy_factory/record_filter_summary.html'
-
-    max = forms.DecimalField(required=False, label=_('Max'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
-    min = forms.DecimalField(required=False, label=_('Min'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20'}))
-
+    LABEL = 'Record filter'
 
     class Meta:
         fieldsets = [('primary', {
@@ -122,12 +120,36 @@ class RecordFilterForm(BetterForm):
     def __init__(self, *args, **kwargs):
         self.ui_holder = args[0]
         super(RecordFilterForm, self).__init__(*args[1:], **kwargs)
+        is_int = False
         if self.ui_holder.is_bound('light_cone'):
             objs = datasets.filter_choices(self.ui_holder.raw_data('light_cone', 'galaxy_model'))
             choices = [(NO_FILTER, 'No Filter')] + [(x.id, '') for x in objs]
+            record_filter = args[1]['record_filter-filter']
+            if record_filter != NO_FILTER:
+                obj = DataSetProperty.objects.get(pk = record_filter)
+                is_int = obj.data_type == DataSetProperty.TYPE_INT or obj.data_type == DataSetProperty.TYPE_LONG_LONG
         else:
             choices = [(NO_FILTER, 'No Filter')]
+        if is_int:
+            args = {'required': False,  'decimal_places': 0, 'max_digits': 20, 'widget': forms.TextInput(attrs={'maxlength': '20'})}
+            val_class = forms.DecimalField
+        else:
+            args = {'required': False,  'widget': forms.TextInput(attrs={'maxlength': '20'})}
+            val_class = forms.FloatField
         self.fields['filter'] = forms.ChoiceField(required=True, choices=choices)
+        self.fields['max'] = val_class(**dict(args.items()+{'label':_('Max'),}.items()))
+        self.fields['min'] = val_class(**dict(args.items()+{'label':_('Min'),}.items()))
+
+    def check_min_or_max_or_both(self):
+        selected_filter = self.cleaned_data['filter']
+        if selected_filter == NO_FILTER:
+            return
+        min_field = self.cleaned_data.get('min')
+        max_field = self.cleaned_data.get('max')
+        if min_field is None and max_field is None:
+            msg = _('Either "min", "max" or both to be provided.')
+            self._errors["min"] = self.error_class([msg])
+            self._errors["max"] = self.error_class([msg])
 
     def check_min_less_than_max(self):
         min_field = self.cleaned_data.get('min')
@@ -139,6 +161,7 @@ class RecordFilterForm(BetterForm):
 
     def clean(self):
         super(RecordFilterForm, self).clean()
+        self.check_min_or_max_or_both()
         self.check_min_less_than_max()
         return self.cleaned_data
 
@@ -156,6 +179,10 @@ class RecordFilterForm(BetterForm):
         child_element(rf_elem, 'filter-type', filter_parameter.name)
         filter_min = self.cleaned_data['min']
         filter_max = self.cleaned_data['max']
+        default_filter = datasets.default_filter_choice(self.ui_holder.raw_data('light_cone', 'galaxy_model'))
+        if default_filter is not None and filter_parameter.id == default_filter.id and filter_min is None and filter_max is None:
+            filter_min = datasets.default_filter_min(self.ui_holder.raw_data('light_cone', 'galaxy_model'))
+            filter_max = datasets.default_filter_max(self.ui_holder.raw_data('light_cone', 'galaxy_model'))
         child_element(rf_elem, 'filter-min', text=str(filter_min), units=filter_parameter.units)
         child_element(rf_elem, 'filter-max', text=str(filter_max), units=filter_parameter.units)
 

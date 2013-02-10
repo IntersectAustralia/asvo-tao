@@ -24,7 +24,7 @@ copy_files() {
 }
 
 rebuild() {
-  echo "Rebuild w/ buildout..."
+  echo "Rebuild with buildout..."
   cd $TARGET/web
   python bootstrap.py
   bin/buildout -c buildout_production.cfg
