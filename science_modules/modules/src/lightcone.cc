@@ -46,7 +46,6 @@ namespace tao {
                              optional<const string&> prefix )
    {
       dict.add_option( new options::string( "geometry", "light-cone" ), prefix );
-      dict.add_option( new options::string( "acceleration-method", "none" ), prefix );
       dict.add_option( new options::string( "box-repetition", "unique" ), prefix );
       dict.add_option( new options::real( "redshift-max" ), prefix );
       dict.add_option( new options::real( "redshift-min" ), prefix );
@@ -137,6 +136,8 @@ namespace tao {
 
 	 // Setup progress indicator.
 	 _prog.set_local_size( _boxes.size() );
+	 if( mpi::comm::world.rank() == 0 )
+	    LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
 
 	 _cur_box = _boxes.begin();
 	 _settle_box();
@@ -159,6 +160,8 @@ namespace tao {
 
 	 // Setup progress indicator.
 	 _prog.set_local_size( _boxes.size() );
+	 if( mpi::comm::world.rank() == 0 )
+	    LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
 
 	 _cur_box = _boxes.begin();
 	 _settle_box();
@@ -203,6 +206,18 @@ namespace tao {
             LOGDLN( "Finished iterating over current boxes." );
             if( ++_cur_box != _boxes.end() )
                _settle_box();
+	    else
+	    {
+	       // Stop the timer.
+	       _per_box.stop_tally();
+	       LOGDLN( "Time per box: ", _per_box.mean() );
+
+	       // Also dump progress.
+	       _prog.set_local_complete_delta( 1 );
+	       _prog.update();
+	       if( mpi::comm::world.rank() == 0 )
+		  LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
+	    }
          }
       }
 
@@ -391,6 +406,10 @@ namespace tao {
 	    _per_box.stop_tally();
 	    LOGDLN( "Time per box: ", _per_box.mean() );
 
+	    // Update the log file with the progress.
+	    _prog.set_local_complete_delta( 1 );
+	    _prog.update();
+
 	    // Also dump progress here.
 	    if( mpi::comm::world.rank() == 0 )
 	       LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
@@ -467,10 +486,6 @@ namespace tao {
 	    // Now prepare tables.
             _settle_table();
 	 }
-
-	 // Update the log file with the progress.
-	 _prog.set_local_complete_delta( 1 );
-	 _prog.update();
       }
       while( _cur_table == _table_names.size() && ++_cur_box != _boxes.end() );
 
@@ -890,7 +905,7 @@ namespace tao {
       LOGDLN( "Using h0 = ", _h0 );
 
       // Should we use the BSP tree system?
-      _accel_method = sub.get<string>( "acceleration-method" );
+      _accel_method = dict.get<string>( "settings:database:acceleration" );
       std::transform( _accel_method.begin(), _accel_method.end(), _accel_method.begin(), ::tolower );
       LOGDLN( "Acceleration method: ", _accel_method );
 

@@ -22,6 +22,7 @@ namespace tao {
       dict.add_option( new options::string( "user" ), "settings:database" );
       dict.add_option( new options::string( "password" ), "settings:database" );
       dict.add_option( new options::string( "treetableprefix", "tree_" ), "settings:database" );
+      dict.add_option( new options::string( "acceleration", "none" ), "settings:database" );
 
       // Add database name.
       dict.add_option( new options::string( "database" ) );

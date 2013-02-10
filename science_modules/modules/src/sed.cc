@@ -45,8 +45,8 @@ namespace tao {
                        optional<const string&> prefix )
    {
       dict.add_option( new options::string( "single-stellar-population-model" ), prefix );
-      dict.add_option( new options::integer( "num_spectra", 1221 ), prefix );
-      dict.add_option( new options::integer( "num_metals", 7 ), prefix );
+      dict.add_option( new options::integer( "num-spectra", 1221 ), prefix );
+      dict.add_option( new options::integer( "num-metals", 7 ), prefix );
    }
 
    ///
@@ -335,7 +335,7 @@ namespace tao {
 	 else
 	    bin = it - _dual_ages.begin();
       }
-      LOGDLN( "Found bin ", bin, " with upper age of ", _dual_ages[bin], "." );
+      LOGDLN( "Found bin ", bin, " with age of ", _bin_ages[bin], "." );
 
       LOG_EXIT();
       return bin;
@@ -364,17 +364,14 @@ namespace tao {
       const options::dictionary& sub = prefix ? dict.sub( *prefix ) : dict;
 
       // Extract database details.
-      _dbtype = dict.get<string>( "database-type" );
-      _dbname = dict.get<string>( "database-name" );
-      _dbhost = dict.get<string>( "database-host" );
-      _dbport = dict.get<string>( "database-port" );
-      _dbuser = dict.get<string>( "database-user" );
-      _dbpass = dict.get<string>( "database-pass" );
+      _read_db_options( dict );
+
+      // Connect to the database.
       _db_connect();
 
       // Extract the counts.
-      _num_spectra = sub.get<unsigned>( "num_spectra" );
-      _num_metals = sub.get<unsigned>( "num_metals" );
+      _num_spectra = sub.get<unsigned>( "num-spectra" );
+      _num_metals = sub.get<unsigned>( "num-metals" );
       LOGLN( "Number of times: ", _bin_ages.size() );
       LOGLN( "Number of spectra: ", _num_spectra );
       LOGLN( "Number of metals: ", _num_metals );
@@ -407,20 +404,11 @@ namespace tao {
          ASSERT( file.good() );
       }
 
+#ifndef NDEBUG
       // Must be ordered.
-      std::sort( _bin_ages.begin(), _bin_ages.end() );
-
-      // // Convert the loaded redshifts into ages.
-      // {
-      // real_type tmp = _bin_ages[0];
-      // _bin_ages[0] = _calc_age( 0.0, _bin_ages[0] );
-      // for( unsigned ii = 1; ii < _bin_ages.size(); ++ii )
-      // {
-      // 	 real_type tmp2 = _bin_ages[ii];
-      // 	 _bin_ages[ii] = _calc_age( tmp, _bin_ages[ii] );
-      // 	 tmp = tmp2;
-      // }
-      // }
+      for( unsigned ii = 1; ii < _bin_ages.size(); ++ii )
+	 ASSERT( _bin_ages[ii] >= _bin_ages[ii - 1] );
+#endif
       LOGDLN( "Bin ages: ", _bin_ages );
 
       // Take the dual to form age bins.
@@ -461,8 +449,7 @@ namespace tao {
       LOGDLN( "Redshifts: ", _snap_ages );
 
       // Convert to ages.
-      _snap_ages[0] = _calc_age( 0.0, _snap_ages[0] );
-      for( unsigned ii = 1; ii < _snap_ages.size(); ++ii )
+      for( unsigned ii = 0; ii < _snap_ages.size(); ++ii )
 	 _snap_ages[ii] = _calc_age( 0.0, _snap_ages[ii] );
       LOGDLN( "Snapshot ages: ", _snap_ages );
 
@@ -500,18 +487,18 @@ namespace tao {
       _snaps.resize( tree_size );
 
       // Extract the table.
-      string query = "SELECT descendant, sfr, sfrbulge, "
-	 "metalsstellarmass, metalsbulgemass, snapnum, stellarmass FROM  " + table + 
+      string query = "SELECT descendant, metalsstellarmass, metalsbulgemass, "
+	"sfr, sfrbulge, snapnum FROM  " + table + 
 	 " WHERE globaltreeid = :id"
 	 " ORDER BY localgalaxyid";
       _sql << query, soci::into( (std::vector<int>&)_descs ),
-   	 soci::into( (std::vector<double>&)_sfrs ), soci::into( (std::vector<double>&)_bulge_sfrs ),
 	 soci::into( (std::vector<double>&)_metals ), soci::into( (std::vector<double>&)_bulge_metals ),
+	 soci::into( (std::vector<double>&)_sfrs ), soci::into( (std::vector<double>&)_bulge_sfrs ),
 	 soci::into( (std::vector<int>&)_snaps ),
 	 soci::use( tree_id );
       LOGDLN( "Descendant: ", _descs );
-      LOGDLN( "SFR: ", _sfrs );
-      LOGDLN( "Bulge SFR: ", _bulge_sfrs );
+      LOGDLN( "Masses: ", _sfrs );
+      LOGDLN( "Bulge masses: ", _bulge_sfrs );
       LOGDLN( "Metals: ", _metals );
       LOGDLN( "Bulge metals: ", _bulge_metals );
       LOGDLN( "Snapshots: ", _snaps );

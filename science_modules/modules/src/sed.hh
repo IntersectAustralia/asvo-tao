@@ -5,6 +5,11 @@
 #include <gsl/gsl_integration.h>
 #include "tao/base/module.hh"
 
+// Forward declaration of test suites to allow direct
+// access to the lightcone module.
+class sed_suite;
+class filter_suite;
+
 namespace tao {
    using namespace hpc;
 
@@ -17,6 +22,9 @@ namespace tao {
    class sed
       : public module
    {
+      friend class ::sed_suite;
+      friend class ::filter_suite;
+
    public:
 
       typedef double real_type;
