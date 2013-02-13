@@ -49,7 +49,7 @@ public:
       }
 
       // Prepare base dictionary.
-      options::dictionary& dict = db_setup.dict.sub( "light-cone" );
+      options::dictionary& dict = db_setup.dict.sub( "workflow:light-cone" );
       dict["geometry"] = "box";
       dict["redshift"] = "1";
       dict["query-box-size"] = "10";
@@ -100,7 +100,7 @@ public:
       }
 
       // Prepare base dictionary.
-      options::dictionary& dict = db_setup.dict.sub( "light-cone" );
+      options::dictionary& dict = db_setup.dict.sub( "workflow:light-cone" );
       dict["geometry"] = "box";
       dict["redshift"] = "0.001";
 
@@ -161,7 +161,7 @@ public:
       }
 
       // Prepare base dictionary.
-      options::dictionary& dict = db_setup.dict.sub( "light-cone" );
+      options::dictionary& dict = db_setup.dict.sub( "workflow:light-cone" );
       dict["geometry"] = "box";
       dict["query-box-size"] = "4.5";
 
@@ -223,7 +223,7 @@ public:
       }
 
       // Prepare base dictionary.
-      options::dictionary& dict = db_setup.dict.sub( "light-cone" );
+      options::dictionary& dict = db_setup.dict.sub( "workflow:light-cone" );
       dict["geometry"] = "light-cone";
       dict["redshift-min"] = "0";
       dict["dec-min"] = "0";
@@ -316,7 +316,7 @@ public:
       }
 
       // Prepare base dictionary.
-      options::dictionary& dict = db_setup.dict.sub( "light-cone" );
+      options::dictionary& dict = db_setup.dict.sub( "workflow:light-cone" );
       dict["redshift-min"] = "0";
       dict["ra-min"] = "0";
       dict["ra-max"] = "90";
@@ -407,7 +407,7 @@ public:
       }
 
       // Prepare base dictionary.
-      options::dictionary& dict = db_setup.dict.sub( "light-cone" );
+      options::dictionary& dict = db_setup.dict.sub( "workflow:light-cone" );
       dict["ra-min"] = "0";
       dict["ra-max"] = "90";
       dict["dec-min"] = "0";
@@ -487,7 +487,7 @@ public:
       }
 
       // Prepare base dictionary.
-      options::dictionary& dict = db_setup.dict.sub( "light-cone" );
+      options::dictionary& dict = db_setup.dict.sub( "workflow:light-cone" );
       dict["redshift-min"] = "0";
       dict["ra-min"] = "0";
       dict["ra-max"] = "90";
@@ -540,7 +540,7 @@ public:
       }
 
       // Prepare base dictionary.
-      options::dictionary& dict = db_setup.dict.sub( "light-cone" );
+      options::dictionary& dict = db_setup.dict.sub( "workflow:light-cone" );
       dict["geometry"] = "box";
       dict["redshift"] = "0.001";
       db_setup.dict["workflow:record-filter:filter-type"] = "pos_x";
@@ -602,7 +602,7 @@ public:
       }
 
       // Prepare base dictionary.
-      options::dictionary& dict = db_setup.dict.sub( "light-cone" );
+      options::dictionary& dict = db_setup.dict.sub( "workflow:light-cone" );
       dict["geometry"] = "box";
       dict["redshift"] = "0.001";
       dict["query-box-size"] = "4.5";
@@ -635,11 +635,11 @@ public:
       // Read in the dictionary from XML.
       options::dictionary dict;
       setup_common_options( dict );
-      lc.setup_options( dict, "light-cone" );
+      lc.setup_options( dict, "workflow:light-cone" );
       dict.compile();
       options::xml xml;
       xml.read( db_setup.xml_filename, dict );
-      lc.initialise( dict, "light-cone" );
+      lc.initialise( dict, "workflow:light-cone" );
    }
 
    void setUp()

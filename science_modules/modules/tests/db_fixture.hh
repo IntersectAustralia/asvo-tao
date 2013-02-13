@@ -43,7 +43,7 @@ public:
 	    sql << "CREATE TABLE tree_" + to_string( ii + 1 ) +
                " (posx DOUBLE PRECISION, posy DOUBLE PRECISION, posz DOUBLE PRECISION, "
 	       "globalindex BIGINT, snapnum INTEGER, localgalaxyid INTEGER, globaltreeid BIGINT, "
-	       "descendant INTEGER, metalsstellarmass DOUBLE PRECISION, metalsbulgemass DOUBLE PRECISION, "
+	       "descendant INTEGER, metalscoldgas DOUBLE PRECISION, metalsbulgemass DOUBLE PRECISION, "
 	       "sfr DOUBLE PRECISION, sfrbulge DOUBLE PRECISION)";
 	 }
       }
@@ -68,17 +68,17 @@ public:
       lightcone lc;
       sed sed;
       setup_common_options( dict );
-      lc.setup_options( dict, "light-cone" );
-      sed.setup_options( dict, "sed" );
+      lc.setup_options( dict, "workflow:light-cone" );
+      sed.setup_options( dict, "workflow:sed" );
       dict.compile();
       dict["settings:database:type"] = "sqlite";
       dict["database"] = db_filename;
-      dict["light-cone:H0"] = "0.73"; // Need this because I'm an idiot.
-      dict["light-cone:geometry"] = "cone";
-      dict["light-cone:redshift-min"] = "0";
-      dict["sed:single-stellar-population-model"] = ssp_filename;
-      dict["sed:num-spectra"] = "2";
-      dict["sed:num-metals"] = "7";
+      dict["workflow:light-cone:H0"] = "0.73"; // Need this because I'm an idiot.
+      dict["workflow:light-cone:geometry"] = "cone";
+      dict["workflow:light-cone:redshift-min"] = "0";
+      dict["workflow:sed:single-stellar-population-model"] = ssp_filename;
+      dict["workflow:sed:num-spectra"] = "2";
+      dict["workflow:sed:num-metals"] = "7";
       xml_filename = tmpnam( NULL );
       xml.write( xml_filename, dict );
 

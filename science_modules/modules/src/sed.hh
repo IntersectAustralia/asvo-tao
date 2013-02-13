@@ -138,11 +138,11 @@ namespace tao {
       long long _cur_tree_id;
       multimap<unsigned,unsigned> _parents;
       vector<int> _descs, _snaps;
-      vector<real_type> _sfrs, _bulge_sfrs, _metals, _bulge_metals;
+      vector<real_type> _sfrs, _bulge_sfrs, _metals;
 
       gsl_integration_workspace* _work;
       gsl_function _func;
-      real_type _omega, _omega_lambda, _h0;
+      real_type _omega, _omega_lambda, _h;
    };
 }
 
