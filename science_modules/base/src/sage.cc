@@ -106,5 +106,18 @@ namespace tao {
 	 file_type.insert( h5::datatype::ieee_f32be, "heating", 188 );
       }
 
+      std::ostream&
+      operator<<( std::ostream& strm,
+		  const galaxy& gal )
+      {
+	 strm << "{";
+	 strm << "tree index: " << gal.tree_index << ", ";
+	 strm << "descendant: " << gal.descendant << ", ";
+	 strm << "stellar mass: " << gal.stellar_mass << ", ";
+	 strm << "bulge stellar mass: " << gal.bulge_mass << ", ";
+	 strm << "star formation rate: " << gal.sfr << ", ";
+	 strm << "bulge star formation rate: " << gal.sfr_bulge;
+	 strm << "}";
+      }
    }
 }

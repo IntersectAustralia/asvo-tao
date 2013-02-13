@@ -3,7 +3,8 @@
 #include <libhpc/libhpc.hh>
 #include <tao/modules/lightcone.hh>
 #include <tao/modules/sed.hh>
-// #include <tao/modules/filter.hh>
+#include <tao/modules/filter.hh>
+#include <tao/modules/csv.hh>
 
 using namespace tao;
 using namespace hpc;
@@ -14,7 +15,7 @@ using namespace hpc;
 struct pipeline
 {
    // Cache any frequently used types.
-   typedef tao::lightcone::real_type real_type;
+   typedef lightcone::real_type real_type;
 
    ///
    /// Add options to dictionary.
@@ -22,9 +23,9 @@ struct pipeline
    void
    setup_options( options::dictionary& dict )
    {
-      lc.setup_options( dict, "light-cone" );
-      sed.setup_options( dict, "sed" );
-      // filter.setup_options( dict, "filter" );
+      lc.setup_options( dict, "workflow:light-cone" );
+      sed.setup_options( dict, "workflow:sed" );
+      filter.setup_options( dict, "workflow:sed" );
    }
 
    ///
@@ -33,9 +34,12 @@ struct pipeline
    void
    initialise( const options::dictionary& dict )
    {
-      lc.initialise( dict, "light-cone" );
-      sed.initialise( dict, "sed" );
-      // filter.initialise( dict, "filter" );
+      lc.initialise( dict, "workflow:light-cone" );
+      sed.initialise( dict, "workflow:sed" );
+      filter.initialise( dict, "workflow:sed" );
+      dump.initialise( dict, lc );
+      dump.set_filename( dict.get<string>( "outputdir" ) + "/tao.output" );
+      dump.open();
    }
 
    ///
@@ -53,19 +57,21 @@ struct pipeline
 
          // Calculate the SED and cache results.
          sed.process_galaxy( gal );
-         // vector<real_type>::view spectra = sed.total_spectra();
+         vector<real_type>::view spectra = sed.total_spectra();
 
-         // // Perform filtering.
-         // filter.process_galaxy( gal, lc.redshift(), spectra );
+         // Perform filtering.
+         filter.process_galaxy( gal, spectra );
+	 real_type app_mag = filter.magnitudes()[0];
 
          // Dump?
-         LOG( setindent( -2 ) );
+	 dump.process_galaxy( gal, app_mag );
       }
    }
 
-   tao::lightcone lc;
+   lightcone lc;
    tao::sed sed;
-   // tao::filter filter;
+   tao::filter filter;
+   csv dump;
 };
 
 // Need to include this last to have a complete pipeline type.

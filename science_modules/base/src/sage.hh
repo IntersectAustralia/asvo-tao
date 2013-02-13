@@ -1,6 +1,7 @@
 #ifndef tao_base_sage_hh
 #define tao_base_sage_hh
 
+#include <ostream>
 #include <libhpc/libhpc.hh>
 
 namespace tao {
@@ -66,6 +67,9 @@ namespace tao {
       make_hdf5_types( h5::datatype& mem_type,
 		       h5::datatype& file_type );
 
+      std::ostream&
+      operator<<( std::ostream& strm,
+		  const galaxy& gal );
    }
 }
 

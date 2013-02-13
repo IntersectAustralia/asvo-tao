@@ -127,7 +127,10 @@ namespace tao {
       _get_boxes( list<array<real_type,3>>& boxes );
 
       real_type
-      _redshift_to_distance( real_type redshift );
+      _redshift_to_distance( real_type redshift ) const;
+
+      real_type
+      _distance_to_redshift( real_type dist ) const;
 
       void
       _read_options( const options::dictionary& dict,
@@ -138,6 +141,11 @@ namespace tao {
 
       void
       _read_snapshots();
+
+      void
+      _build_dist_to_z_tbl( unsigned num_points,
+			    real_type min_z,
+			    real_type max_z );
 
       ///
       ///
@@ -173,6 +181,9 @@ namespace tao {
       uniform_generator<real_type> _real_rng;
       uniform_generator<int> _int_rng;
       int _rng_seed;
+
+      vector<real_type> _dist_to_z_tbl_dist;
+      vector<real_type> _dist_to_z_tbl_z;
 
       string _bin_filename;
       std::ofstream _bin_file;

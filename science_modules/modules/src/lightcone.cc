@@ -232,17 +232,17 @@ namespace tao {
    {
       LOG_ENTER();
 
-#ifndef NDEBUG
-      {
-	 // Check that the row actually belongs in this range.
-         galaxy gal( *_cur_row, *_cur_box, _table_names[_cur_table] );
-         real_type dist = sqrt( pow( gal.x(), 2.0 ) + pow( gal.y(), 2.0 ) + pow( gal.z(), 2.0 ) );
-         ASSERT( dist >= _dist_range.start() && dist < _dist_range.finish() );
-      }
-#endif
+      galaxy gal( *_cur_row, *_cur_box, _table_names[_cur_table] );
+      real_type dist = sqrt( pow( gal.x(), 2.0 ) + pow( gal.y(), 2.0 ) + pow( gal.z(), 2.0 ) );
+
+      // Check that the row actually belongs in this range.
+      ASSERT( dist >= _dist_range.start() && dist < _dist_range.finish() );
+
+      // Setup the redshift.
+      gal.set_redshift( _distance_to_redshift( dist ) );
 
       LOG_EXIT();
-      return galaxy( *_cur_row, *_cur_box, _table_names[_cur_table] );
+      return gal;
    }
 
    ///
@@ -839,7 +839,7 @@ namespace tao {
    ///
    ///
    lightcone::real_type
-   lightcone::_redshift_to_distance( real_type redshift )
+   lightcone::_redshift_to_distance( real_type redshift ) const
    {
       LOG_ENTER();
 
@@ -1040,6 +1040,9 @@ namespace tao {
       }
       LOGDLN( "Outputting fields: ", _output_fields );
 
+      // Setup the distance to redshift tables.
+      _build_dist_to_z_tbl( 1000, _z_min, _z_max );
+
       LOG_EXIT();
    }
 
@@ -1183,5 +1186,43 @@ namespace tao {
       LOGDLN( "Redshift range for snapshot ", _snap_redshifts.size() - 1, ": ", upp, " - ", mid );
 
       LOG_EXIT();
+   }
+
+   void
+   lightcone::_build_dist_to_z_tbl( unsigned num_points,
+				    real_type min_z,
+				    real_type max_z )
+   {
+      ASSERT( num_points > 1 );
+      _dist_to_z_tbl_dist.reallocate( num_points );
+      _dist_to_z_tbl_z.reallocate( num_points );
+      real_type delta = 1.0/(real_type)(num_points - 1);
+      for( unsigned ii = 0; ii < num_points; ++ii )
+      {
+	 _dist_to_z_tbl_z[ii] = min_z + (max_z - min_z)*delta*(real_type)ii;
+	 _dist_to_z_tbl_dist[ii] = _redshift_to_distance( _dist_to_z_tbl_z[ii] );
+      }
+   }
+
+   lightcone::real_type
+   lightcone::_distance_to_redshift( real_type dist ) const
+   {
+      auto it = std::lower_bound( _dist_to_z_tbl_dist.begin(), _dist_to_z_tbl_dist.end(), dist );
+      unsigned low = std::distance( _dist_to_z_tbl_dist.begin(), it );
+      unsigned upp;
+      if( low == 0 )
+	 upp = low + 1;
+      else if( low >= _dist_to_z_tbl_z.size() )
+      {
+	 low = _dist_to_z_tbl_z.size() - 2;
+	 upp = low + 1;
+      }
+      else
+      {
+	 upp = low;
+	 low -= 1;
+      }
+      real_type fac = (dist - _dist_to_z_tbl_dist[low])/(_dist_to_z_tbl_dist[upp] - _dist_to_z_tbl_dist[low]);
+      return _dist_to_z_tbl_z[low] + (_dist_to_z_tbl_z[upp] - _dist_to_z_tbl_z[low])*fac;
    }
 }
