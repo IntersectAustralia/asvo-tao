@@ -204,6 +204,9 @@ public:
    {
       lightcone lc;
 
+      SET_ABORT( true );
+      LOG_FILE( "test.log" );
+
       // Turn off random rotation and shifting.
       lc._unique = true;
 
