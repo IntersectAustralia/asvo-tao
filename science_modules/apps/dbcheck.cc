@@ -46,7 +46,7 @@ main( int argc,
 
    // Open database session.
    #include "tao/base/credentials.hh"
-   string connect = "dbname=millennium_full_mpi host=tao02.hpc.swin.edu.au port=3306 user=" + user + " password='" + password + "'";
+   string connect = "dbname=millennium_full_mpi host=tao02.hpc.swin.edu.au port=3306 user=" + username + " password='" + password + "'";
    soci::session sql( soci::postgresql, connect );
 
    // Get a complete list of tables.

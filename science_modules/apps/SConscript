@@ -17,6 +17,7 @@ libs = ['tao'] + env.get('LIBS', [])
 #
 #   ('<binary name>', '<source 0>', '<source 1>', ...)
 sources = [
+    ('tao', 'tao.cc'),
     ('chiara', 'chiara.cc'),
     ('generate', 'generate.cc'),
     ('milreader', 'milreader.cc'),

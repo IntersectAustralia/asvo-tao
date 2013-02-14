@@ -6,11 +6,90 @@ using namespace hpc;
 
 namespace tao {
 
-   module::module()
-      : _connected( false ),
+   module::module( const string& name )
+      : _name( name ),
+        _it( 0 ),
+        _complete( false ),
+        _connected( false ),
 	_num_restart_its( 10 ),
 	_cur_restart_it( 0 )
    {
+   }
+
+   void
+   module::add_parent( module& parent )
+   {
+      // Check that we don't already have this guy.
+      ASSERT( !_parents.has( &parent ) );
+
+      // Add it to the list.
+      _parents.push_back( &parent );
+   }
+
+   void
+   module::process( unsigned long long iteration )
+   {
+      LOG_ENTER();
+
+      // Iteration should never be lower than my current.
+      ASSERT( iteration >= _it );
+
+      // If we have not already processed this round, launch
+      // the execute routine.
+      if( iteration > _it )
+      {
+         // Should only ever be greater by one.
+         ASSERT( iteration == _it + 1 );
+
+         // Process all parents.
+         bool all_complete = !_parents.empty();
+         for( auto& parent : _parents )
+         {
+            parent->process( iteration );
+            if( !parent->complete() )
+               all_complete = false;
+         }
+
+         // Call the user-defined execute routine.
+         if( !all_complete )
+            execute();
+         else
+         {
+            LOGDLN( "All parents are complete, marking myself as complete." );
+            _complete = true;
+         }
+
+         // Update my iteration counter.
+         _it = iteration;
+      }
+
+      LOG_EXIT();
+   }
+
+   void
+   module::setup_options( options::dictionary& dict,
+                          const char* prefix )
+   {
+      setup_options( dict, string( prefix ) );
+   }
+
+   void
+   module::initialise( const options::dictionary& dict,
+                       const char* prefix )
+   {
+      initialise( dict, string( prefix ) );
+   }
+
+   bool
+   module::complete() const
+   {
+      return _complete;
+   }
+
+   const string&
+   module::name() const
+   {
+      return _name;
    }
 
    void

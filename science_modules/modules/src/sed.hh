@@ -27,45 +27,47 @@ namespace tao {
 
    public:
 
+      static
+      module*
+      factory( const string& name );
+
+   public:
+
       typedef double real_type;
 
-      sed();
+      sed( const string& name = string() );
 
       ~sed();
 
       ///
       ///
       ///
+      virtual
       void
       setup_options( options::dictionary& dict,
                      optional<const string&> prefix=optional<const string&>() );
 
       ///
-      ///
-      ///
-      void
-      setup_options( options::dictionary& dict,
-                     const char* prefix );
-
-      ///
       /// Initialise the module.
       ///
+      virtual
       void
       initialise( const options::dictionary& dict,
                   optional<const string&> prefix=optional<const string&>() );
 
       ///
-      ///
-      ///
-      void
-      initialise( const options::dictionary& dict,
-                  const char* prefix );
-
-      ///
       /// Run the module.
       ///
+      virtual
       void
-      run();
+      execute();
+
+      ///
+      ///
+      ///
+      virtual
+      tao::galaxy&
+      galaxy();
 
       void
       process_galaxy( const tao::galaxy& galaxy );

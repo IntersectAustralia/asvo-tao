@@ -18,8 +18,15 @@ using boost::algorithm::replace_all;
 
 namespace tao {
 
-   lightcone::lightcone()
-      : module(),
+   // Factory function used to create a new lightcone.
+   module*
+   lightcone::factory( const string& name )
+   {
+      return new lightcone( name );
+   }
+
+   lightcone::lightcone( const string& name )
+      : module( name ),
         _z_min( 0.0 ),
         _z_max( 0.0 ),
         _unique( false ),
@@ -73,16 +80,6 @@ namespace tao {
    }
 
    ///
-   ///
-   ///
-   void
-   lightcone::setup_options( options::dictionary& dict,
-                             const char* prefix )
-   {
-      setup_options( dict, string( prefix ) );
-   }
-
-   ///
    /// Initialise the module.
    ///
    void
@@ -98,23 +95,39 @@ namespace tao {
    }
 
    ///
-   ///
-   ///
-   void
-   lightcone::initialise( const options::dictionary& dict,
-                          const char* prefix )
-   {
-      initialise( dict, string( prefix ) );
-   }
-
-   ///
    /// Run the module.
    ///
    void
-   lightcone::run()
+   lightcone::execute()
    {
       LOG_ENTER();
+
+      // Is this my first time through? If so begin iterating.
+      if( _it == 0 )
+         begin();
+
+      // Check if we're done.
+      if( done() )
+         _complete = true;
+
+      // If we're not done and this is not the first iteration,
+      // try and advance.
+      else if( _it > 0 )
+         ++(*this);
+
+      // If we're not done, cache the galaxy.
+      if( !_complete )
+         _gal = *(*this);
+
       LOG_EXIT();
+   }
+
+   ///
+   ///
+   ///
+   tao::galaxy&
+   lightcone::galaxy()
+   {
    }
 
    ///
@@ -227,12 +240,12 @@ namespace tao {
    ///
    /// Get current galaxy.
    ///
-   const galaxy
+   const tao::galaxy
    lightcone::operator*() const
    {
       LOG_ENTER();
 
-      galaxy gal( *_cur_row, *_cur_box, _table_names[_cur_table] );
+      tao::galaxy gal( *_cur_row, _table_names[_cur_table] );
       real_type dist = sqrt( pow( gal.x(), 2.0 ) + pow( gal.y(), 2.0 ) + pow( gal.z(), 2.0 ) );
 
       // Check that the row actually belongs in this range.
