@@ -106,6 +106,7 @@ namespace tao {
    sed::process_galaxy( const tao::galaxy& galaxy )
    {
       LOG_ENTER();
+      _timer.start();
 
       // Cache the galaxy ID.
       unsigned gal_id = galaxy.id();
@@ -133,6 +134,7 @@ namespace tao {
       LOGDLN( "Disk: ", _disk_spectra );
       LOGDLN( "Bulge: ", _bulge_spectra );
       LOGDLN( "Total: ", _total_spectra );
+      _timer.stop();
       LOG_EXIT();
    }
 
