@@ -5,6 +5,7 @@ echo 'Assuming you are using ssh properly (https://wiki.intersect.org.au/display
 
 DIRS='asvo-tao/web light-cone sed'
 TARGET=/web/vhost/tao.asvo.org.au/taodemo
+DEP_DIR=`pwd`
 
 # checks out code into build dir
 checkout() {
@@ -15,15 +16,21 @@ checkout() {
   git clone --depth 1 -b light-cone git@github.com:IntersectAustralia/asvo-tao-ui-modules.git light-cone
   git clone --depth 1 -b sed git@github.com:IntersectAustralia/asvo-tao-ui-modules.git sed
   for d in asvo-tao light-cone sed; do test -d $d/.git && rm -rf $d/.git; done
-  cd ..
+  cd $DEP_DIR
 }
 
 # generate documentation in build directory
 generate_documentation() {
-  CURRENT=`pwd
+  CURRENT=`pwd`
+  cd build/asvo-tao/web
+  cp -r $DEP_DIR/eggs .
+  mkdir src
+  cp -r $DEP_DIR/build/light-cone src
+  cp -r $DEP_DIR/build/sed src
+  cd $DEP_DIR
   cd build/asvo-tao/docs
   ./gendoc.sh
-  cd $CURRENT
+  cd $DEP_DIR
 }
 
 # usage: transfer <host>
