@@ -23,10 +23,10 @@ struct pipeline
    void
    setup_options( options::dictionary& dict )
    {
-      lc.setup_options( dict, "lightcone" );
-      sed.setup_options( dict, "sed" );
-      filter.setup_options( dict, "filter" );
-      skymaker.setup_options( dict, "skymaker" );
+      lc.setup_options( dict, string( "lightcone" ) );
+      sed.setup_options( dict, string( "sed" ) );
+      filter.setup_options( dict, string( "filter" ) );
+      skymaker.setup_options( dict, string( "skymaker" ) );
    }
 
    ///
@@ -35,10 +35,10 @@ struct pipeline
    void
    initialise( const options::dictionary& dict )
    {
-      lc.initialise( dict, "lightcone" );
-      sed.initialise( dict, "sed" );
-      filter.initialise( dict, "filter" );
-      skymaker.initialise( dict, "skymaker" );
+      lc.initialise( dict, string( "lightcone" ) );
+      sed.initialise( dict, string( "sed" ) );
+      filter.initialise( dict, string( "filter" ) );
+      skymaker.initialise( dict, string( "skymaker" ) );
    }
 
    ///
@@ -70,7 +70,7 @@ struct pipeline
       }
 
       // Use skymaker to produce a final image.
-      skymaker.run();
+      skymaker.execute();
    }
 
    tao::lightcone lc;

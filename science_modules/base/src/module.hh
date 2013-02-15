@@ -27,7 +27,7 @@ namespace tao {
       virtual
       void
       setup_options( options::dictionary& dict,
-                     optional<const string&> prefix=optional<const string&>() ) = 0;
+                     optional<const string&> prefix = optional<const string&>() ) = 0;
 
       void
       setup_options( options::dictionary& dict,
@@ -36,7 +36,7 @@ namespace tao {
       virtual
       void
       initialise( const options::dictionary& dict,
-                  optional<const string&> prefix=optional<const string&>() ) = 0;
+                  optional<const string&> prefix = optional<const string&>() ) = 0;
 
       void
       initialise( const options::dictionary& dict,

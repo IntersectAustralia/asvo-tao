@@ -10,7 +10,7 @@ void
 initialise()
 {
    // Call the science module registration function.
-   tao::register_modules();
+
 
    // Setup, at minimum, a list option for the names of the
    // science modules.
@@ -37,34 +37,7 @@ initialise()
 void
 execute()
 {
-   LOG_ENTER();
 
-   // Keep looping over modules until all report being complete.
-   bool complete;
-   unsigned long long it = 1;
-   do
-   {
-      LOGDLN( "Beginning iteration: ", it, hpc::setindent( 2 ) );
-
-      // Reset the complete flag.
-      complete = true;
-
-      // Loop over the modules.
-      for( auto module : tao::factory )
-      {
-         module->process( it );
-         if( !module->complete() )
-            complete = false;
-      }
-
-      // Advance the counter.
-      ++it;
-
-      LOGD( hpc::setindent( -2 ) );
-   }
-   while( !complete );
-
-   LOG_EXIT();
 }
 
 int
@@ -80,7 +53,8 @@ main( int argc,
 {
    hpc::mpi::initialise( argc, argv );
    LOG_FILE( "test.log" );
-   application();
+   application app;
+   app.run();
    hpc::mpi::finalise();
    return EXIT_SUCCESS;
 }

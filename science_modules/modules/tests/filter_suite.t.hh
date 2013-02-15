@@ -105,9 +105,9 @@ public:
       tao::sed sed;
       tao::filter filter;
       options::dictionary dict;
-      lc.setup_options( dict, "lightcone" );
-      sed.setup_options( dict, "sed" );
-      filter.setup_options( dict, "filter" );
+      lc.setup_options( dict, string( "lightcone" ) );
+      sed.setup_options( dict, string( "sed" ) );
+      filter.setup_options( dict, string( "filter" ) );
       dict.compile();
 
       dict["lightcone-database_type"] = "sqlite";
@@ -213,16 +213,16 @@ public:
    {
       // Setup the dictionary.
       options::dictionary dict;
-      lc.setup_options( dict, "lightcone" );
-      sed.setup_options( dict, "sed" );
-      filter.setup_options( dict, "filter" );
+      lc.setup_options( dict, string( "lightcone" ) );
+      sed.setup_options( dict, string( "sed" ) );
+      filter.setup_options( dict, string( "filter" ) );
       dict.compile();
       db_setup.xml.read( db_setup.xml_filename, dict );
 
       // Initialise modules.
-      lc.initialise( dict, "lightcone" );
-      sed.initialise( dict, "sed" );
-      filter.initialise( dict, "filter" );
+      lc.initialise( dict, string( "lightcone" ) );
+      sed.initialise( dict, string( "sed" ) );
+      filter.initialise( dict, string( "filter" ) );
 
       // Switch off random rotation and shifting.
       lc._unique = true;

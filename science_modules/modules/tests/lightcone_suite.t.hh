@@ -638,11 +638,11 @@ public:
       // Read in the dictionary from XML.
       options::dictionary dict;
       setup_common_options( dict );
-      lc.setup_options( dict, "workflow:light-cone" );
+      lc.setup_options( dict, string( "workflow:light-cone" ) );
       dict.compile();
       options::xml xml;
       xml.read( db_setup.xml_filename, dict );
-      lc.initialise( dict, "workflow:light-cone" );
+      lc.initialise( dict, string( "workflow:light-cone" ) );
    }
 
    void setUp()

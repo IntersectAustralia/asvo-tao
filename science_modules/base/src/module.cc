@@ -20,7 +20,7 @@ namespace tao {
    module::add_parent( module& parent )
    {
       // Check that we don't already have this guy.
-      ASSERT( !_parents.has( &parent ) );
+      ASSERT( std::find( _parents.begin(), _parents.end(), &parent ) == _parents.end() );
 
       // Add it to the list.
       _parents.push_back( &parent );

@@ -11,7 +11,8 @@ using namespace hpc;
 
 namespace tao {
 
-   filter::filter()
+   filter::filter( const string& name )
+      : module( name )
    {
    }
 
@@ -32,16 +33,6 @@ namespace tao {
    }
 
    ///
-   ///
-   ///
-   void
-   filter::setup_options( hpc::options::dictionary& dict,
-                          const char* prefix )
-   {
-      setup_options( dict, string( prefix ) );
-   }
-
-   ///
    /// Initialise the module.
    ///
    void
@@ -55,18 +46,18 @@ namespace tao {
       LOG_EXIT();
    }
 
-   ///
-   ///
-   ///
    void
-   filter::initialise( const hpc::options::dictionary& dict,
-                       const char* prefix )
+   filter::execute()
    {
-      initialise( dict, string( prefix ) );
+      LOG_ENTER();
+      LOG_EXIT();
    }
 
-   void
-   filter::run()
+   ///
+   ///
+   ///
+   tao::galaxy&
+   filter::galaxy()
    {
    }
 
