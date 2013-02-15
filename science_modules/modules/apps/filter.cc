@@ -53,7 +53,6 @@ struct pipeline
       {
          // Cache the database row.
          const galaxy gal = *lc;
-         LOGLN( "Processing galaxy: ", gal.id(), setindent( 2 ) );
 
          // Calculate the SED and cache results.
          sed.process_galaxy( gal );
