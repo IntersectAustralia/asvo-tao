@@ -38,5 +38,6 @@ project.build(
     ['base', 'modules'],
     proj_name='tao',
     env=env,
-    vars=vars
+    vars=vars,
+    tests_dir='unittests'
 )

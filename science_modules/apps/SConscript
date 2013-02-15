@@ -4,7 +4,7 @@ from sconsproject import helpers
 Import('env')
 
 # Declare subdirectories.
-sub_dirs = ['bolshoi']
+sub_dirs = []
 
 # Define destination subdirectory, i.e. where these binaries will
 # be placed.
@@ -17,17 +17,6 @@ libs = ['tao'] + env.get('LIBS', [])
 #
 #   ('<binary name>', '<source 0>', '<source 1>', ...)
 sources = [
-    ('chiara', 'chiara.cc'),
-    ('generate', 'generate.cc'),
-    ('milreader', 'milreader.cc'),
-    ('sagereader', 'sagereader.cc'),
-    ('sagecheck', 'sagecheck.cc'),
-    ('dbcheck', 'dbcheck.cc'),
-    ('sageimport', 'sageimport.cc'),
-    ('sage_import_ages', 'sage_import_ages.cc'),
-    ('sage_to_hdf5', 'sage_to_hdf5.cc'),
-    ('add_tree_info', 'add_tree_info.cc'),
-    ('tree_view', 'tree_view.cc'),
 ]
 
 # Call the helper.
