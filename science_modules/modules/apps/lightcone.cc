@@ -49,6 +49,13 @@ struct pipeline
       }
    }
 
+   void
+   log_timings()
+   {
+      LOGILN( "Time breakdown:", setindent( 2 ) );
+      LOGILN( "Lightcone: ", lc.time() );
+   }
+
    lightcone lc;
    csv dump;
 };

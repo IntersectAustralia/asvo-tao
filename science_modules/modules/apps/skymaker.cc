@@ -73,6 +73,15 @@ struct pipeline
       skymaker.run();
    }
 
+   void
+   log_timings()
+   {
+      LOGILN( "Time breakdown:", setindent( 2 ) );
+      LOGILN( "Lightcone: ", lc.time() );
+      LOGILN( "SED:       ", sed.time() );
+      LOGILN( "Filter:    ", filter.time() );
+   }
+
    tao::lightcone lc;
    tao::sed sed;
    tao::filter filter;
