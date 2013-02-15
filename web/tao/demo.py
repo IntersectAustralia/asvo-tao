@@ -1,3 +1,11 @@
+"""
+==================
+tao.demo
+==================
+
+Settings for demo environment
+"""
+
 from tao.settings import *
 
 DEBUG=False

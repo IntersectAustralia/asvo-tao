@@ -1,6 +1,11 @@
 """
-    module responsible for constructing the parameters
+==================
+tao.workflow
+==================
+
+Helper that saves a job from form data (in UI Holder). See :class:`tao.ui_modules.UIModulesHolder`
 """
+
 
 
 from tao import models, time

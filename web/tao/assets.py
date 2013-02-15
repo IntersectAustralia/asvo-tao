@@ -1,7 +1,18 @@
+"""
+==============
+tao.assets
+==============
+
+Helper to generate link to assets
+"""
+
 from django.shortcuts import render
 
 
 def asset_handler(request, path):
+    """
+    Helper to generate path to asset
+    """
     content_type = 'text/plain'
     content_type = _detect_content_type(path)
     return render(request, 'assets/%s' % path, content_type=content_type)

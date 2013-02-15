@@ -1,3 +1,8 @@
+"""
+==================
+tao.decorators
+==================
+"""
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse_lazy
@@ -21,6 +26,12 @@ def admin_required(func):
 
 
 def set_tab(tab_name):
+    """
+    Decorator for menu tabs
+
+    :param tab_name:
+    :return:
+    """
     def decorator_maker(fn):
         @wraps(fn)
         def decorator(request, *args, **kwargs):

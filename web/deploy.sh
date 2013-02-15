@@ -18,6 +18,14 @@ checkout() {
   cd ..
 }
 
+# generate documentation in build directory
+generate_documentation() {
+  CURRENT=`pwd
+  cd build/asvo-tao/docs
+  ./gendoc.sh
+  cd $CURRENT
+}
+
 # usage: transfer <host>
 # compresses build/* into asvo.tgz and transfers it to server
 # also copies remote.sh and maintenance files
@@ -63,6 +71,8 @@ remote_restore() {
 #
 
 checkout
+
+generate_documentation
 
 # underlying storage is shared, so we only need to access one node
 # this is the transfer node mentioned below

@@ -1,3 +1,10 @@
+"""
+==================
+tao.urls
+==================
+
+Django's URL mapping definition
+"""
 from django.conf.urls.defaults import patterns, url, include
 from django.contrib.auth.views import logout
 from django.core.urlresolvers import reverse_lazy

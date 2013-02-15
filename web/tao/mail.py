@@ -1,3 +1,11 @@
+"""
+==================
+tao.mail
+==================
+
+Helper to send email
+"""
+
 from django.conf import settings
 from django.template.loader import get_template
 from django.core.mail.message import EmailMultiAlternatives

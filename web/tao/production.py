@@ -1,3 +1,10 @@
+"""
+==================
+tao.production
+==================
+
+Production settings. It uses a module not available open source that overrides DATABASES.
+"""
 from tao.settings import *
 
 DEBUG=False

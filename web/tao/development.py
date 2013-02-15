@@ -1,3 +1,11 @@
+"""
+==================
+tao.development
+==================
+
+Settings for development environment
+"""
+
 from tao.settings import *
 
 # Configure SMTP Server.

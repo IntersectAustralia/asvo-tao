@@ -1,3 +1,10 @@
+"""
+==================
+tao.widgets
+==================
+
+Custom Django widgets
+"""
 from django import forms
 from django.utils.html import conditional_escape, escape
 from django.utils.encoding import force_unicode

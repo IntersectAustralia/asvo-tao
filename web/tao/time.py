@@ -1,3 +1,10 @@
+"""
+==================
+tao.time
+==================
+
+Helper to implement (a global) timestamp and make timestamp functionality testable
+"""
 from django.utils.timezone import now, get_default_timezone
 
 TIMESTAMP_FORMAT = "%Y-%m-%dT%T%z"
