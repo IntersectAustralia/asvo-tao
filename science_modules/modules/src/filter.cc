@@ -74,6 +74,9 @@ namespace tao {
    filter::process_galaxy( const tao::galaxy& galaxy,
                            vector<real_type>::view spectra )
    {
+      LOG_ENTER();
+      _timer.start();
+
       // Prepare the spectra.
       numerics::spline<real_type> spectra_spline;
       _prepare_spectra( spectra, spectra_spline );
@@ -96,6 +99,9 @@ namespace tao {
             _mags[ii] = 0.0;
       }
       LOGLN( "Band magnitudes: ", _mags );
+
+      _timer.stop();
+      LOG_EXIT();
    }
 
    ///

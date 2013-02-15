@@ -66,6 +66,12 @@ struct pipeline
          // Dump?
 	 dump.process_galaxy( gal, app_mag );
       }
+
+      // Once we're finished, dump out some timings.
+      LOGILN( "Time breakdown:", setindent( 2 ) );
+      LOGILN( "Lightcone: ", lc.time() );
+      LOGILN( "SED:       ", sed.time() );
+      LOGILN( "Filter:    ", filter.time() );
    }
 
    lightcone lc;
