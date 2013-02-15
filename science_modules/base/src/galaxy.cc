@@ -12,6 +12,13 @@ namespace tao {
         _box( box ),
 	_table( table )
    {
+      _z = _row.get<real_type>( "redshift" );
+   }
+
+   void
+   galaxy::set_redshift( real_type redshift )
+   {
+      _z = redshift;
    }
 
    const soci::row&
@@ -101,7 +108,7 @@ namespace tao {
    galaxy::real_type
    galaxy::redshift() const
    {
-      return _row.get<real_type>( "redshift" );
+      return _z;
    }
 
    galaxy::real_type

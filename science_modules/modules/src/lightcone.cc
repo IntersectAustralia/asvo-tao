@@ -9,6 +9,7 @@
 #include "lightcone.hh"
 #include "BSPTree.hh"
 #include "geometry_iterator.hh"
+#include "table_iterator.hh"
 
 using namespace hpc;
 using boost::format;
@@ -29,7 +30,7 @@ namespace tao {
         _x0( 0.0 ),
         _y0( 0.0 ),
         _z0( 0.0 ),
-	_use_bsp( false )
+	_accel_method( "none" )
    {
    }
 
@@ -45,7 +46,6 @@ namespace tao {
                              optional<const string&> prefix )
    {
       dict.add_option( new options::string( "geometry", "light-cone" ), prefix );
-      dict.add_option( new options::boolean( "use-bsp", false ), prefix );
       dict.add_option( new options::string( "box-repetition", "unique" ), prefix );
       dict.add_option( new options::real( "redshift-max" ), prefix );
       dict.add_option( new options::real( "redshift-min" ), prefix );
@@ -136,6 +136,8 @@ namespace tao {
 
 	 // Setup progress indicator.
 	 _prog.set_local_size( _boxes.size() );
+	 if( mpi::comm::world.rank() == 0 )
+	    LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
 
 	 _cur_box = _boxes.begin();
 	 _settle_box();
@@ -158,6 +160,8 @@ namespace tao {
 
 	 // Setup progress indicator.
 	 _prog.set_local_size( _boxes.size() );
+	 if( mpi::comm::world.rank() == 0 )
+	    LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
 
 	 _cur_box = _boxes.begin();
 	 _settle_box();
@@ -202,6 +206,18 @@ namespace tao {
             LOGDLN( "Finished iterating over current boxes." );
             if( ++_cur_box != _boxes.end() )
                _settle_box();
+	    else
+	    {
+	       // Stop the timer.
+	       _per_box.stop_tally();
+	       LOGDLN( "Time per box: ", _per_box.mean() );
+
+	       // Also dump progress.
+	       _prog.set_local_complete_delta( 1 );
+	       _prog.update();
+	       if( mpi::comm::world.rank() == 0 )
+		  LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
+	    }
          }
       }
 
@@ -216,17 +232,17 @@ namespace tao {
    {
       LOG_ENTER();
 
-#ifndef NDEBUG
-      {
-	 // Check that the row actually belongs in this range.
-         galaxy gal( *_cur_row, *_cur_box, _table_names[_cur_table] );
-         real_type dist = sqrt( pow( gal.x(), 2.0 ) + pow( gal.y(), 2.0 ) + pow( gal.z(), 2.0 ) );
-         ASSERT( dist >= _dist_range.start() && dist < _dist_range.finish() );
-      }
-#endif
+      galaxy gal( *_cur_row, *_cur_box, _table_names[_cur_table] );
+      real_type dist = sqrt( pow( gal.x(), 2.0 ) + pow( gal.y(), 2.0 ) + pow( gal.z(), 2.0 ) );
+
+      // Check that the row actually belongs in this range.
+      ASSERT( dist >= _dist_range.start() && dist < _dist_range.finish() );
+
+      // Setup the redshift.
+      gal.set_redshift( _distance_to_redshift( dist ) );
 
       LOG_EXIT();
-      return galaxy( *_cur_row, *_cur_box, _table_names[_cur_table] );
+      return gal;
    }
 
    ///
@@ -257,10 +273,13 @@ namespace tao {
       table_names.deallocate();
 
       // Are we using the BSP tree system?
-      if( _use_bsp )
+      if( _accel_method == "bsp" )
       {
 	 // Prepare a BSP tree.
-	 BSPtree bsp( 20, _dbname, _dbhost, _dbport, _dbuser, _dbpass );
+	 BSPtree bsp( _bsp_step, _dbname, _dbhost, _dbport, _dbuser, _dbpass );
+
+	 // Use a set to remove duplicates.
+	 set<string> table_name_set;
 
 	 // Loop over all polygons.
 	 geometry_iterator<double> it(
@@ -285,9 +304,29 @@ namespace tao {
 
 	    // Extract table names.
 	    auto names = bsp.GetTablesList( shape );
-	    table_names.insert( table_names.end(), names.begin(), names.end() );
+	    table_name_set.insert( names.begin(), names.end() );
 	 }
+
+	 // Transfer table names.
+	 table_names.reallocate( table_name_set.size() );
+	 std::copy( table_name_set.begin(), table_name_set.end(), table_names.begin() );
 	 LOGDLN( "BSP table names: ", table_names );
+      }
+      else if( _accel_method == "direct" )
+      {
+	 table_iterator<real_type> it(
+	    _sql,
+	    _domain_size,
+	    *_cur_box,
+	    _rrs_offs,
+	    _rrs_axis,
+	    _ra_min, _ra_max,
+	    _dec_min, _dec_max,
+	    _dist_range.finish()
+	    );
+	 while( !it.done() )
+	    table_names.push_back( *it++ );
+	 LOGDLN( "Direct table names: ", table_names );
       }
       else
       {
@@ -366,6 +405,14 @@ namespace tao {
 	 {
 	    _per_box.stop_tally();
 	    LOGDLN( "Time per box: ", _per_box.mean() );
+
+	    // Update the log file with the progress.
+	    _prog.set_local_complete_delta( 1 );
+	    _prog.update();
+
+	    // Also dump progress here.
+	    if( mpi::comm::world.rank() == 0 )
+	       LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
 	 }
 	 _per_box.start();
 
@@ -375,7 +422,7 @@ namespace tao {
 	 // If we are using the light-cone geometry and also have requested
 	 // the use of the BSP system, then we need to update the set of
 	 // tables to use.
-	 if( _use_bsp && _box_type != "box" )
+	 if( (_accel_method == "bsp" || _accel_method == "direct") && _box_type != "box" )
 	    _query_table_names( _table_names );
          LOGDLN( "Iterating over ", _table_names.size(), " tables." );
 
@@ -439,12 +486,6 @@ namespace tao {
 	    // Now prepare tables.
             _settle_table();
 	 }
-
-	 // Update the log file with the progress.
-	 _prog.set_local_complete_delta( 1 );
-	 _prog.update();
-	 if( mpi::comm::world.rank() == 0 )
-	    LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
       }
       while( _cur_table == _table_names.size() && ++_cur_box != _boxes.end() );
 
@@ -453,6 +494,10 @@ namespace tao {
       {
 	 _per_box.stop_tally();
 	 LOGDLN( "Time per box: ", _per_box.mean() );
+
+	 // Also dump progress.
+	 if( mpi::comm::world.rank() == 0 )
+	    LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
       }
 
       LOG_EXIT();
@@ -471,6 +516,11 @@ namespace tao {
       // Produce the SQL query text.
       string query;
       _build_query( offs_x, offs_y, offs_z, query );
+
+      // Run a database cycle. This will restart the DB after a
+      // certain number of queries.
+      if( _db_cycle() )
+      	 _setup_redshift_ranges();
 
       // Execute the query and retrieve the rows.
       _rows = new soci::rowset<soci::row>( (_sql.prepare << query) );
@@ -789,7 +839,7 @@ namespace tao {
    ///
    ///
    lightcone::real_type
-   lightcone::_redshift_to_distance( real_type redshift )
+   lightcone::_redshift_to_distance( real_type redshift ) const
    {
       LOG_ENTER();
 
@@ -855,14 +905,15 @@ namespace tao {
       LOGDLN( "Using h0 = ", _h0 );
 
       // Should we use the BSP tree system?
-      _use_bsp = sub.get<bool>( "use-bsp" );
-      LOGDLN( "Use BSP: ", _use_bsp );
+      _accel_method = dict.get<string>( "settings:database:acceleration" );
+      std::transform( _accel_method.begin(), _accel_method.end(), _accel_method.begin(), ::tolower );
+      LOGDLN( "Acceleration method: ", _accel_method );
 
       // Extract database details.
       _read_db_options( dict );
 
       // Connect to the database.
-      _db_connect( _sql );
+      _db_connect();
 
       // Get box type.
       _box_type = sub.get<string>( "geometry" );
@@ -881,6 +932,15 @@ namespace tao {
 	 _sql << "SELECT metavalue FROM metadata WHERE metakey='boxsize'", soci::into( size );
 	 _domain_size = atof( size.c_str() );
 	 LOGDLN( "Simulation domain size: ", _domain_size );
+      }
+
+      // Get BSP separation.
+      if( _accel_method == "bsp" )
+      {
+	 string step;
+	 _sql << "SELECT metavalue FROM metadata WHERE metakey='bspcellsize'", soci::into( step );
+	 _bsp_step = atoi( step.c_str() );
+	 LOGDLN( "BSP step size: ", _bsp_step );
       }
 
       // Extract the random number generator seed and set it.
@@ -903,7 +963,7 @@ namespace tao {
 
       // Query the table names we'll be using. Only need to do
       // this here if we are not using the BSP system.
-      if( !_use_bsp )
+      if( _accel_method == "none" )
 	 _query_table_names( _table_names );
 
       // Redshift ranges.
@@ -979,6 +1039,9 @@ namespace tao {
 
       }
       LOGDLN( "Outputting fields: ", _output_fields );
+
+      // Setup the distance to redshift tables.
+      _build_dist_to_z_tbl( 1000, _z_min, _z_max );
 
       LOG_EXIT();
    }
@@ -1123,5 +1186,43 @@ namespace tao {
       LOGDLN( "Redshift range for snapshot ", _snap_redshifts.size() - 1, ": ", upp, " - ", mid );
 
       LOG_EXIT();
+   }
+
+   void
+   lightcone::_build_dist_to_z_tbl( unsigned num_points,
+				    real_type min_z,
+				    real_type max_z )
+   {
+      ASSERT( num_points > 1 );
+      _dist_to_z_tbl_dist.reallocate( num_points );
+      _dist_to_z_tbl_z.reallocate( num_points );
+      real_type delta = 1.0/(real_type)(num_points - 1);
+      for( unsigned ii = 0; ii < num_points; ++ii )
+      {
+	 _dist_to_z_tbl_z[ii] = min_z + (max_z - min_z)*delta*(real_type)ii;
+	 _dist_to_z_tbl_dist[ii] = _redshift_to_distance( _dist_to_z_tbl_z[ii] );
+      }
+   }
+
+   lightcone::real_type
+   lightcone::_distance_to_redshift( real_type dist ) const
+   {
+      auto it = std::lower_bound( _dist_to_z_tbl_dist.begin(), _dist_to_z_tbl_dist.end(), dist );
+      unsigned low = std::distance( _dist_to_z_tbl_dist.begin(), it );
+      unsigned upp;
+      if( low == 0 )
+	 upp = low + 1;
+      else if( low >= _dist_to_z_tbl_z.size() )
+      {
+	 low = _dist_to_z_tbl_z.size() - 2;
+	 upp = low + 1;
+      }
+      else
+      {
+	 upp = low;
+	 low -= 1;
+      }
+      real_type fac = (dist - _dist_to_z_tbl_dist[low])/(_dist_to_z_tbl_dist[upp] - _dist_to_z_tbl_dist[low]);
+      return _dist_to_z_tbl_z[low] + (_dist_to_z_tbl_z[upp] - _dist_to_z_tbl_z[low])*fac;
    }
 }

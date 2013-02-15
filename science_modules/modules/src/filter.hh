@@ -64,7 +64,6 @@ namespace tao {
       ///
       void
       process_galaxy( const tao::galaxy& galaxy,
-                      real_type redshift,
                       hpc::vector<real_type>::view spectra );
 
       ///

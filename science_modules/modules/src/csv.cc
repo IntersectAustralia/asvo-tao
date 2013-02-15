@@ -43,8 +43,11 @@ namespace tao {
 	 _file << *it++;
 	 while( it != fields.cend() )
 	    _file << ", " << *it++;
-	 _file << "\n";
+	 _file << ", apparant magnitude";
       }
+      else
+	 _file << "apparant magnitude";
+      _file << "\n";
    }
 
    void
@@ -61,8 +64,11 @@ namespace tao {
 	    _file << ", ";
 	    _write_field( galaxy, *it++ );
 	 }
-	 _file << "\n";
+	 _file << ", " << app_mag;
       }
+      else
+	 _file << app_mag;
+      _file << "\n";
    }
 
    void

@@ -22,7 +22,7 @@ namespace tao {
       : _cur_tree_id( -1 ),
 	_omega( 0.25 ),
 	_omega_lambda( 0.75 ),
-	_h0( 0.73 )
+	_h( 0.73 )
    {
       // Prepare the workspace for integrating and the
       // function.
@@ -45,8 +45,8 @@ namespace tao {
                        optional<const string&> prefix )
    {
       dict.add_option( new options::string( "single-stellar-population-model" ), prefix );
-      dict.add_option( new options::integer( "num_spectra", 1221 ), prefix );
-      dict.add_option( new options::integer( "num_metals", 7 ), prefix );
+      dict.add_option( new options::integer( "num-spectra", 1221 ), prefix );
+      dict.add_option( new options::integer( "num-metals", 7 ), prefix );
    }
 
    ///
@@ -301,14 +301,20 @@ namespace tao {
       LOG_ENTER();
       LOGDLN( "Updating bin ", bin, " using timestep of ", dt, "." );
 
-      real_type add_dm = (_sfrs[id] - _bulge_sfrs[id])*dt;
-      real_type add_bm = _bulge_sfrs[id]*dt;
+      real_type add_dm = (_sfrs[id] - _bulge_sfrs[id])*dt*_h;
+      real_type add_bm = _bulge_sfrs[id]*dt*_h;
       real_type new_dm = _disk_age_masses[bin] + add_dm;
       real_type new_bm = _bulge_age_masses[bin] + add_bm;
       if( new_dm > 0.0 )
-	 _disk_age_metals[bin] = (_disk_age_masses[bin]*_disk_age_metals[bin] + add_dm*(_metals[id] - _bulge_metals[id]))/new_dm;
+      {
+	 _disk_age_metals[bin] = (_disk_age_masses[bin]*_disk_age_metals[bin] + 
+                                  add_dm*_metals[id])/new_dm;
+      }
       if( new_bm > 0.0 )
-	 _bulge_age_metals[bin] = (_bulge_age_masses[bin]*_bulge_age_metals[bin] + add_bm*_bulge_metals[id])/new_bm;
+      {
+	 _bulge_age_metals[bin] = (_bulge_age_masses[bin]*_bulge_age_metals[bin] + 
+                                   add_bm*_metals[id])/new_bm;
+      }
       _disk_age_masses[bin] = new_dm;
       _bulge_age_masses[bin] = new_bm;
       LOGDLN( "Added ", add_dm, " disk mass." );
@@ -335,7 +341,7 @@ namespace tao {
 	 else
 	    bin = it - _dual_ages.begin();
       }
-      LOGDLN( "Found bin ", bin, " with upper age of ", _dual_ages[bin], "." );
+      LOGDLN( "Found bin ", bin, " with age of ", _bin_ages[bin], "." );
 
       LOG_EXIT();
       return bin;
@@ -348,9 +354,9 @@ namespace tao {
       LOG_ENTER();
       real_type z = z1 - z0;
       real_type res, abserr;
-      gsl_integration_qag( &_func, 1.0/(z + 1.0), 1.0, 1.0/_h0, 1e-8,
+      gsl_integration_qag( &_func, 1.0/(z + 1.0), 1.0, 1.0/_h, 1e-8,
 			   1000, GSL_INTEG_GAUSS21, _work, &res, &abserr );
-      res = (1.0/_h0)*res;
+      res = (1.0/_h)*res;
       LOGDLN( "Calculated age as ", res, "." );
       LOG_EXIT();
       return res;
@@ -364,17 +370,18 @@ namespace tao {
       const options::dictionary& sub = prefix ? dict.sub( *prefix ) : dict;
 
       // Extract database details.
-      _dbtype = dict.get<string>( "database-type" );
-      _dbname = dict.get<string>( "database-name" );
-      _dbhost = dict.get<string>( "database-host" );
-      _dbport = dict.get<string>( "database-port" );
-      _dbuser = dict.get<string>( "database-user" );
-      _dbpass = dict.get<string>( "database-pass" );
-      _db_connect( _sql );
+      _read_db_options( dict );
+
+      // Connect to the database.
+      _db_connect();
+
+      // Try to read H0 (and hence h) from the lightcone module.
+      _h = dict.get<real_type>( "workflow:light-cone:H0" )/100.0;
+      LOGDLN( "Read h as: ", _h );
 
       // Extract the counts.
-      _num_spectra = sub.get<unsigned>( "num_spectra" );
-      _num_metals = sub.get<unsigned>( "num_metals" );
+      _num_spectra = sub.get<unsigned>( "num-spectra" );
+      _num_metals = sub.get<unsigned>( "num-metals" );
       LOGLN( "Number of times: ", _bin_ages.size() );
       LOGLN( "Number of spectra: ", _num_spectra );
       LOGLN( "Number of metals: ", _num_metals );
@@ -407,20 +414,11 @@ namespace tao {
          ASSERT( file.good() );
       }
 
+#ifndef NDEBUG
       // Must be ordered.
-      std::sort( _bin_ages.begin(), _bin_ages.end() );
-
-      // // Convert the loaded redshifts into ages.
-      // {
-      // real_type tmp = _bin_ages[0];
-      // _bin_ages[0] = _calc_age( 0.0, _bin_ages[0] );
-      // for( unsigned ii = 1; ii < _bin_ages.size(); ++ii )
-      // {
-      // 	 real_type tmp2 = _bin_ages[ii];
-      // 	 _bin_ages[ii] = _calc_age( tmp, _bin_ages[ii] );
-      // 	 tmp = tmp2;
-      // }
-      // }
+      for( unsigned ii = 1; ii < _bin_ages.size(); ++ii )
+	 ASSERT( _bin_ages[ii] >= _bin_ages[ii - 1] );
+#endif
       LOGDLN( "Bin ages: ", _bin_ages );
 
       // Take the dual to form age bins.
@@ -461,8 +459,7 @@ namespace tao {
       LOGDLN( "Redshifts: ", _snap_ages );
 
       // Convert to ages.
-      _snap_ages[0] = _calc_age( 0.0, _snap_ages[0] );
-      for( unsigned ii = 1; ii < _snap_ages.size(); ++ii )
+      for( unsigned ii = 0; ii < _snap_ages.size(); ++ii )
 	 _snap_ages[ii] = _calc_age( 0.0, _snap_ages[ii] );
       LOGDLN( "Snapshot ages: ", _snap_ages );
 
@@ -481,7 +478,6 @@ namespace tao {
       _sfrs.deallocate();
       _bulge_sfrs.deallocate();
       _metals.deallocate();
-      _bulge_metals.deallocate();
       _snaps.deallocate();
       _parents.clear();
 
@@ -496,24 +492,22 @@ namespace tao {
       _sfrs.resize( tree_size );
       _bulge_sfrs.resize( tree_size );
       _metals.resize( tree_size );
-      _bulge_metals.resize( tree_size );
       _snaps.resize( tree_size );
 
       // Extract the table.
-      string query = "SELECT descendant, sfr, sfrbulge, "
-	 "metalsstellarmass, metalsbulgemass, snapnum, stellarmass FROM  " + table + 
+      string query = "SELECT descendant, metalscoldgas, "
+	"sfr, sfrbulge, snapnum FROM  " + table + 
 	 " WHERE globaltreeid = :id"
 	 " ORDER BY localgalaxyid";
       _sql << query, soci::into( (std::vector<int>&)_descs ),
-   	 soci::into( (std::vector<double>&)_sfrs ), soci::into( (std::vector<double>&)_bulge_sfrs ),
-	 soci::into( (std::vector<double>&)_metals ), soci::into( (std::vector<double>&)_bulge_metals ),
+	 soci::into( (std::vector<double>&)_metals ),
+	 soci::into( (std::vector<double>&)_sfrs ), soci::into( (std::vector<double>&)_bulge_sfrs ),
 	 soci::into( (std::vector<int>&)_snaps ),
 	 soci::use( tree_id );
       LOGDLN( "Descendant: ", _descs );
-      LOGDLN( "SFR: ", _sfrs );
-      LOGDLN( "Bulge SFR: ", _bulge_sfrs );
+      LOGDLN( "Star formation rates: ", _sfrs );
+      LOGDLN( "Bulge star formation rates: ", _bulge_sfrs );
       LOGDLN( "Metals: ", _metals );
-      LOGDLN( "Bulge metals: ", _bulge_metals );
       LOGDLN( "Snapshots: ", _snaps );
 
       // Build the parents for each galaxy.

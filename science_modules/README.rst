@@ -22,7 +22,7 @@ Dependencies
 
   scons-project
     Some SCons C++ project helper scripts. This is available from my github
-    page at <http://github.com/furious-luke/scons-config>.
+    page at <https://github.com/furious-luke/scons-project>.
 
   BOOST
     A set of efficient C++ extensions.

@@ -29,6 +29,54 @@ public:
    ///
    ///
    ///
+   void test_redshift_to_distance_consistency()
+   {
+      lightcone lc;
+
+      // Insert some values.
+      {
+         soci::session sql( soci::sqlite3, db_setup.db_filename );
+         sql << "INSERT INTO snap_redshift VALUES(0, 1)";
+         sql << "INSERT INTO snap_redshift VALUES(1, 0)";
+         sql << "INSERT INTO tree_1 VALUES(1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_2 VALUES(2, 2, 2, 1, 0, 0, 1, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_3 VALUES(3, 3, 3, 2, 0, 0, 2, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_4 VALUES(4, 4, 4, 3, 0, 0, 3, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_1 VALUES(1, 1, 1, 4, 1, 1, 0, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_2 VALUES(2, 2, 2, 5, 1, 1, 1, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_3 VALUES(3, 3, 3, 6, 1, 1, 2, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_4 VALUES(4, 4, 4, 7, 1, 1, 3, 0, 0, 0, 0, 0)";
+      }
+
+      // Prepare base dictionary.
+      options::dictionary& dict = db_setup.dict.sub( "workflow:light-cone" );
+      dict["geometry"] = "box";
+      dict["redshift"] = "1";
+      dict["query-box-size"] = "10";
+      db_setup.xml.write( db_setup.xml_filename, db_setup.dict );
+      setup_lightcone( lc );
+
+      // Test directly.
+      TS_ASSERT_DELTA( lc._distance_to_redshift( lc._redshift_to_distance( 0 ) ), 0, 1e-3 );
+      for( double z = 0.0; z < 1.0; z += 0.1 )
+      {
+	 TS_ASSERT_DELTA( lc._distance_to_redshift( lc._redshift_to_distance( z ) ), z, 1e-3 );
+      }
+      TS_ASSERT_DELTA( lc._distance_to_redshift( lc._redshift_to_distance( 1.0 ) ), 1.0, 1e-3 );
+
+      // Now test as read from the galaxy object.
+      SET_ABORT( true );
+      for( lc.begin(); !lc.done(); ++lc )
+      {
+         const galaxy& gal = *lc;
+	 double dist = sqrt( gal.x()*gal.x() + gal.y()*gal.y() + gal.z()*gal.z() );
+	 TS_ASSERT_DELTA( lc._redshift_to_distance( gal.redshift() ), dist, 1e-1 );
+      }
+   }
+
+   ///
+   ///
+   ///
    void test_box_size()
    {
       lightcone lc;
@@ -41,18 +89,18 @@ public:
          soci::session sql( soci::sqlite3, db_setup.db_filename );
          sql << "INSERT INTO snap_redshift VALUES(0, 0.001)";
          sql << "INSERT INTO snap_redshift VALUES(1, 0)";
-         sql << "INSERT INTO tree_1 VALUES(1, 1, 1, 0, 0, 0, 0)";
-         sql << "INSERT INTO tree_2 VALUES(2, 2, 2, 1, 0, 0, 1)";
-         sql << "INSERT INTO tree_3 VALUES(3, 3, 3, 2, 0, 0, 2)";
-         sql << "INSERT INTO tree_4 VALUES(4, 4, 4, 3, 0, 0, 3)";
-         sql << "INSERT INTO tree_1 VALUES(1, 1, 1, 4, 1, 1, 0)";
-         sql << "INSERT INTO tree_2 VALUES(2, 2, 2, 5, 1, 1, 1)";
-         sql << "INSERT INTO tree_3 VALUES(3, 3, 3, 6, 1, 1, 2)";
-         sql << "INSERT INTO tree_4 VALUES(4, 4, 4, 7, 1, 1, 3)";
+         sql << "INSERT INTO tree_1 VALUES(1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_2 VALUES(2, 2, 2, 1, 0, 0, 1, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_3 VALUES(3, 3, 3, 2, 0, 0, 2, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_4 VALUES(4, 4, 4, 3, 0, 0, 3, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_1 VALUES(1, 1, 1, 4, 1, 1, 0, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_2 VALUES(2, 2, 2, 5, 1, 1, 1, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_3 VALUES(3, 3, 3, 6, 1, 1, 2, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_4 VALUES(4, 4, 4, 7, 1, 1, 3, 0, 0, 0, 0, 0)";
       }
 
       // Prepare base dictionary.
-      options::dictionary& dict = db_setup.dict.sub( "light-cone" );
+      options::dictionary& dict = db_setup.dict.sub( "workflow:light-cone" );
       dict["geometry"] = "box";
       dict["redshift"] = "0.001";
 
@@ -102,18 +150,18 @@ public:
          soci::session sql( soci::sqlite3, db_setup.db_filename );
          sql << "INSERT INTO snap_redshift VALUES(0, 0.001)";
          sql << "INSERT INTO snap_redshift VALUES(1, 0)";
-         sql << "INSERT INTO tree_1 VALUES(1, 1, 1, 0, 0, 0, 0)";
-         sql << "INSERT INTO tree_2 VALUES(2, 2, 2, 1, 0, 0, 1)";
-         sql << "INSERT INTO tree_3 VALUES(3, 3, 3, 2, 0, 0, 2)";
-         sql << "INSERT INTO tree_4 VALUES(4, 4, 4, 3, 0, 0, 3)";
-         sql << "INSERT INTO tree_1 VALUES(1, 1, 1, 4, 1, 1, 0)";
-         sql << "INSERT INTO tree_2 VALUES(2, 2, 2, 5, 1, 1, 1)";
-         sql << "INSERT INTO tree_3 VALUES(3, 3, 3, 6, 1, 1, 2)";
-         sql << "INSERT INTO tree_4 VALUES(4, 4, 4, 7, 1, 1, 3)";
+         sql << "INSERT INTO tree_1 VALUES(1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_2 VALUES(2, 2, 2, 1, 0, 0, 1, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_3 VALUES(3, 3, 3, 2, 0, 0, 2, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_4 VALUES(4, 4, 4, 3, 0, 0, 3, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_1 VALUES(1, 1, 1, 4, 1, 1, 0, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_2 VALUES(2, 2, 2, 5, 1, 1, 1, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_3 VALUES(3, 3, 3, 6, 1, 1, 2, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_4 VALUES(4, 4, 4, 7, 1, 1, 3, 0, 0, 0, 0, 0)";
       }
 
       // Prepare base dictionary.
-      options::dictionary& dict = db_setup.dict.sub( "light-cone" );
+      options::dictionary& dict = db_setup.dict.sub( "workflow:light-cone" );
       dict["geometry"] = "box";
       dict["query-box-size"] = "4.5";
 
@@ -164,18 +212,18 @@ public:
          soci::session sql( soci::sqlite3, db_setup.db_filename );
          sql << "INSERT INTO snap_redshift VALUES(0, 0.001)";
          sql << "INSERT INTO snap_redshift VALUES(1, 0)";
-         sql << "INSERT INTO tree_1 VALUES(1, 0.001, 0.001, 0, 0, 0, 0)";
-         sql << "INSERT INTO tree_2 VALUES(0.866, 0.5, 0.001, 1, 0, 0, 1)";
-         sql << "INSERT INTO tree_3 VALUES(0.5, 0.866, 0.001, 2, 0, 0, 2)";
-         sql << "INSERT INTO tree_4 VALUES(0.001, 1, 0.001, 3, 0, 0, 3)";
-         sql << "INSERT INTO tree_1 VALUES(1, 0.001, 0.001, 4, 1, 1, 0)";
-         sql << "INSERT INTO tree_2 VALUES(0.866, 0.5, 0.001, 5, 1, 1, 1)";
-         sql << "INSERT INTO tree_3 VALUES(0.5, 0.866, 0.001, 6, 1, 1, 2)";
-         sql << "INSERT INTO tree_4 VALUES(0.001, 1, 0.001, 7, 1, 1, 3)";
+         sql << "INSERT INTO tree_1 VALUES(1, 0.001, 0.001, 0, 0, 0, 0, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_2 VALUES(0.866, 0.5, 0.001, 1, 0, 0, 1, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_3 VALUES(0.5, 0.866, 0.001, 2, 0, 0, 2, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_4 VALUES(0.001, 1, 0.001, 3, 0, 0, 3, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_1 VALUES(1, 0.001, 0.001, 4, 1, 1, 0, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_2 VALUES(0.866, 0.5, 0.001, 5, 1, 1, 1, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_3 VALUES(0.5, 0.866, 0.001, 6, 1, 1, 2, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_4 VALUES(0.001, 1, 0.001, 7, 1, 1, 3, 0, 0, 0, 0, 0)";
       }
 
       // Prepare base dictionary.
-      options::dictionary& dict = db_setup.dict.sub( "light-cone" );
+      options::dictionary& dict = db_setup.dict.sub( "workflow:light-cone" );
       dict["geometry"] = "light-cone";
       dict["redshift-min"] = "0";
       dict["dec-min"] = "0";
@@ -257,18 +305,18 @@ public:
          soci::session sql( soci::sqlite3, db_setup.db_filename );
          sql << "INSERT INTO snap_redshift VALUES(0, 0.001)";
          sql << "INSERT INTO snap_redshift VALUES(1, 0)";
-         sql << "INSERT INTO tree_1 VALUES(0.707, 0.707, 0.001, 0, 0, 0, 0)";
-         sql << "INSERT INTO tree_2 VALUES(0.612, 0.612, 0.5, 1, 0, 0, 1)";
-         sql << "INSERT INTO tree_3 VALUES(0.354, 0.354, 0.866, 2, 0, 0, 2)";
-         sql << "INSERT INTO tree_4 VALUES(0.001, 0.001, 1, 3, 0, 0, 3)";
-         sql << "INSERT INTO tree_1 VALUES(0.707, 0.707, 0.001, 0, 1, 1, 0)";
-         sql << "INSERT INTO tree_2 VALUES(0.612, 0.612, 0.5, 1, 1, 1, 1)";
-         sql << "INSERT INTO tree_3 VALUES(0.354, 0.354, 0.866, 2, 1, 1, 2)";
-         sql << "INSERT INTO tree_4 VALUES(0.001, 0.001, 1, 3, 1, 1, 3)";
+         sql << "INSERT INTO tree_1 VALUES(0.707, 0.707, 0.001, 0, 0, 0, 0, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_2 VALUES(0.612, 0.612, 0.5, 1, 0, 0, 1, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_3 VALUES(0.354, 0.354, 0.866, 2, 0, 0, 2, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_4 VALUES(0.001, 0.001, 1, 3, 0, 0, 3, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_1 VALUES(0.707, 0.707, 0.001, 0, 1, 1, 0, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_2 VALUES(0.612, 0.612, 0.5, 1, 1, 1, 1, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_3 VALUES(0.354, 0.354, 0.866, 2, 1, 1, 2, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_4 VALUES(0.001, 0.001, 1, 3, 1, 1, 3, 0, 0, 0, 0, 0)";
       }
 
       // Prepare base dictionary.
-      options::dictionary& dict = db_setup.dict.sub( "light-cone" );
+      options::dictionary& dict = db_setup.dict.sub( "workflow:light-cone" );
       dict["redshift-min"] = "0";
       dict["ra-min"] = "0";
       dict["ra-max"] = "90";
@@ -350,16 +398,16 @@ public:
          soci::session sql( soci::sqlite3, db_setup.db_filename );
          sql << "INSERT INTO snap_redshift VALUES(0, 0.001)";
          sql << "INSERT INTO snap_redshift VALUES(1, 0)";
-         sql << "INSERT INTO tree_1 VALUES(34, 34, 34, 0, 0, 0, 0)";
-         sql << "INSERT INTO tree_2 VALUES(57, 57, 57, 1, 0, 0, 1)";
-         sql << "INSERT INTO tree_3 VALUES(230, 230, 230, 2, 0, 0, 2)";
-         sql << "INSERT INTO tree_1 VALUES(34, 34, 34, 3, 1, 1, 0)";
-         sql << "INSERT INTO tree_2 VALUES(57, 57, 57, 4, 1, 1, 1)";
-         sql << "INSERT INTO tree_3 VALUES(230, 230, 230, 5, 1, 1, 2)";
+         sql << "INSERT INTO tree_1 VALUES(34, 34, 34, 0, 0, 0, 0, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_2 VALUES(57, 57, 57, 1, 0, 0, 1, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_3 VALUES(230, 230, 230, 2, 0, 0, 2, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_1 VALUES(34, 34, 34, 3, 1, 1, 0, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_2 VALUES(57, 57, 57, 4, 1, 1, 1, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_3 VALUES(230, 230, 230, 5, 1, 1, 2, 0, 0, 0, 0, 0)";
       }
 
       // Prepare base dictionary.
-      options::dictionary& dict = db_setup.dict.sub( "light-cone" );
+      options::dictionary& dict = db_setup.dict.sub( "workflow:light-cone" );
       dict["ra-min"] = "0";
       dict["ra-max"] = "90";
       dict["dec-min"] = "0";
@@ -427,19 +475,19 @@ public:
          soci::session sql( soci::sqlite3, db_setup.db_filename );
          sql << "INSERT INTO snap_redshift VALUES(0, 0.0001)";
          sql << "INSERT INTO snap_redshift VALUES(1, 0)";
-         sql << "INSERT INTO tree_1 VALUES(10, 10, 10, 0, 0, 0, 0)";
-         sql << "INSERT INTO tree_2 VALUES(10, 10, 10, 1, 0, 0, 1)";
-         sql << "INSERT INTO tree_3 VALUES(10, 10, 10, 2, 0, 0, 2)";
-         sql << "INSERT INTO tree_1 VALUES(10, 10, 10, 3, 1, 1, 0)";
-         sql << "INSERT INTO tree_2 VALUES(10, 10, 10, 4, 1, 1, 1)";
-         sql << "INSERT INTO tree_3 VALUES(10, 10, 10, 5, 1, 1, 2)";
+         sql << "INSERT INTO tree_1 VALUES(10, 10, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_2 VALUES(10, 10, 10, 1, 0, 0, 1, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_3 VALUES(10, 10, 10, 2, 0, 0, 2, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_1 VALUES(10, 10, 10, 3, 1, 1, 0, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_2 VALUES(10, 10, 10, 4, 1, 1, 1, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_3 VALUES(10, 10, 10, 5, 1, 1, 2, 0, 0, 0, 0, 0)";
 
 	 // Update the domain size.
 	 sql << "UPDATE metadata SET metavalue='21' WHERE metakey='boxsize'";
       }
 
       // Prepare base dictionary.
-      options::dictionary& dict = db_setup.dict.sub( "light-cone" );
+      options::dictionary& dict = db_setup.dict.sub( "workflow:light-cone" );
       dict["redshift-min"] = "0";
       dict["ra-min"] = "0";
       dict["ra-max"] = "90";
@@ -481,18 +529,18 @@ public:
          soci::session sql( soci::sqlite3, db_setup.db_filename );
          sql << "INSERT INTO snap_redshift VALUES(0, 0.001)";
          sql << "INSERT INTO snap_redshift VALUES(1, 0)";
-         sql << "INSERT INTO tree_1 VALUES(1, 1, 1, 0, 0, 0, 0)";
-         sql << "INSERT INTO tree_2 VALUES(2, 2, 2, 1, 0, 0, 1)";
-         sql << "INSERT INTO tree_3 VALUES(3, 3, 3, 2, 0, 0, 2)";
-         sql << "INSERT INTO tree_4 VALUES(4, 4, 4, 3, 0, 0, 3)";
-         sql << "INSERT INTO tree_1 VALUES(1, 1, 1, 4, 1, 1, 0)";
-         sql << "INSERT INTO tree_2 VALUES(2, 2, 2, 5, 1, 1, 1)";
-         sql << "INSERT INTO tree_3 VALUES(3, 3, 3, 6, 1, 1, 2)";
-         sql << "INSERT INTO tree_4 VALUES(4, 4, 4, 7, 1, 1, 3)";
+         sql << "INSERT INTO tree_1 VALUES(1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_2 VALUES(2, 2, 2, 1, 0, 0, 1, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_3 VALUES(3, 3, 3, 2, 0, 0, 2, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_4 VALUES(4, 4, 4, 3, 0, 0, 3, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_1 VALUES(1, 1, 1, 4, 1, 1, 0, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_2 VALUES(2, 2, 2, 5, 1, 1, 1, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_3 VALUES(3, 3, 3, 6, 1, 1, 2, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_4 VALUES(4, 4, 4, 7, 1, 1, 3, 0, 0, 0, 0, 0)";
       }
 
       // Prepare base dictionary.
-      options::dictionary& dict = db_setup.dict.sub( "light-cone" );
+      options::dictionary& dict = db_setup.dict.sub( "workflow:light-cone" );
       dict["geometry"] = "box";
       dict["redshift"] = "0.001";
       db_setup.dict["workflow:record-filter:filter-type"] = "pos_x";
@@ -543,18 +591,18 @@ public:
          soci::session sql( soci::sqlite3, db_setup.db_filename );
          sql << "INSERT INTO snap_redshift VALUES(0, 0.001)";
          sql << "INSERT INTO snap_redshift VALUES(1, 0)";
-         sql << "INSERT INTO tree_1 VALUES(1, 1, 1, 0, 0, 0, 0)";
-         sql << "INSERT INTO tree_2 VALUES(2, 2, 2, 1, 0, 0, 1)";
-         sql << "INSERT INTO tree_3 VALUES(3, 3, 3, 2, 0, 0, 2)";
-         sql << "INSERT INTO tree_4 VALUES(4, 4, 4, 3, 0, 0, 3)";
-         sql << "INSERT INTO tree_1 VALUES(1, 1, 1, 4, 1, 1, 0)";
-         sql << "INSERT INTO tree_2 VALUES(2, 2, 2, 5, 1, 1, 1)";
-         sql << "INSERT INTO tree_3 VALUES(3, 3, 3, 6, 1, 1, 2)";
-         sql << "INSERT INTO tree_4 VALUES(4, 4, 4, 7, 1, 1, 3)";
+         sql << "INSERT INTO tree_1 VALUES(1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_2 VALUES(2, 2, 2, 1, 0, 0, 1, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_3 VALUES(3, 3, 3, 2, 0, 0, 2, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_4 VALUES(4, 4, 4, 3, 0, 0, 3, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_1 VALUES(1, 1, 1, 4, 1, 1, 0, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_2 VALUES(2, 2, 2, 5, 1, 1, 1, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_3 VALUES(3, 3, 3, 6, 1, 1, 2, 0, 0, 0, 0, 0)";
+         sql << "INSERT INTO tree_4 VALUES(4, 4, 4, 7, 1, 1, 3, 0, 0, 0, 0, 0)";
       }
 
       // Prepare base dictionary.
-      options::dictionary& dict = db_setup.dict.sub( "light-cone" );
+      options::dictionary& dict = db_setup.dict.sub( "workflow:light-cone" );
       dict["geometry"] = "box";
       dict["redshift"] = "0.001";
       dict["query-box-size"] = "4.5";
@@ -587,11 +635,11 @@ public:
       // Read in the dictionary from XML.
       options::dictionary dict;
       setup_common_options( dict );
-      lc.setup_options( dict, "light-cone" );
+      lc.setup_options( dict, "workflow:light-cone" );
       dict.compile();
       options::xml xml;
       xml.read( db_setup.xml_filename, dict );
-      lc.initialise( dict, "light-cone" );
+      lc.initialise( dict, "workflow:light-cone" );
    }
 
    void setUp()

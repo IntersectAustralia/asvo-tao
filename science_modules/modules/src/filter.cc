@@ -26,9 +26,9 @@ namespace tao {
    filter::setup_options( options::dictionary& dict,
                           optional<const string&> prefix )
    {
-      dict.add_option( new options::string( "waves_filename" ), prefix );
-      dict.add_option( new options::string( "filter_filenames" ), prefix );
-      dict.add_option( new options::string( "vega_filename" ), prefix );
+      dict.add_option( new options::string( "wavelengths" ), prefix );
+      dict.add_option( new options::list<options::string>( "bandpass-filters" ), prefix );
+      dict.add_option( new options::string( "vega-spectrum" ), prefix );
    }
 
    ///
@@ -72,16 +72,15 @@ namespace tao {
 
    void
    filter::process_galaxy( const tao::galaxy& galaxy,
-                           real_type redshift,
                            vector<real_type>::view spectra )
    {
       // Prepare the spectra.
       numerics::spline<real_type> spectra_spline;
       _prepare_spectra( spectra, spectra_spline );
 
-      // Calculate the distance/area for this galaxy. Use 10000
+      // Calculate the distance/area for this galaxy. Use 1000
       // points.
-      real_type dist = numerics::redshift_to_distance( redshift, 10000 )*1e-3;
+      real_type dist = numerics::redshift_to_luminosity_distance( galaxy.redshift(), 1000 )*1e-3;
       real_type area = log10( 4.0*M_PI ) + 2.0*log10( dist*3.08568025e24 );
       LOGLN( "Distance: ", dist );
 
@@ -234,7 +233,7 @@ namespace tao {
 
       {
          // Get the wavelengths filename.
-         string filename = sub.get<string>( "waves_filename" );
+         string filename = sub.get<string>( "wavelengths" );
          LOGLN( "Using wavelengths filename \"", filename, "\"" );
 
          // Load the wavelengths.
@@ -243,13 +242,7 @@ namespace tao {
 
       {
          // Split out the filter filenames.
-         list<string> filenames;
-         {
-            string filters_str = sub.get<string>( "filter_filenames" );
-            boost::tokenizer<boost::char_separator<char> > tokens( filters_str, boost::char_separator<char>( "," ) );
-            for( const auto& fn : tokens )
-               filenames.push_back( boost::trim_copy( fn ) );
-         }
+	 list<string> filenames = sub.get_list<string>( "bandpass-filters" );
 
          // Allocate room for the filters.
          _filters.reallocate( filenames.size() );
@@ -265,7 +258,7 @@ namespace tao {
       LOGLN( "Filter integrals: ", _filt_int );
 
       // Get the Vega filename and perform processing.
-      _process_vega( sub.get<string>( "vega_filename" ) );
+      _process_vega( sub.get<string>( "vega-spectrum" ) );
    }
 
    void

@@ -18,6 +18,9 @@ namespace tao {
               const hpc::array<real_type,3>& box,
 	      const hpc::string& table );
 
+      void
+      set_redshift( real_type redshift );
+
       const soci::row&
       row() const;
 
@@ -69,6 +72,7 @@ namespace tao {
       const soci::row& _row;
       const hpc::array<real_type,3>& _box;
       const hpc::string& _table;
+      real_type _z;
    };
 }
 
