@@ -15,11 +15,37 @@ namespace tao {
    {
    public:
 
-      csv( const string& filename="tao.output" );
+      csv( const string& name = string() );
 
+      ///
+      ///
+      ///
+      virtual
+      void
+      setup_options( options::dictionary& dict,
+                     optional<const string&> prefix = optional<const string&>() );
+
+      ///
+      ///
+      ///
+      virtual
       void
       initialise( const options::dictionary& dict,
-		  const lightcone& lc );
+                  optional<const string&> prefix = optional<const string&>() );
+
+      ///
+      ///
+      ///
+      virtual
+      void
+      execute();
+
+      ///
+      ///
+      ///
+      virtual
+      tao::galaxy&
+      galaxy();
 
       void
       set_filename( const string& filename );

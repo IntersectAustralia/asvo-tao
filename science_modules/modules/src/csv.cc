@@ -5,18 +5,43 @@ using namespace hpc;
 
 namespace tao {
 
-   csv::csv( const string& filename )
+   csv::csv( const string& name )
+      : module( name )
    {
-      set_filename( filename );
    }
 
+   ///
+   ///
+   ///
+   void
+   csv::setup_options( options::dictionary& dict,
+                       optional<const string&> prefix )
+   {
+   }
+
+   ///
+   ///
+   ///
    void
    csv::initialise( const options::dictionary& dict,
-		    const lightcone& lc )
+                    optional<const string&> prefix )
    {
-      // Cache the lightcone module so we can use the
-      // output fields later on.
-      _lc = &lc;
+   }
+
+   ///
+   ///
+   ///
+   void
+   csv::execute()
+   {
+   }
+
+   ///
+   ///
+   ///
+   tao::galaxy&
+   csv::galaxy()
+   {
    }
 
    void

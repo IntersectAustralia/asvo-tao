@@ -9,7 +9,8 @@ using namespace hpc;
 
 namespace tao {
 
-   skymaker::skymaker()
+   skymaker::skymaker( const string& name )
+      : module( name )
    {
    }
 
@@ -39,16 +40,6 @@ namespace tao {
    }
 
    ///
-   ///
-   ///
-   void
-   skymaker::setup_options( hpc::options::dictionary& dict,
-                            const char* prefix )
-   {
-      setup_options( dict, string( prefix ) );
-   }
-
-   ///
    /// Initialise the module.
    ///
    void
@@ -67,18 +58,8 @@ namespace tao {
       LOG_EXIT();
    }
 
-   ///
-   ///
-   ///
    void
-   skymaker::initialise( const hpc::options::dictionary& dict,
-                         const char* prefix )
-   {
-      initialise( dict, string( prefix ) );
-   }
-
-   void
-   skymaker::run()
+   skymaker::execute()
    {
       // Close the list file.
       _list_file.close();
@@ -97,6 +78,14 @@ namespace tao {
       // Delete the files we used.
       ::remove( _list_filename.c_str() );
       ::remove( _conf_filename.c_str() );
+   }
+
+   ///
+   ///
+   ///
+   tao::galaxy&
+   skymaker::galaxy()
+   {
    }
 
    void

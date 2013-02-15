@@ -32,6 +32,7 @@ namespace tao {
 #endif
       module* mod = _facs.get( name )( _in );
       _mods.push_back( mod );
+      LOGDLN( "Created module ", name, " with name ", inst_name );
       return *mod;
    }
 

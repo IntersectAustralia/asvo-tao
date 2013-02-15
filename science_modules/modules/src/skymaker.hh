@@ -21,43 +21,39 @@ namespace tao {
 
    public:
 
-      skymaker();
+      skymaker( const string& name = string() );
 
       ~skymaker();
 
       ///
       ///
       ///
+      virtual
       void
       setup_options( hpc::options::dictionary& dict,
                      hpc::optional<const hpc::string&> prefix=hpc::optional<const hpc::string&>() );
 
       ///
-      ///
-      ///
-      void
-      setup_options( hpc::options::dictionary& dict,
-                     const char* prefix );
-
-      ///
       /// Initialise the module.
       ///
+      virtual
       void
       initialise( const hpc::options::dictionary& dict,
                   hpc::optional<const hpc::string&> prefix=hpc::optional<const hpc::string&>() );
 
       ///
-      ///
-      ///
-      void
-      initialise( const hpc::options::dictionary& dict,
-                  const char* prefix );
-
-      ///
       /// Run the module.
       ///
+      virtual
       void
-      run();
+      execute();
+
+      ///
+      ///
+      ///
+      virtual
+      tao::galaxy&
+      galaxy();
 
       void
       add_galaxy( const tao::galaxy& galaxy,
