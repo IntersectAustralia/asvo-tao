@@ -1,41 +1,10 @@
 #include "application.hh"
+#include "tao/base/base.hh"
+#include "tao/modules/modules.hh"
 
 using namespace hpc;
 
 namespace tao {
-
-   unix::time_type tao_start_time;
-
-   double
-   runtime()
-   {
-      return unix::seconds( unix::timer() - tao::tao_start_time );
-   }
-
-   void
-   setup_common_options( options::dictionary& dict )
-   {
-      // Create "dbcfg" dictionary.
-      dict.add_option( new options::string( "type", "postgresql" ), "settings:database" );
-      dict.add_option( new options::string( "host" ), "settings:database" );
-      dict.add_option( new options::string( "port" ), "settings:database" );
-      dict.add_option( new options::string( "user" ), "settings:database" );
-      dict.add_option( new options::string( "password" ), "settings:database" );
-      dict.add_option( new options::string( "treetableprefix", "tree_" ), "settings:database" );
-      dict.add_option( new options::string( "acceleration", "none" ), "settings:database" );
-
-      // Add database name.
-      dict.add_option( new options::string( "database" ) );
-
-      // Output options.
-      dict.add_option( new options::string( "outputdir", "." ) );
-      dict.add_option( new options::string( "logdir", "." ) );
-
-      // Record filter.
-      dict.add_option( new options::string( "filter-type", "" ), "workflow:record-filter" );
-      dict.add_option( new options::string( "filter-min", "" ), "workflow:record-filter" );
-      dict.add_option( new options::string( "filter-max", "" ), "workflow:record-filter" );
-   }
 
    application::application()
    {
@@ -88,11 +57,17 @@ namespace tao {
    void
    application::run()
    {
+      LOG_ENTER();
+
+      // Load all the modules first up.
+      _load_modules();
+      _connect_parents();
+
       // Read the options dictionary.
       options::dictionary dict;
       _setup_common_options( dict );
       for( auto module : tao::factory )
-         module->setup_options( dict );
+         module->setup_options( dict, string( "workflow:" ) + module->name() );
       dict.compile();
       _read_xml( dict );
 
@@ -101,7 +76,7 @@ namespace tao {
 
       // Initialise all the modules.
       for( auto module : tao::factory )
-         module->initialise( dict );
+         module->initialise( dict, string( "workflow:" ) + module->name() );
 
       // Mark the beginning of the run.
       LOGILN( runtime(), ",start" );
@@ -111,6 +86,8 @@ namespace tao {
 
       // Mark the conclusion of the run.
       LOGILN( runtime(), ",end,successful" );
+
+      LOG_EXIT();
    }
 
    ///
@@ -127,12 +104,39 @@ namespace tao {
       // Read the dictionary once to get at the modules.
       options::dictionary dict;
       dict.add_option( new options::list<options::string>( "modules" ) );
+      dict.compile();
       _read_xml( dict );
 
       // Get the list and add them all.
       list<string> modules = dict.get_list<string>( "modules" );
       for( const auto& name : modules )
          tao::factory.create_module( name );
+
+      LOG_EXIT();
+   }
+
+   ///
+   /// Connect parents.
+   ///
+   void
+   application::_connect_parents()
+   {
+      LOG_ENTER();
+
+      // Compile a dictionary for parents and read them in.
+      options::dictionary dict;
+      for( auto module : tao::factory )
+         dict.add_option( new options::list<options::string>( "parents" ), string( "workflow:" ) + module->name() );
+      dict.compile();
+      _read_xml( dict );
+
+      // Connect 'em all up!
+      for( auto module : tao::factory )
+      {
+         list<string> parents = dict.get_list<string>( string( "workflow:" ) + module->name() + string( ":parents" ) );
+         for( auto& name : parents )
+            module->add_parent( *tao::factory[name] );
+      }
 
       LOG_EXIT();
    }

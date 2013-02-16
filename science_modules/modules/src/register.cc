@@ -8,6 +8,7 @@ namespace tao {
       factory.register_module( "empty", empty::factory );
       factory.register_module( "light-cone", lightcone::factory );
       factory.register_module( "sed", sed::factory );
+      factory.register_module( "csv", csv::factory );
    }
 
 }

@@ -1,5 +1,5 @@
-#ifndef base_application_hh
-#define base_application_hh
+#ifndef tao_apps_application_hh
+#define tao_apps_application_hh
 
 #include <cstdlib>
 #include <iostream>
@@ -7,17 +7,6 @@
 
 namespace tao {
    using namespace hpc;
-
-   extern unix::time_type tao_start_time;
-
-   double
-   runtime();
-
-   ///
-   ///
-   ///
-   void
-   setup_common_options( options::dictionary& dict );
 
    ///
    ///
@@ -45,6 +34,12 @@ namespace tao {
       ///
       void
       _load_modules();
+
+      ///
+      /// Connect parents.
+      ///
+      void
+      _connect_parents();
 
       ///
       /// Insert common options.

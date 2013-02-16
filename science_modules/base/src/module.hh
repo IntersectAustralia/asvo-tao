@@ -18,8 +18,14 @@ namespace tao {
 
       module( const string& name = string() );
 
+      virtual
+      ~module();
+
       void
       add_parent( module& parent );
+
+      list<module*>&
+      parents();
 
       void
       process( unsigned long long iteration );
@@ -48,7 +54,7 @@ namespace tao {
 
       virtual
       tao::galaxy&
-      galaxy() = 0;
+      galaxy();
 
       bool
       complete() const;

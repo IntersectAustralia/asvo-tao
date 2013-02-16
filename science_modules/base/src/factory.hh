@@ -25,6 +25,8 @@ namespace tao {
 
       factory_type();
 
+      ~factory_type();
+
       void
       register_module( const string& name,
                        factory_create_type create );

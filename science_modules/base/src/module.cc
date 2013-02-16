@@ -16,6 +16,10 @@ namespace tao {
    {
    }
 
+   module::~module()
+   {
+   }
+
    void
    module::add_parent( module& parent )
    {
@@ -24,6 +28,14 @@ namespace tao {
 
       // Add it to the list.
       _parents.push_back( &parent );
+
+      LOGDLN( "Added ", parent.name(), " to ", _name );
+   }
+
+   list<module*>&
+   module::parents()
+   {
+      return _parents;
    }
 
    void
@@ -78,6 +90,13 @@ namespace tao {
                        const char* prefix )
    {
       initialise( dict, string( prefix ) );
+   }
+
+   tao::galaxy&
+   module::galaxy()
+   {
+      // By default return the first parent.
+      return _parents.front()->galaxy();
    }
 
    bool

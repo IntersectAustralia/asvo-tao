@@ -5,8 +5,18 @@ using namespace hpc;
 
 namespace tao {
 
+   module*
+   csv::factory( const string& name )
+   {
+      return new csv( name );
+   }
+
    csv::csv( const string& name )
       : module( name )
+   {
+   }
+
+   csv::~csv()
    {
    }
 
@@ -17,6 +27,8 @@ namespace tao {
    csv::setup_options( options::dictionary& dict,
                        optional<const string&> prefix )
    {
+      dict.add_option( new options::string( "filename" ), prefix );
+      dict.add_option( new options::list<options::string>( "fields" ), prefix );
    }
 
    ///
@@ -26,6 +38,18 @@ namespace tao {
    csv::initialise( const options::dictionary& dict,
                     optional<const string&> prefix )
    {
+      LOG_ENTER();
+
+      // Get the sub dictionary, if it exists.
+      const options::dictionary& sub = prefix ? dict.sub( *prefix ) : dict;
+
+      _fn = sub.get<string>( "filename" );
+      _fields = sub.get_list<string>( "fields" );
+
+      // Open the file.
+      open();
+
+      LOG_EXIT();
    }
 
    ///
@@ -34,23 +58,13 @@ namespace tao {
    void
    csv::execute()
    {
-   }
-
-   ///
-   ///
-   ///
-   tao::galaxy&
-   csv::galaxy()
-   {
-   }
-
-   void
-   csv::set_filename( const string& filename )
-   {
       LOG_ENTER();
+      ASSERT( parents().size() == 1 );
 
-      _fn = filename + "." + to_string( mpi::comm::world.rank() );
-      LOGDLN( "Set filename to: ", _fn );
+      // Grab the galaxy from the parent object.
+      tao::galaxy& gal = parents().front()->galaxy();
+
+      process_galaxy( gal );
 
       LOG_EXIT();
    }
@@ -61,66 +75,57 @@ namespace tao {
       _file.open( _fn, std::fstream::out | std::fstream::trunc );
 
       // Dump out a list of field names first.
-      const auto& fields = _lc->output_fields();
-      auto it = fields.cbegin();
-      if( it != fields.cend() )
+      auto it = _fields.cbegin();
+      if( it != _fields.cend() )
       {
 	 _file << *it++;
-	 while( it != fields.cend() )
+	 while( it != _fields.cend() )
 	    _file << ", " << *it++;
-	 _file << ", apparant magnitude";
+         _file << "\n";
       }
-      else
-	 _file << "apparant magnitude";
-      _file << "\n";
    }
 
    void
-   csv::process_galaxy( const tao::galaxy& galaxy,
-			double app_mag )
+   csv::process_galaxy( const tao::galaxy& galaxy )
    {
-      const auto& fields = _lc->output_fields();
-      auto it = fields.cbegin();
-      if( it != fields.cend() )
+      auto it = _fields.cbegin();
+      if( it != _fields.cend() )
       {
 	 _write_field( galaxy, *it++ );
-	 while( it != fields.cend() )
+	 while( it != _fields.cend() )
 	 {
 	    _file << ", ";
 	    _write_field( galaxy, *it++ );
 	 }
-	 _file << ", " << app_mag;
+         _file << "\n";
       }
-      else
-	 _file << app_mag;
-      _file << "\n";
    }
 
    void
    csv::_write_field( const tao::galaxy& galaxy,
 		      const string& field )
    {
-      const soci::row& row = galaxy.row();
-      switch( row.get_properties( field ).get_data_type() )
+      auto val = galaxy.field( field );
+      switch( val.second )
       {
-	 case soci::dt_string:
-	    _file << row.get<std::string>( field );
+	 case tao::galaxy::STRING:
+	    _file << galaxy.value<string>( field );
 	    break;
 
-	 case soci::dt_double:
-	    _file << row.get<double>( field );
+	 case tao::galaxy::DOUBLE:
+	    _file << galaxy.value<double>( field );
 	    break;
 
-	 case soci::dt_integer:
-	    _file << row.get<int>( field );
+	 case tao::galaxy::INTEGER:
+	    _file << galaxy.value<int>( field );
 	    break;
 
-	 case soci::dt_unsigned_long_long:
-	    _file << row.get<unsigned long long>( field );
+	 case tao::galaxy::UNSIGNED_LONG_LONG:
+	    _file << galaxy.value<unsigned long long>( field );
 	    break;
 
-	 case soci::dt_long_long:
-	    _file << row.get<long long>( field );
+	 case tao::galaxy::LONG_LONG:
+	    _file << galaxy.value<long long>( field );
 	    break;
 
 	 default:

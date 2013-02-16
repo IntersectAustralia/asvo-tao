@@ -5,5 +5,6 @@
 #include "empty.hh"
 #include "lightcone.hh"
 #include "sed.hh"
+#include "csv.hh"
 
 #endif
