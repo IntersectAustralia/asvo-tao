@@ -60,10 +60,9 @@ struct pipeline
 
          // Perform filtering.
          filter.process_galaxy( gal, spectra );
-	 real_type app_mag = filter.magnitudes()[0];
 
          // Dump?
-	 dump.process_galaxy( gal, app_mag );
+	 dump.process_galaxy( gal );
       }
    }
 

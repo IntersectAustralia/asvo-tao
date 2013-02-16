@@ -63,7 +63,7 @@ namespace tao {
    }
 
    void
-   dust::run()
+   dust::execute()
    {
    }
 

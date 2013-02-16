@@ -53,7 +53,7 @@ namespace tao {
       /// Run the module.
       ///
       void
-      run();
+      execute();
 
       ///
       ///

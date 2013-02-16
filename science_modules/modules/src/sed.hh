@@ -62,13 +62,6 @@ namespace tao {
       void
       execute();
 
-      ///
-      ///
-      ///
-      virtual
-      tao::galaxy&
-      galaxy();
-
       void
       process_galaxy( const tao::galaxy& galaxy );
 

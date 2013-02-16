@@ -28,9 +28,6 @@ namespace tao {
    void
    empty::execute()
    {
-      LOG_ENTER();
-
-      LOG_EXIT();
    }
 
 }
