@@ -1,3 +1,4 @@
+#include <pugixml.hpp>
 #include "application.hh"
 #include "tao/base/base.hh"
 #include "tao/modules/modules.hh"
@@ -101,16 +102,20 @@ namespace tao {
       // Register all the available science modules.
       tao::register_modules();
 
-      // Read the dictionary once to get at the modules.
-      options::dictionary dict;
-      dict.add_option( new options::list<options::string>( "modules" ) );
-      dict.compile();
-      _read_xml( dict );
+      // Open the primary XML file using pugixml.
+      pugi::xml_document doc;
+      pugi::xml_parse_result result = doc.load_file( _xml_file.c_str() );
+      ASSERT( result );
 
-      // Get the list and add them all.
-      list<string> modules = dict.get_list<string>( "modules" );
-      for( const auto& name : modules )
-         tao::factory.create_module( name );
+      // Iterate over the module nodes.
+      pugi::xpath_node_set nodes = doc.select_nodes( "/tao/workflow/*[@module]" );
+      for( const pugi::xpath_node* it = nodes.begin(); it != nodes.end(); ++it )
+      {
+         pugi::xml_node cur = it->node();
+         string type = cur.attribute( "module" ).value();
+         string name = cur.name();
+         tao::factory.create_module( type, name );
+      }
 
       LOG_EXIT();
    }
