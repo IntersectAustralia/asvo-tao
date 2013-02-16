@@ -9,7 +9,6 @@ main( int argc,
       char* argv[] )
 {
    hpc::mpi::initialise( argc, argv );
-   LOG_FILE( "test.log" );
    tao::application app( argc, argv );
    app.run();
    hpc::mpi::finalise();
