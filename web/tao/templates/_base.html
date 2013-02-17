@@ -21,14 +21,16 @@
     {% endblock %}
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
+  <div id='banner' class="container-fluid">
+    <div class="navbar navbar-inverse">
         <div class="navbar-inner">
-            <div class="container">
                 <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </a>
+                <a id='skymapperlogo' class="brand" href="{% url 'home' %}"><img src='/static/images/Skymapper_Logo_40x40.png'></img></a>
+                <a id='asvologo' class="brand" href="{% url 'home' %}"><img src='/static/images/ASVO_Logo_REV.png'></img></a>
                 <a class="brand" href="{% url 'home' %}">Theoretical Astrophysical Observatory</a>
                 <div class="nav-collapse collapse">
                     <ul class="nav">
@@ -50,10 +52,10 @@
                         {% endif %}
                     </p>
                 </div><!--/.nav-collapse -->
-            </div>
         </div>
     </div>
-    <div class="container">
+  </div>
+    <div id='body' class="container-fluid">
         {% block messages %}
             {% for message in messages %}
                 <div class="{{ message.tags }}">
