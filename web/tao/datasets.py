@@ -1,8 +1,8 @@
 """
-    functionality for:
-        * dark matter simulations
-        * galaxy models
-        * stellar models
+================
+tao.datasets
+================
+
 """
 from django.db.models import Q
 from tao import models

@@ -1,3 +1,10 @@
+"""
+==================
+tao.models
+==================
+
+Database model mapping
+"""
 import django.contrib.auth.models as auth_models
 from django.conf import settings
 from django.db import models

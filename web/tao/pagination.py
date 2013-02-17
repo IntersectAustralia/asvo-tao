@@ -1,3 +1,10 @@
+"""
+==================
+tao.pagination
+==================
+
+Helper to paginate a queryset
+"""
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from django.conf import settings

@@ -1,3 +1,10 @@
+"""
+==================
+tao.qa
+==================
+
+Settings for QA environment
+"""
 from tao.settings import *
 
 DEBUG=False

@@ -1,3 +1,10 @@
+"""
+==================
+tao.pagination
+==================
+
+Settings for automated tests
+"""
 from tao.settings import *
 DEBUG=True
 TEMPLATE_DEBUG=DEBUG

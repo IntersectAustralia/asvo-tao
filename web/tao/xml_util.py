@@ -1,3 +1,10 @@
+"""
+===========================
+tao.xml_util
+===========================
+
+Helper methods for XML
+"""
 from lxml import etree
 
 def create_root(tag, **attrs):
