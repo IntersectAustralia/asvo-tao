@@ -244,3 +244,11 @@ class BandPassFilter(models.Model):
 
     def __unicode__(self):
         return self.label
+
+class DustModel(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    label = models.CharField(max_length=100)
+    details = models.TextField(default='')
+
+    def __unicode__(self):
+        return self.label

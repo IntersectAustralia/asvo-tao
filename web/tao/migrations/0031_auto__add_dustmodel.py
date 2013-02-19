@@ -8,23 +8,19 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Deleting field 'BandPassFilter.dataset'
-        db.delete_column('tao_bandpassfilter', 'dataset_id')
-
-        # Adding field 'BandPassFilter.description'
-        db.add_column('tao_bandpassfilter', 'description',
-                      self.gf('django.db.models.fields.TextField')(default=''),
-                      keep_default=False)
+        # Adding model 'DustModel'
+        db.create_table('tao_dustmodel', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=100)),
+            ('label', self.gf('django.db.models.fields.CharField')(max_length=100)),
+            ('details', self.gf('django.db.models.fields.TextField')(default='')),
+        ))
+        db.send_create_signal('tao', ['DustModel'])
 
 
     def backwards(self, orm):
-        # Adding field 'BandPassFilter.dataset'
-        db.add_column('tao_bandpassfilter', 'dataset',
-                      self.gf('django.db.models.fields.related.ForeignKey')(default=datetime.datetime(2013, 2, 18, 0, 0), to=orm['tao.DataSet']),
-                      keep_default=False)
-
-        # Deleting field 'BandPassFilter.description'
-        db.delete_column('tao_bandpassfilter', 'description')
+        # Deleting model 'DustModel'
+        db.delete_table('tao_dustmodel')
 
 
     models = {
@@ -97,6 +93,13 @@ class Migration(SchemaMigration):
             'name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'units': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '20', 'blank': 'True'})
         },
+        'tao.dustmodel': {
+            'Meta': {'object_name': 'DustModel'},
+            'details': ('django.db.models.fields.TextField', [], {'default': "''"}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'})
+        },
         'tao.galaxymodel': {
             'Meta': {'ordering': "['name']", 'object_name': 'GalaxyModel'},
             'details': ('django.db.models.fields.TextField', [], {'default': "''"}),
@@ -109,6 +112,7 @@ class Migration(SchemaMigration):
             'created_time': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'database': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'description': ('django.db.models.fields.TextField', [], {'max_length': '500'}),
+            'error_message': ('django.db.models.fields.TextField', [], {'default': "''", 'max_length': '1000000', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'output_path': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'parameters': ('django.db.models.fields.TextField', [], {'max_length': '1000000', 'blank': 'True'}),
