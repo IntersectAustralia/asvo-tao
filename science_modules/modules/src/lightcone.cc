@@ -124,6 +124,7 @@ namespace tao {
    lightcone::begin()
    {
       LOG_ENTER();
+      _timer.start();
 
       // Reset the timers.
       _per_box.reset();
@@ -167,6 +168,7 @@ namespace tao {
 	 _settle_box();
       }
 
+      _timer.stop();
       LOG_EXIT();
    }
 
@@ -177,6 +179,7 @@ namespace tao {
    lightcone::done()
    {
       LOG_ENTER();
+      _timer.start();
 
       // We are done when we are out of tables.
       bool result = (_cur_table == _table_names.size());
@@ -185,6 +188,7 @@ namespace tao {
       if( result )
          _db_disconnect();
 
+      _timer.stop();
       LOG_EXIT();
       return result;
    }
@@ -196,6 +200,7 @@ namespace tao {
    lightcone::operator++()
    {
       LOG_ENTER();
+      _timer.start();
 
       if( ++_cur_row == _rows->end() )
       {
@@ -221,6 +226,7 @@ namespace tao {
          }
       }
 
+      _timer.stop();
       LOG_EXIT();
    }
 
@@ -231,6 +237,7 @@ namespace tao {
    lightcone::operator*() const
    {
       LOG_ENTER();
+      ((profile::timer&)_timer).start();
 
       galaxy gal( *_cur_row, *_cur_box, _table_names[_cur_table] );
       real_type dist = sqrt( pow( gal.x(), 2.0 ) + pow( gal.y(), 2.0 ) + pow( gal.z(), 2.0 ) );
@@ -241,6 +248,7 @@ namespace tao {
       // Setup the redshift.
       gal.set_redshift( _distance_to_redshift( dist ) );
 
+      ((profile::timer&)_timer).stop();
       LOG_EXIT();
       return gal;
    }

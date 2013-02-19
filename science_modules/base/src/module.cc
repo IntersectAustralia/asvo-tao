@@ -13,6 +13,12 @@ namespace tao {
    {
    }
 
+   double
+   module::time() const
+   {
+      return _timer.total();
+   }
+
    void
    module::_read_db_options( const options::dictionary& dict )
    {
