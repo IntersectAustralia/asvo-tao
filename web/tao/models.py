@@ -160,12 +160,14 @@ class Job(models.Model):
     COMPLETED = 'COMPLETED'
     QUEUED = 'QUEUED'
     HELD = 'HELD'
+    ERROR = 'ERROR'
     STATUS_CHOICES = (
         (SUBMITTED, 'Submitted'),
         (QUEUED, 'Queued'),
         (IN_PROGRESS, 'In progress'),
         (COMPLETED, 'Completed'),
         (HELD, 'Held'),
+        (ERROR, 'Error'),
     )
 
     user = models.ForeignKey(User)
@@ -176,12 +178,19 @@ class Job(models.Model):
     parameters = models.TextField(blank=True, max_length=1000000)
     output_path = models.TextField(blank=True)  # without a trailing slash, please
     database = models.CharField(max_length=200)
+    error_message = models.TextField(blank=True, max_length=1000000, default='')
 
     def __unicode__(self):
         return "%s %s %s" % (self.user, self.created_time, self.description)
 
     def is_completed(self):
         return self.status == Job.COMPLETED
+
+    def is_error(self):
+        return self.status == Job.ERROR
+
+    def short_error_message(self):
+        return self.error_message[:80]
 
     def files(self):
         if not self.is_completed():
