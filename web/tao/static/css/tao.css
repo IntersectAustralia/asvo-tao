@@ -12,7 +12,6 @@ a.ui-tabs-anchor:focus {
     outline: 0px none -webkit-focus-ring-color;
 }
 
-
 body { padding-top: 40px; }
 
 body, input, textarea {
@@ -284,18 +283,3 @@ color: #333; cursor: pointer; display: inline-block; font-family: inherit; font-
 
 .btn-primary { background: #2ba6cb; color: #FFF; border: 1px solid #1e728c; }
 .btn-primary:hover { background-color: #2284a1; color: #FFF; border: 1px solid #1e728c; }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

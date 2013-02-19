@@ -12,7 +12,7 @@ from tao.settings import OUTPUT_FORMATS
 from taoui_light_cone.forms import Form as LightConeForm
 from taoui_sed.forms import Form as SEDForm
 from tao.tests.support import stripped_joined_lines, UtcPlusTen
-from tao.tests.support.factories import UserFactory, StellarModelFactory, SnapshotFactory, DataSetFactory, SimulationFactory, GalaxyModelFactory, DataSetPropertyFactory
+from tao.tests.support.factories import UserFactory, StellarModelFactory, SnapshotFactory, DataSetFactory, SimulationFactory, GalaxyModelFactory, DataSetPropertyFactory, BandPassFilterFactory
 from tao.tests.support.xml import XmlDiffMixin
 from tao.tests.helper import MockUIHolder, make_form
 
@@ -44,8 +44,9 @@ class WorkflowTests(TestCase, XmlDiffMixin):
         self.filter = DataSetPropertyFactory.create(name='CentralMvir', units="Msun/h", dataset=self.dataset)
         self.output_prop = DataSetPropertyFactory.create(name='CentralMvir', dataset=self.dataset, is_filter=False)
         self.snapshot = SnapshotFactory.create(dataset=self.dataset, redshift='0.1')
-        stellar_model = StellarModelFactory.create(name='Stella')
-        self.sed_parameters = {'single_stellar_population_model': stellar_model.id}
+        self.stellar_model = StellarModelFactory.create(name='Stella')
+        self.band_pass_filter = BandPassFilterFactory.create()
+        self.sed_parameters = {'single_stellar_population_model': self.stellar_model.id, 'band_pass_filters': [self.band_pass_filter.id]}
         self.output_format = OUTPUT_FORMATS[0]['value']
         self.output_format_parameters = {'supported_formats': self.output_format}
 
@@ -80,6 +81,10 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'filter': self.filter.name,
             'filter_min' : '1000000',
             'filter_max' : 'None',
+        })
+        xml_parameters.update({
+            'ssp_name': self.stellar_model.name,
+            'band_pass_filter_id': self.band_pass_filter.filter_id,
         })
 
         # TODO: there are commented out elements which are not implemented yet
@@ -142,6 +147,19 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                         <rng-seed>12345678901234567890</rng-seed> -->
 
                     </light-cone>
+
+                    <!-- Optional: Spectral Energy Distribution parameters -->
+                    <sed>
+                        <!-- Module Version Number -->
+                        <module-version>1</module-version>
+
+                        <single-stellar-population-model>%(ssp_name)s</single-stellar-population-model>
+
+                        <!-- Bandpass Filters) -->
+                        <bandpass-filters>
+                            <item label="filter-name">%(band_pass_filter_id)s</item>
+                        </bandpass-filters>
+                    </sed>
 
                     <!-- Record Filter -->
                     <record-filter>
@@ -234,8 +252,11 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'filter_min' : 'None',
             'filter_max' : '1000000',
             })
-
         # TODO: there are commented out elements which are not implemented yet
+        xml_parameters.update({
+            'ssp_name': self.stellar_model.name,
+            'band_pass_filter_id': self.band_pass_filter.filter_id,
+            })
         # comments are ignored by assertXmlEqual
         expected_parameter_xml = stripped_joined_lines("""
             <?xml version="1.0" encoding="UTF-8"?>
@@ -291,6 +312,19 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                         <rng-seed>12345678901234567890</rng-seed> -->
 
                     </light-cone>
+
+                    <!-- Optional: Spectral Energy Distribution parameters -->
+                    <sed>
+                        <!-- Module Version Number -->
+                        <module-version>1</module-version>
+
+                        <single-stellar-population-model>%(ssp_name)s</single-stellar-population-model>
+
+                        <!-- Bandpass Filters) -->
+                        <bandpass-filters>
+                            <item label="filter-name">%(band_pass_filter_id)s</item>
+                        </bandpass-filters>
+                    </sed>
 
                     <!-- Record Filter -->
                     <record-filter>

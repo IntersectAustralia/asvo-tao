@@ -1,6 +1,6 @@
 from tao.models import Job
 from tao.tests.integration_tests.helper import LiveServerMGFTest, wait, interact
-from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, JobFactory, StellarModelFactory, SnapshotFactory
+from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, JobFactory, StellarModelFactory, SnapshotFactory, BandPassFilterFactory
 
 from taoui_light_cone.forms import Form as LightConeForm
 
@@ -19,7 +19,8 @@ class SubmitLightConeTests(LiveServerMGFTest):
 
         DataSetPropertyFactory.create(dataset=dataset)
         StellarModelFactory.create()
-        
+        BandPassFilterFactory.create()
+
         self.username = "user"
         password = "password"
         self.user = UserFactory.create(username=self.username, password=password)
@@ -59,9 +60,12 @@ class SubmitLightConeTests(LiveServerMGFTest):
             'redshift_min': '1',
             'redshift_max': '2',
         }, id_wrap=self.lc_id)
-        self.click('op_add_all')
-        self.submit_mgf_form()
+        self.click(self.lc_2select('op_add_all'))
 
+        self.click('tao-tabs-2')
+        self.click(self.sed_2select('op_add_all'))
+
+        self.submit_mgf_form()
         self.assert_on_page('held_jobs')
 
     def test_submit_valid_box_job(self):
@@ -73,9 +77,12 @@ class SubmitLightConeTests(LiveServerMGFTest):
             'box_size': '9',
             'snapshot': self.redshifts[0],
         }, id_wrap=self.lc_id)
-        self.click('op_add_all')
-        self.submit_mgf_form()
+        self.click(self.lc_2select('op_add_all'))
 
+        self.click('tao-tabs-2')
+        self.click(self.sed_2select('op_add_all'))
+
+        self.submit_mgf_form()
         self.assert_on_page('held_jobs')
         
 
@@ -96,9 +103,13 @@ class SubmitLightConeTests(LiveServerMGFTest):
             'redshift_min': '1',
             'redshift_max': '2',
         }, id_wrap=self.lc_id)
-        self.click('op_add_all')
-        self.submit_mgf_form()
+        self.click(self.lc_2select('op_add_all'))
 
+        ## fill in SED form correctly
+        self.click('tao-tabs-2')
+        self.click(self.sed_2select('op_add_all'))
+
+        self.submit_mgf_form()
         self.assert_on_page('held_jobs')  # The form is valid because the invalid box size field is hidden
 
     def test_invalid_cone_options_allow_box_submit(self):
@@ -119,9 +130,10 @@ class SubmitLightConeTests(LiveServerMGFTest):
             'box_size': '1',
             'snapshot': self.redshifts[0],
         }, id_wrap=self.lc_id)
-        self.click('op_add_all')
+        self.click(self.lc_2select('op_add_all'))
 
+        self.click('tao-tabs-2')
+        self.click(self.sed_2select('op_add_all'))
 
         self.submit_mgf_form()
-
         self.assert_on_page('held_jobs')  # The form is valid because the invalid light cone fields hidden

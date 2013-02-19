@@ -3,7 +3,7 @@ import factory
 
 from decimal import Decimal
 
-from tao.models import Job, User, Simulation, GalaxyModel, DataSet, DataSetProperty, StellarModel, Snapshot
+from tao.models import Job, User, Simulation, GalaxyModel, DataSet, DataSetProperty, StellarModel, Snapshot, BandPassFilter
 
 class JobFactory(factory.Factory):
     FACTORY_FOR = Job
@@ -73,3 +73,8 @@ class SnapshotFactory(factory.Factory):
     FACTORY_FOR = Snapshot
 
     redshift = factory.Sequence(lambda n: str(int(n)/10.))
+
+class BandPassFilterFactory(factory.Factory):
+    FACTORY_FOR = BandPassFilter
+    label = factory.Sequence(lambda n: 'Band pass filter %03d' % int(n))
+    filter_id = factory.Sequence(lambda n: 'Band_pass_filter_%03d.txt' % int(n))

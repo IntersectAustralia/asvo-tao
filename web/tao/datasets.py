@@ -76,3 +76,8 @@ def output_choices(data_set_id):
 def output_property(id):
     return models.DataSetProperty.objects.get(pk=id, is_output=True)
 
+def band_pass_filters():
+    return [(x.id, x.label) for x in models.BandPassFilter.objects.order_by('label')]
+
+def band_pass_filter(id):
+    return models.BandPassFilter.objects.get(pk=id)

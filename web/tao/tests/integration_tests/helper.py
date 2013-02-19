@@ -58,8 +58,14 @@ class LiveServerTest(django.test.LiveServerTestCase):
     def lc_id(self, bare_field):
         return '#id_light_cone-%s' % bare_field
 
+    def lc_2select(self, bare_field):
+        return 'id_light_cone-output_properties_%s' % bare_field
+
     def rf_id(self, bare_field):
         return '#id_record_filter-%s' % bare_field
+
+    def sed_2select(self, bare_field):
+        return 'id_sed-band_pass_filters_%s' % bare_field
 
     def get_parent_element(self, element):
         return self.selenium.execute_script('return arguments[0].parentNode;', element)

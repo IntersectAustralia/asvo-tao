@@ -236,3 +236,11 @@ class JobFile(object):
                 return '%3.1f%s' % (size, x)
             size /= 1000
         return '%3.1f%s' % (size, 'GB')
+
+class BandPassFilter(models.Model):
+    label = models.CharField(max_length=80) # displays the user-friendly file name for the filter, without file extension
+    filter_id = models.CharField(max_length=200, unique=True) # full file name of the filter data, as an internal identifier
+    description = models.TextField(default='') # when a single band pass filter is selected, this will be displayed in a new details panel on the right
+
+    def __unicode__(self):
+        return self.label
