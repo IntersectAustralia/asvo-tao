@@ -17,6 +17,12 @@ var TwoSidedSelectWidget = function(to_id) {
 
     this.init = function() {
 
+        var resize_filters = function() {
+            $to.height($filter_field.outerHeight() + $from.outerHeight() + 3);
+            $filter_field.width($from.innerWidth() - 11);
+        }
+        resize_filters();
+
         function status_helper($where, selector, status) {
             var $selected_option = $where.find(selector);
             ref.update_displayed_status($selected_option, status);
