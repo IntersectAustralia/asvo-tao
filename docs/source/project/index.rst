@@ -57,12 +57,12 @@ Science: By itself the Telescope Simulator Module can be used to generate differ
 Additional Datasets
 ^^^^^^^^^^^^^^^^^^^
 
-TAO currently only contains the Millennium / SAGE dataset.  We currently plan 
+TAO currently only contains the :ref:`Millennium <Millennium>` / :ref:`SAGE <SAGE>` dataset.  We currently plan 
 to add the following datasets:
 
-* Bolshoi_ / :ref:`SAGE <SAGE>`
-* :ref:`Millennium <Millennium>` / Galacticus
-* Bolshoi_ / Galacticus
+* :ref:`Bolshoi <Bolshoi>` / :ref:`SAGE <SAGE>`
+* :ref:`Millennium <Millennium>` / :ref:`Galacticus <Galacticus>`
+* :ref:`Bolshoi <Bolshoi>` / :ref:`Galacticus <Galacticus>`
 
 
 Transformational Science
