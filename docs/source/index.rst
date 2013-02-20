@@ -19,6 +19,7 @@ Contents:
    installation/index
    api/web/modindex
    api/modules/modindex
+   project/glossary
 
 
 Indices and tables
