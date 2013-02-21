@@ -1,4 +1,5 @@
 from tao.models import Job
+from tao.settings import MODULE_INDICES
 from tao.tests.integration_tests.helper import LiveServerMGFTest, wait, interact
 from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, JobFactory, StellarModelFactory, SnapshotFactory, BandPassFilterFactory
 
@@ -62,7 +63,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
         }, id_wrap=self.lc_id)
         self.click(self.lc_2select('op_add_all'))
 
-        self.click('tao-tabs-2')
+        self.click('tao-tabs-' + MODULE_INDICES['sed'])
         self.click(self.sed_2select('op_add_all'))
 
         self.submit_mgf_form()
@@ -79,7 +80,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
         }, id_wrap=self.lc_id)
         self.click(self.lc_2select('op_add_all'))
 
-        self.click('tao-tabs-2')
+        self.click('tao-tabs-' + MODULE_INDICES['sed'])
         self.click(self.sed_2select('op_add_all'))
 
         self.submit_mgf_form()
@@ -106,7 +107,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
         self.click(self.lc_2select('op_add_all'))
 
         ## fill in SED form correctly
-        self.click('tao-tabs-2')
+        self.click('tao-tabs-' + MODULE_INDICES['sed'])
         self.click(self.sed_2select('op_add_all'))
 
         self.submit_mgf_form()
@@ -132,7 +133,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
         }, id_wrap=self.lc_id)
         self.click(self.lc_2select('op_add_all'))
 
-        self.click('tao-tabs-2')
+        self.click('tao-tabs-' + MODULE_INDICES['sed'])
         self.click(self.sed_2select('op_add_all'))
 
         self.submit_mgf_form()

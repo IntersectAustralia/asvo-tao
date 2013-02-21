@@ -3,7 +3,7 @@ import factory
 
 from decimal import Decimal
 
-from tao.models import Job, User, Simulation, GalaxyModel, DataSet, DataSetProperty, StellarModel, Snapshot, BandPassFilter
+from tao.models import Job, User, Simulation, GalaxyModel, DataSet, DataSetProperty, StellarModel, Snapshot, BandPassFilter, DustModel
 
 class JobFactory(factory.Factory):
     FACTORY_FOR = Job
@@ -78,3 +78,7 @@ class BandPassFilterFactory(factory.Factory):
     FACTORY_FOR = BandPassFilter
     label = factory.Sequence(lambda n: 'Band pass filter %03d' % int(n))
     filter_id = factory.Sequence(lambda n: 'Band_pass_filter_%03d.txt' % int(n))
+
+class DustModelFactory(factory.Factory):
+    FACTORY_FOR = DustModel
+    name = factory.Sequence(lambda n: 'Dust model %03d' % int(n))

@@ -12,7 +12,7 @@ from tao.settings import OUTPUT_FORMATS
 from taoui_light_cone.forms import Form as LightConeForm
 from taoui_sed.forms import Form as SEDForm
 from tao.tests.support import stripped_joined_lines, UtcPlusTen
-from tao.tests.support.factories import UserFactory, StellarModelFactory, SnapshotFactory, DataSetFactory, SimulationFactory, GalaxyModelFactory, DataSetPropertyFactory, BandPassFilterFactory
+from tao.tests.support.factories import UserFactory, StellarModelFactory, SnapshotFactory, DataSetFactory, SimulationFactory, GalaxyModelFactory, DataSetPropertyFactory, BandPassFilterFactory, DustModelFactory
 from tao.tests.support.xml import XmlDiffMixin
 from tao.tests.helper import MockUIHolder, make_form
 
@@ -46,7 +46,8 @@ class WorkflowTests(TestCase, XmlDiffMixin):
         self.snapshot = SnapshotFactory.create(dataset=self.dataset, redshift='0.1')
         self.stellar_model = StellarModelFactory.create(name='Stella')
         self.band_pass_filter = BandPassFilterFactory.create()
-        self.sed_parameters = {'single_stellar_population_model': self.stellar_model.id, 'band_pass_filters': [self.band_pass_filter.id]}
+        self.dust_model = DustModelFactory.create()
+        self.sed_parameters = {'single_stellar_population_model': self.stellar_model.id, 'band_pass_filters': [self.band_pass_filter.id], 'apply_dust': True, 'select_dust_model': self.dust_model.id}
         self.output_format = OUTPUT_FORMATS[0]['value']
         self.output_format_parameters = {'supported_formats': self.output_format}
 
@@ -84,7 +85,10 @@ class WorkflowTests(TestCase, XmlDiffMixin):
         })
         xml_parameters.update({
             'ssp_name': self.stellar_model.name,
+            'band_pass_filter_label': self.band_pass_filter.label,
             'band_pass_filter_id': self.band_pass_filter.filter_id,
+            'dust_model_name': self.dust_model.name,
+
         })
 
         # TODO: there are commented out elements which are not implemented yet
@@ -157,8 +161,9 @@ class WorkflowTests(TestCase, XmlDiffMixin):
 
                         <!-- Bandpass Filters) -->
                         <bandpass-filters>
-                            <item label="filter-name">%(band_pass_filter_id)s</item>
+                            <item label="%(band_pass_filter_label)s">%(band_pass_filter_id)s</item>
                         </bandpass-filters>
+                        <dust>%(dust_model_name)s</dust>
                     </sed>
 
                     <!-- Record Filter -->
@@ -255,7 +260,9 @@ class WorkflowTests(TestCase, XmlDiffMixin):
         # TODO: there are commented out elements which are not implemented yet
         xml_parameters.update({
             'ssp_name': self.stellar_model.name,
+            'band_pass_filter_label': self.band_pass_filter.label,
             'band_pass_filter_id': self.band_pass_filter.filter_id,
+            'dust_model_name': self.dust_model.name,
             })
         # comments are ignored by assertXmlEqual
         expected_parameter_xml = stripped_joined_lines("""
@@ -322,8 +329,9 @@ class WorkflowTests(TestCase, XmlDiffMixin):
 
                         <!-- Bandpass Filters) -->
                         <bandpass-filters>
-                            <item label="filter-name">%(band_pass_filter_id)s</item>
+                            <item label="%(band_pass_filter_label)s">%(band_pass_filter_id)s</item>
                         </bandpass-filters>
+                        <dust>%(dust_model_name)s</dust>
                     </sed>
 
                     <!-- Record Filter -->

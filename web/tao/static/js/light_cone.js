@@ -261,6 +261,27 @@ jQuery(document).ready(function($) {
         });
     };
 
+    var show_dust_model_info = function(dust_id) {
+        $.ajax({
+            url : TAO_JSON_CTX + 'dust_model/' + dust_id,
+            dataType: "json",
+            error: function(){
+                $('div.dust-model-info').hide();
+                alert("Couldn't get data for requested dust model");
+            },
+            success: function(data, status, xhr) {
+                $('div.dust-model-info .name').html(data.fields.name);
+                $('div.dust-model-info .details').html(data.fields.details);
+                $('div.dust-model-info').show();
+            }
+        });
+    };
+
+    var clear_dust_model_info = function() {
+        $('div.dust-model-info .name').html('');
+        $('div.dust-model-info .details').html('');
+        $('div.dust-model-info').show();
+    }
 
     //
     // - event handlers for fields -
@@ -270,6 +291,12 @@ jQuery(document).ready(function($) {
         var sim_id = $this.val();
         show_simulation_info(sim_id);
         update_galaxy_model_options(sim_id); // triggers galaxy_model.change
+    });
+
+    $(sed_id('select_dust_model')).change(function(evt){
+        var $this = $(this);
+        var dust_id = $this.val();
+        show_dust_model_info(dust_id);
     });
 
     var bound = $('#RF_BOUND').val() == 'True';
@@ -448,6 +475,17 @@ jQuery(document).ready(function($) {
         sed_band_pass_filters_widget.cache_store(pseudo_json);
         sed_band_pass_filters_widget.display_selected(current);
     }
+
+    $(sed_id('apply_dust')).change(function(evt){
+        if ($(sed_id('apply_dust')).is(':checked')) {
+            $(sed_id('select_dust_model')).removeAttr('disabled');
+            $(sed_id('select_dust_model')).change();
+        }
+        else {
+            $(sed_id('select_dust_model')).attr('disabled', 'disabled');
+            clear_dust_model_info();
+        }
+    });
 
     $('#id_output_format-supported_formats').change(function(evt){
         var $this = $(this);

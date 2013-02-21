@@ -81,3 +81,6 @@ def band_pass_filters():
 
 def band_pass_filter(id):
     return models.BandPassFilter.objects.get(pk=id)
+
+def dust_models():
+    return [(x.id, x.label) for x in models.DustModel.objects.order_by('label')]
