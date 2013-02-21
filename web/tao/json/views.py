@@ -2,7 +2,7 @@ from django.core import serializers
 from django.utils import simplejson
 from django.http import HttpResponse
 
-from tao.models import Snapshot, Simulation, GalaxyModel, DataSet
+from tao.models import Snapshot, Simulation, GalaxyModel, DataSet, DustModel
 from tao import datasets
 from tao.decorators import researcher_required
 
@@ -85,6 +85,15 @@ def output_choices(request, id):
     resp = serializers.serialize('json', objects)
     return HttpResponse(resp, mimetype="application/json")
 
+@researcher_required
+def dust_model(request, id):
+    resp = '{}'
+    try:
+        object = DustModel.objects.get(id = id)
+        resp = serializers.serialize('json', [object])[1:-1]
+    except DustModel.DoesNotExist:
+        pass
+    return HttpResponse(resp, mimetype="application/json")
 
 def bad_request(request):
     """

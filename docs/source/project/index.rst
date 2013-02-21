@@ -6,7 +6,15 @@ Home page of the ASVO project.
 The Theoretical Astrophysical Observatory (TAO)
 ===============================================
 
-The Theoretical Astrophysical Observatory (TAO) will house queryable data from multiple popular cosmological simulations (currently the Millennium Simulation, Bolshoi Simulation, GiggleZ Simulation suite) and galaxy formation models (currently Croton et al. 2006, Somerville et al. 2008, Benson 2010) in a database that is optimised for rapid access. Query results can be funnelled through additional "modules" (described below) and sent to a local supercomputer for further processing and manipulation. All of this is accessible via the cloud through a browser for access anywhere in the world by the astronomical community using a simple wizard based UI, in particular: no knowledge of SQL is required.
+The Theoretical Astrophysical Observatory (TAO) will house queryable data from
+multiple popular cosmological simulations (currently the Millennium Simulation, 
+Bolshoi Simulation, GiggleZ Simulation suite) and galaxy formation models 
+(currently Croton et al. 2006, Somerville et al. 2008, Benson 2010) in a 
+database that is optimised for rapid access. Query results can be funnelled 
+through additional "modules" (described below) and sent to a local supercomputer 
+for further processing and manipulation. All of this is accessible via the cloud 
+through a browser for access anywhere in the world by the astronomical community 
+using a simple wizard based UI, in particular: no knowledge of SQL is required.
 
 Modules
 -------
@@ -45,6 +53,17 @@ Telescope Simulator Module
 This module extends the functionality of the Light- Cone and SED Modules. It further filters the mock data to more closely mimc that expected from a particular telescope, for example by adding instrument noise. We will initially focus on the most popular telescopes available to Australian astronomers, however more can be added in the future.
 
 Science: By itself the Telescope Simulator Module can be used to generate different mock realisations of a proposed galaxy survey performed with a particular telescope. Combined with the Mock Image Generation Module, a user can simulate the expected imaging one would expect the telescope to produce.
+
+Additional Datasets
+^^^^^^^^^^^^^^^^^^^
+
+TAO currently only contains the :ref:`Millennium <Millennium>` / :ref:`SAGE <SAGE>` dataset.  We currently plan 
+to add the following datasets:
+
+* :ref:`Bolshoi <Bolshoi>` / :ref:`SAGE <SAGE>`
+* :ref:`Millennium <Millennium>` / :ref:`Galacticus <Galacticus>`
+* :ref:`Bolshoi <Bolshoi>` / :ref:`Galacticus <Galacticus>`
+
 
 Transformational Science
 ------------------------

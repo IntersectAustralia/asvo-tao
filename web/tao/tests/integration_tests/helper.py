@@ -58,8 +58,20 @@ class LiveServerTest(django.test.LiveServerTestCase):
     def lc_id(self, bare_field):
         return '#id_light_cone-%s' % bare_field
 
+    def lc_2select(self, bare_field):
+        return 'id_light_cone-output_properties_%s' % bare_field
+
     def rf_id(self, bare_field):
         return '#id_record_filter-%s' % bare_field
+
+    def sed_id(self, bare_field):
+        return 'id_sed-%s' % bare_field
+
+    def sed_css(self, bare_field):
+        return '#%s' % self.sed_id(bare_field)
+
+    def sed_2select(self, bare_field):
+        return 'id_sed-band_pass_filters_%s' % bare_field
 
     def get_parent_element(self, element):
         return self.selenium.execute_script('return arguments[0].parentNode;', element)
@@ -114,7 +126,15 @@ class LiveServerTest(django.test.LiveServerTestCase):
             element = self.find_visible_element(selector)
             actual_value = element.get_attribute(attribute)
             self.assertEqual(expected_value, actual_value)
-            
+
+    def assert_is_checked(self, selector):
+        field = self.selenium.find_element_by_css_selector(selector)
+        self.assertEqual('true', field.get_attribute('checked'))
+
+    def assert_is_unchecked(self, selector):
+        field = self.selenium.find_element_by_css_selector(selector)
+        self.assertIsNone(field.get_attribute('checked'))
+
     def assert_is_enabled(self, selector):
         field = self.selenium.find_element_by_css_selector(selector)
         self.assertIsNone(field.get_attribute('disabled'))

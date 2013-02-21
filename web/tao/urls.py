@@ -58,6 +58,7 @@ json_patterns = patterns('tao.json.views',
     url(r'^galaxy_models/(?P<id>\d+)$', 'galaxy_models', name='json_galaxy_models'),
     url(r'^filters/(?P<id>\d+)$', 'filters', name='json_filters'),
     url(r'^output_choices/(?P<id>\d+)$', 'output_choices', name='json_output_choices'),
+    url(r'^dust_model/(?P<id>\d+)$', 'dust_model', name='json_dust_model'),
     url('^$', 'bad_request', name='json_ctx'),
 )
 

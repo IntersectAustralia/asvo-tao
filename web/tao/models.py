@@ -172,7 +172,7 @@ class Job(models.Model):
 
     user = models.ForeignKey(User)
     created_time = models.DateTimeField(auto_now_add=True)
-    description = models.TextField(max_length=500)
+    description = models.TextField(max_length=500, default='')
 
     status = models.CharField(choices=STATUS_CHOICES, default=HELD, max_length=20)
     parameters = models.TextField(blank=True, max_length=1000000)
@@ -236,3 +236,19 @@ class JobFile(object):
                 return '%3.1f%s' % (size, x)
             size /= 1000
         return '%3.1f%s' % (size, 'GB')
+
+class BandPassFilter(models.Model):
+    label = models.CharField(max_length=80) # displays the user-friendly file name for the filter, without file extension
+    filter_id = models.CharField(max_length=200, unique=True) # full file name of the filter data, as an internal identifier
+    description = models.TextField(default='') # when a single band pass filter is selected, this will be displayed in a new details panel on the right
+
+    def __unicode__(self):
+        return self.label
+
+class DustModel(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    label = models.CharField(max_length=100)
+    details = models.TextField(default='')
+
+    def __unicode__(self):
+        return self.label

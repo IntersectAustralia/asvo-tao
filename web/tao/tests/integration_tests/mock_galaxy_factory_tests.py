@@ -144,6 +144,20 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.visit('held_jobs')
         self.assert_page_has_content(job.description)
 
+    def test_dust_model_disabled_on_initial_load(self):
+        self.click('tao-tabs-' + MODULE_INDICES['sed'])
+        self.assert_is_unchecked(self.sed_css('apply_dust'))
+        self.assert_is_disabled(self.sed_css('select_dust_model'))
+
+    def test_dust_model_enabled_on_check_apply(self):
+        self.click('tao-tabs-' + MODULE_INDICES['sed'])
+        self.click(self.sed_id('apply_dust'))
+        self.assert_is_checked(self.sed_css('apply_dust'))
+        self.assert_is_enabled(self.sed_css('select_dust_model'))
+
+        self.click(self.sed_id('apply_dust'))
+        self.assert_is_unchecked(self.sed_css('apply_dust'))
+        self.assert_is_disabled(self.sed_css('select_dust_model'))
 
     def assert_simulation_info_shown(self, simulation):
         """  check the name of the simulation in the sidebar is the same as simulation_name
