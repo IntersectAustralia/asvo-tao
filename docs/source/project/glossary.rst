@@ -7,6 +7,12 @@ Bolshoi
 
    Another N-Body dark matter simulation we plan to support.
 
+.. _Dataset:
+
+Dataset
+
+   The result of running a Galaxy Model, e.g. SAGE, over a dark-matter simulation, e.g. Millennium.  The Dataset is stored in a PostgreSQL database and used as the input by some of the science modules, most notably the Light Cone and SED modules.
+
 .. _Galacticus:
 
 Galacticus
@@ -32,6 +38,17 @@ Millennium
 
 SAGE
 
-   Semi-Analytic Galaxy Evoluation?
+   Semi-Analytic Galaxy Evolution
    
-   Darren's galaxy model
+   Papers:
+   
+   * `Croton et al. 2006 <http://arxiv.org/abs/astro-ph/0602065>`_
+
+.. _SED:
+
+SED
+
+   Spectral Energy Distribution
+
+   A spectral energy distribution (SED) is a plot of brightness or flux density versus frequency or wavelength of light.  See, e.g., http://en.wikipedia.org/wiki/Spectral_energy_distribution
+
