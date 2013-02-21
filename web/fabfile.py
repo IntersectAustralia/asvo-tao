@@ -36,7 +36,7 @@ def _create_mysql_user_and_database():
     run("""echo "create database tao;" | mysql -utao --password=tao""")
 
 def initial_deploy():
-    sudo("yum install -y git mod_fcgid mysql-server mysql-devel gcc python-devel postfix")
+    sudo("yum install -y git mod_fcgid mysql-server mysql-devel gcc python-devel postfix doxygen")
     sudo("chkconfig mysqld on")
     sudo("chkconfig httpd on")
     sudo("chkconfig postfix on")
@@ -47,7 +47,13 @@ def initial_deploy():
     run("chmod o+rx /home/{user}".format(user=env.user))
     with cd("asvo-tao/web"):
         run("/usr/bin/env python2.6 bootstrap.py")
+        sudo("bin/easy_install -U setuptools")
+        sudo("bin/easy_install -U sphinx")
+        sudo("bin/easy_install -U breathe")
         run("bin/buildout -c buildout_{target_env}.cfg".format(target_env=env.target_env))
+    with cd("asvo-tao/docs"):
+        run("./gendoc.sh")
+    with cd("asvo-tao/web"):
         run("bin/django collectstatic --noinput")
         run("bin/django syncdb --noinput")
         run("bin/django migrate")
@@ -57,11 +63,16 @@ def initial_deploy():
         sudo("service httpd graceful")
         sudo("service httpd start")
 
-
 def update():
     with cd("asvo-tao/web"):
         run("git pull")
         run("bin/buildout -c buildout_{target_env}.cfg".format(target_env=env.target_env))
+        sudo("bin/easy_install -U setuptools")
+        sudo("bin/easy_install -U sphinx")
+        sudo("bin/easy_install -U breathe")
+    with cd("asvo-tao/docs"):
+        run("./gendoc.sh")
+    with cd("asvo-tao/web"):
         run("bin/django collectstatic --noinput")
         run("bin/django syncdb --noinput")
         run("bin/django migrate")
