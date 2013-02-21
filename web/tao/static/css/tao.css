@@ -36,11 +36,11 @@ a:active, a:hover {
 
 .container-fluid { padding: 0 60px; }
 
-.container-fluid .navbar { margin: 0 -20px 20px -20px; }
+/* .container-fluid .navbar { margin: 0 -20px 20px -20px; } */
 .navbar-inverse .navbar-inner {
   min-height: 60px;
-  background-color: rgba(0, 0, 0, 0.80);
   background-image: none;
+  background: #333;
   border-color: #252525;
 }
 
