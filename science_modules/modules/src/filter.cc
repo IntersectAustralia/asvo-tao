@@ -50,21 +50,29 @@ namespace tao {
    filter::execute()
    {
       LOG_ENTER();
-      LOG_EXIT();
-   }
+      ASSERT( parents().size() == 1 );
 
-   ///
-   ///
-   ///
-   tao::galaxy&
-   filter::galaxy()
-   {
+      // Grab the galaxy from the parent object.
+      tao::galaxy& gal = parents().front()->galaxy();
+
+      // Extract things from the galaxy object.
+      vector<real_type>& spectra = gal.vector_value<real_type>( "total_spectra" );
+
+      // Perform the processing.
+      process_galaxy( gal, spectra );
+
+      // Add values to the galaxy object.
+      gal.set_vector_field<real_type>( "apparant_magnitudes", _mags );
+
+      LOG_EXIT();
    }
 
    void
    filter::process_galaxy( const tao::galaxy& galaxy,
-                           vector<real_type>::view spectra )
+                           const vector<real_type>& spectra )
    {
+      LOG_ENTER();
+
       // Prepare the spectra.
       numerics::spline<real_type> spectra_spline;
       _prepare_spectra( spectra, spectra_spline );
@@ -87,6 +95,8 @@ namespace tao {
             _mags[ii] = 0.0;
       }
       LOGLN( "Band magnitudes: ", _mags );
+
+      LOG_EXIT();
    }
 
    ///

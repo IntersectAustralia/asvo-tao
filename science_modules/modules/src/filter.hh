@@ -1,7 +1,7 @@
 #ifndef tao_modules_filter_hh
 #define tao_modules_filter_hh
 
-#include "tao/base/module.hh"
+#include "tao/base/base.hh"
 
 class filter_suite;
 
@@ -51,16 +51,9 @@ namespace tao {
       ///
       ///
       ///
-      virtual
-      tao::galaxy&
-      galaxy();
-
-      ///
-      ///
-      ///
       void
       process_galaxy( const tao::galaxy& galaxy,
-                      hpc::vector<real_type>::view spectra );
+                      const vector<real_type>& spectra );
 
       ///
       ///

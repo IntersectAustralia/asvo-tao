@@ -91,17 +91,12 @@ namespace tao {
       // Perform the processing.
       process_galaxy( gal );
 
-      LOG_EXIT();
-   }
+      // Add spectra to the galaxy object.
+      gal.set_vector_field<real_type>( "disk_spectra", _disk_spectra );
+      gal.set_vector_field<real_type>( "bulge_spectra", _bulge_spectra );
+      gal.set_vector_field<real_type>( "total_spectra", _total_spectra );
 
-   ///
-   ///
-   ///
-   tao::galaxy&
-   sed::galaxy()
-   {
-      // Just return from the parent.
-      return parents().front()->galaxy();
+      LOG_EXIT();
    }
 
    void
