@@ -98,10 +98,27 @@ namespace tao {
       }
 
       template< class T >
+      void
+      set_vector_field( const string& name,
+                        vector<T>& value )
+      {
+         field_type& field = _fields[name];
+         field.first = &value;
+         field.second = (field_value_type)boost::mpl::at<type_map,T>::type::value;
+      }
+
+      template< class T >
       T
       value( const string& name ) const
       {
          return boost::any_cast<T>( field( name ).first );
+      }
+
+      template< class T >
+      vector<T>&
+      vector_value( const string& name ) const
+      {
+         return *boost::any_cast<vector<T>*>( field( name ).first );
       }
 
       field_type
