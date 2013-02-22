@@ -239,7 +239,7 @@ namespace tao {
       LOG_ENTER();
       ((profile::timer&)_timer).start();
 
-      galaxy gal( *_cur_row, *_cur_box, _table_names[_cur_table] );
+      galaxy gal( *_cur_row, _table_names[_cur_table] );
       real_type dist = sqrt( pow( gal.x(), 2.0 ) + pow( gal.y(), 2.0 ) + pow( gal.z(), 2.0 ) );
 
       // Check that the row actually belongs in this range.
