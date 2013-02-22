@@ -65,7 +65,6 @@ public:
       TS_ASSERT_DELTA( lc._distance_to_redshift( lc._redshift_to_distance( 1.0 ) ), 1.0, 1e-3 );
 
       // Now test as read from the galaxy object.
-      SET_ABORT( true );
       for( lc.begin(); !lc.done(); ++lc )
       {
          const galaxy& gal = *lc;
@@ -203,9 +202,6 @@ public:
    void test_ra_minmax()
    {
       lightcone lc;
-
-      SET_ABORT( true );
-      LOG_FILE( "test.log" );
 
       // Turn off random rotation and shifting.
       lc._unique = true;
