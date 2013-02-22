@@ -29,7 +29,7 @@ jQuery(document).ready(function($) {
         show_tab($enclosing, 0);
     }
 
-    var lc_output_props_widget = new TwoSidedSelectWidget(lc_id('output_properties'));
+    var lc_output_props_widget = new TwoSidedSelectWidget(lc_id('output_properties'));//, true);
 
     lc_output_props_widget.change_event(function(evt){
         update_filter_options(false, false);
@@ -40,7 +40,7 @@ jQuery(document).ready(function($) {
         fill_in_summary('light_cone', 'output_properties', output_properties_values);
     });
 
-    var sed_band_pass_filters_widget = new TwoSidedSelectWidget(sed_id('band_pass_filters'));
+    var sed_band_pass_filters_widget = new TwoSidedSelectWidget(sed_id('band_pass_filters'));//, false);
 
     sed_band_pass_filters_widget.change_event(function(evt){
         var band_pass_filter_values = [];
@@ -75,6 +75,9 @@ jQuery(document).ready(function($) {
 
     var fill_in_summary = function(form_name, field_name, input_data) {
         $('div.summary_' + form_name + ' .' + field_name).html(input_data);
+    }
+    var clear_in_summary = function(form_name, field_name) {
+        $('div.summary_' + form_name + ' .' + field_name).html('None');
     }
 
     var update_snapshot_options = function(){
@@ -273,6 +276,7 @@ jQuery(document).ready(function($) {
                 $('div.dust-model-info .name').html(data.fields.name);
                 $('div.dust-model-info .details').html(data.fields.details);
                 $('div.dust-model-info').show();
+                fill_in_summary('sed', 'dust_model', data.fields.name);
             }
         });
     };
@@ -281,6 +285,7 @@ jQuery(document).ready(function($) {
         $('div.dust-model-info .name').html('');
         $('div.dust-model-info .details').html('');
         $('div.dust-model-info').show();
+        clear_in_summary('sed', 'dust_model');
     }
 
     //
@@ -487,6 +492,32 @@ jQuery(document).ready(function($) {
         }
     });
 
+//    $(sed_id('apply_sed')).change(function(evt){
+//        if ($(sed_id('apply_sed')).is(':checked')) {
+//            $('#tao-tabs-2').css({"border-style": "solid"});
+//            $('#tao-tabs-2').css({"color": "#2BA6CB"});
+//            $(sed_id('single_stellar_population_model')).removeAttr('disabled');
+//            $(sed_id('band_pass_filters_filter')).removeAttr('disabled');
+//            $(sed_id('band_pass_filters_from')).removeAttr('disabled');
+//            sed_band_pass_filters_widget.set_enabled(true);
+//            $(sed_id('band_pass_filters')).removeAttr('disabled');
+//            $(sed_id('apply_dust')).removeAttr('disabled');
+//            $(sed_id('apply_dust')).change();
+//        }
+//        else {
+//            $('#tao-tabs-2').css({"border-style": "dashed"});
+//            $('#tao-tabs-2').css({"color": "rgb(119, 221, 252)"});
+//            $(sed_id('single_stellar_population_model')).attr('disabled', 'disabled');
+//            $(sed_id('band_pass_filters_filter')).attr('disabled', 'disabled');
+//            $(sed_id('band_pass_filters_from')).attr('disabled', 'disabled');
+//            sed_band_pass_filters_widget.set_enabled(false);
+//            $(sed_id('band_pass_filters')).attr('disabled', 'disabled');
+//            $(sed_id('apply_dust')).attr('disabled', 'disabled');
+//            $(sed_id('select_dust_model')).attr('disabled', 'disabled');
+//            clear_dust_model_info();
+//        }
+//    });
+
     $('#id_output_format-supported_formats').change(function(evt){
         var $this = $(this);
         var output_format_value = $this.val();
@@ -582,7 +613,8 @@ jQuery(document).ready(function($) {
         $(lc_id('catalogue_geometry')).change();
         $('#id_sed-single_stellar_population_model').change();
         $('#id_output_format-supported_formats').change();
-        fill_in_summary('sed', 'band_pass_filters', 'initialise');
         init_band_pass_filters();
+        $(sed_id('apply_dust')).change();
+//        $(sed_id('apply_sed')).change();
     })();
 });
