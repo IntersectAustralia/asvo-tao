@@ -4,7 +4,7 @@
  * Date: 13/02/13
  * Time: 6:20 PM
  */
-var TwoSidedSelectWidget = function(to_id) {
+var TwoSidedSelectWidget = function(to_id, enable) {
     var $from = $(to_id + '_from');
     var $to = $(to_id);
     var $filter_field = $(to_id + '_filter');
@@ -14,6 +14,7 @@ var TwoSidedSelectWidget = function(to_id) {
     var $remove_all = $(to_id + '_op_remove_all');
     var cache = new Array();
     var ref = this;
+    var enabled = enable;
 
     this.init = function() {
 
@@ -30,22 +31,42 @@ var TwoSidedSelectWidget = function(to_id) {
             return false;
         }
 
-        $select_option.click(function() {
-            return status_helper($from, 'option:selected', 2);
+        $select_option.click(function(e) {
+            if (!enabled) {
+                e.preventDefault();
+            }
+            else {
+                return status_helper($from, 'option:selected', 2);
+            }
         });
 
-        $select_all.click(function() {
-            return status_helper($from, 'option', 2);
+        $select_all.click(function(e) {
+            if (!enabled) {
+                e.preventDefault();
+            }
+            else {
+                return status_helper($from, 'option', 2);
+            }
         });
 
-        $remove_option.click(function() {
-            $filter_field.val('');
-            return status_helper($to, 'option:selected', 1);
+        $remove_option.click(function(e) {
+            if (!enabled) {
+                e.preventDefault();
+            }
+            else {
+                $filter_field.val('');
+                return status_helper($to, 'option:selected', 1);
+            }
         });
 
-        $remove_all.click(function() {
-            $filter_field.val('');
-            return status_helper($to, 'option', 1);
+        $remove_all.click(function(e) {
+            if (!enabled) {
+                e.preventDefault();
+            }
+            else {
+                $filter_field.val('');
+                return status_helper($to, 'option', 1);
+            }
         });
 
         $filter_field.keyup(function(e) {
@@ -127,6 +148,10 @@ var TwoSidedSelectWidget = function(to_id) {
             }
         });
     };
+
+    this.set_enabled = function(enable) {
+        enabled = enable;
+    }
 
     this.init();
 

@@ -2,7 +2,7 @@ from django.utils.html import strip_tags
 
 from tao.tests.integration_tests.helper import LiveServerTest
 
-from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, JobFactory, DataSetPropertyFactory
+from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, JobFactory, DataSetPropertyFactory, DustModelFactory
 from tao.models import Simulation, GalaxyModel, Job
 from tao.settings import MODULE_INDICES
 
@@ -25,7 +25,9 @@ class MockGalaxyFactoryTest(LiveServerTest):
             dsp = DataSetPropertyFactory.create(dataset=ds)
             ds.default_filter_field = dsp
             ds.save()
-        
+
+        DustModelFactory.create()
+
         username = "person"
         password = "funnyfish"
         self.user = UserFactory.create(username=username, password=password)
@@ -144,6 +146,30 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.visit('held_jobs')
         self.assert_page_has_content(job.description)
 
+    def test_sed_elements_disabled_on_initial_load(self):
+        self.click('tao-tabs-' + MODULE_INDICES['sed'])
+        self.assert_is_unchecked(self.sed_css('apply_sed'))
+        self.assert_is_disabled(self.sed_css('single_stellar_population_model'))
+        self.assert_is_disabled(self.sed_css('band_pass_filters_filter'))
+        self.assert_is_disabled(self.sed_css('band_pass_filters_from'))
+        self.assert_is_disabled(self.sed_css('band_pass_filters'))
+
+    def test_sed_module_enabled_on_check_apply(self):
+        self.click('tao-tabs-' + MODULE_INDICES['sed'])
+        self.click(self.sed_id('apply_sed'))
+        self.assert_is_checked(self.sed_css('apply_sed'))
+        self.assert_is_enabled(self.sed_css('single_stellar_population_model'))
+        self.assert_is_enabled(self.sed_css('band_pass_filters_filter'))
+        self.assert_is_enabled(self.sed_css('band_pass_filters_from'))
+        self.assert_is_enabled(self.sed_css('band_pass_filters'))
+
+        self.click(self.sed_id('apply_sed'))
+        self.assert_is_unchecked(self.sed_css('apply_sed'))
+        self.assert_is_disabled(self.sed_css('single_stellar_population_model'))
+        self.assert_is_disabled(self.sed_css('band_pass_filters_filter'))
+        self.assert_is_disabled(self.sed_css('band_pass_filters_from'))
+        self.assert_is_disabled(self.sed_css('band_pass_filters'))
+
     def test_dust_model_disabled_on_initial_load(self):
         self.click('tao-tabs-' + MODULE_INDICES['sed'])
         self.assert_is_unchecked(self.sed_css('apply_dust'))
@@ -151,6 +177,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
 
     def test_dust_model_enabled_on_check_apply(self):
         self.click('tao-tabs-' + MODULE_INDICES['sed'])
+        self.click(self.sed_id('apply_sed'))
         self.click(self.sed_id('apply_dust'))
         self.assert_is_checked(self.sed_css('apply_dust'))
         self.assert_is_enabled(self.sed_css('select_dust_model'))

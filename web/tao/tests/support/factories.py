@@ -81,4 +81,5 @@ class BandPassFilterFactory(factory.Factory):
 
 class DustModelFactory(factory.Factory):
     FACTORY_FOR = DustModel
-    name = factory.Sequence(lambda n: 'Dust model %03d' % int(n))
+    name = factory.Sequence(lambda n: 'Dust_model_%03d.dat' % int(n))
+    label = factory.Sequence(lambda n: 'Dust model %03d' % int(n))

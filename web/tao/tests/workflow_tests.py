@@ -47,7 +47,9 @@ class WorkflowTests(TestCase, XmlDiffMixin):
         self.stellar_model = StellarModelFactory.create(name='Stella')
         self.band_pass_filter = BandPassFilterFactory.create()
         self.dust_model = DustModelFactory.create()
-        self.sed_parameters = {'single_stellar_population_model': self.stellar_model.id, 'band_pass_filters': [self.band_pass_filter.id], 'apply_dust': True, 'select_dust_model': self.dust_model.id}
+        self.sed_parameters = {'apply_sed': True, 'single_stellar_population_model': self.stellar_model.id, 'band_pass_filters': [self.band_pass_filter.id], 'apply_dust': True, 'select_dust_model': self.dust_model.id}
+        self.sed_disabled = {'apply_sed': False}
+        self.sed_parameters_no_dust = {'apply_sed': True, 'single_stellar_population_model': self.stellar_model.id, 'band_pass_filters': [self.band_pass_filter.id]}
         self.output_format = OUTPUT_FORMATS[0]['value']
         self.output_format_parameters = {'supported_formats': self.output_format}
 
@@ -387,6 +389,320 @@ class WorkflowTests(TestCase, XmlDiffMixin):
         light_cone_form = make_form({}, LightConeForm, form_parameters, prefix='light_cone')
         mock_ui_holder = MockUIHolder(light_cone_form)
         sed_form = make_form({}, SEDForm, self.sed_parameters, prefix='sed')
+        record_filter_form = make_form({}, RecordFilterForm, {'filter':str(self.filter.id),'max':str(1000000)}, ui_holder=mock_ui_holder, prefix='record_filter')
+        output_form = make_form({}, OutputFormatForm, {'supported_formats': 'csv'}, prefix='output_format')
+        self.assertEqual({}, light_cone_form.errors)
+        self.assertEqual({}, sed_form.errors)
+        self.assertEqual({}, record_filter_form.errors)
+        self.assertEqual({}, output_form.errors)
+
+        mock_ui_holder.set_forms([light_cone_form, sed_form, record_filter_form, output_form])
+        job = workflow.save(self.user, mock_ui_holder)
+        actual_parameter_xml = job.parameters
+
+        self.assertXmlEqual(expected_parameter_xml, actual_parameter_xml)
+        self.assertEqual(self.dataset.database, job.database)
+
+
+    def test_no_sed(self):
+        form_parameters = {
+            'catalogue_geometry': 'box',
+            'dark_matter_simulation': self.simulation.id,
+            'galaxy_model': self.dataset.id,
+            'output_properties' : [self.filter.id],
+            'snapshot': self.snapshot.id,
+            'box_size': 20,
+            }
+        xml_parameters = form_parameters.copy()
+        xml_parameters.update({
+            'username' : self.user.username,
+            'dark_matter_simulation': self.simulation.name,
+            'galaxy_model': self.galaxy_model.name,
+            'output_properties_1_name' : self.filter.name,
+            'output_properties_1_label' : self.filter.label,
+            'output_properties_1_units' : self.filter.units,
+            'redshift' : float(self.snapshot.redshift),
+            })
+        xml_parameters.update({
+            'filter': self.filter.name,
+            'filter_min' : 'None',
+            'filter_max' : '1000000',
+            })
+        # comments are ignored by assertXmlEqual
+        expected_parameter_xml = stripped_joined_lines("""
+            <?xml version="1.0" encoding="UTF-8"?>
+            <!-- Using the XML namespace provides a version for future modifiability.  The timestamp allows
+                 a researcher to know when this parameter file was generated.  -->
+            <tao xmlns="http://tao.asvo.org.au/schema/module-parameters-v1" timestamp="2012-12-20T13:55:36+10:00">
+
+                <!-- Username submitting the job -->
+                <username>%(username)s</username>
+
+                <!-- Workflow name identifies which workflow is to be executed.
+                     This is currently a placeholder, the name is ignored. -->
+                <workflow name="alpha-light-cone-image">
+
+                    <!-- Global Configuration Parameters -->
+                    <schema-version>1.0</schema-version>
+
+                    <!-- Light-cone module parameters -->
+                    <light-cone>
+                        <!-- Module Version Number -->
+                        <module-version>1</module-version>
+
+                        <!-- Is the query a light-cone or box? -->
+                        <geometry>box</geometry>
+
+                        <!-- Selected Simuation -->
+                        <simulation>%(dark_matter_simulation)s</simulation>
+
+                        <!-- Selected Galaxy Model -->
+                        <galaxy-model>%(galaxy_model)s</galaxy-model>
+
+                        <!-- The number of light-cones to generate
+                        <box-repetition>unique | random</box-repetition>
+                        <num-cones>1</num-cones> -->
+
+                        <!-- The min and max redshifts to filter by -->
+                        <redshift>%(redshift).1f</redshift>
+
+                        <!-- Size of box to return -->
+                        <query-box-size units="Mpc">%(box_size)d</query-box-size>
+
+                        <!-- List of fields to be included in the output file -->
+                        <output-fields>
+                            <item label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
+                        </output-fields>
+
+
+                        <!-- RNG Seed -->
+                        <!-- This will be added by the workflow after the job has been completed
+                             to enable the job to be repeated.
+                             The information stored may change, the intent is to store whatever is
+                             required to re-run the job and obtain the same results.
+                        <rng-seed>12345678901234567890</rng-seed> -->
+
+                    </light-cone>
+
+                    <!-- Record Filter -->
+                    <record-filter>
+                        <!-- Module Version Number -->
+                        <module-version>1</module-version>
+
+                        <!-- Note that the units are for readability,
+                             no unit conversion is supported.  The consumer of the
+                             parameter file should check that the expected units are provided. -->
+                        <filter-type>%(filter)s</filter-type>
+                        <filter-min units="Msun/h">%(filter_min)s</filter-min>
+                        <filter-max units="Msun/h">%(filter_max)s</filter-max>
+                    </record-filter>
+
+                    <!-- File output module -->
+                    <output-file>
+                        <!-- Module Version Number -->
+                        <module-version>1</module-version>
+
+                        <!-- Output file format -->
+                        <format>csv</format>
+                    </output-file>
+
+                    <!-- Image generation module parameters
+                    <image-generator>
+                        <!- Module Version Number ->
+                        <module-version>1</module-version>
+
+                        <!- Image size parameters ->
+                        <image-width units="px">1024</image-width>
+                        <image-height units="px">1024</image-height>
+
+                        <!- Focal scale parameters ->
+                        <focalx units="??">1024</focalx>
+                        <focaly units="??">1024</focaly>
+
+                        <!- Image offset parameters ->
+                        <image-offsetx units="??">512</image-offsetx>
+                        <image-offsety units="??">0</image-offsety>
+                    </image-generator> -->
+
+                </workflow>
+
+                <!-- The signature is automatically generated and is intended to be used when running
+                     old versions of the science modules (to remove the need for the UI to parse and check
+                     every version. -->
+                <signature>base64encodedsignature</signature>
+
+            </tao>
+        """) % xml_parameters
+
+        light_cone_form = make_form({}, LightConeForm, form_parameters, prefix='light_cone')
+        mock_ui_holder = MockUIHolder(light_cone_form)
+        sed_form = make_form({}, SEDForm, self.sed_disabled, prefix='sed')
+        record_filter_form = make_form({}, RecordFilterForm, {'filter':str(self.filter.id),'max':str(1000000)}, ui_holder=mock_ui_holder, prefix='record_filter')
+        output_form = make_form({}, OutputFormatForm, {'supported_formats': 'csv'}, prefix='output_format')
+        self.assertEqual({}, light_cone_form.errors)
+        self.assertEqual({}, sed_form.errors)
+        self.assertEqual({}, record_filter_form.errors)
+        self.assertEqual({}, output_form.errors)
+
+        mock_ui_holder.set_forms([light_cone_form, sed_form, record_filter_form, output_form])
+        job = workflow.save(self.user, mock_ui_holder)
+        actual_parameter_xml = job.parameters
+
+        self.assertXmlEqual(expected_parameter_xml, actual_parameter_xml)
+        self.assertEqual(self.dataset.database, job.database)
+
+    def test_no_dust(self):
+        form_parameters = {
+            'catalogue_geometry': 'box',
+            'dark_matter_simulation': self.simulation.id,
+            'galaxy_model': self.dataset.id,
+            'output_properties' : [self.filter.id],
+            'snapshot': self.snapshot.id,
+            'box_size': 20,
+            }
+        xml_parameters = form_parameters.copy()
+        xml_parameters.update({
+            'username' : self.user.username,
+            'dark_matter_simulation': self.simulation.name,
+            'galaxy_model': self.galaxy_model.name,
+            'output_properties_1_name' : self.filter.name,
+            'output_properties_1_label' : self.filter.label,
+            'output_properties_1_units' : self.filter.units,
+            'redshift' : float(self.snapshot.redshift),
+            })
+        xml_parameters.update({
+            'filter': self.filter.name,
+            'filter_min' : 'None',
+            'filter_max' : '1000000',
+            })
+        # TODO: there are commented out elements which are not implemented yet
+        xml_parameters.update({
+            'ssp_name': self.stellar_model.name,
+            'band_pass_filter_label': self.band_pass_filter.label,
+            'band_pass_filter_id': self.band_pass_filter.filter_id,
+            })
+        # comments are ignored by assertXmlEqual
+        expected_parameter_xml = stripped_joined_lines("""
+            <?xml version="1.0" encoding="UTF-8"?>
+            <!-- Using the XML namespace provides a version for future modifiability.  The timestamp allows
+                 a researcher to know when this parameter file was generated.  -->
+            <tao xmlns="http://tao.asvo.org.au/schema/module-parameters-v1" timestamp="2012-12-20T13:55:36+10:00">
+
+                <!-- Username submitting the job -->
+                <username>%(username)s</username>
+
+                <!-- Workflow name identifies which workflow is to be executed.
+                     This is currently a placeholder, the name is ignored. -->
+                <workflow name="alpha-light-cone-image">
+
+                    <!-- Global Configuration Parameters -->
+                    <schema-version>1.0</schema-version>
+
+                    <!-- Light-cone module parameters -->
+                    <light-cone>
+                        <!-- Module Version Number -->
+                        <module-version>1</module-version>
+
+                        <!-- Is the query a light-cone or box? -->
+                        <geometry>box</geometry>
+
+                        <!-- Selected Simuation -->
+                        <simulation>%(dark_matter_simulation)s</simulation>
+
+                        <!-- Selected Galaxy Model -->
+                        <galaxy-model>%(galaxy_model)s</galaxy-model>
+
+                        <!-- The number of light-cones to generate
+                        <box-repetition>unique | random</box-repetition>
+                        <num-cones>1</num-cones> -->
+
+                        <!-- The min and max redshifts to filter by -->
+                        <redshift>%(redshift).1f</redshift>
+
+                        <!-- Size of box to return -->
+                        <query-box-size units="Mpc">%(box_size)d</query-box-size>
+
+                        <!-- List of fields to be included in the output file -->
+                        <output-fields>
+                            <item label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
+                        </output-fields>
+
+
+                        <!-- RNG Seed -->
+                        <!-- This will be added by the workflow after the job has been completed
+                             to enable the job to be repeated.
+                             The information stored may change, the intent is to store whatever is
+                             required to re-run the job and obtain the same results.
+                        <rng-seed>12345678901234567890</rng-seed> -->
+
+                    </light-cone>
+
+                    <!-- Optional: Spectral Energy Distribution parameters -->
+                    <sed>
+                        <!-- Module Version Number -->
+                        <module-version>1</module-version>
+
+                        <single-stellar-population-model>%(ssp_name)s</single-stellar-population-model>
+
+                        <!-- Bandpass Filters) -->
+                        <bandpass-filters>
+                            <item label="%(band_pass_filter_label)s">%(band_pass_filter_id)s</item>
+                        </bandpass-filters>
+                    </sed>
+
+                    <!-- Record Filter -->
+                    <record-filter>
+                        <!-- Module Version Number -->
+                        <module-version>1</module-version>
+
+                        <!-- Note that the units are for readability,
+                             no unit conversion is supported.  The consumer of the
+                             parameter file should check that the expected units are provided. -->
+                        <filter-type>%(filter)s</filter-type>
+                        <filter-min units="Msun/h">%(filter_min)s</filter-min>
+                        <filter-max units="Msun/h">%(filter_max)s</filter-max>
+                    </record-filter>
+
+                    <!-- File output module -->
+                    <output-file>
+                        <!-- Module Version Number -->
+                        <module-version>1</module-version>
+
+                        <!-- Output file format -->
+                        <format>csv</format>
+                    </output-file>
+
+                    <!-- Image generation module parameters
+                    <image-generator>
+                        <!- Module Version Number ->
+                        <module-version>1</module-version>
+
+                        <!- Image size parameters ->
+                        <image-width units="px">1024</image-width>
+                        <image-height units="px">1024</image-height>
+
+                        <!- Focal scale parameters ->
+                        <focalx units="??">1024</focalx>
+                        <focaly units="??">1024</focaly>
+
+                        <!- Image offset parameters ->
+                        <image-offsetx units="??">512</image-offsetx>
+                        <image-offsety units="??">0</image-offsety>
+                    </image-generator> -->
+
+                </workflow>
+
+                <!-- The signature is automatically generated and is intended to be used when running
+                     old versions of the science modules (to remove the need for the UI to parse and check
+                     every version. -->
+                <signature>base64encodedsignature</signature>
+
+            </tao>
+        """) % xml_parameters
+
+        light_cone_form = make_form({}, LightConeForm, form_parameters, prefix='light_cone')
+        mock_ui_holder = MockUIHolder(light_cone_form)
+        sed_form = make_form({}, SEDForm, self.sed_parameters_no_dust, prefix='sed')
         record_filter_form = make_form({}, RecordFilterForm, {'filter':str(self.filter.id),'max':str(1000000)}, ui_holder=mock_ui_holder, prefix='record_filter')
         output_form = make_form({}, OutputFormatForm, {'supported_formats': 'csv'}, prefix='output_format')
         self.assertEqual({}, light_cone_form.errors)
