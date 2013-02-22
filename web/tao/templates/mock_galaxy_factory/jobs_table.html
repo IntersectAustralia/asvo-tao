@@ -22,7 +22,7 @@
                     {% endif %}
                         <th>Description</th>
                     {% if show_field.output_path %}
-                        <th>Output Path</th>
+                        <th>Output Path/Error message</th>
                     {% endif %}
                 </tr>
             </thead>
@@ -41,7 +41,11 @@
                         {% endif %}
                         <td>{{ job.description|linebreaks }}</td>
                         {% if show_field.output_path %}
-                            <td>{{ job.output_path }}</td>
+                            {%  if job.is_error %}
+                                <td>{{ job.short_error_message }}</td>
+                            {%  else %}
+                                <td>{{ job.output_path }}</td>
+                            {% endif %}
                         {% endif %}
                     </tr>
                 {% endfor %}

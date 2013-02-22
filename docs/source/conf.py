@@ -30,10 +30,17 @@ sys.path[0:0] = [ os.path.abspath(p) for p in [
     '../../web/eggs/nosexcover-1.0.7-py2.6.egg',
     '../../web/eggs/django_rules-0.2-py2.6.egg',
     '../../web/eggs/lxml-3.1beta1-py2.6-macosx-10.6-universal.egg',
+
+    # To run locally, comment next two lines and
+    # uncomment lines below. Please do not commit
+    # this change as paths below match what the
+    # deployment script expects.
+    #
     '../../web/src/light-cone',
     '../../web/src/sed',
     # '../../../light-cone',
     # '../../../sed',
+
     '../../web/eggs/djangorecipe-1.5-py2.6.egg',
     '../../web/eggs/Django-1.4.3-py2.6.egg',
     '../../web/eggs/zc.recipe.egg-2.0.0a3-py2.6.egg',

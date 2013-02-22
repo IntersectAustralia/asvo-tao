@@ -39,9 +39,15 @@
                         (Zip file exceeds maximum download size.)
                     {% endif %}
                 {% else %}
+                {% if job.is_error %}
+                    <pre>
+                    {{ job.error_message|linebreaks  }}
+                    </pre>
+                    {% else %}
                     <p>
                         This job has not completed (and hence has no output).
                     </p>
+                {% endif %}
                 {% endif %}
             </div>
         </div>
