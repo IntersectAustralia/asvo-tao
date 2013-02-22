@@ -16,7 +16,45 @@ namespace tao {
 
    public:
 
-      module();
+      module( const string& name = string() );
+
+      void
+      add_parent( module& parent );
+
+      void
+      process( unsigned long long iteration );
+
+      virtual
+      void
+      setup_options( options::dictionary& dict,
+                     optional<const string&> prefix=optional<const string&>() ) = 0;
+
+      void
+      setup_options( options::dictionary& dict,
+                     const char* prefix );
+
+      virtual
+      void
+      initialise( const options::dictionary& dict,
+                  optional<const string&> prefix=optional<const string&>() ) = 0;
+
+      void
+      initialise( const options::dictionary& dict,
+                  const char* prefix );
+
+      virtual
+      void
+      execute() = 0;
+
+      virtual
+      tao::galaxy&
+      galaxy() = 0;
+
+      bool
+      complete() const;
+
+      const string&
+      name() const;
 
    protected:
 
@@ -34,6 +72,11 @@ namespace tao {
 
    protected:
 
+      string _name;
+      unsigned long long _it;
+      list<module*> _parents;
+      bool _complete;
+
       bool _connected;
       soci::session _sql;
       unsigned _num_restart_its;
@@ -41,6 +84,7 @@ namespace tao {
       string _dbtype, _dbname, _dbhost, _dbport, _dbuser, _dbpass;
       string _tree_pre;
    };
+
 }
 
 #endif

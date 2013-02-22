@@ -18,8 +18,16 @@ namespace tao {
       return 1.0/sqrt( 0.25/x + (1.0 - 0.25 - 0.75) + 0.75*x*x );
    }
 
-   sed::sed()
-      : _cur_tree_id( -1 ),
+   // Factory function used to create a new SED.
+   module*
+   sed::factory( const string& name )
+   {
+      return new sed( name );
+   }
+
+   sed::sed( const string& name )
+      : module( name ),
+        _cur_tree_id( -1 ),
 	_omega( 0.25 ),
 	_omega_lambda( 0.75 ),
 	_h( 0.73 )
@@ -50,16 +58,6 @@ namespace tao {
    }
 
    ///
-   ///
-   ///
-   void
-   sed::setup_options( hpc::options::dictionary& dict,
-                       const char* prefix )
-   {
-      setup_options( dict, string( prefix ) );
-   }
-
-   ///
    /// Initialise the module.
    ///
    void
@@ -79,20 +77,10 @@ namespace tao {
    }
 
    ///
-   ///
-   ///
-   void
-   sed::initialise( const hpc::options::dictionary& dict,
-                    const char* prefix )
-   {
-      initialise( dict, string( prefix ) );
-   }
-
-   ///
    /// Run the module.
    ///
    void
-   sed::run()
+   sed::execute()
    {
       LOG_ENTER();
 
@@ -100,6 +88,14 @@ namespace tao {
       //    _process_galaxy();
 
       LOG_EXIT();
+   }
+
+   ///
+   ///
+   ///
+   tao::galaxy&
+   sed::galaxy()
+   {
    }
 
    void
