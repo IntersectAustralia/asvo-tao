@@ -31,10 +31,6 @@ namespace tao {
       virtual
       void
       execute();
-
-      virtual
-      tao::galaxy&
-      galaxy();
    };
 
 }

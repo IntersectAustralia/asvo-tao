@@ -3,7 +3,7 @@
 
 #include <cstdio>
 #include <libhpc/logging/logging.hh>
-#include "application.hh"
+#include "pipeline_application.hh"
 
 // Forward declare the pipeline.
 struct pipeline;
@@ -17,7 +17,7 @@ main( int argc,
 {
    hpc::mpi::initialise( argc, argv );
    LOG_PUSH( new hpc::mpi::logger( "tao.log." ) );
-   tao::application<pipeline> app( argc, argv );
+   tao::pipeline_application<pipeline> app( argc, argv );
    app.run();
    hpc::mpi::finalise();
    return EXIT_SUCCESS;

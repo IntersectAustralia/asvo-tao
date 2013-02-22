@@ -1,4 +1,4 @@
-#include "tao/base/application.hh"
+#include "tao/base/globals.hh"
 #include "tao/modules/lightcone.hh"
 #include "tao/modules/sed.hh"
 

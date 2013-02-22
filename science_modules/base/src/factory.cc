@@ -9,6 +9,12 @@ namespace tao {
    {
    }
 
+   factory_type::~factory_type()
+   {
+      for( auto mod : _mods )
+         delete mod;
+   }
+
    void
    factory_type::register_module( const string& name,
                                   factory_create_type create )
@@ -32,7 +38,7 @@ namespace tao {
 #endif
       module* mod = _facs.get( name )( _in );
       _mods.push_back( mod );
-      LOGDLN( "Created module ", name, " with name ", inst_name );
+      LOGDLN( "Created module ", name, " with name ", _in );
       return *mod;
    }
 

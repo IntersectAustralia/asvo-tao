@@ -33,9 +33,4 @@ namespace tao {
       LOG_EXIT();
    }
 
-   tao::galaxy&
-   empty::galaxy()
-   {
-   }
-
 }

@@ -5,7 +5,6 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/tokenizer.hpp>
 #include <soci/sqlite3/soci-sqlite3.h>
-#include "tao/base/application.hh"
 #include "lightcone.hh"
 #include "BSPTree.hh"
 #include "geometry_iterator.hh"
@@ -105,18 +104,11 @@ namespace tao {
       // Is this my first time through? If so begin iterating.
       if( _it == 0 )
          begin();
-
-      // Check if we're done.
+      else
+         ++(*this);
       if( done() )
          _complete = true;
-
-      // If we're not done and this is not the first iteration,
-      // try and advance.
-      else if( _it > 0 )
-         ++(*this);
-
-      // If we're not done, cache the galaxy.
-      if( !_complete )
+      else
          _gal = *(*this);
 
       LOG_EXIT();
@@ -128,6 +120,7 @@ namespace tao {
    tao::galaxy&
    lightcone::galaxy()
    {
+      return _gal;
    }
 
    ///

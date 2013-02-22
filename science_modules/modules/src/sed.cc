@@ -83,9 +83,13 @@ namespace tao {
    sed::execute()
    {
       LOG_ENTER();
+      ASSERT( parents().size() == 1 );
 
-      // for( mpi::lindex ii = 0; ii < _num_galaxies; ++ii )
-      //    _process_galaxy();
+      // Grab the galaxy from the parent object.
+      tao::galaxy& gal = parents().front()->galaxy();
+
+      // Perform the processing.
+      process_galaxy( gal );
 
       LOG_EXIT();
    }
@@ -96,6 +100,8 @@ namespace tao {
    tao::galaxy&
    sed::galaxy()
    {
+      // Just return from the parent.
+      return parents().front()->galaxy();
    }
 
    void

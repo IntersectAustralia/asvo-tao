@@ -15,7 +15,16 @@ namespace tao {
    {
    public:
 
+      static
+      module*
+      factory( const string& name );
+
+   public:
+
       csv( const string& name = string() );
+
+      virtual
+      ~csv();
 
       ///
       ///
@@ -40,22 +49,11 @@ namespace tao {
       void
       execute();
 
-      ///
-      ///
-      ///
-      virtual
-      tao::galaxy&
-      galaxy();
-
-      void
-      set_filename( const string& filename );
-
       void
       open();
 
       void
-      process_galaxy( const tao::galaxy& galaxy,
-		      double app_mag=0.0 );
+      process_galaxy( const tao::galaxy& galaxy );
 
    protected:
 
@@ -67,7 +65,7 @@ namespace tao {
 
       std::ofstream _file;
       string _fn;
-      const lightcone* _lc;
+      list<string> _fields;
    };
 }
 
