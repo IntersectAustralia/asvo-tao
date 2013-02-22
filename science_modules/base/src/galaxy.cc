@@ -39,6 +39,7 @@ namespace tao {
    galaxy::set_redshift( real_type redshift )
    {
       _z = redshift;
+      set_field<double>( "redshift", _z );
    }
 
    const soci::row&
