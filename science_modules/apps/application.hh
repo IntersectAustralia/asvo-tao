@@ -48,6 +48,12 @@ namespace tao {
       _setup_common_options( options::dictionary& dict );
 
       ///
+      /// Massage incoming XML.
+      ///
+      void
+      _preprocess_xml() const;
+
+      ///
       /// Read the XML file into a dictionary.
       ///
       void

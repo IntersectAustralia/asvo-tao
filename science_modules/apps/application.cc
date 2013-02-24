@@ -4,6 +4,7 @@
 #include "tao/modules/modules.hh"
 
 using namespace hpc;
+using namespace pugi;
 
 namespace tao {
 
@@ -60,6 +61,9 @@ namespace tao {
    {
       LOG_ENTER();
 
+      // Preprocess the incoming XML file.
+      _preprocess_xml();
+
       // Load all the modules first up.
       _load_modules();
       _connect_parents();
@@ -103,15 +107,14 @@ namespace tao {
       tao::register_modules();
 
       // Open the primary XML file using pugixml.
-      pugi::xml_document doc;
-      pugi::xml_parse_result result = doc.load_file( _xml_file.c_str() );
-      ASSERT( result );
+      xml_document doc;
+      INSIST( doc.load_file( string( _xml_file + ".processed" ).c_str() ), == true );
 
       // Iterate over the module nodes.
-      pugi::xpath_node_set nodes = doc.select_nodes( "/tao/workflow/*[@module]" );
-      for( const pugi::xpath_node* it = nodes.begin(); it != nodes.end(); ++it )
+      xpath_node_set nodes = doc.select_nodes( "/tao/workflow/*[@module]" );
+      for( const xpath_node* it = nodes.begin(); it != nodes.end(); ++it )
       {
-         pugi::xml_node cur = it->node();
+         xml_node cur = it->node();
          string type = cur.attribute( "module" ).value();
          string name = cur.name();
          tao::factory.create_module( type, name );
@@ -156,13 +159,65 @@ namespace tao {
    }
 
    ///
+   /// Massage incoming XML.
+   ///
+   void
+   application::_preprocess_xml() const
+   {
+      // Open the primary XML file using pugixml.
+      xml_document inp_doc, out_doc;
+      INSIST( inp_doc.load_file( string( _xml_file ).c_str() ), == true );
+
+      // Create tao and workflow nodes.
+      xml_node tao_node = out_doc.append_child( "tao" );
+      xml_node workflow_node = tao_node.append_child( "workflow" );
+
+      // Transfer the lightcone module intact.
+      xml_node lc_node = inp_doc.select_single_node( "/tao/workflow/light-cone" ).node();
+      lc_node = workflow_node.append_copy( lc_node );
+      lc_node.append_attribute( "module" ).set_value( "light-cone" );
+
+      // Copy the SED module, but remove the bandpass filters.
+      xml_node sed_node = inp_doc.select_single_node( "/tao/workflow/sed" ).node();
+      if( sed_node )
+      {
+         sed_node = workflow_node.append_copy( sed_node );
+         sed_node.remove_child( "bandpass-filters" );
+         sed_node.append_attribute( "module" ).set_value( "sed" );
+         sed_node.append_child( "parents" ).append_child( "item" ).append_child( node_pcdata ).set_value( "light-cone" );
+
+         // Create the filter module, copying in the bandpass filters from
+         // the sed module.
+         xml_node filter_node = workflow_node.append_child( "filter" );
+         filter_node.append_attribute( "module" ).set_value( "filter" );
+         filter_node.append_copy( inp_doc.select_single_node( "/tao/workflow/sed/bandpass-filters" ).node() );
+         filter_node.append_child( "parents" ).append_child( "item" ).append_child( node_pcdata ).set_value( "sed" );
+      }
+
+      // Create the csv module, copying in output fields from the
+      // lightcone module.
+      xml_node csv_node = workflow_node.append_child( "csv" );
+      csv_node.append_attribute( "module" ).set_value( "csv" );
+      csv_node.append_copy( inp_doc.select_single_node( "/tao/workflow/light-cone/output-fields" ).node() ).set_name( "fields" );
+      csv_node.append_child( "filename" ).append_child( node_pcdata ).set_value( string( string( inp_doc.select_single_node( "/tao/OutputDir" ).node().first_child().value() ) + "/tao.output" ).c_str() );
+      csv_node.append_child( "parents" ).append_child( "item" ).append_child( node_pcdata ).set_value( sed_node ? "sed" : "light-cone" );
+
+      // Copy database and log directory.
+      tao_node.append_child( "database" ).append_child( node_pcdata ).set_value( inp_doc.select_single_node( "/tao/database" ).node().first_child().value() );
+      tao_node.append_child( "LogDir" ).append_child( node_pcdata ).set_value( inp_doc.select_single_node( "/tao/LogDir" ).node().first_child().value() );
+
+      // Write out the new file.
+      out_doc.save_file( string( _xml_file + ".processed" ).c_str() );
+   }
+
+   ///
    /// Read the XML file into a dictionary.
    ///
    void
    application::_read_xml( options::dictionary& dict ) const
    {
       options::xml xml;
-      xml.read( _xml_file, dict, "/tao/*" );
+      xml.read( _xml_file + ".processed", dict, "/tao/*" );
       xml.read( _dbcfg_file, dict );
    }
 
