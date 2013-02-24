@@ -11,6 +11,13 @@ using namespace hpc;
 
 namespace tao {
 
+   // Factory function used to create a new filter module.
+   module*
+   filter::factory( const string& name )
+   {
+      return new filter( name );
+   }
+
    filter::filter( const string& name )
       : module( name )
    {
@@ -27,9 +34,9 @@ namespace tao {
    filter::setup_options( options::dictionary& dict,
                           optional<const string&> prefix )
    {
-      dict.add_option( new options::string( "wavelengths" ), prefix );
+      dict.add_option( new options::string( "wavelengths", "wavelengths.dat" ), prefix );
       dict.add_option( new options::list<options::string>( "bandpass-filters" ), prefix );
-      dict.add_option( new options::string( "vega-spectrum" ), prefix );
+      dict.add_option( new options::string( "vega-spectrum", "A0V_KUR_BB.SED" ), prefix );
    }
 
    ///
@@ -62,7 +69,11 @@ namespace tao {
       process_galaxy( gal, spectra );
 
       // Add values to the galaxy object.
-      gal.set_vector_field<real_type>( "apparant_magnitudes", _mags );
+      for( unsigned ii = 0; ii < _filter_names.size(); ++ii )
+      {
+	 gal.set_field<real_type>( _filter_names[ii] + "_apparent", _app_mags[ii] );
+	 // TODO: Absolute values.
+      }
 
       LOG_EXIT();
    }
@@ -79,8 +90,8 @@ namespace tao {
 
       // Calculate the distance/area for this galaxy. Use 1000
       // points.
-      real_type dist = numerics::redshift_to_luminosity_distance( galaxy.redshift(), 1000 )*1e-3;
-      real_type area = log10( 4.0*M_PI ) + 2.0*log10( dist*3.08568025e24 );
+      real_type dist = numerics::redshift_to_luminosity_distance( galaxy.redshift(), 1000 )*1e-3; // TODO: Check if I need this bit.
+      real_type area = log10( 4.0*M_PI ) + 2.0*log10( dist*3.08568025e24 ); // TODO: Check this calculation.
       LOGLN( "Distance: ", dist );
 
       // Loop over each filter band.
@@ -90,11 +101,11 @@ namespace tao {
 
          // Need to check that there is in fact a spectra.
          if( !num::approx( spec_int, 0.0, 1e-12 ) )
-            _mags[ii] = -2.5*(log10( spec_int ) - area - log10( _filt_int[ii] )) - 48.6;
+            _app_mags[ii] = -2.5*(log10( spec_int ) - area - log10( _filt_int[ii] )) - 48.6;
          else
-            _mags[ii] = 0.0;
+            _app_mags[ii] = 0.0;
       }
-      LOGLN( "Band magnitudes: ", _mags );
+      LOGLN( "Band magnitudes: ", _app_mags );
 
       LOG_EXIT();
    }
@@ -105,19 +116,7 @@ namespace tao {
    const hpc::vector<filter::real_type>::view
    filter::magnitudes() const
    {
-      return _mags;
-   }
-
-   filter::real_type
-   filter::_apparant_magnitude( real_type spectra,
-                                real_type filter,
-                                real_type vega,
-                                real_type distance )
-   {
-      real_type area = log10( 4.0*M_PI ) + 2.0*log10( distance*3.08568025e24 );
-      real_type spec_filt = -2.5*(log10( spectra ) + 20.0 - area - log10( filter )) - 48.6;
-      real_type spec_vega = -2.5*(log10( spectra ) + 20.0 - area - log10( vega ));
-      real_type vega_filt = -2.5*(log10( vega ) - log10( filter )) - 48.6;
+      return _app_mags;
    }
 
    void
@@ -229,6 +228,8 @@ namespace tao {
    filter::_read_options( const options::dictionary& dict,
                           optional<const string&> prefix )
    {
+      LOG_ENTER();
+
       // Get the sub dictionary, if it exists.
       const options::dictionary& sub = prefix ? dict.sub( *prefix ) : dict;
 
@@ -250,16 +251,30 @@ namespace tao {
          _filters.resize( 0 );
          _filt_int.reallocate( filenames.size() );
          _filt_int.resize( 0 );
-         _mags.reallocate( filenames.size() );
+         _app_mags.reallocate( filenames.size() );
+         _abs_mags.reallocate( filenames.size() );
+	 _filter_names.reallocate( filenames.size() );
 
          // Load each filter into memory.
-         for( const auto& fn : filenames )
+	 unsigned ii = 0;
+	 for( const auto fn : filenames )
+	 {
             _load_filter( fn );
+
+	    // Store the field names.
+	    auto it = std::find( fn.rbegin(), fn.rend(), '.' );
+	    it++;
+	    _filter_names[ii] = string( fn.begin(), it.base() );
+	    LOGDLN( "Adding filter by the name: ", _filter_names[ii] );
+	    ++ii;
+	 }
       }
       LOGLN( "Filter integrals: ", _filt_int );
 
       // Get the Vega filename and perform processing.
       _process_vega( sub.get<string>( "vega-spectrum" ) );
+
+      LOG_EXIT();
    }
 
    void

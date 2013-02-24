@@ -6,6 +6,7 @@
 class filter_suite;
 
 namespace tao {
+   using namespace hpc;
 
    ///
    ///
@@ -19,6 +20,10 @@ namespace tao {
 
       typedef double real_type;
 
+      static
+      module*
+      factory( const string& name );
+
    public:
 
       filter( const string& name = string() );
@@ -30,16 +35,16 @@ namespace tao {
       ///
       virtual
       void
-      setup_options( hpc::options::dictionary& dict,
-                     hpc::optional<const hpc::string&> prefix=hpc::optional<const hpc::string&>() );
+      setup_options( options::dictionary& dict,
+                     optional<const string&> prefix=optional<const string&>() );
 
       ///
       /// Initialise the module.
       ///
       virtual
       void
-      initialise( const hpc::options::dictionary& dict,
-                  hpc::optional<const hpc::string&> prefix=hpc::optional<const hpc::string&>() );
+      initialise( const options::dictionary& dict,
+                  optional<const string&> prefix=optional<const string&>() );
 
       ///
       /// Run the module.
@@ -58,7 +63,7 @@ namespace tao {
       ///
       ///
       ///
-      const hpc::vector<real_type>::view
+      const vector<real_type>::view
       magnitudes() const;
 
    protected:
@@ -70,42 +75,44 @@ namespace tao {
                            real_type distance );
 
       void
-      _prepare_spectra( const hpc::vector<real_type>::view& spectra,
-                        hpc::numerics::spline<real_type>& spline );
+      _prepare_spectra( const vector<real_type>::view& spectra,
+                        numerics::spline<real_type>& spline );
 
       real_type
-      _integrate( const hpc::numerics::spline<real_type>& filter,
-                  const hpc::numerics::spline<real_type>& spectra );
+      _integrate( const numerics::spline<real_type>& filter,
+                  const numerics::spline<real_type>& spectra );
 
       real_type
-      _integrate( const hpc::numerics::spline<real_type>& spectra );
+      _integrate( const numerics::spline<real_type>& spectra );
 
       void
-      _gauss_quad( hpc::vector<real_type>::view crds,
-                   hpc::vector<real_type>::view weights );
+      _gauss_quad( vector<real_type>::view crds,
+                   vector<real_type>::view weights );
 
       void
-      _read_options( const hpc::options::dictionary& dict,
-                     hpc::optional<const hpc::string&> prefix=hpc::optional<const hpc::string&>() );
+      _read_options( const options::dictionary& dict,
+                     optional<const string&> prefix=optional<const string&>() );
 
       void
-      _read_wavelengths( const hpc::string& filename );
+      _read_wavelengths( const string& filename );
 
       void
-      _load_filter( const hpc::string& filename );
+      _load_filter( const string& filename );
 
       void
-      _process_vega( const hpc::string& filename );
+      _process_vega( const string& filename );
 
    protected:
 
-      hpc::vector<real_type> _waves;
-      hpc::vector<real_type>::view _spec;
-      hpc::vector<hpc::numerics::spline<real_type>> _filters;
-      hpc::vector<real_type> _filt_int;
-      hpc::vector<real_type> _vega_int;
-      hpc::vector<real_type> _vega_mag;
-      hpc::vector<real_type> _mags;
+      vector<real_type> _waves;
+      vector<real_type>::view _spec;
+      vector<numerics::spline<real_type>> _filters;
+      vector<real_type> _filt_int;
+      vector<real_type> _vega_int;
+      vector<real_type> _vega_mag;
+      vector<real_type> _app_mags;
+      vector<real_type> _abs_mags;
+      vector<string> _filter_names;
    };
 }
 
