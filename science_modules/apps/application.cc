@@ -198,7 +198,8 @@ namespace tao {
       // lightcone module.
       xml_node csv_node = workflow_node.append_child( "csv" );
       csv_node.append_attribute( "module" ).set_value( "csv" );
-      csv_node.append_copy( inp_doc.select_single_node( "/tao/workflow/light-cone/output-fields" ).node() ).set_name( "fields" );
+      xml_node output_fields_node = csv_node.append_copy( inp_doc.select_single_node( "/tao/workflow/light-cone/output-fields" ).node() );
+      output_fields_node.set_name( "fields" );
       csv_node.append_child( "filename" ).append_child( node_pcdata ).set_value( string( string( inp_doc.select_single_node( "/tao/OutputDir" ).node().first_child().value() ) + "/tao.output" ).c_str() );
       csv_node.append_child( "parents" ).append_child( "item" ).append_child( node_pcdata ).set_value( sed_node ? "sed" : "light-cone" );
 
@@ -207,6 +208,21 @@ namespace tao {
       if( rf_node )
       {
          rf_node = workflow_node.append_copy( rf_node );
+      }
+
+      // Automatically add apparent magnitudes onto the output list.
+      if( sed_node )
+      {
+         auto bpfs = inp_doc.select_nodes( "/tao/workflow/sed/bandpass-filters/item" );
+         for( auto bpf : bpfs )
+         {
+            string tmp = bpf.node().first_child().value();
+            auto it = std::find( tmp.rbegin(), tmp.rend(), '.' );
+            it++;
+            string field_name( tmp.begin(), it.base() );
+            field_name += "_apparent";
+            output_fields_node.append_child( "item" ).append_child( node_pcdata ).set_value( field_name.c_str() );
+         }
       }
 
       // Copy database and log directory.
