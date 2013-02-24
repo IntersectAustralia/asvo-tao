@@ -202,6 +202,13 @@ namespace tao {
       csv_node.append_child( "filename" ).append_child( node_pcdata ).set_value( string( string( inp_doc.select_single_node( "/tao/OutputDir" ).node().first_child().value() ) + "/tao.output" ).c_str() );
       csv_node.append_child( "parents" ).append_child( "item" ).append_child( node_pcdata ).set_value( sed_node ? "sed" : "light-cone" );
 
+      // Copy the record filter node.
+      xml_node rf_node = inp_doc.select_single_node( "/tao/workflow/record-filter" ).node();
+      if( rf_node )
+      {
+         rf_node = workflow_node.append_copy( rf_node );
+      }
+
       // Copy database and log directory.
       tao_node.append_child( "database" ).append_child( node_pcdata ).set_value( inp_doc.select_single_node( "/tao/database" ).node().first_child().value() );
       tao_node.append_child( "LogDir" ).append_child( node_pcdata ).set_value( inp_doc.select_single_node( "/tao/LogDir" ).node().first_child().value() );
