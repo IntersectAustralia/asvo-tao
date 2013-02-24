@@ -9,7 +9,7 @@ from tao.settings import OUTPUT_FORMATS
 from taoui_light_cone.forms import Form as LightConeForm
 from taoui_sed.forms import Form as SEDForm
 from tao.tests.support import stripped_joined_lines
-from tao.tests.support.factories import SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, UserFactory, StellarModelFactory, SnapshotFactory
+from tao.tests.support.factories import SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, UserFactory, StellarModelFactory, SnapshotFactory, BandPassFilterFactory
 from tao.tests.support.xml import XmlDiffMixin
 
 from tao.tests.support import UtcPlusTen
@@ -28,8 +28,11 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         self.filter_float = DataSetPropertyFactory.create(dataset=self.dataset, data_type=DataSetProperty.TYPE_FLOAT)
         self.dataset.default_filter_field = self.filter
         self.dataset.save()
-
         SnapshotFactory.create(dataset=self.dataset)
+
+        self.stellar_model = StellarModelFactory.create()
+        self.bandpass = BandPassFilterFactory.create()
+
         self.user = UserFactory.create()
         #expected_timestamp = "2012-11-13 13:45:32+1000"
         time.frozen_time = datetime.datetime(2012, 11, 13, 13, 45, 32, 0, UtcPlusTen())
@@ -45,6 +48,9 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
             'redshift_min': '1',
             'redshift_max': '2',
             }
+        self.default_form_values['sed'] = {
+            'apply_sed': False,
+        }
         self.default_form_values['record_filter'] = {'filter' : NO_FILTER}
 
     def tearDown(self):
@@ -135,6 +141,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
 
         self.assertEqual({}, light_cone_form.errors)
         self.assertTrue(light_cone_form.is_valid())
+
 
     def test_min_and_max_not_optional_for_default_filter(self):
         light_cone_form = make_form(self.default_form_values,LightConeForm,{},prefix='light_cone')
@@ -255,3 +262,24 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         self.assertFalse(redshift_min_overflow_form.is_valid())
         self.assertEqual(['Ensure that there are no more than 20 digits in total.'], redshift_min_overflow_form.errors['redshift_min'])
 
+    def test_sed_fields_not_required_for_no_sed(self):
+        sed_form_no_sed = make_form(self.default_form_values, SEDForm, {})
+
+        self.assertEqual({}, sed_form_no_sed.errors)
+        self.assertTrue(sed_form_no_sed.is_valid())
+
+    def test_sed_fields_required_for_sed(self):
+        sed_form = make_form(self.default_form_values, SEDForm, {'apply_sed': True}, prefix='sed')
+
+        self.assertFalse(sed_form.is_valid())
+        self.assertEqual(['This field is required.'], sed_form.errors['band_pass_filters'])
+
+    def test_dust_model_required_for_dust(self):
+        sed_form_with_dust = make_form(self.default_form_values, SEDForm,
+                                       {'apply_sed': True,
+                                        'apply_dust': True,
+                                        'single_stellar_population_model': self.stellar_model.id,
+                                        'band_pass_filters': self.bandpass.id,},
+                                       prefix='sed')
+        self.assertFalse(sed_form_with_dust.is_valid())
+        self.assertEqual(['This field is required.'], sed_form_with_dust.errors['select_dust_model'])
