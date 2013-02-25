@@ -56,6 +56,7 @@ namespace tao {
    void
    filter::execute()
    {
+      _timer.start();
       LOG_ENTER();
       ASSERT( parents().size() == 1 );
 
@@ -76,12 +77,14 @@ namespace tao {
       }
 
       LOG_EXIT();
+      _timer.stop();
    }
 
    void
    filter::process_galaxy( const tao::galaxy& galaxy,
                            const vector<real_type>& spectra )
    {
+      _timer.start();
       LOG_ENTER();
 
       // Prepare the spectra.
@@ -108,9 +111,10 @@ namespace tao {
          else
             _app_mags[ii] = 0.0;
       }
-      LOGLN( "Band magnitudes: ", _app_mags );
+      LOGDLN( "Band magnitudes: ", _app_mags );
 
       LOG_EXIT();
+      _timer.stop();
    }
 
    ///
@@ -239,7 +243,7 @@ namespace tao {
       {
          // Get the wavelengths filename.
          string filename = sub.get<string>( "wavelengths" );
-         LOGLN( "Using wavelengths filename \"", filename, "\"" );
+         LOGDLN( "Using wavelengths filename \"", filename, "\"" );
 
          // Load the wavelengths.
          _read_wavelengths( filename );
@@ -272,7 +276,7 @@ namespace tao {
 	    ++ii;
 	 }
       }
-      LOGLN( "Filter integrals: ", _filt_int );
+      LOGDLN( "Filter integrals: ", _filt_int );
 
       // Get the Vega filename and perform processing.
       _process_vega( sub.get<string>( "vega-spectrum" ) );
@@ -383,12 +387,12 @@ namespace tao {
       spline.set_knots( knots );
       for( unsigned ii = 0; ii < _filters.size(); ++ii )
          _vega_int[ii] = _integrate( spline, _filters[ii] );
-      LOGLN( "Vega integrals: ", _vega_int );
+      LOGDLN( "Vega integrals: ", _vega_int );
 
       // Calculate the Vega magnitudes.
       _vega_mag.reallocate( _filters.size() );
       for( unsigned ii = 0; ii < _filters.size(); ++ii )
          _vega_mag[ii] = -2.5*log10( _vega_int[ii]/_filt_int[ii] ) - 48.6;
-      LOGLN( "Vega magnitudes: ", _vega_mag );
+      LOGDLN( "Vega magnitudes: ", _vega_mag );
    }
 }

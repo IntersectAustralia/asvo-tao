@@ -86,7 +86,7 @@ namespace tao {
       /// Get current galaxy.
       ///
       const tao::galaxy
-      operator*() const;
+      operator*();
 
       ///
       /// Get current redshift.

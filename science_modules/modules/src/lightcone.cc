@@ -99,6 +99,7 @@ namespace tao {
    void
    lightcone::execute()
    {
+      _timer.start();
       LOG_ENTER();
 
       // Is this my first time through? If so begin iterating.
@@ -112,6 +113,7 @@ namespace tao {
          _gal = *(*this);
 
       LOG_EXIT();
+      _timer.stop();
    }
 
    ///
@@ -129,6 +131,7 @@ namespace tao {
    void
    lightcone::begin()
    {
+      _timer.start();
       LOG_ENTER();
 
       // Reset the timers.
@@ -174,6 +177,7 @@ namespace tao {
       }
 
       LOG_EXIT();
+      _timer.stop();
    }
 
    ///
@@ -182,6 +186,7 @@ namespace tao {
    bool
    lightcone::done()
    {
+      _timer.start();
       LOG_ENTER();
 
       // We are done when we are out of tables.
@@ -192,6 +197,7 @@ namespace tao {
          _db_disconnect();
 
       LOG_EXIT();
+      _timer.stop();
       return result;
    }
 
@@ -201,6 +207,7 @@ namespace tao {
    void
    lightcone::operator++()
    {
+      _timer.start();
       LOG_ENTER();
 
       if( ++_cur_row == _rows->end() )
@@ -228,14 +235,16 @@ namespace tao {
       }
 
       LOG_EXIT();
+      _timer.stop();
    }
 
    ///
    /// Get current galaxy.
    ///
    const tao::galaxy
-   lightcone::operator*() const
+   lightcone::operator*()
    {
+      _timer.start();
       LOG_ENTER();
 
       tao::galaxy gal( *_cur_row, _table_names[_cur_table] );
@@ -248,6 +257,7 @@ namespace tao {
       gal.set_redshift( _distance_to_redshift( dist ) );
 
       LOG_EXIT();
+      _timer.stop();
       return gal;
    }
 
@@ -279,7 +289,7 @@ namespace tao {
       table_names.deallocate();
 
       // Are we using the BSP tree system?
-      if( _accel_method == "bsp" )
+      if( _accel_method == "bsp" && _box_type != "box" )
       {
 	 // Prepare a BSP tree.
 	 BSPtree bsp( _bsp_step, _dbname, _dbhost, _dbport, _dbuser, _dbpass );
@@ -318,7 +328,7 @@ namespace tao {
 	 std::copy( table_name_set.begin(), table_name_set.end(), table_names.begin() );
 	 LOGDLN( "BSP table names: ", table_names );
       }
-      else if( _accel_method == "direct" )
+      else if( _accel_method == "direct" && _box_type != "box" )
       {
 	 table_iterator<real_type> it(
 	    _sql,
@@ -968,8 +978,9 @@ namespace tao {
       _setup_redshift_ranges();
 
       // Query the table names we'll be using. Only need to do
-      // this here if we are not using the BSP system.
-      if( _accel_method == "none" )
+      // this here if we are not using the BSP system, or we are
+      // using the box method.
+      if( _accel_method == "none" || _box_type == "box" )
 	 _query_table_names( _table_names );
 
       // Redshift ranges.

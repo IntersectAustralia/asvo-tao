@@ -82,6 +82,7 @@ namespace tao {
    void
    sed::execute()
    {
+      _timer.start();
       LOG_ENTER();
       ASSERT( parents().size() == 1 );
 
@@ -97,16 +98,18 @@ namespace tao {
       gal.set_vector_field<real_type>( "total_spectra", _total_spectra );
 
       LOG_EXIT();
+      _timer.stop();
    }
 
    void
    sed::process_galaxy( const tao::galaxy& galaxy )
    {
+      _timer.start();
       LOG_ENTER();
 
       // Cache the galaxy ID.
       unsigned gal_id = galaxy.id();
-      LOGLN( "Processing galaxy with ID ", gal_id );
+      LOGDLN( "Processing galaxy with ID ", gal_id );
 
       // Do we need to load a fresh table?
       if( galaxy.tree_id() != _cur_tree_id )
@@ -127,10 +130,11 @@ namespace tao {
       for( unsigned ii = 0; ii < _num_spectra; ++ii )
          _total_spectra[ii] = _disk_spectra[ii] + _bulge_spectra[ii];
 
-      LOGLN( "Disk: ", _disk_spectra );
-      LOGLN( "Bulge: ", _bulge_spectra );
-      LOGLN( "Total: ", _total_spectra );
+      LOGDLN( "Disk: ", _disk_spectra );
+      LOGDLN( "Bulge: ", _bulge_spectra );
+      LOGDLN( "Total: ", _total_spectra );
       LOG_EXIT();
+      _timer.stop();
    }
 
    vector<sed::real_type>::view
@@ -155,7 +159,7 @@ namespace tao {
    sed::_process_time( mpi::lindex time_idx )
    {
       LOG_ENTER();
-      LOGLN( "Processing time ", time_idx );
+      LOGDLN( "Processing time ", time_idx );
 
       _sum_spectra( time_idx, _disk_age_metals[time_idx], _disk_age_masses[time_idx], _disk_spectra );
       _sum_spectra( time_idx, _bulge_age_metals[time_idx], _bulge_age_masses[time_idx], _bulge_spectra );
@@ -174,7 +178,7 @@ namespace tao {
       // Interpolate the metallicity to an index.
       unsigned metal_idx = _interp_metal( metal );
       ASSERT( metal_idx < _num_metals );
-      LOGLN( "Found metal index ", metal_idx, " from metallicity of ", metal );
+      LOGDLN( "Found metal index ", metal_idx, " from metallicity of ", metal );
 
       // Calculate the base index for the ssp table.
       size_t base = time_idx*_num_spectra*_num_metals + metal_idx;
@@ -379,9 +383,9 @@ namespace tao {
       // Extract the counts.
       _num_spectra = sub.get<unsigned>( "num-spectra" );
       _num_metals = sub.get<unsigned>( "num-metals" );
-      LOGLN( "Number of times: ", _bin_ages.size() );
-      LOGLN( "Number of spectra: ", _num_spectra );
-      LOGLN( "Number of metals: ", _num_metals );
+      LOGDLN( "Number of times: ", _bin_ages.size() );
+      LOGDLN( "Number of spectra: ", _num_spectra );
+      LOGDLN( "Number of metals: ", _num_metals );
 
       // Get the SSP filename.
       _read_ssp( sub.get<string>( "single-stellar-population-model" ) );
@@ -426,7 +430,7 @@ namespace tao {
 
       // Allocate. Note that the ordering goes time,spectra,metals.
       _ssp.reallocate( _bin_ages.size()*_num_spectra*_num_metals );
-      LOGLN( "Reallocated SSP array to ", _ssp.size() );
+      LOGDLN( "Reallocated SSP array to ", _ssp.size() );
 
       // Read in the file in one big go.
       for( unsigned ii = 0; ii < _ssp.size(); ++ii )

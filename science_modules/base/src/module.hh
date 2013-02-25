@@ -62,6 +62,9 @@ namespace tao {
       const string&
       name() const;
 
+      double
+      time() const;
+
    protected:
 
       void
@@ -89,6 +92,8 @@ namespace tao {
       unsigned _cur_restart_it;
       string _dbtype, _dbname, _dbhost, _dbport, _dbuser, _dbpass;
       string _tree_pre;
+
+      profile::timer _timer;
    };
 
 }
