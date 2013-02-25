@@ -98,6 +98,9 @@ namespace tao {
 
 	 // Mark the conclusion of the run.
 	 LOGILN( runtime(), ",end,successful" );
+
+	 // Dump timings.
+	 _pl.log_timings();
       }
 
    protected:

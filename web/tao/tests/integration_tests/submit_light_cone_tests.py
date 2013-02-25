@@ -62,11 +62,8 @@ class SubmitLightConeTests(LiveServerMGFTest):
             'redshift_max': '2',
         }, id_wrap=self.lc_id)
         self.click(self.lc_2select('op_add_all'))
-
-        self.click('tao-tabs-' + MODULE_INDICES['sed'])
-        self.click(self.sed_2select('op_add_all'))
-
         self.submit_mgf_form()
+
         self.assert_on_page('held_jobs')
 
     def test_submit_valid_box_job(self):
@@ -79,11 +76,8 @@ class SubmitLightConeTests(LiveServerMGFTest):
             'snapshot': self.redshifts[0],
         }, id_wrap=self.lc_id)
         self.click(self.lc_2select('op_add_all'))
-
-        self.click('tao-tabs-' + MODULE_INDICES['sed'])
-        self.click(self.sed_2select('op_add_all'))
-
         self.submit_mgf_form()
+
         self.assert_on_page('held_jobs')
         
 
@@ -105,10 +99,6 @@ class SubmitLightConeTests(LiveServerMGFTest):
             'redshift_max': '2',
         }, id_wrap=self.lc_id)
         self.click(self.lc_2select('op_add_all'))
-
-        ## fill in SED form correctly
-        self.click('tao-tabs-' + MODULE_INDICES['sed'])
-        self.click(self.sed_2select('op_add_all'))
 
         self.submit_mgf_form()
         self.assert_on_page('held_jobs')  # The form is valid because the invalid box size field is hidden
@@ -132,9 +122,6 @@ class SubmitLightConeTests(LiveServerMGFTest):
             'snapshot': self.redshifts[0],
         }, id_wrap=self.lc_id)
         self.click(self.lc_2select('op_add_all'))
-
-        self.click('tao-tabs-' + MODULE_INDICES['sed'])
-        self.click(self.sed_2select('op_add_all'))
 
         self.submit_mgf_form()
         self.assert_on_page('held_jobs')  # The form is valid because the invalid light cone fields hidden
