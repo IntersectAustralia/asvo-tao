@@ -227,9 +227,26 @@ fieldset legend {
     margin: 0 0 22px 0;
     padding: 20px;
   }
+
+
+.id_light_cone-redshift_min, .id_light_cone-redshift_max,
+.id_record_filter-min, .id_record_filter-max {
+  width: 25%;
+  display: block;
+  float: left;
+  min-height: 30px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  clear: after;
   }
-
-
+.id_light_cone-redshift_min input, .id_light_cone-redshift_max input,
+.id_record_filter-min input, .id_record_filter-max input {
+  width: 50%;
+}
+.id_light_cone-light_cone_type {
+    clear: both;
+  }
 
 
 
