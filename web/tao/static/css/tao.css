@@ -249,8 +249,42 @@ fieldset legend {
   }
 
 
+.id_sed-apply_sed label, .id_sed-apply_dust label {
+  margin-bottom: -25px;
+  margin-left: 30px;
+  cursor: pointer;
+ }
 
+.id_sed-apply_dust {
+      width: 25%;
+  display: block;
+  float: left;
+  min-height: 30px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  clear: after;
+   }
+ .id_sed-select_dust_model {
+   margin-top: 20px;
+      width: 50%;
+  display: block;
+  float: left;
+  min-height: 30px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  clear: after;
+   }
 
+ .id_sed-select_dust_model label {
+   float: left;
+   margin-right: 20px;
+ }
+ .id_sed-select_dust_model select {
+   width: auto;
+   min-width: 200px;
+ }
 
 #tabs.ui-widget input, #tabs.ui-widget select, #tabs.ui-widget textarea, #tabs.ui-widget button {
   font: normal normal normal 14px/18px "Helvetica Neue", "HelveticaNeue", Helvetica, Arial, sans-serif;
