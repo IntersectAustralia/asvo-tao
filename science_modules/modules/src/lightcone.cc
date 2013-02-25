@@ -279,7 +279,7 @@ namespace tao {
       table_names.deallocate();
 
       // Are we using the BSP tree system?
-      if( _accel_method == "bsp" )
+      if( _accel_method == "bsp" && _box_type != "box" )
       {
 	 // Prepare a BSP tree.
 	 BSPtree bsp( _bsp_step, _dbname, _dbhost, _dbport, _dbuser, _dbpass );
@@ -318,7 +318,7 @@ namespace tao {
 	 std::copy( table_name_set.begin(), table_name_set.end(), table_names.begin() );
 	 LOGDLN( "BSP table names: ", table_names );
       }
-      else if( _accel_method == "direct" )
+      else if( _accel_method == "direct" && _box_type != "box" )
       {
 	 table_iterator<real_type> it(
 	    _sql,
@@ -968,8 +968,9 @@ namespace tao {
       _setup_redshift_ranges();
 
       // Query the table names we'll be using. Only need to do
-      // this here if we are not using the BSP system.
-      if( _accel_method == "none" )
+      // this here if we are not using the BSP system, or we are
+      // using the box method.
+      if( _accel_method == "none" || _box_type == "box" )
 	 _query_table_names( _table_names );
 
       // Redshift ranges.
