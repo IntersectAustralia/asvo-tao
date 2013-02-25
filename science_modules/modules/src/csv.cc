@@ -58,6 +58,7 @@ namespace tao {
    void
    csv::execute()
    {
+      _timer.start();
       LOG_ENTER();
       ASSERT( parents().size() == 1 );
 
@@ -67,6 +68,7 @@ namespace tao {
       process_galaxy( gal );
 
       LOG_EXIT();
+      _timer.stop();
    }
 
    void
@@ -88,6 +90,8 @@ namespace tao {
    void
    csv::process_galaxy( const tao::galaxy& galaxy )
    {
+      _timer.start();
+
       auto it = _fields.cbegin();
       if( it != _fields.cend() )
       {
@@ -99,6 +103,8 @@ namespace tao {
 	 }
          _file << "\n";
       }
+
+      _timer.stop();
    }
 
    void

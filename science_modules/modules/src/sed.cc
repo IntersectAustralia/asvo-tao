@@ -82,6 +82,7 @@ namespace tao {
    void
    sed::execute()
    {
+      _timer.start();
       LOG_ENTER();
       ASSERT( parents().size() == 1 );
 
@@ -97,11 +98,13 @@ namespace tao {
       gal.set_vector_field<real_type>( "total_spectra", _total_spectra );
 
       LOG_EXIT();
+      _timer.stop();
    }
 
    void
    sed::process_galaxy( const tao::galaxy& galaxy )
    {
+      _timer.start();
       LOG_ENTER();
 
       // Cache the galaxy ID.
@@ -131,6 +134,7 @@ namespace tao {
       LOGDLN( "Bulge: ", _bulge_spectra );
       LOGDLN( "Total: ", _total_spectra );
       LOG_EXIT();
+      _timer.stop();
    }
 
    vector<sed::real_type>::view

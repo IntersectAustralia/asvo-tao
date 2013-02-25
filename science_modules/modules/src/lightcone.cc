@@ -99,6 +99,7 @@ namespace tao {
    void
    lightcone::execute()
    {
+      _timer.start();
       LOG_ENTER();
 
       // Is this my first time through? If so begin iterating.
@@ -112,6 +113,7 @@ namespace tao {
          _gal = *(*this);
 
       LOG_EXIT();
+      _timer.stop();
    }
 
    ///
@@ -129,6 +131,7 @@ namespace tao {
    void
    lightcone::begin()
    {
+      _timer.start();
       LOG_ENTER();
 
       // Reset the timers.
@@ -174,6 +177,7 @@ namespace tao {
       }
 
       LOG_EXIT();
+      _timer.stop();
    }
 
    ///
@@ -182,6 +186,7 @@ namespace tao {
    bool
    lightcone::done()
    {
+      _timer.start();
       LOG_ENTER();
 
       // We are done when we are out of tables.
@@ -192,6 +197,7 @@ namespace tao {
          _db_disconnect();
 
       LOG_EXIT();
+      _timer.stop();
       return result;
    }
 
@@ -201,6 +207,7 @@ namespace tao {
    void
    lightcone::operator++()
    {
+      _timer.start();
       LOG_ENTER();
 
       if( ++_cur_row == _rows->end() )
@@ -228,14 +235,16 @@ namespace tao {
       }
 
       LOG_EXIT();
+      _timer.stop();
    }
 
    ///
    /// Get current galaxy.
    ///
    const tao::galaxy
-   lightcone::operator*() const
+   lightcone::operator*()
    {
+      _timer.start();
       LOG_ENTER();
 
       tao::galaxy gal( *_cur_row, _table_names[_cur_table] );
@@ -248,6 +257,7 @@ namespace tao {
       gal.set_redshift( _distance_to_redshift( dist ) );
 
       LOG_EXIT();
+      _timer.stop();
       return gal;
    }
 

@@ -56,6 +56,7 @@ namespace tao {
    void
    filter::execute()
    {
+      _timer.start();
       LOG_ENTER();
       ASSERT( parents().size() == 1 );
 
@@ -76,12 +77,14 @@ namespace tao {
       }
 
       LOG_EXIT();
+      _timer.stop();
    }
 
    void
    filter::process_galaxy( const tao::galaxy& galaxy,
                            const vector<real_type>& spectra )
    {
+      _timer.start();
       LOG_ENTER();
 
       // Prepare the spectra.
@@ -108,6 +111,7 @@ namespace tao {
       LOGDLN( "Band magnitudes: ", _app_mags );
 
       LOG_EXIT();
+      _timer.stop();
    }
 
    ///
