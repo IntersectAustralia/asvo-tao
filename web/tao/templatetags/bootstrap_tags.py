@@ -1,7 +1,7 @@
 from django.template import Context
 from django.template.loader import get_template
 from django import template
-
+from django.forms.fields import CheckboxInput
 
 register = template.Library()
 
@@ -25,3 +25,8 @@ def as_bootstrap_fieldset(fieldset):
     template = get_template('bootstrap/fieldset.html')
     ctx = Context({'fieldset': fieldset})
     return template.render(ctx)
+
+
+@register.filter(name='is_checkbox')
+def is_checkbox(value):
+    return isinstance(value, CheckboxInput)
