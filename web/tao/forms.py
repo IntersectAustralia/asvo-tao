@@ -130,13 +130,13 @@ class RecordFilterForm(BetterForm):
         is_int = False
         if self.ui_holder.is_bound('light_cone'):
             objs = datasets.filter_choices(self.ui_holder.raw_data('light_cone', 'galaxy_model'))
-            choices = [(NO_FILTER, 'No Filter')] + [(x.id, '') for x in objs]
-            record_filter = args[1]['record_filter-filter']
+            choices = [('X-' + NO_FILTER, 'No Filter')] + [('D-' + str(x.id), '') for x in objs]
+            filter_type, record_filter = args[1]['record_filter-filter'].split('-')
             if record_filter != NO_FILTER:
                 obj = DataSetProperty.objects.get(pk = record_filter)
                 is_int = obj.data_type == DataSetProperty.TYPE_INT or obj.data_type == DataSetProperty.TYPE_LONG_LONG
         else:
-            choices = [(NO_FILTER, 'No Filter')]
+            choices = [('X-' + NO_FILTER, 'No Filter')]
         if is_int:
             args = {'required': False,  'decimal_places': 0, 'max_digits': 20, 'widget': forms.TextInput(attrs={'maxlength': '20'})}
             val_class = forms.DecimalField
@@ -148,7 +148,7 @@ class RecordFilterForm(BetterForm):
         self.fields['min'] = val_class(**dict(args.items()+{'label':_('Min'),}.items()))
 
     def check_min_or_max_or_both(self):
-        selected_filter = self.cleaned_data['filter']
+        selected_type, selected_filter = self.cleaned_data['filter'].split('-')
         if selected_filter == NO_FILTER:
             return
         min_field = self.cleaned_data.get('min')
@@ -175,7 +175,7 @@ class RecordFilterForm(BetterForm):
     def to_xml(self, parent_xml_element):
         from tao.xml_util import find_or_create, child_element
 
-        selected_filter = self.cleaned_data['filter']
+        selected_type, selected_filter = self.cleaned_data['filter'].split('-')
         if selected_filter == NO_FILTER:
             return
 

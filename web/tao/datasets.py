@@ -79,6 +79,9 @@ def output_property(id):
 def band_pass_filters():
     return [(x.id, x.label) for x in models.BandPassFilter.objects.order_by('label')]
 
+def band_pass_filters_objects():
+    return models.BandPassFilter.objects.order_by('label')
+
 def band_pass_filter(id):
     return models.BandPassFilter.objects.get(pk=id)
 

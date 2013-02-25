@@ -2,9 +2,17 @@ from django.core import serializers
 from django.utils import simplejson
 from django.http import HttpResponse
 
-from tao.models import Snapshot, Simulation, GalaxyModel, DataSet, DustModel
+from tao.models import Snapshot, Simulation, GalaxyModel, DataSet, DustModel, DataSetProperty, BandPassFilter
 from tao import datasets
 from tao.decorators import researcher_required
+
+def json_my_encode(obj):
+    if isinstance(obj, DataSetProperty):
+        return {'type':'D','pk':obj.pk, 'fields':{'name':obj.name,'units':obj.units,'label':obj.label,'type':obj.data_type}}
+    elif isinstance(obj, BandPassFilter):
+        return {'type':'B','pk':obj.pk, 'fields':{'name':obj.label,'units':'','label':obj.filter_id,'type':DataSetProperty.TYPE_FLOAT}}
+    else:
+        raise TypeError(repr(obj) + " is not JSON serializable by our custom method")
 
 @researcher_required
 def snapshots(request, sid, gid):
@@ -70,7 +78,9 @@ def filters(request, id):
         default_id = str(default_filter.id)
     resp = {'list': [], 'default_id':default_id, 'default_min':data_set.default_filter_min, 'default_max':data_set.default_filter_max}
     resp = simplejson.dumps(resp)
-    resp = resp.replace('[]', serializers.serialize('json', objects))
+    filters = [object for object in objects]
+    bandpass = [object for object in datasets.band_pass_filters_objects()]
+    resp = resp.replace('[]', simplejson.dumps(filters + bandpass, default=json_my_encode))
     return HttpResponse(resp, mimetype="application/json")
 
 @researcher_required

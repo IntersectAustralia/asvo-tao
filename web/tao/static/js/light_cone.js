@@ -12,6 +12,10 @@ jQuery(document).ready(function($) {
         return '#id_record_filter-' + bare_name;
     }
 
+    var item_to_value = function(item) {
+        return item.type + '-' + item.pk;
+    }
+
     // focus on tab (direction=0), next tab (direction=+1) or prev tab (direction=-1)
     var show_tab = function($elem, direction) {
         var this_tab = parseInt($elem.closest('div.tao-tab').attr('tao-number'));
@@ -31,15 +35,6 @@ jQuery(document).ready(function($) {
 
     var lc_output_props_widget = new TwoSidedSelectWidget(lc_id('output_properties'), true);
 
-    lc_output_props_widget.change_event(function(evt){
-        update_filter_options(false, false);
-        var output_properties_values = [];
-        $(lc_id('output_properties')+' option').each(function(i) {
-            output_properties_values.push($(this).html() + ' ');
-        });
-        fill_in_summary('light_cone', 'output_properties', output_properties_values);
-    });
-
     var sed_band_pass_filters_widget = new TwoSidedSelectWidget(sed_id('band_pass_filters'), false);
 
     var display_band_pass_filters_summary = function() {
@@ -49,10 +44,6 @@ jQuery(document).ready(function($) {
         });
         fill_in_summary('sed', 'band_pass_filters', band_pass_filter_values);
     }
-
-    sed_band_pass_filters_widget.change_event(function(evt){
-        display_band_pass_filters_summary();
-    });
 
     var update_output_options = function() {
         var data_set_id = $(lc_id('galaxy_model')).find(':selected').attr('value');
@@ -126,13 +117,17 @@ jQuery(document).ready(function($) {
 
         function add_option($filter, item, current_filter) {
             $option = $('<option/>');
-            $option.attr('value',item.pk);
-            if (item.pk == TAO_NO_FILTER.pk) {
+            $option.attr('value',item_to_value(item));
+            if (item_to_value(item) == item_to_value(TAO_NO_FILTER)) {
                 $option.html(item.fields.label);
             } else {
-                $option.html(item.fields.label + ' (' + item.fields.units + ')');
+                if (item.fields.units != '') {
+                    $option.html(item.fields.name + ' (' + item.fields.units + ')');
+                } else {
+                    $option.html(item.fields.name);
+                }
             }
-            if (item.pk == current_filter) {
+            if (item_to_value(item) == current_filter) {
                 $option.attr('selected','selected');
             }
             $option.data('is_valid', item.fields.data_type==1? isFloat : isInt);
@@ -140,10 +135,13 @@ jQuery(document).ready(function($) {
             $filter.append($option);
         }
 
-        function current_output_properties() {
+        function current_selection() {
             var list = [];
             $(lc_id('output_properties')+' option').each(function(i) {
-                list.push($(this).attr("value").toString());
+                list.push('D-' + $(this).attr("value").toString());
+            });
+            $(sed_id('band_pass_filters')+' option').each(function(i) {
+                list.push('B-' + $(this).attr("value").toString());
             });
             return list;
         }
@@ -151,12 +149,12 @@ jQuery(document).ready(function($) {
         function refresh_select(resp, use_default) {
             var $filter = $(rf_id('filter'));
             var current_filter = $filter.val();
-            var current = current_output_properties();
-            current.push(TAO_NO_FILTER);
-            current.push(resp.default_id.toString());
+            var current = current_selection();
+            current.push(item_to_value(TAO_NO_FILTER));
+            current.push('D-' + resp.default_id.toString());
             if (use_default || current.indexOf(current_filter) == -1) {
-                current_filter = resp.default_id;
-                if (current_filter == '' || current_filter == TAO_NO_FILTER) {
+                current_filter = 'D-' + resp.default_id;
+                if (current_filter == '' || current_filter == item_to_value(TAO_NO_FILTER)) {
                     $(rf_id('min')).val('');
                     $(rf_id('max')).val('');
                 } else {
@@ -168,7 +166,7 @@ jQuery(document).ready(function($) {
             add_option($filter, TAO_NO_FILTER, current_filter);
             var data = resp.list;
             for(i=0; i<data.length; i++) {
-                if (current.indexOf(data[i].pk.toString()) != -1) {
+                if (current.indexOf(item_to_value(data[i])) != -1) {
                     add_option($filter, data[i], current_filter);
                 }
             }
@@ -295,6 +293,21 @@ jQuery(document).ready(function($) {
     //
     // - event handlers for fields -
     //
+
+    lc_output_props_widget.change_event(function(evt){
+        update_filter_options(false, false);
+        var output_properties_values = [];
+        $(lc_id('output_properties')+' option').each(function(i) {
+            output_properties_values.push($(this).html() + ' ');
+        });
+        fill_in_summary('light_cone', 'output_properties', output_properties_values);
+    });
+
+    sed_band_pass_filters_widget.change_event(function(evt){
+        display_band_pass_filters_summary();
+        update_filter_options(false, false);
+    });
+
     $(lc_id('dark_matter_simulation')).change(function(evt){
         var $this = $(this);
         var sim_id = $this.val();
@@ -324,7 +337,7 @@ jQuery(document).ready(function($) {
         var $this = $(this);
         var filter_value = $this.val();
 
-        if (filter_value == TAO_NO_FILTER.pk) {
+        if (filter_value == item_to_value(TAO_NO_FILTER)) {
             $(rf_id('max')).attr('disabled', 'disabled');
             $(rf_id('min')).attr('disabled', 'disabled')
             fill_in_summary('record_filter', 'record_filter', 'No Filter');
@@ -537,7 +550,7 @@ jQuery(document).ready(function($) {
         var min = $(rf_id('min')).val();
         var max = $(rf_id('max')).val();
         var $filter = $(rf_id('filter'));
-        if ($filter.val() == TAO_NO_FILTER.pk) { return true; }
+        if ($filter.val() == item_to_value(TAO_NO_FILTER)) { return true; }
         var $option = $filter.find('option:selected');
         var is_valid = $option.data('is_valid');
         var expected_type = $option.data('expected_type');
@@ -568,7 +581,7 @@ jQuery(document).ready(function($) {
         }
         // cleanup record filter
         var filter = $(rf_id('filter')).val();
-        if (filter == TAO_NO_FILTER.pk) {
+        if (filter == item_to_value(TAO_NO_FILTER)) {
             $(rf_id('min')).val('');
             $(rf_id('max')).val('');
         }

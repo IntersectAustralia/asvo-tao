@@ -206,7 +206,7 @@ class LiveServerTest(django.test.LiveServerTestCase):
     
     def get_expected_filter_options(self, data_set_id):
         normal_parameters = datasets.filter_choices(data_set_id)
-        return [NO_FILTER] + [str(x.id) for x in normal_parameters]
+        return ['X-' + NO_FILTER] + ['D-' + str(x.id) for x in normal_parameters]
 
     def get_actual_snapshot_options(self):
         option_selector = '%s option' % self.lc_id('option')
@@ -258,7 +258,7 @@ class LiveServerTest(django.test.LiveServerTestCase):
         wait(0.5)
 
     def select_record_filter(self, filter):
-        self.select(self.rf_id('filter'), filter.label + ' (' + filter.units + ')')
+        self.select(self.rf_id('filter'), filter.name + ' (' + filter.units + ')')
         
     #a function to make a list of list of text inside the table
     def table_as_text_rows(self, selector):

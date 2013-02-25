@@ -130,7 +130,10 @@ class DataSetProperty(models.Model):
         return self.label
 
     def option_label(self):
-        return "%s (%s)" % (self.label, self.units)
+        if (self.units is not None and self.units != ''):
+            return "%s (%s)" % (self.name, self.units)
+        else:
+            return self.name
 
     @classmethod
     def data_type_enum(cls, val):
