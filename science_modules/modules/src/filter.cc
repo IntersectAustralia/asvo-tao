@@ -90,8 +90,8 @@ namespace tao {
 
       // Calculate the distance/area for this galaxy. Use 1000
       // points.
-      real_type dist = numerics::redshift_to_luminosity_distance( galaxy.redshift(), 1000 )*1e-3; // TODO: Check if I need this bit.
-      real_type area = log10( 4.0*M_PI ) + 2.0*log10( dist*3.08568025e24 ); // TODO: Check this calculation.
+      real_type dist = numerics::redshift_to_luminosity_distance( galaxy.redshift(), 1000 );
+      real_type area = log10( 4.0*M_PI ) + 2.0*log10( dist*3.08568025e24 ); // result in cm^2 (I think)
       LOGLN( "Distance: ", dist );
 
       // Loop over each filter band.
@@ -100,8 +100,11 @@ namespace tao {
          real_type spec_int = _integrate( spectra_spline, _filters[ii] );
 
          // Need to check that there is in fact a spectra.
-         if( !num::approx( spec_int, 0.0, 1e-12 ) )
-            _app_mags[ii] = -2.5*(log10( spec_int ) - area - log10( _filt_int[ii] )) - 48.6;
+         if( !num::approx( spec_int, 0.0, 1e-12 ) &&
+             !num::approx( _filt_int[ii], 0.0, 1e-12 ) )
+         {
+            _app_mags[ii] = -2.5*(log10( spec_int ) + 10 + 10 - area - log10( _filt_int[ii] )) - 48.6;
+         }
          else
             _app_mags[ii] = 0.0;
       }
