@@ -13,6 +13,6 @@ Each dataset is available as a mini- and full- version.
 
 To get the best value from TAO it is recommended that you follow the high level process outlined below (or tell us a better way so we can improve TAO).
 
-# Develop your query using the mini- version of the Dataset
-# After confirming that the query is returning the required data (output properties, bandpass filters, etc.), re-run the query of the full Dataset.
+#. Develop your query using the mini- version of the Dataset
+#. After confirming that the query is returning the required data (output properties, bandpass filters, etc.), re-run the query of the full Dataset.
 
