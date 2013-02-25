@@ -427,11 +427,26 @@ jQuery(document).ready(function($) {
             var item = {pk: $this.attr('value'), fields:{name: $this.text()}};
             pseudo_json.push(item);
             if($this.attr('selected')) {
-               current.push($this.attr("value"));
+               current.push(item.pk);
             }
         });
         lc_output_props_widget.cache_store(pseudo_json);
         lc_output_props_widget.display_selected(current);
+    }
+
+    function init_bandpass_properties() {
+        var current = [];
+        var pseudo_json = [];
+        $(sed_id('band_pass_filters') + ' option').each(function(){
+            var $this = $(this);
+            var item = {pk: $this.attr('value'), fields:{name: $this.text()}};
+            pseudo_json.push(item);
+            if($this.attr('selected')) {
+                current.push(item.pk);
+            }
+        });
+        sed_band_pass_filters_widget.cache_store(pseudo_json);
+        sed_band_pass_filters_widget.display_selected(current);
     }
 
 
@@ -482,21 +497,6 @@ jQuery(document).ready(function($) {
         var single_stellar_population_model_value = $this.find('option:selected').html();
         fill_in_summary('sed', 'single_stellar_population_model', single_stellar_population_model_value);
     });
-
-    function init_band_pass_filters() {
-        var current = [];
-        var pseudo_json = [];
-        $(sed_id('band_pass_filters') + ' option').each(function(){
-            var $this = $(this);
-            var item = {pk: $this.attr('value'), fields:{name: $this.text()}};
-            pseudo_json.push(item);
-            if ($this.attr('selected')) {
-                current.push($this.attr("value"));
-            }
-        });
-        sed_band_pass_filters_widget.cache_store(pseudo_json);
-        sed_band_pass_filters_widget.display_selected(current);
-    }
 
     $(sed_id('apply_dust')).change(function(evt){
         if ($(sed_id('apply_dust')).is(':checked')) {
@@ -626,6 +626,7 @@ jQuery(document).ready(function($) {
     //
     (function(){
         init_output_properties();
+        init_bandpass_properties();
         init_wizard();
         var init_light_cone_type_value = $('input[name="light_cone-light_cone_type"][checked="checked"]').attr('value');
         fill_in_summary('light_cone', 'light_cone_type', init_light_cone_type_value);
@@ -634,7 +635,6 @@ jQuery(document).ready(function($) {
         $(lc_id('catalogue_geometry')).change();
         $('#id_sed-single_stellar_population_model').change();
         $('#id_output_format-supported_formats').change();
-        init_band_pass_filters();
         $(sed_id('apply_sed')).change();
         $(sed_id('apply_dust')).change();
     })();

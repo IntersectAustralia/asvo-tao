@@ -1,5 +1,5 @@
 from tao.tests.integration_tests.helper import LiveServerMGFTest, wait
-from tao.tests.support.factories import SimulationFactory, GalaxyModelFactory, UserFactory, DataSetFactory, DataSetPropertyFactory
+from tao.tests.support.factories import SimulationFactory, GalaxyModelFactory, UserFactory, DataSetFactory, DataSetPropertyFactory, BandPassFilterFactory, StellarModelFactory
 from tao.models import Simulation, DataSet, GalaxyModel
 from tao.settings import MODULE_INDICES
 
@@ -24,6 +24,12 @@ class FilterTests(LiveServerMGFTest):
             dataset.default_filter_field = dsp
             dataset.save()
 
+        self.bp_filters = []
+        for unused in range(3):
+            self.bp_filters.append(BandPassFilterFactory.create())
+
+        StellarModelFactory.create()
+
         username = "user"
         password = "password"
         UserFactory.create(username=username, password=password)
@@ -44,6 +50,67 @@ class FilterTests(LiveServerMGFTest):
         actual_filter_options = self.get_actual_filter_options()
 
         self.assertEqual(expected_filter_options, actual_filter_options)
+
+    def test_filter_options_with_band_pass_filter(self):
+        # check drop-down list correspond to properties of the currently selected simulation and galaxy model
+        # plus selected band-pass filter
+        self.click(self.lc_2select('op_add_all'))
+        self.click('tao-tabs-' + MODULE_INDICES['sed'])
+        self.click(self.sed_id('apply_sed'))
+        self.click(self.sed_2select('op_add_all'))
+        expected_filter_options = self.get_expected_filter_options(self.initial_dataset.id)
+        actual_filter_options = self.get_actual_filter_options()
+
+        self.assertEqual(expected_filter_options, actual_filter_options)
+
+    def test_filter_options_with_selected_band_pass_filter_after_submit_error(self):
+        # check drop-down list correspond to properties of the currently selected simulation and galaxy model
+        # plus selected band-pass filter
+        self.click(self.lc_2select('op_add_all'))
+        self.click('tao-tabs-' + MODULE_INDICES['sed'])
+        self.click(self.sed_id('apply_sed'))
+        self.click(self.sed_2select('op_add_all'))
+        self.click('tao-tabs-' + MODULE_INDICES['record_filter'])
+        self.select_record_filter(self.bp_filters[1])
+
+        self.submit_mgf_form()
+
+        self.assert_errors_on_field(True, self.rf_id('min'))
+        self.assert_errors_on_field(True, self.rf_id('max'))
+
+    def test_filter_options_with_selected_band_pass_filter_submit_ok(self):
+        # check drop-down list correspond to properties of the currently selected simulation and galaxy model
+        # plus selected band-pass filter
+        self.click(self.lc_2select('op_add_all'))
+        self.fill_in_fields({'ra_opening_angle':'123', 'dec_opening_angle': '123', 'redshift_min':'1', 'redshift_max':'20'}, id_wrap=self.lc_id)
+        self.click('tao-tabs-' + MODULE_INDICES['sed'])
+        self.click(self.sed_id('apply_sed'))
+        self.click(self.sed_2select('op_add_all'))
+        self.click('tao-tabs-' + MODULE_INDICES['record_filter'])
+        self.select_record_filter(self.bp_filters[1])
+        self.fill_in_fields({'max': '12.3', 'min': ''}, id_wrap=self.rf_id)
+
+        self.submit_mgf_form()
+
+        self.assert_on_page('held_jobs')
+
+    def test_filter_options_with_selected_band_pass_filter_after_submit_other_errors(self):
+        # check drop-down list correspond to properties of the currently selected simulation and galaxy model
+        # plus selected band-pass filter
+        self.click(self.lc_2select('op_add_all'))
+        self.click('tao-tabs-' + MODULE_INDICES['sed'])
+        self.click(self.sed_id('apply_sed'))
+        self.click(self.sed_2select('op_add_all'))
+        self.click('tao-tabs-' + MODULE_INDICES['record_filter'])
+        self.select_record_filter(self.bp_filters[1])
+        self.fill_in_fields({'max': '12.3', 'min': ''}, id_wrap=self.rf_id)
+
+        self.submit_mgf_form()
+
+        self.assert_errors_on_field(True, self.lc_id('redshift_min'))
+        self.click('tao-tabs-' + MODULE_INDICES['record_filter'])
+        self.assertEqual(self.bp_filters[1].label, self.get_selected_option_text(self.rf_id('filter')))
+        self.assert_attribute_equals('value', [(self.rf_id('min'),''),(self.rf_id('max'),'12.3')])
 
     def test_filter_options_and_is_filter(self):
         # check drop-down list correspond to properties of the currently selected simulation and galaxy model

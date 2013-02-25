@@ -68,6 +68,8 @@ class DataSetPropertyFactory(factory.Factory):
 
 class StellarModelFactory(factory.Factory):
     FACTORY_FOR = StellarModel
+    label = factory.Sequence(lambda n: 'stellar_label_%03d' % int(n))
+    name = factory.Sequence(lambda n: 'stellar_name_%03d' % int(n))
 
 class SnapshotFactory(factory.Factory):
     FACTORY_FOR = Snapshot

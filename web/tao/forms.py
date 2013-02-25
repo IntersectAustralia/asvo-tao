@@ -130,9 +130,9 @@ class RecordFilterForm(BetterForm):
         is_int = False
         if self.ui_holder.is_bound('light_cone'):
             objs = datasets.filter_choices(self.ui_holder.raw_data('light_cone', 'galaxy_model'))
-            choices = [('X-' + NO_FILTER, 'No Filter')] + [('D-' + str(x.id), '') for x in objs]
+            choices = [('X-' + NO_FILTER, 'No Filter')] + [('D-' + str(x.id), '') for x in objs] + [('B-' + str(x.id),'') for x in datasets.band_pass_filters_objects()]
             filter_type, record_filter = args[1]['record_filter-filter'].split('-')
-            if record_filter != NO_FILTER:
+            if filter_type == 'D':
                 obj = DataSetProperty.objects.get(pk = record_filter)
                 is_int = obj.data_type == DataSetProperty.TYPE_INT or obj.data_type == DataSetProperty.TYPE_LONG_LONG
         else:

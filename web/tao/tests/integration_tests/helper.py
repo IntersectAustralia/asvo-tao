@@ -6,6 +6,7 @@ import django.test
 
 import re, os
 import tao.datasets as datasets
+from tao.models import DataSetProperty, BandPassFilter
 from tao.forms import NO_FILTER
 from tao.settings import MODULE_INDICES
 
@@ -206,7 +207,8 @@ class LiveServerTest(django.test.LiveServerTestCase):
     
     def get_expected_filter_options(self, data_set_id):
         normal_parameters = datasets.filter_choices(data_set_id)
-        return ['X-' + NO_FILTER] + ['D-' + str(x.id) for x in normal_parameters]
+        bandpass_parameters = datasets.band_pass_filters_objects()
+        return ['X-' + NO_FILTER] + ['D-' + str(x.id) for x in normal_parameters] + ['B-' + str(x.id) for x in bandpass_parameters]
 
     def get_actual_snapshot_options(self):
         option_selector = '%s option' % self.lc_id('option')
@@ -258,7 +260,17 @@ class LiveServerTest(django.test.LiveServerTestCase):
         wait(0.5)
 
     def select_record_filter(self, filter):
-        self.select(self.rf_id('filter'), filter.name + ' (' + filter.units + ')')
+        text = ''
+        if isinstance(filter, DataSetProperty):
+            units_str = ''
+            if filter.units is not None and len(filter.units) > 0:
+                units_str = ' (' + filter.units + ')'
+            text = filter.name + units_str
+        elif isinstance(filter, BandPassFilter):
+            text = filter.label
+        else:
+            raise TypeError("Unknown filter type")
+        self.select(self.rf_id('filter'), text)
         
     #a function to make a list of list of text inside the table
     def table_as_text_rows(self, selector):
