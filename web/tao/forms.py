@@ -116,7 +116,7 @@ class RecordFilterForm(BetterForm):
     EDIT_TEMPLATE = 'mock_galaxy_factory/record_filter.html'
     MODULE_VERSION = 1
     SUMMARY_TEMPLATE = 'mock_galaxy_factory/record_filter_summary.html'
-    LABEL = 'Record filter'
+    LABEL = 'Global Selection'
 
     class Meta:
         fieldsets = [('primary', {
