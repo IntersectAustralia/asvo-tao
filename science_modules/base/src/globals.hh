@@ -8,6 +8,8 @@ namespace tao {
 
    extern unix::time_type tao_start_time;
 
+   typedef double real_type;
+
    double
    runtime();
 
