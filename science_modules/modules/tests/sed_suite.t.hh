@@ -41,43 +41,37 @@ public:
    }
 
    ///
-   /// Test invalid input array sizes.
-   ///
-   /// The stellar mass production rates and metallicities must all
-   /// be the correct sized arrays in order to function. I expect
-   /// errors to be raised if this is not the case.
+   /// Test invalid input array sizes. The stellar mass production
+   /// rates and metallicities must all be the correct sized arrays
+   /// in order to function. I expect errors to be raised if this
+   /// is not the case.
    ///
    void test_array_sizes()
    {
    }
 
    ///
-   /// Test invalid spectral bands.
-   ///
-   /// While it's possible to run the code with zero spectral
-   /// bands, it doesn't make much sense. I expect an error to
-   /// be raised if this happens.
+   /// Test invalid spectral bands. While it's possible to run
+   /// the code with zero spectral bands, it doesn't make much
+   /// sense. I expect an error to be raised if this happens.
    ///
    void test_num_spectral_bands()
    {
    }
 
    ///
-   /// Test single-stellar population array size.
-   ///
-   /// When reading from the SSP table, it should return a row
-   /// of the same size as the number of spectral bands. I
-   /// expect an error to be thrown if this is not the case.
+   /// Test single-stellar population array size. When reading
+   /// from the SSP table, it should return a row of the same
+   /// size as the number of spectral bands. I expect an error
+   /// to be thrown if this is not the case.
    ///
    void test_ssp_size()
    {
    }
 
    ///
-   /// Test metallicity interpolation.
-   ///
-   /// Check the regions of metallicity interpolation. It should
-   /// look like the following:
+   /// Test metallicity interpolation. Check the regions of
+   /// metallicity interpolation. It should look like the following:
    ///
    ///    Metallicity range | Index
    ///   ---------------------------
@@ -93,54 +87,54 @@ public:
    {
    }
 
-   // ///
-   // /// Test load table linear.
-   // ///
-   // void test_load_table_linear()
-   // {
-   //    lightcone lc;
-   //    sed sed;
-   //    setup_sed( lc, sed );
-   //    sed._load_table( 0, "tree_1" );
+   ///
+   /// Test load table linear.
+   ///
+   void test_load_table_linear()
+   {
+      lightcone lc;
+      sed sed;
+      setup_sed( lc, sed );
+      sed._load_table( 0, "tree_1" );
 
-   //    TS_ASSERT_EQUALS( sed._descs.size(), 4 );
-   //    TS_ASSERT_EQUALS( sed._descs[0], -1 );
-   //    TS_ASSERT_EQUALS( sed._descs[1], 0 );
-   //    TS_ASSERT_EQUALS( sed._descs[2], 1 );
-   //    TS_ASSERT_EQUALS( sed._descs[3], 2 );
+      TS_ASSERT_EQUALS( sed._descs.size(), 4 );
+      TS_ASSERT_EQUALS( sed._descs[0], -1 );
+      TS_ASSERT_EQUALS( sed._descs[1], 0 );
+      TS_ASSERT_EQUALS( sed._descs[2], 1 );
+      TS_ASSERT_EQUALS( sed._descs[3], 2 );
 
-   //    TS_ASSERT_EQUALS( sed._parents.size(), 3 );
-   //    TS_ASSERT_EQUALS( sed._parents.get( 0 ), 1 );
-   //    TS_ASSERT_EQUALS( sed._parents.get( 1 ), 2 );
-   //    TS_ASSERT_EQUALS( sed._parents.get( 2 ), 3 );
-   //    TS_ASSERT( !sed._parents.has( 3 ) );
+      TS_ASSERT_EQUALS( sed._parents.size(), 3 );
+      TS_ASSERT_EQUALS( sed._parents.get( 0 ), 1 );
+      TS_ASSERT_EQUALS( sed._parents.get( 1 ), 2 );
+      TS_ASSERT_EQUALS( sed._parents.get( 2 ), 3 );
+      TS_ASSERT( !sed._parents.has( 3 ) );
 
-   //    TS_ASSERT_EQUALS( sed._sfrs.size(), 4 );
-   //    TS_ASSERT_DELTA( sed._sfrs[0], 10.0, 1e-8 );
-   //    TS_ASSERT_DELTA( sed._sfrs[1], 8.0, 1e-8 );
-   //    TS_ASSERT_DELTA( sed._sfrs[2], 6.0, 1e-8 );
-   //    TS_ASSERT_DELTA( sed._sfrs[3], 4.0, 1e-8 );
+      TS_ASSERT_EQUALS( sed._sfrs.size(), 4 );
+      TS_ASSERT_DELTA( sed._sfrs[0], 10.0, 1e-8 );
+      TS_ASSERT_DELTA( sed._sfrs[1], 8.0, 1e-8 );
+      TS_ASSERT_DELTA( sed._sfrs[2], 6.0, 1e-8 );
+      TS_ASSERT_DELTA( sed._sfrs[3], 4.0, 1e-8 );
 
-   //    TS_ASSERT_EQUALS( sed._bulge_sfrs.size(), 4 );
-   //    TS_ASSERT_DELTA( sed._bulge_sfrs[0], 8.0, 1e-8 );
-   //    TS_ASSERT_DELTA( sed._bulge_sfrs[1], 6.0, 1e-8 );
-   //    TS_ASSERT_DELTA( sed._bulge_sfrs[2], 4.0, 1e-8 );
-   //    TS_ASSERT_DELTA( sed._bulge_sfrs[3], 2.0, 1e-8 );
+      TS_ASSERT_EQUALS( sed._bulge_sfrs.size(), 4 );
+      TS_ASSERT_DELTA( sed._bulge_sfrs[0], 8.0, 1e-8 );
+      TS_ASSERT_DELTA( sed._bulge_sfrs[1], 6.0, 1e-8 );
+      TS_ASSERT_DELTA( sed._bulge_sfrs[2], 4.0, 1e-8 );
+      TS_ASSERT_DELTA( sed._bulge_sfrs[3], 2.0, 1e-8 );
 
-   //    TS_ASSERT_EQUALS( sed._metals.size(), 4 );
-   //    TS_ASSERT_DELTA( sed._metals[0], 0.8, 1e-8 );
-   //    TS_ASSERT_DELTA( sed._metals[1], 0.6, 1e-8 );
-   //    TS_ASSERT_DELTA( sed._metals[2], 0.4, 1e-8 );
-   //    TS_ASSERT_DELTA( sed._metals[3], 0.2, 1e-8 );
+      TS_ASSERT_EQUALS( sed._metals.size(), 4 );
+      TS_ASSERT_DELTA( sed._metals[0], 0.8, 1e-8 );
+      TS_ASSERT_DELTA( sed._metals[1], 0.6, 1e-8 );
+      TS_ASSERT_DELTA( sed._metals[2], 0.4, 1e-8 );
+      TS_ASSERT_DELTA( sed._metals[3], 0.2, 1e-8 );
 
-   //    TS_ASSERT_EQUALS( sed._snaps.size(), 4 );
-   //    TS_ASSERT_EQUALS( sed._snaps[0], 0 );
-   //    TS_ASSERT_EQUALS( sed._snaps[1], 1 );
-   //    TS_ASSERT_EQUALS( sed._snaps[2], 2 );
-   //    TS_ASSERT_EQUALS( sed._snaps[3], 3 );
+      TS_ASSERT_EQUALS( sed._snaps.size(), 4 );
+      TS_ASSERT_EQUALS( sed._snaps[0], 0 );
+      TS_ASSERT_EQUALS( sed._snaps[1], 1 );
+      TS_ASSERT_EQUALS( sed._snaps[2], 2 );
+      TS_ASSERT_EQUALS( sed._snaps[3], 3 );
 
-   //    TS_ASSERT_EQUALS( sed._cur_tree_id, 0 );
-   // }
+      TS_ASSERT_EQUALS( sed._cur_tree_id, 0 );
+   }
 
    ///
    /// Test load table non-linear.
