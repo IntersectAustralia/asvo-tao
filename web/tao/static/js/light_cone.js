@@ -39,9 +39,11 @@ jQuery(document).ready(function($) {
 
     var display_band_pass_filters_summary = function() {
         var band_pass_filter_values = [];
+        band_pass_filter_values.push('<ul>');
         $(sed_id('band_pass_filters')+' option').each(function(i) {
-            band_pass_filter_values.push($(this).html() + ' ');
+            band_pass_filter_values.push('<li>' + $(this).html() + '</li>');
         });
+        band_pass_filter_values.push('</ul>');
         fill_in_summary('sed', 'band_pass_filters', band_pass_filter_values);
     }
 
@@ -295,9 +297,11 @@ jQuery(document).ready(function($) {
     lc_output_props_widget.change_event(function(evt){
         update_filter_options(false, false);
         var output_properties_values = [];
+        output_properties_values.push('<ul');
         $(lc_id('output_properties')+' option').each(function(i) {
-            output_properties_values.push($(this).html() + ' ');
+            output_properties_values.push('<li>' + $(this).html() + '</li>');
         });
+        output_properties_values.push('</ul');
         fill_in_summary('light_cone', 'output_properties', output_properties_values);
     });
 
