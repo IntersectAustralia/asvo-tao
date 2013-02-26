@@ -46,6 +46,9 @@ class FilterTests(LiveServerMGFTest):
     def test_filter_options(self):
         # check drop-down list correspond to properties of the currently selected simulation and galaxy model
         self.click(self.lc_2select('op_add_all'))
+        self.click('tao-tabs-' + MODULE_INDICES['sed'])
+        self.click(self.sed_id('apply_sed'))
+        self.click(self.sed_2select('op_add_all'))
         expected_filter_options = self.get_expected_filter_options(self.initial_dataset.id)
         actual_filter_options = self.get_actual_filter_options()
 
@@ -110,7 +113,7 @@ class FilterTests(LiveServerMGFTest):
         self.assert_errors_on_field(True, self.lc_id('redshift_min'))
         self.click('tao-tabs-' + MODULE_INDICES['record_filter'])
         self.assertEqual(self.bp_filters[1].label, self.get_selected_option_text(self.rf_id('filter')))
-        self.assert_attribute_equals('value', [(self.rf_id('min'),''),(self.rf_id('max'),'12.3')])
+        self.assert_attribute_equals('value', {self.rf_id('min'):'' , self.rf_id('max'):'12.3'})
 
     def test_filter_options_and_is_filter(self):
         # check drop-down list correspond to properties of the currently selected simulation and galaxy model
@@ -121,6 +124,10 @@ class FilterTests(LiveServerMGFTest):
         self.select_dark_matter_simulation(simulation)
         self.select_galaxy_model(galaxy_model)
         self.click(self.lc_2select('op_add_all'))
+        self.click('tao-tabs-' + MODULE_INDICES['sed'])
+        self.click(self.sed_id('apply_sed'))
+        self.click(self.sed_2select('op_add_all'))
+
 
         expected_filter_options = self.get_expected_filter_options(dataset.id)
         actual_filter_options = self.get_actual_filter_options()
@@ -137,6 +144,9 @@ class FilterTests(LiveServerMGFTest):
         self.select_dark_matter_simulation(simulation)
         self.select_galaxy_model(galaxy_model)
         self.click(self.lc_2select('op_add_all'))
+        self.click('tao-tabs-' + MODULE_INDICES['sed'])
+        self.click(self.sed_id('apply_sed'))
+        self.click(self.sed_2select('op_add_all'))
 
         actual_filter_options = self.get_actual_filter_options()
 

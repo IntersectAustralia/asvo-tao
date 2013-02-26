@@ -63,7 +63,7 @@ jQuery(document).ready(function($) {
             },
             success: function(data, status, xhr) {
                 lc_output_props_widget.cache_store(data);
-                lc_output_props_widget.display_selected(current);
+                lc_output_props_widget.display_selected(current, true);
             }
         });
     }
@@ -137,11 +137,11 @@ jQuery(document).ready(function($) {
 
         function current_selection() {
             var list = [];
-            $(lc_id('output_properties')+' option').each(function(i) {
-                list.push('D-' + $(this).attr("value").toString());
+            $.each(lc_output_props_widget.selected(), function(i,value) {
+               list.push('D-' + value);
             });
-            $(sed_id('band_pass_filters')+' option').each(function(i) {
-                list.push('B-' + $(this).attr("value").toString());
+            $.each(sed_band_pass_filters_widget.selected(), function(i,value) {
+                list.push('B-' + value);
             });
             return list;
         }
@@ -183,12 +183,10 @@ jQuery(document).ready(function($) {
             dataType: "json",
             error: function() {
                 alert("Couldn't get filters");
-                update_filter_options.initializing = false;
             },
             success: function(resp, status, xhr) {
                 update_filter_options.current_data = resp;
                 refresh_select(resp, use_default);
-                update_filter_options.initializing = false;
             }
         });
     };
@@ -304,8 +302,8 @@ jQuery(document).ready(function($) {
     });
 
     sed_band_pass_filters_widget.change_event(function(evt){
-        display_band_pass_filters_summary();
         update_filter_options(false, false);
+        display_band_pass_filters_summary();
     });
 
     $(lc_id('dark_matter_simulation')).change(function(evt){
@@ -329,6 +327,7 @@ jQuery(document).ready(function($) {
         show_galaxy_model_info(galaxy_model_id);
         var use_default = !update_filter_options.initializing || !bound;
         update_filter_options(true, use_default); // triggers filter.change
+        update_filter_options.initializing = false;
         update_output_options();
         update_snapshot_options();
     });
@@ -431,7 +430,7 @@ jQuery(document).ready(function($) {
             }
         });
         lc_output_props_widget.cache_store(pseudo_json);
-        lc_output_props_widget.display_selected(current);
+        return current;
     }
 
     function init_bandpass_properties() {
@@ -446,7 +445,7 @@ jQuery(document).ready(function($) {
             }
         });
         sed_band_pass_filters_widget.cache_store(pseudo_json);
-        sed_band_pass_filters_widget.display_selected(current);
+        return current;
     }
 
 
@@ -625,8 +624,12 @@ jQuery(document).ready(function($) {
     //    by dark_matter_simulation
     //
     (function(){
-        init_output_properties();
-        init_bandpass_properties();
+        var current_output = init_output_properties();
+        var current_bandpass = init_bandpass_properties();
+        lc_output_props_widget.display_selected(current_output, false);
+        sed_band_pass_filters_widget.display_selected(current_bandpass, false);
+        lc_output_props_widget.change();
+        sed_band_pass_filters_widget.change();
         init_wizard();
         var init_light_cone_type_value = $('input[name="light_cone-light_cone_type"][checked="checked"]').attr('value');
         fill_in_summary('light_cone', 'light_cone_type', init_light_cone_type_value);

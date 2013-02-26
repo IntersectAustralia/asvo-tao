@@ -93,7 +93,7 @@ var TwoSidedSelectWidget = function(to_id, enable) {
                 }
                 console.log('node value=' + node.value + ' node.text=' + node.text + ' displayed=' + node.displayed);
             }
-            ref.redisplay();
+            ref.redisplay(true);
         });
     };
 
@@ -105,7 +105,18 @@ var TwoSidedSelectWidget = function(to_id, enable) {
         }
     };
 
-    this.display_selected = function(current) {
+    this.selected = function() {
+        var selected = [];
+        for(i=0; i<cache.length; i++) {
+            var item = cache[i];
+            if (item.displayed == 2) {
+                selected.push(item.value + '')
+            }
+        }
+        return selected;
+    }
+
+    this.display_selected = function(current, trigger) {
         $filter_field.empty();
         for(i=0; i<cache.length; i++) {
             var item = cache[i];
@@ -115,10 +126,10 @@ var TwoSidedSelectWidget = function(to_id, enable) {
                 item.displayed = 2;
             }
         }
-        ref.redisplay();
+        ref.redisplay(trigger);
     };
 
-    this.redisplay = function() {
+    this.redisplay = function(trigger) {
         $from.empty();
         $to.empty();
         $.each(cache, function(i,v){
@@ -132,6 +143,12 @@ var TwoSidedSelectWidget = function(to_id, enable) {
                 $option.appendTo($to);
             }
         });
+        if (trigger) {
+            $to.change();
+        }
+    }
+
+    this.change = function() {
         $to.change();
     }
 
