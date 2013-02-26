@@ -86,6 +86,7 @@ namespace tao {
    {
       _timer.start();
       LOG_ENTER();
+      LOGDLN( "Using spectra of: ", spectra );
 
       // Prepare the spectra.
       numerics::spline<real_type> spectra_spline;
@@ -93,23 +94,30 @@ namespace tao {
 
       // Calculate the distance/area for this galaxy. Use 1000
       // points.
+      LOGDLN( "Using redshift of ", galaxy.redshift(), " to calculate distance." );
       real_type dist = numerics::redshift_to_luminosity_distance( galaxy.redshift(), 1000 );
-      real_type area = log10( 4.0*M_PI ) + 2.0*log10( dist*3.08568025e24 ); // result in cm^2 (I think)
+      real_type area = log10( 4.0*M_PI ) + 2.0*log10( dist*3.08568025e24 ); // result in cm^2
       LOGLN( "Distance: ", dist );
+      LOGLN( "Log area: ", area );
 
       // Loop over each filter band.
       for( unsigned ii = 0; ii < _filters.size(); ++ii )
       {
          real_type spec_int = _integrate( spectra_spline, _filters[ii] );
+         LOGDLN( "For filter ", ii, " calculated F_\\nu of ", spec_int );
 
          // Need to check that there is in fact a spectra.
          if( !num::approx( spec_int, 0.0, 1e-12 ) &&
              !num::approx( _filt_int[ii], 0.0, 1e-12 ) )
          {
-            _app_mags[ii] = -2.5*(log10( spec_int ) + 10 + 10 - area - log10( _filt_int[ii] )) - 48.6;
+            _app_mags[ii] = -2.5*(log10( spec_int ) - area - log10( _filt_int[ii] )) - 48.6;
+            // _abs_mags[ii] = -2.5*(log10( spec_int ) - log10( _filt_int[ii] )) - 48.6;
          }
          else
+         {
             _app_mags[ii] = 0.0;
+            _abs_mags[ii] = 0.0;
+         }
       }
       LOGDLN( "Band magnitudes: ", _app_mags );
 
@@ -152,6 +160,10 @@ namespace tao {
       range<real_type> sp_rng( spectra.knots().front()[0], spectra.knots().back()[0] );
       real_type low = std::max( fi_rng.start(), sp_rng.start() );
       real_type upp = std::min( fi_rng.finish(), sp_rng.finish() );
+      LOGDLN( "fi_rng = ", fi_rng );
+      LOGDLN( "sp_rng = ", sp_rng );
+      LOGDLN( "low = ", low );
+      LOGDLN( "upp = ", upp );
 
       auto it = make_interp_iterator(
          boost::make_transform_iterator( filter.knots().begin(), take_first ),
@@ -175,14 +187,18 @@ namespace tao {
          real_type jac_det = 0.5*(M_C/low - M_C/(*it));
          unsigned fi_poly = it.indices()[0] - 1;
          unsigned sp_poly = it.indices()[1] - 1;
+         LOGDLN( "w = ", w );
+         LOGDLN( "jac_det = ", jac_det );
          for( unsigned ii = 0; ii < 4; ++ii )
          {
             real_type x = low + w*0.5*(1.0 + crds[ii]);
+            LOGDLN( "Current x: ", x );
 
             // This integral looks like this because of a change of variable
             // frome wavelength to frequency. Do the math!
             // sum += jac_det*weights[ii]*filter( x, fi_poly )*spectra( x, sp_poly )*x*x*x*x*2.0/(2.9979*M_C);
             sum += jac_det*weights[ii]*filter( x, fi_poly )*spectra( x, sp_poly )*x*x*x*x/(M_C*M_C);
+            LOGDLN( "Partial sum is ", sum );
          }
          low = *it;
       }
@@ -389,7 +405,10 @@ namespace tao {
          _vega_int[ii] = _integrate( spline, _filters[ii] );
       LOGDLN( "Vega integrals: ", _vega_int );
 
-      // Calculate the Vega magnitudes.
+      // Calculate the Vega magnitudes. I'm pretty sure that the
+      // SED we read for Vega is already in erg.s^-1.cm^-2.Hz^-1,
+      // it is already a flux density. So, we don't need any
+      // distance information.
       _vega_mag.reallocate( _filters.size() );
       for( unsigned ii = 0; ii < _filters.size(); ++ii )
          _vega_mag[ii] = -2.5*log10( _vega_int[ii]/_filt_int[ii] ) - 48.6;
