@@ -41,7 +41,8 @@ public:
    //    filt._load_filter( "v.dat" );
    //    filt._process_vega( "A0V_KUR_BB.SED" );
 
-   //    std::cout << "\n" << filt._vega_mag << "\n";
+   //    std::cout << "\n" << filt._integrate( filt._filters[0] ) << "\n";
+   //    std::cout << filt._integrate_nu( filt._filters[0] ) << "\n";
    // }
 
    ///
