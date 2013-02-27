@@ -76,6 +76,22 @@ def is_logarithmic(waves):
 ##
 ##
 ##
+def strip_zeros(waves, values):
+    ii = 0
+    while ii < len(values) and values[ii] == 0.0:
+        ii += 1
+    if ii > 0:
+        ii -= 1
+    jj = len(values) - 1
+    while jj >= 0 and values[jj] == 0.0:
+        jj -= 1
+    if jj < len(values) - 1:
+        jj += 1
+    return waves[ii:jj + 1], values[ii:jj + 1]
+
+##
+##
+##
 def plot_filter(filename):
 
     # Read input file.
@@ -87,6 +103,9 @@ def plot_filter(filename):
             words = line.split()
             waves.append(float(words[0]))
             values.append(float(words[1]))
+
+    # Strip and calculate ranges.
+    waves, values = strip_zeros(waves, values)
     x_rng = calc_range(waves)
     y_rng = calc_range(values);
 
