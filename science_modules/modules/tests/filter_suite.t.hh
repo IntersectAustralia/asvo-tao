@@ -12,6 +12,8 @@ using namespace tao;
 #include "mpi_fixture.hh"
 #include "db_fixture.hh"
 
+#define M_C 2.99792458e18 // angstrom/s
+
 ///
 /// Filter class test suite.
 ///
@@ -45,9 +47,13 @@ public:
    ///
    /// Test process galaxy with unity values. Run the process_galaxy
    /// method with prepared values designed to produce unity as results.
+   /// Note, I've gotten the sytem to produce unity as a result of the
+   /// intensity integral, the magnitudes will not be such.
    ///
    void test_process_galaxy_unity()
    {
+      LOG_FILE( "test.log" );
+
       // Prepare the galaxy object. Unfortunately the filter converts
       // redshift to a distance, which is a tricky calculation. I'll have
       // to factor out the distance at the end.
@@ -57,23 +63,24 @@ public:
       // Prepare the spectra.
       unsigned num_waves = 10;
       vector<real_type> spectra( num_waves );
-      std::fill( spectra.begin(), spectra.end(), 0.1 );
+      std::fill( spectra.begin(), spectra.end(), 3.0*M_C/7.0 );
 
       // Prepare the filter's wavelengths.
       string wave_filename = "waves.txt"; //tmpnam( NULL );
       {
          std::ofstream file( wave_filename );
          for( unsigned ii = 0; ii < num_waves; ++ii )
-            file << (ii + 1)*0.1 << "\n";
+            file << 1.0 + (double)ii*(1.0/(double)(num_waves - 1)) << "\n";
       }
 
-      // Prepare a band-pass filter.
+      // Prepare a band-pass filter. Be sure the wavelengths
+      // are offset to the filter's to test the splines.
       string bpf_filename = "bpf.txt"; //tmpnam( NULL );
       {
          std::ofstream file( bpf_filename );
          file << 15 << "\n";
          for( unsigned ii = 0; ii < 15; ++ii )
-            file << (ii + 1)*(1/14.0) << "  " << 1.0/15.0 << "\n";
+            file << 1.0 + ii*(1/14.0) << "  " << 1.0 << "\n";
       }
 
       // Prepare the filter object.
@@ -86,6 +93,13 @@ public:
       // Call the function.
       filt.process_galaxy( gal, spectra );
 
-      std::cout << "\n" << filt._app_mags << "\n";
+      // Check that the apparent magnitude is right.
+      real_type dist = numerics::redshift_to_luminosity_distance( 1.0, 1000 );
+      real_type area = log10( 4.0*M_PI ) + 2.0*log10( dist*3.08568025e24 ); // result in cm^2
+      real_type f_a = log10( 1.0 ) - area - log10( 1.0 );
+      real_type mag_ab = -2.5*f_a - 48.6;
+
+      // Do the check.
+      TS_ASSERT_DELTA( filt._app_mags[0], mag_ab, 1e-8 );
    }
 };
