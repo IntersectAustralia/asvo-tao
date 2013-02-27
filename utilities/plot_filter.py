@@ -1,4 +1,4 @@
-#/usr/bin/env python
+#!/usr/bin/env python
 
 ##
 ## Plot a transmission filter. Provided an ascii transmission
@@ -25,54 +25,73 @@
 ##   200  1.0
 ##   300  0.1
 ##
-## The script accepts two arguments, the first being the
-## filename of the filter, the second being a flag indicating
-## if you wish to use a logarithmic wavelength scale (defaults to
-## false).
+## The script accepts one arguments, that being the filename of
+## the filter.
 ##
 
-import sys
+import sys, math
 import matplotlib.pyplot as plt
 
-if __name__ == '__main__':
-    if len(sys.argv) < 2:
-        print "Please supply filter filename."
-        sys.exit()
+##
+##
+##
+def calc_range(array):
+    rng = None
+    for a in array:
+        if not rng:
+            rng = [a, a]
+        else:
+            if a < rng[0]:
+                rng[0] = a
+            if a > rng[1]:
+                rng[1] = a
+    return rng
+
+##
+##
+##
+def is_logarithmic(waves):
+
+    # Calculate the mean.
+    wcopy = list(waves)
+    wcopy.sort()
+    avg = 0.0
+    for ii in range(len(wcopy) - 1):
+        avg += waves[ii + 1] - waves[ii];
+    avg /= len(wcopy) - 1;
+
+    # Calculate the variance.
+    var = 0.0
+    for ii in range(len(wcopy) - 1):
+        var += ((waves[ii + 1] - waves[ii]) - avg)**2;
+    var /= len(wcopy) - 1;
+
+    # Now the standard deviation.
+    dev = math.sqrt(var)
+
+    # If the standard deviation is greater than 1000, use
+    # a logarithmic scale.
+    return dev >= 1000.0
+
+##
+##
+##
+def plot_filter(filename):
 
     # Read input file.
     waves = []
     values = []
-    x_rng = None
-    y_rng = None
-    with open(sys.argv[1]) as filt_file:
+    with open(filename) as filt_file:
         filt_file.readline()
         for line in filt_file:
             words = line.split()
             waves.append(float(words[0]))
             values.append(float(words[1]))
-            if not x_rng:
-                x_rng = [waves[0], waves[0]]
-            else:
-                if waves[-1] < x_rng[0]:
-                    x_rng[0] = waves[-1]
-                if waves[-1] > x_rng[1]:
-                    x_rng[1] = waves[-1]
-            if not y_rng:
-                y_rng = [values[0], values[0]]
-            else:
-                if values[-1] < y_rng[0]:
-                    y_rng[0] = values[-1]
-                if values[-1] > y_rng[1]:
-                    y_rng[1] = values[-1]
-
-    # Check for logarithmic graph.
-    use_log = False
-    if len(sys.argv) >= 3:
-        if sys.argv[2].lower() in ['yes', 't', 'true', '1']:
-            use_log = True
+    x_rng = calc_range(waves)
+    y_rng = calc_range(values);
 
     # Setup variables.
-    filter_name = sys.argv[1][:sys.argv[1].rfind('.')]
+    filter_name = filename[:filename.rfind('.')]
     color = '#ff4444'
 
     # Plot.
@@ -82,9 +101,17 @@ if __name__ == '__main__':
     plt.ylabel('Transmission')
     plt.xlim(x_rng)
     plt.xlabel(ur'Wavelength (\u00c5)')
-    if use_log:
+    if is_logarithmic(waves):
         plt.xscale('log')
     plt.grid(True)
     plt.title(filter_name)
     # plt.show()
-    plt.savefig(filter_name + '.pdf')
+    plt.savefig(filter_name + '.png')
+    plt.clf()
+
+if __name__ == '__main__':
+    if len(sys.argv) < 2:
+        print "Please supply filter filename."
+        sys.exit()
+
+    plot_filter(sys.argv[1])
