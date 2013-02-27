@@ -99,6 +99,12 @@ namespace tao {
       return _parents.front()->galaxy();
    }
 
+   void
+   module::log_metrics()
+   {
+      LOGILN( name(), " runtime: ", time(), " (s)" );
+   }
+
    bool
    module::complete() const
    {

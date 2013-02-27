@@ -277,6 +277,19 @@ namespace tao {
       return _output_fields;
    }
 
+   unsigned
+   lightcone::num_boxes() const
+   {
+      return _boxes.size();
+   }
+
+   void
+   lightcone::log_metrics()
+   {
+      module::log_metrics();
+      LOGILN( _name, " number of boxes: ", num_boxes() );
+   }
+
    ///
    /// Get a list of tree table names to search.
    ///

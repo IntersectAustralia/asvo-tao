@@ -93,9 +93,9 @@ namespace tao {
       LOGILN( runtime(), ",end,successful" );
 
       // Dump timing information to the end of the info file.
-      LOGILN( "Module total timings (s):", setindent( 2 ) );
+      LOGILN( "Module metrics:", setindent( 2 ) );
       for( auto module : tao::factory )
-	 LOGILN( module->name(), ": ", module->time() );
+         module->log_metrics();
 
       LOG_EXIT();
    }

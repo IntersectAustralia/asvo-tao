@@ -55,6 +55,10 @@ namespace tao {
       void
       process_galaxy( const tao::galaxy& galaxy );
 
+      virtual
+      void
+      log_metrics();
+
    protected:
 
       void
@@ -66,6 +70,7 @@ namespace tao {
       std::ofstream _file;
       string _fn;
       list<string> _fields;
+      unsigned long long _records;
    };
 }
 

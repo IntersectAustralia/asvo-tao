@@ -97,6 +97,13 @@ namespace tao {
       const set<string>&
       output_fields() const;
 
+      unsigned
+      num_boxes() const;
+
+      virtual
+      void
+      log_metrics();
+
    protected:
 
       ///

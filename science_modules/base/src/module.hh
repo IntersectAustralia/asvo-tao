@@ -56,6 +56,10 @@ namespace tao {
       tao::galaxy&
       galaxy();
 
+      virtual
+      void
+      log_metrics();
+
       bool
       complete() const;
 

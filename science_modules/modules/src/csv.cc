@@ -12,7 +12,8 @@ namespace tao {
    }
 
    csv::csv( const string& name )
-      : module( name )
+      : module( name ),
+        _records( 0 )
    {
    }
 
@@ -48,6 +49,9 @@ namespace tao {
 
       // Open the file.
       open();
+
+      // Reset the number of records.
+      _records = 0;
 
       LOG_EXIT();
    }
@@ -104,7 +108,17 @@ namespace tao {
          _file << "\n";
       }
 
+      // Increment number of written records.
+      ++_records;
+
       _timer.stop();
+   }
+
+   void
+   csv::log_metrics()
+   {
+      module::log_metrics();
+      LOGILN( _name, " number of records written: ", _records );
    }
 
    void
