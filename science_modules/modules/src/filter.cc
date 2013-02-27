@@ -184,7 +184,8 @@ namespace tao {
       while( !num::approx( *it++, upp, 1e-7 ) )
       {
          real_type w = *it - low;
-         real_type jac_det = 0.5*(M_C/low - M_C/(*it));
+         // real_type jac_det = 0.5*(M_C/low - M_C/(*it));
+         real_type jac_det = 0.5*w;
          unsigned fi_poly = it.indices()[0] - 1;
          unsigned sp_poly = it.indices()[1] - 1;
          LOGDLN( "w = ", w );
@@ -193,16 +194,20 @@ namespace tao {
          {
             real_type x = low + w*0.5*(1.0 + crds[ii]);
             LOGDLN( "Current x: ", x );
+            LOGDLN( "Filter: ", filter( x, fi_poly ) );
+            LOGDLN( "Spectra: ", spectra( x, sp_poly ) );
 
             // This integral looks like this because of a change of variable
             // frome wavelength to frequency. Do the math!
             // sum += jac_det*weights[ii]*filter( x, fi_poly )*spectra( x, sp_poly )*x*x*x*x*2.0/(2.9979*M_C);
-            sum += jac_det*weights[ii]*filter( x, fi_poly )*spectra( x, sp_poly )*x*x*x*x/(M_C*M_C);
+            // sum += jac_det*weights[ii]*filter( x, fi_poly )*spectra( x, sp_poly )*x*x*x*x/(M_C*M_C);
+            sum += jac_det*weights[ii]*filter( x, fi_poly )*spectra( x, sp_poly )*x*x/M_C;
             LOGDLN( "Partial sum is ", sum );
          }
          low = *it;
       }
 
+      LOGDLN( "Integrated to ", sum );
       return sum;
    }
 
