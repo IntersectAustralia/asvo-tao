@@ -97,8 +97,8 @@ namespace tao {
       LOGDLN( "Using redshift of ", galaxy.redshift(), " to calculate distance." );
       real_type dist = numerics::redshift_to_luminosity_distance( galaxy.redshift(), 1000 );
       real_type area = log10( 4.0*M_PI ) + 2.0*log10( dist*3.08568025e24 ); // result in cm^2
-      LOGLN( "Distance: ", dist );
-      LOGLN( "Log area: ", area );
+      LOGDLN( "Distance: ", dist );
+      LOGDLN( "Log area: ", area );
 
       // Loop over each filter band.
       for( unsigned ii = 0; ii < _filters.size(); ++ii )

@@ -6,6 +6,7 @@
 class skymaker_suite;
 
 namespace tao {
+   using namespace hpc;
 
    ///
    ///
@@ -19,6 +20,10 @@ namespace tao {
 
       typedef double real_type;
 
+      static
+      module*
+      factory( const string& name );
+
    public:
 
       skymaker( const string& name = string() );
@@ -30,16 +35,16 @@ namespace tao {
       ///
       virtual
       void
-      setup_options( hpc::options::dictionary& dict,
-                     hpc::optional<const hpc::string&> prefix=hpc::optional<const hpc::string&>() );
+      setup_options( options::dictionary& dict,
+                     optional<const string&> prefix = optional<const string&>() );
 
       ///
       /// Initialise the module.
       ///
       virtual
       void
-      initialise( const hpc::options::dictionary& dict,
-                  hpc::optional<const hpc::string&> prefix=hpc::optional<const hpc::string&>() );
+      initialise( const options::dictionary& dict,
+                  optional<const string&> prefix = optional<const string&>() );
 
       ///
       /// Run the module.
@@ -48,22 +53,19 @@ namespace tao {
       void
       execute();
 
-      ///
-      ///
-      ///
       virtual
-      tao::galaxy&
-      galaxy();
+      void
+      finalise();
 
       void
-      add_galaxy( const tao::galaxy& galaxy,
-                  real_type magnitude );
+      process_galaxy( const tao::galaxy& galaxy,
+		      real_type magnitude );
 
    protected:
 
       void
-      _read_options( const hpc::options::dictionary& dict,
-                     hpc::optional<const hpc::string&> prefix );
+      _read_options( const options::dictionary& dict,
+                     optional<const string&> prefix );
 
       void
       _setup_list();
@@ -73,7 +75,8 @@ namespace tao {
 
    protected:
 
-      hpc::string _list_filename, _conf_filename;
+      string _mag_field;
+      string _list_filename, _conf_filename;
       std::ofstream _list_file;
       unsigned _img_w, _img_h;
       real_type _ra0, _dec0;

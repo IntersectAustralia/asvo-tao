@@ -64,7 +64,7 @@ struct pipeline
          real_type v_mag = filter.magnitudes()[1]; // V band
 
          // Add to the skymaker object list.
-         skymaker.add_galaxy( gal, v_mag );
+         skymaker.process_galaxy( gal, v_mag );
 
          LOG( setindent( -2 ) );
       }
