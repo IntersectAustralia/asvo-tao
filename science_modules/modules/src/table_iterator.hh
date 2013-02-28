@@ -171,10 +171,10 @@ namespace tao {
 	    for( const auto& wall : _walls )
 	    {
 	       array<real_type,3> tmp_min, tmp_max;
-	       for( unsigned ii = 0; ii < 3; ++ii )
+	       for( unsigned jj = 0; jj < 3; ++jj )
 	       {
-		  tmp_min[ii] = min[_axis[ii]] + wall[_axis[ii]]*_box_size + _offs[_axis[ii]];
-		  tmp_max[ii] = max[_axis[ii]] + wall[_axis[ii]]*_box_size + _offs[_axis[ii]];
+		  tmp_min[jj] = min[_axis[jj]] + wall[_axis[jj]]*_box_size + _offs[_axis[jj]];
+		  tmp_max[jj] = max[_axis[jj]] + wall[_axis[jj]]*_box_size + _offs[_axis[jj]];
 	       }
 	       if( _check_overlap( tmp_min, tmp_max ) )
 	       {
