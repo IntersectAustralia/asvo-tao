@@ -89,6 +89,10 @@ namespace tao {
       // Run.
       _execute();
 
+      // Finalise all the modules.
+      for( auto module : tao::factory )
+         module->finalise();
+
       // Mark the conclusion of the run.
       LOGILN( runtime(), ",end,successful" );
 
@@ -228,6 +232,15 @@ namespace tao {
             field_name += "_apparent";
             output_fields_node.append_child( "item" ).append_child( node_pcdata ).set_value( field_name.c_str() );
          }
+      }
+
+      // Check for and copy the skymaker module.
+      xml_node sky_node = inp_doc.select_single_node( "/tao/workflow/skymaker" ).node();
+      if( sky_node )
+      {
+         sky_node = workflow_node.append_copy( sky_node );
+         sky_node.append_attribute( "module" ).set_value( "skymaker" );
+         sky_node.append_child( "parents" ).append_child( "item" ).append_child( node_pcdata ).set_value( "filter" );
       }
 
       // Copy database and log directory.

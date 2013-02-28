@@ -53,6 +53,10 @@ namespace tao {
       execute() = 0;
 
       virtual
+      void
+      finalise();
+
+      virtual
       tao::galaxy&
       galaxy();
 

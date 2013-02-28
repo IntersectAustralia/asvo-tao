@@ -92,6 +92,11 @@ namespace tao {
       initialise( dict, string( prefix ) );
    }
 
+   void
+   module::finalise()
+   {
+   }
+
    tao::galaxy&
    module::galaxy()
    {
