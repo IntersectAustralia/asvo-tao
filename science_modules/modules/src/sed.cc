@@ -305,8 +305,8 @@ namespace tao {
       // The numbers that come from SAGE at least, are stored in units
       // of 1e10*h. I need to multiply out by these units to get it
       // to natural units.
-      real_type add_dm = (_sfrs[id] - _bulge_sfrs[id])*dt*1e10*_h;
-      real_type add_bm = _bulge_sfrs[id]*dt*1e10*_h;
+      real_type add_dm = (_sfrs[id] - _bulge_sfrs[id])*dt*1e10/_h;
+      real_type add_bm = _bulge_sfrs[id]*dt*1e10/_h;
       real_type new_dm = _disk_age_masses[bin] + add_dm;
       real_type new_bm = _bulge_age_masses[bin] + add_bm;
       if( new_dm > 0.0 )
