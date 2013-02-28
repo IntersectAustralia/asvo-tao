@@ -64,16 +64,22 @@ namespace tao {
       tao::galaxy& gal = parents().front()->galaxy();
 
       // Extract things from the galaxy object.
-      vector<real_type>& spectra = gal.vector_value<real_type>( "total_spectra" );
+      vector<real_type>& total_spectra = gal.vector_value<real_type>( "total_spectra" );
+      vector<real_type>& disk_spectra = gal.vector_value<real_type>( "disk_spectra" );
+      vector<real_type>& bulge_spectra = gal.vector_value<real_type>( "bulge_spectra" );
 
       // Perform the processing.
-      process_galaxy( gal, spectra );
+      process_galaxy( gal, total_spectra, disk_spectra, bulge_spectra );
 
       // Add values to the galaxy object.
       for( unsigned ii = 0; ii < _filter_names.size(); ++ii )
       {
-	 gal.set_field<real_type>( _filter_names[ii] + "_apparent", _app_mags[ii] );
-	 // TODO: Absolute values.
+	 gal.set_field<real_type>( _filter_names[ii] + "_apparent", _total_app_mags[ii] );
+	 gal.set_field<real_type>( _filter_names[ii] + "_absolute", _total_abs_mags[ii] );
+	 gal.set_field<real_type>( _filter_names[ii] + "_disk_apparent", _disk_app_mags[ii] );
+	 gal.set_field<real_type>( _filter_names[ii] + "_disk_absolute", _disk_abs_mags[ii] );
+	 gal.set_field<real_type>( _filter_names[ii] + "_bulge_apparent", _bulge_app_mags[ii] );
+	 gal.set_field<real_type>( _filter_names[ii] + "_bulge_absolute", _bulge_abs_mags[ii] );
       }
 
       LOG_EXIT();
@@ -82,15 +88,12 @@ namespace tao {
 
    void
    filter::process_galaxy( const tao::galaxy& galaxy,
-                           const vector<real_type>& spectra )
+                           const vector<real_type>::view& total_spectra,
+                           const vector<real_type>::view& disk_spectra,
+                           const vector<real_type>::view& bulge_spectra )
    {
       _timer.start();
       LOG_ENTER();
-      LOGDLN( "Using spectra of: ", spectra );
-
-      // Prepare the spectra.
-      numerics::spline<real_type> spectra_spline;
-      _prepare_spectra( spectra, spectra_spline );
 
       // Calculate the distance/area for this galaxy. Use 1000
       // points.
@@ -99,6 +102,28 @@ namespace tao {
       real_type area = log10( 4.0*M_PI ) + 2.0*log10( dist*3.08568025e24 ); // result in cm^2
       LOGDLN( "Distance: ", dist );
       LOGDLN( "Log area: ", area );
+
+      // Process total, disk and bulge.
+      _process_spectra( galaxy, total_spectra, area, _total_app_mags, _total_abs_mags );
+      _process_spectra( galaxy, disk_spectra, area, _disk_app_mags, _bulge_abs_mags );
+      _process_spectra( galaxy, bulge_spectra, area, _bulge_app_mags, _bulge_abs_mags );
+
+      LOG_EXIT();
+      _timer.stop();
+   }
+
+   void
+   filter::_process_spectra( const tao::galaxy& galaxy,
+                             const vector<real_type>::view& spectra,
+                             real_type area,
+                             vector<real_type>& apparent_mags,
+                             vector<real_type>& absolute_mags )
+   {
+      LOGDLN( "Using spectra of: ", spectra );
+
+      // Prepare the spectra.
+      numerics::spline<real_type> spectra_spline;
+      _prepare_spectra( spectra, spectra_spline );
 
       // Loop over each filter band.
       for( unsigned ii = 0; ii < _filters.size(); ++ii )
@@ -110,19 +135,15 @@ namespace tao {
          if( !num::approx( spec_int, 0.0, 1e-12 ) &&
              !num::approx( _filt_int[ii], 0.0, 1e-12 ) )
          {
-            _app_mags[ii] = -2.5*(log10( spec_int ) - area - log10( _filt_int[ii] )) - 48.6;
-            // _abs_mags[ii] = -2.5*(log10( spec_int ) - log10( _filt_int[ii] )) - 48.6;
+            apparent_mags[ii] = -2.5*(log10( spec_int ) - area - log10( _filt_int[ii] )) - 48.6;
+            absolute_mags[ii] = -2.5*(log10( spec_int ) - log10( _filt_int[ii] )) - 48.6;
          }
          else
          {
-            _app_mags[ii] = 0.0;
-            _abs_mags[ii] = 0.0;
+            apparent_mags[ii] = 0.0;
+            absolute_mags[ii] = 0.0;
          }
       }
-      LOGDLN( "Band magnitudes: ", _app_mags );
-
-      LOG_EXIT();
-      _timer.stop();
    }
 
    ///
@@ -131,7 +152,7 @@ namespace tao {
    const hpc::vector<filter::real_type>::view
    filter::magnitudes() const
    {
-      return _app_mags;
+      return _total_app_mags;
    }
 
    void
@@ -279,8 +300,12 @@ namespace tao {
          _filters.resize( 0 );
          _filt_int.reallocate( filenames.size() );
          _filt_int.resize( 0 );
-         _app_mags.reallocate( filenames.size() );
-         _abs_mags.reallocate( filenames.size() );
+         _total_app_mags.reallocate( filenames.size() );
+         _total_abs_mags.reallocate( filenames.size() );
+         _disk_app_mags.reallocate( filenames.size() );
+         _disk_abs_mags.reallocate( filenames.size() );
+         _bulge_app_mags.reallocate( filenames.size() );
+         _bulge_abs_mags.reallocate( filenames.size() );
 	 _filter_names.reallocate( filenames.size() );
 
          // Load each filter into memory.

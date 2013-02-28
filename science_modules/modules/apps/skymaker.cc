@@ -56,11 +56,13 @@ struct pipeline
 
          // Calculate the SED and cache results.
          sed.process_galaxy( gal );
-         vector<real_type>::view spectra = sed.total_spectra();
+         vector<real_type>::view total_spectra = sed.total_spectra();
+         vector<real_type>::view disk_spectra = sed.disk_spectra();
+         vector<real_type>::view bulge_spectra = sed.bulge_spectra();
 
          // Perform filtering and cache the particular
          // band we're interested in.
-         filter.process_galaxy( gal, spectra );
+         filter.process_galaxy( gal, total_spectra, disk_spectra, bulge_spectra );
          real_type v_mag = filter.magnitudes()[1]; // V band
 
          // Add to the skymaker object list.

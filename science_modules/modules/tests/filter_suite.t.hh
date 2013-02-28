@@ -88,11 +88,15 @@ public:
       filter filt;
       filt._read_wavelengths( wave_filename );
       filt._load_filter( bpf_filename );
-      filt._app_mags.resize( 1 );
-      filt._abs_mags.resize( 1 );
+      filt._total_app_mags.resize( 1 );
+      filt._total_abs_mags.resize( 1 );
+      filt._disk_app_mags.resize( 1 );
+      filt._disk_abs_mags.resize( 1 );
+      filt._bulge_app_mags.resize( 1 );
+      filt._bulge_abs_mags.resize( 1 );
 
       // Call the function.
-      filt.process_galaxy( gal, spectra );
+      filt.process_galaxy( gal, spectra, spectra, spectra );
 
       // Check that the apparent magnitude is right.
       real_type dist = numerics::redshift_to_luminosity_distance( 1.0, 1000 );
@@ -101,6 +105,6 @@ public:
       real_type mag_ab = -2.5*f_a - 48.6;
 
       // Do the check.
-      TS_ASSERT_DELTA( filt._app_mags[0], mag_ab, 1e-8 );
+      TS_ASSERT_DELTA( filt._total_app_mags[0], mag_ab, 1e-8 );
    }
 };

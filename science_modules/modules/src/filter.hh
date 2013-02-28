@@ -58,7 +58,9 @@ namespace tao {
       ///
       void
       process_galaxy( const tao::galaxy& galaxy,
-                      const vector<real_type>& spectra );
+                      const vector<real_type>::view& total_spectra,
+                      const vector<real_type>::view& disk_spectra,
+                      const vector<real_type>::view& bulge_spectra );
 
       ///
       ///
@@ -67,6 +69,13 @@ namespace tao {
       magnitudes() const;
 
    protected:
+
+      void
+      _process_spectra( const tao::galaxy& galaxy,
+                        const vector<real_type>::view& spectra,
+                        real_type area,
+                        vector<real_type>& apparent_mags,
+                        vector<real_type>& absolute_mags );
 
       real_type
       _apparant_magnitude( real_type spectra,
@@ -110,8 +119,9 @@ namespace tao {
       vector<real_type> _filt_int;
       vector<real_type> _vega_int;
       vector<real_type> _vega_mag;
-      vector<real_type> _app_mags;
-      vector<real_type> _abs_mags;
+      vector<real_type> _total_app_mags, _total_abs_mags;
+      vector<real_type> _disk_app_mags, _disk_abs_mags;
+      vector<real_type> _bulge_app_mags, _bulge_abs_mags;
       vector<string> _filter_names;
    };
 }

@@ -75,7 +75,7 @@ namespace tao {
 
    protected:
 
-      string _mag_field;
+      string _mag_field, _bulge_mag_field;
       string _list_filename, _conf_filename;
       std::ofstream _list_file;
       unsigned _img_w, _img_h;

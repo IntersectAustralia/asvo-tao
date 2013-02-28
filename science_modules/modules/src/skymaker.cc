@@ -33,6 +33,7 @@ namespace tao {
                             optional<const string&> prefix )
    {
       dict.add_option( new options::string( "magnitude-field" ), prefix );
+      dict.add_option( new options::string( "bulge-magnitude-field" ), prefix );
       dict.add_option( new options::integer( "image_width", 1024 ), prefix );
       dict.add_option( new options::integer( "image_height", 1024 ), prefix );
       dict.add_option( new options::real( "origin_ra", 0.25*M_PI ), prefix );
@@ -114,7 +115,7 @@ namespace tao {
 
    void
    skymaker::process_galaxy( const tao::galaxy& galaxy,
-			     real_type magnitude )
+                             real_type magnitude )
    {
       _timer.start();
 
@@ -145,14 +146,29 @@ namespace tao {
              y >= 0.0 && y <= (real_type)_img_h )
          {
             _list_file << "200 " << x << " " << y << " " << magnitude;
-	    _list_file << " ";
-	    _list_file << generate_uniform<real_type>( 0.1, 0.9 ) << " ";
-	    _list_file << generate_uniform<real_type>( 1, 4 ) << " ";
-	    _list_file << generate_uniform<real_type>( 0.6, 0.9 ) << " ";
+
+            // Try and extract some more values.
+            real_type bulge_magnitude = galaxy.value<real_type>( _bulge_mag_field );
+            real_type disc_scale_radius = galaxy.value<real_type>( "discscaleradius" )/0.71; // divided by h
+            real_type stellar_mass = galaxy.value<real_type>( "stellarmass" )*1e10/0.71;
+            real_type bulge_mass = galaxy.value<real_type>( "bulgemass" )*1e10/0.71;
+
+            // Do some calculations.
+            real_type ang_diam_dist = numerics::redshift_to_angular_diameter_distance( galaxy.redshift() );
+            real_type bulge_to_total = bulge_magnitude/magnitude;
+            real_type bulge_equiv_radius = atan( 0.5*(bulge_mass/stellar_mass)*disc_scale_radius/ang_diam_dist )*206264.806;
+            real_type disc_scale_length = atan( disc_scale_radius/ang_diam_dist )*206264.806;
+
+            std::cout << bulge_to_total << ", " << bulge_equiv_radius << ", " << disc_scale_length << "\n";
+
+            _list_file << " " << bulge_magnitude/magnitude;
+            _list_file << " " << bulge_equiv_radius;
+            _list_file << " 0.8";
 	    _list_file << generate_uniform<real_type>( 0, 360 ) << " ";
-	    _list_file << generate_uniform<real_type>( 1, 4 ) << " ";
-	    _list_file << generate_uniform<real_type>( 0, 1 ) << " ";
+            _list_file << " " << disc_scale_length;
+            _list_file << " 0.2";
 	    _list_file << generate_uniform<real_type>( 0, 360 ) << "\n";
+
             ++_cnt;
          }
 
@@ -171,6 +187,7 @@ namespace tao {
 
       // What magnitude name are we interested in?
       _mag_field = sub.get<string>( "magnitude-field" );
+      _bulge_mag_field = sub.get<string>( "bulge-magnitude-field" );
 
       // Get image dimensions.
       _img_w = sub.get<unsigned>( "image_width" );
