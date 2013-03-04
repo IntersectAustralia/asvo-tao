@@ -81,6 +81,9 @@ namespace tao {
 	 gal.set_field<real_type>( _filter_names[ii] + "_bulge_apparent", _bulge_app_mags[ii] );
 	 gal.set_field<real_type>( _filter_names[ii] + "_bulge_absolute", _bulge_abs_mags[ii] );
       }
+      gal.set_field<real_type>( "total_luminosity", _total_lum );
+      gal.set_field<real_type>( "disk_luminosity", _disk_lum );
+      gal.set_field<real_type>( "bulge_luminosity", _bulge_lum );
 
       LOG_EXIT();
       _timer.stop();
@@ -104,9 +107,9 @@ namespace tao {
       LOGDLN( "Log area: ", area );
 
       // Process total, disk and bulge.
-      _process_spectra( galaxy, total_spectra, area, _total_app_mags, _total_abs_mags );
-      _process_spectra( galaxy, disk_spectra, area, _disk_app_mags, _bulge_abs_mags );
-      _process_spectra( galaxy, bulge_spectra, area, _bulge_app_mags, _bulge_abs_mags );
+      _process_spectra( galaxy, total_spectra, area, _total_lum, _total_app_mags, _total_abs_mags );
+      _process_spectra( galaxy, disk_spectra, area, _disk_lum, _disk_app_mags, _bulge_abs_mags );
+      _process_spectra( galaxy, bulge_spectra, area, _bulge_lum, _bulge_app_mags, _bulge_abs_mags );
 
       LOG_EXIT();
       _timer.stop();
@@ -116,6 +119,7 @@ namespace tao {
    filter::_process_spectra( const tao::galaxy& galaxy,
                              const vector<real_type>::view& spectra,
                              real_type area,
+			     real_type& luminosity,
                              vector<real_type>& apparent_mags,
                              vector<real_type>& absolute_mags )
    {
@@ -124,6 +128,9 @@ namespace tao {
       // Prepare the spectra.
       numerics::spline<real_type> spectra_spline;
       _prepare_spectra( spectra, spectra_spline );
+
+      // Calculate luminosity.
+      luminosity = _integrate( spectra_spline );
 
       // Loop over each filter band.
       for( unsigned ii = 0; ii < _filters.size(); ++ii )

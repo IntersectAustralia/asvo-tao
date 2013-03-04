@@ -74,6 +74,7 @@ namespace tao {
       _process_spectra( const tao::galaxy& galaxy,
                         const vector<real_type>::view& spectra,
                         real_type area,
+			real_type& luminosity,
                         vector<real_type>& apparent_mags,
                         vector<real_type>& absolute_mags );
 
@@ -123,6 +124,7 @@ namespace tao {
       vector<real_type> _disk_app_mags, _disk_abs_mags;
       vector<real_type> _bulge_app_mags, _bulge_abs_mags;
       vector<string> _filter_names;
+      real_type _total_lum, _disk_lum, _bulge_lum;
    };
 }
 
