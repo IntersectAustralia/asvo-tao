@@ -1,5 +1,5 @@
 from tao.tests.integration_tests.helper import LiveServerMGFTest, wait
-from tao.tests.support.factories import SimulationFactory, GalaxyModelFactory, UserFactory, DataSetFactory, DataSetPropertyFactory, BandPassFilterFactory, StellarModelFactory
+from tao.tests.support.factories import SimulationFactory, GalaxyModelFactory, UserFactory, DataSetFactory, DataSetPropertyFactory, BandPassFilterFactory, StellarModelFactory, SnapshotFactory
 from tao.models import Simulation, DataSet, GalaxyModel
 from tao.settings import MODULE_INDICES
 
@@ -10,11 +10,14 @@ class FilterTests(LiveServerMGFTest):
 
         simulation1 = SimulationFactory.create()
         simulation2 = SimulationFactory.create()
+        self.redshifts = ['1.123456789', '2.123456789', '3.123456789']
 
         for unused in range(4):
             galaxy_model = GalaxyModelFactory.create()
             dataset = DataSetFactory.create(simulation=simulation1, galaxy_model=galaxy_model)
             DataSetPropertyFactory.create(dataset=dataset)
+            for redshift in self.redshifts:
+                SnapshotFactory.create(dataset=dataset, redshift=redshift)
 
         for unused in range(5):
             galaxy_model = GalaxyModelFactory.create()
@@ -23,6 +26,8 @@ class FilterTests(LiveServerMGFTest):
             dsp = DataSetPropertyFactory.create(dataset=dataset, is_filter=False)
             dataset.default_filter_field = dsp
             dataset.save()
+            for redshift in self.redshifts:
+                SnapshotFactory.create(dataset=dataset, redshift=redshift)
 
         self.bp_filters = []
         for unused in range(3):

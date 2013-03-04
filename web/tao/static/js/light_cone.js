@@ -95,7 +95,7 @@ jQuery(document).ready(function($) {
                     var item = data[i];
                     $option = $('<option/>');
                     $option.attr('value',item.pk);
-                    $option.html(item.fields.redshift);
+                    $option.html(parseFloat(item.fields.redshift).toFixed(3));
                     if (item.pk == initial_snapshot) {
                         $option.attr('selected','selected');
                     }

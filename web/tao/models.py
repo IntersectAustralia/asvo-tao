@@ -145,7 +145,7 @@ class DataSetProperty(models.Model):
 
 class Snapshot(models.Model):
     dataset = models.ForeignKey(DataSet)
-    redshift = models.DecimalField(max_digits=20, decimal_places=3)
+    redshift = models.DecimalField(max_digits=20, decimal_places=10)
 
     class Meta:
         unique_together = ('dataset', 'redshift')
