@@ -73,9 +73,6 @@ namespace tao {
       double
       time() const;
 
-      double
-      time() const;
-
    protected:
 
       void
