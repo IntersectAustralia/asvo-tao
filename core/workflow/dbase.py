@@ -2,7 +2,7 @@ import pickle, os, logging,string
 import pg
 import EnumerationLookup
 
-
+## Interface to postgresql DB
 class DBInterface(object):
     
     def __init__(self,Options):
