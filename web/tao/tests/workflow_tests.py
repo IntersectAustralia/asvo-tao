@@ -43,7 +43,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
         self.dataset = DataSetFactory.create(simulation=self.simulation, galaxy_model=self.galaxy_model)
         self.filter = DataSetPropertyFactory.create(name='CentralMvir', units="Msun/h", dataset=self.dataset)
         self.output_prop = DataSetPropertyFactory.create(name='CentralMvir', dataset=self.dataset, is_filter=False)
-        self.snapshot = SnapshotFactory.create(dataset=self.dataset, redshift='0.1')
+        self.snapshot = SnapshotFactory.create(dataset=self.dataset, redshift="0.1234567891")
         self.stellar_model = StellarModelFactory.create(name='Stella')
         self.band_pass_filter = BandPassFilterFactory.create()
         self.dust_model = DustModelFactory.create()
@@ -302,7 +302,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                         <num-cones>1</num-cones> -->
 
                         <!-- The min and max redshifts to filter by -->
-                        <redshift>%(redshift).1f</redshift>
+                        <redshift>%(redshift).10f</redshift>
 
                         <!-- Size of box to return -->
                         <query-box-size units="Mpc">%(box_size)d</query-box-size>
@@ -464,7 +464,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                         <num-cones>1</num-cones> -->
 
                         <!-- The min and max redshifts to filter by -->
-                        <redshift>%(redshift).1f</redshift>
+                        <redshift>%(redshift).10f</redshift>
 
                         <!-- Size of box to return -->
                         <query-box-size units="Mpc">%(box_size)d</query-box-size>
@@ -617,7 +617,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                         <num-cones>1</num-cones> -->
 
                         <!-- The min and max redshifts to filter by -->
-                        <redshift>%(redshift).1f</redshift>
+                        <redshift>%(redshift).10f</redshift>
 
                         <!-- Size of box to return -->
                         <query-box-size units="Mpc">%(box_size)d</query-box-size>

@@ -73,7 +73,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
         self.select(self.lc_id('catalogue_geometry'), 'Box')
         self.fill_in_fields({
             'box_size': '9',
-            'snapshot': self.redshifts[0],
+            'snapshot': "%.3f" % self.redshifts[0],
         }, id_wrap=self.lc_id)
         self.click(self.lc_2select('op_add_all'))
         self.submit_mgf_form()
@@ -119,7 +119,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
         self.select(self.lc_id('catalogue_geometry'), 'Box')
         self.fill_in_fields({
             'box_size': '1',
-            'snapshot': self.redshifts[0],
+            'snapshot': "%.3f" % self.redshifts[0],
         }, id_wrap=self.lc_id)
         self.click(self.lc_2select('op_add_all'))
 

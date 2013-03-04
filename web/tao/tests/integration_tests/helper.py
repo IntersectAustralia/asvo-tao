@@ -211,11 +211,11 @@ class LiveServerTest(django.test.LiveServerTestCase):
         return ['X-' + NO_FILTER] + ['D-' + str(x.id) for x in normal_parameters] + ['B-' + str(x.id) for x in bandpass_parameters]
 
     def get_actual_snapshot_options(self):
-        option_selector = '%s option' % self.lc_id('option')
-        return [x.text for x in self.selenium.find_elements_by_css_selector(option_selector)]
+        option_selector = '%s option' % self.lc_id('snapshot')
+        return [x.get_attribute("innerHTML") for x in self.selenium.find_elements_by_css_selector(option_selector)]
 
     def get_expected_snapshot_options(self, snapshots):
-        return [str(snapshot.redshift) for snapshot in snapshots]
+        return [str("%.3f" % snapshot.redshift) for snapshot in snapshots]
         
     def get_full_url(self, url_name, *args, **kwargs):
         return "%s%s" % (self.live_server_url, reverse(url_name, args=args, kwargs=kwargs))
