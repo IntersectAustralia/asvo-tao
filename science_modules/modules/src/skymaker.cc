@@ -153,7 +153,7 @@ namespace tao {
 
             // Try and extract some more values.
             real_type bulge_magnitude = galaxy.value<real_type>( _bulge_mag_field );
-            real_type disk_scale_radius = 0.05*galaxy.value<real_type>( "diskscaleradius" )/0.71; // divided by h
+            real_type disk_scale_radius = 0.1*galaxy.value<real_type>( "diskscaleradius" )/0.71; // divided by h
             real_type total_lum = galaxy.value<real_type>( "total_luminosity" );
             real_type bulge_lum = galaxy.value<real_type>( "bulge_luminosity" );
 
@@ -199,9 +199,9 @@ namespace tao {
       LOGDLN( "Image dimensions: ", _img_w, "x", _img_h );
 
       // Get origin ra,dec.
-      _ra0 = sub.get<unsigned>( "origin_ra" );
-      _dec0 = sub.get<unsigned>( "origin_dec" );
-      LOGDLN( "Origin: ", _ra0, ", ", _dec0 );
+      _ra0 = to_radians( sub.get<real_type>( "origin_ra" ) );
+      _dec0 = to_radians( sub.get<real_type>( "origin_dec" ) );
+      LOGDLN( "Origin (radians): ", _ra0, ", ", _dec0 );
 
       // Get focal scale.
       _foc_x = sub.get<real_type>( "focal_x" );
