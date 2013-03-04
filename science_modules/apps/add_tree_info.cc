@@ -74,14 +74,14 @@ application()
 	 std::numeric_limits<float>::min(),
 	 std::numeric_limits<float>::min()
 	 );
-      for( unsigned ii = 0; ii < gals.size(); ++ii )
+      for( unsigned jj = 0; jj < gals.size(); ++jj )
       {
-	 min[0] = std::min( min[0], gals[ii].x );
-	 min[1] = std::min( min[1], gals[ii].y );
-	 min[2] = std::min( min[2], gals[ii].z );
-	 max[0] = std::max( max[0], gals[ii].x );
-	 max[1] = std::max( max[1], gals[ii].y );
-	 max[2] = std::max( max[2], gals[ii].z );
+	 min[0] = std::min( min[0], gals[jj].x );
+	 min[1] = std::min( min[1], gals[jj].y );
+	 min[2] = std::min( min[2], gals[jj].z );
+	 max[0] = std::max( max[0], gals[jj].x );
+	 max[1] = std::max( max[1], gals[jj].y );
+	 max[2] = std::max( max[2], gals[jj].z );
       }
 
       // Write the bounding box out.

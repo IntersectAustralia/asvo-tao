@@ -6,6 +6,7 @@
 class skymaker_suite;
 
 namespace tao {
+   using namespace hpc;
 
    ///
    ///
@@ -19,55 +20,52 @@ namespace tao {
 
       typedef double real_type;
 
+      static
+      module*
+      factory( const string& name );
+
    public:
 
-      skymaker();
+      skymaker( const string& name = string() );
 
       ~skymaker();
 
       ///
       ///
       ///
+      virtual
       void
-      setup_options( hpc::options::dictionary& dict,
-                     hpc::optional<const hpc::string&> prefix=hpc::optional<const hpc::string&>() );
-
-      ///
-      ///
-      ///
-      void
-      setup_options( hpc::options::dictionary& dict,
-                     const char* prefix );
+      setup_options( options::dictionary& dict,
+                     optional<const string&> prefix = optional<const string&>() );
 
       ///
       /// Initialise the module.
       ///
+      virtual
       void
-      initialise( const hpc::options::dictionary& dict,
-                  hpc::optional<const hpc::string&> prefix=hpc::optional<const hpc::string&>() );
-
-      ///
-      ///
-      ///
-      void
-      initialise( const hpc::options::dictionary& dict,
-                  const char* prefix );
+      initialise( const options::dictionary& dict,
+                  optional<const string&> prefix = optional<const string&>() );
 
       ///
       /// Run the module.
       ///
+      virtual
       void
-      run();
+      execute();
+
+      virtual
+      void
+      finalise();
 
       void
-      add_galaxy( const tao::galaxy& galaxy,
-                  real_type magnitude );
+      process_galaxy( const tao::galaxy& galaxy,
+		      real_type magnitude );
 
    protected:
 
       void
-      _read_options( const hpc::options::dictionary& dict,
-                     hpc::optional<const hpc::string&> prefix );
+      _read_options( const options::dictionary& dict,
+                     optional<const string&> prefix );
 
       void
       _setup_list();
@@ -77,7 +75,8 @@ namespace tao {
 
    protected:
 
-      hpc::string _list_filename, _conf_filename;
+      string _mag_field, _bulge_mag_field;
+      string _list_filename, _conf_filename;
       std::ofstream _list_file;
       unsigned _img_w, _img_h;
       real_type _ra0, _dec0;
@@ -86,6 +85,7 @@ namespace tao {
       real_type _foc_x, _foc_y;
       real_type _min_mag, _max_mag;
       unsigned _cnt;
+      bool _keep_files;
    };
 }
 

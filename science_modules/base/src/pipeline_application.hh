@@ -1,29 +1,19 @@
-#ifndef base_application_hh
-#define base_application_hh
+#ifndef base_pipeline_application_hh
+#define base_pipeline_application_hh
 
 #include <cstdlib>
 #include <iostream>
 #include <libhpc/libhpc.hh>
+#include "globals.hh"
 
 namespace tao {
    using namespace hpc;
-
-   extern unix::time_type tao_start_time;
-
-   double
-   runtime();
-
-   ///
-   ///
-   ///
-   void
-   setup_common_options( options::dictionary& dict );
 
    ///
    ///
    ///
    template< class Pipeline >
-   class application
+   class pipeline_application
    {
    public:
 
@@ -31,12 +21,12 @@ namespace tao {
 
    public:
 
-      application()
+      pipeline_application()
       {
 	 tao_start_time = unix::timer();
       }
 
-      application( int argc,
+      pipeline_application( int argc,
                    char* argv[] )
       {
 	 tao_start_time = unix::timer();

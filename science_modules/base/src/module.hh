@@ -16,7 +16,62 @@ namespace tao {
 
    public:
 
-      module();
+      module( const string& name = string() );
+
+      virtual
+      ~module();
+
+      void
+      add_parent( module& parent );
+
+      list<module*>&
+      parents();
+
+      void
+      process( unsigned long long iteration );
+
+      virtual
+      void
+      setup_options( options::dictionary& dict,
+                     optional<const string&> prefix = optional<const string&>() ) = 0;
+
+      void
+      setup_options( options::dictionary& dict,
+                     const char* prefix );
+
+      virtual
+      void
+      initialise( const options::dictionary& dict,
+                  optional<const string&> prefix = optional<const string&>() ) = 0;
+
+      void
+      initialise( const options::dictionary& dict,
+                  const char* prefix );
+
+      virtual
+      void
+      execute() = 0;
+
+      virtual
+      void
+      finalise();
+
+      virtual
+      tao::galaxy&
+      galaxy();
+
+      virtual
+      void
+      log_metrics();
+
+      bool
+      complete() const;
+
+      const string&
+      name() const;
+
+      double
+      time() const;
 
       double
       time() const;
@@ -37,6 +92,11 @@ namespace tao {
 
    protected:
 
+      string _name;
+      unsigned long long _it;
+      list<module*> _parents;
+      bool _complete;
+
       bool _connected;
       soci::session _sql;
       unsigned _num_restart_its;
@@ -46,6 +106,7 @@ namespace tao {
 
       profile::timer _timer;
    };
+
 }
 
 #endif

@@ -23,10 +23,10 @@ struct pipeline
    void
    setup_options( options::dictionary& dict )
    {
-      lc.setup_options( dict, "lightcone" );
-      sed.setup_options( dict, "sed" );
-      filter.setup_options( dict, "filter" );
-      skymaker.setup_options( dict, "skymaker" );
+      lc.setup_options( dict, string( "lightcone" ) );
+      sed.setup_options( dict, string( "sed" ) );
+      filter.setup_options( dict, string( "filter" ) );
+      skymaker.setup_options( dict, string( "skymaker" ) );
    }
 
    ///
@@ -35,10 +35,10 @@ struct pipeline
    void
    initialise( const options::dictionary& dict )
    {
-      lc.initialise( dict, "lightcone" );
-      sed.initialise( dict, "sed" );
-      filter.initialise( dict, "filter" );
-      skymaker.initialise( dict, "skymaker" );
+      lc.initialise( dict, string( "lightcone" ) );
+      sed.initialise( dict, string( "sed" ) );
+      filter.initialise( dict, string( "filter" ) );
+      skymaker.initialise( dict, string( "skymaker" ) );
    }
 
    ///
@@ -56,21 +56,23 @@ struct pipeline
 
          // Calculate the SED and cache results.
          sed.process_galaxy( gal );
-         vector<real_type>::view spectra = sed.total_spectra();
+         vector<real_type>::view total_spectra = sed.total_spectra();
+         vector<real_type>::view disk_spectra = sed.disk_spectra();
+         vector<real_type>::view bulge_spectra = sed.bulge_spectra();
 
          // Perform filtering and cache the particular
          // band we're interested in.
-         filter.process_galaxy( gal, spectra );
+         filter.process_galaxy( gal, total_spectra, disk_spectra, bulge_spectra );
          real_type v_mag = filter.magnitudes()[1]; // V band
 
          // Add to the skymaker object list.
-         skymaker.add_galaxy( gal, v_mag );
+         skymaker.process_galaxy( gal, v_mag );
 
          LOG( setindent( -2 ) );
       }
 
       // Use skymaker to produce a final image.
-      skymaker.run();
+      skymaker.execute();
    }
 
    void

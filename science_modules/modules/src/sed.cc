@@ -18,8 +18,16 @@ namespace tao {
       return 1.0/sqrt( 0.25/x + (1.0 - 0.25 - 0.75) + 0.75*x*x );
    }
 
-   sed::sed()
-      : _cur_tree_id( -1 ),
+   // Factory function used to create a new SED.
+   module*
+   sed::factory( const string& name )
+   {
+      return new sed( name );
+   }
+
+   sed::sed( const string& name )
+      : module( name ),
+        _cur_tree_id( -1 ),
 	_omega( 0.25 ),
 	_omega_lambda( 0.75 ),
 	_h( 0.73 )
@@ -50,16 +58,6 @@ namespace tao {
    }
 
    ///
-   ///
-   ///
-   void
-   sed::setup_options( hpc::options::dictionary& dict,
-                       const char* prefix )
-   {
-      setup_options( dict, string( prefix ) );
-   }
-
-   ///
    /// Initialise the module.
    ///
    void
@@ -79,32 +77,34 @@ namespace tao {
    }
 
    ///
-   ///
-   ///
-   void
-   sed::initialise( const hpc::options::dictionary& dict,
-                    const char* prefix )
-   {
-      initialise( dict, string( prefix ) );
-   }
-
-   ///
    /// Run the module.
    ///
    void
-   sed::run()
+   sed::execute()
    {
+      _timer.start();
       LOG_ENTER();
+      ASSERT( parents().size() == 1 );
 
-      // for( mpi::lindex ii = 0; ii < _num_galaxies; ++ii )
-      //    _process_galaxy();
+      // Grab the galaxy from the parent object.
+      tao::galaxy& gal = parents().front()->galaxy();
+
+      // Perform the processing.
+      process_galaxy( gal );
+
+      // Add spectra to the galaxy object.
+      gal.set_vector_field<real_type>( "disk_spectra", _disk_spectra );
+      gal.set_vector_field<real_type>( "bulge_spectra", _bulge_spectra );
+      gal.set_vector_field<real_type>( "total_spectra", _total_spectra );
 
       LOG_EXIT();
+      _timer.stop();
    }
 
    void
    sed::process_galaxy( const tao::galaxy& galaxy )
    {
+      _timer.start();
       LOG_ENTER();
       _timer.start();
 
@@ -134,8 +134,8 @@ namespace tao {
       LOGDLN( "Disk: ", _disk_spectra );
       LOGDLN( "Bulge: ", _bulge_spectra );
       LOGDLN( "Total: ", _total_spectra );
-      _timer.stop();
       LOG_EXIT();
+      _timer.stop();
    }
 
    vector<sed::real_type>::view
@@ -303,8 +303,11 @@ namespace tao {
       LOG_ENTER();
       LOGDLN( "Updating bin ", bin, " using timestep of ", dt, "." );
 
-      real_type add_dm = (_sfrs[id] - _bulge_sfrs[id])*dt*_h;
-      real_type add_bm = _bulge_sfrs[id]*dt*_h;
+      // The numbers that come from SAGE at least, are stored in units
+      // of 1e10*h. I need to multiply out by these units to get it
+      // to natural units.
+      real_type add_dm = (_sfrs[id] - _bulge_sfrs[id])*dt*1e10/_h;
+      real_type add_bm = _bulge_sfrs[id]*dt*1e10/_h;
       real_type new_dm = _disk_age_masses[bin] + add_dm;
       real_type new_bm = _bulge_age_masses[bin] + add_bm;
       if( new_dm > 0.0 )

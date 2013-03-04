@@ -23,9 +23,10 @@ struct pipeline
    void
    setup_options( options::dictionary& dict )
    {
-      lc.setup_options( dict, "workflow:light-cone" );
-      sed.setup_options( dict, "workflow:sed" );
-      filter.setup_options( dict, "workflow:sed" );
+      lc.setup_options( dict, string( "workflow:light-cone" ) );
+      sed.setup_options( dict, string( "workflow:sed" ) );
+      filter.setup_options( dict, string( "workflow:sed" ) );
+      dump.setup_options( dict );
    }
 
    ///
@@ -34,12 +35,10 @@ struct pipeline
    void
    initialise( const options::dictionary& dict )
    {
-      lc.initialise( dict, "workflow:light-cone" );
-      sed.initialise( dict, "workflow:sed" );
-      filter.initialise( dict, "workflow:sed" );
-      dump.initialise( dict, lc );
-      dump.set_filename( dict.get<string>( "outputdir" ) + "/tao.output" );
-      dump.open();
+      lc.initialise( dict, string( "workflow:light-cone" ) );
+      sed.initialise( dict, string( "workflow:sed" ) );
+      filter.initialise( dict, string( "workflow:sed" ) );
+      dump.initialise( dict );
    }
 
    ///
@@ -56,14 +55,15 @@ struct pipeline
 
          // Calculate the SED and cache results.
          sed.process_galaxy( gal );
-         vector<real_type>::view spectra = sed.total_spectra();
+         vector<real_type>::view total_spectra = sed.total_spectra();
+         vector<real_type>::view disk_spectra = sed.disk_spectra();
+         vector<real_type>::view bulge_spectra = sed.bulge_spectra();
 
          // Perform filtering.
-         filter.process_galaxy( gal, spectra );
-	 real_type app_mag = filter.magnitudes()[0];
+         filter.process_galaxy( gal, total_spectra, disk_spectra, bulge_spectra );
 
          // Dump?
-	 dump.process_galaxy( gal, app_mag );
+	 dump.process_galaxy( gal );
       }
    }
 

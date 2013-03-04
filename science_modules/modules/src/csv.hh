@@ -15,21 +15,49 @@ namespace tao {
    {
    public:
 
-      csv( const string& filename="tao.output" );
+      static
+      module*
+      factory( const string& name );
 
+   public:
+
+      csv( const string& name = string() );
+
+      virtual
+      ~csv();
+
+      ///
+      ///
+      ///
+      virtual
+      void
+      setup_options( options::dictionary& dict,
+                     optional<const string&> prefix = optional<const string&>() );
+
+      ///
+      ///
+      ///
+      virtual
       void
       initialise( const options::dictionary& dict,
-		  const lightcone& lc );
+                  optional<const string&> prefix = optional<const string&>() );
 
+      ///
+      ///
+      ///
+      virtual
       void
-      set_filename( const string& filename );
+      execute();
 
       void
       open();
 
       void
-      process_galaxy( const tao::galaxy& galaxy,
-		      double app_mag=0.0 );
+      process_galaxy( const tao::galaxy& galaxy );
+
+      virtual
+      void
+      log_metrics();
 
    protected:
 
@@ -41,7 +69,8 @@ namespace tao {
 
       std::ofstream _file;
       string _fn;
-      const lightcone* _lc;
+      list<string> _fields;
+      unsigned long long _records;
    };
 }
 

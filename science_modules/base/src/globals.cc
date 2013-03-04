@@ -1,6 +1,4 @@
-#include "application.hh"
-
-using namespace hpc;
+#include "globals.hh"
 
 namespace tao {
 
@@ -36,4 +34,5 @@ namespace tao {
       dict.add_option( new options::string( "filter-min", "" ), "workflow:record-filter" );
       dict.add_option( new options::string( "filter-max", "" ), "workflow:record-filter" );
    }
+
 }

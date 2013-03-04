@@ -17,7 +17,8 @@ struct pipeline
    void
    setup_options( hpc::options::dictionary& dict )
    {
-      lc.setup_options( dict, "workflow:light-cone" );
+      lc.setup_options( dict, string( "workflow:light-cone" ) );
+      dump.setup_options( dict );
    }
 
    ///
@@ -26,10 +27,8 @@ struct pipeline
    void
    initialise( const hpc::options::dictionary& dict )
    {
-      lc.initialise( dict, "workflow:light-cone" );
-      dump.initialise( dict, lc );
-      dump.set_filename( dict.get<string>( "outputdir" ) + "/tao.output" );
-      dump.open();
+      lc.initialise( dict, string( "workflow:light-cone" ) );
+      dump.initialise( dict );
    }
 
    ///

@@ -11,7 +11,15 @@ using namespace hpc;
 
 namespace tao {
 
-   filter::filter()
+   // Factory function used to create a new filter module.
+   module*
+   filter::factory( const string& name )
+   {
+      return new filter( name );
+   }
+
+   filter::filter( const string& name )
+      : module( name )
    {
    }
 
@@ -26,19 +34,9 @@ namespace tao {
    filter::setup_options( options::dictionary& dict,
                           optional<const string&> prefix )
    {
-      dict.add_option( new options::string( "wavelengths" ), prefix );
+      dict.add_option( new options::string( "wavelengths", "wavelengths.dat" ), prefix );
       dict.add_option( new options::list<options::string>( "bandpass-filters" ), prefix );
-      dict.add_option( new options::string( "vega-spectrum" ), prefix );
-   }
-
-   ///
-   ///
-   ///
-   void
-   filter::setup_options( hpc::options::dictionary& dict,
-                          const char* prefix )
-   {
-      setup_options( dict, string( prefix ) );
+      dict.add_option( new options::string( "vega-spectrum", "A0V_KUR_BB.SED" ), prefix );
    }
 
    ///
@@ -55,53 +53,104 @@ namespace tao {
       LOG_EXIT();
    }
 
-   ///
-   ///
-   ///
    void
-   filter::initialise( const hpc::options::dictionary& dict,
-                       const char* prefix )
+   filter::execute()
    {
-      initialise( dict, string( prefix ) );
-   }
+      _timer.start();
+      LOG_ENTER();
+      ASSERT( parents().size() == 1 );
 
-   void
-   filter::run()
-   {
+      // Grab the galaxy from the parent object.
+      tao::galaxy& gal = parents().front()->galaxy();
+
+      // Extract things from the galaxy object.
+      vector<real_type>& total_spectra = gal.vector_value<real_type>( "total_spectra" );
+      vector<real_type>& disk_spectra = gal.vector_value<real_type>( "disk_spectra" );
+      vector<real_type>& bulge_spectra = gal.vector_value<real_type>( "bulge_spectra" );
+
+      // Perform the processing.
+      process_galaxy( gal, total_spectra, disk_spectra, bulge_spectra );
+
+      // Add values to the galaxy object.
+      for( unsigned ii = 0; ii < _filter_names.size(); ++ii )
+      {
+	 gal.set_field<real_type>( _filter_names[ii] + "_apparent", _total_app_mags[ii] );
+	 gal.set_field<real_type>( _filter_names[ii] + "_absolute", _total_abs_mags[ii] );
+	 gal.set_field<real_type>( _filter_names[ii] + "_disk_apparent", _disk_app_mags[ii] );
+	 gal.set_field<real_type>( _filter_names[ii] + "_disk_absolute", _disk_abs_mags[ii] );
+	 gal.set_field<real_type>( _filter_names[ii] + "_bulge_apparent", _bulge_app_mags[ii] );
+	 gal.set_field<real_type>( _filter_names[ii] + "_bulge_absolute", _bulge_abs_mags[ii] );
+      }
+      gal.set_field<real_type>( "total_luminosity", _total_lum );
+      gal.set_field<real_type>( "disk_luminosity", _disk_lum );
+      gal.set_field<real_type>( "bulge_luminosity", _bulge_lum );
+
+      LOG_EXIT();
+      _timer.stop();
    }
 
    void
    filter::process_galaxy( const tao::galaxy& galaxy,
-                           vector<real_type>::view spectra )
+                           const vector<real_type>::view& total_spectra,
+                           const vector<real_type>::view& disk_spectra,
+                           const vector<real_type>::view& bulge_spectra )
    {
-      LOG_ENTER();
       _timer.start();
+      LOG_ENTER();
+
+      // Calculate the distance/area for this galaxy. Use 1000
+      // points.
+      LOGDLN( "Using redshift of ", galaxy.redshift(), " to calculate distance." );
+      real_type dist = numerics::redshift_to_luminosity_distance( galaxy.redshift(), 1000 );
+      real_type area = log10( 4.0*M_PI ) + 2.0*log10( dist*3.08568025e24 ); // result in cm^2
+      LOGDLN( "Distance: ", dist );
+      LOGDLN( "Log area: ", area );
+
+      // Process total, disk and bulge.
+      _process_spectra( galaxy, total_spectra, area, _total_lum, _total_app_mags, _total_abs_mags );
+      _process_spectra( galaxy, disk_spectra, area, _disk_lum, _disk_app_mags, _bulge_abs_mags );
+      _process_spectra( galaxy, bulge_spectra, area, _bulge_lum, _bulge_app_mags, _bulge_abs_mags );
+
+      LOG_EXIT();
+      _timer.stop();
+   }
+
+   void
+   filter::_process_spectra( const tao::galaxy& galaxy,
+                             const vector<real_type>::view& spectra,
+                             real_type area,
+			     real_type& luminosity,
+                             vector<real_type>& apparent_mags,
+                             vector<real_type>& absolute_mags )
+   {
+      LOGDLN( "Using spectra of: ", spectra );
 
       // Prepare the spectra.
       numerics::spline<real_type> spectra_spline;
       _prepare_spectra( spectra, spectra_spline );
 
-      // Calculate the distance/area for this galaxy. Use 1000
-      // points.
-      real_type dist = numerics::redshift_to_luminosity_distance( galaxy.redshift(), 1000 )*1e-3;
-      real_type area = log10( 4.0*M_PI ) + 2.0*log10( dist*3.08568025e24 );
-      LOGDLN( "Distance: ", dist );
+      // Calculate luminosity.
+      luminosity = _integrate( spectra_spline );
 
       // Loop over each filter band.
       for( unsigned ii = 0; ii < _filters.size(); ++ii )
       {
          real_type spec_int = _integrate( spectra_spline, _filters[ii] );
+         LOGDLN( "For filter ", ii, " calculated F_\\nu of ", spec_int );
 
          // Need to check that there is in fact a spectra.
-         if( !num::approx( spec_int, 0.0, 1e-12 ) )
-            _mags[ii] = -2.5*(log10( spec_int ) - area - log10( _filt_int[ii] )) - 48.6;
+         if( !num::approx( spec_int, 0.0, 1e-12 ) &&
+             !num::approx( _filt_int[ii], 0.0, 1e-12 ) )
+         {
+            apparent_mags[ii] = -2.5*(log10( spec_int ) - area - log10( _filt_int[ii] )) - 48.6;
+            absolute_mags[ii] = -2.5*(log10( spec_int ) - log10( _filt_int[ii] )) - 48.6;
+         }
          else
-            _mags[ii] = 0.0;
+         {
+            apparent_mags[ii] = 0.0;
+            absolute_mags[ii] = 0.0;
+         }
       }
-      LOGDLN( "Band magnitudes: ", _mags );
-
-      _timer.stop();
-      LOG_EXIT();
    }
 
    ///
@@ -110,19 +159,7 @@ namespace tao {
    const hpc::vector<filter::real_type>::view
    filter::magnitudes() const
    {
-      return _mags;
-   }
-
-   filter::real_type
-   filter::_apparant_magnitude( real_type spectra,
-                                real_type filter,
-                                real_type vega,
-                                real_type distance )
-   {
-      real_type area = log10( 4.0*M_PI ) + 2.0*log10( distance*3.08568025e24 );
-      real_type spec_filt = -2.5*(log10( spectra ) + 20.0 - area - log10( filter )) - 48.6;
-      real_type spec_vega = -2.5*(log10( spectra ) + 20.0 - area - log10( vega ));
-      real_type vega_filt = -2.5*(log10( vega ) - log10( filter )) - 48.6;
+      return _total_app_mags;
    }
 
    void
@@ -151,6 +188,10 @@ namespace tao {
       range<real_type> sp_rng( spectra.knots().front()[0], spectra.knots().back()[0] );
       real_type low = std::max( fi_rng.start(), sp_rng.start() );
       real_type upp = std::min( fi_rng.finish(), sp_rng.finish() );
+      LOGDLN( "fi_rng = ", fi_rng );
+      LOGDLN( "sp_rng = ", sp_rng );
+      LOGDLN( "low = ", low );
+      LOGDLN( "upp = ", upp );
 
       auto it = make_interp_iterator(
          boost::make_transform_iterator( filter.knots().begin(), take_first ),
@@ -171,21 +212,30 @@ namespace tao {
       while( !num::approx( *it++, upp, 1e-7 ) )
       {
          real_type w = *it - low;
-         real_type jac_det = 0.5*(M_C/low - M_C/(*it));
+         // real_type jac_det = 0.5*(M_C/low - M_C/(*it));
+         real_type jac_det = 0.5*w;
          unsigned fi_poly = it.indices()[0] - 1;
          unsigned sp_poly = it.indices()[1] - 1;
+         LOGDLN( "w = ", w );
+         LOGDLN( "jac_det = ", jac_det );
          for( unsigned ii = 0; ii < 4; ++ii )
          {
             real_type x = low + w*0.5*(1.0 + crds[ii]);
+            LOGDLN( "Current x: ", x );
+            LOGDLN( "Filter: ", filter( x, fi_poly ) );
+            LOGDLN( "Spectra: ", spectra( x, sp_poly ) );
 
             // This integral looks like this because of a change of variable
             // frome wavelength to frequency. Do the math!
             // sum += jac_det*weights[ii]*filter( x, fi_poly )*spectra( x, sp_poly )*x*x*x*x*2.0/(2.9979*M_C);
-            sum += jac_det*weights[ii]*filter( x, fi_poly )*spectra( x, sp_poly )*x*x*x*x/(M_C*M_C);
+            // sum += jac_det*weights[ii]*filter( x, fi_poly )*spectra( x, sp_poly )*x*x*x*x/(M_C*M_C);
+            sum += jac_det*weights[ii]*filter( x, fi_poly )*spectra( x, sp_poly )*x*x/M_C;
+            LOGDLN( "Partial sum is ", sum );
          }
          low = *it;
       }
 
+      LOGDLN( "Integrated to ", sum );
       return sum;
    }
 
@@ -234,6 +284,8 @@ namespace tao {
    filter::_read_options( const options::dictionary& dict,
                           optional<const string&> prefix )
    {
+      LOG_ENTER();
+
       // Get the sub dictionary, if it exists.
       const options::dictionary& sub = prefix ? dict.sub( *prefix ) : dict;
 
@@ -255,16 +307,34 @@ namespace tao {
          _filters.resize( 0 );
          _filt_int.reallocate( filenames.size() );
          _filt_int.resize( 0 );
-         _mags.reallocate( filenames.size() );
+         _total_app_mags.reallocate( filenames.size() );
+         _total_abs_mags.reallocate( filenames.size() );
+         _disk_app_mags.reallocate( filenames.size() );
+         _disk_abs_mags.reallocate( filenames.size() );
+         _bulge_app_mags.reallocate( filenames.size() );
+         _bulge_abs_mags.reallocate( filenames.size() );
+	 _filter_names.reallocate( filenames.size() );
 
          // Load each filter into memory.
-         for( const auto& fn : filenames )
+	 unsigned ii = 0;
+	 for( const auto fn : filenames )
+	 {
             _load_filter( fn );
+
+	    // Store the field names.
+	    auto it = std::find( fn.rbegin(), fn.rend(), '.' );
+	    it++;
+	    _filter_names[ii] = string( fn.begin(), it.base() );
+	    LOGDLN( "Adding filter by the name: ", _filter_names[ii] );
+	    ++ii;
+	 }
       }
       LOGDLN( "Filter integrals: ", _filt_int );
 
       // Get the Vega filename and perform processing.
       _process_vega( sub.get<string>( "vega-spectrum" ) );
+
+      LOG_EXIT();
    }
 
    void
@@ -372,7 +442,10 @@ namespace tao {
          _vega_int[ii] = _integrate( spline, _filters[ii] );
       LOGDLN( "Vega integrals: ", _vega_int );
 
-      // Calculate the Vega magnitudes.
+      // Calculate the Vega magnitudes. I'm pretty sure that the
+      // SED we read for Vega is already in erg.s^-1.cm^-2.Hz^-1,
+      // it is already a flux density. So, we don't need any
+      // distance information.
       _vega_mag.reallocate( _filters.size() );
       for( unsigned ii = 0; ii < _filters.size(); ++ii )
          _vega_mag[ii] = -2.5*log10( _vega_int[ii]/_filt_int[ii] ) - 48.6;

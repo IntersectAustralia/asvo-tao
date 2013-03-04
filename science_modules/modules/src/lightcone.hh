@@ -1,7 +1,7 @@
 #ifndef tao_lightcone_lightcone_hh
 #define tao_lightcone_lightcone_hh
 
-#include "tao/base/module.hh"
+#include "tao/base/base.hh"
 
 // Forward declaration of test suites to allow direct
 // access to the lightcone module.
@@ -24,43 +24,45 @@ namespace tao {
 
    public:
 
-      lightcone();
+      static
+      module*
+      factory( const string& name );
+
+   public:
+
+      lightcone( const string& name = string() );
 
       ~lightcone();
 
       ///
       ///
       ///
+      virtual
       void
       setup_options( options::dictionary& dict,
-                     optional<const string&> prefix=optional<const string&>() );
+                     optional<const string&> prefix = optional<const string&>() );
 
       ///
       ///
       ///
-      void
-      setup_options( options::dictionary& dict,
-                     const char* prefix );
-
-      ///
-      ///
-      ///
+      virtual
       void
       initialise( const options::dictionary& dict,
-                  optional<const string&> prefix=optional<const string&>() );
-
-      ///
-      ///
-      ///
-      void
-      initialise( const options::dictionary& dict,
-                  const char* prefix );
+                  optional<const string&> prefix = optional<const string&>() );
 
       ///
       /// Run the module.
       ///
+      virtual
       void
-      run();
+      execute();
+
+      ///
+      ///
+      ///
+      virtual
+      tao::galaxy&
+      galaxy();
 
       ///
       /// Begin iterating over galaxies.
@@ -83,8 +85,8 @@ namespace tao {
       ///
       /// Get current galaxy.
       ///
-      const galaxy
-      operator*() const;
+      const tao::galaxy
+      operator*();
 
       ///
       /// Get current redshift.
@@ -94,6 +96,13 @@ namespace tao {
 
       const set<string>&
       output_fields() const;
+
+      unsigned
+      num_boxes() const;
+
+      virtual
+      void
+      log_metrics();
 
    protected:
 
@@ -194,6 +203,7 @@ namespace tao {
       // scoped_ptr<soci::rowset<soci::row>> _rows; // TODO: Latest SOCI doesn't like being destructed!
       soci::rowset<soci::row>* _rows;
       soci::rowset<soci::row>::const_iterator _cur_row;
+      tao::galaxy _gal;
 
       string _accel_method;
       int _bsp_step;

@@ -5,7 +5,6 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/tokenizer.hpp>
 #include <soci/sqlite3/soci-sqlite3.h>
-#include "tao/base/application.hh"
 #include "lightcone.hh"
 #include "BSPTree.hh"
 #include "geometry_iterator.hh"
@@ -18,8 +17,15 @@ using boost::algorithm::replace_all;
 
 namespace tao {
 
-   lightcone::lightcone()
-      : module(),
+   // Factory function used to create a new lightcone.
+   module*
+   lightcone::factory( const string& name )
+   {
+      return new lightcone( name );
+   }
+
+   lightcone::lightcone( const string& name )
+      : module( name ),
         _z_min( 0.0 ),
         _z_max( 0.0 ),
         _unique( false ),
@@ -73,16 +79,6 @@ namespace tao {
    }
 
    ///
-   ///
-   ///
-   void
-   lightcone::setup_options( options::dictionary& dict,
-                             const char* prefix )
-   {
-      setup_options( dict, string( prefix ) );
-   }
-
-   ///
    /// Initialise the module.
    ///
    void
@@ -98,23 +94,35 @@ namespace tao {
    }
 
    ///
-   ///
-   ///
-   void
-   lightcone::initialise( const options::dictionary& dict,
-                          const char* prefix )
-   {
-      initialise( dict, string( prefix ) );
-   }
-
-   ///
    /// Run the module.
    ///
    void
-   lightcone::run()
+   lightcone::execute()
    {
+      _timer.start();
       LOG_ENTER();
+
+      // Is this my first time through? If so begin iterating.
+      if( _it == 0 )
+         begin();
+      else
+         ++(*this);
+      if( done() )
+         _complete = true;
+      else
+         _gal = *(*this);
+
       LOG_EXIT();
+      _timer.stop();
+   }
+
+   ///
+   ///
+   ///
+   tao::galaxy&
+   lightcone::galaxy()
+   {
+      return _gal;
    }
 
    ///
@@ -123,6 +131,7 @@ namespace tao {
    void
    lightcone::begin()
    {
+      _timer.start();
       LOG_ENTER();
       _timer.start();
 
@@ -170,6 +179,7 @@ namespace tao {
 
       _timer.stop();
       LOG_EXIT();
+      _timer.stop();
    }
 
    ///
@@ -178,6 +188,7 @@ namespace tao {
    bool
    lightcone::done()
    {
+      _timer.start();
       LOG_ENTER();
       _timer.start();
 
@@ -190,6 +201,7 @@ namespace tao {
 
       _timer.stop();
       LOG_EXIT();
+      _timer.stop();
       return result;
    }
 
@@ -199,6 +211,7 @@ namespace tao {
    void
    lightcone::operator++()
    {
+      _timer.start();
       LOG_ENTER();
       _timer.start();
 
@@ -228,18 +241,20 @@ namespace tao {
 
       _timer.stop();
       LOG_EXIT();
+      _timer.stop();
    }
 
    ///
    /// Get current galaxy.
    ///
-   const galaxy
-   lightcone::operator*() const
+   const tao::galaxy
+   lightcone::operator*()
    {
+      _timer.start();
       LOG_ENTER();
       ((profile::timer&)_timer).start();
 
-      galaxy gal( *_cur_row, _table_names[_cur_table] );
+      tao::galaxy gal( *_cur_row, _table_names[_cur_table] );
       real_type dist = sqrt( pow( gal.x(), 2.0 ) + pow( gal.y(), 2.0 ) + pow( gal.z(), 2.0 ) );
 
       // Check that the row actually belongs in this range.
@@ -250,6 +265,7 @@ namespace tao {
 
       ((profile::timer&)_timer).stop();
       LOG_EXIT();
+      _timer.stop();
       return gal;
    }
 
@@ -269,6 +285,19 @@ namespace tao {
       return _output_fields;
    }
 
+   unsigned
+   lightcone::num_boxes() const
+   {
+      return _boxes.size();
+   }
+
+   void
+   lightcone::log_metrics()
+   {
+      module::log_metrics();
+      LOGILN( _name, " number of boxes: ", num_boxes() );
+   }
+
    ///
    /// Get a list of tree table names to search.
    ///
@@ -281,7 +310,7 @@ namespace tao {
       table_names.deallocate();
 
       // Are we using the BSP tree system?
-      if( _accel_method == "bsp" )
+      if( _accel_method == "bsp" && _box_type != "box" )
       {
 	 // Prepare a BSP tree.
 	 BSPtree bsp( _bsp_step, _dbname, _dbhost, _dbport, _dbuser, _dbpass );
@@ -320,7 +349,7 @@ namespace tao {
 	 std::copy( table_name_set.begin(), table_name_set.end(), table_names.begin() );
 	 LOGDLN( "BSP table names: ", table_names );
       }
-      else if( _accel_method == "direct" )
+      else if( _accel_method == "direct" && _box_type != "box" )
       {
 	 table_iterator<real_type> it(
 	    _sql,
@@ -970,8 +999,9 @@ namespace tao {
       _setup_redshift_ranges();
 
       // Query the table names we'll be using. Only need to do
-      // this here if we are not using the BSP system.
-      if( _accel_method == "none" )
+      // this here if we are not using the BSP system, or we are
+      // using the box method.
+      if( _accel_method == "none" || _box_type == "box" )
 	 _query_table_names( _table_names );
 
       // Redshift ranges.
