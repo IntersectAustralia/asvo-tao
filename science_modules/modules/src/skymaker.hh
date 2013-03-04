@@ -85,6 +85,7 @@ namespace tao {
       real_type _foc_x, _foc_y;
       real_type _min_mag, _max_mag;
       unsigned _cnt;
+      bool _keep_files;
    };
 }
 

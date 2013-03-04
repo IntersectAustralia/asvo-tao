@@ -46,6 +46,7 @@ namespace tao {
       dict.add_option( new options::real( "pixel_height", 1.0 ), prefix );
       dict.add_option( new options::real( "min_mag", 7.0 ), prefix );
       dict.add_option( new options::real( "max_mag", 50.0 ), prefix );
+      dict.add_option( new options::boolean( "keep-files", false ), prefix );
    }
 
    ///
@@ -107,8 +108,11 @@ namespace tao {
       mpi::comm::world.barrier();
 
       // Delete the files we used.
-      ::remove( _list_filename.c_str() );
-      ::remove( _conf_filename.c_str() );
+      if( !_keep_files )
+      {
+	 ::remove( _list_filename.c_str() );
+	 ::remove( _conf_filename.c_str() );
+      }
 
       _timer.stop();
    }
@@ -149,25 +153,25 @@ namespace tao {
 
             // Try and extract some more values.
             real_type bulge_magnitude = galaxy.value<real_type>( _bulge_mag_field );
-            real_type disc_scale_radius = galaxy.value<real_type>( "discscaleradius" )/0.71; // divided by h
-            real_type stellar_mass = galaxy.value<real_type>( "stellarmass" )*1e10/0.71;
-            real_type bulge_mass = galaxy.value<real_type>( "bulgemass" )*1e10/0.71;
+            real_type disk_scale_radius = 0.05*galaxy.value<real_type>( "diskscaleradius" )/0.71; // divided by h
+            real_type total_lum = galaxy.value<real_type>( "total_luminosity" );
+            real_type bulge_lum = galaxy.value<real_type>( "bulge_luminosity" );
 
             // Do some calculations.
             real_type ang_diam_dist = numerics::redshift_to_angular_diameter_distance( galaxy.redshift() );
-            real_type bulge_to_total = bulge_magnitude/magnitude;
-            real_type bulge_equiv_radius = atan( 0.5*(bulge_mass/stellar_mass)*disc_scale_radius/ang_diam_dist )*206264.806;
-            real_type disc_scale_length = atan( disc_scale_radius/ang_diam_dist )*206264.806;
+            real_type bulge_to_total = bulge_lum/total_lum;
+            real_type bulge_equiv_radius = atan( 0.5*bulge_to_total*disk_scale_radius/ang_diam_dist )*206264.806;
+            real_type disk_scale_length = atan( disk_scale_radius/ang_diam_dist )*206264.806;
 
-            std::cout << bulge_to_total << ", " << bulge_equiv_radius << ", " << disc_scale_length << "\n";
+	    // std::cout << ang_diam_dist << ", " << disk_scale_radius << ", " << disk_scale_length << "\n";
 
-            _list_file << " " << bulge_magnitude/magnitude;
+            _list_file << " " << bulge_to_total;
             _list_file << " " << bulge_equiv_radius;
             _list_file << " 0.8";
-	    _list_file << generate_uniform<real_type>( 0, 360 ) << " ";
-            _list_file << " " << disc_scale_length;
+	    _list_file << " " << generate_uniform<real_type>( 0, 360 ) << " ";
+            _list_file << " " << disk_scale_length;
             _list_file << " 0.2";
-	    _list_file << generate_uniform<real_type>( 0, 360 ) << "\n";
+	    _list_file << " " << generate_uniform<real_type>( 0, 360 ) << "\n";
 
             ++_cnt;
          }
@@ -218,12 +222,15 @@ namespace tao {
       _min_mag = sub.get<real_type>( "min_mag" );
       _max_mag = sub.get<real_type>( "max_mag" );
       LOGDLN( "Magnitude limits: ", _min_mag, ", ", _max_mag );
+
+      // Flags.
+      _keep_files = sub.get<bool>( "keep-files" );
    }
 
    void
    skymaker::_setup_list()
    {
-      _list_filename = tmpnam( NULL );
+      _list_filename = _keep_files ? "my_sky.list" : tmpnam( NULL );
       LOGDLN( "Opening parameter file: ", _list_filename );
       _list_file.open( _list_filename, std::ios::out );
    }
@@ -231,7 +238,7 @@ namespace tao {
    void
    skymaker::_setup_conf()
    {
-      _conf_filename = tmpnam( NULL );
+      _conf_filename = _keep_files ? "my_sky.conf" : tmpnam( NULL );
       LOGDLN( "Opening config file: ", _conf_filename );
       std::ofstream file( _conf_filename, std::ios::out );
       file << "IMAGE_SIZE " << _img_w << "," << _img_h << "\n";
