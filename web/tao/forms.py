@@ -116,7 +116,7 @@ class RecordFilterForm(BetterForm):
     EDIT_TEMPLATE = 'mock_galaxy_factory/record_filter.html'
     MODULE_VERSION = 1
     SUMMARY_TEMPLATE = 'mock_galaxy_factory/record_filter_summary.html'
-    LABEL = 'Global Selection'
+    LABEL = 'Selection'
 
     class Meta:
         fieldsets = [('primary', {
@@ -146,6 +146,7 @@ class RecordFilterForm(BetterForm):
         self.fields['filter'] = forms.ChoiceField(required=True, choices=choices)
         self.fields['max'] = val_class(**dict(args.items()+{'label':_('Max'),}.items()))
         self.fields['min'] = val_class(**dict(args.items()+{'label':_('Min'),}.items()))
+        self.fields['filter'].label = 'Select by ...'
 
     def check_min_or_max_or_both(self):
         selected_type, selected_filter = self.cleaned_data['filter'].split('-')

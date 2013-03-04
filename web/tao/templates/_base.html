@@ -35,7 +35,7 @@
                 <div class="nav-collapse collapse">
                     <ul class="nav">
                         <li class="{% if tab == 'home' %}active{% endif %}"><a href="{% url 'home' %}">Home</a></li>
-                        <li class="{% if tab == 'mgf' %}active{% endif %}"><a href="{% url 'mock_galaxy_factory' %}">MGF</a></li>
+                        <li class="{% if tab == 'mgf' %}active{% endif %}"><a href="{% url 'mock_galaxy_factory' %}">New Catalogue</a></li>
                         <li class="{% if tab == 'jobs' %}active{% endif %}"><a href="{% url 'job_index' %}">Jobs</a></li>
                         {% if user.is_staff %}
                             <li><a href="{% url 'admin_index' %}">Admin</a></li>
