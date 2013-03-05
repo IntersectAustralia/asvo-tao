@@ -65,7 +65,7 @@ class WorkFlow(object):
                 ## Store the Job PBS ID  
                 self.dbaseobj.UpdateJob_PBSID(JobID,PBSJobID)
                 ## Update the Job Status to Queued            
-                self.UpdateMasterDB(UIJobReference, data={'status': 'QUEUED'})
+                self.UpdateTAOUI(UIJobReference, data={'status': 'QUEUED'})
             
     
         return JobsCounter
@@ -100,9 +100,9 @@ class WorkFlow(object):
             file.close()
         
         ParseXMLParametersObj=ParseXML.ParseXMLParameters(outputpath+'/params.xml',self.Options)
-        ParseXMLParametersObj.ParseFile(UIJobReference,JobDatabase)
+        self.SubJobsCount=ParseXMLParametersObj.ParseFile(UIJobReference,JobDatabase,JobUserName)
         
-        ParseXMLParametersObj.ExportTree(logpath+"/params.xml")
+        ParseXMLParametersObj.ExportTrees(logpath+"/params<index>.xml")
         
         src_files = os.listdir(AudDataPath)
         for file_name in src_files:
@@ -122,7 +122,7 @@ class WorkFlow(object):
         ## Return JobID
         return PBSJobID
                 
-    def UpdateMasterDB(self,UIJobID,data):        
+    def UpdateTAOUI(self,UIJobID,data):        
         logging.info('Updating UI MasterDB. JobID ('+str(UIJobID)+').. '+data['status'])        
         requests.put(self.api['update']%UIJobID, data)
         
@@ -151,6 +151,7 @@ class WorkFlow(object):
                 self.dbaseobj.AddNewEvent(0,EnumerationLookup.EventType.Normal,'Found '+str(new_jobs_count)+' New Jobs ')            
         else:
             logging.error('UnKnow Response type from webservice.. Current Content:  '+ResponseType)
+            
     def GetProcessStartTime(self,PBSID):        
         return self.TorqueObj.GetJobStartTime(PBSID)
     
@@ -244,7 +245,7 @@ class WorkFlow(object):
                 data['status']='IN_PROGRESS'
                 
                 #requests.put(self.api['update']%UIReference_ID, data=data)
-                self.UpdateMasterDB(UIReference_ID, data)
+                self.UpdateTAOUI(UIReference_ID, data)
                 
                 self.dbaseobj.AddNewEvent(PBsID[0],EnumerationLookup.EventType.Normal,'Updating Job (UI ID:'+str(UIReference_ID)+', Status:'+data['status']+')')
                 logging.info("Job ("+str(UIReference_ID)+") ... Running") 
@@ -254,7 +255,7 @@ class WorkFlow(object):
                 self.dbaseobj.SetJobQueued(PBsID[0],OldStatus,"Job Queued- PBSID"+PID)                 
                 data['status']='QUEUED'         
                 #requests.put(self.api['update']%UIReference_ID, data=data)
-                self.UpdateMasterDB(UIReference_ID, data)
+                self.UpdateTAOUI(UIReference_ID, data)
                 self.dbaseobj.AddNewEvent(PBsID[0],EnumerationLookup.EventType.Normal,'Updating Job (UI ID:'+str(UIReference_ID)+', Status:'+data['status']+')')
                 logging.info("Job ("+str(UIReference_ID)+") ... Queued")
             ############################################################################################################
@@ -278,7 +279,7 @@ class WorkFlow(object):
                     data['output_path'] = path
                     
                     #requests.put(self.api['update']%UIReference_ID, data=data)
-                    self.UpdateMasterDB(UIReference_ID, data)
+                    self.UpdateTAOUI(UIReference_ID, data)
                     self.dbaseobj.AddNewEvent(PBsID[0],EnumerationLookup.EventType.Normal,'Updating Job (UI ID:'+str(UIReference_ID)+', Status:'+data['status']+')')
                     logging.info ("Job ("+str(UIReference_ID)+") ... Finished Successfully")
                     Message="Job ("+str(UIReference_ID)+") Path:"+path+" Finished Successfully"
@@ -298,7 +299,7 @@ class WorkFlow(object):
                     self.dbaseobj.SetJobFinishedWithError(PBsID[0],PBsID[2],JobDetails['error'],JobDetails['end'])                         
                     data['error_message'] = 'Error:'+JobDetails['error']                    
                     #requests.put(self.api['update']%UIReference_ID, data=data)
-                    self.UpdateMasterDB(UIReference_ID, data)
+                    self.UpdateTAOUI(UIReference_ID, data)
                     self.dbaseobj.AddNewEvent(PBsID[0],EnumerationLookup.EventType.Normal,'Updating Job (UI ID:'+str(UIReference_ID)+', Status:'+data['status']+')')
                     Message="Job ("+str(UIReference_ID)+")  Finished With Error. The Error Message is:" + data['error_message']
                     emailreport.SendEmailToAdmin(self.Options,"Job Finished With Error",Message)    

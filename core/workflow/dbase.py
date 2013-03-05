@@ -8,33 +8,29 @@ import logging
 
 class DBInterface(object):
     
+    
     def __init__(self,Options):
-        '''
-        Constructor
-        '''
+        ### Init DBConnection Object
+        
         self.Options=Options     
         
-        self.InitDBConnection()
+        self.InitDBConnection(self.Options)
         self.IsOpen=False
         
-    def InitDBConnection(self):
+    def InitDBConnection(self,Options):
         
-        ####### PostgreSQL Simulation DB ################# 
-        self.serverip=self.Options['PGDB:serverip']
-        self.username=self.Options['PGDB:user']
-        self.password=self.Options['PGDB:password']
-        self.port=int(self.Options['PGDB:port'])
-        self.DBName=self.Options['PGDB:NewDBName']
+        ####### PostgreSQL Backend Master DB ################# 
+        self.serverip=Options['PGDB:serverip']
+        self.username=Options['PGDB:user']
+        self.password=Options['PGDB:password']
+        self.port=int(Options['PGDB:port'])
+        self.DBName=Options['PGDB:NewDBName']    
+               
         
-        if self.password==None:
-            print('Password for user:'+username+' is not defined')
-            self.password=getpass.getpass('Please enter password:')
-        
-        # Take care that the connection will be opened to standard DB 'master'
-        # This is temp. until the actual database is created
         self.CurrentConnection=pg.connect(host=self.serverip,user=self.username,passwd=self.password,port=self.port,dbname=self.DBName)
         logging.info('Connection to DB is open...')    
         self.IsOpen=True
+        
     def CloseConnections(self):  
         if self.IsOpen==True:      
             self.CurrentConnection.close()        
@@ -110,8 +106,7 @@ class DBInterface(object):
                 
     def AddNewJob(self,UIReferenceID,JobType,XMLParams,UserName,Database):
         
-        #if self.GetJobbyUIReference(UIReferenceID)!=None:
-            
+        ## Encode the XML Params and remove un-replaceable unicode chars    
         XMLParamsASCII=XMLParams.encode('ascii','ignore')
         XMLParamsASCII=XMLParamsASCII.replace("\'","\"")       
         INSERTJobSt="INSERT INTO JOBS(UIReferenceID,JobType,UserName,XMLParams,Database) VALUES ("
@@ -119,14 +114,13 @@ class DBInterface(object):
     
         self.ExecuteNoQuerySQLStatment(INSERTJobSt)
         
+        ## Get Latest JobID
         JobID=self.ExecuteQuerySQLStatment("SELECT currval('nextjobid')")[0][0]
         self.AddNewEvent(JobID, 0, "Job Added")
         self.AddNewJobStatus(JobID,0, "JobAdded")
         
         return JobID
-        #else:
-        #    print("Job Already exists")
-        #    return -1
+        
 
     def UpdateJob_PBSID(self,JobID,PBSID):
         UpdateStat=" update jobs set pbsreferenceid='"+PBSID+"' where jobid="+str(JobID)+";"
