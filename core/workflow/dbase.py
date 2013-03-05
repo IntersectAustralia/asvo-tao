@@ -1,8 +1,11 @@
 import pickle, os, logging,string
 import pg
 import EnumerationLookup
+import locale
+import time
+from datetime import date
+import logging
 
-## Interface to postgresql DB
 class DBInterface(object):
     
     def __init__(self,Options):
@@ -12,6 +15,7 @@ class DBInterface(object):
         self.Options=Options     
         
         self.InitDBConnection()
+        self.IsOpen=False
         
     def InitDBConnection(self):
         
@@ -29,11 +33,13 @@ class DBInterface(object):
         # Take care that the connection will be opened to standard DB 'master'
         # This is temp. until the actual database is created
         self.CurrentConnection=pg.connect(host=self.serverip,user=self.username,passwd=self.password,port=self.port,dbname=self.DBName)
-        print('Connection to DB is open...')    
-
-    def CloseConnections(self):        
-        self.CurrentConnection.close()        
-        print('Connection to DB is Closed...')        
+        logging.info('Connection to DB is open...')    
+        self.IsOpen=True
+    def CloseConnections(self):  
+        if self.IsOpen==True:      
+            self.CurrentConnection.close()        
+            logging.info('Connection to DB is Closed...')
+            self.IsOpen=False        
            
             
     
@@ -42,68 +48,85 @@ class DBInterface(object):
             #SQLStatment=string.lower(SQLStatment)  
             self.CurrentConnection.query(SQLStatment)              
         except Exception as Exp:
-            print(">>>>>Error While Executing Non-Query SQL Statement")
-            print(type(Exp))
-            print(Exp.args)
-            print(Exp)            
-            print("Current SQL Statement =\n"+SQLStatment)
-            raw_input("PLease press enter to continue.....")
+            logging.error(">>>>>Error While Executing Non-Query SQL Statement")
+            logging.error(type(Exp))
+            logging.error(Exp.args)
+            logging.error(Exp)            
+            logging.error("Current SQL Statement =\n"+SQLStatment)
+            raw_input("Error: PLease press enter to continue.....")
     def ExecuteQuerySQLStatment(self,SQLStatment):
         try:            
             resultsList=self.CurrentConnection.query(SQLStatment).getresult()           
             return resultsList  
         except Exception as Exp:
-            print(">>>>>Error While Executing Query SQL Statement")
-            print(type(Exp))
-            print(Exp.args)
-            print(Exp)            
-            print("Current SQL Statement =\n"+SQLStatment)
+            logging.error(">>>>>Error While Executing Query SQL Statement")
+            logging.error(type(Exp))
+            logging.error(Exp.args)
+            logging.error(Exp)            
+            logging.error("Current SQL Statement =\n"+SQLStatment)
             raw_input("PLease press enter to continue.....")
     
     def AddNewEvent(self,AssociatedJobID,EventType,EventDesc):
-        INSERTEvent="INSERT INTO EVENTS (EventType,ASSOCIATEDJOBID,EVENTDESC) VALUES "
-        INSERTEvent=INSERTEvent+"("+str(EventType)+","+str(AssociatedJobID)+",'"+EventDesc+"');"
-        self.ExecuteNoQuerySQLStatment(INSERTEvent)
+        if self.Options['WorkFlowSettings:Events']=='On':
+            INSERTEvent="INSERT INTO EVENTS (EventType,ASSOCIATEDJOBID,EVENTDESC) VALUES "
+            INSERTEvent=INSERTEvent+"("+str(EventType)+","+str(AssociatedJobID)+",'"+EventDesc+"');"
+            self.ExecuteNoQuerySQLStatment(INSERTEvent)
     def GetCurrentActiveJobs(self):
         SELECTActive="SELECT * From Jobs where JobStatus<"+str(EnumerationLookup.JobState.Completed)
         return self.ExecuteQuerySQLStatment(SELECTActive)
-
+    
+    def RemoveOldJobFromWatchList(self,UIReferenceID):
+        UpdateSt='Update Jobs set JobStatus='+str(EnumerationLookup.JobState.Error)+' Where uireferenceid='+str(UIReferenceID)+' and JobStatus<'+str(EnumerationLookup.JobState.Completed)+';'
+        self.ExecuteNoQuerySQLStatment(UpdateSt)
     def GetCurrentActiveJobs_pbsID(self):
         SELECTActive="SELECT jobid,pbsreferenceid,JobStatus,uireferenceid,username From Jobs where JobStatus<"+str(EnumerationLookup.JobState.Completed)
         return self.ExecuteQuerySQLStatment(SELECTActive)
     
-    def SetJobComplete(self,JobID,NewStatus,Comment):
-        print Comment
-        Updatest="UPDATE Jobs set JobStatus="+str(EnumerationLookup.JobState.Completed)+",compeletedate=now(),jobstatuscomment='"+Comment+"' where JobID="+str(JobID)+";"
+    def SetJobComplete(self,JobID,NewStatus,Comment,ExecTime):
+        logging.info('Job ('+str(JobID)+') Completed .... '+Comment)
+        Updatest="UPDATE Jobs set JobStatus="+str(EnumerationLookup.JobState.Completed)+",completedate=insertdate+INTERVAL '"+str(ExecTime)+" seconds' ,jobstatuscomment='"+Comment+"' where JobID="+str(JobID)+";"
         Updatest=Updatest+"INSERT INTO JobHistory(JobID,NewStatus,Comments) VALUES("+str(JobID)+","+str(EnumerationLookup.JobState.Completed)+",'JobCompleted');"
         self.ExecuteNoQuerySQLStatment(Updatest)
+    
+    def SetJobFinishedWithError(self,JobID,NewStatus,Comment,ExecTime):
+        logging.info('Job ('+str(JobID)+') Finished With Error .... '+Comment)
+        Updatest="UPDATE Jobs set JobStatus="+str(EnumerationLookup.JobState.Error)+",completedate=insertdate+INTERVAL '"+str(ExecTime)+" seconds',jobstatuscomment='"+Comment+"' where JobID="+str(JobID)+";"
+        Updatest=Updatest+"INSERT INTO JobHistory(JobID,NewStatus,Comments) VALUES("+str(JobID)+","+str(EnumerationLookup.JobState.Error)+",'Error');"
+        self.ExecuteNoQuerySQLStatment(Updatest)
             
-    def SetJobRunning(self,JobID,OldStatus,Comment):        
+    def SetJobRunning(self,JobID,OldStatus,Comment,JobStartTime):        
         if EnumerationLookup.JobState.Running!=OldStatus:
-            Updatest="UPDATE Jobs set JobStatus="+str(EnumerationLookup.JobState.Running)+",jobstatuscomment='"+Comment+"' where JobID="+str(JobID)+";"
+            Updatest="UPDATE Jobs set JobStatus="+str(EnumerationLookup.JobState.Running)+",jobstatuscomment='"+Comment+"', startdate='"+time.strftime('%d/%m/'+str(date.today().year)+' %H:%M:%S',JobStartTime)+"' where JobID="+str(JobID)+";"
             Updatest=Updatest+"INSERT INTO JobHistory(JobID,NewStatus,Comments) VALUES("+str(JobID)+","+str(EnumerationLookup.JobState.Running)+",'JobRunning');"
             self.ExecuteNoQuerySQLStatment(Updatest)
-            print (str(JobID)+" Updated")
-        else:
-            print (str(JobID)+" Keep as it is (no change in the current Job Status)")
-        
-    def AddNewJob(self,UIReferenceID,JobType,XMLParams,UserName):
-        
-        if self.GetJobbyUIReference(UIReferenceID)!=None:
-        
-            INSERTJobSt="INSERT INTO JOBS(UIReferenceID,JobType,UserName,XMLParams) VALUES ("
-            INSERTJobSt=INSERTJobSt+str(UIReferenceID)+","+str(JobType)+",'"+UserName+"','"+XMLParams+"');"
-        
-            self.ExecuteNoQuerySQLStatment(INSERTJobSt)
+                    
+    def SetJobQueued(self,JobID,OldStatus,Comment):        
+        if EnumerationLookup.JobState.Queued!=OldStatus:
+            Updatest="UPDATE Jobs set JobStatus="+str(EnumerationLookup.JobState.Queued)+",jobstatuscomment='"+Comment+"' where JobID="+str(JobID)+";"
+            Updatest=Updatest+"INSERT INTO JobHistory(JobID,NewStatus,Comments) VALUES("+str(JobID)+","+str(EnumerationLookup.JobState.Queued)+",'JobWaiting');"
+            self.ExecuteNoQuerySQLStatment(Updatest)
             
-            JobID=self.ExecuteQuerySQLStatment("SELECT currval('nextjobid')")[0][0]
-            self.AddNewEvent(JobID, 0, "Job Added")
-            self.AddNewJobStatus(JobID,0, "JobAdded")
+        
+                
+    def AddNewJob(self,UIReferenceID,JobType,XMLParams,UserName,Database):
+        
+        #if self.GetJobbyUIReference(UIReferenceID)!=None:
             
-            return JobID
-        else:
-            print("Job Already exists")
-            return -1
+        XMLParamsASCII=XMLParams.encode('ascii','ignore')
+        XMLParamsASCII=XMLParamsASCII.replace("\'","\"")       
+        INSERTJobSt="INSERT INTO JOBS(UIReferenceID,JobType,UserName,XMLParams,Database) VALUES ("
+        INSERTJobSt=INSERTJobSt+str(UIReferenceID)+","+str(JobType)+",'"+UserName+"','"+XMLParamsASCII+"','"+Database+"');"
+    
+        self.ExecuteNoQuerySQLStatment(INSERTJobSt)
+        
+        JobID=self.ExecuteQuerySQLStatment("SELECT currval('nextjobid')")[0][0]
+        self.AddNewEvent(JobID, 0, "Job Added")
+        self.AddNewJobStatus(JobID,0, "JobAdded")
+        
+        return JobID
+        #else:
+        #    print("Job Already exists")
+        #    return -1
 
     def UpdateJob_PBSID(self,JobID,PBSID):
         UpdateStat=" update jobs set pbsreferenceid='"+PBSID+"' where jobid="+str(JobID)+";"

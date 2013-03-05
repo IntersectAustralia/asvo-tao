@@ -7,6 +7,9 @@ import os, shlex, subprocess,string
 import PBSPy.capi as pbs
 import dbase
 import EnumerationLookup
+import locale
+import time
+import logging
 
 class TorqueInterface(object):
     
@@ -32,10 +35,10 @@ class TorqueInterface(object):
             self.dbaseobj.AddNewEvent(0,EnumerationLookup.EventType.PBSEvent,"Connected to ("+self.ServerAddress+") Successfully")
         except Exception as Exp:
             self.dbaseobj.AddNewEvent(0,EnumerationLookup.EventType.Error,"Connection to ("+self.ServerAddress+") Failed \n"+Exp.args)
-            print(">>>>>Error While Connecting to PBS")
-            print(type(Exp))
-            print(Exp.args)
-            print(Exp) 
+            logging.info(">>>>>Error While Connecting to PBS")
+            logging.info(type(Exp))
+            logging.info(Exp.args)
+            logging.info(Exp) 
             raw_input("PLease press enter to continue.....")           
             
         
@@ -49,14 +52,16 @@ class TorqueInterface(object):
     ##
     def InitDefaultparams(self):
         self.DefaultParams = {'nodes': 1,'ppn': 1,
-                              'wt_hours': 12,'wt_minutes': 0,'wt_seconds': 0}
+                              'wt_hours': 48,'wt_minutes': 0,'wt_seconds': 0}
 
-    def GetJobParams(self,UserName,JobID,nodes=1,ppn=1):    
+    def SetJobParams(self,UserName,JobID,nodes,ppn,path,BasicSettingPath):    
             
         self.DefaultParams['executable'] = self.Options['Torque:ExecutableName']
-        self.DefaultParams['name']='tao_'+UserName+'_'+str(JobID)
+        self.DefaultParams['name']='tao_'+UserName[:4]+'_'+str(JobID)
         self.DefaultParams['nodes'] = nodes        
         self.DefaultParams['ppn'] = ppn
+        self.DefaultParams['path'] = path+"/params.xml"
+        self.DefaultParams['basicsettingpath'] = BasicSettingPath
         
 
     ##
@@ -65,8 +70,8 @@ class TorqueInterface(object):
     ## @param[IN]  params  Dictionary of parameters.
     ## @param[IN]  path    Where to write PBS script.
     ##
-    def WritePBSScriptFile(self,UserName,JobID, nodes,ppn, path):
-        self.GetJobParams(UserName, JobID,nodes, ppn)
+    def WritePBSScriptFile(self,UserName,JobID, nodes,ppn, path,BasicSettingPath):
+        self.SetJobParams(UserName, JobID,nodes, ppn,path,BasicSettingPath)
         FileName = os.path.join(path, self.ScriptFileName)
         ##
         self.dbaseobj.AddNewEvent(JobID,EnumerationLookup.EventType.PBSEvent,"Adding New Job to PBS, Script Name="+self.ScriptFileName)
@@ -82,7 +87,7 @@ class TorqueInterface(object):
             module load gcc/4.6.2 mpich2 hdf5/x86_64/gnu/1.8.9-mpich2 boost
             setenv PATH /home/lhodkins/workspace/asvo-tao/science_modules/build-debug/bin:$PATH
             setenv LD_LIBRARY_PATH /home/lhodkins/workspace/asvo-tao/science_modules/build-debug/lib:$LD_LIBRARY_PATH
-            mpiexec %(executable)s params.xml
+            mpiexec %(executable)s %(path)s %(basicsettingpath)s
             '''%self.DefaultParams)
         return FileName
 
@@ -92,10 +97,12 @@ class TorqueInterface(object):
     ## @param[IN]  params  Parameter dictionary.
     ## @returns PBS job identifier.
     ##
-    def Submit(self,UserName,JobID, nodes=1,ppn=1, path='.'):
-        ScriptFileName = self.WritePBSScriptFile(UserName,JobID, nodes,ppn, path)
-    
-        stdout = subprocess.check_output(shlex.split('ssh g2 \"cd %s; qsub -q tao %s\"'%(os.getcwd(), ScriptFileName)))
+    def Submit(self,UserName,JobID,path,nodes=1,ppn=1):
+        BasicSettingPath=self.Options['Torque:BasicSettingsPath']
+        ScriptFileName = self.WritePBSScriptFile(UserName,JobID, nodes,ppn, path,BasicSettingPath)
+        
+        
+        stdout = subprocess.check_output(shlex.split('ssh g2 \"cd %s; qsub -q tao %s\"'%(path.encode(locale.getpreferredencoding()), ScriptFileName.encode(locale.getpreferredencoding()))))
         pbs_id = stdout[:-1] # remove trailing \n
     
         return pbs_id
@@ -106,7 +113,7 @@ class TorqueInterface(object):
     ## The character returned indicates the job state as follows:
     ##  Q = queued
     ##  R = running
-    ##  C = complete
+    ##  C = complete --- Not Currently Available
     ##
     ## @param[IN]  pbs_id  PBS job identifier.
     ## @returns A character representing the job state.
@@ -115,7 +122,7 @@ class TorqueInterface(object):
         states = {}
         all_jobs = subprocess.check_output(shlex.split('ssh g2 qstat'))        
         lines = all_jobs.splitlines()[2:]
-        
+         
         CurrentJobs={} # Build dictionary with our jobs only
         for line in lines:
             LineParts=shlex.split(line)
@@ -123,20 +130,27 @@ class TorqueInterface(object):
             if JobName.find('tao_')==0:
                 JobID=LineParts[0].split('.')[0]
                 CurrentJobs[JobID]=LineParts[4]
-        JobsStatus=[]
-        for PBsID in pbsIDs:
-            PID=PBsID[1].split('.')[0]
-            if  PID in CurrentJobs and CurrentJobs[PID]=='R': 
-                self.dbaseobj.SetJobRunning(PBsID[0],PBsID[2],"Job Running- PBSID"+PID)
-                JobsStatus.append([PBsID[3],'IN_PROGRESS',PBsID[4]])       
-            else:
-                #path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], 'jobs', PBsID[4], str(PBsID[3]))
-                path = os.path.join('jobs', PBsID[4], str(PBsID[3]))
-                self.dbaseobj.SetJobComplete(PBsID[0],PBsID[2],path)
-                JobsStatus.append([PBsID[3],'COMPLETED',PBsID[4]])
+        
             
          
         
-        return JobsStatus
+        return CurrentJobs
+    
+    
+    
+    def GetJobStartTime(self,pbsID):
+        JobStartTimeOutput = subprocess.check_output(shlex.split('ssh g2 showstart '+pbsID))
+        Lines=JobStartTimeOutput.splitlines()
+        for Line in Lines:
+            
+            if Line.find('Estimated Rsv based start in')!=-1:
+               Line=Line.replace('Estimated Rsv based start in','')
+               Index=Line.find('on')
+               Line=Line[Index+2:].strip()               
+               D=time.strptime(Line,'%a %b %d %H:%M:%S')               
+               return D
+               
+        
+        
     
         

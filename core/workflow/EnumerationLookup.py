@@ -1,8 +1,9 @@
 class JobState:
     NewJob=0
-    SubmittedToPBX=1
+    Queued=1
     Running=2
     Completed=3
+    Error=4
 
 class EventType:
     Normal=0
