@@ -95,7 +95,35 @@ jQuery(document).ready(function($) {
                     var item = data[i];
                     $option = $('<option/>');
                     $option.attr('value',item.pk);
-                    $option.html(parseFloat(item.fields.redshift).toFixed(3));
+//                  Redshift Formatting:
+//                  The age of the universe as a function of redshift is 1 / (1 + z) where z is the redshift.  So z=0 is the present, and z=Infinity is the Big Bang.  
+//                  This is a non-linear relationship with more variation at smaller z values.  To present figures that are easy to read and have sensible precision, redshift will be displayed with 5 digits, e.g.
+//                        * 0.0001
+//                        * 0.0012
+//                        * 0.0123
+//                        * 0.1234
+//                        * 1.2345
+//                        * 12.345
+//                        * 123.45
+//                        * 1234.5
+//                        * 12345
+//                        * 123456
+//                        * 1234567 etc.
+//                  Note that integers > 99,999 will still be displayed correctly (in practice the largest redshift at the moment is 127).
+                    var whole_digits = item.fields.redshift.split(".")[0].length;
+                    var precision = item.fields.redshift.split(".")[1].length;
+                    if (whole_digits+precision > 5) {
+                        var decimal_places = 5-whole_digits;
+                        if (decimal_places > 0) {
+                            $option.html(item.fields.redshift.substr(0,whole_digits) + item.fields.redshift.substr(whole_digits,decimal_places+1));
+                        }
+                        else {
+                            $option.html(item.fields.redshift.substr(0,whole_digits));
+                        }
+                    }
+                    else {
+                        $option.html(item.fields.redshift);
+                    }
                     if (item.pk == initial_snapshot) {
                         $option.attr('selected','selected');
                     }
