@@ -104,18 +104,17 @@ class DBInterface(object):
             
         
                 
-    def AddNewJob(self,UIReferenceID,JobType,XMLParams,UserName,Database):
+    def AddNewJob(self,UIReferenceID,JobType,XMLParams,UserName,Database,SubJobIndex):
         
         ## Encode the XML Params and remove un-replaceable unicode chars    
         XMLParamsASCII=XMLParams.encode('ascii','ignore')
         XMLParamsASCII=XMLParamsASCII.replace("\'","\"")       
-        INSERTJobSt="INSERT INTO JOBS(UIReferenceID,JobType,UserName,XMLParams,Database) VALUES ("
-        INSERTJobSt=INSERTJobSt+str(UIReferenceID)+","+str(JobType)+",'"+UserName+"','"+XMLParamsASCII+"','"+Database+"');"
-    
-        self.ExecuteNoQuerySQLStatment(INSERTJobSt)
-        
+        INSERTJobSt="INSERT INTO JOBS(UIReferenceID,JobType,UserName,XMLParams,Database,subjobindex) VALUES ("
+        INSERTJobSt=INSERTJobSt+str(UIReferenceID)+","+str(JobType)+",'"+UserName+"','"+XMLParamsASCII+"','"+Database+"',"+str(SubJobIndex)+");"
+        INSERTJobSt=INSERTJobSt+"SELECT currval('nextjobid');"
+            
         ## Get Latest JobID
-        JobID=self.ExecuteQuerySQLStatment("SELECT currval('nextjobid')")[0][0]
+        JobID=self.ExecuteQuerySQLStatment(INSERTJobSt)[0][0]        
         self.AddNewEvent(JobID, 0, "Job Added")
         self.AddNewJobStatus(JobID,0, "JobAdded")
         
@@ -123,6 +122,10 @@ class DBInterface(object):
         
 
     def UpdateJob_PBSID(self,JobID,PBSID):
+        UpdateStat=" update jobs set pbsreferenceid='"+PBSID+"' where jobid="+str(JobID)+";"
+        self.ExecuteNoQuerySQLStatment(UpdateStat)
+    
+    def UpdateJob_subjobsCount(self,JobID,PBSID):
         UpdateStat=" update jobs set pbsreferenceid='"+PBSID+"' where jobid="+str(JobID)+";"
         self.ExecuteNoQuerySQLStatment(UpdateStat)
         

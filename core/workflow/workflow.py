@@ -39,44 +39,58 @@ class WorkFlow(object):
 
       
         
-    def json_handler(self,resp):
-        
+    def json_handler(self,resp):       
         
         JobsCounter=0
-        for json in resp.json:
+        for json in resp.json():
             
-            
-            UIJobReference=json['id']
-            JobParams=json['parameters']
-            JobDatabase=json['database']
-            JobUserName=json['username']
-            
-            
-            ## If a Job with the Same UI_ID exists ...ensure that it is out of the watch List (By Error State)
-            self.dbaseobj.RemoveOldJobFromWatchList(UIJobReference)
-            ## Add new Job and return its ID
-            JobID=self.dbaseobj.AddNewJob(UIJobReference,0,JobParams,JobUserName,JobDatabase)
-            
-            if JobID!=-1:     
-                           
-                JobsCounter=JobsCounter+1
-                ## Submit the Job to PBS and get back its ID
-                PBSJobID=self.SubmitJobToPBS(JobID,JobParams,JobUserName,UIJobReference,JobDatabase)
-                ## Store the Job PBS ID  
-                self.dbaseobj.UpdateJob_PBSID(JobID,PBSJobID)
-                ## Update the Job Status to Queued            
-                self.UpdateTAOUI(UIJobReference, data={'status': 'QUEUED'})
-            
+            if self.AddNewJob(json)==True:
+                JobsCounter=JobsCounter+1            
     
         return JobsCounter
     
-    def SubmitJobToPBS(self,JobID,JobParams,JobUserName,UIJobReference,JobDatabase):
+    
+    def AddNewJob(self,jsonObj):
         
+        UIJobReference=jsonObj['id']
+        JobParams=jsonObj['parameters']
+        JobDatabase=jsonObj['database']
+        JobUserName=jsonObj['username']
+        
+        
+        
+        ## If a Job with the Same UI_ID exists ...ensure that it is out of the watch List (By Error State)
+        self.dbaseobj.RemoveOldJobFromWatchList(UIJobReference)
+        ## 1- Prepare the Job Directory
+        SubJobsCount=self.PrepareJobFolder(JobParams,JobUserName,UIJobReference,JobDatabase)
+        CurrentJobType=EnumerationLookup.JobType.Simple
+        if SubJobsCount>1:
+           CurrentJobType=EnumerationLookup.JobType.Complex     
+        
+        
+        ## If the insert process completed successfully (The Job Already got ID)
+                             
+            
+        ## Submit the Job to PBS and get back its ID
+        for i in range(0,SubJobsCount):
+            ## Add new Job and return its ID
+            JobID=self.dbaseobj.AddNewJob(UIJobReference,CurrentJobType,JobParams,JobUserName,JobDatabase,i)
+            ParamXMLName="params"+str(i)+".xml"
+            PBSJobID=self.SubmitJobToPBS(JobID,JobUserName,UIJobReference,ParamXMLName,i)
+            ## Store the Job PBS ID  
+            self.dbaseobj.UpdateJob_PBSID(JobID,PBSJobID)
+                
+            ## Update the Job Status to Queued            
+            #self.UpdateTAOUI(UIJobReference, data={'status': 'QUEUED'})
+        
+        
+    def PrepareJobFolder(self,JobParams,JobUserName,UIJobReference,JobDatabase):
         ## Read User Settings 
         BasedPath=os.path.join(self.Options['WorkFlowSettings:WorkingDir'], 'jobs', JobUserName, str(UIJobReference))
         outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], 'jobs', JobUserName, str(UIJobReference),'output')
         logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], 'jobs', JobUserName, str(UIJobReference),'log')
         AudDataPath=os.path.join(self.Options['Torque:AuxInputData'])
+        
         
         ## If the Job's path exists ... Clear all its contents 
         if(os.path.exists(BasedPath)):
@@ -86,35 +100,42 @@ class WorkFlow(object):
         ## Create working folders     
         os.makedirs(outputpath)
         os.makedirs(logpath)
-        old_dir = os.getcwd()
-        os.chdir(logpath)
-        
-        
-
         
         
         ###############################################################
-        #### Prepare Job Files
+        #### Write params.xml (user version) to the output Directory
         with open(outputpath+'/params.xml', 'w') as file:
             file.write(JobParams.encode('utf8'))
             file.close()
         
-        ParseXMLParametersObj=ParseXML.ParseXMLParameters(outputpath+'/params.xml',self.Options)
-        self.SubJobsCount=ParseXMLParametersObj.ParseFile(UIJobReference,JobDatabase,JobUserName)
         
-        ParseXMLParametersObj.ExportTrees(logpath+"/params<index>.xml")
+        ## Parse the XML file to extract job Information and get if the job is complex or single lightcone
+        ParseXMLParametersObj=ParseXML.ParseXMLParameters(outputpath+'/params.xml',self.Options)
+        SubJobsCount=ParseXMLParametersObj.ParseFile(UIJobReference,JobDatabase,JobUserName)    
+        
+        ## Generate params?.xml files based on the requested jobscounts
+        ParseXMLParametersObj.ExportTrees(logpath+"/params<index>.xml")    
+        
         
         src_files = os.listdir(AudDataPath)
         for file_name in src_files:
             full_file_name = os.path.join(AudDataPath, file_name)
             if (os.path.isfile(full_file_name)):
                 shutil.copy(full_file_name, logpath)
+            
+        return SubJobsCount   
         
+    def SubmitJobToPBS(self,JobID,JobUserName,UIJobReference,ParamXMLName,SubJobIndex=0):
         
+        ## Read User Settings      
+        logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], 'jobs', JobUserName, str(UIJobReference),'log')                
+        
+        old_dir = os.getcwd()
+        os.chdir(logpath)           
                 
         ############################################################
         ### Submit the Job to the PBS Queue
-        PBSJobID=self.TorqueObj.Submit(JobUserName,JobID,logpath)
+        PBSJobID=self.TorqueObj.Submit(JobUserName,JobID,logpath,ParamXMLName,SubJobIndex)
         
         ### Return back to the previous folder    
         os.chdir(old_dir)

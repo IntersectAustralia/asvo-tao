@@ -26,10 +26,8 @@ class ParseXMLParameters(object):
         
     def ExportTrees(self,FileName):
             
-        if self.SubJobsCount==1:
-            FileName=FileName.replace('<index>','')
-            self.ExportTree(FileName,0)
-        elif self.SubJobsCount>1:
+       
+        if self.SubJobsCount>0:
             for i in range(0,self.SubJobsCount):
                 FileNameWithIndex=FileName.replace('<index>',str(i))
                 self.ExportTree(FileNameWithIndex,i)
@@ -86,13 +84,4 @@ class ParseXMLParameters(object):
              
         self.tree.xpath("/ns:tao",namespaces={'ns':self.NameSpace})[0].append(DBElement)
                 
-if __name__ == '__main__':
-    [Options]=settingReader.ParseParams("settings.xml")  
-    outputpath='/home/amr/workspace/'
-    ParseXMLParametersObj=ParseXMLParameters(outputpath+'/params.xml',Options)
-    UIJobReference=100
-    JobDatabase='millennium_mini'
-    JobUserName='amr'
-    ParseXMLParametersObj.ParseFile(UIJobReference,JobDatabase,JobUserName)
-    logpath='/home/amr/workspace/'    
-    ParseXMLParametersObj.ExportTrees(logpath+"/processedparams<index>.xml")    
+ 

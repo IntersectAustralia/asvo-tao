@@ -4,7 +4,6 @@
 ##
 
 import os, shlex, subprocess,string
-import PBSPy.capi as pbs
 import dbase
 import EnumerationLookup
 import locale
@@ -21,25 +20,14 @@ class TorqueInterface(object):
         self.ServerAddress=Options['Torque:ServerAddress'] # BPS Server Address
         self.ScriptFileName=Options['Torque:ScriptFileName'] # What to call the generated PBS script.
         self.InitDefaultparams()
-        self.Connect()
+        
 
     ##
     ## Connect to the PBS server.
     ##
     ## @returns PBSPy Server class.
     ##
-    def Connect(self):
-        try:
-            self.Server = pbs.Server(self.ServerAddress)
-            self.Server.connect()
-            self.dbaseobj.AddNewEvent(0,EnumerationLookup.EventType.PBSEvent,"Connected to ("+self.ServerAddress+") Successfully")
-        except Exception as Exp:
-            self.dbaseobj.AddNewEvent(0,EnumerationLookup.EventType.Error,"Connection to ("+self.ServerAddress+") Failed \n"+Exp.args)
-            logging.info(">>>>>Error While Connecting to PBS")
-            logging.info(type(Exp))
-            logging.info(Exp.args)
-            logging.info(Exp) 
-            raw_input("PLease press enter to continue.....")           
+       
             
         
 
@@ -54,13 +42,13 @@ class TorqueInterface(object):
         self.DefaultParams = {'nodes': 1,'ppn': 1,
                               'wt_hours': 48,'wt_minutes': 0,'wt_seconds': 0}
 
-    def SetJobParams(self,UserName,JobID,nodes,ppn,path,BasicSettingPath):    
+    def SetJobParams(self,UserName,JobID,nodes,ppn,path,BasicSettingPath,ParamXMLName):    
             
         self.DefaultParams['executable'] = self.Options['Torque:ExecutableName']
         self.DefaultParams['name']='tao_'+UserName[:4]+'_'+str(JobID)
         self.DefaultParams['nodes'] = nodes        
         self.DefaultParams['ppn'] = ppn
-        self.DefaultParams['path'] = path+"/params.xml"
+        self.DefaultParams['path'] = path+"/"+ParamXMLName
         self.DefaultParams['basicsettingpath'] = BasicSettingPath
         
 
@@ -70,11 +58,11 @@ class TorqueInterface(object):
     ## @param[IN]  params  Dictionary of parameters.
     ## @param[IN]  path    Where to write PBS script.
     ##
-    def WritePBSScriptFile(self,UserName,JobID, nodes,ppn, path,BasicSettingPath):
-        self.SetJobParams(UserName, JobID,nodes, ppn,path,BasicSettingPath)
-        FileName = os.path.join(path, self.ScriptFileName)
+    def WritePBSScriptFile(self,UserName,JobID, nodes,ppn, path,BasicSettingPath,ParamXMLName,SubJobIndex):
+        self.SetJobParams(UserName, JobID,nodes, ppn,path,BasicSettingPath,ParamXMLName)
+        FileName = os.path.join(path, self.ScriptFileName+str(SubJobIndex))
         ##
-        self.dbaseobj.AddNewEvent(JobID,EnumerationLookup.EventType.PBSEvent,"Adding New Job to PBS, Script Name="+self.ScriptFileName)
+        self.dbaseobj.AddNewEvent(JobID,EnumerationLookup.EventType.PBSEvent,"Adding New Job to PBS, Script Name="+self.ScriptFileName+str(SubJobIndex))
         ##
         
         with open(FileName, 'w') as script:
@@ -97,14 +85,14 @@ class TorqueInterface(object):
     ## @param[IN]  params  Parameter dictionary.
     ## @returns PBS job identifier.
     ##
-    def Submit(self,UserName,JobID,path,nodes=1,ppn=1):
+    def Submit(self,UserName,JobID,path,ParamXMLName,SubJobIndex,nodes=1,ppn=1):
         BasicSettingPath=self.Options['Torque:BasicSettingsPath']
-        ScriptFileName = self.WritePBSScriptFile(UserName,JobID, nodes,ppn, path,BasicSettingPath)
+        ScriptFileName = self.WritePBSScriptFile(UserName,JobID, nodes,ppn, path,BasicSettingPath,ParamXMLName,SubJobIndex)
         
         
-        stdout = subprocess.check_output(shlex.split('ssh g2 \"cd %s; qsub -q tao %s\"'%(path.encode(locale.getpreferredencoding()), ScriptFileName.encode(locale.getpreferredencoding()))))
-        pbs_id = stdout[:-1] # remove trailing \n
-    
+        #stdout = subprocess.check_output(shlex.split('ssh g2 \"cd %s; qsub -q tao %s\"'%(path.encode(locale.getpreferredencoding()), ScriptFileName.encode(locale.getpreferredencoding()))))
+        #pbs_id = stdout[:-1] # remove trailing \n
+        pbs_id="00000000"
         return pbs_id
 
     ##
