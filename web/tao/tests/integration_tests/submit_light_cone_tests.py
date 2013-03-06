@@ -14,7 +14,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
         galaxy_model = GalaxyModelFactory.create()
         dataset = DataSetFactory.create(simulation=simulation, galaxy_model=galaxy_model)
 
-        self.redshifts = [1, 2, 3]
+        self.redshifts = ['1.23456789', '2.987654321', '3.69154927']
         for redshift in self.redshifts:
             SnapshotFactory.create(dataset=dataset, redshift=redshift)
 
@@ -73,7 +73,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
         self.select(self.lc_id('catalogue_geometry'), 'Box')
         self.fill_in_fields({
             'box_size': '9',
-            'snapshot': "%.3f" % self.redshifts[0],
+            'snapshot': "%.5g" % float(self.redshifts[0]),
         }, id_wrap=self.lc_id)
         self.click(self.lc_2select('op_add_all'))
         self.submit_mgf_form()
@@ -119,7 +119,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
         self.select(self.lc_id('catalogue_geometry'), 'Box')
         self.fill_in_fields({
             'box_size': '1',
-            'snapshot': "%.3f" % self.redshifts[0],
+            'snapshot': "%.5g" % float(self.redshifts[0]),
         }, id_wrap=self.lc_id)
         self.click(self.lc_2select('op_add_all'))
 
