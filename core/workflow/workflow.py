@@ -68,7 +68,7 @@ class WorkFlow(object):
            CurrentJobType=EnumerationLookup.JobType.Complex     
         
         
-        ## If the insert process completed successfully (The Job Already got ID)
+        
                              
             
         ## Submit the Job to PBS and get back its ID
@@ -80,8 +80,9 @@ class WorkFlow(object):
             ## Store the Job PBS ID  
             self.dbaseobj.UpdateJob_PBSID(JobID,PBSJobID)
                 
-            ## Update the Job Status to Queued            
-            #self.UpdateTAOUI(UIJobReference, data={'status': 'QUEUED'})
+        ## Update the Job Status to Queued            
+        #self.UpdateTAOUI(UIJobReference, data={'status': 'QUEUED'})
+        return True
         
         
     def PrepareJobFolder(self,JobParams,JobUserName,UIJobReference,JobDatabase):
