@@ -115,7 +115,7 @@ jQuery(document).ready(function($) {
                     if (whole_digits+precision > 5) {
                         var decimal_places = 5-whole_digits;
                         if (decimal_places > 0) {
-                            $option.html(item.fields.redshift.substr(0,whole_digits) + item.fields.redshift.substr(whole_digits,decimal_places+1));
+                            $option.html(parseFloat(item.fields.redshift).toFixed(decimal_places));
                         }
                         else {
                             $option.html(item.fields.redshift.substr(0,whole_digits));

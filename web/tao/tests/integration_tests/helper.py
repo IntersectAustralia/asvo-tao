@@ -215,7 +215,7 @@ class LiveServerTest(django.test.LiveServerTestCase):
         return [x.get_attribute("innerHTML") for x in self.selenium.find_elements_by_css_selector(option_selector)]
 
     def get_expected_snapshot_options(self, snapshots):
-        return [str("%.3f" % snapshot.redshift) for snapshot in snapshots]
+        return [str("%.5g" % snapshot.redshift) for snapshot in snapshots]
         
     def get_full_url(self, url_name, *args, **kwargs):
         return "%s%s" % (self.live_server_url, reverse(url_name, args=args, kwargs=kwargs))
