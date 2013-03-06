@@ -106,7 +106,7 @@ class TorqueInterface(object):
     ## @param[IN]  pbs_id  PBS job identifier.
     ## @returns A character representing the job state.
     ##
-    def QueryPBSJob(self,pbsIDs):        
+    def QueryPBSJob(self):        
         states = {}
         all_jobs = subprocess.check_output(shlex.split('ssh g2 qstat'))        
         lines = all_jobs.splitlines()[2:]

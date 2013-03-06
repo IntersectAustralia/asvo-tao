@@ -206,7 +206,7 @@ class WorkFlow(object):
         
         ## Get Current Active Jobs (Job Status<Complete)
         CurrentJobs_PBSID=self.dbaseobj.GetCurrentActiveJobs_pbsID()
-       
+        
         
         if len(CurrentJobs_PBSID)==0:
             ## Nothing to do ... There are no Jobs in my Watch List
@@ -220,8 +220,9 @@ class WorkFlow(object):
         
         
         ## Query PBS for current Jobs that belong to TAO
-        CurrentJobs=self.TorqueObj.QueryPBSJob(CurrentJobs_PBSID)    
+        CurrentJobs=self.TorqueObj.QueryPBSJob()    
         
+        ####Here
         
         logging.info(str(CurrentJobs))
         

@@ -61,6 +61,17 @@ class DBInterface(object):
             logging.error(Exp)            
             logging.error("Current SQL Statement =\n"+SQLStatment)
             raw_input("PLease press enter to continue.....")
+    def ExecuteQuerySQLStatmentAsDict(self,SQLStatment):
+        try:            
+            resultsList=self.CurrentConnection.query(SQLStatment).dictresult()           
+            return resultsList  
+        except Exception as Exp:
+            logging.error(">>>>>Error While Executing Query SQL Statement")
+            logging.error(type(Exp))
+            logging.error(Exp.args)
+            logging.error(Exp)            
+            logging.error("Current SQL Statement =\n"+SQLStatment)
+            raw_input("PLease press enter to continue.....")
     
     def AddNewEvent(self,AssociatedJobID,EventType,EventDesc):
         if self.Options['WorkFlowSettings:Events']=='On':
@@ -75,8 +86,8 @@ class DBInterface(object):
         UpdateSt='Update Jobs set JobStatus='+str(EnumerationLookup.JobState.Error)+' Where uireferenceid='+str(UIReferenceID)+' and JobStatus<'+str(EnumerationLookup.JobState.Completed)+';'
         self.ExecuteNoQuerySQLStatment(UpdateSt)
     def GetCurrentActiveJobs_pbsID(self):
-        SELECTActive="SELECT jobid,pbsreferenceid,JobStatus,uireferenceid,username From Jobs where JobStatus<"+str(EnumerationLookup.JobState.Completed)
-        return self.ExecuteQuerySQLStatment(SELECTActive)
+        SELECTActive="SELECT jobid,pbsreferenceid,JobStatus,uireferenceid,username,subjobindex,jobtype From Jobs where JobStatus<"+str(EnumerationLookup.JobState.Completed)
+        return self.ExecuteQuerySQLStatmentAsDict(SELECTActive)
     
     def SetJobComplete(self,JobID,NewStatus,Comment,ExecTime):
         logging.info('Job ('+str(JobID)+') Completed .... '+Comment)
@@ -125,9 +136,7 @@ class DBInterface(object):
         UpdateStat=" update jobs set pbsreferenceid='"+PBSID+"' where jobid="+str(JobID)+";"
         self.ExecuteNoQuerySQLStatment(UpdateStat)
     
-    def UpdateJob_subjobsCount(self,JobID,PBSID):
-        UpdateStat=" update jobs set pbsreferenceid='"+PBSID+"' where jobid="+str(JobID)+";"
-        self.ExecuteNoQuerySQLStatment(UpdateStat)
+    
         
     def AddNewJobStatus(self,JobID,NewStatus,Comment):
         INSERTJobSt="INSERT INTO JobHistory(JobID,NewStatus,Comments) VALUES ("
