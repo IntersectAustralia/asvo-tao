@@ -30,13 +30,13 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </a>
-                <a id='asvologo' class="brand" href="{% url 'home' %}"><img src='/static/images/ASVO_Logo_REV.png'></img></a>
+                <a id='asvologo' class="brand" href="{% url 'home' %}"><img src={% static "images/ASVO_Logo_REV.png" %}></img></a>
                 <a class="brand" href="{% url 'home' %}">Theoretical Astrophysical Observatory</a>
                 <div class="nav-collapse collapse">
                     <ul class="nav">
                         <li class="{% if tab == 'home' %}active{% endif %}"><a href="{% url 'home' %}">Home</a></li>
                         <li class="{% if tab == 'mgf' %}active{% endif %}"><a href="{% url 'mock_galaxy_factory' %}">New Catalogue</a></li>
-                        <li class="{% if tab == 'jobs' %}active{% endif %}"><a href="{% url 'job_index' %}">Jobs</a></li>
+                        <li class="{% if tab == 'jobs' %}active{% endif %}"><a href="{% url 'job_index' %}">History</a></li>
                         {% if user.is_staff %}
                             <li><a href="{% url 'admin_index' %}">Admin</a></li>
                         {% endif %}
