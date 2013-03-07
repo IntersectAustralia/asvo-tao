@@ -7,7 +7,7 @@ Settings for QA environment
 """
 from tao.settings import *
 
-DEBUG=False
+DEBUG=True
 TEMPLATE_DEBUG=DEBUG
 
 DATABASES = {
