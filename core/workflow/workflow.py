@@ -302,7 +302,8 @@ class WorkFlow(object):
                     self.UpdateJob_EndSuccessfully(JobID,SubJobIndex,JobType, UIReference_ID, UserName, JobDetails)                    
                 else:
                     ##### Job Terminated with error or was killed by the Job Queue                    
-                    self.UpdateJob_EndWithError(JobID,SubJobIndex,JobType, UIReference_ID, UserName, JobDetails)    
+                    self.UpdateJob_EndWithError(JobID,SubJobIndex,JobType, UIReference_ID, UserName, JobDetails)
+                    break    
             ###############################################################################################################
             ## 5- The Job didn't change its status... Show its progess information if Exists!        
             else:
@@ -337,6 +338,11 @@ class WorkFlow(object):
         if JobDetails['error'] == '':
             JobDetails['error'] = stderr
         
+        
+        
+        self.dbaseobj.SetJobFinishedWithError(JobID, JobDetails['error'], JobDetails['end'])
+        data['error_message'] = 'Error:' + JobDetails['error']        
+        
         if TerminateAllOnError==True:
             SubJobsList=self.dbaseobj.GetJobsStatusbyUIReference(UIReference_ID)
             for JobItem in SubJobsList:
@@ -344,10 +350,6 @@ class WorkFlow(object):
                     self.TorqueObj.TerminateJob(JobItem['pbsreferenceid'].split('.')[0])
                     logging.info("Job (" + str(JobItem['jobid']) +" ["+str(JobItem['subjobindex'])+"]) ... Force Delete")
                     self.dbaseobj.SetJobFinishedWithError(JobItem['jobid'], 'Force Deleted', JobDetails['end'])
-        
-        self.dbaseobj.SetJobFinishedWithError(JobID, JobDetails['error'], JobDetails['end'])
-        data['error_message'] = 'Error:' + JobDetails['error']        
-        
         
         if TerminateAllOnError==True and JobType==EnumerationLookup.JobType.Complex:
            data['error_message']=data['error_message']+" Please note that all other subjobs will be deleted also" 

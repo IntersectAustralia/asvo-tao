@@ -126,7 +126,9 @@ class TorqueInterface(object):
     
     def TerminateJob(self,PBSID):
          try:
-            subprocess.check_output(shlex.split('ssh g2 qdel '+PBSID))
+            logging.info("Trying to Terminate Job "+PBSID+" from the PBS queue....")
+            output=subprocess.check_output(shlex.split('ssh g2 qdel '+PBSID))
+            logging.info("Trying to Terminate Job "+PBSID+" : qdel output was:"+output)
          except Exception as Exp:
             logging.error(">>>>>Error While Terminating Job "+PBSID)
             logging.error(type(Exp))
