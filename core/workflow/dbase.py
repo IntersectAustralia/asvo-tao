@@ -84,18 +84,20 @@ class DBInterface(object):
     
     def RemoveOldJobFromWatchList(self,UIReferenceID):
         UpdateSt='Update Jobs set JobStatus='+str(EnumerationLookup.JobState.Error)+' Where uireferenceid='+str(UIReferenceID)+' and JobStatus<'+str(EnumerationLookup.JobState.Completed)+';'
+        UpdateSt=UpdateSt+' Update Jobs set latestjobversion=False where uireferenceid='+str(UIReferenceID)+';'
         self.ExecuteNoQuerySQLStatment(UpdateSt)
+        
     def GetCurrentActiveJobs_pbsID(self):
         SELECTActive="SELECT jobid,pbsreferenceid,JobStatus,uireferenceid,username,subjobindex,jobtype From Jobs where JobStatus<"+str(EnumerationLookup.JobState.Completed)
         return self.ExecuteQuerySQLStatmentAsDict(SELECTActive)
     
-    def SetJobComplete(self,JobID,NewStatus,Comment,ExecTime):
+    def SetJobComplete(self,JobID,Comment,ExecTime):
         logging.info('Job ('+str(JobID)+') Completed .... '+Comment)
         Updatest="UPDATE Jobs set JobStatus="+str(EnumerationLookup.JobState.Completed)+",completedate=insertdate+INTERVAL '"+str(ExecTime)+" seconds' ,jobstatuscomment='"+Comment+"' where JobID="+str(JobID)+";"
         Updatest=Updatest+"INSERT INTO JobHistory(JobID,NewStatus,Comments) VALUES("+str(JobID)+","+str(EnumerationLookup.JobState.Completed)+",'JobCompleted');"
         self.ExecuteNoQuerySQLStatment(Updatest)
     
-    def SetJobFinishedWithError(self,JobID,NewStatus,Comment,ExecTime):
+    def SetJobFinishedWithError(self,JobID,Comment,ExecTime):
         logging.info('Job ('+str(JobID)+') Finished With Error .... '+Comment)
         Updatest="UPDATE Jobs set JobStatus="+str(EnumerationLookup.JobState.Error)+",completedate=insertdate+INTERVAL '"+str(ExecTime)+" seconds',jobstatuscomment='"+Comment+"' where JobID="+str(JobID)+";"
         Updatest=Updatest+"INSERT INTO JobHistory(JobID,NewStatus,Comments) VALUES("+str(JobID)+","+str(EnumerationLookup.JobState.Error)+",'Error');"
@@ -147,9 +149,14 @@ class DBInterface(object):
     def GetJob(self,JobID):
         SELECTJob="SELECT * From Jobs where JobID="+str(JobID)+";"
         return self.ExecuteQuerySQLStatment(SELECTJob)
+    
     def GetJobbyUIReference(self,UIReferenceID):
-        SELECTJob="SELECT * From Jobs where UIReferenceID="+str(UIReferenceID)+";"
+        SELECTJob="SELECT * From Jobs where UIReferenceID="+str(UIReferenceID)+" and latestjobversion=True ;"
         return self.ExecuteQuerySQLStatment(SELECTJob)
+    
+    def GetJobsStatusbyUIReference(self,UIReferenceID):
+        SELECTJob="SELECT jobid,jobstatus,subjobindex,pbsreferenceid From Jobs where UIReferenceID="+str(UIReferenceID)+" and latestjobversion=True;"
+        return self.ExecuteQuerySQLStatmentAsDict(SELECTJob)
     
     
 

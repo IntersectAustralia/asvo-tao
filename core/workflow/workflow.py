@@ -42,7 +42,7 @@ class WorkFlow(object):
     def json_handler(self,resp):       
         
         JobsCounter=0
-        for json in resp.json():
+        for json in resp.json:
             
             if self.AddNewJob(json)==True:
                 JobsCounter=JobsCounter+1            
@@ -81,7 +81,7 @@ class WorkFlow(object):
             self.dbaseobj.UpdateJob_PBSID(JobID,PBSJobID)
                 
         ## Update the Job Status to Queued            
-        #self.UpdateTAOUI(UIJobReference, data={'status': 'QUEUED'})
+        self.UpdateTAOUI(UIJobReference, CurrentJobType, data={'status': 'QUEUED'})
         return True
         
         
@@ -144,11 +144,38 @@ class WorkFlow(object):
         ## Return JobID
         return PBSJobID
                 
-    def UpdateTAOUI(self,UIJobID,data):        
-        logging.info('Updating UI MasterDB. JobID ('+str(UIJobID)+').. '+data['status'])        
-        requests.put(self.api['update']%UIJobID, data)
+    def UpdateTAOUI(self,UIJobID,JobType,data):
+        ## If the job Type is Simple Update it without any checking  
+        Update=False
+        if JobType==EnumerationLookup.JobType.Simple:      
+            Update=True
+        ## For complex jobs ... More checking is required
+        else:
+            RequestedStatus=data['status']
+            
+            if RequestedStatus=='IN_PROGRESS' or RequestedStatus=='ERROR':
+                Update=True                
+            else:
+                Update=self.AllJobsInSameStatus(UIJobID,RequestedStatus)
+                    
+                 
+                
         
-   
+        if Update==True:
+            logging.info('Updating UI MasterDB. JobID ('+str(UIJobID)+').. '+data['status'])        
+            requests.put(self.api['update']%UIJobID, data) 
+            
+    def AllJobsInSameStatus(self,UIReference_ID,RequestedStatus):
+        StatusMapping={'QUEUED':EnumerationLookup.JobState.Queued,'COMPLETED':EnumerationLookup.JobState.Completed,'ERROR':EnumerationLookup.JobState.Error}
+        RequestedState=StatusMapping[RequestedStatus]        
+        
+        ListofSubJobs=self.dbaseobj.GetJobsStatusbyUIReference(UIReference_ID)        
+                
+        for JobItem in ListofSubJobs:
+            if JobItem['jobstatus']!=RequestedState:
+                return False
+        logging.info('***** All Jobs ('+str(UIReference_ID)+')Are In state:'+str(RequestedState))    
+        return True
     def xml_handler(self,resp):
         xml = resp.xml
         self.dbaseobj.AddNewEvent(0,EnumerationLookup.EventType.Error,"XML Response Handler is not supported: "+xml)
@@ -202,6 +229,9 @@ class WorkFlow(object):
             stderrstring='Cannot file the stderr file:'+JobName
         os.chdir(old_dir)     
         return stderrstring
+
+    
+
     def ProcessJobs(self):
         
         ## Get Current Active Jobs (Job Status<Complete)
@@ -222,7 +252,6 @@ class WorkFlow(object):
         ## Query PBS for current Jobs that belong to TAO
         CurrentJobs=self.TorqueObj.QueryPBSJob()    
         
-        ####Here
         
         logging.info(str(CurrentJobs))
         
@@ -230,62 +259,36 @@ class WorkFlow(object):
         
         JobsStatus=[]
         for PBsID in CurrentJobs_PBSID:
-            
-
-            ## --------------------------------------------------------------------
-            ## PBsID[0] ===> Workflow JobID
-            ## PBsID[1] ===> Current PBS ID
-            ## PBsID[2] ===> Old Status (Current Db Status) 
-            ## PBsID[3] ===> UIReference_ID
-            ## PBsID[4] ===> User Name
-            ## ---------------------------------------------------------------------
-            data = {}            
+                                
             
             
-            PID=PBsID[1].split('.')[0]
-            OldStatus=PBsID[2]
-            UIReference_ID=PBsID[3]
-            UserName=PBsID[4]
+            PID=PBsID['pbsreferenceid'].split('.')[0]
+            OldStatus=PBsID['jobstatus']
+            UIReference_ID=PBsID['uireferenceid']
+            UserName=PBsID['username']
+            JobType=PBsID['jobtype']
+            SubJobIndex=PBsID['subjobindex']
+            JobID=PBsID['jobid']
             
-            ### **********************************************************************
+            
             ## Parse the Job Log File and Extract Current Job Status            
             JobDetails=self.LogReaderObj.ParseFile(UserName,UIReference_ID)
              
-            ### ***********************************************************************
             
-            ###########################################################################################################
+            
+            
             ## 1- Change In Job Status to Running 
             if  PID in CurrentJobs and (CurrentJobs[PID]=='R' and OldStatus!=EnumerationLookup.JobState.Running) : 
-                JobStartTime=datetime.datetime.now().timetuple()
-                try:                                    
-                    JobStartTime=self.GetProcessStartTime(PID)
-                except Exception as Exp:
-                    logging.error('Error In Getting Start time for Job '+str(PID))
-                    logging.error(Exp)    
-                    
-                
-                self.dbaseobj.SetJobRunning(PBsID[0],OldStatus,"Job Running- PBSID"+PID,JobStartTime)                
-                data['status']='IN_PROGRESS'
-                
-                #requests.put(self.api['update']%UIReference_ID, data=data)
-                self.UpdateTAOUI(UIReference_ID, data)
-                
-                self.dbaseobj.AddNewEvent(PBsID[0],EnumerationLookup.EventType.Normal,'Updating Job (UI ID:'+str(UIReference_ID)+', Status:'+data['status']+')')
-                logging.info("Job ("+str(UIReference_ID)+") ... Running") 
-            ############################################################################################################   
+                self.UpdateJob_Running(PID,SubJobIndex,JobType, OldStatus, UIReference_ID, JobID) 
+               
             ## 2-  Change In Job Status to Queued
             elif  PID in CurrentJobs and (CurrentJobs[PID]=='Q' and OldStatus!=EnumerationLookup.JobState.Queued): 
-                self.dbaseobj.SetJobQueued(PBsID[0],OldStatus,"Job Queued- PBSID"+PID)                 
-                data['status']='QUEUED'         
-                #requests.put(self.api['update']%UIReference_ID, data=data)
-                self.UpdateTAOUI(UIReference_ID, data)
-                self.dbaseobj.AddNewEvent(PBsID[0],EnumerationLookup.EventType.Normal,'Updating Job (UI ID:'+str(UIReference_ID)+', Status:'+data['status']+')')
-                logging.info("Job ("+str(UIReference_ID)+") ... Queued")
-            ############################################################################################################
+                self.UpdateJob_Queued(PID,SubJobIndex,JobType, OldStatus, UIReference_ID, JobID)
+            
             ## 3- Job Status Unknown ... It is still in the queue but it is not Q or R !     
             elif  PID in CurrentJobs and CurrentJobs[PID]!='R' and CurrentJobs[PID]!='Q' : 
                 logging.info('Job Status UNKnow '+str(UIReference_ID)+' :'+CurrentJobs[PID])              
-            ############################################################################################################
+            
             ## 4- Job Cannot Be Found in the queue ... In this case the Log File Status determine how its termination status    
             elif (PID not in CurrentJobs):
                 
@@ -293,46 +296,99 @@ class WorkFlow(object):
                 if JobDetails==None:
                     JobDetails={'start':-1,'progress':'0%','end':0,'error':'','endstate':''}
                 
-                ##### Job Terminated Successfully    
-                if  JobDetails['endstate']=='successful': 
-                    path = os.path.join('jobs', PBsID[4], str(PBsID[3]))
-                    self.dbaseobj.SetJobComplete(PBsID[0],PBsID[2],path,JobDetails['end'])                
-                    data['status']='COMPLETED'
-                    path = os.path.join('jobs', UserName, str(UIReference_ID),'output')                
-                    data['output_path'] = path
                     
-                    #requests.put(self.api['update']%UIReference_ID, data=data)
-                    self.UpdateTAOUI(UIReference_ID, data)
-                    self.dbaseobj.AddNewEvent(PBsID[0],EnumerationLookup.EventType.Normal,'Updating Job (UI ID:'+str(UIReference_ID)+', Status:'+data['status']+')')
-                    logging.info ("Job ("+str(UIReference_ID)+") ... Finished Successfully")
-                    Message="Job ("+str(UIReference_ID)+") Path:"+path+" Finished Successfully"
-                    emailreport.SendEmailToAdmin(self.Options,"Workflow update",Message)
-                ##### Job Terminated with error or was killed by the Job Queue    
+                if  JobDetails['endstate']=='successful':
+                    ##### Job Terminated Successfully 
+                    self.UpdateJob_EndSuccessfully(JobID,SubJobIndex,JobType, UIReference_ID, UserName, JobDetails)                    
                 else:
-                    
-                    logging.info ("Job ("+str(UIReference_ID)+") ... Finished With Error")
-                    
-                    stderr=self.GetJobstderrcontents(UserName,UIReference_ID,PBsID[0])
-                    
-                      
-                    
-                    data['status']='ERROR'           
-                    if JobDetails['error']=='':
-                        JobDetails['error']=stderr
-                    self.dbaseobj.SetJobFinishedWithError(PBsID[0],PBsID[2],JobDetails['error'],JobDetails['end'])                         
-                    data['error_message'] = 'Error:'+JobDetails['error']                    
-                    #requests.put(self.api['update']%UIReference_ID, data=data)
-                    self.UpdateTAOUI(UIReference_ID, data)
-                    self.dbaseobj.AddNewEvent(PBsID[0],EnumerationLookup.EventType.Normal,'Updating Job (UI ID:'+str(UIReference_ID)+', Status:'+data['status']+')')
-                    Message="Job ("+str(UIReference_ID)+")  Finished With Error. The Error Message is:" + data['error_message']
-                    emailreport.SendEmailToAdmin(self.Options,"Job Finished With Error",Message)    
+                    ##### Job Terminated with error or was killed by the Job Queue                    
+                    self.UpdateJob_EndWithError(JobID,SubJobIndex,JobType, UIReference_ID, UserName, JobDetails)    
             ###############################################################################################################
             ## 5- The Job didn't change its status... Show its progess information if Exists!        
             else:
                 if JobDetails!=None:
-                    logging.info ("Job ("+str(UIReference_ID)+") .. : Progress="+JobDetails['progress'])
+                    logging.info ("Job ("+str(UIReference_ID)+" ["+str(SubJobIndex)+"]) .. : Progress="+JobDetails['progress'])
                 else:
                     logging.info ("Job ("+str(UIReference_ID)+") .. : Log File Does not exist")
+
+    def UpdateJob_EndSuccessfully(self, JobID,SubJobIndex, JobType, UIReference_ID, UserName, JobDetails):
+        data = {}  
+        path = os.path.join('jobs', UserName, str(UIReference_ID))
+        self.dbaseobj.SetJobComplete(JobID, path, JobDetails['end'])
+        data['status'] = 'COMPLETED'
+        path = os.path.join('jobs', UserName, str(UIReference_ID), 'output')
+        data['output_path'] = path
+        
+        self.UpdateTAOUI(UIReference_ID,JobType, data)
+        self.dbaseobj.AddNewEvent(JobID, EnumerationLookup.EventType.Normal, 'Updating Job (UI ID:' + str(UIReference_ID) + ', Status:' + data['status'] + ')')
+        logging.info("Job (" + str(UIReference_ID) +" ["+str(SubJobIndex)+"]) ... Finished Successfully")
+        Message = "Job (" + str(UIReference_ID) +" ["+str(SubJobIndex)+"]) Path:" + path + " Finished Successfully"
+        emailreport.SendEmailToAdmin(self.Options, "Workflow update", Message)
+
+    def UpdateJob_EndWithError(self, JobID,SubJobIndex, JobType, UIReference_ID, UserName, JobDetails):
+        data = {}  
+        
+        TerminateAllOnError=(self.Options['WorkFlowSettings:TerminateSubJobsOnError']=='On')
+        
+        
+        logging.info("Job (" + str(UIReference_ID) +" ["+str(SubJobIndex)+"]) ... Finished With Error")
+        stderr = self.GetJobstderrcontents(UserName, UIReference_ID, JobID)
+        data['status'] = 'ERROR'
+        if JobDetails['error'] == '':
+            JobDetails['error'] = stderr
+        
+        if TerminateAllOnError==True:
+            SubJobsList=self.dbaseobj.GetJobsStatusbyUIReference(UIReference_ID)
+            for JobItem in SubJobsList:
+                if JobItem['jobid']!=JobID:
+                    self.TorqueObj.TerminateJob(JobItem['pbsreferenceid'].split('.')[0])
+                    logging.info("Job (" + str(JobItem['jobid']) +" ["+str(JobItem['subjobindex'])+"]) ... Force Delete")
+                    self.dbaseobj.SetJobFinishedWithError(JobItem['jobid'], 'Force Deleted', JobDetails['end'])
+        
+        self.dbaseobj.SetJobFinishedWithError(JobID, JobDetails['error'], JobDetails['end'])
+        data['error_message'] = 'Error:' + JobDetails['error']        
+        
+        
+        if TerminateAllOnError==True and JobType==EnumerationLookup.JobType.Complex:
+           data['error_message']=data['error_message']+" Please note that all other subjobs will be deleted also" 
+        
+        
+        self.UpdateTAOUI(UIReference_ID,JobType, data)
+        self.dbaseobj.AddNewEvent(JobID, EnumerationLookup.EventType.Normal, 'Updating Job (UI ID:' + str(UIReference_ID) + ', Status:' + data['status'] + ')')
+        
+        Message = "Job (" + str(UIReference_ID) +" ["+str(SubJobIndex)+"])  Finished With Error. The Error Message is:" + data['error_message']
+        emailreport.SendEmailToAdmin(self.Options, "Job Finished With Error", Message)
+
+    ## Update the Back-end DB and the UI that the job is running. There is no need for special handling in case of complex Jobs
+    ## In this case one job is enough to turn the sate to running
+    def UpdateJob_Running(self, PID,SubJobIndex, JobType, OldStatus, UIReference_ID, JobID):
+        
+        JobStartTime = datetime.datetime.now().timetuple()
+        data = {}  
+        try:
+            JobStartTime = self.GetProcessStartTime(PID)
+        except Exception as Exp:
+            logging.error('Error In Getting Start time for Job ' + str(PID))
+            logging.error(Exp)
+        self.dbaseobj.SetJobRunning(JobID, OldStatus, "Job Running- PBSID" + PID, JobStartTime)
+        data['status'] = 'IN_PROGRESS'        
+        self.UpdateTAOUI(UIReference_ID,JobType, data)
+        self.dbaseobj.AddNewEvent(JobID, EnumerationLookup.EventType.Normal, 'Updating Job (UI ID:' + str(UIReference_ID) + ', Status:' + data['status'] + ')')
+        logging.info("Job (" + str(UIReference_ID) +" ["+str(SubJobIndex)+"]) ... Running")
+
+    ## Update the Back-end DB and the UI that the job is Queued. In case of Multiple Lightcones, the UI will be updated with the last job
+    def UpdateJob_Queued(self, PID,SubJobIndex, JobType, OldStatus, UIReference_ID, JobID):
+        data = {}  
+        self.dbaseobj.SetJobQueued(JobID, OldStatus, "Job Queued- PBSID" + PID)
+        data['status'] = 'QUEUED' 
+        
+        
+        self.UpdateTAOUI(UIReference_ID, JobType, data)
+        
+        self.dbaseobj.AddNewEvent(JobID, EnumerationLookup.EventType.Normal, 'Updating Job (UI ID:' + str(UIReference_ID) + ', Status:' + data['status'] + ')')
+        logging.info("Job (" + str(UIReference_ID) +" ["+str(SubJobIndex)+"]) ... Queued")
+        
+    
                 
         
             
