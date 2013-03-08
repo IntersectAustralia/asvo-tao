@@ -90,9 +90,9 @@ class TorqueInterface(object):
         ScriptFileName = self.WritePBSScriptFile(UserName,JobID, nodes,ppn, path,BasicSettingPath,ParamXMLName,SubJobIndex)
         
         
-        #stdout = subprocess.check_output(shlex.split('ssh g2 \"cd %s; qsub -q tao %s\"'%(path.encode(locale.getpreferredencoding()), ScriptFileName.encode(locale.getpreferredencoding()))))
-        #pbs_id = stdout[:-1] # remove trailing \n
-        pbs_id="00000000"
+        stdout = subprocess.check_output(shlex.split('ssh g2 \"cd %s; qsub -q tao %s\"'%(path.encode(locale.getpreferredencoding()), ScriptFileName.encode(locale.getpreferredencoding()))))
+        pbs_id = stdout[:-1] # remove trailing \n
+        
         return pbs_id
 
     ##
@@ -124,7 +124,17 @@ class TorqueInterface(object):
         
         return CurrentJobs
     
-    
+    def TerminateJob(self,PBSID):
+         try:
+            logging.info("Trying to Terminate Job "+PBSID+" from the PBS queue....")
+            output=subprocess.check_output(shlex.split('ssh g2 qdel '+PBSID))
+            logging.info("Trying to Terminate Job "+PBSID+" : qdel output was:"+output)
+         except Exception as Exp:
+            logging.error(">>>>>Error While Terminating Job "+PBSID)
+            logging.error(type(Exp))
+            logging.error(Exp.args)
+            logging.error(Exp)          
+        
     
     def GetJobStartTime(self,pbsID):
         JobStartTimeOutput = subprocess.check_output(shlex.split('ssh g2 showstart '+pbsID))
