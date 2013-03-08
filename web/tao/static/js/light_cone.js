@@ -170,9 +170,11 @@ jQuery(document).ready(function($) {
             $.each(lc_output_props_widget.selected(), function(i,value) {
                list.push('D-' + value);
             });
-            $.each(sed_band_pass_filters_widget.selected(), function(i,value) {
-                list.push('B-' + value);
-            });
+            if ($(sed_id('apply_sed')).is(':checked')) {
+                $.each(sed_band_pass_filters_widget.selected(), function(i,value) {
+                    list.push('B-' + value);
+                });
+            }
             return list;
         }
 
@@ -553,6 +555,7 @@ jQuery(document).ready(function($) {
             display_band_pass_filters_summary();
             $(sed_id('apply_dust')).removeAttr('disabled');
             $(sed_id('apply_dust')).change();
+            update_filter_options(false, false); // triggers filter.change
         }
         else {
             $('#tao-tabs-2').css({"border-style": "dashed"});
@@ -567,6 +570,7 @@ jQuery(document).ready(function($) {
             $(sed_id('apply_dust')).attr('disabled', 'disabled');
             $(sed_id('select_dust_model')).attr('disabled', 'disabled');
             clear_dust_model_info();
+            update_filter_options(false, true); // triggers filter.change
         }
     });
 

@@ -41,11 +41,11 @@ class WorkflowTests(TestCase, XmlDiffMixin):
         self.simulation = SimulationFactory.create(box_size=500)
         self.galaxy_model = GalaxyModelFactory.create()
         self.dataset = DataSetFactory.create(simulation=self.simulation, galaxy_model=self.galaxy_model)
-        self.filter = DataSetPropertyFactory.create(name='CentralMvir', units="Msun/h", dataset=self.dataset)
-        self.output_prop = DataSetPropertyFactory.create(name='CentralMvir', dataset=self.dataset, is_filter=False)
+        self.filter = DataSetPropertyFactory.create(name='CentralMvir rf', units="Msun/h", dataset=self.dataset)
+        self.output_prop = DataSetPropertyFactory.create(name='Central op', dataset=self.dataset, is_filter=False)
         self.snapshot = SnapshotFactory.create(dataset=self.dataset, redshift="0.1234567891")
         self.stellar_model = StellarModelFactory.create(name='Stella')
-        self.band_pass_filter = BandPassFilterFactory.create()
+        self.band_pass_filter = BandPassFilterFactory.create(label='bandpass')
         self.dust_model = DustModelFactory.create()
         self.sed_parameters = {'apply_sed': True, 'single_stellar_population_model': self.stellar_model.id, 'band_pass_filters': [self.band_pass_filter.id], 'apply_dust': True, 'select_dust_model': self.dust_model.id}
         self.sed_disabled = {'apply_sed': False}
