@@ -73,8 +73,8 @@ class TorqueInterface(object):
             #PBS -d .
             source /usr/local/modules/init/tcsh
             module load gcc/4.6.2 mpich2 hdf5/x86_64/gnu/1.8.9-mpich2 boost
-            setenv PATH /home/lhodkins/workspace/asvo-tao/science_modules/build-debug/bin:$PATH
-            setenv LD_LIBRARY_PATH /home/lhodkins/workspace/asvo-tao/science_modules/build-debug/lib:$LD_LIBRARY_PATH
+            setenv PATH /lustre/projects/p014_swin/programs/ScienceModulesBackup/bin:$PATH
+            setenv LD_LIBRARY_PATH /lustre/projects/p014_swin/programs/ScienceModulesBackup/lib:/lustre/projects/p014_swin/programs/ScienceModulesBackup/helperlib:$LD_LIBRARY_PATH
             mpiexec %(executable)s %(path)s %(basicsettingpath)s
             '''%self.DefaultParams)
         return FileName
