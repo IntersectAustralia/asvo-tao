@@ -231,7 +231,7 @@ fieldset legend {
 .id_light_cone-dark_matter_simulation, .id_light_cone-galaxy_model,
 .id_light_cone-ra_opening_angle, .id_light_cone-dec_opening_angle,
 .id_light_cone-redshift_min, .id_light_cone-redshift_max {
-    width: 35%;
+    width: 50%;
     display: block;
     float: left;
     min-height: 30px;
@@ -242,7 +242,7 @@ fieldset legend {
 }
 .id_light_cone-ra_opening_angle input, .id_light_cone-dec_opening_angle input,
 .id_light_cone-redshift_min input, .id_light_cone-redshift_max input {
-    width: 30%;
+    width: 20%;
 }
 .id_record_filter-min, .id_record_filter-max {
   width: 25%;
