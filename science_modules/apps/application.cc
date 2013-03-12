@@ -3,6 +3,7 @@
 #include "tao/base/base.hh"
 #include "tao/modules/modules.hh"
 
+
 using namespace hpc;
 using namespace pugi;
 
@@ -76,8 +77,17 @@ namespace tao {
       dict.compile();
       _read_xml( dict );
 
+
+
+
       // Prepare the logging.
-      _setup_log( dict.get<string>( "logdir" ) + "/tao.log" );
+      string subjobindex=dict.get<string>( "subjobindex" );
+      LOGDLN("LOG DIRECTORY:"+dict.get<string>( "logdir" ) );
+      LOGDLN("SubJobIndex:"+dict.get<string>( "SubJobIndex" ) );
+
+      _setup_log( dict.get<string>( "logdir" ) + "tao.log."+ subjobindex);
+
+      //_setup_log( dict.get<string>( "logdir" ) + "/tao.log" );
 
       // Initialise all the modules.
       for( auto module : tao::factory )
@@ -181,6 +191,9 @@ namespace tao {
       xml_node tao_node = out_doc.append_child( "tao" );
       xml_node workflow_node = tao_node.append_child( "workflow" );
 
+
+      string subjobindex=inp_doc.select_single_node( "/tao/subjobindex" ).node().first_child().value();
+
       // Transfer the lightcone module intact.
       xml_node lc_node = inp_doc.select_single_node( "/tao/workflow/light-cone" ).node();
       lc_node = workflow_node.append_copy( lc_node );
@@ -209,7 +222,7 @@ namespace tao {
       csv_node.append_attribute( "module" ).set_value( "csv" );
       xml_node output_fields_node = csv_node.append_copy( inp_doc.select_single_node( "/tao/workflow/light-cone/output-fields" ).node() );
       output_fields_node.set_name( "fields" );
-      csv_node.append_child( "filename" ).append_child( node_pcdata ).set_value( string( string( inp_doc.select_single_node( "/tao/OutputDir" ).node().first_child().value() ) + "/tao.output" ).c_str() );
+      csv_node.append_child( "filename" ).append_child( node_pcdata ).set_value( string( string( inp_doc.select_single_node( "/tao/OutputDir" ).node().first_child().value() ) + "tao."+subjobindex+".output" ).c_str() );
       csv_node.append_child( "parents" ).append_child( "item" ).append_child( node_pcdata ).set_value( sed_node ? "sed" : "light-cone" );
 
       // Copy the record filter node.
@@ -246,6 +259,7 @@ namespace tao {
       // Copy database and log directory.
       tao_node.append_child( "database" ).append_child( node_pcdata ).set_value( inp_doc.select_single_node( "/tao/database" ).node().first_child().value() );
       tao_node.append_child( "LogDir" ).append_child( node_pcdata ).set_value( inp_doc.select_single_node( "/tao/LogDir" ).node().first_child().value() );
+      tao_node.append_child( "subjobindex" ).append_child( node_pcdata ).set_value( subjobindex.c_str());
 
       // Write out the new file.
       out_doc.save_file( string( _xml_file + ".processed" ).c_str() );
