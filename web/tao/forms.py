@@ -18,7 +18,7 @@ from form_utils.forms import BetterForm
 
 import tao.settings as tao_settings
 from tao import datasets
-from tao.models import UserProfile, DataSetProperty
+from tao.models import UserProfile, DataSetProperty, BandPassFilter
 
 NO_FILTER = 'no_filter'
 
@@ -180,20 +180,26 @@ class RecordFilterForm(BetterForm):
         if selected_filter == NO_FILTER:
             return
 
-        filter_parameter = DataSetProperty.objects.get(pk=selected_filter)
+        filter_parameter = None
+        filter_type = ''
+        units = ''
+        if selected_type == 'D':
+            filter_parameter = DataSetProperty.objects.get(pk=selected_filter)
+            filter_type = filter_parameter.name
+            units = filter_parameter.units
+        elif selected_type == 'B':
+            filter_parameter = datasets.band_pass_filter(selected_filter)
+            filter_type = filter_parameter.filter_id
+            units = 'bpunits'
 
         rf_elem = find_or_create(parent_xml_element, 'record-filter')
         child_element(rf_elem, 'module-version', text=RecordFilterForm.MODULE_VERSION)
-        child_element(rf_elem, 'filter-type', filter_parameter.name)
+        child_element(rf_elem, 'filter-type', filter_type)
         filter_min = self.cleaned_data['min']
         filter_max = self.cleaned_data['max']
         default_filter = datasets.default_filter_choice(self.ui_holder.raw_data('light_cone', 'galaxy_model'))
         if default_filter is not None and filter_parameter.id == default_filter.id and filter_min is None and filter_max is None:
             filter_min = datasets.default_filter_min(self.ui_holder.raw_data('light_cone', 'galaxy_model'))
             filter_max = datasets.default_filter_max(self.ui_holder.raw_data('light_cone', 'galaxy_model'))
-        child_element(rf_elem, 'filter-min', text=str(filter_min), units=filter_parameter.units)
-        child_element(rf_elem, 'filter-max', text=str(filter_max), units=filter_parameter.units)
-
-
-
-
+        child_element(rf_elem, 'filter-min', text=str(filter_min), units=units)
+        child_element(rf_elem, 'filter-max', text=str(filter_max), units=units)
