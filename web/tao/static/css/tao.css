@@ -228,8 +228,22 @@ fieldset legend {
     padding: 20px;
   }
 
-
-.id_light_cone-redshift_min, .id_light_cone-redshift_max,
+.id_light_cone-dark_matter_simulation, .id_light_cone-galaxy_model,
+.id_light_cone-ra_opening_angle, .id_light_cone-dec_opening_angle,
+.id_light_cone-redshift_min, .id_light_cone-redshift_max {
+    width: 50%;
+    display: block;
+    float: left;
+    min-height: 30px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    clear: after;
+}
+.id_light_cone-ra_opening_angle input, .id_light_cone-dec_opening_angle input,
+.id_light_cone-redshift_min input, .id_light_cone-redshift_max input {
+    width: 20%;
+}
 .id_record_filter-min, .id_record_filter-max {
   width: 25%;
   display: block;
@@ -240,7 +254,6 @@ fieldset legend {
   box-sizing: border-box;
   clear: after;
   }
-.id_light_cone-redshift_min input, .id_light_cone-redshift_max input,
 .id_record_filter-min input, .id_record_filter-max input {
   width: 50%;
 }

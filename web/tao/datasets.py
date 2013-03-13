@@ -45,7 +45,7 @@ def stellar_model_choices():
     """
         for now the SED has a single selection value, which is still TBD.
     """
-    return [(x.id, x.name, {}) for x in models.StellarModel.objects.order_by('name')]
+    return [(x.id, x.label, {}) for x in models.StellarModel.objects.order_by('name')]
 
 def snapshot_choices():
     return [(x.id, str(x.redshift), {'data-galaxy_model_id': str(x.dataset.galaxy_model_id), 'data-simulation_id': str(x.dataset.simulation_id)})

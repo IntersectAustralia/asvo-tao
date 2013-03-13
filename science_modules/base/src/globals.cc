@@ -25,9 +25,10 @@ namespace tao {
       // Add database name.
       dict.add_option( new options::string( "database" ) );
 
-      // Output options.
+      // Output options and subjobindex
       dict.add_option( new options::string( "outputdir", "." ) );
       dict.add_option( new options::string( "logdir", "." ) );
+      dict.add_option( new options::string( "subjobindex" ) );
 
       // Record filter.
       dict.add_option( new options::string( "filter-type", "" ), "workflow:record-filter" );
