@@ -1,4 +1,4 @@
-import pg
+import DBConnection
 import getpass
 import math
 import string
@@ -20,55 +20,22 @@ class ReArrangeTrees(object):
         '''
         self.CommRank=CommRank
         self.Options=Options
-        self.serverip=self.Options['PGDB:serverip']
-        self.username=self.Options['PGDB:user']
-        self.password=self.Options['PGDB:password']
-        self.port=int(self.Options['PGDB:port'])
-        self.DBName=self.Options['PGDB:NewDBName']
+        self.DBConnection=DBConnection.DBConnection(Options)
         self.CurrentSAGEStruct=CurrentSAGEStruct
-        if self.password==None:
-            print('Password for user:'+self.username+' is not defined')
-            self.password=getpass.getpass('Please enter password:')
         
-        # Take care that the connection will be opened to standard DB 'master'
-        # This is temp. until the actual database is created
-        self.CurrentConnection=pg.connect(host=self.serverip,user=self.username,passwd=self.password,port=self.port,dbname=self.DBName)
         print('Connection to DB is open...Start Creating Tables')
         self.CreateNewTableTemplate()
         
     
     
     def CloseConnections(self):        
-        self.CurrentConnection.close()       
+        self.DBConnection.close()       
         print('Connection to DB is Closed...')
     
-    def ExecuteNoQuerySQLStatment(self,SQLStatment):
-        try:           
-            SQLStatment=string.lower(SQLStatment)  
-            self.CurrentConnection.query(SQLStatment)              
-        except Exception as Exp:
-            print(">>>>>Error While creating New Table")
-            print(type(Exp))
-            print(Exp.args)
-            print(Exp)            
-            print("Current SQL Statement =\n"+SQLStatment)
-            raw_input("PLease press enter to continue.....")
-    def ExecuteQuerySQLStatment(self,SQLStatment):
-        try:            
-            SQLStatment=string.lower(SQLStatment)
-            resultsList=self.CurrentConnection.query(SQLStatment).getresult()            
-            return resultsList  
-        except Exception as Exp:
-            print(">>>>>Error While creating New Table")
-            print(type(Exp))
-            print(Exp.args)
-            print(Exp)            
-            print("Current SQL Statement =\n"+SQLStatment)
-            raw_input("PLease press enter to continue.....")
-         
+             
     def GetGridLimits(self):
         TreeMappingSt="select min(gridx),min(gridy),max(gridx),max(gridy) from treemapping;"
-        MappingLimits=self.ExecuteQuerySQLStatment(TreeMappingSt)[0]
+        MappingLimits=self.DBConnection.ExecuteQuerySQLStatment(TreeMappingSt)[0]
         
         
         
@@ -84,7 +51,7 @@ class ReArrangeTrees(object):
         return [MinX,MinY,MaxX,MaxY]  
     def GetTreeIDMinMax(self):
         TreeIDsSt="select min(globaltreeid),max(globaltreeid) from treesummary;"
-        GlobalTreeLimit=self.ExecuteQuerySQLStatment(TreeIDsSt)[0]
+        GlobalTreeLimit=self.DBConnection.ExecuteQuerySQLStatment(TreeIDsSt)[0]
         
         
         MinTreeID=GlobalTreeLimit[0]
@@ -96,7 +63,7 @@ class ReArrangeTrees(object):
         
         
         setWarningOff="set client_min_messages='warning'; "
-        self.ExecuteNoQuerySQLStatment(setWarningOff)
+        self.DBConnection.ExecuteNoQuerySQLStatment(setWarningOff)
         
         for i in range(MinX,MaxX+1):
             for j in range(MinY,MaxY+1):
@@ -127,7 +94,7 @@ class ReArrangeTrees(object):
     def ProcessTree(self,TreeID):
         
         TreeTablesSt="Select tablename from treesummary where globaltreeid="+str(TreeID)
-        TreeTable=self.ExecuteQuerySQLStatment(TreeTablesSt)
+        TreeTable=self.DBConnection.ExecuteQuerySQLStatment(TreeTablesSt)
         if len(TreeTable)>0:
             TableName=self.ExecuteQuerySQLStatment(TreeTablesSt)[0][0]
         
@@ -138,7 +105,7 @@ class ReArrangeTrees(object):
         
         
             MoveSt="Insert into "+NewTableName+" Select * from "+TableName+" where globaltreeid="+str(TreeID)+";"
-            self.ExecuteNoQuerySQLStatment(MoveSt)
+            self.DBConnection.ExecuteNoQuerySQLStatment(MoveSt)
         
         
         
@@ -184,27 +151,27 @@ class ReArrangeTrees(object):
             NewTableName=TablePrefix+str(XIndex)+"_"+str(YIndex)
             ## If the table exists drop it 
             DropSt="DROP TABLE IF EXISTS "+NewTableName+";"
-            self.ExecuteNoQuerySQLStatment(DropSt)
+            self.DBConnection.ExecuteNoQuerySQLStatment(DropSt)
             CreateTableStatment= string.replace(self.CreateTableTemplate,"@TABLEName",NewTableName)
             
                         
             
             CreateTableStatment=string.lower(CreateTableStatment)
             
-            self.ExecuteNoQuerySQLStatment(CreateTableStatment)
+            self.DBConnection.ExecuteNoQuerySQLStatment(CreateTableStatment)
             
             ## Create Table indices             
             
             CreateIndexStatment="Create Index SnapNum_Index_"+NewTableName+" on  "+NewTableName+" (SnapNum);"
-            self.ExecuteNoQuerySQLStatment(CreateIndexStatment)
+            self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment)
             CreateIndexStatment="Create Index GlobalTreeID_Index_"+NewTableName+" on  "+NewTableName+" (GlobalTreeID);"
-            self.ExecuteNoQuerySQLStatment(CreateIndexStatment)
+            self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment)
             CreateIndexStatment="Create Index CentralGalaxyX_Index_"+NewTableName+" on  "+NewTableName+" (CentralGalaxyX);"
-            self.ExecuteNoQuerySQLStatment(CreateIndexStatment)
+            self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment)
             CreateIndexStatment="Create Index CentralGalaxyY_Index_"+NewTableName+" on  "+NewTableName+" (CentralGalaxyY);"
-            self.ExecuteNoQuerySQLStatment(CreateIndexStatment)
+            self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment)
             CreateIndexStatment="Create Index CentralGalaxyZ_Index_"+NewTableName+" on  "+NewTableName+" (CentralGalaxyZ);"
-            self.ExecuteNoQuerySQLStatment(CreateIndexStatment)
+            self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment)
             
              
             #print("Table "+NewTableName+" Created With Index ...")

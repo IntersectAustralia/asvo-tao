@@ -4,6 +4,7 @@ import settingReader # Read the XML settings
 import PGDBInterface # Interaction with the postgreSQL DB
 import time
 from decimal import Decimal
+import DBConnection
 
 class DataImportSpeed:    
         
@@ -25,7 +26,7 @@ class DataImportSpeed:
         
 if __name__ == '__main__':
     [CurrentSAGEStruct,Options]=settingReader.ParseParams("settings.xml")
-    CurrentPGDB=PGDBInterface.DBInterface(CurrentSAGEStruct,Options,0)
+    CurrentPGDB=DBConnection.DBConnection(Options)
     DataImportSpeedObj=DataImportSpeed(Options,CurrentPGDB)
     InitialValue=DataImportSpeedObj.GetCurrentProcessedGalaxiesCount()
     TotalGalaxies=DataImportSpeedObj.GetGalaxiesCount()

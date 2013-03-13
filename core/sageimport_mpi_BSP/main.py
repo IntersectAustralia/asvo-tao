@@ -16,6 +16,7 @@ import PGDBInterface # Interaction with the postgreSQL DB
 import preprocessfiles # Perform necessary pre-processing (e.g. Create Tables)
 import AnalyzeTables
 import UpdateMasterTables
+import DBConnection
 
 
 if __name__ == '__main__':
@@ -65,7 +66,7 @@ if __name__ == '__main__':
             ##    c) Each table will have an associated Table ID in this step 
             PreprocessFilesObj.ProcessAllFiles()
             ## 6) Close the DB connection
-            PreprocessFilesObj.CloseConnections()
+            PreprocessFilesObj.DBConnection.CloseConnections()
             
         ######################################################################################################
         if RegenerateFileList!='y':
@@ -82,7 +83,7 @@ if __name__ == '__main__':
             ## 3) Create All tables required for the importing of the current dataset using the information in "DataFiles" table 
             PreprocessFilesObj.GenerateAllTables()
             ## 4) Close the DB connection
-            PreprocessFilesObj.CloseConnections()
+            PreprocessFilesObj.DBConnection.CloseConnections()
     
         ## Tell All the other processes that we are done and will start processing
         Mesg={"ProcessingDone":True}

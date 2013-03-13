@@ -4,7 +4,7 @@ import os
 import sys
 import struct
 import string
-import pg
+import DBConnection
 
 class PreprocessFiles(object):
     ## Mapping between SAGE (C/C++) data types to Database data types 
@@ -15,6 +15,7 @@ class PreprocessFiles(object):
     def __init__(self,CurrentSAGEStruct,Options):       
         
         self.CurrentFolderPath=Options['RunningSettings:InputDir']
+        self.DBName=Options['PGDB:NewDBName']
         self.CurrentSAGEStruct=CurrentSAGEStruct
         self.Options=Options
           
@@ -29,29 +30,14 @@ class PreprocessFiles(object):
     def InitDBConnection(self,ToMasterDB):
         
         ####### PostgreSQL Simulation DB ################# 
-        self.serverip=self.Options['PGDB:serverip']
-        self.username=self.Options['PGDB:user']
-        self.password=self.Options['PGDB:password']
-        self.port=int(self.Options['PGDB:port'])
-        self.DBName=self.Options['PGDB:NewDBName']
+        self.DBConnection=DBConnection.DBConnection(self.Options,ToMasterDB)
         
-        if self.password==None:
-            print('Password for user:'+username+' is not defined')
-            self.password=getpass.getpass('Please enter password:')
-        
-        
-        # Take care that the connection will be opened to standard DB 'master'
-        # This is temp. until the actual database is created
-        if ToMasterDB==True:
-            self.CurrentConnection=pg.connect(host=self.serverip,user=self.username,passwd=self.password,port=self.port,dbname='postgres')
-        else:
-            self.CurrentConnection=pg.connect(host=self.serverip,user=self.username,passwd=self.password,port=self.port,dbname=self.DBName)
         print('Connection to DB is open...')
     
     def DropDatabase(self):
         ## Check if the database already exists
         
-        ResultsList=self.ExecuteQuerySQLStatment("SELECT datname FROM pg_database where datistemplate=false and datname=\'"+self.DBName+"\'")
+        ResultsList=self.DBConnection.ExecuteQuerySQLStatment("SELECT datname FROM pg_database where datistemplate=false and datname=\'"+self.DBName+"\'")
           
         ## If the database already exists - give the user the option to drop it
         if len(ResultsList)>0:
@@ -60,7 +46,7 @@ class PreprocessFiles(object):
             Response=raw_input("")
             if Response=='y':
                 ## Drop the database
-                self.ExecuteNoQuerySQLStatment("Drop database "+self.DBName+";")                
+                self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers("Drop database "+self.DBName+";")                
                 print("Database "+self.DBName+" Dropped")
     
                 
@@ -70,60 +56,22 @@ class PreprocessFiles(object):
        self.DropDatabase()        
        
        ## Create New DB 
-       self.ExecuteNoQuerySQLStatment("create database "+self.DBName+";") 
+       self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers("create database "+self.DBName+";") 
        print("Database "+self.DBName+" Created")
        ### Close the current Connection (To a Default DB) and open a new one on the new DB
-       self.CurrentConnection.close()
-       self.CurrentConnection=pg.connect(host=self.serverip,user=self.username,passwd=self.password,port=self.port,dbname=self.DBName)      
+       self.DBConnection.CloseConnections()
+       self.DBConnection=DBConnection.DBConnection(self.Options)      
        
        
        print("Connection to Database "+self.DBName+" is opened and ready")
    
    
-    # Execute SQL Statement with no return (DDL Statements and some DML statements )
-    def ExecuteNoQuerySQLStatment(self,SQLStatment):
-        try:    
-            ### All Names will be converted to lower case
-            ### If the execution fails the catch part will work - But the program will not abort 
-            SQLStatment=string.lower(SQLStatment)  
-            self.CurrentConnection.query(SQLStatment)
-              
-        except Exception as Exp:
-            ## Display the error Information and the SQL statement that caused it
-            print(">>>>>Error While Executing NonQuery Statement")
-            print(type(Exp))
-            print(Exp.args)
-            print(Exp)            
-            print("Current SQL Statement =\n"+SQLStatment)
-            ## Pause the execution until the user acknowledge the error
-            raw_input("PLease press enter to continue.....")
-    
-    ## Execute SQL statement with return data
-    ## The results is returned as an array of tuples
-    def ExecuteQuerySQLStatment(self,SQLStatment):
-        try:
-            ### All Names will be converted to lower case
-            ### If the execution fails the catch part will work - But the program will not abort
-                     
-            SQLStatment=string.lower(SQLStatment)
-            resultsList=self.CurrentConnection.query(SQLStatment).getresult()            
-            return resultsList  
-        
-        except Exception as Exp:
-            ## Display the error Information and the SQL statement that caused it
-            print(">>>>>Error While executing Query SQL ")
-            print(type(Exp))
-            print(Exp.args)
-            print(Exp)            
-            print("Current SQL Statement =\n"+SQLStatment)
-            ## Pause the execution until the user acknowledge the error
-            raw_input("PLease press enter to continue.....")
-    
+   
     
     def CreateTreeMappingTable(self):
         
         DropTable="DROP TABLE IF EXISTS TreeMapping;"
-        self.ExecuteNoQuerySQLStatment(DropTable)
+        self.DBConnection.ExecuteNoQuerySQLStatment(DropTable)
         
         CreateTable="CREATE TABLE TreeMapping ("        
         CreateTable=CreateTable+"GlobalTreeID BIGINT,"       
@@ -131,7 +79,7 @@ class PreprocessFiles(object):
         CreateTable=CreateTable+"GridY INT)"                
         
         
-        self.ExecuteNoQuerySQLStatment(CreateTable)
+        self.DBConnection.ExecuteNoQuerySQLStatment(CreateTable)
     
     ## Generate All the tables required for the data importing process
     def GenerateAllTables(self): 
@@ -162,10 +110,10 @@ class PreprocessFiles(object):
         ## Ensure that there is no Files marked as processed..
         ## This may happen if the user drop the table and forget to update the datafiles table
         ## This execution is just a pre-caution
-        self.ExecuteNoQuerySQLStatment("UPDATE datafiles set Processed=FALSE;")
+        self.DBConnection.ExecuteNoQuerySQLStatment("UPDATE datafiles set Processed=FALSE;")
         
         setWarningOff="set client_min_messages='warning'; "
-        self.ExecuteNoQuerySQLStatment(setWarningOff)
+        self.DBConnection.ExecuteNoQuerySQLStatment(setWarningOff)
         
         ## Get List of all tables expected from "datafiles" table
         #TableIDs=self.ExecuteQuerySQLStatment("select distinct tableid from datafiles order by tableid;")
@@ -198,6 +146,7 @@ class PreprocessFiles(object):
         
                
         CreateTableStatment=""
+        HostIndex=TableIndex%self.DBConnection.serverscount
         try:
             
             ## The Table name is defined using the TreeTablePrefix from the XML config file
@@ -205,26 +154,26 @@ class PreprocessFiles(object):
             NewTableName=TablePrefix+str(TableIndex)
             ## If the table exists drop it 
             DropSt="DROP TABLE IF EXISTS "+NewTableName+";"
-            self.ExecuteNoQuerySQLStatment(DropSt)
+            self.DBConnection.ExecuteNoQuerySQLStatment(DropSt,HostIndex)
             CreateTableStatment= string.replace(self.CreateTableTemplate,"@TABLEName",NewTableName)
             
                         
             
             CreateTableStatment=string.lower(CreateTableStatment)
-            self.ExecuteNoQuerySQLStatment(CreateTableStatment)
+            self.DBConnection.ExecuteNoQuerySQLStatment(CreateTableStatment,HostIndex)
             
             ## Create Table indices             
             
             CreateIndexStatment="Create Index SnapNum_Index_"+NewTableName+" on  "+NewTableName+" (SnapNum);"
-            self.ExecuteNoQuerySQLStatment(CreateIndexStatment)
+            self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
             CreateIndexStatment="Create Index GlobalTreeID_Index_"+NewTableName+" on  "+NewTableName+" (GlobalTreeID);"
-            self.ExecuteNoQuerySQLStatment(CreateIndexStatment)
+            self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
             CreateIndexStatment="Create Index CentralGalaxyX_Index_"+NewTableName+" on  "+NewTableName+" (CentralGalaxyX);"
-            self.ExecuteNoQuerySQLStatment(CreateIndexStatment)
+            self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
             CreateIndexStatment="Create Index CentralGalaxyY_Index_"+NewTableName+" on  "+NewTableName+" (CentralGalaxyY);"
-            self.ExecuteNoQuerySQLStatment(CreateIndexStatment)
+            self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
             CreateIndexStatment="Create Index CentralGalaxyZ_Index_"+NewTableName+" on  "+NewTableName+" (CentralGalaxyZ);"
-            self.ExecuteNoQuerySQLStatment(CreateIndexStatment)
+            self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
             
              
             print("Table "+NewTableName+" Created With Index ...")
@@ -272,7 +221,7 @@ class PreprocessFiles(object):
         CreateTableSt=CreateTableSt+"(FileID INT, FileName varchar(500),FileSize BIGINT, "
         CreateTableSt=CreateTableSt+" NumberofTrees INT, TotalNumberOfGalaxies BIGINT, TreeIDFrom INT,TreeIDTo INT,Processed boolean);"
         
-        self.ExecuteNoQuerySQLStatment(CreateTableSt)
+        self.DBConnection.ExecuteNoQuerySQLStatment(CreateTableSt)
         
         ## Generate insert template for the Datafiles table
         InsertTemplate="INSERT INTO DataFiles (FileID,FileName,FileSize,NumberofTrees,TotalNumberOfGalaxies, TreeIDFrom,TreeIDTo,Processed) VALUES "
@@ -308,7 +257,7 @@ class PreprocessFiles(object):
             CurrentInsertSt=CurrentInsertSt+str(StartFrom)+","
             CurrentInsertSt=CurrentInsertSt+str(StartFrom+NumberofTrees-1)+","
             CurrentInsertSt=CurrentInsertSt+"FALSE)"
-            self.ExecuteNoQuerySQLStatment(CurrentInsertSt)
+            self.DBConnection.ExecuteNoQuerySQLStatment(CurrentInsertSt)
             ##############################################################################
             
             FileID=FileID+1

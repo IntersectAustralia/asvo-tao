@@ -6,7 +6,7 @@ import sys
 import settingReader
 import numpy
 import matplotlib.pyplot as plt
-
+import DBConnection
 
 class ProcessTables(object):
     
@@ -15,57 +15,18 @@ class ProcessTables(object):
         Constructor
         '''
         self.Options=Options
-        self.serverip=self.Options['PGDB:serverip']
-        self.username=self.Options['PGDB:user']
-        self.password=self.Options['PGDB:password']
-        self.port=int(self.Options['PGDB:port'])
-        self.DBName=self.Options['PGDB:NewDBName']
+        self.DBConnection=DBConnection.DBConnection(Options)   
         
-        if self.password==None:
-            print('Password for user:'+self.username+' is not defined')
-            self.password=getpass.getpass('Please enter password:')
-        
-        # Take care that the connection will be opened to standard DB 'master'
-        # This is temp. until the actual database is created
-        self.CurrentConnection=pg.connect(host=self.serverip,user=self.username,passwd=self.password,port=self.port,dbname=self.DBName)
         print('Connection to DB is open...')
                 
         
     
     
     def CloseConnections(self):        
-        self.CurrentConnection.close()       
+        self.DBConnection.close()       
         print('Connection to DB is Closed...')
     
-    def ExecuteNoQuerySQLStatment(self,SQLStatment):
-        try:
-            
-           
-            SQLStatment=string.lower(SQLStatment)  
-            self.CurrentConnection.query(SQLStatment)
-              
-        except Exception as Exp:
-            print(">>>>>Error While creating New Table")
-            print(type(Exp))
-            print(Exp.args)
-            print(Exp)            
-            print("Current SQL Statement =\n"+SQLStatment)
-            raw_input("PLease press enter to continue.....")
-    def ExecuteQuerySQLStatment(self,SQLStatment):
-        try:
-            
-            SQLStatment=string.lower(SQLStatment)
-            resultsList=self.CurrentConnection.query(SQLStatment).getresult()
-            
-            return resultsList  
-        except Exception as Exp:
-            print(">>>>>Error While creating New Table")
-            print(type(Exp))
-            print(Exp.args)
-            print(Exp)            
-            print("Current SQL Statement =\n"+SQLStatment)
-            raw_input("PLease press enter to continue.....")
-    
+        
     
    
   
@@ -113,14 +74,14 @@ class ProcessTables(object):
         ALTERSQL=ALTERSQL+" , ALTER COLUMN centralgalaxyz TYPE FLOAT4; "
         ALTERSQL= string.replace(ALTERSQL,"@TABLENAME",TableName)
         
-        self.ExecuteNoQuerySQLStatment(ALTERSQL)
+        self.DBConnection.ExecuteNoQuerySQLStatment(ALTERSQL)
     
         
         
     def GetTablesList(self):
         
         GetTablesListSt="select table_name from information_schema.tables where table_schema='public';"
-        TablesList=self.ExecuteQuerySQLStatment(GetTablesListSt)
+        TablesList=self.DBConnection.ExecuteQuerySQLStatment(GetTablesListSt)
         StartIndex=int(raw_input("From Which Index Should I start?"))
         for Table in TablesList[StartIndex:]:
             TableName=Table[0]

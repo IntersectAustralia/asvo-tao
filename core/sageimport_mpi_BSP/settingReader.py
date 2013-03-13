@@ -27,8 +27,17 @@ def ParseParams(FilePath):
     ## Load PostGres information
     ## Running Options and PostgreSQL DB information will take the form of ["Header"."Child"]
     pgNode=SettingsNode[1]
-    for pgfield in pgNode:
-       RunningOptions[pgNode.tag+':'+pgfield.tag]= pgfield.text     
+    RunningOptions[pgNode.tag+':TreeTablePrefix']= pgNode.findall('TreeTablePrefix')[0].text
+    RunningOptions[pgNode.tag+':NewDBName']= pgNode.findall('NewDBName')[0].text
+    RunningOptions[pgNode.tag+':ServersCount']= pgNode.findall('ServersCount')[0].text
+    
+    serversList=pgNode.findall('serverInfo')
+    ServerIndex=0
+    for pgfield in serversList:
+       for pgserverinfo in pgfield:
+           RunningOptions[pgNode.tag+':'+pgfield.tag+str(ServerIndex)+":"+pgserverinfo.tag]= pgserverinfo.text
+       ServerIndex=ServerIndex+1     
+    
     ##########################################################################   
     RunningSettingsNode=SettingsNode[2]
     for settingfield in RunningSettingsNode:

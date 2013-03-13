@@ -8,7 +8,7 @@ import numpy
 import matplotlib.pyplot as plt
 import matplotlib
 from MySQLdb.constants.FLAG import NUM
-
+import DBConnection
 
 
 class BSPTree(object):
@@ -18,54 +18,17 @@ class BSPTree(object):
         Constructor
         '''
         self.Options=Options
-        self.serverip=self.Options['PGDB:serverip']
-        self.username=self.Options['PGDB:user']
-        self.password=self.Options['PGDB:password']
-        self.port=int(self.Options['PGDB:port'])
-        self.DBName=self.Options['PGDB:NewDBName']
+        self.DBConnection=DBConnection.DBConnection(Options)
         
-        if self.password==None:
-            print('Password for user:'+self.username+' is not defined')
-            self.password=getpass.getpass('Please enter password:')
         
-        # Take care that the connection will be opened to standard DB 'master'
-        # This is temp. until the actual database is created
-        self.CurrentConnection=pg.connect(host=self.serverip,user=self.username,passwd=self.password,port=self.port,dbname=self.DBName)
         print('Connection to DB is open...Start Creating Tables')
         
 
-    def ExecuteNoQuerySQLStatment(self,SQLStatment):
-        try:           
-           
-            SQLStatment=string.lower(SQLStatment)  
-            self.CurrentConnection.query(SQLStatment)
-              
-        except Exception as Exp:
-            print(">>>>>Error While creating New Table")
-            print(type(Exp))
-            print(Exp.args)
-            print(Exp)            
-            print("Current SQL Statement =\n"+SQLStatment)
-            raw_input("PLease press enter to continue.....")
-            
-    def ExecuteQuerySQLStatment(self,SQLStatment):
-        try:
-            
-            SQLStatment=string.lower(SQLStatment)
-            resultsList=self.CurrentConnection.query(SQLStatment).getresult()
-            
-            return resultsList  
-        except Exception as Exp:
-            print(">>>>>Error While creating New Table")
-            print(type(Exp))
-            print(Exp.args)
-            print(Exp)            
-            print("Current SQL Statement =\n"+SQLStatment)
-            raw_input("PLease press enter to continue.....")
+   
      
     def GenerateRectangles(self):
         GetBoundryBox="select min(MinX), min(MinY), min(MinZ), max(MaxX), max(MaxY), max(MaxZ) from TreeSummary;"
-        GlobalSummary=self.ExecuteQuerySQLStatment(GetBoundryBox)[0]
+        GlobalSummary=self.DBConnection.ExecuteQuerySQLStatment(GetBoundryBox)[0]
         
         MinX=int(math.floor(GlobalSummary[0]))
         MinY=int(math.floor(GlobalSummary[1]))
@@ -237,7 +200,7 @@ if __name__ == '__main__':
     
     Query='select distinct tablename from TreeSummary  where globaltreeid in (Select globaltreeid from TreeMapping where gridx in ('+GridXLocationsstr+') and gridy in ('+GridYLocationsstr+'));'
     print Query
-    TablesList=BSPTreeObj.ExecuteQuerySQLStatment(Query)
+    TablesList=BSPTreeObj.DBConnection.ExecuteQuerySQLStatment(Query)
     print len(TablesList)
     for table in TablesList:
         print(table)

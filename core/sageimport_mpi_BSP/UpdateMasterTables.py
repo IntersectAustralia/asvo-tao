@@ -2,23 +2,25 @@
 import string
 import sys # for listing directory contents
 import settingReader # Read the XML settings
-import PGDBInterface # Interaction with the postgreSQL DB
+
+import DBConnection
+
 
 class MasterTablesUpdate:    
         
     def __init__(self,Options,PGDB):
         self.Options=Options
-        self.PGDB=PGDB
+        self.DBConnection=DBConnection.DBConnection(Options)
     def CreateRedshiftTable(self):
         CreatTBSt="CREATE TABLE Snap_redshift (SnapNum Int4,redshift float4);"
-        self.PGDB.ExecuteNoQuerySQLStatment(CreatTBSt)
+        self.DBConnection.ExecuteNoQuerySQLStatment(CreatTBSt)
     def CreateMetadataTable(self):
         CreatTBSt="CREATE TABLE metadata (Metakey varchar(500),MetaValue varchar(5000));"        
-        self.PGDB.ExecuteNoQuerySQLStatment(CreatTBSt)
+        self.DBConnection.ExecuteNoQuerySQLStatment(CreatTBSt)
     
     def AddMetaDataValue(self,Key,Value):
         InsertVSt="INSERT  INTO metadata values ('"+str(Key)+"','"+str(Value)+"');"        
-        self.PGDB.ExecuteNoQuerySQLStatment(InsertVSt)
+        self.DBConnection.ExecuteNoQuerySQLStatment(InsertVSt)
         
     def FillMetadataTable(self):
         self.AddMetaDataValue("BoxSize", self.Options['RunningSettings:SimulationBoxX'])
@@ -38,7 +40,7 @@ class MasterTablesUpdate:
                CurrentSnapNum=i
                print(str(CurrentSnapNum)+":"+str(RedShifList[i]))
                InsertSt="INSERT INTO Snap_redshift Values ("+str(CurrentSnapNum)+","+str(RedShifList[i])+");"
-               self.PGDB.ExecuteNoQuerySQLStatment(InsertSt)
+               self.DBConnection.ExecuteNoQuerySQLStatment(InsertSt)
     
         
         

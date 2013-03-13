@@ -5,6 +5,7 @@ import string
 import sys
 import settingReader
 import numpy
+import DBConnection
 #import matplotlib.pyplot as plt
 
 
@@ -15,19 +16,7 @@ class ProcessTables(object):
         Constructor
         '''
         self.Options=Options
-        self.serverip=self.Options['PGDB:serverip']
-        self.username=self.Options['PGDB:user']
-        self.password=self.Options['PGDB:password']
-        self.port=int(self.Options['PGDB:port'])
-        self.DBName=self.Options['PGDB:NewDBName']
-        
-        if self.password==None:
-            print('Password for user:'+self.username+' is not defined')
-            self.password=getpass.getpass('Please enter password:')
-        
-        # Take care that the connection will be opened to standard DB 'master'
-        # This is temp. until the actual database is created
-        self.CurrentConnection=pg.connect(host=self.serverip,user=self.username,passwd=self.password,port=self.port,dbname=self.DBName)
+        self.DBConnection=DBConnection.DBConnection(Options)
         print('Connection to DB is open...Start Creating Tables')
         self.CreateSummaryTable()
         self.CreateTreeSummaryTable()
@@ -36,43 +25,14 @@ class ProcessTables(object):
     
     
     def CloseConnections(self):        
-        self.CurrentConnection.close()       
-        print('Connection to DB is Closed...')
-    
-    def ExecuteNoQuerySQLStatment(self,SQLStatment):
-        try:
-            
-           
-            SQLStatment=string.lower(SQLStatment)  
-            self.CurrentConnection.query(SQLStatment)
-              
-        except Exception as Exp:
-            print(">>>>>Error While creating New Table")
-            print(type(Exp))
-            print(Exp.args)
-            print(Exp)            
-            print("Current SQL Statement =\n"+SQLStatment)
-            raw_input("PLease press enter to continue.....")
-    def ExecuteQuerySQLStatment(self,SQLStatment):
-        try:
-            
-            SQLStatment=string.lower(SQLStatment)
-            resultsList=self.CurrentConnection.query(SQLStatment).getresult()
-            
-            return resultsList  
-        except Exception as Exp:
-            print(">>>>>Error While creating New Table")
-            print(type(Exp))
-            print(Exp.args)
-            print(Exp)            
-            print("Current SQL Statement =\n"+SQLStatment)
-            raw_input("PLease press enter to continue.....")
+        self.DBConnection.close()       
+        print('Connection to DB is Closed...') 
     
     
     def CreateSummaryTable(self):
         
         DropTable="DROP TABLE IF EXISTS Summary;"
-        self.ExecuteNoQuerySQLStatment(DropTable)
+        self.DBConnection.ExecuteNoQuerySQLStatment(DropTable)
         
         CreateTable="CREATE TABLE Summary ("
         CreateTable=CreateTable+"TableName varchar(100),"        
@@ -86,11 +46,11 @@ class ProcessTables(object):
         CreateTable=CreateTable+"MaxSnap INT4,"
         CreateTable=CreateTable+"GalaxyCount BIGINT)"
         
-        self.ExecuteNoQuerySQLStatment(CreateTable)
+        self.DBConnection.ExecuteNoQuerySQLStatment(CreateTable)
     def CreateTreeSummaryTable(self):
         
         DropTable="DROP TABLE IF EXISTS TreeSummary;"
-        self.ExecuteNoQuerySQLStatment(DropTable)
+        self.DBConnection.ExecuteNoQuerySQLStatment(DropTable)
         
         CreateTable="CREATE TABLE TreeSummary ("        
         CreateTable=CreateTable+"GlobalTreeID BIGINT,"       
@@ -103,7 +63,7 @@ class ProcessTables(object):
         CreateTable=CreateTable+"GalaxyCount BIGINT,"
         CreateTable=CreateTable+"TABLENAME VARCHAR(200))"
         
-        self.ExecuteNoQuerySQLStatment(CreateTable)
+        self.DBConnection.ExecuteNoQuerySQLStatment(CreateTable)
     
     
             
@@ -111,7 +71,7 @@ class ProcessTables(object):
         
         GetSummarySQL="select min(PosX),max(PosX),min(PosY),max(PosY),min(PosZ),max(PosZ),min(snapnum),max(snapnum),count(*) from @TABLEName;"
         GetSummarySQL= string.replace(GetSummarySQL,"@TABLEName",TableName)
-        SummaryListArr=self.ExecuteQuerySQLStatment(GetSummarySQL)
+        SummaryListArr=self.DBConnection.ExecuteQuerySQLStatment(GetSummarySQL)
         if len(SummaryListArr)==0:
             return
         SummaryList=SummaryListArr[0]
@@ -138,7 +98,7 @@ class ProcessTables(object):
         InsertSummaryRecord=InsertSummaryRecord+str(MaxPosX)+","+str(MaxPosY)+","+str(MaxPosZ)+","+str(MinSnap)+","+str(MaxSnap)
         InsertSummaryRecord=InsertSummaryRecord+")"
         InsertSummaryRecord= string.replace(InsertSummaryRecord,"none","0")
-        self.ExecuteNoQuerySQLStatment(InsertSummaryRecord)
+        self.DBConnection.ExecuteNoQuerySQLStatment(InsertSummaryRecord)
         
         
         #print("********************************************************************************")
@@ -146,7 +106,7 @@ class ProcessTables(object):
         #print("Processing Table: "+TableName)
         GetSummarySQL="INSERT INTO TreeSummary select GlobalTreeID,min(PosX),min(PosY),min(PosZ),max(PosX),max(PosY),max(PosZ),count(*),'"+TableName+"' from @TABLEName group by GlobalTreeID order by GlobalTreeID;"
         GetSummarySQL= string.replace(GetSummarySQL,"@TABLEName",TableName)        
-        self.ExecuteNoQuerySQLStatment(GetSummarySQL)
+        self.DBConnection.ExecuteNoQuerySQLStatment(GetSummarySQL)
         
         #print("End Processing Table: "+TableName)
         #print("********************************************************************************")    
@@ -156,13 +116,13 @@ class ProcessTables(object):
            
         
     def SummarizeLocationInfo(self):
-        self.ExecuteNoQuerySQLStatment("DROP Table if Exists TreeLocationsCount;")
-        self.ExecuteNoQuerySQLStatment("Create Table TreeLocationsCount (GlobalTreeID Bigint,LocationsCount int);")
-        self.ExecuteNoQuerySQLStatment("Insert into TreeLocationsCount select globaltreeid,count(*) from TreeMapping group by globaltreeid order by count(*) desc ;")
+        self.DBConnection.ExecuteNoQuerySQLStatment("DROP Table if Exists TreeLocationsCount;")
+        self.DBConnection.ExecuteNoQuerySQLStatment("Create Table TreeLocationsCount (GlobalTreeID Bigint,LocationsCount int);")
+        self.DBConnection.ExecuteNoQuerySQLStatment("Insert into TreeLocationsCount select globaltreeid,count(*) from TreeMapping group by globaltreeid order by count(*) desc ;")
         
         #########################################################################################
         
-        GridData=self.ExecuteQuerySQLStatment("select gridx,gridy,count(*) from TreeMapping  group by  gridx,gridy;")
+        GridData=self.DBConnection.ExecuteQuerySQLStatment("select gridx,gridy,count(*) from TreeMapping  group by  gridx,gridy;")
         #Arr=numpy.zeros((25,25))
         #for GridPoint in GridData:
         #   Arr[GridPoint[0],GridPoint[1]]=GridPoint[2] 
@@ -173,13 +133,13 @@ class ProcessTables(object):
         
     def ValidateImportProcess(self):
         DataFileSummarySt="select sum(totalnumberofgalaxies),max(treeidto) from datafiles;"
-        DataFilesSummary=self.ExecuteQuerySQLStatment(DataFileSummarySt)[0]
+        DataFilesSummary=self.DBConnection.ExecuteQuerySQLStatment(DataFileSummarySt)[0]
         ETotalNumberofExpectedGalaxies=DataFilesSummary[0]
         EMaxTreeID=DataFilesSummary[1]
         
         
         TreeSummarySt="select sum(galaxycount),max(globaltreeid) from treesummary;"
-        TreeSummaryInfo=self.ExecuteQuerySQLStatment(TreeSummarySt)[0]
+        TreeSummaryInfo=self.DBConnection.ExecuteQuerySQLStatment(TreeSummarySt)[0]
         CTotalNumberofExpectedGalaxies=TreeSummaryInfo[0]
         CMaxTreeID=TreeSummaryInfo[1]
         
@@ -200,7 +160,7 @@ class ProcessTables(object):
     def GetTablesList(self):
         
         GetTablesListSt="select table_name from information_schema.tables where table_schema='public' order by table_name;"
-        TablesList=self.ExecuteQuerySQLStatment(GetTablesListSt)
+        TablesList=self.DBConnection.ExecuteQuerySQLStatment(GetTablesListSt)
         Count=0
         for Table in TablesList:
             TableName=Table[0]

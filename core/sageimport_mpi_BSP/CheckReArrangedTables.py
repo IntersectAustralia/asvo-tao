@@ -7,6 +7,7 @@ import settingReader
 import numpy
 import matplotlib.pyplot as plt
 import time
+import DBConnection
 
 
 class CheckReArrangedTrees(object):
@@ -19,55 +20,26 @@ class CheckReArrangedTrees(object):
         '''
         
         self.Options=Options
-        self.serverip=self.Options['PGDB:serverip']
-        self.username=self.Options['PGDB:user']
-        self.password=self.Options['PGDB:password']
-        self.port=int(self.Options['PGDB:port'])
-        self.DBName=self.Options['PGDB:NewDBName']
-        self.CurrentSAGEStruct=CurrentSAGEStruct
-        if self.password==None:
-            print('Password for user:'+self.username+' is not defined')
-            self.password=getpass.getpass('Please enter password:')
+        self.DBConnection=DBConnection.DBConnection(Options)
+        self.CurrentSAGEStruct=CurrentSAGEStruct        
         
         # Take care that the connection will be opened to standard DB 'master'
         # This is temp. until the actual database is created
-        self.CurrentConnection=pg.connect(host=self.serverip,user=self.username,passwd=self.password,port=self.port,dbname=self.DBName)
+        
         print('Connection to DB is open...Start Creating Tables')
         
         
     
     
     def CloseConnections(self):        
-        self.CurrentConnection.close()       
+        self.DBConnection.close()       
         print('Connection to DB is Closed...')
     
-    def ExecuteNoQuerySQLStatment(self,SQLStatment):
-        try:           
-            SQLStatment=string.lower(SQLStatment)  
-            self.CurrentConnection.query(SQLStatment)              
-        except Exception as Exp:
-            print(">>>>>Error While creating New Table")
-            print(type(Exp))
-            print(Exp.args)
-            print(Exp)            
-            print("Current SQL Statement =\n"+SQLStatment)
-            raw_input("PLease press enter to continue.....")
-    def ExecuteQuerySQLStatment(self,SQLStatment):
-        try:            
-            SQLStatment=string.lower(SQLStatment)
-            resultsList=self.CurrentConnection.query(SQLStatment).getresult()            
-            return resultsList  
-        except Exception as Exp:
-            print(">>>>>Error While creating New Table")
-            print(type(Exp))
-            print(Exp.args)
-            print(Exp)            
-            print("Current SQL Statement =\n"+SQLStatment)
-            raw_input("PLease press enter to continue.....")
+   
     def GetTableRecordsCount(self,TableName):
         GetSummarySQL="select count(*)from @TABLEName;"
         GetSummarySQL= string.replace(GetSummarySQL,"@TABLEName",TableName)
-        SummaryListArr=self.ExecuteQuerySQLStatment(GetSummarySQL)
+        SummaryListArr=self.DBConnection.ExecuteQuerySQLStatment(GetSummarySQL)
         if len(SummaryListArr)==0:
             return
         FieldsCount=SummaryListArr[0][0]
@@ -76,7 +48,7 @@ class CheckReArrangedTrees(object):
     
     def CountGalaxies(self):
         GetTablesListSt="select table_name from information_schema.tables where table_schema='public' order by table_name;"
-        TablesList=self.ExecuteQuerySQLStatment(GetTablesListSt)
+        TablesList=self.DBConnection.ExecuteQuerySQLStatment(GetTablesListSt)
         OriginalTablesCount=0
         ReArrangedTablesCount=0
         Count=0

@@ -7,7 +7,7 @@ import getpass
 import math
 import string
 import sys
-
+import DBConnection
 
 class DBInterface(object):
     '''
@@ -32,7 +32,7 @@ class DBInterface(object):
         
         self.CurrentSAGEStruct=CurrentSAGEStruct
         
-        self.InitDBConnection()
+        self.DBConnection=DBConnection.DBConnection(Options)
         
         self.CreateInsertTemplate()                       
         
@@ -57,77 +57,27 @@ class DBInterface(object):
         self.INSERTTemplate=self.INSERTTemplate+"CentralGalaxyY,"
         self.INSERTTemplate=self.INSERTTemplate+"CentralGalaxyZ)"
     
-    def InitDBConnection(self):
-        
-        ####### PostgreSQL Simulation DB ################# 
-        self.serverip=self.Options['PGDB:serverip']
-        self.username=self.Options['PGDB:user']
-        self.password=self.Options['PGDB:password']
-        self.port=int(self.Options['PGDB:port'])
-        self.DBName=self.Options['PGDB:NewDBName']
-        
-        if self.password==None:
-            print('Password for user:'+username+' is not defined')
-            self.password=getpass.getpass('Please enter password:')
-        
-        # Take care that the connection will be opened to standard DB 'master'
-        # This is temp. until the actual database is created
-        self.CurrentConnection=pg.connect(host=self.serverip,user=self.username,passwd=self.password,port=self.port,dbname=self.DBName)
-        print('Connection to DB is open...')
     
     def CloseConnections(self):        
-        self.CurrentConnection.close()
+        self.DBConnection.close()
         self.CloseDebugFile()
-        #print('Connection to DB is Closed...')        
+                
            
             
     
-    def ExecuteNoQuerySQLStatment(self,SQLStatment):
-        try:
-            
-            if self.DebugToFile==True:
-                self.Log.write(SQLStatment+"\n\n")
-                self.Log.flush()
-            #self.cursor.execute(SQLStatment)
-            SQLStatment=string.lower(SQLStatment)  
-            self.CurrentConnection.query(SQLStatment)
-              
-        except Exception as Exp:
-            print(">>>>>Error While creating New Table")
-            print(type(Exp))
-            print(Exp.args)
-            print(Exp)            
-            print("Current SQL Statement =\n"+SQLStatment)
-            raw_input("PLease press enter to continue.....")
-    def ExecuteQuerySQLStatment(self,SQLStatment):
-        try:
-            
-            if self.DebugToFile==True:
-                self.Log.write(SQLStatment+"\n\n")
-                self.Log.flush()
-            
-            resultsList=self.CurrentConnection.query(SQLStatment).getresult()
-            
-            return resultsList  
-        except Exception as Exp:
-            print(">>>>>Error While creating New Table")
-            print(type(Exp))
-            print(Exp.args)
-            print(Exp)            
-            print("Current SQL Statement =\n"+SQLStatment)
-            raw_input("PLease press enter to continue.....")
+  
     def GetListofUnProcessedFiles(self,CommSize,CommRank):
-        return self.ExecuteQuerySQLStatment("SELECT * FROM datafiles where Processed=FALSE and fileid%"+str(CommSize)+"="+str(CommRank)+" order by fileid;")        
+        return self.DBConnection.ExecuteQuerySQLStatment("SELECT * FROM datafiles where Processed=FALSE and fileid%"+str(CommSize)+"="+str(CommRank)+" order by fileid;")        
     
     def SetFileAsProcessed(self,FileID):
-        self.ExecuteNoQuerySQLStatment("UPDATE datafiles set Processed=TRUE where fileid= "+str(FileID))
+        self.DBConnection.ExecuteNoQuerySQLStatment("UPDATE datafiles set Processed=TRUE where fileid= "+str(FileID))
     
         
                 
     def StartTransaction(self):
-        self.ExecuteNoQuerySQLStatment("BEGIN;")
+        self.DBConnection.ExecuteNoQuerySQLStatment("BEGIN;")
     def CommintTransaction(self):
-        self.ExecuteNoQuerySQLStatment("COMMIT;")
+        self.DBConnection.ExecuteNoQuerySQLStatment("COMMIT;")
     def CreateNewTree(self,TableID,TreeData):
         
         self.LocalGalaxyID=0
@@ -184,7 +134,7 @@ class DBInterface(object):
                 self.Log.write(InsertStatment+"\n\n")
                 self.Log.flush()
                 
-            self.ExecuteNoQuerySQLStatment(InsertStatment)
+            self.DBConnection.ExecuteNoQuerySQLStatment(InsertStatment)
         except Exception as Exp:
             print(">>>>>Error While Processing Tree")
             print(type(Exp))
