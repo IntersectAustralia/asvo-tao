@@ -4,18 +4,24 @@
 
 {% block subtitle %}Viewing Job{% endblock subtitle %}
 
+{%  comment %}
+INGREDIENT #5: use forms here .summary view to render the summary here; but it requires JavaScript AND
+the forms being hidden and all.
+{% endcomment %}
+
 {% block content %}
     <div>
-        <h1>Viewing Job</h1>
+        <h1>Viewing Job {{ job.id }}</h1>
         <div>
+{#        Maybe need this for QA testing at some stage #}
+{#            <div>#}
+{#                <strong>Parameters</strong>#}
+{#                <span>#}
+{#                    {{ job.parameters|linebreaks }}#}
+{#                </span>#}
+{#            </div>#}
             <div>
-                <strong>Parameters</strong>
-                <span>
-                    {{ job.parameters|linebreaks }}
-                </span>
-            </div>
-            <div>
-                <strong>Files</strong>
+                <strong>Download</strong>
 
                 {% if job.is_completed %}
                     <ul id='id_completed_jobs'>
@@ -39,16 +45,22 @@
                         (Zip file exceeds maximum download size.)
                     {% endif %}
                 {% else %}
-                {% if job.is_error %}
-                    <pre>
-                    {{ job.error_message|linebreaks  }}
-                    </pre>
-                    {% else %}
                     <p>
                         This job has not completed (and hence has no output).
                     </p>
                 {% endif %}
+            </div>
+            <div>
+                <strong>Status</strong>
+                <p>{{ job.status }}</p>
+                {% if job.is_error %}
+                    <pre>
+                    {{ job.error_message|linebreaks  }}
+                    </pre>
                 {% endif %}
+            </div>
+            <div>
+                <strong>Summary</strong>
             </div>
         </div>
     </div>

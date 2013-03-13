@@ -5,14 +5,11 @@ tao.urls
 
 Django's URL mapping definition
 """
-from django.conf.urls.defaults import patterns, url, include
+from django.conf.urls import patterns, url, include
 from django.contrib.auth.views import logout
 from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import render
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-
-from tao.models import Job
-
 from django.contrib import admin
 admin.autodiscover()
 
@@ -33,14 +30,6 @@ account_patterns = patterns('',
 
 mock_galaxy_factory_patterns = patterns('tao.views.mock_galaxy_factory',
     url(r'^$', 'index', name='mock_galaxy_factory'),
-    url(r'^my_jobs_with_status/(?P<status>.*)$', 'my_jobs_with_status'),
-    url(r'^my_jobs_with_status/$', 'my_jobs_with_status', name='all_jobs'),
-    url(r'^my_jobs_with_status/HELD', 'my_jobs_with_status', {'status': Job.HELD}, name='held_jobs'),
-    url(r'^my_jobs_with_status/SUBMITTED$', 'my_jobs_with_status', {'status': Job.SUBMITTED}, name='submitted_jobs'),
-    url(r'^my_jobs_with_status/IN_PROGRESS$', 'my_jobs_with_status', {'status': Job.IN_PROGRESS}, name='in_progress_jobs'),
-    url(r'^my_jobs_with_status/QUEUED', 'my_jobs_with_status', {'status': Job.QUEUED}, name='queued_jobs'),
-    url(r'^my_jobs_with_status/COMPLETED', 'my_jobs_with_status', {'status': Job.QUEUED}, name='completed_jobs'),
-
     url(r'^fake_a_job$', 'fake_a_job', name='fake_a_job'),
 )
 

@@ -146,7 +146,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
         from tao.tests.integration_tests.helper import wait
         job = JobFactory.create(user=self.user)
         wait(1)
-        self.visit('held_jobs')
+        self.visit('job_index')
         self.assert_page_has_content(job.description)
 
     def test_sed_elements_disabled_on_initial_load(self):

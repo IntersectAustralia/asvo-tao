@@ -100,7 +100,7 @@ class FilterTests(LiveServerMGFTest):
 
         self.submit_mgf_form()
 
-        self.assert_on_page('held_jobs')
+        self.assert_on_page('job_index')
 
     def test_filter_options_with_selected_band_pass_filter_after_submit_other_errors(self):
         # check drop-down list correspond to properties of the currently selected simulation and galaxy model
