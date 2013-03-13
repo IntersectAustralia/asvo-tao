@@ -11,11 +11,11 @@ class LogReader(object):
     def __init__(self,Options):
         self.Options=Options
     
-    def GetFileName(self,UserName,JobID):
-        path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],'jobs', UserName, str(JobID),'log','tao.log')        
+    def GetFileName(self,UserName,JobID,SubJobIndex):
+        path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],'jobs', UserName, str(JobID),'log','tao.log.'+str(SubJobIndex))        
         return path
-    def ParseFile(self,UserName,JobID):
-        FilePath=self.GetFileName(UserName, JobID)
+    def ParseFile(self,UserName,JobID,SubJobIndex):
+        FilePath=self.GetFileName(UserName, JobID,SubJobIndex)
         JobDetails={'start':-1,'progress':'0%','end':-1,'error':'','endstate':''}
         counter=10
         while ((not os.path.exists(FilePath)) and counter>0):

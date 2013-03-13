@@ -272,7 +272,7 @@ class WorkFlow(object):
             
             
             ## Parse the Job Log File and Extract Current Job Status            
-            JobDetails=self.LogReaderObj.ParseFile(UserName,UIReference_ID)
+            JobDetails=self.LogReaderObj.ParseFile(UserName,UIReference_ID,SubJobIndex)
              
             
             

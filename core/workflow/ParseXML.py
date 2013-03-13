@@ -36,7 +36,7 @@ class ParseXMLParameters(object):
             raise  Exception('Error in SubJobsCount','SubJobsCount<=0!')        
     def ExportTree(self,FileName,SubJobIndex): 
          
-        self.tree.xpath("/ns:tao/ns:SubJobIndex",namespaces={'ns':self.NameSpace})[0].text=str(SubJobIndex)
+        self.tree.xpath("/ns:tao/ns:subjobindex",namespaces={'ns':self.NameSpace})[0].text=str(SubJobIndex)
         with open(FileName,'w') as f:
             f.write(ET.tostring(self.tree,encoding='UTF-8',xml_declaration=True,pretty_print=True))       
         
@@ -79,7 +79,7 @@ class ParseXMLParameters(object):
         DBElement.text=self.WorkDirectory+"/jobs/"+JobUserName+"/"+str(JobID)+"/log/"        
         self.tree.xpath("/ns:tao",namespaces={'ns':self.NameSpace})[0].append(DBElement)
         
-        DBElement=ET.Element("{"+self.NameSpace+"}SubJobIndex")        
+        DBElement=ET.Element("{"+self.NameSpace+"}subjobindex")        
         DBElement.text="none" 
              
         self.tree.xpath("/ns:tao",namespaces={'ns':self.NameSpace})[0].append(DBElement)
