@@ -111,9 +111,9 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.fill_in_fields({'max': max_input, 'min': min_input}, id_wrap=self.rf_id)
         self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
         if filter.units != '':
-            expected_filter_display = min_input + ' < ' + filter.name + ' (' + filter.units + ') < ' + max_input
+            expected_filter_display = min_input + ' < ' + filter.label + ' (' + filter.units + ') < ' + max_input
         else:
-            expected_filter_display = min_input + ' < ' + filter.name + ' < ' + max_input
+            expected_filter_display = min_input + ' < ' + filter.label + ' < ' + max_input
         simulation_displayed = self.get_summary_field_text('light_cone', 'simulation')
         galaxy_model_displayed = self.get_summary_field_text('light_cone', 'galaxy_model')
         filter_displayed = self.get_summary_field_text('record_filter', 'record_filter')

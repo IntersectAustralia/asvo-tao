@@ -18,8 +18,15 @@ import StringIO
 def view_job(request, id):
     job = Job.objects.get(id=id)
 
+    # xml_string = job.parameters
+    # ## INGREDIENT #2 : we have ui_holder as a helper (see views/mock_galaxy_factory)
+    # # so extend UI Holder to kick-off from an xml_object, like ui_modules = UIModulesHolder.from_xml
+    # # and then use the forms in the Model below in a similar way to mock_galaxy_factory
+    # ui_holder = None
+
     return render(request, 'jobs/view.html', {
         'job': job,
+        # 'forms': ui_holder.forms(),
     })
 
 @researcher_required
@@ -64,4 +71,7 @@ def get_zip_file(request, id):
 
 @set_tab('jobs')
 def index(request):
-    return render(request, 'jobs/index.html')
+    user_jobs = Job.objects.filter(user=request.user)
+    return render(request, 'jobs/index.html', {
+        'jobs': user_jobs,
+    })

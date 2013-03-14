@@ -10,7 +10,7 @@ def json_my_encode(obj):
     if isinstance(obj, DataSetProperty):
         return {'type':'D','pk':obj.pk, 'fields':{'name':obj.name,'units':obj.units,'label':obj.label,'data_type':obj.data_type}}
     elif isinstance(obj, BandPassFilter):
-        return {'type':'B','pk':obj.pk, 'fields':{'name':obj.label,'units':'','label':obj.filter_id,'data_type':DataSetProperty.TYPE_FLOAT}}
+        return {'type':'B','pk':obj.pk, 'fields':{'name':obj.filter_id,'units':'','label':obj.label,'data_type':DataSetProperty.TYPE_FLOAT}}
     else:
         raise TypeError(repr(obj) + " is not JSON serializable by our custom method")
 

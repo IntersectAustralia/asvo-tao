@@ -152,9 +152,9 @@ jQuery(document).ready(function($) {
                 $option.html(item.fields.label);
             } else {
                 if (item.fields.units != '') {
-                    $option.html(item.fields.name + ' (' + item.fields.units + ')');
+                    $option.html(item.fields.label + ' (' + item.fields.units + ')');
                 } else {
-                    $option.html(item.fields.name);
+                    $option.html(item.fields.label);
                 }
             }
             if (item_to_value(item) == current_filter) {
@@ -457,7 +457,7 @@ jQuery(document).ready(function($) {
         var pseudo_json = [];
         $(lc_id('output_properties') + ' option').each(function(){
             var $this = $(this);
-            var item = {pk: $this.attr('value'), fields:{name: $this.text()}};
+            var item = {pk: $this.attr('value'), fields:{label: $this.text()}};
             pseudo_json.push(item);
             if($this.attr('selected')) {
                current.push(item.pk);
@@ -472,7 +472,7 @@ jQuery(document).ready(function($) {
         var pseudo_json = [];
         $(sed_id('band_pass_filters') + ' option').each(function(){
             var $this = $(this);
-            var item = {pk: $this.attr('value'), fields:{name: $this.text()}};
+            var item = {pk: $this.attr('value'), fields:{label: $this.text()}};
             pseudo_json.push(item);
             if($this.attr('selected')) {
                 current.push(item.pk);

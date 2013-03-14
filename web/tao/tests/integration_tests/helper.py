@@ -265,7 +265,7 @@ class LiveServerTest(django.test.LiveServerTestCase):
             units_str = ''
             if filter.units is not None and len(filter.units) > 0:
                 units_str = ' (' + filter.units + ')'
-            text = filter.name + units_str
+            text = filter.label + units_str
         elif isinstance(filter, BandPassFilter):
             text = filter.label
         else:

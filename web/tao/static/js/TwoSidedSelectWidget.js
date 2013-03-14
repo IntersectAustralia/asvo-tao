@@ -101,7 +101,7 @@ var TwoSidedSelectWidget = function(to_id, enable) {
         cache = [];
         for (var i = 0; i < data.length; i++) {
             var item = data[i];
-            cache.push({value: item.pk, text: item.fields.name, displayed: 1});
+            cache.push({value: item.pk, text: item.fields.label, displayed: 1});
         }
     };
 
