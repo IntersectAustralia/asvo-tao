@@ -3,7 +3,7 @@ from django.utils.html import strip_tags
 from tao.tests.integration_tests.helper import LiveServerTest
 
 from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, JobFactory, DataSetPropertyFactory, DustModelFactory
-from tao.models import Simulation, GalaxyModel, Job
+from tao.models import Simulation
 from tao.settings import MODULE_INDICES
 
 class MockGalaxyFactoryTest(LiveServerTest):

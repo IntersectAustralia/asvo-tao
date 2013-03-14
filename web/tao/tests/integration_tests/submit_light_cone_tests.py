@@ -1,4 +1,4 @@
-from tao.models import Job
+from tao.models import Snapshot
 from tao.settings import MODULE_INDICES
 from tao.tests.integration_tests.helper import LiveServerMGFTest, wait, interact
 from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, JobFactory, StellarModelFactory, SnapshotFactory, BandPassFilterFactory
@@ -14,7 +14,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
         galaxy_model = GalaxyModelFactory.create()
         dataset = DataSetFactory.create(simulation=simulation, galaxy_model=galaxy_model)
 
-        self.redshifts = ['1.23456789', '2.987654321', '3.69154927']
+        self.redshifts = ['1.23456789', '2.987654321', '3.69154927', '4.567890123']
         for redshift in self.redshifts:
             SnapshotFactory.create(dataset=dataset, redshift=redshift)
 
@@ -34,10 +34,9 @@ class SubmitLightConeTests(LiveServerMGFTest):
                     """
         
         self.login(self.username, password)
-
-    def test_submit_invalid_output_properties(self):
         self.visit('mock_galaxy_factory')
 
+    def test_submit_invalid_output_properties(self):
         ## fill in form (correctly)
         self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
         self.fill_in_fields({
@@ -51,8 +50,6 @@ class SubmitLightConeTests(LiveServerMGFTest):
         self.assert_on_page('mock_galaxy_factory')
 
     def test_submit_valid_cone_job(self):
-        self.visit('mock_galaxy_factory')
-        
         ## fill in form (correctly)
         self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
         self.fill_in_fields({
@@ -67,8 +64,6 @@ class SubmitLightConeTests(LiveServerMGFTest):
         self.assert_on_page('job_index')
 
     def test_submit_valid_box_job(self):
-        self.visit('mock_galaxy_factory')
-        
         ## fill in form (correctly)
         self.select(self.lc_id('catalogue_geometry'), 'Box')
         self.fill_in_fields({
@@ -78,12 +73,10 @@ class SubmitLightConeTests(LiveServerMGFTest):
         self.click(self.lc_2select('op_add_all'))
         self.submit_mgf_form()
 
-        self.assert_on_page('job_index')
+        self.assert_on_page('job_index') #'held_jobs')
         
 
     def test_invalid_box_options_allow_light_cone_submit(self):
-        self.visit('mock_galaxy_factory')
-
         ## fill in box fields (incorrectly)
         self.select(self.lc_id('catalogue_geometry'), 'Box')
         self.fill_in_fields({
@@ -101,11 +94,9 @@ class SubmitLightConeTests(LiveServerMGFTest):
         self.click(self.lc_2select('op_add_all'))
 
         self.submit_mgf_form()
-        self.assert_on_page('job_index')  # The form is valid because the invalid box size field is hidden
+        self.assert_on_page('job_index') # The form is valid because the invalid box size field is hidden
 
     def test_invalid_cone_options_allow_box_submit(self):
-        self.visit('mock_galaxy_factory')
-
         ## fill in light-cone fields (incorrectly)
         self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
         self.fill_in_fields({
@@ -124,4 +115,16 @@ class SubmitLightConeTests(LiveServerMGFTest):
         self.click(self.lc_2select('op_add_all'))
 
         self.submit_mgf_form()
-        self.assert_on_page('job_index')  # The form is valid because the invalid light cone fields hidden
+        self.assert_on_page('job_index') # The form is valid because the invalid light cone fields hidden
+
+    def test_redshift_stays_selected_after_failed_submit(self):
+        self.select(self.lc_id('catalogue_geometry'), 'Box')
+        self.fill_in_fields({
+            'box_size': 'bad_number',
+        }, id_wrap=self.lc_id)
+        third_snapshot_text = "%.5g" % float(Snapshot.objects.all()[2].redshift)
+        self.select(self.lc_id('snapshot'), third_snapshot_text)
+
+        self.submit_mgf_form()
+        self.assert_on_page('mock_galaxy_factory')
+        self.assertEqual(third_snapshot_text, self.get_selected_option_text(self.lc_id('snapshot')))

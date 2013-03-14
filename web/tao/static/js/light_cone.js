@@ -81,8 +81,8 @@ jQuery(document).ready(function($) {
         var simulation_id = $(lc_id('dark_matter_simulation')).val();
         var galaxy_model_id = $(lc_id('galaxy_model')).find(':selected').attr('data-galaxy_model_id');
         var $snapshot = $(lc_id('snapshot'));
+        var current = $snapshot.val();
         $snapshot.empty();
-        var initial_snapshot = $snapshot.val();
 
         $.ajax({
             url : TAO_JSON_CTX + 'snapshots/' + simulation_id + ',' + galaxy_model_id,
@@ -124,7 +124,7 @@ jQuery(document).ready(function($) {
                     else {
                         $option.html(item.fields.redshift);
                     }
-                    if (item.pk == initial_snapshot) {
+                    if (item.pk == current) {
                         $option.attr('selected','selected');
                     }
                     $snapshot.append($option);
