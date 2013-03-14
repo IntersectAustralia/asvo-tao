@@ -1,10 +1,56 @@
 {% extends '_base.html' %}
 
+{% load url from future %}
+{% load staticfiles %}
+
 {% block subtitle %}Jobs{% endblock subtitle %}
 
+{% block extrajs %}
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.1/themes/base/jquery-ui.css" />
+    <script type="text/javascript" src="{% static 'js/jquery-ui-1.10.1.custom.min.js' %}"></script>
+
+    <script type="text/javascript" src="{% static 'js/PopUp.js' %}"></script>
+{% endblock extrajs %}
+
 {% block content %}
-    <h1>Jobs</h1>
+    <h1>History</h1>
     <div>
-        {% include 'jobs/_status_links.html' %}
+        <table id="jobs_table" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Submitted Timestamp</th>
+                    <th>Description</th>
+                    <th>Status/Error Message</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for job in jobs %}
+                    <tr>
+                        <td>
+                            {{ job.id }}
+                            {% if job.is_completed %}
+                                (<a id="view_job_{{ job.id }}" href="{% url 'view_job' job.id %}">View</a>)
+                            {% endif %}
+                        </td>
+                        <td>
+                            {{ job.created_time|date:"D d M Y H:i" }}
+                        </td>
+                        <td>
+                            {{ job.description|linebreaks }}
+                        </td>
+                        <td>
+                            {{ job.status }}
+                            {%  if job.is_error %}
+                                <div id="popUpDialogue" title="Error Message for Job {{ job.id }}" style="display: none;">
+                                    <p>{{ job.short_error_message }}</p>
+                                </div>
+                                <button id="popUp">?</button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 {% endblock content %}

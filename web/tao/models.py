@@ -131,9 +131,9 @@ class DataSetProperty(models.Model):
 
     def option_label(self):
         if (self.units is not None and self.units != ''):
-            return "%s (%s)" % (self.name, self.units)
+            return "%s (%s)" % (self.label, self.units)
         else:
-            return self.name
+            return self.label
 
     @classmethod
     def data_type_enum(cls, val):

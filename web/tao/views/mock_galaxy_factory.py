@@ -21,7 +21,7 @@ def index(request):
             user = models.User.objects.get(username=request.user)
             workflow.save(user, ui_holder)
             messages.info(request, _("Your job was held successfully."))
-            return redirect(reverse('held_jobs'))
+            return redirect(reverse('job_index'))
     else:
         ui_holder = UIModulesHolder()
 

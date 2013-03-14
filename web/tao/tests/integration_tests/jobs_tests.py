@@ -63,6 +63,9 @@ class JobTest(LiveServerTest):
         
         self.visit('view_job', completed_job.id)
 
+        self.assert_page_has_content('Download')
+        self.assert_page_has_content('Status')
+        self.assert_page_has_content('Summary')
         self.assert_page_has_content(completed_job.parameters)
         li_elements = self.selenium.find_elements_by_css_selector('#id_completed_jobs li')
         filenames_with_sizes = []
@@ -121,12 +124,11 @@ class JobTest(LiveServerTest):
         download_path = os.path.join(self.DOWNLOAD_DIRECTORY, 'file1')
         self.assertFalse(os.path.exists(download_path))
         
-    def test_view_job_without_files(self):
+    def test_cannot_view_not_completed_job(self):
         self.login(self.username, self.password)
         
-        self.visit('held_jobs')
-        self._click_view_job(self.job)
-        self.assert_page_has_content("This job has not completed (and hence has no output).")
+        self.visit('job_index')
+        self.assert_page_does_not_contain('(View)')
 
     def test_zip_file_download(self):
         completed_job = JobFactory.create(user=self.user, status=Job.COMPLETED, output_path=self.output_paths[0])

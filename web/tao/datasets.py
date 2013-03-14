@@ -45,7 +45,7 @@ def stellar_model_choices():
     """
         for now the SED has a single selection value, which is still TBD.
     """
-    return [(x.id, x.label, {}) for x in models.StellarModel.objects.order_by('name')]
+    return [(x.id, x.label, {}) for x in models.StellarModel.objects.order_by('label')]
 
 def snapshot_choices():
     return [(x.id, str(x.redshift), {'data-galaxy_model_id': str(x.dataset.galaxy_model_id), 'data-simulation_id': str(x.dataset.simulation_id)})
@@ -71,7 +71,7 @@ def default_filter_max(data_set_id):
 
 def output_choices(data_set_id):
     dataset = models.DataSet.objects.get(id=data_set_id)
-    return models.DataSetProperty.objects.filter(dataset_id = dataset.id, is_output = True).order_by('name')
+    return models.DataSetProperty.objects.filter(dataset_id = dataset.id, is_output = True).order_by('label')
 
 def output_property(id):
     return models.DataSetProperty.objects.get(pk=id, is_output=True)
