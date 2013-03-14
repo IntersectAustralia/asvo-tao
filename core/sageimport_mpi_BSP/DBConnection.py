@@ -46,6 +46,8 @@ class DBConnection(object):
         for i in range(0,self.serverscount):
             self.ExecuteNoQuerySQLStatment(SQLStatment, i)
     
+    def MapTableIDToServerIndex(self,TableID):
+        return TableID%self.serverscount
     def ExecuteNoQuerySQLStatment(self,SQLStatment,DatabaseIndex=0):
         try:            
             SQLStatment=string.lower(SQLStatment)  

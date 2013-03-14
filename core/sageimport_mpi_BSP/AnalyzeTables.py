@@ -32,7 +32,7 @@ class ProcessTables(object):
     def CreateSummaryTable(self):
         
         DropTable="DROP TABLE IF EXISTS Summary;"
-        self.DBConnection.ExecuteNoQuerySQLStatment(DropTable)
+        self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers(DropTable)
         
         CreateTable="CREATE TABLE Summary ("
         CreateTable=CreateTable+"TableName varchar(100),"        
@@ -46,7 +46,7 @@ class ProcessTables(object):
         CreateTable=CreateTable+"MaxSnap INT4,"
         CreateTable=CreateTable+"GalaxyCount BIGINT)"
         
-        self.DBConnection.ExecuteNoQuerySQLStatment(CreateTable)
+        self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServersExecuteNoQuerySQLStatment_On_AllServers(CreateTable)
     def CreateTreeSummaryTable(self):
         
         DropTable="DROP TABLE IF EXISTS TreeSummary;"
@@ -98,7 +98,7 @@ class ProcessTables(object):
         InsertSummaryRecord=InsertSummaryRecord+str(MaxPosX)+","+str(MaxPosY)+","+str(MaxPosZ)+","+str(MinSnap)+","+str(MaxSnap)
         InsertSummaryRecord=InsertSummaryRecord+")"
         InsertSummaryRecord= string.replace(InsertSummaryRecord,"none","0")
-        self.DBConnection.ExecuteNoQuerySQLStatment(InsertSummaryRecord)
+        self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers(InsertSummaryRecord)
         
         
         #print("********************************************************************************")

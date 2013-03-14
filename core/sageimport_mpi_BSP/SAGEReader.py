@@ -199,7 +199,7 @@ class SAGEDataReader:
                 if self.IntersectTwoRect(Rect1, Rect2)==True:
                     GetIntersectionWithCurrentBoundingRect="INSERT INTO TreeMapping VALUES("+str(TreeData[0]['TreeID'])+","+str(XLocation)+","+str(YLocation)+"); "                
                 
-                    self.PGDB.ExecuteNoQuerySQLStatment(GetIntersectionWithCurrentBoundingRect)
+                    self.PGDB.DBConnection.ExecuteNoQuerySQLStatment(GetIntersectionWithCurrentBoundingRect)
                     PTableID=int((XLocation*self.CellsInX)+YLocation)
                     #print("("+str(XLocation)+","+str(YLocation)+")="+str(PTableID))
                     PossibleTables=numpy.hstack([PossibleTables,PTableID])

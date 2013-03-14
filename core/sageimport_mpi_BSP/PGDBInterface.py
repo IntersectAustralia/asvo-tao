@@ -75,9 +75,9 @@ class DBInterface(object):
         
                 
     def StartTransaction(self):
-        self.DBConnection.ExecuteNoQuerySQLStatment("BEGIN;")
+        self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers("BEGIN;")
     def CommintTransaction(self):
-        self.DBConnection.ExecuteNoQuerySQLStatment("COMMIT;")
+        self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers("COMMIT;")
     def CreateNewTree(self,TableID,TreeData):
         
         self.LocalGalaxyID=0
@@ -133,8 +133,8 @@ class DBInterface(object):
             if self.DebugToFile==True:
                 self.Log.write(InsertStatment+"\n\n")
                 self.Log.flush()
-                
-            self.DBConnection.ExecuteNoQuerySQLStatment(InsertStatment)
+            HostIndex=self.DBConnection.MapTableIDToServerIndex(TableID)    
+            self.DBConnection.ExecuteNoQuerySQLStatment(InsertStatment,HostIndex)
         except Exception as Exp:
             print(">>>>>Error While Processing Tree")
             print(type(Exp))

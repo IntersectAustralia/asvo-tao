@@ -118,13 +118,19 @@ class PreprocessFiles(object):
         ## Get List of all tables expected from "datafiles" table
         #TableIDs=self.ExecuteQuerySQLStatment("select distinct tableid from datafiles order by tableid;")
         TableIDs=range(0,NumberofTables)
+        self.CreateTable_DB_Mapping()
         ## for each tableID create New Table 
         for TableID in TableIDs:
             print("Creating Table ("+str(TableID)+")")
             self.CreateNewTable(TableID)
         
         self.CreateNewTable(NumberofTables)
-    
+    def CreateTable_DB_Mapping(self):
+        DropTable="DROP TABLE IF EXISTS Table_DB_Mapping;"
+        self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers(DropTable)
+        
+        CreateTableMapping="Create TABLE Table_DB_Mapping (TableName varchar(500),NodeName varchar(5000),IsActive boolean DEFAULT (True), PRIMARY KEY(TableName, NodeName));"
+        self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers(CreateTableMapping) 
     ## Use Statement concatenation and the  CurrentSAGEStrcuture loaded from the XML settings to create a new table template
     def CreateNewTableTemplate(self):
         self.CreateTableTemplate="CREATE TABLE @TABLEName ("
@@ -146,7 +152,7 @@ class PreprocessFiles(object):
         
                
         CreateTableStatment=""
-        HostIndex=TableIndex%self.DBConnection.serverscount
+        HostIndex=self.DBConnection.MapTableIDToServerIndex(TableIndex)
         try:
             
             ## The Table name is defined using the TreeTablePrefix from the XML config file
@@ -175,7 +181,9 @@ class PreprocessFiles(object):
             CreateIndexStatment="Create Index CentralGalaxyZ_Index_"+NewTableName+" on  "+NewTableName+" (CentralGalaxyZ);"
             self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
             
-             
+            NodeName=self.Options['PGDB:serverInfo'+str(HostIndex)+':serverip']
+            InsertStatement="INSERT INTO Table_DB_Mapping Values('"+NewTableName+"','"+NodeName+"');" 
+            self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers(InsertStatement)
             print("Table "+NewTableName+" Created With Index ...")
             
             
