@@ -3,7 +3,7 @@ from django.utils.html import strip_tags
 from tao.tests.integration_tests.helper import LiveServerTest
 
 from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, JobFactory, DataSetPropertyFactory, DustModelFactory
-from tao.models import Simulation
+from tao.models import Simulation, DataSet, DataSetProperty
 from tao.settings import MODULE_INDICES
 
 class MockGalaxyFactoryTest(LiveServerTest):
@@ -18,7 +18,8 @@ class MockGalaxyFactoryTest(LiveServerTest):
             g = GalaxyModelFactory.create()
             ds = DataSetFactory.create(simulation=simulation, galaxy_model=g)
             DataSetPropertyFactory.create(dataset=ds)
-            
+            DataSetPropertyFactory.create(dataset=ds)
+
         for unused in range(4):
             g = GalaxyModelFactory.create()
             ds = DataSetFactory.create(simulation=simulation2, galaxy_model=g)
@@ -97,6 +98,17 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.assertEqual('Box', geometry_displayed)
         self.assert_is_displayed('div.summary_light_cone .box_fields')
         self.assert_not_displayed('div.summary_light_cone .light_cone_fields')
+
+    def test_output_property_details(self):
+        simulation = Simulation.objects.all()[0]
+        self.select_dark_matter_simulation(simulation)
+        init_galaxy_model_of_simulation = simulation.galaxymodel_set.all()[0]
+        dataset = init_galaxy_model_of_simulation.dataset_set.all()[0]
+        for i in [1,0]:
+            output_property = dataset.datasetproperty_set.all()[i]
+            self.click_by_css(self.lc_id('output_properties_from') + " option[value='"+str(output_property.id)+"']")
+            name_displayed = self.get_info_field('output-property', 'name')
+            self.assertEquals(output_property.label, name_displayed)
 
     def test_summary_on_simulation_change(self):
         second_simulation = Simulation.objects.all()[1]

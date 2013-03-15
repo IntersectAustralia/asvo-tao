@@ -95,6 +95,10 @@ class LiveServerTest(django.test.LiveServerTestCase):
     def get_summary_field_text(self, form_name, field_name):
         return self.get_summary_field(form_name, field_name).text
 
+    def get_info_field(self, section, field):
+        elem = self.selenium.find_element_by_css_selector("div.%(section)s-info .%(field)s" % {'section': section, 'field': field})
+        return elem.text
+
     def assert_email_body_contains(self, email, text):
         pattern = re.escape(text)
         matches = re.search(pattern, email.body)
@@ -180,6 +184,11 @@ class LiveServerTest(django.test.LiveServerTestCase):
 
     def click(self, elem_id):
         elem = self.selenium.find_element_by_id(elem_id)
+        elem.click()
+        wait(0.5)
+
+    def click_by_css(self, element_css):
+        elem = self.selenium.find_element_by_css_selector(element_css)
         elem.click()
         wait(0.5)
             

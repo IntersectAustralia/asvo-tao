@@ -16,6 +16,13 @@ var TwoSidedSelectWidget = function(to_id, enable) {
     var ref = this;
     var enabled = enable;
 
+    var option_clicked = function(evt) {
+        if (ref.option_click_handler) {
+            var cache_index = $(evt.target).data('cache_index');
+            ref.option_click_handler(cache[cache_index]);
+        }
+    };
+
     this.init = function() {
 
         var resize_filters = function() {
@@ -101,7 +108,7 @@ var TwoSidedSelectWidget = function(to_id, enable) {
         cache = [];
         for (var i = 0; i < data.length; i++) {
             var item = data[i];
-            cache.push({value: item.pk, text: item.fields.label, displayed: 1});
+            cache.push({value: item.pk, text: item.fields.label, description: item.fields.description, displayed: 1});
         }
     };
 
@@ -136,12 +143,14 @@ var TwoSidedSelectWidget = function(to_id, enable) {
             var $option = $('<option/>');
             $option.attr('value', v.value);
             $option.text(v.text);
+            $option.data('cache_index', i);
             if (v.displayed == 1) {
                 $option.appendTo($from);
             }
             if (v.displayed == 2) {
                 $option.appendTo($to);
             }
+            $option.click(option_clicked)
         });
         if (trigger) {
             $to.change();
@@ -155,6 +164,10 @@ var TwoSidedSelectWidget = function(to_id, enable) {
     this.change_event = function(handler) {
         $to.change(handler);
     };
+
+    this.option_clicked_event = function(handler) {
+        ref.option_click_handler = handler;
+    }
 
     this.update_displayed_status = function($options, status) {
         var opts = [];
