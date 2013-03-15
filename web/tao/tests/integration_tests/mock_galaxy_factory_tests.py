@@ -109,6 +109,11 @@ class MockGalaxyFactoryTest(LiveServerTest):
             self.click_by_css(self.lc_id('output_properties_from') + " option[value='"+str(output_property.id)+"']")
             name_displayed = self.get_info_field('output-property', 'name')
             self.assertEquals(output_property.label, name_displayed)
+        self.click(self.lc_2select('op_add_all'))
+        output_property = dataset.datasetproperty_set.all()[i]
+        self.click_by_css(self.lc_id('output_properties') + " option[value='"+str(output_property.id)+"']")
+        name_displayed = self.get_info_field('output-property', 'name')
+        self.assertEquals(output_property.label, name_displayed)
 
     def test_summary_on_simulation_change(self):
         second_simulation = Simulation.objects.all()[1]
