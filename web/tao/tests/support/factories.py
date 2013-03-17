@@ -70,6 +70,7 @@ class StellarModelFactory(factory.Factory):
     FACTORY_FOR = StellarModel
     label = factory.Sequence(lambda n: 'stellar_label_%03d' % int(n))
     name = factory.Sequence(lambda n: 'stellar_name_%03d' % int(n))
+    description = factory.Sequence(lambda n: '<p>Description ' + n + '</p>')
 
 class SnapshotFactory(factory.Factory):
     FACTORY_FOR = Snapshot
@@ -85,3 +86,4 @@ class DustModelFactory(factory.Factory):
     FACTORY_FOR = DustModel
     name = factory.Sequence(lambda n: 'Dust_model_%03d.dat' % int(n))
     label = factory.Sequence(lambda n: 'Dust model %03d' % int(n))
+    details = factory.Sequence(lambda n: '<p>Detail ' + n + '</p>')
