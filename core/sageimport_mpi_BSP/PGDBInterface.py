@@ -8,6 +8,7 @@ import math
 import string
 import sys
 import DBConnection
+import logging
 
 class DBInterface(object):
     '''
@@ -98,7 +99,7 @@ class DBInterface(object):
         self.CurrentGalaxiesCounter=self.CurrentGalaxiesCounter+len(TreeData)
         
 
-        #print("\n")
+        #logging.info("\n")
     
     def PrepareInsertStatement(self,TableID,TreeData):
         InsertStatment=""
@@ -136,11 +137,11 @@ class DBInterface(object):
             HostIndex=self.DBConnection.MapTableIDToServerIndex(TableID)    
             self.DBConnection.ExecuteNoQuerySQLStatment(InsertStatment,HostIndex)
         except Exception as Exp:
-            print(">>>>>Error While Processing Tree")
-            print(type(Exp))
-            print(Exp.args)
-            print(Exp)            
-            print("Current SQL Statement =\n"+InsertStatment)
+            logging.info(">>>>>Error While Processing Tree")
+            logging.info(type(Exp))
+            logging.info(Exp.args)
+            logging.info(Exp)            
+            logging.info("Current SQL Statement =\n"+InsertStatment)
             raw_input("PLease press enter to continue.....")
             
                 

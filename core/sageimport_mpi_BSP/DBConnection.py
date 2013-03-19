@@ -3,12 +3,14 @@ import math
 import string
 import sys
 import settingReader # Read the XML settings
+import logging
 
 class DBConnection(object):
        
     
     def __init__(self,Options,ConnectToDefaultDB=False):
-        
+        self.ConnectionOpened=False
+        self.QueriesCount=0
         self.Options=Options       
         
         self.InitDBConnection(ConnectToDefaultDB)
@@ -34,12 +36,28 @@ class DBConnection(object):
             self.DBservers.append(serverinfo)      
             CurrentConnection=pg.connect(host=serverinfo['serverip'],user=serverinfo['username'],passwd=serverinfo['password'],port=serverinfo['port'],dbname=self.DBName)
             self.CurrentConnections.append(CurrentConnection)
-        print('Connection to DB is open...')
+        logging.info('Connection to DB is open...')
+        self.ConnectionOpened=True
     
-    def CloseConnections(self):  
-        for i in range(0,self.serverscount):
-            self.CurrentConnections[i].close()              
-           
+    def AutoRestartDBConnections(self):
+        self.IncrementQueriesCount()
+        if self.QueriesCount>=50:
+           self.RestartConnection()
+           self.QueriesCount=0
+            
+    def IncrementQueriesCount(self):
+        if self.DBName!="postgres":
+            self.QueriesCount=self.QueriesCount+1
+    def RestartConnection(self):
+        if self.DBName!="postgres" and self.ConnectionOpened==True:
+            self.CloseConnections()
+            self.InitDBConnection(False)
+        
+    def CloseConnections(self): 
+        if self.ConnectionOpened==True: 
+            for i in range(0,self.serverscount):
+                self.CurrentConnections[i].close()              
+            self.ConnectionOpened=False   
             
     
     def ExecuteNoQuerySQLStatment_On_AllServers(self,SQLStatment):
@@ -50,26 +68,29 @@ class DBConnection(object):
         return TableID%self.serverscount
     def ExecuteNoQuerySQLStatment(self,SQLStatment,DatabaseIndex=0):
         try:            
+            self.AutoRestartDBConnections()
             SQLStatment=string.lower(SQLStatment)  
             self.CurrentConnections[DatabaseIndex].query(SQLStatment)              
         except Exception as Exp:
-            print(">>>>>Error While Executing XML NoQuery Statement")
-            print(type(Exp))
-            print(Exp.args)
-            print(Exp)            
-            print("Current SQL Statement =\n"+SQLStatment)
+            logging.info(">>>>>Error While Executing XML NoQuery Statement")
+            logging.info(type(Exp))
+            logging.info(Exp.args)
+            logging.info(Exp)            
+            logging.info("Current SQL Statement =\n"+SQLStatment)
             raw_input("PLease press enter to continue.....")
             
     def ExecuteQuerySQLStatment(self,SQLStatment,DatabaseIndex=0):
-        try:           
+        
+        try:
+            self.AutoRestartDBConnections()           
             resultsList=self.CurrentConnections[DatabaseIndex].query(SQLStatment).getresult()            
             return resultsList
         except Exception as Exp:
-            print(">>>>>Error While Executing XML Query Statement")
-            print(type(Exp))
-            print(Exp.args)
-            print(Exp)            
-            print("Current SQL Statement =\n"+SQLStatment)
+            logging.info(">>>>>Error While Executing XML Query Statement")
+            logging.info(type(Exp))
+            logging.info(Exp.args)
+            logging.info(Exp)            
+            logging.info("Current SQL Statement =\n"+SQLStatment)
             raw_input("PLease press enter to continue.....")                            
         
         

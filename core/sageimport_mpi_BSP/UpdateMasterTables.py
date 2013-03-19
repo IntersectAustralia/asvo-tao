@@ -4,7 +4,7 @@ import sys # for listing directory contents
 import settingReader # Read the XML settings
 
 import DBConnection
-
+import logging
 
 class MasterTablesUpdate:    
         
@@ -38,7 +38,7 @@ class MasterTablesUpdate:
         
         for i in range(0,len(RedShifList)):
                CurrentSnapNum=i
-               print(str(CurrentSnapNum)+":"+str(RedShifList[i]))
+               logging.info(str(CurrentSnapNum)+":"+str(RedShifList[i]))
                InsertSt="INSERT INTO Snap_redshift Values ("+str(CurrentSnapNum)+","+str(RedShifList[i])+");"
                self.DBConnection.ExecuteNoQuerySQLStatment(InsertSt)
     
