@@ -65,11 +65,11 @@ class LiveServerTest(django.test.LiveServerTestCase):
     def rf_id(self, bare_field):
         return '#id_record_filter-%s' % bare_field
 
-    def sed_id(self, bare_field):
+    def sed(self, bare_field):
         return 'id_sed-%s' % bare_field
 
-    def sed_css(self, bare_field):
-        return '#%s' % self.sed_id(bare_field)
+    def sed_id(self, bare_field):
+        return '#%s' % self.sed(bare_field)
 
     def sed_2select(self, bare_field):
         return 'id_sed-band_pass_filters_%s' % bare_field
@@ -266,6 +266,10 @@ class LiveServerTest(django.test.LiveServerTestCase):
         
     def select_galaxy_model(self, galaxy_model):
         self.select(self.lc_id('galaxy_model'), galaxy_model.name)
+        wait(0.5)
+
+    def select_stellar_model(self, stellar_model):
+        self.select(self.sed_id('single_stellar_population_model'), stellar_model.label)
         wait(0.5)
 
     def select_record_filter(self, filter):

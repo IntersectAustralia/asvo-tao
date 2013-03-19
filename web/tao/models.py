@@ -153,7 +153,8 @@ class Snapshot(models.Model):
 class StellarModel(models.Model):
     name = models.CharField(max_length=200, unique=True)
     label = models.CharField(max_length=200, unique=True)
-    
+    description = models.TextField(default='')
+
     def __unicode__(self):
         return self.name
     
