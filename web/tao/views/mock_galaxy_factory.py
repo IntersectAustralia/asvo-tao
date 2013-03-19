@@ -16,14 +16,14 @@ from tao.ui_modules import UIModulesHolder
 @researcher_required
 def index(request):
     if request.method == 'POST':
-        ui_holder = UIModulesHolder(request.POST)
+        ui_holder = UIModulesHolder(UIModulesHolder.POST, request.POST)
         if ui_holder.validate():
             user = models.User.objects.get(username=request.user)
             workflow.save(user, ui_holder)
             messages.info(request, _("Your job was held successfully."))
             return redirect(reverse('job_index'))
     else:
-        ui_holder = UIModulesHolder()
+        ui_holder = UIModulesHolder(UIModulesHolder.POST)
 
     return render(request, 'mock_galaxy_factory/index.html', {
         'forms': ui_holder.forms(),
