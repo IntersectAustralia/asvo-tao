@@ -68,6 +68,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'dec_opening_angle': 41.811,
             'output_properties' : [self.filter.id, self.output_prop.id],
             'light_cone_type': 'unique',
+            'number_of_light_cones': '1',
             }
         xml_parameters = form_parameters.copy()
         xml_parameters.update({
@@ -127,7 +128,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
 
                         <!-- The number of light-cones to generate  -->
                         <box-repetition>unique</box-repetition>
-                        <num-cones>1</num-cones>
+                        <num-cones>%(number_of_light_cones)s</num-cones>
 
                         <!-- The min and max redshifts to filter by -->
                         <redshift-min>%(redshift_min).1f</redshift-min>

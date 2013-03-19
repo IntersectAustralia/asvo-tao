@@ -676,6 +676,7 @@ jQuery(document).ready(function($) {
         init_wizard();
         var init_light_cone_type_value = $('input[name="light_cone-light_cone_type"][checked="checked"]').attr('value');
         fill_in_summary('light_cone', 'light_cone_type', init_light_cone_type_value);
+        $(lc_id('number_of_light_cones')).attr('class', 'light_cone_field'); // needed to associate the spinner with light-cone only, not when selecting box
         update_filter_options.initializing = true;
         $(lc_id('dark_matter_simulation')).change();
         $(lc_id('catalogue_geometry')).change();
