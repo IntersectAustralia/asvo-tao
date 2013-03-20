@@ -1,0 +1,94 @@
+\title{SED Equations}
+\author{
+  Luke Hodkinson \\
+  Center for Astrophysics and Supercomputing \\
+  Swinburne University of Technology \\
+  Melbourne, Hawthorn 32000, \underline{Australia}
+}
+\date{\today}
+
+\documentclass[12pt]{scrartcl}
+\usepackage{color}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{listings}
+%% \usepackage[scaled]{beramono}
+%% \renewcommand*\familydefault{\ttdefault}
+%% \usepackage[Tl]{fontenc}
+
+\newcommand{\deriv}[2]{\ensuremath{\frac{\mathrm{d}#1}{\mathrm{d}#2}}}
+\newcommand{\sderiv}[2]{\ensuremath{\frac{\mathrm{d}^2#1}{\mathrm{d}#2^2}}}
+\newcommand{\dx}[1]{\ensuremath{\,\mathrm{d}#1}}
+
+%% \lstset{
+%%   language=Python,
+%%   showstringspaces=false,
+%%   formfeed=\newpage,
+%%   tabsize=4,
+%%   basicstyle=\small\ttfamily,
+%%   commentstyle=\color{BrickRed}\itshape,
+%%   keywordstyle=\color{blue},
+%%   stringstyle=\color{OliveGreen},
+%%   morekeywords={models, lambda, forms, dict, list, str, import, dir, help,
+%%    zip, with, open}
+%% }
+
+\begin{document}
+\maketitle
+
+\section{Apparent Magnitude}
+
+\[ I = \int_\nu f_\nu s_\nu \dx{\nu} \]
+$I$ is the intensity of the object, $f_\nu$ is the spectral energy density of
+the object in $erg\cdot s^{-1}\cdot Hz^{-1}$ and $s_\nu$ is the unitless band-pass filter.
+
+\[ f_a = \frac{I}{4\pi r^2} \]
+$f_a$ is the flux density, $r$ is the distance to the object in $cm$.
+
+\[ f_b = \int_\nu s_\nu \dx{\nu} \]
+$f_b$ is the reference value used in the AB magnitude system.
+
+\[ m_{ab} = -2.5\log_{10}\left(\frac{f_a}{f_b}\right) - 48.60 \]
+$m_{ab}$ is the apparent magnitude.
+
+\section{Finding An Expression for $f_\nu$}
+
+Recall the equation for intensity:
+\[ I = \int_\nu f_\nu s_\nu \dx{\nu} \]
+Notice that this equation requires a definition for $f_\nu$, the spectral
+energy density defined on the frequency domain. To be more specific, we
+need an expression for
+\[ f_\nu = f_\nu(\nu) \;. \]
+We have values for $f_\lambda$, but in general these two functions are
+not equal. However, the energy of each function must be equal,
+\[ \int_\nu f_\nu(\nu) \dx{\nu} = \int_\lambda f_\lambda(\lambda) \dx{\lambda} \;, \]
+and we can use this equation to deduce an appropriate function for
+$f_\nu$. We begin by using the equations
+\begin{eqnarray*}
+\lambda & = & \frac{c}{\nu} \\
+\mathrm{d}{\lambda} & = & -\frac{c}{\nu^2}\dx{\nu}
+\end{eqnarray*}
+to perform a change of variable of the $\lambda$ form of the energy,
+\[ -\int_\nu f_\lambda\left(\frac{c}{\nu}\right) \frac{c}{\nu^2} \dx{\nu} \; . \]
+We know this form must be equatable to the $\nu$ energy equation
+above, meaning we can elicit that
+\[ f_\nu(\nu) = -f_\lambda\left(\frac{c}{\nu}\right) \frac{c}{\nu^2} \]
+In the code we would prefer to integrate over $\lambda$ instead of $\nu$.
+We can substitute the definition of $\lambda$ into the above equation,
+\begin{eqnarray*}
+f_\nu(\nu) & = & -f_\lambda(\lambda) \frac{c}{\left(\frac{c}{\lambda}\right)^2} \\
+          & = & -f_\lambda(\lambda) \frac{\lambda^2}{c} \\
+          & = & f_\nu(\lambda) \; .
+\end{eqnarray*}
+Using this we can substitute for an expression of
+the intensity,
+\[ I = -\int_\lambda f_\lambda(\lambda)s(\lambda)\frac{\lambda^2}{c}\dx{\lambda} \; . \]
+
+It's woth noting that the negative appearing at the front of the above equation
+is there as a result of the change of variable from $\nu$ to $\lambda$, which
+changes the direction of integration. If we are sure to integrate from lower to
+higher values of $\lambda$ we can remove it,
+\[ I = \int_\lambda f_\lambda(\lambda)s(\lambda)\frac{\lambda^2}{c}\dx{\lambda} \; . \]
+
+\end{document}
