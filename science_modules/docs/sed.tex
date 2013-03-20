@@ -53,7 +53,7 @@ $f_b$ is the reference value used in the AB magnitude system.
 \[ m_{ab} = -2.5\log_{10}\left(\frac{f_a}{f_b}\right) - 48.60 \]
 $m_{ab}$ is the apparent magnitude.
 
-\section{Finding An Expression for $f_\nu$}
+\section{Expressions for $f_\nu$ and $s_\nu$}
 
 Recall the equation for intensity:
 \[ I = \int_\nu f_\nu s_\nu \dx{\nu} \]
@@ -63,46 +63,43 @@ defined on the frequency domain. We have values for $f_\lambda$ and $s_\lambda$,
 but in general we are unable to directly equate the $\lambda$ versions with
 the $\nu$ ones. However, we know that the energy of these values
 must be equal for any arbitrary subdomain,
-\begin{eqnarray*}
-\nu \dx{\nu} & = & \lambda \dx{\lambda} \\
-\int_\nu f_\nu \dx{\nu} & = & \int_\lambda f_\lambda \dx{\lambda} \; .
-\end{eqnarray*}
-and we can use this equation to deduce an appropriate function for
-$f_\nu$ and $s_\nu$.
-
-We begin by using the equations
+\[ f_\nu \dx{\nu} = f_\lambda \dx{\lambda} \; , \]
+which can be rearranged to produce
+\[ f_\nu = f_\lambda \frac{\dx{\lambda}}{\dx{\nu}} \; . \]
+Now, we only need an expression for $\frac{\dx{\lambda}}{\dx{\nu}}$
+to complete the transformation. We can use
 \begin{eqnarray*}
 \lambda & = & \frac{c}{\nu} \\
-\mathrm{d}{\lambda} & = & -\frac{c}{\nu^2}\dx{\nu}
+\therefore \;\;\;\; \frac{\dx{\lambda}}{\dx{\nu}} & = & -\frac{c}{\nu^2} \; ,
 \end{eqnarray*}
-to perform a change of variable of the $\lambda$ form of the energy,
-\[ \int_\nu f_\nu \dx{\nu} = -\int_\nu f_\lambda \frac{c}{\nu^2} \dx{\nu} \; . \]
-Firstly, we can remove the negative on the RHS; this is a result
-of swapping the direction of integration. We will define the integration
-directions to be the same, giving
-\[ \int_\nu f_\nu \dx{\nu} = \int_\nu f_\lambda \frac{c}{\nu^2} \dx{\nu} \; . \]
-Because these integrals can be performed over any arbitrary subdomain of the
-frequency space the integrands must be equal, thusly
-\begin{eqnarray*}
-\int_\nu f_\nu \dx{\nu} & = & \int_\nu f_\lambda \frac{c}{\nu^2} \dx{\nu} \\
-\int_\nu f_\nu \dx{\nu} - \int_\nu f_\lambda \frac{c}{\nu^2} \dx{\nu} & = & 0 \\
-\int_\nu f_\nu - f_\lambda \frac{c}{\nu^2} \dx{\nu} & = & 0 \\
-\therefore \;\;\; f_\nu & = & f_\lambda \frac{c}{\nu^2} \; .
-\end{eqnarray*}
+and substituting into the previous equation yields
+\[ f_\nu = -f_\lambda \frac{c}{\nu^2} \; . \]
 We can also substitute the relationship between $\lambda$ and $\nu$ into
 the right hand side if convenient for the software,
-\[ f_\nu = f_\lambda \frac{\lambda^2}{c} \; . \]
+\[ f_\nu = -f_\lambda \frac{\lambda^2}{c} \; . \]
 
 In addition to converting the spectra function from the wavelength domain
 to the frequency domain, we must perform the same procedure for the
 transmission function, which we initially have in the wavelength domain
 only. Beginning with
-\[ \int_\nu s_\nu \dx{\nu} = \int_\lambda s_\lambda \dx{\lambda} \]
+\[ s_\nu \dx{\nu} = s_\lambda \dx{\lambda} \]
 and following the same method as above we end with
-\[ s_\nu = s_\lambda \frac{\lambda^2}{c} \; . \]
-
+\[ s_\nu = -s_\lambda \frac{\lambda^2}{c} \; . \]
 Substituting both of these equations into the equation for intensity
 we get
 \[ I = \int_\nu f_\lambda s_\lambda\frac{\lambda^4}{c^2}\dx{\nu} \; . \]
+
+We could end here, but we can save a little computation by now transforming
+this final equation into the wavelength domain,
+\begin{eqnarray*}
+I & = & \int_\nu f_\lambda s_\lambda\frac{\lambda^4}{c^2}\dx{\nu} \\
+& = & -\int_\lambda f_\lambda s_\lambda\frac{\lambda^4}{c^2} \frac{c}{\lambda^2} \dx{\lambda} \\
+& = & -\int_\lambda f_\lambda s_\lambda\frac{\lambda^2}{c} \dx{\lambda} \; .
+\end{eqnarray*}
+Note that the negative sign out the front of the RHS is only there
+as when we swap to the $\lambda$ domain we have implicitly reversed the
+integration direction. If we are careful to integrate from low to high
+terminals we can eliminate it,
+\[ I = \int_\lambda f_\lambda s_\lambda\frac{\lambda^2}{c} \dx{\lambda} \; . \]
 
 \end{document}
