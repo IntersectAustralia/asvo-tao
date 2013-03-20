@@ -153,7 +153,8 @@ class Snapshot(models.Model):
 class StellarModel(models.Model):
     name = models.CharField(max_length=200, unique=True)
     label = models.CharField(max_length=200, unique=True)
-    
+    description = models.TextField(default='')
+
     def __unicode__(self):
         return self.name
     
@@ -255,3 +256,8 @@ class DustModel(models.Model):
 
     def __unicode__(self):
         return self.label
+
+class GlobalParameter(models.Model):
+    parameter_name = models.CharField(max_length=60, unique=True)
+    parameter_value = models.CharField(max_length=60)
+    description = models.TextField(default='')

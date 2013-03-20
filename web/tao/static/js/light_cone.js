@@ -275,6 +275,22 @@ jQuery(document).ready(function($) {
         });
     };
 
+    var show_stellar_model_info = function(stellar_id) {
+        $.ajax({
+            url : TAO_JSON_CTX + 'stellar_model/' + stellar_id,
+            dataType: "json",
+            error: function(){
+                $('div.stellar-model-info').hide();
+                alert("Couldn't get data for requested dust model");
+            },
+            success: function(data, status, xhr) {
+                $('div.stellar-model-info .name').html(data.fields.name);
+                $('div.stellar-model-info .details').html(data.fields.description);
+                $('div.stellar-model-info').show();
+            }
+        });
+    };
+
     var show_dust_model_info = function(dust_id) {
         $.ajax({
             url : TAO_JSON_CTX + 'dust_model/' + dust_id,
@@ -298,11 +314,11 @@ jQuery(document).ready(function($) {
         $('div.output-property-info').show();
     }
 
-    var clear_dust_model_info = function() {
-        $('div.dust-model-info .name').html('');
-        $('div.dust-model-info .details').html('');
-        $('div.dust-model-info').show();
-        clear_in_summary('sed', 'dust_model');
+    var clear_model_info = function(form_name, model_name) {
+        $('div.' + model_name + '-model-info .name').html('');
+        $('div.' + model_name + '-model-info .details').html('');
+        $('div.' + model_name + '-model-info').show();
+        clear_in_summary(form_name, model_name + '_model');
     }
 
     //
@@ -501,6 +517,32 @@ jQuery(document).ready(function($) {
         fill_in_summary('light_cone', 'light_cone_type', $this.attr('value'));
     });
 
+    $(lc_id('light_cone_type_1')).click(function(evt){
+        $.ajax({
+            url : TAO_JSON_CTX + 'global_parameter/' + 'maximum-random-light-cones',
+            dataType: "json",
+            error: function() {
+                alert("Couldn't get data for maximum-random-light-cones");
+            },
+            success: function(data, status, xhr) {
+                alert('max is ' + data.fields.parameter_value);
+                $(lc_id('number_of_light_cones')).data("spin-max",parseInt(data.fields.parameter_value));
+            }
+        });
+    });
+
+    $(lc_id('number_of_light_cones')).spinner({
+        spin: function(evt, ui) {
+            var maximum = $(lc_id('number_of_light_cones')).data('spin-max');
+            if ( ui.value > maximum || ui.value <= 0 ) {
+                alert("invalid!");
+                return false;
+            } else {
+                return true;
+            }
+        }
+    });
+
     $(lc_id('box_size')).change(function(evt){
         var $this = $(this);
         var box_size_value = $this.val();
@@ -516,6 +558,7 @@ jQuery(document).ready(function($) {
 
     $(sed_id('single_stellar_population_model')).change(function(evt){
         var $this = $(this);
+        show_stellar_model_info($this.val())
         var single_stellar_population_model_value = $this.find('option:selected').html();
         fill_in_summary('sed', 'single_stellar_population_model', single_stellar_population_model_value);
     });
@@ -527,7 +570,7 @@ jQuery(document).ready(function($) {
         }
         else {
             $(sed_id('select_dust_model')).attr('disabled', 'disabled');
-            clear_dust_model_info();
+            clear_model_info('sed', 'dust');
         }
     });
 
@@ -558,7 +601,8 @@ jQuery(document).ready(function($) {
             clear_in_summary('sed', 'band_pass_filters');
             $(sed_id('apply_dust')).attr('disabled', 'disabled');
             $(sed_id('select_dust_model')).attr('disabled', 'disabled');
-            clear_dust_model_info();
+            clear_model_info('sed', 'stellar');
+            clear_model_info('sed', 'dust');
             update_filter_options(false, true); // triggers filter.change
         }
     });
@@ -658,10 +702,10 @@ jQuery(document).ready(function($) {
         init_wizard();
         var init_light_cone_type_value = $('input[name="light_cone-light_cone_type"][checked="checked"]').attr('value');
         fill_in_summary('light_cone', 'light_cone_type', init_light_cone_type_value);
+        $(lc_id('number_of_light_cones')).attr('class', 'light_cone_field'); // needed to associate the spinner with light-cone only, not when selecting box
         update_filter_options.initializing = true;
         $(lc_id('dark_matter_simulation')).change();
         $(lc_id('catalogue_geometry')).change();
-        $('#id_sed-single_stellar_population_model').change();
         $('#id_output_format-supported_formats').change();
         $(sed_id('apply_sed')).change();
         $(sed_id('apply_dust')).change();

@@ -2,8 +2,8 @@ from django.utils.html import strip_tags
 
 from tao.tests.integration_tests.helper import LiveServerTest
 
-from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, JobFactory, DataSetPropertyFactory, DustModelFactory
-from tao.models import Simulation, DataSet, DataSetProperty
+from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, JobFactory, DataSetPropertyFactory, DustModelFactory, StellarModelFactory
+from tao.models import Simulation, StellarModel, DustModel
 from tao.settings import MODULE_INDICES
 
 class MockGalaxyFactoryTest(LiveServerTest):
@@ -27,7 +27,9 @@ class MockGalaxyFactoryTest(LiveServerTest):
             ds.default_filter_field = dsp
             ds.save()
 
-        DustModelFactory.create()
+        for unused in range(3):
+            StellarModelFactory.create()
+            DustModelFactory.create()
 
         username = "person"
         password = "funnyfish"
@@ -55,6 +57,10 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.assert_galaxy_model_info_shown(first_galaxy_model)
         self.assert_galaxy_model_options_correct_for_a_simulation(first_simulation)
         self.assert_simulation_info_shown(first_simulation)
+
+        self.click('tao-tabs-' + MODULE_INDICES['sed'])
+        self.assert_model_info_not_shown('stellar')
+        self.assert_model_info_not_shown('dust')
     
     def test_sidebar_text_on_simulation_change(self):      
         second_simulation = Simulation.objects.all()[1]
@@ -72,6 +78,35 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.select_galaxy_model(second_galaxy_model)
         
         self.assert_galaxy_model_info_shown(second_galaxy_model)
+
+    def test_sed_sidebar_text_on_apply_sed(self):
+        self.click('tao-tabs-' + MODULE_INDICES['sed'])
+        self.click(self.sed('apply_sed'))
+        initial_stellar_model = StellarModel.objects.all()[0]
+        self.assert_stellar_model_info_shown(initial_stellar_model)
+        self.assert_model_info_not_shown('dust')
+
+        self.click(self.sed('apply_sed'))
+        self.assert_model_info_not_shown('stellar')
+        self.assert_model_info_not_shown('dust')
+
+    def test_sed_sidebar_text_on_apply_dust(self):
+        self.click('tao-tabs-' + MODULE_INDICES['sed'])
+        self.click(self.sed('apply_sed'))
+        self.click(self.sed('apply_dust'))
+        initial_dust_model = DustModel.objects.all()[0]
+        self.assert_dust_model_info_shown(initial_dust_model)
+
+        self.click(self.sed('apply_dust'))
+        self.assert_model_info_not_shown('dust')
+
+    def test_sidebar_text_on_stellar_model_change(self):
+        self.click('tao-tabs-' + MODULE_INDICES['sed'])
+        self.click(self.sed('apply_sed'))
+        third_stellar_model = StellarModel.objects.all()[2]
+
+        self.select_stellar_model(third_stellar_model)
+        self.assert_stellar_model_info_shown(third_stellar_model)
 
     def test_summary_on_initial_load(self):
         self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
@@ -168,43 +203,43 @@ class MockGalaxyFactoryTest(LiveServerTest):
 
     def test_sed_elements_disabled_on_initial_load(self):
         self.click('tao-tabs-' + MODULE_INDICES['sed'])
-        self.assert_is_unchecked(self.sed_css('apply_sed'))
-        self.assert_is_disabled(self.sed_css('single_stellar_population_model'))
-        self.assert_is_disabled(self.sed_css('band_pass_filters_filter'))
-        self.assert_is_disabled(self.sed_css('band_pass_filters_from'))
-        self.assert_is_disabled(self.sed_css('band_pass_filters'))
+        self.assert_is_unchecked(self.sed_id('apply_sed'))
+        self.assert_is_disabled(self.sed_id('single_stellar_population_model'))
+        self.assert_is_disabled(self.sed_id('band_pass_filters_filter'))
+        self.assert_is_disabled(self.sed_id('band_pass_filters_from'))
+        self.assert_is_disabled(self.sed_id('band_pass_filters'))
 
     def test_sed_module_enabled_on_check_apply(self):
         self.click('tao-tabs-' + MODULE_INDICES['sed'])
-        self.click(self.sed_id('apply_sed'))
-        self.assert_is_checked(self.sed_css('apply_sed'))
-        self.assert_is_enabled(self.sed_css('single_stellar_population_model'))
-        self.assert_is_enabled(self.sed_css('band_pass_filters_filter'))
-        self.assert_is_enabled(self.sed_css('band_pass_filters_from'))
-        self.assert_is_enabled(self.sed_css('band_pass_filters'))
+        self.click(self.sed('apply_sed'))
+        self.assert_is_checked(self.sed_id('apply_sed'))
+        self.assert_is_enabled(self.sed_id('single_stellar_population_model'))
+        self.assert_is_enabled(self.sed_id('band_pass_filters_filter'))
+        self.assert_is_enabled(self.sed_id('band_pass_filters_from'))
+        self.assert_is_enabled(self.sed_id('band_pass_filters'))
 
-        self.click(self.sed_id('apply_sed'))
-        self.assert_is_unchecked(self.sed_css('apply_sed'))
-        self.assert_is_disabled(self.sed_css('single_stellar_population_model'))
-        self.assert_is_disabled(self.sed_css('band_pass_filters_filter'))
-        self.assert_is_disabled(self.sed_css('band_pass_filters_from'))
-        self.assert_is_disabled(self.sed_css('band_pass_filters'))
+        self.click(self.sed('apply_sed'))
+        self.assert_is_unchecked(self.sed_id('apply_sed'))
+        self.assert_is_disabled(self.sed_id('single_stellar_population_model'))
+        self.assert_is_disabled(self.sed_id('band_pass_filters_filter'))
+        self.assert_is_disabled(self.sed_id('band_pass_filters_from'))
+        self.assert_is_disabled(self.sed_id('band_pass_filters'))
 
     def test_dust_model_disabled_on_initial_load(self):
         self.click('tao-tabs-' + MODULE_INDICES['sed'])
-        self.assert_is_unchecked(self.sed_css('apply_dust'))
-        self.assert_is_disabled(self.sed_css('select_dust_model'))
+        self.assert_is_unchecked(self.sed_id('apply_dust'))
+        self.assert_is_disabled(self.sed_id('select_dust_model'))
 
     def test_dust_model_enabled_on_check_apply(self):
         self.click('tao-tabs-' + MODULE_INDICES['sed'])
-        self.click(self.sed_id('apply_sed'))
-        self.click(self.sed_id('apply_dust'))
-        self.assert_is_checked(self.sed_css('apply_dust'))
-        self.assert_is_enabled(self.sed_css('select_dust_model'))
+        self.click(self.sed('apply_sed'))
+        self.click(self.sed('apply_dust'))
+        self.assert_is_checked(self.sed_id('apply_dust'))
+        self.assert_is_enabled(self.sed_id('select_dust_model'))
 
-        self.click(self.sed_id('apply_dust'))
-        self.assert_is_unchecked(self.sed_css('apply_dust'))
-        self.assert_is_disabled(self.sed_css('select_dust_model'))
+        self.click(self.sed('apply_dust'))
+        self.assert_is_unchecked(self.sed_id('apply_dust'))
+        self.assert_is_disabled(self.sed_id('select_dust_model'))
 
     def assert_simulation_info_shown(self, simulation):
         """  check the name of the simulation in the sidebar is the same as simulation_name
@@ -229,3 +264,21 @@ class MockGalaxyFactoryTest(LiveServerTest):
         actual_galaxy_model_names = [x.text for x in self.selenium.find_elements_by_css_selector(selector)]
         
         self.assertEqual(expected_galaxy_model_names, actual_galaxy_model_names)
+
+    def assert_stellar_model_info_shown(self, stellar_model):
+        stellar_model_selector_value = {
+                            '.stellar-model-info .name': stellar_model.name,
+                            '.stellar-model-info .details': strip_tags(stellar_model.description),
+                            }
+        self.assert_selector_texts_equals_expected_values(stellar_model_selector_value)
+
+    def assert_dust_model_info_shown(self, dust_model):
+        dust_model_selector_value = {
+                            '.dust-model-info .name': dust_model.name,
+                            '.dust-model-info .details': strip_tags(dust_model.details),
+                            }
+        self.assert_selector_texts_equals_expected_values(dust_model_selector_value)
+
+    def assert_model_info_not_shown(self, model_name):
+        self.assertEqual([], self.find_visible_elements('.' + model_name + '-model-info .name'))
+        self.assertEqual([], self.find_visible_elements('.' + model_name + '-model-info .details'))

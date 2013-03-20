@@ -52,7 +52,7 @@ class FilterTests(LiveServerMGFTest):
         # check drop-down list correspond to properties of the currently selected simulation and galaxy model
         self.click(self.lc_2select('op_add_all'))
         self.click('tao-tabs-' + MODULE_INDICES['sed'])
-        self.click(self.sed_id('apply_sed'))
+        self.click(self.sed('apply_sed'))
         self.click(self.sed_2select('op_add_all'))
         expected_filter_options = self.get_expected_filter_options(self.initial_dataset.id)
         actual_filter_options = self.get_actual_filter_options()
@@ -64,7 +64,7 @@ class FilterTests(LiveServerMGFTest):
         # plus selected band-pass filter
         self.click(self.lc_2select('op_add_all'))
         self.click('tao-tabs-' + MODULE_INDICES['sed'])
-        self.click(self.sed_id('apply_sed'))
+        self.click(self.sed('apply_sed'))
         self.click(self.sed_2select('op_add_all'))
         expected_filter_options = self.get_expected_filter_options(self.initial_dataset.id)
         actual_filter_options = self.get_actual_filter_options()
@@ -76,7 +76,7 @@ class FilterTests(LiveServerMGFTest):
         # plus selected band-pass filter
         self.click(self.lc_2select('op_add_all'))
         self.click('tao-tabs-' + MODULE_INDICES['sed'])
-        self.click(self.sed_id('apply_sed'))
+        self.click(self.sed('apply_sed'))
         self.click(self.sed_2select('op_add_all'))
         self.click('tao-tabs-' + MODULE_INDICES['record_filter'])
         self.select_record_filter(self.bp_filters[1])
@@ -92,7 +92,7 @@ class FilterTests(LiveServerMGFTest):
         self.click(self.lc_2select('op_add_all'))
         self.fill_in_fields({'ra_opening_angle':'123', 'dec_opening_angle': '123', 'redshift_min':'1', 'redshift_max':'20'}, id_wrap=self.lc_id)
         self.click('tao-tabs-' + MODULE_INDICES['sed'])
-        self.click(self.sed_id('apply_sed'))
+        self.click(self.sed('apply_sed'))
         self.click(self.sed_2select('op_add_all'))
         self.click('tao-tabs-' + MODULE_INDICES['record_filter'])
         self.select_record_filter(self.bp_filters[1])
@@ -107,7 +107,7 @@ class FilterTests(LiveServerMGFTest):
         # plus selected band-pass filter
         self.click(self.lc_2select('op_add_all'))
         self.click('tao-tabs-' + MODULE_INDICES['sed'])
-        self.click(self.sed_id('apply_sed'))
+        self.click(self.sed('apply_sed'))
         self.click(self.sed_2select('op_add_all'))
         self.click('tao-tabs-' + MODULE_INDICES['record_filter'])
         self.select_record_filter(self.bp_filters[1])
@@ -130,7 +130,7 @@ class FilterTests(LiveServerMGFTest):
         self.select_galaxy_model(galaxy_model)
         self.click(self.lc_2select('op_add_all'))
         self.click('tao-tabs-' + MODULE_INDICES['sed'])
-        self.click(self.sed_id('apply_sed'))
+        self.click(self.sed('apply_sed'))
         self.click(self.sed_2select('op_add_all'))
 
         expected_filter_options = self.get_expected_filter_options(dataset.id)
@@ -149,7 +149,7 @@ class FilterTests(LiveServerMGFTest):
         self.select_galaxy_model(galaxy_model)
         self.click(self.lc_2select('op_add_all'))
         self.click('tao-tabs-' + MODULE_INDICES['sed'])
-        self.click(self.sed_id('apply_sed'))
+        self.click(self.sed('apply_sed'))
         self.click(self.sed_2select('op_add_all'))
 
         actual_filter_options = self.get_actual_filter_options()
