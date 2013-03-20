@@ -6,17 +6,19 @@
  * To change this template use File | Settings | File Templates.
  */
 
+/*
 $(function() {
-
     $("#id_light_cone-number_of_light_cones").spinner({
         spin: function( event, ui ) {
-            if ( ui.value > 10 ) {
-                $(this).spinner("value",10);
-                return false;
-            } else if ( ui.value < 0 ) {
+//            if ( ui.value > 2 ) {
+//                $(this).spinner("value",2);
+//                return false;
+//            } else
+            if ( ui.value < 0 ) {
                 $(this).spinner("value", 0);
                 return false;
             }
         }
     });
 });
+*/
