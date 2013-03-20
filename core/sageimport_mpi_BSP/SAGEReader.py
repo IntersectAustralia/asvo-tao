@@ -226,7 +226,7 @@ class SAGEDataReader:
         TreeFields=[]        
         for j in range(0,NumberofGalaxiesInTree):
             #read the fields of this tree
-            logging.info(str(j)+"/"+str(NumberofGalaxiesInTree))
+            #logging.info(str(j)+"/"+str(NumberofGalaxiesInTree))
             FieldData=self.ReadTreeField(CurrentFile,CurrentFileGalaxyID,TreeID)
             TreeFields.append(FieldData)
             CurrentFileGalaxyID=CurrentFileGalaxyID+1

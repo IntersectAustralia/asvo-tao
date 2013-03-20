@@ -76,9 +76,10 @@ class DBInterface(object):
         
                 
     def StartTransaction(self):
-        self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers("BEGIN;")
-    def CommintTransaction(self):
-        self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers("COMMIT;")
+        self.DBConnection.StartTransaction()
+    def CommitTransaction(self):
+        self.DBConnection.CommitTransaction()
+        
     def CreateNewTree(self,TableID,TreeData):
         
         self.LocalGalaxyID=0
@@ -98,8 +99,8 @@ class DBInterface(object):
         
         self.CurrentGalaxiesCounter=self.CurrentGalaxiesCounter+len(TreeData)
         
-
-        #logging.info("\n")
+        logging.info("Adding "+str(len(TreeData))+" Galaxies to Table"+str(TableID))
+        
     
     def PrepareInsertStatement(self,TableID,TreeData):
         InsertStatment=""
