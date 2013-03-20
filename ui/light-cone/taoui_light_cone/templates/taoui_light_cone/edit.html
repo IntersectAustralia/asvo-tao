@@ -1,0 +1,62 @@
+{% load staticfiles %}
+{% load bootstrap_tags %}
+{% load assets %}
+{% js_asset 'taoui_light_cone/light_cone.js' %}
+
+{% block extrajs %}
+    <link rel="stylesheet" href="{% static 'css/jquery-ui/themes/base/jquery-ui.css' %}" />
+    <script type="text/javascript" src="{% static 'js/jquery-1.8.0.min.js' %}"></script>
+    <!--<script src="/resources/demos/external/jquery.mousewheel.js"></script>-->
+    <script type="text/javascript" src="{% static 'js/jquery-ui-1.10.1.custom.js' %}"></script>
+
+    <script type="text/javascript" src="{% static 'js/CounterSpinner.js' %}"></script>
+{% endblock extrajs %}
+
+<legend></legend>
+<div class="row-fluid">
+    <div class="boxed span8">
+        {% for fieldset in form.fieldsets %}
+        <fieldset>
+            <legend>{{ fieldset.legend }}</legend>
+            {% for field in fieldset %}
+               {% include "bootstrap/field.html" %}
+            {% endfor %}
+        </fieldset>
+        {% endfor %}
+    </div>
+    <div class="aside span4">
+        <div class="boxed">
+            <div class="simulation-info">
+                <div> Selected simulation details </div>
+                <div style="overflow-y: scroll;height: 162px">
+                    <p>
+                        <strong class="name"><!-- --></strong>
+                    </p>
+                    <div class="details"><!-- --></div>
+                </div>
+            </div>
+        </div>
+        <div class="boxed">
+            <div class="galaxy-model-info">
+                <div> Selected galaxy model details </div>
+                <div style="overflow-y: scroll;height: 162px">
+                    <p>
+                        <strong class="name"><!-- --></strong>
+                    </p>
+                    <div class="details"><!-- --></div>
+                </div>
+            </div>
+        </div>
+        <div class="boxed">
+            <div class="output-property-info">
+                <div> Selected output property details </div>
+                <div style="overflow-y: scroll;height: 162px">
+                    <p>
+                        <strong class="name"><!-- --></strong>
+                    </p>
+                    <div class="details"><!-- --></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
