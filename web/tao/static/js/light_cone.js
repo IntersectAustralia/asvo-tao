@@ -517,6 +517,32 @@ jQuery(document).ready(function($) {
         fill_in_summary('light_cone', 'light_cone_type', $this.attr('value'));
     });
 
+    $(lc_id('light_cone_type_1')).click(function(evt){
+        $.ajax({
+            url : TAO_JSON_CTX + 'global_parameter/' + 'maximum-random-light-cones',
+            dataType: "json",
+            error: function() {
+                alert("Couldn't get data for maximum-random-light-cones");
+            },
+            success: function(data, status, xhr) {
+                alert('max is ' + data.fields.parameter_value);
+                $(lc_id('number_of_light_cones')).data("spin-max",parseInt(data.fields.parameter_value));
+            }
+        });
+    });
+
+    $(lc_id('number_of_light_cones')).spinner({
+        spin: function(evt, ui) {
+            var maximum = $(lc_id('number_of_light_cones')).data('spin-max');
+            if ( ui.value > maximum || ui.value <= 0 ) {
+                alert("invalid!");
+                return false;
+            } else {
+                return true;
+            }
+        }
+    });
+
     $(lc_id('box_size')).change(function(evt){
         var $this = $(this);
         var box_size_value = $this.val();
@@ -676,6 +702,7 @@ jQuery(document).ready(function($) {
         init_wizard();
         var init_light_cone_type_value = $('input[name="light_cone-light_cone_type"][checked="checked"]').attr('value');
         fill_in_summary('light_cone', 'light_cone_type', init_light_cone_type_value);
+        $(lc_id('number_of_light_cones')).attr('class', 'light_cone_field'); // needed to associate the spinner with light-cone only, not when selecting box
         update_filter_options.initializing = true;
         $(lc_id('dark_matter_simulation')).change();
         $(lc_id('catalogue_geometry')).change();
