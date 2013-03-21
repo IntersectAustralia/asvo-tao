@@ -12,10 +12,8 @@ checkout() {
   test -d build && rm -rf build && echo "Removed existing build dir"
   mkdir build
   cd build
-  git clone --depth 1 git@github.com:IntersectAustralia/asvo-tao.git
-  git clone --depth 1 -b light-cone git@github.com:IntersectAustralia/asvo-tao-ui-modules.git light-cone
-  git clone --depth 1 -b sed git@github.com:IntersectAustralia/asvo-tao-ui-modules.git sed
-  for d in asvo-tao light-cone sed; do test -d $d/.git && rm -rf $d/.git; done
+  git clone -b master --depth 1 git@github.com:IntersectAustralia/asvo-tao.git
+  rm -rf asvo-tao/.git
   cd $DEP_DIR
 }
 
