@@ -146,6 +146,7 @@ INSTALLED_APPS = (
     'tao',
     'captcha',
     'django_rules',
+    'django_extensions',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )

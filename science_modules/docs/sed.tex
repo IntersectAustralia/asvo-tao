@@ -1,0 +1,105 @@
+\title{SED Equations}
+\author{
+  Luke Hodkinson \\
+  Center for Astrophysics and Supercomputing \\
+  Swinburne University of Technology \\
+  Melbourne, Hawthorn 32000, \underline{Australia}
+}
+\date{\today}
+
+\documentclass[12pt]{scrartcl}
+\usepackage{color}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{listings}
+%% \usepackage[scaled]{beramono}
+%% \renewcommand*\familydefault{\ttdefault}
+%% \usepackage[Tl]{fontenc}
+
+\newcommand{\deriv}[2]{\ensuremath{\frac{\mathrm{d}#1}{\mathrm{d}#2}}}
+\newcommand{\sderiv}[2]{\ensuremath{\frac{\mathrm{d}^2#1}{\mathrm{d}#2^2}}}
+\newcommand{\dx}[1]{\ensuremath{\,\mathrm{d}#1}}
+
+%% \lstset{
+%%   language=Python,
+%%   showstringspaces=false,
+%%   formfeed=\newpage,
+%%   tabsize=4,
+%%   basicstyle=\small\ttfamily,
+%%   commentstyle=\color{BrickRed}\itshape,
+%%   keywordstyle=\color{blue},
+%%   stringstyle=\color{OliveGreen},
+%%   morekeywords={models, lambda, forms, dict, list, str, import, dir, help,
+%%    zip, with, open}
+%% }
+
+\begin{document}
+\maketitle
+
+\section{Apparent Magnitude}
+
+\[ I = \int_\nu f_\nu s_\nu \dx{\nu} \]
+$I$ is the intensity of the object, $f_\nu$ is the spectral energy density of
+the object in $erg\cdot s^{-1}\cdot Hz^{-1}$ and $s_\nu$ is the unitless band-pass filter.
+
+\[ f_a = \frac{I}{4\pi r^2} \]
+$f_a$ is the flux density, $r$ is the distance to the object in $cm$.
+
+\[ f_b = \int_\nu s_\nu \dx{\nu} \]
+$f_b$ is the reference value used in the AB magnitude system.
+
+\[ m_{ab} = -2.5\log_{10}\left(\frac{f_a}{f_b}\right) - 48.60 \]
+$m_{ab}$ is the apparent magnitude.
+
+\section{Expressions for $f_\nu$ and $s_\nu$}
+
+Recall the equation for intensity:
+\[ I = \int_\nu f_\nu s_\nu \dx{\nu} \]
+Notice that this equation requires a definition for $f_\nu$ and $s_\nu$,
+the spectral energy density and the transmission function, repsectively, each
+defined on the frequency domain. We have values for $f_\lambda$ and $s_\lambda$,
+but in general we are unable to directly equate the $\lambda$ versions with
+the $\nu$ ones. However, we know that the energy of these values
+must be equal for any arbitrary subdomain,
+\[ f_\nu \dx{\nu} = f_\lambda \dx{\lambda} \; , \]
+which can be rearranged to produce
+\[ f_\nu = f_\lambda \frac{\dx{\lambda}}{\dx{\nu}} \; . \]
+Now, we only need an expression for $\frac{\dx{\lambda}}{\dx{\nu}}$
+to complete the transformation. We can use
+\begin{eqnarray*}
+\lambda & = & \frac{c}{\nu} \\
+\therefore \;\;\;\; \frac{\dx{\lambda}}{\dx{\nu}} & = & -\frac{c}{\nu^2} \; ,
+\end{eqnarray*}
+and substituting into the previous equation yields
+\[ f_\nu = -f_\lambda \frac{c}{\nu^2} \; . \]
+We can also substitute the relationship between $\lambda$ and $\nu$ into
+the right hand side if convenient for the software,
+\[ f_\nu = -f_\lambda \frac{\lambda^2}{c} \; . \]
+
+In addition to converting the spectra function from the wavelength domain
+to the frequency domain, we must perform the same procedure for the
+transmission function, which we initially have in the wavelength domain
+only. Beginning with
+\[ s_\nu \dx{\nu} = s_\lambda \dx{\lambda} \]
+and following the same method as above we end with
+\[ s_\nu = -s_\lambda \frac{\lambda^2}{c} \; . \]
+Substituting both of these equations into the equation for intensity
+we get
+\[ I = \int_\nu f_\lambda s_\lambda\frac{\lambda^4}{c^2}\dx{\nu} \; . \]
+
+We could end here, but we can save a little computation by now transforming
+this final equation into the wavelength domain,
+\begin{eqnarray*}
+I & = & \int_\nu f_\lambda s_\lambda\frac{\lambda^4}{c^2}\dx{\nu} \\
+& = & -\int_\lambda f_\lambda s_\lambda\frac{\lambda^4}{c^2} \frac{c}{\lambda^2} \dx{\lambda} \\
+& = & -\int_\lambda f_\lambda s_\lambda\frac{\lambda^2}{c} \dx{\lambda} \; .
+\end{eqnarray*}
+Note that the negative sign out the front of the RHS is only there
+as when we swap to the $\lambda$ domain we have implicitly reversed the
+integration direction. If we are careful to integrate from low to high
+terminals we can eliminate it,
+\[ I = \int_\lambda f_\lambda s_\lambda\frac{\lambda^2}{c} \dx{\lambda} \; . \]
+
+\end{document}
