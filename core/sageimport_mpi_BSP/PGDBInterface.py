@@ -136,7 +136,9 @@ class DBInterface(object):
                 self.Log.write(InsertStatment+"\n\n")
                 self.Log.flush()
             HostIndex=self.DBConnection.MapTableIDToServerIndex(TableID)    
+            
             self.DBConnection.ExecuteNoQuerySQLStatment(InsertStatment,HostIndex)
+            
         except Exception as Exp:
             logging.info(">>>>>Error While Processing Tree")
             logging.info(type(Exp))
