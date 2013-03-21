@@ -46,7 +46,7 @@ SED of objects in a lightcone. In order to get started I will
 focus on AB magnitudes. The AB magnitude of an object is defined
 as
 \[ m_{ab} = -2.4\log_{10}F_{\nu} - 48.6 \; , \]
-where $F_\nu$ is the spectral flux density in $erg\cdot s^{-1}\cdot Hz^{-1}$.
+where $F_\nu$ is the spectral flux density in $erg\cdot s^{-1}\cdot cm^{-1} \cdot Hz^{-1}$.
 We will be defining $F_\nu$ as
 \[ F_\nu = \frac{I}{R} \; , \]
 where $I$ is the intensity of the object and $R$ is the normalisation
@@ -57,13 +57,13 @@ I & = & \int_\nu f_\nu r \dx{\nu} \\
 R & = & \int_\nu r \dx{\nu}
 \end{eqnarray*}
 where $f_\nu$ is the sepctral energy density of the object in
-$erg\cdot s^{-1}\cdot Hz^{-1}$ and $r$ is a unitless transmission
+$erg\cdot s^{-1}\cdot cm^{-2}\cdot Hz^{-1}$ and $r$ is a unitless transmission
 response filter.
 
 The spectral energy densitiy will be given
 to us not as a function of frequency, as we need, but instead as
 a function of wavelength and in units of
-$erg\cdot s^{-1}\cdot \angstrom^{-1}$. We refer to this quantity as
+$erg\cdot s^{-1}\cdot cm^{-2}\cdot \angstrom^{-1}$. We refer to this quantity as
 $f_\lambda$. In general $f_\lambda \ne f_\nu$, so we
 will need to find $f_\nu$ in terms of $f_\lambda$.
 We know that the energy of these values
@@ -93,7 +93,7 @@ irrespective of whether considered on the wavelength or the
 frequency domain. It is also very convenient, as we have no need
 to transform any quantites to frequency.
 
-While we could leave the expression for $R$, that is, in terms of
+While we could leave the expression for $R$ in terms of
 frequency, it's more convenient for the code to integrate it in
 terms of wavelength. To do this we can simply perform a variable
 substitution in the integral,
@@ -104,8 +104,7 @@ R & = & \int_\nu r \dx{\nu} \\
 & = & \int_\lambda r \frac{c}{\lambda^2} \dx{\lambda} \; .
 \end{eqnarray*}
 Note that we are able to eliminate the negation of the RHS because
-it appears only as a result of reversing the integration direction
-of integration.
+it appears only as a result of reversing the integration direction.
 
 Now we have all the necessary expressions to define $F_\nu$ in terms
 of wavelength,
