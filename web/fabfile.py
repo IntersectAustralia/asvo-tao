@@ -44,6 +44,7 @@ def initial_deploy():
     sudo("service postfix start")
     _create_mysql_user_and_database()
     run("git clone git@github.com:IntersectAustralia/asvo-tao.git")
+    run("git checkout work")
     run("chmod o+rx /home/{user}".format(user=env.user))
     with cd("asvo-tao/web"):
         run("/usr/bin/env python2.6 bootstrap.py")
@@ -65,7 +66,8 @@ def initial_deploy():
 
 def update():
     with cd("asvo-tao/web"):
-        run("git pull")
+        run("git checkout work")
+        run("git pull origin work")
         run("bin/buildout -c buildout_{target_env}.cfg".format(target_env=env.target_env))
         sudo("bin/easy_install -U setuptools")
         sudo("bin/easy_install -U sphinx")
