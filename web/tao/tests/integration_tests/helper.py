@@ -152,6 +152,10 @@ class LiveServerTest(django.test.LiveServerTestCase):
         fields = self.selenium.find_elements_by_name(name)
         self.assertTrue([field.is_displayed() for field in fields])
 
+    def assert_are_displayed_by_class_name(self, name):
+        fields = self.selenium.find_elements_by_class_name(name)
+        self.assertTrue([field.is_displayed() for field in fields])
+
     def assert_are_not_displayed(self, name):
         fields = self.selenium.find_elements_by_name(name)
         self.assertFalse(all([field.is_displayed() for field in fields]))
@@ -191,7 +195,12 @@ class LiveServerTest(django.test.LiveServerTestCase):
         elem = self.selenium.find_element_by_css_selector(element_css)
         elem.click()
         wait(0.5)
-            
+
+    def click_by_class_name(self, class_name):
+        elem = self.selenium.find_element_by_class_name(class_name)
+        elem.click()
+        wait(0.5)
+
     def login(self, username, password):
         self.visit('login')
 

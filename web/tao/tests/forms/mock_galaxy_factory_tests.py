@@ -47,6 +47,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
             'dec_opening_angle': '2',
             'redshift_min': '1',
             'redshift_max': '2',
+            'number_of_light_cones': '1',
             }
         self.default_form_values['sed'] = {
             'apply_sed': False,

@@ -69,6 +69,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'dec_opening_angle': 41.811,
             'output_properties' : [self.filter.id, self.output_prop.id],
             'light_cone_type': 'unique',
+            'number_of_light_cones': '1',
             }
         xml_parameters = form_parameters.copy()
         xml_parameters.update({
