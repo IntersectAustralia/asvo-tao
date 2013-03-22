@@ -26,7 +26,7 @@ class ProcessTables(object):
     
     
     def CloseConnections(self):        
-        self.DBConnection.close()       
+        self.DBConnection.CloseConnections()       
         logging.info('Connection to DB is Closed...') 
     
     
@@ -47,7 +47,7 @@ class ProcessTables(object):
         CreateTable=CreateTable+"MaxSnap INT4,"
         CreateTable=CreateTable+"GalaxyCount BIGINT)"
         
-        self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServersExecuteNoQuerySQLStatment_On_AllServers(CreateTable)
+        self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers(CreateTable)
     def CreateTreeSummaryTable(self):
         
         DropTable="DROP TABLE IF EXISTS TreeSummary;"
