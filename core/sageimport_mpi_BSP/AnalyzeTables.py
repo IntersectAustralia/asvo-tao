@@ -2,7 +2,7 @@ import pg
 import getpass
 import math
 import string
-import sys
+import sys,os
 import settingReader
 import numpy
 import DBConnection
@@ -51,7 +51,7 @@ class ProcessTables(object):
     def CreateTreeSummaryTable(self):
         
         DropTable="DROP TABLE IF EXISTS TreeSummary;"
-        self.DBConnection.ExecuteNoQuerySQLStatment(DropTable)
+        self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers(DropTable)
         
         CreateTable="CREATE TABLE TreeSummary ("        
         CreateTable=CreateTable+"GlobalTreeID BIGINT,"       
@@ -64,15 +64,16 @@ class ProcessTables(object):
         CreateTable=CreateTable+"GalaxyCount BIGINT,"
         CreateTable=CreateTable+"TABLENAME VARCHAR(200))"
         
-        self.DBConnection.ExecuteNoQuerySQLStatment(CreateTable)
+        self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers(CreateTable)
     
     
             
-    def GetTableSummary(self,TableName):
+    def GetTableSummary(self,TableName,ServerIndex):
         
         GetSummarySQL="select min(PosX),max(PosX),min(PosY),max(PosY),min(PosZ),max(PosZ),min(snapnum),max(snapnum),count(*) from @TABLEName;"
         GetSummarySQL= string.replace(GetSummarySQL,"@TABLEName",TableName)
-        SummaryListArr=self.DBConnection.ExecuteQuerySQLStatment(GetSummarySQL)
+        
+        SummaryListArr=self.DBConnection.ExecuteQuerySQLStatment(GetSummarySQL,ServerIndex)
         if len(SummaryListArr)==0:
             return
         SummaryList=SummaryListArr[0]
@@ -103,12 +104,39 @@ class ProcessTables(object):
         
         
         
-    def GetTreeSummary(self,TableName):
+    def GetTreeSummary(self,TableName,ServerIndex):
         logging.info("GetTreeSummary ..... Processing Table: "+TableName)
-        GetSummarySQL="INSERT INTO TreeSummary select GlobalTreeID,min(PosX),min(PosY),min(PosZ),max(PosX),max(PosY),max(PosZ),count(*),'"+TableName+"' from @TABLEName group by GlobalTreeID order by GlobalTreeID;"
-        GetSummarySQL= string.replace(GetSummarySQL,"@TABLEName",TableName)        
-        self.DBConnection.ExecuteNoQuerySQLStatment(GetSummarySQL)
+        #GetSummarySQL="INSERT INTO TreeSummary select GlobalTreeID,min(PosX),min(PosY),min(PosZ),max(PosX),max(PosY),max(PosZ),count(*),'"+TableName+"' from @TABLEName group by GlobalTreeID order by GlobalTreeID;"
+        GetSummarySQL="select GlobalTreeID,min(PosX),min(PosY),min(PosZ),max(PosX),max(PosY),max(PosZ),count(*),'"+TableName+"' from @TABLEName group by GlobalTreeID order by GlobalTreeID;"
+        GetSummarySQL= string.replace(GetSummarySQL,"@TABLEName",TableName)
         
+                
+        Resultsset=self.DBConnection.ExecuteQuerySQLStatment(GetSummarySQL,ServerIndex)
+        RecordsCount=0
+        InserSummarySQL="Insert into TreeSummary Values"
+        for Row in Resultsset:
+            
+            RecordsCount=RecordsCount+1
+            
+            
+            globaltreeid=Row[0]
+            minx=Row[1]
+            miny=Row[2]
+            minz=Row[3]
+            maxx=Row[4]
+            maxy=Row[5]
+            maxz=Row[6]
+            count=Row[7]
+            InserSummarySQL=InserSummarySQL+"("+str(globaltreeid)+","+str(minx)+","+str(miny)+","+str(minz)+","+str(maxx)+","+str(maxy)+","+str(maxz)+","+str(count)+",'"+TableName+"'),"
+            
+            if RecordsCount%100==0:                
+                InserSummarySQL=InserSummarySQL[:-1]+";"            
+                self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers(InserSummarySQL)
+                InserSummarySQL="Insert into TreeSummary Values"
+        if RecordsCount%100>0: 
+            InserSummarySQL=InserSummarySQL[:-1]+";"            
+            self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers(InserSummarySQL)
+                
         logging.info("End Processing Table: "+TableName)
             
     
@@ -133,6 +161,8 @@ class ProcessTables(object):
         #plt.show()
         
     def ValidateImportProcess(self):
+        
+        
         DataFileSummarySt="select sum(totalnumberofgalaxies),max(treeidto) from datafiles;"
         DataFilesSummary=self.DBConnection.ExecuteQuerySQLStatment(DataFileSummarySt)[0]
         ETotalNumberofExpectedGalaxies=DataFilesSummary[0]
@@ -158,30 +188,36 @@ class ProcessTables(object):
         
         
         
-    def GetTablesList(self):
+    def GetTablesList(self,ServerID):
         
         GetTablesListSt="select table_name from information_schema.tables where table_schema='public' order by table_name;"
-        TablesList=self.DBConnection.ExecuteQuerySQLStatment(GetTablesListSt)
+        TablesList=self.DBConnection.ExecuteQuerySQLStatment(GetTablesListSt,ServerID)
         Count=0
         for Table in TablesList:
             TableName=Table[0]
             
             if string.find(TableName,self.Options['PGDB:TreeTablePrefix'])==0:
-                logging.info("Processing Table: "+TableName+ "\t "+str(Count)+"/"+str(len(TablesList)))
-                self.GetTableSummary(TableName)
-                self.GetTreeSummary(TableName)
+                logging.info(str(ServerID)+":Processing Table: "+TableName+ "\t "+str(Count)+"/"+str(len(TablesList)))
+                self.GetTableSummary(TableName,ServerID)
+                self.GetTreeSummary(TableName,ServerID)
             Count=Count+1
                 
                  
 #if __name__ == '__main__':
 #    print('Starting DB processing')
+#    FilePath='log/logfile_AnalyzeTable.log'
+#    if os.path.exists(FilePath):
+#        os.remove(FilePath)
+#    logging.basicConfig(filename=FilePath,level=logging.DEBUG,format='%(asctime)s %(message)s')
+    
 #    [CurrentSAGEStruct,Options]=settingReader.ParseParams("settings.xml") 
 #    ProcessTablesObj=ProcessTables(Options)
-#    ProcessTablesObj.GetTablesList()
-    
+#    for i in range(0,ProcessTablesObj.DBConnection.serverscount):
+#        ProcessTablesObj.GetTablesList(i)
+   
 #    ProcessTablesObj.SummarizeLocationInfo()  
 #    ProcessTablesObj.ValidateImportProcess()            
-        
+#    ProcessTablesObj.CloseConnections()      
         
         
         
