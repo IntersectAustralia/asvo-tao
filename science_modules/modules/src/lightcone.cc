@@ -403,7 +403,19 @@ namespace tao {
 	 _sql << query, soci::into( (std::vector<std::string>&)table_names );
       }
 
-      LOGDLN( "Table names: ", table_names );
+      // If we are running in parallel we will need to only process the tables that
+      // fall into my range.
+      {
+         LOGDLN( "Full table names: ", table_names );
+         unsigned first_table = (mpi::comm::world.rank()*table_names.size())/mpi::comm::world.size();
+         unsigned last_table = ((mpi::comm::world.rank() + 1)*table_names.size())/mpi::comm::world.size();
+         vector<string> tmp_tbl_names( last_table - first_table );
+         for( unsigned ii = first_table; ii < last_table; ++ii )
+            tmp_tbl_names[ii - first_table] = table_names[ii];
+         table_names.swap( tmp_tbl_names );
+      }
+
+      LOGDLN( "My table names: ", table_names );
       LOG_EXIT();
    }
 
