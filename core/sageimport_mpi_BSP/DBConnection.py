@@ -10,6 +10,7 @@ class DBConnection(object):
     
     def __init__(self,Options,ConnectToDefaultDB=False):
         self.ConnectionOpened=False
+        self.InTransactions=False
         self.QueriesCount=0
         self.Options=Options       
         
@@ -49,7 +50,8 @@ class DBConnection(object):
         if self.DBName!="postgres":
             self.QueriesCount=self.QueriesCount+1
     def RestartConnection(self):
-        if self.DBName!="postgres" and self.ConnectionOpened==True:
+        if self.DBName!="postgres" and self.ConnectionOpened==True and self.InTransactions==False:
+            logging.info("Restarting DB Connections")
             self.CloseConnections()
             self.InitDBConnection(False)
         
@@ -58,21 +60,44 @@ class DBConnection(object):
             for i in range(0,self.serverscount):
                 self.CurrentConnections[i].close()              
             self.ConnectionOpened=False   
-            
     
+    def StartTransaction(self):
+        
+        self.ExecuteNoQuerySQLStatment_On_AllServers("BEGIN;")
+        self.InTransactions=True
+        logging.info("Start Transaction")
+        
+    def CommitTransaction(self):
+        
+        self.ExecuteNoQuerySQLStatment_On_AllServers("COMMIT;")        
+        self.InTransactions=False
+        logging.info("End Transaction")
+    
+    def GetServerID(self,TableName):
+        SelectStm='select nodename from table_db_mapping where isactive=True and tablename=\''+TableName+'\';'
+        Results=self.ExecuteQuerySQLStatment(SelectStm);
+        if len(Results)>0:
+            ServerIP=Results[0]
+            for i in range(0,self.serverscount):
+                if self.DBservers['serverip']==ServerIP:
+                    return i
+            return -1
+        else:
+            return -1    
     def ExecuteNoQuerySQLStatment_On_AllServers(self,SQLStatment):
         for i in range(0,self.serverscount):
             self.ExecuteNoQuerySQLStatment(SQLStatment, i)
     
     def MapTableIDToServerIndex(self,TableID):
         return TableID%self.serverscount
+    
     def ExecuteNoQuerySQLStatment(self,SQLStatment,DatabaseIndex=0):
         try:            
             self.AutoRestartDBConnections()
             SQLStatment=string.lower(SQLStatment)  
             self.CurrentConnections[DatabaseIndex].query(SQLStatment)              
         except Exception as Exp:
-            logging.info(">>>>>Error While Executing XML NoQuery Statement")
+            logging.info(">>>>>Error While Executing NoQuery Statement On Server ("+str(DatabaseIndex)+")")
             logging.info(type(Exp))
             logging.info(Exp.args)
             logging.info(Exp)            
@@ -86,7 +111,7 @@ class DBConnection(object):
             resultsList=self.CurrentConnections[DatabaseIndex].query(SQLStatment).getresult()            
             return resultsList
         except Exception as Exp:
-            logging.info(">>>>>Error While Executing XML Query Statement")
+            logging.info(">>>>>Error While Executing Query Statement On Server ("+str(DatabaseIndex)+")")
             logging.info(type(Exp))
             logging.info(Exp.args)
             logging.info(Exp)            
