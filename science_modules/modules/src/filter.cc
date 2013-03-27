@@ -27,23 +27,13 @@ namespace tao {
    {
    }
 
-   ///
-   ///
-   ///
-   void
-   filter::setup_options( options::dictionary& dict,
-                          optional<const string&> prefix )
-   {
-      dict.add_option( new options::string( "wavelengths", "wavelengths.dat" ), prefix );
-      dict.add_option( new options::list<options::string>( "bandpass-filters" ), prefix );
-      dict.add_option( new options::string( "vega-spectrum", "A0V_KUR_BB.SED" ), prefix );
-   }
+
 
    ///
    /// Initialise the module.
    ///
    void
-   filter::initialise( const options::dictionary& dict,
+   filter::initialise( const options::xml_dict& dict,
                        optional<const string&> prefix )
    {
       LOG_ENTER();
@@ -282,17 +272,17 @@ namespace tao {
    }
 
    void
-   filter::_read_options( const options::dictionary& dict,
+   filter::_read_options( const options::xml_dict& dict,
                           optional<const string&> prefix )
    {
       LOG_ENTER();
 
       // Get the sub dictionary, if it exists.
-      const options::dictionary& sub = prefix ? dict.sub( *prefix ) : dict;
+      //const options::dictionary& sub = prefix ? dict.sub( *prefix ) : dict;
 
       {
          // Get the wavelengths filename.
-         string filename = sub.get<string>( "wavelengths" );
+         string filename = dict.get<string>( prefix.get()+":wavelengths" );
          LOGDLN( "Using wavelengths filename \"", filename, "\"" );
 
          // Load the wavelengths.
@@ -301,7 +291,7 @@ namespace tao {
 
       {
          // Split out the filter filenames.
-	 list<string> filenames = sub.get_list<string>( "bandpass-filters" );
+	 list<string> filenames = dict.get_list<string>( prefix.get()+":bandpass-filters" );
 
          // Allocate room for the filters.
          _filters.reallocate( filenames.size() );
@@ -333,7 +323,7 @@ namespace tao {
       LOGDLN( "Filter integrals: ", _filt_int );
 
       // Get the Vega filename and perform processing.
-      _process_vega( sub.get<string>( "vega-spectrum" ) );
+      _process_vega( dict.get<string>( prefix.get()+":vega-spectrum" ) );
 
       LOG_EXIT();
    }

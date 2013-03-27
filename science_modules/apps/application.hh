@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <libhpc/libhpc.hh>
+#include <libhpc/options/xml_dict.hh>
 
 namespace tao {
    using namespace hpc;
@@ -41,23 +42,15 @@ namespace tao {
       void
       _connect_parents();
 
-      ///
-      /// Insert common options.
-      ///
-      void
-      _setup_common_options( options::dictionary& dict );
 
-      ///
-      /// Massage incoming XML.
-      ///
-      void
-      _preprocess_xml() const;
+
+
 
       ///
       /// Read the XML file into a dictionary.
       ///
       void
-      _read_xml( options::dictionary& dict ) const;
+      _read_xml( options::xml_dict& xml ) const;
 
       ///
       /// Prepare log file.

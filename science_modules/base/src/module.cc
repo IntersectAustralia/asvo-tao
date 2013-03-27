@@ -78,15 +78,9 @@ namespace tao {
       LOG_EXIT();
    }
 
-   void
-   module::setup_options( options::dictionary& dict,
-                          const char* prefix )
-   {
-      setup_options( dict, string( prefix ) );
-   }
 
    void
-   module::initialise( const options::dictionary& dict,
+   module::initialise( const options::xml_dict& dict,
                        const char* prefix )
    {
       initialise( dict, string( prefix ) );
@@ -129,7 +123,7 @@ namespace tao {
    }
 
    void
-   module::_read_db_options( const options::dictionary& dict )
+   module::_read_db_options(const  options::xml_dict& dict )
    {
       LOG_ENTER();
 
