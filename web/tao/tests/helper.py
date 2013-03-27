@@ -1,5 +1,7 @@
 import os, errno
 
+from tao.xml_util import xml_parse
+
 def create_file(dir_path, filename, filenames_to_contents):    
     file_path = os.path.join(dir_path, filename)
     mkdir_p(os.path.dirname(file_path))
@@ -35,6 +37,11 @@ def make_form(defaults, form_class, values, prefix=None, ui_holder=None):
         default_values = {}
     default_values.update(values)
     return form_class(ui_holder, dict([(prefix + '-'+ k,v) for k,v in default_values.iteritems()]), prefix=prefix)
+
+def make_form_xml(form_class, xml_str, prefix=None, ui_holder=None):
+    xml_root = xml_parse(xml_str)
+    return form_class.from_xml(ui_holder, xml_root, prefix=prefix)
+
 
 class MockUIHolder:
     """
