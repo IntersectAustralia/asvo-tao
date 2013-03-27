@@ -518,7 +518,7 @@ jQuery(document).ready(function($) {
     });
 
 
-    // Max's algorithm for the maximum allowed number of unique light-cones
+    // Max's algorithm for calculating the maximum allowed number of unique light-cones
 //    /**
 //     * Convert redshift to distance
 //     * @param z redshift
@@ -551,17 +551,12 @@ jQuery(document).ready(function($) {
     }
 //    /**
 //     * Compute the maximum number of unique cones available for selected parameters
-//     * @param z_min redshift min
-//     * @param z_max redshift max
-//     * @param rasc right ascension
-//     * @param decl declination
-//     * @param simId simulation id
 //     */
      var get_number_of_unique_light_cones = function() {
-        var alfa1 = parseFloat($(lc_id('ra_opening_angle')).val()); //Double.valueOf(rasc.getValue())/60;
-        var box_side = $(lc_id('number_of_light_cones')).data("simulation-box-size"); //Settings.Simulations_size[simId];
-        var d1 = redshift_to_distance(parseFloat($(lc_id('redshift_min')).val())); //Double.valueOf(z_min.getValue()));
-        var d2 = redshift_to_distance(parseFloat($(lc_id('redshift_max')).val())); //Double.valueOf(z_max.getValue()));
+        var alfa1 = parseFloat($(lc_id('ra_opening_angle')).val());
+        var box_side = $(lc_id('number_of_light_cones')).data("simulation-box-size");
+        var d1 = redshift_to_distance(parseFloat($(lc_id('redshift_min')).val()));
+        var d2 = redshift_to_distance(parseFloat($(lc_id('redshift_max')).val()));
         var beta1;
         for (beta1 = alfa1; beta1 < 90; beta1 = beta1 + 0.01) {
             if ((d2 - box_side)*Math.sin((Math.PI/180)*(beta1+alfa1)) <= d2*Math.sin((Math.PI/180)*beta1)) {
@@ -570,7 +565,7 @@ jQuery(document).ready(function($) {
         }
         var hv = Math.floor(d2*Math.sin((Math.PI/180)*(alfa1+beta1)) - d1*Math.sin((Math.PI/180)*(alfa1+beta1)));
 
-        var hh = 2*d2*Math.sin((Math.PI/180)*(parseFloat($(lc_id('dec_opening_angle')).val()))/2); //Double.valueOf(decl.getValue())/60)/2);
+        var hh = 2*d2*Math.sin((Math.PI/180)*(parseFloat($(lc_id('dec_opening_angle')).val()))/2);
 
         var nv = Math.floor(box_side/hv);
         var nh = Math.floor(box_side/hh);
@@ -821,9 +816,6 @@ jQuery(document).ready(function($) {
         var init_light_cone_type_value = $('input[name="light_cone-light_cone_type"][checked="checked"]').attr('value');
         fill_in_summary('light_cone', 'light_cone_type', init_light_cone_type_value);
         $(lc_id('number_of_light_cones')).attr('class', 'light_cone_field'); // needed to associate the spinner with light-cone only, not when selecting box
-//        var errorSpan = document.createElement('span');
-//        errorSpan.id = 'maximumZeroError';
-//        $(lc_id('number_of_light_cones')).append(errorSpan);
         update_filter_options.initializing = true;
         $(lc_id('dark_matter_simulation')).change();
         $(lc_id('catalogue_geometry')).change();
