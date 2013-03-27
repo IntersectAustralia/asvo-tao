@@ -64,6 +64,7 @@ namespace tao {
       dict.add_option( new options::real( "H0", 73.0 ), prefix );
       dict.add_option( new options::list<options::string>( "output-fields" ), prefix );
       dict.add_option( new options::integer( "rng-seed" ), prefix );
+      dict.add_option( new options::string( "decomposition-method", "tables" ), prefix );
 
       // Setup table names.
       dict.add_option( new options::string( "snapshot-redshift-table", "snap_redshift" ), prefix );
@@ -403,7 +404,20 @@ namespace tao {
 	 _sql << query, soci::into( (std::vector<std::string>&)table_names );
       }
 
-      LOGDLN( "Table names: ", table_names );
+      // If we are running in parallel we will need to only process the tables that
+      // fall into my range.
+      if( _decomp_method == "tables" )
+      {
+         LOGDLN( "Full table names: ", table_names );
+         unsigned first_table = (mpi::comm::world.rank()*table_names.size())/mpi::comm::world.size();
+         unsigned last_table = ((mpi::comm::world.rank() + 1)*table_names.size())/mpi::comm::world.size();
+         vector<string> tmp_tbl_names( last_table - first_table );
+         for( unsigned ii = first_table; ii < last_table; ++ii )
+            tmp_tbl_names[ii - first_table] = table_names[ii];
+         table_names.swap( tmp_tbl_names );
+      }
+
+      LOGDLN( "My table names: ", table_names );
       LOG_EXIT();
    }
 
@@ -531,6 +545,11 @@ namespace tao {
       {
 	 _per_box.stop_tally();
 	 LOGDLN( "Time per box: ", _per_box.mean() );
+
+	 // Wait for parallel progress.
+	 _prog.set_local_complete_delta( 1 );
+	 while( _prog.test() )
+	   _prog.update();
 
 	 // Also dump progress.
 	 if( mpi::comm::world.rank() == 0 )
@@ -924,6 +943,9 @@ namespace tao {
       // Get the sub dictionary, if it exists.
       const options::dictionary& sub = prefix ? dict.sub( *prefix ) : dict;
 
+      // Get the decomposition method.
+      _decomp_method = sub.get<string>( "decomposition-method" );
+
       // Extract table names.
       _snap_red_table = sub.get<string>( "snapshot-redshift-table" );
 
@@ -1024,9 +1046,12 @@ namespace tao {
          _ra_max = 89.9999999;
       if( _ra_min > _ra_max )
          _ra_min = _ra_max;
-      real_type width = _ra_max - _ra_min;
-      _ra_max = _ra_min + (width*(mpi::comm::world.rank() + 1))/mpi::comm::world.size();
-      _ra_min += (width*mpi::comm::world.rank())/mpi::comm::world.size();
+      if( _decomp_method == "cone" )
+      {
+	 real_type width = _ra_max - _ra_min;
+	 _ra_max = _ra_min + (width*(mpi::comm::world.rank() + 1))/mpi::comm::world.size();
+	 _ra_min += (width*mpi::comm::world.rank())/mpi::comm::world.size();
+      }
       LOGDLN( "Have right ascension range ", _ra_min, " - ", _ra_max );
 
       // Declination.

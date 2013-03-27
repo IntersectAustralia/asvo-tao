@@ -40,6 +40,7 @@ class XmlFormsTests(TestCase):
             'dec_opening_angle': 41.811,
             'output_properties' : [1L, 2L], #[self.filter.id, self.output_prop.id],
             'light_cone_type': 'unique',
+            'number_of_light_cones': 1,
             }
         xml_parameters.update({
             'username' : 'test', # self.user.username,

@@ -23,14 +23,15 @@ class ListJobsTests(LiveServerMGFTest):
                         <catalogue_geometry>cone</catalogue_geometry>
                         </lightcone>
                     """
-        error_message = 'blah blah'
+        error_message = ['blah blah', 'wah wah', 'lah lah']
 
         self.held_job = JobFactory.create(user=self.user, parameters=parameters, status=Job.HELD)
         self.submitted_job = JobFactory.create(user=self.user, parameters=parameters, status=Job.SUBMITTED)
         self.queued_job = JobFactory.create(user=self.user, parameters=parameters, status=Job.QUEUED)
         self.in_progress_job = JobFactory.create(user=self.user, parameters=parameters, status=Job.IN_PROGRESS)
         self.completed_job = JobFactory.create(user=self.user, parameters=parameters, status=Job.COMPLETED)
-        self.error_job = JobFactory.create(user=self.user, parameters=parameters, status=Job.ERROR, error_message=error_message)
+        self.error_job = JobFactory.create(user=self.user, parameters=parameters, status=Job.ERROR, error_message=error_message[0])
+        self.error_job2 =  JobFactory.create(user=self.user, parameters=parameters, status=Job.ERROR, error_message=error_message[1])
 
         self.visit('job_index')
 
@@ -38,13 +39,19 @@ class ListJobsTests(LiveServerMGFTest):
         super(ListJobsTests, self).tearDown()
 
     def test_all_jobs_in_a_single_table(self):
-        expected_jobs = [self.held_job, self.submitted_job, self.queued_job, self.in_progress_job, self.completed_job, self.error_job]
+        expected_jobs = [self.held_job, self.submitted_job, self.queued_job, self.in_progress_job, self.completed_job, self.error_job, self.error_job2]
         self.assert_job_table_equals(expected_jobs)
 
     def test_error_message_displayed_in_popup(self):
-        self.assert_is_displayed('#popUp')
-        self.click('popUp')
+        self.assert_are_displayed_by_class_name('openPopUp')
+        buttons = self.selenium.find_elements_by_class_name('openPopUp')
+
+        buttons[0].click()
         self.assert_page_has_content(self.error_job.error_message)
+        self.click_by_class_name('ui-button-text')
+
+        buttons[1].click()
+        self.assert_page_has_content(self.error_job2.error_message)
 
     def test_completed_job_viewed_via_link(self):
         completed_id = self.completed_job.id

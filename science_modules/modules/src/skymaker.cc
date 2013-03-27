@@ -96,11 +96,31 @@ namespace tao {
       // Close the list file.
       _list_file.close();
 
+      // Merge list files.
+      string master_filename;
+      if( mpi::comm::world.rank() == 0 )
+      {
+	 master_filename = "master_sky.list"; //tmpnam( NULL );
+         ::remove( master_filename.c_str() );
+      }
+      mpi::comm::world.bcast( master_filename, 0 );
+      LOGDLN( "Skymaker master filename: ", master_filename );
+      mpi::comm::world.chain_recv<int>(); // wait for previous ranks to finish.
+      std::ofstream master_file( master_filename, std::ofstream::out | std::ofstream::app );
+      std::ifstream list_file( _list_filename );
+      char ch;
+      while( list_file.get( ch ) )
+         master_file.put( ch );
+      ASSERT( list_file.eof() );
+      list_file.close();
+      master_file.close();
+      mpi::comm::world.chain_send<int>( 0 ); // flag next rank
+
       // Launch the external command, but only if we are rank zero.
       // TODO: Need a library call.
       if( mpi::comm::world.rank() == 0 )
       {
-         string cmd = string( "sky " ) + _list_filename + string( " -c " ) + _conf_filename;
+         string cmd = string( "sky " ) + master_filename + string( " -c " ) + _conf_filename;
          cmd += " > /dev/null";
          LOGDLN( "Running: ", cmd );
          ::system( cmd.c_str() );
@@ -108,6 +128,7 @@ namespace tao {
       mpi::comm::world.barrier();
 
       // Delete the files we used.
+      ::remove( master_filename.c_str() );
       if( !_keep_files )
       {
 	 ::remove( _list_filename.c_str() );
@@ -175,8 +196,6 @@ namespace tao {
 
             ++_cnt;
          }
-
-         // TODO: Include all the disk/bulge information.
       }
 
       _timer.stop();
@@ -230,7 +249,9 @@ namespace tao {
    void
    skymaker::_setup_list()
    {
-      _list_filename = _keep_files ? "my_sky.list" : tmpnam( NULL );
+      std::stringstream filename;
+      filename << "my_sky.list." << std::setfill( '0' ) << std::setw( 5 ) << mpi::comm::world.rank();
+      _list_filename = _keep_files ? filename.str() : tmpnam( NULL );
       LOGDLN( "Opening parameter file: ", _list_filename );
       _list_file.open( _list_filename, std::ios::out );
    }
@@ -238,11 +259,15 @@ namespace tao {
    void
    skymaker::_setup_conf()
    {
-      _conf_filename = _keep_files ? "my_sky.conf" : tmpnam( NULL );
-      LOGDLN( "Opening config file: ", _conf_filename );
-      std::ofstream file( _conf_filename, std::ios::out );
-      file << "IMAGE_SIZE " << _img_w << "," << _img_h << "\n";
-      file << "STARCOUNT_ZP 0.0\n";  // no auto stars
-      file << "MAG_LIMITS 0.1 49.0"; // wider magnitude limits
+      // Only rank 0 sets up the configuration.
+      if( mpi::comm::world.rank() == 0 )
+      {
+         _conf_filename = _keep_files ? "my_sky.conf" : tmpnam( NULL );
+         LOGDLN( "Opening config file: ", _conf_filename );
+         std::ofstream file( _conf_filename, std::ios::out );
+         file << "IMAGE_SIZE " << _img_w << "," << _img_h << "\n";
+         file << "STARCOUNT_ZP 0.0\n";  // no auto stars
+         file << "MAG_LIMITS 0.1 49.0"; // wider magnitude limits
+      }
    }
 }
