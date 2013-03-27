@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 from MySQLdb.constants.FLAG import NUM
 import DBConnection
+import logging
 
 
 class BSPTree(object):
@@ -21,7 +22,7 @@ class BSPTree(object):
         self.DBConnection=DBConnection.DBConnection(Options)
         
         
-        print('Connection to DB is open...Start Creating Tables')
+        logging.info('Connection to DB is open...Start Creating Tables')
         
 
    
@@ -199,11 +200,11 @@ if __name__ == '__main__':
     GridYLocationsstr=GridYLocationsstr[1:]
     
     Query='select distinct tablename from TreeSummary  where globaltreeid in (Select globaltreeid from TreeMapping where gridx in ('+GridXLocationsstr+') and gridy in ('+GridYLocationsstr+'));'
-    print Query
+    logging.info(Query)
     TablesList=BSPTreeObj.DBConnection.ExecuteQuerySQLStatment(Query)
-    print len(TablesList)
+    logging.info(len(TablesList))
     for table in TablesList:
-        print(table)
+        logging.info(table)
     #GridData=BSPTreeObj.ExecuteQuerySQLStatment("select gridx,gridy,count(*) from TreeMapping  group by  gridx,gridy;")
     #Arr=numpy.zeros((25,25))
     #for GridPoint in GridData:

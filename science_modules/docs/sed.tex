@@ -13,6 +13,7 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
+\usepackage{siunitx}
 \usepackage{listings}
 %% \usepackage[scaled]{beramono}
 %% \renewcommand*\familydefault{\ttdefault}
@@ -40,28 +41,32 @@
 
 \section{Apparent Magnitude}
 
-\[ I = \int_\nu f_\nu s_\nu \dx{\nu} \]
-$I$ is the intensity of the object, $f_\nu$ is the spectral energy density of
-the object in $erg\cdot s^{-1}\cdot Hz^{-1}$ and $s_\nu$ is the unitless band-pass filter.
+We are primarily concerned with calculating magnitudes from the
+SED of objects in a lightcone. In order to get started I will
+focus on AB magnitudes. The AB magnitude of an object is defined
+as
+\[ m_{ab} = -2.4\log_{10}F_{\nu} - 48.6 \; , \]
+where $F_\nu$ is the spectral flux density in $erg\cdot s^{-1}\cdot cm^{-1} \cdot Hz^{-1}$.
+We will be defining $F_\nu$ as
+\[ F_\nu = \frac{I}{R} \; , \]
+where $I$ is the intensity of the object and $R$ is the normalisation
+with respect to the bandpass filter used. $I$ and $R$ are defined
+as
+\begin{eqnarray*}
+I & = & \int_\nu f_\nu r \dx{\nu} \\
+R & = & \int_\nu r \dx{\nu}
+\end{eqnarray*}
+where $f_\nu$ is the sepctral energy density of the object in
+$erg\cdot s^{-1}\cdot cm^{-2}\cdot Hz^{-1}$ and $r$ is a unitless transmission
+response filter.
 
-\[ f_a = \frac{I}{4\pi r^2} \]
-$f_a$ is the flux density, $r$ is the distance to the object in $cm$.
-
-\[ f_b = \int_\nu s_\nu \dx{\nu} \]
-$f_b$ is the reference value used in the AB magnitude system.
-
-\[ m_{ab} = -2.5\log_{10}\left(\frac{f_a}{f_b}\right) - 48.60 \]
-$m_{ab}$ is the apparent magnitude.
-
-\section{Expressions for $f_\nu$ and $s_\nu$}
-
-Recall the equation for intensity:
-\[ I = \int_\nu f_\nu s_\nu \dx{\nu} \]
-Notice that this equation requires a definition for $f_\nu$ and $s_\nu$,
-the spectral energy density and the transmission function, repsectively, each
-defined on the frequency domain. We have values for $f_\lambda$ and $s_\lambda$,
-but in general we are unable to directly equate the $\lambda$ versions with
-the $\nu$ ones. However, we know that the energy of these values
+The spectral energy densitiy will be given
+to us not as a function of frequency, as we need, but instead as
+a function of wavelength and in units of
+$erg\cdot s^{-1}\cdot cm^{-2}\cdot \angstrom^{-1}$. We refer to this quantity as
+$f_\lambda$. In general $f_\lambda \ne f_\nu$, so we
+will need to find $f_\nu$ in terms of $f_\lambda$.
+We know that the energy of these values
 must be equal for any arbitrary subdomain,
 \[ f_\nu \dx{\nu} = f_\lambda \dx{\lambda} \; , \]
 which can be rearranged to produce
@@ -74,32 +79,41 @@ to complete the transformation. We can use
 \end{eqnarray*}
 and substituting into the previous equation yields
 \[ f_\nu = -f_\lambda \frac{c}{\nu^2} \; . \]
-We can also substitute the relationship between $\lambda$ and $\nu$ into
-the right hand side if convenient for the software,
-\[ f_\nu = -f_\lambda \frac{\lambda^2}{c} \; . \]
-
-In addition to converting the spectra function from the wavelength domain
-to the frequency domain, we must perform the same procedure for the
-transmission function, which we initially have in the wavelength domain
-only. Beginning with
-\[ s_\nu \dx{\nu} = s_\lambda \dx{\lambda} \]
-and following the same method as above we end with
-\[ s_\nu = -s_\lambda \frac{\lambda^2}{c} \; . \]
-Substituting both of these equations into the equation for intensity
-we get
-\[ I = \int_\nu f_\lambda s_\lambda\frac{\lambda^4}{c^2}\dx{\nu} \; . \]
-
-We could end here, but we can save a little computation by now transforming
-this final equation into the wavelength domain,
+Substitution into the equation for intensity gives
+\[ I = -\int_\nu f_\lambda r \frac{c}{\nu^2} \dx{\nu} \; . \]
+We would prefer to integrate over $\lambda$, for conenience, so
+we will transform the integral from $\nu$ using the relationship
+between $\nu$ and $\lambda$,
 \begin{eqnarray*}
-I & = & \int_\nu f_\lambda s_\lambda\frac{\lambda^4}{c^2}\dx{\nu} \\
-& = & -\int_\lambda f_\lambda s_\lambda\frac{\lambda^4}{c^2} \frac{c}{\lambda^2} \dx{\lambda} \\
-& = & -\int_\lambda f_\lambda s_\lambda\frac{\lambda^2}{c} \dx{\lambda} \; .
+I & = & -\int_\lambda f_\lambda r \frac{c}{\nu^2} \left(-\frac{\nu^2}{c}\right) \dx{\lambda} \\
+& = & \int_\lambda f_\lambda r \dx{\lambda} \; .
 \end{eqnarray*}
-Note that the negative sign out the front of the RHS is only there
-as when we swap to the $\lambda$ domain we have implicitly reversed the
-integration direction. If we are careful to integrate from low to high
-terminals we can eliminate it,
-\[ I = \int_\lambda f_\lambda s_\lambda\frac{\lambda^2}{c} \dx{\lambda} \; . \]
+This result is as expected; the energy of the filtered SED is the same
+irrespective of whether considered on the wavelength or the
+frequency domain. It is also very convenient, as we have no need
+to transform any quantites to frequency.
+
+While we could leave the expression for $R$ in terms of
+frequency, it's more convenient for the code to integrate it in
+terms of wavelength. To do this we can simply perform a variable
+substitution in the integral,
+\begin{eqnarray*}
+R & = & \int_\nu r \dx{\nu} \\
+& = & \int_\lambda r \left(-\frac{c}{\lambda^2}\right) \dx{\lambda} \\
+& = & -\int_\lambda r \frac{c}{\lambda^2} \dx{\lambda} \\
+& = & \int_\lambda r \frac{c}{\lambda^2} \dx{\lambda} \; .
+\end{eqnarray*}
+Note that we are able to eliminate the negation of the RHS because
+it appears only as a result of reversing the integration direction.
+
+Now we have all the necessary expressions to define $F_\nu$ in terms
+of wavelength,
+\begin{eqnarray*}
+F_\nu & = & \frac{I}{R} \\
+& = & \frac{{\displaystyle \int_\lambda f_\lambda r \dx{\lambda}}}{{\displaystyle \int_\lambda r \frac{c}{\lambda^2} \dx{\lambda}}} \; ,
+\end{eqnarray*}
+allowing us to provide the full equation for the AB magnitude of an
+object:
+\[ m_{ab} = -2.5\log_{10} \frac{{\displaystyle \int_\lambda f_\lambda r \dx{\lambda}}}{{\displaystyle \int_\lambda r \frac{c}{\lambda^2} \dx{\lambda}}} - 48.6 \]
 
 \end{document}

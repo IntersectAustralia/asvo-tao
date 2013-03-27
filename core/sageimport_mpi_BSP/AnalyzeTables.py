@@ -6,6 +6,7 @@ import sys
 import settingReader
 import numpy
 import DBConnection
+import logging
 #import matplotlib.pyplot as plt
 
 
@@ -17,16 +18,16 @@ class ProcessTables(object):
         '''
         self.Options=Options
         self.DBConnection=DBConnection.DBConnection(Options)
-        print('Connection to DB is open...Start Creating Tables')
+        logging.info('Connection to DB is open...Start Creating Tables')
         self.CreateSummaryTable()
         self.CreateTreeSummaryTable()
         
-        print('Summary Table Created ...')
+        logging.info('Summary Table Created ...')
     
     
     def CloseConnections(self):        
         self.DBConnection.close()       
-        print('Connection to DB is Closed...') 
+        logging.info('Connection to DB is Closed...') 
     
     
     def CreateSummaryTable(self):
@@ -101,15 +102,15 @@ class ProcessTables(object):
         self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers(InsertSummaryRecord)
         
         
-        #print("********************************************************************************")
+        
     def GetTreeSummary(self,TableName):
-        #print("Processing Table: "+TableName)
+        logging.info("GetTreeSummary ..... Processing Table: "+TableName)
         GetSummarySQL="INSERT INTO TreeSummary select GlobalTreeID,min(PosX),min(PosY),min(PosZ),max(PosX),max(PosY),max(PosZ),count(*),'"+TableName+"' from @TABLEName group by GlobalTreeID order by GlobalTreeID;"
         GetSummarySQL= string.replace(GetSummarySQL,"@TABLEName",TableName)        
         self.DBConnection.ExecuteNoQuerySQLStatment(GetSummarySQL)
         
-        #print("End Processing Table: "+TableName)
-        #print("********************************************************************************")    
+        logging.info("End Processing Table: "+TableName)
+            
     
     
                 
@@ -143,15 +144,15 @@ class ProcessTables(object):
         CTotalNumberofExpectedGalaxies=TreeSummaryInfo[0]
         CMaxTreeID=TreeSummaryInfo[1]
         
-        print("----------------------------------------------------------------")
-        print("Validate Importing Process")
-        print("Total Number of Galaxies = "+str(CTotalNumberofExpectedGalaxies)+"\nExpected Number of Galaxies (Header Info)="+str(ETotalNumberofExpectedGalaxies))
-        print("Total Number of Trees = "+str(CMaxTreeID)+"\nExpected Number of Trees (Header Info)="+str(EMaxTreeID))
+        logging.info("----------------------------------------------------------------")
+        logging.info("Validate Importing Process")
+        logging.info("Total Number of Galaxies = "+str(CTotalNumberofExpectedGalaxies)+"\nExpected Number of Galaxies (Header Info)="+str(ETotalNumberofExpectedGalaxies))
+        logging.info("Total Number of Trees = "+str(CMaxTreeID)+"\nExpected Number of Trees (Header Info)="+str(EMaxTreeID))
         
         if CMaxTreeID==EMaxTreeID and CTotalNumberofExpectedGalaxies==ETotalNumberofExpectedGalaxies:
-            print("Data Validation Completed")
+            logging.info("Data Validation Completed")
         else:
-            print("Error in the Import Process. Please revise the imported data!")
+            logging.info("Error in the Import Process. Please revise the imported data!")
         
         
         
@@ -166,7 +167,7 @@ class ProcessTables(object):
             TableName=Table[0]
             
             if string.find(TableName,self.Options['PGDB:TreeTablePrefix'])==0:
-                print("Processing Table: "+TableName+ "\t "+str(Count)+"/"+str(len(TablesList)))
+                logging.info("Processing Table: "+TableName+ "\t "+str(Count)+"/"+str(len(TablesList)))
                 self.GetTableSummary(TableName)
                 self.GetTreeSummary(TableName)
             Count=Count+1

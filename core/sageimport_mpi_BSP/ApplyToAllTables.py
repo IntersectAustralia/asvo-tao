@@ -7,6 +7,7 @@ import settingReader
 import numpy
 import matplotlib.pyplot as plt
 import DBConnection
+import logging
 
 class ProcessTables(object):
     
@@ -17,14 +18,14 @@ class ProcessTables(object):
         self.Options=Options
         self.DBConnection=DBConnection.DBConnection(Options)   
         
-        print('Connection to DB is open...')
+        logging.info('Connection to DB is open...')
                 
         
     
     
     def CloseConnections(self):        
         self.DBConnection.close()       
-        print('Connection to DB is Closed...')
+        logging.info('Connection to DB is Closed...')
     
         
     
@@ -34,7 +35,7 @@ class ProcessTables(object):
   
             
     def ApplyQueryToTable(self,TableName):
-        print(TableName)
+        logging.info(TableName)
         ALTERSQL=" ALTER TABLE @TABLENAME ALTER COLUMN centralmvir TYPE FLOAT4 "
         ALTERSQL=ALTERSQL+" , ALTER COLUMN posx TYPE FLOAT4"
         ALTERSQL=ALTERSQL+" , ALTER COLUMN posy TYPE FLOAT4 "
@@ -51,7 +52,7 @@ class ProcessTables(object):
         ALTERSQL=ALTERSQL+" , ALTER COLUMN vmax TYPE FLOAT4 "
         ALTERSQL=ALTERSQL+" , ALTER COLUMN veldisp TYPE FLOAT4 "
         ALTERSQL=ALTERSQL+" , ALTER COLUMN coldgas TYPE FLOAT4 "
-        ALTERSQL=ALTERSQL+" , ALTER COLUMN stellarmass TYPE FLOAT4 "
+        ALTERSQL=ALTERSQL+" , logging.infoALTER COLUMN stellarmass TYPE FLOAT4 "
         ALTERSQL=ALTERSQL+" , ALTER COLUMN bulgemass TYPE FLOAT4 "
         ALTERSQL=ALTERSQL+" , ALTER COLUMN hotgas TYPE FLOAT4 "
         ALTERSQL=ALTERSQL+" , ALTER COLUMN ejectedmass TYPE FLOAT4 "
@@ -90,7 +91,8 @@ class ProcessTables(object):
                 
                  
 if __name__ == '__main__':
-    print('Starting DB processing')
+    logging.basicConfig(filename='log/ApplytoAllTables.log',level=logging.DEBUG,format='%(asctime)s %(message)s')
+    logging.info('Starting DB processing')
     [CurrentSAGEStruct,Options]=settingReader.ParseParams("settings.xml") 
     ProcessTablesObj=ProcessTables(Options)
     ProcessTablesObj.GetTablesList()

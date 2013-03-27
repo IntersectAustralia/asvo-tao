@@ -229,7 +229,8 @@ namespace tao {
             // frome wavelength to frequency. Do the math!
             // sum += jac_det*weights[ii]*filter( x, fi_poly )*spectra( x, sp_poly )*x*x*x*x*2.0/(2.9979*M_C);
             // sum += jac_det*weights[ii]*filter( x, fi_poly )*spectra( x, sp_poly )*x*x*x*x/(M_C*M_C);
-            sum += jac_det*weights[ii]*filter( x, fi_poly )*spectra( x, sp_poly )*x*x/M_C;
+            // sum += jac_det*weights[ii]*filter( x, fi_poly )*spectra( x, sp_poly )*x*x/M_C;
+            sum += jac_det*weights[ii]*filter( x, fi_poly )*spectra( x, sp_poly );
             LOGDLN( "Partial sum is ", sum );
          }
          low = *it;
@@ -257,7 +258,7 @@ namespace tao {
 
             // Note that this integral does not require a change of
             // variable, as it is not a convolution.
-            sum += jac_det*weights[jj]*spectra( x, ii );
+            sum += jac_det*weights[jj]*spectra( x, ii )*M_C/(x*x);
          }
       }
 
