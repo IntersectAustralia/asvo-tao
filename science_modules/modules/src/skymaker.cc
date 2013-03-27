@@ -100,10 +100,11 @@ namespace tao {
       string master_filename;
       if( mpi::comm::world.rank() == 0 )
       {
-         master_filename = tmpnam( NULL );
+	 master_filename = "master_sky.list"; //tmpnam( NULL );
          ::remove( master_filename.c_str() );
       }
       mpi::comm::world.bcast( master_filename, 0 );
+      LOGDLN( "Skymaker master filename: ", master_filename );
       mpi::comm::world.chain_recv<int>(); // wait for previous ranks to finish.
       std::ofstream master_file( master_filename, std::ofstream::out | std::ofstream::app );
       std::ifstream list_file( _list_filename );
