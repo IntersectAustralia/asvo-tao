@@ -37,16 +37,6 @@ jQuery(document).ready(function($) {
 
     var sed_band_pass_filters_widget = new TwoSidedSelectWidget(sed_id('band_pass_filters'), false);
 
-    var display_band_pass_filters_summary = function() {
-        var band_pass_filter_values = [];
-        band_pass_filter_values.push('<ul>');
-        $(sed_id('band_pass_filters')+' option').each(function(i) {
-            band_pass_filter_values.push('<li>' + $(this).html() + '</li>');
-        });
-        band_pass_filter_values.push('</ul>');
-        fill_in_summary('sed', 'band_pass_filters', band_pass_filter_values);
-    }
-
     var update_output_options = function() {
         var data_set_id = $(lc_id('galaxy_model')).find(':selected').attr('value');
         var $to = $(lc_id('output_properties'));
@@ -345,15 +335,28 @@ jQuery(document).ready(function($) {
         show_output_property_info(cache_item);
     });
 
+    var display_band_pass_filters_summary = function() {
+        var band_pass_filter_values = [];
+        band_pass_filter_values.push('<ul>');
+        $(sed_id('band_pass_filters')+' option').each(function(i) {
+            if ($(this).attr("selected")) {
+                band_pass_filter_values.push('<li>' + $(this).html() + '</li>');
+            }
+        });
+        band_pass_filter_values.push('</ul>');
+        fill_in_summary('sed', 'band_pass_filters', band_pass_filter_values);
+    }
+
     sed_band_pass_filters_widget.change_event(function(evt){
         update_filter_options(false, false);
-        var bandpass_filters_values = [];
-        bandpass_filters_values.push('<ul');
-        $(sed_id('band_pass_filters')+' option').each(function(i) {
-            bandpass_filters_values.push('<li>' + $(this).html() + '</li>');
-        });
-        bandpass_filters_values.push('</ul');
         display_band_pass_filters_summary();
+//        var bandpass_filters_values = [];
+//        bandpass_filters_values.push('<ul');
+//        $(sed_id('band_pass_filters')+' option').each(function(i) {
+//            bandpass_filters_values.push('<li>' + $(this).html() + '</li>');
+//        });
+//        bandpass_filters_values.push('</ul');
+//        fill_in_summary('sed', 'band_pass_filters', bandpass_filters_values);
     });
 
     sed_band_pass_filters_widget.option_clicked_event(function(cache_item){
@@ -714,6 +717,7 @@ jQuery(document).ready(function($) {
             $(sed_id('band_pass_filters_from')).removeAttr('disabled');
             sed_band_pass_filters_widget.set_enabled(true);
             $(sed_id('band_pass_filters')).removeAttr('disabled');
+//            sed_band_pass_filters_widget.change_event();
             display_band_pass_filters_summary();
             $(sed_id('apply_dust')).removeAttr('disabled');
             $(sed_id('apply_dust')).change();

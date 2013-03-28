@@ -98,6 +98,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
         self.fill_in_fields({
             'number_of_light_cones': '4', # this exceeds the calculated maximum for parameters above
         }, id_wrap=self.lc_id)
+        wait(1);
         self.submit_mgf_form()
 
         self.assert_on_page('mock_galaxy_factory')
