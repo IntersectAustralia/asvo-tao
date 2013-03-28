@@ -1,34 +1,47 @@
 #!/bin/bash
 
-echo 'Deploying to asv1'
+TAG=$1
+
+if [ -z "$TAG" ]; then
+  echo 'Use version (a tag in remote git repo)'
+  exit 1
+fi
+
+echo "Deploying to ASV1 version $TAG"
 echo 'Assuming you are using ssh properly (https://wiki.intersect.org.au/display/DEV/Use+ssh+Properly)'
 
-DIRS='asvo-tao/web light-cone sed'
+DIRS='asvo-tao/web asvo-tao/ui/light-cone asvo-tao/ui/sed'
 TARGET=/web/vhost/tao.asvo.org.au/taodemo
 DEP_DIR=`pwd`
 
 # checks out code into build dir
 checkout() {
+  cd $DEP_DIR
   test -d build && rm -rf build && echo "Removed existing build dir"
   mkdir build
   cd build
-  git clone -b master --depth 1 git@github.com:IntersectAustralia/asvo-tao.git
-  rm -rf asvo-tao/.git
+  git clone -b master git@github.com:IntersectAustralia/asvo-tao.git
+  cd asvo-tao
+  git checkout $TAG
+  ## temporaly copy files from current working copy, like
+  # cp $DEP_DIR/../docs/source/conf.py docs/source/conf.py
+  # cp $DEP_DIR/../docs/gendoc.sh docs/gendoc.sh
+  rm -rf .git
   cd $DEP_DIR
 }
 
-# generate documentation in build directory
 generate_documentation() {
-  CURRENT=`pwd`
-  cd build/asvo-tao/web
-  cp -r $DEP_DIR/eggs .
-  mkdir src
-  cp -r $DEP_DIR/build/light-cone src
-  cp -r $DEP_DIR/build/sed src
-  cd $DEP_DIR
-  cd build/asvo-tao/docs
+  # have to generate infrastructure first
+  cd $DEP_DIR/build
+  virtualenv BUILD
+  source BUILD/bin/activate
+  echo ">> BUILD virtual environment active - calling buildout"
+  cd $DEP_DIR/build/asvo-tao/web
+  python bootstrap.py -v 1.7.0
+  bin/buildout
+  # now, we can generate documentation
+  cd $DEP_DIR/build/asvo-tao/docs
   ./gendoc.sh
-  cd $DEP_DIR
 }
 
 # usage: transfer <host>
@@ -36,6 +49,7 @@ generate_documentation() {
 # also copies remote.sh and maintenance files
 transfer() {
   host=$1
+  cd $DEP_DIR
   test -f asvo.tgz && rm -f asvo.tgz && echo "Removed existing .tgz"
   tar -czf asvo.tgz -C build $DIRS
   scp asvo.tgz remote.sh deploy/maintenance_htaccess deploy/maintenance_index.html deploy/production_htaccess $host:~
