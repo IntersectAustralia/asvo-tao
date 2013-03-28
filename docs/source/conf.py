@@ -17,20 +17,6 @@ import sys, os
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path[0:0] = [ os.path.abspath(p) for p in [ 
-    '../../web/eggs/MySQL_python-1.2.3-py2.6-macosx-10.6-universal.egg',
-    '../../web/eggs/South-0.7.6-py2.6.egg',
-    '../../web/eggs/flup-1.0.3.dev_20110405-py2.6.egg',
-    '../../web/eggs/django_recaptcha-0.0.6-py2.6.egg',
-    '../../web/eggs/django_form_utils-0.2.0-py2.6.egg',
-    '../../web/eggs/selenium-2.25.0-py2.6.egg',
-    '../../web/eggs/django_piston-0.2.3-py2.6.egg',
-    '../../web/eggs/setuptools-0.6c12dev_r88846-py2.6.egg',
-    '../../web/eggs/factory_boy-1.2.0-py2.6.egg',
-    '../../web/eggs/django_nose-1.1-py2.6.egg',
-    '../../web/eggs/nosexcover-1.0.7-py2.6.egg',
-    '../../web/eggs/django_rules-0.2-py2.6.egg',
-    '../../web/eggs/lxml-3.1beta1-py2.6-macosx-10.6-universal.egg',
-
     # To run locally, comment next two lines and
     # uncomment lines below. Please do not commit
     # this change as paths below match what the
@@ -38,15 +24,6 @@ sys.path[0:0] = [ os.path.abspath(p) for p in [
     #
     '../../web/src/light-cone',
     '../../web/src/sed',
-    # '../../../light-cone',
-    # '../../../sed',
-
-    '../../web/eggs/djangorecipe-1.5-py2.6.egg',
-    '../../web/eggs/Django-1.4.3-py2.6.egg',
-    '../../web/eggs/zc.recipe.egg-2.0.0a3-py2.6.egg',
-    '../../web/eggs/zc.buildout-1.7.0-py2.6.egg',
-    '../../web/eggs/coverage-3.6-py2.6-macosx-10.6-universal.egg',
-    '../../web/eggs/nose-1.2.1-py2.6.egg',
     '../../web',
     ] ]
 
