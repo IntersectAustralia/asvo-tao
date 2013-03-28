@@ -72,7 +72,18 @@ class DBConnection(object):
         self.ExecuteNoQuerySQLStatment_On_AllServers("COMMIT;")        
         self.InTransactions=False
         logging.info("End Transaction")
-        
+    
+    def GetServerID(self,TableName):
+        SelectStm='select nodename from table_db_mapping where isactive=True and tablename=\''+TableName+'\';'
+        Results=self.ExecuteQuerySQLStatment(SelectStm);
+        if len(Results)>0:
+            ServerIP=Results[0]
+            for i in range(0,self.serverscount):
+                if self.DBservers['serverip']==ServerIP:
+                    return i
+            return -1
+        else:
+            return -1    
     def ExecuteNoQuerySQLStatment_On_AllServers(self,SQLStatment):
         for i in range(0,self.serverscount):
             self.ExecuteNoQuerySQLStatment(SQLStatment, i)

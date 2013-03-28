@@ -87,7 +87,7 @@ class SAGEDataReader:
             self.PGDB.StartTransaction()
             self.ProcessFile(UnProcessedFile)
             self.PGDB.SetFileAsProcessed(UnProcessedFile[0])            
-            self.PGDB.CommintTransaction()
+            self.PGDB.CommitTransaction()
             FileCounter=FileCounter+1
             
         
@@ -137,7 +137,7 @@ class SAGEDataReader:
          
     
         CurrentFile.close()  
-                  
+               
         if self.DebugToFile==True:
             Log.close()
     
@@ -212,7 +212,7 @@ class SAGEDataReader:
         else: 
                        
             FinalTableID=self.CellsInX*self.CellsInY
-                        
+        logging.info("Final Table ID="+str(FinalTableID))                
         return FinalTableID
         
     
