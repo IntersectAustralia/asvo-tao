@@ -309,7 +309,7 @@ class LiveServerMGFTest(LiveServerTest):
     def submit_mgf_form(self):
         submit_button = self.selenium.find_element_by_css_selector('#mgf-form input[type="submit"]')
         submit_button.submit()
-        wait(1)
+        wait(1.5)
 
     def assert_errors_on_field(self, what, field_id):
         field_elem = self.selenium.find_element_by_css_selector(field_id)

@@ -37,16 +37,6 @@ jQuery(document).ready(function($) {
 
     var sed_band_pass_filters_widget = new TwoSidedSelectWidget(sed_id('band_pass_filters'), false);
 
-    var display_band_pass_filters_summary = function() {
-        var band_pass_filter_values = [];
-        band_pass_filter_values.push('<ul>');
-        $(sed_id('band_pass_filters')+' option').each(function(i) {
-            band_pass_filter_values.push('<li>' + $(this).html() + '</li>');
-        });
-        band_pass_filter_values.push('</ul>');
-        fill_in_summary('sed', 'band_pass_filters', band_pass_filter_values);
-    }
-
     var update_output_options = function() {
         var data_set_id = $(lc_id('galaxy_model')).find(':selected').attr('value');
         var $to = $(lc_id('output_properties'));
@@ -315,13 +305,17 @@ jQuery(document).ready(function($) {
         $('div.output-property-info').show();
     }
 
-    var clear_model_info = function(form_name, model_name) {
-        $('div.' + model_name + '-model-info .name').html('');
-        $('div.' + model_name + '-model-info .details').html('');
-        $('div.' + model_name + '-model-info').show();
-        clear_in_summary(form_name, model_name + '_model');
+    var clear_info = function(form_name, name) {
+        $('div.' + name + '-info .name').html('');
+        $('div.' + name + '-info .details').html('');
+        $('div.' + name + '-info').show();
     }
 
+    var show_bandpass_filter_info = function(cache_item) {
+        $('div.band-pass-info .name').html(cache_item.text);
+        $('div.band-pass-info .details').html(cache_item.description);
+        $('div.band-pass-info').show();
+    }
     //
     // - event handlers for fields -
     //
@@ -341,9 +335,23 @@ jQuery(document).ready(function($) {
         show_output_property_info(cache_item);
     });
 
+    var display_band_pass_filters_summary = function() {
+        var band_pass_filter_values = [];
+        band_pass_filter_values.push('<ul');
+        $(sed_id('band_pass_filters')+' option').each(function(i) {
+            band_pass_filter_values.push('<li>' + $(this).html() + '</li>');
+        });
+        band_pass_filter_values.push('</ul');
+        fill_in_summary('sed', 'band_pass_filters', band_pass_filter_values);
+    }
+
     sed_band_pass_filters_widget.change_event(function(evt){
         update_filter_options(false, false);
         display_band_pass_filters_summary();
+    });
+
+    sed_band_pass_filters_widget.option_clicked_event(function(cache_item){
+        show_bandpass_filter_info(cache_item);
     });
 
     $(lc_id('dark_matter_simulation')).change(function(evt){
@@ -463,6 +471,7 @@ jQuery(document).ready(function($) {
         var pseudo_json = [];
         $(lc_id('output_properties') + ' option').each(function(){
             var $this = $(this);
+            console.log($this);
             var item = {pk: $this.attr('value'), fields:{label: $this.text()}};
             pseudo_json.push(item);
             if($this.attr('selected')) {
@@ -470,21 +479,35 @@ jQuery(document).ready(function($) {
             }
         });
         lc_output_props_widget.cache_store(pseudo_json);
+        console.log(current);
         return current;
     }
 
     function init_bandpass_properties() {
         var current = [];
-        var pseudo_json = [];
         $(sed_id('band_pass_filters') + ' option').each(function(){
             var $this = $(this);
-            var item = {pk: $this.attr('value'), fields:{label: $this.text()}};
-            pseudo_json.push(item);
-            if($this.attr('selected')) {
-                current.push(item.pk);
+//            console.log($this);
+//            $(this).attr("selected", "selected");
+            if ($this.attr('selected')) {
+                current.push($this.attr('value'));
             }
         });
-        sed_band_pass_filters_widget.cache_store(pseudo_json);
+//        var current = $to.val(); // in string format
+//        $to.empty();
+//        $from.empty();
+        $.ajax({
+            url : TAO_JSON_CTX + 'bandpass_filters/',
+            dataType: "json",
+            error: function() {
+                alert("Couldn't get bandpass filters");
+            },
+            success: function(data, status, xhr) {
+                sed_band_pass_filters_widget.cache_store(data);
+                sed_band_pass_filters_widget.display_selected(current, false);
+            }
+        });
+        console.log(current);
         return current;
     }
 
@@ -670,7 +693,8 @@ jQuery(document).ready(function($) {
         }
         else {
             $(sed_id('select_dust_model')).attr('disabled', 'disabled');
-            clear_model_info('sed', 'dust');
+            clear_info('sed', 'dust-model');
+            clear_in_summary('sed', 'dust_model');
         }
     });
 
@@ -684,6 +708,7 @@ jQuery(document).ready(function($) {
             $(sed_id('band_pass_filters_from')).removeAttr('disabled');
             sed_band_pass_filters_widget.set_enabled(true);
             $(sed_id('band_pass_filters')).removeAttr('disabled');
+//            sed_band_pass_filters_widget.change_event();
             display_band_pass_filters_summary();
             $(sed_id('apply_dust')).removeAttr('disabled');
             $(sed_id('apply_dust')).change();
@@ -701,8 +726,12 @@ jQuery(document).ready(function($) {
             clear_in_summary('sed', 'band_pass_filters');
             $(sed_id('apply_dust')).attr('disabled', 'disabled');
             $(sed_id('select_dust_model')).attr('disabled', 'disabled');
-            clear_model_info('sed', 'stellar');
-            clear_model_info('sed', 'dust');
+            clear_info('sed', 'stellar-model');
+            clear_in_summary('sed', 'stellar_model');
+            clear_info('sed', 'band-pass');
+            clear_in_summary('sed', 'band_pass_filters');
+            clear_info('sed', 'dust-model');
+            clear_in_summary('sed', 'dust_model');
             update_filter_options(false, true); // triggers filter.change
         }
     });
@@ -809,7 +838,8 @@ jQuery(document).ready(function($) {
         var current_output = init_output_properties();
         var current_bandpass = init_bandpass_properties();
         lc_output_props_widget.display_selected(current_output, false);
-        sed_band_pass_filters_widget.display_selected(current_bandpass, false);
+        console.log(current_bandpass);
+//        sed_band_pass_filters_widget.display_selected(current_bandpass, false);
         lc_output_props_widget.change();
         sed_band_pass_filters_widget.change();
         init_wizard();

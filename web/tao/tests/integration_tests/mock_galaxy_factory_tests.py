@@ -1,9 +1,9 @@
 from django.utils.html import strip_tags
 
-from tao.tests.integration_tests.helper import LiveServerTest
+from tao.tests.integration_tests.helper import LiveServerTest, wait
 
-from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, JobFactory, DataSetPropertyFactory, DustModelFactory, StellarModelFactory
-from tao.models import Simulation, StellarModel, DustModel
+from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, JobFactory, DataSetPropertyFactory, DustModelFactory, StellarModelFactory, BandPassFilterFactory
+from tao.models import Simulation, StellarModel, DustModel, BandPassFilter
 from tao.settings import MODULE_INDICES
 
 class MockGalaxyFactoryTest(LiveServerTest):
@@ -29,6 +29,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
 
         for unused in range(3):
             StellarModelFactory.create()
+            BandPassFilterFactory.create()
             DustModelFactory.create()
 
         username = "person"
@@ -37,6 +38,9 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.login(username, password)
         
         self.visit('mock_galaxy_factory')
+
+    def tearDown(self):
+        super(MockGalaxyFactoryTest, self).tearDown()
 
     def test_box_size_field_on_initial_load(self):
         initial_selection = self.get_selected_option_text(self.lc_id('catalogue_geometry'))
@@ -59,8 +63,9 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.assert_simulation_info_shown(first_simulation)
 
         self.click('tao-tabs-' + MODULE_INDICES['sed'])
-        self.assert_model_info_not_shown('stellar')
-        self.assert_model_info_not_shown('dust')
+        self.assert_sidebar_info_not_shown('stellar-model')
+        self.assert_sidebar_info_not_shown('band-pass')
+        self.assert_sidebar_info_not_shown('dust-model')
     
     def test_sidebar_text_on_simulation_change(self):      
         second_simulation = Simulation.objects.all()[1]
@@ -84,11 +89,12 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.click(self.sed('apply_sed'))
         initial_stellar_model = StellarModel.objects.all()[0]
         self.assert_stellar_model_info_shown(initial_stellar_model)
-        self.assert_model_info_not_shown('dust')
+        self.assert_sidebar_info_not_shown('dust')
 
         self.click(self.sed('apply_sed'))
-        self.assert_model_info_not_shown('stellar')
-        self.assert_model_info_not_shown('dust')
+        self.assert_sidebar_info_not_shown('stellar-model')
+        self.assert_sidebar_info_not_shown('band-pass')
+        self.assert_sidebar_info_not_shown('dust-model')
 
     def test_sed_sidebar_text_on_apply_dust(self):
         self.click('tao-tabs-' + MODULE_INDICES['sed'])
@@ -98,9 +104,9 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.assert_dust_model_info_shown(initial_dust_model)
 
         self.click(self.sed('apply_dust'))
-        self.assert_model_info_not_shown('dust')
+        self.assert_sidebar_info_not_shown('dust')
 
-    def test_sidebar_text_on_stellar_model_change(self):
+    def test_sed_sidebar_text_on_stellar_model_change(self):
         self.click('tao-tabs-' + MODULE_INDICES['sed'])
         self.click(self.sed('apply_sed'))
         third_stellar_model = StellarModel.objects.all()[2]
@@ -116,12 +122,18 @@ class MockGalaxyFactoryTest(LiveServerTest):
         init_galaxy_model = init_simulation.galaxymodel_set.all()[0]
         galaxy_model_displayed = self.get_summary_field_text('light_cone', 'galaxy_model')
         type_displayed = self.get_summary_field_text('light_cone', 'light_cone_type')
+        stellar_model = self.get_summary_field_text('sed', 'single_stellar_population_model')
+        band_pass_filters = self.get_summary_field_text('sed', 'band_pass_filters')
+        dust_model = self.get_summary_field_text('sed', 'dust_model')
         filter_displayed = self.get_summary_field_text('record_filter', 'record_filter')
 
         self.assertEqual('Light-Cone', geometry_displayed)
         self.assertEqual(init_simulation.name, simulation_displayed)
         self.assertEqual(init_galaxy_model.name, galaxy_model_displayed)
         self.assertEqual('unique', type_displayed)
+        self.assertEqual('None', stellar_model)
+        self.assertEqual('None', band_pass_filters)
+        self.assertEqual('None', dust_model)
         self.assertEqual('No Filter', filter_displayed)
         self.assert_not_displayed('div.summary_light_cone .box_fields')
 
@@ -150,6 +162,20 @@ class MockGalaxyFactoryTest(LiveServerTest):
         name_displayed = self.get_info_field('output-property', 'name')
         self.assertEquals(output_property.label, name_displayed)
 
+    def test_bandpass_filter_details(self):
+        self.click('tao-tabs-' + MODULE_INDICES['sed'])
+        self.click(self.sed('apply_sed'))
+        for i in [1,0]:
+            bandpass_filter = BandPassFilter.objects.all()[i]
+            self.click_by_css(self.sed_id('band_pass_filters_from') + " option[value='"+str(bandpass_filter.id)+"']")
+            name_displayed = self.get_info_field('band-pass', 'name')
+            self.assertEquals(bandpass_filter.label, name_displayed)
+        self.click(self.sed_2select('op_add_all'))
+        bandpass_filter = BandPassFilter.objects.all()[i]
+        self.click_by_css(self.sed_id('band_pass_filters') + " option[value='"+str(bandpass_filter.id)+"']")
+        name_displayed = self.get_info_field('band-pass', 'name')
+        self.assertEquals(bandpass_filter.label, name_displayed)
+
     def test_summary_on_simulation_change(self):
         second_simulation = Simulation.objects.all()[1]
         self.select_dark_matter_simulation(second_simulation)
@@ -162,6 +188,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
         min_input = "9"
         self.fill_in_fields({'max': max_input, 'min': min_input}, id_wrap=self.rf_id)
         self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
+        wait(1)
         if filter.units != '':
             expected_filter_display = min_input + ' < ' + filter.label + ' (' + filter.units + ') < ' + max_input
         else:
@@ -195,7 +222,6 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.assert_are_displayed('light_cone-light_cone_type')
 
     def test_description_displayed_in_listing(self):
-        from tao.tests.integration_tests.helper import wait
         job = JobFactory.create(user=self.user)
         wait(1)
         self.visit('job_index')
@@ -279,6 +305,6 @@ class MockGalaxyFactoryTest(LiveServerTest):
                             }
         self.assert_selector_texts_equals_expected_values(dust_model_selector_value)
 
-    def assert_model_info_not_shown(self, model_name):
-        self.assertEqual([], self.find_visible_elements('.' + model_name + '-model-info .name'))
-        self.assertEqual([], self.find_visible_elements('.' + model_name + '-model-info .details'))
+    def assert_sidebar_info_not_shown(self, field_name):
+        self.assertEqual([], self.find_visible_elements('.' + field_name + '-info .name'))
+        self.assertEqual([], self.find_visible_elements('.' + field_name + '-info .details'))
