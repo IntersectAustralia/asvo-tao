@@ -614,6 +614,7 @@ jQuery(document).ready(function($) {
             }
         }
         show_error($(lc_id('number_of_light_cones')), null);
+        fill_in_summary('light_cone', 'number_of_light_cones', new_value +  " " + $("input[name='light_cone-light_cone_type']:checked").val() + " light cones");
         return true;
     }
 
