@@ -36,6 +36,9 @@ class SubmitLightConeTests(LiveServerMGFTest):
         self.login(self.username, password)
         self.visit('mock_galaxy_factory')
 
+    def tearDown(self):
+        super(SubmitLightConeTests, self).tearDown()
+
     def test_submit_invalid_output_properties(self):
         ## fill in form (correctly)
         self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
@@ -86,6 +89,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
         self.assert_on_page('job_index')
 
     def test_submit_invalid_unique_cone_job(self):
+        wait(2)
         self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
         self.fill_in_fields({
             'ra_opening_angle': '2',
@@ -94,11 +98,11 @@ class SubmitLightConeTests(LiveServerMGFTest):
             'redshift_max': '2',
         }, id_wrap=self.lc_id)
         self.click(self.lc_2select('op_add_all'))
+        wait(2)
         self.clear(self.lc_id('number_of_light_cones'))
         self.fill_in_fields({
-            'number_of_light_cones': '4', # this exceeds the calculated maximum for parameters above
+            'number_of_light_cones': '9', # this exceeds the calculated maximum, 3, for parameters above
         }, id_wrap=self.lc_id)
-        wait(1);
         self.submit_mgf_form()
 
         self.assert_on_page('mock_galaxy_factory')

@@ -337,26 +337,17 @@ jQuery(document).ready(function($) {
 
     var display_band_pass_filters_summary = function() {
         var band_pass_filter_values = [];
-        band_pass_filter_values.push('<ul>');
+        band_pass_filter_values.push('<ul');
         $(sed_id('band_pass_filters')+' option').each(function(i) {
-            if ($(this).attr("selected")) {
-                band_pass_filter_values.push('<li>' + $(this).html() + '</li>');
-            }
+            band_pass_filter_values.push('<li>' + $(this).html() + '</li>');
         });
-        band_pass_filter_values.push('</ul>');
+        band_pass_filter_values.push('</ul');
         fill_in_summary('sed', 'band_pass_filters', band_pass_filter_values);
     }
 
     sed_band_pass_filters_widget.change_event(function(evt){
         update_filter_options(false, false);
         display_band_pass_filters_summary();
-//        var bandpass_filters_values = [];
-//        bandpass_filters_values.push('<ul');
-//        $(sed_id('band_pass_filters')+' option').each(function(i) {
-//            bandpass_filters_values.push('<li>' + $(this).html() + '</li>');
-//        });
-//        bandpass_filters_values.push('</ul');
-//        fill_in_summary('sed', 'band_pass_filters', bandpass_filters_values);
     });
 
     sed_band_pass_filters_widget.option_clicked_event(function(cache_item){
