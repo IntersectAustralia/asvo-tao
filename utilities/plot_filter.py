@@ -139,17 +139,22 @@ def plot(filter):
     # plt.show()
 
 
-def plot_filter(filename):
+def plot_filter(filename, dest=None):
     filter = calc_filter(filename)
     plot(filter)
-    plt.savefig(filter['filter_name'] + '.png')
+    if dest is None:
+        pngname = filter['filter_name'] + '.png'
+    else:
+        pngname = dest
+    plt.savefig(pngname)
     plt.clf()
+    return pngname
 
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
         print "Please supply filter filename."
-        sys.exit()
+        sys.exit(1)
 
     plot_filter(sys.argv[1])
 
