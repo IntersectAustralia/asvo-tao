@@ -224,3 +224,8 @@ OUTPUT_FORMATS = [{'value':'csv', 'text':'CSV (Text)'}]
 MODULE_INDICES = {'light_cone': '1', 'sed': '2', 'record_filter': '3', 'output_format': '4'}
 
 TAO_VERSION = '0.15.1'
+
+AAF_DS_URL = 'https://ds.test.aaf.edu.au/discovery/DS'
+AAF_APP_ID = 'https://asvo-qa.intersect.org.au/shibboleth'
+AAF_SESSION_URL = 'https://asvo-qa.intersect.org.au/Shibboleth.sso/Login'
+
