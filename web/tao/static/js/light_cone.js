@@ -322,13 +322,32 @@ jQuery(document).ready(function($) {
 
     lc_output_props_widget.change_event(function(evt){
         update_filter_options(false, false);
+        var output_properties_count = 0;
         var output_properties_values = [];
         output_properties_values.push('<ul');
         $(lc_id('output_properties')+' option').each(function(i) {
             output_properties_values.push('<li>' + $(this).html() + '</li>');
+            output_properties_count++;
         });
         output_properties_values.push('</ul');
-        fill_in_summary('light_cone', 'output_properties', output_properties_values);
+        fill_in_summary('light_cone', 'output_properties_list', output_properties_values);
+        if (output_properties_count == 1)
+            fill_in_summary('light_cone', 'output_properties', output_properties_count + " property selected");
+        else
+            fill_in_summary('light_cone', 'output_properties', output_properties_count + " properties selected");
+    });
+
+    $('#expand_output_properties').click(function(e) {
+        $this = $(this);
+//        alert($this.html() + " is clicked!");
+//        e.stopPropagation();
+        if ($this.html() === " &gt;&gt; ") {
+            $('div.summary_light_cone .output_properties_list').show();
+            $this.html("<<");
+        } else {
+            $('div.summary_light_cone .output_properties_list').hide();
+            $this.html(" >> ");
+        }
     });
 
     lc_output_props_widget.option_clicked_event(function(cache_item){
@@ -336,18 +355,35 @@ jQuery(document).ready(function($) {
     });
 
     var display_band_pass_filters_summary = function() {
+        var band_pass_filter_count = 0;
         var band_pass_filter_values = [];
         band_pass_filter_values.push('<ul');
         $(sed_id('band_pass_filters')+' option').each(function(i) {
             band_pass_filter_values.push('<li>' + $(this).html() + '</li>');
+            band_pass_filter_count++;
         });
         band_pass_filter_values.push('</ul');
-        fill_in_summary('sed', 'band_pass_filters', band_pass_filter_values);
+        fill_in_summary('sed', 'band_pass_filters_list', band_pass_filter_values);
+        if (band_pass_filter_count == 1)
+            fill_in_summary('sed', 'band_pass_filters', band_pass_filter_count + " filter selected");
+        else
+            fill_in_summary('sed', 'band_pass_filters', band_pass_filter_count + " filters selected");
     }
 
     sed_band_pass_filters_widget.change_event(function(evt){
         update_filter_options(false, false);
         display_band_pass_filters_summary();
+    });
+
+    $('#expand_band_pass_filters').click(function(e) {
+        $this = $(this);
+        if ($this.html() === " &gt;&gt; ") {
+            $('div.summary_sed .band_pass_filters_list').show();
+            $this.html("<<");
+        } else {
+            $('div.summary_sed .band_pass_filters_list').hide();
+            $this.html(">>");
+        }
     });
 
     sed_band_pass_filters_widget.option_clicked_event(function(cache_item){
@@ -380,6 +416,20 @@ jQuery(document).ready(function($) {
         update_snapshot_options();
     });
 
+    var fill_in_selection_in_summary = function() {
+        var filter_min = $(rf_id('min')).val();
+        var filter_max = $(rf_id('max')).val();
+        var filter_selected = $(rf_id('filter')).find('option:selected').html();
+        if (!filter_min && !filter_max)
+            fill_in_summary('record_filter', 'record_filter', filter_selected);
+        else if (!filter_min)
+            fill_in_summary('record_filter', 'record_filter', filter_selected + ' &le; ' + filter_max);
+        else if (!filter_max)
+            fill_in_summary('record_filter', 'record_filter', filter_min + ' &le; ' + filter_selected);
+        else
+            fill_in_summary('record_filter', 'record_filter', filter_min + ' &le; ' + filter_selected + ' &le; ' + filter_max);
+    }
+
     $(rf_id('filter')).change(function(evt){
         var $this = $(this);
         var filter_value = $this.val();
@@ -391,42 +441,13 @@ jQuery(document).ready(function($) {
         } else {
             $(rf_id('max')).removeAttr('disabled');
             $(rf_id('min')).removeAttr('disabled');
-            var filter_min = $(rf_id('min')).val();
-            var filter_max = $(rf_id('max')).val();
-            var filter_selected = $this.find('option:selected').html();
-            if (!filter_min && !filter_max)
-                fill_in_summary('record_filter', 'record_filter', filter_selected)
-            else if (!filter_min)
-                fill_in_summary('record_filter', 'record_filter', filter_selected + ' &lt; ' + filter_max);
-            else if (!filter_max)
-                fill_in_summary('record_filter', 'record_filter', filter_min + ' &lt; ' + filter_selected);
-            else
-                fill_in_summary('record_filter', 'record_filter', filter_min + ' &lt; ' + filter_selected + ' &lt; ' + filter_max);
+            fill_in_selection_in_summary();
         }
     });
 
-    $(rf_id('min')).change(function(evt){
-        var $this = $(this);
-        var filter_min = $this.val();
-        var filter_max = $(rf_id('max')).val();
-        var filter_selected = $(rf_id('filter')).find('option:selected').html();
-        if (!filter_max)
-            fill_in_summary('record_filter', 'record_filter', filter_min + ' &lt; ' + filter_selected);
-        else
-            fill_in_summary('record_filter', 'record_filter', filter_min + ' &lt; ' + filter_selected + ' &lt; ' + filter_max);
+    $(rf_id('min') + ', ' + rf_id('max')).change(function(evt){
+        fill_in_selection_in_summary();
     });
-
-    $(rf_id('max')).change(function(evt){
-        var $this = $(this);
-        var filter_max = $this.val();
-        var filter_min = $(rf_id('min')).val();
-        var filter_selected = $(rf_id('filter')).find('option:selected').html();
-        if (!filter_min)
-            fill_in_summary('record_filter', 'record_filter', filter_selected + ' &lt; ' + filter_max);
-        else
-            fill_in_summary('record_filter', 'record_filter', filter_min + ' &lt; ' + filter_selected + ' &lt; ' + filter_max);
-    });
-
 
     $(sed_id('band_pass_filters_add_link')).change(function() {
         fill_in_summary('sed', 'band_pass_filters', 'band_pass_filters_add_link.click()');
@@ -493,9 +514,6 @@ jQuery(document).ready(function($) {
                 current.push($this.attr('value'));
             }
         });
-//        var current = $to.val(); // in string format
-//        $to.empty();
-//        $from.empty();
         $.ajax({
             url : TAO_JSON_CTX + 'bandpass_filters/',
             dataType: "json",
@@ -511,35 +529,54 @@ jQuery(document).ready(function($) {
         return current;
     }
 
+    var fill_in_ra_dec_in_summary = function() {
+        var ra_opening_angle_value = $(lc_id('ra_opening_angle')).val();
+        var dec_opening_angle_value = $(lc_id('dec_opening_angle')).val();
+        if (!ra_opening_angle_value && !dec_opening_angle_value) {
+            fill_in_summary('light_cone', 'ra_opening_angle', '');
+            fill_in_summary('light_cone', 'dec_opening_angle', '');
+        } else if (!ra_opening_angle_value) {
+            fill_in_summary('light_cone', 'ra_opening_angle', '');
+            fill_in_summary('light_cone', 'dec_opening_angle', 'Dec: ' + dec_opening_angle_value + '&deg;<br>');
+        } else if (!dec_opening_angle_value) {
+            fill_in_summary('light_cone', 'ra_opening_angle', 'RA: ' + ra_opening_angle_value + '&deg; <br>');
+            fill_in_summary('light_cone', 'dec_opening_angle', '');
+        } else {
+            fill_in_summary('light_cone', 'ra_opening_angle', 'RA: ' + ra_opening_angle_value + '&deg;, ');
+            fill_in_summary('light_cone', 'dec_opening_angle', 'Dec: ' + dec_opening_angle_value + '&deg;<br>');
+        }
+    }
 
-    $(lc_id('ra_opening_angle')).change(function(evt){
-        var $this = $(this);
-        var ra_opening_angle_value = $this.val();
-        fill_in_summary('light_cone', 'ra_opening_angle', ra_opening_angle_value);
+    $(lc_id('ra_opening_angle') + ', ' + lc_id('dec_opening_angle')).change(function(evt){
+        fill_in_ra_dec_in_summary();
         calculate_max_number_of_cones();
     });
 
-    $(lc_id('dec_opening_angle')).change(function(evt){
-        var $this = $(this);
-        var dec_opening_angle_value = $this.val();
-        fill_in_summary('light_cone', 'dec_opening_angle', dec_opening_angle_value);
+    var fill_in_redshift_in_summary = function() {
+        var redshift_max_value = $(lc_id('redshift_max')).val();
+        var redshift_min_value = $(lc_id('redshift_min')).val();
+        if (!redshift_min_value && !redshift_max_value) {
+            fill_in_summary('light_cone', 'redshift_min', '')
+            fill_in_summary('light_cone', 'redshift_max', '')
+        }
+        else if (!redshift_min_value) {
+            fill_in_summary('light_cone', 'redshift_min', '')
+            fill_in_summary('light_cone', 'redshift_max', 'Redshift: r &le; ' + redshift_max_value);
+        }
+        else if (!redshift_max_value) {
+            fill_in_summary('light_cone', 'redshift_min', 'Redshift: ' + redshift_min_value + ' &le; r');
+            fill_in_summary('light_cone', 'redshift_max', '')
+        }
+        else {
+            fill_in_summary('light_cone', 'redshift_min', 'Redshift: ' + redshift_min_value + ' &le; r &le; ');
+            fill_in_summary('light_cone', 'redshift_max', redshift_max_value);
+        }
+    }
+
+    $(lc_id('redshift_min') + ', ' + lc_id('redshift_max')).change(function(evt){
+        fill_in_redshift_in_summary();
         calculate_max_number_of_cones();
     });
-
-    $(lc_id('redshift_min')).change(function(evt){
-        var $this = $(this);
-        var redshift_min_value = $this.val();
-        fill_in_summary('light_cone', 'redshift_min', redshift_min_value);
-        calculate_max_number_of_cones();
-    });
-
-    $(lc_id('redshift_max')).change(function(evt){
-        var $this = $(this);
-        var redshift_max_value = $this.val();
-        fill_in_summary('light_cone', 'redshift_max', redshift_max_value);
-        calculate_max_number_of_cones();
-    });
-
 
     // Max's algorithm for calculating the maximum allowed number of unique light-cones
 //    /**
@@ -710,6 +747,8 @@ jQuery(document).ready(function($) {
             sed_band_pass_filters_widget.set_enabled(true);
             $(sed_id('band_pass_filters')).removeAttr('disabled');
 //            sed_band_pass_filters_widget.change_event();
+            $('div.summary_sed .apply_sed').show();
+            fill_in_summary('sed', 'select_sed', '');
             display_band_pass_filters_summary();
             $(sed_id('apply_dust')).removeAttr('disabled');
             $(sed_id('apply_dust')).change();
@@ -728,11 +767,13 @@ jQuery(document).ready(function($) {
             $(sed_id('apply_dust')).attr('disabled', 'disabled');
             $(sed_id('select_dust_model')).attr('disabled', 'disabled');
             clear_info('sed', 'stellar-model');
-            clear_in_summary('sed', 'stellar_model');
+//            clear_in_summary('sed', 'stellar_model');
             clear_info('sed', 'band-pass');
-            clear_in_summary('sed', 'band_pass_filters');
+//            clear_in_summary('sed', 'band_pass_filters');
             clear_info('sed', 'dust-model');
-            clear_in_summary('sed', 'dust_model');
+//            clear_in_summary('sed', 'dust_model');
+            $('div.summary_sed .apply_sed').hide();
+            fill_in_summary('sed', 'select_sed', 'Not selected');
             update_filter_options(false, true); // triggers filter.change
         }
     });
@@ -839,7 +880,6 @@ jQuery(document).ready(function($) {
         var current_output = init_output_properties();
         var current_bandpass = init_bandpass_properties();
         lc_output_props_widget.display_selected(current_output, false);
-        console.log(current_bandpass);
 //        sed_band_pass_filters_widget.display_selected(current_bandpass, false);
         lc_output_props_widget.change();
         sed_band_pass_filters_widget.change();
@@ -853,5 +893,7 @@ jQuery(document).ready(function($) {
         $('#id_output_format-supported_formats').change();
         $(sed_id('apply_sed')).change();
         $(sed_id('apply_dust')).change();
+        $('div.summary_light_cone .output_properties_list').hide();
+        $('div.summary_sed .band_pass_filters_list').hide();
     })();
 });
