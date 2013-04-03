@@ -1,4 +1,5 @@
 import xml.etree.ElementTree as ET
+import logging
 
 ## Helps reading XML setting file into a Hash Table of Running options and Tuples array which describes the SAGE fields and their data types
 def ParseParams(FilePath):

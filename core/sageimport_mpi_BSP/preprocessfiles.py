@@ -5,6 +5,7 @@ import sys
 import struct
 import string
 import DBConnection
+import logging
 
 class PreprocessFiles(object):
     ## Mapping between SAGE (C/C++) data types to Database data types 
@@ -32,7 +33,7 @@ class PreprocessFiles(object):
         ####### PostgreSQL Simulation DB ################# 
         self.DBConnection=DBConnection.DBConnection(self.Options,ToMasterDB)
         
-        print('Connection to DB is open...')
+        logging.info('Connection to DB is open...')
     
     def DropDatabase(self):
         ## Check if the database already exists
@@ -47,7 +48,7 @@ class PreprocessFiles(object):
             if Response=='y':
                 ## Drop the database
                 self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers("Drop database "+self.DBName+";")                
-                print("Database "+self.DBName+" Dropped")
+                logging.info("Database "+self.DBName+" Dropped")
     
                 
     
@@ -57,13 +58,13 @@ class PreprocessFiles(object):
        
        ## Create New DB 
        self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers("create database "+self.DBName+";") 
-       print("Database "+self.DBName+" Created")
+       logging.info("Database "+self.DBName+" Created")
        ### Close the current Connection (To a Default DB) and open a new one on the new DB
        self.DBConnection.CloseConnections()
        self.DBConnection=DBConnection.DBConnection(self.Options)      
        
        
-       print("Connection to Database "+self.DBName+" is opened and ready")
+       logging.info("Connection to Database "+self.DBName+" is opened and ready")
    
    
    
@@ -89,13 +90,13 @@ class PreprocessFiles(object):
         SimulationBoxY=float(self.Options['RunningSettings:SimulationBoxX'])
         BSPCellSize=float(self.Options['RunningSettings:BSPCellSize'])
         
-        print("Processing BOX ("+str(SimulationBoxX)+"x"+str(SimulationBoxY)+") With Cell Size="+str(BSPCellSize))
+        logging.info("Processing BOX ("+str(SimulationBoxX)+"x"+str(SimulationBoxY)+") With Cell Size="+str(BSPCellSize))
         
         CellsInX=int(math.ceil(SimulationBoxX/BSPCellSize))
         CellsInY=int(math.ceil(SimulationBoxY/BSPCellSize))
         
-        print("Cells In X="+str(CellsInX))
-        print("Cells In Y="+str(CellsInY))
+        logging.info("Cells In X="+str(CellsInX))
+        logging.info("Cells In Y="+str(CellsInY))
         
         
         NumberofTables=CellsInX*CellsInY
@@ -105,7 +106,7 @@ class PreprocessFiles(object):
         ## Create Table template statement 
         self.CreateNewTableTemplate()
         
-        print("WARNING ALL DATA TABLES WILL BE RECREATED .....")
+        logging.info("WARNING ALL DATA TABLES WILL BE RECREATED .....")
         
         ## Ensure that there is no Files marked as processed..
         ## This may happen if the user drop the table and forget to update the datafiles table
@@ -121,7 +122,7 @@ class PreprocessFiles(object):
         self.CreateTable_DB_Mapping()
         ## for each tableID create New Table 
         for TableID in TableIDs:
-            print("Creating Table ("+str(TableID)+")")
+            logging.info("Creating Table ("+str(TableID)+")")
             self.CreateNewTable(TableID)
         
         self.CreateNewTable(NumberofTables)
@@ -184,24 +185,24 @@ class PreprocessFiles(object):
             NodeName=self.Options['PGDB:serverInfo'+str(HostIndex)+':serverip']
             InsertStatement="INSERT INTO Table_DB_Mapping Values('"+NewTableName+"','"+NodeName+"');" 
             self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers(InsertStatement)
-            print("Table "+NewTableName+" Created With Index ...")
+            logging.info("Table "+NewTableName+" Created With Index ...")
             
             
         except Exception as Exp:
             ## If an error happen catch it and let the user know
-            print(">>>>>Error While creating New Table")
-            print(type(Exp))
-            print(Exp.args)
-            print(Exp)            
-            print("Current SQL Statement =\n"+CreateTableStatment)
+            logging.info(">>>>>Error While creating New Table")
+            logging.info(type(Exp))
+            logging.info(Exp.args)
+            logging.info(Exp)            
+            logging.info("Current SQL Statement =\n"+CreateTableStatment)
             raw_input("PLease press enter to continue.....")       
     
     def GetNonEmptyFilesList(self):
         
         #Get List of Files where the file size is greater than zero        
-        print("Get list of files to be processed ....")
+        logging.info("Get list of files to be processed ....")
         dirList=os.listdir(self.CurrentFolderPath)
-        print("Current Files Count="+str(len(dirList)))
+        logging.info("Current Files Count="+str(len(dirList)))
         fullPathArray=[]
         for fname in dirList:
             ## Get file information (for getting the file size)  
@@ -212,7 +213,7 @@ class PreprocessFiles(object):
             if(statinfo.st_size>0 and string.find(fname,'model_')==0):
                 fullPathArray.append([self.CurrentFolderPath+'/'+fname,statinfo.st_size])
             elif(statinfo.st_size>0):
-                print("File Not Included:"+fname)
+                logging.info("File Not Included:"+fname)
         self.NonEmptyFiles=fullPathArray
      
      
@@ -225,7 +226,7 @@ class PreprocessFiles(object):
         #Process All the Non-Empty Files 
         ## The table "DataFiles" will work as a record keeper for which files has been processed and which has not been processed 
         ## It will be use to support continue in case of error
-        CreateTableSt="CREATE TABLE DataFiles "
+        CreateTableSt="DROP TABLE IF EXISTS DataFiles; CREATE TABLE DataFiles "
         CreateTableSt=CreateTableSt+"(FileID INT, FileName varchar(500),FileSize BIGINT, "
         CreateTableSt=CreateTableSt+" NumberofTrees INT, TotalNumberOfGalaxies BIGINT, TreeIDFrom INT,TreeIDTo INT,Processed boolean);"
         
@@ -247,7 +248,7 @@ class PreprocessFiles(object):
             
             
             CurrentInsertSt=InsertTemplate+"("
-            print('Processing File ('+str(FileID)+"/"+str(TotalFilesCount-1)+"):"+fobject[0])                       
+            logging.info('Adding File ('+str(FileID)+"/"+str(TotalFilesCount-1)+"):"+fobject[0])                       
             
             
             ########## Get File data from the header #########################            
@@ -276,7 +277,7 @@ class PreprocessFiles(object):
             StartFrom=StartFrom+NumberofTrees
         
         #SettingFile.close()
-        print ("Total Number of Galaxies="+str(TotalGalaxiesCount))
+        logging.info ("Total Number of Galaxies="+str(TotalGalaxiesCount))
     
     ## Read file header and get the information associated        
     def ProcessFile(self,FilePath):

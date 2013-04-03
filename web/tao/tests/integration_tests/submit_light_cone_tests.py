@@ -36,6 +36,9 @@ class SubmitLightConeTests(LiveServerMGFTest):
         self.login(self.username, password)
         self.visit('mock_galaxy_factory')
 
+    def tearDown(self):
+        super(SubmitLightConeTests, self).tearDown()
+
     def test_submit_invalid_output_properties(self):
         ## fill in form (correctly)
         self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
@@ -49,7 +52,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
 
         self.assert_on_page('mock_galaxy_factory')
 
-    def test_submit_valid_cone_job(self):
+    def test_submit_valid_unique_cone_job(self):
         ## fill in form (correctly)
         self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
         self.fill_in_fields({
@@ -59,9 +62,50 @@ class SubmitLightConeTests(LiveServerMGFTest):
             'redshift_max': '2',
         }, id_wrap=self.lc_id)
         self.click(self.lc_2select('op_add_all'))
+        self.clear(self.lc_id('number_of_light_cones'))
+        self.fill_in_fields({
+            'number_of_light_cones': '3', # this is actually the calculated maximum for parameters above
+        }, id_wrap=self.lc_id)
         self.submit_mgf_form()
 
         self.assert_on_page('job_index')
+
+    def test_submit_valid_random_cone_job(self):
+        self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
+        self.fill_in_fields({
+            'ra_opening_angle': '2',
+            'dec_opening_angle': '2',
+            'redshift_min': '1',
+            'redshift_max': '2',
+        }, id_wrap=self.lc_id)
+        self.click(self.lc_2select('op_add_all'))
+        self.clear(self.lc_id('number_of_light_cones'))
+        self.fill_in_fields({
+            'number_of_light_cones': '10', # this is greater than the maximum for "unique" for the parameters above
+        }, id_wrap=self.lc_id)
+        self.click_by_css(self.lc_id('light_cone_type_1')) # select "random"
+        self.submit_mgf_form()
+
+        self.assert_on_page('job_index')
+
+    def test_submit_invalid_unique_cone_job(self):
+        wait(2)
+        self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
+        self.fill_in_fields({
+            'ra_opening_angle': '2',
+            'dec_opening_angle': '2',
+            'redshift_min': '1',
+            'redshift_max': '2',
+        }, id_wrap=self.lc_id)
+        self.click(self.lc_2select('op_add_all'))
+        wait(2)
+        self.clear(self.lc_id('number_of_light_cones'))
+        self.fill_in_fields({
+            'number_of_light_cones': '9', # this exceeds the calculated maximum, 3, for parameters above
+        }, id_wrap=self.lc_id)
+        self.submit_mgf_form()
+
+        self.assert_on_page('mock_galaxy_factory')
 
     def test_submit_valid_box_job(self):
         ## fill in form (correctly)
@@ -73,7 +117,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
         self.click(self.lc_2select('op_add_all'))
         self.submit_mgf_form()
 
-        self.assert_on_page('job_index') #'held_jobs')
+        self.assert_on_page('job_index')
         
 
     def test_invalid_box_options_allow_light_cone_submit(self):
@@ -128,3 +172,22 @@ class SubmitLightConeTests(LiveServerMGFTest):
         self.submit_mgf_form()
         self.assert_on_page('mock_galaxy_factory')
         self.assertEqual(third_snapshot_text, self.get_selected_option_text(self.lc_id('snapshot')))
+
+    def test_number_of_cones_stays_the_same_after_failed_submit(self):
+        number_of_light_cones = '3'
+        self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
+        self.fill_in_fields({
+            'ra_opening_angle': '2',
+            'dec_opening_angle': '2',
+            'redshift_min': '1',
+            'redshift_max': '2',
+        }, id_wrap=self.lc_id)
+        self.click_by_css(self.lc_id('light_cone_type_0'))
+        self.clear(self.lc_id('number_of_light_cones'))
+        self.fill_in_fields({
+            'number_of_light_cones': number_of_light_cones, # this is actually the calculated maximum for parameters above
+        }, id_wrap=self.lc_id)
+
+        self.submit_mgf_form()
+        self.assert_on_page('mock_galaxy_factory')
+        self.assertEqual(number_of_light_cones, self.selenium.find_element_by_css_selector(self.lc_id('number_of_light_cones')).get_attribute('value'))

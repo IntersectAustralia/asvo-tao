@@ -206,6 +206,7 @@ namespace tao {
       tao::galaxy _gal;
 
       string _accel_method;
+      string _decomp_method;
       int _bsp_step;
       string _snap_red_table;
       map<string,string> _field_map;

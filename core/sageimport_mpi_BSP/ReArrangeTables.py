@@ -8,6 +8,7 @@ import numpy
 import matplotlib.pyplot as plt
 import time
 from mpi4py import MPI # MPI Implementation
+import logging
 
 class ReArrangeTrees(object):
     
@@ -23,14 +24,14 @@ class ReArrangeTrees(object):
         self.DBConnection=DBConnection.DBConnection(Options)
         self.CurrentSAGEStruct=CurrentSAGEStruct
         
-        print('Connection to DB is open...Start Creating Tables')
+        logging.info('Connection to DB is open...Start Creating Tables')
         self.CreateNewTableTemplate()
         
     
     
     def CloseConnections(self):        
         self.DBConnection.close()       
-        print('Connection to DB is Closed...')
+        logging.info('Connection to DB is Closed...')
     
              
     def GetGridLimits(self):
@@ -68,7 +69,7 @@ class ReArrangeTrees(object):
         for i in range(MinX,MaxX+1):
             for j in range(MinY,MaxY+1):
                 self.CreateNewTable(i,j)
-                print("Table "+str(i)+","+str(j)+" Created")
+                logging.info("Table "+str(i)+","+str(j)+" Created")
                 
         return [MinTreeID,MaxTreeID]
         
@@ -118,7 +119,7 @@ class ReArrangeTrees(object):
             start= time.clock()      
             self.ProcessTree(TreeID)
             end= time.clock()
-            print(str(CommRank)+":Moving Tree "+str(TreeID-TreeIDMin)+"/"+str(TreeIDMax-TreeIDMin+1)+"="+str(int(((TreeID-TreeIDMin)/float(TreeIDMax-TreeIDMin))*100))+"%\t"+str((end-start)/1000.0)+"S")
+            logging.info(str(CommRank)+":Moving Tree "+str(TreeID-TreeIDMin)+"/"+str(TreeIDMax-TreeIDMin+1)+"="+str(int(((TreeID-TreeIDMin)/float(TreeIDMax-TreeIDMin))*100))+"%\t"+str((end-start)/1000.0)+"S")
             
             
             
@@ -174,16 +175,16 @@ class ReArrangeTrees(object):
             self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment)
             
              
-            #print("Table "+NewTableName+" Created With Index ...")
+            #logging.info("Table "+NewTableName+" Created With Index ...")
             
             
         except Exception as Exp:
             ## If an error happen catch it and let the user know
-            print(">>>>>Error While creating New Table")
-            print(type(Exp))
-            print(Exp.args)
-            print(Exp)            
-            print("Current SQL Statement =\n"+CreateTableStatment)
+            logging.info(">>>>>Error While creating New Table")
+            logging.info(type(Exp))
+            logging.info(Exp.args)
+            logging.info(Exp)            
+            logging.info("Current SQL Statement =\n"+CreateTableStatment)
             raw_input("PLease press enter to continue.....")       
                 
                  
@@ -196,10 +197,10 @@ if __name__ == '__main__':
     CommSize= comm.Get_size()
     
     if CommRank==0:
-        print('SAGE Tree Re-Arranging ( MPI version)')
+        logging.info('SAGE Tree Re-Arranging ( MPI version)')
     
     
-    print("MPI Starting .... My Rank is: "+str(CommRank)+"/"+str(CommSize))
+    logging.info("MPI Starting .... My Rank is: "+str(CommRank)+"/"+str(CommSize))
     
       
     
@@ -213,7 +214,7 @@ if __name__ == '__main__':
         [MinX,MinY,MaxX,MaxY] =ReArrangeTablesObj.GetGridLimits()
         [MinTreeID,MaxTreeID]=ReArrangeTablesObj.GetTreeIDMinMax()
         ReArrangeTablesObj.GenerateTables(MinX,MinY,MaxX,MaxY)
-        print([MinTreeID,MaxTreeID])
+        logging.info([MinTreeID,MaxTreeID])
         Current_LocalMinTreeID=int(MinTreeID+((MaxTreeID-MinTreeID)*(1.0/CommSize)))+1
         
         for i in range(1,CommSize):
@@ -234,7 +235,7 @@ if __name__ == '__main__':
         LocalMaxTreeID=Mesg["MaxTreeID"]
         
         
-    print ("Node ("+str(CommRank)+"): From ="+str(LocalMinTreeID)+"\t To="+str(LocalMaxTreeID))
+    logging.info ("Node ("+str(CommRank)+"): From ="+str(LocalMinTreeID)+"\t To="+str(LocalMaxTreeID))
     
         
     ReArrangeTablesObj.ArrangeTrees(LocalMinTreeID,LocalMaxTreeID) 

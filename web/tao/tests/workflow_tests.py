@@ -58,18 +58,18 @@ class WorkflowTests(TestCase, XmlDiffMixin):
         super(WorkflowTests, self).tearDown()
         time.frozen_time = None
 
-    def test_cone(self):
+    def test_unique_cone(self):
         form_parameters = {
             'catalogue_geometry': 'light-cone',
             'dark_matter_simulation': self.simulation.id,
             'galaxy_model': self.galaxy_model.id,
-            'redshift_min': 0.2,
-            'redshift_max': 0.3,
-            'ra_opening_angle': 71.565,
-            'dec_opening_angle': 41.811,
+            'redshift_min': 0.0,
+            'redshift_max': 0.2,
+            'ra_opening_angle': 12.001,
+            'dec_opening_angle': 10.003,
             'output_properties' : [self.filter.id, self.output_prop.id],
             'light_cone_type': 'unique',
-            'number_of_light_cones': '1',
+            'number_of_light_cones': 8,
             }
         xml_parameters = form_parameters.copy()
         xml_parameters.update({
@@ -82,6 +82,65 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'output_properties_2_name' : self.output_prop.name,
             'output_properties_2_label' : self.output_prop.label,
             })
+        xml_parameters.update({
+            'filter': self.filter.name,
+            'filter_min' : '1000000',
+            'filter_max' : 'None',
+        })
+        xml_parameters.update({
+            'ssp_name': self.stellar_model.name,
+            'band_pass_filter_label': self.band_pass_filter.label,
+            'band_pass_filter_id': self.band_pass_filter.filter_id,
+            'dust_model_name': self.dust_model.name,
+
+        })
+
+        # TODO: there are commented out elements which are not implemented yet
+        # comments are ignored by assertXmlEqual
+
+        expected_parameter_xml = light_cone_xml(xml_parameters)
+
+        light_cone_form = make_form({}, LightConeForm, form_parameters, prefix='light_cone')
+        mock_ui_holder = MockUIHolder(light_cone_form)
+        sed_form = make_form({}, SEDForm, self.sed_parameters, prefix='sed')
+        record_filter_form = make_form({}, RecordFilterForm, {'filter':'D-'+str(self.filter.id),'min':str(1000000)}, ui_holder=mock_ui_holder, prefix='record_filter')
+        output_form = make_form({}, OutputFormatForm, {'supported_formats': 'csv'}, prefix='output_format')
+        self.assertEqual({}, light_cone_form.errors)
+        self.assertEqual({}, sed_form.errors)
+        self.assertEqual({}, record_filter_form.errors)
+        self.assertEqual({}, output_form.errors)
+
+        mock_ui_holder.set_forms([light_cone_form, sed_form, record_filter_form, output_form])
+        job = workflow.save(self.user, mock_ui_holder)
+        actual_parameter_xml = job.parameters
+
+        self.assertXmlEqual(expected_parameter_xml, actual_parameter_xml)
+        self.assertEqual(self.dataset.database, job.database)
+
+    def test_random_cone(self):
+        form_parameters = {
+            'catalogue_geometry': 'light-cone',
+            'dark_matter_simulation': self.simulation.id,
+            'galaxy_model': self.galaxy_model.id,
+            'redshift_min': 0.2,
+            'redshift_max': 0.3,
+            'ra_opening_angle': 71.565,
+            'dec_opening_angle': 41.811,
+            'output_properties' : [self.filter.id, self.output_prop.id],
+            'light_cone_type': 'random',
+            'number_of_light_cones': 10,
+        }
+        xml_parameters = form_parameters.copy()
+        xml_parameters.update({
+            'username' : self.user.username,
+            'dark_matter_simulation': self.simulation.name,
+            'galaxy_model': self.galaxy_model.name,
+            'output_properties_1_name' : self.filter.name,
+            'output_properties_1_label' : self.filter.label,
+            'output_properties_1_units' : self.filter.units,
+            'output_properties_2_name' : self.output_prop.name,
+            'output_properties_2_label' : self.output_prop.label,
+        })
         xml_parameters.update({
             'filter': self.filter.name,
             'filter_min' : '1000000',

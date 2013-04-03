@@ -2,10 +2,11 @@ import pg
 import getpass
 import math
 import string
-import sys
+import sys,os
 import settingReader
 import numpy
 import DBConnection
+import logging
 #import matplotlib.pyplot as plt
 
 
@@ -17,16 +18,16 @@ class ProcessTables(object):
         '''
         self.Options=Options
         self.DBConnection=DBConnection.DBConnection(Options)
-        print('Connection to DB is open...Start Creating Tables')
+        logging.info('Connection to DB is open...Start Creating Tables')
         self.CreateSummaryTable()
         self.CreateTreeSummaryTable()
         
-        print('Summary Table Created ...')
+        logging.info('Summary Table Created ...')
     
     
     def CloseConnections(self):        
-        self.DBConnection.close()       
-        print('Connection to DB is Closed...') 
+        self.DBConnection.CloseConnections()       
+        logging.info('Connection to DB is Closed...') 
     
     
     def CreateSummaryTable(self):
@@ -46,11 +47,11 @@ class ProcessTables(object):
         CreateTable=CreateTable+"MaxSnap INT4,"
         CreateTable=CreateTable+"GalaxyCount BIGINT)"
         
-        self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServersExecuteNoQuerySQLStatment_On_AllServers(CreateTable)
+        self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers(CreateTable)
     def CreateTreeSummaryTable(self):
         
         DropTable="DROP TABLE IF EXISTS TreeSummary;"
-        self.DBConnection.ExecuteNoQuerySQLStatment(DropTable)
+        self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers(DropTable)
         
         CreateTable="CREATE TABLE TreeSummary ("        
         CreateTable=CreateTable+"GlobalTreeID BIGINT,"       
@@ -63,15 +64,16 @@ class ProcessTables(object):
         CreateTable=CreateTable+"GalaxyCount BIGINT,"
         CreateTable=CreateTable+"TABLENAME VARCHAR(200))"
         
-        self.DBConnection.ExecuteNoQuerySQLStatment(CreateTable)
+        self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers(CreateTable)
     
     
             
-    def GetTableSummary(self,TableName):
+    def GetTableSummary(self,TableName,ServerIndex):
         
         GetSummarySQL="select min(PosX),max(PosX),min(PosY),max(PosY),min(PosZ),max(PosZ),min(snapnum),max(snapnum),count(*) from @TABLEName;"
         GetSummarySQL= string.replace(GetSummarySQL,"@TABLEName",TableName)
-        SummaryListArr=self.DBConnection.ExecuteQuerySQLStatment(GetSummarySQL)
+        
+        SummaryListArr=self.DBConnection.ExecuteQuerySQLStatment(GetSummarySQL,ServerIndex)
         if len(SummaryListArr)==0:
             return
         SummaryList=SummaryListArr[0]
@@ -101,15 +103,42 @@ class ProcessTables(object):
         self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers(InsertSummaryRecord)
         
         
-        #print("********************************************************************************")
-    def GetTreeSummary(self,TableName):
-        #print("Processing Table: "+TableName)
-        GetSummarySQL="INSERT INTO TreeSummary select GlobalTreeID,min(PosX),min(PosY),min(PosZ),max(PosX),max(PosY),max(PosZ),count(*),'"+TableName+"' from @TABLEName group by GlobalTreeID order by GlobalTreeID;"
-        GetSummarySQL= string.replace(GetSummarySQL,"@TABLEName",TableName)        
-        self.DBConnection.ExecuteNoQuerySQLStatment(GetSummarySQL)
         
-        #print("End Processing Table: "+TableName)
-        #print("********************************************************************************")    
+    def GetTreeSummary(self,TableName,ServerIndex):
+        logging.info("GetTreeSummary ..... Processing Table: "+TableName)
+        #GetSummarySQL="INSERT INTO TreeSummary select GlobalTreeID,min(PosX),min(PosY),min(PosZ),max(PosX),max(PosY),max(PosZ),count(*),'"+TableName+"' from @TABLEName group by GlobalTreeID order by GlobalTreeID;"
+        GetSummarySQL="select GlobalTreeID,min(PosX),min(PosY),min(PosZ),max(PosX),max(PosY),max(PosZ),count(*),'"+TableName+"' from @TABLEName group by GlobalTreeID order by GlobalTreeID;"
+        GetSummarySQL= string.replace(GetSummarySQL,"@TABLEName",TableName)
+        
+                
+        Resultsset=self.DBConnection.ExecuteQuerySQLStatment(GetSummarySQL,ServerIndex)
+        RecordsCount=0
+        InserSummarySQL="Insert into TreeSummary Values"
+        for Row in Resultsset:
+            
+            RecordsCount=RecordsCount+1
+            
+            
+            globaltreeid=Row[0]
+            minx=Row[1]
+            miny=Row[2]
+            minz=Row[3]
+            maxx=Row[4]
+            maxy=Row[5]
+            maxz=Row[6]
+            count=Row[7]
+            InserSummarySQL=InserSummarySQL+"("+str(globaltreeid)+","+str(minx)+","+str(miny)+","+str(minz)+","+str(maxx)+","+str(maxy)+","+str(maxz)+","+str(count)+",'"+TableName+"'),"
+            
+            if RecordsCount%100==0:                
+                InserSummarySQL=InserSummarySQL[:-1]+";"            
+                self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers(InserSummarySQL)
+                InserSummarySQL="Insert into TreeSummary Values"
+        if RecordsCount%100>0: 
+            InserSummarySQL=InserSummarySQL[:-1]+";"            
+            self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers(InserSummarySQL)
+                
+        logging.info("End Processing Table: "+TableName)
+            
     
     
                 
@@ -132,6 +161,8 @@ class ProcessTables(object):
         #plt.show()
         
     def ValidateImportProcess(self):
+        
+        
         DataFileSummarySt="select sum(totalnumberofgalaxies),max(treeidto) from datafiles;"
         DataFilesSummary=self.DBConnection.ExecuteQuerySQLStatment(DataFileSummarySt)[0]
         ETotalNumberofExpectedGalaxies=DataFilesSummary[0]
@@ -143,44 +174,50 @@ class ProcessTables(object):
         CTotalNumberofExpectedGalaxies=TreeSummaryInfo[0]
         CMaxTreeID=TreeSummaryInfo[1]
         
-        print("----------------------------------------------------------------")
-        print("Validate Importing Process")
-        print("Total Number of Galaxies = "+str(CTotalNumberofExpectedGalaxies)+"\nExpected Number of Galaxies (Header Info)="+str(ETotalNumberofExpectedGalaxies))
-        print("Total Number of Trees = "+str(CMaxTreeID)+"\nExpected Number of Trees (Header Info)="+str(EMaxTreeID))
+        logging.info("----------------------------------------------------------------")
+        logging.info("Validate Importing Process")
+        logging.info("Total Number of Galaxies = "+str(CTotalNumberofExpectedGalaxies)+"\nExpected Number of Galaxies (Header Info)="+str(ETotalNumberofExpectedGalaxies))
+        logging.info("Total Number of Trees = "+str(CMaxTreeID)+"\nExpected Number of Trees (Header Info)="+str(EMaxTreeID))
         
         if CMaxTreeID==EMaxTreeID and CTotalNumberofExpectedGalaxies==ETotalNumberofExpectedGalaxies:
-            print("Data Validation Completed")
+            logging.info("Data Validation Completed")
         else:
-            print("Error in the Import Process. Please revise the imported data!")
+            logging.info("Error in the Import Process. Please revise the imported data!")
         
         
         
         
         
-    def GetTablesList(self):
+    def GetTablesList(self,ServerID):
         
         GetTablesListSt="select table_name from information_schema.tables where table_schema='public' order by table_name;"
-        TablesList=self.DBConnection.ExecuteQuerySQLStatment(GetTablesListSt)
+        TablesList=self.DBConnection.ExecuteQuerySQLStatment(GetTablesListSt,ServerID)
         Count=0
         for Table in TablesList:
             TableName=Table[0]
             
             if string.find(TableName,self.Options['PGDB:TreeTablePrefix'])==0:
-                print("Processing Table: "+TableName+ "\t "+str(Count)+"/"+str(len(TablesList)))
-                self.GetTableSummary(TableName)
-                self.GetTreeSummary(TableName)
+                logging.info(str(ServerID)+":Processing Table: "+TableName+ "\t "+str(Count)+"/"+str(len(TablesList)))
+                self.GetTableSummary(TableName,ServerID)
+                self.GetTreeSummary(TableName,ServerID)
             Count=Count+1
                 
                  
 #if __name__ == '__main__':
 #    print('Starting DB processing')
+#    FilePath='log/logfile_AnalyzeTable.log'
+#    if os.path.exists(FilePath):
+#        os.remove(FilePath)
+#    logging.basicConfig(filename=FilePath,level=logging.DEBUG,format='%(asctime)s %(message)s')
+    
 #    [CurrentSAGEStruct,Options]=settingReader.ParseParams("settings.xml") 
 #    ProcessTablesObj=ProcessTables(Options)
-#    ProcessTablesObj.GetTablesList()
-    
+#    for i in range(0,ProcessTablesObj.DBConnection.serverscount):
+#        ProcessTablesObj.GetTablesList(i)
+   
 #    ProcessTablesObj.SummarizeLocationInfo()  
 #    ProcessTablesObj.ValidateImportProcess()            
-        
+#    ProcessTablesObj.CloseConnections()      
         
         
         

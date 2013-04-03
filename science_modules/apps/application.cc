@@ -62,8 +62,12 @@ namespace tao {
    {
       LOG_ENTER();
 
-      // Preprocess the incoming XML file.
-      _preprocess_xml();
+      // Preprocess the incoming XML file, only if we're
+      // the root process, as we don't want any conflicts
+      // in writing the processed file.
+      if( mpi::comm::world.rank() == 0 )
+	 _preprocess_xml();
+      mpi::comm::world.barrier();
 
       // Load all the modules first up.
       _load_modules();
@@ -81,9 +85,9 @@ namespace tao {
 
 
       // Prepare the logging.
-      string subjobindex=dict.get<string>( "subjobindex" );
+      string subjobindex=dict.get<string>( "subjobindex", "0" );
       LOGDLN("LOG DIRECTORY:"+dict.get<string>( "logdir" ) );
-      LOGDLN("SubJobIndex:"+dict.get<string>( "SubJobIndex" ) );
+      LOGDLN("SubJobIndex:"+dict.get<string>( "SubJobIndex", "0" ) );
 
       _setup_log( dict.get<string>( "logdir" ) + "tao.log."+ subjobindex);
 
