@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="{% static 'css/jquery-ui/themes/base/jquery-ui.css' %}" />
     <script type="text/javascript" src="{% static 'js/jquery-ui-1.10.1.custom.min.js' %}"></script>
 
-    <script type="text/javascript" src="{% static 'js/PopUp.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jobs.js' %}"></script>
 {% endblock extrajs %}
 
 {% block content %}
@@ -42,10 +42,10 @@
                         <td>
                             {{ job.status }}
                             {%  if job.is_error %}
-                                <div id="popUpDialogue" title="Error Message for Job {{ job.id }}" style="display: none;">
+                                <button class="openPopUp" id="popUp">?</button>
+                                <div class="popUpDialogue" title="Error Message for Job {{ job.id }}" style="display: none;">
                                     <p>{{ job.short_error_message }}</p>
                                 </div>
-                                <button id="popUp">?</button>
                             {% endif %}
                         </td>
                     </tr>

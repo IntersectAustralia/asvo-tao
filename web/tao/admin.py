@@ -11,9 +11,9 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as AuthUserAdmin
 from django.contrib.auth.models import User
 
-from tao.models import Job, UserProfile, Simulation, GalaxyModel, DataSet, DataSetProperty, StellarModel, Snapshot, BandPassFilter, DustModel
+from tao.models import Job, UserProfile, Simulation, GalaxyModel, DataSet, DataSetProperty, StellarModel, Snapshot, BandPassFilter, DustModel, GlobalParameter
 
-for model in (Simulation, Job, GalaxyModel, DataSetProperty, StellarModel, BandPassFilter, DustModel):
+for model in (Simulation, Job, GalaxyModel, DataSetProperty, StellarModel, BandPassFilter, DustModel, GlobalParameter):
     admin.site.register(model)
 
 

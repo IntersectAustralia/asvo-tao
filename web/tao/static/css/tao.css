@@ -2,10 +2,6 @@ body {
     padding-top: 60px;
 }
 
-ul {
-    list-style-type:none;
-    margin: 0 0 10px 0;
-}
 
 a.ui-tabs-anchor:focus {
     outline: 0px none black;
@@ -137,7 +133,7 @@ legend {
     -webkit-border-radius: 0; -moz-border-radius: 0; border-radius: 0;
   }
 
-#tabs.ui-tabs .ui-tabs-nav { 
+#tabs.ui-tabs .ui-tabs-nav {
   margin: 0 0 20px 0; padding: 0px; width: auto;
   border: 0px solid; background: none; color: #333;
   float: none;
@@ -259,8 +255,25 @@ fieldset legend {
 }
 .id_light_cone-light_cone_type {
     clear: both;
+    width: 50%;
+    float: left;
   }
+.id_light_cone-light_cone_type ul {
+    list-style-type:none;
+    margin: 0 0 10px 0;
+}
 
+.id_light_cone-number_of_light_cones {
+    width: 50%;
+    float: left;
+}
+.id_light_cone-number_of_light_cones .ui-spinner-input {
+    margin: 0 0;
+    margin-top: 0;
+    margin-left: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+}
 
 .id_sed-apply_sed label, .id_sed-apply_dust label {
   margin-bottom: -25px;
@@ -347,3 +360,5 @@ color: #333; cursor: pointer; display: inline-block; font-family: inherit; font-
 
 .btn-primary { background: #2ba6cb; color: #FFF; border: 1px solid #1e728c; }
 .btn-primary:hover { background-color: #2284a1; color: #FFF; border: 1px solid #1e728c; }
+
+.ui-spinner .help-inline { display: block; }

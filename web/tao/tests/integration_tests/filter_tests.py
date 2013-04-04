@@ -89,8 +89,8 @@ class FilterTests(LiveServerMGFTest):
     def test_filter_options_with_selected_band_pass_filter_submit_ok(self):
         # check drop-down list correspond to properties of the currently selected simulation and galaxy model
         # plus selected band-pass filter
+        self.fill_in_fields({'ra_opening_angle':'12', 'dec_opening_angle': '10', 'redshift_min':'0', 'redshift_max':'0.2'}, id_wrap=self.lc_id)
         self.click(self.lc_2select('op_add_all'))
-        self.fill_in_fields({'ra_opening_angle':'123', 'dec_opening_angle': '123', 'redshift_min':'1', 'redshift_max':'20'}, id_wrap=self.lc_id)
         self.click('tao-tabs-' + MODULE_INDICES['sed'])
         self.click(self.sed('apply_sed'))
         self.click(self.sed_2select('op_add_all'))

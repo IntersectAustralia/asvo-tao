@@ -112,6 +112,15 @@ class OutputFormatForm(BetterForm):
         child_element(of_elem, 'module-version', text=OutputFormatForm.MODULE_VERSION)
         child_element(of_elem, 'format', text=self.cleaned_data['supported_formats'])
 
+    @classmethod
+    def from_xml(cls, ui_holder, xml_root, prefix=None):
+        # elem = find output-file elemen in xml
+        # grab elem.format in xml_supported_format
+        elems = xml_root.xpath('//n:output-file/n:format',namespaces={'n':'http://tao.asvo.org.au/schema/module-parameters-v1'})
+        supported_format = tao_settings.OUTPUT_FORMATS[0]
+        if elems is not None and len(elems) == 1: supported_format = elems[0].text
+        return cls(ui_holder, {prefix + '-supported_formats': supported_format})
+
 class RecordFilterForm(BetterForm):
     EDIT_TEMPLATE = 'mock_galaxy_factory/record_filter.html'
     MODULE_VERSION = 1

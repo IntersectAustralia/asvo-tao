@@ -17,10 +17,7 @@ copy_files() {
   test -d $TARGET_BACKUP && rm -rf $TARGET_BACKUP
   mv $TARGET $TARGET_BACKUP
   mkdir -p $TARGET
-  cp -r $UNPACK_DIR/asvo-tao/web $TARGET/
-  mkdir -p $TARGET/web/src
-  cp -r $UNPACK_DIR/light-cone $TARGET/web/src/
-  cp -r $UNPACK_DIR/sed $TARGET/web/src/
+  cp -r $UNPACK_DIR/asvo-tao/* $TARGET/
 }
 
 rebuild() {
@@ -39,7 +36,12 @@ db_update() {
 
 static_update() {
   echo "Updating static resources..."
+  cd $TARGET/web
   bin/django collectstatic
+}
+
+finish() {
+  cp $DIR/production_htaccess $TARGET/.htaccess
 }
 
 unpack
@@ -47,3 +49,4 @@ copy_files
 rebuild
 db_update
 static_update
+finish

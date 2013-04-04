@@ -26,6 +26,9 @@ def child_element(parent, tag, text=None, **attrs):
 def xml_print(root):
     return etree.tostring(root, pretty_print=True, encoding='utf-8', xml_declaration=True)
 
+def xml_parse(xml_str):
+    return etree.fromstring(xml_str)
+
 def remove_comments(root):
     comments = root.xpath('//comment()')
     for c in comments:

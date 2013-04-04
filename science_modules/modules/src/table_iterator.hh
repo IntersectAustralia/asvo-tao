@@ -309,6 +309,7 @@ namespace tao {
 	 _planes.push_back( plane );
 	 _calc_plane( ph[1], ph[2], ph[3], plane );
 	 _planes.push_back( plane );
+	 LOGDLN( "Table iterator planes: ", _planes );
 
 #ifndef NDEBUG
 	 // Do a quick sanity check. Pick two points, one inside

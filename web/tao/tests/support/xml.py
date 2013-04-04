@@ -1,12 +1,137 @@
 from lxml import etree, objectify
 from tao.xml_util import remove_comments
-
+from tao.tests.support import stripped_joined_lines
 
 def normalise_xml(xmlstring):
     as_object = etree.fromstring(xmlstring)
     as_object = remove_comments(as_object)
     normalised_string = etree.tostring(as_object, pretty_print=True)
     return normalised_string
+
+def light_cone_xml(xml_parameters):
+    xml = stripped_joined_lines("""
+            <?xml version="1.0" encoding="UTF-8"?>
+            <!-- Using the XML namespace provides a version for future modifiability.  The timestamp allows
+                 a researcher to know when this parameter file was generated.  -->
+            <tao xmlns="http://tao.asvo.org.au/schema/module-parameters-v1" timestamp="2012-12-20T13:55:36+10:00">
+
+                <!-- Username submitting the job -->
+                <username>%(username)s</username>
+
+                <!-- Workflow name identifies which workflow is to be executed.
+                     This is currently a placeholder, the name is ignored. -->
+                <workflow name="alpha-light-cone-image">
+
+                    <!-- Global Configuration Parameters -->
+                    <schema-version>1.0</schema-version>
+
+                    <!-- Light-cone module parameters -->
+                    <light-cone>
+                        <!-- Module Version Number -->
+                        <module-version>1</module-version>
+
+                        <!-- Is the query a light-cone or box? -->
+                        <geometry>light-cone</geometry>
+
+                        <!-- Selected Simuation -->
+                        <simulation>%(dark_matter_simulation)s</simulation>
+
+                        <!-- Selected Galaxy Model -->
+                        <galaxy-model>%(galaxy_model)s</galaxy-model>
+
+                        <!-- The number of light-cones to generate  -->
+                        <box-repetition>%(light_cone_type)s</box-repetition>
+                        <num-cones>%(number_of_light_cones)d</num-cones>
+
+                        <!-- The min and max redshifts to filter by -->
+                        <redshift-min>%(redshift_min).1f</redshift-min>
+                        <redshift-max>%(redshift_max).1f</redshift-max>
+
+                        <!-- RA/Dec range for limiting the light-cone -->
+                        <ra-min units="deg">0.0</ra-min>
+                        <ra-max units="deg">%(ra_opening_angle).3f</ra-max>
+                        <dec-min units="deg">0.0</dec-min>
+                        <dec-max units="deg">%(dec_opening_angle).3f</dec-max>
+
+                        <!-- List of fields to be included in the output file -->
+                        <output-fields>
+                            <item label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
+                            <item label="%(output_properties_2_label)s">%(output_properties_2_name)s</item>
+                        </output-fields>
+
+                        <!-- RNG Seed -->
+                        <!-- This will be added by the workflow after the job has been completed
+                             to enable the job to be repeated.
+                             The information stored may change, the intent is to store whatever is
+                             required to re-run the job and obtain the same results.
+                        <rng-seed>12345678901234567890</rng-seed> -->
+
+                    </light-cone>
+
+                    <!-- Optional: Spectral Energy Distribution parameters -->
+                    <sed>
+                        <!-- Module Version Number -->
+                        <module-version>1</module-version>
+
+                        <single-stellar-population-model>%(ssp_name)s</single-stellar-population-model>
+
+                        <!-- Bandpass Filters) -->
+                        <bandpass-filters>
+                            <item label="%(band_pass_filter_label)s">%(band_pass_filter_id)s</item>
+                        </bandpass-filters>
+                        <dust>%(dust_model_name)s</dust>
+                    </sed>
+
+                    <!-- Record Filter -->
+                    <record-filter>
+                        <!-- Module Version Number -->
+                        <module-version>1</module-version>
+
+                        <!-- Note that the units are for readability,
+                             no unit conversion is supported.  The consumer of the
+                             parameter file should check that the expected units are provided. -->
+                        <filter-type>%(filter)s</filter-type>
+                        <filter-min units="Msun/h">%(filter_min)s</filter-min>
+                        <filter-max units="Msun/h">%(filter_max)s</filter-max>
+                    </record-filter>
+
+                    <!-- File output module -->
+                    <output-file>
+                        <!-- Module Version Number -->
+                        <module-version>1</module-version>
+
+                        <!-- Output file format -->
+                        <format>csv</format>
+                    </output-file>
+
+                    <!-- Image generation module parameters
+                    <image-generator>
+                        <!- Module Version Number ->
+                        <module-version>1</module-version>
+
+                        <!- Image size parameters ->
+                        <image-width units="px">1024</image-width>
+                        <image-height units="px">1024</image-height>
+
+                        <!- Focal scale parameters ->
+                        <focalx units="??">1024</focalx>
+                        <focaly units="??">1024</focaly>
+
+                        <!- Image offset parameters ->
+                        <image-offsetx units="??">512</image-offsetx>
+                        <image-offsety units="??">0</image-offsety>
+                    </image-generator> -->
+
+                </workflow>
+
+                <!-- The signature is automatically generated and is intended to be used when running
+                     old versions of the science modules (to remove the need for the UI to parse and check
+                     every version. -->
+                <signature>base64encodedsignature</signature>
+
+            </tao>
+        """) % xml_parameters
+    return xml
 
 
 class XmlDiffMixin(object):
