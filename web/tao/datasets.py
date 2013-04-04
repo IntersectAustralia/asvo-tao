@@ -87,3 +87,21 @@ def band_pass_filter(id):
 
 def dust_models():
     return [(x.id, x.label) for x in models.DustModel.objects.order_by('label')]
+
+def dataset_find_from_xml(simulation, galaxy_model):
+    try:
+        obj = models.DataSet.objects.get(simulation__name=simulation, galaxy_model__name=galaxy_model)
+        return obj
+    except models.DataSet.DoesNotExist:
+        return None
+
+def filter_find_from_xml(data_set_id, filter_type, filter_units):
+    try:
+        obj = models.DataSetProperty.objects.get(name=filter_type, units=filter_units, dataset__pk=data_set_id)
+        return ('D', obj.id)
+    except models.DataSetProperty.DoesNotExist:
+        try:
+            obj = models.BandPassFilter.objects.get(filter_id=filter_type)
+            return ('B', obj.id)
+        except models.BandPassFilter.DoesNotExist:
+            return ('E', 0)

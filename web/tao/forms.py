@@ -19,6 +19,7 @@ from form_utils.forms import BetterForm
 import tao.settings as tao_settings
 from tao import datasets
 from tao.models import UserProfile, DataSetProperty, BandPassFilter
+from tao.xml_util import module_xpath
 
 NO_FILTER = 'no_filter'
 
@@ -114,11 +115,7 @@ class OutputFormatForm(BetterForm):
 
     @classmethod
     def from_xml(cls, ui_holder, xml_root, prefix=None):
-        # elem = find output-file elemen in xml
-        # grab elem.format in xml_supported_format
-        elems = xml_root.xpath('//n:output-file/n:format',namespaces={'n':'http://tao.asvo.org.au/schema/module-parameters-v1'})
-        supported_format = tao_settings.OUTPUT_FORMATS[0]
-        if elems is not None and len(elems) == 1: supported_format = elems[0].text
+        supported_format = module_xpath(xml_root, '//output-file/format')
         return cls(ui_holder, {prefix + '-supported_formats': supported_format})
 
 class RecordFilterForm(BetterForm):
@@ -212,3 +209,23 @@ class RecordFilterForm(BetterForm):
             filter_max = datasets.default_filter_max(self.ui_holder.raw_data('light_cone', 'galaxy_model'))
         child_element(rf_elem, 'filter-min', text=str(filter_min), units=units)
         child_element(rf_elem, 'filter-max', text=str(filter_max), units=units)
+
+    @classmethod
+    def from_xml(cls, ui_holder, xml_root, prefix=None):
+        simulation = module_xpath(xml_root, '//light-cone/simulation')
+        galaxy_model = module_xpath(xml_root, '//light-cone/galaxy-model')
+        data_set = datasets.dataset_find_from_xml(simulation, galaxy_model)
+        filter_type = module_xpath(xml_root, '//record-filter/filter-type')
+        filter_min = module_xpath(xml_root, '//record-filter/filter-min')
+        filter_max = module_xpath(xml_root, '//record-filter/filter-max')
+        filter_units = module_xpath(xml_root, '//record-filter/filter-min', attribute='units')
+        if filter_min == 'None': filter_min = None
+        if filter_max == 'None': filter_max = None
+        data_set_id = 0
+        if data_set is not None: data_set_id = data_set.id
+        kind, record_id = datasets.filter_find_from_xml(data_set_id, filter_type, filter_units)
+        attrs = {prefix+'-filter': kind + '-' + str(record_id),
+               prefix+'-min': filter_min,
+               prefix+'-max': filter_max,
+               }
+        return cls(ui_holder, attrs)
