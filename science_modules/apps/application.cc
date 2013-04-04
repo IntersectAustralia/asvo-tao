@@ -129,7 +129,10 @@ namespace tao {
       LOGILN( "Load Modules From File",_xml_file );
       // Open the primary XML file using pugixml.
       xml_document doc;
-      INSIST( doc.load_file( string( _xml_file+".processed").c_str() ), == true );
+      if (_currentxml_version!="1.0")
+    	  INSIST( doc.load_file( string( _xml_file).c_str() ), == true );
+      else
+    	  INSIST( doc.load_file( string( _xml_file+".processed").c_str() ), == true );
 
       // Iterate over the module nodes.
       xpath_node_set nodes = doc.select_nodes( "/tao/workflow/*[@module]" );
@@ -176,11 +179,15 @@ namespace tao {
   /// Massage incoming XML.
   ///
   void
-  application::_preprocess_xml() const
+  application::_preprocess_xml()
   {
 	 // Open the primary XML file using pugixml.
 	 xml_document inp_doc, out_doc;
 	 INSIST( inp_doc.load_file( string( _xml_file ).c_str() ), == true );
+	 _currentxml_version=inp_doc.select_single_node( "/tao/workflow/schema-version" ).node().first_child().value();
+	 LOGDLN("Current XMl Schema Version:",_currentxml_version);
+	 if (_currentxml_version!="1.0")
+		 return;
 
 	 // Create tao and workflow nodes.
 	 xml_node tao_node = out_doc.append_child( "tao" );
@@ -267,7 +274,10 @@ namespace tao {
 	  LOG_ENTER();
 	  LOGDLN( "XML File:", _xml_file );
 	  LOGDLN( "Basic Config XML File:", _dbcfg_file );
-      xml.read( _xml_file+".processed", "/tao" );
+	  if (_currentxml_version!="1.0")
+		  xml.read( _xml_file, "/tao" );
+	  else
+		  xml.read( _xml_file+".processed", "/tao" );
       xml.read( _dbcfg_file );
       LOG_EXIT();
    }

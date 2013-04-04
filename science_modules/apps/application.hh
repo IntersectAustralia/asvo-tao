@@ -47,7 +47,7 @@ namespace tao {
 	  /// Massage incoming XML.
 	  ///
 	  void
-	  _preprocess_xml() const;
+	  _preprocess_xml();
 
 
 
@@ -73,6 +73,7 @@ namespace tao {
 
       string _xml_file;
       string _dbcfg_file;
+      string _currentxml_version;
    };
 }
 
