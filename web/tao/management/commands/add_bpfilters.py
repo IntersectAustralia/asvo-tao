@@ -18,10 +18,11 @@ import csv
 import os
 from os import listdir
 from os.path import abspath, isdir, join, splitext
+from optparse import make_option
 
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
-from optparse import make_option
+import settings
 
 from tao.models import BandPassFilter
 from utilities.plot_filter import plot_filter
@@ -29,7 +30,7 @@ from utilities.plot_filter import plot_filter
 
 
 class Command(BaseCommand):
-    args = "<filters.csv filename> <doc source directory>"
+    args = "<filters.csv filename> <doc root directory>"
     help = """Populate / extend the BandPass Filter table"""
     option_list = BaseCommand.option_list + (
         make_option("-d", action='store_true', default=False,
@@ -63,6 +64,7 @@ class Command(BaseCommand):
             dialect = csv.Sniffer().sniff(csvfile.read(1024))
             csvfile.seek(0)
             csvreader = csv.reader(csvfile, dialect)
+            url_root = settings.STATIC_URL + 'docs/bpfilters/'
             for record in csvreader:
                 #
                 # Read the record
@@ -78,9 +80,10 @@ class Command(BaseCommand):
                     description = ''
                 flattened_fn = filter_fn.replace(os.sep, '_')
                 details = ("<p>{description}</p>\n"
-                           "<p>Additional Details: <a href=\"/static/docs/"
-                           "bpfilters/{ffn}.html\">{label}</a>.</p>").format(
-                            description=description, ffn=flattened_fn, label=label)
+                           "<p>Additional Details: <a href=\"{url_root}"
+                           "{ffn}.html\">{label}</a>.</p>").format(
+                                description=description, url_root=url_root,
+                                ffn=flattened_fn, label=label)
                 spectra_fn = self.generate_spectra(filter_fn, flattened_fn, label, description)
                 self.generate_doco(filter_fn, flattened_fn, label, description, spectra_fn)
                 self.save_filter(filter_fn, label, details)
