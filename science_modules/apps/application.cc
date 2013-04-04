@@ -164,7 +164,8 @@ namespace tao {
       // Connect 'em all up!
       for( auto module : tao::factory )
       {
-         list<string> parents = dict.get_list<string>( string( "workflow:" ) + module->name() + string( ":parents" ) );
+         string parents_opt = string( "workflow:" ) + module->name() + string( ":parents" );
+         list<string> parents = dict.get_list<string>( parents_opt, list<string>() );
          for( auto& name : parents )
             module->add_parent( *tao::factory[name] );
       }
