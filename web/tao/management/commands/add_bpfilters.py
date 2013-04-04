@@ -1,4 +1,28 @@
-"""Populate / extend the BandPass Filter table
+"""Populate / extend the BandPass Filter table and documentation
+
+The command takes two parameters:
+
+1. A CSV file containing the bandpass filter information, see below
+2. The root document directory (typically /path/to/asvo-tao/docs/)
+
+The bandpass filter documentation is generated with the following structure:
+
+    /path/to/asvo-tao/docs/
+        bpfilters/
+            index.rst
+            filter1.rst
+            .
+            .
+            .
+            filterN.rst
+            spectra/
+                filter1.png
+                .
+                .
+                .
+                filterN.png
+
+Links to the documentation are assumed to be: [settings.STATIC_URL]/docs/bpfilters/filterM.html
 
 The input bandpass file is a CSV file with columns:
 
@@ -11,7 +35,7 @@ link to the spectra in the documentation.
 
 Existing file names have their label, description and spectra replaced.
 
-Entries are never deleted (this needs to be done manually)."""
+Entries are never deleted (this currently needs to be done manually)."""
 
 import sys
 import csv
@@ -22,7 +46,7 @@ from optparse import make_option
 
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
-import settings
+from django.conf import settings
 
 from tao.models import BandPassFilter
 from utilities.plot_filter import plot_filter
@@ -36,10 +60,16 @@ class Command(BaseCommand):
         make_option("-d", action='store_true', default=False,
                     dest='debug',
                     help="Enter the debugger and halt"),
+        make_option("--doc", action='store_true', default=False,
+                    dest='doc',
+                    help="Display the command documentation and exit")
         )
 
 
     def handle(self, *args, **options):
+        if options['doc']:
+            print __doc__
+            exit(0)
         if len(args) != 2:
             raise CommandError("Command takes two arguments".format(sys.argv[0]))
         if options['debug']:
