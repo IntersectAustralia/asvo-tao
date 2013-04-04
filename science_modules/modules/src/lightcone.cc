@@ -903,24 +903,24 @@ namespace tao {
 
 
       // Extract table names.
-      _snap_red_table = dict.get<string>( prefix.get()+"/snapshot-redshift-table" );
+      _snap_red_table = dict.get<string>( prefix.get()+":snapshot-redshift-table","snap_redshift" );
 
       // Read all the field mappings.
-      _field_map.insert( "pos_x", dict.get<string>( prefix.get()+":pos_x" ) );
-      _field_map.insert( "pos_y", dict.get<string>( prefix.get()+":pos_y" ) );
-      _field_map.insert( "pos_z", dict.get<string>( prefix.get()+":pos_z" ) );
-      _field_map.insert( "global_id", dict.get<string>( prefix.get()+":global_id" ) );
-      _field_map.insert( "local_id", dict.get<string>( prefix.get()+":local_id" ) );
-      _field_map.insert( "tree_id", dict.get<string>( prefix.get()+":tree_id" ) );
-      _field_map.insert( "snapshot", dict.get<string>( prefix.get()+":snapshot" ) );
+      _field_map.insert( "pos_x", dict.get<string>( prefix.get()+":pos_x","posx" ) );
+      _field_map.insert( "pos_y", dict.get<string>( prefix.get()+":pos_y","posy" ) );
+      _field_map.insert( "pos_z", dict.get<string>( prefix.get()+":pos_z","posz" ) );
+      _field_map.insert( "global_id", dict.get<string>( prefix.get()+":global_id","globalindex" ) );
+      _field_map.insert( "local_id", dict.get<string>( prefix.get()+":local_id", "localgalaxyid") );
+      _field_map.insert( "tree_id", dict.get<string>( prefix.get()+":tree_id", "globaltreeid" ) );
+      _field_map.insert( "snapshot", dict.get<string>( prefix.get()+":snapshot", "snapnum") );
 
       // Astronomical values. Get these first just in case
       // we do any redshift calculations in here.
-      _h0 = dict.get<real_type>( prefix.get()+":H0" );
+      _h0 = dict.get<real_type>( prefix.get()+":H0",73.0 );
       LOGDLN( "Using h0 = ", _h0 );
 
       // Should we use the BSP tree system?
-      _accel_method = dict.get<string>( "settings:database:acceleration" );
+      _accel_method = dict.get<string>( "settings:database:acceleration","none" );
       std::transform( _accel_method.begin(), _accel_method.end(), _accel_method.begin(), ::tolower );
       LOGDLN( "Acceleration method: ", _accel_method );
 
@@ -931,11 +931,11 @@ namespace tao {
       _db_connect();
 
       // Get box type.
-      _box_type = dict.get<string>( prefix.get()+":geometry" );
+      _box_type = dict.get<string>( prefix.get()+":geometry", "light-cone" );
       LOGDLN( "Box type '", _box_type );
 
       // Get box repetition type.
-      _box_repeat = dict.get<string>( prefix.get()+":box-repetition" );
+      _box_repeat = dict.get<string>( prefix.get()+":box-repetition", "unique");
       std::transform( _box_repeat.begin(), _box_repeat.end(), _box_repeat.begin(), ::tolower );
       LOGDLN( "Box repetition type '", _box_repeat, "'" );
       _unique = (_box_repeat == "unique");
@@ -994,10 +994,10 @@ namespace tao {
       LOGDLN( "Distance range: (", _dist_range.start(), ", ", _dist_range.finish(), ")" );
 
       // Right ascension.
-      _ra_min = dict.get<real_type>( prefix.get()+":ra-min" );
+      _ra_min = dict.get<real_type>( prefix.get()+":ra-min",0.0 );
       if( _ra_min < 0.0 )
          _ra_min = 0.0;
-      _ra_max = dict.get<real_type>( prefix.get()+":ra-max" ); // TODO divide by 60.0?
+      _ra_max = dict.get<real_type>( prefix.get()+":ra-max",90.0 ); // TODO divide by 60.0?
       if( _ra_max >= 89.9999999 )
          _ra_max = 89.9999999;
       if( _ra_min > _ra_max )
@@ -1008,10 +1008,10 @@ namespace tao {
       LOGDLN( "Have right ascension range ", _ra_min, " - ", _ra_max );
 
       // Declination.
-      _dec_min = dict.get<real_type>( prefix.get()+":dec-min" );
+      _dec_min = dict.get<real_type>( prefix.get()+":dec-min",0.0 );
       if( _dec_min < 0.0 )
          _dec_min = 0.0;
-      _dec_max = dict.get<real_type>( prefix.get()+":dec-max" ); // TODO divide by 60.0?
+      _dec_max = dict.get<real_type>( prefix.get()+":dec-max",90.0 ); // TODO divide by 60.0?
       if( _dec_max >= 89.9999999 )
          _dec_max = 89.9999999;
       if( _dec_min > _dec_max )
@@ -1026,10 +1026,10 @@ namespace tao {
       }
 
       // Filter information.
-      _filter = dict.get<string>( "workflow:record-filter:filter-type" );
+      _filter = dict.get<string>( "workflow:record-filter:filter-type","" );
       std::transform( _filter.begin(), _filter.end(), _filter.begin(), ::tolower );
-      _filter_min = dict.get<string>( "workflow:record-filter:filter-min" );
-      _filter_max = dict.get<string>( "workflow:record-filter:filter-max" );
+      _filter_min = dict.get<string>( "workflow:record-filter:filter-min","" );
+      _filter_max = dict.get<string>( "workflow:record-filter:filter-max","" );
       LOGDLN( "Read filter name of: ", _filter );
       LOGDLN( "Read filter range of: ", _filter_min, " to ", _filter_max );
 

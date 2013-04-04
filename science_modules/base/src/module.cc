@@ -128,7 +128,7 @@ namespace tao {
       LOG_ENTER();
 
       // Extract database details.
-      _dbtype = dict.get<string>( "settings:database:type" );
+      _dbtype = dict.get<string>( "settings:database:type","postgresql" );
       _dbname = dict.get<string>( "database" );
       if( _dbtype != "sqlite" )
       {
@@ -137,7 +137,7 @@ namespace tao {
          _dbuser = dict.get<string>( "settings:database:user" );
          _dbpass = dict.get<string>( "settings:database:password" );
       }
-      _tree_pre = dict.get<string>( "settings:database:treetableprefix" );
+      _tree_pre = dict.get<string>( "settings:database:treetableprefix", "tree_" );
 
       LOG_EXIT();
    }

@@ -282,7 +282,7 @@ namespace tao {
 
       {
          // Get the wavelengths filename.
-         string filename = dict.get<string>( prefix.get()+":wavelengths" );
+         string filename = dict.get<string>( prefix.get()+":wavelengths","wavelengths.dat" );
          LOGDLN( "Using wavelengths filename \"", filename, "\"" );
 
          // Load the wavelengths.
@@ -323,7 +323,7 @@ namespace tao {
       LOGDLN( "Filter integrals: ", _filt_int );
 
       // Get the Vega filename and perform processing.
-      _process_vega( dict.get<string>( prefix.get()+":vega-spectrum" ) );
+      _process_vega( dict.get<string>( prefix.get()+":vega-spectrum","A0V_KUR_BB.SED" ) );
 
       LOG_EXIT();
    }

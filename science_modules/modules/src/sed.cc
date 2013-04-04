@@ -381,12 +381,12 @@ namespace tao {
       _db_connect();
 
       // Try to read H0 (and hence h) from the lightcone module.
-      _h = dict.get<real_type>( "workflow:light-cone:H0" )/100.0;
+      _h = dict.get<real_type>( "workflow:light-cone:H0",73.0 )/100.0;
       LOGDLN( "Read h as: ", _h );
 
       // Extract the counts.
-      _num_spectra = dict.get<unsigned>( prefix.get()+":num-spectra" );
-      _num_metals = dict.get<unsigned>( prefix.get()+":num-metals" );
+      _num_spectra = dict.get<unsigned>( prefix.get()+":num-spectra",1221 );
+      _num_metals = dict.get<unsigned>( prefix.get()+":num-metals",7 );
       LOGDLN( "Number of times: ", _bin_ages.size() );
       LOGDLN( "Number of spectra: ", _num_spectra );
       LOGDLN( "Number of metals: ", _num_metals );
@@ -402,7 +402,7 @@ namespace tao {
    sed::_read_ssp( const string& filename )
    {
       LOG_ENTER();
-
+      LOGDLN( "SSP File Name: ", filename );
       // The SSP file contains the age grid information first.
       std::ifstream file( filename, std::ios::in );
       unsigned num_ages;

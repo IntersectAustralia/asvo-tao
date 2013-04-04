@@ -43,6 +43,11 @@ namespace tao {
       _connect_parents();
 
 
+      ///
+	  /// Massage incoming XML.
+	  ///
+	  void
+	  _preprocess_xml() const;
 
 
 
