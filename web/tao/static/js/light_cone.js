@@ -601,15 +601,18 @@ jQuery(document).ready(function($) {
         var maximum = $(lc_id('number_of_light_cones')).data('spin-max');
         if (maximum <= 0) {
             show_error($(lc_id('number_of_light_cones')),"Selection parameters can't be used to generate unique light-cones");
+            fill_in_summary('light_cone', 'number_of_light_cones', 'An invalid number of light cones is selected');
             return false;
         }
         else {
             if (new_value <= 0) {
                 show_error($(lc_id('number_of_light_cones')), "Please provide a positive number of light-cones");
+                fill_in_summary('light_cone', 'number_of_light_cones', 'Negative number of light cones is invalid');
                 return false;
             }
             else if (new_value > maximum) {
                 show_error($(lc_id('number_of_light_cones')), "The maximum is " + maximum);
+                fill_in_summary('light_cone', 'number_of_light_cones', 'Number of light cones selected exceeds the maximum');
                 return false;
             }
         }
