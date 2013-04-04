@@ -98,6 +98,9 @@ class DBInterface(object):
         self.ExecuteNoQuerySQLStatment(Updatest)
     
     def SetJobFinishedWithError(self,JobID,Comment,ExecTime):
+        Comment=pg.escape_string(Comment)
+        if len(Comment)>500:
+            Comment=Comment[:500]
         logging.info('Job ('+str(JobID)+') Finished With Error .... '+Comment)
         Updatest="UPDATE Jobs set JobStatus="+str(EnumerationLookup.JobState.Error)+",completedate=insertdate+INTERVAL '"+str(ExecTime)+" seconds',jobstatuscomment='"+Comment+"' where JobID="+str(JobID)+";"
         Updatest=Updatest+"INSERT INTO JobHistory(JobID,NewStatus,Comments) VALUES("+str(JobID)+","+str(EnumerationLookup.JobState.Error)+",'Error');"
