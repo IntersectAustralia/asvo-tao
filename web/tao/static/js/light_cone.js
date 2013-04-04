@@ -210,6 +210,7 @@ jQuery(document).ready(function($) {
                 $('div.galaxy-model-info .details').html(data.fields.details);
                 $galaxy_model_info.show();
                 fill_in_summary('light_cone', 'galaxy_model', data.fields.name);
+                fill_in_summary('light_cone', 'galaxy_model_description', '<br><b>' + data.fields.name + ':</b><br>' + data.fields.details);
             }
         });
     };
@@ -261,6 +262,7 @@ jQuery(document).ready(function($) {
                 $('div.simulation-info .details').html(data.fields.details);
                 $('div.simulation-info').show();
                 fill_in_summary('light_cone', 'simulation', data.fields.name);
+                fill_in_summary('light_cone', 'simulation_description', '<br><b>' + data.fields.name + ':</b><br>' + data.fields.details);
                 $(lc_id('number_of_light_cones')).data("simulation-box-size", data.fields.box_size);
             }
         });
@@ -278,6 +280,7 @@ jQuery(document).ready(function($) {
                 $('div.stellar-model-info .name').html(data.fields.name);
                 $('div.stellar-model-info .details').html(data.fields.description);
                 $('div.stellar-model-info').show();
+                fill_in_summary('sed', 'stellar_model_description', '<br>' + data.fields.description);
             }
         });
     };
@@ -295,6 +298,7 @@ jQuery(document).ready(function($) {
                 $('div.dust-model-info .details').html(data.fields.details);
                 $('div.dust-model-info').show();
                 fill_in_summary('sed', 'dust_model', data.fields.name);
+                fill_in_summary('sed', 'dust_model_description', '<br>' + data.fields.details);
             }
         });
     };
@@ -320,6 +324,41 @@ jQuery(document).ready(function($) {
     // - event handlers for fields -
     //
 
+    $('#expand_dataset').click(function(e) {
+        $this = $(this);
+//        alert($this.html() + " is clicked!");
+//        e.stopPropagation();
+        if ($this.html() === "&gt;&gt;") {
+            $('div.summary_light_cone .simulation_description, div.summary_light_cone .galaxy_model_description').show();
+            $this.html("<<");
+        } else {
+            $('div.summary_light_cone .simulation_description, div.summary_light_cone .galaxy_model_description').hide();
+            $this.html(">>");
+        }
+    });
+
+    $('#expand_stellar_model').click(function(e) {
+        $this = $(this);
+        if ($this.html() === "&gt;&gt;") {
+            $('div.summary_sed .stellar_model_description').show();
+            $this.html("<<");
+        } else {
+            $('div.summary_sed .stellar_model_description').hide();
+            $this.html(">>");
+        }
+    });
+
+    $('#expand_dust_model').click(function(e) {
+        $this = $(this);
+        if ($this.html() === "&gt;&gt;") {
+            $('div.summary_sed .dust_model_description').show();
+            $this.html("<<");
+        } else {
+            $('div.summary_sed .dust_model_description').hide();
+            $this.html(">>");
+        }
+    });
+
     lc_output_props_widget.change_event(function(evt){
         update_filter_options(false, false);
         var output_properties_count = 0;
@@ -341,12 +380,12 @@ jQuery(document).ready(function($) {
         $this = $(this);
 //        alert($this.html() + " is clicked!");
 //        e.stopPropagation();
-        if ($this.html() === " &gt;&gt; ") {
+        if ($this.html() === "&gt;&gt;") {
             $('div.summary_light_cone .output_properties_list').show();
             $this.html("<<");
         } else {
             $('div.summary_light_cone .output_properties_list').hide();
-            $this.html(" >> ");
+            $this.html(">>");
         }
     });
 
@@ -377,7 +416,7 @@ jQuery(document).ready(function($) {
 
     $('#expand_band_pass_filters').click(function(e) {
         $this = $(this);
-        if ($this.html() === " &gt;&gt; ") {
+        if ($this.html() === "&gt;&gt;") {
             $('div.summary_sed .band_pass_filters_list').show();
             $this.html("<<");
         } else {
@@ -731,11 +770,14 @@ jQuery(document).ready(function($) {
         if ($(sed_id('apply_dust')).is(':checked')) {
             $(sed_id('select_dust_model')).removeAttr('disabled');
             $(sed_id('select_dust_model')).change();
+            $('#expand_dust_model').show();
         }
         else {
             $(sed_id('select_dust_model')).attr('disabled', 'disabled');
             clear_info('sed', 'dust-model');
             clear_in_summary('sed', 'dust_model');
+            $('#expand_dust_model').hide();
+            $('div.summary_sed .dust_model_description').hide();
         }
     });
 
@@ -783,7 +825,7 @@ jQuery(document).ready(function($) {
 
     $('#id_output_format-supported_formats').change(function(evt){
         var $this = $(this);
-        var output_format_value = $this.val();
+        var output_format_value = $this.text();
         fill_in_summary('output', 'output_format', output_format_value);
     });
 
@@ -898,5 +940,8 @@ jQuery(document).ready(function($) {
         $(sed_id('apply_dust')).change();
         $('div.summary_light_cone .output_properties_list').hide();
         $('div.summary_sed .band_pass_filters_list').hide();
+        $('div.summary_light_cone .simulation_description, div.summary_light_cone .galaxy_model_description').hide();
+        $('div.summary_sed .stellar_model_description').hide();
+        $('div.summary_sed .dust_model_description').hide();
     })();
 });

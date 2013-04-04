@@ -114,38 +114,6 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.select_stellar_model(third_stellar_model)
         self.assert_stellar_model_info_shown(third_stellar_model)
 
-    def test_summary_on_initial_load(self):
-        self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
-        geometry_displayed = self.get_summary_field_text('light_cone', 'geometry_type')
-        init_simulation = Simulation.objects.all()[0]
-        simulation_displayed = self.get_summary_field_text('light_cone', 'simulation')
-        init_galaxy_model = init_simulation.galaxymodel_set.all()[0]
-        galaxy_model_displayed = self.get_summary_field_text('light_cone', 'galaxy_model')
-        type_displayed = self.get_summary_field_text('light_cone', 'light_cone_type')
-        stellar_model = self.get_summary_field_text('sed', 'single_stellar_population_model')
-        band_pass_filters = self.get_summary_field_text('sed', 'band_pass_filters')
-        dust_model = self.get_summary_field_text('sed', 'dust_model')
-        filter_displayed = self.get_summary_field_text('record_filter', 'record_filter')
-
-        self.assertEqual('Light-Cone', geometry_displayed)
-        self.assertEqual(init_simulation.name, simulation_displayed)
-        self.assertEqual(init_galaxy_model.name, galaxy_model_displayed)
-        self.assertEqual('unique', type_displayed)
-        self.assertEqual('None', stellar_model)
-        self.assertEqual('None', band_pass_filters)
-        self.assertEqual('None', dust_model)
-        self.assertEqual('No Filter', filter_displayed)
-        self.assert_not_displayed('div.summary_light_cone .box_fields')
-
-    def test_summary_on_geometry_change(self):
-        self.select(self.lc_id('catalogue_geometry'), 'Box')
-        self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
-        geometry_displayed = self.get_summary_field_text('light_cone', 'geometry_type')
-
-        self.assertEqual('Box', geometry_displayed)
-        self.assert_is_displayed('div.summary_light_cone .box_fields')
-        self.assert_not_displayed('div.summary_light_cone .light_cone_fields')
-
     def test_output_property_details(self):
         simulation = Simulation.objects.all()[0]
         self.select_dark_matter_simulation(simulation)
@@ -176,6 +144,35 @@ class MockGalaxyFactoryTest(LiveServerTest):
         name_displayed = self.get_info_field('band-pass', 'name')
         self.assertEquals(bandpass_filter.label, name_displayed)
 
+    def test_summary_on_initial_load(self):
+        self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
+        geometry_displayed = self.get_summary_field_text('light_cone', 'geometry_type')
+        init_simulation = Simulation.objects.all()[0]
+        simulation_displayed = self.get_summary_field_text('light_cone', 'simulation')
+        init_galaxy_model = init_simulation.galaxymodel_set.all()[0]
+        galaxy_model_displayed = self.get_summary_field_text('light_cone', 'galaxy_model')
+        output_properties_displayed = self.get_summary_field_text('light_cone', 'output_properties')
+        sed_displayed = self.get_summary_field_text('sed', 'select_sed')
+        filter_displayed = self.get_summary_field_text('record_filter', 'record_filter')
+
+        self.assertEqual('Light-Cone', geometry_displayed)
+        self.assertEqual(init_simulation.name, simulation_displayed)
+        self.assertEqual(init_galaxy_model.name, galaxy_model_displayed)
+        self.assertEqual('0 properties selected', output_properties_displayed)
+        self.assertEqual('Not selected', sed_displayed)
+        self.assertEqual('No Filter', filter_displayed)
+        self.assert_not_displayed('div.summary_light_cone .box_fields')
+        self.assert_not_displayed('div.summary_sed .apply_sed')
+
+    def test_summary_on_geometry_change(self):
+        self.select(self.lc_id('catalogue_geometry'), 'Box')
+        self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
+        geometry_displayed = self.get_summary_field_text('light_cone', 'geometry_type')
+
+        self.assertEqual('Box', geometry_displayed)
+        self.assert_is_displayed('div.summary_light_cone .box_fields')
+        self.assert_not_displayed('div.summary_light_cone .light_cone_fields')
+
     def test_summary_on_simulation_change(self):
         second_simulation = Simulation.objects.all()[1]
         self.select_dark_matter_simulation(second_simulation)
@@ -189,10 +186,12 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.fill_in_fields({'max': max_input, 'min': min_input}, id_wrap=self.rf_id)
         self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
         wait(1)
+        import HTMLParser
+        h = HTMLParser.HTMLParser()
         if filter.units != '':
-            expected_filter_display = min_input + ' < ' + filter.label + ' (' + filter.units + ') < ' + max_input
+            expected_filter_display = min_input + h.unescape(' &le; ') + filter.label + ' (' + filter.units + ') '+ h.unescape(' &le; ') + max_input
         else:
-            expected_filter_display = min_input + ' < ' + filter.label + ' < ' + max_input
+            expected_filter_display = min_input + h.unescape(' &le; ') + filter.label + h.unescape(' &le; ') + max_input
         simulation_displayed = self.get_summary_field_text('light_cone', 'simulation')
         galaxy_model_displayed = self.get_summary_field_text('light_cone', 'galaxy_model')
         filter_displayed = self.get_summary_field_text('record_filter', 'record_filter')
@@ -200,6 +199,30 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.assertEqual(second_simulation.name, simulation_displayed)
         self.assertEqual(init_galaxy_model_of_second_simulation.name, galaxy_model_displayed)
         self.assertEqual(expected_filter_display, filter_displayed)
+
+    def test_summary_on_dataset_description_expand(self):
+        # in dataset, stellar model, and dust model, clicking on ">>" expands to show the description
+        # ">>" rotates to show the current state: expanded or not
+        init_simulation = Simulation.objects.all()[0];
+        init_galaxy_model = init_simulation.galaxymodel_set.all()[0]
+        self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
+        self.assertEqual('>>', self.selenium.find_element_by_id('expand_dataset').text)
+        self.click('expand_dataset')
+        expected_simulation_details = init_simulation.name + ':\n' + strip_tags(init_simulation.details)
+        expected_galaxy_model_details = init_galaxy_model.name + ':\n' + strip_tags(init_galaxy_model.details)
+        simulation_details_displayed = strip_tags(self.get_summary_field_text('light_cone', 'simulation_description'))
+        galaxy_model_details_displayed = strip_tags(self.get_summary_field_text('light_cone', 'galaxy_model_description'))
+        self.assertEqual(expected_simulation_details, simulation_details_displayed)
+        self.assertEqual(expected_galaxy_model_details, galaxy_model_details_displayed)
+        self.assertEqual('<<', self.selenium.find_element_by_id('expand_dataset').text)
+
+    def test_summary_on_light_cone_dimensions_change(self):
+        #range displays should be intelligent, i.e. if the min or max is blank, it isn't displayed
+        pass
+
+    def test_summary_on_filter_expand(self):
+        # Clicking on ">>" in output properties or bandpass filters expands the div and lists the properties in an unordered list
+        pass
 
     def get_field_by_value_in_control_group(self, value, name):
         control_group = self.selenium.find_elements_by_name(name)
