@@ -12,6 +12,7 @@ from form_utils.forms import BetterForm
 from tao import datasets
 from tao import models as tao_models
 from tao.widgets import ChoiceFieldWithOtherAttrs, TwoSidedSelectWidget
+from tao.xml_util import module_xpath, module_xpath_iterate
 
 
 class Form(BetterForm):
@@ -105,3 +106,32 @@ class Form(BetterForm):
             if apply_dust:
                 selected_dust_model = tao_models.DustModel.objects.get(pk=self.cleaned_data['select_dust_model'])
                 child_element(sed_elem, 'dust', text=selected_dust_model.name)
+
+    @classmethod
+    def from_xml(cls, ui_holder, xml_root, prefix=None):
+        sed = module_xpath(xml_root, '//workflow/sed', text=False)
+        apply_sed = sed is not None
+        params = {prefix+'-apply_sed': apply_sed}
+        if apply_sed:
+            sspm_name = module_xpath(xml_root, '//sed/single-stellar-population-model')
+            sspm = datasets.stellar_model_find_from_xml(sspm_name)
+            if sspm is not None:
+                params.update({prefix+'-single_stellar_population_model': sspm.id})
+            bp_filters = []
+            for filter_id in module_xpath_iterate(xml_root, '//sed/bandpass-filters/item'):
+                filter = datasets.band_pass_filter_find_from_xml(filter_id)
+                if filter is not None: bp_filters.append(filter.id)
+            if len(bp_filters) > 0:
+                params.update({prefix+'-band_pass_filters': bp_filters})
+            dust = module_xpath(xml_root, '//sed/dust')
+            apply_dust = dust is not None
+            if apply_dust:
+                dust_model = datasets.dust_model_find_from_xml(dust)
+                if dust_model is not None:
+                    params.update({prefix+'-apply_dust': True})
+                    params.update({prefix+'-select_dust_model': dust_model.id})
+                else:
+                    params.update({prefix+'-apply_dust': False})
+            else:
+                params.update({prefix+'-apply_dust': False})
+        return cls(ui_holder, params)

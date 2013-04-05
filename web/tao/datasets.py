@@ -105,3 +105,24 @@ def filter_find_from_xml(data_set_id, filter_type, filter_units):
             return ('B', obj.id)
         except models.BandPassFilter.DoesNotExist:
             return ('E', 0)
+
+def stellar_model_find_from_xml(name):
+    try:
+        obj = models.StellarModel.objects.get(name=name)
+        return obj
+    except models.StellarModel.DoesNotExist:
+        return None
+
+def band_pass_filter_find_from_xml(filter_id):
+    try:
+        obj = models.BandPassFilter.objects.get(filter_id=filter_id)
+        return obj
+    except models.BandPassFilter.DoesNotExist:
+        return None
+
+def dust_model_find_from_xml(name):
+    try:
+        obj = models.DustModel.objects.get(name=name)
+        return obj
+    except models.DustModel.DoesNotExist:
+        return None

@@ -14,6 +14,7 @@ from tao.tests.support.xml import light_cone_xml
 from tao.tests.helper import MockUIHolder, make_form_xml, make_form
 from tao.forms import OutputFormatForm, RecordFilterForm
 from taoui_light_cone.forms import Form as LightConeForm
+from taoui_sed.forms import Form as SedForm
 from tao.tests.support.factories import UserFactory, StellarModelFactory, SnapshotFactory, DataSetFactory, SimulationFactory, GalaxyModelFactory, DataSetPropertyFactory, BandPassFilterFactory, DustModelFactory
 from unittest import TestCase
 #
@@ -27,6 +28,9 @@ class XmlFormsTests(TestCase):
         self.galaxy_model = GalaxyModelFactory.create()
         self.dataset = DataSetFactory.create(simulation=self.simulation, galaxy_model=self.galaxy_model)
         self.filter = DataSetPropertyFactory.create(name='CentralMvir rf', units="Msun/h", dataset=self.dataset)
+        self.stellar_model = StellarModelFactory.create()
+        self.band_pass_filter = BandPassFilterFactory.create()
+        self.dust_model = DustModelFactory.create()
 
     def tearDown(self):
         # super(TestCase, self).tearDown()
@@ -111,3 +115,43 @@ class XmlFormsTests(TestCase):
         self.assertEquals('D-' + str(self.filter.id), form.data['record_filter-filter'])
         self.assertEquals('1000000', form.data['record_filter-min'])
         self.assertEquals(None, form.data['record_filter-max'])
+
+    def test_sed_form(self):
+        xml_parameters = {
+            'catalogue_geometry': 'light-cone',
+            'dark_matter_simulation': self.simulation.id, # self.simulation.id,
+            'galaxy_model': self.galaxy_model.id, #self.galaxy_model.id,
+            'redshift_min': 0.2,
+            'redshift_max': 0.3,
+            'ra_opening_angle': 71.565,
+            'dec_opening_angle': 41.811,
+            'output_properties' : [1L, 2L], #[self.filter.id, self.output_prop.id],
+            'light_cone_type': 'unique',
+            'number_of_light_cones': 1,
+            }
+        xml_parameters.update({
+            'username' : 'test', # self.user.username,
+            'dark_matter_simulation': self.simulation.name,
+            'galaxy_model': self.galaxy_model.name,
+            'output_properties_1_name' : 'FN', # self.filter.name,
+            'output_properties_1_label' : 'FL', # self.filter.label,
+            'output_properties_1_units' : 'FU', # self.filter.units,
+            'output_properties_2_name' : 'OPN', # self.output_prop.name,
+            'output_properties_2_label' : 'OPL', # self.output_prop.label,
+        })
+        xml_parameters.update({
+            'filter': 'FN', # self.filter.name,
+            'filter_min' : '1000000',
+            'filter_max' : 'None',
+            })
+        xml_parameters.update({
+            'ssp_name': self.stellar_model.name,
+            'band_pass_filter_label': self.band_pass_filter.label,
+            'band_pass_filter_id': self.band_pass_filter.filter_id,
+            'dust_model_name': self.dust_model.name,
+        })
+        xml_str = light_cone_xml(xml_parameters)
+        form = make_form_xml(SedForm, xml_str, prefix='sed')
+        self.assertEquals(True, form.data['sed-apply_sed'])
+        self.assertEquals(self.stellar_model.id, form.data['sed-single_stellar_population_model'])
+

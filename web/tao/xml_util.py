@@ -59,3 +59,16 @@ def module_xpath(xml_root, path, text=True, attribute=None):
             resp = elems[0]
     return resp
 
+def module_xpath_iterate(xml_root, path, text=True, attribute=None):
+    path = _XPATH_SLASH_BEFORE_TOKEN.sub('/m:', path)
+    elems = xml_root.xpath(path, namespaces={'m':'http://tao.asvo.org.au/schema/module-parameters-v1'})
+    for elem in elems:
+        if attribute is not None:
+            yield elem.get(attribute)
+        elif text:
+            yield elem.text
+        else:
+            yield elem
+
+
+
