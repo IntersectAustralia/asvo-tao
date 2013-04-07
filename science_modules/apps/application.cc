@@ -223,7 +223,7 @@ namespace tao {
 	 csv_node.append_attribute( "module" ).set_value( "csv" );
 	 xml_node output_fields_node = csv_node.append_copy( inp_doc.select_single_node( "/tao/workflow/light-cone/output-fields" ).node() );
 	 output_fields_node.set_name( "fields" );
-     csv_node.append_child( "filename" ).append_child( node_pcdata ).set_value( string( string( inp_doc.select_single_node( "/tao/OutputDir" ).node().first_child().value() ) + "tao."+subjobindex+".output" ).c_str() );
+     csv_node.append_child( "filename" ).append_child( node_pcdata ).set_value( string( string( inp_doc.select_single_node( "/tao/outputdir" ).node().first_child().value() ) + "tao."+subjobindex+".output" ).c_str() );
 	 csv_node.append_child( "parents" ).append_child( "item" ).append_child( node_pcdata ).set_value( sed_node ? "sed" : "light-cone" );
 
 	 // Copy the record filter node.
