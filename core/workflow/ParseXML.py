@@ -45,7 +45,11 @@ class ParseXMLParameters(object):
         self.UserName=self.tree.xpath("ns:username",namespaces={'ns':self.NameSpace})[0].text
     
     def GetSubJobsCount(self):
-        self.SubJobsCount=self.tree.xpath("ns:workflow/ns:light-cone/ns:num-cones",namespaces={'ns':self.NameSpace})[0].text
+        NumofConesNode=self.tree.xpath("ns:workflow/ns:light-cone/ns:num-cones",namespaces={'ns':self.NameSpace})
+        if len(NumofConesNode)>0:
+            self.SubJobsCount=NumofConesNode[0].text
+        else:
+            self.SubJobsCount=1
         return int(self.SubJobsCount)
     def GetDocumentSignature(self):
         self.Signature=self.tree.xpath("ns:signature",namespaces={'ns':self.NameSpace})[0].text
