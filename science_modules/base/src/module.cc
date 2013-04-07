@@ -78,15 +78,9 @@ namespace tao {
       LOG_EXIT();
    }
 
-   void
-   module::setup_options( options::dictionary& dict,
-                          const char* prefix )
-   {
-      setup_options( dict, string( prefix ) );
-   }
 
    void
-   module::initialise( const options::dictionary& dict,
+   module::initialise( const options::xml_dict& dict,
                        const char* prefix )
    {
       initialise( dict, string( prefix ) );
@@ -129,12 +123,12 @@ namespace tao {
    }
 
    void
-   module::_read_db_options( const options::dictionary& dict )
+   module::_read_db_options(const  options::xml_dict& dict )
    {
       LOG_ENTER();
 
       // Extract database details.
-      _dbtype = dict.get<string>( "settings:database:type" );
+      _dbtype = dict.get<string>( "settings:database:type","postgresql" );
       _dbname = dict.get<string>( "database" );
       if( _dbtype != "sqlite" )
       {
@@ -143,7 +137,7 @@ namespace tao {
          _dbuser = dict.get<string>( "settings:database:user" );
          _dbpass = dict.get<string>( "settings:database:password" );
       }
-      _tree_pre = dict.get<string>( "settings:database:treetableprefix" );
+      _tree_pre = dict.get<string>( "settings:database:treetableprefix", "tree_" );
 
       LOG_EXIT();
    }

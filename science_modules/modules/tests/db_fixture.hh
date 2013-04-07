@@ -67,10 +67,7 @@ public:
       // details, then dumping to file.
       lightcone lc;
       sed sed;
-      setup_common_options( dict );
-      lc.setup_options( dict, string( "workflow:light-cone" ) );
-      sed.setup_options( dict, string( "workflow:sed" ) );
-      dict.compile();
+
       dict["settings:database:type"] = "sqlite";
       dict["database"] = db_filename;
       dict["workflow:light-cone:H0"] = "0.73"; // Need this because I'm an idiot.

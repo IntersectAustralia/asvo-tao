@@ -34,20 +34,14 @@ namespace tao {
 
       ~lightcone();
 
-      ///
-      ///
-      ///
-      virtual
-      void
-      setup_options( options::dictionary& dict,
-                     optional<const string&> prefix = optional<const string&>() );
+
 
       ///
       ///
       ///
       virtual
       void
-      initialise( const options::dictionary& dict,
+      initialise( const options::xml_dict& dict,
                   optional<const string&> prefix = optional<const string&>() );
 
       ///
@@ -142,7 +136,7 @@ namespace tao {
       _distance_to_redshift( real_type dist ) const;
 
       void
-      _read_options( const options::dictionary& dict,
+      _read_options( const options::xml_dict& dict,
                      optional<const string&> prefix=optional<const string&>() );
 
       void
