@@ -10,7 +10,7 @@ import string
 import math
 import numpy
 from random import randrange
-
+import logging
 import PGDBInterface
 
 class SAGEDataReader:    
@@ -81,13 +81,13 @@ class SAGEDataReader:
         FileCounter=0
         for UnProcessedFile in ListOfUpProcessedFile:
             # Updating the user with what is going on
-            print(str(self.CommRank)+":Processing File ("+str(FileCounter)+"/"+str(TotalNumberofUnPrcoessedFiles-1)+"):"+UnProcessedFile[1])
-            print('\t File Size:'+str(UnProcessedFile[2]/1024)+' KB')
+            logging.info(str(self.CommRank)+":Processing File ("+str(FileCounter)+"/"+str(TotalNumberofUnPrcoessedFiles-1)+"):"+UnProcessedFile[1])
+            logging.info('\t File Size:'+str(UnProcessedFile[2]/1024)+' KB')
             
             self.PGDB.StartTransaction()
             self.ProcessFile(UnProcessedFile)
             self.PGDB.SetFileAsProcessed(UnProcessedFile[0])            
-            self.PGDB.CommintTransaction()
+            self.PGDB.CommitTransaction()
             FileCounter=FileCounter+1
             
         
@@ -121,12 +121,12 @@ class SAGEDataReader:
         
         # Verify the total number of galaxies 
         if not SumOfAllGalaxies==TotalNumberOfGalaxies:
-            print("Error In Header File "+str(SumOfAllGalaxies)+"/"+str(TotalNumberOfGalaxies)) 
+            logging.info("Error In Header File "+str(SumOfAllGalaxies)+"/"+str(TotalNumberOfGalaxies)) 
             raise AssertionError
     
         for i in range(0,NumberofTrees):
             NumberofGalaxiesInTree=TreeLengthList[i]
-            #print('\t '+str(self.CommRank)+': Number of Galaxies in Tree ('+str(i)+')='+str(NumberofGalaxiesInTree))
+            logging.info('\t '+str(self.CommRank)+': Number of Galaxies in Tree ('+str(i)+')='+str(NumberofGalaxiesInTree))
             if NumberofGalaxiesInTree>0:
                 TreeData=self.ProcessTree(TreeIDStart+i,NumberofGalaxiesInTree,CurrentFile,CurrentFileGalaxyID)  
                 if len(TreeData)>0: 
@@ -137,7 +137,7 @@ class SAGEDataReader:
          
     
         CurrentFile.close()  
-                  
+               
         if self.DebugToFile==True:
             Log.close()
     
@@ -201,7 +201,7 @@ class SAGEDataReader:
                 
                     self.PGDB.DBConnection.ExecuteNoQuerySQLStatment(GetIntersectionWithCurrentBoundingRect)
                     PTableID=int((XLocation*self.CellsInX)+YLocation)
-                    #print("("+str(XLocation)+","+str(YLocation)+")="+str(PTableID))
+                    logging.info("("+str(XLocation)+","+str(YLocation)+")="+str(PTableID))
                     PossibleTables=numpy.hstack([PossibleTables,PTableID])
         FinalTableID=-1
         
@@ -212,7 +212,7 @@ class SAGEDataReader:
         else: 
                        
             FinalTableID=self.CellsInX*self.CellsInY
-                        
+        logging.info("Final Table ID="+str(FinalTableID))                
         return FinalTableID
         
     
@@ -226,7 +226,7 @@ class SAGEDataReader:
         TreeFields=[]        
         for j in range(0,NumberofGalaxiesInTree):
             #read the fields of this tree
-            #print(str(j)+"/"+str(NumberofGalaxiesInTree))
+            #logging.info(str(j)+"/"+str(NumberofGalaxiesInTree))
             FieldData=self.ReadTreeField(CurrentFile,CurrentFileGalaxyID,TreeID)
             TreeFields.append(FieldData)
             CurrentFileGalaxyID=CurrentFileGalaxyID+1

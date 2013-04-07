@@ -62,10 +62,11 @@ namespace tao {
    {
       LOG_ENTER();
 
-      // Preprocess the incoming XML file.
-      //_preprocess_xml();
+      // Preprocess the incoming XML file, only if we're
+      // the root process, as we don't want any conflicts
+      // in writing the processed file.
       if( mpi::comm::world.rank() == 0 )
-    	  _preprocess_xml();
+	 _preprocess_xml();
       mpi::comm::world.barrier();
 
       // Load all the modules first up.

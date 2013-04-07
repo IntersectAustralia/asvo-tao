@@ -373,6 +373,7 @@ namespace tao {
 
       // If we are running in parallel we will need to only process the tables that
       // fall into my range.
+      if( _decomp_method == "tables" )
       {
          LOGDLN( "Full table names: ", table_names );
          unsigned first_table = (mpi::comm::world.rank()*table_names.size())/mpi::comm::world.size();
@@ -511,6 +512,11 @@ namespace tao {
       {
 	 _per_box.stop_tally();
 	 LOGDLN( "Time per box: ", _per_box.mean() );
+
+	 // Wait for parallel progress.
+	 _prog.set_local_complete_delta( 1 );
+	 while( _prog.test() )
+	   _prog.update();
 
 	 // Also dump progress.
 	 if( mpi::comm::world.rank() == 0 )
@@ -1002,9 +1008,12 @@ namespace tao {
          _ra_max = 89.9999999;
       if( _ra_min > _ra_max )
          _ra_min = _ra_max;
-      real_type width = _ra_max - _ra_min;
-      _ra_max = _ra_min + (width*(mpi::comm::world.rank() + 1))/mpi::comm::world.size();
-      _ra_min += (width*mpi::comm::world.rank())/mpi::comm::world.size();
+      if( _decomp_method == "cone" )
+      {
+	 real_type width = _ra_max - _ra_min;
+	 _ra_max = _ra_min + (width*(mpi::comm::world.rank() + 1))/mpi::comm::world.size();
+	 _ra_min += (width*mpi::comm::world.rank())/mpi::comm::world.size();
+      }
       LOGDLN( "Have right ascension range ", _ra_min, " - ", _ra_max );
 
       // Declination.

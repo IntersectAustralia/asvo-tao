@@ -186,6 +186,10 @@ class LiveServerTest(django.test.LiveServerTestCase):
             else:
                 elem.send_keys(str(text_to_input))
 
+    def clear(self, selector):
+        elem = self.selenium.find_element_by_css_selector(selector)
+        elem.clear()
+
     def click(self, elem_id):
         elem = self.selenium.find_element_by_id(elem_id)
         elem.click()
@@ -305,7 +309,7 @@ class LiveServerMGFTest(LiveServerTest):
     def submit_mgf_form(self):
         submit_button = self.selenium.find_element_by_css_selector('#mgf-form input[type="submit"]')
         submit_button.submit()
-        wait(1)
+        wait(1.5)
 
     def assert_errors_on_field(self, what, field_id):
         field_elem = self.selenium.find_element_by_css_selector(field_id)

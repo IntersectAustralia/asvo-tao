@@ -40,3 +40,6 @@ API_ALLOWED_IPS = (
                    '136.186.55.226', # tao02
                    '136.186.24.174', # Amr
                    )
+
+ALLOWED_HOSTS = ['tao.asvo.org.au']
+

@@ -37,16 +37,6 @@ jQuery(document).ready(function($) {
 
     var sed_band_pass_filters_widget = new TwoSidedSelectWidget(sed_id('band_pass_filters'), false);
 
-    var display_band_pass_filters_summary = function() {
-        var band_pass_filter_values = [];
-        band_pass_filter_values.push('<ul>');
-        $(sed_id('band_pass_filters')+' option').each(function(i) {
-            band_pass_filter_values.push('<li>' + $(this).html() + '</li>');
-        });
-        band_pass_filter_values.push('</ul>');
-        fill_in_summary('sed', 'band_pass_filters', band_pass_filter_values);
-    }
-
     var update_output_options = function() {
         var data_set_id = $(lc_id('galaxy_model')).find(':selected').attr('value');
         var $to = $(lc_id('output_properties'));
@@ -271,6 +261,7 @@ jQuery(document).ready(function($) {
                 $('div.simulation-info .details').html(data.fields.details);
                 $('div.simulation-info').show();
                 fill_in_summary('light_cone', 'simulation', data.fields.name);
+                $(lc_id('number_of_light_cones')).data("simulation-box-size", data.fields.box_size);
             }
         });
     };
@@ -314,13 +305,17 @@ jQuery(document).ready(function($) {
         $('div.output-property-info').show();
     }
 
-    var clear_model_info = function(form_name, model_name) {
-        $('div.' + model_name + '-model-info .name').html('');
-        $('div.' + model_name + '-model-info .details').html('');
-        $('div.' + model_name + '-model-info').show();
-        clear_in_summary(form_name, model_name + '_model');
+    var clear_info = function(form_name, name) {
+        $('div.' + name + '-info .name').html('');
+        $('div.' + name + '-info .details').html('');
+        $('div.' + name + '-info').show();
     }
 
+    var show_bandpass_filter_info = function(cache_item) {
+        $('div.band-pass-info .name').html(cache_item.text);
+        $('div.band-pass-info .details').html(cache_item.description);
+        $('div.band-pass-info').show();
+    }
     //
     // - event handlers for fields -
     //
@@ -340,9 +335,23 @@ jQuery(document).ready(function($) {
         show_output_property_info(cache_item);
     });
 
+    var display_band_pass_filters_summary = function() {
+        var band_pass_filter_values = [];
+        band_pass_filter_values.push('<ul');
+        $(sed_id('band_pass_filters')+' option').each(function(i) {
+            band_pass_filter_values.push('<li>' + $(this).html() + '</li>');
+        });
+        band_pass_filter_values.push('</ul');
+        fill_in_summary('sed', 'band_pass_filters', band_pass_filter_values);
+    }
+
     sed_band_pass_filters_widget.change_event(function(evt){
         update_filter_options(false, false);
         display_band_pass_filters_summary();
+    });
+
+    sed_band_pass_filters_widget.option_clicked_event(function(cache_item){
+        show_bandpass_filter_info(cache_item);
     });
 
     $(lc_id('dark_matter_simulation')).change(function(evt){
@@ -462,6 +471,7 @@ jQuery(document).ready(function($) {
         var pseudo_json = [];
         $(lc_id('output_properties') + ' option').each(function(){
             var $this = $(this);
+            console.log($this);
             var item = {pk: $this.attr('value'), fields:{label: $this.text()}};
             pseudo_json.push(item);
             if($this.attr('selected')) {
@@ -469,21 +479,35 @@ jQuery(document).ready(function($) {
             }
         });
         lc_output_props_widget.cache_store(pseudo_json);
+        console.log(current);
         return current;
     }
 
     function init_bandpass_properties() {
         var current = [];
-        var pseudo_json = [];
         $(sed_id('band_pass_filters') + ' option').each(function(){
             var $this = $(this);
-            var item = {pk: $this.attr('value'), fields:{label: $this.text()}};
-            pseudo_json.push(item);
-            if($this.attr('selected')) {
-                current.push(item.pk);
+//            console.log($this);
+//            $(this).attr("selected", "selected");
+            if ($this.attr('selected')) {
+                current.push($this.attr('value'));
             }
         });
-        sed_band_pass_filters_widget.cache_store(pseudo_json);
+//        var current = $to.val(); // in string format
+//        $to.empty();
+//        $from.empty();
+        $.ajax({
+            url : TAO_JSON_CTX + 'bandpass_filters/',
+            dataType: "json",
+            error: function() {
+                alert("Couldn't get bandpass filters");
+            },
+            success: function(data, status, xhr) {
+                sed_band_pass_filters_widget.cache_store(data);
+                sed_band_pass_filters_widget.display_selected(current, false);
+            }
+        });
+        console.log(current);
         return current;
     }
 
@@ -492,55 +516,158 @@ jQuery(document).ready(function($) {
         var $this = $(this);
         var ra_opening_angle_value = $this.val();
         fill_in_summary('light_cone', 'ra_opening_angle', ra_opening_angle_value);
+        calculate_max_number_of_cones();
     });
 
     $(lc_id('dec_opening_angle')).change(function(evt){
         var $this = $(this);
         var dec_opening_angle_value = $this.val();
         fill_in_summary('light_cone', 'dec_opening_angle', dec_opening_angle_value);
+        calculate_max_number_of_cones();
     });
 
     $(lc_id('redshift_min')).change(function(evt){
         var $this = $(this);
         var redshift_min_value = $this.val();
         fill_in_summary('light_cone', 'redshift_min', redshift_min_value);
+        calculate_max_number_of_cones();
     });
 
     $(lc_id('redshift_max')).change(function(evt){
         var $this = $(this);
         var redshift_max_value = $this.val();
         fill_in_summary('light_cone', 'redshift_max', redshift_max_value);
+        calculate_max_number_of_cones();
     });
+
+
+    // Max's algorithm for calculating the maximum allowed number of unique light-cones
+//    /**
+//     * Convert redshift to distance
+//     * @param z redshift
+//     * @return comoving distance
+//     */
+    var redshift_to_distance = function(z) {
+        var n = 1000;
+
+        var c = 299792.458;
+        var H0 = 100.0;
+        var h = H0/100;
+        var WM = 0.25;
+        var WV = 1.0 - WM - 0.4165/(H0*H0);
+        var WR = 4.165E-5/(h*h);
+        var WK = 1-WM-WR-WV;
+        var az = 1.0/(1+1.0*z);
+        var DTT = 0.0;
+        var DCMR = 0.0;
+        for (var i = 0; i < n; i++) {
+            var a = az+(1-az)*(i+0.5)/n;
+            var adot = Math.sqrt(WK+(WM/a)+(WR/(a*a))+(WV*a*a));
+            DTT = DTT + 1.0/adot;
+            DCMR = DCMR + 1.0/(a*adot);
+        }
+        DTT = (1.-az)*DTT/n;
+        DCMR = (1.-az)*DCMR/n;
+        var d = (c/H0)*DCMR;
+
+        return d;
+    }
+//    /**
+//     * Compute the maximum number of unique cones available for selected parameters
+//     */
+     var get_number_of_unique_light_cones = function() {
+        var alfa1 = parseFloat($(lc_id('ra_opening_angle')).val());
+        var box_side = $(lc_id('number_of_light_cones')).data("simulation-box-size");
+        var d1 = redshift_to_distance(parseFloat($(lc_id('redshift_min')).val()));
+        var d2 = redshift_to_distance(parseFloat($(lc_id('redshift_max')).val()));
+        var beta1;
+        for (beta1 = alfa1; beta1 < 90; beta1 = beta1 + 0.01) {
+            if ((d2 - box_side)*Math.sin((Math.PI/180)*(beta1+alfa1)) <= d2*Math.sin((Math.PI/180)*beta1)) {
+                break;
+            }
+        }
+        var hv = Math.floor(d2*Math.sin((Math.PI/180)*(alfa1+beta1)) - d1*Math.sin((Math.PI/180)*(alfa1+beta1)));
+
+        var hh = 2*d2*Math.sin((Math.PI/180)*(parseFloat($(lc_id('dec_opening_angle')).val()))/2);
+
+        var nv = Math.floor(box_side/hv);
+        var nh = Math.floor(box_side/hh);
+        var n = nv*nh;
+
+        return n;
+    }
+
+    var spinner_check_value = function(new_value) {
+        var maximum = $(lc_id('number_of_light_cones')).data('spin-max');
+        if (maximum <= 0) {
+            show_error($(lc_id('number_of_light_cones')),"Selection parameters can't be used to generate unique light-cones");
+            fill_in_summary('light_cone', 'number_of_light_cones', 'An invalid number of light cones is selected');
+            return false;
+        }
+        else {
+            if (new_value <= 0) {
+                show_error($(lc_id('number_of_light_cones')), "Please provide a positive number of light-cones");
+                fill_in_summary('light_cone', 'number_of_light_cones', 'Negative number of light cones is invalid');
+                return false;
+            }
+            else if (new_value > maximum) {
+                show_error($(lc_id('number_of_light_cones')), "The maximum is " + maximum);
+                fill_in_summary('light_cone', 'number_of_light_cones', 'Number of light cones selected exceeds the maximum');
+                return false;
+            }
+        }
+        show_error($(lc_id('number_of_light_cones')), null);
+        fill_in_summary('light_cone', 'number_of_light_cones', new_value +  " " + $("input[name='light_cone-light_cone_type']:checked").val() + " light cones");
+        return true;
+    }
+
+    var calculate_max_number_of_cones = function() {
+        function spinner_set_max(maximum) {
+            if ( isNaN(maximum) || maximum === 0 ){
+                $(lc_id('number_of_light_cones')).spinner("disable");
+                $(lc_id('number_of_light_cones')).data("spin-max", 0);
+            }
+            else {
+                $(lc_id('number_of_light_cones')).spinner("enable");
+                $(lc_id('number_of_light_cones')).data("spin-max",maximum);
+            }
+            spinner_check_value(parseInt($(lc_id('number_of_light_cones')).val()));
+        }
+
+        var selection = $("input[name='light_cone-light_cone_type']:checked").val();
+        if ("unique" == selection) {
+            var maximum = get_number_of_unique_light_cones();
+            spinner_set_max(maximum);
+        } else {
+            $.ajax({
+                url : TAO_JSON_CTX + 'global_parameter/' + 'maximum-random-light-cones',
+                dataType: "json",
+                error: function() {
+                    alert("Couldn't get data for maximum-random-light-cones");
+                },
+                success: function(data, status, xhr) {
+                    var maximum = parseInt(data.fields.parameter_value);
+                    spinner_set_max(maximum);
+                }
+            });
+        }
+    }
 
     $(lc_id('light_cone_type_0')+', '+lc_id('light_cone_type_1')).click(function(evt){
         var $this = $(this);
         fill_in_summary('light_cone', 'light_cone_type', $this.attr('value'));
-    });
-
-    $(lc_id('light_cone_type_1')).click(function(evt){
-        $.ajax({
-            url : TAO_JSON_CTX + 'global_parameter/' + 'maximum-random-light-cones',
-            dataType: "json",
-            error: function() {
-                alert("Couldn't get data for maximum-random-light-cones");
-            },
-            success: function(data, status, xhr) {
-                alert('max is ' + data.fields.parameter_value);
-                $(lc_id('number_of_light_cones')).data("spin-max",parseInt(data.fields.parameter_value));
-            }
-        });
+        calculate_max_number_of_cones();
     });
 
     $(lc_id('number_of_light_cones')).spinner({
         spin: function(evt, ui) {
-            var maximum = $(lc_id('number_of_light_cones')).data('spin-max');
-            if ( ui.value > maximum || ui.value <= 0 ) {
-                alert("invalid!");
-                return false;
-            } else {
-                return true;
-            }
+            return spinner_check_value(ui.value);
         }
+    });
+
+    $(lc_id('number_of_light_cones')).change(function() {
+       var new_value = parseInt($(this).val());
+       return spinner_check_value(new_value);
     });
 
     $(lc_id('box_size')).change(function(evt){
@@ -570,7 +697,8 @@ jQuery(document).ready(function($) {
         }
         else {
             $(sed_id('select_dust_model')).attr('disabled', 'disabled');
-            clear_model_info('sed', 'dust');
+            clear_info('sed', 'dust-model');
+            clear_in_summary('sed', 'dust_model');
         }
     });
 
@@ -584,6 +712,7 @@ jQuery(document).ready(function($) {
             $(sed_id('band_pass_filters_from')).removeAttr('disabled');
             sed_band_pass_filters_widget.set_enabled(true);
             $(sed_id('band_pass_filters')).removeAttr('disabled');
+//            sed_band_pass_filters_widget.change_event();
             display_band_pass_filters_summary();
             $(sed_id('apply_dust')).removeAttr('disabled');
             $(sed_id('apply_dust')).change();
@@ -601,8 +730,12 @@ jQuery(document).ready(function($) {
             clear_in_summary('sed', 'band_pass_filters');
             $(sed_id('apply_dust')).attr('disabled', 'disabled');
             $(sed_id('select_dust_model')).attr('disabled', 'disabled');
-            clear_model_info('sed', 'stellar');
-            clear_model_info('sed', 'dust');
+            clear_info('sed', 'stellar-model');
+            clear_in_summary('sed', 'stellar_model');
+            clear_info('sed', 'band-pass');
+            clear_in_summary('sed', 'band_pass_filters');
+            clear_info('sed', 'dust-model');
+            clear_in_summary('sed', 'dust_model');
             update_filter_options(false, true); // triggers filter.change
         }
     });
@@ -639,6 +772,15 @@ jQuery(document).ready(function($) {
         return !error;
     }
 
+    var validate_number_of_light_cones = function() {
+        var geometry = $(lc_id('catalogue_geometry')).val();
+        if (geometry == "light-cone") {
+            var number_of_light_cones = parseInt($(lc_id('number_of_light_cones')).val());
+            return spinner_check_value(number_of_light_cones);
+        }
+        return true;
+    }
+
     var cleanup_fields = function($form) {
         // cleanup geometry
         var geometry = $(lc_id('catalogue_geometry')).val();
@@ -661,7 +803,11 @@ jQuery(document).ready(function($) {
     $('#mgf-form').submit(function(){
         var $form = $(this);
         cleanup_fields($form);
-        if (!validate_min_max()) { return false; }
+        var min_max_valid = validate_min_max();
+        var number_of_light_cones_valid = validate_number_of_light_cones();
+        if (!min_max_valid || !number_of_light_cones_valid) {
+            return false;
+        }
         $(lc_id('output_properties')+' option').each(function(i) {
             $(this).attr("selected", "selected");
         });
@@ -696,7 +842,8 @@ jQuery(document).ready(function($) {
         var current_output = init_output_properties();
         var current_bandpass = init_bandpass_properties();
         lc_output_props_widget.display_selected(current_output, false);
-        sed_band_pass_filters_widget.display_selected(current_bandpass, false);
+        console.log(current_bandpass);
+//        sed_band_pass_filters_widget.display_selected(current_bandpass, false);
         lc_output_props_widget.change();
         sed_band_pass_filters_widget.change();
         init_wizard();
