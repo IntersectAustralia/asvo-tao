@@ -224,6 +224,14 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
         self.click('expand_output_properties')
 
+        # check the right number of properties are displayed, and check if expanded all the right properties are listed
+        simulation = Simulation.objects.all()[0]
+        galaxy_model = simulation.galaxymodel_set.all()[0]
+        dataset = galaxy_model.dataset_set.all()[0]
+        dataset_properties = dataset.datasetproperty_set.all()
+        self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
+        self.assert_summary_field_correctly_shown(str(len(dataset_properties)) + ' properties selected', 'light_cone', 'output_properties')
+        self.assert_summary_field_correctly_shown('\n'.join([dataset_property.label for dataset_property in dataset_properties]), 'light_cone', 'output_properties_list')
 
     def test_summary_on_light_cone_dimensions_change(self):
         self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
@@ -265,6 +273,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
         redshift_max = '4'
         number_of_light_cones = '5'
         self.fill_in_fields({'ra_opening_angle': ra_opening_angle, 'dec_opening_angle': dec_opening_angle, 'redshift_min': redshift_min, 'redshift_max': redshift_max}, id_wrap=self.lc_id)
+        wait(0.5)
         self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
         self.assert_summary_field_correctly_shown('1 unique light cones', 'light_cone', 'number_of_light_cones')
 
