@@ -357,7 +357,6 @@ class MockGalaxyFactoryTest(LiveServerTest):
     def assert_summary_field_correctly_shown(self, expected_value, form_name, field_name):
         value_displayed = self.get_summary_field_text(form_name, field_name)
         self.assertEqual(expected_value, strip_tags(value_displayed))
-        # self.assert_is_displayed(self.get_summary_selector(form_name, field_name))
 
     def assert_summary_range_correctly_shown(self, expected_value, form_name, field_names):
         value_displayed = ''
