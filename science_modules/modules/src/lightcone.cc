@@ -199,7 +199,7 @@ namespace tao {
 	       LOGDLN( "Time per box: ", _per_box.mean() );
 
 	       // Also dump progress.
-	       _prog.set_local_complete_delta( 1 );
+	       _prog.set_delta( 1 );
 	       _prog.update();
 	       if( mpi::comm::world.rank() == 0 )
 		  LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
@@ -425,7 +425,7 @@ namespace tao {
 	    LOGDLN( "Time per box: ", _per_box.mean() );
 
 	    // Update the log file with the progress.
-	    _prog.set_local_complete_delta( 1 );
+	    _prog.set_delta( 1 );
 	    _prog.update();
 
 	    // Also dump progress here.
@@ -514,9 +514,8 @@ namespace tao {
 	 LOGDLN( "Time per box: ", _per_box.mean() );
 
 	 // Wait for parallel progress.
-	 _prog.set_local_complete_delta( 1 );
-	 while( _prog.test() )
-	   _prog.update();
+	 _prog.set_delta( 1 );
+
 
 	 // Also dump progress.
 	 if( mpi::comm::world.rank() == 0 )

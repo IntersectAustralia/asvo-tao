@@ -2,9 +2,13 @@
 #include <soci/sqlite3/soci-sqlite3.h>
 #include <cxxtest/TestSuite.h>
 #include <libhpc/libhpc.hh>
-#include "modules/src/settingReader.hh"
 #include <vector>
 #include <iostream>
+#include <pugixml.hpp>
+
+#include "tao/base/base.hh"
+#include "tao/modules/modules.hh"
+#include "tao/base/multidb.hh"
 
 using namespace std;
 using namespace hpc;
@@ -21,51 +25,27 @@ public:
 
 	void test_SettingReader()
 	{
+		LOG_PUSH( new logging::file( "TestLog.log", logging::info ) );
 		TS_TRACE("Starting SettingReader Test");
-		hpc::string ParamXMLFile="/home/amr/tao01.xml";
-		hpc::string BasicXMLFile="/home/amr/basicsetting.xml";
+		string ParamXMLFile="/home/amr/workspace/params0.xml.processed";
+		string BasicXMLFile="/home/amr/workspace/basicsetting.xml";
+		options::xml_dict xml;
 
-		SettingReader Reader(BasicXMLFile,ParamXMLFile);
-		LightConeParams Params= Reader.LoadLightCone();
-		//TS_ASSERT(TableList.size()>0);
-		PrintLightCone(Params);
+		xml.read( ParamXMLFile, "/tao" );
+		xml.read( BasicXMLFile );
+
+		multidb db(xml);
+		db.OpenAllConnections();
+		//db.RestartAllConnections();
+		//db.CloseAllConnections();
+
+
+
+
 
 		TS_TRACE("End Setting Test");
 
 
 	}
-	void PrintLightCone(LightConeParams Parmas)
-	{
 
-	   cout<<Parmas.ModuleVersion<<endl;
-	   cout<<Parmas.Geometry<<endl;
-	   cout<<Parmas.Simultation<<endl;
-	   cout<<Parmas.GalaxyModel<<endl;
-	   cout<<Parmas.BoxRepetition<<endl;
-
-	   cout<<Parmas.NumberofCones<<endl;
-
-	   cout<<Parmas.redshiftmin<<endl;
-	   cout<<Parmas.redshiftmax<<endl;
-
-
-	   cout<<Parmas.ramin<<endl;
-	   cout<<Parmas.ramax<<endl;
-	   cout<<Parmas.decmin<<endl;
-	   cout<<Parmas.decmax<<endl;
-
-
-	   for(int i=0;i<Parmas.OutputFieldsList.size();i++)
-	   {
-		   cout<<Parmas.OutputFieldsList[i].FieldDBName<<"\t"<<Parmas.OutputFieldsList[i].FieldLabel<<endl;
-
-	   }
-
-
-
-	   cout<<Parmas.rngseed<<endl;
-
-
-
-	}
 };
