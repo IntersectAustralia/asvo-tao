@@ -13,11 +13,7 @@ namespace tao {
    double
    runtime();
 
-   ///
-   ///
-   ///
-   void
-   setup_common_options( options::dictionary& dict );
+
 
 }
 

@@ -20,20 +20,20 @@ struct pipeline
    ///
    /// Add options to dictionary.
    ///
-   void
-   setup_options( options::dictionary& dict )
-   {
-      lc.setup_options( dict, string( "lightcone" ) );
-      sed.setup_options( dict, string( "sed" ) );
-      filter.setup_options( dict, string( "filter" ) );
-      skymaker.setup_options( dict, string( "skymaker" ) );
-   }
+   //void
+   //setup_options( options::dictionary& dict )
+   //{
+   //   lc.setup_options( dict, string( "lightcone" ) );
+   //   sed.setup_options( dict, string( "sed" ) );
+   //   filter.setup_options( dict, string( "filter" ) );
+   //   skymaker.setup_options( dict, string( "skymaker" ) );
+   //}
 
    ///
    /// Persistent initialisation.
    ///
    void
-   initialise( const options::dictionary& dict )
+   initialise( const options::xml_dict& dict )
    {
       lc.initialise( dict, string( "lightcone" ) );
       sed.initialise( dict, string( "sed" ) );
