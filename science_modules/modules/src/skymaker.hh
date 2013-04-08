@@ -30,20 +30,14 @@ namespace tao {
 
       ~skymaker();
 
-      ///
-      ///
-      ///
-      virtual
-      void
-      setup_options( options::dictionary& dict,
-                     optional<const string&> prefix = optional<const string&>() );
+
 
       ///
       /// Initialise the module.
       ///
       virtual
       void
-      initialise( const options::dictionary& dict,
+      initialise( const options::xml_dict& dict,
                   optional<const string&> prefix = optional<const string&>() );
 
       ///
@@ -64,7 +58,7 @@ namespace tao {
    protected:
 
       void
-      _read_options( const options::dictionary& dict,
+      _read_options( const options::xml_dict& dict,
                      optional<const string&> prefix );
 
       void

@@ -632,12 +632,9 @@ public:
       lc._db_disconnect();
 
       // Read in the dictionary from XML.
-      options::dictionary dict;
-      setup_common_options( dict );
-      lc.setup_options( dict, string( "workflow:light-cone" ) );
-      dict.compile();
-      options::xml xml;
-      xml.read( db_setup.xml_filename, dict );
+      options::xml_dict dict;
+
+      dict.read( db_setup.xml_filename);
       lc.initialise( dict, string( "workflow:light-cone" ) );
    }
 
