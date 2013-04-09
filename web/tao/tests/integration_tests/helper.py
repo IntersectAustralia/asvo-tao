@@ -188,6 +188,7 @@ class LiveServerTest(django.test.LiveServerTestCase):
                 self.select(selector, str(text_to_input))
             else:
                 elem.send_keys(str(text_to_input))
+        wait(0.5)
 
     def clear(self, selector):
         elem = self.selenium.find_element_by_css_selector(selector)

@@ -325,6 +325,7 @@ jQuery(document).ready(function($) {
     //
 
     $('#expand_dataset').click(function(e) {
+        e.preventDefault();
         $this = $(this);
 //        alert($this.html() + " is clicked!");
 //        e.stopPropagation();
@@ -335,9 +336,11 @@ jQuery(document).ready(function($) {
             $('div.summary_light_cone .simulation_description, div.summary_light_cone .galaxy_model_description').hide();
             $this.html(">>");
         }
+        return false;
     });
 
     $('#expand_stellar_model').click(function(e) {
+        e.preventDefault();
         $this = $(this);
         if ($this.html() === "&gt;&gt;") {
             $('div.summary_sed .stellar_model_description').show();
@@ -346,9 +349,11 @@ jQuery(document).ready(function($) {
             $('div.summary_sed .stellar_model_description').hide();
             $this.html(">>");
         }
+        return false;
     });
 
     $('#expand_dust_model').click(function(e) {
+        e.preventDefault();
         $this = $(this);
         if ($this.html() === "&gt;&gt;") {
             $('div.summary_sed .dust_model_description').show();
@@ -357,6 +362,7 @@ jQuery(document).ready(function($) {
             $('div.summary_sed .dust_model_description').hide();
             $this.html(">>");
         }
+        return false;
     });
 
     lc_output_props_widget.change_event(function(evt){
@@ -377,6 +383,7 @@ jQuery(document).ready(function($) {
     });
 
     $('#expand_output_properties').click(function(e) {
+        e.preventDefault();
         $this = $(this);
 //        alert($this.html() + " is clicked!");
 //        e.stopPropagation();
@@ -387,6 +394,7 @@ jQuery(document).ready(function($) {
             $('div.summary_light_cone .output_properties_list').hide();
             $this.html(">>");
         }
+        return false;
     });
 
     lc_output_props_widget.option_clicked_event(function(cache_item){
@@ -415,6 +423,7 @@ jQuery(document).ready(function($) {
     });
 
     $('#expand_band_pass_filters').click(function(e) {
+        e.preventDefault();
         $this = $(this);
         if ($this.html() === "&gt;&gt;") {
             $('div.summary_sed .band_pass_filters_list').show();
@@ -423,6 +432,7 @@ jQuery(document).ready(function($) {
             $('div.summary_sed .band_pass_filters_list').hide();
             $this.html(">>");
         }
+        return false;
     });
 
     sed_band_pass_filters_widget.option_clicked_event(function(cache_item){
