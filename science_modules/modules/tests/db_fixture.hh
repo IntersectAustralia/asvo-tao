@@ -2,6 +2,7 @@
 #include "tao/modules/lightcone.hh"
 #include "tao/modules/sed.hh"
 
+
 ///
 /// Database preparation fixture.
 ///
@@ -18,6 +19,72 @@ public:
    {
       return true;
    }
+
+   void setup_common_options( options::dictionary& dict )
+   {
+	 // Create "dbcfg" dictionary.
+	 dict.add_option( new options::string( "type", "postgresql" ), "settings:database" );
+	 dict.add_option( new options::string( "host" ), "settings:database" );
+	 dict.add_option( new options::string( "port" ), "settings:database" );
+	 dict.add_option( new options::string( "user" ), "settings:database" );
+	 dict.add_option( new options::string( "password" ), "settings:database" );
+	 dict.add_option( new options::string( "treetableprefix", "tree_" ), "settings:database" );
+	 dict.add_option( new options::string( "acceleration", "none" ), "settings:database" );
+
+	 // Add database name.
+	 dict.add_option( new options::string( "database" ) );
+
+	 // Output options and subjobindex
+	 dict.add_option( new options::string( "outputdir", "." ) );
+	 dict.add_option( new options::string( "logdir", "." ) );
+	 dict.add_option( new options::string( "subjobindex" ) );
+
+	 // Record filter.
+	 dict.add_option( new options::string( "filter-type", "" ), "workflow:record-filter" );
+	 dict.add_option( new options::string( "filter-min", "" ), "workflow:record-filter" );
+	 dict.add_option( new options::string( "filter-max", "" ), "workflow:record-filter" );
+   }
+
+  void lightconesetup_options( options::dictionary& dict,optional<const string&> prefix )
+  {
+	 dict.add_option( new options::string( "geometry", "light-cone" ), prefix );
+	 dict.add_option( new options::string( "box-repetition", "unique" ), prefix );
+	 dict.add_option( new options::real( "redshift-max" ), prefix );
+	 dict.add_option( new options::real( "redshift-min" ), prefix );
+	 dict.add_option( new options::real( "redshift" ), prefix );
+	 dict.add_option( new options::real( "query-box-size" ), prefix );
+	 dict.add_option( new options::real( "ra-min", 0.0 ), prefix );
+	 dict.add_option( new options::real( "ra-max", 90.0 ), prefix );
+	 dict.add_option( new options::real( "dec-min", 0.0 ), prefix );
+	 dict.add_option( new options::real( "dec-max", 90.0 ), prefix );
+	 dict.add_option( new options::real( "H0", 73.0 ), prefix );
+	 dict.add_option( new options::list<options::string>( "output-fields" ), prefix );
+	 dict.add_option( new options::integer( "rng-seed" ), prefix );
+	 dict.add_option( new options::string( "decomposition-method", "tables" ), prefix );
+
+	 // Setup table names.
+	 dict.add_option( new options::string( "snapshot-redshift-table", "snap_redshift" ), prefix );
+
+	 // Setup the field mappings we might need to use.
+	 dict.add_option( new options::string( "pos_x", "posx" ), prefix );
+	 dict.add_option( new options::string( "pos_y", "posy" ), prefix );
+	 dict.add_option( new options::string( "pos_z", "posz" ), prefix );
+	 dict.add_option( new options::string( "global_id", "globalindex" ), prefix );
+	 dict.add_option( new options::string( "local_id", "localgalaxyid" ), prefix );
+	 dict.add_option( new options::string( "tree_id", "globaltreeid" ), prefix );
+	 dict.add_option( new options::string( "snapshot", "snapnum" ), prefix );
+  }
+  void sedsetup_options( options::dictionary& dict, optional<const string&> prefix )
+  {
+	 dict.add_option( new options::string( "single-stellar-population-model" ), prefix );
+	 dict.add_option( new options::integer( "num-spectra", 1221 ), prefix );
+	 dict.add_option( new options::integer( "num-metals", 7 ), prefix );
+  }
+
+
+
+
+
 
    bool setUpWorld()
    {
@@ -67,6 +134,10 @@ public:
       // details, then dumping to file.
       lightcone lc;
       sed sed;
+      setup_common_options(dict);
+      lightconesetup_options(dict,string( "workflow:light-cone" ) );
+      sedsetup_options(dict,string( "workflow:sed" ) );
+      dict.compile();
 
       dict["settings:database:type"] = "sqlite";
       dict["database"] = db_filename;
@@ -76,6 +147,7 @@ public:
       dict["workflow:sed:single-stellar-population-model"] = ssp_filename;
       dict["workflow:sed:num-spectra"] = "2";
       dict["workflow:sed:num-metals"] = "7";
+      dict["workflow:light-cone:output-fields"]="pos_x";
       xml_filename = tmpnam( NULL );
       xml.write( xml_filename, dict );
 

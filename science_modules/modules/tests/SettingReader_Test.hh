@@ -35,9 +35,11 @@ public:
 		xml.read( BasicXMLFile );
 
 		multidb db(xml);
-		db.OpenAllConnections();
-		//db.RestartAllConnections();
-		//db.CloseAllConnections();
+		/*db.OpenAllConnections();
+		db.RestartAllConnections();
+		db.CloseAllConnections();*/
+
+		db["tree_1"];
 
 
 

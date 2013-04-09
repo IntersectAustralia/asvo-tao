@@ -16,7 +16,7 @@ namespace tao {
 		   string UserName;
 		   string Password;
 		   string Port;
-		   string DBType;
+
 		   string DBName;
 		   soci::session Connection;
 
@@ -41,12 +41,16 @@ namespace tao {
            void CloseAllConnections();
            void RestartAllConnections();
            void OpenAllConnections();
+           soci::session* operator [](string TableName);
+           list<string> TableNames;
+           map<string,ServerInfo*> CurrentServers;
+           map<string,ServerInfo*> TablesMapping;
 	   protected:
            int _serverscount;
-           list<ServerInfo*> _CurrentServers;
+
            string _dbtype, _dbname;
            string _tree_pre;
-
+           void ReadTableMapping();
            void  _read_db_options( const options::xml_dict& dict );
 
 

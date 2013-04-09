@@ -4,6 +4,7 @@
 #include <cxxtest/GlobalFixture.h>
 #include <libhpc/logging/logging.hh>
 #include "tao/modules/lightcone.hh"
+#include <stdio.h>
 
 using namespace hpc;
 using namespace tao;
@@ -33,6 +34,7 @@ public:
    {
       lightcone lc;
 
+
       // Insert some values.
       {
          soci::session sql( soci::sqlite3, db_setup.db_filename );
@@ -48,12 +50,14 @@ public:
          sql << "INSERT INTO tree_4 VALUES(4, 4, 4, 7, 1, 1, 3, 0, 0, 0, 0, 0)";
       }
 
+
       // Prepare base dictionary.
       options::dictionary& dict = db_setup.dict.sub( "workflow:light-cone" );
       dict["geometry"] = "box";
       dict["redshift"] = "1";
       dict["query-box-size"] = "10";
       db_setup.xml.write( db_setup.xml_filename, db_setup.dict );
+
       setup_lightcone( lc );
 
       // Test directly.
@@ -64,12 +68,14 @@ public:
       }
       TS_ASSERT_DELTA( lc._distance_to_redshift( lc._redshift_to_distance( 1.0 ) ), 1.0, 1e-3 );
 
+
       // Now test as read from the galaxy object.
       for( lc.begin(); !lc.done(); ++lc )
       {
          const galaxy& gal = *lc;
 	 double dist = sqrt( gal.x()*gal.x() + gal.y()*gal.y() + gal.z()*gal.z() );
 	 TS_ASSERT_DELTA( lc._redshift_to_distance( gal.redshift() ), dist, 1e-1 );
+
       }
    }
 
@@ -171,20 +177,24 @@ public:
       dict["redshift"] = "0.001";
       db_setup.xml.write( db_setup.xml_filename, db_setup.dict );
       setup_lightcone( lc );
+      std::cout<<"(1)"<<std::endl;
       ids.resize( 0 );
       for( lc.begin(); !lc.done(); ++lc )
       {
          const galaxy& gal = *lc;
          ids.push_back( gal.id() );
       }
+      std::cout<<"(1.1)"<<std::endl;
       TS_ASSERT_EQUALS( ids.size(), 4 );
       for( unsigned ii = 0; ii < 4; ++ii )
          TS_ASSERT_EQUALS( ids[ii], ii );
-
+      std::cout<<"(1.2)"<<std::endl;
       // Only row 1.
       dict["redshift"] = "0";
       db_setup.xml.write( db_setup.xml_filename, db_setup.dict );
+      std::cout<<"(1.3)"<<std::endl;
       setup_lightcone( lc );
+      std::cout<<"(2)"<<std::endl;
       ids.resize( 0 );
       for( lc.begin(); !lc.done(); ++lc )
       {
@@ -633,9 +643,9 @@ public:
 
       // Read in the dictionary from XML.
       options::xml_dict dict;
-
       dict.read( db_setup.xml_filename);
       lc.initialise( dict, string( "workflow:light-cone" ) );
+
    }
 
    void setUp()

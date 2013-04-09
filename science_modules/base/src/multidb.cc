@@ -2,10 +2,13 @@
 #include <soci/postgresql/soci-postgresql.h>
 #include <pugixml.hpp>
 #include "multidb.hh"
-
+#include <stdio.h>
 
 using namespace hpc;
 using namespace pugi;
+using namespace soci;
+using namespace std;
+
 
 namespace tao
 {
@@ -17,12 +20,11 @@ namespace tao
 	    UserName=node.select_single_node("user").node().first_child().value();
 	    Password=node.select_single_node("password").node().first_child().value();
 	    Port=node.select_single_node("port").node().first_child().value();
-	    DBType="postgresql";
+
 	    DBName=_DBName;
-
-
 	    _connected=false;
 	    _QueriesCount=0;
+
 
 
 
@@ -43,21 +45,20 @@ namespace tao
 		try
 		{
 
+			if(!_connected)
+			{
+				string ConnectionString = "dbname=" + DBName;
+				ConnectionString += " host=" + ServerHost;
+				ConnectionString += " port=" + Port;
+				ConnectionString += " user=" + UserName;
+				ConnectionString += " password='" + Password + "'";
 
-			string ConnectionString = "dbname=" + DBName;
+				LOGDLN( "Connect string: ", ConnectionString );
 
-			ConnectionString += " host=" + ServerHost;
+				Connection.open( soci::postgresql, ConnectionString );
 
-			ConnectionString += " port=" + Port;
-
-			ConnectionString += " user=" + UserName;
-
-			ConnectionString += " password='" + Password + "'";
-
-			LOGDLN( "Connect string: ", ConnectionString );
-
-			Connection.open( soci::postgresql, ConnectionString );
-			_connected=true;
+				_connected=true;
+			}
 		}
 		catch(const std::exception& ex)
 		{
@@ -110,61 +111,94 @@ namespace tao
 	multidb::multidb(const options::xml_dict& dict)
 	{
 		_read_db_options(dict);
+		ReadTableMapping();
 	}
 
 	multidb::~multidb()
 	{
-
+		for (std::map<string,ServerInfo*>::iterator it=CurrentServers.begin(); it != CurrentServers.end(); ++it)
+				    delete it->second;
+		CurrentServers.erase(CurrentServers.begin(),CurrentServers.end());
 	}
 
 
 	void  multidb::CloseAllConnections()
 	{
-		for (std::list<ServerInfo*>::iterator it=_CurrentServers.begin(); it != _CurrentServers.end(); ++it)
-		    (*it)->CloseConnection();
+		for (std::map<string,ServerInfo*>::iterator it=CurrentServers.begin(); it != CurrentServers.end(); ++it)
+			it->second->CloseConnection();
 
 	}
 
 	void multidb::RestartAllConnections()
 	{
-		for (std::list<ServerInfo*>::iterator it=_CurrentServers.begin(); it != _CurrentServers.end(); ++it)
-			(*it)->RestartConnection();
+		for (std::map<string,ServerInfo*>::iterator it=CurrentServers.begin(); it != CurrentServers.end(); ++it)
+			it->second->RestartConnection();
 
 	}
 
 	void multidb::OpenAllConnections()
 	{
-		for (std::list<ServerInfo*>::iterator it=_CurrentServers.begin(); it != _CurrentServers.end(); ++it)
-				(*it)->OpenConnection();
+		for (std::map<string,ServerInfo*>::iterator it=CurrentServers.begin(); it != CurrentServers.end(); ++it)
+		{
+			it->second->OpenConnection();
+		}
 	}
 
-	void multidb::_read_db_options(const  options::xml_dict& dict )
+
+
+	void multidb::_read_db_options(const options::xml_dict& dict)
 	{
-	      LOG_ENTER();
+		LOG_ENTER();
+		// Extract database details.
+		_dbtype = dict.get < string > ("settings:database:type", "postgresql");
+		_dbname = dict.get < string > ("database");
+		_tree_pre = dict.get < string
+				> ("settings:database:treetableprefix", "tree_");
+		_serverscount = dict.get<int>("settings:database:serverscount", 1);
+		xpath_node_set ServersSet = dict.get_nodes("settings/database/serverinfo");
+		for (xpath_node_set::const_iterator it = ServersSet.begin();it != ServersSet.end(); ++it)
+		{
+			pugi::xpath_node node = *it;
+			ServerInfo* NewServer = new ServerInfo(_dbname, node.node());
+			CurrentServers[NewServer->ServerHost] = NewServer;
+		}
+		LOG_EXIT();
+	}
 
+	void multidb::ReadTableMapping()
+	{
+		// Get Object of the first DB Server to load the data from it
+		std::map<string, ServerInfo*>::iterator it = CurrentServers.begin();
+		ServerInfo* TempDbServer = it->second;
+		TempDbServer->OpenConnection();
+		string query ="SELECT tablename, nodename  FROM table_db_mapping Where isactive=True;";
+		rowset < row > TablesMappingRowset = (TempDbServer->Connection.prepare << query);
+		for (rowset<row>::const_iterator it = TablesMappingRowset.begin();it != TablesMappingRowset.end(); ++it)
+		{
+			const row& row = *it;
+			string TableName=row.get<string>(0);
+			if(TablesMapping.count(TableName)==0)
+				TablesMapping[TableName]=CurrentServers[row.get<string>(1)];
+			TableNames.push_back(TableName);
+		}
 
-	      // Extract database details.
-	      _dbtype = dict.get<string>( "settings:database:type","postgresql" );
-	      _dbname = dict.get<string>( "database" );
-	      _tree_pre = dict.get<string>( "settings:database:treetableprefix", "tree_" );
-	      _serverscount = dict.get<int>( "settings:database:serverscount", 1 );
-	      if( _dbtype != "sqlite" )
-	      {
-	    	  xpath_node_set ServersSet= dict.get_nodes("settings/database/serverinfo");
+		TempDbServer->CloseConnection();
 
-	    	  for(xpath_node_set::const_iterator  it = ServersSet.begin(); it != ServersSet.end(); ++it )
-	    	  {
-	    		  pugi::xpath_node node = *it;
-	    		  ServerInfo NewServer(_dbname,node.node());
-	    		  _CurrentServers.push_back(&NewServer);
+	}
 
-	    	  }
+	soci::session* multidb::operator [](string TableName)
+	{
+		if(TablesMapping.count(TableName)>0)
+		{
+			TablesMapping[TableName]->OpenConnection();
+			return &TablesMapping[TableName]->Connection;
 
-
-	      }
-
-
-	      LOG_EXIT();
+		}
+		else
+		{
+			//Table Name Doesnot exists in the List
+			assert(0);
+		}
 	}
 
 
