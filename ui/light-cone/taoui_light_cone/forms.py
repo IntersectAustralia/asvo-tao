@@ -164,15 +164,33 @@ class Form(BetterForm):
 
     @classmethod
     def from_xml(cls, ui_holder, xml_root, prefix=None):
-        simulation = module_xpath(xml_root, '//light-cone/simulation')
+        simulation_name = module_xpath(xml_root, '//light-cone/simulation')
         galaxy_model = module_xpath(xml_root, '//light-cone/galaxy-model')
-        data_set = datasets.dataset_find_from_xml(simulation, galaxy_model)
+        simulation = datasets.simulation_from_xml(simulation_name)
+        data_set = datasets.dataset_find_from_xml(simulation_name, galaxy_model)
         geometry = module_xpath(xml_root, '//light-cone/geometry')
         if not (geometry in [Form.CONE, Form.BOX]):
             geometry = None
         params = {
             prefix+'-catalogue_geometry': geometry,
             prefix+'-galaxy_model': data_set.id,
+            prefix+'-dark_matter_simulation': simulation.id,
             }
+        if geometry == Form.BOX:
+            redshift = module_xpath(xml_root, '//light-cone/redshift')
+            snapshot = datasets.snapshot_from_xml(redshift)
+            if snapshot is not None:
+                params.update({prefix+'-redshift':snapshot.id})
+        else:
+            light_cone_type = module_xpath(xml_root, '//light-cone/box-repetition')
+            num_cones = module_xpath(xml_root, '//light-cone/num-cones')
+            redshift_min = module_xpath(xml_root, '//light-cone/redshift-min')
+            redshift_max = module_xpath(xml_root, '//light-cone/redshift-max')
+            params.update({
+                prefix+'-light_cone_type': light_cone_type,
+                prefix+'-number_of_light_cones': num_cones,
+                prefix+'-redshift_min': redshift_min,
+                prefix+'-redshift_max': redshift_max,
+            })
+
         return cls(ui_holder, params, prefix=prefix)
-    

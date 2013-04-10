@@ -126,3 +126,18 @@ def dust_model_find_from_xml(name):
         return obj
     except models.DustModel.DoesNotExist:
         return None
+
+def snapshot_from_xml(data_set_id, redshift):
+    try:
+        obj = models.Snapshot.objects.get(dataset=data_set_id, redshift=redshift)
+        return obj
+    except models.Snapshot.DoesNotExist:
+        return None
+
+def simulation_from_xml(simulation_name):
+    try:
+        obj = models.Simulation.objects.get(name=simulation_name)
+        return obj
+    except models.Simulation.DoesNotExist:
+        return None
+
