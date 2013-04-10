@@ -193,4 +193,10 @@ class XmlFormsTests(TestCase):
         xml_str = light_cone_xml(xml_parameters)
         form = make_form_xml(LightConeForm, xml_str, prefix='light_cone')
         self.assertEquals(LightConeForm.CONE, form.data['light_cone-catalogue_geometry'])
+        self.assertEquals(self.dataset.id, form.data['light_cone-galaxy_model'])
+        self.assertEquals(self.simulation.id, form.data['light_cone-dark_matter_simulation'])
+        self.assertEquals('unique', form.data['light_cone-light_cone_type'])
+        self.assertEquals('1', form.data['light_cone-number_of_light_cones'])
+        self.assertEquals('0.2', form.data['light_cone-redshift_min'])
+        self.assertEquals('0.3', form.data['light_cone-redshift_max'])
 
