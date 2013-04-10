@@ -12,6 +12,8 @@ import form_utils.fields as bf_fields
 from tao import datasets
 from tao import models as tao_models
 from tao.widgets import ChoiceFieldWithOtherAttrs, SelectWithOtherAttrs, TwoSidedSelectWidget
+from tao.xml_util import module_xpath, module_xpath_iterate
+
 
 class Form(BetterForm):
     EDIT_TEMPLATE = 'taoui_light_cone/edit.html'
@@ -159,3 +161,18 @@ class Form(BetterForm):
                 attrs = {'label': op.label}
                 if op.units is not None and len(op.units) > 0: attrs['units'] = op.units
                 child_element(output_elem, 'item', text=op.name, **attrs)
+
+    @classmethod
+    def from_xml(cls, ui_holder, xml_root, prefix=None):
+        simulation = module_xpath(xml_root, '//light-cone/simulation')
+        galaxy_model = module_xpath(xml_root, '//light-cone/galaxy-model')
+        data_set = datasets.dataset_find_from_xml(simulation, galaxy_model)
+        geometry = module_xpath(xml_root, '//light-cone/geometry')
+        if not (geometry in [Form.CONE, Form.BOX]):
+            geometry = None
+        params = {
+            prefix+'-catalogue_geometry': geometry,
+            prefix+'-galaxy_model': data_set.id,
+            }
+        return cls(ui_holder, params, prefix=prefix)
+    

@@ -134,4 +134,4 @@ class Form(BetterForm):
                     params.update({prefix+'-apply_dust': False})
             else:
                 params.update({prefix+'-apply_dust': False})
-        return cls(ui_holder, params)
+        return cls(ui_holder, params, prefix=prefix)
