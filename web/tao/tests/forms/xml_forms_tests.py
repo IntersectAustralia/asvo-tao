@@ -29,6 +29,7 @@ class XmlFormsTests(TestCase):
         self.dataset = DataSetFactory.create(simulation=self.simulation, galaxy_model=self.galaxy_model)
         self.filter = DataSetPropertyFactory.create(name='CentralMvir rf', units="Msun/h", dataset=self.dataset)
         self.output_prop = DataSetPropertyFactory.create(name='Central op', dataset=self.dataset, is_filter=False)
+        self.snapshot = SnapshotFactory.create(dataset=self.dataset, redshift='0.33')
         self.stellar_model = StellarModelFactory.create()
         self.band_pass_filter = BandPassFilterFactory.create()
         self.dust_model = DustModelFactory.create()
@@ -156,7 +157,7 @@ class XmlFormsTests(TestCase):
         self.assertEquals(True, form.data['sed-apply_sed'])
         self.assertEquals(self.stellar_model.id, form.data['sed-single_stellar_population_model'])
 
-    def test_light_cone_form(self):
+    def test_light_cone_geometry(self):
         xml_parameters = {
             'catalogue_geometry': 'light-cone',
             'dark_matter_simulation': self.simulation.id, # self.simulation.id,
@@ -199,4 +200,54 @@ class XmlFormsTests(TestCase):
         self.assertEquals('1', form.data['light_cone-number_of_light_cones'])
         self.assertEquals('0.2', form.data['light_cone-redshift_min'])
         self.assertEquals('0.3', form.data['light_cone-redshift_max'])
+        self.assertEquals('71.565', form.data['light_cone-ra_opening_angle'])
+        self.assertEquals('71.565', form.data['light_cone-ra_opening_angle'])
+        self.assertEquals('41.811', form.data['light_cone-dec_opening_angle'])
+        op_list = form.data['light_cone-output_properties']
+        self.assertEquals(2, len(op_list))
+        self.assertTrue(self.filter.id in op_list)
+        self.assertTrue(self.output_prop.id in op_list)
+
+    def test_box_geometry(self):
+        xml_parameters = {
+            'catalogue_geometry': 'box',
+            'dark_matter_simulation': self.simulation.id, # self.simulation.id,
+            'galaxy_model': self.galaxy_model.id, #self.galaxy_model.id,
+            'redshift': self.snapshot.redshift,
+            'box_size': 11.3,
+            'output_properties' : [self.filter.id, self.output_prop.id],
+            }
+        xml_parameters.update({
+            'username' : 'test', # self.user.username,
+            'dark_matter_simulation': self.simulation.name,
+            'galaxy_model': self.galaxy_model.name,
+            'output_properties_1_name' : self.filter.name,
+            'output_properties_1_label' : self.filter.label,
+            'output_properties_1_units' : self.filter.units,
+            'output_properties_2_name' : self.output_prop.name,
+            'output_properties_2_label' : self.output_prop.label,
+            })
+        xml_parameters.update({
+            'filter': self.filter.name,
+            'filter_min' : '1000000',
+            'filter_max' : 'None',
+            })
+        xml_parameters.update({
+            'ssp_name': self.stellar_model.name,
+            'band_pass_filter_label': self.band_pass_filter.label,
+            'band_pass_filter_id': self.band_pass_filter.filter_id,
+            'dust_model_name': self.dust_model.name,
+            })
+        xml_str = light_cone_xml(xml_parameters)
+        form = make_form_xml(LightConeForm, xml_str, prefix='light_cone')
+        self.assertEquals(LightConeForm.BOX, form.data['light_cone-catalogue_geometry'])
+        self.assertEquals(self.dataset.id, form.data['light_cone-galaxy_model'])
+        self.assertEquals(self.simulation.id, form.data['light_cone-dark_matter_simulation'])
+        self.assertEquals(self.snapshot.id, form.data['light_cone-snapshot'])
+        self.assertEquals(11.3, float(form.data['light_cone-box_size']))
+        op_list = form.data['light_cone-output_properties']
+        self.assertEquals(2, len(op_list))
+        self.assertTrue(self.filter.id in op_list)
+        self.assertTrue(self.output_prop.id in op_list)
+
 

@@ -133,25 +133,24 @@ class Form(BetterForm):
         child_element(light_cone_elem, 'galaxy-model', text=galaxy_model.name)
 
         if self.cleaned_data['catalogue_geometry'] == Form.BOX:
+
             snapshot = tao_models.Snapshot.objects.get(id=self.cleaned_data['snapshot'])
             child_element(light_cone_elem, 'redshift', text=snapshot.redshift)
-        else:
-            child_element(light_cone_elem, 'box-repetition', text=self.cleaned_data['light_cone_type'])
-            child_element(light_cone_elem, 'num-cones', text=self.cleaned_data['number_of_light_cones'])
-            child_element(light_cone_elem, 'redshift-min', text=self.cleaned_data['redshift_min'])
-            child_element(light_cone_elem, 'redshift-max', text=self.cleaned_data['redshift_max'])
-
-        if self.cleaned_data['catalogue_geometry'] == Form.CONE:
-            child_element(light_cone_elem, 'ra-min', text='0.0', units='deg')
-            child_element(light_cone_elem, 'ra-max', text=self.cleaned_data['ra_opening_angle'], units='deg')
-            child_element(light_cone_elem, 'dec-min', text='0.0', units='deg')
-            child_element(light_cone_elem, 'dec-max', text=self.cleaned_data['dec_opening_angle'], units='deg')
-
-        if self.cleaned_data['catalogue_geometry'] == Form.BOX:
             box_size = self.cleaned_data['box_size']
             if box_size is None or box_size == '':
                 box_size = simulation.box_size
             child_element(light_cone_elem, 'query-box-size', text=box_size, units='Mpc')
+
+        else:  # == Form.CONE
+
+            child_element(light_cone_elem, 'box-repetition', text=self.cleaned_data['light_cone_type'])
+            child_element(light_cone_elem, 'num-cones', text=self.cleaned_data['number_of_light_cones'])
+            child_element(light_cone_elem, 'redshift-min', text=self.cleaned_data['redshift_min'])
+            child_element(light_cone_elem, 'redshift-max', text=self.cleaned_data['redshift_max'])
+            child_element(light_cone_elem, 'ra-min', text='0.0', units='deg')
+            child_element(light_cone_elem, 'ra-max', text=self.cleaned_data['ra_opening_angle'], units='deg')
+            child_element(light_cone_elem, 'dec-min', text='0.0', units='deg')
+            child_element(light_cone_elem, 'dec-max', text=self.cleaned_data['dec_opening_angle'], units='deg')
 
         output_properties = self.cleaned_data['output_properties']
         if len(output_properties) > 0:
@@ -176,21 +175,43 @@ class Form(BetterForm):
             prefix+'-galaxy_model': data_set.id,
             prefix+'-dark_matter_simulation': simulation.id,
             }
+
         if geometry == Form.BOX:
+
             redshift = module_xpath(xml_root, '//light-cone/redshift')
-            snapshot = datasets.snapshot_from_xml(redshift)
+            snapshot = datasets.snapshot_from_xml(data_set, redshift)
             if snapshot is not None:
-                params.update({prefix+'-redshift':snapshot.id})
-        else:
+                params.update({prefix+'-snapshot':snapshot.id})
+            box_size = module_xpath(xml_root, '//light-cone/query-box-size')
+            params.update({prefix+'-box_size': box_size})
+
+        else: ## == Form.CONE
+
             light_cone_type = module_xpath(xml_root, '//light-cone/box-repetition')
             num_cones = module_xpath(xml_root, '//light-cone/num-cones')
             redshift_min = module_xpath(xml_root, '//light-cone/redshift-min')
             redshift_max = module_xpath(xml_root, '//light-cone/redshift-max')
+            ra_max = module_xpath(xml_root, '//light-cone/ra-max')
+            dec_max = module_xpath(xml_root, '//light-cone/dec-max')
             params.update({
                 prefix+'-light_cone_type': light_cone_type,
                 prefix+'-number_of_light_cones': num_cones,
                 prefix+'-redshift_min': redshift_min,
                 prefix+'-redshift_max': redshift_max,
+                prefix+'-ra_opening_angle': ra_max,
+                prefix+'-dec_opening_angle': dec_max,
             })
 
+        params.update({prefix+'-output_properties': [dsp.id for dsp in Form._map_elems(xml_root, data_set)]})
+
         return cls(ui_holder, params, prefix=prefix)
+
+    @classmethod
+    def _map_elems(cls, xml_root, data_set):
+        for elem in module_xpath_iterate(xml_root, '//light-cone/output-fields/item', text=False):
+            label = elem.get('label')
+            name = elem.text
+            data_set_property = datasets.data_set_property_from_xml(data_set, label, name)
+            if data_set_property is not None:
+                yield data_set_property
+

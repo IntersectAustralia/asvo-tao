@@ -127,9 +127,9 @@ def dust_model_find_from_xml(name):
     except models.DustModel.DoesNotExist:
         return None
 
-def snapshot_from_xml(data_set_id, redshift):
+def snapshot_from_xml(data_set, redshift):
     try:
-        obj = models.Snapshot.objects.get(dataset=data_set_id, redshift=redshift)
+        obj = models.Snapshot.objects.get(dataset=data_set, redshift=redshift)
         return obj
     except models.Snapshot.DoesNotExist:
         return None
@@ -141,3 +141,9 @@ def simulation_from_xml(simulation_name):
     except models.Simulation.DoesNotExist:
         return None
 
+def data_set_property_from_xml(data_set, label, name):
+    try:
+        obj = models.DataSetProperty.objects.get(dataset=data_set, label=label, name=name)
+        return obj
+    except models.DataSetProperty.DoesNotExist:
+        return None
