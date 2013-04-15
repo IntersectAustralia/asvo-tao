@@ -127,7 +127,10 @@ class DataSetProperty(models.Model):
     description = models.TextField(default='', blank=True)
     group = models.CharField(max_length=80, default='')
     order = models.IntegerField(default=0)
-    
+
+    class Meta:
+        ordering = ['group', 'order', 'label']
+
     def __unicode__(self):
         return self.label
 
@@ -249,6 +252,9 @@ class BandPassFilter(models.Model):
     description = models.TextField(default='') # when a single band pass filter is selected, this will be displayed in a new details panel on the right
     group = models.CharField(max_length=80, default='')
     order = models.IntegerField(default=0)
+
+    class Meta:
+        ordering = ['group', 'order', 'label']
 
     def __unicode__(self):
         return self.label
