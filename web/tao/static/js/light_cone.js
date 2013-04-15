@@ -327,8 +327,6 @@ jQuery(document).ready(function($) {
     $('#expand_dataset').click(function(e) {
         e.preventDefault();
         $this = $(this);
-//        alert($this.html() + " is clicked!");
-//        e.stopPropagation();
         if ($this.html() === "&gt;&gt;") {
             $('div.summary_light_cone .simulation_description, div.summary_light_cone .galaxy_model_description').show();
             $this.html("<<");
@@ -365,17 +363,42 @@ jQuery(document).ready(function($) {
         return false;
     });
 
+    var list_multiple_selections_in_summary = function(form_name, select_widget){
+        var selections_count = 0;
+        var selected_values = [];
+
+        selected_values.push('<ul>');
+        var $groups = $('#id_' + form_name + '-' + select_widget +' optgroup');
+        console.log(form_name + ' ' + select_widget + ' has group size: ' + $groups.size());
+        if ($groups.size() > 0) {
+            $groups.each(function(i, e) {
+                var name = $(e).attr('group-name');
+                if (name.length == 0) {
+                    name = "Ungrouped";
+                }
+                selected_values.push('<li>' + name + '<ul>');
+                $(e).find('option').each(function(i,option) {
+                    selected_values.push('<li>' + $(option).html() + '</li>');
+                    selections_count++;
+                })
+                selected_values.push('</ul></li>');
+            })
+        } else {
+            $('#id_' + form_name + '-' + select_widget +' option').each(function(i,option) {
+                selected_values.push('<li>' + $(option).html() + '</li>');
+                selections_count++;
+            });
+        }
+        selected_values.push('</ul>');
+
+        fill_in_summary(form_name, select_widget + '_list', selected_values.join(''));
+        return selections_count;
+    }
+
     lc_output_props_widget.change_event(function(evt){
         update_filter_options(false, false);
-        var output_properties_count = 0;
-        var output_properties_values = [];
-        output_properties_values.push('<ul');
-        $(lc_id('output_properties')+' option').each(function(i) {
-            output_properties_values.push('<li>' + $(this).html() + '</li>');
-            output_properties_count++;
-        });
-        output_properties_values.push('</ul');
-        fill_in_summary('light_cone', 'output_properties_list', output_properties_values);
+        var output_properties_count = list_multiple_selections_in_summary('light_cone', 'output_properties');
+
         if (output_properties_count == 1)
             fill_in_summary('light_cone', 'output_properties', output_properties_count + " property selected");
         else
@@ -385,8 +408,6 @@ jQuery(document).ready(function($) {
     $('#expand_output_properties').click(function(e) {
         e.preventDefault();
         $this = $(this);
-//        alert($this.html() + " is clicked!");
-//        e.stopPropagation();
         if ($this.html() === "&gt;&gt;") {
             $('div.summary_light_cone .output_properties_list').show();
             $this.html("<<");
@@ -402,15 +423,8 @@ jQuery(document).ready(function($) {
     });
 
     var display_band_pass_filters_summary = function() {
-        var band_pass_filter_count = 0;
-        var band_pass_filter_values = [];
-        band_pass_filter_values.push('<ul');
-        $(sed_id('band_pass_filters')+' option').each(function(i) {
-            band_pass_filter_values.push('<li>' + $(this).html() + '</li>');
-            band_pass_filter_count++;
-        });
-        band_pass_filter_values.push('</ul');
-        fill_in_summary('sed', 'band_pass_filters_list', band_pass_filter_values);
+        var band_pass_filter_count = list_multiple_selections_in_summary('sed', 'band_pass_filters');
+
         if (band_pass_filter_count == 1)
             fill_in_summary('sed', 'band_pass_filters', band_pass_filter_count + " filter selected");
         else
@@ -557,8 +571,6 @@ jQuery(document).ready(function($) {
         var current = [];
         $(sed_id('band_pass_filters') + ' option').each(function(){
             var $this = $(this);
-//            console.log($this);
-//            $(this).attr("selected", "selected");
             if ($this.attr('selected')) {
                 current.push($this.attr('value'));
             }
