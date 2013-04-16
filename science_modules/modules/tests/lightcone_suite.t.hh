@@ -145,7 +145,7 @@ public:
    ///
    void test_box_z_snap()
    {
-	  /*LOG_PUSH( new hpc::mpi::logger( "TestCasesLogFile.log" ) );
+	  LOG_PUSH( new hpc::mpi::logger( "TestCasesLogFile.log" ) );
       lightcone lc;
 
       // Turn off random rotation and shifting.
@@ -204,7 +204,7 @@ public:
       }
       TS_ASSERT_EQUALS( ids.size(), 4 );
       for( unsigned ii = 0; ii < 4; ++ii )
-         TS_ASSERT_EQUALS( ids[ii], 4 + ii );*/
+         TS_ASSERT_EQUALS( ids[ii], 4 + ii );
    }
 
    ///
