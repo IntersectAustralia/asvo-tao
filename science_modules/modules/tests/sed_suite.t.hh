@@ -99,16 +99,16 @@ public:
       sed._load_table( 0, "tree_1" );
 
       TS_ASSERT_EQUALS( sed._descs.size(), 4 );
-      TS_ASSERT_EQUALS( sed._descs[0], -1 );
-      TS_ASSERT_EQUALS( sed._descs[1], 0 );
-      TS_ASSERT_EQUALS( sed._descs[2], 1 );
-      TS_ASSERT_EQUALS( sed._descs[3], 2 );
+      TS_ASSERT_EQUALS( sed._descs[0], 1 );
+      TS_ASSERT_EQUALS( sed._descs[1], 2 );
+      TS_ASSERT_EQUALS( sed._descs[2], 3 );
+      TS_ASSERT_EQUALS( sed._descs[3], -1 );
 
       TS_ASSERT_EQUALS( sed._parents.size(), 3 );
-      TS_ASSERT_EQUALS( sed._parents.get( 0 ), 1 );
-      TS_ASSERT_EQUALS( sed._parents.get( 1 ), 2 );
-      TS_ASSERT_EQUALS( sed._parents.get( 2 ), 3 );
-      TS_ASSERT( !sed._parents.has( 3 ) );
+      TS_ASSERT_EQUALS( sed._parents.get( 1 ), 0 );
+      TS_ASSERT_EQUALS( sed._parents.get( 2 ), 1 );
+      TS_ASSERT_EQUALS( sed._parents.get( 3 ), 2 );
+      TS_ASSERT( !sed._parents.has( 0 ) );
 
       TS_ASSERT_EQUALS( sed._sfrs.size(), 4 );
       TS_ASSERT_DELTA( sed._sfrs[0], 10.0, 1e-8 );
@@ -315,7 +315,7 @@ public:
 	 dict["query-box-size"] = "10";
 	 dict["geometry"] = "box";
 	 dict["redshift"] = "0";
-         dict["H0"] = "73";
+         dict["h0"] = "73";
 	 db_setup.xml.write( db_setup.xml_filename, db_setup.dict );
       }
 
