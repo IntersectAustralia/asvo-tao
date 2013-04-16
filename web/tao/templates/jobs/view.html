@@ -63,7 +63,9 @@ the forms being hidden and all.
                 <strong>Summary</strong>
             </div>
             <div id="hidden_lc_form"> {# style="display: none;"> #}
-                {{ job.parameter }}
+
+                {{ job.parameters|linebreaks }}
+
                 {% for form in forms %}
                     {{ form.from_xml }}
                 {% endfor %}
