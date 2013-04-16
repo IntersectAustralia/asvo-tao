@@ -62,6 +62,21 @@ the forms being hidden and all.
             <div>
                 <strong>Summary</strong>
             </div>
+            <div id="hidden_lc_form"> {# style="display: none;"> #}
+                {{ job.parameter }}
+                {% for form in forms %}
+                    {{ form.from_xml }}
+                {% endfor %}
+            </div>
+            <form id="job-form" action="" method="XML">
+                <fieldset>
+                    <div class="row-fluid">
+                        {% for form in forms %}
+                            {% include form.SUMMARY_TEMPLATE %}
+                        {% endfor %}
+                    </div>
+                </fieldset>
+            </form>
         </div>
     </div>
 {% endblock content %}
