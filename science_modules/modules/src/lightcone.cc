@@ -10,6 +10,7 @@
 #include "geometry_iterator.hh"
 #include "table_iterator.hh"
 
+
 using namespace hpc;
 using boost::format;
 using boost::str;
@@ -44,46 +45,13 @@ namespace tao {
    {
    }
 
-   ///
-   ///
-   ///
-   void
-   lightcone::setup_options( options::dictionary& dict,
-                             optional<const string&> prefix )
-   {
-      dict.add_option( new options::string( "geometry", "light-cone" ), prefix );
-      dict.add_option( new options::string( "box-repetition", "unique" ), prefix );
-      dict.add_option( new options::real( "redshift-max" ), prefix );
-      dict.add_option( new options::real( "redshift-min" ), prefix );
-      dict.add_option( new options::real( "redshift" ), prefix );
-      dict.add_option( new options::real( "query-box-size" ), prefix );
-      dict.add_option( new options::real( "ra-min", 0.0 ), prefix );
-      dict.add_option( new options::real( "ra-max", 90.0 ), prefix );
-      dict.add_option( new options::real( "dec-min", 0.0 ), prefix );
-      dict.add_option( new options::real( "dec-max", 90.0 ), prefix );
-      dict.add_option( new options::real( "H0", 73.0 ), prefix );
-      dict.add_option( new options::list<options::string>( "output-fields" ), prefix );
-      dict.add_option( new options::integer( "rng-seed" ), prefix );
-      dict.add_option( new options::string( "decomposition-method", "tables" ), prefix );
 
-      // Setup table names.
-      dict.add_option( new options::string( "snapshot-redshift-table", "snap_redshift" ), prefix );
-
-      // Setup the field mappings we might need to use.
-      dict.add_option( new options::string( "pos_x", "posx" ), prefix );
-      dict.add_option( new options::string( "pos_y", "posy" ), prefix );
-      dict.add_option( new options::string( "pos_z", "posz" ), prefix );
-      dict.add_option( new options::string( "global_id", "globalindex" ), prefix );
-      dict.add_option( new options::string( "local_id", "localgalaxyid" ), prefix );
-      dict.add_option( new options::string( "tree_id", "globaltreeid" ), prefix );
-      dict.add_option( new options::string( "snapshot", "snapnum" ), prefix );
-   }
 
    ///
    /// Initialise the module.
    ///
    void
-   lightcone::initialise( const options::dictionary& dict,
+   lightcone::initialise( const options::xml_dict& dict,
                           optional<const string&> prefix )
    {
       LOG_ENTER();
@@ -141,41 +109,44 @@ namespace tao {
 
       if( _box_type != "box" )
       {
-	 // The outer loop is over the boxes.
-	 _get_boxes( _boxes );
-	 LOGDLN( "Boxes: ", _boxes );
 
-	 // Setup progress indicator.
-	 _prog.set_local_size( _boxes.size() );
-	 if( mpi::comm::world.rank() == 0 )
-	    LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
+		// The outer loop is over the boxes.
+		_get_boxes( _boxes );
+		LOGDLN( "Boxes: ", _boxes );
 
-	 _cur_box = _boxes.begin();
-	 _settle_box();
+		// Setup progress indicator.
+		_prog.set_local_size( _boxes.size() );
+		if( mpi::comm::world.rank() == 0 )
+		LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
+
+		_cur_box = _boxes.begin();
+		_settle_box();
       }
       else
       {
-	 auto it = _snap_redshifts.begin();
-	 while( it != _snap_redshifts.end() )
-	 {
-	    if( num::approx( *it, _z_snap, 1e-4 ) )
-	       break;
-	    ++it;
-	 }
-         ASSERT( it != _snap_redshifts.end(), "Invalid redshift." );
-         _z_snap_idx = it - _snap_redshifts.begin();
 
-	 // The outer loop is over the boxes.
-	 _get_boxes( _boxes );
-	 LOGDLN( "Boxes: ", _boxes );
 
-	 // Setup progress indicator.
-	 _prog.set_local_size( _boxes.size() );
-	 if( mpi::comm::world.rank() == 0 )
-	    LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
+		auto it = _snap_redshifts.begin();
+		while( it != _snap_redshifts.end() )
+		{
+			if( num::approx( *it, _z_snap, 1e-4 ) )
+			   break;
+			++it;
+		}
+		 ASSERT( it != _snap_redshifts.end(), "Invalid redshift." );
+		 _z_snap_idx = it - _snap_redshifts.begin();
 
-	 _cur_box = _boxes.begin();
-	 _settle_box();
+		// The outer loop is over the boxes.
+		_get_boxes( _boxes );
+		LOGDLN( "Boxes: ", _boxes );
+
+		// Setup progress indicator.
+		_prog.set_local_size( _boxes.size() );
+		if( mpi::comm::world.rank() == 0 )
+			LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
+
+		_cur_box = _boxes.begin();
+		_settle_box();
       }
 
       _timer.stop();
@@ -232,7 +203,7 @@ namespace tao {
 	       LOGDLN( "Time per box: ", _per_box.mean() );
 
 	       // Also dump progress.
-	       _prog.set_local_complete_delta( 1 );
+	       _prog.set_delta( 1 );
 	       _prog.update();
 	       if( mpi::comm::world.rank() == 0 )
 		  LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
@@ -257,6 +228,14 @@ namespace tao {
 
       tao::galaxy gal( *_cur_row, _table_names[_cur_table] );
       real_type dist = sqrt( pow( gal.x(), 2.0 ) + pow( gal.y(), 2.0 ) + pow( gal.z(), 2.0 ) );
+
+      LOGDLN("(",gal.x(),",",gal.y(),",",gal.z(),")=",dist);
+      LOGDLN("Redshift=",gal.redshift());
+      LOGDLN(gal.id(),":(",_dist_range.start(),","<<dist<<",",_dist_range.finish(),")");
+
+
+
+
 
       // Check that the row actually belongs in this range.
       ASSERT( dist >= _dist_range.start() && dist < _dist_range.finish() );
@@ -458,7 +437,7 @@ namespace tao {
 	    LOGDLN( "Time per box: ", _per_box.mean() );
 
 	    // Update the log file with the progress.
-	    _prog.set_local_complete_delta( 1 );
+	    _prog.set_delta( 1 );
 	    _prog.update();
 
 	    // Also dump progress here.
@@ -547,9 +526,8 @@ namespace tao {
 	 LOGDLN( "Time per box: ", _per_box.mean() );
 
 	 // Wait for parallel progress.
-	 _prog.set_local_complete_delta( 1 );
-	 while( _prog.test() )
-	   _prog.update();
+	 _prog.set_delta( 1 );
+
 
 	 // Also dump progress.
 	 if( mpi::comm::world.rank() == 0 )
@@ -579,6 +557,7 @@ namespace tao {
       	 _setup_redshift_ranges();
 
       // Execute the query and retrieve the rows.
+
       _rows = new soci::rowset<soci::row>( (_sql.prepare << query) );
       _cur_row = _rows->begin();
 
@@ -600,6 +579,10 @@ namespace tao {
       real_type ra_max = to_radians( _ra_max );
       real_type dec_min = to_radians( _dec_min );
       real_type dec_max = to_radians( _dec_max );
+
+      LOGDLN("RA:",_ra_min," to ",_ra_max);
+      LOGDLN("DEC:",_dec_min," to ",_dec_max);
+
 
       vector<string>& ops = _ops;
       string pos1 = ops[0];
@@ -625,8 +608,12 @@ namespace tao {
       // Cache some values.
       real_type z_min = _z_min;
       real_type z_max = _z_max;
+
+      LOGDLN("Z:",_z_min," to ",_z_max);
+
       real_type max_dist = _dist_range.finish();
       real_type min_dist = _dist_range.start();
+      LOGDLN("Max Dist=",max_dist,", Min Dist=",min_dist);
 
       real_type halo_pos1_max = max_dist*cos( ra_min )*cos( dec_min );
       real_type halo_pos2_max = max_dist*sin( ra_max )*cos( dec_min );
@@ -935,36 +922,35 @@ namespace tao {
    /// from the parameter dictionary.
    ///
    void
-   lightcone::_read_options( const options::dictionary& dict,
+   lightcone::_read_options( const options::xml_dict& dict,
                              optional<const string&> prefix )
    {
       LOG_ENTER();
 
-      // Get the sub dictionary, if it exists.
-      const options::dictionary& sub = prefix ? dict.sub( *prefix ) : dict;
 
       // Get the decomposition method.
-      _decomp_method = sub.get<string>( "decomposition-method" );
+      _decomp_method = dict.get<string>( prefix.get()+":decomposition-method", "tables" );
+
 
       // Extract table names.
-      _snap_red_table = sub.get<string>( "snapshot-redshift-table" );
+      _snap_red_table = dict.get<string>( prefix.get()+":snapshot-redshift-table","snap_redshift" );
 
       // Read all the field mappings.
-      _field_map.insert( "pos_x", sub.get<string>( "pos_x" ) );
-      _field_map.insert( "pos_y", sub.get<string>( "pos_y" ) );
-      _field_map.insert( "pos_z", sub.get<string>( "pos_z" ) );
-      _field_map.insert( "global_id", sub.get<string>( "global_id" ) );
-      _field_map.insert( "local_id", sub.get<string>( "local_id" ) );
-      _field_map.insert( "tree_id", sub.get<string>( "tree_id" ) );
-      _field_map.insert( "snapshot", sub.get<string>( "snapshot" ) );
+      _field_map.insert( "pos_x", dict.get<string>( prefix.get()+":pos_x","posx" ) );
+      _field_map.insert( "pos_y", dict.get<string>( prefix.get()+":pos_y","posy" ) );
+      _field_map.insert( "pos_z", dict.get<string>( prefix.get()+":pos_z","posz" ) );
+      _field_map.insert( "global_id", dict.get<string>( prefix.get()+":global_id","globalindex" ) );
+      _field_map.insert( "local_id", dict.get<string>( prefix.get()+":local_id", "localgalaxyid") );
+      _field_map.insert( "tree_id", dict.get<string>( prefix.get()+":tree_id", "globaltreeid" ) );
+      _field_map.insert( "snapshot", dict.get<string>( prefix.get()+":snapshot", "snapnum") );
 
       // Astronomical values. Get these first just in case
       // we do any redshift calculations in here.
-      _h0 = sub.get<real_type>( "H0" );
+      _h0 = dict.get<real_type>( prefix.get()+":h0",73.0 );
       LOGDLN( "Using h0 = ", _h0 );
 
       // Should we use the BSP tree system?
-      _accel_method = dict.get<string>( "settings:database:acceleration" );
+      _accel_method = dict.get<string>( "settings:database:acceleration","none" );
       std::transform( _accel_method.begin(), _accel_method.end(), _accel_method.begin(), ::tolower );
       LOGDLN( "Acceleration method: ", _accel_method );
 
@@ -975,11 +961,10 @@ namespace tao {
       _db_connect();
 
       // Get box type.
-      _box_type = sub.get<string>( "geometry" );
+      _box_type = dict.get<string>( prefix.get()+":geometry", "light-cone" );
       LOGDLN( "Box type '", _box_type );
-
       // Get box repetition type.
-      _box_repeat = sub.get<string>( "box-repetition" );
+      _box_repeat = dict.get<string>( prefix.get()+":box-repetition", "unique");
       std::transform( _box_repeat.begin(), _box_repeat.end(), _box_repeat.begin(), ::tolower );
       LOGDLN( "Box repetition type '", _box_repeat, "'" );
       _unique = (_box_repeat == "unique");
@@ -1005,7 +990,7 @@ namespace tao {
       // Extract the random number generator seed and set it.
       _real_rng.set_range( 0, _domain_size );
       _int_rng.set_range( 1, 6 );
-      auto rng_seed = sub.opt<int>( "rng-seed" );
+      auto rng_seed = dict.opt<int>( prefix.get()+":rng-seed" );
       if( rng_seed )
       {
 	 _rng_seed = *rng_seed;
@@ -1028,20 +1013,21 @@ namespace tao {
 
       // Redshift ranges.
       real_type snap_z_max = _snap_redshifts.front(), snap_z_min = _snap_redshifts.back();
-      _z_max = sub.get<real_type>( "redshift-max", snap_z_max );
+      _z_max = dict.get<real_type>( prefix.get()+":redshift-max", snap_z_max );
       _z_max = std::min( _z_max, snap_z_max );
-      _z_min = sub.get<real_type>( "redshift-min", snap_z_min );
+      _z_min = dict.get<real_type>( prefix.get()+":redshift-min", snap_z_min );
       LOGDLN( "Redshift range: (", _z_min, ", ", _z_max, ")" );
+
 
       // Create distance range.
       _dist_range.set( _redshift_to_distance( _z_min ), _redshift_to_distance( _z_max ) );
       LOGDLN( "Distance range: (", _dist_range.start(), ", ", _dist_range.finish(), ")" );
 
       // Right ascension.
-      _ra_min = sub.get<real_type>( "ra-min" );
+      _ra_min = dict.get<real_type>( prefix.get()+":ra-min",0.0 );
       if( _ra_min < 0.0 )
          _ra_min = 0.0;
-      _ra_max = sub.get<real_type>( "ra-max" ); // TODO divide by 60.0?
+      _ra_max = dict.get<real_type>( prefix.get()+":ra-max",90.0 ); // TODO divide by 60.0?
       if( _ra_max >= 89.9999999 )
          _ra_max = 89.9999999;
       if( _ra_min > _ra_max )
@@ -1055,10 +1041,10 @@ namespace tao {
       LOGDLN( "Have right ascension range ", _ra_min, " - ", _ra_max );
 
       // Declination.
-      _dec_min = sub.get<real_type>( "dec-min" );
+      _dec_min = dict.get<real_type>( prefix.get()+":dec-min",0.0 );
       if( _dec_min < 0.0 )
          _dec_min = 0.0;
-      _dec_max = sub.get<real_type>( "dec-max" ); // TODO divide by 60.0?
+      _dec_max = dict.get<real_type>( prefix.get()+":dec-max",90.0 ); // TODO divide by 60.0?
       if( _dec_max >= 89.9999999 )
          _dec_max = 89.9999999;
       if( _dec_min > _dec_max )
@@ -1068,21 +1054,21 @@ namespace tao {
       // For the box type.
       if( _box_type == "box" )
       {
-         _z_snap = sub.get<real_type>( "redshift" );
-         _box_size = sub.get<real_type>( "query-box-size" );
+         _z_snap = dict.get<real_type>( prefix.get()+":redshift" );
+         _box_size = dict.get<real_type>( prefix.get()+":query-box-size" );
       }
 
       // Filter information.
-      _filter = dict.get<string>( "workflow:record-filter:filter-type" );
+      _filter = dict.get<string>( "workflow:record-filter:filter-type","" );
       std::transform( _filter.begin(), _filter.end(), _filter.begin(), ::tolower );
-      _filter_min = dict.get<string>( "workflow:record-filter:filter-min" );
-      _filter_max = dict.get<string>( "workflow:record-filter:filter-max" );
+      _filter_min = dict.get<string>( "workflow:record-filter:filter-min","" );
+      _filter_max = dict.get<string>( "workflow:record-filter:filter-max","" );
       LOGDLN( "Read filter name of: ", _filter );
       LOGDLN( "Read filter range of: ", _filter_min, " to ", _filter_max );
 
       // Output field information.
       {
-         list<string> fields = sub.get_list<string>( "output-fields" );
+         list<string> fields = dict.get_list<string>( prefix.get()+":output-fields" );
 	 for( const auto& field : fields )
 	 {
 	    string low = field;
