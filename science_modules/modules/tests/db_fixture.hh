@@ -57,7 +57,7 @@ public:
 	 dict.add_option( new options::real( "ra-max", 90.0 ), prefix );
 	 dict.add_option( new options::real( "dec-min", 0.0 ), prefix );
 	 dict.add_option( new options::real( "dec-max", 90.0 ), prefix );
-	 dict.add_option( new options::real( "H0", 73.0 ), prefix );
+	 dict.add_option( new options::real( "h0", 73.0 ), prefix );
 	 dict.add_option( new options::list<options::string>( "output-fields" ), prefix );
 	 dict.add_option( new options::integer( "rng-seed" ), prefix );
 	 dict.add_option( new options::string( "decomposition-method", "tables" ), prefix );

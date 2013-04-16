@@ -109,6 +109,7 @@ public:
       dict["geometry"] = "box";
       dict["redshift"] = "0.001";
 
+
       // Place to store row IDs.
       vector<int> ids;
 
@@ -145,7 +146,7 @@ public:
    ///
    void test_box_z_snap()
    {
-	  LOG_PUSH( new hpc::mpi::logger( "TestCasesLogFile.log" ) );
+
       lightcone lc;
 
       // Turn off random rotation and shifting.
@@ -170,7 +171,7 @@ public:
       options::dictionary& dict = db_setup.dict.sub( "workflow:light-cone" );
       dict["geometry"] = "box";
       dict["query-box-size"] = "4.5";
-
+      dict["h0"]="0.73";
       // Place to store row IDs.
       vector<int> ids;
 
