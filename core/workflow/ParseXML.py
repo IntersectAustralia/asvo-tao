@@ -20,7 +20,8 @@ class ParseXMLParameters(object):
         #self.GetCurrentUser()
         #self.GetDocumentSignature()    
         self.SubJobsCount=self.GetSubJobsCount()
-        
+        self.ModifySEDFilePath()
+        self.ModifyFilterFilePath()
         self.SetBasicInformation(JobID,DatabaseName,JobUserName)
         return self.SubJobsCount
         
@@ -50,7 +51,21 @@ class ParseXMLParameters(object):
     def GetDocumentSignature(self):
         self.Signature=self.tree.xpath("ns:signature",namespaces={'ns':self.NameSpace})[0].text
         print self.Signature
-    
+    def ModifySEDFilePath(self):
+        self.SEDDir=Options['Torque:maindatapath']+"/sed/"        
+        self.stellarpopulationmodel=self.tree.xpath("ns:workflow/ns:sed/ns:single-stellar-population-model",namespaces={'ns':self.NameSpace})
+        if len(self.stellarpopulationmodel)>0:
+            self.stellarpopulationmodel=self.stellarpopulationmodel[0]
+        self.stellarpopulationmodel.text=self.SEDDir+ self.stellarpopulationmodel.text
+    def ModifyFilterFilePath(self):
+        self.BandPassDIR=Options['Torque:maindatapath']+"/bandpass/"
+        
+        self.bandpassfilters=self.tree.xpath("ns:workflow/ns:sed/ns:bandpass-filters/ns:item",namespaces={'ns':self.NameSpace})
+        for filter in self.bandpassfilters:
+            filter.text=self.BandPassDIR+filter.text
+                        
+        
+        
     ## This function is used for debugging reasons only (not currently active)    
     def FindModules(self):        
         self.Modules=self.tree.xpath("ns:workflow/ns:module",namespaces={'ns':self.NameSpace})
@@ -84,4 +99,10 @@ class ParseXMLParameters(object):
              
         self.tree.xpath("/ns:tao",namespaces={'ns':self.NameSpace})[0].append(DBElement)
                 
- 
+if __name__ == '__main__':
+     [Options]=settingReader.ParseParams("settings.xml")
+     ParseXMLParametersObj=ParseXMLParameters('/home/amr/workspace/sedparam.xml',Options)
+     ParseXMLParametersObj.ModifySEDFilePath()
+     ParseXMLParametersObj.ModifyFilterFilePath()
+     ParseXMLParametersObj.SetBasicInformation(110, "Database", "TestUser")
+     ParseXMLParametersObj.ExportTree('/home/amr/workspace/sedparam.processed.xml', 0)
