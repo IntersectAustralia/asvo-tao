@@ -159,6 +159,7 @@ public:
       remove( db_filename.c_str() );
       remove( xml_filename.c_str() );
       remove( ssp_filename.c_str() );
+
       dict.clear();
       return true;
    }

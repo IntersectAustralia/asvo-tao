@@ -92,6 +92,7 @@ public:
    ///
    void test_load_table_linear()
    {
+	  LOG_PUSH( new hpc::mpi::logger( "TestCasesLogFileSED.log" ) );
       lightcone lc;
       sed sed;
       setup_sed( lc, sed );

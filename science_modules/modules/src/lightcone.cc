@@ -10,6 +10,7 @@
 #include "geometry_iterator.hh"
 #include "table_iterator.hh"
 
+
 using namespace hpc;
 using boost::format;
 using boost::str;
@@ -108,41 +109,44 @@ namespace tao {
 
       if( _box_type != "box" )
       {
-	 // The outer loop is over the boxes.
-	 _get_boxes( _boxes );
-	 LOGDLN( "Boxes: ", _boxes );
 
-	 // Setup progress indicator.
-	 _prog.set_local_size( _boxes.size() );
-	 if( mpi::comm::world.rank() == 0 )
-	    LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
+		// The outer loop is over the boxes.
+		_get_boxes( _boxes );
+		LOGDLN( "Boxes: ", _boxes );
 
-	 _cur_box = _boxes.begin();
-	 _settle_box();
+		// Setup progress indicator.
+		_prog.set_local_size( _boxes.size() );
+		if( mpi::comm::world.rank() == 0 )
+		LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
+
+		_cur_box = _boxes.begin();
+		_settle_box();
       }
       else
       {
-	 auto it = _snap_redshifts.begin();
-	 while( it != _snap_redshifts.end() )
-	 {
-	    if( num::approx( *it, _z_snap, 1e-4 ) )
-	       break;
-	    ++it;
-	 }
-         ASSERT( it != _snap_redshifts.end(), "Invalid redshift." );
-         _z_snap_idx = it - _snap_redshifts.begin();
 
-	 // The outer loop is over the boxes.
-	 _get_boxes( _boxes );
-	 LOGDLN( "Boxes: ", _boxes );
 
-	 // Setup progress indicator.
-	 _prog.set_local_size( _boxes.size() );
-	 if( mpi::comm::world.rank() == 0 )
-	    LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
+		auto it = _snap_redshifts.begin();
+		while( it != _snap_redshifts.end() )
+		{
+			if( num::approx( *it, _z_snap, 1e-4 ) )
+			   break;
+			++it;
+		}
+		 ASSERT( it != _snap_redshifts.end(), "Invalid redshift." );
+		 _z_snap_idx = it - _snap_redshifts.begin();
 
-	 _cur_box = _boxes.begin();
-	 _settle_box();
+		// The outer loop is over the boxes.
+		_get_boxes( _boxes );
+		LOGDLN( "Boxes: ", _boxes );
+
+		// Setup progress indicator.
+		_prog.set_local_size( _boxes.size() );
+		if( mpi::comm::world.rank() == 0 )
+			LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
+
+		_cur_box = _boxes.begin();
+		_settle_box();
       }
 
       _timer.stop();
@@ -224,6 +228,14 @@ namespace tao {
 
       tao::galaxy gal( *_cur_row, _table_names[_cur_table] );
       real_type dist = sqrt( pow( gal.x(), 2.0 ) + pow( gal.y(), 2.0 ) + pow( gal.z(), 2.0 ) );
+
+      LOGDLN("(",gal.x(),",",gal.y(),",",gal.z(),")=",dist);
+      LOGDLN("Redshift=",gal.redshift());
+      LOGDLN(gal.id(),":(",_dist_range.start(),","<<dist<<",",_dist_range.finish(),")");
+
+
+
+
 
       // Check that the row actually belongs in this range.
       ASSERT( dist >= _dist_range.start() && dist < _dist_range.finish() );
@@ -545,6 +557,7 @@ namespace tao {
       	 _setup_redshift_ranges();
 
       // Execute the query and retrieve the rows.
+
       _rows = new soci::rowset<soci::row>( (_sql.prepare << query) );
       _cur_row = _rows->begin();
 
@@ -566,6 +579,10 @@ namespace tao {
       real_type ra_max = to_radians( _ra_max );
       real_type dec_min = to_radians( _dec_min );
       real_type dec_max = to_radians( _dec_max );
+
+      LOGDLN("RA:",_ra_min," to ",_ra_max);
+      LOGDLN("DEC:",_dec_min," to ",_dec_max);
+
 
       vector<string>& ops = _ops;
       string pos1 = ops[0];
@@ -591,8 +608,12 @@ namespace tao {
       // Cache some values.
       real_type z_min = _z_min;
       real_type z_max = _z_max;
+
+      LOGDLN("Z:",_z_min," to ",_z_max);
+
       real_type max_dist = _dist_range.finish();
       real_type min_dist = _dist_range.start();
+      LOGDLN("Max Dist=",max_dist,", Min Dist=",min_dist);
 
       real_type halo_pos1_max = max_dist*cos( ra_min )*cos( dec_min );
       real_type halo_pos2_max = max_dist*sin( ra_max )*cos( dec_min );
@@ -907,6 +928,10 @@ namespace tao {
       LOG_ENTER();
 
 
+      // Get the decomposition method.
+      _decomp_method = dict.get<string>( prefix.get()+":decomposition-method", "tables" );
+
+
       // Extract table names.
       _snap_red_table = dict.get<string>( prefix.get()+":snapshot-redshift-table","snap_redshift" );
 
@@ -938,7 +963,6 @@ namespace tao {
       // Get box type.
       _box_type = dict.get<string>( prefix.get()+":geometry", "light-cone" );
       LOGDLN( "Box type '", _box_type );
-
       // Get box repetition type.
       _box_repeat = dict.get<string>( prefix.get()+":box-repetition", "unique");
       std::transform( _box_repeat.begin(), _box_repeat.end(), _box_repeat.begin(), ::tolower );
@@ -993,6 +1017,7 @@ namespace tao {
       _z_max = std::min( _z_max, snap_z_max );
       _z_min = dict.get<real_type>( prefix.get()+":redshift-min", snap_z_min );
       LOGDLN( "Redshift range: (", _z_min, ", ", _z_max, ")" );
+
 
       // Create distance range.
       _dist_range.set( _redshift_to_distance( _z_min ), _redshift_to_distance( _z_max ) );
