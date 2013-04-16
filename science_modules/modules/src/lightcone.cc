@@ -946,7 +946,7 @@ namespace tao {
 
       // Astronomical values. Get these first just in case
       // we do any redshift calculations in here.
-      _h0 = dict.get<real_type>( prefix.get()+":H0",73.0 );
+      _h0 = dict.get<real_type>( prefix.get()+":h0",73.0 );
       LOGDLN( "Using h0 = ", _h0 );
 
       // Should we use the BSP tree system?
