@@ -11,6 +11,7 @@ namespace tao {
       factory.register_module( "filter", filter::factory );
       factory.register_module( "csv", csv::factory );
       factory.register_module( "skymaker", skymaker::factory );
+      factory.register_module( "votable", votable::factory );
    }
 
 }
