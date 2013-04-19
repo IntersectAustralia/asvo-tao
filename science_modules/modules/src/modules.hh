@@ -8,5 +8,6 @@
 #include "filter.hh"
 #include "csv.hh"
 #include "skymaker.hh"
+#include "votable.hh"
 
 #endif
