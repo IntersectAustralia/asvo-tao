@@ -21,8 +21,6 @@ namespace tao {
    {
    }
 
-
-
    ///
    ///
    ///
@@ -31,9 +29,6 @@ namespace tao {
                     optional<const string&> prefix )
    {
       LOG_ENTER();
-
-
-
 
       _fn = dict.get<hpc::string>( prefix.get()+":filename" );
       _fields = dict.get_list<hpc::string>( prefix.get()+":fields" );
@@ -143,4 +138,5 @@ namespace tao {
 	    ASSERT( 0 );
       }
    }
+
 }
