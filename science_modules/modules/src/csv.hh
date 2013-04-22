@@ -26,20 +26,14 @@ namespace tao {
       virtual
       ~csv();
 
-      ///
-      ///
-      ///
-      virtual
-      void
-      setup_options( options::dictionary& dict,
-                     optional<const string&> prefix = optional<const string&>() );
+
 
       ///
       ///
       ///
       virtual
       void
-      initialise( const options::dictionary& dict,
+      initialise( const options::xml_dict& dict,
                   optional<const string&> prefix = optional<const string&>() );
 
       ///

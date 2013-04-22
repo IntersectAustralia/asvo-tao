@@ -4,6 +4,7 @@
 #include <cxxtest/GlobalFixture.h>
 #include <libhpc/logging/logging.hh>
 #include "tao/modules/lightcone.hh"
+#include <stdio.h>
 
 using namespace hpc;
 using namespace tao;
@@ -33,6 +34,7 @@ public:
    {
       lightcone lc;
 
+
       // Insert some values.
       {
          soci::session sql( soci::sqlite3, db_setup.db_filename );
@@ -48,12 +50,14 @@ public:
          sql << "INSERT INTO tree_4 VALUES(4, 4, 4, 7, 1, 1, 3, 0, 0, 0, 0, 0)";
       }
 
+
       // Prepare base dictionary.
       options::dictionary& dict = db_setup.dict.sub( "workflow:light-cone" );
       dict["geometry"] = "box";
       dict["redshift"] = "1";
       dict["query-box-size"] = "10";
       db_setup.xml.write( db_setup.xml_filename, db_setup.dict );
+
       setup_lightcone( lc );
 
       // Test directly.
@@ -64,12 +68,14 @@ public:
       }
       TS_ASSERT_DELTA( lc._distance_to_redshift( lc._redshift_to_distance( 1.0 ) ), 1.0, 1e-3 );
 
+
       // Now test as read from the galaxy object.
       for( lc.begin(); !lc.done(); ++lc )
       {
          const galaxy& gal = *lc;
 	 double dist = sqrt( gal.x()*gal.x() + gal.y()*gal.y() + gal.z()*gal.z() );
 	 TS_ASSERT_DELTA( lc._redshift_to_distance( gal.redshift() ), dist, 1e-1 );
+
       }
    }
 
@@ -102,6 +108,7 @@ public:
       options::dictionary& dict = db_setup.dict.sub( "workflow:light-cone" );
       dict["geometry"] = "box";
       dict["redshift"] = "0.001";
+
 
       // Place to store row IDs.
       vector<int> ids;
@@ -139,6 +146,7 @@ public:
    ///
    void test_box_z_snap()
    {
+
       lightcone lc;
 
       // Turn off random rotation and shifting.
@@ -163,7 +171,7 @@ public:
       options::dictionary& dict = db_setup.dict.sub( "workflow:light-cone" );
       dict["geometry"] = "box";
       dict["query-box-size"] = "4.5";
-
+      dict["h0"]="0.73";
       // Place to store row IDs.
       vector<int> ids;
 
@@ -171,12 +179,15 @@ public:
       dict["redshift"] = "0.001";
       db_setup.xml.write( db_setup.xml_filename, db_setup.dict );
       setup_lightcone( lc );
+
       ids.resize( 0 );
       for( lc.begin(); !lc.done(); ++lc )
       {
          const galaxy& gal = *lc;
          ids.push_back( gal.id() );
+
       }
+
       TS_ASSERT_EQUALS( ids.size(), 4 );
       for( unsigned ii = 0; ii < 4; ++ii )
          TS_ASSERT_EQUALS( ids[ii], ii );
@@ -185,6 +196,7 @@ public:
       dict["redshift"] = "0";
       db_setup.xml.write( db_setup.xml_filename, db_setup.dict );
       setup_lightcone( lc );
+
       ids.resize( 0 );
       for( lc.begin(); !lc.done(); ++lc )
       {
@@ -632,13 +644,10 @@ public:
       lc._db_disconnect();
 
       // Read in the dictionary from XML.
-      options::dictionary dict;
-      setup_common_options( dict );
-      lc.setup_options( dict, string( "workflow:light-cone" ) );
-      dict.compile();
-      options::xml xml;
-      xml.read( db_setup.xml_filename, dict );
+      options::xml_dict dict;
+      dict.read( db_setup.xml_filename);
       lc.initialise( dict, string( "workflow:light-cone" ) );
+
    }
 
    void setUp()

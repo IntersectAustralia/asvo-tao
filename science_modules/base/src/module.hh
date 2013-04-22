@@ -4,6 +4,8 @@
 #include <soci/soci.h>
 #include <libhpc/libhpc.hh>
 #include "galaxy.hh"
+#include <libhpc/options/xml_dict.hh>
+
 
 namespace tao {
    using namespace hpc;
@@ -30,22 +32,15 @@ namespace tao {
       void
       process( unsigned long long iteration );
 
-      virtual
-      void
-      setup_options( options::dictionary& dict,
-                     optional<const string&> prefix = optional<const string&>() ) = 0;
 
-      void
-      setup_options( options::dictionary& dict,
-                     const char* prefix );
 
       virtual
       void
-      initialise( const options::dictionary& dict,
+      initialise( const options::xml_dict& dict,
                   optional<const string&> prefix = optional<const string&>() ) = 0;
 
       void
-      initialise( const options::dictionary& dict,
+      initialise( const options::xml_dict& dict,
                   const char* prefix );
 
       virtual
@@ -79,7 +74,7 @@ namespace tao {
    protected:
 
       void
-      _read_db_options( const options::dictionary& dict );
+      _read_db_options( const options::xml_dict& dict );
 
       void
       _db_connect();

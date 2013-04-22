@@ -48,20 +48,20 @@ namespace tao {
    ///
    ///
    ///
-   void
-   sed::setup_options( options::dictionary& dict,
-                       optional<const string&> prefix )
-   {
-      dict.add_option( new options::string( "single-stellar-population-model" ), prefix );
-      dict.add_option( new options::integer( "num-spectra", 1221 ), prefix );
-      dict.add_option( new options::integer( "num-metals", 7 ), prefix );
-   }
+   //void
+   //sed::setup_options( options::dictionary& dict,
+   //                    optional<const string&> prefix )
+   //{
+   //   dict.add_option( new options::string( "single-stellar-population-model" ), prefix );
+   //   dict.add_option( new options::integer( "num-spectra", 1221 ), prefix );
+   //   dict.add_option( new options::integer( "num-metals", 7 ), prefix );
+   //}
 
    ///
    /// Initialise the module.
    ///
    void
-   sed::initialise( const options::dictionary& dict,
+   sed::initialise( const options::xml_dict& dict,
                     optional<const string&> prefix )
    {
       LOG_ENTER();
@@ -367,11 +367,11 @@ namespace tao {
    }
 
    void
-   sed::_read_options( const options::dictionary& dict,
+   sed::_read_options( const options::xml_dict& dict,
                        optional<const string&> prefix )
    {
       // Get the sub dictionary, if it exists.
-      const options::dictionary& sub = prefix ? dict.sub( *prefix ) : dict;
+      //const options::dictionary& sub = prefix ? dict.sub( *prefix ) : dict;
 
       // Extract database details.
       _read_db_options( dict );
@@ -380,18 +380,18 @@ namespace tao {
       _db_connect();
 
       // Try to read H0 (and hence h) from the lightcone module.
-      _h = dict.get<real_type>( "workflow:light-cone:H0" )/100.0;
+      _h = dict.get<real_type>( "workflow:light-cone:H0",73.0 )/100.0;
       LOGDLN( "Read h as: ", _h );
 
       // Extract the counts.
-      _num_spectra = sub.get<unsigned>( "num-spectra" );
-      _num_metals = sub.get<unsigned>( "num-metals" );
+      _num_spectra = dict.get<unsigned>( prefix.get()+":num-spectra",1221 );
+      _num_metals = dict.get<unsigned>( prefix.get()+":num-metals",7 );
       LOGDLN( "Number of times: ", _bin_ages.size() );
       LOGDLN( "Number of spectra: ", _num_spectra );
       LOGDLN( "Number of metals: ", _num_metals );
 
       // Get the SSP filename.
-      _read_ssp( sub.get<string>( "single-stellar-population-model" ) );
+      _read_ssp( dict.get<string>( prefix.get()+":single-stellar-population-model" ) );
 
       // Prepare the snapshot ages.
       _setup_snap_ages();
@@ -401,7 +401,7 @@ namespace tao {
    sed::_read_ssp( const string& filename )
    {
       LOG_ENTER();
-
+      LOGDLN( "SSP File Name: ", filename );
       // The SSP file contains the age grid information first.
       std::ifstream file( filename, std::ios::in );
       unsigned num_ages;
