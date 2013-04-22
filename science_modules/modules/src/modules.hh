@@ -7,6 +7,7 @@
 #include "sed.hh"
 #include "filter.hh"
 #include "csv.hh"
+#include "hdf5.hh"
 #include "skymaker.hh"
 
 #endif
