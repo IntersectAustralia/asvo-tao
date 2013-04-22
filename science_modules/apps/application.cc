@@ -108,6 +108,7 @@ namespace tao {
          module->finalise();
 
       // Mark the conclusion of the run.
+      mpi::comm::world.barrier();
       LOGILN( runtime(), ",end,successful" );
 
       // Dump timing information to the end of the info file.

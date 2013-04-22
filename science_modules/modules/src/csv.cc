@@ -118,7 +118,7 @@ namespace tao {
    csv::log_metrics()
    {
       module::log_metrics();
-      LOGILN( _name, " number of records written: ", _records );
+      LOGILN( _name, " number of records written: ", mpi::comm::world.all_reduce( _records ) );
    }
 
    void

@@ -134,7 +134,6 @@ namespace tao {
    {
       _timer.start();
       LOG_ENTER();
-      _timer.start();
 
       // Reset the timers.
       _per_box.reset();
@@ -178,7 +177,6 @@ namespace tao {
 	 _settle_box();
       }
 
-      _timer.stop();
       LOG_EXIT();
       _timer.stop();
    }
@@ -191,7 +189,6 @@ namespace tao {
    {
       _timer.start();
       LOG_ENTER();
-      _timer.start();
 
       // We are done when we are out of tables.
       bool result = (_cur_table == _table_names.size());
@@ -200,7 +197,6 @@ namespace tao {
       if( result )
          _db_disconnect();
 
-      _timer.stop();
       LOG_EXIT();
       _timer.stop();
       return result;
@@ -214,9 +210,11 @@ namespace tao {
    {
       _timer.start();
       LOG_ENTER();
-      _timer.start();
 
-      if( ++_cur_row == _rows->end() )
+      _db_timer.start();
+      ++_cur_row;
+      _db_timer.stop();
+      if( _cur_row == _rows->end() )
       {
          LOGDLN( "Finished iterating over current rowset." );
          if( ++_cur_table == _table_names.size() ||
@@ -232,15 +230,14 @@ namespace tao {
 	       LOGDLN( "Time per box: ", _per_box.mean() );
 
 	       // Also dump progress.
-	       _prog.set_local_complete_delta( 1 );
+	       _prog.set_delta( 1 );
 	       _prog.update();
 	       if( mpi::comm::world.rank() == 0 )
-		  LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
+	       	  LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
 	    }
          }
       }
 
-      _timer.stop();
       LOG_EXIT();
       _timer.stop();
    }
@@ -253,9 +250,10 @@ namespace tao {
    {
       _timer.start();
       LOG_ENTER();
-      ((profile::timer&)_timer).start();
 
+      _db_timer.start();
       tao::galaxy gal( *_cur_row, _table_names[_cur_table] );
+      _db_timer.stop();
       real_type dist = sqrt( pow( gal.x(), 2.0 ) + pow( gal.y(), 2.0 ) + pow( gal.z(), 2.0 ) );
 
       // Check that the row actually belongs in this range.
@@ -264,7 +262,6 @@ namespace tao {
       // Setup the redshift.
       gal.set_redshift( _distance_to_redshift( dist ) );
 
-      ((profile::timer&)_timer).stop();
       LOG_EXIT();
       _timer.stop();
       return gal;
@@ -305,6 +302,7 @@ namespace tao {
    void
    lightcone::_query_table_names( vector<string>& table_names )
    {
+      _timer.start();
       LOG_ENTER();
 
       // Clear existing.
@@ -384,7 +382,9 @@ namespace tao {
 	       to_string( _tree_pre.length() ) + ")='" + _tree_pre + "'";
 	 }
 	 LOGDLN( "Query for number of table names: ", query );
+	 _db_timer.start();
 	 _sql << query, soci::into( num_tables );
+	 _db_timer.stop();
 	 LOGDLN( "Number of tables: ", num_tables );
 
 	 // Retrieve all the table names.
@@ -401,7 +401,9 @@ namespace tao {
 			    to_string( _tree_pre.length() ) + ")='" ) + _tree_pre + string( "'" );
 	 }
 	 LOGDLN( "Query for table names: ", query );
+	 _db_timer.start();
 	 _sql << query, soci::into( (std::vector<std::string>&)table_names );
+	 _db_timer.stop();
       }
 
       // If we are running in parallel we will need to only process the tables that
@@ -419,11 +421,13 @@ namespace tao {
 
       LOGDLN( "My table names: ", table_names );
       LOG_EXIT();
+      _timer.stop();
    }
 
    void
    lightcone::_settle_table()
    {
+      _timer.start();
       LOG_ENTER();
 
       // Keep moving over tables until we find one that
@@ -440,11 +444,13 @@ namespace tao {
       while( _cur_row == _rows->end() && ++_cur_table != _table_names.size() );
 
       LOG_EXIT();
+      _timer.stop();
    }
 
    void
    lightcone::_settle_box()
    {
+      _timer.start();
       LOG_ENTER();
 
       do
@@ -457,11 +463,9 @@ namespace tao {
 	    _per_box.stop_tally();
 	    LOGDLN( "Time per box: ", _per_box.mean() );
 
-	    // Update the log file with the progress.
-	    _prog.set_local_complete_delta( 1 );
+	    // Update the log file with the progress and dump.
+	    _prog.set_delta( 1 );
 	    _prog.update();
-
-	    // Also dump progress here.
 	    if( mpi::comm::world.rank() == 0 )
 	       LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
 	 }
@@ -546,17 +550,15 @@ namespace tao {
 	 _per_box.stop_tally();
 	 LOGDLN( "Time per box: ", _per_box.mean() );
 
-	 // Wait for parallel progress.
-	 _prog.set_local_complete_delta( 1 );
-	 while( _prog.test() )
-	   _prog.update();
-
-	 // Also dump progress.
+	 // Update and complete.
+	 _prog.set_delta( 1 );
+	 _prog.update();
 	 if( mpi::comm::world.rank() == 0 )
 	    LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
       }
 
       LOG_EXIT();
+      _timer.stop();
    }
 
    ///
@@ -567,6 +569,7 @@ namespace tao {
                              real_type offs_y,
                              real_type offs_z )
    {
+      _timer.start();
       LOG_ENTER();
 
       // Produce the SQL query text.
@@ -579,10 +582,13 @@ namespace tao {
       	 _setup_redshift_ranges();
 
       // Execute the query and retrieve the rows.
+      _db_timer.start();
       _rows = new soci::rowset<soci::row>( (_sql.prepare << query) );
       _cur_row = _rows->begin();
+      _db_timer.stop();
 
       LOG_EXIT();
+      _timer.stop();
    }
 
    ///
@@ -594,6 +600,7 @@ namespace tao {
                             real_type offs_z,
                             string& query )
    {
+      _timer.start();
       LOG_ENTER();
 
       real_type ra_min = to_radians( _ra_min );
@@ -669,6 +676,7 @@ namespace tao {
 
       LOGDLN( "Query: ", query );
       LOG_EXIT();
+      _timer.stop();
    }
 
    ///
@@ -677,6 +685,7 @@ namespace tao {
    void
    lightcone::_random_rotation_and_shifting( vector<string>& ops )
    {
+      _timer.start();
       LOG_ENTER();
 
       // Cache the current box size.
@@ -837,6 +846,7 @@ namespace tao {
       }
 
       LOG_EXIT();
+      _timer.stop();
    }
 
    ///
@@ -845,6 +855,7 @@ namespace tao {
    void
    lightcone::_get_boxes( list<array<real_type,3>>& boxes )
    {
+      _timer.start();
       LOG_ENTER();
 
       // Cache the current box size.
@@ -889,6 +900,7 @@ namespace tao {
       }
 
       LOG_EXIT();
+      _timer.stop();
    }
 
    ///
@@ -938,6 +950,7 @@ namespace tao {
    lightcone::_read_options( const options::dictionary& dict,
                              optional<const string&> prefix )
    {
+      _timer.start();
       LOG_ENTER();
 
       // Get the sub dictionary, if it exists.
@@ -945,6 +958,7 @@ namespace tao {
 
       // Get the decomposition method.
       _decomp_method = sub.get<string>( "decomposition-method" );
+      LOGDLN( "Decomposition method: ", _decomp_method );
 
       // Extract table names.
       _snap_red_table = sub.get<string>( "snapshot-redshift-table" );
@@ -988,7 +1002,9 @@ namespace tao {
       // Get the domain size.
       {
 	 string size;
+	 _db_timer.start();
 	 _sql << "SELECT metavalue FROM metadata WHERE metakey='boxsize'", soci::into( size );
+	 _db_timer.stop();
 	 _domain_size = atof( size.c_str() );
 	 LOGDLN( "Simulation domain size: ", _domain_size );
       }
@@ -997,7 +1013,9 @@ namespace tao {
       if( _accel_method == "bsp" )
       {
 	 string step;
+	 _db_timer.start();
 	 _sql << "SELECT metavalue FROM metadata WHERE metakey='bspcellsize'", soci::into( step );
+	 _db_timer.stop();
 	 _bsp_step = atoi( step.c_str() );
 	 LOGDLN( "BSP step size: ", _bsp_step );
       }
@@ -1007,12 +1025,16 @@ namespace tao {
       _int_rng.set_range( 1, 6 );
       auto rng_seed = sub.opt<int>( "rng-seed" );
       if( rng_seed )
-      {
 	 _rng_seed = *rng_seed;
-	 _real_rng.set_seed( _rng_seed );
-	 _int_rng.reset();
-	 LOGDLN( "Random number generator seed: ", _rng_seed );
+      else
+      {
+	 ::srand( ::time( NULL ) );
+	 _rng_seed = rand();
       }
+      mpi::comm::world.bcast<int>( _rng_seed, 0 );
+      LOGDLN( "Random seed: ", _rng_seed );
+      _real_rng.set_seed( _rng_seed );
+      _int_rng.reset();
 
       // Extract and parse the snapshot redshifts.
       _read_snapshots();
@@ -1107,6 +1129,7 @@ namespace tao {
       _build_dist_to_z_tbl( 1000, _z_min, _z_max );
 
       LOG_EXIT();
+      _timer.stop();
    }
 
    ///
@@ -1191,20 +1214,26 @@ namespace tao {
    void
    lightcone::_read_snapshots()
    {
+      _timer.start();
       LOG_ENTER();
 
       // Find number of snapshots and resize the containers.
       unsigned num_snaps;
+      _db_timer.start();
       _sql << "SELECT COUNT(*) FROM " + _snap_red_table, soci::into( num_snaps );
+      _db_timer.stop();
       LOGDLN( num_snaps, " snapshots." );
       _snap_redshifts.reallocate( num_snaps );
 
       // Read meta data.
+      _db_timer.start();
       _sql << "SELECT redshift FROM " + _snap_red_table + " ORDER BY " + _field_map.get( "snapshot" ),
          soci::into( (std::vector<real_type>&)_snap_redshifts );
+      _db_timer.stop();
       LOGDLN( "Redshifts: ", _snap_redshifts );
 
       LOG_EXIT();
+      _timer.stop();
    }
 
    ///
@@ -1218,15 +1247,19 @@ namespace tao {
       ASSERT( _snap_redshifts.size() >= 2, "Must be at least two snapshots." );
 
       // Create a temporary table to hold values.
+      _db_timer.start();
       _sql << "CREATE TEMPORARY TABLE redshift_ranges (snapshot INTEGER, "
       	 "redshift DOUBLE PRECISION, min DOUBLE PRECISION, max DOUBLE PRECISION)";
+      _db_timer.stop();
 
       // Insert the first redshift range.
       real_type low = _redshift_to_distance( _snap_redshifts[0] ),
 	 upp = _redshift_to_distance( _snap_redshifts[1] ),
 	 mid = upp + 0.5*(low - upp);
+      _db_timer.start();
       _sql << "INSERT INTO redshift_ranges VALUES(0, :z, :min, :max)",
 	 soci::use( _snap_redshifts[0] ), soci::use( mid*mid ), soci::use( low*low );
+      _db_timer.stop();
       LOGDLN( "Distance range for snapshot 0 with redshift ", _snap_redshifts[0], ": ", mid, " - ", low );
 
       // Walk over snapshots creating distances.
@@ -1235,17 +1268,21 @@ namespace tao {
 	 low = upp;
 	 upp = _redshift_to_distance( _snap_redshifts[ii + 1] );
 	 real_type new_mid = upp + 0.5*(low - upp);
+	 _db_timer.start();
 	 _sql << "INSERT INTO redshift_ranges VALUES(:snapshot, :z, :min, :max)",
 	    soci::use( ii ), soci::use( _snap_redshifts[ii] ),
 	    soci::use( new_mid*new_mid ), soci::use( mid*mid );
+	 _db_timer.stop();
 	 LOGDLN( "Distance range for snapshot ", ii, " with redshift ", _snap_redshifts[ii], ": ", new_mid, " - ", mid );
 	 mid = new_mid;
       }
 
       // Insert the last redshift range.
+      _db_timer.start();
       _sql << "INSERT INTO redshift_ranges VALUES(:snapshot, :z, :min, :max)",
 	 soci::use( _snap_redshifts.size() - 1 ), soci::use( _snap_redshifts.back() ),
 	 soci::use( upp*upp ), soci::use( mid*mid );
+      _db_timer.stop();
       LOGDLN( "Redshift range for snapshot ", _snap_redshifts.size() - 1, ": ", upp, " - ", mid );
 
       LOG_EXIT();
