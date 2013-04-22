@@ -9,5 +9,6 @@
 #include "csv.hh"
 #include "skymaker.hh"
 #include "votable.hh"
+#include "fits.hh"
 
 #endif

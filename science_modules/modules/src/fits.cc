@@ -1,23 +1,23 @@
 #include <soci/soci.h>
-#include "votable.hh"
+#include "fits.hh"
 
 using namespace hpc;
 
 namespace tao {
 
    module*
-   votable::factory( const string& name )
+   fits::factory( const string& name )
    {
-      return new votable( name );
+      return new fits( name );
    }
 
-   votable::votable( const string& name ): module( name ),_records( 0 )
+   fits::fits( const string& name ): module( name ),_records( 0 )
    {
 	   _istableopened=false;
 	   _isfirstgalaxy=true;
    }
 
-   votable::~votable()
+   fits::~fits()
    {
    }
 
@@ -26,7 +26,7 @@ namespace tao {
    ///
    ///
    ///
-   void  votable::initialise( const options::xml_dict& dict, optional<const string&> prefix )
+   void  fits::initialise( const options::xml_dict& dict, optional<const string&> prefix )
    {
       LOG_ENTER();
 
@@ -45,7 +45,7 @@ namespace tao {
       LOG_EXIT();
    }
 
-   void votable::_write_table_header(const tao::galaxy& galaxy)
+   void fits::_write_table_header(const tao::galaxy& galaxy)
    {
 	   	 auto it = _fields.cbegin();
 	   	 while( it != _fields.cend() )
@@ -84,7 +84,7 @@ namespace tao {
    ///
    ///
    ///
-   void votable::execute()
+   void fits::execute()
    {
       _timer.start();
       LOG_ENTER();
@@ -109,7 +109,7 @@ namespace tao {
       _timer.stop();
    }
 
-   void votable::open()
+   void fits::open()
    {
       _file.open( _fn, std::fstream::out | std::fstream::trunc );
 
@@ -119,14 +119,14 @@ namespace tao {
 
    }
 
-   void votable::finalise()
+   void fits::finalise()
    {
 	   _end_table();
 	   _write_footer();
 
    }
 
-   void votable::_write_file_header(const string& ResourceName,const string& TableName)
+   void fits::_write_file_header(const string& ResourceName,const string& TableName)
    {
 	   if(_file.is_open())
 	   {
@@ -138,7 +138,7 @@ namespace tao {
 	   }
 
    }
-   void votable::_write_footer()
+   void fits::_write_footer()
    {
 	   if(_file.is_open())
 	   {
@@ -148,13 +148,13 @@ namespace tao {
 	   }
 
    }
-   void votable::_start_table()
+   void fits::_start_table()
    {
 	   _istableopened=true;
 	   _file<<"<DATA>"<<std::endl;
 	   _file<<"<TABLEDATA>"<<std::endl;
    }
-   void votable::_end_table()
+   void fits::_end_table()
    {
 
 	   if(_istableopened)
@@ -165,7 +165,7 @@ namespace tao {
 	   }
 
    }
-   void votable::process_galaxy( const tao::galaxy& galaxy )
+   void fits::process_galaxy( const tao::galaxy& galaxy )
    {
       _timer.start();
 
@@ -187,13 +187,13 @@ namespace tao {
       _timer.stop();
    }
 
-   void votable::log_metrics()
+   void fits::log_metrics()
    {
       module::log_metrics();
       LOGILN( _name, " number of records written: ", _records );
    }
 
-   void votable::_write_field( const tao::galaxy& galaxy, const string& field )
+   void fits::_write_field( const tao::galaxy& galaxy, const string& field )
    {
 	   _file<<"<TD>"<<std::endl;
       auto val = galaxy.field( field );
