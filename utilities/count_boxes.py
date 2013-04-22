@@ -73,21 +73,10 @@ def redshift_to_distance(z):
         val = math.sinh(math.sqrt(-omega_k)*val/dh )*dh/math.sqrt(omega_k)
     return val
 
-if __name__ == '__main__':
-
-    parser = argparse.ArgumentParser(description='Compute number of boxes in lightcone.')
-    parser.add_argument('box_size', type=float, help='size of the simulation box')
-    parser.add_argument('min_ra', type=float, help='minimum right-ascension in degrees')
-    parser.add_argument('max_ra', type=float, help='maximum right-ascension in degrees')
-    parser.add_argument('min_dec', type=float, help='minimum declination in degrees')
-    parser.add_argument('max_dec', type=float, help='maximum declination in degrees')
-    parser.add_argument('max_z', type=float, help='maximum redshift')
-    args = parser.parse_args()
-
-    box_size = args.box_size
-    ra_rng = (math.radians(args.min_ra), math.radians(args.max_ra))
-    dec_rng = (math.radians(args.min_dec), math.radians(args.max_dec))
-    max_dist = redshift_to_distance(args.max_z)
+def count_boxes(box_size, min_ra, max_ra, min_dec, max_dec, max_z):
+    ra_rng = (math.radians(min_ra), math.radians(max_ra))
+    dec_rng = (math.radians(min_dec), math.radians(max_dec))
+    max_dist = redshift_to_distance(max_z)
 
     ecs_mid = (mid(ra_rng), mid(dec_rng))
     x, y, z = ecs_to_cart(*ecs_mid)
@@ -137,5 +126,19 @@ if __name__ == '__main__':
             box[1] += box_size
         box[1] = 0
         box[0] += box_size
+
+    return num_boxes
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Compute number of boxes in lightcone.')
+    parser.add_argument('box_size', type=float, help='size of the simulation box')
+    parser.add_argument('min_ra', type=float, help='minimum right-ascension in degrees')
+    parser.add_argument('max_ra', type=float, help='maximum right-ascension in degrees')
+    parser.add_argument('min_dec', type=float, help='minimum declination in degrees')
+    parser.add_argument('max_dec', type=float, help='maximum declination in degrees')
+    parser.add_argument('max_z', type=float, help='maximum redshift')
+    args = parser.parse_args()
+
+    num_boxes = count_boxes(args.box_size, args.min_ra, args.max_ra, args.min_dec, args.max_dec, args.max_z)
 
     print num_boxes
