@@ -46,18 +46,6 @@ namespace tao {
    }
 
    ///
-   ///
-   ///
-   //void
-   //sed::setup_options( options::dictionary& dict,
-   //                    optional<const string&> prefix )
-   //{
-   //   dict.add_option( new options::string( "single-stellar-population-model" ), prefix );
-   //   dict.add_option( new options::integer( "num-spectra", 1221 ), prefix );
-   //   dict.add_option( new options::integer( "num-metals", 7 ), prefix );
-   //}
-
-   ///
    /// Initialise the module.
    ///
    void
@@ -107,32 +95,36 @@ namespace tao {
       _timer.start();
       LOG_ENTER();
 
-      // Cache the galaxy ID.
-      unsigned gal_id = galaxy.id();
-      LOGDLN( "Processing galaxy with ID ", gal_id );
+      // Process each galaxy.
+      for( unsigned ii = 0; ii < galaxy.batch_size(); ++ii )
+      {
+         // Cache the galaxy ID.
+         LOGDLN( "Processing galaxy with ID ", galaxy.values<long long>( "globalid" )[ii] );
 
-      // Do we need to load a fresh table?
-      if( galaxy.tree_id() != _cur_tree_id )
-	 _load_table( galaxy.tree_id(), galaxy.table() );
+         // Do we need to load a fresh table?
+         if( galaxy.values<long long>( "globaltreeid" )[ii] != _cur_tree_id )
+            _load_table( galaxy.values<long long>( "globaltreeid" )[ii], galaxy.table() );
 
-      // Read the star-formation histories for this galaxy.
-      _rebin_info( galaxy );
+         // Read the star-formation histories for this galaxy.
+         _rebin_info( galaxy, ii );
 
-      // Clear disk and bulge output spectrums.
-      std::fill( _disk_spectra.begin(), _disk_spectra.end(), 0.0 );
-      std::fill( _bulge_spectra.begin(), _bulge_spectra.end(), 0.0 );
+         // Clear disk and bulge output spectrums.
+         std::fill( _disk_spectra[ii].begin(), _disk_spectra[ii].end(), 0.0 );
+         std::fill( _bulge_spectra[ii].begin(), _bulge_spectra[ii].end(), 0.0 );
 
-      // Process each time.
-      for( mpi::lindex ii = 0; ii < _bin_ages.size(); ++ii )
-         _process_time( ii );
+         // Process each time.
+         for( mpi::lindex jj = 0; jj < _bin_ages.size(); ++jj )
+            _process_time( jj );
 
-      // Create total spectra.
-      for( unsigned ii = 0; ii < _num_spectra; ++ii )
-         _total_spectra[ii] = _disk_spectra[ii] + _bulge_spectra[ii];
+         // Create total spectra.
+         for( unsigned jj = 0; jj < _num_spectra; ++jj )
+            _total_spectra[ii][jj] = _disk_spectra[ii][jj] + _bulge_spectra[ii][jj];
 
-      LOGDLN( "Disk: ", _disk_spectra );
-      LOGDLN( "Bulge: ", _bulge_spectra );
-      LOGDLN( "Total: ", _total_spectra );
+         LOGDLN( "Disk: ", _disk_spectra[ii] );
+         LOGDLN( "Bulge: ", _bulge_spectra[ii] );
+         LOGDLN( "Total: ", _total_spectra[ii] );
+      }
+
       LOG_EXIT();
       _timer.stop();
    }
@@ -215,7 +207,8 @@ namespace tao {
    }
 
    void
-   sed::_rebin_info( const tao::galaxy& galaxy )
+   sed::_rebin_info( const tao::galaxy& galaxy,
+                     unsigned idx )
    {
       LOG_ENTER();
 
@@ -226,7 +219,7 @@ namespace tao {
       std::fill( _bulge_age_metals.begin(), _bulge_age_metals.end(), 0.0 );
 
       // Rebin everything from this galaxy.
-      unsigned id = galaxy.local_id();
+      unsigned id = galaxy.values<unsigned>( "galaxylocalid" )[idx];
       _rebin_parents( id, id );
 
       LOG_EXIT();

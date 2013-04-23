@@ -46,7 +46,7 @@ namespace tao {
 
    protected:
 
-      void _write_field( const tao::galaxy& galaxy,const string& field );
+      void _write_field( const tao::galaxy& galaxy,unsigned idx,const string& field );
       void _write_file_header(const string& ResourceName,const string& TableName );
       void _write_footer();
 

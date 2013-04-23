@@ -84,39 +84,43 @@ namespace tao {
       // here.
       if( !_ready )
       {
-	 for( const auto& field : _fields )
-	 {
-	    h5::datatype dtype = _field_type( galaxy, field );
-	    h5::dataspace dspace;
-	    dspace.create( _chunk_size, true );
-	    h5::property_list props( H5P_DATASET_CREATE );
-	    props.set_chunk_size( _chunk_size );
-	    props.set_deflate();
-	    _dsets.push_back( new h5::dataset( _file, field, dtype, dspace, none, false, props ) );
-	 }
+	 // for( const auto& field : _fields )
+	 // {
+	 //    h5::datatype dtype = _field_type( galaxy, field );
+	 //    h5::dataspace dspace;
+	 //    dspace.create( _chunk_size, true );
+	 //    h5::property_list props( H5P_DATASET_CREATE );
+	 //    props.set_chunk_size( _chunk_size );
+	 //    props.set_deflate();
+	 //    _dsets.push_back( new h5::dataset( _file, field, dtype, dspace, none, false, props ) );
+	 // }
 
 	 // Flag as complete.
 	 _ready = true;
       }
 
-      // Write the fields.
-      auto dset_it = _dsets.begin();
-      for( const auto& field : _fields )
+      // Process each element.
+      for( unsigned ii = 0; ii < galaxy.batch_size(); ++ii )
       {
-	 h5::dataset* dset = (*dset_it++).get();
-	 hsize_t old_size;
-	 {
-	    h5::dataspace dspace( *dset );
-	    old_size = dspace.size();
-	    dset->extend( old_size + 1 );
-	 }
-	 h5::dataspace dspace( *dset );
-	 dspace.select_one( old_size );
-	 _write_field( galaxy, field, *dset, dspace );
-      }
+         // Write the fields.
+         auto dset_it = _dsets.begin();
+         for( const auto& field : _fields )
+         {
+            // h5::dataset* dset = (*dset_it++).get();
+            // hsize_t old_size;
+            // {
+            //    h5::dataspace dspace( *dset );
+            //    old_size = dspace.size();
+            //    dset->extend( old_size + 1 );
+            // }
+            // h5::dataspace dspace( *dset );
+            // dspace.select_one( old_size );
+            // _write_field( galaxy, ii, field, *dset, dspace );
+         }
 
-      // Increment number of written records.
-      ++_records;
+         // Increment number of written records.
+         ++_records;
+      }
 
       _timer.stop();
    }
@@ -136,7 +140,7 @@ namespace tao {
       switch( val.second )
       {
 	 case tao::galaxy::STRING:
-	    return h5::datatype::string;
+	    // return h5::datatype::string;
 	    break;
 
 	 case tao::galaxy::DOUBLE:
@@ -162,6 +166,7 @@ namespace tao {
 
    void
    hdf5::_write_field( const tao::galaxy& galaxy,
+                       unsigned idx,
 		       const string& field,
 		       h5::dataset& dset,
 		       h5::dataspace& dspace )
@@ -174,35 +179,35 @@ namespace tao {
       {
 	 case tao::galaxy::STRING:
 	 {
-	    string data = galaxy.value<string>( field );
-	    dset.write( data.c_str(), h5::datatype::string, mem_space, dspace );
+	    string data = galaxy.values<string>( field )[idx];
+	    // dset.write( data.c_str(), h5::datatype::string, mem_space, dspace );
 	    break;
 	 }
 
 	 case tao::galaxy::DOUBLE:
 	 {
-	    double data = galaxy.value<double>( field );
+	    double data = galaxy.values<double>( field )[idx];
 	    dset.write( &data, h5::datatype::native_double, mem_space, dspace );
 	    break;
 	 }
 
 	 case tao::galaxy::INTEGER:
 	 {
-	    double data = galaxy.value<int>( field );
+	    double data = galaxy.values<int>( field )[idx];
 	    dset.write( &data, h5::datatype::native_int, mem_space, dspace );
 	    break;
 	 }
 
 	 case tao::galaxy::UNSIGNED_LONG_LONG:
 	 {
-	    double data = galaxy.value<unsigned long long>( field );
+	    double data = galaxy.values<unsigned long long>( field )[idx];
 	    dset.write( &data, h5::datatype::native_llong, mem_space, dspace );
 	    break;
 	 }
 
 	 case tao::galaxy::LONG_LONG:
 	 {
-	    double data = galaxy.value<long long>( field );
+	    double data = galaxy.values<long long>( field )[idx];
 	    dset.write( &data, h5::datatype::native_llong, mem_space, dspace );
 	    break;
 	 }

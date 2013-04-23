@@ -55,11 +55,15 @@ namespace tao {
       // Grab the galaxy from the parent object.
       tao::galaxy& gal = parents().front()->galaxy();
 
-      // Read magnitude from galaxy.
-      real_type mag = gal.value<real_type>( _mag_field );
+      // Walk over galaxies here.
+      for( unsigned ii = 0; ii < gal.batch_size(); ++ii )
+      {
+         // Read magnitude from galaxy.
+         real_type mag = gal.values<real_type>( _mag_field )[ii];
 
-      // Perform the processing.
-      process_galaxy( gal, mag );
+         // Perform the processing.
+         process_galaxy( gal, ii, mag );
+      }
 
       LOG_EXIT();
       _timer.stop();
@@ -117,6 +121,7 @@ namespace tao {
 
    void
    skymaker::process_galaxy( const tao::galaxy& galaxy,
+                             unsigned idx,
                              real_type magnitude )
    {
       _timer.start();
@@ -127,7 +132,11 @@ namespace tao {
          // Convert the cartesian coordiantes to right-ascension and
          // declination.
          real_type ra, dec;
-         numerics::cartesian_to_ecs( galaxy.x(), galaxy.y(), galaxy.z(), ra, dec );
+         numerics::cartesian_to_ecs( galaxy.values<real_type>( "pos_x" )[idx],
+                                     galaxy.values<real_type>( "pos_y" )[idx],
+                                     galaxy.values<real_type>( "pos_z" )[idx],
+                                     ra,
+                                     dec );
          LOGDLN( "Converted to (", ra, ", ", dec, ")" );
 
          // Now convert to pixel coordinates.
@@ -150,13 +159,13 @@ namespace tao {
             _list_file << "200 " << x << " " << y << " " << magnitude;
 
             // Try and extract some more values.
-            real_type bulge_magnitude = galaxy.value<real_type>( _bulge_mag_field );
-            real_type disk_scale_radius = 0.1*galaxy.value<real_type>( "diskscaleradius" )/0.71; // divided by h
-            real_type total_lum = galaxy.value<real_type>( "total_luminosity" );
-            real_type bulge_lum = galaxy.value<real_type>( "bulge_luminosity" );
+            real_type bulge_magnitude = galaxy.values<real_type>( _bulge_mag_field )[idx];
+            real_type disk_scale_radius = 0.1*galaxy.values<real_type>( "diskscaleradius" )[idx]/0.71; // divided by h
+            real_type total_lum = galaxy.values<real_type>( "total_luminosity" )[idx];
+            real_type bulge_lum = galaxy.values<real_type>( "bulge_luminosity" )[idx];
 
             // Do some calculations.
-            real_type ang_diam_dist = numerics::redshift_to_angular_diameter_distance( galaxy.redshift() );
+            real_type ang_diam_dist = numerics::redshift_to_angular_diameter_distance( galaxy.values<real_type>( "redshift" )[idx] );
             real_type bulge_to_total = bulge_lum/total_lum;
             real_type bulge_equiv_radius = atan( 0.5*bulge_to_total*disk_scale_radius/ang_diam_dist )*206264.806;
             real_type disk_scale_length = atan( disk_scale_radius/ang_diam_dist )*206264.806;

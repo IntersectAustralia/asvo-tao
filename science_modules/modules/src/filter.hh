@@ -52,9 +52,9 @@ namespace tao {
       ///
       void
       process_galaxy( const tao::galaxy& galaxy,
-                      const vector<real_type>::view& total_spectra,
-                      const vector<real_type>::view& disk_spectra,
-                      const vector<real_type>::view& bulge_spectra );
+                      const fibre<real_type>& total_spectra,
+                      const fibre<real_type>& disk_spectra,
+                      const fibre<real_type>& bulge_spectra );
 
       ///
       ///
@@ -65,12 +65,11 @@ namespace tao {
    protected:
 
       void
-      _process_spectra( const tao::galaxy& galaxy,
-                        const vector<real_type>::view& spectra,
+      _process_spectra( const vector<real_type>::view& spectra,
                         real_type area,
 			real_type& luminosity,
-                        vector<real_type>& apparent_mags,
-                        vector<real_type>& absolute_mags );
+                        vector<real_type>::view apparent_mags,
+                        vector<real_type>::view absolute_mags );
 
       real_type
       _apparant_magnitude( real_type spectra,
@@ -108,17 +107,20 @@ namespace tao {
 
    protected:
 
+      unsigned _batch_size;
+
       vector<real_type> _waves;
       vector<real_type>::view _spec;
       vector<numerics::spline<real_type>> _filters;
       vector<real_type> _filt_int;
       vector<real_type> _vega_int;
       vector<real_type> _vega_mag;
-      vector<real_type> _total_app_mags, _total_abs_mags;
-      vector<real_type> _disk_app_mags, _disk_abs_mags;
-      vector<real_type> _bulge_app_mags, _bulge_abs_mags;
       vector<string> _filter_names;
-      real_type _total_lum, _disk_lum, _bulge_lum;
+
+      fibre<real_type> _total_app_mags, _total_abs_mags;
+      fibre<real_type> _disk_app_mags, _disk_abs_mags;
+      fibre<real_type> _bulge_app_mags, _bulge_abs_mags;
+      vector<real_type> _total_lum, _disk_lum, _bulge_lum;
    };
 }
 

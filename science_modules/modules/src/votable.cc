@@ -169,20 +169,23 @@ namespace tao {
    {
       _timer.start();
 
-      auto it = _fields.cbegin();
-      if( it != _fields.cend() )
+      for( unsigned ii = 0; ii < galaxy.batch_size(); ++ii )
       {
-    	  _file<<"<TR>"<<std::endl;
+         auto it = _fields.cbegin();
+         if( it != _fields.cend() )
+         {
+            _file<<"<TR>"<<std::endl;
 
-		 while( it != _fields.cend() )
-		 {
-			_write_field( galaxy, *it++ );
-		 }
-		 _file<<"</TR>"<<std::endl;
+            while( it != _fields.cend() )
+            {
+               _write_field( galaxy, ii, *it++ );
+            }
+            _file<<"</TR>"<<std::endl;
+         }
+
+         // Increment number of written records.
+         ++_records;
       }
-
-      // Increment number of written records.
-      ++_records;
 
       _timer.stop();
    }
@@ -193,30 +196,30 @@ namespace tao {
       LOGILN( _name, " number of records written: ", _records );
    }
 
-   void votable::_write_field( const tao::galaxy& galaxy, const string& field )
+   void votable::_write_field( const tao::galaxy& galaxy, unsigned idx, const string& field )
    {
 	   _file<<"<TD>"<<std::endl;
       auto val = galaxy.field( field );
       switch( val.second )
       {
 		 case tao::galaxy::STRING:
-			_file << galaxy.value<string>( field );
+			_file << galaxy.values<string>( field )[idx];
 			break;
 
 		 case tao::galaxy::DOUBLE:
-			_file << galaxy.value<double>( field );
+			_file << galaxy.values<double>( field )[idx];
 			break;
 
 		 case tao::galaxy::INTEGER:
-			_file << galaxy.value<int>( field );
+			_file << galaxy.values<int>( field )[idx];
 			break;
 
 		 case tao::galaxy::UNSIGNED_LONG_LONG:
-			_file << galaxy.value<unsigned long long>( field );
+			_file << galaxy.values<unsigned long long>( field )[idx];
 			break;
 
 		 case tao::galaxy::LONG_LONG:
-			_file << galaxy.value<long long>( field );
+			_file << galaxy.values<long long>( field )[idx];
 			break;
 
 		 default:

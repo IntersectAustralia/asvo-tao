@@ -98,6 +98,7 @@ namespace tao {
       unsigned _cur_restart_it;
       string _dbtype, _dbname, _dbhost, _dbport, _dbuser, _dbpass;
       string _tree_pre;
+      unsigned _batch_size;
 
       profile::timer _timer;
       profile::timer _db_timer;
