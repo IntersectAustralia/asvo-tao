@@ -6,6 +6,7 @@
 #include "tao/base/module.hh"
 #include "tao/base/galaxy.hh"
 #include "lightcone.hh"
+#include "fitsio.h"
 
 namespace tao {
    using namespace hpc;
@@ -56,7 +57,7 @@ namespace tao {
    protected:
       bool _isfirstgalaxy;
       bool _istableopened;
-      std::ofstream _file;
+      fitsfile* _file;
       string _fn;
       list<string> _fields;
       unsigned long long _records;

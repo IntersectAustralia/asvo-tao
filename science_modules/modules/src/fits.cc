@@ -47,7 +47,7 @@ namespace tao {
 
    void fits::_write_table_header(const tao::galaxy& galaxy)
    {
-	   	 auto it = _fields.cbegin();
+	   	 /*auto it = _fields.cbegin();
 	   	 while( it != _fields.cend() )
 		 {
 	   		   _file<<"<FIELD name=\""+(*it)<<"\" ID=\"Col_"<<(*it)<<"\" ";
@@ -78,7 +78,7 @@ namespace tao {
 					ASSERT( 0 );
 			   }
 			 it++;
-		 }
+		 }*/
 
    }
    ///
@@ -111,7 +111,10 @@ namespace tao {
 
    void fits::open()
    {
-      _file.open( _fn, std::fstream::out | std::fstream::trunc );
+	   int status=0;
+	   if(fits_create_file(&_file,_fn.c_str(),&status))
+		   ASSERT(status==0);
+
 
       //Put File Header First
       _write_file_header("TempResourceName","TempTableName");
@@ -128,41 +131,41 @@ namespace tao {
 
    void fits::_write_file_header(const string& ResourceName,const string& TableName)
    {
-	   if(_file.is_open())
+	   /*if(_file.is_open())
 	   {
 		   _file<<"<?xml version=\"1.0\"?>"<<std::endl;
 		   _file<<"<VOTABLE version=\"1.3\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.ivoa.net/xml/VOTable/v1.3\"";
 		   _file<<" xmlns:stc=\"http://www.ivoa.net/xml/STC/v1.30\" >"<<std::endl;
 		   _file<<"<RESOURCE name=\""<<ResourceName<<"\">"<<std::endl;
 		   _file<<"<TABLE name=\""<<TableName<<"\">"<<std::endl;
-	   }
+	   }*/
 
    }
    void fits::_write_footer()
    {
-	   if(_file.is_open())
+	   /*if(_file.is_open())
 	   {
 		   _file<<"</TABLE>"<<std::endl;
 		   _file<<"</RESOURCE>"<<std::endl;
 		   _file<<"</VOTABLE>"<<std::endl;
-	   }
+	   }*/
 
    }
    void fits::_start_table()
    {
-	   _istableopened=true;
+	   /*_istableopened=true;
 	   _file<<"<DATA>"<<std::endl;
-	   _file<<"<TABLEDATA>"<<std::endl;
+	   _file<<"<TABLEDATA>"<<std::endl;*/
    }
    void fits::_end_table()
    {
 
-	   if(_istableopened)
+	   /*if(_istableopened)
 	   {
 		   _file<<"</TABLEDATA>"<<std::endl;
 		   _file<<"</DATA>"<<std::endl;
 		   _istableopened=false;
-	   }
+	   }*/
 
    }
    void fits::process_galaxy( const tao::galaxy& galaxy )
@@ -172,13 +175,13 @@ namespace tao {
       auto it = _fields.cbegin();
       if( it != _fields.cend() )
       {
-    	  _file<<"<TR>"<<std::endl;
+    	  //_file<<"<TR>"<<std::endl;
 
 		 while( it != _fields.cend() )
 		 {
 			_write_field( galaxy, *it++ );
 		 }
-		 _file<<"</TR>"<<std::endl;
+		 //_file<<"</TR>"<<std::endl;
       }
 
       // Increment number of written records.
@@ -195,33 +198,33 @@ namespace tao {
 
    void fits::_write_field( const tao::galaxy& galaxy, const string& field )
    {
-	   _file<<"<TD>"<<std::endl;
+	  // _file<<"<TD>"<<std::endl;
       auto val = galaxy.field( field );
       switch( val.second )
       {
 		 case tao::galaxy::STRING:
-			_file << galaxy.value<string>( field );
+			//_file << galaxy.value<string>( field );
 			break;
 
 		 case tao::galaxy::DOUBLE:
-			_file << galaxy.value<double>( field );
+			//_file << galaxy.value<double>( field );
 			break;
 
 		 case tao::galaxy::INTEGER:
-			_file << galaxy.value<int>( field );
+			//_file << galaxy.value<int>( field );
 			break;
 
 		 case tao::galaxy::UNSIGNED_LONG_LONG:
-			_file << galaxy.value<unsigned long long>( field );
+			//_file << galaxy.value<unsigned long long>( field );
 			break;
 
 		 case tao::galaxy::LONG_LONG:
-			_file << galaxy.value<long long>( field );
+			//_file << galaxy.value<long long>( field );
 			break;
 
 		 default:
 			ASSERT( 0 );
       }
-      _file<<"</TD>"<<std::endl;
+      //_file<<"</TD>"<<std::endl;
    }
 }
