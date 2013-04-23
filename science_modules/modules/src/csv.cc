@@ -25,27 +25,13 @@ namespace tao {
    ///
    ///
    void
-   csv::setup_options( options::dictionary& dict,
-                       optional<const string&> prefix )
-   {
-      dict.add_option( new options::string( "filename" ), prefix );
-      dict.add_option( new options::list<options::string>( "fields" ), prefix );
-   }
-
-   ///
-   ///
-   ///
-   void
-   csv::initialise( const options::dictionary& dict,
+   csv::initialise( const options::xml_dict& dict,
                     optional<const string&> prefix )
    {
       LOG_ENTER();
 
-      // Get the sub dictionary, if it exists.
-      const options::dictionary& sub = prefix ? dict.sub( *prefix ) : dict;
-
-      _fn = sub.get<string>( "filename" );
-      _fields = sub.get_list<string>( "fields" );
+      _fn = dict.get<hpc::string>( prefix.get()+":filename" );
+      _fields = dict.get_list<hpc::string>( prefix.get()+":fields" );
 
       // Open the file.
       open();
@@ -118,7 +104,7 @@ namespace tao {
    csv::log_metrics()
    {
       module::log_metrics();
-      LOGILN( _name, " number of records written: ", _records );
+      LOGILN( _name, " number of records written: ", mpi::comm::world.all_reduce( _records ) );
    }
 
    void
@@ -152,4 +138,5 @@ namespace tao {
 	    ASSERT( 0 );
       }
    }
+
 }

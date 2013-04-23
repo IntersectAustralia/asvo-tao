@@ -71,7 +71,7 @@ def default_filter_max(data_set_id):
 
 def output_choices(data_set_id):
     dataset = models.DataSet.objects.get(id=data_set_id)
-    return models.DataSetProperty.objects.filter(dataset_id = dataset.id, is_output = True).order_by('label')
+    return models.DataSetProperty.objects.filter(dataset_id = dataset.id, is_output = True).order_by('group', 'order', 'label')
 
 def output_property(id):
     return models.DataSetProperty.objects.get(pk=id, is_output=True)
@@ -80,7 +80,7 @@ def band_pass_filters():
     return [(x.id, x.label) for x in models.BandPassFilter.objects.order_by('label')]
 
 def band_pass_filters_objects():
-    return models.BandPassFilter.objects.order_by('label')
+    return models.BandPassFilter.objects.order_by('group', 'order', 'label')
 
 def band_pass_filter(id):
     return models.BandPassFilter.objects.get(pk=id)

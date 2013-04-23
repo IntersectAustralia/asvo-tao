@@ -1,16 +1,14 @@
-#ifndef tao_modules_csv_hh
-#define tao_modules_csv_hh
+#ifndef tao_modules_hdf5_hh
+#define tao_modules_hdf5_hh
 
-#include <fstream>
 #include <libhpc/libhpc.hh>
 #include "tao/base/module.hh"
 #include "tao/base/galaxy.hh"
-#include "lightcone.hh"
 
 namespace tao {
    using namespace hpc;
 
-   class csv
+   class hdf5
       : public module
    {
    public:
@@ -21,10 +19,10 @@ namespace tao {
 
    public:
 
-      csv( const string& name = string() );
+      hdf5( const string& name = string() );
 
       virtual
-      ~csv();
+      ~hdf5();
 
 
 
@@ -55,16 +53,25 @@ namespace tao {
 
    protected:
 
+      h5::datatype
+      _field_type( const tao::galaxy& galaxy,
+		   const string& field );
+
       void
       _write_field( const tao::galaxy& galaxy,
-		    const string& field );
+		    const string& field,
+		    h5::dataset& dset,
+		    h5::dataspace& dspace );
 
    protected:
 
-      std::ofstream _file;
+      h5::file _file;
       string _fn;
       list<string> _fields;
       unsigned long long _records;
+      list<scoped_ptr<h5::dataset>> _dsets;
+      hsize_t _chunk_size;
+      bool _ready;
    };
 }
 

@@ -17,23 +17,13 @@ struct pipeline
    // Cache any frequently used types.
    typedef lightcone::real_type real_type;
 
-   ///
-   /// Add options to dictionary.
-   ///
-   void
-   setup_options( options::dictionary& dict )
-   {
-      lc.setup_options( dict, string( "workflow:light-cone" ) );
-      sed.setup_options( dict, string( "workflow:sed" ) );
-      filter.setup_options( dict, string( "workflow:sed" ) );
-      dump.setup_options( dict );
-   }
+
 
    ///
    /// Persistent initialisation.
    ///
    void
-   initialise( const options::dictionary& dict )
+   initialise( const options::xml_dict& dict )
    {
       lc.initialise( dict, string( "workflow:light-cone" ) );
       sed.initialise( dict, string( "workflow:sed" ) );

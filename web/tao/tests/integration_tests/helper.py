@@ -88,8 +88,11 @@ class LiveServerTest(django.test.LiveServerTestCase):
             element = self.get_parent_element(element)
         return element
 
+    def get_summary_selector(self, form_name, field_name):
+        return 'div.summary_%s .%s' % (form_name, field_name)
+
     def get_summary_field(self, form_name, field_name):
-        summary_selector = 'div.summary_%s .%s' % (form_name, field_name)
+        summary_selector = self.get_summary_selector(form_name, field_name)
         return self.selenium.find_element_by_css_selector(summary_selector)
 
     def get_summary_field_text(self, form_name, field_name):
@@ -185,6 +188,7 @@ class LiveServerTest(django.test.LiveServerTestCase):
                 self.select(selector, str(text_to_input))
             else:
                 elem.send_keys(str(text_to_input))
+        wait(2)
 
     def clear(self, selector):
         elem = self.selenium.find_element_by_css_selector(selector)
