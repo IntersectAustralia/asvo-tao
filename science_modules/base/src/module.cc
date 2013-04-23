@@ -84,6 +84,8 @@ namespace tao {
                        const char* prefix )
    {
       initialise( dict, string( prefix ) );
+      _timer.reset();
+      _db_timer.reset();
    }
 
    void
@@ -101,7 +103,12 @@ namespace tao {
    void
    module::log_metrics()
    {
+      // LOGILN( name(), " runtime: ", mpi::comm::world.all_reduce( time(), MPI_MAX ), " (s)" );
+      // LOGILN( name(), " db time: ", mpi::comm::world.all_reduce( db_time(), MPI_MAX ), " (s)" );
+      // LOGILN( name(), " runtime: ", mpi::comm::world.all_reduce( time() ), " (s)" );
+      // LOGILN( name(), " db time: ", mpi::comm::world.all_reduce( db_time() ), " (s)" );
       LOGILN( name(), " runtime: ", time(), " (s)" );
+      LOGILN( name(), " db time: ", db_time(), " (s)" );
    }
 
    bool
@@ -120,6 +127,12 @@ namespace tao {
    module::time() const
    {
       return _timer.total();
+   }
+
+   double
+   module::db_time() const
+   {
+      return _db_timer.total();
    }
 
    void

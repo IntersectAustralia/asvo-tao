@@ -67,7 +67,8 @@ namespace tao {
       // in writing the processed file.
       if( mpi::comm::world.rank() == 0 )
 	 _preprocess_xml();
-      mpi::comm::world.barrier();
+      mpi::comm::world.bcast( _currentxml_version );
+      LOGDLN("Current XMl Schema Version: ",_currentxml_version);
 
       // Load all the modules first up.
       _load_modules();
@@ -107,6 +108,7 @@ namespace tao {
          module->finalise();
 
       // Mark the conclusion of the run.
+      mpi::comm::world.barrier();
       LOGILN( runtime(), ",end,successful" );
 
       // Dump timing information to the end of the info file.
@@ -186,7 +188,6 @@ namespace tao {
 	 xml_document inp_doc, out_doc;
 	 INSIST( inp_doc.load_file( string( _xml_file ).c_str() ), == true );
 	 _currentxml_version=inp_doc.select_single_node( "/tao/workflow/schema-version" ).node().first_child().value();
-	 LOGDLN("Current XMl Schema Version:",_currentxml_version);
 	 if (_currentxml_version!="1.0")
 		 return;
 

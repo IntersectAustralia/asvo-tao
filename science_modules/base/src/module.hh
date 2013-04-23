@@ -68,6 +68,9 @@ namespace tao {
       double
       time() const;
 
+      double
+      db_time() const;
+
    protected:
 
       void
@@ -97,6 +100,7 @@ namespace tao {
       string _tree_pre;
 
       profile::timer _timer;
+      profile::timer _db_timer;
    };
 
 }

@@ -21,8 +21,6 @@ namespace tao {
    {
    }
 
-
-
    ///
    ///
    ///
@@ -31,9 +29,6 @@ namespace tao {
                     optional<const string&> prefix )
    {
       LOG_ENTER();
-
-
-
 
       _fn = dict.get<hpc::string>( prefix.get()+":filename" );
       _fields = dict.get_list<hpc::string>( prefix.get()+":fields" );
@@ -109,7 +104,7 @@ namespace tao {
    csv::log_metrics()
    {
       module::log_metrics();
-      LOGILN( _name, " number of records written: ", _records );
+      LOGILN( _name, " number of records written: ", mpi::comm::world.all_reduce( _records ) );
    }
 
    void
@@ -143,4 +138,5 @@ namespace tao {
 	    ASSERT( 0 );
       }
    }
+
 }

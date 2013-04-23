@@ -106,7 +106,6 @@ namespace tao {
    {
       _timer.start();
       LOG_ENTER();
-      _timer.start();
 
       // Cache the galaxy ID.
       unsigned gal_id = galaxy.id();
@@ -450,17 +449,22 @@ namespace tao {
    void
    sed::_setup_snap_ages()
    {
+      _timer.start();
       LOG_ENTER();
 
       // Find number of snapshots and resize the containers.
       unsigned num_snaps;
+      _db_timer.start();
       _sql << "SELECT COUNT(*) FROM snap_redshift", soci::into( num_snaps );
+      _db_timer.stop();
       LOGDLN( num_snaps, " snapshots." );
       _snap_ages.reallocate( num_snaps );
 
       // Read meta data.
+      _db_timer.start();
       _sql << "SELECT redshift FROM snap_redshift ORDER BY snapnum",
          soci::into( (std::vector<real_type>&)_snap_ages );
+      _db_timer.stop();
       LOGDLN( "Redshifts: ", _snap_ages );
 
       // Convert to ages.
@@ -469,12 +473,14 @@ namespace tao {
       LOGDLN( "Snapshot ages: ", _snap_ages );
 
       LOG_EXIT();
+      _timer.stop();
    }
 
    void
    sed::_load_table( long long tree_id,
 		     const string& table )
    {
+      _timer.start();
       LOG_ENTER();
       LOGDLN( "Loading table ", table, " and tree ID ", tree_id );
 
@@ -488,8 +494,10 @@ namespace tao {
 
       // Extract number of records in this tree.
       unsigned tree_size;
+      _db_timer.start();
       _sql << "SELECT COUNT(*) FROM " + table + " WHERE globaltreeid = :id",
    	 soci::into( tree_size ), soci::use( tree_id );
+      _db_timer.stop();
       LOGDLN( "Have ", tree_size, " galaxies to load." );
 
       // Resize all our arrays.
@@ -504,11 +512,13 @@ namespace tao {
 	"sfr, sfrbulge, snapnum FROM  " + table + 
 	 " WHERE globaltreeid = :id"
 	 " ORDER BY localgalaxyid";
+      _db_timer.start();
       _sql << query, soci::into( (std::vector<int>&)_descs ),
 	 soci::into( (std::vector<double>&)_metals ),
 	 soci::into( (std::vector<double>&)_sfrs ), soci::into( (std::vector<double>&)_bulge_sfrs ),
 	 soci::into( (std::vector<int>&)_snaps ),
 	 soci::use( tree_id );
+      _db_timer.stop();
       LOGDLN( "Descendant: ", _descs );
       LOGDLN( "Star formation rates: ", _sfrs );
       LOGDLN( "Bulge star formation rates: ", _bulge_sfrs );
@@ -527,5 +537,6 @@ namespace tao {
       _cur_tree_id = tree_id;
 
       LOG_EXIT();
+      _timer.stop();
    }
 }
