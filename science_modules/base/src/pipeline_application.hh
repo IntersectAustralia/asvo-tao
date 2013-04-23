@@ -73,12 +73,12 @@ namespace tao {
       run()
       {
          options::dictionary dict;
-         _setup_common_options( dict );
-         _pl.setup_options( dict );
+         //_setup_common_options( dict );
+         //_pl.setup_options( dict );
          dict.compile();
          _read_xml( dict );
-	 _setup_log( dict.get<string>( "logdir" ) + "/tao.log" );
-         _pl.initialise( dict );
+         _setup_log( dict.get<string>( "logdir" ) + "/tao.log" );
+         //_pl.initialise( dict );
 
 	 // Mark the beginning of the run.
 	 LOGILN( runtime(), ",start" );
@@ -101,7 +101,7 @@ namespace tao {
       void
       _setup_common_options( options::dictionary& dict )
       {
-	 setup_common_options( dict );
+	 //setup_common_options( dict );
       }
 
       ///
