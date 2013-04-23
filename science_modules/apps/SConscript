@@ -29,6 +29,7 @@ sources = [
     ('sage_to_hdf5', 'sage_to_hdf5.cc'),
     ('add_tree_info', 'add_tree_info.cc'),
     ('tree_view', 'tree_view.cc'),
+    ('max_test', 'max_test.cc'),
 ]
 
 # Call the helper.
