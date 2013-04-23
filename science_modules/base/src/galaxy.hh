@@ -59,6 +59,9 @@ namespace tao {
       void
       clear();
 
+      void
+      set_table( const string& table );
+
       const string&
       table() const;
 

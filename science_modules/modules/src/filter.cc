@@ -98,9 +98,9 @@ namespace tao {
          LOGDLN( "Log area: ", area );
 
          // Process total, disk and bulge.
-         _process_spectra( total_spectra[ii], area, _total_lum[ii], _total_app_mags[ii], _total_abs_mags[ii] );
-         _process_spectra( disk_spectra[ii], area, _disk_lum[ii], _disk_app_mags[ii], _bulge_abs_mags[ii] );
-         _process_spectra( bulge_spectra[ii], area, _bulge_lum[ii], _bulge_app_mags[ii], _bulge_abs_mags[ii] );
+         _process_spectra( total_spectra[ii], area, _total_lum[ii], _total_app_mags, _total_abs_mags, ii );
+         _process_spectra( disk_spectra[ii], area, _disk_lum[ii], _disk_app_mags, _bulge_abs_mags, ii );
+         _process_spectra( bulge_spectra[ii], area, _bulge_lum[ii], _bulge_app_mags, _bulge_abs_mags, ii );
       }
 
       LOG_EXIT();
@@ -111,8 +111,9 @@ namespace tao {
    filter::_process_spectra( const vector<real_type>::view& spectra,
                              real_type area,
 			     real_type& luminosity,
-                             vector<real_type>::view apparent_mags,
-                             vector<real_type>::view absolute_mags )
+                             fibre<real_type>& apparent_mags,
+                             fibre<real_type>& absolute_mags,
+			     unsigned gal_idx )
    {
       LOGDLN( "Using spectra of: ", spectra );
 
@@ -133,13 +134,13 @@ namespace tao {
          if( !num::approx( spec_int, 0.0, 1e-12 ) &&
              !num::approx( _filt_int[ii], 0.0, 1e-12 ) )
          {
-            apparent_mags[ii] = -2.5*(log10( spec_int ) - area - log10( _filt_int[ii] )) - 48.6;
-            absolute_mags[ii] = -2.5*(log10( spec_int ) - log10( _filt_int[ii] )) - 48.6;
+            apparent_mags[ii][gal_idx] = -2.5*(log10( spec_int ) - area - log10( _filt_int[ii] )) - 48.6;
+            absolute_mags[ii][gal_idx] = -2.5*(log10( spec_int ) - log10( _filt_int[ii] )) - 48.6;
          }
          else
          {
-            apparent_mags[ii] = 0.0;
-            absolute_mags[ii] = 0.0;
+            apparent_mags[ii][gal_idx] = 0.0;
+            absolute_mags[ii][gal_idx] = 0.0;
          }
       }
    }
@@ -278,8 +279,8 @@ namespace tao {
    {
       LOG_ENTER();
 
-      // Get the sub dictionary, if it exists.
-      //const options::dictionary& sub = prefix ? dict.sub( *prefix ) : dict;
+      // Must perform the module read to get batch size.
+      _read_db_options( dict );
 
       {
          // Get the wavelengths filename.

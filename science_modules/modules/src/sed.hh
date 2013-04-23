@@ -71,7 +71,8 @@ namespace tao {
    protected:
 
       void
-      _process_time( mpi::lindex time_idx );
+      _process_time( mpi::lindex time_idx,
+		     unsigned gal_idx );
 
       void
       _sum_spectra( mpi::lindex time_idx,

@@ -54,7 +54,6 @@ namespace tao {
       LOG_ENTER();
 
       _read_options( dict, prefix );
-      _setup_query_template();
 
       LOG_EXIT();
    }
@@ -534,22 +533,27 @@ namespace tao {
          switch( _field_types[ii] )
          {
             case galaxy::STRING:
-               prep = prep, soci::into( *(std::vector<std::string>*)_field_stor[ii] );
+	       ((std::vector<std::string>*)_field_stor[ii])->resize( _batch_size );
+	       prep = prep, soci::into( *(std::vector<std::string>*)_field_stor[ii] );
                break;
 
             case galaxy::DOUBLE:
+	       ((std::vector<double>*)_field_stor[ii])->resize( _batch_size );
                prep = prep, soci::into( *(std::vector<double>*)_field_stor[ii] );
                break;
 
             case galaxy::INTEGER:
+	       ((std::vector<int>*)_field_stor[ii])->resize( _batch_size );
                prep = prep, soci::into( *(std::vector<int>*)_field_stor[ii] );
                break;
 
             case galaxy::UNSIGNED_LONG_LONG:
+	       ((std::vector<unsigned long long>*)_field_stor[ii])->resize( _batch_size );
                prep = prep, soci::into( *(std::vector<unsigned long long>*)_field_stor[ii] );
                break;
 
             case galaxy::LONG_LONG:
+	       ((std::vector<long long>*)_field_stor[ii])->resize( _batch_size );
                prep = prep, soci::into( *(std::vector<long long>*)_field_stor[ii] );
                break;
 
@@ -1099,7 +1103,6 @@ namespace tao {
          _output_fields.insert( "pos_x" );
          _output_fields.insert( "pos_y" );
          _output_fields.insert( "pos_z" );
-         _output_fields.insert( "redshift" );
          _output_fields.insert( _field_map.get( "global_id" ) );
          _output_fields.insert( _field_map.get( "local_id" ) );
          _output_fields.insert( _field_map.get( "tree_id" ) );
@@ -1109,6 +1112,9 @@ namespace tao {
 
       // Setup the distance to redshift tables.
       _build_dist_to_z_tbl( 1000, _z_min, _z_max );
+
+      // Prepare the query statement.
+      _setup_query_template();
 
       // Prepare bulk transactions.
       _setup_batching();
@@ -1131,8 +1137,7 @@ namespace tao {
       // Add the output fields.
       for( auto& field : _output_fields )
       {
-	 if( field != "redshift" &&
-	     field != "pos_x" &&
+	 if( field != "pos_x" &&
 	     field != "pos_y" &&
 	     field != "pos_z" )
 	 {
@@ -1140,15 +1145,15 @@ namespace tao {
 	 }
          else if ( field == "pos_x" )
 	 {
-            _query_template += "-pos1- AS pos_x";
+            _query_template += ", -pos1- AS pos_x";
 	 }
          else if ( field == "pos_y" )
 	 {
-            _query_template += "-pos2- AS pos_y";
+            _query_template += ", -pos2- AS pos_y";
 	 }
          else if ( field == "pos_z" )
 	 {
-            _query_template += "-pos3- AS pos_z";
+            _query_template += ", -pos3- AS pos_z";
 	 }
          else
          {
@@ -1156,7 +1161,11 @@ namespace tao {
          }
       }
 
-      _query_template = "SELECT " + _query_template + " FROM -table-";
+      // Setup the basic query (no WHERE clauses) and store for later
+      // use.
+      _query_template = "SELECT " + _query_template.substr( 2 ) + " FROM -table-";
+      _basic_query = _query_template;
+
       _query_template += " INNER JOIN redshift_ranges ON (-table-." + _field_map.get( "snapshot" ) + 
 	 " = redshift_ranges.snapshot)";
       _query_template += " WHERE";
@@ -1335,7 +1344,15 @@ namespace tao {
 
       // In order to retrieve the data types for each field I need
       // to extract a row from the database.
-      soci::rowset<soci::row> rows = (_sql.prepare << "SELECT * FROM trees_1 LIMIT 1");
+      string query = _basic_query;
+      replace_all( query, "-pos1-", "Pos1" );
+      replace_all( query, "-pos2-", "Pos2" );
+      replace_all( query, "-pos3-", "Pos3" );
+      replace_all( query, "-table-", "tree_1" );
+      replace_all( query, "Pos1", _field_map.get( "pos_x" ) );
+      replace_all( query, "Pos2", _field_map.get( "pos_y" ) );
+      replace_all( query, "Pos3", _field_map.get( "pos_z" ) );
+      soci::rowset<soci::row> rows = (_sql.prepare << query);
       const soci::row& row = *rows.begin();
 
       // Loop over the fields in the field map. For each one I want
@@ -1400,6 +1417,7 @@ namespace tao {
 
       // Clear out the current galaxy object.
       _gal.clear();
+      _gal.set_table( _table_names[_cur_table] );
 
       // Actually perform the fetch.
       _db_timer.start();
@@ -1415,28 +1433,28 @@ namespace tao {
             switch( _field_types[ii] )
             {
                case galaxy::STRING:
-                  _gal.set_field<string>( name, *(vector<string>*)_field_stor[ii] );
                   _gal.set_batch_size( ((vector<string>*)_field_stor[ii])->size() );
+                  _gal.set_field<string>( name, *(vector<string>*)_field_stor[ii] );
                   break;
 
                case galaxy::DOUBLE:
-                  _gal.set_field<double>( name, *(vector<double>*)_field_stor[ii] );
                   _gal.set_batch_size( ((vector<double>*)_field_stor[ii])->size() );
+                  _gal.set_field<double>( name, *(vector<double>*)_field_stor[ii] );
                   break;
 
                case galaxy::INTEGER:
-                  _gal.set_field<int>( name, *(vector<int>*)_field_stor[ii] );
                   _gal.set_batch_size( ((vector<int>*)_field_stor[ii])->size() );
+                  _gal.set_field<int>( name, *(vector<int>*)_field_stor[ii] );
                   break;
 
                case galaxy::UNSIGNED_LONG_LONG:
-                  _gal.set_field<unsigned long long>( name, *(vector<unsigned long long>*)_field_stor[ii] );
                   _gal.set_batch_size( ((vector<unsigned long long>*)_field_stor[ii])->size() );
+                  _gal.set_field<unsigned long long>( name, *(vector<unsigned long long>*)_field_stor[ii] );
                   break;
 
                case galaxy::LONG_LONG:
-                  _gal.set_field<long long>( name, *(vector<long long>*)_field_stor[ii] );
                   _gal.set_batch_size( ((vector<long long>*)_field_stor[ii])->size() );
+                  _gal.set_field<long long>( name, *(vector<long long>*)_field_stor[ii] );
                   break;
 
                default:
@@ -1453,7 +1471,7 @@ namespace tao {
          vector<real_type>::view pos_x = _gal.values<real_type>( "pos_x" );
          vector<real_type>::view pos_y = _gal.values<real_type>( "pos_y" );
          vector<real_type>::view pos_z = _gal.values<real_type>( "pos_z" );
-         vector<real_type>::view redshift = _gal.values<real_type>( "redshift" );
+	 _gal_z.resize( _gal.batch_size() );
          for( unsigned ii = 0; ii < _gal.batch_size(); ++ii )
          {
             // Get the distance and check it actually belongs here.
@@ -1461,8 +1479,11 @@ namespace tao {
             ASSERT( dist >= _dist_range.start() && dist < _dist_range.finish() );
 
             // Update the galaxy's redshift.
-            redshift[ii] = _distance_to_redshift( dist );
+            _gal_z[ii] = _distance_to_redshift( dist );
          }
+
+	 // Set the field.
+	 _gal.set_field<real_type>( "redshift", _gal_z );
       }
    }
 

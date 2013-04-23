@@ -23,6 +23,12 @@ namespace tao {
    }
 
    void
+   galaxy::set_table( const string& table )
+   {
+      _table = &table;
+   }
+
+   void
    galaxy::set_batch_size( unsigned size )
    {
       _batch_size = size;

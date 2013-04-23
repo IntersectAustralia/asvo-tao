@@ -57,9 +57,9 @@ namespace tao {
       _read_options( dict, prefix );
 
       // Allocate for output spectra.
-      _disk_spectra.reallocate( _num_spectra );
-      _bulge_spectra.reallocate( _num_spectra );
-      _total_spectra.reallocate( _num_spectra );
+      _disk_spectra.reallocate( _num_spectra, _batch_size );
+      _bulge_spectra.reallocate( _num_spectra, _batch_size );
+      _total_spectra.reallocate( _num_spectra, _batch_size );
 
       LOG_EXIT();
    }
@@ -99,7 +99,7 @@ namespace tao {
       for( unsigned ii = 0; ii < galaxy.batch_size(); ++ii )
       {
          // Cache the galaxy ID.
-         LOGDLN( "Processing galaxy with ID ", galaxy.values<long long>( "globalid" )[ii] );
+         LOGDLN( "Processing galaxy with ID ", galaxy.values<long long>( "globalindex" )[ii] );
 
          // Do we need to load a fresh table?
          if( galaxy.values<long long>( "globaltreeid" )[ii] != _cur_tree_id )
@@ -114,7 +114,7 @@ namespace tao {
 
          // Process each time.
          for( mpi::lindex jj = 0; jj < _bin_ages.size(); ++jj )
-            _process_time( jj );
+            _process_time( jj, ii );
 
          // Create total spectra.
          for( unsigned jj = 0; jj < _num_spectra; ++jj )
@@ -148,13 +148,14 @@ namespace tao {
    }
 
    void
-   sed::_process_time( mpi::lindex time_idx )
+   sed::_process_time( mpi::lindex time_idx,
+		       unsigned gal_idx )
    {
       LOG_ENTER();
       LOGDLN( "Processing time ", time_idx );
 
-      _sum_spectra( time_idx, _disk_age_metals[time_idx], _disk_age_masses[time_idx], _disk_spectra );
-      _sum_spectra( time_idx, _bulge_age_metals[time_idx], _bulge_age_masses[time_idx], _bulge_spectra );
+      _sum_spectra( time_idx, _disk_age_metals[time_idx], _disk_age_masses[time_idx], _disk_spectra[gal_idx] );
+      _sum_spectra( time_idx, _bulge_age_metals[time_idx], _bulge_age_masses[time_idx], _bulge_spectra[gal_idx] );
 
       LOG_EXIT();
    }
@@ -219,7 +220,7 @@ namespace tao {
       std::fill( _bulge_age_metals.begin(), _bulge_age_metals.end(), 0.0 );
 
       // Rebin everything from this galaxy.
-      unsigned id = galaxy.values<unsigned>( "galaxylocalid" )[idx];
+      unsigned id = galaxy.values<int>( "localgalaxyid" )[idx];
       _rebin_parents( id, id );
 
       LOG_EXIT();

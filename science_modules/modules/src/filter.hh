@@ -68,8 +68,9 @@ namespace tao {
       _process_spectra( const vector<real_type>::view& spectra,
                         real_type area,
 			real_type& luminosity,
-                        vector<real_type>::view apparent_mags,
-                        vector<real_type>::view absolute_mags );
+			fibre<real_type>& apparent_mags,
+			fibre<real_type>& absolute_mags,
+			unsigned gal_idx );
 
       real_type
       _apparant_magnitude( real_type spectra,
@@ -106,8 +107,6 @@ namespace tao {
       _process_vega( const string& filename );
 
    protected:
-
-      unsigned _batch_size;
 
       vector<real_type> _waves;
       vector<real_type>::view _spec;

@@ -178,6 +178,7 @@ namespace tao {
       real_type _h0;
 
       string _query_template;
+      string _basic_query;
       vector<string> _ops;
       array<real_type,3> _rrs_offs;
       array<int,3> _rrs_axis;
@@ -201,6 +202,7 @@ namespace tao {
       bool _rows_exist;
       vector<void*> _field_stor;
       vector<galaxy::field_value_type> _field_types;
+      vector<real_type> _gal_z;
       tao::galaxy _gal;
 
       string _accel_method;
