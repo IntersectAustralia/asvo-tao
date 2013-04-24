@@ -1485,6 +1485,9 @@ namespace tao {
 	 // Set the field.
 	 _gal.set_field<real_type>( "redshift", _gal_z );
       }
+
+      LOG_EXIT();
+      _timer.stop();
    }
 
 }
