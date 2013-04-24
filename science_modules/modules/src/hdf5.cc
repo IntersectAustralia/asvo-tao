@@ -33,7 +33,7 @@ namespace tao {
       LOG_ENTER();
 
       // Get our information.
-      _fn = dict.get<hpc::string>( prefix.get()+":filename" );
+      _fn = dict.get<hpc::string>( prefix.get()+":filename" ) + string( "." ) + to_string( mpi::comm::world.rank() );
       _fields = dict.get_list<hpc::string>( prefix.get()+":fields" );
 
       // Open the file.
@@ -84,43 +84,53 @@ namespace tao {
       // here.
       if( !_ready )
       {
-	 // for( const auto& field : _fields )
-	 // {
-	 //    h5::datatype dtype = _field_type( galaxy, field );
-	 //    h5::dataspace dspace;
-	 //    dspace.create( _chunk_size, true );
-	 //    h5::property_list props( H5P_DATASET_CREATE );
-	 //    props.set_chunk_size( _chunk_size );
-	 //    props.set_deflate();
-	 //    _dsets.push_back( new h5::dataset( _file, field, dtype, dspace, none, false, props ) );
-	 // }
+	 for( const auto& field : _fields )
+	 {
+	    h5::datatype dtype = _field_type( galaxy, field );
+	    h5::dataspace dspace;
+	    dspace.create( galaxy.batch_size(), true );
+	    h5::property_list props( H5P_DATASET_CREATE );
+	    props.set_chunk_size( _chunk_size );
+	    props.set_deflate();
+	    h5::dataset* dset = new h5::dataset( _file, field, dtype, dspace, none, false, props );
+	    _dsets.push_back( dset );
+
+	    // Dump first chunk.
+	    for( unsigned ii = 0; ii < galaxy.batch_size(); ++ii )
+	    {
+	       dspace.select_one( ii );
+	       _write_field( galaxy, ii, field, *dset, dspace );
+	    }
+	 }
 
 	 // Flag as complete.
 	 _ready = true;
       }
-
-      // Process each element.
-      for( unsigned ii = 0; ii < galaxy.batch_size(); ++ii )
+      else
       {
-         // Write the fields.
-         auto dset_it = _dsets.begin();
-         for( const auto& field : _fields )
-         {
-            // h5::dataset* dset = (*dset_it++).get();
-            // hsize_t old_size;
-            // {
-            //    h5::dataspace dspace( *dset );
-            //    old_size = dspace.size();
-            //    dset->extend( old_size + 1 );
-            // }
-            // h5::dataspace dspace( *dset );
-            // dspace.select_one( old_size );
-            // _write_field( galaxy, ii, field, *dset, dspace );
-         }
-
-         // Increment number of written records.
-         ++_records;
+	 // Process each element.
+	 for( unsigned ii = 0; ii < galaxy.batch_size(); ++ii )
+	 {
+	    // Write the fields.
+	    auto dset_it = _dsets.begin();
+	    for( const auto& field : _fields )
+	    {
+	       h5::dataset* dset = (*dset_it++).get();
+	       hsize_t old_size;
+	       {
+		  h5::dataspace dspace( *dset );
+		  old_size = dspace.size();
+		  dset->extend( old_size + 1 );
+	       }
+	       h5::dataspace dspace( *dset );
+	       dspace.select_one( old_size );
+	       _write_field( galaxy, ii, field, *dset, dspace );
+	    }
+	 }
       }
+
+      // Increment number of written records.
+      _records += galaxy.batch_size();
 
       _timer.stop();
    }
@@ -134,13 +144,13 @@ namespace tao {
 
    h5::datatype
    hdf5::_field_type( const tao::galaxy& galaxy,
-		     const string& field )
+		      const string& field )
    {
       auto val = galaxy.field( field );
       switch( val.second )
       {
 	 case tao::galaxy::STRING:
-	    // return h5::datatype::string;
+	    return h5::datatype::string;
 	    break;
 
 	 case tao::galaxy::DOUBLE:
@@ -166,7 +176,7 @@ namespace tao {
 
    void
    hdf5::_write_field( const tao::galaxy& galaxy,
-                       unsigned idx,
+		       unsigned idx,
 		       const string& field,
 		       h5::dataset& dset,
 		       h5::dataspace& dspace )
@@ -180,7 +190,7 @@ namespace tao {
 	 case tao::galaxy::STRING:
 	 {
 	    string data = galaxy.values<string>( field )[idx];
-	    // dset.write( data.c_str(), h5::datatype::string, mem_space, dspace );
+	    dset.write( data.c_str(), h5::datatype::string, mem_space, dspace );
 	    break;
 	 }
 
