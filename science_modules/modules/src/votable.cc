@@ -22,6 +22,27 @@ namespace tao {
    }
 
 
+   void votable::ReadLabels(const options::xml_dict& dict, optional<const string&> prefix)
+   {
+		 list<optional<hpc::string>> Templabels = dict.get_list_attributes<hpc::string>( prefix.get()+":fields","label" );
+
+
+		 auto lblit = Templabels.cbegin();
+		 auto fldsit = _fields.cbegin();
+		 while( lblit != Templabels.cend() )
+		 {
+		  if(!*lblit)
+		  {
+			  _labels.push_back(*fldsit);
+		  }
+		  else
+		  {
+			  _labels.push_back(**lblit);
+		  }
+		  lblit++;
+		  fldsit++;
+		 }
+   }
 
    ///
    ///
@@ -36,6 +57,8 @@ namespace tao {
       _fn = dict.get<hpc::string>( prefix.get()+":filename" );
       _fields = dict.get_list<hpc::string>( prefix.get()+":fields" );
 
+
+      ReadLabels(dict,prefix);
       // Open the file.
       open();
 
@@ -78,6 +101,7 @@ namespace tao {
 					ASSERT( 0 );
 			   }
 			 it++;
+			 _file<<std::endl;
 		 }
 
    }
@@ -172,13 +196,13 @@ namespace tao {
       auto it = _fields.cbegin();
       if( it != _fields.cend() )
       {
-    	  _file<<"<TR>"<<std::endl;
+    	  _file<<"\t<TR>"<<std::endl;
 
 		 while( it != _fields.cend() )
 		 {
 			_write_field( galaxy, *it++ );
 		 }
-		 _file<<"</TR>"<<std::endl;
+		 _file<<"\t</TR>"<<std::endl;
       }
 
       // Increment number of written records.
@@ -195,7 +219,7 @@ namespace tao {
 
    void votable::_write_field( const tao::galaxy& galaxy, const string& field )
    {
-	   _file<<"<TD>"<<std::endl;
+	   _file<<"\t\t<TD>";
       auto val = galaxy.field( field );
       switch( val.second )
       {

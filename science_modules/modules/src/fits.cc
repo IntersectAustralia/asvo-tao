@@ -22,6 +22,27 @@ namespace tao {
    }
 
 
+   void fits::ReadLabels(const options::xml_dict& dict, optional<const string&> prefix)
+  {
+	 list<optional<hpc::string>> Templabels = dict.get_list_attributes<hpc::string>( prefix.get()+":fields","label" );
+
+
+	 auto lblit = Templabels.cbegin();
+	 auto fldsit = _fields.cbegin();
+	 while( lblit != Templabels.cend() )
+	 {
+	  if(!*lblit)
+	  {
+		  _labels.push_back(*fldsit);
+	  }
+	  else
+	  {
+		  _labels.push_back(**lblit);
+	  }
+	  lblit++;
+	  fldsit++;
+	 }
+  }
 
    ///
    ///
@@ -36,6 +57,7 @@ namespace tao {
       _fn = dict.get<hpc::string>( prefix.get()+":filename" );
       _fields = dict.get_list<hpc::string>( prefix.get()+":fields" );
 
+      ReadLabels(dict,prefix);
       // Open the file.
       open();
 

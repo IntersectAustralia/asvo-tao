@@ -221,10 +221,15 @@ namespace tao {
 
 	 // Create the csv module, copying in output fields from the
 	 // lightcone module.
-	 string outputformat = inp_doc.select_single_node( "/tao/workflow/output-file/format" ).node().value();
+	 LOGILN(inp_doc.select_single_node( "/tao/workflow/output-file/format" ).node().first_child().value());
+
+
+	 string outputformat = inp_doc.select_single_node( "/tao/workflow/output-file/format" ).node().first_child().value();
+	 LOGILN( "Output Format:",outputformat );
 	 xml_node output_fields_node;
 	 if(outputformat=="votable")
 	 {
+		 LOGILN( "Writing Output to VOTable");
 		 xml_node votable_node = workflow_node.append_child( "votable" );
 		 votable_node.append_attribute( "module" ).set_value( "votable" );
 		 output_fields_node = votable_node.append_copy( inp_doc.select_single_node( "/tao/workflow/light-cone/output-fields" ).node() );
@@ -234,6 +239,7 @@ namespace tao {
 	 }
 	 else if(outputformat=="fits")
 	 {
+		 LOGILN( "Writing Output to FITS");
 		 xml_node fits_node = workflow_node.append_child( "fits" );
 		 fits_node.append_attribute( "module" ).set_value( "fits" );
 		 output_fields_node = fits_node.append_copy( inp_doc.select_single_node( "/tao/workflow/light-cone/output-fields" ).node() );
@@ -243,6 +249,7 @@ namespace tao {
 	 }
 	 else if(outputformat=="hdf5")
 	 {
+		 LOGILN( "Writing Output to hdf5");
 		 xml_node hdf_node = workflow_node.append_child( "hdf" );
 		 hdf_node.append_attribute( "module" ).set_value( "hdf" );
 		 output_fields_node = hdf_node.append_copy( inp_doc.select_single_node( "/tao/workflow/light-cone/output-fields" ).node() );
@@ -252,6 +259,7 @@ namespace tao {
 	 }
 	 else // if(outputformat=="csv")
 	 {
+		 LOGILN( "Writing Output to csv");
 		 xml_node csv_node = workflow_node.append_child( "csv" );
 		 csv_node.append_attribute( "module" ).set_value( "csv" );
 		 output_fields_node = csv_node.append_copy( inp_doc.select_single_node( "/tao/workflow/light-cone/output-fields" ).node() );
