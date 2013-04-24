@@ -97,9 +97,8 @@ namespace tao {
       set_field( const string& name,
                  typename vector<T>::view value )
       {
-         ASSERT( value.size() == _batch_size );
          field_type& field = _fields[name];
-         field.first = value;
+         field.first = typename vector<T>::view( value, _batch_size );
          field.second = (field_value_type)boost::mpl::at<type_map,T>::type::value;
       }
 
@@ -108,7 +107,8 @@ namespace tao {
       set_vector_field( const string& name,
                         fibre<T>& value )
       {
-         ASSERT( value.size() == _batch_size );
+	 // TODO: I need to put this back in and make a fibre view.
+	 // ASSERT( value.size() == _batch_size );
          field_type& field = _fields[name];
          field.first = &value;
          field.second = (field_value_type)boost::mpl::at<type_map,T>::type::value;
