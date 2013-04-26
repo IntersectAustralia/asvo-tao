@@ -39,86 +39,93 @@ namespace tao {
 
    public:
 
-      galaxy( const soci::row& row,
-	      const string& table );
-
       galaxy();
 
-      void
-      update( const soci::row& row,
-              const string& table );
+      galaxy( const string& table );
+
+      // void
+      // update( const soci::row& row,
+      //         const string& table );
+
+      // void
+      // update( const galaxy& gal );
+
+      // void
+      // set_redshifts( vector<real_type>& redshift );
+
+      // const soci::row&
+      // row() const;
 
       void
-      update( const galaxy& gal );
+      clear();
 
       void
-      set_redshift( real_type redshift );
-
-      const soci::row&
-      row() const;
+      set_table( const string& table );
 
       const string&
       table() const;
 
-      long long
-      id() const;
+      void
+      set_batch_size( unsigned size );
 
-      int
-      local_id() const;
+      // const vector<long long>&
+      // ids() const;
 
-      long long
-      tree_id() const;
+      // const vector<int>&
+      // local_ids() const;
 
-      real_type
-      x() const;
+      // const vector<long long>&
+      // tree_ids() const;
 
-      real_type
-      y() const;
+      // const vector<real_type>&
+      // x() const;
 
-      real_type
-      z() const;
+      // const vector<real_type>&
+      // y() const;
 
-      real_type
-      redshift() const;
+      // const vector<real_type>&
+      // z() const;
 
-      real_type
-      disk_metallicity() const;
+      // const vector<real_type>&
+      // redshifts() const;
 
-      real_type
-      bulge_metallicity() const;
+      unsigned
+      batch_size() const;
 
       template< class T >
       void
       set_field( const string& name,
-                 T value )
+                 typename vector<T>::view value )
       {
          field_type& field = _fields[name];
-         field.first = value;
+         field.first = typename vector<T>::view( value, _batch_size );
          field.second = (field_value_type)boost::mpl::at<type_map,T>::type::value;
       }
 
       template< class T >
       void
       set_vector_field( const string& name,
-                        vector<T>& value )
+                        fibre<T>& value )
       {
+	 // TODO: I need to put this back in and make a fibre view.
+	 // ASSERT( value.size() == _batch_size );
          field_type& field = _fields[name];
          field.first = &value;
          field.second = (field_value_type)boost::mpl::at<type_map,T>::type::value;
       }
 
       template< class T >
-      T
-      value( const string& name ) const
+      typename vector<T>::view
+      values( const string& name ) const
       {
-         return boost::any_cast<T>( field( name ).first );
+         return boost::any_cast<typename vector<T>::view>( field( name ).first );
       }
 
       template< class T >
-      vector<T>&
-      vector_value( const string& name ) const
+      fibre<T>&
+      vector_values( const string& name ) const
       {
-         return *boost::any_cast<vector<T>*>( field( name ).first );
+         return *boost::any_cast<fibre<T>*>( field( name ).first );
       }
 
       field_type
@@ -130,9 +137,8 @@ namespace tao {
 
    public:
 
-      const soci::row* _row;
       const string* _table;
-      real_type _z;
+      unsigned _batch_size;
       std::unordered_map<string,field_type> _fields;
    };
 }

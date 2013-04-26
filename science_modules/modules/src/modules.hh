@@ -7,6 +7,9 @@
 #include "sed.hh"
 #include "filter.hh"
 #include "csv.hh"
+#include "hdf5.hh"
 #include "skymaker.hh"
+#include "votable.hh"
+#include "fits.hh"
 
 #endif

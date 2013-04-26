@@ -10,7 +10,6 @@
 #include "geometry_iterator.hh"
 #include "table_iterator.hh"
 
-
 using namespace hpc;
 using boost::format;
 using boost::str;
@@ -45,8 +44,6 @@ namespace tao {
    {
    }
 
-
-
    ///
    /// Initialise the module.
    ///
@@ -57,7 +54,6 @@ namespace tao {
       LOG_ENTER();
 
       _read_options( dict, prefix );
-      _setup_query_template();
 
       LOG_EXIT();
    }
@@ -79,7 +75,12 @@ namespace tao {
       if( done() )
          _complete = true;
       else
-         _gal = *(*this);
+      {
+         // Note that I can just call the dereference operation without
+         // using the result because I just want to setup the internal
+         // galaxy object.
+         *(*this);
+      }
 
       LOG_EXIT();
       _timer.stop();
@@ -102,7 +103,6 @@ namespace tao {
    {
       _timer.start();
       LOG_ENTER();
-      _timer.start();
 
       // Reset the timers.
       _per_box.reset();
@@ -149,7 +149,6 @@ namespace tao {
 		_settle_box();
       }
 
-      _timer.stop();
       LOG_EXIT();
       _timer.stop();
    }
@@ -162,7 +161,6 @@ namespace tao {
    {
       _timer.start();
       LOG_ENTER();
-      _timer.start();
 
       // We are done when we are out of tables.
       bool result = (_cur_table == _table_names.size());
@@ -171,7 +169,6 @@ namespace tao {
       if( result )
          _db_disconnect();
 
-      _timer.stop();
       LOG_EXIT();
       _timer.stop();
       return result;
@@ -185,11 +182,12 @@ namespace tao {
    {
       _timer.start();
       LOG_ENTER();
-      _timer.start();
 
-      if( ++_cur_row == _rows->end() )
+      // Fetch the next batch of galaxies and check for completion.
+      _fetch();
+      if( !_rows_exist )
       {
-         LOGDLN( "Finished iterating over current rowset." );
+         LOGDLN( "Finished iterating over current table." );
          if( ++_cur_table == _table_names.size() ||
              (_settle_table(), _cur_table == _table_names.size()) )
          {
@@ -206,12 +204,11 @@ namespace tao {
 	       _prog.set_delta( 1 );
 	       _prog.update();
 	       if( mpi::comm::world.rank() == 0 )
-		  LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
+	       	  LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
 	    }
          }
       }
 
-      _timer.stop();
       LOG_EXIT();
       _timer.stop();
    }
@@ -219,44 +216,10 @@ namespace tao {
    ///
    /// Get current galaxy.
    ///
-   const tao::galaxy
+   tao::galaxy&
    lightcone::operator*()
    {
-      _timer.start();
-      LOG_ENTER();
-      ((profile::timer&)_timer).start();
-
-      tao::galaxy gal( *_cur_row, _table_names[_cur_table] );
-      real_type dist = sqrt( pow( gal.x(), 2.0 ) + pow( gal.y(), 2.0 ) + pow( gal.z(), 2.0 ) );
-
-      LOGDLN("(",gal.x(),",",gal.y(),",",gal.z(),")=",dist);
-      LOGDLN("Redshift=",gal.redshift());
-      LOGDLN(gal.id(),":(",_dist_range.start(),","<<dist<<",",_dist_range.finish(),")");
-
-
-
-
-
-      // Check that the row actually belongs in this range.
-      ASSERT( dist >= _dist_range.start() && dist < _dist_range.finish() );
-
-      // Setup the redshift.
-      gal.set_redshift( _distance_to_redshift( dist ) );
-
-      ((profile::timer&)_timer).stop();
-      LOG_EXIT();
-      _timer.stop();
-      return gal;
-   }
-
-   ///
-   /// Get current redshift.
-   ///
-   lightcone::real_type
-   lightcone::redshift() const
-   {
-      ASSERT( _cur_row != _rows->end() );
-      return _snap_redshifts[_cur_row->get<int>( "snapnum" )];
+      return _gal;
    }
 
    const set<string>&
@@ -284,6 +247,7 @@ namespace tao {
    void
    lightcone::_query_table_names( vector<string>& table_names )
    {
+      _timer.start();
       LOG_ENTER();
 
       // Clear existing.
@@ -363,7 +327,9 @@ namespace tao {
 	       to_string( _tree_pre.length() ) + ")='" + _tree_pre + "'";
 	 }
 	 LOGDLN( "Query for number of table names: ", query );
+	 _db_timer.start();
 	 _sql << query, soci::into( num_tables );
+	 _db_timer.stop();
 	 LOGDLN( "Number of tables: ", num_tables );
 
 	 // Retrieve all the table names.
@@ -380,7 +346,9 @@ namespace tao {
 			    to_string( _tree_pre.length() ) + ")='" ) + _tree_pre + string( "'" );
 	 }
 	 LOGDLN( "Query for table names: ", query );
+	 _db_timer.start();
 	 _sql << query, soci::into( (std::vector<std::string>&)table_names );
+	 _db_timer.stop();
       }
 
       // If we are running in parallel we will need to only process the tables that
@@ -398,11 +366,13 @@ namespace tao {
 
       LOGDLN( "My table names: ", table_names );
       LOG_EXIT();
+      _timer.stop();
    }
 
    void
    lightcone::_settle_table()
    {
+      _timer.start();
       LOG_ENTER();
 
       // Keep moving over tables until we find one that
@@ -414,16 +384,18 @@ namespace tao {
 
 	 const array<real_type,3>& box = *_cur_box;
          _build_pixels( _x0 + box[0], _y0 + box[1], _z0 + box[2] );
-	 LOGDLN( "Any objects in this box/table: ", ((_cur_row != _rows->end()) ? "true" : "false") );
+	 LOGDLN( "Any objects in this box/table: ", (_rows_exist ? "true" : "false") );
       }
-      while( _cur_row == _rows->end() && ++_cur_table != _table_names.size() );
+      while( !_rows_exist && ++_cur_table != _table_names.size() );
 
       LOG_EXIT();
+      _timer.stop();
    }
 
    void
    lightcone::_settle_box()
    {
+      _timer.start();
       LOG_ENTER();
 
       do
@@ -436,11 +408,9 @@ namespace tao {
 	    _per_box.stop_tally();
 	    LOGDLN( "Time per box: ", _per_box.mean() );
 
-	    // Update the log file with the progress.
+	    // Update the log file with the progress and dump.
 	    _prog.set_delta( 1 );
 	    _prog.update();
-
-	    // Also dump progress here.
 	    if( mpi::comm::world.rank() == 0 )
 	       LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
 	 }
@@ -525,16 +495,15 @@ namespace tao {
 	 _per_box.stop_tally();
 	 LOGDLN( "Time per box: ", _per_box.mean() );
 
-	 // Wait for parallel progress.
+	 // Update and complete.
 	 _prog.set_delta( 1 );
-
-
-	 // Also dump progress.
+	 _prog.update();
 	 if( mpi::comm::world.rank() == 0 )
 	    LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
       }
 
       LOG_EXIT();
+      _timer.stop();
    }
 
    ///
@@ -545,6 +514,7 @@ namespace tao {
                              real_type offs_y,
                              real_type offs_z )
    {
+      _timer.start();
       LOG_ENTER();
 
       // Produce the SQL query text.
@@ -556,12 +526,51 @@ namespace tao {
       if( _db_cycle() )
       	 _setup_redshift_ranges();
 
-      // Execute the query and retrieve the rows.
+      // Prepare the query.
+      auto prep = _sql.prepare << query;
+      for( unsigned ii = 0; ii < _output_fields.size(); ++ii )
+      {
+         switch( _field_types[ii] )
+         {
+            case galaxy::STRING:
+	       ((std::vector<std::string>*)_field_stor[ii])->resize( _batch_size );
+	       prep = prep, soci::into( *(std::vector<std::string>*)_field_stor[ii] );
+               break;
 
-      _rows = new soci::rowset<soci::row>( (_sql.prepare << query) );
-      _cur_row = _rows->begin();
+            case galaxy::DOUBLE:
+	       ((std::vector<double>*)_field_stor[ii])->resize( _batch_size );
+               prep = prep, soci::into( *(std::vector<double>*)_field_stor[ii] );
+               break;
+
+            case galaxy::INTEGER:
+	       ((std::vector<int>*)_field_stor[ii])->resize( _batch_size );
+               prep = prep, soci::into( *(std::vector<int>*)_field_stor[ii] );
+               break;
+
+            case galaxy::UNSIGNED_LONG_LONG:
+	       ((std::vector<unsigned long long>*)_field_stor[ii])->resize( _batch_size );
+               prep = prep, soci::into( *(std::vector<unsigned long long>*)_field_stor[ii] );
+               break;
+
+            case galaxy::LONG_LONG:
+	       ((std::vector<long long>*)_field_stor[ii])->resize( _batch_size );
+               prep = prep, soci::into( *(std::vector<long long>*)_field_stor[ii] );
+               break;
+
+            default:
+               ASSERT( 0 );
+         }
+      }
+
+      // Execute the query.
+      _db_timer.start();
+      _st = new soci::statement( prep );
+      _st->execute();
+      _fetch();
+      _db_timer.stop();
 
       LOG_EXIT();
+      _timer.stop();
    }
 
    ///
@@ -573,6 +582,7 @@ namespace tao {
                             real_type offs_z,
                             string& query )
    {
+      _timer.start();
       LOG_ENTER();
 
       real_type ra_min = to_radians( _ra_min );
@@ -656,6 +666,7 @@ namespace tao {
 
       LOGDLN( "Query: ", query );
       LOG_EXIT();
+      _timer.stop();
    }
 
    ///
@@ -664,6 +675,7 @@ namespace tao {
    void
    lightcone::_random_rotation_and_shifting( vector<string>& ops )
    {
+      _timer.start();
       LOG_ENTER();
 
       // Cache the current box size.
@@ -824,6 +836,7 @@ namespace tao {
       }
 
       LOG_EXIT();
+      _timer.stop();
    }
 
    ///
@@ -832,6 +845,7 @@ namespace tao {
    void
    lightcone::_get_boxes( list<array<real_type,3>>& boxes )
    {
+      _timer.start();
       LOG_ENTER();
 
       // Cache the current box size.
@@ -876,6 +890,7 @@ namespace tao {
       }
 
       LOG_EXIT();
+      _timer.stop();
    }
 
    ///
@@ -925,12 +940,12 @@ namespace tao {
    lightcone::_read_options( const options::xml_dict& dict,
                              optional<const string&> prefix )
    {
+      _timer.start();
       LOG_ENTER();
-
 
       // Get the decomposition method.
       _decomp_method = dict.get<string>( prefix.get()+":decomposition-method", "tables" );
-
+      LOGDLN( "Decomposition method: ", _decomp_method );
 
       // Extract table names.
       _snap_red_table = dict.get<string>( prefix.get()+":snapshot-redshift-table","snap_redshift" );
@@ -973,7 +988,9 @@ namespace tao {
       // Get the domain size.
       {
 	 string size;
+	 _db_timer.start();
 	 _sql << "SELECT metavalue FROM metadata WHERE metakey='boxsize'", soci::into( size );
+	 _db_timer.stop();
 	 _domain_size = atof( size.c_str() );
 	 LOGDLN( "Simulation domain size: ", _domain_size );
       }
@@ -982,7 +999,9 @@ namespace tao {
       if( _accel_method == "bsp" )
       {
 	 string step;
+	 _db_timer.start();
 	 _sql << "SELECT metavalue FROM metadata WHERE metakey='bspcellsize'", soci::into( step );
+	 _db_timer.stop();
 	 _bsp_step = atoi( step.c_str() );
 	 LOGDLN( "BSP step size: ", _bsp_step );
       }
@@ -992,12 +1011,16 @@ namespace tao {
       _int_rng.set_range( 1, 6 );
       auto rng_seed = dict.opt<int>( prefix.get()+":rng-seed" );
       if( rng_seed )
-      {
 	 _rng_seed = *rng_seed;
-	 _real_rng.set_seed( _rng_seed );
-	 _int_rng.reset();
-	 LOGDLN( "Random number generator seed: ", _rng_seed );
+      else
+      {
+	 ::srand( ::time( NULL ) );
+	 _rng_seed = rand();
       }
+      mpi::comm::world.bcast<int>( _rng_seed, 0 );
+      LOGDLN( "Random seed: ", _rng_seed );
+      _real_rng.set_seed( _rng_seed );
+      _int_rng.reset();
 
       // Extract and parse the snapshot redshifts.
       _read_snapshots();
@@ -1017,7 +1040,6 @@ namespace tao {
       _z_max = std::min( _z_max, snap_z_max );
       _z_min = dict.get<real_type>( prefix.get()+":redshift-min", snap_z_min );
       LOGDLN( "Redshift range: (", _z_min, ", ", _z_max, ")" );
-
 
       // Create distance range.
       _dist_range.set( _redshift_to_distance( _z_min ), _redshift_to_distance( _z_max ) );
@@ -1081,7 +1103,6 @@ namespace tao {
          _output_fields.insert( "pos_x" );
          _output_fields.insert( "pos_y" );
          _output_fields.insert( "pos_z" );
-         _output_fields.insert( "redshift" );
          _output_fields.insert( _field_map.get( "global_id" ) );
          _output_fields.insert( _field_map.get( "local_id" ) );
          _output_fields.insert( _field_map.get( "tree_id" ) );
@@ -1092,7 +1113,14 @@ namespace tao {
       // Setup the distance to redshift tables.
       _build_dist_to_z_tbl( 1000, _z_min, _z_max );
 
+      // Prepare the query statement.
+      _setup_query_template();
+
+      // Prepare bulk transactions.
+      _setup_batching();
+
       LOG_EXIT();
+      _timer.stop();
    }
 
    ///
@@ -1104,27 +1132,40 @@ namespace tao {
       LOG_ENTER();
 
       // Select basic positions.
-      _query_template = "-pos1- AS pos_x, -pos2- AS pos_y, -pos3- AS pos_z";
+      _query_template = "";
 
       // Add the output fields.
       for( auto& field : _output_fields )
       {
-	 if( field != "redshift" &&
-	     field != "pos_x" &&
+	 if( field != "pos_x" &&
 	     field != "pos_y" &&
 	     field != "pos_z" )
 	 {
 	    _query_template += ", " + string( "-table-." ) + field;
 	 }
-         else if ( field != "pos_x" &&
-		   field != "pos_y" &&
-		   field != "pos_z" )
+         else if ( field == "pos_x" )
 	 {
-            _query_template += ", " + field;
+            _query_template += ", -pos1- AS pos_x";
 	 }
+         else if ( field == "pos_y" )
+	 {
+            _query_template += ", -pos2- AS pos_y";
+	 }
+         else if ( field == "pos_z" )
+	 {
+            _query_template += ", -pos3- AS pos_z";
+	 }
+         else
+         {
+            _query_template += ", " + field;
+         }
       }
 
-      _query_template = "SELECT " + _query_template + " FROM -table-";
+      // Setup the basic query (no WHERE clauses) and store for later
+      // use.
+      _query_template = "SELECT " + _query_template.substr( 2 ) + " FROM -table-";
+      _basic_query = _query_template;
+
       _query_template += " INNER JOIN redshift_ranges ON (-table-." + _field_map.get( "snapshot" ) + 
 	 " = redshift_ranges.snapshot)";
       _query_template += " WHERE";
@@ -1177,20 +1218,26 @@ namespace tao {
    void
    lightcone::_read_snapshots()
    {
+      _timer.start();
       LOG_ENTER();
 
       // Find number of snapshots and resize the containers.
       unsigned num_snaps;
+      _db_timer.start();
       _sql << "SELECT COUNT(*) FROM " + _snap_red_table, soci::into( num_snaps );
+      _db_timer.stop();
       LOGDLN( num_snaps, " snapshots." );
       _snap_redshifts.reallocate( num_snaps );
 
       // Read meta data.
+      _db_timer.start();
       _sql << "SELECT redshift FROM " + _snap_red_table + " ORDER BY " + _field_map.get( "snapshot" ),
          soci::into( (std::vector<real_type>&)_snap_redshifts );
+      _db_timer.stop();
       LOGDLN( "Redshifts: ", _snap_redshifts );
 
       LOG_EXIT();
+      _timer.stop();
    }
 
    ///
@@ -1204,15 +1251,19 @@ namespace tao {
       ASSERT( _snap_redshifts.size() >= 2, "Must be at least two snapshots." );
 
       // Create a temporary table to hold values.
+      _db_timer.start();
       _sql << "CREATE TEMPORARY TABLE redshift_ranges (snapshot INTEGER, "
       	 "redshift DOUBLE PRECISION, min DOUBLE PRECISION, max DOUBLE PRECISION)";
+      _db_timer.stop();
 
       // Insert the first redshift range.
       real_type low = _redshift_to_distance( _snap_redshifts[0] ),
 	 upp = _redshift_to_distance( _snap_redshifts[1] ),
 	 mid = upp + 0.5*(low - upp);
+      _db_timer.start();
       _sql << "INSERT INTO redshift_ranges VALUES(0, :z, :min, :max)",
 	 soci::use( _snap_redshifts[0] ), soci::use( mid*mid ), soci::use( low*low );
+      _db_timer.stop();
       LOGDLN( "Distance range for snapshot 0 with redshift ", _snap_redshifts[0], ": ", mid, " - ", low );
 
       // Walk over snapshots creating distances.
@@ -1221,17 +1272,21 @@ namespace tao {
 	 low = upp;
 	 upp = _redshift_to_distance( _snap_redshifts[ii + 1] );
 	 real_type new_mid = upp + 0.5*(low - upp);
+	 _db_timer.start();
 	 _sql << "INSERT INTO redshift_ranges VALUES(:snapshot, :z, :min, :max)",
 	    soci::use( ii ), soci::use( _snap_redshifts[ii] ),
 	    soci::use( new_mid*new_mid ), soci::use( mid*mid );
+	 _db_timer.stop();
 	 LOGDLN( "Distance range for snapshot ", ii, " with redshift ", _snap_redshifts[ii], ": ", new_mid, " - ", mid );
 	 mid = new_mid;
       }
 
       // Insert the last redshift range.
+      _db_timer.start();
       _sql << "INSERT INTO redshift_ranges VALUES(:snapshot, :z, :min, :max)",
 	 soci::use( _snap_redshifts.size() - 1 ), soci::use( _snap_redshifts.back() ),
 	 soci::use( upp*upp ), soci::use( mid*mid );
+      _db_timer.stop();
       LOGDLN( "Redshift range for snapshot ", _snap_redshifts.size() - 1, ": ", upp, " - ", mid );
 
       LOG_EXIT();
@@ -1274,4 +1329,165 @@ namespace tao {
       real_type fac = (dist - _dist_to_z_tbl_dist[low])/(_dist_to_z_tbl_dist[upp] - _dist_to_z_tbl_dist[low]);
       return _dist_to_z_tbl_z[low] + (_dist_to_z_tbl_z[upp] - _dist_to_z_tbl_z[low])*fac;
    }
+
+   ///
+   /// Allocate arrays for batching.
+   ///
+   void
+   lightcone::_setup_batching()
+   {
+      LOG_ENTER();
+
+      // Allocate space for the fields.
+      _field_stor.reallocate( _output_fields.size() );
+      _field_types.reallocate( _output_fields.size() );
+
+      // In order to retrieve the data types for each field I need
+      // to extract a row from the database.
+      string query = _basic_query;
+      replace_all( query, "-pos1-", "Pos1" );
+      replace_all( query, "-pos2-", "Pos2" );
+      replace_all( query, "-pos3-", "Pos3" );
+      replace_all( query, "-table-", "tree_1" );
+      replace_all( query, "Pos1", _field_map.get( "pos_x" ) );
+      replace_all( query, "Pos2", _field_map.get( "pos_y" ) );
+      replace_all( query, "Pos3", _field_map.get( "pos_z" ) );
+      soci::rowset<soci::row> rows = (_sql.prepare << query);
+      const soci::row& row = *rows.begin();
+
+      // Loop over the fields in the field map. For each one I want
+      // to add an entry to my galaxy object.
+      unsigned ii = 0;
+      for( const auto& name : _output_fields )
+      {
+         LOGD( "Field '", name, "' has type '" );
+
+         // Get the type of this field from the database. It is assumed
+         // all values from the database are scalar.
+         galaxy::field_type type;
+         switch( row.get_properties( name ).get_data_type() )
+         {
+            case soci::dt_string:
+               _field_types[ii] = galaxy::STRING;
+               _field_stor[ii] = new vector<string>( _batch_size );
+               LOGD( "string" );
+               break;
+
+            case soci::dt_double:
+               _field_types[ii] = galaxy::DOUBLE;
+               _field_stor[ii] = new vector<double>( _batch_size );
+               LOGD( "double" );
+               break;
+
+            case soci::dt_integer:
+               _field_types[ii] = galaxy::INTEGER;
+               _field_stor[ii] = new vector<int>( _batch_size );
+               LOGD( "int" );
+               break;
+
+            case soci::dt_unsigned_long_long:
+               _field_types[ii] = galaxy::UNSIGNED_LONG_LONG;
+               _field_stor[ii] = new vector<unsigned long long>( _batch_size );
+               LOGD( "unsigned long long" );
+               break;
+
+            case soci::dt_long_long:
+               _field_types[ii] = galaxy::LONG_LONG;
+               _field_stor[ii] = new vector<long long>( _batch_size );
+               LOGD( "long long" );
+               break;
+
+            default:
+               ASSERT( 0 );
+         }
+         LOGDLN( "'" );
+
+         // Advance the index.
+         ++ii;
+      }
+
+      LOG_EXIT();
+   }
+
+   void
+   lightcone::_fetch()
+   {
+      _timer.start();
+      LOG_ENTER();
+
+      // Clear out the current galaxy object.
+      _gal.clear();
+      _gal.set_table( _table_names[_cur_table] );
+
+      // Actually perform the fetch.
+      _db_timer.start();
+      _rows_exist = _st->fetch();
+      _db_timer.stop();
+
+      if( _rows_exist )
+      {
+         // Update the galaxy object.
+         unsigned ii = 0;
+         for( const string& name : _output_fields )
+         {
+            switch( _field_types[ii] )
+            {
+               case galaxy::STRING:
+                  _gal.set_batch_size( ((vector<string>*)_field_stor[ii])->size() );
+                  _gal.set_field<string>( name, *(vector<string>*)_field_stor[ii] );
+                  break;
+
+               case galaxy::DOUBLE:
+                  _gal.set_batch_size( ((vector<double>*)_field_stor[ii])->size() );
+                  _gal.set_field<double>( name, *(vector<double>*)_field_stor[ii] );
+                  break;
+
+               case galaxy::INTEGER:
+                  _gal.set_batch_size( ((vector<int>*)_field_stor[ii])->size() );
+                  _gal.set_field<int>( name, *(vector<int>*)_field_stor[ii] );
+                  break;
+
+               case galaxy::UNSIGNED_LONG_LONG:
+                  _gal.set_batch_size( ((vector<unsigned long long>*)_field_stor[ii])->size() );
+                  _gal.set_field<unsigned long long>( name, *(vector<unsigned long long>*)_field_stor[ii] );
+                  break;
+
+               case galaxy::LONG_LONG:
+                  _gal.set_batch_size( ((vector<long long>*)_field_stor[ii])->size() );
+                  _gal.set_field<long long>( name, *(vector<long long>*)_field_stor[ii] );
+                  break;
+
+               default:
+                  ASSERT( 0 );
+            }
+
+            // Don't forget to advance.
+            ++ii;
+         }
+
+         // The redshifts need to be updated to match the returned
+         // distances. This is because the redshifts of each object
+         // are discretised rather abruptly.
+         vector<real_type>::view pos_x = _gal.values<real_type>( "pos_x" );
+         vector<real_type>::view pos_y = _gal.values<real_type>( "pos_y" );
+         vector<real_type>::view pos_z = _gal.values<real_type>( "pos_z" );
+	 _gal_z.resize( _gal.batch_size() );
+         for( unsigned ii = 0; ii < _gal.batch_size(); ++ii )
+         {
+            // Get the distance and check it actually belongs here.
+            real_type dist = sqrt( pos_x[ii]*pos_x[ii] + pos_y[ii]*pos_y[ii] + pos_z[ii]*pos_z[ii] );
+            ASSERT( dist >= _dist_range.start() && dist < _dist_range.finish() );
+
+            // Update the galaxy's redshift.
+            _gal_z[ii] = _distance_to_redshift( dist );
+         }
+
+	 // Set the field.
+	 _gal.set_field<real_type>( "redshift", _gal_z );
+      }
+
+      LOG_EXIT();
+      _timer.stop();
+   }
+
 }

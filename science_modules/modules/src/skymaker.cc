@@ -55,11 +55,15 @@ namespace tao {
       // Grab the galaxy from the parent object.
       tao::galaxy& gal = parents().front()->galaxy();
 
-      // Read magnitude from galaxy.
-      real_type mag = gal.value<real_type>( _mag_field );
+      // Walk over galaxies here.
+      for( unsigned ii = 0; ii < gal.batch_size(); ++ii )
+      {
+         // Read magnitude from galaxy.
+         real_type mag = gal.values<real_type>( _mag_field )[ii];
 
-      // Perform the processing.
-      process_galaxy( gal, mag );
+         // Perform the processing.
+         process_galaxy( gal, ii, mag );
+      }
 
       LOG_EXIT();
       _timer.stop();
@@ -117,6 +121,7 @@ namespace tao {
 
    void
    skymaker::process_galaxy( const tao::galaxy& galaxy,
+                             unsigned idx,
                              real_type magnitude )
    {
       _timer.start();
@@ -127,7 +132,11 @@ namespace tao {
          // Convert the cartesian coordiantes to right-ascension and
          // declination.
          real_type ra, dec;
-         numerics::cartesian_to_ecs( galaxy.x(), galaxy.y(), galaxy.z(), ra, dec );
+         numerics::cartesian_to_ecs( galaxy.values<real_type>( "pos_x" )[idx],
+                                     galaxy.values<real_type>( "pos_y" )[idx],
+                                     galaxy.values<real_type>( "pos_z" )[idx],
+                                     ra,
+                                     dec );
          LOGDLN( "Converted to (", ra, ", ", dec, ")" );
 
          // Now convert to pixel coordinates.
@@ -150,13 +159,13 @@ namespace tao {
             _list_file << "200 " << x << " " << y << " " << magnitude;
 
             // Try and extract some more values.
-            real_type bulge_magnitude = galaxy.value<real_type>( _bulge_mag_field );
-            real_type disk_scale_radius = 0.1*galaxy.value<real_type>( "diskscaleradius" )/0.71; // divided by h
-            real_type total_lum = galaxy.value<real_type>( "total_luminosity" );
-            real_type bulge_lum = galaxy.value<real_type>( "bulge_luminosity" );
+            real_type bulge_magnitude = galaxy.values<real_type>( _bulge_mag_field )[idx];
+            real_type disk_scale_radius = 0.1*galaxy.values<real_type>( "diskscaleradius" )[idx]/0.71; // divided by h
+            real_type total_lum = galaxy.values<real_type>( "total_luminosity" )[idx];
+            real_type bulge_lum = galaxy.values<real_type>( "bulge_luminosity" )[idx];
 
             // Do some calculations.
-            real_type ang_diam_dist = numerics::redshift_to_angular_diameter_distance( galaxy.redshift() );
+            real_type ang_diam_dist = numerics::redshift_to_angular_diameter_distance( galaxy.values<real_type>( "redshift" )[idx] );
             real_type bulge_to_total = bulge_lum/total_lum;
             real_type bulge_equiv_radius = atan( 0.5*bulge_to_total*disk_scale_radius/ang_diam_dist )*206264.806;
             real_type disk_scale_length = atan( disk_scale_radius/ang_diam_dist )*206264.806;
@@ -190,37 +199,37 @@ namespace tao {
       _bulge_mag_field = dict.get<string>( prefix.get()+":bulge-magnitude-field" );
 
       // Get image dimensions.
-      _img_w = dict.get<unsigned>( prefix.get()+":image_width" );
-      _img_h = dict.get<unsigned>( prefix.get()+":image_height" );
+      _img_w = dict.get<unsigned>( prefix.get()+":image_width",1024 );
+      _img_h = dict.get<unsigned>( prefix.get()+":image_height",1024 );
       LOGDLN( "Image dimensions: ", _img_w, "x", _img_h );
 
       // Get origin ra,dec.
-      _ra0 = to_radians( dict.get<real_type>( prefix.get()+":origin_ra" ) );
-      _dec0 = to_radians( dict.get<real_type>( prefix.get()+":origin_dec" ) );
+      _ra0 = to_radians( dict.get<real_type>( prefix.get()+":origin_ra",0.25*M_PI ) );
+      _dec0 = to_radians( dict.get<real_type>( prefix.get()+":origin_dec",0.25*M_PI ) );
       LOGDLN( "Origin (radians): ", _ra0, ", ", _dec0 );
 
       // Get focal scale.
-      _foc_x = dict.get<real_type>( prefix.get()+":focal_x" );
-      _foc_y = dict.get<real_type>( prefix.get()+":focal_y" );
+      _foc_x = dict.get<real_type>( prefix.get()+":focal_x",1.0 );
+      _foc_y = dict.get<real_type>( prefix.get()+":focal_y",1.0 );
       LOGDLN( "Image offset: ", _foc_x, ", ", _foc_y );
 
       // Get image offset.
-      _img_x = dict.get<real_type>( prefix.get()+":image_offset_x" );
-      _img_y = dict.get<real_type>( prefix.get()+":image_offset_y" );
+      _img_x = dict.get<real_type>( prefix.get()+":image_offset_x",0.0 );
+      _img_y = dict.get<real_type>( prefix.get()+":image_offset_y",0.0 );
       LOGDLN( "Image offset: ", _img_x, ", ", _img_y );
 
       // Get pixel dimensions.
-      _pix_w = dict.get<real_type>( prefix.get()+":pixel_width" );
-      _pix_h = dict.get<real_type>( prefix.get()+":pixel_height" );
+      _pix_w = dict.get<real_type>( prefix.get()+":pixel_width",1.0 );
+      _pix_h = dict.get<real_type>( prefix.get()+":pixel_height",1.0 );
       LOGDLN( "Pixel dimensions: ", _pix_w, "x", _pix_h );
 
       // Get magnitude limits.
-      _min_mag = dict.get<real_type>( prefix.get()+":min_mag" );
-      _max_mag = dict.get<real_type>( prefix.get()+":max_mag" );
+      _min_mag = dict.get<real_type>( prefix.get()+":min_mag",7.0 );
+      _max_mag = dict.get<real_type>( prefix.get()+":max_mag",50.0 );
       LOGDLN( "Magnitude limits: ", _min_mag, ", ", _max_mag );
 
       // Flags.
-      _keep_files = dict.get<bool>( prefix.get()+":keep-files" );
+      _keep_files = dict.get<bool>( prefix.get()+":keep-files",false );
    }
 
    void

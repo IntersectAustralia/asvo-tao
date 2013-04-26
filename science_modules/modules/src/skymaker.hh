@@ -53,6 +53,7 @@ namespace tao {
 
       void
       process_galaxy( const tao::galaxy& galaxy,
+                      unsigned idx,
 		      real_type magnitude );
 
    protected:
