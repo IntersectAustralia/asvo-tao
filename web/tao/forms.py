@@ -116,7 +116,7 @@ class OutputFormatForm(BetterForm):
     @classmethod
     def from_xml(cls, ui_holder, xml_root, prefix=None):
         supported_format = module_xpath(xml_root, '//output-file/format')
-        return cls(ui_holder, {prefix + '-supported_formats': supported_format})
+        return cls(ui_holder, {prefix + '-supported_formats': supported_format}, prefix=prefix)
 
 class RecordFilterForm(BetterForm):
     EDIT_TEMPLATE = 'mock_galaxy_factory/record_filter.html'
@@ -136,7 +136,7 @@ class RecordFilterForm(BetterForm):
         is_int = False
         if self.ui_holder.is_bound('light_cone'):
             objs = datasets.filter_choices(self.ui_holder.raw_data('light_cone', 'galaxy_model'))
-            choices = [('X-' + NO_FILTER, 'No Filter')] + [('D-' + str(x.id), '') for x in objs] + [('B-' + str(x.id),'') for x in datasets.band_pass_filters_objects()]
+            choices = [('X-' + NO_FILTER, 'No Filter')] + [('D-' + str(x.id), x.label + ' (' + x.units + ')') for x in objs] + [('B-' + str(x.id), x.label) for x in datasets.band_pass_filters_objects()]
             filter_type, record_filter = args[1]['record_filter-filter'].split('-')
             if filter_type == 'D':
                 obj = DataSetProperty.objects.get(pk = record_filter)
@@ -155,6 +155,8 @@ class RecordFilterForm(BetterForm):
         self.fields['filter'].label = 'Select by ...'
 
     def check_min_or_max_or_both(self):
+        if 'filter' not in self.cleaned_data:
+            return
         selected_type, selected_filter = self.cleaned_data['filter'].split('-')
         if selected_filter == NO_FILTER:
             return
@@ -224,8 +226,11 @@ class RecordFilterForm(BetterForm):
         data_set_id = 0
         if data_set is not None: data_set_id = data_set.id
         kind, record_id = datasets.filter_find_from_xml(data_set_id, filter_type, filter_units)
+        if filter_type == None:
+            kind = 'X'
+            record_id = NO_FILTER
         attrs = {prefix+'-filter': kind + '-' + str(record_id),
                prefix+'-min': filter_min,
                prefix+'-max': filter_max,
                }
-        return cls(ui_holder, attrs)
+        return cls(ui_holder, attrs, prefix=prefix)

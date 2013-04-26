@@ -168,12 +168,16 @@ class Form(BetterForm):
         simulation = datasets.simulation_from_xml(simulation_name)
         data_set = datasets.dataset_find_from_xml(simulation_name, galaxy_model)
         geometry = module_xpath(xml_root, '//light-cone/geometry')
+        simulation_id = None
+        if simulation is not None: simulation_id = simulation.id
+        data_set_id = None
+        if data_set is not None: data_set_id = data_set.id
         if not (geometry in [Form.CONE, Form.BOX]):
             geometry = None
         params = {
             prefix+'-catalogue_geometry': geometry,
-            prefix+'-galaxy_model': data_set.id,
-            prefix+'-dark_matter_simulation': simulation.id,
+            prefix+'-galaxy_model': data_set_id,
+            prefix+'-dark_matter_simulation': simulation_id,
             }
 
         if geometry == Form.BOX:
@@ -203,7 +207,6 @@ class Form(BetterForm):
             })
 
         params.update({prefix+'-output_properties': [dsp.id for dsp in Form._map_elems(xml_root, data_set)]})
-
         return cls(ui_holder, params, prefix=prefix)
 
     @classmethod

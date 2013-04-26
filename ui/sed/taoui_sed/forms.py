@@ -50,12 +50,13 @@ class Form(BetterForm):
         default_required = False
         objs = datasets.band_pass_filters_objects()
         bandpass_filters = [(x.id, x.label) for x in objs]
+        dust_models = [(x.id, x.label) for x in datasets.dust_models_objects()]
 
         self.fields['apply_sed'] = forms.BooleanField(required=False, widget=forms.CheckboxInput(), label='Apply Spectral Energy Distribution')
         self.fields['single_stellar_population_model'] = ChoiceFieldWithOtherAttrs(choices=datasets.stellar_model_choices(), required=default_required)
         self.fields['band_pass_filters'] = bf_fields.forms.MultipleChoiceField(required=default_required, choices=bandpass_filters, widget=TwoSidedSelectWidget)
         self.fields['apply_dust'] = forms.BooleanField(required=default_required, widget=forms.CheckboxInput(attrs={'class': 'checkbox'}), label='Apply Dust')
-        self.fields['select_dust_model'] = forms.ChoiceField(choices=datasets.dust_models(), required=default_required, widget=forms.Select(attrs={'disabled': 'disabled'}))
+        self.fields['select_dust_model'] = forms.ChoiceField(choices=dust_models, required=default_required, widget=forms.Select())
 
         for field_name in Form.SED_REQUIRED_FIELDS:
             self.fields[field_name].semirequired = True

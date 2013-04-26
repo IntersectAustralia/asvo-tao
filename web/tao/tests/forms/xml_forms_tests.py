@@ -35,14 +35,16 @@ class XmlFormsTests(TestCase):
         self.dust_model = DustModelFactory.create()
 
     def tearDown(self):
-        # super(TestCase, self).tearDown()
-        pass
+        super(XmlFormsTests, self).tearDown()
+        from tao.models import Simulation
+        for sim in Simulation.objects.all():
+            sim.delete()
 
     def test_output_format_form(self):
         xml_parameters = {
             'catalogue_geometry': 'light-cone',
-            'dark_matter_simulation': self.simulation.id, # self.simulation.id,
-            'galaxy_model': self.galaxy_model.id, #self.galaxy_model.id,
+            'dark_matter_simulation': self.simulation.id,
+            'galaxy_model': self.galaxy_model.id,
             'redshift_min': 0.2,
             'redshift_max': 0.3,
             'ra_opening_angle': 71.565,

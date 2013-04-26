@@ -67,6 +67,12 @@ jQuery(document).ready(function($) {
         $('div.summary_' + form_name + ' .' + field_name).html('None');
     }
 
+    var format_redshift = function(redshift_string) {
+        var redshift = parseFloat(redshift_string);
+        var whole_digit = parseInt(redshift).toString().length;
+        return redshift.toFixed(Math.max(5-whole_digit, 0));
+    };
+
     var update_snapshot_options = function(){
         var simulation_id = $(lc_id('dark_matter_simulation')).val();
         var galaxy_model_id = $(lc_id('galaxy_model')).find(':selected').attr('data-galaxy_model_id');
@@ -90,9 +96,7 @@ jQuery(document).ready(function($) {
                     // So z=0 is the present, and z=Infinity is the Big Bang.
                     // This is a non-linear relationship with more variation at smaller z values.
                     // To present figures that are easy to read and have sensible precision, redshift will be displayed with up to 5 decimals.
-                    var redshift = parseFloat(item.fields.redshift);
-                    var whole_digits = parseInt(redshift).toString().length;
-                    $option.html(redshift.toFixed(Math.max(5-whole_digits,0)));
+                    $option.html(format_redshift(item.fields.redshift));
                     if (item.pk == current) {
                         $option.attr('selected','selected');
                     }
@@ -813,7 +817,6 @@ jQuery(document).ready(function($) {
             $(sed_id('band_pass_filters_from')).removeAttr('disabled');
             sed_band_pass_filters_widget.set_enabled(true);
             $(sed_id('band_pass_filters')).removeAttr('disabled');
-//            sed_band_pass_filters_widget.change_event();
             $('div.summary_sed .apply_sed').show();
             fill_in_summary('sed', 'select_sed', '');
             display_band_pass_filters_summary();
@@ -834,14 +837,12 @@ jQuery(document).ready(function($) {
             $(sed_id('apply_dust')).attr('disabled', 'disabled');
             $(sed_id('select_dust_model')).attr('disabled', 'disabled');
             clear_info('sed', 'stellar-model');
-//            clear_in_summary('sed', 'stellar_model');
             clear_info('sed', 'band-pass');
-//            clear_in_summary('sed', 'band_pass_filters');
             clear_info('sed', 'dust-model');
-//            clear_in_summary('sed', 'dust_model');
             $('div.summary_sed .apply_sed').hide();
             fill_in_summary('sed', 'select_sed', 'Not selected');
-            update_filter_options(false, true); // triggers filter.change
+            var use_default = !update_filter_options.initializing || !bound;
+            update_filter_options(false, use_default); // triggers filter.change
         }
     });
 
@@ -952,7 +953,7 @@ jQuery(document).ready(function($) {
         sed_band_pass_filters_widget.change();
         init_wizard();
         var init_light_cone_type_value = $('input[name="light_cone-light_cone_type"][checked="checked"]').attr('value');
-        fill_in_summary('light_cone', 'light_cone_type', init_light_cone_type_value);
+        fill_in_summary('light_cone', 'number_of_light_cones',  $(lc_id('number_of_light_cones')).val() +  " " + init_light_cone_type_value + " light cones");
         $(lc_id('number_of_light_cones')).attr('class', 'light_cone_field'); // needed to associate the spinner with light-cone only, not when selecting box
         update_filter_options.initializing = true;
         $(lc_id('dark_matter_simulation')).change();
@@ -965,5 +966,9 @@ jQuery(document).ready(function($) {
         $('div.summary_light_cone .simulation_description, div.summary_light_cone .galaxy_model_description').hide();
         $('div.summary_sed .stellar_model_description').hide();
         $('div.summary_sed .dust_model_description').hide();
+        fill_in_ra_dec_in_summary();
+        fill_in_redshift_in_summary();
+        fill_in_summary('light_cone', 'box_size', $(lc_id('box_size')).val());
+        fill_in_summary('light_cone', 'snapshot', format_redshift($(lc_id('snapshot')+' option:selected').html()));
     })();
 });

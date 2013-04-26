@@ -48,6 +48,9 @@ class FilterTests(LiveServerMGFTest):
         initial_galaxy_model = initial_simulation.galaxymodel_set.all().order_by('id')[0]
         self.initial_dataset = DataSet.objects.get(simulation=initial_simulation, galaxy_model=initial_galaxy_model)
 
+    def tearDown(self):
+        super(FilterTests, self).tearDown()
+
     def test_filter_options(self):
         # check drop-down list correspond to properties of the currently selected simulation and galaxy model
         self.click(self.lc_2select('op_add_all'))

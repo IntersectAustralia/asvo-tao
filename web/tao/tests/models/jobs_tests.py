@@ -13,6 +13,9 @@ class JobTestCase(TestCase):
         
         self.user = User()
         self.user.save()
+
+    def tearDown(self):
+        super(JobTestCase, self).tearDown()
         
     def test_not_available_unless_completed(self):
         self.jobs = dict((status, Job(status=status, user=self.user)) for (status, _) in Job.STATUS_CHOICES)

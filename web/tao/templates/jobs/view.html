@@ -1,8 +1,25 @@
 {% extends '_base.html' %}
 
 {% load url from future %}
+{% load staticfiles %}
+{% load bootstrap_tags %}
+{% load assets %}
+{% load light_cone_tags  %}
 
 {% block subtitle %}Viewing Job{% endblock subtitle %}
+
+{% block extrajs %}
+    <link rel="stylesheet" href="{% static 'css/jquery-ui/themes/base/jquery-ui.css' %}" />
+    <script src="{% static 'js/jquery-ui-1.10.1.custom.min.js' %}"></script>
+
+    <script type="text/javascript" src="{% static 'js/TwoSidedSelectWidget.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/light_cone.js' %}"></script>
+    <script type="text/javascript">
+        var TAO_SEMIREQUIRED_FIELD_IDS = '{% semirequired_field_ids %}';
+        var TAO_JSON_CTX = '{% json_ctx %}';
+        var TAO_NO_FILTER = {% no_filter %};
+    </script>
+{% endblock extrajs %}
 
 {%  comment %}
 INGREDIENT #5: use forms here .summary view to render the summary here; but it requires JavaScript AND
@@ -62,23 +79,18 @@ the forms being hidden and all.
             <div>
                 <strong>Summary</strong>
             </div>
-            <div id="hidden_lc_form"> {# style="display: none;"> #}
-
-                {{ job.parameters|linebreaks }}
-
+            <div class="row-fluid" style="display: none;">
                 {% for form in forms %}
-                    {{ form.from_xml }}
+                    <form action="" method="">
+                        {% include form.EDIT_TEMPLATE %}
+                    </form>
                 {% endfor %}
             </div>
-            <form id="job-form" action="" method="XML">
-                <fieldset>
-                    <div class="row-fluid">
-                        {% for form in forms %}
-                            {% include form.SUMMARY_TEMPLATE %}
-                        {% endfor %}
-                    </div>
-                </fieldset>
-            </form>
+            <div class="job_view">
+                {% for form in forms %}
+                    {% include form.SUMMARY_TEMPLATE %}
+                {% endfor %}
+            </div>
         </div>
     </div>
 {% endblock content %}
