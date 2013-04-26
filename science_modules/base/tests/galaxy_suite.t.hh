@@ -19,46 +19,21 @@ public:
    ///
    void test_set_field()
    {
-      soci::rowset<soci::row> rowset = (sql.prepare << "SELECT * FROM blah");
-      const soci::row& row = *rowset.begin();
-      string table = "blah";
-      galaxy gal( row, table );
-      gal.set_field<int>( "an_int", 4 );
-      gal.set_field<double>( "a_double", 2.0 );
-      gal.set_field<string>( "a_string", "hello" );
-      TS_ASSERT_EQUALS( gal.value<int>( "an_int" ), 4 );
-      TS_ASSERT_EQUALS( gal.value<double>( "a_double" ), 2.0 );
-      TS_ASSERT( gal.value<string>( "a_string" ) == "hello" );
+      galaxy gal;
+      gal.set_batch_size( 1 );
+
+      vector<int> an_int( 1 );
+      an_int[0] = 4;
+      gal.set_field<int>( "an_int", an_int );
+      vector<double> a_double( 1 );
+      a_double[0] = 4.0;
+      gal.set_field<double>( "a_double", a_double );
+      vector<string> a_string( 1 );
+      a_string[0] = "hello";
+      gal.set_field<string>( "a_string", a_string );
+
+      TS_ASSERT_EQUALS( gal.values<int>( "an_int" )[0], 4 );
+      TS_ASSERT_EQUALS( gal.values<double>( "a_double" )[0], 4.0 );
+      TS_ASSERT( gal.values<string>( "a_string" )[0] == "hello" );
    }
-
-   ///
-   ///
-   ///
-   void test_use_row()
-   {
-      soci::rowset<soci::row> rowset = (sql.prepare << "SELECT * FROM blah");
-      const soci::row& row = *rowset.begin();
-      string table = "blah";
-      galaxy gal( row, table );
-      TS_ASSERT_EQUALS( gal.value<double>( "redshift" ), 100.0 );
-   }
-
-   void setUp()
-   {
-      db_filename = tmpnam( NULL );
-      sql.open( soci::sqlite3, db_filename );
-      sql << "CREATE TABLE blah (redshift DOUBLE PRECISION)";
-      sql << "INSERT INTO blah VALUES(100)";
-   }
-
-   void tearDown()
-   {
-      sql.close();
-      remove( db_filename.c_str() );
-   }
-
-protected:
-
-   string db_filename;
-   soci::session sql;
 };

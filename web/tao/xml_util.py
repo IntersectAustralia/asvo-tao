@@ -6,6 +6,7 @@ tao.xml_util
 Helper methods for XML
 """
 from lxml import etree
+import re
 
 def create_root(tag, **attrs):
     return etree.Element(tag, **attrs)
@@ -36,3 +37,38 @@ def remove_comments(root):
         if p is not None:
             p.remove(c)
     return root
+
+_XPATH_SLASH_BEFORE_TOKEN = rx = re.compile('/(?=[^/])')
+
+def module_xpath(xml_root, path, text=True, attribute=None):
+    """
+    utility to simplify our xpaths so we use a known namespace
+    :param xml_root: the root xml we are searching from
+    :param path: a quasi-xpath to which name space is attached
+    :return: the text (if true), or an attribute (if provided) or the element
+    """
+    path = _XPATH_SLASH_BEFORE_TOKEN.sub('/m:', path)
+    elems = xml_root.xpath(path, namespaces={'m':'http://tao.asvo.org.au/schema/module-parameters-v1'})
+    resp = None
+    if elems is not None and len(elems) == 1:
+        if attribute is not None:
+            resp = elems[0].get(attribute)
+        elif text:
+            resp = elems[0].text
+        else:
+            resp = elems[0]
+    return resp
+
+def module_xpath_iterate(xml_root, path, text=True, attribute=None):
+    path = _XPATH_SLASH_BEFORE_TOKEN.sub('/m:', path)
+    elems = xml_root.xpath(path, namespaces={'m':'http://tao.asvo.org.au/schema/module-parameters-v1'})
+    for elem in elems:
+        if attribute is not None:
+            yield elem.get(attribute)
+        elif text:
+            yield elem.text
+        else:
+            yield elem
+
+
+

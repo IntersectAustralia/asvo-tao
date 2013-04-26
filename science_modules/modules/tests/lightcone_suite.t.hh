@@ -4,6 +4,7 @@
 #include <cxxtest/GlobalFixture.h>
 #include <libhpc/logging/logging.hh>
 #include "tao/modules/lightcone.hh"
+#include <stdio.h>
 
 using namespace hpc;
 using namespace tao;
@@ -54,6 +55,7 @@ public:
       dict["redshift"] = "1";
       dict["query-box-size"] = "10";
       db_setup.xml.write( db_setup.xml_filename, db_setup.dict );
+
       setup_lightcone( lc );
 
       // Test directly.
@@ -68,8 +70,11 @@ public:
       for( lc.begin(); !lc.done(); ++lc )
       {
          const galaxy& gal = *lc;
-	 double dist = sqrt( gal.x()*gal.x() + gal.y()*gal.y() + gal.z()*gal.z() );
-	 TS_ASSERT_DELTA( lc._redshift_to_distance( gal.redshift() ), dist, 1e-1 );
+	 double dist = sqrt( gal.values<real_type>( "pos_x" )[0]*gal.values<real_type>( "pos_x" )[0] + 
+                             gal.values<real_type>( "pos_y" )[0]*gal.values<real_type>( "pos_y" )[0] + 
+                             gal.values<real_type>( "pos_z" )[0]*gal.values<real_type>( "pos_z" )[0] );
+	 TS_ASSERT_DELTA( lc._redshift_to_distance( gal.values<real_type>( "redshift" )[0] ), dist, 1e-1 );
+
       }
    }
 
@@ -104,7 +109,7 @@ public:
       dict["redshift"] = "0.001";
 
       // Place to store row IDs.
-      vector<int> ids;
+      vector<long long> ids;
 
       // Only row 0.
       dict["query-box-size"] = "1.5";
@@ -114,7 +119,7 @@ public:
       for( lc.begin(); !lc.done(); ++lc )
       {
          const galaxy& gal = *lc;
-         ids.push_back( gal.id() );
+         ids.push_back( gal.values<long long>( "globalindex" )[0] );
       }
       TS_ASSERT_EQUALS( ids.size(), 1 );
       TS_ASSERT_EQUALS( ids[0], 0 );
@@ -127,7 +132,7 @@ public:
       for( lc.begin(); !lc.done(); ++lc )
       {
          const galaxy& gal = *lc;
-         ids.push_back( gal.id() );
+         ids.push_back( gal.values<long long>( "globalindex" )[0] );
       }
       TS_ASSERT_EQUALS( ids.size(), 2 );
       TS_ASSERT_EQUALS( ids[0], 0 );
@@ -139,6 +144,7 @@ public:
    ///
    void test_box_z_snap()
    {
+
       lightcone lc;
 
       // Turn off random rotation and shifting.
@@ -163,20 +169,23 @@ public:
       options::dictionary& dict = db_setup.dict.sub( "workflow:light-cone" );
       dict["geometry"] = "box";
       dict["query-box-size"] = "4.5";
-
+      dict["h0"]="0.73";
       // Place to store row IDs.
-      vector<int> ids;
+      vector<long long> ids;
 
       // Only row 0.
       dict["redshift"] = "0.001";
       db_setup.xml.write( db_setup.xml_filename, db_setup.dict );
       setup_lightcone( lc );
+
       ids.resize( 0 );
       for( lc.begin(); !lc.done(); ++lc )
       {
          const galaxy& gal = *lc;
-         ids.push_back( gal.id() );
+         ids.push_back( gal.values<long long>( "globalindex" )[0] );
+
       }
+
       TS_ASSERT_EQUALS( ids.size(), 4 );
       for( unsigned ii = 0; ii < 4; ++ii )
          TS_ASSERT_EQUALS( ids[ii], ii );
@@ -185,11 +194,12 @@ public:
       dict["redshift"] = "0";
       db_setup.xml.write( db_setup.xml_filename, db_setup.dict );
       setup_lightcone( lc );
+
       ids.resize( 0 );
       for( lc.begin(); !lc.done(); ++lc )
       {
          const galaxy& gal = *lc;
-         ids.push_back( gal.id() );
+         ids.push_back( gal.values<long long>( "globalindex" )[0] );
       }
       TS_ASSERT_EQUALS( ids.size(), 4 );
       for( unsigned ii = 0; ii < 4; ++ii )
@@ -229,7 +239,7 @@ public:
       dict["dec-max"] = "90";
 
       // Place to store row IDs.
-      vector<int> ids;
+      vector<long long> ids;
 
       // Only row 0.
       dict["ra-min"] = "0.0";
@@ -240,7 +250,7 @@ public:
       for( lc.begin(); !lc.done(); ++lc )
       {
          const galaxy& gal = *lc;
-         ids.push_back( gal.id() );
+         ids.push_back( gal.values<long long>( "globalindex" )[0] );
       }
       TS_ASSERT_EQUALS( ids.size(), 1 );
       TS_ASSERT_EQUALS( ids[0], 4 );
@@ -254,7 +264,7 @@ public:
       for( lc.begin(); !lc.done(); ++lc )
       {
          const galaxy& gal = *lc;
-         ids.push_back( gal.id() );
+         ids.push_back( gal.values<long long>( "globalindex" )[0] );
       }
       TS_ASSERT_EQUALS( ids.size(), 1 );
       TS_ASSERT_EQUALS( ids[0], 5 );
@@ -268,7 +278,7 @@ public:
       for( lc.begin(); !lc.done(); ++lc )
       {
          const galaxy& gal = *lc;
-         ids.push_back( gal.id() );
+         ids.push_back( gal.values<long long>( "globalindex" )[0] );
       }
       TS_ASSERT_EQUALS( ids.size(), 1 );
       TS_ASSERT_EQUALS( ids[0], 6 );
@@ -283,7 +293,7 @@ public:
       for( lc.begin(); !lc.done(); ++lc )
       {
          const galaxy& gal = *lc;
-         ids.push_back( gal.id() );
+         ids.push_back( gal.values<long long>( "globalindex" )[0] );
       }
       TS_ASSERT_EQUALS( ids.size(), 1 );
       TS_ASSERT_EQUALS( ids[0], 7 );
@@ -321,7 +331,7 @@ public:
       dict["ra-max"] = "90";
 
       // Place to store row IDs.
-      vector<int> ids;
+      vector<long long> ids;
 
       // Only row 0.
       dict["dec-min"] = "0.0";
@@ -332,7 +342,7 @@ public:
       for( lc.begin(); !lc.done(); ++lc )
       {
          const galaxy& gal = *lc;
-         ids.push_back( gal.id() );
+         ids.push_back( gal.values<long long>( "globalindex" )[0] );
       }
       TS_ASSERT_EQUALS( ids.size(), 1 );
       TS_ASSERT_EQUALS( ids[0], 0 );
@@ -346,7 +356,7 @@ public:
       for( lc.begin(); !lc.done(); ++lc )
       {
          const galaxy& gal = *lc;
-         ids.push_back( gal.id() );
+         ids.push_back( gal.values<long long>( "globalindex" )[0] );
       }
       TS_ASSERT_EQUALS( ids.size(), 1 );
       TS_ASSERT_EQUALS( ids[0], 1 );
@@ -360,7 +370,7 @@ public:
       for( lc.begin(); !lc.done(); ++lc )
       {
          const galaxy& gal = *lc;
-         ids.push_back( gal.id() );
+         ids.push_back( gal.values<long long>( "globalindex" )[0] );
       }
       TS_ASSERT_EQUALS( ids.size(), 1 );
       TS_ASSERT_EQUALS( ids[0], 2 );
@@ -375,7 +385,7 @@ public:
       for( lc.begin(); !lc.done(); ++lc )
       {
          const galaxy& gal = *lc;
-         ids.push_back( gal.id() );
+         ids.push_back( gal.values<long long>( "globalindex" )[0] );
       }
       TS_ASSERT_EQUALS( ids.size(), 1 );
       TS_ASSERT_EQUALS( ids[0], 3 );
@@ -413,7 +423,7 @@ public:
       dict["dec-max"] = "90";
 
       // Place to store row IDs.
-      vector<int> ids;
+      vector<long long> ids;
 
       // Capture first point.
       dict["redshift-min"] = "0.0001";
@@ -424,7 +434,7 @@ public:
       for( lc.begin(); !lc.done(); ++lc )
       {
          const galaxy& gal = *lc;
-         ids.push_back( gal.id() );
+         ids.push_back( gal.values<long long>( "globalindex" )[0] );
       }
       TS_ASSERT_EQUALS( ids.size(), 1 );
       TS_ASSERT_EQUALS( ids[0], 3 );
@@ -438,7 +448,7 @@ public:
       for( lc.begin(); !lc.done(); ++lc )
       {
          const galaxy& gal = *lc;
-         ids.push_back( gal.id() );
+         ids.push_back( gal.values<long long>( "globalindex" )[0] );
       }
       TS_ASSERT_EQUALS( ids.size(), 1 );
       TS_ASSERT_EQUALS( ids[0], 4 );
@@ -452,7 +462,7 @@ public:
       for( lc.begin(); !lc.done(); ++lc )
       {
          const galaxy& gal = *lc;
-         ids.push_back( gal.id() );
+         ids.push_back( gal.values<long long>( "globalindex" )[0] );
       }
       TS_ASSERT_EQUALS( ids.size(), 1 );
       TS_ASSERT_EQUALS( ids[0], 2 );
@@ -494,7 +504,7 @@ public:
       dict["dec-max"] = "90";
 
       // Place to store row IDs.
-      vector<int> ids;
+      vector<long long> ids;
 
       // Generate all results.
       db_setup.xml.write( db_setup.xml_filename, db_setup.dict );
@@ -503,7 +513,7 @@ public:
       for( lc.begin(); !lc.done(); ++lc )
       {
          const galaxy& gal = *lc;
-         ids.push_back( gal.id() );
+         ids.push_back( gal.values<long long>( "globalindex" )[0] );
       }
       TS_ASSERT_EQUALS( ids.size(), 12 );
       TS_ASSERT_EQUALS( ids[0], 3 );
@@ -547,7 +557,7 @@ public:
       db_setup.dict["workflow:record-filter:filter-max"] = "2.5";
 
       // Place to store row IDs.
-      vector<int> ids;
+      vector<long long> ids;
 
       // Only row 0.
       dict["query-box-size"] = "1.5";
@@ -557,7 +567,7 @@ public:
       for( lc.begin(); !lc.done(); ++lc )
       {
          const galaxy& gal = *lc;
-         ids.push_back( gal.id() );
+         ids.push_back( gal.values<long long>( "globalindex" )[0] );
       }
       TS_ASSERT_EQUALS( ids.size(), 0 );
 
@@ -569,7 +579,7 @@ public:
       for( lc.begin(); !lc.done(); ++lc )
       {
          const galaxy& gal = *lc;
-         ids.push_back( gal.id() );
+         ids.push_back( gal.values<long long>( "globalindex" )[0] );
       }
       TS_ASSERT_EQUALS( ids.size(), 1 );
       TS_ASSERT_EQUALS( ids[0], 1 );
@@ -612,7 +622,7 @@ public:
       for( lc.begin(); !lc.done(); ++lc )
       {
          const galaxy& gal = *lc;
-         TS_ASSERT_THROWS_ANYTHING( gal.row().get<int>( "snapnum" ) );
+         TS_ASSERT_THROWS_ANYTHING( gal.values<int>( "snapnum" )[0] );
       }
 
       // Now with snapshot.
@@ -622,7 +632,7 @@ public:
       for( lc.begin(); !lc.done(); ++lc )
       {
          const galaxy& gal = *lc;
-         TS_ASSERT_EQUALS( gal.row().get<int>( "snapnum" ), 0 );
+         TS_ASSERT_EQUALS( gal.values<int>( "snapnum" )[0], 0 );
       }
    }
 
@@ -633,9 +643,9 @@ public:
 
       // Read in the dictionary from XML.
       options::xml_dict dict;
-
       dict.read( db_setup.xml_filename);
       lc.initialise( dict, string( "workflow:light-cone" ) );
+
    }
 
    void setUp()

@@ -67,7 +67,8 @@ namespace tao {
       // in writing the processed file.
       if( mpi::comm::world.rank() == 0 )
 	 _preprocess_xml();
-      mpi::comm::world.barrier();
+      mpi::comm::world.bcast( _currentxml_version );
+      LOGDLN("Current XMl Schema Version: ",_currentxml_version);
 
       // Load all the modules first up.
       _load_modules();
@@ -107,6 +108,7 @@ namespace tao {
          module->finalise();
 
       // Mark the conclusion of the run.
+      mpi::comm::world.barrier();
       LOGILN( runtime(), ",end,successful" );
 
       // Dump timing information to the end of the info file.
@@ -186,7 +188,6 @@ namespace tao {
 	 xml_document inp_doc, out_doc;
 	 INSIST( inp_doc.load_file( string( _xml_file ).c_str() ), == true );
 	 _currentxml_version=inp_doc.select_single_node( "/tao/workflow/schema-version" ).node().first_child().value();
-	 LOGDLN("Current XMl Schema Version:",_currentxml_version);
 	 if (_currentxml_version!="1.0")
 		 return;
 
@@ -217,14 +218,49 @@ namespace tao {
 		filter_node.append_child( "parents" ).append_child( "item" ).append_child( node_pcdata ).set_value( "sed" );
 	 }
 
+
 	 // Create the csv module, copying in output fields from the
 	 // lightcone module.
-	 xml_node csv_node = workflow_node.append_child( "csv" );
-	 csv_node.append_attribute( "module" ).set_value( "csv" );
-	 xml_node output_fields_node = csv_node.append_copy( inp_doc.select_single_node( "/tao/workflow/light-cone/output-fields" ).node() );
-	 output_fields_node.set_name( "fields" );
-     csv_node.append_child( "filename" ).append_child( node_pcdata ).set_value( string( string( inp_doc.select_single_node( "/tao/outputdir" ).node().first_child().value() ) + "tao."+subjobindex+".output" ).c_str() );
-	 csv_node.append_child( "parents" ).append_child( "item" ).append_child( node_pcdata ).set_value( sed_node ? "sed" : "light-cone" );
+	 string outputformat = inp_doc.select_single_node( "/tao/workflow/output-file/format" ).node().value();
+	 xml_node output_fields_node;
+	 if(outputformat=="votable")
+	 {
+		 xml_node votable_node = workflow_node.append_child( "votable" );
+		 votable_node.append_attribute( "module" ).set_value( "votable" );
+		 output_fields_node = votable_node.append_copy( inp_doc.select_single_node( "/tao/workflow/light-cone/output-fields" ).node() );
+		 output_fields_node.set_name( "fields" );
+		 votable_node.append_child( "filename" ).append_child( node_pcdata ).set_value( string( string( inp_doc.select_single_node( "/tao/outputdir" ).node().first_child().value() ) + "tao."+subjobindex+".xml" ).c_str() );
+		 votable_node.append_child( "parents" ).append_child( "item" ).append_child( node_pcdata ).set_value( sed_node ? "sed" : "light-cone" );
+	 }
+	 else if(outputformat=="fits")
+	 {
+		 xml_node fits_node = workflow_node.append_child( "fits" );
+		 fits_node.append_attribute( "module" ).set_value( "fits" );
+		 output_fields_node = fits_node.append_copy( inp_doc.select_single_node( "/tao/workflow/light-cone/output-fields" ).node() );
+		 output_fields_node.set_name( "fields" );
+		 fits_node.append_child( "filename" ).append_child( node_pcdata ).set_value( string( string( inp_doc.select_single_node( "/tao/outputdir" ).node().first_child().value() ) + "tao."+subjobindex+".fits" ).c_str() );
+		 fits_node.append_child( "parents" ).append_child( "item" ).append_child( node_pcdata ).set_value( sed_node ? "sed" : "light-cone" );
+	 }
+	 else if(outputformat=="hdf5")
+	 {
+		 xml_node hdf_node = workflow_node.append_child( "hdf" );
+		 hdf_node.append_attribute( "module" ).set_value( "hdf" );
+		 output_fields_node = hdf_node.append_copy( inp_doc.select_single_node( "/tao/workflow/light-cone/output-fields" ).node() );
+		 output_fields_node.set_name( "fields" );
+		 hdf_node.append_child( "filename" ).append_child( node_pcdata ).set_value( string( string( inp_doc.select_single_node( "/tao/outputdir" ).node().first_child().value() ) + "tao."+subjobindex+".hdf" ).c_str() );
+		 hdf_node.append_child( "parents" ).append_child( "item" ).append_child( node_pcdata ).set_value( sed_node ? "sed" : "light-cone" );
+	 }
+	 else // if(outputformat=="csv")
+	 {
+		 xml_node csv_node = workflow_node.append_child( "csv" );
+		 csv_node.append_attribute( "module" ).set_value( "csv" );
+		 output_fields_node = csv_node.append_copy( inp_doc.select_single_node( "/tao/workflow/light-cone/output-fields" ).node() );
+		 output_fields_node.set_name( "fields" );
+		 csv_node.append_child( "filename" ).append_child( node_pcdata ).set_value( string( string( inp_doc.select_single_node( "/tao/outputdir" ).node().first_child().value() ) + "tao."+subjobindex+".csv" ).c_str() );
+		 csv_node.append_child( "parents" ).append_child( "item" ).append_child( node_pcdata ).set_value( sed_node ? "sed" : "light-cone" );
+	 }
+
+
 
 	 // Copy the record filter node.
 	 xml_node rf_node = inp_doc.select_single_node( "/tao/workflow/record-filter" ).node();

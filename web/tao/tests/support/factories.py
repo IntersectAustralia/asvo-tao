@@ -5,20 +5,6 @@ from decimal import Decimal
 
 from tao.models import Job, User, Simulation, GalaxyModel, DataSet, DataSetProperty, StellarModel, Snapshot, BandPassFilter, DustModel
 
-class JobFactory(factory.Factory):
-    FACTORY_FOR = Job
-    database = factory.Sequence(lambda n: 'database_' + n)
-    description = factory.Sequence(lambda n: 'description job ' + n)
-    
-    @classmethod
-    def _prepare(cls, create, **kwargs):
-        created_time = kwargs.pop('created_time', None)
-        job = super(JobFactory, cls)._prepare(create, **kwargs)
-        if created_time:
-            job.created_time = created_time
-            if create:
-                job.save()
-        return job
 
 class UserFactory(factory.Factory):
     FACTORY_FOR = User
@@ -40,12 +26,12 @@ class SimulationFactory(factory.Factory):
     name = factory.Sequence(lambda n: 'simulation_%03d' % int(n))
     box_size = factory.Sequence(lambda n: 500 + int(n))
     details = factory.Sequence(lambda n:
-                                '<a class="simulation-paper" target="_blank" href="http://www.abcd' + n + '.com/">abcd' + n + '</a>' +
-                                '<a class="simulation-link" target="_blank" href="http://www.defg' + n + '.org/">http://www.defg' + n + '.org/</a>' +
-                                '<span class="simulation-cosmology">fairy' + n + '</span>' +
-                                '<span class="simulation-cosmological-parameters">dust' + n + '</span>' +
-                                '<span class="simulation-box-size">' + n + '</span>' +
-                                '<a class="simulation-web-site" target="_blank" href="http://mysite' + n + '.edu/">http://mysite' + n + '.edu/</a>'
+                                '<a class="simulation-paper" target="_blank" href="http://www.abcd' + str(n) + '.com/">abcd' + str(n) + '</a>' +
+                                '<a class="simulation-link" target="_blank" href="http://www.defg' + str(n) + '.org/">http://www.defg' + str(n) + '.org/</a>' +
+                                '<span class="simulation-cosmology">fairy' + str(n) + '</span>' +
+                                '<span class="simulation-cosmological-parameters">dust' + str(n) + '</span>' +
+                                '<span class="simulation-box-size">' + str(n) + '</span>' +
+                                '<a class="simulation-web-site" target="_blank" href="http://mysite' + str(n) + '.edu/">http://mysite' + str(n) + '.edu/</a>'
                                 )
     
 class GalaxyModelFactory(factory.Factory):
@@ -53,8 +39,8 @@ class GalaxyModelFactory(factory.Factory):
 
     name = factory.Sequence(lambda n: 'galaxy_model_%03d' % int(n))
     details = factory.Sequence(lambda n:
-                                'Kind: <span class="galaxy-model-kind">' + 'sometype' + n + '</span>' +
-                                'Paper: <a class="galaxy-model-paper" target="_blank" href="' + 'http://www.xyz' + n + '.com/' + '">' + 'xyz' + n + '</a>'
+                                'Kind: <span class="galaxy-model-kind">' + 'sometype' + str(n) + '</span>' +
+                                'Paper: <a class="galaxy-model-paper" target="_blank" href="' + 'http://www.xyz' + str(n) + '.com/' + '">' + 'xyz' + str(n) + '</a>'
                                 )
 
 class DataSetFactory(factory.Factory):
@@ -87,3 +73,18 @@ class DustModelFactory(factory.Factory):
     name = factory.Sequence(lambda n: 'Dust_model_%03d.dat' % int(n))
     label = factory.Sequence(lambda n: 'Dust model %03d' % int(n))
     details = factory.Sequence(lambda n: '<p>Detail ' + n + '</p>')
+
+class JobFactory(factory.Factory):
+    FACTORY_FOR = Job
+    database = factory.Sequence(lambda n: 'database_' + n)
+    description = factory.Sequence(lambda n: 'description job ' + n)
+
+    @classmethod
+    def _prepare(cls, create, **kwargs):
+        created_time = kwargs.pop('created_time', None)
+        job = super(JobFactory, cls)._prepare(create, **kwargs)
+        if created_time:
+            job.created_time = created_time
+            if create:
+                job.save()
+        return job

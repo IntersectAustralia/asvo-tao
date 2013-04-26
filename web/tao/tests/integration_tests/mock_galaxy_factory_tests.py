@@ -354,10 +354,6 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.assert_is_unchecked(self.sed_id('apply_dust'))
         self.assert_is_disabled(self.sed_id('select_dust_model'))
 
-    def assert_summary_field_correctly_shown(self, expected_value, form_name, field_name):
-        value_displayed = self.get_summary_field_text(form_name, field_name)
-        self.assertEqual(expected_value, strip_tags(value_displayed))
-
     def assert_summary_range_correctly_shown(self, expected_value, form_name, field_names):
         value_displayed = ''
         for field_name in field_names:
