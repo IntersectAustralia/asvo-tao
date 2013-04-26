@@ -54,14 +54,16 @@ namespace tao {
       void _write_table_header(const tao::galaxy& galaxy);
       void _start_table();
       void _end_table();
-      void ReadLabels(const options::xml_dict& dict, optional<const string&> prefix = optional<const string&>());
+      void ReadFieldsInfo(const options::xml_dict& dict, optional<const string&> prefix = optional<const string&>());
    protected:
       bool _isfirstgalaxy;
       bool _istableopened;
       fitsfile* _file;
       string _fn;
-      list<string> _fields;
-      list<hpc::string> _labels;
+      list<hpc::string> _fields;
+	  list<hpc::string> _labels;
+	  list<hpc::string> _units;
+	  list<hpc::string> _desc;
       unsigned long long _records;
 
    };
