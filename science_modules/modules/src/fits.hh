@@ -47,13 +47,9 @@ namespace tao {
 
    protected:
 
-      void _write_field( const tao::galaxy& galaxy,const string& field );
-      void _write_file_header(const string& ResourceName,const string& TableName );
-      void _write_footer();
-
+      void _write_field( const tao::galaxy& galaxy,const string& field,int ColIndex=0 );
       void _write_table_header(const tao::galaxy& galaxy);
-      void _start_table();
-      void _end_table();
+
       void ReadFieldsInfo(const options::xml_dict& dict, optional<const string&> prefix = optional<const string&>());
    protected:
       bool _isfirstgalaxy;
