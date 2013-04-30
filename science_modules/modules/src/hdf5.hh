@@ -24,8 +24,6 @@ namespace tao {
       virtual
       ~hdf5();
 
-
-
       ///
       ///
       ///
@@ -59,6 +57,7 @@ namespace tao {
 
       void
       _write_field( const tao::galaxy& galaxy,
+                    unsigned idx,
 		    const string& field,
 		    h5::dataset& dset,
 		    h5::dataspace& dspace );

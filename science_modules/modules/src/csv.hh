@@ -26,8 +26,6 @@ namespace tao {
       virtual
       ~csv();
 
-
-
       ///
       ///
       ///
@@ -57,7 +55,8 @@ namespace tao {
 
       void
       _write_field( const tao::galaxy& galaxy,
-		    const string& field );
+                    const string& field,
+                    unsigned idx );
 
    protected:
 

@@ -59,12 +59,15 @@ public:
       // redshift to a distance, which is a tricky calculation. I'll have
       // to factor out the distance at the end.
       tao::galaxy gal;
-      gal._z = 1.0;
+      vector<real_type> gal_z( 1 );
+      gal_z[0] = 1.0;
+      gal.set_batch_size( 1 );
+      gal.set_field<real_type>( "redshift", gal_z );
 
       // Prepare the spectra.
       unsigned num_waves = 10;
-      vector<real_type> spectra( num_waves );
-      std::fill( spectra.begin(), spectra.end(), 3.0*M_C/7.0 );
+      fibre<real_type> spectra( num_waves, 1 );
+      std::fill( spectra[0].begin(), spectra[0].end(), 3.0*M_C/7.0 );
 
       // Prepare the filter's wavelengths.
       string wave_filename = "waves.txt"; //tmpnam( NULL );
@@ -88,12 +91,15 @@ public:
       filter filt;
       filt._read_wavelengths( wave_filename );
       filt._load_filter( bpf_filename );
-      filt._total_app_mags.resize( 1 );
-      filt._total_abs_mags.resize( 1 );
-      filt._disk_app_mags.resize( 1 );
-      filt._disk_abs_mags.resize( 1 );
-      filt._bulge_app_mags.resize( 1 );
-      filt._bulge_abs_mags.resize( 1 );
+      filt._total_app_mags.reallocate( 1, 1 );
+      filt._total_abs_mags.reallocate( 1, 1 );
+      filt._disk_app_mags.reallocate( 1, 1 );
+      filt._disk_abs_mags.reallocate( 1, 1 );
+      filt._bulge_app_mags.reallocate( 1, 1 );
+      filt._bulge_abs_mags.reallocate( 1, 1 );
+      filt._total_lum.reallocate( 1 );
+      filt._disk_lum.reallocate( 1 );
+      filt._bulge_lum.reallocate( 1 );
 
       // Call the function.
       filt.process_galaxy( gal, spectra, spectra, spectra );

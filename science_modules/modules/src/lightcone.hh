@@ -79,14 +79,8 @@ namespace tao {
       ///
       /// Get current galaxy.
       ///
-      const tao::galaxy
+      tao::galaxy&
       operator*();
-
-      ///
-      /// Get current redshift.
-      ///
-      real_type
-      redshift() const;
 
       const set<string>&
       output_fields() const;
@@ -156,6 +150,12 @@ namespace tao {
       void
       _setup_redshift_ranges();
 
+      void
+      _setup_batching();
+
+      void
+      _fetch();
+
    protected:
 
       string _box_type;
@@ -178,6 +178,7 @@ namespace tao {
       real_type _h0;
 
       string _query_template;
+      string _basic_query;
       vector<string> _ops;
       array<real_type,3> _rrs_offs;
       array<int,3> _rrs_axis;
@@ -195,8 +196,13 @@ namespace tao {
       list<array<real_type,3>> _boxes;
       list<array<real_type,3>>::const_iterator _cur_box;
       // scoped_ptr<soci::rowset<soci::row>> _rows; // TODO: Latest SOCI doesn't like being destructed!
-      soci::rowset<soci::row>* _rows;
-      soci::rowset<soci::row>::const_iterator _cur_row;
+      // soci::rowset<soci::row>* _rows;
+      // soci::rowset<soci::row>::const_iterator _cur_row;
+      soci::statement* _st;
+      bool _rows_exist;
+      vector<void*> _field_stor;
+      vector<galaxy::field_value_type> _field_types;
+      vector<real_type> _gal_z;
       tao::galaxy _gal;
 
       string _accel_method;

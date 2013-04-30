@@ -273,10 +273,10 @@ public:
       for( lc.begin(); !lc.done(); ++lc )
       {
          const galaxy& gal = *lc;
-	 if( gal.tree_id() == 0 )
+	 if( gal.values<long long>( "globaltreeid" )[0] == 0 )
 	 {
-	    sed._load_table( gal.tree_id(), gal.table() );
-	    sed._rebin_info( gal );
+	    sed._load_table( gal.values<long long>( "globaltreeid" )[0], gal.table() );
+	    sed._rebin_info( gal, 0 );
 	 }
       }
    }

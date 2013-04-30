@@ -168,7 +168,6 @@ var TwoSidedSelectWidget = function(to_id, enable) {
         var $current_group_from = [null];
         var $current_group_to = [null];
 
-        var $group_heading = $('<optgroup/>');
         $.each(cache, function(i,v){
 
             var $option = $('<option/>');
@@ -176,7 +175,6 @@ var TwoSidedSelectWidget = function(to_id, enable) {
             $option.text(v.text);
             $option.data('cache_index', i);
             $option.click(option_clicked);
-
             if (v.displayed == 1) {
                 create_or_current_and_append($current_group_from, v.group, $option, $from);
             }

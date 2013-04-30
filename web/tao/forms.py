@@ -19,6 +19,7 @@ from form_utils.forms import BetterForm
 import tao.settings as tao_settings
 from tao import datasets
 from tao.models import UserProfile, DataSetProperty, BandPassFilter
+from tao.xml_util import module_xpath
 
 NO_FILTER = 'no_filter'
 
@@ -114,12 +115,8 @@ class OutputFormatForm(BetterForm):
 
     @classmethod
     def from_xml(cls, ui_holder, xml_root, prefix=None):
-        # elem = find output-file elemen in xml
-        # grab elem.format in xml_supported_format
-        elems = xml_root.xpath('//n:output-file/n:format',namespaces={'n':'http://tao.asvo.org.au/schema/module-parameters-v1'})
-        supported_format = tao_settings.OUTPUT_FORMATS[0]
-        if elems is not None and len(elems) == 1: supported_format = elems[0].text
-        return cls(ui_holder, {prefix + '-supported_formats': supported_format})
+        supported_format = module_xpath(xml_root, '//output-file/format')
+        return cls(ui_holder, {prefix + '-supported_formats': supported_format}, prefix=prefix)
 
 class RecordFilterForm(BetterForm):
     EDIT_TEMPLATE = 'mock_galaxy_factory/record_filter.html'
@@ -139,7 +136,7 @@ class RecordFilterForm(BetterForm):
         is_int = False
         if self.ui_holder.is_bound('light_cone'):
             objs = datasets.filter_choices(self.ui_holder.raw_data('light_cone', 'galaxy_model'))
-            choices = [('X-' + NO_FILTER, 'No Filter')] + [('D-' + str(x.id), '') for x in objs] + [('B-' + str(x.id),'') for x in datasets.band_pass_filters_objects()]
+            choices = [('X-' + NO_FILTER, 'No Filter')] + [('D-' + str(x.id), x.label + ' (' + x.units + ')') for x in objs] + [('B-' + str(x.id), x.label) for x in datasets.band_pass_filters_objects()]
             filter_type, record_filter = args[1]['record_filter-filter'].split('-')
             if filter_type == 'D':
                 obj = DataSetProperty.objects.get(pk = record_filter)
@@ -158,6 +155,8 @@ class RecordFilterForm(BetterForm):
         self.fields['filter'].label = 'Select by ...'
 
     def check_min_or_max_or_both(self):
+        if 'filter' not in self.cleaned_data:
+            return
         selected_type, selected_filter = self.cleaned_data['filter'].split('-')
         if selected_filter == NO_FILTER:
             return
@@ -212,3 +211,26 @@ class RecordFilterForm(BetterForm):
             filter_max = datasets.default_filter_max(self.ui_holder.raw_data('light_cone', 'galaxy_model'))
         child_element(rf_elem, 'filter-min', text=str(filter_min), units=units)
         child_element(rf_elem, 'filter-max', text=str(filter_max), units=units)
+
+    @classmethod
+    def from_xml(cls, ui_holder, xml_root, prefix=None):
+        simulation = module_xpath(xml_root, '//light-cone/simulation')
+        galaxy_model = module_xpath(xml_root, '//light-cone/galaxy-model')
+        data_set = datasets.dataset_find_from_xml(simulation, galaxy_model)
+        filter_type = module_xpath(xml_root, '//record-filter/filter-type')
+        filter_min = module_xpath(xml_root, '//record-filter/filter-min')
+        filter_max = module_xpath(xml_root, '//record-filter/filter-max')
+        filter_units = module_xpath(xml_root, '//record-filter/filter-min', attribute='units')
+        if filter_min == 'None': filter_min = None
+        if filter_max == 'None': filter_max = None
+        data_set_id = 0
+        if data_set is not None: data_set_id = data_set.id
+        kind, record_id = datasets.filter_find_from_xml(data_set_id, filter_type, filter_units)
+        if filter_type == None:
+            kind = 'X'
+            record_id = NO_FILTER
+        attrs = {prefix+'-filter': kind + '-' + str(record_id),
+               prefix+'-min': filter_min,
+               prefix+'-max': filter_max,
+               }
+        return cls(ui_holder, attrs, prefix=prefix)

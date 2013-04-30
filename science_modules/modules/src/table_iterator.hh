@@ -319,7 +319,7 @@ namespace tao {
 	    0.2*ph[0][1],
 	    0.2*ph[0][2]
 	    );
-	 for( unsigned ii = 1; ii < 4; ++ii )
+	 for( unsigned ii = 1; ii < 5; ++ii )
 	 {
 	    in_pnt[0] += 0.2*ph[ii][0];
 	    in_pnt[1] += 0.2*ph[ii][1];
@@ -335,6 +335,11 @@ namespace tao {
 	 {
 	    if( !inside( in_pnt.begin(), in_pnt.end(), plane.begin() ) )
 	    {
+	       LOGDLN( "Not inside: ", setindent( 2 ) );
+	       LOGDLN( "Plane: ", plane );
+	       LOGDLN( "Point: ", in_pnt );
+	       LOGDLN( "Evaluated: ", half_space_eval( in_pnt.begin(), in_pnt.end(), plane.begin() ) );
+	       LOGD( setindent( -2 ) );
 	       in = false;
 	       break;
 	    }
