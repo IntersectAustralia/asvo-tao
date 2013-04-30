@@ -148,8 +148,7 @@ void fits::_write_table_header(const tao::galaxy& galaxy)
 		string Displayttunit;
 		Displayttunit=tunit[index];
 
-		LOGILN(" DEBUGLINE: Field Name: ",FieldName,"\t\"",Displayttype,"\"");
-		LOGILN(" DEBUGLINE: Unit Name: ",*unitit,"\t\"",Displayttunit,"\"");
+
 
 
 
@@ -255,31 +254,36 @@ void fits::finalise()
 void fits::process_galaxy( const tao::galaxy& galaxy )
 {
 	_timer.start();
-	int ColIndex=1;
 
-	int status=0;
-
-	if(fits_insert_rows(_file,_records,1,&status))
-	{
-		LOGILN(status);
-		ASSERT(status==0);
-	}
-	auto it = _fields.cbegin();
-	if( it != _fields.cend() )
+	for( unsigned ii = 0; ii < galaxy.batch_size(); ++ii )
 	{
 
+		int ColIndex=1;
 
-		while( it != _fields.cend() )
+		int status=0;
+
+		if(fits_insert_rows(_file,_records,1,&status))
 		{
-			_write_field( galaxy, *it++,ColIndex );
-			ColIndex++;
+			LOGILN(status);
+			ASSERT(status==0);
+		}
+		auto it = _fields.cbegin();
+		if( it != _fields.cend() )
+		{
+
+
+			while( it != _fields.cend() )
+			{
+				_write_field( galaxy, *it++,ColIndex );
+				ColIndex++;
+			}
+
 		}
 
+		// Increment number of written records.
+		++_records;
+		LOGILN("FITS: ROW Count=",_records);
 	}
-
-	// Increment number of written records.
-	++_records;
-
 	_timer.stop();
 }
 
