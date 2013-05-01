@@ -153,7 +153,7 @@ namespace tao {
       _tree_pre = dict.get<string>( "settings:database:treetableprefix", "tree_" );
 
       // Read the batch size from the dictinary.
-      _batch_size = dict.get<unsigned>( "settings:database:batch-size" );
+      _batch_size = dict.get<unsigned>( "settings:database:batch-size",100 );
       LOGDLN( "Setting batch size to ", _batch_size );
 
       LOG_EXIT();

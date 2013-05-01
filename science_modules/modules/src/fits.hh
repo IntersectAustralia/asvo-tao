@@ -47,7 +47,7 @@ namespace tao {
 
    protected:
 
-      void _write_field( const tao::galaxy& galaxy,const string& field,int ColIndex=0 );
+      void _write_field( const tao::galaxy& galaxy,const string& field,unsigned idx, int ColIndex);
       void _write_table_header(const tao::galaxy& galaxy);
 
       void ReadFieldsInfo(const options::xml_dict& dict, optional<const string&> prefix = optional<const string&>());

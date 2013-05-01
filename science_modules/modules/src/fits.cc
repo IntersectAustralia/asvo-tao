@@ -190,7 +190,7 @@ void fits::_write_table_header(const tao::galaxy& galaxy)
 	string TableName="New Table";
 	if(fits_create_tbl(_file,BINARY_TBL,0,tfields,ttype,tform,tunit,TableName.c_str(),&status))
 	{
-		LOGILN(status);
+		LOGDLN(status);
 		ASSERT(status==0);
 	}
 	LOG_EXIT();
@@ -228,7 +228,7 @@ void fits::open()
 	int status=0;
 	if(fits_create_file(&_file,("!"+_fn).c_str(), &status))
 	{
-			LOGILN(status);
+			LOGDLN(status);
 			ASSERT(status==0);
 	}
 
@@ -264,7 +264,7 @@ void fits::process_galaxy( const tao::galaxy& galaxy )
 
 		if(fits_insert_rows(_file,_records,1,&status))
 		{
-			LOGILN(status);
+			LOGDLN(status);
 			ASSERT(status==0);
 		}
 		auto it = _fields.cbegin();
@@ -274,7 +274,7 @@ void fits::process_galaxy( const tao::galaxy& galaxy )
 
 			while( it != _fields.cend() )
 			{
-				_write_field( galaxy, *it++,ColIndex );
+				_write_field( galaxy, *it++,ii,ColIndex );
 				ColIndex++;
 			}
 
@@ -282,7 +282,7 @@ void fits::process_galaxy( const tao::galaxy& galaxy )
 
 		// Increment number of written records.
 		++_records;
-		LOGILN("FITS: ROW Count=",_records);
+		LOGDLN("FITS: ROW Count=",_records);
 	}
 	_timer.stop();
 }
@@ -290,10 +290,10 @@ void fits::process_galaxy( const tao::galaxy& galaxy )
 void fits::log_metrics()
 {
 	module::log_metrics();
-	LOGILN( _name, " number of records written: ", _records );
+	LOGILN( _name, " number of records written: ", mpi::comm::world.all_reduce( _records ) );
 }
 
-void fits::_write_field( const tao::galaxy& galaxy, const string& field,int ColIndex )
+void fits::_write_field( const tao::galaxy& galaxy, const string& field,unsigned idx,int ColIndex )
 {
 	int status=0;
 
@@ -302,47 +302,43 @@ void fits::_write_field( const tao::galaxy& galaxy, const string& field,int ColI
 	switch( val.second )
 	{
 	case tao::galaxy::STRING:
-		fits_write_col(_file,TSTRING,ColIndex,_records+1,1,1,(void*)galaxy.value<string>( field ).c_str(),&status);
-		LOGILN(status);
+		fits_write_col(_file,TSTRING,ColIndex,_records+1,1,1,(void*)galaxy.values<string>(field)[idx].c_str(),&status);
+		LOGDLN(status);
 		ASSERT(status==0);
 		break;
 
 	case tao::galaxy::DOUBLE:
 	{
-		//_file << galaxy.value<double>( field );
-		double FieldVal=galaxy.value<double>( field );
+		double FieldVal=galaxy.values<double>( field )[idx];
 		fits_write_col(_file,TDOUBLE,ColIndex,_records+1,1,1,(void*)&FieldVal,&status);
-		LOGILN(status);
+		LOGDLN(status);
 		ASSERT(status==0);
 	}
 	break;
 
 	case tao::galaxy::INTEGER:
 	{
-		//_file << galaxy.value<int>( field );
-		int FieldVal=galaxy.value<int>( field );
+		int FieldVal=galaxy.values<int>(field)[idx];
 		fits_write_col(_file,TINT,ColIndex,_records+1,1,1,(void*)&FieldVal,&status);
-		LOGILN(status);
+		LOGDLN(status);
 		ASSERT(status==0);
 	}
 	break;
 
 	case tao::galaxy::UNSIGNED_LONG_LONG:
 	{
-		//_file << galaxy.value<int>( field );
-		unsigned long long FieldVal=galaxy.value<unsigned long long>( field );
+		unsigned long long FieldVal=galaxy.values<unsigned long long>(field)[idx];
 		fits_write_col(_file,TLONG,ColIndex,_records+1,1,1,(void*)&FieldVal,&status);
-		LOGILN(status);
+		LOGDLN(status);
 		ASSERT(status==0);
 	}
-	//_file << galaxy.value<unsigned long long>( field );	break;
+	break;
 
 	case tao::galaxy::LONG_LONG:
 	{
-
-		long long FieldVal=galaxy.value<long long>( field );
+		long long FieldVal=galaxy.values<long long>(field)[idx];
 		fits_write_col(_file,TLONG,ColIndex,_records+1,1,1,(void*)&FieldVal,&status);
-		LOGILN(status);
+		LOGDLN(status);
 		ASSERT(status==0);
 	}
 	break;
@@ -350,6 +346,6 @@ void fits::_write_field( const tao::galaxy& galaxy, const string& field,int ColI
 	default:
 		ASSERT( 0 );
 	}
-	//_file<<"</TD>"<<std::endl;
+
 }
 }
