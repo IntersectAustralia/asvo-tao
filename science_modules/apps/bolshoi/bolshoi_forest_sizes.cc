@@ -21,7 +21,7 @@ main( int argc,
    // LOG_PUSH( new logging::omp::file( "log.", logging::debug ) );
 
    // Use this to track when to update.
-   unix::time_type since_update = unix::timer();
+   posix::time_type since_update = posix::timer();
 
    // Load the forests. The file contains rows of
    // forest ID and tree ID, creating a multimap.
@@ -152,12 +152,12 @@ main( int argc,
 
 	 // Have each thread dump information every so often.
 #pragma omp critical( update )
-	 if( unix::seconds( unix::timer() - since_update ) > update_every )
+	 if( posix::seconds( posix::timer() - since_update ) > update_every )
 	 {
 	    LOGILN( forests_done, " of ", num_forests, " completed." );
 
 	    // Reset the update clock.
-	    since_update = unix::timer();
+	    since_update = posix::timer();
 	 }
       }
 

@@ -11,13 +11,13 @@ namespace tao {
 
    application::application()
    {
-      tao_start_time = unix::timer();
+      tao_start_time = posix::timer();
    }
 
    application::application( int argc,
                              char* argv[] )
    {
-      tao_start_time = unix::timer();
+      tao_start_time = posix::timer();
       arguments( argc, argv );
    }
 

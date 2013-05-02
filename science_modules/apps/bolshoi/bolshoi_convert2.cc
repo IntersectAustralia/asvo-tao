@@ -629,7 +629,7 @@ main( int argc,
    unsigned long long halos_seen[num_threads];
    unsigned long long forests_seen[num_threads];
    unsigned long long total_halos_seen, total_forests_seen;
-   unix::time_type since_update = unix::timer();
+   posix::time_type since_update = posix::timer();
    std::fill( halos_seen, halos_seen + num_threads, 0 );
    std::fill( forests_seen, forests_seen + num_threads, 0 );
 
@@ -812,7 +812,7 @@ main( int argc,
 
 	 // Check if we need to update the user.
 #pragma omp critical( update )
-	 if( unix::seconds( unix::timer() - since_update ) > update_every )
+	 if( posix::seconds( posix::timer() - since_update ) > update_every )
 	 {
 	    // Sum the net results.
 	    total_halos_seen = halos_seen[0];
@@ -829,7 +829,7 @@ main( int argc,
 	    LOGILN( "Percentage complete: ", 100.0*(float)total_forests_seen/(float)num_forests );
 
 	    // Reset the update clock.
-	    since_update = unix::timer();
+	    since_update = posix::timer();
 	 }
 
 	 LOGDLN( "Done.", setindent( -2 ) );
