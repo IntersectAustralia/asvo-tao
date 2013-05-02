@@ -5,15 +5,19 @@
 #include <string.h>
 #include <stdio.h>
 #include "fitsio.h"
+#include <iostream>
+
+using namespace std;
+
 
 
 int main(int argc, char *argv[])
 {
 	fitsfile *fptr;      /* FITS file pointer, defined in fitsio.h */
 	char *val, value[1000], nullstr[]="*";
-	char keyword[FLEN_KEYWORD], colname[FLEN_VALUE];
+	char keyword[FLEN_KEYWORD], colname[FLEN_VALUE],coltype[FLEN_VALUE],colDtype[FLEN_VALUE];
 	int status = 0;   /*  CFITSIO status value MUST be initialized to zero!  */
-	int hdunum, hdutype, ncols, anynul, dispwidth[1000];
+	int hdunum, hdutype, ncols, anynul;
 	long nrows;
 
 	if (!fits_open_file(&fptr, argv[1], READONLY, &status))
@@ -26,46 +30,75 @@ int main(int argc, char *argv[])
 			fits_get_hdu_type(fptr, &hdutype, &status); /* Get the HDU type */
 
 		if (hdutype == IMAGE_HDU)
-			printf("Error: this program only displays tables, not images\n");
+			cout<<"Error: this program only displays tables, not images"<<endl;
 		else
 		{
 			fits_get_num_rows(fptr, &nrows, &status);
-			printf("Number of Rows=%ld \n",nrows);
 			fits_get_num_cols(fptr, &ncols, &status);
 
+			cout<<"Number of Columns="<<ncols<<endl;
 
-			for (int lcol = 1; lcol <= ncols; lcol++)
-			{
-				fits_get_col_display_width(fptr, lcol, &dispwidth[lcol], &status);
-			}
 
 
 			/* print column names as column headers */
-			printf("\n    ");
+
 			for (int ii = 1; ii <= ncols; ii++)
 			{
+				int dispwidth;
 				fits_make_keyn("TTYPE", ii, keyword, &status);
 				fits_read_key(fptr, TSTRING, keyword, colname, NULL, &status);
-				colname[dispwidth[ii]] = '\0';  /* truncate long names */
-				printf("%*s ",dispwidth[ii], colname);
+				fits_get_col_display_width(fptr, ii, &dispwidth, &status);
+				colname[dispwidth] = '\0';  /* truncate long names */
+
+				fits_make_keyn("TUNIT", ii, keyword, &status);
+				fits_read_key(fptr, TSTRING, keyword, coltype, NULL, &status);
+
+				fits_make_keyn("TFORM", ii, keyword, &status);
+				fits_read_key(fptr, TSTRING, keyword, colDtype, NULL, &status);
+				string DataTypestr="";
+
+				switch(colDtype[0])
+				{
+				case 'J':
+					DataTypestr="Integer";
+					break;
+				case 'D':
+					DataTypestr="Double";
+					break;
+				case 'K':
+					DataTypestr="64 Bit Integer";
+					break;
+				case 'A':
+					DataTypestr="String";
+					break;
+				default:
+					DataTypestr="Not Supported";
+					break;
+				}
+
+				cout<< colname<<":"<<coltype<<":"<<DataTypestr<<endl;
 			}
-			printf("\n");  /* terminate header line */
+
+
+			cout<<"Number of Rows="<<nrows<<endl;
+
 
 			/* print each column, row by row (there are faster ways to do this) */
 			val = value;
 			for (long jj = 1; jj <= nrows && !status; jj++)
 			{
-				printf("(%4ld) ", jj);
+				cout<<"("<< jj<<"):";
 				for (int ii = 1; ii <= ncols; ii++)
 				{
 					/* read value as a string, regardless of intrinsic datatype */
-					if (fits_read_col_str (fptr,ii,jj, 1, 1, nullstr,
-							&val, &anynul, &status) )
+					if (fits_read_col_str (fptr,ii,jj, 1, 1, nullstr, &val, &anynul, &status) )
 						break;  /* jump out of loop on error */
 
-					printf("%-*s ",dispwidth[ii], value);
+					cout<<value;
+					if(ii < ncols)
+						cout<<",";
 				}
-				printf("\n");
+				cout<<endl;
 			}
 
 		}
