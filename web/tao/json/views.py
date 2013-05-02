@@ -127,6 +127,7 @@ def global_parameter(request, parameter_name):
 
 @researcher_required
 def bandpass_filters(request):
+    resp = '{}'
     objects = BandPassFilter.objects.all()
     resp = serializers.serialize('json', objects)
     return HttpResponse(resp, mimetype="application/json")

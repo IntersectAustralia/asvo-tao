@@ -84,8 +84,8 @@ class SubmitLightConeTests(LiveServerMGFTest):
             'number_of_light_cones': '10', # this is greater than the maximum for "unique" for the parameters above
         }, id_wrap=self.lc_id)
         self.click_by_css(self.lc_id('light_cone_type_1')) # select "random"
-        self.submit_mgf_form()
 
+        self.submit_mgf_form()
         self.assert_on_page('job_index')
 
     def test_submit_invalid_unique_cone_job(self):

@@ -1,4 +1,5 @@
 from django.core.urlresolvers import reverse
+from django.utils.html import strip_tags
 
 from selenium.webdriver.firefox.webdriver import WebDriver
 
@@ -9,6 +10,7 @@ import tao.datasets as datasets
 from tao.models import DataSetProperty, BandPassFilter
 from tao.forms import NO_FILTER
 from tao.settings import MODULE_INDICES
+from tao.tests import helper as tests_helper
 
 def wait(secs=1):
     import time
@@ -47,6 +49,7 @@ class LiveServerTest(django.test.LiveServerTestCase):
             os.makedirs(self.DOWNLOAD_DIRECTORY)
 
     def tearDown(self):
+        super(LiveServerTest, self).tearDown()
         self.selenium.quit()
 
         # remove the download dir
@@ -55,6 +58,7 @@ class LiveServerTest(django.test.LiveServerTestCase):
                 os.remove(os.path.join(root, name))
             for name in dirs:
                 os.rmdir(os.path.join(root, name))
+
 
     def lc_id(self, bare_field):
         return '#id_light_cone-%s' % bare_field
@@ -106,15 +110,25 @@ class LiveServerTest(django.test.LiveServerTestCase):
         pattern = re.escape(text)
         matches = re.search(pattern, email.body)
         self.assertTrue(matches, "Email does not contain " + text)
-        
-    def assert_page_has_content(self, string):
-        page_source = self.selenium.page_source
 
+    def get_page_source(self):
+        try:
+            return self.selenium.page_source
+        except:
+            while True:
+                wait(0.2)
+                try:
+                    self.selenium.switch_to_alert().accept()
+                except:
+                    return self.selenium.page_source
+
+    def assert_page_has_content(self, string):
+        page_source = self.get_page_source()
         pattern = re.escape(string)
-        self.assertTrue(re.search(pattern, page_source), "page source did not contain %s" % pattern)
+        self.assertTrue((string in page_source) or re.search(pattern, page_source), "page source did not contain %s" % pattern)
         
     def assert_page_does_not_contain(self, string):
-        page_source = self.selenium.page_source
+        page_source = self.get_page_source()
         
         pattern = re.escape(string)
         self.assertFalse(re.search(pattern, page_source), "page source contained %s" % pattern)
@@ -178,7 +192,11 @@ class LiveServerTest(django.test.LiveServerTestCase):
             split_url = self.selenium.current_url.split('?')
             url = split_url[0]
             self.assertEqual(url, self.get_full_url(url_name))
-            
+
+    def assert_summary_field_correctly_shown(self, expected_value, form_name, field_name):
+        value_displayed = self.get_summary_field_text(form_name, field_name)
+        self.assertEqual(expected_value, strip_tags(value_displayed))
+
     def fill_in_fields(self, field_data, id_wrap=None):
         for selector, text_to_input in field_data.items():
             if id_wrap:
@@ -188,7 +206,7 @@ class LiveServerTest(django.test.LiveServerTestCase):
                 self.select(selector, str(text_to_input))
             else:
                 elem.send_keys(str(text_to_input))
-        wait(2)
+        wait(2.5)
 
     def clear(self, selector):
         elem = self.selenium.find_element_by_css_selector(selector)
@@ -197,7 +215,7 @@ class LiveServerTest(django.test.LiveServerTestCase):
     def click(self, elem_id):
         elem = self.selenium.find_element_by_id(elem_id)
         elem.click()
-        wait(0.5)
+        wait(1)
 
     def click_by_css(self, element_css):
         elem = self.selenium.find_element_by_css_selector(element_css)

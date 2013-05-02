@@ -6,6 +6,8 @@ from django.shortcuts import render
 from tao.decorators import researcher_required, set_tab, \
     object_permission_required
 from tao.models import Job, JobFile
+from tao.ui_modules import UIModulesHolder
+from tao.xml_util import xml_parse
 import os
 import zipfile
 import StringIO
@@ -19,14 +21,12 @@ def view_job(request, id):
     job = Job.objects.get(id=id)
 
     # xml_string = job.parameters
-    # ## INGREDIENT #2 : we have ui_holder as a helper (see views/mock_galaxy_factory)
-    # # so extend UI Holder to kick-off from an xml_object, like ui_modules = UIModulesHolder.from_xml
-    # # and then use the forms in the Model below in a similar way to mock_galaxy_factory
-    # ui_holder = None
+    ui_holder = UIModulesHolder(UIModulesHolder.XML, xml_parse(job.parameters.encode('utf-8')))
 
     return render(request, 'jobs/view.html', {
         'job': job,
-        # 'forms': ui_holder.forms(),
+        'forms': ui_holder.forms(),
+        'forms_size' : len(ui_holder.forms())+1,
     })
 
 @researcher_required
