@@ -8,13 +8,16 @@ Helper to send email
 
 from django.conf import settings
 from django.template import Template
+from django.template.context import Context
 from django.core.mail.message import EmailMultiAlternatives
-from tao.models import GlobalParameter
-
 
 def send_mail(template_name, context, subject, to_addrs, from_addr=None):
+    from tao.models import GlobalParameter
     if from_addr is None:
         from_addr = settings.EMAIL_FROM_ADDRESS
+
+    if type(context) == dict:
+        context = Context(context)
 
     try:
         html_mail = GlobalParameter.objects.get(parameter_name='{template_name}.html'.format(template_name=template_name))

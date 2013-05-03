@@ -8,6 +8,7 @@ Database model mapping
 import django.contrib.auth.models as auth_models
 from django.conf import settings
 from django.db import models
+from tao.mail import send_mail
 
 import os
 
@@ -189,6 +190,12 @@ class Job(models.Model):
     database = models.CharField(max_length=200)
     error_message = models.TextField(blank=True, max_length=1000000, default='')
 
+    def __init__(self, *args, **kwargs):
+        super(Job, self).__init__(*args, **kwargs)
+        self.var_cache = {}
+        for var in ['status']:
+            self.var_cache[var] = getattr(self, var)
+
     def __unicode__(self):
         return "%s %s %s" % (self.user, self.created_time, self.description)
 
@@ -227,6 +234,11 @@ class Job(models.Model):
             file_path = file.file_path 
             sum_size += os.path.getsize(file_path)
         return sum_size < settings.MAX_DOWNLOAD_SIZE
+
+    def save(self, *args, **kwargs):
+        super(Job, self).save(*args, **kwargs)
+        if self.var_cache['status'] != getattr(self, 'status') and getattr(self, 'status') == Job.COMPLETED:
+            send_mail('job-status', {'job': self, 'user': self.user}, 'Job status update', (self.user.email,))
     
 class JobFile(object):
     def __init__(self, job_dir, file_name):

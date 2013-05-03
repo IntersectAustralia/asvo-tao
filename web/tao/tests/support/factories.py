@@ -1,10 +1,7 @@
 import factory
 # http://factoryboy.readthedocs.org/en/latest/index.html
 
-from decimal import Decimal
-
 from tao.models import Job, User, Simulation, GalaxyModel, DataSet, DataSetProperty, StellarModel, Snapshot, BandPassFilter, DustModel, GlobalParameter
-
 
 class UserFactory(factory.Factory):
     FACTORY_FOR = User
