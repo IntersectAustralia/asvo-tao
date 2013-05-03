@@ -269,5 +269,5 @@ class DustModel(models.Model):
 
 class GlobalParameter(models.Model):
     parameter_name = models.CharField(max_length=60, unique=True)
-    parameter_value = models.CharField(max_length=60)
+    parameter_value = models.TextField(default='')
     description = models.TextField(default='')
