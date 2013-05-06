@@ -1,5 +1,0 @@
-Hello {{ title }} {{ first_name }} {{ last_name }}.
-
-Welcome to ASVO TAO. Your account has been activated and you may sign-in.
-
-{{ login_url }}

@@ -1,230 +1,351 @@
 #include <soci/soci.h>
 #include "fits.hh"
+#include <boost/algorithm/string/replace.hpp>
+
 
 using namespace hpc;
+using boost::algorithm::replace_all;
 
 namespace tao {
 
-   module*
-   fits::factory( const string& name )
-   {
-      return new fits( name );
-   }
+module*
+fits::factory( const string& name )
+{
+	return new fits( name );
+}
 
-   fits::fits( const string& name ): module( name ),_records( 0 )
-   {
-	   _istableopened=false;
-	   _isfirstgalaxy=true;
-   }
+fits::fits( const string& name ): module( name ),_records( 0 )
+{
+	_istableopened=false;
+	_isfirstgalaxy=true;
+}
 
-   fits::~fits()
-   {
-   }
+fits::~fits()
+{
+}
 
 
-
-   ///
-   ///
-   ///
-   void  fits::initialise( const options::xml_dict& dict, optional<const string&> prefix )
-   {
-      LOG_ENTER();
+void fits::ReadFieldsInfo(const options::xml_dict& dict, optional<const string&> prefix)
+{
+	list<optional<hpc::string>> Templabels = dict.get_list_attributes<hpc::string>( prefix.get()+":fields","label" );
+	list<optional<hpc::string>> Tempunits = dict.get_list_attributes<hpc::string>( prefix.get()+":fields","units" );
+	list<optional<hpc::string>> Tempdescription = dict.get_list_attributes<hpc::string>( prefix.get()+":fields","description" );
 
 
 
 
-      _fn = dict.get<hpc::string>( prefix.get()+":filename" );
-      _fields = dict.get_list<hpc::string>( prefix.get()+":fields" );
 
-      // Open the file.
-      open();
-
-      // Reset the number of records.
-      _records = 0;
-
-      LOG_EXIT();
-   }
-
-   void fits::_write_table_header(const tao::galaxy& galaxy)
-   {
-	   	 /*auto it = _fields.cbegin();
-	   	 while( it != _fields.cend() )
-		 {
-	   		   _file<<"<FIELD name=\""+(*it)<<"\" ID=\"Col_"<<(*it)<<"\" ";
-			   auto val = galaxy.field( *it );
-			   switch( val.second )
-			   {
-				 case tao::galaxy::STRING:
-					_file<<"datatype=\"char\" arraysize=\"*\"/>";
-					break;
-
-				 case tao::galaxy::DOUBLE:
-					 _file<<"datatype=\"double\"/>";
-					break;
-
-				 case tao::galaxy::INTEGER:
-					 _file<<"datatype=\"int\"/>";
-					break;
-
-				 case tao::galaxy::UNSIGNED_LONG_LONG:
-					 _file<<"datatype=\"long\"/>";
-					break;
-
-				 case tao::galaxy::LONG_LONG:
-					 _file<<"datatype=\"long\"/>";
-					break;
-
-				 default:
-					ASSERT( 0 );
-			   }
-			 it++;
-		 }*/
-
-   }
-   ///
-   ///
-   ///
-   void fits::execute()
-   {
-      _timer.start();
-      LOG_ENTER();
-      ASSERT( parents().size() == 1 );
+	auto lblit = Templabels.cbegin();
+	auto unitit = Tempunits.cbegin();
+	auto descit = Tempdescription.cbegin();
+	auto fldsit = _fields.cbegin();
+	while( lblit != Templabels.cend() )
+	{
 
 
 
-      // Grab the galaxy from the parent object.
-      tao::galaxy& gal = parents().front()->galaxy();
 
-      // Is this the first galaxy? if so, please write the fields information
-	  if(_isfirstgalaxy)
-	  {
-		_write_table_header(gal);
-		_start_table();
-		_isfirstgalaxy=false;
-	  }
-	  //Process the galaxy as any other galaxy
-      process_galaxy( gal );
+		if(!*lblit)
+			_labels.push_back(*fldsit);
+		else
+		{
+			_labels.push_back(**lblit);
 
-      LOG_EXIT();
-      _timer.stop();
-   }
+		}
 
-   void fits::open()
-   {
-	   int status=0;
-	   if(fits_create_file(&_file,_fn.c_str(),&status))
-		   ASSERT(status==0);
+		if(!*unitit)
+			_units.push_back("unitless");
+		else
+		{
+			_units.push_back(**unitit);
+
+		}
 
 
-      //Put File Header First
-      _write_file_header("TempResourceName","TempTableName");
-      // Fields information need a single galaxy so I will be waiting till the first galaxy is available
+		if(!*descit)
+			_desc.push_back("");
+		else
+		{
+			_desc.push_back(**descit);
 
-   }
+		}
 
-   void fits::finalise()
-   {
-	   _end_table();
-	   _write_footer();
 
-   }
 
-   void fits::_write_file_header(const string& ResourceName,const string& TableName)
-   {
-	   /*if(_file.is_open())
-	   {
-		   _file<<"<?xml version=\"1.0\"?>"<<std::endl;
-		   _file<<"<VOTABLE version=\"1.3\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.ivoa.net/xml/VOTable/v1.3\"";
-		   _file<<" xmlns:stc=\"http://www.ivoa.net/xml/STC/v1.30\" >"<<std::endl;
-		   _file<<"<RESOURCE name=\""<<ResourceName<<"\">"<<std::endl;
-		   _file<<"<TABLE name=\""<<TableName<<"\">"<<std::endl;
-	   }*/
+		// Increment all the iterators at the same time
+		lblit++;
+		fldsit++;
+		unitit++;
+		descit++;
+	}
+}
 
-   }
-   void fits::_write_footer()
-   {
-	   /*if(_file.is_open())
-	   {
-		   _file<<"</TABLE>"<<std::endl;
-		   _file<<"</RESOURCE>"<<std::endl;
-		   _file<<"</VOTABLE>"<<std::endl;
-	   }*/
+///
+///
+///
+void  fits::initialise( const options::xml_dict& dict, optional<const string&> prefix )
+{
+	LOG_ENTER();
 
-   }
-   void fits::_start_table()
-   {
-	   /*_istableopened=true;
-	   _file<<"<DATA>"<<std::endl;
-	   _file<<"<TABLEDATA>"<<std::endl;*/
-   }
-   void fits::_end_table()
-   {
 
-	   /*if(_istableopened)
-	   {
-		   _file<<"</TABLEDATA>"<<std::endl;
-		   _file<<"</DATA>"<<std::endl;
-		   _istableopened=false;
-	   }*/
 
-   }
-   void fits::process_galaxy( const tao::galaxy& galaxy )
-   {
-      _timer.start();
 
-      auto it = _fields.cbegin();
-      if( it != _fields.cend() )
-      {
-    	  //_file<<"<TR>"<<std::endl;
+	_fn = dict.get<hpc::string>( prefix.get()+":filename" );
+	_fields = dict.get_list<hpc::string>( prefix.get()+":fields" );
 
-		 while( it != _fields.cend() )
-		 {
-			_write_field( galaxy, *it++ );
-		 }
-		 //_file<<"</TR>"<<std::endl;
-      }
+	ReadFieldsInfo(dict,prefix);
+	// Open the file.
+	open();
 
-      // Increment number of written records.
-      ++_records;
+	// Reset the number of records.
+	_records = 0;
 
-      _timer.stop();
-   }
+	LOG_EXIT();
+}
 
-   void fits::log_metrics()
-   {
-      module::log_metrics();
-      LOGILN( _name, " number of records written: ", _records );
-   }
+void fits::_write_table_header(const tao::galaxy& galaxy)
+{
+	LOG_ENTER();
 
-   void fits::_write_field( const tao::galaxy& galaxy, const string& field )
-   {
-	  // _file<<"<TD>"<<std::endl;
-      auto val = galaxy.field( field );
-      switch( val.second )
-      {
-		 case tao::galaxy::STRING:
-			//_file << galaxy.value<string>( field );
+
+	int tfields=_fields.size();
+	int status=0;
+
+	char** ttype=new char*[tfields];
+	char** tform=new char*[tfields];
+	char** tunit=new char*[tfields];
+
+
+
+
+
+
+	int index=0;
+	auto it = _fields.cbegin();
+	auto unitit = _units.cbegin();
+	auto lblit = _labels.cbegin();
+	while( it != _fields.cend() )
+	{
+		string FieldName=*lblit;
+
+		replace_all(FieldName," ","_");
+
+		ttype[index]=new char[80];
+		tunit[index]=new char[80];
+
+
+		memcpy(ttype[index],FieldName.c_str(),(int)FieldName.length());
+		memcpy(tunit[index],(*unitit).c_str(),(int)(*unitit).length());
+
+		ttype[index][(int)FieldName.length()]='\0';
+		tunit[index][(int)(*unitit).length()]='\0';
+
+		tform[index]=new char[3];
+
+
+		string Displayttype;
+		Displayttype=ttype[index];
+		string Displayttunit;
+		Displayttunit=tunit[index];
+
+
+
+
+
+		auto val = galaxy.field( *it );
+		switch( val.second )
+		{
+		case tao::galaxy::STRING:
+			tform[index]=(char*)"A";
 			break;
 
-		 case tao::galaxy::DOUBLE:
-			//_file << galaxy.value<double>( field );
+		case tao::galaxy::DOUBLE:
+			tform[index]=(char*)"D";
 			break;
 
-		 case tao::galaxy::INTEGER:
-			//_file << galaxy.value<int>( field );
+		case tao::galaxy::INTEGER:
+			tform[index]=(char*)"J";
 			break;
 
-		 case tao::galaxy::UNSIGNED_LONG_LONG:
-			//_file << galaxy.value<unsigned long long>( field );
+		case tao::galaxy::UNSIGNED_LONG_LONG:
+			tform[index]=(char*)"K";
 			break;
 
-		 case tao::galaxy::LONG_LONG:
-			//_file << galaxy.value<long long>( field );
+		case tao::galaxy::LONG_LONG:
+			tform[index]=(char*)"K";
 			break;
 
-		 default:
+		default:
 			ASSERT( 0 );
-      }
-      //_file<<"</TD>"<<std::endl;
-   }
+		}
+
+
+		it++;
+		lblit++;
+		unitit++;
+		index++;
+
+
+	}
+	string TableName="New Table";
+	if(fits_create_tbl(_file,BINARY_TBL,0,tfields,ttype,tform,tunit,TableName.c_str(),&status))
+	{
+		LOGDLN(status);
+		ASSERT(status==0);
+	}
+	LOG_EXIT();
+}
+///
+///
+///
+void fits::execute()
+{
+	_timer.start();
+	LOG_ENTER();
+	ASSERT( parents().size() == 1 );
+
+
+
+	// Grab the galaxy from the parent object.
+	tao::galaxy& gal = parents().front()->galaxy();
+
+	// Is this the first galaxy? if so, please write the fields information
+	if(_isfirstgalaxy)
+	{
+		_write_table_header(gal);
+
+		_isfirstgalaxy=false;
+	}
+	//Process the galaxy as any other galaxy
+	process_galaxy( gal );
+
+	LOG_EXIT();
+	_timer.stop();
+}
+
+void fits::open()
+{
+	int status=0;
+	if(fits_create_file(&_file,("!"+_fn).c_str(), &status))
+	{
+			LOGDLN(status);
+			ASSERT(status==0);
+	}
+
+
+
+
+	// Fields information need a single galaxy so I will be waiting till the first galaxy is available
+
+}
+
+void fits::finalise()
+{
+
+	int status=0;
+	if(fits_close_file(_file,&status))
+		ASSERT(status==0);
+
+}
+
+
+
+
+void fits::process_galaxy( const tao::galaxy& galaxy )
+{
+	_timer.start();
+
+	for( unsigned ii = 0; ii < galaxy.batch_size(); ++ii )
+	{
+
+		int ColIndex=1;
+
+		int status=0;
+
+		if(fits_insert_rows(_file,_records,1,&status))
+		{
+			LOGDLN(status);
+			ASSERT(status==0);
+		}
+		auto it = _fields.cbegin();
+		if( it != _fields.cend() )
+		{
+
+
+			while( it != _fields.cend() )
+			{
+				_write_field( galaxy, *it++,ii,ColIndex );
+				ColIndex++;
+			}
+
+		}
+
+		// Increment number of written records.
+		++_records;
+		LOGDLN("FITS: ROW Count=",_records);
+	}
+	_timer.stop();
+}
+
+void fits::log_metrics()
+{
+	module::log_metrics();
+	LOGILN( _name, " number of records written: ", mpi::comm::world.all_reduce( _records ) );
+}
+
+void fits::_write_field( const tao::galaxy& galaxy, const string& field,unsigned idx,int ColIndex )
+{
+	int status=0;
+
+
+	auto val = galaxy.field( field );
+	switch( val.second )
+	{
+	case tao::galaxy::STRING:
+		fits_write_col(_file,TSTRING,ColIndex,_records+1,1,1,(void*)galaxy.values<string>(field)[idx].c_str(),&status);
+		LOGDLN(status);
+		ASSERT(status==0);
+		break;
+
+	case tao::galaxy::DOUBLE:
+	{
+		double FieldVal=galaxy.values<double>( field )[idx];
+		fits_write_col(_file,TDOUBLE,ColIndex,_records+1,1,1,(void*)&FieldVal,&status);
+		LOGDLN(status);
+		ASSERT(status==0);
+	}
+	break;
+
+	case tao::galaxy::INTEGER:
+	{
+		int FieldVal=galaxy.values<int>(field)[idx];
+		fits_write_col(_file,TINT,ColIndex,_records+1,1,1,(void*)&FieldVal,&status);
+		LOGDLN(status);
+		ASSERT(status==0);
+	}
+	break;
+
+	case tao::galaxy::UNSIGNED_LONG_LONG:
+	{
+		unsigned long long FieldVal=galaxy.values<unsigned long long>(field)[idx];
+		fits_write_col(_file,TLONG,ColIndex,_records+1,1,1,(void*)&FieldVal,&status);
+		LOGDLN(status);
+		ASSERT(status==0);
+	}
+	break;
+
+	case tao::galaxy::LONG_LONG:
+	{
+		long long FieldVal=galaxy.values<long long>(field)[idx];
+		fits_write_col(_file,TLONG,ColIndex,_records+1,1,1,(void*)&FieldVal,&status);
+		LOGDLN(status);
+		ASSERT(status==0);
+	}
+	break;
+
+	default:
+		ASSERT( 0 );
+	}
+
+}
 }
