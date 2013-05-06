@@ -57,6 +57,9 @@ class WorkflowTests(TestCase, XmlDiffMixin):
     def tearDown(self):
         super(WorkflowTests, self).tearDown()
         time.frozen_time = None
+        from tao.models import Simulation
+        for sim in Simulation.objects.all():
+            sim.delete()
 
     def test_unique_cone(self):
         form_parameters = {

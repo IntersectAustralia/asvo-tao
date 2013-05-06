@@ -20,7 +20,7 @@ class UserFactory(factory.Factory):
             if create:
                 user.save()
         return user
-    
+
 class SimulationFactory(factory.Factory):
     FACTORY_FOR = Simulation
     name = factory.Sequence(lambda n: 'simulation_%03d' % int(n))
@@ -33,6 +33,7 @@ class SimulationFactory(factory.Factory):
                                 '<span class="simulation-box-size">' + str(n) + '</span>' +
                                 '<a class="simulation-web-site" target="_blank" href="http://mysite' + str(n) + '.edu/">http://mysite' + str(n) + '.edu/</a>'
                                 )
+
     
 class GalaxyModelFactory(factory.Factory):
     FACTORY_FOR = GalaxyModel

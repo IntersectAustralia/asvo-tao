@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.test.utils import override_settings
 
-from tao.models import Job, BandPassFilter
+from tao.models import Job, BandPassFilter, Simulation
 from tao.tests import helper
 from tao.tests.integration_tests.helper import LiveServerTest
 from tao.tests.support.factories import JobFactory, UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, StellarModelFactory, DustModelFactory, BandPassFilterFactory, SnapshotFactory
@@ -52,13 +52,12 @@ class JobTest(LiveServerTest):
         self.simulation = SimulationFactory.create()
         self.galaxy = GalaxyModelFactory.create()
         self.dataset = DataSetFactory.create(simulation=self.simulation, galaxy_model=self.galaxy)
-        self.output_prop = DataSetPropertyFactory.create(dataset=self.dataset)
+        self.output_prop = DataSetPropertyFactory.create(dataset=self.dataset, name='Central op', is_filter=False)
         self.filter = DataSetPropertyFactory.create(name='CentralMvir rf', units="Msun/h", dataset=self.dataset)
         self.sed = StellarModelFactory.create()
         self.dust = DustModelFactory.create()
-        self.number_bandpass_filters = 2
-        for unused in range(self.number_bandpass_filters):
-            BandPassFilterFactory.create()
+        self.snapshot = SnapshotFactory.create(dataset=self.dataset, redshift='0.33')
+        self.band_pass_filters = [BandPassFilterFactory.create(), BandPassFilterFactory.create()]
 
     def tearDown(self):
         super(JobTest, self).tearDown()
@@ -69,10 +68,6 @@ class JobTest(LiveServerTest):
                 os.rmdir(os.path.join(root, name))
 
     def make_xml_parameters(self):
-        output_prop = DataSetPropertyFactory.create(name='Central op', dataset=self.dataset, is_filter=False)
-        SnapshotFactory.create(dataset=self.dataset, redshift='0.33')
-        band_pass_filter = BandPassFilterFactory.create()
-
         xml_parameters = {
             'catalogue_geometry': 'light-cone',
             'dark_matter_simulation': self.simulation.id,
@@ -92,8 +87,8 @@ class JobTest(LiveServerTest):
             'output_properties_1_name' : self.filter.name,
             'output_properties_1_label' : self.filter.label,
             'output_properties_1_units' : self.filter.units,
-            'output_properties_2_name' : output_prop.name,
-            'output_properties_2_label' : output_prop.label,
+            'output_properties_2_name' : self.output_prop.name,
+            'output_properties_2_label' : self.output_prop.label,
             })
         xml_parameters.update({
             'filter': self.filter.name,
@@ -102,8 +97,8 @@ class JobTest(LiveServerTest):
             })
         xml_parameters.update({
             'ssp_name': self.sed.name,
-            'band_pass_filter_label': band_pass_filter.label,
-            'band_pass_filter_id': band_pass_filter.filter_id,
+            'band_pass_filter_label': self.band_pass_filters[0].label,
+            'band_pass_filter_id': self.band_pass_filters[0].filter_id,
             'dust_model_name': self.dust.name,
             })
         return light_cone_xml(xml_parameters)
@@ -150,12 +145,13 @@ class JobTest(LiveServerTest):
         # test files download
         for li in li_elements:
             li.find_element_by_css_selector('a').click()
-            split_name = li.text.split(' (')
-            file_name = os.path.basename(split_name[0])
-            download_path = os.path.join(self.DOWNLOAD_DIRECTORY, file_name)
+        self.wait(1)
+
+        for job_file in completed_job.files():
+            download_path = os.path.join(self.DOWNLOAD_DIRECTORY, job_file.file_name.replace('/','_'))
             self.assertTrue(os.path.exists(download_path))
             f = open(download_path)
-            self.assertEqual(self.file_names_to_contents[split_name[0]], f.read())
+            self.assertEqual(self.file_names_to_contents[job_file.file_name], f.read())
             f.close()
             
     # test that anonymous user cannot view job or download files
@@ -215,7 +211,7 @@ class JobTest(LiveServerTest):
         
         download_path = os.path.join(self.DOWNLOAD_DIRECTORY, 'tao_output.zip')
 
-        from .helper import wait; wait()
+        self.wait()
         self.assertTrue(os.path.exists(download_path))
         
         # extract the files
@@ -273,7 +269,7 @@ class JobTest(LiveServerTest):
         
         for file_name in self.file_names_to_contents.keys():
             self.visit('get_file', small_completed_job.id, file_name)
-            download_path = os.path.join(self.DOWNLOAD_DIRECTORY, os.path.basename(file_name))
+            download_path = os.path.join(self.DOWNLOAD_DIRECTORY, os.path.basename(file_name.replace('/','_')))
             self.assertTrue(os.path.exists(download_path))
         
     def _extract_zipfile_to_dir(self, download_path, dirname):
