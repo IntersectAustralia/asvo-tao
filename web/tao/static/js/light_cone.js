@@ -33,6 +33,15 @@ jQuery(document).ready(function($) {
         show_tab($enclosing, 0);
     }
 
+    var display_maximum_number_light_cones = function($field, msg) {
+        var $enclosing = $field.closest('label.control-label');
+        $enclosing.find('span.lc_number-inline').remove();
+        if (msg == null) return;
+        $field.after('<span class="lc_number-inline"></span>');
+        $enclosing.find('span.lc_number-inline').text(msg);
+        show_tab($enclosing, 0);
+    }
+
     var lc_output_props_widget = new TwoSidedSelectWidget(lc_id('output_properties'), true);
 
     var sed_band_pass_filters_widget = new TwoSidedSelectWidget(sed_id('band_pass_filters'), false);
@@ -701,37 +710,45 @@ jQuery(document).ready(function($) {
 
     var spinner_check_value = function(new_value) {
         var maximum = $(lc_id('number_of_light_cones')).data('spin-max');
+        var $spinner = $(lc_id('number_of_light_cones')).closest('span');
         if (maximum <= 0) {
-            show_error($(lc_id('number_of_light_cones')),"Selection parameters can't be used to generate unique light-cones");
+            show_error($spinner, "Selection parameters can't be used to generate unique light-cones");
             fill_in_summary('light_cone', 'number_of_light_cones', 'An invalid number of light cones is selected');
             return false;
         }
         else {
             if (new_value <= 0) {
-                show_error($(lc_id('number_of_light_cones')), "Please provide a positive number of light-cones");
+                show_error($spinner, "Please provide a positive number of light-cones");
                 fill_in_summary('light_cone', 'number_of_light_cones', 'Negative number of light cones is invalid');
+                $('.ui-spinner-down').button('disable').addClass("ui-state-disabled").removeClass('ui-state-enabled');
                 return false;
             }
             else if (new_value > maximum) {
-                show_error($(lc_id('number_of_light_cones')), "The maximum is " + maximum);
+                show_error($spinner, "The maximum is " + maximum);
                 fill_in_summary('light_cone', 'number_of_light_cones', 'Number of light cones selected exceeds the maximum');
+                $('.ui-spinner-up').button('disable').addClass("ui-state-disabled").removeClass('ui-state-enabled');
                 return false;
             }
         }
-        show_error($(lc_id('number_of_light_cones')), null);
+        $('.ui-spinner-down').button('enable').addClass('ui-state-enabled').removeClass("ui-state-disabled");
+        $('.ui-spinner-up').button('enable').addClass('ui-state-enabled').removeClass("ui-state-disabled");
+        show_error($spinner, null);
         fill_in_summary('light_cone', 'number_of_light_cones', new_value +  " " + $("input[name='light_cone-light_cone_type']:checked").val() + " light cones");
         return true;
     }
 
     var calculate_max_number_of_cones = function() {
         function spinner_set_max(maximum) {
-            if ( isNaN(maximum) || maximum === 0 ){
+            $spinner_label = $('label[for=id_light_cone-number_of_light_cones]');
+            if ( isNaN(maximum) || maximum <= 0 || !isFinite(maximum)){
                 $(lc_id('number_of_light_cones')).spinner("disable");
                 $(lc_id('number_of_light_cones')).data("spin-max", 0);
+                $spinner_label.html("Select the number of light-cones:*");
             }
             else {
                 $(lc_id('number_of_light_cones')).spinner("enable");
                 $(lc_id('number_of_light_cones')).data("spin-max",maximum);
+                $spinner_label.html("Select the number of light-cones: (maximum for the selected parameters is " + maximum + ")*");
             }
             spinner_check_value(parseInt($(lc_id('number_of_light_cones')).val()));
         }
@@ -750,6 +767,7 @@ jQuery(document).ready(function($) {
                 success: function(data, status, xhr) {
                     var maximum = parseInt(data.fields.parameter_value);
                     spinner_set_max(maximum);
+                    display_maximum_number_light_cones($(lc_id('number_of_light_cones')), maximum);
                 }
             });
         }

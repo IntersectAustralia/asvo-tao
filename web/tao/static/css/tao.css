@@ -267,12 +267,9 @@ fieldset legend {
     width: 50%;
     float: left;
 }
-.id_light_cone-number_of_light_cones .ui-spinner-input {
-    margin: 0 0;
-    margin-top: 0;
-    margin-left: 0;
+
+#id_light_cone-number_of_light_cones {
     margin-bottom: 0;
-    margin-left: 0;
 }
 
 .id_sed-apply_sed label, .id_sed-apply_dust label {
@@ -369,4 +366,18 @@ color: #333; cursor: pointer; display: inline-block; font-family: inherit; font-
 .summary_record_filter td,
 .summary_output td {
     width: 300px;
+}
+
+.ui-state-disabled {
+    border: 1px solid #aaaaaa;
+    background: white;
+    font-weight: normal;
+    color: #212121;
+}
+
+.ui-state-enabled {
+    border: 1px solid #d3d3d3;
+    background: #e6e6e6;
+    font-weight: normal;
+    color: #555555;
 }

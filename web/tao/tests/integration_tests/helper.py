@@ -5,16 +5,11 @@ from selenium.webdriver.firefox.webdriver import WebDriver
 
 import django.test
 
-import re, os
+import re, os, time
 import tao.datasets as datasets
-from tao.models import DataSetProperty, BandPassFilter
+from tao.models import DataSetProperty, BandPassFilter, Simulation
 from tao.forms import NO_FILTER
 from tao.settings import MODULE_INDICES
-from tao.tests import helper as tests_helper
-
-def wait(secs=1):
-    import time
-    time.sleep(secs)
 
 def interact(local):
     """
@@ -26,13 +21,16 @@ def interact(local):
     
 def visit(client, view_name, *args, **kwargs):
     return client.get(reverse(view_name, args=args), follow=True)
-    
+
 class LiveServerTest(django.test.LiveServerTestCase):
     DOWNLOAD_DIRECTORY = '/tmp/work/downloads'
 
     ## List all ajax enabled pages that have initialization code and must wait
     AJAX_WAIT = ['mock_galaxy_factory']
     SUMMARY_INDEX = str(len(MODULE_INDICES)+1)
+
+    def wait(self, secs=1):
+        time.sleep(secs)
 
     def setUp(self):
         from selenium.webdriver.firefox.webdriver import FirefoxProfile
@@ -49,16 +47,18 @@ class LiveServerTest(django.test.LiveServerTestCase):
             os.makedirs(self.DOWNLOAD_DIRECTORY)
 
     def tearDown(self):
-        super(LiveServerTest, self).tearDown()
         self.selenium.quit()
-
+        m = __import__('tao.models')
+        for name in ['Simulation', 'GalaxyModel', 'DataSet', 'DataSetProperty', 'StellarModel', 'DustModel', 'Snapshot', 'BandPassFilter', 'Job', 'GlobalParameter']:
+            klass = getattr(m.models, name)
+            for obj in klass.objects.all(): obj.delete()
         # remove the download dir
         for root, dirs, files in os.walk(self.DOWNLOAD_DIRECTORY, topdown=False):
             for name in files:
                 os.remove(os.path.join(root, name))
             for name in dirs:
                 os.rmdir(os.path.join(root, name))
-
+        super(LiveServerTest, self).tearDown()
 
     def lc_id(self, bare_field):
         return '#id_light_cone-%s' % bare_field
@@ -116,7 +116,7 @@ class LiveServerTest(django.test.LiveServerTestCase):
             return self.selenium.page_source
         except:
             while True:
-                wait(0.2)
+                self.wait(0.2)
                 try:
                     self.selenium.switch_to_alert().accept()
                 except:
@@ -206,7 +206,7 @@ class LiveServerTest(django.test.LiveServerTestCase):
                 self.select(selector, str(text_to_input))
             else:
                 elem.send_keys(str(text_to_input))
-        wait(2.5)
+        self.wait(2.5)
 
     def clear(self, selector):
         elem = self.selenium.find_element_by_css_selector(selector)
@@ -215,17 +215,17 @@ class LiveServerTest(django.test.LiveServerTestCase):
     def click(self, elem_id):
         elem = self.selenium.find_element_by_id(elem_id)
         elem.click()
-        wait(1)
+        self.wait(0.5)
 
     def click_by_css(self, element_css):
         elem = self.selenium.find_element_by_css_selector(element_css)
         elem.click()
-        wait(0.5)
+        self.wait(0.5)
 
     def click_by_class_name(self, class_name):
         elem = self.selenium.find_element_by_class_name(class_name)
         elem.click()
-        wait(0.5)
+        self.wait(0.5)
 
     def login(self, username, password):
         self.visit('login')
@@ -243,7 +243,7 @@ class LiveServerTest(django.test.LiveServerTestCase):
         """ self.visit(name_of_url_as_defined_in_your_urlconf) """
         self.selenium.get(self.get_full_url(url_name, *args, **kwargs))
         if url_name in LiveServerTest.AJAX_WAIT:
-            wait(1)
+            self.wait(1)
         
     def get_actual_filter_options(self):
         option_selector = '%s option' % self.rf_id('filter')
@@ -297,15 +297,15 @@ class LiveServerTest(django.test.LiveServerTestCase):
     
     def select_dark_matter_simulation(self, simulation):
         self.select(self.lc_id('dark_matter_simulation'), simulation.name)
-        wait(0.5)
+        self.wait(0.5)
         
     def select_galaxy_model(self, galaxy_model):
         self.select(self.lc_id('galaxy_model'), galaxy_model.name)
-        wait(0.5)
+        self.wait(0.5)
 
     def select_stellar_model(self, stellar_model):
         self.select(self.sed_id('single_stellar_population_model'), stellar_model.label)
-        wait(0.5)
+        self.wait(0.5)
 
     def select_record_filter(self, filter):
         text = ''
@@ -331,7 +331,7 @@ class LiveServerMGFTest(LiveServerTest):
     def submit_mgf_form(self):
         submit_button = self.selenium.find_element_by_css_selector('#mgf-form input[type="submit"]')
         submit_button.submit()
-        wait(1.5)
+        self.wait(1.5)
 
     def assert_errors_on_field(self, what, field_id):
         field_elem = self.selenium.find_element_by_css_selector(field_id)

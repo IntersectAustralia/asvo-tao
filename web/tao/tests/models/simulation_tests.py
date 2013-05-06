@@ -1,8 +1,6 @@
 from django.db import IntegrityError
 from django.test.testcases import TestCase
 
-from tao.models import Simulation
-
 from tao.tests.support.factories import SimulationFactory
 
 

@@ -33,21 +33,19 @@ def view_job(request, id):
 @object_permission_required('can_read_job')
 def get_file(request, id, filepath):
     job = Job.objects.get(pk=id)
-            
-    if filepath not in [file.file_name for file in job.files()]:
+
+    the_one = [file for file in job.files() if file.file_name == filepath]
+    if len(the_one) == 0:
         raise Http404
     
-    job_file = JobFile(os.path.join(settings.FILES_BASE, job.output_path), filepath)
+    job_file = the_one[0]
     if not job_file.can_be_downloaded():
         raise PermissionDenied
-    
-    fullpath = os.path.join(settings.FILES_BASE, job.output_path, filepath)
-    file = open(fullpath)
-    response = HttpResponse(FileWrapper(file))
 
-    basename = os.path.basename(fullpath)
+    response = HttpResponse(FileWrapper(open(job_file.file_path)))
+
     # TODO sanitise filename
-    response['Content-Disposition'] = 'attachment; filename="%s"' % basename
+    response['Content-Disposition'] = 'attachment; filename="%s"' % job_file.file_name.replace('/','_')
     return response
     
 @researcher_required

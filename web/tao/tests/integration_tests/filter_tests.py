@@ -1,4 +1,4 @@
-from tao.tests.integration_tests.helper import LiveServerMGFTest, wait
+from tao.tests.integration_tests.helper import LiveServerMGFTest
 from tao.tests.support.factories import SimulationFactory, GalaxyModelFactory, UserFactory, DataSetFactory, DataSetPropertyFactory, BandPassFilterFactory, StellarModelFactory, SnapshotFactory
 from tao.models import Simulation, DataSet, GalaxyModel
 from tao.settings import MODULE_INDICES
@@ -50,6 +50,7 @@ class FilterTests(LiveServerMGFTest):
 
     def tearDown(self):
         super(FilterTests, self).tearDown()
+
 
     def test_filter_options(self):
         # check drop-down list correspond to properties of the currently selected simulation and galaxy model
