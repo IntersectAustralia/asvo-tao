@@ -2,7 +2,7 @@ from django.test.client import Client
 from django.test.testcases import TestCase
 from tao.models import User, UserProfile
 from django.core import mail
-
+from tao.tests.support.factories import GlobalParameterFactory
 
 class RegisterUserTestCase(TestCase):
 
@@ -11,6 +11,12 @@ class RegisterUserTestCase(TestCase):
         super_user = User(username='superman', email='email@super.com', first_name='super', last_name='man', is_active=True, is_staff=True)
         super_user.set_password('superman')
         super_user.save()
+        GlobalParameterFactory(parameter_name='approve.html', parameter_value='')
+        GlobalParameterFactory(parameter_name='approve.txt', parameter_value='')
+        GlobalParameterFactory(parameter_name='registration.html', parameter_value='')
+        GlobalParameterFactory(parameter_name='registration.txt', parameter_value='')
+        GlobalParameterFactory(parameter_name='reject.html', parameter_value='{{ reason }}')
+        GlobalParameterFactory(parameter_name='reject.txt', parameter_value='{{ reason }}')
         mail.outbox = []
 
     def testApproveUser(self):

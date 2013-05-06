@@ -1,10 +1,7 @@
 import factory
 # http://factoryboy.readthedocs.org/en/latest/index.html
 
-from decimal import Decimal
-
-from tao.models import Job, User, Simulation, GalaxyModel, DataSet, DataSetProperty, StellarModel, Snapshot, BandPassFilter, DustModel
-
+from tao.models import Job, User, Simulation, GalaxyModel, DataSet, DataSetProperty, StellarModel, Snapshot, BandPassFilter, DustModel, GlobalParameter
 
 class UserFactory(factory.Factory):
     FACTORY_FOR = User
@@ -88,3 +85,9 @@ class JobFactory(factory.Factory):
             if create:
                 job.save()
         return job
+
+class GlobalParameterFactory(factory.Factory):
+    FACTORY_FOR = GlobalParameter
+    parameter_name = factory.Sequence(lambda n: 'global_%d' % int(n))
+    parameter_value = factory.Sequence(lambda n: 'global_value_%d' % int(n))
+    description = factory.Sequence(lambda n: 'description_%d' % int(n))
