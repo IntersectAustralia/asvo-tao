@@ -1,4 +1,4 @@
-! gfortran fitsreader.f90 -o f_fitreader -L/home/amr/Downloads/cfitsio/lib -lcfitsio -I/home/amr/Downloads/cfitsio/include
+! gfortran fitsreader.f90 -o f_fitreader -LINSTALL_DIR/cfitsio/lib -lcfitsio -IINSTALL_DIR/cfitsio/include
       program main
 
 !  This FITS Table Loader has been modified from CFITSIO cookbook
@@ -23,7 +23,7 @@
       call ftgiou(unit,status)
 
 !  Open the FITS file previously created by WRITEIMAGE
-      filename='/home/amr/workspace/tao.0.fits'
+      filename='tao.0.fits'
       rmode=0
       call ftopen(unit,filename,rmode,blocksize,status)
 

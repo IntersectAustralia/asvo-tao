@@ -12,7 +12,7 @@
 	integer :: j
 	type(Node), pointer :: document, element,Field, datapoint, datacolumn 
 	type(NodeList), pointer :: fieldsList, dataList,childlist
-	document => parseFile("/home/amr/workspace/tao.0.xml")
+	document => parseFile("tao.0.xml")
 
 	fieldsList => getElementsByTagname(document, "FIELD")
 	dataList => getElementsByTagname(document, "TR")
