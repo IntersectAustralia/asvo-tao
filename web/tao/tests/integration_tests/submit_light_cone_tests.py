@@ -1,7 +1,7 @@
 from tao.models import Snapshot
 from tao.settings import MODULE_INDICES
 from tao.tests.integration_tests.helper import LiveServerMGFTest, interact
-from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, JobFactory, StellarModelFactory, SnapshotFactory, BandPassFilterFactory
+from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, JobFactory, StellarModelFactory, SnapshotFactory, BandPassFilterFactory, GlobalParameterFactory
 
 from taoui_light_cone.forms import Form as LightConeForm
 
@@ -9,8 +9,9 @@ class SubmitLightConeTests(LiveServerMGFTest):
 
     def setUp(self):
         super(SubmitLightConeTests, self).setUp()
-        
-        simulation = SimulationFactory.create()
+
+        GlobalParameterFactory.create(parameter_name='maximum-random-light-cones', parameter_value='10')
+        simulation = SimulationFactory.create(box_size=500)
         galaxy_model = GalaxyModelFactory.create()
         dataset = DataSetFactory.create(simulation=simulation, galaxy_model=galaxy_model)
 

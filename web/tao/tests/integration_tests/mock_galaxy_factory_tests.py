@@ -5,13 +5,14 @@ from django.utils.html import strip_tags
 from tao.models import Simulation, StellarModel, DustModel, BandPassFilter
 from tao.settings import MODULE_INDICES
 from tao.tests.integration_tests.helper import LiveServerTest
-from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, JobFactory, DataSetPropertyFactory, DustModelFactory, StellarModelFactory, BandPassFilterFactory
+from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, JobFactory, DataSetPropertyFactory, DustModelFactory, StellarModelFactory, BandPassFilterFactory, GlobalParameterFactory
 
 class MockGalaxyFactoryTest(LiveServerTest):
 
     def setUp(self):
         super(MockGalaxyFactoryTest, self).setUp()
 
+        GlobalParameterFactory.create(parameter_name='maximum-random-light-cones', parameter_value='10')
         simulation = SimulationFactory.create(box_size=500)
         simulation2 = SimulationFactory.create()
 
