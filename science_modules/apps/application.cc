@@ -11,13 +11,13 @@ namespace tao {
 
    application::application()
    {
-      tao_start_time = unix::timer();
+      tao_start_time = posix::timer();
    }
 
    application::application( int argc,
                              char* argv[] )
    {
-      tao_start_time = unix::timer();
+      tao_start_time = posix::timer();
       arguments( argc, argv );
    }
 
@@ -250,8 +250,8 @@ namespace tao {
 	 else if(outputformat=="hdf5")
 	 {
 		 LOGILN( "Writing Output to hdf5");
-		 xml_node hdf_node = workflow_node.append_child( "hdf" );
-		 hdf_node.append_attribute( "module" ).set_value( "hdf" );
+		 xml_node hdf_node = workflow_node.append_child( "hdf5" );
+		 hdf_node.append_attribute( "module" ).set_value( "hdf5" );
 		 output_fields_node = hdf_node.append_copy( inp_doc.select_single_node( "/tao/workflow/light-cone/output-fields" ).node() );
 		 output_fields_node.set_name( "fields" );
 		 hdf_node.append_child( "filename" ).append_child( node_pcdata ).set_value( string( string( inp_doc.select_single_node( "/tao/outputdir" ).node().first_child().value() ) + "tao."+subjobindex+".hdf" ).c_str() );

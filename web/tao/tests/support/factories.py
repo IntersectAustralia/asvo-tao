@@ -1,10 +1,7 @@
 import factory
 # http://factoryboy.readthedocs.org/en/latest/index.html
 
-from decimal import Decimal
-
-from tao.models import Job, User, Simulation, GalaxyModel, DataSet, DataSetProperty, StellarModel, Snapshot, BandPassFilter, DustModel
-
+from tao.models import Job, User, Simulation, GalaxyModel, DataSet, DataSetProperty, StellarModel, Snapshot, BandPassFilter, DustModel, GlobalParameter
 
 class UserFactory(factory.Factory):
     FACTORY_FOR = User
@@ -20,7 +17,7 @@ class UserFactory(factory.Factory):
             if create:
                 user.save()
         return user
-    
+
 class SimulationFactory(factory.Factory):
     FACTORY_FOR = Simulation
     name = factory.Sequence(lambda n: 'simulation_%03d' % int(n))
@@ -33,6 +30,7 @@ class SimulationFactory(factory.Factory):
                                 '<span class="simulation-box-size">' + str(n) + '</span>' +
                                 '<a class="simulation-web-site" target="_blank" href="http://mysite' + str(n) + '.edu/">http://mysite' + str(n) + '.edu/</a>'
                                 )
+
     
 class GalaxyModelFactory(factory.Factory):
     FACTORY_FOR = GalaxyModel
@@ -88,3 +86,9 @@ class JobFactory(factory.Factory):
             if create:
                 job.save()
         return job
+
+class GlobalParameterFactory(factory.Factory):
+    FACTORY_FOR = GlobalParameter
+    parameter_name = factory.Sequence(lambda n: 'global_%d' % int(n))
+    parameter_value = factory.Sequence(lambda n: 'global_value_%d' % int(n))
+    description = factory.Sequence(lambda n: 'description_%d' % int(n))
