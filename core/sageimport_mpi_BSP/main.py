@@ -31,7 +31,10 @@ def SetupLogFile(CommRank):
 
 if __name__ == '__main__':
     
-    
+    if len(sys.argv)<2:
+        print("Error Not Enough Arguments")
+        exit()
+    SettingFile=sys.argv[1]
     
     ## MPI already initiated in the import statement
     ## Get The current Process Rank and the total number of processes
@@ -53,7 +56,7 @@ if __name__ == '__main__':
     ##$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Serial Section $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
     
     ### Read Running Settings
-    [CurrentSAGEStruct,Options]=settingReader.ParseParams("settings.xml")
+    [CurrentSAGEStruct,Options]=settingReader.ParseParams(SettingFile)
     
     ## This section will be executed only by the server ... All the nodes must wait until this is performed
     if CommRank==0:
