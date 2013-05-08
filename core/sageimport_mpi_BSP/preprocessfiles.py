@@ -8,6 +8,7 @@ import DBConnection
 import logging
 
 class PreprocessFiles(object):
+
     ## Mapping between SAGE (C/C++) data types to Database data types 
     FormatMapping={'int':'INT','float':'FLOAT4','long long':'BIGINT'}
     
@@ -42,10 +43,9 @@ class PreprocessFiles(object):
           
         ## If the database already exists - give the user the option to drop it
         if len(ResultsList)>0:
-            sys.stdout.write("\033[0;33m"+"Database "+self.DBName+" with the same name already exists!\nIf you Choose to Continue it will be dropped. Do you want to Drop it?(y/n)\033[0m\n")
-            sys.stdout.flush()
-            Response=raw_input("")
-            if Response=='y':
+
+            Response=self.Options["RunningSettings:OverWriteDB"]
+            if Response=='yes':
                 ## Drop the database
                 self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers("Drop database "+self.DBName+";")                
                 logging.info("Database "+self.DBName+" Dropped")

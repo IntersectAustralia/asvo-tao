@@ -10,15 +10,16 @@ import sys # for listing directory contents
 from mpi4py import MPI # MPI Implementation
 import time
 
+
 import SAGEReader # Read the SAGE Files into memory
 import settingReader # Read the XML settings
 import PGDBInterface # Interaction with the postgreSQL DB
 import preprocessfiles # Perform necessary pre-processing (e.g. Create Tables)
 import AnalyzeTables
 import UpdateMasterTables
-import DBConnection
 import logging
 import os
+import SetupNewDatabase
 
 def SetupLogFile(CommRank):
     FilePath='log/logfile'+str(CommRank)+'.log'
@@ -57,16 +58,14 @@ if __name__ == '__main__':
     ## This section will be executed only by the server ... All the nodes must wait until this is performed
     if CommRank==0:
         
-        logging.info("Server: Start Pre-processing files ...")
-        sys.stdout.write("\033[0;33m"+"Do you want me to re-generate the files list and the DB (y/n)?\033[0m\n")
-        sys.stdout.flush()
-        RegenerateFileList=string.lower(sys.stdin.readline()).strip()
+
+        RegenerateFileList=Options["RunningSettings:RegenerateFilesList"]
         
         #################### Preprocessing data files for the first time #####################################
         ################### This will import the files metadata into a DB table and create the new DB ######## 
-        if RegenerateFileList=='y':
-            sys.stdout.write("Pre-processing data\n")
-            sys.stdout.flush()
+        if RegenerateFileList=='yes':
+            logging.info("Pre-processing data")
+
             ## 1) Init the class with DB option 
             PreprocessFilesObj=preprocessfiles.PreprocessFiles(CurrentSAGEStruct,Options)
             ## 2) Open connection to the DB (ToMasterDB=True - Open connection to a default DB before creating the new DB)
@@ -83,18 +82,18 @@ if __name__ == '__main__':
             PreprocessFilesObj.DBConnection.CloseConnections()
             
         ######################################################################################################
-        if RegenerateFileList!='y':
+        RegenerateTablesList=RegenerateFileList
+        if RegenerateFileList!='yes':
             # Ask Him only if he refuse to re-generate the files list.            
-            sys.stdout.write("Do you want me to re-generate all the tables (y/n)\n")
-            sys.stdout.flush()
-            RegenerateFileList=string.lower(sys.stdin.readline()).strip()
+
+            RegenerateTablesList=Options["RunningSettings:RegenerateTables"]
             
-        if RegenerateFileList=='y':
+        if RegenerateTablesList=='yes':
             ## 1) Init Class
             PreprocessFilesObj=preprocessfiles.PreprocessFiles(CurrentSAGEStruct,Options)
             ## 2) Open Database connection
             PreprocessFilesObj.InitDBConnection(False)
-            ## 3) Create All tables required for the importing of the current dataset using the information in "DataFiles" table 
+            ## 3) Create All tables required for the importing of the current dataset using the information in "DataFiles" table
             PreprocessFilesObj.GenerateAllTables()
             ## 4) Close the DB connection
             PreprocessFilesObj.DBConnection.CloseConnections()
@@ -142,7 +141,8 @@ if __name__ == '__main__':
             
         logging.info('Starting PostProcessing: Generate Tables Statistics and BSP Tree Information')
         ProcessTablesObj=AnalyzeTables.ProcessTables(Options)
-        ProcessTablesObj.GetTablesList()
+        for si in range(0,ProcessTablesObj.DBConnection.serverscount):
+            ProcessTablesObj.GetTablesList(si)
     
         ProcessTablesObj.SummarizeLocationInfo()  
         ProcessTablesObj.ValidateImportProcess()       
@@ -154,11 +154,13 @@ if __name__ == '__main__':
         MasterTablesUpdateObj.CreateMetadataTable()
         MasterTablesUpdateObj.FillMetadataTable()
         end= time.clock()
-        sys.stdout.write("\033[0;33m"+str(CommRank)+": Total Processing Time="+str((end-start))+" seconds\033[0m\n")
-        sys.stdout.flush()
+        logging.info(str(CommRank)+": Total Processing Time="+str((end-start))+" seconds")
+
         
     
     
     
     CurrentPGDB.CloseConnections()
     logging.info(str(CommRank)+':Processing Done')
+    SetupNewDatabaseObj= SetupNewDatabase.SetupNewDatabase(Options,CurrentSAGEStruct)
+    SetupNewDatabaseObj.SetNewDatabase()
