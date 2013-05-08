@@ -15,7 +15,7 @@ def SendEmailToAdmin(Options,Title,Contents):
     msg['From'] = Options['WorkFlowSettings:senderEmail']
     msg['To'] = ','.join(Recipients)#Options['WorkFlowSettings:ToEmail']
     
-    #s.sendmail(Options['WorkFlowSettings:senderEmail'],Recipients,msg.as_string())
+    s.sendmail(Options['WorkFlowSettings:senderEmail'],Recipients,msg.as_string())
     
     
     
