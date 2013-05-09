@@ -28,24 +28,54 @@ def light_cone_xml(xml_parameters):
                 <workflow name="alpha-light-cone-image">
 
                     <!-- Global Configuration Parameters -->
-                    <schema-version>1.0</schema-version>
+                    <schema-version>2.0</schema-version>
 
                     <!-- Light-cone module parameters -->
                     %(geometry_fragment)s
 
+                    <!-- File output module -->
+                    <csv module="csv">
+                        <fields>
+                            <item label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
+                            <item label="%(output_properties_2_label)s">%(output_properties_2_name)s</item>
+                            <item label="bandpass">%(band_pass_filter_name)s_absolute</item>
+                            <item label="bandpass">%(band_pass_filter_name)s_apparent</item>
+                        </fields>
+
+                        <parents>
+                            <item>filter</item>
+                        </parents>
+
+                        <!-- Module Version Number -->
+                        <module-version>1</module-version>
+
+                        <!-- Output file format -->
+                        <filename>tao.output.csv</filename>
+                    </csv>
+
                     <!-- Optional: Spectral Energy Distribution parameters -->
-                    <sed>
+                    <sed module="sed">
+                        <parents>
+                            <item>light-cone</item>
+                        </parents>
+
                         <!-- Module Version Number -->
                         <module-version>1</module-version>
 
                         <single-stellar-population-model>%(ssp_name)s</single-stellar-population-model>
+                        <dust>%(dust_model_name)s</dust>
+                    </sed>
+
+                    <filter module="filter">
+                        <parents>
+                            <item>sed</item>
+                        </parents>
 
                         <!-- Bandpass Filters) -->
                         <bandpass-filters>
                             <item label="%(band_pass_filter_label)s">%(band_pass_filter_id)s</item>
                         </bandpass-filters>
-                        <dust>%(dust_model_name)s</dust>
-                    </sed>
+                    </filter>
 
                     <!-- Record Filter -->
                     <record-filter>
@@ -59,15 +89,6 @@ def light_cone_xml(xml_parameters):
                         <filter-min units="Msun/h">%(filter_min)s</filter-min>
                         <filter-max units="Msun/h">%(filter_max)s</filter-max>
                     </record-filter>
-
-                    <!-- File output module -->
-                    <output-file>
-                        <!-- Module Version Number -->
-                        <module-version>1</module-version>
-
-                        <!-- Output file format -->
-                        <format>csv</format>
-                    </output-file>
 
                     <!-- Image generation module parameters
                     <image-generator>
@@ -100,7 +121,7 @@ def light_cone_xml(xml_parameters):
 
 def light_cone_geometry_xml(xml_parameters):
     return stripped_joined_lines("""
-                    <light-cone>
+                    <light-cone module="light-cone">
                         <!-- Module Version Number -->
                         <module-version>1</module-version>
 
@@ -145,7 +166,7 @@ def light_cone_geometry_xml(xml_parameters):
 
 def box_geometry_xml(xml_parameters):
     return stripped_joined_lines("""
-                    <light-cone>
+                    <light-cone module="light-cone">
                         <!-- Module Version Number -->
                         <module-version>1</module-version>
 

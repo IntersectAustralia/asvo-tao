@@ -1,6 +1,6 @@
 from django.test.testcases import TransactionTestCase
 
-import datetime
+import os, datetime
 
 # from tao import workflow, time
 # from tao.forms import OutputFormatForm, RecordFilterForm, NO_FILTER
@@ -72,6 +72,7 @@ class XmlFormsTests(TestCase):
             'ssp_name': 'SM', # self.stellar_model.name,
             'band_pass_filter_label': 'BPFN', # self.band_pass_filter.label,
             'band_pass_filter_id': 1L, # self.band_pass_filter.filter_id,
+            'band_pass_filter_name': 'BPFN',
             'dust_model_name': 'DM', # self.dust_model.name,
             })
         xml_str = light_cone_xml(xml_parameters)
@@ -110,6 +111,7 @@ class XmlFormsTests(TestCase):
             'ssp_name': 'SM', # self.stellar_model.name,
             'band_pass_filter_label': 'BPFN', # self.band_pass_filter.label,
             'band_pass_filter_id': 1L, # self.band_pass_filter.filter_id,
+            'band_pass_filter_name': 'BPFN',
             'dust_model_name': 'DM', # self.dust_model.name,
         })
         xml_str = light_cone_xml(xml_parameters)
@@ -152,6 +154,7 @@ class XmlFormsTests(TestCase):
             'ssp_name': self.stellar_model.name,
             'band_pass_filter_label': self.band_pass_filter.label,
             'band_pass_filter_id': self.band_pass_filter.filter_id,
+            'band_pass_filter_name': os.path.splitext(self.band_pass_filter.filter_id)[0],
             'dust_model_name': self.dust_model.name,
         })
         xml_str = light_cone_xml(xml_parameters)
@@ -191,6 +194,7 @@ class XmlFormsTests(TestCase):
             'ssp_name': self.stellar_model.name,
             'band_pass_filter_label': self.band_pass_filter.label,
             'band_pass_filter_id': self.band_pass_filter.filter_id,
+            'band_pass_filter_name': os.path.splitext(self.band_pass_filter.filter_id)[0],
             'dust_model_name': self.dust_model.name,
             })
         xml_str = light_cone_xml(xml_parameters)
@@ -238,6 +242,7 @@ class XmlFormsTests(TestCase):
             'ssp_name': self.stellar_model.name,
             'band_pass_filter_label': self.band_pass_filter.label,
             'band_pass_filter_id': self.band_pass_filter.filter_id,
+            'band_pass_filter_name': os.path.splitext(self.band_pass_filter.filter_id)[0],
             'dust_model_name': self.dust_model.name,
             })
         xml_str = light_cone_xml(xml_parameters)

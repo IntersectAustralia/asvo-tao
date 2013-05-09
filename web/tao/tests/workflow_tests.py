@@ -1,6 +1,6 @@
 # coding=utf-8
 
-import datetime
+import os, datetime
 
 from decimal import Decimal
 
@@ -36,7 +36,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                 'attrs': {
                     'name': 'schema-version'
                 },
-                'value': '1.0',
+                'value': '2.0',
             },
         ]
         self.simulation = SimulationFactory.create(box_size=500)
@@ -94,6 +94,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'ssp_name': self.stellar_model.name,
             'band_pass_filter_label': self.band_pass_filter.label,
             'band_pass_filter_id': self.band_pass_filter.filter_id,
+            'band_pass_filter_name': os.path.splitext(self.band_pass_filter.filter_id)[0],
             'dust_model_name': self.dust_model.name,
 
         })
@@ -153,6 +154,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'ssp_name': self.stellar_model.name,
             'band_pass_filter_label': self.band_pass_filter.label,
             'band_pass_filter_id': self.band_pass_filter.filter_id,
+            'band_pass_filter_name': os.path.splitext(self.band_pass_filter.filter_id)[0],
             'dust_model_name': self.dust_model.name,
 
         })
@@ -225,10 +227,10 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                 <workflow name="alpha-light-cone-image">
 
                     <!-- Global Configuration Parameters -->
-                    <schema-version>1.0</schema-version>
+                    <schema-version>2.0</schema-version>
 
                     <!-- Light-cone module parameters -->
-                    <light-cone>
+                    <light-cone module="light-cone">
                         <!-- Module Version Number -->
                         <module-version>1</module-version>
 
@@ -266,19 +268,48 @@ class WorkflowTests(TestCase, XmlDiffMixin):
 
                     </light-cone>
 
+                    <!-- File output module -->
+                    <csv module="csv">
+                        <fields>
+                            <item label="parameter_001 label" units="Msun/h">CentralMvir rf</item>
+                            <item label="bandpass">Band_pass_filter_000_absolute</item>
+                            <item label="bandpass">Band_pass_filter_000_apparent</item>
+                        </fields>
+
+                        <parents>
+                            <item>filter</item>
+                        </parents>
+
+                        <!-- Module Version Number -->
+                        <module-version>1</module-version>
+
+                        <!-- Output file format -->
+                        <filename>tao.output.csv</filename>
+                    </csv>
+
                     <!-- Optional: Spectral Energy Distribution parameters -->
-                    <sed>
+                    <sed module="sed">
+                        <parents>
+                            <item>light-cone</item>
+                        </parents>
+
                         <!-- Module Version Number -->
                         <module-version>1</module-version>
 
                         <single-stellar-population-model>%(ssp_name)s</single-stellar-population-model>
+                        <dust>%(dust_model_name)s</dust>
+                    </sed>
+
+                    <filter module="filter">
+                        <parents>
+                            <item>sed</item>
+                        </parents>
 
                         <!-- Bandpass Filters) -->
                         <bandpass-filters>
                             <item label="%(band_pass_filter_label)s">%(band_pass_filter_id)s</item>
                         </bandpass-filters>
-                        <dust>%(dust_model_name)s</dust>
-                    </sed>
+                    </filter>
 
                     <!-- Record Filter -->
                     <record-filter>
@@ -292,15 +323,6 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                         <filter-min units="Msun/h">%(filter_min)s</filter-min>
                         <filter-max units="Msun/h">%(filter_max)s</filter-max>
                     </record-filter>
-
-                    <!-- File output module -->
-                    <output-file>
-                        <!-- Module Version Number -->
-                        <module-version>1</module-version>
-
-                        <!-- Output file format -->
-                        <format>csv</format>
-                    </output-file>
 
                     <!-- Image generation module parameters
                     <image-generator>
@@ -387,10 +409,10 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                 <workflow name="alpha-light-cone-image">
 
                     <!-- Global Configuration Parameters -->
-                    <schema-version>1.0</schema-version>
+                    <schema-version>2.0</schema-version>
 
                     <!-- Light-cone module parameters -->
-                    <light-cone>
+                    <light-cone module="light-cone">
                         <!-- Module Version Number -->
                         <module-version>1</module-version>
 
@@ -428,6 +450,23 @@ class WorkflowTests(TestCase, XmlDiffMixin):
 
                     </light-cone>
 
+                    <!-- File output module -->
+                    <csv module="csv">
+                        <fields>
+                            <item label="parameter_005 label" units="Msun/h">CentralMvir rf</item>
+                        </fields>
+
+                        <parents>
+                            <item>light-cone</item>
+                        </parents>
+
+                        <!-- Module Version Number -->
+                        <module-version>1</module-version>
+
+                        <!-- Output file format -->
+                        <filename>tao.output.csv</filename>
+                    </csv>
+
                     <!-- Record Filter -->
                     <record-filter>
                         <!-- Module Version Number -->
@@ -440,15 +479,6 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                         <filter-min units="Msun/h">%(filter_min)s</filter-min>
                         <filter-max units="Msun/h">%(filter_max)s</filter-max>
                     </record-filter>
-
-                    <!-- File output module -->
-                    <output-file>
-                        <!-- Module Version Number -->
-                        <module-version>1</module-version>
-
-                        <!-- Output file format -->
-                        <format>csv</format>
-                    </output-file>
 
                     <!-- Image generation module parameters
                     <image-generator>
@@ -540,10 +570,10 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                 <workflow name="alpha-light-cone-image">
 
                     <!-- Global Configuration Parameters -->
-                    <schema-version>1.0</schema-version>
+                    <schema-version>2.0</schema-version>
 
                     <!-- Light-cone module parameters -->
-                    <light-cone>
+                    <light-cone module="light-cone">
                         <!-- Module Version Number -->
                         <module-version>1</module-version>
 
@@ -581,18 +611,47 @@ class WorkflowTests(TestCase, XmlDiffMixin):
 
                     </light-cone>
 
+                    <!-- File output module -->
+                    <csv module="csv">
+                        <fields>
+                            <item label="parameter_003 label" units="Msun/h">CentralMvir rf</item>
+                            <item label="bandpass">Band_pass_filter_001_absolute</item>
+                            <item label="bandpass">Band_pass_filter_001_apparent</item>
+                        </fields>
+
+                        <parents>
+                            <item>filter</item>
+                        </parents>
+
+                        <!-- Module Version Number -->
+                        <module-version>1</module-version>
+
+                        <!-- Output file format -->
+                        <filename>tao.output.csv</filename>
+                    </csv>
+
                     <!-- Optional: Spectral Energy Distribution parameters -->
-                    <sed>
+                    <sed module="sed">
+                        <parents>
+                            <item>light-cone</item>
+                        </parents>
+
                         <!-- Module Version Number -->
                         <module-version>1</module-version>
 
                         <single-stellar-population-model>%(ssp_name)s</single-stellar-population-model>
+                    </sed>
+
+                    <filter module="filter">
+                        <parents>
+                            <item>sed</item>
+                        </parents>
 
                         <!-- Bandpass Filters) -->
                         <bandpass-filters>
                             <item label="%(band_pass_filter_label)s">%(band_pass_filter_id)s</item>
                         </bandpass-filters>
-                    </sed>
+                    </filter>
 
                     <!-- Record Filter -->
                     <record-filter>
@@ -606,15 +665,6 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                         <filter-min units="Msun/h">%(filter_min)s</filter-min>
                         <filter-max units="Msun/h">%(filter_max)s</filter-max>
                     </record-filter>
-
-                    <!-- File output module -->
-                    <output-file>
-                        <!-- Module Version Number -->
-                        <module-version>1</module-version>
-
-                        <!-- Output file format -->
-                        <format>csv</format>
-                    </output-file>
 
                     <!-- Image generation module parameters
                     <image-generator>

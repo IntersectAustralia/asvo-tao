@@ -99,6 +99,7 @@ class JobTest(LiveServerTest):
             'ssp_name': self.sed.name,
             'band_pass_filter_label': self.band_pass_filters[0].label,
             'band_pass_filter_id': self.band_pass_filters[0].filter_id,
+            'band_pass_filter_name': os.path.splitext(self.band_pass_filters[0].filter_id)[0],
             'dust_model_name': self.dust.name,
             })
         return light_cone_xml(xml_parameters)

@@ -109,13 +109,22 @@ class OutputFormatForm(BetterForm):
     def to_xml(self, parent_xml_element):
         from tao.xml_util import find_or_create, child_element
 
-        of_elem = find_or_create(parent_xml_element, 'output-file')
+        # Hunt down the full item from the list of output formats.
+        fmt = self.cleaned_data['supported_formats']
+        ext = ''
+        for x in tao_settings.OUTPUT_FORMATS:
+            if x['value'] == fmt:
+                ext = '.' + x['extension']
+                break
+
+        # The output file should be a CSV, by default.
+        of_elem = find_or_create(parent_xml_element, fmt, module=fmt)
         child_element(of_elem, 'module-version', text=OutputFormatForm.MODULE_VERSION)
-        child_element(of_elem, 'format', text=self.cleaned_data['supported_formats'])
+        child_element(of_elem, 'filename', text='tao.output' + ext)
 
     @classmethod
     def from_xml(cls, ui_holder, xml_root, prefix=None):
-        supported_format = module_xpath(xml_root, '//output-file/format')
+        supported_format = 'csv'
         return cls(ui_holder, {prefix + '-supported_formats': supported_format}, prefix=prefix)
 
 class RecordFilterForm(BetterForm):
