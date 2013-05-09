@@ -67,14 +67,14 @@ class TwoSidedSelectWidget(SelectMultiple):
         if options:
             output_right.append(options)
         output_right.append('</select>')
-        output = [u'<table><tr>']
-        output.extend(['<td><i>Available</i><br/>'] + output_filter + ['<br/>'] + output_left + ['</td>'])
+        output = [u'<table id="' + widget_id + '-table"><tr>']
+        output.extend(['<td id="' + widget_id + '-left"><i>Available</i><br/>'] + output_filter + ['<br/>'] + output_left + ['</td>'])
         output.extend(['<td class="text-align:center;">',
                        u'<a href="#" id="%s_op_add_all" style="display:block;text-decoration:none;clear:both;">&gt;&gt;</a>' % widget_id,
                        u'<a href="#" id="%s_op_add" style="display:block;text-decoration:none;clear:both;">&gt;</a>' % widget_id,
                        u'<a href="#" id="%s_op_remove" style="display:block;text-decoration:none;clear:both;">&lt;</a>' % widget_id,
                        u'<a href="#" id="%s_op_remove_all" style="display:block;text-decoration:none;clear:both;">&lt;&lt;</a>' % widget_id,
                        '</td>'])
-        output.extend(['<td><i>Selected</i><br/>'] + output_right + ['</td>'])
+        output.extend(['<td id="' + widget_id + '-right"><i>Selected</i><br/>'] + output_right + ['</td>'])
         output.extend([u'</tr></table>'])
         return mark_safe(u'\n'.join(output))

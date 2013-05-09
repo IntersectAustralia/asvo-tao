@@ -46,6 +46,13 @@ jQuery(document).ready(function($) {
 
     var sed_band_pass_filters_widget = new TwoSidedSelectWidget(sed_id('band_pass_filters'), false);
 
+    $(lc_id('output_properties') + '-table .ui-icon-gripsmall-diagonal-se').click(function(e) {
+        lc_output_props_widget.resize_widget();
+    });
+    $(sed_id('band_pass_filters') + '-table .ui-icon-gripsmall-diagonal-se').click(function(e) {
+        sed_band_pass_filters_widget.resize_widget();
+    });
+
     var update_output_options = function() {
         var data_set_id = $(lc_id('galaxy_model')).find(':selected').attr('value');
         var $to = $(lc_id('output_properties'));
