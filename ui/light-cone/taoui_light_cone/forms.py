@@ -121,7 +121,7 @@ class Form(BetterForm):
     def to_xml(self, root):
         from tao.xml_util import find_or_create, child_element
 
-        light_cone_elem = find_or_create(root, 'light-cone')
+        light_cone_elem = find_or_create(root, 'light-cone', module='light-cone')
 
         simulation = tao_models.Simulation.objects.get(pk=self.cleaned_data['dark_matter_simulation'])
         dataset = tao_models.DataSet.objects.get(id=self.cleaned_data['galaxy_model'])
@@ -154,12 +154,20 @@ class Form(BetterForm):
 
         output_properties = self.cleaned_data['output_properties']
         if len(output_properties) > 0:
+
+            # Create the light-cone output properties.
             output_elem = child_element(light_cone_elem, 'output-fields')
+
+            # Either create or find the CSV output properties.
+            fields_elem = find_or_create(find_or_create(root, 'csv', module='csv'), 'fields')
+
+            # Insert entries.
             for item in output_properties:
                 op = datasets.output_property(item)
                 attrs = {'label': op.label}
                 if op.units is not None and len(op.units) > 0: attrs['units'] = op.units
                 child_element(output_elem, 'item', text=op.name, **attrs)
+                child_element(fields_elem, 'item', text=op.name, **attrs)
 
     @classmethod
     def from_xml(cls, ui_holder, xml_root, prefix=None):
