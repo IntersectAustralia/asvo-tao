@@ -90,6 +90,10 @@ class UserCreationForm(auth_forms.UserCreationForm):
 class RejectForm(forms.Form):
     reason = forms.CharField(widget=forms.Textarea(attrs={'rows': 3}), required=False)
 
+class FeedbackForm(forms.Form):
+    subject = forms.CharField()
+    text = forms.Textarea()
+
 class OutputFormatForm(BetterForm):
     EDIT_TEMPLATE = 'mock_galaxy_factory/output_format.html'
     MODULE_VERSION = 1

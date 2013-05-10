@@ -114,5 +114,11 @@ def reject_user(request, user_id):
 
     return redirect(access_requests)
 
+@researcher_required
+def contact_us(request):
+    from tao.forms import FeedbackForm
+    # work in progress
+    return
+
 def handle_403(request):
     return render(request, '403.html', status=403)
