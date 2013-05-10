@@ -24,13 +24,11 @@ var TwoSidedSelectWidget = function(to_id, enable) {
         }
     };
 
-    this.init = function() {
+    $(to_id + '-table').resizable({
+        maxWidth: $("#tabs-1 > .row-fluid > .boxed.span8").width()
+    });
 
-        var resize_filters = function() {
-            $to.height($filter_field.outerHeight() + $from.outerHeight() + 3);
-            $filter_field.width($from.innerWidth() - 11);
-        }
-        resize_filters();
+    this.init = function() {
 
         function status_helper($where, selector, status) {
             var $selected_option = $where.find(selector);

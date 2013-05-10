@@ -381,3 +381,68 @@ color: #333; cursor: pointer; display: inline-block; font-family: inherit; font-
     font-weight: normal;
     color: #555555;
 }
+
+#id_light_cone-output_properties-table.ui-resizable {
+    width: 500px;
+}
+
+/*Left light cone output properties table*/
+#id_light_cone-output_properties-table.ui-resizable > tbody > tr > #id_light_cone-output_properties-left {
+    width: 47%;
+}
+
+#id_light_cone-output_properties-table.ui-resizable > tbody > tr > td> input#id_light_cone-output_properties_filter {
+    padding: 4px 0px 6px 0px;
+    width: 100%;
+}
+
+#id_light_cone-output_properties-table.ui-resizable > tbody > tr > #id_light_cone-output_properties-left > select {
+    height: 100%;
+    width: 100%;
+}
+
+/*Right light cone output properties table*/
+#id_light_cone-output_properties-table.ui-resizable > tbody > tr > #id_light_cone-output_properties-right {
+    width: 47%;
+}
+
+#id_light_cone-output_properties-table.ui-resizable > tbody > tr > #id_light_cone-output_properties-right > select {
+    height: 100%;
+    width: 100%;
+}
+
+#id_light_cone-output_properties-table.ui-resizable > tbody > tr > #id_light_cone-output_properties-buttons {
+    text-align: center;
+    width: 6%;
+}
+
+/*Left sed band pass filters table*/
+#id_sed-band_pass_filters-table.ui-resizable > tbody > tr > #id_sed-band_pass_filters-left {
+    width: 47%;
+}
+
+#id_sed-band_pass_filters-table.ui-resizable > tbody > tr > td> input#id_sed-band_pass_filters_filter {
+    padding: 4px 0px 6px 0px;
+    width: 100%;
+}
+
+#id_sed-band_pass_filters-table.ui-resizable > tbody > tr > #id_sed-band_pass_filters-left > select {
+    height: 100%;
+    width: 100%;
+}
+
+/*Right sed band pass filters table*/
+#id_sed-band_pass_filters-table.ui-resizable > tbody > tr > #id_sed-band_pass_filters-right {
+    width: 47%;
+}
+
+#id_sed-band_pass_filters-table.ui-resizable > tbody > tr > #id_sed-band_pass_filters-right > select {
+    height: 100%;
+    width: 100%;
+}
+
+#id_sed-band_pass_filters-table.ui-resizable > tbody > tr > #id_sed-band_pass_filters-buttons {
+    text-align: center;
+    width: 6%;
+}
+
