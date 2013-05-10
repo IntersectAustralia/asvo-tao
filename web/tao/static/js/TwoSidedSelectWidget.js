@@ -16,7 +16,6 @@ var TwoSidedSelectWidget = function(to_id, enable) {
     var must_group = false;
     var ref = this;
     var enabled = enable;
-    var $drag = $(to_id + '_drag');
 
     var option_clicked = function(evt) {
         if (ref.option_click_handler) {
@@ -25,48 +24,11 @@ var TwoSidedSelectWidget = function(to_id, enable) {
         }
     };
 
-
-//    $(to_id + ' td').each(function(i,n){
-//        $(n).resizable({
-//            alsoResize: $(n).parent()
-//        });
-//    });
-//    $(to_id + ' tr').resizable({
-//        handles: "e",
-//
-//        //set correct COL element and original size
-//        start: function(event, ui) {
-//            var colIndex = ui.helper.index() + 1;
-//            colElement = table.find("colgroup > col:nth-child(" + colIndex + ")");
-//            //get col width
-//            colWidth = parseInt(colElement.get(0).style.width, 10);
-//            originalSize = ui.size.width;
-//        },
-//
-//        //set COL width
-//        resize: function(event, ui) {
-//            var resizeDelta = ui.size.width - originalSize;
-//            var newColWidth = colWidth + resizeDelta;
-//            colElement.width(newColWidth);
-//        }
-//    });
-    // todo: refactor this
-//    var boxWidth = $("#tabs-1 > .row-fluid > .boxed.span8").width();
-//    $(window).resize(function(){
-//        boxWidth = $("#tabs-1 > .row-fluid > .boxed.span8").width();
-//    });
-//
     $(to_id + '-table').resizable({
         maxWidth: $("#tabs-1 > .row-fluid > .boxed.span8").width()
     });
 
-
     this.init = function() {
-//        var resize_filters = function() {
-//            $to.height($filter_field.outerHeight() + $from.outerHeight() + 3);
-//            $filter_field.width($from.innerWidth() - 11);
-//        }
-//        resize_filters();
 
         function status_helper($where, selector, status) {
             var $selected_option = $where.find(selector);
@@ -140,18 +102,6 @@ var TwoSidedSelectWidget = function(to_id, enable) {
             ref.redisplay(true);
         });
     };
-
-    this.resize_widget = function() {
-        var table_height = $(to_id + '-table').innerHeight();
-        $from.height(table_height-$filter_field.outerHeight());
-        $to.height($filter_field.outerHeight() + $from.outerHeight() + 5);
-        var right_cell_width = $(to_id + '-right').innerWidth();
-        $to.width(right_cell_width);
-        var left_cell_width = $(to_id + '-left').innerHeight();
-        $filter_field.width(left_cell_width);
-        $from.width(left_cell_width);
-    };
-    this.resize_widget();
 
     this.cache_store = function(data) {
         cache = [];
