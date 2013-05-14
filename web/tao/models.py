@@ -283,3 +283,6 @@ class GlobalParameter(models.Model):
     parameter_name = models.CharField(max_length=60, unique=True)
     parameter_value = models.TextField(default='')
     description = models.TextField(default='')
+
+    def __str__(self):
+        return self.parameter_name
