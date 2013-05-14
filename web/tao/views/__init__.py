@@ -1,3 +1,4 @@
+import re
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import views as auth_views
@@ -12,7 +13,7 @@ from tao import models
 from tao.decorators import researcher_required, admin_required, set_tab
 from tao.mail import send_mail
 from tao.pagination import paginate
-from tao.models import User
+from tao.models import User, GlobalParameter
 
 import logging
 
@@ -71,7 +72,6 @@ def access_requests(request):
         'reject_form': RejectForm(),
     })
 
-
 @admin_required
 @require_POST
 def approve_user(request, user_id):
@@ -115,10 +115,26 @@ def reject_user(request, user_id):
     return redirect(access_requests)
 
 @researcher_required
-def contact_us(request):
-    from tao.forms import FeedbackForm
-    # work in progress
-    return
+@set_tab('support')
+def support(request):
+    from tao.forms import SupportForm
+    if request.method == 'POST':
+        form = SupportForm(request.POST)
+        if form.is_valid():
+            to_addrs = _get_support_recipients()
+            context = Context({'subject': form.cleaned_data['subject'], 'message': form.cleaned_data['message'], 'user': request.user})
+            send_mail('support-template', context, 'TAO Support: ' + form.cleaned_data['subject'], to_addrs)
+            return render(request, 'email_sent.html')
+    else:
+        form = SupportForm()
+
+    return render(request, 'support.html', {
+        'form': form,
+    })
 
 def handle_403(request):
     return render(request, '403.html', status=403)
+
+def _get_support_recipients():
+    recipients = GlobalParameter.objects.get(parameter_name='support-recipients')
+    return re.split('[ \t\n\r\f\v,]+', recipients.parameter_value)

@@ -21,6 +21,9 @@ class Migration(DataMigration):
             '\n'
             '{{ user.username }}',
             'Template for support emails, text version. Use {{ user }} template variable'),
+            ('support-recipients',
+            'test1@example.org, test2@example.org',
+            'List of recipients to send support emails'),
         ]
 
     def forwards(self, orm):

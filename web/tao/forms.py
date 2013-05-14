@@ -11,6 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.contrib.auth import forms as auth_forms
 from django.contrib.auth.models import User
+from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 from captcha.fields import ReCaptchaField
 
@@ -90,9 +91,10 @@ class UserCreationForm(auth_forms.UserCreationForm):
 class RejectForm(forms.Form):
     reason = forms.CharField(widget=forms.Textarea(attrs={'rows': 3}), required=False)
 
-class FeedbackForm(forms.Form):
-    subject = forms.CharField()
-    text = forms.Textarea()
+class SupportForm(forms.Form):
+    subject = forms.CharField(max_length=80, validators=[RegexValidator(regex='[^ \t\n\r\f\v,]', message="This field cannot be blank")], required=True)
+    message = forms.CharField(widget=forms.Textarea(), validators=[RegexValidator(regex='[^ \t\n\r\f\v,]', message="This field cannot be blank")], required=True)
+
 
 class OutputFormatForm(BetterForm):
     EDIT_TEMPLATE = 'mock_galaxy_factory/output_format.html'
