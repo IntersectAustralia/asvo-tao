@@ -87,8 +87,10 @@ class JobTest(LiveServerTest):
             'output_properties_1_name' : self.filter.name,
             'output_properties_1_label' : self.filter.label,
             'output_properties_1_units' : self.filter.units,
+            'output_properties_1_description' : self.filter.description,
             'output_properties_2_name' : self.output_prop.name,
             'output_properties_2_label' : self.output_prop.label,
+            'output_properties_2_description' : self.output_prop.description,
             })
         xml_parameters.update({
             'filter': self.filter.name,

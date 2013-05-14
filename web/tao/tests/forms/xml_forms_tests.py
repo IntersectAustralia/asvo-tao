@@ -60,8 +60,10 @@ class XmlFormsTests(TestCase):
             'output_properties_1_name' : 'FN', # self.filter.name,
             'output_properties_1_label' : 'FL', # self.filter.label,
             'output_properties_1_units' : 'FU', # self.filter.units,
+            'output_properties_1_description' : 'FD', # self.filter.units,
             'output_properties_2_name' : 'OPN', # self.output_prop.name,
             'output_properties_2_label' : 'OPL', # self.output_prop.label,
+            'output_properties_2_description' : 'OD', # self.filter.units,
             })
         xml_parameters.update({
             'filter': 'FN', # self.filter.name,
@@ -99,8 +101,10 @@ class XmlFormsTests(TestCase):
             'output_properties_1_name' : 'FN', # self.filter.name,
             'output_properties_1_label' : 'FL', # self.filter.label,
             'output_properties_1_units' : 'FU', # self.filter.units,
+            'output_properties_1_description' : 'FD', # self.filter.units,
             'output_properties_2_name' : 'OPN', # self.output_prop.name,
             'output_properties_2_label' : 'OPL', # self.output_prop.label,
+            'output_properties_2_description' : 'OD', # self.filter.units,
         })
         xml_parameters.update({
             'filter': self.filter.name,
@@ -142,8 +146,10 @@ class XmlFormsTests(TestCase):
             'output_properties_1_name' : 'FN', # self.filter.name,
             'output_properties_1_label' : 'FL', # self.filter.label,
             'output_properties_1_units' : 'FU', # self.filter.units,
+            'output_properties_1_description' : 'FD', # self.filter.units,
             'output_properties_2_name' : 'OPN', # self.output_prop.name,
             'output_properties_2_label' : 'OPL', # self.output_prop.label,
+            'output_properties_2_description' : 'OD', # self.filter.units,
         })
         xml_parameters.update({
             'filter': 'FN', # self.filter.name,
@@ -182,8 +188,10 @@ class XmlFormsTests(TestCase):
             'output_properties_1_name' : self.filter.name,
             'output_properties_1_label' : self.filter.label,
             'output_properties_1_units' : self.filter.units,
+            'output_properties_1_description' : 'FD', # self.filter.units,
             'output_properties_2_name' : self.output_prop.name,
             'output_properties_2_label' : self.output_prop.label,
+            'output_properties_2_description' : 'OD', # self.filter.units,
         })
         xml_parameters.update({
             'filter': self.filter.name,
@@ -230,8 +238,10 @@ class XmlFormsTests(TestCase):
             'output_properties_1_name' : self.filter.name,
             'output_properties_1_label' : self.filter.label,
             'output_properties_1_units' : self.filter.units,
+            'output_properties_1_description' : 'FD', # self.filter.units,
             'output_properties_2_name' : self.output_prop.name,
             'output_properties_2_label' : self.output_prop.label,
+            'output_properties_2_description' : 'OD', # self.filter.units,
             })
         xml_parameters.update({
             'filter': self.filter.name,

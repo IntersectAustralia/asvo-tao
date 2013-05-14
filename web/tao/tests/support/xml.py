@@ -150,8 +150,8 @@ def light_cone_geometry_xml(xml_parameters):
 
                         <!-- List of fields to be included in the output file -->
                         <output-fields>
-                            <item label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
-                            <item label="%(output_properties_2_label)s">%(output_properties_2_name)s</item>
+                            <item description="%(output_properties_1_description)s" label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
+                            <item description="%(output_properties_2_description)s" label="%(output_properties_2_label)s">%(output_properties_2_name)s</item>
                         </output-fields>
 
                         <!-- RNG Seed -->
