@@ -82,8 +82,10 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'output_properties_1_name' : self.filter.name,
             'output_properties_1_label' : self.filter.label,
             'output_properties_1_units' : self.filter.units,
+            'output_properties_1_description' : self.filter.description,
             'output_properties_2_name' : self.output_prop.name,
             'output_properties_2_label' : self.output_prop.label,
+            'output_properties_2_description' : self.output_prop.description,
             })
         xml_parameters.update({
             'filter': self.filter.name,
@@ -91,12 +93,14 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'filter_max' : 'None',
         })
         xml_parameters.update({
+            'apply_sed': False,
+        })
+        xml_parameters.update({
             'ssp_name': self.stellar_model.name,
             'band_pass_filter_label': self.band_pass_filter.label,
             'band_pass_filter_id': self.band_pass_filter.filter_id,
             'band_pass_filter_name': os.path.splitext(self.band_pass_filter.filter_id)[0],
             'dust_model_name': self.dust_model.name,
-
         })
 
         # TODO: there are commented out elements which are not implemented yet
@@ -142,8 +146,10 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'output_properties_1_name' : self.filter.name,
             'output_properties_1_label' : self.filter.label,
             'output_properties_1_units' : self.filter.units,
+            'output_properties_1_description' : self.filter.description,
             'output_properties_2_name' : self.output_prop.name,
             'output_properties_2_label' : self.output_prop.label,
+            'output_properties_2_description' : self.output_prop.description,
         })
         xml_parameters.update({
             'filter': self.filter.name,
@@ -198,6 +204,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'output_properties_1_name' : self.filter.name,
             'output_properties_1_label' : self.filter.label,
             'output_properties_1_units' : self.filter.units,
+            'output_properties_1_description' : self.filter.description,
             'redshift' : float(self.snapshot.redshift),
             })
         xml_parameters.update({
@@ -210,11 +217,12 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'ssp_name': self.stellar_model.name,
             'band_pass_filter_label': self.band_pass_filter.label,
             'band_pass_filter_id': self.band_pass_filter.filter_id,
+            'band_pass_filter_description': self.band_pass_filter.description,
             'dust_model_name': self.dust_model.name,
             })
         # comments are ignored by assertXmlEqual
         expected_parameter_xml = stripped_joined_lines("""
-            <?xml version="1.0" encoding="UTF-8"?>
+            <?xml version="1.0"?>
             <!-- Using the XML namespace provides a version for future modifiability.  The timestamp allows
                  a researcher to know when this parameter file was generated.  -->
             <tao xmlns="http://tao.asvo.org.au/schema/module-parameters-v1" timestamp="2012-12-20T13:55:36+10:00">
@@ -255,7 +263,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
 
                         <!-- List of fields to be included in the output file -->
                         <output-fields>
-                            <item label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
+                            <item description="%(output_properties_1_description)s" label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
                         </output-fields>
 
 
@@ -271,7 +279,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                     <!-- File output module -->
                     <csv module="csv">
                         <fields>
-                            <item label="parameter_001 label" units="Msun/h">CentralMvir rf</item>
+                            <item label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
                             <item label="bandpass">Band_pass_filter_000_absolute</item>
                             <item label="bandpass">Band_pass_filter_000_apparent</item>
                         </fields>
@@ -307,7 +315,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
 
                         <!-- Bandpass Filters) -->
                         <bandpass-filters>
-                            <item label="%(band_pass_filter_label)s">%(band_pass_filter_id)s</item>
+                            <item description="%(band_pass_filter_description)s" label="%(band_pass_filter_label)s">%(band_pass_filter_id)s</item>
                         </bandpass-filters>
                     </filter>
 
@@ -387,14 +395,25 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'output_properties_1_name' : self.filter.name,
             'output_properties_1_label' : self.filter.label,
             'output_properties_1_units' : self.filter.units,
+            'output_properties_1_description' : self.filter.description,
+            'output_properties_2_name' : self.output_prop.name,
+            'output_properties_2_label' : self.output_prop.label,
+            'output_properties_2_description' : self.output_prop.description,
             'redshift' : float(self.snapshot.redshift),
             })
         xml_parameters.update({
             'filter': self.filter.name,
             'filter_min' : 'None',
             'filter_max' : '1000000',
+            'band_pass_filter_name': os.path.splitext(self.band_pass_filter.filter_id)[0],
             })
-        # comments are ignored by assertXmlEqual
+        xml_parameters.update({
+            'ssp_name': self.stellar_model.name,
+            'band_pass_filter_label': self.band_pass_filter.label,
+            'band_pass_filter_id': self.band_pass_filter.filter_id,
+            'band_pass_filter_name': os.path.splitext(self.band_pass_filter.filter_id)[0],
+            'dust_model_name': self.dust_model.name,
+            })
         expected_parameter_xml = stripped_joined_lines("""
             <?xml version="1.0" encoding="UTF-8"?>
             <!-- Using the XML namespace provides a version for future modifiability.  The timestamp allows
@@ -437,7 +456,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
 
                         <!-- List of fields to be included in the output file -->
                         <output-fields>
-                            <item label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
+                            <item description="%(output_properties_1_description)s" label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
                         </output-fields>
 
 
@@ -453,7 +472,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                     <!-- File output module -->
                     <csv module="csv">
                         <fields>
-                            <item label="parameter_005 label" units="Msun/h">CentralMvir rf</item>
+                            <item label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
                         </fields>
 
                         <parents>
@@ -542,6 +561,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'output_properties_1_name' : self.filter.name,
             'output_properties_1_label' : self.filter.label,
             'output_properties_1_units' : self.filter.units,
+            'output_properties_1_description' : self.filter.description,
             'redshift' : float(self.snapshot.redshift),
             })
         xml_parameters.update({
@@ -554,10 +574,12 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'ssp_name': self.stellar_model.name,
             'band_pass_filter_label': self.band_pass_filter.label,
             'band_pass_filter_id': self.band_pass_filter.filter_id,
+            'band_pass_filter_name': os.path.splitext(self.band_pass_filter.filter_id)[0],
+            'band_pass_filter_description': self.band_pass_filter.description,
             })
         # comments are ignored by assertXmlEqual
         expected_parameter_xml = stripped_joined_lines("""
-            <?xml version="1.0" encoding="UTF-8"?>
+            <?xml version="1.0"?>
             <!-- Using the XML namespace provides a version for future modifiability.  The timestamp allows
                  a researcher to know when this parameter file was generated.  -->
             <tao xmlns="http://tao.asvo.org.au/schema/module-parameters-v1" timestamp="2012-12-20T13:55:36+10:00">
@@ -598,7 +620,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
 
                         <!-- List of fields to be included in the output file -->
                         <output-fields>
-                            <item label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
+                            <item description="%(output_properties_1_description)s" label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
                         </output-fields>
 
 
@@ -614,9 +636,9 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                     <!-- File output module -->
                     <csv module="csv">
                         <fields>
-                            <item label="parameter_003 label" units="Msun/h">CentralMvir rf</item>
-                            <item label="bandpass">Band_pass_filter_001_absolute</item>
-                            <item label="bandpass">Band_pass_filter_001_apparent</item>
+                            <item label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
+                            <item label="bandpass">%(band_pass_filter_name)s_absolute</item>
+                            <item label="bandpass">%(band_pass_filter_name)s_apparent</item>
                         </fields>
 
                         <parents>
@@ -649,7 +671,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
 
                         <!-- Bandpass Filters) -->
                         <bandpass-filters>
-                            <item label="%(band_pass_filter_label)s">%(band_pass_filter_id)s</item>
+                            <item description="%(band_pass_filter_description)s" label="%(band_pass_filter_label)s">%(band_pass_filter_id)s</item>
                         </bandpass-filters>
                     </filter>
 
