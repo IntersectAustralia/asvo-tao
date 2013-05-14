@@ -326,7 +326,11 @@ class LiveServerTest(django.test.LiveServerTestCase):
         rows = table.find_elements_by_css_selector('tr')
         cells = [[cell.text for cell in row.find_elements_by_css_selector('th, td')] for row in rows]
         return cells
-        
+
+    def submit_support_form(self):
+        submit_button = self.selenium.find_element_by_css_selector('button[type="submit"]')
+        submit_button.submit()
+
 class LiveServerMGFTest(LiveServerTest):
     def submit_mgf_form(self):
         submit_button = self.selenium.find_element_by_css_selector('#mgf-form input[type="submit"]')

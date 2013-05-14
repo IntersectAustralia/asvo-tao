@@ -26,6 +26,7 @@ account_patterns = patterns('',
     url(r'login/$', 'tao.views.login', name='login'),
     url(r'logout/$', logout, {'next_page': reverse_lazy('home')}, name='logout'),
     url(r'register/$', 'tao.views.register', name='register'),
+    url(r'support_page/$', 'tao.views.support', name='support_page'),
 )
 
 mock_galaxy_factory_patterns = patterns('tao.views.mock_galaxy_factory',

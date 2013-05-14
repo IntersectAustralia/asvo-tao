@@ -104,6 +104,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
         self.fill_in_fields({
             'number_of_light_cones': '9', # this exceeds the calculated maximum, 3, for parameters above
         }, id_wrap=self.lc_id)
+        self.click(self.lc_2select('op_add_all')) # click somewhere else to shift focus out of the number of cones field (this shouldn't affect the current selection, as they are already all selected)
         self.submit_mgf_form()
 
         self.assert_on_page('mock_galaxy_factory')

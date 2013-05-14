@@ -19,7 +19,6 @@ class UserRegisterTest(helper.LiveServerTest):
         mail.outbox = []
 
     def tearDown(self):
-        for o in GlobalParameter.objects.all(): o.delete()
         for o in User.objects.all(): o.delete()
         super(UserRegisterTest, self).tearDown()
     
