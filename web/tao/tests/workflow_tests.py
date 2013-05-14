@@ -217,11 +217,12 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'ssp_name': self.stellar_model.name,
             'band_pass_filter_label': self.band_pass_filter.label,
             'band_pass_filter_id': self.band_pass_filter.filter_id,
+            'band_pass_filter_description': self.band_pass_filter.description,
             'dust_model_name': self.dust_model.name,
             })
         # comments are ignored by assertXmlEqual
         expected_parameter_xml = stripped_joined_lines("""
-            <?xml version="1.0" encoding="UTF-8"?>
+            <?xml version="1.0"?>
             <!-- Using the XML namespace provides a version for future modifiability.  The timestamp allows
                  a researcher to know when this parameter file was generated.  -->
             <tao xmlns="http://tao.asvo.org.au/schema/module-parameters-v1" timestamp="2012-12-20T13:55:36+10:00">
@@ -314,7 +315,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
 
                         <!-- Bandpass Filters) -->
                         <bandpass-filters>
-                            <item label="%(band_pass_filter_label)s">%(band_pass_filter_id)s</item>
+                            <item description="%(band_pass_filter_description)s" label="%(band_pass_filter_label)s">%(band_pass_filter_id)s</item>
                         </bandpass-filters>
                     </filter>
 
@@ -574,10 +575,11 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'band_pass_filter_label': self.band_pass_filter.label,
             'band_pass_filter_id': self.band_pass_filter.filter_id,
             'band_pass_filter_name': os.path.splitext(self.band_pass_filter.filter_id)[0],
+            'band_pass_filter_description': self.band_pass_filter.description,
             })
         # comments are ignored by assertXmlEqual
         expected_parameter_xml = stripped_joined_lines("""
-            <?xml version="1.0" encoding="UTF-8"?>
+            <?xml version="1.0"?>
             <!-- Using the XML namespace provides a version for future modifiability.  The timestamp allows
                  a researcher to know when this parameter file was generated.  -->
             <tao xmlns="http://tao.asvo.org.au/schema/module-parameters-v1" timestamp="2012-12-20T13:55:36+10:00">
@@ -669,7 +671,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
 
                         <!-- Bandpass Filters) -->
                         <bandpass-filters>
-                            <item label="%(band_pass_filter_label)s">%(band_pass_filter_id)s</item>
+                            <item description="%(band_pass_filter_description)s" label="%(band_pass_filter_label)s">%(band_pass_filter_id)s</item>
                         </bandpass-filters>
                     </filter>
 

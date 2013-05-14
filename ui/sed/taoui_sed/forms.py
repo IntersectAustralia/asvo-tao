@@ -123,7 +123,7 @@ class Form(BetterForm):
                 bf_elem = child_element(filter_elem, 'bandpass-filters')
                 for item in band_pass_filters:
                     op = datasets.band_pass_filter(item)
-                    child_element(bf_elem, 'item', text=op.filter_id, label=op.label)
+                    child_element(bf_elem, 'item', text=op.filter_id, label=op.label, description=op.description)
                     bpf = os.path.splitext(op.filter_id)[0]
                     child_element(fields_elem, 'item', text=bpf + '_absolute', label=op.label)
                     child_element(fields_elem, 'item', text=bpf + '_apparent', label=op.label)
