@@ -14,6 +14,8 @@ def light_cone_xml(xml_parameters):
     else:
         geometry_fragment = light_cone_geometry_xml(xml_parameters)
     xml_parameters.update({'geometry_fragment': geometry_fragment})
+    if 'band_pass_filter_description' not in xml_parameters:
+        xml_parameters.update({'band_pass_filter_description': ''})
     xml = stripped_joined_lines("""
             <?xml version="1.0" encoding="UTF-8"?>
             <!-- Using the XML namespace provides a version for future modifiability.  The timestamp allows
@@ -73,7 +75,7 @@ def light_cone_xml(xml_parameters):
 
                         <!-- Bandpass Filters) -->
                         <bandpass-filters>
-                            <item label="%(band_pass_filter_label)s">%(band_pass_filter_id)s</item>
+                            <item description="%(band_pass_filter_description)s" label="%(band_pass_filter_label)s">%(band_pass_filter_id)s</item>
                         </bandpass-filters>
                     </filter>
 
@@ -150,8 +152,8 @@ def light_cone_geometry_xml(xml_parameters):
 
                         <!-- List of fields to be included in the output file -->
                         <output-fields>
-                            <item label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
-                            <item label="%(output_properties_2_label)s">%(output_properties_2_name)s</item>
+                            <item description="%(output_properties_1_description)s" label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
+                            <item description="%(output_properties_2_description)s" label="%(output_properties_2_label)s">%(output_properties_2_name)s</item>
                         </output-fields>
 
                         <!-- RNG Seed -->

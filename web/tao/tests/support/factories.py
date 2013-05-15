@@ -48,6 +48,7 @@ class DataSetPropertyFactory(factory.Factory):
     FACTORY_FOR = DataSetProperty
     label = factory.Sequence(lambda n: 'parameter_%03d label' % int(n))
     name = factory.Sequence(lambda n: 'name_%03d' % int(n))
+    description = factory.Sequence(lambda n: 'description_%03d' % int(n))
     data_type = DataSetProperty.TYPE_INT
 
 class StellarModelFactory(factory.Factory):

@@ -166,8 +166,9 @@ class Form(BetterForm):
                 op = datasets.output_property(item)
                 attrs = {'label': op.label}
                 if op.units is not None and len(op.units) > 0: attrs['units'] = op.units
-                child_element(output_elem, 'item', text=op.name, **attrs)
                 child_element(fields_elem, 'item', text=op.name, **attrs)
+                attrs.update({'description': op.description})
+                child_element(output_elem, 'item', text=op.name, **attrs)
 
     @classmethod
     def from_xml(cls, ui_holder, xml_root, prefix=None):
