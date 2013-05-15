@@ -1,0 +1,16 @@
+{% extends '_base.html' %}
+{% load bootstrap_tags %}
+{% block subtitle %}
+    Support Page
+{% endblock %}
+
+{% block content %}
+    <h1>
+        Support Page
+    </h1>
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{ form|as_bootstrap }}
+    </form>
+    <p>Otherwise mail at <a href="mailto:asvo-tao-users@googlegroups.com">here</a></p>
+{% endblock content %}

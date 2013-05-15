@@ -267,12 +267,9 @@ fieldset legend {
     width: 50%;
     float: left;
 }
-.id_light_cone-number_of_light_cones .ui-spinner-input {
-    margin: 0 0;
-    margin-top: 0;
-    margin-left: 0;
+
+#id_light_cone-number_of_light_cones {
     margin-bottom: 0;
-    margin-left: 0;
 }
 
 .id_sed-apply_sed label, .id_sed-apply_dust label {
@@ -361,4 +358,91 @@ color: #333; cursor: pointer; display: inline-block; font-family: inherit; font-
 .btn-primary { background: #2ba6cb; color: #FFF; border: 1px solid #1e728c; }
 .btn-primary:hover { background-color: #2284a1; color: #FFF; border: 1px solid #1e728c; }
 
-.ui-spinner .help-inline { display: block; }
+
+.ui-spinner .help-inline { display: block; padding-right: 25px; }
+
+.summary_light_cone td,
+.summary_sed td,
+.summary_record_filter td,
+.summary_output td {
+    width: 300px;
+}
+
+.ui-state-disabled {
+    border: 1px solid #aaaaaa;
+    background: white;
+    font-weight: normal;
+    color: #212121;
+}
+
+.ui-state-enabled {
+    border: 1px solid #d3d3d3;
+    background: #e6e6e6;
+    font-weight: normal;
+    color: #555555;
+}
+
+#id_light_cone-output_properties-table.ui-resizable {
+    width: 500px;
+}
+
+/*Left light cone output properties table*/
+#id_light_cone-output_properties-table.ui-resizable > tbody > tr > #id_light_cone-output_properties-left {
+    width: 47%;
+}
+
+#id_light_cone-output_properties-table.ui-resizable > tbody > tr > td> input#id_light_cone-output_properties_filter {
+    padding: 4px 0px 6px 0px;
+    width: 100%;
+}
+
+#id_light_cone-output_properties-table.ui-resizable > tbody > tr > #id_light_cone-output_properties-left > select {
+    height: 100%;
+    width: 100%;
+}
+
+/*Right light cone output properties table*/
+#id_light_cone-output_properties-table.ui-resizable > tbody > tr > #id_light_cone-output_properties-right {
+    width: 47%;
+}
+
+#id_light_cone-output_properties-table.ui-resizable > tbody > tr > #id_light_cone-output_properties-right > select {
+    height: 100%;
+    width: 100%;
+}
+
+#id_light_cone-output_properties-table.ui-resizable > tbody > tr > #id_light_cone-output_properties-buttons {
+    text-align: center;
+    width: 6%;
+}
+
+/*Left sed band pass filters table*/
+#id_sed-band_pass_filters-table.ui-resizable > tbody > tr > #id_sed-band_pass_filters-left {
+    width: 47%;
+}
+
+#id_sed-band_pass_filters-table.ui-resizable > tbody > tr > td> input#id_sed-band_pass_filters_filter {
+    padding: 4px 0px 6px 0px;
+    width: 100%;
+}
+
+#id_sed-band_pass_filters-table.ui-resizable > tbody > tr > #id_sed-band_pass_filters-left > select {
+    height: 100%;
+    width: 100%;
+}
+
+/*Right sed band pass filters table*/
+#id_sed-band_pass_filters-table.ui-resizable > tbody > tr > #id_sed-band_pass_filters-right {
+    width: 47%;
+}
+
+#id_sed-band_pass_filters-table.ui-resizable > tbody > tr > #id_sed-band_pass_filters-right > select {
+    height: 100%;
+    width: 100%;
+}
+
+#id_sed-band_pass_filters-table.ui-resizable > tbody > tr > #id_sed-band_pass_filters-buttons {
+    text-align: center;
+    width: 6%;
+}
+

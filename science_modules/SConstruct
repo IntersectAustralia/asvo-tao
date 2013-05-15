@@ -13,6 +13,7 @@ config.select(
     config.packages.pugixml(),
     config.packages.Eigen(required=False),
     config.packages.libhpc(),
+    config.packages.cfitsio(),
 )
 
 vars = project.create_variables()

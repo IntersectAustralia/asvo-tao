@@ -9,6 +9,13 @@ def normalise_xml(xmlstring):
     return normalised_string
 
 def light_cone_xml(xml_parameters):
+    if xml_parameters['catalogue_geometry'] == 'box':
+        geometry_fragment = box_geometry_xml(xml_parameters)
+    else:
+        geometry_fragment = light_cone_geometry_xml(xml_parameters)
+    xml_parameters.update({'geometry_fragment': geometry_fragment})
+    if 'band_pass_filter_description' not in xml_parameters:
+        xml_parameters.update({'band_pass_filter_description': ''})
     xml = stripped_joined_lines("""
             <?xml version="1.0" encoding="UTF-8"?>
             <!-- Using the XML namespace provides a version for future modifiability.  The timestamp allows
@@ -23,64 +30,54 @@ def light_cone_xml(xml_parameters):
                 <workflow name="alpha-light-cone-image">
 
                     <!-- Global Configuration Parameters -->
-                    <schema-version>1.0</schema-version>
+                    <schema-version>2.0</schema-version>
 
                     <!-- Light-cone module parameters -->
-                    <light-cone>
+                    %(geometry_fragment)s
+
+                    <!-- File output module -->
+                    <csv module="csv">
+                        <fields>
+                            <item label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
+                            <item label="%(output_properties_2_label)s">%(output_properties_2_name)s</item>
+                            <item label="bandpass">%(band_pass_filter_name)s_absolute</item>
+                            <item label="bandpass">%(band_pass_filter_name)s_apparent</item>
+                        </fields>
+
+                        <parents>
+                            <item>filter</item>
+                        </parents>
+
                         <!-- Module Version Number -->
                         <module-version>1</module-version>
 
-                        <!-- Is the query a light-cone or box? -->
-                        <geometry>light-cone</geometry>
-
-                        <!-- Selected Simuation -->
-                        <simulation>%(dark_matter_simulation)s</simulation>
-
-                        <!-- Selected Galaxy Model -->
-                        <galaxy-model>%(galaxy_model)s</galaxy-model>
-
-                        <!-- The number of light-cones to generate  -->
-                        <box-repetition>%(light_cone_type)s</box-repetition>
-                        <num-cones>%(number_of_light_cones)d</num-cones>
-
-                        <!-- The min and max redshifts to filter by -->
-                        <redshift-min>%(redshift_min).1f</redshift-min>
-                        <redshift-max>%(redshift_max).1f</redshift-max>
-
-                        <!-- RA/Dec range for limiting the light-cone -->
-                        <ra-min units="deg">0.0</ra-min>
-                        <ra-max units="deg">%(ra_opening_angle).3f</ra-max>
-                        <dec-min units="deg">0.0</dec-min>
-                        <dec-max units="deg">%(dec_opening_angle).3f</dec-max>
-
-                        <!-- List of fields to be included in the output file -->
-                        <output-fields>
-                            <item label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
-                            <item label="%(output_properties_2_label)s">%(output_properties_2_name)s</item>
-                        </output-fields>
-
-                        <!-- RNG Seed -->
-                        <!-- This will be added by the workflow after the job has been completed
-                             to enable the job to be repeated.
-                             The information stored may change, the intent is to store whatever is
-                             required to re-run the job and obtain the same results.
-                        <rng-seed>12345678901234567890</rng-seed> -->
-
-                    </light-cone>
+                        <!-- Output file format -->
+                        <filename>tao.output.csv</filename>
+                    </csv>
 
                     <!-- Optional: Spectral Energy Distribution parameters -->
-                    <sed>
+                    <sed module="sed">
+                        <parents>
+                            <item>light-cone</item>
+                        </parents>
+
                         <!-- Module Version Number -->
                         <module-version>1</module-version>
 
                         <single-stellar-population-model>%(ssp_name)s</single-stellar-population-model>
+                        <dust>%(dust_model_name)s</dust>
+                    </sed>
+
+                    <filter module="filter">
+                        <parents>
+                            <item>sed</item>
+                        </parents>
 
                         <!-- Bandpass Filters) -->
                         <bandpass-filters>
-                            <item label="%(band_pass_filter_label)s">%(band_pass_filter_id)s</item>
+                            <item description="%(band_pass_filter_description)s" label="%(band_pass_filter_label)s">%(band_pass_filter_id)s</item>
                         </bandpass-filters>
-                        <dust>%(dust_model_name)s</dust>
-                    </sed>
+                    </filter>
 
                     <!-- Record Filter -->
                     <record-filter>
@@ -94,15 +91,6 @@ def light_cone_xml(xml_parameters):
                         <filter-min units="Msun/h">%(filter_min)s</filter-min>
                         <filter-max units="Msun/h">%(filter_max)s</filter-max>
                     </record-filter>
-
-                    <!-- File output module -->
-                    <output-file>
-                        <!-- Module Version Number -->
-                        <module-version>1</module-version>
-
-                        <!-- Output file format -->
-                        <format>csv</format>
-                    </output-file>
 
                     <!-- Image generation module parameters
                     <image-generator>
@@ -133,6 +121,84 @@ def light_cone_xml(xml_parameters):
         """) % xml_parameters
     return xml
 
+def light_cone_geometry_xml(xml_parameters):
+    return stripped_joined_lines("""
+                    <light-cone module="light-cone">
+                        <!-- Module Version Number -->
+                        <module-version>1</module-version>
+
+                        <!-- Is the query a light-cone or box? -->
+                        <geometry>light-cone</geometry>
+
+                        <!-- Selected Simuation -->
+                        <simulation>%(dark_matter_simulation)s</simulation>
+
+                        <!-- Selected Galaxy Model -->
+                        <galaxy-model>%(galaxy_model)s</galaxy-model>
+
+                        <!-- The number of light-cones to generate  -->
+                        <box-repetition>%(light_cone_type)s</box-repetition>
+                        <num-cones>%(number_of_light_cones)d</num-cones>
+
+                        <!-- The min and max redshifts to filter by -->
+                        <redshift-min>%(redshift_min).1f</redshift-min>
+                        <redshift-max>%(redshift_max).1f</redshift-max>
+
+                        <!-- RA/Dec range for limiting the light-cone -->
+                        <ra-min units="deg">0.0</ra-min>
+                        <ra-max units="deg">%(ra_opening_angle).3f</ra-max>
+                        <dec-min units="deg">0.0</dec-min>
+                        <dec-max units="deg">%(dec_opening_angle).3f</dec-max>
+
+                        <!-- List of fields to be included in the output file -->
+                        <output-fields>
+                            <item description="%(output_properties_1_description)s" label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
+                            <item description="%(output_properties_2_description)s" label="%(output_properties_2_label)s">%(output_properties_2_name)s</item>
+                        </output-fields>
+
+                        <!-- RNG Seed -->
+                        <!-- This will be added by the workflow after the job has been completed
+                             to enable the job to be repeated.
+                             The information stored may change, the intent is to store whatever is
+                             required to re-run the job and obtain the same results.
+                        <rng-seed>12345678901234567890</rng-seed> -->
+
+                    </light-cone>
+    """) % xml_parameters
+
+def box_geometry_xml(xml_parameters):
+    return stripped_joined_lines("""
+                    <light-cone module="light-cone">
+                        <!-- Module Version Number -->
+                        <module-version>1</module-version>
+
+                        <!-- Is the query a light-cone or box? -->
+                        <geometry>box</geometry>
+
+                        <!-- Selected Simuation -->
+                        <simulation>%(dark_matter_simulation)s</simulation>
+
+                        <!-- Selected Galaxy Model -->
+                        <galaxy-model>%(galaxy_model)s</galaxy-model>
+
+                        <redshift>%(redshift)s</redshift>
+                        <query-box-size units="Mpc">%(box_size)f</query-box-size>
+
+                        <!-- List of fields to be included in the output file -->
+                        <output-fields>
+                            <item label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
+                            <item label="%(output_properties_2_label)s">%(output_properties_2_name)s</item>
+                        </output-fields>
+
+                        <!-- RNG Seed -->
+                        <!-- This will be added by the workflow after the job has been completed
+                             to enable the job to be repeated.
+                             The information stored may change, the intent is to store whatever is
+                             required to re-run the job and obtain the same results.
+                        <rng-seed>12345678901234567890</rng-seed> -->
+
+                    </light-cone>
+    """) % xml_parameters
 
 class XmlDiffMixin(object):
     """

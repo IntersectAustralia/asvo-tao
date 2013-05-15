@@ -1,12 +1,13 @@
 from django.db import IntegrityError
 from django.test.testcases import TestCase
 
-from tao.models import Simulation
-
 from tao.tests.support.factories import SimulationFactory
 
 
 class SimulationTest(TestCase):
+    def tearDown(self):
+        super(SimulationTest, self).tearDown()
+
     def test_name_must_be_unique(self):
         name = 'some name'
 

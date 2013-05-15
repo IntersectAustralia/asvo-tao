@@ -30,20 +30,14 @@ namespace tao {
 
       ~filter();
 
-      ///
-      ///
-      ///
-      virtual
-      void
-      setup_options( options::dictionary& dict,
-                     optional<const string&> prefix=optional<const string&>() );
+
 
       ///
       /// Initialise the module.
       ///
       virtual
       void
-      initialise( const options::dictionary& dict,
+      initialise( const options::xml_dict& dict,
                   optional<const string&> prefix=optional<const string&>() );
 
       ///
@@ -58,9 +52,9 @@ namespace tao {
       ///
       void
       process_galaxy( const tao::galaxy& galaxy,
-                      const vector<real_type>::view& total_spectra,
-                      const vector<real_type>::view& disk_spectra,
-                      const vector<real_type>::view& bulge_spectra );
+                      const fibre<real_type>& total_spectra,
+                      const fibre<real_type>& disk_spectra,
+                      const fibre<real_type>& bulge_spectra );
 
       ///
       ///
@@ -71,12 +65,12 @@ namespace tao {
    protected:
 
       void
-      _process_spectra( const tao::galaxy& galaxy,
-                        const vector<real_type>::view& spectra,
+      _process_spectra( const vector<real_type>::view& spectra,
                         real_type area,
 			real_type& luminosity,
-                        vector<real_type>& apparent_mags,
-                        vector<real_type>& absolute_mags );
+			fibre<real_type>& apparent_mags,
+			fibre<real_type>& absolute_mags,
+			unsigned gal_idx );
 
       real_type
       _apparant_magnitude( real_type spectra,
@@ -100,7 +94,7 @@ namespace tao {
                    vector<real_type>::view weights );
 
       void
-      _read_options( const options::dictionary& dict,
+      _read_options( const options::xml_dict& dict,
                      optional<const string&> prefix=optional<const string&>() );
 
       void
@@ -120,11 +114,12 @@ namespace tao {
       vector<real_type> _filt_int;
       vector<real_type> _vega_int;
       vector<real_type> _vega_mag;
-      vector<real_type> _total_app_mags, _total_abs_mags;
-      vector<real_type> _disk_app_mags, _disk_abs_mags;
-      vector<real_type> _bulge_app_mags, _bulge_abs_mags;
       vector<string> _filter_names;
-      real_type _total_lum, _disk_lum, _bulge_lum;
+
+      fibre<real_type> _total_app_mags, _total_abs_mags;
+      fibre<real_type> _disk_app_mags, _disk_abs_mags;
+      fibre<real_type> _bulge_app_mags, _bulge_abs_mags;
+      vector<real_type> _total_lum, _disk_lum, _bulge_lum;
    };
 }
 

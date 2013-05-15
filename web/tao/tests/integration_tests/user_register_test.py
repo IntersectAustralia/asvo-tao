@@ -2,9 +2,11 @@ from django.core import mail
 from django.test.utils import override_settings
 
 from tao.tests.integration_tests import helper
-from tao.tests.support.factories import UserFactory
+from tao.tests.support.factories import UserFactory, GlobalParameterFactory
+from tao.models import GlobalParameter, User
 
-class UserRegisterTest(helper.LiveServerTest):    
+class UserRegisterTest(helper.LiveServerTest):
+
     def setUp(self):
         super(UserRegisterTest, self).setUp()
         self.admin_emails = []
@@ -12,7 +14,13 @@ class UserRegisterTest(helper.LiveServerTest):
             u = UserFactory.create(is_staff=True)
             self.admin_emails.append(u.email)
         UserFactory.create(username="someone", email="normal@test.com")
+        GlobalParameterFactory(parameter_name='registration.html', parameter_value='{{ pending_requests_url }}')
+        GlobalParameterFactory(parameter_name='registration.txt', parameter_value='{{ pending_requests_url }}')
         mail.outbox = []
+
+    def tearDown(self):
+        for o in User.objects.all(): o.delete()
+        super(UserRegisterTest, self).tearDown()
     
     @override_settings(USE_CAPTCHA=False)    
     def test_email_admin(self):

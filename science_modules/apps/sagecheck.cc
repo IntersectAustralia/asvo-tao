@@ -9,8 +9,8 @@ using namespace hpc;
 struct galaxy_type
 {
    int   type;
-   long long   GalaxyIndex;
-   int   HaloIndex;
+   long long   galaxy_index;
+   int   halo_index;
    int   fof_idx;
    int   tree_idx;
 
@@ -23,18 +23,18 @@ struct galaxy_type
   
    int   snap;
    int   central_gal;
-   float CentralMvir;
+   float central_mvir;
 
    // properties of subhalo at the last time this galaxy was a central galaaxy 
-   float Pos[3];
-   float Vel[3];
-   float Spin[3];
-   int   Len;   
-   float Mvir;
-   float Rvir;
-   float Vvir;
-   float Vmax;
-   float VelDisp;
+   float pos[3];
+   float vel[3];
+   float spin[3];
+   int   len;   
+   float mvir;
+   float rvir;
+   float vvir;
+   float vmax;
+   float vel_disp;
 
    // baryonic reservoirs 
    float ColdGas;
@@ -60,6 +60,9 @@ struct galaxy_type
    float DiskScaleRadius;
    float Cooling;
    float Heating;
+
+  float LastMajorMerger;
+  float OutflowRate;
 };
 
 std::ostream&
@@ -197,8 +200,8 @@ main( int argc,
             // Insert global to local mapping and range.
             ASSERT( !global_to_local.has( halos[jj].global_index ) );
             global_to_local.insert( halos[jj].global_index, jj );
-	    ASSERT( halos[jj].global_index > global_upp );
-	    global_upp = halos[jj].global_index;
+	    // ASSERT( halos[jj].global_index > global_upp );
+	    // global_upp = halos[jj].global_index;
          }
 
          // Starting from the bases, walk up the tree to compute some

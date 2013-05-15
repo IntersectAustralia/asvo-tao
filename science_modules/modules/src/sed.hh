@@ -39,20 +39,14 @@ namespace tao {
 
       ~sed();
 
-      ///
-      ///
-      ///
-      virtual
-      void
-      setup_options( options::dictionary& dict,
-                     optional<const string&> prefix=optional<const string&>() );
+
 
       ///
       /// Initialise the module.
       ///
       virtual
       void
-      initialise( const options::dictionary& dict,
+      initialise( const options::xml_dict& dict,
                   optional<const string&> prefix=optional<const string&>() );
 
       ///
@@ -77,7 +71,8 @@ namespace tao {
    protected:
 
       void
-      _process_time( mpi::lindex time_idx );
+      _process_time( mpi::lindex time_idx,
+		     unsigned gal_idx );
 
       void
       _sum_spectra( mpi::lindex time_idx,
@@ -89,7 +84,8 @@ namespace tao {
       _interp_metal( real_type metal );
 
       void
-      _rebin_info( const tao::galaxy& galaxy );
+      _rebin_info( const tao::galaxy& galaxy,
+                   unsigned idx );
 
       void
       _rebin_parents( unsigned id,
@@ -114,7 +110,7 @@ namespace tao {
       _setup_snap_ages();
 
       void
-      _read_options( const options::dictionary& dict,
+      _read_options( const options::xml_dict& dict,
                      optional<const string&> prefix=optional<const string&>() );
 
       void
@@ -127,7 +123,7 @@ namespace tao {
       vector<real_type> _disk_age_masses, _bulge_age_masses;
       vector<real_type> _disk_age_metals, _bulge_age_metals;
       mpi::lindex _num_spectra, _num_metals;
-      vector<real_type> _disk_spectra, _bulge_spectra, _total_spectra;
+      fibre<real_type> _disk_spectra, _bulge_spectra, _total_spectra;
       vector<real_type> _ssp;
 
       long long _cur_tree_id;
