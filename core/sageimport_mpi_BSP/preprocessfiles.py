@@ -8,6 +8,7 @@ import DBConnection
 import logging
 
 class PreprocessFiles(object):
+
     ## Mapping between SAGE (C/C++) data types to Database data types 
     FormatMapping={'int':'INT','float':'FLOAT4','long long':'BIGINT'}
     
@@ -42,10 +43,9 @@ class PreprocessFiles(object):
           
         ## If the database already exists - give the user the option to drop it
         if len(ResultsList)>0:
-            sys.stdout.write("\033[0;33m"+"Database "+self.DBName+" with the same name already exists!\nIf you Choose to Continue it will be dropped. Do you want to Drop it?(y/n)\033[0m\n")
-            sys.stdout.flush()
-            Response=raw_input("")
-            if Response=='y':
+
+            Response=self.Options["RunningSettings:OverWriteDB"]
+            if Response=='yes':
                 ## Drop the database
                 self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers("Drop database "+self.DBName+";")                
                 logging.info("Database "+self.DBName+" Dropped")
@@ -71,10 +71,10 @@ class PreprocessFiles(object):
     
     def CreateTreeMappingTable(self):
         
-        DropTable="DROP TABLE IF EXISTS TreeMapping;"
+        DropTable="SET client_min_messages TO WARNING; DROP TABLE IF EXISTS TreeMapping;"
         self.DBConnection.ExecuteNoQuerySQLStatment(DropTable)
         
-        CreateTable="CREATE TABLE TreeMapping ("        
+        CreateTable="SET client_min_messages TO WARNING; CREATE TABLE TreeMapping ("
         CreateTable=CreateTable+"GlobalTreeID BIGINT,"       
         CreateTable=CreateTable+"GridX INT,"
         CreateTable=CreateTable+"GridY INT)"                
@@ -127,10 +127,10 @@ class PreprocessFiles(object):
         
         self.CreateNewTable(NumberofTables)
     def CreateTable_DB_Mapping(self):
-        DropTable="DROP TABLE IF EXISTS Table_DB_Mapping;"
+        DropTable="SET client_min_messages TO WARNING; DROP TABLE IF EXISTS Table_DB_Mapping;"
         self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers(DropTable)
         
-        CreateTableMapping="Create TABLE Table_DB_Mapping (TableName varchar(500),NodeName varchar(5000),IsActive boolean DEFAULT (True), PRIMARY KEY(TableName, NodeName));"
+        CreateTableMapping="SET client_min_messages TO WARNING; Create TABLE Table_DB_Mapping (TableName varchar(500),NodeName varchar(5000),IsActive boolean DEFAULT (True), PRIMARY KEY(TableName, NodeName));"
         self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers(CreateTableMapping) 
     ## Use Statement concatenation and the  CurrentSAGEStrcuture loaded from the XML settings to create a new table template
     def CreateNewTableTemplate(self):
@@ -160,7 +160,7 @@ class PreprocessFiles(object):
             TablePrefix=self.Options['PGDB:TreeTablePrefix']
             NewTableName=TablePrefix+str(TableIndex)
             ## If the table exists drop it 
-            DropSt="DROP TABLE IF EXISTS "+NewTableName+";"
+            DropSt="SET client_min_messages TO WARNING; DROP TABLE IF EXISTS "+NewTableName+";"
             self.DBConnection.ExecuteNoQuerySQLStatment(DropSt,HostIndex)
             CreateTableStatment= string.replace(self.CreateTableTemplate,"@TABLEName",NewTableName)
             
@@ -226,7 +226,7 @@ class PreprocessFiles(object):
         #Process All the Non-Empty Files 
         ## The table "DataFiles" will work as a record keeper for which files has been processed and which has not been processed 
         ## It will be use to support continue in case of error
-        CreateTableSt="DROP TABLE IF EXISTS DataFiles; CREATE TABLE DataFiles "
+        CreateTableSt="SET client_min_messages TO WARNING; DROP TABLE IF EXISTS DataFiles; CREATE TABLE DataFiles "
         CreateTableSt=CreateTableSt+"(FileID INT, FileName varchar(500),FileSize BIGINT, "
         CreateTableSt=CreateTableSt+" NumberofTrees INT, TotalNumberOfGalaxies BIGINT, TreeIDFrom INT,TreeIDTo INT,Processed boolean);"
         
