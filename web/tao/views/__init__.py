@@ -123,6 +123,9 @@ def support(request):
         if form.is_valid():
             to_addrs = _get_support_recipients()
             context = Context({'subject': form.cleaned_data['subject'], 'message': form.cleaned_data['message'], 'user': request.user})
+            logger.info('Support email from ' + request.user.username)
+            logger.info('Subject: ' + form.cleaned_data['subject'])
+            logger.info('Message: ' + form.cleaned_data['message'])
             send_mail('support-template', context, 'TAO Support: ' + form.cleaned_data['subject'], to_addrs)
             return render(request, 'email_sent.html')
     else:
