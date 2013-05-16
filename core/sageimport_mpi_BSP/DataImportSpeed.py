@@ -5,6 +5,7 @@ import PGDBInterface # Interaction with the postgreSQL DB
 import time
 from decimal import Decimal
 import DBConnection
+import logging
 
 class DataImportSpeed:    
         
@@ -25,6 +26,8 @@ class DataImportSpeed:
         
         
 if __name__ == '__main__':
+    logging.basicConfig(filename='log/DataImportSpeed.log',level=logging.DEBUG,format='%(asctime)s %(message)s')
+    
     [CurrentSAGEStruct,Options]=settingReader.ParseParams("settings.xml")
     CurrentPGDB=DBConnection.DBConnection(Options)
     DataImportSpeedObj=DataImportSpeed(Options,CurrentPGDB)
@@ -39,13 +42,13 @@ if __name__ == '__main__':
             time.sleep(10)            
             CurrentValue=DataImportSpeedObj.GetCurrentProcessedGalaxiesCount()
             CTime= time.time()
-            print (str(STime)+"/"+str(CTime))
+            logging.info (str(STime)+"/"+str(CTime))
             Elapsed=CTime-STime
-            print("Total Imported="+str(CurrentValue)+"/"+str(TotalGalaxies)+"="+str(((CurrentValue*Decimal(100.0))/TotalGalaxies))+"%")
+            logging.info("Total Imported="+str(CurrentValue)+"/"+str(TotalGalaxies)+"="+str(((CurrentValue*Decimal(100.0))/TotalGalaxies))+"%")
             
-            print("Imported from Start="+str(CurrentValue-InitialValue)+"\tElapsed="+str(Elapsed)+" seconds")      
-            print("Current Speed ="+str(int((CurrentValue-InitialValue)/Decimal(Elapsed)))+" Record/Second")
+            logging.info("Imported from Start="+str(CurrentValue-InitialValue)+"\tElapsed="+str(Elapsed)+" seconds")      
+            logging.info("Current Speed ="+str(int((CurrentValue-InitialValue)/Decimal(Elapsed)))+" Record/Second")
             
     except Exception as Exp:
-        print Exp
+        logging.info(Exp)
         CurrentPGDB.CloseConnections()

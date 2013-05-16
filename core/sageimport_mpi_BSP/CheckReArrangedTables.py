@@ -8,6 +8,7 @@ import numpy
 import matplotlib.pyplot as plt
 import time
 import DBConnection
+import logging
 
 
 class CheckReArrangedTrees(object):
@@ -26,14 +27,14 @@ class CheckReArrangedTrees(object):
         # Take care that the connection will be opened to standard DB 'master'
         # This is temp. until the actual database is created
         
-        print('Connection to DB is open...Start Creating Tables')
+        logging.info('Connection to DB is open...Start Creating Tables')
         
         
     
     
     def CloseConnections(self):        
         self.DBConnection.close()       
-        print('Connection to DB is Closed...')
+        logging.info('Connection to DB is Closed...')
     
    
     def GetTableRecordsCount(self,TableName):
@@ -60,7 +61,7 @@ class CheckReArrangedTrees(object):
             if string.find(TableName,self.Options['PGDB:ReArrangedTreeTablePrefix'])==0:                
                 ReArrangedTablesCount=ReArrangedTablesCount+self.GetTableRecordsCount(TableName)
             
-            print("Processing Table: "+TableName+ "\t "+str(Count)+"/"+str(len(TablesList))+"\t"+str(ReArrangedTablesCount)+"/"+str(OriginalTablesCount))    
+            logging.info("Processing Table: "+TableName+ "\t "+str(Count)+"/"+str(len(TablesList))+"\t"+str(ReArrangedTablesCount)+"/"+str(OriginalTablesCount))    
                 
             Count=Count+1    
                     
@@ -68,7 +69,7 @@ class CheckReArrangedTrees(object):
 if __name__ == '__main__':
     
     
-    
+    logging.basicConfig(filename='log/CheckReArrangeTableslogfile.log',level=logging.DEBUG,format='%(asctime)s %(message)s')
     
     [CurrentSAGEStruct,Options]=settingReader.ParseParams("settings.xml") 
     CheckReArrangedTreesObj=CheckReArrangedTrees(CurrentSAGEStruct,Options)

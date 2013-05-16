@@ -92,7 +92,7 @@ def strip_zeros(waves, values):
 ##
 ##
 ##
-def plot_filter(filename):
+def calc_filter(filename):
 
     # Read input file.
     waves = []
@@ -111,22 +111,40 @@ def plot_filter(filename):
 
     # Setup variables.
     filter_name = filename[:filename.rfind('.')]
-    color = '#ff4444'
 
+    # Answer as a dictionary
+    filter = {
+        'filter_name': filter_name,
+        'waves': waves,
+        'values': values,
+        'x_rng': x_rng,
+        'y_rng': y_rng,
+        }
+    return filter
+
+def plot(filter):
+    color = '#ff4444'
     # Plot.
     # plt.plot(waves, values, linewidth=2.0, color='grey')
-    plt.fill_between(waves, values, facecolor=color, color=color)
-    plt.ylim([y_rng[0], y_rng[1] + 0.1])
+    plt.fill_between(filter['waves'], filter['values'],
+        facecolor=color, color=color)
+    plt.ylim([filter['y_rng'][0], filter['y_rng'][1] + 0.1])
     plt.ylabel('Transmission')
-    plt.xlim(x_rng)
+    plt.xlim(filter['x_rng'])
     plt.xlabel(ur'Wavelength (\u00c5)')
-    if is_logarithmic(waves):
+    if is_logarithmic(filter['waves']):
         plt.xscale('log')
     plt.grid(True)
-    plt.title(filter_name)
+    plt.title(filter['filter_name'])
     # plt.show()
-    plt.savefig(filter_name + '.png')
+
+
+def plot_filter(filename):
+    filter = calc_filter(filename)
+    plot(filter)
+    plt.savefig(filter['filter_name'] + '.png')
     plt.clf()
+
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
@@ -134,3 +152,4 @@ if __name__ == '__main__':
         sys.exit()
 
     plot_filter(sys.argv[1])
+

@@ -152,6 +152,10 @@ class LiveServerTest(django.test.LiveServerTestCase):
         fields = self.selenium.find_elements_by_name(name)
         self.assertTrue([field.is_displayed() for field in fields])
 
+    def assert_are_displayed_by_class_name(self, name):
+        fields = self.selenium.find_elements_by_class_name(name)
+        self.assertTrue([field.is_displayed() for field in fields])
+
     def assert_are_not_displayed(self, name):
         fields = self.selenium.find_elements_by_name(name)
         self.assertFalse(all([field.is_displayed() for field in fields]))
@@ -182,6 +186,10 @@ class LiveServerTest(django.test.LiveServerTestCase):
             else:
                 elem.send_keys(str(text_to_input))
 
+    def clear(self, selector):
+        elem = self.selenium.find_element_by_css_selector(selector)
+        elem.clear()
+
     def click(self, elem_id):
         elem = self.selenium.find_element_by_id(elem_id)
         elem.click()
@@ -191,7 +199,12 @@ class LiveServerTest(django.test.LiveServerTestCase):
         elem = self.selenium.find_element_by_css_selector(element_css)
         elem.click()
         wait(0.5)
-            
+
+    def click_by_class_name(self, class_name):
+        elem = self.selenium.find_element_by_class_name(class_name)
+        elem.click()
+        wait(0.5)
+
     def login(self, username, password):
         self.visit('login')
 
@@ -296,7 +309,7 @@ class LiveServerMGFTest(LiveServerTest):
     def submit_mgf_form(self):
         submit_button = self.selenium.find_element_by_css_selector('#mgf-form input[type="submit"]')
         submit_button.submit()
-        wait(1)
+        wait(1.5)
 
     def assert_errors_on_field(self, what, field_id):
         field_elem = self.selenium.find_element_by_css_selector(field_id)

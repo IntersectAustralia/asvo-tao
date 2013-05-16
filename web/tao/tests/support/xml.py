@@ -40,8 +40,8 @@ def light_cone_xml(xml_parameters):
                         <galaxy-model>%(galaxy_model)s</galaxy-model>
 
                         <!-- The number of light-cones to generate  -->
-                        <box-repetition>unique</box-repetition>
-                        <num-cones>1</num-cones>
+                        <box-repetition>%(light_cone_type)s</box-repetition>
+                        <num-cones>%(number_of_light_cones)d</num-cones>
 
                         <!-- The min and max redshifts to filter by -->
                         <redshift-min>%(redshift_min).1f</redshift-min>

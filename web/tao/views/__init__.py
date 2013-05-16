@@ -32,9 +32,12 @@ def login(request):
     if request.method == 'POST':
         if not request.POST.get('remember_me', None):
             request.session.set_expiry(0)  # expires on browser close
-    q_dict = {'target':request.build_absolute_uri(reverse('home')),'entityID':tao_settings.AAF_APP_ID}
+    q_dict = {'target':request.build_absolute_uri(reverse('home'))}
     aaf_session_url = tao_settings.AAF_SESSION_URL + "?" + django_urlencode(q_dict)
     return auth_views.login(request, authentication_form=LoginForm,extra_context={'aaf_session_url':aaf_session_url})
+
+def fail(request):
+    print request.METAS
 
 
 def register(request):

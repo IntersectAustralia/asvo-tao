@@ -135,7 +135,7 @@ class Form(BetterForm):
             child_element(light_cone_elem, 'redshift', text=snapshot.redshift)
         else:
             child_element(light_cone_elem, 'box-repetition', text=self.cleaned_data['light_cone_type'])
-            child_element(light_cone_elem, 'num-cones', text=1)
+            child_element(light_cone_elem, 'num-cones', text=self.cleaned_data['number_of_light_cones'])
             child_element(light_cone_elem, 'redshift-min', text=self.cleaned_data['redshift_min'])
             child_element(light_cone_elem, 'redshift-max', text=self.cleaned_data['redshift_max'])
 
