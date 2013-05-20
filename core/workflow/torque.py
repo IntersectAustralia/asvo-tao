@@ -72,7 +72,10 @@ class TorqueInterface(object):
             #PBS -l walltime=%(wt_hours)02d:%(wt_minutes)02d:%(wt_seconds)02d
             #PBS -d .
             source /usr/local/modules/init/tcsh
-            module load gcc/4.6.2 mpich2 hdf5/x86_64/gnu/1.8.9-mpich2 boost
+            module load boost gsl hdf5/x86_64/gnu/1.8.9-openmpi-psm postgresql
+            module load cmake/x86_64/gnu/2.8.8
+            module load cfitsio/x86_64/gnu/3.290
+
             setenv PATH /lustre/projects/p014_swin/programs/ScienceModulesBackup/bin:$PATH
             setenv LD_LIBRARY_PATH /lustre/projects/p014_swin/programs/ScienceModulesBackup/lib:/lustre/projects/p014_swin/programs/ScienceModulesBackup/helperlib:$LD_LIBRARY_PATH
             mpiexec %(executable)s %(path)s %(basicsettingpath)s

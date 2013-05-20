@@ -4,7 +4,7 @@ import requests
 import torque
 import dbase
 import settingReader # Read the XML settings
-import logging
+import logging, logging.handlers
 from daemon import Daemon
 import signal
 import emailreport
@@ -23,10 +23,18 @@ class WorkflowDaemon(Daemon):
            LogFileBackup.write(Contents)
            LogFileBackup.close()
            os.remove('log/logfile.log')
-            
+    def PrepareLogFile(self):
+        LOG_FILENAME = 'log/logfile.log'
+        self.TAOLoger = logging.getLogger() 
+        self.TAOLoger.setLevel(logging.DEBUG)      
+        handler = logging.handlers.RotatingFileHandler(LOG_FILENAME, maxBytes=10485760, backupCount=5)
+        handler.setFormatter(logging.Formatter('%(asctime)s - %(message)s'))
+        self.TAOLoger.addHandler(handler)
+        
     def Workflow(self):
-        self.BackupLogFile()
-        logging.basicConfig(filename='log/logfile.log',level=logging.DEBUG,format='%(asctime)s %(message)s')
+        #self.BackupLogFile()
+        self.PrepareLogFile()
+        #logging.basicConfig(filename='log/logfile.log',level=logging.DEBUG,format='%(asctime)s %(message)s')
         ## Read Running Setting from XML File
         [self.Options]=settingReader.ParseParams("settings.xml")
         
