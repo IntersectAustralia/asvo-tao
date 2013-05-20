@@ -33,6 +33,15 @@ jQuery(document).ready(function($) {
         show_tab($enclosing, 0);
     }
 
+    var display_maximum_number_light_cones = function($field, msg) {
+        var $enclosing = $field.closest('label.control-label');
+        $enclosing.find('span.lc_number-inline').remove();
+        if (msg == null) return;
+        $field.after('<span class="lc_number-inline"></span>');
+        $enclosing.find('span.lc_number-inline').text(msg);
+        show_tab($enclosing, 0);
+    }
+
     var lc_output_props_widget = new TwoSidedSelectWidget(lc_id('output_properties'), true);
 
     var sed_band_pass_filters_widget = new TwoSidedSelectWidget(sed_id('band_pass_filters'), false);
@@ -67,6 +76,12 @@ jQuery(document).ready(function($) {
         $('div.summary_' + form_name + ' .' + field_name).html('None');
     }
 
+    var format_redshift = function(redshift_string) {
+        var redshift = parseFloat(redshift_string);
+        var whole_digit = parseInt(redshift).toString().length;
+        return redshift.toFixed(Math.max(5-whole_digit, 0));
+    };
+
     var update_snapshot_options = function(){
         var simulation_id = $(lc_id('dark_matter_simulation')).val();
         var galaxy_model_id = $(lc_id('galaxy_model')).find(':selected').attr('data-galaxy_model_id');
@@ -90,9 +105,7 @@ jQuery(document).ready(function($) {
                     // So z=0 is the present, and z=Infinity is the Big Bang.
                     // This is a non-linear relationship with more variation at smaller z values.
                     // To present figures that are easy to read and have sensible precision, redshift will be displayed with up to 5 decimals.
-                    var redshift = parseFloat(item.fields.redshift);
-                    var whole_digits = parseInt(redshift).toString().length;
-                    $option.html(redshift.toFixed(Math.max(5-whole_digits,0)));
+                    $option.html(format_redshift(item.fields.redshift));
                     if (item.pk == current) {
                         $option.attr('selected','selected');
                     }
@@ -210,6 +223,7 @@ jQuery(document).ready(function($) {
                 $('div.galaxy-model-info .details').html(data.fields.details);
                 $galaxy_model_info.show();
                 fill_in_summary('light_cone', 'galaxy_model', data.fields.name);
+                fill_in_summary('light_cone', 'galaxy_model_description', '<br><b>' + data.fields.name + ':</b><br>' + data.fields.details);
             }
         });
     };
@@ -261,6 +275,7 @@ jQuery(document).ready(function($) {
                 $('div.simulation-info .details').html(data.fields.details);
                 $('div.simulation-info').show();
                 fill_in_summary('light_cone', 'simulation', data.fields.name);
+                fill_in_summary('light_cone', 'simulation_description', '<br><b>' + data.fields.name + ':</b><br>' + data.fields.details);
                 $(lc_id('number_of_light_cones')).data("simulation-box-size", data.fields.box_size);
             }
         });
@@ -278,6 +293,7 @@ jQuery(document).ready(function($) {
                 $('div.stellar-model-info .name').html(data.fields.name);
                 $('div.stellar-model-info .details').html(data.fields.description);
                 $('div.stellar-model-info').show();
+                fill_in_summary('sed', 'stellar_model_description', '<br>' + data.fields.description);
             }
         });
     };
@@ -295,6 +311,7 @@ jQuery(document).ready(function($) {
                 $('div.dust-model-info .details').html(data.fields.details);
                 $('div.dust-model-info').show();
                 fill_in_summary('sed', 'dust_model', data.fields.name);
+                fill_in_summary('sed', 'dust_model_description', '<br>' + data.fields.details);
             }
         });
     };
@@ -320,15 +337,100 @@ jQuery(document).ready(function($) {
     // - event handlers for fields -
     //
 
+    $('#expand_dataset').click(function(e) {
+        e.preventDefault();
+        $this = $(this);
+        if ($this.html() === "&gt;&gt;") {
+            $('div.summary_light_cone .simulation_description, div.summary_light_cone .galaxy_model_description').show();
+            $this.html("<<");
+        } else {
+            $('div.summary_light_cone .simulation_description, div.summary_light_cone .galaxy_model_description').hide();
+            $this.html(">>");
+        }
+        return false;
+    });
+
+    $('#expand_stellar_model').click(function(e) {
+        e.preventDefault();
+        $this = $(this);
+        if ($this.html() === "&gt;&gt;") {
+            $('div.summary_sed .stellar_model_description').show();
+            $this.html("<<");
+        } else {
+            $('div.summary_sed .stellar_model_description').hide();
+            $this.html(">>");
+        }
+        return false;
+    });
+
+    $('#expand_dust_model').click(function(e) {
+        e.preventDefault();
+        $this = $(this);
+        if ($this.html() === "&gt;&gt;") {
+            $('div.summary_sed .dust_model_description').show();
+            $this.html("<<");
+        } else {
+            $('div.summary_sed .dust_model_description').hide();
+            $this.html(">>");
+        }
+        return false;
+    });
+
+    var list_multiple_selections_in_summary = function(form_name, select_widget){
+        console.log("list_multiple_selections_in_summary for " + select_widget + " starts")
+        var selections_count = 0;
+        var selected_values = [];
+
+        selected_values.push('<ul>');
+        var $groups = $('#id_' + form_name + '-' + select_widget +' optgroup');
+        console.log(form_name + ' ' + select_widget + ' has group size: ' + $groups.size());
+        if ($groups.size() > 0) {
+            $groups.each(function(i, e) {
+                var name = $(e).attr('group-name');
+                if (name.length == 0) {
+                    name = "Ungrouped";
+                }
+                selected_values.push('<li>' + name + '<ul>');
+                $(e).find('option').each(function(i,option) {
+                    selected_values.push('<li>' + $(option).html() + '</li>');
+                    selections_count++;
+                })
+                selected_values.push('</ul></li>');
+            })
+        } else {
+            $('#id_' + form_name + '-' + select_widget +' option').each(function(i,option) {
+                selected_values.push('<li>' + $(option).html() + '</li>');
+                selections_count++;
+            });
+        }
+        selected_values.push('</ul>');
+
+        fill_in_summary(form_name, select_widget + '_list', selected_values.join(''));
+        console.log("list_multiple_selections_in_summary  " + select_widget + " ends")
+        return selections_count;
+    }
+
     lc_output_props_widget.change_event(function(evt){
         update_filter_options(false, false);
-        var output_properties_values = [];
-        output_properties_values.push('<ul');
-        $(lc_id('output_properties')+' option').each(function(i) {
-            output_properties_values.push('<li>' + $(this).html() + '</li>');
-        });
-        output_properties_values.push('</ul');
-        fill_in_summary('light_cone', 'output_properties', output_properties_values);
+        var output_properties_count = list_multiple_selections_in_summary('light_cone', 'output_properties');
+
+        if (output_properties_count == 1)
+            fill_in_summary('light_cone', 'output_properties', output_properties_count + " property selected");
+        else
+            fill_in_summary('light_cone', 'output_properties', output_properties_count + " properties selected");
+    });
+
+    $('#expand_output_properties').click(function(e) {
+        e.preventDefault();
+        $this = $(this);
+        if ($this.html() === "&gt;&gt;") {
+            $('div.summary_light_cone .output_properties_list').show();
+            $this.html("<<");
+        } else {
+            $('div.summary_light_cone .output_properties_list').hide();
+            $this.html(">>");
+        }
+        return false;
     });
 
     lc_output_props_widget.option_clicked_event(function(cache_item){
@@ -336,18 +438,30 @@ jQuery(document).ready(function($) {
     });
 
     var display_band_pass_filters_summary = function() {
-        var band_pass_filter_values = [];
-        band_pass_filter_values.push('<ul');
-        $(sed_id('band_pass_filters')+' option').each(function(i) {
-            band_pass_filter_values.push('<li>' + $(this).html() + '</li>');
-        });
-        band_pass_filter_values.push('</ul');
-        fill_in_summary('sed', 'band_pass_filters', band_pass_filter_values);
+        var band_pass_filter_count = list_multiple_selections_in_summary('sed', 'band_pass_filters');
+
+        if (band_pass_filter_count == 1)
+            fill_in_summary('sed', 'band_pass_filters', band_pass_filter_count + " filter selected");
+        else
+            fill_in_summary('sed', 'band_pass_filters', band_pass_filter_count + " filters selected");
     }
 
     sed_band_pass_filters_widget.change_event(function(evt){
         update_filter_options(false, false);
         display_band_pass_filters_summary();
+    });
+
+    $('#expand_band_pass_filters').click(function(e) {
+        e.preventDefault();
+        $this = $(this);
+        if ($this.html() === "&gt;&gt;") {
+            $('div.summary_sed .band_pass_filters_list').show();
+            $this.html("<<");
+        } else {
+            $('div.summary_sed .band_pass_filters_list').hide();
+            $this.html(">>");
+        }
+        return false;
     });
 
     sed_band_pass_filters_widget.option_clicked_event(function(cache_item){
@@ -380,6 +494,20 @@ jQuery(document).ready(function($) {
         update_snapshot_options();
     });
 
+    var fill_in_selection_in_summary = function() {
+        var filter_min = $(rf_id('min')).val();
+        var filter_max = $(rf_id('max')).val();
+        var filter_selected = $(rf_id('filter')).find('option:selected').html();
+        if (!filter_min && !filter_max)
+            fill_in_summary('record_filter', 'record_filter', filter_selected);
+        else if (!filter_min)
+            fill_in_summary('record_filter', 'record_filter', filter_selected + ' &le; ' + filter_max);
+        else if (!filter_max)
+            fill_in_summary('record_filter', 'record_filter', filter_min + ' &le; ' + filter_selected);
+        else
+            fill_in_summary('record_filter', 'record_filter', filter_min + ' &le; ' + filter_selected + ' &le; ' + filter_max);
+    }
+
     $(rf_id('filter')).change(function(evt){
         var $this = $(this);
         var filter_value = $this.val();
@@ -391,42 +519,13 @@ jQuery(document).ready(function($) {
         } else {
             $(rf_id('max')).removeAttr('disabled');
             $(rf_id('min')).removeAttr('disabled');
-            var filter_min = $(rf_id('min')).val();
-            var filter_max = $(rf_id('max')).val();
-            var filter_selected = $this.find('option:selected').html();
-            if (!filter_min && !filter_max)
-                fill_in_summary('record_filter', 'record_filter', filter_selected)
-            else if (!filter_min)
-                fill_in_summary('record_filter', 'record_filter', filter_selected + ' &lt; ' + filter_max);
-            else if (!filter_max)
-                fill_in_summary('record_filter', 'record_filter', filter_min + ' &lt; ' + filter_selected);
-            else
-                fill_in_summary('record_filter', 'record_filter', filter_min + ' &lt; ' + filter_selected + ' &lt; ' + filter_max);
+            fill_in_selection_in_summary();
         }
     });
 
-    $(rf_id('min')).change(function(evt){
-        var $this = $(this);
-        var filter_min = $this.val();
-        var filter_max = $(rf_id('max')).val();
-        var filter_selected = $(rf_id('filter')).find('option:selected').html();
-        if (!filter_max)
-            fill_in_summary('record_filter', 'record_filter', filter_min + ' &lt; ' + filter_selected);
-        else
-            fill_in_summary('record_filter', 'record_filter', filter_min + ' &lt; ' + filter_selected + ' &lt; ' + filter_max);
+    $(rf_id('min') + ', ' + rf_id('max')).change(function(evt){
+        fill_in_selection_in_summary();
     });
-
-    $(rf_id('max')).change(function(evt){
-        var $this = $(this);
-        var filter_max = $this.val();
-        var filter_min = $(rf_id('min')).val();
-        var filter_selected = $(rf_id('filter')).find('option:selected').html();
-        if (!filter_min)
-            fill_in_summary('record_filter', 'record_filter', filter_selected + ' &lt; ' + filter_max);
-        else
-            fill_in_summary('record_filter', 'record_filter', filter_min + ' &lt; ' + filter_selected + ' &lt; ' + filter_max);
-    });
-
 
     $(sed_id('band_pass_filters_add_link')).change(function() {
         fill_in_summary('sed', 'band_pass_filters', 'band_pass_filters_add_link.click()');
@@ -479,7 +578,7 @@ jQuery(document).ready(function($) {
             }
         });
         lc_output_props_widget.cache_store(pseudo_json);
-        console.log(current);
+        console.log('Current output properties: ' + current);
         return current;
     }
 
@@ -487,15 +586,10 @@ jQuery(document).ready(function($) {
         var current = [];
         $(sed_id('band_pass_filters') + ' option').each(function(){
             var $this = $(this);
-//            console.log($this);
-//            $(this).attr("selected", "selected");
             if ($this.attr('selected')) {
                 current.push($this.attr('value'));
             }
         });
-//        var current = $to.val(); // in string format
-//        $to.empty();
-//        $from.empty();
         $.ajax({
             url : TAO_JSON_CTX + 'bandpass_filters/',
             dataType: "json",
@@ -507,39 +601,58 @@ jQuery(document).ready(function($) {
                 sed_band_pass_filters_widget.display_selected(current, false);
             }
         });
-        console.log(current);
+        console.log('Current bandpass filters: ' + current);
         return current;
     }
 
+    var fill_in_ra_dec_in_summary = function() {
+        var ra_opening_angle_value = $(lc_id('ra_opening_angle')).val();
+        var dec_opening_angle_value = $(lc_id('dec_opening_angle')).val();
+        if (!ra_opening_angle_value && !dec_opening_angle_value) {
+            fill_in_summary('light_cone', 'ra_opening_angle', '');
+            fill_in_summary('light_cone', 'dec_opening_angle', '');
+        } else if (!ra_opening_angle_value) {
+            fill_in_summary('light_cone', 'ra_opening_angle', '');
+            fill_in_summary('light_cone', 'dec_opening_angle', 'Dec: ' + dec_opening_angle_value + '&deg;<br>');
+        } else if (!dec_opening_angle_value) {
+            fill_in_summary('light_cone', 'ra_opening_angle', 'RA: ' + ra_opening_angle_value + '&deg; <br>');
+            fill_in_summary('light_cone', 'dec_opening_angle', '');
+        } else {
+            fill_in_summary('light_cone', 'ra_opening_angle', 'RA: ' + ra_opening_angle_value + '&deg;, ');
+            fill_in_summary('light_cone', 'dec_opening_angle', 'Dec: ' + dec_opening_angle_value + '&deg;<br>');
+        }
+    }
 
-    $(lc_id('ra_opening_angle')).change(function(evt){
-        var $this = $(this);
-        var ra_opening_angle_value = $this.val();
-        fill_in_summary('light_cone', 'ra_opening_angle', ra_opening_angle_value);
+    $(lc_id('ra_opening_angle') + ', ' + lc_id('dec_opening_angle')).change(function(evt){
+        fill_in_ra_dec_in_summary();
         calculate_max_number_of_cones();
     });
 
-    $(lc_id('dec_opening_angle')).change(function(evt){
-        var $this = $(this);
-        var dec_opening_angle_value = $this.val();
-        fill_in_summary('light_cone', 'dec_opening_angle', dec_opening_angle_value);
+    var fill_in_redshift_in_summary = function() {
+        var redshift_max_value = $(lc_id('redshift_max')).val();
+        var redshift_min_value = $(lc_id('redshift_min')).val();
+        if (!redshift_min_value && !redshift_max_value) {
+            fill_in_summary('light_cone', 'redshift_min', '')
+            fill_in_summary('light_cone', 'redshift_max', '')
+        }
+        else if (!redshift_min_value) {
+            fill_in_summary('light_cone', 'redshift_min', '')
+            fill_in_summary('light_cone', 'redshift_max', 'Redshift: r &le; ' + redshift_max_value);
+        }
+        else if (!redshift_max_value) {
+            fill_in_summary('light_cone', 'redshift_min', 'Redshift: ' + redshift_min_value + ' &le; r');
+            fill_in_summary('light_cone', 'redshift_max', '')
+        }
+        else {
+            fill_in_summary('light_cone', 'redshift_min', 'Redshift: ' + redshift_min_value + ' &le; r &le; ');
+            fill_in_summary('light_cone', 'redshift_max', redshift_max_value);
+        }
+    }
+
+    $(lc_id('redshift_min') + ', ' + lc_id('redshift_max')).change(function(evt){
+        fill_in_redshift_in_summary();
         calculate_max_number_of_cones();
     });
-
-    $(lc_id('redshift_min')).change(function(evt){
-        var $this = $(this);
-        var redshift_min_value = $this.val();
-        fill_in_summary('light_cone', 'redshift_min', redshift_min_value);
-        calculate_max_number_of_cones();
-    });
-
-    $(lc_id('redshift_max')).change(function(evt){
-        var $this = $(this);
-        var redshift_max_value = $this.val();
-        fill_in_summary('light_cone', 'redshift_max', redshift_max_value);
-        calculate_max_number_of_cones();
-    });
-
 
     // Max's algorithm for calculating the maximum allowed number of unique light-cones
 //    /**
@@ -599,34 +712,45 @@ jQuery(document).ready(function($) {
 
     var spinner_check_value = function(new_value) {
         var maximum = $(lc_id('number_of_light_cones')).data('spin-max');
+        var $spinner = $(lc_id('number_of_light_cones')).closest('span');
         if (maximum <= 0) {
-            show_error($(lc_id('number_of_light_cones')),"Selection parameters can't be used to generate unique light-cones");
+            show_error($spinner, "Selection parameters can't be used to generate unique light-cones");
+            fill_in_summary('light_cone', 'number_of_light_cones', 'An invalid number of light cones is selected');
             return false;
         }
         else {
             if (new_value <= 0) {
-                show_error($(lc_id('number_of_light_cones')), "Please provide a positive number of light-cones");
+                show_error($spinner, "Please provide a positive number of light-cones");
+                fill_in_summary('light_cone', 'number_of_light_cones', 'Negative number of light cones is invalid');
+                $('.ui-spinner-down').button('disable').addClass("ui-state-disabled").removeClass('ui-state-enabled');
                 return false;
             }
             else if (new_value > maximum) {
-                show_error($(lc_id('number_of_light_cones')), "The maximum is " + maximum);
+                show_error($spinner, "The maximum is " + maximum);
+                fill_in_summary('light_cone', 'number_of_light_cones', 'Number of light cones selected exceeds the maximum');
+                $('.ui-spinner-up').button('disable').addClass("ui-state-disabled").removeClass('ui-state-enabled');
                 return false;
             }
         }
-        show_error($(lc_id('number_of_light_cones')), null);
+        $('.ui-spinner-down').button('enable').addClass('ui-state-enabled').removeClass("ui-state-disabled");
+        $('.ui-spinner-up').button('enable').addClass('ui-state-enabled').removeClass("ui-state-disabled");
+        show_error($spinner, null);
         fill_in_summary('light_cone', 'number_of_light_cones', new_value +  " " + $("input[name='light_cone-light_cone_type']:checked").val() + " light cones");
         return true;
     }
 
     var calculate_max_number_of_cones = function() {
         function spinner_set_max(maximum) {
-            if ( isNaN(maximum) || maximum === 0 ){
+            $spinner_label = $('label[for=id_light_cone-number_of_light_cones]');
+            if ( isNaN(maximum) || maximum <= 0 || !isFinite(maximum)){
                 $(lc_id('number_of_light_cones')).spinner("disable");
                 $(lc_id('number_of_light_cones')).data("spin-max", 0);
+                $spinner_label.html("Select the number of light-cones:*");
             }
             else {
                 $(lc_id('number_of_light_cones')).spinner("enable");
                 $(lc_id('number_of_light_cones')).data("spin-max",maximum);
+                $spinner_label.html("Select the number of light-cones: (maximum for the selected parameters is " + maximum + ")*");
             }
             spinner_check_value(parseInt($(lc_id('number_of_light_cones')).val()));
         }
@@ -645,6 +769,7 @@ jQuery(document).ready(function($) {
                 success: function(data, status, xhr) {
                     var maximum = parseInt(data.fields.parameter_value);
                     spinner_set_max(maximum);
+                    display_maximum_number_light_cones($(lc_id('number_of_light_cones')), maximum);
                 }
             });
         }
@@ -691,11 +816,14 @@ jQuery(document).ready(function($) {
         if ($(sed_id('apply_dust')).is(':checked')) {
             $(sed_id('select_dust_model')).removeAttr('disabled');
             $(sed_id('select_dust_model')).change();
+            $('#expand_dust_model').show();
         }
         else {
             $(sed_id('select_dust_model')).attr('disabled', 'disabled');
             clear_info('sed', 'dust-model');
             clear_in_summary('sed', 'dust_model');
+            $('#expand_dust_model').hide();
+            $('div.summary_sed .dust_model_description').hide();
         }
     });
 
@@ -709,7 +837,8 @@ jQuery(document).ready(function($) {
             $(sed_id('band_pass_filters_from')).removeAttr('disabled');
             sed_band_pass_filters_widget.set_enabled(true);
             $(sed_id('band_pass_filters')).removeAttr('disabled');
-//            sed_band_pass_filters_widget.change_event();
+            $('div.summary_sed .apply_sed').show();
+            fill_in_summary('sed', 'select_sed', '');
             display_band_pass_filters_summary();
             $(sed_id('apply_dust')).removeAttr('disabled');
             $(sed_id('apply_dust')).change();
@@ -728,18 +857,18 @@ jQuery(document).ready(function($) {
             $(sed_id('apply_dust')).attr('disabled', 'disabled');
             $(sed_id('select_dust_model')).attr('disabled', 'disabled');
             clear_info('sed', 'stellar-model');
-            clear_in_summary('sed', 'stellar_model');
             clear_info('sed', 'band-pass');
-            clear_in_summary('sed', 'band_pass_filters');
             clear_info('sed', 'dust-model');
-            clear_in_summary('sed', 'dust_model');
-            update_filter_options(false, true); // triggers filter.change
+            $('div.summary_sed .apply_sed').hide();
+            fill_in_summary('sed', 'select_sed', 'Not selected');
+            var use_default = !update_filter_options.initializing || !bound;
+            update_filter_options(false, use_default); // triggers filter.change
         }
     });
 
     $('#id_output_format-supported_formats').change(function(evt){
         var $this = $(this);
-        var output_format_value = $this.val();
+        var output_format_value = $this.text();
         fill_in_summary('output', 'output_format', output_format_value);
     });
 
@@ -839,13 +968,12 @@ jQuery(document).ready(function($) {
         var current_output = init_output_properties();
         var current_bandpass = init_bandpass_properties();
         lc_output_props_widget.display_selected(current_output, false);
-        console.log(current_bandpass);
 //        sed_band_pass_filters_widget.display_selected(current_bandpass, false);
         lc_output_props_widget.change();
         sed_band_pass_filters_widget.change();
         init_wizard();
         var init_light_cone_type_value = $('input[name="light_cone-light_cone_type"][checked="checked"]').attr('value');
-        fill_in_summary('light_cone', 'light_cone_type', init_light_cone_type_value);
+        fill_in_summary('light_cone', 'number_of_light_cones',  $(lc_id('number_of_light_cones')).val() +  " " + init_light_cone_type_value + " light cones");
         $(lc_id('number_of_light_cones')).attr('class', 'light_cone_field'); // needed to associate the spinner with light-cone only, not when selecting box
         update_filter_options.initializing = true;
         $(lc_id('dark_matter_simulation')).change();
@@ -853,5 +981,17 @@ jQuery(document).ready(function($) {
         $('#id_output_format-supported_formats').change();
         $(sed_id('apply_sed')).change();
         $(sed_id('apply_dust')).change();
+        $('div.summary_light_cone .output_properties_list').hide();
+        $('div.summary_sed .band_pass_filters_list').hide();
+        $('div.summary_light_cone .simulation_description, div.summary_light_cone .galaxy_model_description').hide();
+        $('div.summary_sed .stellar_model_description').hide();
+        $('div.summary_sed .dust_model_description').hide();
+        fill_in_ra_dec_in_summary();
+        fill_in_redshift_in_summary();
+        fill_in_summary('light_cone', 'box_size', $(lc_id('box_size')).val());
+        fill_in_summary('light_cone', 'snapshot', format_redshift($(lc_id('snapshot')+' option:selected').html()));
+        setTimeout(function(){
+            display_band_pass_filters_summary();
+        }, 1000);
     })();
 });

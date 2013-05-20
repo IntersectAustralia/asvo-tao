@@ -1,7 +1,7 @@
 from tao.models import Snapshot
 from tao.settings import MODULE_INDICES
-from tao.tests.integration_tests.helper import LiveServerMGFTest, wait, interact
-from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, JobFactory, StellarModelFactory, SnapshotFactory, BandPassFilterFactory
+from tao.tests.integration_tests.helper import LiveServerMGFTest, interact
+from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, JobFactory, StellarModelFactory, SnapshotFactory, BandPassFilterFactory, GlobalParameterFactory
 
 from taoui_light_cone.forms import Form as LightConeForm
 
@@ -9,8 +9,9 @@ class SubmitLightConeTests(LiveServerMGFTest):
 
     def setUp(self):
         super(SubmitLightConeTests, self).setUp()
-        
-        simulation = SimulationFactory.create()
+
+        GlobalParameterFactory.create(parameter_name='maximum-random-light-cones', parameter_value='10')
+        simulation = SimulationFactory.create(box_size=500)
         galaxy_model = GalaxyModelFactory.create()
         dataset = DataSetFactory.create(simulation=simulation, galaxy_model=galaxy_model)
 
@@ -84,12 +85,12 @@ class SubmitLightConeTests(LiveServerMGFTest):
             'number_of_light_cones': '10', # this is greater than the maximum for "unique" for the parameters above
         }, id_wrap=self.lc_id)
         self.click_by_css(self.lc_id('light_cone_type_1')) # select "random"
-        self.submit_mgf_form()
 
+        self.submit_mgf_form()
         self.assert_on_page('job_index')
 
     def test_submit_invalid_unique_cone_job(self):
-        wait(2)
+        self.wait(1)
         self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
         self.fill_in_fields({
             'ra_opening_angle': '2',
@@ -98,11 +99,12 @@ class SubmitLightConeTests(LiveServerMGFTest):
             'redshift_max': '2',
         }, id_wrap=self.lc_id)
         self.click(self.lc_2select('op_add_all'))
-        wait(2)
+        self.wait(1)
         self.clear(self.lc_id('number_of_light_cones'))
         self.fill_in_fields({
             'number_of_light_cones': '9', # this exceeds the calculated maximum, 3, for parameters above
         }, id_wrap=self.lc_id)
+        self.click(self.lc_2select('op_add_all')) # click somewhere else to shift focus out of the number of cones field (this shouldn't affect the current selection, as they are already all selected)
         self.submit_mgf_form()
 
         self.assert_on_page('mock_galaxy_factory')

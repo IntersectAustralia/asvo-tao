@@ -11,6 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.contrib.auth import forms as auth_forms
 from django.contrib.auth.models import User
+from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 from captcha.fields import ReCaptchaField
 
@@ -19,6 +20,7 @@ from form_utils.forms import BetterForm
 import tao.settings as tao_settings
 from tao import datasets
 from tao.models import UserProfile, DataSetProperty, BandPassFilter
+from tao.xml_util import module_xpath
 
 NO_FILTER = 'no_filter'
 
@@ -89,6 +91,11 @@ class UserCreationForm(auth_forms.UserCreationForm):
 class RejectForm(forms.Form):
     reason = forms.CharField(widget=forms.Textarea(attrs={'rows': 3}), required=False)
 
+class SupportForm(forms.Form):
+    subject = forms.CharField(max_length=80, validators=[RegexValidator(regex='[^ \t\n\r\f\v,]', message="This field cannot be blank")], required=True)
+    message = forms.CharField(widget=forms.Textarea(), validators=[RegexValidator(regex='[^ \t\n\r\f\v,]', message="This field cannot be blank")], required=True)
+
+
 class OutputFormatForm(BetterForm):
     EDIT_TEMPLATE = 'mock_galaxy_factory/output_format.html'
     MODULE_VERSION = 1
@@ -108,18 +115,23 @@ class OutputFormatForm(BetterForm):
     def to_xml(self, parent_xml_element):
         from tao.xml_util import find_or_create, child_element
 
-        of_elem = find_or_create(parent_xml_element, 'output-file')
+        # Hunt down the full item from the list of output formats.
+        fmt = self.cleaned_data['supported_formats']
+        ext = ''
+        for x in tao_settings.OUTPUT_FORMATS:
+            if x['value'] == fmt:
+                ext = '.' + x['extension']
+                break
+
+        # The output file should be a CSV, by default.
+        of_elem = find_or_create(parent_xml_element, fmt, module=fmt)
         child_element(of_elem, 'module-version', text=OutputFormatForm.MODULE_VERSION)
-        child_element(of_elem, 'format', text=self.cleaned_data['supported_formats'])
+        child_element(of_elem, 'filename', text='tao.output' + ext)
 
     @classmethod
     def from_xml(cls, ui_holder, xml_root, prefix=None):
-        # elem = find output-file elemen in xml
-        # grab elem.format in xml_supported_format
-        elems = xml_root.xpath('//n:output-file/n:format',namespaces={'n':'http://tao.asvo.org.au/schema/module-parameters-v1'})
-        supported_format = tao_settings.OUTPUT_FORMATS[0]
-        if elems is not None and len(elems) == 1: supported_format = elems[0].text
-        return cls(ui_holder, {prefix + '-supported_formats': supported_format})
+        supported_format = 'csv'
+        return cls(ui_holder, {prefix + '-supported_formats': supported_format}, prefix=prefix)
 
 class RecordFilterForm(BetterForm):
     EDIT_TEMPLATE = 'mock_galaxy_factory/record_filter.html'
@@ -139,7 +151,9 @@ class RecordFilterForm(BetterForm):
         is_int = False
         if self.ui_holder.is_bound('light_cone'):
             objs = datasets.filter_choices(self.ui_holder.raw_data('light_cone', 'galaxy_model'))
-            choices = [('X-' + NO_FILTER, 'No Filter')] + [('D-' + str(x.id), '') for x in objs] + [('B-' + str(x.id),'') for x in datasets.band_pass_filters_objects()]
+            choices = [('X-' + NO_FILTER, 'No Filter')] + [('D-' + str(x.id), x.label + ' (' + x.units + ')') for x in objs] + \
+                [('B-' + str(x.id) + '_apparent', x.label) for x in datasets.band_pass_filters_objects()] + \
+                [('B-' + str(x.id) + '_absolute', x.label) for x in datasets.band_pass_filters_objects()]
             filter_type, record_filter = args[1]['record_filter-filter'].split('-')
             if filter_type == 'D':
                 obj = DataSetProperty.objects.get(pk = record_filter)
@@ -158,6 +172,8 @@ class RecordFilterForm(BetterForm):
         self.fields['filter'].label = 'Select by ...'
 
     def check_min_or_max_or_both(self):
+        if 'filter' not in self.cleaned_data:
+            return
         selected_type, selected_filter = self.cleaned_data['filter'].split('-')
         if selected_filter == NO_FILTER:
             return
@@ -197,8 +213,9 @@ class RecordFilterForm(BetterForm):
             filter_type = filter_parameter.name
             units = filter_parameter.units
         elif selected_type == 'B':
+            selected_filter, selected_extension = selected_filter.split('_')
             filter_parameter = datasets.band_pass_filter(selected_filter)
-            filter_type = filter_parameter.filter_id
+            filter_type = str(filter_parameter.filter_id) + '_' + selected_extension
             units = 'bpunits'
 
         rf_elem = find_or_create(parent_xml_element, 'record-filter')
@@ -212,3 +229,26 @@ class RecordFilterForm(BetterForm):
             filter_max = datasets.default_filter_max(self.ui_holder.raw_data('light_cone', 'galaxy_model'))
         child_element(rf_elem, 'filter-min', text=str(filter_min), units=units)
         child_element(rf_elem, 'filter-max', text=str(filter_max), units=units)
+
+    @classmethod
+    def from_xml(cls, ui_holder, xml_root, prefix=None):
+        simulation = module_xpath(xml_root, '//light-cone/simulation')
+        galaxy_model = module_xpath(xml_root, '//light-cone/galaxy-model')
+        data_set = datasets.dataset_find_from_xml(simulation, galaxy_model)
+        filter_type = module_xpath(xml_root, '//record-filter/filter-type')
+        filter_min = module_xpath(xml_root, '//record-filter/filter-min')
+        filter_max = module_xpath(xml_root, '//record-filter/filter-max')
+        filter_units = module_xpath(xml_root, '//record-filter/filter-min', attribute='units')
+        if filter_min == 'None': filter_min = None
+        if filter_max == 'None': filter_max = None
+        data_set_id = 0
+        if data_set is not None: data_set_id = data_set.id
+        kind, record_id = datasets.filter_find_from_xml(data_set_id, filter_type, filter_units)
+        if filter_type == None:
+            kind = 'X'
+            record_id = NO_FILTER
+        attrs = {prefix+'-filter': kind + '-' + str(record_id),
+               prefix+'-min': filter_min,
+               prefix+'-max': filter_max,
+               }
+        return cls(ui_holder, attrs, prefix=prefix)

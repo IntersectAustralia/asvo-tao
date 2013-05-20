@@ -27,7 +27,7 @@ def _make_parameters(user, forms):
     child_element(root, 'username', text=user)
 
     workflow = find_or_create(root, 'workflow', name='alpha-light-cone-image')
-    child_element(workflow, 'schema-version', text='1.0')
+    child_element(workflow, 'schema-version', text='2.0')
 
     for form in forms:
         form.to_xml(workflow)

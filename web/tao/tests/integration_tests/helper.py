@@ -1,18 +1,15 @@
 from django.core.urlresolvers import reverse
+from django.utils.html import strip_tags
 
 from selenium.webdriver.firefox.webdriver import WebDriver
 
 import django.test
 
-import re, os
+import re, os, time
 import tao.datasets as datasets
-from tao.models import DataSetProperty, BandPassFilter
+from tao.models import DataSetProperty, BandPassFilter, Simulation
 from tao.forms import NO_FILTER
 from tao.settings import MODULE_INDICES
-
-def wait(secs=1):
-    import time
-    time.sleep(secs)
 
 def interact(local):
     """
@@ -24,13 +21,16 @@ def interact(local):
     
 def visit(client, view_name, *args, **kwargs):
     return client.get(reverse(view_name, args=args), follow=True)
-    
+
 class LiveServerTest(django.test.LiveServerTestCase):
     DOWNLOAD_DIRECTORY = '/tmp/work/downloads'
 
     ## List all ajax enabled pages that have initialization code and must wait
     AJAX_WAIT = ['mock_galaxy_factory']
     SUMMARY_INDEX = str(len(MODULE_INDICES)+1)
+
+    def wait(self, secs=1):
+        time.sleep(secs)
 
     def setUp(self):
         from selenium.webdriver.firefox.webdriver import FirefoxProfile
@@ -48,13 +48,17 @@ class LiveServerTest(django.test.LiveServerTestCase):
 
     def tearDown(self):
         self.selenium.quit()
-
+        m = __import__('tao.models')
+        for name in ['Simulation', 'GalaxyModel', 'DataSet', 'DataSetProperty', 'StellarModel', 'DustModel', 'Snapshot', 'BandPassFilter', 'Job', 'GlobalParameter']:
+            klass = getattr(m.models, name)
+            for obj in klass.objects.all(): obj.delete()
         # remove the download dir
         for root, dirs, files in os.walk(self.DOWNLOAD_DIRECTORY, topdown=False):
             for name in files:
                 os.remove(os.path.join(root, name))
             for name in dirs:
                 os.rmdir(os.path.join(root, name))
+        super(LiveServerTest, self).tearDown()
 
     def lc_id(self, bare_field):
         return '#id_light_cone-%s' % bare_field
@@ -88,8 +92,11 @@ class LiveServerTest(django.test.LiveServerTestCase):
             element = self.get_parent_element(element)
         return element
 
+    def get_summary_selector(self, form_name, field_name):
+        return 'div.summary_%s .%s' % (form_name, field_name)
+
     def get_summary_field(self, form_name, field_name):
-        summary_selector = 'div.summary_%s .%s' % (form_name, field_name)
+        summary_selector = self.get_summary_selector(form_name, field_name)
         return self.selenium.find_element_by_css_selector(summary_selector)
 
     def get_summary_field_text(self, form_name, field_name):
@@ -103,15 +110,25 @@ class LiveServerTest(django.test.LiveServerTestCase):
         pattern = re.escape(text)
         matches = re.search(pattern, email.body)
         self.assertTrue(matches, "Email does not contain " + text)
-        
-    def assert_page_has_content(self, string):
-        page_source = self.selenium.page_source
 
+    def get_page_source(self):
+        try:
+            return self.selenium.page_source
+        except:
+            while True:
+                self.wait(0.2)
+                try:
+                    self.selenium.switch_to_alert().accept()
+                except:
+                    return self.selenium.page_source
+
+    def assert_page_has_content(self, string):
+        page_source = self.get_page_source()
         pattern = re.escape(string)
-        self.assertTrue(re.search(pattern, page_source), "page source did not contain %s" % pattern)
+        self.assertTrue((string in page_source) or re.search(pattern, page_source), "page source did not contain %s" % pattern)
         
     def assert_page_does_not_contain(self, string):
-        page_source = self.selenium.page_source
+        page_source = self.get_page_source()
         
         pattern = re.escape(string)
         self.assertFalse(re.search(pattern, page_source), "page source contained %s" % pattern)
@@ -175,7 +192,11 @@ class LiveServerTest(django.test.LiveServerTestCase):
             split_url = self.selenium.current_url.split('?')
             url = split_url[0]
             self.assertEqual(url, self.get_full_url(url_name))
-            
+
+    def assert_summary_field_correctly_shown(self, expected_value, form_name, field_name):
+        value_displayed = self.get_summary_field_text(form_name, field_name)
+        self.assertEqual(expected_value, strip_tags(value_displayed))
+
     def fill_in_fields(self, field_data, id_wrap=None):
         for selector, text_to_input in field_data.items():
             if id_wrap:
@@ -185,6 +206,7 @@ class LiveServerTest(django.test.LiveServerTestCase):
                 self.select(selector, str(text_to_input))
             else:
                 elem.send_keys(str(text_to_input))
+        self.wait(2.5)
 
     def clear(self, selector):
         elem = self.selenium.find_element_by_css_selector(selector)
@@ -193,17 +215,17 @@ class LiveServerTest(django.test.LiveServerTestCase):
     def click(self, elem_id):
         elem = self.selenium.find_element_by_id(elem_id)
         elem.click()
-        wait(0.5)
+        self.wait(0.5)
 
     def click_by_css(self, element_css):
         elem = self.selenium.find_element_by_css_selector(element_css)
         elem.click()
-        wait(0.5)
+        self.wait(0.5)
 
     def click_by_class_name(self, class_name):
         elem = self.selenium.find_element_by_class_name(class_name)
         elem.click()
-        wait(0.5)
+        self.wait(0.5)
 
     def login(self, username, password):
         self.visit('login')
@@ -221,16 +243,20 @@ class LiveServerTest(django.test.LiveServerTestCase):
         """ self.visit(name_of_url_as_defined_in_your_urlconf) """
         self.selenium.get(self.get_full_url(url_name, *args, **kwargs))
         if url_name in LiveServerTest.AJAX_WAIT:
-            wait(1)
+            self.wait(1)
         
     def get_actual_filter_options(self):
         option_selector = '%s option' % self.rf_id('filter')
         return [x.get_attribute('value').encode('ascii') for x in self.selenium.find_elements_by_css_selector(option_selector)]
     
     def get_expected_filter_options(self, data_set_id):
+        def gen_bp_pairs(objs):
+            for obj in objs:
+                yield ('B-' + str(obj.id) + '_apparent')
+                yield ('B-' + str(obj.id) + '_absolute')
         normal_parameters = datasets.filter_choices(data_set_id)
         bandpass_parameters = datasets.band_pass_filters_objects()
-        return ['X-' + NO_FILTER] + ['D-' + str(x.id) for x in normal_parameters] + ['B-' + str(x.id) for x in bandpass_parameters]
+        return ['X-' + NO_FILTER] + ['D-' + str(x.id) for x in normal_parameters] + [pair for pair in gen_bp_pairs(bandpass_parameters)]
 
     def get_actual_snapshot_options(self):
         option_selector = '%s option' % self.lc_id('snapshot')
@@ -275,17 +301,17 @@ class LiveServerTest(django.test.LiveServerTestCase):
     
     def select_dark_matter_simulation(self, simulation):
         self.select(self.lc_id('dark_matter_simulation'), simulation.name)
-        wait(0.5)
+        self.wait(0.5)
         
     def select_galaxy_model(self, galaxy_model):
         self.select(self.lc_id('galaxy_model'), galaxy_model.name)
-        wait(0.5)
+        self.wait(0.5)
 
     def select_stellar_model(self, stellar_model):
         self.select(self.sed_id('single_stellar_population_model'), stellar_model.label)
-        wait(0.5)
+        self.wait(0.5)
 
-    def select_record_filter(self, filter):
+    def select_record_filter(self, filter, extension=None):
         text = ''
         if isinstance(filter, DataSetProperty):
             units_str = ''
@@ -294,6 +320,8 @@ class LiveServerTest(django.test.LiveServerTestCase):
             text = filter.label + units_str
         elif isinstance(filter, BandPassFilter):
             text = filter.label
+            if extension is not None:
+                text += ' (' + extension.capitalize() + ')'
         else:
             raise TypeError("Unknown filter type")
         self.select(self.rf_id('filter'), text)
@@ -304,12 +332,16 @@ class LiveServerTest(django.test.LiveServerTestCase):
         rows = table.find_elements_by_css_selector('tr')
         cells = [[cell.text for cell in row.find_elements_by_css_selector('th, td')] for row in rows]
         return cells
-        
+
+    def submit_support_form(self):
+        submit_button = self.selenium.find_element_by_css_selector('button[type="submit"]')
+        submit_button.submit()
+
 class LiveServerMGFTest(LiveServerTest):
     def submit_mgf_form(self):
         submit_button = self.selenium.find_element_by_css_selector('#mgf-form input[type="submit"]')
         submit_button.submit()
-        wait(1.5)
+        self.wait(1.5)
 
     def assert_errors_on_field(self, what, field_id):
         field_elem = self.selenium.find_element_by_css_selector(field_id)

@@ -6,6 +6,8 @@ from django.shortcuts import render
 from tao.decorators import researcher_required, set_tab, \
     object_permission_required
 from tao.models import Job, JobFile
+from tao.ui_modules import UIModulesHolder
+from tao.xml_util import xml_parse
 import os
 import zipfile
 import StringIO
@@ -19,35 +21,31 @@ def view_job(request, id):
     job = Job.objects.get(id=id)
 
     # xml_string = job.parameters
-    # ## INGREDIENT #2 : we have ui_holder as a helper (see views/mock_galaxy_factory)
-    # # so extend UI Holder to kick-off from an xml_object, like ui_modules = UIModulesHolder.from_xml
-    # # and then use the forms in the Model below in a similar way to mock_galaxy_factory
-    # ui_holder = None
+    ui_holder = UIModulesHolder(UIModulesHolder.XML, xml_parse(job.parameters.encode('utf-8')))
 
     return render(request, 'jobs/view.html', {
         'job': job,
-        # 'forms': ui_holder.forms(),
+        'forms': ui_holder.forms(),
+        'forms_size' : len(ui_holder.forms())+1,
     })
 
 @researcher_required
 @object_permission_required('can_read_job')
 def get_file(request, id, filepath):
     job = Job.objects.get(pk=id)
-            
-    if filepath not in [file.file_name for file in job.files()]:
+
+    the_one = [file for file in job.files() if file.file_name == filepath]
+    if len(the_one) == 0:
         raise Http404
     
-    job_file = JobFile(os.path.join(settings.FILES_BASE, job.output_path), filepath)
+    job_file = the_one[0]
     if not job_file.can_be_downloaded():
         raise PermissionDenied
-    
-    fullpath = os.path.join(settings.FILES_BASE, job.output_path, filepath)
-    file = open(fullpath)
-    response = HttpResponse(FileWrapper(file))
 
-    basename = os.path.basename(fullpath)
+    response = HttpResponse(FileWrapper(open(job_file.file_path)))
+
     # TODO sanitise filename
-    response['Content-Disposition'] = 'attachment; filename="%s"' % basename
+    response['Content-Disposition'] = 'attachment; filename="%s"' % job_file.file_name.replace('/','_')
     return response
     
 @researcher_required

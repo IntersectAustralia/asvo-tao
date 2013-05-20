@@ -13,6 +13,7 @@ var TwoSidedSelectWidget = function(to_id, enable) {
     var $select_all = $(to_id + '_op_add_all');
     var $remove_all = $(to_id + '_op_remove_all');
     var cache = new Array();
+    var must_group = false;
     var ref = this;
     var enabled = enable;
 
@@ -23,13 +24,11 @@ var TwoSidedSelectWidget = function(to_id, enable) {
         }
     };
 
-    this.init = function() {
+    $(to_id + '-table').resizable({
+        maxWidth: $("#tabs-1 > .row-fluid > .boxed.span8").width()
+    });
 
-        var resize_filters = function() {
-            $to.height($filter_field.outerHeight() + $from.outerHeight() + 3);
-            $filter_field.width($from.innerWidth() - 11);
-        }
-        resize_filters();
+    this.init = function() {
 
         function status_helper($where, selector, status) {
             var $selected_option = $where.find(selector);
@@ -98,7 +97,7 @@ var TwoSidedSelectWidget = function(to_id, enable) {
                         }
                     }
                 }
-                console.log('node value=' + node.value + ' node.text=' + node.text + ' displayed=' + node.displayed);
+//                console.log('node value=' + node.value + ' node.text=' + node.text + ' displayed=' + node.displayed);
             }
             ref.redisplay(true);
         });
@@ -106,9 +105,11 @@ var TwoSidedSelectWidget = function(to_id, enable) {
 
     this.cache_store = function(data) {
         cache = [];
+        must_group = false;
         for (var i = 0; i < data.length; i++) {
             var item = data[i];
-            cache.push({value: item.pk, text: item.fields.label, description: item.fields.description, displayed: 1});
+            cache.push({value: item.pk, text: item.fields.label, description: item.fields.description, displayed: 1, group: item.fields.group});
+            must_group = must_group || (typeof(item.fields.group)=="string" && item.fields.group.length > 0);
         }
     };
 
@@ -137,21 +138,49 @@ var TwoSidedSelectWidget = function(to_id, enable) {
     };
 
     this.redisplay = function(trigger) {
+
+        function create_or_current_and_append($group_ptr, name, $option, $side) {
+            var $g = null;
+            if (($group_ptr[0] == null /* first time */
+                || $group_ptr[0].attr('group-name') != name /* current is not same */)
+                && must_group /* have to create */) {
+                var $g = $('<optgroup/>');
+                $g.attr('group-name', name);
+                $g.appendTo($side);
+                if (name.length == 0) name = 'Ungrouped';
+                $g.attr('label', name);
+                $group_ptr[0] = $g;
+            } else {
+                $g = $group_ptr[0];
+            }
+            if ($g != null) {
+                $option.appendTo($g);
+            } else {
+                $option.appendTo($side);
+            }
+        }
+
         $from.empty();
         $to.empty();
+
+        var $current_group_from = [null];
+        var $current_group_to = [null];
+
         $.each(cache, function(i,v){
+
             var $option = $('<option/>');
             $option.attr('value', v.value);
             $option.text(v.text);
             $option.data('cache_index', i);
+            $option.click(option_clicked);
             if (v.displayed == 1) {
-                $option.appendTo($from);
+                create_or_current_and_append($current_group_from, v.group, $option, $from);
             }
             if (v.displayed == 2) {
-                $option.appendTo($to);
+                create_or_current_and_append($current_group_to, v.group, $option, $to);
             }
-            $option.click(option_clicked)
         });
+
         if (trigger) {
             $to.change();
         }

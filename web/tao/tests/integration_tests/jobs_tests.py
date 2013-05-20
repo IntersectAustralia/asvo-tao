@@ -1,10 +1,11 @@
 from django.conf import settings
 from django.test.utils import override_settings
 
-from tao.models import Job
+from tao.models import Job, BandPassFilter, Simulation
 from tao.tests import helper
 from tao.tests.integration_tests.helper import LiveServerTest
-from tao.tests.support.factories import JobFactory, UserFactory
+from tao.tests.support.factories import JobFactory, UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, StellarModelFactory, DustModelFactory, BandPassFilterFactory, SnapshotFactory
+from tao.tests.support.xml import light_cone_xml
 
 import os, zipfile
 
@@ -46,8 +47,18 @@ class JobTest(LiveServerTest):
         for file_name in self.file_names_to_contents.keys():
             helper.create_file(self.dir_paths[0], file_name, self.file_names_to_contents)
         for file_name in self.file_names_to_contents2.keys():
-            helper.create_file(self.dir_paths[1], file_name, self.file_names_to_contents2)    
-            
+            helper.create_file(self.dir_paths[1], file_name, self.file_names_to_contents2)
+
+        self.simulation = SimulationFactory.create()
+        self.galaxy = GalaxyModelFactory.create()
+        self.dataset = DataSetFactory.create(simulation=self.simulation, galaxy_model=self.galaxy)
+        self.output_prop = DataSetPropertyFactory.create(dataset=self.dataset, name='Central op', is_filter=False)
+        self.filter = DataSetPropertyFactory.create(name='CentralMvir rf', units="Msun/h", dataset=self.dataset)
+        self.sed = StellarModelFactory.create()
+        self.dust = DustModelFactory.create()
+        self.snapshot = SnapshotFactory.create(dataset=self.dataset, redshift='0.33')
+        self.band_pass_filters = [BandPassFilterFactory.create(), BandPassFilterFactory.create()]
+
     def tearDown(self):
         super(JobTest, self).tearDown()
         for root, dirs, files in os.walk(settings.FILES_BASE, topdown=False):
@@ -55,34 +66,96 @@ class JobTest(LiveServerTest):
                 os.remove(os.path.join(root, name))
             for name in dirs:
                 os.rmdir(os.path.join(root, name))
-                
-    def test_view_job_with_files(self):
+
+    def make_xml_parameters(self):
+        xml_parameters = {
+            'catalogue_geometry': 'light-cone',
+            'dark_matter_simulation': self.simulation.id,
+            'galaxy_model': self.galaxy.id,
+            'redshift_min': 0.2,
+            'redshift_max': 0.3,
+            'ra_opening_angle': 71.565,
+            'dec_opening_angle': 41.811,
+            'output_properties' : [self.filter.id, self.output_prop.id],
+            'light_cone_type': 'unique',
+            'number_of_light_cones': 1,
+            }
+        xml_parameters.update({
+            'username' : self.username,
+            'dark_matter_simulation': self.simulation.name,
+            'galaxy_model': self.galaxy.name,
+            'output_properties_1_name' : self.filter.name,
+            'output_properties_1_label' : self.filter.label,
+            'output_properties_1_units' : self.filter.units,
+            'output_properties_1_description' : self.filter.description,
+            'output_properties_2_name' : self.output_prop.name,
+            'output_properties_2_label' : self.output_prop.label,
+            'output_properties_2_description' : self.output_prop.description,
+            })
+        xml_parameters.update({
+            'filter': self.filter.name,
+            'filter_min' : '1000000',
+            'filter_max' : 'None',
+            })
+        xml_parameters.update({
+            'ssp_name': self.sed.name,
+            'band_pass_filter_label': self.band_pass_filters[0].label + ' (Apparent)',
+            'band_pass_filter_id': self.band_pass_filters[0].filter_id,
+            'band_pass_filter_name': os.path.splitext(self.band_pass_filters[0].filter_id)[0],
+            'dust_model_name': self.dust.name,
+            })
+        return light_cone_xml(xml_parameters)
+
+    def test_view_job_summary(self):
         self.login(self.username, self.password)
-        
-        completed_job = JobFactory.create(user=self.user, status=Job.COMPLETED, output_path=self.output_paths[0])
+
+        parameters = self.make_xml_parameters()
+        completed_job = JobFactory.create(user=self.user, status=Job.COMPLETED, output_path=self.output_paths[0],parameters=parameters)
         
         self.visit('view_job', completed_job.id)
 
         self.assert_page_has_content('Download')
         self.assert_page_has_content('Status')
         self.assert_page_has_content('Summary')
-        self.assert_page_has_content(completed_job.parameters)
+        self.assert_summary_field_correctly_shown(self.simulation.name, 'light_cone', 'simulation')
+        self.assert_summary_field_correctly_shown(self.galaxy.name, 'light_cone', 'galaxy_model')
+        self.assert_summary_field_correctly_shown('1 unique light cones', 'light_cone', 'number_of_light_cones')
+        self.assert_summary_field_correctly_shown(self.sed.label, 'sed', 'single_stellar_population_model')
+        self.assert_summary_field_correctly_shown(self.dust.name, 'sed', 'dust_model')
+        self.assert_summary_field_correctly_shown(u"1000000 \u2264 %s (%s)" % (self.filter.label, self.filter.units), 'record_filter', 'record_filter')
+
+        band_pass_filters = BandPassFilter.objects.all()
+        self.wait(2)
+        self.assert_summary_field_correctly_shown('1 filter selected', 'sed', 'band_pass_filters')
+        self.click('expand_band_pass_filters') # this click doesn't work, it just grabs the focus
+        self.click('expand_band_pass_filters') # need a second call to actually do the click
+        self.assert_summary_field_correctly_shown(band_pass_filters[0].label + ' (Apparent)', 'sed', 'band_pass_filters_list')
+
+    def test_job_with_files_downloads(self):
+        self.login(self.username, self.password)
+
+        parameters = self.make_xml_parameters()
+        completed_job = JobFactory.create(user=self.user, status=Job.COMPLETED, output_path=self.output_paths[0], parameters=parameters)
+
+        self.visit('view_job', completed_job.id)
+
         li_elements = self.selenium.find_elements_by_css_selector('#id_completed_jobs li')
         filenames_with_sizes = []
         for file_name in self.file_names_to_contents:
             file_size = helper.get_file_size(self.dir_paths[0],file_name)
             filenames_with_sizes.append(file_name + " (" + file_size + ")")
         self.assertEqual(sorted(filenames_with_sizes), sorted([li.text for li in li_elements]))
-        
-        # test files download 
+
+        # test files download
         for li in li_elements:
             li.find_element_by_css_selector('a').click()
-            split_name = li.text.split(' (')
-            file_name = os.path.basename(split_name[0])
-            download_path = os.path.join(self.DOWNLOAD_DIRECTORY, file_name)
+        self.wait(1)
+
+        for job_file in completed_job.files():
+            download_path = os.path.join(self.DOWNLOAD_DIRECTORY, job_file.file_name.replace('/','_'))
             self.assertTrue(os.path.exists(download_path))
             f = open(download_path)
-            self.assertEqual(self.file_names_to_contents[split_name[0]], f.read())
+            self.assertEqual(self.file_names_to_contents[job_file.file_name], f.read())
             f.close()
             
     # test that anonymous user cannot view job or download files
@@ -131,7 +204,8 @@ class JobTest(LiveServerTest):
         self.assert_page_does_not_contain('(View)')
 
     def test_zip_file_download(self):
-        completed_job = JobFactory.create(user=self.user, status=Job.COMPLETED, output_path=self.output_paths[0])
+        parameters = self.make_xml_parameters()
+        completed_job = JobFactory.create(user=self.user, status=Job.COMPLETED, output_path=self.output_paths[0], parameters=parameters)
 
         self.login(self.username, self.password)
         self.visit('view_job', completed_job.id)
@@ -141,7 +215,7 @@ class JobTest(LiveServerTest):
         
         download_path = os.path.join(self.DOWNLOAD_DIRECTORY, 'tao_output.zip')
 
-        from .helper import wait; wait()
+        self.wait()
         self.assertTrue(os.path.exists(download_path))
         
         # extract the files
@@ -152,15 +226,17 @@ class JobTest(LiveServerTest):
                 
     def test_zip_file_displayed(self):
         self.login(self.username, self.password)
-        completed_job = JobFactory.create(user=self.user, status=Job.COMPLETED, output_path=self.output_paths[0])
+        parameters = self.make_xml_parameters()
+        completed_job = JobFactory.create(user=self.user, status=Job.COMPLETED, output_path=self.output_paths[0],parameters=parameters)
         self.visit('view_job', completed_job.id)
-        
+
         self.assert_page_has_content('Download zip file')
         
     @override_settings(MAX_DOWNLOAD_SIZE=40)
     def test_large_zip_file_not_displayed(self):
         self.login(self.username, self.password)
-        completed_job = JobFactory.create(user=self.user, status=Job.COMPLETED, output_path=self.output_paths[1])
+        parameters = self.make_xml_parameters()
+        completed_job = JobFactory.create(user=self.user, status=Job.COMPLETED, output_path=self.output_paths[1], parameters=parameters)
         self.visit('view_job', completed_job.id)
         
         self.assert_page_does_not_contain('Download zip file')
@@ -171,13 +247,15 @@ class JobTest(LiveServerTest):
         """ Job output files larger than the download limit gets displayed, but are not downloadable.
         """
         self.login(self.username, self.password)
-        large_completed_job = JobFactory.create(user=self.user, status=Job.COMPLETED, output_path=self.output_paths[1])
+        parameters = self.make_xml_parameters()
+        large_completed_job = JobFactory.create(user=self.user, status=Job.COMPLETED, output_path=self.output_paths[1], parameters=parameters)
         self.visit('view_job', large_completed_job.id)
         
         for file_name in self.file_names_to_contents2.keys():
             file_size = helper.get_file_size(self.dir_paths[1], file_name)
+            print file_name + " (" + file_size + ". File size exceeds download limit.)"
             self.assert_page_has_content(file_name + " (" + file_size + ". File size exceeds download limit.)")
-            
+
         for file_name in self.file_names_to_contents2.keys():
             self.visit('get_file', large_completed_job.id, file_name)
             self.assert_page_has_content('Forbidden')
@@ -185,7 +263,8 @@ class JobTest(LiveServerTest):
     @override_settings(MAX_DOWNLOAD_SIZE=10)
     def test_small_file_downloads(self):
         self.login(self.username, self.password)
-        small_completed_job = JobFactory.create(user=self.user, status=Job.COMPLETED, output_path=self.output_paths[0])
+        parameters = self.make_xml_parameters()
+        small_completed_job = JobFactory.create(user=self.user, status=Job.COMPLETED, output_path=self.output_paths[0], parameters=parameters)
         self.visit('view_job', small_completed_job.id)
         
         for file_name in self.file_names_to_contents.keys():
@@ -194,7 +273,7 @@ class JobTest(LiveServerTest):
         
         for file_name in self.file_names_to_contents.keys():
             self.visit('get_file', small_completed_job.id, file_name)
-            download_path = os.path.join(self.DOWNLOAD_DIRECTORY, os.path.basename(file_name))
+            download_path = os.path.join(self.DOWNLOAD_DIRECTORY, os.path.basename(file_name.replace('/','_')))
             self.assertTrue(os.path.exists(download_path))
         
     def _extract_zipfile_to_dir(self, download_path, dirname):

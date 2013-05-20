@@ -14,18 +14,18 @@ struct pipeline
    ///
    /// Add options to dictionary.
    ///
-   void
-   setup_options( hpc::options::dictionary& dict )
-   {
-      lc.setup_options( dict, string( "workflow:light-cone" ) );
-      dump.setup_options( dict );
-   }
+   //void
+   //setup_options( hpc::options::dictionary& dict )
+   //{
+   //   lc.setup_options( dict, string( "workflow:light-cone" ) );
+   //   dump.setup_options( dict );
+   //}
 
    ///
    /// Persistent initialisation.
    ///
    void
-   initialise( const hpc::options::dictionary& dict )
+   initialise( const hpc::options::xml_dict& dict )
    {
       lc.initialise( dict, string( "workflow:light-cone" ) );
       dump.initialise( dict );

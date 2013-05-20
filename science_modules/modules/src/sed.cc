@@ -46,22 +46,10 @@ namespace tao {
    }
 
    ///
-   ///
-   ///
-   void
-   sed::setup_options( options::dictionary& dict,
-                       optional<const string&> prefix )
-   {
-      dict.add_option( new options::string( "single-stellar-population-model" ), prefix );
-      dict.add_option( new options::integer( "num-spectra", 1221 ), prefix );
-      dict.add_option( new options::integer( "num-metals", 7 ), prefix );
-   }
-
-   ///
    /// Initialise the module.
    ///
    void
-   sed::initialise( const options::dictionary& dict,
+   sed::initialise( const options::xml_dict& dict,
                     optional<const string&> prefix )
    {
       LOG_ENTER();
@@ -69,9 +57,9 @@ namespace tao {
       _read_options( dict, prefix );
 
       // Allocate for output spectra.
-      _disk_spectra.reallocate( _num_spectra );
-      _bulge_spectra.reallocate( _num_spectra );
-      _total_spectra.reallocate( _num_spectra );
+      _disk_spectra.reallocate( _num_spectra, _batch_size );
+      _bulge_spectra.reallocate( _num_spectra, _batch_size );
+      _total_spectra.reallocate( _num_spectra, _batch_size );
 
       LOG_EXIT();
    }
@@ -106,34 +94,37 @@ namespace tao {
    {
       _timer.start();
       LOG_ENTER();
-      _timer.start();
 
-      // Cache the galaxy ID.
-      unsigned gal_id = galaxy.id();
-      LOGDLN( "Processing galaxy with ID ", gal_id );
+      // Process each galaxy.
+      for( unsigned ii = 0; ii < galaxy.batch_size(); ++ii )
+      {
+         // Cache the galaxy ID.
+         LOGDLN( "Processing galaxy with ID ", galaxy.values<long long>( "globalindex" )[ii] );
 
-      // Do we need to load a fresh table?
-      if( galaxy.tree_id() != _cur_tree_id )
-	 _load_table( galaxy.tree_id(), galaxy.table() );
+         // Do we need to load a fresh table?
+         if( galaxy.values<long long>( "globaltreeid" )[ii] != _cur_tree_id )
+            _load_table( galaxy.values<long long>( "globaltreeid" )[ii], galaxy.table() );
 
-      // Read the star-formation histories for this galaxy.
-      _rebin_info( galaxy );
+         // Read the star-formation histories for this galaxy.
+         _rebin_info( galaxy, ii );
 
-      // Clear disk and bulge output spectrums.
-      std::fill( _disk_spectra.begin(), _disk_spectra.end(), 0.0 );
-      std::fill( _bulge_spectra.begin(), _bulge_spectra.end(), 0.0 );
+         // Clear disk and bulge output spectrums.
+         std::fill( _disk_spectra[ii].begin(), _disk_spectra[ii].end(), 0.0 );
+         std::fill( _bulge_spectra[ii].begin(), _bulge_spectra[ii].end(), 0.0 );
 
-      // Process each time.
-      for( mpi::lindex ii = 0; ii < _bin_ages.size(); ++ii )
-         _process_time( ii );
+         // Process each time.
+         for( mpi::lindex jj = 0; jj < _bin_ages.size(); ++jj )
+            _process_time( jj, ii );
 
-      // Create total spectra.
-      for( unsigned ii = 0; ii < _num_spectra; ++ii )
-         _total_spectra[ii] = _disk_spectra[ii] + _bulge_spectra[ii];
+         // Create total spectra.
+         for( unsigned jj = 0; jj < _num_spectra; ++jj )
+            _total_spectra[ii][jj] = _disk_spectra[ii][jj] + _bulge_spectra[ii][jj];
 
-      LOGDLN( "Disk: ", _disk_spectra );
-      LOGDLN( "Bulge: ", _bulge_spectra );
-      LOGDLN( "Total: ", _total_spectra );
+         LOGDLN( "Disk: ", _disk_spectra[ii] );
+         LOGDLN( "Bulge: ", _bulge_spectra[ii] );
+         LOGDLN( "Total: ", _total_spectra[ii] );
+      }
+
       LOG_EXIT();
       _timer.stop();
    }
@@ -157,13 +148,14 @@ namespace tao {
    }
 
    void
-   sed::_process_time( mpi::lindex time_idx )
+   sed::_process_time( mpi::lindex time_idx,
+		       unsigned gal_idx )
    {
       LOG_ENTER();
       LOGDLN( "Processing time ", time_idx );
 
-      _sum_spectra( time_idx, _disk_age_metals[time_idx], _disk_age_masses[time_idx], _disk_spectra );
-      _sum_spectra( time_idx, _bulge_age_metals[time_idx], _bulge_age_masses[time_idx], _bulge_spectra );
+      _sum_spectra( time_idx, _disk_age_metals[time_idx], _disk_age_masses[time_idx], _disk_spectra[gal_idx] );
+      _sum_spectra( time_idx, _bulge_age_metals[time_idx], _bulge_age_masses[time_idx], _bulge_spectra[gal_idx] );
 
       LOG_EXIT();
    }
@@ -216,7 +208,8 @@ namespace tao {
    }
 
    void
-   sed::_rebin_info( const tao::galaxy& galaxy )
+   sed::_rebin_info( const tao::galaxy& galaxy,
+                     unsigned idx )
    {
       LOG_ENTER();
 
@@ -227,7 +220,7 @@ namespace tao {
       std::fill( _bulge_age_metals.begin(), _bulge_age_metals.end(), 0.0 );
 
       // Rebin everything from this galaxy.
-      unsigned id = galaxy.local_id();
+      unsigned id = galaxy.values<int>( "localgalaxyid" )[idx];
       _rebin_parents( id, id );
 
       LOG_EXIT();
@@ -368,11 +361,11 @@ namespace tao {
    }
 
    void
-   sed::_read_options( const options::dictionary& dict,
+   sed::_read_options( const options::xml_dict& dict,
                        optional<const string&> prefix )
    {
       // Get the sub dictionary, if it exists.
-      const options::dictionary& sub = prefix ? dict.sub( *prefix ) : dict;
+      //const options::dictionary& sub = prefix ? dict.sub( *prefix ) : dict;
 
       // Extract database details.
       _read_db_options( dict );
@@ -381,18 +374,18 @@ namespace tao {
       _db_connect();
 
       // Try to read H0 (and hence h) from the lightcone module.
-      _h = dict.get<real_type>( "workflow:light-cone:H0" )/100.0;
+      _h = dict.get<real_type>( "workflow:light-cone:H0",73.0 )/100.0;
       LOGDLN( "Read h as: ", _h );
 
       // Extract the counts.
-      _num_spectra = sub.get<unsigned>( "num-spectra" );
-      _num_metals = sub.get<unsigned>( "num-metals" );
+      _num_spectra = dict.get<unsigned>( prefix.get()+":num-spectra",1221 );
+      _num_metals = dict.get<unsigned>( prefix.get()+":num-metals",7 );
       LOGDLN( "Number of times: ", _bin_ages.size() );
       LOGDLN( "Number of spectra: ", _num_spectra );
       LOGDLN( "Number of metals: ", _num_metals );
 
       // Get the SSP filename.
-      _read_ssp( sub.get<string>( "single-stellar-population-model" ) );
+      _read_ssp( dict.get<string>( prefix.get()+":single-stellar-population-model" ) );
 
       // Prepare the snapshot ages.
       _setup_snap_ages();
@@ -402,7 +395,7 @@ namespace tao {
    sed::_read_ssp( const string& filename )
    {
       LOG_ENTER();
-
+      LOGDLN( "SSP File Name: ", filename );
       // The SSP file contains the age grid information first.
       std::ifstream file( filename, std::ios::in );
       unsigned num_ages;
@@ -450,17 +443,22 @@ namespace tao {
    void
    sed::_setup_snap_ages()
    {
+      _timer.start();
       LOG_ENTER();
 
       // Find number of snapshots and resize the containers.
       unsigned num_snaps;
+      _db_timer.start();
       _sql << "SELECT COUNT(*) FROM snap_redshift", soci::into( num_snaps );
+      _db_timer.stop();
       LOGDLN( num_snaps, " snapshots." );
       _snap_ages.reallocate( num_snaps );
 
       // Read meta data.
+      _db_timer.start();
       _sql << "SELECT redshift FROM snap_redshift ORDER BY snapnum",
          soci::into( (std::vector<real_type>&)_snap_ages );
+      _db_timer.stop();
       LOGDLN( "Redshifts: ", _snap_ages );
 
       // Convert to ages.
@@ -469,12 +467,14 @@ namespace tao {
       LOGDLN( "Snapshot ages: ", _snap_ages );
 
       LOG_EXIT();
+      _timer.stop();
    }
 
    void
    sed::_load_table( long long tree_id,
 		     const string& table )
    {
+      _timer.start();
       LOG_ENTER();
       LOGDLN( "Loading table ", table, " and tree ID ", tree_id );
 
@@ -488,8 +488,10 @@ namespace tao {
 
       // Extract number of records in this tree.
       unsigned tree_size;
+      _db_timer.start();
       _sql << "SELECT COUNT(*) FROM " + table + " WHERE globaltreeid = :id",
    	 soci::into( tree_size ), soci::use( tree_id );
+      _db_timer.stop();
       LOGDLN( "Have ", tree_size, " galaxies to load." );
 
       // Resize all our arrays.
@@ -504,11 +506,13 @@ namespace tao {
 	"sfr, sfrbulge, snapnum FROM  " + table + 
 	 " WHERE globaltreeid = :id"
 	 " ORDER BY localgalaxyid";
+      _db_timer.start();
       _sql << query, soci::into( (std::vector<int>&)_descs ),
 	 soci::into( (std::vector<double>&)_metals ),
 	 soci::into( (std::vector<double>&)_sfrs ), soci::into( (std::vector<double>&)_bulge_sfrs ),
 	 soci::into( (std::vector<int>&)_snaps ),
 	 soci::use( tree_id );
+      _db_timer.stop();
       LOGDLN( "Descendant: ", _descs );
       LOGDLN( "Star formation rates: ", _sfrs );
       LOGDLN( "Bulge star formation rates: ", _bulge_sfrs );
@@ -527,5 +531,6 @@ namespace tao {
       _cur_tree_id = tree_id;
 
       LOG_EXIT();
+      _timer.stop();
    }
 }

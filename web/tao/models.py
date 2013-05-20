@@ -8,6 +8,7 @@ Database model mapping
 import django.contrib.auth.models as auth_models
 from django.conf import settings
 from django.db import models
+from tao.mail import send_mail
 
 import os
 
@@ -125,7 +126,12 @@ class DataSetProperty(models.Model):
     is_filter = models.BooleanField(default=True)
     is_output = models.BooleanField(default=True)
     description = models.TextField(default='', blank=True)
-    
+    group = models.CharField(max_length=80, default='', blank=True)
+    order = models.IntegerField(default=0)
+
+    class Meta:
+        ordering = ['group', 'order', 'label']
+
     def __unicode__(self):
         return self.label
 
@@ -184,6 +190,12 @@ class Job(models.Model):
     database = models.CharField(max_length=200)
     error_message = models.TextField(blank=True, max_length=1000000, default='')
 
+    def __init__(self, *args, **kwargs):
+        super(Job, self).__init__(*args, **kwargs)
+        self.var_cache = {}
+        for var in ['status']:
+            self.var_cache[var] = getattr(self, var)
+
     def __unicode__(self):
         return "%s %s %s" % (self.user, self.created_time, self.description)
 
@@ -222,6 +234,11 @@ class Job(models.Model):
             file_path = file.file_path 
             sum_size += os.path.getsize(file_path)
         return sum_size < settings.MAX_DOWNLOAD_SIZE
+
+    def save(self, *args, **kwargs):
+        super(Job, self).save(*args, **kwargs)
+        if self.var_cache['status'] != getattr(self, 'status') and getattr(self, 'status') == Job.COMPLETED:
+            send_mail('job-status', {'job': self, 'user': self.user}, 'Job status update', (self.user.email,))
     
 class JobFile(object):
     def __init__(self, job_dir, file_name):
@@ -245,6 +262,11 @@ class BandPassFilter(models.Model):
     label = models.CharField(max_length=80) # displays the user-friendly file name for the filter, without file extension
     filter_id = models.CharField(max_length=200, unique=True) # full file name of the filter data, as an internal identifier
     description = models.TextField(default='') # when a single band pass filter is selected, this will be displayed in a new details panel on the right
+    group = models.CharField(max_length=80, default='', blank=True)
+    order = models.IntegerField(default=0)
+
+    class Meta:
+        ordering = ['group', 'order', 'label']
 
     def __unicode__(self):
         return self.label
@@ -259,5 +281,8 @@ class DustModel(models.Model):
 
 class GlobalParameter(models.Model):
     parameter_name = models.CharField(max_length=60, unique=True)
-    parameter_value = models.CharField(max_length=60)
+    parameter_value = models.TextField(default='')
     description = models.TextField(default='')
+
+    def __str__(self):
+        return self.parameter_name
