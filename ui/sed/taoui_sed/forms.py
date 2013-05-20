@@ -50,13 +50,11 @@ class Form(BetterForm):
         super(Form, self).__init__(*args[1:], **kwargs)
 
         default_required = False
-        objs = datasets.band_pass_filters_objects()
-        bandpass_filters = [(x.id, x.label) for x in objs]
         dust_models = [(x.id, x.label) for x in datasets.dust_models_objects()]
 
         self.fields['apply_sed'] = forms.BooleanField(required=False, widget=forms.CheckboxInput(), label='Apply Spectral Energy Distribution')
         self.fields['single_stellar_population_model'] = ChoiceFieldWithOtherAttrs(choices=datasets.stellar_model_choices(), required=default_required)
-        self.fields['band_pass_filters'] = bf_fields.forms.MultipleChoiceField(required=default_required, choices=bandpass_filters, widget=TwoSidedSelectWidget)
+        self.fields['band_pass_filters'] = bf_fields.forms.MultipleChoiceField(required=default_required, choices=datasets.band_pass_filters_enriched(), widget=TwoSidedSelectWidget)
         self.fields['apply_dust'] = forms.BooleanField(required=default_required, widget=forms.CheckboxInput(attrs={'class': 'checkbox'}), label='Apply Dust')
         self.fields['select_dust_model'] = forms.ChoiceField(choices=dust_models, required=default_required, widget=forms.Select())
 
@@ -121,12 +119,20 @@ class Form(BetterForm):
             band_pass_filters = self.cleaned_data['band_pass_filters']
             if len(band_pass_filters) > 0:
                 bf_elem = child_element(filter_elem, 'bandpass-filters')
+                added = {}
+                selected = {}
                 for item in band_pass_filters:
-                    op = datasets.band_pass_filter(item)
-                    child_element(bf_elem, 'item', text=op.filter_id, label=op.label, description=op.description)
+                    item_id, item_extension = item.split('_')
+                    if item_id not in selected: selected[item_id] = []
+                    selected[item_id].append(item_extension)
+                for item in band_pass_filters:
+                    item_id, item_extension = item.split('_')
+                    op = datasets.band_pass_filter(item_id)
+                    if item_id not in added:
+                        child_element(bf_elem, 'item', text=op.filter_id, label=op.label, description=op.description, selected=",".join(selected[item_id]))
+                        added[item_id] = True
                     bpf = os.path.splitext(op.filter_id)[0]
-                    child_element(fields_elem, 'item', text=bpf + '_absolute', label=op.label)
-                    child_element(fields_elem, 'item', text=bpf + '_apparent', label=op.label)
+                    child_element(fields_elem, 'item', text=bpf + '_' + item_extension, label=op.label + ' (' + item_extension.capitalize() + ')')
 
         else:
             from tao.xml_util import find_or_create, child_element
@@ -145,9 +151,13 @@ class Form(BetterForm):
             if sspm is not None:
                 params.update({prefix+'-single_stellar_population_model': sspm.id})
             bp_filters = []
-            for filter_id in module_xpath_iterate(xml_root, '//filter/bandpass-filters/item'):
+            for filter_item in module_xpath_iterate(xml_root, '//filter/bandpass-filters/item', text=False):
+                filter_id = filter_item.text
+                filter_extension_list = filter_item.get('selected').split(',')
                 filter = datasets.band_pass_filter_find_from_xml(filter_id)
-                if filter is not None: bp_filters.append(filter.id)
+                if filter is not None:
+                    for filter_extension in filter_extension_list:
+                        bp_filters.append(str(filter.id) + '_' + filter_extension)
             if len(bp_filters) > 0:
                 params.update({prefix+'-band_pass_filters': bp_filters})
             dust = module_xpath(xml_root, '//sed/dust')

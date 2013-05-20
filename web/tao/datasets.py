@@ -86,14 +86,21 @@ def output_choices(data_set_id):
 def output_property(id):
     return models.DataSetProperty.objects.get(pk=id, is_output=True)
 
-def band_pass_filters():
-    return [(x.id, x.label) for x in models.BandPassFilter.objects.order_by('label')]
-
 def band_pass_filters_objects():
     return models.BandPassFilter.objects.order_by('group', 'order', 'label')
 
+def band_pass_filters_enriched():
+    def gen_pairs(objs):
+        for obj in objs:
+            yield (str(obj.id) + '_apparent', obj.label + ' (Apparent)')
+            yield (str(obj.id) + '_absolute', obj.label + ' (Absolute)')
+    return [pair for pair in gen_pairs(band_pass_filters_objects())]
+
 def band_pass_filter(id):
-    return models.BandPassFilter.objects.get(pk=id)
+    id_num = id
+    if '_' in id:
+        id_num = id[0:id.index('_')]
+    return models.BandPassFilter.objects.get(pk=id_num)
 
 def dust_models():
     return [(x.id, x.label) for x in models.DustModel.objects.order_by('label')]
