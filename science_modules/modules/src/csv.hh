@@ -31,15 +31,7 @@ namespace tao {
       ///
       virtual
       void
-      setup_options( options::dictionary& dict,
-                     optional<const string&> prefix = optional<const string&>() );
-
-      ///
-      ///
-      ///
-      virtual
-      void
-      initialise( const options::dictionary& dict,
+      initialise( const options::xml_dict& dict,
                   optional<const string&> prefix = optional<const string&>() );
 
       ///
@@ -63,7 +55,8 @@ namespace tao {
 
       void
       _write_field( const tao::galaxy& galaxy,
-		    const string& field );
+                    const string& field,
+                    unsigned idx );
 
    protected:
 

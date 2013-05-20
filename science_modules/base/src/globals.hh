@@ -6,18 +6,14 @@
 namespace tao {
    using namespace hpc;
 
-   extern unix::time_type tao_start_time;
+   extern posix::time_type tao_start_time;
 
    typedef double real_type;
 
    double
    runtime();
 
-   ///
-   ///
-   ///
-   void
-   setup_common_options( options::dictionary& dict );
+
 
 }
 

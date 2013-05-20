@@ -78,18 +78,14 @@ namespace tao {
       LOG_EXIT();
    }
 
-   void
-   module::setup_options( options::dictionary& dict,
-                          const char* prefix )
-   {
-      setup_options( dict, string( prefix ) );
-   }
 
    void
-   module::initialise( const options::dictionary& dict,
+   module::initialise( const options::xml_dict& dict,
                        const char* prefix )
    {
       initialise( dict, string( prefix ) );
+      _timer.reset();
+      _db_timer.reset();
    }
 
    void
@@ -107,7 +103,12 @@ namespace tao {
    void
    module::log_metrics()
    {
+      // LOGILN( name(), " runtime: ", mpi::comm::world.all_reduce( time(), MPI_MAX ), " (s)" );
+      // LOGILN( name(), " db time: ", mpi::comm::world.all_reduce( db_time(), MPI_MAX ), " (s)" );
+      // LOGILN( name(), " runtime: ", mpi::comm::world.all_reduce( time() ), " (s)" );
+      // LOGILN( name(), " db time: ", mpi::comm::world.all_reduce( db_time() ), " (s)" );
       LOGILN( name(), " runtime: ", time(), " (s)" );
+      LOGILN( name(), " db time: ", db_time(), " (s)" );
    }
 
    bool
@@ -128,13 +129,19 @@ namespace tao {
       return _timer.total();
    }
 
+   double
+   module::db_time() const
+   {
+      return _db_timer.total();
+   }
+
    void
-   module::_read_db_options( const options::dictionary& dict )
+   module::_read_db_options( const options::xml_dict& dict )
    {
       LOG_ENTER();
 
       // Extract database details.
-      _dbtype = dict.get<string>( "settings:database:type" );
+      _dbtype = dict.get<string>( "settings:database:type","postgresql" );
       _dbname = dict.get<string>( "database" );
       if( _dbtype != "sqlite" )
       {
@@ -143,7 +150,11 @@ namespace tao {
          _dbuser = dict.get<string>( "settings:database:user" );
          _dbpass = dict.get<string>( "settings:database:password" );
       }
-      _tree_pre = dict.get<string>( "settings:database:treetableprefix" );
+      _tree_pre = dict.get<string>( "settings:database:treetableprefix", "tree_" );
+
+      // Read the batch size from the dictinary.
+      _batch_size = dict.get<unsigned>( "settings:database:batch-size",100 );
+      LOGDLN( "Setting batch size to ", _batch_size );
 
       LOG_EXIT();
    }

@@ -125,6 +125,13 @@ def global_parameter(request, parameter_name):
         pass
     return HttpResponse(resp, mimetype="application/json")
 
+@researcher_required
+def bandpass_filters(request):
+    resp = '{}'
+    objects = BandPassFilter.objects.all()
+    resp = serializers.serialize('json', objects)
+    return HttpResponse(resp, mimetype="application/json")
+
 def bad_request(request):
     """
     returns an error to the browser

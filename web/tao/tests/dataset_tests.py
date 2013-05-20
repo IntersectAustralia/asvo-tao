@@ -5,6 +5,11 @@ from tao.models import DataSetProperty
 
 class DatasetTestCase(TransactionTestCase):
 
+    def setUp(self):
+        super(DatasetTestCase, self).setUp()
+
+    def tearDown(self):
+        super(DatasetTestCase, self).tearDown()
 
     def test_dark_matter_simulation_choices(self):
         from tao.datasets import dark_matter_simulation_choices

@@ -1,0 +1,12 @@
+{% extends '_base.html' %}
+{% load bootstrap_tags %}
+{% block subtitle %}
+    Email sent
+{% endblock %}
+
+{% block content %}
+    <h3>
+        Thank you -- your email has been sent.
+    </h3>
+    <a href="{% url 'home' %}">Back</a>
+{% endblock content %}

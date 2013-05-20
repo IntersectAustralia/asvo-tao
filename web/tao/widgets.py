@@ -67,14 +67,18 @@ class TwoSidedSelectWidget(SelectMultiple):
         if options:
             output_right.append(options)
         output_right.append('</select>')
-        output = [u'<table><tr>']
-        output.extend(['<td><i>Available</i><br/>'] + output_filter + ['<br/>'] + output_left + ['</td>'])
-        output.extend(['<td class="text-align:center;">',
+        output = [u'<table id="' + widget_id + '-table">']
+        output.extend(['<tr><td>Available</td>'])
+        output.extend(['<td></td>'])
+        output.extend(['<td>Selected</td></tr>'])
+        output.extend(['<td>'] + output_filter + ['</td>'])
+        output.extend(['<td rowspan="2" id="' + widget_id + '-buttons">',
                        u'<a href="#" id="%s_op_add_all" style="display:block;text-decoration:none;clear:both;">&gt;&gt;</a>' % widget_id,
                        u'<a href="#" id="%s_op_add" style="display:block;text-decoration:none;clear:both;">&gt;</a>' % widget_id,
                        u'<a href="#" id="%s_op_remove" style="display:block;text-decoration:none;clear:both;">&lt;</a>' % widget_id,
                        u'<a href="#" id="%s_op_remove_all" style="display:block;text-decoration:none;clear:both;">&lt;&lt;</a>' % widget_id,
                        '</td>'])
-        output.extend(['<td><i>Selected</i><br/>'] + output_right + ['</td>'])
-        output.extend([u'</tr></table>'])
+        output.extend(['<td rowspan="2" id="' + widget_id + '-right">'] + output_right + ['</td></tr>'])
+        output.extend(['<tr><td style="height:100%" id="' + widget_id + '-left">'] + output_left + ['</td></tr>'])
+        output.extend([u'</table>'])
         return mark_safe(u'\n'.join(output))

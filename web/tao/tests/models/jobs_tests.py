@@ -1,18 +1,25 @@
+from django.core import mail
 from django.conf import settings
 from django.test.testcases import TestCase
 
 from tao.models import Job, User
 #from tao.tests import helper
-from tao.tests.support.factories import JobFactory
+from tao.tests.support.factories import GlobalParameterFactory
 
 import os
 
 class JobTestCase(TestCase):
     def setUp(self):
         super(JobTestCase, self).setUp()
-        
+        GlobalParameterFactory(parameter_name='job-status.html', parameter_value='{{ job.id }} {{ user.username }}')
+        GlobalParameterFactory(parameter_name='job-status.txt', parameter_value='{{ job.id }} {{ user.username }}')
+
         self.user = User()
         self.user.save()
+        mail.outbox = []
+
+    def tearDown(self):
+        super(JobTestCase, self).tearDown()
         
     def test_not_available_unless_completed(self):
         self.jobs = dict((status, Job(status=status, user=self.user)) for (status, _) in Job.STATUS_CHOICES)
@@ -59,4 +66,16 @@ class JobTestCase(TestCase):
         merged_file_names_to_contents.update(file_names_to_contents)
         merged_file_names_to_contents.update(file_names_to_contents2)
         self.assertEqual(sorted(merged_file_names_to_contents.keys()), sorted([job_file.file_name for job_file in j.files()]))
+
+    def test_email_sent_only_when_completed(self):
+        mail.outbox = []
+        job = Job(user=self.user, status=Job.IN_PROGRESS, output_path='job_dir')
+        job.save()
+        self.assertEqual(0, len(mail.outbox))
+        job.status = Job.COMPLETED
+        job.save()
+        self.assertEqual(1, len(mail.outbox))
+        self.assertEquals('Job status update', mail.outbox[0].subject)
+        mail_content = str(mail.outbox[0].body)
+        self.assertTrue((str(job.id) in mail_content) and (self.user.username in mail_content))
 

@@ -12,6 +12,8 @@ import form_utils.fields as bf_fields
 from tao import datasets
 from tao import models as tao_models
 from tao.widgets import ChoiceFieldWithOtherAttrs, SelectWithOtherAttrs, TwoSidedSelectWidget
+from tao.xml_util import module_xpath, module_xpath_iterate
+
 
 class Form(BetterForm):
     EDIT_TEMPLATE = 'taoui_light_cone/edit.html'
@@ -119,7 +121,7 @@ class Form(BetterForm):
     def to_xml(self, root):
         from tao.xml_util import find_or_create, child_element
 
-        light_cone_elem = find_or_create(root, 'light-cone')
+        light_cone_elem = find_or_create(root, 'light-cone', module='light-cone')
 
         simulation = tao_models.Simulation.objects.get(pk=self.cleaned_data['dark_matter_simulation'])
         dataset = tao_models.DataSet.objects.get(id=self.cleaned_data['galaxy_model'])
@@ -131,31 +133,97 @@ class Form(BetterForm):
         child_element(light_cone_elem, 'galaxy-model', text=galaxy_model.name)
 
         if self.cleaned_data['catalogue_geometry'] == Form.BOX:
+
             snapshot = tao_models.Snapshot.objects.get(id=self.cleaned_data['snapshot'])
             child_element(light_cone_elem, 'redshift', text=snapshot.redshift)
-        else:
-            child_element(light_cone_elem, 'box-repetition', text=self.cleaned_data['light_cone_type'])
-            child_element(light_cone_elem, 'num-cones', text=self.cleaned_data['number_of_light_cones'])
-            child_element(light_cone_elem, 'redshift-min', text=self.cleaned_data['redshift_min'])
-            child_element(light_cone_elem, 'redshift-max', text=self.cleaned_data['redshift_max'])
-
-        if self.cleaned_data['catalogue_geometry'] == Form.CONE:
-            child_element(light_cone_elem, 'ra-min', text='0.0', units='deg')
-            child_element(light_cone_elem, 'ra-max', text=self.cleaned_data['ra_opening_angle'], units='deg')
-            child_element(light_cone_elem, 'dec-min', text='0.0', units='deg')
-            child_element(light_cone_elem, 'dec-max', text=self.cleaned_data['dec_opening_angle'], units='deg')
-
-        if self.cleaned_data['catalogue_geometry'] == Form.BOX:
             box_size = self.cleaned_data['box_size']
             if box_size is None or box_size == '':
                 box_size = simulation.box_size
             child_element(light_cone_elem, 'query-box-size', text=box_size, units='Mpc')
 
+        else:  # == Form.CONE
+
+            child_element(light_cone_elem, 'box-repetition', text=self.cleaned_data['light_cone_type'])
+            child_element(light_cone_elem, 'num-cones', text=self.cleaned_data['number_of_light_cones'])
+            child_element(light_cone_elem, 'redshift-min', text=self.cleaned_data['redshift_min'])
+            child_element(light_cone_elem, 'redshift-max', text=self.cleaned_data['redshift_max'])
+            child_element(light_cone_elem, 'ra-min', text='0.0', units='deg')
+            child_element(light_cone_elem, 'ra-max', text=self.cleaned_data['ra_opening_angle'], units='deg')
+            child_element(light_cone_elem, 'dec-min', text='0.0', units='deg')
+            child_element(light_cone_elem, 'dec-max', text=self.cleaned_data['dec_opening_angle'], units='deg')
+
         output_properties = self.cleaned_data['output_properties']
         if len(output_properties) > 0:
+
+            # Create the light-cone output properties.
             output_elem = child_element(light_cone_elem, 'output-fields')
+
+            # Either create or find the CSV output properties.
+            fields_elem = find_or_create(find_or_create(root, 'csv', module='csv'), 'fields')
+
+            # Insert entries.
             for item in output_properties:
                 op = datasets.output_property(item)
                 attrs = {'label': op.label}
                 if op.units is not None and len(op.units) > 0: attrs['units'] = op.units
+                child_element(fields_elem, 'item', text=op.name, **attrs)
+                attrs.update({'description': op.description})
                 child_element(output_elem, 'item', text=op.name, **attrs)
+
+    @classmethod
+    def from_xml(cls, ui_holder, xml_root, prefix=None):
+        simulation_name = module_xpath(xml_root, '//light-cone/simulation')
+        galaxy_model = module_xpath(xml_root, '//light-cone/galaxy-model')
+        simulation = datasets.simulation_from_xml(simulation_name)
+        data_set = datasets.dataset_find_from_xml(simulation_name, galaxy_model)
+        geometry = module_xpath(xml_root, '//light-cone/geometry')
+        simulation_id = None
+        if simulation is not None: simulation_id = simulation.id
+        data_set_id = None
+        if data_set is not None: data_set_id = data_set.id
+        if not (geometry in [Form.CONE, Form.BOX]):
+            geometry = None
+        params = {
+            prefix+'-catalogue_geometry': geometry,
+            prefix+'-galaxy_model': data_set_id,
+            prefix+'-dark_matter_simulation': simulation_id,
+            }
+
+        if geometry == Form.BOX:
+
+            redshift = module_xpath(xml_root, '//light-cone/redshift')
+            snapshot = datasets.snapshot_from_xml(data_set, redshift)
+            if snapshot is not None:
+                params.update({prefix+'-snapshot':snapshot.id})
+            box_size = module_xpath(xml_root, '//light-cone/query-box-size')
+            params.update({prefix+'-box_size': box_size})
+
+        else: ## == Form.CONE
+
+            light_cone_type = module_xpath(xml_root, '//light-cone/box-repetition')
+            num_cones = module_xpath(xml_root, '//light-cone/num-cones')
+            redshift_min = module_xpath(xml_root, '//light-cone/redshift-min')
+            redshift_max = module_xpath(xml_root, '//light-cone/redshift-max')
+            ra_max = module_xpath(xml_root, '//light-cone/ra-max')
+            dec_max = module_xpath(xml_root, '//light-cone/dec-max')
+            params.update({
+                prefix+'-light_cone_type': light_cone_type,
+                prefix+'-number_of_light_cones': num_cones,
+                prefix+'-redshift_min': redshift_min,
+                prefix+'-redshift_max': redshift_max,
+                prefix+'-ra_opening_angle': ra_max,
+                prefix+'-dec_opening_angle': dec_max,
+            })
+
+        params.update({prefix+'-output_properties': [dsp.id for dsp in Form._map_elems(xml_root, data_set)]})
+        return cls(ui_holder, params, prefix=prefix)
+
+    @classmethod
+    def _map_elems(cls, xml_root, data_set):
+        for elem in module_xpath_iterate(xml_root, '//light-cone/output-fields/item', text=False):
+            label = elem.get('label')
+            name = elem.text
+            data_set_property = datasets.data_set_property_from_xml(data_set, label, name)
+            if data_set_property is not None:
+                yield data_set_property
+

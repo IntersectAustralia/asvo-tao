@@ -25,27 +25,13 @@ namespace tao {
    ///
    ///
    void
-   csv::setup_options( options::dictionary& dict,
-                       optional<const string&> prefix )
-   {
-      dict.add_option( new options::string( "filename" ), prefix );
-      dict.add_option( new options::list<options::string>( "fields" ), prefix );
-   }
-
-   ///
-   ///
-   ///
-   void
-   csv::initialise( const options::dictionary& dict,
+   csv::initialise( const options::xml_dict& dict,
                     optional<const string&> prefix )
    {
       LOG_ENTER();
 
-      // Get the sub dictionary, if it exists.
-      const options::dictionary& sub = prefix ? dict.sub( *prefix ) : dict;
-
-      _fn = sub.get<string>( "filename" );
-      _fields = sub.get_list<string>( "fields" );
+      _fn = dict.get<hpc::string>( prefix.get()+":filename" );
+      _fields = dict.get_list<hpc::string>( prefix.get()+":fields" );
 
       // Open the file.
       open();
@@ -96,20 +82,24 @@ namespace tao {
    {
       _timer.start();
 
-      auto it = _fields.cbegin();
-      if( it != _fields.cend() )
+      // Repeat for each galaxy in the batch.
+      for( unsigned ii = 0; ii < galaxy.batch_size(); ++ii )
       {
-	 _write_field( galaxy, *it++ );
-	 while( it != _fields.cend() )
-	 {
-	    _file << ", ";
-	    _write_field( galaxy, *it++ );
-	 }
-         _file << "\n";
-      }
+         auto it = _fields.cbegin();
+         if( it != _fields.cend() )
+         {
+            _write_field( galaxy, *it++, ii );
+            while( it != _fields.cend() )
+            {
+               _file << ", ";
+               _write_field( galaxy, *it++, ii );
+            }
+            _file << "\n";
+         }
 
-      // Increment number of written records.
-      ++_records;
+         // Increment number of written records.
+         ++_records;
+      }
 
       _timer.stop();
    }
@@ -118,38 +108,42 @@ namespace tao {
    csv::log_metrics()
    {
       module::log_metrics();
-      LOGILN( _name, " number of records written: ", _records );
+      LOGILN( _name, " number of records written: ", mpi::comm::world.all_reduce( _records ) );
    }
 
    void
    csv::_write_field( const tao::galaxy& galaxy,
-		      const string& field )
+                      const string& field,
+                      unsigned idx )
    {
+      // TODO: Can make this faster by not repeating the
+      //       value lookup for each index.
       auto val = galaxy.field( field );
       switch( val.second )
       {
 	 case tao::galaxy::STRING:
-	    _file << galaxy.value<string>( field );
+	    _file << galaxy.values<string>( field )[idx];
 	    break;
 
 	 case tao::galaxy::DOUBLE:
-	    _file << galaxy.value<double>( field );
+	    _file << galaxy.values<double>( field )[idx];
 	    break;
 
 	 case tao::galaxy::INTEGER:
-	    _file << galaxy.value<int>( field );
+	    _file << galaxy.values<int>( field )[idx];
 	    break;
 
 	 case tao::galaxy::UNSIGNED_LONG_LONG:
-	    _file << galaxy.value<unsigned long long>( field );
+	    _file << galaxy.values<unsigned long long>( field )[idx];
 	    break;
 
 	 case tao::galaxy::LONG_LONG:
-	    _file << galaxy.value<long long>( field );
+	    _file << galaxy.values<long long>( field )[idx];
 	    break;
 
 	 default:
 	    ASSERT( 0 );
       }
    }
+
 }

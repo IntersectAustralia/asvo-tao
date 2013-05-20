@@ -14,13 +14,13 @@ namespace tao {
    }
 
    void
-   empty::setup_options( options::dictionary& dict,
+   empty::setup_options( options::xml_dict& dict,
                          optional<const string&> prefix )
    {
    }
 
    void
-   empty::initialise( const options::dictionary& dict,
+   empty::initialise( const options::xml_dict& dict,
                       optional<const string&> prefix )
    {
    }
