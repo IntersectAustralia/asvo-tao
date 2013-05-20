@@ -164,18 +164,19 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.assertEquals(output_property.label, name_displayed)
 
     def test_bandpass_filter_details(self):
+        extension = 'apparent'
         self.click('tao-tabs-' + MODULE_INDICES['sed'])
         self.click(self.sed('apply_sed'))
         for i in [1,0]:
             bandpass_filter = BandPassFilter.objects.all()[i]
-            self.click_by_css(self.sed_id('band_pass_filters_from') + " option[value='"+str(bandpass_filter.id)+"']")
+            self.click_by_css(self.sed_id('band_pass_filters_from') + " option[value='"+str(bandpass_filter.id)+"_" + extension + "']")
             name_displayed = self.get_info_field('band-pass', 'name')
-            self.assertEquals(bandpass_filter.label, name_displayed)
+            self.assertEquals(bandpass_filter.label + ' (' + extension.capitalize() + ')', name_displayed)
         self.click(self.sed_2select('op_add_all'))
         bandpass_filter = BandPassFilter.objects.all()[i]
-        self.click_by_css(self.sed_id('band_pass_filters') + " option[value='"+str(bandpass_filter.id)+"']")
+        self.click_by_css(self.sed_id('band_pass_filters') + " option[value='"+str(bandpass_filter.id)+"_" + extension + "']")
         name_displayed = self.get_info_field('band-pass', 'name')
-        self.assertEquals(bandpass_filter.label, name_displayed)
+        self.assertEquals(bandpass_filter.label + ' (' + extension.capitalize() + ')', name_displayed)
 
     def test_summary_on_initial_load(self):
         self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)

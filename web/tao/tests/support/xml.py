@@ -40,8 +40,8 @@ def light_cone_xml(xml_parameters):
                         <fields>
                             <item label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
                             <item label="%(output_properties_2_label)s">%(output_properties_2_name)s</item>
-                            <item label="bandpass">%(band_pass_filter_name)s_absolute</item>
-                            <item label="bandpass">%(band_pass_filter_name)s_apparent</item>
+                            <!-- <item label="bandpass (Absolute)">%(band_pass_filter_name)s_absolute</item> -->
+                            <item label="bandpass (Apparent)">%(band_pass_filter_name)s_apparent</item>
                         </fields>
 
                         <parents>
@@ -75,7 +75,7 @@ def light_cone_xml(xml_parameters):
 
                         <!-- Bandpass Filters) -->
                         <bandpass-filters>
-                            <item description="%(band_pass_filter_description)s" label="%(band_pass_filter_label)s">%(band_pass_filter_id)s</item>
+                            <item description="%(band_pass_filter_description)s" label="%(band_pass_filter_label)s" selected="apparent">%(band_pass_filter_id)s</item>
                         </bandpass-filters>
                     </filter>
 

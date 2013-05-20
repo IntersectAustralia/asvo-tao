@@ -48,9 +48,9 @@ class WorkflowTests(TestCase, XmlDiffMixin):
         self.stellar_model = StellarModelFactory.create(name='Stella')
         self.band_pass_filter = BandPassFilterFactory.create(label='bandpass')
         self.dust_model = DustModelFactory.create()
-        self.sed_parameters = {'apply_sed': True, 'single_stellar_population_model': self.stellar_model.id, 'band_pass_filters': [self.band_pass_filter.id], 'apply_dust': True, 'select_dust_model': self.dust_model.id}
+        self.sed_parameters = {'apply_sed': True, 'single_stellar_population_model': self.stellar_model.id, 'band_pass_filters': [str(self.band_pass_filter.id) + '_apparent'], 'apply_dust': True, 'select_dust_model': self.dust_model.id}
         self.sed_disabled = {'apply_sed': False}
-        self.sed_parameters_no_dust = {'apply_sed': True, 'single_stellar_population_model': self.stellar_model.id, 'band_pass_filters': [self.band_pass_filter.id]}
+        self.sed_parameters_no_dust = {'apply_sed': True, 'single_stellar_population_model': self.stellar_model.id, 'band_pass_filters': [str(self.band_pass_filter.id) + '_absolute']}
         self.output_format = OUTPUT_FORMATS[0]['value']
         self.output_format_parameters = {'supported_formats': self.output_format}
 
@@ -218,6 +218,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'band_pass_filter_label': self.band_pass_filter.label,
             'band_pass_filter_id': self.band_pass_filter.filter_id,
             'band_pass_filter_description': self.band_pass_filter.description,
+            'band_pass_extension': 'apparent',
             'dust_model_name': self.dust_model.name,
             })
         # comments are ignored by assertXmlEqual
@@ -280,8 +281,8 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                     <csv module="csv">
                         <fields>
                             <item label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
-                            <item label="bandpass">Band_pass_filter_000_absolute</item>
-                            <item label="bandpass">Band_pass_filter_000_apparent</item>
+                            <!-- <item label="bandpass (Absolute)">Band_pass_filter_000_absolute</item> -->
+                            <item label="bandpass (Apparent)">Band_pass_filter_000_apparent</item>
                         </fields>
 
                         <parents>
@@ -315,7 +316,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
 
                         <!-- Bandpass Filters) -->
                         <bandpass-filters>
-                            <item description="%(band_pass_filter_description)s" label="%(band_pass_filter_label)s">%(band_pass_filter_id)s</item>
+                            <item description="%(band_pass_filter_description)s" label="%(band_pass_filter_label)s" selected="%(band_pass_extension)s">%(band_pass_filter_id)s</item>
                         </bandpass-filters>
                     </filter>
 
@@ -576,6 +577,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'band_pass_filter_id': self.band_pass_filter.filter_id,
             'band_pass_filter_name': os.path.splitext(self.band_pass_filter.filter_id)[0],
             'band_pass_filter_description': self.band_pass_filter.description,
+            'band_pass_extension': 'absolute',
             })
         # comments are ignored by assertXmlEqual
         expected_parameter_xml = stripped_joined_lines("""
@@ -637,8 +639,8 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                     <csv module="csv">
                         <fields>
                             <item label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
-                            <item label="bandpass">%(band_pass_filter_name)s_absolute</item>
-                            <item label="bandpass">%(band_pass_filter_name)s_apparent</item>
+                            <item label="bandpass (Absolute)">%(band_pass_filter_name)s_absolute</item>
+                            <!-- <item label="bandpass (Apparent)">%(band_pass_filter_name)s_apparent</item> -->
                         </fields>
 
                         <parents>
@@ -671,7 +673,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
 
                         <!-- Bandpass Filters) -->
                         <bandpass-filters>
-                            <item description="%(band_pass_filter_description)s" label="%(band_pass_filter_label)s">%(band_pass_filter_id)s</item>
+                            <item description="%(band_pass_filter_description)s" label="%(band_pass_filter_label)s" selected="%(band_pass_extension)s">%(band_pass_filter_id)s</item>
                         </bandpass-filters>
                     </filter>
 

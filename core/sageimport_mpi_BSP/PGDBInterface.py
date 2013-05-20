@@ -60,7 +60,7 @@ class DBInterface(object):
     
     
     def CloseConnections(self):        
-        self.DBConnection.close()
+        self.DBConnection.CloseConnections()
         self.CloseDebugFile()
                 
            
