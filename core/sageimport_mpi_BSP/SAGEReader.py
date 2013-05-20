@@ -103,7 +103,7 @@ class SAGEDataReader:
         
     
         NumberofTrees= struct.unpack('i', CurrentFile.read(4))[0]
-        TotalNumberOfGalaxies= struct.unpack('i', CurrentFile.read(4))[0]
+        TotalNumberOfGalaxies= struct.unpack('q', CurrentFile.read(8))[0]
         if self.DebugToFile==True:
             self.Log.write('\t Trees Count= '+str(NumberofTrees)+'\n')
             self.Log.write('\t Total Number of Galaxies = '+str(TotalNumberOfGalaxies)+'\n')
@@ -149,6 +149,7 @@ class SAGEDataReader:
         if (RectA[0] < RectB[1] and RectA[1] > RectB[0] and RectA[2] < RectB[3] and RectA[3] > RectB[2]): 
             return True;
         else:
+            
             return False;
         
     def MapTreetoTableID(self,TreeData):
@@ -172,9 +173,10 @@ class SAGEDataReader:
             MaxX=max(MaxX,TreeItem['PosX'])
             MinY=min(MinY,TreeItem['PosY'])
             MaxY=max(MaxY,TreeItem['PosY'])
+            logging.info(str(TreeItem['PosX'])+","+str(TreeItem['PosY'])+","+str(TreeItem['PosZ']))
         
         Rect1=[MinX,MaxX,MinY,MaxY]
-        
+        logging.info('Tree Box'+ str(Rect1))
         XLocation=-1
         YLocation=-1
         StepSize=self.BSPCellSize
@@ -196,6 +198,7 @@ class SAGEDataReader:
                 
                 Rect2=[BX1,BX2,BY1,BY2]
                 
+                
                 if self.IntersectTwoRect(Rect1, Rect2)==True:
                     GetIntersectionWithCurrentBoundingRect="INSERT INTO TreeMapping VALUES("+str(TreeData[0]['TreeID'])+","+str(XLocation)+","+str(YLocation)+"); "                
                 
@@ -203,6 +206,9 @@ class SAGEDataReader:
                     PTableID=int((XLocation*self.CellsInX)+YLocation)
                     logging.info("("+str(XLocation)+","+str(YLocation)+")="+str(PTableID))
                     PossibleTables=numpy.hstack([PossibleTables,PTableID])
+                    logging.info("Intersect - Rect1="+str(Rect1)+"\tRect2="+str(Rect2))
+                else:
+                    logging.info("Fail - Rect1="+str(Rect1)+"\tRect2="+str(Rect2))
         FinalTableID=-1
         
         if len(PossibleTables)==1:
@@ -247,6 +253,7 @@ class SAGEDataReader:
     def ComputeFields(self,TreeData):
         for TreeField in TreeData:
             CentralGalaxyLocalID=TreeField['CentralGal']
+            #logging.info("Central Galaxy Local ID="+str(CentralGalaxyLocalID)+"/"+len(TreeData))
             DescGalaxyLocalID=TreeField['Descendant']
             CentralGalaxy=TreeData[CentralGalaxyLocalID]
             TreeField['CentralGalaxyGlobalID']=CentralGalaxy['GlobalIndex']
@@ -260,10 +267,11 @@ class SAGEDataReader:
     def ReadTreeField(self,CurrentFile,CurrentFileGalaxyID,TreeID):
         
         #Read a single Galaxy information based on the pre-defined struct
-        
+        #print self.FormatStr
+        #print struct.calcsize(self.FormatStr)
         GalaxiesField= struct.unpack(self.FormatStr, CurrentFile.read(self.FieldSize))
         FieldData={}
-        FieldsIndex=0;
+        FieldsIndex=0
         for Field in self.CurrentSAGEStruct:            
             FieldData[Field[0]]=GalaxiesField[FieldsIndex]
             FieldsIndex=FieldsIndex+1
