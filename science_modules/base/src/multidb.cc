@@ -186,12 +186,12 @@ namespace tao
 
 	}
 
-	soci::session* multidb::operator [](string TableName)
+	soci::session& multidb::operator [](string TableName)
 	{
 		if(TablesMapping.count(TableName)>0)
 		{
 			TablesMapping[TableName]->OpenConnection();
-			return &TablesMapping[TableName]->Connection;
+			return TablesMapping[TableName]->Connection;
 
 		}
 		else

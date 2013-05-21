@@ -23,6 +23,7 @@ sources = [
     ('milreader', 'milreader.cc'),
     ('sagereader', 'sagereader.cc'),
     ('sagecheck', 'sagecheck.cc'),
+    ('subfind_check', 'subfind_check.cc'),
 #    ('dbcheck', 'dbcheck.cc'),
     ('sageimport', 'sageimport.cc'),
     ('sage_import_ages', 'sage_import_ages.cc'),

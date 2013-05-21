@@ -6,7 +6,6 @@
 #include "galaxy.hh"
 #include <libhpc/options/xml_dict.hh>
 
-
 namespace tao {
    using namespace hpc;
 
@@ -31,8 +30,6 @@ namespace tao {
 
       void
       process( unsigned long long iteration );
-
-
 
       virtual
       void
@@ -93,7 +90,11 @@ namespace tao {
       bool _complete;
 
       bool _connected;
+#ifdef MULTIDB
+      multidb* _db;
+#else
       soci::session _sql;
+#endif
       unsigned _num_restart_its;
       unsigned _cur_restart_it;
       string _dbtype, _dbname, _dbhost, _dbport, _dbuser, _dbpass;

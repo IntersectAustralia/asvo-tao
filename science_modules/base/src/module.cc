@@ -8,6 +8,9 @@ namespace tao {
 
    module::module( const string& name )
       : _name( name ),
+#ifdef MULTIDB
+	_db( NULL ),
+#endif
         _it( 0 ),
         _complete( false ),
         _connected( false ),
@@ -103,10 +106,6 @@ namespace tao {
    void
    module::log_metrics()
    {
-      // LOGILN( name(), " runtime: ", mpi::comm::world.all_reduce( time(), MPI_MAX ), " (s)" );
-      // LOGILN( name(), " db time: ", mpi::comm::world.all_reduce( db_time(), MPI_MAX ), " (s)" );
-      // LOGILN( name(), " runtime: ", mpi::comm::world.all_reduce( time() ), " (s)" );
-      // LOGILN( name(), " db time: ", mpi::comm::world.all_reduce( db_time() ), " (s)" );
       LOGILN( name(), " runtime: ", time(), " (s)" );
       LOGILN( name(), " db time: ", db_time(), " (s)" );
    }
@@ -164,6 +163,10 @@ namespace tao {
    {
       LOG_ENTER();
 
+#ifdef MULTIDB
+      // Fire up the multidb.
+      _db = new multidb( dict );
+#else
       LOGDLN( "Connecting to ", _dbtype, " database \"", _dbname, "\"" );
       try
       {
@@ -171,13 +174,13 @@ namespace tao {
             _sql.open( soci::sqlite3, _dbname );
          else
          {
-	    string connect = "dbname=" + _dbname;
-	    connect += " host=" + _dbhost;
-	    connect += " port=" + _dbport;
-	    connect += " user=" + _dbuser;
-	    connect += " password='" + _dbpass + "'";
-	    LOGDLN( "Connect string: ", connect );
-	    _sql.open( soci::postgresql, connect );
+      	    string connect = "dbname=" + _dbname;
+      	    connect += " host=" + _dbhost;
+      	    connect += " port=" + _dbport;
+      	    connect += " user=" + _dbuser;
+      	    connect += " password='" + _dbpass + "'";
+      	    LOGDLN( "Connect string: ", connect );
+      	    _sql.open( soci::postgresql, connect );
          }
       }
       catch( const std::exception& ex )
@@ -186,6 +189,7 @@ namespace tao {
          LOGDLN( "Error opening database connection: ", ex.what() );
          ASSERT( 0 );
       }
+#endif
 
       // Flag as connected.
       _connected = true;
@@ -199,7 +203,12 @@ namespace tao {
       if( _connected )
       {
          LOGDLN( "Disconnecting from database." );
-         _sql.close();
+#ifdef MULTIDB
+	 delete _db;
+	 _db = NULL;
+#else
+	 _sql.close();
+#endif
          _connected = false;
       }
    }
@@ -218,4 +227,5 @@ namespace tao {
       else
 	 return false;
    }
+
 }

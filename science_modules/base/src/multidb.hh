@@ -41,7 +41,7 @@ namespace tao {
            void CloseAllConnections();
            void RestartAllConnections();
            void OpenAllConnections();
-           soci::session* operator [](string TableName);
+           soci::session& operator [](string TableName);
            list<string> TableNames;
            map<string,ServerInfo*> CurrentServers;
            map<string,ServerInfo*> TablesMapping;

@@ -449,15 +449,24 @@ namespace tao {
       // Find number of snapshots and resize the containers.
       unsigned num_snaps;
       _db_timer.start();
+#ifdef MULTIDB
+      (*_db)["tree_1"] << "SELECT COUNT(*) FROM snap_redshift", soci::into( num_snaps );
+#else
       _sql << "SELECT COUNT(*) FROM snap_redshift", soci::into( num_snaps );
+#endif
       _db_timer.stop();
       LOGDLN( num_snaps, " snapshots." );
       _snap_ages.reallocate( num_snaps );
 
       // Read meta data.
       _db_timer.start();
+#ifdef MULTIDB
+      (*_db)["tree_1"] << "SELECT redshift FROM snap_redshift ORDER BY snapnum",
+         soci::into( (std::vector<real_type>&)_snap_ages );
+#else
       _sql << "SELECT redshift FROM snap_redshift ORDER BY snapnum",
          soci::into( (std::vector<real_type>&)_snap_ages );
+#endif
       _db_timer.stop();
       LOGDLN( "Redshifts: ", _snap_ages );
 
@@ -489,8 +498,13 @@ namespace tao {
       // Extract number of records in this tree.
       unsigned tree_size;
       _db_timer.start();
+#ifdef MULTIDB
+      (*_db)[table] << "SELECT COUNT(*) FROM " + table + " WHERE globaltreeid = :id",
+	 soci::into( tree_size ), soci::use( tree_id );
+#else
       _sql << "SELECT COUNT(*) FROM " + table + " WHERE globaltreeid = :id",
    	 soci::into( tree_size ), soci::use( tree_id );
+#endif
       _db_timer.stop();
       LOGDLN( "Have ", tree_size, " galaxies to load." );
 
@@ -507,11 +521,19 @@ namespace tao {
 	 " WHERE globaltreeid = :id"
 	 " ORDER BY localgalaxyid";
       _db_timer.start();
+#ifdef MULTIDB
+      (*_db)[table] << query, soci::into( (std::vector<int>&)_descs ),
+	 soci::into( (std::vector<double>&)_metals ),
+	 soci::into( (std::vector<double>&)_sfrs ), soci::into( (std::vector<double>&)_bulge_sfrs ),
+	 soci::into( (std::vector<int>&)_snaps ),
+	 soci::use( tree_id );
+#else
       _sql << query, soci::into( (std::vector<int>&)_descs ),
 	 soci::into( (std::vector<double>&)_metals ),
 	 soci::into( (std::vector<double>&)_sfrs ), soci::into( (std::vector<double>&)_bulge_sfrs ),
 	 soci::into( (std::vector<int>&)_snaps ),
 	 soci::use( tree_id );
+#endif
       _db_timer.stop();
       LOGDLN( "Descendant: ", _descs );
       LOGDLN( "Star formation rates: ", _sfrs );
