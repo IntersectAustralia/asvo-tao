@@ -42,11 +42,15 @@ namespace tao {
            void RestartAllConnections();
            void OpenAllConnections();
            soci::session& operator [](string TableName);
+           bool TableExist(string TableName);
+           bool ExecuteNoQuery_AllServers(string SQLStatement);
+           soci::session* GetConnectionToAnyServer();
            list<string> TableNames;
            map<string,ServerInfo*> CurrentServers;
            map<string,ServerInfo*> TablesMapping;
 	   protected:
            int _serverscount;
+           std::map<string,ServerInfo*>::iterator DefaultServerIterator;
 
            string _dbtype, _dbname;
            string _tree_pre;

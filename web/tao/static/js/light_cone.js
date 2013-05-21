@@ -377,6 +377,7 @@ jQuery(document).ready(function($) {
     });
 
     var list_multiple_selections_in_summary = function(form_name, select_widget){
+        console.log("list_multiple_selections_in_summary for " + select_widget + " starts")
         var selections_count = 0;
         var selected_values = [];
 
@@ -405,6 +406,7 @@ jQuery(document).ready(function($) {
         selected_values.push('</ul>');
 
         fill_in_summary(form_name, select_widget + '_list', selected_values.join(''));
+        console.log("list_multiple_selections_in_summary  " + select_widget + " ends")
         return selections_count;
     }
 
@@ -576,7 +578,7 @@ jQuery(document).ready(function($) {
             }
         });
         lc_output_props_widget.cache_store(pseudo_json);
-        console.log(current);
+        console.log('Current output properties: ' + current);
         return current;
     }
 
@@ -599,7 +601,7 @@ jQuery(document).ready(function($) {
                 sed_band_pass_filters_widget.display_selected(current, false);
             }
         });
-        console.log(current);
+        console.log('Current bandpass filters: ' + current);
         return current;
     }
 
@@ -988,5 +990,8 @@ jQuery(document).ready(function($) {
         fill_in_redshift_in_summary();
         fill_in_summary('light_cone', 'box_size', $(lc_id('box_size')).val());
         fill_in_summary('light_cone', 'snapshot', format_redshift($(lc_id('snapshot')+' option:selected').html()));
+        setTimeout(function(){
+            display_band_pass_filters_summary();
+        }, 1000);
     })();
 });

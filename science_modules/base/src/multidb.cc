@@ -112,6 +112,7 @@ namespace tao
 	{
 		_read_db_options(dict);
 		ReadTableMapping();
+		DefaultServerIterator=CurrentServers.begin();
 	}
 
 	multidb::~multidb()
@@ -201,7 +202,35 @@ namespace tao
 		}
 	}
 
+	bool multidb::TableExist(string TableName)
+	{
+		return (TablesMapping.count(TableName)>0);
+	}
 
+	bool multidb::ExecuteNoQuery_AllServers(string SQLStatement)
+	{
+		for (std::map<string,ServerInfo*>::iterator it=CurrentServers.begin(); it != CurrentServers.end(); ++it)
+		{
+			it->second->OpenConnection();
+			it->second->Connection<<SQLStatement;
+		}
+
+	}
+
+	soci::session* multidb::GetConnectionToAnyServer()
+	{
+
+		if(DefaultServerIterator==CurrentServers.end())
+		{
+			DefaultServerIterator=CurrentServers.begin();
+		}
+		DefaultServerIterator->second->OpenConnection();
+		soci::session* OpenedSession= &DefaultServerIterator->second->Connection;
+
+		DefaultServerIterator++;
+		return OpenedSession;
+
+	}
 
 }
 

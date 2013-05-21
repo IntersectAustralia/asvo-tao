@@ -151,7 +151,9 @@ class RecordFilterForm(BetterForm):
         is_int = False
         if self.ui_holder.is_bound('light_cone'):
             objs = datasets.filter_choices(self.ui_holder.raw_data('light_cone', 'galaxy_model'))
-            choices = [('X-' + NO_FILTER, 'No Filter')] + [('D-' + str(x.id), x.label + ' (' + x.units + ')') for x in objs] + [('B-' + str(x.id), x.label) for x in datasets.band_pass_filters_objects()]
+            choices = [('X-' + NO_FILTER, 'No Filter')] + [('D-' + str(x.id), x.label + ' (' + x.units + ')') for x in objs] + \
+                [('B-' + str(x.id) + '_apparent', x.label) for x in datasets.band_pass_filters_objects()] + \
+                [('B-' + str(x.id) + '_absolute', x.label) for x in datasets.band_pass_filters_objects()]
             filter_type, record_filter = args[1]['record_filter-filter'].split('-')
             if filter_type == 'D':
                 obj = DataSetProperty.objects.get(pk = record_filter)
@@ -211,8 +213,9 @@ class RecordFilterForm(BetterForm):
             filter_type = filter_parameter.name
             units = filter_parameter.units
         elif selected_type == 'B':
+            selected_filter, selected_extension = selected_filter.split('_')
             filter_parameter = datasets.band_pass_filter(selected_filter)
-            filter_type = filter_parameter.filter_id
+            filter_type = str(filter_parameter.filter_id) + '_' + selected_extension
             units = 'bpunits'
 
         rf_elem = find_or_create(parent_xml_element, 'record-filter')

@@ -15,7 +15,7 @@ suites = [
     ('BSPTree_Test.hh', 'BSPTree.cc'),
     ('clip_suite.t.hh',),
     ('geometry_iterator.t.hh', 'GrahamScanConvexHull.cpp'),
-    ('SettingReader_Test.hh', 'settingReader.cc'),
+    ('MultiDB_Test.hh'),
 ]
 
 # Define libraries to link against.

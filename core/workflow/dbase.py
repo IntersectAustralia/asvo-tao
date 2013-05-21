@@ -16,6 +16,7 @@ class DBInterface(object):
         
         self.InitDBConnection(self.Options)
         self.IsOpen=False
+        self.QueriesCount=0
         
     def InitDBConnection(self,Options):
         
@@ -37,10 +38,19 @@ class DBInterface(object):
             logging.info('Connection to DB is Closed...')
             self.IsOpen=False        
            
-            
+    def RestartConnection(self):
+        if self.QueriesCount%20==0 and self.QueriesCount>0:
+            self.CloseConnections()
+            self.CurrentConnection=pg.connect(host=self.serverip,user=self.username,passwd=self.password,port=self.port,dbname=self.DBName)
+            logging.info('Connection to DB - Restart...')    
+            self.IsOpen=True
+        
+        self.QueriesCount=self.QueriesCount+1                
     
     def ExecuteNoQuerySQLStatment(self,SQLStatment):
-        try:           
+        try:
+            self.RestartConnection()
+                       
             #SQLStatment=string.lower(SQLStatment)  
             self.CurrentConnection.query(SQLStatment)              
         except Exception as Exp:
@@ -51,7 +61,9 @@ class DBInterface(object):
             logging.error("Current SQL Statement =\n"+SQLStatment)
             raw_input("Error: PLease press enter to continue.....")
     def ExecuteQuerySQLStatment(self,SQLStatment):
-        try:            
+        try: 
+            self.RestartConnection()  
+                     
             resultsList=self.CurrentConnection.query(SQLStatment).getresult()           
             return resultsList  
         except Exception as Exp:
@@ -62,7 +74,9 @@ class DBInterface(object):
             logging.error("Current SQL Statement =\n"+SQLStatment)
             raw_input("PLease press enter to continue.....")
     def ExecuteQuerySQLStatmentAsDict(self,SQLStatment):
-        try:            
+        try:
+            self.RestartConnection()
+                    
             resultsList=self.CurrentConnection.query(SQLStatment).dictresult()           
             return resultsList  
         except Exception as Exp:
@@ -98,6 +112,9 @@ class DBInterface(object):
         self.ExecuteNoQuerySQLStatment(Updatest)
     
     def SetJobFinishedWithError(self,JobID,Comment,ExecTime):
+        Comment=pg.escape_string(Comment)
+        if len(Comment)>500:
+            Comment=Comment[:500]
         logging.info('Job ('+str(JobID)+') Finished With Error .... '+Comment)
         Updatest="UPDATE Jobs set JobStatus="+str(EnumerationLookup.JobState.Error)+",completedate=insertdate+INTERVAL '"+str(ExecTime)+" seconds',jobstatuscomment='"+Comment+"' where JobID="+str(JobID)+";"
         Updatest=Updatest+"INSERT INTO JobHistory(JobID,NewStatus,Comments) VALUES("+str(JobID)+","+str(EnumerationLookup.JobState.Error)+",'Error');"

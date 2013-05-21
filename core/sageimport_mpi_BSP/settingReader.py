@@ -30,6 +30,7 @@ def ParseParams(FilePath):
     pgNode=SettingsNode[1]
     RunningOptions[pgNode.tag+':TreeTablePrefix']= pgNode.findall('TreeTablePrefix')[0].text
     RunningOptions[pgNode.tag+':NewDBName']= pgNode.findall('NewDBName')[0].text
+    RunningOptions[pgNode.tag+':NewDBAlias']= pgNode.findall('NewDBAlias')[0].text
     RunningOptions[pgNode.tag+':ServersCount']= pgNode.findall('ServersCount')[0].text
     
     serversList=pgNode.findall('serverInfo')
