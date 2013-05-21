@@ -157,6 +157,13 @@ namespace tao
 				> ("settings:database:treetableprefix", "tree_");
 		_serverscount = dict.get<int>("settings:database:serverscount", 1);
 		xpath_node_set ServersSet = dict.get_nodes("settings/database/serverinfo");
+
+		// If there is no servers at all, Raise exception
+		ASSERT(!ServersSet.empty());
+		// If the number of servers claimed in settings:database:serverscount is no equal to number of serverinfo nodes
+		// also, raise exception
+		ASSERT(_serverscount==ServersSet.size());
+
 		for (xpath_node_set::const_iterator it = ServersSet.begin();it != ServersSet.end(); ++it)
 		{
 			pugi::xpath_node node = *it;
@@ -170,10 +177,17 @@ namespace tao
 	{
 		// Get Object of the first DB Server to load the data from it
 		std::map<string, ServerInfo*>::iterator it = CurrentServers.begin();
+
 		ServerInfo* TempDbServer = it->second;
+
+
+		// I can get at least one server
+		ASSERT(TempDbServer!=NULL);
+
 		TempDbServer->OpenConnection();
 		string query ="SELECT tablename, nodename  FROM table_db_mapping Where isactive=True;";
 		rowset < row > TablesMappingRowset = (TempDbServer->Connection.prepare << query);
+
 		for (rowset<row>::const_iterator it = TablesMappingRowset.begin();it != TablesMappingRowset.end(); ++it)
 		{
 			const row& row = *it;
@@ -194,11 +208,13 @@ namespace tao
 
 	bool multidb::ExecuteNoQuery_AllServers(string SQLStatement)
 	{
+
 		for (std::map<string,ServerInfo*>::iterator it=CurrentServers.begin(); it != CurrentServers.end(); ++it)
 		{
 			it->second->OpenConnection();
 			it->second->Connection<<SQLStatement;
 		}
+		return true;
 
 	}
 
@@ -229,7 +245,7 @@ namespace tao
 		else
 		{
 			//Table Name Doesnot exists in the List
-			assert(0);
+			ASSERT(0);
 		}
 	}
 
