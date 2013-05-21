@@ -113,7 +113,7 @@ class SAGEDataReader:
         SumOfAllGalaxies=0                
         TreeLengthList=[]                
         for i in range(0,NumberofTrees):
-            GalaxiesperTree= struct.unpack('i', CurrentFile.read(4))[0]
+            GalaxiesperTree= struct.unpack('q', CurrentFile.read(8))[0]
             
             TreeLengthList.append(GalaxiesperTree)     
             SumOfAllGalaxies=SumOfAllGalaxies+ GalaxiesperTree    
