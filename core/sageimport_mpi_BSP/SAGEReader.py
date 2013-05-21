@@ -160,7 +160,7 @@ class SAGEDataReader:
         #self.BSPCellSize=float(self.Options['RunningSettings:BSPCellSize'])              
         #self.CellsInX=int(math.ceil(self.SimulationBoxX/self.BSPCellSize))
         #self.CellsInY=int(math.ceil(self.SimulationBoxY/self.BSPCellSize))
-        
+        logging.info('Calculating Tree Bounding Box for '+ str(len(TreeData))+' Galaxy!')
         ## Get Tree Bounding Rectangle
         MinX=TreeData[0]['PosX']
         MaxX=TreeData[0]['PosX']
@@ -215,8 +215,7 @@ class SAGEDataReader:
             FinalTableID=int(PossibleTables[0])
         elif len(PossibleTables)<=10:
             FinalTableID=int(PossibleTables[randrange(len(PossibleTables))])
-        else: 
-                       
+        else:                        
             FinalTableID=self.CellsInX*self.CellsInY
         logging.info("Final Table ID="+str(FinalTableID))                
         return FinalTableID
