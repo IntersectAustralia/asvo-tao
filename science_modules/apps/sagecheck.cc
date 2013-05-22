@@ -4,8 +4,8 @@
 #include <boost/lexical_cast.hpp>
 #include <libhpc/libhpc.hh>
 
-double box_size = 512.0;
-unsigned num_snapshots = 64;
+double box_size = 250.0;
+unsigned num_snapshots = 181;
 
 using namespace hpc;
 

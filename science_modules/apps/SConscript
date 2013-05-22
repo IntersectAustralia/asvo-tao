@@ -28,6 +28,7 @@ sources = [
     ('sageimport', 'sageimport.cc'),
     ('sage_import_ages', 'sage_import_ages.cc'),
     ('sage_to_hdf5', 'sage_to_hdf5.cc'),
+    ('subfind_to_hdf5', 'subfind_to_hdf5.cc'),
     ('add_tree_info', 'add_tree_info.cc'),
     ('tree_view', 'tree_view.cc'),
 #    ('max_test', 'max_test.cc'),
