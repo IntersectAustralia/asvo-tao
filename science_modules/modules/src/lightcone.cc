@@ -53,6 +53,7 @@ namespace tao {
    {
       LOG_ENTER();
 
+      module::initialise( dict, prefix );
       _read_options( dict, prefix );
 
       LOG_EXIT();
@@ -540,7 +541,7 @@ namespace tao {
 
       // Prepare the query.
 #ifdef MULTIDB
-      auto prep = (*_db)[_table_names[_cur_table]] << query;
+      auto prep = (*_db)[_table_names[_cur_table]].prepare << query;
 #else
       auto prep = _sql.prepare << query;
 #endif
@@ -1286,9 +1287,9 @@ namespace tao {
       // Create a temporary table to hold values.
       _db_timer.start();
 #ifdef MULTIDB
-      for( auto& sql : *_db )
+      for( auto& pair : _db->CurrentServers )
       {
-	 sql << "CREATE TEMPORARY TABLE redshift_ranges (snapshot INTEGER, "
+	 pair.second->Connection << "CREATE TEMPORARY TABLE redshift_ranges (snapshot INTEGER, "
 	    "redshift DOUBLE PRECISION, min DOUBLE PRECISION, max DOUBLE PRECISION)";
       }
 #else
@@ -1303,9 +1304,9 @@ namespace tao {
 	 mid = upp + 0.5*(low - upp);
       _db_timer.start();
 #ifdef MULTIDB
-      for( auto& sql : *_db )
+      for( auto& pair : _db->CurrentServers )
       {
-	 sql << "INSERT INTO redshift_ranges VALUES(0, :z, :min, :max)",
+	 pair.second->Connection << "INSERT INTO redshift_ranges VALUES(0, :z, :min, :max)",
 	    soci::use( _snap_redshifts[0] ), soci::use( mid*mid ), soci::use( low*low );
       }
 #else
@@ -1323,9 +1324,9 @@ namespace tao {
 	 real_type new_mid = upp + 0.5*(low - upp);
 	 _db_timer.start();
 #ifdef MULTIDB
-	 for( auto& sql : *_db )
+	 for( auto& pair : _db->CurrentServers )
 	 {
-	    sql << "INSERT INTO redshift_ranges VALUES(:snapshot, :z, :min, :max)",
+	    pair.second->Connection << "INSERT INTO redshift_ranges VALUES(:snapshot, :z, :min, :max)",
 	       soci::use( ii ), soci::use( _snap_redshifts[ii] ),
 	       soci::use( new_mid*new_mid ), soci::use( mid*mid );
 	 }
@@ -1342,9 +1343,9 @@ namespace tao {
       // Insert the last redshift range.
       _db_timer.start();
 #ifdef MULTIDB
-      for( auto& sql : *_db )
+      for( auto& pair : _db->CurrentServers )
       {
-	 sql << "INSERT INTO redshift_ranges VALUES(:snapshot, :z, :min, :max)",
+	 pair.second->Connection << "INSERT INTO redshift_ranges VALUES(:snapshot, :z, :min, :max)",
 	    soci::use( _snap_redshifts.size() - 1 ), soci::use( _snap_redshifts.back() ),
 	    soci::use( upp*upp ), soci::use( mid*mid );
       }

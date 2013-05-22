@@ -3,8 +3,9 @@
 
 #include <soci/soci.h>
 #include <libhpc/libhpc.hh>
-#include "galaxy.hh"
 #include <libhpc/options/xml_dict.hh>
+#include "galaxy.hh"
+#include "multidb.hh"
 
 namespace tao {
    using namespace hpc;
@@ -89,6 +90,7 @@ namespace tao {
       list<module*> _parents;
       bool _complete;
 
+      const options::xml_dict* _dict;
       bool _connected;
 #ifdef MULTIDB
       multidb* _db;

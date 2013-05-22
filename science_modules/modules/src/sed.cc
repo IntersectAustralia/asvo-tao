@@ -54,6 +54,7 @@ namespace tao {
    {
       LOG_ENTER();
 
+      module::initialise( dict, prefix );
       _read_options( dict, prefix );
 
       // Allocate for output spectra.

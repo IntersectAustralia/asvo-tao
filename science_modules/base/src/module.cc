@@ -81,6 +81,13 @@ namespace tao {
       LOG_EXIT();
    }
 
+  void
+  module::initialise( const options::xml_dict& dict,
+		      optional<const string&> prefix )
+  {
+      // Cache the dictinoary object for later.
+      _dict = &dict;
+  }
 
    void
    module::initialise( const options::xml_dict& dict,
@@ -139,6 +146,7 @@ namespace tao {
    {
       LOG_ENTER();
 
+#ifndef MULTIDB
       // Extract database details.
       _dbtype = dict.get<string>( "settings:database:type","postgresql" );
       _dbname = dict.get<string>( "database" );
@@ -150,6 +158,7 @@ namespace tao {
          _dbpass = dict.get<string>( "settings:database:password" );
       }
       _tree_pre = dict.get<string>( "settings:database:treetableprefix", "tree_" );
+#endif
 
       // Read the batch size from the dictinary.
       _batch_size = dict.get<unsigned>( "settings:database:batch-size",100 );
@@ -165,7 +174,9 @@ namespace tao {
 
 #ifdef MULTIDB
       // Fire up the multidb.
-      _db = new multidb( dict );
+      ASSERT( _dict );
+      _db = new multidb( *_dict );
+      _db->OpenAllConnections();
 #else
       LOGDLN( "Connecting to ", _dbtype, " database \"", _dbname, "\"" );
       try

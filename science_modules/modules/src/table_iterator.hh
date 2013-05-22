@@ -43,7 +43,7 @@ namespace tao {
 	 )
 	 :
 #ifdef MULTIDB
-	 _db( _db ),
+	 _db( db ),
 #else
 	 _sql( sql ),
 #endif
