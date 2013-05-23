@@ -5,6 +5,22 @@ The command takes two parameters:
 1. A CSV file containing the bandpass filter information, see below
 2. The root document directory (typically /path/to/asvo-tao/docs/)
 
+By default, bandpass filter documentation is generated as described below.
+This may be disabled with the --no-doco flag.
+
+The input bandpass file is a CSV file with columns:
+
+1. Filename
+2. Label
+3. Description
+
+A spectra is produced for each filter and the Description is extended with a
+link to the spectra in the documentation.
+
+Existing file names have their label, description and spectra replaced.
+
+Entries are never deleted (this currently needs to be done manually).
+
 The bandpass filter documentation is generated with the following structure:
 
     /path/to/asvo-tao/docs/
@@ -23,19 +39,7 @@ The bandpass filter documentation is generated with the following structure:
                 filterN.png
 
 Links to the documentation are assumed to be: [settings.STATIC_URL]/docs/bpfilters/filterM.html
-
-The input bandpass file is a CSV file with columns:
-
-1. Filename
-2. Label
-3. Description
-
-A spectra is produced for each filter and the Description is extended with a
-link to the spectra in the documentation.
-
-Existing file names have their label, description and spectra replaced.
-
-Entries are never deleted (this currently needs to be done manually)."""
+"""
 
 import sys
 import csv
@@ -60,6 +64,9 @@ class Command(BaseCommand):
         make_option("-d", action='store_true', default=False,
                     dest='debug',
                     help="Enter the debugger and halt"),
+        make_option("--no-doco", action='store_false', default=True,
+                    dest='gendoco',
+                    help="Disable the production and linking of bandpass spectra"),
         make_option("--doc", action='store_true', default=False,
                     dest='doc',
                     help="Display the command documentation and exit")
@@ -78,12 +85,13 @@ class Command(BaseCommand):
 
         self._args = args
         self._options = options
-        self._doc_dir = abspath(join(args[1], 'source', 'bpfilters'))
-        if not isdir(self._doc_dir):
-            raise CommandError("Doc dir not found: {0}".format(self._doc_dir))
-        self._spectra_dir = join(self._doc_dir, 'spectra')
-        if not isdir(self._spectra_dir):
-            raise CommandError("Spectra dir not found: {0}".format(self._spectra_dir))
+        if options['gendoco']:
+            self._doc_dir = abspath(join(args[1], 'source', 'bpfilters'))
+            if not isdir(self._doc_dir):
+                raise CommandError("Doc dir not found: {0}".format(self._doc_dir))
+            self._spectra_dir = join(self._doc_dir, 'spectra')
+            if not isdir(self._spectra_dir):
+                raise CommandError("Spectra dir not found: {0}".format(self._spectra_dir))
         self.populate_filters()
 
 
@@ -102,22 +110,27 @@ class Command(BaseCommand):
                 if len(record) < 2 or len(record) > 3:
                     raise CommandError("Expected 2 or 3 columns")
                 print "Processing: {0}...".format(record[0])
-                filter_fn = record[0]
-                label = record[1]
+                filter_fn = record[0].strip()
+                label = record[1].strip()
                 if len(record) == 3:
                     description = record[2].strip()
                 else:
                     description = ''
                 flattened_fn = filter_fn.replace(os.sep, '_')
-                details = ("<p>{description}</p>\n"
-                           "<p>Additional Details: <a href=\"{url_root}"
-                           "{ffn}.html\">{label}</a>.</p>").format(
-                                description=description, url_root=url_root,
-                                ffn=flattened_fn, label=label)
-                spectra_fn = self.generate_spectra(filter_fn, flattened_fn, label, description)
-                self.generate_doco(filter_fn, flattened_fn, label, description, spectra_fn)
+                if self._options['gendoco']:
+                    details = ("<p>{description}</p>\n"
+                               "<p>Additional Details: <a href=\"{url_root}"
+                               "{ffn}.html\">{label}</a>.</p>").format(
+                                    description=description, url_root=url_root,
+                                    ffn=flattened_fn, label=label)
+                    spectra_fn = self.generate_spectra(filter_fn, flattened_fn, label, description)
+                    self.generate_doco(filter_fn, flattened_fn, label, description, spectra_fn)
+                else:
+                    details = ("<p>{description}</p>\n").format(
+                                    description=description)
                 self.save_filter(filter_fn, label, details)
-        self.generate_index()
+        if self._options['gendoco']:
+            self.generate_index()
 
 
     def save_filter(self, filename, label, details):
