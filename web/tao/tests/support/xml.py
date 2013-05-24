@@ -36,7 +36,7 @@ def light_cone_xml(xml_parameters):
                     %(geometry_fragment)s
 
                     <!-- File output module -->
-                    <csv module="csv">
+                    <csv-dump id="%(csv_dump_id)s">
                         <fields>
                             <item label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
                             <item label="%(output_properties_2_label)s">%(output_properties_2_name)s</item>
@@ -44,33 +44,34 @@ def light_cone_xml(xml_parameters):
                             <item label="bandpass (Apparent)">%(band_pass_filter_name)s_apparent</item>
                         </fields>
 
-                        <parents>
-                            <item>filter</item>
-                        </parents>
-
                         <!-- Module Version Number -->
                         <module-version>1</module-version>
 
                         <!-- Output file format -->
                         <filename>tao.output.csv</filename>
-                    </csv>
 
-                    <!-- Optional: Spectral Energy Distribution parameters -->
-                    <sed module="sed">
                         <parents>
-                            <item>light-cone</item>
+                            <item>%(bandpass_filter_id)s</item>
                         </parents>
 
+                    </csv-dump>
+
+                    <!-- Optional: Spectral Energy Distribution parameters -->
+                    <sed id="%(sed_id)s">
                         <!-- Module Version Number -->
                         <module-version>1</module-version>
 
+                        <parents>
+                            <item>%(light_cone_id)s</item>
+                        </parents>
+
                         <single-stellar-population-model>%(ssp_name)s</single-stellar-population-model>
-                        <dust>%(dust_model_name)s</dust>
                     </sed>
 
-                    <filter module="filter">
+                    <filter id="%(bandpass_filter_id)s">
+                        <module-version>1</module-version>
                         <parents>
-                            <item>sed</item>
+                            <item>%(dust_id)s</item>
                         </parents>
 
                         <!-- Bandpass Filters) -->
@@ -78,6 +79,15 @@ def light_cone_xml(xml_parameters):
                             <item description="%(band_pass_filter_description)s" label="%(band_pass_filter_label)s" selected="apparent">%(band_pass_filter_id)s</item>
                         </bandpass-filters>
                     </filter>
+
+                    <dust id="%(dust_id)s">
+                        <!-- Module Version Number -->
+                        <module-version>1</module-version>
+                        <parents>
+                            <item>%(sed_id)s</item>
+                        </parents>
+                        <model>%(dust_model_name)s</model>
+                    </dust>
 
                     <!-- Record Filter -->
                     <record-filter>
@@ -87,9 +97,11 @@ def light_cone_xml(xml_parameters):
                         <!-- Note that the units are for readability,
                              no unit conversion is supported.  The consumer of the
                              parameter file should check that the expected units are provided. -->
-                        <filter-type>%(filter)s</filter-type>
-                        <filter-min units="Msun/h">%(filter_min)s</filter-min>
-                        <filter-max units="Msun/h">%(filter_max)s</filter-max>
+                        <filter>
+                            <filter-attribute>%(filter)s</filter-attribute>
+                            <filter-min units="Msun/h">%(filter_min)s</filter-min>
+                            <filter-max units="Msun/h">%(filter_max)s</filter-max>
+                        </filter>
                     </record-filter>
 
                     <!-- Image generation module parameters
@@ -123,7 +135,7 @@ def light_cone_xml(xml_parameters):
 
 def light_cone_geometry_xml(xml_parameters):
     return stripped_joined_lines("""
-                    <light-cone module="light-cone">
+                    <light-cone id="%(light_cone_id)s">
                         <!-- Module Version Number -->
                         <module-version>1</module-version>
 
@@ -168,7 +180,7 @@ def light_cone_geometry_xml(xml_parameters):
 
 def box_geometry_xml(xml_parameters):
     return stripped_joined_lines("""
-                    <light-cone module="light-cone">
+                    <light-cone id="%(light_cone_id)s">
                         <!-- Module Version Number -->
                         <module-version>1</module-version>
 
