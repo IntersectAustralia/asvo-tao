@@ -281,6 +281,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.click('tao-tabs-' + MODULE_INDICES['light_cone'])
         self.fill_in_fields({'ra_opening_angle': ra_opening_angle, 'dec_opening_angle': dec_opening_angle, 'redshift_min': redshift_min, 'redshift_max': redshift_max}, id_wrap=self.lc_id)
         self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
+        self.wait(1)
         self.assert_summary_field_correctly_shown('RA: '+ra_opening_angle+h.unescape('&deg;')+',', 'light_cone', 'ra_opening_angle')
         self.assert_summary_field_correctly_shown('Dec: '+dec_opening_angle+h.unescape('&deg;'), 'light_cone', 'dec_opening_angle')
         self.assert_summary_range_correctly_shown('Redshift: ' + redshift_min + h.unescape(' &le;') + ' r ' + h.unescape('&le;') + redshift_max, 'light_cone', ['redshift_min', 'redshift_max'])

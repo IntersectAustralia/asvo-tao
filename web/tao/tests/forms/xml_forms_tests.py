@@ -10,9 +10,11 @@ import os, datetime
 # from taoui_sed.forms import Form as SEDForm
 # from tao.tests.support import stripped_joined_lines
 # from tao.tests.support.factories import SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, UserFactory, StellarModelFactory, SnapshotFactory, BandPassFilterFactory
+from tao.forms import FormsGraph
 from tao.tests.support.xml import light_cone_xml
 from tao.tests.helper import MockUIHolder, make_form_xml, make_form
-from tao.forms import OutputFormatForm, RecordFilterForm
+from tao.output_format_form import OutputFormatForm
+from tao.record_filter_form import RecordFilterForm
 from taoui_light_cone.forms import Form as LightConeForm
 from taoui_sed.forms import Form as SedForm
 from tao.tests.support.factories import UserFactory, StellarModelFactory, SnapshotFactory, DataSetFactory, SimulationFactory, GalaxyModelFactory, DataSetPropertyFactory, BandPassFilterFactory, DustModelFactory
@@ -77,6 +79,13 @@ class XmlFormsTests(TestCase):
             'band_pass_filter_name': 'BPFN',
             'dust_model_name': 'DM', # self.dust_model.name,
             })
+        xml_parameters.update({
+            'light_cone_id': FormsGraph.LIGHT_CONE_ID,
+            'csv_dump_id': FormsGraph.OUTPUT_ID,
+            'bandpass_filter_id': FormsGraph.BANDPASS_FILTER_ID,
+            'sed_id': FormsGraph.SED_ID,
+            'dust_id': FormsGraph.DUST_ID,
+            })
         xml_str = light_cone_xml(xml_parameters)
         form = make_form_xml(OutputFormatForm, xml_str, prefix='output_format')
         self.assertEquals('csv', form.data['output_format-supported_formats'])
@@ -107,7 +116,7 @@ class XmlFormsTests(TestCase):
             'output_properties_2_description' : 'OD', # self.filter.units,
         })
         xml_parameters.update({
-            'filter': self.filter.name,
+            'filter': self.filter.name, #'D-'+str(self.filter.id),
             'filter_min' : '1000000',
             'filter_max' : 'None',
             })
@@ -118,13 +127,22 @@ class XmlFormsTests(TestCase):
             'band_pass_filter_name': 'BPFN',
             'dust_model_name': 'DM', # self.dust_model.name,
         })
+        xml_parameters.update({
+            'light_cone_id': FormsGraph.LIGHT_CONE_ID,
+            'csv_dump_id': FormsGraph.OUTPUT_ID,
+            'bandpass_filter_id': FormsGraph.BANDPASS_FILTER_ID,
+            'sed_id': FormsGraph.SED_ID,
+            'dust_id': FormsGraph.DUST_ID,
+        })
+        mock_ui_holder = MockUIHolder()
         xml_str = light_cone_xml(xml_parameters)
         light_cone_form = make_form({}, LightConeForm, {'simulation':self.simulation.id, 'galaxy_model':self.dataset.id}, prefix='light_cone')
-        mock_ui_holder = MockUIHolder(light_cone_form)
-        form = make_form_xml(RecordFilterForm, xml_str, prefix='record_filter', ui_holder=mock_ui_holder)
-        self.assertEquals('D-' + str(self.filter.id), form.data['record_filter-filter'])
-        self.assertEquals('1000000', form.data['record_filter-min'])
-        self.assertEquals(None, form.data['record_filter-max'])
+        mock_ui_holder.update(light_cone = light_cone_form)
+        rf_form = make_form_xml(RecordFilterForm, xml_str, prefix='record_filter', ui_holder=mock_ui_holder)
+
+        self.assertEquals('D-' + str(self.filter.id), rf_form.data['record_filter-filter'])
+        self.assertEquals('1000000', rf_form.data['record_filter-min'])
+        self.assertEquals(None, rf_form.data['record_filter-max'])
 
     def test_sed_form(self):
         xml_parameters = {
@@ -162,6 +180,13 @@ class XmlFormsTests(TestCase):
             'band_pass_filter_id': self.band_pass_filter.filter_id,
             'band_pass_filter_name': os.path.splitext(self.band_pass_filter.filter_id)[0],
             'dust_model_name': self.dust_model.name,
+        })
+        xml_parameters.update({
+            'light_cone_id': FormsGraph.LIGHT_CONE_ID,
+            'csv_dump_id': FormsGraph.OUTPUT_ID,
+            'bandpass_filter_id': FormsGraph.BANDPASS_FILTER_ID,
+            'sed_id': FormsGraph.SED_ID,
+            'dust_id': FormsGraph.DUST_ID,
         })
         xml_str = light_cone_xml(xml_parameters)
         form = make_form_xml(SedForm, xml_str, prefix='sed')
@@ -205,6 +230,13 @@ class XmlFormsTests(TestCase):
             'band_pass_filter_name': os.path.splitext(self.band_pass_filter.filter_id)[0],
             'dust_model_name': self.dust_model.name,
             })
+        xml_parameters.update({
+            'light_cone_id': FormsGraph.LIGHT_CONE_ID,
+            'csv_dump_id': FormsGraph.OUTPUT_ID,
+            'bandpass_filter_id': FormsGraph.BANDPASS_FILTER_ID,
+            'sed_id': FormsGraph.SED_ID,
+            'dust_id': FormsGraph.DUST_ID,
+        })
         xml_str = light_cone_xml(xml_parameters)
         form = make_form_xml(LightConeForm, xml_str, prefix='light_cone')
         self.assertEquals(LightConeForm.CONE, form.data['light_cone-catalogue_geometry'])
@@ -255,6 +287,13 @@ class XmlFormsTests(TestCase):
             'band_pass_filter_name': os.path.splitext(self.band_pass_filter.filter_id)[0],
             'dust_model_name': self.dust_model.name,
             })
+        xml_parameters.update({
+            'light_cone_id': FormsGraph.LIGHT_CONE_ID,
+            'csv_dump_id': FormsGraph.OUTPUT_ID,
+            'bandpass_filter_id': FormsGraph.BANDPASS_FILTER_ID,
+            'sed_id': FormsGraph.SED_ID,
+            'dust_id': FormsGraph.DUST_ID,
+        })
         xml_str = light_cone_xml(xml_parameters)
         form = make_form_xml(LightConeForm, xml_str, prefix='light_cone')
         self.assertEquals(LightConeForm.BOX, form.data['light_cone-catalogue_geometry'])
