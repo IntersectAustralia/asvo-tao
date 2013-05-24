@@ -9,6 +9,8 @@ from watchdog.observers import Observer
 from daemon import Daemon
 import signal
 import shlex, subprocess
+import emailreport
+import settingReader
 ## ----------------------------------------------------------------------------------------------
 
 class WatchDogDaemon(Daemon):
@@ -47,10 +49,14 @@ class WatchDogDaemon(Daemon):
         logging.info("WatchDog Terminated!")        
     
     def RestartApp(self):
+        [self.Options]=settingReader.ParseParams("settings.xml")
+        
         logging.info('Restarting the Application')
         stdout = subprocess.check_output(shlex.split('python /lustre/projects/p014_swin/programs/Workflow/main.py start'))
         logging.info('Starting Process Output ="'+stdout+'"')
         logging.info('Application Restart Done')
+        EmailStr=str(datetime.now())+": Workflow Restarted!"
+        emailreport.SendEmailToAdmin(self.Options,"WorkFlow Restart",EmailStr)
         
     def Event_Restart(self):
         
