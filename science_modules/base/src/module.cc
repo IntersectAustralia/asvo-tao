@@ -8,6 +8,9 @@ namespace tao {
 
    module::module( const string& name )
       : _name( name ),
+#ifdef MULTIDB
+	_db( NULL ),
+#endif
         _it( 0 ),
         _complete( false ),
         _connected( false ),
@@ -78,6 +81,13 @@ namespace tao {
       LOG_EXIT();
    }
 
+  void
+  module::initialise( const options::xml_dict& dict,
+		      optional<const string&> prefix )
+  {
+      // Cache the dictinoary object for later.
+      _dict = &dict;
+  }
 
    void
    module::initialise( const options::xml_dict& dict,
@@ -103,10 +113,6 @@ namespace tao {
    void
    module::log_metrics()
    {
-      // LOGILN( name(), " runtime: ", mpi::comm::world.all_reduce( time(), MPI_MAX ), " (s)" );
-      // LOGILN( name(), " db time: ", mpi::comm::world.all_reduce( db_time(), MPI_MAX ), " (s)" );
-      // LOGILN( name(), " runtime: ", mpi::comm::world.all_reduce( time() ), " (s)" );
-      // LOGILN( name(), " db time: ", mpi::comm::world.all_reduce( db_time() ), " (s)" );
       LOGILN( name(), " runtime: ", time(), " (s)" );
       LOGILN( name(), " db time: ", db_time(), " (s)" );
    }
@@ -140,6 +146,7 @@ namespace tao {
    {
       LOG_ENTER();
 
+#ifndef MULTIDB
       // Extract database details.
       _dbtype = dict.get<string>( "settings:database:type","postgresql" );
       _dbname = dict.get<string>( "database" );
@@ -151,6 +158,7 @@ namespace tao {
          _dbpass = dict.get<string>( "settings:database:password" );
       }
       _tree_pre = dict.get<string>( "settings:database:treetableprefix", "tree_" );
+#endif
 
       // Read the batch size from the dictinary.
       _batch_size = dict.get<unsigned>( "settings:database:batch-size",100 );
@@ -164,6 +172,12 @@ namespace tao {
    {
       LOG_ENTER();
 
+#ifdef MULTIDB
+      // Fire up the multidb.
+      ASSERT( _dict );
+      _db = new multidb( *_dict );
+      _db->OpenAllConnections();
+#else
       LOGDLN( "Connecting to ", _dbtype, " database \"", _dbname, "\"" );
       try
       {
@@ -171,13 +185,13 @@ namespace tao {
             _sql.open( soci::sqlite3, _dbname );
          else
          {
-	    string connect = "dbname=" + _dbname;
-	    connect += " host=" + _dbhost;
-	    connect += " port=" + _dbport;
-	    connect += " user=" + _dbuser;
-	    connect += " password='" + _dbpass + "'";
-	    LOGDLN( "Connect string: ", connect );
-	    _sql.open( soci::postgresql, connect );
+      	    string connect = "dbname=" + _dbname;
+      	    connect += " host=" + _dbhost;
+      	    connect += " port=" + _dbport;
+      	    connect += " user=" + _dbuser;
+      	    connect += " password='" + _dbpass + "'";
+      	    LOGDLN( "Connect string: ", connect );
+      	    _sql.open( soci::postgresql, connect );
          }
       }
       catch( const std::exception& ex )
@@ -186,6 +200,7 @@ namespace tao {
          LOGDLN( "Error opening database connection: ", ex.what() );
          ASSERT( 0 );
       }
+#endif
 
       // Flag as connected.
       _connected = true;
@@ -199,7 +214,12 @@ namespace tao {
       if( _connected )
       {
          LOGDLN( "Disconnecting from database." );
-         _sql.close();
+#ifdef MULTIDB
+	 delete _db;
+	 _db = NULL;
+#else
+	 _sql.close();
+#endif
          _connected = false;
       }
    }
@@ -218,4 +238,5 @@ namespace tao {
       else
 	 return false;
    }
+
 }
