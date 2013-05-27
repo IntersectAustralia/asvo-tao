@@ -52,9 +52,11 @@ class SupportTests(helper.LiveServerTest):
         self.assertEqual('TAO Support: ' + subject, email.subject)
         self.assertTrue(message in mail_content)
         self.assertTrue(self.user.email in mail_content)
-        self.assertTrue('test1@example.org' in email.to)
-        self.assertTrue('test2@example.org' in email.to)
-        self.assertTrue(len(email.to) == 2)
+        self.assertTrue(self.user.email in email.to)
+        self.assertTrue('test1@example.org' in email.bcc)
+        self.assertTrue('test2@example.org' in email.bcc)
+        self.assertTrue(len(email.to) == 1)
+        self.assertTrue(len(email.bcc) == 2)
         self.assert_page_has_content("Thank you -- your email has been sent")
 
     def test_support_message_not_empty(self):

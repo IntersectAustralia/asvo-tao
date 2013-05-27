@@ -11,7 +11,7 @@ from django.template import Template
 from django.template.context import Context
 from django.core.mail.message import EmailMultiAlternatives
 
-def send_mail(template_name, context, subject, to_addrs, from_addr=None):
+def send_mail(template_name, context, subject, to_addrs, bcc, from_addr=None):
     from tao.models import GlobalParameter
     if from_addr is None:
         from_addr = settings.EMAIL_FROM_ADDRESS
@@ -28,7 +28,7 @@ def send_mail(template_name, context, subject, to_addrs, from_addr=None):
     try:
         text_mail = GlobalParameter.objects.get(parameter_name='{template_name}.txt'.format(template_name=template_name))
         text_content = Template(text_mail.parameter_value).render(context)
-        msg = EmailMultiAlternatives(subject, text_content, from_addr, to_addrs)
+        msg = EmailMultiAlternatives(subject, text_content, from_addr, to_addrs, bcc=bcc)
         if html_content is not None:
             msg.attach_alternative(html_content, 'text/html')
         msg.send(fail_silently=False)
