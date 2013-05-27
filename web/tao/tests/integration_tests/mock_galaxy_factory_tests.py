@@ -164,18 +164,19 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.assertEquals(output_property.label, name_displayed)
 
     def test_bandpass_filter_details(self):
+        extension = 'apparent'
         self.click('tao-tabs-' + MODULE_INDICES['sed'])
         self.click(self.sed('apply_sed'))
         for i in [1,0]:
             bandpass_filter = BandPassFilter.objects.all()[i]
-            self.click_by_css(self.sed_id('band_pass_filters_from') + " option[value='"+str(bandpass_filter.id)+"']")
+            self.click_by_css(self.sed_id('band_pass_filters_from') + " option[value='"+str(bandpass_filter.id)+"_" + extension + "']")
             name_displayed = self.get_info_field('band-pass', 'name')
-            self.assertEquals(bandpass_filter.label, name_displayed)
+            self.assertEquals(bandpass_filter.label + ' (' + extension.capitalize() + ')', name_displayed)
         self.click(self.sed_2select('op_add_all'))
         bandpass_filter = BandPassFilter.objects.all()[i]
-        self.click_by_css(self.sed_id('band_pass_filters') + " option[value='"+str(bandpass_filter.id)+"']")
+        self.click_by_css(self.sed_id('band_pass_filters') + " option[value='"+str(bandpass_filter.id)+"_" + extension + "']")
         name_displayed = self.get_info_field('band-pass', 'name')
-        self.assertEquals(bandpass_filter.label, name_displayed)
+        self.assertEquals(bandpass_filter.label + ' (' + extension.capitalize() + ')', name_displayed)
 
     def test_summary_on_initial_load(self):
         self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
@@ -280,6 +281,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.click('tao-tabs-' + MODULE_INDICES['light_cone'])
         self.fill_in_fields({'ra_opening_angle': ra_opening_angle, 'dec_opening_angle': dec_opening_angle, 'redshift_min': redshift_min, 'redshift_max': redshift_max}, id_wrap=self.lc_id)
         self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
+        self.wait(1)
         self.assert_summary_field_correctly_shown('RA: '+ra_opening_angle+h.unescape('&deg;')+',', 'light_cone', 'ra_opening_angle')
         self.assert_summary_field_correctly_shown('Dec: '+dec_opening_angle+h.unescape('&deg;'), 'light_cone', 'dec_opening_angle')
         self.assert_summary_range_correctly_shown('Redshift: ' + redshift_min + h.unescape(' &le;') + ' r ' + h.unescape('&le;') + redshift_max, 'light_cone', ['redshift_min', 'redshift_max'])

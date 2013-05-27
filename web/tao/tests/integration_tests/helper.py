@@ -250,9 +250,13 @@ class LiveServerTest(django.test.LiveServerTestCase):
         return [x.get_attribute('value').encode('ascii') for x in self.selenium.find_elements_by_css_selector(option_selector)]
     
     def get_expected_filter_options(self, data_set_id):
+        def gen_bp_pairs(objs):
+            for obj in objs:
+                yield ('B-' + str(obj.id) + '_apparent')
+                yield ('B-' + str(obj.id) + '_absolute')
         normal_parameters = datasets.filter_choices(data_set_id)
         bandpass_parameters = datasets.band_pass_filters_objects()
-        return ['X-' + NO_FILTER] + ['D-' + str(x.id) for x in normal_parameters] + ['B-' + str(x.id) for x in bandpass_parameters]
+        return ['X-' + NO_FILTER] + ['D-' + str(x.id) for x in normal_parameters] + [pair for pair in gen_bp_pairs(bandpass_parameters)]
 
     def get_actual_snapshot_options(self):
         option_selector = '%s option' % self.lc_id('snapshot')
@@ -307,7 +311,7 @@ class LiveServerTest(django.test.LiveServerTestCase):
         self.select(self.sed_id('single_stellar_population_model'), stellar_model.label)
         self.wait(0.5)
 
-    def select_record_filter(self, filter):
+    def select_record_filter(self, filter, extension=None):
         text = ''
         if isinstance(filter, DataSetProperty):
             units_str = ''
@@ -316,6 +320,8 @@ class LiveServerTest(django.test.LiveServerTestCase):
             text = filter.label + units_str
         elif isinstance(filter, BandPassFilter):
             text = filter.label
+            if extension is not None:
+                text += ' (' + extension.capitalize() + ')'
         else:
             raise TypeError("Unknown filter type")
         self.select(self.rf_id('filter'), text)

@@ -53,6 +53,7 @@ namespace tao {
    {
       LOG_ENTER();
 
+      module::initialise( dict, prefix );
       _read_options( dict, prefix );
 
       LOG_EXIT();
@@ -296,7 +297,11 @@ namespace tao {
       else if( _accel_method == "direct" && _box_type != "box" )
       {
 	 table_iterator<real_type> it(
+#ifdef MULTIDB
+	    *_db,
+#else
 	    _sql,
+#endif
 	    _domain_size,
 	    *_cur_box,
 	    _rrs_offs,
@@ -313,6 +318,9 @@ namespace tao {
       {
 	 // Get the number of tables.
 	 unsigned num_tables;
+#ifdef MULTIDB
+	 num_tables = _db->TableNames.size();
+#else
 	 string query;
 	 if( _dbtype == "sqlite" )
 	 {
@@ -330,10 +338,14 @@ namespace tao {
 	 _db_timer.start();
 	 _sql << query, soci::into( num_tables );
 	 _db_timer.stop();
+#endif
 	 LOGDLN( "Number of tables: ", num_tables );
 
 	 // Retrieve all the table names.
 	 table_names.reallocate( num_tables );
+#ifdef MULTIDB
+	 std::copy( _db->TableNames.begin(), _db->TableNames.end(), table_names.begin() );
+#else
 	 if( _dbtype == "sqlite" )
 	 {
 	    query = "SELECT name FROM sqlite_master WHERE type='table' AND SUBSTR(name,1," + 
@@ -349,6 +361,7 @@ namespace tao {
 	 _db_timer.start();
 	 _sql << query, soci::into( (std::vector<std::string>&)table_names );
 	 _db_timer.stop();
+#endif
       }
 
       // If we are running in parallel we will need to only process the tables that
@@ -527,7 +540,11 @@ namespace tao {
       	 _setup_redshift_ranges();
 
       // Prepare the query.
+#ifdef MULTIDB
+      auto prep = (*_db)[_table_names[_cur_table]].prepare << query;
+#else
       auto prep = _sql.prepare << query;
+#endif
       for( unsigned ii = 0; ii < _output_fields.size(); ++ii )
       {
          switch( _field_types[ii] )
@@ -989,7 +1006,11 @@ namespace tao {
       {
 	 string size;
 	 _db_timer.start();
+#ifdef MULTIDB
+	 (*_db)["tree_1"] << "SELECT metavalue FROM metadata WHERE metakey='boxsize'", soci::into( size );
+#else
 	 _sql << "SELECT metavalue FROM metadata WHERE metakey='boxsize'", soci::into( size );
+#endif
 	 _db_timer.stop();
 	 _domain_size = atof( size.c_str() );
 	 LOGDLN( "Simulation domain size: ", _domain_size );
@@ -1000,7 +1021,11 @@ namespace tao {
       {
 	 string step;
 	 _db_timer.start();
+#ifdef MULTIDB
+	 (*_db)["tree_1"] << "SELECT metavalue FROM metadata WHERE metakey='bspcellsize'", soci::into( step );
+#else
 	 _sql << "SELECT metavalue FROM metadata WHERE metakey='bspcellsize'", soci::into( step );
+#endif
 	 _db_timer.stop();
 	 _bsp_step = atoi( step.c_str() );
 	 LOGDLN( "BSP step size: ", _bsp_step );
@@ -1224,15 +1249,24 @@ namespace tao {
       // Find number of snapshots and resize the containers.
       unsigned num_snaps;
       _db_timer.start();
+#ifdef MULTIDB
+      (*_db)["tree_1"] << "SELECT COUNT(*) FROM " + _snap_red_table, soci::into( num_snaps );
+#else
       _sql << "SELECT COUNT(*) FROM " + _snap_red_table, soci::into( num_snaps );
+#endif
       _db_timer.stop();
       LOGDLN( num_snaps, " snapshots." );
       _snap_redshifts.reallocate( num_snaps );
 
       // Read meta data.
       _db_timer.start();
+#ifdef MULTIDB
+      (*_db)["tree_1"] << "SELECT redshift FROM " + _snap_red_table + " ORDER BY " + _field_map.get( "snapshot" ),
+         soci::into( (std::vector<real_type>&)_snap_redshifts );
+#else
       _sql << "SELECT redshift FROM " + _snap_red_table + " ORDER BY " + _field_map.get( "snapshot" ),
          soci::into( (std::vector<real_type>&)_snap_redshifts );
+#endif
       _db_timer.stop();
       LOGDLN( "Redshifts: ", _snap_redshifts );
 
@@ -1252,8 +1286,16 @@ namespace tao {
 
       // Create a temporary table to hold values.
       _db_timer.start();
+#ifdef MULTIDB
+      for( auto& pair : _db->CurrentServers )
+      {
+	 pair.second->Connection << "CREATE TEMPORARY TABLE redshift_ranges (snapshot INTEGER, "
+	    "redshift DOUBLE PRECISION, min DOUBLE PRECISION, max DOUBLE PRECISION)";
+      }
+#else
       _sql << "CREATE TEMPORARY TABLE redshift_ranges (snapshot INTEGER, "
       	 "redshift DOUBLE PRECISION, min DOUBLE PRECISION, max DOUBLE PRECISION)";
+#endif
       _db_timer.stop();
 
       // Insert the first redshift range.
@@ -1261,8 +1303,16 @@ namespace tao {
 	 upp = _redshift_to_distance( _snap_redshifts[1] ),
 	 mid = upp + 0.5*(low - upp);
       _db_timer.start();
+#ifdef MULTIDB
+      for( auto& pair : _db->CurrentServers )
+      {
+	 pair.second->Connection << "INSERT INTO redshift_ranges VALUES(0, :z, :min, :max)",
+	    soci::use( _snap_redshifts[0] ), soci::use( mid*mid ), soci::use( low*low );
+      }
+#else
       _sql << "INSERT INTO redshift_ranges VALUES(0, :z, :min, :max)",
 	 soci::use( _snap_redshifts[0] ), soci::use( mid*mid ), soci::use( low*low );
+#endif
       _db_timer.stop();
       LOGDLN( "Distance range for snapshot 0 with redshift ", _snap_redshifts[0], ": ", mid, " - ", low );
 
@@ -1273,9 +1323,18 @@ namespace tao {
 	 upp = _redshift_to_distance( _snap_redshifts[ii + 1] );
 	 real_type new_mid = upp + 0.5*(low - upp);
 	 _db_timer.start();
+#ifdef MULTIDB
+	 for( auto& pair : _db->CurrentServers )
+	 {
+	    pair.second->Connection << "INSERT INTO redshift_ranges VALUES(:snapshot, :z, :min, :max)",
+	       soci::use( ii ), soci::use( _snap_redshifts[ii] ),
+	       soci::use( new_mid*new_mid ), soci::use( mid*mid );
+	 }
+#else
 	 _sql << "INSERT INTO redshift_ranges VALUES(:snapshot, :z, :min, :max)",
 	    soci::use( ii ), soci::use( _snap_redshifts[ii] ),
 	    soci::use( new_mid*new_mid ), soci::use( mid*mid );
+#endif
 	 _db_timer.stop();
 	 LOGDLN( "Distance range for snapshot ", ii, " with redshift ", _snap_redshifts[ii], ": ", new_mid, " - ", mid );
 	 mid = new_mid;
@@ -1283,9 +1342,18 @@ namespace tao {
 
       // Insert the last redshift range.
       _db_timer.start();
+#ifdef MULTIDB
+      for( auto& pair : _db->CurrentServers )
+      {
+	 pair.second->Connection << "INSERT INTO redshift_ranges VALUES(:snapshot, :z, :min, :max)",
+	    soci::use( _snap_redshifts.size() - 1 ), soci::use( _snap_redshifts.back() ),
+	    soci::use( upp*upp ), soci::use( mid*mid );
+      }
+#else
       _sql << "INSERT INTO redshift_ranges VALUES(:snapshot, :z, :min, :max)",
 	 soci::use( _snap_redshifts.size() - 1 ), soci::use( _snap_redshifts.back() ),
 	 soci::use( upp*upp ), soci::use( mid*mid );
+#endif
       _db_timer.stop();
       LOGDLN( "Redshift range for snapshot ", _snap_redshifts.size() - 1, ": ", upp, " - ", mid );
 
@@ -1352,7 +1420,11 @@ namespace tao {
       replace_all( query, "Pos1", _field_map.get( "pos_x" ) );
       replace_all( query, "Pos2", _field_map.get( "pos_y" ) );
       replace_all( query, "Pos3", _field_map.get( "pos_z" ) );
+#ifdef MULTIDB
+      soci::rowset<soci::row> rows = ((*_db)["tree_1"].prepare << query);
+#else
       soci::rowset<soci::row> rows = (_sql.prepare << query);
+#endif
       const soci::row& row = *rows.begin();
 
       // Loop over the fields in the field map. For each one I want
