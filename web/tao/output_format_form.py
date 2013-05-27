@@ -25,8 +25,12 @@ def to_xml_2(form, root):
    child_element(of_elem, 'filename', text='tao.output' + ext)
 
 def from_xml_2(cls, ui_holder, xml_root, prefix=None):
-   supported_format = 'csv'
-   return cls(ui_holder, {prefix + '-supported_formats': supported_format}, prefix=prefix)
+    params = {prefix+'-supported_formats': 'csv'}
+    for fmt in tao_settings.OUTPUT_FORMATS:
+        supported_format = module_xpath(xml_root, '//' + fmt['value'] + '-dump')
+        if supported_format is not None:
+            params.update({prefix+'-supported_formats': fmt['value']})
+    return cls(ui_holder, params, prefix=prefix)
 
 ########################
 
