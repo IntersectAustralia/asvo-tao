@@ -76,6 +76,9 @@ class WatchDogDaemon(Daemon):
                 self.RestartCounts=0
             return True
         else:
+            [self.Options]=settingReader.ParseParams("settings.xml")
+            EmailStr=str(datetime.now())+": Multiple Workflow restart in a short time. I'll terminate the watchdog service! action by the admin is needed."
+            emailreport.SendEmailToAdmin(self.Options,"WorkFlow Terminated",EmailStr)
             logging.info("Sorry I have to quit me ! Multiple restart in two minutes")            
             return False
             
