@@ -212,6 +212,129 @@ def box_geometry_xml(xml_parameters):
                     </light-cone>
     """) % xml_parameters
 
+def fits_output_format_xml(xml_parameters):
+    if xml_parameters['catalogue_geometry'] == 'box':
+        geometry_fragment = box_geometry_xml(xml_parameters)
+    else:
+        geometry_fragment = light_cone_geometry_xml(xml_parameters)
+    xml_parameters.update({'geometry_fragment': geometry_fragment})
+    if 'band_pass_filter_description' not in xml_parameters:
+        xml_parameters.update({'band_pass_filter_description': ''})
+    xml = stripped_joined_lines("""
+            <?xml version="1.0" encoding="UTF-8"?>
+            <!-- Using the XML namespace provides a version for future modifiability.  The timestamp allows
+                 a researcher to know when this parameter file was generated.  -->
+            <tao xmlns="http://tao.asvo.org.au/schema/module-parameters-v1" timestamp="2012-12-20T13:55:36+10:00">
+
+                <!-- Username submitting the job -->
+                <username>%(username)s</username>
+
+                <!-- Workflow name identifies which workflow is to be executed.
+                     This is currently a placeholder, the name is ignored. -->
+                <workflow name="alpha-light-cone-image">
+
+                    <!-- Global Configuration Parameters -->
+                    <schema-version>2.0</schema-version>
+
+
+                    <!-- File output module -->
+                    <fits-dump id="%(csv_dump_id)s">
+                        <fields>
+                            <item label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
+                            <item label="%(output_properties_2_label)s">%(output_properties_2_name)s</item>
+                            <!-- <item label="bandpass (Absolute)">%(band_pass_filter_name)s_absolute</item> -->
+                            <item label="bandpass (Apparent)">%(band_pass_filter_name)s_apparent</item>
+                        </fields>
+
+                        <!-- Module Version Number -->
+                        <module-version>1</module-version>
+
+                        <!-- Output file format -->
+                        <filename>tao.output.csv</filename>
+
+                        <parents>
+                            <item>%(bandpass_filter_id)s</item>
+                        </parents>
+
+                    </fits-dump>
+
+                    <!-- Optional: Spectral Energy Distribution parameters -->
+                    <sed id="%(sed_id)s">
+                        <!-- Module Version Number -->
+                        <module-version>1</module-version>
+
+                        <parents>
+                            <item>%(light_cone_id)s</item>
+                        </parents>
+
+                        <single-stellar-population-model>%(ssp_name)s</single-stellar-population-model>
+                    </sed>
+
+                    <filter id="%(bandpass_filter_id)s">
+                        <module-version>1</module-version>
+                        <parents>
+                            <item>%(dust_id)s</item>
+                        </parents>
+
+                        <!-- Bandpass Filters) -->
+                        <bandpass-filters>
+                            <item description="%(band_pass_filter_description)s" label="%(band_pass_filter_label)s" selected="apparent">%(band_pass_filter_id)s</item>
+                        </bandpass-filters>
+                    </filter>
+
+                    <dust id="%(dust_id)s">
+                        <!-- Module Version Number -->
+                        <module-version>1</module-version>
+                        <parents>
+                            <item>%(sed_id)s</item>
+                        </parents>
+                        <model>%(dust_model_name)s</model>
+                    </dust>
+
+                    <!-- Record Filter -->
+                    <record-filter>
+                        <!-- Module Version Number -->
+                        <module-version>1</module-version>
+
+                        <!-- Note that the units are for readability,
+                             no unit conversion is supported.  The consumer of the
+                             parameter file should check that the expected units are provided. -->
+                        <filter>
+                            <filter-attribute>%(filter)s</filter-attribute>
+                            <filter-min units="Msun/h">%(filter_min)s</filter-min>
+                            <filter-max units="Msun/h">%(filter_max)s</filter-max>
+                        </filter>
+                    </record-filter>
+
+                    <!-- Image generation module parameters
+                    <image-generator>
+                        <!- Module Version Number ->
+                        <module-version>1</module-version>
+
+                        <!- Image size parameters ->
+                        <image-width units="px">1024</image-width>
+                        <image-height units="px">1024</image-height>
+
+                        <!- Focal scale parameters ->
+                        <focalx units="??">1024</focalx>
+                        <focaly units="??">1024</focaly>
+
+                        <!- Image offset parameters ->
+                        <image-offsetx units="??">512</image-offsetx>
+                        <image-offsety units="??">0</image-offsety>
+                    </image-generator> -->
+
+                </workflow>
+
+                <!-- The signature is automatically generated and is intended to be used when running
+                     old versions of the science modules (to remove the need for the UI to parse and check
+                     every version. -->
+                <signature>base64encodedsignature</signature>
+
+            </tao>
+        """) % xml_parameters
+    return xml
+
 class XmlDiffMixin(object):
     """
         This class provides xml diff capabilities
