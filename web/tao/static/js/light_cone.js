@@ -868,7 +868,7 @@ jQuery(document).ready(function($) {
 
     $('#id_output_format-supported_formats').change(function(evt){
         var $this = $(this);
-        var output_format_value = $this.text();
+        var output_format_value = $this.find('option:selected').text();
         fill_in_summary('output', 'output_format', output_format_value);
     });
 
