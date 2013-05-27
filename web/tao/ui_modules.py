@@ -6,7 +6,8 @@ tao.ui_modules
 Helper class to extension UI modules
 """
 from django.conf import settings
-from tao.forms import OutputFormatForm, RecordFilterForm
+from tao.record_filter_form import RecordFilterForm
+from tao.output_format_form import OutputFormatForm
 
 def _from_post(self, klass, module_name, param):
     if param is None:

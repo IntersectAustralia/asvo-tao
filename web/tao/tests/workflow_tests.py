@@ -7,7 +7,9 @@ from decimal import Decimal
 from django.test import TestCase
 
 from tao import workflow, time
-from tao.forms import OutputFormatForm, RecordFilterForm
+from tao.forms import FormsGraph
+from tao.output_format_form import OutputFormatForm
+from tao.record_filter_form import RecordFilterForm
 from tao.settings import OUTPUT_FORMATS
 from taoui_light_cone.forms import Form as LightConeForm
 from taoui_sed.forms import Form as SEDForm
@@ -102,23 +104,30 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'band_pass_filter_name': os.path.splitext(self.band_pass_filter.filter_id)[0],
             'dust_model_name': self.dust_model.name,
         })
-
+        xml_parameters.update({
+            'light_cone_id': FormsGraph.LIGHT_CONE_ID,
+            'csv_dump_id': FormsGraph.OUTPUT_ID,
+            'bandpass_filter_id': FormsGraph.BANDPASS_FILTER_ID,
+            'sed_id': FormsGraph.SED_ID,
+            'dust_id': FormsGraph.DUST_ID,
+        })
         # TODO: there are commented out elements which are not implemented yet
         # comments are ignored by assertXmlEqual
 
         expected_parameter_xml = light_cone_xml(xml_parameters)
 
-        light_cone_form = make_form({}, LightConeForm, form_parameters, prefix='light_cone')
-        mock_ui_holder = MockUIHolder(light_cone_form)
-        sed_form = make_form({}, SEDForm, self.sed_parameters, prefix='sed')
+        mock_ui_holder = MockUIHolder()
+        light_cone_form = make_form({}, LightConeForm, form_parameters, ui_holder=mock_ui_holder, prefix='light_cone')
+        sed_form = make_form({}, SEDForm, self.sed_parameters, ui_holder=mock_ui_holder, prefix='sed')
+        output_form = make_form({}, OutputFormatForm, {'supported_formats': 'csv'}, ui_holder=mock_ui_holder, prefix='output_format')
+        mock_ui_holder.update(light_cone = light_cone_form, sed = sed_form, output_format = output_form)
         record_filter_form = make_form({}, RecordFilterForm, {'filter':'D-'+str(self.filter.id),'min':str(1000000)}, ui_holder=mock_ui_holder, prefix='record_filter')
-        output_form = make_form({}, OutputFormatForm, {'supported_formats': 'csv'}, prefix='output_format')
         self.assertEqual({}, light_cone_form.errors)
         self.assertEqual({}, sed_form.errors)
         self.assertEqual({}, record_filter_form.errors)
         self.assertEqual({}, output_form.errors)
 
-        mock_ui_holder.set_forms([light_cone_form, sed_form, record_filter_form, output_form])
+        mock_ui_holder.update(record_filter = record_filter_form)
         job = workflow.save(self.user, mock_ui_holder)
         actual_parameter_xml = job.parameters
 
@@ -164,23 +173,30 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'dust_model_name': self.dust_model.name,
 
         })
-
+        xml_parameters.update({
+            'light_cone_id': FormsGraph.LIGHT_CONE_ID,
+            'csv_dump_id': FormsGraph.OUTPUT_ID,
+            'bandpass_filter_id': FormsGraph.BANDPASS_FILTER_ID,
+            'sed_id': FormsGraph.SED_ID,
+            'dust_id': FormsGraph.DUST_ID,
+        })
         # TODO: there are commented out elements which are not implemented yet
         # comments are ignored by assertXmlEqual
 
         expected_parameter_xml = light_cone_xml(xml_parameters)
 
-        light_cone_form = make_form({}, LightConeForm, form_parameters, prefix='light_cone')
-        mock_ui_holder = MockUIHolder(light_cone_form)
-        sed_form = make_form({}, SEDForm, self.sed_parameters, prefix='sed')
+        mock_ui_holder = MockUIHolder()
+        light_cone_form = make_form({}, LightConeForm, form_parameters, ui_holder=mock_ui_holder, prefix='light_cone')
+        sed_form = make_form({}, SEDForm, self.sed_parameters, ui_holder=mock_ui_holder, prefix='sed')
+        output_form = make_form({}, OutputFormatForm, {'supported_formats': 'csv'}, ui_holder=mock_ui_holder, prefix='output_format')
+        mock_ui_holder.update(light_cone = light_cone_form, sed = sed_form, output_format = output_form)
         record_filter_form = make_form({}, RecordFilterForm, {'filter':'D-'+str(self.filter.id),'min':str(1000000)}, ui_holder=mock_ui_holder, prefix='record_filter')
-        output_form = make_form({}, OutputFormatForm, {'supported_formats': 'csv'}, prefix='output_format')
         self.assertEqual({}, light_cone_form.errors)
         self.assertEqual({}, sed_form.errors)
         self.assertEqual({}, record_filter_form.errors)
         self.assertEqual({}, output_form.errors)
 
-        mock_ui_holder.set_forms([light_cone_form, sed_form, record_filter_form, output_form])
+        mock_ui_holder.update(record_filter = record_filter_form)#mock_ui_holder.set_forms([light_cone_form, sed_form, record_filter_form, output_form])
         job = workflow.save(self.user, mock_ui_holder)
         actual_parameter_xml = job.parameters
 
@@ -221,6 +237,13 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'band_pass_extension': 'apparent',
             'dust_model_name': self.dust_model.name,
             })
+        xml_parameters.update({
+            'light_cone_id': FormsGraph.LIGHT_CONE_ID,
+            'csv_dump_id': FormsGraph.OUTPUT_ID,
+            'bandpass_filter_id': FormsGraph.BANDPASS_FILTER_ID,
+            'sed_id': FormsGraph.SED_ID,
+            'dust_id': FormsGraph.DUST_ID,
+        })
         # comments are ignored by assertXmlEqual
         expected_parameter_xml = stripped_joined_lines("""
             <?xml version="1.0"?>
@@ -239,7 +262,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                     <schema-version>2.0</schema-version>
 
                     <!-- Light-cone module parameters -->
-                    <light-cone module="light-cone">
+                    <light-cone id="%(light_cone_id)s">
                         <!-- Module Version Number -->
                         <module-version>1</module-version>
 
@@ -278,40 +301,43 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                     </light-cone>
 
                     <!-- File output module -->
-                    <csv module="csv">
+                    <csv-dump id="%(csv_dump_id)s">
                         <fields>
                             <item label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
                             <!-- <item label="bandpass (Absolute)">Band_pass_filter_000_absolute</item> -->
                             <item label="bandpass (Apparent)">Band_pass_filter_000_apparent</item>
                         </fields>
 
-                        <parents>
-                            <item>filter</item>
-                        </parents>
-
                         <!-- Module Version Number -->
                         <module-version>1</module-version>
 
                         <!-- Output file format -->
                         <filename>tao.output.csv</filename>
-                    </csv>
 
-                    <!-- Optional: Spectral Energy Distribution parameters -->
-                    <sed module="sed">
                         <parents>
-                            <item>light-cone</item>
+                            <item>%(bandpass_filter_id)s</item>
                         </parents>
 
+                    </csv-dump>
+
+                    <!-- Optional: Spectral Energy Distribution parameters -->
+                    <sed id="%(sed_id)s">
                         <!-- Module Version Number -->
                         <module-version>1</module-version>
 
+                        <parents>
+                            <item>%(light_cone_id)s</item>
+                        </parents>
+
                         <single-stellar-population-model>%(ssp_name)s</single-stellar-population-model>
-                        <dust>%(dust_model_name)s</dust>
                     </sed>
 
-                    <filter module="filter">
+                    <filter id="%(bandpass_filter_id)s">
+                        <!-- Module Version Number -->
+                        <module-version>1</module-version>
+
                         <parents>
-                            <item>sed</item>
+                            <item>%(dust_id)s</item>
                         </parents>
 
                         <!-- Bandpass Filters) -->
@@ -319,6 +345,15 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                             <item description="%(band_pass_filter_description)s" label="%(band_pass_filter_label)s" selected="%(band_pass_extension)s">%(band_pass_filter_id)s</item>
                         </bandpass-filters>
                     </filter>
+
+                    <dust id="%(dust_id)s">
+                        <module-version>1</module-version>
+                        <parents>
+                            <item>%(sed_id)s</item>
+                        </parents>
+                        <model>%(dust_model_name)s</model>
+                    </dust>
+
 
                     <!-- Record Filter -->
                     <record-filter>
@@ -328,9 +363,11 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                         <!-- Note that the units are for readability,
                              no unit conversion is supported.  The consumer of the
                              parameter file should check that the expected units are provided. -->
-                        <filter-type>%(filter)s</filter-type>
-                        <filter-min units="Msun/h">%(filter_min)s</filter-min>
-                        <filter-max units="Msun/h">%(filter_max)s</filter-max>
+                        <filter>
+                            <filter-attribute>%(filter)s</filter-attribute>
+                            <filter-min units="Msun/h">%(filter_min)s</filter-min>
+                            <filter-max units="Msun/h">%(filter_max)s</filter-max>
+                        </filter>
                     </record-filter>
 
                     <!-- Image generation module parameters
@@ -361,17 +398,18 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             </tao>
         """) % xml_parameters
 
-        light_cone_form = make_form({}, LightConeForm, form_parameters, prefix='light_cone')
-        mock_ui_holder = MockUIHolder(light_cone_form)
-        sed_form = make_form({}, SEDForm, self.sed_parameters, prefix='sed')
-        record_filter_form = make_form({}, RecordFilterForm, {'filter':'D-'+str(self.filter.id),'max':str(1000000)}, ui_holder=mock_ui_holder, prefix='record_filter')
+        mock_ui_holder = MockUIHolder()
+        light_cone_form = make_form({}, LightConeForm, form_parameters, ui_holder=mock_ui_holder, prefix='light_cone')
         output_form = make_form({}, OutputFormatForm, {'supported_formats': 'csv'}, prefix='output_format')
+        sed_form = make_form({}, SEDForm, self.sed_parameters, ui_holder=mock_ui_holder, prefix='sed')
+        mock_ui_holder.update(light_cone = light_cone_form, sed = sed_form, output_format = output_form)
+        record_filter_form = make_form({}, RecordFilterForm, {'filter':'D-'+str(self.filter.id),'max':str(1000000)}, ui_holder=mock_ui_holder, prefix='record_filter')
         self.assertEqual({}, light_cone_form.errors)
         self.assertEqual({}, sed_form.errors)
         self.assertEqual({}, record_filter_form.errors)
         self.assertEqual({}, output_form.errors)
 
-        mock_ui_holder.set_forms([light_cone_form, sed_form, record_filter_form, output_form])
+        mock_ui_holder.update(record_filter = record_filter_form)
         job = workflow.save(self.user, mock_ui_holder)
         actual_parameter_xml = job.parameters
 
@@ -415,6 +453,14 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'band_pass_filter_name': os.path.splitext(self.band_pass_filter.filter_id)[0],
             'dust_model_name': self.dust_model.name,
             })
+        xml_parameters.update({
+            'light_cone_id': FormsGraph.LIGHT_CONE_ID,
+            'csv_dump_id': FormsGraph.OUTPUT_ID,
+            'bandpass_filter_id': FormsGraph.BANDPASS_FILTER_ID,
+            'sed_id': FormsGraph.SED_ID,
+            'dust_id': FormsGraph.DUST_ID,
+            })
+
         expected_parameter_xml = stripped_joined_lines("""
             <?xml version="1.0" encoding="UTF-8"?>
             <!-- Using the XML namespace provides a version for future modifiability.  The timestamp allows
@@ -432,7 +478,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                     <schema-version>2.0</schema-version>
 
                     <!-- Light-cone module parameters -->
-                    <light-cone module="light-cone">
+                    <light-cone id="%(light_cone_id)s">
                         <!-- Module Version Number -->
                         <module-version>1</module-version>
 
@@ -471,21 +517,22 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                     </light-cone>
 
                     <!-- File output module -->
-                    <csv module="csv">
+                    <csv-dump id="%(csv_dump_id)s">
                         <fields>
                             <item label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
                         </fields>
-
-                        <parents>
-                            <item>light-cone</item>
-                        </parents>
 
                         <!-- Module Version Number -->
                         <module-version>1</module-version>
 
                         <!-- Output file format -->
                         <filename>tao.output.csv</filename>
-                    </csv>
+
+                        <parents>
+                            <item>%(light_cone_id)s</item>
+                        </parents>
+
+                    </csv-dump>
 
                     <!-- Record Filter -->
                     <record-filter>
@@ -495,9 +542,11 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                         <!-- Note that the units are for readability,
                              no unit conversion is supported.  The consumer of the
                              parameter file should check that the expected units are provided. -->
-                        <filter-type>%(filter)s</filter-type>
-                        <filter-min units="Msun/h">%(filter_min)s</filter-min>
-                        <filter-max units="Msun/h">%(filter_max)s</filter-max>
+                        <filter>
+                            <filter-attribute>%(filter)s</filter-attribute>
+                            <filter-min units="Msun/h">%(filter_min)s</filter-min>
+                            <filter-max units="Msun/h">%(filter_max)s</filter-max>
+                        </filter>
                     </record-filter>
 
                     <!-- Image generation module parameters
@@ -528,17 +577,18 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             </tao>
         """) % xml_parameters
 
-        light_cone_form = make_form({}, LightConeForm, form_parameters, prefix='light_cone')
-        mock_ui_holder = MockUIHolder(light_cone_form)
-        sed_form = make_form({}, SEDForm, self.sed_disabled, prefix='sed')
+        mock_ui_holder = MockUIHolder()
+        light_cone_form = make_form({}, LightConeForm, form_parameters, ui_holder=mock_ui_holder, prefix='light_cone')
+        sed_form = make_form({}, SEDForm, self.sed_disabled, ui_holder=mock_ui_holder, prefix='sed')
+        output_form = make_form({}, OutputFormatForm, {'supported_formats': 'csv'}, ui_holder=mock_ui_holder, prefix='output_format')
+        mock_ui_holder.update(light_cone = light_cone_form, sed = sed_form, output_format = output_form)
         record_filter_form = make_form({}, RecordFilterForm, {'filter':'D-'+str(self.filter.id),'max':str(1000000)}, ui_holder=mock_ui_holder, prefix='record_filter')
-        output_form = make_form({}, OutputFormatForm, {'supported_formats': 'csv'}, prefix='output_format')
         self.assertEqual({}, light_cone_form.errors)
         self.assertEqual({}, sed_form.errors)
         self.assertEqual({}, record_filter_form.errors)
         self.assertEqual({}, output_form.errors)
 
-        mock_ui_holder.set_forms([light_cone_form, sed_form, record_filter_form, output_form])
+        mock_ui_holder.update(record_filter = record_filter_form)
         job = workflow.save(self.user, mock_ui_holder)
         actual_parameter_xml = job.parameters
 
@@ -579,6 +629,13 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'band_pass_filter_description': self.band_pass_filter.description,
             'band_pass_extension': 'absolute',
             })
+        xml_parameters.update({
+            'light_cone_id': FormsGraph.LIGHT_CONE_ID,
+            'csv_dump_id': FormsGraph.OUTPUT_ID,
+            'bandpass_filter_id': FormsGraph.BANDPASS_FILTER_ID,
+            'sed_id': FormsGraph.SED_ID,
+            'dust_id': FormsGraph.DUST_ID,
+            })
         # comments are ignored by assertXmlEqual
         expected_parameter_xml = stripped_joined_lines("""
             <?xml version="1.0"?>
@@ -597,7 +654,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                     <schema-version>2.0</schema-version>
 
                     <!-- Light-cone module parameters -->
-                    <light-cone module="light-cone">
+                    <light-cone id="%(light_cone_id)s">
                         <!-- Module Version Number -->
                         <module-version>1</module-version>
 
@@ -636,39 +693,41 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                     </light-cone>
 
                     <!-- File output module -->
-                    <csv module="csv">
+                    <csv-dump id="%(csv_dump_id)s">
                         <fields>
                             <item label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
                             <item label="bandpass (Absolute)">%(band_pass_filter_name)s_absolute</item>
                             <!-- <item label="bandpass (Apparent)">%(band_pass_filter_name)s_apparent</item> -->
                         </fields>
 
-                        <parents>
-                            <item>filter</item>
-                        </parents>
-
                         <!-- Module Version Number -->
                         <module-version>1</module-version>
 
                         <!-- Output file format -->
                         <filename>tao.output.csv</filename>
-                    </csv>
 
-                    <!-- Optional: Spectral Energy Distribution parameters -->
-                    <sed module="sed">
                         <parents>
-                            <item>light-cone</item>
+                            <item>%(bandpass_filter_id)s</item>
                         </parents>
 
+                    </csv-dump>
+
+                    <!-- Optional: Spectral Energy Distribution parameters -->
+                    <sed id="%(sed_id)s">
                         <!-- Module Version Number -->
                         <module-version>1</module-version>
+
+                        <parents>
+                            <item>%(light_cone_id)s</item>
+                        </parents>
 
                         <single-stellar-population-model>%(ssp_name)s</single-stellar-population-model>
                     </sed>
 
-                    <filter module="filter">
+                    <filter id="%(bandpass_filter_id)s">
+                        <module-version>1</module-version>
                         <parents>
-                            <item>sed</item>
+                            <item>%(sed_id)s</item>
                         </parents>
 
                         <!-- Bandpass Filters) -->
@@ -685,9 +744,11 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                         <!-- Note that the units are for readability,
                              no unit conversion is supported.  The consumer of the
                              parameter file should check that the expected units are provided. -->
-                        <filter-type>%(filter)s</filter-type>
-                        <filter-min units="Msun/h">%(filter_min)s</filter-min>
-                        <filter-max units="Msun/h">%(filter_max)s</filter-max>
+                        <filter>
+                            <filter-attribute>%(filter)s</filter-attribute>
+                            <filter-min units="Msun/h">%(filter_min)s</filter-min>
+                            <filter-max units="Msun/h">%(filter_max)s</filter-max>
+                        </filter>
                     </record-filter>
 
                     <!-- Image generation module parameters
@@ -718,17 +779,18 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             </tao>
         """) % xml_parameters
 
-        light_cone_form = make_form({}, LightConeForm, form_parameters, prefix='light_cone')
-        mock_ui_holder = MockUIHolder(light_cone_form)
-        sed_form = make_form({}, SEDForm, self.sed_parameters_no_dust, prefix='sed')
+        mock_ui_holder = MockUIHolder()
+        light_cone_form = make_form({}, LightConeForm, form_parameters, ui_holder=mock_ui_holder, prefix='light_cone')
+        sed_form = make_form({}, SEDForm, self.sed_parameters_no_dust, ui_holder=mock_ui_holder, prefix='sed')
+        output_form = make_form({}, OutputFormatForm, {'supported_formats': 'csv'}, ui_holder=mock_ui_holder, prefix='output_format')
+        mock_ui_holder.update(light_cone = light_cone_form, sed = sed_form, output_format = output_form)
         record_filter_form = make_form({}, RecordFilterForm, {'filter':'D-'+str(self.filter.id),'max':str(1000000)}, ui_holder=mock_ui_holder, prefix='record_filter')
-        output_form = make_form({}, OutputFormatForm, {'supported_formats': 'csv'}, prefix='output_format')
         self.assertEqual({}, light_cone_form.errors)
         self.assertEqual({}, sed_form.errors)
         self.assertEqual({}, record_filter_form.errors)
         self.assertEqual({}, output_form.errors)
 
-        mock_ui_holder.set_forms([light_cone_form, sed_form, record_filter_form, output_form])
+        mock_ui_holder.update(record_filter = record_filter_form)
         job = workflow.save(self.user, mock_ui_holder)
         actual_parameter_xml = job.parameters
 

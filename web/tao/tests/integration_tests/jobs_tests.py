@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.test.utils import override_settings
 
+from tao.forms import FormsGraph
 from tao.models import Job, BandPassFilter, Simulation
 from tao.tests import helper
 from tao.tests.integration_tests.helper import LiveServerTest
@@ -103,6 +104,13 @@ class JobTest(LiveServerTest):
             'band_pass_filter_id': self.band_pass_filters[0].filter_id,
             'band_pass_filter_name': os.path.splitext(self.band_pass_filters[0].filter_id)[0],
             'dust_model_name': self.dust.name,
+            })
+        xml_parameters.update({
+            'light_cone_id': FormsGraph.LIGHT_CONE_ID,
+            'csv_dump_id': FormsGraph.OUTPUT_ID,
+            'bandpass_filter_id': FormsGraph.BANDPASS_FILTER_ID,
+            'sed_id': FormsGraph.SED_ID,
+            'dust_id': FormsGraph.DUST_ID,
             })
         return light_cone_xml(xml_parameters)
 
