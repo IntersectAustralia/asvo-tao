@@ -1,5 +1,5 @@
 from django.core import serializers
-from django.utils import simplejson
+import json
 from django.http import HttpResponse
 
 from tao.models import Snapshot, Simulation, GalaxyModel, DataSet, DustModel, DataSetProperty, BandPassFilter, StellarModel, GlobalParameter
@@ -51,7 +51,7 @@ def galaxy_models(request, id):
     """
     data_sets = DataSet.objects.filter(simulation_id = id).select_related('galaxy_model').order_by('galaxy_model__name')
     dicts = [{'id':x.id, 'name':x.galaxy_model.name, 'galaxy_model_id':x.galaxy_model_id} for x in data_sets]
-    resp = simplejson.dumps(dicts)
+    resp = json.dumps(dicts)
     return HttpResponse(resp, mimetype="application/json")
 
 @researcher_required
@@ -81,10 +81,10 @@ def filters(request, id):
     else:
         default_id = str(default_filter.id)
     resp = {'list': [], 'default_id':default_id, 'default_min':data_set.default_filter_min, 'default_max':data_set.default_filter_max}
-    resp = simplejson.dumps(resp)
+    resp = json.dumps(resp)
     filters = [json_my_encode(object) for object in objects]
     bandpass = [custom_dict for custom_dict in gen_pairs(datasets.band_pass_filters_objects())]
-    resp = resp.replace('[]', simplejson.dumps(filters + bandpass))
+    resp = resp.replace('[]', json.dumps(filters + bandpass))
     return HttpResponse(resp, mimetype="application/json")
 
 @researcher_required
@@ -131,14 +131,24 @@ def global_parameter(request, parameter_name):
 
 @researcher_required
 def bandpass_filters(request):
-    def gen_json(obj, extension):
-        return '{"pk": "' + str(obj.id) + '_' + extension + '", "model": "tao.bandpassfilter", "fields": {"order": ' + str(obj.order) + ', "filter_id": "' + obj.filter_id + '", "group": "' + obj.group + '", "description": "' + obj.description + '", "label": "' + obj.label + ' (' + extension.capitalize() + ')"}}'
+    def gen_dict(obj, extension):
+        d = {
+             "pk": str(obj.id) + '_' + extension,
+             "model": "tao.bandpassfilter",
+             "fields": {
+                 "order": obj.order,
+                 "filter_id": obj.filter_id,
+                 "group": obj.group,
+                 "description": obj.description,
+                 "label": obj.label + ' (' + extension.capitalize() + ')'
+             }}
+        return d
     def gen_pairs(objs):
         for obj in objs:
-            yield gen_json(obj, 'apparent')
-            yield gen_json(obj, 'absolute')
+            yield gen_dict(obj, 'apparent')
+            yield gen_dict(obj, 'absolute')
     objects = BandPassFilter.objects.all()
-    resp = '[' + ','.join([json_str for json_str in gen_pairs(objects)]) + ']'
+    resp = json.dumps([d for d in gen_pairs(objects)])
     return HttpResponse(resp, mimetype="application/json")
 
 def bad_request(request):

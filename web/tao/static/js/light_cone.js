@@ -593,7 +593,7 @@ jQuery(document).ready(function($) {
         $.ajax({
             url : TAO_JSON_CTX + 'bandpass_filters/',
             dataType: "json",
-            error: function() {
+            error: function(jqXHR, status, error) {
                 alert("Couldn't get bandpass filters");
             },
             success: function(data, status, xhr) {
