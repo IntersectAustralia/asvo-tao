@@ -72,8 +72,7 @@ def to_xml_2(form, root):
                 if item_id not in added:
                     child_element(bf_elem, 'item', text=op.filter_id, label=op.label, description=op.description, selected=",".join(selected[item_id]))
                     added[item_id] = True
-                bpf = os.path.splitext(op.filter_id)[0]
-                child_element(fields_elem, 'item', text=bpf + '_' + item_extension, label=op.label + ' (' + item_extension.capitalize() + ')')
+                child_element(fields_elem, 'item', text=op.filter_id + '_' + item_extension, label=op.label + ' (' + item_extension.capitalize() + ')')
 
     else:
         from tao.xml_util import find_or_create, child_element
