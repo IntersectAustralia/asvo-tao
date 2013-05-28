@@ -176,6 +176,26 @@ class DBInterface(object):
         return self.ExecuteQuerySQLStatmentAsDict(SELECTJob)
     
     
+#########################################################################################################################
+########## Commands DB Access ###############################################
 
-    
+    def AddNewCommand(self,UICommandID,CommandType,UIJobID,AdditionalParams):
+        
+          
+        INSERTJobSt="INSERT INTO COMMANDS(UICommandID,UIJobID,CommandType,AdditionalParams) VALUES ("
+        INSERTJobSt=INSERTJobSt+str(UICommandID)+","+str(CommandType)+","+str(UIJobID)+",'"+AdditionalParams+"');"
+        INSERTJobSt=INSERTJobSt+"SELECT currval('NextCommandID');"
+            
+        ## Get Latest JobID
+        CommandID=self.ExecuteQuerySQLStatment(INSERTJobSt)[0][0]        
+        self.AddNewEvent(CommandID, 0, "Command Added")
+        
+        
+        return CommandID
+
+    def UpdateCommandStatus(self,CommandID,NewStatus):
+        
+        Updatest="UPDATE Commands set ExecStatus="+str(NewStatus)+",COMPELETEDATE=CURRENT_TIMESTAMP where CommandID="+str(CommandID)+";"
+            
+        self.ExecuteNoQuerySQLStatment(Updatest)
 
