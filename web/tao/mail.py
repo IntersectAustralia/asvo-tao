@@ -11,7 +11,7 @@ from django.template import Template
 from django.template.context import Context
 from django.core.mail.message import EmailMultiAlternatives
 
-def send_mail(template_name, context, subject, to_addrs, bcc, from_addr=None):
+def send_mail(template_name, context, subject, to_addrs, bcc=None, from_addr=None):
     from tao.models import GlobalParameter
     if from_addr is None:
         from_addr = settings.EMAIL_FROM_ADDRESS
