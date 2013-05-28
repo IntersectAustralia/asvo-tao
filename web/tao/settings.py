@@ -222,8 +222,10 @@ INSTALLED_APPS += tuple(('taoui_' + module_name for module_name in MODULES))
 OUTPUT_FORMATS = [
     {'value':'csv', 'text':'CSV (Text)', 'extension':'csv'},
     {'value':'hdf5', 'text':'HDF5', 'extension':'hdf5'},
+    {'value': 'fits', 'text': 'FITS', 'extension': 'fits'},
+    {'value': 'votable', 'text': 'VOTable', 'extension': 'xml'},
 ]
 
 MODULE_INDICES = {'light_cone': '1', 'sed': '2', 'record_filter': '3', 'output_format': '4'}
 
-TAO_VERSION = '0.20.1'
+TAO_VERSION = '0.21.1'

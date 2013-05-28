@@ -3,9 +3,9 @@
 
 #include <soci/soci.h>
 #include <libhpc/libhpc.hh>
-#include "galaxy.hh"
 #include <libhpc/options/xml_dict.hh>
-
+#include "galaxy.hh"
+#include "multidb.hh"
 
 namespace tao {
    using namespace hpc;
@@ -31,8 +31,6 @@ namespace tao {
 
       void
       process( unsigned long long iteration );
-
-
 
       virtual
       void
@@ -92,8 +90,13 @@ namespace tao {
       list<module*> _parents;
       bool _complete;
 
+      const options::xml_dict* _dict;
       bool _connected;
+#ifdef MULTIDB
+      multidb* _db;
+#else
       soci::session _sql;
+#endif
       unsigned _num_restart_its;
       unsigned _cur_restart_it;
       string _dbtype, _dbname, _dbhost, _dbport, _dbuser, _dbpass;
