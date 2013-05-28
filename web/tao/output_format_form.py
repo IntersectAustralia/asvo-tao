@@ -20,13 +20,17 @@ def to_xml_2(form, root):
            break
 
    # The output file should be a CSV, by default.
-   of_elem = find_or_create(root, fmt+'-dump', id=FormsGraph.OUTPUT_ID)
+   of_elem = find_or_create(root, fmt, id=FormsGraph.OUTPUT_ID)
    child_element(of_elem, 'module-version', text=OutputFormatForm.MODULE_VERSION)
    child_element(of_elem, 'filename', text='tao.output' + ext)
 
 def from_xml_2(cls, ui_holder, xml_root, prefix=None):
-   supported_format = 'csv'
-   return cls(ui_holder, {prefix + '-supported_formats': supported_format}, prefix=prefix)
+    params = {prefix+'-supported_formats': 'csv'}
+    for fmt in tao_settings.OUTPUT_FORMATS:
+        supported_format = module_xpath(xml_root, '//' + fmt['value'], text=False)
+        if supported_format is not None:
+            params.update({prefix+'-supported_formats': fmt['value']})
+    return cls(ui_holder, params, prefix=prefix)
 
 ########################
 

@@ -59,7 +59,7 @@ def to_xml_2(form, root):
 
         # Either create or find the CSV/HDF5 output properties.
         output_format = form.ui_holder.cleaned_data('output_format', 'supported_formats')
-        fields_elem = find_or_create(find_or_create(root, output_format+'-dump', id=FormsGraph.OUTPUT_ID), 'fields')
+        fields_elem = find_or_create(find_or_create(root, output_format, id=FormsGraph.OUTPUT_ID), 'fields')
 
         # Insert entries.
         for item in output_properties:
