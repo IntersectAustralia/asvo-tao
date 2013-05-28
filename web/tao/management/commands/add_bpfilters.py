@@ -77,8 +77,12 @@ class Command(BaseCommand):
         if options['doc']:
             print __doc__
             exit(0)
-        if len(args) != 2:
-            raise CommandError("Command takes two arguments".format(sys.argv[0]))
+        if options['gendoco']:
+            if len(args) != 2:
+                raise CommandError("{0} <filters.csv filename> <doc root directory> required".format(sys.argv[0]))
+        else:
+            if len(args) != 1:
+                raise CommandError("{0} <filters.csv filename> required".format(sys.argv[0]))
         if options['debug']:
             import pdb
             pdb.set_trace()
