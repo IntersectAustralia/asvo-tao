@@ -76,35 +76,72 @@ class SysCommands(object):
         logging.info("Command Local ID:"+str(CommandID))        
         
         CommandFunction=FunctionsMap[CommandType]
-        return CommandFunction()
+        return CommandFunction(UICommandID,UIJobID,CommandParams)
         
     
-    def Job_Stop_All(self):
+    def Job_Stop_All(self,UICommandID,UIJobID,CommandParams):
+        CurrentJobs_PBSID=self.dbaseobj.GetCurrentActiveJobs_pbsID()
+        
+        for PBsID in CurrentJobs_PBSID:
+            PID=PBsID['pbsreferenceid'].split('.')[0]
+            OldStatus=PBsID['jobstatus']
+            UIReference_ID=PBsID['uireferenceid']
+            UserName=PBsID['username']
+            JobType=PBsID['jobtype']
+            SubJobIndex=PBsID['subjobindex']
+            JobID=PBsID['jobid']
+            JobDetails={'start':-1,'progress':'0%','end':0,'error':'','endstate':''}
+            self.UpdateJob_EndWithError(JobID,SubJobIndex,JobType, UIReference_ID, UserName, JobDetails)
         print("Job_Stop_All")
         return True
-    def Job_Stop(self):
+    def Job_Stop(self,UICommandID,UIJobID,CommandParams):
         print("Job_Stop")
         return True
-    def Job_Resume(self):
+    def Job_Resume(self,UICommandID,UIJobID,CommandParams):
         print("Job_Resume")
         return True
-    def Workflow_Stop(self):
+    def Workflow_Stop(self,UICommandID,UIJobID,CommandParams):
         print("Workflow_Stop")
         return True
-    def Worflow_Resume(self):
+    def Worflow_Resume(self,UICommandID,UIJobID,CommandParams):
         print("Worflow_Resume")
         return True
-    def Lighcone_acceleration_on(self):
+    def Lighcone_acceleration_on(self,UICommandID,UIJobID,CommandParams):
         print("Lighcone_acceleration_on")
         return True
-    def Lighcone_acceleration_off(self):
+    def Lighcone_acceleration_off(self,UICommandID,UIJobID,CommandParams):
         print("Lighcone_acceleration_off")
         return True
-    def Job_Output_Delete(self):
+    def Job_Output_Delete(self,UICommandID,UIJobID,CommandParams):
         print("Job_Output_Delete")
         return True
         
-         
+    def UpdateJob_EndWithError(self, JobID,SubJobIndex, JobType, UIReference_ID, UserName, JobDetails):
+        data = {}        
+        
+        
+        logging.info("Job (" + str(UIReference_ID) +" ["+str(SubJobIndex)+"]) ... Finished With Error")
+        
+        data['status'] = 'FORCETERMINATION'
+        JobDetails['error'] = "JOB WAS TERMINATED BY ADMIN COMMAND"
+        
+        
+        
+        self.dbaseobj.SetJobFinishedWithError(JobID, JobDetails['error'], JobDetails['end'])
+        data['error_message'] = 'Error:' + JobDetails['error']        
+        
+        
+        
+        
+        self.UpdateTAOUI(UIReference_ID,JobType, data)
+        
+    def UpdateTAOUI(self,UIJobID,JobType,data):
+        ## If the job Type is Simple Update it without any checking  
+        
+        RequestedStatus=data['status']       
+        
+        logging.info('Updating UI MasterDB. JobID ('+str(UIJobID)+').. '+data['status'])        
+        requests.put(self.api['update']%UIJobID, data)        
                  
     
 if __name__ == '__main__':
