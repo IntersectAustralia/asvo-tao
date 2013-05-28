@@ -179,11 +179,11 @@ class DBInterface(object):
 #########################################################################################################################
 ########## Commands DB Access ###############################################
 
-    def AddNewCommand(self,UICommandID,CommandType,UIJobID,AdditionalParams):
+    def AddNewCommand(self,UICommandID,commandtext,UIJobID,AdditionalParams):
         
           
         INSERTJobSt="INSERT INTO COMMANDS(UICommandID,UIJobID,CommandType,AdditionalParams) VALUES ("
-        INSERTJobSt=INSERTJobSt+str(UICommandID)+","+str(CommandType)+","+str(UIJobID)+",'"+AdditionalParams+"');"
+        INSERTJobSt=INSERTJobSt+str(UICommandID)+",'"+commandtext+"',"+str(UIJobID)+",'"+AdditionalParams+"');"
         INSERTJobSt=INSERTJobSt+"SELECT currval('NextCommandID');"
             
         ## Get Latest JobID
