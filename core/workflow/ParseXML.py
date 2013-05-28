@@ -21,7 +21,7 @@ class ParseXMLParameters(object):
         #self.GetDocumentSignature()    
         self.SubJobsCount=self.GetSubJobsCount()
         self.ModifySEDFilePath()
-        self.ModifyFilterFilePath()
+        #self.ModifyFilterFilePath()
         self.SetBasicInformation(JobID,DatabaseName,JobUserName)
         return self.SubJobsCount
         
@@ -98,6 +98,10 @@ class ParseXMLParameters(object):
         DBElement.text=self.WorkDirectory+"/jobs/"+JobUserName+"/"+str(JobID)+"/log/"        
         self.tree.xpath("/ns:tao",namespaces={'ns':self.NameSpace})[0].append(DBElement)
         
+        DBElement=ET.Element("{"+self.NameSpace+"}bandpassdatapath")        
+        DBElement.text= Options['Torque:maindatapath']+"/bandpass/"       
+        self.tree.xpath("/ns:tao",namespaces={'ns':self.NameSpace})[0].append(DBElement)
+        
         DBElement=ET.Element("{"+self.NameSpace+"}subjobindex")        
         DBElement.text="none" 
              
@@ -105,8 +109,8 @@ class ParseXMLParameters(object):
                 
 if __name__ == '__main__':
      [Options]=settingReader.ParseParams("settings.xml")
-     ParseXMLParametersObj=ParseXMLParameters('/home/amr/workspace/sedparam.xml',Options)
+     ParseXMLParametersObj=ParseXMLParameters('/home/amr/workspace/params.xml',Options)
      ParseXMLParametersObj.ModifySEDFilePath()
-     ParseXMLParametersObj.ModifyFilterFilePath()
+    
      ParseXMLParametersObj.SetBasicInformation(110, "Database", "TestUser")
-     ParseXMLParametersObj.ExportTree('/home/amr/workspace/sedparam.processed.xml', 0)
+     ParseXMLParametersObj.ExportTree('/home/amr/workspace/params.processed.xml', 0)
