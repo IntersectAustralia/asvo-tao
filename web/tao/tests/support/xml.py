@@ -36,7 +36,7 @@ def light_cone_xml(xml_parameters):
                     %(geometry_fragment)s
 
                     <!-- File output module -->
-                    <csv-dump id="%(csv_dump_id)s">
+                    <csv id="%(csv_dump_id)s">
                         <fields>
                             <item label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
                             <item label="%(output_properties_2_label)s">%(output_properties_2_name)s</item>
@@ -54,7 +54,7 @@ def light_cone_xml(xml_parameters):
                             <item>%(bandpass_filter_id)s</item>
                         </parents>
 
-                    </csv-dump>
+                    </csv>
 
                     <!-- Optional: Spectral Energy Distribution parameters -->
                     <sed id="%(sed_id)s">
@@ -238,7 +238,7 @@ def fits_output_format_xml(xml_parameters):
 
 
                     <!-- File output module -->
-                    <fits-dump id="%(csv_dump_id)s">
+                    <fits id="%(csv_dump_id)s">
                         <fields>
                             <item label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
                             <item label="%(output_properties_2_label)s">%(output_properties_2_name)s</item>
@@ -256,7 +256,7 @@ def fits_output_format_xml(xml_parameters):
                             <item>%(bandpass_filter_id)s</item>
                         </parents>
 
-                    </fits-dump>
+                    </fits>
 
                     <!-- Optional: Spectral Energy Distribution parameters -->
                     <sed id="%(sed_id)s">

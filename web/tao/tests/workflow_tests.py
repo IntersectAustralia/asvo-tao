@@ -301,7 +301,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                     </light-cone>
 
                     <!-- File output module -->
-                    <csv-dump id="%(csv_dump_id)s">
+                    <csv id="%(csv_dump_id)s">
                         <fields>
                             <item label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
                             <!-- <item label="bandpass (Absolute)">Band_pass_filter_000_absolute</item> -->
@@ -318,7 +318,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                             <item>%(bandpass_filter_id)s</item>
                         </parents>
 
-                    </csv-dump>
+                    </csv>
 
                     <!-- Optional: Spectral Energy Distribution parameters -->
                     <sed id="%(sed_id)s">
@@ -517,7 +517,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                     </light-cone>
 
                     <!-- File output module -->
-                    <csv-dump id="%(csv_dump_id)s">
+                    <csv id="%(csv_dump_id)s">
                         <fields>
                             <item label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
                         </fields>
@@ -532,7 +532,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                             <item>%(light_cone_id)s</item>
                         </parents>
 
-                    </csv-dump>
+                    </csv>
 
                     <!-- Record Filter -->
                     <record-filter>
@@ -693,7 +693,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                     </light-cone>
 
                     <!-- File output module -->
-                    <csv-dump id="%(csv_dump_id)s">
+                    <csv id="%(csv_dump_id)s">
                         <fields>
                             <item label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
                             <item label="bandpass (Absolute)">%(band_pass_filter_name)s_absolute</item>
@@ -710,7 +710,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                             <item>%(bandpass_filter_id)s</item>
                         </parents>
 
-                    </csv-dump>
+                    </csv>
 
                     <!-- Optional: Spectral Energy Distribution parameters -->
                     <sed id="%(sed_id)s">
