@@ -28,10 +28,7 @@
                 {% for job in jobs %}
                     <tr>
                         <td>
-                            {{ job.id }}
-                            {% if job.is_completed %}
-                                (<a id="view_job_{{ job.id }}" href="{% url 'view_job' job.id %}">View</a>)
-                            {% endif %}
+                            <a id="view_job_{{ job.id }}" href="{% url 'view_job' job.id %}">{{ job.id }}</a>
                         </td>
                         <td>
                             {{ job.created_time|date:"D d M Y H:i" }}

@@ -101,7 +101,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'ssp_name': self.stellar_model.name,
             'band_pass_filter_label': self.band_pass_filter.label,
             'band_pass_filter_id': self.band_pass_filter.filter_id,
-            'band_pass_filter_name': os.path.splitext(self.band_pass_filter.filter_id)[0],
+            'band_pass_filter_name': self.band_pass_filter.filter_id,
             'dust_model_name': self.dust_model.name,
         })
         xml_parameters.update({
@@ -169,7 +169,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'ssp_name': self.stellar_model.name,
             'band_pass_filter_label': self.band_pass_filter.label,
             'band_pass_filter_id': self.band_pass_filter.filter_id,
-            'band_pass_filter_name': os.path.splitext(self.band_pass_filter.filter_id)[0],
+            'band_pass_filter_name': self.band_pass_filter.filter_id,
             'dust_model_name': self.dust_model.name,
 
         })
@@ -301,11 +301,11 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                     </light-cone>
 
                     <!-- File output module -->
-                    <csv-dump id="%(csv_dump_id)s">
+                    <csv id="%(csv_dump_id)s">
                         <fields>
                             <item label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
                             <!-- <item label="bandpass (Absolute)">Band_pass_filter_000_absolute</item> -->
-                            <item label="bandpass (Apparent)">Band_pass_filter_000_apparent</item>
+                            <item label="bandpass (Apparent)">Band_pass_filter_000.txt_apparent</item>
                         </fields>
 
                         <!-- Module Version Number -->
@@ -318,7 +318,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                             <item>%(bandpass_filter_id)s</item>
                         </parents>
 
-                    </csv-dump>
+                    </csv>
 
                     <!-- Optional: Spectral Energy Distribution parameters -->
                     <sed id="%(sed_id)s">
@@ -444,13 +444,13 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'filter': self.filter.name,
             'filter_min' : 'None',
             'filter_max' : '1000000',
-            'band_pass_filter_name': os.path.splitext(self.band_pass_filter.filter_id)[0],
+            'band_pass_filter_name': self.band_pass_filter.filter_id,
             })
         xml_parameters.update({
             'ssp_name': self.stellar_model.name,
             'band_pass_filter_label': self.band_pass_filter.label,
             'band_pass_filter_id': self.band_pass_filter.filter_id,
-            'band_pass_filter_name': os.path.splitext(self.band_pass_filter.filter_id)[0],
+            'band_pass_filter_name': self.band_pass_filter.filter_id,
             'dust_model_name': self.dust_model.name,
             })
         xml_parameters.update({
@@ -517,7 +517,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                     </light-cone>
 
                     <!-- File output module -->
-                    <csv-dump id="%(csv_dump_id)s">
+                    <csv id="%(csv_dump_id)s">
                         <fields>
                             <item label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
                         </fields>
@@ -532,7 +532,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                             <item>%(light_cone_id)s</item>
                         </parents>
 
-                    </csv-dump>
+                    </csv>
 
                     <!-- Record Filter -->
                     <record-filter>
@@ -625,7 +625,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'ssp_name': self.stellar_model.name,
             'band_pass_filter_label': self.band_pass_filter.label,
             'band_pass_filter_id': self.band_pass_filter.filter_id,
-            'band_pass_filter_name': os.path.splitext(self.band_pass_filter.filter_id)[0],
+            'band_pass_filter_name': self.band_pass_filter.filter_id,
             'band_pass_filter_description': self.band_pass_filter.description,
             'band_pass_extension': 'absolute',
             })
@@ -693,7 +693,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                     </light-cone>
 
                     <!-- File output module -->
-                    <csv-dump id="%(csv_dump_id)s">
+                    <csv id="%(csv_dump_id)s">
                         <fields>
                             <item label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
                             <item label="bandpass (Absolute)">%(band_pass_filter_name)s_absolute</item>
@@ -710,7 +710,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                             <item>%(bandpass_filter_id)s</item>
                         </parents>
 
-                    </csv-dump>
+                    </csv>
 
                     <!-- Optional: Spectral Energy Distribution parameters -->
                     <sed id="%(sed_id)s">
