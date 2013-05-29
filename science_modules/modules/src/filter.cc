@@ -321,9 +321,7 @@ namespace tao {
             _load_filter( prefix + "/" + fn );
 
 	    // Store the field names.
-	    auto it = std::find( fn.rbegin(), fn.rend(), '.' );
-	    it++;
-	    _filter_names[ii] = string( fn.begin(), it.base() );
+	    _filter_names[ii] = fn;
 	    LOGDLN( "Adding filter by the name: ", _filter_names[ii] );
 	    ++ii;
 	 }
