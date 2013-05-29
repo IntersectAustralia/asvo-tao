@@ -11,7 +11,7 @@ import os, datetime
 # from tao.tests.support import stripped_joined_lines
 # from tao.tests.support.factories import SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, UserFactory, StellarModelFactory, SnapshotFactory, BandPassFilterFactory
 from tao.forms import FormsGraph
-from tao.tests.support.xml import light_cone_xml
+from tao.tests.support.xml import light_cone_xml, fits_output_format_xml
 from tao.tests.helper import MockUIHolder, make_form_xml, make_form
 from tao.output_format_form import OutputFormatForm
 from tao.record_filter_form import RecordFilterForm
@@ -89,6 +89,54 @@ class XmlFormsTests(TestCase):
         xml_str = light_cone_xml(xml_parameters)
         form = make_form_xml(OutputFormatForm, xml_str, prefix='output_format')
         self.assertEquals('csv', form.data['output_format-supported_formats'])
+
+    def test_output_format_selection(self):
+        xml_parameters = {
+            'catalogue_geometry': 'light-cone',
+            'dark_matter_simulation': self.simulation.id,
+            'galaxy_model': self.galaxy_model.id,
+            'redshift_min': 0.2,
+            'redshift_max': 0.3,
+            'ra_opening_angle': 71.565,
+            'dec_opening_angle': 41.811,
+            'output_properties' : [1L, 2L], #[self.filter.id, self.output_prop.id],
+            'light_cone_type': 'unique',
+            'number_of_light_cones': 1,
+            }
+        xml_parameters.update({
+            'username' : 'test', # self.user.username,
+            'dark_matter_simulation': self.simulation.name,
+            'galaxy_model': self.galaxy_model.name,
+            'output_properties_1_name' : 'FN', # self.filter.name,
+            'output_properties_1_label' : 'FL', # self.filter.label,
+            'output_properties_1_units' : 'FU', # self.filter.units,
+            'output_properties_1_description' : 'FD', # self.filter.units,
+            'output_properties_2_name' : 'OPN', # self.output_prop.name,
+            'output_properties_2_label' : 'OPL', # self.output_prop.label,
+            'output_properties_2_description' : 'OD', # self.filter.units,
+            })
+        xml_parameters.update({
+            'filter': 'FN', # self.filter.name,
+            'filter_min' : '1000000',
+            'filter_max' : 'None',
+            })
+        xml_parameters.update({
+            'ssp_name': 'SM', # self.stellar_model.name,
+            'band_pass_filter_label': 'BPFN', # self.band_pass_filter.label,
+            'band_pass_filter_id': 1L, # self.band_pass_filter.filter_id,
+            'band_pass_filter_name': 'BPFN',
+            'dust_model_name': 'DM', # self.dust_model.name,
+            })
+        xml_parameters.update({
+            'light_cone_id': FormsGraph.LIGHT_CONE_ID,
+            'csv_dump_id': FormsGraph.OUTPUT_ID,
+            'bandpass_filter_id': FormsGraph.BANDPASS_FILTER_ID,
+            'sed_id': FormsGraph.SED_ID,
+            'dust_id': FormsGraph.DUST_ID,
+            })
+        xml_str = fits_output_format_xml(xml_parameters)
+        form = make_form_xml(OutputFormatForm, xml_str, prefix='output_format')
+        self.assertEquals('fits', form.data['output_format-supported_formats'])
 
     def test_record_filter_form(self):
         xml_parameters = {
@@ -178,7 +226,7 @@ class XmlFormsTests(TestCase):
             'ssp_name': self.stellar_model.name,
             'band_pass_filter_label': self.band_pass_filter.label,
             'band_pass_filter_id': self.band_pass_filter.filter_id,
-            'band_pass_filter_name': os.path.splitext(self.band_pass_filter.filter_id)[0],
+            'band_pass_filter_name': self.band_pass_filter.filter_id,
             'dust_model_name': self.dust_model.name,
         })
         xml_parameters.update({
@@ -227,7 +275,7 @@ class XmlFormsTests(TestCase):
             'ssp_name': self.stellar_model.name,
             'band_pass_filter_label': self.band_pass_filter.label,
             'band_pass_filter_id': self.band_pass_filter.filter_id,
-            'band_pass_filter_name': os.path.splitext(self.band_pass_filter.filter_id)[0],
+            'band_pass_filter_name': self.band_pass_filter.filter_id,
             'dust_model_name': self.dust_model.name,
             })
         xml_parameters.update({
@@ -284,7 +332,7 @@ class XmlFormsTests(TestCase):
             'ssp_name': self.stellar_model.name,
             'band_pass_filter_label': self.band_pass_filter.label,
             'band_pass_filter_id': self.band_pass_filter.filter_id,
-            'band_pass_filter_name': os.path.splitext(self.band_pass_filter.filter_id)[0],
+            'band_pass_filter_name': self.band_pass_filter.filter_id,
             'dust_model_name': self.dust_model.name,
             })
         xml_parameters.update({

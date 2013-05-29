@@ -32,7 +32,7 @@ def to_xml_2(form, root):
         # Add a hard-coded connection to the light-cone and the CSV output.
         child_element(child_element(sed_elem, 'parents'), 'item', text=FormsGraph.LIGHT_CONE_ID)
 
-        child_element(child_element(find_or_create(root, output_format+'-dump', id=FormsGraph.OUTPUT_ID), 'parents'), 'item', text=FormsGraph.BANDPASS_FILTER_ID)
+        child_element(child_element(find_or_create(root, output_format, id=FormsGraph.OUTPUT_ID), 'parents'), 'item', text=FormsGraph.BANDPASS_FILTER_ID)
 
         single_stellar_population_model = tao_models.StellarModel.objects.get(pk=form.cleaned_data['single_stellar_population_model'])
         child_element(sed_elem, 'single-stellar-population-model', text=single_stellar_population_model.name)
@@ -55,7 +55,7 @@ def to_xml_2(form, root):
 
         # Find the CSV output element or create it, and get access to
         # the fields tag.
-        fields_elem = find_or_create(find_or_create(root, output_format+'-dump', id=FormsGraph.OUTPUT_ID), 'fields')
+        fields_elem = find_or_create(find_or_create(root, output_format, id=FormsGraph.OUTPUT_ID), 'fields')
 
         band_pass_filters = form.cleaned_data['band_pass_filters']
         if len(band_pass_filters) > 0:
@@ -72,14 +72,13 @@ def to_xml_2(form, root):
                 if item_id not in added:
                     child_element(bf_elem, 'item', text=op.filter_id, label=op.label, description=op.description, selected=",".join(selected[item_id]))
                     added[item_id] = True
-                bpf = os.path.splitext(op.filter_id)[0]
-                child_element(fields_elem, 'item', text=bpf + '_' + item_extension, label=op.label + ' (' + item_extension.capitalize() + ')')
+                child_element(fields_elem, 'item', text=op.filter_id + '_' + item_extension, label=op.label + ' (' + item_extension.capitalize() + ')')
 
     else:
         from tao.xml_util import find_or_create, child_element
 
         # No SED module, connect the output to the light-cone module.
-        child_element(child_element(find_or_create(root, output_format+'-dump', id=FormsGraph.OUTPUT_ID), 'parents'), 'item', text=FormsGraph.LIGHT_CONE_ID)
+        child_element(child_element(find_or_create(root, output_format, id=FormsGraph.OUTPUT_ID), 'parents'), 'item', text=FormsGraph.LIGHT_CONE_ID)
 
 def from_xml_2(cls, ui_holder, xml_root, prefix=None):
     sed = module_xpath(xml_root, '//workflow/sed', text=False)

@@ -593,7 +593,7 @@ jQuery(document).ready(function($) {
         $.ajax({
             url : TAO_JSON_CTX + 'bandpass_filters/',
             dataType: "json",
-            error: function() {
+            error: function(jqXHR, status, error) {
                 alert("Couldn't get bandpass filters");
             },
             success: function(data, status, xhr) {
@@ -868,7 +868,7 @@ jQuery(document).ready(function($) {
 
     $('#id_output_format-supported_formats').change(function(evt){
         var $this = $(this);
-        var output_format_value = $this.text();
+        var output_format_value = $this.find('option:selected').text();
         fill_in_summary('output', 'output_format', output_format_value);
     });
 
