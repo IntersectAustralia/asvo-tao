@@ -6,13 +6,15 @@ using namespace hpc;
 namespace tao {
 
    module*
-   csv::factory( const string& name )
+   csv::factory( const string& name,
+		 pugi::xml_node base )
    {
-      return new csv( name );
+      return new csv( name, base );
    }
 
-   csv::csv( const string& name )
-      : module( name ),
+   csv::csv( const string& name,
+	     pugi::xml_node base )
+      : module( name, base ),
         _records( 0 )
    {
    }
@@ -25,13 +27,12 @@ namespace tao {
    ///
    ///
    void
-   csv::initialise( const options::xml_dict& dict,
-                    optional<const string&> prefix )
+   csv::initialise( const options::xml_dict& global_dict )
    {
       LOG_ENTER();
 
-      _fn = dict.get<hpc::string>( prefix.get()+":filename" );
-      _fields = dict.get_list<hpc::string>( prefix.get()+":fields" );
+      _fn = _dict.get<string>( "filename" );
+      _fields = _dict.get_list<string>( "fields" );
 
       // Open the file.
       open();

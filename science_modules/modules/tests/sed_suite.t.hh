@@ -329,8 +329,8 @@ public:
 
 
       dict.read( db_setup.xml_filename );
-      lc.initialise( dict, string( "workflow:light-cone" ) );
-      sed.initialise( dict, string( "workflow:sed" ) );
+      lc.initialise( dict );
+      sed.initialise( dict );
    }
 
    void tearDown()
