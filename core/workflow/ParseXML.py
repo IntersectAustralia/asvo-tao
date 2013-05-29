@@ -101,7 +101,7 @@ class ParseXMLParameters(object):
         self.tree.xpath("/ns:tao",namespaces={'ns':self.NameSpace})[0].append(DBElement)
         
         DBElement=ET.Element("{"+self.NameSpace+"}bandpassdatapath")        
-        DBElement.text= Options['Torque:maindatapath']+"/bandpass/"       
+        DBElement.text= self.Options['Torque:maindatapath']+"/bandpass/"       
         self.tree.xpath("/ns:tao",namespaces={'ns':self.NameSpace})[0].append(DBElement)
         
         DBElement=ET.Element("{"+self.NameSpace+"}subjobindex")        
