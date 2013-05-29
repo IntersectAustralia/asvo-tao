@@ -101,6 +101,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'tao.shibboleth.ShibbolethUserMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
 )
 
@@ -184,7 +185,8 @@ from django.core.urlresolvers import reverse_lazy
 LOGIN_REDIRECT_URL = reverse_lazy('tao.views.home')
 LOGIN_URL = reverse_lazy('tao.views.login')
 
-AUTH_PROFILE_MODULE = 'tao.UserProfile'  # appname.modelname
+## AUTH_PROFILE_MODULE = 'tao.UserProfile'  # appname.modelname
+AUTH_USER_MODEL = 'tao.TaoUser'
 
 EMAIL_HOST = 'gpo.swin.edu.au'
 EMAIL_PORT = '25'
@@ -204,6 +206,7 @@ FILES_BASE = '/tmp/'  # please include a trailing slash
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'django_rules.backends.ObjectPermissionBackend',
+    'tao.shibboleth.ShibbolethUserBackend',
 )
 
 MAX_DOWNLOAD_SIZE = 512 * 2**20
@@ -227,3 +230,7 @@ OUTPUT_FORMATS = [
 MODULE_INDICES = {'light_cone': '1', 'sed': '2', 'record_filter': '3', 'output_format': '4'}
 
 TAO_VERSION = '0.20.1'
+
+AAF_DS_URL = 'https://ds.test.aaf.edu.au/discovery/DS'
+AAF_APP_ID = 'https://asvo-aff.intersect.org.au/shibboleth'
+AAF_SESSION_URL = 'https://asvo-aff.intersect.org.au/Shibboleth.sso/Login'

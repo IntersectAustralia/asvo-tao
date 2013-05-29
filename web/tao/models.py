@@ -12,31 +12,36 @@ from tao.mail import send_mail
 
 import os
 
-class UserProfile(models.Model):
-    user = models.OneToOneField(auth_models.User)
+class UserManager(auth_models.UserManager):
+    def admin_emails(self):
+        return [x[0] for x in TaoUser.objects.filter(is_active=True, is_staff=True).values_list('email')]
+    
+class TaoUser(auth_models.AbstractUser):
+    RS_NA = 'NA'
+    RS_EMPTY = 'EMP'
+    RS_PENDING = 'PEN'
+    RS_APPROVED = 'APR'
+    RS_REJECTED = 'REJ'
+
+    objects = UserManager()
 
     institution = models.CharField(max_length=100)
     scientific_interests = models.CharField(max_length=500)
     title = models.CharField(max_length=5)
     rejected = models.BooleanField(default=False)
+    aaf_shared_token = models.CharField(max_length=64,blank=True,default='')
+    account_registration_status = models.CharField(max_length=3, blank=False, default=RS_NA)
+    account_registration_reason = models.TextField(blank=True, default='')
+    account_registration_date = models.DateTimeField(null=True)
 
+    def display_name(self):
+        if self.aaf_shared_token is not None and len(self.aaf_shared_token)>0:
+            return self.first_name + ' (via AAF)'
+        else:
+            return self.username
 
-class UserManager(auth_models.UserManager):
-    def admin_emails(self):
-        return [x[0] for x in User.objects.filter(is_active=True, is_staff=True).values_list('email')]
-    
-    
-class User(auth_models.User):
-    """
-        Wrapper to make methods on user_profile one call
-    """
-    objects = UserManager()
-    def title(self):
-        # TODO This probably makes too many SQL queries by default?
-        return self.get_profile().title
-
-    class Meta:
-        proxy = True
+    def is_aaf(self):
+        return self.account_registration_status in [TaoUser.RS_EMPTY, TaoUser.RS_APPROVED, TaoUser.RS_PENDING, TaoUser.RS_REJECTED]
     
 class Simulation(models.Model):        
 
@@ -180,7 +185,7 @@ class Job(models.Model):
         (ERROR, 'Error'),
     )
 
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
     created_time = models.DateTimeField(auto_now_add=True)
     description = models.TextField(max_length=500, default='')
 

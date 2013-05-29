@@ -8,6 +8,12 @@
     <h1>
         Register
     </h1>
+    {% check_aaf user as is_aaf %}
+    {% if not is_aaf %}
+    <p>
+    <b>Note:</b> You can use your <a href="{% url 'login' %}">AAF credentials to register.</a>
+    </p>
+    {% endif %}
     <form action="" method="POST">
         {% csrf_token %}
         {{ form|as_bootstrap }}

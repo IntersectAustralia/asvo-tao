@@ -30,3 +30,13 @@ def as_bootstrap_fieldset(fieldset):
 @register.filter(name='is_checkbox')
 def is_checkbox(value):
     return isinstance(value, CheckboxInput)
+
+@register.assignment_tag
+def check_aaf(user):
+    try:
+        if callable(getattr(user,'is_aaf')):
+            return user.is_aaf()
+        else:
+            return False
+    except AttributeError:
+        return False

@@ -10,7 +10,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from django.conf import settings
 from django.contrib.auth import forms as auth_forms
-from django.contrib.auth.models import User
+from tao.models import TaoUser
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 from captcha.fields import ReCaptchaField
@@ -19,7 +19,7 @@ from form_utils.forms import BetterForm
 
 import tao.settings as tao_settings
 from tao import datasets
-from tao.models import UserProfile, DataSetProperty, BandPassFilter
+from tao.models import DataSetProperty, BandPassFilter
 from tao.xml_util import module_xpath
 
 NO_FILTER = 'no_filter'
@@ -32,32 +32,68 @@ class LoginForm(auth_forms.AuthenticationForm):
         self.fields['username'].widget.attrs['autofocus'] = 'autofocus'
 
 
-class UserCreationForm(auth_forms.UserCreationForm):
+class UserCreationForm(forms.Form):
+    # username
+    # password1
+    # password2
     title = forms.CharField(label=_("Title"),
                             max_length=5)
-    first_name = forms.CharField(label=_("First Name"),
-                                    max_length=30)
-    last_name = forms.CharField(label=_("Last Name"),
-                                    max_length=30)
     institution = forms.CharField(label=_("Institution"), max_length=100)
     scientific_interests = forms.CharField(label=_("Scientific Interests"),
                                             help_text = _("e.g. your area of expertise, how you hope to use the data, team memberships and collaborations"),
                                             max_length=500,
                                             widget=forms.Textarea(attrs={'rows':
                                             3}), required=False)
-    email = forms.EmailField(label=_("Email"), max_length=75)
     captcha = ReCaptchaField()
 
     def __init__(self, *args, **kwargs):
-        super(UserCreationForm, self).__init__(*args, **kwargs)
-        if not getattr(settings, 'USE_CAPTCHA', True):    
-            del self.fields['captcha']
+        self.user = kwargs['user']
+        super(UserCreationForm, self).__init__(*args)
+        if self.is_aaf():
+            self.create_aaf_fields()
+        else:
+            self.create_fields()
 
-    class Meta:
-        model = User
-        fields = ('title', 'first_name', 'last_name', 'username', 'email',
-        'password1', 'password2', 'institution', 'scientific_interests')
+    def create_aaf_fields(self):
+        first_name = forms.CharField(label=_("First Name"), max_length=30, initial=self.user.first_name)
+        first_name.widget.attrs['readonly'] = True
+        self.fields['first_name'] = first_name
+        last_name = forms.CharField(label=_("Last Name"), max_length=30, initial=self.user.last_name)
+        last_name.widget.attrs['readonly'] = True
+        self.fields['last_name'] = last_name
+        email = forms.EmailField(label=_("Email"), max_length=75, initial=self.user.email)
+        email.widget.attrs['readonly'] = True
+        self.fields['email'] = email
+        username = forms.CharField(label=_("Username"), max_length=75, initial='from AAF')
+        username.widget.attrs['readonly'] = True
+        self.fields['username'] = username
+        self.fields.keyOrder = ('title', 'first_name', 'last_name', 'username', 'email',
+            'institution', 'scientific_interests')
 
+    def create_fields(self):
+        first_name = forms.CharField(label=_("First Name"), max_length=30)
+        self.fields['first_name'] = first_name
+        last_name = forms.CharField(label=_("Last Name"), max_length=30)
+        self.fields['last_name'] = last_name
+        email = forms.EmailField(label=_("Email"), max_length=75)
+        self.fields['email'] = email
+        username = forms.CharField(label=_("Username"), max_length=75)
+        self.fields['username'] = username
+        self.fields['password1'] = forms.CharField(label=_("Password"), max_length=32, widget=forms.PasswordInput)
+        self.fields['password2'] = forms.CharField(label=_("Password confirmation"), max_length=32, widget=forms.PasswordInput)
+        key_order = ('title', 'first_name', 'last_name', 'username', 'email',
+            'password1', 'password2', 'institution', 'scientific_interests')
+        if getattr(settings, 'USE_CAPTCHA', False):
+            self.fields['captcha'] = ReCaptchaField()
+            key_order.append('captcha')
+        self.fields.keyOrder = key_order
+        
+
+    def is_aaf(self):
+        try:
+            return callable(getattr(self.user, 'is_aaf')) and self.user.is_aaf()
+        except AttributeError:
+            return False
 
     def clean_password1(self):
         password = self.cleaned_data.get('password1')
@@ -67,7 +103,7 @@ class UserCreationForm(auth_forms.UserCreationForm):
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
-        if User.objects.filter(email=email).count() > 0:
+        if not self.is_aaf() and TaoUser.objects.filter(email=email).count() > 0:
             raise ValidationError(_('That email is already taken.'))
         return email
 
@@ -78,13 +114,10 @@ class UserCreationForm(auth_forms.UserCreationForm):
         user.last_name = self.cleaned_data['last_name']
         user.email = self.cleaned_data['email']
         user.is_active = False
+        user.title = self.cleaned_data['title']
+        user.institution = self.cleaned_data.get('institution')
+        user.scientific_interests = self.cleaned_data.get('scientific_interests')
         user.save()
-
-        up = UserProfile(user=user)
-        up.title = self.cleaned_data['title']
-        up.institution = self.cleaned_data.get('institution')
-        up.scientific_interests = self.cleaned_data.get('scientific_interests')
-        up.save()
 
         return user
 

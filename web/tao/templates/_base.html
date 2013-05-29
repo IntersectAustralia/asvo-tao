@@ -45,7 +45,7 @@
                     </ul>
                     <p class="navbar-text pull-right">
                         {% if user.is_authenticated %}
-                            Logged in as {{ user.username }}
+                            Logged in as {{ user.display_name }}
                             <a href="{% url 'logout' %}">Logout</a>
                         {% else %}
                             <a href="{% url 'login' %}">Login</a>
