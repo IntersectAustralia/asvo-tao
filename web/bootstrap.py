@@ -18,6 +18,9 @@ The script accepts buildout command-line options, so you can
 use the -c option to specify an alternate configuration file.
 """
 
+# testing testing
+# This is bootstrap v2, required by buildout v2
+
 import os, shutil, sys, tempfile
 from optparse import OptionParser
 
