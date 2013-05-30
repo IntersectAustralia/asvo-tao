@@ -2,7 +2,14 @@
 TAO User's Guide
 ****************
 
-Home page of user's guide.
+.. toctree::
+   :maxdepth: 1
+
+   register
+
+
+Home page of user's guide
+-------------------------
 
 A number of guiding principles and assumptions have been adopted in the design of TAO:
 

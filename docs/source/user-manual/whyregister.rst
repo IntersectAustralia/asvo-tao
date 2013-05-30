@@ -1,0 +1,16 @@
+Test Heading star
+*****************
+
+some text
+
+Test Heading equals
+===================
+
+asdf
+
+Test Hewading iunderline
+------------------------
+
+Many astronomical datasets are freely available to download from the web in their raw form without the need for an account. However, TAO is different in that both datasets of significance and value-adding eResearch tools are being coupled online and made available to the community. Such tools require high performance computing to process (such as Swinburne University's supercomputer, gSTAR), and these resources are expensive to install and maintain. Hence, to ensure that they are not wasted or abused, and to help us continually optimise the system, we are requiring all users of TAO to be registered. It is expected that anyone with a legitimate association with the Astronomy community will be granted an account.
+
+
