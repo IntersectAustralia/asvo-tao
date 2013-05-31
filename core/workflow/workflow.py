@@ -118,11 +118,11 @@ class WorkFlow(object):
         ParseXMLParametersObj.ExportTrees(logpath+"/params<index>.xml")    
         
         
-        #src_files = os.listdir(AudDataPath)
-        #for file_name in src_files:
-        #    full_file_name = os.path.join(AudDataPath, file_name)
-        #    if (os.path.isfile(full_file_name)):
-        #        shutil.copy(full_file_name, logpath)
+        src_files = os.listdir(AudDataPath)
+        for file_name in src_files:
+            full_file_name = os.path.join(AudDataPath, file_name)
+            if (os.path.isfile(full_file_name)):
+                shutil.copy(full_file_name, logpath)
             
         return SubJobsCount   
         

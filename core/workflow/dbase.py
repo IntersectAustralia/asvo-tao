@@ -59,7 +59,7 @@ class DBInterface(object):
             logging.error(Exp.args)
             logging.error(Exp)            
             logging.error("Current SQL Statement =\n"+SQLStatment)
-            raw_input("Error: PLease press enter to continue.....")
+            
     def ExecuteQuerySQLStatment(self,SQLStatment):
         try: 
             self.RestartConnection()  
@@ -72,7 +72,7 @@ class DBInterface(object):
             logging.error(Exp.args)
             logging.error(Exp)            
             logging.error("Current SQL Statement =\n"+SQLStatment)
-            raw_input("PLease press enter to continue.....")
+            
     def ExecuteQuerySQLStatmentAsDict(self,SQLStatment):
         try:
             self.RestartConnection()
@@ -85,7 +85,7 @@ class DBInterface(object):
             logging.error(Exp.args)
             logging.error(Exp)            
             logging.error("Current SQL Statement =\n"+SQLStatment)
-            raw_input("PLease press enter to continue.....")
+            
     
     def AddNewEvent(self,AssociatedJobID,EventType,EventDesc):
         if self.Options['WorkFlowSettings:Events']=='On':

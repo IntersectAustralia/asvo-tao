@@ -1,4 +1,4 @@
-import re
+import re,os
 import lxml.etree as ET
 import settingReader # Read the XML settings
 import StringIO
@@ -14,7 +14,7 @@ class ParseXMLParameters(object):
         self.NameSpace=re.findall('\{.*\}',self.tree.xpath('.')[0].tag)[0]
         self.NameSpace=self.NameSpace[1:-1]
         self.Options=Options
-        self.WorkDirectory=Options['WorkFlowSettings:WorkingDir']
+        self.WorkDirectory=self.Options['WorkFlowSettings:WorkingDir']
     
     def ParseFile(self,JobID,DatabaseName,JobUserName):
         #self.GetCurrentUser()
@@ -22,6 +22,7 @@ class ParseXMLParameters(object):
         self.SubJobsCount=self.GetSubJobsCount()
         self.ModifySEDFilePath()
         #self.ModifyFilterFilePath()
+        self.ModifyOutputPath()
         self.SetBasicInformation(JobID,DatabaseName,JobUserName)
         return self.SubJobsCount
         
@@ -39,7 +40,9 @@ class ParseXMLParameters(object):
          
         self.tree.xpath("/ns:tao/ns:subjobindex",namespaces={'ns':self.NameSpace})[0].text=str(SubJobIndex)
         with open(FileName,'w') as f:
-            f.write(ET.tostring(self.tree,encoding='UTF-8',xml_declaration=True,pretty_print=True))       
+            strTree=ET.tostring(self.tree,encoding='UTF-8',xml_declaration=True,pretty_print=True)
+            strTree=strTree.replace("&lt;OutputFileIndex&gt;",str(SubJobIndex))
+            f.write(strTree)       
         
            
     def GetCurrentUser(self):
@@ -55,20 +58,47 @@ class ParseXMLParameters(object):
     def GetDocumentSignature(self):
         self.Signature=self.tree.xpath("ns:signature",namespaces={'ns':self.NameSpace})[0].text
         print self.Signature
+        
     def ModifySEDFilePath(self):
-        self.SEDDir=Options['Torque:maindatapath']+"/sed/"        
+        self.SEDDir=self.Options['Torque:maindatapath']+"/sed/"        
         self.stellarpopulationmodel=self.tree.xpath("ns:workflow/ns:sed/ns:single-stellar-population-model",namespaces={'ns':self.NameSpace})
         if len(self.stellarpopulationmodel)>0:
             self.stellarpopulationmodel=self.stellarpopulationmodel[0]
         self.stellarpopulationmodel.text=self.SEDDir+ self.stellarpopulationmodel.text
     def ModifyFilterFilePath(self):
-        self.BandPassDIR=Options['Torque:maindatapath']+"/bandpass/"
+        self.BandPassDIR=self.Options['Torque:maindatapath']+"/bandpass/"
         
-        self.bandpassfilters=self.tree.xpath("ns:workflow/ns:sed/ns:bandpass-filters/ns:item",namespaces={'ns':self.NameSpace})
+        self.bandpassfilters=self.tree.xpath("ns:workflow/ns:filter/ns:bandpass-filters/ns:item",namespaces={'ns':self.NameSpace})
+        
         for filter in self.bandpassfilters:
-            filter.text=self.BandPassDIR+filter.text
-                        
+            filter.text=self.BandPassDIR+filter.text.lower()
+    
+    def ModifyOutputPath(self):
+        self.lfilename=self.tree.xpath("ns:workflow/ns:fits/ns:filename",namespaces={'ns':self.NameSpace})                    
+        if len(self.lfilename)>0:
+            self.filename=self.lfilename[0]
+            strfileName, strfileExtension = os.path.splitext(self.filename.text)
+            self.filename.text=strfileName+".<OutputFileIndex>"+strfileExtension
+            
+            
         
+        self.lfilename=self.tree.xpath("ns:workflow/ns:votable/ns:filename",namespaces={'ns':self.NameSpace})                    
+        if len(self.lfilename)>0:
+            self.filename=self.lfilename[0]
+            strfileName, strfileExtension = os.path.splitext(self.filename.text)
+            self.filename.text=strfileName+".<OutputFileIndex>"+strfileExtension
+        
+        self.lfilename=self.tree.xpath("ns:workflow/ns:csv/ns:filename",namespaces={'ns':self.NameSpace})                    
+        if len(self.lfilename)>0:
+            self.filename=self.lfilename[0]
+            strfileName, strfileExtension = os.path.splitext(self.filename.text)
+            self.filename.text=strfileName+".<OutputFileIndex>"+strfileExtension
+        
+        self.lfilename=self.tree.xpath("ns:workflow/ns:hdf5/ns:filename",namespaces={'ns':self.NameSpace})                    
+        if len(self.lfilename)>0:
+            self.filename=self.lfilename[0]
+            strfileName, strfileExtension = os.path.splitext(self.filename.text)
+            self.filename.text=strfileName+".<OutputFileIndex>"+strfileExtension
         
     ## This function is used for debugging reasons only (not currently active)    
     def FindModules(self):        
@@ -99,7 +129,7 @@ class ParseXMLParameters(object):
         self.tree.xpath("/ns:tao",namespaces={'ns':self.NameSpace})[0].append(DBElement)
         
         DBElement=ET.Element("{"+self.NameSpace+"}bandpassdatapath")        
-        DBElement.text= Options['Torque:maindatapath']+"/bandpass/"       
+        DBElement.text= self.Options['Torque:maindatapath']+"/bandpass/"       
         self.tree.xpath("/ns:tao",namespaces={'ns':self.NameSpace})[0].append(DBElement)
         
         DBElement=ET.Element("{"+self.NameSpace+"}subjobindex")        
@@ -111,6 +141,6 @@ if __name__ == '__main__':
      [Options]=settingReader.ParseParams("settings.xml")
      ParseXMLParametersObj=ParseXMLParameters('/home/amr/workspace/params.xml',Options)
      ParseXMLParametersObj.ModifySEDFilePath()
-    
+     ParseXMLParametersObj.ModifyOutputPath()
      ParseXMLParametersObj.SetBasicInformation(110, "Database", "TestUser")
      ParseXMLParametersObj.ExportTree('/home/amr/workspace/params.processed.xml', 0)
