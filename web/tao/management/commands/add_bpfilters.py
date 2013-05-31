@@ -1,6 +1,12 @@
-"""Populate / extend the BandPass Filter table and documentation
+"""Populate / extend the BandPass Filter table & documentation, and associated utilties
 
-The command takes two parameters:
+add_bpfilters has three modes of operation:
+
+1. Add bp filters and generate associated spectra (documentation)
+2. Add bp filters, without documentation
+3. Scan the bp filters for duplicate wavelengths
+
+In the first mode, the command takes two parameters:
 
 1. A CSV file containing the bandpass filter information, see below
 2. The root document directory (typically /path/to/asvo-tao/docs/)
@@ -39,13 +45,16 @@ The bandpass filter documentation is generated with the following structure:
                 filterN.png
 
 Links to the documentation are assumed to be: [settings.STATIC_URL]/docs/bpfilters/filterM.html
+
+When scanning the filters for duplicate wavelengths a single parameter is supplied:
+the CSV file containing the bandpass filter information 
 """
 
 import sys
 import csv
 import os
 from os import listdir
-from os.path import abspath, isdir, join, splitext
+from os.path import abspath, isdir, join, splitext, dirname
 from optparse import make_option
 
 from django.core.management.base import BaseCommand, CommandError
@@ -64,6 +73,9 @@ class Command(BaseCommand):
         make_option("-d", action='store_true', default=False,
                     dest='debug',
                     help="Enter the debugger and halt"),
+        make_option("--check-dups", action='store_true', default=False,
+                    dest='checkdups',
+                    help="Flag spectra with duplicate wavelengths and exit"),
         make_option("--no-doco", action='store_false', default=True,
                     dest='gendoco',
                     help="Disable the production and linking of bandpass spectra"),
@@ -77,18 +89,23 @@ class Command(BaseCommand):
         if options['doc']:
             print __doc__
             exit(0)
+        self._args = args
+        self._options = options
+        if options['debug']:
+            import pdb
+            pdb.set_trace()
+        if options['checkdups']:
+            if len(args) != 1:
+                raise CommandError("{0} <filters.csv filename> required".format(sys.argv[0]))
+            self.check_dups()
+            exit(0)
         if options['gendoco']:
             if len(args) != 2:
                 raise CommandError("{0} <filters.csv filename> <doc root directory> required".format(sys.argv[0]))
         else:
             if len(args) != 1:
                 raise CommandError("{0} <filters.csv filename> required".format(sys.argv[0]))
-        if options['debug']:
-            import pdb
-            pdb.set_trace()
 
-        self._args = args
-        self._options = options
         if options['gendoco']:
             self._doc_dir = abspath(join(args[1], 'source', 'bpfilters'))
             if not isdir(self._doc_dir):
@@ -198,4 +215,32 @@ class Command(BaseCommand):
                 if file == 'index.rst' or ft != '.rst':
                     continue
                 ifp.write("    " + fn + "\n")
+        return
+
+
+    def check_dups(self):
+        """Iterate over all the filters and flag if a duplicate wavelength is found"""
+        csvfn = self._args[0]
+        csv_root = dirname(csvfn) 
+        with open(self._args[0], 'r') as csvfile:
+            dialect = csv.Sniffer().sniff(csvfile.read(1024))
+            csvfile.seek(0)
+            csvreader = csv.reader(csvfile, dialect)
+            for record in csvreader:
+                #
+                # Read the record
+                #
+                if len(record) < 2 or len(record) > 3:
+                    raise CommandError("Expected 2 or 3 columns")
+                print "Processing: {0}...".format(record[0])
+                filter_fn = record[0].strip()
+                label = record[1].strip()
+                bpfn = join(csv_root, filter_fn)
+                previous = None
+                with open(bpfn, 'r') as bpfile:
+                    for filter in bpfile:
+                        current = filter.split()[0]
+                        if current == previous:
+                            print "   duplicate wavelength: {0}".format(filter.strip())
+                        previous = current
         return
