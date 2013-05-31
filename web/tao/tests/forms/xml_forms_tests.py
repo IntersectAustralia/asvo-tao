@@ -226,7 +226,7 @@ class XmlFormsTests(TestCase):
             'ssp_name': self.stellar_model.name,
             'band_pass_filter_label': self.band_pass_filter.label,
             'band_pass_filter_id': self.band_pass_filter.filter_id,
-            'band_pass_filter_name': os.path.splitext(self.band_pass_filter.filter_id)[0],
+            'band_pass_filter_name': self.band_pass_filter.filter_id,
             'dust_model_name': self.dust_model.name,
         })
         xml_parameters.update({
@@ -275,7 +275,7 @@ class XmlFormsTests(TestCase):
             'ssp_name': self.stellar_model.name,
             'band_pass_filter_label': self.band_pass_filter.label,
             'band_pass_filter_id': self.band_pass_filter.filter_id,
-            'band_pass_filter_name': os.path.splitext(self.band_pass_filter.filter_id)[0],
+            'band_pass_filter_name': self.band_pass_filter.filter_id,
             'dust_model_name': self.dust_model.name,
             })
         xml_parameters.update({
@@ -332,7 +332,7 @@ class XmlFormsTests(TestCase):
             'ssp_name': self.stellar_model.name,
             'band_pass_filter_label': self.band_pass_filter.label,
             'band_pass_filter_id': self.band_pass_filter.filter_id,
-            'band_pass_filter_name': os.path.splitext(self.band_pass_filter.filter_id)[0],
+            'band_pass_filter_name': self.band_pass_filter.filter_id,
             'dust_model_name': self.dust_model.name,
             })
         xml_parameters.update({

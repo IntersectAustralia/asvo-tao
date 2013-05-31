@@ -102,7 +102,7 @@ class JobTest(LiveServerTest):
             'ssp_name': self.sed.name,
             'band_pass_filter_label': self.band_pass_filters[0].label + ' (Apparent)',
             'band_pass_filter_id': self.band_pass_filters[0].filter_id,
-            'band_pass_filter_name': os.path.splitext(self.band_pass_filters[0].filter_id)[0],
+            'band_pass_filter_name': self.band_pass_filters[0].filter_id,
             'dust_model_name': self.dust.name,
             })
         xml_parameters.update({

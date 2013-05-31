@@ -17,11 +17,13 @@ namespace tao {
 
       static
       module*
-      factory( const string& name );
+      factory( const string& name,
+	       pugi::xml_node base );
 
    public:
 
-      csv( const string& name = string() );
+     csv( const string& name = string(),
+	  pugi::xml_node base = pugi::xml_node() );
 
       virtual
       ~csv();
@@ -31,8 +33,7 @@ namespace tao {
       ///
       virtual
       void
-      initialise( const options::xml_dict& dict,
-                  optional<const string&> prefix = optional<const string&>() );
+      initialise( const options::xml_dict& global_dict );
 
       ///
       ///
@@ -65,6 +66,7 @@ namespace tao {
       list<string> _fields;
       unsigned long long _records;
    };
+
 }
 
 #endif
