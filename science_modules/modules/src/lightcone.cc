@@ -19,13 +19,15 @@ namespace tao {
 
    // Factory function used to create a new lightcone.
    module*
-   lightcone::factory( const string& name )
+   lightcone::factory( const string& name,
+		       pugi::xml_node base )
    {
-      return new lightcone( name );
+      return new lightcone( name, base );
    }
 
-   lightcone::lightcone( const string& name )
-      : module( name ),
+   lightcone::lightcone( const string& name,
+			 pugi::xml_node base )
+      : module( name, base ),
         _z_min( 0.0 ),
         _z_max( 0.0 ),
         _unique( false ),
@@ -48,13 +50,12 @@ namespace tao {
    /// Initialise the module.
    ///
    void
-   lightcone::initialise( const options::xml_dict& dict,
-                          optional<const string&> prefix )
+   lightcone::initialise( const options::xml_dict& global_dict )
    {
       LOG_ENTER();
 
-      module::initialise( dict, prefix );
-      _read_options( dict, prefix );
+      module::initialise( global_dict );
+      _read_options( global_dict );
 
       LOG_EXIT();
    }
@@ -111,43 +112,43 @@ namespace tao {
       if( _box_type != "box" )
       {
 
-		// The outer loop is over the boxes.
-		_get_boxes( _boxes );
-		LOGDLN( "Boxes: ", _boxes );
+	 // The outer loop is over the boxes.
+	 _get_boxes( _boxes );
+	 LOGDLN( "Boxes: ", _boxes );
 
-		// Setup progress indicator.
-		_prog.set_local_size( _boxes.size() );
-		if( mpi::comm::world.rank() == 0 )
-		LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
+	 // Setup progress indicator.
+	 _prog.set_local_size( _boxes.size() );
+	 if( mpi::comm::world.rank() == 0 )
+	    LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
 
-		_cur_box = _boxes.begin();
-		_settle_box();
+	 _cur_box = _boxes.begin();
+	 _settle_box();
       }
       else
       {
 
 
-		auto it = _snap_redshifts.begin();
-		while( it != _snap_redshifts.end() )
-		{
-			if( num::approx( *it, _z_snap, 1e-4 ) )
-			   break;
-			++it;
-		}
-		 ASSERT( it != _snap_redshifts.end(), "Invalid redshift." );
-		 _z_snap_idx = it - _snap_redshifts.begin();
+	 auto it = _snap_redshifts.begin();
+	 while( it != _snap_redshifts.end() )
+	 {
+	    if( num::approx( *it, _z_snap, 1e-4 ) )
+	       break;
+	    ++it;
+	 }
+	 ASSERT( it != _snap_redshifts.end(), "Invalid redshift." );
+	 _z_snap_idx = it - _snap_redshifts.begin();
 
-		// The outer loop is over the boxes.
-		_get_boxes( _boxes );
-		LOGDLN( "Boxes: ", _boxes );
+	 // The outer loop is over the boxes.
+	 _get_boxes( _boxes );
+	 LOGDLN( "Boxes: ", _boxes );
 
-		// Setup progress indicator.
-		_prog.set_local_size( _boxes.size() );
-		if( mpi::comm::world.rank() == 0 )
-			LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
+	 // Setup progress indicator.
+	 _prog.set_local_size( _boxes.size() );
+	 if( mpi::comm::world.rank() == 0 )
+	    LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
 
-		_cur_box = _boxes.begin();
-		_settle_box();
+	 _cur_box = _boxes.begin();
+	 _settle_box();
       }
 
       LOG_EXIT();
@@ -580,9 +581,11 @@ namespace tao {
       }
 
       // Execute the query.
+      LOGDLN( "Executing query." );
       _db_timer.start();
       _st = new soci::statement( prep );
       _st->execute();
+      LOGDLN( "Finished executing query." );
       _fetch();
       _db_timer.stop();
 
@@ -954,49 +957,51 @@ namespace tao {
    /// from the parameter dictionary.
    ///
    void
-   lightcone::_read_options( const options::xml_dict& dict,
-                             optional<const string&> prefix )
+   lightcone::_read_options( const options::xml_dict& global_dict )
    {
       _timer.start();
       LOG_ENTER();
 
+      // Cache the local dictionary.
+      const options::xml_dict& dict = _dict;
+
       // Get the decomposition method.
-      _decomp_method = dict.get<string>( prefix.get()+":decomposition-method", "tables" );
+      _decomp_method = dict.get<string>( "decomposition-method", "tables" );
       LOGDLN( "Decomposition method: ", _decomp_method );
 
       // Extract table names.
-      _snap_red_table = dict.get<string>( prefix.get()+":snapshot-redshift-table","snap_redshift" );
+      _snap_red_table = dict.get<string>( "snapshot-redshift-table","snap_redshift" );
 
       // Read all the field mappings.
-      _field_map.insert( "pos_x", dict.get<string>( prefix.get()+":pos_x","posx" ) );
-      _field_map.insert( "pos_y", dict.get<string>( prefix.get()+":pos_y","posy" ) );
-      _field_map.insert( "pos_z", dict.get<string>( prefix.get()+":pos_z","posz" ) );
-      _field_map.insert( "global_id", dict.get<string>( prefix.get()+":global_id","globalindex" ) );
-      _field_map.insert( "local_id", dict.get<string>( prefix.get()+":local_id", "localgalaxyid") );
-      _field_map.insert( "tree_id", dict.get<string>( prefix.get()+":tree_id", "globaltreeid" ) );
-      _field_map.insert( "snapshot", dict.get<string>( prefix.get()+":snapshot", "snapnum") );
+      _field_map.insert( "pos_x", dict.get<string>( "pos_x","posx" ) );
+      _field_map.insert( "pos_y", dict.get<string>( "pos_y","posy" ) );
+      _field_map.insert( "pos_z", dict.get<string>( "pos_z","posz" ) );
+      _field_map.insert( "global_id", dict.get<string>( "global_id","globalindex" ) );
+      _field_map.insert( "local_id", dict.get<string>( "local_id", "localgalaxyid") );
+      _field_map.insert( "tree_id", dict.get<string>( "tree_id", "globaltreeid" ) );
+      _field_map.insert( "snapshot", dict.get<string>( "snapshot", "snapnum") );
 
       // Astronomical values. Get these first just in case
       // we do any redshift calculations in here.
-      _h0 = dict.get<real_type>( prefix.get()+":h0",73.0 );
+      _h0 = dict.get<real_type>( "h0",73.0 );
       LOGDLN( "Using h0 = ", _h0 );
 
       // Should we use the BSP tree system?
-      _accel_method = dict.get<string>( "settings:database:acceleration","none" );
+      _accel_method = global_dict.get<string>( "settings:database:acceleration","none" );
       std::transform( _accel_method.begin(), _accel_method.end(), _accel_method.begin(), ::tolower );
       LOGDLN( "Acceleration method: ", _accel_method );
 
       // Extract database details.
-      _read_db_options( dict );
+      _read_db_options( global_dict );
 
       // Connect to the database.
       _db_connect();
 
       // Get box type.
-      _box_type = dict.get<string>( prefix.get()+":geometry", "light-cone" );
+      _box_type = dict.get<string>( "geometry", "light-cone" );
       LOGDLN( "Box type '", _box_type );
       // Get box repetition type.
-      _box_repeat = dict.get<string>( prefix.get()+":box-repetition", "unique");
+      _box_repeat = dict.get<string>( "box-repetition", "unique");
       std::transform( _box_repeat.begin(), _box_repeat.end(), _box_repeat.begin(), ::tolower );
       LOGDLN( "Box repetition type '", _box_repeat, "'" );
       _unique = (_box_repeat == "unique");
@@ -1034,7 +1039,7 @@ namespace tao {
       // Extract the random number generator seed and set it.
       _real_rng.set_range( 0, _domain_size );
       _int_rng.set_range( 1, 6 );
-      auto rng_seed = dict.opt<int>( prefix.get()+":rng-seed" );
+      auto rng_seed = dict.opt<int>( "rng-seed" );
       if( rng_seed )
 	 _rng_seed = *rng_seed;
       else
@@ -1061,9 +1066,9 @@ namespace tao {
 
       // Redshift ranges.
       real_type snap_z_max = _snap_redshifts.front(), snap_z_min = _snap_redshifts.back();
-      _z_max = dict.get<real_type>( prefix.get()+":redshift-max", snap_z_max );
+      _z_max = dict.get<real_type>( "redshift-max", snap_z_max );
       _z_max = std::min( _z_max, snap_z_max );
-      _z_min = dict.get<real_type>( prefix.get()+":redshift-min", snap_z_min );
+      _z_min = dict.get<real_type>( "redshift-min", snap_z_min );
       LOGDLN( "Redshift range: (", _z_min, ", ", _z_max, ")" );
 
       // Create distance range.
@@ -1071,10 +1076,10 @@ namespace tao {
       LOGDLN( "Distance range: (", _dist_range.start(), ", ", _dist_range.finish(), ")" );
 
       // Right ascension.
-      _ra_min = dict.get<real_type>( prefix.get()+":ra-min",0.0 );
+      _ra_min = dict.get<real_type>( "ra-min",0.0 );
       if( _ra_min < 0.0 )
          _ra_min = 0.0;
-      _ra_max = dict.get<real_type>( prefix.get()+":ra-max",90.0 ); // TODO divide by 60.0?
+      _ra_max = dict.get<real_type>( "ra-max",90.0 ); // TODO divide by 60.0?
       if( _ra_max >= 89.9999999 )
          _ra_max = 89.9999999;
       if( _ra_min > _ra_max )
@@ -1088,10 +1093,10 @@ namespace tao {
       LOGDLN( "Have right ascension range ", _ra_min, " - ", _ra_max );
 
       // Declination.
-      _dec_min = dict.get<real_type>( prefix.get()+":dec-min",0.0 );
+      _dec_min = dict.get<real_type>( "dec-min",0.0 );
       if( _dec_min < 0.0 )
          _dec_min = 0.0;
-      _dec_max = dict.get<real_type>( prefix.get()+":dec-max",90.0 ); // TODO divide by 60.0?
+      _dec_max = dict.get<real_type>( "dec-max",90.0 ); // TODO divide by 60.0?
       if( _dec_max >= 89.9999999 )
          _dec_max = 89.9999999;
       if( _dec_min > _dec_max )
@@ -1101,21 +1106,21 @@ namespace tao {
       // For the box type.
       if( _box_type == "box" )
       {
-         _z_snap = dict.get<real_type>( prefix.get()+":redshift" );
-         _box_size = dict.get<real_type>( prefix.get()+":query-box-size" );
+         _z_snap = dict.get<real_type>( "redshift" );
+         _box_size = dict.get<real_type>( "query-box-size" );
       }
 
       // Filter information.
-      _filter = dict.get<string>( "workflow:record-filter:filter-type","" );
+      _filter = global_dict.get<string>( "workflow:record-filter:filter-type","" );
       std::transform( _filter.begin(), _filter.end(), _filter.begin(), ::tolower );
-      _filter_min = dict.get<string>( "workflow:record-filter:filter-min","" );
-      _filter_max = dict.get<string>( "workflow:record-filter:filter-max","" );
+      _filter_min = global_dict.get<string>( "workflow:record-filter:filter-min","" );
+      _filter_max = global_dict.get<string>( "workflow:record-filter:filter-max","" );
       LOGDLN( "Read filter name of: ", _filter );
       LOGDLN( "Read filter range of: ", _filter_min, " to ", _filter_max );
 
       // Output field information.
       {
-         list<string> fields = dict.get_list<string>( prefix.get()+":output-fields" );
+         list<string> fields = dict.get_list<string>( "output-fields" );
 	 for( const auto& field : fields )
 	 {
 	    string low = field;

@@ -4,6 +4,7 @@
 #include "tao/base/module.hh"
 
 namespace tao {
+   using namespace hpc;
 
    ///
    ///
@@ -13,41 +14,28 @@ namespace tao {
    {
    public:
 
+      static
+      module*
+      factory( const string& name,
+	       pugi::xml_node base );
+
+   public:
+
       typedef double real_type;
 
    public:
 
-      dust();
+     dust( const string& name = string(),
+	   pugi::xml_node base = pugi::xml_node() );
 
       ~dust();
 
       ///
-      ///
-      ///
-      void
-      setup_options( hpc::options::dictionary& dict,
-                     hpc::optional<const hpc::string&> prefix=hpc::optional<const hpc::string&>() );
-
-      ///
-      ///
-      ///
-      void
-      setup_options( hpc::options::dictionary& dict,
-                     const char* prefix );
-
-      ///
       /// Initialise the module.
       ///
+      virtual
       void
-      initialise( const hpc::options::dictionary& dict,
-                  hpc::optional<const hpc::string&> prefix=hpc::optional<const hpc::string&>() );
-
-      ///
-      ///
-      ///
-      void
-      initialise( const hpc::options::dictionary& dict,
-                  const char* prefix );
+      initialise( const options::xml_dict& global_dict );
 
       ///
       /// Run the module.
@@ -60,7 +48,7 @@ namespace tao {
       ///
       void
       process_galaxy( const tao::galaxy& galaxy,
-                      hpc::vector<real_type>::view spectra );
+                      vector<real_type>::view spectra );
 
    protected:
 
@@ -68,14 +56,13 @@ namespace tao {
       _read_wavelengths();
 
       void
-      _read_options( const hpc::options::dictionary& dict,
-                     hpc::optional<const hpc::string&> prefix=hpc::optional<const hpc::string&>() );
+      _read_options( const options::xml_dict& global_dict );
 
    protected:
 
-      hpc::string _waves_filename;
+      string _waves_filename;
       unsigned _num_spectra;
-      hpc::vector<real_type> _waves; // the wavelengths of each spectral band
+      vector<real_type> _waves; // the wavelengths of each spectral band
    };
 }
 

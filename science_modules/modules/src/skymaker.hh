@@ -22,11 +22,13 @@ namespace tao {
 
       static
       module*
-      factory( const string& name );
+      factory( const string& name,
+	       pugi::xml_node base );
 
    public:
 
-      skymaker( const string& name = string() );
+      skymaker( const string& name = string(),
+		pugi::xml_node base = pugi::xml_node() );
 
       ~skymaker();
 
@@ -37,8 +39,7 @@ namespace tao {
       ///
       virtual
       void
-      initialise( const options::xml_dict& dict,
-                  optional<const string&> prefix = optional<const string&>() );
+      initialise( const options::xml_dict& global_dict );
 
       ///
       /// Run the module.
@@ -59,8 +60,7 @@ namespace tao {
    protected:
 
       void
-      _read_options( const options::xml_dict& dict,
-                     optional<const string&> prefix );
+      _read_options( const options::xml_dict& global_dict );
 
       void
       _setup_list();

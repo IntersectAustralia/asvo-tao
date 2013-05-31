@@ -155,14 +155,15 @@ namespace tao
 		_dbname = dict.get < string > ("database");
 		_tree_pre = dict.get < string
 				> ("settings:database:treetableprefix", "tree_");
-		_serverscount = dict.get<int>("settings:database:serverscount", 1);
+		// _serverscount = dict.get<int>("settings:database:serverscount", 1);
 		xpath_node_set ServersSet = dict.get_nodes("settings/database/serverinfo");
 
 		// If there is no servers at all, Raise exception
 		ASSERT(!ServersSet.empty());
 		// If the number of servers claimed in settings:database:serverscount is no equal to number of serverinfo nodes
 		// also, raise exception
-		ASSERT(_serverscount==ServersSet.size());
+		_serverscount = ServersSet.size();
+		// ASSERT(_serverscount==ServersSet.size());
 
 		for (xpath_node_set::const_iterator it = ServersSet.begin();it != ServersSet.end(); ++it)
 		{

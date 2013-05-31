@@ -8,7 +8,17 @@ using namespace hpc;
 
 namespace tao {
 
-   dust::dust()
+   // Factory function used to create a new dust.
+   module*
+   dust::factory( const string& name,
+		  pugi::xml_node base )
+   {
+      return new dust( name, base );
+   }
+
+   dust::dust( const string& name,
+	       pugi::xml_node base )
+      : module( name, base )
    {
    }
 
@@ -17,54 +27,39 @@ namespace tao {
    }
 
    ///
-   ///
-   ///
-   void
-   dust::setup_options( options::dictionary& dict,
-                        optional<const string&> prefix )
-   {
-      dict.add_option( new options::string( "waves_filename" ), prefix );
-      dict.add_option( new options::integer( "num_spectra" ), prefix );
-   }
-
-   ///
-   ///
-   ///
-   void
-   dust::setup_options( hpc::options::dictionary& dict,
-                        const char* prefix )
-   {
-      setup_options( dict, string( prefix ) );
-   }
-
-   ///
    /// Initialise the module.
    ///
    void
-   dust::initialise( const options::dictionary& dict,
-                     optional<const string&> prefix )
+   dust::initialise( const options::xml_dict& global_dict )
    {
       LOG_ENTER();
 
-      _read_options( dict, prefix );
-      _read_wavelengths();
+      // _read_options( dict, prefix );
+      // _read_wavelengths();
 
       LOG_EXIT();
-   }
-
-   ///
-   ///
-   ///
-   void
-   dust::initialise( const hpc::options::dictionary& dict,
-                     const char* prefix )
-   {
-      initialise( dict, string( prefix ) );
    }
 
    void
    dust::execute()
    {
+      _timer.start();
+      LOG_ENTER();
+      ASSERT( parents().size() == 1 );
+
+      // Grab the galaxy from the parent object.
+      tao::galaxy& gal = parents().front()->galaxy();
+
+      // // Perform the processing.
+      // process_galaxy( gal );
+
+      // // Add spectra to the galaxy object.
+      // gal.set_vector_field<real_type>( "disk_spectra", _disk_spectra );
+      // gal.set_vector_field<real_type>( "bulge_spectra", _bulge_spectra );
+      // gal.set_vector_field<real_type>( "total_spectra", _total_spectra );
+
+      LOG_EXIT();
+      _timer.stop();
    }
 
    void
@@ -137,18 +132,17 @@ namespace tao {
    }
 
    void
-   dust::_read_options( const options::dictionary& dict,
-                        optional<const string&> prefix )
+   dust::_read_options( const options::xml_dict& global_dict )
    {
-      // Get the sub dictionary, if it exists.
-      const options::dictionary& sub = prefix ? dict.sub( *prefix ) : dict;
+      // // Get the sub dictionary, if it exists.
+      // const options::dictionary& sub = prefix ? dict.sub( *prefix ) : dict;
 
-      // Get the wavelengths filename.
-      _waves_filename = sub.get<string>( "waves_filename" );
-      LOGLN( "Using wavelengths filename \"", _waves_filename, "\"" );
+      // // Get the wavelengths filename.
+      // _waves_filename = sub.get<string>( "waves_filename" );
+      // LOGLN( "Using wavelengths filename \"", _waves_filename, "\"" );
 
-      // Get the counts.
-      _num_spectra = sub.get<unsigned>( "num_spectra" );
-      LOGLN( "Number of spectra: ", _num_spectra );
+      // // Get the counts.
+      // _num_spectra = sub.get<unsigned>( "num_spectra" );
+      // LOGLN( "Number of spectra: ", _num_spectra );
    }
 }

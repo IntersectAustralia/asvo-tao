@@ -20,13 +20,15 @@ namespace tao {
 
    // Factory function used to create a new SED.
    module*
-   sed::factory( const string& name )
+   sed::factory( const string& name,
+		 pugi::xml_node base )
    {
-      return new sed( name );
+      return new sed( name, base );
    }
 
-   sed::sed( const string& name )
-      : module( name ),
+   sed::sed( const string& name,
+	     pugi::xml_node base )
+      : module( name, base ),
         _cur_tree_id( -1 ),
 	_omega( 0.25 ),
 	_omega_lambda( 0.75 ),
@@ -49,13 +51,12 @@ namespace tao {
    /// Initialise the module.
    ///
    void
-   sed::initialise( const options::xml_dict& dict,
-                    optional<const string&> prefix )
+   sed::initialise( const options::xml_dict& global_dict )
    {
       LOG_ENTER();
 
-      module::initialise( dict, prefix );
-      _read_options( dict, prefix );
+      module::initialise( global_dict );
+      _read_options( global_dict );
 
       // Allocate for output spectra.
       _disk_spectra.reallocate( _num_spectra, _batch_size );
@@ -362,31 +363,25 @@ namespace tao {
    }
 
    void
-   sed::_read_options( const options::xml_dict& dict,
-                       optional<const string&> prefix )
+   sed::_read_options( const options::xml_dict& global_dict )
    {
-      // Get the sub dictionary, if it exists.
-      //const options::dictionary& sub = prefix ? dict.sub( *prefix ) : dict;
-
-      // Extract database details.
-      _read_db_options( dict );
-
-      // Connect to the database.
+      // Extract database details and connect.
+      _read_db_options( global_dict );
       _db_connect();
 
       // Try to read H0 (and hence h) from the lightcone module.
-      _h = dict.get<real_type>( "workflow:light-cone:H0",73.0 )/100.0;
+      _h = global_dict.get<real_type>( "workflow:light-cone:H0",73.0 )/100.0;
       LOGDLN( "Read h as: ", _h );
 
       // Extract the counts.
-      _num_spectra = dict.get<unsigned>( prefix.get()+":num-spectra",1221 );
-      _num_metals = dict.get<unsigned>( prefix.get()+":num-metals",7 );
+      _num_spectra = _dict.get<unsigned>( "num-spectra",1221 );
+      _num_metals = _dict.get<unsigned>( "num-metals",7 );
       LOGDLN( "Number of times: ", _bin_ages.size() );
       LOGDLN( "Number of spectra: ", _num_spectra );
       LOGDLN( "Number of metals: ", _num_metals );
 
       // Get the SSP filename.
-      _read_ssp( dict.get<string>( prefix.get()+":single-stellar-population-model" ) );
+      _read_ssp( _dict.get<string>( "single-stellar-population-model" ) );
 
       // Prepare the snapshot ages.
       _setup_snap_ages();
