@@ -4,15 +4,20 @@
 <legend></legend>
 <div class="row-fluid">
     <div class="boxed span8">
+        <div>
+            {{ form.get_apply_sed.field|as_bootstrap_field }}
+        </div>
+        <div>
 	{% for fieldset in form.fieldsets %}
 	    {{ fieldset|as_bootstrap_fieldset }}
 	{% endfor %}
+        </div>
     </div>
     <div class="aside span4">
         <div class="boxed">
             <div class="stellar-model-info">
                 <div> Selected stellar model details </div>
-                <div style="overflow-y: scroll;height: 130px">
+                <div style="overflow-y: scroll;height: 178px">
                     <p>
                         <strong class="name"><!-- --></strong>
                     </p>
@@ -23,7 +28,7 @@
         <div class="boxed">
             <div class="band-pass-info">
                 <div> Selected band-pass filter details </div>
-                <div style="overflow-y: scroll;height: 130px">
+                <div style="overflow-y: scroll;height: 178px">
                     <p>
                         <strong class="name"><!-- --></strong>
                     </p>
@@ -34,7 +39,7 @@
         <div class="boxed">
             <div class="dust-model-info">
                 <div> Selected dust model details </div>
-                <div style="overflow-y: scroll;height: 130px">
+                <div style="overflow-y: scroll;height: 178px">
                     <p>
                         <strong class="name"><!-- --></strong>
                     </p>
