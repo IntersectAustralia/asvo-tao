@@ -372,7 +372,8 @@ class WorkFlow(object):
         except Exception as Exp:
             logging.error('Error In Getting Start time for Job ' + str(PID))
             logging.error(Exp)
-        self.dbaseobj.SetJobRunning(JobID, OldStatus, "Job Running- PBSID" + PID, JobStartTime)
+        if EnumerationLookup.JobState.Running!=OldStatus:
+            self.dbaseobj.SetJobRunning(JobID, "Job Running- PBSID" + PID, JobStartTime)
         data['status'] = 'IN_PROGRESS'        
         self.UpdateTAOUI(UIReference_ID,JobType, data)
         self.dbaseobj.AddNewEvent(JobID, EnumerationLookup.EventType.Normal, 'Updating Job (UI ID:' + str(UIReference_ID) + ', Status:' + data['status'] + ')')
@@ -380,8 +381,9 @@ class WorkFlow(object):
 
     ## Update the Back-end DB and the UI that the job is Queued. In case of Multiple Lightcones, the UI will be updated with the last job
     def UpdateJob_Queued(self, PID,SubJobIndex, JobType, OldStatus, UIReference_ID, JobID):
-        data = {}  
-        self.dbaseobj.SetJobQueued(JobID, OldStatus, "Job Queued- PBSID" + PID)
+        data = {} 
+        if EnumerationLookup.JobState.Queued!=OldStatus: 
+            self.dbaseobj.SetJobQueued(JobID, "Job Queued- PBSID" + PID)
         data['status'] = 'QUEUED' 
         
         
