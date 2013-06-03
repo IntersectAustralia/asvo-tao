@@ -84,7 +84,8 @@ class SysCommands(object):
         logging.info("Command Local ID:"+str(CommandID))        
         
         CommandFunction=self.FunctionsMap[commandtext]
-        return CommandFunction(UICommandID,UIJobID,CommandParams)
+        if CommandFunction(UICommandID,UIJobID,CommandParams)==True:
+            self.dbaseobj.UpdateCommandStatus(CommandID,EnumerationLookup.CommandState.Completed)
         
     
     def Job_Stop_All(self,UICommandID,UIJobID,CommandParams):
@@ -111,7 +112,7 @@ class SysCommands(object):
     ##If it is running stop it
         if (JobStatus <= EnumerationLookup.JobState.Running and JobStatus > EnumerationLookup.JobState.NewJob):
             logging.info("COMMAND Job_Stop: JobID=" + str(JobID) + " , Terminating Job From Queue")
-            self.TorqueObj.TerminateJob(PBSID) ##If its status is running or before set it to pause
+            #self.TorqueObj.TerminateJob(PBSID) ##If its status is running or before set it to pause
         if (JobStatus <= EnumerationLookup.JobState.Running):
             logging.info("COMMAND Job_Stop: JobID=" + str(JobID) + " , SetJob to Pause")
             self.dbaseobj.SetJobPaused(JobID, UICommandID)
@@ -126,7 +127,7 @@ class SysCommands(object):
             JobStatus=JobRow['jobstatus']
             
             self.PauseJob(UICommandID, JobID, PBSID, JobStatus)
-                
+        self.UpdateTAOUI(UIJobID)        
         print("Job_Stop")
         return True
     def Job_Resume(self,UICommandID,UIJobID,CommandParams):
@@ -148,37 +149,19 @@ class SysCommands(object):
         print("Job_Output_Delete")
         return True
         
-    def UpdateJob_EndWithPAUSE(self, JobID,SubJobIndex, JobType, UIReference_ID, UserName, JobDetails):
-        data = {}        
+    
         
+    def UpdateTAOUI(self,UIJobID):        
         
-        logging.info("Job (" + str(UIReference_ID) +" ["+str(SubJobIndex)+"]) ... Finished With Error")
-        
-        data['status'] = 'FORCETERMINATION'
-        JobDetails['error'] = "JOB WAS TERMINATED BY ADMIN COMMAND"
-        
-        
-        
-        self.dbaseobj.SetJobFinishedWithError(JobID, JobDetails['error'], JobDetails['end'])
-        data['error_message'] = 'Error:' + JobDetails['error']        
-        
-        
-        
-        
-        self.UpdateTAOUI(UIReference_ID,JobType, data)
-        
-    def UpdateTAOUI(self,UIJobID,JobType,data):
-        ## If the job Type is Simple Update it without any checking  
-        
-        RequestedStatus=data['status']       
-        
+        data = {}                
+        data['status'] = 'HELD'             
+        data['error_message'] = "Status:JOB WAS TERMINATED BY ADMIN COMMAND"                
         logging.info('Updating UI MasterDB. JobID ('+str(UIJobID)+').. '+data['status'])        
         requests.put(self.api['update']%UIJobID, data)        
                  
     
 if __name__ == '__main__':
-     [Options]=settingReader.ParseParams("localsettings.xml")
-     FilePath="/home/amr/workspace/samplecommands.txt"
+     [Options]=settingReader.ParseParams("localsettings.xml")     
      dbaseObj=dbase.DBInterface(Options)
      TorqueObj=torque.TorqueInterface(Options,dbaseObj)
      SysCommandsObj=SysCommands(Options,dbaseObj,TorqueObj)
