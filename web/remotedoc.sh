@@ -25,5 +25,5 @@ static_update() {
 }
 
 unpack
-# copy_files
-# static_update
+copy_files
+static_update

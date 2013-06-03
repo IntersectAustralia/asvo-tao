@@ -12,7 +12,7 @@ fi
 echo "This script only deploys documentation to ASV1 version $TAG"
 echo 'Assuming you are using ssh properly (https://wiki.intersect.org.au/display/DEV/Use+ssh+Properly)'
 
-DIRS='asvo-tao/web/static/docs'
+DIRS='static/docs'
 TARGET=/web/vhost/tao.asvo.org.au/taodemo
 DEP_DIR=`pwd`
 
@@ -50,7 +50,7 @@ transfer() {
   host=$1
   cd $DEP_DIR
   test -f asvo-doc.tgz && rm -f asvo-doc.tgz && echo "Removed existing asvo-doc.tgz"
-  tar -czf asvo-doc.tgz -C build $DIRS
+  tar -czf asvo-doc.tgz -C build asvo-tao/web/tao/static/docs
   scp asvo-doc.tgz remotedoc.sh $host:~
   HOME_DIR=$(ssh $host 'chmod a+x remotedoc.sh; echo $HOME')
 }
