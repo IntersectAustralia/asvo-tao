@@ -156,9 +156,8 @@ class Form(BetterForm):
             self.fields[field_name].semirequired = True
 
     def get_apply_sed(self):
-        # from code import interact
-        # interact(local=locals())
-        return self.fields['apply_sed']
+        # use this to ensure a BoundField is returned
+        return self['apply_sed']
 
     def check_sed_required_fields(self):
         apply_sed = self.cleaned_data.get('apply_sed')

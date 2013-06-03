@@ -44,6 +44,7 @@ class Simulation(models.Model):
     box_size_units = models.CharField(max_length=10, default='Mpc')
     box_size = models.DecimalField(max_digits=10, decimal_places=3)
     details = models.TextField(default='')
+    order = models.IntegerField(default='0')
 
     def __unicode__(self):
         return self.name
@@ -58,6 +59,8 @@ class Simulation(models.Model):
 
     def box_size_with_units(self):
         return "%s %s" % (self.box_size, self.box_size_units)
+
+    box_size_with_units.short_description = 'Box size'
 
 class GalaxyModel(models.Model):
 

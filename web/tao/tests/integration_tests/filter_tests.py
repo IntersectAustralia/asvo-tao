@@ -41,6 +41,7 @@ class FilterTests(LiveServerMGFTest):
         self.login(username, password)
 
         self.visit('mock_galaxy_factory')
+        self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
         self.select_dark_matter_simulation(simulation1)
         self.select_galaxy_model(simulation1.galaxymodel_set.all().order_by('id')[0])
 
