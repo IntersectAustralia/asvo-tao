@@ -217,6 +217,8 @@ MODULES = (
     'sed',
 )
 
+INITIAL_JOB_STATUS = 'HELD'
+
 INSTALLED_APPS += tuple(('taoui_' + module_name for module_name in MODULES))
 
 OUTPUT_FORMATS = [

@@ -37,7 +37,15 @@ class User(auth_models.User):
 
     class Meta:
         proxy = True
-    
+
+class GlobalParameter(models.Model):
+    parameter_name = models.CharField(max_length=60, unique=True)
+    parameter_value = models.TextField(default='')
+    description = models.TextField(default='')
+
+    def __str__(self):
+        return self.parameter_name
+
 class Simulation(models.Model):        
 
     name = models.CharField(max_length=100, unique=True)
@@ -166,7 +174,17 @@ class StellarModel(models.Model):
 
     def __unicode__(self):
         return self.name
-    
+
+def initial_job_status():
+    try:
+        obj = GlobalParameter.objects.get(parameter_name='INITIAL_JOB_STATUS')
+        return obj.parameter_value.strip()
+    except GlobalParameter.DoesNotExist:
+        try:
+            return getattr(settings,'INITIAL_JOB_STATUS')
+        except AttributeError:
+            return 'HELD'
+
 class Job(models.Model):
     SUBMITTED = 'SUBMITTED'
     IN_PROGRESS = 'IN_PROGRESS'
@@ -187,7 +205,7 @@ class Job(models.Model):
     created_time = models.DateTimeField(auto_now_add=True)
     description = models.TextField(max_length=500, default='')
 
-    status = models.CharField(choices=STATUS_CHOICES, default=HELD, max_length=20)
+    status = models.CharField(choices=STATUS_CHOICES, default=initial_job_status, max_length=20)
     parameters = models.TextField(blank=True, max_length=1000000)
     output_path = models.TextField(blank=True)  # without a trailing slash, please
     database = models.CharField(max_length=200)
@@ -282,10 +300,3 @@ class DustModel(models.Model):
     def __unicode__(self):
         return self.label
 
-class GlobalParameter(models.Model):
-    parameter_name = models.CharField(max_length=60, unique=True)
-    parameter_value = models.TextField(default='')
-    description = models.TextField(default='')
-
-    def __str__(self):
-        return self.parameter_name
