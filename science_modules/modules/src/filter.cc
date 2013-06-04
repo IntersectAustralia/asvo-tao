@@ -186,6 +186,10 @@ namespace tao {
       LOGDLN( "low = ", low );
       LOGDLN( "upp = ", upp );
 
+      // If there is no overlap, return 0.
+      if( upp <= low )
+	 return 0.0;
+
       auto it = make_interp_iterator(
          boost::make_transform_iterator( filter.knots().begin(), take_first ),
          boost::make_transform_iterator( filter.knots().end(), take_first ),
