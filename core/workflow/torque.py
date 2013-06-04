@@ -72,12 +72,11 @@ class TorqueInterface(object):
             #PBS -l walltime=%(wt_hours)02d:%(wt_minutes)02d:%(wt_seconds)02d
             #PBS -d .
             source /usr/local/modules/init/tcsh
-            module load boost gsl hdf5/x86_64/gnu/1.8.9-openmpi-psm postgresql
-            module load cmake/x86_64/gnu/2.8.8
-            module load cfitsio/x86_64/gnu/3.290
+            module load gcc/4.7.1 boost gsl openmpi/x86_64/gnu/1.6.1-psm hdf5/x86_64/gnu/1.8.9-openmpi-psm postgresql            
+            module load cfitsio/x86_64/gnu/3.290-threaded
 
-            setenv PATH /lustre/projects/p014_swin/programs/ScienceModulesBackup/bin:$PATH
-            setenv LD_LIBRARY_PATH /lustre/projects/p014_swin/programs/ScienceModulesBackup/lib:/lustre/projects/p014_swin/programs/ScienceModulesBackup/helperlib:$LD_LIBRARY_PATH
+            setenv PATH /lustre/projects/p014_swin/programs/ScienceModules/bin:$PATH
+            setenv LD_LIBRARY_PATH /lustre/projects/p014_swin/programs/ScienceModules/lib:/lustre/projects/p014_swin/programs/ScienceModules/helperlib:$LD_LIBRARY_PATH
             mpiexec %(executable)s %(path)s %(basicsettingpath)s
             '''%self.DefaultParams)
         return FileName
@@ -88,7 +87,7 @@ class TorqueInterface(object):
     ## @param[IN]  params  Parameter dictionary.
     ## @returns PBS job identifier.
     ##
-    def Submit(self,UserName,JobID,path,ParamXMLName,SubJobIndex,nodes=1,ppn=1):
+    def Submit(self,UserName,JobID,path,ParamXMLName,SubJobIndex,nodes=1,ppn=4):
         BasicSettingPath=self.Options['Torque:BasicSettingsPath']
         ScriptFileName = self.WritePBSScriptFile(UserName,JobID, nodes,ppn, path,BasicSettingPath,ParamXMLName,SubJobIndex)
         

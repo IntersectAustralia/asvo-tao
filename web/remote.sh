@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 DIR=`dirname $0`
 TARGET=/web/vhost/tao.asvo.org.au/taodemo
 TARGET_BACKUP=/web/vhost/tao.asvo.org.au/taodemo-backup
@@ -13,17 +15,19 @@ unpack() {
 }
 
 copy_files() {
-  echo "Copying files..."
+  echo "Backing up database in $TARGET_BACKUP/dump.py. Use to restore if something goes wrong"
+  bin/django dumpscript > $TARGET/dump.py
   test -d $TARGET_BACKUP && rm -rf $TARGET_BACKUP
   mv $TARGET $TARGET_BACKUP
   mkdir -p $TARGET
+  echo "Copying files..."
   cp -r $UNPACK_DIR/asvo-tao/* $TARGET/
 }
 
 rebuild() {
   echo "Rebuild with buildout..."
   cd $TARGET/web
-  python bootstrap.py -v 1.7.0
+  python bootstrap.py
   bin/buildout -c buildout_production.cfg
 }
 

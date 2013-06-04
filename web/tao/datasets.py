@@ -31,7 +31,7 @@ def dark_matter_simulation_choices():
         return tuples of dark matter choices suitable for use in a
         tao.widgets.ChoiceFieldWithOtherAttrs
     """
-    return [(x.id, x.name, {}) for x in models.Simulation.objects.order_by('name')]
+    return [(x.id, x.name, {}) for x in models.Simulation.objects.order_by('order', 'name')]
 
 
 def galaxy_model_choices():

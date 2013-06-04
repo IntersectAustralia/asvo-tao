@@ -15,8 +15,8 @@ class DatasetTestCase(TransactionTestCase):
         from tao.datasets import dark_matter_simulation_choices
         self.assertEqual([], dark_matter_simulation_choices())
 
-        SimulationFactory.create(id=1, name='sim')
-        SimulationFactory.create(id=2, name='a sim')
+        SimulationFactory.create(id=1, name='sim', order='2')
+        SimulationFactory.create(id=2, name='a sim', order='1')
 
         # should be ordered by name
         self.assertEqual([

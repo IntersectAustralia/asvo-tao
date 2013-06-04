@@ -125,10 +125,6 @@ class Form(BetterForm):
 
     class Meta:
         fieldsets = [
-            ('topmost', {
-                'legend': '',
-                'fields': ['apply_sed'],
-            }),
             ('primary', {
                 'legend': 'Model',
                 'fields': ['single_stellar_population_model',],
@@ -158,6 +154,10 @@ class Form(BetterForm):
 
         for field_name in Form.SED_REQUIRED_FIELDS:
             self.fields[field_name].semirequired = True
+
+    def get_apply_sed(self):
+        # use this to ensure a BoundField is returned
+        return self['apply_sed']
 
     def check_sed_required_fields(self):
         apply_sed = self.cleaned_data.get('apply_sed')
