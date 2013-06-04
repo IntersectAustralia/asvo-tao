@@ -40,6 +40,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.login(username, password)
 
         self.visit('mock_galaxy_factory')
+        self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
 
     def tearDown(self):
         super(MockGalaxyFactoryTest, self).tearDown()

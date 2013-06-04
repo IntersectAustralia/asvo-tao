@@ -69,7 +69,7 @@ def get_zip_file(request, id):
 
 @set_tab('jobs')
 def index(request):
-    user_jobs = Job.objects.filter(user=request.user)
+    user_jobs = Job.objects.filter(user=request.user).order_by('-id')
     return render(request, 'jobs/index.html', {
         'jobs': user_jobs,
     })

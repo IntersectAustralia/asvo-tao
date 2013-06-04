@@ -22,6 +22,7 @@ class SimulationFactory(factory.Factory):
     FACTORY_FOR = Simulation
     name = factory.Sequence(lambda n: 'simulation_%03d' % int(n))
     box_size = factory.Sequence(lambda n: 500 + int(n))
+    order = factory.Sequence(lambda n: int(n))
     details = factory.Sequence(lambda n:
                                 '<a class="simulation-paper" target="_blank" href="http://www.abcd' + str(n) + '.com/">abcd' + str(n) + '</a>' +
                                 '<a class="simulation-link" target="_blank" href="http://www.defg' + str(n) + '.org/">http://www.defg' + str(n) + '.org/</a>' +
