@@ -66,7 +66,7 @@ def HandleCSVFiles(ListofFiles,OutputFileName):
     logging.info('Merging Done >> '+OutputFileName)
     return True
 def PrepareLog(OutputFolder):
-    LOG_FILENAME = OutputFolder+'/logfile.log'
+    LOG_FILENAME = OutputFolder+'/merging_logfile.log'
     TAOLoger = logging.getLogger() 
     TAOLoger.setLevel(logging.DEBUG)      
     handler = logging.handlers.RotatingFileHandler(LOG_FILENAME, maxBytes=10485760, backupCount=5)
@@ -77,8 +77,9 @@ if __name__ == '__main__':
     if len(sys.argv) != 3:
         exit(-100);
     CurrentFolderPath=sys.argv[1]
+    CurrentLogPath=sys.argv[1].replace("/output","/log")
     SubJobIndex=sys.argv[2]
-    TAOLoger=PrepareLog(CurrentFolderPath) 
+    TAOLoger=PrepareLog(CurrentLogPath) 
     logging.info('Merging Files in '+CurrentFolderPath)   
     dirList=os.listdir(CurrentFolderPath)    
     fullPathArray=[]
