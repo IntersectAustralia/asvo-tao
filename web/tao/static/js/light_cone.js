@@ -488,6 +488,14 @@ jQuery(document).ready(function($) {
         var galaxy_model_id = $this.find(':selected').attr('data-galaxy_model_id');
         show_galaxy_model_info(galaxy_model_id);
         var use_default = !update_filter_options.initializing || !bound;
+        if (use_default) {
+            var catalogue_geometry_value = $(lc_id('catalogue_geometry')).val();
+            if (catalogue_geometry_value == "box") {
+                var simulation_box_size = $(lc_id('number_of_light_cones')).data("simulation-box-size");
+                $(lc_id('box_size')).val(simulation_box_size);
+                $(lc_id('box_size')).change();
+            }
+        }
         update_filter_options(true, use_default); // triggers filter.change
         update_filter_options.initializing = false;
         update_output_options();
