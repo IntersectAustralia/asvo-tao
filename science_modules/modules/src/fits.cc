@@ -91,7 +91,7 @@ namespace tao {
 
 
 
-      _fn = global_dict.get<string>( "outputdir" ) + "/" + _dict.get<hpc::string>( "filename" );
+      _fn = global_dict.get<string>( "outputdir" ) + "/" + _dict.get<hpc::string>( "filename" ) + "." + mpi::rank_string();
       _fields = _dict.get_list<hpc::string>( "fields" );
 
       ReadFieldsInfo(_dict );
