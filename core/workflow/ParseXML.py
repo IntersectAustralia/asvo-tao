@@ -1,4 +1,4 @@
-import re
+import re,os
 import lxml.etree as ET
 import settingReader # Read the XML settings
 import StringIO
@@ -22,6 +22,7 @@ class ParseXMLParameters(object):
         self.SubJobsCount=self.GetSubJobsCount()
         self.ModifySEDFilePath()
         #self.ModifyFilterFilePath()
+        self.ModifyOutputPath()
         self.SetBasicInformation(JobID,DatabaseName,JobUserName)
         return self.SubJobsCount
         
@@ -39,7 +40,9 @@ class ParseXMLParameters(object):
          
         self.tree.xpath("/ns:tao/ns:subjobindex",namespaces={'ns':self.NameSpace})[0].text=str(SubJobIndex)
         with open(FileName,'w') as f:
-            f.write(ET.tostring(self.tree,encoding='UTF-8',xml_declaration=True,pretty_print=True))       
+            strTree=ET.tostring(self.tree,encoding='UTF-8',xml_declaration=True,pretty_print=True)
+            strTree=strTree.replace("&lt;OutputFileIndex&gt;",str(SubJobIndex))
+            f.write(strTree)       
         
            
     def GetCurrentUser(self):
@@ -69,8 +72,33 @@ class ParseXMLParameters(object):
         
         for filter in self.bandpassfilters:
             filter.text=self.BandPassDIR+filter.text.lower()
-                        
+    
+    def ModifyOutputPath(self):
+        self.lfilename=self.tree.xpath("ns:workflow/ns:fits/ns:filename",namespaces={'ns':self.NameSpace})                    
+        if len(self.lfilename)>0:
+            self.filename=self.lfilename[0]
+            strfileName, strfileExtension = os.path.splitext(self.filename.text)
+            self.filename.text=strfileName+".<OutputFileIndex>"+strfileExtension
+            
+            
         
+        self.lfilename=self.tree.xpath("ns:workflow/ns:votable/ns:filename",namespaces={'ns':self.NameSpace})                    
+        if len(self.lfilename)>0:
+            self.filename=self.lfilename[0]
+            strfileName, strfileExtension = os.path.splitext(self.filename.text)
+            self.filename.text=strfileName+".<OutputFileIndex>"+strfileExtension
+        
+        self.lfilename=self.tree.xpath("ns:workflow/ns:csv/ns:filename",namespaces={'ns':self.NameSpace})                    
+        if len(self.lfilename)>0:
+            self.filename=self.lfilename[0]
+            strfileName, strfileExtension = os.path.splitext(self.filename.text)
+            self.filename.text=strfileName+".<OutputFileIndex>"+strfileExtension
+        
+        self.lfilename=self.tree.xpath("ns:workflow/ns:hdf5/ns:filename",namespaces={'ns':self.NameSpace})                    
+        if len(self.lfilename)>0:
+            self.filename=self.lfilename[0]
+            strfileName, strfileExtension = os.path.splitext(self.filename.text)
+            self.filename.text=strfileName+".<OutputFileIndex>"+strfileExtension
         
     ## This function is used for debugging reasons only (not currently active)    
     def FindModules(self):        
@@ -108,11 +136,28 @@ class ParseXMLParameters(object):
         DBElement.text="none" 
              
         self.tree.xpath("/ns:tao",namespaces={'ns':self.NameSpace})[0].append(DBElement)
+        
+        nodes=self.Options['Torque:Nodes']        
+        ppn=self.Options['Torque:ProcessorNode']
+        queuename=self.Options['Torque:JobsQueue']
+        
+        DBElement=ET.Element("{"+self.NameSpace+"}queue")        
+        DBElement.text=queuename            
+        self.tree.xpath("/ns:tao",namespaces={'ns':self.NameSpace})[0].append(DBElement)
+        
+        DBElement=ET.Element("{"+self.NameSpace+"}nodes")        
+        DBElement.text=str(nodes)            
+        self.tree.xpath("/ns:tao",namespaces={'ns':self.NameSpace})[0].append(DBElement)
+        
+        DBElement=ET.Element("{"+self.NameSpace+"}processorpernode")        
+        DBElement.text=str(ppn)            
+        self.tree.xpath("/ns:tao",namespaces={'ns':self.NameSpace})[0].append(DBElement)
+        
                 
 if __name__ == '__main__':
      [Options]=settingReader.ParseParams("settings.xml")
      ParseXMLParametersObj=ParseXMLParameters('/home/amr/workspace/params.xml',Options)
      ParseXMLParametersObj.ModifySEDFilePath()
-    
+     ParseXMLParametersObj.ModifyOutputPath()
      ParseXMLParametersObj.SetBasicInformation(110, "Database", "TestUser")
      ParseXMLParametersObj.ExportTree('/home/amr/workspace/params.processed.xml', 0)
