@@ -135,7 +135,7 @@ namespace tao {
 	       break;
 	    ++it;
 	 }
-	 ASSERT( it != _snap_redshifts.end(), "Invalid redshift." );
+	 EXCEPT( it != _snap_redshifts.end(), "Invalid redshift selected for box." );
 	 _z_snap_idx = it - _snap_redshifts.begin();
 
 	 // The outer loop is over the boxes.
