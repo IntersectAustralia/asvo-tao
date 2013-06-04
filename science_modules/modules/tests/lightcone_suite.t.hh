@@ -644,7 +644,7 @@ public:
       // Read in the dictionary from XML.
       options::xml_dict dict;
       dict.read( db_setup.xml_filename);
-      lc.initialise( dict, string( "workflow:light-cone" ) );
+      lc.initialise( dict );
 
    }
 

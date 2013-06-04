@@ -29,25 +29,24 @@ namespace tao {
 
       static
       module*
-      factory( const string& name );
+      factory( const string& name,
+	       pugi::xml_node base );
 
    public:
 
       typedef double real_type;
 
-      sed( const string& name = string() );
+      sed( const string& name = string(),
+	   pugi::xml_node base = pugi::xml_node() );
 
       ~sed();
-
-
 
       ///
       /// Initialise the module.
       ///
       virtual
       void
-      initialise( const options::xml_dict& dict,
-                  optional<const string&> prefix=optional<const string&>() );
+      initialise( const options::xml_dict& global_dict );
 
       ///
       /// Run the module.
@@ -110,8 +109,7 @@ namespace tao {
       _setup_snap_ages();
 
       void
-      _read_options( const options::xml_dict& dict,
-                     optional<const string&> prefix=optional<const string&>() );
+      _read_options( const options::xml_dict& global_dict );
 
       void
       _load_table( long long tree_id,

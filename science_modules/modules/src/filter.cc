@@ -13,13 +13,15 @@ namespace tao {
 
    // Factory function used to create a new filter module.
    module*
-   filter::factory( const string& name )
+   filter::factory( const string& name,
+		    pugi::xml_node base )
    {
-      return new filter( name );
+      return new filter( name, base );
    }
 
-   filter::filter( const string& name )
-      : module( name )
+   filter::filter( const string& name,
+		   pugi::xml_node base )
+      : module( name, base )
    {
    }
 
@@ -31,12 +33,11 @@ namespace tao {
    /// Initialise the module.
    ///
    void
-   filter::initialise( const options::xml_dict& dict,
-                       optional<const string&> prefix )
+   filter::initialise( const options::xml_dict& global_dict )
    {
       LOG_ENTER();
 
-      _read_options( dict, prefix );
+      _read_options( global_dict );
 
       LOG_EXIT();
    }
@@ -274,17 +275,19 @@ namespace tao {
    }
 
    void
-   filter::_read_options( const options::xml_dict& dict,
-                          optional<const string&> prefix )
+   filter::_read_options( const options::xml_dict& global_dict )
    {
       LOG_ENTER();
 
       // Must perform the module read to get batch size.
-      _read_db_options( dict );
+      _read_db_options( global_dict );
+
+      // Read the prefix of the bandpass filters.
+      string prefix = global_dict.get<string>( "bandpassdatapath", "." );
 
       {
          // Get the wavelengths filename.
-         string filename = dict.get<string>( prefix.get()+":wavelengths","wavelengths.dat" );
+         string filename = _dict.get<string>( "wavelengths","wavelengths.dat" );
          LOGDLN( "Using wavelengths filename \"", filename, "\"" );
 
          // Load the wavelengths.
@@ -293,7 +296,7 @@ namespace tao {
 
       {
          // Split out the filter filenames.
-	 list<string> filenames = dict.get_list<string>( prefix.get()+":bandpass-filters" );
+	 list<string> filenames = _dict.get_list<string>( "bandpass-filters" );
 
          // Allocate room for the filters.
          _filters.reallocate( filenames.size() );
@@ -315,12 +318,10 @@ namespace tao {
 	 unsigned ii = 0;
 	 for( const auto fn : filenames )
 	 {
-            _load_filter( fn );
+            _load_filter( prefix + "/" + fn );
 
 	    // Store the field names.
-	    auto it = std::find( fn.rbegin(), fn.rend(), '.' );
-	    it++;
-	    _filter_names[ii] = string( fn.begin(), it.base() );
+	    _filter_names[ii] = fn;
 	    LOGDLN( "Adding filter by the name: ", _filter_names[ii] );
 	    ++ii;
 	 }
@@ -328,7 +329,7 @@ namespace tao {
       LOGDLN( "Filter integrals: ", _filt_int );
 
       // Get the Vega filename and perform processing.
-      _process_vega( dict.get<string>( prefix.get()+":vega-spectrum","A0V_KUR_BB.SED" ) );
+      _process_vega( _dict.get<string>( "vega-spectrum","A0V_KUR_BB.SED" ) );
 
       LOG_EXIT();
    }
@@ -369,6 +370,8 @@ namespace tao {
    void
    filter::_load_filter( const string& filename )
    {
+      LOGDLN( "Loading bandpass filter at: ", filename );
+
       std::ifstream file( filename, std::ios::in );
       ASSERT( file.is_open() );
 

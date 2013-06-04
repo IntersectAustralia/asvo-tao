@@ -20,7 +20,8 @@ namespace tao {
       ///
       static
       module*
-      factory( const string& name );
+      factory( const string& name,
+	       pugi::xml_node base );
 
    public:
 
@@ -29,18 +30,8 @@ namespace tao {
       ///
       /// @param[in] name The unique name for this module.
       ///
-      empty( const string& name = string() );
-
-      ///
-      /// Declare all dictionary options.
-      ///
-      /// @param[in,out] dict Options dictionary to prepare.
-      /// @param[in] prefix An optional prefix to apply to options.
-      ///
-      virtual
-      void
-      setup_options( options::xml_dict& dict,
-                     optional<const string&> prefix = optional<const string&>() );
+      empty( const string& name = string(),
+	     pugi::xml_node base = NULL );
 
       ///
       /// Read options, perform required setup.
@@ -50,8 +41,7 @@ namespace tao {
       ///
       virtual
       void
-      initialise( const options::xml_dict& dict,
-                  optional<const string&> prefix=optional<const string&>() );
+      initialise( const options::xml_dict& global_dict );
 
       ///
       /// Execute.

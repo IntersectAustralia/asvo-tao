@@ -6,15 +6,19 @@ using namespace hpc;
 
 namespace tao {
 
-   module::module( const string& name )
+   module::module( const string& name,
+		   pugi::xml_node base )
       : _name( name ),
+	_base( base ),
+	_dict( base ),
+	_global_dict( NULL ),
 #ifdef MULTIDB
 	_db( NULL ),
 #endif
         _it( 0 ),
         _complete( false ),
         _connected( false ),
-	_num_restart_its( 10 ),
+	_num_restart_its( 1000 ),
 	_cur_restart_it( 0 )
    {
    }
@@ -81,19 +85,13 @@ namespace tao {
       LOG_EXIT();
    }
 
-  void
-  module::initialise( const options::xml_dict& dict,
-		      optional<const string&> prefix )
-  {
-      // Cache the dictinoary object for later.
-      _dict = &dict;
-  }
-
    void
-   module::initialise( const options::xml_dict& dict,
-                       const char* prefix )
+   module::initialise( const options::xml_dict& global_dict )
    {
-      initialise( dict, string( prefix ) );
+      // Store global dictionary.
+      _global_dict = &global_dict;
+
+      // Reset timers.
       _timer.reset();
       _db_timer.reset();
    }
@@ -129,6 +127,18 @@ namespace tao {
       return _name;
    }
 
+   const options::xml_dict&
+   module::local_dict() const
+   {
+      return _dict;
+   }
+
+   pugi::xml_node
+   module::local_xml_node()
+   {
+      return _base;
+   }
+
    double
    module::time() const
    {
@@ -142,26 +152,26 @@ namespace tao {
    }
 
    void
-   module::_read_db_options( const options::xml_dict& dict )
+   module::_read_db_options( const options::xml_dict& global_dict )
    {
       LOG_ENTER();
 
 #ifndef MULTIDB
       // Extract database details.
-      _dbtype = dict.get<string>( "settings:database:type","postgresql" );
-      _dbname = dict.get<string>( "database" );
+      _dbtype = global_dict.get<string>( "settings:database:type","postgresql" );
+      _dbname = global_dict.get<string>( "database" );
       if( _dbtype != "sqlite" )
       {
-         _dbhost = dict.get<string>( "settings:database:host" );
-         _dbport = dict.get<string>( "settings:database:port" );
-         _dbuser = dict.get<string>( "settings:database:user" );
-         _dbpass = dict.get<string>( "settings:database:password" );
+         _dbhost = global_dict.get<string>( "settings:database:host" );
+         _dbport = global_dict.get<string>( "settings:database:port" );
+         _dbuser = global_dict.get<string>( "settings:database:user" );
+         _dbpass = global_dict.get<string>( "settings:database:password" );
       }
-      _tree_pre = dict.get<string>( "settings:database:treetableprefix", "tree_" );
+      _tree_pre = global_dict.get<string>( "settings:database:treetableprefix", "tree_" );
 #endif
 
       // Read the batch size from the dictinary.
-      _batch_size = dict.get<unsigned>( "settings:database:batch-size",100 );
+      _batch_size = global_dict.get<unsigned>( "settings:database:batch-size",100 );
       LOGDLN( "Setting batch size to ", _batch_size );
 
       LOG_EXIT();
@@ -174,8 +184,8 @@ namespace tao {
 
 #ifdef MULTIDB
       // Fire up the multidb.
-      ASSERT( _dict );
-      _db = new multidb( *_dict );
+      ASSERT( _global_dict );
+      _db = new multidb( *_global_dict );
       _db->OpenAllConnections();
 #else
       LOGDLN( "Connecting to ", _dbtype, " database \"", _dbname, "\"" );
@@ -227,6 +237,8 @@ namespace tao {
    bool
    module::_db_cycle()
    {
+      LOG_ENTER();
+
       if( ++_cur_restart_it == _num_restart_its )
       {
 	 LOGDLN( "Reconnecting to database." );
@@ -237,6 +249,8 @@ namespace tao {
       }
       else
 	 return false;
+
+      LOG_EXIT();
    }
 
 }

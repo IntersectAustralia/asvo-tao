@@ -16,11 +16,13 @@ namespace tao {
    {
    public:
 
-      static module* factory( const string& name );
+      static module* factory( const string& name,
+			      pugi::xml_node base );
 
    public:
 
-      fits( const string& name = string() );
+      fits( const string& name = string(),
+	    pugi::xml_node base = pugi::xml_node() );
 
       virtual ~fits();
 
@@ -29,7 +31,7 @@ namespace tao {
       ///
       virtual
       void
-      initialise( const options::xml_dict& dict, optional<const string&> prefix = optional<const string&>() );
+      initialise( const options::xml_dict& global_dict );
 
       ///
       ///
@@ -50,7 +52,8 @@ namespace tao {
       void _write_field( const tao::galaxy& galaxy,const string& field,unsigned idx, int ColIndex);
       void _write_table_header(const tao::galaxy& galaxy);
 
-      void ReadFieldsInfo(const options::xml_dict& dict, optional<const string&> prefix = optional<const string&>());
+      void ReadFieldsInfo(const options::xml_dict& global_dict );
+
    protected:
       bool _isfirstgalaxy;
       bool _istableopened;

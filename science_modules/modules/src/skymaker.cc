@@ -11,13 +11,15 @@ namespace tao {
 
    // Factory function used to create a new skymaker module.
    module*
-   skymaker::factory( const string& name )
+   skymaker::factory( const string& name,
+		      pugi::xml_node base )
    {
-      return new skymaker( name );
+      return new skymaker( name, base );
    }
 
-   skymaker::skymaker( const string& name )
-      : module( name )
+   skymaker::skymaker( const string& name,
+		       pugi::xml_node base )
+      : module( name, base )
    {
    }
 
@@ -30,12 +32,11 @@ namespace tao {
    /// Initialise the module.
    ///
    void
-   skymaker::initialise( const options::xml_dict& dict,
-                         optional<const string&> prefix )
+   skymaker::initialise( const options::xml_dict& global_dict )
    {
       LOG_ENTER();
 
-      _read_options( dict, prefix );
+      _read_options( global_dict );
       _setup_list();
       _setup_conf();
 
@@ -188,48 +189,47 @@ namespace tao {
    }
 
    void
-   skymaker::_read_options( const options::xml_dict& dict,
-                            optional<const string&> prefix )
+   skymaker::_read_options( const options::xml_dict& global_dict )
    {
-      // Get the sub dictionary, if it exists.
-      //const options::dictionary& sub = prefix ? dict.sub( *prefix ) : dict;
+      // Cache the dictionary.
+      const options::xml_dict& dict = _dict;
 
       // What magnitude name are we interested in?
-      _mag_field = dict.get<string>( prefix.get()+":magnitude-field" );
-      _bulge_mag_field = dict.get<string>( prefix.get()+":bulge-magnitude-field" );
+      _mag_field = dict.get<string>( "magnitude-field" );
+      _bulge_mag_field = dict.get<string>( "bulge-magnitude-field" );
 
       // Get image dimensions.
-      _img_w = dict.get<unsigned>( prefix.get()+":image_width",1024 );
-      _img_h = dict.get<unsigned>( prefix.get()+":image_height",1024 );
+      _img_w = dict.get<unsigned>( "image_width",1024 );
+      _img_h = dict.get<unsigned>( "image_height",1024 );
       LOGDLN( "Image dimensions: ", _img_w, "x", _img_h );
 
       // Get origin ra,dec.
-      _ra0 = to_radians( dict.get<real_type>( prefix.get()+":origin_ra",0.25*M_PI ) );
-      _dec0 = to_radians( dict.get<real_type>( prefix.get()+":origin_dec",0.25*M_PI ) );
+      _ra0 = to_radians( dict.get<real_type>( "origin_ra",0.25*M_PI ) );
+      _dec0 = to_radians( dict.get<real_type>( "origin_dec",0.25*M_PI ) );
       LOGDLN( "Origin (radians): ", _ra0, ", ", _dec0 );
 
       // Get focal scale.
-      _foc_x = dict.get<real_type>( prefix.get()+":focal_x",1.0 );
-      _foc_y = dict.get<real_type>( prefix.get()+":focal_y",1.0 );
+      _foc_x = dict.get<real_type>( "focal_x",1.0 );
+      _foc_y = dict.get<real_type>( "focal_y",1.0 );
       LOGDLN( "Image offset: ", _foc_x, ", ", _foc_y );
 
       // Get image offset.
-      _img_x = dict.get<real_type>( prefix.get()+":image_offset_x",0.0 );
-      _img_y = dict.get<real_type>( prefix.get()+":image_offset_y",0.0 );
+      _img_x = dict.get<real_type>( "image_offset_x",0.0 );
+      _img_y = dict.get<real_type>( "image_offset_y",0.0 );
       LOGDLN( "Image offset: ", _img_x, ", ", _img_y );
 
       // Get pixel dimensions.
-      _pix_w = dict.get<real_type>( prefix.get()+":pixel_width",1.0 );
-      _pix_h = dict.get<real_type>( prefix.get()+":pixel_height",1.0 );
+      _pix_w = dict.get<real_type>( "pixel_width",1.0 );
+      _pix_h = dict.get<real_type>( "pixel_height",1.0 );
       LOGDLN( "Pixel dimensions: ", _pix_w, "x", _pix_h );
 
       // Get magnitude limits.
-      _min_mag = dict.get<real_type>( prefix.get()+":min_mag",7.0 );
-      _max_mag = dict.get<real_type>( prefix.get()+":max_mag",50.0 );
+      _min_mag = dict.get<real_type>( "min_mag",7.0 );
+      _max_mag = dict.get<real_type>( "max_mag",50.0 );
       LOGDLN( "Magnitude limits: ", _min_mag, ", ", _max_mag );
 
       // Flags.
-      _keep_files = dict.get<bool>( prefix.get()+":keep-files",false );
+      _keep_files = dict.get<bool>( "keep-files",false );
    }
 
    void

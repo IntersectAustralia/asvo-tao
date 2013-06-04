@@ -3,25 +3,20 @@
 namespace tao {
 
    module*
-   empty::factory( const string& name )
+   empty::factory( const string& name,
+		   pugi::xml_node base )
    {
-      return new empty( name );
+      return new empty( name, base );
    }
 
-   empty::empty( const string& name )
-      : module( name )
-   {
-   }
-
-   void
-   empty::setup_options( options::xml_dict& dict,
-                         optional<const string&> prefix )
+   empty::empty( const string& name,
+		 pugi::xml_node base )
+      : module( name, base )
    {
    }
 
    void
-   empty::initialise( const options::xml_dict& dict,
-                      optional<const string&> prefix )
+   empty::initialise( const options::xml_dict& global_dict )
    {
    }
 
