@@ -1,0 +1,16 @@
+Django==1.5.1
+selenium==2.32.0
+factory-boy==1.3.0
+South
+flup
+django-recaptcha
+django-form-utils
+django-piston
+django-nose
+nosexcover
+django-rules
+lxml
+django-extensions
+werkzeug
+breathe
+
