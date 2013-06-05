@@ -3,6 +3,7 @@ import sys,os
 import string
 from distutils.filelist import FileList
 import logging, logging.handlers
+import pyfits
 
 def ValidateAllSameExtension(FilesList):
     logging.info('Start Validating File List (Length and Extension)')
@@ -47,6 +48,39 @@ def HandleVOFiles(ListofFiles,OutputFileName):
     f.close()
     logging.info('Merging Done >> '+OutputFileName)
     return True
+
+def HandleFITSFiles(ListofFiles,OutputFileName):
+    if len(ListofFiles)==0:
+        return
+    logging.info('Merging Output for sub-task - FITS Files List')
+    logging.info('Output File Name : '+OutputFileName)
+        
+    TotalRowsCount=0;
+    for i in range(0,len(ListofFiles)):
+        Reader = pyfits.open(ListofFiles[i])
+        logging.info(ListofFiles[i]+" :("+ str(i)+"): "+str(Reader[1].data.shape[0]))
+        TotalRowsCount=TotalRowsCount+Reader[1].data.shape[0]
+        
+    
+    
+    Reader = pyfits.open(ListofFiles[0])       
+    hdu = pyfits.new_table(Reader[1].data, nrows=TotalRowsCount)
+    nrows=Reader[1].data.shape[0]
+    
+    for i in range(1,len(ListofFiles)):
+        logging.info('Merging File : '+ListofFiles[i])
+        
+        Reader = pyfits.open(ListofFiles[i])
+        for name in hdu.columns.names:            
+            hdu.data.field(name)[nrows:nrows+Reader[1].data.shape[0]]=Reader[1].data.field(name)
+        nrows=nrows+Reader[1].data.shape[0]
+            
+    
+    hdu.writeto(OutputFileName)
+    logging.info('Merging Done >> '+OutputFileName)
+    return True
+
+
 def HandleCSVFiles(ListofFiles,OutputFileName):    
     if len(ListofFiles)==0:
         return
@@ -72,12 +106,23 @@ def PrepareLog(OutputFolder):
     handler = logging.handlers.RotatingFileHandler(LOG_FILENAME, maxBytes=10485760, backupCount=5)
     handler.setFormatter(logging.Formatter('%(asctime)s - %(message)s'))
     TAOLoger.addHandler(handler)
-    return TAOLoger    
+    return TAOLoger
+def ProcessFiles(FilesList,OutputFileName):
+    if FilesList[0].split('.')[-2]=='csv':        
+        return HandleCSVFiles(FilesList,OutputFileName)
+    elif FilesList[0].split('.')[-2]=='xml':
+        return HandleVOFiles(FilesList,OutputFileName)
+    elif FilesList[0].split('.')[-2]=='fits':
+        return HandleFITSFiles(FilesList,OutputFileName)
+def RemoveFiles(FilesList): 
+    for DataFile in FilesList:
+        os.remove(DataFile)
+               
 if __name__ == '__main__':
     if len(sys.argv) != 3:
         exit(-100);
     CurrentFolderPath=sys.argv[1]
-    CurrentLogPath=sys.argv[1].replace("/output","/log")
+    CurrentLogPath=sys.argv[1]#.replace("/output","/log")
     SubJobIndex=sys.argv[2]
     TAOLoger=PrepareLog(CurrentLogPath) 
     logging.info('Merging Files in '+CurrentFolderPath)   
@@ -103,10 +148,8 @@ if __name__ == '__main__':
     FilesList=map[str(SubJobIndex)]
     FilesList.sort()        
     OutputFileName=".".join(FilesList[0].split('.')[0:-1])
-    if FilesList[0].split('.')[-2]=='csv':        
-        HandleCSVFiles(FilesList,OutputFileName)
-    elif FilesList[0].split('.')[-2]=='xml':
-        HandleVOFiles(FilesList,OutputFileName)
+    if (ProcessFiles(FilesList,OutputFileName)==True):
+        RemoveFiles(FilesList)
         
        
     
