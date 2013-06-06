@@ -239,6 +239,24 @@ class Job(models.Model):
             all_files += [JobFile(job_base_dir, os.path.join(root, filename)) for filename in files]
         return sorted(all_files, key=lambda job_file: job_file.file_name)
 
+    def files_tree(self):
+        if not self.is_completed():
+            raise Exception("can't look at files of job that is not completed")
+
+        job_base_dir = os.path.join(settings.FILES_BASE, self.output_path)
+
+        def traverse(path):
+            for fn in os.listdir(path):
+                child_path = os.path.join(path, fn)
+                if os.path.isdir(child_path):
+                    yield (child_path, traverse(child_path))
+                else:
+                    yield (child_path, None)
+
+        #for data in traverse(job_base_dir):
+        #    yield data
+        return traverse(job_base_dir)
+
     def username(self):
         """ used by api """
         return self.user.username
@@ -250,11 +268,7 @@ class Job(models.Model):
         return self.user.id == user.id
 
     def can_download_zip_file(self):
-        sum_size = 0
-        for file in self.files():
-            file_path = file.file_path 
-            sum_size += os.path.getsize(file_path)
-        return sum_size < settings.MAX_DOWNLOAD_SIZE
+        return True
 
     def save(self, *args, **kwargs):
         super(Job, self).save(*args, **kwargs)
@@ -268,7 +282,7 @@ class JobFile(object):
         self.file_size = os.path.getsize(self.file_path)
     
     def can_be_downloaded(self):
-        return self.file_size <= settings.MAX_DOWNLOAD_SIZE
+        return True
 
     def get_file_size(self):
         size = self.file_size
