@@ -39,7 +39,7 @@ generate_documentation() {
   source BUILD/bin/activate
   echo ">> BUILD virtual environment active - calling buildout"
   cd $DEP_DIR/build/asvo-tao/web
-  python bootstrap.py -v 1.7.0
+  python bootstrap.py 
   bin/buildout
   # now, we can generate documentation
   cd $DEP_DIR/build/asvo-tao/docs
