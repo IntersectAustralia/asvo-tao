@@ -141,3 +141,6 @@ class RecordFilterForm(BetterForm):
         version = module_xpath(xml_root, '//workflow/schema-version')
         if version == '2.0':
             return from_xml_2(cls, ui_holder, xml_root, prefix=prefix)
+        else:
+            return cls(ui_holder, {}, prefix=prefix)
+
