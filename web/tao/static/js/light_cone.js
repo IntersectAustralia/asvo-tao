@@ -488,6 +488,14 @@ jQuery(document).ready(function($) {
         var galaxy_model_id = $this.find(':selected').attr('data-galaxy_model_id');
         show_galaxy_model_info(galaxy_model_id);
         var use_default = !update_filter_options.initializing || !bound;
+        if (use_default) {
+            var catalogue_geometry_value = $(lc_id('catalogue_geometry')).val();
+            if (catalogue_geometry_value == "box") {
+                var simulation_box_size = $(lc_id('number_of_light_cones')).data("simulation-box-size");
+                $(lc_id('box_size')).val(simulation_box_size);
+                $(lc_id('box_size')).change();
+            }
+        }
         update_filter_options(true, use_default); // triggers filter.change
         update_filter_options.initializing = false;
         update_output_options();
@@ -794,7 +802,17 @@ jQuery(document).ready(function($) {
 
     $(lc_id('box_size')).change(function(evt){
         var $this = $(this);
-        var box_size_value = $this.val();
+        var box_size_value = parseFloat($this.val());
+        var max_box_size = parseFloat($(lc_id('number_of_light_cones')).data("simulation-box-size"));
+        if (isNaN(box_size_value)) {
+            show_error($(lc_id('box_size')),'Box size must be a number');
+            return false;
+        }
+        if (!isNaN(max_box_size) && parseFloat(box_size_value) > parseFloat(max_box_size)) {
+            show_error($(lc_id('box_size')),'Box size greater than simulation\'s box size');
+            return false;
+        }
+        show_error($(lc_id('box_size')), null);
         fill_in_summary('light_cone', 'box_size', box_size_value);
     });
 
@@ -864,6 +882,8 @@ jQuery(document).ready(function($) {
             var use_default = !update_filter_options.initializing || !bound;
             update_filter_options(false, use_default); // triggers filter.change
         }
+        $('#sed_params').slideToggle();
+        $('#sed_info').slideToggle();
     });
 
     $('#id_output_format-supported_formats').change(function(evt){

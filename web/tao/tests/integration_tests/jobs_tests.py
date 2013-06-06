@@ -239,51 +239,7 @@ class JobTest(LiveServerTest):
         self.visit('view_job', completed_job.id)
 
         self.assert_page_has_content('Download zip file')
-        
-    @override_settings(MAX_DOWNLOAD_SIZE=40)
-    def test_large_zip_file_not_displayed(self):
-        self.login(self.username, self.password)
-        parameters = self.make_xml_parameters()
-        completed_job = JobFactory.create(user=self.user, status=Job.COMPLETED, output_path=self.output_paths[1], parameters=parameters)
-        self.visit('view_job', completed_job.id)
-        
-        self.assert_page_does_not_contain('Download zip file')
-        self.assert_page_has_content('Zip file exceeds maximum download size.')
-    
-    @override_settings(MAX_DOWNLOAD_SIZE=10)
-    def test_large_file_not_downloadable(self):
-        """ Job output files larger than the download limit gets displayed, but are not downloadable.
-        """
-        self.login(self.username, self.password)
-        parameters = self.make_xml_parameters()
-        large_completed_job = JobFactory.create(user=self.user, status=Job.COMPLETED, output_path=self.output_paths[1], parameters=parameters)
-        self.visit('view_job', large_completed_job.id)
-        
-        for file_name in self.file_names_to_contents2.keys():
-            file_size = helper.get_file_size(self.dir_paths[1], file_name)
-            print file_name + " (" + file_size + ". File size exceeds download limit.)"
-            self.assert_page_has_content(file_name + " (" + file_size + ". File size exceeds download limit.)")
 
-        for file_name in self.file_names_to_contents2.keys():
-            self.visit('get_file', large_completed_job.id, file_name)
-            self.assert_page_has_content('Forbidden')
-
-    @override_settings(MAX_DOWNLOAD_SIZE=10)
-    def test_small_file_downloads(self):
-        self.login(self.username, self.password)
-        parameters = self.make_xml_parameters()
-        small_completed_job = JobFactory.create(user=self.user, status=Job.COMPLETED, output_path=self.output_paths[0], parameters=parameters)
-        self.visit('view_job', small_completed_job.id)
-        
-        for file_name in self.file_names_to_contents.keys():
-            self.assert_page_has_content(file_name)
-            self.assert_page_does_not_contain("(File size exceeds download limit.)")
-        
-        for file_name in self.file_names_to_contents.keys():
-            self.visit('get_file', small_completed_job.id, file_name)
-            download_path = os.path.join(self.DOWNLOAD_DIRECTORY, os.path.basename(file_name.replace('/','_')))
-            self.assertTrue(os.path.exists(download_path))
-        
     def _extract_zipfile_to_dir(self, download_path, dirname):
         fullpathhandle = open(download_path, 'r')
         zipfile_obj = zipfile.ZipFile(fullpathhandle)

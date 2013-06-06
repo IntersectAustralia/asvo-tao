@@ -217,6 +217,8 @@ MODULES = (
     'sed',
 )
 
+INITIAL_JOB_STATUS = 'HELD'
+
 INSTALLED_APPS += tuple(('taoui_' + module_name for module_name in MODULES))
 
 OUTPUT_FORMATS = [
@@ -228,4 +230,4 @@ OUTPUT_FORMATS = [
 
 MODULE_INDICES = {'light_cone': '1', 'sed': '2', 'record_filter': '3', 'output_format': '4'}
 
-TAO_VERSION = '0.21.2'
+TAO_VERSION = '0.21.4'
