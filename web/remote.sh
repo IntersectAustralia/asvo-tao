@@ -15,8 +15,6 @@ unpack() {
 }
 
 copy_files() {
-  echo "Backing up database in $TARGET_BACKUP/dump.py. Use to restore if something goes wrong"
-  bin/django dumpscript > $TARGET/dump.py
   test -d $TARGET_BACKUP && rm -rf $TARGET_BACKUP
   mv $TARGET $TARGET_BACKUP
   mkdir -p $TARGET
@@ -32,6 +30,8 @@ rebuild() {
 }
 
 db_update() {
+  echo "Backing up database in $TARGET_BACKUP/dump.py. Use to restore if something goes wrong"
+  bin/django dumpscript > $TARGET_BACKUP/dump.py
   echo "Updating DB..."
   bin/django syncdb
   bin/django migrate
