@@ -12,7 +12,7 @@ echo "Setting up virtualenv in $WORKSPACE"
 curl -O https://pypi.python.org/packages/source/v/virtualenv/virtualenv-1.9.tar.gz
 tar xvzf virtualenv-1.9.tar.gz
 cd virtualenv-1.9
-python virtualenv.py ../TAO
+/usr/bin/env python26 virtualenv.py ../TAO
 cd ../TAO/bin
 cat activate - > activate-qa <<EOF
 export DJANGO_SETTINGS_MODULE=tao.test
