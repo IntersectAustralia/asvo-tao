@@ -19,5 +19,7 @@ export DJANGO_SETTINGS_MODULE=tao.test
 EOF
 chmod a+x activate-qa
 source activate-qa
+cd $WORKSPACE/
+pip install -r tao.pip.reqs
 cd $WORKSPACE/web
 ./manage.py test tao -v2
