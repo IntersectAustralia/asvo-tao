@@ -136,6 +136,23 @@ class ParseXMLParameters(object):
         DBElement.text="none" 
              
         self.tree.xpath("/ns:tao",namespaces={'ns':self.NameSpace})[0].append(DBElement)
+        
+        nodes=self.Options['Torque:Nodes']        
+        ppn=self.Options['Torque:ProcessorNode']
+        queuename=self.Options['Torque:JobsQueue']
+        
+        DBElement=ET.Element("{"+self.NameSpace+"}queue")        
+        DBElement.text=queuename            
+        self.tree.xpath("/ns:tao",namespaces={'ns':self.NameSpace})[0].append(DBElement)
+        
+        DBElement=ET.Element("{"+self.NameSpace+"}nodes")        
+        DBElement.text=str(nodes)            
+        self.tree.xpath("/ns:tao",namespaces={'ns':self.NameSpace})[0].append(DBElement)
+        
+        DBElement=ET.Element("{"+self.NameSpace+"}processorpernode")        
+        DBElement.text=str(ppn)            
+        self.tree.xpath("/ns:tao",namespaces={'ns':self.NameSpace})[0].append(DBElement)
+        
                 
 if __name__ == '__main__':
      [Options]=settingReader.ParseParams("settings.xml")
