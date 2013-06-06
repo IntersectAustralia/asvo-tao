@@ -129,7 +129,7 @@ class Form(BetterForm):
     SUMMARY_TEMPLATE = 'taoui_light_cone/summary.html'
     LABEL = 'General Properties'
 
-    catalogue_geometry = forms.ChoiceField(choices=[(CONE, 'Light-Cone'), (BOX, 'Box')])
+    catalogue_geometry = forms.ChoiceField(choices=[(BOX, 'Box'), (CONE, 'Light-Cone'), ])
 
     redshift_max = forms.DecimalField(required=False, label=_('Redshift Max'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
     redshift_min = forms.DecimalField(required=False, label=_('Redshift Min'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
@@ -231,6 +231,8 @@ class Form(BetterForm):
         version = module_xpath(xml_root, '//workflow/schema-version')
         if version == '2.0':
             return from_xml_2(cls, ui_holder, xml_root, prefix=prefix)
+        else:
+            return cls(ui_holder, prefix=prefix)
 
     @classmethod
     def _map_elems(cls, xml_root, data_set):

@@ -384,6 +384,10 @@ color: #333; cursor: pointer; display: inline-block; font-family: inherit; font-
 
 #id_light_cone-output_properties-table.ui-resizable {
     width: 500px;
+    height: 300px;
+}
+#id_sed-band_pass_filters-table.ui-resizable {
+    height: 300px;
 }
 
 /*Left light cone output properties table*/

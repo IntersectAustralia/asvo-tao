@@ -31,7 +31,7 @@ namespace tao {
    {
       LOG_ENTER();
 
-      _fn = global_dict.get<string>( "outputdir" ) + "/" + _dict.get<string>( "filename" );
+      _fn = global_dict.get<string>( "outputdir" ) + "/" + _dict.get<string>( "filename" ) + "." + mpi::rank_string();
       _fields = _dict.get_list<string>( "fields" );
 
       // Open the file.

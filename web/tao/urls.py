@@ -37,7 +37,7 @@ mock_galaxy_factory_patterns = patterns('tao.views.mock_galaxy_factory',
 job_patterns = patterns('tao.views.jobs',
     url(r'^$', 'index', name='job_index'),
     url(r'^(?P<id>\d+)$', 'view_job', name='view_job'),
-    url(r'^(?P<id>\d+)/file/(?P<filepath>.+)$', 'get_file', name='get_file'),
+    url(r'^(?P<id>\d+)/file/(?P<file_path>.+)$', 'get_file', name='get_file'),
     url(r'^(?P<id>\d+)/download_zip$', 'get_zip_file', name='get_zip_file'),
 )
 
