@@ -1,8 +1,6 @@
-****************
-TAO User's Guide
-****************
-
-Home page of user's guide.
+************
+User's Guide
+************
 
 A number of guiding principles and assumptions have been adopted in the design of TAO:
 
@@ -15,4 +13,13 @@ To get the best value from TAO it is recommended that you follow the high level 
 
 #. Develop your query using the mini- version of the Dataset
 #. After confirming that the query is returning the required data (output properties, bandpass filters, etc.), re-run the query of the full Dataset.
+
+Detailed information on using TAO is available in the sections listed below.
+
+.. toctree::
+   :maxdepth: 1
+
+   register
+
+
 
