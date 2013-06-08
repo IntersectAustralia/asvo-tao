@@ -43,7 +43,7 @@
                         {% if user.is_staff %}
                             <li><a href="{% url 'admin_index' %}">Admin</a></li>
                         {% endif %}
-                        <li><a href="{% static 'docs/index.html' %}">About</a></li>
+                        <li><a href="{% static 'docs/index.html' %}">Documentation</a></li>
                         <li class="{% if tab == 'support' %}active{% endif %}"><a id="id-support" href="{%  url 'support_page' %}">Support</a></li>
                     </ul>
                     <p class="navbar-text pull-right">

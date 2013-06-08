@@ -15,6 +15,7 @@ Contents:
 
    project/index
    user-manual/index
+   bpfilters/index
    developers/index
    installation/index
    api/web/modindex
