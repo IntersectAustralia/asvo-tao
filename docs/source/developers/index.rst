@@ -1,8 +1,15 @@
 Developer's guide
 *****************
 
-This is currently more of a dumping ground than an organised guide - it should improve
-over time.
+This is currently more of a dumping ground than an organised guide - it should improve over time.
+
+.. toctree::
+   :maxdepth: 2
+
+   devenv
+   mysql
+   macnotes
+
 
 =============
 Galaxy Models
