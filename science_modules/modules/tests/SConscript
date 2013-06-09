@@ -14,7 +14,6 @@ suites = [
     ('filter_suite.t.hh', 'filter.cc', 'sed.cc', 'lightcone.cc', 'BSPTree.cc', 'GrahamScanConvexHull.cpp'),
     ('BSPTree_Test.hh', 'BSPTree.cc'),
     ('clip_suite.t.hh',),
-    ('diff_suite.t.hh',),
     ('geometry_iterator.t.hh', 'GrahamScanConvexHull.cpp'),
     ('MultiDB_Test.hh'),
 ]
