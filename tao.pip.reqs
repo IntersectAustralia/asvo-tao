@@ -11,9 +11,8 @@ nosexcover
 django-rules
 lxml
 django-extensions
-djangorecipe
 werkzeug
 breathe
 MySQL_python
--e git://github.com/IntersectAustralia/SpiderOak-zipstream.git#egg=zipstream
+-e git+https://github.com/IntersectAustralia/SpiderOak-zipstream.git#egg=zipstream
 
