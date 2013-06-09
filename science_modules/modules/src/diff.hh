@@ -3,7 +3,8 @@
 
 namespace tao {
 
-   template< class InputIterator >
+   template< class InputIterator,
+             class OutputIterator >
    void
    differentiate( InputIterator func_begin,
 		  const InputIterator& func_end,

@@ -1,5 +1,6 @@
 #include <cxxtest/TestSuite.h>
 #include <cxxtest/GlobalFixture.h>
+#include <libhpc/containers/vector.hh>
 #include "tao/modules/diff.hh"
 
 using namespace hpc;
@@ -18,7 +19,7 @@ public:
    void test_empty()
    {
       vector<double> func, diff;
-      differentate( func.begin(), func.end(), diff.begin(), 1 );
+      differentiate( func.begin(), func.end(), diff.begin(), 1 );
    }
 
    ///
@@ -28,10 +29,10 @@ public:
    {
       vector<double> func( 1 ), diff( 1 );
       func[0] = 2;
-      func[1] = 0;
-      differentate( func.begin(), func.end(), diff.begin(), 1 );
+      diff[0] = 0;
+      differentiate( func.begin(), func.end(), diff.begin(), 1 );
       TS_ASSERT_EQUALS( func[0], 2 );
-      TS_ASSERT_EQUALS( func[1], 0 );
+      TS_ASSERT_EQUALS( diff[0], 0 );
    }
 
    ///
@@ -41,7 +42,7 @@ public:
    {
       vector<double> func( 10 ), diff( 10 );
       std::fill( func.begin(), func.end(), 4 );
-      differentate( func.begin(), func.end(), diff.begin(), 1 );
+      differentiate( func.begin(), func.end(), diff.begin(), 1 );
       for( auto val : func )
       {
 	 TS_ASSERT_EQUALS( val, 4 );
@@ -59,7 +60,7 @@ public:
    {
       vector<double> func( 10 ), diff( 10 );
       std::iota( func.begin(), func.end(), 3 );
-      differentate( func.begin(), func.end(), diff.begin(), 1 );
+      differentiate( func.begin(), func.end(), diff.begin(), 1 );
       for( unsigned ii = 0; ii < 10; ++ii )
       {
 	 TS_ASSERT_DELTA( func[ii], 3 + ii, 1e-4 );
@@ -77,7 +78,7 @@ public:
    {
       vector<double> func( 10 ), diff( 10 );
       std::iota( func.begin(), func.end(), 3 );
-      differentate( func.begin(), func.end(), diff.begin(), 2 );
+      differentiate( func.begin(), func.end(), diff.begin(), 2 );
       for( unsigned ii = 0; ii < 10; ++ii )
       {
 	 TS_ASSERT_DELTA( func[ii], 3 + ii, 1e-4 );
@@ -94,16 +95,18 @@ public:
    void test_quadratic()
    {
       vector<double> func( 10 ), diff( 10 );
-      for( unsigned ii = 0; ii < 10; ++ii )
+      for( int ii = 0; ii < 10; ++ii )
 	 func[ii] = (ii - 5)*(ii - 5);
-      differentate( func.begin(), func.end(), diff.begin(), 1 );
-      for( unsigned ii = 0; ii < 10; ++ii )
+      differentiate( func.begin(), func.end(), diff.begin(), 1 );
+      for( int ii = 0; ii < 10; ++ii )
       {
 	 TS_ASSERT_DELTA( func[ii], (ii - 5)*(ii - 5), 1e-4 );
       }
-      for( unsigned ii = 0; ii < 10; ++ii )
+      TS_ASSERT_DELTA( diff[0], -9, 1e-4 );
+      for( int ii = 1; ii < 9; ++ii )
       {
 	 TS_ASSERT_DELTA( diff[ii], 2*(ii - 5), 1e-4 );
       }
+      TS_ASSERT_DELTA( diff[9], 7, 1e-4 );
    }
 };
