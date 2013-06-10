@@ -10,6 +10,9 @@ Edit bin/activate and add a line indicating which settings file to use by defaul
 
    $ cat >> activate <<EOF
    export DJANGO_SETTINGS_MODULE=development
+   export TAOBIN="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+   export TAOHOME=`dirname $TAOBIN`
+   export PYTHONPATH=$PYTHONPATH:$TAOHOME/asvo-tao
    EOF
    $ source activate
 

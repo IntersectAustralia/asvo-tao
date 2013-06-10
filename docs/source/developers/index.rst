@@ -10,6 +10,9 @@ This is currently more of a dumping ground than an organised guide - it should i
    devenv
    mysql
    macnotes
+   ../installation/index
+   ../api/web/modindex
+   ../api/modules/modindex
 
 
 =============

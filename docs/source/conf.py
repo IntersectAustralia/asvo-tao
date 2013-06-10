@@ -55,7 +55,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'All Sky Virtual Observatory'
+project = u'Theoretical Astrophysical Observatory'
 copyright = u'2013, ASVO Team'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -179,7 +179,7 @@ html_static_path = ['_static']
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'AllSkyVirtualObservatorydoc'
+htmlhelp_basename = 'taodoc'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -198,8 +198,8 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'AllSkyVirtualObservatory.tex', u'All Sky Virtual Observatory Documentation',
-   u'ASVO Team', 'manual'),
+  ('index', 'TheoreticalAstrophysicalObservatory.tex', u'Theoretical Astrophysical Observatory Documentation',
+   u'TAO Team', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -228,8 +228,8 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'allskyvirtualobservatory', u'All Sky Virtual Observatory Documentation',
-     [u'ASVO Team'], 1)
+    ('index', 'theoreticalastrophysicalobservatory', u'Theoretical Astrophysical Observatory Documentation',
+     [u'TAO Team'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -242,8 +242,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'AllSkyVirtualObservatory', u'All Sky Virtual Observatory Documentation',
-   u'ASVO Team', 'AllSkyVirtualObservatory', 'One line description of project.',
+  ('index', 'TheoreticalAstrophysicalObservatory', u'Theoretical Astrophysical Observatory Documentation',
+   u'TAO Team', 'TheoreticalAstrophysicalObservatory', 'One line description of project.',
    'Miscellaneous'),
 ]
 
@@ -260,10 +260,10 @@ texinfo_documents = [
 # -- Options for Epub output ---------------------------------------------------
 
 # Bibliographic Dublin Core info.
-epub_title = u'All Sky Virtual Observatory'
-epub_author = u'ASVO Team'
-epub_publisher = u'ASVO Team'
-epub_copyright = u'2013, ASVO Team'
+epub_title = u'Theoretical Astrophysical Observatory'
+epub_author = u'TAO Team'
+epub_publisher = u'TAO Team'
+epub_copyright = u'2013, TAO Team'
 
 # The language of the text. It defaults to the language option
 # or en if the language is not set.
