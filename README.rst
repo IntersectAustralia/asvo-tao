@@ -7,6 +7,8 @@ Description
 
 The Theoretical Astrophysical Obvservatory (TAO) is a service hosted and supported by the `Centre for Astrophysics and Supercomputing <http://astronomy.swin.edu.au/>`_ at the `Swinburne University of Technology <http://www.swinburne.edu.au/>`_ to facilitate research in to the galaxy formation and the evolution of the universe.
 
+For more information about TAO and the ASVO, please see the `ASVO Web Site <http://asvo.org.au>`_.
+
 Web UI
 ======
 
@@ -15,13 +17,16 @@ The TAO UI is a Python / Django hosted application.  The installation instructio
 Major Dependencies
 ------------------
 
-========== ========
-Module     Version
-========== ========
-Python     >= 2.6.5
-virtualenv >= 1.9.1
-Apache
-========== ========
+================== ========
+Module             Version
+================== ========
+libxml2-dev
+libxslt-dev
+libmysqlclient-dev
+Python             >= 2.6.5
+virtualenv         >= 1.9.1
+Apache (optional)
+================== ========
 
 The remaining python modules are listed in tao.pip.reqs.
 
