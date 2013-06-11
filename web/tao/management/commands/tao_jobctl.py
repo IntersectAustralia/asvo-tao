@@ -41,8 +41,8 @@ Note that the description and xml parameter file can contain two variables as de
                     help="job description with i parameter"),
         make_option("--status", default="SUBMITTED",
                     dest='status',
-                    help=('initial status: Held, Submitted, Queued, '
-                          'In_Progress, Completed')),
+                    help=('status: Held, Submitted, Queued, '
+                          'In_Progress, Completed.  Special values: All, NotCompleted')),
         make_option("--count", default=1,
                     dest='count',
                     help=('the number of jobs to generate. '
@@ -107,7 +107,9 @@ Note that the description and xml parameter file can contain two variables as de
         jobs = Job.objects.all()
         if len(args) > 0:
             jobs = jobs.filter(id__in=args)
-        if status != 'ALL':
+        if status == 'NOTCOMPLETED':
+            jobs = jobs.filter().exclude(status='COMPLETED')
+        elif status != 'ALL':
             # Check that a valid status has been requested
             self.valid_states.index(status)
             jobs = jobs.filter(status=status)

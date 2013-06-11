@@ -1,6 +1,5 @@
 #!/bin/bash
 
-export PATH=../web/bin:$PATH
 rm -rf build/*
 rm -rf doxyxml/*
 doxygen Doxyfile.conf
