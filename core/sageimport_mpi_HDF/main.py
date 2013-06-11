@@ -14,7 +14,7 @@ import time
 import SAGEReader # Read the SAGE Files into memory
 import settingReader # Read the XML settings
 import PGDBInterface # Interaction with the postgreSQL DB
-import preprocessfiles # Perform necessary pre-processing (e.g. Create Tables)
+import PreprocessData # Perform necessary pre-processing (e.g. Create Tables)
 import AnalyzeTables
 import UpdateMasterTables
 import logging
@@ -61,25 +61,21 @@ if __name__ == '__main__':
     ## This section will be executed only by the server ... All the nodes must wait until this is performed
     if CommRank==0:
         
-
-       
-        
-       
-        
+         
         logging.info("Pre-processing data")
 
         ## 1) Init the class with DB option 
-        PreprocessFilesObj=preprocessfiles.PreprocessFiles(CurrentSAGEStruct,Options)
+        PreprocessDataObj=PreprocessData.PreprocessData(CurrentSAGEStruct,Options)
         ## 2) Open connection to the DB (ToMasterDB=True - Open connection to a default DB before creating the new DB)
-        PreprocessFilesObj.InitDBConnection(True)        
+        PreprocessDataObj.InitDBConnection(True)        
         ## 3) Create New DB (If a DB with the same name exists user will be asked if he want to drop it)
-        PreprocessFilesObj.CreateDB()
+        PreprocessDataObj.CreateDB()
         ## 4) a) Create "DataFiles" Table
         ##    b) read the header of each file and fill the table with the metadata ( the initial status of all the files is un-processed)
         ##    c) Each table will have an associated Table ID in this step 
-        PreprocessFilesObj.ProcessAllFiles()
+        PreprocessDataObj.FillTreeProcessingTable()
         ## 6) Close the DB connection
-        PreprocessFilesObj.DBConnection.CloseConnections()
+        PreprocessDataObj.DBConnection.CloseConnections()
             
         ######################################################################################################
         RegenerateTablesList=RegenerateFileList
@@ -88,13 +84,13 @@ if __name__ == '__main__':
             
         if RegenerateTablesList=='yes':
             ## 1) Init Class
-            PreprocessFilesObj=preprocessfiles.PreprocessFiles(CurrentSAGEStruct,Options)
+            PreprocessDataObj=PreprocessData.PreprocessData(CurrentSAGEStruct,Options)
             ## 2) Open Database connection
-            PreprocessFilesObj.InitDBConnection(False)
+            PreprocessDataObj.InitDBConnection(False)
             ## 3) Create All tables required for the importing of the current dataset using the information in "DataFiles" table
-            PreprocessFilesObj.GenerateAllTables()
+            PreprocessDataObj.GenerateAllTables()
             ## 4) Close the DB connection
-            PreprocessFilesObj.DBConnection.CloseConnections()
+            PreprocessDataObj.DBConnection.CloseConnections()
     
         ## Tell All the other processes that we are done and will start processing
         Mesg={"ProcessingDone":True}

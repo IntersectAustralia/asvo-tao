@@ -1,4 +1,5 @@
 import psycopg2
+from psycopg2 import extras
 import math
 import string
 import sys
@@ -35,22 +36,24 @@ class DBConnection(object):
             serverinfo['password']=self.Options['PGDB:serverInfo'+str(i)+':password']
             serverinfo['port']=int(self.Options['PGDB:serverInfo'+str(i)+':port'])
             self.DBservers.append(serverinfo)  
-            ConnectionStr="host="+serverinfo['serverip']+" user="+serverinfo['username']+" password="+serverinfo['password']+" port="+serverinfo['port']+" dbname="+self.DBName    
+            ConnectionStr="host="+serverinfo['serverip']+" user="+serverinfo['username']+" password="+serverinfo['password']+" port="+str(serverinfo['port'])+" dbname="+self.DBName    
             CurrentConnection=psycopg2.connect(ConnectionStr)
+            CurrentConnection.autocommit=True
             self.CurrentConnections.append(CurrentConnection)
-            self.ActiveCursors.append(conn.cursor())
+            self.ActiveCursors.append(CurrentConnection.cursor(cursor_factory=psycopg2.extras.DictCursor))
         logging.info('Connection to DB is open...')
         self.ConnectionOpened=True
     
     def AutoRestartDBConnections(self):
         self.IncrementQueriesCount()
-        if self.QueriesCount>=50:
+        if self.QueriesCount>=500:
            self.RestartConnection()
            self.QueriesCount=0
             
     def IncrementQueriesCount(self):
         if self.DBName!="postgres":
             self.QueriesCount=self.QueriesCount+1
+    
     def RestartConnection(self):
         if self.DBName!="postgres" and self.ConnectionOpened==True:
             logging.info("Restarting DB Connections")
@@ -76,18 +79,19 @@ class DBConnection(object):
             return -1
         else:
             return -1    
-    def ExecuteNoQuerySQLStatment_On_AllServers(self,SQLStatment):
+    
+    def ExecuteNoQuerySQLStatment_On_AllServers(self,SQLStatment,SQLParamsDict={}):
         for i in range(0,self.serverscount):
-            self.ExecuteNoQuerySQLStatment(SQLStatment, i)
+            self.ExecuteNoQuerySQLStatment(SQLStatment,SQLParamsDict, i)
     
     def MapTableIDToServerIndex(self,TableID):
         return TableID%self.serverscount
     
-    def ExecuteNoQuerySQLStatment(self,SQLStatment,DatabaseIndex=0):
+    def ExecuteNoQuerySQLStatment(self,SQLStatment,SQLParamsDict={},DatabaseIndex=0):
         try:            
             self.AutoRestartDBConnections()
             SQLStatment=string.lower(SQLStatment)  
-            self.CurrentConnections[DatabaseIndex].query(SQLStatment)              
+            self.ActiveCursors[DatabaseIndex].execute(SQLStatment,SQLParamsDict)              
         except Exception as Exp:
             logging.info(">>>>>Error While Executing NoQuery Statement On Server ("+str(DatabaseIndex)+")")
             logging.info(type(Exp))
@@ -96,11 +100,12 @@ class DBConnection(object):
             logging.info("Current SQL Statement =\n"+SQLStatment)
             raw_input("PLease press enter to continue.....")
             
-    def ExecuteQuerySQLStatment(self,SQLStatment,DatabaseIndex=0):
+    def ExecuteQuerySQLStatment(self,SQLStatment,SQLParamsDict={},DatabaseIndex=0):
         
         try:
             self.AutoRestartDBConnections()           
-            resultsList=self.CurrentConnections[DatabaseIndex].query(SQLStatment).getresult()            
+            self.ActiveCursors[DatabaseIndex].execute(SQLStatment,SQLParamsDict)
+            resultsList= self.ActiveCursors[DatabaseIndex].fetchall()           
             return resultsList
         except Exception as Exp:
             logging.info(">>>>>Error While Executing Query Statement On Server ("+str(DatabaseIndex)+")")
