@@ -1,15 +1,10 @@
-The All Sky Virtual Observatory
-*******************************
-
-Home page of the ASVO project.
-
-The Theoretical Astrophysical Observatory (TAO)
-===============================================
+Introduction
+************
 
 The Theoretical Astrophysical Observatory (TAO) will house queryable data from
 multiple popular cosmological simulations (currently the Millennium Simulation, 
-Bolshoi Simulation, GiggleZ Simulation suite) and galaxy formation models 
-(currently Croton et al. 2006, Somerville et al. 2008, Benson 2010) in a 
+with Bolshoi Simulation and GiggleZ Simulation planned) and galaxy formation models 
+(currently Croton et al. 2006 (SAGE), with Somerville et al. 2008 and Benson 2010 planned) in a 
 database that is optimised for rapid access. Query results can be funnelled 
 through additional "modules" (described below) and sent to a local supercomputer 
 for further processing and manipulation. All of this is accessible via the cloud 
@@ -36,9 +31,20 @@ Science: SED post-processing will vastly expand the wavelength coverage of all s
 Futures
 -------
 
-TAO has been designed to be extensible so that additional modules can be built and easily inserted into the data chain as needs require in the future (e.g. a module to perform lensing on the simulated data).
+TAO has been designed to be extensible so that additional modules can be built and easily inserted into the data chain as needs evolve in the future (e.g. a module to perform lensing on the simulated data).
 
 We are planning to add two more modules as part of the current project:
+
+#. Mock Image Generation Module
+#. Telescope Module
+
+For additional information about these modules, please see below.
+
+We also have a number of enhancements planned as part of the current project:
+
+* Job Quota Management.  This will calculate a maximum execution time for each job ensuring that the system is not blocked by jobs that are too large.  If you would like to run a job that exceeds your quota, please submit a support request.
+* Disk Quota Management.  The ability to delete mock catalogues that are no longer required will be added.
+
 
 Mock Image Generation Module
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^

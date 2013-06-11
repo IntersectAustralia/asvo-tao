@@ -14,8 +14,7 @@ namespace tao {
    calc_age_func( double x,
 		  void* param )
    {
-      // return 1.0/sqrt( omega/x + (1.0 - omega - omega_lambda) + omega_lambda*x*x );
-      return 1.0/sqrt( 0.25/x + (1.0 - 0.25 - 0.75) + 0.75*x*x );
+      return 1.0/sqrt( _omega/x + (1.0 - _omega - _omega_lambda) + _omega_lambda*x*x );
    }
 
    // Factory function used to create a new SED.
@@ -352,11 +351,15 @@ namespace tao {
 		   real_type z1 )
    {
       LOG_ENTER();
+      // real_type hubble = 3.2407789e-18;  // in h/sec (from SAGE)
+      // real_type unit_time = 3.08568e+24/1e5; // in seconds (from SAGE)
+      // real_type hub_fac = hubble*unit_time; // from SAGE
+      real_type hub_fac = _h;
       real_type z = z1 - z0;
       real_type res, abserr;
-      gsl_integration_qag( &_func, 1.0/(z + 1.0), 1.0, 1.0/_h, 1e-8,
+      gsl_integration_qag( &_func, 1.0/(z + 1.0), 1.0, 1.0/hub_fac, 1e-8,
 			   1000, GSL_INTEG_GAUSS21, _work, &res, &abserr );
-      res = (1.0/_h)*res;
+      res = 1.0/hub_fac*res;
       LOGDLN( "Calculated age as ", res, "." );
       LOG_EXIT();
       return res;

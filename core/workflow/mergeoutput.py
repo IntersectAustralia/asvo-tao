@@ -4,6 +4,9 @@ import string
 from distutils.filelist import FileList
 import logging, logging.handlers
 import pyfits
+import h5py
+import shutil
+import numpy
 
 def ValidateAllSameExtension(FilesList):
     logging.info('Start Validating File List (Length and Extension)')
@@ -46,6 +49,43 @@ def HandleVOFiles(ListofFiles,OutputFileName):
         Reader.close()
     f.write(Closing)    
     f.close()
+    logging.info('Merging Done >> '+OutputFileName)
+    return True
+def HandleHDF5Dataset(InputDataset,OutputDataset):
+    
+    StartPos= OutputDataset.shape
+    OutputDataset.resize( numpy.add(InputDataset.shape,OutputDataset.shape))
+    OutputDataset[StartPos[0]:]=InputDataset[:]
+    
+    
+def HandleHDF5Files(ListofFiles,OutputFileName):
+    if len(ListofFiles)==0:
+        return
+    logging.info('Merging Output for sub-task - HDF5 Files List')
+    logging.info('Output File Name : '+OutputFileName)
+        
+      
+    
+    shutil.copy(ListofFiles[0],OutputFileName)  
+    logging.info('First File Copied to  : '+OutputFileName)     
+    OutputFile=h5py.File(OutputFileName,'r+')
+    
+    for i in range(1,len(ListofFiles)):
+        logging.info('Merging File : '+ListofFiles[i])
+        
+        Reader = h5py.File(ListofFiles[i],'r')
+        for Dset in Reader:
+            
+            if type(Reader[Dset])==h5py._hl.group.Group:
+                for SubDataset in Reader[Dset]:                    
+                    HandleHDF5Dataset(Reader[Dset+"/"+SubDataset],OutputFile[Dset+"/"+SubDataset])
+            else:
+                HandleHDF5Dataset(Reader[Dset],OutputFile[Dset])
+        Reader.close()        
+           
+            
+    OutputFile.close()
+   
     logging.info('Merging Done >> '+OutputFileName)
     return True
 
@@ -108,12 +148,15 @@ def PrepareLog(OutputFolder):
     TAOLoger.addHandler(handler)
     return TAOLoger
 def ProcessFiles(FilesList,OutputFileName):
+    
     if FilesList[0].split('.')[-2]=='csv':        
         return HandleCSVFiles(FilesList,OutputFileName)
     elif FilesList[0].split('.')[-2]=='xml':
         return HandleVOFiles(FilesList,OutputFileName)
     elif FilesList[0].split('.')[-2]=='fits':
         return HandleFITSFiles(FilesList,OutputFileName)
+    elif FilesList[0].split('.')[-2]=='hdf5':
+        return HandleHDF5Files(FilesList,OutputFileName)
 def RemoveFiles(FilesList): 
     for DataFile in FilesList:
         os.remove(DataFile)
@@ -122,7 +165,7 @@ if __name__ == '__main__':
     if len(sys.argv) != 3:
         exit(-100);
     CurrentFolderPath=sys.argv[1]
-    CurrentLogPath=sys.argv[1]#.replace("/output","/log")
+    CurrentLogPath=sys.argv[1].replace("/output","/log")
     SubJobIndex=sys.argv[2]
     TAOLoger=PrepareLog(CurrentLogPath) 
     logging.info('Merging Files in '+CurrentFolderPath)   
@@ -148,7 +191,7 @@ if __name__ == '__main__':
     FilesList=map[str(SubJobIndex)]
     FilesList.sort()        
     OutputFileName=".".join(FilesList[0].split('.')[0:-1])
-    if (ProcessFiles(FilesList,OutputFileName)==True):
+    if (ProcessFiles(FilesList,OutputFileName)==True):        
         RemoveFiles(FilesList)
         
        

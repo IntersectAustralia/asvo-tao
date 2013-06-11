@@ -22,4 +22,5 @@ web/build
 web/tao/static/docs
 docs/build
 docs/doxyxml
+docs/source/bpfilters
 .idea
