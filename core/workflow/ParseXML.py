@@ -62,7 +62,9 @@ class ParseXMLParameters(object):
     def ModifySEDFilePath(self):
         self.SEDDir=self.Options['Torque:maindatapath']+"/sed/"        
         self.stellarpopulationmodel=self.tree.xpath("ns:workflow/ns:sed/ns:single-stellar-population-model",namespaces={'ns':self.NameSpace})
-        if len(self.stellarpopulationmodel)>0:
+        if len(self.stellarpopulationmodel)==0:
+            return
+        elif len(self.stellarpopulationmodel)>0:
             self.stellarpopulationmodel=self.stellarpopulationmodel[0]
         self.stellarpopulationmodel.text=self.SEDDir+ self.stellarpopulationmodel.text
     def ModifyFilterFilePath(self):
