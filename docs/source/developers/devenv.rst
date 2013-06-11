@@ -9,14 +9,14 @@ Edit bin/activate and add a line indicating which settings file to use by defaul
 .. code-block:: sh
 
    $ cat >> activate <<EOF
-   export DJANGO_SETTINGS_MODULE=development
-   export TAOBIN="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-   export TAOHOME=`dirname $TAOBIN`
-   export PYTHONPATH=$PYTHONPATH:$TAOHOME/asvo-tao
+   export DJANGO_SETTINGS_MODULE=tao.development
+   export PYTHONPATH=$PYTHONPATH:$VIRTUAL_ENV/asvo-tao
    EOF
    $ source activate
 
-If the database needs to be initialised:
+The developer configuration settings, tao.development, assumes that MySQL is installed and a tao user and database has been created.  See <TBS>.
+
+Initialise the database:
 
 .. code-block:: sh
 
