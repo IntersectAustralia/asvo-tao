@@ -1,4 +1,4 @@
-Developer's guide
+Developer's Guide
 *****************
 
 This is currently more of a dumping ground than an organised guide - it should improve over time.
@@ -13,6 +13,10 @@ This is currently more of a dumping ground than an organised guide - it should i
    ../installation/index
    ../api/web/modindex
    ../api/modules/modindex
+   lightcone
+   sed
+   mockimage
+   telescope
 
 
 =============

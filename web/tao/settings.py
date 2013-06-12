@@ -217,7 +217,7 @@ API_ALLOWED_IPS = (
                    '127.0.0.1',
                    )
 
-INITIAL_JOB_STATUS = 'HELD'
+INITIAL_JOB_STATUS = 'SUBMITTED'
 
 #
 # To avoid changing the directory structure until after we have confirmed
@@ -243,4 +243,4 @@ OUTPUT_FORMATS = [
 
 MODULE_INDICES = {'light_cone': '1', 'sed': '2', 'record_filter': '3', 'output_format': '4'}
 
-TAO_VERSION = '0.21.4'
+TAO_VERSION = '0.22.1'

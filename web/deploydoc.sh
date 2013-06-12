@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -e
+set -v
 
 TAG=$1
 
@@ -22,23 +23,35 @@ checkout() {
   test -d build && rm -rf build && echo "Removed existing build dir"
   mkdir build
   cd build
-  git clone -b master git@github.com:IntersectAustralia/asvo-tao.git
+  git clone -b master https://github.com/IntersectAustralia/asvo-tao.git
   cd asvo-tao
   git checkout $TAG
   rm -rf .git
   cd $DEP_DIR
 }
 
-generate_documentation() {
-  # have to generate infrastructure first
+environment_setup() {
+  echo ">> generating virtual environment."
   cd $DEP_DIR/build
-  virtualenv BUILD
-  source BUILD/bin/activate
-  echo ">> BUILD virtual environment active - calling buildout"
-  cd $DEP_DIR/build/asvo-tao/web
-  python bootstrap.py
-  bin/buildout
-  echo "now, we can generate documentation"
+  mkdir TAOENV
+  curl -O https://pypi.python.org/packages/source/v/virtualenv/virtualenv-1.9.1.tar.gz
+  tar xvzf virtualenv-1.9.1.tar.gz
+  cd virtualenv-1.9.1
+  found26=`python --version 2>&1 | grep "2.[67]"`
+  if [ -n "$found26" ]; then
+      python virtualenv.py ../TAOENV
+  else
+      /usr/bin/env python26 virtualenv.py ../TAOENV
+  fi
+  cd $DEP_DIR/build
+  source TAOENV/bin/activate
+  echo ">> virtual environment active."
+  echo ">> installing packages now."
+  cd $DEP_DIR/build/asvo-tao
+  pip install -r tao.pip.reqs
+}
+
+generate_documentation() {
   cd $DEP_DIR/build/asvo-tao/docs
   ./gendoc.sh
 }
@@ -48,10 +61,14 @@ generate_documentation() {
 # also copies remote.sh and maintenance files
 transfer() {
   host=$1
-  cd $DEP_DIR
+  echo ">> PACKAGING docs FOR $host"
+  source $DEP_DIR/build/TAOENV/bin/activate
+  cd $DEP_DIR/build
   test -f asvo-doc.tgz && rm -f asvo-doc.tgz && echo "Removed existing asvo-doc.tgz"
-  tar -czf asvo-doc.tgz -C build asvo-tao/web/tao/static/docs
-  scp asvo-doc.tgz remotedoc.sh $host:~
+  tar -czf asvo-doc.tgz -C $DEP_DIR/build asvo-tao/web/tao/static/docs
+  cd $DEP_DIR
+  echo ">> UPLOADING TO $host"
+  scp build/asvo-doc.tgz remotedoc.sh $host:~
   HOME_DIR=$(ssh $host 'chmod a+x remotedoc.sh; echo $HOME')
 }
 
@@ -69,6 +86,8 @@ remote_install() {
 
 checkout
 
+environment_setup
+
 generate_documentation
 
 # underlying storage is shared, so we only need to access one node
@@ -77,6 +96,6 @@ transfer asv1
 
 # run the install script now, as storage and DB are shared, we need
 # to do this in transfer node only
-remote_install asv1
+#remote_install asv1
 
 

@@ -124,11 +124,11 @@ remote_restore() {
 # -- main --
 #
 
-#checkout
+checkout
 
-#environment_setup
+environment_setup
 
-#generate_documentation
+generate_documentation
 
 # underlying storage is shared, so we only need to access one node
 # this is the transfer node mentioned below
@@ -142,7 +142,7 @@ remote_unpack asv1
 
 # run the install script now, as storage and DB are shared, we need
 # to do this in transfer node only
-remote_install asv1
+# remote_install asv1
 
 # restores the .htaccess file, again, only transfer node needs to be accessed
 # remote_restore asv1
