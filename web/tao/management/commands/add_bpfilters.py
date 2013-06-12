@@ -123,7 +123,7 @@ class Command(BaseCommand):
             dialect = csv.Sniffer().sniff(csvfile.read(1024))
             csvfile.seek(0)
             csvreader = csv.reader(csvfile, dialect)
-            url_root = settings.STATIC_URL + 'docs/bpfilters/'
+            url_root = '..' + settings.STATIC_URL + 'docs/bpfilters/'
             for record in csvreader:
                 #
                 # Read the record
