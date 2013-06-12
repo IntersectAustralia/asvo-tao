@@ -2,6 +2,8 @@ import DBConnection
 import settingReader # Read the XML settings
 import logging,os
 import PreprocessData # Perform necessary pre-processing (e.g. Create Tables)
+import PGDBInterface # Interaction with the postgreSQL DB
+import SAGEReader # Read the SAGE Files into memory
 
 def SetupLogFile():
     FilePath='logfile.log'
@@ -56,8 +58,17 @@ def testpreprocessing(CurrentSAGEStruct,Options):
     print("Start Preprocessing ...")
     PreprocessDataObj.FillTreeProcessingTable()
     print("End Preprocessing ...")
+    PreprocessDataObj.GenerateAllTables()
     ## 6) Close the DB connection
     PreprocessDataObj.DBConnection.CloseConnections()
+    CommRank=0
+    CommSize=1
+    CurrentPGDB=PGDBInterface.DBInterface(CurrentSAGEStruct,Options,CommRank)
+    ## Init files reader
+    Reader=SAGEReader.SAGEDataReader(CurrentSAGEStruct,Options,CurrentPGDB,CommSize,CommRank)
+    ## Start Processing the files
+    ## This will get all unprocessed file and distribute them using Modulus operator
+    Reader.ProcessAllTrees()
 
 if __name__ == '__main__':
     

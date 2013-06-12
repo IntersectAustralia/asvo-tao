@@ -12,11 +12,12 @@ import numpy
 from random import randrange
 import logging
 import PGDBInterface
+import h5py
 
 class SAGEDataReader:    
     #The Module handles the data reading from SAGE output to a memory data structure.
-    DebugToFile=False
-    CurrentFolderPath=""
+    
+    CurrentInputFilePath=""
     CurrentGlobalTreeID=0
     FormatMapping={'int':'i',
                    'float':'f',
@@ -27,36 +28,24 @@ class SAGEDataReader:
         
         
         #Initialize the Class to handle a specific file path        
-        self.CurrentFolderPath=Options['RunningSettings:InputDir']
+        self.CurrentInputFilePath=Options['RunningSettings:InputFile']
         self.CurrentSAGEStruct=CurrentSAGEStruct
         self.Options=Options
         self.PGDB=PGDB
         self.CommSize=CommSize
         self.CommRank=CommRank
-        # Just in case the folder path contain additional '/' Remove it
-        if self.CurrentFolderPath.endswith("/"):
-            self.CurrentFolderPath=self.CurrentFolderPath[:-1] 
+        
             
         
         
   
-    def GetStructSizeAndFormat(self):
-        
-        #Use the struct definition and the data mapping schema defined to return the expected field size
-        #in Bytes
-        
-        FormatStr=''
-        for field in self.CurrentSAGEStruct:
-            FormatStr=FormatStr+self.FormatMapping[field[1]]
-        TotalSizeInBytes=struct.calcsize(FormatStr)
-        return [FormatStr, TotalSizeInBytes]    
-        
+    
             
     
         
         
     
-    def ProcessAllFiles(self):
+    def ProcessAllTrees(self):
         
                
         self.SimulationBoxX=float(self.Options['RunningSettings:SimulationBoxX'])
@@ -68,78 +57,70 @@ class SAGEDataReader:
         self.CellsInX=int(math.ceil(self.SimulationBoxX/self.BSPCellSize))
         self.CellsInY=int(math.ceil(self.SimulationBoxY/self.BSPCellSize))
         
-        
+        self.InputFile=h5py.File(self.CurrentInputFilePath,'r')
         
         
         
         #Process All the Non-Empty Files
+             
+        ListOfUpProcessedTrees=self.PGDB.GetListofUnProcessedTrees(self.CommSize,self.CommRank)
         
+        TotalNumberofUnPrcoessedTrees=len(ListOfUpProcessedTrees)
         
-        [self.FormatStr,self.FieldSize]=self.GetStructSizeAndFormat()
-        ListOfUpProcessedFile=self.PGDB.GetListofUnProcessedFiles(self.CommSize,self.CommRank)
-        TotalNumberofUnPrcoessedFiles=len(ListOfUpProcessedFile)
-        FileCounter=0
-        for UnProcessedFile in ListOfUpProcessedFile:
+        TreeCounter=0
+        for UnProcessedTree in ListOfUpProcessedTrees:
             # Updating the user with what is going on
-            logging.info(str(self.CommRank)+":Processing File ("+str(FileCounter)+"/"+str(TotalNumberofUnPrcoessedFiles-1)+"):"+UnProcessedFile[1])
-            logging.info('\t File Size:'+str(UnProcessedFile[2]/1024)+' KB')
+            logging.info(str(self.CommRank)+":Processing Tree ("+str(TreeCounter)+"/"+str(TotalNumberofUnPrcoessedTrees-1)+"):"+str(UnProcessedTree[0]))
             
-            self.PGDB.StartTransaction()
-            self.ProcessFile(UnProcessedFile)
-            self.PGDB.SetFileAsProcessed(UnProcessedFile[0])            
-            self.PGDB.CommitTransaction()
-            FileCounter=FileCounter+1
             
-        
-    
-    def ProcessFile(self,UnProcessedFile):
-        
-         
-        CurrentFile=open(UnProcessedFile[1],"rb")
-        CurrentFileGalaxyID=0
-        
-        
-        TreeIDStart=UnProcessedFile[5]
-        
-    
-        NumberofTrees= struct.unpack('i', CurrentFile.read(4))[0]
-        TotalNumberOfGalaxies= struct.unpack('q', CurrentFile.read(8))[0]
-        if self.DebugToFile==True:
-            self.Log.write('\t Trees Count= '+str(NumberofTrees)+'\n')
-            self.Log.write('\t Total Number of Galaxies = '+str(TotalNumberOfGalaxies)+'\n')
-        
-        
-        # Read the number of Galaxies per each tree
-        SumOfAllGalaxies=0                
-        TreeLengthList=[]                
-        for i in range(0,NumberofTrees):
-            GalaxiesperTree= struct.unpack('q', CurrentFile.read(8))[0]
             
-            TreeLengthList.append(GalaxiesperTree)     
-            SumOfAllGalaxies=SumOfAllGalaxies+ GalaxiesperTree    
+            self.ProcessTree(UnProcessedTree)
+            self.PGDB.SetTreeAsProcessed(UnProcessedTree[0])            
+            
+            TreeCounter=TreeCounter+1
             
         
-        # Verify the total number of galaxies 
-        if not SumOfAllGalaxies==TotalNumberOfGalaxies:
-            logging.info("Error In Header File "+str(SumOfAllGalaxies)+"/"+str(TotalNumberOfGalaxies)) 
-            raise AssertionError
-    
-        for i in range(0,NumberofTrees):
-            NumberofGalaxiesInTree=TreeLengthList[i]
-            logging.info('\t '+str(self.CommRank)+': Number of Galaxies in Tree ('+str(i)+')='+str(NumberofGalaxiesInTree))
-            if NumberofGalaxiesInTree>0:
-                TreeData=self.ProcessTree(TreeIDStart+i,NumberofGalaxiesInTree,CurrentFile,CurrentFileGalaxyID)  
-                if len(TreeData)>0: 
-                    TableID=self.MapTreetoTableID(TreeData) 
-                    self.PGDB.CreateNewTree(TableID,TreeData)        
+    def GenerateDictFromFields(self,TreeLoadingID,TreeData):
+        TreeDict=[]
+        
+        for Tree in TreeData:
+            
+            FieldData={}            
+            FieldsIndex=0
+            for Field in self.CurrentSAGEStruct:            
+                FieldData[Field[0]]=Tree[FieldsIndex]
+                FieldsIndex=FieldsIndex+1
+            
+            FieldData['TreeID']=TreeLoadingID
+            TreeDict.append(FieldData)
+        return TreeDict    
+            
+    def ProcessTree(self,UnProcessedTree):
+        
+        
+        LoadingTreeID= UnProcessedTree[0]
+        StartIndex=UnProcessedTree[3]
+        GalaxiesCount=UnProcessedTree[2]        
+        
+        
+        logging.info('\t '+str(self.CommRank)+': Number of Galaxies in Tree ('+str(LoadingTreeID)+')='+str(GalaxiesCount))
+        if GalaxiesCount>0:
+            TreeData=self.InputFile['galaxies'][StartIndex:StartIndex+GalaxiesCount] 
+                     
+            TreeData=self.GenerateDictFromFields(LoadingTreeID,TreeData)
+            
+            self.ComputeFields(TreeData)   
+            print("Compute Fields Done") 
+            TableID=self.MapTreetoTableID(TreeData) 
+            print("TableID="+str(TableID)) 
+            self.PGDB.CreateNewTree(TableID,TreeData)        
             
             
          
     
         CurrentFile.close()  
                
-        if self.DebugToFile==True:
-            Log.close()
+       
     
     
         
@@ -221,43 +202,16 @@ class SAGEDataReader:
         return FinalTableID
         
     
-    def ProcessTree(self,TreeID,NumberofGalaxiesInTree,CurrentFile,CurrentFileGalaxyID):    
-                
-        
-                
-        if self.DebugToFile==True:
-            self.Log.write('SnapNum,FOFHaloIndex,Type,CentralMvir,Mvir,StellarMass,GalaxyIndex,TreeIndexss,Descendant,FileGalaxyID,TreeID\n')
-        
-        TreeFields=[]        
-        for j in range(0,NumberofGalaxiesInTree):
-            #read the fields of this tree
-            #logging.info(str(j)+"/"+str(NumberofGalaxiesInTree))
-            FieldData=self.ReadTreeField(CurrentFile,CurrentFileGalaxyID,TreeID)
-            TreeFields.append(FieldData)
-            CurrentFileGalaxyID=CurrentFileGalaxyID+1
-            if self.DebugToFile==True:
-                self.Log.write(str(FieldData['SnapNum'])+','+
-                          str(FieldData['FOFHaloIndex'])+','+
-                          str(FieldData['Type'])+','+
-                          str(FieldData['CentralMvir'])+','+
-                          str(FieldData['Mvir'])+','+
-                          str(FieldData['StellarMass'])+','+
-                          str(FieldData['GalaxyIndex'])+','+
-                          str(FieldData['TreeIndex'])+','+
-                          str(FieldData['Descendant'])+','+
-                          str(FieldData['FileGalaxyID'])+','+
-                          str(FieldData['TreeID'])+'\n')
-        return self.ComputeFields(TreeFields)    
+    
     
     def ComputeFields(self,TreeData):
         for TreeField in TreeData:
             CentralGalaxyLocalID=TreeField['CentralGal']
-            #logging.info("Central Galaxy Local ID="+str(CentralGalaxyLocalID)+"/"+len(TreeData))
+            
             DescGalaxyLocalID=TreeField['Descendant']
             CentralGalaxy=TreeData[CentralGalaxyLocalID]
             TreeField['CentralGalaxyGlobalID']=CentralGalaxy['GlobalIndex']
-            DescGalaxy=TreeData[DescGalaxyLocalID]
-            #TreeField['DescendantGlobalID']=DescGalaxy['GalaxyIndex']
+            DescGalaxy=TreeData[DescGalaxyLocalID]            
             TreeField['CentralGalaxyX']=CentralGalaxy['PosX']
             TreeField['CentralGalaxyY']=CentralGalaxy['PosY']
             TreeField['CentralGalaxyZ']=CentralGalaxy['PosZ']

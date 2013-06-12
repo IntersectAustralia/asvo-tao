@@ -87,11 +87,14 @@ class DBConnection(object):
     def MapTableIDToServerIndex(self,TableID):
         return TableID%self.serverscount
     
-    def ExecuteNoQuerySQLStatment(self,SQLStatment,SQLParamsDict={},DatabaseIndex=0):
+    def ExecuteNoQuerySQLStatment(self,SQLStatment,SQLParamsDict=None,DatabaseIndex=0):
         try:            
             self.AutoRestartDBConnections()
             SQLStatment=string.lower(SQLStatment)  
-            self.ActiveCursors[DatabaseIndex].execute(SQLStatment,SQLParamsDict)              
+            if SQLParamsDict==None:
+                self.ActiveCursors[DatabaseIndex].execute(SQLStatment)
+            else:
+                self.ActiveCursors[DatabaseIndex].execute(SQLStatment,SQLParamsDict)              
         except Exception as Exp:
             logging.info(">>>>>Error While Executing NoQuery Statement On Server ("+str(DatabaseIndex)+")")
             logging.info(type(Exp))

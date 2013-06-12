@@ -9,6 +9,8 @@ import string
 import sys
 import DBConnection
 import logging
+from io import StringIO
+
 
 class DBInterface(object):
     '''
@@ -22,14 +24,13 @@ class DBInterface(object):
     
     
     
-    DebugToFile=False
-    
+   
     def __init__(self,CurrentSAGEStruct,Options,CommRank):
         '''
         Constructor
         '''
         self.Options=Options
-        self.Log = open(self.Options['RunningSettings:OutputDir']+'DBCreation_sql'+str(CommRank)+'.txt', 'wt')
+        
         
         self.CurrentSAGEStruct=CurrentSAGEStruct
         
@@ -46,39 +47,38 @@ class DBInterface(object):
     
     
     def CreateInsertTemplate(self):
+        Values=" values ("
         self.INSERTTemplate="INSERT INTO @TABLEName ("           
-        for field in self.CurrentSAGEStruct:
-            if field[3]==1:                
-                FieldName=field[2]
-                self.INSERTTemplate=self.INSERTTemplate+ FieldName+","
+        for field in self.CurrentSAGEStruct:                            
+            FieldName=field[2]
+            self.INSERTTemplate=self.INSERTTemplate+ FieldName+","
+            Values=Values+"%s,"
         self.INSERTTemplate=self.INSERTTemplate+"GlobalTreeID," 
         self.INSERTTemplate=self.INSERTTemplate+"CentralGalaxyGlobalID,"
         self.INSERTTemplate=self.INSERTTemplate+"LocalGalaxyID,"
         self.INSERTTemplate=self.INSERTTemplate+"CentralGalaxyX,"
         self.INSERTTemplate=self.INSERTTemplate+"CentralGalaxyY,"
         self.INSERTTemplate=self.INSERTTemplate+"CentralGalaxyZ)"
+        Values=Values+"%s,%s,%s,%s,%s,%s)"
+        self.INSERTTemplate=self.INSERTTemplate+Values
     
-    
+        print self.INSERTTemplate
     def CloseConnections(self):        
         self.DBConnection.CloseConnections()
-        self.CloseDebugFile()
+        
                 
            
             
     
   
-    def GetListofUnProcessedFiles(self,CommSize,CommRank):
-        return self.DBConnection.ExecuteQuerySQLStatment("SELECT * FROM datafiles where Processed=FALSE and fileid%"+str(CommSize)+"="+str(CommRank)+" order by fileid;")        
+    def GetListofUnProcessedTrees(self,CommSize,CommRank):
+        return self.DBConnection.ExecuteQuerySQLStatment("SELECT * FROM TreeProcessingSummary where Processed=FALSE and mod(LoadingTreeID,"+str(CommSize)+")="+str(CommRank)+" order by LoadingTreeID;")        
     
-    def SetFileAsProcessed(self,FileID):
-        self.DBConnection.ExecuteNoQuerySQLStatment("UPDATE datafiles set Processed=TRUE where fileid= "+str(FileID))
+    def SetTreeAsProcessed(self,TreeID):
+        self.DBConnection.ExecuteNoQuerySQLStatment("UPDATE TreeProcessingSummary set Processed=TRUE where LoadingTreeID= "+str(TreeID))
     
         
-                
-    def StartTransaction(self):
-        self.DBConnection.StartTransaction()
-    def CommitTransaction(self):
-        self.DBConnection.CommitTransaction()
+   
         
     def CreateNewTree(self,TableID,TreeData):
         
@@ -88,13 +88,11 @@ class DBInterface(object):
         if len(TreeData)>1000:
             for c in range(0,(len(TreeData)/1000)+1):
                 start=c*1000
-                end=min((c+1)*1000,len(TreeData))
-                #sys.stdout.write("\033[0;33m"+str(start)+":"+str(end)+" from "+str(len(TreeData))+"\033[0m\r")
-                #sys.stdout.flush()
+                end=min((c+1)*1000,len(TreeData))                
                 if start!=end:                    
-                    self.PrepareInsertStatement(TableID,TreeData[start:end])
+                    self.InsertData(TableID,TreeData[start:end])
         else:            
-            self.PrepareInsertStatement(TableID,TreeData) 
+            self.InsertData(TableID,TreeData) 
                
         
         self.CurrentGalaxiesCounter=self.CurrentGalaxiesCounter+len(TreeData)
@@ -102,40 +100,40 @@ class DBInterface(object):
         logging.info("Adding "+str(len(TreeData))+" Galaxies to Table"+str(TableID))
         
     
-    def PrepareInsertStatement(self,TableID,TreeData):
-        InsertStatment=""
+    def InsertData(self,TableID,TreeData):
+        cpyData = StringIO()
         
         try:            
             TablePrefix=self.Options['PGDB:TreeTablePrefix']
             NewTableName=TablePrefix+str(TableID)
             InsertStatment= string.replace(self.INSERTTemplate,"@TABLEName",NewTableName)
-            InsertStatment=InsertStatment+" VALUES "            
+            HostIndex=self.DBConnection.MapTableIDToServerIndex(TableID)          
             
             
             for TreeField in TreeData:
                     
-                InsertStatment=InsertStatment+"("
+                FieldData=[]
                 for field in self.CurrentSAGEStruct:                
                     if field[3]==1:                
                         FieldName=field[0]
-                        InsertStatment=InsertStatment+ str(TreeField[FieldName])+","
+                        FieldData.append(TreeField[FieldName])
                 
-                InsertStatment=InsertStatment+str(TreeField['TreeID'])+","
-                InsertStatment=InsertStatment+str(TreeField['CentralGalaxyGlobalID'])+","                
-                InsertStatment=InsertStatment+str(self.LocalGalaxyID)+","
+                FieldData.append(TreeField['TreeID'])
+                FieldData.append(TreeField['CentralGalaxyGlobalID'])                
+                FieldData.append(self.LocalGalaxyID)
                 
-                InsertStatment=InsertStatment+str(TreeField['CentralGalaxyX'])+","
-                InsertStatment=InsertStatment+str(TreeField['CentralGalaxyY'])+","
-                InsertStatment=InsertStatment+str(TreeField['CentralGalaxyZ'])+"),"
+                FieldData.append(TreeField['CentralGalaxyX'])
+                FieldData.append(TreeField['CentralGalaxyY'])
+                FieldData.append(TreeField['CentralGalaxyZ'])
                 self.LocalGalaxyID=self.LocalGalaxyID+1
+               
+                cpyData.write('\t'.join([repr(x) for x in FieldData]) + '\n')
                 
-            InsertStatment=InsertStatment[:-1]+";"
+           
             
             
-            if self.DebugToFile==True:
-                self.Log.write(InsertStatment+"\n\n")
-                self.Log.flush()
-            HostIndex=self.DBConnection.MapTableIDToServerIndex(TableID)    
+           
+                
             
             self.DBConnection.ExecuteNoQuerySQLStatment(InsertStatment,HostIndex)
             
@@ -148,8 +146,6 @@ class DBInterface(object):
             raw_input("PLease press enter to continue.....")
             
                 
-    def CloseDebugFile(self):        
-        if self.DebugToFile==True and self.Log!=None:
-            self.Log.close()
+   
             
         
