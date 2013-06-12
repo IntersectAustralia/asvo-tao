@@ -1,14 +1,11 @@
-body {
-    padding-top: 60px;
-}
-
+body { padding-top: 0px; }
+#body { padding-top: 120px; }
 
 a.ui-tabs-anchor:focus {
     outline: 0px none black;
     outline: 0px none -webkit-focus-ring-color;
 }
 
-body { padding-top: 40px; }
 
 body, input, textarea {
     font: normal normal normal 14px/22px "Helvetica Neue", "HelveticaNeue", Helvetica, Arial, sans-serif;
@@ -27,8 +24,7 @@ a:active, a:hover {
 }
 
 
-#banner { position: fixed; padding: 0; left: 60px; right: 60px; z-index: 1; }
-#body { padding-top: 80px; }
+#banner { position: fixed; padding: 0; left: 0px; right: 0px; z-index: 1; }
 
 .container-fluid { padding: 0 60px; }
 
@@ -449,4 +445,20 @@ color: #333; cursor: pointer; display: inline-block; font-family: inherit; font-
     text-align: center;
     width: 6%;
 }
+
+.brand.small { display: none; }
+@media only screen and (max-width : 1200px) {
+.navbar div.brand { display: none; }
+.navbar .brand.small { display: block; }
+}
+
+
+
+
+
+
+
+
+
+
 
