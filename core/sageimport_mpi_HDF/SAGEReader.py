@@ -109,16 +109,14 @@ class SAGEDataReader:
                      
             TreeData=self.GenerateDictFromFields(LoadingTreeID,TreeData)
             
-            self.ComputeFields(TreeData)   
-            print("Compute Fields Done") 
-            TableID=self.MapTreetoTableID(TreeData) 
-            print("TableID="+str(TableID)) 
+            self.ComputeFields(TreeData)            
+            TableID=self.MapTreetoTableID(TreeData)            
             self.PGDB.CreateNewTree(TableID,TreeData)        
             
             
          
     
-        CurrentFile.close()  
+        
                
        
     
@@ -154,7 +152,7 @@ class SAGEDataReader:
             MaxX=max(MaxX,TreeItem['PosX'])
             MinY=min(MinY,TreeItem['PosY'])
             MaxY=max(MaxY,TreeItem['PosY'])
-            logging.info(str(TreeItem['PosX'])+","+str(TreeItem['PosY'])+","+str(TreeItem['PosZ']))
+            #logging.info(str(TreeItem['PosX'])+","+str(TreeItem['PosY'])+","+str(TreeItem['PosZ']))
         
         Rect1=[MinX,MaxX,MinY,MaxY]
         logging.info('Tree Box'+ str(Rect1))
@@ -185,11 +183,11 @@ class SAGEDataReader:
                 
                     self.PGDB.DBConnection.ExecuteNoQuerySQLStatment(GetIntersectionWithCurrentBoundingRect)
                     PTableID=int((XLocation*self.CellsInX)+YLocation)
-                    logging.info("("+str(XLocation)+","+str(YLocation)+")="+str(PTableID))
+                    #logging.info("("+str(XLocation)+","+str(YLocation)+")="+str(PTableID))
                     PossibleTables=numpy.hstack([PossibleTables,PTableID])
-                    logging.info("Intersect - Rect1="+str(Rect1)+"\tRect2="+str(Rect2))
-                else:
-                    logging.info("Fail - Rect1="+str(Rect1)+"\tRect2="+str(Rect2))
+                    #logging.info("Intersect - Rect1="+str(Rect1)+"\tRect2="+str(Rect2))
+                #else:
+                    #logging.info("Fail - Rect1="+str(Rect1)+"\tRect2="+str(Rect2))
         FinalTableID=-1
         
         if len(PossibleTables)==1:

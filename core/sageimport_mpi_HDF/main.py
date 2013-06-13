@@ -77,8 +77,7 @@ if __name__ == '__main__':
         ## 6) Close the DB connection
         PreprocessDataObj.DBConnection.CloseConnections()
             
-        ######################################################################################################
-        RegenerateTablesList=RegenerateFileList
+        ######################################################################################################       
                     
         RegenerateTablesList=Options["RunningSettings:RegenerateTables"]
             
@@ -116,7 +115,7 @@ if __name__ == '__main__':
     Reader=SAGEReader.SAGEDataReader(CurrentSAGEStruct,Options,CurrentPGDB,CommSize,CommRank)
     ## Start Processing the files
     ## This will get all unprocessed file and distribute them using Modulus operator
-    Reader.ProcessAllFiles()
+    Reader.ProcessAllTrees()
     
     ## All data imported ... Processing done 
     
@@ -139,7 +138,7 @@ if __name__ == '__main__':
             ProcessTablesObj.GetTablesList(si)
     
         ProcessTablesObj.SummarizeLocationInfo()  
-        ProcessTablesObj.ValidateImportProcess()       
+        #ProcessTablesObj.ValidateImportProcess()       
         ProcessTablesObj.CloseConnections()
     
         MasterTablesUpdateObj=UpdateMasterTables.MasterTablesUpdate(Options,CurrentPGDB)

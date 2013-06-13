@@ -37,7 +37,7 @@ class PreprocessData(object):
     def DropDatabase(self):
         ## Check if the database already exists
         
-        ResultsList=self.DBConnection.ExecuteQuerySQLStatment("SELECT datname FROM pg_database where datistemplate=false and datname=%(dbname)s;",{'dbname':self.DBName})
+        ResultsList=self.DBConnection.ExecuteQuerySQLStatment("SELECT datname FROM pg_database where datistemplate=false and datname=%(dbname)s;",0,{'dbname':self.DBName})
           
         ## If the database already exists - give the user the option to drop it
         if len(ResultsList)>0:
@@ -215,22 +215,25 @@ class PreprocessData(object):
         ## Generate insert template for the Datafiles table
         #InsertTemplate="INSERT INTO TreeProcessingSummary (LoadingTreeID, GalaxiesCount, StartIndex, Processed) VALUES (%(treeid)s,%(galaxiescount)s,%(startindex)s,FALSE);"
         
-        
+        logging.info("Start Loading HDF5 File Done....")
         InputFile=h5py.File(self.CurrentH5InputFile,'r')
-        TotalTreesCount=len(InputFile['tree_counts'])
-        print TotalTreesCount
-               
+        TotalTreesCount=len(InputFile['tree_counts'])        
+        logging.info("End Loading HDF5 File Done....")       
         TotalGalaxiesCount=0        
         cpyData = StringIO()       
-        
-        for TreeIndex in range(0,TotalTreesCount):                       
+        logging.info("Trees Count="+str(TotalTreesCount))
+        for TreeIndex in range(0,TotalTreesCount):
+            if (TreeIndex%1000)==0:
+                logging.info("Input Tree "+str(TreeIndex)+"/"+str(TotalTreesCount)+"="+str((TreeIndex/float(TotalTreesCount))*100))                       
             CurrentStParams=[TreeIndex,long(InputFile['tree_counts'][TreeIndex]) ,long(InputFile['tree_displs'][TreeIndex]),False ] 
             DataStr=';'.join([str(x) for x in CurrentStParams]) + '\n'                   
             cpyData.write(DataStr)
-        
-        cpyData.seek(0)
-        self.DBConnection.ActiveCursors[0].copy_from(cpyData, 'treeprocessingsummary', sep=';', columns=('LoadingTreeID', 'GalaxiesCount', 'StartIndex', 'Processed'))
-           
+            if ((TreeIndex+1)%100000)==0 or (TreeIndex==TotalTreesCount-1):
+                logging.info("Start Copying Data....")
+                cpyData.seek(0)
+                self.DBConnection.ActiveCursors[0].copy_from(cpyData, 'treeprocessingsummary', sep=';', columns=('LoadingTreeID', 'GalaxiesCount', 'StartIndex', 'Processed'))
+                logging.info("End Copying Data....")
+                cpyData = StringIO()
         
     
     

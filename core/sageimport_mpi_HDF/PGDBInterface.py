@@ -2,14 +2,14 @@
 Created on 01/10/2012
 @author: Amr Hassan
 '''
-import pg
-import getpass
+import psycopg2
+from psycopg2 import extras
 import math
 import string
 import sys
 import DBConnection
 import logging
-from io import StringIO
+from io import BytesIO as StringIO
 
 
 class DBInterface(object):
@@ -36,7 +36,7 @@ class DBInterface(object):
         
         self.DBConnection=DBConnection.DBConnection(Options)
         
-        self.CreateInsertTemplate()                       
+        self.PrepareFieldsList()                       
         
         
         self.CurrentGalaxiesCounter=int(Options['RunningSettings:GalaxiesPerTable'])+1 # To Create the First Table
@@ -46,23 +46,21 @@ class DBInterface(object):
         
     
     
-    def CreateInsertTemplate(self):
-        Values=" values ("
-        self.INSERTTemplate="INSERT INTO @TABLEName ("           
+    def PrepareFieldsList(self):
+        self.FieldsName=[]
+        
+                   
         for field in self.CurrentSAGEStruct:                            
-            FieldName=field[2]
-            self.INSERTTemplate=self.INSERTTemplate+ FieldName+","
-            Values=Values+"%s,"
-        self.INSERTTemplate=self.INSERTTemplate+"GlobalTreeID," 
-        self.INSERTTemplate=self.INSERTTemplate+"CentralGalaxyGlobalID,"
-        self.INSERTTemplate=self.INSERTTemplate+"LocalGalaxyID,"
-        self.INSERTTemplate=self.INSERTTemplate+"CentralGalaxyX,"
-        self.INSERTTemplate=self.INSERTTemplate+"CentralGalaxyY,"
-        self.INSERTTemplate=self.INSERTTemplate+"CentralGalaxyZ)"
-        Values=Values+"%s,%s,%s,%s,%s,%s)"
-        self.INSERTTemplate=self.INSERTTemplate+Values
+            self.FieldsName.append(field[2])            
+            
+        self.FieldsName.append("GlobalTreeID")
+        self.FieldsName.append("CentralGalaxyGlobalID")
+        self.FieldsName.append("LocalGalaxyID")
+        self.FieldsName.append("CentralGalaxyX")
+        self.FieldsName.append("CentralGalaxyY")
+        self.FieldsName.append("CentralGalaxyZ")       
     
-        print self.INSERTTemplate
+        
     def CloseConnections(self):        
         self.DBConnection.CloseConnections()
         
@@ -101,21 +99,21 @@ class DBInterface(object):
         
     
     def InsertData(self,TableID,TreeData):
-        cpyData = StringIO()
         
-        try:            
+        
+        try:
+            cpyData = StringIO()            
             TablePrefix=self.Options['PGDB:TreeTablePrefix']
-            NewTableName=TablePrefix+str(TableID)
-            InsertStatment= string.replace(self.INSERTTemplate,"@TABLEName",NewTableName)
+            NewTableName=TablePrefix+str(TableID)            
             HostIndex=self.DBConnection.MapTableIDToServerIndex(TableID)          
             
             
             for TreeField in TreeData:
                     
                 FieldData=[]
-                for field in self.CurrentSAGEStruct:                
-                    if field[3]==1:                
-                        FieldName=field[0]
+                
+                for field in self.CurrentSAGEStruct:                                    
+                        FieldName=field[0]                        
                         FieldData.append(TreeField[FieldName])
                 
                 FieldData.append(TreeField['TreeID'])
@@ -126,23 +124,18 @@ class DBInterface(object):
                 FieldData.append(TreeField['CentralGalaxyY'])
                 FieldData.append(TreeField['CentralGalaxyZ'])
                 self.LocalGalaxyID=self.LocalGalaxyID+1
-               
-                cpyData.write('\t'.join([repr(x) for x in FieldData]) + '\n')
-                
-           
+                 
+                DataStr=';'.join([str(x) for x in FieldData]) + '\n'                   
+                cpyData.write(DataStr)
             
-            
-           
-                
-            
-            self.DBConnection.ExecuteNoQuerySQLStatment(InsertStatment,HostIndex)
+            cpyData.seek(0)
+            self.DBConnection.ActiveCursors[HostIndex].copy_from(cpyData, NewTableName, sep=';', columns=self.FieldsName)
             
         except Exception as Exp:
             logging.info(">>>>>Error While Processing Tree")
             logging.info(type(Exp))
             logging.info(Exp.args)
             logging.info(Exp)            
-            logging.info("Current SQL Statement =\n"+InsertStatment)
             raw_input("PLease press enter to continue.....")
             
                 

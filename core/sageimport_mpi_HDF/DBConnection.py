@@ -82,12 +82,12 @@ class DBConnection(object):
     
     def ExecuteNoQuerySQLStatment_On_AllServers(self,SQLStatment,SQLParamsDict={}):
         for i in range(0,self.serverscount):
-            self.ExecuteNoQuerySQLStatment(SQLStatment,SQLParamsDict, i)
+            self.ExecuteNoQuerySQLStatment(SQLStatment,i,SQLParamsDict)
     
     def MapTableIDToServerIndex(self,TableID):
         return TableID%self.serverscount
     
-    def ExecuteNoQuerySQLStatment(self,SQLStatment,SQLParamsDict=None,DatabaseIndex=0):
+    def ExecuteNoQuerySQLStatment(self,SQLStatment,DatabaseIndex=0,SQLParamsDict=None):
         try:            
             self.AutoRestartDBConnections()
             SQLStatment=string.lower(SQLStatment)  
@@ -103,7 +103,7 @@ class DBConnection(object):
             logging.info("Current SQL Statement =\n"+SQLStatment)
             raw_input("PLease press enter to continue.....")
             
-    def ExecuteQuerySQLStatment(self,SQLStatment,SQLParamsDict={},DatabaseIndex=0):
+    def ExecuteQuerySQLStatment(self,SQLStatment,DatabaseIndex=0,SQLParamsDict={}):
         
         try:
             self.AutoRestartDBConnections()           
