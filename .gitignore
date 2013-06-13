@@ -8,6 +8,7 @@ config.py
 .sconsign.dblite
 build/*
 dist/*
+docs/doctrees
 *.egg-info
 credentials.hh
 core/sageimport/SQLStatments.txt
@@ -25,3 +26,4 @@ docs/build
 docs/doxyxml
 docs/source/bpfilters
 .idea
+akg_*
