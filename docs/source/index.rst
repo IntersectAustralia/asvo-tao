@@ -19,6 +19,7 @@ Contents:
    admin/index
    developers/index
    project/glossary
+   knownissues
 
 
 Indices and tables
