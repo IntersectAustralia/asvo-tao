@@ -7,7 +7,8 @@ import string
 import DBConnection
 import logging
 import h5py
-from io import BytesIO as StringIO
+from io import BytesIO
+import numpy
 
 class PreprocessData(object):
 
@@ -63,7 +64,15 @@ class PreprocessData(object):
        
        
        logging.info("Connection to Database "+self.DBName+" is opened and ready")
-   
+       self.CreateTreeMappingTable()
+       
+       
+       #Process All the Non-Empty Files 
+       ## The table "DataFiles" will work as a record keeper for which files has been processed and which has not been processed 
+       ## It will be use to support continue in case of error
+       CreateTableSt="SET client_min_messages TO WARNING; DROP TABLE IF EXISTS TreeProcessingSummary; CREATE TABLE TreeProcessingSummary "
+       CreateTableSt=CreateTableSt+"(LoadingTreeID BIGINT, GalaxiesCount BIGINT, StartIndex BIGINT, Processed boolean);"        
+       self.DBConnection.ExecuteNoQuerySQLStatment(CreateTableSt)
    
    
     def CreateTreeMappingTable(self):
@@ -79,6 +88,26 @@ class PreprocessData(object):
         
         self.DBConnection.ExecuteNoQuerySQLStatment(CreateTable)
     
+    def GenerateTablesIndex(self):
+        
+        SimulationBoxX=float(self.Options['RunningSettings:SimulationBoxX'])
+        SimulationBoxY=float(self.Options['RunningSettings:SimulationBoxX'])
+        BSPCellSize=float(self.Options['RunningSettings:BSPCellSize'])       
+        
+        
+        CellsInX=int(math.ceil(SimulationBoxX/BSPCellSize))
+        CellsInY=int(math.ceil(SimulationBoxY/BSPCellSize))
+        
+        logging.info("Cells In X="+str(CellsInX))
+        logging.info("Cells In Y="+str(CellsInY))
+        
+        
+        NumberofTables=CellsInX*CellsInY
+        TableIDs=range(0,NumberofTables)
+        
+        for TableID in TableIDs:
+            logging.info("Updating Table ("+str(TableID)+")")
+            self.CreateTableIndex(TableID)
     
     ## Generate All the tables required for the data importing process
     def GenerateAllTables(self): 
@@ -141,11 +170,27 @@ class PreprocessData(object):
             self.CreateTableTemplate=self.CreateTableTemplate+ FieldName +' '+FieldDT+","
         self.CreateTableTemplate=self.CreateTableTemplate+"GlobalTreeID BIGINT,"
         self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyGlobalID BIGINT,"     
-        self.CreateTableTemplate=self.CreateTableTemplate+"LocalGalaxyID INT,"
-        self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyX FLOAT4,"
-        self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyY FLOAT4,"
-        self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyZ FLOAT4, PRIMARY KEY (GlobalIndex))"
+        self.CreateTableTemplate=self.CreateTableTemplate+"LocalGalaxyID INT)"       
+        
                 
+    def CreateTableIndex(self,TableIndex):
+        
+        TablePrefix=self.Options['PGDB:TreeTablePrefix']
+        NewTableName=TablePrefix+str(TableIndex)
+        HostIndex=self.DBConnection.MapTableIDToServerIndex(TableIndex)
+        CreateIndexStatment="ALTER TABLE  "+NewTableName+" ADD PRIMARY KEY (GlobalIndex);"
+        self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
+        CreateIndexStatment="Create Index SnapNum_Index_"+NewTableName+" on  "+NewTableName+" (SnapNum);"
+        self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
+        CreateIndexStatment="Create Index GlobalTreeID_Index_"+NewTableName+" on  "+NewTableName+" (GlobalTreeID);"
+        self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
+        CreateIndexStatment="Create Index GalaxyX_Index_"+NewTableName+" on  "+NewTableName+" (posx);"
+        self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
+        CreateIndexStatment="Create Index GalaxyY_Index_"+NewTableName+" on  "+NewTableName+" (posy);"
+        self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
+        CreateIndexStatment="Create Index GalaxyZ_Index_"+NewTableName+" on  "+NewTableName+" (posz);"
+        self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
+        logging.info("Table "+NewTableName+" Index Created ...")
     ## Perform create table for a specific TableIndex            
     def CreateNewTable(self,TableIndex):        
         
@@ -169,21 +214,12 @@ class PreprocessData(object):
             
             ## Create Table indices             
             
-            CreateIndexStatment="Create Index SnapNum_Index_"+NewTableName+" on  "+NewTableName+" (SnapNum);"
-            self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
-            CreateIndexStatment="Create Index GlobalTreeID_Index_"+NewTableName+" on  "+NewTableName+" (GlobalTreeID);"
-            self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
-            CreateIndexStatment="Create Index CentralGalaxyX_Index_"+NewTableName+" on  "+NewTableName+" (CentralGalaxyX);"
-            self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
-            CreateIndexStatment="Create Index CentralGalaxyY_Index_"+NewTableName+" on  "+NewTableName+" (CentralGalaxyY);"
-            self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
-            CreateIndexStatment="Create Index CentralGalaxyZ_Index_"+NewTableName+" on  "+NewTableName+" (CentralGalaxyZ);"
-            self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
+            
             
             NodeName=self.Options['PGDB:serverInfo'+str(HostIndex)+':serverip']
             InsertStatement="INSERT INTO Table_DB_Mapping Values('"+NewTableName+"','"+NodeName+"');" 
             self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers(InsertStatement)
-            logging.info("Table "+NewTableName+" Created With Index ...")
+            logging.info("Table "+NewTableName+" Created ...")
             
             
         except Exception as Exp:
@@ -198,42 +234,65 @@ class PreprocessData(object):
     
      
      
-    def FillTreeProcessingTable(self):
-        
-        self.CreateTreeMappingTable()
+    def FillTreeProcessingTable(self,CommSize,CommRank):
         
         
-              
-        #Process All the Non-Empty Files 
-        ## The table "DataFiles" will work as a record keeper for which files has been processed and which has not been processed 
-        ## It will be use to support continue in case of error
-        CreateTableSt="SET client_min_messages TO WARNING; DROP TABLE IF EXISTS TreeProcessingSummary; CREATE TABLE TreeProcessingSummary "
-        CreateTableSt=CreateTableSt+"(LoadingTreeID BIGINT,GlobalTreeID BIGINT, GalaxiesCount BIGINT, StartIndex BIGINT,GridX INT,GridY INT, Processed boolean);"        
-        
-        self.DBConnection.ExecuteNoQuerySQLStatment(CreateTableSt)
-        
-        ## Generate insert template for the Datafiles table
-        #InsertTemplate="INSERT INTO TreeProcessingSummary (LoadingTreeID, GalaxiesCount, StartIndex, Processed) VALUES (%(treeid)s,%(galaxiescount)s,%(startindex)s,FALSE);"
-        
+        ## Generate insert template for the Datafiles table        
         logging.info("Start Loading HDF5 File Done....")
         InputFile=h5py.File(self.CurrentH5InputFile,'r')
         TotalTreesCount=len(InputFile['tree_counts'])        
-        logging.info("End Loading HDF5 File Done....")       
-        TotalGalaxiesCount=0        
-        cpyData = StringIO()       
-        logging.info("Trees Count="+str(TotalTreesCount))
-        for TreeIndex in range(0,TotalTreesCount):
-            if (TreeIndex%1000)==0:
-                logging.info("Input Tree "+str(TreeIndex)+"/"+str(TotalTreesCount)+"="+str((TreeIndex/float(TotalTreesCount))*100))                       
-            CurrentStParams=[TreeIndex,long(InputFile['tree_counts'][TreeIndex]) ,long(InputFile['tree_displs'][TreeIndex]),False ] 
-            DataStr=';'.join([str(x) for x in CurrentStParams]) + '\n'                   
-            cpyData.write(DataStr)
-            if ((TreeIndex+1)%100000)==0 or (TreeIndex==TotalTreesCount-1):
-                logging.info("Start Copying Data....")
-                cpyData.seek(0)
-                self.DBConnection.ActiveCursors[0].copy_from(cpyData, 'treeprocessingsummary', sep=';', columns=('LoadingTreeID', 'GalaxiesCount', 'StartIndex', 'Processed'))
-                logging.info("End Copying Data....")
-                cpyData = StringIO()
+        logging.info("End Loading HDF5 File Done....")   
+        logging.info("Trees Count="+str(TotalTreesCount))    
+        ProcessShare=math.ceil(TotalTreesCount/float(CommSize)) 
+        StartIndex=int(CommRank*ProcessShare)
+        
+        EndIndex=int(min((CommRank+1)*ProcessShare,TotalTreesCount))
+        
+        logging.info("Trees From "+str(StartIndex)+"===>"+str(EndIndex))         
+        
+        dtype = ([('treeindex', 'i8'), ('tree_counts', 'i8'), ('tree_displs', 'i8'),('processed', 'b')])
+        data = numpy.empty(int(EndIndex-StartIndex), dtype)
+        
+        
+        
+        data['treeindex']=range(StartIndex,EndIndex)
+        data['tree_counts']=InputFile['tree_counts'][StartIndex:EndIndex]
+        data['tree_displs']=InputFile['tree_displs'][StartIndex:EndIndex]
+        data['processed'].fill(False)
+        
+        
+        #for TreeIndex in range(int(StartIndex),int(EndIndex)):
+            #if (TreeIndex%1000)==0:
+            #    logging.info("Input Tree "+str(TreeIndex)+"/"+str(TotalTreesCount)+"="+str((TreeIndex/float(TotalTreesCount))*100))                       
+            #CurrentStParams=[TreeIndex,long(InputFile['tree_counts'][TreeIndex]) ,long(InputFile['tree_displs'][TreeIndex]),False ]
+            
+            #cpyData.write(struct.pack('hiqiqiqi?',4,8,(TreeIndex),8,(InputFile['tree_counts'][TreeIndex]),8,(long(InputFile['tree_displs'][TreeIndex])),1,False)) 
+            #DataStr=';'.join([str(x) for x in CurrentStParams]) + '\n'                   
+            #cpyData.write(DataStr)
+        
+        pgcopy_dtype = [('num_fields','>i2')]
+        for field, dtype in data.dtype.descr:
+            pgcopy_dtype += [(field + '_length', '>i4'),(field, dtype.replace('<', '>'))]
+            
+        pgcopy = numpy.empty(data.shape, pgcopy_dtype)
+        pgcopy['num_fields'] = len(data.dtype)
+        for i in range(len(data.dtype)):
+            field = data.dtype.names[i]
+            pgcopy[field + '_length'] = data.dtype[i].alignment
+            pgcopy[field] = data[field]
+            
+                
+        cpyData = BytesIO()       
+        cpyData.write(struct.pack('!11sii', b'PGCOPY\n\377\r\n\0', 0, 0))
+        cpyData.write(pgcopy.tostring())
+        cpyData.write(struct.pack('!h', -1))  # file trailer    
+        logging.info("Start Copying Data....")
+        
+        cpyData.seek(0)
+        self.DBConnection.ActiveCursors[0].copy_expert('COPY treeprocessingsummary FROM STDIN WITH BINARY', cpyData)
+        #self.DBConnection.ActiveCursors[0].copy_from(cpyData, 'treeprocessingsummary', sep=';', columns=('LoadingTreeID', 'GalaxiesCount', 'StartIndex', 'Processed'))
+        logging.info("End Copying Data....")
+        
         
     
     

@@ -9,7 +9,7 @@ import string
 import sys
 import DBConnection
 import logging
-from io import BytesIO as StringIO
+from cStringIO import StringIO
 
 
 class DBInterface(object):
@@ -56,9 +56,7 @@ class DBInterface(object):
         self.FieldsName.append("GlobalTreeID")
         self.FieldsName.append("CentralGalaxyGlobalID")
         self.FieldsName.append("LocalGalaxyID")
-        self.FieldsName.append("CentralGalaxyX")
-        self.FieldsName.append("CentralGalaxyY")
-        self.FieldsName.append("CentralGalaxyZ")       
+             
     
         
     def CloseConnections(self):        
@@ -120,9 +118,7 @@ class DBInterface(object):
                 FieldData.append(TreeField['CentralGalaxyGlobalID'])                
                 FieldData.append(self.LocalGalaxyID)
                 
-                FieldData.append(TreeField['CentralGalaxyX'])
-                FieldData.append(TreeField['CentralGalaxyY'])
-                FieldData.append(TreeField['CentralGalaxyZ'])
+                
                 self.LocalGalaxyID=self.LocalGalaxyID+1
                  
                 DataStr=';'.join([str(x) for x in FieldData]) + '\n'                   

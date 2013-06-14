@@ -99,8 +99,8 @@ class SAGEDataReader:
         
         
         LoadingTreeID= UnProcessedTree[0]
-        StartIndex=UnProcessedTree[3]
-        GalaxiesCount=UnProcessedTree[2]        
+        StartIndex=UnProcessedTree[2]
+        GalaxiesCount=UnProcessedTree[1]        
         
         
         logging.info('\t '+str(self.CommRank)+': Number of Galaxies in Tree ('+str(LoadingTreeID)+')='+str(GalaxiesCount))
@@ -210,9 +210,7 @@ class SAGEDataReader:
             CentralGalaxy=TreeData[CentralGalaxyLocalID]
             TreeField['CentralGalaxyGlobalID']=CentralGalaxy['GlobalIndex']
             DescGalaxy=TreeData[DescGalaxyLocalID]            
-            TreeField['CentralGalaxyX']=CentralGalaxy['PosX']
-            TreeField['CentralGalaxyY']=CentralGalaxy['PosY']
-            TreeField['CentralGalaxyZ']=CentralGalaxy['PosZ']
+            
             
         return TreeData
     def ReadTreeField(self,CurrentFile,CurrentFileGalaxyID,TreeID):
