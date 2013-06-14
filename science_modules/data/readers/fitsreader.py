@@ -1,8 +1,6 @@
 import pyfits
 import sys,string,os
 
-
-
 if __name__ == '__main__':
     FitsFileName=sys.argv[1]
     f = pyfits.open(FitsFileName)
