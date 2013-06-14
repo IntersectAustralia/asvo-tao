@@ -14,5 +14,5 @@ django-extensions
 werkzeug
 breathe
 MySQL_python
--e git+https://github.com/IntersectAustralia/SpiderOak-zipstream.git#egg=zipstream
+--exists-action=w -e git+https://github.com/IntersectAustralia/SpiderOak-zipstream.git#egg=zipstream
 
