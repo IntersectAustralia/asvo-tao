@@ -55,7 +55,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Theoretical Astrophysical Observatory'
+project = u'TAO'
 copyright = u'2013, ASVO Team'
 
 # The version info for the project you're documenting, acts as replacement for

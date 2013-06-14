@@ -217,7 +217,7 @@ API_ALLOWED_IPS = (
                    '127.0.0.1',
                    )
 
-INITIAL_JOB_STATUS = 'SUBMITTED'
+INITIAL_JOB_STATUS = 'HELD'
 
 #
 # To avoid changing the directory structure until after we have confirmed
