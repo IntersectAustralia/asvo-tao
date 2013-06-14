@@ -116,13 +116,22 @@ def dataset_find_from_xml(simulation, galaxy_model):
         return None
 
 def filter_find_from_xml(data_set_id, filter_type, filter_units):
+    if filter_type is None:
+        return ('E', 0)
     try:
         obj = models.DataSetProperty.objects.get(name=filter_type, units=filter_units, dataset__pk=data_set_id)
         return ('D', obj.id)
     except models.DataSetProperty.DoesNotExist:
+        suffix = ''
+        if filter_type.endswith('_apparent'):
+            filter_type = filter_type[:-len('apparent')-1]
+            suffix = '_apparent'
+        elif filter_type.endswith('_absolute'):
+            filter_type = filter_type[:-len('absolute')-1]
+            suffix = '_absolute'
         try:
             obj = models.BandPassFilter.objects.get(filter_id=filter_type)
-            return ('B', obj.id)
+            return ('B', str(obj.id) + suffix)
         except models.BandPassFilter.DoesNotExist:
             return ('E', 0)
 
