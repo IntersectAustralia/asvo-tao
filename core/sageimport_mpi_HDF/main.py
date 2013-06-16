@@ -88,12 +88,15 @@ if __name__ == '__main__':
     ##    c) Each table will have an associated Table ID in this step 
     PreprocessDataObj.FillTreeProcessingTable(CommSize,CommRank)
     ## 6) Close the DB connection
-    PreprocessDataObj.DBConnection.CloseConnections()
+    
     logging.info("Reaching Second Barrier")
     comm.Barrier()
     logging.info("Barrier Released")    
+    if CommRank==0:
+        PreprocessDataObj.AddTreeProcessingIndex()  
         
-    
+    comm.Barrier()  
+    PreprocessDataObj.DBConnection.CloseConnections()
             
     ## Open Connection to Postgres
     CurrentPGDB=PGDBInterface.DBInterface(CurrentSAGEStruct,Options,CommRank)

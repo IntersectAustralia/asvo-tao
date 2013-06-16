@@ -14,6 +14,7 @@ import logging
 import PGDBInterface
 import h5py
 import numpy
+import time
 
 class SAGEDataReader:    
     #The Module handles the data reading from SAGE output to a memory data structure.
@@ -74,10 +75,12 @@ class SAGEDataReader:
             logging.info(str(self.CommRank)+":Processing Tree ("+str(TreeCounter)+"/"+str(TotalNumberofUnPrcoessedTrees-1)+"):"+str(UnProcessedTree[0]))
             
             
-            
+            start_time = time.time()
             self.ProcessTree(UnProcessedTree)
-            self.PGDB.SetTreeAsProcessed(UnProcessedTree[0])            
-            
+            logging.info(">>>> Importing Tree Execution time="+str( time.time() - start_time)+ " seconds")
+            start_time = time.time()
+            self.PGDB.SetTreeAsProcessed(UnProcessedTree[0])                   
+            logging.info(">>>> Set Tree as Processed time="+str( time.time() - start_time)+ " seconds")
             TreeCounter=TreeCounter+1
             
         
@@ -136,15 +139,21 @@ class SAGEDataReader:
         
         logging.info('\t '+str(self.CommRank)+': Number of Galaxies in Tree ('+str(LoadingTreeID)+')='+str(GalaxiesCount))
         if GalaxiesCount>0:
+            start_time = time.time()
             TreeData=self.InputFile['galaxies'][StartIndex:StartIndex+GalaxiesCount] 
-                     
+            logging.info("Reading Data="+str( time.time() - start_time)+ " seconds")   
+            start_time = time.time()      
             TreeData=self.GenerateDictFromFields(LoadingTreeID,TreeData)
-            
-            self.ComputeFields(TreeData)            
+            logging.info("Convert to Dict="+str( time.time() - start_time)+ " seconds") 
+            start_time = time.time()   
+            self.ComputeFields(TreeData) 
+            logging.info("Compute Fields="+str( time.time() - start_time)+ " seconds")  
+            start_time = time.time()            
             TableID=self.MapTreetoTableID(TreeData)  
-                     
+            logging.info("Get TableID="+str( time.time() - start_time)+ " seconds")  
+            start_time = time.time()         
             self.PGDB.CreateNewTree(TableID,TreeData)        
-            
+            logging.info("Insert to Database="+str( time.time() - start_time)+ " seconds")
             
          
     

@@ -232,7 +232,11 @@ class PreprocessData(object):
             raw_input("PLease press enter to continue.....")      
     
     
-     
+    def AddTreeProcessingIndex(self):
+        
+        CreateIndexStatment="ALTER TABLE TreeProcessingSummary  ADD PRIMARY KEY (LoadingTreeID);"
+        self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment)
+         
      
     def FillTreeProcessingTable(self,CommSize,CommRank):
         
