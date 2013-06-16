@@ -5,7 +5,7 @@ User's Guide
 Detailed information on using TAO is available in the sections listed below.
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    register
    overview
@@ -14,5 +14,5 @@ Detailed information on using TAO is available in the sections listed below.
    sed
    mockimage
    output
-
+   scriptlib
 

@@ -1,6 +1,11 @@
 Spectral Energy Distribution (SED) Module
 =========================================
 
+.. toctree::
+   :maxdepth: 1
+
+   ../bpfilters/index
+
 Notes:
 
 * h=0.73 unless otherwise stated
