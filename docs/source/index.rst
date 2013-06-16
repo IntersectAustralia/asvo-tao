@@ -15,7 +15,6 @@ Contents:
 
    project/index
    user-manual/index
-   bpfilters/index
    admin/index
    developers/index
    project/glossary
