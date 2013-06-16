@@ -13,6 +13,7 @@ from random import randrange
 import logging
 import PGDBInterface
 import h5py
+import numpy
 
 class SAGEDataReader:    
     #The Module handles the data reading from SAGE output to a memory data structure.
@@ -83,17 +84,47 @@ class SAGEDataReader:
     def GenerateDictFromFields(self,TreeLoadingID,TreeData):
         TreeDict=[]
         
-        for Tree in TreeData:
+        pgcopy_dtype = [('num_fields','>i2')]
+        FieldsIndex=0
+        for field, dtype in TreeData.dtype.descr:
             
-            FieldData={}            
-            FieldsIndex=0
-            for Field in self.CurrentSAGEStruct:            
-                FieldData[Field[0]]=Tree[FieldsIndex]
-                FieldsIndex=FieldsIndex+1
+            FieldName=self.CurrentSAGEStruct[FieldsIndex][0]
+            pgcopy_dtype += [(FieldName + '_length', '>i4'),(FieldName, dtype.replace('<', '>'))]
+            FieldsIndex=FieldsIndex+1
+        FieldName='TreeID'
+        pgcopy_dtype += [(FieldName + '_length', '>i4'),(FieldName, '>i8')]
+        FieldName='CentralGalaxyGlobalID'
+        pgcopy_dtype += [(FieldName + '_length', '>i4'),(FieldName, '>i8')]
+        
+        pgcopy = numpy.empty(TreeData.shape, pgcopy_dtype)
+        pgcopy['num_fields'] = len(TreeData.dtype)+2
+        for i in range(0,len(TreeData.dtype)):
+            field = self.CurrentSAGEStruct[i][0]                            
+            pgcopy[field + '_length'] = TreeData.dtype[i].alignment
+            pgcopy[field] = TreeData[TreeData.dtype.names[i]]
+        
+             
+        pgcopy['TreeID_length'] = pgcopy.dtype[-3].alignment
+        
+        pgcopy['TreeID'].fill(TreeLoadingID) 
+        pgcopy['CentralGalaxyGlobalID_length'] = pgcopy.dtype[-1].alignment
+        
+        
             
-            FieldData['TreeID']=TreeLoadingID
-            TreeDict.append(FieldData)
-        return TreeDict    
+            
+        return pgcopy  
+    
+    def ComputeFields(self,TreeData):
+        
+        #print TreeData
+        for TreeField in TreeData:
+            CentralGalaxyLocalID=TreeField['CentralGal']  
+                     
+            CentralGalaxy=TreeData[CentralGalaxyLocalID]
+            TreeField['CentralGalaxyGlobalID']=CentralGalaxy['GlobalIndex']    
+                        
+        return TreeData
+      
             
     def ProcessTree(self,UnProcessedTree):
         
@@ -110,7 +141,8 @@ class SAGEDataReader:
             TreeData=self.GenerateDictFromFields(LoadingTreeID,TreeData)
             
             self.ComputeFields(TreeData)            
-            TableID=self.MapTreetoTableID(TreeData)            
+            TableID=self.MapTreetoTableID(TreeData)  
+                     
             self.PGDB.CreateNewTree(TableID,TreeData)        
             
             
@@ -183,11 +215,7 @@ class SAGEDataReader:
                 
                     self.PGDB.DBConnection.ExecuteNoQuerySQLStatment(GetIntersectionWithCurrentBoundingRect)
                     PTableID=int((XLocation*self.CellsInX)+YLocation)
-                    #logging.info("("+str(XLocation)+","+str(YLocation)+")="+str(PTableID))
                     PossibleTables=numpy.hstack([PossibleTables,PTableID])
-                    #logging.info("Intersect - Rect1="+str(Rect1)+"\tRect2="+str(Rect2))
-                #else:
-                    #logging.info("Fail - Rect1="+str(Rect1)+"\tRect2="+str(Rect2))
         FinalTableID=-1
         
         if len(PossibleTables)==1:
@@ -202,32 +230,6 @@ class SAGEDataReader:
     
     
     
-    def ComputeFields(self,TreeData):
-        for TreeField in TreeData:
-            CentralGalaxyLocalID=TreeField['CentralGal']
-            
-            DescGalaxyLocalID=TreeField['Descendant']
-            CentralGalaxy=TreeData[CentralGalaxyLocalID]
-            TreeField['CentralGalaxyGlobalID']=CentralGalaxy['GlobalIndex']
-            DescGalaxy=TreeData[DescGalaxyLocalID]            
-            
-            
-        return TreeData
-    def ReadTreeField(self,CurrentFile,CurrentFileGalaxyID,TreeID):
-        
-        #Read a single Galaxy information based on the pre-defined struct
-        #print self.FormatStr
-        #print struct.calcsize(self.FormatStr)
-        GalaxiesField= struct.unpack(self.FormatStr, CurrentFile.read(self.FieldSize))
-        FieldData={}
-        FieldsIndex=0
-        for Field in self.CurrentSAGEStruct:            
-            FieldData[Field[0]]=GalaxiesField[FieldsIndex]
-            FieldsIndex=FieldsIndex+1
-        FieldData['FileGalaxyID']=CurrentFileGalaxyID
-        FieldData['TreeID']=TreeID
-        
-        return FieldData        
     
             
                 

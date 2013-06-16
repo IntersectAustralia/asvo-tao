@@ -169,8 +169,8 @@ class PreprocessData(object):
             FieldName=field[2]
             self.CreateTableTemplate=self.CreateTableTemplate+ FieldName +' '+FieldDT+","
         self.CreateTableTemplate=self.CreateTableTemplate+"GlobalTreeID BIGINT,"
-        self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyGlobalID BIGINT,"     
-        self.CreateTableTemplate=self.CreateTableTemplate+"LocalGalaxyID INT)"       
+        self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyGlobalID BIGINT)"     
+        #self.CreateTableTemplate=self.CreateTableTemplate+"LocalGalaxyID INT)"       
         
                 
     def CreateTableIndex(self,TableIndex):
@@ -258,17 +258,8 @@ class PreprocessData(object):
         data['treeindex']=range(StartIndex,EndIndex)
         data['tree_counts']=InputFile['tree_counts'][StartIndex:EndIndex]
         data['tree_displs']=InputFile['tree_displs'][StartIndex:EndIndex]
-        data['processed'].fill(False)
+        data['processed'].fill(False)       
         
-        
-        #for TreeIndex in range(int(StartIndex),int(EndIndex)):
-            #if (TreeIndex%1000)==0:
-            #    logging.info("Input Tree "+str(TreeIndex)+"/"+str(TotalTreesCount)+"="+str((TreeIndex/float(TotalTreesCount))*100))                       
-            #CurrentStParams=[TreeIndex,long(InputFile['tree_counts'][TreeIndex]) ,long(InputFile['tree_displs'][TreeIndex]),False ]
-            
-            #cpyData.write(struct.pack('hiqiqiqi?',4,8,(TreeIndex),8,(InputFile['tree_counts'][TreeIndex]),8,(long(InputFile['tree_displs'][TreeIndex])),1,False)) 
-            #DataStr=';'.join([str(x) for x in CurrentStParams]) + '\n'                   
-            #cpyData.write(DataStr)
         
         pgcopy_dtype = [('num_fields','>i2')]
         for field, dtype in data.dtype.descr:
@@ -281,7 +272,7 @@ class PreprocessData(object):
             pgcopy[field + '_length'] = data.dtype[i].alignment
             pgcopy[field] = data[field]
             
-                
+              
         cpyData = BytesIO()       
         cpyData.write(struct.pack('!11sii', b'PGCOPY\n\377\r\n\0', 0, 0))
         cpyData.write(pgcopy.tostring())
