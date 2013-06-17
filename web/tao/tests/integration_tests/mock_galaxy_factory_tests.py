@@ -421,7 +421,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
 
     def assert_stellar_model_info_shown(self, stellar_model):
         stellar_model_selector_value = {
-                            '.stellar-model-info .name': stellar_model.name,
+                            '.stellar-model-info .label': stellar_model.label,
                             '.stellar-model-info .details': strip_tags(stellar_model.description),
                             }
         self.assert_selector_texts_equals_expected_values(stellar_model_selector_value)
