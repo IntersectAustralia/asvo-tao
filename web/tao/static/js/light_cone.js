@@ -290,7 +290,7 @@ jQuery(document).ready(function($) {
                 alert("Couldn't get data for requested dust model");
             },
             success: function(data, status, xhr) {
-                $('div.stellar-model-info .name').html(data.fields.name);
+                $('div.stellar-model-info .label').html(data.fields.label);
                 $('div.stellar-model-info .details').html(data.fields.description);
                 $('div.stellar-model-info').show();
                 fill_in_summary('sed', 'stellar_model_description', '<br>' + data.fields.description);
