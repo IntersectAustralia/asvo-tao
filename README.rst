@@ -64,6 +64,8 @@ Follow the steps below to set up your virtual environment and check out the code
    cd ../asvo-tao/docs
    ./gendoc.sh
    gnome-open build/index.html
-   # Click on Developer's Guide
+   # Continue with the instructions in the Developer's Guide:
+   # - asvo-tao/docs/build/developers/index.rst
+   # - http://tao.asvo.org.au/taodemo/static/docs/developers/index.html
 
 
