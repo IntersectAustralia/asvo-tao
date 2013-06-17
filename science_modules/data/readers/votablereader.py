@@ -1,18 +1,28 @@
-#This file needs the following
-#http://stsdas.stsci.edu/astrolib/vo-0.8.tar.gz
-# https://github.com/atpy/atpy/downloads
+#!/usr/bin/env python
 
-import atpy
-import sys,string,os
+import sys
+from vo.table import parse_single_table
 
+if len(sys.argv) < 2:
+    print "\nplease specify an input file.\n"
+    sys.exit()
 
+filename = sys.argv[1]
 
-if __name__ == '__main__':
-    voFileName=sys.argv[1]
-    tbl = atpy.Table(voFileName)
-    for column in tbl.columns:
-        print column+":"+str(tbl.columns[column])
-        
-    for rowindx in range(1,len(tbl)):
-        print tbl.row(rowindx)
-    
+table = parse_single_table(filename)
+data = table.array
+
+# Read comlumn names
+columns = []
+for field in table.fields:
+	columns.append(field.name)
+
+# Print out the header 
+print "#", ", ".join("%s" % c for c in columns)
+
+# Print out the dataset
+for i in range(0,len(data[columns[0]])):
+    d = []
+    for j in range(0,len(columns)):
+    	d.append(data[columns[j]][i])
+    print " ".join("%e" % c for c in d)

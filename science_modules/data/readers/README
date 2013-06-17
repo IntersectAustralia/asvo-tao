@@ -17,7 +17,7 @@ FITS format readers:
 VO Tables format readers:
 
 - votablereader.py
-  requirements: ATPY library (http://atpy.github.io/)
+  requirements: astrolib library (https://trac.assembla.com/astrolib)
 
 - votablereader.cc
   requirements: pugixml library (http://pugixml.org/)
