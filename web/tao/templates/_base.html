@@ -46,7 +46,9 @@
                     <p class="navbar-text pull-right">
                         {% if user.is_authenticated %}
                             Logged in as {{ user.display_name }}
-                            <a href="{% url 'logout' %}">Logout</a>
+                            {% if not user.is_aaf %}
+                                <a href="{% url 'logout' %}">Logout</a>
+                            {% endif %}
                         {% else %}
                             <a href="{% url 'login' %}">Login</a>
                             <a href="{% url 'register' %}">Register</a>

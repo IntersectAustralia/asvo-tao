@@ -40,9 +40,25 @@ class TaoUser(auth_models.AbstractUser):
         else:
             return self.username
 
+    def display_registration_status(self):
+        messages = {
+            TaoUser.RS_NA: 'Not Applicable',
+            TaoUser.RS_EMPTY: 'No registration form',
+            TaoUser.RS_PENDING: 'Pending approval',
+            TaoUser.RS_APPROVED: 'Account approved',
+            TaoUser.RS_REJECTED: 'Registration rejected',
+            }
+        return messages[self.account_registration_status]
+
     def is_aaf(self):
         return self.account_registration_status in [TaoUser.RS_EMPTY, TaoUser.RS_APPROVED, TaoUser.RS_PENDING, TaoUser.RS_REJECTED]
-    
+
+    def is_rejected(self):
+        return self.account_registration_status == TaoUser.RS_REJECTED
+
+    def __unicode__(self):
+        return "(%d) %s, %s" % (self.id, self.username, self.account_registration_status)
+
 class Simulation(models.Model):        
 
     name = models.CharField(max_length=100, unique=True)

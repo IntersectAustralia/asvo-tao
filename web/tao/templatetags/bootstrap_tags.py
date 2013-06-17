@@ -32,10 +32,14 @@ def is_checkbox(value):
     return isinstance(value, CheckboxInput)
 
 @register.assignment_tag
-def check_aaf(user):
+def check_user(user, method):
     try:
-        if callable(getattr(user,'is_aaf')):
-            return user.is_aaf()
+        m = getattr(user,method)
+        if callable(m):
+            if m():
+                return True
+            else:
+                return False
         else:
             return False
     except AttributeError:

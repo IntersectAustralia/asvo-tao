@@ -67,6 +67,7 @@ def get_zip_file(request, id):
     string_io.seek(0) 
     return response
 
+@researcher_required
 @set_tab('jobs')
 def index(request):
     user_jobs = Job.objects.filter(user=request.user)

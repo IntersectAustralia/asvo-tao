@@ -22,12 +22,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-
-@set_tab('home')
-def home(request):
-    return render(request, 'home.html')
-
-
 def login(request):
     from tao.forms import LoginForm
     if request.method == 'POST':
@@ -42,6 +36,9 @@ def fail(request):
 
 
 def register(request):
+    if hasattr(request,'user') and hasattr(request.user,'account_registration_status'):
+        if request.user.account_registration_status != TaoUser.RS_EMPTY:
+            return redirect(account_status)
     from tao.forms import UserCreationForm
     if request.method == 'POST':
         form = UserCreationForm(request.POST, user=request.user)
@@ -63,6 +60,26 @@ def register(request):
         'form': form,
         'user': request.user,
     })
+
+def account_status(request):
+    if hasattr(request,'user') and hasattr(request.user,'account_registration_status'):
+        if request.user.account_registration_status == TaoUser.RS_EMPTY:
+            return redirect(register)
+    else:
+        return redirect(home)
+    return render(request, "account_status.html", {
+        'user': request.user
+    })
+
+@set_tab('home')
+def home(request):
+    if hasattr(request,'user') and hasattr(request.user,'account_registration_status'):
+        if request.user.account_registration_status == TaoUser.RS_EMPTY:
+            return redirect(register)
+        elif request.user.account_registration_status == TaoUser.RS_PENDING:
+            return redirect(account_status)
+    return render(request, 'home.html')
+
 
 #@aaf_empty_required
 #def register_aaf(request):

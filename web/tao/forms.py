@@ -9,7 +9,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 
 from django.conf import settings
-from django.contrib.auth import forms as auth_forms
+from django.contrib.auth import forms as auth_forms, get_user_model
 from tao.models import TaoUser
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
@@ -96,9 +96,19 @@ class UserCreationForm(forms.Form):
             return False
 
     def clean_password1(self):
+        if self.is_aaf():
+            return ''
         password = self.cleaned_data.get('password1')
         if len(password) < 8:
             raise ValidationError(_('Password must be at least 8 characters long'))
+        return password
+
+    def clean_password2(self):
+        if self.is_aaf():
+            return ''
+        password = self.cleaned_data.get('password2')
+        if password != self.cleaned_data.get('password1'):
+            raise ValidationError(_('Password confirmation does not match'))
         return password
 
     def clean_email(self):
@@ -107,18 +117,33 @@ class UserCreationForm(forms.Form):
             raise ValidationError(_('That email is already taken.'))
         return email
 
-    def save(self):  # what about transactions?
-        user = super(auth_forms.UserCreationForm, self).save(commit=False)
-        user.set_password(self.cleaned_data['password1'])  # FIXME shouldn't have to do this ??
-        user.first_name = self.cleaned_data['first_name']
-        user.last_name = self.cleaned_data['last_name']
-        user.email = self.cleaned_data['email']
-        user.is_active = False
-        user.title = self.cleaned_data['title']
-        user.institution = self.cleaned_data.get('institution')
-        user.scientific_interests = self.cleaned_data.get('scientific_interests')
-        user.save()
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        if not self.is_aaf() and TaoUser.objects.filter(username=username).count() > 0:
+            raise ValidationError(_('That username is already taken.'))
+        return username
 
+    def save(self):  # what about transactions?
+        UserModel = get_user_model()
+        if self.is_aaf():
+            self.user.title = self.cleaned_data['title']
+            self.user.institution = self.cleaned_data['institution']
+            self.user.scientific_interest = self.cleaned_data['scientific_interests']
+            self.user.account_registration_status = UserModel.RS_PENDING
+            self.user.save()
+            user = self.user
+        else:
+            user = UserModel(username=self.clean_username())
+            user.set_password(self.cleaned_data['password1'])
+            user.first_name = self.cleaned_data['first_name']
+            user.last_name = self.cleaned_data['last_name']
+            user.email = self.cleaned_data['email']
+            user.is_active = False
+            user.title = self.cleaned_data['title']
+            user.institution = self.cleaned_data.get('institution')
+            user.scientific_interests = self.cleaned_data.get('scientific_interests')
+            user.account_registration_status = UserModel.RS_NA
+            user.save()
         return user
 
 class RejectForm(forms.Form):

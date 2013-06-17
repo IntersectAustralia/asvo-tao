@@ -30,21 +30,6 @@ def aaf_active_or_else_required(function):
         return actual_decorator(function)
     return actual_decorator
 
-
-def aaf_required(func):
-    """
-    check that, if the user logged in via AAF, it is approved
-    """
-    login_url = reverse_lazy('tao.views.register')
-    actual_decorator = user_passes_test(
-        lambda u: u.account_registration_status in [TaoUser.RS_APPROVED],
-        login_url=login_url,
-    )
-    if function:
-        return actual_decorator(function)
-    return actual_decorator
-
-
 def researcher_required(func):
     return login_required(aaf_active_or_else_required(func))
 
