@@ -46,8 +46,10 @@ pip install -r tao.pip.reqs
 
 web_gendocs() {
 source $WORKSPACE/TAO/bin/activate-qa
-. $CUR_DIR/../docs/gendoc.sh
-$CUR_DIR/manage.py collectstatic --noinput
+cd $CUR_DIR/../docs/
+./gendoc.sh
+cd $CUR_DIR/
+./manage.py collectstatic --noinput
 }
 
 migrate() {
