@@ -18,6 +18,7 @@ Contents:
    admin/index
    developers/index
    project/glossary
+   whatsnew
    knownissues
 
 
