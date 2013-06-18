@@ -8,6 +8,10 @@ jQuery(document).ready(function($) {
         return '#id_sed-' + bare_name;
     };
 
+    var mi_id = function(bare_name) {
+        return '#id_mock_image-' + bare_name;
+    };
+
     var rf_id = function(bare_name) {
         return '#id_record_filter-' + bare_name;
     }
@@ -448,6 +452,7 @@ jQuery(document).ready(function($) {
 
     sed_band_pass_filters_widget.change_event(function(evt){
         update_filter_options(false, false);
+        update_mock_image();
         display_band_pass_filters_summary();
     });
 
@@ -861,6 +866,10 @@ jQuery(document).ready(function($) {
             $(sed_id('apply_dust')).removeAttr('disabled');
             $(sed_id('apply_dust')).change();
             update_filter_options(false, false); // triggers filter.change
+
+            // Allow mock image.
+            disable_mock_image(true);
+            $(mi_id('apply_mock_image')).removeAttr('disabled');
         }
         else {
             $('#tao-tabs-2').css({"border-style": "dashed"});
@@ -881,6 +890,10 @@ jQuery(document).ready(function($) {
             fill_in_summary('sed', 'select_sed', 'Not selected');
             var use_default = !update_filter_options.initializing || !bound;
             update_filter_options(false, use_default); // triggers filter.change
+
+            // Disable mock image.
+            disable_mock_image(true);
+            $(mi_id('apply_mock_image')).attr('disabled', 'disabled');
         }
         $('#sed_params').slideToggle();
         $('#sed_info').slideToggle();
@@ -1001,6 +1014,19 @@ jQuery(document).ready(function($) {
         $('#id_output_format-supported_formats').change();
         $(sed_id('apply_sed')).change();
         $(sed_id('apply_dust')).change();
+
+        // Disable the mock-image button if SED is disabled.
+        if($(sed_id('apply_sed')).is(':checked'))
+            enable_mock_image(true);
+        else
+            disable_mock_image(true);
+
+        // Clear out any mock image values.
+        // TODO: Figure out at what stage the SED selection gets set
+        // so I can replace this with an appropriate call to updat_mock_image.
+        $(mi_id('total_mag_field')).empty();
+        $(mi_id('bulge_mag_field')).empty();
+
         $('div.summary_light_cone .output_properties_list').hide();
         $('div.summary_sed .band_pass_filters_list').hide();
         $('div.summary_light_cone .simulation_description, div.summary_light_cone .galaxy_model_description').hide();
@@ -1014,4 +1040,93 @@ jQuery(document).ready(function($) {
             display_band_pass_filters_summary();
         }, 1000);
     })();
+
+
+    //
+    // Mock Image
+    //
+
+    function disable_mock_image(toggle) {
+        $('#tao-tabs-3').css({"border-style": "dashed"});
+        $('#tao-tabs-3').css({"color": "rgb(119, 221, 252)"});
+        $(mi_id('total_mag_field')).attr('disabled', 'disabled');
+        $(mi_id('bulge_mag_field')).attr('disabled', 'disabled');
+        $(mi_id('min_mag')).attr('disabled', 'disabled');
+        $(mi_id('max_mag')).attr('disabled', 'disabled');
+        $('div.summary_mock_image .apply_mock_image').hide();
+        fill_in_summary('mock_image', 'select_mock_image', 'Not selected');
+        if($(mi_id('apply_mock_image')).is(':checked'))
+            $(mi_id('apply_mock_image')).prop('checked', false);
+        if(toggle)
+            $('#mock_image_params').hide();
+    }
+
+    function enable_mock_image(toggle) {
+        $('#tao-tabs-3').css({"border-style": "solid"});
+        $('#tao-tabs-3').css({"color": "#2BA6CB"});
+        $(mi_id('total_mag_field')).removeAttr('disabled');
+        $(mi_id('bulge_mag_field')).removeAttr('disabled');
+        $(mi_id('min_mag')).removeAttr('disabled');
+        $(mi_id('max_mag')).removeAttr('disabled');
+        $('div.summary_mock_image .apply_mock_image').show();
+        fill_in_summary('mock_image', 'select_mock_image', '');
+        if(!$(mi_id('apply_mock_image')).is(':checked'))
+            $(mi_id('apply_mock_image')).prop('checked', true);
+        if(toggle)
+            $('#mock_image_params').show();
+
+        // Force update of dimensions for mock image.
+        $(mi_id('width')).change();
+    }
+
+    $(mi_id('apply_mock_image')).change(function(evt){
+        if ($(mi_id('apply_mock_image')).is(':checked')) {
+            enable_mock_image(false);
+        }
+        else {
+            disable_mock_image(false);
+        }
+        $('#mock_image_params').slideToggle();
+        $('#mock_image_info').slideToggle();
+    });
+
+    $(mi_id('total_mag_field')).change(function(){
+        var val = $('#id_mock_image-total_mag_field option:selected').html();
+        if(val === undefined)
+            val = '';
+        fill_in_summary('mock_image', 'total_mag_field', val);
+    });
+    $(mi_id('bulge_mag_field')).change(function(){
+        var val = $('#id_mock_image-bulge_mag_field option:selected').html();
+        if(val === undefined)
+            val = '';
+        fill_in_summary('mock_image', 'bulge_mag_field', val);
+    });
+
+    $('#id_mock_image-width, #id_mock_image-height').change(function(){
+        var val = $('#id_mock_image-width').val().toString() + 'x' + $('#id_mock_image-height').val().toString();
+        fill_in_summary('mock_image', 'dim', val);
+    });
+
+    function update_mock_image() {
+        var opts = $('#id_sed-band_pass_filters > option');
+
+        function do_one(field) {
+            var cur = field.children('option:selected');
+            if(cur)
+                cur = cur.attr('value');
+            field.empty();
+            opts.each(function(){
+                var opt = $('<option></option>').attr('value', $(this).attr('value')).text($(this).text());
+                if($(this).attr('value') == cur)
+                    opt.prop('selected', true);
+                field.append(opt);
+            });
+            field.change();
+        }
+
+        do_one($(mi_id('total_mag_field')));
+        do_one($(mi_id('bulge_mag_field')));
+    }
+
 });
