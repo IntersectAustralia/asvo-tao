@@ -719,27 +719,34 @@ jQuery(document).ready(function($) {
     }
 
     var spinner_check_value = function(new_value) {
-        var maximum = $(lc_id('number_of_light_cones')).data('spin-max');
         var $spinner = $(lc_id('number_of_light_cones')).closest('span');
+        var maximum = $(lc_id('number_of_light_cones')).data('spin-max');
+        if (new_value <= 0) {
+            show_error($spinner, "Please provide a positive number of light-cones");
+            fill_in_summary('light_cone', 'number_of_light_cones', 'Negative number of light cones is invalid');
+            $('.ui-spinner-down').button('disable').addClass("ui-state-disabled").removeClass('ui-state-enabled');
+            return false;
+        }
+        else if (maximum > 0 && new_value > maximum) {
+            show_error($spinner, "The maximum is " + maximum);
+            fill_in_summary('light_cone', 'number_of_light_cones', 'Number of light cones selected exceeds the maximum');
+            $('.ui-spinner-up').button('disable').addClass("ui-state-disabled").removeClass('ui-state-enabled');
+            return false;
+        }
+
+        var ra = $(lc_id('ra_opening_angle')).text();
+        var dec = $(lc_id('dec_opening_angle')).text();
+        var redshift_min = $(lc_id('redshift_min')).text();
+        var redshift_max = $(lc_id('redshift_max')).text();
+        if (ra == "" || dec == "" || redshift_min == "" || redshift_max == "")
+            return true;
+
         if (maximum <= 0) {
             show_error($spinner, "Selection parameters can't be used to generate unique light-cones");
             fill_in_summary('light_cone', 'number_of_light_cones', 'An invalid number of light cones is selected');
             return false;
         }
-        else {
-            if (new_value <= 0) {
-                show_error($spinner, "Please provide a positive number of light-cones");
-                fill_in_summary('light_cone', 'number_of_light_cones', 'Negative number of light cones is invalid');
-                $('.ui-spinner-down').button('disable').addClass("ui-state-disabled").removeClass('ui-state-enabled');
-                return false;
-            }
-            else if (new_value > maximum) {
-                show_error($spinner, "The maximum is " + maximum);
-                fill_in_summary('light_cone', 'number_of_light_cones', 'Number of light cones selected exceeds the maximum');
-                $('.ui-spinner-up').button('disable').addClass("ui-state-disabled").removeClass('ui-state-enabled');
-                return false;
-            }
-        }
+
         $('.ui-spinner-down').button('enable').addClass('ui-state-enabled').removeClass("ui-state-disabled");
         $('.ui-spinner-up').button('enable').addClass('ui-state-enabled').removeClass("ui-state-disabled");
         show_error($spinner, null);
