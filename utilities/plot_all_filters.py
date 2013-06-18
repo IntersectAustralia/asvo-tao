@@ -6,7 +6,7 @@ from plot_filter import plot_filter
 if __name__ == '__main__':
 
     # List all filters (extension .dat).
-    filters = [f for f in os.listdir(os.getcwd()) if f[-4:].lower() == '.dat']
+    filters = [f for f in os.listdir(os.getcwd()) if f[-4:].lower() in ['.dat', 'dati']]
 
     # Run on all filters.
     for filt in filters:
