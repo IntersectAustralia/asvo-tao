@@ -227,7 +227,8 @@ INITIAL_JOB_STATUS = 'HELD'
 UI_DIR = join(dirname(PROJECT_DIR), 'ui')
 MODULES_PATHS = (
     ('light_cone', 'light-cone'),
-    ('sed', 'sed')
+    ('sed', 'sed'),
+    ('mock_image', 'mock_image'),
 )
 sys.path.extend([join(UI_DIR, module[1]) for module in MODULES_PATHS])
 INSTALLED_APPS += tuple(['taoui_' + module[0] for module in MODULES_PATHS])
