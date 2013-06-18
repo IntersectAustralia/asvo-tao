@@ -1,0 +1,29 @@
+{% load bootstrap_tags %}
+{% load assets %}
+
+<legend></legend>
+<div class="row-fluid">
+    <div class="boxed span8">
+        <div>
+            {{ form.get_apply_mock_image|as_bootstrap_field }}
+        </div>
+        <div id="mock_image_params">
+	{% for fieldset in form.fieldsets %}
+	    {{ fieldset|as_bootstrap_fieldset }}
+	{% endfor %}
+        </div>
+    </div>
+    <div class="aside span4" id="sed_info">
+        <div class="boxed">
+            <div class="mock-image-info">
+                <div>Mock Image Configuration</div>
+                <div style="overflow-y: scroll;height: 178px">
+                    <p>
+                        <strong class="name"><!-- --></strong>
+                    </p>
+                    <div class="details"><!-- --></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>  
