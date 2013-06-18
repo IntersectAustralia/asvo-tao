@@ -1,62 +1,55 @@
 [
     {
+        "pk": 1,
+        "model": "auth.user",
+        "fields": {
+            "username": "test", 
+            "is_active": true,
+            "is_superuser": true,
+            "is_staff": true,
+            "last_login": "2013-06-18T01:00:50Z",
+            "password": "pbkdf2_sha256$10000$01GF4YwvmGBl$ZLmmzzxOOqjqtHL7kiUFja/6M0mDUmExugcnvZUHXSM=",
+            "email": "test@test.org",
+            "date_joined": "2013-06-18T01:00:50Z"
+        }
+    },
+    {
         "model" : "tao.Simulation",
         "pk" : 1,
         "fields" : {
             "name": "Millenium",
-            "paper_title": "Paper",
-            "paper_url" : "http://www.example.com/paper.html",
-            "external_link_url" : "http://www.another-example.com/url.html",
-            "cosmology" : "Special cosmology",
-            "cosmological_parameters" : "G=42",
-            "box_size_units" : "kP",
-            "box_size" : 1234567,
-            "web_site" : "http://www.example.com/"
+            "box_size_units" : "Mpc",
+            "box_size" : 500
         }
     },
     {
         "model" : "tao.Simulation",
         "pk" : 2,
         "fields" : {
-            "name": "Century",
-            "paper_title": "100 papers",
-            "paper_url" : "http://www.example.com/papers.html",
-            "external_link_url" : "http://www.another-example.com/urls.html",
-            "cosmology" : "Special multivariate cosmology",
-            "cosmological_parameters" : "G=Pi",
-            "box_size_units" : "kP",
-            "box_size" : 3141592,
-            "web_site" : "http://www.example.com/"
+            "name": "MiniMillennium",
+            "box_size_units" : "Mpc",
+            "box_size" : 64
         }
     },
     {
         "model" : "tao.GalaxyModel",
         "pk" : 1,
         "fields" : {
-            "name": "Ridge model",
-            "kind": "Ridge solution",
-            "paper_title": "Galaxy ridge model",
-            "paper_url" : "http://www.example.com/papers.html"
+            "name": "Ridge model"
         }
     },
     {
         "model" : "tao.GalaxyModel",
         "pk" : 2,
         "fields" : {
-            "name": "Scattered model",
-            "kind": "Scattered solution",
-            "paper_title": "Galaxy scattered model",
-            "paper_url" : "http://www.example.com/papers.html"
+            "name": "Scattered model"
         }
     },
     {
         "model" : "tao.GalaxyModel",
         "pk" : 3,
         "fields" : {
-            "name": "Sphere",
-            "kind": "Spherical solution",
-            "paper_title": "Galaxy spherical model",
-            "paper_url" : "http://www.example.com/papers.html"
+            "name": "Sphere"
         }
     },
     {
@@ -65,7 +58,8 @@
         "fields" : {
             "galaxy_model": 1,
             "simulation" : 1,
-            "database": "Millenium - ridge"
+            "database": "Millenium - ridge",
+            "import_date": "1981-11-22"
         }
     },
     {
@@ -74,7 +68,8 @@
         "fields" : {
             "galaxy_model": 2,
             "simulation" : 1,
-            "database": "Millenium - scattered"
+            "database": "Millenium - scattered",
+            "import_date": "1981-11-22"
         }
     },
     {
@@ -83,7 +78,8 @@
         "fields" : {
             "galaxy_model": 3,
             "simulation" : 1,
-            "database": "Millenium - sphere"
+            "database": "Millenium - sphere",
+            "import_date": "1981-11-22"
         }
     },
     {
@@ -92,7 +88,8 @@
         "fields" : {
             "galaxy_model": 2,
             "simulation" : 2,
-            "database": "Century - scattered"
+            "database": "Century - scattered",
+            "import_date": "1981-11-22"
         }
     },
     {
@@ -101,16 +98,8 @@
         "fields" : {
             "galaxy_model": 3,
             "simulation" : 2,
-            "database": "Century - sphere"
-        }
-    },
-    {
-        "model" : "tao.DataSet",
-        "pk" : 5,
-        "fields" : {
-            "galaxy_model": 3,
-            "simulation" : 2,
-            "database": "Century - sphere"
+            "database": "Century - sphere",
+            "import_date": "1981-11-22"
         }
     },
     {
@@ -135,6 +124,39 @@
         "fields" : {
             "dataset": 5,
             "redshift" : "2.71828"
+        }
+    },
+    {
+        "pk": 1,
+        "model": "tao.bandpassfilter",
+        "fields": {
+            "order": 0,
+            "filter_id": "2MASS/Hband_2mass.dati",
+            "group": "",
+            "description": "<p>2 Micron All Sky Survey (2MASS) H</p>\n",
+            "label": "2MASS H"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "tao.bandpassfilter",
+        "fields": {
+            "order": 0,
+            "filter_id": "2MASS/Ksband_2mass.dati",
+            "group": "",
+            "description": "<p>2 Micron All Sky Survey (2MASS) Ks</p>\n",
+            "label": "2MASS Ks"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "tao.bandpassfilter",
+        "fields": {
+            "order": 0,
+            "filter_id": "dummy_filter",
+            "group": "",
+            "description": "<p>Luke's nonsense</p>\n",
+            "label": "dummy"
         }
     }
 ]
