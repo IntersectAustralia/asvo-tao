@@ -33,7 +33,8 @@ pip install fabric
 deploy() {
 source $WORKSPACE/TAO/bin/activate-qa
 cd $CUR_DIR
-./manage.py fabfile.py qa $*
+echo fab qa $*
+fab qa $*
 }
 
 install_libraries() {
@@ -72,7 +73,7 @@ case $command in
             ;;
   fabric)  install_fabric
             ;;
-  deploy)  deploy
+  deploy)  deploy $*
             ;;
   install)  install_libraries
             ;;

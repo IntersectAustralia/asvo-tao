@@ -7,6 +7,7 @@
 """
 from fabric.api import *
 from fabric.context_managers import cd
+from fabric.contrib.files import exists
 
 env.forward_agent = True
 
@@ -46,17 +47,23 @@ def install_software():
 def create_database():
     _create_mysql_user_and_database()
 
+def run_git(git_command):
+    run("eval `ssh-agent`; ssh-add /home/devel/.ssh/id_rsa; " + git_command)
+
 def initial_setup():
-    run("test ! -d asvo-tao && git clone git@github.com:IntersectAustralia/asvo-tao.git")
-    run("chmod o+rx /home/{user}".format(user=env.user))
+    if exists("asvo-tao"):
+        run("rm -rf asvo-tao")
+    run_git("git clone git@github.com:IntersectAustralia/asvo-tao.git")
+    run("chmod o+rx /home/{user}/asvo-tao".format(user=env.user))
     with cd("asvo-tao/web"):
-        run("git checkout work")
+        run_git("git checkout work")
+        run_git("git pull origin work")
         run("./qa.sh setup")
 
 def update():
     with cd("asvo-tao"):
-        run("git checkout work")
-        run("git pull origin work")
+        run_git("git checkout work")
+        run_git("git pull origin work")
     with cd("asvo-tao/web"):
         run("./qa.sh install")
         run("./qa.sh gendocs")
