@@ -44,7 +44,7 @@ cd $CUR_DIR/..
 pip install -r tao.pip.reqs
 }
 
-web_gendoc() {
+web_gendocs() {
 source $WORKSPACE/TAO/bin/activate-qa
 . $CUR_DIR/../docs/gendoc.sh
 $CUR_DIR/manage.py collectstatic --noinput
