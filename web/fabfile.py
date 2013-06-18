@@ -47,39 +47,19 @@ def initial_deploy():
     run("git checkout work")
     run("chmod o+rx /home/{user}".format(user=env.user))
     with cd("asvo-tao/web"):
-        run("/usr/bin/env python2.6 bootstrap.py")
-        sudo("bin/easy_install -U setuptools")
-        sudo("bin/easy_install -U sphinx")
-        sudo("bin/easy_install -U breathe")
-        run("bin/buildout -c buildout_{target_env}.cfg".format(target_env=env.target_env))
-    with cd("asvo-tao/docs"):
-        run("./gendoc.sh")
-    with cd("asvo-tao/web"):
-        run("bin/django collectstatic --noinput")
-        run("bin/django syncdb --noinput")
-        run("bin/django migrate")
-        run("bin/django sync_rules")
-        run("touch tao/django.log && chmod o+w tao/django.log")
-        sudo("cp deploy/httpd/tao_{target_env}_httpd.conf /etc/httpd/conf.d/tao_httpd.conf".format(target_env=env.target_env))
-        sudo("service httpd graceful")
-        sudo("service httpd start")
+        run("./qa.sh setup")
 
 def update():
-    with cd("asvo-tao/web"):
+    with cd("asvo-tao"):
         run("git checkout work")
         run("git pull origin work")
-        run("bin/buildout -c buildout_{target_env}.cfg".format(target_env=env.target_env))
-        sudo("bin/easy_install -U setuptools")
-        sudo("bin/easy_install -U sphinx")
-        sudo("bin/easy_install -U breathe")
-    with cd("asvo-tao/docs"):
-        run("./gendoc.sh")
     with cd("asvo-tao/web"):
-        run("bin/django collectstatic --noinput")
-        run("bin/django syncdb --noinput")
-        run("bin/django migrate")
+        run("./qa.sh install")
+        run("./qa.sh gendocs")
+        run("./qa.sh migrate")
+    with cd("asvo-tao/web"):
         sudo("cp deploy/httpd/tao_{target_env}_httpd.conf /etc/httpd/conf.d/tao_httpd.conf".format(target_env=env.target_env))
-        sudo("service httpd graceful")
+    sudo("service httpd graceful")
 
 def create_test_admin_users():
     with cd("asvo-tao/web"):
