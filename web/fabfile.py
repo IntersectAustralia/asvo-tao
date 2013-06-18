@@ -35,18 +35,22 @@ def _create_mysql_user_and_database():
     run("""echo "create user 'tao'@'localhost' identified by 'tao'; grant all privileges on tao.* to 'tao'@'localhost'; flush privileges;" | mysql -uroot """)
     run("""echo "create database tao;" | mysql -utao --password=tao""")
 
-def initial_deploy():
+def install_software():
     sudo("yum install -y git mod_fcgid mysql-server mysql-devel gcc python-devel postfix doxygen")
     sudo("chkconfig mysqld on")
     sudo("chkconfig httpd on")
     sudo("chkconfig postfix on")
     sudo("service mysqld start")
     sudo("service postfix start")
+
+def create_database():
     _create_mysql_user_and_database()
-    run("git clone git@github.com:IntersectAustralia/asvo-tao.git")
-    run("git checkout work")
+
+def initial_setup():
+    run("test ! -d asvo-tao && git clone git@github.com:IntersectAustralia/asvo-tao.git")
     run("chmod o+rx /home/{user}".format(user=env.user))
     with cd("asvo-tao/web"):
+        run("git checkout work")
         run("./qa.sh setup")
 
 def update():
