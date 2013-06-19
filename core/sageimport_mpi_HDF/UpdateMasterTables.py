@@ -2,7 +2,7 @@
 import string
 import sys # for listing directory contents
 import settingReader # Read the XML settings
-import PGDBInterface
+
 import DBConnection
 import logging
 
