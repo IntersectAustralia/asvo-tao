@@ -105,9 +105,10 @@ class SubmitLightConeTests(LiveServerMGFTest):
             'number_of_light_cones': '9', # this exceeds the calculated maximum, 3, for parameters above
         }, id_wrap=self.lc_id)
         self.click(self.lc_2select('op_add_all')) # click somewhere else to shift focus out of the number of cones field (this shouldn't affect the current selection, as they are already all selected)
+        self.assertEqual('3', self.get_selector_value(self.lc_id('number_of_light_cones'))) # resets to the maximum valid value
         self.submit_mgf_form()
 
-        self.assert_on_page('mock_galaxy_factory')
+        self.assert_on_page('job_index') # used to return to the mock_galaxy_factory page, as previously used to keep the invalid input and fail validation
 
     def test_submit_valid_box_job(self):
         ## fill in form (correctly)
