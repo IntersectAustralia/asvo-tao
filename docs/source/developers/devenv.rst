@@ -2,6 +2,8 @@
 Development Enviroment
 ======================
 
+The description below only covers the Web UI (Django) development enviroment.  The Science Module and Core dev. environments are TBS.
+
 After following the initial steps as outlined in README.rst:
 
 Edit bin/activate and add a line indicating which settings file to use by default, e.g.:
