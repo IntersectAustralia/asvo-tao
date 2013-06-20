@@ -190,6 +190,23 @@ test("Validating forms call all inputs.", function() {
     ok(called_another && called_something, 'Must have called both inputs.');
 });
 
+test("Removing from DOM removes from forms.", function() {
+    var called = false;
+    var v1 = $('#id_something').validate({
+        form: 'the_form'
+    }).validate('test', {
+        check: function() {
+            called = true;
+            return true;
+        },
+        message: ''
+    });
+    $('#id_something').remove();
+    v1.remove();
+    $.validate_form('the_form');
+    ok(!called, 'Must not call the test.');
+});
+
 function module_teardown() {
     $('#id_something').removeData();
     $('#id_something').unbind('focusout')

@@ -111,22 +111,6 @@
             return this.each(function() {
                 var $this = $(this);
                 var data = $this.data('validate');
-
-                // Remove the element from the all array.
-                var idx = jQuery.inArray($this, all);
-                if(idx > -1)
-                    all.splice(idx, 1);
-
-                // Remove the element from any forms.
-                for(var key in forms) {
-                    idx = jQuery.inArray($this, forms[key]);
-                    if(idx > -1) {
-                        forms[key].splice(idx, 1);
-                        if(forms[key].length == 0)
-                            delete forms[key];
-                    }
-                }
-
                 $(window).unbind('.validate');
                 data.validate.remove();
                 $this.removeData('validate');
@@ -150,7 +134,9 @@
         if(forms[form] !== undefined) {
             for(var ii=0; ii<forms[form].length; ii++) {
                 var elem = forms[form][ii];
-                validate_element(elem, elem.data('validate'), done);
+                var data = elem.data('validate');
+                if(data !== undefined)
+                    validate_element(elem, data, done);
             }
         }
     }
@@ -159,7 +145,9 @@
         var done = undefined;
         for(var ii=0; ii<all.length; ii++) {
             var elem = all[ii];
-            validate_element(elem, elem.data('validate'), done);
+            var data = elem.data('validate');
+            if(data !== undefined)
+                validate_element(elem, data, done);
         }
     }
 
