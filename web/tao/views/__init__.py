@@ -42,7 +42,8 @@ def register(request):
             
             admin_emails = User.objects.admin_emails()
             context = Context({
-                          'pending_requests_url': request.build_absolute_uri(reverse('access_requests'))
+                          'pending_requests_url': request.build_absolute_uri(reverse('access_requests')),
+                          'user': form.cleaned_data
                       })
             send_mail("registration", context, "Registration submitted", admin_emails)
             
