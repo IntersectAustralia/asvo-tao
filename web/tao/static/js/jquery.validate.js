@@ -59,13 +59,15 @@
 
         // Now check my element.
         clear_error(elem);
-        var cache = build_cache(data.cache);
-        var val = parse(elem.val(), data.type);
-        for(var ii=0; ii < data.tests.length; ii++) {
-            var test = data.tests[ii];
-            if(!test[0].call(undefined, val, cache, elem)) {
-                set_error(elem, test[1]);
-                return false;
+	if(!elem.is(':disabled')) {
+            var cache = build_cache(data.cache);
+            var val = parse(elem.val(), data.type);
+            for(var ii=0; ii < data.tests.length; ii++) {
+		var test = data.tests[ii];
+		if(!test[0].call(undefined, val, cache, elem)) {
+                    set_error(elem, test[1]);
+                    return false;
+		}
             }
         }
         return true;
@@ -130,25 +132,31 @@
     }
 
     jQuery.validate_form = function(form) {
+	var failed = undefined;
         var done = undefined;
         if(forms[form] !== undefined) {
             for(var ii=0; ii<forms[form].length; ii++) {
                 var elem = forms[form][ii];
                 var data = elem.data('validate');
                 if(data !== undefined)
-                    validate_element(elem, data, done);
+                    if(!validate_element(elem, data, done) && failed === undefined)
+			failed = elem;
             }
         }
+	return failed;
     }
 
     jQuery.validate_all = function() {
+	var failed = undefined;
         var done = undefined;
         for(var ii=0; ii<all.length; ii++) {
             var elem = all[ii];
             var data = elem.data('validate');
             if(data !== undefined)
-                validate_element(elem, data, done);
+                if(!validate_element(elem, data, done) && failed === undefined)
+		    failed = elem;
         }
+	return failed;
     }
 
     $.fn.validate = function(method) {
