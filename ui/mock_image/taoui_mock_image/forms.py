@@ -8,6 +8,7 @@ taoui_mock_image.forms
 import os
 
 from django import forms
+from django.forms.formsets import formset_factory
 import form_utils.fields as bf_fields
 from form_utils.forms import BetterForm
 from django.utils.translation import ugettext_lazy as _
@@ -116,56 +117,35 @@ from tao.xml_util import module_xpath, module_xpath_iterate
 #######################
 
 
-class Form(BetterForm):
-    EDIT_TEMPLATE = 'taoui_mock_image/edit.html'
-    MODULE_VERSION = 1
-    SUMMARY_TEMPLATE = 'taoui_mock_image/summary.html'
-    LABEL = 'Mock Image'
+class SingleForm(BetterForm):
 
-    MOCK_IMAGE_REQUIRED_FIELDS = [] #'single_stellar_population_model', 'band_pass_filters')
-
-    class Meta:
-        fieldsets = [
-            ('tertiary', {
-                'legend': 'Magnitudes',
-                'fields': ['total_mag_field', 'bulge_mag_field', 'min_mag', 'max_mag'],
-            }),
-            ('secondary', {
-                'legend': 'Image Parameters',
-                'fields': ['width', 'height', 'origin_ra', 'origin_dec',
-                           'focal_x', 'focal_y', 'offset_x', 'offset_y',
-                           'pix_width', 'pix_height'],
-            }),
-        ]
+    FORMAT_CHOICES = [
+        ('FITS', 'FITS'),
+        ('PNG', 'PNG'),
+        ('JPEG', 'JPEG')
+    ]
 
     def __init__(self, *args, **kwargs):
-        self.ui_holder = args[0]
-        super(Form, self).__init__(*args[1:], **kwargs)
+        super(SingleForm, self).__init__(*args, **kwargs)
 
-        default_required = False
+        self.fields['sub_cone'] = forms.ChoiceField(label=_('Sub-cone index:'), choices=[], required=True)
+        self.fields['format'] = forms.ChoiceField(label=_('Output format:'), choices=self.FORMAT_CHOICES,
+                                                  required=True)
+        self.fields['mag_field'] = forms.ChoiceField(label=_('Magnitude field:'),
+                                                     choices=datasets.band_pass_filters_enriched(), required=True)
+        self.fields['min_mag'] = forms.DecimalField(label=_('Minimum magnitude:'), required=True)
+        self.fields['z_min'] = forms.DecimalField(label=_('Minimum redshift:'), required=True)
+        self.fields['z_max'] = forms.DecimalField(label=_('Maximum redshift:'), required=True)
+        self.fields['origin_ra'] = forms.DecimalField(label=_('Center on RA:'), required=True)
+        self.fields['origin_dec'] = forms.DecimalField(label=_('Center on DEC:'), required=True)
+        self.fields['fov_ra'] = forms.DecimalField(label=_('FOV range RA:'), required=True)
+        self.fields['fov_dec'] = forms.DecimalField(label=_('FOV range DEC:'), required=True)
+        self.fields['width'] = forms.IntegerField(label=_('Image width in pixels:'), required=True)
+        self.fields['height'] = forms.IntegerField(label=_('Image height in pixels:'), required=True)
 
-        self.fields['apply_mock_image'] = forms.BooleanField(required=False, widget=forms.CheckboxInput(), label=_('Generate Mock Image'))
-        self.fields['total_mag_field'] = forms.ChoiceField(choices=datasets.band_pass_filters_enriched(), required=True)
-        self.fields['bulge_mag_field'] = forms.ChoiceField(choices=datasets.band_pass_filters_enriched(), required=True)
-        self.fields['min_mag'] = forms.DecimalField(label=_('Minimum magnitude:'), required=True, initial=7.0)
-        self.fields['max_mag'] = forms.DecimalField(label=_('Maximum magnitude:'), required=True, initial=50.0)
-        self.fields['width'] = forms.IntegerField(required=True, initial=1024)
-        self.fields['height'] = forms.IntegerField(required=True, initial=1024)
-        self.fields['origin_ra'] = forms.DecimalField(label=_('Origin RA:'), required=True, initial=0)
-        self.fields['origin_dec'] = forms.DecimalField(label=_('Origin DEC:'), required=True, initial=0)
-        self.fields['focal_x'] = forms.DecimalField(label=_('Focal X Scaling:'), required=True, initial=1)
-        self.fields['focal_y'] = forms.DecimalField(label=_('Focal Y Scaling:'), required=True, initial=1)
-        self.fields['offset_x'] = forms.DecimalField(label=_('X Offset:'), required=True, initial=0)
-        self.fields['offset_y'] = forms.DecimalField(label=_('Y Offset:'), required=True, initial=0)
-        self.fields['pix_width'] = forms.DecimalField(label=_('Pixel Width:'), required=True, initial=1)
-        self.fields['pix_height'] = forms.DecimalField(label=_('Pixel Height:'), required=True, initial=1)
-
-        for field_name in Form.MOCK_IMAGE_REQUIRED_FIELDS:
-            self.fields[field_name].semirequired = True
-
-    def get_apply_mock_image(self):
-        # use this to ensure a BoundField is returned
-        return self['apply_mock_image']
+    # def get_apply_mock_image(self):
+    #     # use this to ensure a BoundField is returned
+    #     return self['apply_mock_image']
 
     # def check_sed_required_fields(self):
     #     apply_sed = self.cleaned_data.get('apply_sed')
@@ -186,16 +166,30 @@ class Form(BetterForm):
     #             self.errors['select_dust_model'] = self.error_class(['This field is required.'])
 
     def clean(self):
-        apply_mock = self.cleaned_data.get('apply_mock_image')
-        if not apply_mock:
-            import pdb
-            pdb.set_trace()
-            for field in self.errors.keys():
-                self[field].error_class()
+        # apply_mock = self.cleaned_data.get('apply_mock_image')
+        # if not apply_mock:
+        #     import pdb
+        #     pdb.set_trace()
+        #     for field in self.errors.keys():
+        #         self[field].error_class()
         # self.check_magnitude_fields()
         # self.check_sed_required_fields()
         # self.check_dust_required_fields()
         return self.cleaned_data
+
+# Define a formset.
+BaseForm = formset_factory(SingleForm, extra=1)
+
+class Form(BaseForm):
+    EDIT_TEMPLATE = 'taoui_mock_image/edit.html'
+    MODULE_VERSION = 1
+    SUMMARY_TEMPLATE = 'taoui_mock_image/summary.html'
+    LABEL = 'Mock Image'
+
+    def __init__(self, *args, **kwargs):
+        self.ui_holder = args[0]
+        super(Form, self).__init__(*args[1:], **kwargs)
+        # self.fields['apply_mock_image'] = forms.BooleanField(required=False, widget=forms.CheckboxInput(), label=_('Generate Mock Image'))
 
     def to_xml(self, root):
         version = 2.0
@@ -208,4 +202,3 @@ class Form(BetterForm):
             return from_xml_2(cls, ui_holder, xml_root, prefix=prefix)
         else:
             return cls(ui_holder, {}, prefix=prefix)
-
