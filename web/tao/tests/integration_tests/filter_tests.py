@@ -1,5 +1,5 @@
 from tao.tests.integration_tests.helper import LiveServerMGFTest
-from tao.tests.support.factories import SimulationFactory, GalaxyModelFactory, UserFactory, DataSetFactory, DataSetPropertyFactory, BandPassFilterFactory, StellarModelFactory, SnapshotFactory
+from tao.tests.support.factories import SimulationFactory, GalaxyModelFactory, UserFactory, DataSetFactory, DataSetPropertyFactory, BandPassFilterFactory, StellarModelFactory, SnapshotFactory, GlobalParameterFactory
 from tao.models import Simulation, DataSet, GalaxyModel
 from tao.settings import MODULE_INDICES
 
@@ -48,6 +48,8 @@ class FilterTests(LiveServerMGFTest):
         initial_simulation = Simulation.objects.all().order_by('id')[0]
         initial_galaxy_model = initial_simulation.galaxymodel_set.all().order_by('id')[0]
         self.initial_dataset = DataSet.objects.get(simulation=initial_simulation, galaxy_model=initial_galaxy_model)
+
+        GlobalParameterFactory(parameter_name='INITIAL_JOB_STATUS', parameter_value='HELD')
 
     def tearDown(self):
         super(FilterTests, self).tearDown()
@@ -102,7 +104,6 @@ class FilterTests(LiveServerMGFTest):
         self.click('tao-tabs-' + MODULE_INDICES['record_filter'])
         self.select_record_filter(self.bp_filters[1])
         self.fill_in_fields({'max': '12.3', 'min': ''}, id_wrap=self.rf_id)
-
         self.submit_mgf_form()
 
         self.assert_on_page('job_index')
