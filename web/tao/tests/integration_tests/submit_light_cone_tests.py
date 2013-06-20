@@ -11,6 +11,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
         super(SubmitLightConeTests, self).setUp()
 
         GlobalParameterFactory.create(parameter_name='maximum-random-light-cones', parameter_value='10')
+        GlobalParameterFactory(parameter_name='INITIAL_JOB_STATUS', parameter_value='HELD')
         simulation = SimulationFactory.create(box_size=500)
         galaxy_model = GalaxyModelFactory.create()
         dataset = DataSetFactory.create(simulation=simulation, galaxy_model=galaxy_model)
@@ -105,6 +106,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
             'number_of_light_cones': '9', # this exceeds the calculated maximum, 3, for parameters above
         }, id_wrap=self.lc_id)
         self.click(self.lc_2select('op_add_all')) # click somewhere else to shift focus out of the number of cones field (this shouldn't affect the current selection, as they are already all selected)
+        self.wait(1)
         self.assertEqual('3', self.get_selector_value(self.lc_id('number_of_light_cones'))) # resets to the maximum valid value
         self.submit_mgf_form()
 
