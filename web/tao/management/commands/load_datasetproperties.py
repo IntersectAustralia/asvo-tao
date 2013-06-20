@@ -36,11 +36,11 @@ class Command(NoArgsCommand):
         add parameters to the specified DataSet
 
         usage:
-            bin/django %s --list-available-datasets
+            manage.py --list-available-datasets
         or:
-            bin/django %s --dataset=<dataset_id> --file=<filename>
+            manage.py --dataset=<dataset_id> --file=<filename>
 
-""" % (_current_command, _current_command)
+"""
 
     option_list = NoArgsCommand.option_list + (
         make_option('--list-available-datasets',
@@ -54,6 +54,13 @@ class Command(NoArgsCommand):
             dest='xml_filename',
             default=None,
             help='the input XML filename containing the metadata',
+        ),
+        make_option('--copy-properties',
+            type="int",
+            action='store',
+            dest='copy_id',
+            default=None,
+            help='copy dataset properties from the nominated dataset id',
         ),
         make_option('--dataset',
             type="int",
@@ -85,6 +92,8 @@ class Command(NoArgsCommand):
                 self._list_available_datasets()
             else:
                 self._load_properties(data_set, options['xml_filename'])
+        elif options['copy_id'] and options['dataset_id']:
+            self._copy_properties(options['copy_id'], options['dataset_id'])
         else:
             self.stderr.write(self.help)
 
@@ -131,3 +140,27 @@ class Command(NoArgsCommand):
             new_redshift = Snapshot(dataset=data_set,
                                     redshift=value)
             new_redshift.save()
+
+    @transaction.commit_on_success
+    def _copy_properties(self, copy_id, dataset_id):
+        """Copy the dataset properties from the specified dataset"""
+        try:
+            data_set = DataSet.objects.get(pk=dataset_id)
+        except DataSet.DoesNotExist:
+            raise CommandError('DataSet not found: %s\n' % dataset_id)
+        try:
+            copy_set = DataSet.objects.get(pk=copy_id)
+        except DataSet.DoesNotExist:
+            raise CommandError('DataSet not found: %s\n' % copy_id)
+
+        properties = DataSetProperty.objects.filter(dataset=copy_set)
+        i = 0
+        for prop in properties:
+            prop.dataset = data_set
+            prop.pk = None
+            prop.save()
+            i += 1
+        print("Copied {i} properties from {copy} to {dest}".format(
+                i=i,
+                copy=str(copy_set),
+                dest=str(data_set)))
