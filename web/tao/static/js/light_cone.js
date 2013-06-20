@@ -958,6 +958,15 @@ jQuery(document).ready(function($) {
         if (!min_max_valid || !number_of_light_cones_valid) {
             return false;
         }
+
+	// Perform the jQuery validation routine here. It returns undefined if
+	// there were no errors and the first element that failed otherwise.
+	var failed = $.validate_all();
+	if(failed !== undefined) {
+	    show_tab(failed, 0);
+	    return false;
+	}
+
         $(lc_id('output_properties')+' option').each(function(i) {
             $(this).attr("selected", "selected");
         });
@@ -1000,12 +1009,19 @@ jQuery(document).ready(function($) {
             if($('#mock_image_params .single-form').length == 0)
                 $('#mock_image_params .add-row').click();
 
+	    // Enable all inputs.
+	    $('#mock_image_params input, #mock_image_params select').removeAttr('disabled');
+
             $('#mock_image_params').slideDown();
             $('#mock_image_info').slideDown();
         }
         else {
             $('#tao-tabs-3').css({"border-style": "dashed"});
             $('#tao-tabs-3').css({"color": "rgb(119, 221, 252)"});
+
+	    // Disable all inputs.
+	    $('#mock_image_params input, #mock_image_params select').attr('disabled', 'disabled');
+
             $('#mock_image_params').slideUp();
             $('#mock_image_info').slideUp();
         }
