@@ -23,14 +23,17 @@ class SysCommands(object):
         self.Options=Options
         self.dbaseobj=dbaseobj
         self.TorqueObj=TorqueObj
+        self.KeepWorkFlowActive=True
         self.LogReaderObj=LogReader.LogReader(Options)
         # Define the request API.
         
         self.CALLBackBase = Options['WorkFlowSettings:CommandsURL']
-        self.api = {
+        self.commandapi = {
                'get': self.CALLBackBase + 'commands/submitted',
-               'update': self.CALLBackBase + 'commands/update'}
-        
+               'update': self.CALLBackBase + 'commands/%d'}
+        self.api = {
+               'get': self.CALLBackBase + 'jobs/status/submitted',
+               'update': self.CALLBackBase + 'jobs/%d'}
         self.FunctionsMap={
                  'Job_Stop_All':self.Job_Stop_All,
                  'Job_Stop':self.Job_Stop,
@@ -60,7 +63,7 @@ class SysCommands(object):
     def CheckForNewCommands(self):
         logging.info("Checking for UI Commands")
         new_jobs = 0
-        WebserviceResponse = requests.get(self.api['get'])
+        WebserviceResponse = requests.get(self.commandapi['get'])
         
         #ResponseType = string.replace(WebserviceResponse.headers['content-type'],"; charset=utf-8","")
         
@@ -86,7 +89,7 @@ class SysCommands(object):
         CommandFunction=self.FunctionsMap[commandtext]
         if CommandFunction(UICommandID,UIJobID,CommandParams)==True:
             self.dbaseobj.UpdateCommandStatus(CommandID,EnumerationLookup.CommandState.Completed)
-        
+            UpdateTAOCommandUI(CommandID)
     
     def Job_Stop_All(self,UICommandID,UIJobID,CommandParams):
         CurrentJobs_PBSID=self.dbaseobj.GetCurrentActiveJobs_pbsID()
@@ -127,37 +130,52 @@ class SysCommands(object):
             JobStatus=JobRow['jobstatus']
             
             self.PauseJob(UICommandID, JobID, PBSID, JobStatus)
-        self.UpdateTAOUI(UIJobID)        
+        self.UpdateTAOJobUI(UIJobID)        
         print("Job_Stop")
         return True
     def Job_Resume(self,UICommandID,UIJobID,CommandParams):
-        print("Job_Resume")
+        logging.info("Job_Resume is not currently supported")
         return True
     def Workflow_Stop(self,UICommandID,UIJobID,CommandParams):
+        self.KeepWorkFlowActive=False
         print("Workflow_Stop")
         return True
     def Worflow_Resume(self,UICommandID,UIJobID,CommandParams):
+        self.KeepWorkFlowActive=True
         print("Worflow_Resume")
-        return True
-    def Lighcone_acceleration_on(self,UICommandID,UIJobID,CommandParams):
-        print("Lighcone_acceleration_on")
-        return True
-    def Lighcone_acceleration_off(self,UICommandID,UIJobID,CommandParams):
-        print("Lighcone_acceleration_off")
-        return True
+        return True    
     def Job_Output_Delete(self,UICommandID,UIJobID,CommandParams):
         print("Job_Output_Delete")
+        JobUserName=CommandParams
+        BasedPath=os.path.join(self.Options['WorkFlowSettings:WorkingDir'], 'jobs', JobUserName, str(UIJobID))
+        outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], 'jobs', JobUserName, str(UIJobID),'output')
+        
+        
+        if(os.path.exists(outputpath)):
+           logging.info('Path already exists ... Clearing Files....'+outputpath) 
+           shutil.rmtree(outputpath)
+        
+        
+        
         return True
         
     
         
-    def UpdateTAOUI(self,UIJobID):        
+    def UpdateTAOJobUI(self,UIJobID):        
         
         data = {}                
         data['status'] = 'HELD'             
         data['error_message'] = "Status:JOB WAS TERMINATED BY ADMIN COMMAND"                
         logging.info('Updating UI MasterDB. JobID ('+str(UIJobID)+').. '+data['status'])        
-        requests.put(self.api['update']%UIJobID, data)        
+        requests.put(self.api['update']%UIJobID, data)
+    
+    def UpdateTAOCommandUI(self,CommandID):        
+        
+        data = {}                
+        data['status'] = 'EXECUTED'             
+        data['error_message'] = ""                
+        logging.info('Updating UI MasterDB. CommandID ('+str(CommandID)+').. '+data['status'])        
+        requests.put(self.commandapi['update']%CommandID, data)        
                  
     
 if __name__ == '__main__':
