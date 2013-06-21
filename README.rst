@@ -24,6 +24,8 @@ libxml2-dev
 libxslt-dev
 libmysqlclient-dev
 Python             >= 2.6.5
+Python-dev
+doxygen
 virtualenv         >= 1.9.1
 Apache (optional)
 ================== ========
