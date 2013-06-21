@@ -570,6 +570,7 @@ jQuery(document).ready(function($) {
             fill_in_summary('light_cone', 'geometry_type', 'Light-Cone');
             $('div.summary_light_cone .box_fields').hide();
             $('div.summary_light_cone .light_cone_fields').show();
+            calculate_max_number_of_cones();
         }
     });
 
@@ -731,31 +732,31 @@ jQuery(document).ready(function($) {
         var $spinner = $(lc_id('number_of_light_cones')).closest('span');
         var maximum = $(lc_id('number_of_light_cones')).data('spin-max');
         if (new_value <= 1) {
-            $('.ui-spinner-down').button('disable').addClass("ui-state-disabled").removeClass('ui-state-enabled ui-state-active');
+//            $('.ui-spinner-down').button('disable').addClass("ui-state-disabled").removeClass('ui-state-enabled ui-state-active');
             if (new_value <= 0) {
                 show_error($spinner, "Please provide a positive number of light-cones");
                 fill_in_summary('light_cone', 'number_of_light_cones', 'Negative number of light-cones is invalid');
                 return false;
             }
         }
-        else {
-            $('.ui-spinner-down').button('enable').addClass('ui-state-enabled').removeClass("ui-state-disabled");
-        }
+//        else {
+//            $('.ui-spinner-down').button('enable').addClass('ui-state-enabled').removeClass("ui-state-disabled");
+//        }
 
 
         if ( maximum > 0 ) {
             $(lc_id('number_of_light_cones')).spinner("option", "max", maximum);
             if (new_value >= maximum) {
-                $('.ui-spinner-up').button('disable').addClass("ui-state-disabled").removeClass('ui-state-enabled ui-state-active');
+//                $('.ui-spinner-up').button('disable').addClass("ui-state-disabled").removeClass('ui-state-enabled ui-state-active');
                 if (new_value > maximum) {
                     show_error($spinner, "The maximum is " + maximum);
                     fill_in_summary('light_cone', 'number_of_light_cones', 'Number of light cones selected exceeds the maximum');
                     return false;
                 }
             }
-            else {
-                $('.ui-spinner-up').button('enable').addClass('ui-state-enabled').removeClass("ui-state-disabled");
-            }
+//            else {
+//                $('.ui-spinner-up').button('enable').addClass('ui-state-enabled').removeClass("ui-state-disabled");
+//            }
         }
         else if (ra != "" && dec != "" && redshift_min != "" && redshift_max != "") {
             show_error($spinner, "Selection parameters can't be used to generate unique light-cones");
