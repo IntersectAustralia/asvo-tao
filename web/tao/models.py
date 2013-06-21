@@ -185,21 +185,22 @@ def initial_job_status():
         except AttributeError:
             return 'HELD'
 
+SUBMITTED = 'SUBMITTED'
+IN_PROGRESS = 'IN_PROGRESS'
+COMPLETED = 'COMPLETED'
+QUEUED = 'QUEUED'
+HELD = 'HELD'
+ERROR = 'ERROR'
+STATUS_CHOICES = (
+    (SUBMITTED, 'Submitted'),
+    (QUEUED, 'Queued'),
+    (IN_PROGRESS, 'In progress'),
+    (COMPLETED, 'Completed'),
+    (HELD, 'Held'),
+    (ERROR, 'Error'),
+)
+
 class Job(models.Model):
-    SUBMITTED = 'SUBMITTED'
-    IN_PROGRESS = 'IN_PROGRESS'
-    COMPLETED = 'COMPLETED'
-    QUEUED = 'QUEUED'
-    HELD = 'HELD'
-    ERROR = 'ERROR'
-    STATUS_CHOICES = (
-        (SUBMITTED, 'Submitted'),
-        (QUEUED, 'Queued'),
-        (IN_PROGRESS, 'In progress'),
-        (COMPLETED, 'Completed'),
-        (HELD, 'Held'),
-        (ERROR, 'Error'),
-    )
 
     user = models.ForeignKey(User)
     created_time = models.DateTimeField(auto_now_add=True)
@@ -314,3 +315,25 @@ class DustModel(models.Model):
     def __unicode__(self):
         return self.label
 
+class WorkflowCommand(models.Model):
+    JOB_STOP_ALL = "Job_Stop_All"
+    JOB_STOP = "Job_Stop"
+    WORKFLOW_STOP = "Workflow_Stop"
+    WORKFLOW_RESUME = "Workflow_Resume"
+    JOB_OUTPUT_DELETE = "Job_Output_Delete"
+    COMMAND_CHOICES = (
+        (JOB_STOP_ALL, "Job Stop All"),
+        (JOB_STOP, "Job Stop"),
+        (WORKFLOW_STOP, "Workflow Stop"),
+        (WORKFLOW_RESUME, "Workflow Resume"),
+        (JOB_OUTPUT_DELETE, "Job Output Delete"),
+    )
+
+    job_id = models.ForeignKey(Job)
+    issued = models.DateTimeField(auto_now_add=True)
+    submitted_by = models.ForeignKey(User)
+    command = models.CharField(choices=COMMAND_CHOICES, max_length=64)
+    parameters = models.CharField(max_length=1024, default='')
+    executed = models.DateTimeField(null=True, blank=True)
+    execution_status = models.CharField(choices=STATUS_CHOICES, max_length=20)
+    execution_comment = models.TextField(null=True, blank=True)
