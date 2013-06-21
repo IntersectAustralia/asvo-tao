@@ -108,7 +108,7 @@ Note that the description and xml parameter file can contain two variables as de
         if len(args) > 0:
             jobs = jobs.filter(id__in=args)
         if status == 'NOTCOMPLETED':
-            jobs = jobs.filter().exclude(status='COMPLETED')
+            jobs = jobs.filter().exclude(status='COMPLETED').exclude(status='ERROR')
         elif status != 'ALL':
             # Check that a valid status has been requested
             self.valid_states.index(status)
