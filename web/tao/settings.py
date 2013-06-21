@@ -243,4 +243,4 @@ OUTPUT_FORMATS = [
 
 MODULE_INDICES = {'light_cone': '1', 'sed': '2', 'record_filter': '3', 'output_format': '4'}
 
-TAO_VERSION = '0.22.1.doc.2'
+TAO_VERSION = '0.22.1'

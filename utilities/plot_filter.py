@@ -111,14 +111,10 @@ def calc_filter(filename):
     # Strip and calculate ranges.
     waves, values = strip_zeros(waves, values)
     x_rng = [waves.min(), waves.max()]
-<<<<<<< HEAD
     # Add 5% space on either side of the X-axis
     x_space = (x_rng[1] - x_rng[0]) / 20
     x_rng = [x_rng[0]-x_space, x_rng[1]+x_space]
     y_rng = [0, max(1.1, values.max())]
-=======
-    y_rng = [0, values.max()]
->>>>>>> asvo-451
 
     # Setup variables.
     filter_name = filename[:filename.rfind('.')]
