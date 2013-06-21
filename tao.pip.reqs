@@ -10,6 +10,7 @@ django-nose
 nosexcover
 django-rules
 lxml
+cssselect
 django-extensions
 werkzeug
 breathe
