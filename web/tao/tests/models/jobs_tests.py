@@ -2,6 +2,7 @@ from django.core import mail
 from django.conf import settings
 from django.test.testcases import TestCase
 
+from tao import models
 from tao.models import Job, User
 from tao.tests.support.factories import GlobalParameterFactory
 
@@ -26,13 +27,13 @@ class JobTestCase(TestCase):
         self.assertEquals('SUBMITTED', job.status)
         
     def test_not_available_unless_completed(self):
-        self.jobs = dict((status, Job(status=status, user=self.user)) for (status, _) in Job.STATUS_CHOICES)
+        self.jobs = dict((status, Job(status=status, user=self.user)) for (status, _) in models.STATUS_CHOICES)
 
         for status, job in self.jobs.iteritems():
             job.save()
 
 
-        for status, _ in Job.STATUS_CHOICES:
+        for status, _ in models.STATUS_CHOICES:
             if status != Job.COMPLETED:
                 self.assertRaises(Exception, self.jobs[status].files)
             else:

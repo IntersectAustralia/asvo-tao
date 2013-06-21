@@ -191,6 +191,7 @@ COMPLETED = 'COMPLETED'
 QUEUED = 'QUEUED'
 HELD = 'HELD'
 ERROR = 'ERROR'
+
 STATUS_CHOICES = (
     (SUBMITTED, 'Submitted'),
     (QUEUED, 'Queued'),
@@ -201,6 +202,12 @@ STATUS_CHOICES = (
 )
 
 class Job(models.Model):
+    SUBMITTED = 'SUBMITTED'
+    IN_PROGRESS = 'IN_PROGRESS'
+    COMPLETED = 'COMPLETED'
+    QUEUED = 'QUEUED'
+    HELD = 'HELD'
+    ERROR = 'ERROR'
 
     user = models.ForeignKey(User)
     created_time = models.DateTimeField(auto_now_add=True)
