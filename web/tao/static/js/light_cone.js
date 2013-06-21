@@ -1009,8 +1009,8 @@ jQuery(document).ready(function($) {
             if($('#mock_image_params .single-form').length == 0)
                 $('#mock_image_params .add-row').click();
 
-	    // Enable all inputs.
-	    $('#mock_image_params input, #mock_image_params select').removeAttr('disabled');
+	    // Enable all inputs except hidden ones.
+	    $('#mock_image_params input[type!="hidden"], #mock_image_params select').removeAttr('disabled');
 
             $('#mock_image_params').slideDown();
             $('#mock_image_info').slideDown();
@@ -1019,8 +1019,8 @@ jQuery(document).ready(function($) {
             $('#tao-tabs-3').css({"border-style": "dashed"});
             $('#tao-tabs-3').css({"color": "rgb(119, 221, 252)"});
 
-	    // Disable all inputs.
-	    $('#mock_image_params input, #mock_image_params select').attr('disabled', 'disabled');
+	    // Disable all inputs except hidden ones.
+	    $('#mock_image_params input[type!="hidden"], #mock_image_params select').attr('disabled', 'disabled');
 
             $('#mock_image_params').slideUp();
             $('#mock_image_info').slideUp();
@@ -1028,7 +1028,7 @@ jQuery(document).ready(function($) {
         update_mock_image_summary();
     }
 
-    function update_mock_image_magnitudes(sel) {
+    function mock_image_update_magnitudes(sel) {
         if(sel === undefined)
             sel = $('#mock_image_params select[name$="mag_field"]');
         update_select(sel, $('#id_sed-band_pass_filters > option'));
@@ -1104,7 +1104,7 @@ jQuery(document).ready(function($) {
 
         // Update all mock image magnitudes.
         if(old_tab == 'tao-tabs-2')
-            update_mock_image_magnitudes();
+            mock_image_update_magnitudes();
 
         // Update every mock image sub-cone option with appropriate
         // values from the general properties.
@@ -1117,32 +1117,7 @@ jQuery(document).ready(function($) {
             $.validate_form('mock_image');
     }
 
-    function mock_image_setup_form(form) {
-        var ra = $('#id_light_cone-ra_opening_angle').val();
-        var dec = $('#id_light_cone-dec_opening_angle').val();
-        var z_min = $('#id_light_cone-redshift_min').val();
-        var z_max = $('#id_light_cone-redshift_max').val();
-        update_mock_image_sub_cones(form.find('select[name$="sub_cone"]'));
-        update_mock_image_magnitudes(form.find('select[name$="mag_field"]'));
-        form.find('input[name$="min_mag"]').val(7);
-        form.find('input[name$="z_min"]').val(z_min);
-        form.find('input[name$="z_max"]').val(z_max);
-        if(ra != "") {
-            form.find('input[name$="origin_ra"]').val(ra/2.0);
-            form.find('input[name$="fov_ra"]').val(ra);
-        }
-        if(dec !== "") {
-            form.find('input[name$="origin_dec"]').val(dec/2.0);
-            form.find('input[name$="fov_dec"]').val(dec);
-        }
-        form.find('input[name$="width"]').val(1024);
-        form.find('input[name$="height"]').val(1024);
-        update_mock_image_summary();
-
-        $('.delete-row:last').click(function(){
-            update_mock_image_summary();
-            return true;
-        });
+    function mock_image_setup_form_behaviors(form) {
 
         //
         // Setup validation on each input.
@@ -1323,6 +1298,36 @@ jQuery(document).ready(function($) {
         });
     }
 
+    function mock_image_setup_form(form) {
+        var ra = $('#id_light_cone-ra_opening_angle').val();
+        var dec = $('#id_light_cone-dec_opening_angle').val();
+        var z_min = $('#id_light_cone-redshift_min').val();
+        var z_max = $('#id_light_cone-redshift_max').val();
+        update_mock_image_sub_cones(form.find('select[name$="sub_cone"]'));
+        mock_image_update_magnitudes(form.find('select[name$="mag_field"]'));
+        form.find('input[name$="min_mag"]').val(7);
+        form.find('input[name$="z_min"]').val(z_min);
+        form.find('input[name$="z_max"]').val(z_max);
+        if(ra != "") {
+            form.find('input[name$="origin_ra"]').val(ra/2.0);
+            form.find('input[name$="fov_ra"]').val(ra);
+        }
+        if(dec !== "") {
+            form.find('input[name$="origin_dec"]').val(dec/2.0);
+            form.find('input[name$="fov_dec"]').val(dec);
+        }
+        form.find('input[name$="width"]').val(1024);
+        form.find('input[name$="height"]').val(1024);
+        update_mock_image_summary();
+
+        $('.delete-row:last').click(function(){
+            update_mock_image_summary();
+            return true;
+        });
+
+        mock_image_setup_form_behaviors(form);
+    }
+
     //
     // -- initialization, note that there is a chain of events triggered
     //    by dark_matter_simulation
@@ -1366,11 +1371,29 @@ jQuery(document).ready(function($) {
         // We always have an extra form at the end, so delete it
         // now that we've initialised the formset.
         $('#mock_image_params .single-form:last').remove();
+        $('#id_mock_image-TOTAL_FORMS').val(parseInt($('#id_mock_image-TOTAL_FORMS').val()) - 1);
 
         // Pretty up the "add another" button and add my own click handler.
         $('.add-row').button().click(function(){
             mock_image_setup_form($('#mock_image_params .single-form:last'));
             return true;
         });
+
+        // Add behaviors to existing forms.
+        $('#mock_image_params .single-form').each(function() {
+            mock_image_setup_form_behaviors($(this));
+        });
+
+        // Run validation on all existing forms.
+        $('#mock_image_params .single-form').each(function() {
+            $.validate_form('mock_image');
+        });
+
+        // The magnitude field sometimes comes back with an inline
+        // error message; clear them all out, just to be sure.
+        $('#mock_image_params .help-inline').remove();
+
+        // Reevaluate all the magnitude fields.
+        mock_image_update_magnitudes();
     })();
 });

@@ -43,6 +43,7 @@
     function clear_error(elem) {
         elem.closest('.control-group').removeClass('error');
         elem.popover('destroy');
+        elem.closest('.control-group .help-inline').remove();
     }
 
     function validate_element(elem, data, done) {

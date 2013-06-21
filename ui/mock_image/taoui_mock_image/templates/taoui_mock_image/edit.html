@@ -8,7 +8,9 @@
           <div class="control-group id_mock_image-apply_mock_image">
             <label class="control-label" for="id_mock_image-apply_mock_image">Generate Mock Image</label>
             <div class="controls">
-              <input id="id_mock_image-apply_mock_image" name="mock_image-apply_mock_image" type="checkbox" />
+              <input id="id_mock_image-apply_mock_image"
+              name="mock_image-apply_mock_image" type="checkbox"
+              {% if form.apply_mock_image %}checked{% endif %} />
             </div>
           </div>
         </div>
