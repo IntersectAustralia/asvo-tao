@@ -340,7 +340,13 @@ class WorkflowCommand(models.Model):
     issued = models.DateTimeField(auto_now_add=True)
     submitted_by = models.ForeignKey(User)
     command = models.CharField(choices=COMMAND_CHOICES, max_length=64)
-    parameters = models.CharField(max_length=1024, default='')
+    parameters = models.CharField(max_length=1024, default='', blank=True)
     executed = models.DateTimeField(null=True, blank=True)
     execution_status = models.CharField(choices=STATUS_CHOICES, max_length=20)
     execution_comment = models.TextField(null=True, blank=True)
+    
+    def jobid(self):
+        return self.job_id.pk
+
+    def submittedby(self):
+        return self.submitted_by.pk

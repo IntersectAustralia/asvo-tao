@@ -17,16 +17,21 @@ class JobHandler(BaseHandler):
         else:
             return base.all()
 
+
+
 class WorkflowCommandHandler(BaseHandler):
     allowed_methods = ('GET', 'PUT',)
     model = WorkflowCommand
 
-    def job_stop_all(self, request, id=None, status=None):
-        base = Job.objects
+    fields = ('id', 'jobid', 'submittedby', 'command', 'parameters',
+              'execution_status', 'execution_comment')
+
+    def read(self, request, id=None, status=None):
+        base = WorkflowCommand.objects
 
         if id:
             return base.get(pk=id)
         elif status:
-            return base.filter(status__iexact=status)
+            return base.filter(execution_status__iexact=status)
         else:
             return base.all()
