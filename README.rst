@@ -46,14 +46,11 @@ Follow the steps below to set up your virtual environment and check out the code
    #
    # Get the code
    #
-   git clone git@github.com:IntersectAustralia/asvo-tao.git
+   git clone https://github.com/IntersectAustralia/asvo-tao.git
    #
    # Install all the required python libraries
    #
    cd asvo-tao
-   # Temporary until this is merged in to work & master
-   git checkout asvo-414-replace-buildout
-   # end temporary
    pip install -r tao.pip.reqs
    #
    # Set up paths, etc.
