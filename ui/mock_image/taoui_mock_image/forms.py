@@ -70,8 +70,8 @@ class SingleForm(BetterForm):
     ]
 
     SUB_CONE_CHOICES = [
-        ('ALL', 'ALL')
-    ]
+        ('ALL', 'ALL'),
+    ] + [(str(ii), str(ii)) for ii in xrange(20)]
 
     def __init__(self, *args, **kwargs):
         super(SingleForm, self).__init__(*args, **kwargs)

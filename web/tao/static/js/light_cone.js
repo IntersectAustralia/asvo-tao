@@ -1125,6 +1125,18 @@ jQuery(document).ready(function($) {
         // Setup validation on each input.
         //
 
+        // sub_cone
+        form.find('select[name$="sub_cone"]').validate({
+            required: true,
+            form: 'mock_image'
+        });
+
+        // format
+        form.find('select[name$="format"]').validate({
+            required: true,
+            form: 'mock_image'
+        });
+
         // mag_field
         form.find('select[name$="mag_field"]').validate({
             required: true,
