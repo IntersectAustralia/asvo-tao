@@ -12,7 +12,8 @@ Edit bin/activate and add a line indicating which settings file to use by defaul
 
    $ cat >> activate <<EOF
    export DJANGO_SETTINGS_MODULE=tao.development
-   export PYTHONPATH=$PYTHONPATH:$VIRTUAL_ENV/asvo-tao:$VIRTUAL_ENV/asvo-tao/web
+   export PYTHONPATH=\$PYTHONPATH:$VIRTUAL_ENV/asvo-tao:\$VIRTUAL_ENV/asvo-tao/web
+   export PATH=\$PATH:\$VIRTUAL_ENV/asvo-tao/web
    EOF
    $ source activate
 
