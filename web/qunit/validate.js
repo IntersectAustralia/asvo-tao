@@ -207,9 +207,107 @@ test("Removing from DOM removes from forms.", function() {
     ok(!called, 'Must not call the test.');
 });
 
+test("Disabled elements do not get checked.", function() {
+    var called = false;
+    var v1 = $('#id_select').validate().validate('test', {
+        check: function(val) {
+            called = true;
+        },
+        message: ''
+    });
+    $('#id_select').attr('disabled', 'disabled');
+    ok(!called, "Must not be called.");
+});
+
+test("Select inputs have their value passed correctly.", function() {
+    var v1 = $('#id_select').validate().validate('test', {
+        check: function(val) {
+            equal(val, "hello", "Must extract correct value.");
+        },
+        message: ''
+    });
+    $('#id_select').focus();
+    $('#id_another').focus();
+});
+
+test("Required inputs have errors set.", function() {
+    var v1 = $('#id_empty').validate({
+        required: true
+    }).validate('test', {
+        check: function(val) {
+            return true;
+        },
+        message: ''
+    });
+    $('#id_empty').focus();
+    $('#id_another').focus();
+    ok($('#id_empty').closest('.control-group').hasClass('error'), "Must have error set.");
+});
+
+test("Optional inputs do not have errors.", function() {
+    var v1 = $('#id_empty').validate().validate('test', {
+        check: function(val) {
+            return true;
+        },
+        message: ''
+    });
+    $('#id_empty').focus();
+    $('#id_another').focus();
+    ok(!$('#id_empty').closest('.control-group').hasClass('error'), "Must not have error set.");
+});
+
+test("Checkbox values appear as boolean.", function() {
+    var v1 = $('#id_check').validate().validate('test', {
+        check: function(val) {
+            ok(val === true || val === false, "Must be strictly true or false.");
+            return true;
+        },
+        message: ''
+    });
+    $('#id_check').focus();
+    $('#id_another').focus();
+});
+
+test("Validation always called if in error.", function() {
+    var called = false;
+    var v1 = $('#id_empty').validate().validate('test', {
+        check: function(val) {
+            called = true;
+            return true;
+        },
+        message: ''
+    });
+    $.validate_all();
+    ok(!called, 'Must not have called yet.')
+    $('#id_empty').closest('.control-group').addClass('error');
+    $.validate_all();
+    ok(called, 'Must have called.');
+});
+
+test("No validation for empty fields.", function() {
+    var called = false;
+    var v1 = $('#id_empty').validate().validate('test', {
+        check: function(val) {
+            called = true;
+            return true;
+        },
+        message: ''
+    });
+    $.validate_all();
+    ok(!called, 'Must not have called.')
+});
+
 function module_teardown() {
     $('#id_something').removeData();
     $('#id_something').unbind('focusout')
     $('#id_another').removeData();
     $('#id_another').unbind('focusout')
+    $('#id_select').removeData();
+    $('#id_select').unbind('focusout')
+    $('#id_select').removeAttr('disabled');
+    $('#id_empty').closest('.control-group').removeClass('error');
+    $('#id_empty').removeData();
+    $('#id_empty').unbind('focusout')
+    $('#id_check').removeData();
+    $('#id_check').unbind('focusout')
 }

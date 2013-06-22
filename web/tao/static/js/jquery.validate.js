@@ -46,31 +46,65 @@
         elem.closest('.control-group .help-inline').remove();
     }
 
-    function validate_element(elem, data, done) {
+    function has_value(elem) {
+        if(elem.is('checkbox'))
+            return true;
+        else {
+            var val = elem.val();
+            return val !== undefined && val !== null && val != '';
+        }
+    }
+
+    function validate_element(elem, data, done, force, ev) {
         if(done === undefined)
             done = [];
         done.push(elem);
 
-        // First check group elements.
-        for(var ii=0; ii<data.group.length; ii++) {
-            var grp = data.group[ii];
-            if(jQuery.inArray(grp, done) == -1)
-                validate_element(grp, grp.data('validate'), done);
-        }
+        // We  only check the element in the following conditions:
+        //  1. 'force' is set.
+        //  2. We've been called as a result of a focusout.
+        //  3. The input is in an error condition.
+        //  4. The input has a value.
+        if((ev !== undefined && ev.type == 'focusout') ||
+           force === true ||
+           elem.closest('.control-group').hasClass('error') ||
+           has_value(elem)) {
 
-        // Now check my element.
-        clear_error(elem);
-	if(!elem.is(':disabled')) {
-            var cache = build_cache(data.cache);
-            var val = parse(elem.val(), data.type);
-            for(var ii=0; ii < data.tests.length; ii++) {
-		var test = data.tests[ii];
-		if(!test[0].call(undefined, val, cache, elem)) {
-                    set_error(elem, test[1]);
-                    return false;
-		}
+            // First check group elements.
+            for(var ii=0; ii<data.group.length; ii++) {
+                var grp = data.group[ii];
+                if(jQuery.inArray(grp, done) == -1)
+                    validate_element(grp, grp.data('validate'), done, force, ev);
+            }
+
+            // Now check my element.
+            clear_error(elem);
+	    if(!elem.is(':disabled')) {
+                var cache = build_cache(data.cache);
+                var val;
+                if(elem.is(':checkbox'))
+                    val = elem.is(':checked');
+                else {
+                    val = elem.val();
+                    if(val === undefined || val === null || val == '') {
+                        if(data.required) {
+                            set_error(elem, 'This value is required.');
+                            return false;
+                        }
+                    }
+                    else
+                        val = parse(val, data.type);
+                }
+                for(var ii=0; ii < data.tests.length; ii++) {
+		    var test = data.tests[ii];
+		    if(!test[0].call(undefined, val, cache, elem)) {
+                        set_error(elem, test[1]);
+                        return false;
+		    }
+                }
             }
         }
+
         return true;
     }
 
@@ -87,7 +121,8 @@
                         type: undefined,
                         cache: {},
                         group: [],
-                        form: undefined
+                        form: undefined,
+                        required: false
                     }, options));
                     data = $this.data('validate');
                 }
@@ -96,7 +131,7 @@
                 data.tests = []
 
                 // Upon leaving focus we must run the tests.
-                $this.focusout(validate_element.bind(undefined, $this, data, undefined))
+                $this.focusout(validate_element.bind(undefined, $this, data, undefined, undefined))
 
                 // If we are identified as part of a form, add it in.
                 if(data.form !== undefined) {
@@ -107,6 +142,9 @@
 
                 // Add to the all variable to track everything.
                 all.push($this);
+
+                // Remove any inline help.
+                $this.closest('.control-group').find('.help-inline').remove();
             });
         },
 
@@ -132,7 +170,7 @@
 
     }
 
-    jQuery.validate_form = function(form) {
+    jQuery.validate_form = function(form, force) {
 	var failed = undefined;
         var done = undefined;
         if(forms[form] !== undefined) {
@@ -140,21 +178,21 @@
                 var elem = forms[form][ii];
                 var data = elem.data('validate');
                 if(data !== undefined)
-                    if(!validate_element(elem, data, done) && failed === undefined)
+                    if(!validate_element(elem, data, done, force) && failed === undefined)
 			failed = elem;
             }
         }
 	return failed;
     }
 
-    jQuery.validate_all = function() {
+    jQuery.validate_all = function(force) {
 	var failed = undefined;
         var done = undefined;
         for(var ii=0; ii<all.length; ii++) {
             var elem = all[ii];
             var data = elem.data('validate');
             if(data !== undefined)
-                if(!validate_element(elem, data, done) && failed === undefined)
+                if(!validate_element(elem, data, done, force) && failed === undefined)
 		    failed = elem;
         }
 	return failed;

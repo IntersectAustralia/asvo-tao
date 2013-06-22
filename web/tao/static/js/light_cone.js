@@ -960,8 +960,10 @@ jQuery(document).ready(function($) {
         }
 
 	// Perform the jQuery validation routine here. It returns undefined if
-	// there were no errors and the first element that failed otherwise.
-	var failed = $.validate_all();
+	// there were no errors and the first element that failed otherwise. Also
+        // be sure to force validation checks, as we need to check even fields that
+        // have been left empty.
+	var failed = $.validate_all(true);
 	if(failed !== undefined) {
 	    show_tab(failed, 0);
 	    return false;
@@ -1123,9 +1125,16 @@ jQuery(document).ready(function($) {
         // Setup validation on each input.
         //
 
+        // mag_field
+        form.find('select[name$="mag_field"]').validate({
+            required: true,
+            form: 'mock_image'
+        });
+
         // z_min
         form.find('input[name$="z_min"]').validate({
             type: 'float',
+            required: true,
             cache: {
                 z_min: [$('#id_light_cone-redshift_min'), 'float'],
                 z_max: [$('#id_light_cone-redshift_max'), 'float']
@@ -1155,6 +1164,7 @@ jQuery(document).ready(function($) {
         // z_max
         form.find('input[name$="z_max"]').validate({
             type: 'float',
+            required: true,
             cache: {
                 z_min: [$('#id_light_cone-redshift_min'), 'float'],
                 z_max: [$('#id_light_cone-redshift_max'), 'float']
@@ -1184,6 +1194,7 @@ jQuery(document).ready(function($) {
         // origin_ra
         form.find('input[name$="origin_ra"]').validate({
             type: 'float',
+            required: true,
             cache: {
                 ra: [$('#id_light_cone-ra_opening_angle'), 'float'],
                 fov_ra: [form.find('input[name$="fov_ra"]'), 'float']
@@ -1205,6 +1216,7 @@ jQuery(document).ready(function($) {
         // origin_dec
         form.find('input[name$="origin_dec"]').validate({
             type: 'float',
+            required: true,
             cache: {
                 dec: [$('#id_light_cone-dec_opening_angle'), 'float'],
                 fov_dec: [form.find('input[name$="fov_dec"]'), 'float']
@@ -1226,6 +1238,7 @@ jQuery(document).ready(function($) {
         // fov_ra
         form.find('input[name$="fov_ra"]').validate({
             type: 'float',
+            required: true,
             cache: {
                 ra: [$('#id_light_cone-ra_opening_angle'), 'float'],
                 o_ra: [form.find('input[name$="origin_ra"]'), 'float']
@@ -1247,6 +1260,7 @@ jQuery(document).ready(function($) {
         // fov_dec
         form.find('input[name$="fov_dec"]').validate({
             type: 'float',
+            required: true,
             cache: {
                 dec: [$('#id_light_cone-dec_opening_angle'), 'float'],
                 o_dec: [form.find('input[name$="origin_dec"]'), 'float']
@@ -1268,6 +1282,7 @@ jQuery(document).ready(function($) {
         // width
         form.find('input[name$="width"]').validate({
             type: 'int',
+            required: true,
             form: 'mock_image'
         }).validate('test', {
             check: function(val) {
@@ -1284,6 +1299,7 @@ jQuery(document).ready(function($) {
         // height
         form.find('input[name$="height"]').validate({
             type: 'int',
+            required: true,
             form: 'mock_image'
         }).validate('test', {
             check: function(val) {
@@ -1384,14 +1400,13 @@ jQuery(document).ready(function($) {
             mock_image_setup_form_behaviors($(this));
         });
 
-        // Run validation on all existing forms.
+        // Run validation on all existing forms. Don't force anything here,
+        // as we don't know if this is a returning form or a new one. If it's
+        // returning, then any errors flagged in control groups will be picked
+        // up by jQuery.validate.
         $('#mock_image_params .single-form').each(function() {
             $.validate_form('mock_image');
         });
-
-        // The magnitude field sometimes comes back with an inline
-        // error message; clear them all out, just to be sure.
-        $('#mock_image_params .help-inline').remove();
 
         // Reevaluate all the magnitude fields.
         mock_image_update_magnitudes();
