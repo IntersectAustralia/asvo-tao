@@ -832,7 +832,7 @@ jQuery(document).ready(function($) {
         var $this = $(this);
         var box_size_value = parseFloat($this.val());
         var max_box_size = parseFloat($(lc_id('number_of_light_cones')).data("simulation-box-size"));
-        if (isNaN(box_size_value)) {
+        if ($this.val() != "" && isNaN(box_size_value)) {
             show_error($(lc_id('box_size')),'Box size must be a number');
             return false;
         }
