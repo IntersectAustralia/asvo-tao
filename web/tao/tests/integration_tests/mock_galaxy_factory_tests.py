@@ -285,13 +285,13 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.wait(1)
         self.assert_summary_field_correctly_shown('RA: '+ra_opening_angle+h.unescape('&deg;')+',', 'light_cone', 'ra_opening_angle')
         self.assert_summary_field_correctly_shown('Dec: '+dec_opening_angle+h.unescape('&deg;'), 'light_cone', 'dec_opening_angle')
-        self.assert_summary_range_correctly_shown('Redshift: ' + redshift_min + h.unescape(' &le;') + ' r ' + h.unescape('&le;') + redshift_max, 'light_cone', ['redshift_min', 'redshift_max'])
+        self.assert_summary_range_correctly_shown('Redshift: ' + redshift_min + h.unescape(' &le;') + ' z ' + h.unescape('&le;') + redshift_max, 'light_cone', ['redshift_min', 'redshift_max'])
 
         #range displays should be intelligent, i.e. if the min or max is blank, it isn't displayed
         self.click('tao-tabs-' + MODULE_INDICES['light_cone'])
         self.clear(self.lc_id('redshift_min'))
         self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
-        self.assert_summary_range_correctly_shown('Redshift: r ' + h.unescape('&le;') + ' 4', 'light_cone', ['redshift_min', 'redshift_max'])
+        self.assert_summary_range_correctly_shown('Redshift: z ' + h.unescape('&le;') + ' 4', 'light_cone', ['redshift_min', 'redshift_max'])
         self.click('tao-tabs-' + MODULE_INDICES['light_cone'])
         self.clear(self.lc_id('redshift_max'))
         self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
@@ -299,7 +299,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.click('tao-tabs-' + MODULE_INDICES['light_cone'])
         self.fill_in_fields({'redshift_min': 5}, id_wrap=self.lc_id)
         self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
-        self.assert_summary_range_correctly_shown('Redshift: 5 ' + h.unescape('&le;') + ' r', 'light_cone', ['redshift_min', 'redshift_max'])
+        self.assert_summary_range_correctly_shown('Redshift: 5 ' + h.unescape('&le;') + ' z', 'light_cone', ['redshift_min', 'redshift_max'])
 
     def test_summary_on_light_cone_count_and_type(self):
         ra_opening_angle = '1'

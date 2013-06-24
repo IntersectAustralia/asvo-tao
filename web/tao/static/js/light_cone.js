@@ -646,14 +646,14 @@ jQuery(document).ready(function($) {
         }
         else if (!redshift_min_value) {
             fill_in_summary('light_cone', 'redshift_min', '')
-            fill_in_summary('light_cone', 'redshift_max', 'Redshift: r &le; ' + redshift_max_value);
+            fill_in_summary('light_cone', 'redshift_max', 'Redshift: z &le; ' + redshift_max_value);
         }
         else if (!redshift_max_value) {
-            fill_in_summary('light_cone', 'redshift_min', 'Redshift: ' + redshift_min_value + ' &le; r');
+            fill_in_summary('light_cone', 'redshift_min', 'Redshift: ' + redshift_min_value + ' &le; z');
             fill_in_summary('light_cone', 'redshift_max', '')
         }
         else {
-            fill_in_summary('light_cone', 'redshift_min', 'Redshift: ' + redshift_min_value + ' &le; r &le; ');
+            fill_in_summary('light_cone', 'redshift_min', 'Redshift: ' + redshift_min_value + ' &le; z &le; ');
             fill_in_summary('light_cone', 'redshift_max', redshift_max_value);
         }
     }
@@ -781,7 +781,6 @@ jQuery(document).ready(function($) {
             else {
                 $(lc_id('number_of_light_cones')).spinner("enable");
                 $(lc_id('number_of_light_cones')).data("spin-max",maximum);
-//                $spinner_label.html("Select the number of light-cones: (maximum for the selected parameters is " + maximum + ")*");
             }
             spinner_check_value(parseInt($(lc_id('number_of_light_cones')).val()));
             return true;
