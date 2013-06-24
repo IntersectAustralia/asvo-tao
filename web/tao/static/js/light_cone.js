@@ -776,19 +776,23 @@ jQuery(document).ready(function($) {
                 $(lc_id('number_of_light_cones')).spinner("disable");
                 $(lc_id('number_of_light_cones')).data("spin-max", 0);
                 $spinner_label.html("Select the number of light-cones:*");
+                return false;
             }
             else {
                 $(lc_id('number_of_light_cones')).spinner("enable");
                 $(lc_id('number_of_light_cones')).data("spin-max",maximum);
-                $spinner_label.html("Select the number of light-cones: (maximum for the selected parameters is " + maximum + ")*");
+//                $spinner_label.html("Select the number of light-cones: (maximum for the selected parameters is " + maximum + ")*");
             }
             spinner_check_value(parseInt($(lc_id('number_of_light_cones')).val()));
+            return true;
         }
 
         var selection = $("input[name='light_cone-light_cone_type']:checked").val();
         if ("unique" == selection) {
             var maximum = get_number_of_unique_light_cones();
-            spinner_set_max(maximum);
+            if (spinner_set_max(maximum)) {
+                $spinner_label.html("Select the number of light-cones: (maximum for the selected parameters is " + maximum + ")*");
+            }
         } else {
             $.ajax({
                 url : TAO_JSON_CTX + 'global_parameter/' + 'maximum-random-light-cones',
@@ -798,8 +802,10 @@ jQuery(document).ready(function($) {
                 },
                 success: function(data, status, xhr) {
                     var maximum = parseInt(data.fields.parameter_value);
-                    spinner_set_max(maximum);
-                    display_maximum_number_light_cones($(lc_id('number_of_light_cones')), maximum);
+                    if (spinner_set_max(maximum)) {
+                        $spinner_label.html("Select the number of light-cones: (maximum " + maximum + " random light-cones)*");
+                    }
+//                    display_maximum_number_light_cones($(lc_id('number_of_light_cones')), maximum);
                 }
             });
         }
