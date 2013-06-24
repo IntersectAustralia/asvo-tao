@@ -161,7 +161,7 @@ namespace tao {
 
             // Try and extract some more values.
             real_type bulge_magnitude = galaxy.values<real_type>( _bulge_mag_field )[idx];
-            real_type disk_scale_radius = 0.1*galaxy.values<real_type>( "diskscaleradius" )[idx]/0.71; // divided by h
+            real_type disk_scale_radius = galaxy.values<real_type>( "diskscaleradius" )[idx];
             real_type total_lum = galaxy.values<real_type>( "total_luminosity" )[idx];
             real_type bulge_lum = galaxy.values<real_type>( "bulge_luminosity" )[idx];
 
