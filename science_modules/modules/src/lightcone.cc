@@ -126,17 +126,8 @@ namespace tao {
       }
       else
       {
-
-
-	 auto it = _snap_redshifts.begin();
-	 while( it != _snap_redshifts.end() )
-	 {
-	    if( num::approx( *it, _z_snap, 1e-4 ) )
-	       break;
-	    ++it;
-	 }
-	 EXCEPT( it != _snap_redshifts.end(), "Invalid redshift selected for box." );
-	 _z_snap_idx = it - _snap_redshifts.begin();
+	 // Which snapshot index are we using?
+	 _z_snap_idx = _box_snapshot( _z_snap );
 
 	 // The outer loop is over the boxes.
 	 _get_boxes( _boxes );
@@ -153,6 +144,20 @@ namespace tao {
 
       LOG_EXIT();
       _timer.stop();
+   }
+
+   unsigned
+   lightcone::_box_snapshot( real_type redshift )
+   {
+      auto it = _snap_redshifts.begin();
+      while( it != _snap_redshifts.end() )
+      {
+	 if( num::approx<real_type>( *it, redshift, 1e-4 ) )
+	    break;
+	 ++it;
+      }
+      EXCEPT( it != _snap_redshifts.end(), "Invalid redshift selected for box." );
+      return it - _snap_redshifts.begin();
    }
 
    ///
@@ -947,7 +952,7 @@ namespace tao {
       real_type d = (c/h0)*DCMR;
 
       LOG_EXIT();
-      return d;
+      return h*d;
    }
 
    ///
@@ -1110,14 +1115,6 @@ namespace tao {
          _box_size = dict.get<real_type>( "query-box-size" );
       }
 
-      // Filter information.
-      _filter = global_dict.get<string>( "workflow:record-filter:filter-type","" );
-      std::transform( _filter.begin(), _filter.end(), _filter.begin(), ::tolower );
-      _filter_min = global_dict.get<string>( "workflow:record-filter:filter-min","" );
-      _filter_max = global_dict.get<string>( "workflow:record-filter:filter-max","" );
-      LOGDLN( "Read filter name of: ", _filter );
-      LOGDLN( "Read filter range of: ", _filter_min, " to ", _filter_max );
-
       // Output field information.
       {
          list<string> fields = dict.get_list<string>( "output-fields" );
@@ -1136,9 +1133,22 @@ namespace tao {
          _output_fields.insert( _field_map.get( "global_id" ) );
          _output_fields.insert( _field_map.get( "local_id" ) );
          _output_fields.insert( _field_map.get( "tree_id" ) );
-
+         _output_fields.insert( "sfr" );
       }
       LOGDLN( "Outputting fields: ", _output_fields );
+
+      // Filter information.
+      _filter = global_dict.get<string>( "workflow:record-filter:filter:filter-attribute","" );
+      std::transform( _filter.begin(), _filter.end(), _filter.begin(), ::tolower );
+      _filter_min = global_dict.get<string>( "workflow:record-filter:filter:filter-min","" );
+      _filter_max = global_dict.get<string>( "workflow:record-filter:filter:filter-max","" );
+      LOGDLN( "Read filter name of: ", _filter );
+      LOGDLN( "Read filter range of: ", _filter_min, " to ", _filter_max );
+      if( !_output_fields.has( _filter ) )
+      {
+	 LOGDLN( "Record-filter: Couldn't locate record-filter name in lightcone output fields." );
+	 _filter.clear();
+      }
 
       // Setup the distance to redshift tables.
       _build_dist_to_z_tbl( 1000, _z_min, _z_max );
@@ -1148,6 +1158,9 @@ namespace tao {
 
       // Prepare bulk transactions.
       _setup_batching();
+
+      // Have the galaxy prepare its options.
+      _gal.read_record_filter( global_dict );
 
       LOG_EXIT();
       _timer.stop();
@@ -1549,15 +1562,24 @@ namespace tao {
          vector<real_type>::view pos_y = _gal.values<real_type>( "pos_y" );
          vector<real_type>::view pos_z = _gal.values<real_type>( "pos_z" );
 	 _gal_z.resize( _gal.batch_size() );
-         for( unsigned ii = 0; ii < _gal.batch_size(); ++ii )
-         {
-            // Get the distance and check it actually belongs here.
-            real_type dist = sqrt( pos_x[ii]*pos_x[ii] + pos_y[ii]*pos_y[ii] + pos_z[ii]*pos_z[ii] );
-            ASSERT( dist >= _dist_range.start() && dist < _dist_range.finish() );
 
-            // Update the galaxy's redshift.
-            _gal_z[ii] = _distance_to_redshift( dist );
+	 // Update the galaxy's redshift. This is dependant on using a box
+	 // or a light-cone.
+	 if( _box_type != "box" )
+	 {
+	    for( unsigned ii = 0; ii < _gal.batch_size(); ++ii )
+	    {
+	       // Get the distance and check it actually belongs here.
+	       real_type dist = sqrt( pos_x[ii]*pos_x[ii] + pos_y[ii]*pos_y[ii] + pos_z[ii]*pos_z[ii] );
+	       ASSERT( dist >= _dist_range.start() && dist < _dist_range.finish() );
+
+	       _gal_z[ii] = _distance_to_redshift( dist );
+	    }
          }
+	 else
+	 {
+	    std::fill( _gal_z.begin(), _gal_z.end(), _z_snap );
+	 }
 
 	 // Set the field.
 	 _gal.set_field<real_type>( "redshift", _gal_z );

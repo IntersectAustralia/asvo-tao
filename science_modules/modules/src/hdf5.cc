@@ -76,7 +76,7 @@ namespace tao {
    }
 
    void
-   hdf5::process_galaxy( const tao::galaxy& galaxy )
+   hdf5::process_galaxy( tao::galaxy& galaxy )
    {
       _timer.start();
 
@@ -97,10 +97,11 @@ namespace tao {
 	    _dsets.push_back( dset );
 
 	    // Dump first chunk.
-	    for( unsigned ii = 0; ii < galaxy.batch_size(); ++ii )
+	    unsigned ii = 0;
+	    for( galaxy.begin(); !galaxy.done(); galaxy.next(), ++ii )
 	    {
 	       dspace.select_one( ii );
-	       _write_field( galaxy, ii, field, *dset, dspace );
+	       _write_field( galaxy, field, *dset, dspace );
 	    }
 	 }
 
@@ -110,7 +111,7 @@ namespace tao {
       else
       {
 	 // Process each element.
-	 for( unsigned ii = 0; ii < galaxy.batch_size(); ++ii )
+	 for( galaxy.begin(); !galaxy.done(); galaxy.next() )
 	 {
 	    // Write the fields.
 	    auto dset_it = _dsets.begin();
@@ -125,7 +126,7 @@ namespace tao {
 	       }
 	       h5::dataspace dspace( *dset );
 	       dspace.select_one( old_size );
-	       _write_field( galaxy, ii, field, *dset, dspace );
+	       _write_field( galaxy, field, *dset, dspace );
 	    }
 	 }
       }
@@ -177,7 +178,6 @@ namespace tao {
 
    void
    hdf5::_write_field( const tao::galaxy& galaxy,
-		       unsigned idx,
 		       const string& field,
 		       h5::dataset& dset,
 		       h5::dataspace& dspace )
@@ -190,35 +190,35 @@ namespace tao {
       {
 	 case tao::galaxy::STRING:
 	 {
-	    string data = galaxy.values<string>( field )[idx];
+	    string data = galaxy.current_value<string>( field );
 	    dset.write( data.c_str(), h5::datatype::string, mem_space, dspace );
 	    break;
 	 }
 
 	 case tao::galaxy::DOUBLE:
 	 {
-	    double data = galaxy.values<double>( field )[idx];
+	    double data = galaxy.current_value<double>( field );
 	    dset.write( &data, h5::datatype::native_double, mem_space, dspace );
 	    break;
 	 }
 
 	 case tao::galaxy::INTEGER:
 	 {
-	    double data = galaxy.values<int>( field )[idx];
+	    double data = galaxy.current_value<int>( field );
 	    dset.write( &data, h5::datatype::native_int, mem_space, dspace );
 	    break;
 	 }
 
 	 case tao::galaxy::UNSIGNED_LONG_LONG:
 	 {
-	    double data = galaxy.values<unsigned long long>( field )[idx];
+	    double data = galaxy.current_value<unsigned long long>( field );
 	    dset.write( &data, h5::datatype::native_llong, mem_space, dspace );
 	    break;
 	 }
 
 	 case tao::galaxy::LONG_LONG:
 	 {
-	    double data = galaxy.values<long long>( field )[idx];
+	    double data = galaxy.current_value<long long>( field );
 	    dset.write( &data, h5::datatype::native_llong, mem_space, dspace );
 	    break;
 	 }
