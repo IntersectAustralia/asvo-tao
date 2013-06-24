@@ -135,7 +135,16 @@ namespace tao {
          xml_node cur = it->node();
          string name = cur.attribute( "id" ).value();
          string type = cur.name();
+#ifdef PREPROCESSING
+         LOGILN( "Loading Module : ",type);
+         if (type=="light-cone")
+        	 tao::factory.create_module( type, name, cur );
+         else
+        	 LOGILN( " Pre-Processing mode : Ignore Loading Module : ",type);
+#else
          tao::factory.create_module( type, name, cur );
+#endif
+
       }
 
       LOG_EXIT();
