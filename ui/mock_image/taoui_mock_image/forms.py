@@ -133,6 +133,18 @@ class Form(BaseForm):
 
             data['mock_image-TOTAL_FORMS'] = total
 
+            # Check for the existence of the other management form
+            # elements and, if they're not there, add them in to
+            # prevent errors.
+            if 'mock_image-INITIAL_FORMS' not in data:
+                data['mock_image-INITIAL_FORMS'] = 0
+            if 'mock_image-MAX_NUM_FORMS' not in data:
+                data['mock_image-MAX_NUM_FORMS'] = 1000
+
+            # Also need to check for the apply mock image checkbox, due
+            # to not using "from_xml" in certain places.
+            self.apply_mock_image = data.get('mock_image-apply_mock_image', False)
+
         # Set to None if we aren't bound.
         else:
             data = None
