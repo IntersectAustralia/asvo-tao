@@ -79,21 +79,22 @@ namespace tao {
    }
 
    void
-   csv::process_galaxy( const tao::galaxy& galaxy )
+   csv::process_galaxy( tao::galaxy& galaxy )
    {
       _timer.start();
 
       // Repeat for each galaxy in the batch.
-      for( unsigned ii = 0; ii < galaxy.batch_size(); ++ii )
+      LOGDLN( "Beginning CSV dump of galaxies." );
+      for( galaxy.begin(); !galaxy.done(); galaxy.next() )
       {
          auto it = _fields.cbegin();
          if( it != _fields.cend() )
          {
-            _write_field( galaxy, *it++, ii );
+	    _write_field( galaxy, *it++ );
             while( it != _fields.cend() )
             {
                _file << ", ";
-               _write_field( galaxy, *it++, ii );
+               _write_field( galaxy, *it++ );
             }
             _file << "\n";
          }
@@ -101,6 +102,7 @@ namespace tao {
          // Increment number of written records.
          ++_records;
       }
+      LOGDLN( "Ending CSV dump of galaxies." );
 
       _timer.stop();
    }
@@ -114,32 +116,32 @@ namespace tao {
 
    void
    csv::_write_field( const tao::galaxy& galaxy,
-                      const string& field,
-                      unsigned idx )
+                      const string& field )
    {
+      LOGDLN( "CSV: Writing field: ", field );
       // TODO: Can make this faster by not repeating the
       //       value lookup for each index.
       auto val = galaxy.field( field );
       switch( val.second )
       {
 	 case tao::galaxy::STRING:
-	    _file << galaxy.values<string>( field )[idx];
+	    _file << galaxy.current_value<string>( field );
 	    break;
 
 	 case tao::galaxy::DOUBLE:
-	    _file << galaxy.values<double>( field )[idx];
+	    _file << galaxy.current_value<double>( field );
 	    break;
 
 	 case tao::galaxy::INTEGER:
-	    _file << galaxy.values<int>( field )[idx];
+	    _file << galaxy.current_value<int>( field );
 	    break;
 
 	 case tao::galaxy::UNSIGNED_LONG_LONG:
-	    _file << galaxy.values<unsigned long long>( field )[idx];
+	    _file << galaxy.current_value<unsigned long long>( field );
 	    break;
 
 	 case tao::galaxy::LONG_LONG:
-	    _file << galaxy.values<long long>( field )[idx];
+	    _file << galaxy.current_value<long long>( field );
 	    break;
 
 	 default:

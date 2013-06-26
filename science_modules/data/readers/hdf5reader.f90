@@ -16,6 +16,7 @@ PROGRAM read_hdf5
   INTEGER, PARAMETER :: num_fields = 3
 
   INTEGER, PARAMETER :: max_chunk_size = 100
+  ! NOTE: Change filename to your input file
   CHARACTER(LEN=12), PARAMETER :: filename = "tao.output.0"
   INTEGER, PARAMETER :: mem_rank = 1
 

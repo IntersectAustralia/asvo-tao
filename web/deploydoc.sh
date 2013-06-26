@@ -61,10 +61,14 @@ generate_documentation() {
 # also copies remote.sh and maintenance files
 transfer() {
   host=$1
-  cd $DEP_DIR
+  echo ">> PACKAGING docs FOR $host"
+  source $DEP_DIR/build/TAOENV/bin/activate
+  cd $DEP_DIR/build
   test -f asvo-doc.tgz && rm -f asvo-doc.tgz && echo "Removed existing asvo-doc.tgz"
-  tar -czf asvo-doc.tgz -C build asvo-tao/web/tao/static/docs
-  scp asvo-doc.tgz remotedoc.sh $host:~
+  tar -czf asvo-doc.tgz -C $DEP_DIR/build asvo-tao/web/tao/static/docs
+  cd $DEP_DIR
+  echo ">> UPLOADING TO $host"
+  scp build/asvo-doc.tgz remotedoc.sh $host:~
   HOME_DIR=$(ssh $host 'chmod a+x remotedoc.sh; echo $HOME')
 }
 
@@ -81,6 +85,8 @@ remote_install() {
 #
 
 checkout
+
+environment_setup
 
 generate_documentation
 

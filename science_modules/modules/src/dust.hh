@@ -47,13 +47,21 @@ namespace tao {
       ///
       ///
       void
-      process_galaxy( const tao::galaxy& galaxy,
-                      vector<real_type>::view spectra );
+      process_galaxy( tao::galaxy& galaxy,
+		      fibre<real_type>& total_spectra,
+		      fibre<real_type>& disk_spectra,
+		      fibre<real_type>& bulge_spectra );
+
+      void
+      process_spectra( tao::galaxy& galaxy,
+		       unsigned gal_idx,
+		       real_type& sfr,
+		       vector<real_type>::view spectra );
 
    protected:
 
       void
-      _read_wavelengths();
+      _read_wavelengths( const string& filename );
 
       void
       _read_options( const options::xml_dict& global_dict );
@@ -61,7 +69,6 @@ namespace tao {
    protected:
 
       string _waves_filename;
-      unsigned _num_spectra;
       vector<real_type> _waves; // the wavelengths of each spectral band
    };
 }
