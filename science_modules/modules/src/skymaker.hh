@@ -20,6 +20,42 @@ namespace tao {
 
       typedef double real_type;
 
+      class image {
+
+         image();
+
+         image( int sub_cone,
+                const string& format,
+                const string& mag_field,
+                real_type min_mag,
+                real_type z_min,
+                real_type z_max,
+                real_type origin_ra,
+                real_type origin_dec,
+                real_type fov_ra,
+                real_type fov_dec,
+                unsigned width,
+                unsigned height );
+
+         void
+         process_galaxy( const tao::galaxy& galaxy,
+                         unsigned idx,
+                         real_type magnitude );
+
+      protected:
+
+         string _mag_field, _bulge_mag_field;
+         string _list_filename, _conf_filename;
+         std::ofstream _list_file;
+         unsigned _img_w, _img_h;
+         real_type _ra0, _dec0;
+         real_type _pix_w, _pix_h;
+         real_type _img_x, _img_y;
+         real_type _foc_x, _foc_y;
+         real_type _min_mag, _max_mag;
+         unsigned _cnt;
+      };
+
       static
       module*
       factory( const string& name,
@@ -70,16 +106,7 @@ namespace tao {
 
    protected:
 
-      string _mag_field, _bulge_mag_field;
-      string _list_filename, _conf_filename;
-      std::ofstream _list_file;
-      unsigned _img_w, _img_h;
-      real_type _ra0, _dec0;
-      real_type _pix_w, _pix_h;
-      real_type _img_x, _img_y;
-      real_type _foc_x, _foc_y;
-      real_type _min_mag, _max_mag;
-      unsigned _cnt;
+      list<image> _imgs;
       bool _keep_files;
    };
 }
