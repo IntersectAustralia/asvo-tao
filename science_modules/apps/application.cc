@@ -336,10 +336,12 @@ namespace tao {
 
       if( mpi::comm::world.rank() == 0 )
       {
+#ifndef NLOG
          LOGDLN( "Setting logging file to: ", filename );
          logging::file* Logf=new logging::file( filename, logging::info );
          Logf->add_tag("progress");
          LOG_PUSH(Logf);
+#endif
       }
 
       LOG_EXIT();
