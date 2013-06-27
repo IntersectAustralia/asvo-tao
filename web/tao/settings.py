@@ -152,6 +152,7 @@ INSTALLED_APPS = (
     'captcha',
     'django_rules',
     'django_extensions',
+    'tastypie',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )

@@ -5,7 +5,8 @@ from django.shortcuts import redirect
 
 from piston.resource import Resource
 
-from tao.api.handlers import JobHandler, WorkflowCommandHandler
+from tao.api.handlers import JobHandler
+
 
 class IpBasedAuthenticator(object):
     def is_authenticated(self, request):
@@ -17,13 +18,9 @@ class IpBasedAuthenticator(object):
     
 ip_auth = IpBasedAuthenticator()
 job_handler = Resource(JobHandler, authentication=ip_auth)
-workflow_command_handler = Resource(WorkflowCommandHandler, authentication=ip_auth)
 
 urlpatterns = (
     url(r'jobs/status/(?P<status>.+)$', job_handler, name='api_jobs_by_status'),
     url(r'jobs/(?P<id>\d+)$', job_handler, name='api_jobs_by_id'),
     url(r'jobs/$', job_handler, name='api_jobs'),
-    url(r'command/status/(?P<status>.+)$', workflow_command_handler, name='api_workflow_command_by_status'),
-    url(r'command/(?P<id>\d+)$', workflow_command_handler, name='api_workflow_command_by_id'),
-    url(r'command/$', workflow_command_handler, name='api_workflow_commands'),
 )

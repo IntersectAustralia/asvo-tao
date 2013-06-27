@@ -344,6 +344,9 @@ class WorkflowCommand(models.Model):
     executed = models.DateTimeField(null=True, blank=True)
     execution_status = models.CharField(choices=STATUS_CHOICES, max_length=20)
     execution_comment = models.TextField(null=True, blank=True)
+
+    def __unicode__(self):
+        return self.command
     
     def jobid(self):
         return self.job_id.pk
