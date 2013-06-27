@@ -19,6 +19,10 @@ from tao.forms import FormsGraph
 from tao.widgets import ChoiceFieldWithOtherAttrs, TwoSidedSelectWidget
 from tao.xml_util import module_xpath, module_xpath_iterate
 
+def strip_namespace(tag):
+    idx = tag.rfind('}')
+    return tag[idx + 1:]
+
 def to_xml_2(form, root):
     if form.apply_mock_image:
         from tao.xml_util import find_or_create, child_element
@@ -38,16 +42,21 @@ def to_xml_2(form, root):
             if ii < form.total_form_count() - 1:
                 sub_elem = child_element(list_elem, 'item')
                 for field, val in sub.cleaned_data.iteritems():
-                    child_element(sub_elem, field, str(val))
+                    if field[-9:] == 'mag_field':
+                        item_id, item_extension = val.split('_')
+                        op = datasets.band_pass_filter(item_id)
+                        child_element(sub_elem, field, op.filter_id + '_' + item_extension)
+                    else:
+                        child_element(sub_elem, field, str(val))
 
 def from_xml_2(cls, ui_holder, xml_root, prefix=None):
-    mi = xml_root.xpath('//workflow/skymaker')
+    mi = module_xpath(xml_root, '//workflow/skymaker', False)
     apply_mock_image = mi is not None
     params = {'mock_image-apply_mock_image': apply_mock_image}
     if apply_mock_image:
 
         # Find the images and setup the management form.
-        imgs = xml_root.xpath('//skymaker/images/item')
+        imgs = list(module_xpath_iterate(xml_root, '//skymaker/images/item', False))
         params[prefix + '-TOTAL_FORMS'] = len(imgs)
         params[prefix + '-INITIAL_FORMS'] = len(imgs)
         params[prefix + '-MAX_NUM_FORMS'] = 1000
@@ -56,7 +65,14 @@ def from_xml_2(cls, ui_holder, xml_root, prefix=None):
         for ii, img in enumerate(imgs):
             pre = prefix + '-' + str(ii) + '-'
             for field in img:
-                params[pre + field.tag] = field.text
+                tag = strip_namespace(field.tag)
+                if tag == 'mag_field':
+                    id, ext = field.text.rsplit('_', 1)
+                    filter = datasets.band_pass_filter_find_from_xml(id)
+                    if filter is not None:
+                        params[pre + tag] = str(filter.id) + '_' + ext
+                else:
+                    params[pre + tag] = field.text
 
     # Create the class.
     return cls(ui_holder, params, prefix=prefix)
@@ -133,6 +149,18 @@ class Form(BaseForm):
 
             data['mock_image-TOTAL_FORMS'] = total
 
+            # Check for the existence of the other management form
+            # elements and, if they're not there, add them in to
+            # prevent errors.
+            if 'mock_image-INITIAL_FORMS' not in data:
+                data['mock_image-INITIAL_FORMS'] = 0
+            if 'mock_image-MAX_NUM_FORMS' not in data:
+                data['mock_image-MAX_NUM_FORMS'] = 1000
+
+            # Also need to check for the apply mock image checkbox, due
+            # to not using "from_xml" in certain places.
+            self.apply_mock_image = data.get('mock_image-apply_mock_image', False)
+
         # Set to None if we aren't bound.
         else:
             data = None
@@ -150,8 +178,8 @@ class Form(BaseForm):
 
     @classmethod
     def from_xml(cls, ui_holder, xml_root, prefix=None):
-        version = xml_root.xpath('//workflow/schema-version')
-        if version and version[0].text == '2.0':
+        version = module_xpath(xml_root, '//workflow/schema-version', False)
+        if version is not None and version.text == '2.0':
             return from_xml_2(cls, ui_holder, xml_root, prefix=prefix)
         else:
             return cls(ui_holder, {}, prefix=prefix)
