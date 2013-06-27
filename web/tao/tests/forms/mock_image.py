@@ -117,7 +117,7 @@ class FormTestCase(TestCase):
         data = dict(self.make_mgmt_data(2).items() + self.make_sub_form_data(0).items() + self.make_sub_form_data(1).items())
         form = Form(self.uih, data, prefix=self.prefix)
         self.assertTrue(form.is_valid())
-        root = create_root('tao')
+        root = create_root('tao', xmlns='http://tao.asvo.org.au/schema/module-parameters-v1')
         work = child_element(root, 'workflow')
         child_element(work, 'schema-version', '2.0')
         form.to_xml(work)
@@ -148,7 +148,7 @@ class FormTestCase(TestCase):
             if field == 'sub_cone':
                 val = 'ALL'
             elif field == 'mag_field':
-                val = 'test'
+                val = '1_apparent'
             elif field == 'format':
                 val = 'FITS'
             else:
