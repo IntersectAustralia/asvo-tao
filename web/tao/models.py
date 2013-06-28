@@ -347,7 +347,7 @@ class WorkflowCommand(models.Model):
 
     def __unicode__(self):
         return self.command
-    
+
     def jobid(self):
         return self.job_id.pk
 

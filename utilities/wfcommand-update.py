@@ -25,13 +25,14 @@ import json
 
 base_url = "http://127.0.0.1:8000/api/v1/workflowcommand/"
 
-if len(sys.argv) < 4:
-    print("usage: {0} wf_id status comment".format(sys.argv[0]))
+if len(sys.argv) < 5:
+    print("usage: {0} wf_id status comment job_id".format(sys.argv[0]))
     exit(0)
 
 wf_id = sys.argv[1]
 status = sys.argv[2].upper()
 comment = sys.argv[3]
+job_id = sys.argv[4]
 
 data = {
         'id': wf_id,
@@ -50,12 +51,12 @@ print(json.dumps(json.loads(response.content),
 
 url = base_url + wf_id
 print("URL: {0}".format(url))
-response = requests.put(url, data)
+response = requests.put(url, data=data)
 print("Response: {0}".format(response))
 print(json.dumps(json.loads(response.content),
     sort_keys=True, indent=4, separators=(',',':')))
 
-url = base_url + '?execution_status=' + status
+url = base_url + '?job_id=' + job_id # for now just using the same id from args (in reality job_id is different to wf_id)
 print("URL: {0}".format(url))
 response = requests.get(url)
 print("Response: {0}".format(response))
@@ -63,8 +64,9 @@ print(json.dumps(json.loads(response.content),
     sort_keys=True, indent=4, separators=(',',':')))
 
 
+url = base_url + '?execution_status=' + status
 print("URL: {0}".format(url))
-response = requests.put(url, data)
+response = requests.get(url)
 print("Response: {0}".format(response))
 print(json.dumps(json.loads(response.content),
     sort_keys=True, indent=4, separators=(',',':')))
