@@ -37,16 +37,6 @@ main( int argc,
    LOGILN( "Done.", setindent( -2 ) );
 
 #ifndef NDEBUG
-   // Sanity check; every key in the forest sizes must be in
-   // the forests multimap.
-   for( const auto& pair : forest_sizes_map )
-      ASSERT( forests_map.count( pair.first ) > 0 );
-
-   // Conversly, every key in the multimap must be in the
-   // size map.
-   for( const auto& pair : forests_map )
-      ASSERT( forest_sizes_map.has( pair.first ) );
-
    // Locations and forests must be the same size (number of trees).
    ASSERT( forests_map.size() == locations_map.size() );
 

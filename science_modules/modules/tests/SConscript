@@ -12,6 +12,7 @@ suites = [
     ('lightcone_suite.t.hh', 'sed.cc', 'lightcone.cc', 'BSPTree.cc', 'GrahamScanConvexHull.cpp'),
     ('sed_suite.t.hh', 'sed.cc', 'lightcone.cc', 'BSPTree.cc', 'GrahamScanConvexHull.cpp'),
     ('filter_suite.t.hh', 'filter.cc', 'sed.cc', 'lightcone.cc', 'BSPTree.cc', 'GrahamScanConvexHull.cpp'),
+    ('skymaker_suite.t.hh', 'skymaker.cc'),
     ('BSPTree_Test.hh', 'BSPTree.cc'),
     ('clip_suite.t.hh',),
     ('diff_suite.t.hh',),

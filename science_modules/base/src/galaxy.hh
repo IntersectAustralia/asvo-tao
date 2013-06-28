@@ -9,6 +9,7 @@
 #include <boost/mpl/at.hpp>
 #include <soci/soci.h>
 #include <libhpc/libhpc.hh>
+#include <libhpc/options/xml_dict.hh>
 
 namespace tao {
    using namespace hpc;
@@ -67,6 +68,28 @@ namespace tao {
 
       void
       set_batch_size( unsigned size );
+
+      void
+      read_record_filter( const options::xml_dict& global_dict );
+
+      void
+      begin();
+
+      bool
+      done() const;
+
+      void
+      next();
+
+      void
+      settle();
+
+      template< class T >
+      const T&
+      current_value( const string& name ) const
+      {
+         return boost::any_cast<typename vector<T>::view>( field( name ).first )[_it];
+      }
 
       // const vector<long long>&
       // ids() const;
@@ -140,6 +163,10 @@ namespace tao {
       const string* _table;
       unsigned _batch_size;
       std::unordered_map<string,field_type> _fields;
+
+      unsigned _it;
+      string _filter;
+      double _filter_min, _filter_max;
    };
 }
 

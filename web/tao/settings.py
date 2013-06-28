@@ -227,7 +227,8 @@ INITIAL_JOB_STATUS = 'HELD'
 UI_DIR = join(dirname(PROJECT_DIR), 'ui')
 MODULES_PATHS = (
     ('light_cone', 'light-cone'),
-    ('sed', 'sed')
+    ('sed', 'sed'),
+    ('mock_image', 'mock_image'),
 )
 sys.path.extend([join(UI_DIR, module[1]) for module in MODULES_PATHS])
 INSTALLED_APPS += tuple(['taoui_' + module[0] for module in MODULES_PATHS])
@@ -241,6 +242,7 @@ OUTPUT_FORMATS = [
     {'value': 'votable', 'text': 'VOTable', 'extension': 'xml'},
 ]
 
-MODULE_INDICES = {'light_cone': '1', 'sed': '2', 'record_filter': '3', 'output_format': '4'}
+MODULE_INDICES = {'light_cone': '1', 'sed': '2', 'mock_image': '3',
+                  'record_filter': '4', 'output_format': '5'}
 
 TAO_VERSION = '0.22.1'
