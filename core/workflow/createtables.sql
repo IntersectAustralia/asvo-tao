@@ -36,3 +36,18 @@ STATUSCHANGETIME TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 NewStatus SMALLINT DEFAULT(0),
 Comments varchar(1000)
 );
+
+CREATE TABLE TablesSummary
+(
+TableName varchar(100),
+DatabaseName varchar(200),
+ServerIP varchar(100),
+GalaxyCount int,
+TreeCount int,
+MinGalaxyPerTable int,
+MaxGalaxyPerTable int,
+PRIMARY KEY (TableName,DatabaseName)
+);
+
+
+
