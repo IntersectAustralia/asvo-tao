@@ -20,7 +20,8 @@ def index(request):
         if ui_holder.validate():
             user = models.User.objects.get(username=request.user)
             workflow.save(user, ui_holder)
-            messages.info(request, _("Your job was held successfully."))
+            # initial_job_status_obj = models.GlobalParameter.objects.get(parameter_name='INITIAL_JOB_STATUS')
+            messages.info(request, _("Your job was " + models.initial_job_status().lower() + " successfully."))
             return redirect(reverse('job_index'))
     else:
         ui_holder = UIModulesHolder(UIModulesHolder.POST)

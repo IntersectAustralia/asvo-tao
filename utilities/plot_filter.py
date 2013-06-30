@@ -31,47 +31,51 @@
 
 import sys, math
 import matplotlib.pyplot as plt
-
-##
-##
-##
-def calc_range(array):
-    rng = None
-    for a in array:
-        if not rng:
-            rng = [a, a]
-        else:
-            if a < rng[0]:
-                rng[0] = a
-            if a > rng[1]:
-                rng[1] = a
-    return rng
+import numpy as np
+from scipy.optimize import curve_fit
 
 ##
 ##
 ##
 def is_logarithmic(waves):
 
-    # Calculate the mean.
+    def expfunc(x, a, b, c):
+        return a*np.exp(b*x) + c
+
     wcopy = list(waves)
     wcopy.sort()
-    avg = 0.0
+
+    # If the ratio of x-max : x-min < 10, don't use a logarithmic scale
+    # (at least in matplotlib)
+    if (wcopy[-1] / wcopy[0]) < 10:
+        return False
+
+    # Take a guess at whether it is logarithmic by seeing how well the x-scale
+    # fits an exponential curve
+    diffs = []
     for ii in range(len(wcopy) - 1):
-        avg += waves[ii + 1] - waves[ii];
-    avg /= len(wcopy) - 1;
+        diffs.append(wcopy[ii + 1] - wcopy[ii])
 
-    # Calculate the variance.
-    var = 0.0
-    for ii in range(len(wcopy) - 1):
-        var += ((waves[ii + 1] - waves[ii]) - avg)**2;
-    var /= len(wcopy) - 1;
+    # Fit the diffs to an exponential curve
+    x = np.arange(len(wcopy)-1)
+    try:
+        popt, pcov = curve_fit(expfunc, x, diffs)
+    except Exception as e:
+        print e
+        popt = [0.0, 0.0, 0.0]
+        pcov = np.inf
 
-    # Now the standard deviation.
-    dev = math.sqrt(var)
+    # If a > 0.5 and covsum < 1000.0
+    # use a logarithmic scale.
+    if type(pcov) == float:
+        # It's probably np.inf
+        covsum = pcov
+    else:
+        covsum = pcov.diagonal().sum()
+    res = (covsum < 1000.0) & (popt[0] > 0.5)
+    #print "Result = {0}".format(res)
+    return res
 
-    # If the standard deviation is greater than 1000, use
-    # a logarithmic scale.
-    return dev >= 1000.0
 
 ##
 ##
@@ -87,7 +91,7 @@ def strip_zeros(waves, values):
         jj -= 1
     if jj < len(values) - 1:
         jj += 1
-    return waves[ii:jj + 1], values[ii:jj + 1]
+    return np.array(waves[ii:jj + 1]), np.array(values[ii:jj + 1])
 
 ##
 ##
@@ -106,8 +110,11 @@ def calc_filter(filename):
 
     # Strip and calculate ranges.
     waves, values = strip_zeros(waves, values)
-    x_rng = calc_range(waves)
-    y_rng = calc_range(values);
+    x_rng = [waves.min(), waves.max()]
+    # Add 5% space on either side of the X-axis
+    x_space = (x_rng[1] - x_rng[0]) / 20
+    x_rng = [x_rng[0]-x_space, x_rng[1]+x_space]
+    y_rng = [0, max(1.1, values.max())]
 
     # Setup variables.
     filter_name = filename[:filename.rfind('.')]
@@ -130,16 +137,17 @@ def plot(filter):
         facecolor=color, color=color)
     plt.ylim([filter['y_rng'][0], filter['y_rng'][1] + 0.1])
     plt.ylabel('Transmission')
-    plt.xlim(filter['x_rng'])
-    plt.xlabel(ur'Wavelength (\u00c5)')
     if is_logarithmic(filter['waves']):
         plt.xscale('log')
+    plt.xlim(filter['x_rng'])
+    plt.xlabel(ur'Wavelength (\u00c5)')
     plt.grid(True)
     plt.title(filter['filter_name'])
     # plt.show()
 
 
 def plot_filter(filename, dest=None):
+    #print("Processing: {0}".format(filename))
     filter = calc_filter(filename)
     plot(filter)
     if dest is None:

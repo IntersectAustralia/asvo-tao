@@ -1,0 +1,41 @@
+{% load bootstrap_tags %}
+{% load assets %}
+
+<legend></legend>
+<div class="row-fluid">
+    <div class="boxed span8">
+        <div>
+          <div class="control-group id_mock_image-apply_mock_image">
+            <label class="control-label" for="id_mock_image-apply_mock_image">Generate Mock Image</label>
+            <div class="controls">
+              <input id="id_mock_image-apply_mock_image"
+              name="mock_image-apply_mock_image" type="checkbox"
+              {% if form.apply_mock_image %}checked{% endif %} />
+            </div>
+          </div>
+        </div>
+        <div id="mock_image_params">
+          {% for sf in form %}
+          <div class="single-form boxed">
+            {% for field in sf %}
+            {{ field|as_bootstrap_field }}
+            {% endfor %}
+          </div>
+	  {% endfor %}
+          {{ form.management_form }}
+        </div>
+    </div>
+    <div class="aside span4" id="sed_info">
+        <!-- <div class="boxed"> -->
+        <!--     <div class="mock-image-info"> -->
+        <!--         <div>Mock Image Configuration</div> -->
+        <!--         <div style="overflow-y: scroll;height: 178px"> -->
+        <!--             <p> -->
+        <!--                 <strong class="name"><\!-- -\-></strong> -->
+        <!--             </p> -->
+        <!--             <div class="details"><\!-- -\-></div> -->
+        <!--         </div> -->
+        <!--     </div> -->
+        <!-- </div> -->
+    </div>
+</div>  

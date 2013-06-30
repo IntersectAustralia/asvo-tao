@@ -44,7 +44,7 @@ namespace tao {
       open();
 
       void
-      process_galaxy( const tao::galaxy& galaxy );
+      process_galaxy( tao::galaxy& galaxy );
 
       virtual
       void
@@ -58,7 +58,6 @@ namespace tao {
 
       void
       _write_field( const tao::galaxy& galaxy,
-                    unsigned idx,
 		    const string& field,
 		    h5::dataset& dset,
 		    h5::dataspace& dspace );

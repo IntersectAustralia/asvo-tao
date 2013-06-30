@@ -7,6 +7,7 @@
 """
 from fabric.api import *
 from fabric.context_managers import cd
+from fabric.contrib.files import exists
 
 env.forward_agent = True
 
@@ -35,51 +36,41 @@ def _create_mysql_user_and_database():
     run("""echo "create user 'tao'@'localhost' identified by 'tao'; grant all privileges on tao.* to 'tao'@'localhost'; flush privileges;" | mysql -uroot """)
     run("""echo "create database tao;" | mysql -utao --password=tao""")
 
-def initial_deploy():
+def install_software():
     sudo("yum install -y git mod_fcgid mysql-server mysql-devel gcc python-devel postfix doxygen")
     sudo("chkconfig mysqld on")
     sudo("chkconfig httpd on")
     sudo("chkconfig postfix on")
     sudo("service mysqld start")
     sudo("service postfix start")
+
+def create_database():
     _create_mysql_user_and_database()
-    run("git clone git@github.com:IntersectAustralia/asvo-tao.git")
-    run("git checkout work")
-    run("chmod o+rx /home/{user}".format(user=env.user))
+
+def run_git(git_command):
+    run("eval `ssh-agent`; ssh-add /home/devel/.ssh/id_rsa; " + git_command)
+
+def initial_setup():
+    if exists("asvo-tao"):
+        run("rm -rf asvo-tao")
+    run_git("git clone git@github.com:IntersectAustralia/asvo-tao.git")
+    run("chmod o+rx /home/{user}/asvo-tao".format(user=env.user))
     with cd("asvo-tao/web"):
-        run("/usr/bin/env python2.6 bootstrap.py")
-        sudo("bin/easy_install -U setuptools")
-        sudo("bin/easy_install -U sphinx")
-        sudo("bin/easy_install -U breathe")
-        run("bin/buildout -c buildout_{target_env}.cfg".format(target_env=env.target_env))
-    with cd("asvo-tao/docs"):
-        run("./gendoc.sh")
-    with cd("asvo-tao/web"):
-        run("bin/django collectstatic --noinput")
-        run("bin/django syncdb --noinput")
-        run("bin/django migrate")
-        run("bin/django sync_rules")
-        run("touch tao/django.log && chmod o+w tao/django.log")
-        sudo("cp deploy/httpd/tao_{target_env}_httpd.conf /etc/httpd/conf.d/tao_httpd.conf".format(target_env=env.target_env))
-        sudo("service httpd graceful")
-        sudo("service httpd start")
+        run_git("git checkout work")
+        run_git("git pull origin work")
+        run("./qa.sh setup")
 
 def update():
+    with cd("asvo-tao"):
+        run_git("git checkout work")
+        run_git("git pull origin work")
     with cd("asvo-tao/web"):
-        run("git checkout work")
-        run("git pull origin work")
-        run("bin/buildout -c buildout_{target_env}.cfg".format(target_env=env.target_env))
-        sudo("bin/easy_install -U setuptools")
-        sudo("bin/easy_install -U sphinx")
-        sudo("bin/easy_install -U breathe")
-    with cd("asvo-tao/docs"):
-        run("./gendoc.sh")
+        run("./qa.sh install")
+        run("./qa.sh gendocs")
+        run("./qa.sh migrate")
     with cd("asvo-tao/web"):
-        run("bin/django collectstatic --noinput")
-        run("bin/django syncdb --noinput")
-        run("bin/django migrate")
         sudo("cp deploy/httpd/tao_{target_env}_httpd.conf /etc/httpd/conf.d/tao_httpd.conf".format(target_env=env.target_env))
-        sudo("service httpd graceful")
+    sudo("service httpd graceful")
 
 def create_test_admin_users():
     with cd("asvo-tao/web"):
