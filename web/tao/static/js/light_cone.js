@@ -290,7 +290,7 @@ jQuery(document).ready(function($) {
                 alert("Couldn't get data for requested dust model");
             },
             success: function(data, status, xhr) {
-                $('div.stellar-model-info .name').html(data.fields.name);
+                $('div.stellar-model-info .label').html(data.fields.label);
                 $('div.stellar-model-info .details').html(data.fields.description);
                 $('div.stellar-model-info').show();
                 fill_in_summary('sed', 'stellar_model_description', '<br>' + data.fields.description);
@@ -377,6 +377,7 @@ jQuery(document).ready(function($) {
     });
 
     var list_multiple_selections_in_summary = function(form_name, select_widget){
+        console.log("list_multiple_selections_in_summary for " + select_widget + " starts")
         var selections_count = 0;
         var selected_values = [];
 
@@ -405,6 +406,7 @@ jQuery(document).ready(function($) {
         selected_values.push('</ul>');
 
         fill_in_summary(form_name, select_widget + '_list', selected_values.join(''));
+        console.log("list_multiple_selections_in_summary  " + select_widget + " ends")
         return selections_count;
     }
 
@@ -486,6 +488,14 @@ jQuery(document).ready(function($) {
         var galaxy_model_id = $this.find(':selected').attr('data-galaxy_model_id');
         show_galaxy_model_info(galaxy_model_id);
         var use_default = !update_filter_options.initializing || !bound;
+        if (use_default) {
+            var catalogue_geometry_value = $(lc_id('catalogue_geometry')).val();
+            if (catalogue_geometry_value == "box") {
+                var simulation_box_size = $(lc_id('number_of_light_cones')).data("simulation-box-size");
+                $(lc_id('box_size')).val(simulation_box_size);
+                $(lc_id('box_size')).change();
+            }
+        }
         update_filter_options(true, use_default); // triggers filter.change
         update_filter_options.initializing = false;
         update_output_options();
@@ -576,7 +586,7 @@ jQuery(document).ready(function($) {
             }
         });
         lc_output_props_widget.cache_store(pseudo_json);
-        console.log(current);
+        console.log('Current output properties: ' + current);
         return current;
     }
 
@@ -591,7 +601,7 @@ jQuery(document).ready(function($) {
         $.ajax({
             url : TAO_JSON_CTX + 'bandpass_filters/',
             dataType: "json",
-            error: function() {
+            error: function(jqXHR, status, error) {
                 alert("Couldn't get bandpass filters");
             },
             success: function(data, status, xhr) {
@@ -599,7 +609,7 @@ jQuery(document).ready(function($) {
                 sed_band_pass_filters_widget.display_selected(current, false);
             }
         });
-        console.log(current);
+        console.log('Current bandpass filters: ' + current);
         return current;
     }
 
@@ -792,7 +802,17 @@ jQuery(document).ready(function($) {
 
     $(lc_id('box_size')).change(function(evt){
         var $this = $(this);
-        var box_size_value = $this.val();
+        var box_size_value = parseFloat($this.val());
+        var max_box_size = parseFloat($(lc_id('number_of_light_cones')).data("simulation-box-size"));
+        if (isNaN(box_size_value)) {
+            show_error($(lc_id('box_size')),'Box size must be a number');
+            return false;
+        }
+        if (!isNaN(max_box_size) && parseFloat(box_size_value) > parseFloat(max_box_size)) {
+            show_error($(lc_id('box_size')),'Box size greater than simulation\'s box size');
+            return false;
+        }
+        show_error($(lc_id('box_size')), null);
         fill_in_summary('light_cone', 'box_size', box_size_value);
     });
 
@@ -862,11 +882,13 @@ jQuery(document).ready(function($) {
             var use_default = !update_filter_options.initializing || !bound;
             update_filter_options(false, use_default); // triggers filter.change
         }
+        $('#sed_params').slideToggle();
+        $('#sed_info').slideToggle();
     });
 
     $('#id_output_format-supported_formats').change(function(evt){
         var $this = $(this);
-        var output_format_value = $this.text();
+        var output_format_value = $this.find('option:selected').text();
         fill_in_summary('output', 'output_format', output_format_value);
     });
 
@@ -988,5 +1010,8 @@ jQuery(document).ready(function($) {
         fill_in_redshift_in_summary();
         fill_in_summary('light_cone', 'box_size', $(lc_id('box_size')).val());
         fill_in_summary('light_cone', 'snapshot', format_redshift($(lc_id('snapshot')+' option:selected').html()));
+        setTimeout(function(){
+            display_band_pass_filters_summary();
+        }, 1000);
     })();
 });

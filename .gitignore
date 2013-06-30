@@ -1,5 +1,6 @@
 **~
 **.pyc
+**.swp
 build-*
 config.log
 config.py
@@ -7,6 +8,7 @@ config.py
 .sconsign.dblite
 build/*
 dist/*
+docs/doctrees
 *.egg-info
 credentials.hh
 core/sageimport/SQLStatments.txt
@@ -22,4 +24,6 @@ web/build
 web/tao/static/docs
 docs/build
 docs/doxyxml
+docs/source/bpfilters
 .idea
+akg_*

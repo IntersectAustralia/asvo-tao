@@ -35,6 +35,9 @@ if not env['MEMSTATS']:
 if not env['STACKTRACE']:
     env.MergeFlags('-DNSTACKTRACE')
 
+env.MergeFlags('-DMULTIDB')
+env.MergeFlags('-DNLOGTRIVIAL -DNLOGDEBUG')
+
 project.build(
     ['base', 'modules'],
     proj_name='tao',

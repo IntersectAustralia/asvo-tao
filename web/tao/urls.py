@@ -39,7 +39,7 @@ mock_galaxy_factory_patterns = patterns('tao.views.mock_galaxy_factory',
 job_patterns = patterns('tao.views.jobs',
     url(r'^$', 'index', name='job_index'),
     url(r'^(?P<id>\d+)$', 'view_job', name='view_job'),
-    url(r'^(?P<id>\d+)/file/(?P<filepath>.+)$', 'get_file', name='get_file'),
+    url(r'^(?P<id>\d+)/file/(?P<file_path>.+)$', 'get_file', name='get_file'),
     url(r'^(?P<id>\d+)/download_zip$', 'get_zip_file', name='get_zip_file'),
 )
 
@@ -53,7 +53,7 @@ json_patterns = patterns('tao.json.views',
     url(r'^stellar_model/(?P<id>\d+)$', 'stellar_model', name='json_stellar_model'),
     url(r'^dust_model/(?P<id>\d+)$', 'dust_model', name='json_dust_model'),
     url(r'^global_parameter/(?P<parameter_name>[-\w]+)/$', 'global_parameter', name='json_global_parameter'),
-    url('^bandpass_filters/', 'bandpass_filters', name='json_bandpass_filters'),
+    url(r'^bandpass_filters/', 'bandpass_filters', name='json_bandpass_filters'),
     url(r'^$', 'bad_request', name='json_ctx'),
 )
 

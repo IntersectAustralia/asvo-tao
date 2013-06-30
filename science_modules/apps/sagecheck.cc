@@ -4,6 +4,9 @@
 #include <boost/lexical_cast.hpp>
 #include <libhpc/libhpc.hh>
 
+double box_size = 250.0;
+unsigned num_snapshots = 181;
+
 using namespace hpc;
 
 struct galaxy_type
@@ -106,10 +109,18 @@ main( int argc,
       char* argv[] )
 {
    mpi::initialise( argc, argv );
-
-   // ASSERT( argc > 1 );
-   // LOG_CONSOLE();
    LOG_PUSH( new logging::stdout() );
+
+   // See if we were given a starting file/chunk.
+   unsigned file_idx = 0, chunk_idx = 0;
+   if( argc >= 2 )
+   {
+      file_idx = atoi( argv[1] );
+   }
+   if( argc >= 3 )
+   {
+      chunk_idx = atoi( argv[2] );
+   }
 
 #ifndef NLUKE
    // Need a global range.
@@ -117,7 +128,6 @@ main( int argc,
 #endif
 
    // Keep processing files from 0 onwards until we cannot open a file.
-   unsigned file_idx = 0, chunk_idx = 0;
    while( 1 )
    {
       // Try and open the file with current chunk index.
@@ -141,22 +151,30 @@ main( int argc,
       LOGILN( "Success." );
 
       // Read counts.
-      int num_trees, net_halos;
+      int num_trees;
+      size_t net_halos;
       file.read( (char*)&num_trees, sizeof(num_trees) );
-      file.read( (char*)&net_halos, sizeof(num_trees) );
-      vector<int> num_tree_halos( num_trees );
-      file.read( (char*)num_tree_halos.data(), sizeof(int)*num_trees );
+      file.read( (char*)&net_halos, sizeof(net_halos) );
+      vector<size_t> num_tree_halos( num_trees );
+      file.read( (char*)num_tree_halos.data(), sizeof(size_t)*num_trees );
       ASSERT( !file.fail() );
       LOGDLN( num_trees, " in file." );
+
+      // Check number of trees and net halos.
+      ASSERT( num_trees, "Invalid number of trees for file." );
+      ASSERT( net_halos, "Invalid net halos for file." );
 
       // Iterate over trees.
       vector<galaxy_type> halos;
       for( unsigned ii = 0; ii < num_trees; ++ii )
       {
-         LOGDLN( "Reading tree ", ii, ".", setindent( 2 ) );
+         LOGDLN( "Reading tree ", ii, " with ", num_tree_halos[ii], " halos.", setindent( 2 ) );
          halos.resize( num_tree_halos[ii] );
          file.read( (char*)halos.data(), halos.size()*sizeof(galaxy_type) );
          ASSERT( !file.fail() );
+
+	 // Check number of halos in this tree.
+	 ASSERT( num_tree_halos[ii], "Invalid number of halos in tree." );
 
          // Need to represent the parents of each galaxy, and also
          // the bases of each tree. We also need to store the FOF
@@ -181,9 +199,17 @@ main( int argc,
             ASSERT( halos[jj].type >= 0 && halos[jj].type <= 2,
                     "Bad galaxy type." );
 
-            // All snapshot numbers must be <= 63.
-            ASSERT( halos[jj].snap <= 63,
+            // All snapshot numbers must be < specified value.
+            ASSERT( halos[jj].snap < num_snapshots,
                     "Bad snapshot number." );
+
+	    // Check positions.
+	    ASSERT( halos[jj].pos[0] >= 0.0 && halos[jj].pos[0] <= box_size,
+		    "Bad position value." );
+	    ASSERT( halos[jj].pos[1] >= 0.0 && halos[jj].pos[1] <= box_size,
+		    "Bad position value." );
+	    ASSERT( halos[jj].pos[2] >= 0.0 && halos[jj].pos[2] <= box_size,
+		    "Bad position value." );
 
             // Add parent information.
             if( halos[jj].descendant != -1 )

@@ -13,9 +13,13 @@ from tao.models import TaoUser
 
 from tao.models import Job, Simulation, GalaxyModel, DataSet, DataSetProperty, StellarModel, Snapshot, BandPassFilter, DustModel, GlobalParameter
 
-for model in (Simulation, Job, GalaxyModel, DataSetProperty, StellarModel, BandPassFilter, DustModel, GlobalParameter):
+for model in (Job, GalaxyModel, DataSetProperty, StellarModel, BandPassFilter, DustModel, GlobalParameter):
     admin.site.register(model)
 
+class SimulationAdmin(admin.ModelAdmin):
+    list_display = ('name', 'order', 'box_size_with_units')
+
+admin.site.register(Simulation, SimulationAdmin)
 
 class DataSetPropertyInline(admin.TabularInline):
     """

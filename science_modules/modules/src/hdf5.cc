@@ -6,13 +6,15 @@ using namespace hpc;
 namespace tao {
 
    module*
-   hdf5::factory( const string& name )
+   hdf5::factory( const string& name,
+		  pugi::xml_node base )
    {
-      return new hdf5( name );
+      return new hdf5( name, base );
    }
 
-   hdf5::hdf5( const string& name )
-      : module( name ),
+   hdf5::hdf5( const string& name,
+	       pugi::xml_node base )
+      : module( name, base ),
 	_chunk_size( 100 ),
 	_ready( false ),
 	_records( 0 )
@@ -27,14 +29,13 @@ namespace tao {
    ///
    ///
    void
-   hdf5::initialise( const options::xml_dict& dict,
-		     optional<const string&> prefix )
+   hdf5::initialise( const options::xml_dict& global_dict )
    {
       LOG_ENTER();
 
       // Get our information.
-      _fn = dict.get<hpc::string>( prefix.get()+":filename" ) + string( "." ) + to_string( mpi::comm::world.rank() );
-      _fields = dict.get_list<hpc::string>( prefix.get()+":fields" );
+      _fn = global_dict.get<string>( "outputdir" ) + "/" + _dict.get<string>( "filename" ) + "." + mpi::rank_string();
+      _fields = _dict.get_list<string>( "fields" );
 
       // Open the file.
       open();

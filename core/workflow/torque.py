@@ -42,14 +42,18 @@ class TorqueInterface(object):
         self.DefaultParams = {'nodes': 1,'ppn': 1,
                               'wt_hours': 48,'wt_minutes': 0,'wt_seconds': 0}
 
-    def SetJobParams(self,UserName,JobID,nodes,ppn,path,BasicSettingPath,ParamXMLName):    
+    def SetJobParams(self,UserName,JobID,nodes,ppn,path,outputpath,BasicSettingPath,ParamXMLName,SubJobIndex):    
             
         self.DefaultParams['executable'] = self.Options['Torque:ExecutableName']
         self.DefaultParams['name']='tao_'+UserName[:4]+'_'+str(JobID)
         self.DefaultParams['nodes'] = nodes        
         self.DefaultParams['ppn'] = ppn
+        self.DefaultParams['subjobindex'] = SubJobIndex
         self.DefaultParams['path'] = path+"/"+ParamXMLName
         self.DefaultParams['basicsettingpath'] = BasicSettingPath
+        self.DefaultParams['outputpath'] = outputpath
+        self.DefaultParams['MergeScriptName'] = self.Options['Torque:MergeScriptName']
+        
         
 
     ##
@@ -58,8 +62,8 @@ class TorqueInterface(object):
     ## @param[IN]  params  Dictionary of parameters.
     ## @param[IN]  path    Where to write PBS script.
     ##
-    def WritePBSScriptFile(self,UserName,JobID, nodes,ppn, path,BasicSettingPath,ParamXMLName,SubJobIndex):
-        self.SetJobParams(UserName, JobID,nodes, ppn,path,BasicSettingPath,ParamXMLName)
+    def WritePBSScriptFile(self,UserName,JobID, nodes,ppn, path,outputpath,BasicSettingPath,ParamXMLName,SubJobIndex):
+        self.SetJobParams(UserName, JobID,nodes, ppn,path,outputpath,BasicSettingPath,ParamXMLName,SubJobIndex)
         FileName = os.path.join(path, self.ScriptFileName+str(SubJobIndex))
         ##
         self.dbaseobj.AddNewEvent(JobID,EnumerationLookup.EventType.PBSEvent,"Adding New Job to PBS, Script Name="+self.ScriptFileName+str(SubJobIndex))
@@ -72,13 +76,13 @@ class TorqueInterface(object):
             #PBS -l walltime=%(wt_hours)02d:%(wt_minutes)02d:%(wt_seconds)02d
             #PBS -d .
             source /usr/local/modules/init/tcsh
-            module load boost gsl hdf5/x86_64/gnu/1.8.9-openmpi-psm postgresql
-            module load cmake/x86_64/gnu/2.8.8
+            module load boost gsl hdf5/x86_64/gnu/1.8.9-openmpi-psm postgresql            
             module load cfitsio/x86_64/gnu/3.290
-
-            setenv PATH /lustre/projects/p014_swin/programs/ScienceModulesBackup/bin:$PATH
-            setenv LD_LIBRARY_PATH /lustre/projects/p014_swin/programs/ScienceModulesBackup/lib:/lustre/projects/p014_swin/programs/ScienceModulesBackup/helperlib:$LD_LIBRARY_PATH
+            setenv PSM_SHAREDCONTEXTS_MAX %(ppn)d
+            setenv PATH /lustre/projects/p014_swin/programs/ScienceModules/bin:$PATH
+            setenv LD_LIBRARY_PATH /lustre/projects/p014_swin/programs/ScienceModules/lib:/lustre/projects/p014_swin/programs/ScienceModules/helperlib:$LD_LIBRARY_PATH
             mpiexec %(executable)s %(path)s %(basicsettingpath)s
+            %(MergeScriptName)s %(outputpath)s %(subjobindex)d
             '''%self.DefaultParams)
         return FileName
 
@@ -88,12 +92,18 @@ class TorqueInterface(object):
     ## @param[IN]  params  Parameter dictionary.
     ## @returns PBS job identifier.
     ##
-    def Submit(self,UserName,JobID,path,ParamXMLName,SubJobIndex,nodes=1,ppn=1):
+    def Submit(self,UserName,JobID,path,outputpath,ParamXMLName,SubJobIndex):
         BasicSettingPath=self.Options['Torque:BasicSettingsPath']
-        ScriptFileName = self.WritePBSScriptFile(UserName,JobID, nodes,ppn, path,BasicSettingPath,ParamXMLName,SubJobIndex)
+        
+        nodes=int(self.Options['Torque:Nodes'])        
+        ppn=int(self.Options['Torque:ProcessorNode'])
+        queuename=self.Options['Torque:JobsQueue']
         
         
-        stdout = subprocess.check_output(shlex.split('ssh g2 \"cd %s; qsub -q tao %s\"'%(path.encode(locale.getpreferredencoding()), ScriptFileName.encode(locale.getpreferredencoding()))))
+        ScriptFileName = self.WritePBSScriptFile(UserName,JobID, nodes,ppn, path,outputpath,BasicSettingPath,ParamXMLName,SubJobIndex)
+        
+        
+        stdout = subprocess.check_output(shlex.split('ssh g2 \"cd %s; qsub -q %s %s\"'%(path.encode(locale.getpreferredencoding()), queuename.encode(locale.getpreferredencoding()), ScriptFileName.encode(locale.getpreferredencoding()))))
         pbs_id = stdout[:-1] # remove trailing \n
         
         return pbs_id

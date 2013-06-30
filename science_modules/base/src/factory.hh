@@ -18,7 +18,8 @@ namespace tao {
    {
    public:
 
-      typedef module* (*factory_create_type)( const string& name );
+      typedef module* (*factory_create_type)( const string& name, 
+					      pugi::xml_node base );
       typedef list<module*>::iterator iterator;
 
    public:
@@ -33,7 +34,8 @@ namespace tao {
 
       module&
       create_module( const string& name,
-                     const string& inst_name = string() );
+                     const string& inst_name = string(),
+		     pugi::xml_node base = NULL );
 
       iterator
       begin();

@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.test.utils import override_settings
 
+from tao.forms import FormsGraph
 from tao.models import Job, BandPassFilter, Simulation
 from tao.tests import helper
 from tao.tests.integration_tests.helper import LiveServerTest
@@ -99,10 +100,17 @@ class JobTest(LiveServerTest):
             })
         xml_parameters.update({
             'ssp_name': self.sed.name,
-            'band_pass_filter_label': self.band_pass_filters[0].label,
+            'band_pass_filter_label': self.band_pass_filters[0].label + ' (Apparent)',
             'band_pass_filter_id': self.band_pass_filters[0].filter_id,
-            'band_pass_filter_name': os.path.splitext(self.band_pass_filters[0].filter_id)[0],
+            'band_pass_filter_name': self.band_pass_filters[0].filter_id,
             'dust_model_name': self.dust.name,
+            })
+        xml_parameters.update({
+            'light_cone_id': FormsGraph.LIGHT_CONE_ID,
+            'csv_dump_id': FormsGraph.OUTPUT_ID,
+            'bandpass_filter_id': FormsGraph.BANDPASS_FILTER_ID,
+            'sed_id': FormsGraph.SED_ID,
+            'dust_id': FormsGraph.DUST_ID,
             })
         return light_cone_xml(xml_parameters)
 
@@ -125,10 +133,11 @@ class JobTest(LiveServerTest):
         self.assert_summary_field_correctly_shown(u"1000000 \u2264 %s (%s)" % (self.filter.label, self.filter.units), 'record_filter', 'record_filter')
 
         band_pass_filters = BandPassFilter.objects.all()
-        self.assert_summary_field_correctly_shown(str(len(band_pass_filters)) + ' filters selected', 'sed', 'band_pass_filters')
+        self.wait(2)
+        self.assert_summary_field_correctly_shown('1 filter selected', 'sed', 'band_pass_filters')
         self.click('expand_band_pass_filters') # this click doesn't work, it just grabs the focus
         self.click('expand_band_pass_filters') # need a second call to actually do the click
-        self.assert_summary_field_correctly_shown('\n'.join([band_pass_filter.label for band_pass_filter in band_pass_filters]), 'sed', 'band_pass_filters_list')
+        self.assert_summary_field_correctly_shown(band_pass_filters[0].label + ' (Apparent)', 'sed', 'band_pass_filters_list')
 
     def test_job_with_files_downloads(self):
         self.login(self.username, self.password)
@@ -230,51 +239,7 @@ class JobTest(LiveServerTest):
         self.visit('view_job', completed_job.id)
 
         self.assert_page_has_content('Download zip file')
-        
-    @override_settings(MAX_DOWNLOAD_SIZE=40)
-    def test_large_zip_file_not_displayed(self):
-        self.login(self.username, self.password)
-        parameters = self.make_xml_parameters()
-        completed_job = JobFactory.create(user=self.user, status=Job.COMPLETED, output_path=self.output_paths[1], parameters=parameters)
-        self.visit('view_job', completed_job.id)
-        
-        self.assert_page_does_not_contain('Download zip file')
-        self.assert_page_has_content('Zip file exceeds maximum download size.')
-    
-    @override_settings(MAX_DOWNLOAD_SIZE=10)
-    def test_large_file_not_downloadable(self):
-        """ Job output files larger than the download limit gets displayed, but are not downloadable.
-        """
-        self.login(self.username, self.password)
-        parameters = self.make_xml_parameters()
-        large_completed_job = JobFactory.create(user=self.user, status=Job.COMPLETED, output_path=self.output_paths[1], parameters=parameters)
-        self.visit('view_job', large_completed_job.id)
-        
-        for file_name in self.file_names_to_contents2.keys():
-            file_size = helper.get_file_size(self.dir_paths[1], file_name)
-            print file_name + " (" + file_size + ". File size exceeds download limit.)"
-            self.assert_page_has_content(file_name + " (" + file_size + ". File size exceeds download limit.)")
 
-        for file_name in self.file_names_to_contents2.keys():
-            self.visit('get_file', large_completed_job.id, file_name)
-            self.assert_page_has_content('Forbidden')
-
-    @override_settings(MAX_DOWNLOAD_SIZE=10)
-    def test_small_file_downloads(self):
-        self.login(self.username, self.password)
-        parameters = self.make_xml_parameters()
-        small_completed_job = JobFactory.create(user=self.user, status=Job.COMPLETED, output_path=self.output_paths[0], parameters=parameters)
-        self.visit('view_job', small_completed_job.id)
-        
-        for file_name in self.file_names_to_contents.keys():
-            self.assert_page_has_content(file_name)
-            self.assert_page_does_not_contain("(File size exceeds download limit.)")
-        
-        for file_name in self.file_names_to_contents.keys():
-            self.visit('get_file', small_completed_job.id, file_name)
-            download_path = os.path.join(self.DOWNLOAD_DIRECTORY, os.path.basename(file_name.replace('/','_')))
-            self.assertTrue(os.path.exists(download_path))
-        
     def _extract_zipfile_to_dir(self, download_path, dirname):
         fullpathhandle = open(download_path, 'r')
         zipfile_obj = zipfile.ZipFile(fullpathhandle)

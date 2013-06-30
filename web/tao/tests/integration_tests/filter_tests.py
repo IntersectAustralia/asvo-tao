@@ -41,6 +41,7 @@ class FilterTests(LiveServerMGFTest):
         self.login(username, password)
 
         self.visit('mock_galaxy_factory')
+        self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
         self.select_dark_matter_simulation(simulation1)
         self.select_galaxy_model(simulation1.galaxymodel_set.all().order_by('id')[0])
 
@@ -114,14 +115,14 @@ class FilterTests(LiveServerMGFTest):
         self.click(self.sed('apply_sed'))
         self.click(self.sed_2select('op_add_all'))
         self.click('tao-tabs-' + MODULE_INDICES['record_filter'])
-        self.select_record_filter(self.bp_filters[1])
+        self.select_record_filter(self.bp_filters[1], 'apparent')
         self.fill_in_fields({'max': '12.3', 'min': ''}, id_wrap=self.rf_id)
 
         self.submit_mgf_form()
 
         self.assert_errors_on_field(True, self.lc_id('redshift_min'))
         self.click('tao-tabs-' + MODULE_INDICES['record_filter'])
-        self.assertEqual(self.bp_filters[1].label, self.get_selected_option_text(self.rf_id('filter')))
+        self.assertEqual(self.bp_filters[1].label + ' (Apparent)', self.get_selected_option_text(self.rf_id('filter')))
         self.assert_attribute_equals('value', {self.rf_id('min'):'',self.rf_id('max'):'12.3'})
 
     def test_filter_options_and_is_filter(self):

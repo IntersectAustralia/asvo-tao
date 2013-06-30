@@ -5,8 +5,13 @@ tao.settings
 
 Common Django settings
 """
+import sys
+from os.path import abspath, dirname, join, split
 
 # Django settings for tao project.
+
+PROJECT_PATH = abspath(split(__file__)[0])
+PROJECT_DIR = dirname(PROJECT_PATH)
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -215,21 +220,33 @@ API_ALLOWED_IPS = (
                    '127.0.0.1',
                    )
 
-MODULES = (
-    'light_cone',
-    'sed',
-)
+INITIAL_JOB_STATUS = 'HELD'
 
-INSTALLED_APPS += tuple(('taoui_' + module_name for module_name in MODULES))
+#
+# To avoid changing the directory structure until after we have confirmed
+# the repository structure and replacing buildout with pip,
+# set up the path and installed apps for the UI modules
+#
+UI_DIR = join(dirname(PROJECT_DIR), 'ui')
+MODULES_PATHS = (
+    ('light_cone', 'light-cone'),
+    ('sed', 'sed')
+)
+sys.path.extend([join(UI_DIR, module[1]) for module in MODULES_PATHS])
+INSTALLED_APPS += tuple(['taoui_' + module[0] for module in MODULES_PATHS])
+MODULES = tuple([module[0] for module in MODULES_PATHS])
+#INSTALLED_APPS += tuple(('taoui_' + module_name for module_name in MODULES))
 
 OUTPUT_FORMATS = [
     {'value':'csv', 'text':'CSV (Text)', 'extension':'csv'},
     {'value':'hdf5', 'text':'HDF5', 'extension':'hdf5'},
+    {'value': 'fits', 'text': 'FITS', 'extension': 'fits'},
+    {'value': 'votable', 'text': 'VOTable', 'extension': 'xml'},
 ]
 
 MODULE_INDICES = {'light_cone': '1', 'sed': '2', 'record_filter': '3', 'output_format': '4'}
 
-TAO_VERSION = '0.20.1'
+TAO_VERSION = '0.22.1'
 
 AAF_DS_URL = 'https://ds.test.aaf.edu.au/discovery/DS'
 AAF_APP_ID = 'https://asvo-aff.intersect.org.au/shibboleth'

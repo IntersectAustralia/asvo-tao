@@ -1,11 +1,12 @@
 #ifndef tao_base_module_hh
 #define tao_base_module_hh
 
+#include <pugixml.hpp>
 #include <soci/soci.h>
 #include <libhpc/libhpc.hh>
-#include "galaxy.hh"
 #include <libhpc/options/xml_dict.hh>
-
+#include "galaxy.hh"
+#include "multidb.hh"
 
 namespace tao {
    using namespace hpc;
@@ -18,7 +19,8 @@ namespace tao {
 
    public:
 
-      module( const string& name = string() );
+      module( const string& name = string(),
+	      pugi::xml_node base = pugi::xml_node() );
 
       virtual
       ~module();
@@ -32,16 +34,9 @@ namespace tao {
       void
       process( unsigned long long iteration );
 
-
-
       virtual
       void
-      initialise( const options::xml_dict& dict,
-                  optional<const string&> prefix = optional<const string&>() ) = 0;
-
-      void
-      initialise( const options::xml_dict& dict,
-                  const char* prefix );
+      initialise( const options::xml_dict& global_dict );
 
       virtual
       void
@@ -65,6 +60,12 @@ namespace tao {
       const string&
       name() const;
 
+      const options::xml_dict&
+      local_dict() const;
+
+      pugi::xml_node
+      local_xml_node();
+
       double
       time() const;
 
@@ -74,7 +75,7 @@ namespace tao {
    protected:
 
       void
-      _read_db_options( const options::xml_dict& dict );
+      _read_db_options( const options::xml_dict& global_dict );
 
       void
       _db_connect();
@@ -92,8 +93,15 @@ namespace tao {
       list<module*> _parents;
       bool _complete;
 
+      pugi::xml_node _base;
+      const options::xml_dict _dict;
+      const options::xml_dict* _global_dict;
       bool _connected;
+#ifdef MULTIDB
+      multidb* _db;
+#else
       soci::session _sql;
+#endif
       unsigned _num_restart_its;
       unsigned _cur_restart_it;
       string _dbtype, _dbname, _dbhost, _dbport, _dbuser, _dbpass;

@@ -14,19 +14,20 @@ namespace tao {
    calc_age_func( double x,
 		  void* param )
    {
-      // return 1.0/sqrt( omega/x + (1.0 - omega - omega_lambda) + omega_lambda*x*x );
-      return 1.0/sqrt( 0.25/x + (1.0 - 0.25 - 0.75) + 0.75*x*x );
+      return 1.0/sqrt( _omega/x + (1.0 - _omega - _omega_lambda) + _omega_lambda*x*x );
    }
 
    // Factory function used to create a new SED.
    module*
-   sed::factory( const string& name )
+   sed::factory( const string& name,
+		 pugi::xml_node base )
    {
-      return new sed( name );
+      return new sed( name, base );
    }
 
-   sed::sed( const string& name )
-      : module( name ),
+   sed::sed( const string& name,
+	     pugi::xml_node base )
+      : module( name, base ),
         _cur_tree_id( -1 ),
 	_omega( 0.25 ),
 	_omega_lambda( 0.75 ),
@@ -49,12 +50,12 @@ namespace tao {
    /// Initialise the module.
    ///
    void
-   sed::initialise( const options::xml_dict& dict,
-                    optional<const string&> prefix )
+   sed::initialise( const options::xml_dict& global_dict )
    {
       LOG_ENTER();
 
-      _read_options( dict, prefix );
+      module::initialise( global_dict );
+      _read_options( global_dict );
 
       // Allocate for output spectra.
       _disk_spectra.reallocate( _num_spectra, _batch_size );
@@ -350,42 +351,40 @@ namespace tao {
 		   real_type z1 )
    {
       LOG_ENTER();
+      // real_type hubble = 3.2407789e-18;  // in h/sec (from SAGE)
+      // real_type unit_time = 3.08568e+24/1e5; // in seconds (from SAGE)
+      // real_type hub_fac = hubble*unit_time; // from SAGE
+      real_type hub_fac = _h;
       real_type z = z1 - z0;
       real_type res, abserr;
-      gsl_integration_qag( &_func, 1.0/(z + 1.0), 1.0, 1.0/_h, 1e-8,
+      gsl_integration_qag( &_func, 1.0/(z + 1.0), 1.0, 1.0/hub_fac, 1e-8,
 			   1000, GSL_INTEG_GAUSS21, _work, &res, &abserr );
-      res = (1.0/_h)*res;
+      res = 1.0/hub_fac*res;
       LOGDLN( "Calculated age as ", res, "." );
       LOG_EXIT();
       return res;
    }
 
    void
-   sed::_read_options( const options::xml_dict& dict,
-                       optional<const string&> prefix )
+   sed::_read_options( const options::xml_dict& global_dict )
    {
-      // Get the sub dictionary, if it exists.
-      //const options::dictionary& sub = prefix ? dict.sub( *prefix ) : dict;
-
-      // Extract database details.
-      _read_db_options( dict );
-
-      // Connect to the database.
+      // Extract database details and connect.
+      _read_db_options( global_dict );
       _db_connect();
 
       // Try to read H0 (and hence h) from the lightcone module.
-      _h = dict.get<real_type>( "workflow:light-cone:H0",73.0 )/100.0;
+      _h = global_dict.get<real_type>( "workflow:light-cone:H0",73.0 )/100.0;
       LOGDLN( "Read h as: ", _h );
 
       // Extract the counts.
-      _num_spectra = dict.get<unsigned>( prefix.get()+":num-spectra",1221 );
-      _num_metals = dict.get<unsigned>( prefix.get()+":num-metals",7 );
+      _num_spectra = _dict.get<unsigned>( "num-spectra",1221 );
+      _num_metals = _dict.get<unsigned>( "num-metals",7 );
       LOGDLN( "Number of times: ", _bin_ages.size() );
       LOGDLN( "Number of spectra: ", _num_spectra );
       LOGDLN( "Number of metals: ", _num_metals );
 
       // Get the SSP filename.
-      _read_ssp( dict.get<string>( prefix.get()+":single-stellar-population-model" ) );
+      _read_ssp( _dict.get<string>( "single-stellar-population-model" ) );
 
       // Prepare the snapshot ages.
       _setup_snap_ages();
@@ -449,15 +448,24 @@ namespace tao {
       // Find number of snapshots and resize the containers.
       unsigned num_snaps;
       _db_timer.start();
+#ifdef MULTIDB
+      (*_db)["tree_1"] << "SELECT COUNT(*) FROM snap_redshift", soci::into( num_snaps );
+#else
       _sql << "SELECT COUNT(*) FROM snap_redshift", soci::into( num_snaps );
+#endif
       _db_timer.stop();
       LOGDLN( num_snaps, " snapshots." );
       _snap_ages.reallocate( num_snaps );
 
       // Read meta data.
       _db_timer.start();
+#ifdef MULTIDB
+      (*_db)["tree_1"] << "SELECT redshift FROM snap_redshift ORDER BY snapnum",
+         soci::into( (std::vector<real_type>&)_snap_ages );
+#else
       _sql << "SELECT redshift FROM snap_redshift ORDER BY snapnum",
          soci::into( (std::vector<real_type>&)_snap_ages );
+#endif
       _db_timer.stop();
       LOGDLN( "Redshifts: ", _snap_ages );
 
@@ -489,8 +497,13 @@ namespace tao {
       // Extract number of records in this tree.
       unsigned tree_size;
       _db_timer.start();
+#ifdef MULTIDB
+      (*_db)[table] << "SELECT COUNT(*) FROM " + table + " WHERE globaltreeid = :id",
+	 soci::into( tree_size ), soci::use( tree_id );
+#else
       _sql << "SELECT COUNT(*) FROM " + table + " WHERE globaltreeid = :id",
    	 soci::into( tree_size ), soci::use( tree_id );
+#endif
       _db_timer.stop();
       LOGDLN( "Have ", tree_size, " galaxies to load." );
 
@@ -507,11 +520,19 @@ namespace tao {
 	 " WHERE globaltreeid = :id"
 	 " ORDER BY localgalaxyid";
       _db_timer.start();
+#ifdef MULTIDB
+      (*_db)[table] << query, soci::into( (std::vector<int>&)_descs ),
+	 soci::into( (std::vector<double>&)_metals ),
+	 soci::into( (std::vector<double>&)_sfrs ), soci::into( (std::vector<double>&)_bulge_sfrs ),
+	 soci::into( (std::vector<int>&)_snaps ),
+	 soci::use( tree_id );
+#else
       _sql << query, soci::into( (std::vector<int>&)_descs ),
 	 soci::into( (std::vector<double>&)_metals ),
 	 soci::into( (std::vector<double>&)_sfrs ), soci::into( (std::vector<double>&)_bulge_sfrs ),
 	 soci::into( (std::vector<int>&)_snaps ),
 	 soci::use( tree_id );
+#endif
       _db_timer.stop();
       LOGDLN( "Descendant: ", _descs );
       LOGDLN( "Star formation rates: ", _sfrs );
