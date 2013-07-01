@@ -25,13 +25,13 @@ class TaoUser(auth_models.AbstractUser):
 
     objects = UserManager()
 
-    institution = models.CharField(max_length=100)
-    scientific_interests = models.CharField(max_length=500)
-    title = models.CharField(max_length=5)
+    institution = models.CharField(max_length=100, null=True)
+    scientific_interests = models.CharField(max_length=500, null=True)
+    title = models.CharField(max_length=5, null=True)
     rejected = models.BooleanField(default=False)
-    aaf_shared_token = models.CharField(max_length=64,blank=True,default='')
+    aaf_shared_token = models.CharField(max_length=64, null=True, blank=True, default='')
     account_registration_status = models.CharField(max_length=3, blank=False, default=RS_NA)
-    account_registration_reason = models.TextField(blank=True, default='')
+    account_registration_reason = models.TextField(null=True, blank=True, default='')
     account_registration_date = models.DateTimeField(null=True)
 
     def display_name(self):

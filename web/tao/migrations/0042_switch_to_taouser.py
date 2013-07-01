@@ -32,14 +32,6 @@ class Migration(SchemaMigration):
                 ('is_staff', self.gf('django.db.models.fields.BooleanField')(default=False)),
                 ('is_active', self.gf('django.db.models.fields.BooleanField')(default=False)),
                 ('date_joined', self.gf('django.db.models.fields.DateTimeField')()),
-                ('institution', self.gf('django.db.models.fields.CharField')(max_length=100)),
-                ('scientific_interests', self.gf('django.db.models.fields.CharField')(max_length=500)),
-                ('title', self.gf('django.db.models.fields.CharField')(max_length=5)),
-                ('rejected', self.gf('django.db.models.fields.BooleanField')(default=False)),
-                ('aaf_shared_token', self.gf('django.db.models.fields.CharField')(max_length=64,blank=True,default='')),
-                ('account_registration_status', self.gf('django.db.models.fields.CharField')(max_length=3, blank=False, default='NA')),
-                ('account_registration_reason', self.gf('django.db.models.fields.TextField')(blank=True, default='')),
-                ('account_registration_date', self.gf('django.db.models.fields.DateTimeField')(null=True))
                 ))
             db.create_unique('tao_taouser', ['username'])
 

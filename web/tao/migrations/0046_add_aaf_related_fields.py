@@ -10,7 +10,7 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Adding field 'TaoUser.aaf_shared_token'
         db.add_column(u'tao_taouser', 'aaf_shared_token',
-                      self.gf('django.db.models.fields.CharField')(default='', max_length=64, blank=True),
+                      self.gf('django.db.models.fields.CharField')(default='', max_length=64, null=True, blank=True),
                       keep_default=False)
 
         # Adding field 'TaoUser.account_registration_status'
@@ -20,7 +20,7 @@ class Migration(SchemaMigration):
 
         # Adding field 'TaoUser.account_registration_reason'
         db.add_column(u'tao_taouser', 'account_registration_reason',
-                      self.gf('django.db.models.fields.TextField')(default='', blank=True),
+                      self.gf('django.db.models.fields.TextField')(default='', null=True, blank=True),
                       keep_default=False)
 
         # Adding field 'TaoUser.account_registration_date'
