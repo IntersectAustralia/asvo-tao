@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth import get_user_model
 
 from django.core.urlresolvers import reverse
 
@@ -18,7 +19,8 @@ def index(request):
     if request.method == 'POST':
         ui_holder = UIModulesHolder(UIModulesHolder.POST, request.POST)
         if ui_holder.validate():
-            user = models.User.objects.get(username=request.user)
+            UserModel = get_user_model()
+            user = UserModel.objects.get(username=request.user.username)
             workflow.save(user, ui_holder)
             # initial_job_status_obj = models.GlobalParameter.objects.get(parameter_name='INITIAL_JOB_STATUS')
             messages.info(request, _("Your job was " + models.initial_job_status().lower() + " successfully."))
