@@ -12,38 +12,60 @@ from tao.mail import send_mail
 
 import os
 
-class UserProfile(models.Model):
-    user = models.OneToOneField(auth_models.User)
+class UserManager(auth_models.UserManager):
+    def admin_emails(self):
+        return [x[0] for x in TaoUser.objects.filter(is_active=True, is_staff=True).values_list('email')]
+    
+class TaoUser(auth_models.AbstractUser):
+    RS_NA = 'NA'
+    RS_EMPTY = 'EMP'
+    RS_PENDING = 'PEN'
+    RS_APPROVED = 'APR'
+    RS_REJECTED = 'REJ'
+
+    objects = UserManager()
 
     institution = models.CharField(max_length=100)
     scientific_interests = models.CharField(max_length=500)
     title = models.CharField(max_length=5)
     rejected = models.BooleanField(default=False)
+    aaf_shared_token = models.CharField(max_length=64,blank=True,default='')
+    account_registration_status = models.CharField(max_length=3, blank=False, default=RS_NA)
+    account_registration_reason = models.TextField(blank=True, default='')
+    account_registration_date = models.DateTimeField(null=True)
 
+    def display_name(self):
+        if self.aaf_shared_token is not None and len(self.aaf_shared_token)>0:
+            return self.first_name + ' (via AAF)'
+        else:
+            return self.username
 
-class UserManager(auth_models.UserManager):
-    def admin_emails(self):
-        return [x[0] for x in User.objects.filter(is_active=True, is_staff=True).values_list('email')]
-    
-    
-class User(auth_models.User):
-    """
-        Wrapper to make methods on user_profile one call
-    """
-    objects = UserManager()
-    def title(self):
-        # TODO This probably makes too many SQL queries by default?
-        return self.get_profile().title
+    def display_registration_status(self):
+        messages = {
+            TaoUser.RS_NA: 'Not Applicable',
+            TaoUser.RS_EMPTY: 'No registration form',
+            TaoUser.RS_PENDING: 'Pending approval',
+            TaoUser.RS_APPROVED: 'Account approved',
+            TaoUser.RS_REJECTED: 'Registration rejected',
+            }
+        return messages[self.account_registration_status]
 
-    class Meta:
-        proxy = True
-    
+    def is_aaf(self):
+        return self.account_registration_status in [TaoUser.RS_EMPTY, TaoUser.RS_APPROVED, TaoUser.RS_PENDING, TaoUser.RS_REJECTED]
+
+    def is_rejected(self):
+        return self.account_registration_status == TaoUser.RS_REJECTED
+
+    def __unicode__(self):
+        return "(%d) %s, %s" % (self.id, self.username, self.account_registration_status)
+
 class Simulation(models.Model):        
 
     name = models.CharField(max_length=100, unique=True)
     box_size_units = models.CharField(max_length=10, default='Mpc')
     box_size = models.DecimalField(max_digits=10, decimal_places=3)
     details = models.TextField(default='')
+    order = models.IntegerField(default='0')
 
     def __unicode__(self):
         return self.name
@@ -58,6 +80,8 @@ class Simulation(models.Model):
 
     def box_size_with_units(self):
         return "%s %s" % (self.box_size, self.box_size_units)
+
+    box_size_with_units.short_description = 'Box size'
 
 class GalaxyModel(models.Model):
 
@@ -163,7 +187,17 @@ class StellarModel(models.Model):
 
     def __unicode__(self):
         return self.name
-    
+
+def initial_job_status():
+    try:
+        obj = GlobalParameter.objects.get(parameter_name='INITIAL_JOB_STATUS')
+        return obj.parameter_value.strip()
+    except GlobalParameter.DoesNotExist:
+        try:
+            return getattr(settings,'INITIAL_JOB_STATUS')
+        except AttributeError:
+            return 'HELD'
+
 class Job(models.Model):
     SUBMITTED = 'SUBMITTED'
     IN_PROGRESS = 'IN_PROGRESS'
@@ -180,11 +214,11 @@ class Job(models.Model):
         (ERROR, 'Error'),
     )
 
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
     created_time = models.DateTimeField(auto_now_add=True)
     description = models.TextField(max_length=500, default='')
 
-    status = models.CharField(choices=STATUS_CHOICES, default=HELD, max_length=20)
+    status = models.CharField(choices=STATUS_CHOICES, default=initial_job_status, max_length=20)
     parameters = models.TextField(blank=True, max_length=1000000)
     output_path = models.TextField(blank=True)  # without a trailing slash, please
     database = models.CharField(max_length=200)
@@ -218,6 +252,24 @@ class Job(models.Model):
             all_files += [JobFile(job_base_dir, os.path.join(root, filename)) for filename in files]
         return sorted(all_files, key=lambda job_file: job_file.file_name)
 
+    def files_tree(self):
+        if not self.is_completed():
+            raise Exception("can't look at files of job that is not completed")
+
+        job_base_dir = os.path.join(settings.FILES_BASE, self.output_path)
+
+        def traverse(path):
+            for fn in os.listdir(path):
+                child_path = os.path.join(path, fn)
+                if os.path.isdir(child_path):
+                    yield (child_path, traverse(child_path))
+                else:
+                    yield (child_path, None)
+
+        #for data in traverse(job_base_dir):
+        #    yield data
+        return traverse(job_base_dir)
+
     def username(self):
         """ used by api """
         return self.user.username
@@ -229,11 +281,7 @@ class Job(models.Model):
         return self.user.id == user.id
 
     def can_download_zip_file(self):
-        sum_size = 0
-        for file in self.files():
-            file_path = file.file_path 
-            sum_size += os.path.getsize(file_path)
-        return sum_size < settings.MAX_DOWNLOAD_SIZE
+        return True
 
     def save(self, *args, **kwargs):
         super(Job, self).save(*args, **kwargs)
@@ -247,7 +295,7 @@ class JobFile(object):
         self.file_size = os.path.getsize(self.file_path)
     
     def can_be_downloaded(self):
-        return self.file_size <= settings.MAX_DOWNLOAD_SIZE
+        return True
 
     def get_file_size(self):
         size = self.file_size

@@ -54,11 +54,11 @@ public:
       dict.add_option( new options::real( "redshift-min" ), prefix );
       dict.add_option( new options::real( "redshift" ), prefix );
       dict.add_option( new options::real( "query-box-size" ), prefix );
-      dict.add_option( new options::real( "ra-min", 0.0 ), prefix );
-      dict.add_option( new options::real( "ra-max", 90.0 ), prefix );
-      dict.add_option( new options::real( "dec-min", 0.0 ), prefix );
-      dict.add_option( new options::real( "dec-max", 90.0 ), prefix );
-      dict.add_option( new options::real( "h0", 73.0 ), prefix );
+      dict.add_option( new options::real( "ra-min", "ri", 0.0 ), prefix );
+      dict.add_option( new options::real( "ra-max", "rx", 90.0 ), prefix );
+      dict.add_option( new options::real( "dec-min", "di", 0.0 ), prefix );
+      dict.add_option( new options::real( "dec-max", "dx", 90.0 ), prefix );
+      dict.add_option( new options::real( "h0", "h0", 73.0 ), prefix );
       dict.add_option( new options::list<options::string>( "output-fields" ), prefix );
       dict.add_option( new options::integer( "rng-seed" ), prefix );
       dict.add_option( new options::string( "decomposition-method", "tables" ), prefix );
@@ -79,8 +79,8 @@ public:
    void sedsetup_options( options::dictionary& dict, optional<const string&> prefix )
    {
       dict.add_option( new options::string( "single-stellar-population-model" ), prefix );
-      dict.add_option( new options::integer( "num-spectra", 1221 ), prefix );
-      dict.add_option( new options::integer( "num-metals", 7 ), prefix );
+      dict.add_option( new options::integer( "num-spectra", "ns", 1221 ), prefix );
+      dict.add_option( new options::integer( "num-metals", "nm", 7 ), prefix );
    }
 
    bool setUpWorld()

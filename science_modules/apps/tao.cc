@@ -16,7 +16,12 @@ main( int argc,
    int index=XMLFile.find(".xml");
    XMLFile.replace(index,4,"_tao.debug.log");
    LOG_PUSH( new hpc::mpi::logger( XMLFile ) );
-
+#ifdef PREPROCESSING
+   XMLFile=argv[1];
+   index=XMLFile.find(".xml");
+   XMLFile.replace(index,4,"_tao.Profile.log");
+   LOG_PUSH( new hpc::mpi::logger( XMLFile,100 ) );
+#endif
 
    tao::application app( argc, argv );
    app.run();

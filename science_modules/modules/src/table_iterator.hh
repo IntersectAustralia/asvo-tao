@@ -25,26 +25,37 @@ namespace tao {
       typedef const std::string& value_type;
       typedef value_type reference_type;
 
-      table_iterator( soci::session& sql,
-		      real_type box_size,
-		      const array<real_type,3>& box,
-		      const array<real_type,3>& offset,
-		      const array<int,3>& axis,
-		      real_type ra_min,
-		      real_type ra_max,
-		      real_type dec_min,
-		      real_type dec_max,
-		      real_type max_dist )
-	 : _sql( sql ),
-	   _box_size( box_size ),
-	   _box( box ),
-	   _offs( offset ),
-	   _axis( axis ),
-	   _ra_min( to_radians( ra_min ) ),
-	   _ra_max( to_radians( ra_max ) ),
-	   _dec_min( to_radians( dec_min ) ),
-	   _dec_max( to_radians( dec_max ) ),
-	   _max_dist( max_dist )
+      table_iterator(
+#ifdef MULTIDB
+	 multidb& db,
+#else
+	 soci::session& sql,
+#endif
+	 real_type box_size,
+	 const array<real_type,3>& box,
+	 const array<real_type,3>& offset,
+	 const array<int,3>& axis,
+	 real_type ra_min,
+	 real_type ra_max,
+	 real_type dec_min,
+	 real_type dec_max,
+	 real_type max_dist
+	 )
+	 :
+#ifdef MULTIDB
+	 _db( db ),
+#else
+	 _sql( sql ),
+#endif
+	 _box_size( box_size ),
+	 _box( box ),
+	 _offs( offset ),
+	 _axis( axis ),
+	 _ra_min( to_radians( ra_min ) ),
+	 _ra_max( to_radians( ra_max ) ),
+	 _dec_min( to_radians( dec_min ) ),
+	 _dec_max( to_radians( dec_max ) ),
+	 _max_dist( max_dist )
       {
 	 vector<real_type> perms( 9 );
 	 for( unsigned ii = 0; ii < 3; ++ii )
@@ -126,7 +137,11 @@ namespace tao {
 	 std::vector<std::string> names;
 	 {
 	    int size;
+#ifdef MULTIDB
+	    _db["tree_1"] << "SELECT COUNT(*) FROM summary", soci::into( size );
+#else
 	    _sql << "SELECT COUNT(*) FROM summary", soci::into( size );
+#endif
 	    minx.resize( size );
 	    miny.resize( size );
 	    minz.resize( size );
@@ -135,37 +150,22 @@ namespace tao {
 	    maxz.resize( size );
 	    names.resize( size );
 	 }
+#ifdef MULTIDB
+	 _db["tree_1"] << "SELECT minx, miny, minz, maxx, maxy, maxz, tablename FROM summary",
+	    soci::into( minx ), soci::into( miny ), soci::into( minz ),
+	    soci::into( maxx ), soci::into( maxy ), soci::into( maxz ),
+	    soci::into( names );
+#else
 	 _sql << "SELECT minx, miny, minz, maxx, maxy, maxz, tablename FROM summary",
 	    soci::into( minx ), soci::into( miny ), soci::into( minz ),
 	    soci::into( maxx ), soci::into( maxy ), soci::into( maxz ),
 	    soci::into( names );
+#endif
 
 	 set<string> table_names;
 	 for( unsigned ii = 0; ii < names.size(); ++ii )
 	 {
 	    array<real_type,3> min( minx[ii], miny[ii], minz[ii] ), max( maxx[ii], maxy[ii], maxz[ii] );
-
-	    // // Rotate.
-	    // for( unsigned ii = 0; ii < 3; ++ii )
-	    // {
-	    //    min[ii] += _offs[ii];
-	    //    max[ii] += _offs[ii];
-	    // }
-
-	    // // Offset this box.
-	    // for( unsigned ii = 0; ii < 3; ++ii )
-	    // {
-	    //    min[ii] += _offs[ii];
-	    //    max[ii] += _offs[ii];
-	    // }
-
-	    // // Check if this box has at least any part inside the
-	    // // walls.
-	    // if( _check_overlap( min, max ) )
-	    // {
-	    //    _table_names.push_back( names[ii] );
-	    //    continue;
-	    // }
 
 	    // Apply each periodic side to the box and check.
 	    for( const auto& wall : _walls )
@@ -387,7 +387,11 @@ namespace tao {
       vector<string> _table_names;
       vector<string>::const_iterator _it;
 
+#ifdef MULTIDB
+      multidb& _db;
+#else
       soci::session& _sql;
+#endif
       real_type _box_size;
       array<real_type,3> _box;
       array<real_type,3> _offs;

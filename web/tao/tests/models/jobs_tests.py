@@ -3,7 +3,6 @@ from django.conf import settings
 from django.test.testcases import TestCase
 
 from tao.models import Job, User
-#from tao.tests import helper
 from tao.tests.support.factories import GlobalParameterFactory
 
 import os
@@ -20,6 +19,11 @@ class JobTestCase(TestCase):
 
     def tearDown(self):
         super(JobTestCase, self).tearDown()
+
+    def test_initial_job_status(self):
+        GlobalParameterFactory(parameter_name='INITIAL_JOB_STATUS', parameter_value='SUBMITTED')
+        job = Job(user=self.user)
+        self.assertEquals('SUBMITTED', job.status)
         
     def test_not_available_unless_completed(self):
         self.jobs = dict((status, Job(status=status, user=self.user)) for (status, _) in Job.STATUS_CHOICES)

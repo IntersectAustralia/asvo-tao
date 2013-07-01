@@ -13,13 +13,15 @@ namespace tao {
 
    // Factory function used to create a new filter module.
    module*
-   filter::factory( const string& name )
+   filter::factory( const string& name,
+                    pugi::xml_node base )
    {
-      return new filter( name );
+      return new filter( name, base );
    }
 
-   filter::filter( const string& name )
-      : module( name )
+   filter::filter( const string& name,
+                   pugi::xml_node base )
+      : module( name, base )
    {
    }
 
@@ -31,12 +33,11 @@ namespace tao {
    /// Initialise the module.
    ///
    void
-   filter::initialise( const options::xml_dict& dict,
-                       optional<const string&> prefix )
+   filter::initialise( const options::xml_dict& global_dict )
    {
       LOG_ENTER();
 
-      _read_options( dict, prefix );
+      _read_options( global_dict );
 
       LOG_EXIT();
    }
@@ -62,12 +63,12 @@ namespace tao {
       // Add values to the galaxy object.
       for( unsigned ii = 0; ii < _filter_names.size(); ++ii )
       {
-	 gal.set_field<real_type>( _filter_names[ii] + "_apparent", _total_app_mags[ii] );
-	 gal.set_field<real_type>( _filter_names[ii] + "_absolute", _total_abs_mags[ii] );
-	 gal.set_field<real_type>( _filter_names[ii] + "_disk_apparent", _disk_app_mags[ii] );
-	 gal.set_field<real_type>( _filter_names[ii] + "_disk_absolute", _disk_abs_mags[ii] );
-	 gal.set_field<real_type>( _filter_names[ii] + "_bulge_apparent", _bulge_app_mags[ii] );
-	 gal.set_field<real_type>( _filter_names[ii] + "_bulge_absolute", _bulge_abs_mags[ii] );
+         gal.set_field<real_type>( _filter_names[ii] + "_apparent", _total_app_mags[ii] );
+         gal.set_field<real_type>( _filter_names[ii] + "_absolute", _total_abs_mags[ii] );
+         gal.set_field<real_type>( _filter_names[ii] + "_disk_apparent", _disk_app_mags[ii] );
+         gal.set_field<real_type>( _filter_names[ii] + "_disk_absolute", _disk_abs_mags[ii] );
+         gal.set_field<real_type>( _filter_names[ii] + "_bulge_apparent", _bulge_app_mags[ii] );
+         gal.set_field<real_type>( _filter_names[ii] + "_bulge_absolute", _bulge_abs_mags[ii] );
       }
       gal.set_field<real_type>( "total_luminosity", _total_lum );
       gal.set_field<real_type>( "disk_luminosity", _disk_lum );
@@ -93,9 +94,11 @@ namespace tao {
          // points.
          LOGDLN( "Using redshift of ", galaxy.values<real_type>( "redshift" )[ii], " to calculate distance." );
          real_type dist = numerics::redshift_to_luminosity_distance( galaxy.values<real_type>( "redshift" )[ii], 1000 );
-         real_type area = log10( 4.0*M_PI ) + 2.0*log10( dist*3.08568025e24 ); // result in cm^2
-         LOGDLN( "Distance: ", dist );
-         LOGDLN( "Log area: ", area );
+	 if( dist < 1e-5 )  // Be careful! If dist is zero (which it can be) then resort to absolute
+	    dist = 1e-5;    // magnitudes.
+	 real_type area = log10( 4.0*M_PI ) + 2.0*log10( dist*3.08568025e24 ); // result in cm^2
+	 LOGDLN( "Distance: ", dist );
+	 LOGDLN( "Log area: ", area );
 
          // Process total, disk and bulge.
          _process_spectra( total_spectra[ii], area, _total_lum[ii], _total_app_mags, _total_abs_mags, ii );
@@ -110,12 +113,15 @@ namespace tao {
    void
    filter::_process_spectra( const vector<real_type>::view& spectra,
                              real_type area,
-			     real_type& luminosity,
+                             real_type& luminosity,
                              fibre<real_type>& apparent_mags,
                              fibre<real_type>& absolute_mags,
-			     unsigned gal_idx )
+                             unsigned gal_idx )
    {
       LOGDLN( "Using spectra of: ", spectra );
+
+      // TODO: Shift this elsewhere to save some time.
+      real_type abs_area = log10( 4.0*M_PI ) + 2.0*log10( (10.0/1e6)*3.08568025e24 ); // result in cm^2
 
       // Prepare the spectra.
       numerics::spline<real_type> spectra_spline;
@@ -134,14 +140,18 @@ namespace tao {
          if( !num::approx( spec_int, 0.0, 1e-12 ) &&
              !num::approx( _filt_int[ii], 0.0, 1e-12 ) )
          {
-            apparent_mags[ii][gal_idx] = -2.5*(log10( spec_int ) - area - log10( _filt_int[ii] )) - 48.6;
-            absolute_mags[ii][gal_idx] = -2.5*(log10( spec_int ) - log10( _filt_int[ii] )) - 48.6;
+	    apparent_mags[ii][gal_idx] = -2.5*(log10( spec_int ) - area - log10( _filt_int[ii] )) - 48.6;
+            absolute_mags[ii][gal_idx] = -2.5*(log10( spec_int ) - abs_area - log10( _filt_int[ii] )) - 48.6;
          }
          else
          {
             apparent_mags[ii][gal_idx] = 0.0;
             absolute_mags[ii][gal_idx] = 0.0;
          }
+
+	 // Make sure these are sane.
+	 ASSERT( apparent_mags[ii][gal_idx] == apparent_mags[ii][gal_idx], "NaN" );
+	 ASSERT( absolute_mags[ii][gal_idx] == absolute_mags[ii][gal_idx], "NaN" );
       }
    }
 
@@ -171,7 +181,7 @@ namespace tao {
    filter::real_type
    filter::_integrate( const numerics::spline<real_type>& spectra,
                        const numerics::spline<real_type>& filter )
-                       
+
    {
       typedef vector<real_type>::view array_type;
       element<array_type> take_first( 0 );
@@ -180,10 +190,10 @@ namespace tao {
       range<real_type> sp_rng( spectra.knots().front()[0], spectra.knots().back()[0] );
       real_type low = std::max( fi_rng.start(), sp_rng.start() );
       real_type upp = std::min( fi_rng.finish(), sp_rng.finish() );
-      LOGDLN( "fi_rng = ", fi_rng );
-      LOGDLN( "sp_rng = ", sp_rng );
-      LOGDLN( "low = ", low );
-      LOGDLN( "upp = ", upp );
+
+      // If there is no overlap, return 0.
+      if( upp <= low )
+         return 0.0;
 
       auto it = make_interp_iterator(
          boost::make_transform_iterator( filter.knots().begin(), take_first ),
@@ -208,14 +218,9 @@ namespace tao {
          real_type jac_det = 0.5*w;
          unsigned fi_poly = it.indices()[0] - 1;
          unsigned sp_poly = it.indices()[1] - 1;
-         LOGDLN( "w = ", w );
-         LOGDLN( "jac_det = ", jac_det );
          for( unsigned ii = 0; ii < 4; ++ii )
          {
             real_type x = low + w*0.5*(1.0 + crds[ii]);
-            LOGDLN( "Current x: ", x );
-            LOGDLN( "Filter: ", filter( x, fi_poly ) );
-            LOGDLN( "Spectra: ", spectra( x, sp_poly ) );
 
             // This integral looks like this because of a change of variable
             // frome wavelength to frequency. Do the math!
@@ -223,12 +228,10 @@ namespace tao {
             // sum += jac_det*weights[ii]*filter( x, fi_poly )*spectra( x, sp_poly )*x*x*x*x/(M_C*M_C);
             // sum += jac_det*weights[ii]*filter( x, fi_poly )*spectra( x, sp_poly )*x*x/M_C;
             sum += jac_det*weights[ii]*filter( x, fi_poly )*spectra( x, sp_poly );
-            LOGDLN( "Partial sum is ", sum );
          }
          low = *it;
       }
 
-      LOGDLN( "Integrated to ", sum );
       return sum;
    }
 
@@ -274,17 +277,19 @@ namespace tao {
    }
 
    void
-   filter::_read_options( const options::xml_dict& dict,
-                          optional<const string&> prefix )
+   filter::_read_options( const options::xml_dict& global_dict )
    {
       LOG_ENTER();
 
       // Must perform the module read to get batch size.
-      _read_db_options( dict );
+      _read_db_options( global_dict );
+
+      // Read the prefix of the bandpass filters.
+      string prefix = global_dict.get<string>( "bandpassdatapath", "." );
 
       {
          // Get the wavelengths filename.
-         string filename = dict.get<string>( prefix.get()+":wavelengths","wavelengths.dat" );
+         string filename = _dict.get<string>( "wavelengths","wavelengths.dat" );
          LOGDLN( "Using wavelengths filename \"", filename, "\"" );
 
          // Load the wavelengths.
@@ -293,14 +298,14 @@ namespace tao {
 
       {
          // Split out the filter filenames.
-	 list<string> filenames = dict.get_list<string>( prefix.get()+":bandpass-filters" );
+         list<string> filenames = _dict.get_list<string>( "bandpass-filters" );
 
          // Allocate room for the filters.
          _filters.reallocate( filenames.size() );
          _filters.resize( 0 );
          _filt_int.reallocate( filenames.size() );
          _filt_int.resize( 0 );
-	 _filter_names.reallocate( filenames.size() );
+         _filter_names.reallocate( filenames.size() );
          _total_app_mags.reallocate( _batch_size, filenames.size() );
          _total_abs_mags.reallocate( _batch_size, filenames.size() );
          _disk_app_mags.reallocate( _batch_size, filenames.size() );
@@ -312,23 +317,21 @@ namespace tao {
          _bulge_lum.reallocate( _batch_size );
 
          // Load each filter into memory.
-	 unsigned ii = 0;
-	 for( const auto fn : filenames )
-	 {
-            _load_filter( fn );
+         unsigned ii = 0;
+         for( const auto fn : filenames )
+         {
+            _load_filter( prefix + "/" + fn );
 
-	    // Store the field names.
-	    auto it = std::find( fn.rbegin(), fn.rend(), '.' );
-	    it++;
-	    _filter_names[ii] = string( fn.begin(), it.base() );
-	    LOGDLN( "Adding filter by the name: ", _filter_names[ii] );
-	    ++ii;
-	 }
+            // Store the field names.
+            _filter_names[ii] = fn;
+            LOGDLN( "Adding filter by the name: ", _filter_names[ii] );
+            ++ii;
+         }
       }
       LOGDLN( "Filter integrals: ", _filt_int );
 
       // Get the Vega filename and perform processing.
-      _process_vega( dict.get<string>( prefix.get()+":vega-spectrum","A0V_KUR_BB.SED" ) );
+      _process_vega( _dict.get<string>( "vega-spectrum","A0V_KUR_BB.SED" ) );
 
       LOG_EXIT();
    }
@@ -369,6 +372,8 @@ namespace tao {
    void
    filter::_load_filter( const string& filename )
    {
+      LOGDLN( "Loading bandpass filter at: ", filename );
+
       std::ifstream file( filename, std::ios::in );
       ASSERT( file.is_open() );
 

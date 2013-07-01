@@ -6,6 +6,7 @@
 #include <libhpc/libhpc.hh>
 #include <libhpc/options/xml_dict.hh>
 
+//#define PREPROCESSING
 namespace tao {
    using namespace hpc;
 
@@ -74,6 +75,7 @@ namespace tao {
       string _xml_file;
       string _dbcfg_file;
       string _currentxml_version;
+      pugi::xml_document _doc;
    };
 }
 

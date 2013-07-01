@@ -25,7 +25,8 @@ namespace tao {
 
    module&
    factory_type::create_module( const string& name,
-                                const string& inst_name )
+                                const string& inst_name,
+				pugi::xml_node base )
    {
       string _in;
       if( inst_name.empty() )
@@ -36,7 +37,7 @@ namespace tao {
       for( auto mod : _mods )
          ASSERT( mod->name() != _in, "Module with that instance name already exists." );
 #endif
-      module* mod = _facs.get( name )( _in );
+      module* mod = _facs.get( name )( _in, base );
       _mods.push_back( mod );
       LOGDLN( "Created module ", name, " with name ", _in );
       return *mod;

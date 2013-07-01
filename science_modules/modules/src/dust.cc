@@ -1,4 +1,5 @@
-#include <cmath>
+#include <math.h>
+#include <boost/algorithm/string/trim.hpp>
 #include "dust.hh"
 
 #define M_E_CU (M_E*M_E*M_E)
@@ -8,7 +9,17 @@ using namespace hpc;
 
 namespace tao {
 
-   dust::dust()
+   // Factory function used to create a new dust.
+   module*
+   dust::factory( const string& name,
+		  pugi::xml_node base )
+   {
+      return new dust( name, base );
+   }
+
+   dust::dust( const string& name,
+	       pugi::xml_node base )
+      : module( name, base )
    {
    }
 
@@ -17,66 +28,66 @@ namespace tao {
    }
 
    ///
-   ///
-   ///
-   void
-   dust::setup_options( options::dictionary& dict,
-                        optional<const string&> prefix )
-   {
-      dict.add_option( new options::string( "waves_filename" ), prefix );
-      dict.add_option( new options::integer( "num_spectra" ), prefix );
-   }
-
-   ///
-   ///
-   ///
-   void
-   dust::setup_options( hpc::options::dictionary& dict,
-                        const char* prefix )
-   {
-      setup_options( dict, string( prefix ) );
-   }
-
-   ///
    /// Initialise the module.
    ///
    void
-   dust::initialise( const options::dictionary& dict,
-                     optional<const string&> prefix )
+   dust::initialise( const options::xml_dict& global_dict )
    {
       LOG_ENTER();
 
-      _read_options( dict, prefix );
-      _read_wavelengths();
+      _read_options( global_dict );
+      _read_wavelengths( _waves_filename );
 
       LOG_EXIT();
-   }
-
-   ///
-   ///
-   ///
-   void
-   dust::initialise( const hpc::options::dictionary& dict,
-                     const char* prefix )
-   {
-      initialise( dict, string( prefix ) );
    }
 
    void
    dust::execute()
    {
+      _timer.start();
+      LOG_ENTER();
+      ASSERT( parents().size() == 1 );
+
+      // Grab the galaxy from the parent object.
+      tao::galaxy& gal = parents().front()->galaxy();
+
+      // Extract things from the galaxy object.
+      fibre<real_type>& total_spectra = gal.vector_values<real_type>( "total_spectra" );
+      fibre<real_type>& disk_spectra = gal.vector_values<real_type>( "disk_spectra" );
+      fibre<real_type>& bulge_spectra = gal.vector_values<real_type>( "bulge_spectra" );
+
+      // Perform the processing.
+      process_galaxy( gal, total_spectra, disk_spectra, bulge_spectra );
+
+      LOG_EXIT();
+      _timer.stop();
    }
 
    void
-   dust::process_galaxy( const tao::galaxy& galaxy,
-                         vector<real_type>::view spectra )
+   dust::process_galaxy( tao::galaxy& galaxy,
+			 fibre<real_type>& total_spectra,
+			 fibre<real_type>& disk_spectra,
+			 fibre<real_type>& bulge_spectra )
    {
-      ASSERT( spectra.size() == _num_spectra );
+      auto ids = galaxy.values<int>( "localgalaxyid" );
+      auto sfrs = galaxy.values<real_type>( "sfr" );
+      for( unsigned ii = 0; ii < galaxy.batch_size(); ++ii )
+      {
+	 process_spectra( galaxy, ids[ii], sfrs[ii], total_spectra[ii] );
+	 process_spectra( galaxy, ids[ii], sfrs[ii], disk_spectra[ii] );
+	 process_spectra( galaxy, ids[ii], sfrs[ii], bulge_spectra[ii] );
+      }
+   }
 
-      // Cache star formation rates.
-      real_type disk_sfr = 0.0; //galaxy.get<real_type>( "disk_sfr" );
-      real_type bulge_sfr = 0.0; //galaxy.get<real_type>( "bulge_sfr" );
-      real_type sfr = disk_sfr + bulge_sfr;
+   void
+   dust::process_spectra( tao::galaxy& galaxy,
+			  unsigned gal_idx,
+			  real_type& sfr,
+			  vector<real_type>::view spectra )
+   {
+      ASSERT( _waves.size() == spectra.size() );
+      LOGDLN( "Adding dust to specific spectra of galaxy: ", gal_idx, setindent( 2 ) );
+      LOGDLN( "SFR: ", sfr );
 
       // Calculate "adust", whatever that is...
       real_type adust;
@@ -84,14 +95,17 @@ namespace tao {
       {
          // TODO: Explain the shit out of this.
          // TODO: Needs thorough checking.
-         adust = pow( 3.675*1/ALPHA*(sfr/1.479), 0.4 );
+         adust = 3.675*1.0/ALPHA*pow( sfr/1.479, 0.4 );
          adust += -1.0/ALPHA/M_E/M_E + 0.06;
       }
       else
          adust = 0.0;
+      LOGDLN( "adust: ", adust );
 
       // K-band unchanged by dust with this value (?).
       real_type rdust = 3.675;
+      LOGDLN( "rdust: ", rdust );
+      ASSERT( adust/rdust >= 0.0, "Some dust problem... ?" );
 
       for( unsigned ii = 0; ii < spectra.size(); ++ii )
       {
@@ -108,28 +122,49 @@ namespace tao {
          {
             kdust = 2.659*(-1.857 + 1.040*1e4/wl) + rdust;
          }
+	 LOGDLN( "kdust: ", kdust );
 
          real_type expdust;
          if( adust >= 0.0 )
             expdust = kdust*adust/rdust;
          else
             expdust = 0.0;
+	 LOGDLN( "expdust: ", expdust );
 
          // Stomp on spectra.
-         spectra[ii] = pow( spectra[ii]*10.0, -0.4*expdust );
+         spectra[ii] = spectra[ii]*pow( 10.0, -0.4*expdust );
       }
+
+      LOGD( setindent( -2 ) );
    }
 
    void
-   dust::_read_wavelengths()
+   dust::_read_wavelengths( const string& filename )
    {
       LOG_ENTER();
 
+      // Open the file.
+      std::ifstream file( filename );
+      ASSERT( file.is_open() );
+
+      // Need to get number of lines in file first.
+      unsigned num_waves = 0;
+      {
+         string line;
+         while( !file.eof() )
+         {
+            std::getline( file, line );
+            if( boost::trim_copy( line ).length() )
+               ++num_waves;
+         }
+      }
+
       // Allocate. Note that the ordering goes time,spectra,metals.
-      _waves.reallocate( _num_spectra );
+      _waves.reallocate( num_waves );
 
       // Read in the file in one big go.
-      std::ifstream file( _waves_filename, std::ios::in );
+      file.clear();
+      file.seekg( 0 );
       for( unsigned ii = 0; ii < _waves.size(); ++ii )
          file >> _waves[ii];
 
@@ -137,18 +172,10 @@ namespace tao {
    }
 
    void
-   dust::_read_options( const options::dictionary& dict,
-                        optional<const string&> prefix )
+   dust::_read_options( const options::xml_dict& global_dict )
    {
-      // Get the sub dictionary, if it exists.
-      const options::dictionary& sub = prefix ? dict.sub( *prefix ) : dict;
-
       // Get the wavelengths filename.
-      _waves_filename = sub.get<string>( "waves_filename" );
+      _waves_filename = _dict.get<string>( "wavelengths", "wavelengths.dat" );
       LOGLN( "Using wavelengths filename \"", _waves_filename, "\"" );
-
-      // Get the counts.
-      _num_spectra = sub.get<unsigned>( "num_spectra" );
-      LOGLN( "Number of spectra: ", _num_spectra );
    }
 }

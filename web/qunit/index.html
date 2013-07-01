@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>QUnit Example</title>
+  <link rel="stylesheet" href="qunit-1.11.0.css">
+</head>
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+  <script src="../tao/static/js/jquery-1.8.0.min.js"></script>
+  <script src="../tao/static/js/jquery.validate.js"></script>
+  <script src="../tao/static/bootstrap/js/bootstrap.min.js"></script>
+  <script src="qunit-1.11.0.js"></script>
+  <script src="validate.js"></script>
+
+  <!-- Fixtures -->
+  <div id="qunit-fixture">
+    <form>
+      <div class="control-group">
+        <input id="id_something" name="something" value="one" />
+      </div>
+      <div class="control-group">
+        <input id="id_another" name="another" value="two" />
+      </div>
+      <div class="control-group">
+        <input id="id_more" name="more" value="three" />
+      </div>
+      <div class="control-group">
+        <input id="id_empty" name="empty" />
+      </div>
+      <div class="control-group">
+        <select id="id_select" name="select">
+          <option value="first">second</option>
+          <option value="hello" selected>world</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <input id="id_check" type="checkbox" name="empty" />
+      </div>
+    </form>
+  </div>
+</body>
+</html>

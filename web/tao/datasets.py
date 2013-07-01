@@ -31,7 +31,7 @@ def dark_matter_simulation_choices():
         return tuples of dark matter choices suitable for use in a
         tao.widgets.ChoiceFieldWithOtherAttrs
     """
-    return [(x.id, x.name, {}) for x in models.Simulation.objects.order_by('name')]
+    return [(x.id, x.name, {}) for x in models.Simulation.objects.order_by('order', 'name')]
 
 
 def galaxy_model_choices():
@@ -86,14 +86,21 @@ def output_choices(data_set_id):
 def output_property(id):
     return models.DataSetProperty.objects.get(pk=id, is_output=True)
 
-def band_pass_filters():
-    return [(x.id, x.label) for x in models.BandPassFilter.objects.order_by('label')]
-
 def band_pass_filters_objects():
     return models.BandPassFilter.objects.order_by('group', 'order', 'label')
 
+def band_pass_filters_enriched():
+    def gen_pairs(objs):
+        for obj in objs:
+            yield (str(obj.id) + '_apparent', obj.label + ' (Apparent)')
+            yield (str(obj.id) + '_absolute', obj.label + ' (Absolute)')
+    return [pair for pair in gen_pairs(band_pass_filters_objects())]
+
 def band_pass_filter(id):
-    return models.BandPassFilter.objects.get(pk=id)
+    id_num = id
+    if '_' in id:
+        id_num = id[0:id.index('_')]
+    return models.BandPassFilter.objects.get(pk=id_num)
 
 def dust_models():
     return [(x.id, x.label) for x in models.DustModel.objects.order_by('label')]
@@ -109,13 +116,22 @@ def dataset_find_from_xml(simulation, galaxy_model):
         return None
 
 def filter_find_from_xml(data_set_id, filter_type, filter_units):
+    if filter_type is None:
+        return ('E', 0)
     try:
         obj = models.DataSetProperty.objects.get(name=filter_type, units=filter_units, dataset__pk=data_set_id)
         return ('D', obj.id)
     except models.DataSetProperty.DoesNotExist:
+        suffix = ''
+        if filter_type.endswith('_apparent'):
+            filter_type = filter_type[:-len('apparent')-1]
+            suffix = '_apparent'
+        elif filter_type.endswith('_absolute'):
+            filter_type = filter_type[:-len('absolute')-1]
+            suffix = '_absolute'
         try:
             obj = models.BandPassFilter.objects.get(filter_id=filter_type)
-            return ('B', obj.id)
+            return ('B', str(obj.id) + suffix)
         except models.BandPassFilter.DoesNotExist:
             return ('E', 0)
 

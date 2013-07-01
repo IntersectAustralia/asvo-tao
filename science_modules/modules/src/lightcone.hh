@@ -26,23 +26,22 @@ namespace tao {
 
       static
       module*
-      factory( const string& name );
+      factory( const string& name,
+	       pugi::xml_node base );
 
    public:
 
-      lightcone( const string& name = string() );
+      lightcone( const string& name = string(),
+		 pugi::xml_node base = pugi::xml_node() );
 
       ~lightcone();
-
-
 
       ///
       ///
       ///
       virtual
       void
-      initialise( const options::xml_dict& dict,
-                  optional<const string&> prefix = optional<const string&>() );
+      initialise( const options::xml_dict& global_dict );
 
       ///
       /// Run the module.
@@ -130,8 +129,7 @@ namespace tao {
       _distance_to_redshift( real_type dist ) const;
 
       void
-      _read_options( const options::xml_dict& dict,
-                     optional<const string&> prefix=optional<const string&>() );
+      _read_options( const options::xml_dict& global_dict );
 
       void
       _setup_query_template();
@@ -143,6 +141,9 @@ namespace tao {
       _build_dist_to_z_tbl( unsigned num_points,
 			    real_type min_z,
 			    real_type max_z );
+
+      unsigned
+      _box_snapshot( real_type redshift );
 
       ///
       ///

@@ -1,22 +1,30 @@
+#!/usr/bin/env python
+
 import pyfits
-import sys,string,os
+import sys
 
+if len(sys.argv) < 2:
+    print "\nplease specify an input file.\n"
+    sys.exit()
 
+filename = sys.argv[1]
 
-if __name__ == '__main__':
-    FitsFileName=sys.argv[1]
-    f = pyfits.open(FitsFileName)
-    tbdata = f[1].data
-    tbhdr = f[1].header
-    for field in tbhdr:
-        print field+":"+str(tbhdr[field])
-    ColCount=tbhdr['TFIELDS']
-    print "----------------------------------------------------------------------\n"
-    print "Columns Count="+str(ColCount)
-    for i in range(1,ColCount+1):
-        print tbhdr['TTYPE'+str(i)]+":"+tbhdr['TUNIT'+str(i)]
-    print "----------------------------------------------------------------------\n"    
-    for row in tbdata:
-        print row
-    
+data = pyfits.open(filename)
+
+# Read comlumn names
+n_fields = data[1].header['TFIELDS']
+fields = []
+for i in range(1,n_fields+1):
+    fields.append(data[1].header['TTYPE%d' % i])
+
+# Print out the header
+print "#", ", ".join("%s" % f for f in fields)
+
+# Print out the dataset
+for i in range(0, len(data[1].data)):
+    vars = []
+    for j in range(0,n_fields):
+    	vars.append(data[1].data[i][j])
+    print " ".join("%e" % v for v in vars)
+
         

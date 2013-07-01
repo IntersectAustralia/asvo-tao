@@ -1,14 +1,11 @@
-body {
-    padding-top: 60px;
-}
-
+body { padding-top: 0px; }
+#body { padding-top: 120px; }
 
 a.ui-tabs-anchor:focus {
     outline: 0px none black;
     outline: 0px none -webkit-focus-ring-color;
 }
 
-body { padding-top: 40px; }
 
 body, input, textarea {
     font: normal normal normal 14px/22px "Helvetica Neue", "HelveticaNeue", Helvetica, Arial, sans-serif;
@@ -27,14 +24,13 @@ a:active, a:hover {
 }
 
 
-#banner { position: fixed; padding: 0; left: 60px; right: 60px; z-index: 1; }
-#body { padding-top: 80px; }
+#banner { position: fixed; padding: 0; left: 0px; right: 0px; z-index: 1; }
 
 .container-fluid { padding: 0 60px; }
 
 /* .container-fluid .navbar { margin: 0 -20px 20px -20px; } */
 .navbar-inverse .navbar-inner {
-  min-height: 60px;
+  min-height: 40px;
   background-image: none;
   background: #333;
   border-color: #252525;
@@ -47,7 +43,7 @@ a:active, a:hover {
 
 .navbar .brand { padding: 20px 20px 20px; }
 #skymapperlogo { padding: 10px 20px 10px; }
-#asvologo { padding: 8px 20px 12px; }
+#asvologo { padding: 5px 20px; }
 
 .navbar .nav > li > a { padding: 20px 15px 20px; }
 .navbar-text { padding: 10px 0; }
@@ -224,9 +220,27 @@ fieldset legend {
     padding: 20px;
   }
 
+/* Style dynamic forms. */
+.single-form {
+    margin-bottom: 5px; /* A little space at the bottom to separate. */
+    background-color: rgb(242,242,242); /* Prettier. */
+}
+
 .id_light_cone-dark_matter_simulation, .id_light_cone-galaxy_model,
 .id_light_cone-ra_opening_angle, .id_light_cone-dec_opening_angle,
-.id_light_cone-redshift_min, .id_light_cone-redshift_max {
+.id_light_cone-redshift_min, .id_light_cone-redshift_max,
+[class*="id_mock_image"][class*="sub_cone"],
+[class*="id_mock_image"][class*="format"],
+[class*="id_mock_image"][class*="mag_field"],
+[class*="id_mock_image"][class*="min_mag"],
+[class*="id_mock_image"][class*="z_min"],
+[class*="id_mock_image"][class*="z_max"],
+[class*="id_mock_image"][class*="origin_ra"],
+[class*="id_mock_image"][class*="origin_dec"],
+[class*="id_mock_image"][class*="fov_ra"],
+[class*="id_mock_image"][class*="fov_dec"],
+[class*="id_mock_image"][class*="width"],
+[class*="id_mock_image"][class*="height"] {
     width: 50%;
     display: block;
     float: left;
@@ -237,8 +251,17 @@ fieldset legend {
     clear: after;
 }
 .id_light_cone-ra_opening_angle input, .id_light_cone-dec_opening_angle input,
-.id_light_cone-redshift_min input, .id_light_cone-redshift_max input {
+.id_light_cone-redshift_min input, .id_light_cone-redshift_max input,
+.id_mock_image-min_mag input, .id_mock_image-max_mag input,
+.id_mock_image-width input, .id_mock_image-height input,
+.id_mock_image-origin_ra input, .id_mock_image-origin_dec input,
+.id_mock_image-focal_x input, .id_mock_image-focal_y input,
+.id_mock_image-offset_x input, .id_mock_image-offset_y input,
+.id_mock_image-pix_width input, .id_mock_image-pix_height input {
     width: 20%;
+}
+.id_mock_image-height {
+    margin-top: 20px;
 }
 .id_record_filter-min, .id_record_filter-max {
   width: 25%;
@@ -272,7 +295,8 @@ fieldset legend {
     margin-bottom: 0;
 }
 
-.id_sed-apply_sed label, .id_sed-apply_dust label {
+.id_sed-apply_sed label, .id_sed-apply_dust label,
+.id_mock_image-apply_mock_image label {
   margin-bottom: -25px;
   margin-left: 30px;
   cursor: pointer;
@@ -288,7 +312,7 @@ fieldset legend {
   box-sizing: border-box;
   clear: after;
    }
- .id_sed-select_dust_model {
+.id_sed-select_dust_model {
    margin-top: 20px;
       width: 50%;
   display: block;
@@ -363,6 +387,7 @@ color: #333; cursor: pointer; display: inline-block; font-family: inherit; font-
 
 .summary_light_cone td,
 .summary_sed td,
+.summary_mock_image td,
 .summary_record_filter td,
 .summary_output td {
     width: 300px;
@@ -384,6 +409,10 @@ color: #333; cursor: pointer; display: inline-block; font-family: inherit; font-
 
 #id_light_cone-output_properties-table.ui-resizable {
     width: 500px;
+    height: 300px;
+}
+#id_sed-band_pass_filters-table.ui-resizable {
+    height: 300px;
 }
 
 /*Left light cone output properties table*/
@@ -444,5 +473,40 @@ color: #333; cursor: pointer; display: inline-block; font-family: inherit; font-
 #id_sed-band_pass_filters-table.ui-resizable > tbody > tr > #id_sed-band_pass_filters-buttons {
     text-align: center;
     width: 6%;
+}
+
+.verticalLine {
+border-left:thick solid #d0d0d0;
+}
+
+.brand.small { display: none; }
+
+
+.navbar .brand { padding: 10px; }
+.navbar .nav > li > a { padding: 10px 15px 10px; }
+.navbar-text { margin-bottom: 0; line-height: 20px; }
+.brand.small { display: none; }
+
+@media only screen and (max-width : 1200px) {
+  .navbar div.brand { display: none; }
+  .navbar .brand.small { display: block; }
+}
+
+@media (max-width: 979px) {
+  #banner .navbar-inner { padding: 0px; }
+  .nav-collapse .nav>li>a, .nav-collapse .dropdown-menu a {
+    padding: 9px 15px;
+    font-weight: bold;
+    color: #CCC;
+    -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;
+  }
+  .nav-collapse .dropdown-menu { display: inline-block; }
+}
+
+@media (max-width: 767px) {
+  body {
+    padding-right: 0px;
+    padding-left: 0px;
+  }
 }
 

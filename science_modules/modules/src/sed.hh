@@ -29,25 +29,24 @@ namespace tao {
 
       static
       module*
-      factory( const string& name );
+      factory( const string& name,
+               pugi::xml_node base );
 
    public:
 
       typedef double real_type;
 
-      sed( const string& name = string() );
+      sed( const string& name = string(),
+           pugi::xml_node base = pugi::xml_node() );
 
       ~sed();
-
-
 
       ///
       /// Initialise the module.
       ///
       virtual
       void
-      initialise( const options::xml_dict& dict,
-                  optional<const string&> prefix=optional<const string&>() );
+      initialise( const options::xml_dict& global_dict );
 
       ///
       /// Run the module.
@@ -68,11 +67,23 @@ namespace tao {
       vector<real_type>::view
       total_spectra();
 
+      real_type
+      omega() const;
+
+      real_type
+      omega_lambda() const;
+
+      real_type
+      omega_k() const;
+
+      real_type
+      omega_r() const;
+
    protected:
 
       void
       _process_time( mpi::lindex time_idx,
-		     unsigned gal_idx );
+                     unsigned gal_idx );
 
       void
       _sum_spectra( mpi::lindex time_idx,
@@ -88,20 +99,23 @@ namespace tao {
                    unsigned idx );
 
       void
-      _rebin_parents( unsigned id,
-		      unsigned root_id );
+      _rebin_recurse( unsigned id,
+                      real_type oldest_age );
 
-      void
-      _update_bin( unsigned bin,
-		   unsigned id,
-		   real_type dt );
+      // void
+      // _rebin_parents( unsigned id,
+      //                      unsigned root_id );
+
+      // void
+      // _update_bin( unsigned bin,
+      //                   unsigned id,
+      //                   real_type dt );
 
       unsigned
       _find_bin( real_type age );
 
       real_type
-      _calc_age( real_type z0,
-		 real_type z1 );
+      _calc_age( real_type redshift );
 
       void
       _read_ssp( const string& filename );
@@ -110,18 +124,17 @@ namespace tao {
       _setup_snap_ages();
 
       void
-      _read_options( const options::xml_dict& dict,
-                     optional<const string&> prefix=optional<const string&>() );
+      _read_options( const options::xml_dict& global_dict );
 
       void
       _load_table( long long tree_id,
-		   const string& table );
+                   const string& table );
 
    protected:
 
       vector<real_type> _snap_ages, _bin_ages, _dual_ages;
-      vector<real_type> _disk_age_masses, _bulge_age_masses;
-      vector<real_type> _disk_age_metals, _bulge_age_metals;
+      vector<real_type> _age_masses, _bulge_age_masses;
+      vector<real_type> _age_metals;
       mpi::lindex _num_spectra, _num_metals;
       fibre<real_type> _disk_spectra, _bulge_spectra, _total_spectra;
       vector<real_type> _ssp;
@@ -129,11 +142,12 @@ namespace tao {
       long long _cur_tree_id;
       multimap<unsigned,unsigned> _parents;
       vector<int> _descs, _snaps;
-      vector<real_type> _sfrs, _bulge_sfrs, _metals;
+      vector<real_type> _sfrs, _bulge_sfrs, _cold_gas, _metals;
 
       gsl_integration_workspace* _work;
       gsl_function _func;
-      real_type _omega, _omega_lambda, _h;
+      real_type _omega, _omega_lambda, _hubble;
+      real_type _omega_r, _omega_k;
    };
 }
 

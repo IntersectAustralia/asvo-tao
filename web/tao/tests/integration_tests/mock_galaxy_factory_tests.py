@@ -40,6 +40,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.login(username, password)
 
         self.visit('mock_galaxy_factory')
+        self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
 
     def tearDown(self):
         super(MockGalaxyFactoryTest, self).tearDown()
@@ -66,7 +67,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.fill_in_fields({'ra_opening_angle': ra_open, 'dec_opening_angle': dec_open, 'redshift_min': rmin, 'redshift_max': rmax}, id_wrap=self.lc_id)
 
         self.click_by_css(self.lc_id('light_cone_type_1')) # select "random"
-        self.assert_element_text_equals(unicode("label[for='id_light_cone-number_of_light_cones']"), 'Select the number of light-cones: (maximum for the selected parameters is 10)*')
+        self.assert_element_text_equals(unicode("label[for='id_light_cone-number_of_light_cones']"), 'Select the number of light-cones: (maximum 10 random light-cones)*')
 
         self.click_by_css(self.lc_id('light_cone_type_0')) # select "unique"
         self.assert_element_text_equals(unicode("label[for='id_light_cone-number_of_light_cones']"), 'Select the number of light-cones: (maximum for the selected parameters is 8)*')
@@ -164,18 +165,19 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.assertEquals(output_property.label, name_displayed)
 
     def test_bandpass_filter_details(self):
+        extension = 'apparent'
         self.click('tao-tabs-' + MODULE_INDICES['sed'])
         self.click(self.sed('apply_sed'))
         for i in [1,0]:
             bandpass_filter = BandPassFilter.objects.all()[i]
-            self.click_by_css(self.sed_id('band_pass_filters_from') + " option[value='"+str(bandpass_filter.id)+"']")
+            self.click_by_css(self.sed_id('band_pass_filters_from') + " option[value='"+str(bandpass_filter.id)+"_" + extension + "']")
             name_displayed = self.get_info_field('band-pass', 'name')
-            self.assertEquals(bandpass_filter.label, name_displayed)
+            self.assertEquals(bandpass_filter.label + ' (' + extension.capitalize() + ')', name_displayed)
         self.click(self.sed_2select('op_add_all'))
         bandpass_filter = BandPassFilter.objects.all()[i]
-        self.click_by_css(self.sed_id('band_pass_filters') + " option[value='"+str(bandpass_filter.id)+"']")
+        self.click_by_css(self.sed_id('band_pass_filters') + " option[value='"+str(bandpass_filter.id)+"_" + extension + "']")
         name_displayed = self.get_info_field('band-pass', 'name')
-        self.assertEquals(bandpass_filter.label, name_displayed)
+        self.assertEquals(bandpass_filter.label + ' (' + extension.capitalize() + ')', name_displayed)
 
     def test_summary_on_initial_load(self):
         self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
@@ -280,15 +282,16 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.click('tao-tabs-' + MODULE_INDICES['light_cone'])
         self.fill_in_fields({'ra_opening_angle': ra_opening_angle, 'dec_opening_angle': dec_opening_angle, 'redshift_min': redshift_min, 'redshift_max': redshift_max}, id_wrap=self.lc_id)
         self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
+        self.wait(1)
         self.assert_summary_field_correctly_shown('RA: '+ra_opening_angle+h.unescape('&deg;')+',', 'light_cone', 'ra_opening_angle')
         self.assert_summary_field_correctly_shown('Dec: '+dec_opening_angle+h.unescape('&deg;'), 'light_cone', 'dec_opening_angle')
-        self.assert_summary_range_correctly_shown('Redshift: ' + redshift_min + h.unescape(' &le;') + ' r ' + h.unescape('&le;') + redshift_max, 'light_cone', ['redshift_min', 'redshift_max'])
+        self.assert_summary_range_correctly_shown('Redshift: ' + redshift_min + h.unescape(' &le;') + ' z ' + h.unescape('&le;') + redshift_max, 'light_cone', ['redshift_min', 'redshift_max'])
 
         #range displays should be intelligent, i.e. if the min or max is blank, it isn't displayed
         self.click('tao-tabs-' + MODULE_INDICES['light_cone'])
         self.clear(self.lc_id('redshift_min'))
         self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
-        self.assert_summary_range_correctly_shown('Redshift: r ' + h.unescape('&le;') + ' 4', 'light_cone', ['redshift_min', 'redshift_max'])
+        self.assert_summary_range_correctly_shown('Redshift: z ' + h.unescape('&le;') + ' 4', 'light_cone', ['redshift_min', 'redshift_max'])
         self.click('tao-tabs-' + MODULE_INDICES['light_cone'])
         self.clear(self.lc_id('redshift_max'))
         self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
@@ -296,7 +299,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.click('tao-tabs-' + MODULE_INDICES['light_cone'])
         self.fill_in_fields({'redshift_min': 5}, id_wrap=self.lc_id)
         self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
-        self.assert_summary_range_correctly_shown('Redshift: 5 ' + h.unescape('&le;') + ' r', 'light_cone', ['redshift_min', 'redshift_max'])
+        self.assert_summary_range_correctly_shown('Redshift: 5 ' + h.unescape('&le;') + ' z', 'light_cone', ['redshift_min', 'redshift_max'])
 
     def test_summary_on_light_cone_count_and_type(self):
         ra_opening_angle = '1'
@@ -418,7 +421,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
 
     def assert_stellar_model_info_shown(self, stellar_model):
         stellar_model_selector_value = {
-                            '.stellar-model-info .name': stellar_model.name,
+                            '.stellar-model-info .name': stellar_model.label,
                             '.stellar-model-info .details': strip_tags(stellar_model.description),
                             }
         self.assert_selector_texts_equals_expected_values(stellar_model_selector_value)
