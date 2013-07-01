@@ -39,34 +39,48 @@ data = {
         'execution_status': status,
         'execution_comment': comment,
 }
-print("Job ID: {0}".format(wf_id))
-print("Status: {0}".format(status))
-print("Comment: {0}\n\n".format(comment))
 
-print("URL: {0}".format(base_url))
+print("Workflow ID: {0}".format(wf_id))
+print("Status: {0}".format(status))
+print("Comment: {0}".format(comment))
+print("Job ID: {0}\n\n".format(job_id))
+
+print("GET URL: {0}".format(base_url))
 response = requests.get(base_url)
 print("Response: {0}".format(response))
-print(json.dumps(json.loads(response.content),
-    sort_keys=True, indent=4, separators=(',',':')))
+if response.status_code == requests.codes.ok:
+    print(json.dumps(json.loads(response.content),
+        sort_keys=True, indent=4, separators=(',',':')))
 
-url = base_url + wf_id
-print("URL: {0}".format(url))
-response = requests.put(url, data=data)
+url = base_url + wf_id + '/'
+print("PUT URL: {0}".format(url))
+response = requests.put(url, data=json.dumps(data), headers={'content-type': "application/json"})
 print("Response: {0}".format(response))
-print(json.dumps(json.loads(response.content),
-    sort_keys=True, indent=4, separators=(',',':')))
+print response.headers['content-type']
+print response.content
+print ">> Note that 204 is the correct response for a successful PUT.\n\n"
 
-url = base_url + '?job_id=' + job_id # for now just using the same id from args (in reality job_id is different to wf_id)
-print("URL: {0}".format(url))
+print("GET URL: {0}".format(url))
 response = requests.get(url)
 print("Response: {0}".format(response))
-print(json.dumps(json.loads(response.content),
-    sort_keys=True, indent=4, separators=(',',':')))
+if response.status_code == requests.codes.ok:
+    print(json.dumps(json.loads(response.content),
+        sort_keys=True, indent=4, separators=(',',':')))
+
+url = base_url + '?job_id=' + job_id # for now just using the same id from args (in reality job_id is different to wf_id)
+print("GET URL: {0}".format(url))
+response = requests.get(url)
+print("Response: {0}".format(response))
+if response.status_code == requests.codes.ok:
+    print(json.dumps(json.loads(response.content),
+        sort_keys=True, indent=4, separators=(',',':')))
 
 
 url = base_url + '?execution_status=' + status
-print("URL: {0}".format(url))
+print("GET URL: {0}".format(url))
 response = requests.get(url)
 print("Response: {0}".format(response))
-print(json.dumps(json.loads(response.content),
-    sort_keys=True, indent=4, separators=(',',':')))
+if response.status_code == requests.codes.ok:
+    print(json.dumps(json.loads(response.content),
+        sort_keys=True, indent=4, separators=(',',':')))
+
