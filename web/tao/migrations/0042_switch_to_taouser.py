@@ -2,15 +2,62 @@
 import datetime
 from south.db import db
 from south.v2 import SchemaMigration
+from django.db import connection
 from django.db import models
 
+def db_table_exists(table_name):
+    return table_name in connection.introspection.table_names()
 
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        db.rename_table('auth_user', 'tao_taouser')
-        db.rename_table('auth_user_user_permissions', 'tao_taouser_user_permissions')
-        db.rename_table('auth_user_groups', 'tao_taouser_groups')
+        #import pdb; pdb.set_trace()
+        # Use auth_user as a proxy for all tables existing
+        if db_table_exists('auth_user'):
+            # Presumably migrating from Django < 1.5
+            db.rename_table('auth_user', 'tao_taouser')
+            db.rename_table('auth_user_user_permissions', 'tao_taouser_user_permissions')
+            db.rename_table('auth_user_groups', 'tao_taouser_groups')
+        else:
+            # Presumably clean install with Django >= 1.5
+            db.create_table('tao_taouser', (
+                ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+                ('password', self.gf('django.db.models.fields.CharField')(max_length=128)),
+                ('last_login', self.gf('django.db.models.fields.DateTimeField')()),
+                ('is_superuser', self.gf('django.db.models.fields.BooleanField')(default=False)),
+                ('username', self.gf('django.db.models.fields.CharField')(max_length=30)),
+                ('first_name', self.gf('django.db.models.fields.CharField')(max_length=30)),
+                ('last_name', self.gf('django.db.models.fields.CharField')(max_length=30)),
+                ('email', self.gf('django.db.models.fields.CharField')(max_length=75)),
+                ('is_staff', self.gf('django.db.models.fields.BooleanField')(default=False)),
+                ('is_active', self.gf('django.db.models.fields.BooleanField')(default=False)),
+                ('date_joined', self.gf('django.db.models.fields.DateTimeField')()),
+                ('institution', self.gf('django.db.models.fields.CharField')(max_length=100)),
+                ('scientific_interests', self.gf('django.db.models.fields.CharField')(max_length=500)),
+                ('title', self.gf('django.db.models.fields.CharField')(max_length=5)),
+                ('rejected', self.gf('django.db.models.fields.BooleanField')(default=False)),
+                ('aaf_shared_token', self.gf('django.db.models.fields.CharField')(max_length=64,blank=True,default='')),
+                ('account_registration_status', self.gf('django.db.models.fields.CharField')(max_length=3, blank=False, default='NA')),
+                ('account_registration_reason', self.gf('django.db.models.fields.TextField')(blank=True, default='')),
+                ('account_registration_date', self.gf('django.db.models.fields.DateTimeField')(null=True))
+                ))
+            db.create_unique('tao_taouser', ['username'])
+
+            db.create_table('tao_taouser_user_permissions', (
+                ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+                ('user_id', self.gf('django.db.models.fields.IntegerField')()),
+                ('permission', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.Permission']))
+                ))
+            db.create_index('tao_taouser_user_permissions', ['user_id'])
+            db.create_index('tao_taouser_user_permissions', ['permission_id'])
+            db.create_unique('tao_taouser_user_permissions', ['user_id', 'permission_id'])
+            db.create_table('tao_taouser_groups', (
+                ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+                ('user_id', self.gf('django.db.models.fields.IntegerField')()),
+                ('group', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.Group']))
+                ))
+            db.create_index('tao_taouser_groups', ['user_id'])
+            db.create_index('tao_taouser_groups', ['group_id'])
         db.send_create_signal('tao', ['TaoUser'])
 
     def backwards(self, orm):
