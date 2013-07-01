@@ -15,8 +15,6 @@ from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 from captcha.fields import ReCaptchaField
 
-from tao.models import UserProfile
-
 NO_FILTER = 'no_filter'
 
 class FormsGraph():
