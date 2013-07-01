@@ -45,18 +45,19 @@ class Migration(SchemaMigration):
 
             db.create_table('tao_taouser_user_permissions', (
                 ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-                ('user_id', self.gf('django.db.models.fields.IntegerField')()),
+                ('taouser_id', self.gf('django.db.models.fields.IntegerField')()),
                 ('permission', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.Permission']))
                 ))
-            db.create_index('tao_taouser_user_permissions', ['user_id'])
+            db.create_index('tao_taouser_user_permissions', ['taouser_id'])
             db.create_index('tao_taouser_user_permissions', ['permission_id'])
-            db.create_unique('tao_taouser_user_permissions', ['user_id', 'permission_id'])
+            db.create_unique('tao_taouser_user_permissions', ['taouser_id', 'permission_id'])
+
             db.create_table('tao_taouser_groups', (
                 ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-                ('user_id', self.gf('django.db.models.fields.IntegerField')()),
+                ('taouser_id', self.gf('django.db.models.fields.IntegerField')()),
                 ('group', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.Group']))
                 ))
-            db.create_index('tao_taouser_groups', ['user_id'])
+            db.create_index('tao_taouser_groups', ['taouser_id'])
             db.create_index('tao_taouser_groups', ['group_id'])
         db.send_create_signal('tao', ['TaoUser'])
 

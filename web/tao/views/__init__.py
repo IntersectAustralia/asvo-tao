@@ -99,7 +99,7 @@ def admin_index(request):
 @admin_required
 def access_requests(request):
     from tao.forms import RejectForm
-    user_list = models.TaoUser.objects.filter(is_active=False, userprofile__rejected=False).order_by('-id')
+    user_list = models.TaoUser.objects.filter(is_active=False, rejected=False).order_by('-id')
     users = paginate(user_list, request.GET.get('page'))
 
     return render(request, 'access_requests.html', {
@@ -113,13 +113,12 @@ def approve_user(request, user_id):
     u = models.TaoUser.objects.get(pk=user_id)
     u.is_active = True
     u.save()
-    profile = u.get_profile()
 
     template_name = 'approve'
     subject = settings.EMAIL_ACCEPT_SUBJECT
     to_addrs = [u.email]
     context = Context({
-        'title': profile.title,
+        'title': u.title,
         'first_name': u.first_name,
         'last_name': u.last_name,
         'login_url': request.build_absolute_uri(reverse('login')),
