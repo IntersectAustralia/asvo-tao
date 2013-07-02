@@ -74,7 +74,7 @@ urlpatterns = patterns('',
 
     url(r'^mgf/$', simple_view, {'template_name': 'mgf.html'}),
     url(r'^$', 'tao.views.home', name='home'),
-    url(r'^api/', include('tao.api.urls')),
+    url(r'^old_api/', include('tao.api.urls')),
     url(r'^api/', include(v1_api.urls)),
     url(r'^assets/(?P<path>.+)$', 'tao.assets.asset_handler', name='asset'),
 

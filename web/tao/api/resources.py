@@ -1,3 +1,4 @@
+from django.conf.urls.defaults import url
 from tastypie import fields
 from tastypie.authentication import Authentication
 from tastypie.authorization import Authorization
@@ -43,6 +44,7 @@ class WorkflowCommandResource(ModelResource):
         queryset = WorkflowCommand.objects.all()
         fields = ['id', 'job_id', 'submitted_by', 'command', 'parameters', 'execution_status', 'execution_comment']
         allowed_methods = ['get', 'put']
+        resource_name = 'workflowcommand'
         authorization = Authorization()
         authentication = IpBasedAuthentication()
         validation = ExecutionStatusValidation()
@@ -50,3 +52,13 @@ class WorkflowCommandResource(ModelResource):
             "execution_status": 'exact',
             "job_id": 'exact',
         }
+
+    # def override_urls(self):
+    #     return [
+    #         url(r'^%s/(?P<id>\d+)$', self.wrap_view('dispatch_detail'), name='api_workflowcommand_by_id'),
+    #         # url(r'^%s/$' % self._meta.resource_name, self.wrap_view('dispatch_list'), name="api_workflowcommand_all"),
+    #         # url(r'^%s/schema$' % self._meta.resource_name, self.wrap_view('get_schema'), name="api_workflowcommand_schema"),
+    #     ]
+
+    def get_resource_uri(self, bundle_or_obj=None, url_name='api_dispatch_list'):
+        return '/api/v1/%s/' % (self._meta.resource_name)
