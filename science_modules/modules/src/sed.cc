@@ -35,7 +35,8 @@ namespace tao {
         _cur_tree_id( -1 ),
         _omega( 0.25 ),
         _omega_lambda( 0.75 ),
-        _hubble( 73.0 )
+        _hubble( 73.0 ),
+        _thresh( 1000000 )
    {
       // Prepare the workspace for integrating and the
       // function.
@@ -252,25 +253,44 @@ namespace tao {
       std::fill( _bulge_age_masses.begin(), _bulge_age_masses.end(), 0.0 );
       std::fill( _age_metals.begin(), _age_metals.end(), 0.0 );
 
-      // Rebin everything from this galaxy.
+      // Rebin everything from this galaxy. Check if we are supposed to
+      // be using a cumulative method.
       unsigned id = galaxy.values<int>( "localgalaxyid" )[idx];
-      _rebin_recurse( id, _snap_ages[_snaps[id]] );
+      if( _accum )
+      {
+         _iter_parents( id, _snap_ages[_snaps[id]] );
+      }
+      else
+      {
+         _rebin_recurse( id, _sfrs[id], _bulge_sfrs[id], _cold_gas[id], _metals[id], _snap_ages[_snaps[id]] );
+      }
 
       LOG_EXIT();
    }
 
    void
    sed::_rebin_recurse( unsigned id,
+                        real_type sfr,
+                        real_type bulge_sfr,
+                        real_type cold_gas,
+                        real_type metal,
                         real_type oldest_age )
    {
       LOGDLN( "Rebinning masses at galaxy: ", id, setindent( 2 ) );
 
       // Recurse parents, rebinning each of them.
-      auto rng = _parents.equal_range( id );
-      while( rng.first != rng.second )
+      if( _accum )
       {
-         unsigned par = (*rng.first++).second;
-         _rebin_recurse( par, oldest_age );
+         _iter_parents( id, oldest_age );
+      }
+      else
+      {
+         auto rng = _parents.equal_range( id );
+         while( rng.first != rng.second )
+         {
+            unsigned par = (*rng.first++).second;
+            _rebin_recurse( par, _sfrs[par], _bulge_sfrs[par], _cold_gas[par], _metals[par], oldest_age );
+         }
       }
 
       // Calculate the age of material created at the beginning of
@@ -284,24 +304,11 @@ namespace tao {
       LOGDLN( "Age range: [", first_age, "-", last_age, ")" );
       LOGDLN( "Age size: ", age_size );
 
-      // // Recurse parents, summing their combined masses.
-      // real_type mass = 0.0, bulge_mass = 0.0;
-      // auto rng = _parents.equal_range( id );
-      // while( rng.first != rng.second )
-      // {
-      //    unsigned par = (*rng.first++).second;
-      //    auto ret_mass = _rebin_recurse( par, _snap_ages[_snaps[id]], oldest_age );
-      //    mass += ret_mass.first;
-      //    bulge_mass += ret_mass.second;
-      // }
-      // LOGDLN( "Parent mass: ", mass );
-      // LOGDLN( "Parent bulge mass: ", bulge_mass );
-
       // Use the star formation rates to compute the new mass
       // produced. Bear in mind the rates we expect from the
       // database will be solar masses per year.
-      real_type new_mass = _sfrs[id]*age_size*1e9;
-      real_type new_bulge_mass = _bulge_sfrs[id]*age_size*1e9;
+      real_type new_mass = sfr*age_size*1e9;
+      real_type new_bulge_mass = bulge_sfr*age_size*1e9;
       LOGDLN( "New mass: ", new_mass );
       LOGDLN( "New bulge mass: ", new_bulge_mass );
       ASSERT( new_mass >= 0.0 && new_bulge_mass >= 0.0, "What does it mean to have lost mass?" );
@@ -341,7 +348,7 @@ namespace tao {
 	    LOGD( "Metals from ", _age_metals[first_bin], " to " );
 	    _age_metals[first_bin] =
 	       (cur_bin_mass*_age_metals[first_bin] +
-		frac*new_mass*(_metals[id]/_cold_gas[id]))/
+		frac*new_mass*(metal/cold_gas))/
 	       _age_masses[first_bin];
 	    LOGDLN( _age_metals[first_bin], "." );
 	 }
@@ -355,104 +362,35 @@ namespace tao {
       LOGD( setindent( -2 ) );
    }
 
-   // void
-   // sed::_rebin_parents( unsigned id,
-   //                   unsigned root_id )
-   // {
-   //    LOG_ENTER();
-   //    LOGDLN( "Rebinning the parents of ", id, "." );
+   void
+   sed::_iter_parents( unsigned id,
+                       real_type oldest_age )
+   {
+      LOGDLN_TAG( "sedaccum", "Accumulating tree with id: ", id );
 
-   //    // Find the bin for the galaxy.
-   //    real_type last_age = _snap_ages[_snaps[id]] - _snap_ages[_snaps[root_id]];
-   //    unsigned last_bin = _find_bin( last_age );
-   //    LOGDLN( "Oldest bin and age of ", id, " is ", last_bin, ", ", last_age, "." );
+      // Must query the database to get parents.
+      string query = str( format( "SELECT local_idx, sfr, bulge_sfr, coldgas, metalscoldgas FROM %1% WHERE descendant=%2% AND tree_idx=%3%" ) % _cur_table % id % _cur_tree_id );
+      _db_timer.start();
+#ifdef MULTIDB
+      soci::rowset<soci::row> rs = (*_db)[_cur_tree].prepare << query;
+#else
+      soci::rowset<soci::row> rs = _sql.prepare << query;
+#endif
+      _db_timer.stop();
 
-   //    // Get the range of parents.
-   //    auto rng = _parents.equal_range( id );
-   //    while( rng.first != rng.second )
-   //    {
-   //    // Cache the parent.
-   //    unsigned par = (*rng.first++).second;
-   //    LOGDLN( "Looking at parent ", par, "." );
-
-   //    // Find the bin for this parent.
-   //    real_type first_age = _snap_ages[_snaps[par]] - _snap_ages[_snaps[root_id]];
-   //    unsigned first_bin = _find_bin( first_age );
-   //    LOGDLN( "Newest bin and age of ", par, " is ", first_bin, ", ", first_age, "." );
-
-   //    // Is this real time section contained entirely within
-   //    // one bin?
-   //    if( first_bin == last_bin )
-   //    {
-   //       LOGDLN( "Contained in one bin." );
-   //       _update_bin( first_bin, par, first_age - last_age );
-   //    }
-
-   //    // Split across multiple bins.
-   //    else
-   //    {
-   //       LOGDLN( "Spread over multiple bins." );
-
-   //       // Start at last age.
-   //       LOGDLN( "Section: ", last_age, ", ", _dual_ages[last_bin], "." );
-   //       _update_bin( last_bin, par, _dual_ages[last_bin] - last_age );
-
-   //       // Update any full intermediate bins.
-   //       while( last_bin < first_bin - 1 )
-   //       {
-   //          LOGDLN( "Section: ", _dual_ages[last_bin], ", ", _dual_ages[last_bin + 1], "." );
-   //          _update_bin( last_bin + 1, par, _dual_ages[last_bin + 1] - _dual_ages[last_bin] );
-   //          ++last_bin;
-   //       }
-
-   //       // Update the last bin portion.
-   //       LOGDLN( "Section: ", _dual_ages[first_bin - 1], ", ", first_age, "." );
-   //       _update_bin( first_bin, par, first_age - _dual_ages[first_bin - 1] );
-   //    }
-
-   //    // Recursively process parents.
-   //    _rebin_parents( par, root_id );
-   //    }
-
-   //    LOG_EXIT();
-   // }
-
-   // void
-   // sed::_update_bin( unsigned bin,
-   //                unsigned id,
-   //                real_type dt )
-   // {
-   //    LOG_ENTER();
-   //    LOGDLN( "Updating bin ", bin, " using timestep of ", dt, "." );
-
-   //    // The numbers that come from SAGE at least, are stored in units
-   //    // of 1e10*h. I need to multiply out by these units to get it
-   //    // to natural units.
-   //    real_type add_dm = (_sfrs[id] - _bulge_sfrs[id])*dt*1e10;
-   //    real_type add_bm = _bulge_sfrs[id]*dt*1e10;
-   //    real_type new_dm = _age_masses[bin] + add_dm;
-   //    real_type new_bm = _bulge_age_masses[bin] + add_bm;
-   //    if( new_dm > 0.0 )
-   //    {
-   //    _age_metals[bin] = (_age_masses[bin]*_age_metals[bin] +
-   //                                add_dm*_metals[id])/new_dm;
-   //    }
-   //    if( new_bm > 0.0 )
-   //    {
-   //    _bulge_age_metals[bin] = (_bulge_age_masses[bin]*_bulge_age_metals[bin] +
-   //                                 add_bm*_metals[id])/new_bm;
-   //    }
-   //    _age_masses[bin] = new_dm;
-   //    _bulge_age_masses[bin] = new_bm;
-   //    LOGDLN( "Added ", add_dm, " disk mass." );
-   //    LOGDLN( "Added ", add_bm, " bulge mass." );
-   //    LOGDLN( "New disk mass: ", _age_masses[bin] );
-   //    LOGDLN( "New bulge mass: ", _bulge_age_masses[bin] );
-   //    LOGDLN( "New disk metallicity: ", _age_metals[bin] );
-   //    LOGDLN( "New bulge metallicity: ", _bulge_age_metals[bin] );
-
-   //    LOG_EXIT();
-   // }
+      // Now process each parent directly.
+      for( soci::rowset<soci::row>::const_iterator it = rs.begin(); it != rs.end(); ++it )
+      {
+         _db_timer.start();
+         int pid = it->get<int>( 0 );
+         double psfr = it->get<double>( 1 );
+         double pbulge_sfr = it->get<double>( 2 );
+         double pcold_gas = it->get<double>( 3 );
+         double pmetal = it->get<double>( 4 );
+         _db_timer.stop();
+         _rebin_recurse( pid, psfr, pbulge_sfr, pcold_gas, pmetal, oldest_age );
+      }
+   }
 
    unsigned
    sed::_find_bin( real_type age )
@@ -630,51 +568,62 @@ namespace tao {
       _db_timer.stop();
       LOGDLN( "Have ", tree_size, " galaxies to load." );
 
-      // Resize all our arrays.
-      _descs.resize( tree_size );
-      _sfrs.resize( tree_size );
-      _bulge_sfrs.resize( tree_size );
-      _cold_gas.resize( tree_size );
-      _metals.resize( tree_size );
-      _snaps.resize( tree_size );
-
-      // Extract the table.
-      string query = "SELECT descendant, metalscoldgas, coldgas, "
-        "sfr, sfrbulge, snapnum FROM  " + table +
-         " WHERE globaltreeid = :id"
-         " ORDER BY localgalaxyid";
-      _db_timer.start();
-#ifdef MULTIDB
-      (*_db)[table] << query, soci::into( (std::vector<int>&)_descs ),
-         soci::into( (std::vector<double>&)_metals ), soci::into( (std::vector<double>&)_cold_gas ),
-         soci::into( (std::vector<double>&)_sfrs ), soci::into( (std::vector<double>&)_bulge_sfrs ),
-         soci::into( (std::vector<int>&)_snaps ),
-         soci::use( tree_id );
-#else
-      _sql << query, soci::into( (std::vector<int>&)_descs ),
-         soci::into( (std::vector<double>&)_metals ), soci::into( (std::vector<double>&)_cold_gas ),
-         soci::into( (std::vector<double>&)_sfrs ), soci::into( (std::vector<double>&)_bulge_sfrs ),
-         soci::into( (std::vector<int>&)_snaps ),
-         soci::use( tree_id );
-#endif
-      _db_timer.stop();
-      LOGDLN( "Descendant: ", _descs );
-      LOGDLN( "Star formation rates: ", _sfrs );
-      LOGDLN( "Bulge star formation rates: ", _bulge_sfrs );
-      LOGDLN( "Metals cold gas: ", _metals );
-      LOGDLN( "Cold gas: ", _cold_gas );
-      LOGDLN( "Snapshots: ", _snaps );
-
-      // Build the parents for each galaxy.
-      for( unsigned ii = 0; ii < _descs.size(); ++ii )
+      // Check the size of the tree; if it's greater than our threshold
+      // we need to use accumulation to process it.
+      if( tree_size > _thresh )
       {
-         if( _descs[ii] != -1 )
-            _parents.insert( _descs[ii], ii );
+         LOGDLN_TAG( "sedaccum", "Have tree size greater than threshold, flagging for accumulation." );
+         _accum = true;
       }
-      LOGDLN( "Parents table for tree: ", _parents );
+      else
+      {
+         // Resize all our arrays.
+         _descs.resize( tree_size );
+         _sfrs.resize( tree_size );
+         _bulge_sfrs.resize( tree_size );
+         _cold_gas.resize( tree_size );
+         _metals.resize( tree_size );
+         _snaps.resize( tree_size );
 
-      // Set the current table.
+         // Extract the table.
+         string query = "SELECT descendant, metalscoldgas, coldgas, "
+            "sfr, sfrbulge, snapnum FROM  " + table +
+            " WHERE globaltreeid = :id"
+            " ORDER BY localgalaxyid";
+         _db_timer.start();
+#ifdef MULTIDB
+         (*_db)[table] << query, soci::into( (std::vector<int>&)_descs ),
+            soci::into( (std::vector<double>&)_metals ), soci::into( (std::vector<double>&)_cold_gas ),
+            soci::into( (std::vector<double>&)_sfrs ), soci::into( (std::vector<double>&)_bulge_sfrs ),
+            soci::into( (std::vector<int>&)_snaps ),
+            soci::use( tree_id );
+#else
+         _sql << query, soci::into( (std::vector<int>&)_descs ),
+            soci::into( (std::vector<double>&)_metals ), soci::into( (std::vector<double>&)_cold_gas ),
+            soci::into( (std::vector<double>&)_sfrs ), soci::into( (std::vector<double>&)_bulge_sfrs ),
+            soci::into( (std::vector<int>&)_snaps ),
+            soci::use( tree_id );
+#endif
+         _db_timer.stop();
+         LOGDLN( "Descendant: ", _descs );
+         LOGDLN( "Star formation rates: ", _sfrs );
+         LOGDLN( "Bulge star formation rates: ", _bulge_sfrs );
+         LOGDLN( "Metals cold gas: ", _metals );
+         LOGDLN( "Cold gas: ", _cold_gas );
+         LOGDLN( "Snapshots: ", _snaps );
+
+         // Build the parents for each galaxy.
+         for( unsigned ii = 0; ii < _descs.size(); ++ii )
+         {
+            if( _descs[ii] != -1 )
+               _parents.insert( _descs[ii], ii );
+         }
+         LOGDLN( "Parents table for tree: ", _parents );
+      }
+
+      // Set the current tree ID and table.
       _cur_tree_id = tree_id;
+      _cur_table = table;
 
       LOG_EXIT();
       _timer.stop();

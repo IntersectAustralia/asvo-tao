@@ -100,16 +100,15 @@ namespace tao {
 
       void
       _rebin_recurse( unsigned id,
+                      real_type sfr,
+                      real_type bulge_sfr,
+                      real_type cold_gas,
+                      real_type metal,
                       real_type oldest_age );
 
-      // void
-      // _rebin_parents( unsigned id,
-      //                      unsigned root_id );
-
-      // void
-      // _update_bin( unsigned bin,
-      //                   unsigned id,
-      //                   real_type dt );
+      void
+      _iter_parents( unsigned id,
+                     real_type oldest_age );
 
       unsigned
       _find_bin( real_type age );
@@ -139,7 +138,11 @@ namespace tao {
       fibre<real_type> _disk_spectra, _bulge_spectra, _total_spectra;
       vector<real_type> _ssp;
 
+      string _cur_table;
+      string _cur_tree;
       long long _cur_tree_id;
+      unsigned _thresh;
+      bool _accum;
       multimap<unsigned,unsigned> _parents;
       vector<int> _descs, _snaps;
       vector<real_type> _sfrs, _bulge_sfrs, _cold_gas, _metals;

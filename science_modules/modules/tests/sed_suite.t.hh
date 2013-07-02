@@ -50,7 +50,7 @@ public:
    ///   |
    ///   0       0.2  4
    ///
-   void test_rebin_recurse()
+   void test_rebin_recurse_no_accumulation()
    {
       tao::sed sed;
 
@@ -140,7 +140,7 @@ public:
       std::fill( sed._age_metals.begin(), sed._age_metals.end(), 0.0 );
 
       // Call the recursive rebinning.
-      sed._rebin_recurse( 0, sed._snap_ages[sed._snaps[0]] );
+      sed._rebin_recurse( 0, sed._sfrs[0], sed._bulge_sfrs[0], sed._cold_gas[0], sed._metals[0], sed._snap_ages[sed._snaps[0]] );
    }
 
    ///
