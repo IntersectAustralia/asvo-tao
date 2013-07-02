@@ -17,6 +17,7 @@ import LogReader
 import emailreport
 import glob
 import pg
+import stat
 
 class WorkFlow(object):
 
@@ -204,6 +205,28 @@ class WorkFlow(object):
     def GetProcessStartTime(self,PBSID):        
         return self.TorqueObj.GetJobStartTime(PBSID)
     
+    
+    
+    def ChangePBSFilesmod(self,UserName,JobID,LocalJobID):
+        
+        JobName='tao_'+UserName[:4]+'_'+str(LocalJobID)
+        path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],'jobs', UserName, str(JobID),'log')
+        old_dir = os.getcwd()
+        os.chdir(path)
+        
+        listoffiles=glob.glob(JobName+".*")
+        logging.info('Changing Mod for Files:'+str(listoffiles))
+        for PBSFile in listoffiles:
+            logging.info('Changing Mod for File:'+PBSFile)
+            os.chmod(PBSFile,  stat.S_IRUSR|  stat.S_IWUSR |  stat.S_IRGRP )
+        os.chdir(old_dir)     
+        
+    
+    
+    
+    
+    
+    
     def GetJobstderrcontents(self,UserName,JobID,LocalJobID):
         
         JobName='tao_'+UserName[:4]+'_'+str(LocalJobID)
@@ -299,10 +322,12 @@ class WorkFlow(object):
                     
                 if  JobDetails['endstate']=='successful':
                     ##### Job Terminated Successfully 
-                    self.UpdateJob_EndSuccessfully(JobID,SubJobIndex,JobType, UIReference_ID, UserName, JobDetails)                    
+                    self.UpdateJob_EndSuccessfully(JobID,SubJobIndex,JobType, UIReference_ID, UserName, JobDetails) 
+                    self.ChangePBSFilesmod(UserName, UIReference_ID, JobID)                   
                 else:
                     ##### Job Terminated with error or was killed by the Job Queue                    
                     self.UpdateJob_EndWithError(JobID,SubJobIndex,JobType, UIReference_ID, UserName, JobDetails)
+                    self.ChangePBSFilesmod(UserName, UIReference_ID, JobID)  
                     break    
             ###############################################################################################################
             ## 5- The Job didn't change its status... Show its progess information if Exists!        
