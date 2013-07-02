@@ -1,11 +1,13 @@
 #include <cstdio>
 #include <cmath>
 #include <fstream>
+#include <boost/filesystem.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/tokenizer.hpp>
 #include "skymaker.hh"
 
 using namespace hpc;
+namespace fs = boost::filesystem;
 
 namespace tao {
 
@@ -27,54 +29,138 @@ namespace tao {
    {
    }
 
+   skymaker::image::image()
+   {
+   }
+
+   skymaker::image::image( unsigned index,
+			   int sub_cone,
+                           const string& format,
+                           const string& mag_field,
+                           real_type min_mag,
+                           real_type z_min,
+                           real_type z_max,
+                           real_type origin_ra,
+                           real_type origin_dec,
+                           real_type fov_ra,
+                           real_type fov_dec,
+                           unsigned width,
+                           unsigned height )
+   {
+      setup( index, sub_cone, format, mag_field, min_mag, z_min, z_max,
+	     origin_ra, origin_dec, fov_ra, fov_dec, width, height );
+   }
 
    ///
-   /// Initialise the module.
+   /// Setup an image.
    ///
    void
-   skymaker::initialise( const options::xml_dict& global_dict )
+   skymaker::image::setup( unsigned index,
+			   int sub_cone,
+                           const string& format,
+                           const string& mag_field,
+                           real_type min_mag,
+                           real_type z_min,
+                           real_type z_max,
+                           real_type origin_ra,
+                           real_type origin_dec,
+                           real_type fov_ra,
+                           real_type fov_dec,
+                           unsigned width,
+                           unsigned height )
    {
-      LOG_ENTER();
-
-      _read_options( global_dict );
-      _setup_list();
-      _setup_conf();
-
-      // Reset counter.
+      _idx = index;
+      _sub_cone = sub_cone;
+      _format = format;
+      _mag_field = mag_field;
+      _min_mag = min_mag;
+      _z_min = z_min;
+      _z_max = z_max;
+      _origin_ra = to_radians( origin_ra );
+      _origin_dec = to_radians( origin_dec );
+      _fov_ra = to_radians( fov_ra );
+      _fov_dec = to_radians( fov_dec );
+      _width = width;
+      _height = height;
       _cnt = 0;
 
-      LOG_EXIT();
+      // Calculate the required scale factors.
+      _scale_x = 0.5*_width/tan( 0.5*_fov_ra );
+      _scale_y = 0.5*_height/tan( 0.5*_fov_dec );
    }
 
    void
-   skymaker::execute()
+   skymaker::image::add_galaxy( const tao::galaxy& gal,
+				unsigned idx )
    {
-      _timer.start();
-      LOG_ENTER();
-      ASSERT( parents().size() == 1 );
+      // Read magnitude and redshift from galaxy.
+      real_type mag = gal.values<real_type>( _mag_field )[idx];
+      real_type redshift = gal.values<real_type>( "redshift" )[idx];
 
-      // Grab the galaxy from the parent object.
-      tao::galaxy& gal = parents().front()->galaxy();
-
-      // Walk over galaxies here.
-      for( unsigned ii = 0; ii < gal.batch_size(); ++ii )
+      // Only process if within magnitude and redshift limits.
+      if( mag >= _min_mag &&
+	  redshift >= _z_min && redshift <= _z_max )
       {
-         // Read magnitude from galaxy.
-         real_type mag = gal.values<real_type>( _mag_field )[ii];
+         // Convert the cartesian coordiantes to right-ascension and
+         // declination.
+         real_type ra, dec;
+         numerics::cartesian_to_ecs( gal.values<real_type>( "pos_x" )[idx],
+                                     gal.values<real_type>( "pos_y" )[idx],
+                                     gal.values<real_type>( "pos_z" )[idx],
+                                     ra,
+                                     dec );
+         LOGDLN( "Converted to (", ra, ", ", dec, ")" );
 
-         // Perform the processing.
-         process_galaxy( gal, ii, mag );
+	 // Filter out any RA or DEC outside our FoV.
+	 if( fabs( ra - _origin_ra ) <= 0.5*_fov_ra && fabs( dec - _origin_dec ) <= 0.5*_fov_dec )
+	 {
+	    // Now convert to pixel coordinates.
+	    real_type x, y;
+	    numerics::gnomonic_projection( ra, dec,
+					   _origin_ra, _origin_dec,
+					   x, y );
+	    LOGDLN( "Now to (", x, ", ", y, ")" );
+
+	    // To convert to pixel coordinates use the scaling factor
+	    // in each dimension and offset by half image size.
+	    x = x*_scale_x + 0.5*_width;
+	    y = y*_scale_y + 0.5*_height;
+	    // ASSERT( x >= 0.0 && x <= _width, "Bad X pixel calculation." );
+	    // ASSERT( y >= 0.0 && y <= _height, "Bad Y pixel calculation." );
+	    LOGDLN( "Pixel coordinates: ", x, ", ", y );
+
+            _list_file << "200 " << x << " " << y << " " << mag;
+
+            // // Try and extract some more values.
+            // real_type disk_scale_radius = gal.values<real_type>( "diskscaleradius" )[idx];
+            // real_type total_lum = gal.values<real_type>( "total_luminosity" )[idx];
+            // real_type bulge_lum = gal.values<real_type>( "bulge_luminosity" )[idx];
+
+            // // Do some calculations.
+            // real_type ang_diam_dist = numerics::redshift_to_angular_diameter_distance( gal.values<real_type>( "redshift" )[idx] );
+            // real_type bulge_to_total = bulge_lum/total_lum;
+            // real_type bulge_equiv_radius = atan( 0.5*bulge_to_total*disk_scale_radius/ang_diam_dist )*206264.806;
+            // real_type disk_scale_length = atan( disk_scale_radius/ang_diam_dist )*206264.806;
+
+	    // // std::cout << ang_diam_dist << ", " << disk_scale_radius << ", " << disk_scale_length << "\n";
+
+            // _list_file << " " << bulge_to_total;
+            // _list_file << " " << bulge_equiv_radius;
+            // _list_file << " 0.8";
+	    // _list_file << " " << generate_uniform<real_type>( 0, 360 ) << " ";
+            // _list_file << " " << disk_scale_length;
+            // _list_file << " 0.2";
+	    // _list_file << " " << generate_uniform<real_type>( 0, 360 );
+	    _list_file << "\n";
+
+            ++_cnt;
+         }
       }
-
-      LOG_EXIT();
-      _timer.stop();
    }
 
    void
-   skymaker::finalise()
+   skymaker::image::render( bool keep_files )
    {
-      _timer.start();
-
       // Close the list file.
       _list_file.close();
 
@@ -82,7 +168,7 @@ namespace tao {
       string master_filename;
       if( mpi::comm::world.rank() == 0 )
       {
-	 master_filename = "master_sky.list"; //tmpnam( NULL );
+	 master_filename = "tao_sky.master." + index_string( _idx ) + ".list";
          ::remove( master_filename.c_str() );
       }
       mpi::comm::world.bcast( master_filename, 0 );
@@ -106,84 +192,98 @@ namespace tao {
          cmd += " > /dev/null";
          LOGDLN( "Running: ", cmd );
          ::system( cmd.c_str() );
+
+	 // Rename the output file.
+	 fs::path target = "image." + index_string( _idx ) + ".fits";
+	 fs::rename( "sky.fits", target );
       }
       mpi::comm::world.barrier();
 
       // Delete the files we used.
-      ::remove( master_filename.c_str() );
-      if( !_keep_files )
+      if( !keep_files )
       {
+	 ::remove( master_filename.c_str() );
 	 ::remove( _list_filename.c_str() );
 	 ::remove( _conf_filename.c_str() );
       }
+   }
+
+   void
+   skymaker::image::setup_list()
+   {
+      _list_filename = "tao_sky." + index_string( _idx ) + "." + mpi::rank_string() + ".list";
+      LOGDLN( "Opening parameter file: ", _list_filename );
+      _list_file.open( _list_filename, std::ios::out );
+   }
+
+   void
+   skymaker::image::setup_conf()
+   {
+      _conf_filename ="tao_sky." + index_string( _idx ) + "." + mpi::rank_string() + ".conf";
+      LOGDLN( "Opening config file: ", _conf_filename );
+      std::ofstream file( _conf_filename, std::ios::out );
+      file << "IMAGE_SIZE " << _width << "," << _height << "\n";
+      file << "STARCOUNT_ZP 0.0\n";  // no auto stars
+      file << "MAG_LIMITS 0.1 49.0"; // wider magnitude limits
+   }
+
+   ///
+   /// Initialise the module.
+   ///
+   void
+   skymaker::initialise( const options::xml_dict& global_dict )
+   {
+      LOG_ENTER();
+
+      _read_options( global_dict );
+
+      // Reset counter of each image.
+      for( auto& img : _imgs )
+      {
+	 img.setup_list();
+	 img.setup_conf();
+      }
+
+      LOG_EXIT();
+   }
+
+   void
+   skymaker::execute()
+   {
+      _timer.start();
+      LOG_ENTER();
+      ASSERT( parents().size() == 1 );
+
+      // Grab the galaxy from the parent object.
+      tao::galaxy& gal = parents().front()->galaxy();
+
+      // Walk over galaxies here.
+      for( unsigned ii = 0; ii < gal.batch_size(); ++ii )
+         process_galaxy( gal, ii );
+
+      LOG_EXIT();
+      _timer.stop();
+   }
+
+   void
+   skymaker::finalise()
+   {
+      _timer.start();
+
+      for( auto& img : _imgs )
+	 img.render( _keep_files );
 
       _timer.stop();
    }
 
    void
    skymaker::process_galaxy( const tao::galaxy& galaxy,
-                             unsigned idx,
-                             real_type magnitude )
+                             unsigned idx )
    {
       _timer.start();
 
-      // Only process if within magnitude limits.
-      if( magnitude >= _min_mag && magnitude <= _max_mag )
-      {
-         // Convert the cartesian coordiantes to right-ascension and
-         // declination.
-         real_type ra, dec;
-         numerics::cartesian_to_ecs( galaxy.values<real_type>( "pos_x" )[idx],
-                                     galaxy.values<real_type>( "pos_y" )[idx],
-                                     galaxy.values<real_type>( "pos_z" )[idx],
-                                     ra,
-                                     dec );
-         LOGDLN( "Converted to (", ra, ", ", dec, ")" );
-
-         // Now convert to pixel coordinates.
-         real_type x, y;
-         numerics::gnomonic_projection( ra, dec,
-                                        _ra0, _dec0,
-                                        x, y );
-         LOGDLN( "Now to (", x, ", ", y, ")" );
-
-         // Now, convert to pixel coordinates.
-         // TODO: Do this properly.
-         x = _foc_x*x/_pix_w + _img_x;
-         y = _foc_y*y/_pix_h + _img_y;
-         LOGDLN( "Pixel coordinates: ", x, ", ", y );
-
-         // If not outside image bounds, write to file.
-         if( x >= 0.0 && x <= (real_type)_img_w &&
-             y >= 0.0 && y <= (real_type)_img_h )
-         {
-            _list_file << "200 " << x << " " << y << " " << magnitude;
-
-            // Try and extract some more values.
-            real_type bulge_magnitude = galaxy.values<real_type>( _bulge_mag_field )[idx];
-            real_type disk_scale_radius = 0.1*galaxy.values<real_type>( "diskscaleradius" )[idx]/0.71; // divided by h
-            real_type total_lum = galaxy.values<real_type>( "total_luminosity" )[idx];
-            real_type bulge_lum = galaxy.values<real_type>( "bulge_luminosity" )[idx];
-
-            // Do some calculations.
-            real_type ang_diam_dist = numerics::redshift_to_angular_diameter_distance( galaxy.values<real_type>( "redshift" )[idx] );
-            real_type bulge_to_total = bulge_lum/total_lum;
-            real_type bulge_equiv_radius = atan( 0.5*bulge_to_total*disk_scale_radius/ang_diam_dist )*206264.806;
-            real_type disk_scale_length = atan( disk_scale_radius/ang_diam_dist )*206264.806;
-
-	    // std::cout << ang_diam_dist << ", " << disk_scale_radius << ", " << disk_scale_length << "\n";
-
-            _list_file << " " << bulge_to_total;
-            _list_file << " " << bulge_equiv_radius;
-            _list_file << " 0.8";
-	    _list_file << " " << generate_uniform<real_type>( 0, 360 ) << " ";
-            _list_file << " " << disk_scale_length;
-            _list_file << " 0.2";
-	    _list_file << " " << generate_uniform<real_type>( 0, 360 ) << "\n";
-
-            ++_cnt;
-         }
-      }
+      for( auto& img : _imgs )
+         img.add_galaxy( galaxy, idx );
 
       _timer.stop();
    }
@@ -194,66 +294,28 @@ namespace tao {
       // Cache the dictionary.
       const options::xml_dict& dict = _dict;
 
-      // What magnitude name are we interested in?
-      _mag_field = dict.get<string>( "magnitude-field" );
-      _bulge_mag_field = dict.get<string>( "bulge-magnitude-field" );
+      // Get image list.
+      auto imgs = dict.get_nodes( "images/item" );
+      unsigned ii = 0;
+      for( const auto& img : imgs )
+      {
+         // Create a sub XML dict.
+	 options::xml_dict sub( img.node() );
 
-      // Get image dimensions.
-      _img_w = dict.get<unsigned>( "image_width",1024 );
-      _img_h = dict.get<unsigned>( "image_height",1024 );
-      LOGDLN( "Image dimensions: ", _img_w, "x", _img_h );
-
-      // Get origin ra,dec.
-      _ra0 = to_radians( dict.get<real_type>( "origin_ra",0.25*M_PI ) );
-      _dec0 = to_radians( dict.get<real_type>( "origin_dec",0.25*M_PI ) );
-      LOGDLN( "Origin (radians): ", _ra0, ", ", _dec0 );
-
-      // Get focal scale.
-      _foc_x = dict.get<real_type>( "focal_x",1.0 );
-      _foc_y = dict.get<real_type>( "focal_y",1.0 );
-      LOGDLN( "Image offset: ", _foc_x, ", ", _foc_y );
-
-      // Get image offset.
-      _img_x = dict.get<real_type>( "image_offset_x",0.0 );
-      _img_y = dict.get<real_type>( "image_offset_y",0.0 );
-      LOGDLN( "Image offset: ", _img_x, ", ", _img_y );
-
-      // Get pixel dimensions.
-      _pix_w = dict.get<real_type>( "pixel_width",1.0 );
-      _pix_h = dict.get<real_type>( "pixel_height",1.0 );
-      LOGDLN( "Pixel dimensions: ", _pix_w, "x", _pix_h );
-
-      // Get magnitude limits.
-      _min_mag = dict.get<real_type>( "min_mag",7.0 );
-      _max_mag = dict.get<real_type>( "max_mag",50.0 );
-      LOGDLN( "Magnitude limits: ", _min_mag, ", ", _max_mag );
+         // Construct a new image with the contents.
+         _imgs.emplace_back(
+	    ii++,
+            sub.get<int>( "sub_cone" ), sub.get<string>( "format" ),
+            sub.get<string>( "mag_field" ), sub.get<real_type>( "min_mag" ),
+            sub.get<real_type>( "z_min" ), sub.get<real_type>( "z_max" ),
+            sub.get<real_type>( "origin_ra" ), sub.get<real_type>( "origin_dec" ),
+            sub.get<real_type>( "fov_ra" ), sub.get<real_type>( "fov_dec" ),
+            sub.get<unsigned>( "width" ), sub.get<unsigned>( "height" )
+            );
+      }
 
       // Flags.
       _keep_files = dict.get<bool>( "keep-files",false );
    }
 
-   void
-   skymaker::_setup_list()
-   {
-      std::stringstream filename;
-      filename << "my_sky.list." << std::setfill( '0' ) << std::setw( 5 ) << mpi::comm::world.rank();
-      _list_filename = _keep_files ? filename.str() : tmpnam( NULL );
-      LOGDLN( "Opening parameter file: ", _list_filename );
-      _list_file.open( _list_filename, std::ios::out );
-   }
-
-   void
-   skymaker::_setup_conf()
-   {
-      // Only rank 0 sets up the configuration.
-      if( mpi::comm::world.rank() == 0 )
-      {
-         _conf_filename = _keep_files ? "my_sky.conf" : tmpnam( NULL );
-         LOGDLN( "Opening config file: ", _conf_filename );
-         std::ofstream file( _conf_filename, std::ios::out );
-         file << "IMAGE_SIZE " << _img_w << "," << _img_h << "\n";
-         file << "STARCOUNT_ZP 0.0\n";  // no auto stars
-         file << "MAG_LIMITS 0.1 49.0"; // wider magnitude limits
-      }
-   }
 }

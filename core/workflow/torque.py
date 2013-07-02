@@ -76,7 +76,7 @@ class TorqueInterface(object):
             #PBS -l walltime=%(wt_hours)02d:%(wt_minutes)02d:%(wt_seconds)02d
             #PBS -d .
             source /usr/local/modules/init/tcsh
-            module load boost gsl hdf5/x86_64/gnu/1.8.9-openmpi-psm postgresql            
+            module load boost gsl hdf5/x86_64/gnu/1.8.9-openmpi-1.6.4 postgresql            
             module load cfitsio/x86_64/gnu/3.290
             setenv PSM_SHAREDCONTEXTS_MAX %(ppn)d
             setenv PATH /lustre/projects/p014_swin/programs/ScienceModules/bin:$PATH

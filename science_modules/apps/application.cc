@@ -2,7 +2,7 @@
 #include "application.hh"
 #include "tao/base/base.hh"
 #include "tao/modules/modules.hh"
-
+#include <libhpc/logging/file.hh>
 
 using namespace hpc;
 using namespace pugi;
@@ -89,7 +89,9 @@ namespace tao {
          module->initialise( xml );
 
       // Mark the beginning of the run.
+      LOG_PUSH_TAG( "progress" );
       LOGILN( runtime(), ",start" );
+      LOG_POP_TAG( "progress" );
 
       // Run.
       _execute();
@@ -100,7 +102,9 @@ namespace tao {
 
       // Mark the conclusion of the run.
       mpi::comm::world.barrier();
+      LOG_PUSH_TAG( "progress" );
       LOGILN( runtime(), ",end,successful" );
+      LOG_POP_TAG( "progress" );
 
       // Dump timing information to the end of the info file.
       LOGILN( "Module metrics:", setindent( 2 ) );
@@ -135,7 +139,16 @@ namespace tao {
          xml_node cur = it->node();
          string name = cur.attribute( "id" ).value();
          string type = cur.name();
+#ifdef PREPROCESSING
+         LOGILN( "Loading Module : ",type);
+         if (type=="light-cone")
+        	 tao::factory.create_module( type, name, cur );
+         else
+        	 LOGILN( " Pre-Processing mode : Ignore Loading Module : ",type);
+#else
          tao::factory.create_module( type, name, cur );
+#endif
+
       }
 
       LOG_EXIT();
@@ -323,8 +336,12 @@ namespace tao {
 
       if( mpi::comm::world.rank() == 0 )
       {
+#ifndef NLOG
          LOGDLN( "Setting logging file to: ", filename );
-         LOG_PUSH( new logging::file( filename, logging::info ) );
+         logging::file* Logf=new logging::file( filename, logging::info );
+         Logf->add_tag("progress");
+         LOG_PUSH(Logf);
+#endif
       }
 
       LOG_EXIT();
@@ -341,6 +358,7 @@ namespace tao {
       // Keep looping over modules until all report being complete.
       bool complete;
       unsigned long long it = 1;
+
       do
       {
          LOGDLN( "Beginning iteration: ", it, hpc::setindent( 2 ) );

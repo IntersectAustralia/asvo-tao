@@ -94,6 +94,7 @@ def get_zip_file(request, id):
     response['Content-Disposition'] = 'attachment; filename="tao_output.zip"'
     return response
 
+@researcher_required
 @set_tab('jobs')
 def index(request):
     user_jobs = Job.objects.filter(user=request.user).order_by('-id')

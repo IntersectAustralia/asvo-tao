@@ -11,7 +11,7 @@ else
 HDF5_FLAGS=
 endif
 
-all: read_hdf5
+all: hdf5reader
 
-read_hdf5 : read_hdf5.f90
-	gfortran -o read_hdf5 $(HDF5_FLAGS) read_hdf5.f90 $(HDF5_LIBS)
+hdf5reader : hdf5reader.f90
+	gfortran -o hdf5reader $(HDF5_FLAGS) hdf5reader.f90 $(HDF5_LIBS)
