@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import patterns, url, include
+from django.conf.urls import patterns, url, include
 from django.conf import settings
 from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import redirect
