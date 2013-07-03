@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-List of sample programs for reading catalogues produced by TAO.
-=======
 Sample programs for reading catalogues produced by TAO.
->>>>>>> asvo-335
 
 
 FITS format readers:
@@ -10,11 +6,8 @@ FITS format readers:
 - fitsreader.py
   requirements: PyFITS library 
   (http://www.stsci.edu/institute/software_hardware/pyfits)
-<<<<<<< HEAD
-=======
   to insall using pip: 
     pip install pyfits
->>>>>>> asvo-335
 
 - fitsreader.cc
   requirements: cfitsio (http://heasarc.gsfc.nasa.gov/fitsio/)
@@ -26,13 +19,9 @@ FITS format readers:
 VO Tables format readers:
 
 - votablereader.py
-<<<<<<< HEAD
-  requirements: astrolib library (https://trac.assembla.com/astrolib)
-=======
   requirements: astropy library (http://www.astropy.org/)
   to insall using pip: 
     pip install astropy
->>>>>>> asvo-335
 
 - votablereader.cc
   requirements: pugixml library (http://pugixml.org/)
@@ -45,21 +34,18 @@ HDF5 format readers:
 
 - hdf5reader.py
   requirements: h5py library (http://code.google.com/p/h5py/)
-<<<<<<< HEAD
+  to insall using pip: 
+    pip install h5py
 
 - hdf5reader.cc
 
 - hdf5reader.f90
   requieremnts: libhdf5-serial-dev
-=======
-  to insall using pip: 
-    pip install h5py
 
 - hdf5reader.cc
   requirements: hdf5 develeopment libriries (http://www.hdfgroup.org/HDF5/)
 
 - hdf5reader.f90
   requieremnts: hdf5 develeopment libriries (http://www.hdfgroup.org/HDF5/)
->>>>>>> asvo-335
 
 
