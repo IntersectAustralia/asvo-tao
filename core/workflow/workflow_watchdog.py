@@ -33,7 +33,11 @@ class WatchDogDaemon(Daemon):
         logging.info('WatchDog Starting')
         
         path = '/tmp/'
-        filename = 'daemon-workflow.pid'
+        [self.Options]=settingReader.ParseParams("settings.xml")    
+        filename=self.Options['WorkFlowSettings:ProcessID']
+        
+    
+        
         
         logging.info("Process ID= "+path+filename)
         
@@ -119,7 +123,11 @@ class MyEventHandler(FileSystemEventHandler):
 
 
 if __name__ == "__main__":
-    daemonobj = WatchDogDaemon('/tmp/daemon-workflow-watchdog.pid','/dev/null','log/watchdogout.log','log/watchdogerr.log')
+    
+    
+    [Options]=settingReader.ParseParams("settings.xml")    
+    ProcessIDFile=Options['WorkFlowSettings:WatchDogProcessID']   
+    daemonobj = WatchDogDaemon('/tmp/'+ProcessIDFile,'/dev/null','log/watchdogout.log','log/watchdogerr.log')
     signal.signal(signal.SIGTERM, daemonobj.HandleExit)
     if len(sys.argv) == 2:
             if 'start' == sys.argv[1]:

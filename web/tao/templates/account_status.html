@@ -1,0 +1,40 @@
+{% extends '_base.html' %}
+{% load bootstrap_tags %}
+{% block subtitle %}
+    Register
+{% endblock %}
+
+{% block content %}
+    <h1>
+        Account registration status
+    </h1>
+    <table>
+    <tr>
+        <td>
+            User:
+        </td>
+        <td>
+            {{ user.display_name }}
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Registration status:
+        </td>
+        <td>
+            {{ user.display_registration_status }}
+        </td>
+    </tr>
+    {% check_user user 'is_rejected' as is_rejected %}
+    {% if is_rejected %}
+    <tr>
+        <td>
+            Reason:
+        </td>
+        <td>
+            {{ user.account_registration_reason }}
+        </td>
+    </tr>
+    {% endif %}
+    </table>
+{% endblock content %}

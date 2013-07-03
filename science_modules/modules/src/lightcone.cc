@@ -74,6 +74,7 @@ namespace tao {
          begin();
       else
          ++(*this);
+
       if( done() )
          _complete = true;
       else
@@ -83,6 +84,8 @@ namespace tao {
          // galaxy object.
          *(*this);
       }
+
+
 
       LOG_EXIT();
       _timer.stop();
@@ -103,6 +106,8 @@ namespace tao {
    void
    lightcone::begin()
    {
+
+
       _timer.start();
       LOG_ENTER();
 
@@ -115,11 +120,17 @@ namespace tao {
 	 // The outer loop is over the boxes.
 	 _get_boxes( _boxes );
 	 LOGDLN( "Boxes: ", _boxes );
-
+#ifdef PREPROCESSING
+	 LOGLN( logging::pushlevel( 100 ), "Boxes:",_boxes, logging::poplevel );
+#endif
 	 // Setup progress indicator.
 	 _prog.set_local_size( _boxes.size() );
 	 if( mpi::comm::world.rank() == 0 )
+	 {
+		LOG_PUSH_TAG( "progress" );
 	    LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
+	    LOG_POP_TAG( "progress" );
+	 }
 
 	 _cur_box = _boxes.begin();
 	 _settle_box();
@@ -136,8 +147,11 @@ namespace tao {
 	 // Setup progress indicator.
 	 _prog.set_local_size( _boxes.size() );
 	 if( mpi::comm::world.rank() == 0 )
+	 {
+		LOG_PUSH_TAG( "progress" );
 	    LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
-
+	    LOG_POP_TAG( "progress" );
+	 }
 	 _cur_box = _boxes.begin();
 	 _settle_box();
       }
@@ -211,7 +225,11 @@ namespace tao {
 	       _prog.set_delta( 1 );
 	       _prog.update();
 	       if( mpi::comm::world.rank() == 0 )
+	       {
+	    	  LOG_PUSH_TAG( "progress" );
 	       	  LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
+	       	  LOG_POP_TAG( "progress" );
+	       }
 	    }
          }
       }
@@ -319,6 +337,7 @@ namespace tao {
 	 while( !it.done() )
 	    table_names.push_back( *it++ );
 	 LOGDLN( "Direct table names: ", table_names );
+
       }
       else
       {
@@ -384,6 +403,9 @@ namespace tao {
       }
 
       LOGDLN( "My table names: ", table_names );
+#ifdef PREPROCESSING
+      LOGLN( logging::pushlevel( 100 ), "Tables:",table_names, logging::poplevel );
+#endif
       LOG_EXIT();
       _timer.stop();
    }
@@ -420,6 +442,9 @@ namespace tao {
       do
       {
          LOGDLN( "Using box ", *_cur_box );
+#ifdef PREPROCESSING
+         LOGLN( logging::pushlevel( 100 ), "Using box:",*_cur_box, logging::poplevel );
+#endif
 
 	 // Update the box timings.
 	 if( _per_box.running() )
@@ -431,7 +456,11 @@ namespace tao {
 	    _prog.set_delta( 1 );
 	    _prog.update();
 	    if( mpi::comm::world.rank() == 0 )
+	    {
+	       LOG_PUSH_TAG( "progress" );
 	       LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
+	       LOG_POP_TAG( "progress" );
+	    }
 	 }
 	 _per_box.start();
 
@@ -518,7 +547,11 @@ namespace tao {
 	 _prog.set_delta( 1 );
 	 _prog.update();
 	 if( mpi::comm::world.rank() == 0 )
+	 {
+		 LOG_PUSH_TAG( "progress" );
 	    LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
+	    LOG_POP_TAG( "progress" );
+	 }
       }
 
       LOG_EXIT();
@@ -533,6 +566,7 @@ namespace tao {
                              real_type offs_y,
                              real_type offs_z )
    {
+#ifndef PREPROCESSING
       _timer.start();
       LOG_ENTER();
 
@@ -596,6 +630,7 @@ namespace tao {
 
       LOG_EXIT();
       _timer.stop();
+#endif
    }
 
    ///

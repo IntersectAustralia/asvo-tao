@@ -25,8 +25,9 @@ class UserCreationFormTest(TransactionTestCase):
         test_email = 'cindy@intersect.org.au'
         UserFactory.create(email=test_email)
         
-        from tao.models import User
-        self.assertEqual(1, User.objects.count())
+        from tao.models import TaoUser
+        self.assertEqual(1, TaoUser.objects.count())
+        from django.contrib.auth.models import AnonymousUser
         user_form = UserCreationForm({'title': 'a', 
             'first_name': 'b', 
             'last_name': 'c', 
@@ -35,7 +36,7 @@ class UserCreationFormTest(TransactionTestCase):
             'recaptcha_response_field': 'PASSED',
             'username': 'e',
             'password1': 'funnyfish',
-            'password2': 'funnyfish'})
+            'password2': 'funnyfish'}, user=AnonymousUser())
         self.assertFalse(user_form.is_valid())
 
         self.assertEqual(['That email is already taken.'], user_form.errors['email'])

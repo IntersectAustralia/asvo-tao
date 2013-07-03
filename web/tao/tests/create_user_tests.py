@@ -1,7 +1,6 @@
 from django.test import TestCase
 
 from django.test.client import Client
-from tao.models import User
 from django.test.utils import override_settings
 
 

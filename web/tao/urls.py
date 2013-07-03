@@ -11,6 +11,10 @@ from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import render
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib import admin
+
+from tastypie.api import Api
+from tao.api.resources import WorkflowCommandResource
+
 admin.autodiscover()
 
 simple_view = lambda request, template_name: render(request, template_name)
@@ -26,7 +30,9 @@ account_patterns = patterns('',
     url(r'login/$', 'tao.views.login', name='login'),
     url(r'logout/$', logout, {'next_page': reverse_lazy('home')}, name='logout'),
     url(r'register/$', 'tao.views.register', name='register'),
+    url(r'account_status/$', 'tao.views.account_status', name='account_status'),
     url(r'support_page/$', 'tao.views.support', name='support_page'),
+    url(r'fail/$', 'tao.views.fail', name='failurl'),
 )
 
 mock_galaxy_factory_patterns = patterns('tao.views.mock_galaxy_factory',
@@ -55,6 +61,9 @@ json_patterns = patterns('tao.json.views',
     url(r'^$', 'bad_request', name='json_ctx'),
 )
 
+v1_api = Api(api_name='v1')
+v1_api.register(WorkflowCommandResource())
+
 urlpatterns = patterns('',
     ('^admin/', include(admin.site.urls)),
     ('^accounts/', include(account_patterns)),
@@ -67,7 +76,8 @@ urlpatterns = patterns('',
 
     url(r'^mgf/$', simple_view, {'template_name': 'mgf.html'}),
     url(r'^$', 'tao.views.home', name='home'),
-    url(r'^api/', include('tao.api.urls')),
+    url(r'^old_api/', include('tao.api.urls')),
+    url(r'^api/', include(v1_api.urls)),
     url(r'^assets/(?P<path>.+)$', 'tao.assets.asset_handler', name='asset'),
 
 
