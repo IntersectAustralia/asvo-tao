@@ -1,0 +1,20 @@
+<settings>	
+	<PGDB>
+		<TreeTablePrefix>tree_</TreeTablePrefix>
+		<DBName>bolshoi_full_hdf5_dist</DBName>
+        <DBAlias>Bolshoi_Full</DBAlias>
+		<ServersCount>2</ServersCount>		
+		<serverInfo>
+			<serverip>tao01.hpc.swin.edu.au</serverip>
+			<port>3306</port>
+			<user>taoadmin</user>
+			<password>tao_admin_password_##</password>			
+		</serverInfo>
+		<serverInfo>
+			<serverip>tao02.hpc.swin.edu.au</serverip>
+			<port>3306</port>
+			<user>taoadmin</user>
+			<password>tao_admin_password_##</password>			
+		</serverInfo>	
+	</PGDB>	
+</settings>	
