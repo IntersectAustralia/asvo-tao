@@ -135,4 +135,5 @@ class ParseProfileData(object):
 
 if __name__ == '__main__':
      ParseProfileDataObj=ParseProfileData("summarygeneration.xml")
-     ParseProfileDataObj.ProcessTables(0)
+     for i in range(0,ParseProfileDataObj.serverscount):
+         ParseProfileDataObj.ProcessTables(i)
