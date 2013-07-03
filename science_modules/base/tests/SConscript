@@ -11,6 +11,7 @@ Import('env')
 suites = [
     # ('', '', '', range(1, 5)),
     ('galaxy_suite.t.hh', 'galaxy.cc'),
+    ('utils_suite.t.hh',),
 ]
 
 # Define libraries to link against.
