@@ -1,4 +1,4 @@
-List of sample programs for reading catalogues produced by TAO.
+Sample programs for reading catalogues produced by TAO.
 
 
 FITS format readers:
@@ -6,6 +6,8 @@ FITS format readers:
 - fitsreader.py
   requirements: PyFITS library 
   (http://www.stsci.edu/institute/software_hardware/pyfits)
+  to insall using pip: 
+    pip install pyfits
 
 - fitsreader.cc
   requirements: cfitsio (http://heasarc.gsfc.nasa.gov/fitsio/)
@@ -32,10 +34,13 @@ HDF5 format readers:
 
 - hdf5reader.py
   requirements: h5py library (http://code.google.com/p/h5py/)
+  to insall using pip: 
+    pip install h5py
 
 - hdf5reader.cc
+  requirements: hdf5 develeopment libriries (http://www.hdfgroup.org/HDF5/)
 
 - hdf5reader.f90
-  requieremnts: libhdf5-serial-dev
+  requieremnts: hdf5 develeopment libriries (http://www.hdfgroup.org/HDF5/)
 
 

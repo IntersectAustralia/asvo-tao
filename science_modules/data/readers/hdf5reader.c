@@ -44,7 +44,7 @@ int main (int argc, char *argv[]) {
     space = H5Dget_space(dataset);
     size = H5Sget_simple_extent_dims(space, dims, NULL);
 
-    // Open datasets for simultinious reading
+    // Open datasets for simultaneous reading
     for (j = 0; j < counter; j++) {
         datasets[j] = H5Dopen(file, fields[j], H5P_DEFAULT);
         spaces[j] = H5Dget_space(datasets[j]);
