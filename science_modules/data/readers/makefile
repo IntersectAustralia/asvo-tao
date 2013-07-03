@@ -1,5 +1,6 @@
-# Set locations to point to HDF5, VO and FITS installed, if it is in a 
-# non-standard location. Otherwise leave it blank.
+# Set locations to point to HDF5, FITS and PUGIXML (required for VO) 
+# installed, if it is in a non-standard location. Otherwise leave it 
+# blank.
 
 HDF5_DIR=
 FITS_DIR=
@@ -55,3 +56,4 @@ default: all
 
 clean:
 	rm hdf5readerF90 hdf5readerC fitsreaderF90 fitsreaderCC votablereaderF90 votablereaderCC
+	
