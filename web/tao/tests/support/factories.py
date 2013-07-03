@@ -1,10 +1,10 @@
 import factory
 # http://factoryboy.readthedocs.org/en/latest/index.html
 
-from tao.models import Job, User, Simulation, GalaxyModel, DataSet, DataSetProperty, StellarModel, Snapshot, BandPassFilter, DustModel, GlobalParameter, WorkflowCommand
+from tao.models import Job, TaoUser, Simulation, GalaxyModel, DataSet, DataSetProperty, StellarModel, Snapshot, BandPassFilter, DustModel, GlobalParameter, WorkflowCommand
 
 class UserFactory(factory.Factory):
-    FACTORY_FOR = User
+    FACTORY_FOR = TaoUser
     username = factory.Sequence(lambda n: 'username' + n)
     email = factory.Sequence(lambda n: 'email' + n + '@example.com')
     

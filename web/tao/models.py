@@ -351,7 +351,7 @@ class WorkflowCommand(models.Model):
 
     job_id = models.ForeignKey(Job)
     issued = models.DateTimeField(auto_now_add=True)
-    submitted_by = models.ForeignKey(User)
+    submitted_by = models.ForeignKey(TaoUser)
     command = models.CharField(choices=COMMAND_CHOICES, max_length=64)
     parameters = models.CharField(max_length=1024, default='', blank=True)
     executed = models.DateTimeField(null=True, blank=True)

@@ -113,13 +113,12 @@ def approve_user(request, user_id):
     u = models.TaoUser.objects.get(pk=user_id)
     u.is_active = True
     u.save()
-    profile = u.get_profile()
 
     template_name = 'approve'
     subject = settings.EMAIL_ACCEPT_SUBJECT
     to_addrs = [u.email]
     context = Context({
-        'title': profile.title,
+        'title': u.title,
         'first_name': u.first_name,
         'last_name': u.last_name,
         'login_url': request.build_absolute_uri(reverse('login')),
@@ -134,14 +133,13 @@ def approve_user(request, user_id):
 @require_POST
 def reject_user(request, user_id):
     u = models.TaoUser.objects.get(pk=user_id)
-    profile = u.get_profile()
-    profile.rejected = True
-    profile.save()
+    u.rejected = True
+    u.save()
 
     reason = request.POST['reason']
 
     template_name = 'reject'
-    context = Context({'title': profile.title, 'first_name': u.first_name, 'last_name': u.last_name, 'reason': reason})
+    context = Context({'title': u.title, 'first_name': u.first_name, 'last_name': u.last_name, 'reason': reason})
     subject = settings.EMAIL_REJECT_SUBJECT
     to_addrs = [u.email]
 
@@ -161,7 +159,7 @@ def support(request):
             username = request.user.username
             subject = form.cleaned_data['subject']
             message = form.cleaned_data['message']
-            user_email = models.User.objects.get(username=username).email
+            user_email = models.TaoUser.objects.get(username=username).email
             logger.info('Support email from ' + username)
             logger.info('Subject: ' + subject)
             logger.info('Message: ' + message)

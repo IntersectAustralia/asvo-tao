@@ -3,7 +3,7 @@ from django.conf import settings
 from django.test.testcases import TestCase
 
 from tao import models
-from tao.models import Job, User
+from tao.models import Job, TaoUser
 from tao.tests.support.factories import GlobalParameterFactory
 
 import os
@@ -14,7 +14,7 @@ class JobTestCase(TestCase):
         GlobalParameterFactory(parameter_name='job-status.html', parameter_value='{{ job.id }} {{ user.username }}')
         GlobalParameterFactory(parameter_name='job-status.txt', parameter_value='{{ job.id }} {{ user.username }}')
 
-        self.user = User()
+        self.user = TaoUser()
         self.user.save()
         mail.outbox = []
 

@@ -11,9 +11,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as AuthUserAdmin
 from tao.models import TaoUser
 
-from tao.models import Job, UserProfile, Simulation, GalaxyModel, DataSet
-from tao.models import DataSetProperty, StellarModel, Snapshot, BandPassFilter
-from tao.models import DustModel, GlobalParameter, WorkflowCommand
+from tao.models import Job, Simulation, GalaxyModel, DataSet, DataSetProperty, StellarModel, Snapshot, BandPassFilter, DustModel, GlobalParameter, WorkflowCommand
 
 for model in (Job, GalaxyModel, DataSetProperty, StellarModel, BandPassFilter,
               DustModel, GlobalParameter, WorkflowCommand):

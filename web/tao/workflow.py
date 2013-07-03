@@ -24,7 +24,7 @@ def _make_parameters(user, forms):
 
     root = create_root('tao', xmlns='http://tao.asvo.org.au/schema/module-parameters-v1', timestamp=time.timestamp())
 
-    child_element(root, 'username', text=user)
+    child_element(root, 'username', text=user.username)
 
     workflow = find_or_create(root, 'workflow', name='alpha-light-cone-image')
     child_element(workflow, 'schema-version', text='2.0')

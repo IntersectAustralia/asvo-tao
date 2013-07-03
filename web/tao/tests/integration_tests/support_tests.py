@@ -3,7 +3,7 @@ from django.test.utils import override_settings
 
 from tao.tests.integration_tests import helper
 from tao.tests.support.factories import UserFactory, GlobalParameterFactory
-from tao.models import GlobalParameter, User
+from tao.models import TaoUser
 
 
 class SupportTests(helper.LiveServerTest):
@@ -21,7 +21,7 @@ class SupportTests(helper.LiveServerTest):
         mail.outbox = []
 
     def tearDown(self):
-        for o in User.objects.all(): o.delete()
+        for o in TaoUser.objects.all(): o.delete()
         super(SupportTests, self).tearDown()
 
     def test_support_requires_login(self):
