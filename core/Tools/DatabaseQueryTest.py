@@ -73,9 +73,10 @@ class TestClass(object):
         
         logging.info('Start Test')
         start= time.clock()
-        GetTablesListSt="select * from "+TableName+" LIMIT 10000000;"
+        GetTablesListSt="select count(Distinct treeindex) from "+TableName+";"
         self.ActiveCursors[ServerID].execute(GetTablesListSt)
         TablesList= self.ActiveCursors[ServerID].fetchall() 
+        
         end= time.clock()
         print(str(CommRank)+": Total Processing Time="+str((end-start))+" seconds")
         logging.info('End Test')
