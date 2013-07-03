@@ -252,6 +252,6 @@ MODULE_INDICES = {'light_cone': '1', 'sed': '2', 'mock_image': '3',
 TAO_VERSION = '0.22.1'
 
 AAF_DS_URL = 'https://ds.test.aaf.edu.au/discovery/DS'
-AAF_APP_ID = 'https://asvo-aff.intersect.org.au/shibboleth'
-AAF_SESSION_URL = 'https://asvo-aff.intersect.org.au/Shibboleth.sso/Login'
-AAF_LOGOUT_URL = 'https://asvo-aff.intersect.org.au/Shibboleth.sso/Logout'
+AAF_APP_ID = 'https://example.intersect.org.au/shibboleth'
+AAF_SESSION_URL = 'https://example.intersect.org.au/Shibboleth.sso/Login'
+AAF_LOGOUT_URL = 'https://example.intersect.org.au/Shibboleth.sso/Logout'

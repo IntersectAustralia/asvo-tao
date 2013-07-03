@@ -1,7 +1,3 @@
-/////// This File has been modified from tablist CFITSIO sample
-// g++ fitsreader.cc -L/usr/local/x86_64/gnu/cfitsio-3.290/lib -lcfitsio -I/usr/local/x86_64/gnu/cfitsio-3.290/include -o fitreader
-// g++ fitsreader.cc -L/home/amr/Downloads/cfitsio/lib -lcfitsio -I/home/amr/Downloads/cfitsio/include -o fitreader
-
 #include <string.h>
 #include <stdio.h>
 #include "fitsio.h"
