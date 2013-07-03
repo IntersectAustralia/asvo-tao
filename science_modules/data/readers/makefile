@@ -24,7 +24,7 @@ endif
 
 
 ifdef PUGIXML
-VO_FLAGS=-I$(PUGIXML)/src/
+VO_FLAGS=-I$(PUGIXML)/src
 else
 VO_FLAGS=
 endif
