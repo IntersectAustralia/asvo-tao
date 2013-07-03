@@ -1,14 +1,12 @@
 $(function() {
-    var moveLeft = 20;
-    var moveDown = 10;
-
-    $('a#trigger').hover(function() {
+    $('a#show-why-register').click(function(e) {
+        e.stopPropagation();
         $('div#why-register').show();
-    }, function() {
-        $('div#why-register').hide();
+        return false;
     });
 
-//    $('a#trigger').mousemove(function(e) {
-//        $('div#pop-up').css('top', e.pageY + moveDown).css('left', e.pageX + moveLeft);
-//    });
+    $("a#close-why-register").click(function() {
+        $('div#why-register').hide();
+        return false;
+    });
 });

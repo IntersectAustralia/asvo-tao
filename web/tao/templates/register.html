@@ -1,5 +1,6 @@
 {% extends '_base.html' %}
 {% load bootstrap_tags %}
+{% load rst_to_html %}
 {% load staticfiles %}
 {% block subtitle %}
     Register
@@ -22,7 +23,7 @@
     </p>
     {% endif %}
     <p>
-        <a href="#" id="trigger">Why register?</a>
+        <a href="#" id="show-why-register">Why register?</a>
     </p>
     <div class="row-fluid">
         <div class="boxed span8">
@@ -34,17 +35,14 @@
         <!-- HIDDEN / POP-UP DIV -->
         <div class="aside span4" id="why-register" style="display: none;">
             <div class="boxed">
-                <div style="overflow-y: scroll;height: 210px">
-                <p>
-                    Test: This text only appears when hovering over the "Why register?" link.
-                    Otherwise it is hidden from view.
-                </p>
+                <div>
+                    <legend>Why register?</legend>
+                    <p>
+                        {% rst_file_to_html '../docs/source/user-manual/whyregister.rst'%}
+                    </p>
+                    <a href="#" id="close-why-register">[Close]</a>
                 </div>
             </div>
         </div>
     </div>
-{#    <form action="" method="POST">#}
-{#        {% csrf_token %}#}
-{#        {{ form|as_bootstrap }}#}
-{#    </form>#}
 {% endblock content %}
