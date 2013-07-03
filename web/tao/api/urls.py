@@ -7,6 +7,7 @@ from piston.resource import Resource
 
 from tao.api.handlers import JobHandler
 
+
 class IpBasedAuthenticator(object):
     def is_authenticated(self, request):
         ip_addr = request.META.get('REMOTE_ADDR')
