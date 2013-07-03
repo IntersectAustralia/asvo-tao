@@ -3,7 +3,7 @@ from django.test.utils import override_settings
 
 from tao.tests.integration_tests import helper
 from tao.tests.support.factories import UserFactory, GlobalParameterFactory
-from tao.models import GlobalParameter, User
+from tao.models import TaoUser
 
 class UserRegisterTest(helper.LiveServerTest):
 
@@ -19,7 +19,7 @@ class UserRegisterTest(helper.LiveServerTest):
         mail.outbox = []
 
     def tearDown(self):
-        for o in User.objects.all(): o.delete()
+        for o in TaoUser.objects.all(): o.delete()
         super(UserRegisterTest, self).tearDown()
     
     @override_settings(USE_CAPTCHA=False)    

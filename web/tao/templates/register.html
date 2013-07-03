@@ -15,11 +15,17 @@
     <h1>
         Register
     </h1>
+    {% check_user user 'is_aaf' as is_aaf %}
+    {% if not is_aaf %}
+    <p>
+    <b>Note:</b> You can use your <a href="{% url 'login' %}">AAF credentials to register.</a>
+    </p>
+    {% endif %}
+    <p>
+        <a href="#" id="trigger">Why register?</a>
+    </p>
     <div class="row-fluid">
         <div class="boxed span8">
-            <p>
-                <a href="#" id="trigger">Why register?</a>
-            </p>
             <form action="" method="POST">
                 {% csrf_token %}
                 {{ form|as_bootstrap }}
@@ -37,4 +43,8 @@
             </div>
         </div>
     </div>
+{#    <form action="" method="POST">#}
+{#        {% csrf_token %}#}
+{#        {{ form|as_bootstrap }}#}
+{#    </form>#}
 {% endblock content %}

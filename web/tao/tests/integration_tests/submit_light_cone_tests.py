@@ -115,6 +115,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
     def test_submit_valid_box_job(self):
         ## fill in form (correctly)
         self.select(self.lc_id('catalogue_geometry'), 'Box')
+        self.clear(self.lc_id('box_size'))
         self.fill_in_fields({
             'box_size': '9',
             'snapshot': "%.5g" % float(self.redshifts[0]),
@@ -157,6 +158,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
 
         ## fill in box fields (correctly)
         self.select(self.lc_id('catalogue_geometry'), 'Box')
+        self.clear(self.lc_id('box_size'))
         self.fill_in_fields({
             'box_size': '1',
             'snapshot': "%.5g" % float(self.redshifts[0]),
