@@ -1,11 +1,18 @@
 #ifndef tao_base_sfh_hh
 #define tao_base_sfh_hh
 
+#include <boost/algorithm/string/trim.hpp>
+#include <boost/lexical_cast.hpp>
+#include "timed.hh"
+#include "age_line.hh"
+
 // Forward declaration of test suites to allow direct access.
 class sfh_suite;
 
 namespace tao {
    using namespace hpc;
+   using boost::format;
+   using boost::str;
 
    ///
    /// Star-formation History. Responsible for rebinning star-formation
@@ -13,6 +20,7 @@ namespace tao {
    ///
    template< class T >
    class sfh
+      : public timed
    {
       friend class ::sfh_suite;
 
@@ -23,21 +31,12 @@ namespace tao {
    public:
 
       sfh()
-         : _timer( NULL ),
-           _db_timer( NULL )
+         : timed(),
+           _snap_ages( NULL ),
+           _bin_ages( NULL ),
+           _thresh( 1000000 ),
+           _accum( false )
       {
-      }
-
-      void
-      set_timer( profile::timer* timer )
-      {
-         _timer = timer;
-      }
-
-      void
-      set_db_timer( profile::timer* timer )
-      {
-         _db_timer = timer;
       }
 
       void
@@ -52,18 +51,17 @@ namespace tao {
       }
 
       void
-      set_snapshot_ages( const age_line& snap_ages )
+      set_snapshot_ages( const age_line<real_type>* snap_ages )
       {
          _snap_ages = snap_ages;
       }
 
       void
-      set_bin_ages( const age_line& bin_ages )
+      set_bin_ages( const age_line<real_type>* bin_ages )
       {
          _bin_ages = bin_ages;
       }
 
-      template< class T >
       void
       set_tree_data( vector<int> descs,
                      vector<int> snaps,
@@ -100,7 +98,7 @@ namespace tao {
                       const string& table_name,
                       unsigned long long tree_id )
       {
-         _timer_start( _timer );
+         timer_start();
          LOGILN( "Loading tree with global ID ", tree_id, " from table ", table_name, setindent( 2 ) );
 
          // Clear away any existing tree data.
@@ -108,10 +106,10 @@ namespace tao {
 
          // Extract number of records in this tree.
          unsigned tree_size;
-         _timer_start( _db_timer );
-         sql << "SELECT COUNT(*) FROM " + table + " WHERE globaltreeid = :id",
+         db_timer_start();
+         sql << "SELECT COUNT(*) FROM " + table_name + " WHERE globaltreeid = :id",
             soci::into( tree_size ), soci::use( tree_id );
-         _timer_stop( _db_timer );
+         db_timer_stop();
          LOGDLN( "Tree size: ", tree_size );
 
          // If the tree size is greater than the threshold we should use a cumulative
@@ -134,16 +132,16 @@ namespace tao {
 
             // Extract the table.
             string query = "SELECT descendant, metalscoldgas, coldgas, "
-               "sfr, sfrbulge, snapnum FROM  " + table +
+               "sfr, sfrbulge, snapnum FROM  " + table_name +
                " WHERE globaltreeid = :id"
                " ORDER BY localgalaxyid";
-            _timer_start( _db_timer );
+            db_timer_start();
             sql << query, soci::into( (std::vector<int>&)_descs ),
                soci::into( (std::vector<double>&)_metals ), soci::into( (std::vector<double>&)_cold_gas ),
                soci::into( (std::vector<double>&)_sfrs ), soci::into( (std::vector<double>&)_bulge_sfrs ),
                soci::into( (std::vector<int>&)_snaps ),
                soci::use( tree_id );
-            _timer_stop( _db_timer );
+            db_timer_stop();
             LOGTLN( "Descendant: ", _descs );
             LOGTLN( "Star formation rates: ", _sfrs );
             LOGTLN( "Bulge star formation rates: ", _bulge_sfrs );
@@ -160,23 +158,27 @@ namespace tao {
          _cur_tree_id = tree_id;
 
          LOGI( setindent( -2 ) );
-         _timer_stop( _timer );
+         timer_stop();
       }
 
-      template< class T >
+      template< class U >
       void
       rebin( soci::session& sql,
              unsigned galaxy_id,
-             typename vector<T>::view age_masses,
-             typename vector<T>::view bulge_age_masses,
-             typename vector<T>::view age_metals )
+             typename vector<U>::view age_masses,
+             typename vector<U>::view bulge_age_masses,
+             typename vector<U>::view age_metals )
       {
-         LOGDLN( "Rebinning galaxy with local ID ", galaxy_id, " in tree with ID ", _cur_tree, " in table ", _cur_table, "." );
+         LOGDLN( "Rebinning galaxy with local ID ", galaxy_id, " in tree with ID ", _cur_tree_id, " in table ", _cur_table, ".", setindent( 2 ) );
+
+         // Must have ages available.
+         ASSERT( _snap_ages, "Snapshot ages have not been set." );
+         ASSERT( _bin_ages, "Bin ages have not been set." );
 
          // Array sizes must match the number of bins.
-         ASSERT( _bin_ages.size() == age_masses.size() &&
-                 _bin_ages.size() == bulge_age_masses.size() &&
-                 _bin_ages.size() == age_metals.size(),
+         ASSERT( _bin_ages->size() == age_masses.size() &&
+                 _bin_ages->size() == bulge_age_masses.size() &&
+                 _bin_ages->size() == age_metals.size(),
                  "Rebinning arrays must have the same size as the age bins." );
 
          // Clear out values.
@@ -191,15 +193,19 @@ namespace tao {
             // Extract the snapshot so we can get the age.
             unsigned snap;
             sql << "SELECT snapnum FROM " + _cur_table + " WHERE globaltreeid = :tid AND localgalaxyid = :gid",
-               soci::into( snap ), soci::use( _cur_tree ), soci::use( galaxy_id );
+               soci::into( snap ), soci::use( _cur_tree_id ), soci::use( galaxy_id );
 
             // Begin processing parents.
-            _iter_parents( sql, id, _snap_ages[snap] );
+            _iter_parents<U>( sql, galaxy_id, (*_snap_ages)[snap], age_masses, bulge_age_masses, age_metals );
          }
          else
          {
-            _rebin_recurse( sql, id, _sfrs[id], _bulge_sfrs[id], _cold_gas[id], _metals[id], _snap_ages[_snaps[id]] );
+            _rebin_recurse<U>( sql, galaxy_id, _sfrs[galaxy_id], _bulge_sfrs[galaxy_id], _cold_gas[galaxy_id],
+                               _metals[galaxy_id], _snaps[galaxy_id], (*_snap_ages)[_snaps[galaxy_id]],
+                               age_masses, bulge_age_masses, age_metals );
          }
+
+         LOGD( setindent( -2 ) );
       }
 
    protected:
@@ -218,21 +224,26 @@ namespace tao {
          }
       }
 
+      template< class U >
       void
-      sed::_rebin_recurse( soci::session& sql,
-                           unsigned id,
-                           real_type sfr,
-                           real_type bulge_sfr,
-                           real_type cold_gas,
-                           real_type metal,
-                           real_type oldest_age )
+      _rebin_recurse( soci::session& sql,
+                      unsigned id,
+                      real_type sfr,
+                      real_type bulge_sfr,
+                      real_type cold_gas,
+                      real_type metal,
+                      unsigned snap,
+                      real_type oldest_age,
+                      typename vector<U>::view age_masses,
+                      typename vector<U>::view bulge_age_masses,
+                      typename vector<U>::view age_metals )
       {
          LOGDLN( "Rebinning masses/metals at galaxy: ", id, setindent( 2 ) );
 
          // Recurse parents, rebinning each of them.
          if( _accum )
          {
-            _iter_parents( sql, id, oldest_age );
+            _iter_parents<U>( sql, id, oldest_age, age_masses, bulge_age_masses, age_metals );
          }
          else
          {
@@ -240,7 +251,8 @@ namespace tao {
             while( rng.first != rng.second )
             {
                unsigned par = (*rng.first++).second;
-               _rebin_recurse( sql, par, _sfrs[par], _bulge_sfrs[par], _cold_gas[par], _metals[par], oldest_age );
+               _rebin_recurse<U>( sql, par, _sfrs[par], _bulge_sfrs[par], _cold_gas[par], _metals[par], _snaps[par],
+                                  oldest_age, age_masses, bulge_age_masses, age_metals );
             }
          }
 
@@ -248,9 +260,9 @@ namespace tao {
          // this timestep and at the end. Be careful! This age I speak
          // of is how old the material will be when we get to the
          // time of the final galaxy.
-         ASSERT( _snaps[id] > 0, "Must have a previous snapshot." );
-         real_type first_age = oldest_age - _snap_ages[_snaps[id] - 1];
-         real_type last_age = oldest_age - _snap_ages[_snaps[id]];
+         ASSERT( snap > 0, "Must have a previous snapshot." );
+         real_type first_age = oldest_age - (*_snap_ages)[snap - 1];
+         real_type last_age = oldest_age - (*_snap_ages)[snap];
          real_type age_size = first_age - last_age;
          LOGDLN( "Age range: [", first_age, "-", last_age, ")" );
          LOGDLN( "Age size: ", age_size );
@@ -266,15 +278,15 @@ namespace tao {
 
          // Add the new mass to the appropriate bins. Find the first bin
          // that has overlap with this age range.
-         unsigned first_bin = _find_bin( last_age );
-         unsigned last_bin = _find_bin( first_age ) + 1;
+         unsigned first_bin = _bin_ages->find_bin( last_age );
+         unsigned last_bin = _bin_ages->find_bin( first_age ) + 1;
          while( first_bin != last_bin )
          {
             // Find the fraction we will use to contribute to this
             // bin.
             real_type upp;
             if( first_bin < last_bin - 1 )
-               upp = std::min( _dual_ages[first_bin], first_age );
+               upp = std::min( _bin_ages->dual( first_bin ), first_age );
             else
                upp = first_age;
             real_type frac = (upp - last_age)/age_size;
@@ -282,90 +294,84 @@ namespace tao {
             LOGDLN( "Updating bin ", first_bin, " with fraction of ", frac, "." );
 
             // Cache the current bin mass for later.
-            real_type cur_bin_mass = _age_masses[first_bin];
+            real_type cur_bin_mass = age_masses[first_bin];
 
             // Update the mass bins.
-            LOGD( "Mass from ", _age_masses[first_bin], " to " );
-            _age_masses[first_bin] += frac*new_mass;
-            LOGDLN( _age_masses[first_bin], "." );
-            LOGD( "Bulge mass from ", _bulge_age_masses[first_bin], " to " );
-            _bulge_age_masses[first_bin] += frac*new_bulge_mass;
-            LOGDLN( _bulge_age_masses[first_bin], "." );
+            LOGD( "Mass from ", age_masses[first_bin], " to " );
+            age_masses[first_bin] += frac*new_mass;
+            LOGDLN( age_masses[first_bin], "." );
+            LOGD( "Bulge mass from ", bulge_age_masses[first_bin], " to " );
+            bulge_age_masses[first_bin] += frac*new_bulge_mass;
+            LOGDLN( bulge_age_masses[first_bin], "." );
 
             // Update the metal bins. This is impossible when no masses
             // have been added to the bin at all.
-            if( _age_masses[first_bin] > 0.0 )
+            if( age_masses[first_bin] > 0.0 )
             {
-               LOGD( "Metals from ", _age_metals[first_bin], " to " );
-               _age_metals[first_bin] =
-                  (cur_bin_mass*_age_metals[first_bin] +
+               LOGD( "Metals from ", age_metals[first_bin], " to " );
+               age_metals[first_bin] =
+                  (cur_bin_mass*age_metals[first_bin] +
                    frac*new_mass*(metal/cold_gas))/
-                  _age_masses[first_bin];
-               LOGDLN( _age_metals[first_bin], "." );
+                  age_masses[first_bin];
+               LOGDLN( age_metals[first_bin], "." );
             }
 
             // Move to the next bin.
-            if( first_bin < _dual_ages.size() )
-               last_age = _dual_ages[first_bin];
+            if( first_bin < _bin_ages->size() - 1 )
+               last_age = _bin_ages->dual( first_bin );
             ++first_bin;
          }
 
          LOGD( setindent( -2 ) );
       }
 
+      template< class U >
       void
-      sed::_iter_parents( soci::session& sql,
-                          unsigned id,
-                          real_type oldest_age )
+      _iter_parents( soci::session& sql,
+                     unsigned id,
+                     real_type oldest_age,
+                     typename vector<U>::view age_masses,
+                     typename vector<U>::view bulge_age_masses,
+                     typename vector<U>::view age_metals )
       {
-         LOGDLN( "Accumulating tree with id: ", id );
+         LOGDLN( "Accumulating tree with galaxy ID: ", id, setindent( 2 ) );
 
          // Must query the database to get parents.
-         string query = str( format( "SELECT local_idx, sfr, bulge_sfr, coldgas, metalscoldgas FROM %1% WHERE descendant=%2% AND tree_idx=%3%" ) % _cur_table % id % _cur_tree_id );
-         _timer_start( _db_timer );
+         string query = str( format( "SELECT localgalaxyid, sfr, sfrbulge, coldgas, metalscoldgas, snapnum "
+                                     "FROM %1% WHERE descendant=%2% AND globaltreeid=%3%" ) % _cur_table % id % _cur_tree_id );
+         db_timer_start();
          soci::rowset<soci::row> rs = sql.prepare << query;
-         _timer_stop( _db_timer );
+         db_timer_stop();
 
          // Now process each parent directly.
          for( soci::rowset<soci::row>::const_iterator it = rs.begin(); it != rs.end(); ++it )
          {
-            _timer_start( _db_timer );
+            db_timer_start();
             int pid = it->get<int>( 0 );
             double psfr = it->get<double>( 1 );
             double pbulge_sfr = it->get<double>( 2 );
             double pcold_gas = it->get<double>( 3 );
             double pmetal = it->get<double>( 4 );
-            _timer_stop( _db_timer );
-            _rebin_recurse( sql, pid, psfr, pbulge_sfr, pcold_gas, pmetal, oldest_age );
+            unsigned psnap = it->get<int>( 5 );
+            db_timer_stop();
+            _rebin_recurse<U>( sql, pid, psfr, pbulge_sfr, pcold_gas, pmetal, psnap,
+                               oldest_age, age_masses, bulge_age_masses, age_metals );
          }
-      }
 
-      void
-      _timer_start( profile::timer* timer )
-      {
-         if( timer )
-            timer->start();
-      }
-
-      void
-      _timer_stop( profile::timer* timer )
-      {
-         if( timer )
-            timer->stop();
+         LOGD( setindent( -2 ) );
       }
 
    protected:
 
-      age_list* _snap_ages;
-      age_list* _bin_ages;
+      const age_line<real_type>* _snap_ages;
+      const age_line<real_type>* _bin_ages;
+      unsigned _thresh;
+      bool _accum;
       vector<int> _descs, _snaps;
       vector<real_type> _sfrs, _bulge_sfrs, _cold_gas, _metals;
       multimap<unsigned,unsigned> _parents;
-      string _cur_tree;
+      string _cur_table;
       unsigned long long _cur_tree_id;
-
-      profile::timer* _db_timer;
-      profile::timer* _timer;
    };
 
 }

@@ -1,6 +1,8 @@
 #ifndef tao_base_timed_hh
 #define tao_base_timed_hh
 
+#include <libhpc/profile/timer.hh>
+
 namespace tao {
    using namespace hpc;
 

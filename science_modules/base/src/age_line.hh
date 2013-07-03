@@ -1,6 +1,7 @@
 #ifndef tao_base_age_line_hh
 #define tao_base_age_line_hh
 
+#include <libhpc/logging/logging.hh>
 #include "timed.hh"
 #include "utils.hh"
 
@@ -27,6 +28,7 @@ namespace tao {
    public:
 
       age_line()
+         : timed()
       {
       }
 
@@ -47,15 +49,26 @@ namespace tao {
          _dual.deallocate();
       }
 
+      unsigned
+      size() const
+      {
+         return _ages.size();
+      }
+
+      real_type
+      dual( unsigned idx ) const
+      {
+         return _dual[idx];
+      }
+
       ///
       /// Set age values. Ages must be given as giga-years from the beginning
       /// of the universe.
       ///
-      template< class InputIterator >
       void
       set_ages( vector<real_type> ages )
       {
-         _timer_start();
+         timer_start();
          LOGTLN( "Setting ages on age line.", setindent( 2 ) );
 
          // Clear existing values.
@@ -79,7 +92,7 @@ namespace tao {
          }
 
          LOGT( setindent( -2 ) );
-         _timer_stop();
+         timer_stop();
       }
 
       ///
@@ -89,7 +102,7 @@ namespace tao {
       void
       load_ages( soci::session& sql )
       {
-         _timer_start();
+         timer_start();
          LOGDLN( "Loading ages from database.", setindent( 2 ) );
 
          // Clear existing values.
@@ -97,19 +110,19 @@ namespace tao {
 
          // Find number of snapshots and resize the containers.
          unsigned num_snaps;
-         _db_timer_start();
+         db_timer_start();
          sql << "SELECT COUNT(*) FROM snap_redshift", soci::into( num_snaps );
-         _db_timer_stop();
+         db_timer_stop();
          LOGDLN( "Number of snapshots: ", num_snaps );
 
          // Need space to store the snapshots.
          _ages.reallocate( num_snaps );
 
          // Read meta data.
-         _db_timer_start();
+         db_timer_start();
          sql << "SELECT redshift FROM snap_redshift ORDER BY snapnum",
             soci::into( (std::vector<real_type>&)_ages );
-         _db_timer_stop();
+         db_timer_stop();
          LOGTLN( "Redshifts: ", _ages );
 
          // Convert to ages.
@@ -121,24 +134,30 @@ namespace tao {
          _calc_dual();
 
          LOGD( setindent( -2 ) );
-         _timer_stop();
+         timer_stop();
       }
 
       unsigned
-      find_bin( real_type age )
+      find_bin( real_type age ) const
       {
          LOGTLN( "Searching for bin using age: ", age, setindent( 2 ) );
          unsigned bin;
          {
             // Use binary search to find first element greater.
-            auto it = std::lower_bound( _dual_ages.begin(), _dual_ages.end(), age );
-            if( it == _dual_ages.end() )
-               bin = _dual_ages.size();
+            auto it = std::lower_bound( _dual.begin(), _dual.end(), age );
+            if( it == _dual.end() )
+               bin = _dual.size();
             else
-               bin = it - _dual_ages.begin();
+               bin = it - _dual.begin();
          }
-         LOGTLN( "Found bin ", bin, " with age of ", _bin_ages[bin], ".", setindent( -2 ) );
+         LOGTLN( "Found bin ", bin, " with age of ", _ages[bin], ".", setindent( -2 ) );
          return bin;
+      }
+
+      real_type
+      operator[]( unsigned idx ) const
+      {
+         return _ages[idx];
       }
 
    protected:
@@ -149,7 +168,7 @@ namespace tao {
          if( _ages.size() )
          {
             _dual.resize( _ages.size() - 1 );
-            for( ii = 1; ii < _ages.size(); ++ii )
+            for( unsigned ii = 1; ii < _ages.size(); ++ii )
                _dual[ii - 1] = 0.5*(_ages[ii] + _ages[ii - 1]);
          }
          else

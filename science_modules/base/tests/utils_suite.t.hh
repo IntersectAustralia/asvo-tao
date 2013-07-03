@@ -1,11 +1,10 @@
 #include <cxxtest/TestSuite.h>
 #include <cxxtest/GlobalFixture.h>
 #include "tao/base/utils.hh"
-
-using namespace hpc;
-using namespace tao;
-
 #include "mpi_fixture.hh"
+
+using namespace tao;
+using namespace hpc;
 
 ///
 /// Utilities test suite.

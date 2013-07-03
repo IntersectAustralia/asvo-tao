@@ -1,6 +1,9 @@
 #ifndef tao_base_utils_hh
 #define tao_base_utils_hh
 
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_integration.h>
+
 namespace tao {
 
    template< class T >
@@ -19,7 +22,7 @@ namespace tao {
                          void* param )
    {
       cosmology<T>* cosmo = (cosmology<T>*)param;
-      return 1.0/sqrt( cosmo->omega_k() +
+      return 1.0/sqrt( cosmo->omega_k +
                        cosmo->omega_m/x +
                        cosmo->omega_r/(x*x) +
                        cosmo->omega_l*x*x );
@@ -37,8 +40,8 @@ namespace tao {
       cosmo.hubble = hubble;
       cosmo.omega_m = omega_m;
       cosmo.omega_l = omega_l;
-      cosmo.omega_r = 4.165e-5/((_hubble/100.0)*(_hubble/100.0));
-      cosmo.omega_k = 1.0 - cosmo.omega - cosmo.omega_lambda - cosmo.omega_r;
+      cosmo.omega_r = 4.165e-5/((hubble/100.0)*(hubble/100.0));
+      cosmo.omega_k = 1.0 - cosmo.omega_m - cosmo.omega_l - cosmo.omega_r;
       gsl_function func;
       func.function = &redshift_to_age_func<T>;
       func.params = &cosmo;
