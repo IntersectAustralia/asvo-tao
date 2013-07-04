@@ -6,14 +6,13 @@ import logging
 import string,sys
 import time,os
 
+
 class TestClass(object): 
     
     def __init__(self,XMLFileName):
         self.ParseXML(XMLFileName)
         self.InitDBConnection()
-        #self.InsertSummaryRecord="INSERT INTO tablessummary ("
-        #self.InsertSummaryRecord=self.InsertSummaryRecord+"tablename, databasename,serverip,galaxycount,treecount,mingalaxypertable,maxgalaxypertable) "
-        #self.InsertSummaryRecord=self.InsertSummaryRecord+"Values (%s,%s,%s,%s,%s,%s,%s)"
+        
     
     def ParseXML(self,XMLSetting):
             self.Options=dict()
@@ -69,16 +68,23 @@ class TestClass(object):
         
         print('Connection to DB is open...')
         self.ConnectionOpened=True
-    def RunTest(self,TableName,ServerID):
+    def RunTest(self,CommRank,TableName,ServerID):
         
         logging.info('Start Test')
-        start= time.clock()
-        GetTablesListSt="select count(Distinct treeindex) from "+TableName+";"
-        self.ActiveCursors[ServerID].execute(GetTablesListSt)
+        
+        RecordsCount=5000000
+        SQLSt=""
+        if CommRank%2==0:
+            SQLSt="select * from "+TableName+" LIMIT "+str(RecordsCount)+" OFFSET "+str(RecordsCount*CommRank)+";"
+        else:
+            SQLSt="select count(*) from "+TableName+";"
+        
+        self.ActiveCursors[ServerID].execute(SQLSt)
+       
+        
         TablesList= self.ActiveCursors[ServerID].fetchall() 
         
-        end= time.clock()
-        print(str(CommRank)+": Total Processing Time="+str((end-start))+" seconds")
+        
         logging.info('End Test')
 
 
@@ -117,8 +123,12 @@ if __name__ == '__main__':
     
     logging.info('Starting Database Testing tool')
     TestClassObj=TestClass("setting.xml")
+    start= time.clock()
+    TestClassObj.RunTest(CommRank,TableName,ServerID)
     
-    TestClassObj.RunTest(TableName,ServerID)
+    end= time.clock()
+    print(str(CommRank)+": Total Processing Time="+str((end-start))+" seconds")
+    
     
     TestClassObj.CloseConnections()  
     
