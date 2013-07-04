@@ -402,7 +402,7 @@ namespace tao {
          table_names.swap( tmp_tbl_names );
       }
 
-      LOGDLN( "My table names: ", table_names );
+      LOGILN( "My table names: ", table_names );
 #ifdef PREPROCESSING
       LOGLN( logging::pushlevel( 100 ), "Tables:",table_names, logging::poplevel );
 #endif
@@ -421,11 +421,11 @@ namespace tao {
       do
       {
          LOGDLN( "Current table index: ", _cur_table );
-	 LOGDLN( "Current table name: ", _table_names[_cur_table] );
+	 LOGILN( "Looking at table: ", _table_names[_cur_table] );
 
 	 const array<real_type,3>& box = *_cur_box;
          _build_pixels( _x0 + box[0], _y0 + box[1], _z0 + box[2] );
-	 LOGDLN( "Any objects in this box/table: ", (_rows_exist ? "true" : "false") );
+	 LOGILN( "Any objects in this box/table: ", (_rows_exist ? "true" : "false") );
       }
       while( !_rows_exist && ++_cur_table != _table_names.size() );
 
@@ -620,11 +620,11 @@ namespace tao {
       }
 
       // Execute the query.
-      LOGDLN( "Executing query." );
+      LOGILN( "Executing lightcone query." );
       _db_timer.start();
       _st = new soci::statement( prep );
       _st->execute();
-      LOGDLN( "Finished executing query." );
+      LOGILN( "Finished executing lightcone query." );
       _fetch();
       _db_timer.stop();
 
@@ -1473,6 +1473,7 @@ namespace tao {
       replace_all( query, "Pos1", _field_map.get( "pos_x" ) );
       replace_all( query, "Pos2", _field_map.get( "pos_y" ) );
       replace_all( query, "Pos3", _field_map.get( "pos_z" ) );
+      query += " LIMIT 1";
 #ifdef MULTIDB
       soci::rowset<soci::row> rows = ((*_db)["tree_1"].prepare << query);
 #else
