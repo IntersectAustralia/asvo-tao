@@ -10,6 +10,7 @@ from django.views.decorators.http import require_POST
 
 from tao import models, workflow
 from tao.decorators import researcher_required, set_tab
+from tao.settings import INITIAL_JOB_MESSAGE
 from tao.ui_modules import UIModulesHolder
 
 
@@ -22,8 +23,7 @@ def index(request):
             UserModel = get_user_model()
             user = UserModel.objects.get(username=request.user.username)
             workflow.save(user, ui_holder)
-            # initial_job_status_obj = models.GlobalParameter.objects.get(parameter_name='INITIAL_JOB_STATUS')
-            messages.info(request, _("Your job was " + models.initial_job_status().lower() + " successfully."))
+            messages.info(request, _(INITIAL_JOB_MESSAGE))
             return redirect(reverse('job_index'))
     else:
         ui_holder = UIModulesHolder(UIModulesHolder.POST)

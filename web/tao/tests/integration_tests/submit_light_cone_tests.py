@@ -113,6 +113,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
         self.assert_on_page('job_index') # used to return to the mock_galaxy_factory page, as previously used to keep the invalid input and fail validation
 
     def test_submit_valid_box_job(self):
+        from tao.settings import INITIAL_JOB_MESSAGE
         ## fill in form (correctly)
         self.select(self.lc_id('catalogue_geometry'), 'Box')
         self.clear(self.lc_id('box_size'))
@@ -124,7 +125,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
         self.submit_mgf_form()
 
         self.assert_on_page('job_index')
-        
+        self.assert_page_has_content(INITIAL_JOB_MESSAGE)
 
     def test_invalid_box_options_allow_light_cone_submit(self):
         ## fill in box fields (incorrectly)
