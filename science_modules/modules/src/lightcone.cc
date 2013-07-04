@@ -9,6 +9,7 @@
 #include "BSPTree.hh"
 #include "geometry_iterator.hh"
 #include "table_iterator.hh"
+#include "tao/base/types.hh"
 
 using namespace hpc;
 using boost::format;
@@ -956,7 +957,7 @@ namespace tao {
    ///
    ///
    ///
-   lightcone::real_type
+   real_type
    lightcone::_redshift_to_distance( real_type redshift ) const
    {
       LOG_ENTER();
@@ -1429,7 +1430,7 @@ namespace tao {
       }
    }
 
-   lightcone::real_type
+   real_type
    lightcone::_distance_to_redshift( real_type dist ) const
    {
       auto it = std::lower_bound( _dist_to_z_tbl_dist.begin(), _dist_to_z_tbl_dist.end(), dist );
