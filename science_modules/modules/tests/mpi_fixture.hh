@@ -1,3 +1,5 @@
+#include <libhpc/hpcmpi/mpi.hh>
+
 class mpi_fixture : public CxxTest::GlobalFixture
 {
 public:

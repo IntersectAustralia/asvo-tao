@@ -20,7 +20,7 @@ public:
    ///
    void test_redshift_to_age()
    {
-      double age = redshift_to_age( 3.0 );
+      double age = redshift_to_age<double>( 3.0 );
       TS_ASSERT_DELTA( age, 2.211, 1e-3 )
    }
 };

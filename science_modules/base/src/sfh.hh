@@ -35,7 +35,8 @@ namespace tao {
            _snap_ages( NULL ),
            _bin_ages( NULL ),
            _thresh( 1000000 ),
-           _accum( false )
+           _accum( false ),
+           _cur_tree_id( std::numeric_limits<unsigned long long>::max() )
       {
       }
 
@@ -99,65 +100,70 @@ namespace tao {
                       unsigned long long tree_id )
       {
          timer_start();
-         LOGILN( "Loading tree with global ID ", tree_id, " from table ", table_name, setindent( 2 ) );
 
-         // Clear away any existing tree data.
-         clear_tree_data();
-
-         // Extract number of records in this tree.
-         unsigned tree_size;
-         db_timer_start();
-         sql << "SELECT COUNT(*) FROM " + table_name + " WHERE globaltreeid = :id",
-            soci::into( tree_size ), soci::use( tree_id );
-         db_timer_stop();
-         LOGDLN( "Tree size: ", tree_size );
-
-         // If the tree size is greater than the threshold we should use a cumulative
-         // method to form the history.
-         if( tree_size >= _thresh )
+         // We only want to reload if this isn't the same tree.
+         if( _cur_tree_id != tree_id )
          {
-            _accum = true;
-         }
-         else
-         {
-            _accum = false;
+            LOGILN( "Loading tree with global ID ", tree_id, " from table ", table_name, setindent( 2 ) );
 
-            // Resize data arrays.
-            _descs.resize( tree_size );
-            _sfrs.resize( tree_size );
-            _bulge_sfrs.resize( tree_size );
-            _cold_gas.resize( tree_size );
-            _metals.resize( tree_size );
-            _snaps.resize( tree_size );
+            // Clear away any existing tree data.
+            clear_tree_data();
 
-            // Extract the table.
-            string query = "SELECT descendant, metalscoldgas, coldgas, "
-               "sfr, sfrbulge, snapnum FROM  " + table_name +
-               " WHERE globaltreeid = :id"
-               " ORDER BY localgalaxyid";
+            // Extract number of records in this tree.
+            unsigned tree_size;
             db_timer_start();
-            sql << query, soci::into( (std::vector<int>&)_descs ),
-               soci::into( (std::vector<double>&)_metals ), soci::into( (std::vector<double>&)_cold_gas ),
-               soci::into( (std::vector<double>&)_sfrs ), soci::into( (std::vector<double>&)_bulge_sfrs ),
-               soci::into( (std::vector<int>&)_snaps ),
-               soci::use( tree_id );
+            sql << "SELECT COUNT(*) FROM " + table_name + " WHERE globaltreeid = :id",
+               soci::into( tree_size ), soci::use( tree_id );
             db_timer_stop();
-            LOGTLN( "Descendant: ", _descs );
-            LOGTLN( "Star formation rates: ", _sfrs );
-            LOGTLN( "Bulge star formation rates: ", _bulge_sfrs );
-            LOGTLN( "Metals cold gas: ", _metals );
-            LOGTLN( "Cold gas: ", _cold_gas );
-            LOGTLN( "Snapshots: ", _snaps );
+            LOGDLN( "Tree size: ", tree_size );
 
-            // Build the parents for each galaxy.
-            _calc_parents();
+            // If the tree size is greater than the threshold we should use a cumulative
+            // method to form the history.
+            if( tree_size >= _thresh )
+            {
+               _accum = true;
+            }
+            else
+            {
+               _accum = false;
+
+               // Resize data arrays.
+               _descs.resize( tree_size );
+               _sfrs.resize( tree_size );
+               _bulge_sfrs.resize( tree_size );
+               _cold_gas.resize( tree_size );
+               _metals.resize( tree_size );
+               _snaps.resize( tree_size );
+
+               // Extract the table.
+               string query = "SELECT descendant, metalscoldgas, coldgas, "
+                  "sfr, sfrbulge, snapnum FROM  " + table_name +
+                  " WHERE globaltreeid = :id"
+                  " ORDER BY localgalaxyid";
+               db_timer_start();
+               sql << query, soci::into( (std::vector<int>&)_descs ),
+                  soci::into( (std::vector<double>&)_metals ), soci::into( (std::vector<double>&)_cold_gas ),
+                  soci::into( (std::vector<double>&)_sfrs ), soci::into( (std::vector<double>&)_bulge_sfrs ),
+                  soci::into( (std::vector<int>&)_snaps ),
+                  soci::use( tree_id );
+               db_timer_stop();
+               LOGTLN( "Descendant: ", _descs );
+               LOGTLN( "Star formation rates: ", _sfrs );
+               LOGTLN( "Bulge star formation rates: ", _bulge_sfrs );
+               LOGTLN( "Metals cold gas: ", _metals );
+               LOGTLN( "Cold gas: ", _cold_gas );
+               LOGTLN( "Snapshots: ", _snaps );
+
+               // Build the parents for each galaxy.
+               _calc_parents();
+            }
+
+            // Set the current table/tree information.
+            _cur_table = table_name;
+            _cur_tree_id = tree_id;
+
+            LOGI( setindent( -2 ) );
          }
-
-         // Set the current table/tree information.
-         _cur_table = table_name;
-         _cur_tree_id = tree_id;
-
-         LOGI( setindent( -2 ) );
          timer_stop();
       }
 

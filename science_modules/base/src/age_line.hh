@@ -100,7 +100,10 @@ namespace tao {
       /// database under the table name "snap_redshift".
       ///
       void
-      load_ages( soci::session& sql )
+      load_ages( soci::session& sql,
+                 real_type hubble = 73.0,
+                 real_type omega_m = 0.25,
+                 real_type omega_l = 0.75 )
       {
          timer_start();
          LOGDLN( "Loading ages from database.", setindent( 2 ) );
@@ -127,7 +130,7 @@ namespace tao {
 
          // Convert to ages.
          for( unsigned ii = 0; ii < _ages.size(); ++ii )
-            _ages[ii] = redshift_to_age<real_type>( _ages[ii] );
+            _ages[ii] = redshift_to_age<real_type>( _ages[ii], hubble, omega_m, omega_l );
          LOGDLN( "Snapshot ages: ", _ages );
 
          // Calculate the dual.

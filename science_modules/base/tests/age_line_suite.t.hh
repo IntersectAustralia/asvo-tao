@@ -5,6 +5,7 @@
 #include "tao/base/age_line.hh"
 #include "tao/base/utils.hh"
 #include "mpi_fixture.hh"
+#include "db_fixture.hh"
 
 using namespace hpc;
 using namespace tao;
@@ -33,7 +34,7 @@ public:
    {
       // Create a test table.
       soci::session sql( soci::sqlite3, ":memory:" );
-      setup_snapshot_table( sql );
+      db_fix.setup_snapshot_table( sql );
 
       // Construct.
       age_line<double> al( sql );
@@ -61,7 +62,7 @@ public:
    {
       // Create a test table.
       soci::session sql( soci::sqlite3, ":memory:" );
-      setup_snapshot_table( sql );
+      db_fix.setup_snapshot_table( sql );
 
       // Construct.
       age_line<double> al( sql );
@@ -76,16 +77,5 @@ public:
       TS_ASSERT_EQUALS( al.find_bin( 0.51*(redshift_to_age<double>( 127 ) + redshift_to_age<double>( 80 )) ), 1 );
       TS_ASSERT_EQUALS( al.find_bin( 0.51*(redshift_to_age<double>( 80 ) + redshift_to_age<double>( 63 )) ), 2 );
       TS_ASSERT_EQUALS( al.find_bin( 0.51*(redshift_to_age<double>( 63 ) + redshift_to_age<double>( 20 )) ), 3 );
-   }
-
-   void
-   setup_snapshot_table( soci::session& sql )
-   {
-      sql << "CREATE TABLE snap_redshift (snapnum INTEGER, redshift DOUBLE PRECISION)";
-      sql << "INSERT INTO snap_redshift VALUES(0, 127)";
-      sql << "INSERT INTO snap_redshift VALUES(1, 80)";
-      sql << "INSERT INTO snap_redshift VALUES(2, 63)";
-      sql << "INSERT INTO snap_redshift VALUES(3, 20)";
-      sql << "INSERT INTO snap_redshift VALUES(4, 10)";
    }
 };

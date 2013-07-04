@@ -2,6 +2,7 @@
 #define tao_lightcone_lightcone_hh
 
 #include "tao/base/base.hh"
+#include "tao/base/types.hh"
 
 // Forward declaration of test suites to allow direct
 // access to the lightcone module.
