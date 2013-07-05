@@ -250,7 +250,7 @@ OUTPUT_FORMATS = [
 MODULE_INDICES = {'light_cone': '1', 'sed': '2', 'mock_image': '3',
                   'record_filter': '4', 'output_format': '5'}
 
-TAO_VERSION = '0.22.1'
+TAO_VERSION = '0.23.1-rc1'
 
 AAF_DS_URL = 'https://ds.test.aaf.edu.au/discovery/DS'
 AAF_APP_ID = 'https://example.intersect.org.au/shibboleth'

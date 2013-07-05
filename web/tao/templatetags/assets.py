@@ -1,7 +1,7 @@
 from django import template
 from django.utils.http import urlencode as django_urlencode
 from django.utils.safestring import mark_safe
-from tao import settings
+from django.conf import settings
 
 register = template.Library()
 from django.core.urlresolvers import reverse

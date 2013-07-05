@@ -1,6 +1,7 @@
 {% load url from future %}
 <!doctype html>
 {% load staticfiles %}
+{% load assets %}
 <html>
 <head>
     <title>
@@ -69,6 +70,7 @@
         </div>
     </div>
   </div>
+  <div class="wrapper">
     <div id='body' class="container-fluid">
         {% block messages %}
             {% for message in messages %}
@@ -82,6 +84,10 @@
             overwrite this content in templates...
         {% endblock content %}
     </div>
-
+    <div class="push"><!--//--></div>
+  </div>
+  <footer>
+        <span style="margin-left: 10px; font-size: 0.75em;">{% setting 'TAO_VERSION' %}</span>
+  </footer>
 </body>
 </html>

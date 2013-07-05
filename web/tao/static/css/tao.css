@@ -510,3 +510,24 @@ border-left:thick solid #d0d0d0;
   }
 }
 
+footer {
+    color: #222;
+    background: #DDD;
+    padding: 0 0 0 0;
+    border-top: 1px solid #000;
+}
+
+.wrapper {
+            min-height: 100%;
+            height: auto !important;
+            height: 100%;
+            margin: 0 auto -23px;
+        }
+
+.push {
+    height: 26px;
+}
+
+html, body {
+    height: 100%;
+}
