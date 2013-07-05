@@ -1,0 +1,173 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="classsed__suite" kind="class" prot="public">
+    <compoundname>sed_suite</compoundname>
+    <basecompoundref refid="class_cxx_test_1_1_test_suite" prot="public" virt="non-virtual">CxxTest::TestSuite</basecompoundref>
+    <includes refid="sed__suite_8t_8hh" local="no">sed_suite.t.hh</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classsed__suite_1a2eda1ed892de53bdc728d302a25102df" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void sed_suite::test_ctor</definition>
+        <argsstring>()</argsstring>
+        <name>test_ctor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Test default constructor. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/sed_suite.t.hh" line="24" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/sed_suite.t.hh" bodystart="23" bodyend="26"/>
+      </memberdef>
+      <memberdef kind="function" id="classsed__suite_1ab3de93a155bd1dbd5f24648ece153a86" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void sed_suite::test_redshift_to_age</definition>
+        <argsstring>()</argsstring>
+        <name>test_redshift_to_age</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Test redshift to age calculation. Ned&apos;s cosmological calculator from online suggests with constants of H0=73, OmegaM=0.25 and OmegaV=0.75 we should get an age for redshift 3 of 2.211 Gyr. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/sed_suite.t.hh" line="34" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/sed_suite.t.hh" bodystart="33" bodyend="38"/>
+      </memberdef>
+      <memberdef kind="function" id="classsed__suite_1ac5ae2809811a045a5efe9ae386aa8832" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void sed_suite::test_rebin_recurse</definition>
+        <argsstring>()</argsstring>
+        <name>test_rebin_recurse</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Tree setup: <verbatim>      z   snap
+      4    0
+</verbatim> 4 5 6 3 1 | |/ 2 3 2 2 |/ 1 1 3 | 0 0.2 4 </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/sed_suite.t.hh" line="54" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/sed_suite.t.hh" bodystart="53" bodyend="144"/>
+      </memberdef>
+      <memberdef kind="function" id="classsed__suite_1aeaf1fdfa36ff0991504f6743b60b11f5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void sed_suite::test_no_galaxies</definition>
+        <argsstring>()</argsstring>
+        <name>test_no_galaxies</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Test no galaxies. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/sed_suite.t.hh" line="150" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/sed_suite.t.hh" bodystart="149" bodyend="151"/>
+      </memberdef>
+      <memberdef kind="function" id="classsed__suite_1ab7caae8990d35c6b1d02b202d7ee7379" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void sed_suite::test_no_timepoints</definition>
+        <argsstring>()</argsstring>
+        <name>test_no_timepoints</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Test no time-points. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/sed_suite.t.hh" line="157" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/sed_suite.t.hh" bodystart="156" bodyend="158"/>
+      </memberdef>
+      <memberdef kind="function" id="classsed__suite_1ad5950c3f6868039609b296581273348d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void sed_suite::test_array_sizes</definition>
+        <argsstring>()</argsstring>
+        <name>test_array_sizes</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Test invalid input array sizes. The stellar mass production rates and metallicities must all be the correct sized arrays in order to function. I expect errors to be raised if this is not the case. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/sed_suite.t.hh" line="167" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/sed_suite.t.hh" bodystart="166" bodyend="168"/>
+      </memberdef>
+      <memberdef kind="function" id="classsed__suite_1a7a7c01870fb958cdef54ae7e6ad886c8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void sed_suite::test_num_spectral_bands</definition>
+        <argsstring>()</argsstring>
+        <name>test_num_spectral_bands</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Test invalid spectral bands. While it&apos;s possible to run the code with zero spectral bands, it doesn&apos;t make much sense. I expect an error to be raised if this happens. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/sed_suite.t.hh" line="176" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/sed_suite.t.hh" bodystart="175" bodyend="177"/>
+      </memberdef>
+      <memberdef kind="function" id="classsed__suite_1aef0f4a43d61e5457cd673a24066afb4a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void sed_suite::test_ssp_size</definition>
+        <argsstring>()</argsstring>
+        <name>test_ssp_size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Test single-stellar population array size. When reading from the SSP table, it should return a row of the same size as the number of spectral bands. I expect an error to be thrown if this is not the case. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/sed_suite.t.hh" line="186" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/sed_suite.t.hh" bodystart="185" bodyend="187"/>
+      </memberdef>
+      <memberdef kind="function" id="classsed__suite_1a62494ebddb393517e563f843ce13ba67" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void sed_suite::test_metal_interp</definition>
+        <argsstring>()</argsstring>
+        <name>test_metal_interp</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Test metallicity interpolation. Check the regions of metallicity interpolation. It should look like the following:</para><para><heading level="2">Metallicity range | Index</heading>
+</para><para>0.0000 - 0.0005 | 0 0.0005 - 0.0025 | 1 0.0025 - 0.0070 | 2 0.0070 - 0.0150 | 3 0.0150 - 0.0300 | 4 0.0300 - 0.0550 | 5 0.0550 - inf | 6 </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/sed_suite.t.hh" line="204" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/sed_suite.t.hh" bodystart="203" bodyend="205"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>SED class test suite. </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="309">
+        <label>CxxTest::TestSuite</label>
+        <link refid="class_cxx_test_1_1_test_suite"/>
+      </node>
+      <node id="308">
+        <label>sed_suite</label>
+        <link refid="classsed__suite"/>
+        <childnode refid="309" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="311">
+        <label>CxxTest::TestSuite</label>
+        <link refid="class_cxx_test_1_1_test_suite"/>
+      </node>
+      <node id="310">
+        <label>sed_suite</label>
+        <link refid="classsed__suite"/>
+        <childnode refid="311" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/sed_suite.t.hh" line="17" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/sed_suite.t.hh" bodystart="16" bodyend="461"/>
+    <listofallmembers>
+      <member refid="class_cxx_test_1_1_test_suite_1a03e7e9428316d10a22d44d20811192fb" prot="public" virt="virtual"><scope>sed_suite</scope><name>setUp</name></member>
+      <member refid="class_cxx_test_1_1_test_suite_1aa871c96da869344962b1435b72bcea13" prot="public" virt="virtual"><scope>sed_suite</scope><name>tearDown</name></member>
+      <member refid="classsed__suite_1ad5950c3f6868039609b296581273348d" prot="public" virt="non-virtual"><scope>sed_suite</scope><name>test_array_sizes</name></member>
+      <member refid="classsed__suite_1a2eda1ed892de53bdc728d302a25102df" prot="public" virt="non-virtual"><scope>sed_suite</scope><name>test_ctor</name></member>
+      <member refid="classsed__suite_1a62494ebddb393517e563f843ce13ba67" prot="public" virt="non-virtual"><scope>sed_suite</scope><name>test_metal_interp</name></member>
+      <member refid="classsed__suite_1aeaf1fdfa36ff0991504f6743b60b11f5" prot="public" virt="non-virtual"><scope>sed_suite</scope><name>test_no_galaxies</name></member>
+      <member refid="classsed__suite_1ab7caae8990d35c6b1d02b202d7ee7379" prot="public" virt="non-virtual"><scope>sed_suite</scope><name>test_no_timepoints</name></member>
+      <member refid="classsed__suite_1a7a7c01870fb958cdef54ae7e6ad886c8" prot="public" virt="non-virtual"><scope>sed_suite</scope><name>test_num_spectral_bands</name></member>
+      <member refid="classsed__suite_1ac5ae2809811a045a5efe9ae386aa8832" prot="public" virt="non-virtual"><scope>sed_suite</scope><name>test_rebin_recurse</name></member>
+      <member refid="classsed__suite_1ab3de93a155bd1dbd5f24648ece153a86" prot="public" virt="non-virtual"><scope>sed_suite</scope><name>test_redshift_to_age</name></member>
+      <member refid="classsed__suite_1aef0f4a43d61e5457cd673a24066afb4a" prot="public" virt="non-virtual"><scope>sed_suite</scope><name>test_ssp_size</name></member>
+      <member refid="class_cxx_test_1_1_test_suite_1a647ce2d9feb3f7450506fdb372f982f1" prot="public" virt="virtual"><scope>sed_suite</scope><name>~TestSuite</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

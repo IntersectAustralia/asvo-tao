@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="class_cxx_test_1_1_stdio_file_printer" kind="class" prot="public">
+    <compoundname>CxxTest::StdioFilePrinter</compoundname>
+    <basecompoundref refid="class_cxx_test_1_1_error_formatter" prot="public" virt="non-virtual">CxxTest::ErrorFormatter</basecompoundref>
+    <derivedcompoundref refid="class_cxx_test_1_1_stdio_printer" prot="public" virt="non-virtual">CxxTest::StdioPrinter</derivedcompoundref>
+    <innerclass refid="class_cxx_test_1_1_stdio_file_printer_1_1_adapter" prot="private">CxxTest::StdioFilePrinter::Adapter</innerclass>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_cxx_test_1_1_stdio_file_printer_1a3fc17987196b398c255b84649ba72aa9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::StdioFilePrinter::StdioFilePrinter</definition>
+        <argsstring>(FILE *o, const char *preLine=&quot;:&quot;, const char *postLine=&quot;&quot;)</argsstring>
+        <name>StdioFilePrinter</name>
+        <param>
+          <type>FILE *</type>
+          <declname>o</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>preLine</declname>
+          <defval>&quot;:&quot;</defval>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>postLine</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/StdioFilePrinter.h" line="20" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/StdioFilePrinter.h" bodystart="19" bodyend="20"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_stdio_file_printer_1a3bdb42611e09c80da53e669078e3253d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type></type>
+        <definition>virtual CxxTest::StdioFilePrinter::~StdioFilePrinter</definition>
+        <argsstring>()</argsstring>
+        <name>~StdioFilePrinter</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/StdioFilePrinter.h" line="21" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/StdioFilePrinter.h" bodystart="21" bodyend="21"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="343">
+        <label>CxxTest::StdioFilePrinter</label>
+        <link refid="class_cxx_test_1_1_stdio_file_printer"/>
+        <childnode refid="344" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="344">
+        <label>CxxTest::ErrorFormatter</label>
+        <link refid="class_cxx_test_1_1_error_formatter"/>
+        <childnode refid="345" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="345">
+        <label>CxxTest::TestListener</label>
+        <link refid="class_cxx_test_1_1_test_listener"/>
+      </node>
+      <node id="346">
+        <label>CxxTest::StdioPrinter</label>
+        <link refid="class_cxx_test_1_1_stdio_printer"/>
+        <childnode refid="343" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="347">
+        <label>CxxTest::StdioFilePrinter</label>
+        <link refid="class_cxx_test_1_1_stdio_file_printer"/>
+        <childnode refid="348" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="348">
+        <label>CxxTest::ErrorFormatter</label>
+        <link refid="class_cxx_test_1_1_error_formatter"/>
+        <childnode refid="349" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="349">
+        <label>CxxTest::TestListener</label>
+        <link refid="class_cxx_test_1_1_test_listener"/>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/StdioFilePrinter.h" line="17" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/StdioFilePrinter.h" bodystart="16" bodyend="38"/>
+    <listofallmembers>
+      <member refid="class_cxx_test_1_1_error_formatter_1a72d81800df02cedef86fa3bb7e6a736f" prot="public" virt="virtual"><scope>CxxTest::StdioFilePrinter</scope><name>enterSuite</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1a4cf5c3068bcfe3478a02a16c5ab9dca3" prot="public" virt="virtual"><scope>CxxTest::StdioFilePrinter</scope><name>enterTest</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1ae0bfc9107f1c5c15d6f7ab112096afd5" prot="public" virt="virtual"><scope>CxxTest::StdioFilePrinter</scope><name>enterWorld</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1aa9ccfd2827519a72f03c2cd2b18a3fe1" prot="public" virt="non-virtual"><scope>CxxTest::StdioFilePrinter</scope><name>ErrorFormatter</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1ab26f8b47e4069597685860e14c8221f1" prot="public" virt="virtual"><scope>CxxTest::StdioFilePrinter</scope><name>failedAssert</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1a5efb8e87225bc8d32bb7ded8ca141640" prot="public" virt="virtual"><scope>CxxTest::StdioFilePrinter</scope><name>failedAssertDelta</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1aef26050d912199df03b4c536c633d55f" prot="public" virt="virtual"><scope>CxxTest::StdioFilePrinter</scope><name>failedAssertDiffers</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1a8f1d2babd72ebd66d97300e749470783" prot="public" virt="virtual"><scope>CxxTest::StdioFilePrinter</scope><name>failedAssertEquals</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1a5f5aa461f86a7f4d46e9d1a56bf00098" prot="public" virt="virtual"><scope>CxxTest::StdioFilePrinter</scope><name>failedAssertLessThan</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1ad3885ac86c5f5e2a4177c5cf6491bd1d" prot="public" virt="virtual"><scope>CxxTest::StdioFilePrinter</scope><name>failedAssertLessThanEquals</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1a99aee4be84f7b2d08caca4d5019d848a" prot="public" virt="virtual"><scope>CxxTest::StdioFilePrinter</scope><name>failedAssertPredicate</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1a1307fb012d68e5f4a5eb12b84dc9757a" prot="public" virt="virtual"><scope>CxxTest::StdioFilePrinter</scope><name>failedAssertRelation</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1a7cd3a0dc84fe2b34ac128c56e34ad668" prot="public" virt="virtual"><scope>CxxTest::StdioFilePrinter</scope><name>failedAssertSameData</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1a2d0c4bb47b08d9e871dc9ce9d0f2d321" prot="public" virt="virtual"><scope>CxxTest::StdioFilePrinter</scope><name>failedAssertThrows</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1ac9fe1e21e03f8ae0ebc4d1de8dd742a2" prot="public" virt="virtual"><scope>CxxTest::StdioFilePrinter</scope><name>failedAssertThrowsNot</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1a66f5ad747c1e5e061b4504dfd20be5d9" prot="public" virt="virtual"><scope>CxxTest::StdioFilePrinter</scope><name>failedTest</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1aaac3ffc635abb616f7a2cd2cd460d265" prot="public" virt="virtual"><scope>CxxTest::StdioFilePrinter</scope><name>leaveSuite</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1a59d77ff2f2b8ff3715e7fb3938914dc5" prot="public" virt="virtual"><scope>CxxTest::StdioFilePrinter</scope><name>leaveTest</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1a68b02ba2222576fcdad50be38672b5c9" prot="public" virt="virtual"><scope>CxxTest::StdioFilePrinter</scope><name>leaveWorld</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1a62580519afc8c1874ef1ad32ec0d57ad" prot="protected" virt="non-virtual"><scope>CxxTest::StdioFilePrinter</scope><name>outputStream</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1a864e271c4a95907866d483a460aa5f71" prot="public" virt="non-virtual"><scope>CxxTest::StdioFilePrinter</scope><name>run</name></member>
+      <member refid="class_cxx_test_1_1_stdio_file_printer_1a3fc17987196b398c255b84649ba72aa9" prot="public" virt="non-virtual"><scope>CxxTest::StdioFilePrinter</scope><name>StdioFilePrinter</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1ab5958bd800642f706c2a7a0e8741778f" prot="public" virt="non-virtual"><scope>CxxTest::StdioFilePrinter</scope><name>TestListener</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1a9e81e6c50d0abb508eaaa256148fb271" prot="public" virt="non-virtual"><scope>CxxTest::StdioFilePrinter</scope><name>totalTests</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1a568d420df1ea4972ff6122c304da5211" prot="public" virt="virtual"><scope>CxxTest::StdioFilePrinter</scope><name>trace</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1a2cbcc99a3c79d9a612d5fd2d4261131c" prot="public" virt="virtual"><scope>CxxTest::StdioFilePrinter</scope><name>warning</name></member>
+      <member refid="class_cxx_test_1_1_stdio_file_printer_1a3bdb42611e09c80da53e669078e3253d" prot="public" virt="virtual"><scope>CxxTest::StdioFilePrinter</scope><name>~StdioFilePrinter</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1a4d4cb5d990e0c4b0891f64f9e055b729" prot="public" virt="virtual"><scope>CxxTest::StdioFilePrinter</scope><name>~TestListener</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="dir_a2932a1a7e375b515fecbbd7f1a1b77c" kind="dir">
+    <compoundname>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps</compoundname>
+    <innerdir refid="dir_870029406f19bbe9414b04be8cb20ce1">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi</innerdir>
+    <innerfile refid="add__tree__info_8cc">add_tree_info.cc</innerfile>
+    <innerfile refid="application_8cc">application.cc</innerfile>
+    <innerfile refid="application_8hh">application.hh</innerfile>
+    <innerfile refid="chiara_8cc">chiara.cc</innerfile>
+    <innerfile refid="dbcheck_8cc">dbcheck.cc</innerfile>
+    <innerfile refid="generate_8cc">generate.cc</innerfile>
+    <innerfile refid="max__test_8cc">max_test.cc</innerfile>
+    <innerfile refid="milreader_8cc">milreader.cc</innerfile>
+    <innerfile refid="sage__import__ages_8cc">sage_import_ages.cc</innerfile>
+    <innerfile refid="sage__to__hdf5_8cc">sage_to_hdf5.cc</innerfile>
+    <innerfile refid="sagecheck_8cc">sagecheck.cc</innerfile>
+    <innerfile refid="sageimport_8cc">sageimport.cc</innerfile>
+    <innerfile refid="sagereader_8cc">sagereader.cc</innerfile>
+    <innerfile refid="subfind__check_8cc">subfind_check.cc</innerfile>
+    <innerfile refid="subfind__to__hdf5_8cc">subfind_to_hdf5.cc</innerfile>
+    <innerfile refid="tao_8cc">tao.cc</innerfile>
+    <innerfile refid="tree__view_8cc">tree_view.cc</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/"/>
+  </compounddef>
+</doxygen>

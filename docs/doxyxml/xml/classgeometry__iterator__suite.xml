@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="classgeometry__iterator__suite" kind="class" prot="public">
+    <compoundname>geometry_iterator_suite</compoundname>
+    <basecompoundref refid="class_cxx_test_1_1_test_suite" prot="public" virt="non-virtual">CxxTest::TestSuite</basecompoundref>
+    <includes refid="geometry__iterator_8t_8hh" local="no">geometry_iterator.t.hh</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classgeometry__iterator__suite_1a9513cc1bf7cd71f3f372090ea270a0b5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void geometry_iterator_suite::test_constructor</definition>
+        <argsstring>()</argsstring>
+        <name>test_constructor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/geometry_iterator.t.hh" line="19" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/geometry_iterator.t.hh" bodystart="18" bodyend="29"/>
+      </memberdef>
+      <memberdef kind="function" id="classgeometry__iterator__suite_1aec5e8b35eb67e170bdd556174038421c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void geometry_iterator_suite::test_covered</definition>
+        <argsstring>()</argsstring>
+        <name>test_covered</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/geometry_iterator.t.hh" line="35" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/geometry_iterator.t.hh" bodystart="34" bodyend="45"/>
+      </memberdef>
+      <memberdef kind="function" id="classgeometry__iterator__suite_1a224579452e4c97b06707a92c0b49effe" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void geometry_iterator_suite::test_offset</definition>
+        <argsstring>()</argsstring>
+        <name>test_offset</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/geometry_iterator.t.hh" line="51" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/geometry_iterator.t.hh" bodystart="50" bodyend="61"/>
+      </memberdef>
+      <memberdef kind="function" id="classgeometry__iterator__suite_1ada7880bd0e0aef2e07bdac540649753d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void geometry_iterator_suite::test_rotation</definition>
+        <argsstring>()</argsstring>
+        <name>test_rotation</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/geometry_iterator.t.hh" line="67" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/geometry_iterator.t.hh" bodystart="66" bodyend="83"/>
+      </memberdef>
+      <memberdef kind="function" id="classgeometry__iterator__suite_1a93ae1fcca73c55c900c207dc6751af18" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void geometry_iterator_suite::setUp</definition>
+        <argsstring>()</argsstring>
+        <name>setUp</name>
+        <reimplements refid="class_cxx_test_1_1_test_suite_1a03e7e9428316d10a22d44d20811192fb">setUp</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/geometry_iterator.t.hh" line="86" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/geometry_iterator.t.hh" bodystart="85" bodyend="87"/>
+      </memberdef>
+      <memberdef kind="function" id="classgeometry__iterator__suite_1a917fbaf6a1f0542e2c3d4af8d8bf9db0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void geometry_iterator_suite::tearDown</definition>
+        <argsstring>()</argsstring>
+        <name>tearDown</name>
+        <reimplements refid="class_cxx_test_1_1_test_suite_1aa871c96da869344962b1435b72bcea13">tearDown</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/geometry_iterator.t.hh" line="90" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/geometry_iterator.t.hh" bodystart="89" bodyend="91"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Geometry iterator test suite. </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="144">
+        <label>geometry_iterator_suite</label>
+        <link refid="classgeometry__iterator__suite"/>
+        <childnode refid="145" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="145">
+        <label>CxxTest::TestSuite</label>
+        <link refid="class_cxx_test_1_1_test_suite"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="146">
+        <label>geometry_iterator_suite</label>
+        <link refid="classgeometry__iterator__suite"/>
+        <childnode refid="147" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="147">
+        <label>CxxTest::TestSuite</label>
+        <link refid="class_cxx_test_1_1_test_suite"/>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/geometry_iterator.t.hh" line="12" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/geometry_iterator.t.hh" bodystart="11" bodyend="92"/>
+    <listofallmembers>
+      <member refid="classgeometry__iterator__suite_1a93ae1fcca73c55c900c207dc6751af18" prot="public" virt="virtual"><scope>geometry_iterator_suite</scope><name>setUp</name></member>
+      <member refid="classgeometry__iterator__suite_1a917fbaf6a1f0542e2c3d4af8d8bf9db0" prot="public" virt="virtual"><scope>geometry_iterator_suite</scope><name>tearDown</name></member>
+      <member refid="classgeometry__iterator__suite_1a9513cc1bf7cd71f3f372090ea270a0b5" prot="public" virt="non-virtual"><scope>geometry_iterator_suite</scope><name>test_constructor</name></member>
+      <member refid="classgeometry__iterator__suite_1aec5e8b35eb67e170bdd556174038421c" prot="public" virt="non-virtual"><scope>geometry_iterator_suite</scope><name>test_covered</name></member>
+      <member refid="classgeometry__iterator__suite_1a224579452e4c97b06707a92c0b49effe" prot="public" virt="non-virtual"><scope>geometry_iterator_suite</scope><name>test_offset</name></member>
+      <member refid="classgeometry__iterator__suite_1ada7880bd0e0aef2e07bdac540649753d" prot="public" virt="non-virtual"><scope>geometry_iterator_suite</scope><name>test_rotation</name></member>
+      <member refid="class_cxx_test_1_1_test_suite_1a647ce2d9feb3f7450506fdb372f982f1" prot="public" virt="virtual"><scope>geometry_iterator_suite</scope><name>~TestSuite</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

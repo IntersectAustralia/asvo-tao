@@ -1,0 +1,1003 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="_mock_8h" kind="file">
+    <compoundname>Mock.h</compoundname>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="_mock_8h_1a45f09a0dd9b0cf4d5af1a9732b478362" prot="public" static="no">
+        <name>CXXTEST_MOCK_NAMESPACE</name>
+        <initializer>T</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" line="8" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" bodystart="8" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_mock_8h_1a7d6231aa9772b3029499c73849fc9ebd" prot="public" static="no">
+        <name>__CXXTEST_MOCK__TRAITS</name>
+        <initializer>namespace CXXTEST_MOCK_NAMESPACE \
+    { \
+        template&lt;class T&gt; \
+        class MockTraits \
+        { \
+        public: \
+            static T defaultValue() { return 0; } \
+        }; \
+    };</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" line="23" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" bodystart="14" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_mock_8h_1af9f8cdb2db9ba9d3aef1b1736b5b2302" prot="public" static="no">
+        <name>CXXTEST_EXTERN_C</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" line="31" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" bodystart="31" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_mock_8h_1a1a2e3e40e51f2c1fdbc815ce4ba3468b" prot="public" static="no">
+        <name>__CXXTEST_MOCK__PROTOTYPE</name>
+        <param><defname>MOCK</defname></param>
+        <param><defname>TYPE</defname></param>
+        <param><defname>NAME</defname></param>
+        <param><defname>ARGS</defname></param>
+        <param><defname>REAL</defname></param>
+        <param><defname>CALL</defname></param>
+        <initializer>namespace CXXTEST_MOCK_NAMESPACE { TYPE NAME ARGS; }</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" line="38" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" bodystart="37" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_mock_8h_1a3a13a30655d47b71f425eadc620e7e8e" prot="public" static="no">
+        <name>__CXXTEST_MOCK_VOID__PROTOTYPE</name>
+        <param><defname>MOCK</defname></param>
+        <param><defname>NAME</defname></param>
+        <param><defname>ARGS</defname></param>
+        <param><defname>REAL</defname></param>
+        <param><defname>CALL</defname></param>
+        <initializer>__CXXTEST_MOCK__PROTOTYPE( MOCK, void, NAME, ARGS, REAL, CALL )</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" line="41" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" bodystart="40" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_mock_8h_1ad07cba256402cdf8ad4b79408605bae2" prot="public" static="no">
+        <name>__CXXTEST_SUPPLY__PROTOTYPE</name>
+        <param><defname>MOCK</defname></param>
+        <param><defname>TYPE</defname></param>
+        <param><defname>NAME</defname></param>
+        <param><defname>ARGS</defname></param>
+        <param><defname>REAL</defname></param>
+        <param><defname>CALL</defname></param>
+        <initializer>TYPE REAL ARGS;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" line="44" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" bodystart="43" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_mock_8h_1a21af12cc515ef1ac5af6e4c70eb7a588" prot="public" static="no">
+        <name>__CXXTEST_SUPPLY_VOID__PROTOTYPE</name>
+        <param><defname>MOCK</defname></param>
+        <param><defname>NAME</defname></param>
+        <param><defname>ARGS</defname></param>
+        <param><defname>REAL</defname></param>
+        <param><defname>CALL</defname></param>
+        <initializer>__CXXTEST_SUPPLY__PROTOTYPE( MOCK, void, NAME, ARGS, REAL, CALL )</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" line="47" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" bodystart="46" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_mock_8h_1ab859258284b602ae0e1cd58cbbd47b0d" prot="public" static="no">
+        <name>__CXXTEST_MOCK__CLASS_DECLARATION</name>
+        <param><defname>MOCK</defname></param>
+        <param><defname>TYPE</defname></param>
+        <param><defname>NAME</defname></param>
+        <param><defname>ARGS</defname></param>
+        <param><defname>REAL</defname></param>
+        <param><defname>CALL</defname></param>
+        <initializer>namespace CXXTEST_MOCK_NAMESPACE { \
+        class Base_##MOCK : public <ref refid="class_cxx_test_1_1_link" kindref="compound">CxxTest::Link</ref> \
+        { \
+        public: \
+            Base_##MOCK(); \
+            ~Base_##MOCK(); \
+            bool setUp(); \
+            bool tearDown(); \
+         \
+            static Base_##MOCK &amp;current(); \
+         \
+            virtual TYPE NAME ARGS = 0; \
+         \
+        private: \
+            static <ref refid="struct_cxx_test_1_1_list" kindref="compound">CxxTest::List</ref> _list; \
+        }; \
+         \
+        class Real_##MOCK  : public Base_##MOCK \
+        { \
+        public: \
+            TYPE NAME ARGS; \
+        }; \
+         \
+        class _Unimplemented_##MOCK  : public Base_##MOCK \
+        { \
+        public: \
+            TYPE NAME ARGS; \
+        }; \
+    }</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" line="81" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" bodystart="52" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_mock_8h_1a2ec5e9a244882cd18f4964d4050c33db" prot="public" static="no">
+        <name>__CXXTEST_MOCK_VOID__CLASS_DECLARATION</name>
+        <param><defname>MOCK</defname></param>
+        <param><defname>NAME</defname></param>
+        <param><defname>ARGS</defname></param>
+        <param><defname>REAL</defname></param>
+        <param><defname>CALL</defname></param>
+        <initializer>__CXXTEST_MOCK__CLASS_DECLARATION( MOCK, void, NAME, ARGS, REAL, CALL )</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" line="84" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" bodystart="83" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_mock_8h_1aa830f65694232a02d62281bb0f498a2e" prot="public" static="no">
+        <name>__CXXTEST_SUPPLY__CLASS_DECLARATION</name>
+        <param><defname>MOCK</defname></param>
+        <param><defname>TYPE</defname></param>
+        <param><defname>NAME</defname></param>
+        <param><defname>ARGS</defname></param>
+        <param><defname>REAL</defname></param>
+        <param><defname>CALL</defname></param>
+        <initializer>namespace CXXTEST_MOCK_NAMESPACE { \
+        class Base_##MOCK : public <ref refid="class_cxx_test_1_1_link" kindref="compound">CxxTest::Link</ref> \
+        { \
+        public: \
+            Base_##MOCK(); \
+            ~Base_##MOCK(); \
+            bool setUp(); \
+            bool tearDown(); \
+         \
+            static Base_##MOCK &amp;current(); \
+         \
+            virtual TYPE NAME ARGS = 0; \
+         \
+        private: \
+            static <ref refid="struct_cxx_test_1_1_list" kindref="compound">CxxTest::List</ref> _list; \
+        }; \
+         \
+        class _Unimplemented_##MOCK  : public Base_##MOCK \
+        { \
+        public: \
+            TYPE NAME ARGS; \
+        }; \
+    }</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" line="109" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" bodystart="86" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_mock_8h_1ad07b953d7e25271b747c31a468fc6a1e" prot="public" static="no">
+        <name>__CXXTEST_SUPPLY_VOID__CLASS_DECLARATION</name>
+        <param><defname>MOCK</defname></param>
+        <param><defname>NAME</defname></param>
+        <param><defname>ARGS</defname></param>
+        <param><defname>REAL</defname></param>
+        <param><defname>CALL</defname></param>
+        <initializer>__CXXTEST_SUPPLY__CLASS_DECLARATION( MOCK, void, NAME, ARGS, REAL, CALL )</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" line="112" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" bodystart="111" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_mock_8h_1a1bff203fc58b5985766967e4a797b79f" prot="public" static="no">
+        <name>__CXXTEST_MOCK__COMMON_CLASS_IMPLEMENTATION</name>
+        <param><defname>MOCK</defname></param>
+        <param><defname>NAME</defname></param>
+        <initializer>namespace CXXTEST_MOCK_NAMESPACE { \
+         \
+        <ref refid="struct_cxx_test_1_1_list" kindref="compound">CxxTest::List</ref> Base_##MOCK::_list = { 0, 0 }; \
+         \
+        Base_##MOCK::Base_##MOCK() { attach( _list ); } \
+        Base_##MOCK::~Base_##MOCK() { detach( _list ); } \
+        bool Base_##MOCK::setUp() { return true; } \
+        bool Base_##MOCK::tearDown() { return true; } \
+         \
+        Base_##MOCK &amp;Base_##MOCK::current() \
+        { \
+            if ( _list.empty() ) \
+                static _Unimplemented_##MOCK unimplemented; \
+            return *(Base_##MOCK *)_list.tail(); \
+        } \
+    }</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" line="133" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" bodystart="117" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_mock_8h_1ab8caeeca6237b5e08113c1670e687696" prot="public" static="no">
+        <name>__CXXTEST_MOCK__CLASS_IMPLEMENTATION</name>
+        <param><defname>MOCK</defname></param>
+        <param><defname>TYPE</defname></param>
+        <param><defname>NAME</defname></param>
+        <param><defname>ARGS</defname></param>
+        <param><defname>REAL</defname></param>
+        <param><defname>CALL</defname></param>
+        <initializer>__CXXTEST_MOCK__COMMON_CLASS_IMPLEMENTATION( MOCK, NAME ) \
+    namespace CXXTEST_MOCK_NAMESPACE { \
+        TYPE Real_##MOCK::NAME ARGS \
+        { \
+            return REAL CALL; \
+        } \
+         \
+        TYPE _Unimplemented_##MOCK::NAME ARGS \
+        { \
+            while ( false ) \
+                return NAME CALL; \
+            __CXXTEST_MOCK_UNIMPLEMENTED( NAME, ARGS ); \
+            return MockTraits&lt;TYPE&gt;::defaultValue(); \
+        } \
+         \
+        TYPE NAME ARGS \
+        { \
+            return Base_##MOCK::current().NAME CALL; \
+        } \
+    }</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" line="155" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" bodystart="135" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_mock_8h_1a2f15b16c44bc10b71209470564e8206d" prot="public" static="no">
+        <name>__CXXTEST_MOCK_VOID__CLASS_IMPLEMENTATION</name>
+        <param><defname>MOCK</defname></param>
+        <param><defname>NAME</defname></param>
+        <param><defname>ARGS</defname></param>
+        <param><defname>REAL</defname></param>
+        <param><defname>CALL</defname></param>
+        <initializer>__CXXTEST_MOCK__COMMON_CLASS_IMPLEMENTATION( MOCK, NAME ) \
+    namespace CXXTEST_MOCK_NAMESPACE { \
+        void Real_##MOCK::NAME ARGS \
+        { \
+            REAL CALL; \
+        } \
+         \
+        void _Unimplemented_##MOCK::NAME ARGS \
+        { \
+            while ( false ) \
+                NAME CALL; \
+            __CXXTEST_MOCK_UNIMPLEMENTED( NAME, ARGS ); \
+        } \
+         \
+        void NAME ARGS \
+        { \
+            Base_##MOCK::current().NAME CALL; \
+        } \
+    }</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" line="176" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" bodystart="157" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_mock_8h_1a2901b9b6d6661aeb78d8c7d4e885c6d6" prot="public" static="no">
+        <name>__CXXTEST_SUPPLY__CLASS_IMPLEMENTATION</name>
+        <param><defname>MOCK</defname></param>
+        <param><defname>TYPE</defname></param>
+        <param><defname>NAME</defname></param>
+        <param><defname>ARGS</defname></param>
+        <param><defname>REAL</defname></param>
+        <param><defname>CALL</defname></param>
+        <initializer>__CXXTEST_MOCK__COMMON_CLASS_IMPLEMENTATION( MOCK, NAME ) \
+    namespace CXXTEST_MOCK_NAMESPACE { \
+        TYPE _Unimplemented_##MOCK::NAME ARGS \
+        { \
+            while ( false ) \
+                return NAME CALL; \
+            __CXXTEST_MOCK_UNIMPLEMENTED( NAME, ARGS ); \
+            return MockTraits&lt;TYPE&gt;::defaultValue(); \
+        } \
+    } \
+     \
+    TYPE REAL ARGS \
+    { \
+        return CXXTEST_MOCK_NAMESPACE::Base_##MOCK::current().NAME CALL; \
+    }</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" line="193" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" bodystart="178" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_mock_8h_1a07c5694000f8ae69a83271174e37cf30" prot="public" static="no">
+        <name>__CXXTEST_SUPPLY_VOID__CLASS_IMPLEMENTATION</name>
+        <param><defname>MOCK</defname></param>
+        <param><defname>NAME</defname></param>
+        <param><defname>ARGS</defname></param>
+        <param><defname>REAL</defname></param>
+        <param><defname>CALL</defname></param>
+        <initializer>__CXXTEST_MOCK__COMMON_CLASS_IMPLEMENTATION( MOCK, NAME ) \
+    namespace CXXTEST_MOCK_NAMESPACE { \
+        void _Unimplemented_##MOCK::NAME ARGS \
+        { \
+            while ( false ) \
+                NAME CALL; \
+            __CXXTEST_MOCK_UNIMPLEMENTED( NAME, ARGS ); \
+        } \
+    } \
+     \
+    void REAL ARGS \
+    { \
+        CXXTEST_MOCK_NAMESPACE::Base_##MOCK::current().NAME CALL; \
+    } \</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" line="210" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" bodystart="195" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_mock_8h_1a8288bb879073699311e0ce9e0da61ac9" prot="public" static="no">
+        <name>__CXXTEST_MOCK_UNIMPLEMENTED</name>
+        <param><defname>NAME</defname></param>
+        <param><defname>ARGS</defname></param>
+        <initializer>TS_FAIL( CXXTEST_MOCK_NAMESPACE_STR #NAME #ARGS &quot; called with no &quot; \
+             CXXTEST_MOCK_NAMESPACE_STR &quot;Base_&quot; #NAME &quot; object&quot; ); \</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" line="217" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" bodystart="214" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_mock_8h_1a4b60444c4f0cc95cdd17e0cf11e974f2" prot="public" static="no">
+        <name>CXXTEST_MOCK_NAMESPACE_STR</name>
+        <initializer>__CXXTEST_STR(CXXTEST_MOCK_NAMESPACE) &quot;::&quot;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" line="218" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" bodystart="218" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_mock_8h_1a9f6b84af8b65a237b555302344372001" prot="public" static="no">
+        <name>__CXXTEST_STR</name>
+        <param><defname>X</defname></param>
+        <initializer>__CXXTEST_XSTR(X)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" line="219" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" bodystart="219" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_mock_8h_1aad9b345e82427149d1258e53b724a858" prot="public" static="no">
+        <name>__CXXTEST_XSTR</name>
+        <param><defname>X</defname></param>
+        <initializer>#X</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" line="220" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" bodystart="220" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_mock_8h_1ac50225ebdb531c49c477061c51276945" prot="public" static="no">
+        <name>CXXTEST_MOCK</name>
+        <param><defname>MOCK</defname></param>
+        <param><defname>TYPE</defname></param>
+        <param><defname>NAME</defname></param>
+        <param><defname>ARGS</defname></param>
+        <param><defname>REAL</defname></param>
+        <param><defname>CALL</defname></param>
+        <initializer>__CXXTEST_MOCK__PROTOTYPE( MOCK, TYPE, NAME, ARGS, REAL, CALL )</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" line="290" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" bodystart="289" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_mock_8h_1a42e5c2d819f959b7971cce18a2fd41c8" prot="public" static="no">
+        <name>CXXTEST_MOCK_VOID</name>
+        <param><defname>MOCK</defname></param>
+        <param><defname>NAME</defname></param>
+        <param><defname>ARGS</defname></param>
+        <param><defname>REAL</defname></param>
+        <param><defname>CALL</defname></param>
+        <initializer>__CXXTEST_MOCK_VOID__PROTOTYPE( MOCK, NAME, ARGS, REAL, CALL )</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" line="293" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" bodystart="292" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_mock_8h_1a71adc68475c13fedd300cbaacbbd6840" prot="public" static="no">
+        <name>CXXTEST_SUPPLY</name>
+        <param><defname>MOCK</defname></param>
+        <param><defname>TYPE</defname></param>
+        <param><defname>NAME</defname></param>
+        <param><defname>ARGS</defname></param>
+        <param><defname>REAL</defname></param>
+        <param><defname>CALL</defname></param>
+        <initializer>__CXXTEST_SUPPLY__PROTOTYPE( MOCK, TYPE, NAME, ARGS, REAL, CALL )</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" line="296" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" bodystart="295" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_mock_8h_1a7b6cdd2adc86fcd22577427a592ca1fe" prot="public" static="no">
+        <name>CXXTEST_SUPPLY_VOID</name>
+        <param><defname>MOCK</defname></param>
+        <param><defname>NAME</defname></param>
+        <param><defname>ARGS</defname></param>
+        <param><defname>REAL</defname></param>
+        <param><defname>CALL</defname></param>
+        <initializer>__CXXTEST_SUPPLY_VOID__PROTOTYPE( MOCK, NAME, ARGS, REAL, CALL )</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" line="299" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" bodystart="298" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_mock_8h_1a071c472886a226da7d43db851aeba363" prot="public" static="no">
+        <name>CXXTEST_SUPPLY_C</name>
+        <param><defname>MOCK</defname></param>
+        <param><defname>TYPE</defname></param>
+        <param><defname>NAME</defname></param>
+        <param><defname>ARGS</defname></param>
+        <param><defname>REAL</defname></param>
+        <param><defname>CALL</defname></param>
+        <initializer>CXXTEST_EXTERN_C __CXXTEST_SUPPLY__PROTOTYPE( MOCK, TYPE, NAME, ARGS, REAL, CALL ) \
+    CXXTEST_SUPPLY( MOCK, TYPE, NAME, ARGS, REAL, CALL )</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" line="308" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" bodystart="306" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_mock_8h_1aa8ae97dafa29d520cb92d725cc4e0f45" prot="public" static="no">
+        <name>CXXTEST_SUPPLY_VOID_C</name>
+        <param><defname>MOCK</defname></param>
+        <param><defname>NAME</defname></param>
+        <param><defname>ARGS</defname></param>
+        <param><defname>REAL</defname></param>
+        <param><defname>CALL</defname></param>
+        <initializer>CXXTEST_EXTERN_C __CXXTEST_SUPPLY_VOID__PROTOTYPE( MOCK, NAME, ARGS, REAL, CALL ) \
+    CXXTEST_SUPPLY_VOID( MOCK, NAME, ARGS, REAL, CALL )</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" line="312" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" bodystart="310" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_mock_8h_1a261da4ab68e13749e2f0e17391ad8825" prot="public" static="no">
+        <name>CXXTEST_MOCK_GLOBAL</name>
+        <param><defname>TYPE</defname></param>
+        <param><defname>NAME</defname></param>
+        <param><defname>ARGS</defname></param>
+        <param><defname>CALL</defname></param>
+        <initializer>CXXTEST_MOCK( NAME, TYPE, NAME, ARGS, ::NAME, CALL )</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" line="318" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" bodystart="317" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_mock_8h_1ab6aaa8ace2b11b3fb95650cc237cb957" prot="public" static="no">
+        <name>CXXTEST_MOCK_VOID_GLOBAL</name>
+        <param><defname>NAME</defname></param>
+        <param><defname>ARGS</defname></param>
+        <param><defname>CALL</defname></param>
+        <initializer>CXXTEST_MOCK_VOID( NAME, NAME, ARGS, ::NAME, CALL )</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" line="321" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" bodystart="320" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_mock_8h_1a14cbebdc8eb885c6ecf3d44848715e9b" prot="public" static="no">
+        <name>CXXTEST_SUPPLY_GLOBAL</name>
+        <param><defname>TYPE</defname></param>
+        <param><defname>NAME</defname></param>
+        <param><defname>ARGS</defname></param>
+        <param><defname>CALL</defname></param>
+        <initializer>CXXTEST_SUPPLY( NAME, TYPE, NAME, ARGS, NAME, CALL )</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" line="324" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" bodystart="323" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_mock_8h_1a0fb941a6872b51c911b346e8bd1211f6" prot="public" static="no">
+        <name>CXXTEST_SUPPLY_VOID_GLOBAL</name>
+        <param><defname>NAME</defname></param>
+        <param><defname>ARGS</defname></param>
+        <param><defname>CALL</defname></param>
+        <initializer>CXXTEST_SUPPLY_VOID( NAME, NAME, ARGS, NAME, CALL )</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" line="327" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" bodystart="326" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_mock_8h_1ad7e0fd8a3fb07a81205c0614dd4dd3e2" prot="public" static="no">
+        <name>CXXTEST_SUPPLY_GLOBAL_C</name>
+        <param><defname>TYPE</defname></param>
+        <param><defname>NAME</defname></param>
+        <param><defname>ARGS</defname></param>
+        <param><defname>CALL</defname></param>
+        <initializer>CXXTEST_SUPPLY_C( NAME, TYPE, NAME, ARGS, NAME, CALL )</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" line="330" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" bodystart="329" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_mock_8h_1a42de085bbf0b816350ae6c6f944d280c" prot="public" static="no">
+        <name>CXXTEST_SUPPLY_VOID_GLOBAL_C</name>
+        <param><defname>NAME</defname></param>
+        <param><defname>ARGS</defname></param>
+        <param><defname>CALL</defname></param>
+        <initializer>CXXTEST_SUPPLY_VOID_C( NAME, NAME, ARGS, NAME, CALL )</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" line="333" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" bodystart="332" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_mock_8h_1a6be0e8a11dd5bcac3b493b6c2810e475" prot="public" static="no">
+        <name>CXXTEST_MOCK_DEFAULT_VALUE</name>
+        <param><defname>TYPE</defname></param>
+        <param><defname>VALUE</defname></param>
+        <initializer>namespace CXXTEST_MOCK_NAMESPACE \
+    { \
+        template&lt;&gt; \
+        class MockTraits&lt;TYPE&gt; \
+        { \
+        public: \
+            static TYPE defaultValue() { return VALUE; } \
+        }; \
+    }</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" line="348" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h" bodystart="339" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#ifndef<sp/>__cxxtest__Mock_h__</highlight></codeline>
+<codeline lineno="2"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>__cxxtest__Mock_h__</highlight></codeline>
+<codeline lineno="3"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="comment">//<sp/>The<sp/>default<sp/>namespace<sp/>is<sp/>T::</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>CXXTEST_MOCK_NAMESPACE</highlight></codeline>
+<codeline lineno="8"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#<sp/><sp/><sp/>define<sp/>CXXTEST_MOCK_NAMESPACE<sp/>T</highlight></codeline>
+<codeline lineno="9"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#endif<sp/>//<sp/>CXXTEST_MOCK_NAMESPACE</highlight></codeline>
+<codeline lineno="10"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="comment">//<sp/>MockTraits:<sp/>What<sp/>to<sp/>return<sp/>when<sp/>no<sp/>mock<sp/>object<sp/>has<sp/>been<sp/>created</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>__CXXTEST_MOCK__TRAITS<sp/>\</highlight></codeline>
+<codeline lineno="15"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>namespace<sp/>CXXTEST_MOCK_NAMESPACE<sp/>\</highlight></codeline>
+<codeline lineno="16"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>{<sp/>\</highlight></codeline>
+<codeline lineno="17"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>template&lt;class<sp/>T&gt;<sp/>\</highlight></codeline>
+<codeline lineno="18"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>class<sp/>MockTraits<sp/>\</highlight></codeline>
+<codeline lineno="19"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{<sp/>\</highlight></codeline>
+<codeline lineno="20"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>public:<sp/>\</highlight></codeline>
+<codeline lineno="21"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>static<sp/>T<sp/>defaultValue()<sp/>{<sp/>return<sp/>0;<sp/>}<sp/>\</highlight></codeline>
+<codeline lineno="22"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>};<sp/>\</highlight></codeline>
+<codeline lineno="23"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline lineno="24"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight><highlight class="comment">//<sp/>extern<sp/>&quot;C&quot;<sp/>when<sp/>needed</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>__cplusplus</highlight></codeline>
+<codeline lineno="29"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#<sp/><sp/><sp/>define<sp/>CXXTEST_EXTERN_C<sp/>extern<sp/>&quot;C&quot;</highlight></codeline>
+<codeline lineno="30"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#else</highlight></codeline>
+<codeline lineno="31"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#<sp/><sp/><sp/>define<sp/>CXXTEST_EXTERN_C</highlight></codeline>
+<codeline lineno="32"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#endif<sp/>//<sp/>__cplusplus</highlight></codeline>
+<codeline lineno="33"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Prototypes:<sp/>For<sp/>&quot;normal&quot;<sp/>headers</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="36"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="37"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>__CXXTEST_MOCK__PROTOTYPE(<sp/>MOCK,<sp/>TYPE,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="38"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>namespace<sp/>CXXTEST_MOCK_NAMESPACE<sp/>{<sp/>TYPE<sp/>NAME<sp/>ARGS;<sp/>}</highlight></codeline>
+<codeline lineno="39"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>__CXXTEST_MOCK_VOID__PROTOTYPE(<sp/>MOCK,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="41"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>__CXXTEST_MOCK__PROTOTYPE(<sp/>MOCK,<sp/>void,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)</highlight></codeline>
+<codeline lineno="42"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>__CXXTEST_SUPPLY__PROTOTYPE(<sp/>MOCK,<sp/>TYPE,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="44"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>TYPE<sp/>REAL<sp/>ARGS;</highlight></codeline>
+<codeline lineno="45"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>__CXXTEST_SUPPLY_VOID__PROTOTYPE(<sp/>MOCK,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="47"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>__CXXTEST_SUPPLY__PROTOTYPE(<sp/>MOCK,<sp/>void,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)</highlight></codeline>
+<codeline lineno="48"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="49"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="50"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Class<sp/>declarations:<sp/>For<sp/>test<sp/>files</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="51"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="52"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>__CXXTEST_MOCK__CLASS_DECLARATION(<sp/>MOCK,<sp/>TYPE,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="53"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>namespace<sp/>CXXTEST_MOCK_NAMESPACE<sp/>{<sp/>\</highlight></codeline>
+<codeline lineno="54"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>class<sp/>Base_##MOCK<sp/>:<sp/>public<sp/>CxxTest::Link<sp/>\</highlight></codeline>
+<codeline lineno="55"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{<sp/>\</highlight></codeline>
+<codeline lineno="56"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>public:<sp/>\</highlight></codeline>
+<codeline lineno="57"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Base_##MOCK();<sp/>\</highlight></codeline>
+<codeline lineno="58"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>~Base_##MOCK();<sp/>\</highlight></codeline>
+<codeline lineno="59"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>bool<sp/>setUp();<sp/>\</highlight></codeline>
+<codeline lineno="60"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>bool<sp/>tearDown();<sp/>\</highlight></codeline>
+<codeline lineno="61"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="62"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>static<sp/>Base_##MOCK<sp/>&amp;current();<sp/>\</highlight></codeline>
+<codeline lineno="63"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="64"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>virtual<sp/>TYPE<sp/>NAME<sp/>ARGS<sp/>=<sp/>0;<sp/>\</highlight></codeline>
+<codeline lineno="65"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="66"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>private:<sp/>\</highlight></codeline>
+<codeline lineno="67"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>static<sp/>CxxTest::List<sp/>_list;<sp/>\</highlight></codeline>
+<codeline lineno="68"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>};<sp/>\</highlight></codeline>
+<codeline lineno="69"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="70"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>class<sp/>Real_##MOCK<sp/><sp/>:<sp/>public<sp/>Base_##MOCK<sp/>\</highlight></codeline>
+<codeline lineno="71"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{<sp/>\</highlight></codeline>
+<codeline lineno="72"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>public:<sp/>\</highlight></codeline>
+<codeline lineno="73"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>TYPE<sp/>NAME<sp/>ARGS;<sp/>\</highlight></codeline>
+<codeline lineno="74"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>};<sp/>\</highlight></codeline>
+<codeline lineno="75"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="76"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>class<sp/>_Unimplemented_##MOCK<sp/><sp/>:<sp/>public<sp/>Base_##MOCK<sp/>\</highlight></codeline>
+<codeline lineno="77"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{<sp/>\</highlight></codeline>
+<codeline lineno="78"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>public:<sp/>\</highlight></codeline>
+<codeline lineno="79"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>TYPE<sp/>NAME<sp/>ARGS;<sp/>\</highlight></codeline>
+<codeline lineno="80"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>};<sp/>\</highlight></codeline>
+<codeline lineno="81"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="82"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="83"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>__CXXTEST_MOCK_VOID__CLASS_DECLARATION(<sp/>MOCK,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="84"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>__CXXTEST_MOCK__CLASS_DECLARATION(<sp/>MOCK,<sp/>void,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)</highlight></codeline>
+<codeline lineno="85"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="86"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>__CXXTEST_SUPPLY__CLASS_DECLARATION(<sp/>MOCK,<sp/>TYPE,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="87"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>namespace<sp/>CXXTEST_MOCK_NAMESPACE<sp/>{<sp/>\</highlight></codeline>
+<codeline lineno="88"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>class<sp/>Base_##MOCK<sp/>:<sp/>public<sp/>CxxTest::Link<sp/>\</highlight></codeline>
+<codeline lineno="89"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{<sp/>\</highlight></codeline>
+<codeline lineno="90"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>public:<sp/>\</highlight></codeline>
+<codeline lineno="91"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Base_##MOCK();<sp/>\</highlight></codeline>
+<codeline lineno="92"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>~Base_##MOCK();<sp/>\</highlight></codeline>
+<codeline lineno="93"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>bool<sp/>setUp();<sp/>\</highlight></codeline>
+<codeline lineno="94"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>bool<sp/>tearDown();<sp/>\</highlight></codeline>
+<codeline lineno="95"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="96"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>static<sp/>Base_##MOCK<sp/>&amp;current();<sp/>\</highlight></codeline>
+<codeline lineno="97"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="98"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>virtual<sp/>TYPE<sp/>NAME<sp/>ARGS<sp/>=<sp/>0;<sp/>\</highlight></codeline>
+<codeline lineno="99"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="100"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>private:<sp/>\</highlight></codeline>
+<codeline lineno="101"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>static<sp/>CxxTest::List<sp/>_list;<sp/>\</highlight></codeline>
+<codeline lineno="102"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>};<sp/>\</highlight></codeline>
+<codeline lineno="103"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="104"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>class<sp/>_Unimplemented_##MOCK<sp/><sp/>:<sp/>public<sp/>Base_##MOCK<sp/>\</highlight></codeline>
+<codeline lineno="105"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{<sp/>\</highlight></codeline>
+<codeline lineno="106"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>public:<sp/>\</highlight></codeline>
+<codeline lineno="107"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>TYPE<sp/>NAME<sp/>ARGS;<sp/>\</highlight></codeline>
+<codeline lineno="108"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>};<sp/>\</highlight></codeline>
+<codeline lineno="109"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="110"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="111"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>__CXXTEST_SUPPLY_VOID__CLASS_DECLARATION(<sp/>MOCK,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="112"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>__CXXTEST_SUPPLY__CLASS_DECLARATION(<sp/>MOCK,<sp/>void,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)</highlight></codeline>
+<codeline lineno="113"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="114"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="115"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Class<sp/>implementation:<sp/>For<sp/>test<sp/>source<sp/>files</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="116"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="117"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>__CXXTEST_MOCK__COMMON_CLASS_IMPLEMENTATION(<sp/>MOCK,<sp/>NAME<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="118"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>namespace<sp/>CXXTEST_MOCK_NAMESPACE<sp/>{<sp/>\</highlight></codeline>
+<codeline lineno="119"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="120"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>CxxTest::List<sp/>Base_##MOCK::_list<sp/>=<sp/>{<sp/>0,<sp/>0<sp/>};<sp/>\</highlight></codeline>
+<codeline lineno="121"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="122"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Base_##MOCK::Base_##MOCK()<sp/>{<sp/>attach(<sp/>_list<sp/>);<sp/>}<sp/>\</highlight></codeline>
+<codeline lineno="123"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Base_##MOCK::~Base_##MOCK()<sp/>{<sp/>detach(<sp/>_list<sp/>);<sp/>}<sp/>\</highlight></codeline>
+<codeline lineno="124"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>bool<sp/>Base_##MOCK::setUp()<sp/>{<sp/>return<sp/>true;<sp/>}<sp/>\</highlight></codeline>
+<codeline lineno="125"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>bool<sp/>Base_##MOCK::tearDown()<sp/>{<sp/>return<sp/>true;<sp/>}<sp/>\</highlight></codeline>
+<codeline lineno="126"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="127"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Base_##MOCK<sp/>&amp;Base_##MOCK::current()<sp/>\</highlight></codeline>
+<codeline lineno="128"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{<sp/>\</highlight></codeline>
+<codeline lineno="129"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>if<sp/>(<sp/>_list.empty()<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="130"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>static<sp/>_Unimplemented_##MOCK<sp/>unimplemented;<sp/>\</highlight></codeline>
+<codeline lineno="131"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>return<sp/>*(Base_##MOCK<sp/>*)_list.tail();<sp/>\</highlight></codeline>
+<codeline lineno="132"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}<sp/>\</highlight></codeline>
+<codeline lineno="133"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="134"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="135"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>__CXXTEST_MOCK__CLASS_IMPLEMENTATION(<sp/>MOCK,<sp/>TYPE,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="136"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>__CXXTEST_MOCK__COMMON_CLASS_IMPLEMENTATION(<sp/>MOCK,<sp/>NAME<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="137"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>namespace<sp/>CXXTEST_MOCK_NAMESPACE<sp/>{<sp/>\</highlight></codeline>
+<codeline lineno="138"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>TYPE<sp/>Real_##MOCK::NAME<sp/>ARGS<sp/>\</highlight></codeline>
+<codeline lineno="139"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{<sp/>\</highlight></codeline>
+<codeline lineno="140"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>return<sp/>REAL<sp/>CALL;<sp/>\</highlight></codeline>
+<codeline lineno="141"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}<sp/>\</highlight></codeline>
+<codeline lineno="142"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="143"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>TYPE<sp/>_Unimplemented_##MOCK::NAME<sp/>ARGS<sp/>\</highlight></codeline>
+<codeline lineno="144"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{<sp/>\</highlight></codeline>
+<codeline lineno="145"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>while<sp/>(<sp/>false<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="146"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>return<sp/>NAME<sp/>CALL;<sp/>\</highlight></codeline>
+<codeline lineno="147"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>__CXXTEST_MOCK_UNIMPLEMENTED(<sp/>NAME,<sp/>ARGS<sp/>);<sp/>\</highlight></codeline>
+<codeline lineno="148"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>return<sp/>MockTraits&lt;TYPE&gt;::defaultValue();<sp/>\</highlight></codeline>
+<codeline lineno="149"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}<sp/>\</highlight></codeline>
+<codeline lineno="150"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="151"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>TYPE<sp/>NAME<sp/>ARGS<sp/>\</highlight></codeline>
+<codeline lineno="152"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{<sp/>\</highlight></codeline>
+<codeline lineno="153"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>return<sp/>Base_##MOCK::current().NAME<sp/>CALL;<sp/>\</highlight></codeline>
+<codeline lineno="154"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}<sp/>\</highlight></codeline>
+<codeline lineno="155"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="156"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="157"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>__CXXTEST_MOCK_VOID__CLASS_IMPLEMENTATION(<sp/>MOCK,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="158"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>__CXXTEST_MOCK__COMMON_CLASS_IMPLEMENTATION(<sp/>MOCK,<sp/>NAME<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="159"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>namespace<sp/>CXXTEST_MOCK_NAMESPACE<sp/>{<sp/>\</highlight></codeline>
+<codeline lineno="160"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>void<sp/>Real_##MOCK::NAME<sp/>ARGS<sp/>\</highlight></codeline>
+<codeline lineno="161"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{<sp/>\</highlight></codeline>
+<codeline lineno="162"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>REAL<sp/>CALL;<sp/>\</highlight></codeline>
+<codeline lineno="163"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}<sp/>\</highlight></codeline>
+<codeline lineno="164"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="165"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>void<sp/>_Unimplemented_##MOCK::NAME<sp/>ARGS<sp/>\</highlight></codeline>
+<codeline lineno="166"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{<sp/>\</highlight></codeline>
+<codeline lineno="167"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>while<sp/>(<sp/>false<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="168"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>NAME<sp/>CALL;<sp/>\</highlight></codeline>
+<codeline lineno="169"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>__CXXTEST_MOCK_UNIMPLEMENTED(<sp/>NAME,<sp/>ARGS<sp/>);<sp/>\</highlight></codeline>
+<codeline lineno="170"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}<sp/>\</highlight></codeline>
+<codeline lineno="171"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="172"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>void<sp/>NAME<sp/>ARGS<sp/>\</highlight></codeline>
+<codeline lineno="173"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{<sp/>\</highlight></codeline>
+<codeline lineno="174"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Base_##MOCK::current().NAME<sp/>CALL;<sp/>\</highlight></codeline>
+<codeline lineno="175"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}<sp/>\</highlight></codeline>
+<codeline lineno="176"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="177"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="178"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>__CXXTEST_SUPPLY__CLASS_IMPLEMENTATION(<sp/>MOCK,<sp/>TYPE,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="179"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>__CXXTEST_MOCK__COMMON_CLASS_IMPLEMENTATION(<sp/>MOCK,<sp/>NAME<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="180"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>namespace<sp/>CXXTEST_MOCK_NAMESPACE<sp/>{<sp/>\</highlight></codeline>
+<codeline lineno="181"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>TYPE<sp/>_Unimplemented_##MOCK::NAME<sp/>ARGS<sp/>\</highlight></codeline>
+<codeline lineno="182"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{<sp/>\</highlight></codeline>
+<codeline lineno="183"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>while<sp/>(<sp/>false<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="184"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>return<sp/>NAME<sp/>CALL;<sp/>\</highlight></codeline>
+<codeline lineno="185"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>__CXXTEST_MOCK_UNIMPLEMENTED(<sp/>NAME,<sp/>ARGS<sp/>);<sp/>\</highlight></codeline>
+<codeline lineno="186"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>return<sp/>MockTraits&lt;TYPE&gt;::defaultValue();<sp/>\</highlight></codeline>
+<codeline lineno="187"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}<sp/>\</highlight></codeline>
+<codeline lineno="188"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>}<sp/>\</highlight></codeline>
+<codeline lineno="189"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="190"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>TYPE<sp/>REAL<sp/>ARGS<sp/>\</highlight></codeline>
+<codeline lineno="191"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>{<sp/>\</highlight></codeline>
+<codeline lineno="192"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>return<sp/>CXXTEST_MOCK_NAMESPACE::Base_##MOCK::current().NAME<sp/>CALL;<sp/>\</highlight></codeline>
+<codeline lineno="193"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="194"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="195"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>__CXXTEST_SUPPLY_VOID__CLASS_IMPLEMENTATION(<sp/>MOCK,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="196"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>__CXXTEST_MOCK__COMMON_CLASS_IMPLEMENTATION(<sp/>MOCK,<sp/>NAME<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="197"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>namespace<sp/>CXXTEST_MOCK_NAMESPACE<sp/>{<sp/>\</highlight></codeline>
+<codeline lineno="198"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>void<sp/>_Unimplemented_##MOCK::NAME<sp/>ARGS<sp/>\</highlight></codeline>
+<codeline lineno="199"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{<sp/>\</highlight></codeline>
+<codeline lineno="200"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>while<sp/>(<sp/>false<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="201"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>NAME<sp/>CALL;<sp/>\</highlight></codeline>
+<codeline lineno="202"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>__CXXTEST_MOCK_UNIMPLEMENTED(<sp/>NAME,<sp/>ARGS<sp/>);<sp/>\</highlight></codeline>
+<codeline lineno="203"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}<sp/>\</highlight></codeline>
+<codeline lineno="204"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>}<sp/>\</highlight></codeline>
+<codeline lineno="205"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="206"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>void<sp/>REAL<sp/>ARGS<sp/>\</highlight></codeline>
+<codeline lineno="207"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>{<sp/>\</highlight></codeline>
+<codeline lineno="208"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>CXXTEST_MOCK_NAMESPACE::Base_##MOCK::current().NAME<sp/>CALL;<sp/>\</highlight></codeline>
+<codeline lineno="209"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>}<sp/>\</highlight></codeline>
+<codeline lineno="210"><highlight class="preprocessor"></highlight></codeline>
+<codeline lineno="211"><highlight class="preprocessor"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="212"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Error<sp/>for<sp/>calling<sp/>mock<sp/>function<sp/>w/o<sp/>object</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="213"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="214"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>__CXXTEST_MOCK_UNIMPLEMENTED(<sp/>NAME,<sp/>ARGS<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="215"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>TS_FAIL(<sp/>CXXTEST_MOCK_NAMESPACE_STR<sp/>#NAME<sp/>#ARGS<sp/>&quot;<sp/>called<sp/>with<sp/>no<sp/>&quot;<sp/>\</highlight></codeline>
+<codeline lineno="216"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>CXXTEST_MOCK_NAMESPACE_STR<sp/>&quot;Base_&quot;<sp/>#NAME<sp/>&quot;<sp/>object&quot;<sp/>);<sp/>\</highlight></codeline>
+<codeline lineno="217"><highlight class="preprocessor"></highlight></codeline>
+<codeline lineno="218"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>CXXTEST_MOCK_NAMESPACE_STR<sp/>__CXXTEST_STR(CXXTEST_MOCK_NAMESPACE)<sp/>&quot;::&quot;</highlight></codeline>
+<codeline lineno="219"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>__CXXTEST_STR(X)<sp/>__CXXTEST_XSTR(X)</highlight></codeline>
+<codeline lineno="220"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>__CXXTEST_XSTR(X)<sp/>#X</highlight></codeline>
+<codeline lineno="221"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="222"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>defined(CXXTEST_MOCK_TEST_SOURCE_FILE)</highlight></codeline>
+<codeline lineno="223"><highlight class="preprocessor"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="224"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Test<sp/>source<sp/>file:<sp/>Prototypes,<sp/>class<sp/>declarations<sp/>and<sp/>implementation</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="225"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="226"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;cxxtest/TestSuite.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="227"><highlight class="normal"></highlight></codeline>
+<codeline lineno="228"><highlight class="normal">__CXXTEST_MOCK__TRAITS;</highlight></codeline>
+<codeline lineno="229"><highlight class="normal"></highlight></codeline>
+<codeline lineno="230"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CXXTEST_MOCK(<sp/>MOCK,<sp/>TYPE,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="231"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>__CXXTEST_MOCK__PROTOTYPE(<sp/>MOCK,<sp/>TYPE,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="232"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>__CXXTEST_MOCK__CLASS_DECLARATION(<sp/>MOCK,<sp/>TYPE,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="233"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>__CXXTEST_MOCK__CLASS_IMPLEMENTATION(<sp/>MOCK,<sp/>TYPE,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)</highlight></codeline>
+<codeline lineno="234"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="235"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CXXTEST_MOCK_VOID(<sp/>MOCK,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="236"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>__CXXTEST_MOCK_VOID__PROTOTYPE(<sp/>MOCK,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="237"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>__CXXTEST_MOCK_VOID__CLASS_DECLARATION(<sp/>MOCK,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="238"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>__CXXTEST_MOCK_VOID__CLASS_IMPLEMENTATION(<sp/>MOCK,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)</highlight></codeline>
+<codeline lineno="239"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="240"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CXXTEST_SUPPLY(<sp/>MOCK,<sp/>TYPE,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="241"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>__CXXTEST_SUPPLY__PROTOTYPE(<sp/>MOCK,<sp/>TYPE,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="242"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>__CXXTEST_SUPPLY__CLASS_DECLARATION(<sp/>MOCK,<sp/>TYPE,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="243"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>__CXXTEST_SUPPLY__CLASS_IMPLEMENTATION(<sp/>MOCK,<sp/>TYPE,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)</highlight></codeline>
+<codeline lineno="244"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="245"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CXXTEST_SUPPLY_VOID(<sp/>MOCK,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="246"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>__CXXTEST_SUPPLY_VOID__PROTOTYPE(<sp/>MOCK,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="247"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>__CXXTEST_SUPPLY_VOID__CLASS_DECLARATION(<sp/>MOCK,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="248"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>__CXXTEST_SUPPLY_VOID__CLASS_IMPLEMENTATION(<sp/>MOCK,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)</highlight></codeline>
+<codeline lineno="249"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="250"><highlight class="normal"></highlight><highlight class="preprocessor">#elif<sp/>defined(CXXTEST_FLAGS)<sp/>||<sp/>defined(CXXTEST_RUNNING)</highlight></codeline>
+<codeline lineno="251"><highlight class="preprocessor"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="252"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Test<sp/>file<sp/>other<sp/>than<sp/>source:<sp/>Prototypes<sp/>and<sp/>class<sp/>declarations</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="253"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="254"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;cxxtest/TestSuite.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="255"><highlight class="normal"></highlight></codeline>
+<codeline lineno="256"><highlight class="normal">__CXXTEST_MOCK__TRAITS;</highlight></codeline>
+<codeline lineno="257"><highlight class="normal"></highlight></codeline>
+<codeline lineno="258"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CXXTEST_MOCK(<sp/>MOCK,<sp/>TYPE,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="259"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>__CXXTEST_MOCK__PROTOTYPE(<sp/>MOCK,<sp/>TYPE,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="260"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>__CXXTEST_MOCK__CLASS_DECLARATION(<sp/>MOCK,<sp/>TYPE,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)</highlight></codeline>
+<codeline lineno="261"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="262"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CXXTEST_MOCK_VOID(<sp/>MOCK,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="263"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>__CXXTEST_MOCK_VOID__PROTOTYPE(<sp/>MOCK,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="264"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>__CXXTEST_MOCK_VOID__CLASS_DECLARATION(<sp/>MOCK,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)</highlight></codeline>
+<codeline lineno="265"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="266"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CXXTEST_SUPPLY(<sp/>MOCK,<sp/>TYPE,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="267"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>__CXXTEST_SUPPLY__PROTOTYPE(<sp/>MOCK,<sp/>TYPE,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="268"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>__CXXTEST_SUPPLY__CLASS_DECLARATION(<sp/>MOCK,<sp/>TYPE,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)</highlight></codeline>
+<codeline lineno="269"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="270"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CXXTEST_SUPPLY_VOID(<sp/>MOCK,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="271"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>__CXXTEST_SUPPLY_VOID__PROTOTYPE(<sp/>MOCK,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="272"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>__CXXTEST_SUPPLY_VOID__CLASS_DECLARATION(<sp/>MOCK,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)</highlight></codeline>
+<codeline lineno="273"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="274"><highlight class="normal"></highlight><highlight class="preprocessor">#elif<sp/>defined(CXXTEST_MOCK_REAL_SOURCE_FILE)</highlight></codeline>
+<codeline lineno="275"><highlight class="preprocessor"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="276"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Real<sp/>source<sp/>file:<sp/>&quot;Real&quot;<sp/>implementations</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="277"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="278"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CXXTEST_MOCK(<sp/>MOCK,<sp/>TYPE,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="279"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>namespace<sp/>CXXTEST_MOCK_NAMESPACE<sp/>{<sp/>TYPE<sp/>NAME<sp/>ARGS<sp/>{<sp/>return<sp/>REAL<sp/>CALL;<sp/>}<sp/>}</highlight></codeline>
+<codeline lineno="280"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="281"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CXXTEST_MOCK_VOID(<sp/>MOCK,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="282"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>namespace<sp/>CXXTEST_MOCK_NAMESPACE<sp/>{<sp/>void<sp/>NAME<sp/>ARGS<sp/>{<sp/>REAL<sp/>CALL;<sp/>}<sp/>}</highlight></codeline>
+<codeline lineno="283"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="284"><highlight class="normal"></highlight><highlight class="preprocessor">#else</highlight></codeline>
+<codeline lineno="285"><highlight class="preprocessor"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="286"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Ordinary<sp/>header<sp/>file:<sp/>Just<sp/>prototypes</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="287"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="288"><highlight class="normal"></highlight></codeline>
+<codeline lineno="289"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CXXTEST_MOCK(<sp/>MOCK,<sp/>TYPE,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="290"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>__CXXTEST_MOCK__PROTOTYPE(<sp/>MOCK,<sp/>TYPE,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)</highlight></codeline>
+<codeline lineno="291"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="292"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CXXTEST_MOCK_VOID(<sp/>MOCK,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="293"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>__CXXTEST_MOCK_VOID__PROTOTYPE(<sp/>MOCK,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)</highlight></codeline>
+<codeline lineno="294"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="295"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CXXTEST_SUPPLY(<sp/>MOCK,<sp/>TYPE,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="296"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>__CXXTEST_SUPPLY__PROTOTYPE(<sp/>MOCK,<sp/>TYPE,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)</highlight></codeline>
+<codeline lineno="297"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="298"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CXXTEST_SUPPLY_VOID(<sp/>MOCK,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="299"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>__CXXTEST_SUPPLY_VOID__PROTOTYPE(<sp/>MOCK,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)</highlight></codeline>
+<codeline lineno="300"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="301"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/>//<sp/>Ordinary<sp/>header<sp/>file</highlight></codeline>
+<codeline lineno="302"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="303"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="304"><highlight class="normal"></highlight><highlight class="comment">//<sp/>How<sp/>to<sp/>supply<sp/>extern<sp/>&quot;C&quot;<sp/>functions</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="305"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="306"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CXXTEST_SUPPLY_C(<sp/>MOCK,<sp/>TYPE,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="307"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>CXXTEST_EXTERN_C<sp/>__CXXTEST_SUPPLY__PROTOTYPE(<sp/>MOCK,<sp/>TYPE,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="308"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>CXXTEST_SUPPLY(<sp/>MOCK,<sp/>TYPE,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)</highlight></codeline>
+<codeline lineno="309"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="310"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CXXTEST_SUPPLY_VOID_C(<sp/>MOCK,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="311"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>CXXTEST_EXTERN_C<sp/>__CXXTEST_SUPPLY_VOID__PROTOTYPE(<sp/>MOCK,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="312"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>CXXTEST_SUPPLY_VOID(<sp/>MOCK,<sp/>NAME,<sp/>ARGS,<sp/>REAL,<sp/>CALL<sp/>)</highlight></codeline>
+<codeline lineno="313"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="314"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="315"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Usually<sp/>we<sp/>mean<sp/>the<sp/>global<sp/>namespace</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="316"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="317"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CXXTEST_MOCK_GLOBAL(<sp/>TYPE,<sp/>NAME,<sp/>ARGS,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="318"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>CXXTEST_MOCK(<sp/>NAME,<sp/>TYPE,<sp/>NAME,<sp/>ARGS,<sp/>::NAME,<sp/>CALL<sp/>)</highlight></codeline>
+<codeline lineno="319"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="320"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CXXTEST_MOCK_VOID_GLOBAL(<sp/>NAME,<sp/>ARGS,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="321"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>CXXTEST_MOCK_VOID(<sp/>NAME,<sp/>NAME,<sp/>ARGS,<sp/>::NAME,<sp/>CALL<sp/>)</highlight></codeline>
+<codeline lineno="322"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="323"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CXXTEST_SUPPLY_GLOBAL(<sp/>TYPE,<sp/>NAME,<sp/>ARGS,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="324"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>CXXTEST_SUPPLY(<sp/>NAME,<sp/>TYPE,<sp/>NAME,<sp/>ARGS,<sp/>NAME,<sp/>CALL<sp/>)</highlight></codeline>
+<codeline lineno="325"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="326"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CXXTEST_SUPPLY_VOID_GLOBAL(<sp/>NAME,<sp/>ARGS,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="327"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>CXXTEST_SUPPLY_VOID(<sp/>NAME,<sp/>NAME,<sp/>ARGS,<sp/>NAME,<sp/>CALL<sp/>)</highlight></codeline>
+<codeline lineno="328"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="329"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CXXTEST_SUPPLY_GLOBAL_C(<sp/>TYPE,<sp/>NAME,<sp/>ARGS,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="330"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>CXXTEST_SUPPLY_C(<sp/>NAME,<sp/>TYPE,<sp/>NAME,<sp/>ARGS,<sp/>NAME,<sp/>CALL<sp/>)</highlight></codeline>
+<codeline lineno="331"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="332"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CXXTEST_SUPPLY_VOID_GLOBAL_C(<sp/>NAME,<sp/>ARGS,<sp/>CALL<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="333"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>CXXTEST_SUPPLY_VOID_C(<sp/>NAME,<sp/>NAME,<sp/>ARGS,<sp/>NAME,<sp/>CALL<sp/>)</highlight></codeline>
+<codeline lineno="334"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="335"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="336"><highlight class="normal"></highlight><highlight class="comment">//<sp/>What<sp/>to<sp/>return<sp/>when<sp/>no<sp/>mock<sp/>object<sp/>has<sp/>been<sp/>created.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="337"><highlight class="normal"></highlight><highlight class="comment">//<sp/>The<sp/>default<sp/>value<sp/>of<sp/>0<sp/>usually<sp/>works,<sp/>but<sp/>some<sp/>cases<sp/>may<sp/>need<sp/>this.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="338"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="339"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>CXXTEST_MOCK_DEFAULT_VALUE(<sp/>TYPE,<sp/>VALUE<sp/>)<sp/>\</highlight></codeline>
+<codeline lineno="340"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>namespace<sp/>CXXTEST_MOCK_NAMESPACE<sp/>\</highlight></codeline>
+<codeline lineno="341"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>{<sp/>\</highlight></codeline>
+<codeline lineno="342"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>template&lt;&gt;<sp/>\</highlight></codeline>
+<codeline lineno="343"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>class<sp/>MockTraits&lt;TYPE&gt;<sp/>\</highlight></codeline>
+<codeline lineno="344"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{<sp/>\</highlight></codeline>
+<codeline lineno="345"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>public:<sp/>\</highlight></codeline>
+<codeline lineno="346"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>static<sp/>TYPE<sp/>defaultValue()<sp/>{<sp/>return<sp/>VALUE;<sp/>}<sp/>\</highlight></codeline>
+<codeline lineno="347"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>};<sp/>\</highlight></codeline>
+<codeline lineno="348"><highlight class="preprocessor"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="349"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="350"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/>//<sp/>__cxxtest__Mock_h__</highlight></codeline>
+    </programlisting>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Mock.h"/>
+  </compounddef>
+</doxygen>

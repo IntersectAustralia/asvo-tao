@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="classmpi__fixture" kind="class" prot="public">
+    <compoundname>mpi_fixture</compoundname>
+    <basecompoundref refid="class_cxx_test_1_1_global_fixture" prot="public" virt="non-virtual">CxxTest::GlobalFixture</basecompoundref>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classmpi__fixture_1a958992f1ede139806a0a79846c133d01" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>bool</type>
+        <definition>bool mpi_fixture::setUpWorld</definition>
+        <argsstring>()</argsstring>
+        <name>setUpWorld</name>
+        <reimplements refid="class_cxx_test_1_1_global_fixture_1a38d38d51f0bf725262bdc52915a2c7ab">setUpWorld</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/mpi_fixture.hh" line="5" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/mpi_fixture.hh" bodystart="5" bodyend="8"/>
+      </memberdef>
+      <memberdef kind="function" id="classmpi__fixture_1a4e53aa6905a389af5765d82ca4b9c22a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>bool</type>
+        <definition>bool mpi_fixture::tearDownWorld</definition>
+        <argsstring>()</argsstring>
+        <name>tearDownWorld</name>
+        <reimplements refid="class_cxx_test_1_1_global_fixture_1afefd57ebe829308b138d40580e8f935d">tearDownWorld</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/mpi_fixture.hh" line="10" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/mpi_fixture.hh" bodystart="10" bodyend="13"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="233">
+        <label>mpi_fixture</label>
+        <link refid="classmpi__fixture"/>
+        <childnode refid="234" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="235">
+        <label>CxxTest::Link</label>
+        <link refid="class_cxx_test_1_1_link"/>
+      </node>
+      <node id="234">
+        <label>CxxTest::GlobalFixture</label>
+        <link refid="class_cxx_test_1_1_global_fixture"/>
+        <childnode refid="235" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="236">
+        <label>mpi_fixture</label>
+        <link refid="classmpi__fixture"/>
+        <childnode refid="237" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="238">
+        <label>CxxTest::Link</label>
+        <link refid="class_cxx_test_1_1_link"/>
+      </node>
+      <node id="237">
+        <label>CxxTest::GlobalFixture</label>
+        <link refid="class_cxx_test_1_1_global_fixture"/>
+        <childnode refid="238" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/mpi_fixture.hh" line="2" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/mpi_fixture.hh" bodystart="1" bodyend="14"/>
+    <listofallmembers>
+      <member refid="class_cxx_test_1_1_link_1a2230eceb6d776394a32fddb1514cf93a" prot="public" virt="non-virtual"><scope>mpi_fixture</scope><name>active</name></member>
+      <member refid="class_cxx_test_1_1_link_1ad69f02495f7a28842a4683ad436c5fb4" prot="public" virt="non-virtual"><scope>mpi_fixture</scope><name>attach</name></member>
+      <member refid="class_cxx_test_1_1_link_1ad3544121b85766c6f4a8b5b6fa98599e" prot="public" virt="non-virtual"><scope>mpi_fixture</scope><name>detach</name></member>
+      <member refid="class_cxx_test_1_1_global_fixture_1ad003581f56210ef50c7edc2275b14f3b" prot="public" virt="non-virtual"><scope>mpi_fixture</scope><name>firstGlobalFixture</name></member>
+      <member refid="class_cxx_test_1_1_global_fixture_1a0606be3763b0fcaf669fff226045469b" prot="public" virt="non-virtual"><scope>mpi_fixture</scope><name>GlobalFixture</name></member>
+      <member refid="class_cxx_test_1_1_link_1aa1c8015f02e8541749956f2d551dbed3" prot="public" virt="non-virtual"><scope>mpi_fixture</scope><name>justNext</name></member>
+      <member refid="class_cxx_test_1_1_link_1ab77cb38969bd38f7b3491a455134c12c" prot="public" virt="non-virtual"><scope>mpi_fixture</scope><name>justPrev</name></member>
+      <member refid="class_cxx_test_1_1_global_fixture_1a7ceddff923c9e2f138f3a28eda2e0a6f" prot="public" virt="non-virtual"><scope>mpi_fixture</scope><name>lastGlobalFixture</name></member>
+      <member refid="class_cxx_test_1_1_link_1aedaab303be994c92afb366f5e6476be5" prot="public" virt="non-virtual"><scope>mpi_fixture</scope><name>Link</name></member>
+      <member refid="class_cxx_test_1_1_link_1a4c03b844ac15861f40d2355d650e8ec7" prot="public" virt="non-virtual"><scope>mpi_fixture</scope><name>next</name></member>
+      <member refid="class_cxx_test_1_1_link_1a949bdd1988b71318f3d58232344dc35a" prot="public" virt="non-virtual"><scope>mpi_fixture</scope><name>next</name></member>
+      <member refid="class_cxx_test_1_1_global_fixture_1a514b06f4054d3150681116e832fe82d2" prot="public" virt="non-virtual"><scope>mpi_fixture</scope><name>nextGlobalFixture</name></member>
+      <member refid="class_cxx_test_1_1_link_1aedc0d2dc3d6f11f5d566c8c21ac7b660" prot="public" virt="non-virtual"><scope>mpi_fixture</scope><name>prev</name></member>
+      <member refid="class_cxx_test_1_1_link_1ac263414ff3438af00306bb2d0b6aa483" prot="public" virt="non-virtual"><scope>mpi_fixture</scope><name>prev</name></member>
+      <member refid="class_cxx_test_1_1_global_fixture_1a319015cb471dc253e2cd540283724853" prot="public" virt="non-virtual"><scope>mpi_fixture</scope><name>prevGlobalFixture</name></member>
+      <member refid="class_cxx_test_1_1_link_1aa06c69998cd5c34348bab11d46577b51" prot="public" virt="non-virtual"><scope>mpi_fixture</scope><name>setActive</name></member>
+      <member refid="class_cxx_test_1_1_global_fixture_1a5edcee94174c4452e6a3d4cd6c190b74" prot="public" virt="virtual"><scope>mpi_fixture</scope><name>setUp</name></member>
+      <member refid="classmpi__fixture_1a958992f1ede139806a0a79846c133d01" prot="public" virt="virtual"><scope>mpi_fixture</scope><name>setUpWorld</name></member>
+      <member refid="class_cxx_test_1_1_global_fixture_1a0d79953ba5fb3f0ec5bf2e6d2fa0a1d1" prot="public" virt="virtual"><scope>mpi_fixture</scope><name>tearDown</name></member>
+      <member refid="classmpi__fixture_1a4e53aa6905a389af5765d82ca4b9c22a" prot="public" virt="virtual"><scope>mpi_fixture</scope><name>tearDownWorld</name></member>
+      <member refid="class_cxx_test_1_1_global_fixture_1abb853d06a3560687ee075445c2685f5f" prot="public" virt="non-virtual"><scope>mpi_fixture</scope><name>~GlobalFixture</name></member>
+      <member refid="class_cxx_test_1_1_link_1a8d1bb253d6975839d3c337bfcb8d744a" prot="public" virt="virtual"><scope>mpi_fixture</scope><name>~Link</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

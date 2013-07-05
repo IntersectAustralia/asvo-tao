@@ -1,0 +1,173 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="types_8hh" kind="file">
+    <compoundname>types.hh</compoundname>
+    <includes local="no">libhpc/libhpc.hh</includes>
+    <includedby refid="bolshoi__convert2_8cc" local="yes">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/bolshoi_convert2.cc</includedby>
+    <includedby refid="exporter_8hh" local="yes">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.hh</includedby>
+    <includedby refid="to__hdf5_8cc" local="yes">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/to_hdf5.cc</includedby>
+    <includedby refid="types_8cc" local="yes">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.cc</includedby>
+    <incdepgraph>
+      <node id="77">
+        <label>libhpc/libhpc.hh</label>
+      </node>
+      <node id="76">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh</label>
+        <link refid="types.hh"/>
+        <childnode refid="77" relation="include">
+        </childnode>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="81">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.cc</label>
+        <link refid="exporter_8cc_source"/>
+      </node>
+      <node id="80">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.hh</label>
+        <link refid="exporter_8hh_source"/>
+        <childnode refid="79" relation="include">
+        </childnode>
+        <childnode refid="81" relation="include">
+        </childnode>
+      </node>
+      <node id="82">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/to_hdf5.cc</label>
+        <link refid="to__hdf5_8cc_source"/>
+      </node>
+      <node id="79">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/bolshoi_convert2.cc</label>
+        <link refid="bolshoi__convert2_8cc_source"/>
+      </node>
+      <node id="78">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh</label>
+        <link refid="types.hh"/>
+        <childnode refid="79" relation="include">
+        </childnode>
+        <childnode refid="80" relation="include">
+        </childnode>
+        <childnode refid="82" relation="include">
+        </childnode>
+        <childnode refid="83" relation="include">
+        </childnode>
+      </node>
+      <node id="83">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.cc</label>
+        <link refid="types_8cc_source"/>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="structbolshoi__halo__type" prot="public">bolshoi_halo_type</innerclass>
+    <innerclass refid="structsage__halo__type" prot="public">sage_halo_type</innerclass>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="types_8hh_1ae8f699d145b6ffd5a390e0096644a294" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void make_hdf5_types</definition>
+        <argsstring>(hpc::h5::datatype &amp;mem_type, hpc::h5::datatype &amp;file_type)</argsstring>
+        <name>make_hdf5_types</name>
+        <param>
+          <type>hpc::h5::datatype &amp;</type>
+          <declname>mem_type</declname>
+        </param>
+        <param>
+          <type>hpc::h5::datatype &amp;</type>
+          <declname>file_type</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="92" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/flat.hh" bodystart="20" bodyend="45"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#ifndef<sp/>bolshoi_types_hh</highlight></codeline>
+<codeline lineno="2"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>bolshoi_types_hh</highlight></codeline>
+<codeline lineno="3"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;libhpc/libhpc.hh&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight></codeline>
+<codeline lineno="13" refid="structbolshoi__halo__type" refkind="compound"><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="structbolshoi__halo__type" kindref="compound">bolshoi_halo_type</ref></highlight></codeline>
+<codeline lineno="14"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="15"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>float<sp/><sp/><sp/><sp/><sp/>scale;<sp/>//<sp/>Scale<sp/>factor<sp/>of<sp/>halo.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/><sp/>id;<sp/></highlight><highlight class="comment">//<sp/>ID<sp/>of<sp/>halo<sp/>(unique<sp/>across<sp/>entire<sp/>simulation).</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>float<sp/><sp/><sp/><sp/><sp/>desc_scale;<sp/>//<sp/>Scale<sp/>of<sp/>descendant<sp/>halo,<sp/>if<sp/>applicable.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/><sp/>desc_id;<sp/></highlight><highlight class="comment">//<sp/>ID<sp/>of<sp/>descendant<sp/>halo,<sp/>if<sp/>applicable.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/><sp/><sp/>num_prog;<sp/></highlight><highlight class="comment">//<sp/>Number<sp/>of<sp/>progenitors.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/><sp/>pid;<sp/></highlight><highlight class="comment">//<sp/>Host<sp/>halo<sp/>ID.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>long<sp/>long<sp/><sp/>upid;<sp/>//<sp/>Most<sp/>massive<sp/>host<sp/>halo<sp/>ID<sp/>(only<sp/>different<sp/>from<sp/>pid<sp/>in</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>//<sp/>cases<sp/>of<sp/>sub-subs<sp/>or<sp/>sub-sub-subs<sp/>etc.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>long<sp/>long<sp/><sp/>desc_pid;<sp/>//<sp/>pid<sp/>of<sp/>descendant<sp/>halo,<sp/>if<sp/>applicable.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>int<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>phantom;<sp/>//<sp/>Nonzero<sp/>for<sp/>halos<sp/>interpolated<sp/>across<sp/>timesteps.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>float<sp/><sp/><sp/><sp/><sp/>sam_mvir;<sp/>//<sp/>Halo<sp/>mass,<sp/>smoothed<sp/>across<sp/>accretion<sp/>history;<sp/>always<sp/>greater</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>//<sp/>than<sp/>sum<sp/>of<sp/>halo<sp/>masses<sp/>of<sp/>contributing<sp/>progenitors<sp/>(Msun/h).</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>//<sp/>Only<sp/>for<sp/>use<sp/>with<sp/>select<sp/>semi-analytic<sp/>models.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>mvir;<sp/></highlight><highlight class="comment">//<sp/>Halo<sp/>mass<sp/>(Msun/h).</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>rvir;<sp/></highlight><highlight class="comment">//<sp/>Halo<sp/>radius<sp/>(kpc/h<sp/>comoving).</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>float<sp/><sp/><sp/><sp/><sp/>rs;<sp/>//<sp/>Scale<sp/>radius<sp/>(kpc/h<sp/>comoving).</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>vrms;<sp/></highlight><highlight class="comment">//<sp/>Velocity<sp/>dispersion<sp/>(km/s<sp/>physical).</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>int<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>mmp;<sp/>//<sp/>Whether<sp/>the<sp/>halo<sp/>is<sp/>the<sp/>most<sp/>massive<sp/>progenitor<sp/>or<sp/>not.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>float<sp/><sp/><sp/><sp/><sp/>scale_of_last_mm;<sp/>//<sp/>Scale<sp/>factor<sp/>of<sp/>the<sp/>last<sp/>major<sp/>merger<sp/>(mass<sp/>ratio<sp/>&gt;<sp/>0.3).</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>vmax;<sp/></highlight><highlight class="comment">//<sp/>Maximum<sp/>circular<sp/>velocity<sp/>(km/s<sp/>physical).</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>x,<sp/>y,<sp/>z;<sp/></highlight><highlight class="comment">//<sp/>Halo<sp/>position<sp/>(Mpc/h<sp/>comoving).</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="36"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>vx,<sp/>vy,<sp/>vz;<sp/></highlight><highlight class="comment">//<sp/>Halo<sp/>velocity<sp/>(km/s<sp/>physical).</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="37"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>jx,<sp/>jy,<sp/>jz;<sp/></highlight><highlight class="comment">//<sp/>Halo<sp/>angular<sp/>momenta<sp/>((Msub/h)*(Mpc/h)*km/s<sp/>physical).</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="38"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>spin;<sp/></highlight><highlight class="comment">//<sp/>Halo<sp/>spin<sp/>parameter.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="39"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>unsigned<sp/><sp/><sp/>breadth_first_id;<sp/>//<sp/>Breadth-first<sp/>ordering<sp/>of<sp/>halos<sp/>within<sp/>a<sp/>tree.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="40"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>unsigned<sp/><sp/><sp/>depth_first_id;<sp/>//<sp/>Depth-first<sp/>ordering<sp/>of<sp/>halos<sp/>withing<sp/>a<sp/>tree.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>long<sp/>long<sp/><sp/>tree_root_id;<sp/>//<sp/>ID<sp/>of<sp/>the<sp/>halo<sp/>at<sp/>the<sp/>last<sp/>timestep<sp/>in<sp/>the<sp/>tree.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="42"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>long<sp/>long<sp/><sp/>orig_halo_id;<sp/>//<sp/>Original<sp/>halo<sp/>ID<sp/>from<sp/>the<sp/>halo<sp/>finder.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="43"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/><sp/><sp/>snap_num;<sp/></highlight><highlight class="comment">//<sp/>Snapshot<sp/>number<sp/>from<sp/>which<sp/>halo<sp/>originated.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>unsigned<sp/><sp/><sp/>next_coprog_depthfirst_id;<sp/>//<sp/>Depth-first<sp/>ID<sp/>of<sp/>next<sp/>coprogenitor.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="45"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>unsigned<sp/><sp/><sp/>last_coprog_depthfirst_id;<sp/>//<sp/>Depth-first<sp/>ID<sp/>of<sp/>last<sp/>progenitor.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="46"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>float<sp/><sp/><sp/><sp/><sp/>rs_klypin;<sp/>//<sp/>Scale<sp/>radius<sp/>determined<sp/>using<sp/>Vmax<sp/>and<sp/>Mvir<sp/>(see<sp/>Rockstar<sp/>paper).</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="47"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>float<sp/><sp/><sp/><sp/><sp/>mvir_all;<sp/>//<sp/>Mass<sp/>enclosed<sp/>within<sp/>the<sp/>specified<sp/>overdensity,<sp/>including<sp/>unbound</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="48"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>//<sp/>particles<sp/>(Msun/h).</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="49"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>float<sp/><sp/><sp/><sp/><sp/>m200b_m2500c[4];<sp/>//<sp/>Mass<sp/>enclosed<sp/>within<sp/>specified<sp/>overdensities<sp/>(Msun/h).</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="50"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>float<sp/><sp/><sp/><sp/><sp/>x_offs;<sp/>//<sp/>Offset<sp/>of<sp/>density<sp/>peak<sp/>from<sp/>average<sp/>particle<sp/>position<sp/>(kpc/h<sp/>comoving).</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="51"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>float<sp/><sp/><sp/><sp/><sp/>v_offs;<sp/>//<sp/>Offset<sp/>of<sp/>density<sp/>peak<sp/>from<sp/>average<sp/>particle<sp/>velocity<sp/>(km/s<sp/>physical).</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>float<sp/><sp/><sp/><sp/><sp/>spin_bullock;<sp/>//<sp/>Bullock<sp/>spin<sp/>parameter<sp/>(J/(sqrt(2)*GMVR)).</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="53"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>float<sp/><sp/><sp/><sp/><sp/>b_to_a,<sp/>c_to_a;<sp/>//<sp/>Ration<sp/>of<sp/>second<sp/>and<sp/>third<sp/>largest<sp/>shape<sp/>ellipsoid<sp/>axes<sp/>(B<sp/>and<sp/>C)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="54"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>//<sp/>to<sp/>largest<sp/>shape<sp/>ellipsoid<sp/>axis<sp/>(A)<sp/>(dimensionless).</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="55"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>float<sp/><sp/><sp/><sp/><sp/>ax,<sp/>ay,<sp/>az;<sp/>//<sp/>Largest<sp/>shape<sp/>ellipsoid<sp/>axis<sp/>(kpc/h<sp/>comoving).</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="56"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"></highlight></codeline>
+<codeline lineno="61" refid="structsage__halo__type" refkind="compound"><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="structsage__halo__type" kindref="compound">sage_halo_type</ref></highlight></codeline>
+<codeline lineno="62"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>merger<sp/>tree<sp/>pointers<sp/></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="64"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>descendant;</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>first_progenitor;</highlight></codeline>
+<codeline lineno="66"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>next_progenitor;</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>first_halo_in_fof_group;</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>next_halo_in_fof_group;</highlight></codeline>
+<codeline lineno="69"><highlight class="normal"></highlight></codeline>
+<codeline lineno="70"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>properties<sp/>of<sp/>halo<sp/></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="71"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>Len;</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>M_Mean200,<sp/>Mvir,<sp/>M_TopHat;<sp/><sp/></highlight><highlight class="comment">//<sp/>Mean<sp/>200<sp/>values<sp/>(Mvir=M_Crit200)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="73"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>Pos[3];</highlight></codeline>
+<codeline lineno="74"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>Vel[3];</highlight></codeline>
+<codeline lineno="75"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>VelDisp;</highlight></codeline>
+<codeline lineno="76"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>Vmax;</highlight></codeline>
+<codeline lineno="77"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>Spin[3];</highlight></codeline>
+<codeline lineno="78"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/>MostBoundID;</highlight></codeline>
+<codeline lineno="79"><highlight class="normal"></highlight></codeline>
+<codeline lineno="80"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>original<sp/>position<sp/>in<sp/>subfind<sp/>output<sp/></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="81"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>SnapNum;</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>FileNr;</highlight></codeline>
+<codeline lineno="83"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>SubhaloIndex;</highlight></codeline>
+<codeline lineno="84"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>SubHalfMass;</highlight></codeline>
+<codeline lineno="85"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="86"><highlight class="normal"></highlight></codeline>
+<codeline lineno="90"><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="91"><highlight class="normal">make_hdf5_types(<sp/>hpc::h5::datatype&amp;<sp/>mem_type,</highlight></codeline>
+<codeline lineno="92"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>hpc::h5::datatype&amp;<sp/>file_type<sp/>);</highlight></codeline>
+<codeline lineno="93"><highlight class="normal"></highlight></codeline>
+<codeline lineno="94"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight></codeline>
+    </programlisting>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh"/>
+  </compounddef>
+</doxygen>

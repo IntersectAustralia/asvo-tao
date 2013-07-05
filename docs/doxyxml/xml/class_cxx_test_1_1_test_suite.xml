@@ -1,0 +1,137 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="class_cxx_test_1_1_test_suite" kind="class" prot="public">
+    <compoundname>CxxTest::TestSuite</compoundname>
+    <derivedcompoundref refid="class_b_s_p__suite" prot="public" virt="non-virtual">BSP_suite</derivedcompoundref>
+    <derivedcompoundref refid="classclip__suite" prot="public" virt="non-virtual">clip_suite</derivedcompoundref>
+    <derivedcompoundref refid="classdiff__suite" prot="public" virt="non-virtual">diff_suite</derivedcompoundref>
+    <derivedcompoundref refid="classfilter__suite" prot="public" virt="non-virtual">filter_suite</derivedcompoundref>
+    <derivedcompoundref refid="classgalaxy__suite" prot="public" virt="non-virtual">galaxy_suite</derivedcompoundref>
+    <derivedcompoundref refid="classgeometry__iterator__suite" prot="public" virt="non-virtual">geometry_iterator_suite</derivedcompoundref>
+    <derivedcompoundref refid="classlightcone__suite" prot="public" virt="non-virtual">lightcone_suite</derivedcompoundref>
+    <derivedcompoundref refid="classsed__suite" prot="public" virt="non-virtual">sed_suite</derivedcompoundref>
+    <derivedcompoundref refid="class_setting_reader__suite" prot="public" virt="non-virtual">SettingReader_suite</derivedcompoundref>
+    <derivedcompoundref refid="classskymaker__suite" prot="public" virt="non-virtual">skymaker_suite</derivedcompoundref>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_cxx_test_1_1_test_suite_1a647ce2d9feb3f7450506fdb372f982f1" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>CxxTest::TestSuite::~TestSuite</definition>
+        <argsstring>()</argsstring>
+        <name>~TestSuite</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.h" line="24" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.cpp" bodystart="11" bodyend="11"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_suite_1a03e7e9428316d10a22d44d20811192fb" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TestSuite::setUp</definition>
+        <argsstring>()</argsstring>
+        <name>setUp</name>
+        <reimplementedby refid="classgeometry__iterator__suite_1a93ae1fcca73c55c900c207dc6751af18">setUp</reimplementedby>
+        <reimplementedby refid="classlightcone__suite_1a8eb5332f6fc1b864f59affe990a5a558">setUp</reimplementedby>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.h" line="25" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.cpp" bodystart="12" bodyend="12"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_suite_1aa871c96da869344962b1435b72bcea13" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TestSuite::tearDown</definition>
+        <argsstring>()</argsstring>
+        <name>tearDown</name>
+        <reimplementedby refid="classgeometry__iterator__suite_1a917fbaf6a1f0542e2c3d4af8d8bf9db0">tearDown</reimplementedby>
+        <reimplementedby refid="classlightcone__suite_1ac22fcc61557ca40384efe379ed531406">tearDown</reimplementedby>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.h" line="26" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.cpp" bodystart="13" bodyend="13"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="404">
+        <label>BSP_suite</label>
+        <link refid="class_b_s_p__suite"/>
+        <childnode refid="403" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="408">
+        <label>galaxy_suite</label>
+        <link refid="classgalaxy__suite"/>
+        <childnode refid="403" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="405">
+        <label>clip_suite</label>
+        <link refid="classclip__suite"/>
+        <childnode refid="403" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="407">
+        <label>filter_suite</label>
+        <link refid="classfilter__suite"/>
+        <childnode refid="403" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="409">
+        <label>geometry_iterator_suite</label>
+        <link refid="classgeometry__iterator__suite"/>
+        <childnode refid="403" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="403">
+        <label>CxxTest::TestSuite</label>
+        <link refid="class_cxx_test_1_1_test_suite"/>
+      </node>
+      <node id="406">
+        <label>diff_suite</label>
+        <link refid="classdiff__suite"/>
+        <childnode refid="403" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="411">
+        <label>sed_suite</label>
+        <link refid="classsed__suite"/>
+        <childnode refid="403" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="413">
+        <label>skymaker_suite</label>
+        <link refid="classskymaker__suite"/>
+        <childnode refid="403" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="412">
+        <label>SettingReader_suite</label>
+        <link refid="class_setting_reader__suite"/>
+        <childnode refid="403" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="410">
+        <label>lightcone_suite</label>
+        <link refid="classlightcone__suite"/>
+        <childnode refid="403" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.h" line="22" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.h" bodystart="21" bodyend="27"/>
+    <listofallmembers>
+      <member refid="class_cxx_test_1_1_test_suite_1a03e7e9428316d10a22d44d20811192fb" prot="public" virt="virtual"><scope>CxxTest::TestSuite</scope><name>setUp</name></member>
+      <member refid="class_cxx_test_1_1_test_suite_1aa871c96da869344962b1435b72bcea13" prot="public" virt="virtual"><scope>CxxTest::TestSuite</scope><name>tearDown</name></member>
+      <member refid="class_cxx_test_1_1_test_suite_1a647ce2d9feb3f7450506fdb372f982f1" prot="public" virt="virtual"><scope>CxxTest::TestSuite</scope><name>~TestSuite</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

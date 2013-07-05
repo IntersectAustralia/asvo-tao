@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="dir_577a8061f7430b920e5cbd8fab308f87" kind="dir">
+    <compoundname>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/data/readers</compoundname>
+    <innerfile refid="fitsreader_8cc">fitsreader.cc</innerfile>
+    <innerfile refid="fitsreader_8f90">fitsreader.f90</innerfile>
+    <innerfile refid="fitsreader_8py">fitsreader.py</innerfile>
+    <innerfile refid="hdf5reader_8c">hdf5reader.c</innerfile>
+    <innerfile refid="hdf5reader_8f90">hdf5reader.f90</innerfile>
+    <innerfile refid="hdf5reader_8py">hdf5reader.py</innerfile>
+    <innerfile refid="votablereader_8cc">votablereader.cc</innerfile>
+    <innerfile refid="votablereader_8f90">votablereader.f90</innerfile>
+    <innerfile refid="votablereader_8py">votablereader.py</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/data/readers/"/>
+  </compounddef>
+</doxygen>

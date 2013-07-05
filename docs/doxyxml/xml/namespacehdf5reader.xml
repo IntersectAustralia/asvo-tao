@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="namespacehdf5reader" kind="namespace">
+    <compoundname>hdf5reader</compoundname>
+      <sectiondef kind="var">
+      <memberdef kind="variable" id="namespacehdf5reader_1aa088fd7e7291cf6a1b9ae9ddf87ec0b5" prot="public" static="no" mutable="no">
+        <type>list</type>
+        <definition>list hdf5reader.filename</definition>
+        <argsstring></argsstring>
+        <name>filename</name>
+        <initializer>= sys.argv[1]</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/data/readers/hdf5reader.py" line="10" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/data/readers/hdf5reader.py" bodystart="10" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacehdf5reader_1a6b363e796e39d579e5b548ef6a03caad" prot="public" static="no" mutable="no">
+        <type>tuple</type>
+        <definition>tuple hdf5reader.data</definition>
+        <argsstring></argsstring>
+        <name>data</name>
+        <initializer>= h5py.File(filename, &apos;r&apos;)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/data/readers/hdf5reader.py" line="12" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/data/readers/hdf5reader.py" bodystart="12" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacehdf5reader_1acd273e067f667425dcb38b3ecff36b3a" prot="public" static="no" mutable="no">
+        <type>list</type>
+        <definition>list hdf5reader.fields</definition>
+        <argsstring></argsstring>
+        <name>fields</name>
+        <initializer>= []</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/data/readers/hdf5reader.py" line="15" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/data/readers/hdf5reader.py" bodystart="15" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacehdf5reader_1abb11693d9f4537ee1ee1c4ab84ac12b5" prot="public" static="no" mutable="no">
+        <type>list</type>
+        <definition>list hdf5reader.vars</definition>
+        <argsstring></argsstring>
+        <name>vars</name>
+        <initializer>= []</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/data/readers/hdf5reader.py" line="28" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/data/readers/hdf5reader.py" bodystart="28" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/data/readers/hdf5reader.py" line="1"/>
+  </compounddef>
+</doxygen>

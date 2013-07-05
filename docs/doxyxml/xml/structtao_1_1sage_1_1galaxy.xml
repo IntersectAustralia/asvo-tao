@@ -1,0 +1,645 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="structtao_1_1sage_1_1galaxy" kind="struct" prot="public">
+    <compoundname>tao::sage::galaxy</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1a103fb64eec70b8fb35ad1670b34ec24d" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int tao::sage::galaxy::type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="14" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="14" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1a76d4755e088fbdfc165a5c839c19fe76" prot="public" static="no" mutable="no">
+        <type>long long</type>
+        <definition>long long tao::sage::galaxy::galaxy_index</definition>
+        <argsstring></argsstring>
+        <name>galaxy_index</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="15" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="15" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1a0cfd84cb43a050609d0ca36858c2de6f" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int tao::sage::galaxy::halo_index</definition>
+        <argsstring></argsstring>
+        <name>halo_index</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="16" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="16" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1abfaf97fd30d0b5402a8da2a9336c8df0" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int tao::sage::galaxy::fof_index</definition>
+        <argsstring></argsstring>
+        <name>fof_index</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="17" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="17" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1abed60f9cee5e44eb1a043140a033713e" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int tao::sage::galaxy::tree_index</definition>
+        <argsstring></argsstring>
+        <name>tree_index</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="18" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="18" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1a85f8f1ae50fe966fe506b4a94e8aa118" prot="public" static="no" mutable="no">
+        <type>long long</type>
+        <definition>long long tao::sage::galaxy::global_index</definition>
+        <argsstring></argsstring>
+        <name>global_index</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="21" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="21" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1a3139a85c3c8210d07ce0a41e2b0900df" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int tao::sage::galaxy::descendant</definition>
+        <argsstring></argsstring>
+        <name>descendant</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="22" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="22" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1acb04d92741ae53b8c4f4ff218a5dcdf7" prot="public" static="no" mutable="no">
+        <type>long long</type>
+        <definition>long long tao::sage::galaxy::global_descendant</definition>
+        <argsstring></argsstring>
+        <name>global_descendant</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="23" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="23" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1ab8466b6deb185ce586fa04299a4c3742" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int tao::sage::galaxy::snap</definition>
+        <argsstring></argsstring>
+        <name>snap</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="25" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="25" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1ae952b4b1f920136656d4a162b4c4ce01" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int tao::sage::galaxy::central_gal</definition>
+        <argsstring></argsstring>
+        <name>central_gal</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="26" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="26" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1a5d9301506defc743de6146b3179219ca" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::sage::galaxy::central_mvir</definition>
+        <argsstring></argsstring>
+        <name>central_mvir</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="27" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="27" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1a5e2669713395c1a2f378048f1140a8da" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::sage::galaxy::x</definition>
+        <argsstring></argsstring>
+        <name>x</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="30" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="30" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1ad3aa553b959bdbcdad7e8558b9141c7c" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::sage::galaxy::y</definition>
+        <argsstring></argsstring>
+        <name>y</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="30" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="30" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1a4a715f1ab3bfa865cb6574a109ba5bce" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::sage::galaxy::z</definition>
+        <argsstring></argsstring>
+        <name>z</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="30" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="30" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1aaab5433563715161d5112acae6682d31" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::sage::galaxy::vx</definition>
+        <argsstring></argsstring>
+        <name>vx</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="31" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="31" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1af43134b4d1b98163ff3bd6fc2f3d135f" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::sage::galaxy::vy</definition>
+        <argsstring></argsstring>
+        <name>vy</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="31" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="31" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1a08c8dd4793708141e676e090a1ece7d6" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::sage::galaxy::vz</definition>
+        <argsstring></argsstring>
+        <name>vz</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="31" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="31" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1a1622265ba950f30d236adceed2496271" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::sage::galaxy::sx</definition>
+        <argsstring></argsstring>
+        <name>sx</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="32" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="32" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1a032fd75448ad5b35eb879a6b49a82c1c" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::sage::galaxy::sy</definition>
+        <argsstring></argsstring>
+        <name>sy</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="32" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="32" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1ae078cbe7ccaf6692d30c367b83435880" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::sage::galaxy::sz</definition>
+        <argsstring></argsstring>
+        <name>sz</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="32" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="32" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1a094f77a9921ede2cdd91d88d2bed1595" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int tao::sage::galaxy::len</definition>
+        <argsstring></argsstring>
+        <name>len</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="33" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="33" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1aabde94431e37033384d85281874392a2" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::sage::galaxy::mvir</definition>
+        <argsstring></argsstring>
+        <name>mvir</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="34" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="34" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1ac5c1c90d8377f9660d1714df3e892d37" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::sage::galaxy::rvir</definition>
+        <argsstring></argsstring>
+        <name>rvir</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="35" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="35" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1acf103342b4841922e61a362793aa6f2d" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::sage::galaxy::vvir</definition>
+        <argsstring></argsstring>
+        <name>vvir</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="36" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="36" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1a4b61be69d67e176e96d1b9346556a118" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::sage::galaxy::vmax</definition>
+        <argsstring></argsstring>
+        <name>vmax</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="37" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="37" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1a2d3c66b19f86e26359730b5817798719" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::sage::galaxy::vel_disp</definition>
+        <argsstring></argsstring>
+        <name>vel_disp</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="38" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1ac3727b35f6ffea20f7d50a9dd3155927" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::sage::galaxy::cold_gas</definition>
+        <argsstring></argsstring>
+        <name>cold_gas</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="41" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="41" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1a04b7219f6ed190737fad431fc1115f40" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::sage::galaxy::stellar_mass</definition>
+        <argsstring></argsstring>
+        <name>stellar_mass</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="42" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="42" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1a181004f8b9c0729b6bf46e7b7b02b6a8" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::sage::galaxy::bulge_mass</definition>
+        <argsstring></argsstring>
+        <name>bulge_mass</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="43" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="43" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1aa77ac6725d987d6b0856366133e3be1c" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::sage::galaxy::hot_gas</definition>
+        <argsstring></argsstring>
+        <name>hot_gas</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="44" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="44" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1aaec3e2bbf0b8b8332f964ab96807371d" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::sage::galaxy::ejected_mass</definition>
+        <argsstring></argsstring>
+        <name>ejected_mass</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="45" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="45" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1a59d15a9b9fbee3f310fb32d9bb3c8776" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::sage::galaxy::black_hole_mass</definition>
+        <argsstring></argsstring>
+        <name>black_hole_mass</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="46" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="46" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1ae29e09e7dbefa93000c57440ddd92afe" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::sage::galaxy::ics</definition>
+        <argsstring></argsstring>
+        <name>ics</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="47" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1a0eb7f6460c207bb063362c15b6dd6667" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::sage::galaxy::metals_cold_gas</definition>
+        <argsstring></argsstring>
+        <name>metals_cold_gas</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="50" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="50" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1a801539dc67fb672bcf267a3a4d95c9f6" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::sage::galaxy::metals_stellar_mass</definition>
+        <argsstring></argsstring>
+        <name>metals_stellar_mass</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="51" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="51" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1ac7b781c36ffe81d38d18c1fbce6bdf37" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::sage::galaxy::metals_bulge_mass</definition>
+        <argsstring></argsstring>
+        <name>metals_bulge_mass</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="52" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="52" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1a6e33decd5b6ea1aa3e034aeb8349f83b" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::sage::galaxy::metals_hot_gas</definition>
+        <argsstring></argsstring>
+        <name>metals_hot_gas</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="53" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="53" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1a7ba61ae4ceaa20e76f81ce7b8a27d011" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::sage::galaxy::metals_ejected_mass</definition>
+        <argsstring></argsstring>
+        <name>metals_ejected_mass</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="54" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="54" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1ad34e6f0990e99805fff9e1a4472fd067" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::sage::galaxy::metals_ics</definition>
+        <argsstring></argsstring>
+        <name>metals_ics</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="55" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="55" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1a1776dcf73d6113cbac614b3e2e1b4d35" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::sage::galaxy::sfr</definition>
+        <argsstring></argsstring>
+        <name>sfr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="58" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="58" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1a5eec48d1b6718d08587bf461c0014bf9" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::sage::galaxy::sfr_bulge</definition>
+        <argsstring></argsstring>
+        <name>sfr_bulge</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="59" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="59" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1a6f3334bed565a979f3940aef7dc3bfca" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::sage::galaxy::sfr_ics</definition>
+        <argsstring></argsstring>
+        <name>sfr_ics</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="60" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="60" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1ade8d28a1d48105b3ca353267717a07f5" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::sage::galaxy::disk_scale_radius</definition>
+        <argsstring></argsstring>
+        <name>disk_scale_radius</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="61" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="61" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1a9c3d528f9bc438d6fa4e1c556d858970" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::sage::galaxy::cooling</definition>
+        <argsstring></argsstring>
+        <name>cooling</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="62" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="62" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1sage_1_1galaxy_1a4c6ade06b9dbb8a981a606963a3e2e66" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::sage::galaxy::heating</definition>
+        <argsstring></argsstring>
+        <name>heating</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="63" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="63" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" line="13" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/sage.hh" bodystart="12" bodyend="64"/>
+    <listofallmembers>
+      <member refid="structtao_1_1sage_1_1galaxy_1a59d15a9b9fbee3f310fb32d9bb3c8776" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>black_hole_mass</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1a181004f8b9c0729b6bf46e7b7b02b6a8" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>bulge_mass</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1ae952b4b1f920136656d4a162b4c4ce01" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>central_gal</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1a5d9301506defc743de6146b3179219ca" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>central_mvir</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1ac3727b35f6ffea20f7d50a9dd3155927" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>cold_gas</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1a9c3d528f9bc438d6fa4e1c556d858970" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>cooling</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1a3139a85c3c8210d07ce0a41e2b0900df" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>descendant</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1ade8d28a1d48105b3ca353267717a07f5" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>disk_scale_radius</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1aaec3e2bbf0b8b8332f964ab96807371d" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>ejected_mass</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1abfaf97fd30d0b5402a8da2a9336c8df0" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>fof_index</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1a76d4755e088fbdfc165a5c839c19fe76" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>galaxy_index</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1acb04d92741ae53b8c4f4ff218a5dcdf7" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>global_descendant</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1a85f8f1ae50fe966fe506b4a94e8aa118" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>global_index</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1a0cfd84cb43a050609d0ca36858c2de6f" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>halo_index</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1a4c6ade06b9dbb8a981a606963a3e2e66" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>heating</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1aa77ac6725d987d6b0856366133e3be1c" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>hot_gas</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1ae29e09e7dbefa93000c57440ddd92afe" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>ics</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1a094f77a9921ede2cdd91d88d2bed1595" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>len</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1ac7b781c36ffe81d38d18c1fbce6bdf37" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>metals_bulge_mass</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1a0eb7f6460c207bb063362c15b6dd6667" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>metals_cold_gas</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1a7ba61ae4ceaa20e76f81ce7b8a27d011" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>metals_ejected_mass</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1a6e33decd5b6ea1aa3e034aeb8349f83b" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>metals_hot_gas</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1ad34e6f0990e99805fff9e1a4472fd067" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>metals_ics</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1a801539dc67fb672bcf267a3a4d95c9f6" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>metals_stellar_mass</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1aabde94431e37033384d85281874392a2" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>mvir</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1ac5c1c90d8377f9660d1714df3e892d37" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>rvir</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1a1776dcf73d6113cbac614b3e2e1b4d35" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>sfr</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1a5eec48d1b6718d08587bf461c0014bf9" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>sfr_bulge</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1a6f3334bed565a979f3940aef7dc3bfca" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>sfr_ics</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1ab8466b6deb185ce586fa04299a4c3742" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>snap</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1a04b7219f6ed190737fad431fc1115f40" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>stellar_mass</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1a1622265ba950f30d236adceed2496271" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>sx</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1a032fd75448ad5b35eb879a6b49a82c1c" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>sy</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1ae078cbe7ccaf6692d30c367b83435880" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>sz</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1abed60f9cee5e44eb1a043140a033713e" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>tree_index</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1a103fb64eec70b8fb35ad1670b34ec24d" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>type</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1a2d3c66b19f86e26359730b5817798719" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>vel_disp</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1a4b61be69d67e176e96d1b9346556a118" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>vmax</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1acf103342b4841922e61a362793aa6f2d" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>vvir</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1aaab5433563715161d5112acae6682d31" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>vx</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1af43134b4d1b98163ff3bd6fc2f3d135f" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>vy</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1a08c8dd4793708141e676e090a1ece7d6" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>vz</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1a5e2669713395c1a2f378048f1140a8da" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>x</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1ad3aa553b959bdbcdad7e8558b9141c7c" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>y</name></member>
+      <member refid="structtao_1_1sage_1_1galaxy_1a4a715f1ab3bfa865cb6574a109ba5bce" prot="public" virt="non-virtual"><scope>tao::sage::galaxy</scope><name>z</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

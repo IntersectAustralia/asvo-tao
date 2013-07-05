@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="dir_78c4c3cd00a95130cb9567a5f59c76b5" kind="dir">
+    <compoundname>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests</compoundname>
+    <innerfile refid="_b_s_p_tree___test_8hh">BSPTree_Test.hh</innerfile>
+    <innerfile refid="clip__suite_8t_8hh">clip_suite.t.hh</innerfile>
+    <innerfile refid="db__fixture_8hh">db_fixture.hh</innerfile>
+    <innerfile refid="diff__suite_8t_8hh">diff_suite.t.hh</innerfile>
+    <innerfile refid="filter__suite_8t_8hh">filter_suite.t.hh</innerfile>
+    <innerfile refid="geometry__iterator_8t_8hh">geometry_iterator.t.hh</innerfile>
+    <innerfile refid="lightcone__suite_8t_8hh">lightcone_suite.t.hh</innerfile>
+    <innerfile refid="mpi__fixture_8hh">mpi_fixture.hh</innerfile>
+    <innerfile refid="_multi_d_b___test_8hh">MultiDB_Test.hh</innerfile>
+    <innerfile refid="sed__suite_8t_8hh">sed_suite.t.hh</innerfile>
+    <innerfile refid="skymaker__suite_8t_8hh">skymaker_suite.t.hh</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/"/>
+  </compounddef>
+</doxygen>

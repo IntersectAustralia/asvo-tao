@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="class_cxx_test_1_1_value_traits" kind="class" prot="public">
+    <compoundname>CxxTest::ValueTraits</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-type">
+      <memberdef kind="enum" id="class_cxx_test_1_1_value_traits_1af9a49c54396bc53c7c6ac48555a46115" prot="private" static="no">
+        <name>@2</name>
+        <enumvalue id="class_cxx_test_1_1_value_traits_1af9a49c54396bc53c7c6ac48555a46115a0fb42f023b294011cb8e08bdcb6adc7c" prot="private">
+          <name>MAX_BYTES</name>
+          <initializer>= 8</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" line="76" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" bodystart="76" bodyend="76"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_cxx_test_1_1_value_traits_1a90b69ff609116e09786c5f8cb657037d" prot="private" static="no" mutable="no">
+        <type>char</type>
+        <definition>char CxxTest::ValueTraits&lt; T &gt;::_asString[sizeof(&quot;{ &quot;)+sizeof(&quot;XX &quot;)*MAX_BYTES+sizeof(&quot;... }&quot;)]</definition>
+        <argsstring>[sizeof(&quot;{ &quot;)+sizeof(&quot;XX &quot;)*MAX_BYTES+sizeof(&quot;... }&quot;)]</argsstring>
+        <name>_asString</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" line="77" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" bodystart="77" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_cxx_test_1_1_value_traits_1acf53c877a17c0725565e33a9580c3229" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::ValueTraits&lt; T &gt;::ValueTraits</definition>
+        <argsstring>(const T &amp;t)</argsstring>
+        <name>ValueTraits</name>
+        <param>
+          <type>const T &amp;</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" line="80" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" bodystart="80" bodyend="80"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_value_traits_1abf431a4200fb70a54019bd07a2d3e258" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const char *</type>
+        <definition>const char* CxxTest::ValueTraits&lt; T &gt;::asString</definition>
+        <argsstring>(void) const </argsstring>
+        <name>asString</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" line="81" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" bodystart="81" bodyend="81"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" line="75" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" bodystart="74" bodyend="82"/>
+    <listofallmembers>
+      <member refid="class_cxx_test_1_1_value_traits_1a90b69ff609116e09786c5f8cb657037d" prot="private" virt="non-virtual"><scope>CxxTest::ValueTraits</scope><name>_asString</name></member>
+      <member refid="class_cxx_test_1_1_value_traits_1abf431a4200fb70a54019bd07a2d3e258" prot="public" virt="non-virtual"><scope>CxxTest::ValueTraits</scope><name>asString</name></member>
+      <member refid="class_cxx_test_1_1_value_traits_1af9a49c54396bc53c7c6ac48555a46115a0fb42f023b294011cb8e08bdcb6adc7c" prot="private" virt="non-virtual"><scope>CxxTest::ValueTraits</scope><name>MAX_BYTES</name></member>
+      <member refid="class_cxx_test_1_1_value_traits_1acf53c877a17c0725565e33a9580c3229" prot="public" virt="non-virtual"><scope>CxxTest::ValueTraits</scope><name>ValueTraits</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

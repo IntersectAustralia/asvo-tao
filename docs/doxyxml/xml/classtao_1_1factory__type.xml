@@ -1,0 +1,199 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="classtao_1_1factory__type" kind="class" prot="public">
+    <compoundname>tao::factory_type</compoundname>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classtao_1_1factory__type_1a8a2a1f9ad1f4bf7e035f8a3acda75f13" prot="public" static="no">
+        <type><ref refid="classtao_1_1module" kindref="compound">module</ref> *(*</type>
+        <definition>typedef module*(* tao::factory_type::factory_create_type)(const string &amp;name, pugi::xml_node base)</definition>
+        <argsstring>)(const string &amp;name, pugi::xml_node base)</argsstring>
+        <name>factory_create_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/factory.hh" line="22" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/factory.hh" bodystart="21" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classtao_1_1factory__type_1aa7c9bb15bff1ff6ecaa00fe19cfc4009" prot="public" static="no">
+        <type>list&lt; <ref refid="classtao_1_1module" kindref="compound">module</ref> * &gt;::iterator</type>
+        <definition>typedef list&lt;module*&gt;::iterator tao::factory_type::iterator</definition>
+        <argsstring></argsstring>
+        <name>iterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/factory.hh" line="23" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/factory.hh" bodystart="23" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classtao_1_1factory__type_1a29eb9c371410242bf3e7fdb92ae48bf7" prot="protected" static="no" mutable="no">
+        <type>map&lt; string, factory_create_type &gt;</type>
+        <definition>map&lt;string,factory_create_type&gt; tao::factory_type::_facs</definition>
+        <argsstring></argsstring>
+        <name>_facs</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/factory.hh" line="51" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/factory.hh" bodystart="51" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1factory__type_1a9bd86f1bca0aaa4c82ce6ee79d7d087c" prot="protected" static="no" mutable="no">
+        <type>list&lt; <ref refid="classtao_1_1module" kindref="compound">module</ref> * &gt;</type>
+        <definition>list&lt;module*&gt; tao::factory_type::_mods</definition>
+        <argsstring></argsstring>
+        <name>_mods</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/factory.hh" line="52" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/factory.hh" bodystart="52" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classtao_1_1factory__type_1a85af67bb6febf8bfcebeab6e85ae6aaa" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>tao::factory_type::factory_type</definition>
+        <argsstring>()</argsstring>
+        <name>factory_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/factory.hh" line="27" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/factory.cc" bodystart="8" bodyend="10"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1factory__type_1ab4ea86d169b89b8ccde377af06a5667f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>tao::factory_type::~factory_type</definition>
+        <argsstring>()</argsstring>
+        <name>~factory_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/factory.hh" line="29" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/factory.cc" bodystart="12" bodyend="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1factory__type_1aba209c98e0d34e57e136bce433136298" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::factory_type::register_module</definition>
+        <argsstring>(const string &amp;name, factory_create_type create)</argsstring>
+        <name>register_module</name>
+        <param>
+          <type>const string &amp;</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>factory_create_type</type>
+          <declname>create</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/factory.hh" line="33" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/factory.cc" bodystart="19" bodyend="24"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1factory__type_1a853f6490854de94dd86e35f1a0279da4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classtao_1_1module" kindref="compound">module</ref> &amp;</type>
+        <definition>module &amp; tao::factory_type::create_module</definition>
+        <argsstring>(const string &amp;name, const string &amp;inst_name=string(), pugi::xml_node base=NULL)</argsstring>
+        <name>create_module</name>
+        <param>
+          <type>const string &amp;</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>const string &amp;</type>
+          <declname>inst_name</declname>
+          <defval>string()</defval>
+        </param>
+        <param>
+          <type>pugi::xml_node</type>
+          <declname>base</declname>
+          <defval>NULL</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/factory.hh" line="38" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/factory.cc" bodystart="27" bodyend="44"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1factory__type_1a0ce5d64b8f99e37c759f6db33d8314e9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>iterator</type>
+        <definition>factory_type::iterator tao::factory_type::begin</definition>
+        <argsstring>()</argsstring>
+        <name>begin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/factory.hh" line="41" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/factory.cc" bodystart="47" bodyend="50"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1factory__type_1a62c4315dbb85ba52ed671d078cd27e2b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>iterator</type>
+        <definition>factory_type::iterator tao::factory_type::end</definition>
+        <argsstring>()</argsstring>
+        <name>end</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/factory.hh" line="44" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/factory.cc" bodystart="53" bodyend="56"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1factory__type_1a5fd5e18bf70f1c0d1e57be216eef12b4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classtao_1_1module" kindref="compound">module</ref> *</type>
+        <definition>module * tao::factory_type::operator[]</definition>
+        <argsstring>(const string &amp;name)</argsstring>
+        <name>operator[]</name>
+        <param>
+          <type>const string &amp;</type>
+          <declname>name</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/factory.hh" line="47" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/factory.cc" bodystart="59" bodyend="67"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/factory.hh" line="18" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/factory.hh" bodystart="17" bodyend="53"/>
+    <listofallmembers>
+      <member refid="classtao_1_1factory__type_1a29eb9c371410242bf3e7fdb92ae48bf7" prot="protected" virt="non-virtual"><scope>tao::factory_type</scope><name>_facs</name></member>
+      <member refid="classtao_1_1factory__type_1a9bd86f1bca0aaa4c82ce6ee79d7d087c" prot="protected" virt="non-virtual"><scope>tao::factory_type</scope><name>_mods</name></member>
+      <member refid="classtao_1_1factory__type_1a0ce5d64b8f99e37c759f6db33d8314e9" prot="public" virt="non-virtual"><scope>tao::factory_type</scope><name>begin</name></member>
+      <member refid="classtao_1_1factory__type_1a853f6490854de94dd86e35f1a0279da4" prot="public" virt="non-virtual"><scope>tao::factory_type</scope><name>create_module</name></member>
+      <member refid="classtao_1_1factory__type_1a62c4315dbb85ba52ed671d078cd27e2b" prot="public" virt="non-virtual"><scope>tao::factory_type</scope><name>end</name></member>
+      <member refid="classtao_1_1factory__type_1a8a2a1f9ad1f4bf7e035f8a3acda75f13" prot="public" virt="non-virtual"><scope>tao::factory_type</scope><name>factory_create_type</name></member>
+      <member refid="classtao_1_1factory__type_1a85af67bb6febf8bfcebeab6e85ae6aaa" prot="public" virt="non-virtual"><scope>tao::factory_type</scope><name>factory_type</name></member>
+      <member refid="classtao_1_1factory__type_1aa7c9bb15bff1ff6ecaa00fe19cfc4009" prot="public" virt="non-virtual"><scope>tao::factory_type</scope><name>iterator</name></member>
+      <member refid="classtao_1_1factory__type_1a5fd5e18bf70f1c0d1e57be216eef12b4" prot="public" virt="non-virtual"><scope>tao::factory_type</scope><name>operator[]</name></member>
+      <member refid="classtao_1_1factory__type_1aba209c98e0d34e57e136bce433136298" prot="public" virt="non-virtual"><scope>tao::factory_type</scope><name>register_module</name></member>
+      <member refid="classtao_1_1factory__type_1ab4ea86d169b89b8ccde377af06a5667f" prot="public" virt="non-virtual"><scope>tao::factory_type</scope><name>~factory_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

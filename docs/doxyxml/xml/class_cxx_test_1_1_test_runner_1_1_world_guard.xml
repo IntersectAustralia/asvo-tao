@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="class_cxx_test_1_1_test_runner_1_1_world_guard" kind="class" prot="private">
+    <compoundname>CxxTest::TestRunner::WorldGuard</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">CxxTest::TestRunner::StateGuard</basecompoundref>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_cxx_test_1_1_test_runner_1_1_world_guard_1a2b13a4584d9555049d8b0f973ffe84cf" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::TestRunner::WorldGuard::WorldGuard</definition>
+        <argsstring>()</argsstring>
+        <name>WorldGuard</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestRunner.h" line="109" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestRunner.h" bodystart="108" bodyend="114"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="462">
+        <label>CxxTest::TestRunner::WorldGuard</label>
+        <childnode refid="463" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="463">
+        <label>CxxTest::TestRunner::StateGuard</label>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="464">
+        <label>CxxTest::TestRunner::WorldGuard</label>
+        <childnode refid="465" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="465">
+        <label>CxxTest::TestRunner::StateGuard</label>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestRunner.h" line="106" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestRunner.h" bodystart="105" bodyend="115"/>
+    <listofallmembers>
+      <member refid="class_cxx_test_1_1_test_runner_1_1_state_guard_1a45244d794d32ba37f1865f93aaed77be" prot="public" virt="non-virtual"><scope>CxxTest::TestRunner::WorldGuard</scope><name>StateGuard</name></member>
+      <member refid="class_cxx_test_1_1_test_runner_1_1_world_guard_1a2b13a4584d9555049d8b0f973ffe84cf" prot="public" virt="non-virtual"><scope>CxxTest::TestRunner::WorldGuard</scope><name>WorldGuard</name></member>
+      <member refid="class_cxx_test_1_1_test_runner_1_1_state_guard_1ac1605d130534c4f446dff2ceca940b31" prot="public" virt="non-virtual"><scope>CxxTest::TestRunner::WorldGuard</scope><name>~StateGuard</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>
