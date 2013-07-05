@@ -1,0 +1,365 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="structhalo__type" kind="struct" prot="public">
+    <compoundname>halo_type</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structhalo__type_1a423d0adadb8b7e7b4f6169dd36410d65" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int halo_type::descendant</definition>
+        <argsstring></argsstring>
+        <name>descendant</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" line="11" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" bodystart="11" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structhalo__type_1a398f50e2d2433c39e1a89c33ba528080" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int halo_type::first_progenitor</definition>
+        <argsstring></argsstring>
+        <name>first_progenitor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" line="12" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" bodystart="12" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structhalo__type_1a620641b6da8809977108caaf18d3ec40" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int halo_type::next_progenitor</definition>
+        <argsstring></argsstring>
+        <name>next_progenitor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" line="13" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" bodystart="13" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structhalo__type_1a3c57c40e384b4af3570f0099113ac615" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int halo_type::first_fof</definition>
+        <argsstring></argsstring>
+        <name>first_fof</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" line="14" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" bodystart="14" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structhalo__type_1a87e4b07d59c71f1f77328008038b9f21" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int halo_type::next_fof</definition>
+        <argsstring></argsstring>
+        <name>next_fof</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" line="15" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" bodystart="15" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structhalo__type_1a9d04b334e1b387403a4bd9b37a91969e" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int halo_type::num_particles</definition>
+        <argsstring></argsstring>
+        <name>num_particles</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" line="18" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" bodystart="18" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structhalo__type_1a4290405862eb7c2e71dc077f82be34c9" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float halo_type::M_Mean200</definition>
+        <argsstring></argsstring>
+        <name>M_Mean200</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" line="19" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" bodystart="19" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structhalo__type_1a4f72c247dbb5e661ce5c571a1f364773" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float halo_type::Mvir</definition>
+        <argsstring></argsstring>
+        <name>Mvir</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" line="19" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" bodystart="19" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structhalo__type_1a30a7baf55d0180d3d9b065d5a3638028" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float halo_type::M_TopHat</definition>
+        <argsstring></argsstring>
+        <name>M_TopHat</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" line="19" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" bodystart="19" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structhalo__type_1adfdf2b55be12c86048f62e424e2069a6" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float halo_type::x</definition>
+        <argsstring></argsstring>
+        <name>x</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" line="20" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" bodystart="20" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structhalo__type_1af1c4417a8e2cbc3a4893e69be65c476f" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float halo_type::y</definition>
+        <argsstring></argsstring>
+        <name>y</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" line="20" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" bodystart="20" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structhalo__type_1aec04429e9cca281e19e2a4f16a10b3a4" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float halo_type::z</definition>
+        <argsstring></argsstring>
+        <name>z</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" line="20" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" bodystart="20" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structhalo__type_1a0dc233918fc57f3f3f3ba41b83e1751f" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float halo_type::vx</definition>
+        <argsstring></argsstring>
+        <name>vx</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" line="21" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" bodystart="21" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structhalo__type_1a88ac9c7f215f7e8e778d0fcca4b09559" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float halo_type::vy</definition>
+        <argsstring></argsstring>
+        <name>vy</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" line="21" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" bodystart="21" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structhalo__type_1a8fd0c3b494a52504bf37cdc54928ffbd" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float halo_type::vz</definition>
+        <argsstring></argsstring>
+        <name>vz</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" line="21" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" bodystart="21" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structhalo__type_1a969d1b2d03418b846b12a82f9530ffb3" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float halo_type::vel_disp</definition>
+        <argsstring></argsstring>
+        <name>vel_disp</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" line="22" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" bodystart="22" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structhalo__type_1af5342188869da52a674651ac9c7a4e21" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float halo_type::vmax</definition>
+        <argsstring></argsstring>
+        <name>vmax</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" line="23" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" bodystart="23" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structhalo__type_1aa8d882fc80d4a9bfd297fd51ae057354" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float halo_type::sx</definition>
+        <argsstring></argsstring>
+        <name>sx</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" line="24" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" bodystart="24" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structhalo__type_1a0fb48e9c3286d9796fbf2130d554170c" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float halo_type::sy</definition>
+        <argsstring></argsstring>
+        <name>sy</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" line="24" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" bodystart="24" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structhalo__type_1a9a25c0f843fb516c29b2cee232a2a7fb" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float halo_type::sz</definition>
+        <argsstring></argsstring>
+        <name>sz</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" line="24" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" bodystart="24" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structhalo__type_1a42b02478927a0db6d910404e172b02c1" prot="public" static="no" mutable="no">
+        <type>long long</type>
+        <definition>long long halo_type::most_bound_id</definition>
+        <argsstring></argsstring>
+        <name>most_bound_id</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" line="25" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" bodystart="25" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structhalo__type_1aa8f0b0d0a0a3f20e99ec15805ad7b22c" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int halo_type::snap_num</definition>
+        <argsstring></argsstring>
+        <name>snap_num</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" line="28" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" bodystart="28" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structhalo__type_1ab94db38ec17bb1fcc0451eed7fdd4e23" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int halo_type::file_nr</definition>
+        <argsstring></argsstring>
+        <name>file_nr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" line="29" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" bodystart="29" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structhalo__type_1a10bde0ce5c79d4ea8cfcc6234430e657" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int halo_type::SubhaloIndex</definition>
+        <argsstring></argsstring>
+        <name>SubhaloIndex</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" line="30" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" bodystart="30" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structhalo__type_1a242321b10f568a28547e8a9193ddd2da" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float halo_type::SubHalfMass</definition>
+        <argsstring></argsstring>
+        <name>SubHalfMass</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" line="31" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" bodystart="31" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" line="9" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/milreader.cc" bodystart="8" bodyend="32"/>
+    <listofallmembers>
+      <member refid="structhalo__type_1a423d0adadb8b7e7b4f6169dd36410d65" prot="public" virt="non-virtual"><scope>halo_type</scope><name>descendant</name></member>
+      <member refid="structhalo__type_1ab94db38ec17bb1fcc0451eed7fdd4e23" prot="public" virt="non-virtual"><scope>halo_type</scope><name>file_nr</name></member>
+      <member refid="structhalo__type_1a3c57c40e384b4af3570f0099113ac615" prot="public" virt="non-virtual"><scope>halo_type</scope><name>first_fof</name></member>
+      <member refid="structhalo__type_1a398f50e2d2433c39e1a89c33ba528080" prot="public" virt="non-virtual"><scope>halo_type</scope><name>first_progenitor</name></member>
+      <member refid="structhalo__type_1a4290405862eb7c2e71dc077f82be34c9" prot="public" virt="non-virtual"><scope>halo_type</scope><name>M_Mean200</name></member>
+      <member refid="structhalo__type_1a30a7baf55d0180d3d9b065d5a3638028" prot="public" virt="non-virtual"><scope>halo_type</scope><name>M_TopHat</name></member>
+      <member refid="structhalo__type_1a42b02478927a0db6d910404e172b02c1" prot="public" virt="non-virtual"><scope>halo_type</scope><name>most_bound_id</name></member>
+      <member refid="structhalo__type_1a4f72c247dbb5e661ce5c571a1f364773" prot="public" virt="non-virtual"><scope>halo_type</scope><name>Mvir</name></member>
+      <member refid="structhalo__type_1a87e4b07d59c71f1f77328008038b9f21" prot="public" virt="non-virtual"><scope>halo_type</scope><name>next_fof</name></member>
+      <member refid="structhalo__type_1a620641b6da8809977108caaf18d3ec40" prot="public" virt="non-virtual"><scope>halo_type</scope><name>next_progenitor</name></member>
+      <member refid="structhalo__type_1a9d04b334e1b387403a4bd9b37a91969e" prot="public" virt="non-virtual"><scope>halo_type</scope><name>num_particles</name></member>
+      <member refid="structhalo__type_1aa8f0b0d0a0a3f20e99ec15805ad7b22c" prot="public" virt="non-virtual"><scope>halo_type</scope><name>snap_num</name></member>
+      <member refid="structhalo__type_1a242321b10f568a28547e8a9193ddd2da" prot="public" virt="non-virtual"><scope>halo_type</scope><name>SubHalfMass</name></member>
+      <member refid="structhalo__type_1a10bde0ce5c79d4ea8cfcc6234430e657" prot="public" virt="non-virtual"><scope>halo_type</scope><name>SubhaloIndex</name></member>
+      <member refid="structhalo__type_1aa8d882fc80d4a9bfd297fd51ae057354" prot="public" virt="non-virtual"><scope>halo_type</scope><name>sx</name></member>
+      <member refid="structhalo__type_1a0fb48e9c3286d9796fbf2130d554170c" prot="public" virt="non-virtual"><scope>halo_type</scope><name>sy</name></member>
+      <member refid="structhalo__type_1a9a25c0f843fb516c29b2cee232a2a7fb" prot="public" virt="non-virtual"><scope>halo_type</scope><name>sz</name></member>
+      <member refid="structhalo__type_1a969d1b2d03418b846b12a82f9530ffb3" prot="public" virt="non-virtual"><scope>halo_type</scope><name>vel_disp</name></member>
+      <member refid="structhalo__type_1af5342188869da52a674651ac9c7a4e21" prot="public" virt="non-virtual"><scope>halo_type</scope><name>vmax</name></member>
+      <member refid="structhalo__type_1a0dc233918fc57f3f3f3ba41b83e1751f" prot="public" virt="non-virtual"><scope>halo_type</scope><name>vx</name></member>
+      <member refid="structhalo__type_1a88ac9c7f215f7e8e778d0fcca4b09559" prot="public" virt="non-virtual"><scope>halo_type</scope><name>vy</name></member>
+      <member refid="structhalo__type_1a8fd0c3b494a52504bf37cdc54928ffbd" prot="public" virt="non-virtual"><scope>halo_type</scope><name>vz</name></member>
+      <member refid="structhalo__type_1adfdf2b55be12c86048f62e424e2069a6" prot="public" virt="non-virtual"><scope>halo_type</scope><name>x</name></member>
+      <member refid="structhalo__type_1af1c4417a8e2cbc3a4893e69be65c476f" prot="public" virt="non-virtual"><scope>halo_type</scope><name>y</name></member>
+      <member refid="structhalo__type_1aec04429e9cca281e19e2a4f16a10b3a4" prot="public" virt="non-virtual"><scope>halo_type</scope><name>z</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

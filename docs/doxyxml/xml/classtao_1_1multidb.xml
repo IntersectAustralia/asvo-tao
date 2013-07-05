@@ -1,0 +1,321 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="classtao_1_1multidb" kind="class" prot="public">
+    <compoundname>tao::multidb</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classtao_1_1multidb_1ac0a7d1bff9983daf7198ce046d9eb26e" prot="public" static="no" mutable="no">
+        <type>list&lt; string &gt;</type>
+        <definition>list&lt;string&gt; tao::multidb::TableNames</definition>
+        <argsstring></argsstring>
+        <name>TableNames</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/multidb.hh" line="48" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/multidb.hh" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1multidb_1a641c861ef27fcffa0e9513ce9c115a80" prot="public" static="no" mutable="no">
+        <type>map&lt; string, <ref refid="classtao_1_1_server_info" kindref="compound">ServerInfo</ref> * &gt;</type>
+        <definition>map&lt;string,ServerInfo*&gt; tao::multidb::CurrentServers</definition>
+        <argsstring></argsstring>
+        <name>CurrentServers</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/multidb.hh" line="49" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/multidb.hh" bodystart="49" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1multidb_1a735ce87fadec47a804e95416853a72f7" prot="public" static="no" mutable="no">
+        <type>map&lt; string, <ref refid="classtao_1_1_server_info" kindref="compound">ServerInfo</ref> * &gt;</type>
+        <definition>map&lt;string,ServerInfo*&gt; tao::multidb::TablesMapping</definition>
+        <argsstring></argsstring>
+        <name>TablesMapping</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/multidb.hh" line="50" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/multidb.hh" bodystart="50" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classtao_1_1multidb_1a414134f496d58367dc32f94ef3e38893" prot="protected" static="no" mutable="no">
+        <type>int</type>
+        <definition>int tao::multidb::_serverscount</definition>
+        <argsstring></argsstring>
+        <name>_serverscount</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/multidb.hh" line="52" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/multidb.hh" bodystart="52" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1multidb_1a0c44c8a9411b64545a1d431880204935" prot="protected" static="no" mutable="no">
+        <type>std::map&lt; string, <ref refid="classtao_1_1_server_info" kindref="compound">ServerInfo</ref> * &gt;::iterator</type>
+        <definition>std::map&lt;string,ServerInfo*&gt;::iterator tao::multidb::DefaultServerIterator</definition>
+        <argsstring></argsstring>
+        <name>DefaultServerIterator</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/multidb.hh" line="53" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/multidb.hh" bodystart="53" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1multidb_1ab1db8d27b6a862fec76810b4c8f3ef26" prot="protected" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::multidb::_dbtype</definition>
+        <argsstring></argsstring>
+        <name>_dbtype</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/multidb.hh" line="55" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/multidb.hh" bodystart="55" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1multidb_1a10959d76b3907bcd8a1e7bdad2649a00" prot="protected" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::multidb::_dbname</definition>
+        <argsstring></argsstring>
+        <name>_dbname</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/multidb.hh" line="55" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/multidb.hh" bodystart="55" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1multidb_1a224e0fd2cb7e7f8fab5aaf641f3b625b" prot="protected" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::multidb::_tree_pre</definition>
+        <argsstring></argsstring>
+        <name>_tree_pre</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/multidb.hh" line="56" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/multidb.hh" bodystart="56" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classtao_1_1multidb_1aed380f67b3a74617cb0a3627a9668509" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>tao::multidb::multidb</definition>
+        <argsstring>(const options::xml_dict &amp;dict)</argsstring>
+        <name>multidb</name>
+        <param>
+          <type>const options::xml_dict &amp;</type>
+          <declname>dict</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/multidb.hh" line="39" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/multidb.cc" bodystart="111" bodyend="116"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1multidb_1a2f4d9d77ac2cd0f2e61861b9d36caabd" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>tao::multidb::~multidb</definition>
+        <argsstring>()</argsstring>
+        <name>~multidb</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/multidb.hh" line="40" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/multidb.cc" bodystart="118" bodyend="123"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1multidb_1a6444dcce061d6805adfa4faea55395fb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::multidb::CloseAllConnections</definition>
+        <argsstring>()</argsstring>
+        <name>CloseAllConnections</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/multidb.hh" line="41" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/multidb.cc" bodystart="126" bodyend="131"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1multidb_1a0907a72a7726fdd6d7c7d93a9b4308be" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::multidb::RestartAllConnections</definition>
+        <argsstring>()</argsstring>
+        <name>RestartAllConnections</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/multidb.hh" line="42" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/multidb.cc" bodystart="133" bodyend="138"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1multidb_1a072ac488592ca273ad012dfecfa458f2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::multidb::OpenAllConnections</definition>
+        <argsstring>()</argsstring>
+        <name>OpenAllConnections</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/multidb.hh" line="43" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/multidb.cc" bodystart="140" bodyend="146"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1multidb_1a44eedcc5dbf2df63063442d850c7ab78" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>soci::session &amp;</type>
+        <definition>soci::session &amp; tao::multidb::operator[]</definition>
+        <argsstring>(string TableName)</argsstring>
+        <name>operator[]</name>
+        <param>
+          <type>string</type>
+          <declname>TableName</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/multidb.hh" line="44" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/multidb.cc" bodystart="237" bodyend="250"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1multidb_1aab46443ac114319cc3a730f3c8c6bd59" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool tao::multidb::TableExist</definition>
+        <argsstring>(string TableName)</argsstring>
+        <name>TableExist</name>
+        <param>
+          <type>string</type>
+          <declname>TableName</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/multidb.hh" line="45" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/multidb.cc" bodystart="205" bodyend="208"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1multidb_1a881cd5cd4b2cdad884daa6a23931f1ba" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool tao::multidb::ExecuteNoQuery_AllServers</definition>
+        <argsstring>(string SQLStatement)</argsstring>
+        <name>ExecuteNoQuery_AllServers</name>
+        <param>
+          <type>string</type>
+          <declname>SQLStatement</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/multidb.hh" line="46" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/multidb.cc" bodystart="210" bodyend="220"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1multidb_1a8750ee516af315f379e83ab7aeba69d8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>soci::session *</type>
+        <definition>soci::session * tao::multidb::GetConnectionToAnyServer</definition>
+        <argsstring>()</argsstring>
+        <name>GetConnectionToAnyServer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/multidb.hh" line="47" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/multidb.cc" bodystart="222" bodyend="235"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classtao_1_1multidb_1a5cdb21cf0306b11a3483540db733655a" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::multidb::ReadTableMapping</definition>
+        <argsstring>()</argsstring>
+        <name>ReadTableMapping</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/multidb.hh" line="57" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/multidb.cc" bodystart="177" bodyend="203"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1multidb_1abd5c979667263d7fb1213d8215446bf8" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::multidb::_read_db_options</definition>
+        <argsstring>(const options::xml_dict &amp;dict)</argsstring>
+        <name>_read_db_options</name>
+        <param>
+          <type>const options::xml_dict &amp;</type>
+          <declname>dict</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/multidb.hh" line="58" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/multidb.cc" bodystart="150" bodyend="175"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="241">
+        <label>string</label>
+      </node>
+      <node id="240">
+        <label>tao::multidb</label>
+        <link refid="classtao_1_1multidb"/>
+        <childnode refid="241" relation="usage">
+          <edgelabel>_dbname</edgelabel>
+          <edgelabel>_tree_pre</edgelabel>
+          <edgelabel>_dbtype</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/multidb.hh" line="35" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/multidb.hh" bodystart="34" bodyend="61"/>
+    <listofallmembers>
+      <member refid="classtao_1_1multidb_1a10959d76b3907bcd8a1e7bdad2649a00" prot="protected" virt="non-virtual"><scope>tao::multidb</scope><name>_dbname</name></member>
+      <member refid="classtao_1_1multidb_1ab1db8d27b6a862fec76810b4c8f3ef26" prot="protected" virt="non-virtual"><scope>tao::multidb</scope><name>_dbtype</name></member>
+      <member refid="classtao_1_1multidb_1abd5c979667263d7fb1213d8215446bf8" prot="protected" virt="non-virtual"><scope>tao::multidb</scope><name>_read_db_options</name></member>
+      <member refid="classtao_1_1multidb_1a414134f496d58367dc32f94ef3e38893" prot="protected" virt="non-virtual"><scope>tao::multidb</scope><name>_serverscount</name></member>
+      <member refid="classtao_1_1multidb_1a224e0fd2cb7e7f8fab5aaf641f3b625b" prot="protected" virt="non-virtual"><scope>tao::multidb</scope><name>_tree_pre</name></member>
+      <member refid="classtao_1_1multidb_1a6444dcce061d6805adfa4faea55395fb" prot="public" virt="non-virtual"><scope>tao::multidb</scope><name>CloseAllConnections</name></member>
+      <member refid="classtao_1_1multidb_1a641c861ef27fcffa0e9513ce9c115a80" prot="public" virt="non-virtual"><scope>tao::multidb</scope><name>CurrentServers</name></member>
+      <member refid="classtao_1_1multidb_1a0c44c8a9411b64545a1d431880204935" prot="protected" virt="non-virtual"><scope>tao::multidb</scope><name>DefaultServerIterator</name></member>
+      <member refid="classtao_1_1multidb_1a881cd5cd4b2cdad884daa6a23931f1ba" prot="public" virt="non-virtual"><scope>tao::multidb</scope><name>ExecuteNoQuery_AllServers</name></member>
+      <member refid="classtao_1_1multidb_1a8750ee516af315f379e83ab7aeba69d8" prot="public" virt="non-virtual"><scope>tao::multidb</scope><name>GetConnectionToAnyServer</name></member>
+      <member refid="classtao_1_1multidb_1aed380f67b3a74617cb0a3627a9668509" prot="public" virt="non-virtual"><scope>tao::multidb</scope><name>multidb</name></member>
+      <member refid="classtao_1_1multidb_1a072ac488592ca273ad012dfecfa458f2" prot="public" virt="non-virtual"><scope>tao::multidb</scope><name>OpenAllConnections</name></member>
+      <member refid="classtao_1_1multidb_1a44eedcc5dbf2df63063442d850c7ab78" prot="public" virt="non-virtual"><scope>tao::multidb</scope><name>operator[]</name></member>
+      <member refid="classtao_1_1multidb_1a5cdb21cf0306b11a3483540db733655a" prot="protected" virt="non-virtual"><scope>tao::multidb</scope><name>ReadTableMapping</name></member>
+      <member refid="classtao_1_1multidb_1a0907a72a7726fdd6d7c7d93a9b4308be" prot="public" virt="non-virtual"><scope>tao::multidb</scope><name>RestartAllConnections</name></member>
+      <member refid="classtao_1_1multidb_1aab46443ac114319cc3a730f3c8c6bd59" prot="public" virt="non-virtual"><scope>tao::multidb</scope><name>TableExist</name></member>
+      <member refid="classtao_1_1multidb_1ac0a7d1bff9983daf7198ce046d9eb26e" prot="public" virt="non-virtual"><scope>tao::multidb</scope><name>TableNames</name></member>
+      <member refid="classtao_1_1multidb_1a735ce87fadec47a804e95416853a72f7" prot="public" virt="non-virtual"><scope>tao::multidb</scope><name>TablesMapping</name></member>
+      <member refid="classtao_1_1multidb_1a2f4d9d77ac2cd0f2e61861b9d36caabd" prot="public" virt="virtual"><scope>tao::multidb</scope><name>~multidb</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

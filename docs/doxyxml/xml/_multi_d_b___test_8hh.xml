@@ -1,0 +1,212 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="_multi_d_b___test_8hh" kind="file">
+    <compoundname>MultiDB_Test.hh</compoundname>
+    <includes local="no">soci/soci.h</includes>
+    <includes local="no">soci/sqlite3/soci-sqlite3.h</includes>
+    <includes refid="_test_suite_8h" local="no">cxxtest/TestSuite.h</includes>
+    <includes local="no">libhpc/libhpc.hh</includes>
+    <includes local="no">vector</includes>
+    <includes local="no">iostream</includes>
+    <includes local="no">pugixml.hpp</includes>
+    <includes local="yes">tao/base/base.hh</includes>
+    <includes local="yes">tao/modules/modules.hh</includes>
+    <includes local="yes">tao/base/multidb.hh</includes>
+    <incdepgraph>
+      <node id="1540">
+        <label>libhpc/libhpc.hh</label>
+      </node>
+      <node id="1543">
+        <label>pugixml.hpp</label>
+      </node>
+      <node id="1532">
+        <label>cxxtest/TestSuite.h</label>
+        <link refid="_test_suite_8h_source"/>
+        <childnode refid="1533" relation="include">
+        </childnode>
+        <childnode refid="1534" relation="include">
+        </childnode>
+        <childnode refid="1536" relation="include">
+        </childnode>
+        <childnode refid="1539" relation="include">
+        </childnode>
+      </node>
+      <node id="1534">
+        <label>cxxtest/TestTracker.h</label>
+        <link refid="_test_tracker_8h_source"/>
+        <childnode refid="1535" relation="include">
+        </childnode>
+        <childnode refid="1538" relation="include">
+        </childnode>
+      </node>
+      <node id="1536">
+        <label>cxxtest/Descriptions.h</label>
+        <link refid="_descriptions_8h_source"/>
+        <childnode refid="1537" relation="include">
+        </childnode>
+      </node>
+      <node id="1544">
+        <label>tao/base/base.hh</label>
+      </node>
+      <node id="1535">
+        <label>cxxtest/TestListener.h</label>
+        <link refid="_test_listener_8h_source"/>
+        <childnode refid="1536" relation="include">
+        </childnode>
+      </node>
+      <node id="1539">
+        <label>cxxtest/ValueTraits.h</label>
+        <link refid="_value_traits_8h_source"/>
+        <childnode refid="1533" relation="include">
+        </childnode>
+      </node>
+      <node id="1529">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/MultiDB_Test.hh</label>
+        <link refid="MultiDB_Test.hh"/>
+        <childnode refid="1530" relation="include">
+        </childnode>
+        <childnode refid="1531" relation="include">
+        </childnode>
+        <childnode refid="1532" relation="include">
+        </childnode>
+        <childnode refid="1540" relation="include">
+        </childnode>
+        <childnode refid="1541" relation="include">
+        </childnode>
+        <childnode refid="1542" relation="include">
+        </childnode>
+        <childnode refid="1543" relation="include">
+        </childnode>
+        <childnode refid="1544" relation="include">
+        </childnode>
+        <childnode refid="1545" relation="include">
+        </childnode>
+        <childnode refid="1546" relation="include">
+        </childnode>
+      </node>
+      <node id="1546">
+        <label>tao/base/multidb.hh</label>
+      </node>
+      <node id="1541">
+        <label>vector</label>
+      </node>
+      <node id="1530">
+        <label>soci/soci.h</label>
+      </node>
+      <node id="1531">
+        <label>soci/sqlite3/soci-sqlite3.h</label>
+      </node>
+      <node id="1545">
+        <label>tao/modules/modules.hh</label>
+      </node>
+      <node id="1542">
+        <label>iostream</label>
+      </node>
+      <node id="1538">
+        <label>cxxtest/DummyDescriptions.h</label>
+        <link refid="_dummy_descriptions_8h_source"/>
+        <childnode refid="1536" relation="include">
+        </childnode>
+      </node>
+      <node id="1533">
+        <label>cxxtest/Flags.h</label>
+        <link refid="_flags_8h_source"/>
+      </node>
+      <node id="1537">
+        <label>cxxtest/LinkedList.h</label>
+        <link refid="_linked_list_8h_source"/>
+        <childnode refid="1533" relation="include">
+        </childnode>
+      </node>
+    </incdepgraph>
+    <innerclass refid="class_setting_reader__suite" prot="public">SettingReader_suite</innerclass>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="_multi_d_b___test_8hh_1a8de3ed741dadc9c979a4ff17c0a9116e" prot="public" static="no">
+        <name>NDEBUG</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/MultiDB_Test.hh" line="16" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/MultiDB_Test.hh" bodystart="16" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#include<sp/>&lt;soci/soci.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;soci/sqlite3/soci-sqlite3.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;cxxtest/TestSuite.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;libhpc/libhpc.hh&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;vector&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;iostream&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;pugixml.hpp&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;tao/base/base.hh&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;tao/modules/modules.hh&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;tao/base/multidb.hh&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="keyword">using<sp/>namespace<sp/></highlight><highlight class="normal">std;</highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="keyword">using<sp/>namespace<sp/></highlight><highlight class="normal">hpc;</highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight><highlight class="keyword">using<sp/>namespace<sp/></highlight><highlight class="normal">tao;</highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>NDEBUG</highlight></codeline>
+<codeline lineno="17"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight></codeline>
+<codeline lineno="21" refid="class_setting_reader__suite" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="class_setting_reader__suite" kindref="compound">SettingReader_suite</ref><sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="class_cxx_test_1_1_test_suite" kindref="compound">CxxTest::TestSuite</ref></highlight></codeline>
+<codeline lineno="22"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>test_SettingReader()</highlight></codeline>
+<codeline lineno="27"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>LOG_PUSH(<sp/></highlight><highlight class="keyword">new</highlight><highlight class="normal"><sp/>logging::file(<sp/></highlight><highlight class="stringliteral">&quot;TestLog.log&quot;</highlight><highlight class="normal">,<sp/>logging::info<sp/>)<sp/>);</highlight></codeline>
+<codeline lineno="31"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>TS_TRACE(</highlight><highlight class="stringliteral">&quot;Starting<sp/>SettingReader<sp/>Test&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="32"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">string</highlight><highlight class="normal"><sp/>ParamXMLFile=</highlight><highlight class="stringliteral">&quot;params0.xml.processed&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="33"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">string</highlight><highlight class="normal"><sp/>BasicXMLFile=</highlight><highlight class="stringliteral">&quot;basicsetting.xml&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="34"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>options::xml_dict<sp/>xml;</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight></codeline>
+<codeline lineno="36"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>xml.read(<sp/>ParamXMLFile,<sp/></highlight><highlight class="stringliteral">&quot;/tao&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="37"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>xml.read(<sp/>BasicXMLFile<sp/>);</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"></highlight></codeline>
+<codeline lineno="39"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classtao_1_1multidb" kindref="compound">multidb</ref><sp/>db(xml);</highlight></codeline>
+<codeline lineno="40"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">/*db.OpenAllConnections();</highlight></codeline>
+<codeline lineno="41"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>db.RestartAllConnections();</highlight></codeline>
+<codeline lineno="42"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>db.CloseAllConnections();*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>db[</highlight><highlight class="stringliteral">&quot;tree_1&quot;</highlight><highlight class="normal">];</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"></highlight></codeline>
+<codeline lineno="46"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>soci::session*<sp/>OldConnection=NULL;</highlight></codeline>
+<codeline lineno="47"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>j=0;j&lt;10;j++)</highlight></codeline>
+<codeline lineno="48"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="49"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>soci::session*<sp/><sp/>CurrentConnection=db.GetConnectionToAnyServer();</highlight></codeline>
+<codeline lineno="50"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(CurrentConnection!=OldConnection)</highlight></codeline>
+<codeline lineno="51"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>TS_TRACE(</highlight><highlight class="stringliteral">&quot;New<sp/>Connection&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>OldConnection=CurrentConnection;</highlight></codeline>
+<codeline lineno="54"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="55"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="56"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ASSERT(<sp/>0<sp/>);</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="58"><highlight class="normal"></highlight></codeline>
+<codeline lineno="59"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>db.ExecuteNoQuery_AllServers(</highlight><highlight class="stringliteral">&quot;Create<sp/>Table<sp/>Test(Id<sp/>int);&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="60"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>db.ExecuteNoQuery_AllServers(</highlight><highlight class="stringliteral">&quot;Drop<sp/>Table<sp/>Test;&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"></highlight></codeline>
+<codeline lineno="62"><highlight class="normal"></highlight></codeline>
+<codeline lineno="63"><highlight class="normal"></highlight></codeline>
+<codeline lineno="64"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>TS_TRACE(</highlight><highlight class="stringliteral">&quot;End<sp/>Setting<sp/>Test&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"></highlight></codeline>
+<codeline lineno="66"><highlight class="normal"></highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"></highlight></codeline>
+<codeline lineno="69"><highlight class="normal">};</highlight></codeline>
+    </programlisting>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/MultiDB_Test.hh"/>
+  </compounddef>
+</doxygen>

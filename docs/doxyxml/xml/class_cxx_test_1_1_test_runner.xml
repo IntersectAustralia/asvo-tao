@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="class_cxx_test_1_1_test_runner" kind="class" prot="public">
+    <compoundname>CxxTest::TestRunner</compoundname>
+    <innerclass refid="class_cxx_test_1_1_test_runner_1_1_state_guard" prot="private">CxxTest::TestRunner::StateGuard</innerclass>
+    <innerclass refid="class_cxx_test_1_1_test_runner_1_1_world_guard" prot="private">CxxTest::TestRunner::WorldGuard</innerclass>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="class_cxx_test_1_1_test_runner_1a8aeaf09a5d5553c9d7c05733fdacdbf0" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>static void CxxTest::TestRunner::runAllTests</definition>
+        <argsstring>(TestListener &amp;listener)</argsstring>
+        <name>runAllTests</name>
+        <param>
+          <type><ref refid="class_cxx_test_1_1_test_listener" kindref="compound">TestListener</ref> &amp;</type>
+          <declname>listener</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestRunner.h" line="21" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestRunner.h" bodystart="20" bodyend="26"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_runner_1a4e505f5ce94f49d640b27b994f06d8d8" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>static void CxxTest::TestRunner::runAllTests</definition>
+        <argsstring>(TestListener *listener)</argsstring>
+        <name>runAllTests</name>
+        <param>
+          <type><ref refid="class_cxx_test_1_1_test_listener" kindref="compound">TestListener</ref> *</type>
+          <declname>listener</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestRunner.h" line="29" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestRunner.h" bodystart="28" bodyend="34"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="class_cxx_test_1_1_test_runner_1a03bf8b33510899859a3e03414bfd1af4" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::TestRunner::runWorld</definition>
+        <argsstring>()</argsstring>
+        <name>runWorld</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestRunner.h" line="38" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestRunner.h" bodystart="37" bodyend="51"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_runner_1a786d7985e1355f1aa9da950c015c2777" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::TestRunner::runSuite</definition>
+        <argsstring>(SuiteDescription &amp;sd)</argsstring>
+        <name>runSuite</name>
+        <param>
+          <type><ref refid="class_cxx_test_1_1_suite_description" kindref="compound">SuiteDescription</ref> &amp;</type>
+          <declname>sd</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestRunner.h" line="54" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestRunner.h" bodystart="53" bodyend="66"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_runner_1ad235c642bda39f66a48884b7f5fdcdd1" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::TestRunner::runTest</definition>
+        <argsstring>(TestDescription &amp;td)</argsstring>
+        <name>runTest</name>
+        <param>
+          <type><ref refid="class_cxx_test_1_1_test_description" kindref="compound">TestDescription</ref> &amp;</type>
+          <declname>td</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestRunner.h" line="69" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestRunner.h" bodystart="68" bodyend="78"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestRunner.h" line="18" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestRunner.h" bodystart="17" bodyend="116"/>
+    <listofallmembers>
+      <member refid="class_cxx_test_1_1_test_runner_1a8aeaf09a5d5553c9d7c05733fdacdbf0" prot="public" virt="non-virtual"><scope>CxxTest::TestRunner</scope><name>runAllTests</name></member>
+      <member refid="class_cxx_test_1_1_test_runner_1a4e505f5ce94f49d640b27b994f06d8d8" prot="public" virt="non-virtual"><scope>CxxTest::TestRunner</scope><name>runAllTests</name></member>
+      <member refid="class_cxx_test_1_1_test_runner_1a786d7985e1355f1aa9da950c015c2777" prot="private" virt="non-virtual"><scope>CxxTest::TestRunner</scope><name>runSuite</name></member>
+      <member refid="class_cxx_test_1_1_test_runner_1ad235c642bda39f66a48884b7f5fdcdd1" prot="private" virt="non-virtual"><scope>CxxTest::TestRunner</scope><name>runTest</name></member>
+      <member refid="class_cxx_test_1_1_test_runner_1a03bf8b33510899859a3e03414bfd1af4" prot="private" virt="non-virtual"><scope>CxxTest::TestRunner</scope><name>runWorld</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

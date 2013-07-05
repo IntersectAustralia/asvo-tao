@@ -1,0 +1,207 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="classtao_1_1empty" kind="class" prot="public">
+    <compoundname>tao::empty</compoundname>
+    <basecompoundref refid="classtao_1_1module" prot="public" virt="non-virtual">tao::module</basecompoundref>
+    <includes refid="empty_8hh" local="no">empty.hh</includes>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classtao_1_1empty_1a0e6617b478928ff9affae4ba7b406898" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classtao_1_1module" kindref="compound">module</ref> *</type>
+        <definition>module * tao::empty::factory</definition>
+        <argsstring>(const string &amp;name, pugi::xml_node base)</argsstring>
+        <name>factory</name>
+        <param>
+          <type>const string &amp;</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>pugi::xml_node</type>
+          <declname>base</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Create an instance of the module.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="in">name</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The unique name for the created module. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/empty.hh" line="24" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/empty.cc" bodystart="6" bodyend="10"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classtao_1_1empty_1ad54900282361202254bd855811e331f9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>tao::empty::empty</definition>
+        <argsstring>(const string &amp;name=string(), pugi::xml_node base=NULL)</argsstring>
+        <name>empty</name>
+        <param>
+          <type>const string &amp;</type>
+          <declname>name</declname>
+          <defval>string()</defval>
+        </param>
+        <param>
+          <type>pugi::xml_node</type>
+          <declname>base</declname>
+          <defval>NULL</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Constructor.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="in">name</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The unique name for this module. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/empty.hh" line="34" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/empty.cc" bodystart="12" bodyend="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1empty_1a29d6af54d9c25fd57a59fc2061b20d71" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void tao::empty::initialise</definition>
+        <argsstring>(const options::xml_dict &amp;global_dict)</argsstring>
+        <name>initialise</name>
+        <reimplements refid="classtao_1_1module_1a023002eb7c268ecda8a230fd3e562a45">initialise</reimplements>
+        <param>
+          <type>const options::xml_dict &amp;</type>
+          <declname>global_dict</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Read options, perform required setup.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="inout">dict</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Options dictionary to prepare. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">prefix</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>An optional prefix to apply to options. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/empty.hh" line="44" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/empty.cc" bodystart="19" bodyend="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1empty_1adb92263083d1ad278257654acab79c4c" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void tao::empty::execute</definition>
+        <argsstring>()</argsstring>
+        <name>execute</name>
+        <reimplements refid="classtao_1_1module_1a21b4c2d748b31a7b39fbd0b6fbcc331a">execute</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Execute.</para><para>Retrieve galaxy information from parent(s) and perform processing. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/empty.hh" line="54" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/empty.cc" bodystart="24" bodyend="26"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Example science module. </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="89">
+        <label>tao::empty</label>
+        <link refid="classtao_1_1empty"/>
+        <childnode refid="90" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="90">
+        <label>tao::module</label>
+        <link refid="classtao_1_1module"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="91">
+        <label>tao::empty</label>
+        <link refid="classtao_1_1empty"/>
+        <childnode refid="92" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="93">
+        <label>string</label>
+      </node>
+      <node id="92">
+        <label>tao::module</label>
+        <link refid="classtao_1_1module"/>
+        <childnode refid="93" relation="usage">
+          <edgelabel>_dbhost</edgelabel>
+          <edgelabel>_name</edgelabel>
+          <edgelabel>_dbname</edgelabel>
+          <edgelabel>_dbport</edgelabel>
+          <edgelabel>_dbuser</edgelabel>
+          <edgelabel>_tree_pre</edgelabel>
+          <edgelabel>_dbpass</edgelabel>
+          <edgelabel>_dbtype</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/empty.hh" line="13" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/empty.hh" bodystart="11" bodyend="55"/>
+    <listofallmembers>
+      <member refid="classtao_1_1module_1a1b9223e987716522f3d43dff398cb6c2" prot="protected" virt="non-virtual"><scope>tao::empty</scope><name>_base</name></member>
+      <member refid="classtao_1_1module_1aaa566598c72208d1b7222a5f8d61f9e1" prot="protected" virt="non-virtual"><scope>tao::empty</scope><name>_batch_size</name></member>
+      <member refid="classtao_1_1module_1ad36a3f632e13a7ebb16170da155e9f91" prot="protected" virt="non-virtual"><scope>tao::empty</scope><name>_complete</name></member>
+      <member refid="classtao_1_1module_1ab7902628daffb48f233c25c6b278a041" prot="protected" virt="non-virtual"><scope>tao::empty</scope><name>_connected</name></member>
+      <member refid="classtao_1_1module_1a0d2f74174e37e6dbbcbc590599c274b1" prot="protected" virt="non-virtual"><scope>tao::empty</scope><name>_cur_restart_it</name></member>
+      <member refid="classtao_1_1module_1a0b3144ec62a9790142779ec64e120b17" prot="protected" virt="non-virtual"><scope>tao::empty</scope><name>_db_connect</name></member>
+      <member refid="classtao_1_1module_1a7dcdf9a63725c2ba5cc46db7199003dd" prot="protected" virt="non-virtual"><scope>tao::empty</scope><name>_db_cycle</name></member>
+      <member refid="classtao_1_1module_1aad462a73697cd7a0944d5060555df81f" prot="protected" virt="non-virtual"><scope>tao::empty</scope><name>_db_disconnect</name></member>
+      <member refid="classtao_1_1module_1a11c834df4a7148ed692ff8f038959578" prot="protected" virt="non-virtual"><scope>tao::empty</scope><name>_db_timer</name></member>
+      <member refid="classtao_1_1module_1a8acfc87fe9a2ae5a07a0abec783eb923" prot="protected" virt="non-virtual"><scope>tao::empty</scope><name>_dbhost</name></member>
+      <member refid="classtao_1_1module_1a87d3363daa10b9963c0056de30f35fea" prot="protected" virt="non-virtual"><scope>tao::empty</scope><name>_dbname</name></member>
+      <member refid="classtao_1_1module_1aa13743158514ba39f639eee1e1d8d9ef" prot="protected" virt="non-virtual"><scope>tao::empty</scope><name>_dbpass</name></member>
+      <member refid="classtao_1_1module_1a062ee83e634269ebf464b185cf904be5" prot="protected" virt="non-virtual"><scope>tao::empty</scope><name>_dbport</name></member>
+      <member refid="classtao_1_1module_1ad6c4ae45e8382b53c130035028a2bf9b" prot="protected" virt="non-virtual"><scope>tao::empty</scope><name>_dbtype</name></member>
+      <member refid="classtao_1_1module_1a4148a925aa5fe1e6eb2cfd28de3d9c43" prot="protected" virt="non-virtual"><scope>tao::empty</scope><name>_dbuser</name></member>
+      <member refid="classtao_1_1module_1a83ff7c6af3b37d905e489a6f1dda1de4" prot="protected" virt="non-virtual"><scope>tao::empty</scope><name>_dict</name></member>
+      <member refid="classtao_1_1module_1add5763e6abd9514b8a1fb277bacf7aa0" prot="protected" virt="non-virtual"><scope>tao::empty</scope><name>_global_dict</name></member>
+      <member refid="classtao_1_1module_1aee8d7601611bb1297410dce20c24a94f" prot="protected" virt="non-virtual"><scope>tao::empty</scope><name>_it</name></member>
+      <member refid="classtao_1_1module_1a068866a4eafd7bc6cf97c0dbddc1eabe" prot="protected" virt="non-virtual"><scope>tao::empty</scope><name>_name</name></member>
+      <member refid="classtao_1_1module_1a4dc48114767b3275d631d076f1e536ae" prot="protected" virt="non-virtual"><scope>tao::empty</scope><name>_num_restart_its</name></member>
+      <member refid="classtao_1_1module_1af247d18388488838d7919ca79423bab2" prot="protected" virt="non-virtual"><scope>tao::empty</scope><name>_parents</name></member>
+      <member refid="classtao_1_1module_1a3bcaa9defed890ddfa254e7a3bdbc954" prot="protected" virt="non-virtual"><scope>tao::empty</scope><name>_read_db_options</name></member>
+      <member refid="classtao_1_1module_1abbd63eb3630af38531d35c485b59abc7" prot="protected" virt="non-virtual"><scope>tao::empty</scope><name>_sql</name></member>
+      <member refid="classtao_1_1module_1aa0a08453739811e1cd5ef0ed403be169" prot="protected" virt="non-virtual"><scope>tao::empty</scope><name>_timer</name></member>
+      <member refid="classtao_1_1module_1a055dbe05ca82475015b5c474ea666e91" prot="protected" virt="non-virtual"><scope>tao::empty</scope><name>_tree_pre</name></member>
+      <member refid="classtao_1_1module_1af8fe67b903df825b119076e57ac9b9a7" prot="public" virt="non-virtual"><scope>tao::empty</scope><name>add_parent</name></member>
+      <member refid="classtao_1_1module_1a19feaef9bbe5f219344b07f1bd1bfa38" prot="public" virt="non-virtual"><scope>tao::empty</scope><name>complete</name></member>
+      <member refid="classtao_1_1module_1a4f85def6c0bbe44938d67230e9300093" prot="public" virt="non-virtual"><scope>tao::empty</scope><name>db_time</name></member>
+      <member refid="classtao_1_1empty_1ad54900282361202254bd855811e331f9" prot="public" virt="non-virtual"><scope>tao::empty</scope><name>empty</name></member>
+      <member refid="classtao_1_1empty_1adb92263083d1ad278257654acab79c4c" prot="public" virt="virtual"><scope>tao::empty</scope><name>execute</name></member>
+      <member refid="classtao_1_1empty_1a0e6617b478928ff9affae4ba7b406898" prot="public" virt="non-virtual"><scope>tao::empty</scope><name>factory</name></member>
+      <member refid="classtao_1_1module_1af0317008573ba52254e3e0267408cec2" prot="public" virt="virtual"><scope>tao::empty</scope><name>finalise</name></member>
+      <member refid="classtao_1_1module_1a0c6d0b7670a9dad3e566ccf2697c13be" prot="public" virt="virtual"><scope>tao::empty</scope><name>galaxy</name></member>
+      <member refid="classtao_1_1empty_1a29d6af54d9c25fd57a59fc2061b20d71" prot="public" virt="virtual"><scope>tao::empty</scope><name>initialise</name></member>
+      <member refid="classtao_1_1module_1a93af84d540204ec448964a99baec2de4" prot="public" virt="non-virtual"><scope>tao::empty</scope><name>local_dict</name></member>
+      <member refid="classtao_1_1module_1a186257b8d6711e1f2cba7a5f3ce9e3b9" prot="public" virt="non-virtual"><scope>tao::empty</scope><name>local_xml_node</name></member>
+      <member refid="classtao_1_1module_1a04a85ec8fb341115c9d99b5fdf54ed5a" prot="public" virt="virtual"><scope>tao::empty</scope><name>log_metrics</name></member>
+      <member refid="classtao_1_1module_1a5be311f8503aafb4e62735bddfc82aa2" prot="public" virt="non-virtual"><scope>tao::empty</scope><name>module</name></member>
+      <member refid="classtao_1_1module_1a75cf764bee3e92e306b56f96d1be25ad" prot="public" virt="non-virtual"><scope>tao::empty</scope><name>name</name></member>
+      <member refid="classtao_1_1module_1a3c8712c817e986905749497611d49a34" prot="public" virt="non-virtual"><scope>tao::empty</scope><name>parents</name></member>
+      <member refid="classtao_1_1module_1aeded5c4440e21754dd389ae5e23c4537" prot="public" virt="non-virtual"><scope>tao::empty</scope><name>process</name></member>
+      <member refid="classtao_1_1module_1abdc09890519027e51fbd3603406b2e87" prot="public" virt="non-virtual"><scope>tao::empty</scope><name>real_type</name></member>
+      <member refid="classtao_1_1module_1ada65b8d273ab0139cba098ec0737d6f0" prot="public" virt="non-virtual"><scope>tao::empty</scope><name>time</name></member>
+      <member refid="classtao_1_1module_1a4ad3799129a4680da08760564810dd14" prot="public" virt="virtual"><scope>tao::empty</scope><name>~module</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

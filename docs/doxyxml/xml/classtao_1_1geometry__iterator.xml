@@ -1,0 +1,443 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="classtao_1_1geometry__iterator" kind="class" prot="public">
+    <compoundname>tao::geometry_iterator</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">boost::iterator_facade&lt; geometry_iterator&lt; T &gt;, const list&lt; array&lt; T, 2 &gt; &gt; &amp;, std::forward_iterator_tag, const list&lt; array&lt; T, 2 &gt; &gt; &gt;</basecompoundref>
+    <templateparamlist>
+      <param>
+        <type>class</type>
+        <declname>T</declname>
+        <defname>T</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classtao_1_1geometry__iterator_1a7efbf157dcbb4a98df0c66ec94dcc2fb" prot="public" static="no">
+        <type>T</type>
+        <definition>typedef T tao::geometry_iterator&lt; T &gt;::real_type</definition>
+        <argsstring></argsstring>
+        <name>real_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" line="23" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" bodystart="23" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classtao_1_1geometry__iterator_1a5d2467972186b93494c915ef3e48ad5a" prot="public" static="no">
+        <type>list&lt; array&lt; real_type, 2 &gt; &gt;</type>
+        <definition>typedef list&lt;array&lt;real_type,2&gt; &gt; tao::geometry_iterator&lt; T &gt;::value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" line="24" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" bodystart="24" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classtao_1_1geometry__iterator_1a0f7e201badf302e24f88b5c549618afb" prot="public" static="no">
+        <type>list&lt; array&lt; real_type, 2 &gt; &gt;</type>
+        <definition>typedef list&lt;array&lt;real_type,2&gt; &gt; tao::geometry_iterator&lt; T &gt;::reference_type</definition>
+        <argsstring></argsstring>
+        <name>reference_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" line="25" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" bodystart="25" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="friend">
+      <memberdef kind="friend" id="classtao_1_1geometry__iterator_1ac09f73e325921cc50ebcd96bed0f8096" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend class</type>
+        <definition>friend class boost::iterator_core_access</definition>
+        <argsstring></argsstring>
+        <name>boost::iterator_core_access</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" line="19" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" bodystart="19" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classtao_1_1geometry__iterator_1a2409db67bb65cdaa838966d425024398" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::geometry_iterator&lt; T &gt;::_box_size</definition>
+        <argsstring></argsstring>
+        <name>_box_size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" line="245" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" bodystart="245" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1geometry__iterator_1a2088972dfc9dc98f550c171d5085fa5b" prot="protected" static="no" mutable="no">
+        <type>array&lt; real_type, 3 &gt;</type>
+        <definition>array&lt;real_type,3&gt; tao::geometry_iterator&lt; T &gt;::_box</definition>
+        <argsstring></argsstring>
+        <name>_box</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" line="246" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" bodystart="246" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1geometry__iterator_1adf1a3575de2a824d49f5f1fd29d3529a" prot="protected" static="no" mutable="no">
+        <type>array&lt; real_type, 3 &gt;</type>
+        <definition>array&lt;real_type,3&gt; tao::geometry_iterator&lt; T &gt;::_offs</definition>
+        <argsstring></argsstring>
+        <name>_offs</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" line="247" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" bodystart="247" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1geometry__iterator_1a39901aba8710aa9e1c2d7e75d2a5a4c5" prot="protected" static="no" mutable="no">
+        <type>array&lt; int, 3 &gt;</type>
+        <definition>array&lt;int,3&gt; tao::geometry_iterator&lt; T &gt;::_axis</definition>
+        <argsstring></argsstring>
+        <name>_axis</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" line="248" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" bodystart="248" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1geometry__iterator_1aa692abb95f07aa77d3c8ed85f9c85307" prot="protected" static="no" mutable="no">
+        <type>value_type</type>
+        <definition>value_type tao::geometry_iterator&lt; T &gt;::_base</definition>
+        <argsstring></argsstring>
+        <name>_base</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" line="249" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" bodystart="249" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1geometry__iterator_1a91e4d09194757d9cd706cd142a156a88" prot="protected" static="no" mutable="no">
+        <type>value_type</type>
+        <definition>value_type tao::geometry_iterator&lt; T &gt;::_val</definition>
+        <argsstring></argsstring>
+        <name>_val</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" line="250" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" bodystart="250" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1geometry__iterator_1a4a46d3473d2356785a580098f6cb696f" prot="protected" static="no" mutable="no">
+        <type>list&lt; array&lt; real_type, 3 &gt; &gt;</type>
+        <definition>list&lt;array&lt;real_type,3&gt; &gt; tao::geometry_iterator&lt; T &gt;::_ph</definition>
+        <argsstring></argsstring>
+        <name>_ph</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" line="251" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" bodystart="251" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1geometry__iterator_1a3b450c44c530c3ecce4db7c99f58f7d6" prot="protected" static="no" mutable="no">
+        <type>vector&lt; array&lt; real_type, 2 &gt; &gt;</type>
+        <definition>vector&lt;array&lt;real_type,2&gt; &gt; tao::geometry_iterator&lt; T &gt;::_walls</definition>
+        <argsstring></argsstring>
+        <name>_walls</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" line="252" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" bodystart="252" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1geometry__iterator_1a6e5c3e5b2269d53aae71f6bbb3a59833" prot="protected" static="no" mutable="no">
+        <type>vector&lt; array&lt; real_type, 2 &gt; &gt;::const_iterator</type>
+        <definition>vector&lt;array&lt;real_type,2&gt; &gt;::const_iterator tao::geometry_iterator&lt; T &gt;::_it</definition>
+        <argsstring></argsstring>
+        <name>_it</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" line="253" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" bodystart="253" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1geometry__iterator_1a904b58bfdf11495c83aa6ac8098f5344" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::geometry_iterator&lt; T &gt;::_ra_min</definition>
+        <argsstring></argsstring>
+        <name>_ra_min</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" line="255" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" bodystart="255" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1geometry__iterator_1ae5fc12eca6e8fbd9e6af1fd1c3d936a0" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::geometry_iterator&lt; T &gt;::_ra_max</definition>
+        <argsstring></argsstring>
+        <name>_ra_max</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" line="255" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" bodystart="255" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1geometry__iterator_1af6e0eb6dd4a48eb47d3d7ff32b925884" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::geometry_iterator&lt; T &gt;::_dec_min</definition>
+        <argsstring></argsstring>
+        <name>_dec_min</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" line="256" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" bodystart="256" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1geometry__iterator_1aa239d926b1a638d275cc435f4a0316da" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::geometry_iterator&lt; T &gt;::_dec_max</definition>
+        <argsstring></argsstring>
+        <name>_dec_max</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" line="256" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" bodystart="256" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1geometry__iterator_1a2dd957786fce0950df7aa43ab926b780" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::geometry_iterator&lt; T &gt;::_max_dist</definition>
+        <argsstring></argsstring>
+        <name>_max_dist</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" line="257" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" bodystart="257" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classtao_1_1geometry__iterator_1a20bcd6f91164b9b585d50676824333d1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>tao::geometry_iterator&lt; T &gt;::geometry_iterator</definition>
+        <argsstring>(real_type box_size, const array&lt; real_type, 3 &gt; &amp;box, const array&lt; real_type, 3 &gt; &amp;offset, const array&lt; int, 3 &gt; &amp;axis, real_type ra_min, real_type ra_max, real_type dec_min, real_type dec_max, real_type max_dist)</argsstring>
+        <name>geometry_iterator</name>
+        <param>
+          <type>real_type</type>
+          <declname>box_size</declname>
+        </param>
+        <param>
+          <type>const array&lt; real_type, 3 &gt; &amp;</type>
+          <declname>box</declname>
+        </param>
+        <param>
+          <type>const array&lt; real_type, 3 &gt; &amp;</type>
+          <declname>offset</declname>
+        </param>
+        <param>
+          <type>const array&lt; int, 3 &gt; &amp;</type>
+          <declname>axis</declname>
+        </param>
+        <param>
+          <type>real_type</type>
+          <declname>ra_min</declname>
+        </param>
+        <param>
+          <type>real_type</type>
+          <declname>ra_max</declname>
+        </param>
+        <param>
+          <type>real_type</type>
+          <declname>dec_min</declname>
+        </param>
+        <param>
+          <type>real_type</type>
+          <declname>dec_max</declname>
+        </param>
+        <param>
+          <type>real_type</type>
+          <declname>max_dist</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" line="45" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" bodystart="27" bodyend="57"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1geometry__iterator_1ab63bc82df773abc58b62c5797f4a72a6" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool tao::geometry_iterator&lt; T &gt;::done</definition>
+        <argsstring>() const </argsstring>
+        <name>done</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" line="61" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" bodystart="60" bodyend="63"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classtao_1_1geometry__iterator_1a23c5e5a8a982b25f050759b8f320ed06" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::geometry_iterator&lt; T &gt;::increment</definition>
+        <argsstring>()</argsstring>
+        <name>increment</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" line="69" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" bodystart="68" bodyend="102"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1geometry__iterator_1ad4a6c75b2195c09019988781100bb61a" prot="protected" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool tao::geometry_iterator&lt; T &gt;::equal</definition>
+        <argsstring>(const geometry_iterator &amp;op) const </argsstring>
+        <name>equal</name>
+        <param>
+          <type>const <ref refid="classtao_1_1geometry__iterator" kindref="compound">geometry_iterator</ref> &amp;</type>
+          <declname>op</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" line="106" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" bodystart="105" bodyend="108"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1geometry__iterator_1a746196524ae66218740fdb022121fe65" prot="protected" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const reference_type</type>
+        <definition>const reference_type tao::geometry_iterator&lt; T &gt;::dereference</definition>
+        <argsstring>() const </argsstring>
+        <name>dereference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" line="112" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" bodystart="111" bodyend="114"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1geometry__iterator_1ab95108baa19e34eb9413460690dc4e99" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::geometry_iterator&lt; T &gt;::_begin</definition>
+        <argsstring>()</argsstring>
+        <name>_begin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" line="118" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" bodystart="117" bodyend="182"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1geometry__iterator_1ae522551334677c594d96194d0648d25e" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::geometry_iterator&lt; T &gt;::_calc_polyhedron</definition>
+        <argsstring>()</argsstring>
+        <name>_calc_polyhedron</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" line="186" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" bodystart="185" bodyend="241"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="140">
+        <label>tao::geometry_iterator&lt; T &gt;</label>
+        <link refid="classtao_1_1geometry__iterator"/>
+        <childnode refid="141" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="141">
+        <label>boost::iterator_facade&lt; geometry_iterator&lt; T &gt;, const list&lt; array&lt; T, 2 &gt; &gt; &amp;, std::forward_iterator_tag, const list&lt; array&lt; T, 2 &gt; &gt; &gt;</label>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="142">
+        <label>tao::geometry_iterator&lt; T &gt;</label>
+        <link refid="classtao_1_1geometry__iterator"/>
+        <childnode refid="143" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="143">
+        <label>boost::iterator_facade&lt; geometry_iterator&lt; T &gt;, const list&lt; array&lt; T, 2 &gt; &gt; &amp;, std::forward_iterator_tag, const list&lt; array&lt; T, 2 &gt; &gt; &gt;</label>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" line="18" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/geometry_iterator.hh" bodystart="13" bodyend="258"/>
+    <listofallmembers>
+      <member refid="classtao_1_1geometry__iterator_1a39901aba8710aa9e1c2d7e75d2a5a4c5" prot="protected" virt="non-virtual"><scope>tao::geometry_iterator</scope><name>_axis</name></member>
+      <member refid="classtao_1_1geometry__iterator_1aa692abb95f07aa77d3c8ed85f9c85307" prot="protected" virt="non-virtual"><scope>tao::geometry_iterator</scope><name>_base</name></member>
+      <member refid="classtao_1_1geometry__iterator_1ab95108baa19e34eb9413460690dc4e99" prot="protected" virt="non-virtual"><scope>tao::geometry_iterator</scope><name>_begin</name></member>
+      <member refid="classtao_1_1geometry__iterator_1a2088972dfc9dc98f550c171d5085fa5b" prot="protected" virt="non-virtual"><scope>tao::geometry_iterator</scope><name>_box</name></member>
+      <member refid="classtao_1_1geometry__iterator_1a2409db67bb65cdaa838966d425024398" prot="protected" virt="non-virtual"><scope>tao::geometry_iterator</scope><name>_box_size</name></member>
+      <member refid="classtao_1_1geometry__iterator_1ae522551334677c594d96194d0648d25e" prot="protected" virt="non-virtual"><scope>tao::geometry_iterator</scope><name>_calc_polyhedron</name></member>
+      <member refid="classtao_1_1geometry__iterator_1aa239d926b1a638d275cc435f4a0316da" prot="protected" virt="non-virtual"><scope>tao::geometry_iterator</scope><name>_dec_max</name></member>
+      <member refid="classtao_1_1geometry__iterator_1af6e0eb6dd4a48eb47d3d7ff32b925884" prot="protected" virt="non-virtual"><scope>tao::geometry_iterator</scope><name>_dec_min</name></member>
+      <member refid="classtao_1_1geometry__iterator_1a6e5c3e5b2269d53aae71f6bbb3a59833" prot="protected" virt="non-virtual"><scope>tao::geometry_iterator</scope><name>_it</name></member>
+      <member refid="classtao_1_1geometry__iterator_1a2dd957786fce0950df7aa43ab926b780" prot="protected" virt="non-virtual"><scope>tao::geometry_iterator</scope><name>_max_dist</name></member>
+      <member refid="classtao_1_1geometry__iterator_1adf1a3575de2a824d49f5f1fd29d3529a" prot="protected" virt="non-virtual"><scope>tao::geometry_iterator</scope><name>_offs</name></member>
+      <member refid="classtao_1_1geometry__iterator_1a4a46d3473d2356785a580098f6cb696f" prot="protected" virt="non-virtual"><scope>tao::geometry_iterator</scope><name>_ph</name></member>
+      <member refid="classtao_1_1geometry__iterator_1ae5fc12eca6e8fbd9e6af1fd1c3d936a0" prot="protected" virt="non-virtual"><scope>tao::geometry_iterator</scope><name>_ra_max</name></member>
+      <member refid="classtao_1_1geometry__iterator_1a904b58bfdf11495c83aa6ac8098f5344" prot="protected" virt="non-virtual"><scope>tao::geometry_iterator</scope><name>_ra_min</name></member>
+      <member refid="classtao_1_1geometry__iterator_1a91e4d09194757d9cd706cd142a156a88" prot="protected" virt="non-virtual"><scope>tao::geometry_iterator</scope><name>_val</name></member>
+      <member refid="classtao_1_1geometry__iterator_1a3b450c44c530c3ecce4db7c99f58f7d6" prot="protected" virt="non-virtual"><scope>tao::geometry_iterator</scope><name>_walls</name></member>
+      <member refid="classtao_1_1geometry__iterator_1ac09f73e325921cc50ebcd96bed0f8096" prot="public" virt="non-virtual"><scope>tao::geometry_iterator</scope><name>boost::iterator_core_access</name></member>
+      <member refid="classtao_1_1geometry__iterator_1a746196524ae66218740fdb022121fe65" prot="protected" virt="non-virtual"><scope>tao::geometry_iterator</scope><name>dereference</name></member>
+      <member refid="classtao_1_1geometry__iterator_1ab63bc82df773abc58b62c5797f4a72a6" prot="public" virt="non-virtual"><scope>tao::geometry_iterator</scope><name>done</name></member>
+      <member refid="classtao_1_1geometry__iterator_1ad4a6c75b2195c09019988781100bb61a" prot="protected" virt="non-virtual"><scope>tao::geometry_iterator</scope><name>equal</name></member>
+      <member refid="classtao_1_1geometry__iterator_1a20bcd6f91164b9b585d50676824333d1" prot="public" virt="non-virtual"><scope>tao::geometry_iterator</scope><name>geometry_iterator</name></member>
+      <member refid="classtao_1_1geometry__iterator_1a23c5e5a8a982b25f050759b8f320ed06" prot="protected" virt="non-virtual"><scope>tao::geometry_iterator</scope><name>increment</name></member>
+      <member refid="classtao_1_1geometry__iterator_1a7efbf157dcbb4a98df0c66ec94dcc2fb" prot="public" virt="non-virtual"><scope>tao::geometry_iterator</scope><name>real_type</name></member>
+      <member refid="classtao_1_1geometry__iterator_1a0f7e201badf302e24f88b5c549618afb" prot="public" virt="non-virtual"><scope>tao::geometry_iterator</scope><name>reference_type</name></member>
+      <member refid="classtao_1_1geometry__iterator_1a5d2467972186b93494c915ef3e48ad5a" prot="public" virt="non-virtual"><scope>tao::geometry_iterator</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

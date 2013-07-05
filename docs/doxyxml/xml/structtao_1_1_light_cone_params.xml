@@ -1,0 +1,228 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="structtao_1_1_light_cone_params" kind="struct" prot="public">
+    <compoundname>tao::LightConeParams</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structtao_1_1_light_cone_params_1aed4b706af7ea1fc47b3b2ac9863ec006" prot="public" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::LightConeParams::ModuleVersion</definition>
+        <argsstring></argsstring>
+        <name>ModuleVersion</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" line="40" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" bodystart="40" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1_light_cone_params_1a3df01199a71fbfde3e7e3198f18d949e" prot="public" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::LightConeParams::Geometry</definition>
+        <argsstring></argsstring>
+        <name>Geometry</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" line="41" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" bodystart="41" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1_light_cone_params_1a5e13a9631d3a2ae5b05c9af984462b9c" prot="public" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::LightConeParams::Simultation</definition>
+        <argsstring></argsstring>
+        <name>Simultation</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" line="42" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" bodystart="42" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1_light_cone_params_1a8ea4bfb4ebcec8db52ef8bf8b133394e" prot="public" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::LightConeParams::GalaxyModel</definition>
+        <argsstring></argsstring>
+        <name>GalaxyModel</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" line="43" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" bodystart="43" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1_light_cone_params_1a1b1028e87f3f08cde14ba65cd2b01186" prot="public" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::LightConeParams::BoxRepetition</definition>
+        <argsstring></argsstring>
+        <name>BoxRepetition</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" line="44" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" bodystart="44" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1_light_cone_params_1a39b04da9327a3cd0258242b2e8caaa48" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int tao::LightConeParams::NumberofCones</definition>
+        <argsstring></argsstring>
+        <name>NumberofCones</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" line="46" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" bodystart="46" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1_light_cone_params_1a78449b2927f3cc1e537f829a99ddd65f" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::LightConeParams::redshiftmin</definition>
+        <argsstring></argsstring>
+        <name>redshiftmin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" line="48" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1_light_cone_params_1a2cba90c6b4a81224a8c69a0348b9f66f" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::LightConeParams::redshiftmax</definition>
+        <argsstring></argsstring>
+        <name>redshiftmax</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" line="49" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" bodystart="49" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1_light_cone_params_1a1160b724a6b1e19a15c5898b54c50541" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::LightConeParams::ramin</definition>
+        <argsstring></argsstring>
+        <name>ramin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" line="51" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" bodystart="51" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1_light_cone_params_1ac7987cd68001add7860e7b94ac759569" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::LightConeParams::ramax</definition>
+        <argsstring></argsstring>
+        <name>ramax</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" line="51" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" bodystart="51" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1_light_cone_params_1ac80b603c6cdfb9fc2b9899fd92e081b3" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::LightConeParams::decmin</definition>
+        <argsstring></argsstring>
+        <name>decmin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" line="52" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" bodystart="52" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1_light_cone_params_1a54e71866320a6170fafbdcf17177d13a" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::LightConeParams::decmax</definition>
+        <argsstring></argsstring>
+        <name>decmax</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" line="52" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" bodystart="52" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1_light_cone_params_1a1c94b5dc5d64ca8948fa97c09e9ff53a" prot="public" static="no" mutable="no">
+        <type>vector&lt; <ref refid="structtao_1_1_output_field" kindref="compound">OutputField</ref> &gt;</type>
+        <definition>vector&lt;OutputField&gt; tao::LightConeParams::OutputFieldsList</definition>
+        <argsstring></argsstring>
+        <name>OutputFieldsList</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" line="54" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" bodystart="54" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1_light_cone_params_1ab8453eaa00834dd24ce919e24e5a2d0f" prot="public" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::LightConeParams::rngseed</definition>
+        <argsstring></argsstring>
+        <name>rngseed</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" line="57" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" bodystart="57" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="196">
+        <label>tao::LightConeParams</label>
+        <link refid="structtao_1_1_light_cone_params"/>
+        <childnode refid="197" relation="usage">
+          <edgelabel>Geometry</edgelabel>
+          <edgelabel>GalaxyModel</edgelabel>
+          <edgelabel>rngseed</edgelabel>
+          <edgelabel>BoxRepetition</edgelabel>
+          <edgelabel>Simultation</edgelabel>
+          <edgelabel>ModuleVersion</edgelabel>
+        </childnode>
+      </node>
+      <node id="197">
+        <label>string</label>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" line="39" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" bodystart="38" bodyend="60"/>
+    <listofallmembers>
+      <member refid="structtao_1_1_light_cone_params_1a1b1028e87f3f08cde14ba65cd2b01186" prot="public" virt="non-virtual"><scope>tao::LightConeParams</scope><name>BoxRepetition</name></member>
+      <member refid="structtao_1_1_light_cone_params_1a54e71866320a6170fafbdcf17177d13a" prot="public" virt="non-virtual"><scope>tao::LightConeParams</scope><name>decmax</name></member>
+      <member refid="structtao_1_1_light_cone_params_1ac80b603c6cdfb9fc2b9899fd92e081b3" prot="public" virt="non-virtual"><scope>tao::LightConeParams</scope><name>decmin</name></member>
+      <member refid="structtao_1_1_light_cone_params_1a8ea4bfb4ebcec8db52ef8bf8b133394e" prot="public" virt="non-virtual"><scope>tao::LightConeParams</scope><name>GalaxyModel</name></member>
+      <member refid="structtao_1_1_light_cone_params_1a3df01199a71fbfde3e7e3198f18d949e" prot="public" virt="non-virtual"><scope>tao::LightConeParams</scope><name>Geometry</name></member>
+      <member refid="structtao_1_1_light_cone_params_1aed4b706af7ea1fc47b3b2ac9863ec006" prot="public" virt="non-virtual"><scope>tao::LightConeParams</scope><name>ModuleVersion</name></member>
+      <member refid="structtao_1_1_light_cone_params_1a39b04da9327a3cd0258242b2e8caaa48" prot="public" virt="non-virtual"><scope>tao::LightConeParams</scope><name>NumberofCones</name></member>
+      <member refid="structtao_1_1_light_cone_params_1a1c94b5dc5d64ca8948fa97c09e9ff53a" prot="public" virt="non-virtual"><scope>tao::LightConeParams</scope><name>OutputFieldsList</name></member>
+      <member refid="structtao_1_1_light_cone_params_1ac7987cd68001add7860e7b94ac759569" prot="public" virt="non-virtual"><scope>tao::LightConeParams</scope><name>ramax</name></member>
+      <member refid="structtao_1_1_light_cone_params_1a1160b724a6b1e19a15c5898b54c50541" prot="public" virt="non-virtual"><scope>tao::LightConeParams</scope><name>ramin</name></member>
+      <member refid="structtao_1_1_light_cone_params_1a2cba90c6b4a81224a8c69a0348b9f66f" prot="public" virt="non-virtual"><scope>tao::LightConeParams</scope><name>redshiftmax</name></member>
+      <member refid="structtao_1_1_light_cone_params_1a78449b2927f3cc1e537f829a99ddd65f" prot="public" virt="non-virtual"><scope>tao::LightConeParams</scope><name>redshiftmin</name></member>
+      <member refid="structtao_1_1_light_cone_params_1ab8453eaa00834dd24ce919e24e5a2d0f" prot="public" virt="non-virtual"><scope>tao::LightConeParams</scope><name>rngseed</name></member>
+      <member refid="structtao_1_1_light_cone_params_1a5e13a9631d3a2ae5b05c9af984462b9c" prot="public" virt="non-virtual"><scope>tao::LightConeParams</scope><name>Simultation</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

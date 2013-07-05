@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="structmass__compare__type" kind="struct" prot="public">
+    <compoundname>mass_compare_type</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structmass__compare__type_1a73b362aaed52f2010594ec9a997e0f61" prot="public" static="no" mutable="no">
+        <type>const vector&lt; <ref refid="structbolshoi__halo__type" kindref="compound">bolshoi_halo_type</ref> &gt; &amp;</type>
+        <definition>const vector&lt;bolshoi_halo_type&gt;&amp; mass_compare_type::forest</definition>
+        <argsstring></argsstring>
+        <name>forest</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/bolshoi_convert2.cc" line="53" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/bolshoi_convert2.cc" bodystart="53" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structmass__compare__type_1aaed2ca6ff953ce9d94149b43c7ed94c3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>mass_compare_type::mass_compare_type</definition>
+        <argsstring>(const vector&lt; bolshoi_halo_type &gt; &amp;forest)</argsstring>
+        <name>mass_compare_type</name>
+        <param>
+          <type>const vector&lt; <ref refid="structbolshoi__halo__type" kindref="compound">bolshoi_halo_type</ref> &gt; &amp;</type>
+          <declname>forest</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/bolshoi_convert2.cc" line="43" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/bolshoi_convert2.cc" bodystart="41" bodyend="44"/>
+      </memberdef>
+      <memberdef kind="function" id="structmass__compare__type_1ac28d609bb0782a3713a29e5239a2fa55" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool mass_compare_type::operator()</definition>
+        <argsstring>(unsigned op_a, unsigned op_b)</argsstring>
+        <name>operator()</name>
+        <param>
+          <type>unsigned</type>
+          <declname>op_a</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>op_b</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/bolshoi_convert2.cc" line="49" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/bolshoi_convert2.cc" bodystart="47" bodyend="51"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Custom mass comparison. </para>    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/bolshoi_convert2.cc" line="40" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/bolshoi_convert2.cc" bodystart="39" bodyend="54"/>
+    <listofallmembers>
+      <member refid="structmass__compare__type_1a73b362aaed52f2010594ec9a997e0f61" prot="public" virt="non-virtual"><scope>mass_compare_type</scope><name>forest</name></member>
+      <member refid="structmass__compare__type_1aaed2ca6ff953ce9d94149b43c7ed94c3" prot="public" virt="non-virtual"><scope>mass_compare_type</scope><name>mass_compare_type</name></member>
+      <member refid="structmass__compare__type_1ac28d609bb0782a3713a29e5239a2fa55" prot="public" virt="non-virtual"><scope>mass_compare_type</scope><name>operator()</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

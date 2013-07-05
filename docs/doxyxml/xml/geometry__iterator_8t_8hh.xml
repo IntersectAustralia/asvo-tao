@@ -1,0 +1,169 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="geometry__iterator_8t_8hh" kind="file">
+    <compoundname>geometry_iterator.t.hh</compoundname>
+    <includes refid="_test_suite_8h" local="no">cxxtest/TestSuite.h</includes>
+    <includes refid="_global_fixture_8h" local="no">cxxtest/GlobalFixture.h</includes>
+    <includes local="yes">tao/modules/geometry_iterator.hh</includes>
+    <incdepgraph>
+      <node id="1494">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/geometry_iterator.t.hh</label>
+        <link refid="geometry_iterator.t.hh"/>
+        <childnode refid="1495" relation="include">
+        </childnode>
+        <childnode refid="1503" relation="include">
+        </childnode>
+        <childnode refid="1504" relation="include">
+        </childnode>
+      </node>
+      <node id="1495">
+        <label>cxxtest/TestSuite.h</label>
+        <link refid="_test_suite_8h_source"/>
+        <childnode refid="1496" relation="include">
+        </childnode>
+        <childnode refid="1497" relation="include">
+        </childnode>
+        <childnode refid="1499" relation="include">
+        </childnode>
+        <childnode refid="1502" relation="include">
+        </childnode>
+      </node>
+      <node id="1497">
+        <label>cxxtest/TestTracker.h</label>
+        <link refid="_test_tracker_8h_source"/>
+        <childnode refid="1498" relation="include">
+        </childnode>
+        <childnode refid="1501" relation="include">
+        </childnode>
+      </node>
+      <node id="1499">
+        <label>cxxtest/Descriptions.h</label>
+        <link refid="_descriptions_8h_source"/>
+        <childnode refid="1500" relation="include">
+        </childnode>
+      </node>
+      <node id="1498">
+        <label>cxxtest/TestListener.h</label>
+        <link refid="_test_listener_8h_source"/>
+        <childnode refid="1499" relation="include">
+        </childnode>
+      </node>
+      <node id="1502">
+        <label>cxxtest/ValueTraits.h</label>
+        <link refid="_value_traits_8h_source"/>
+        <childnode refid="1496" relation="include">
+        </childnode>
+      </node>
+      <node id="1503">
+        <label>cxxtest/GlobalFixture.h</label>
+        <link refid="_global_fixture_8h_source"/>
+        <childnode refid="1500" relation="include">
+        </childnode>
+      </node>
+      <node id="1504">
+        <label>tao/modules/geometry_iterator.hh</label>
+      </node>
+      <node id="1501">
+        <label>cxxtest/DummyDescriptions.h</label>
+        <link refid="_dummy_descriptions_8h_source"/>
+        <childnode refid="1499" relation="include">
+        </childnode>
+      </node>
+      <node id="1496">
+        <label>cxxtest/Flags.h</label>
+        <link refid="_flags_8h_source"/>
+      </node>
+      <node id="1500">
+        <label>cxxtest/LinkedList.h</label>
+        <link refid="_linked_list_8h_source"/>
+        <childnode refid="1496" relation="include">
+        </childnode>
+      </node>
+    </incdepgraph>
+    <innerclass refid="classgeometry__iterator__suite" prot="public">geometry_iterator_suite</innerclass>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#include<sp/>&lt;cxxtest/TestSuite.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;cxxtest/GlobalFixture.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;tao/modules/geometry_iterator.hh&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="keyword">using<sp/>namespace<sp/></highlight><highlight class="normal">hpc;</highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="keyword">using<sp/>namespace<sp/></highlight><highlight class="normal">tao;</highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight></codeline>
+<codeline lineno="11" refid="classgeometry__iterator__suite" refkind="compound"><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classgeometry__iterator__suite" kindref="compound">geometry_iterator_suite</ref><sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="class_cxx_test_1_1_test_suite" kindref="compound">CxxTest::TestSuite</ref></highlight></codeline>
+<codeline lineno="12"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>test_constructor()</highlight></codeline>
+<codeline lineno="19"><highlight class="normal"><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="20"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classtao_1_1geometry__iterator" kindref="compound">geometry_iterator&lt;double&gt;</ref><sp/>it(</highlight></codeline>
+<codeline lineno="21"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>10,</highlight></codeline>
+<codeline lineno="22"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>array&lt;double,3&gt;(<sp/>0,<sp/>0,<sp/>0<sp/>),</highlight></codeline>
+<codeline lineno="23"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>array&lt;double,3&gt;(<sp/>0,<sp/>0,<sp/>0<sp/>),</highlight></codeline>
+<codeline lineno="24"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>array&lt;int,3&gt;(<sp/>0,<sp/>1,<sp/>2<sp/>),</highlight></codeline>
+<codeline lineno="25"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>0,<sp/>90,</highlight></codeline>
+<codeline lineno="26"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>0,<sp/>90,</highlight></codeline>
+<codeline lineno="27"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>100.0</highlight></codeline>
+<codeline lineno="28"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>);</highlight></codeline>
+<codeline lineno="29"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>test_covered()</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="36"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classtao_1_1geometry__iterator" kindref="compound">geometry_iterator&lt;double&gt;</ref><sp/>it(</highlight></codeline>
+<codeline lineno="37"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>10,</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>array&lt;double,3&gt;(<sp/>0,<sp/>0,<sp/>0<sp/>),</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>array&lt;double,3&gt;(<sp/>0,<sp/>0,<sp/>0<sp/>),</highlight></codeline>
+<codeline lineno="40"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>array&lt;int,3&gt;(<sp/>0,<sp/>1,<sp/>2<sp/>),</highlight></codeline>
+<codeline lineno="41"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>0,<sp/>90,</highlight></codeline>
+<codeline lineno="42"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>0,<sp/>90,</highlight></codeline>
+<codeline lineno="43"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>100.0</highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>);</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight></codeline>
+<codeline lineno="50"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>test_offset()</highlight></codeline>
+<codeline lineno="51"><highlight class="normal"><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classtao_1_1geometry__iterator" kindref="compound">geometry_iterator&lt;double&gt;</ref><sp/>it(</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>10,</highlight></codeline>
+<codeline lineno="54"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>array&lt;double,3&gt;(<sp/>0,<sp/>0,<sp/>0<sp/>),</highlight></codeline>
+<codeline lineno="55"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>array&lt;double,3&gt;(<sp/>5,<sp/>0,<sp/>0<sp/>),</highlight></codeline>
+<codeline lineno="56"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>array&lt;int,3&gt;(<sp/>0,<sp/>1,<sp/>2<sp/>),</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>30,<sp/>60,</highlight></codeline>
+<codeline lineno="58"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>30,<sp/>60,</highlight></codeline>
+<codeline lineno="59"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>100.0</highlight></codeline>
+<codeline lineno="60"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>);</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="62"><highlight class="normal"></highlight></codeline>
+<codeline lineno="66"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>test_rotation()</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classtao_1_1geometry__iterator" kindref="compound">geometry_iterator&lt;double&gt;</ref><sp/>it(</highlight></codeline>
+<codeline lineno="69"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>10,</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>array&lt;double,3&gt;(<sp/>0,<sp/>0,<sp/>0<sp/>),</highlight></codeline>
+<codeline lineno="71"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>array&lt;double,3&gt;(<sp/>0,<sp/>0,<sp/>0<sp/>),</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>array&lt;int,3&gt;(<sp/>0,<sp/>1,<sp/>2<sp/>),</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>0,<sp/>0.01,</highlight></codeline>
+<codeline lineno="74"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>0,<sp/>10,</highlight></codeline>
+<codeline lineno="75"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>100.0</highlight></codeline>
+<codeline lineno="76"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>);</highlight></codeline>
+<codeline lineno="77"><highlight class="normal"></highlight></codeline>
+<codeline lineno="78"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(<sp/>;<sp/>!it.done();<sp/>++it<sp/>)</highlight></codeline>
+<codeline lineno="80"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="81"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/>*it<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="83"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="84"><highlight class="normal"></highlight></codeline>
+<codeline lineno="85"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>setUp()</highlight></codeline>
+<codeline lineno="86"><highlight class="normal"><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="87"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="88"><highlight class="normal"></highlight></codeline>
+<codeline lineno="89"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>tearDown()</highlight></codeline>
+<codeline lineno="90"><highlight class="normal"><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="91"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="92"><highlight class="normal">};</highlight></codeline>
+    </programlisting>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/geometry_iterator.t.hh"/>
+  </compounddef>
+</doxygen>

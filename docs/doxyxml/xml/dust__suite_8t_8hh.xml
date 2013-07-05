@@ -1,0 +1,340 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="dust__suite_8t_8hh" kind="file">
+    <compoundname>dust_suite.t.hh</compoundname>
+    <includes local="no">soci/soci.h</includes>
+    <includes local="no">soci/sqlite3/soci-sqlite3.h</includes>
+    <includes refid="_test_suite_8h" local="no">cxxtest/TestSuite.h</includes>
+    <includes refid="_global_fixture_8h" local="no">cxxtest/GlobalFixture.h</includes>
+    <includes local="yes">tao/modules/sed.hh</includes>
+    <includes local="yes">tao/modules/lightcone.hh</includes>
+    <includes local="yes">tao/modules/dust.hh</includes>
+    <includes refid="mpi__fixture_8hh" local="yes">mpi_fixture.hh</includes>
+    <incdepgraph>
+      <node id="1103">
+        <label>cxxtest/TestSuite.h</label>
+        <link refid="_test_suite_8h_source"/>
+        <childnode refid="1104" relation="include">
+        </childnode>
+        <childnode refid="1105" relation="include">
+        </childnode>
+        <childnode refid="1107" relation="include">
+        </childnode>
+        <childnode refid="1110" relation="include">
+        </childnode>
+      </node>
+      <node id="1105">
+        <label>cxxtest/TestTracker.h</label>
+        <link refid="_test_tracker_8h_source"/>
+        <childnode refid="1106" relation="include">
+        </childnode>
+        <childnode refid="1109" relation="include">
+        </childnode>
+      </node>
+      <node id="1100">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/dust_suite.t.hh</label>
+        <link refid="dust_suite.t.hh"/>
+        <childnode refid="1101" relation="include">
+        </childnode>
+        <childnode refid="1102" relation="include">
+        </childnode>
+        <childnode refid="1103" relation="include">
+        </childnode>
+        <childnode refid="1111" relation="include">
+        </childnode>
+        <childnode refid="1112" relation="include">
+        </childnode>
+        <childnode refid="1113" relation="include">
+        </childnode>
+        <childnode refid="1114" relation="include">
+        </childnode>
+        <childnode refid="1115" relation="include">
+        </childnode>
+      </node>
+      <node id="1107">
+        <label>cxxtest/Descriptions.h</label>
+        <link refid="_descriptions_8h_source"/>
+        <childnode refid="1108" relation="include">
+        </childnode>
+      </node>
+      <node id="1114">
+        <label>tao/modules/dust.hh</label>
+      </node>
+      <node id="1112">
+        <label>tao/modules/sed.hh</label>
+      </node>
+      <node id="1115">
+        <label>mpi_fixture.hh</label>
+        <link refid="mpi__fixture_8hh_source"/>
+      </node>
+      <node id="1106">
+        <label>cxxtest/TestListener.h</label>
+        <link refid="_test_listener_8h_source"/>
+        <childnode refid="1107" relation="include">
+        </childnode>
+      </node>
+      <node id="1110">
+        <label>cxxtest/ValueTraits.h</label>
+        <link refid="_value_traits_8h_source"/>
+        <childnode refid="1104" relation="include">
+        </childnode>
+      </node>
+      <node id="1111">
+        <label>cxxtest/GlobalFixture.h</label>
+        <link refid="_global_fixture_8h_source"/>
+        <childnode refid="1108" relation="include">
+        </childnode>
+      </node>
+      <node id="1101">
+        <label>soci/soci.h</label>
+      </node>
+      <node id="1102">
+        <label>soci/sqlite3/soci-sqlite3.h</label>
+      </node>
+      <node id="1109">
+        <label>cxxtest/DummyDescriptions.h</label>
+        <link refid="_dummy_descriptions_8h_source"/>
+        <childnode refid="1107" relation="include">
+        </childnode>
+      </node>
+      <node id="1104">
+        <label>cxxtest/Flags.h</label>
+        <link refid="_flags_8h_source"/>
+      </node>
+      <node id="1108">
+        <label>cxxtest/LinkedList.h</label>
+        <link refid="_linked_list_8h_source"/>
+        <childnode refid="1104" relation="include">
+        </childnode>
+      </node>
+      <node id="1113">
+        <label>tao/modules/lightcone.hh</label>
+      </node>
+    </incdepgraph>
+    <innerclass refid="classdb__setup__fixture" prot="public">db_setup_fixture</innerclass>
+    <innerclass refid="classsed__suite" prot="public">sed_suite</innerclass>
+      <sectiondef kind="var">
+      <memberdef kind="variable" id="dust__suite_8t_8hh_1a89cd3aea4c638ae8be76c371322b09c3" prot="public" static="yes" mutable="no">
+        <type><ref refid="classdb__setup__fixture" kindref="compound">db_setup_fixture</ref></type>
+        <definition>db_setup_fixture db_setup</definition>
+        <argsstring></argsstring>
+        <name>db_setup</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/dust_suite.t.hh" line="148" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/dust_suite.t.hh" bodystart="148" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#include<sp/>&lt;soci/soci.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;soci/sqlite3/soci-sqlite3.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;cxxtest/TestSuite.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;cxxtest/GlobalFixture.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;tao/modules/sed.hh&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;tao/modules/lightcone.hh&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;tao/modules/dust.hh&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="keyword">using<sp/>namespace<sp/></highlight><highlight class="normal">hpc;</highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="keyword">using<sp/>namespace<sp/></highlight><highlight class="normal">tao;</highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;mpi_fixture.hh&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classdb__setup__fixture" kindref="compound">db_setup_fixture</ref><sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="class_cxx_test_1_1_global_fixture" kindref="compound">CxxTest::GlobalFixture</ref></highlight></codeline>
+<codeline lineno="18"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>setUp()</highlight></codeline>
+<codeline lineno="22"><highlight class="normal"><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="23"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="24"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>tearDown()</highlight></codeline>
+<codeline lineno="27"><highlight class="normal"><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="28"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="29"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>setUpWorld()</highlight></codeline>
+<codeline lineno="32"><highlight class="normal"><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="33"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Setup<sp/>filenames.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>db_filename<sp/>=<sp/>tmpnam(<sp/>NULL<sp/>);</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>xml_filename<sp/>=<sp/>tmpnam(<sp/>NULL<sp/>);</highlight></codeline>
+<codeline lineno="36"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>ssp_filename<sp/>=<sp/>tmpnam(<sp/>NULL<sp/>);</highlight></codeline>
+<codeline lineno="37"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>waves_filename<sp/>=<sp/>tmpnam(<sp/>NULL<sp/>);</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"></highlight></codeline>
+<codeline lineno="39"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Open<sp/>the<sp/>database.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="40"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>soci::session<sp/>sql(<sp/>soci::sqlite3,<sp/>db_filename<sp/>);</highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight></codeline>
+<codeline lineno="42"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Write<sp/>a<sp/>simple<sp/>set<sp/>of<sp/>galaxies.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="43"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sql<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;create<sp/>table<sp/>snapshot_000<sp/>(Pos1<sp/>double<sp/>precision,<sp/>Pos2<sp/>double<sp/>precision,<sp/>Pos3<sp/>double<sp/>precision,<sp/>id<sp/>integer,<sp/>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;disk_sfr<sp/>double<sp/>precision,<sp/>bulge_sfr<sp/>double<sp/>precision)&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sql<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;create<sp/>table<sp/>snapshot_001<sp/>(Pos1<sp/>double<sp/>precision,<sp/>Pos2<sp/>double<sp/>precision,<sp/>Pos3<sp/>double<sp/>precision,<sp/>id<sp/>integer,<sp/>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="46"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;disk_sfr<sp/>double<sp/>precision,<sp/>bulge_sfr<sp/>double<sp/>precision)&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="47"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sql<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;insert<sp/>into<sp/>snapshot_000<sp/>values<sp/>(1,<sp/>0.001,<sp/>0.001,<sp/>0,<sp/>1,<sp/>2)&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="48"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sql<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;insert<sp/>into<sp/>snapshot_000<sp/>values<sp/>(0.866,<sp/>0.5,<sp/>0.001,<sp/>1,<sp/>3,<sp/>4)&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="49"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sql<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;insert<sp/>into<sp/>snapshot_000<sp/>values<sp/>(0.5,<sp/>0.866,<sp/>0.001,<sp/>2,<sp/>5,<sp/>6)&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="50"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sql<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;insert<sp/>into<sp/>snapshot_001<sp/>values<sp/>(1,<sp/>0.001,<sp/>0.001,<sp/>0,<sp/>1,<sp/>2)&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="51"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sql<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;insert<sp/>into<sp/>snapshot_001<sp/>values<sp/>(0.866,<sp/>0.5,<sp/>0.001,<sp/>1,<sp/>3,<sp/>4)&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sql<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;insert<sp/>into<sp/>snapshot_001<sp/>values<sp/>(0.5,<sp/>0.866,<sp/>0.001,<sp/>2,<sp/>5,<sp/>6)&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"></highlight></codeline>
+<codeline lineno="54"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Write<sp/>a<sp/>sample<sp/>set<sp/>of<sp/>star<sp/>formation<sp/>histories/metallicities.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="55"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sql<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;create<sp/>table<sp/>disk_star_formation<sp/>(galaxy_id<sp/>integer,<sp/>history<sp/>double<sp/>precision,<sp/>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="56"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;metal<sp/>double<sp/>precision,<sp/>age<sp/>double<sp/>precision)&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sql<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;create<sp/>table<sp/>bulge_star_formation<sp/>(galaxy_id<sp/>integer,<sp/>history<sp/>double<sp/>precision,<sp/>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="58"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;metal<sp/>double<sp/>precision,<sp/>age<sp/>double<sp/>precision)&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="59"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sql<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;insert<sp/>into<sp/>disk_star_formation<sp/>values<sp/>(0,<sp/>1,<sp/>0.00,<sp/>3)&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="60"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sql<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;insert<sp/>into<sp/>disk_star_formation<sp/>values<sp/>(0,<sp/>2,<sp/>0.01,<sp/>2)&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sql<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;insert<sp/>into<sp/>disk_star_formation<sp/>values<sp/>(0,<sp/>3,<sp/>0.02,<sp/>1)&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="62"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sql<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;insert<sp/>into<sp/>disk_star_formation<sp/>values<sp/>(1,<sp/>4,<sp/>0.00,<sp/>3)&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sql<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;insert<sp/>into<sp/>disk_star_formation<sp/>values<sp/>(1,<sp/>5,<sp/>0.01,<sp/>2)&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sql<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;insert<sp/>into<sp/>disk_star_formation<sp/>values<sp/>(1,<sp/>6,<sp/>0.02,<sp/>1)&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sql<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;insert<sp/>into<sp/>disk_star_formation<sp/>values<sp/>(2,<sp/>7,<sp/>0.00,<sp/>3)&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="66"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sql<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;insert<sp/>into<sp/>disk_star_formation<sp/>values<sp/>(2,<sp/>8,<sp/>0.01,<sp/>2)&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sql<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;insert<sp/>into<sp/>disk_star_formation<sp/>values<sp/>(2,<sp/>9,<sp/>0.02,<sp/>1)&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sql<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;insert<sp/>into<sp/>bulge_star_formation<sp/>values<sp/>(0,<sp/>10,<sp/>0.00,<sp/>3)&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="69"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sql<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;insert<sp/>into<sp/>bulge_star_formation<sp/>values<sp/>(0,<sp/>11,<sp/>0.01,<sp/>2)&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sql<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;insert<sp/>into<sp/>bulge_star_formation<sp/>values<sp/>(0,<sp/>12,<sp/>0.02,<sp/>1)&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="71"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sql<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;insert<sp/>into<sp/>bulge_star_formation<sp/>values<sp/>(1,<sp/>13,<sp/>0.00,<sp/>3)&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sql<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;insert<sp/>into<sp/>bulge_star_formation<sp/>values<sp/>(1,<sp/>14,<sp/>0.01,<sp/>2)&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sql<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;insert<sp/>into<sp/>bulge_star_formation<sp/>values<sp/>(1,<sp/>15,<sp/>0.02,<sp/>1)&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="74"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sql<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;insert<sp/>into<sp/>bulge_star_formation<sp/>values<sp/>(2,<sp/>16,<sp/>0.00,<sp/>3)&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="75"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sql<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;insert<sp/>into<sp/>bulge_star_formation<sp/>values<sp/>(2,<sp/>17,<sp/>0.01,<sp/>2)&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="76"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sql<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;insert<sp/>into<sp/>bulge_star_formation<sp/>values<sp/>(2,<sp/>18,<sp/>0.02,<sp/>1)&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="77"><highlight class="normal"></highlight></codeline>
+<codeline lineno="78"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Write<sp/>a<sp/>sample<sp/>SSP<sp/>file,<sp/>assuming<sp/>num_times=3,<sp/>num_spectra=2,<sp/>num_metals=7.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="80"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::ofstream<sp/>file(<sp/>ssp_filename,<sp/>std::ios::out<sp/>);</highlight></codeline>
+<codeline lineno="81"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>val<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(<sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>ii<sp/>=<sp/>0;<sp/>ii<sp/>&lt;<sp/>3;<sp/>++ii<sp/>)</highlight></codeline>
+<codeline lineno="83"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="84"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(<sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>jj<sp/>=<sp/>0;<sp/>jj<sp/>&lt;<sp/>2;<sp/>++jj<sp/>)</highlight></codeline>
+<codeline lineno="85"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="86"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(<sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>kk<sp/>=<sp/>0;<sp/>kk<sp/>&lt;<sp/>7;<sp/>++kk<sp/>)</highlight></codeline>
+<codeline lineno="87"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>file<sp/>&lt;&lt;<sp/>to_string(<sp/>val++<sp/>)<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;<sp/>&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="88"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>file<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="89"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="90"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="91"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="92"><highlight class="normal"></highlight></codeline>
+<codeline lineno="93"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Write<sp/>a<sp/>dummy<sp/>wavelengths<sp/>file.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="94"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="95"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::ofstream<sp/>file(<sp/>waves_filename,<sp/>std::ios::out<sp/>);</highlight></codeline>
+<codeline lineno="96"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>val<sp/>=<sp/>1;</highlight></codeline>
+<codeline lineno="97"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(<sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>ii<sp/>=<sp/>0;<sp/>ii<sp/>&lt;<sp/>2;<sp/>++ii<sp/>)</highlight></codeline>
+<codeline lineno="98"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>file<sp/>&lt;&lt;<sp/>to_string(<sp/>1000*val++<sp/>)<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;<sp/>&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="99"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>file<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="100"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="101"><highlight class="normal"></highlight></codeline>
+<codeline lineno="102"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Create<sp/>an<sp/>appropriate<sp/>XML<sp/>file<sp/>for<sp/>both<sp/>the<sp/>lightcone<sp/>and</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="103"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>the<sp/>SED<sp/>modules.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="104"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classtao_1_1lightcone" kindref="compound">lightcone</ref><sp/>lc;</highlight></codeline>
+<codeline lineno="105"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classtao_1_1sed" kindref="compound">tao::sed</ref><sp/><ref refid="classtao_1_1sed" kindref="compound">sed</ref>;</highlight></codeline>
+<codeline lineno="106"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classtao_1_1dust" kindref="compound">tao::dust</ref><sp/><ref refid="classtao_1_1dust" kindref="compound">dust</ref>;</highlight></codeline>
+<codeline lineno="107"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>options::dictionary<sp/>dict;</highlight></codeline>
+<codeline lineno="108"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>lc.setup_options(<sp/>dict,<sp/></highlight><highlight class="stringliteral">&quot;lightcone&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="109"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sed.setup_options(<sp/>dict,<sp/></highlight><highlight class="stringliteral">&quot;sed&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="110"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>dust.setup_options(<sp/>dict,<sp/></highlight><highlight class="stringliteral">&quot;dust&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="111"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>dict.compile();</highlight></codeline>
+<codeline lineno="112"><highlight class="normal"></highlight></codeline>
+<codeline lineno="113"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>dict[</highlight><highlight class="stringliteral">&quot;lightcone-database_type&quot;</highlight><highlight class="normal">]<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;sqlite&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="114"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>dict[</highlight><highlight class="stringliteral">&quot;lightcone-database_name&quot;</highlight><highlight class="normal">]<sp/>=<sp/>db_filename;</highlight></codeline>
+<codeline lineno="115"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>dict[</highlight><highlight class="stringliteral">&quot;lightcone-box_type&quot;</highlight><highlight class="normal">]<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;cone&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="116"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>dict[</highlight><highlight class="stringliteral">&quot;lightcone-box_side&quot;</highlight><highlight class="normal">]<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;100&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="117"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>dict[</highlight><highlight class="stringliteral">&quot;lightcone-snapshots&quot;</highlight><highlight class="normal">]<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;0.01,0&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="118"><highlight class="normal"></highlight></codeline>
+<codeline lineno="119"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>dict[</highlight><highlight class="stringliteral">&quot;sed-database_type&quot;</highlight><highlight class="normal">]<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;sqlite&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="120"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>dict[</highlight><highlight class="stringliteral">&quot;sed-database_name&quot;</highlight><highlight class="normal">]<sp/>=<sp/>db_filename;</highlight></codeline>
+<codeline lineno="121"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>dict[</highlight><highlight class="stringliteral">&quot;sed-ssp_filename&quot;</highlight><highlight class="normal">]<sp/>=<sp/>ssp_filename;</highlight></codeline>
+<codeline lineno="122"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>dict[</highlight><highlight class="stringliteral">&quot;sed-num_times&quot;</highlight><highlight class="normal">]<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;3&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="123"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>dict[</highlight><highlight class="stringliteral">&quot;sed-num_spectra&quot;</highlight><highlight class="normal">]<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;2&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="124"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>dict[</highlight><highlight class="stringliteral">&quot;sed-num_metals&quot;</highlight><highlight class="normal">]<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;7&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="125"><highlight class="normal"></highlight></codeline>
+<codeline lineno="126"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>dict[</highlight><highlight class="stringliteral">&quot;dust-num_spectra&quot;</highlight><highlight class="normal">]<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;2&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="127"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>dict[</highlight><highlight class="stringliteral">&quot;dust-waves_filename&quot;</highlight><highlight class="normal">]<sp/>=<sp/>waves_filename;</highlight></codeline>
+<codeline lineno="128"><highlight class="normal"></highlight></codeline>
+<codeline lineno="129"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>xml_filename<sp/>=<sp/>tmpnam(<sp/>NULL<sp/>);</highlight></codeline>
+<codeline lineno="130"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>xml.write(<sp/>xml_filename,<sp/>dict<sp/>);</highlight></codeline>
+<codeline lineno="131"><highlight class="normal"></highlight></codeline>
+<codeline lineno="132"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="133"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="134"><highlight class="normal"></highlight></codeline>
+<codeline lineno="135"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>tearDownWorld()</highlight></codeline>
+<codeline lineno="136"><highlight class="normal"><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="137"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">remove</highlight><highlight class="normal">(<sp/>db_filename.c_str()<sp/>);</highlight></codeline>
+<codeline lineno="138"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">remove</highlight><highlight class="normal">(<sp/>xml_filename.c_str()<sp/>);</highlight></codeline>
+<codeline lineno="139"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">remove</highlight><highlight class="normal">(<sp/>ssp_filename.c_str()<sp/>);</highlight></codeline>
+<codeline lineno="140"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">remove</highlight><highlight class="normal">(<sp/>waves_filename.c_str()<sp/>);</highlight></codeline>
+<codeline lineno="141"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="142"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="143"><highlight class="normal"></highlight></codeline>
+<codeline lineno="144"><highlight class="normal"><sp/><sp/><sp/>options::xml<sp/>xml;</highlight></codeline>
+<codeline lineno="145"><highlight class="normal"><sp/><sp/><sp/>std::string<sp/>db_filename,<sp/>xml_filename,<sp/>ssp_filename,<sp/>waves_filename;</highlight></codeline>
+<codeline lineno="146"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="147"><highlight class="normal"></highlight></codeline>
+<codeline lineno="148"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="classdb__setup__fixture" kindref="compound">db_setup_fixture</ref><sp/>db_setup;</highlight></codeline>
+<codeline lineno="149"><highlight class="normal"></highlight></codeline>
+<codeline lineno="153" refid="classsed__suite" refkind="compound"><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classsed__suite" kindref="compound">sed_suite</ref><sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="class_cxx_test_1_1_test_suite" kindref="compound">CxxTest::TestSuite</ref></highlight></codeline>
+<codeline lineno="154"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="155"><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="156"><highlight class="normal"></highlight></codeline>
+<codeline lineno="160" refid="classsed__suite_1a596aca9dcde5bc34d8395847046d0b06" refkind="member"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>test_sepctral_sum()</highlight></codeline>
+<codeline lineno="161"><highlight class="normal"><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="162"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classtao_1_1lightcone" kindref="compound">tao::lightcone</ref><sp/>lc;</highlight></codeline>
+<codeline lineno="163"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classtao_1_1sed" kindref="compound">tao::sed</ref><sp/>sed;</highlight></codeline>
+<codeline lineno="164"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classtao_1_1dust" kindref="compound">tao::dust</ref><sp/>dust;</highlight></codeline>
+<codeline lineno="165"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>setup_dust(<sp/>lc,<sp/>sed,<sp/>dust<sp/>);</highlight></codeline>
+<codeline lineno="166"><highlight class="normal"></highlight></codeline>
+<codeline lineno="167"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/><ref refid="classtao_1_1galaxy" kindref="compound">galaxy</ref><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="168"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(<sp/>lc.<ref refid="classtao_1_1lightcone_1a5214c32ad678f4fb048a0962e81cd511" kindref="member">begin</ref>();<sp/>!lc.<ref refid="classtao_1_1lightcone_1a1c1a642695bfa199054cb03fa6cba180" kindref="member">done</ref>();<sp/>++lc,<sp/>++galaxy<sp/>)</highlight></codeline>
+<codeline lineno="169"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="170"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>sed.process_galaxy(<sp/>*lc<sp/>);</highlight></codeline>
+<codeline lineno="171"><highlight class="normal"></highlight></codeline>
+<codeline lineno="172"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;\n&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>sed.total_spectra()<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="173"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dust.process_galaxy(<sp/>*lc,<sp/>sed.total_spectra()<sp/>);</highlight></codeline>
+<codeline lineno="174"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/>sed.total_spectra()<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="175"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="176"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="177"><highlight class="normal"></highlight></codeline>
+<codeline lineno="178"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>setup_dust(<sp/><ref refid="classtao_1_1lightcone" kindref="compound">tao::lightcone</ref>&amp;<sp/>lc,<sp/><ref refid="classtao_1_1sed" kindref="compound">tao::sed</ref>&amp;<sp/>sed,<sp/><ref refid="classtao_1_1dust" kindref="compound">tao::dust</ref>&amp;<sp/>dust<sp/>)</highlight></codeline>
+<codeline lineno="179"><highlight class="normal"><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="180"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Setup<sp/>the<sp/>dictionary.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="181"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>options::dictionary<sp/>dict;</highlight></codeline>
+<codeline lineno="182"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>lc.setup_options(<sp/>dict,<sp/></highlight><highlight class="stringliteral">&quot;lightcone&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="183"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sed.setup_options(<sp/>dict,<sp/></highlight><highlight class="stringliteral">&quot;sed&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="184"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>dust.setup_options(<sp/>dict,<sp/></highlight><highlight class="stringliteral">&quot;dust&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="185"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>dict.compile();</highlight></codeline>
+<codeline lineno="186"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>db_setup.xml.read(<sp/>db_setup.xml_filename,<sp/>dict<sp/>);</highlight></codeline>
+<codeline lineno="187"><highlight class="normal"></highlight></codeline>
+<codeline lineno="188"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Initialise<sp/>modules.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="189"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>lc.<ref refid="classtao_1_1lightcone_1a3ae5c9b6e79a4fd5b65d9a633e9dd1df" kindref="member">initialise</ref>(<sp/>dict,<sp/></highlight><highlight class="stringliteral">&quot;lightcone&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="190"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sed.<ref refid="classtao_1_1sed_1ae5e33946d9c5004b329755d4eb47497c" kindref="member">initialise</ref>(<sp/>dict,<sp/></highlight><highlight class="stringliteral">&quot;sed&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="191"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>dust.<ref refid="classtao_1_1dust_1a79618b84594757dbca66985b5b1caa08" kindref="member">initialise</ref>(<sp/>dict,<sp/></highlight><highlight class="stringliteral">&quot;dust&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="192"><highlight class="normal"></highlight></codeline>
+<codeline lineno="193"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Switch<sp/>off<sp/>random<sp/>rotation<sp/>and<sp/>shifting.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="194"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>lc._unique<sp/>=<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="195"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="196"><highlight class="normal"></highlight></codeline>
+<codeline lineno="197"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>setUp()</highlight></codeline>
+<codeline lineno="198"><highlight class="normal"><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="199"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>num_ranks<sp/>=<sp/>mpi::comm::world.size();</highlight></codeline>
+<codeline lineno="200"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>my_rank<sp/>=<sp/>mpi::comm::world.rank();</highlight></codeline>
+<codeline lineno="201"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="202"><highlight class="normal"></highlight></codeline>
+<codeline lineno="203"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>tearDown()</highlight></codeline>
+<codeline lineno="204"><highlight class="normal"><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="205"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="206"><highlight class="normal"></highlight></codeline>
+<codeline lineno="207"><highlight class="normal"></highlight><highlight class="keyword">private</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="208"><highlight class="normal"></highlight></codeline>
+<codeline lineno="209"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>num_ranks,<sp/>my_rank;</highlight></codeline>
+<codeline lineno="210"><highlight class="normal">};</highlight></codeline>
+    </programlisting>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/dust_suite.t.hh"/>
+  </compounddef>
+</doxygen>

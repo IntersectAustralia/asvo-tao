@@ -1,0 +1,183 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="classtao_1_1_setting_reader" kind="class" prot="public">
+    <compoundname>tao::SettingReader</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classtao_1_1_setting_reader_1a08ac9ef952f75258f3029f031c0fde6b" prot="public" static="no" mutable="no">
+        <type><ref refid="structtao_1_1_basic_settings" kindref="compound">BasicSettings</ref></type>
+        <definition>BasicSettings tao::SettingReader::CurrentBasicSettings</definition>
+        <argsstring></argsstring>
+        <name>CurrentBasicSettings</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" line="68" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" bodystart="68" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classtao_1_1_setting_reader_1aa2d9ad514590fba22fcd2f4da994fca6" prot="protected" static="no" mutable="no">
+        <type>pugi::xml_document</type>
+        <definition>pugi::xml_document tao::SettingReader::ParamsDoc</definition>
+        <argsstring></argsstring>
+        <name>ParamsDoc</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" line="75" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" bodystart="75" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classtao_1_1_setting_reader_1ad91524d4993ca18a7d0f70bf8879d20b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>tao::SettingReader::SettingReader</definition>
+        <argsstring>(string BasicSettingsFile, string ParamsFile)</argsstring>
+        <name>SettingReader</name>
+        <param>
+          <type>string</type>
+          <declname>BasicSettingsFile</declname>
+        </param>
+        <param>
+          <type>string</type>
+          <declname>ParamsFile</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" line="66" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.cc" bodystart="8" bodyend="12"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1_setting_reader_1a79600cb1fda07f4d25c3d66349525582" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>tao::SettingReader::~SettingReader</definition>
+        <argsstring>()</argsstring>
+        <name>~SettingReader</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" line="67" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.cc" bodystart="14" bodyend="17"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1_setting_reader_1a2a1b30043b3f074d2ce8bee5fc59fa77" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="structtao_1_1_light_cone_params" kindref="compound">LightConeParams</ref></type>
+        <definition>LightConeParams tao::SettingReader::LoadLightCone</definition>
+        <argsstring>()</argsstring>
+        <name>LoadLightCone</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" line="69" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.cc" bodystart="81" bodyend="116"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classtao_1_1_setting_reader_1a47518698e4180b411630df097fb17885" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>xml_node</type>
+        <definition>xml_node tao::SettingReader::_GetNodeWithAssert</definition>
+        <argsstring>(pugi::xml_document &amp;doc, string XPathQuery)</argsstring>
+        <name>_GetNodeWithAssert</name>
+        <param>
+          <type>pugi::xml_document &amp;</type>
+          <declname>doc</declname>
+        </param>
+        <param>
+          <type>string</type>
+          <declname>XPathQuery</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" line="76" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.cc" bodystart="69" bodyend="79"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1_setting_reader_1a4becfd9d04a3f18e974b5f7ebd298347" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::SettingReader::ReadBasicXMLSettings</definition>
+        <argsstring>(string FileName)</argsstring>
+        <name>ReadBasicXMLSettings</name>
+        <param>
+          <type>string</type>
+          <declname>FileName</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" line="77" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.cc" bodystart="19" bodyend="43"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1_setting_reader_1ac4022d94d5450e10e5daa6deea56ac90" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::SettingReader::ReadXMLParams</definition>
+        <argsstring>(string FileName)</argsstring>
+        <name>ReadXMLParams</name>
+        <param>
+          <type>string</type>
+          <declname>FileName</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" line="78" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.cc" bodystart="44" bodyend="68"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="316">
+        <label>tao::SettingReader</label>
+        <link refid="classtao_1_1_setting_reader"/>
+        <childnode refid="317" relation="usage">
+          <edgelabel>CurrentBasicSettings</edgelabel>
+        </childnode>
+      </node>
+      <node id="318">
+        <label>string</label>
+      </node>
+      <node id="317">
+        <label>tao::BasicSettings</label>
+        <link refid="structtao_1_1_basic_settings"/>
+        <childnode refid="318" relation="usage">
+          <edgelabel>Password</edgelabel>
+          <edgelabel>WorkingFolder</edgelabel>
+          <edgelabel>CurrentUserName</edgelabel>
+          <edgelabel>TablePrefix</edgelabel>
+          <edgelabel>UserName</edgelabel>
+          <edgelabel>CurrentDB</edgelabel>
+          <edgelabel>LogFolder</edgelabel>
+          <edgelabel>ServerIP</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" line="64" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" bodystart="63" bodyend="80"/>
+    <listofallmembers>
+      <member refid="classtao_1_1_setting_reader_1a47518698e4180b411630df097fb17885" prot="protected" virt="non-virtual"><scope>tao::SettingReader</scope><name>_GetNodeWithAssert</name></member>
+      <member refid="classtao_1_1_setting_reader_1a08ac9ef952f75258f3029f031c0fde6b" prot="public" virt="non-virtual"><scope>tao::SettingReader</scope><name>CurrentBasicSettings</name></member>
+      <member refid="classtao_1_1_setting_reader_1a2a1b30043b3f074d2ce8bee5fc59fa77" prot="public" virt="non-virtual"><scope>tao::SettingReader</scope><name>LoadLightCone</name></member>
+      <member refid="classtao_1_1_setting_reader_1aa2d9ad514590fba22fcd2f4da994fca6" prot="protected" virt="non-virtual"><scope>tao::SettingReader</scope><name>ParamsDoc</name></member>
+      <member refid="classtao_1_1_setting_reader_1a4becfd9d04a3f18e974b5f7ebd298347" prot="protected" virt="non-virtual"><scope>tao::SettingReader</scope><name>ReadBasicXMLSettings</name></member>
+      <member refid="classtao_1_1_setting_reader_1ac4022d94d5450e10e5daa6deea56ac90" prot="protected" virt="non-virtual"><scope>tao::SettingReader</scope><name>ReadXMLParams</name></member>
+      <member refid="classtao_1_1_setting_reader_1ad91524d4993ca18a7d0f70bf8879d20b" prot="public" virt="non-virtual"><scope>tao::SettingReader</scope><name>SettingReader</name></member>
+      <member refid="classtao_1_1_setting_reader_1a79600cb1fda07f4d25c3d66349525582" prot="public" virt="non-virtual"><scope>tao::SettingReader</scope><name>~SettingReader</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

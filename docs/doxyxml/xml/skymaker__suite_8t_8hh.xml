@@ -1,0 +1,168 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="skymaker__suite_8t_8hh" kind="file">
+    <compoundname>skymaker_suite.t.hh</compoundname>
+    <includes local="no">soci/soci.h</includes>
+    <includes local="no">soci/sqlite3/soci-sqlite3.h</includes>
+    <includes refid="_test_suite_8h" local="no">cxxtest/TestSuite.h</includes>
+    <includes refid="_global_fixture_8h" local="no">cxxtest/GlobalFixture.h</includes>
+    <includes local="yes">tao/modules/skymaker.hh</includes>
+    <includes refid="mpi__fixture_8hh" local="yes">mpi_fixture.hh</includes>
+    <incdepgraph>
+      <node id="1567">
+        <label>cxxtest/TestSuite.h</label>
+        <link refid="_test_suite_8h_source"/>
+        <childnode refid="1568" relation="include">
+        </childnode>
+        <childnode refid="1569" relation="include">
+        </childnode>
+        <childnode refid="1571" relation="include">
+        </childnode>
+        <childnode refid="1574" relation="include">
+        </childnode>
+      </node>
+      <node id="1569">
+        <label>cxxtest/TestTracker.h</label>
+        <link refid="_test_tracker_8h_source"/>
+        <childnode refid="1570" relation="include">
+        </childnode>
+        <childnode refid="1573" relation="include">
+        </childnode>
+      </node>
+      <node id="1571">
+        <label>cxxtest/Descriptions.h</label>
+        <link refid="_descriptions_8h_source"/>
+        <childnode refid="1572" relation="include">
+        </childnode>
+      </node>
+      <node id="1564">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/skymaker_suite.t.hh</label>
+        <link refid="skymaker_suite.t.hh"/>
+        <childnode refid="1565" relation="include">
+        </childnode>
+        <childnode refid="1566" relation="include">
+        </childnode>
+        <childnode refid="1567" relation="include">
+        </childnode>
+        <childnode refid="1575" relation="include">
+        </childnode>
+        <childnode refid="1576" relation="include">
+        </childnode>
+        <childnode refid="1577" relation="include">
+        </childnode>
+      </node>
+      <node id="1577">
+        <label>mpi_fixture.hh</label>
+        <link refid="mpi__fixture_8hh_source"/>
+      </node>
+      <node id="1570">
+        <label>cxxtest/TestListener.h</label>
+        <link refid="_test_listener_8h_source"/>
+        <childnode refid="1571" relation="include">
+        </childnode>
+      </node>
+      <node id="1574">
+        <label>cxxtest/ValueTraits.h</label>
+        <link refid="_value_traits_8h_source"/>
+        <childnode refid="1568" relation="include">
+        </childnode>
+      </node>
+      <node id="1575">
+        <label>cxxtest/GlobalFixture.h</label>
+        <link refid="_global_fixture_8h_source"/>
+        <childnode refid="1572" relation="include">
+        </childnode>
+      </node>
+      <node id="1565">
+        <label>soci/soci.h</label>
+      </node>
+      <node id="1566">
+        <label>soci/sqlite3/soci-sqlite3.h</label>
+      </node>
+      <node id="1576">
+        <label>tao/modules/skymaker.hh</label>
+      </node>
+      <node id="1573">
+        <label>cxxtest/DummyDescriptions.h</label>
+        <link refid="_dummy_descriptions_8h_source"/>
+        <childnode refid="1571" relation="include">
+        </childnode>
+      </node>
+      <node id="1568">
+        <label>cxxtest/Flags.h</label>
+        <link refid="_flags_8h_source"/>
+      </node>
+      <node id="1572">
+        <label>cxxtest/LinkedList.h</label>
+        <link refid="_linked_list_8h_source"/>
+        <childnode refid="1568" relation="include">
+        </childnode>
+      </node>
+    </incdepgraph>
+    <innerclass refid="classskymaker__suite" prot="public">skymaker_suite</innerclass>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#include<sp/>&lt;soci/soci.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;soci/sqlite3/soci-sqlite3.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;cxxtest/TestSuite.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;cxxtest/GlobalFixture.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;tao/modules/skymaker.hh&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="keyword">using<sp/>namespace<sp/></highlight><highlight class="normal">hpc;</highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="keyword">using<sp/>namespace<sp/></highlight><highlight class="normal">tao;</highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;mpi_fixture.hh&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight></codeline>
+<codeline lineno="15" refid="classskymaker__suite" refkind="compound"><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classskymaker__suite" kindref="compound">skymaker_suite</ref><sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="class_cxx_test_1_1_test_suite" kindref="compound">CxxTest::TestSuite</ref></highlight></codeline>
+<codeline lineno="16"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>skymaker::real_type<sp/>real_type;</highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight></codeline>
+<codeline lineno="24" refid="classskymaker__suite_1ad4f4883a1e36a72190fd193548252510" refkind="member"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>test_default_constructor()</highlight></codeline>
+<codeline lineno="25"><highlight class="normal"><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="26"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classtao_1_1skymaker" kindref="compound">tao::skymaker</ref><sp/>sky;</highlight></codeline>
+<codeline lineno="27"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight></codeline>
+<codeline lineno="32" refid="classskymaker__suite_1aafbab8f272a735bd159fc54e8d6c1e99" refkind="member"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>test_image_constructor()</highlight></codeline>
+<codeline lineno="33"><highlight class="normal"><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="34"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>sub_cone<sp/>=<sp/>1;</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">string</highlight><highlight class="normal"><sp/>format<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;FITS&quot;</highlight><highlight class="normal">,<sp/>mag_field<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;field&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="36"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>real_type<sp/>min_mag<sp/>=<sp/>3,<sp/>z_min<sp/>=<sp/>4,<sp/>z_max<sp/>=<sp/>5;</highlight></codeline>
+<codeline lineno="37"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>real_type<sp/>origin_ra<sp/>=<sp/>6,<sp/>origin_dec<sp/>=<sp/>7;</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>real_type<sp/>fov_ra<sp/>=<sp/>90,<sp/>fov_dec<sp/>=<sp/>90;</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>width<sp/>=<sp/>10,<sp/>height<sp/>=<sp/>11;</highlight></codeline>
+<codeline lineno="40"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classtao_1_1skymaker_1_1image" kindref="compound">tao::skymaker::image</ref><sp/>img(<sp/>0,</highlight></codeline>
+<codeline lineno="41"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>sub_cone,<sp/>format,<sp/>mag_field,</highlight></codeline>
+<codeline lineno="42"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>min_mag,<sp/>z_min,<sp/>z_max,</highlight></codeline>
+<codeline lineno="43"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>origin_ra,<sp/>origin_dec,</highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>fov_ra,<sp/>fov_dec,</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>width,<sp/>height<sp/>);</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight></codeline>
+<codeline lineno="47"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Values<sp/>are<sp/>set<sp/>correctly.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="48"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>TS_ASSERT_EQUALS(<sp/>img._sub_cone,<sp/>sub_cone<sp/>);</highlight></codeline>
+<codeline lineno="49"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>TS_ASSERT_EQUALS(<sp/>img._format,<sp/>format<sp/>);</highlight></codeline>
+<codeline lineno="50"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>TS_ASSERT_EQUALS(<sp/>img._mag_field,<sp/>mag_field<sp/>);</highlight></codeline>
+<codeline lineno="51"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>TS_ASSERT_EQUALS(<sp/>img._min_mag,<sp/>min_mag<sp/>);</highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>TS_ASSERT_EQUALS(<sp/>img._z_min,<sp/>z_min<sp/>);</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>TS_ASSERT_EQUALS(<sp/>img._z_max,<sp/>z_max<sp/>);</highlight></codeline>
+<codeline lineno="54"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>TS_ASSERT_EQUALS(<sp/>img._origin_ra,<sp/>to_radians(<sp/>origin_ra<sp/>)<sp/>);</highlight></codeline>
+<codeline lineno="55"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>TS_ASSERT_EQUALS(<sp/>img._origin_dec,<sp/>to_radians(<sp/>origin_dec<sp/>)<sp/>);</highlight></codeline>
+<codeline lineno="56"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>TS_ASSERT_EQUALS(<sp/>img._fov_ra,<sp/>to_radians(<sp/>fov_ra<sp/>)<sp/>);</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>TS_ASSERT_EQUALS(<sp/>img._fov_dec,<sp/>to_radians(<sp/>fov_dec<sp/>)<sp/>);</highlight></codeline>
+<codeline lineno="58"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>TS_ASSERT_EQUALS(<sp/>img._width,<sp/>width<sp/>);</highlight></codeline>
+<codeline lineno="59"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>TS_ASSERT_EQUALS(<sp/>img._height,<sp/>height<sp/>);</highlight></codeline>
+<codeline lineno="60"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>TS_ASSERT_EQUALS(<sp/>img._cnt,<sp/>0<sp/>);</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"></highlight></codeline>
+<codeline lineno="62"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Scale<sp/>factors<sp/>are<sp/>correctly<sp/>set.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>TS_ASSERT_DELTA(<sp/>img._scale_x,<sp/>0.5*width,<sp/>1e-3<sp/>);</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>TS_ASSERT_DELTA(<sp/>img._scale_y,<sp/>0.5*height,<sp/>1e-3<sp/>);</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="66"><highlight class="normal">};</highlight></codeline>
+    </programlisting>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/skymaker_suite.t.hh"/>
+  </compounddef>
+</doxygen>

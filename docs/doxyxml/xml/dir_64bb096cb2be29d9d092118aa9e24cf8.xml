@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="dir_64bb096cb2be29d9d092118aa9e24cf8" kind="dir">
+    <compoundname>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules</compoundname>
+    <innerdir refid="dir_a8e74dbb432abdc2177cb14dee53e9a3">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/apps</innerdir>
+    <innerdir refid="dir_43700e2eecfe28789961fb060c558a57">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src</innerdir>
+    <innerdir refid="dir_78c4c3cd00a95130cb9567a5f59c76b5">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests</innerdir>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/"/>
+  </compounddef>
+</doxygen>

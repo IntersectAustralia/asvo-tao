@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="dir_186b281dbd7dd38e410e21f26728990c" kind="dir">
+    <compoundname>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest</compoundname>
+    <innerdir refid="dir_3e725fd6c34ebb9624eb38c12d3898db">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include</innerdir>
+    <innerdir refid="dir_dcf004e67155db0137318dc305e6d478">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts</innerdir>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,120 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="structtao_1_1flat__info" kind="struct" prot="public">
+    <compoundname>tao::flat_info</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class</type>
+        <declname>T</declname>
+        <defname>T</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structtao_1_1flat__info_1a13d9c51cdaa482b4c3a52edbd7b8d0fa" prot="public" static="no" mutable="no">
+        <type>T</type>
+        <definition>T tao::flat_info&lt; T &gt;::disk_mass</definition>
+        <argsstring></argsstring>
+        <name>disk_mass</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/flat.hh" line="9" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/flat.hh" bodystart="9" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1flat__info_1a987e9e8f3452719f1146a72aaa273600" prot="public" static="no" mutable="no">
+        <type>T</type>
+        <definition>T tao::flat_info&lt; T &gt;::bulge_mass</definition>
+        <argsstring></argsstring>
+        <name>bulge_mass</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/flat.hh" line="10" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/flat.hh" bodystart="10" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1flat__info_1a1a753eb10eea595dd4157c9d33bcf5d8" prot="public" static="no" mutable="no">
+        <type>T</type>
+        <definition>T tao::flat_info&lt; T &gt;::disk_rate</definition>
+        <argsstring></argsstring>
+        <name>disk_rate</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/flat.hh" line="11" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/flat.hh" bodystart="11" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1flat__info_1adfa4d2bb77d25c0f87988972340b9ca3" prot="public" static="no" mutable="no">
+        <type>T</type>
+        <definition>T tao::flat_info&lt; T &gt;::bulge_rate</definition>
+        <argsstring></argsstring>
+        <name>bulge_rate</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/flat.hh" line="12" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/flat.hh" bodystart="12" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1flat__info_1ad9b905623618067f1c293bcedd73b00c" prot="public" static="no" mutable="no">
+        <type>T</type>
+        <definition>T tao::flat_info&lt; T &gt;::disk_metal</definition>
+        <argsstring></argsstring>
+        <name>disk_metal</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/flat.hh" line="13" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/flat.hh" bodystart="13" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1flat__info_1a8961fd3db1dde2d31337506299671199" prot="public" static="no" mutable="no">
+        <type>T</type>
+        <definition>T tao::flat_info&lt; T &gt;::bulge_metal</definition>
+        <argsstring></argsstring>
+        <name>bulge_metal</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/flat.hh" line="14" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/flat.hh" bodystart="14" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1flat__info_1a5f4a0e6de62bf77bd5196de4372fc3f1" prot="public" static="no" mutable="no">
+        <type>T</type>
+        <definition>T tao::flat_info&lt; T &gt;::redshift</definition>
+        <argsstring></argsstring>
+        <name>redshift</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/flat.hh" line="15" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/flat.hh" bodystart="15" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/flat.hh" line="8" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/flat.hh" bodystart="7" bodyend="16"/>
+    <listofallmembers>
+      <member refid="structtao_1_1flat__info_1a987e9e8f3452719f1146a72aaa273600" prot="public" virt="non-virtual"><scope>tao::flat_info</scope><name>bulge_mass</name></member>
+      <member refid="structtao_1_1flat__info_1a8961fd3db1dde2d31337506299671199" prot="public" virt="non-virtual"><scope>tao::flat_info</scope><name>bulge_metal</name></member>
+      <member refid="structtao_1_1flat__info_1adfa4d2bb77d25c0f87988972340b9ca3" prot="public" virt="non-virtual"><scope>tao::flat_info</scope><name>bulge_rate</name></member>
+      <member refid="structtao_1_1flat__info_1a13d9c51cdaa482b4c3a52edbd7b8d0fa" prot="public" virt="non-virtual"><scope>tao::flat_info</scope><name>disk_mass</name></member>
+      <member refid="structtao_1_1flat__info_1ad9b905623618067f1c293bcedd73b00c" prot="public" virt="non-virtual"><scope>tao::flat_info</scope><name>disk_metal</name></member>
+      <member refid="structtao_1_1flat__info_1a1a753eb10eea595dd4157c9d33bcf5d8" prot="public" virt="non-virtual"><scope>tao::flat_info</scope><name>disk_rate</name></member>
+      <member refid="structtao_1_1flat__info_1a5f4a0e6de62bf77bd5196de4372fc3f1" prot="public" virt="non-virtual"><scope>tao::flat_info</scope><name>redshift</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

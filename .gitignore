@@ -23,7 +23,6 @@ core/sageimport_mpi_BSP/settings.xml
 web/build
 web/tao/static/docs
 docs/build
-docs/doxyxml
 docs/source/bpfilters
 .idea
 akg_*

@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="class_cxx_test_1_1_value_traits_3_01const_01char_01_4" kind="class" prot="public">
+    <compoundname>CxxTest::ValueTraits&lt; const char &gt;</compoundname>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_cxx_test_1_1_value_traits_3_01const_01char_01_4_1a92eabd5b7a37c2780df1b87ddcf388cd" prot="private" static="no" mutable="no">
+        <type>char</type>
+        <definition>char CxxTest::ValueTraits&lt; const char &gt;::_asString[sizeof(&quot;&apos;\\xXX&apos;&quot;)]</definition>
+        <argsstring>[sizeof(&quot;&apos;\\xXX&apos;&quot;)]</argsstring>
+        <name>_asString</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" line="291" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" bodystart="291" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_cxx_test_1_1_value_traits_3_01const_01char_01_4_1af39bb7dff864fd660f79a3d05680c32a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::ValueTraits&lt; const char &gt;::ValueTraits</definition>
+        <argsstring>(char c)</argsstring>
+        <name>ValueTraits</name>
+        <param>
+          <type>char</type>
+          <declname>c</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" line="293" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" bodystart="293" bodyend="293"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_value_traits_3_01const_01char_01_4_1a87dcb6e4fef8ea5e8561f599576bfea5" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const char *</type>
+        <definition>const char* CxxTest::ValueTraits&lt; const char &gt;::asString</definition>
+        <argsstring>(void) const </argsstring>
+        <name>asString</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" line="294" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" bodystart="294" bodyend="294"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" line="290" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" bodystart="289" bodyend="295"/>
+    <listofallmembers>
+      <member refid="class_cxx_test_1_1_value_traits_3_01const_01char_01_4_1a92eabd5b7a37c2780df1b87ddcf388cd" prot="private" virt="non-virtual"><scope>CxxTest::ValueTraits&lt; const char &gt;</scope><name>_asString</name></member>
+      <member refid="class_cxx_test_1_1_value_traits_3_01const_01char_01_4_1a87dcb6e4fef8ea5e8561f599576bfea5" prot="public" virt="non-virtual"><scope>CxxTest::ValueTraits&lt; const char &gt;</scope><name>asString</name></member>
+      <member refid="class_cxx_test_1_1_value_traits_3_01const_01char_01_4_1af39bb7dff864fd660f79a3d05680c32a" prot="public" virt="non-virtual"><scope>CxxTest::ValueTraits&lt; const char &gt;</scope><name>ValueTraits</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

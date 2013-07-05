@@ -1,0 +1,196 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="_global_fixture_8h" kind="file">
+    <compoundname>GlobalFixture.h</compoundname>
+    <includes refid="_linked_list_8h" local="no">cxxtest/LinkedList.h</includes>
+    <includedby refid="galaxy__suite_8t_8hh" local="no">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/tests/galaxy_suite.t.hh</includedby>
+    <includedby refid="_global_fixture_8cpp" local="no">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/GlobalFixture.cpp</includedby>
+    <includedby refid="_real_descriptions_8h" local="no">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.h</includedby>
+    <includedby refid="clip__suite_8t_8hh" local="no">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/clip_suite.t.hh</includedby>
+    <includedby refid="diff__suite_8t_8hh" local="no">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/diff_suite.t.hh</includedby>
+    <includedby refid="filter__suite_8t_8hh" local="no">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/filter_suite.t.hh</includedby>
+    <includedby refid="geometry__iterator_8t_8hh" local="no">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/geometry_iterator.t.hh</includedby>
+    <includedby refid="lightcone__suite_8t_8hh" local="no">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/lightcone_suite.t.hh</includedby>
+    <includedby refid="sed__suite_8t_8hh" local="no">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/sed_suite.t.hh</includedby>
+    <includedby refid="skymaker__suite_8t_8hh" local="no">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/skymaker_suite.t.hh</includedby>
+    <incdepgraph>
+      <node id="582">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/GlobalFixture.h</label>
+        <link refid="GlobalFixture.h"/>
+        <childnode refid="583" relation="include">
+        </childnode>
+      </node>
+      <node id="584">
+        <label>cxxtest/Flags.h</label>
+        <link refid="_flags_8h_source"/>
+      </node>
+      <node id="583">
+        <label>cxxtest/LinkedList.h</label>
+        <link refid="_linked_list_8h_source"/>
+        <childnode refid="584" relation="include">
+        </childnode>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="595">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/StdioFilePrinter.h</label>
+        <link refid="_stdio_file_printer_8h_source"/>
+        <childnode refid="596" relation="include">
+        </childnode>
+      </node>
+      <node id="599">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/diff_suite.t.hh</label>
+        <link refid="diff__suite_8t_8hh_source"/>
+      </node>
+      <node id="593">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorPrinter.h</label>
+        <link refid="_error_printer_8h_source"/>
+        <childnode refid="594" relation="include">
+        </childnode>
+      </node>
+      <node id="586">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/tests/galaxy_suite.t.hh</label>
+        <link refid="galaxy__suite_8t_8hh_source"/>
+      </node>
+      <node id="594">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ParenPrinter.h</label>
+        <link refid="_paren_printer_8h_source"/>
+      </node>
+      <node id="589">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.h</label>
+        <link refid="_real_descriptions_8h_source"/>
+        <childnode refid="590" relation="include">
+        </childnode>
+        <childnode refid="591" relation="include">
+        </childnode>
+      </node>
+      <node id="603">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/sed_suite.t.hh</label>
+        <link refid="sed__suite_8t_8hh_source"/>
+      </node>
+      <node id="601">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/geometry_iterator.t.hh</label>
+        <link refid="geometry__iterator_8t_8hh_source"/>
+      </node>
+      <node id="587">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/GlobalFixture.cpp</label>
+        <link refid="_global_fixture_8cpp_source"/>
+        <childnode refid="588" relation="include">
+        </childnode>
+      </node>
+      <node id="604">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/skymaker_suite.t.hh</label>
+        <link refid="skymaker__suite_8t_8hh_source"/>
+      </node>
+      <node id="591">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestRunner.h</label>
+        <link refid="_test_runner_8h_source"/>
+        <childnode refid="592" relation="include">
+        </childnode>
+        <childnode refid="597" relation="include">
+        </childnode>
+      </node>
+      <node id="597">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/YesNoRunner.h</label>
+        <link refid="_yes_no_runner_8h_source"/>
+      </node>
+      <node id="585">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/GlobalFixture.h</label>
+        <link refid="GlobalFixture.h"/>
+        <childnode refid="586" relation="include">
+        </childnode>
+        <childnode refid="587" relation="include">
+        </childnode>
+        <childnode refid="589" relation="include">
+        </childnode>
+        <childnode refid="598" relation="include">
+        </childnode>
+        <childnode refid="599" relation="include">
+        </childnode>
+        <childnode refid="600" relation="include">
+        </childnode>
+        <childnode refid="601" relation="include">
+        </childnode>
+        <childnode refid="602" relation="include">
+        </childnode>
+        <childnode refid="603" relation="include">
+        </childnode>
+        <childnode refid="604" relation="include">
+        </childnode>
+      </node>
+      <node id="602">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/lightcone_suite.t.hh</label>
+        <link refid="lightcone__suite_8t_8hh_source"/>
+      </node>
+      <node id="590">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.cpp</label>
+        <link refid="_real_descriptions_8cpp_source"/>
+        <childnode refid="588" relation="include">
+        </childnode>
+      </node>
+      <node id="592">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h</label>
+        <link refid="_error_formatter_8h_source"/>
+        <childnode refid="593" relation="include">
+        </childnode>
+        <childnode refid="595" relation="include">
+        </childnode>
+      </node>
+      <node id="600">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/filter_suite.t.hh</label>
+        <link refid="filter__suite_8t_8hh_source"/>
+      </node>
+      <node id="588">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Root.cpp</label>
+        <link refid="_root_8cpp_source"/>
+      </node>
+      <node id="596">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/StdioPrinter.h</label>
+        <link refid="_stdio_printer_8h_source"/>
+      </node>
+      <node id="598">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/clip_suite.t.hh</label>
+        <link refid="clip__suite_8t_8hh_source"/>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="class_cxx_test_1_1_global_fixture" prot="public">CxxTest::GlobalFixture</innerclass>
+    <innernamespace refid="namespace_cxx_test">CxxTest</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#ifndef<sp/>__cxxtest__GlobalFixture_h__</highlight></codeline>
+<codeline lineno="2"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>__cxxtest__GlobalFixture_h__</highlight></codeline>
+<codeline lineno="3"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;cxxtest/LinkedList.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">CxxTest<sp/></highlight></codeline>
+<codeline lineno="7"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="8" refid="class_cxx_test_1_1_global_fixture" refkind="compound"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="class_cxx_test_1_1_global_fixture" kindref="compound">GlobalFixture</ref><sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="class_cxx_test_1_1_link" kindref="compound">Link</ref></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="10"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="11"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>setUpWorld();</highlight></codeline>
+<codeline lineno="12"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>tearDownWorld();</highlight></codeline>
+<codeline lineno="13"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>setUp();</highlight></codeline>
+<codeline lineno="14"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>tearDown();</highlight></codeline>
+<codeline lineno="15"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="class_cxx_test_1_1_global_fixture" kindref="compound">GlobalFixture</ref>();</highlight></codeline>
+<codeline lineno="17"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>~<ref refid="class_cxx_test_1_1_global_fixture" kindref="compound">GlobalFixture</ref>();</highlight></codeline>
+<codeline lineno="18"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="class_cxx_test_1_1_global_fixture" kindref="compound">GlobalFixture</ref><sp/>*firstGlobalFixture();</highlight></codeline>
+<codeline lineno="20"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="class_cxx_test_1_1_global_fixture" kindref="compound">GlobalFixture</ref><sp/>*lastGlobalFixture();</highlight></codeline>
+<codeline lineno="21"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="class_cxx_test_1_1_global_fixture" kindref="compound">GlobalFixture</ref><sp/>*nextGlobalFixture();</highlight></codeline>
+<codeline lineno="22"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="class_cxx_test_1_1_global_fixture" kindref="compound">GlobalFixture</ref><sp/>*prevGlobalFixture();</highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">private</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="25"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="struct_cxx_test_1_1_list" kindref="compound">List</ref><sp/>_list;</highlight></codeline>
+<codeline lineno="26"><highlight class="normal"><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline lineno="27"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/>//<sp/>__cxxtest__GlobalFixture_h__</highlight></codeline>
+<codeline lineno="30"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/GlobalFixture.h"/>
+  </compounddef>
+</doxygen>

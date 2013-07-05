@@ -1,0 +1,365 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="structtao_1_1subfind_1_1halo" kind="struct" prot="public">
+    <compoundname>tao::subfind::halo</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structtao_1_1subfind_1_1halo_1a413c20896c3784390e1b9e475dc43d5b" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int tao::subfind::halo::descendant</definition>
+        <argsstring></argsstring>
+        <name>descendant</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" line="14" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" bodystart="14" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1subfind_1_1halo_1a6004bdc11dafaad60ea7ee73ed950d8b" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int tao::subfind::halo::first_progenitor</definition>
+        <argsstring></argsstring>
+        <name>first_progenitor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" line="15" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" bodystart="15" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1subfind_1_1halo_1a242dbcc92477859642214bccac1fda58" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int tao::subfind::halo::next_progenitor</definition>
+        <argsstring></argsstring>
+        <name>next_progenitor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" line="16" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" bodystart="16" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1subfind_1_1halo_1a01a00bff6bc02054e13f6e2032910866" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int tao::subfind::halo::first_fof</definition>
+        <argsstring></argsstring>
+        <name>first_fof</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" line="17" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" bodystart="17" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1subfind_1_1halo_1a3b7f40cbc2e2166bbf5e39efc14e8378" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int tao::subfind::halo::next_fof</definition>
+        <argsstring></argsstring>
+        <name>next_fof</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" line="18" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" bodystart="18" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1subfind_1_1halo_1afa52d08b8351b3b38f75abb280e5d3d7" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int tao::subfind::halo::num_particles</definition>
+        <argsstring></argsstring>
+        <name>num_particles</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" line="21" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" bodystart="21" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1subfind_1_1halo_1a3912a6ec9216583f9a64660cc3ba57bf" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::subfind::halo::m_mean200</definition>
+        <argsstring></argsstring>
+        <name>m_mean200</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" line="22" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" bodystart="22" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1subfind_1_1halo_1a1c2c71100529bce5cdcae9fe2eefab17" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::subfind::halo::mvir</definition>
+        <argsstring></argsstring>
+        <name>mvir</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" line="22" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" bodystart="22" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1subfind_1_1halo_1aac045001a247dff6f28a78b46914b169" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::subfind::halo::m_top_hat</definition>
+        <argsstring></argsstring>
+        <name>m_top_hat</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" line="22" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" bodystart="22" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1subfind_1_1halo_1a27af11d1aea9637160178eb0480d89ac" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::subfind::halo::x</definition>
+        <argsstring></argsstring>
+        <name>x</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" line="23" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" bodystart="23" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1subfind_1_1halo_1a85437266cf255c93d7ccac296085ffae" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::subfind::halo::y</definition>
+        <argsstring></argsstring>
+        <name>y</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" line="23" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" bodystart="23" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1subfind_1_1halo_1a94fdeb6498be89ddff72d73ce36eb3be" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::subfind::halo::z</definition>
+        <argsstring></argsstring>
+        <name>z</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" line="23" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" bodystart="23" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1subfind_1_1halo_1ad3fac541ac094ed916abafbbb873e5ab" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::subfind::halo::vx</definition>
+        <argsstring></argsstring>
+        <name>vx</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" line="24" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" bodystart="24" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1subfind_1_1halo_1ab0cc43a242b8ebf2cdbd7a8f4976248e" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::subfind::halo::vy</definition>
+        <argsstring></argsstring>
+        <name>vy</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" line="24" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" bodystart="24" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1subfind_1_1halo_1ae2425d6a3a708ae58c68da04e4c06d65" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::subfind::halo::vz</definition>
+        <argsstring></argsstring>
+        <name>vz</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" line="24" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" bodystart="24" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1subfind_1_1halo_1ab8c2c33a32130212f93d3faa0174ec24" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::subfind::halo::vel_disp</definition>
+        <argsstring></argsstring>
+        <name>vel_disp</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" line="25" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" bodystart="25" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1subfind_1_1halo_1acd877a1ad9841cff24b46a8d19f67879" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::subfind::halo::vmax</definition>
+        <argsstring></argsstring>
+        <name>vmax</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" line="26" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" bodystart="26" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1subfind_1_1halo_1abcc49612a94aa66a7c00ab7388f71383" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::subfind::halo::sx</definition>
+        <argsstring></argsstring>
+        <name>sx</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" line="27" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" bodystart="27" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1subfind_1_1halo_1a4bd59fb54a9a456e3c8672959b14f7cd" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::subfind::halo::sy</definition>
+        <argsstring></argsstring>
+        <name>sy</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" line="27" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" bodystart="27" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1subfind_1_1halo_1a1c384e0588772a5cf7dad7bfa8b3b0e1" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::subfind::halo::sz</definition>
+        <argsstring></argsstring>
+        <name>sz</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" line="27" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" bodystart="27" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1subfind_1_1halo_1a1dfe1d2241c6972770ef1c39153a7300" prot="public" static="no" mutable="no">
+        <type>long long</type>
+        <definition>long long tao::subfind::halo::most_bound_id</definition>
+        <argsstring></argsstring>
+        <name>most_bound_id</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" line="28" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" bodystart="28" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1subfind_1_1halo_1a3710b938b24850f1878d279f23fd48c7" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int tao::subfind::halo::snap_num</definition>
+        <argsstring></argsstring>
+        <name>snap_num</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" line="31" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" bodystart="31" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1subfind_1_1halo_1a720855dac97024e80d5ecc3e491854d5" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int tao::subfind::halo::file_nr</definition>
+        <argsstring></argsstring>
+        <name>file_nr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" line="32" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" bodystart="32" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1subfind_1_1halo_1a8e4361c041d071f9bc614cb93362300f" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int tao::subfind::halo::subhalo_index</definition>
+        <argsstring></argsstring>
+        <name>subhalo_index</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" line="33" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" bodystart="33" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1subfind_1_1halo_1a01548dbfc19add3312c4e1a8c3eee5cc" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float tao::subfind::halo::sub_half_mass</definition>
+        <argsstring></argsstring>
+        <name>sub_half_mass</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" line="34" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" bodystart="34" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" line="12" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.hh" bodystart="11" bodyend="35"/>
+    <listofallmembers>
+      <member refid="structtao_1_1subfind_1_1halo_1a413c20896c3784390e1b9e475dc43d5b" prot="public" virt="non-virtual"><scope>tao::subfind::halo</scope><name>descendant</name></member>
+      <member refid="structtao_1_1subfind_1_1halo_1a720855dac97024e80d5ecc3e491854d5" prot="public" virt="non-virtual"><scope>tao::subfind::halo</scope><name>file_nr</name></member>
+      <member refid="structtao_1_1subfind_1_1halo_1a01a00bff6bc02054e13f6e2032910866" prot="public" virt="non-virtual"><scope>tao::subfind::halo</scope><name>first_fof</name></member>
+      <member refid="structtao_1_1subfind_1_1halo_1a6004bdc11dafaad60ea7ee73ed950d8b" prot="public" virt="non-virtual"><scope>tao::subfind::halo</scope><name>first_progenitor</name></member>
+      <member refid="structtao_1_1subfind_1_1halo_1a3912a6ec9216583f9a64660cc3ba57bf" prot="public" virt="non-virtual"><scope>tao::subfind::halo</scope><name>m_mean200</name></member>
+      <member refid="structtao_1_1subfind_1_1halo_1aac045001a247dff6f28a78b46914b169" prot="public" virt="non-virtual"><scope>tao::subfind::halo</scope><name>m_top_hat</name></member>
+      <member refid="structtao_1_1subfind_1_1halo_1a1dfe1d2241c6972770ef1c39153a7300" prot="public" virt="non-virtual"><scope>tao::subfind::halo</scope><name>most_bound_id</name></member>
+      <member refid="structtao_1_1subfind_1_1halo_1a1c2c71100529bce5cdcae9fe2eefab17" prot="public" virt="non-virtual"><scope>tao::subfind::halo</scope><name>mvir</name></member>
+      <member refid="structtao_1_1subfind_1_1halo_1a3b7f40cbc2e2166bbf5e39efc14e8378" prot="public" virt="non-virtual"><scope>tao::subfind::halo</scope><name>next_fof</name></member>
+      <member refid="structtao_1_1subfind_1_1halo_1a242dbcc92477859642214bccac1fda58" prot="public" virt="non-virtual"><scope>tao::subfind::halo</scope><name>next_progenitor</name></member>
+      <member refid="structtao_1_1subfind_1_1halo_1afa52d08b8351b3b38f75abb280e5d3d7" prot="public" virt="non-virtual"><scope>tao::subfind::halo</scope><name>num_particles</name></member>
+      <member refid="structtao_1_1subfind_1_1halo_1a3710b938b24850f1878d279f23fd48c7" prot="public" virt="non-virtual"><scope>tao::subfind::halo</scope><name>snap_num</name></member>
+      <member refid="structtao_1_1subfind_1_1halo_1a01548dbfc19add3312c4e1a8c3eee5cc" prot="public" virt="non-virtual"><scope>tao::subfind::halo</scope><name>sub_half_mass</name></member>
+      <member refid="structtao_1_1subfind_1_1halo_1a8e4361c041d071f9bc614cb93362300f" prot="public" virt="non-virtual"><scope>tao::subfind::halo</scope><name>subhalo_index</name></member>
+      <member refid="structtao_1_1subfind_1_1halo_1abcc49612a94aa66a7c00ab7388f71383" prot="public" virt="non-virtual"><scope>tao::subfind::halo</scope><name>sx</name></member>
+      <member refid="structtao_1_1subfind_1_1halo_1a4bd59fb54a9a456e3c8672959b14f7cd" prot="public" virt="non-virtual"><scope>tao::subfind::halo</scope><name>sy</name></member>
+      <member refid="structtao_1_1subfind_1_1halo_1a1c384e0588772a5cf7dad7bfa8b3b0e1" prot="public" virt="non-virtual"><scope>tao::subfind::halo</scope><name>sz</name></member>
+      <member refid="structtao_1_1subfind_1_1halo_1ab8c2c33a32130212f93d3faa0174ec24" prot="public" virt="non-virtual"><scope>tao::subfind::halo</scope><name>vel_disp</name></member>
+      <member refid="structtao_1_1subfind_1_1halo_1acd877a1ad9841cff24b46a8d19f67879" prot="public" virt="non-virtual"><scope>tao::subfind::halo</scope><name>vmax</name></member>
+      <member refid="structtao_1_1subfind_1_1halo_1ad3fac541ac094ed916abafbbb873e5ab" prot="public" virt="non-virtual"><scope>tao::subfind::halo</scope><name>vx</name></member>
+      <member refid="structtao_1_1subfind_1_1halo_1ab0cc43a242b8ebf2cdbd7a8f4976248e" prot="public" virt="non-virtual"><scope>tao::subfind::halo</scope><name>vy</name></member>
+      <member refid="structtao_1_1subfind_1_1halo_1ae2425d6a3a708ae58c68da04e4c06d65" prot="public" virt="non-virtual"><scope>tao::subfind::halo</scope><name>vz</name></member>
+      <member refid="structtao_1_1subfind_1_1halo_1a27af11d1aea9637160178eb0480d89ac" prot="public" virt="non-virtual"><scope>tao::subfind::halo</scope><name>x</name></member>
+      <member refid="structtao_1_1subfind_1_1halo_1a85437266cf255c93d7ccac296085ffae" prot="public" virt="non-virtual"><scope>tao::subfind::halo</scope><name>y</name></member>
+      <member refid="structtao_1_1subfind_1_1halo_1a94fdeb6498be89ddff72d73ce36eb3be" prot="public" virt="non-virtual"><scope>tao::subfind::halo</scope><name>z</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

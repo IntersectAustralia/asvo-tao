@@ -1,0 +1,1283 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="class_cxx_test_1_1_test_tracker" kind="class" prot="public">
+    <compoundname>CxxTest::TestTracker</compoundname>
+    <basecompoundref refid="class_cxx_test_1_1_test_listener" prot="public" virt="non-virtual">CxxTest::TestListener</basecompoundref>
+      <sectiondef kind="private-static-attrib">
+      <memberdef kind="variable" id="class_cxx_test_1_1_test_tracker_1a5918b61521d81958e5664115ae133c06" prot="private" static="yes" mutable="no">
+        <type>bool</type>
+        <definition>bool CxxTest::TestTracker::_created</definition>
+        <argsstring></argsstring>
+        <name>_created</name>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="85" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" bodystart="85" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_cxx_test_1_1_test_tracker_1a8d6e99e437ced81d0e51594edbe5828d" prot="private" static="no" mutable="no">
+        <type><ref refid="class_cxx_test_1_1_test_listener" kindref="compound">TestListener</ref></type>
+        <definition>TestListener CxxTest::TestTracker::_dummyListener</definition>
+        <argsstring></argsstring>
+        <name>_dummyListener</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="86" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" bodystart="86" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_test_tracker_1aa6f548055b076b3e37178b2f969c0fd6" prot="private" static="no" mutable="no">
+        <type><ref refid="class_cxx_test_1_1_dummy_world_description" kindref="compound">DummyWorldDescription</ref></type>
+        <definition>DummyWorldDescription CxxTest::TestTracker::_dummyWorld</definition>
+        <argsstring></argsstring>
+        <name>_dummyWorld</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="87" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" bodystart="87" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_test_tracker_1a1efa5eec7465d2bfa3a1802d12f53e21" prot="private" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned CxxTest::TestTracker::_warnings</definition>
+        <argsstring></argsstring>
+        <name>_warnings</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="88" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" bodystart="88" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_test_tracker_1a00b3d67c111547536a2f2bdc4aae15cb" prot="private" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned CxxTest::TestTracker::_failedTests</definition>
+        <argsstring></argsstring>
+        <name>_failedTests</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="88" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" bodystart="88" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_test_tracker_1a947ff564791d2ff6b83bd405c3cd3772" prot="private" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned CxxTest::TestTracker::_testFailedAsserts</definition>
+        <argsstring></argsstring>
+        <name>_testFailedAsserts</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="88" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" bodystart="88" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_test_tracker_1aed5a2b2bb0d68b8e7cbe190c67f4a234" prot="private" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned CxxTest::TestTracker::_suiteFailedTests</definition>
+        <argsstring></argsstring>
+        <name>_suiteFailedTests</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="88" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" bodystart="88" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_test_tracker_1aba1a6705b92a4f388cc210ca9ed13650" prot="private" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned CxxTest::TestTracker::_failedSuites</definition>
+        <argsstring></argsstring>
+        <name>_failedSuites</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="88" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" bodystart="88" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_test_tracker_1ace7aaf8023fefc42e41493f0c48989e3" prot="private" static="no" mutable="no">
+        <type><ref refid="class_cxx_test_1_1_test_listener" kindref="compound">TestListener</ref> *</type>
+        <definition>TestListener* CxxTest::TestTracker::_l</definition>
+        <argsstring></argsstring>
+        <name>_l</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="89" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" bodystart="89" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_test_tracker_1a0c751d46d1f237a650f381f9e788ffb3" prot="private" static="no" mutable="no">
+        <type>const <ref refid="class_cxx_test_1_1_world_description" kindref="compound">WorldDescription</ref> *</type>
+        <definition>const WorldDescription* CxxTest::TestTracker::_world</definition>
+        <argsstring></argsstring>
+        <name>_world</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="90" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" bodystart="90" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_test_tracker_1ae0c164af12605e469c3a84729fbaec3c" prot="private" static="no" mutable="no">
+        <type>const <ref refid="class_cxx_test_1_1_suite_description" kindref="compound">SuiteDescription</ref> *</type>
+        <definition>const SuiteDescription* CxxTest::TestTracker::_suite</definition>
+        <argsstring></argsstring>
+        <name>_suite</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="91" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" bodystart="91" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_test_tracker_1a07d9d5826ab2d69febc7123a3f0839e2" prot="private" static="no" mutable="no">
+        <type>const <ref refid="class_cxx_test_1_1_test_description" kindref="compound">TestDescription</ref> *</type>
+        <definition>const TestDescription* CxxTest::TestTracker::_test</definition>
+        <argsstring></argsstring>
+        <name>_test</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="92" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" bodystart="92" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="friend">
+      <memberdef kind="friend" id="class_cxx_test_1_1_test_tracker_1aef55eac6a104472bd865f4dd2a13d378" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend class</type>
+        <definition>friend class TestRunner</definition>
+        <argsstring></argsstring>
+        <name>TestRunner</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="104" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" bodystart="104" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1a0116bf1ee4cbc5419426bd38bd9bcf42" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>CxxTest::TestTracker::~TestTracker</definition>
+        <argsstring>()</argsstring>
+        <name>~TestTracker</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="20" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.cpp" bodystart="18" bodyend="20"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1a02f9382a8d08d508eff303c0174ba7ff" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>const <ref refid="class_cxx_test_1_1_test_description" kindref="compound">TestDescription</ref> *</type>
+        <definition>const TestDescription * CxxTest::TestTracker::fixTest</definition>
+        <argsstring>(const TestDescription *d) const </argsstring>
+        <name>fixTest</name>
+        <param>
+          <type>const <ref refid="class_cxx_test_1_1_test_description" kindref="compound">TestDescription</ref> *</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="24" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.cpp" bodystart="41" bodyend="44"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1a2709b62654d0cdb173c7edc7e1e86882" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>const <ref refid="class_cxx_test_1_1_suite_description" kindref="compound">SuiteDescription</ref> *</type>
+        <definition>const SuiteDescription * CxxTest::TestTracker::fixSuite</definition>
+        <argsstring>(const SuiteDescription *d) const </argsstring>
+        <name>fixSuite</name>
+        <param>
+          <type>const <ref refid="class_cxx_test_1_1_suite_description" kindref="compound">SuiteDescription</ref> *</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="25" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.cpp" bodystart="46" bodyend="49"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1ae8e907563f59629cf89bfc8d475f0670" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>const <ref refid="class_cxx_test_1_1_world_description" kindref="compound">WorldDescription</ref> *</type>
+        <definition>const WorldDescription * CxxTest::TestTracker::fixWorld</definition>
+        <argsstring>(const WorldDescription *d) const </argsstring>
+        <name>fixWorld</name>
+        <param>
+          <type>const <ref refid="class_cxx_test_1_1_world_description" kindref="compound">WorldDescription</ref> *</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="26" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.cpp" bodystart="51" bodyend="54"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1a8edec34ac735ec377b1b981e957e05ec" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const <ref refid="class_cxx_test_1_1_test_description" kindref="compound">TestDescription</ref> &amp;</type>
+        <definition>const TestDescription&amp; CxxTest::TestTracker::test</definition>
+        <argsstring>() const </argsstring>
+        <name>test</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="28" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" bodystart="28" bodyend="28"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1ab09d3ae879aeee14dcf1970e4680d120" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const <ref refid="class_cxx_test_1_1_suite_description" kindref="compound">SuiteDescription</ref> &amp;</type>
+        <definition>const SuiteDescription&amp; CxxTest::TestTracker::suite</definition>
+        <argsstring>() const </argsstring>
+        <name>suite</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="29" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" bodystart="29" bodyend="29"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1ad89ddc3c6b70f85fc093582024edba29" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const <ref refid="class_cxx_test_1_1_world_description" kindref="compound">WorldDescription</ref> &amp;</type>
+        <definition>const WorldDescription&amp; CxxTest::TestTracker::world</definition>
+        <argsstring>() const </argsstring>
+        <name>world</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="30" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" bodystart="30" bodyend="30"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1a4d6343d5e8757054544751650e7a9705" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool CxxTest::TestTracker::testFailed</definition>
+        <argsstring>() const </argsstring>
+        <name>testFailed</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="32" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" bodystart="32" bodyend="32"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1ad4553193f02d1c55bdc53b566b77cee5" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool CxxTest::TestTracker::suiteFailed</definition>
+        <argsstring>() const </argsstring>
+        <name>suiteFailed</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="33" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" bodystart="33" bodyend="33"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1a250b3c7dc976fd82e2c07cb5a986b4e8" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool CxxTest::TestTracker::worldFailed</definition>
+        <argsstring>() const </argsstring>
+        <name>worldFailed</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="34" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" bodystart="34" bodyend="34"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1a82b40a9d161d4d551e9464f560a8aee1" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>unsigned</type>
+        <definition>unsigned CxxTest::TestTracker::warnings</definition>
+        <argsstring>() const </argsstring>
+        <name>warnings</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="36" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" bodystart="36" bodyend="36"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1a9b92119960b68326bd3a542ae3b1fb35" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>unsigned</type>
+        <definition>unsigned CxxTest::TestTracker::failedTests</definition>
+        <argsstring>() const </argsstring>
+        <name>failedTests</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="37" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" bodystart="37" bodyend="37"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1a1b4012a8431fbb356ce429cfe0b79f34" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>unsigned</type>
+        <definition>unsigned CxxTest::TestTracker::testFailedAsserts</definition>
+        <argsstring>() const </argsstring>
+        <name>testFailedAsserts</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="38" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" bodystart="38" bodyend="38"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1a49cd8944645b4d5ffd4146b8aad4069a" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>unsigned</type>
+        <definition>unsigned CxxTest::TestTracker::suiteFailedTests</definition>
+        <argsstring>() const </argsstring>
+        <name>suiteFailedTests</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="39" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" bodystart="39" bodyend="39"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1af9f4f5e82256c00dd1a8e4255b1dd3a1" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>unsigned</type>
+        <definition>unsigned CxxTest::TestTracker::failedSuites</definition>
+        <argsstring>() const </argsstring>
+        <name>failedSuites</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="40" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" bodystart="40" bodyend="40"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1a2a3fd6a514b3cd1ca0d4f6403dd2e65e" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TestTracker::enterWorld</definition>
+        <argsstring>(const WorldDescription &amp;wd)</argsstring>
+        <name>enterWorld</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a947f7954fbfeb604df5c183c92811bbd">enterWorld</reimplements>
+        <param>
+          <type>const <ref refid="class_cxx_test_1_1_world_description" kindref="compound">WorldDescription</ref> &amp;</type>
+          <declname>wd</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="42" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.cpp" bodystart="76" bodyend="81"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1a777853f8a17e324fa7897bf4d7f3b105" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TestTracker::enterSuite</definition>
+        <argsstring>(const SuiteDescription &amp;sd)</argsstring>
+        <name>enterSuite</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1aec118cbeef8ae759abf47a6c05c4edc0">enterSuite</reimplements>
+        <param>
+          <type>const <ref refid="class_cxx_test_1_1_suite_description" kindref="compound">SuiteDescription</ref> &amp;</type>
+          <declname>sd</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="43" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.cpp" bodystart="83" bodyend="88"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1a1bb56ae825eca66306259248716230a1" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TestTracker::enterTest</definition>
+        <argsstring>(const TestDescription &amp;td)</argsstring>
+        <name>enterTest</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1af9a62cbee47da01007d1b14c46b32ae8">enterTest</reimplements>
+        <param>
+          <type>const <ref refid="class_cxx_test_1_1_test_description" kindref="compound">TestDescription</ref> &amp;</type>
+          <declname>td</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="44" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.cpp" bodystart="90" bodyend="95"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1ae7febc4e06e5140fac47d7ea1489ad86" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TestTracker::leaveTest</definition>
+        <argsstring>(const TestDescription &amp;td)</argsstring>
+        <name>leaveTest</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a46b4a76c5f0feb378c6b058e90d1508e">leaveTest</reimplements>
+        <param>
+          <type>const <ref refid="class_cxx_test_1_1_test_description" kindref="compound">TestDescription</ref> &amp;</type>
+          <declname>td</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="45" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.cpp" bodystart="97" bodyend="101"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1ad99be8070c25bf86141e5312c4b561c1" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TestTracker::leaveSuite</definition>
+        <argsstring>(const SuiteDescription &amp;sd)</argsstring>
+        <name>leaveSuite</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1aaac3ffc635abb616f7a2cd2cd460d265">leaveSuite</reimplements>
+        <param>
+          <type>const <ref refid="class_cxx_test_1_1_suite_description" kindref="compound">SuiteDescription</ref> &amp;</type>
+          <declname>sd</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="46" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.cpp" bodystart="103" bodyend="107"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1a1a726c2e92761ff8468724d9b331bd6b" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TestTracker::leaveWorld</definition>
+        <argsstring>(const WorldDescription &amp;wd)</argsstring>
+        <name>leaveWorld</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a9fdc72862efba6b9505a53044cb6b996">leaveWorld</reimplements>
+        <param>
+          <type>const <ref refid="class_cxx_test_1_1_world_description" kindref="compound">WorldDescription</ref> &amp;</type>
+          <declname>wd</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="47" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.cpp" bodystart="109" bodyend="113"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1a18b1199f41d2187f834bd07f9d9c9bd7" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TestTracker::trace</definition>
+        <argsstring>(const char *file, unsigned line, const char *expression)</argsstring>
+        <name>trace</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a3bac16644da9c76c8fdb90a7a67b444d">trace</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>expression</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="48" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.cpp" bodystart="115" bodyend="118"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1ad3da4dd1884d28c2abf033964f4fc6c4" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TestTracker::warning</definition>
+        <argsstring>(const char *file, unsigned line, const char *expression)</argsstring>
+        <name>warning</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a9f186c3b4983959abc0b7f4a5839b5f3">warning</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>expression</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="49" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.cpp" bodystart="120" bodyend="124"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1a63c315dc165e2ca91d2710041b327afa" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TestTracker::failedTest</definition>
+        <argsstring>(const char *file, unsigned line, const char *expression)</argsstring>
+        <name>failedTest</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a7b6733b07a17c45b7b503d3b0c4ba9dd">failedTest</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>expression</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="50" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.cpp" bodystart="126" bodyend="130"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1a704f8437d761c4f680163f8d7cd2dd9a" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TestTracker::failedAssert</definition>
+        <argsstring>(const char *file, unsigned line, const char *expression)</argsstring>
+        <name>failedAssert</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a5496f04ec411e4e56e2121ca279952d0">failedAssert</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>expression</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="51" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.cpp" bodystart="132" bodyend="136"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1a7d5d7257ce7b222ae716993c64453d34" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TestTracker::failedAssertEquals</definition>
+        <argsstring>(const char *file, unsigned line, const char *xStr, const char *yStr, const char *x, const char *y)</argsstring>
+        <name>failedAssertEquals</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a37c2df98ac833ff9b39c9ef06372574e">failedAssertEquals</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>xStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>yStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="54" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.cpp" bodystart="138" bodyend="144"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1af75f606ea1b391631f2e5e934eaa6744" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TestTracker::failedAssertSameData</definition>
+        <argsstring>(const char *file, unsigned line, const char *xStr, const char *yStr, const char *sizeStr, const void *x, const void *y, unsigned size)</argsstring>
+        <name>failedAssertSameData</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1ac9bcebc7a6a77e87098d6342db1d18ff">failedAssertSameData</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>xStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>yStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>sizeStr</declname>
+        </param>
+        <param>
+          <type>const void *</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>const void *</type>
+          <declname>y</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="58" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.cpp" bodystart="146" bodyend="153"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1ad08999608772e6a778b1e7a51696b18b" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TestTracker::failedAssertDelta</definition>
+        <argsstring>(const char *file, unsigned line, const char *xStr, const char *yStr, const char *dStr, const char *x, const char *y, const char *d)</argsstring>
+        <name>failedAssertDelta</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a5f45960ba9e1065b61c0e232220f1b83">failedAssertDelta</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>xStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>yStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>dStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>y</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="61" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.cpp" bodystart="155" bodyend="161"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1a7d4a7ec9482c5cd02943b4666699aa82" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TestTracker::failedAssertDiffers</definition>
+        <argsstring>(const char *file, unsigned line, const char *xStr, const char *yStr, const char *value)</argsstring>
+        <name>failedAssertDiffers</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a2b456f8d4b3f7c63653aa819b6480451">failedAssertDiffers</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>xStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>yStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="64" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.cpp" bodystart="163" bodyend="169"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1af1753d458799b0ef494bd7847d7a92a2" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TestTracker::failedAssertLessThan</definition>
+        <argsstring>(const char *file, unsigned line, const char *xStr, const char *yStr, const char *x, const char *y)</argsstring>
+        <name>failedAssertLessThan</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a4d7bcffdcd7d78578bcbdba0c63c8a0d">failedAssertLessThan</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>xStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>yStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="67" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.cpp" bodystart="171" bodyend="177"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1a3d5e7b5d260a237f89c334271c50dbc3" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TestTracker::failedAssertLessThanEquals</definition>
+        <argsstring>(const char *file, unsigned line, const char *xStr, const char *yStr, const char *x, const char *y)</argsstring>
+        <name>failedAssertLessThanEquals</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a1198d1a2c639008ba856d66ffc02f1ca">failedAssertLessThanEquals</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>xStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>yStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="70" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.cpp" bodystart="179" bodyend="185"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1a1f417de8b6e688bd62bd77f3cc813998" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TestTracker::failedAssertPredicate</definition>
+        <argsstring>(const char *file, unsigned line, const char *predicate, const char *xStr, const char *x)</argsstring>
+        <name>failedAssertPredicate</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1ab296234687d058a4ae3d0ad8c0d6f0b3">failedAssertPredicate</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>predicate</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>xStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="72" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.cpp" bodystart="187" bodyend="192"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1a00821d92b6018d2603a20fde1c05310f" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TestTracker::failedAssertRelation</definition>
+        <argsstring>(const char *file, unsigned line, const char *relation, const char *xStr, const char *yStr, const char *x, const char *y)</argsstring>
+        <name>failedAssertRelation</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a784a1a7eca5008820fd7df46f2019bc9">failedAssertRelation</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>relation</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>xStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>yStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="75" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.cpp" bodystart="194" bodyend="200"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1a1f3d7f2aa727fb97b864f2a400d52310" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TestTracker::failedAssertThrows</definition>
+        <argsstring>(const char *file, unsigned line, const char *expression, const char *type, bool otherThrown)</argsstring>
+        <name>failedAssertThrows</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a9136ed0314ce55bb6b8dc2cca0e65c8b">failedAssertThrows</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>expression</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>type</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>otherThrown</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="78" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.cpp" bodystart="202" bodyend="208"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1adf6adc751035706c4c3f17389547d732" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TestTracker::failedAssertThrowsNot</definition>
+        <argsstring>(const char *file, unsigned line, const char *expression)</argsstring>
+        <name>failedAssertThrowsNot</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a8416fe966f24ccef824b49090266a40c">failedAssertThrowsNot</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>expression</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="79" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.cpp" bodystart="210" bodyend="214"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1a81a8b816f49e67208435a49294c56846" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="class_cxx_test_1_1_test_tracker" kindref="compound">TestTracker</ref> &amp;</type>
+        <definition>TestTracker &amp; CxxTest::TestTracker::tracker</definition>
+        <argsstring>()</argsstring>
+        <name>tracker</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="22" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.cpp" bodystart="22" bodyend="26"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1a29936d829b4502109fbc5551425c9ce6" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::TestTracker::TestTracker</definition>
+        <argsstring>(const TestTracker &amp;)</argsstring>
+        <name>TestTracker</name>
+        <param>
+          <type>const <ref refid="class_cxx_test_1_1_test_tracker" kindref="compound">TestTracker</ref> &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="82"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1a7d218c7566773cf6f8ade020eaf58cce" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="class_cxx_test_1_1_test_tracker" kindref="compound">TestTracker</ref> &amp;</type>
+        <definition>TestTracker&amp; CxxTest::TestTracker::operator=</definition>
+        <argsstring>(const TestTracker &amp;)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type>const <ref refid="class_cxx_test_1_1_test_tracker" kindref="compound">TestTracker</ref> &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="83"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1ac33f0acc5bad5cf942a2fa36d2af4002" prot="private" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>const <ref refid="class_cxx_test_1_1_test_description" kindref="compound">TestDescription</ref> &amp;</type>
+        <definition>const TestDescription &amp; CxxTest::TestTracker::dummyTest</definition>
+        <argsstring>() const </argsstring>
+        <name>dummyTest</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="94" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.cpp" bodystart="56" bodyend="59"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1ac632e630c7eb3846e842f1757d738343" prot="private" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>const <ref refid="class_cxx_test_1_1_suite_description" kindref="compound">SuiteDescription</ref> &amp;</type>
+        <definition>const SuiteDescription &amp; CxxTest::TestTracker::dummySuite</definition>
+        <argsstring>() const </argsstring>
+        <name>dummySuite</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="95" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.cpp" bodystart="61" bodyend="64"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1a0bb424dd100a053c8917a4e8695d72fa" prot="private" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>const <ref refid="class_cxx_test_1_1_world_description" kindref="compound">WorldDescription</ref> &amp;</type>
+        <definition>const WorldDescription &amp; CxxTest::TestTracker::dummyWorld</definition>
+        <argsstring>() const </argsstring>
+        <name>dummyWorld</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="96" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.cpp" bodystart="66" bodyend="69"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1a81a44d2aa1d60c1789a9f0fd4c4570fd" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::TestTracker::setWorld</definition>
+        <argsstring>(const WorldDescription *w)</argsstring>
+        <name>setWorld</name>
+        <param>
+          <type>const <ref refid="class_cxx_test_1_1_world_description" kindref="compound">WorldDescription</ref> *</type>
+          <declname>w</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="98" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.cpp" bodystart="216" bodyend="220"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1a8fb7770655d696a874edd04585bd2fd4" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::TestTracker::setSuite</definition>
+        <argsstring>(const SuiteDescription *s)</argsstring>
+        <name>setSuite</name>
+        <param>
+          <type>const <ref refid="class_cxx_test_1_1_suite_description" kindref="compound">SuiteDescription</ref> *</type>
+          <declname>s</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="99" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.cpp" bodystart="222" bodyend="226"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1ad4e0e85b879a00ebaeaa011ff7bde18d" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::TestTracker::setTest</definition>
+        <argsstring>(const TestDescription *t)</argsstring>
+        <name>setTest</name>
+        <param>
+          <type>const <ref refid="class_cxx_test_1_1_test_description" kindref="compound">TestDescription</ref> *</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="100" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.cpp" bodystart="228" bodyend="231"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1a1f28aa5c4c618e091a7851095f64693e" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::TestTracker::countWarning</definition>
+        <argsstring>()</argsstring>
+        <name>countWarning</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="101" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.cpp" bodystart="233" bodyend="236"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1a53ff3c193cab24ee45720ebeed4d83d7" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::TestTracker::countFailure</definition>
+        <argsstring>()</argsstring>
+        <name>countFailure</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="102" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.cpp" bodystart="238" bodyend="245"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1a39a70bd3368c27bd71d4e791cecb6bb4" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::TestTracker::TestTracker</definition>
+        <argsstring>()</argsstring>
+        <name>TestTracker</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="106" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.cpp" bodystart="10" bodyend="16"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1aa8d865e700f7e73a9506b86f0940e607" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::TestTracker::initialize</definition>
+        <argsstring>()</argsstring>
+        <name>initialize</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="107" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.cpp" bodystart="28" bodyend="39"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_tracker_1a6a0e35b110749eec21048fded5497262" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::TestTracker::setListener</definition>
+        <argsstring>(TestListener *l)</argsstring>
+        <name>setListener</name>
+        <param>
+          <type><ref refid="class_cxx_test_1_1_test_listener" kindref="compound">TestListener</ref> *</type>
+          <declname>l</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="108" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.cpp" bodystart="71" bodyend="74"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="416">
+        <label>CxxTest::TestListener</label>
+        <link refid="class_cxx_test_1_1_test_listener"/>
+      </node>
+      <node id="415">
+        <label>CxxTest::TestTracker</label>
+        <link refid="class_cxx_test_1_1_test_tracker"/>
+        <childnode refid="416" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="418">
+        <label>CxxTest::TestListener</label>
+        <link refid="class_cxx_test_1_1_test_listener"/>
+      </node>
+      <node id="417">
+        <label>CxxTest::TestTracker</label>
+        <link refid="class_cxx_test_1_1_test_tracker"/>
+        <childnode refid="418" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="18" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" bodystart="17" bodyend="109"/>
+    <listofallmembers>
+      <member refid="class_cxx_test_1_1_test_tracker_1a5918b61521d81958e5664115ae133c06" prot="private" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>_created</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1a8d6e99e437ced81d0e51594edbe5828d" prot="private" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>_dummyListener</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1aa6f548055b076b3e37178b2f969c0fd6" prot="private" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>_dummyWorld</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1aba1a6705b92a4f388cc210ca9ed13650" prot="private" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>_failedSuites</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1a00b3d67c111547536a2f2bdc4aae15cb" prot="private" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>_failedTests</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1ace7aaf8023fefc42e41493f0c48989e3" prot="private" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>_l</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1ae0c164af12605e469c3a84729fbaec3c" prot="private" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>_suite</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1aed5a2b2bb0d68b8e7cbe190c67f4a234" prot="private" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>_suiteFailedTests</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1a07d9d5826ab2d69febc7123a3f0839e2" prot="private" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>_test</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1a947ff564791d2ff6b83bd405c3cd3772" prot="private" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>_testFailedAsserts</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1a1efa5eec7465d2bfa3a1802d12f53e21" prot="private" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>_warnings</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1a0c751d46d1f237a650f381f9e788ffb3" prot="private" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>_world</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1a53ff3c193cab24ee45720ebeed4d83d7" prot="private" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>countFailure</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1a1f28aa5c4c618e091a7851095f64693e" prot="private" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>countWarning</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1ac632e630c7eb3846e842f1757d738343" prot="private" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>dummySuite</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1ac33f0acc5bad5cf942a2fa36d2af4002" prot="private" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>dummyTest</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1a0bb424dd100a053c8917a4e8695d72fa" prot="private" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>dummyWorld</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1a777853f8a17e324fa7897bf4d7f3b105" prot="public" virt="virtual"><scope>CxxTest::TestTracker</scope><name>enterSuite</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1a1bb56ae825eca66306259248716230a1" prot="public" virt="virtual"><scope>CxxTest::TestTracker</scope><name>enterTest</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1a2a3fd6a514b3cd1ca0d4f6403dd2e65e" prot="public" virt="virtual"><scope>CxxTest::TestTracker</scope><name>enterWorld</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1a704f8437d761c4f680163f8d7cd2dd9a" prot="public" virt="virtual"><scope>CxxTest::TestTracker</scope><name>failedAssert</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1ad08999608772e6a778b1e7a51696b18b" prot="public" virt="virtual"><scope>CxxTest::TestTracker</scope><name>failedAssertDelta</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1a7d4a7ec9482c5cd02943b4666699aa82" prot="public" virt="virtual"><scope>CxxTest::TestTracker</scope><name>failedAssertDiffers</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1a7d5d7257ce7b222ae716993c64453d34" prot="public" virt="virtual"><scope>CxxTest::TestTracker</scope><name>failedAssertEquals</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1af1753d458799b0ef494bd7847d7a92a2" prot="public" virt="virtual"><scope>CxxTest::TestTracker</scope><name>failedAssertLessThan</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1a3d5e7b5d260a237f89c334271c50dbc3" prot="public" virt="virtual"><scope>CxxTest::TestTracker</scope><name>failedAssertLessThanEquals</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1a1f417de8b6e688bd62bd77f3cc813998" prot="public" virt="virtual"><scope>CxxTest::TestTracker</scope><name>failedAssertPredicate</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1a00821d92b6018d2603a20fde1c05310f" prot="public" virt="virtual"><scope>CxxTest::TestTracker</scope><name>failedAssertRelation</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1af75f606ea1b391631f2e5e934eaa6744" prot="public" virt="virtual"><scope>CxxTest::TestTracker</scope><name>failedAssertSameData</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1a1f3d7f2aa727fb97b864f2a400d52310" prot="public" virt="virtual"><scope>CxxTest::TestTracker</scope><name>failedAssertThrows</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1adf6adc751035706c4c3f17389547d732" prot="public" virt="virtual"><scope>CxxTest::TestTracker</scope><name>failedAssertThrowsNot</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1af9f4f5e82256c00dd1a8e4255b1dd3a1" prot="public" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>failedSuites</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1a63c315dc165e2ca91d2710041b327afa" prot="public" virt="virtual"><scope>CxxTest::TestTracker</scope><name>failedTest</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1a9b92119960b68326bd3a542ae3b1fb35" prot="public" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>failedTests</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1a2709b62654d0cdb173c7edc7e1e86882" prot="public" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>fixSuite</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1a02f9382a8d08d508eff303c0174ba7ff" prot="public" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>fixTest</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1ae8e907563f59629cf89bfc8d475f0670" prot="public" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>fixWorld</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1aa8d865e700f7e73a9506b86f0940e607" prot="private" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>initialize</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1ad99be8070c25bf86141e5312c4b561c1" prot="public" virt="virtual"><scope>CxxTest::TestTracker</scope><name>leaveSuite</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1ae7febc4e06e5140fac47d7ea1489ad86" prot="public" virt="virtual"><scope>CxxTest::TestTracker</scope><name>leaveTest</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1a1a726c2e92761ff8468724d9b331bd6b" prot="public" virt="virtual"><scope>CxxTest::TestTracker</scope><name>leaveWorld</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1a7d218c7566773cf6f8ade020eaf58cce" prot="private" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>operator=</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1a6a0e35b110749eec21048fded5497262" prot="private" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>setListener</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1a8fb7770655d696a874edd04585bd2fd4" prot="private" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>setSuite</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1ad4e0e85b879a00ebaeaa011ff7bde18d" prot="private" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>setTest</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1a81a44d2aa1d60c1789a9f0fd4c4570fd" prot="private" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>setWorld</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1ab09d3ae879aeee14dcf1970e4680d120" prot="public" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>suite</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1ad4553193f02d1c55bdc53b566b77cee5" prot="public" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>suiteFailed</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1a49cd8944645b4d5ffd4146b8aad4069a" prot="public" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>suiteFailedTests</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1a8edec34ac735ec377b1b981e957e05ec" prot="public" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>test</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1a4d6343d5e8757054544751650e7a9705" prot="public" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>testFailed</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1a1b4012a8431fbb356ce429cfe0b79f34" prot="public" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>testFailedAsserts</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1ab5958bd800642f706c2a7a0e8741778f" prot="public" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>TestListener</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1aef55eac6a104472bd865f4dd2a13d378" prot="private" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>TestRunner</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1a29936d829b4502109fbc5551425c9ce6" prot="private" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>TestTracker</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1a39a70bd3368c27bd71d4e791cecb6bb4" prot="private" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>TestTracker</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1a18b1199f41d2187f834bd07f9d9c9bd7" prot="public" virt="virtual"><scope>CxxTest::TestTracker</scope><name>trace</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1a81a8b816f49e67208435a49294c56846" prot="public" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>tracker</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1ad3da4dd1884d28c2abf033964f4fc6c4" prot="public" virt="virtual"><scope>CxxTest::TestTracker</scope><name>warning</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1a82b40a9d161d4d551e9464f560a8aee1" prot="public" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>warnings</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1ad89ddc3c6b70f85fc093582024edba29" prot="public" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>world</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1a250b3c7dc976fd82e2c07cb5a986b4e8" prot="public" virt="non-virtual"><scope>CxxTest::TestTracker</scope><name>worldFailed</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1a4d4cb5d990e0c4b0891f64f9e055b729" prot="public" virt="virtual"><scope>CxxTest::TestTracker</scope><name>~TestListener</name></member>
+      <member refid="class_cxx_test_1_1_test_tracker_1a0116bf1ee4cbc5419426bd38bd9bcf42" prot="public" virt="virtual"><scope>CxxTest::TestTracker</scope><name>~TestTracker</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

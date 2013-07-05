@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="dir_eccac569e426298ef00954acbc407976" kind="dir">
+    <compoundname>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src</compoundname>
+    <innerfile refid="base_8hh">base.hh</innerfile>
+    <innerfile refid="errors_8hh">errors.hh</innerfile>
+    <innerfile refid="factory_8cc">factory.cc</innerfile>
+    <innerfile refid="factory_8hh">factory.hh</innerfile>
+    <innerfile refid="flat_8hh">flat.hh</innerfile>
+    <innerfile refid="galaxy_8cc">galaxy.cc</innerfile>
+    <innerfile refid="galaxy_8hh">galaxy.hh</innerfile>
+    <innerfile refid="globals_8cc">globals.cc</innerfile>
+    <innerfile refid="globals_8hh">globals.hh</innerfile>
+    <innerfile refid="main_8hh">main.hh</innerfile>
+    <innerfile refid="module_8cc">module.cc</innerfile>
+    <innerfile refid="module_8hh">module.hh</innerfile>
+    <innerfile refid="multidb_8cc">multidb.cc</innerfile>
+    <innerfile refid="multidb_8hh">multidb.hh</innerfile>
+    <innerfile refid="pipeline_8hh">pipeline.hh</innerfile>
+    <innerfile refid="pipeline__application_8hh">pipeline_application.hh</innerfile>
+    <innerfile refid="sage_8cc">sage.cc</innerfile>
+    <innerfile refid="sage_8hh">sage.hh</innerfile>
+    <innerfile refid="subfind_8cc">subfind.cc</innerfile>
+    <innerfile refid="subfind_8hh">subfind.hh</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/"/>
+  </compounddef>
+</doxygen>

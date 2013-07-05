@@ -1,0 +1,1498 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="class_cxx_test_1_1_win32_gui" kind="class" prot="public">
+    <compoundname>CxxTest::Win32Gui</compoundname>
+    <basecompoundref refid="class_cxx_test_1_1_gui_listener" prot="public" virt="non-virtual">CxxTest::GuiListener</basecompoundref>
+      <sectiondef kind="private-type">
+      <memberdef kind="enum" id="class_cxx_test_1_1_win32_gui_1ad4d389f0e67fa5bc8e19a365be07c052" prot="private" static="no">
+        <name>@4</name>
+        <enumvalue id="class_cxx_test_1_1_win32_gui_1ad4d389f0e67fa5bc8e19a365be07c052a3e69fe884dc6ad6614222348b79826bd" prot="private">
+          <name>STATUS_SUITE_NAME</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="class_cxx_test_1_1_win32_gui_1ad4d389f0e67fa5bc8e19a365be07c052a67050689db7f6f26a7d6e8fcdf2d6c2f" prot="private">
+          <name>STATUS_SUITE_TIME</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="class_cxx_test_1_1_win32_gui_1ad4d389f0e67fa5bc8e19a365be07c052a43b17bcb1f1f87753dc99b356f072ea8" prot="private">
+          <name>STATUS_TEST_NAME</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="class_cxx_test_1_1_win32_gui_1ad4d389f0e67fa5bc8e19a365be07c052a999e45ab93d7dd781bc045ef9320ff21" prot="private">
+          <name>STATUS_TEST_TIME</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="class_cxx_test_1_1_win32_gui_1ad4d389f0e67fa5bc8e19a365be07c052aa96c8ddc0393f35dd3ddd587c5301d3e" prot="private">
+          <name>STATUS_TESTS_DONE</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="class_cxx_test_1_1_win32_gui_1ad4d389f0e67fa5bc8e19a365be07c052ae6a6ca3a50e0b5ac25bb22967ea9c93e" prot="private">
+          <name>STATUS_WORLD_TIME</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="class_cxx_test_1_1_win32_gui_1ad4d389f0e67fa5bc8e19a365be07c052a98fdb0735b1e29d798a96e3efe0e32a6" prot="private">
+          <name>STATUS_TOTAL_PARTS</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="93" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="93" bodyend="98"/>
+      </memberdef>
+      <memberdef kind="enum" id="class_cxx_test_1_1_win32_gui_1a231d5dfcd86f359f627dd39df79603a4" prot="private" static="no">
+        <name>@5</name>
+        <enumvalue id="class_cxx_test_1_1_win32_gui_1a231d5dfcd86f359f627dd39df79603a4a3f9200faaef8e7bc508f9f13cbbe08b7" prot="private">
+          <name>TIMER_ID</name>
+          <initializer>= 1</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="class_cxx_test_1_1_win32_gui_1a231d5dfcd86f359f627dd39df79603a4a17da67929a6332ba02d5dae2f76b908c" prot="private">
+          <name>TIMER_DELAY</name>
+          <initializer>= 1000</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="295" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="295" bodyend="295"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_cxx_test_1_1_win32_gui_1a729595fc4628f1a4f80b9bf1824bf4d1" prot="private" static="no" mutable="no">
+        <type>const char *</type>
+        <definition>const char* CxxTest::Win32Gui::_title</definition>
+        <argsstring></argsstring>
+        <name>_title</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="85" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="85" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_win32_gui_1a78a2559cd7c56f4ef3642c6ff602afde" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool CxxTest::Win32Gui::_startMinimized</definition>
+        <argsstring></argsstring>
+        <name>_startMinimized</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="86" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="86" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_win32_gui_1a1213b1340161a419e4a5a6231b006d98" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool CxxTest::Win32Gui::_keep</definition>
+        <argsstring></argsstring>
+        <name>_keep</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="86" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="86" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_win32_gui_1a961e5fb675dae74f0fe6dc7e3e39cd3d" prot="private" static="no" mutable="no">
+        <type>HANDLE</type>
+        <definition>HANDLE CxxTest::Win32Gui::_gui</definition>
+        <argsstring></argsstring>
+        <name>_gui</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="87" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="87" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_win32_gui_1a9abb108a7ba32bbe6cc75e0833d45886" prot="private" static="no" mutable="no">
+        <type>WNDCLASSEX</type>
+        <definition>WNDCLASSEX CxxTest::Win32Gui::_windowClass</definition>
+        <argsstring></argsstring>
+        <name>_windowClass</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="88" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="88" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_win32_gui_1a332801a5b9014e2d4f8bf19bf976fa49" prot="private" static="no" mutable="no">
+        <type>HWND</type>
+        <definition>HWND CxxTest::Win32Gui::_mainWindow</definition>
+        <argsstring></argsstring>
+        <name>_mainWindow</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="89" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="89" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_win32_gui_1aff547cd67bdce0e3c291c1a7d9f86dfa" prot="private" static="no" mutable="no">
+        <type>HWND</type>
+        <definition>HWND CxxTest::Win32Gui::_progressBar</definition>
+        <argsstring></argsstring>
+        <name>_progressBar</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="89" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="89" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_win32_gui_1ac4919bc1c3cf66a005f0e8786c1c1b8d" prot="private" static="no" mutable="no">
+        <type>HWND</type>
+        <definition>HWND CxxTest::Win32Gui::_statusBar</definition>
+        <argsstring></argsstring>
+        <name>_statusBar</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="89" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="89" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_win32_gui_1a44bd0fd066133c647c09868ff7683d6f" prot="private" static="no" mutable="no">
+        <type>HANDLE</type>
+        <definition>HANDLE CxxTest::Win32Gui::_canStartTests</definition>
+        <argsstring></argsstring>
+        <name>_canStartTests</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="90" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="90" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_win32_gui_1a94642082a4c0babae7b70dd4d9a3e99e" prot="private" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned CxxTest::Win32Gui::_numTotalTests</definition>
+        <argsstring></argsstring>
+        <name>_numTotalTests</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="91" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="91" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_win32_gui_1aa8c3709c0c97fd82a9b991c714b9283b" prot="private" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned CxxTest::Win32Gui::_testsDone</definition>
+        <argsstring></argsstring>
+        <name>_testsDone</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="91" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="91" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_win32_gui_1a406b4d1f077e253039ee5ce158729752" prot="private" static="no" mutable="no">
+        <type>char</type>
+        <definition>char CxxTest::Win32Gui::_strTotalTests[WorldDescription::MAX_STRLEN_TOTAL_TESTS]</definition>
+        <argsstring>[WorldDescription::MAX_STRLEN_TOTAL_TESTS]</argsstring>
+        <name>_strTotalTests</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="92" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="92" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_win32_gui_1a1623fdcdb0243b197aa79f293060157c" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int CxxTest::Win32Gui::_statusWidths[STATUS_TOTAL_PARTS]</definition>
+        <argsstring>[STATUS_TOTAL_PARTS]</argsstring>
+        <name>_statusWidths</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="99" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="99" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_win32_gui_1a39c2ef672a7a5d3f9cc3d90796f54d90" prot="private" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned CxxTest::Win32Gui::_statusOffsets[STATUS_TOTAL_PARTS]</definition>
+        <argsstring>[STATUS_TOTAL_PARTS]</argsstring>
+        <name>_statusOffsets</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="100" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="100" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_win32_gui_1a16b1bce6503c864013f28c3b3ae217f8" prot="private" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned CxxTest::Win32Gui::_statusTotal</definition>
+        <argsstring></argsstring>
+        <name>_statusTotal</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="101" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="101" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_win32_gui_1ac5f1a5345727c450b1a3141b03325191" prot="private" static="no" mutable="no">
+        <type>char</type>
+        <definition>char CxxTest::Win32Gui::_statusTestsDone[sizeof(&quot;1000000000 of  (100%)&quot;)+WorldDescription::MAX_STRLEN_TOTAL_TESTS]</definition>
+        <argsstring>[sizeof(&quot;1000000000 of  (100%)&quot;)+WorldDescription::MAX_STRLEN_TOTAL_TESTS]</argsstring>
+        <name>_statusTestsDone</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="102" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="102" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_win32_gui_1ac9e46b07bb261bb85cfdf9b0d6dbfd93" prot="private" static="no" mutable="no">
+        <type>DWORD</type>
+        <definition>DWORD CxxTest::Win32Gui::_worldStart</definition>
+        <argsstring></argsstring>
+        <name>_worldStart</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="103" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="103" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_win32_gui_1a2b39d48819ce7556a7790f27f6678d0d" prot="private" static="no" mutable="no">
+        <type>DWORD</type>
+        <definition>DWORD CxxTest::Win32Gui::_suiteStart</definition>
+        <argsstring></argsstring>
+        <name>_suiteStart</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="103" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="103" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_win32_gui_1a15c9eb791b027b103d6b7beb5427f672" prot="private" static="no" mutable="no">
+        <type>DWORD</type>
+        <definition>DWORD CxxTest::Win32Gui::_testStart</definition>
+        <argsstring></argsstring>
+        <name>_testStart</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="103" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="103" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_win32_gui_1acf098f92662d5c39eaf3a6b47caed8cc" prot="private" static="no" mutable="no">
+        <type>char</type>
+        <definition>char CxxTest::Win32Gui::_timeString[sizeof(&quot;00:00:00&quot;)]</definition>
+        <argsstring>[sizeof(&quot;00:00:00&quot;)]</argsstring>
+        <name>_timeString</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="104" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="104" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1a6e55bf95d71d80e5dd835476b102efac" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::enterGui</definition>
+        <argsstring>(int &amp;argc, char **argv)</argsstring>
+        <name>enterGui</name>
+        <reimplements refid="class_cxx_test_1_1_gui_listener_1aa54cf47bea6e158e8773325604259e2b">enterGui</reimplements>
+        <param>
+          <type>int &amp;</type>
+          <declname>argc</declname>
+        </param>
+        <param>
+          <type>char **</type>
+          <declname>argv</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="31" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="30" bodyend="33"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1a6ace75b735224e8593de343b820760dc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::enterWorld</definition>
+        <argsstring>(const WorldDescription &amp;wd)</argsstring>
+        <name>enterWorld</name>
+        <reimplements refid="class_cxx_test_1_1_gui_listener_1ac3bf41d19fabb940bddfaaf7c15176ab">enterWorld</reimplements>
+        <param>
+          <type>const <ref refid="class_cxx_test_1_1_world_description" kindref="compound">WorldDescription</ref> &amp;</type>
+          <declname>wd</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="36" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="35" bodyend="40"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1a84ec6040c2afe575c497cf51d9b4156a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::guiEnterSuite</definition>
+        <argsstring>(const char *suiteName)</argsstring>
+        <name>guiEnterSuite</name>
+        <reimplements refid="class_cxx_test_1_1_gui_listener_1ab7f2ec233b21b16a6e080f50cc411695">guiEnterSuite</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>suiteName</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="43" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="42" bodyend="46"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1a8df332e1a263b0e158cd99c74bdc7648" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::guiEnterTest</definition>
+        <argsstring>(const char *suiteName, const char *testName)</argsstring>
+        <name>guiEnterTest</name>
+        <reimplements refid="class_cxx_test_1_1_gui_listener_1a68e35d61caf85091aa81de1f974f915f">guiEnterTest</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>suiteName</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>testName</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="49" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="48" bodyend="56"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1ad6f1da6e5f92b5550d15c089e2a5cbe4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::yellowBar</definition>
+        <argsstring>()</argsstring>
+        <name>yellowBar</name>
+        <reimplements refid="class_cxx_test_1_1_gui_listener_1a6b2b9ab54b7b61dbfdf25abb45bc954b">yellowBar</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="59" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="58" bodyend="63"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1ac8e2ea92c33d5f20ffe7f9426c8d519d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::redBar</definition>
+        <argsstring>()</argsstring>
+        <name>redBar</name>
+        <reimplements refid="class_cxx_test_1_1_gui_listener_1ac471a5b189ecfdea1710034d156f7de9">redBar</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="66" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="65" bodyend="72"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1a495912f4f1f3fb84030d14763706f9fb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::leaveGui</definition>
+        <argsstring>()</argsstring>
+        <name>leaveGui</name>
+        <reimplements refid="class_cxx_test_1_1_gui_listener_1aca2b3ffe19f48d917a8694156cef5e21">leaveGui</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="75" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="74" bodyend="82"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1a8bc56f308a2a7a50ecf3b49b949e8939" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::parseCommandLine</definition>
+        <argsstring>(int argc, char **argv)</argsstring>
+        <name>parseCommandLine</name>
+        <param>
+          <type>int</type>
+          <declname>argc</declname>
+        </param>
+        <param>
+          <type>char **</type>
+          <declname>argv</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="107" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="106" bodyend="120"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1a0ca06cbe4ffd369cb3fd6561af0460ec" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::getTotalTests</definition>
+        <argsstring>()</argsstring>
+        <name>getTotalTests</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="123" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="122" bodyend="125"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1a53593eb8d632d7e70e4f37c91e7d3249" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::getTotalTests</definition>
+        <argsstring>(const WorldDescription &amp;wd)</argsstring>
+        <name>getTotalTests</name>
+        <param>
+          <type>const <ref refid="class_cxx_test_1_1_world_description" kindref="compound">WorldDescription</ref> &amp;</type>
+          <declname>wd</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="128" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="127" bodyend="131"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1a72f81f21ff59ed9e913de4a9c25619ec" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::startGuiThread</definition>
+        <argsstring>()</argsstring>
+        <name>startGuiThread</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="134" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="133" bodyend="139"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1a843493b1a43b0ab9c423d221ac4efcbb" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::gui</definition>
+        <argsstring>()</argsstring>
+        <name>gui</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="148" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="147" bodyend="160"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1ad4628bdb60b230f8551085d7155d62bc" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::registerWindowClass</definition>
+        <argsstring>()</argsstring>
+        <name>registerWindowClass</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="163" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="162" bodyend="178"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1ab5af5a6892cfa22c1d7501ec6a0d4b60" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::createMainWindow</definition>
+        <argsstring>()</argsstring>
+        <name>createMainWindow</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="181" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="180" bodyend="183"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1a87f49ccdd06279e7c23f2aa757dc262b" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::initCommonControls</definition>
+        <argsstring>()</argsstring>
+        <name>initCommonControls</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="186" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="185" bodyend="197"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1a115e4ceeb35d13cf5a82f2e0a7961513" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::createProgressBar</definition>
+        <argsstring>()</argsstring>
+        <name>createProgressBar</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="200" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="199" bodyend="212"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1aca17f743620f7071bac7b90f4d23f455" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::createStatusBar</definition>
+        <argsstring>()</argsstring>
+        <name>createStatusBar</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="215" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="214" bodyend="218"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1a5d61606d9fbff494d576aacc79fef260" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::setRatios</definition>
+        <argsstring>(unsigned suiteNameRatio, unsigned suiteTimeRatio, unsigned testNameRatio, unsigned testTimeRatio, unsigned testsDoneRatio, unsigned worldTimeRatio)</argsstring>
+        <name>setRatios</name>
+        <param>
+          <type>unsigned</type>
+          <declname>suiteNameRatio</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>suiteTimeRatio</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>testNameRatio</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>testTimeRatio</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>testsDoneRatio</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>worldTimeRatio</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="223" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="220" bodyend="231"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1a3415f2db5af0b3859e7a04dd90a99979" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>HWND</type>
+        <definition>HWND CxxTest::Win32Gui::createWindow</definition>
+        <argsstring>(LPCTSTR className, DWORD style, HWND parent=(HWND) NULL)</argsstring>
+        <name>createWindow</name>
+        <param>
+          <type>LPCTSTR</type>
+          <declname>className</declname>
+        </param>
+        <param>
+          <type>DWORD</type>
+          <declname>style</declname>
+        </param>
+        <param>
+          <type>HWND</type>
+          <declname>parent</declname>
+          <defval>(HWND) NULL</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="234" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="233" bodyend="237"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1a09d5341c13edab98081f13a477555fda" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::progressBarMessage</definition>
+        <argsstring>(UINT message, WPARAM wParam=0, LPARAM lParam=0)</argsstring>
+        <name>progressBarMessage</name>
+        <param>
+          <type>UINT</type>
+          <declname>message</declname>
+        </param>
+        <param>
+          <type>WPARAM</type>
+          <declname>wParam</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type>LPARAM</type>
+          <declname>lParam</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="240" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="239" bodyend="242"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1a0a9030de036aa38d62b417bfd10b1f0a" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::centerMainWindow</definition>
+        <argsstring>()</argsstring>
+        <name>centerMainWindow</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="245" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="244" bodyend="264"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1a6f41b084784a15eaf02d821e2905d707" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::getScreenArea</definition>
+        <argsstring>(RECT &amp;area)</argsstring>
+        <name>getScreenArea</name>
+        <param>
+          <type>RECT &amp;</type>
+          <declname>area</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="267" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="266" bodyend="270"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1ab4a52651115548c229bf7e29d7387dd3" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool CxxTest::Win32Gui::getScreenAreaWithoutTaskbar</definition>
+        <argsstring>(RECT &amp;area)</argsstring>
+        <name>getScreenAreaWithoutTaskbar</name>
+        <param>
+          <type>RECT &amp;</type>
+          <declname>area</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="273" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="272" bodyend="275"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1a9e8815e95305667b95b084778a5b2993" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::getWholeScreenArea</definition>
+        <argsstring>(RECT &amp;area)</argsstring>
+        <name>getWholeScreenArea</name>
+        <param>
+          <type>RECT &amp;</type>
+          <declname>area</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="278" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="277" bodyend="282"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1afdb1d50ad99a246b4758aceba61ecff7" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::showMainWindow</definition>
+        <argsstring>()</argsstring>
+        <name>showMainWindow</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="285" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="284" bodyend="288"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1a8ff466aaf2a2dfd0898f4f2d27864cba" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::showMainWindow</definition>
+        <argsstring>(int mode)</argsstring>
+        <name>showMainWindow</name>
+        <param>
+          <type>int</type>
+          <declname>mode</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="291" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="290" bodyend="293"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1a3b588c0b1c4487e4bab16cbee93539a3" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::startTimer</definition>
+        <argsstring>()</argsstring>
+        <name>startTimer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="298" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="297" bodyend="303"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1a57adb7ef114603707dc46d11ec48d460" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::reset</definition>
+        <argsstring>(DWORD &amp;tick)</argsstring>
+        <name>reset</name>
+        <param>
+          <type>DWORD &amp;</type>
+          <declname>tick</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="306" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="305" bodyend="308"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1afc895cdb4b83a9d90515bec8ef5427c6" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::startTests</definition>
+        <argsstring>()</argsstring>
+        <name>startTests</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="311" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="310" bodyend="313"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1a602a47e0563b405e06671e797d27725b" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::messageLoop</definition>
+        <argsstring>()</argsstring>
+        <name>messageLoop</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="316" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="315" bodyend="321"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1aab1323f1641d374a876194cb3a398f91" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>LRESULT</type>
+        <definition>LRESULT CxxTest::Win32Gui::handle</definition>
+        <argsstring>(HWND window, UINT message, WPARAM wParam, LPARAM lParam)</argsstring>
+        <name>handle</name>
+        <param>
+          <type>HWND</type>
+          <declname>window</declname>
+        </param>
+        <param>
+          <type>UINT</type>
+          <declname>message</declname>
+        </param>
+        <param>
+          <type>WPARAM</type>
+          <declname>wParam</declname>
+        </param>
+        <param>
+          <type>LPARAM</type>
+          <declname>lParam</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="338" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="337" bodyend="353"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1a8cdbc60769bb9bc2a16848e11a07bb23" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::resizeControls</definition>
+        <argsstring>()</argsstring>
+        <name>resizeControls</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="356" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="355" bodyend="370"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1a4d5c4420ab5d1f420b86287a9d51962d" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::setStatusParts</definition>
+        <argsstring>(LONG width)</argsstring>
+        <name>setStatusParts</name>
+        <param>
+          <type>LONG</type>
+          <declname>width</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="373" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="372" bodyend="378"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1a259571a089346dba7fb699a538470823" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::statusBarMessage</definition>
+        <argsstring>(UINT message, WPARAM wParam=0, const void *lParam=0)</argsstring>
+        <name>statusBarMessage</name>
+        <param>
+          <type>UINT</type>
+          <declname>message</declname>
+        </param>
+        <param>
+          <type>WPARAM</type>
+          <declname>wParam</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type>const void *</type>
+          <declname>lParam</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="381" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="380" bodyend="383"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1a88a0170d49602a53a4d6786f70cfbc6e" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::greenBar</definition>
+        <argsstring>()</argsstring>
+        <name>greenBar</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="386" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="385" bodyend="389"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1ac14e324fec07c497dcbac7d6b05e49f0" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::setColor</definition>
+        <argsstring>(BYTE, BYTE, BYTE)</argsstring>
+        <name>setColor</name>
+        <param>
+          <type>BYTE</type>
+        </param>
+        <param>
+          <type>BYTE</type>
+        </param>
+        <param>
+          <type>BYTE</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="398" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="397" bodyend="399"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1a53ad9807c61bfa1afac18cda6d5ab891" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::setIcon</definition>
+        <argsstring>(LPCTSTR icon)</argsstring>
+        <name>setIcon</name>
+        <param>
+          <type>LPCTSTR</type>
+          <declname>icon</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="403" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="402" bodyend="405"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1ad707369f92ebf67b070803849e2e4a46" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>HICON</type>
+        <definition>HICON CxxTest::Win32Gui::loadStandardIcon</definition>
+        <argsstring>(LPCTSTR icon)</argsstring>
+        <name>loadStandardIcon</name>
+        <param>
+          <type>LPCTSTR</type>
+          <declname>icon</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="408" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="407" bodyend="410"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1acd2f82ff5f341773b70178f8b487c815" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::setTestCaption</definition>
+        <argsstring>(const char *suiteName, const char *testName)</argsstring>
+        <name>setTestCaption</name>
+        <param>
+          <type>const char *</type>
+          <declname>suiteName</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>testName</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="413" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="412" bodyend="415"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1a036400b198df268513b8d4154143c29a" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::setCaption</definition>
+        <argsstring>(const char *a=&quot;&quot;, const char *b=&quot;&quot;, const char *c=&quot;&quot;, const char *d=&quot;&quot;)</argsstring>
+        <name>setCaption</name>
+        <param>
+          <type>const char *</type>
+          <declname>a</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>b</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>c</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>d</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="418" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="417" bodyend="430"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1a6262d15df26cb49a70ab0a8f72892bb7" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::showSuiteName</definition>
+        <argsstring>(const char *suiteName)</argsstring>
+        <name>showSuiteName</name>
+        <param>
+          <type>const char *</type>
+          <declname>suiteName</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="433" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="432" bodyend="435"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1a7550ab2523b67deebd01be5b3a4a9de0" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::showTestName</definition>
+        <argsstring>(const char *testName)</argsstring>
+        <name>showTestName</name>
+        <param>
+          <type>const char *</type>
+          <declname>testName</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="438" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="437" bodyend="440"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1abd58e7f110ad6e177f9cb2989c9689d8" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::showTestsDone</definition>
+        <argsstring>()</argsstring>
+        <name>showTestsDone</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="443" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="442" bodyend="448"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1a7db892262886628ca1f77600b828589b" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::updateTime</definition>
+        <argsstring>()</argsstring>
+        <name>updateTime</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="451" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="450" bodyend="455"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1a31e85db1d63d85eb3729d9bc434ac104" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::setStatusTime</definition>
+        <argsstring>(unsigned part, DWORD start)</argsstring>
+        <name>setStatusTime</name>
+        <param>
+          <type>unsigned</type>
+          <declname>part</declname>
+        </param>
+        <param>
+          <type>DWORD</type>
+          <declname>start</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="458" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="457" bodyend="470"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1ac94844a00b98f24e0ef01e449f219113" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool CxxTest::Win32Gui::keep</definition>
+        <argsstring>()</argsstring>
+        <name>keep</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="473" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="472" bodyend="479"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1ac680afe70ef124e5d929d4b6a349585d" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::showSummary</definition>
+        <argsstring>()</argsstring>
+        <name>showSummary</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="482" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="481" bodyend="486"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1ad5a7832d3c27e11ac6337f8d5e6f127f" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::setStatusPart</definition>
+        <argsstring>(unsigned part, const char *text)</argsstring>
+        <name>setStatusPart</name>
+        <param>
+          <type>unsigned</type>
+          <declname>part</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>text</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="489" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="488" bodyend="491"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1ad65c17c73e32d5014ce2662490de394c" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::stopTimer</definition>
+        <argsstring>()</argsstring>
+        <name>stopTimer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="494" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="493" bodyend="497"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1a1e36b95e16c17f8aa70107effe057e8b" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::setSummaryStatusBar</definition>
+        <argsstring>()</argsstring>
+        <name>setSummaryStatusBar</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="500" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="499" bodyend="512"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1acb374acd77a994290f08794ef957e5de" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::setSummaryCaption</definition>
+        <argsstring>()</argsstring>
+        <name>setSummaryCaption</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="515" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="514" bodyend="517"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1a80ed4b62b1a7cd9e4ffe8f70c9548fa8" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>char *</type>
+        <definition>char* CxxTest::Win32Gui::allocate</definition>
+        <argsstring>(unsigned length)</argsstring>
+        <name>allocate</name>
+        <param>
+          <type>unsigned</type>
+          <declname>length</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="520" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="519" bodyend="522"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1aa5266056a604e23baf9a52fe449a0a8f" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Win32Gui::deallocate</definition>
+        <argsstring>(char *data)</argsstring>
+        <name>deallocate</name>
+        <param>
+          <type>char *</type>
+          <declname>data</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="525" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="524" bodyend="527"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-static-func">
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1a96b77a5292e0a0892f4a6d98c4e79da8" prot="private" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>DWORD WINAPI</type>
+        <definition>static DWORD WINAPI CxxTest::Win32Gui::guiThread</definition>
+        <argsstring>(LPVOID parameter)</argsstring>
+        <name>guiThread</name>
+        <param>
+          <type>LPVOID</type>
+          <declname>parameter</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="142" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="141" bodyend="145"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1a0764e82906b468babbe30701ff6ca15f" prot="private" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>LRESULT CALLBACK</type>
+        <definition>static LRESULT CALLBACK CxxTest::Win32Gui::windowProcedure</definition>
+        <argsstring>(HWND window, UINT message, WPARAM wParam, LPARAM lParam)</argsstring>
+        <name>windowProcedure</name>
+        <param>
+          <type>HWND</type>
+          <declname>window</declname>
+        </param>
+        <param>
+          <type>UINT</type>
+          <declname>message</declname>
+        </param>
+        <param>
+          <type>WPARAM</type>
+          <declname>wParam</declname>
+        </param>
+        <param>
+          <type>LPARAM</type>
+          <declname>lParam</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="324" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="323" bodyend="330"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_win32_gui_1a7111cf7a02e450ed4108f03a5efd38ad" prot="private" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>static void CxxTest::Win32Gui::setUp</definition>
+        <argsstring>(HWND window, LPCREATESTRUCT create)</argsstring>
+        <name>setUp</name>
+        <param>
+          <type>HWND</type>
+          <declname>window</declname>
+        </param>
+        <param>
+          <type>LPCREATESTRUCT</type>
+          <declname>create</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="333" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="332" bodyend="335"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="452">
+        <label>CxxTest::TestListener</label>
+        <link refid="class_cxx_test_1_1_test_listener"/>
+      </node>
+      <node id="450">
+        <label>CxxTest::Win32Gui</label>
+        <link refid="class_cxx_test_1_1_win32_gui"/>
+        <childnode refid="451" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="451">
+        <label>CxxTest::GuiListener</label>
+        <link refid="class_cxx_test_1_1_gui_listener"/>
+        <childnode refid="452" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="455">
+        <label>CxxTest::TestListener</label>
+        <link refid="class_cxx_test_1_1_test_listener"/>
+      </node>
+      <node id="453">
+        <label>CxxTest::Win32Gui</label>
+        <link refid="class_cxx_test_1_1_win32_gui"/>
+        <childnode refid="454" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="454">
+        <label>CxxTest::GuiListener</label>
+        <link refid="class_cxx_test_1_1_gui_listener"/>
+        <childnode refid="455" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" line="28" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Win32Gui.h" bodystart="27" bodyend="528"/>
+    <listofallmembers>
+      <member refid="class_cxx_test_1_1_win32_gui_1a44bd0fd066133c647c09868ff7683d6f" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>_canStartTests</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a961e5fb675dae74f0fe6dc7e3e39cd3d" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>_gui</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a1213b1340161a419e4a5a6231b006d98" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>_keep</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a332801a5b9014e2d4f8bf19bf976fa49" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>_mainWindow</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a94642082a4c0babae7b70dd4d9a3e99e" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>_numTotalTests</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1aff547cd67bdce0e3c291c1a7d9f86dfa" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>_progressBar</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a78a2559cd7c56f4ef3642c6ff602afde" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>_startMinimized</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1ac4919bc1c3cf66a005f0e8786c1c1b8d" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>_statusBar</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a39c2ef672a7a5d3f9cc3d90796f54d90" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>_statusOffsets</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1ac5f1a5345727c450b1a3141b03325191" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>_statusTestsDone</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a16b1bce6503c864013f28c3b3ae217f8" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>_statusTotal</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a1623fdcdb0243b197aa79f293060157c" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>_statusWidths</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a406b4d1f077e253039ee5ce158729752" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>_strTotalTests</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a2b39d48819ce7556a7790f27f6678d0d" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>_suiteStart</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1aa8c3709c0c97fd82a9b991c714b9283b" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>_testsDone</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a15c9eb791b027b103d6b7beb5427f672" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>_testStart</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1acf098f92662d5c39eaf3a6b47caed8cc" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>_timeString</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a729595fc4628f1a4f80b9bf1824bf4d1" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>_title</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a9abb108a7ba32bbe6cc75e0833d45886" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>_windowClass</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1ac9e46b07bb261bb85cfdf9b0d6dbfd93" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>_worldStart</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a80ed4b62b1a7cd9e4ffe8f70c9548fa8" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>allocate</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a0a9030de036aa38d62b417bfd10b1f0a" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>centerMainWindow</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1ab5af5a6892cfa22c1d7501ec6a0d4b60" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>createMainWindow</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a115e4ceeb35d13cf5a82f2e0a7961513" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>createProgressBar</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1aca17f743620f7071bac7b90f4d23f455" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>createStatusBar</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a3415f2db5af0b3859e7a04dd90a99979" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>createWindow</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1aa5266056a604e23baf9a52fe449a0a8f" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>deallocate</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a6e55bf95d71d80e5dd835476b102efac" prot="public" virt="virtual"><scope>CxxTest::Win32Gui</scope><name>enterGui</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1a7d826471e620c45526abcd702994ebb8" prot="public" virt="virtual"><scope>CxxTest::Win32Gui</scope><name>enterSuite</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1a9cecb3a9fbd578cd377a5b6353a88a40" prot="public" virt="virtual"><scope>CxxTest::Win32Gui</scope><name>enterTest</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a6ace75b735224e8593de343b820760dc" prot="public" virt="virtual"><scope>CxxTest::Win32Gui</scope><name>enterWorld</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1a061a48b4133776007f25b3ad03709508" prot="public" virt="virtual"><scope>CxxTest::Win32Gui</scope><name>failedAssert</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1ab8fb717bf3d1048fafd8ad46f3d2aa75" prot="public" virt="virtual"><scope>CxxTest::Win32Gui</scope><name>failedAssertDelta</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1afeab8a1ebf6a491bbc32d9c4d1f61957" prot="public" virt="virtual"><scope>CxxTest::Win32Gui</scope><name>failedAssertDiffers</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1a0da4a8373d37735fd838d64c479e98b6" prot="public" virt="virtual"><scope>CxxTest::Win32Gui</scope><name>failedAssertEquals</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1a8e4379c24f51a23a63be2aae01c1db15" prot="public" virt="virtual"><scope>CxxTest::Win32Gui</scope><name>failedAssertLessThan</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1a10ddef187352aec4e20f6571f846c289" prot="public" virt="virtual"><scope>CxxTest::Win32Gui</scope><name>failedAssertLessThanEquals</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1a16b2504f44d5bb31e11760f4910279d6" prot="public" virt="virtual"><scope>CxxTest::Win32Gui</scope><name>failedAssertPredicate</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1adc47227eef4bb58df92e9bb3c323a0ce" prot="public" virt="virtual"><scope>CxxTest::Win32Gui</scope><name>failedAssertRelation</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1ad22bc9507148994e099228e06e2320c3" prot="public" virt="virtual"><scope>CxxTest::Win32Gui</scope><name>failedAssertSameData</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1ad7c260f27b673f4770d8ba016692f348" prot="public" virt="virtual"><scope>CxxTest::Win32Gui</scope><name>failedAssertThrows</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1ab692ff5b9336e668e6133222c296951a" prot="public" virt="virtual"><scope>CxxTest::Win32Gui</scope><name>failedAssertThrowsNot</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1a5620d327669b9e03112ac40dd443a9fc" prot="public" virt="virtual"><scope>CxxTest::Win32Gui</scope><name>failedTest</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a6f41b084784a15eaf02d821e2905d707" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>getScreenArea</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1ab4a52651115548c229bf7e29d7387dd3" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>getScreenAreaWithoutTaskbar</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a0ca06cbe4ffd369cb3fd6561af0460ec" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>getTotalTests</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a53593eb8d632d7e70e4f37c91e7d3249" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>getTotalTests</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a9e8815e95305667b95b084778a5b2993" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>getWholeScreenArea</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a88a0170d49602a53a4d6786f70cfbc6e" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>greenBar</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a843493b1a43b0ab9c423d221ac4efcbb" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>gui</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a84ec6040c2afe575c497cf51d9b4156a" prot="public" virt="virtual"><scope>CxxTest::Win32Gui</scope><name>guiEnterSuite</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a8df332e1a263b0e158cd99c74bdc7648" prot="public" virt="virtual"><scope>CxxTest::Win32Gui</scope><name>guiEnterTest</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1af5f966a34f11f5e4ea4c59ecf83b01e2" prot="public" virt="virtual"><scope>CxxTest::Win32Gui</scope><name>guiEnterWorld</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1a0166397e8eb7c7cf303cd91c4ebd92bf" prot="public" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>GuiListener</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a96b77a5292e0a0892f4a6d98c4e79da8" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>guiThread</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1aab1323f1641d374a876194cb3a398f91" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>handle</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a87f49ccdd06279e7c23f2aa757dc262b" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>initCommonControls</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1ac94844a00b98f24e0ef01e449f219113" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>keep</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a495912f4f1f3fb84030d14763706f9fb" prot="public" virt="virtual"><scope>CxxTest::Win32Gui</scope><name>leaveGui</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1ae8d4756b071cb906eba66a7d2200c622" prot="public" virt="virtual"><scope>CxxTest::Win32Gui</scope><name>leaveSuite</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1a88c2bea6cdf73ae460a76e795e46237f" prot="public" virt="virtual"><scope>CxxTest::Win32Gui</scope><name>leaveTest</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1a33ddb18a7a501562303cbd071218f816" prot="public" virt="virtual"><scope>CxxTest::Win32Gui</scope><name>leaveWorld</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1ad707369f92ebf67b070803849e2e4a46" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>loadStandardIcon</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a602a47e0563b405e06671e797d27725b" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>messageLoop</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a8bc56f308a2a7a50ecf3b49b949e8939" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>parseCommandLine</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a09d5341c13edab98081f13a477555fda" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>progressBarMessage</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1ac8e2ea92c33d5f20ffe7f9426c8d519d" prot="public" virt="virtual"><scope>CxxTest::Win32Gui</scope><name>redBar</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1a1ef08c9cf0c21041ff9a024731ec68ca" prot="protected" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>redBarSafe</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1ad4628bdb60b230f8551085d7155d62bc" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>registerWindowClass</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a57adb7ef114603707dc46d11ec48d460" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>reset</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a8cdbc60769bb9bc2a16848e11a07bb23" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>resizeControls</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1aa2473ba3fbc19514724487361761d7f9" prot="public" virt="virtual"><scope>CxxTest::Win32Gui</scope><name>runGui</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a036400b198df268513b8d4154143c29a" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>setCaption</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1ac14e324fec07c497dcbac7d6b05e49f0" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>setColor</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a53ad9807c61bfa1afac18cda6d5ab891" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>setIcon</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a5d61606d9fbff494d576aacc79fef260" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>setRatios</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1ad5a7832d3c27e11ac6337f8d5e6f127f" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>setStatusPart</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a4d5c4420ab5d1f420b86287a9d51962d" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>setStatusParts</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a31e85db1d63d85eb3729d9bc434ac104" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>setStatusTime</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1acb374acd77a994290f08794ef957e5de" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>setSummaryCaption</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a1e36b95e16c17f8aa70107effe057e8b" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>setSummaryStatusBar</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1acd2f82ff5f341773b70178f8b487c815" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>setTestCaption</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a7111cf7a02e450ed4108f03a5efd38ad" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>setUp</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1afdb1d50ad99a246b4758aceba61ecff7" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>showMainWindow</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a8ff466aaf2a2dfd0898f4f2d27864cba" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>showMainWindow</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a6262d15df26cb49a70ab0a8f72892bb7" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>showSuiteName</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1ac680afe70ef124e5d929d4b6a349585d" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>showSummary</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a7550ab2523b67deebd01be5b3a4a9de0" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>showTestName</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1abd58e7f110ad6e177f9cb2989c9689d8" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>showTestsDone</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a72f81f21ff59ed9e913de4a9c25619ec" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>startGuiThread</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1afc895cdb4b83a9d90515bec8ef5427c6" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>startTests</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a3b588c0b1c4487e4bab16cbee93539a3" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>startTimer</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1ad4d389f0e67fa5bc8e19a365be07c052a3e69fe884dc6ad6614222348b79826bd" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>STATUS_SUITE_NAME</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1ad4d389f0e67fa5bc8e19a365be07c052a67050689db7f6f26a7d6e8fcdf2d6c2f" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>STATUS_SUITE_TIME</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1ad4d389f0e67fa5bc8e19a365be07c052a43b17bcb1f1f87753dc99b356f072ea8" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>STATUS_TEST_NAME</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1ad4d389f0e67fa5bc8e19a365be07c052a999e45ab93d7dd781bc045ef9320ff21" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>STATUS_TEST_TIME</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1ad4d389f0e67fa5bc8e19a365be07c052aa96c8ddc0393f35dd3ddd587c5301d3e" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>STATUS_TESTS_DONE</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1ad4d389f0e67fa5bc8e19a365be07c052a98fdb0735b1e29d798a96e3efe0e32a6" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>STATUS_TOTAL_PARTS</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1ad4d389f0e67fa5bc8e19a365be07c052ae6a6ca3a50e0b5ac25bb22967ea9c93e" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>STATUS_WORLD_TIME</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a259571a089346dba7fb699a538470823" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>statusBarMessage</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1ad65c17c73e32d5014ce2662490de394c" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>stopTimer</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1ab5958bd800642f706c2a7a0e8741778f" prot="public" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>TestListener</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a231d5dfcd86f359f627dd39df79603a4a17da67929a6332ba02d5dae2f76b908c" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>TIMER_DELAY</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a231d5dfcd86f359f627dd39df79603a4a3f9200faaef8e7bc508f9f13cbbe08b7" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>TIMER_ID</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1a3bac16644da9c76c8fdb90a7a67b444d" prot="public" virt="virtual"><scope>CxxTest::Win32Gui</scope><name>trace</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a7db892262886628ca1f77600b828589b" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>updateTime</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1ac1328f483ef777fc05f5ec2b153464c7" prot="public" virt="virtual"><scope>CxxTest::Win32Gui</scope><name>warning</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1a0764e82906b468babbe30701ff6ca15f" prot="private" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>windowProcedure</name></member>
+      <member refid="class_cxx_test_1_1_win32_gui_1ad6f1da6e5f92b5550d15c089e2a5cbe4" prot="public" virt="virtual"><scope>CxxTest::Win32Gui</scope><name>yellowBar</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1aa4ca06d3a9cf402fa01c51c4366c1b24" prot="protected" virt="non-virtual"><scope>CxxTest::Win32Gui</scope><name>yellowBarSafe</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1aa42f1f79be1a66434590a72a5246ffa2" prot="public" virt="virtual"><scope>CxxTest::Win32Gui</scope><name>~GuiListener</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1a4d4cb5d990e0c4b0891f64f9e055b729" prot="public" virt="virtual"><scope>CxxTest::Win32Gui</scope><name>~TestListener</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>
