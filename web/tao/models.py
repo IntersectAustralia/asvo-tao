@@ -121,6 +121,7 @@ class DataSet(models.Model):
     default_filter_field = models.ForeignKey('DataSetProperty', related_name='DataSetProperty', null=True, blank=True)
     default_filter_min = models.FloatField(null=True, blank=True)
     default_filter_max = models.FloatField(null=True, blank=True)
+    max_job_box_count = models.IntegerField(default=0)
     
     class Meta:
         unique_together = ('simulation', 'galaxy_model')
