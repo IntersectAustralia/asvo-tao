@@ -42,4 +42,5 @@ API_ALLOWED_IPS = (
                    )
 
 ALLOWED_HOSTS = ['tao.asvo.org.au']
+USE_CAPTCHA=True
 

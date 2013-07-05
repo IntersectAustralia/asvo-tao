@@ -45,7 +45,6 @@ class UserCreationForm(forms.Form):
                                             max_length=500,
                                             widget=forms.Textarea(attrs={'rows':
                                             3}), required=False)
-    captcha = ReCaptchaField()
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs['user']
@@ -82,8 +81,8 @@ class UserCreationForm(forms.Form):
         self.fields['username'] = username
         self.fields['password1'] = forms.CharField(label=_("Password"), max_length=32, widget=forms.PasswordInput)
         self.fields['password2'] = forms.CharField(label=_("Password confirmation"), max_length=32, widget=forms.PasswordInput)
-        key_order = ('title', 'first_name', 'last_name', 'username', 'email',
-            'password1', 'password2', 'institution', 'scientific_interests')
+        key_order = ['title', 'first_name', 'last_name', 'username', 'email',
+            'password1', 'password2', 'institution', 'scientific_interests']
         if getattr(settings, 'USE_CAPTCHA', False):
             self.fields['captcha'] = ReCaptchaField()
             key_order.append('captcha')
