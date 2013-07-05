@@ -54,6 +54,6 @@ Create the database and user::
 
    Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
 
-   mysql> create database tao;
+   mysql> CREATE DATABASE tao CHARACTER SET utf8 COLLATE utf8_general_ci;
    Query OK, 1 row affected (0.00 sec)
 

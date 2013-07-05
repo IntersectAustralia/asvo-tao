@@ -11,6 +11,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
         super(SubmitLightConeTests, self).setUp()
 
         GlobalParameterFactory.create(parameter_name='maximum-random-light-cones', parameter_value='10')
+        GlobalParameterFactory(parameter_name='INITIAL_JOB_STATUS', parameter_value='HELD')
         simulation = SimulationFactory.create(box_size=500)
         galaxy_model = GalaxyModelFactory.create()
         dataset = DataSetFactory.create(simulation=simulation, galaxy_model=galaxy_model)
@@ -105,13 +106,17 @@ class SubmitLightConeTests(LiveServerMGFTest):
             'number_of_light_cones': '9', # this exceeds the calculated maximum, 3, for parameters above
         }, id_wrap=self.lc_id)
         self.click(self.lc_2select('op_add_all')) # click somewhere else to shift focus out of the number of cones field (this shouldn't affect the current selection, as they are already all selected)
+        self.wait(1)
+        self.assertEqual('3', self.get_selector_value(self.lc_id('number_of_light_cones'))) # resets to the maximum valid value
         self.submit_mgf_form()
 
-        self.assert_on_page('mock_galaxy_factory')
+        self.assert_on_page('job_index') # used to return to the mock_galaxy_factory page, as previously used to keep the invalid input and fail validation
 
     def test_submit_valid_box_job(self):
+        from tao.settings import INITIAL_JOB_MESSAGE
         ## fill in form (correctly)
         self.select(self.lc_id('catalogue_geometry'), 'Box')
+        self.clear(self.lc_id('box_size'))
         self.fill_in_fields({
             'box_size': '9',
             'snapshot': "%.5g" % float(self.redshifts[0]),
@@ -120,7 +125,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
         self.submit_mgf_form()
 
         self.assert_on_page('job_index')
-        
+        self.assert_page_has_content(INITIAL_JOB_MESSAGE)
 
     def test_invalid_box_options_allow_light_cone_submit(self):
         ## fill in box fields (incorrectly)
@@ -154,6 +159,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
 
         ## fill in box fields (correctly)
         self.select(self.lc_id('catalogue_geometry'), 'Box')
+        self.clear(self.lc_id('box_size'))
         self.fill_in_fields({
             'box_size': '1',
             'snapshot': "%.5g" % float(self.redshifts[0]),

@@ -78,7 +78,7 @@ class JobTest(LiveServerTest):
             'ra_opening_angle': 71.565,
             'dec_opening_angle': 41.811,
             'output_properties' : [self.filter.id, self.output_prop.id],
-            'light_cone_type': 'unique',
+            'light_cone_type': 'random', #'unique',
             'number_of_light_cones': 1,
             }
         xml_parameters.update({
@@ -127,7 +127,7 @@ class JobTest(LiveServerTest):
         self.assert_page_has_content('Summary')
         self.assert_summary_field_correctly_shown(self.simulation.name, 'light_cone', 'simulation')
         self.assert_summary_field_correctly_shown(self.galaxy.name, 'light_cone', 'galaxy_model')
-        self.assert_summary_field_correctly_shown('1 unique light cones', 'light_cone', 'number_of_light_cones')
+        self.assert_summary_field_correctly_shown('1 random light cones', 'light_cone', 'number_of_light_cones')
         self.assert_summary_field_correctly_shown(self.sed.label, 'sed', 'single_stellar_population_model')
         self.assert_summary_field_correctly_shown(self.dust.name, 'sed', 'dust_model')
         self.assert_summary_field_correctly_shown(u"1000000 \u2264 %s (%s)" % (self.filter.label, self.filter.units), 'record_filter', 'record_filter')

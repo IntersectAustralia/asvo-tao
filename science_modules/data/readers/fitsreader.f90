@@ -1,4 +1,3 @@
-! gfortran fitsreader.f90 -o f_fitreader -LINSTALL_DIR/cfitsio/lib -lcfitsio -IINSTALL_DIR/cfitsio/include
       program main
 
 !  This FITS Table Loader has been modified from CFITSIO cookbook

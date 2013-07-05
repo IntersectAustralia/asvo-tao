@@ -142,6 +142,9 @@ namespace tao {
 			    real_type min_z,
 			    real_type max_z );
 
+      unsigned
+      _box_snapshot( real_type redshift );
+
       ///
       ///
       ///

@@ -1,15 +1,48 @@
 {% extends '_base.html' %}
 {% load bootstrap_tags %}
+{% load rst_to_html %}
+{% load staticfiles %}
 {% block subtitle %}
     Register
 {% endblock %}
+{% block extrajs %}
+    <link rel="stylesheet" href="{% static 'css/jquery-ui/themes/base/jquery-ui.css' %}" />
+    <script src="{% static 'js/jquery-ui-1.10.1.custom.min.js' %}"></script>
+
+    <script type="text/javascript" src="{% static 'js/PopUp.js' %}"></script>
+{% endblock extrajs %}
 
 {% block content %}
     <h1>
         Register
     </h1>
-    <form action="" method="POST">
-        {% csrf_token %}
-        {{ form|as_bootstrap }}
-    </form>
+    {% check_user user 'is_aaf' as is_aaf %}
+    {% if not is_aaf %}
+    <p>
+    <b>Note:</b> You can use your <a href="{% url 'login' %}">AAF credentials to register.</a>
+    </p>
+    {% endif %}
+    <p>
+        <a href="#" id="show-why-register">Why register?</a>
+    </p>
+    <div class="row-fluid">
+        <div class="boxed span8">
+            <form action="" method="POST">
+                {% csrf_token %}
+                {{ form|as_bootstrap }}
+            </form>
+        </div>
+        <!-- HIDDEN / POP-UP DIV -->
+        <div class="aside span4" id="why-register" style="display: none;">
+            <div class="boxed">
+                <div>
+                    <legend>Why register?</legend>
+                    <p>
+                        {% rst_file_to_html '../docs/source/user-manual/whyregister.rst'%}
+                    </p>
+                    <a href="#" id="close-why-register">[Close]</a>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock content %}

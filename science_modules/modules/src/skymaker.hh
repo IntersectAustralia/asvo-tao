@@ -20,6 +20,74 @@ namespace tao {
 
       typedef double real_type;
 
+      class image
+      {
+	 friend class ::skymaker_suite;
+
+      public:
+
+         image();
+
+	 image( unsigned index,
+		int sub_cone,
+                const string& format,
+                const string& mag_field,
+                real_type min_mag,
+                real_type z_min,
+                real_type z_max,
+                real_type origin_ra,
+                real_type origin_dec,
+                real_type fov_ra,
+                real_type fov_dec,
+                unsigned width,
+                unsigned height );
+
+	 void
+	 setup( unsigned index,
+		int sub_cone,
+		const string& format,
+		const string& mag_field,
+		real_type min_mag,
+		real_type z_min,
+		real_type z_max,
+		real_type origin_ra,
+		real_type origin_dec,
+		real_type fov_ra,
+		real_type fov_dec,
+		unsigned width,
+		unsigned height );
+
+	 void
+	 setup_list();
+
+	 void
+	 setup_conf();
+
+         void
+         add_galaxy( const tao::galaxy& galaxy,
+		     unsigned idx );
+
+	 void
+	 render( bool keep_files );
+
+      protected:
+
+	 unsigned _idx;
+         string _list_filename;
+	 string _conf_filename;
+         std::ofstream _list_file;
+	 unsigned _sub_cone;
+	 string _format;
+         string _mag_field;
+         real_type _min_mag;
+	 real_type _z_min, _z_max;
+	 real_type _origin_ra, _origin_dec;
+	 real_type _fov_ra, _fov_dec;
+         unsigned _width, _height;
+	 real_type _scale_x, _scale_y;
+         unsigned _cnt;
+      };
+
       static
       module*
       factory( const string& name,
@@ -54,32 +122,16 @@ namespace tao {
 
       void
       process_galaxy( const tao::galaxy& galaxy,
-                      unsigned idx,
-		      real_type magnitude );
+                      unsigned idx );
 
    protected:
 
       void
       _read_options( const options::xml_dict& global_dict );
 
-      void
-      _setup_list();
-
-      void
-      _setup_conf();
-
    protected:
 
-      string _mag_field, _bulge_mag_field;
-      string _list_filename, _conf_filename;
-      std::ofstream _list_file;
-      unsigned _img_w, _img_h;
-      real_type _ra0, _dec0;
-      real_type _pix_w, _pix_h;
-      real_type _img_x, _img_y;
-      real_type _foc_x, _foc_y;
-      real_type _min_mag, _max_mag;
-      unsigned _cnt;
+      list<image> _imgs;
       bool _keep_files;
    };
 }

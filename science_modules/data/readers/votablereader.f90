@@ -1,8 +1,3 @@
-! Fox Library is needed to use this code
-! http://www1.gly.bris.ac.uk/~walker/FoX/source/
-! gfortran votablereader.f90 -o votablereader_f `FoX-config`
-
-
       program main
 
 	use FoX_dom

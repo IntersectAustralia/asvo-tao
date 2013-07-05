@@ -6,6 +6,7 @@
 #include <libhpc/libhpc.hh>
 #include <libhpc/options/xml_dict.hh>
 
+//#define PREPROCESSING
 namespace tao {
    using namespace hpc;
 

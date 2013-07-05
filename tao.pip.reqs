@@ -7,9 +7,11 @@ django-recaptcha
 django-form-utils
 django-piston
 django-nose
+django-tastypie
 nosexcover
 django-rules
 lxml
+cssselect
 django-extensions
 werkzeug
 breathe

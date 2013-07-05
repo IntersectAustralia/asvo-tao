@@ -1,6 +1,7 @@
 #include <soci/soci.h>
 #include "votable.hh"
 #include <boost/algorithm/string/replace.hpp>
+#include <boost/spirit/include/classic.hpp>
 
 using namespace hpc;
 using boost::algorithm::replace_all;
@@ -85,7 +86,34 @@ namespace tao {
 
       LOG_EXIT();
    }
+   string votable::_xml_encode(string _toencode_string)
+   {
+	   std::map<char, std::string> transformations;
+	   transformations['&']  = std::string("&amp;");
+	   transformations['\''] = std::string("&apos;");
+	   transformations['"']  = std::string("&quot;");
+	   transformations['>']  = std::string("&gt;");
+	   transformations['<']  = std::string("&lt;");
 
+	   std::string reserved_chars;
+	   for (auto ti = transformations.begin(); ti != transformations.end(); ti++)
+	   {
+		   reserved_chars += ti->first;
+	   }
+
+	   size_t pos = 0;
+	   while (std::string::npos != (pos = _toencode_string.find_first_of(reserved_chars, pos)))
+	   {
+		   _toencode_string.replace(pos, 1, transformations[_toencode_string[pos]]);
+		   pos++;
+	   }
+
+	   return _toencode_string;
+
+
+
+
+   }
    void votable::_write_table_header(const tao::galaxy& galaxy)
    {
       auto it = _fields.cbegin();
@@ -96,28 +124,29 @@ namespace tao {
       {
 	 string FieldName=*lblit;
 	 replace_all(FieldName," ","_");
-	 _file<<"<FIELD name=\""+FieldName<<"\" ID=\"Col_"<<(*it)<<"\" ";
+	 FieldName=_xml_encode(FieldName);
+	 _file<<"<FIELD name=\""+FieldName<<"\" ID=\"Col_"<<_xml_encode(*it)<<"\" ";
 	 auto val = galaxy.field( *it );
 	 switch( val.second )
 	 {
 	    case tao::galaxy::STRING:
-	       _file<<"datatype=\"char\" arraysize=\"*\" unit=\""+(*unitit)+"\"";
+	       _file<<"datatype=\"char\" arraysize=\"*\" unit=\""+_xml_encode(*unitit)+"\"";
 	       break;
 
 	    case tao::galaxy::DOUBLE:
-	       _file<<"datatype=\"double\" unit=\""+(*unitit)+"\"";
+	       _file<<"datatype=\"double\" unit=\""+_xml_encode(*unitit)+"\"";
 	       break;
 
 	    case tao::galaxy::INTEGER:
-	       _file<<"datatype=\"int\" unit=\""+(*unitit)+"\"";
+	       _file<<"datatype=\"int\" unit=\""+_xml_encode(*unitit)+"\"";
 	       break;
 
 	    case tao::galaxy::UNSIGNED_LONG_LONG:
-	       _file<<"datatype=\"long\" unit=\""+(*unitit)+"\"";
+	       _file<<"datatype=\"long\" unit=\""+_xml_encode(*unitit)+"\"";
 	       break;
 
 	    case tao::galaxy::LONG_LONG:
-	       _file<<"datatype=\"long\" unit=\""+(*unitit)+"\"";
+	       _file<<"datatype=\"long\" unit=\""+_xml_encode(*unitit)+"\"";
 	       break;
 
 	    default:

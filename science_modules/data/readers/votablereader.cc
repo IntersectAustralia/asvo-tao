@@ -1,8 +1,3 @@
-// g++ votablereader.cc -L/home/amr/workspace/asvo-tao-science/science_modules/external_packages/pugixml/lib -lpugixml -I/home/amr/workspace/asvo-tao-science/science_modules/external_packages/pugixml/include -o votablereader
-//g++ votablereader.cc -L/lustre/projects/p014_swin/amr_work/asvo-tao-science/science_modules/external_packages/pugixml/lib -lpugixml -I/lustre/projects/p014_swin/amr_work/asvo-tao-science/science_modules/external_packages/pugixml/include -o votablereader
-
-/// The main Intension of this sample is to provide a simple and easy way to access the data stored and it is not a standard votable reader
-
 #include <pugixml.hpp>
 #include <string.h>
 #include <stdio.h>

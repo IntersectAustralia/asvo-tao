@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import patterns, url, include
+from django.conf.urls import patterns, url, include
 from django.conf import settings
 from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import redirect
@@ -6,6 +6,7 @@ from django.shortcuts import redirect
 from piston.resource import Resource
 
 from tao.api.handlers import JobHandler
+
 
 class IpBasedAuthenticator(object):
     def is_authenticated(self, request):
