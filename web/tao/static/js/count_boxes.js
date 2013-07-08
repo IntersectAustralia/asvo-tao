@@ -4,7 +4,6 @@ jQuery(document).ready(function($) {
         return '#id_light_cone-' + bare_name;
     };
 
-    // convert from degrees to radians
     Math.radians = function(degrees) {
         return degrees * Math.PI / 180;
     };
@@ -51,9 +50,39 @@ jQuery(document).ready(function($) {
         return (point[0]*plane[0] + point[1]*plane[1] + point[2]*plane[2]) >= plane[3];
     }
 
+//    from https://gist.github.com/ramn/3103615
+    var cartesian_product = function(param_array) {
+        if (!param_array || param_array.length < 1) {
+            return [];
+        }
+        else {
+            var head = param_array[0];
+            var tail = param_array.slice(1);
+            var result = [];
+            for (var i = 0; i < head.length; i++) {
+                var product_of_tail = cartesian_product(tail);
+                if (product_of_tail && product_of_tail.length > 0) {
+                    for (var j = 0; j < product_of_tail.length; j++) {
+                        result.push([head[i]].concat(product_of_tail[j]));
+                    }
+                }
+                else
+                    result.push([head[i]]);
+            }
+            return result;
+        }
+    }
+
+    var product = function(elem, repeats) {
+        arr = [];
+        for (var i = 0; i < repeats; i++) {
+            arr.push(elem);
+        }
+        return cartesian_product(arr);
+    }
+
     var box_plane_overlap = function(box_low, box_upp, plane) {
-//        FIXME cartesian product of this
-//        for (perm in product([0, 1], repeat=3)) {
+        for (perm in product([0, 1], 3)) {
             var point = [];
             for (var ii = 0; ii < len(box_low); ii++) {
                 if (perm[ii]) {
@@ -66,7 +95,7 @@ jQuery(document).ready(function($) {
             if (inside(point, plane)) {
                 return true;
             }
-//        }
+        }
         return false;
     }
 
@@ -83,7 +112,7 @@ jQuery(document).ready(function($) {
         var omega_m = 0.27;
         var omega_k = 1.0 - omega_m - omega_v;
 
-//        TODO get integral by Simpson's rule
+//        TODO get integral by (Adaptive) Simpson's rule
         var val = quad(redshift_to_distance_func, 0.0, z, (omega_m, omega_k, omega_v))[0];
         var dh = 300000.0/hubble;
         val = val*dh;
