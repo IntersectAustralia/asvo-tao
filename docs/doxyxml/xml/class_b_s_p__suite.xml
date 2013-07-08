@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="class_b_s_p__suite" kind="class" prot="public">
+    <compoundname>BSP_suite</compoundname>
+    <basecompoundref refid="class_cxx_test_1_1_test_suite" prot="public" virt="non-virtual">CxxTest::TestSuite</basecompoundref>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_b_s_p__suite_1ad61c9cc680de891fe6470545227261fe" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void BSP_suite::test_BSP</definition>
+        <argsstring>()</argsstring>
+        <name>test_BSP</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/BSPTree_Test.hh" line="23" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/BSPTree_Test.hh" bodystart="22" bodyend="52"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="20">
+        <label>BSP_suite</label>
+        <link refid="class_b_s_p__suite"/>
+        <childnode refid="21" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="21">
+        <label>CxxTest::TestSuite</label>
+        <link refid="class_cxx_test_1_1_test_suite"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="22">
+        <label>BSP_suite</label>
+        <link refid="class_b_s_p__suite"/>
+        <childnode refid="23" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="23">
+        <label>CxxTest::TestSuite</label>
+        <link refid="class_cxx_test_1_1_test_suite"/>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/BSPTree_Test.hh" line="18" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/BSPTree_Test.hh" bodystart="17" bodyend="53"/>
+    <listofallmembers>
+      <member refid="class_cxx_test_1_1_test_suite_1a03e7e9428316d10a22d44d20811192fb" prot="public" virt="virtual"><scope>BSP_suite</scope><name>setUp</name></member>
+      <member refid="class_cxx_test_1_1_test_suite_1aa871c96da869344962b1435b72bcea13" prot="public" virt="virtual"><scope>BSP_suite</scope><name>tearDown</name></member>
+      <member refid="class_b_s_p__suite_1ad61c9cc680de891fe6470545227261fe" prot="public" virt="non-virtual"><scope>BSP_suite</scope><name>test_BSP</name></member>
+      <member refid="class_cxx_test_1_1_test_suite_1a647ce2d9feb3f7450506fdb372f982f1" prot="public" virt="virtual"><scope>BSP_suite</scope><name>~TestSuite</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

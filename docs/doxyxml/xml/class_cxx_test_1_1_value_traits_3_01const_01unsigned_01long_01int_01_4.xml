@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="class_cxx_test_1_1_value_traits_3_01const_01unsigned_01long_01int_01_4" kind="class" prot="public">
+    <compoundname>CxxTest::ValueTraits&lt; const unsigned long int &gt;</compoundname>
+      <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="class_cxx_test_1_1_value_traits_3_01const_01unsigned_01long_01int_01_4_1a692f4b0b5213d8fe28615c04ffb46b68" prot="private" static="no">
+        <type>unsigned long int</type>
+        <definition>typedef unsigned long int CxxTest::ValueTraits&lt; const unsigned long int &gt;::T</definition>
+        <argsstring></argsstring>
+        <name>T</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" line="259" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" bodystart="259" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_cxx_test_1_1_value_traits_3_01const_01unsigned_01long_01int_01_4_1a32812b785f320795869d2c698e7a5f46" prot="private" static="no" mutable="no">
+        <type>char</type>
+        <definition>char CxxTest::ValueTraits&lt; const unsigned long int &gt;::_asString[1+3 *sizeof(T)]</definition>
+        <argsstring>[1+3 *sizeof(T)]</argsstring>
+        <name>_asString</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" line="260" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" bodystart="260" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_cxx_test_1_1_value_traits_3_01const_01unsigned_01long_01int_01_4_1a1bdab0f349d92d078f5aa24a133f4307" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::ValueTraits&lt; const unsigned long int &gt;::ValueTraits</definition>
+        <argsstring>(T t)</argsstring>
+        <name>ValueTraits</name>
+        <param>
+          <type>T</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" line="262" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" bodystart="262" bodyend="262"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_value_traits_3_01const_01unsigned_01long_01int_01_4_1adf3b969d89db1885a6e4e8ed197d8fc3" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const char *</type>
+        <definition>const char* CxxTest::ValueTraits&lt; const unsigned long int &gt;::asString</definition>
+        <argsstring>(void) const </argsstring>
+        <name>asString</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" line="263" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" bodystart="263" bodyend="263"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" line="258" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" bodystart="257" bodyend="264"/>
+    <listofallmembers>
+      <member refid="class_cxx_test_1_1_value_traits_3_01const_01unsigned_01long_01int_01_4_1a32812b785f320795869d2c698e7a5f46" prot="private" virt="non-virtual"><scope>CxxTest::ValueTraits&lt; const unsigned long int &gt;</scope><name>_asString</name></member>
+      <member refid="class_cxx_test_1_1_value_traits_3_01const_01unsigned_01long_01int_01_4_1adf3b969d89db1885a6e4e8ed197d8fc3" prot="public" virt="non-virtual"><scope>CxxTest::ValueTraits&lt; const unsigned long int &gt;</scope><name>asString</name></member>
+      <member refid="class_cxx_test_1_1_value_traits_3_01const_01unsigned_01long_01int_01_4_1a692f4b0b5213d8fe28615c04ffb46b68" prot="private" virt="non-virtual"><scope>CxxTest::ValueTraits&lt; const unsigned long int &gt;</scope><name>T</name></member>
+      <member refid="class_cxx_test_1_1_value_traits_3_01const_01unsigned_01long_01int_01_4_1a1bdab0f349d92d078f5aa24a133f4307" prot="public" virt="non-virtual"><scope>CxxTest::ValueTraits&lt; const unsigned long int &gt;</scope><name>ValueTraits</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

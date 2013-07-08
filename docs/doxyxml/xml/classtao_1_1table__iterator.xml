@@ -1,0 +1,533 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="classtao_1_1table__iterator" kind="class" prot="public">
+    <compoundname>tao::table_iterator</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">boost::iterator_facade&lt; table_iterator&lt; T &gt;, const std::string &amp;, std::forward_iterator_tag &gt;</basecompoundref>
+    <templateparamlist>
+      <param>
+        <type>class T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classtao_1_1table__iterator_1ac6e342b6901cad7608d58597de67f2a3" prot="public" static="no">
+        <type>T</type>
+        <definition>typedef T tao::table_iterator&lt; T &gt;::real_type</definition>
+        <argsstring></argsstring>
+        <name>real_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" line="24" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" bodystart="24" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classtao_1_1table__iterator_1a24b1f8a83adf65fe6f6a49186b5a191c" prot="public" static="no">
+        <type>const std::string &amp;</type>
+        <definition>typedef const std::string&amp; tao::table_iterator&lt; T &gt;::value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" line="25" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" bodystart="25" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classtao_1_1table__iterator_1a923b0ae7a09ae8f57cdf68604c501102" prot="public" static="no">
+        <type>value_type</type>
+        <definition>typedef value_type tao::table_iterator&lt; T &gt;::reference_type</definition>
+        <argsstring></argsstring>
+        <name>reference_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" line="26" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" bodystart="26" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="friend">
+      <memberdef kind="friend" id="classtao_1_1table__iterator_1ac09f73e325921cc50ebcd96bed0f8096" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend class</type>
+        <definition>friend class boost::iterator_core_access</definition>
+        <argsstring></argsstring>
+        <name>boost::iterator_core_access</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" line="20" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" bodystart="20" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classtao_1_1table__iterator_1a41b2d7d09892a4af166ceae72662ff69" prot="protected" static="no" mutable="no">
+        <type>list&lt; array&lt; real_type, 3 &gt; &gt;</type>
+        <definition>list&lt;array&lt;real_type,3&gt; &gt; tao::table_iterator&lt; T &gt;::_ph</definition>
+        <argsstring></argsstring>
+        <name>_ph</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" line="383" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" bodystart="383" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1table__iterator_1a7aa9b895665843cb092ab46cc9dea5f9" prot="protected" static="no" mutable="no">
+        <type>list&lt; array&lt; real_type, 4 &gt; &gt;</type>
+        <definition>list&lt;array&lt;real_type,4&gt; &gt; tao::table_iterator&lt; T &gt;::_planes</definition>
+        <argsstring></argsstring>
+        <name>_planes</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" line="384" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" bodystart="384" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1table__iterator_1aeba1f9f9e24897acdb214713e93f8c53" prot="protected" static="no" mutable="no">
+        <type>vector&lt; array&lt; real_type, 3 &gt; &gt;</type>
+        <definition>vector&lt;array&lt;real_type,3&gt; &gt; tao::table_iterator&lt; T &gt;::_walls</definition>
+        <argsstring></argsstring>
+        <name>_walls</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" line="385" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" bodystart="385" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1table__iterator_1a875ea30df3b0ef7dca2b23cf9a656d03" prot="protected" static="no" mutable="no">
+        <type>vector&lt; string &gt;</type>
+        <definition>vector&lt;string&gt; tao::table_iterator&lt; T &gt;::_table_names</definition>
+        <argsstring></argsstring>
+        <name>_table_names</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" line="387" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" bodystart="387" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1table__iterator_1a86578f48bb61a6c7ecfb31bf867e430b" prot="protected" static="no" mutable="no">
+        <type>vector&lt; string &gt;::const_iterator</type>
+        <definition>vector&lt;string&gt;::const_iterator tao::table_iterator&lt; T &gt;::_it</definition>
+        <argsstring></argsstring>
+        <name>_it</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" line="388" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" bodystart="388" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1table__iterator_1a29f53e187d688fa4aea37e887e98af67" prot="protected" static="no" mutable="no">
+        <type>soci::session &amp;</type>
+        <definition>soci::session&amp; tao::table_iterator&lt; T &gt;::_sql</definition>
+        <argsstring></argsstring>
+        <name>_sql</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" line="393" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" bodystart="393" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1table__iterator_1a6bfe3778325c8f9b2a1b917d8e1c77a6" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::table_iterator&lt; T &gt;::_box_size</definition>
+        <argsstring></argsstring>
+        <name>_box_size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" line="395" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" bodystart="395" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1table__iterator_1ac9a239e041cb02adadfc719d515ac806" prot="protected" static="no" mutable="no">
+        <type>array&lt; real_type, 3 &gt;</type>
+        <definition>array&lt;real_type,3&gt; tao::table_iterator&lt; T &gt;::_box</definition>
+        <argsstring></argsstring>
+        <name>_box</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" line="396" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" bodystart="396" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1table__iterator_1a5ece88bb96819fa87dd4f50cf72bfc92" prot="protected" static="no" mutable="no">
+        <type>array&lt; real_type, 3 &gt;</type>
+        <definition>array&lt;real_type,3&gt; tao::table_iterator&lt; T &gt;::_offs</definition>
+        <argsstring></argsstring>
+        <name>_offs</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" line="397" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" bodystart="397" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1table__iterator_1ab4bd270b95037d4a519c85eacbc0d893" prot="protected" static="no" mutable="no">
+        <type>array&lt; int, 3 &gt;</type>
+        <definition>array&lt;int,3&gt; tao::table_iterator&lt; T &gt;::_axis</definition>
+        <argsstring></argsstring>
+        <name>_axis</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" line="398" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" bodystart="398" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1table__iterator_1ad214ec325c638d23862f623d45d80fb5" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::table_iterator&lt; T &gt;::_ra_min</definition>
+        <argsstring></argsstring>
+        <name>_ra_min</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" line="399" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" bodystart="399" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1table__iterator_1afe4acee86c077495ace0091d446e1059" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::table_iterator&lt; T &gt;::_ra_max</definition>
+        <argsstring></argsstring>
+        <name>_ra_max</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" line="399" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" bodystart="399" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1table__iterator_1a9c92e00b817db896d166bf11e0274096" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::table_iterator&lt; T &gt;::_dec_min</definition>
+        <argsstring></argsstring>
+        <name>_dec_min</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" line="400" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" bodystart="400" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1table__iterator_1af05866f6789022d44adda9d2276a5745" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::table_iterator&lt; T &gt;::_dec_max</definition>
+        <argsstring></argsstring>
+        <name>_dec_max</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" line="400" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" bodystart="400" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1table__iterator_1a4c36c4bde3b1004f4fb43eff0ced2919" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::table_iterator&lt; T &gt;::_max_dist</definition>
+        <argsstring></argsstring>
+        <name>_max_dist</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" line="401" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" bodystart="401" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classtao_1_1table__iterator_1a0733718555c057513177e6007e8a94cf" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>tao::table_iterator&lt; T &gt;::table_iterator</definition>
+        <argsstring>(soci::session &amp;sql, real_type box_size, const array&lt; real_type, 3 &gt; &amp;box, const array&lt; real_type, 3 &gt; &amp;offset, const array&lt; int, 3 &gt; &amp;axis, real_type ra_min, real_type ra_max, real_type dec_min, real_type dec_max, real_type max_dist)</argsstring>
+        <name>table_iterator</name>
+        <param>
+          <type>soci::session &amp;</type>
+          <declname>sql</declname>
+        </param>
+        <param>
+          <type>real_type</type>
+          <declname>box_size</declname>
+        </param>
+        <param>
+          <type>const array&lt; real_type, 3 &gt; &amp;</type>
+          <declname>box</declname>
+        </param>
+        <param>
+          <type>const array&lt; real_type, 3 &gt; &amp;</type>
+          <declname>offset</declname>
+        </param>
+        <param>
+          <type>const array&lt; int, 3 &gt; &amp;</type>
+          <declname>axis</declname>
+        </param>
+        <param>
+          <type>real_type</type>
+          <declname>ra_min</declname>
+        </param>
+        <param>
+          <type>real_type</type>
+          <declname>ra_max</declname>
+        </param>
+        <param>
+          <type>real_type</type>
+          <declname>dec_min</declname>
+        </param>
+        <param>
+          <type>real_type</type>
+          <declname>dec_max</declname>
+        </param>
+        <param>
+          <type>real_type</type>
+          <declname>max_dist</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" line="59" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" bodystart="28" bodyend="83"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1table__iterator_1ae87b07e041abecd19ed07f1dc234d082" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool tao::table_iterator&lt; T &gt;::done</definition>
+        <argsstring>() const </argsstring>
+        <name>done</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" line="87" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" bodystart="86" bodyend="89"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classtao_1_1table__iterator_1ab2e160df24f9c51faf060bbe754e88a6" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::table_iterator&lt; T &gt;::increment</definition>
+        <argsstring>()</argsstring>
+        <name>increment</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" line="95" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" bodystart="94" bodyend="97"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1table__iterator_1aa50bfc89ded0d1a66b7a954e8b902c11" prot="protected" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool tao::table_iterator&lt; T &gt;::equal</definition>
+        <argsstring>(const table_iterator &amp;op) const </argsstring>
+        <name>equal</name>
+        <param>
+          <type>const <ref refid="classtao_1_1table__iterator" kindref="compound">table_iterator</ref> &amp;</type>
+          <declname>op</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" line="101" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" bodystart="100" bodyend="103"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1table__iterator_1aaf5d686ccf8d2dd9b7163c359fe8e524" prot="protected" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const reference_type</type>
+        <definition>const reference_type tao::table_iterator&lt; T &gt;::dereference</definition>
+        <argsstring>() const </argsstring>
+        <name>dereference</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" line="107" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" bodystart="106" bodyend="109"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1table__iterator_1a272e8a6b0b2dd4712ea114a34b373115" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::table_iterator&lt; T &gt;::_begin</definition>
+        <argsstring>()</argsstring>
+        <name>_begin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" line="113" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" bodystart="112" bodyend="190"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1table__iterator_1acd949ecbef563064be3acbb6b436e9de" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool tao::table_iterator&lt; T &gt;::_check_overlap</definition>
+        <argsstring>(const array&lt; real_type, 3 &gt; &amp;min, const array&lt; real_type, 3 &gt; &amp;max)</argsstring>
+        <name>_check_overlap</name>
+        <param>
+          <type>const array&lt; real_type, 3 &gt; &amp;</type>
+          <declname>min</declname>
+        </param>
+        <param>
+          <type>const array&lt; real_type, 3 &gt; &amp;</type>
+          <declname>max</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" line="195" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" bodystart="193" bodyend="233"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1table__iterator_1a20f50300f038c5d48707527e99439312" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::table_iterator&lt; T &gt;::_calc_polyhedron</definition>
+        <argsstring>()</argsstring>
+        <name>_calc_polyhedron</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" line="237" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" bodystart="236" bodyend="292"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1table__iterator_1aa4adb164c27a9ce36d9200d6abdb7b89" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::table_iterator&lt; T &gt;::_calc_polygon_planes</definition>
+        <argsstring>()</argsstring>
+        <name>_calc_polygon_planes</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" line="296" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" bodystart="295" bodyend="359"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1table__iterator_1aa60fd176d4a8a0375752c8a237e83422" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Point</type>
+          </param>
+          <param>
+            <type>class Plane</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tao::table_iterator&lt; T &gt;::_calc_plane</definition>
+        <argsstring>(const Point &amp;point_a, const Point &amp;point_b, const Point &amp;point_c, Plane &amp;plane)</argsstring>
+        <name>_calc_plane</name>
+        <param>
+          <type>const Point &amp;</type>
+          <declname>point_a</declname>
+        </param>
+        <param>
+          <type>const Point &amp;</type>
+          <declname>point_b</declname>
+        </param>
+        <param>
+          <type>const Point &amp;</type>
+          <declname>point_c</declname>
+        </param>
+        <param>
+          <type>Plane &amp;</type>
+          <declname>plane</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" line="368" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" bodystart="364" bodyend="379"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="372">
+        <label>boost::iterator_facade&lt; table_iterator&lt;T&gt;, const std::string&amp;, std::forward_iterator_tag &gt;</label>
+      </node>
+      <node id="371">
+        <label>tao::table_iterator&lt; T &gt;</label>
+        <link refid="classtao_1_1table__iterator"/>
+        <childnode refid="372" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="374">
+        <label>boost::iterator_facade&lt; table_iterator&lt;T&gt;, const std::string&amp;, std::forward_iterator_tag &gt;</label>
+      </node>
+      <node id="373">
+        <label>tao::table_iterator&lt; T &gt;</label>
+        <link refid="classtao_1_1table__iterator"/>
+        <childnode refid="374" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" line="19" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/table_iterator.hh" bodystart="15" bodyend="402"/>
+    <listofallmembers>
+      <member refid="classtao_1_1table__iterator_1ab4bd270b95037d4a519c85eacbc0d893" prot="protected" virt="non-virtual"><scope>tao::table_iterator</scope><name>_axis</name></member>
+      <member refid="classtao_1_1table__iterator_1a272e8a6b0b2dd4712ea114a34b373115" prot="protected" virt="non-virtual"><scope>tao::table_iterator</scope><name>_begin</name></member>
+      <member refid="classtao_1_1table__iterator_1ac9a239e041cb02adadfc719d515ac806" prot="protected" virt="non-virtual"><scope>tao::table_iterator</scope><name>_box</name></member>
+      <member refid="classtao_1_1table__iterator_1a6bfe3778325c8f9b2a1b917d8e1c77a6" prot="protected" virt="non-virtual"><scope>tao::table_iterator</scope><name>_box_size</name></member>
+      <member refid="classtao_1_1table__iterator_1aa60fd176d4a8a0375752c8a237e83422" prot="protected" virt="non-virtual"><scope>tao::table_iterator</scope><name>_calc_plane</name></member>
+      <member refid="classtao_1_1table__iterator_1aa4adb164c27a9ce36d9200d6abdb7b89" prot="protected" virt="non-virtual"><scope>tao::table_iterator</scope><name>_calc_polygon_planes</name></member>
+      <member refid="classtao_1_1table__iterator_1a20f50300f038c5d48707527e99439312" prot="protected" virt="non-virtual"><scope>tao::table_iterator</scope><name>_calc_polyhedron</name></member>
+      <member refid="classtao_1_1table__iterator_1acd949ecbef563064be3acbb6b436e9de" prot="protected" virt="non-virtual"><scope>tao::table_iterator</scope><name>_check_overlap</name></member>
+      <member refid="classtao_1_1table__iterator_1af05866f6789022d44adda9d2276a5745" prot="protected" virt="non-virtual"><scope>tao::table_iterator</scope><name>_dec_max</name></member>
+      <member refid="classtao_1_1table__iterator_1a9c92e00b817db896d166bf11e0274096" prot="protected" virt="non-virtual"><scope>tao::table_iterator</scope><name>_dec_min</name></member>
+      <member refid="classtao_1_1table__iterator_1a86578f48bb61a6c7ecfb31bf867e430b" prot="protected" virt="non-virtual"><scope>tao::table_iterator</scope><name>_it</name></member>
+      <member refid="classtao_1_1table__iterator_1a4c36c4bde3b1004f4fb43eff0ced2919" prot="protected" virt="non-virtual"><scope>tao::table_iterator</scope><name>_max_dist</name></member>
+      <member refid="classtao_1_1table__iterator_1a5ece88bb96819fa87dd4f50cf72bfc92" prot="protected" virt="non-virtual"><scope>tao::table_iterator</scope><name>_offs</name></member>
+      <member refid="classtao_1_1table__iterator_1a41b2d7d09892a4af166ceae72662ff69" prot="protected" virt="non-virtual"><scope>tao::table_iterator</scope><name>_ph</name></member>
+      <member refid="classtao_1_1table__iterator_1a7aa9b895665843cb092ab46cc9dea5f9" prot="protected" virt="non-virtual"><scope>tao::table_iterator</scope><name>_planes</name></member>
+      <member refid="classtao_1_1table__iterator_1afe4acee86c077495ace0091d446e1059" prot="protected" virt="non-virtual"><scope>tao::table_iterator</scope><name>_ra_max</name></member>
+      <member refid="classtao_1_1table__iterator_1ad214ec325c638d23862f623d45d80fb5" prot="protected" virt="non-virtual"><scope>tao::table_iterator</scope><name>_ra_min</name></member>
+      <member refid="classtao_1_1table__iterator_1a29f53e187d688fa4aea37e887e98af67" prot="protected" virt="non-virtual"><scope>tao::table_iterator</scope><name>_sql</name></member>
+      <member refid="classtao_1_1table__iterator_1a875ea30df3b0ef7dca2b23cf9a656d03" prot="protected" virt="non-virtual"><scope>tao::table_iterator</scope><name>_table_names</name></member>
+      <member refid="classtao_1_1table__iterator_1aeba1f9f9e24897acdb214713e93f8c53" prot="protected" virt="non-virtual"><scope>tao::table_iterator</scope><name>_walls</name></member>
+      <member refid="classtao_1_1table__iterator_1ac09f73e325921cc50ebcd96bed0f8096" prot="public" virt="non-virtual"><scope>tao::table_iterator</scope><name>boost::iterator_core_access</name></member>
+      <member refid="classtao_1_1table__iterator_1aaf5d686ccf8d2dd9b7163c359fe8e524" prot="protected" virt="non-virtual"><scope>tao::table_iterator</scope><name>dereference</name></member>
+      <member refid="classtao_1_1table__iterator_1ae87b07e041abecd19ed07f1dc234d082" prot="public" virt="non-virtual"><scope>tao::table_iterator</scope><name>done</name></member>
+      <member refid="classtao_1_1table__iterator_1aa50bfc89ded0d1a66b7a954e8b902c11" prot="protected" virt="non-virtual"><scope>tao::table_iterator</scope><name>equal</name></member>
+      <member refid="classtao_1_1table__iterator_1ab2e160df24f9c51faf060bbe754e88a6" prot="protected" virt="non-virtual"><scope>tao::table_iterator</scope><name>increment</name></member>
+      <member refid="classtao_1_1table__iterator_1ac6e342b6901cad7608d58597de67f2a3" prot="public" virt="non-virtual"><scope>tao::table_iterator</scope><name>real_type</name></member>
+      <member refid="classtao_1_1table__iterator_1a923b0ae7a09ae8f57cdf68604c501102" prot="public" virt="non-virtual"><scope>tao::table_iterator</scope><name>reference_type</name></member>
+      <member refid="classtao_1_1table__iterator_1a0733718555c057513177e6007e8a94cf" prot="public" virt="non-virtual"><scope>tao::table_iterator</scope><name>table_iterator</name></member>
+      <member refid="classtao_1_1table__iterator_1a24b1f8a83adf65fe6f6a49186b5a191c" prot="public" virt="non-virtual"><scope>tao::table_iterator</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

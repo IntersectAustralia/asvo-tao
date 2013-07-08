@@ -1,0 +1,654 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="namespacetao" kind="namespace">
+    <compoundname>tao</compoundname>
+    <innerclass refid="classtao_1_1application" prot="public">tao::application</innerclass>
+    <innerclass refid="classtao_1_1factory__type" prot="public">tao::factory_type</innerclass>
+    <innerclass refid="structtao_1_1flat__info" prot="public">tao::flat_info</innerclass>
+    <innerclass refid="classtao_1_1galaxy" prot="public">tao::galaxy</innerclass>
+    <innerclass refid="classtao_1_1module" prot="public">tao::module</innerclass>
+    <innerclass refid="classtao_1_1_server_info" prot="public">tao::ServerInfo</innerclass>
+    <innerclass refid="classtao_1_1multidb" prot="public">tao::multidb</innerclass>
+    <innerclass refid="classtao_1_1pipeline" prot="public">tao::pipeline</innerclass>
+    <innerclass refid="classtao_1_1pipeline__application" prot="public">tao::pipeline_application</innerclass>
+    <innerclass refid="structtao_1_1_b_s_p_rectangle" prot="public">tao::BSPRectangle</innerclass>
+    <innerclass refid="classtao_1_1_b_s_p2_d_point" prot="public">tao::BSP2DPoint</innerclass>
+    <innerclass refid="classtao_1_1_b_s_ptree" prot="public">tao::BSPtree</innerclass>
+    <innerclass refid="classtao_1_1csv" prot="public">tao::csv</innerclass>
+    <innerclass refid="classtao_1_1dust" prot="public">tao::dust</innerclass>
+    <innerclass refid="classtao_1_1empty" prot="public">tao::empty</innerclass>
+    <innerclass refid="classtao_1_1filter" prot="public">tao::filter</innerclass>
+    <innerclass refid="classtao_1_1fits" prot="public">tao::fits</innerclass>
+    <innerclass refid="classtao_1_1geometry__iterator" prot="public">tao::geometry_iterator</innerclass>
+    <innerclass refid="classtao_1_1hdf5" prot="public">tao::hdf5</innerclass>
+    <innerclass refid="classtao_1_1lightcone" prot="public">tao::lightcone</innerclass>
+    <innerclass refid="classtao_1_1sed" prot="public">tao::sed</innerclass>
+    <innerclass refid="structtao_1_1_basic_settings" prot="public">tao::BasicSettings</innerclass>
+    <innerclass refid="structtao_1_1_output_field" prot="public">tao::OutputField</innerclass>
+    <innerclass refid="structtao_1_1_light_cone_params" prot="public">tao::LightConeParams</innerclass>
+    <innerclass refid="classtao_1_1_setting_reader" prot="public">tao::SettingReader</innerclass>
+    <innerclass refid="classtao_1_1skymaker" prot="public">tao::skymaker</innerclass>
+    <innerclass refid="classtao_1_1table__iterator" prot="public">tao::table_iterator</innerclass>
+    <innerclass refid="classtao_1_1votable" prot="public">tao::votable</innerclass>
+    <innernamespace refid="namespacetao_1_1sage">tao::sage</innernamespace>
+    <innernamespace refid="namespacetao_1_1subfind">tao::subfind</innernamespace>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="namespacetao_1a570ce4b4fbd349c78ce07a2c6f31b41e" prot="public" static="no">
+        <type>double</type>
+        <definition>typedef double tao::real_type</definition>
+        <argsstring></argsstring>
+        <name>real_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/globals.hh" line="11" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/globals.hh" bodystart="11" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="var">
+      <memberdef kind="variable" id="namespacetao_1a47b38bd5197d81fe609c72f3c2727c00" prot="public" static="no" mutable="no">
+        <type><ref refid="classtao_1_1factory__type" kindref="compound">factory_type</ref></type>
+        <definition>factory_type tao::factory</definition>
+        <argsstring></argsstring>
+        <name>factory</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/factory.cc" line="6" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/factory.cc" bodystart="6" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacetao_1a99ca814c67789c788aaeffff7a409f48" prot="public" static="no" mutable="no">
+        <type>posix::time_type</type>
+        <definition>posix::time_type tao::tao_start_time</definition>
+        <argsstring></argsstring>
+        <name>tao_start_time</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/globals.cc" line="5" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/globals.cc" bodystart="5" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacetao_1ae07505080c052997917a89dd7b23b290" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tao::make_hdf5_types</definition>
+        <argsstring>(hpc::h5::datatype &amp;mem_type, hpc::h5::datatype &amp;file_type)</argsstring>
+        <name>make_hdf5_types</name>
+        <param>
+          <type>hpc::h5::datatype &amp;</type>
+          <declname>mem_type</declname>
+        </param>
+        <param>
+          <type>hpc::h5::datatype &amp;</type>
+          <declname>file_type</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/flat.hh" line="22" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/flat.hh" bodystart="20" bodyend="45"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetao_1a2475173217762e4a68861f58d8b41fbd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::ostream &amp;</type>
+        <definition>std::ostream&amp; tao::operator&lt;&lt;</definition>
+        <argsstring>(std::ostream &amp;strm, const galaxy &amp;obj)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>strm</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classtao_1_1galaxy" kindref="compound">galaxy</ref> &amp;</type>
+          <declname>obj</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.cc" line="261" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.cc" bodystart="259" bodyend="263"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetao_1adc86e510d0094d7575c48478b04af7c7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>double</type>
+        <definition>double tao::runtime</definition>
+        <argsstring>()</argsstring>
+        <name>runtime</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/globals.cc" line="9" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/globals.cc" bodystart="8" bodyend="11"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetao_1ab59f6f295f7a68c094c0ef94133b8e0a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Iterator1</type>
+          </param>
+          <param>
+            <type>class Iterator2</type>
+          </param>
+        </templateparamlist>
+        <type>std::iterator_traits&lt; Iterator1 &gt;::value_type</type>
+        <definition>std::iterator_traits&lt;Iterator1&gt;::value_type tao::inner_product</definition>
+        <argsstring>(Iterator1 first1, const Iterator1 &amp;last1, Iterator2 first2)</argsstring>
+        <name>inner_product</name>
+        <param>
+          <type>Iterator1</type>
+          <declname>first1</declname>
+        </param>
+        <param>
+          <type>const Iterator1 &amp;</type>
+          <declname>last1</declname>
+        </param>
+        <param>
+          <type>Iterator2</type>
+          <declname>first2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/clip.hh" line="17" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/clip.hh" bodystart="14" bodyend="23"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetao_1ac4191630c276f6a6c0e5f47aaec3833c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class PointIterator</type>
+          </param>
+          <param>
+            <type>class HalfSpaceIterator</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool tao::inside</definition>
+        <argsstring>(PointIterator point_first, const PointIterator &amp;point_last, HalfSpaceIterator half_space_first, typename std::iterator_traits&lt; PointIterator &gt;::value_type epsilon=1e-8)</argsstring>
+        <name>inside</name>
+        <param>
+          <type>PointIterator</type>
+          <declname>point_first</declname>
+        </param>
+        <param>
+          <type>const PointIterator &amp;</type>
+          <declname>point_last</declname>
+        </param>
+        <param>
+          <type>HalfSpaceIterator</type>
+          <declname>half_space_first</declname>
+        </param>
+        <param>
+          <type>typename std::iterator_traits&lt; PointIterator &gt;::value_type</type>
+          <declname>epsilon</declname>
+          <defval>1e-8</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/clip.hh" line="32" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/clip.hh" bodystart="28" bodyend="38"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetao_1aee6013935cf5a78d7fa080c450037985" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class PointIterator</type>
+          </param>
+          <param>
+            <type>class HalfSpaceIterator</type>
+          </param>
+        </templateparamlist>
+        <type>std::iterator_traits&lt; PointIterator &gt;::value_type</type>
+        <definition>std::iterator_traits&lt;PointIterator&gt;::value_type tao::half_space_eval</definition>
+        <argsstring>(PointIterator point_first, const PointIterator &amp;point_last, HalfSpaceIterator half_space_first)</argsstring>
+        <name>half_space_eval</name>
+        <param>
+          <type>PointIterator</type>
+          <declname>point_first</declname>
+        </param>
+        <param>
+          <type>const PointIterator &amp;</type>
+          <declname>point_last</declname>
+        </param>
+        <param>
+          <type>HalfSpaceIterator</type>
+          <declname>half_space_first</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/clip.hh" line="46" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/clip.hh" bodystart="43" bodyend="52"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetao_1a433e10137967d997e51f26c69dbd5792" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Point1Iterator</type>
+          </param>
+          <param>
+            <type>class Point2Iterator</type>
+          </param>
+          <param>
+            <type>class HalfSpaceIterator</type>
+          </param>
+          <param>
+            <type>class ResultIterator</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tao::line_half_space_intersection</definition>
+        <argsstring>(Point1Iterator point1_first, const Point1Iterator &amp;point1_last, Point2Iterator point2_first, const Point2Iterator &amp;point2_last, HalfSpaceIterator half_space_first, ResultIterator result)</argsstring>
+        <name>line_half_space_intersection</name>
+        <param>
+          <type>Point1Iterator</type>
+          <declname>point1_first</declname>
+        </param>
+        <param>
+          <type>const Point1Iterator &amp;</type>
+          <declname>point1_last</declname>
+        </param>
+        <param>
+          <type>Point2Iterator</type>
+          <declname>point2_first</declname>
+        </param>
+        <param>
+          <type>const Point2Iterator &amp;</type>
+          <declname>point2_last</declname>
+        </param>
+        <param>
+          <type>HalfSpaceIterator</type>
+          <declname>half_space_first</declname>
+        </param>
+        <param>
+          <type>ResultIterator</type>
+          <declname>result</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/clip.hh" line="65" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/clip.hh" bodystart="59" bodyend="95"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetao_1a251cbd416d5d014c283cd5eaf5c30f84" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class MinIterator</type>
+          </param>
+          <param>
+            <type>class MaxIterator</type>
+          </param>
+          <param>
+            <type>class HalfSpaceIterator</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool tao::box_half_space_overlap</definition>
+        <argsstring>(MinIterator min_first, const MinIterator &amp;min_last, MaxIterator max_first, HalfSpaceIterator half_space_first, typename std::iterator_traits&lt; MinIterator &gt;::value_type epsilon=1e-8)</argsstring>
+        <name>box_half_space_overlap</name>
+        <param>
+          <type>MinIterator</type>
+          <declname>min_first</declname>
+        </param>
+        <param>
+          <type>const MinIterator &amp;</type>
+          <declname>min_last</declname>
+        </param>
+        <param>
+          <type>MaxIterator</type>
+          <declname>max_first</declname>
+        </param>
+        <param>
+          <type>HalfSpaceIterator</type>
+          <declname>half_space_first</declname>
+        </param>
+        <param>
+          <type>typename std::iterator_traits&lt; MinIterator &gt;::value_type</type>
+          <declname>epsilon</declname>
+          <defval>1e-8</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/clip.hh" line="106" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/clip.hh" bodystart="101" bodyend="138"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetao_1af524ed899b6f25e781e352348edbd1ff" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class MinIterator</type>
+          </param>
+          <param>
+            <type>class MaxIterator</type>
+          </param>
+          <param>
+            <type>class HalfSpaceIterator</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool tao::box_half_space_intersection</definition>
+        <argsstring>(MinIterator min_first, const MinIterator &amp;min_last, MaxIterator max_first, HalfSpaceIterator half_space_first)</argsstring>
+        <name>box_half_space_intersection</name>
+        <param>
+          <type>MinIterator</type>
+          <declname>min_first</declname>
+        </param>
+        <param>
+          <type>const MinIterator &amp;</type>
+          <declname>min_last</declname>
+        </param>
+        <param>
+          <type>MaxIterator</type>
+          <declname>max_first</declname>
+        </param>
+        <param>
+          <type>HalfSpaceIterator</type>
+          <declname>half_space_first</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/clip.hh" line="148" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/clip.hh" bodystart="144" bodyend="193"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetao_1a4e8b4b3a92e1ae2a12bd5391a397be8a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class MinIterator</type>
+          </param>
+          <param>
+            <type>class MaxIterator</type>
+          </param>
+          <param>
+            <type>class MinBndIterator</type>
+          </param>
+          <param>
+            <type>class MaxBndIterator</type>
+          </param>
+          <param>
+            <type>class ResultMinIterator</type>
+          </param>
+          <param>
+            <type>class ResultMaxIterator</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tao::box_box_clip</definition>
+        <argsstring>(MinIterator min_first, const MinIterator &amp;min_last, MaxIterator max_first, MinBndIterator bnd_min_first, MaxBndIterator bnd_max_first, ResultMinIterator min_result, ResultMaxIterator max_result)</argsstring>
+        <name>box_box_clip</name>
+        <param>
+          <type>MinIterator</type>
+          <declname>min_first</declname>
+        </param>
+        <param>
+          <type>const MinIterator &amp;</type>
+          <declname>min_last</declname>
+        </param>
+        <param>
+          <type>MaxIterator</type>
+          <declname>max_first</declname>
+        </param>
+        <param>
+          <type>MinBndIterator</type>
+          <declname>bnd_min_first</declname>
+        </param>
+        <param>
+          <type>MaxBndIterator</type>
+          <declname>bnd_max_first</declname>
+        </param>
+        <param>
+          <type>ResultMinIterator</type>
+          <declname>min_result</declname>
+        </param>
+        <param>
+          <type>ResultMaxIterator</type>
+          <declname>max_result</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/clip.hh" line="209" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/clip.hh" bodystart="202" bodyend="231"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetao_1a5c256936f5ceab94bb943e4c3bd254ac" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class MinIterator</type>
+          </param>
+          <param>
+            <type>class MaxIterator</type>
+          </param>
+        </templateparamlist>
+        <type>std::iterator_traits&lt; MinIterator &gt;::value_type</type>
+        <definition>std::iterator_traits&lt;MinIterator&gt;::value_type tao::box_volume</definition>
+        <argsstring>(MinIterator min_first, const MinIterator &amp;min_last, MaxIterator max_first)</argsstring>
+        <name>box_volume</name>
+        <param>
+          <type>MinIterator</type>
+          <declname>min_first</declname>
+        </param>
+        <param>
+          <type>const MinIterator &amp;</type>
+          <declname>min_last</declname>
+        </param>
+        <param>
+          <type>MaxIterator</type>
+          <declname>max_first</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/clip.hh" line="239" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/clip.hh" bodystart="236" bodyend="244"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetao_1a1ae4dbbcbd796adc77faea2637aa235f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class PointIterator</type>
+          </param>
+        </templateparamlist>
+        <type>PointIterator::value_type::value_type</type>
+        <definition>PointIterator::value_type::value_type tao::polygon_area</definition>
+        <argsstring>(PointIterator point_first, const PointIterator &amp;point_last)</argsstring>
+        <name>polygon_area</name>
+        <param>
+          <type>PointIterator</type>
+          <declname>point_first</declname>
+        </param>
+        <param>
+          <type>const PointIterator &amp;</type>
+          <declname>point_last</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/clip.hh" line="250" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/clip.hh" bodystart="248" bodyend="268"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetao_1ac6061e2544109375894480d689fb89a7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class HalfSpaceIterator</type>
+          </param>
+          <param>
+            <type>class PointIterator</type>
+          </param>
+          <param>
+            <type>class ResultIterator</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tao::clip_edge</definition>
+        <argsstring>(const HalfSpaceIterator &amp;half_space, PointIterator first, const PointIterator &amp;last, ResultIterator result)</argsstring>
+        <name>clip_edge</name>
+        <param>
+          <type>const HalfSpaceIterator &amp;</type>
+          <declname>half_space</declname>
+        </param>
+        <param>
+          <type>PointIterator</type>
+          <declname>first</declname>
+        </param>
+        <param>
+          <type>const PointIterator &amp;</type>
+          <declname>last</declname>
+        </param>
+        <param>
+          <type>ResultIterator</type>
+          <declname>result</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/clip.hh" line="278" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/clip.hh" bodystart="274" bodyend="366"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetao_1a55052a19f5ef97ebf528418102828e1d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class PointIterator</type>
+          </param>
+          <param>
+            <type>class ResultIterator</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tao::clip_polygon</definition>
+        <argsstring>(double box_size, PointIterator poly_start, const PointIterator &amp;poly_finish, ResultIterator result)</argsstring>
+        <name>clip_polygon</name>
+        <param>
+          <type>double</type>
+          <declname>box_size</declname>
+        </param>
+        <param>
+          <type>PointIterator</type>
+          <declname>poly_start</declname>
+        </param>
+        <param>
+          <type>const PointIterator &amp;</type>
+          <declname>poly_finish</declname>
+        </param>
+        <param>
+          <type>ResultIterator</type>
+          <declname>result</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/clip.hh" line="375" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/clip.hh" bodystart="371" bodyend="436"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetao_1a8c6f7284d23c317c394a379b2dd67473" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class InputIterator</type>
+          </param>
+          <param>
+            <type>class OutputIterator</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tao::differentiate</definition>
+        <argsstring>(InputIterator func_begin, const InputIterator &amp;func_end, OutputIterator result, typename InputIterator::value_type step_size)</argsstring>
+        <name>differentiate</name>
+        <param>
+          <type>InputIterator</type>
+          <declname>func_begin</declname>
+        </param>
+        <param>
+          <type>const InputIterator &amp;</type>
+          <declname>func_end</declname>
+        </param>
+        <param>
+          <type>OutputIterator</type>
+          <declname>result</declname>
+        </param>
+        <param>
+          <type>typename InputIterator::value_type</type>
+          <declname>step_size</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/diff.hh" line="13" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/diff.hh" bodystart="9" bodyend="40"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetao_1a0f91e1803776f65b2858d8e0710fa1b7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::register_modules</definition>
+        <argsstring>()</argsstring>
+        <name>register_modules</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/register.cc" line="7" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/register.cc" bodystart="6" bodyend="18"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetao_1af52557cc51d2419c667ba69269e19359" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>double</type>
+        <definition>double tao::calc_age_func</definition>
+        <argsstring>(double x, void *param)</argsstring>
+        <name>calc_age_func</name>
+        <param>
+          <type>double</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>param</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.cc" line="16" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.cc" bodystart="14" bodyend="22"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/application.cc" line="10"/>
+  </compounddef>
+</doxygen>

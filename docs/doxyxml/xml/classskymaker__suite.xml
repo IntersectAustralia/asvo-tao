@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="classskymaker__suite" kind="class" prot="public">
+    <compoundname>skymaker_suite</compoundname>
+    <basecompoundref refid="class_cxx_test_1_1_test_suite" prot="public" virt="non-virtual">CxxTest::TestSuite</basecompoundref>
+    <includes refid="skymaker__suite_8t_8hh" local="no">skymaker_suite.t.hh</includes>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classskymaker__suite_1a41f1e0d0123de7f9bd730327c8f6a2d2" prot="public" static="no">
+        <type>skymaker::real_type</type>
+        <definition>typedef skymaker::real_type skymaker_suite::real_type</definition>
+        <argsstring></argsstring>
+        <name>real_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/skymaker_suite.t.hh" line="19" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/skymaker_suite.t.hh" bodystart="19" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classskymaker__suite_1ad4f4883a1e36a72190fd193548252510" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void skymaker_suite::test_default_constructor</definition>
+        <argsstring>()</argsstring>
+        <name>test_default_constructor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Test default constructor. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/skymaker_suite.t.hh" line="25" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/skymaker_suite.t.hh" bodystart="24" bodyend="27"/>
+      </memberdef>
+      <memberdef kind="function" id="classskymaker__suite_1aafbab8f272a735bd159fc54e8d6c1e99" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void skymaker_suite::test_image_constructor</definition>
+        <argsstring>()</argsstring>
+        <name>test_image_constructor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Test image constructor. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/skymaker_suite.t.hh" line="33" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/skymaker_suite.t.hh" bodystart="32" bodyend="65"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Skymaker test suite. </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="329">
+        <label>CxxTest::TestSuite</label>
+        <link refid="class_cxx_test_1_1_test_suite"/>
+      </node>
+      <node id="328">
+        <label>skymaker_suite</label>
+        <link refid="classskymaker__suite"/>
+        <childnode refid="329" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="331">
+        <label>CxxTest::TestSuite</label>
+        <link refid="class_cxx_test_1_1_test_suite"/>
+      </node>
+      <node id="330">
+        <label>skymaker_suite</label>
+        <link refid="classskymaker__suite"/>
+        <childnode refid="331" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/skymaker_suite.t.hh" line="16" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/skymaker_suite.t.hh" bodystart="15" bodyend="66"/>
+    <listofallmembers>
+      <member refid="classskymaker__suite_1a41f1e0d0123de7f9bd730327c8f6a2d2" prot="public" virt="non-virtual"><scope>skymaker_suite</scope><name>real_type</name></member>
+      <member refid="class_cxx_test_1_1_test_suite_1a03e7e9428316d10a22d44d20811192fb" prot="public" virt="virtual"><scope>skymaker_suite</scope><name>setUp</name></member>
+      <member refid="class_cxx_test_1_1_test_suite_1aa871c96da869344962b1435b72bcea13" prot="public" virt="virtual"><scope>skymaker_suite</scope><name>tearDown</name></member>
+      <member refid="classskymaker__suite_1ad4f4883a1e36a72190fd193548252510" prot="public" virt="non-virtual"><scope>skymaker_suite</scope><name>test_default_constructor</name></member>
+      <member refid="classskymaker__suite_1aafbab8f272a735bd159fc54e8d6c1e99" prot="public" virt="non-virtual"><scope>skymaker_suite</scope><name>test_image_constructor</name></member>
+      <member refid="class_cxx_test_1_1_test_suite_1a647ce2d9feb3f7450506fdb372f982f1" prot="public" virt="virtual"><scope>skymaker_suite</scope><name>~TestSuite</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

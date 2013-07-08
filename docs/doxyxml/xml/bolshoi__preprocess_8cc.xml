@@ -1,0 +1,187 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="bolshoi__preprocess_8cc" kind="file">
+    <compoundname>bolshoi_preprocess.cc</compoundname>
+    <includes local="no">iostream</includes>
+    <includes local="no">libhpc/libhpc.hh</includes>
+    <includes refid="utils_8hh" local="yes">utils.hh</includes>
+    <incdepgraph>
+      <node id="45">
+        <label>libhpc/libhpc.hh</label>
+      </node>
+      <node id="46">
+        <label>utils.hh</label>
+        <link refid="utils_8hh_source"/>
+        <childnode refid="45" relation="include">
+        </childnode>
+      </node>
+      <node id="43">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/bolshoi_preprocess.cc</label>
+        <link refid="bolshoi_preprocess.cc"/>
+        <childnode refid="44" relation="include">
+        </childnode>
+        <childnode refid="45" relation="include">
+        </childnode>
+        <childnode refid="46" relation="include">
+        </childnode>
+      </node>
+      <node id="44">
+        <label>iostream</label>
+      </node>
+    </incdepgraph>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="bolshoi__preprocess_8cc_1a0ddf1224851353fc92bfbff6f499fa97" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int main</definition>
+        <argsstring>(int argc, char *argv[])</argsstring>
+        <name>main</name>
+        <param>
+          <type>int</type>
+          <declname>argc</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>argv</declname>
+          <array>[]</array>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/bolshoi_preprocess.cc" line="13" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/bolshoi_preprocess.cc" bodystart="11" bodyend="126"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#include<sp/>&lt;iostream&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;libhpc/libhpc.hh&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;utils.hh&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="keyword">using<sp/>namespace<sp/></highlight><highlight class="normal">hpc;</highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="keywordtype">int</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal">main(<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>argc,</highlight></codeline>
+<codeline lineno="12"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal">*<sp/>argv[]<sp/>)</highlight></codeline>
+<codeline lineno="13"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="14"><highlight class="normal"><sp/><sp/><sp/>mpi::initialise(<sp/>argc,<sp/>argv<sp/>);</highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"><sp/><sp/><sp/>LOG_PUSH(<sp/></highlight><highlight class="keyword">new</highlight><highlight class="normal"><sp/>logging::stdout(<sp/>logging::info<sp/>)<sp/>);</highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Load<sp/>the<sp/>forests.<sp/>The<sp/>file<sp/>contains<sp/>rows<sp/>of</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>forest<sp/>ID<sp/>and<sp/>tree<sp/>ID,<sp/>creating<sp/>a<sp/>multimap.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"><sp/><sp/><sp/>LOGILN(<sp/></highlight><highlight class="stringliteral">&quot;Loading<sp/>forests.&quot;</highlight><highlight class="normal">,<sp/>setindent(<sp/>2<sp/>)<sp/>);</highlight></codeline>
+<codeline lineno="21"><highlight class="normal"><sp/><sp/><sp/>multimap&lt;long<sp/>long,long<sp/>long&gt;<sp/>forests_map;</highlight></codeline>
+<codeline lineno="22"><highlight class="normal"><sp/><sp/><sp/>load_forests_map(<sp/>forests_map<sp/>);</highlight></codeline>
+<codeline lineno="23"><highlight class="normal"><sp/><sp/><sp/>LOGILN(<sp/></highlight><highlight class="stringliteral">&quot;Done.&quot;</highlight><highlight class="normal">,<sp/>setindent(<sp/>-2<sp/>)<sp/>);</highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Load<sp/>the<sp/>precomputed<sp/>counts<sp/>of<sp/>halos<sp/>to<sp/>each</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>forest,<sp/>called<sp/>forest<sp/>sizes.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"><sp/><sp/><sp/>LOGILN(<sp/></highlight><highlight class="stringliteral">&quot;Loading<sp/>forest<sp/>sizes.&quot;</highlight><highlight class="normal">,<sp/>setindent(<sp/>2<sp/>)<sp/>);</highlight></codeline>
+<codeline lineno="28"><highlight class="normal"><sp/><sp/><sp/>map&lt;long<sp/>long,unsigned&gt;<sp/>forest_sizes_map;</highlight></codeline>
+<codeline lineno="29"><highlight class="normal"><sp/><sp/><sp/>load_forest_sizes_map(<sp/>forest_sizes_map<sp/>);</highlight></codeline>
+<codeline lineno="30"><highlight class="normal"><sp/><sp/><sp/>LOGILN(<sp/></highlight><highlight class="stringliteral">&quot;Done.&quot;</highlight><highlight class="normal">,<sp/>setindent(<sp/>-2<sp/>)<sp/>);</highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Load<sp/>locations.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"><sp/><sp/><sp/>LOGILN(<sp/></highlight><highlight class="stringliteral">&quot;Loading<sp/>locations.&quot;</highlight><highlight class="normal">,<sp/>setindent(<sp/>2<sp/>)<sp/>);</highlight></codeline>
+<codeline lineno="34"><highlight class="normal"><sp/><sp/><sp/>map&lt;long<sp/>long,std::pair&lt;unsigned,size_t&gt;&gt;<sp/>locations_map;</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"><sp/><sp/><sp/>map&lt;unsigned,string&gt;<sp/>file_map_map;</highlight></codeline>
+<codeline lineno="36"><highlight class="normal"><sp/><sp/><sp/>load_locations_map(<sp/>locations_map,<sp/>file_map_map<sp/>);</highlight></codeline>
+<codeline lineno="37"><highlight class="normal"><sp/><sp/><sp/>LOGILN(<sp/></highlight><highlight class="stringliteral">&quot;Done.&quot;</highlight><highlight class="normal">,<sp/>setindent(<sp/>-2<sp/>)<sp/>);</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"></highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>NDEBUG</highlight></codeline>
+<codeline lineno="40"><highlight class="preprocessor"></highlight><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Locations<sp/>and<sp/>forests<sp/>must<sp/>be<sp/>the<sp/>same<sp/>size<sp/>(number<sp/>of<sp/>trees).</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"><sp/><sp/><sp/>ASSERT(<sp/>forests_map.size()<sp/>==<sp/>locations_map.size()<sp/>);</highlight></codeline>
+<codeline lineno="42"><highlight class="normal"></highlight></codeline>
+<codeline lineno="43"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Check<sp/>that<sp/>every<sp/>value<sp/>in<sp/>the<sp/>multimap<sp/>corresponds</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>to<sp/>a<sp/>key<sp/>in<sp/>the<sp/>locations<sp/>map.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="45"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/>pair<sp/>:<sp/>forests_map<sp/>)</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>ASSERT(<sp/>locations_map.has(<sp/>pair.second<sp/>)<sp/>);</highlight></codeline>
+<codeline lineno="47"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight></codeline>
+<codeline lineno="48"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="49"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Cache<sp/>the<sp/>number<sp/>of<sp/>forests.<sp/>Can&apos;t<sp/>get<sp/>this<sp/>from</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="50"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>the<sp/>multimap<sp/>as<sp/>that<sp/>will<sp/>be<sp/>the<sp/>number<sp/>of</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="51"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>trees,<sp/>not<sp/>forests.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>num_forests<sp/>=<sp/>forest_sizes_map.size();</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"></highlight></codeline>
+<codeline lineno="54"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Allocate<sp/>for<sp/>the<sp/>forest<sp/>sizes<sp/>array.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="55"><highlight class="normal"><sp/><sp/><sp/>vector&lt;unsigned&gt;<sp/>forest_sizes(<sp/>num_forests<sp/>);</highlight></codeline>
+<codeline lineno="56"><highlight class="normal"></highlight></codeline>
+<codeline lineno="57"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Allocate<sp/>for<sp/>the<sp/>forests<sp/>CSR<sp/>and<sp/>construct<sp/>both</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="58"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>the<sp/>CSR<sp/>and<sp/>the<sp/>forest<sp/>sizes<sp/>array.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="59"><highlight class="normal"><sp/><sp/><sp/>LOGILN(<sp/></highlight><highlight class="stringliteral">&quot;Computing<sp/>flattened<sp/>arrays.&quot;</highlight><highlight class="normal">,<sp/>setindent(<sp/>2<sp/>)<sp/>);</highlight></codeline>
+<codeline lineno="60"><highlight class="normal"><sp/><sp/><sp/>csr&lt;long<sp/>long&gt;<sp/>forests;</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"><sp/><sp/><sp/>forests.num_rows(<sp/>num_forests<sp/>);</highlight></codeline>
+<codeline lineno="62"><highlight class="normal"><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>vector&lt;size_t&gt;::view<sp/>cnts<sp/>=<sp/>forests.counts();</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>idx<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/>pair<sp/>:<sp/>forest_sizes_map<sp/>)</highlight></codeline>
+<codeline lineno="66"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/>fid<sp/>=<sp/>pair.first;</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>cnts[idx]<sp/>=<sp/>forests_map.count(<sp/>fid<sp/>);</highlight></codeline>
+<codeline lineno="69"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>forest_sizes[idx]<sp/>=<sp/>pair.second;</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>++idx;</highlight></codeline>
+<codeline lineno="71"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>forests.setup_array(<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="74"><highlight class="normal"><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="75"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>vector&lt;long<sp/>long&gt;&amp;<sp/>array<sp/>=<sp/>forests.mod_array();</highlight></codeline>
+<codeline lineno="76"><highlight class="normal"></highlight></codeline>
+<codeline lineno="77"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>The<sp/>array<sp/>needs<sp/>to<sp/>be<sp/>the<sp/>same<sp/>size<sp/>as<sp/>the<sp/>forest</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="78"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>multimap.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>ASSERT(<sp/>array.size()<sp/>==<sp/>forests_map.size()<sp/>);</highlight></codeline>
+<codeline lineno="80"><highlight class="normal"></highlight></codeline>
+<codeline lineno="81"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>idx<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/>pair<sp/>:<sp/>forests_map<sp/>)</highlight></codeline>
+<codeline lineno="83"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>array[idx++]<sp/>=<sp/>pair.second;</highlight></codeline>
+<codeline lineno="84"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="85"><highlight class="normal"><sp/><sp/><sp/>LOGILN(<sp/></highlight><highlight class="stringliteral">&quot;Done.&quot;</highlight><highlight class="normal">,<sp/>setindent(<sp/>-2<sp/>)<sp/>);</highlight></codeline>
+<codeline lineno="86"><highlight class="normal"></highlight></codeline>
+<codeline lineno="87"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Clear<sp/>unneeded<sp/>maps<sp/>now.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="88"><highlight class="normal"><sp/><sp/><sp/>forests_map.clear();</highlight></codeline>
+<codeline lineno="89"><highlight class="normal"><sp/><sp/><sp/>forest_sizes_map.clear();</highlight></codeline>
+<codeline lineno="90"><highlight class="normal"></highlight></codeline>
+<codeline lineno="91"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Now<sp/>convert<sp/>the<sp/>locations.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="92"><highlight class="normal"><sp/><sp/><sp/>vector&lt;size_t&gt;<sp/>location_offsets(<sp/>locations_map.size()<sp/>);</highlight></codeline>
+<codeline lineno="93"><highlight class="normal"><sp/><sp/><sp/>vector&lt;unsigned&gt;<sp/>location_files(<sp/>locations_map.size()<sp/>);</highlight></codeline>
+<codeline lineno="94"><highlight class="normal"><sp/><sp/><sp/>vector&lt;string&gt;<sp/>file_map(<sp/>file_map_map.size()<sp/>);</highlight></codeline>
+<codeline lineno="95"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(<sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>ii<sp/>=<sp/>0;<sp/>ii<sp/>&lt;<sp/>forests.array().size();<sp/>++ii<sp/>)</highlight></codeline>
+<codeline lineno="96"><highlight class="normal"><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="97"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>loc<sp/>=<sp/>locations_map.get(<sp/>forests.array()[ii]<sp/>);</highlight></codeline>
+<codeline lineno="98"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>location_files[ii]<sp/>=<sp/>loc.first;</highlight></codeline>
+<codeline lineno="99"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>location_offsets[ii]<sp/>=<sp/>loc.second;</highlight></codeline>
+<codeline lineno="100"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(<sp/>file_map[loc.first].empty()<sp/>)</highlight></codeline>
+<codeline lineno="101"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>file_map[loc.first]<sp/>=<sp/>file_map_map.get(<sp/>loc.first<sp/>);</highlight></codeline>
+<codeline lineno="102"><highlight class="normal"></highlight></codeline>
+<codeline lineno="103"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>NDEBUG</highlight></codeline>
+<codeline lineno="104"><highlight class="preprocessor"></highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Be<sp/>sure<sp/>every<sp/>file<sp/>reference<sp/>matches.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="105"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="106"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>ASSERT(<sp/>file_map[loc.first]<sp/>==<sp/>file_map_map.get(<sp/>loc.first<sp/>)<sp/>);</highlight></codeline>
+<codeline lineno="107"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight></codeline>
+<codeline lineno="108"><highlight class="preprocessor"></highlight><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="109"><highlight class="normal"></highlight></codeline>
+<codeline lineno="110"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Clear<sp/>more<sp/>maps.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="111"><highlight class="normal"><sp/><sp/><sp/>locations_map.clear();</highlight></codeline>
+<codeline lineno="112"><highlight class="normal"><sp/><sp/><sp/>file_map_map.clear();</highlight></codeline>
+<codeline lineno="113"><highlight class="normal"></highlight></codeline>
+<codeline lineno="114"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Dump<sp/>results<sp/>as<sp/>HDF5.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="115"><highlight class="normal"><sp/><sp/><sp/>LOGILN(<sp/></highlight><highlight class="stringliteral">&quot;Saving<sp/>results.&quot;</highlight><highlight class="normal">,<sp/>setindent(<sp/>2<sp/>)<sp/>);</highlight></codeline>
+<codeline lineno="116"><highlight class="normal"><sp/><sp/><sp/>h5::file<sp/>out(<sp/></highlight><highlight class="stringliteral">&quot;bolshoi.h5&quot;</highlight><highlight class="normal">,<sp/>H5F_ACC_TRUNC<sp/>);</highlight></codeline>
+<codeline lineno="117"><highlight class="normal"><sp/><sp/><sp/>out.write&lt;</highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal">&gt;(<sp/></highlight><highlight class="stringliteral">&quot;/info/forest_trees&quot;</highlight><highlight class="normal">,<sp/>forests<sp/>);</highlight></codeline>
+<codeline lineno="118"><highlight class="normal"><sp/><sp/><sp/>out.write&lt;</highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal">&gt;(<sp/></highlight><highlight class="stringliteral">&quot;/info/forest_halo_counts&quot;</highlight><highlight class="normal">,<sp/>forest_sizes<sp/>);</highlight></codeline>
+<codeline lineno="119"><highlight class="normal"><sp/><sp/><sp/>out.write&lt;</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal">&gt;(<sp/></highlight><highlight class="stringliteral">&quot;/info/location_file_offsets&quot;</highlight><highlight class="normal">,<sp/>location_offsets<sp/>);</highlight></codeline>
+<codeline lineno="120"><highlight class="normal"><sp/><sp/><sp/>out.write&lt;</highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal">&gt;(<sp/></highlight><highlight class="stringliteral">&quot;/info/location_file_indices&quot;</highlight><highlight class="normal">,<sp/>location_files<sp/>);</highlight></codeline>
+<codeline lineno="121"><highlight class="normal"><sp/><sp/><sp/>out.write&lt;</highlight><highlight class="keywordtype">string</highlight><highlight class="normal">&gt;(<sp/></highlight><highlight class="stringliteral">&quot;/info/location_files&quot;</highlight><highlight class="normal">,<sp/>file_map<sp/>);</highlight></codeline>
+<codeline lineno="122"><highlight class="normal"><sp/><sp/><sp/>LOGILN(<sp/></highlight><highlight class="stringliteral">&quot;Done.&quot;</highlight><highlight class="normal">,<sp/>setindent(<sp/>-2<sp/>)<sp/>);</highlight></codeline>
+<codeline lineno="123"><highlight class="normal"></highlight></codeline>
+<codeline lineno="124"><highlight class="normal"><sp/><sp/><sp/>mpi::finalise();</highlight></codeline>
+<codeline lineno="125"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>EXIT_SUCCESS;</highlight></codeline>
+<codeline lineno="126"><highlight class="normal">}</highlight></codeline>
+    </programlisting>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/bolshoi_preprocess.cc"/>
+  </compounddef>
+</doxygen>

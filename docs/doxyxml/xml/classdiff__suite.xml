@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="classdiff__suite" kind="class" prot="public">
+    <compoundname>diff_suite</compoundname>
+    <basecompoundref refid="class_cxx_test_1_1_test_suite" prot="public" virt="non-virtual">CxxTest::TestSuite</basecompoundref>
+    <includes refid="diff__suite_8t_8hh" local="no">diff_suite.t.hh</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classdiff__suite_1a851b434d5b104ca3b9e916185f8c4be5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void diff_suite::test_empty</definition>
+        <argsstring>()</argsstring>
+        <name>test_empty</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/diff_suite.t.hh" line="20" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/diff_suite.t.hh" bodystart="19" bodyend="23"/>
+      </memberdef>
+      <memberdef kind="function" id="classdiff__suite_1ae51f56896872915a52512c679bf7bf6b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void diff_suite::test_one</definition>
+        <argsstring>()</argsstring>
+        <name>test_one</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/diff_suite.t.hh" line="29" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/diff_suite.t.hh" bodystart="28" bodyend="36"/>
+      </memberdef>
+      <memberdef kind="function" id="classdiff__suite_1a0ce152099658ea4b221d40e46b198502" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void diff_suite::test_flat</definition>
+        <argsstring>()</argsstring>
+        <name>test_flat</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/diff_suite.t.hh" line="42" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/diff_suite.t.hh" bodystart="41" bodyend="54"/>
+      </memberdef>
+      <memberdef kind="function" id="classdiff__suite_1a038386f9609423dc71e76beff60e87a2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void diff_suite::test_linear</definition>
+        <argsstring>()</argsstring>
+        <name>test_linear</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/diff_suite.t.hh" line="60" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/diff_suite.t.hh" bodystart="59" bodyend="72"/>
+      </memberdef>
+      <memberdef kind="function" id="classdiff__suite_1ad32c84e5fba97b88404f553247160039" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void diff_suite::test_linear_step_size</definition>
+        <argsstring>()</argsstring>
+        <name>test_linear_step_size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/diff_suite.t.hh" line="78" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/diff_suite.t.hh" bodystart="77" bodyend="90"/>
+      </memberdef>
+      <memberdef kind="function" id="classdiff__suite_1a968d17afb2face8f1d3beccc516e2f92" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void diff_suite::test_quadratic</definition>
+        <argsstring>()</argsstring>
+        <name>test_quadratic</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/diff_suite.t.hh" line="96" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/diff_suite.t.hh" bodystart="95" bodyend="111"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Differentiation test suite. </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="53">
+        <label>CxxTest::TestSuite</label>
+        <link refid="class_cxx_test_1_1_test_suite"/>
+      </node>
+      <node id="52">
+        <label>diff_suite</label>
+        <link refid="classdiff__suite"/>
+        <childnode refid="53" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="55">
+        <label>CxxTest::TestSuite</label>
+        <link refid="class_cxx_test_1_1_test_suite"/>
+      </node>
+      <node id="54">
+        <label>diff_suite</label>
+        <link refid="classdiff__suite"/>
+        <childnode refid="55" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/diff_suite.t.hh" line="13" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/diff_suite.t.hh" bodystart="12" bodyend="112"/>
+    <listofallmembers>
+      <member refid="class_cxx_test_1_1_test_suite_1a03e7e9428316d10a22d44d20811192fb" prot="public" virt="virtual"><scope>diff_suite</scope><name>setUp</name></member>
+      <member refid="class_cxx_test_1_1_test_suite_1aa871c96da869344962b1435b72bcea13" prot="public" virt="virtual"><scope>diff_suite</scope><name>tearDown</name></member>
+      <member refid="classdiff__suite_1a851b434d5b104ca3b9e916185f8c4be5" prot="public" virt="non-virtual"><scope>diff_suite</scope><name>test_empty</name></member>
+      <member refid="classdiff__suite_1a0ce152099658ea4b221d40e46b198502" prot="public" virt="non-virtual"><scope>diff_suite</scope><name>test_flat</name></member>
+      <member refid="classdiff__suite_1a038386f9609423dc71e76beff60e87a2" prot="public" virt="non-virtual"><scope>diff_suite</scope><name>test_linear</name></member>
+      <member refid="classdiff__suite_1ad32c84e5fba97b88404f553247160039" prot="public" virt="non-virtual"><scope>diff_suite</scope><name>test_linear_step_size</name></member>
+      <member refid="classdiff__suite_1ae51f56896872915a52512c679bf7bf6b" prot="public" virt="non-virtual"><scope>diff_suite</scope><name>test_one</name></member>
+      <member refid="classdiff__suite_1a968d17afb2face8f1d3beccc516e2f92" prot="public" virt="non-virtual"><scope>diff_suite</scope><name>test_quadratic</name></member>
+      <member refid="class_cxx_test_1_1_test_suite_1a647ce2d9feb3f7450506fdb372f982f1" prot="public" virt="virtual"><scope>diff_suite</scope><name>~TestSuite</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

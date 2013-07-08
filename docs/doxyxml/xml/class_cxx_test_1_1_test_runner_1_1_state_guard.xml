@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="class_cxx_test_1_1_test_runner_1_1_state_guard" kind="class" prot="private">
+    <compoundname>CxxTest::TestRunner::StateGuard</compoundname>
+    <derivedcompoundref refid="class_cxx_test_1_1_test_runner_1_1_world_guard" prot="public" virt="non-virtual">CxxTest::TestRunner::WorldGuard</derivedcompoundref>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_cxx_test_1_1_test_runner_1_1_state_guard_1ab6cd90e77b1779ae199b37275c3ead1c" prot="private" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned CxxTest::TestRunner::StateGuard::_maxDumpSize</definition>
+        <argsstring></argsstring>
+        <name>_maxDumpSize</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestRunner.h" line="85" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestRunner.h" bodystart="85" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_cxx_test_1_1_test_runner_1_1_state_guard_1a45244d794d32ba37f1865f93aaed77be" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::TestRunner::StateGuard::StateGuard</definition>
+        <argsstring>()</argsstring>
+        <name>StateGuard</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestRunner.h" line="89" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestRunner.h" bodystart="88" bodyend="94"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_test_runner_1_1_state_guard_1ac1605d130534c4f446dff2ceca940b31" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::TestRunner::StateGuard::~StateGuard</definition>
+        <argsstring>()</argsstring>
+        <name>~StateGuard</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestRunner.h" line="97" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestRunner.h" bodystart="96" bodyend="102"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="333">
+        <label>CxxTest::TestRunner::WorldGuard</label>
+        <childnode refid="332" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="332">
+        <label>CxxTest::TestRunner::StateGuard</label>
+      </node>
+    </inheritancegraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestRunner.h" line="81" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestRunner.h" bodystart="80" bodyend="103"/>
+    <listofallmembers>
+      <member refid="class_cxx_test_1_1_test_runner_1_1_state_guard_1ab6cd90e77b1779ae199b37275c3ead1c" prot="private" virt="non-virtual"><scope>CxxTest::TestRunner::StateGuard</scope><name>_maxDumpSize</name></member>
+      <member refid="class_cxx_test_1_1_test_runner_1_1_state_guard_1a45244d794d32ba37f1865f93aaed77be" prot="public" virt="non-virtual"><scope>CxxTest::TestRunner::StateGuard</scope><name>StateGuard</name></member>
+      <member refid="class_cxx_test_1_1_test_runner_1_1_state_guard_1ac1605d130534c4f446dff2ceca940b31" prot="public" virt="non-virtual"><scope>CxxTest::TestRunner::StateGuard</scope><name>~StateGuard</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

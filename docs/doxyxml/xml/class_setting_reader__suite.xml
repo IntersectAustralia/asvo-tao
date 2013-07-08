@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="class_setting_reader__suite" kind="class" prot="public">
+    <compoundname>SettingReader_suite</compoundname>
+    <basecompoundref refid="class_cxx_test_1_1_test_suite" prot="public" virt="non-virtual">CxxTest::TestSuite</basecompoundref>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_setting_reader__suite_1a200797181e813b9c44c279b02db783ff" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void SettingReader_suite::test_SettingReader</definition>
+        <argsstring>()</argsstring>
+        <name>test_SettingReader</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/MultiDB_Test.hh" line="27" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/MultiDB_Test.hh" bodystart="26" bodyend="67"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="320">
+        <label>CxxTest::TestSuite</label>
+        <link refid="class_cxx_test_1_1_test_suite"/>
+      </node>
+      <node id="319">
+        <label>SettingReader_suite</label>
+        <link refid="class_setting_reader__suite"/>
+        <childnode refid="320" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="322">
+        <label>CxxTest::TestSuite</label>
+        <link refid="class_cxx_test_1_1_test_suite"/>
+      </node>
+      <node id="321">
+        <label>SettingReader_suite</label>
+        <link refid="class_setting_reader__suite"/>
+        <childnode refid="322" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/MultiDB_Test.hh" line="22" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/MultiDB_Test.hh" bodystart="21" bodyend="69"/>
+    <listofallmembers>
+      <member refid="class_cxx_test_1_1_test_suite_1a03e7e9428316d10a22d44d20811192fb" prot="public" virt="virtual"><scope>SettingReader_suite</scope><name>setUp</name></member>
+      <member refid="class_cxx_test_1_1_test_suite_1aa871c96da869344962b1435b72bcea13" prot="public" virt="virtual"><scope>SettingReader_suite</scope><name>tearDown</name></member>
+      <member refid="class_setting_reader__suite_1a200797181e813b9c44c279b02db783ff" prot="public" virt="non-virtual"><scope>SettingReader_suite</scope><name>test_SettingReader</name></member>
+      <member refid="class_cxx_test_1_1_test_suite_1a647ce2d9feb3f7450506fdb372f982f1" prot="public" virt="virtual"><scope>SettingReader_suite</scope><name>~TestSuite</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

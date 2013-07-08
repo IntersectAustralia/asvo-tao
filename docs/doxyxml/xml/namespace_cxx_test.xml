@@ -1,0 +1,1626 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="namespace_cxx_test" kind="namespace">
+    <compoundname>CxxTest</compoundname>
+    <innerclass refid="class_cxx_test_1_1_test_description" prot="public">CxxTest::TestDescription</innerclass>
+    <innerclass refid="class_cxx_test_1_1_suite_description" prot="public">CxxTest::SuiteDescription</innerclass>
+    <innerclass refid="class_cxx_test_1_1_world_description" prot="public">CxxTest::WorldDescription</innerclass>
+    <innerclass refid="class_cxx_test_1_1_dummy_test_description" prot="public">CxxTest::DummyTestDescription</innerclass>
+    <innerclass refid="class_cxx_test_1_1_dummy_suite_description" prot="public">CxxTest::DummySuiteDescription</innerclass>
+    <innerclass refid="class_cxx_test_1_1_dummy_world_description" prot="public">CxxTest::DummyWorldDescription</innerclass>
+    <innerclass refid="class_cxx_test_1_1_output_stream" prot="public">CxxTest::OutputStream</innerclass>
+    <innerclass refid="class_cxx_test_1_1_error_formatter" prot="public">CxxTest::ErrorFormatter</innerclass>
+    <innerclass refid="class_cxx_test_1_1_error_printer" prot="public">CxxTest::ErrorPrinter</innerclass>
+    <innerclass refid="class_cxx_test_1_1_global_fixture" prot="public">CxxTest::GlobalFixture</innerclass>
+    <innerclass refid="class_cxx_test_1_1_gui_listener" prot="public">CxxTest::GuiListener</innerclass>
+    <innerclass refid="class_cxx_test_1_1_gui_tui_runner" prot="public">CxxTest::GuiTuiRunner</innerclass>
+    <innerclass refid="struct_cxx_test_1_1_list" prot="public">CxxTest::List</innerclass>
+    <innerclass refid="class_cxx_test_1_1_link" prot="public">CxxTest::Link</innerclass>
+    <innerclass refid="class_cxx_test_1_1_paren_printer" prot="public">CxxTest::ParenPrinter</innerclass>
+    <innerclass refid="class_cxx_test_1_1_qt_gui" prot="public">CxxTest::QtGui</innerclass>
+    <innerclass refid="class_cxx_test_1_1_real_test_description" prot="public">CxxTest::RealTestDescription</innerclass>
+    <innerclass refid="class_cxx_test_1_1_real_suite_description" prot="public">CxxTest::RealSuiteDescription</innerclass>
+    <innerclass refid="class_cxx_test_1_1_static_suite_description" prot="public">CxxTest::StaticSuiteDescription</innerclass>
+    <innerclass refid="class_cxx_test_1_1_common_dynamic_suite_description" prot="public">CxxTest::CommonDynamicSuiteDescription</innerclass>
+    <innerclass refid="class_cxx_test_1_1_dynamic_suite_description" prot="public">CxxTest::DynamicSuiteDescription</innerclass>
+    <innerclass refid="class_cxx_test_1_1_real_world_description" prot="public">CxxTest::RealWorldDescription</innerclass>
+    <innerclass refid="class_cxx_test_1_1_stdio_file_printer" prot="public">CxxTest::StdioFilePrinter</innerclass>
+    <innerclass refid="class_cxx_test_1_1_stdio_printer" prot="public">CxxTest::StdioPrinter</innerclass>
+    <innerclass refid="class_cxx_test_1_1_std_traits_base" prot="public">CxxTest::StdTraitsBase</innerclass>
+    <innerclass refid="class_cxx_test_1_1_value_traits_3_01const_01_c_x_x_t_e_s_t___s_t_d_07string_08_4" prot="public">CxxTest::ValueTraits&lt; const CXXTEST_STD(string)&gt;</innerclass>
+    <innerclass refid="class_cxx_test_1_1_value_traits_3_01const_01_c_x_x_t_e_s_t___s_t_d_07basic__string_3_01wchar__t_01_4_08_4" prot="public">CxxTest::ValueTraits&lt; const CXXTEST_STD(basic_string&lt; wchar_t &gt;)&gt;</innerclass>
+    <innerclass refid="class_cxx_test_1_1_tee_listener" prot="public">CxxTest::TeeListener</innerclass>
+    <innerclass refid="class_cxx_test_1_1_test_listener" prot="public">CxxTest::TestListener</innerclass>
+    <innerclass refid="class_cxx_test_1_1_test_runner" prot="public">CxxTest::TestRunner</innerclass>
+    <innerclass refid="class_cxx_test_1_1_test_suite" prot="public">CxxTest::TestSuite</innerclass>
+    <innerclass refid="class_cxx_test_1_1_abort_test" prot="public">CxxTest::AbortTest</innerclass>
+    <innerclass refid="class_cxx_test_1_1_test_tracker" prot="public">CxxTest::TestTracker</innerclass>
+    <innerclass refid="class_cxx_test_1_1_value_traits" prot="public">CxxTest::ValueTraits</innerclass>
+    <innerclass refid="class_cxx_test_1_1_value_traits_3_01const_01char_01_5const_01_6_01_4" prot="public">CxxTest::ValueTraits&lt; const char *const &amp; &gt;</innerclass>
+    <innerclass refid="class_cxx_test_1_1_value_traits_3_01const_01bool_01_4" prot="public">CxxTest::ValueTraits&lt; const bool &gt;</innerclass>
+    <innerclass refid="class_cxx_test_1_1_value_traits_3_01const_01signed_01long_01int_01_4" prot="public">CxxTest::ValueTraits&lt; const signed long int &gt;</innerclass>
+    <innerclass refid="class_cxx_test_1_1_value_traits_3_01const_01unsigned_01long_01int_01_4" prot="public">CxxTest::ValueTraits&lt; const unsigned long int &gt;</innerclass>
+    <innerclass refid="class_cxx_test_1_1_value_traits_3_01const_01char_01_4" prot="public">CxxTest::ValueTraits&lt; const char &gt;</innerclass>
+    <innerclass refid="class_cxx_test_1_1_value_traits_3_01const_01double_01_4" prot="public">CxxTest::ValueTraits&lt; const double &gt;</innerclass>
+    <innerclass refid="class_cxx_test_1_1_win32_gui" prot="public">CxxTest::Win32Gui</innerclass>
+    <innerclass refid="class_cxx_test_1_1_x11_gui" prot="public">CxxTest::X11Gui</innerclass>
+    <innerclass refid="class_cxx_test_1_1_yes_no_runner" prot="public">CxxTest::YesNoRunner</innerclass>
+      <sectiondef kind="var">
+      <memberdef kind="variable" id="namespace_cxx_test_1ab8c00e83bc6374aa63eafc78f9e94c15" prot="public" static="yes" mutable="no">
+        <type>bool</type>
+        <definition>bool CxxTest::currentAbortTestOnFail</definition>
+        <argsstring></argsstring>
+        <name>currentAbortTestOnFail</name>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.cpp" line="18" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.cpp" bodystart="18" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespace_cxx_test_1a01205d3f8d51459a5450194c95898381" prot="public" static="yes" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned CxxTest::currentMaxDumpSize</definition>
+        <argsstring></argsstring>
+        <name>currentMaxDumpSize</name>
+        <initializer>= CXXTEST_MAX_DUMP_SIZE</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.cpp" line="41" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.cpp" bodystart="41" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespace_cxx_test_1aa4db59bb2ca0800a697b2cb3bd3bbc2c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::activateAllTests</definition>
+        <argsstring>()</argsstring>
+        <name>activateAllTests</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.cpp" line="300" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.cpp" bodystart="299" bodyend="302"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1aa9582305bdfb541e65f0d29850f7b2e4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool CxxTest::leaveOnly</definition>
+        <argsstring>(const char *suiteName, const char *testName)</argsstring>
+        <name>leaveOnly</name>
+        <param>
+          <type>const char *</type>
+          <declname>suiteName</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>testName</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.cpp" line="305" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.cpp" bodystart="304" bodyend="307"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a920e400ef7dc2d068006bd7b153bee19" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::CXXTEST_COPY_CONST_TRAITS</definition>
+        <argsstring>(CXXTEST_STD(string))</argsstring>
+        <name>CXXTEST_COPY_CONST_TRAITS</name>
+        <param>
+          <type>CXXTEST_STD(string)</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/StdValueTraits.h" line="62"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a2e0e65ec3d8abd5fc278b9a5714acdff" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::CXXTEST_COPY_CONST_TRAITS</definition>
+        <argsstring>(CXXTEST_STD(basic_string&lt; wchar_t &gt;))</argsstring>
+        <name>CXXTEST_COPY_CONST_TRAITS</name>
+        <param>
+          <type>CXXTEST_STD(basic_string&lt; wchar_t &gt;)</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/StdValueTraits.h" line="84"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a1435fedf32742841968d733a768cc960" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Stream</type>
+          </param>
+          <param>
+            <type>class Iterator</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void CxxTest::dumpRange</definition>
+        <argsstring>(Stream &amp;s, Iterator first, Iterator last)</argsstring>
+        <name>dumpRange</name>
+        <param>
+          <type>Stream &amp;</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type>Iterator</type>
+          <declname>first</declname>
+        </param>
+        <param>
+          <type>Iterator</type>
+          <declname>last</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/StdValueTraits.h" line="93" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/StdValueTraits.h" bodystart="92" bodyend="100"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1ae93f7654c3f8a31744e87b239de2cad3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::initialize</definition>
+        <argsstring>()</argsstring>
+        <name>initialize</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestRunner.h" line="121"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a0b81171fd2d6571166c2d830bbe10806" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool CxxTest::abortTestOnFail</definition>
+        <argsstring>()</argsstring>
+        <name>abortTestOnFail</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.cpp" line="21" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.cpp" bodystart="20" bodyend="23"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1afe6aa6131aa951b835adbefcdde8f791" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::setAbortTestOnFail</definition>
+        <argsstring>(bool value)</argsstring>
+        <name>setAbortTestOnFail</name>
+        <param>
+          <type>bool</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.cpp" line="26" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.cpp" bodystart="25" bodyend="28"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a4bdd6a4f1dc3741828d9a9e2491db15c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::doAbortTest</definition>
+        <argsstring>()</argsstring>
+        <name>doAbortTest</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.cpp" line="31" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.cpp" bodystart="30" bodyend="36"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a43ab719cba7e7d254db966ae20bc95b6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>unsigned</type>
+        <definition>unsigned CxxTest::maxDumpSize</definition>
+        <argsstring>()</argsstring>
+        <name>maxDumpSize</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.cpp" line="44" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.cpp" bodystart="43" bodyend="46"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a96fd1455cff408fd21381d826aeff6c2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::setMaxDumpSize</definition>
+        <argsstring>(unsigned value)</argsstring>
+        <name>setMaxDumpSize</name>
+        <param>
+          <type>unsigned</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.cpp" line="49" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.cpp" bodystart="48" bodyend="51"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a6225c40e304fb8e6fcf2afa1b627c0cd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::doTrace</definition>
+        <argsstring>(const char *file, unsigned line, const char *message)</argsstring>
+        <name>doTrace</name>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>message</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.cpp" line="57" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.cpp" bodystart="56" bodyend="59"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a65caf9ca17945dc5c47706953f96e782" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::doWarn</definition>
+        <argsstring>(const char *file, unsigned line, const char *message)</argsstring>
+        <name>doWarn</name>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>message</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.cpp" line="62" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.cpp" bodystart="61" bodyend="64"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1abcd63ea0af77db8f394b31091967c778" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::doFailTest</definition>
+        <argsstring>(const char *file, unsigned line, const char *message)</argsstring>
+        <name>doFailTest</name>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>message</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.cpp" line="67" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.cpp" bodystart="66" bodyend="70"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a27589d3999b313958e4a0028151da47f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::doFailAssert</definition>
+        <argsstring>(const char *file, unsigned line, const char *expression, const char *message)</argsstring>
+        <name>doFailAssert</name>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>expression</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>message</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.cpp" line="74" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.cpp" bodystart="72" bodyend="79"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1ae69136d4fed43790c4848fee71c0ce2c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool CxxTest::sameData</definition>
+        <argsstring>(const void *x, const void *y, unsigned size)</argsstring>
+        <name>sameData</name>
+        <param>
+          <type>const void *</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>const void *</type>
+          <declname>y</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.cpp" line="82" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.cpp" bodystart="81" bodyend="99"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a534bc9665dd9893ab43e108aac5a9073" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::doAssertSameData</definition>
+        <argsstring>(const char *file, unsigned line, const char *xExpr, const void *x, const char *yExpr, const void *y, const char *sizeExpr, unsigned size, const char *message)</argsstring>
+        <name>doAssertSameData</name>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>xExpr</declname>
+        </param>
+        <param>
+          <type>const void *</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>yExpr</declname>
+        </param>
+        <param>
+          <type>const void *</type>
+          <declname>y</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>sizeExpr</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>size</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>message</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.cpp" line="106" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.cpp" bodystart="101" bodyend="113"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a2a7629e0beede606aabf6894380ee395" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::doFailAssertThrows</definition>
+        <argsstring>(const char *file, unsigned line, const char *expr, const char *type, bool otherThrown, const char *message)</argsstring>
+        <name>doFailAssertThrows</name>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>expr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>type</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>otherThrown</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>message</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.cpp" line="119" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.cpp" bodystart="115" bodyend="125"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a5e550b8bfbaeae5d774e3fd010333e55" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::doFailAssertThrowsNot</definition>
+        <argsstring>(const char *file, unsigned line, const char *expression, const char *message)</argsstring>
+        <name>doFailAssertThrowsNot</name>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>expression</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>message</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.cpp" line="129" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.cpp" bodystart="127" bodyend="135"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1acd17b95a59454265f99986af2013fb9f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class X</type>
+          </param>
+          <param>
+            <type>class Y</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool CxxTest::equals</definition>
+        <argsstring>(X x, Y y)</argsstring>
+        <name>equals</name>
+        <param>
+          <type>X</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>Y</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.h" line="46" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.h" bodystart="45" bodyend="48"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a44a2e15662cd34d4cee46254d04d1925" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class X</type>
+          </param>
+          <param>
+            <type>class Y</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void CxxTest::doAssertEquals</definition>
+        <argsstring>(const char *file, unsigned line, const char *xExpr, X x, const char *yExpr, Y y, const char *message)</argsstring>
+        <name>doAssertEquals</name>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>xExpr</declname>
+        </param>
+        <param>
+          <type>X</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>yExpr</declname>
+        </param>
+        <param>
+          <type>Y</type>
+          <declname>y</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>message</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.h" line="55" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.h" bodystart="51" bodyend="62"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1aef332ae4d62625819cb30fccd6f58bb8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class X</type>
+          </param>
+          <param>
+            <type>class Y</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool CxxTest::differs</definition>
+        <argsstring>(X x, Y y)</argsstring>
+        <name>differs</name>
+        <param>
+          <type>X</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>Y</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.h" line="72" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.h" bodystart="71" bodyend="74"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a0c7196cab2ec2ddc257ab8a2a1b06c70" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class X</type>
+          </param>
+          <param>
+            <type>class Y</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void CxxTest::doAssertDiffers</definition>
+        <argsstring>(const char *file, unsigned line, const char *xExpr, X x, const char *yExpr, Y y, const char *message)</argsstring>
+        <name>doAssertDiffers</name>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>xExpr</declname>
+        </param>
+        <param>
+          <type>X</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>yExpr</declname>
+        </param>
+        <param>
+          <type>Y</type>
+          <declname>y</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>message</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.h" line="81" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.h" bodystart="77" bodyend="88"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1aeda6db9bc0ad9877df856223f5384a15" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class X</type>
+          </param>
+          <param>
+            <type>class Y</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool CxxTest::lessThan</definition>
+        <argsstring>(X x, Y y)</argsstring>
+        <name>lessThan</name>
+        <param>
+          <type>X</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>Y</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.h" line="92" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.h" bodystart="91" bodyend="94"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a41c73b8445f592e3255e10ee0b00c202" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class X</type>
+          </param>
+          <param>
+            <type>class Y</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void CxxTest::doAssertLessThan</definition>
+        <argsstring>(const char *file, unsigned line, const char *xExpr, X x, const char *yExpr, Y y, const char *message)</argsstring>
+        <name>doAssertLessThan</name>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>xExpr</declname>
+        </param>
+        <param>
+          <type>X</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>yExpr</declname>
+        </param>
+        <param>
+          <type>Y</type>
+          <declname>y</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>message</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.h" line="101" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.h" bodystart="97" bodyend="108"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a692bf2320f07e643c8501b2c3a10c560" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class X</type>
+          </param>
+          <param>
+            <type>class Y</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool CxxTest::lessThanEquals</definition>
+        <argsstring>(X x, Y y)</argsstring>
+        <name>lessThanEquals</name>
+        <param>
+          <type>X</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>Y</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.h" line="112" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.h" bodystart="111" bodyend="114"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a269b5250ac7e3e188b3a82cf5ffd1fcd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class X</type>
+          </param>
+          <param>
+            <type>class Y</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void CxxTest::doAssertLessThanEquals</definition>
+        <argsstring>(const char *file, unsigned line, const char *xExpr, X x, const char *yExpr, Y y, const char *message)</argsstring>
+        <name>doAssertLessThanEquals</name>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>xExpr</declname>
+        </param>
+        <param>
+          <type>X</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>yExpr</declname>
+        </param>
+        <param>
+          <type>Y</type>
+          <declname>y</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>message</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.h" line="121" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.h" bodystart="117" bodyend="128"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a5d2ec1631d8ffe69a1476c093e05829c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class X</type>
+          </param>
+          <param>
+            <type>class P</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void CxxTest::doAssertPredicate</definition>
+        <argsstring>(const char *file, unsigned line, const char *pExpr, const P &amp;p, const char *xExpr, X x, const char *message)</argsstring>
+        <name>doAssertPredicate</name>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>pExpr</declname>
+        </param>
+        <param>
+          <type>const P &amp;</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>xExpr</declname>
+        </param>
+        <param>
+          <type>X</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>message</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.h" line="135" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.h" bodystart="131" bodyend="142"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a05d82c8433256c8417cf4cd8f8ad1fb0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class X</type>
+          </param>
+          <param>
+            <type>class Y</type>
+          </param>
+          <param>
+            <type>class R</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void CxxTest::doAssertRelation</definition>
+        <argsstring>(const char *file, unsigned line, const char *rExpr, const R &amp;r, const char *xExpr, X x, const char *yExpr, Y y, const char *message)</argsstring>
+        <name>doAssertRelation</name>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>rExpr</declname>
+        </param>
+        <param>
+          <type>const R &amp;</type>
+          <declname>r</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>xExpr</declname>
+        </param>
+        <param>
+          <type>X</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>yExpr</declname>
+        </param>
+        <param>
+          <type>Y</type>
+          <declname>y</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>message</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.h" line="150" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.h" bodystart="145" bodyend="157"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a616bb9c6fff1d94e35fbe9885ee2dbee" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class X</type>
+          </param>
+          <param>
+            <type>class Y</type>
+          </param>
+          <param>
+            <type>class D</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool CxxTest::delta</definition>
+        <argsstring>(X x, Y y, D d)</argsstring>
+        <name>delta</name>
+        <param>
+          <type>X</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>Y</type>
+          <declname>y</declname>
+        </param>
+        <param>
+          <type>D</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.h" line="161" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.h" bodystart="160" bodyend="163"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1ad1e68d0e9d5b501b65f11c8b32ee9d4f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class X</type>
+          </param>
+          <param>
+            <type>class Y</type>
+          </param>
+          <param>
+            <type>class D</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void CxxTest::doAssertDelta</definition>
+        <argsstring>(const char *file, unsigned line, const char *xExpr, X x, const char *yExpr, Y y, const char *dExpr, D d, const char *message)</argsstring>
+        <name>doAssertDelta</name>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>xExpr</declname>
+        </param>
+        <param>
+          <type>X</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>yExpr</declname>
+        </param>
+        <param>
+          <type>Y</type>
+          <declname>y</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>dExpr</declname>
+        </param>
+        <param>
+          <type>D</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>message</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.h" line="171" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestSuite.h" bodystart="166" bodyend="180"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a72fe5ac24c7eb45a43bf2120eb72b333" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="class_cxx_test_1_1_test_tracker" kindref="compound">TestTracker</ref> &amp;</type>
+        <definition>TestTracker&amp; CxxTest::tracker</definition>
+        <argsstring>()</argsstring>
+        <name>tracker</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" line="111" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TestTracker.h" bodystart="111" bodyend="111"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a597a9986f1b72522bafd818bf6a4c629" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>char</type>
+        <definition>char CxxTest::digitToChar</definition>
+        <argsstring>(unsigned digit)</argsstring>
+        <name>digitToChar</name>
+        <param>
+          <type>unsigned</type>
+          <declname>digit</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.cpp" line="13" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.cpp" bodystart="12" bodyend="19"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a4631aafc7c78f74a482a666c4d14fd78" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>const char *</type>
+        <definition>const char * CxxTest::byteToHex</definition>
+        <argsstring>(unsigned char byte)</argsstring>
+        <name>byteToHex</name>
+        <param>
+          <type>unsigned char</type>
+          <declname>byte</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.cpp" line="22" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.cpp" bodystart="21" bodyend="28"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a9d81c500b7f477135528e6fb3d987f21" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>char *</type>
+        <definition>char * CxxTest::copyString</definition>
+        <argsstring>(char *dst, const char *src)</argsstring>
+        <name>copyString</name>
+        <param>
+          <type>char *</type>
+          <declname>dst</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>src</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.cpp" line="31" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.cpp" bodystart="30" bodyend="37"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a38de4d83b2300f0155409040d9e3b77a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool CxxTest::stringsEqual</definition>
+        <argsstring>(const char *s1, const char *s2)</argsstring>
+        <name>stringsEqual</name>
+        <param>
+          <type>const char *</type>
+          <declname>s1</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>s2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.cpp" line="40" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.cpp" bodystart="39" bodyend="46"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1aa53a00cf084e559aba9615e2fb0b6806" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>char *</type>
+        <definition>char * CxxTest::charToString</definition>
+        <argsstring>(unsigned long c, char *s)</argsstring>
+        <name>charToString</name>
+        <param>
+          <type>unsigned long</type>
+          <declname>c</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>s</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.cpp" line="49" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.cpp" bodystart="48" bodyend="75"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a979e56ce7fc7f8e58467f5f27bad65bb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>char *</type>
+        <definition>char * CxxTest::charToString</definition>
+        <argsstring>(char c, char *s)</argsstring>
+        <name>charToString</name>
+        <param>
+          <type>char</type>
+          <declname>c</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>s</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.cpp" line="78" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.cpp" bodystart="77" bodyend="80"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1af50fe21eeb06133e59d7a13ab046155a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>char *</type>
+        <definition>char * CxxTest::bytesToString</definition>
+        <argsstring>(const unsigned char *bytes, unsigned numBytes, unsigned maxBytes, char *s)</argsstring>
+        <name>bytesToString</name>
+        <param>
+          <type>const unsigned char *</type>
+          <declname>bytes</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>numBytes</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>maxBytes</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>s</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.cpp" line="83" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.cpp" bodystart="82" bodyend="94"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a1c92c025863e0624b8ffca01e50faaab" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="class_cxx_test_1_1_value_traits" kindref="compound">ValueTraits</ref>&lt; T &gt;</type>
+        <definition>ValueTraits&lt;T&gt; CxxTest::traits</definition>
+        <argsstring>(T t)</argsstring>
+        <name>traits</name>
+        <param>
+          <type>T</type>
+          <declname>t</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" line="90" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" bodystart="89" bodyend="92"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1af004516c2c2415cb714b7b20a041d68e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class N</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool CxxTest::negative</definition>
+        <argsstring>(N n)</argsstring>
+        <name>negative</name>
+        <param>
+          <type>N</type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" line="119" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" bodystart="119" bodyend="119"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a7ad01ff86f6118b8347a3ce0657f0723" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class N</type>
+          </param>
+        </templateparamlist>
+        <type>N</type>
+        <definition>N CxxTest::abs</definition>
+        <argsstring>(N n)</argsstring>
+        <name>abs</name>
+        <param>
+          <type>N</type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" line="120" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" bodystart="120" bodyend="120"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1aa848c87cd21cea32e624a713f4556f1b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class N</type>
+          </param>
+        </templateparamlist>
+        <type>char *</type>
+        <definition>char* CxxTest::numberToString</definition>
+        <argsstring>(N n, char *s, N base=10, unsigned skipDigits=0, unsigned maxDigits=(unsigned)-1)</argsstring>
+        <name>numberToString</name>
+        <param>
+          <type>N</type>
+          <declname>n</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type>N</type>
+          <declname>base</declname>
+          <defval>10</defval>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>skipDigits</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>maxDigits</declname>
+          <defval>(unsigned)-1</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" line="147" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" bodystart="143" bodyend="164"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a3958993548c13e06b296d9ff121f7624" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::CXXTEST_COPY_TRAITS</definition>
+        <argsstring>(const char *, const char *const &amp;)</argsstring>
+        <name>CXXTEST_COPY_TRAITS</name>
+        <param>
+          <type>const char *</type>
+        </param>
+        <param>
+          <type>const char *const &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" line="188"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a0410c34e8292ecfd447552300f865637" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::CXXTEST_COPY_TRAITS</definition>
+        <argsstring>(char *, const char *const &amp;)</argsstring>
+        <name>CXXTEST_COPY_TRAITS</name>
+        <param>
+          <type>char *</type>
+        </param>
+        <param>
+          <type>const char *const &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" line="189"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a3f8942c43ba26ceed9d11c2867e4d022" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::CXXTEST_COPY_CONST_TRAITS</definition>
+        <argsstring>(bool)</argsstring>
+        <name>CXXTEST_COPY_CONST_TRAITS</name>
+        <param>
+          <type>bool</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" line="204"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a9c01ca0041941d9d345df7522c38ba93" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::CXXTEST_COPY_CONST_TRAITS</definition>
+        <argsstring>(signed long int)</argsstring>
+        <name>CXXTEST_COPY_CONST_TRAITS</name>
+        <param>
+          <type>signed long</type>
+          <declname>int</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" line="251"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1ac80d98dc0c2e2a437e2afb7e59b0a044" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::CXXTEST_COPY_CONST_TRAITS</definition>
+        <argsstring>(unsigned long int)</argsstring>
+        <name>CXXTEST_COPY_CONST_TRAITS</name>
+        <param>
+          <type>unsigned long</type>
+          <declname>int</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" line="266"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1aaa1617ffb833d4897b0aafae643db68c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::CXXTEST_COPY_TRAITS</definition>
+        <argsstring>(const signed int, const signed long int)</argsstring>
+        <name>CXXTEST_COPY_TRAITS</name>
+        <param>
+          <type>const signed</type>
+          <declname>int</declname>
+        </param>
+        <param>
+          <type>const signed long</type>
+          <declname>int</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" line="272"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1aaddfb4e5fcddf69a66b9fb3e22c18624" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::CXXTEST_COPY_TRAITS</definition>
+        <argsstring>(const unsigned int, const unsigned long int)</argsstring>
+        <name>CXXTEST_COPY_TRAITS</name>
+        <param>
+          <type>const unsigned</type>
+          <declname>int</declname>
+        </param>
+        <param>
+          <type>const unsigned long</type>
+          <declname>int</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" line="273"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a25307a40dbf6ff68365fd1b71cbebdaf" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::CXXTEST_COPY_TRAITS</definition>
+        <argsstring>(const signed short int, const signed long int)</argsstring>
+        <name>CXXTEST_COPY_TRAITS</name>
+        <param>
+          <type>const signed short</type>
+          <declname>int</declname>
+        </param>
+        <param>
+          <type>const signed long</type>
+          <declname>int</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" line="274"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a8d1d18e9291b3eeaf396b7e04853ab01" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::CXXTEST_COPY_TRAITS</definition>
+        <argsstring>(const unsigned short int, const unsigned long int)</argsstring>
+        <name>CXXTEST_COPY_TRAITS</name>
+        <param>
+          <type>const unsigned short</type>
+          <declname>int</declname>
+        </param>
+        <param>
+          <type>const unsigned long</type>
+          <declname>int</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" line="275"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1acdc0991ff7640feb6b4dbec62e24f1f3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::CXXTEST_COPY_CONST_TRAITS</definition>
+        <argsstring>(signed int)</argsstring>
+        <name>CXXTEST_COPY_CONST_TRAITS</name>
+        <param>
+          <type>signed</type>
+          <declname>int</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" line="278"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a069c4ca62f90f95396251926ff94915f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::CXXTEST_COPY_CONST_TRAITS</definition>
+        <argsstring>(unsigned int)</argsstring>
+        <name>CXXTEST_COPY_CONST_TRAITS</name>
+        <param>
+          <type>unsigned</type>
+          <declname>int</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" line="279"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a7ba5d6c928b4b682eff4009c5aa36ad1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::CXXTEST_COPY_CONST_TRAITS</definition>
+        <argsstring>(signed short int)</argsstring>
+        <name>CXXTEST_COPY_CONST_TRAITS</name>
+        <param>
+          <type>signed short</type>
+          <declname>int</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" line="280"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a965887a98b7f358e23d1e0e73b7928df" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::CXXTEST_COPY_CONST_TRAITS</definition>
+        <argsstring>(unsigned short int)</argsstring>
+        <name>CXXTEST_COPY_CONST_TRAITS</name>
+        <param>
+          <type>unsigned short</type>
+          <declname>int</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" line="281"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a80b44282eeed31e9385d2ef0484136de" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::CXXTEST_COPY_CONST_TRAITS</definition>
+        <argsstring>(char)</argsstring>
+        <name>CXXTEST_COPY_CONST_TRAITS</name>
+        <param>
+          <type>char</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" line="297"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a19da9b7edd8c973967c02fc477b5d2ba" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::CXXTEST_COPY_TRAITS</definition>
+        <argsstring>(const signed char, const char)</argsstring>
+        <name>CXXTEST_COPY_TRAITS</name>
+        <param>
+          <type>const signed</type>
+          <declname>char</declname>
+        </param>
+        <param>
+          <type>const char</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" line="303"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a88a7afe02d5eaf7bbc242702f20c642b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::CXXTEST_COPY_CONST_TRAITS</definition>
+        <argsstring>(double)</argsstring>
+        <name>CXXTEST_COPY_CONST_TRAITS</name>
+        <param>
+          <type>double</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" line="333"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1aaeb69b90378afe1308f74a09d134377e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::CXXTEST_COPY_TRAITS</definition>
+        <argsstring>(const float, const double)</argsstring>
+        <name>CXXTEST_COPY_TRAITS</name>
+        <param>
+          <type>const float</type>
+        </param>
+        <param>
+          <type>const double</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" line="338"/>
+      </memberdef>
+      <memberdef kind="function" id="namespace_cxx_test_1a56d8cac6b8f71bab89a49d759c8cb31e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::CXXTEST_COPY_CONST_TRAITS</definition>
+        <argsstring>(float)</argsstring>
+        <name>CXXTEST_COPY_CONST_TRAITS</name>
+        <param>
+          <type>float</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" line="339"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Descriptions.cpp" line="7"/>
+  </compounddef>
+</doxygen>

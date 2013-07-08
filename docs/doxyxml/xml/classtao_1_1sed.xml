@@ -1,0 +1,954 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="classtao_1_1sed" kind="class" prot="public">
+    <compoundname>tao::sed</compoundname>
+    <basecompoundref refid="classtao_1_1module" prot="public" virt="non-virtual">tao::module</basecompoundref>
+    <includes refid="sed_8hh" local="no">sed.hh</includes>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classtao_1_1sed_1aca5f768be558c7c494d0a063132305eb" prot="public" static="no">
+        <type>double</type>
+        <definition>typedef double tao::sed::real_type</definition>
+        <argsstring></argsstring>
+        <name>real_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="37" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" bodystart="37" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="friend">
+      <memberdef kind="friend" id="classtao_1_1sed_1a582c83e4496871dd042e511478d2f999" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend class</type>
+        <definition>friend class ::sed_suite</definition>
+        <argsstring></argsstring>
+        <name>::sed_suite</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="25" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" bodystart="25" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="friend" id="classtao_1_1sed_1a8b04ab5fe90c127bcbc61c58ba645718" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend class</type>
+        <definition>friend class ::filter_suite</definition>
+        <argsstring></argsstring>
+        <name>::filter_suite</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="26" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" bodystart="26" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classtao_1_1sed_1a032770bba47abbaa251352c38c32a8a7" prot="protected" static="no" mutable="no">
+        <type>vector&lt; real_type &gt;</type>
+        <definition>vector&lt;real_type&gt; tao::sed::_snap_ages</definition>
+        <argsstring></argsstring>
+        <name>_snap_ages</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="135" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" bodystart="135" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1sed_1a7f127ee25773981149580e69ae3796f5" prot="protected" static="no" mutable="no">
+        <type>vector&lt; real_type &gt;</type>
+        <definition>vector&lt;real_type&gt; tao::sed::_bin_ages</definition>
+        <argsstring></argsstring>
+        <name>_bin_ages</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="135" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" bodystart="135" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1sed_1a2b1bd058533f04f108fd79e5d8547ef1" prot="protected" static="no" mutable="no">
+        <type>vector&lt; real_type &gt;</type>
+        <definition>vector&lt;real_type&gt; tao::sed::_dual_ages</definition>
+        <argsstring></argsstring>
+        <name>_dual_ages</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="135" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" bodystart="135" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1sed_1a2d06c86b8a0f27aa80166682f12ae1e4" prot="protected" static="no" mutable="no">
+        <type>vector&lt; real_type &gt;</type>
+        <definition>vector&lt;real_type&gt; tao::sed::_age_masses</definition>
+        <argsstring></argsstring>
+        <name>_age_masses</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="136" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" bodystart="136" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1sed_1a1d78b764a4f7d9d2df7f87b0e9a74acc" prot="protected" static="no" mutable="no">
+        <type>vector&lt; real_type &gt;</type>
+        <definition>vector&lt;real_type&gt; tao::sed::_bulge_age_masses</definition>
+        <argsstring></argsstring>
+        <name>_bulge_age_masses</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="136" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" bodystart="136" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1sed_1a64184d23ba0c1c9e185c9a6a6485b503" prot="protected" static="no" mutable="no">
+        <type>vector&lt; real_type &gt;</type>
+        <definition>vector&lt;real_type&gt; tao::sed::_age_metals</definition>
+        <argsstring></argsstring>
+        <name>_age_metals</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="137" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" bodystart="137" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1sed_1a0f48e6f8af5911bd190a8bb5e596c1e8" prot="protected" static="no" mutable="no">
+        <type>mpi::lindex</type>
+        <definition>mpi::lindex tao::sed::_num_spectra</definition>
+        <argsstring></argsstring>
+        <name>_num_spectra</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="138" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" bodystart="138" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1sed_1a2f3047df849fce598e7b59d8d38cd0e1" prot="protected" static="no" mutable="no">
+        <type>mpi::lindex</type>
+        <definition>mpi::lindex tao::sed::_num_metals</definition>
+        <argsstring></argsstring>
+        <name>_num_metals</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="138" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" bodystart="138" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1sed_1a3ae2b5e2e85b8fd408581c682de76373" prot="protected" static="no" mutable="no">
+        <type>fibre&lt; real_type &gt;</type>
+        <definition>fibre&lt;real_type&gt; tao::sed::_disk_spectra</definition>
+        <argsstring></argsstring>
+        <name>_disk_spectra</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="139" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" bodystart="139" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1sed_1ab7ae9f58b0df850a350d6391d1aecdab" prot="protected" static="no" mutable="no">
+        <type>fibre&lt; real_type &gt;</type>
+        <definition>fibre&lt;real_type&gt; tao::sed::_bulge_spectra</definition>
+        <argsstring></argsstring>
+        <name>_bulge_spectra</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="139" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" bodystart="139" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1sed_1a7ac2d03a29d14eb1b1effdfc5ea5f458" prot="protected" static="no" mutable="no">
+        <type>fibre&lt; real_type &gt;</type>
+        <definition>fibre&lt;real_type&gt; tao::sed::_total_spectra</definition>
+        <argsstring></argsstring>
+        <name>_total_spectra</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="139" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" bodystart="139" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1sed_1a1a013e34ecd3edb19dc4692dd0c7ec43" prot="protected" static="no" mutable="no">
+        <type>vector&lt; real_type &gt;</type>
+        <definition>vector&lt;real_type&gt; tao::sed::_ssp</definition>
+        <argsstring></argsstring>
+        <name>_ssp</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="140" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" bodystart="140" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1sed_1aca36e047e6b9eff668a0917092a299a1" prot="protected" static="no" mutable="no">
+        <type>long long</type>
+        <definition>long long tao::sed::_cur_tree_id</definition>
+        <argsstring></argsstring>
+        <name>_cur_tree_id</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="142" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" bodystart="142" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1sed_1a91b1ca95f21ee9f063c316de09ce0438" prot="protected" static="no" mutable="no">
+        <type>multimap&lt; unsigned, unsigned &gt;</type>
+        <definition>multimap&lt;unsigned,unsigned&gt; tao::sed::_parents</definition>
+        <argsstring></argsstring>
+        <name>_parents</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="143" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" bodystart="143" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1sed_1aabe642d05e7f6ac19968fe63920f86d2" prot="protected" static="no" mutable="no">
+        <type>vector&lt; int &gt;</type>
+        <definition>vector&lt;int&gt; tao::sed::_descs</definition>
+        <argsstring></argsstring>
+        <name>_descs</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="144" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" bodystart="144" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1sed_1ab97948a2ee189beb1740f5a106d9a806" prot="protected" static="no" mutable="no">
+        <type>vector&lt; int &gt;</type>
+        <definition>vector&lt;int&gt; tao::sed::_snaps</definition>
+        <argsstring></argsstring>
+        <name>_snaps</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="144" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" bodystart="144" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1sed_1accb9852f9ecf8fe9fdbea02b1cfffe4d" prot="protected" static="no" mutable="no">
+        <type>vector&lt; real_type &gt;</type>
+        <definition>vector&lt;real_type&gt; tao::sed::_sfrs</definition>
+        <argsstring></argsstring>
+        <name>_sfrs</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="145" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" bodystart="145" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1sed_1a80a0ba519543dde0ab06fbf2d64859db" prot="protected" static="no" mutable="no">
+        <type>vector&lt; real_type &gt;</type>
+        <definition>vector&lt;real_type&gt; tao::sed::_bulge_sfrs</definition>
+        <argsstring></argsstring>
+        <name>_bulge_sfrs</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="145" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" bodystart="145" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1sed_1a7d39e3ec30f5c31890d9093f18903861" prot="protected" static="no" mutable="no">
+        <type>vector&lt; real_type &gt;</type>
+        <definition>vector&lt;real_type&gt; tao::sed::_cold_gas</definition>
+        <argsstring></argsstring>
+        <name>_cold_gas</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="145" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" bodystart="145" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1sed_1a979b99105678131a890b76320eaf7eae" prot="protected" static="no" mutable="no">
+        <type>vector&lt; real_type &gt;</type>
+        <definition>vector&lt;real_type&gt; tao::sed::_metals</definition>
+        <argsstring></argsstring>
+        <name>_metals</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="145" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" bodystart="145" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1sed_1ac3fb713e245f21b51c17349c4ade63bc" prot="protected" static="no" mutable="no">
+        <type>gsl_integration_workspace *</type>
+        <definition>gsl_integration_workspace* tao::sed::_work</definition>
+        <argsstring></argsstring>
+        <name>_work</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="147" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" bodystart="147" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1sed_1aa184fb0a071b9c3fdc2112073618912d" prot="protected" static="no" mutable="no">
+        <type>gsl_function</type>
+        <definition>gsl_function tao::sed::_func</definition>
+        <argsstring></argsstring>
+        <name>_func</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="148" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" bodystart="148" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1sed_1ad3dc9e3668284a6688db4cb4599aafac" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::sed::_omega</definition>
+        <argsstring></argsstring>
+        <name>_omega</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="149" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" bodystart="149" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1sed_1a22eb5d3d6c36acf5fdd32489b4d58e4a" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::sed::_omega_lambda</definition>
+        <argsstring></argsstring>
+        <name>_omega_lambda</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="149" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" bodystart="149" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1sed_1a4d8fa694a38ce941d6d6943feb9c8708" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::sed::_hubble</definition>
+        <argsstring></argsstring>
+        <name>_hubble</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="149" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" bodystart="149" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1sed_1a8a9052189eb446ba2fa7961eb4f3049c" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::sed::_omega_r</definition>
+        <argsstring></argsstring>
+        <name>_omega_r</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="150" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" bodystart="150" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1sed_1af8266909b253d60ec84fb5bcdcdd97bf" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::sed::_omega_k</definition>
+        <argsstring></argsstring>
+        <name>_omega_k</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="150" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" bodystart="150" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classtao_1_1sed_1a325ad630081d8603eef8a011697662f7" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classtao_1_1module" kindref="compound">module</ref> *</type>
+        <definition>module * tao::sed::factory</definition>
+        <argsstring>(const string &amp;name, pugi::xml_node base)</argsstring>
+        <name>factory</name>
+        <param>
+          <type>const string &amp;</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>pugi::xml_node</type>
+          <declname>base</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="33" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.cc" bodystart="26" bodyend="30"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classtao_1_1sed_1aeb8469786fc8baf42c3e96707d64a239" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>tao::sed::sed</definition>
+        <argsstring>(const string &amp;name=string(), pugi::xml_node base=pugi::xml_node())</argsstring>
+        <name>sed</name>
+        <param>
+          <type>const string &amp;</type>
+          <declname>name</declname>
+          <defval>string()</defval>
+        </param>
+        <param>
+          <type>pugi::xml_node</type>
+          <declname>base</declname>
+          <defval>pugi::xml_node()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="40" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.cc" bodystart="32" bodyend="49"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1sed_1ad0dc5357a10ec5b7d83ba07d00b69b6a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>tao::sed::~sed</definition>
+        <argsstring>()</argsstring>
+        <name>~sed</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="42" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.cc" bodystart="54" bodyend="56"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1sed_1a3517fc1c615c370d26852e35bf1e552a" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void tao::sed::initialise</definition>
+        <argsstring>(const options::xml_dict &amp;global_dict)</argsstring>
+        <name>initialise</name>
+        <reimplements refid="classtao_1_1module_1a023002eb7c268ecda8a230fd3e562a45">initialise</reimplements>
+        <param>
+          <type>const options::xml_dict &amp;</type>
+          <declname>global_dict</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Initialise the module. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="49" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.cc" bodystart="62" bodyend="75"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1sed_1aac524fa5848125e3fd9eeee2d1f4ebb7" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void tao::sed::execute</definition>
+        <argsstring>()</argsstring>
+        <name>execute</name>
+        <reimplements refid="classtao_1_1module_1a21b4c2d748b31a7b39fbd0b6fbcc331a">execute</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Run the module. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="56" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.cc" bodystart="81" bodyend="100"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1sed_1a8dc784a867c78b8e46790de2b1cd1dc7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::sed::process_galaxy</definition>
+        <argsstring>(const tao::galaxy &amp;galaxy)</argsstring>
+        <name>process_galaxy</name>
+        <param>
+          <type>const <ref refid="classtao_1_1galaxy" kindref="compound">tao::galaxy</ref> &amp;</type>
+          <declname>galaxy</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="59" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.cc" bodystart="103" bodyend="140"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1sed_1a98642c430297f6231719654d93b086d0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>vector&lt; real_type &gt;::view</type>
+        <definition>vector&lt; sed::real_type &gt;::view tao::sed::disk_spectra</definition>
+        <argsstring>()</argsstring>
+        <name>disk_spectra</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="62" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.cc" bodystart="143" bodyend="146"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1sed_1ad73364bca1f7f8ad8f87677419519b3d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>vector&lt; real_type &gt;::view</type>
+        <definition>vector&lt; sed::real_type &gt;::view tao::sed::bulge_spectra</definition>
+        <argsstring>()</argsstring>
+        <name>bulge_spectra</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="65" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.cc" bodystart="149" bodyend="152"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1sed_1ac84fb62a0e848dc752079e2f03104773" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>vector&lt; real_type &gt;::view</type>
+        <definition>vector&lt; sed::real_type &gt;::view tao::sed::total_spectra</definition>
+        <argsstring>()</argsstring>
+        <name>total_spectra</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="68" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.cc" bodystart="155" bodyend="158"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1sed_1a399e8b7dd730160aa71b8f9ccb829d2c" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>real_type</type>
+        <definition>sed::real_type tao::sed::omega</definition>
+        <argsstring>() const </argsstring>
+        <name>omega</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="71" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.cc" bodystart="161" bodyend="164"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1sed_1aedd1dfb305bb244f621436142630a6e7" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>real_type</type>
+        <definition>sed::real_type tao::sed::omega_lambda</definition>
+        <argsstring>() const </argsstring>
+        <name>omega_lambda</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="74" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.cc" bodystart="167" bodyend="170"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1sed_1a14b5b13f0405d9b9465f8f4742a759ac" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>real_type</type>
+        <definition>sed::real_type tao::sed::omega_k</definition>
+        <argsstring>() const </argsstring>
+        <name>omega_k</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="77" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.cc" bodystart="173" bodyend="176"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1sed_1a217e0b2ddcee069d8f488c63849b105a" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>real_type</type>
+        <definition>sed::real_type tao::sed::omega_r</definition>
+        <argsstring>() const </argsstring>
+        <name>omega_r</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="80" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.cc" bodystart="179" bodyend="182"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classtao_1_1sed_1aebb70b58d65c0726396e90a1f8a25cb0" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::sed::_process_time</definition>
+        <argsstring>(mpi::lindex time_idx, unsigned gal_idx)</argsstring>
+        <name>_process_time</name>
+        <param>
+          <type>mpi::lindex</type>
+          <declname>time_idx</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>gal_idx</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="86" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.cc" bodystart="185" bodyend="195"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1sed_1aa7708c33b073d27ce61bfb2b5248ddb4" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::sed::_sum_spectra</definition>
+        <argsstring>(mpi::lindex time_idx, real_type metal, real_type sfh, vector&lt; real_type &gt;::view galaxy_spectra)</argsstring>
+        <name>_sum_spectra</name>
+        <param>
+          <type>mpi::lindex</type>
+          <declname>time_idx</declname>
+        </param>
+        <param>
+          <type>real_type</type>
+          <declname>metal</declname>
+        </param>
+        <param>
+          <type>real_type</type>
+          <declname>sfh</declname>
+        </param>
+        <param>
+          <type>vector&lt; real_type &gt;::view</type>
+          <declname>galaxy_spectra</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="92" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.cc" bodystart="198" bodyend="223"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1sed_1a87ce37d6144c885ced2c18f30b696116" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>unsigned</type>
+        <definition>unsigned tao::sed::_interp_metal</definition>
+        <argsstring>(real_type metal)</argsstring>
+        <name>_interp_metal</name>
+        <param>
+          <type>real_type</type>
+          <declname>metal</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="95" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.cc" bodystart="226" bodyend="242"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1sed_1ac51447c957b62fcb74def0b92de9b64b" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::sed::_rebin_info</definition>
+        <argsstring>(const tao::galaxy &amp;galaxy, unsigned idx)</argsstring>
+        <name>_rebin_info</name>
+        <param>
+          <type>const <ref refid="classtao_1_1galaxy" kindref="compound">tao::galaxy</ref> &amp;</type>
+          <declname>galaxy</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>idx</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="99" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.cc" bodystart="245" bodyend="260"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1sed_1abcc1dfa897f5707e533abeee350eaf3f" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::sed::_rebin_recurse</definition>
+        <argsstring>(unsigned id, real_type oldest_age)</argsstring>
+        <name>_rebin_recurse</name>
+        <param>
+          <type>unsigned</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type>real_type</type>
+          <declname>oldest_age</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="103" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.cc" bodystart="263" bodyend="356"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1sed_1a4736fe9e4e2381e7fe7365a83778afec" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>unsigned</type>
+        <definition>unsigned tao::sed::_find_bin</definition>
+        <argsstring>(real_type age)</argsstring>
+        <name>_find_bin</name>
+        <param>
+          <type>real_type</type>
+          <declname>age</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="115" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.cc" bodystart="458" bodyend="475"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1sed_1ad8db49c0d6ce45c5c5934e5c467712a1" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>real_type</type>
+        <definition>sed::real_type tao::sed::_calc_age</definition>
+        <argsstring>(real_type redshift)</argsstring>
+        <name>_calc_age</name>
+        <param>
+          <type>real_type</type>
+          <declname>redshift</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="118" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.cc" bodystart="478" bodyend="489"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1sed_1a7875355d2321e7d6157b167f63206ed1" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::sed::_read_ssp</definition>
+        <argsstring>(const string &amp;filename)</argsstring>
+        <name>_read_ssp</name>
+        <param>
+          <type>const string &amp;</type>
+          <declname>filename</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="121" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.cc" bodystart="517" bodyend="562"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1sed_1aff247ef04e8ac961c593548a17391580" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::sed::_setup_snap_ages</definition>
+        <argsstring>()</argsstring>
+        <name>_setup_snap_ages</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="124" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.cc" bodystart="565" bodyend="601"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1sed_1a5f02dcca5902ae4c43d15ac6120a4598" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::sed::_read_options</definition>
+        <argsstring>(const options::xml_dict &amp;global_dict)</argsstring>
+        <name>_read_options</name>
+        <param>
+          <type>const options::xml_dict &amp;</type>
+          <declname>global_dict</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="127" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.cc" bodystart="492" bodyend="514"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1sed_1a9fef2b163be1708390fec074a00f1c8d" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::sed::_load_table</definition>
+        <argsstring>(long long tree_id, const string &amp;table)</argsstring>
+        <name>_load_table</name>
+        <param>
+          <type>long long</type>
+          <declname>tree_id</declname>
+        </param>
+        <param>
+          <type>const string &amp;</type>
+          <declname>table</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="131" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.cc" bodystart="604" bodyend="681"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>SED science module.</para><para>The SED module is responsible for calculating the energy spectra of each galaxy. </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="304">
+        <label>tao::module</label>
+        <link refid="classtao_1_1module"/>
+      </node>
+      <node id="303">
+        <label>tao::sed</label>
+        <link refid="classtao_1_1sed"/>
+        <childnode refid="304" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="307">
+        <label>string</label>
+      </node>
+      <node id="306">
+        <label>tao::module</label>
+        <link refid="classtao_1_1module"/>
+        <childnode refid="307" relation="usage">
+          <edgelabel>_dbhost</edgelabel>
+          <edgelabel>_name</edgelabel>
+          <edgelabel>_dbname</edgelabel>
+          <edgelabel>_dbport</edgelabel>
+          <edgelabel>_dbuser</edgelabel>
+          <edgelabel>_tree_pre</edgelabel>
+          <edgelabel>_dbpass</edgelabel>
+          <edgelabel>_dbtype</edgelabel>
+        </childnode>
+      </node>
+      <node id="305">
+        <label>tao::sed</label>
+        <link refid="classtao_1_1sed"/>
+        <childnode refid="306" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" line="24" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/sed.hh" bodystart="22" bodyend="151"/>
+    <listofallmembers>
+      <member refid="classtao_1_1sed_1a8b04ab5fe90c127bcbc61c58ba645718" prot="public" virt="non-virtual"><scope>tao::sed</scope><name>::filter_suite</name></member>
+      <member refid="classtao_1_1sed_1a582c83e4496871dd042e511478d2f999" prot="public" virt="non-virtual"><scope>tao::sed</scope><name>::sed_suite</name></member>
+      <member refid="classtao_1_1sed_1a2d06c86b8a0f27aa80166682f12ae1e4" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_age_masses</name></member>
+      <member refid="classtao_1_1sed_1a64184d23ba0c1c9e185c9a6a6485b503" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_age_metals</name></member>
+      <member refid="classtao_1_1module_1a1b9223e987716522f3d43dff398cb6c2" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_base</name></member>
+      <member refid="classtao_1_1module_1aaa566598c72208d1b7222a5f8d61f9e1" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_batch_size</name></member>
+      <member refid="classtao_1_1sed_1a7f127ee25773981149580e69ae3796f5" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_bin_ages</name></member>
+      <member refid="classtao_1_1sed_1a1d78b764a4f7d9d2df7f87b0e9a74acc" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_bulge_age_masses</name></member>
+      <member refid="classtao_1_1sed_1a80a0ba519543dde0ab06fbf2d64859db" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_bulge_sfrs</name></member>
+      <member refid="classtao_1_1sed_1ab7ae9f58b0df850a350d6391d1aecdab" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_bulge_spectra</name></member>
+      <member refid="classtao_1_1sed_1ad8db49c0d6ce45c5c5934e5c467712a1" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_calc_age</name></member>
+      <member refid="classtao_1_1sed_1a7d39e3ec30f5c31890d9093f18903861" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_cold_gas</name></member>
+      <member refid="classtao_1_1module_1ad36a3f632e13a7ebb16170da155e9f91" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_complete</name></member>
+      <member refid="classtao_1_1module_1ab7902628daffb48f233c25c6b278a041" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_connected</name></member>
+      <member refid="classtao_1_1module_1a0d2f74174e37e6dbbcbc590599c274b1" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_cur_restart_it</name></member>
+      <member refid="classtao_1_1sed_1aca36e047e6b9eff668a0917092a299a1" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_cur_tree_id</name></member>
+      <member refid="classtao_1_1module_1a0b3144ec62a9790142779ec64e120b17" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_db_connect</name></member>
+      <member refid="classtao_1_1module_1a7dcdf9a63725c2ba5cc46db7199003dd" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_db_cycle</name></member>
+      <member refid="classtao_1_1module_1aad462a73697cd7a0944d5060555df81f" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_db_disconnect</name></member>
+      <member refid="classtao_1_1module_1a11c834df4a7148ed692ff8f038959578" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_db_timer</name></member>
+      <member refid="classtao_1_1module_1a8acfc87fe9a2ae5a07a0abec783eb923" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_dbhost</name></member>
+      <member refid="classtao_1_1module_1a87d3363daa10b9963c0056de30f35fea" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_dbname</name></member>
+      <member refid="classtao_1_1module_1aa13743158514ba39f639eee1e1d8d9ef" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_dbpass</name></member>
+      <member refid="classtao_1_1module_1a062ee83e634269ebf464b185cf904be5" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_dbport</name></member>
+      <member refid="classtao_1_1module_1ad6c4ae45e8382b53c130035028a2bf9b" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_dbtype</name></member>
+      <member refid="classtao_1_1module_1a4148a925aa5fe1e6eb2cfd28de3d9c43" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_dbuser</name></member>
+      <member refid="classtao_1_1sed_1aabe642d05e7f6ac19968fe63920f86d2" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_descs</name></member>
+      <member refid="classtao_1_1module_1a83ff7c6af3b37d905e489a6f1dda1de4" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_dict</name></member>
+      <member refid="classtao_1_1sed_1a3ae2b5e2e85b8fd408581c682de76373" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_disk_spectra</name></member>
+      <member refid="classtao_1_1sed_1a2b1bd058533f04f108fd79e5d8547ef1" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_dual_ages</name></member>
+      <member refid="classtao_1_1sed_1a4736fe9e4e2381e7fe7365a83778afec" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_find_bin</name></member>
+      <member refid="classtao_1_1sed_1aa184fb0a071b9c3fdc2112073618912d" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_func</name></member>
+      <member refid="classtao_1_1module_1add5763e6abd9514b8a1fb277bacf7aa0" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_global_dict</name></member>
+      <member refid="classtao_1_1sed_1a4d8fa694a38ce941d6d6943feb9c8708" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_hubble</name></member>
+      <member refid="classtao_1_1sed_1a87ce37d6144c885ced2c18f30b696116" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_interp_metal</name></member>
+      <member refid="classtao_1_1module_1aee8d7601611bb1297410dce20c24a94f" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_it</name></member>
+      <member refid="classtao_1_1sed_1a9fef2b163be1708390fec074a00f1c8d" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_load_table</name></member>
+      <member refid="classtao_1_1sed_1a979b99105678131a890b76320eaf7eae" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_metals</name></member>
+      <member refid="classtao_1_1module_1a068866a4eafd7bc6cf97c0dbddc1eabe" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_name</name></member>
+      <member refid="classtao_1_1sed_1a2f3047df849fce598e7b59d8d38cd0e1" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_num_metals</name></member>
+      <member refid="classtao_1_1module_1a4dc48114767b3275d631d076f1e536ae" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_num_restart_its</name></member>
+      <member refid="classtao_1_1sed_1a0f48e6f8af5911bd190a8bb5e596c1e8" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_num_spectra</name></member>
+      <member refid="classtao_1_1sed_1ad3dc9e3668284a6688db4cb4599aafac" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_omega</name></member>
+      <member refid="classtao_1_1sed_1af8266909b253d60ec84fb5bcdcdd97bf" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_omega_k</name></member>
+      <member refid="classtao_1_1sed_1a22eb5d3d6c36acf5fdd32489b4d58e4a" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_omega_lambda</name></member>
+      <member refid="classtao_1_1sed_1a8a9052189eb446ba2fa7961eb4f3049c" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_omega_r</name></member>
+      <member refid="classtao_1_1sed_1a91b1ca95f21ee9f063c316de09ce0438" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_parents</name></member>
+      <member refid="classtao_1_1sed_1aebb70b58d65c0726396e90a1f8a25cb0" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_process_time</name></member>
+      <member refid="classtao_1_1module_1a3bcaa9defed890ddfa254e7a3bdbc954" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_read_db_options</name></member>
+      <member refid="classtao_1_1sed_1a5f02dcca5902ae4c43d15ac6120a4598" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_read_options</name></member>
+      <member refid="classtao_1_1sed_1a7875355d2321e7d6157b167f63206ed1" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_read_ssp</name></member>
+      <member refid="classtao_1_1sed_1ac51447c957b62fcb74def0b92de9b64b" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_rebin_info</name></member>
+      <member refid="classtao_1_1sed_1abcc1dfa897f5707e533abeee350eaf3f" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_rebin_recurse</name></member>
+      <member refid="classtao_1_1sed_1aff247ef04e8ac961c593548a17391580" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_setup_snap_ages</name></member>
+      <member refid="classtao_1_1sed_1accb9852f9ecf8fe9fdbea02b1cfffe4d" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_sfrs</name></member>
+      <member refid="classtao_1_1sed_1a032770bba47abbaa251352c38c32a8a7" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_snap_ages</name></member>
+      <member refid="classtao_1_1sed_1ab97948a2ee189beb1740f5a106d9a806" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_snaps</name></member>
+      <member refid="classtao_1_1module_1abbd63eb3630af38531d35c485b59abc7" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_sql</name></member>
+      <member refid="classtao_1_1sed_1a1a013e34ecd3edb19dc4692dd0c7ec43" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_ssp</name></member>
+      <member refid="classtao_1_1sed_1aa7708c33b073d27ce61bfb2b5248ddb4" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_sum_spectra</name></member>
+      <member refid="classtao_1_1module_1aa0a08453739811e1cd5ef0ed403be169" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_timer</name></member>
+      <member refid="classtao_1_1sed_1a7ac2d03a29d14eb1b1effdfc5ea5f458" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_total_spectra</name></member>
+      <member refid="classtao_1_1module_1a055dbe05ca82475015b5c474ea666e91" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_tree_pre</name></member>
+      <member refid="classtao_1_1sed_1ac3fb713e245f21b51c17349c4ade63bc" prot="protected" virt="non-virtual"><scope>tao::sed</scope><name>_work</name></member>
+      <member refid="classtao_1_1module_1af8fe67b903df825b119076e57ac9b9a7" prot="public" virt="non-virtual"><scope>tao::sed</scope><name>add_parent</name></member>
+      <member refid="classtao_1_1sed_1ad73364bca1f7f8ad8f87677419519b3d" prot="public" virt="non-virtual"><scope>tao::sed</scope><name>bulge_spectra</name></member>
+      <member refid="classtao_1_1module_1a19feaef9bbe5f219344b07f1bd1bfa38" prot="public" virt="non-virtual"><scope>tao::sed</scope><name>complete</name></member>
+      <member refid="classtao_1_1module_1a4f85def6c0bbe44938d67230e9300093" prot="public" virt="non-virtual"><scope>tao::sed</scope><name>db_time</name></member>
+      <member refid="classtao_1_1sed_1a98642c430297f6231719654d93b086d0" prot="public" virt="non-virtual"><scope>tao::sed</scope><name>disk_spectra</name></member>
+      <member refid="classtao_1_1sed_1aac524fa5848125e3fd9eeee2d1f4ebb7" prot="public" virt="virtual"><scope>tao::sed</scope><name>execute</name></member>
+      <member refid="classtao_1_1sed_1a325ad630081d8603eef8a011697662f7" prot="public" virt="non-virtual"><scope>tao::sed</scope><name>factory</name></member>
+      <member refid="classtao_1_1module_1af0317008573ba52254e3e0267408cec2" prot="public" virt="virtual"><scope>tao::sed</scope><name>finalise</name></member>
+      <member refid="classtao_1_1module_1a0c6d0b7670a9dad3e566ccf2697c13be" prot="public" virt="virtual"><scope>tao::sed</scope><name>galaxy</name></member>
+      <member refid="classtao_1_1sed_1a3517fc1c615c370d26852e35bf1e552a" prot="public" virt="virtual"><scope>tao::sed</scope><name>initialise</name></member>
+      <member refid="classtao_1_1module_1a93af84d540204ec448964a99baec2de4" prot="public" virt="non-virtual"><scope>tao::sed</scope><name>local_dict</name></member>
+      <member refid="classtao_1_1module_1a186257b8d6711e1f2cba7a5f3ce9e3b9" prot="public" virt="non-virtual"><scope>tao::sed</scope><name>local_xml_node</name></member>
+      <member refid="classtao_1_1module_1a04a85ec8fb341115c9d99b5fdf54ed5a" prot="public" virt="virtual"><scope>tao::sed</scope><name>log_metrics</name></member>
+      <member refid="classtao_1_1module_1a5be311f8503aafb4e62735bddfc82aa2" prot="public" virt="non-virtual"><scope>tao::sed</scope><name>module</name></member>
+      <member refid="classtao_1_1module_1a75cf764bee3e92e306b56f96d1be25ad" prot="public" virt="non-virtual"><scope>tao::sed</scope><name>name</name></member>
+      <member refid="classtao_1_1sed_1a399e8b7dd730160aa71b8f9ccb829d2c" prot="public" virt="non-virtual"><scope>tao::sed</scope><name>omega</name></member>
+      <member refid="classtao_1_1sed_1a14b5b13f0405d9b9465f8f4742a759ac" prot="public" virt="non-virtual"><scope>tao::sed</scope><name>omega_k</name></member>
+      <member refid="classtao_1_1sed_1aedd1dfb305bb244f621436142630a6e7" prot="public" virt="non-virtual"><scope>tao::sed</scope><name>omega_lambda</name></member>
+      <member refid="classtao_1_1sed_1a217e0b2ddcee069d8f488c63849b105a" prot="public" virt="non-virtual"><scope>tao::sed</scope><name>omega_r</name></member>
+      <member refid="classtao_1_1module_1a3c8712c817e986905749497611d49a34" prot="public" virt="non-virtual"><scope>tao::sed</scope><name>parents</name></member>
+      <member refid="classtao_1_1module_1aeded5c4440e21754dd389ae5e23c4537" prot="public" virt="non-virtual"><scope>tao::sed</scope><name>process</name></member>
+      <member refid="classtao_1_1sed_1a8dc784a867c78b8e46790de2b1cd1dc7" prot="public" virt="non-virtual"><scope>tao::sed</scope><name>process_galaxy</name></member>
+      <member refid="classtao_1_1sed_1aca5f768be558c7c494d0a063132305eb" prot="public" virt="non-virtual"><scope>tao::sed</scope><name>real_type</name></member>
+      <member refid="classtao_1_1sed_1aeb8469786fc8baf42c3e96707d64a239" prot="public" virt="non-virtual"><scope>tao::sed</scope><name>sed</name></member>
+      <member refid="classtao_1_1module_1ada65b8d273ab0139cba098ec0737d6f0" prot="public" virt="non-virtual"><scope>tao::sed</scope><name>time</name></member>
+      <member refid="classtao_1_1sed_1ac84fb62a0e848dc752079e2f03104773" prot="public" virt="non-virtual"><scope>tao::sed</scope><name>total_spectra</name></member>
+      <member refid="classtao_1_1module_1a4ad3799129a4680da08760564810dd14" prot="public" virt="virtual"><scope>tao::sed</scope><name>~module</name></member>
+      <member refid="classtao_1_1sed_1ad0dc5357a10ec5b7d83ba07d00b69b6a" prot="public" virt="non-virtual"><scope>tao::sed</scope><name>~sed</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

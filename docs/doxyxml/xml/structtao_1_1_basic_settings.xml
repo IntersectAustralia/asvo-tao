@@ -1,0 +1,160 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="structtao_1_1_basic_settings" kind="struct" prot="public">
+    <compoundname>tao::BasicSettings</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structtao_1_1_basic_settings_1a96926d8f25e21b71e7b4537be56bb434" prot="public" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::BasicSettings::ServerIP</definition>
+        <argsstring></argsstring>
+        <name>ServerIP</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" line="21" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" bodystart="21" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1_basic_settings_1a76ed982e432477bf4b18424f29ee7cbf" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int tao::BasicSettings::Port</definition>
+        <argsstring></argsstring>
+        <name>Port</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" line="22" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" bodystart="22" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1_basic_settings_1a6abaa5ce0e7077af8870ee2a6033dcb9" prot="public" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::BasicSettings::UserName</definition>
+        <argsstring></argsstring>
+        <name>UserName</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" line="23" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" bodystart="23" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1_basic_settings_1a37b17c687c05c73ae280bea45870798d" prot="public" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::BasicSettings::Password</definition>
+        <argsstring></argsstring>
+        <name>Password</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" line="24" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" bodystart="24" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1_basic_settings_1a4a2b9ca4a56b2e9b02434eab638c24bd" prot="public" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::BasicSettings::TablePrefix</definition>
+        <argsstring></argsstring>
+        <name>TablePrefix</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" line="25" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" bodystart="25" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1_basic_settings_1a5709c9db8e031e6d3c9201757083b4ae" prot="public" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::BasicSettings::CurrentUserName</definition>
+        <argsstring></argsstring>
+        <name>CurrentUserName</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" line="26" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" bodystart="26" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1_basic_settings_1ab8c7a23fbd475db0c6d927f69373bc1b" prot="public" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::BasicSettings::CurrentDB</definition>
+        <argsstring></argsstring>
+        <name>CurrentDB</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" line="27" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" bodystart="27" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1_basic_settings_1ac8ba5993a53fdc9cac0a4f154a62238f" prot="public" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::BasicSettings::WorkingFolder</definition>
+        <argsstring></argsstring>
+        <name>WorkingFolder</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" line="28" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" bodystart="28" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1_basic_settings_1a8ce13b8066ccdf62452c51de1755d174" prot="public" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::BasicSettings::LogFolder</definition>
+        <argsstring></argsstring>
+        <name>LogFolder</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" line="29" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" bodystart="29" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="15">
+        <label>string</label>
+      </node>
+      <node id="14">
+        <label>tao::BasicSettings</label>
+        <link refid="structtao_1_1_basic_settings"/>
+        <childnode refid="15" relation="usage">
+          <edgelabel>Password</edgelabel>
+          <edgelabel>WorkingFolder</edgelabel>
+          <edgelabel>CurrentUserName</edgelabel>
+          <edgelabel>TablePrefix</edgelabel>
+          <edgelabel>UserName</edgelabel>
+          <edgelabel>CurrentDB</edgelabel>
+          <edgelabel>LogFolder</edgelabel>
+          <edgelabel>ServerIP</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" line="20" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" bodystart="19" bodyend="30"/>
+    <listofallmembers>
+      <member refid="structtao_1_1_basic_settings_1ab8c7a23fbd475db0c6d927f69373bc1b" prot="public" virt="non-virtual"><scope>tao::BasicSettings</scope><name>CurrentDB</name></member>
+      <member refid="structtao_1_1_basic_settings_1a5709c9db8e031e6d3c9201757083b4ae" prot="public" virt="non-virtual"><scope>tao::BasicSettings</scope><name>CurrentUserName</name></member>
+      <member refid="structtao_1_1_basic_settings_1a8ce13b8066ccdf62452c51de1755d174" prot="public" virt="non-virtual"><scope>tao::BasicSettings</scope><name>LogFolder</name></member>
+      <member refid="structtao_1_1_basic_settings_1a37b17c687c05c73ae280bea45870798d" prot="public" virt="non-virtual"><scope>tao::BasicSettings</scope><name>Password</name></member>
+      <member refid="structtao_1_1_basic_settings_1a76ed982e432477bf4b18424f29ee7cbf" prot="public" virt="non-virtual"><scope>tao::BasicSettings</scope><name>Port</name></member>
+      <member refid="structtao_1_1_basic_settings_1a96926d8f25e21b71e7b4537be56bb434" prot="public" virt="non-virtual"><scope>tao::BasicSettings</scope><name>ServerIP</name></member>
+      <member refid="structtao_1_1_basic_settings_1a4a2b9ca4a56b2e9b02434eab638c24bd" prot="public" virt="non-virtual"><scope>tao::BasicSettings</scope><name>TablePrefix</name></member>
+      <member refid="structtao_1_1_basic_settings_1a6abaa5ce0e7077af8870ee2a6033dcb9" prot="public" virt="non-virtual"><scope>tao::BasicSettings</scope><name>UserName</name></member>
+      <member refid="structtao_1_1_basic_settings_1ac8ba5993a53fdc9cac0a4f154a62238f" prot="public" virt="non-virtual"><scope>tao::BasicSettings</scope><name>WorkingFolder</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>
