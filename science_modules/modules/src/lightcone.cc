@@ -1597,6 +1597,9 @@ namespace tao {
          vector<real_type>::view pos_y = _gal.values<real_type>( "pos_y" );
          vector<real_type>::view pos_z = _gal.values<real_type>( "pos_z" );
 	 _gal_z.resize( _gal.batch_size() );
+         _gal_ra.resize( _gal.batch_size() );
+         _gal_dec.resize( _gal.batch_size() );
+         _gal_dist.resize( _gal.batch_size() );
 
 	 // Update the galaxy's redshift. This is dependant on using a box
 	 // or a light-cone.
@@ -1608,8 +1611,16 @@ namespace tao {
 	       real_type dist = sqrt( pos_x[ii]*pos_x[ii] + pos_y[ii]*pos_y[ii] + pos_z[ii]*pos_z[ii] );
 	       ASSERT( dist >= _dist_range.start() && dist < _dist_range.finish() );
 
+               // Set values.
 	       _gal_z[ii] = _distance_to_redshift( dist );
+               numerics::cartesian_to_ecs( pos_x[ii], pos_y[ii], pos_z[ii], &_gal_ra[ii], &_gal_dec[ii] );
+               _gal_dist[ii] = dist;
 	    }
+
+            // Set cone specific fields.
+            _gal.set_field<real_type>( "ra", _gal_ra );
+            _gal.set_field<real_type>( "dec", _gal_dec );
+            _gal.set_field<real_type>( "distance", _gal_dist );
          }
 	 else
 	 {
