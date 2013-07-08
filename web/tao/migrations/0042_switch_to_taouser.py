@@ -18,6 +18,8 @@ class Migration(SchemaMigration):
             db.rename_table('auth_user', 'tao_taouser')
             db.rename_table('auth_user_user_permissions', 'tao_taouser_user_permissions')
             db.rename_table('auth_user_groups', 'tao_taouser_groups')
+            db.rename_column('tao_taouser_groups','user_id','taouser_id')
+            db.rename_column('tao_taouser_user_permissions','user_id','taouser_id')
         else:
             # Presumably clean install with Django >= 1.5
             db.create_table('tao_taouser', (
@@ -54,9 +56,12 @@ class Migration(SchemaMigration):
         db.send_create_signal('tao', ['TaoUser'])
 
     def backwards(self, orm):
+        # this would migrate the user model to django 1.4, probably breaking code
         db.rename_table('tao_taouser', 'auth_user')
         db.rename_table('tao_taouser_user_permissions', 'auth_user_user_permissions')
         db.rename_table('tao_taouser_groups', 'auth_user_groups')
+        db.rename_column('tao_taouser_groups','taouser_id','user_id')
+        db.rename_column('tao_taouser_user_permissions','taouser_id','user_id')
         db.send_create_signal('auth', ['User'])
 
     models = {
