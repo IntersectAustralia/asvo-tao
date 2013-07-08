@@ -1,0 +1,1478 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="classtao_1_1lightcone" kind="class" prot="public">
+    <compoundname>tao::lightcone</compoundname>
+    <basecompoundref refid="classtao_1_1module" prot="public" virt="non-virtual">tao::module</basecompoundref>
+    <includes refid="lightcone_8hh" local="no">lightcone.hh</includes>
+      <sectiondef kind="friend">
+      <memberdef kind="friend" id="classtao_1_1lightcone_1a5a0603f1eb8cbd94b436e7058a8cf286" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend class</type>
+        <definition>friend class ::lightcone_suite</definition>
+        <argsstring></argsstring>
+        <name>::lightcone_suite</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="21" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="21" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="friend" id="classtao_1_1lightcone_1a582c83e4496871dd042e511478d2f999" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend class</type>
+        <definition>friend class ::sed_suite</definition>
+        <argsstring></argsstring>
+        <name>::sed_suite</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="22" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="22" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="friend" id="classtao_1_1lightcone_1a8b04ab5fe90c127bcbc61c58ba645718" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend class</type>
+        <definition>friend class ::filter_suite</definition>
+        <argsstring></argsstring>
+        <name>::filter_suite</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="23" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="23" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classtao_1_1lightcone_1af505be8226a12d8456edec175577be05" prot="protected" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::lightcone::_box_type</definition>
+        <argsstring></argsstring>
+        <name>_box_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="162" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="162" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1aa9fa92ef8de737d8f5a831d4a673418b" prot="protected" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::lightcone::_box_repeat</definition>
+        <argsstring></argsstring>
+        <name>_box_repeat</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="163" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="163" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1a2334edbd200713488024e463b9f7ad75" prot="protected" static="no" mutable="no">
+        <type>vector&lt; string &gt;</type>
+        <definition>vector&lt;string&gt; tao::lightcone::_table_names</definition>
+        <argsstring></argsstring>
+        <name>_table_names</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="164" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="164" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1ad3f1e936c81a3ffab78af802eb2ae7ac" prot="protected" static="no" mutable="no">
+        <type>vector&lt; real_type &gt;</type>
+        <definition>vector&lt;real_type&gt; tao::lightcone::_snap_redshifts</definition>
+        <argsstring></argsstring>
+        <name>_snap_redshifts</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="165" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="165" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1a618b513924c4017c260adb27b1322e59" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::lightcone::_domain_size</definition>
+        <argsstring></argsstring>
+        <name>_domain_size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="166" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="166" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1a74189822165178b917ca73f87c489ef4" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::lightcone::_x0</definition>
+        <argsstring></argsstring>
+        <name>_x0</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="167" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="167" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1a36e73fa2c67e6c6409928c973f822e0c" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::lightcone::_y0</definition>
+        <argsstring></argsstring>
+        <name>_y0</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="167" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="167" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1a57fffcd3f1553c3a53ff4af58b857816" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::lightcone::_z0</definition>
+        <argsstring></argsstring>
+        <name>_z0</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="167" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="167" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1a25a20648071349a7f266e03c02568093" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::lightcone::_z_min</definition>
+        <argsstring></argsstring>
+        <name>_z_min</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="168" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="168" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1a3483d7d45b7952cce660a05b327ad92b" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::lightcone::_z_max</definition>
+        <argsstring></argsstring>
+        <name>_z_max</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="168" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="168" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1ab3eb6a16589abaa3e41759f9a2402b63" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::lightcone::_ra_min</definition>
+        <argsstring></argsstring>
+        <name>_ra_min</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="169" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="169" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1af6d77386b9c1be45127df8ec9f8cfbaf" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::lightcone::_ra_max</definition>
+        <argsstring></argsstring>
+        <name>_ra_max</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="169" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="169" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1ae6d46523b7e318a7343a186c27360f3c" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::lightcone::_dec_min</definition>
+        <argsstring></argsstring>
+        <name>_dec_min</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="170" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="170" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1afa172206cf20f87c0535836e9e5ff043" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::lightcone::_dec_max</definition>
+        <argsstring></argsstring>
+        <name>_dec_max</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="170" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="170" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1a441418e543ec43cb23f3a76e86448c9f" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::lightcone::_z_snap</definition>
+        <argsstring></argsstring>
+        <name>_z_snap</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="171" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="171" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1a88967b4632c438d385a22554b0e1ebc9" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::lightcone::_box_size</definition>
+        <argsstring></argsstring>
+        <name>_box_size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="171" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="171" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1ac3d84fc8906c15d2947cd8fb29051dfa" prot="protected" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned tao::lightcone::_min_snap</definition>
+        <argsstring></argsstring>
+        <name>_min_snap</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="172" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="172" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1a276cf7272b5b2876f0b5d1897485840f" prot="protected" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned tao::lightcone::_max_snap</definition>
+        <argsstring></argsstring>
+        <name>_max_snap</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="172" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="172" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1a57e09c862f99306d7e917cf6f9f8862d" prot="protected" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned tao::lightcone::_z_snap_idx</definition>
+        <argsstring></argsstring>
+        <name>_z_snap_idx</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="172" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="172" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1a7acb0c7482857f082df55c69aceb0476" prot="protected" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool tao::lightcone::_unique</definition>
+        <argsstring></argsstring>
+        <name>_unique</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="173" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="173" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1ab8ff7098082f4ea585450928e4ab2712" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::lightcone::_unique_offs_x</definition>
+        <argsstring></argsstring>
+        <name>_unique_offs_x</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="174" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="174" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1ab80be6cec9d5dff1830c8448ad74e214" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::lightcone::_unique_offs_y</definition>
+        <argsstring></argsstring>
+        <name>_unique_offs_y</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="174" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="174" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1aa70751717dd62ff760da9d86f7909678" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::lightcone::_unique_offs_z</definition>
+        <argsstring></argsstring>
+        <name>_unique_offs_z</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="174" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="174" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1a7946a8224a5206316a44ffac61ad498f" prot="protected" static="no" mutable="no">
+        <type>range&lt; real_type &gt;</type>
+        <definition>range&lt;real_type&gt; tao::lightcone::_dist_range</definition>
+        <argsstring></argsstring>
+        <name>_dist_range</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="175" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="175" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1aaf96e37e6525abd9491f5fdd16425e8f" prot="protected" static="no" mutable="no">
+        <type>set&lt; string &gt;</type>
+        <definition>set&lt;string&gt; tao::lightcone::_output_fields</definition>
+        <argsstring></argsstring>
+        <name>_output_fields</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="176" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="176" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1af74c8edd31e2719203e10d38951d4233" prot="protected" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::lightcone::_filter</definition>
+        <argsstring></argsstring>
+        <name>_filter</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="177" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="177" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1ad960f7dcdd496a84b8d6561585d94bdf" prot="protected" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::lightcone::_filter_min</definition>
+        <argsstring></argsstring>
+        <name>_filter_min</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="178" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="178" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1a125ca1edac172404693203e4dff114ce" prot="protected" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::lightcone::_filter_max</definition>
+        <argsstring></argsstring>
+        <name>_filter_max</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="178" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="178" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1adb5e1ed0ce79f17581c5e3396e3c5ae9" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::lightcone::_h0</definition>
+        <argsstring></argsstring>
+        <name>_h0</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="179" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="179" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1a8247494bbd309f2bab0384dabfc21d5a" prot="protected" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::lightcone::_query_template</definition>
+        <argsstring></argsstring>
+        <name>_query_template</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="181" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="181" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1a8418714d1ed43d45cfd7f2683240ec0c" prot="protected" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::lightcone::_basic_query</definition>
+        <argsstring></argsstring>
+        <name>_basic_query</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="182" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="182" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1ae895ed43e6d46a040c321f8d50430e28" prot="protected" static="no" mutable="no">
+        <type>vector&lt; string &gt;</type>
+        <definition>vector&lt;string&gt; tao::lightcone::_ops</definition>
+        <argsstring></argsstring>
+        <name>_ops</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="183" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="183" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1a7eb80abf501bedd160df76a44a50c2b1" prot="protected" static="no" mutable="no">
+        <type>array&lt; real_type, 3 &gt;</type>
+        <definition>array&lt;real_type,3&gt; tao::lightcone::_rrs_offs</definition>
+        <argsstring></argsstring>
+        <name>_rrs_offs</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="184" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="184" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1af471128a7a3bd6aabfcc7975a4ddb714" prot="protected" static="no" mutable="no">
+        <type>array&lt; int, 3 &gt;</type>
+        <definition>array&lt;int,3&gt; tao::lightcone::_rrs_axis</definition>
+        <argsstring></argsstring>
+        <name>_rrs_axis</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="185" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="185" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1a7b2e43f577f954b31138adf6a1280dfd" prot="protected" static="no" mutable="no">
+        <type>uniform_generator&lt; real_type &gt;</type>
+        <definition>uniform_generator&lt;real_type&gt; tao::lightcone::_real_rng</definition>
+        <argsstring></argsstring>
+        <name>_real_rng</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="186" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="186" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1aa8b65561d2832063178a863ea4ad8997" prot="protected" static="no" mutable="no">
+        <type>uniform_generator&lt; int &gt;</type>
+        <definition>uniform_generator&lt;int&gt; tao::lightcone::_int_rng</definition>
+        <argsstring></argsstring>
+        <name>_int_rng</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="187" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="187" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1a36ba473352e7c26dec03e57279c49f45" prot="protected" static="no" mutable="no">
+        <type>int</type>
+        <definition>int tao::lightcone::_rng_seed</definition>
+        <argsstring></argsstring>
+        <name>_rng_seed</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="188" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="188" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1a370a37d9e9290258f70414a59b37263e" prot="protected" static="no" mutable="no">
+        <type>vector&lt; real_type &gt;</type>
+        <definition>vector&lt;real_type&gt; tao::lightcone::_dist_to_z_tbl_dist</definition>
+        <argsstring></argsstring>
+        <name>_dist_to_z_tbl_dist</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="190" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="190" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1ab64084c1c359457b553f6a20400e87e3" prot="protected" static="no" mutable="no">
+        <type>vector&lt; real_type &gt;</type>
+        <definition>vector&lt;real_type&gt; tao::lightcone::_dist_to_z_tbl_z</definition>
+        <argsstring></argsstring>
+        <name>_dist_to_z_tbl_z</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="191" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="191" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1ad3ee22d54f627d39d8c4ac4cdaceb40e" prot="protected" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::lightcone::_bin_filename</definition>
+        <argsstring></argsstring>
+        <name>_bin_filename</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="193" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="193" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1a11bfead6467d294fa3bd1b8e572da3e9" prot="protected" static="no" mutable="no">
+        <type>std::ofstream</type>
+        <definition>std::ofstream tao::lightcone::_bin_file</definition>
+        <argsstring></argsstring>
+        <name>_bin_file</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="194" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="194" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1ada860cce5cbc15c8db7ede755081ba7c" prot="protected" static="no" mutable="no">
+        <type>size_t</type>
+        <definition>size_t tao::lightcone::_cur_table</definition>
+        <argsstring></argsstring>
+        <name>_cur_table</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="196" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="196" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1adf2e340ed42fc7046859063bb4425cae" prot="protected" static="no" mutable="no">
+        <type>list&lt; array&lt; real_type, 3 &gt; &gt;</type>
+        <definition>list&lt;array&lt;real_type,3&gt; &gt; tao::lightcone::_boxes</definition>
+        <argsstring></argsstring>
+        <name>_boxes</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="197" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="197" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1ad4ebc7235f31d3da68bdbd3698e946b1" prot="protected" static="no" mutable="no">
+        <type>list&lt; array&lt; real_type, 3 &gt; &gt;::const_iterator</type>
+        <definition>list&lt;array&lt;real_type,3&gt; &gt;::const_iterator tao::lightcone::_cur_box</definition>
+        <argsstring></argsstring>
+        <name>_cur_box</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="198" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="198" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1aeb5db34fcde2314eb9bb0680c9f685cb" prot="protected" static="no" mutable="no">
+        <type>soci::statement *</type>
+        <definition>soci::statement* tao::lightcone::_st</definition>
+        <argsstring></argsstring>
+        <name>_st</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="202" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="202" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1a4b004649b49b7e9306c6194e88a167ce" prot="protected" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool tao::lightcone::_rows_exist</definition>
+        <argsstring></argsstring>
+        <name>_rows_exist</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="203" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="203" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1a19074a9131a64268ba4ac40df2e706f9" prot="protected" static="no" mutable="no">
+        <type>vector&lt; void * &gt;</type>
+        <definition>vector&lt;void*&gt; tao::lightcone::_field_stor</definition>
+        <argsstring></argsstring>
+        <name>_field_stor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="204" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="204" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1aa93c1e519831bc494fb60df8f3a11127" prot="protected" static="no" mutable="no">
+        <type>vector&lt; galaxy::field_value_type &gt;</type>
+        <definition>vector&lt;galaxy::field_value_type&gt; tao::lightcone::_field_types</definition>
+        <argsstring></argsstring>
+        <name>_field_types</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="205" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="205" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1ae42f690bc1cdc5c0ce0ae3d648101a14" prot="protected" static="no" mutable="no">
+        <type>vector&lt; real_type &gt;</type>
+        <definition>vector&lt;real_type&gt; tao::lightcone::_gal_z</definition>
+        <argsstring></argsstring>
+        <name>_gal_z</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="206" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="206" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1a574b31b2718d59a80b0e45cfd86c9c1a" prot="protected" static="no" mutable="no">
+        <type><ref refid="classtao_1_1galaxy" kindref="compound">tao::galaxy</ref></type>
+        <definition>tao::galaxy tao::lightcone::_gal</definition>
+        <argsstring></argsstring>
+        <name>_gal</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="207" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="207" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1a4f7d820b204919368b38fa10413211ff" prot="protected" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::lightcone::_accel_method</definition>
+        <argsstring></argsstring>
+        <name>_accel_method</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="209" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="209" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1aa8bba91c8936030c9357d6fc197f6dec" prot="protected" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::lightcone::_decomp_method</definition>
+        <argsstring></argsstring>
+        <name>_decomp_method</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="210" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="210" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1ad8dabc8be951b76abe8535e0b01831ad" prot="protected" static="no" mutable="no">
+        <type>int</type>
+        <definition>int tao::lightcone::_bsp_step</definition>
+        <argsstring></argsstring>
+        <name>_bsp_step</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="211" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="211" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1a6f8e82d61d9d486ab486ac13ff2800e6" prot="protected" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::lightcone::_snap_red_table</definition>
+        <argsstring></argsstring>
+        <name>_snap_red_table</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="212" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="212" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1aa1e6a950115fce20fc7c85f05171d84c" prot="protected" static="no" mutable="no">
+        <type>map&lt; string, string &gt;</type>
+        <definition>map&lt;string,string&gt; tao::lightcone::_field_map</definition>
+        <argsstring></argsstring>
+        <name>_field_map</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="213" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="213" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1a7f7cc9060a3ac64ab274ffe762cd6a16" prot="protected" static="no" mutable="no">
+        <type>profile::progress</type>
+        <definition>profile::progress tao::lightcone::_prog</definition>
+        <argsstring></argsstring>
+        <name>_prog</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="215" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="215" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1lightcone_1a8c3107855a35d8f7124fb47c316347a3" prot="protected" static="no" mutable="no">
+        <type>profile::timer</type>
+        <definition>profile::timer tao::lightcone::_per_box</definition>
+        <argsstring></argsstring>
+        <name>_per_box</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="216" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="216" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classtao_1_1lightcone_1a4bdf65233eae89e6b0ce4d4c98735c33" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classtao_1_1module" kindref="compound">module</ref> *</type>
+        <definition>module * tao::lightcone::factory</definition>
+        <argsstring>(const string &amp;name, pugi::xml_node base)</argsstring>
+        <name>factory</name>
+        <param>
+          <type>const string &amp;</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>pugi::xml_node</type>
+          <declname>base</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="30" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.cc" bodystart="22" bodyend="26"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classtao_1_1lightcone_1ac8b180f5939dce78906d6c12d64a2a37" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>tao::lightcone::lightcone</definition>
+        <argsstring>(const string &amp;name=string(), pugi::xml_node base=pugi::xml_node())</argsstring>
+        <name>lightcone</name>
+        <param>
+          <type>const string &amp;</type>
+          <declname>name</declname>
+          <defval>string()</defval>
+        </param>
+        <param>
+          <type>pugi::xml_node</type>
+          <declname>base</declname>
+          <defval>pugi::xml_node()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="35" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.cc" bodystart="28" bodyend="43"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1lightcone_1a46d5956619b22423f0fde3ebb1a52ad6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>tao::lightcone::~lightcone</definition>
+        <argsstring>()</argsstring>
+        <name>~lightcone</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="37" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.cc" bodystart="45" bodyend="47"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1lightcone_1aa4acb03b7e50bf835f7f69c396184021" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void tao::lightcone::initialise</definition>
+        <argsstring>(const options::xml_dict &amp;global_dict)</argsstring>
+        <name>initialise</name>
+        <reimplements refid="classtao_1_1module_1a023002eb7c268ecda8a230fd3e562a45">initialise</reimplements>
+        <param>
+          <type>const options::xml_dict &amp;</type>
+          <declname>global_dict</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Initialise the module. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="44" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.cc" bodystart="53" bodyend="61"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1lightcone_1afc174f18f28af8a0093092374af6a16e" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void tao::lightcone::execute</definition>
+        <argsstring>()</argsstring>
+        <name>execute</name>
+        <reimplements refid="classtao_1_1module_1a21b4c2d748b31a7b39fbd0b6fbcc331a">execute</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Run the module. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="51" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.cc" bodystart="67" bodyend="92"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1lightcone_1a4724c985fbdfc45adc1c4738d23b710c" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type><ref refid="classtao_1_1galaxy" kindref="compound">tao::galaxy</ref> &amp;</type>
+        <definition>tao::galaxy &amp; tao::lightcone::galaxy</definition>
+        <argsstring>()</argsstring>
+        <name>galaxy</name>
+        <reimplements refid="classtao_1_1module_1a0c6d0b7670a9dad3e566ccf2697c13be">galaxy</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="58" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.cc" bodystart="98" bodyend="101"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1lightcone_1a5214c32ad678f4fb048a0962e81cd511" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::lightcone::begin</definition>
+        <argsstring>()</argsstring>
+        <name>begin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Begin iterating over galaxies. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="64" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.cc" bodystart="107" bodyend="161"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1lightcone_1a1c1a642695bfa199054cb03fa6cba180" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool tao::lightcone::done</definition>
+        <argsstring>()</argsstring>
+        <name>done</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Check for completed iteration. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="70" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.cc" bodystart="181" bodyend="196"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1lightcone_1ad5c6e4486427cf2cdfb036443cd31cee" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::lightcone::operator++</definition>
+        <argsstring>()</argsstring>
+        <name>operator++</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Advance to next galaxy. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="76" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.cc" bodystart="202" bodyend="239"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1lightcone_1a23da9494fef3807bd6c6e4efe8429e3e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classtao_1_1galaxy" kindref="compound">tao::galaxy</ref> &amp;</type>
+        <definition>tao::galaxy &amp; tao::lightcone::operator*</definition>
+        <argsstring>()</argsstring>
+        <name>operator*</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get current galaxy. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="82" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.cc" bodystart="245" bodyend="248"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1lightcone_1aabc0947a8e4e22d6416e011d4fb79f88" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>const set&lt; string &gt; &amp;</type>
+        <definition>const set&lt; string &gt; &amp; tao::lightcone::output_fields</definition>
+        <argsstring>() const </argsstring>
+        <name>output_fields</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="85" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.cc" bodystart="251" bodyend="254"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1lightcone_1afeb0e77b02550539fc92a90454cd932e" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>unsigned</type>
+        <definition>unsigned tao::lightcone::num_boxes</definition>
+        <argsstring>() const </argsstring>
+        <name>num_boxes</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="88" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.cc" bodystart="257" bodyend="260"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1lightcone_1ac17cb2147a4e17fc437522040ebbf09c" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void tao::lightcone::log_metrics</definition>
+        <argsstring>()</argsstring>
+        <name>log_metrics</name>
+        <reimplements refid="classtao_1_1module_1a04a85ec8fb341115c9d99b5fdf54ed5a">log_metrics</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="92" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.cc" bodystart="263" bodyend="267"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classtao_1_1lightcone_1a0cca4dc3b22ff62d384ce318c1926587" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::lightcone::_query_table_names</definition>
+        <argsstring>(vector&lt; string &gt; &amp;table_names)</argsstring>
+        <name>_query_table_names</name>
+        <param>
+          <type>vector&lt; string &gt; &amp;</type>
+          <declname>table_names</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get a list of tree table names to search. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="100" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.cc" bodystart="273" bodyend="411"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1lightcone_1ac2543fb6633dc510155cc52eef17943d" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::lightcone::_settle_table</definition>
+        <argsstring>()</argsstring>
+        <name>_settle_table</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="103" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.cc" bodystart="414" bodyend="434"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1lightcone_1a70e5b7c2ccbe215319e5403a637bd2bb" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::lightcone::_settle_box</definition>
+        <argsstring>()</argsstring>
+        <name>_settle_box</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="106" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.cc" bodystart="437" bodyend="559"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1lightcone_1a90aa51a5bf61baf85dfee4914294af7f" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::lightcone::_build_pixels</definition>
+        <argsstring>(real_type offs_x, real_type offs_y, real_type offs_z)</argsstring>
+        <name>_build_pixels</name>
+        <param>
+          <type>real_type</type>
+          <declname>offs_x</declname>
+        </param>
+        <param>
+          <type>real_type</type>
+          <declname>offs_y</declname>
+        </param>
+        <param>
+          <type>real_type</type>
+          <declname>offs_z</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="111" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.cc" bodystart="565" bodyend="634"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1lightcone_1adcbbf6c3491cf9ae00e1c008b9f9050e" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::lightcone::_build_query</definition>
+        <argsstring>(real_type offs_x, real_type offs_y, real_type offs_z, string &amp;query)</argsstring>
+        <name>_build_query</name>
+        <param>
+          <type>real_type</type>
+          <declname>offs_x</declname>
+        </param>
+        <param>
+          <type>real_type</type>
+          <declname>offs_y</declname>
+        </param>
+        <param>
+          <type>real_type</type>
+          <declname>offs_z</declname>
+        </param>
+        <param>
+          <type>string &amp;</type>
+          <declname>query</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="117" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.cc" bodystart="640" bodyend="730"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1lightcone_1a318601434333d464a042ba59eaf326bc" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::lightcone::_random_rotation_and_shifting</definition>
+        <argsstring>(vector&lt; string &gt; &amp;ops)</argsstring>
+        <name>_random_rotation_and_shifting</name>
+        <param>
+          <type>vector&lt; string &gt; &amp;</type>
+          <declname>ops</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="120" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.cc" bodystart="736" bodyend="900"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1lightcone_1a46f2e709b384dc99942fb8b7605104d8" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::lightcone::_get_boxes</definition>
+        <argsstring>(list&lt; array&lt; real_type, 3 &gt;&gt; &amp;boxes)</argsstring>
+        <name>_get_boxes</name>
+        <param>
+          <type>list&lt; array&lt; real_type, 3 &gt;&gt; &amp;</type>
+          <declname>boxes</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="123" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.cc" bodystart="906" bodyend="954"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1lightcone_1a4507b8e6c840fa082cc5039ec600c1fe" prot="protected" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>real_type</type>
+        <definition>lightcone::real_type tao::lightcone::_redshift_to_distance</definition>
+        <argsstring>(real_type redshift) const </argsstring>
+        <name>_redshift_to_distance</name>
+        <param>
+          <type>real_type</type>
+          <declname>redshift</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="126" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.cc" bodystart="960" bodyend="991"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1lightcone_1abb8fe724f89138c29a0bc1d040c9f07d" prot="protected" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>real_type</type>
+        <definition>lightcone::real_type tao::lightcone::_distance_to_redshift</definition>
+        <argsstring>(real_type dist) const </argsstring>
+        <name>_distance_to_redshift</name>
+        <param>
+          <type>real_type</type>
+          <declname>dist</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="129" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.cc" bodystart="1433" bodyend="1452"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1lightcone_1aa762f12d50f8ca957c88a51d47af8637" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::lightcone::_read_options</definition>
+        <argsstring>(const options::xml_dict &amp;global_dict)</argsstring>
+        <name>_read_options</name>
+        <param>
+          <type>const options::xml_dict &amp;</type>
+          <declname>global_dict</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Setup parameters.</para><para>For performance sake, we cache all the parameters we need from the parameter dictionary. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="132" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.cc" bodystart="1000" bodyend="1202"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1lightcone_1ac6049047f382484c4071f39f9110321c" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::lightcone::_setup_query_template</definition>
+        <argsstring>()</argsstring>
+        <name>_setup_query_template</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="135" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.cc" bodystart="1208" bodyend="1291"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1lightcone_1aef0001985468e54f16b0c45a5b97fb2a" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::lightcone::_read_snapshots</definition>
+        <argsstring>()</argsstring>
+        <name>_read_snapshots</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="138" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.cc" bodystart="1297" bodyend="1328"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1lightcone_1ab09aa3f90c3a245237e9d203b26bfb2f" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::lightcone::_build_dist_to_z_tbl</definition>
+        <argsstring>(unsigned num_points, real_type min_z, real_type max_z)</argsstring>
+        <name>_build_dist_to_z_tbl</name>
+        <param>
+          <type>unsigned</type>
+          <declname>num_points</declname>
+        </param>
+        <param>
+          <type>real_type</type>
+          <declname>min_z</declname>
+        </param>
+        <param>
+          <type>real_type</type>
+          <declname>max_z</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="143" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.cc" bodystart="1417" bodyend="1430"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1lightcone_1af95e7792a9c16f686fe4633c5ef83764" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>unsigned</type>
+        <definition>unsigned tao::lightcone::_box_snapshot</definition>
+        <argsstring>(real_type redshift)</argsstring>
+        <name>_box_snapshot</name>
+        <param>
+          <type>real_type</type>
+          <declname>redshift</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="146" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.cc" bodystart="164" bodyend="175"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1lightcone_1a72a26ef1237467e1b9adb11117ffcd77" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::lightcone::_setup_redshift_ranges</definition>
+        <argsstring>()</argsstring>
+        <name>_setup_redshift_ranges</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="152" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.cc" bodystart="1334" bodyend="1414"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1lightcone_1a8a14921b3d1e8c00eaa92f02dd9fed1d" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::lightcone::_setup_batching</definition>
+        <argsstring>()</argsstring>
+        <name>_setup_batching</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Allocate arrays for batching. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="155" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.cc" bodystart="1458" bodyend="1535"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1lightcone_1a2905ad5542a9811e183523f2607c8a16" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::lightcone::_fetch</definition>
+        <argsstring>()</argsstring>
+        <name>_fetch</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="158" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.cc" bodystart="1538" bodyend="1625"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Lightcone science module. </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="185">
+        <label>tao::lightcone</label>
+        <link refid="classtao_1_1lightcone"/>
+        <childnode refid="186" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="186">
+        <label>tao::module</label>
+        <link refid="classtao_1_1module"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="189">
+        <label>string</label>
+      </node>
+      <node id="187">
+        <label>tao::lightcone</label>
+        <link refid="classtao_1_1lightcone"/>
+        <childnode refid="188" relation="public-inheritance">
+        </childnode>
+        <childnode refid="189" relation="usage">
+          <edgelabel>_basic_query</edgelabel>
+          <edgelabel>_query_template</edgelabel>
+          <edgelabel>_filter</edgelabel>
+          <edgelabel>_accel_method</edgelabel>
+          <edgelabel>_bin_filename</edgelabel>
+          <edgelabel>_filter_max</edgelabel>
+          <edgelabel>_decomp_method</edgelabel>
+          <edgelabel>_box_type</edgelabel>
+          <edgelabel>_snap_red_table</edgelabel>
+          <edgelabel>_box_repeat</edgelabel>
+          <edgelabel>...</edgelabel>
+        </childnode>
+        <childnode refid="190" relation="usage">
+          <edgelabel>_gal</edgelabel>
+        </childnode>
+      </node>
+      <node id="190">
+        <label>tao::galaxy</label>
+        <link refid="classtao_1_1galaxy"/>
+        <childnode refid="189" relation="usage">
+          <edgelabel>_filter</edgelabel>
+          <edgelabel>_table</edgelabel>
+        </childnode>
+      </node>
+      <node id="188">
+        <label>tao::module</label>
+        <link refid="classtao_1_1module"/>
+        <childnode refid="189" relation="usage">
+          <edgelabel>_dbhost</edgelabel>
+          <edgelabel>_name</edgelabel>
+          <edgelabel>_dbname</edgelabel>
+          <edgelabel>_dbport</edgelabel>
+          <edgelabel>_dbuser</edgelabel>
+          <edgelabel>_tree_pre</edgelabel>
+          <edgelabel>_dbpass</edgelabel>
+          <edgelabel>_dbtype</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" line="20" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.hh" bodystart="18" bodyend="217"/>
+    <listofallmembers>
+      <member refid="classtao_1_1lightcone_1a8b04ab5fe90c127bcbc61c58ba645718" prot="public" virt="non-virtual"><scope>tao::lightcone</scope><name>::filter_suite</name></member>
+      <member refid="classtao_1_1lightcone_1a5a0603f1eb8cbd94b436e7058a8cf286" prot="public" virt="non-virtual"><scope>tao::lightcone</scope><name>::lightcone_suite</name></member>
+      <member refid="classtao_1_1lightcone_1a582c83e4496871dd042e511478d2f999" prot="public" virt="non-virtual"><scope>tao::lightcone</scope><name>::sed_suite</name></member>
+      <member refid="classtao_1_1lightcone_1a4f7d820b204919368b38fa10413211ff" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_accel_method</name></member>
+      <member refid="classtao_1_1module_1a1b9223e987716522f3d43dff398cb6c2" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_base</name></member>
+      <member refid="classtao_1_1lightcone_1a8418714d1ed43d45cfd7f2683240ec0c" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_basic_query</name></member>
+      <member refid="classtao_1_1module_1aaa566598c72208d1b7222a5f8d61f9e1" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_batch_size</name></member>
+      <member refid="classtao_1_1lightcone_1a11bfead6467d294fa3bd1b8e572da3e9" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_bin_file</name></member>
+      <member refid="classtao_1_1lightcone_1ad3ee22d54f627d39d8c4ac4cdaceb40e" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_bin_filename</name></member>
+      <member refid="classtao_1_1lightcone_1aa9fa92ef8de737d8f5a831d4a673418b" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_box_repeat</name></member>
+      <member refid="classtao_1_1lightcone_1a88967b4632c438d385a22554b0e1ebc9" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_box_size</name></member>
+      <member refid="classtao_1_1lightcone_1af95e7792a9c16f686fe4633c5ef83764" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_box_snapshot</name></member>
+      <member refid="classtao_1_1lightcone_1af505be8226a12d8456edec175577be05" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_box_type</name></member>
+      <member refid="classtao_1_1lightcone_1adf2e340ed42fc7046859063bb4425cae" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_boxes</name></member>
+      <member refid="classtao_1_1lightcone_1ad8dabc8be951b76abe8535e0b01831ad" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_bsp_step</name></member>
+      <member refid="classtao_1_1lightcone_1ab09aa3f90c3a245237e9d203b26bfb2f" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_build_dist_to_z_tbl</name></member>
+      <member refid="classtao_1_1lightcone_1a90aa51a5bf61baf85dfee4914294af7f" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_build_pixels</name></member>
+      <member refid="classtao_1_1lightcone_1adcbbf6c3491cf9ae00e1c008b9f9050e" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_build_query</name></member>
+      <member refid="classtao_1_1module_1ad36a3f632e13a7ebb16170da155e9f91" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_complete</name></member>
+      <member refid="classtao_1_1module_1ab7902628daffb48f233c25c6b278a041" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_connected</name></member>
+      <member refid="classtao_1_1lightcone_1ad4ebc7235f31d3da68bdbd3698e946b1" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_cur_box</name></member>
+      <member refid="classtao_1_1module_1a0d2f74174e37e6dbbcbc590599c274b1" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_cur_restart_it</name></member>
+      <member refid="classtao_1_1lightcone_1ada860cce5cbc15c8db7ede755081ba7c" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_cur_table</name></member>
+      <member refid="classtao_1_1module_1a0b3144ec62a9790142779ec64e120b17" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_db_connect</name></member>
+      <member refid="classtao_1_1module_1a7dcdf9a63725c2ba5cc46db7199003dd" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_db_cycle</name></member>
+      <member refid="classtao_1_1module_1aad462a73697cd7a0944d5060555df81f" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_db_disconnect</name></member>
+      <member refid="classtao_1_1module_1a11c834df4a7148ed692ff8f038959578" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_db_timer</name></member>
+      <member refid="classtao_1_1module_1a8acfc87fe9a2ae5a07a0abec783eb923" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_dbhost</name></member>
+      <member refid="classtao_1_1module_1a87d3363daa10b9963c0056de30f35fea" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_dbname</name></member>
+      <member refid="classtao_1_1module_1aa13743158514ba39f639eee1e1d8d9ef" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_dbpass</name></member>
+      <member refid="classtao_1_1module_1a062ee83e634269ebf464b185cf904be5" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_dbport</name></member>
+      <member refid="classtao_1_1module_1ad6c4ae45e8382b53c130035028a2bf9b" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_dbtype</name></member>
+      <member refid="classtao_1_1module_1a4148a925aa5fe1e6eb2cfd28de3d9c43" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_dbuser</name></member>
+      <member refid="classtao_1_1lightcone_1afa172206cf20f87c0535836e9e5ff043" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_dec_max</name></member>
+      <member refid="classtao_1_1lightcone_1ae6d46523b7e318a7343a186c27360f3c" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_dec_min</name></member>
+      <member refid="classtao_1_1lightcone_1aa8bba91c8936030c9357d6fc197f6dec" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_decomp_method</name></member>
+      <member refid="classtao_1_1module_1a83ff7c6af3b37d905e489a6f1dda1de4" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_dict</name></member>
+      <member refid="classtao_1_1lightcone_1a7946a8224a5206316a44ffac61ad498f" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_dist_range</name></member>
+      <member refid="classtao_1_1lightcone_1a370a37d9e9290258f70414a59b37263e" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_dist_to_z_tbl_dist</name></member>
+      <member refid="classtao_1_1lightcone_1ab64084c1c359457b553f6a20400e87e3" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_dist_to_z_tbl_z</name></member>
+      <member refid="classtao_1_1lightcone_1abb8fe724f89138c29a0bc1d040c9f07d" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_distance_to_redshift</name></member>
+      <member refid="classtao_1_1lightcone_1a618b513924c4017c260adb27b1322e59" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_domain_size</name></member>
+      <member refid="classtao_1_1lightcone_1a2905ad5542a9811e183523f2607c8a16" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_fetch</name></member>
+      <member refid="classtao_1_1lightcone_1aa1e6a950115fce20fc7c85f05171d84c" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_field_map</name></member>
+      <member refid="classtao_1_1lightcone_1a19074a9131a64268ba4ac40df2e706f9" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_field_stor</name></member>
+      <member refid="classtao_1_1lightcone_1aa93c1e519831bc494fb60df8f3a11127" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_field_types</name></member>
+      <member refid="classtao_1_1lightcone_1af74c8edd31e2719203e10d38951d4233" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_filter</name></member>
+      <member refid="classtao_1_1lightcone_1a125ca1edac172404693203e4dff114ce" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_filter_max</name></member>
+      <member refid="classtao_1_1lightcone_1ad960f7dcdd496a84b8d6561585d94bdf" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_filter_min</name></member>
+      <member refid="classtao_1_1lightcone_1a574b31b2718d59a80b0e45cfd86c9c1a" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_gal</name></member>
+      <member refid="classtao_1_1lightcone_1ae42f690bc1cdc5c0ce0ae3d648101a14" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_gal_z</name></member>
+      <member refid="classtao_1_1lightcone_1a46f2e709b384dc99942fb8b7605104d8" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_get_boxes</name></member>
+      <member refid="classtao_1_1module_1add5763e6abd9514b8a1fb277bacf7aa0" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_global_dict</name></member>
+      <member refid="classtao_1_1lightcone_1adb5e1ed0ce79f17581c5e3396e3c5ae9" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_h0</name></member>
+      <member refid="classtao_1_1lightcone_1aa8b65561d2832063178a863ea4ad8997" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_int_rng</name></member>
+      <member refid="classtao_1_1module_1aee8d7601611bb1297410dce20c24a94f" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_it</name></member>
+      <member refid="classtao_1_1lightcone_1a276cf7272b5b2876f0b5d1897485840f" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_max_snap</name></member>
+      <member refid="classtao_1_1lightcone_1ac3d84fc8906c15d2947cd8fb29051dfa" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_min_snap</name></member>
+      <member refid="classtao_1_1module_1a068866a4eafd7bc6cf97c0dbddc1eabe" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_name</name></member>
+      <member refid="classtao_1_1module_1a4dc48114767b3275d631d076f1e536ae" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_num_restart_its</name></member>
+      <member refid="classtao_1_1lightcone_1ae895ed43e6d46a040c321f8d50430e28" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_ops</name></member>
+      <member refid="classtao_1_1lightcone_1aaf96e37e6525abd9491f5fdd16425e8f" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_output_fields</name></member>
+      <member refid="classtao_1_1module_1af247d18388488838d7919ca79423bab2" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_parents</name></member>
+      <member refid="classtao_1_1lightcone_1a8c3107855a35d8f7124fb47c316347a3" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_per_box</name></member>
+      <member refid="classtao_1_1lightcone_1a7f7cc9060a3ac64ab274ffe762cd6a16" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_prog</name></member>
+      <member refid="classtao_1_1lightcone_1a0cca4dc3b22ff62d384ce318c1926587" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_query_table_names</name></member>
+      <member refid="classtao_1_1lightcone_1a8247494bbd309f2bab0384dabfc21d5a" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_query_template</name></member>
+      <member refid="classtao_1_1lightcone_1af6d77386b9c1be45127df8ec9f8cfbaf" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_ra_max</name></member>
+      <member refid="classtao_1_1lightcone_1ab3eb6a16589abaa3e41759f9a2402b63" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_ra_min</name></member>
+      <member refid="classtao_1_1lightcone_1a318601434333d464a042ba59eaf326bc" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_random_rotation_and_shifting</name></member>
+      <member refid="classtao_1_1module_1a3bcaa9defed890ddfa254e7a3bdbc954" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_read_db_options</name></member>
+      <member refid="classtao_1_1lightcone_1aa762f12d50f8ca957c88a51d47af8637" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_read_options</name></member>
+      <member refid="classtao_1_1lightcone_1aef0001985468e54f16b0c45a5b97fb2a" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_read_snapshots</name></member>
+      <member refid="classtao_1_1lightcone_1a7b2e43f577f954b31138adf6a1280dfd" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_real_rng</name></member>
+      <member refid="classtao_1_1lightcone_1a4507b8e6c840fa082cc5039ec600c1fe" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_redshift_to_distance</name></member>
+      <member refid="classtao_1_1lightcone_1a36ba473352e7c26dec03e57279c49f45" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_rng_seed</name></member>
+      <member refid="classtao_1_1lightcone_1a4b004649b49b7e9306c6194e88a167ce" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_rows_exist</name></member>
+      <member refid="classtao_1_1lightcone_1af471128a7a3bd6aabfcc7975a4ddb714" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_rrs_axis</name></member>
+      <member refid="classtao_1_1lightcone_1a7eb80abf501bedd160df76a44a50c2b1" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_rrs_offs</name></member>
+      <member refid="classtao_1_1lightcone_1a70e5b7c2ccbe215319e5403a637bd2bb" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_settle_box</name></member>
+      <member refid="classtao_1_1lightcone_1ac2543fb6633dc510155cc52eef17943d" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_settle_table</name></member>
+      <member refid="classtao_1_1lightcone_1a8a14921b3d1e8c00eaa92f02dd9fed1d" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_setup_batching</name></member>
+      <member refid="classtao_1_1lightcone_1ac6049047f382484c4071f39f9110321c" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_setup_query_template</name></member>
+      <member refid="classtao_1_1lightcone_1a72a26ef1237467e1b9adb11117ffcd77" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_setup_redshift_ranges</name></member>
+      <member refid="classtao_1_1lightcone_1a6f8e82d61d9d486ab486ac13ff2800e6" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_snap_red_table</name></member>
+      <member refid="classtao_1_1lightcone_1ad3f1e936c81a3ffab78af802eb2ae7ac" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_snap_redshifts</name></member>
+      <member refid="classtao_1_1module_1abbd63eb3630af38531d35c485b59abc7" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_sql</name></member>
+      <member refid="classtao_1_1lightcone_1aeb5db34fcde2314eb9bb0680c9f685cb" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_st</name></member>
+      <member refid="classtao_1_1lightcone_1a2334edbd200713488024e463b9f7ad75" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_table_names</name></member>
+      <member refid="classtao_1_1module_1aa0a08453739811e1cd5ef0ed403be169" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_timer</name></member>
+      <member refid="classtao_1_1module_1a055dbe05ca82475015b5c474ea666e91" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_tree_pre</name></member>
+      <member refid="classtao_1_1lightcone_1a7acb0c7482857f082df55c69aceb0476" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_unique</name></member>
+      <member refid="classtao_1_1lightcone_1ab8ff7098082f4ea585450928e4ab2712" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_unique_offs_x</name></member>
+      <member refid="classtao_1_1lightcone_1ab80be6cec9d5dff1830c8448ad74e214" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_unique_offs_y</name></member>
+      <member refid="classtao_1_1lightcone_1aa70751717dd62ff760da9d86f7909678" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_unique_offs_z</name></member>
+      <member refid="classtao_1_1lightcone_1a74189822165178b917ca73f87c489ef4" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_x0</name></member>
+      <member refid="classtao_1_1lightcone_1a36e73fa2c67e6c6409928c973f822e0c" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_y0</name></member>
+      <member refid="classtao_1_1lightcone_1a57fffcd3f1553c3a53ff4af58b857816" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_z0</name></member>
+      <member refid="classtao_1_1lightcone_1a3483d7d45b7952cce660a05b327ad92b" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_z_max</name></member>
+      <member refid="classtao_1_1lightcone_1a25a20648071349a7f266e03c02568093" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_z_min</name></member>
+      <member refid="classtao_1_1lightcone_1a441418e543ec43cb23f3a76e86448c9f" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_z_snap</name></member>
+      <member refid="classtao_1_1lightcone_1a57e09c862f99306d7e917cf6f9f8862d" prot="protected" virt="non-virtual"><scope>tao::lightcone</scope><name>_z_snap_idx</name></member>
+      <member refid="classtao_1_1module_1af8fe67b903df825b119076e57ac9b9a7" prot="public" virt="non-virtual"><scope>tao::lightcone</scope><name>add_parent</name></member>
+      <member refid="classtao_1_1lightcone_1a5214c32ad678f4fb048a0962e81cd511" prot="public" virt="non-virtual"><scope>tao::lightcone</scope><name>begin</name></member>
+      <member refid="classtao_1_1module_1a19feaef9bbe5f219344b07f1bd1bfa38" prot="public" virt="non-virtual"><scope>tao::lightcone</scope><name>complete</name></member>
+      <member refid="classtao_1_1module_1a4f85def6c0bbe44938d67230e9300093" prot="public" virt="non-virtual"><scope>tao::lightcone</scope><name>db_time</name></member>
+      <member refid="classtao_1_1lightcone_1a1c1a642695bfa199054cb03fa6cba180" prot="public" virt="non-virtual"><scope>tao::lightcone</scope><name>done</name></member>
+      <member refid="classtao_1_1lightcone_1afc174f18f28af8a0093092374af6a16e" prot="public" virt="virtual"><scope>tao::lightcone</scope><name>execute</name></member>
+      <member refid="classtao_1_1lightcone_1a4bdf65233eae89e6b0ce4d4c98735c33" prot="public" virt="non-virtual"><scope>tao::lightcone</scope><name>factory</name></member>
+      <member refid="classtao_1_1module_1af0317008573ba52254e3e0267408cec2" prot="public" virt="virtual"><scope>tao::lightcone</scope><name>finalise</name></member>
+      <member refid="classtao_1_1lightcone_1a4724c985fbdfc45adc1c4738d23b710c" prot="public" virt="virtual"><scope>tao::lightcone</scope><name>galaxy</name></member>
+      <member refid="classtao_1_1lightcone_1aa4acb03b7e50bf835f7f69c396184021" prot="public" virt="virtual"><scope>tao::lightcone</scope><name>initialise</name></member>
+      <member refid="classtao_1_1lightcone_1ac8b180f5939dce78906d6c12d64a2a37" prot="public" virt="non-virtual"><scope>tao::lightcone</scope><name>lightcone</name></member>
+      <member refid="classtao_1_1module_1a93af84d540204ec448964a99baec2de4" prot="public" virt="non-virtual"><scope>tao::lightcone</scope><name>local_dict</name></member>
+      <member refid="classtao_1_1module_1a186257b8d6711e1f2cba7a5f3ce9e3b9" prot="public" virt="non-virtual"><scope>tao::lightcone</scope><name>local_xml_node</name></member>
+      <member refid="classtao_1_1lightcone_1ac17cb2147a4e17fc437522040ebbf09c" prot="public" virt="virtual"><scope>tao::lightcone</scope><name>log_metrics</name></member>
+      <member refid="classtao_1_1module_1a5be311f8503aafb4e62735bddfc82aa2" prot="public" virt="non-virtual"><scope>tao::lightcone</scope><name>module</name></member>
+      <member refid="classtao_1_1module_1a75cf764bee3e92e306b56f96d1be25ad" prot="public" virt="non-virtual"><scope>tao::lightcone</scope><name>name</name></member>
+      <member refid="classtao_1_1lightcone_1afeb0e77b02550539fc92a90454cd932e" prot="public" virt="non-virtual"><scope>tao::lightcone</scope><name>num_boxes</name></member>
+      <member refid="classtao_1_1lightcone_1a23da9494fef3807bd6c6e4efe8429e3e" prot="public" virt="non-virtual"><scope>tao::lightcone</scope><name>operator*</name></member>
+      <member refid="classtao_1_1lightcone_1ad5c6e4486427cf2cdfb036443cd31cee" prot="public" virt="non-virtual"><scope>tao::lightcone</scope><name>operator++</name></member>
+      <member refid="classtao_1_1lightcone_1aabc0947a8e4e22d6416e011d4fb79f88" prot="public" virt="non-virtual"><scope>tao::lightcone</scope><name>output_fields</name></member>
+      <member refid="classtao_1_1module_1a3c8712c817e986905749497611d49a34" prot="public" virt="non-virtual"><scope>tao::lightcone</scope><name>parents</name></member>
+      <member refid="classtao_1_1module_1aeded5c4440e21754dd389ae5e23c4537" prot="public" virt="non-virtual"><scope>tao::lightcone</scope><name>process</name></member>
+      <member refid="classtao_1_1module_1abdc09890519027e51fbd3603406b2e87" prot="public" virt="non-virtual"><scope>tao::lightcone</scope><name>real_type</name></member>
+      <member refid="classtao_1_1module_1ada65b8d273ab0139cba098ec0737d6f0" prot="public" virt="non-virtual"><scope>tao::lightcone</scope><name>time</name></member>
+      <member refid="classtao_1_1lightcone_1a46d5956619b22423f0fde3ebb1a52ad6" prot="public" virt="non-virtual"><scope>tao::lightcone</scope><name>~lightcone</name></member>
+      <member refid="classtao_1_1module_1a4ad3799129a4680da08760564810dd14" prot="public" virt="virtual"><scope>tao::lightcone</scope><name>~module</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

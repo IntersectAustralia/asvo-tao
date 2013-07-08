@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="classfilter__suite" kind="class" prot="public">
+    <compoundname>filter_suite</compoundname>
+    <basecompoundref refid="class_cxx_test_1_1_test_suite" prot="public" virt="non-virtual">CxxTest::TestSuite</basecompoundref>
+    <includes refid="filter__suite_8t_8hh" local="no">filter_suite.t.hh</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classfilter__suite_1af0506b9e2cf078a5b6ef130318e7c198" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void filter_suite::test_default_constructor</definition>
+        <argsstring>()</argsstring>
+        <name>test_default_constructor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Test default constructor. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/filter_suite.t.hh" line="28" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/filter_suite.t.hh" bodystart="27" bodyend="30"/>
+      </memberdef>
+      <memberdef kind="function" id="classfilter__suite_1a9ea35ba7b57d4bf86178c255153d0a92" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void filter_suite::test_process_galaxy_unity</definition>
+        <argsstring>()</argsstring>
+        <name>test_process_galaxy_unity</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Test process galaxy with unity values. Run the process_galaxy method with prepared values designed to produce unity as results. Note, I&apos;ve gotten the sytem to produce unity as a result of the intensity integral, the magnitudes will not be such. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/filter_suite.t.hh" line="55" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/filter_suite.t.hh" bodystart="54" bodyend="117"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Filter class test suite. </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="118">
+        <label>filter_suite</label>
+        <link refid="classfilter__suite"/>
+        <childnode refid="119" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="119">
+        <label>CxxTest::TestSuite</label>
+        <link refid="class_cxx_test_1_1_test_suite"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="120">
+        <label>filter_suite</label>
+        <link refid="classfilter__suite"/>
+        <childnode refid="121" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="121">
+        <label>CxxTest::TestSuite</label>
+        <link refid="class_cxx_test_1_1_test_suite"/>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/filter_suite.t.hh" line="21" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/filter_suite.t.hh" bodystart="20" bodyend="118"/>
+    <listofallmembers>
+      <member refid="class_cxx_test_1_1_test_suite_1a03e7e9428316d10a22d44d20811192fb" prot="public" virt="virtual"><scope>filter_suite</scope><name>setUp</name></member>
+      <member refid="class_cxx_test_1_1_test_suite_1aa871c96da869344962b1435b72bcea13" prot="public" virt="virtual"><scope>filter_suite</scope><name>tearDown</name></member>
+      <member refid="classfilter__suite_1af0506b9e2cf078a5b6ef130318e7c198" prot="public" virt="non-virtual"><scope>filter_suite</scope><name>test_default_constructor</name></member>
+      <member refid="classfilter__suite_1a9ea35ba7b57d4bf86178c255153d0a92" prot="public" virt="non-virtual"><scope>filter_suite</scope><name>test_process_galaxy_unity</name></member>
+      <member refid="class_cxx_test_1_1_test_suite_1a647ce2d9feb3f7450506fdb372f982f1" prot="public" virt="virtual"><scope>filter_suite</scope><name>~TestSuite</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,179 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="class_cxx_test_1_1_stdio_file_printer_1_1_adapter" kind="class" prot="private">
+    <compoundname>CxxTest::StdioFilePrinter::Adapter</compoundname>
+    <basecompoundref refid="class_cxx_test_1_1_output_stream" prot="public" virt="non-virtual">CxxTest::OutputStream</basecompoundref>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_cxx_test_1_1_stdio_file_printer_1_1_adapter_1a972cb266099d867a9a45e4b18fd27474" prot="private" static="no" mutable="no">
+        <type>FILE *</type>
+        <definition>FILE* CxxTest::StdioFilePrinter::Adapter::_o</definition>
+        <argsstring></argsstring>
+        <name>_o</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/StdioFilePrinter.h" line="29" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/StdioFilePrinter.h" bodystart="29" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="class_cxx_test_1_1_stdio_file_printer_1_1_adapter_1aa0bb020ef2c8f58c907279946245e807" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::StdioFilePrinter::Adapter::Adapter</definition>
+        <argsstring>(const Adapter &amp;)</argsstring>
+        <name>Adapter</name>
+        <param>
+          <type>const Adapter &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/StdioFilePrinter.h" line="26"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_stdio_file_printer_1_1_adapter_1a59e1322bbf05bf46961a5c263b14a641" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>Adapter &amp;</type>
+        <definition>Adapter&amp; CxxTest::StdioFilePrinter::Adapter::operator=</definition>
+        <argsstring>(const Adapter &amp;)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type>const Adapter &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/StdioFilePrinter.h" line="27"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_cxx_test_1_1_stdio_file_printer_1_1_adapter_1a4d0253b740dcda6ed09f8ac273432384" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::StdioFilePrinter::Adapter::Adapter</definition>
+        <argsstring>(FILE *o)</argsstring>
+        <name>Adapter</name>
+        <param>
+          <type>FILE *</type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/StdioFilePrinter.h" line="32" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/StdioFilePrinter.h" bodystart="32" bodyend="32"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_stdio_file_printer_1_1_adapter_1ad3c9618532b093a45e42d0c208aeed78" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::StdioFilePrinter::Adapter::flush</definition>
+        <argsstring>()</argsstring>
+        <name>flush</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/StdioFilePrinter.h" line="33" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/StdioFilePrinter.h" bodystart="33" bodyend="33"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_stdio_file_printer_1_1_adapter_1a72d11d91e01c15cb39e91049047ad061" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="class_cxx_test_1_1_output_stream" kindref="compound">OutputStream</ref> &amp;</type>
+        <definition>OutputStream&amp; CxxTest::StdioFilePrinter::Adapter::operator&lt;&lt;</definition>
+        <argsstring>(unsigned i)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>unsigned</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/StdioFilePrinter.h" line="34" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/StdioFilePrinter.h" bodystart="34" bodyend="34"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_stdio_file_printer_1_1_adapter_1a04d1d2a51a3f176120a3c1a5486f8e7e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="class_cxx_test_1_1_output_stream" kindref="compound">OutputStream</ref> &amp;</type>
+        <definition>OutputStream&amp; CxxTest::StdioFilePrinter::Adapter::operator&lt;&lt;</definition>
+        <argsstring>(const char *s)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>const char *</type>
+          <declname>s</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/StdioFilePrinter.h" line="35" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/StdioFilePrinter.h" bodystart="35" bodyend="35"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_stdio_file_printer_1_1_adapter_1a0d24522ff55b9c77c8f0f5ab7850bf9b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="class_cxx_test_1_1_output_stream" kindref="compound">OutputStream</ref> &amp;</type>
+        <definition>OutputStream&amp; CxxTest::StdioFilePrinter::Adapter::operator&lt;&lt;</definition>
+        <argsstring>(Manipulator m)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>Manipulator</type>
+          <declname>m</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/StdioFilePrinter.h" line="36" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/StdioFilePrinter.h" bodystart="36" bodyend="36"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="3">
+        <label>CxxTest::OutputStream</label>
+        <link refid="class_cxx_test_1_1_output_stream"/>
+      </node>
+      <node id="2">
+        <label>CxxTest::StdioFilePrinter::Adapter</label>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="5">
+        <label>CxxTest::OutputStream</label>
+        <link refid="class_cxx_test_1_1_output_stream"/>
+      </node>
+      <node id="4">
+        <label>CxxTest::StdioFilePrinter::Adapter</label>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/StdioFilePrinter.h" line="25" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/StdioFilePrinter.h" bodystart="24" bodyend="37"/>
+    <listofallmembers>
+      <member refid="class_cxx_test_1_1_stdio_file_printer_1_1_adapter_1a972cb266099d867a9a45e4b18fd27474" prot="private" virt="non-virtual"><scope>CxxTest::StdioFilePrinter::Adapter</scope><name>_o</name></member>
+      <member refid="class_cxx_test_1_1_stdio_file_printer_1_1_adapter_1aa0bb020ef2c8f58c907279946245e807" prot="private" virt="non-virtual"><scope>CxxTest::StdioFilePrinter::Adapter</scope><name>Adapter</name></member>
+      <member refid="class_cxx_test_1_1_stdio_file_printer_1_1_adapter_1a4d0253b740dcda6ed09f8ac273432384" prot="public" virt="non-virtual"><scope>CxxTest::StdioFilePrinter::Adapter</scope><name>Adapter</name></member>
+      <member refid="class_cxx_test_1_1_output_stream_1ac87f8253aceba7da987d9a183c816789" prot="public" virt="non-virtual"><scope>CxxTest::StdioFilePrinter::Adapter</scope><name>endl</name></member>
+      <member refid="class_cxx_test_1_1_stdio_file_printer_1_1_adapter_1ad3c9618532b093a45e42d0c208aeed78" prot="public" virt="non-virtual"><scope>CxxTest::StdioFilePrinter::Adapter</scope><name>flush</name></member>
+      <member refid="class_cxx_test_1_1_output_stream_1aea784ebaae63978d47df0766071da443" prot="public" virt="non-virtual"><scope>CxxTest::StdioFilePrinter::Adapter</scope><name>Manipulator</name></member>
+      <member refid="class_cxx_test_1_1_stdio_file_printer_1_1_adapter_1a72d11d91e01c15cb39e91049047ad061" prot="public" virt="non-virtual"><scope>CxxTest::StdioFilePrinter::Adapter</scope><name>operator&lt;&lt;</name></member>
+      <member refid="class_cxx_test_1_1_stdio_file_printer_1_1_adapter_1a04d1d2a51a3f176120a3c1a5486f8e7e" prot="public" virt="non-virtual"><scope>CxxTest::StdioFilePrinter::Adapter</scope><name>operator&lt;&lt;</name></member>
+      <member refid="class_cxx_test_1_1_stdio_file_printer_1_1_adapter_1a0d24522ff55b9c77c8f0f5ab7850bf9b" prot="public" virt="non-virtual"><scope>CxxTest::StdioFilePrinter::Adapter</scope><name>operator&lt;&lt;</name></member>
+      <member refid="class_cxx_test_1_1_stdio_file_printer_1_1_adapter_1a59e1322bbf05bf46961a5c263b14a641" prot="private" virt="non-virtual"><scope>CxxTest::StdioFilePrinter::Adapter</scope><name>operator=</name></member>
+      <member refid="class_cxx_test_1_1_output_stream_1ab6299a6420e6b35e0b6fbcfcc04b9980" prot="public" virt="virtual"><scope>CxxTest::StdioFilePrinter::Adapter</scope><name>~OutputStream</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

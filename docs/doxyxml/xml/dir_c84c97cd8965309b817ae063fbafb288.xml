@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="dir_c84c97cd8965309b817ae063fbafb288" kind="dir">
+    <compoundname>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/data</compoundname>
+    <innerdir refid="dir_577a8061f7430b920e5cbd8fab308f87">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/data/readers</innerdir>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/data/"/>
+  </compounddef>
+</doxygen>

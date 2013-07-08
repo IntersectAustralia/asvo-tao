@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="register_8hh" kind="file">
+    <compoundname>register.hh</compoundname>
+    <includes local="yes">tao/base/factory.hh</includes>
+    <includedby refid="modules_8hh" local="yes">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/modules.hh</includedby>
+    <incdepgraph>
+      <node id="1339">
+        <label>tao/base/factory.hh</label>
+      </node>
+      <node id="1338">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/register.hh</label>
+        <link refid="register.hh"/>
+        <childnode refid="1339" relation="include">
+        </childnode>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="1341">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/modules.hh</label>
+        <link refid="modules_8hh_source"/>
+        <childnode refid="1342" relation="include">
+        </childnode>
+      </node>
+      <node id="1342">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/register.cc</label>
+        <link refid="register_8cc_source"/>
+      </node>
+      <node id="1340">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/register.hh</label>
+        <link refid="register.hh"/>
+        <childnode refid="1341" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+    <innernamespace refid="namespacetao">tao</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#ifndef<sp/>tao_modules_register_hh</highlight></codeline>
+<codeline lineno="2"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>tao_modules_register_hh</highlight></codeline>
+<codeline lineno="3"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;tao/base/factory.hh&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">tao<sp/>{</highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"><sp/><sp/><sp/>register_modules();</highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight></codeline>
+    </programlisting>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/register.hh"/>
+  </compounddef>
+</doxygen>

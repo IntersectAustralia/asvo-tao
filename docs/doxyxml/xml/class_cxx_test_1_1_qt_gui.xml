@@ -1,0 +1,782 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="class_cxx_test_1_1_qt_gui" kind="class" prot="public">
+    <compoundname>CxxTest::QtGui</compoundname>
+    <basecompoundref refid="class_cxx_test_1_1_gui_listener" prot="public" virt="non-virtual">CxxTest::GuiListener</basecompoundref>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_cxx_test_1_1_qt_gui_1abf180f510ddcdb3e45b836d22efdcf1d" prot="private" static="no" mutable="no">
+        <type>QString</type>
+        <definition>QString CxxTest::QtGui::_title</definition>
+        <argsstring></argsstring>
+        <name>_title</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="88" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="88" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_qt_gui_1a479c6dc9ea0e9e8b1ff4fe78dc1fff09" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool CxxTest::QtGui::_startMinimized</definition>
+        <argsstring></argsstring>
+        <name>_startMinimized</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="89" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="89" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_qt_gui_1ab57335c88a5bfd4bfe6ee10d390e75b4" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool CxxTest::QtGui::_keep</definition>
+        <argsstring></argsstring>
+        <name>_keep</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="89" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="89" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_qt_gui_1a54adfd544ce74b430f0bef85fa1e924b" prot="private" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned CxxTest::QtGui::_numTotalTests</definition>
+        <argsstring></argsstring>
+        <name>_numTotalTests</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="90" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="90" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_qt_gui_1a53ab4cb547cb06cf18d4bb2d0a2a4a1e" prot="private" static="no" mutable="no">
+        <type>QString</type>
+        <definition>QString CxxTest::QtGui::_strTotalTests</definition>
+        <argsstring></argsstring>
+        <name>_strTotalTests</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="91" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="91" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_qt_gui_1ad29c9b88abd23d6f4ffe390617187a10" prot="private" static="no" mutable="no">
+        <type>QApplication *</type>
+        <definition>QApplication* CxxTest::QtGui::_application</definition>
+        <argsstring></argsstring>
+        <name>_application</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="92" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="92" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_qt_gui_1a001924c81375af3df869ec535042fd35" prot="private" static="no" mutable="no">
+        <type>QWidget *</type>
+        <definition>QWidget* CxxTest::QtGui::_mainWindow</definition>
+        <argsstring></argsstring>
+        <name>_mainWindow</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="93" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="93" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_qt_gui_1afcfb46c36e01699bb175a68731ccf98a" prot="private" static="no" mutable="no">
+        <type>QVBoxLayout *</type>
+        <definition>QVBoxLayout* CxxTest::QtGui::_layout</definition>
+        <argsstring></argsstring>
+        <name>_layout</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="94" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="94" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_qt_gui_1a0a6063fc7a92e652d9f29b429187ea1c" prot="private" static="no" mutable="no">
+        <type>QProgressBar *</type>
+        <definition>QProgressBar* CxxTest::QtGui::_progressBar</definition>
+        <argsstring></argsstring>
+        <name>_progressBar</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="95" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="95" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_qt_gui_1a7f9cecaec6aadb22293367391f30ea81" prot="private" static="no" mutable="no">
+        <type>QStatusBar *</type>
+        <definition>QStatusBar* CxxTest::QtGui::_statusBar</definition>
+        <argsstring></argsstring>
+        <name>_statusBar</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="96" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="96" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_qt_gui_1a6230498a00e53826219711af83718368" prot="private" static="no" mutable="no">
+        <type>QLabel *</type>
+        <definition>QLabel* CxxTest::QtGui::_suiteName</definition>
+        <argsstring></argsstring>
+        <name>_suiteName</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="97" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="97" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_qt_gui_1a6c66147d1db9e9254b0f9152967d83e9" prot="private" static="no" mutable="no">
+        <type>QLabel *</type>
+        <definition>QLabel * CxxTest::QtGui::_testName</definition>
+        <argsstring></argsstring>
+        <name>_testName</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="97" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="97" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_qt_gui_1a0b9796884b4b16be09198c300b67973f" prot="private" static="no" mutable="no">
+        <type>QLabel *</type>
+        <definition>QLabel * CxxTest::QtGui::_testsDone</definition>
+        <argsstring></argsstring>
+        <name>_testsDone</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="97" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="97" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_cxx_test_1_1_qt_gui_1a66796f2a04e7634ca5dded000aac2f5e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::QtGui::enterGui</definition>
+        <argsstring>(int &amp;argc, char **argv)</argsstring>
+        <name>enterGui</name>
+        <reimplements refid="class_cxx_test_1_1_gui_listener_1aa54cf47bea6e158e8773325604259e2b">enterGui</reimplements>
+        <param>
+          <type>int &amp;</type>
+          <declname>argc</declname>
+        </param>
+        <param>
+          <type>char **</type>
+          <declname>argv</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="34" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="33" bodyend="37"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_qt_gui_1a8e93d3f7d715cb51c5b400758e1407ce" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::QtGui::enterWorld</definition>
+        <argsstring>(const WorldDescription &amp;wd)</argsstring>
+        <name>enterWorld</name>
+        <reimplements refid="class_cxx_test_1_1_gui_listener_1ac3bf41d19fabb940bddfaaf7c15176ab">enterWorld</reimplements>
+        <param>
+          <type>const <ref refid="class_cxx_test_1_1_world_description" kindref="compound">WorldDescription</ref> &amp;</type>
+          <declname>wd</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="40" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="39" bodyend="43"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_qt_gui_1a30cdc6c47a861553c411c095a0e097a4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::QtGui::guiEnterSuite</definition>
+        <argsstring>(const char *suiteName)</argsstring>
+        <name>guiEnterSuite</name>
+        <reimplements refid="class_cxx_test_1_1_gui_listener_1ab7f2ec233b21b16a6e080f50cc411695">guiEnterSuite</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>suiteName</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="46" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="45" bodyend="48"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_qt_gui_1acf87800fc3e3bf7d2519f8c1d2c9d77f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::QtGui::guiEnterTest</definition>
+        <argsstring>(const char *suiteName, const char *testName)</argsstring>
+        <name>guiEnterTest</name>
+        <reimplements refid="class_cxx_test_1_1_gui_listener_1a68e35d61caf85091aa81de1f974f915f">guiEnterTest</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>suiteName</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>testName</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="51" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="50" bodyend="57"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_qt_gui_1a1856e88c7c455783de79066ead4dca55" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::QtGui::yellowBar</definition>
+        <argsstring>()</argsstring>
+        <name>yellowBar</name>
+        <reimplements refid="class_cxx_test_1_1_gui_listener_1a6b2b9ab54b7b61dbfdf25abb45bc954b">yellowBar</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="60" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="59" bodyend="65"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_qt_gui_1aad2d92c46fd804c5656a82b96e6b600b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::QtGui::redBar</definition>
+        <argsstring>()</argsstring>
+        <name>redBar</name>
+        <reimplements refid="class_cxx_test_1_1_gui_listener_1ac471a5b189ecfdea1710034d156f7de9">redBar</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="68" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="67" bodyend="75"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_qt_gui_1aca2ecfad186d2e02fb35ee57c18ead7d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::QtGui::leaveGui</definition>
+        <argsstring>()</argsstring>
+        <name>leaveGui</name>
+        <reimplements refid="class_cxx_test_1_1_gui_listener_1aca2b3ffe19f48d917a8694156cef5e21">leaveGui</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="78" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="77" bodyend="85"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="class_cxx_test_1_1_qt_gui_1a18de077f6837385b6cf51e46a5aa41fb" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::QtGui::parseCommandLine</definition>
+        <argsstring>(int argc, char **argv)</argsstring>
+        <name>parseCommandLine</name>
+        <param>
+          <type>int</type>
+          <declname>argc</declname>
+        </param>
+        <param>
+          <type>char **</type>
+          <declname>argv</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="100" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="99" bodyend="113"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_qt_gui_1a12a15446fe5df0eed4a8615c292f29a1" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::QtGui::createApplication</definition>
+        <argsstring>(int &amp;argc, char **argv)</argsstring>
+        <name>createApplication</name>
+        <param>
+          <type>int &amp;</type>
+          <declname>argc</declname>
+        </param>
+        <param>
+          <type>char **</type>
+          <declname>argv</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="116" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="115" bodyend="118"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_qt_gui_1a92bc509a678be3abb7e5a90b8baf614e" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::QtGui::createWindow</definition>
+        <argsstring>(const WorldDescription &amp;wd)</argsstring>
+        <name>createWindow</name>
+        <param>
+          <type>const <ref refid="class_cxx_test_1_1_world_description" kindref="compound">WorldDescription</ref> &amp;</type>
+          <declname>wd</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="121" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="120" bodyend="131"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_qt_gui_1a8e65d5161053593c86502f3adcc1f0f6" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::QtGui::getTotalTests</definition>
+        <argsstring>()</argsstring>
+        <name>getTotalTests</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="134" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="133" bodyend="136"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_qt_gui_1a6bf7c16c503e798d66eeab0ce3618736" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::QtGui::getTotalTests</definition>
+        <argsstring>(const WorldDescription &amp;wd)</argsstring>
+        <name>getTotalTests</name>
+        <param>
+          <type>const <ref refid="class_cxx_test_1_1_world_description" kindref="compound">WorldDescription</ref> &amp;</type>
+          <declname>wd</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="139" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="138" bodyend="143"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_qt_gui_1ab9bdff070797f13a17bd37cfbff3cab1" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::QtGui::createMainWindow</definition>
+        <argsstring>()</argsstring>
+        <name>createMainWindow</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="146" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="145" bodyend="149"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_qt_gui_1a96d0fc9c42ceb67e7bcc513dbdaf3947" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::QtGui::createProgressBar</definition>
+        <argsstring>()</argsstring>
+        <name>createProgressBar</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="152" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="151" bodyend="157"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_qt_gui_1a50c38ecfa6633ea50499315dca44fb8f" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::QtGui::createStatusBar</definition>
+        <argsstring>()</argsstring>
+        <name>createStatusBar</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="160" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="159" bodyend="165"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_qt_gui_1a5ed24a7f5a96119d0299c957312b5d5b" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::QtGui::setMainWidget</definition>
+        <argsstring>()</argsstring>
+        <name>setMainWidget</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="168" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="167" bodyend="170"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_qt_gui_1a3bd0e06f0644f54edad2b77c6b5d9aa9" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::QtGui::showMinimized</definition>
+        <argsstring>()</argsstring>
+        <name>showMinimized</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="173" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="172" bodyend="175"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_qt_gui_1a67ad7cdc9881947f31781768c16eb2d2" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::QtGui::showNormal</definition>
+        <argsstring>()</argsstring>
+        <name>showNormal</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="178" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="177" bodyend="181"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_qt_gui_1a50c9039cf9083419d3f077cee407e205" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::QtGui::setCaption</definition>
+        <argsstring>(const QString &amp;suiteName, const QString &amp;testName)</argsstring>
+        <name>setCaption</name>
+        <param>
+          <type>const QString &amp;</type>
+          <declname>suiteName</declname>
+        </param>
+        <param>
+          <type>const QString &amp;</type>
+          <declname>testName</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="184" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="183" bodyend="186"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_qt_gui_1a5c1a3fa1c64534e15de894b28ed51ed2" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::QtGui::showSuiteName</definition>
+        <argsstring>(const QString &amp;suiteName)</argsstring>
+        <name>showSuiteName</name>
+        <param>
+          <type>const QString &amp;</type>
+          <declname>suiteName</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="189" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="188" bodyend="191"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_qt_gui_1a5f4f944ba8b1e718aabbe7f002753c07" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::QtGui::advanceProgressBar</definition>
+        <argsstring>()</argsstring>
+        <name>advanceProgressBar</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="194" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="193" bodyend="196"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_qt_gui_1ae3431d9e198e6842998732229e15ed4e" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::QtGui::showTestName</definition>
+        <argsstring>(const QString &amp;testName)</argsstring>
+        <name>showTestName</name>
+        <param>
+          <type>const QString &amp;</type>
+          <declname>testName</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="199" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="198" bodyend="201"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_qt_gui_1a00e49b717329e4b6228f0fb315b5af16" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::QtGui::showTestsDone</definition>
+        <argsstring>(unsigned testsDone)</argsstring>
+        <name>showTestsDone</name>
+        <param>
+          <type>unsigned</type>
+          <declname>testsDone</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="204" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="203" bodyend="206"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_qt_gui_1a91e2c83bf2a3c42ca0c7c6c6eec404b6" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::QtGui::setColor</definition>
+        <argsstring>(int r, int g, int b)</argsstring>
+        <name>setColor</name>
+        <param>
+          <type>int</type>
+          <declname>r</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>g</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="214" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="213" bodyend="218"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_qt_gui_1a7fa8dc5d2a944bc4c83816d4f98e0c5f" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::QtGui::setIcon</definition>
+        <argsstring>(QMessageBox::Icon icon)</argsstring>
+        <name>setIcon</name>
+        <param>
+          <type>QMessageBox::Icon</type>
+          <declname>icon</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="221" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="220" bodyend="227"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_qt_gui_1a5f8837eeb4d4ee9c8fbf33466b873d7a" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::QtGui::processEvents</definition>
+        <argsstring>()</argsstring>
+        <name>processEvents</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="230" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="229" bodyend="232"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_qt_gui_1a4a3173aed8f7f0628f953f08e1ec5961" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::QtGui::centerWindow</definition>
+        <argsstring>()</argsstring>
+        <name>centerWindow</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="235" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="234" bodyend="243"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_qt_gui_1ac3d0f2d426caa8a59c4d8d44f4bfe273" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool CxxTest::QtGui::keep</definition>
+        <argsstring>()</argsstring>
+        <name>keep</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="246" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="245" bodyend="252"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_qt_gui_1a234cc39c79cbf04b1673c163abe43abe" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::QtGui::showSummary</definition>
+        <argsstring>()</argsstring>
+        <name>showSummary</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="255" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="254" bodyend="267"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-static-func">
+      <memberdef kind="function" id="class_cxx_test_1_1_qt_gui_1af6f0dd398ce172990b171b92e4bf59d1" prot="private" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>QString</type>
+        <definition>static QString CxxTest::QtGui::asString</definition>
+        <argsstring>(unsigned n)</argsstring>
+        <name>asString</name>
+        <param>
+          <type>unsigned</type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="209" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="208" bodyend="211"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="276">
+        <label>CxxTest::TestListener</label>
+        <link refid="class_cxx_test_1_1_test_listener"/>
+      </node>
+      <node id="275">
+        <label>CxxTest::GuiListener</label>
+        <link refid="class_cxx_test_1_1_gui_listener"/>
+        <childnode refid="276" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="274">
+        <label>CxxTest::QtGui</label>
+        <link refid="class_cxx_test_1_1_qt_gui"/>
+        <childnode refid="275" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="279">
+        <label>CxxTest::TestListener</label>
+        <link refid="class_cxx_test_1_1_test_listener"/>
+      </node>
+      <node id="278">
+        <label>CxxTest::GuiListener</label>
+        <link refid="class_cxx_test_1_1_gui_listener"/>
+        <childnode refid="279" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="277">
+        <label>CxxTest::QtGui</label>
+        <link refid="class_cxx_test_1_1_qt_gui"/>
+        <childnode refid="278" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" line="31" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/QtGui.h" bodystart="30" bodyend="268"/>
+    <listofallmembers>
+      <member refid="class_cxx_test_1_1_qt_gui_1ad29c9b88abd23d6f4ffe390617187a10" prot="private" virt="non-virtual"><scope>CxxTest::QtGui</scope><name>_application</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1ab57335c88a5bfd4bfe6ee10d390e75b4" prot="private" virt="non-virtual"><scope>CxxTest::QtGui</scope><name>_keep</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1afcfb46c36e01699bb175a68731ccf98a" prot="private" virt="non-virtual"><scope>CxxTest::QtGui</scope><name>_layout</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1a001924c81375af3df869ec535042fd35" prot="private" virt="non-virtual"><scope>CxxTest::QtGui</scope><name>_mainWindow</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1a54adfd544ce74b430f0bef85fa1e924b" prot="private" virt="non-virtual"><scope>CxxTest::QtGui</scope><name>_numTotalTests</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1a0a6063fc7a92e652d9f29b429187ea1c" prot="private" virt="non-virtual"><scope>CxxTest::QtGui</scope><name>_progressBar</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1a479c6dc9ea0e9e8b1ff4fe78dc1fff09" prot="private" virt="non-virtual"><scope>CxxTest::QtGui</scope><name>_startMinimized</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1a7f9cecaec6aadb22293367391f30ea81" prot="private" virt="non-virtual"><scope>CxxTest::QtGui</scope><name>_statusBar</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1a53ab4cb547cb06cf18d4bb2d0a2a4a1e" prot="private" virt="non-virtual"><scope>CxxTest::QtGui</scope><name>_strTotalTests</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1a6230498a00e53826219711af83718368" prot="private" virt="non-virtual"><scope>CxxTest::QtGui</scope><name>_suiteName</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1a6c66147d1db9e9254b0f9152967d83e9" prot="private" virt="non-virtual"><scope>CxxTest::QtGui</scope><name>_testName</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1a0b9796884b4b16be09198c300b67973f" prot="private" virt="non-virtual"><scope>CxxTest::QtGui</scope><name>_testsDone</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1abf180f510ddcdb3e45b836d22efdcf1d" prot="private" virt="non-virtual"><scope>CxxTest::QtGui</scope><name>_title</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1a5f4f944ba8b1e718aabbe7f002753c07" prot="private" virt="non-virtual"><scope>CxxTest::QtGui</scope><name>advanceProgressBar</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1af6f0dd398ce172990b171b92e4bf59d1" prot="private" virt="non-virtual"><scope>CxxTest::QtGui</scope><name>asString</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1a4a3173aed8f7f0628f953f08e1ec5961" prot="private" virt="non-virtual"><scope>CxxTest::QtGui</scope><name>centerWindow</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1a12a15446fe5df0eed4a8615c292f29a1" prot="private" virt="non-virtual"><scope>CxxTest::QtGui</scope><name>createApplication</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1ab9bdff070797f13a17bd37cfbff3cab1" prot="private" virt="non-virtual"><scope>CxxTest::QtGui</scope><name>createMainWindow</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1a96d0fc9c42ceb67e7bcc513dbdaf3947" prot="private" virt="non-virtual"><scope>CxxTest::QtGui</scope><name>createProgressBar</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1a50c38ecfa6633ea50499315dca44fb8f" prot="private" virt="non-virtual"><scope>CxxTest::QtGui</scope><name>createStatusBar</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1a92bc509a678be3abb7e5a90b8baf614e" prot="private" virt="non-virtual"><scope>CxxTest::QtGui</scope><name>createWindow</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1a66796f2a04e7634ca5dded000aac2f5e" prot="public" virt="virtual"><scope>CxxTest::QtGui</scope><name>enterGui</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1a7d826471e620c45526abcd702994ebb8" prot="public" virt="virtual"><scope>CxxTest::QtGui</scope><name>enterSuite</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1a9cecb3a9fbd578cd377a5b6353a88a40" prot="public" virt="virtual"><scope>CxxTest::QtGui</scope><name>enterTest</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1a8e93d3f7d715cb51c5b400758e1407ce" prot="public" virt="virtual"><scope>CxxTest::QtGui</scope><name>enterWorld</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1a061a48b4133776007f25b3ad03709508" prot="public" virt="virtual"><scope>CxxTest::QtGui</scope><name>failedAssert</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1ab8fb717bf3d1048fafd8ad46f3d2aa75" prot="public" virt="virtual"><scope>CxxTest::QtGui</scope><name>failedAssertDelta</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1afeab8a1ebf6a491bbc32d9c4d1f61957" prot="public" virt="virtual"><scope>CxxTest::QtGui</scope><name>failedAssertDiffers</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1a0da4a8373d37735fd838d64c479e98b6" prot="public" virt="virtual"><scope>CxxTest::QtGui</scope><name>failedAssertEquals</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1a8e4379c24f51a23a63be2aae01c1db15" prot="public" virt="virtual"><scope>CxxTest::QtGui</scope><name>failedAssertLessThan</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1a10ddef187352aec4e20f6571f846c289" prot="public" virt="virtual"><scope>CxxTest::QtGui</scope><name>failedAssertLessThanEquals</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1a16b2504f44d5bb31e11760f4910279d6" prot="public" virt="virtual"><scope>CxxTest::QtGui</scope><name>failedAssertPredicate</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1adc47227eef4bb58df92e9bb3c323a0ce" prot="public" virt="virtual"><scope>CxxTest::QtGui</scope><name>failedAssertRelation</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1ad22bc9507148994e099228e06e2320c3" prot="public" virt="virtual"><scope>CxxTest::QtGui</scope><name>failedAssertSameData</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1ad7c260f27b673f4770d8ba016692f348" prot="public" virt="virtual"><scope>CxxTest::QtGui</scope><name>failedAssertThrows</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1ab692ff5b9336e668e6133222c296951a" prot="public" virt="virtual"><scope>CxxTest::QtGui</scope><name>failedAssertThrowsNot</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1a5620d327669b9e03112ac40dd443a9fc" prot="public" virt="virtual"><scope>CxxTest::QtGui</scope><name>failedTest</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1a8e65d5161053593c86502f3adcc1f0f6" prot="private" virt="non-virtual"><scope>CxxTest::QtGui</scope><name>getTotalTests</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1a6bf7c16c503e798d66eeab0ce3618736" prot="private" virt="non-virtual"><scope>CxxTest::QtGui</scope><name>getTotalTests</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1a30cdc6c47a861553c411c095a0e097a4" prot="public" virt="virtual"><scope>CxxTest::QtGui</scope><name>guiEnterSuite</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1acf87800fc3e3bf7d2519f8c1d2c9d77f" prot="public" virt="virtual"><scope>CxxTest::QtGui</scope><name>guiEnterTest</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1af5f966a34f11f5e4ea4c59ecf83b01e2" prot="public" virt="virtual"><scope>CxxTest::QtGui</scope><name>guiEnterWorld</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1a0166397e8eb7c7cf303cd91c4ebd92bf" prot="public" virt="non-virtual"><scope>CxxTest::QtGui</scope><name>GuiListener</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1ac3d0f2d426caa8a59c4d8d44f4bfe273" prot="private" virt="non-virtual"><scope>CxxTest::QtGui</scope><name>keep</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1aca2ecfad186d2e02fb35ee57c18ead7d" prot="public" virt="virtual"><scope>CxxTest::QtGui</scope><name>leaveGui</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1ae8d4756b071cb906eba66a7d2200c622" prot="public" virt="virtual"><scope>CxxTest::QtGui</scope><name>leaveSuite</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1a88c2bea6cdf73ae460a76e795e46237f" prot="public" virt="virtual"><scope>CxxTest::QtGui</scope><name>leaveTest</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1a33ddb18a7a501562303cbd071218f816" prot="public" virt="virtual"><scope>CxxTest::QtGui</scope><name>leaveWorld</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1a18de077f6837385b6cf51e46a5aa41fb" prot="private" virt="non-virtual"><scope>CxxTest::QtGui</scope><name>parseCommandLine</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1a5f8837eeb4d4ee9c8fbf33466b873d7a" prot="private" virt="non-virtual"><scope>CxxTest::QtGui</scope><name>processEvents</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1aad2d92c46fd804c5656a82b96e6b600b" prot="public" virt="virtual"><scope>CxxTest::QtGui</scope><name>redBar</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1a1ef08c9cf0c21041ff9a024731ec68ca" prot="protected" virt="non-virtual"><scope>CxxTest::QtGui</scope><name>redBarSafe</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1aa2473ba3fbc19514724487361761d7f9" prot="public" virt="virtual"><scope>CxxTest::QtGui</scope><name>runGui</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1a50c9039cf9083419d3f077cee407e205" prot="private" virt="non-virtual"><scope>CxxTest::QtGui</scope><name>setCaption</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1a91e2c83bf2a3c42ca0c7c6c6eec404b6" prot="private" virt="non-virtual"><scope>CxxTest::QtGui</scope><name>setColor</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1a7fa8dc5d2a944bc4c83816d4f98e0c5f" prot="private" virt="non-virtual"><scope>CxxTest::QtGui</scope><name>setIcon</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1a5ed24a7f5a96119d0299c957312b5d5b" prot="private" virt="non-virtual"><scope>CxxTest::QtGui</scope><name>setMainWidget</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1a3bd0e06f0644f54edad2b77c6b5d9aa9" prot="private" virt="non-virtual"><scope>CxxTest::QtGui</scope><name>showMinimized</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1a67ad7cdc9881947f31781768c16eb2d2" prot="private" virt="non-virtual"><scope>CxxTest::QtGui</scope><name>showNormal</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1a5c1a3fa1c64534e15de894b28ed51ed2" prot="private" virt="non-virtual"><scope>CxxTest::QtGui</scope><name>showSuiteName</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1a234cc39c79cbf04b1673c163abe43abe" prot="private" virt="non-virtual"><scope>CxxTest::QtGui</scope><name>showSummary</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1ae3431d9e198e6842998732229e15ed4e" prot="private" virt="non-virtual"><scope>CxxTest::QtGui</scope><name>showTestName</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1a00e49b717329e4b6228f0fb315b5af16" prot="private" virt="non-virtual"><scope>CxxTest::QtGui</scope><name>showTestsDone</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1ab5958bd800642f706c2a7a0e8741778f" prot="public" virt="non-virtual"><scope>CxxTest::QtGui</scope><name>TestListener</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1a3bac16644da9c76c8fdb90a7a67b444d" prot="public" virt="virtual"><scope>CxxTest::QtGui</scope><name>trace</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1ac1328f483ef777fc05f5ec2b153464c7" prot="public" virt="virtual"><scope>CxxTest::QtGui</scope><name>warning</name></member>
+      <member refid="class_cxx_test_1_1_qt_gui_1a1856e88c7c455783de79066ead4dca55" prot="public" virt="virtual"><scope>CxxTest::QtGui</scope><name>yellowBar</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1aa4ca06d3a9cf402fa01c51c4366c1b24" prot="protected" virt="non-virtual"><scope>CxxTest::QtGui</scope><name>yellowBarSafe</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1aa42f1f79be1a66434590a72a5246ffa2" prot="public" virt="virtual"><scope>CxxTest::QtGui</scope><name>~GuiListener</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1a4d4cb5d990e0c4b0891f64f9e055b729" prot="public" virt="virtual"><scope>CxxTest::QtGui</scope><name>~TestListener</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

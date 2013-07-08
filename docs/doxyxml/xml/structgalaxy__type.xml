@@ -1,0 +1,827 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="structgalaxy__type" kind="struct" prot="public">
+    <compoundname>galaxy_type</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structgalaxy__type_1a53be192c91505193c09f6a84be60d633" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int galaxy_type::type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="14" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="14" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1a20a96eb79ed23a636d9e4a1ba71e2eee" prot="public" static="no" mutable="no">
+        <type>long long</type>
+        <definition>long long galaxy_type::galaxy_index</definition>
+        <argsstring></argsstring>
+        <name>galaxy_index</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="15" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="15" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1a25c3e4abb1c2a422bc6a886ca9c7fcd9" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int galaxy_type::halo_index</definition>
+        <argsstring></argsstring>
+        <name>halo_index</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="16" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="16" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1a2aad3bd8dc0e829f33b02fe7f423c6c8" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int galaxy_type::fof_idx</definition>
+        <argsstring></argsstring>
+        <name>fof_idx</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="17" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="17" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1a96e6b642df05c73c426a03af3daed106" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int galaxy_type::tree_idx</definition>
+        <argsstring></argsstring>
+        <name>tree_idx</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="18" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="18" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1af36fcb7e6b946d1682263caab85d1449" prot="public" static="no" mutable="no">
+        <type>long long</type>
+        <definition>long long galaxy_type::global_index</definition>
+        <argsstring></argsstring>
+        <name>global_index</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="22" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="22" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1aa4095ef8245dbea120e29958a3ff13f6" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int galaxy_type::descendant</definition>
+        <argsstring></argsstring>
+        <name>descendant</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="23" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="23" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1a7e1966b935abdd09d8be2c214b153700" prot="public" static="no" mutable="no">
+        <type>long long</type>
+        <definition>long long galaxy_type::global_descendant</definition>
+        <argsstring></argsstring>
+        <name>global_descendant</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="24" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="24" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1a9750c2f1126230d116ef351c226b3a28" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int galaxy_type::snap</definition>
+        <argsstring></argsstring>
+        <name>snap</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="27" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="27" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1aa72d33ab8acb03584c7dffa6bea4a879" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int galaxy_type::central_gal</definition>
+        <argsstring></argsstring>
+        <name>central_gal</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="28" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="28" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1a0ee3459152bde523b3d2690c1fc94f51" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float galaxy_type::central_mvir</definition>
+        <argsstring></argsstring>
+        <name>central_mvir</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="29" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="29" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1ac9b6c11246409caa1c075aa88fd3b39f" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float galaxy_type::pos[3]</definition>
+        <argsstring>[3]</argsstring>
+        <name>pos</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="32" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="32" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1a73618f703846c92121e0071d99e137b8" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float galaxy_type::vel[3]</definition>
+        <argsstring>[3]</argsstring>
+        <name>vel</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="33" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="33" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1a7a0ed4bbf2723f734cca40b33dd70c8f" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float galaxy_type::spin[3]</definition>
+        <argsstring>[3]</argsstring>
+        <name>spin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="34" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="34" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1aca44387cc360036990c9b62c640dfc66" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int galaxy_type::len</definition>
+        <argsstring></argsstring>
+        <name>len</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="35" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="35" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1a9e1721acf21c2a12aba1fcd6ed701feb" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float galaxy_type::mvir</definition>
+        <argsstring></argsstring>
+        <name>mvir</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="36" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="36" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1ab000f6e08aaad457b5cb98053b9caa6d" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float galaxy_type::rvir</definition>
+        <argsstring></argsstring>
+        <name>rvir</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="37" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="37" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1a8a80c48154041da32f04ba901da85489" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float galaxy_type::vvir</definition>
+        <argsstring></argsstring>
+        <name>vvir</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="38" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1ad386e82a259c3e0d5548a15e1ff343ac" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float galaxy_type::vmax</definition>
+        <argsstring></argsstring>
+        <name>vmax</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="39" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1a4e25358749c296eb2e0473155a8e76c9" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float galaxy_type::vel_disp</definition>
+        <argsstring></argsstring>
+        <name>vel_disp</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="40" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="40" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1a245632f6258f553085c97e57e90e14b5" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float galaxy_type::ColdGas</definition>
+        <argsstring></argsstring>
+        <name>ColdGas</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="43" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="43" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1afbf9ca0c06cc52673dd913480feaf9c7" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float galaxy_type::StellarMass</definition>
+        <argsstring></argsstring>
+        <name>StellarMass</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="44" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="44" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1accbbbbe08d64235c67128086ee713da6" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float galaxy_type::BulgeMass</definition>
+        <argsstring></argsstring>
+        <name>BulgeMass</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="45" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="45" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1a01ecec7af5ded29d3cf0ae7c6156df78" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float galaxy_type::HotGas</definition>
+        <argsstring></argsstring>
+        <name>HotGas</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="46" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="46" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1a38a3d4994f7cef0dc3972ef1817726db" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float galaxy_type::EjectedMass</definition>
+        <argsstring></argsstring>
+        <name>EjectedMass</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="47" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1a640c6da61e15c21def645d9c70cbb1aa" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float galaxy_type::BlackHoleMass</definition>
+        <argsstring></argsstring>
+        <name>BlackHoleMass</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="48" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1a35fbb0d110d4eeb490371f7aa653dffe" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float galaxy_type::ICS</definition>
+        <argsstring></argsstring>
+        <name>ICS</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="49" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="49" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1a98707ca26d7480ee2014a583801a2c94" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float galaxy_type::MetalsColdGas</definition>
+        <argsstring></argsstring>
+        <name>MetalsColdGas</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="52" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="52" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1adb4dff0735a8c625a0982776ae321f04" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float galaxy_type::MetalsStellarMass</definition>
+        <argsstring></argsstring>
+        <name>MetalsStellarMass</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="53" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="53" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1a8d2bd9273f88a769c5e44fccc495a023" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float galaxy_type::MetalsBulgeMass</definition>
+        <argsstring></argsstring>
+        <name>MetalsBulgeMass</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="54" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="54" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1a42343157843c399162afd5035ca78a68" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float galaxy_type::MetalsHotGas</definition>
+        <argsstring></argsstring>
+        <name>MetalsHotGas</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="55" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="55" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1a662391c604c1c7f04f74d958e6d2d98b" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float galaxy_type::MetalsEjectedMass</definition>
+        <argsstring></argsstring>
+        <name>MetalsEjectedMass</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="56" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="56" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1ae780088b5f499af39e75dc5f7aa399f7" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float galaxy_type::MetalsICS</definition>
+        <argsstring></argsstring>
+        <name>MetalsICS</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="57" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="57" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1af62a108401a28471426728d23afadc13" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float galaxy_type::Sfr</definition>
+        <argsstring></argsstring>
+        <name>Sfr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="60" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="60" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1a59848bac1b774ac78a2ca0cc52c24d11" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float galaxy_type::SfrBulge</definition>
+        <argsstring></argsstring>
+        <name>SfrBulge</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="61" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="61" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1a5a85f6c9c3be788e5c1cc34741d0fee0" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float galaxy_type::SfrICS</definition>
+        <argsstring></argsstring>
+        <name>SfrICS</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="62" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="62" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1a8305548b6abbd6060b057a046db9d0d9" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float galaxy_type::DiskScaleRadius</definition>
+        <argsstring></argsstring>
+        <name>DiskScaleRadius</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="63" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="63" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1a9178ba1dac2efac4e4893151b761f59f" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float galaxy_type::Cooling</definition>
+        <argsstring></argsstring>
+        <name>Cooling</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="64" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="64" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1a20267870618bfff13806c1acb84c6394" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float galaxy_type::Heating</definition>
+        <argsstring></argsstring>
+        <name>Heating</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="65" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="65" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1a2a0a44fdaa53618e1a52f516cfcbd074" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float galaxy_type::LastMajorMerger</definition>
+        <argsstring></argsstring>
+        <name>LastMajorMerger</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="67" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="67" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1aafb87bac390b01ffb4c011f878d335ca" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float galaxy_type::OutflowRate</definition>
+        <argsstring></argsstring>
+        <name>OutflowRate</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="68" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="68" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1a9cd202aa33b1f2165ff89596cf4738b0" prot="public" static="no" mutable="no">
+        <type>long long</type>
+        <definition>long long galaxy_type::GalaxyIndex</definition>
+        <argsstring></argsstring>
+        <name>GalaxyIndex</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sageimport.cc" line="18" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sageimport.cc" bodystart="18" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1a3b416bc6ef7e9b16d6e69d9d68adf705" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int galaxy_type::HaloIndex</definition>
+        <argsstring></argsstring>
+        <name>HaloIndex</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sageimport.cc" line="19" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sageimport.cc" bodystart="19" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1a0e87d2587d4dcb852b04fb152739de71" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float galaxy_type::CentralMvir</definition>
+        <argsstring></argsstring>
+        <name>CentralMvir</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sageimport.cc" line="30" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sageimport.cc" bodystart="30" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1a46a8325d1c410e74b18e7abf93a0bc5b" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float galaxy_type::Pos</definition>
+        <argsstring>[3]</argsstring>
+        <name>Pos</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sageimport.cc" line="33" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sageimport.cc" bodystart="33" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1ac384508c40f4eecc98329bde7bd0ce9b" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float galaxy_type::Vel</definition>
+        <argsstring>[3]</argsstring>
+        <name>Vel</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sageimport.cc" line="34" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sageimport.cc" bodystart="34" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1a487cb81dfd6d88d34895f05659de80a8" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float galaxy_type::Spin</definition>
+        <argsstring>[3]</argsstring>
+        <name>Spin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sageimport.cc" line="35" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sageimport.cc" bodystart="35" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1abe78dd7d154690535b97d93ff2767d8a" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int galaxy_type::Len</definition>
+        <argsstring></argsstring>
+        <name>Len</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sageimport.cc" line="36" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sageimport.cc" bodystart="36" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1ae2ed5aa146b7b701ebeb1ff2d06a7507" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float galaxy_type::Mvir</definition>
+        <argsstring></argsstring>
+        <name>Mvir</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sageimport.cc" line="37" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sageimport.cc" bodystart="37" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1ac04a250e0c3e549c84df906a44774d22" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float galaxy_type::Rvir</definition>
+        <argsstring></argsstring>
+        <name>Rvir</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sageimport.cc" line="38" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sageimport.cc" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1adf75d0225892ff0bfc5755adb35a5b5b" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float galaxy_type::Vvir</definition>
+        <argsstring></argsstring>
+        <name>Vvir</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sageimport.cc" line="39" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sageimport.cc" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1a8e971176e5d769b008fc272b7ee7d957" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float galaxy_type::Vmax</definition>
+        <argsstring></argsstring>
+        <name>Vmax</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sageimport.cc" line="40" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sageimport.cc" bodystart="40" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1ad826c0a6fb64cc6c8a4960852022e2d7" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float galaxy_type::VelDisp</definition>
+        <argsstring></argsstring>
+        <name>VelDisp</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sageimport.cc" line="41" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sageimport.cc" bodystart="41" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1a315b0474dbe1d31b8ab4823c3cf78912" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int galaxy_type::Type</definition>
+        <argsstring></argsstring>
+        <name>Type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagereader.cc" line="10" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagereader.cc" bodystart="10" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1a11d1bd49d79142090412086b6f8bb6db" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int galaxy_type::FOFHaloIndex</definition>
+        <argsstring></argsstring>
+        <name>FOFHaloIndex</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagereader.cc" line="13" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagereader.cc" bodystart="13" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1ae67002901a992fdf7c297ed2f9474ece" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int galaxy_type::TreeIndex</definition>
+        <argsstring></argsstring>
+        <name>TreeIndex</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagereader.cc" line="14" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagereader.cc" bodystart="14" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1a41c6d85c43f5ed31f92aebce11f7d775" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int galaxy_type::SnapNum</definition>
+        <argsstring></argsstring>
+        <name>SnapNum</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagereader.cc" line="19" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagereader.cc" bodystart="19" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgalaxy__type_1a8d012659b3c15a981d76ce8ee293649d" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int galaxy_type::CentralGal</definition>
+        <argsstring></argsstring>
+        <name>CentralGal</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagereader.cc" line="20" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagereader.cc" bodystart="20" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" line="13" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/sagecheck.cc" bodystart="12" bodyend="69"/>
+    <listofallmembers>
+      <member refid="structgalaxy__type_1a640c6da61e15c21def645d9c70cbb1aa" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>BlackHoleMass</name></member>
+      <member refid="structgalaxy__type_1accbbbbe08d64235c67128086ee713da6" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>BulgeMass</name></member>
+      <member refid="structgalaxy__type_1aa72d33ab8acb03584c7dffa6bea4a879" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>central_gal</name></member>
+      <member refid="structgalaxy__type_1a0ee3459152bde523b3d2690c1fc94f51" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>central_mvir</name></member>
+      <member refid="structgalaxy__type_1a8d012659b3c15a981d76ce8ee293649d" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>CentralGal</name></member>
+      <member refid="structgalaxy__type_1a0e87d2587d4dcb852b04fb152739de71" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>CentralMvir</name></member>
+      <member refid="structgalaxy__type_1a245632f6258f553085c97e57e90e14b5" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>ColdGas</name></member>
+      <member refid="structgalaxy__type_1a9178ba1dac2efac4e4893151b761f59f" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>Cooling</name></member>
+      <member refid="structgalaxy__type_1aa4095ef8245dbea120e29958a3ff13f6" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>descendant</name></member>
+      <member refid="structgalaxy__type_1a8305548b6abbd6060b057a046db9d0d9" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>DiskScaleRadius</name></member>
+      <member refid="structgalaxy__type_1a38a3d4994f7cef0dc3972ef1817726db" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>EjectedMass</name></member>
+      <member refid="structgalaxy__type_1a2aad3bd8dc0e829f33b02fe7f423c6c8" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>fof_idx</name></member>
+      <member refid="structgalaxy__type_1a11d1bd49d79142090412086b6f8bb6db" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>FOFHaloIndex</name></member>
+      <member refid="structgalaxy__type_1a20a96eb79ed23a636d9e4a1ba71e2eee" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>galaxy_index</name></member>
+      <member refid="structgalaxy__type_1a9cd202aa33b1f2165ff89596cf4738b0" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>GalaxyIndex</name></member>
+      <member refid="structgalaxy__type_1a7e1966b935abdd09d8be2c214b153700" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>global_descendant</name></member>
+      <member refid="structgalaxy__type_1af36fcb7e6b946d1682263caab85d1449" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>global_index</name></member>
+      <member refid="structgalaxy__type_1a25c3e4abb1c2a422bc6a886ca9c7fcd9" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>halo_index</name></member>
+      <member refid="structgalaxy__type_1a3b416bc6ef7e9b16d6e69d9d68adf705" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>HaloIndex</name></member>
+      <member refid="structgalaxy__type_1a20267870618bfff13806c1acb84c6394" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>Heating</name></member>
+      <member refid="structgalaxy__type_1a01ecec7af5ded29d3cf0ae7c6156df78" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>HotGas</name></member>
+      <member refid="structgalaxy__type_1a35fbb0d110d4eeb490371f7aa653dffe" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>ICS</name></member>
+      <member refid="structgalaxy__type_1a2a0a44fdaa53618e1a52f516cfcbd074" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>LastMajorMerger</name></member>
+      <member refid="structgalaxy__type_1abe78dd7d154690535b97d93ff2767d8a" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>Len</name></member>
+      <member refid="structgalaxy__type_1aca44387cc360036990c9b62c640dfc66" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>len</name></member>
+      <member refid="structgalaxy__type_1a8d2bd9273f88a769c5e44fccc495a023" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>MetalsBulgeMass</name></member>
+      <member refid="structgalaxy__type_1a98707ca26d7480ee2014a583801a2c94" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>MetalsColdGas</name></member>
+      <member refid="structgalaxy__type_1a662391c604c1c7f04f74d958e6d2d98b" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>MetalsEjectedMass</name></member>
+      <member refid="structgalaxy__type_1a42343157843c399162afd5035ca78a68" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>MetalsHotGas</name></member>
+      <member refid="structgalaxy__type_1ae780088b5f499af39e75dc5f7aa399f7" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>MetalsICS</name></member>
+      <member refid="structgalaxy__type_1adb4dff0735a8c625a0982776ae321f04" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>MetalsStellarMass</name></member>
+      <member refid="structgalaxy__type_1a9e1721acf21c2a12aba1fcd6ed701feb" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>mvir</name></member>
+      <member refid="structgalaxy__type_1ae2ed5aa146b7b701ebeb1ff2d06a7507" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>Mvir</name></member>
+      <member refid="structgalaxy__type_1aafb87bac390b01ffb4c011f878d335ca" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>OutflowRate</name></member>
+      <member refid="structgalaxy__type_1a46a8325d1c410e74b18e7abf93a0bc5b" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>Pos</name></member>
+      <member refid="structgalaxy__type_1ac9b6c11246409caa1c075aa88fd3b39f" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>pos</name></member>
+      <member refid="structgalaxy__type_1ab000f6e08aaad457b5cb98053b9caa6d" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>rvir</name></member>
+      <member refid="structgalaxy__type_1ac04a250e0c3e549c84df906a44774d22" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>Rvir</name></member>
+      <member refid="structgalaxy__type_1af62a108401a28471426728d23afadc13" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>Sfr</name></member>
+      <member refid="structgalaxy__type_1a59848bac1b774ac78a2ca0cc52c24d11" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>SfrBulge</name></member>
+      <member refid="structgalaxy__type_1a5a85f6c9c3be788e5c1cc34741d0fee0" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>SfrICS</name></member>
+      <member refid="structgalaxy__type_1a9750c2f1126230d116ef351c226b3a28" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>snap</name></member>
+      <member refid="structgalaxy__type_1a41c6d85c43f5ed31f92aebce11f7d775" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>SnapNum</name></member>
+      <member refid="structgalaxy__type_1a7a0ed4bbf2723f734cca40b33dd70c8f" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>spin</name></member>
+      <member refid="structgalaxy__type_1a487cb81dfd6d88d34895f05659de80a8" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>Spin</name></member>
+      <member refid="structgalaxy__type_1afbf9ca0c06cc52673dd913480feaf9c7" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>StellarMass</name></member>
+      <member refid="structgalaxy__type_1a96e6b642df05c73c426a03af3daed106" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>tree_idx</name></member>
+      <member refid="structgalaxy__type_1ae67002901a992fdf7c297ed2f9474ece" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>TreeIndex</name></member>
+      <member refid="structgalaxy__type_1a53be192c91505193c09f6a84be60d633" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>type</name></member>
+      <member refid="structgalaxy__type_1a315b0474dbe1d31b8ab4823c3cf78912" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>Type</name></member>
+      <member refid="structgalaxy__type_1ac384508c40f4eecc98329bde7bd0ce9b" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>Vel</name></member>
+      <member refid="structgalaxy__type_1a73618f703846c92121e0071d99e137b8" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>vel</name></member>
+      <member refid="structgalaxy__type_1a4e25358749c296eb2e0473155a8e76c9" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>vel_disp</name></member>
+      <member refid="structgalaxy__type_1ad826c0a6fb64cc6c8a4960852022e2d7" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>VelDisp</name></member>
+      <member refid="structgalaxy__type_1ad386e82a259c3e0d5548a15e1ff343ac" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>vmax</name></member>
+      <member refid="structgalaxy__type_1a8e971176e5d769b008fc272b7ee7d957" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>Vmax</name></member>
+      <member refid="structgalaxy__type_1a8a80c48154041da32f04ba901da85489" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>vvir</name></member>
+      <member refid="structgalaxy__type_1adf75d0225892ff0bfc5755adb35a5b5b" prot="public" virt="non-virtual"><scope>galaxy_type</scope><name>Vvir</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="dir_5260fddcd5196a0bf35b97d105c9db28" kind="dir">
+    <compoundname>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest</compoundname>
+    <innerfile refid="_descriptions_8cpp">Descriptions.cpp</innerfile>
+    <innerfile refid="_descriptions_8h">Descriptions.h</innerfile>
+    <innerfile refid="_dummy_descriptions_8cpp">DummyDescriptions.cpp</innerfile>
+    <innerfile refid="_dummy_descriptions_8h">DummyDescriptions.h</innerfile>
+    <innerfile refid="_error_formatter_8h">ErrorFormatter.h</innerfile>
+    <innerfile refid="_error_printer_8h">ErrorPrinter.h</innerfile>
+    <innerfile refid="_flags_8h">Flags.h</innerfile>
+    <innerfile refid="_global_fixture_8cpp">GlobalFixture.cpp</innerfile>
+    <innerfile refid="_global_fixture_8h">GlobalFixture.h</innerfile>
+    <innerfile refid="_gui_8h">Gui.h</innerfile>
+    <innerfile refid="_linked_list_8cpp">LinkedList.cpp</innerfile>
+    <innerfile refid="_linked_list_8h">LinkedList.h</innerfile>
+    <innerfile refid="_mock_8h">Mock.h</innerfile>
+    <innerfile refid="_paren_printer_8h">ParenPrinter.h</innerfile>
+    <innerfile refid="_qt_gui_8h">QtGui.h</innerfile>
+    <innerfile refid="_real_descriptions_8cpp">RealDescriptions.cpp</innerfile>
+    <innerfile refid="_real_descriptions_8h">RealDescriptions.h</innerfile>
+    <innerfile refid="_root_8cpp">Root.cpp</innerfile>
+    <innerfile refid="_self_test_8h">SelfTest.h</innerfile>
+    <innerfile refid="_std_headers_8h">StdHeaders.h</innerfile>
+    <innerfile refid="_stdio_file_printer_8h">StdioFilePrinter.h</innerfile>
+    <innerfile refid="_stdio_printer_8h">StdioPrinter.h</innerfile>
+    <innerfile refid="_std_value_traits_8h">StdValueTraits.h</innerfile>
+    <innerfile refid="_tee_listener_8h">TeeListener.h</innerfile>
+    <innerfile refid="_test_listener_8h">TestListener.h</innerfile>
+    <innerfile refid="_test_runner_8h">TestRunner.h</innerfile>
+    <innerfile refid="_test_suite_8cpp">TestSuite.cpp</innerfile>
+    <innerfile refid="_test_suite_8h">TestSuite.h</innerfile>
+    <innerfile refid="_test_tracker_8cpp">TestTracker.cpp</innerfile>
+    <innerfile refid="_test_tracker_8h">TestTracker.h</innerfile>
+    <innerfile refid="_value_traits_8cpp">ValueTraits.cpp</innerfile>
+    <innerfile refid="_value_traits_8h">ValueTraits.h</innerfile>
+    <innerfile refid="_win32_gui_8h">Win32Gui.h</innerfile>
+    <innerfile refid="_x11_gui_8h">X11Gui.h</innerfile>
+    <innerfile refid="_yes_no_runner_8h">YesNoRunner.h</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/"/>
+  </compounddef>
+</doxygen>

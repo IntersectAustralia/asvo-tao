@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="classtao_1_1_b_s_p2_d_point" kind="class" prot="public">
+    <compoundname>tao::BSP2DPoint</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classtao_1_1_b_s_p2_d_point_1a0c8f57971b225248b0ceedf2e96ad1aa" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int tao::BSP2DPoint::X</definition>
+        <argsstring></argsstring>
+        <name>X</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" line="27" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" bodystart="27" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1_b_s_p2_d_point_1a619d3962ff11ef75c22806aa58231c38" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int tao::BSP2DPoint::Y</definition>
+        <argsstring></argsstring>
+        <name>Y</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" line="28" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" bodystart="28" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classtao_1_1_b_s_p2_d_point_1afea86c231b8f7b5aed982ce9e17d322d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>tao::BSP2DPoint::BSP2DPoint</definition>
+        <argsstring>(int _X, int _Y)</argsstring>
+        <name>BSP2DPoint</name>
+        <param>
+          <type>int</type>
+          <declname>_X</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>_Y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" line="30" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.cc" bodystart="9" bodyend="13"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" line="25" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" bodystart="24" bodyend="31"/>
+    <listofallmembers>
+      <member refid="classtao_1_1_b_s_p2_d_point_1afea86c231b8f7b5aed982ce9e17d322d" prot="public" virt="non-virtual"><scope>tao::BSP2DPoint</scope><name>BSP2DPoint</name></member>
+      <member refid="classtao_1_1_b_s_p2_d_point_1a0c8f57971b225248b0ceedf2e96ad1aa" prot="public" virt="non-virtual"><scope>tao::BSP2DPoint</scope><name>X</name></member>
+      <member refid="classtao_1_1_b_s_p2_d_point_1a619d3962ff11ef75c22806aa58231c38" prot="public" virt="non-virtual"><scope>tao::BSP2DPoint</scope><name>Y</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

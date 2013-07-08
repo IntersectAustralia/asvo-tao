@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="hdf5reader_8f90" kind="file">
+    <compoundname>hdf5reader.f90</compoundname>
+    <innernamespace refid="namespacehdf5">hdf5</innernamespace>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="hdf5reader_8f90_1a0534efd49570ffc4c7d0803f2512b797" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>program</type>
+        <definition>program read_hdf5</definition>
+        <argsstring></argsstring>
+        <name>read_hdf5</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/data/readers/hdf5reader.f90" line="1" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/data/readers/hdf5reader.f90" bodystart="1" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="keyword">PROGRAM</highlight><highlight class="normal"><sp/>read_hdf5</highlight></codeline>
+<codeline lineno="2"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">USE<sp/></highlight><highlight class="normal">hdf5</highlight></codeline>
+<codeline lineno="3"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">IMPLICIT<sp/>NONE</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">!<sp/>NOTE:<sp/>Modify<sp/>this<sp/>parameter<sp/>to<sp/>reflect<sp/>the<sp/>number<sp/>of<sp/>fields</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">!<sp/>you<sp/>would<sp/>like<sp/>to<sp/>read<sp/>out<sp/>of<sp/>the<sp/>file.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">INTEGER</highlight><highlight class="normal">,<sp/></highlight><highlight class="keywordtype">PARAMETER</highlight><highlight class="normal"><sp/>::<sp/>num_fields<sp/>=<sp/>3</highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">INTEGER</highlight><highlight class="normal">,<sp/></highlight><highlight class="keywordtype">PARAMETER</highlight><highlight class="normal"><sp/>::<sp/>max_chunk_size<sp/>=<sp/>100</highlight></codeline>
+<codeline lineno="10"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">!<sp/>NOTE:<sp/>Change<sp/>filename<sp/>to<sp/>your<sp/>input<sp/>file</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">CHARACTER(LEN=12)</highlight><highlight class="normal">,<sp/></highlight><highlight class="keywordtype">PARAMETER</highlight><highlight class="normal"><sp/>::<sp/>filename<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;tao.output.0&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">INTEGER</highlight><highlight class="normal">,<sp/></highlight><highlight class="keywordtype">PARAMETER</highlight><highlight class="normal"><sp/>::<sp/>mem_rank<sp/>=<sp/>1</highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">!<sp/>NOTE:<sp/>Add<sp/>storage<sp/>for<sp/>additional<sp/>fields<sp/>here.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">REAL</highlight><highlight class="normal">,<sp/></highlight><highlight class="keywordtype">DIMENSION(max_chunk_size)</highlight><highlight class="normal"><sp/>::<sp/>pos_x,<sp/>pos_y,<sp/>pos_z</highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">INTEGER(HID_T)</highlight><highlight class="normal"><sp/>::<sp/>file_id,<sp/>memspace_id,<sp/>dataspace_id</highlight></codeline>
+<codeline lineno="18"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">INTEGER(HID_T)</highlight><highlight class="normal">,<sp/></highlight><highlight class="keywordtype">DIMENSION(num_fields)</highlight><highlight class="normal"><sp/>::<sp/>dataset_ids</highlight></codeline>
+<codeline lineno="19"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">INTEGER(HSIZE_T)</highlight><highlight class="normal">,<sp/></highlight><highlight class="keywordtype">DIMENSION(1)</highlight><highlight class="normal"><sp/>::<sp/>mem_dims<sp/>=<sp/>(/<sp/>max_chunk_size<sp/>/)</highlight></codeline>
+<codeline lineno="20"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">INTEGER</highlight><highlight class="normal"><sp/>::<sp/>chunk_size,<sp/>chunk_start,<sp/>ii,<sp/>jj,<sp/>size</highlight></codeline>
+<codeline lineno="21"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">INTEGER</highlight><highlight class="normal"><sp/>::<sp/>error</highlight></codeline>
+<codeline lineno="22"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">INTEGER(HSIZE_T)</highlight><highlight class="normal">,<sp/></highlight><highlight class="keywordtype">DIMENSION(1)</highlight><highlight class="normal"><sp/>::<sp/>data_dims,<sp/>max_data_dims,<sp/>offset,<sp/>count</highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"><sp/><sp/>CALL<sp/>h5open_f(error)</highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"><sp/><sp/>CALL<sp/>h5fopen_f(<sp/>filename,<sp/>h5f_acc_rdonly_f,<sp/>file_id,<sp/>error<sp/>)</highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">!<sp/>NOTE:<sp/>Add<sp/>extra<sp/>copies<sp/>of<sp/>these<sp/>lines<sp/>to<sp/>open<sp/>the<sp/>dataset</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">!<sp/>from<sp/>the<sp/>HDF5<sp/>file.<sp/>Notice<sp/>that<sp/>each<sp/>call<sp/>uses<sp/>a<sp/>dataset</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">!<sp/>identifier<sp/>that<sp/>is<sp/>numbered.<sp/>Be<sp/>sure<sp/>to<sp/>increment<sp/>the<sp/>index</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">!<sp/>with<sp/>each<sp/>call.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"><sp/><sp/>CALL<sp/>h5dopen_f(<sp/>file_id,<sp/></highlight><highlight class="stringliteral">&quot;k_apparent&quot;</highlight><highlight class="normal">,<sp/>dataset_ids(1),<sp/>error<sp/>)</highlight></codeline>
+<codeline lineno="33"><highlight class="normal"><sp/><sp/>CALL<sp/>h5dopen_f(<sp/>file_id,<sp/></highlight><highlight class="stringliteral">&quot;v_apparent&quot;</highlight><highlight class="normal">,<sp/>dataset_ids(2),<sp/>error<sp/>)</highlight></codeline>
+<codeline lineno="34"><highlight class="normal"><sp/><sp/>CALL<sp/>h5dopen_f(<sp/>file_id,<sp/></highlight><highlight class="stringliteral">&quot;bub_apparent&quot;</highlight><highlight class="normal">,<sp/>dataset_ids(3),<sp/>error<sp/>)</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight></codeline>
+<codeline lineno="36"><highlight class="normal"><sp/><sp/>CALL<sp/>h5dget_space_f(<sp/>dataset_ids(1),<sp/>dataspace_id,<sp/>error<sp/>)</highlight></codeline>
+<codeline lineno="37"><highlight class="normal"><sp/><sp/>CALL<sp/>h5sget_simple_extent_dims_f(<sp/>dataspace_id,<sp/>data_dims,<sp/>max_data_dims,<sp/>error<sp/>)</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"></highlight></codeline>
+<codeline lineno="39"><highlight class="normal"><sp/><sp/>CALL<sp/>h5screate_simple_f(<sp/>mem_rank,<sp/>data_dims,<sp/>memspace_id,<sp/>error<sp/>)</highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">size</highlight><highlight class="normal"><sp/>=<sp/>data_dims(1)</highlight></codeline>
+<codeline lineno="42"><highlight class="normal"><sp/><sp/>offset<sp/>=<sp/>0</highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/>data_dims(1)<sp/>=<sp/>max_chunk_size</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"></highlight></codeline>
+<codeline lineno="46"><highlight class="normal"><sp/><sp/>chunk_start<sp/>=<sp/>0</highlight></codeline>
+<codeline lineno="47"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">DO</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordflow">WHILE</highlight><highlight class="normal"><sp/>(chunk_start<sp/>&lt;<sp/>size)</highlight></codeline>
+<codeline lineno="48"><highlight class="normal"></highlight></codeline>
+<codeline lineno="49"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>chunk_size<sp/>=<sp/>min(<sp/></highlight><highlight class="keyword">size</highlight><highlight class="normal"><sp/>-<sp/>chunk_start,<sp/>max_chunk_size<sp/>)</highlight></codeline>
+<codeline lineno="50"><highlight class="normal"></highlight></codeline>
+<codeline lineno="51"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>offset<sp/>=<sp/>chunk_start</highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>count<sp/>=<sp/>chunk_size</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>CALL<sp/>h5sselect_hyperslab_f(<sp/>dataspace_id,<sp/>h5s_select_set_f,<sp/>offset,<sp/>count,<sp/>error<sp/>)</highlight></codeline>
+<codeline lineno="54"><highlight class="normal"></highlight></codeline>
+<codeline lineno="55"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>offset<sp/>=<sp/>0</highlight></codeline>
+<codeline lineno="56"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>CALL<sp/>h5sselect_hyperslab_f(<sp/>memspace_id,<sp/>h5s_select_set_f,<sp/>offset,<sp/>count,<sp/>error<sp/>)</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"></highlight></codeline>
+<codeline lineno="58"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">!<sp/>NOTE:<sp/>Add<sp/>a<sp/>copy<sp/>of<sp/>one<sp/>of<sp/>these<sp/>lines<sp/>to<sp/>read<sp/>the<sp/>contents<sp/>of</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="59"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">!<sp/>the<sp/>datasets.<sp/>Notice<sp/>that<sp/>you<sp/>must<sp/>provide<sp/>the<sp/>dataset<sp/>ID<sp/>and</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="60"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">!<sp/>the<sp/>storage<sp/>location.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="61"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>CALL<sp/>h5dread_f(<sp/>dataset_ids(1),<sp/>h5t_native_real,<sp/>pos_x,<sp/>data_dims,<sp/>error,<sp/>memspace_id,<sp/>dataspace_id<sp/>)</highlight></codeline>
+<codeline lineno="62"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>CALL<sp/>h5dread_f(<sp/>dataset_ids(2),<sp/>h5t_native_real,<sp/>pos_y,<sp/>data_dims,<sp/>error,<sp/>memspace_id,<sp/>dataspace_id<sp/>)</highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>CALL<sp/>h5dread_f(<sp/>dataset_ids(3),<sp/>h5t_native_real,<sp/>pos_z,<sp/>data_dims,<sp/>error,<sp/>memspace_id,<sp/>dataspace_id<sp/>)</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"></highlight></codeline>
+<codeline lineno="65"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">!<sp/>NOTE:<sp/>Add<sp/>any<sp/>required<sp/>writing/processing<sp/>here.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="66"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">DO</highlight><highlight class="normal"><sp/>ii<sp/>=<sp/>1,<sp/>chunk_size</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">WRITE</highlight><highlight class="normal">(<sp/>*,<sp/></highlight><highlight class="stringliteral">&apos;(E10.3,A)&apos;</highlight><highlight class="normal">,<sp/>advance=</highlight><highlight class="stringliteral">&quot;NO&quot;</highlight><highlight class="normal"><sp/>)<sp/>pos_x(ii),<sp/></highlight><highlight class="stringliteral">&quot;<sp/><sp/>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">WRITE</highlight><highlight class="normal">(<sp/>*,<sp/></highlight><highlight class="stringliteral">&apos;(E10.3,A)&apos;</highlight><highlight class="normal">,<sp/>advance=</highlight><highlight class="stringliteral">&quot;NO&quot;</highlight><highlight class="normal"><sp/>)<sp/>pos_y(ii),<sp/></highlight><highlight class="stringliteral">&quot;<sp/><sp/>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="69"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">WRITE</highlight><highlight class="normal">(<sp/>*,<sp/></highlight><highlight class="stringliteral">&apos;(E10.3,A)&apos;</highlight><highlight class="normal">,<sp/>advance=</highlight><highlight class="stringliteral">&quot;NO&quot;</highlight><highlight class="normal"><sp/>)<sp/>pos_z(ii),<sp/></highlight><highlight class="stringliteral">&quot;<sp/><sp/>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="70"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>print*,</highlight><highlight class="stringliteral">&apos;&apos;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="71"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">END<sp/>DO</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="72"><highlight class="normal"></highlight></codeline>
+<codeline lineno="73"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>chunk_start<sp/>=<sp/>chunk_start<sp/>+<sp/>chunk_size</highlight></codeline>
+<codeline lineno="74"><highlight class="normal"></highlight></codeline>
+<codeline lineno="75"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">END<sp/>DO</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="76"><highlight class="normal"></highlight></codeline>
+<codeline lineno="77"><highlight class="normal"></highlight><highlight class="keyword">END<sp/>PROGRAM</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/data/readers/hdf5reader.f90"/>
+  </compounddef>
+</doxygen>

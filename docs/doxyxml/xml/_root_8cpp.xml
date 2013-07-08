@@ -1,0 +1,191 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="_root_8cpp" kind="file">
+    <compoundname>Root.cpp</compoundname>
+    <includes refid="_descriptions_8cpp" local="no">cxxtest/Descriptions.cpp</includes>
+    <includes refid="_dummy_descriptions_8cpp" local="no">cxxtest/DummyDescriptions.cpp</includes>
+    <includes refid="_global_fixture_8cpp" local="no">cxxtest/GlobalFixture.cpp</includes>
+    <includes refid="_linked_list_8cpp" local="no">cxxtest/LinkedList.cpp</includes>
+    <includes refid="_real_descriptions_8cpp" local="no">cxxtest/RealDescriptions.cpp</includes>
+    <includes refid="_test_suite_8cpp" local="no">cxxtest/TestSuite.cpp</includes>
+    <includes refid="_test_tracker_8cpp" local="no">cxxtest/TestTracker.cpp</includes>
+    <includes refid="_value_traits_8cpp" local="no">cxxtest/ValueTraits.cpp</includes>
+    <incdepgraph>
+      <node id="742">
+        <label>cxxtest/DummyDescriptions.cpp</label>
+        <link refid="_dummy_descriptions_8cpp_source"/>
+        <childnode refid="743" relation="include">
+        </childnode>
+      </node>
+      <node id="738">
+        <label>cxxtest/Descriptions.cpp</label>
+        <link refid="_descriptions_8cpp_source"/>
+        <childnode refid="739" relation="include">
+        </childnode>
+      </node>
+      <node id="748">
+        <label>cxxtest/RealDescriptions.h</label>
+        <link refid="_real_descriptions_8h_source"/>
+        <childnode refid="739" relation="include">
+        </childnode>
+        <childnode refid="749" relation="include">
+        </childnode>
+        <childnode refid="745" relation="include">
+        </childnode>
+      </node>
+      <node id="749">
+        <label>cxxtest/TestSuite.h</label>
+        <link refid="_test_suite_8h_source"/>
+        <childnode refid="741" relation="include">
+        </childnode>
+        <childnode refid="750" relation="include">
+        </childnode>
+        <childnode refid="739" relation="include">
+        </childnode>
+        <childnode refid="752" relation="include">
+        </childnode>
+      </node>
+      <node id="750">
+        <label>cxxtest/TestTracker.h</label>
+        <link refid="_test_tracker_8h_source"/>
+        <childnode refid="751" relation="include">
+        </childnode>
+        <childnode refid="743" relation="include">
+        </childnode>
+      </node>
+      <node id="744">
+        <label>cxxtest/GlobalFixture.cpp</label>
+        <link refid="_global_fixture_8cpp_source"/>
+        <childnode refid="745" relation="include">
+        </childnode>
+      </node>
+      <node id="739">
+        <label>cxxtest/Descriptions.h</label>
+        <link refid="_descriptions_8h_source"/>
+        <childnode refid="740" relation="include">
+        </childnode>
+      </node>
+      <node id="755">
+        <label>cxxtest/ValueTraits.cpp</label>
+        <link refid="_value_traits_8cpp_source"/>
+        <childnode refid="752" relation="include">
+        </childnode>
+      </node>
+      <node id="754">
+        <label>cxxtest/TestTracker.cpp</label>
+        <link refid="_test_tracker_8cpp_source"/>
+        <childnode refid="750" relation="include">
+        </childnode>
+      </node>
+      <node id="751">
+        <label>cxxtest/TestListener.h</label>
+        <link refid="_test_listener_8h_source"/>
+        <childnode refid="739" relation="include">
+        </childnode>
+      </node>
+      <node id="752">
+        <label>cxxtest/ValueTraits.h</label>
+        <link refid="_value_traits_8h_source"/>
+        <childnode refid="741" relation="include">
+        </childnode>
+      </node>
+      <node id="745">
+        <label>cxxtest/GlobalFixture.h</label>
+        <link refid="_global_fixture_8h_source"/>
+        <childnode refid="740" relation="include">
+        </childnode>
+      </node>
+      <node id="746">
+        <label>cxxtest/LinkedList.cpp</label>
+        <link refid="_linked_list_8cpp_source"/>
+        <childnode refid="740" relation="include">
+        </childnode>
+      </node>
+      <node id="747">
+        <label>cxxtest/RealDescriptions.cpp</label>
+        <link refid="_real_descriptions_8cpp_source"/>
+        <childnode refid="748" relation="include">
+        </childnode>
+      </node>
+      <node id="737">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Root.cpp</label>
+        <link refid="Root.cpp"/>
+        <childnode refid="738" relation="include">
+        </childnode>
+        <childnode refid="742" relation="include">
+        </childnode>
+        <childnode refid="744" relation="include">
+        </childnode>
+        <childnode refid="746" relation="include">
+        </childnode>
+        <childnode refid="747" relation="include">
+        </childnode>
+        <childnode refid="753" relation="include">
+        </childnode>
+        <childnode refid="754" relation="include">
+        </childnode>
+        <childnode refid="755" relation="include">
+        </childnode>
+      </node>
+      <node id="743">
+        <label>cxxtest/DummyDescriptions.h</label>
+        <link refid="_dummy_descriptions_8h_source"/>
+        <childnode refid="739" relation="include">
+        </childnode>
+      </node>
+      <node id="741">
+        <label>cxxtest/Flags.h</label>
+        <link refid="_flags_8h_source"/>
+      </node>
+      <node id="740">
+        <label>cxxtest/LinkedList.h</label>
+        <link refid="_linked_list_8h_source"/>
+        <childnode refid="741" relation="include">
+        </childnode>
+      </node>
+      <node id="753">
+        <label>cxxtest/TestSuite.cpp</label>
+        <link refid="_test_suite_8cpp_source"/>
+        <childnode refid="749" relation="include">
+        </childnode>
+      </node>
+    </incdepgraph>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="_root_8cpp_1a29761cf40e882cb26cd1b57245a644f1" prot="public" static="no">
+        <name>__cxxtest__Root_cpp__</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Root.cpp" line="2" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Root.cpp" bodystart="2" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#ifndef<sp/>__cxxtest__Root_cpp__</highlight></codeline>
+<codeline lineno="2"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>__cxxtest__Root_cpp__</highlight></codeline>
+<codeline lineno="3"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="comment">//<sp/>This<sp/>file<sp/>holds<sp/>the<sp/>&quot;root&quot;<sp/>of<sp/>CxxTest,<sp/>i.e.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="comment">//<sp/>the<sp/>parts<sp/>that<sp/>must<sp/>be<sp/>in<sp/>a<sp/>source<sp/>file<sp/>file.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;cxxtest/Descriptions.cpp&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;cxxtest/DummyDescriptions.cpp&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;cxxtest/GlobalFixture.cpp&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;cxxtest/LinkedList.cpp&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;cxxtest/RealDescriptions.cpp&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;cxxtest/TestSuite.cpp&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;cxxtest/TestTracker.cpp&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;cxxtest/ValueTraits.cpp&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/>//<sp/>__cxxtest__Root_cpp__</highlight></codeline>
+    </programlisting>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Root.cpp"/>
+  </compounddef>
+</doxygen>

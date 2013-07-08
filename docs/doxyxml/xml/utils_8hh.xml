@@ -1,0 +1,203 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="utils_8hh" kind="file">
+    <compoundname>utils.hh</compoundname>
+    <includes local="no">libhpc/libhpc.hh</includes>
+    <includedby refid="bolshoi__convert2_8cc" local="yes">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/bolshoi_convert2.cc</includedby>
+    <includedby refid="bolshoi__forest__sizes_8cc" local="yes">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/bolshoi_forest_sizes.cc</includedby>
+    <includedby refid="bolshoi__preprocess_8cc" local="yes">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/bolshoi_preprocess.cc</includedby>
+    <includedby refid="to__hdf5_8cc" local="yes">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/to_hdf5.cc</includedby>
+    <includedby refid="utils_8cc" local="yes">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/utils.cc</includedby>
+    <incdepgraph>
+      <node id="90">
+        <label>libhpc/libhpc.hh</label>
+      </node>
+      <node id="89">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/utils.hh</label>
+        <link refid="utils.hh"/>
+        <childnode refid="90" relation="include">
+        </childnode>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="93">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/bolshoi_forest_sizes.cc</label>
+        <link refid="bolshoi__forest__sizes_8cc_source"/>
+      </node>
+      <node id="95">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/to_hdf5.cc</label>
+        <link refid="to__hdf5_8cc_source"/>
+      </node>
+      <node id="92">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/bolshoi_convert2.cc</label>
+        <link refid="bolshoi__convert2_8cc_source"/>
+      </node>
+      <node id="96">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/utils.cc</label>
+        <link refid="utils_8cc_source"/>
+      </node>
+      <node id="91">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/utils.hh</label>
+        <link refid="utils.hh"/>
+        <childnode refid="92" relation="include">
+        </childnode>
+        <childnode refid="93" relation="include">
+        </childnode>
+        <childnode refid="94" relation="include">
+        </childnode>
+        <childnode refid="95" relation="include">
+        </childnode>
+        <childnode refid="96" relation="include">
+        </childnode>
+      </node>
+      <node id="94">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/bolshoi_preprocess.cc</label>
+        <link refid="bolshoi__preprocess_8cc_source"/>
+      </node>
+    </invincdepgraph>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="utils_8hh_1a221d1a0e87acb026c614e83a0aa9f46d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Stream</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void finish_line</definition>
+        <argsstring>(Stream &amp;strm)</argsstring>
+        <name>finish_line</name>
+        <param>
+          <type>Stream &amp;</type>
+          <declname>strm</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Finish reading a line. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/utils.hh" line="12" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/utils.hh" bodystart="11" bodyend="15"/>
+      </memberdef>
+      <memberdef kind="function" id="utils_8hh_1a23160004cdcde4b50a50f6b2799abf9e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class Stream</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void skip_comments</definition>
+        <argsstring>(Stream &amp;strm)</argsstring>
+        <name>skip_comments</name>
+        <param>
+          <type>Stream &amp;</type>
+          <declname>strm</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Read past any comments. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/utils.hh" line="23" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/utils.hh" bodystart="22" bodyend="30"/>
+      </memberdef>
+      <memberdef kind="function" id="utils_8hh_1a6320fd08053f87f515717c1936c265e0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void load_forests_map</definition>
+        <argsstring>(hpc::multimap&lt; long long, long long &gt; &amp;forests)</argsstring>
+        <name>load_forests_map</name>
+        <param>
+          <type>hpc::multimap&lt; long long, long long &gt; &amp;</type>
+          <declname>forests</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/utils.hh" line="36"/>
+      </memberdef>
+      <memberdef kind="function" id="utils_8hh_1a12f934f58b82543667b80a2e98def8ec" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void load_locations_map</definition>
+        <argsstring>(hpc::map&lt; long long, std::pair&lt; unsigned, size_t &gt;&gt; &amp;locations, hpc::map&lt; unsigned, hpc::string &gt; &amp;file_map)</argsstring>
+        <name>load_locations_map</name>
+        <param>
+          <type>hpc::map&lt; long long, std::pair&lt; unsigned, size_t &gt;&gt; &amp;</type>
+          <declname>locations</declname>
+        </param>
+        <param>
+          <type>hpc::map&lt; unsigned, hpc::string &gt; &amp;</type>
+          <declname>file_map</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/utils.hh" line="43"/>
+      </memberdef>
+      <memberdef kind="function" id="utils_8hh_1a4a0203d1f5525d4b5a00d6da4f59d8d4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void load_forest_sizes_map</definition>
+        <argsstring>(hpc::map&lt; long long, unsigned &gt; &amp;forest_sizes)</argsstring>
+        <name>load_forest_sizes_map</name>
+        <param>
+          <type>hpc::map&lt; long long, unsigned &gt; &amp;</type>
+          <declname>forest_sizes</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/utils.hh" line="49"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#ifndef<sp/>bolshoi_utils_hh</highlight></codeline>
+<codeline lineno="2"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>bolshoi_utils_hh</highlight></codeline>
+<codeline lineno="3"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;libhpc/libhpc.hh&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="keyword">template</highlight><highlight class="normal">&lt;<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Stream<sp/>&gt;</highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal">finish_line(<sp/>Stream&amp;<sp/>strm<sp/>)</highlight></codeline>
+<codeline lineno="12"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="13"><highlight class="normal"><sp/><sp/><sp/>strm.ignore(<sp/>std::numeric_limits&lt;std::streamsize&gt;::max(),<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="14"><highlight class="normal"><sp/><sp/><sp/>ASSERT(<sp/>!strm.fail()<sp/>);</highlight></codeline>
+<codeline lineno="15"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="keyword">template</highlight><highlight class="normal">&lt;<sp/></highlight><highlight class="keyword">class</highlight><highlight class="normal"><sp/>Stream<sp/>&gt;</highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal">skip_comments(<sp/>Stream&amp;<sp/>strm<sp/>)</highlight></codeline>
+<codeline lineno="23"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="24"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordflow">while</highlight><highlight class="normal">(<sp/>strm.peek()<sp/>==<sp/></highlight><highlight class="charliteral">&apos;#&apos;</highlight><highlight class="normal"><sp/>)</highlight></codeline>
+<codeline lineno="25"><highlight class="normal"><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="26"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>LOGDLN(<sp/></highlight><highlight class="stringliteral">&quot;Ignoring<sp/>line<sp/>of<sp/>comments.&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="27"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>finish_line(<sp/>strm<sp/>);</highlight></codeline>
+<codeline lineno="28"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="29"><highlight class="normal"><sp/><sp/><sp/>ASSERT(<sp/>!strm.fail()<sp/>);</highlight></codeline>
+<codeline lineno="30"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="36"><highlight class="normal">load_forests_map(<sp/>hpc::multimap&lt;long<sp/>long,long<sp/>long&gt;&amp;<sp/>forests<sp/>);</highlight></codeline>
+<codeline lineno="37"><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="42"><highlight class="normal">load_locations_map(<sp/>hpc::map&lt;</highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal">,std::pair&lt;unsigned,size_t&gt;&gt;&amp;<sp/>locations,</highlight></codeline>
+<codeline lineno="43"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>hpc::map&lt;unsigned,hpc::string&gt;&amp;<sp/>file_map<sp/>);</highlight></codeline>
+<codeline lineno="44"><highlight class="normal"></highlight></codeline>
+<codeline lineno="48"><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="49"><highlight class="normal">load_forest_sizes_map(<sp/>hpc::map&lt;long<sp/>long,unsigned&gt;&amp;<sp/>forest_sizes<sp/>);</highlight></codeline>
+<codeline lineno="50"><highlight class="normal"></highlight></codeline>
+<codeline lineno="51"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight></codeline>
+    </programlisting>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/utils.hh"/>
+  </compounddef>
+</doxygen>

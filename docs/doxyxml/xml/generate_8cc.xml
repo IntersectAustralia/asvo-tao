@@ -1,0 +1,382 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="generate_8cc" kind="file">
+    <compoundname>generate.cc</compoundname>
+    <includes local="no">cstdlib</includes>
+    <includes local="no">iostream</includes>
+    <includes local="no">boost/lexical_cast.hpp</includes>
+    <includes local="no">soci/soci.h</includes>
+    <includes local="no">soci/sqlite3/soci-sqlite3.h</includes>
+    <includes local="no">libhpc/libhpc.hh</includes>
+    <includes local="no">tao/base/flat.hh</includes>
+    <incdepgraph>
+      <node id="120">
+        <label>libhpc/libhpc.hh</label>
+      </node>
+      <node id="117">
+        <label>boost/lexical_cast.hpp</label>
+      </node>
+      <node id="114">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/generate.cc</label>
+        <link refid="generate.cc"/>
+        <childnode refid="115" relation="include">
+        </childnode>
+        <childnode refid="116" relation="include">
+        </childnode>
+        <childnode refid="117" relation="include">
+        </childnode>
+        <childnode refid="118" relation="include">
+        </childnode>
+        <childnode refid="119" relation="include">
+        </childnode>
+        <childnode refid="120" relation="include">
+        </childnode>
+        <childnode refid="121" relation="include">
+        </childnode>
+      </node>
+      <node id="118">
+        <label>soci/soci.h</label>
+      </node>
+      <node id="119">
+        <label>soci/sqlite3/soci-sqlite3.h</label>
+      </node>
+      <node id="115">
+        <label>cstdlib</label>
+      </node>
+      <node id="116">
+        <label>iostream</label>
+      </node>
+      <node id="121">
+        <label>tao/base/flat.hh</label>
+      </node>
+    </incdepgraph>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="generate_8cc_1a02897b61386935d85c0276a20c79aaf0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>string</type>
+        <definition>string table_name</definition>
+        <argsstring>(unsigned idx)</argsstring>
+        <name>table_name</name>
+        <param>
+          <type>unsigned</type>
+          <declname>idx</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/generate.cc" line="18" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/generate.cc" bodystart="17" bodyend="20"/>
+      </memberdef>
+      <memberdef kind="function" id="generate_8cc_1a2ff0126ead878fefcded258a45fa1e6c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>unsigned</type>
+        <definition>unsigned step_down</definition>
+        <argsstring>(unsigned num_cur_galaxies)</argsstring>
+        <name>step_down</name>
+        <param>
+          <type>unsigned</type>
+          <declname>num_cur_galaxies</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="in">num_cur_galaxies</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of galaxies on current level. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Number of galaxies on next level. </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/generate.cc" line="28" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/generate.cc" bodystart="27" bodyend="29"/>
+      </memberdef>
+      <memberdef kind="function" id="generate_8cc_1a665bc86b1970a0f1faeb9427cf884740" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void write_flat_file</definition>
+        <argsstring>(soci::session &amp;sql, const string &amp;filename)</argsstring>
+        <name>write_flat_file</name>
+        <param>
+          <type>soci::session &amp;</type>
+          <declname>sql</declname>
+        </param>
+        <param>
+          <type>const string &amp;</type>
+          <declname>filename</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/generate.cc" line="34" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/generate.cc" bodystart="32" bodyend="106"/>
+      </memberdef>
+      <memberdef kind="function" id="generate_8cc_1a0ddf1224851353fc92bfbff6f499fa97" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int main</definition>
+        <argsstring>(int argc, char *argv[])</argsstring>
+        <name>main</name>
+        <param>
+          <type>int</type>
+          <declname>argc</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>argv</declname>
+          <array>[]</array>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/generate.cc" line="111" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/generate.cc" bodystart="109" bodyend="237"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#include<sp/>&lt;cstdlib&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;iostream&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;boost/lexical_cast.hpp&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;soci/soci.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;soci/sqlite3/soci-sqlite3.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="comment">//<sp/>#include<sp/>&lt;soci/mysql/soci-mysql.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="comment">//<sp/>#include<sp/>&lt;soci/postgresql/soci-postgresql.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;libhpc/libhpc.hh&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;tao/base/flat.hh&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="keyword">using<sp/>namespace<sp/></highlight><highlight class="normal">hpc;</highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="keyword">using<sp/>namespace<sp/></highlight><highlight class="normal">tao;</highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>soci::use;</highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>soci::into;</highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="keywordtype">string</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal">table_name(<sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>idx<sp/>)</highlight></codeline>
+<codeline lineno="18"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="19"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>boost::str(<sp/>boost::format(<sp/></highlight><highlight class="stringliteral">&quot;snapshot_%1$03d&quot;</highlight><highlight class="normal"><sp/>)<sp/>%<sp/>idx<sp/>);</highlight></codeline>
+<codeline lineno="20"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="keywordtype">unsigned</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal">step_down(<sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>num_cur_galaxies<sp/>)</highlight></codeline>
+<codeline lineno="28"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="29"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal">write_flat_file(<sp/>soci::session&amp;<sp/>sql,</highlight></codeline>
+<codeline lineno="33"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">string</highlight><highlight class="normal">&amp;<sp/>filename<sp/>)</highlight></codeline>
+<codeline lineno="34"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>//<sp/>Open<sp/>the<sp/>file.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="36"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>std::ofstream<sp/>file(<sp/>filename,<sp/>std::ios::out<sp/>);</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="37"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>ASSERT(<sp/>file.good()<sp/>);</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="38"><highlight class="normal"></highlight></codeline>
+<codeline lineno="39"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Need<sp/>to<sp/>create<sp/>two<sp/>datatypes,<sp/>one<sp/>for<sp/>memory<sp/>and<sp/>the<sp/>other<sp/>for<sp/>file.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="40"><highlight class="normal"><sp/><sp/><sp/>h5::datatype<sp/>mem_type,<sp/>file_type;</highlight></codeline>
+<codeline lineno="41"><highlight class="normal"><sp/><sp/><sp/>make_hdf5_types&lt;double&gt;(<sp/>mem_type,<sp/>file_type<sp/>);</highlight></codeline>
+<codeline lineno="42"><highlight class="normal"></highlight></codeline>
+<codeline lineno="43"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Create<sp/>new<sp/>file<sp/>for<sp/>writing.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/>h5::file<sp/>file(<sp/>filename,<sp/>H5F_ACC_TRUNC<sp/>);</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"></highlight></codeline>
+<codeline lineno="46"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Get<sp/>the<sp/>number<sp/>of<sp/>snapshots<sp/>we&apos;re<sp/>dealing<sp/>with.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="47"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>num_snaps;</highlight></codeline>
+<codeline lineno="48"><highlight class="normal"><sp/><sp/><sp/>sql<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;SELECT<sp/>count(*)<sp/>FROM<sp/>meta&quot;</highlight><highlight class="normal">,<sp/>into(<sp/>num_snaps<sp/>);</highlight></codeline>
+<codeline lineno="49"><highlight class="normal"></highlight></codeline>
+<codeline lineno="50"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>How<sp/>many<sp/>galaxies<sp/>are<sp/>in<sp/>all<sp/>the<sp/>snapshots?</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="51"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>net_gals<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(<sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>ii<sp/>=<sp/>0;<sp/>ii<sp/>&lt;<sp/>num_snaps;<sp/>++ii<sp/>)</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="54"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">string</highlight><highlight class="normal"><sp/>query<sp/>=<sp/>string(<sp/></highlight><highlight class="stringliteral">&quot;SELECT<sp/>count(*)<sp/>FROM<sp/>&quot;</highlight><highlight class="normal"><sp/>)<sp/>+<sp/>table_name(<sp/>ii<sp/>);</highlight></codeline>
+<codeline lineno="55"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>num_in_this;</highlight></codeline>
+<codeline lineno="56"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sql<sp/>&lt;&lt;<sp/>query,<sp/>into(<sp/>num_in_this<sp/>);</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>net_gals<sp/>+=<sp/>num_in_this;</highlight></codeline>
+<codeline lineno="58"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="59"><highlight class="normal"></highlight></codeline>
+<codeline lineno="60"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Create<sp/>a<sp/>file<sp/>dataset<sp/>of<sp/>the<sp/>appropriate<sp/>size.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="61"><highlight class="normal"><sp/><sp/><sp/>h5::dataspace<sp/>file_space;</highlight></codeline>
+<codeline lineno="62"><highlight class="normal"><sp/><sp/><sp/>file_space.create(<sp/>net_gals<sp/>);</highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/>h5::dataset<sp/>file_set;</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"><sp/><sp/><sp/>file_set.create(<sp/>file,<sp/></highlight><highlight class="stringliteral">&quot;flat_trees&quot;</highlight><highlight class="normal">,<sp/>file_type,<sp/>file_space<sp/>);</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"></highlight></codeline>
+<codeline lineno="66"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Create<sp/>a<sp/>memory<sp/>space<sp/>of<sp/>a<sp/>single<sp/>elements<sp/>size.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/><sp/>h5::dataspace<sp/>mem_space;</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/><sp/>mem_space.create(<sp/>1<sp/>);</highlight></codeline>
+<codeline lineno="69"><highlight class="normal"></highlight></codeline>
+<codeline lineno="70"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Iterate<sp/>over<sp/>all<sp/>flat<sp/>objects,<sp/>in<sp/>order,<sp/>to<sp/>write<sp/>them.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="71"><highlight class="normal"><sp/><sp/><sp/>vector&lt;hsize_t&gt;<sp/>count(<sp/>1<sp/>),<sp/>start(<sp/>1<sp/>);</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><sp/><sp/><sp/>soci::rowset&lt;soci::row&gt;<sp/>snap_rowset(<sp/>(sql.prepare<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;SELECT<sp/>*<sp/>FROM<sp/>meta<sp/>ORDER<sp/>BY<sp/>redshift&quot;</highlight><highlight class="normal">)<sp/>);</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(<sp/>soci::rowset&lt;soci::row&gt;::const_iterator<sp/>snap_it<sp/>=<sp/>snap_rowset.begin();<sp/>snap_it<sp/>!=<sp/>snap_rowset.end();<sp/>++snap_it<sp/>)</highlight></codeline>
+<codeline lineno="74"><highlight class="normal"><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="75"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Cache<sp/>the<sp/>table<sp/>name<sp/>and<sp/>the<sp/>redshift.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="76"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">string</highlight><highlight class="normal"><sp/>table<sp/>=<sp/>table_name(<sp/>snap_it-&gt;get&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&gt;(<sp/></highlight><highlight class="stringliteral">&quot;snap_table&quot;</highlight><highlight class="normal"><sp/>)<sp/>);</highlight></codeline>
+<codeline lineno="77"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>redshift<sp/>=<sp/>snap_it-&gt;get&lt;</highlight><highlight class="keywordtype">double</highlight><highlight class="normal">&gt;(<sp/></highlight><highlight class="stringliteral">&quot;redshift&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="78"><highlight class="normal"></highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Iterate<sp/>over<sp/>the<sp/>entries<sp/>in<sp/>the<sp/>snapshot<sp/>table.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="80"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>soci::rowset&lt;soci::row&gt;<sp/>rowset(<sp/>(sql.prepare<sp/>&lt;&lt;<sp/></highlight><highlight class="keywordtype">string</highlight><highlight class="normal">(<sp/></highlight><highlight class="stringliteral">&quot;SELECT<sp/>*<sp/>FROM<sp/>&quot;</highlight><highlight class="normal"><sp/>)<sp/>+<sp/>table)<sp/>);</highlight></codeline>
+<codeline lineno="81"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(<sp/>soci::rowset&lt;soci::row&gt;::const_iterator<sp/>gal_it<sp/>=<sp/>rowset.begin();<sp/>gal_it<sp/>!=<sp/>rowset.end();<sp/>++gal_it<sp/>)</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="83"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Cache<sp/>the<sp/>row.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="84"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>soci::row&amp;<sp/>gal<sp/>=<sp/>*gal_it;</highlight></codeline>
+<codeline lineno="85"><highlight class="normal"></highlight></codeline>
+<codeline lineno="86"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Prepare<sp/>the<sp/>data.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="87"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="structtao_1_1flat__info" kindref="compound">flat_info&lt;double&gt;</ref><sp/>info;</highlight></codeline>
+<codeline lineno="88"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>info.disk_mass<sp/>=<sp/>gal.get&lt;</highlight><highlight class="keywordtype">double</highlight><highlight class="normal">&gt;(<sp/></highlight><highlight class="stringliteral">&quot;disk_mass&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="89"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>info.bulge_mass<sp/>=<sp/>gal.get&lt;</highlight><highlight class="keywordtype">double</highlight><highlight class="normal">&gt;(<sp/></highlight><highlight class="stringliteral">&quot;bulge_mass&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="90"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>info.disk_rate<sp/>=<sp/>gal.get&lt;</highlight><highlight class="keywordtype">double</highlight><highlight class="normal">&gt;(<sp/></highlight><highlight class="stringliteral">&quot;disk_rate&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="91"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>info.bulge_rate<sp/>=<sp/>gal.get&lt;</highlight><highlight class="keywordtype">double</highlight><highlight class="normal">&gt;(<sp/></highlight><highlight class="stringliteral">&quot;bulge_rate&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="92"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>info.disk_metal<sp/>=<sp/>gal.get&lt;</highlight><highlight class="keywordtype">double</highlight><highlight class="normal">&gt;(<sp/></highlight><highlight class="stringliteral">&quot;disk_metal&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="93"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>info.bulge_metal<sp/>=<sp/>gal.get&lt;</highlight><highlight class="keywordtype">double</highlight><highlight class="normal">&gt;(<sp/></highlight><highlight class="stringliteral">&quot;bulge_metal&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="94"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>info.redshift<sp/>=<sp/>redshift;</highlight></codeline>
+<codeline lineno="95"><highlight class="normal"></highlight></codeline>
+<codeline lineno="96"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Select<sp/>the<sp/>appropriate<sp/>element<sp/>in<sp/>the<sp/>file<sp/>based<sp/>on<sp/>the<sp/>row.<sp/>Note<sp/>that</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="97"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>we<sp/>only<sp/>write<sp/>this<sp/>particular<sp/>galaxy.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="98"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>start[0]<sp/>=<sp/>gal.get&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&gt;(<sp/></highlight><highlight class="stringliteral">&quot;flat_offset&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="99"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>count[0]<sp/>=<sp/>1;</highlight></codeline>
+<codeline lineno="100"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>file_space.select_hyperslab(<sp/>H5S_SELECT_SET,<sp/>count,<sp/>start<sp/>);</highlight></codeline>
+<codeline lineno="101"><highlight class="normal"></highlight></codeline>
+<codeline lineno="102"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Transfer<sp/>each<sp/>element,<sp/>in<sp/>order,<sp/>to<sp/>the<sp/>file.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="103"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>file_set.write(<sp/>&amp;info,<sp/>mem_type,<sp/>mem_space,<sp/>file_space<sp/>);</highlight></codeline>
+<codeline lineno="104"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="105"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="106"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="107"><highlight class="normal"></highlight></codeline>
+<codeline lineno="108"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="109"><highlight class="normal">main(<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>argc,</highlight></codeline>
+<codeline lineno="110"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal">*<sp/>argv[]<sp/>)</highlight></codeline>
+<codeline lineno="111"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="112"><highlight class="normal"><sp/><sp/><sp/>mpi::initialise(<sp/>argc,<sp/>argv<sp/>);</highlight></codeline>
+<codeline lineno="113"><highlight class="normal"></highlight></codeline>
+<codeline lineno="114"><highlight class="normal"><sp/><sp/><sp/>ASSERT(<sp/>argc<sp/>&gt;<sp/>1<sp/>);</highlight></codeline>
+<codeline lineno="115"><highlight class="normal"><sp/><sp/><sp/>LOG_CONSOLE();</highlight></codeline>
+<codeline lineno="116"><highlight class="normal"></highlight></codeline>
+<codeline lineno="117"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Setup<sp/>the<sp/>filenames.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="118"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">string</highlight><highlight class="normal"><sp/>db_filename<sp/>=<sp/>string(<sp/>argv[1]<sp/>)<sp/>+<sp/></highlight><highlight class="stringliteral">&quot;.db&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="119"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">string</highlight><highlight class="normal"><sp/>flat_filename<sp/>=<sp/>string(<sp/>argv[1]<sp/>)<sp/>+<sp/></highlight><highlight class="stringliteral">&quot;.flat.0&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="120"><highlight class="normal"></highlight></codeline>
+<codeline lineno="121"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Open<sp/>database<sp/>session.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="122"><highlight class="normal"><sp/><sp/><sp/>soci::session<sp/>sql(<sp/>soci::sqlite3,<sp/></highlight><highlight class="stringliteral">&quot;db=random<sp/>unix_socket=&apos;/var/lib/mysql/mysql.sock&apos;<sp/>user=root<sp/>pass=&apos;la<sp/>di<sp/>da&apos;&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="123"><highlight class="normal"></highlight></codeline>
+<codeline lineno="124"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Define<sp/>some<sp/>values.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="125"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>num_snapshots<sp/>=<sp/>12;</highlight></codeline>
+<codeline lineno="126"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>num_galaxies<sp/>=<sp/>500;</highlight></codeline>
+<codeline lineno="127"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>start_z<sp/>=<sp/>0.1;</highlight></codeline>
+<codeline lineno="128"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>dz<sp/>=<sp/>0.1;</highlight></codeline>
+<codeline lineno="129"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>box_min<sp/>=<sp/>100.0,<sp/>box_max<sp/>=<sp/>1000.0;</highlight></codeline>
+<codeline lineno="130"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>box_size<sp/>=<sp/>generate_uniform&lt;double&gt;(<sp/>box_min,<sp/>box_max<sp/>);</highlight></codeline>
+<codeline lineno="131"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>min_distance<sp/>=<sp/>10.0;</highlight></codeline>
+<codeline lineno="132"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>min_disk_mass<sp/>=<sp/>1e4,<sp/>max_disk_mass<sp/>=<sp/>1e11;</highlight></codeline>
+<codeline lineno="133"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>min_bulge_mass<sp/>=<sp/>0.0,<sp/>max_bulge_mass<sp/>=<sp/>1e11;</highlight></codeline>
+<codeline lineno="134"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>min_disk_rate<sp/>=<sp/>0.2,<sp/>max_disk_rate<sp/>=<sp/>6.0;</highlight></codeline>
+<codeline lineno="135"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>min_bulge_rate<sp/>=<sp/>0.0,<sp/>max_bulge_rate<sp/>=<sp/>8e-8;</highlight></codeline>
+<codeline lineno="136"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>min_disk_metal<sp/>=<sp/>0.0,<sp/>max_disk_metal<sp/>=<sp/>0.06;</highlight></codeline>
+<codeline lineno="137"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>min_bulge_metal<sp/>=<sp/>0.0,<sp/>max_bulge_metal<sp/>=<sp/>0.06;</highlight></codeline>
+<codeline lineno="138"><highlight class="normal"></highlight></codeline>
+<codeline lineno="139"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Create<sp/>the<sp/>metadata<sp/>table.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="140"><highlight class="normal"><sp/><sp/><sp/>LOGLN(<sp/></highlight><highlight class="stringliteral">&quot;Creating<sp/>metadata<sp/>table...&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="141"><highlight class="normal"><sp/><sp/><sp/>sql<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;DROP<sp/>TABLE<sp/>IF<sp/>EXISTS<sp/>meta&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="142"><highlight class="normal"><sp/><sp/><sp/>sql<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;CREATE<sp/>TABLE<sp/>meta<sp/>(snap_table<sp/>INTEGER,<sp/>redshift<sp/>DOUBLE<sp/>PRECISION,<sp/>box_size<sp/>DOUBLE<sp/>PRECISION)&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="143"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(<sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>ii<sp/>=<sp/>0;<sp/>ii<sp/>&lt;<sp/>num_snapshots;<sp/>++ii<sp/>)</highlight></codeline>
+<codeline lineno="144"><highlight class="normal"><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="145"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sql<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;INSERT<sp/>INTO<sp/>meta<sp/>VALUES(:table,<sp/>:z,<sp/>:box)&quot;</highlight><highlight class="normal">,</highlight></codeline>
+<codeline lineno="146"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>use(<sp/>ii<sp/>),<sp/>use(<sp/>start_z<sp/>+<sp/>(num_snapshots<sp/>-<sp/>ii<sp/>-<sp/>1)*dz<sp/>),</highlight></codeline>
+<codeline lineno="147"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>use(<sp/>box_size<sp/>);</highlight></codeline>
+<codeline lineno="148"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="149"><highlight class="normal"><sp/><sp/><sp/>LOGLN(<sp/></highlight><highlight class="stringliteral">&quot;done.&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="150"><highlight class="normal"></highlight></codeline>
+<codeline lineno="151"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Create<sp/>some<sp/>tables<sp/>for<sp/>snapshots.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="152"><highlight class="normal"><sp/><sp/><sp/>LOGLN(<sp/></highlight><highlight class="stringliteral">&quot;Creating<sp/>snapshots<sp/>tables...&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="153"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(<sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>ii<sp/>=<sp/>0;<sp/>ii<sp/>&lt;<sp/>num_snapshots;<sp/>++ii<sp/>)</highlight></codeline>
+<codeline lineno="154"><highlight class="normal"><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="155"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sql<sp/>&lt;&lt;<sp/>(string(</highlight><highlight class="stringliteral">&quot;DROP<sp/>TABLE<sp/>IF<sp/>EXISTS<sp/>&quot;</highlight><highlight class="normal">)<sp/>+<sp/>table_name(<sp/>ii<sp/>));</highlight></codeline>
+<codeline lineno="156"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">string</highlight><highlight class="normal"><sp/>query<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;CREATE<sp/>TABLE<sp/>&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="157"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>query<sp/>+=<sp/>table_name(<sp/>ii<sp/>);</highlight></codeline>
+<codeline lineno="158"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>query<sp/>+=<sp/></highlight><highlight class="stringliteral">&quot;<sp/>(x<sp/>DOUBLE<sp/>PRECISION,<sp/>y<sp/>DOUBLE<sp/>PRECISION,<sp/>z<sp/>DOUBLE<sp/>PRECISION,<sp/>id<sp/>INTEGER,<sp/>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="159"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;disk_mass<sp/>DOUBLE<sp/>PRECISION,<sp/>bulge_mass<sp/>DOUBLE<sp/>PRECISION,<sp/>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="160"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;disk_rate<sp/>DOUBLE<sp/>PRECISION,<sp/>bulge_rate<sp/>DOUBLE<sp/>PRECISION,<sp/>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="161"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;disk_metal<sp/>DOUBLE<sp/>PRECISION,<sp/>bulge_metal<sp/>DOUBLE<sp/>PRECISION,<sp/>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="162"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;flat_file<sp/>INTEGER,<sp/>flat_offset<sp/>INTEGER,<sp/>flat_length<sp/>INTEGER)&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="163"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>sql<sp/>&lt;&lt;<sp/>query;</highlight></codeline>
+<codeline lineno="164"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="165"><highlight class="normal"><sp/><sp/><sp/>LOGLN(<sp/></highlight><highlight class="stringliteral">&quot;done.&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="166"><highlight class="normal"></highlight></codeline>
+<codeline lineno="167"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Need<sp/>some<sp/>constants<sp/>and<sp/>variables<sp/>for<sp/>adding<sp/>objects<sp/>to</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="168"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>the<sp/>database.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="169"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>gal_id<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="170"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>chunk_size<sp/>=<sp/>1000;</highlight></codeline>
+<codeline lineno="171"><highlight class="normal"><sp/><sp/><sp/>std::vector&lt;double&gt;<sp/>sfhd(<sp/>chunk_size<sp/>),<sp/>sfhb(<sp/>chunk_size<sp/>);</highlight></codeline>
+<codeline lineno="172"><highlight class="normal"><sp/><sp/><sp/>std::vector&lt;double&gt;<sp/>metd(<sp/>chunk_size<sp/>),<sp/>metb(<sp/>chunk_size<sp/>);</highlight></codeline>
+<codeline lineno="173"><highlight class="normal"><sp/><sp/><sp/>std::vector&lt;unsigned&gt;<sp/>gal_ids(<sp/>chunk_size<sp/>);</highlight></codeline>
+<codeline lineno="174"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>flat_offs<sp/>=<sp/>0,<sp/>flat_file<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="175"><highlight class="normal"></highlight></codeline>
+<codeline lineno="176"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Produce<sp/>as<sp/>many<sp/>galaxies<sp/>as<sp/>requested.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="177"><highlight class="normal"><sp/><sp/><sp/>LOGLN(<sp/></highlight><highlight class="stringliteral">&quot;Generating<sp/>galaxies...&quot;</highlight><highlight class="normal">,<sp/>setindent(<sp/>2<sp/>)<sp/>);</highlight></codeline>
+<codeline lineno="178"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordflow">while</highlight><highlight class="normal">(<sp/>gal_id<sp/>&lt;<sp/>num_galaxies<sp/>)</highlight></codeline>
+<codeline lineno="179"><highlight class="normal"><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="180"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Use<sp/>a<sp/>transaction<sp/>to<sp/>speed<sp/>this<sp/>jerk<sp/>up.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="181"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>soci::transaction<sp/>trn(<sp/>sql<sp/>);</highlight></codeline>
+<codeline lineno="182"><highlight class="normal"></highlight></codeline>
+<codeline lineno="183"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Build<sp/>galaxies<sp/>in<sp/>chunks<sp/>to<sp/>ehance<sp/>performance.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="184"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(<sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>ii<sp/>=<sp/>0;<sp/>ii<sp/>&lt;<sp/>chunk_size<sp/>&amp;&amp;<sp/>gal_id<sp/>&lt;<sp/>num_galaxies;<sp/>++ii<sp/>)</highlight></codeline>
+<codeline lineno="185"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="186"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Generate<sp/>some<sp/>randomized<sp/>coordinates.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="187"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>x,<sp/>y,<sp/>z;</highlight></codeline>
+<codeline lineno="188"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">do</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="189"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="190"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>x<sp/>=<sp/>generate_uniform&lt;double&gt;(<sp/>0.0,<sp/>box_size<sp/>);</highlight></codeline>
+<codeline lineno="191"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>y<sp/>=<sp/>generate_uniform&lt;double&gt;(<sp/>0.0,<sp/>box_size<sp/>);</highlight></codeline>
+<codeline lineno="192"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>z<sp/>=<sp/>generate_uniform&lt;double&gt;(<sp/>0.0,<sp/>box_size<sp/>);</highlight></codeline>
+<codeline lineno="193"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="194"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">while</highlight><highlight class="normal">(<sp/>x*x<sp/>+<sp/>y*y<sp/>+<sp/>z*z<sp/>&lt;<sp/>min_distance<sp/>);</highlight></codeline>
+<codeline lineno="195"><highlight class="normal"></highlight></codeline>
+<codeline lineno="196"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Generate<sp/>some<sp/>masses<sp/>and<sp/>things.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="197"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>dmass,<sp/>bmass,<sp/>drate,<sp/>brate,<sp/>dmetal,<sp/>bmetal;</highlight></codeline>
+<codeline lineno="198"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dmass<sp/>=<sp/>generate_uniform&lt;double&gt;(<sp/>min_disk_mass,<sp/>max_disk_mass<sp/>);</highlight></codeline>
+<codeline lineno="199"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>bmass<sp/>=<sp/>generate_uniform&lt;double&gt;(<sp/>min_bulge_mass,<sp/>max_bulge_mass<sp/>);</highlight></codeline>
+<codeline lineno="200"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>drate<sp/>=<sp/>generate_uniform&lt;double&gt;(<sp/>min_disk_rate,<sp/>max_disk_rate<sp/>);</highlight></codeline>
+<codeline lineno="201"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>brate<sp/>=<sp/>generate_uniform&lt;double&gt;(<sp/>min_bulge_rate,<sp/>max_bulge_rate<sp/>);</highlight></codeline>
+<codeline lineno="202"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dmetal<sp/>=<sp/>generate_uniform&lt;double&gt;(<sp/>min_disk_metal,<sp/>max_disk_metal<sp/>);</highlight></codeline>
+<codeline lineno="203"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>bmetal<sp/>=<sp/>generate_uniform&lt;double&gt;(<sp/>min_bulge_metal,<sp/>max_bulge_metal<sp/>);</highlight></codeline>
+<codeline lineno="204"><highlight class="normal"></highlight></codeline>
+<codeline lineno="205"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Insert<sp/>galaxy<sp/>object<sp/>position<sp/>information.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="206"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(<sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>jj<sp/>=<sp/>num_snapshots;<sp/>jj<sp/>&gt;<sp/>0;<sp/>--jj<sp/>)</highlight></codeline>
+<codeline lineno="207"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="208"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">string</highlight><highlight class="normal"><sp/>query<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;INSERT<sp/>INTO<sp/>&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="209"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>query<sp/>+=<sp/>table_name(<sp/>jj<sp/>-<sp/>1<sp/>);</highlight></codeline>
+<codeline lineno="210"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>query<sp/>+=<sp/></highlight><highlight class="stringliteral">&quot;<sp/>VALUES(:x,<sp/>:y,<sp/>:z,<sp/>:id,<sp/>:dm,<sp/>:bm,<sp/>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="211"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;:dr,<sp/>:br,<sp/>:dme,<sp/>:bme,<sp/>:ff,<sp/>:fi,<sp/>:fl)&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="212"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>sql<sp/>&lt;&lt;<sp/>query,</highlight></codeline>
+<codeline lineno="213"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>use(<sp/>x<sp/>),<sp/>use(<sp/>y<sp/>),<sp/>use(<sp/>z<sp/>),<sp/>use(<sp/>gal_id<sp/>),</highlight></codeline>
+<codeline lineno="214"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>use(<sp/>dmass<sp/>),<sp/>use(<sp/>bmass<sp/>),</highlight></codeline>
+<codeline lineno="215"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>use(<sp/>drate<sp/>),<sp/>use(<sp/>brate<sp/>),</highlight></codeline>
+<codeline lineno="216"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>use(<sp/>dmetal<sp/>),<sp/>use(<sp/>bmetal<sp/>),</highlight></codeline>
+<codeline lineno="217"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>use(<sp/>flat_file<sp/>),<sp/>use(<sp/>flat_offs++<sp/>),<sp/>use(<sp/>jj<sp/>);</highlight></codeline>
+<codeline lineno="218"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="219"><highlight class="normal"></highlight></codeline>
+<codeline lineno="220"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Update.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="221"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>LOGLN(<sp/></highlight><highlight class="stringliteral">&quot;Wrote<sp/>galaxy<sp/>&quot;</highlight><highlight class="normal">,<sp/>gal_id,<sp/></highlight><highlight class="stringliteral">&quot;<sp/>at<sp/>&quot;</highlight><highlight class="normal">,<sp/>x,<sp/></highlight><highlight class="stringliteral">&quot;,<sp/>&quot;</highlight><highlight class="normal">,<sp/>y,<sp/></highlight><highlight class="stringliteral">&quot;,<sp/>&quot;</highlight><highlight class="normal">,<sp/>z<sp/>);</highlight></codeline>
+<codeline lineno="222"><highlight class="normal"></highlight></codeline>
+<codeline lineno="223"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Move<sp/>forward.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="224"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>++gal_id;</highlight></codeline>
+<codeline lineno="225"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="226"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>LOGLN(<sp/>setindent(<sp/>-2<sp/>),<sp/></highlight><highlight class="stringliteral">&quot;done.&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="227"><highlight class="normal"></highlight></codeline>
+<codeline lineno="228"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Commit<sp/>the<sp/>transaction<sp/>now.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="229"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>trn.commit();</highlight></codeline>
+<codeline lineno="230"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="231"><highlight class="normal"></highlight></codeline>
+<codeline lineno="232"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Now<sp/>that<sp/>the<sp/>database<sp/>in<sp/>order,<sp/>dump<sp/>the<sp/>flat<sp/>file.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="233"><highlight class="normal"><sp/><sp/><sp/>write_flat_file(<sp/>sql,<sp/>flat_filename<sp/>);</highlight></codeline>
+<codeline lineno="234"><highlight class="normal"></highlight></codeline>
+<codeline lineno="235"><highlight class="normal"><sp/><sp/><sp/>mpi::finalise();</highlight></codeline>
+<codeline lineno="236"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>EXIT_SUCCESS;</highlight></codeline>
+<codeline lineno="237"><highlight class="normal">}</highlight></codeline>
+    </programlisting>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/generate.cc"/>
+  </compounddef>
+</doxygen>

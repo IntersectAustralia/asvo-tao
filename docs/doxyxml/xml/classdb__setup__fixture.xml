@@ -1,0 +1,265 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="classdb__setup__fixture" kind="class" prot="public">
+    <compoundname>db_setup_fixture</compoundname>
+    <basecompoundref refid="class_cxx_test_1_1_global_fixture" prot="public" virt="non-virtual">CxxTest::GlobalFixture</basecompoundref>
+    <includes refid="db__fixture_8hh" local="no">db_fixture.hh</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classdb__setup__fixture_1a44faa0d9de9dfe483e32d1c37222aab6" prot="public" static="no" mutable="no">
+        <type>options::dictionary</type>
+        <definition>options::dictionary db_setup_fixture::dict</definition>
+        <argsstring></argsstring>
+        <name>dict</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/db_fixture.hh" line="165" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/db_fixture.hh" bodystart="165" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classdb__setup__fixture_1a01f7775c2586a9e3e24b2597ff362026" prot="public" static="no" mutable="no">
+        <type>options::xml</type>
+        <definition>options::xml db_setup_fixture::xml</definition>
+        <argsstring></argsstring>
+        <name>xml</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/db_fixture.hh" line="166" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/db_fixture.hh" bodystart="166" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classdb__setup__fixture_1ada68a161125f10b998955214af27a7a7" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string db_setup_fixture::db_filename</definition>
+        <argsstring></argsstring>
+        <name>db_filename</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/db_fixture.hh" line="167" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/db_fixture.hh" bodystart="167" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classdb__setup__fixture_1afbbbb458f7f680475c0ad2fb6f4e49f3" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string db_setup_fixture::xml_filename</definition>
+        <argsstring></argsstring>
+        <name>xml_filename</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/db_fixture.hh" line="167" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/db_fixture.hh" bodystart="167" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classdb__setup__fixture_1aa5f33db6bc8a385575b637d8b67efe38" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string db_setup_fixture::ssp_filename</definition>
+        <argsstring></argsstring>
+        <name>ssp_filename</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/db_fixture.hh" line="167" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/db_fixture.hh" bodystart="167" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classdb__setup__fixture_1a54bbfb34e9f618ac75f6d28494ff6915" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>bool</type>
+        <definition>bool db_setup_fixture::setUp</definition>
+        <argsstring>()</argsstring>
+        <name>setUp</name>
+        <reimplements refid="class_cxx_test_1_1_global_fixture_1a5edcee94174c4452e6a3d4cd6c190b74">setUp</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/db_fixture.hh" line="14" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/db_fixture.hh" bodystart="13" bodyend="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classdb__setup__fixture_1ac073526081a47b6a299e0abd1664c5e9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>bool</type>
+        <definition>bool db_setup_fixture::tearDown</definition>
+        <argsstring>()</argsstring>
+        <name>tearDown</name>
+        <reimplements refid="class_cxx_test_1_1_global_fixture_1a0d79953ba5fb3f0ec5bf2e6d2fa0a1d1">tearDown</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/db_fixture.hh" line="19" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/db_fixture.hh" bodystart="18" bodyend="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classdb__setup__fixture_1aa5dbe05244b4d41e3fef7ff6dc5bc505" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void db_setup_fixture::setup_common_options</definition>
+        <argsstring>(options::dictionary &amp;dict)</argsstring>
+        <name>setup_common_options</name>
+        <param>
+          <type>options::dictionary &amp;</type>
+          <declname>dict</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/db_fixture.hh" line="24" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/db_fixture.hh" bodystart="23" bodyend="47"/>
+      </memberdef>
+      <memberdef kind="function" id="classdb__setup__fixture_1ab3c0e5e21767d53285e5296c0297850b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void db_setup_fixture::lightconesetup_options</definition>
+        <argsstring>(options::dictionary &amp;dict, optional&lt; const string &amp; &gt; prefix)</argsstring>
+        <name>lightconesetup_options</name>
+        <param>
+          <type>options::dictionary &amp;</type>
+          <declname>dict</declname>
+        </param>
+        <param>
+          <type>optional&lt; const string &amp; &gt;</type>
+          <declname>prefix</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/db_fixture.hh" line="50" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/db_fixture.hh" bodystart="49" bodyend="77"/>
+      </memberdef>
+      <memberdef kind="function" id="classdb__setup__fixture_1ac336ff231840c97d8267615b9170d78d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void db_setup_fixture::sedsetup_options</definition>
+        <argsstring>(options::dictionary &amp;dict, optional&lt; const string &amp; &gt; prefix)</argsstring>
+        <name>sedsetup_options</name>
+        <param>
+          <type>options::dictionary &amp;</type>
+          <declname>dict</declname>
+        </param>
+        <param>
+          <type>optional&lt; const string &amp; &gt;</type>
+          <declname>prefix</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/db_fixture.hh" line="80" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/db_fixture.hh" bodystart="79" bodyend="84"/>
+      </memberdef>
+      <memberdef kind="function" id="classdb__setup__fixture_1aa9ab644fee649f70e590a2ee76da4345" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>bool</type>
+        <definition>bool db_setup_fixture::setUpWorld</definition>
+        <argsstring>()</argsstring>
+        <name>setUpWorld</name>
+        <reimplements refid="class_cxx_test_1_1_global_fixture_1a38d38d51f0bf725262bdc52915a2c7ab">setUpWorld</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/db_fixture.hh" line="87" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/db_fixture.hh" bodystart="86" bodyend="153"/>
+      </memberdef>
+      <memberdef kind="function" id="classdb__setup__fixture_1ab10d6769c5407deb339a519b9437c8d7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>bool</type>
+        <definition>bool db_setup_fixture::tearDownWorld</definition>
+        <argsstring>()</argsstring>
+        <name>tearDownWorld</name>
+        <reimplements refid="class_cxx_test_1_1_global_fixture_1afefd57ebe829308b138d40580e8f935d">tearDownWorld</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/db_fixture.hh" line="156" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/db_fixture.hh" bodystart="155" bodyend="163"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Database preparation fixture. </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="48">
+        <label>CxxTest::Link</label>
+        <link refid="class_cxx_test_1_1_link"/>
+      </node>
+      <node id="46">
+        <label>db_setup_fixture</label>
+        <link refid="classdb__setup__fixture"/>
+        <childnode refid="47" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="47">
+        <label>CxxTest::GlobalFixture</label>
+        <link refid="class_cxx_test_1_1_global_fixture"/>
+        <childnode refid="48" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="51">
+        <label>CxxTest::Link</label>
+        <link refid="class_cxx_test_1_1_link"/>
+      </node>
+      <node id="49">
+        <label>db_setup_fixture</label>
+        <link refid="classdb__setup__fixture"/>
+        <childnode refid="50" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="50">
+        <label>CxxTest::GlobalFixture</label>
+        <link refid="class_cxx_test_1_1_global_fixture"/>
+        <childnode refid="51" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/db_fixture.hh" line="10" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/db_fixture.hh" bodystart="9" bodyend="168"/>
+    <listofallmembers>
+      <member refid="class_cxx_test_1_1_link_1a2230eceb6d776394a32fddb1514cf93a" prot="public" virt="non-virtual"><scope>db_setup_fixture</scope><name>active</name></member>
+      <member refid="class_cxx_test_1_1_link_1ad69f02495f7a28842a4683ad436c5fb4" prot="public" virt="non-virtual"><scope>db_setup_fixture</scope><name>attach</name></member>
+      <member refid="classdb__setup__fixture_1ada68a161125f10b998955214af27a7a7" prot="public" virt="non-virtual"><scope>db_setup_fixture</scope><name>db_filename</name></member>
+      <member refid="class_cxx_test_1_1_link_1ad3544121b85766c6f4a8b5b6fa98599e" prot="public" virt="non-virtual"><scope>db_setup_fixture</scope><name>detach</name></member>
+      <member refid="classdb__setup__fixture_1a44faa0d9de9dfe483e32d1c37222aab6" prot="public" virt="non-virtual"><scope>db_setup_fixture</scope><name>dict</name></member>
+      <member refid="class_cxx_test_1_1_global_fixture_1ad003581f56210ef50c7edc2275b14f3b" prot="public" virt="non-virtual"><scope>db_setup_fixture</scope><name>firstGlobalFixture</name></member>
+      <member refid="class_cxx_test_1_1_global_fixture_1a0606be3763b0fcaf669fff226045469b" prot="public" virt="non-virtual"><scope>db_setup_fixture</scope><name>GlobalFixture</name></member>
+      <member refid="class_cxx_test_1_1_link_1aa1c8015f02e8541749956f2d551dbed3" prot="public" virt="non-virtual"><scope>db_setup_fixture</scope><name>justNext</name></member>
+      <member refid="class_cxx_test_1_1_link_1ab77cb38969bd38f7b3491a455134c12c" prot="public" virt="non-virtual"><scope>db_setup_fixture</scope><name>justPrev</name></member>
+      <member refid="class_cxx_test_1_1_global_fixture_1a7ceddff923c9e2f138f3a28eda2e0a6f" prot="public" virt="non-virtual"><scope>db_setup_fixture</scope><name>lastGlobalFixture</name></member>
+      <member refid="classdb__setup__fixture_1ab3c0e5e21767d53285e5296c0297850b" prot="public" virt="non-virtual"><scope>db_setup_fixture</scope><name>lightconesetup_options</name></member>
+      <member refid="class_cxx_test_1_1_link_1aedaab303be994c92afb366f5e6476be5" prot="public" virt="non-virtual"><scope>db_setup_fixture</scope><name>Link</name></member>
+      <member refid="class_cxx_test_1_1_link_1a4c03b844ac15861f40d2355d650e8ec7" prot="public" virt="non-virtual"><scope>db_setup_fixture</scope><name>next</name></member>
+      <member refid="class_cxx_test_1_1_link_1a949bdd1988b71318f3d58232344dc35a" prot="public" virt="non-virtual"><scope>db_setup_fixture</scope><name>next</name></member>
+      <member refid="class_cxx_test_1_1_global_fixture_1a514b06f4054d3150681116e832fe82d2" prot="public" virt="non-virtual"><scope>db_setup_fixture</scope><name>nextGlobalFixture</name></member>
+      <member refid="class_cxx_test_1_1_link_1aedc0d2dc3d6f11f5d566c8c21ac7b660" prot="public" virt="non-virtual"><scope>db_setup_fixture</scope><name>prev</name></member>
+      <member refid="class_cxx_test_1_1_link_1ac263414ff3438af00306bb2d0b6aa483" prot="public" virt="non-virtual"><scope>db_setup_fixture</scope><name>prev</name></member>
+      <member refid="class_cxx_test_1_1_global_fixture_1a319015cb471dc253e2cd540283724853" prot="public" virt="non-virtual"><scope>db_setup_fixture</scope><name>prevGlobalFixture</name></member>
+      <member refid="classdb__setup__fixture_1ac336ff231840c97d8267615b9170d78d" prot="public" virt="non-virtual"><scope>db_setup_fixture</scope><name>sedsetup_options</name></member>
+      <member refid="class_cxx_test_1_1_link_1aa06c69998cd5c34348bab11d46577b51" prot="public" virt="non-virtual"><scope>db_setup_fixture</scope><name>setActive</name></member>
+      <member refid="classdb__setup__fixture_1a54bbfb34e9f618ac75f6d28494ff6915" prot="public" virt="virtual"><scope>db_setup_fixture</scope><name>setUp</name></member>
+      <member refid="classdb__setup__fixture_1aa5dbe05244b4d41e3fef7ff6dc5bc505" prot="public" virt="non-virtual"><scope>db_setup_fixture</scope><name>setup_common_options</name></member>
+      <member refid="classdb__setup__fixture_1aa9ab644fee649f70e590a2ee76da4345" prot="public" virt="virtual"><scope>db_setup_fixture</scope><name>setUpWorld</name></member>
+      <member refid="classdb__setup__fixture_1aa5f33db6bc8a385575b637d8b67efe38" prot="public" virt="non-virtual"><scope>db_setup_fixture</scope><name>ssp_filename</name></member>
+      <member refid="classdb__setup__fixture_1ac073526081a47b6a299e0abd1664c5e9" prot="public" virt="virtual"><scope>db_setup_fixture</scope><name>tearDown</name></member>
+      <member refid="classdb__setup__fixture_1ab10d6769c5407deb339a519b9437c8d7" prot="public" virt="virtual"><scope>db_setup_fixture</scope><name>tearDownWorld</name></member>
+      <member refid="classdb__setup__fixture_1a01f7775c2586a9e3e24b2597ff362026" prot="public" virt="non-virtual"><scope>db_setup_fixture</scope><name>xml</name></member>
+      <member refid="classdb__setup__fixture_1afbbbb458f7f680475c0ad2fb6f4e49f3" prot="public" virt="non-virtual"><scope>db_setup_fixture</scope><name>xml_filename</name></member>
+      <member refid="class_cxx_test_1_1_global_fixture_1abb853d06a3560687ee075445c2685f5f" prot="public" virt="non-virtual"><scope>db_setup_fixture</scope><name>~GlobalFixture</name></member>
+      <member refid="class_cxx_test_1_1_link_1a8d1bb253d6975839d3c337bfcb8d744a" prot="public" virt="virtual"><scope>db_setup_fixture</scope><name>~Link</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

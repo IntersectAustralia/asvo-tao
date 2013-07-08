@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="namespacefitsreader" kind="namespace">
+    <compoundname>fitsreader</compoundname>
+      <sectiondef kind="var">
+      <memberdef kind="variable" id="namespacefitsreader_1a9ae7877f2088a3c76df863f956da0872" prot="public" static="no" mutable="no">
+        <type>list</type>
+        <definition>list fitsreader.filename</definition>
+        <argsstring></argsstring>
+        <name>filename</name>
+        <initializer>= sys.argv[1]</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/data/readers/fitsreader.py" line="10" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/data/readers/fitsreader.py" bodystart="10" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacefitsreader_1ab448933b5a410755e8b34f65ac5783d7" prot="public" static="no" mutable="no">
+        <type>tuple</type>
+        <definition>tuple fitsreader.data</definition>
+        <argsstring></argsstring>
+        <name>data</name>
+        <initializer>= pyfits.open(filename)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/data/readers/fitsreader.py" line="12" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/data/readers/fitsreader.py" bodystart="12" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacefitsreader_1ab71d6216aa473335d7ce8e857056a877" prot="public" static="no" mutable="no">
+        <type>list</type>
+        <definition>list fitsreader.n_fields</definition>
+        <argsstring></argsstring>
+        <name>n_fields</name>
+        <initializer>= data[1]</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/data/readers/fitsreader.py" line="15" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/data/readers/fitsreader.py" bodystart="15" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacefitsreader_1accef853104c12cf0928e8851606a2178" prot="public" static="no" mutable="no">
+        <type>list</type>
+        <definition>list fitsreader.fields</definition>
+        <argsstring></argsstring>
+        <name>fields</name>
+        <initializer>= []</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/data/readers/fitsreader.py" line="16" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/data/readers/fitsreader.py" bodystart="16" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacefitsreader_1a5c2c99d72220576bbfcca02ea5f875ac" prot="public" static="no" mutable="no">
+        <type>list</type>
+        <definition>list fitsreader.vars</definition>
+        <argsstring></argsstring>
+        <name>vars</name>
+        <initializer>= []</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/data/readers/fitsreader.py" line="25" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/data/readers/fitsreader.py" bodystart="25" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/data/readers/fitsreader.py" line="1"/>
+  </compounddef>
+</doxygen>

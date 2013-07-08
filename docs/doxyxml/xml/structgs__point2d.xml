@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="structgs__point2d" kind="struct" prot="public">
+    <compoundname>gs_point2d</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structgs__point2d_1addfa94fc4fe707aadbf06129dbd475b7" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double gs_point2d::x</definition>
+        <argsstring></argsstring>
+        <name>x</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" line="38" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgs__point2d_1ac058f2b021a30e984483ae1a58fe78f5" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double gs_point2d::y</definition>
+        <argsstring></argsstring>
+        <name>y</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" line="39" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgs__point2d_1abcdef4d19a594e296c224f4a2bf23aac" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double gs_point2d::angle</definition>
+        <argsstring></argsstring>
+        <name>angle</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" line="40" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" bodystart="40" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgs__point2d_1a4e5574570a3462f8dfda5800d4fecb65" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int gs_point2d::Index</definition>
+        <argsstring></argsstring>
+        <name>Index</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" line="41" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" bodystart="41" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structgs__point2d_1aa7a47f5d219835193a0ce9735041f70d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>gs_point2d::gs_point2d</definition>
+        <argsstring>(double _x=0.0, double _y=0.0, double _angle=0.0, int _index=0)</argsstring>
+        <name>gs_point2d</name>
+        <param>
+          <type>double</type>
+          <declname>_x</declname>
+          <defval>0.0</defval>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>_y</declname>
+          <defval>0.0</defval>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>_angle</declname>
+          <defval>0.0</defval>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>_index</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" line="37" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" bodystart="37" bodyend="37"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" line="35" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" bodystart="34" bodyend="42"/>
+    <listofallmembers>
+      <member refid="structgs__point2d_1abcdef4d19a594e296c224f4a2bf23aac" prot="public" virt="non-virtual"><scope>gs_point2d</scope><name>angle</name></member>
+      <member refid="structgs__point2d_1aa7a47f5d219835193a0ce9735041f70d" prot="public" virt="non-virtual"><scope>gs_point2d</scope><name>gs_point2d</name></member>
+      <member refid="structgs__point2d_1a4e5574570a3462f8dfda5800d4fecb65" prot="public" virt="non-virtual"><scope>gs_point2d</scope><name>Index</name></member>
+      <member refid="structgs__point2d_1addfa94fc4fe707aadbf06129dbd475b7" prot="public" virt="non-virtual"><scope>gs_point2d</scope><name>x</name></member>
+      <member refid="structgs__point2d_1ac058f2b021a30e984483ae1a58fe78f5" prot="public" virt="non-virtual"><scope>gs_point2d</scope><name>y</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

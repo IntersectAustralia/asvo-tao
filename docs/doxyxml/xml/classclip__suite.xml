@@ -1,0 +1,198 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="classclip__suite" kind="class" prot="public">
+    <compoundname>clip_suite</compoundname>
+    <basecompoundref refid="class_cxx_test_1_1_test_suite" prot="public" virt="non-virtual">CxxTest::TestSuite</basecompoundref>
+    <includes refid="clip__suite_8t_8hh" local="no">clip_suite.t.hh</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classclip__suite_1ac59890d354fe9120ec8ae65074dc8ee6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void clip_suite::test_inner_product</definition>
+        <argsstring>()</argsstring>
+        <name>test_inner_product</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/clip_suite.t.hh" line="19" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/clip_suite.t.hh" bodystart="18" bodyend="22"/>
+      </memberdef>
+      <memberdef kind="function" id="classclip__suite_1a333b27dd0c0513eb3083efbb7569a238" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void clip_suite::test_inside</definition>
+        <argsstring>()</argsstring>
+        <name>test_inside</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/clip_suite.t.hh" line="28" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/clip_suite.t.hh" bodystart="27" bodyend="33"/>
+      </memberdef>
+      <memberdef kind="function" id="classclip__suite_1a736bf6ef936fe28628973126968c50a0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void clip_suite::test_half_space_eval</definition>
+        <argsstring>()</argsstring>
+        <name>test_half_space_eval</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/clip_suite.t.hh" line="39" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/clip_suite.t.hh" bodystart="38" bodyend="43"/>
+      </memberdef>
+      <memberdef kind="function" id="classclip__suite_1ad52e9915a0ce8560ed878d798b5951c4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void clip_suite::test_line_half_space_intersection</definition>
+        <argsstring>()</argsstring>
+        <name>test_line_half_space_intersection</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/clip_suite.t.hh" line="49" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/clip_suite.t.hh" bodystart="48" bodyend="55"/>
+      </memberdef>
+      <memberdef kind="function" id="classclip__suite_1a0d9c066626930292f3a48a4c1134ecdc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void clip_suite::test_box_half_space_overlap</definition>
+        <argsstring>()</argsstring>
+        <name>test_box_half_space_overlap</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/clip_suite.t.hh" line="61" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/clip_suite.t.hh" bodystart="60" bodyend="91"/>
+      </memberdef>
+      <memberdef kind="function" id="classclip__suite_1ac437b46f2e5a1b31a6b89fdfccdca678" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void clip_suite::test_box_half_space_intersection</definition>
+        <argsstring>()</argsstring>
+        <name>test_box_half_space_intersection</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/clip_suite.t.hh" line="97" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/clip_suite.t.hh" bodystart="96" bodyend="127"/>
+      </memberdef>
+      <memberdef kind="function" id="classclip__suite_1a7dafe70e62dcefbf842d7cb7c0f2b8fd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void clip_suite::test_polygon_area</definition>
+        <argsstring>()</argsstring>
+        <name>test_polygon_area</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/clip_suite.t.hh" line="133" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/clip_suite.t.hh" bodystart="132" bodyend="141"/>
+      </memberdef>
+      <memberdef kind="function" id="classclip__suite_1ac021be4c4c31b768aa2ffc67268a4d93" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void clip_suite::test_clip_edge</definition>
+        <argsstring>()</argsstring>
+        <name>test_clip_edge</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/clip_suite.t.hh" line="147" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/clip_suite.t.hh" bodystart="146" bodyend="159"/>
+      </memberdef>
+      <memberdef kind="function" id="classclip__suite_1a8ca995b82b1444fe7147069cb9593187" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void clip_suite::test_clip_edge_final_edge</definition>
+        <argsstring>()</argsstring>
+        <name>test_clip_edge_final_edge</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/clip_suite.t.hh" line="165" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/clip_suite.t.hh" bodystart="164" bodyend="177"/>
+      </memberdef>
+      <memberdef kind="function" id="classclip__suite_1af4483f773891b5eac2bc42140d8ebc89" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void clip_suite::test_clip_polygon</definition>
+        <argsstring>()</argsstring>
+        <name>test_clip_polygon</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/clip_suite.t.hh" line="183" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/clip_suite.t.hh" bodystart="182" bodyend="194"/>
+      </memberdef>
+      <memberdef kind="function" id="classclip__suite_1ace749da908702c3aca0dc1f160af0daa" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void clip_suite::test_clip_polygon_full</definition>
+        <argsstring>()</argsstring>
+        <name>test_clip_polygon_full</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/clip_suite.t.hh" line="200" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/clip_suite.t.hh" bodystart="199" bodyend="211"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Clip test suite. </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="28">
+        <label>clip_suite</label>
+        <link refid="classclip__suite"/>
+        <childnode refid="29" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="29">
+        <label>CxxTest::TestSuite</label>
+        <link refid="class_cxx_test_1_1_test_suite"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="30">
+        <label>clip_suite</label>
+        <link refid="classclip__suite"/>
+        <childnode refid="31" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="31">
+        <label>CxxTest::TestSuite</label>
+        <link refid="class_cxx_test_1_1_test_suite"/>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/clip_suite.t.hh" line="12" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/clip_suite.t.hh" bodystart="11" bodyend="212"/>
+    <listofallmembers>
+      <member refid="class_cxx_test_1_1_test_suite_1a03e7e9428316d10a22d44d20811192fb" prot="public" virt="virtual"><scope>clip_suite</scope><name>setUp</name></member>
+      <member refid="class_cxx_test_1_1_test_suite_1aa871c96da869344962b1435b72bcea13" prot="public" virt="virtual"><scope>clip_suite</scope><name>tearDown</name></member>
+      <member refid="classclip__suite_1ac437b46f2e5a1b31a6b89fdfccdca678" prot="public" virt="non-virtual"><scope>clip_suite</scope><name>test_box_half_space_intersection</name></member>
+      <member refid="classclip__suite_1a0d9c066626930292f3a48a4c1134ecdc" prot="public" virt="non-virtual"><scope>clip_suite</scope><name>test_box_half_space_overlap</name></member>
+      <member refid="classclip__suite_1ac021be4c4c31b768aa2ffc67268a4d93" prot="public" virt="non-virtual"><scope>clip_suite</scope><name>test_clip_edge</name></member>
+      <member refid="classclip__suite_1a8ca995b82b1444fe7147069cb9593187" prot="public" virt="non-virtual"><scope>clip_suite</scope><name>test_clip_edge_final_edge</name></member>
+      <member refid="classclip__suite_1af4483f773891b5eac2bc42140d8ebc89" prot="public" virt="non-virtual"><scope>clip_suite</scope><name>test_clip_polygon</name></member>
+      <member refid="classclip__suite_1ace749da908702c3aca0dc1f160af0daa" prot="public" virt="non-virtual"><scope>clip_suite</scope><name>test_clip_polygon_full</name></member>
+      <member refid="classclip__suite_1a736bf6ef936fe28628973126968c50a0" prot="public" virt="non-virtual"><scope>clip_suite</scope><name>test_half_space_eval</name></member>
+      <member refid="classclip__suite_1ac59890d354fe9120ec8ae65074dc8ee6" prot="public" virt="non-virtual"><scope>clip_suite</scope><name>test_inner_product</name></member>
+      <member refid="classclip__suite_1a333b27dd0c0513eb3083efbb7569a238" prot="public" virt="non-virtual"><scope>clip_suite</scope><name>test_inside</name></member>
+      <member refid="classclip__suite_1ad52e9915a0ce8560ed878d798b5951c4" prot="public" virt="non-virtual"><scope>clip_suite</scope><name>test_line_half_space_intersection</name></member>
+      <member refid="classclip__suite_1a7dafe70e62dcefbf842d7cb7c0f2b8fd" prot="public" virt="non-virtual"><scope>clip_suite</scope><name>test_polygon_area</name></member>
+      <member refid="class_cxx_test_1_1_test_suite_1a647ce2d9feb3f7450506fdb372f982f1" prot="public" virt="virtual"><scope>clip_suite</scope><name>~TestSuite</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="class_cxx_test_1_1_value_traits_3_01const_01_c_x_x_t_e_s_t___s_t_d_07basic__string_3_01wchar__t_01_4_08_4" kind="class" prot="public">
+    <compoundname>CxxTest::ValueTraits&lt; const CXXTEST_STD(basic_string&lt; wchar_t &gt;)&gt;</compoundname>
+    <basecompoundref refid="class_cxx_test_1_1_std_traits_base" prot="public" virt="non-virtual">CxxTest::StdTraitsBase</basecompoundref>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_cxx_test_1_1_value_traits_3_01const_01_c_x_x_t_e_s_t___s_t_d_07basic__string_3_01wchar__t_01_4_08_4_1afeeca3823b7bfe20436ee85fc8bc0a32" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::ValueTraits&lt; const CXXTEST_STD(basic_string&lt; wchar_t &gt;)&gt;::ValueTraits</definition>
+        <argsstring>(const CXXTEST_STD(basic_string&lt; wchar_t &gt;)&amp;s)</argsstring>
+        <name>ValueTraits</name>
+        <param>
+          <type>const CXXTEST_STD(basic_string&lt; wchar_t &gt;)&amp;</type>
+          <declname>s</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/StdValueTraits.h" line="73" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/StdValueTraits.h" bodystart="72" bodyend="81"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="431">
+        <label>CxxTest::ValueTraits&lt; const CXXTEST_STD(basic_string&lt; wchar_t &gt;)&gt;</label>
+        <link refid="class_cxx_test_1_1_value_traits_3_01const_01_c_x_x_t_e_s_t___s_t_d_07basic__string_3_01wchar__t_01_4_08_4"/>
+        <childnode refid="432" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="432">
+        <label>CxxTest::StdTraitsBase</label>
+        <link refid="class_cxx_test_1_1_std_traits_base"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="433">
+        <label>CxxTest::ValueTraits&lt; const CXXTEST_STD(basic_string&lt; wchar_t &gt;)&gt;</label>
+        <link refid="class_cxx_test_1_1_value_traits_3_01const_01_c_x_x_t_e_s_t___s_t_d_07basic__string_3_01wchar__t_01_4_08_4"/>
+        <childnode refid="434" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="434">
+        <label>CxxTest::StdTraitsBase</label>
+        <link refid="class_cxx_test_1_1_std_traits_base"/>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/StdValueTraits.h" line="70" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/StdValueTraits.h" bodystart="69" bodyend="82"/>
+    <listofallmembers>
+      <member refid="class_cxx_test_1_1_std_traits_base_1a29350abcc52bf3beacaa27535f9cbb28" prot="public" virt="non-virtual"><scope>CxxTest::ValueTraits&lt; const CXXTEST_STD(basic_string&lt; wchar_t &gt;)&gt;</scope><name>asString</name></member>
+      <member refid="class_cxx_test_1_1_std_traits_base_1a718ab1ca1874b1a3892592d66b6e7437" prot="public" virt="non-virtual"><scope>CxxTest::ValueTraits&lt; const CXXTEST_STD(basic_string&lt; wchar_t &gt;)&gt;</scope><name>operator&lt;&lt;</name></member>
+      <member refid="class_cxx_test_1_1_value_traits_3_01const_01_c_x_x_t_e_s_t___s_t_d_07basic__string_3_01wchar__t_01_4_08_4_1afeeca3823b7bfe20436ee85fc8bc0a32" prot="public" virt="non-virtual"><scope>CxxTest::ValueTraits&lt; const CXXTEST_STD(basic_string&lt; wchar_t &gt;)&gt;</scope><name>ValueTraits</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

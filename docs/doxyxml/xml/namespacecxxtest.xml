@@ -1,0 +1,191 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="namespacecxxtest" kind="namespace">
+    <compoundname>cxxtest</compoundname>
+    <innerclass refid="classcxxtest_1_1_tool_cxx_test_warning" prot="public">cxxtest::ToolCxxTestWarning</innerclass>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacecxxtest_1a10ea5dc66e77a04d8e96208ee4fa0647" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtest.accumulateEnvVar</definition>
+        <argsstring></argsstring>
+        <name>accumulateEnvVar</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Accumulates the values under key &apos;name&apos; from the list of dictionaries dict.
+The default value is appended to the end list if &apos;name&apos; does not exist in
+the dict.
+</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/site_scons/site_tools/cxxtest.py" line="69" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/site_scons/site_tools/cxxtest.py" bodystart="69" bodyend="79"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtest_1a18903130ba70fd7c85fccda7efb1ecf5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtest.multiget</definition>
+        <argsstring></argsstring>
+        <name>multiget</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Takes a list of dictionaries as its 1st argument. Checks if the key exists
+in each one and returns the 1st one it finds. If the key is found in no
+dictionaries, the default is returned.
+</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/site_scons/site_tools/cxxtest.py" line="80" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/site_scons/site_tools/cxxtest.py" bodystart="80" bodyend="91"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtest_1a23becb9452ac138b8cdb90facbb09828" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtest.envget</definition>
+        <argsstring></argsstring>
+        <name>envget</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Look in the env, then in os.environ. Otherwise same as multiget.</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/site_scons/site_tools/cxxtest.py" line="92" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/site_scons/site_tools/cxxtest.py" bodystart="92" bodyend="95"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtest_1a03e4916387972d09f05eb873e45ebd3e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtest.make_command</definition>
+        <argsstring></argsstring>
+        <name>make_command</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/site_scons/site_tools/cxxtest.py" line="96" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/site_scons/site_tools/cxxtest.py" bodystart="96" bodyend="103"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtest_1aa9884f194e9bf23c3624190a913ac3c2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtest.UnitTest</definition>
+        <argsstring></argsstring>
+        <name>UnitTest</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Prepares the Program call arguments, calls Program and adds the result to
+the check target.
+</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/site_scons/site_tools/cxxtest.py" line="104" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/site_scons/site_tools/cxxtest.py" bodystart="104" bodyend="134"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtest_1abf1c98d94fa0d424f94e0631b49f191c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtest.isValidScriptPath</definition>
+        <argsstring></argsstring>
+        <name>isValidScriptPath</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>check keyword arg or environment variable locating cxxtestgen script</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/site_scons/site_tools/cxxtest.py" line="135" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/site_scons/site_tools/cxxtest.py" bodystart="135" bodyend="144"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtest_1a5d7ff88aacc53cbcbff9ac4040cdbcf9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtest.defaultCxxTestGenLocation</definition>
+        <argsstring></argsstring>
+        <name>defaultCxxTestGenLocation</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/site_scons/site_tools/cxxtest.py" line="145" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/site_scons/site_tools/cxxtest.py" bodystart="145" bodyend="150"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtest_1a789f56e0695755279ae999e16edac7df" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtest.findCxxTestGen</definition>
+        <argsstring></argsstring>
+        <name>findCxxTestGen</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>locate the cxxtestgen script by checking environment, path and project</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/site_scons/site_tools/cxxtest.py" line="151" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/site_scons/site_tools/cxxtest.py" bodystart="151" bodyend="205"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtest_1a6c8ec4e87a8493ede800fddf834f051b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtest.findCxxTestHeaders</definition>
+        <argsstring></argsstring>
+        <name>findCxxTestHeaders</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/site_scons/site_tools/cxxtest.py" line="206" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/site_scons/site_tools/cxxtest.py" bodystart="206" bodyend="219"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtest_1a000bf768cd18591656ac9dde09524a36" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtest.generate</definition>
+        <argsstring></argsstring>
+        <name>generate</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Keyword arguments (all can be set via environment variables as well):
+CXXTEST         - the path to the cxxtestgen script.
+                    Default: searches SCons environment, OS environment,
+                    path and project in that order. Instead of setting this,
+                    you can also set CXXTEST_INSTALL_DIR
+CXXTEST_RUNNER  - the runner to use.  Default: ErrorPrinter
+CXXTEST_OPTS    - other options to pass to cxxtest.  Default: &apos;&apos;
+CXXTEST_SUFFIX  - the suffix of the test files.  Default: &apos;.t.h&apos;
+CXXTEST_TARGET  - the target to append the tests to.  Default: check
+CXXTEST_CXXFLAGS_REMOVE - the flags that cxxtests can&apos;t compile with,
+                          or give lots of warnings. Will be stripped.
+                          Default: -pedantic -Weffc++
+CXXTEST_CCFLAGS_REMOVE - the same thing as CXXTEST_CXXFLAGS_REMOVE, just for
+                        CCFLAGS. Default: same as CXXFLAGS.
+CXXTEST_PYTHON  - the path to the python binary.
+                    Default: searches path for python
+CXXTEST_SKIP_ERRORS - set to True to continue running the next test if one
+                      test fails. Default: False
+CXXTEST_CPPPATH - If you do not want to clutter your global CPPPATH with the
+                    CxxTest header files and other stuff you only need for
+                    your tests, this is the variable to set. Behaves as
+                    CPPPATH does.
+CXXTEST_INSTALL_DIR - this is where you tell the builder where CxxTest is
+                        installed. The install directory has cxxtest,
+                        python, docs and other subdirectories.
+... and all others that Program() accepts, like CPPPATH etc.
+</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/site_scons/site_tools/cxxtest.py" line="220" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/site_scons/site_tools/cxxtest.py" bodystart="220" bodyend="360"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtest_1a34a8ae16aede700de903cc0de29c8921" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtest.exists</definition>
+        <argsstring></argsstring>
+        <name>exists</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/site_scons/site_tools/cxxtest.py" line="361" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/site_scons/site_tools/cxxtest.py" bodystart="361" bodyend="364"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/site_scons/site_tools/cxxtest.py" line="1"/>
+  </compounddef>
+</doxygen>

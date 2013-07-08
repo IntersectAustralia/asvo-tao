@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="_global_fixture_8cpp" kind="file">
+    <compoundname>GlobalFixture.cpp</compoundname>
+    <includes refid="_global_fixture_8h" local="no">cxxtest/GlobalFixture.h</includes>
+    <includedby refid="_root_8cpp" local="no">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Root.cpp</includedby>
+    <incdepgraph>
+      <node id="576">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/GlobalFixture.cpp</label>
+        <link refid="GlobalFixture.cpp"/>
+        <childnode refid="577" relation="include">
+        </childnode>
+      </node>
+      <node id="577">
+        <label>cxxtest/GlobalFixture.h</label>
+        <link refid="_global_fixture_8h_source"/>
+        <childnode refid="578" relation="include">
+        </childnode>
+      </node>
+      <node id="579">
+        <label>cxxtest/Flags.h</label>
+        <link refid="_flags_8h_source"/>
+      </node>
+      <node id="578">
+        <label>cxxtest/LinkedList.h</label>
+        <link refid="_linked_list_8h_source"/>
+        <childnode refid="579" relation="include">
+        </childnode>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="580">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/GlobalFixture.cpp</label>
+        <link refid="GlobalFixture.cpp"/>
+        <childnode refid="581" relation="include">
+        </childnode>
+      </node>
+      <node id="581">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Root.cpp</label>
+        <link refid="_root_8cpp_source"/>
+      </node>
+    </invincdepgraph>
+    <innernamespace refid="namespace_cxx_test">CxxTest</innernamespace>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="_global_fixture_8cpp_1a66bfcb303c61a85fd7f2867ef816158a" prot="public" static="no">
+        <name>__cxxtest__GlobalFixture_cpp__</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/GlobalFixture.cpp" line="2" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/GlobalFixture.cpp" bodystart="2" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#ifndef<sp/>__cxxtest__GlobalFixture_cpp__</highlight></codeline>
+<codeline lineno="2"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>__cxxtest__GlobalFixture_cpp__</highlight></codeline>
+<codeline lineno="3"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;cxxtest/GlobalFixture.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">CxxTest<sp/></highlight></codeline>
+<codeline lineno="7"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="8"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>GlobalFixture::setUpWorld()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
+<codeline lineno="9"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>GlobalFixture::tearDownWorld()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
+<codeline lineno="10"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>GlobalFixture::setUp()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
+<codeline lineno="11"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>GlobalFixture::tearDown()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
+<codeline lineno="12"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"><sp/><sp/><sp/><sp/>GlobalFixture::GlobalFixture()<sp/>{<sp/>attach(<sp/>_list<sp/>);<sp/>}</highlight></codeline>
+<codeline lineno="14"><highlight class="normal"><sp/><sp/><sp/><sp/>GlobalFixture::~GlobalFixture()<sp/>{<sp/>detach(<sp/>_list<sp/>);<sp/>}</highlight></codeline>
+<codeline lineno="15"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"><sp/><sp/><sp/><sp/>GlobalFixture<sp/>*GlobalFixture::firstGlobalFixture()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(GlobalFixture<sp/>*)_list.head();<sp/>}</highlight></codeline>
+<codeline lineno="17"><highlight class="normal"><sp/><sp/><sp/><sp/>GlobalFixture<sp/>*GlobalFixture::lastGlobalFixture()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(GlobalFixture<sp/>*)_list.tail();<sp/>}</highlight></codeline>
+<codeline lineno="18"><highlight class="normal"><sp/><sp/><sp/><sp/>GlobalFixture<sp/>*GlobalFixture::nextGlobalFixture()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(GlobalFixture<sp/>*)next();<sp/>}</highlight></codeline>
+<codeline lineno="19"><highlight class="normal"><sp/><sp/><sp/><sp/>GlobalFixture<sp/>*GlobalFixture::prevGlobalFixture()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(GlobalFixture<sp/>*)prev();<sp/>}</highlight></codeline>
+<codeline lineno="20"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/>//<sp/>__cxxtest__GlobalFixture_cpp__</highlight></codeline>
+<codeline lineno="23"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/GlobalFixture.cpp"/>
+  </compounddef>
+</doxygen>

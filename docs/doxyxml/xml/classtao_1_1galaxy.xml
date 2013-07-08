@@ -1,0 +1,586 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="classtao_1_1galaxy" kind="class" prot="public">
+    <compoundname>tao::galaxy</compoundname>
+      <sectiondef kind="public-type">
+      <memberdef kind="enum" id="classtao_1_1galaxy_1a970c222d201d750e778643050afc2b5c" prot="public" static="no">
+        <name>field_value_type</name>
+        <enumvalue id="classtao_1_1galaxy_1a970c222d201d750e778643050afc2b5ca43d80d04bd089fb01099167966ed9b06" prot="public">
+          <name>STRING</name>
+          <initializer>= soci::dt_string</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classtao_1_1galaxy_1a970c222d201d750e778643050afc2b5ca8c0c4d947583c4232463ab7b959c197a" prot="public">
+          <name>DOUBLE</name>
+          <initializer>= soci::dt_double</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classtao_1_1galaxy_1a970c222d201d750e778643050afc2b5caa08607a725dc6b38335ec9919987e768" prot="public">
+          <name>INTEGER</name>
+          <initializer>= soci::dt_integer</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classtao_1_1galaxy_1a970c222d201d750e778643050afc2b5ca7ae0116209134e4f83067c817cea5dbd" prot="public">
+          <name>UNSIGNED_LONG</name>
+          <initializer>= soci::dt_unsigned_long</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classtao_1_1galaxy_1a970c222d201d750e778643050afc2b5ca57d07ca67425c38dbec0eac648f37658" prot="public">
+          <name>LONG_LONG</name>
+          <initializer>= soci::dt_long_long</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="classtao_1_1galaxy_1a970c222d201d750e778643050afc2b5cad29796831106da3631a37d7da7fafc0c" prot="public">
+          <name>UNSIGNED_LONG_LONG</name>
+          <initializer>= soci::dt_unsigned_long_long</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" line="22" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" bodystart="21" bodyend="29"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classtao_1_1galaxy_1a19980ddb3b9701344868399f533e7a4d" prot="public" static="no">
+        <type>double</type>
+        <definition>typedef double tao::galaxy::real_type</definition>
+        <argsstring></argsstring>
+        <name>real_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" line="31" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" bodystart="31" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classtao_1_1galaxy_1ac85d47a0287bf4d925d516eb0a2e32e6" prot="public" static="no">
+        <type>std::pair&lt; boost::any, field_value_type &gt;</type>
+        <definition>typedef std::pair&lt;boost::any,field_value_type&gt; tao::galaxy::field_type</definition>
+        <argsstring></argsstring>
+        <name>field_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" line="32" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" bodystart="32" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classtao_1_1galaxy_1a5a419c2d4f84a9a710034dd43dc8dd8e" prot="public" static="no">
+        <type>boost::mpl::map&lt; mpl::pair&lt; string, mpl::int_&lt; STRING &gt; &gt;, mpl::pair&lt; double, mpl::int_&lt; DOUBLE &gt; &gt;, mpl::pair&lt; int, mpl::int_&lt; INTEGER &gt; &gt;, mpl::pair&lt; unsigned long, mpl::int_&lt; UNSIGNED_LONG &gt; &gt;, mpl::pair&lt; long long, mpl::int_&lt; LONG_LONG &gt; &gt;, mpl::pair&lt; unsigned long long, mpl::int_&lt; UNSIGNED_LONG_LONG &gt; &gt; &gt;</type>
+        <definition>typedef boost::mpl::map&lt;mpl::pair&lt;string, mpl::int_&lt;STRING&gt; &gt;, mpl::pair&lt;double, mpl::int_&lt;DOUBLE&gt; &gt;, mpl::pair&lt;int, mpl::int_&lt;INTEGER&gt; &gt;, mpl::pair&lt;unsigned long, mpl::int_&lt;UNSIGNED_LONG&gt; &gt;, mpl::pair&lt;long long, mpl::int_&lt;LONG_LONG&gt; &gt;, mpl::pair&lt;unsigned long long, mpl::int_&lt;UNSIGNED_LONG_LONG&gt; &gt; &gt; tao::galaxy::type_map</definition>
+        <argsstring></argsstring>
+        <name>type_map</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" line="39" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classtao_1_1galaxy_1ab5069fe9422b2efe8bc8a01424c82bea" prot="public" static="no" mutable="no">
+        <type>const string *</type>
+        <definition>const string* tao::galaxy::_table</definition>
+        <argsstring></argsstring>
+        <name>_table</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" line="163" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" bodystart="163" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1galaxy_1ae8063161c77ecd40c14ae41c1eed6758" prot="public" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned tao::galaxy::_batch_size</definition>
+        <argsstring></argsstring>
+        <name>_batch_size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" line="164" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" bodystart="164" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1galaxy_1a2ec167e1d7af7a7f615d31ff6f45728d" prot="public" static="no" mutable="no">
+        <type>std::unordered_map&lt; string, field_type &gt;</type>
+        <definition>std::unordered_map&lt;string,field_type&gt; tao::galaxy::_fields</definition>
+        <argsstring></argsstring>
+        <name>_fields</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" line="165" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" bodystart="165" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1galaxy_1a7da62770e3d1ddd680e35c7e43e83dc1" prot="public" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned tao::galaxy::_it</definition>
+        <argsstring></argsstring>
+        <name>_it</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" line="167" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" bodystart="167" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1galaxy_1a12dc1b751332a93c6c96e42864b99540" prot="public" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::galaxy::_filter</definition>
+        <argsstring></argsstring>
+        <name>_filter</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" line="168" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" bodystart="168" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1galaxy_1a79df50737ce13037fee3562a63359815" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double tao::galaxy::_filter_min</definition>
+        <argsstring></argsstring>
+        <name>_filter_min</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" line="169" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" bodystart="169" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1galaxy_1a604bd1739c02350d755373820b5a001b" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double tao::galaxy::_filter_max</definition>
+        <argsstring></argsstring>
+        <name>_filter_max</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" line="169" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" bodystart="169" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classtao_1_1galaxy_1a4adbd77b89728fa2b331b7e6a0720325" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>tao::galaxy::galaxy</definition>
+        <argsstring>()</argsstring>
+        <name>galaxy</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" line="43" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.cc" bodystart="9" bodyend="12"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1galaxy_1a4d35c201bc0863ef38426de9edc618dc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>tao::galaxy::galaxy</definition>
+        <argsstring>(const string &amp;table)</argsstring>
+        <name>galaxy</name>
+        <param>
+          <type>const string &amp;</type>
+          <declname>table</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" line="45" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.cc" bodystart="14" bodyend="17"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1galaxy_1a3c0b10e0b4fb88d3903adc7f69545ee0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::galaxy::clear</definition>
+        <argsstring>()</argsstring>
+        <name>clear</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" line="61" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.cc" bodystart="20" bodyend="24"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1galaxy_1a1286441fddee8c3537687a379bf729d5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::galaxy::set_table</definition>
+        <argsstring>(const string &amp;table)</argsstring>
+        <name>set_table</name>
+        <param>
+          <type>const string &amp;</type>
+          <declname>table</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" line="64" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.cc" bodystart="27" bodyend="30"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1galaxy_1a90f8427758b518874cd945aeaef206b2" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>const string &amp;</type>
+        <definition>const string &amp; tao::galaxy::table</definition>
+        <argsstring>() const </argsstring>
+        <name>table</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" line="67" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.cc" bodystart="139" bodyend="143"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1galaxy_1ac7c2b8b9114308a635e51c323c0e2ec3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::galaxy::set_batch_size</definition>
+        <argsstring>(unsigned size)</argsstring>
+        <name>set_batch_size</name>
+        <param>
+          <type>unsigned</type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" line="70" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.cc" bodystart="33" bodyend="36"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1galaxy_1a05c9db1e6f8d9d117ff6748428ad56c9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::galaxy::read_record_filter</definition>
+        <argsstring>(const options::xml_dict &amp;global_dict)</argsstring>
+        <name>read_record_filter</name>
+        <param>
+          <type>const options::xml_dict &amp;</type>
+          <declname>global_dict</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" line="73" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.cc" bodystart="39" bodyend="58"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1galaxy_1a0ff3cd67419d494f57c962b7b1d70026" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::galaxy::begin</definition>
+        <argsstring>()</argsstring>
+        <name>begin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" line="76" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.cc" bodystart="61" bodyend="66"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1galaxy_1ac6d5125d54bd2c3081d682f71eddc8e5" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool tao::galaxy::done</definition>
+        <argsstring>() const </argsstring>
+        <name>done</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" line="79" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.cc" bodystart="69" bodyend="72"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1galaxy_1abf632eddbdc9f000f866a957e98f2ed5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::galaxy::next</definition>
+        <argsstring>()</argsstring>
+        <name>next</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" line="82" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.cc" bodystart="75" bodyend="79"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1galaxy_1ae500c3073ca9f1056dcc014527a7f1f2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::galaxy::settle</definition>
+        <argsstring>()</argsstring>
+        <name>settle</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" line="85" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.cc" bodystart="82" bodyend="114"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1galaxy_1ae200f27524a91de93854e95ffdf0a7fc" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>const T &amp;</type>
+        <definition>const T&amp; tao::galaxy::current_value</definition>
+        <argsstring>(const string &amp;name) const </argsstring>
+        <name>current_value</name>
+        <param>
+          <type>const string &amp;</type>
+          <declname>name</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" line="90" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" bodystart="89" bodyend="92"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1galaxy_1a78fe5410838991e7c6c4aac8bd4ced9d" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>unsigned</type>
+        <definition>unsigned tao::galaxy::batch_size</definition>
+        <argsstring>() const </argsstring>
+        <name>batch_size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" line="116" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.cc" bodystart="146" bodyend="149"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1galaxy_1a5b8194f7a80fb5e3e13fafc1558e3a02" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tao::galaxy::set_field</definition>
+        <argsstring>(const string &amp;name, typename vector&lt; T &gt;::view value)</argsstring>
+        <name>set_field</name>
+        <param>
+          <type>const string &amp;</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>typename vector&lt; T &gt;::view</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" line="122" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" bodystart="120" bodyend="126"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1galaxy_1a047297ce7d8b1daa19c03627fa3347c3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tao::galaxy::set_vector_field</definition>
+        <argsstring>(const string &amp;name, fibre&lt; T &gt; &amp;value)</argsstring>
+        <name>set_vector_field</name>
+        <param>
+          <type>const string &amp;</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>fibre&lt; T &gt; &amp;</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" line="132" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" bodystart="130" bodyend="138"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1galaxy_1a7400aa04ea6b892f97633c8e66714ef7" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>vector&lt; T &gt;::view</type>
+        <definition>vector&lt;T&gt;::view tao::galaxy::values</definition>
+        <argsstring>(const string &amp;name) const </argsstring>
+        <name>values</name>
+        <param>
+          <type>const string &amp;</type>
+          <declname>name</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" line="143" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" bodystart="142" bodyend="145"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1galaxy_1a3c895bc1770e2423dd7aef98d4f31994" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>fibre&lt; T &gt; &amp;</type>
+        <definition>fibre&lt;T&gt;&amp; tao::galaxy::vector_values</definition>
+        <argsstring>(const string &amp;name) const </argsstring>
+        <name>vector_values</name>
+        <param>
+          <type>const string &amp;</type>
+          <declname>name</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" line="150" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" bodystart="149" bodyend="152"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1galaxy_1afc75b9258af76c132cd45242443a9acf" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>field_type</type>
+        <definition>galaxy::field_type tao::galaxy::field</definition>
+        <argsstring>(const string &amp;name) const </argsstring>
+        <name>field</name>
+        <param>
+          <type>const string &amp;</type>
+          <declname>name</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" line="155" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.cc" bodystart="251" bodyend="256"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="friend">
+      <memberdef kind="friend" id="classtao_1_1galaxy_1a4abbfca1910c06cea02c828a53cd2d51" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend std::ostream &amp;</type>
+        <definition>std::ostream&amp; operator&lt;&lt;</definition>
+        <argsstring>(std::ostream &amp;strm, const galaxy &amp;obj)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>strm</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classtao_1_1galaxy" kindref="compound">galaxy</ref> &amp;</type>
+          <declname>obj</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" line="159" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.cc" bodystart="259" bodyend="263"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="133">
+        <label>string</label>
+      </node>
+      <node id="132">
+        <label>tao::galaxy</label>
+        <link refid="classtao_1_1galaxy"/>
+        <childnode refid="133" relation="usage">
+          <edgelabel>_filter</edgelabel>
+          <edgelabel>_table</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" line="18" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/galaxy.hh" bodystart="17" bodyend="170"/>
+    <listofallmembers>
+      <member refid="classtao_1_1galaxy_1ae8063161c77ecd40c14ae41c1eed6758" prot="public" virt="non-virtual"><scope>tao::galaxy</scope><name>_batch_size</name></member>
+      <member refid="classtao_1_1galaxy_1a2ec167e1d7af7a7f615d31ff6f45728d" prot="public" virt="non-virtual"><scope>tao::galaxy</scope><name>_fields</name></member>
+      <member refid="classtao_1_1galaxy_1a12dc1b751332a93c6c96e42864b99540" prot="public" virt="non-virtual"><scope>tao::galaxy</scope><name>_filter</name></member>
+      <member refid="classtao_1_1galaxy_1a604bd1739c02350d755373820b5a001b" prot="public" virt="non-virtual"><scope>tao::galaxy</scope><name>_filter_max</name></member>
+      <member refid="classtao_1_1galaxy_1a79df50737ce13037fee3562a63359815" prot="public" virt="non-virtual"><scope>tao::galaxy</scope><name>_filter_min</name></member>
+      <member refid="classtao_1_1galaxy_1a7da62770e3d1ddd680e35c7e43e83dc1" prot="public" virt="non-virtual"><scope>tao::galaxy</scope><name>_it</name></member>
+      <member refid="classtao_1_1galaxy_1ab5069fe9422b2efe8bc8a01424c82bea" prot="public" virt="non-virtual"><scope>tao::galaxy</scope><name>_table</name></member>
+      <member refid="classtao_1_1galaxy_1a78fe5410838991e7c6c4aac8bd4ced9d" prot="public" virt="non-virtual"><scope>tao::galaxy</scope><name>batch_size</name></member>
+      <member refid="classtao_1_1galaxy_1a0ff3cd67419d494f57c962b7b1d70026" prot="public" virt="non-virtual"><scope>tao::galaxy</scope><name>begin</name></member>
+      <member refid="classtao_1_1galaxy_1a3c0b10e0b4fb88d3903adc7f69545ee0" prot="public" virt="non-virtual"><scope>tao::galaxy</scope><name>clear</name></member>
+      <member refid="classtao_1_1galaxy_1ae200f27524a91de93854e95ffdf0a7fc" prot="public" virt="non-virtual"><scope>tao::galaxy</scope><name>current_value</name></member>
+      <member refid="classtao_1_1galaxy_1ac6d5125d54bd2c3081d682f71eddc8e5" prot="public" virt="non-virtual"><scope>tao::galaxy</scope><name>done</name></member>
+      <member refid="classtao_1_1galaxy_1a970c222d201d750e778643050afc2b5ca8c0c4d947583c4232463ab7b959c197a" prot="public" virt="non-virtual"><scope>tao::galaxy</scope><name>DOUBLE</name></member>
+      <member refid="classtao_1_1galaxy_1afc75b9258af76c132cd45242443a9acf" prot="public" virt="non-virtual"><scope>tao::galaxy</scope><name>field</name></member>
+      <member refid="classtao_1_1galaxy_1ac85d47a0287bf4d925d516eb0a2e32e6" prot="public" virt="non-virtual"><scope>tao::galaxy</scope><name>field_type</name></member>
+      <member refid="classtao_1_1galaxy_1a970c222d201d750e778643050afc2b5c" prot="public" virt="non-virtual"><scope>tao::galaxy</scope><name>field_value_type</name></member>
+      <member refid="classtao_1_1galaxy_1a4adbd77b89728fa2b331b7e6a0720325" prot="public" virt="non-virtual"><scope>tao::galaxy</scope><name>galaxy</name></member>
+      <member refid="classtao_1_1galaxy_1a4d35c201bc0863ef38426de9edc618dc" prot="public" virt="non-virtual"><scope>tao::galaxy</scope><name>galaxy</name></member>
+      <member refid="classtao_1_1galaxy_1a970c222d201d750e778643050afc2b5caa08607a725dc6b38335ec9919987e768" prot="public" virt="non-virtual"><scope>tao::galaxy</scope><name>INTEGER</name></member>
+      <member refid="classtao_1_1galaxy_1a970c222d201d750e778643050afc2b5ca57d07ca67425c38dbec0eac648f37658" prot="public" virt="non-virtual"><scope>tao::galaxy</scope><name>LONG_LONG</name></member>
+      <member refid="classtao_1_1galaxy_1abf632eddbdc9f000f866a957e98f2ed5" prot="public" virt="non-virtual"><scope>tao::galaxy</scope><name>next</name></member>
+      <member refid="classtao_1_1galaxy_1a4abbfca1910c06cea02c828a53cd2d51" prot="public" virt="non-virtual"><scope>tao::galaxy</scope><name>operator&lt;&lt;</name></member>
+      <member refid="classtao_1_1galaxy_1a05c9db1e6f8d9d117ff6748428ad56c9" prot="public" virt="non-virtual"><scope>tao::galaxy</scope><name>read_record_filter</name></member>
+      <member refid="classtao_1_1galaxy_1a19980ddb3b9701344868399f533e7a4d" prot="public" virt="non-virtual"><scope>tao::galaxy</scope><name>real_type</name></member>
+      <member refid="classtao_1_1galaxy_1ac7c2b8b9114308a635e51c323c0e2ec3" prot="public" virt="non-virtual"><scope>tao::galaxy</scope><name>set_batch_size</name></member>
+      <member refid="classtao_1_1galaxy_1a5b8194f7a80fb5e3e13fafc1558e3a02" prot="public" virt="non-virtual"><scope>tao::galaxy</scope><name>set_field</name></member>
+      <member refid="classtao_1_1galaxy_1a1286441fddee8c3537687a379bf729d5" prot="public" virt="non-virtual"><scope>tao::galaxy</scope><name>set_table</name></member>
+      <member refid="classtao_1_1galaxy_1a047297ce7d8b1daa19c03627fa3347c3" prot="public" virt="non-virtual"><scope>tao::galaxy</scope><name>set_vector_field</name></member>
+      <member refid="classtao_1_1galaxy_1ae500c3073ca9f1056dcc014527a7f1f2" prot="public" virt="non-virtual"><scope>tao::galaxy</scope><name>settle</name></member>
+      <member refid="classtao_1_1galaxy_1a970c222d201d750e778643050afc2b5ca43d80d04bd089fb01099167966ed9b06" prot="public" virt="non-virtual"><scope>tao::galaxy</scope><name>STRING</name></member>
+      <member refid="classtao_1_1galaxy_1a90f8427758b518874cd945aeaef206b2" prot="public" virt="non-virtual"><scope>tao::galaxy</scope><name>table</name></member>
+      <member refid="classtao_1_1galaxy_1a5a419c2d4f84a9a710034dd43dc8dd8e" prot="public" virt="non-virtual"><scope>tao::galaxy</scope><name>type_map</name></member>
+      <member refid="classtao_1_1galaxy_1a970c222d201d750e778643050afc2b5ca7ae0116209134e4f83067c817cea5dbd" prot="public" virt="non-virtual"><scope>tao::galaxy</scope><name>UNSIGNED_LONG</name></member>
+      <member refid="classtao_1_1galaxy_1a970c222d201d750e778643050afc2b5cad29796831106da3631a37d7da7fafc0c" prot="public" virt="non-virtual"><scope>tao::galaxy</scope><name>UNSIGNED_LONG_LONG</name></member>
+      <member refid="classtao_1_1galaxy_1a7400aa04ea6b892f97633c8e66714ef7" prot="public" virt="non-virtual"><scope>tao::galaxy</scope><name>values</name></member>
+      <member refid="classtao_1_1galaxy_1a3c895bc1770e2423dd7aef98d4f31994" prot="public" virt="non-virtual"><scope>tao::galaxy</scope><name>vector_values</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="dir_3b56094dc3037d0b400c1eac5e2ddd32" kind="dir">
+    <compoundname>/Users/carlos/Devel/ASVO/asvo-tao/science_modules</compoundname>
+    <innerdir refid="dir_a2932a1a7e375b515fecbbd7f1a1b77c">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps</innerdir>
+    <innerdir refid="dir_231d22eece1aa5ec437b1131efc769f6">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base</innerdir>
+    <innerdir refid="dir_186b281dbd7dd38e410e21f26728990c">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest</innerdir>
+    <innerdir refid="dir_c84c97cd8965309b817ae063fbafb288">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/data</innerdir>
+    <innerdir refid="dir_64bb096cb2be29d9d092118aa9e24cf8">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules</innerdir>
+    <innerdir refid="dir_c251c58c4587f6490e624da968f2bf25">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/site_scons</innerdir>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/"/>
+  </compounddef>
+</doxygen>

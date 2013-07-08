@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="namespacetao_1_1subfind" kind="namespace">
+    <compoundname>tao::subfind</compoundname>
+    <innerclass refid="structtao_1_1subfind_1_1halo" prot="public">tao::subfind::halo</innerclass>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacetao_1_1subfind_1aba9d39f3e565550840d7e9c8d5bc82b2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::subfind::make_hdf5_types</definition>
+        <argsstring>(h5::datatype &amp;mem_type, h5::datatype &amp;file_type)</argsstring>
+        <name>make_hdf5_types</name>
+        <param>
+          <type>h5::datatype &amp;</type>
+          <declname>mem_type</declname>
+        </param>
+        <param>
+          <type>h5::datatype &amp;</type>
+          <declname>file_type</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.cc" line="9" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.cc" bodystart="7" bodyend="65"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/subfind.cc" line="4"/>
+  </compounddef>
+</doxygen>

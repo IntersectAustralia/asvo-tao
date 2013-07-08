@@ -1,0 +1,422 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="class_cxx_test_1_1_link" kind="class" prot="public" abstract="yes">
+    <compoundname>CxxTest::Link</compoundname>
+    <derivedcompoundref refid="class_cxx_test_1_1_global_fixture" prot="public" virt="non-virtual">CxxTest::GlobalFixture</derivedcompoundref>
+    <derivedcompoundref refid="class_cxx_test_1_1_suite_description" prot="public" virt="non-virtual">CxxTest::SuiteDescription</derivedcompoundref>
+    <derivedcompoundref refid="class_cxx_test_1_1_test_description" prot="public" virt="non-virtual">CxxTest::TestDescription</derivedcompoundref>
+    <derivedcompoundref refid="class_cxx_test_1_1_world_description" prot="public" virt="non-virtual">CxxTest::WorldDescription</derivedcompoundref>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_cxx_test_1_1_link_1accdf0973c70028844098faa93bda655a" prot="private" static="no" mutable="no">
+        <type><ref refid="class_cxx_test_1_1_link" kindref="compound">Link</ref> *</type>
+        <definition>Link* CxxTest::Link::_next</definition>
+        <argsstring></argsstring>
+        <name>_next</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/LinkedList.h" line="55" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/LinkedList.h" bodystart="55" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_link_1a7bbab60e1d221d78662de404a1e67bb1" prot="private" static="no" mutable="no">
+        <type><ref refid="class_cxx_test_1_1_link" kindref="compound">Link</ref> *</type>
+        <definition>Link* CxxTest::Link::_prev</definition>
+        <argsstring></argsstring>
+        <name>_prev</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/LinkedList.h" line="56" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/LinkedList.h" bodystart="56" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_link_1a5a3e137c2f96ac8c563c841a775613cb" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool CxxTest::Link::_active</definition>
+        <argsstring></argsstring>
+        <name>_active</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/LinkedList.h" line="57" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/LinkedList.h" bodystart="57" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_cxx_test_1_1_link_1aedaab303be994c92afb366f5e6476be5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::Link::Link</definition>
+        <argsstring>()</argsstring>
+        <name>Link</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/LinkedList.h" line="34" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/LinkedList.cpp" bodystart="82" bodyend="87"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_link_1a8d1bb253d6975839d3c337bfcb8d744a" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>CxxTest::Link::~Link</definition>
+        <argsstring>()</argsstring>
+        <name>~Link</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/LinkedList.h" line="35" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/LinkedList.cpp" bodystart="89" bodyend="91"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_link_1a2230eceb6d776394a32fddb1514cf93a" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool CxxTest::Link::active</definition>
+        <argsstring>() const </argsstring>
+        <name>active</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/LinkedList.h" line="37" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/LinkedList.cpp" bodystart="93" bodyend="96"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_link_1aa06c69998cd5c34348bab11d46577b51" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Link::setActive</definition>
+        <argsstring>(bool value=true)</argsstring>
+        <name>setActive</name>
+        <param>
+          <type>bool</type>
+          <declname>value</declname>
+          <defval>true</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/LinkedList.h" line="38" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/LinkedList.cpp" bodystart="98" bodyend="101"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_link_1aa1c8015f02e8541749956f2d551dbed3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="class_cxx_test_1_1_link" kindref="compound">Link</ref> *</type>
+        <definition>Link * CxxTest::Link::justNext</definition>
+        <argsstring>()</argsstring>
+        <name>justNext</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/LinkedList.h" line="40" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/LinkedList.cpp" bodystart="103" bodyend="106"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_link_1ab77cb38969bd38f7b3491a455134c12c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="class_cxx_test_1_1_link" kindref="compound">Link</ref> *</type>
+        <definition>Link * CxxTest::Link::justPrev</definition>
+        <argsstring>()</argsstring>
+        <name>justPrev</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/LinkedList.h" line="41" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/LinkedList.cpp" bodystart="108" bodyend="111"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_link_1a4c03b844ac15861f40d2355d650e8ec7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="class_cxx_test_1_1_link" kindref="compound">Link</ref> *</type>
+        <definition>Link * CxxTest::Link::next</definition>
+        <argsstring>()</argsstring>
+        <name>next</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/LinkedList.h" line="43" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/LinkedList.cpp" bodystart="113" bodyend="119"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_link_1aedc0d2dc3d6f11f5d566c8c21ac7b660" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="class_cxx_test_1_1_link" kindref="compound">Link</ref> *</type>
+        <definition>Link * CxxTest::Link::prev</definition>
+        <argsstring>()</argsstring>
+        <name>prev</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/LinkedList.h" line="44" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/LinkedList.cpp" bodystart="121" bodyend="127"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_link_1a949bdd1988b71318f3d58232344dc35a" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>const <ref refid="class_cxx_test_1_1_link" kindref="compound">Link</ref> *</type>
+        <definition>const Link * CxxTest::Link::next</definition>
+        <argsstring>() const </argsstring>
+        <name>next</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/LinkedList.h" line="45" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/LinkedList.cpp" bodystart="129" bodyend="135"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_link_1ac263414ff3438af00306bb2d0b6aa483" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>const <ref refid="class_cxx_test_1_1_link" kindref="compound">Link</ref> *</type>
+        <definition>const Link * CxxTest::Link::prev</definition>
+        <argsstring>() const </argsstring>
+        <name>prev</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/LinkedList.h" line="46" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/LinkedList.cpp" bodystart="137" bodyend="143"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_link_1aa540f5bc2bdc42aea499c5518c23f0b3" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool CxxTest::Link::setUp</definition>
+        <argsstring>()=0</argsstring>
+        <name>setUp</name>
+        <reimplementedby refid="class_cxx_test_1_1_global_fixture_1a5edcee94174c4452e6a3d4cd6c190b74">setUp</reimplementedby>
+        <reimplementedby refid="classdb__setup__fixture_1a54bbfb34e9f618ac75f6d28494ff6915">setUp</reimplementedby>
+        <reimplementedby refid="class_cxx_test_1_1_dummy_test_description_1a24f9066548e0d6376ff91467af2aff3a">setUp</reimplementedby>
+        <reimplementedby refid="class_cxx_test_1_1_real_test_description_1ac53fd0156f865f77a55ca4b18c0427d2">setUp</reimplementedby>
+        <reimplementedby refid="class_cxx_test_1_1_dummy_suite_description_1a7c6d90effe118805dd651a8be2ca4582">setUp</reimplementedby>
+        <reimplementedby refid="class_cxx_test_1_1_dummy_world_description_1a17bf1593f3627dded7f69d71c8172172">setUp</reimplementedby>
+        <reimplementedby refid="class_cxx_test_1_1_static_suite_description_1ae5f5ef0c93d0c72b6dc3d50384d32729">setUp</reimplementedby>
+        <reimplementedby refid="class_cxx_test_1_1_dynamic_suite_description_1a0cee600a803f0accaaa82a1e933d2266">setUp</reimplementedby>
+        <reimplementedby refid="class_cxx_test_1_1_real_world_description_1a0e5c1168073ab7f75439d2d56561abb7">setUp</reimplementedby>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/LinkedList.h" line="48"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_link_1aefe59c002cd2fc0fac1b0e545d226dab" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>bool</type>
+        <definition>virtual bool CxxTest::Link::tearDown</definition>
+        <argsstring>()=0</argsstring>
+        <name>tearDown</name>
+        <reimplementedby refid="class_cxx_test_1_1_global_fixture_1a0d79953ba5fb3f0ec5bf2e6d2fa0a1d1">tearDown</reimplementedby>
+        <reimplementedby refid="classdb__setup__fixture_1ac073526081a47b6a299e0abd1664c5e9">tearDown</reimplementedby>
+        <reimplementedby refid="class_cxx_test_1_1_dummy_test_description_1a89914791c85021c2612a29fbe57a7f99">tearDown</reimplementedby>
+        <reimplementedby refid="class_cxx_test_1_1_real_test_description_1a50844cd37291d7da907db2a8e87540e4">tearDown</reimplementedby>
+        <reimplementedby refid="class_cxx_test_1_1_dummy_suite_description_1add53762c3405f0b5d159e61f5092ef00">tearDown</reimplementedby>
+        <reimplementedby refid="class_cxx_test_1_1_dummy_world_description_1aeac2bd6926e9ce72df8f04bb8c432d5c">tearDown</reimplementedby>
+        <reimplementedby refid="class_cxx_test_1_1_static_suite_description_1a76c248028af4e941970287e70ccdd936">tearDown</reimplementedby>
+        <reimplementedby refid="class_cxx_test_1_1_dynamic_suite_description_1a322a0b084882a891bc8cf12805a56f12">tearDown</reimplementedby>
+        <reimplementedby refid="class_cxx_test_1_1_real_world_description_1ac3285f884a779c0d7d371a284fd8e19f">tearDown</reimplementedby>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/LinkedList.h" line="49"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_link_1ad69f02495f7a28842a4683ad436c5fb4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Link::attach</definition>
+        <argsstring>(List &amp;l)</argsstring>
+        <name>attach</name>
+        <param>
+          <type><ref refid="struct_cxx_test_1_1_list" kindref="compound">List</ref> &amp;</type>
+          <declname>l</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/LinkedList.h" line="51" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/LinkedList.cpp" bodystart="145" bodyend="156"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_link_1ad3544121b85766c6f4a8b5b6fa98599e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::Link::detach</definition>
+        <argsstring>(List &amp;l)</argsstring>
+        <name>detach</name>
+        <param>
+          <type><ref refid="struct_cxx_test_1_1_list" kindref="compound">List</ref> &amp;</type>
+          <declname>l</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/LinkedList.h" line="52" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/LinkedList.cpp" bodystart="158" bodyend="169"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="class_cxx_test_1_1_link_1aec9e323be49b87205d497ce9d1a37de5" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::Link::Link</definition>
+        <argsstring>(const Link &amp;)</argsstring>
+        <name>Link</name>
+        <param>
+          <type>const <ref refid="class_cxx_test_1_1_link" kindref="compound">Link</ref> &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/LinkedList.h" line="59"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_link_1a78b8349a8b60b543e24630e580b6e849" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="class_cxx_test_1_1_link" kindref="compound">Link</ref> &amp;</type>
+        <definition>Link&amp; CxxTest::Link::operator=</definition>
+        <argsstring>(const Link &amp;)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type>const <ref refid="class_cxx_test_1_1_link" kindref="compound">Link</ref> &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/LinkedList.h" line="60"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="210">
+        <label>CxxTest::RealTestDescription</label>
+        <link refid="class_cxx_test_1_1_real_test_description"/>
+        <childnode refid="208" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="208">
+        <label>CxxTest::TestDescription</label>
+        <link refid="class_cxx_test_1_1_test_description"/>
+        <childnode refid="198" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="209">
+        <label>CxxTest::DummyTestDescription</label>
+        <link refid="class_cxx_test_1_1_dummy_test_description"/>
+        <childnode refid="208" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="207">
+        <label>CxxTest::StaticSuiteDescription</label>
+        <link refid="class_cxx_test_1_1_static_suite_description"/>
+        <childnode refid="204" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="201">
+        <label>mpi_fixture</label>
+        <link refid="classmpi__fixture"/>
+        <childnode refid="199" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="212">
+        <label>CxxTest::DummyWorldDescription</label>
+        <link refid="class_cxx_test_1_1_dummy_world_description"/>
+        <childnode refid="211" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="198">
+        <label>CxxTest::Link</label>
+        <link refid="class_cxx_test_1_1_link"/>
+      </node>
+      <node id="211">
+        <label>CxxTest::WorldDescription</label>
+        <link refid="class_cxx_test_1_1_world_description"/>
+        <childnode refid="198" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="204">
+        <label>CxxTest::RealSuiteDescription</label>
+        <link refid="class_cxx_test_1_1_real_suite_description"/>
+        <childnode refid="202" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="200">
+        <label>db_setup_fixture</label>
+        <link refid="classdb__setup__fixture"/>
+        <childnode refid="199" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="199">
+        <label>CxxTest::GlobalFixture</label>
+        <link refid="class_cxx_test_1_1_global_fixture"/>
+        <childnode refid="198" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="213">
+        <label>CxxTest::RealWorldDescription</label>
+        <link refid="class_cxx_test_1_1_real_world_description"/>
+        <childnode refid="211" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="205">
+        <label>CxxTest::CommonDynamicSuiteDescription</label>
+        <link refid="class_cxx_test_1_1_common_dynamic_suite_description"/>
+        <childnode refid="204" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="206">
+        <label>CxxTest::DynamicSuiteDescription&lt; S &gt;</label>
+        <link refid="class_cxx_test_1_1_dynamic_suite_description"/>
+        <childnode refid="205" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="202">
+        <label>CxxTest::SuiteDescription</label>
+        <link refid="class_cxx_test_1_1_suite_description"/>
+        <childnode refid="198" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="203">
+        <label>CxxTest::DummySuiteDescription</label>
+        <link refid="class_cxx_test_1_1_dummy_suite_description"/>
+        <childnode refid="202" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/LinkedList.h" line="32" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/LinkedList.h" bodystart="31" bodyend="61"/>
+    <listofallmembers>
+      <member refid="class_cxx_test_1_1_link_1a5a3e137c2f96ac8c563c841a775613cb" prot="private" virt="non-virtual"><scope>CxxTest::Link</scope><name>_active</name></member>
+      <member refid="class_cxx_test_1_1_link_1accdf0973c70028844098faa93bda655a" prot="private" virt="non-virtual"><scope>CxxTest::Link</scope><name>_next</name></member>
+      <member refid="class_cxx_test_1_1_link_1a7bbab60e1d221d78662de404a1e67bb1" prot="private" virt="non-virtual"><scope>CxxTest::Link</scope><name>_prev</name></member>
+      <member refid="class_cxx_test_1_1_link_1a2230eceb6d776394a32fddb1514cf93a" prot="public" virt="non-virtual"><scope>CxxTest::Link</scope><name>active</name></member>
+      <member refid="class_cxx_test_1_1_link_1ad69f02495f7a28842a4683ad436c5fb4" prot="public" virt="non-virtual"><scope>CxxTest::Link</scope><name>attach</name></member>
+      <member refid="class_cxx_test_1_1_link_1ad3544121b85766c6f4a8b5b6fa98599e" prot="public" virt="non-virtual"><scope>CxxTest::Link</scope><name>detach</name></member>
+      <member refid="class_cxx_test_1_1_link_1aa1c8015f02e8541749956f2d551dbed3" prot="public" virt="non-virtual"><scope>CxxTest::Link</scope><name>justNext</name></member>
+      <member refid="class_cxx_test_1_1_link_1ab77cb38969bd38f7b3491a455134c12c" prot="public" virt="non-virtual"><scope>CxxTest::Link</scope><name>justPrev</name></member>
+      <member refid="class_cxx_test_1_1_link_1aedaab303be994c92afb366f5e6476be5" prot="public" virt="non-virtual"><scope>CxxTest::Link</scope><name>Link</name></member>
+      <member refid="class_cxx_test_1_1_link_1aec9e323be49b87205d497ce9d1a37de5" prot="private" virt="non-virtual"><scope>CxxTest::Link</scope><name>Link</name></member>
+      <member refid="class_cxx_test_1_1_link_1a4c03b844ac15861f40d2355d650e8ec7" prot="public" virt="non-virtual"><scope>CxxTest::Link</scope><name>next</name></member>
+      <member refid="class_cxx_test_1_1_link_1a949bdd1988b71318f3d58232344dc35a" prot="public" virt="non-virtual"><scope>CxxTest::Link</scope><name>next</name></member>
+      <member refid="class_cxx_test_1_1_link_1a78b8349a8b60b543e24630e580b6e849" prot="private" virt="non-virtual"><scope>CxxTest::Link</scope><name>operator=</name></member>
+      <member refid="class_cxx_test_1_1_link_1aedc0d2dc3d6f11f5d566c8c21ac7b660" prot="public" virt="non-virtual"><scope>CxxTest::Link</scope><name>prev</name></member>
+      <member refid="class_cxx_test_1_1_link_1ac263414ff3438af00306bb2d0b6aa483" prot="public" virt="non-virtual"><scope>CxxTest::Link</scope><name>prev</name></member>
+      <member refid="class_cxx_test_1_1_link_1aa06c69998cd5c34348bab11d46577b51" prot="public" virt="non-virtual"><scope>CxxTest::Link</scope><name>setActive</name></member>
+      <member refid="class_cxx_test_1_1_link_1aa540f5bc2bdc42aea499c5518c23f0b3" prot="public" virt="pure-virtual"><scope>CxxTest::Link</scope><name>setUp</name></member>
+      <member refid="class_cxx_test_1_1_link_1aefe59c002cd2fc0fac1b0e545d226dab" prot="public" virt="pure-virtual"><scope>CxxTest::Link</scope><name>tearDown</name></member>
+      <member refid="class_cxx_test_1_1_link_1a8d1bb253d6975839d3c337bfcb8d744a" prot="public" virt="virtual"><scope>CxxTest::Link</scope><name>~Link</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

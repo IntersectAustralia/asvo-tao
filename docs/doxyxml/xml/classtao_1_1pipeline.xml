@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="classtao_1_1pipeline" kind="class" prot="public">
+    <compoundname>tao::pipeline</compoundname>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classtao_1_1pipeline_1a809cebda343fbd0f672220770897f4ed" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::pipeline::setup_options</definition>
+        <argsstring>(hpc::options::dictionary &amp;dict)</argsstring>
+        <name>setup_options</name>
+        <param>
+          <type>hpc::options::dictionary &amp;</type>
+          <declname>dict</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/pipeline.hh" line="11"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1pipeline_1a51a023be30db244091a5930669711bf4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::pipeline::initialise</definition>
+        <argsstring>(const hpc::options::dictionary &amp;dict)</argsstring>
+        <name>initialise</name>
+        <param>
+          <type>const hpc::options::dictionary &amp;</type>
+          <declname>dict</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/pipeline.hh" line="14"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1pipeline_1a1a0909244769b3c6c8fe6298e546d63d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::pipeline::run</definition>
+        <argsstring>()</argsstring>
+        <name>run</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/pipeline.hh" line="17"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/pipeline.hh" line="7" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/pipeline.hh" bodystart="6" bodyend="18"/>
+    <listofallmembers>
+      <member refid="classtao_1_1pipeline_1a51a023be30db244091a5930669711bf4" prot="public" virt="non-virtual"><scope>tao::pipeline</scope><name>initialise</name></member>
+      <member refid="classtao_1_1pipeline_1a1a0909244769b3c6c8fe6298e546d63d" prot="public" virt="non-virtual"><scope>tao::pipeline</scope><name>run</name></member>
+      <member refid="classtao_1_1pipeline_1a809cebda343fbd0f672220770897f4ed" prot="public" virt="non-virtual"><scope>tao::pipeline</scope><name>setup_options</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>
