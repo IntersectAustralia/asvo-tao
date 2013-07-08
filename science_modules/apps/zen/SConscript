@@ -11,7 +11,7 @@ sub_dirs = []
 dst_dir = '#' + env['BUILD'] + '/bin/'
 
 # Define libraries to use.
-libs = [] + env.get('LIBS', [])
+libs = ['tao'] + env.get('LIBS', [])
 
 # Declare local sources. Format is:
 #

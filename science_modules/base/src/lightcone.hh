@@ -2,16 +2,23 @@
 #define tao_base_lightcone_hh
 
 #include "simulation.hh"
+#include "box.hh"
 
 namespace tao {
    using namespace hpc;
 
    template< class T >
+   class lightcone_box_iterator;
+
+   template< class T >
    class lightcone
    {
+      friend lightcone_box_iterator<T>;
+
    public:
 
       typedef T real_type;
+      typedef lightcone_box_iterator<real_type> box_iterator;
 
    public:
 
@@ -21,13 +28,16 @@ namespace tao {
          set_simulation( NULL );
       }
 
-      void
-      set_simulation( simulation<real_type>* sim )
+      lightcone( tao::simulation<real_type>* )
+         : _is_set( false )
       {
-         if( sim )
-            _sim = sim;
-         else
-            _sim = new simulation<real_type>();
+         set_simulation( NULL );
+      }
+
+      void
+      set_simulation( tao::simulation<real_type>* sim )
+      {
+         _sim = sim;
 
          // Setting the simulation requires recalculation of
          // the dependant parts of the lightcone.
@@ -63,10 +73,10 @@ namespace tao {
                  "Minimum redshift must be less than maximum redshift." );
 
          // Set values.
-         _ra[0] = ra_min;
-         _ra[1] = ra_max;
-         _dec[0] = dec_min;
-         _dec[1] = dec_max;
+         _ra[0] = to_radians( ra_min );
+         _ra[1] = to_radians( ra_max );
+         _dec[0] = to_radians( dec_min );
+         _dec[1] = to_radians( dec_max );
          _ori[0] = ra_ori.get_value_or( 0.5*(_ra[0] + _ra[1]) );
          _ori[1] = dec_ori.get_value_or( 0.5*(_dec[0] + _dec[1]) );
          _z[0] = z_min;
@@ -75,10 +85,26 @@ namespace tao {
          _recalc();
       }
 
-      const simulation<real_type>&
+      const tao::simulation<real_type>&
       simulation() const
       {
+         ASSERT( _sim, "No simulation set." );
          return *_sim;
+      }
+
+      box_iterator
+      box_begin()
+      {
+         if( _is_set )
+            return box_iterator( *this, false );
+         else
+            return box_end();
+      }
+
+      box_iterator
+      box_end()
+      {
+         return box_iterator( *this, true );
       }
 
    protected:
@@ -88,14 +114,15 @@ namespace tao {
       {
          if( _is_set )
          {
-            _dist[0] = numerics::redshift_to_comoving( _z[0], _sim->hubble(), _sim->omega_l(), _sim->omega_m() );
-            _dist[1] = numerics::redshift_to_comoving( _z[1], _sim->hubble(), _sim->omega_l(), _sim->omega_m() );
+            ASSERT( _sim, "No simulation set." );
+            _dist[0] = numerics::redshift_to_comoving_distance( _z[0], 1000, _sim->hubble(), _sim->omega_l(), _sim->omega_m() );
+            _dist[1] = numerics::redshift_to_comoving_distance( _z[1], 1000, _sim->hubble(), _sim->omega_l(), _sim->omega_m() );
          }
       }
 
    protected:
 
-      shared_ptr<simulation<real_type>> _sim;
+      tao::simulation<real_type>* _sim;
       array<real_type,2> _ra;
       array<real_type,2> _dec;
       array<real_type,2> _ori;
@@ -107,21 +134,35 @@ namespace tao {
    template< class T >
    class lightcone_box_iterator
       : public boost::iterator_facade< lightcone_box_iterator<T>,
-                                       const array<T,3>&,
-				       std::forward_iterator_tag >
+                                       box<T>,
+				       std::forward_iterator_tag,
+                                       box<T> >
    {
       friend class boost::iterator_core_access;
 
    public:
 
       typedef T real_type;
-      typedef const array<real_type,3>& value_type;
+      typedef box<real_type> value_type;
       typedef value_type reference_type;
 
-      lightcone_box_iterator()
+      enum check_result
+      {
+         BELOW,
+         ABOVE,
+         ON
+      };
+
+   public:
+
+      lightcone_box_iterator( lightcone<real_type>& lc,
+                              bool done )
+         : _lc( lc ),
+           _done( done )
       {
          std::fill( _cur.begin(), _cur.end(), 0 );
-         _settle();
+         if( _check() != ON )
+            increment();
       }
 
    protected:
@@ -129,38 +170,108 @@ namespace tao {
       void
       increment()
       {
-	 ++_it;
+         real_type bs = _lc.simulation().box_size();
+         check_result res;
+         do {
+            do {
+               do
+               {
+                  _cur[2] += bs;
+                  res = _check();
+                  if( res == ON )
+                     return;
+               }
+               while( res == BELOW );
+
+               _cur[1] += bs;
+               _cur[2] = 0;
+               res = _check();
+               if( res == ON )
+                  return;
+            }
+            while( res == BELOW );
+
+            _cur[0] += bs;
+            _cur[1] = 0;
+            _cur[2] = 0;
+            res = _check();
+            if( res == ON )
+               return;
+         }
+         while( res == BELOW );
+
+         _done = true;
       }
 
       bool
+      equal( const lightcone_box_iterator& op ) const
+      {
+         return _done == op._done;
+      }
+
+      reference_type
+      dereference() const
+      {
+         return box<real_type>( _lc, _cur );
+      }
+
+      check_result
       _check()
       {
-         real_type bs = _sim->box_size();
+         real_type bs = _lc._sim->box_size();
 
          // Check that the farthest corner of the box is greater than the
          // minimum distance.
          if( sqrt( pow( _cur[0] + bs, 2.0 ) + 
                    pow( _cur[1] + bs, 2.0 ) + 
-                   pow( _cur[2] + bs, 2.0 ) ) < _dist[0] )
+                   pow( _cur[2] + bs, 2.0 ) ) < _lc._dist[0] )
          {
-            return false;
+            return BELOW;
          }
 
-         // 
-
-         if( 
-             (((_cur[0] + bs)/sqrt( pow( _cur[0] + bs, 2.0 ) + 
-                                    pow( _cur[1], 2.0 ) )) > cos( _ra[1] )) &&
-             (_cur[0]/sqrt( pow( _cur[0], 2.0 ) + pow( _cur[1] + bs, 2.0 ) ) < cos( _ra[0] )) &&
-             ((sqrt( pow( _cur[0] + bs, 2.0 ) + pow( _cur[1] + bs, 2.0 )))/sqrt( pow( _cur[0] + bs +, 2.0 ) + pow( _cur[1] + bs, 2.0 ) + pow( _cur[2], 2.0 ) ) > cos( _dec[1] )) &&
-             ((sqrt( pow( _cur[0], 2.0 ) + pow( _cur[1], 2.0 )))/sqrt( pow( _cur[0], 2.0 ) + pow( _cur[1], 2.0 ) + pow( _cur[2] + bs, 2.0 ) ) < cos( _dec[0] )) )
+         // Check that the closest corner of the box is less than the
+         // maximum distance.
+         if( sqrt( pow( _cur[0], 2.0 ) + 
+                   pow( _cur[1], 2.0 ) + 
+                   pow( _cur[2], 2.0 ) ) > _lc._dist[1] )
          {
+            return ABOVE;
          }
+
+         // We can check lower RA and DEC bounds by converting the (0, 1, 0)
+         // vertex of the cube to ECS coordinates.
+         real_type ra, dec;
+         numerics::cartesian_to_ecs( _cur[0], _cur[1] + bs, _cur[2], ra, dec );
+         if( ra < _lc._ra[0] )
+            return BELOW;
+
+         // Similarly, we check the upper bounds by converting the (1, 0, 0)
+         // vertex of the cube to ECS coordinates.
+         numerics::cartesian_to_ecs( _cur[0] + bs, _cur[1], _cur[2], ra, dec );
+         if( ra > _lc._ra[1] )
+            return ABOVE;
+
+         // Similarly, we check the upper bounds by converting the (1, 0, 0)
+         // vertex of the cube to ECS coordinates.
+         numerics::cartesian_to_ecs( _cur[0], _cur[1], _cur[2] + bs, ra, dec );
+         if( dec < _lc._dec[0] )
+            return BELOW;
+
+         // We can check lower RA and DEC bounds by converting the (0, 1, 0)
+         // vertex of the cube to ECS coordinates.
+         numerics::cartesian_to_ecs( _cur[0] + bs, _cur[1] + bs, _cur[2], ra, dec );
+         if( dec > _lc._dec[1] )
+            return ABOVE;
+
+         // If we get here this box is in overlap.
+         return ON;
       }
 
    protected:
 
+      lightcone<real_type>& _lc;
       array<real_type,3> _cur;
+      bool _done;
    };
 
 }

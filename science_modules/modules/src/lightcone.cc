@@ -1613,7 +1613,7 @@ namespace tao {
 
                // Set values.
 	       _gal_z[ii] = _distance_to_redshift( dist );
-               numerics::cartesian_to_ecs( pos_x[ii], pos_y[ii], pos_z[ii], &_gal_ra[ii], &_gal_dec[ii] );
+               numerics::cartesian_to_ecs( pos_x[ii], pos_y[ii], pos_z[ii], _gal_ra[ii], _gal_dec[ii] );
                _gal_dist[ii] = dist;
 	    }
 

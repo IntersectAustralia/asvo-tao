@@ -13,10 +13,13 @@ namespace tao {
 
    public:
 
-      simulation()
-         : _box_size( 500 )
+      simulation( real_type box_size = 500,
+                  real_type hubble = 73,
+                  real_type omega_m = 0.25,
+                  real_type omega_l = 0.75 )
+         : _box_size( box_size )
       {
-         set_cosmology( 73, 0.25, 0.75 );
+         set_cosmology( hubble, omega_m, omega_l );
       }
 
       void
@@ -30,6 +33,30 @@ namespace tao {
          _omega_l = omega_l;
          _omega_r = 4.165e-5/(_h*_h);
          _omega_k = 1 - _omega_m - _omega_l - _omega_r;
+      }
+
+      real_type
+      box_size() const
+      {
+         return _box_size;
+      }
+
+      real_type
+      hubble() const
+      {
+         return _hubble;
+      }
+
+      real_type
+      omega_m() const
+      {
+         return _omega_m;
+      }
+
+      real_type
+      omega_l() const
+      {
+         return _omega_l;
       }
 
    protected:
