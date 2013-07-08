@@ -1,0 +1,206 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="_paren_printer_8h" kind="file">
+    <compoundname>ParenPrinter.h</compoundname>
+    <includes refid="_error_printer_8h" local="no">cxxtest/ErrorPrinter.h</includes>
+    <incdepgraph>
+      <node id="681">
+        <label>list</label>
+      </node>
+      <node id="663">
+        <label>cxxtest/ErrorPrinter.h</label>
+        <link refid="_error_printer_8h_source"/>
+        <childnode refid="664" relation="include">
+        </childnode>
+        <childnode refid="665" relation="include">
+        </childnode>
+        <childnode refid="677" relation="include">
+        </childnode>
+        <childnode refid="686" relation="include">
+        </childnode>
+      </node>
+      <node id="662">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ParenPrinter.h</label>
+        <link refid="ParenPrinter.h"/>
+        <childnode refid="663" relation="include">
+        </childnode>
+      </node>
+      <node id="671">
+        <label>cxxtest/RealDescriptions.h</label>
+        <link refid="_real_descriptions_8h_source"/>
+        <childnode refid="669" relation="include">
+        </childnode>
+        <childnode refid="672" relation="include">
+        </childnode>
+        <childnode refid="676" relation="include">
+        </childnode>
+      </node>
+      <node id="672">
+        <label>cxxtest/TestSuite.h</label>
+        <link refid="_test_suite_8h_source"/>
+        <childnode refid="664" relation="include">
+        </childnode>
+        <childnode refid="673" relation="include">
+        </childnode>
+        <childnode refid="669" relation="include">
+        </childnode>
+        <childnode refid="675" relation="include">
+        </childnode>
+      </node>
+      <node id="673">
+        <label>cxxtest/TestTracker.h</label>
+        <link refid="_test_tracker_8h_source"/>
+        <childnode refid="668" relation="include">
+        </childnode>
+        <childnode refid="674" relation="include">
+        </childnode>
+      </node>
+      <node id="684">
+        <label>string</label>
+      </node>
+      <node id="682">
+        <label>map</label>
+      </node>
+      <node id="669">
+        <label>cxxtest/Descriptions.h</label>
+        <link refid="_descriptions_8h_source"/>
+        <childnode refid="670" relation="include">
+        </childnode>
+      </node>
+      <node id="667">
+        <label>cxxtest/TestRunner.h</label>
+        <link refid="_test_runner_8h_source"/>
+        <childnode refid="668" relation="include">
+        </childnode>
+        <childnode refid="671" relation="include">
+        </childnode>
+        <childnode refid="672" relation="include">
+        </childnode>
+        <childnode refid="673" relation="include">
+        </childnode>
+      </node>
+      <node id="668">
+        <label>cxxtest/TestListener.h</label>
+        <link refid="_test_listener_8h_source"/>
+        <childnode refid="669" relation="include">
+        </childnode>
+      </node>
+      <node id="675">
+        <label>cxxtest/ValueTraits.h</label>
+        <link refid="_value_traits_8h_source"/>
+        <childnode refid="664" relation="include">
+        </childnode>
+      </node>
+      <node id="677">
+        <label>cxxtest/StdValueTraits.h</label>
+        <link refid="_std_value_traits_8h_source"/>
+        <childnode refid="675" relation="include">
+        </childnode>
+        <childnode refid="678" relation="include">
+        </childnode>
+      </node>
+      <node id="676">
+        <label>cxxtest/GlobalFixture.h</label>
+        <link refid="_global_fixture_8h_source"/>
+        <childnode refid="670" relation="include">
+        </childnode>
+      </node>
+      <node id="678">
+        <label>cxxtest/StdHeaders.h</label>
+        <link refid="_std_headers_8h_source"/>
+        <childnode refid="679" relation="include">
+        </childnode>
+        <childnode refid="680" relation="include">
+        </childnode>
+        <childnode refid="681" relation="include">
+        </childnode>
+        <childnode refid="682" relation="include">
+        </childnode>
+        <childnode refid="683" relation="include">
+        </childnode>
+        <childnode refid="684" relation="include">
+        </childnode>
+        <childnode refid="685" relation="include">
+        </childnode>
+      </node>
+      <node id="685">
+        <label>vector</label>
+      </node>
+      <node id="686">
+        <label>iostream</label>
+      </node>
+      <node id="665">
+        <label>cxxtest/ErrorFormatter.h</label>
+        <link refid="_error_formatter_8h_source"/>
+        <childnode refid="666" relation="include">
+        </childnode>
+        <childnode refid="667" relation="include">
+        </childnode>
+        <childnode refid="668" relation="include">
+        </childnode>
+        <childnode refid="673" relation="include">
+        </childnode>
+        <childnode refid="675" relation="include">
+        </childnode>
+      </node>
+      <node id="680">
+        <label>deque</label>
+      </node>
+      <node id="666">
+        <label>mpi.h</label>
+      </node>
+      <node id="674">
+        <label>cxxtest/DummyDescriptions.h</label>
+        <link refid="_dummy_descriptions_8h_source"/>
+        <childnode refid="669" relation="include">
+        </childnode>
+      </node>
+      <node id="664">
+        <label>cxxtest/Flags.h</label>
+        <link refid="_flags_8h_source"/>
+      </node>
+      <node id="683">
+        <label>set</label>
+      </node>
+      <node id="679">
+        <label>complex</label>
+      </node>
+      <node id="670">
+        <label>cxxtest/LinkedList.h</label>
+        <link refid="_linked_list_8h_source"/>
+        <childnode refid="664" relation="include">
+        </childnode>
+      </node>
+    </incdepgraph>
+    <innerclass refid="class_cxx_test_1_1_paren_printer" prot="public">CxxTest::ParenPrinter</innerclass>
+    <innernamespace refid="namespace_cxx_test">CxxTest</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#ifndef<sp/>__cxxtest__ParenPrinter_h__</highlight></codeline>
+<codeline lineno="2"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>__cxxtest__ParenPrinter_h__</highlight></codeline>
+<codeline lineno="3"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="comment">//<sp/>The<sp/>ParenPrinter<sp/>is<sp/>identical<sp/>to<sp/>the<sp/>ErrorPrinter,<sp/>except<sp/>it</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="comment">//<sp/>prints<sp/>the<sp/>line<sp/>number<sp/>in<sp/>a<sp/>format<sp/>expected<sp/>by<sp/>some<sp/>compilers</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="comment">//<sp/>(notably,<sp/>MSVC).</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;cxxtest/ErrorPrinter.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">CxxTest<sp/></highlight></codeline>
+<codeline lineno="13"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="14" refid="class_cxx_test_1_1_paren_printer" refkind="compound"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="class_cxx_test_1_1_paren_printer" kindref="compound">ParenPrinter</ref><sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="class_cxx_test_1_1_error_printer" kindref="compound">ErrorPrinter</ref></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="16"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="17"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="class_cxx_test_1_1_paren_printer" kindref="compound">ParenPrinter</ref>(<sp/>CXXTEST_STD(ostream)<sp/>&amp;o<sp/>=<sp/>CXXTEST_STD(cout)<sp/>)<sp/>:<sp/><ref refid="class_cxx_test_1_1_error_printer" kindref="compound">ErrorPrinter</ref>(<sp/>o,<sp/></highlight><highlight class="stringliteral">&quot;(&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;)&quot;</highlight><highlight class="normal"><sp/>)<sp/>{}</highlight></codeline>
+<codeline lineno="18"><highlight class="normal"><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline lineno="19"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/>//<sp/>__cxxtest__ParenPrinter_h__</highlight></codeline>
+    </programlisting>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ParenPrinter.h"/>
+  </compounddef>
+</doxygen>

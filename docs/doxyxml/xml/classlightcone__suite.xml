@@ -1,0 +1,114 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="classlightcone__suite" kind="class" prot="public">
+    <compoundname>lightcone_suite</compoundname>
+    <basecompoundref refid="class_cxx_test_1_1_test_suite" prot="public" virt="non-virtual">CxxTest::TestSuite</basecompoundref>
+    <includes refid="lightcone__suite_8t_8hh" local="no">lightcone_suite.t.hh</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classlightcone__suite_1af99e5b180dcf0d95234cc3283b760b24" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void lightcone_suite::test_ctor</definition>
+        <argsstring>()</argsstring>
+        <name>test_ctor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Test default constructor. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/lightcone_suite.t.hh" line="26" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/lightcone_suite.t.hh" bodystart="25" bodyend="28"/>
+      </memberdef>
+      <memberdef kind="function" id="classlightcone__suite_1a42dba7be8967e5f831654c5dbb06aea6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void lightcone_suite::test_redshift_to_distance</definition>
+        <argsstring>()</argsstring>
+        <name>test_redshift_to_distance</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Redshift to distance (comoving). </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/lightcone_suite.t.hh" line="34" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/lightcone_suite.t.hh" bodystart="33" bodyend="39"/>
+      </memberdef>
+      <memberdef kind="function" id="classlightcone__suite_1add1e651590756254b100f44852226376" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void lightcone_suite::test_box_snapshot</definition>
+        <argsstring>()</argsstring>
+        <name>test_box_snapshot</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Box snapshot. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/lightcone_suite.t.hh" line="45" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/lightcone_suite.t.hh" bodystart="44" bodyend="64"/>
+      </memberdef>
+      <memberdef kind="function" id="classlightcone__suite_1a8eb5332f6fc1b864f59affe990a5a558" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void lightcone_suite::setUp</definition>
+        <argsstring>()</argsstring>
+        <name>setUp</name>
+        <reimplements refid="class_cxx_test_1_1_test_suite_1a03e7e9428316d10a22d44d20811192fb">setUp</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/lightcone_suite.t.hh" line="688" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/lightcone_suite.t.hh" bodystart="687" bodyend="689"/>
+      </memberdef>
+      <memberdef kind="function" id="classlightcone__suite_1ac22fcc61557ca40384efe379ed531406" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void lightcone_suite::tearDown</definition>
+        <argsstring>()</argsstring>
+        <name>tearDown</name>
+        <reimplements refid="class_cxx_test_1_1_test_suite_1aa871c96da869344962b1435b72bcea13">tearDown</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/lightcone_suite.t.hh" line="692" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/lightcone_suite.t.hh" bodystart="691" bodyend="700"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Lightcone class test suite. </para>    </detaileddescription>
+    <inheritancegraph>
+      <node id="192">
+        <label>CxxTest::TestSuite</label>
+        <link refid="class_cxx_test_1_1_test_suite"/>
+      </node>
+      <node id="191">
+        <label>lightcone_suite</label>
+        <link refid="classlightcone__suite"/>
+        <childnode refid="192" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="194">
+        <label>CxxTest::TestSuite</label>
+        <link refid="class_cxx_test_1_1_test_suite"/>
+      </node>
+      <node id="193">
+        <label>lightcone_suite</label>
+        <link refid="classlightcone__suite"/>
+        <childnode refid="194" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/lightcone_suite.t.hh" line="19" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/lightcone_suite.t.hh" bodystart="18" bodyend="701"/>
+    <listofallmembers>
+      <member refid="classlightcone__suite_1a8eb5332f6fc1b864f59affe990a5a558" prot="public" virt="virtual"><scope>lightcone_suite</scope><name>setUp</name></member>
+      <member refid="classlightcone__suite_1ac22fcc61557ca40384efe379ed531406" prot="public" virt="virtual"><scope>lightcone_suite</scope><name>tearDown</name></member>
+      <member refid="classlightcone__suite_1add1e651590756254b100f44852226376" prot="public" virt="non-virtual"><scope>lightcone_suite</scope><name>test_box_snapshot</name></member>
+      <member refid="classlightcone__suite_1af99e5b180dcf0d95234cc3283b760b24" prot="public" virt="non-virtual"><scope>lightcone_suite</scope><name>test_ctor</name></member>
+      <member refid="classlightcone__suite_1a42dba7be8967e5f831654c5dbb06aea6" prot="public" virt="non-virtual"><scope>lightcone_suite</scope><name>test_redshift_to_distance</name></member>
+      <member refid="class_cxx_test_1_1_test_suite_1a647ce2d9feb3f7450506fdb372f982f1" prot="public" virt="virtual"><scope>lightcone_suite</scope><name>~TestSuite</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

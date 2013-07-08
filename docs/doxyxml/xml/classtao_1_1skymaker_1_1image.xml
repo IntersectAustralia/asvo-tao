@@ -1,0 +1,528 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="classtao_1_1skymaker_1_1image" kind="class" prot="public">
+    <compoundname>tao::skymaker::image</compoundname>
+      <sectiondef kind="friend">
+      <memberdef kind="friend" id="classtao_1_1skymaker_1_1image_1aa09890cbddad73e6a82edb07878d619e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend class</type>
+        <definition>friend class ::skymaker_suite</definition>
+        <argsstring></argsstring>
+        <name>::skymaker_suite</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" line="25" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" bodystart="25" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classtao_1_1skymaker_1_1image_1a887e015fd3944f7cbf073fa0ccece0d4" prot="protected" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned tao::skymaker::image::_idx</definition>
+        <argsstring></argsstring>
+        <name>_idx</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" line="75" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" bodystart="75" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1skymaker_1_1image_1a9cc3663332777ded911be832d5107366" prot="protected" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::skymaker::image::_list_filename</definition>
+        <argsstring></argsstring>
+        <name>_list_filename</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" line="76" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" bodystart="76" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1skymaker_1_1image_1a7769864060fd13f2c518898db5917e84" prot="protected" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::skymaker::image::_conf_filename</definition>
+        <argsstring></argsstring>
+        <name>_conf_filename</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" line="77" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" bodystart="77" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1skymaker_1_1image_1a262e12faea0101028bbc9d9d4b3e609a" prot="protected" static="no" mutable="no">
+        <type>std::ofstream</type>
+        <definition>std::ofstream tao::skymaker::image::_list_file</definition>
+        <argsstring></argsstring>
+        <name>_list_file</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" line="78" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" bodystart="78" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1skymaker_1_1image_1a5147e6c30f63b12473ddb71e3062d982" prot="protected" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned tao::skymaker::image::_sub_cone</definition>
+        <argsstring></argsstring>
+        <name>_sub_cone</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" line="79" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" bodystart="79" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1skymaker_1_1image_1aaae3c0a5f096d9d4dd1c9bbc5c1f235c" prot="protected" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::skymaker::image::_format</definition>
+        <argsstring></argsstring>
+        <name>_format</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" line="80" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" bodystart="80" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1skymaker_1_1image_1a497c4973f4c0bf1cb57dbf16aa711fbb" prot="protected" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::skymaker::image::_mag_field</definition>
+        <argsstring></argsstring>
+        <name>_mag_field</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" line="81" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" bodystart="81" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1skymaker_1_1image_1a5d380f1b564acb87e1657b178e836dd2" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::skymaker::image::_min_mag</definition>
+        <argsstring></argsstring>
+        <name>_min_mag</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" line="82" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" bodystart="82" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1skymaker_1_1image_1ae577e70f478859db1b922aeeb706f3ca" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::skymaker::image::_z_min</definition>
+        <argsstring></argsstring>
+        <name>_z_min</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" line="83" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" bodystart="83" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1skymaker_1_1image_1a6484bc9758630116c866e85268fbed0a" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::skymaker::image::_z_max</definition>
+        <argsstring></argsstring>
+        <name>_z_max</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" line="83" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" bodystart="83" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1skymaker_1_1image_1ac6af14bf4c7f91bdf5702c100868e4e8" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::skymaker::image::_origin_ra</definition>
+        <argsstring></argsstring>
+        <name>_origin_ra</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" line="84" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" bodystart="84" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1skymaker_1_1image_1afc1b6bd4408cfa09d4a5bf14c2de64eb" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::skymaker::image::_origin_dec</definition>
+        <argsstring></argsstring>
+        <name>_origin_dec</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" line="84" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" bodystart="84" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1skymaker_1_1image_1aacd4febb098b22c116158dfaeb8ca1ec" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::skymaker::image::_fov_ra</definition>
+        <argsstring></argsstring>
+        <name>_fov_ra</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" line="85" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" bodystart="85" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1skymaker_1_1image_1a9b47c251a67265d82944c182e94e49a3" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::skymaker::image::_fov_dec</definition>
+        <argsstring></argsstring>
+        <name>_fov_dec</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" line="85" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" bodystart="85" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1skymaker_1_1image_1a8826739c608a86b7c6c4e05cc686e6f3" prot="protected" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned tao::skymaker::image::_width</definition>
+        <argsstring></argsstring>
+        <name>_width</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" line="86" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" bodystart="86" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1skymaker_1_1image_1a99cc589eff518f83560feb0fae123dc5" prot="protected" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned tao::skymaker::image::_height</definition>
+        <argsstring></argsstring>
+        <name>_height</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" line="86" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" bodystart="86" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1skymaker_1_1image_1a74f99e54b5e07894790604e893e11762" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::skymaker::image::_scale_x</definition>
+        <argsstring></argsstring>
+        <name>_scale_x</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" line="87" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" bodystart="87" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1skymaker_1_1image_1ad037319cdc9c6bf2a79c9ca31039b946" prot="protected" static="no" mutable="no">
+        <type>real_type</type>
+        <definition>real_type tao::skymaker::image::_scale_y</definition>
+        <argsstring></argsstring>
+        <name>_scale_y</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" line="87" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" bodystart="87" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1skymaker_1_1image_1aa8361e1dbb11cd7a96467c7d2fcabc95" prot="protected" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned tao::skymaker::image::_cnt</definition>
+        <argsstring></argsstring>
+        <name>_cnt</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" line="88" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" bodystart="88" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classtao_1_1skymaker_1_1image_1a30e9b6bfb5c379035e3f78a9bc0f97f3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>tao::skymaker::image::image</definition>
+        <argsstring>()</argsstring>
+        <name>image</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" line="29" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.cc" bodystart="32" bodyend="34"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1skymaker_1_1image_1a7f42fe3ed094017cecede42e76e590cc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>tao::skymaker::image::image</definition>
+        <argsstring>(unsigned index, int sub_cone, const string &amp;format, const string &amp;mag_field, real_type min_mag, real_type z_min, real_type z_max, real_type origin_ra, real_type origin_dec, real_type fov_ra, real_type fov_dec, unsigned width, unsigned height)</argsstring>
+        <name>image</name>
+        <param>
+          <type>unsigned</type>
+          <declname>index</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>sub_cone</declname>
+        </param>
+        <param>
+          <type>const string &amp;</type>
+          <declname>format</declname>
+        </param>
+        <param>
+          <type>const string &amp;</type>
+          <declname>mag_field</declname>
+        </param>
+        <param>
+          <type>real_type</type>
+          <declname>min_mag</declname>
+        </param>
+        <param>
+          <type>real_type</type>
+          <declname>z_min</declname>
+        </param>
+        <param>
+          <type>real_type</type>
+          <declname>z_max</declname>
+        </param>
+        <param>
+          <type>real_type</type>
+          <declname>origin_ra</declname>
+        </param>
+        <param>
+          <type>real_type</type>
+          <declname>origin_dec</declname>
+        </param>
+        <param>
+          <type>real_type</type>
+          <declname>fov_ra</declname>
+        </param>
+        <param>
+          <type>real_type</type>
+          <declname>fov_dec</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>width</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>height</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" line="43" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.cc" bodystart="36" bodyend="52"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1skymaker_1_1image_1a1ee996216772c5a41001555f4e25889c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::skymaker::image::setup</definition>
+        <argsstring>(unsigned index, int sub_cone, const string &amp;format, const string &amp;mag_field, real_type min_mag, real_type z_min, real_type z_max, real_type origin_ra, real_type origin_dec, real_type fov_ra, real_type fov_dec, unsigned width, unsigned height)</argsstring>
+        <name>setup</name>
+        <param>
+          <type>unsigned</type>
+          <declname>index</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>sub_cone</declname>
+        </param>
+        <param>
+          <type>const string &amp;</type>
+          <declname>format</declname>
+        </param>
+        <param>
+          <type>const string &amp;</type>
+          <declname>mag_field</declname>
+        </param>
+        <param>
+          <type>real_type</type>
+          <declname>min_mag</declname>
+        </param>
+        <param>
+          <type>real_type</type>
+          <declname>z_min</declname>
+        </param>
+        <param>
+          <type>real_type</type>
+          <declname>z_max</declname>
+        </param>
+        <param>
+          <type>real_type</type>
+          <declname>origin_ra</declname>
+        </param>
+        <param>
+          <type>real_type</type>
+          <declname>origin_dec</declname>
+        </param>
+        <param>
+          <type>real_type</type>
+          <declname>fov_ra</declname>
+        </param>
+        <param>
+          <type>real_type</type>
+          <declname>fov_dec</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>width</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>height</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Setup an image. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" line="58" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.cc" bodystart="58" bodyend="90"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1skymaker_1_1image_1adf18697c95bce434bcde365acf30a66e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::skymaker::image::setup_list</definition>
+        <argsstring>()</argsstring>
+        <name>setup_list</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" line="61" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.cc" bodystart="212" bodyend="217"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1skymaker_1_1image_1abd2b7cf43624478424ba8797e7e9e69c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::skymaker::image::setup_conf</definition>
+        <argsstring>()</argsstring>
+        <name>setup_conf</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" line="64" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.cc" bodystart="220" bodyend="228"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1skymaker_1_1image_1a80c073dc293fb335372ccdd066537e8d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::skymaker::image::add_galaxy</definition>
+        <argsstring>(const tao::galaxy &amp;galaxy, unsigned idx)</argsstring>
+        <name>add_galaxy</name>
+        <param>
+          <type>const <ref refid="classtao_1_1galaxy" kindref="compound">tao::galaxy</ref> &amp;</type>
+          <declname>galaxy</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>idx</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" line="68" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.cc" bodystart="93" bodyend="159"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1skymaker_1_1image_1ac436ecd765926ad46381a20fed7e17de" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::skymaker::image::render</definition>
+        <argsstring>(bool keep_files)</argsstring>
+        <name>render</name>
+        <param>
+          <type>bool</type>
+          <declname>keep_files</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" line="71" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.cc" bodystart="162" bodyend="209"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="184">
+        <label>string</label>
+      </node>
+      <node id="183">
+        <label>tao::skymaker::image</label>
+        <link refid="classtao_1_1skymaker_1_1image"/>
+        <childnode refid="184" relation="usage">
+          <edgelabel>_mag_field</edgelabel>
+          <edgelabel>_list_filename</edgelabel>
+          <edgelabel>_conf_filename</edgelabel>
+          <edgelabel>_format</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" line="24" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/skymaker.hh" bodystart="23" bodyend="89"/>
+    <listofallmembers>
+      <member refid="classtao_1_1skymaker_1_1image_1aa09890cbddad73e6a82edb07878d619e" prot="public" virt="non-virtual"><scope>tao::skymaker::image</scope><name>::skymaker_suite</name></member>
+      <member refid="classtao_1_1skymaker_1_1image_1aa8361e1dbb11cd7a96467c7d2fcabc95" prot="protected" virt="non-virtual"><scope>tao::skymaker::image</scope><name>_cnt</name></member>
+      <member refid="classtao_1_1skymaker_1_1image_1a7769864060fd13f2c518898db5917e84" prot="protected" virt="non-virtual"><scope>tao::skymaker::image</scope><name>_conf_filename</name></member>
+      <member refid="classtao_1_1skymaker_1_1image_1aaae3c0a5f096d9d4dd1c9bbc5c1f235c" prot="protected" virt="non-virtual"><scope>tao::skymaker::image</scope><name>_format</name></member>
+      <member refid="classtao_1_1skymaker_1_1image_1a9b47c251a67265d82944c182e94e49a3" prot="protected" virt="non-virtual"><scope>tao::skymaker::image</scope><name>_fov_dec</name></member>
+      <member refid="classtao_1_1skymaker_1_1image_1aacd4febb098b22c116158dfaeb8ca1ec" prot="protected" virt="non-virtual"><scope>tao::skymaker::image</scope><name>_fov_ra</name></member>
+      <member refid="classtao_1_1skymaker_1_1image_1a99cc589eff518f83560feb0fae123dc5" prot="protected" virt="non-virtual"><scope>tao::skymaker::image</scope><name>_height</name></member>
+      <member refid="classtao_1_1skymaker_1_1image_1a887e015fd3944f7cbf073fa0ccece0d4" prot="protected" virt="non-virtual"><scope>tao::skymaker::image</scope><name>_idx</name></member>
+      <member refid="classtao_1_1skymaker_1_1image_1a262e12faea0101028bbc9d9d4b3e609a" prot="protected" virt="non-virtual"><scope>tao::skymaker::image</scope><name>_list_file</name></member>
+      <member refid="classtao_1_1skymaker_1_1image_1a9cc3663332777ded911be832d5107366" prot="protected" virt="non-virtual"><scope>tao::skymaker::image</scope><name>_list_filename</name></member>
+      <member refid="classtao_1_1skymaker_1_1image_1a497c4973f4c0bf1cb57dbf16aa711fbb" prot="protected" virt="non-virtual"><scope>tao::skymaker::image</scope><name>_mag_field</name></member>
+      <member refid="classtao_1_1skymaker_1_1image_1a5d380f1b564acb87e1657b178e836dd2" prot="protected" virt="non-virtual"><scope>tao::skymaker::image</scope><name>_min_mag</name></member>
+      <member refid="classtao_1_1skymaker_1_1image_1afc1b6bd4408cfa09d4a5bf14c2de64eb" prot="protected" virt="non-virtual"><scope>tao::skymaker::image</scope><name>_origin_dec</name></member>
+      <member refid="classtao_1_1skymaker_1_1image_1ac6af14bf4c7f91bdf5702c100868e4e8" prot="protected" virt="non-virtual"><scope>tao::skymaker::image</scope><name>_origin_ra</name></member>
+      <member refid="classtao_1_1skymaker_1_1image_1a74f99e54b5e07894790604e893e11762" prot="protected" virt="non-virtual"><scope>tao::skymaker::image</scope><name>_scale_x</name></member>
+      <member refid="classtao_1_1skymaker_1_1image_1ad037319cdc9c6bf2a79c9ca31039b946" prot="protected" virt="non-virtual"><scope>tao::skymaker::image</scope><name>_scale_y</name></member>
+      <member refid="classtao_1_1skymaker_1_1image_1a5147e6c30f63b12473ddb71e3062d982" prot="protected" virt="non-virtual"><scope>tao::skymaker::image</scope><name>_sub_cone</name></member>
+      <member refid="classtao_1_1skymaker_1_1image_1a8826739c608a86b7c6c4e05cc686e6f3" prot="protected" virt="non-virtual"><scope>tao::skymaker::image</scope><name>_width</name></member>
+      <member refid="classtao_1_1skymaker_1_1image_1a6484bc9758630116c866e85268fbed0a" prot="protected" virt="non-virtual"><scope>tao::skymaker::image</scope><name>_z_max</name></member>
+      <member refid="classtao_1_1skymaker_1_1image_1ae577e70f478859db1b922aeeb706f3ca" prot="protected" virt="non-virtual"><scope>tao::skymaker::image</scope><name>_z_min</name></member>
+      <member refid="classtao_1_1skymaker_1_1image_1a80c073dc293fb335372ccdd066537e8d" prot="public" virt="non-virtual"><scope>tao::skymaker::image</scope><name>add_galaxy</name></member>
+      <member refid="classtao_1_1skymaker_1_1image_1a30e9b6bfb5c379035e3f78a9bc0f97f3" prot="public" virt="non-virtual"><scope>tao::skymaker::image</scope><name>image</name></member>
+      <member refid="classtao_1_1skymaker_1_1image_1a7f42fe3ed094017cecede42e76e590cc" prot="public" virt="non-virtual"><scope>tao::skymaker::image</scope><name>image</name></member>
+      <member refid="classtao_1_1skymaker_1_1image_1ac436ecd765926ad46381a20fed7e17de" prot="public" virt="non-virtual"><scope>tao::skymaker::image</scope><name>render</name></member>
+      <member refid="classtao_1_1skymaker_1_1image_1a1ee996216772c5a41001555f4e25889c" prot="public" virt="non-virtual"><scope>tao::skymaker::image</scope><name>setup</name></member>
+      <member refid="classtao_1_1skymaker_1_1image_1abd2b7cf43624478424ba8797e7e9e69c" prot="public" virt="non-virtual"><scope>tao::skymaker::image</scope><name>setup_conf</name></member>
+      <member refid="classtao_1_1skymaker_1_1image_1adf18697c95bce434bcde365acf30a66e" prot="public" virt="non-virtual"><scope>tao::skymaker::image</scope><name>setup_list</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

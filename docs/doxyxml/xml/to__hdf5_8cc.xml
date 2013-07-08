@@ -1,0 +1,377 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="to__hdf5_8cc" kind="file">
+    <compoundname>to_hdf5.cc</compoundname>
+    <includes local="no">cstdlib</includes>
+    <includes local="no">iostream</includes>
+    <includes local="no">omp.h</includes>
+    <includes local="no">boost/lexical_cast.hpp</includes>
+    <includes local="no">boost/iostreams/filtering_stream.hpp</includes>
+    <includes local="no">boost/iostreams/filter/gzip.hpp</includes>
+    <includes local="no">libhpc/libhpc.hh</includes>
+    <includes refid="types_8hh" local="yes">types.hh</includes>
+    <includes refid="utils_8hh" local="yes">utils.hh</includes>
+    <incdepgraph>
+      <node id="68">
+        <label>libhpc/libhpc.hh</label>
+      </node>
+      <node id="65">
+        <label>boost/lexical_cast.hpp</label>
+      </node>
+      <node id="67">
+        <label>boost/iostreams/filter/gzip.hpp</label>
+      </node>
+      <node id="61">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/to_hdf5.cc</label>
+        <link refid="to_hdf5.cc"/>
+        <childnode refid="62" relation="include">
+        </childnode>
+        <childnode refid="63" relation="include">
+        </childnode>
+        <childnode refid="64" relation="include">
+        </childnode>
+        <childnode refid="65" relation="include">
+        </childnode>
+        <childnode refid="66" relation="include">
+        </childnode>
+        <childnode refid="67" relation="include">
+        </childnode>
+        <childnode refid="68" relation="include">
+        </childnode>
+        <childnode refid="69" relation="include">
+        </childnode>
+        <childnode refid="70" relation="include">
+        </childnode>
+      </node>
+      <node id="64">
+        <label>omp.h</label>
+      </node>
+      <node id="69">
+        <label>types.hh</label>
+        <link refid="types_8hh_source"/>
+        <childnode refid="68" relation="include">
+        </childnode>
+      </node>
+      <node id="70">
+        <label>utils.hh</label>
+        <link refid="utils_8hh_source"/>
+        <childnode refid="68" relation="include">
+        </childnode>
+      </node>
+      <node id="62">
+        <label>cstdlib</label>
+      </node>
+      <node id="63">
+        <label>iostream</label>
+      </node>
+      <node id="66">
+        <label>boost/iostreams/filtering_stream.hpp</label>
+      </node>
+    </incdepgraph>
+      <sectiondef kind="var">
+      <memberdef kind="variable" id="to__hdf5_8cc_1a8024d7bfb038f1bb0ee12477238e6d6a" prot="public" static="no" mutable="no">
+        <type>const unsigned</type>
+        <definition>const unsigned num_threads</definition>
+        <argsstring></argsstring>
+        <name>num_threads</name>
+        <initializer>= 10</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Tunable parameters. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/to_hdf5.cc" line="16" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/to_hdf5.cc" bodystart="16" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="to__hdf5_8cc_1a0fcabc71e59d09343310b0e16ca7b149" prot="public" static="no" mutable="no">
+        <type>const float</type>
+        <definition>const float update_every</definition>
+        <argsstring></argsstring>
+        <name>update_every</name>
+        <initializer>= 10.0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/to_hdf5.cc" line="17" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/to_hdf5.cc" bodystart="17" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="to__hdf5_8cc_1a0ddf1224851353fc92bfbff6f499fa97" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int main</definition>
+        <argsstring>(int argc, char *argv[])</argsstring>
+        <name>main</name>
+        <param>
+          <type>int</type>
+          <declname>argc</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>argv</declname>
+          <array>[]</array>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/to_hdf5.cc" line="25" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/to_hdf5.cc" bodystart="23" bodyend="250"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#include<sp/>&lt;cstdlib&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;iostream&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;omp.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;boost/lexical_cast.hpp&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;boost/iostreams/filtering_stream.hpp&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;boost/iostreams/filter/gzip.hpp&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;libhpc/libhpc.hh&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;types.hh&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;utils.hh&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="keyword">using<sp/>namespace<sp/></highlight><highlight class="normal">hpc;</highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>num_threads<sp/>=<sp/>10;</highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/><sp/><sp/><sp/>update_every<sp/>=<sp/>10.0;</highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="keywordtype">int</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal">main(<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>argc,</highlight></codeline>
+<codeline lineno="24"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal">*<sp/>argv[]<sp/>)</highlight></codeline>
+<codeline lineno="25"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="26"><highlight class="normal"><sp/><sp/><sp/>mpi::initialise(<sp/>argc,<sp/>argv<sp/>);</highlight></codeline>
+<codeline lineno="27"><highlight class="normal"><sp/><sp/><sp/>LOG_PUSH(<sp/></highlight><highlight class="keyword">new</highlight><highlight class="normal"><sp/>logging::file(<sp/></highlight><highlight class="stringliteral">&quot;log&quot;</highlight><highlight class="normal">,<sp/>logging::info<sp/>)<sp/>);</highlight></codeline>
+<codeline lineno="28"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>LOG_PUSH(<sp/>new<sp/>logging::stdout(<sp/>logging::info<sp/>)<sp/>);</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>LOG_PUSH(<sp/>new<sp/>logging::omp::file(<sp/>&quot;conv.&quot;,<sp/>logging::debug<sp/>)<sp/>);</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Keep<sp/>track<sp/>of<sp/>how<sp/>many<sp/>Halos<sp/>each<sp/>thread<sp/>has<sp/>seen</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>for<sp/>updating<sp/>purposes.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/>halos_seen[num_threads];</highlight></codeline>
+<codeline lineno="34"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/>forests_seen[num_threads];</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/>total_halos_seen,<sp/>total_forests_seen;</highlight></codeline>
+<codeline lineno="36"><highlight class="normal"><sp/><sp/><sp/>unix::time_type<sp/>since_update<sp/>=<sp/>unix::timer();</highlight></codeline>
+<codeline lineno="37"><highlight class="normal"><sp/><sp/><sp/>std::fill(<sp/>halos_seen,<sp/>halos_seen<sp/>+<sp/>num_threads,<sp/>0<sp/>);</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"><sp/><sp/><sp/>std::fill(<sp/>forests_seen,<sp/>forests_seen<sp/>+<sp/>num_threads,<sp/>0<sp/>);</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight></codeline>
+<codeline lineno="40"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Load<sp/>in<sp/>tables<sp/>needed<sp/>to<sp/>locate<sp/>FOF<sp/>groups.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"><sp/><sp/><sp/>LOGILN(<sp/></highlight><highlight class="stringliteral">&quot;Reading<sp/>auxilliary<sp/>tables.&quot;</highlight><highlight class="normal">,<sp/>setindent(<sp/>2<sp/>)<sp/>);</highlight></codeline>
+<codeline lineno="42"><highlight class="normal"><sp/><sp/><sp/>csr&lt;long<sp/>long&gt;<sp/>forest_trees;</highlight></codeline>
+<codeline lineno="43"><highlight class="normal"><sp/><sp/><sp/>vector&lt;long<sp/>long&gt;<sp/>forest_ids;</highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/>vector&lt;unsigned&gt;<sp/>forest_halo_cnts;</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"><sp/><sp/><sp/>vector&lt;size_t&gt;<sp/>location_file_offsets;</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"><sp/><sp/><sp/>vector&lt;unsigned&gt;<sp/>location_file_idxs;</highlight></codeline>
+<codeline lineno="47"><highlight class="normal"><sp/><sp/><sp/>vector&lt;string&gt;<sp/>location_files;</highlight></codeline>
+<codeline lineno="48"><highlight class="normal"><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="49"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>h5::file<sp/>aux_file(<sp/></highlight><highlight class="stringliteral">&quot;bolshoi.h5&quot;</highlight><highlight class="normal">,<sp/>H5F_ACC_RDONLY<sp/>);</highlight></codeline>
+<codeline lineno="50"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>aux_file.reada&lt;</highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal">&gt;(<sp/></highlight><highlight class="stringliteral">&quot;/info/forest_trees&quot;</highlight><highlight class="normal">,<sp/>forest_trees<sp/>);</highlight></codeline>
+<codeline lineno="51"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>aux_file.reada&lt;</highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal">&gt;(<sp/></highlight><highlight class="stringliteral">&quot;/info/forest_ids&quot;</highlight><highlight class="normal">,<sp/>forest_ids<sp/>);</highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>aux_file.reada&lt;</highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal">&gt;(<sp/></highlight><highlight class="stringliteral">&quot;/info/forest_halo_counts&quot;</highlight><highlight class="normal">,<sp/>forest_halo_cnts<sp/>);</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>aux_file.reada&lt;</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal">&gt;(<sp/></highlight><highlight class="stringliteral">&quot;/info/location_file_offsets&quot;</highlight><highlight class="normal">,<sp/>location_file_offsets<sp/>);</highlight></codeline>
+<codeline lineno="54"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>aux_file.reada&lt;</highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal">&gt;(<sp/></highlight><highlight class="stringliteral">&quot;/info/location_file_indices&quot;</highlight><highlight class="normal">,<sp/>location_file_idxs<sp/>);</highlight></codeline>
+<codeline lineno="55"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>aux_file.reada(<sp/></highlight><highlight class="stringliteral">&quot;/info/location_files&quot;</highlight><highlight class="normal">,<sp/>location_files<sp/>);</highlight></codeline>
+<codeline lineno="56"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"><sp/><sp/><sp/>LOGILN(<sp/></highlight><highlight class="stringliteral">&quot;Done.&quot;</highlight><highlight class="normal">,<sp/>setindent(<sp/>-2<sp/>)<sp/>);</highlight></codeline>
+<codeline lineno="58"><highlight class="normal"></highlight></codeline>
+<codeline lineno="59"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>NDEBUG</highlight></codeline>
+<codeline lineno="60"><highlight class="preprocessor"></highlight><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Check<sp/>sizes.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="61"><highlight class="normal"><sp/><sp/><sp/>ASSERT(<sp/>forest_tree.displs().size()<sp/>==<sp/>forest_halo_cnts.size()<sp/>+<sp/>1<sp/>);</highlight></codeline>
+<codeline lineno="62"><highlight class="normal"><sp/><sp/><sp/>ASSERT(<sp/>forest_tree.array().size()<sp/>==<sp/>location_file_offsets.size()<sp/>);</highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/>ASSERT(<sp/>forest_tree.array().size()<sp/>==<sp/>location_file_idxs.size()<sp/>);</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight></codeline>
+<codeline lineno="65"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="66"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Cache<sp/>the<sp/>number<sp/>of<sp/>forests.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>num_forests<sp/>=<sp/>forest_halo_cnts.size();</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/><sp/>LOGILN(<sp/></highlight><highlight class="stringliteral">&quot;Have<sp/>&quot;</highlight><highlight class="normal">,<sp/>num_forests,<sp/></highlight><highlight class="stringliteral">&quot;<sp/>forests<sp/>to<sp/>process.&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="69"><highlight class="normal"></highlight></codeline>
+<codeline lineno="70"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Setup<sp/>the<sp/>number<sp/>of<sp/>threads<sp/>to<sp/>use.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="71"><highlight class="normal"><sp/><sp/><sp/>omp_set_num_threads(<sp/>num_threads<sp/>);</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><sp/><sp/><sp/>LOGILN(<sp/></highlight><highlight class="stringliteral">&quot;Running<sp/>with<sp/>&quot;</highlight><highlight class="normal">,<sp/>num_threads,<sp/></highlight><highlight class="stringliteral">&quot;<sp/>threads.&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"></highlight></codeline>
+<codeline lineno="74"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Calculate<sp/>for<sp/>each<sp/>thread<sp/>the<sp/>start<sp/>and<sp/>finish<sp/>offsets.<sp/>I<sp/>will</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="75"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>do<sp/>this<sp/>by<sp/>balancing<sp/>the<sp/>number<sp/>of<sp/>halos<sp/>(approximately)<sp/>each</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="76"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>will<sp/>have<sp/>to<sp/>process.<sp/>First<sp/>count<sp/>the<sp/>total<sp/>number<sp/>of<sp/>halos</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="77"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>we<sp/>have.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="78"><highlight class="normal"><sp/><sp/><sp/>LOGILN(<sp/></highlight><highlight class="stringliteral">&quot;Distributing.&quot;</highlight><highlight class="normal">,<sp/>setindent(<sp/>2<sp/>)<sp/>);</highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/>net_halos<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="80"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(<sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>ii<sp/>=<sp/>0;<sp/>ii<sp/>&lt;<sp/>num_forests;<sp/>++<sp/>ii<sp/>)</highlight></codeline>
+<codeline lineno="81"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>net_halos<sp/>+=<sp/>forest_halo_cnts[ii];</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/>halos_per_thread<sp/>=<sp/>net_halos/num_threads;</highlight></codeline>
+<codeline lineno="83"><highlight class="normal"><sp/><sp/><sp/>LOGILN(<sp/>net_halos,<sp/></highlight><highlight class="stringliteral">&quot;<sp/>total<sp/>halos,<sp/>giving<sp/>~&quot;</highlight><highlight class="normal">,<sp/>halos_per_thread,<sp/></highlight><highlight class="stringliteral">&quot;<sp/>per<sp/>thread.&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="84"><highlight class="normal"></highlight></codeline>
+<codeline lineno="85"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Now<sp/>add<sp/>forests<sp/>to<sp/>each<sp/>thead<sp/>until<sp/>they<sp/>reach<sp/>the<sp/>balance<sp/>point.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="86"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>start_forest[num_threads],<sp/>finish_forest[num_threads];</highlight></codeline>
+<codeline lineno="87"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/>num_thread_halos[num_threads],<sp/>num_thread_forests[num_threads];</highlight></codeline>
+<codeline lineno="88"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(<sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>ii<sp/>=<sp/>0;<sp/>ii<sp/>&lt;<sp/>num_threads;<sp/>++ii<sp/>)</highlight></codeline>
+<codeline lineno="89"><highlight class="normal"><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="90"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>First<sp/>thread<sp/>begins<sp/>at<sp/>zero,<sp/>other<sp/>threads</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="91"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>begin<sp/>where<sp/>the<sp/>prior<sp/>thread<sp/>left<sp/>off.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="92"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(<sp/>ii<sp/>==<sp/>0<sp/>)</highlight></codeline>
+<codeline lineno="93"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>start_forest[ii]<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="94"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="95"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>start_forest[ii]<sp/>=<sp/>finish_forest[ii<sp/>-<sp/>1];</highlight></codeline>
+<codeline lineno="96"><highlight class="normal"></highlight></codeline>
+<codeline lineno="97"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Build<sp/>up<sp/>forests<sp/>on<sp/>each<sp/>thread<sp/>based<sp/>on<sp/>how<sp/>many<sp/>halos</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="98"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>they<sp/>contribute.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="99"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>num_thread_forests[ii]<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="100"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>num_thread_halos[ii]<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="101"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>finish_forest[ii]<sp/>=<sp/>start_forest[ii];</highlight></codeline>
+<codeline lineno="102"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">while</highlight><highlight class="normal">(<sp/>finish_forest[ii]<sp/>!=<sp/>num_forests<sp/>&amp;&amp;<sp/>num_thread_halos[ii]<sp/>&lt;<sp/>halos_per_thread<sp/>)</highlight></codeline>
+<codeline lineno="103"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="104"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>num_thread_halos[ii]<sp/>+=<sp/>forest_halo_cnts[finish_forest[ii]++];</highlight></codeline>
+<codeline lineno="105"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>++num_thread_forests[ii];</highlight></codeline>
+<codeline lineno="106"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="107"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>LOGILN(<sp/></highlight><highlight class="stringliteral">&quot;Thread<sp/>&quot;</highlight><highlight class="normal">,<sp/>ii,<sp/></highlight><highlight class="stringliteral">&quot;<sp/>has<sp/>&quot;</highlight><highlight class="normal">,<sp/>num_thread_forests[ii],<sp/></highlight><highlight class="stringliteral">&quot;<sp/>forests<sp/>and<sp/>&quot;</highlight><highlight class="normal">,<sp/>num_thread_halos[ii],<sp/></highlight><highlight class="stringliteral">&quot;<sp/>halos.&quot;</highlight><highlight class="normal"><sp/><sp/>);</highlight></codeline>
+<codeline lineno="108"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>LOGILN(<sp/></highlight><highlight class="stringliteral">&quot;And<sp/>will<sp/>process<sp/>forests<sp/>from<sp/>&quot;</highlight><highlight class="normal">,<sp/>start_forest[ii],<sp/></highlight><highlight class="stringliteral">&quot;<sp/>to<sp/>&quot;</highlight><highlight class="normal">,<sp/>finish_forest[ii],<sp/></highlight><highlight class="stringliteral">&quot;.&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="109"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="110"><highlight class="normal"><sp/><sp/><sp/>LOGILN(<sp/></highlight><highlight class="stringliteral">&quot;Done.&quot;</highlight><highlight class="normal">,<sp/>setindent(<sp/>-2<sp/>)<sp/>);</highlight></codeline>
+<codeline lineno="111"><highlight class="normal"></highlight></codeline>
+<codeline lineno="112"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Open<sp/>the<sp/>H5<sp/>file.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="113"><highlight class="normal"><sp/><sp/><sp/>h5::file<sp/>h5_file(<sp/></highlight><highlight class="stringliteral">&quot;forests.h5&quot;</highlight><highlight class="normal">,<sp/>H5F_FILE_TRUNC<sp/>);</highlight></codeline>
+<codeline lineno="114"><highlight class="normal"><sp/><sp/><sp/>h5::group<sp/>h5_group(<sp/>h5_file,<sp/></highlight><highlight class="stringliteral">&quot;forests&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="115"><highlight class="normal"></highlight></codeline>
+<codeline lineno="116"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Form<sp/>a<sp/>team<sp/>of<sp/>threads<sp/>here.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="117"><highlight class="normal"></highlight><highlight class="preprocessor">#pragma<sp/>omp<sp/>parallel</highlight></codeline>
+<codeline lineno="118"><highlight class="preprocessor"></highlight><highlight class="normal"><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="119"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Cache<sp/>our<sp/>thread<sp/>ID.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="120"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>tid<sp/>=<sp/>OMP_TID;</highlight></codeline>
+<codeline lineno="121"><highlight class="normal"></highlight></codeline>
+<codeline lineno="122"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Create<sp/>the<sp/>exporter.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="123"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classexporter" kindref="compound">exporter</ref><sp/>exp(<sp/>start_forest[tid],<sp/>finish_forest[tid],<sp/>forest_halo_cnts<sp/>);</highlight></codeline>
+<codeline lineno="124"><highlight class="normal"></highlight></codeline>
+<codeline lineno="125"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Loop<sp/>over<sp/>our<sp/>section<sp/>of<sp/>the<sp/>forests.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="126"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(<sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>ii<sp/>=<sp/>start_forest[tid];<sp/>ii<sp/>&lt;<sp/>finish_forest[tid];<sp/>++ii<sp/>)</highlight></codeline>
+<codeline lineno="127"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="128"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>LOGDLN(<sp/></highlight><highlight class="stringliteral">&quot;Processing<sp/>forest<sp/>&quot;</highlight><highlight class="normal">,<sp/>ii,<sp/></highlight><highlight class="stringliteral">&quot;.&quot;</highlight><highlight class="normal">,<sp/>setindent(<sp/>2<sp/>)<sp/>);</highlight></codeline>
+<codeline lineno="129"><highlight class="normal"></highlight></codeline>
+<codeline lineno="130"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Cache<sp/>forest<sp/>ID.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="131"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/>forest_id<sp/>=<sp/>forest_ids[ii];</highlight></codeline>
+<codeline lineno="132"><highlight class="normal"></highlight></codeline>
+<codeline lineno="133"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Setup<sp/>tree<sp/>displacement<sp/>and<sp/>counts.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="134"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>tree_displ<sp/>=<sp/>forest_tree.displs()[ii];</highlight></codeline>
+<codeline lineno="135"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>num_trees<sp/>=<sp/>forest_tree.displs()[ii<sp/>+<sp/>1]<sp/>-<sp/>tree_displ;</highlight></codeline>
+<codeline lineno="136"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>LOGDLN(<sp/>num_trees,<sp/></highlight><highlight class="stringliteral">&quot;<sp/>trees<sp/>in<sp/>forest.&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="137"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>LOGDLN(<sp/></highlight><highlight class="stringliteral">&quot;Looking<sp/>at<sp/>tree<sp/>displacement<sp/>&quot;</highlight><highlight class="normal">,<sp/>tree_displ<sp/>);</highlight></codeline>
+<codeline lineno="138"><highlight class="normal"></highlight></codeline>
+<codeline lineno="139"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>How<sp/>many<sp/>halos<sp/>in<sp/>this<sp/>forest?</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="140"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>num_halos<sp/>=<sp/>forest_halo_cnts[ii];</highlight></codeline>
+<codeline lineno="141"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>LOGDLN(<sp/>num_halos,<sp/></highlight><highlight class="stringliteral">&quot;<sp/>halos<sp/>in<sp/>forest.&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="142"><highlight class="normal"></highlight></codeline>
+<codeline lineno="143"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Store<sp/>current<sp/>forest<sp/>in<sp/>a<sp/>vector<sp/>of<sp/>halos.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="144"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>vector&lt;bolshoi_halo_type&gt;<sp/>forest(<sp/>num_halos<sp/>);</highlight></codeline>
+<codeline lineno="145"><highlight class="normal"></highlight></codeline>
+<codeline lineno="146"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Track<sp/>how<sp/>many<sp/>halos<sp/>we<sp/>load<sp/>in<sp/>this<sp/>forest.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="147"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>cur_halo<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="148"><highlight class="normal"></highlight></codeline>
+<codeline lineno="149"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Select<sp/>the<sp/>range<sp/>of<sp/>trees<sp/>we<sp/>need<sp/>to<sp/>process<sp/>and</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="150"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>iterate<sp/>over<sp/>each<sp/>tree.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="151"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(<sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>jj<sp/>=<sp/>0;<sp/>jj<sp/>&lt;<sp/>num_trees;<sp/>++jj<sp/>)</highlight></codeline>
+<codeline lineno="152"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="153"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>LOGDLN(<sp/></highlight><highlight class="stringliteral">&quot;Processing<sp/>tree<sp/>&quot;</highlight><highlight class="normal">,<sp/>jj,<sp/></highlight><highlight class="stringliteral">&quot;.&quot;</highlight><highlight class="normal">,<sp/>setindent(<sp/>2<sp/>)<sp/>);</highlight></codeline>
+<codeline lineno="154"><highlight class="normal"></highlight></codeline>
+<codeline lineno="155"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Map<sp/>to<sp/>the<sp/>location<sp/>information.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="156"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>file_offs<sp/>=<sp/>location_file_offsets[tree_displ<sp/>+<sp/>jj];</highlight></codeline>
+<codeline lineno="157"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>LOGDLN(<sp/></highlight><highlight class="stringliteral">&quot;File<sp/>offset<sp/>&quot;</highlight><highlight class="normal">,<sp/>file_offs,<sp/></highlight><highlight class="stringliteral">&quot;.&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="158"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>LOGDLN(<sp/></highlight><highlight class="stringliteral">&quot;File<sp/>index<sp/>&quot;</highlight><highlight class="normal">,<sp/>location_file_idxs[tree_displ<sp/>+<sp/>jj],<sp/></highlight><highlight class="stringliteral">&quot;.&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="159"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>filename<sp/>=<sp/>location_files[location_file_idxs[tree_displ<sp/>+<sp/>jj]];</highlight></codeline>
+<codeline lineno="160"><highlight class="normal"></highlight></codeline>
+<codeline lineno="161"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Open<sp/>the<sp/>file<sp/>in<sp/>which<sp/>the<sp/>tree<sp/>lives<sp/>then<sp/>scan<sp/>to</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="162"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>the<sp/>appropriate<sp/>offset<sp/>for<sp/>the<sp/>tree.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="163"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>LOGDLN(<sp/></highlight><highlight class="stringliteral">&quot;Opening<sp/>file<sp/>\&quot;&quot;</highlight><highlight class="normal">,<sp/>filename,<sp/></highlight><highlight class="stringliteral">&quot;\&quot;&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="164"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::ifstream<sp/>file(<sp/>filename,<sp/>std::ios::in<sp/>);</highlight></codeline>
+<codeline lineno="165"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ASSERT(<sp/>file<sp/>);</highlight></codeline>
+<codeline lineno="166"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>LOGDLN(<sp/></highlight><highlight class="stringliteral">&quot;Seeking<sp/>to<sp/>&quot;</highlight><highlight class="normal">,<sp/>file_offs,<sp/></highlight><highlight class="stringliteral">&quot;.&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="167"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>file.seekg(<sp/>file_offs<sp/>);</highlight></codeline>
+<codeline lineno="168"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ASSERT(<sp/>file<sp/>);</highlight></codeline>
+<codeline lineno="169"><highlight class="normal"></highlight></codeline>
+<codeline lineno="170"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>We<sp/>aren&apos;t<sp/>given<sp/>information<sp/>about<sp/>how<sp/>many<sp/>halos<sp/>are<sp/>in</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="171"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>each<sp/>tree,<sp/>so<sp/>we<sp/>just<sp/>have<sp/>to<sp/>loop<sp/>until<sp/>we<sp/>hit<sp/>the<sp/>end</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="172"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>of<sp/>the<sp/>file.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="173"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">while</highlight><highlight class="normal">(<sp/>file.peek()<sp/>!=<sp/></highlight><highlight class="charliteral">&apos;#&apos;</highlight><highlight class="normal"><sp/>&amp;&amp;<sp/>!file.eof()<sp/><sp/>)</highlight></codeline>
+<codeline lineno="174"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="175"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>LOGDLN(<sp/></highlight><highlight class="stringliteral">&quot;Processing<sp/>halo<sp/>&quot;</highlight><highlight class="normal">,<sp/>cur_halo,<sp/></highlight><highlight class="stringliteral">&quot;.&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="176"><highlight class="normal"></highlight></codeline>
+<codeline lineno="177"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Put<sp/>this<sp/>halo<sp/>on<sp/>the<sp/>back<sp/>of<sp/>the<sp/>current<sp/>tree.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="178"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="structbolshoi__halo__type" kindref="compound">bolshoi_halo_type</ref>&amp;<sp/>bh<sp/>=<sp/>forest[cur_halo];</highlight></codeline>
+<codeline lineno="179"><highlight class="normal"></highlight></codeline>
+<codeline lineno="180"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Read<sp/>each<sp/>field<sp/>in<sp/>turn.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="181"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>scale,<sp/>desc_scale,<sp/>sam_mvir,<sp/>rs,<sp/>scale_of_last_mm;</highlight></codeline>
+<codeline lineno="182"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/>upid,<sp/>desc_pid,<sp/>tree_root_id,<sp/>orig_halo_id;</highlight></codeline>
+<codeline lineno="183"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>breadth_first_id,<sp/>depth_first_id;</highlight></codeline>
+<codeline lineno="184"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>phantom,<sp/>mmp;</highlight></codeline>
+<codeline lineno="185"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>file<sp/>&gt;&gt;<sp/>scale<sp/>&gt;&gt;<sp/>bh.id<sp/>&gt;&gt;<sp/>desc_scale<sp/>&gt;&gt;<sp/>bh.desc_id<sp/>&gt;&gt;<sp/>bh.num_prog<sp/>&gt;&gt;<sp/>bh.pid</highlight></codeline>
+<codeline lineno="186"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&gt;&gt;<sp/>upid<sp/>&gt;&gt;<sp/>desc_pid<sp/>&gt;&gt;<sp/>phantom<sp/>&gt;&gt;<sp/>sam_mvir<sp/>&gt;&gt;<sp/>bh.mvir</highlight></codeline>
+<codeline lineno="187"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&gt;&gt;<sp/>bh.rvir<sp/>&gt;&gt;<sp/>rs<sp/>&gt;&gt;<sp/>bh.vrms<sp/>&gt;&gt;<sp/>mmp<sp/>&gt;&gt;<sp/>scale_of_last_mm<sp/>&gt;&gt;<sp/>bh.vmax</highlight></codeline>
+<codeline lineno="188"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&gt;&gt;<sp/>bh.x<sp/>&gt;&gt;<sp/>bh.y<sp/>&gt;&gt;<sp/>bh.z<sp/>&gt;&gt;<sp/>bh.vx<sp/>&gt;&gt;<sp/>bh.vy<sp/>&gt;&gt;<sp/>bh.vz<sp/>&gt;&gt;<sp/>bh.jx<sp/>&gt;&gt;<sp/>bh.jy</highlight></codeline>
+<codeline lineno="189"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&gt;&gt;<sp/>bh.jz<sp/>&gt;&gt;<sp/>bh.spin<sp/>&gt;&gt;<sp/>breadth_first_id<sp/>&gt;&gt;<sp/>depth_first_id</highlight></codeline>
+<codeline lineno="190"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&gt;&gt;<sp/>tree_root_id<sp/>&gt;&gt;<sp/>orig_halo_id<sp/>&gt;&gt;<sp/>bh.snap_num;</highlight></codeline>
+<codeline lineno="191"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>finish_line(<sp/>file<sp/>);</highlight></codeline>
+<codeline lineno="192"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ASSERT(<sp/>!file.fail()<sp/>);</highlight></codeline>
+<codeline lineno="193"><highlight class="normal"></highlight></codeline>
+<codeline lineno="194"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Advance.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="195"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>++cur_halo;</highlight></codeline>
+<codeline lineno="196"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="197"><highlight class="normal"></highlight></codeline>
+<codeline lineno="198"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>LOGDLN(<sp/></highlight><highlight class="stringliteral">&quot;Done.&quot;</highlight><highlight class="normal">,<sp/>setindent(<sp/>-2<sp/>)<sp/>);</highlight></codeline>
+<codeline lineno="199"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="200"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>LOGDLN(<sp/></highlight><highlight class="stringliteral">&quot;Loaded<sp/>&quot;</highlight><highlight class="normal">,<sp/>cur_halo,<sp/></highlight><highlight class="stringliteral">&quot;<sp/>halos.&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="201"><highlight class="normal"></highlight></codeline>
+<codeline lineno="202"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Must<sp/>have<sp/>filled<sp/>the<sp/>entire<sp/>forest.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="203"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>ASSERT(<sp/>cur_halo<sp/>==<sp/>num_halos<sp/>);</highlight></codeline>
+<codeline lineno="204"><highlight class="normal"></highlight></codeline>
+<codeline lineno="205"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Write<sp/>out<sp/>the<sp/>forest.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="206"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="207"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>h5::dataspace<sp/>dspace;</highlight></codeline>
+<codeline lineno="208"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dspace.create(<sp/>num_halos<sp/>);</highlight></codeline>
+<codeline lineno="209"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>h5::dataset<sp/>dset(<sp/>h5_group,<sp/>to_string(<sp/>forest_id<sp/>),<sp/>file_type,<sp/>dspace<sp/>);</highlight></codeline>
+<codeline lineno="210"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dset.write(<sp/>forest.data(),<sp/>mem_type<sp/>);</highlight></codeline>
+<codeline lineno="211"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="212"><highlight class="normal"></highlight></codeline>
+<codeline lineno="213"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Update<sp/>the<sp/>number<sp/>of<sp/>halos<sp/>seen.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="214"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>halos_seen[tid]<sp/>+=<sp/>cur_halo;</highlight></codeline>
+<codeline lineno="215"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>++forests_seen[tid];</highlight></codeline>
+<codeline lineno="216"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>LOGDLN(<sp/></highlight><highlight class="stringliteral">&quot;Seen<sp/>&quot;</highlight><highlight class="normal">,<sp/>halos_seen[tid],<sp/></highlight><highlight class="stringliteral">&quot;<sp/>halos.&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="217"><highlight class="normal"></highlight></codeline>
+<codeline lineno="218"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Check<sp/>if<sp/>we<sp/>need<sp/>to<sp/>update<sp/>the<sp/>user.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="219"><highlight class="normal"></highlight><highlight class="preprocessor">#pragma<sp/>omp<sp/>critical(<sp/>update<sp/>)</highlight></codeline>
+<codeline lineno="220"><highlight class="preprocessor"></highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(<sp/>unix::seconds(<sp/>unix::timer()<sp/>-<sp/>since_update<sp/>)<sp/>&gt;<sp/>update_every<sp/>)</highlight></codeline>
+<codeline lineno="221"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="222"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Sum<sp/>the<sp/>net<sp/>results.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="223"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>total_halos_seen<sp/>=<sp/>halos_seen[0];</highlight></codeline>
+<codeline lineno="224"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>total_forests_seen<sp/>=<sp/>forests_seen[0];</highlight></codeline>
+<codeline lineno="225"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(<sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>jj<sp/>=<sp/>1;<sp/>jj<sp/>&lt;<sp/>num_threads;<sp/>++jj<sp/>)</highlight></codeline>
+<codeline lineno="226"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="227"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>total_halos_seen<sp/>+=<sp/>halos_seen[jj];</highlight></codeline>
+<codeline lineno="228"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>total_forests_seen<sp/>+=<sp/>forests_seen[jj];</highlight></codeline>
+<codeline lineno="229"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="230"><highlight class="normal"></highlight></codeline>
+<codeline lineno="231"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Print<sp/>some<sp/>info.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="232"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>LOGILN(<sp/></highlight><highlight class="stringliteral">&quot;Total<sp/>halos<sp/>seen:<sp/><sp/><sp/><sp/>&quot;</highlight><highlight class="normal">,<sp/>total_halos_seen<sp/>);</highlight></codeline>
+<codeline lineno="233"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>LOGILN(<sp/></highlight><highlight class="stringliteral">&quot;Total<sp/>forests<sp/>seen:<sp/><sp/>&quot;</highlight><highlight class="normal">,<sp/>total_forests_seen<sp/>);</highlight></codeline>
+<codeline lineno="234"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>LOGILN(<sp/></highlight><highlight class="stringliteral">&quot;Percentage<sp/>complete:<sp/>&quot;</highlight><highlight class="normal">,<sp/>100.0*(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">)total_forests_seen/(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">)num_forests<sp/>);</highlight></codeline>
+<codeline lineno="235"><highlight class="normal"></highlight></codeline>
+<codeline lineno="236"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Reset<sp/>the<sp/>update<sp/>clock.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="237"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>since_update<sp/>=<sp/>unix::timer();</highlight></codeline>
+<codeline lineno="238"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="239"><highlight class="normal"></highlight></codeline>
+<codeline lineno="240"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>LOGDLN(<sp/></highlight><highlight class="stringliteral">&quot;Done.&quot;</highlight><highlight class="normal">,<sp/>setindent(<sp/>-2<sp/>)<sp/>);</highlight></codeline>
+<codeline lineno="241"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="242"><highlight class="normal"></highlight></codeline>
+<codeline lineno="243"><highlight class="normal"></highlight><highlight class="preprocessor">#pragma<sp/>omp<sp/>critical(<sp/>done<sp/>)</highlight></codeline>
+<codeline lineno="244"><highlight class="preprocessor"></highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>LOGDLN(<sp/></highlight><highlight class="stringliteral">&quot;Thread<sp/>&quot;</highlight><highlight class="normal">,<sp/>tid,<sp/></highlight><highlight class="stringliteral">&quot;<sp/>done.&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="245"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="246"><highlight class="normal"></highlight></codeline>
+<codeline lineno="247"><highlight class="normal"><sp/><sp/><sp/>LOGILN(<sp/></highlight><highlight class="stringliteral">&quot;Complete.&quot;</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="248"><highlight class="normal"><sp/><sp/><sp/>mpi::finalise();</highlight></codeline>
+<codeline lineno="249"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>EXIT_SUCCESS;</highlight></codeline>
+<codeline lineno="250"><highlight class="normal">}</highlight></codeline>
+    </programlisting>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/to_hdf5.cc"/>
+  </compounddef>
+</doxygen>

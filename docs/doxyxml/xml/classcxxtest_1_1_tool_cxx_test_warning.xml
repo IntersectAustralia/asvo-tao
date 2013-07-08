@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="classcxxtest_1_1_tool_cxx_test_warning" kind="class" prot="public">
+    <compoundname>cxxtest::ToolCxxTestWarning</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">Warning</basecompoundref>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="419">
+        <label>cxxtest.ToolCxxTestWarning</label>
+        <link refid="classcxxtest_1_1_tool_cxx_test_warning"/>
+        <childnode refid="420" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="420">
+        <label>SCons::Warnings::Warning</label>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="421">
+        <label>cxxtest.ToolCxxTestWarning</label>
+        <link refid="classcxxtest_1_1_tool_cxx_test_warning"/>
+        <childnode refid="422" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="422">
+        <label>SCons::Warnings::Warning</label>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/site_scons/site_tools/cxxtest.py" line="64" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/site_scons/site_tools/cxxtest.py" bodystart="64" bodyend="69"/>
+    <listofallmembers>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="structtao_1_1_output_field" kind="struct" prot="public">
+    <compoundname>tao::OutputField</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structtao_1_1_output_field_1ac54af74ba3602945b61daa6ca81fd42b" prot="public" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::OutputField::FieldDBName</definition>
+        <argsstring></argsstring>
+        <name>FieldDBName</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" line="34" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" bodystart="34" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1_output_field_1a70addb5f75f4d8500d1f68f28e31d011" prot="public" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::OutputField::FieldLabel</definition>
+        <argsstring></argsstring>
+        <name>FieldLabel</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" line="35" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" bodystart="35" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="244">
+        <label>string</label>
+      </node>
+      <node id="243">
+        <label>tao::OutputField</label>
+        <link refid="structtao_1_1_output_field"/>
+        <childnode refid="244" relation="usage">
+          <edgelabel>FieldLabel</edgelabel>
+          <edgelabel>FieldDBName</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" line="33" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/settingReader.hh" bodystart="32" bodyend="36"/>
+    <listofallmembers>
+      <member refid="structtao_1_1_output_field_1ac54af74ba3602945b61daa6ca81fd42b" prot="public" virt="non-virtual"><scope>tao::OutputField</scope><name>FieldDBName</name></member>
+      <member refid="structtao_1_1_output_field_1a70addb5f75f4d8500d1f68f28e31d011" prot="public" virt="non-virtual"><scope>tao::OutputField</scope><name>FieldLabel</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

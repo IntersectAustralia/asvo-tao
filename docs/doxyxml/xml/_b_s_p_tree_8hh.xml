@@ -1,0 +1,154 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="_b_s_p_tree_8hh" kind="file">
+    <compoundname>BSPTree.hh</compoundname>
+    <includes local="no">soci/postgresql/soci-postgresql.h</includes>
+    <includes local="no">soci/soci.h</includes>
+    <includes local="no">libhpc/libhpc.hh</includes>
+    <includes local="no">vector</includes>
+    <includes local="no">iostream</includes>
+    <includedby refid="_b_s_p_tree_8cc" local="yes">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.cc</includedby>
+    <includedby refid="src_2lightcone_8cc" local="yes">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.cc</includedby>
+    <includedby refid="_b_s_p_tree___test_8hh" local="yes">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/BSPTree_Test.hh</includedby>
+    <incdepgraph>
+      <node id="1142">
+        <label>libhpc/libhpc.hh</label>
+      </node>
+      <node id="1139">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh</label>
+        <link refid="BSPTree.hh"/>
+        <childnode refid="1140" relation="include">
+        </childnode>
+        <childnode refid="1141" relation="include">
+        </childnode>
+        <childnode refid="1142" relation="include">
+        </childnode>
+        <childnode refid="1143" relation="include">
+        </childnode>
+        <childnode refid="1144" relation="include">
+        </childnode>
+      </node>
+      <node id="1143">
+        <label>vector</label>
+      </node>
+      <node id="1141">
+        <label>soci/soci.h</label>
+      </node>
+      <node id="1144">
+        <label>iostream</label>
+      </node>
+      <node id="1140">
+        <label>soci/postgresql/soci-postgresql.h</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="1145">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh</label>
+        <link refid="BSPTree.hh"/>
+        <childnode refid="1146" relation="include">
+        </childnode>
+        <childnode refid="1147" relation="include">
+        </childnode>
+        <childnode refid="1148" relation="include">
+        </childnode>
+      </node>
+      <node id="1146">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.cc</label>
+        <link refid="_b_s_p_tree_8cc_source"/>
+      </node>
+      <node id="1148">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/BSPTree_Test.hh</label>
+        <link refid="_b_s_p_tree___test_8hh_source"/>
+      </node>
+      <node id="1147">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/lightcone.cc</label>
+        <link refid="src_2lightcone_8cc_source"/>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="structtao_1_1_b_s_p_rectangle" prot="public">tao::BSPRectangle</innerclass>
+    <innerclass refid="classtao_1_1_b_s_p2_d_point" prot="public">tao::BSP2DPoint</innerclass>
+    <innerclass refid="classtao_1_1_b_s_ptree" prot="public">tao::BSPtree</innerclass>
+    <innernamespace refid="namespacetao">tao</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#ifndef<sp/>tao_modules_bsptree_hh</highlight></codeline>
+<codeline lineno="2"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>tao_modules_bsptree_hh</highlight></codeline>
+<codeline lineno="3"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;soci/postgresql/soci-postgresql.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;soci/soci.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;libhpc/libhpc.hh&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;vector&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;iostream&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">tao</highlight></codeline>
+<codeline lineno="11"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="12"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keyword">using<sp/>namespace<sp/></highlight><highlight class="normal">hpc;</highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight></codeline>
+<codeline lineno="14" refid="structtao_1_1_b_s_p_rectangle" refkind="compound"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="structtao_1_1_b_s_p_rectangle" kindref="compound">BSPRectangle</ref></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="16"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>XMin;</highlight></codeline>
+<codeline lineno="17"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>XMax;</highlight></codeline>
+<codeline lineno="18"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>YMin;</highlight></codeline>
+<codeline lineno="19"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>YMax;</highlight></codeline>
+<codeline lineno="20"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>XLocation;</highlight></codeline>
+<codeline lineno="21"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>YLocation;</highlight></codeline>
+<codeline lineno="22"><highlight class="normal"><sp/><sp/><sp/>};</highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight></codeline>
+<codeline lineno="24" refid="classtao_1_1_b_s_p2_d_point" refkind="compound"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classtao_1_1_b_s_p2_d_point" kindref="compound">BSP2DPoint</ref></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="26"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="27"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>X;</highlight></codeline>
+<codeline lineno="28"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>Y;</highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classtao_1_1_b_s_p2_d_point" kindref="compound">BSP2DPoint</ref>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>_X,</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>_Y);</highlight></codeline>
+<codeline lineno="31"><highlight class="normal"><sp/><sp/><sp/>};</highlight></codeline>
+<codeline lineno="33" refid="classtao_1_1_b_s_ptree" refkind="compound"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classtao_1_1_b_s_ptree" kindref="compound">BSPtree</ref></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="36"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classtao_1_1_b_s_ptree" kindref="compound">BSPtree</ref>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>StepSize,hpc::string<sp/>DBName,hpc::string<sp/>DBHost,hpc::string<sp/>DBPort,hpc::string<sp/>DBUserName,hpc::string<sp/>DBPassword);</highlight></codeline>
+<codeline lineno="37"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>~<ref refid="classtao_1_1_b_s_ptree" kindref="compound">BSPtree</ref>();</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"></highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight></codeline>
+<codeline lineno="42"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::vector&lt;string&gt;<sp/>GetTablesList(std::vector&lt;BSP2DPoint&gt;<sp/>PolyPoints);</highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"></highlight></codeline>
+<codeline lineno="45"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">protected</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight></codeline>
+<codeline lineno="47"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>GenerateRectangles();</highlight></codeline>
+<codeline lineno="48"><highlight class="normal"></highlight></codeline>
+<codeline lineno="49"><highlight class="normal"></highlight></codeline>
+<codeline lineno="50"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="structtao_1_1_b_s_p_rectangle" kindref="compound">BSPRectangle</ref><sp/>GetBoundingRect(std::vector&lt;BSP2DPoint&gt;<sp/>PolyPoints);</highlight></codeline>
+<codeline lineno="51"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>IntersectTwoRect(<ref refid="structtao_1_1_b_s_p_rectangle" kindref="compound">BSPRectangle</ref><sp/>RectA,<ref refid="structtao_1_1_b_s_p_rectangle" kindref="compound">BSPRectangle</ref><sp/>RectB);</highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::vector&lt;BSP2DPoint&gt;<sp/>GetRectIds(std::vector&lt;BSP2DPoint&gt;<sp/>PolyPoints);</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"></highlight></codeline>
+<codeline lineno="54"><highlight class="normal"></highlight></codeline>
+<codeline lineno="55"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>_db_connect();</highlight></codeline>
+<codeline lineno="56"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>_db_disconnect();</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"></highlight></codeline>
+<codeline lineno="58"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>_ccw(<ref refid="classtao_1_1_b_s_p2_d_point" kindref="compound">BSP2DPoint</ref><sp/>A,<ref refid="classtao_1_1_b_s_p2_d_point" kindref="compound">BSP2DPoint</ref><sp/>B,<ref refid="classtao_1_1_b_s_p2_d_point" kindref="compound">BSP2DPoint</ref><sp/>C);</highlight></codeline>
+<codeline lineno="59"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>_seg_intersect(<ref refid="classtao_1_1_b_s_p2_d_point" kindref="compound">BSP2DPoint</ref><sp/>A,<ref refid="classtao_1_1_b_s_p2_d_point" kindref="compound">BSP2DPoint</ref><sp/>B,<ref refid="classtao_1_1_b_s_p2_d_point" kindref="compound">BSP2DPoint</ref><sp/>C,<ref refid="classtao_1_1_b_s_p2_d_point" kindref="compound">BSP2DPoint</ref><sp/>D);</highlight></codeline>
+<codeline lineno="60"><highlight class="normal"></highlight></codeline>
+<codeline lineno="61"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>IntersectPolyRect(std::vector&lt;BSP2DPoint&gt;<sp/>PolyPoints,<ref refid="structtao_1_1_b_s_p_rectangle" kindref="compound">BSPRectangle</ref><sp/>BoundingRect,<ref refid="structtao_1_1_b_s_p_rectangle" kindref="compound">BSPRectangle</ref><sp/>Rect);</highlight></codeline>
+<codeline lineno="62"><highlight class="normal"></highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::vector&lt;BSPRectangle&gt;<sp/>RectanglesList;</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>soci::session<sp/>_sql;</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>IsConnected;</highlight></codeline>
+<codeline lineno="66"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>hpc::string<sp/>_dbname,<sp/>_dbhost,<sp/>_dbport,<sp/>_dbuser,<sp/>_dbpass;</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>_stepsize;</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"></highlight></codeline>
+<codeline lineno="69"><highlight class="normal"></highlight></codeline>
+<codeline lineno="70"><highlight class="normal"></highlight></codeline>
+<codeline lineno="71"><highlight class="normal"><sp/><sp/><sp/>};</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"></highlight></codeline>
+<codeline lineno="73"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="74"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight></codeline>
+<codeline lineno="75"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh"/>
+  </compounddef>
+</doxygen>

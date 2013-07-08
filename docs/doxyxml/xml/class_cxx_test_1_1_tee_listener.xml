@@ -1,0 +1,765 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="class_cxx_test_1_1_tee_listener" kind="class" prot="public">
+    <compoundname>CxxTest::TeeListener</compoundname>
+    <basecompoundref refid="class_cxx_test_1_1_test_listener" prot="public" virt="non-virtual">CxxTest::TestListener</basecompoundref>
+    <derivedcompoundref refid="class_cxx_test_1_1_gui_tui_runner" prot="public" virt="non-virtual">CxxTest::GuiTuiRunner&lt; GuiT, TuiT &gt;</derivedcompoundref>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_cxx_test_1_1_tee_listener_1a1629032057e39dc1bd9506b37db09b5b" prot="private" static="no" mutable="no">
+        <type><ref refid="class_cxx_test_1_1_test_listener" kindref="compound">TestListener</ref> *</type>
+        <definition>TestListener* CxxTest::TeeListener::_first</definition>
+        <argsstring></argsstring>
+        <name>_first</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" line="176" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" bodystart="176" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_tee_listener_1a97e14af4b5fae1411a6dd7a457b6829b" prot="private" static="no" mutable="no">
+        <type><ref refid="class_cxx_test_1_1_test_listener" kindref="compound">TestListener</ref> *</type>
+        <definition>TestListener * CxxTest::TeeListener::_second</definition>
+        <argsstring></argsstring>
+        <name>_second</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" line="176" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" bodystart="176" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_tee_listener_1afdc9d0b12da383163e16aa2301862916" prot="private" static="no" mutable="no">
+        <type><ref refid="class_cxx_test_1_1_test_listener" kindref="compound">TestListener</ref></type>
+        <definition>TestListener CxxTest::TeeListener::_dummy</definition>
+        <argsstring></argsstring>
+        <name>_dummy</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" line="177" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" bodystart="177" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_cxx_test_1_1_tee_listener_1a652c427abe1564e44698fadd0c78caf0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::TeeListener::TeeListener</definition>
+        <argsstring>()</argsstring>
+        <name>TeeListener</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" line="17" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" bodystart="16" bodyend="20"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_tee_listener_1a60f17c0352dc36c7c414cf9fb5d76007" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type></type>
+        <definition>virtual CxxTest::TeeListener::~TeeListener</definition>
+        <argsstring>()</argsstring>
+        <name>~TeeListener</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" line="23" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" bodystart="22" bodyend="24"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_tee_listener_1aa91dcb312fe21c395f1eb4cb488b0316" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::TeeListener::setFirst</definition>
+        <argsstring>(TestListener &amp;first)</argsstring>
+        <name>setFirst</name>
+        <param>
+          <type><ref refid="class_cxx_test_1_1_test_listener" kindref="compound">TestListener</ref> &amp;</type>
+          <declname>first</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" line="27" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" bodystart="26" bodyend="29"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_tee_listener_1afde9102d8c0d6080dd2a10bb252c802d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::TeeListener::setSecond</definition>
+        <argsstring>(TestListener &amp;second)</argsstring>
+        <name>setSecond</name>
+        <param>
+          <type><ref refid="class_cxx_test_1_1_test_listener" kindref="compound">TestListener</ref> &amp;</type>
+          <declname>second</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" line="32" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" bodystart="31" bodyend="34"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_tee_listener_1ad5700c6452a09529bcdcac7ae566e039" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TeeListener::enterWorld</definition>
+        <argsstring>(const WorldDescription &amp;d)</argsstring>
+        <name>enterWorld</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a947f7954fbfeb604df5c183c92811bbd">enterWorld</reimplements>
+        <param>
+          <type>const <ref refid="class_cxx_test_1_1_world_description" kindref="compound">WorldDescription</ref> &amp;</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" line="37" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" bodystart="36" bodyend="40"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_tee_listener_1ac65623839949cc08dc8641b880267619" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TeeListener::enterSuite</definition>
+        <argsstring>(const SuiteDescription &amp;d)</argsstring>
+        <name>enterSuite</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1aec118cbeef8ae759abf47a6c05c4edc0">enterSuite</reimplements>
+        <param>
+          <type>const <ref refid="class_cxx_test_1_1_suite_description" kindref="compound">SuiteDescription</ref> &amp;</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" line="43" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" bodystart="42" bodyend="46"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_tee_listener_1a40cf28118bcd40ced4d6dfab8e33cc7e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TeeListener::enterTest</definition>
+        <argsstring>(const TestDescription &amp;d)</argsstring>
+        <name>enterTest</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1af9a62cbee47da01007d1b14c46b32ae8">enterTest</reimplements>
+        <param>
+          <type>const <ref refid="class_cxx_test_1_1_test_description" kindref="compound">TestDescription</ref> &amp;</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" line="49" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" bodystart="48" bodyend="52"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_tee_listener_1ab98d4b8047dc6c6d4bf137ff60e5e2a0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TeeListener::trace</definition>
+        <argsstring>(const char *file, unsigned line, const char *expression)</argsstring>
+        <name>trace</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a3bac16644da9c76c8fdb90a7a67b444d">trace</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>expression</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" line="55" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" bodystart="54" bodyend="58"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_tee_listener_1a6d316d543696552b5e5420598fbe30ba" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TeeListener::warning</definition>
+        <argsstring>(const char *file, unsigned line, const char *expression)</argsstring>
+        <name>warning</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a9f186c3b4983959abc0b7f4a5839b5f3">warning</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>expression</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" line="61" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" bodystart="60" bodyend="64"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_tee_listener_1ae5e14e4e4b38a80802fb737b52a98490" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TeeListener::failedTest</definition>
+        <argsstring>(const char *file, unsigned line, const char *expression)</argsstring>
+        <name>failedTest</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a7b6733b07a17c45b7b503d3b0c4ba9dd">failedTest</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>expression</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" line="67" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" bodystart="66" bodyend="70"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_tee_listener_1a7751be4a9be622f92fe7ba3157741b21" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TeeListener::failedAssert</definition>
+        <argsstring>(const char *file, unsigned line, const char *expression)</argsstring>
+        <name>failedAssert</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a5496f04ec411e4e56e2121ca279952d0">failedAssert</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>expression</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" line="73" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" bodystart="72" bodyend="76"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_tee_listener_1a5ff8dcc7c553d804710f851438b20df0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TeeListener::failedAssertEquals</definition>
+        <argsstring>(const char *file, unsigned line, const char *xStr, const char *yStr, const char *x, const char *y)</argsstring>
+        <name>failedAssertEquals</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a37c2df98ac833ff9b39c9ef06372574e">failedAssertEquals</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>xStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>yStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" line="81" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" bodystart="78" bodyend="84"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_tee_listener_1a9360d7a7b7a16104d215751061f85a8b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TeeListener::failedAssertSameData</definition>
+        <argsstring>(const char *file, unsigned line, const char *xStr, const char *yStr, const char *sizeStr, const void *x, const void *y, unsigned size)</argsstring>
+        <name>failedAssertSameData</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1ac9bcebc7a6a77e87098d6342db1d18ff">failedAssertSameData</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>xStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>yStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>sizeStr</declname>
+        </param>
+        <param>
+          <type>const void *</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>const void *</type>
+          <declname>y</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" line="90" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" bodystart="86" bodyend="93"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_tee_listener_1a7074eaf638a7a8ceb0727dce15f56e13" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TeeListener::failedAssertDelta</definition>
+        <argsstring>(const char *file, unsigned line, const char *xStr, const char *yStr, const char *dStr, const char *x, const char *y, const char *d)</argsstring>
+        <name>failedAssertDelta</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a5f45960ba9e1065b61c0e232220f1b83">failedAssertDelta</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>xStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>yStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>dStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>y</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" line="98" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" bodystart="95" bodyend="101"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_tee_listener_1a536d7f12ca72f2868f84acd73835104b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TeeListener::failedAssertDiffers</definition>
+        <argsstring>(const char *file, unsigned line, const char *xStr, const char *yStr, const char *value)</argsstring>
+        <name>failedAssertDiffers</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a2b456f8d4b3f7c63653aa819b6480451">failedAssertDiffers</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>xStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>yStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" line="106" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" bodystart="103" bodyend="109"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_tee_listener_1ad1ccf0beefdccabf05fe63599e2f3869" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TeeListener::failedAssertLessThan</definition>
+        <argsstring>(const char *file, unsigned line, const char *xStr, const char *yStr, const char *x, const char *y)</argsstring>
+        <name>failedAssertLessThan</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a4d7bcffdcd7d78578bcbdba0c63c8a0d">failedAssertLessThan</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>xStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>yStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" line="114" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" bodystart="111" bodyend="117"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_tee_listener_1afef21509f32909144f440750b562b2ba" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TeeListener::failedAssertLessThanEquals</definition>
+        <argsstring>(const char *file, unsigned line, const char *xStr, const char *yStr, const char *x, const char *y)</argsstring>
+        <name>failedAssertLessThanEquals</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a1198d1a2c639008ba856d66ffc02f1ca">failedAssertLessThanEquals</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>xStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>yStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" line="122" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" bodystart="119" bodyend="125"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_tee_listener_1adee9f163d0803c289b967c5a5dfa5ff1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TeeListener::failedAssertPredicate</definition>
+        <argsstring>(const char *file, unsigned line, const char *predicate, const char *xStr, const char *x)</argsstring>
+        <name>failedAssertPredicate</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1ab296234687d058a4ae3d0ad8c0d6f0b3">failedAssertPredicate</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>predicate</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>xStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" line="129" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" bodystart="127" bodyend="132"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_tee_listener_1ad6ff068c0e8b7807bb11691bfe5f6f3c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TeeListener::failedAssertRelation</definition>
+        <argsstring>(const char *file, unsigned line, const char *relation, const char *xStr, const char *yStr, const char *x, const char *y)</argsstring>
+        <name>failedAssertRelation</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a784a1a7eca5008820fd7df46f2019bc9">failedAssertRelation</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>relation</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>xStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>yStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" line="137" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" bodystart="134" bodyend="140"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_tee_listener_1a29ecd619ba4297177e1994c7550fffec" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TeeListener::failedAssertThrows</definition>
+        <argsstring>(const char *file, unsigned line, const char *expression, const char *type, bool otherThrown)</argsstring>
+        <name>failedAssertThrows</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a9136ed0314ce55bb6b8dc2cca0e65c8b">failedAssertThrows</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>expression</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>type</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>otherThrown</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" line="145" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" bodystart="142" bodyend="148"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_tee_listener_1a43a8cb93bb7bfcdd73006f4ddb851b1b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TeeListener::failedAssertThrowsNot</definition>
+        <argsstring>(const char *file, unsigned line, const char *expression)</argsstring>
+        <name>failedAssertThrowsNot</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a8416fe966f24ccef824b49090266a40c">failedAssertThrowsNot</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>expression</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" line="152" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" bodystart="150" bodyend="155"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_tee_listener_1ab969f02289bce8276b90f10def738561" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TeeListener::leaveTest</definition>
+        <argsstring>(const TestDescription &amp;d)</argsstring>
+        <name>leaveTest</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a46b4a76c5f0feb378c6b058e90d1508e">leaveTest</reimplements>
+        <param>
+          <type>const <ref refid="class_cxx_test_1_1_test_description" kindref="compound">TestDescription</ref> &amp;</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" line="158" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" bodystart="157" bodyend="161"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_tee_listener_1aab9624116110d6467880ccbcbe10d88b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TeeListener::leaveSuite</definition>
+        <argsstring>(const SuiteDescription &amp;d)</argsstring>
+        <name>leaveSuite</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1aaac3ffc635abb616f7a2cd2cd460d265">leaveSuite</reimplements>
+        <param>
+          <type>const <ref refid="class_cxx_test_1_1_suite_description" kindref="compound">SuiteDescription</ref> &amp;</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" line="164" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" bodystart="163" bodyend="167"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_tee_listener_1ac7902d501dac45dd267a43f0526c55cc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::TeeListener::leaveWorld</definition>
+        <argsstring>(const WorldDescription &amp;d)</argsstring>
+        <name>leaveWorld</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a9fdc72862efba6b9505a53044cb6b996">leaveWorld</reimplements>
+        <param>
+          <type>const <ref refid="class_cxx_test_1_1_world_description" kindref="compound">WorldDescription</ref> &amp;</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" line="170" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" bodystart="169" bodyend="173"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="377">
+        <label>CxxTest::GuiTuiRunner&lt; GuiT, TuiT &gt;</label>
+        <link refid="class_cxx_test_1_1_gui_tui_runner"/>
+        <childnode refid="375" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="376">
+        <label>CxxTest::TestListener</label>
+        <link refid="class_cxx_test_1_1_test_listener"/>
+      </node>
+      <node id="375">
+        <label>CxxTest::TeeListener</label>
+        <link refid="class_cxx_test_1_1_tee_listener"/>
+        <childnode refid="376" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="379">
+        <label>CxxTest::TestListener</label>
+        <link refid="class_cxx_test_1_1_test_listener"/>
+      </node>
+      <node id="378">
+        <label>CxxTest::TeeListener</label>
+        <link refid="class_cxx_test_1_1_tee_listener"/>
+        <childnode refid="379" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" line="14" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/TeeListener.h" bodystart="13" bodyend="178"/>
+    <listofallmembers>
+      <member refid="class_cxx_test_1_1_tee_listener_1afdc9d0b12da383163e16aa2301862916" prot="private" virt="non-virtual"><scope>CxxTest::TeeListener</scope><name>_dummy</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1a1629032057e39dc1bd9506b37db09b5b" prot="private" virt="non-virtual"><scope>CxxTest::TeeListener</scope><name>_first</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1a97e14af4b5fae1411a6dd7a457b6829b" prot="private" virt="non-virtual"><scope>CxxTest::TeeListener</scope><name>_second</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1ac65623839949cc08dc8641b880267619" prot="public" virt="virtual"><scope>CxxTest::TeeListener</scope><name>enterSuite</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1a40cf28118bcd40ced4d6dfab8e33cc7e" prot="public" virt="virtual"><scope>CxxTest::TeeListener</scope><name>enterTest</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1ad5700c6452a09529bcdcac7ae566e039" prot="public" virt="virtual"><scope>CxxTest::TeeListener</scope><name>enterWorld</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1a7751be4a9be622f92fe7ba3157741b21" prot="public" virt="virtual"><scope>CxxTest::TeeListener</scope><name>failedAssert</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1a7074eaf638a7a8ceb0727dce15f56e13" prot="public" virt="virtual"><scope>CxxTest::TeeListener</scope><name>failedAssertDelta</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1a536d7f12ca72f2868f84acd73835104b" prot="public" virt="virtual"><scope>CxxTest::TeeListener</scope><name>failedAssertDiffers</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1a5ff8dcc7c553d804710f851438b20df0" prot="public" virt="virtual"><scope>CxxTest::TeeListener</scope><name>failedAssertEquals</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1ad1ccf0beefdccabf05fe63599e2f3869" prot="public" virt="virtual"><scope>CxxTest::TeeListener</scope><name>failedAssertLessThan</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1afef21509f32909144f440750b562b2ba" prot="public" virt="virtual"><scope>CxxTest::TeeListener</scope><name>failedAssertLessThanEquals</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1adee9f163d0803c289b967c5a5dfa5ff1" prot="public" virt="virtual"><scope>CxxTest::TeeListener</scope><name>failedAssertPredicate</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1ad6ff068c0e8b7807bb11691bfe5f6f3c" prot="public" virt="virtual"><scope>CxxTest::TeeListener</scope><name>failedAssertRelation</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1a9360d7a7b7a16104d215751061f85a8b" prot="public" virt="virtual"><scope>CxxTest::TeeListener</scope><name>failedAssertSameData</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1a29ecd619ba4297177e1994c7550fffec" prot="public" virt="virtual"><scope>CxxTest::TeeListener</scope><name>failedAssertThrows</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1a43a8cb93bb7bfcdd73006f4ddb851b1b" prot="public" virt="virtual"><scope>CxxTest::TeeListener</scope><name>failedAssertThrowsNot</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1ae5e14e4e4b38a80802fb737b52a98490" prot="public" virt="virtual"><scope>CxxTest::TeeListener</scope><name>failedTest</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1aab9624116110d6467880ccbcbe10d88b" prot="public" virt="virtual"><scope>CxxTest::TeeListener</scope><name>leaveSuite</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1ab969f02289bce8276b90f10def738561" prot="public" virt="virtual"><scope>CxxTest::TeeListener</scope><name>leaveTest</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1ac7902d501dac45dd267a43f0526c55cc" prot="public" virt="virtual"><scope>CxxTest::TeeListener</scope><name>leaveWorld</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1aa91dcb312fe21c395f1eb4cb488b0316" prot="public" virt="non-virtual"><scope>CxxTest::TeeListener</scope><name>setFirst</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1afde9102d8c0d6080dd2a10bb252c802d" prot="public" virt="non-virtual"><scope>CxxTest::TeeListener</scope><name>setSecond</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1a652c427abe1564e44698fadd0c78caf0" prot="public" virt="non-virtual"><scope>CxxTest::TeeListener</scope><name>TeeListener</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1ab5958bd800642f706c2a7a0e8741778f" prot="public" virt="non-virtual"><scope>CxxTest::TeeListener</scope><name>TestListener</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1ab98d4b8047dc6c6d4bf137ff60e5e2a0" prot="public" virt="virtual"><scope>CxxTest::TeeListener</scope><name>trace</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1a6d316d543696552b5e5420598fbe30ba" prot="public" virt="virtual"><scope>CxxTest::TeeListener</scope><name>warning</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1a60f17c0352dc36c7c414cf9fb5d76007" prot="public" virt="virtual"><scope>CxxTest::TeeListener</scope><name>~TeeListener</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1a4d4cb5d990e0c4b0891f64f9e055b729" prot="public" virt="virtual"><scope>CxxTest::TeeListener</scope><name>~TestListener</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

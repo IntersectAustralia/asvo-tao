@@ -9,9 +9,9 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         for field_name, spec in (
-                ('institution', self.gf('django.db.models.fields.CharField')(max_length=100)),
-                ('title', self.gf('django.db.models.fields.CharField')(max_length=5)),
-                ('scientific_interests', self.gf('django.db.models.fields.CharField')(max_length=500)),
+                ('institution', self.gf('django.db.models.fields.CharField')(max_length=100, null=True)),
+                ('title', self.gf('django.db.models.fields.CharField')(max_length=5, null=True)),
+                ('scientific_interests', self.gf('django.db.models.fields.CharField')(max_length=500, null=True)),
                 ('rejected', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ):
             db.add_column(u'tao_taouser', field_name, spec)

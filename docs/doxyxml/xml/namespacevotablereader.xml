@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="namespacevotablereader" kind="namespace">
+    <compoundname>votablereader</compoundname>
+      <sectiondef kind="var">
+      <memberdef kind="variable" id="namespacevotablereader_1a54cf4631ed7d6dc853a78a60d9f0f06d" prot="public" static="no" mutable="no">
+        <type>list</type>
+        <definition>list votablereader.filename</definition>
+        <argsstring></argsstring>
+        <name>filename</name>
+        <initializer>= sys.argv[1]</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/data/readers/votablereader.py" line="10" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/data/readers/votablereader.py" bodystart="10" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacevotablereader_1a7f9e74b813b35303d4235bf458fdb13d" prot="public" static="no" mutable="no">
+        <type>tuple</type>
+        <definition>tuple votablereader.table</definition>
+        <argsstring></argsstring>
+        <name>table</name>
+        <initializer>= parse_single_table(filename)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/data/readers/votablereader.py" line="12" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/data/readers/votablereader.py" bodystart="12" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacevotablereader_1ad7540ad5ab36a4a2ff58050664ec9577" prot="public" static="no" mutable="no">
+        <type></type>
+        <definition>votablereader.data</definition>
+        <argsstring></argsstring>
+        <name>data</name>
+        <initializer>= table.array</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/data/readers/votablereader.py" line="13" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/data/readers/votablereader.py" bodystart="13" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacevotablereader_1a2d94f1daeffaeb56fc0a51f1c5ab07ec" prot="public" static="no" mutable="no">
+        <type>list</type>
+        <definition>list votablereader.columns</definition>
+        <argsstring></argsstring>
+        <name>columns</name>
+        <initializer>= []</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/data/readers/votablereader.py" line="16" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/data/readers/votablereader.py" bodystart="16" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacevotablereader_1a07b02101c6df5eb06f3f1b148ae66180" prot="public" static="no" mutable="no">
+        <type>list</type>
+        <definition>list votablereader.d</definition>
+        <argsstring></argsstring>
+        <name>d</name>
+        <initializer>= []</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/data/readers/votablereader.py" line="25" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/data/readers/votablereader.py" bodystart="25" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/data/readers/votablereader.py" line="1"/>
+  </compounddef>
+</doxygen>

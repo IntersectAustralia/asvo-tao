@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="class_cxx_test_1_1_value_traits_3_01const_01bool_01_4" kind="class" prot="public">
+    <compoundname>CxxTest::ValueTraits&lt; const bool &gt;</compoundname>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_cxx_test_1_1_value_traits_3_01const_01bool_01_4_1a428e308bfbc6154d2aa8ead00f8c4114" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool CxxTest::ValueTraits&lt; const bool &gt;::_value</definition>
+        <argsstring></argsstring>
+        <name>_value</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" line="197" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" bodystart="197" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_cxx_test_1_1_value_traits_3_01const_01bool_01_4_1a5b96c0a136b357429f212632ca400b6f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::ValueTraits&lt; const bool &gt;::ValueTraits</definition>
+        <argsstring>(const bool value)</argsstring>
+        <name>ValueTraits</name>
+        <param>
+          <type>const bool</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" line="200" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" bodystart="200" bodyend="200"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_value_traits_3_01const_01bool_01_4_1a5eb09ffab658a64e672c0051d9b3dd89" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const char *</type>
+        <definition>const char* CxxTest::ValueTraits&lt; const bool &gt;::asString</definition>
+        <argsstring>(void) const </argsstring>
+        <name>asString</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" line="201" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" bodystart="201" bodyend="201"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" line="196" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ValueTraits.h" bodystart="195" bodyend="202"/>
+    <listofallmembers>
+      <member refid="class_cxx_test_1_1_value_traits_3_01const_01bool_01_4_1a428e308bfbc6154d2aa8ead00f8c4114" prot="private" virt="non-virtual"><scope>CxxTest::ValueTraits&lt; const bool &gt;</scope><name>_value</name></member>
+      <member refid="class_cxx_test_1_1_value_traits_3_01const_01bool_01_4_1a5eb09ffab658a64e672c0051d9b3dd89" prot="public" virt="non-virtual"><scope>CxxTest::ValueTraits&lt; const bool &gt;</scope><name>asString</name></member>
+      <member refid="class_cxx_test_1_1_value_traits_3_01const_01bool_01_4_1a5b96c0a136b357429f212632ca400b6f" prot="public" virt="non-virtual"><scope>CxxTest::ValueTraits&lt; const bool &gt;</scope><name>ValueTraits</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="class_cxx_test_1_1_yes_no_runner" kind="class" prot="public">
+    <compoundname>CxxTest::YesNoRunner</compoundname>
+    <basecompoundref refid="class_cxx_test_1_1_test_listener" prot="public" virt="non-virtual">CxxTest::TestListener</basecompoundref>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_cxx_test_1_1_yes_no_runner_1a98c3f83ce6fd0d1436118c1536074e43" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::YesNoRunner::YesNoRunner</definition>
+        <argsstring>()</argsstring>
+        <name>YesNoRunner</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/YesNoRunner.h" line="18" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/YesNoRunner.h" bodystart="17" bodyend="19"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_yes_no_runner_1a945e3cc8a542b9ff29601e9eaff19507" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int CxxTest::YesNoRunner::run</definition>
+        <argsstring>()</argsstring>
+        <name>run</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/YesNoRunner.h" line="22" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/YesNoRunner.h" bodystart="21" bodyend="25"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="472">
+        <label>CxxTest::YesNoRunner</label>
+        <link refid="class_cxx_test_1_1_yes_no_runner"/>
+        <childnode refid="473" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="473">
+        <label>CxxTest::TestListener</label>
+        <link refid="class_cxx_test_1_1_test_listener"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="474">
+        <label>CxxTest::YesNoRunner</label>
+        <link refid="class_cxx_test_1_1_yes_no_runner"/>
+        <childnode refid="475" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="475">
+        <label>CxxTest::TestListener</label>
+        <link refid="class_cxx_test_1_1_test_listener"/>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/YesNoRunner.h" line="15" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/YesNoRunner.h" bodystart="14" bodyend="26"/>
+    <listofallmembers>
+      <member refid="class_cxx_test_1_1_test_listener_1aec118cbeef8ae759abf47a6c05c4edc0" prot="public" virt="virtual"><scope>CxxTest::YesNoRunner</scope><name>enterSuite</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1af9a62cbee47da01007d1b14c46b32ae8" prot="public" virt="virtual"><scope>CxxTest::YesNoRunner</scope><name>enterTest</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1a947f7954fbfeb604df5c183c92811bbd" prot="public" virt="virtual"><scope>CxxTest::YesNoRunner</scope><name>enterWorld</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1a5496f04ec411e4e56e2121ca279952d0" prot="public" virt="virtual"><scope>CxxTest::YesNoRunner</scope><name>failedAssert</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1a5f45960ba9e1065b61c0e232220f1b83" prot="public" virt="virtual"><scope>CxxTest::YesNoRunner</scope><name>failedAssertDelta</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1a2b456f8d4b3f7c63653aa819b6480451" prot="public" virt="virtual"><scope>CxxTest::YesNoRunner</scope><name>failedAssertDiffers</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1a37c2df98ac833ff9b39c9ef06372574e" prot="public" virt="virtual"><scope>CxxTest::YesNoRunner</scope><name>failedAssertEquals</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1a4d7bcffdcd7d78578bcbdba0c63c8a0d" prot="public" virt="virtual"><scope>CxxTest::YesNoRunner</scope><name>failedAssertLessThan</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1a1198d1a2c639008ba856d66ffc02f1ca" prot="public" virt="virtual"><scope>CxxTest::YesNoRunner</scope><name>failedAssertLessThanEquals</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1ab296234687d058a4ae3d0ad8c0d6f0b3" prot="public" virt="virtual"><scope>CxxTest::YesNoRunner</scope><name>failedAssertPredicate</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1a784a1a7eca5008820fd7df46f2019bc9" prot="public" virt="virtual"><scope>CxxTest::YesNoRunner</scope><name>failedAssertRelation</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1ac9bcebc7a6a77e87098d6342db1d18ff" prot="public" virt="virtual"><scope>CxxTest::YesNoRunner</scope><name>failedAssertSameData</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1a9136ed0314ce55bb6b8dc2cca0e65c8b" prot="public" virt="virtual"><scope>CxxTest::YesNoRunner</scope><name>failedAssertThrows</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1a8416fe966f24ccef824b49090266a40c" prot="public" virt="virtual"><scope>CxxTest::YesNoRunner</scope><name>failedAssertThrowsNot</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1a7b6733b07a17c45b7b503d3b0c4ba9dd" prot="public" virt="virtual"><scope>CxxTest::YesNoRunner</scope><name>failedTest</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1aaac3ffc635abb616f7a2cd2cd460d265" prot="public" virt="virtual"><scope>CxxTest::YesNoRunner</scope><name>leaveSuite</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1a46b4a76c5f0feb378c6b058e90d1508e" prot="public" virt="virtual"><scope>CxxTest::YesNoRunner</scope><name>leaveTest</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1a9fdc72862efba6b9505a53044cb6b996" prot="public" virt="virtual"><scope>CxxTest::YesNoRunner</scope><name>leaveWorld</name></member>
+      <member refid="class_cxx_test_1_1_yes_no_runner_1a945e3cc8a542b9ff29601e9eaff19507" prot="public" virt="non-virtual"><scope>CxxTest::YesNoRunner</scope><name>run</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1ab5958bd800642f706c2a7a0e8741778f" prot="public" virt="non-virtual"><scope>CxxTest::YesNoRunner</scope><name>TestListener</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1a3bac16644da9c76c8fdb90a7a67b444d" prot="public" virt="virtual"><scope>CxxTest::YesNoRunner</scope><name>trace</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1a9f186c3b4983959abc0b7f4a5839b5f3" prot="public" virt="virtual"><scope>CxxTest::YesNoRunner</scope><name>warning</name></member>
+      <member refid="class_cxx_test_1_1_yes_no_runner_1a98c3f83ce6fd0d1436118c1536074e43" prot="public" virt="non-virtual"><scope>CxxTest::YesNoRunner</scope><name>YesNoRunner</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1a4d4cb5d990e0c4b0891f64f9e055b729" prot="public" virt="virtual"><scope>CxxTest::YesNoRunner</scope><name>~TestListener</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

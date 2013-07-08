@@ -1,0 +1,189 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="utils_8cc" kind="file">
+    <compoundname>utils.cc</compoundname>
+    <includes local="no">fstream</includes>
+    <includes refid="utils_8hh" local="yes">utils.hh</includes>
+    <incdepgraph>
+      <node id="87">
+        <label>libhpc/libhpc.hh</label>
+      </node>
+      <node id="85">
+        <label>fstream</label>
+      </node>
+      <node id="84">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/utils.cc</label>
+        <link refid="utils.cc"/>
+        <childnode refid="85" relation="include">
+        </childnode>
+        <childnode refid="86" relation="include">
+        </childnode>
+      </node>
+      <node id="86">
+        <label>utils.hh</label>
+        <link refid="utils_8hh_source"/>
+        <childnode refid="87" relation="include">
+        </childnode>
+      </node>
+    </incdepgraph>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="utils_8cc_1adff06ded5aa1971558a47570ceffbb05" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void load_forests_map</definition>
+        <argsstring>(multimap&lt; long long, long long &gt; &amp;forests)</argsstring>
+        <name>load_forests_map</name>
+        <param>
+          <type>multimap&lt; long long, long long &gt; &amp;</type>
+          <declname>forests</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/utils.cc" line="11" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/utils.cc" bodystart="10" bodyend="33"/>
+      </memberdef>
+      <memberdef kind="function" id="utils_8cc_1a7d9e648c11c99a528e83a253d2c90516" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void load_locations_map</definition>
+        <argsstring>(map&lt; long long, std::pair&lt; unsigned, size_t &gt;&gt; &amp;locations, map&lt; unsigned, string &gt; &amp;file_map)</argsstring>
+        <name>load_locations_map</name>
+        <param>
+          <type>map&lt; long long, std::pair&lt; unsigned, size_t &gt;&gt; &amp;</type>
+          <declname>locations</declname>
+        </param>
+        <param>
+          <type>map&lt; unsigned, string &gt; &amp;</type>
+          <declname>file_map</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/utils.cc" line="41" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/utils.cc" bodystart="39" bodyend="76"/>
+      </memberdef>
+      <memberdef kind="function" id="utils_8cc_1a6c2f753aaa00c66fa55b5885565b5f8b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void load_forest_sizes_map</definition>
+        <argsstring>(map&lt; long long, unsigned &gt; &amp;forest_sizes)</argsstring>
+        <name>load_forest_sizes_map</name>
+        <param>
+          <type>map&lt; long long, unsigned &gt; &amp;</type>
+          <declname>forest_sizes</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/utils.cc" line="83" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/utils.cc" bodystart="82" bodyend="104"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#include<sp/>&lt;fstream&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;utils.hh&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="keyword">using<sp/>namespace<sp/></highlight><highlight class="normal">hpc;</highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal">load_forests_map(<sp/>multimap&lt;long<sp/>long,long<sp/>long&gt;&amp;<sp/>forests<sp/>)</highlight></codeline>
+<codeline lineno="11"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="12"><highlight class="normal"><sp/><sp/><sp/>LOG_ENTER();</highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Open<sp/>the<sp/>gzip<sp/>stream.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"><sp/><sp/><sp/>std::ifstream<sp/>file(<sp/></highlight><highlight class="stringliteral">&quot;forests.list&quot;</highlight><highlight class="normal">,<sp/>std::ios_base::in<sp/>);</highlight></codeline>
+<codeline lineno="16"><highlight class="normal"><sp/><sp/><sp/>ASSERT(<sp/>file<sp/>);</highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>There<sp/>will<sp/>be<sp/>at<sp/>least<sp/>one<sp/>commented<sp/>line<sp/>at<sp/>the<sp/>start.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"><sp/><sp/><sp/>skip_comments(<sp/>file<sp/>);</highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Then<sp/>each<sp/>line<sp/>will<sp/>have<sp/>a<sp/>tree<sp/>ID<sp/>and<sp/>a<sp/>forest<sp/>ID.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"><sp/><sp/><sp/>forests.clear();</highlight></codeline>
+<codeline lineno="23"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordflow">while</highlight><highlight class="normal">(<sp/>file.peek()<sp/>!=<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal"><sp/>&amp;&amp;<sp/>!file.eof()<sp/>)</highlight></codeline>
+<codeline lineno="24"><highlight class="normal"><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="25"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/>tree,<sp/>forest;</highlight></codeline>
+<codeline lineno="26"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>file<sp/>&gt;&gt;<sp/>tree<sp/>&gt;&gt;<sp/>forest;</highlight></codeline>
+<codeline lineno="27"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>finish_line(<sp/>file<sp/>);</highlight></codeline>
+<codeline lineno="28"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>ASSERT(<sp/>!file.fail()<sp/>);</highlight></codeline>
+<codeline lineno="29"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>forests.insert(<sp/>forest,<sp/>tree<sp/>);</highlight></codeline>
+<codeline lineno="30"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"><sp/><sp/><sp/>LOG_EXIT();</highlight></codeline>
+<codeline lineno="33"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight></codeline>
+<codeline lineno="38"><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="39"><highlight class="normal">load_locations_map(<sp/>map&lt;</highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal">,std::pair&lt;unsigned,size_t&gt;&gt;&amp;<sp/>locations,</highlight></codeline>
+<codeline lineno="40"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>map&lt;unsigned,string&gt;&amp;<sp/>file_map<sp/>)</highlight></codeline>
+<codeline lineno="41"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="42"><highlight class="normal"><sp/><sp/><sp/>LOG_ENTER();</highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Clear<sp/>structures.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="45"><highlight class="normal"><sp/><sp/><sp/>locations.clear();</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"><sp/><sp/><sp/>file_map.clear();</highlight></codeline>
+<codeline lineno="47"><highlight class="normal"></highlight></codeline>
+<codeline lineno="48"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Open<sp/>the<sp/>gzip<sp/>stream.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="49"><highlight class="normal"><sp/><sp/><sp/>std::ifstream<sp/>file(<sp/></highlight><highlight class="stringliteral">&quot;locations.dat&quot;</highlight><highlight class="normal">,<sp/>std::ios_base::in<sp/>);</highlight></codeline>
+<codeline lineno="50"><highlight class="normal"><sp/><sp/><sp/>ASSERT(<sp/>file<sp/>);</highlight></codeline>
+<codeline lineno="51"><highlight class="normal"></highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>There<sp/>will<sp/>be<sp/>at<sp/>least<sp/>one<sp/>commented<sp/>line<sp/>at<sp/>the<sp/>start.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="53"><highlight class="normal"><sp/><sp/><sp/>skip_comments(<sp/>file<sp/>);</highlight></codeline>
+<codeline lineno="54"><highlight class="normal"></highlight></codeline>
+<codeline lineno="55"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Then<sp/>each<sp/>line<sp/>will<sp/>have<sp/>a<sp/>tree<sp/>ID<sp/>and<sp/>a<sp/>forest<sp/>ID.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="56"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordflow">while</highlight><highlight class="normal">(<sp/>file.peek()<sp/>!=<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal"><sp/>&amp;&amp;<sp/>!file.eof()<sp/>)</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="58"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/>tree,<sp/>file_id;</highlight></codeline>
+<codeline lineno="59"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>offset;</highlight></codeline>
+<codeline lineno="60"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">string</highlight><highlight class="normal"><sp/>filename;</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>file<sp/>&gt;&gt;<sp/>tree<sp/>&gt;&gt;<sp/>file_id<sp/>&gt;&gt;<sp/>offset<sp/>&gt;&gt;<sp/>filename;</highlight></codeline>
+<codeline lineno="62"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>finish_line(<sp/>file<sp/>);</highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>ASSERT(<sp/>!file.fail()<sp/>);</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>locations.insert(<sp/>tree,<sp/>std::make_pair(<sp/>file_id,<sp/>offset<sp/>)<sp/>);</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"></highlight></codeline>
+<codeline lineno="66"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>NDEBUG</highlight></codeline>
+<codeline lineno="67"><highlight class="preprocessor"></highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>If<sp/>the<sp/>file<sp/>map<sp/>has<sp/>the<sp/>id,<sp/>the<sp/>filename<sp/>must<sp/>match.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(<sp/>file_map.has(<sp/>file_id<sp/>)<sp/>)</highlight></codeline>
+<codeline lineno="69"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>ASSERT(<sp/>file_map.get(<sp/>file_id<sp/>)<sp/>==<sp/>filename<sp/>);</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight></codeline>
+<codeline lineno="71"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>file_map.insert(<sp/>file_id,<sp/>filename<sp/>);</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="74"><highlight class="normal"></highlight></codeline>
+<codeline lineno="75"><highlight class="normal"><sp/><sp/><sp/>LOG_EXIT();</highlight></codeline>
+<codeline lineno="76"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="77"><highlight class="normal"></highlight></codeline>
+<codeline lineno="81"><highlight class="keywordtype">void</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="82"><highlight class="normal">load_forest_sizes_map(<sp/>map&lt;long<sp/>long,unsigned&gt;&amp;<sp/>forest_sizes<sp/>)</highlight></codeline>
+<codeline lineno="83"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="84"><highlight class="normal"><sp/><sp/><sp/>LOG_ENTER();</highlight></codeline>
+<codeline lineno="85"><highlight class="normal"></highlight></codeline>
+<codeline lineno="86"><highlight class="normal"><sp/><sp/><sp/>forest_sizes.clear();</highlight></codeline>
+<codeline lineno="87"><highlight class="normal"></highlight></codeline>
+<codeline lineno="88"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Open<sp/>the<sp/>gzip<sp/>stream.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="89"><highlight class="normal"><sp/><sp/><sp/>std::ifstream<sp/>file(<sp/></highlight><highlight class="stringliteral">&quot;forest_sizes.dat&quot;</highlight><highlight class="normal">,<sp/>std::ios_base::in<sp/>);</highlight></codeline>
+<codeline lineno="90"><highlight class="normal"><sp/><sp/><sp/>ASSERT(<sp/>file<sp/>);</highlight></codeline>
+<codeline lineno="91"><highlight class="normal"></highlight></codeline>
+<codeline lineno="92"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Then<sp/>each<sp/>line<sp/>will<sp/>have<sp/>a<sp/>tree<sp/>ID<sp/>and<sp/>a<sp/>forest<sp/>ID.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="93"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordflow">while</highlight><highlight class="normal">(<sp/>file.peek()<sp/>!=<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal"><sp/>&amp;&amp;<sp/>!file.eof()<sp/>)</highlight></codeline>
+<codeline lineno="94"><highlight class="normal"><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="95"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/>forest;</highlight></codeline>
+<codeline lineno="96"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>cnt;</highlight></codeline>
+<codeline lineno="97"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>file<sp/>&gt;&gt;<sp/>forest<sp/>&gt;&gt;<sp/>cnt;</highlight></codeline>
+<codeline lineno="98"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>finish_line(<sp/>file<sp/>);</highlight></codeline>
+<codeline lineno="99"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>ASSERT(<sp/>!file.fail()<sp/>);</highlight></codeline>
+<codeline lineno="100"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>forest_sizes.insert(<sp/>forest,<sp/>cnt<sp/>);</highlight></codeline>
+<codeline lineno="101"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="102"><highlight class="normal"></highlight></codeline>
+<codeline lineno="103"><highlight class="normal"><sp/><sp/><sp/>LOG_EXIT();</highlight></codeline>
+<codeline lineno="104"><highlight class="normal">}</highlight></codeline>
+    </programlisting>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/utils.cc"/>
+  </compounddef>
+</doxygen>
