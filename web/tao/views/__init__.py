@@ -12,7 +12,6 @@ from django.views.decorators.http import require_POST
 from django.utils.http import urlencode as django_urlencode
 
 from tao import models
-import tao.settings as tao_settings
 from tao.decorators import researcher_required, admin_required, set_tab
 from tao.mail import send_mail
 from tao.pagination import paginate
@@ -28,7 +27,7 @@ def login(request):
         if not request.POST.get('remember_me', None):
             request.session.set_expiry(0)  # expires on browser close
     q_dict = {'target':request.build_absolute_uri(reverse('home'))}
-    aaf_session_url = tao_settings.AAF_SESSION_URL + "?" + django_urlencode(q_dict)
+    aaf_session_url = settings.AAF_SESSION_URL + "?" + django_urlencode(q_dict)
     return auth_views.login(request, authentication_form=LoginForm,extra_context={'aaf_session_url':aaf_session_url})
 
 def fail(request):
@@ -99,7 +98,7 @@ def admin_index(request):
 @admin_required
 def access_requests(request):
     from tao.forms import RejectForm
-    user_list = models.TaoUser.objects.filter(is_active=False, userprofile__rejected=False).order_by('-id')
+    user_list = models.TaoUser.objects.filter(is_active=False, rejected=False).order_by('-id')
     users = paginate(user_list, request.GET.get('page'))
 
     return render(request, 'access_requests.html', {
@@ -113,13 +112,12 @@ def approve_user(request, user_id):
     u = models.TaoUser.objects.get(pk=user_id)
     u.is_active = True
     u.save()
-    profile = u.get_profile()
 
     template_name = 'approve'
     subject = settings.EMAIL_ACCEPT_SUBJECT
     to_addrs = [u.email]
     context = Context({
-        'title': profile.title,
+        'title': u.title,
         'first_name': u.first_name,
         'last_name': u.last_name,
         'login_url': request.build_absolute_uri(reverse('login')),
@@ -134,14 +132,13 @@ def approve_user(request, user_id):
 @require_POST
 def reject_user(request, user_id):
     u = models.TaoUser.objects.get(pk=user_id)
-    profile = u.get_profile()
-    profile.rejected = True
-    profile.save()
+    u.rejected = True
+    u.save()
 
     reason = request.POST['reason']
 
     template_name = 'reject'
-    context = Context({'title': profile.title, 'first_name': u.first_name, 'last_name': u.last_name, 'reason': reason})
+    context = Context({'title': u.title, 'first_name': u.first_name, 'last_name': u.last_name, 'reason': reason})
     subject = settings.EMAIL_REJECT_SUBJECT
     to_addrs = [u.email]
 
@@ -161,7 +158,7 @@ def support(request):
             username = request.user.username
             subject = form.cleaned_data['subject']
             message = form.cleaned_data['message']
-            user_email = models.User.objects.get(username=username).email
+            user_email = models.TaoUser.objects.get(username=username).email
             logger.info('Support email from ' + username)
             logger.info('Subject: ' + subject)
             logger.info('Message: ' + message)

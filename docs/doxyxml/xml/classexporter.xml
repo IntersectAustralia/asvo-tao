@@ -1,0 +1,355 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="classexporter" kind="class" prot="public">
+    <compoundname>exporter</compoundname>
+      <sectiondef kind="public-static-attrib">
+      <memberdef kind="variable" id="classexporter_1a2b4a9b61d70d2208b5243b94c48b81da" prot="public" static="yes" mutable="no">
+        <type>const unsigned</type>
+        <definition>const unsigned exporter::default_halos_per_file</definition>
+        <argsstring></argsstring>
+        <name>default_halos_per_file</name>
+        <initializer>= 150000</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.hh" line="12" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.hh" bodystart="12" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classexporter_1a52015d522966334c2deb1f219fd74372" prot="protected" static="no" mutable="no">
+        <type>std::ofstream</type>
+        <definition>std::ofstream exporter::_file</definition>
+        <argsstring></argsstring>
+        <name>_file</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.hh" line="48" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.hh" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classexporter_1a568016359261555a67c43c42782a6fe1" prot="protected" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned exporter::_num_local_files</definition>
+        <argsstring></argsstring>
+        <name>_num_local_files</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.hh" line="49" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.hh" bodystart="49" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classexporter_1a1cc1bbbf94cd06d06ec35c3dd1c7d26a" prot="protected" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned exporter::_cur_file</definition>
+        <argsstring></argsstring>
+        <name>_cur_file</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.hh" line="50" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.hh" bodystart="50" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classexporter_1a821a15c5c4bf0580d83cb1ed338f0370" prot="protected" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned exporter::_hpf</definition>
+        <argsstring></argsstring>
+        <name>_hpf</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.hh" line="51" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.hh" bodystart="51" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classexporter_1a85b5fb05f98f07d311be0bbfa37bf21b" prot="protected" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned exporter::_num_halos</definition>
+        <argsstring></argsstring>
+        <name>_num_halos</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.hh" line="52" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.hh" bodystart="52" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classexporter_1a26c3094458a2b3f3266930bd6e96b192" prot="protected" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned exporter::_last_forests</definition>
+        <argsstring></argsstring>
+        <name>_last_forests</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.hh" line="53" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.hh" bodystart="53" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classexporter_1ae86879adec1c83759ee4daa401fac025" prot="protected" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned exporter::_num_forests</definition>
+        <argsstring></argsstring>
+        <name>_num_forests</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.hh" line="53" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.hh" bodystart="53" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classexporter_1a1cf6f4c170e5abbd13d47494401083cb" prot="protected" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned exporter::_next_forests</definition>
+        <argsstring></argsstring>
+        <name>_next_forests</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.hh" line="54" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.hh" bodystart="54" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classexporter_1aa313111a2c39086e02f6adfaaca118df" prot="protected" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned exporter::_next_halos</definition>
+        <argsstring></argsstring>
+        <name>_next_halos</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.hh" line="54" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.hh" bodystart="54" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classexporter_1ae6b1dbe3d935f2e58d128c9e1bd26a37" prot="protected" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned exporter::_first</definition>
+        <argsstring></argsstring>
+        <name>_first</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.hh" line="55" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.hh" bodystart="55" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classexporter_1a5a1fe0898b5ffbdab0d6e432384cdec1" prot="protected" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned exporter::_last</definition>
+        <argsstring></argsstring>
+        <name>_last</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.hh" line="55" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.hh" bodystart="55" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classexporter_1aeb1ec05bcd65830c79ca99f0706e1b54" prot="protected" static="no" mutable="no">
+        <type>const hpc::vector&lt; unsigned &gt; &amp;</type>
+        <definition>const hpc::vector&lt;unsigned&gt;&amp; exporter::_halo_cnts</definition>
+        <argsstring></argsstring>
+        <name>_halo_cnts</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.hh" line="56" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.hh" bodystart="56" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classexporter_1a3931cefbcd42d052dd6eb26870bead8c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>exporter::exporter</definition>
+        <argsstring>(unsigned first_forest, unsigned last_forest, const hpc::vector&lt; unsigned &gt; &amp;forest_halo_cnts, unsigned halos_per_file=default_halos_per_file)</argsstring>
+        <name>exporter</name>
+        <param>
+          <type>unsigned</type>
+          <declname>first_forest</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>last_forest</declname>
+        </param>
+        <param>
+          <type>const hpc::vector&lt; unsigned &gt; &amp;</type>
+          <declname>forest_halo_cnts</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>halos_per_file</declname>
+          <defval>default_halos_per_file</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.hh" line="19" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.cc" bodystart="10" bodyend="23"/>
+      </memberdef>
+      <memberdef kind="function" id="classexporter_1af207ee8b9d8f850b200132f5ca39a3ce" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>exporter::~exporter</definition>
+        <argsstring>()</argsstring>
+        <name>~exporter</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.hh" line="21" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.cc" bodystart="25" bodyend="27"/>
+      </memberdef>
+      <memberdef kind="function" id="classexporter_1a9a3ed11f32aa4336b4fa61f07929b15c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void exporter::export_forest</definition>
+        <argsstring>(const hpc::vector&lt; sage_halo_type &gt; &amp;forest)</argsstring>
+        <name>export_forest</name>
+        <param>
+          <type>const hpc::vector&lt; <ref refid="structsage__halo__type" kindref="compound">sage_halo_type</ref> &gt; &amp;</type>
+          <declname>forest</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.hh" line="24" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.cc" bodystart="30" bodyend="58"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classexporter_1a382cffcfcea9f6c0516f0ddc668fe41e" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>unsigned</type>
+        <definition>unsigned exporter::_calc_next_count</definition>
+        <argsstring>(unsigned first)</argsstring>
+        <name>_calc_next_count</name>
+        <param>
+          <type>unsigned</type>
+          <declname>first</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.hh" line="29" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.cc" bodystart="61" bodyend="71"/>
+      </memberdef>
+      <memberdef kind="function" id="classexporter_1a9cf524de2d7bedc2bb93c7d03940a060" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void exporter::_open_file</definition>
+        <argsstring>()</argsstring>
+        <name>_open_file</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.hh" line="32" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.cc" bodystart="74" bodyend="88"/>
+      </memberdef>
+      <memberdef kind="function" id="classexporter_1a69ff0ec63ca744807208fbd2f1d9727d" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void exporter::_write_header</definition>
+        <argsstring>()</argsstring>
+        <name>_write_header</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.hh" line="35" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.cc" bodystart="91" bodyend="102"/>
+      </memberdef>
+      <memberdef kind="function" id="classexporter_1a242479058bb8ef41e9bee7007d45d345" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>hpc::string</type>
+        <definition>string exporter::_cur_filename</definition>
+        <argsstring>()</argsstring>
+        <name>_cur_filename</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.hh" line="38" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.cc" bodystart="105" bodyend="108"/>
+      </memberdef>
+      <memberdef kind="function" id="classexporter_1abcbba3152728139f4767e906d6641acf" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void exporter::_calc_file_offset</definition>
+        <argsstring>()</argsstring>
+        <name>_calc_file_offset</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.hh" line="41" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.cc" bodystart="111" bodyend="127"/>
+      </memberdef>
+      <memberdef kind="function" id="classexporter_1afb5d209933f2051cc7778f28dfc4c0ac" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void exporter::_calc_num_local_files</definition>
+        <argsstring>()</argsstring>
+        <name>_calc_num_local_files</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.hh" line="44" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.cc" bodystart="130" bodyend="141"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.hh" line="9" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/exporter.hh" bodystart="8" bodyend="57"/>
+    <listofallmembers>
+      <member refid="classexporter_1abcbba3152728139f4767e906d6641acf" prot="protected" virt="non-virtual"><scope>exporter</scope><name>_calc_file_offset</name></member>
+      <member refid="classexporter_1a382cffcfcea9f6c0516f0ddc668fe41e" prot="protected" virt="non-virtual"><scope>exporter</scope><name>_calc_next_count</name></member>
+      <member refid="classexporter_1afb5d209933f2051cc7778f28dfc4c0ac" prot="protected" virt="non-virtual"><scope>exporter</scope><name>_calc_num_local_files</name></member>
+      <member refid="classexporter_1a1cc1bbbf94cd06d06ec35c3dd1c7d26a" prot="protected" virt="non-virtual"><scope>exporter</scope><name>_cur_file</name></member>
+      <member refid="classexporter_1a242479058bb8ef41e9bee7007d45d345" prot="protected" virt="non-virtual"><scope>exporter</scope><name>_cur_filename</name></member>
+      <member refid="classexporter_1a52015d522966334c2deb1f219fd74372" prot="protected" virt="non-virtual"><scope>exporter</scope><name>_file</name></member>
+      <member refid="classexporter_1ae6b1dbe3d935f2e58d128c9e1bd26a37" prot="protected" virt="non-virtual"><scope>exporter</scope><name>_first</name></member>
+      <member refid="classexporter_1aeb1ec05bcd65830c79ca99f0706e1b54" prot="protected" virt="non-virtual"><scope>exporter</scope><name>_halo_cnts</name></member>
+      <member refid="classexporter_1a821a15c5c4bf0580d83cb1ed338f0370" prot="protected" virt="non-virtual"><scope>exporter</scope><name>_hpf</name></member>
+      <member refid="classexporter_1a5a1fe0898b5ffbdab0d6e432384cdec1" prot="protected" virt="non-virtual"><scope>exporter</scope><name>_last</name></member>
+      <member refid="classexporter_1a26c3094458a2b3f3266930bd6e96b192" prot="protected" virt="non-virtual"><scope>exporter</scope><name>_last_forests</name></member>
+      <member refid="classexporter_1a1cf6f4c170e5abbd13d47494401083cb" prot="protected" virt="non-virtual"><scope>exporter</scope><name>_next_forests</name></member>
+      <member refid="classexporter_1aa313111a2c39086e02f6adfaaca118df" prot="protected" virt="non-virtual"><scope>exporter</scope><name>_next_halos</name></member>
+      <member refid="classexporter_1ae86879adec1c83759ee4daa401fac025" prot="protected" virt="non-virtual"><scope>exporter</scope><name>_num_forests</name></member>
+      <member refid="classexporter_1a85b5fb05f98f07d311be0bbfa37bf21b" prot="protected" virt="non-virtual"><scope>exporter</scope><name>_num_halos</name></member>
+      <member refid="classexporter_1a568016359261555a67c43c42782a6fe1" prot="protected" virt="non-virtual"><scope>exporter</scope><name>_num_local_files</name></member>
+      <member refid="classexporter_1a9cf524de2d7bedc2bb93c7d03940a060" prot="protected" virt="non-virtual"><scope>exporter</scope><name>_open_file</name></member>
+      <member refid="classexporter_1a69ff0ec63ca744807208fbd2f1d9727d" prot="protected" virt="non-virtual"><scope>exporter</scope><name>_write_header</name></member>
+      <member refid="classexporter_1a2b4a9b61d70d2208b5243b94c48b81da" prot="public" virt="non-virtual"><scope>exporter</scope><name>default_halos_per_file</name></member>
+      <member refid="classexporter_1a9a3ed11f32aa4336b4fa61f07929b15c" prot="public" virt="non-virtual"><scope>exporter</scope><name>export_forest</name></member>
+      <member refid="classexporter_1a3931cefbcd42d052dd6eb26870bead8c" prot="public" virt="non-virtual"><scope>exporter</scope><name>exporter</name></member>
+      <member refid="classexporter_1af207ee8b9d8f850b200132f5ca39a3ce" prot="public" virt="non-virtual"><scope>exporter</scope><name>~exporter</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -5,12 +5,15 @@ import settingReader # Read the XML settings
 
 import DBConnection
 import logging
+import h5py 
 
 class MasterTablesUpdate:    
         
     def __init__(self,Options,PGDB):
         self.Options=Options
         self.DBConnection=DBConnection.DBConnection(Options)
+        self.CurrentH5InputFile=Options['RunningSettings:InputFile']
+        self.InputFile=h5py.File(self.CurrentH5InputFile,'r')
     def CreateRedshiftTable(self):
         CreatTBSt="CREATE TABLE Snap_redshift (SnapNum Int4,redshift float4);"
         self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers(CreatTBSt)
@@ -26,16 +29,13 @@ class MasterTablesUpdate:
         self.AddMetaDataValue("BoxSize", self.Options['RunningSettings:SimulationBoxX'])
         self.AddMetaDataValue("BSPCellSize", self.Options['RunningSettings:BSPCellSize'])
         self.AddMetaDataValue("TreeTablePrefix", self.Options['PGDB:TreeTablePrefix'])
-        
+        for item in self.InputFile['cosmology']:            
+            self.AddMetaDataValue(str(item), str(self.InputFile['cosmology'][item][0]))
         
             
-    def FillRedshiftData(self):
-        SnapshotFile=self.Options['RunningSettings:SnpshottoRedshiftMapping']
-        f = open(SnapshotFile, 'rt')
-        RedShifList=[]
-        for line in f:
-            RedShifList.append((1/float(line))-1)
+    def FillRedshiftData(self):        
         
+        RedShifList=self.InputFile['snapshot_redshifts']        
         for i in range(0,len(RedShifList)):
                CurrentSnapNum=i
                logging.info(str(CurrentSnapNum)+":"+str(RedShifList[i]))

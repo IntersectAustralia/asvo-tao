@@ -172,6 +172,7 @@ class PreprocessData(object):
             FieldName=field[2]
             self.CreateTableTemplate=self.CreateTableTemplate+ FieldName +' '+FieldDT+","
         self.CreateTableTemplate=self.CreateTableTemplate+"GlobalTreeID BIGINT,"
+<<<<<<< HEAD
         self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyGlobalID BIGINT,"     
         self.CreateTableTemplate=self.CreateTableTemplate+"LocalGalaxyID INT)"       
      
@@ -181,6 +182,14 @@ class PreprocessData(object):
         self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers(CreateIndexStatment)
         logging.info("Table treesummary Index Created ...") 
             
+=======
+        self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyGlobalID BIGINT)"     
+        #self.CreateTableTemplate=self.CreateTableTemplate+"LocalGalaxyID INT)"       
+    def CreateIndexOnTreeSummaryTable(self):
+        CreateIndexStatment="ALTER TABLE treesummary  ADD PRIMARY KEY (globaltreeid);"
+        self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers(CreateIndexStatment)
+        logging.info("Table treesummary Index Created ...")    
+>>>>>>> be3bd6a89d13f48fc1a0eccaae7b59ed2c0856d0
                 
     def CreateTableIndex(self,TableIndex,CommSize,CommRank):
         

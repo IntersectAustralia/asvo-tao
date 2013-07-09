@@ -1,0 +1,936 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="class_cxx_test_1_1_x11_gui" kind="class" prot="public">
+    <compoundname>CxxTest::X11Gui</compoundname>
+    <basecompoundref refid="class_cxx_test_1_1_gui_listener" prot="public" virt="non-virtual">CxxTest::GuiListener</basecompoundref>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_cxx_test_1_1_x11_gui_1ae10291ffc79324cd8ec86a7838d24dd5" prot="private" static="no" mutable="no">
+        <type>const char *</type>
+        <definition>const char* CxxTest::X11Gui::_programName</definition>
+        <argsstring></argsstring>
+        <name>_programName</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="86" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="86" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_x11_gui_1a632c197547f9b235919c160c5bede817" prot="private" static="no" mutable="no">
+        <type>Display *</type>
+        <definition>Display* CxxTest::X11Gui::_display</definition>
+        <argsstring></argsstring>
+        <name>_display</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="87" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="87" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_x11_gui_1a8869f3983f712d7f9cf291f3d9258513" prot="private" static="no" mutable="no">
+        <type>Window</type>
+        <definition>Window CxxTest::X11Gui::_window</definition>
+        <argsstring></argsstring>
+        <name>_window</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="88" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="88" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_x11_gui_1a68df34891c847947eeb86f9788416ebe" prot="private" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned CxxTest::X11Gui::_numTotalTests</definition>
+        <argsstring></argsstring>
+        <name>_numTotalTests</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="89" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="89" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_x11_gui_1a0d4f3a697be082f5b11336c5363dbdb6" prot="private" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned CxxTest::X11Gui::_testsDone</definition>
+        <argsstring></argsstring>
+        <name>_testsDone</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="89" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="89" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_x11_gui_1a3547e013acbb899206c3daca64aeab7d" prot="private" static="no" mutable="no">
+        <type>char</type>
+        <definition>char CxxTest::X11Gui::_strTotalTests[WorldDescription::MAX_STRLEN_TOTAL_TESTS]</definition>
+        <argsstring>[WorldDescription::MAX_STRLEN_TOTAL_TESTS]</argsstring>
+        <name>_strTotalTests</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="90" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="90" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_x11_gui_1af22a70c13a03a83cb3c303bb08bf9b27" prot="private" static="no" mutable="no">
+        <type>const char *</type>
+        <definition>const char* CxxTest::X11Gui::_foregroundName</definition>
+        <argsstring></argsstring>
+        <name>_foregroundName</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="91" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="91" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_x11_gui_1ad5eac367345eb8e2758caacb28c3c222" prot="private" static="no" mutable="no">
+        <type>const char *</type>
+        <definition>const char * CxxTest::X11Gui::_backgroundName</definition>
+        <argsstring></argsstring>
+        <name>_backgroundName</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="91" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="91" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_x11_gui_1a467bc13a5487a0ed287b48affb359a1c" prot="private" static="no" mutable="no">
+        <type>const char *</type>
+        <definition>const char* CxxTest::X11Gui::_greenName</definition>
+        <argsstring></argsstring>
+        <name>_greenName</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="92" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="92" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_x11_gui_1adea98a6b21f053f931801716a7c82dd7" prot="private" static="no" mutable="no">
+        <type>const char *</type>
+        <definition>const char * CxxTest::X11Gui::_yellowName</definition>
+        <argsstring></argsstring>
+        <name>_yellowName</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="92" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="92" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_x11_gui_1ae842c9c6ba0300a973f551bc1b06db1d" prot="private" static="no" mutable="no">
+        <type>const char *</type>
+        <definition>const char * CxxTest::X11Gui::_redName</definition>
+        <argsstring></argsstring>
+        <name>_redName</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="92" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="92" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_x11_gui_1a53a5b7dbb86c9a4573d9aaa94bc11e4b" prot="private" static="no" mutable="no">
+        <type>unsigned long</type>
+        <definition>unsigned long CxxTest::X11Gui::_foreground</definition>
+        <argsstring></argsstring>
+        <name>_foreground</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="93" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="93" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_x11_gui_1aa478110a0e777f705345c2c4bda5b7eb" prot="private" static="no" mutable="no">
+        <type>unsigned long</type>
+        <definition>unsigned long CxxTest::X11Gui::_background</definition>
+        <argsstring></argsstring>
+        <name>_background</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="93" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="93" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_x11_gui_1a92d7cb8416f431600b0d93ce224a27fd" prot="private" static="no" mutable="no">
+        <type>unsigned long</type>
+        <definition>unsigned long CxxTest::X11Gui::_barColor</definition>
+        <argsstring></argsstring>
+        <name>_barColor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="93" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="93" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_x11_gui_1a566327c21e2b6d6a00b733cda7f65779" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int CxxTest::X11Gui::_width</definition>
+        <argsstring></argsstring>
+        <name>_width</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="94" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="94" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_x11_gui_1a45f36a5449465e5392b6c1084926c3c6" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int CxxTest::X11Gui::_height</definition>
+        <argsstring></argsstring>
+        <name>_height</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="94" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="94" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_x11_gui_1a41bbc4540d6ca5be342258db760953a5" prot="private" static="no" mutable="no">
+        <type>GC</type>
+        <definition>GC CxxTest::X11Gui::_gc</definition>
+        <argsstring></argsstring>
+        <name>_gc</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="95" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="95" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_x11_gui_1a8ad7725b3c0c4f232c7204494a9dbfad" prot="private" static="no" mutable="no">
+        <type>const char *</type>
+        <definition>const char* CxxTest::X11Gui::_fontName</definition>
+        <argsstring></argsstring>
+        <name>_fontName</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="96" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="96" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_x11_gui_1a95b1586e81cd74402fbdfde18a4e4eca" prot="private" static="no" mutable="no">
+        <type>XID</type>
+        <definition>XID CxxTest::X11Gui::_fontId</definition>
+        <argsstring></argsstring>
+        <name>_fontId</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="97" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="97" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_x11_gui_1ab7546da743adae179f76bfdc6af9f9a2" prot="private" static="no" mutable="no">
+        <type>XFontStruct *</type>
+        <definition>XFontStruct* CxxTest::X11Gui::_fontInfo</definition>
+        <argsstring></argsstring>
+        <name>_fontInfo</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="98" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="98" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_x11_gui_1a510b3368d168ef40642ac20be0c5e175" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int CxxTest::X11Gui::_textHeight</definition>
+        <argsstring></argsstring>
+        <name>_textHeight</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="99" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="99" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_x11_gui_1ac697b6e299dd83d7dcf1285550ae7c54" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int CxxTest::X11Gui::_textDescent</definition>
+        <argsstring></argsstring>
+        <name>_textDescent</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="99" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="99" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_x11_gui_1a1ed0c1761c0740ebfc12a56dc53d1789" prot="private" static="no" mutable="no">
+        <type>long</type>
+        <definition>long CxxTest::X11Gui::_eventMask</definition>
+        <argsstring></argsstring>
+        <name>_eventMask</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="100" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="100" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_x11_gui_1a7373013535e8568ea940c0f665d0577b" prot="private" static="no" mutable="no">
+        <type>Colormap</type>
+        <definition>Colormap CxxTest::X11Gui::_colormap</definition>
+        <argsstring></argsstring>
+        <name>_colormap</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="101" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="101" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_cxx_test_1_1_x11_gui_1ae2486eff18e9dde13abebf4e20686979" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::X11Gui::enterGui</definition>
+        <argsstring>(int &amp;argc, char **argv)</argsstring>
+        <name>enterGui</name>
+        <reimplements refid="class_cxx_test_1_1_gui_listener_1aa54cf47bea6e158e8773325604259e2b">enterGui</reimplements>
+        <param>
+          <type>int &amp;</type>
+          <declname>argc</declname>
+        </param>
+        <param>
+          <type>char **</type>
+          <declname>argv</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="29" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="28" bodyend="31"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_x11_gui_1a130b274f2a763e99fee41b0ac397ab9d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::X11Gui::enterWorld</definition>
+        <argsstring>(const WorldDescription &amp;wd)</argsstring>
+        <name>enterWorld</name>
+        <reimplements refid="class_cxx_test_1_1_gui_listener_1ac3bf41d19fabb940bddfaaf7c15176ab">enterWorld</reimplements>
+        <param>
+          <type>const <ref refid="class_cxx_test_1_1_world_description" kindref="compound">WorldDescription</ref> &amp;</type>
+          <declname>wd</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="34" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="33" bodyend="46"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_x11_gui_1a4e382d67854003eb82ca75738ec8789f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::X11Gui::guiEnterTest</definition>
+        <argsstring>(const char *suiteName, const char *testName)</argsstring>
+        <name>guiEnterTest</name>
+        <reimplements refid="class_cxx_test_1_1_gui_listener_1a68e35d61caf85091aa81de1f974f915f">guiEnterTest</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>suiteName</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>testName</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="49" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="48" bodyend="55"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_x11_gui_1af9490e4a6a604a5fdd61cdac7fda5a54" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::X11Gui::yellowBar</definition>
+        <argsstring>()</argsstring>
+        <name>yellowBar</name>
+        <reimplements refid="class_cxx_test_1_1_gui_listener_1a6b2b9ab54b7b61dbfdf25abb45bc954b">yellowBar</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="58" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="57" bodyend="64"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_x11_gui_1a5897fd74481f9abba6cdbd2dfbd43145" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::X11Gui::redBar</definition>
+        <argsstring>()</argsstring>
+        <name>redBar</name>
+        <reimplements refid="class_cxx_test_1_1_gui_listener_1ac471a5b189ecfdea1710034d156f7de9">redBar</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="67" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="66" bodyend="73"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_x11_gui_1a046edf4f504ded2a365719bb65cfe8ab" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::X11Gui::leaveGui</definition>
+        <argsstring>()</argsstring>
+        <name>leaveGui</name>
+        <reimplements refid="class_cxx_test_1_1_gui_listener_1aca2b3ffe19f48d917a8694156cef5e21">leaveGui</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="76" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="75" bodyend="83"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="class_cxx_test_1_1_x11_gui_1a7c5e48a8e5b115ea87e0e267777df060" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::X11Gui::parseCommandLine</definition>
+        <argsstring>(int &amp;argc, char **argv)</argsstring>
+        <name>parseCommandLine</name>
+        <param>
+          <type>int &amp;</type>
+          <declname>argc</declname>
+        </param>
+        <param>
+          <type>char **</type>
+          <declname>argv</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="104" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="103" bodyend="130"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_x11_gui_1adee67bd63255a1bf8f5598e87bb5ad90" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::X11Gui::openDisplay</definition>
+        <argsstring>()</argsstring>
+        <name>openDisplay</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="133" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="132" bodyend="135"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_x11_gui_1a1802232673d237928abc4532c1880c9e" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::X11Gui::createColors</definition>
+        <argsstring>()</argsstring>
+        <name>createColors</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="138" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="137" bodyend="142"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_x11_gui_1abe9310de4414f999dc9ccd196bbe061e" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>unsigned long</type>
+        <definition>unsigned long CxxTest::X11Gui::getColor</definition>
+        <argsstring>(const char *colorName)</argsstring>
+        <name>getColor</name>
+        <param>
+          <type>const char *</type>
+          <declname>colorName</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="145" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="144" bodyend="150"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_x11_gui_1ab83640127f368ee142b1c25340a1f3bc" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::X11Gui::createWindow</definition>
+        <argsstring>()</argsstring>
+        <name>createWindow</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="153" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="152" bodyend="155"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_x11_gui_1a5b9b99a33b9a79fd91c3b76ef9674f2e" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::X11Gui::createGc</definition>
+        <argsstring>()</argsstring>
+        <name>createGc</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="158" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="157" bodyend="160"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_x11_gui_1ae5a87f9e3bf89c2222ec0ea9aec32275" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::X11Gui::createFont</definition>
+        <argsstring>()</argsstring>
+        <name>createFont</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="163" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="162" bodyend="169"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_x11_gui_1abd05c4fc7bc708617159e1c601999db2" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool CxxTest::X11Gui::loadFont</definition>
+        <argsstring>()</argsstring>
+        <name>loadFont</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="172" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="171" bodyend="177"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_x11_gui_1a3889664244dd944238608d5c84cca126" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::X11Gui::useDefaultFont</definition>
+        <argsstring>()</argsstring>
+        <name>useDefaultFont</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="180" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="179" bodyend="182"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_x11_gui_1a23571e4e19b365df29c8c465fe874d46" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::X11Gui::getFontInfo</definition>
+        <argsstring>()</argsstring>
+        <name>getFontInfo</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="185" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="184" bodyend="187"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_x11_gui_1a5ac2e12cdfa8ed0256b719380e39c0f1" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::X11Gui::freeFontInfo</definition>
+        <argsstring>()</argsstring>
+        <name>freeFontInfo</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="190" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="189" bodyend="192"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_x11_gui_1a28cc9f469010fb26efbb76336fce9fd3" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::X11Gui::initializeEvents</definition>
+        <argsstring>()</argsstring>
+        <name>initializeEvents</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="195" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="194" bodyend="198"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_x11_gui_1a924a7d37c156a4c2981a309a683f3feb" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::X11Gui::initializeBar</definition>
+        <argsstring>(const WorldDescription &amp;wd)</argsstring>
+        <name>initializeBar</name>
+        <param>
+          <type>const <ref refid="class_cxx_test_1_1_world_description" kindref="compound">WorldDescription</ref> &amp;</type>
+          <declname>wd</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="201" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="200" bodyend="205"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_x11_gui_1af4765a3a85ae5c377dcd56e9690c6cf9" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::X11Gui::getTotalTests</definition>
+        <argsstring>()</argsstring>
+        <name>getTotalTests</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="208" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="207" bodyend="210"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_x11_gui_1aaab828e277a82c63cbc1126154ae2b6b" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::X11Gui::getTotalTests</definition>
+        <argsstring>(const WorldDescription &amp;wd)</argsstring>
+        <name>getTotalTests</name>
+        <param>
+          <type>const <ref refid="class_cxx_test_1_1_world_description" kindref="compound">WorldDescription</ref> &amp;</type>
+          <declname>wd</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="213" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="212" bodyend="216"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_x11_gui_1a7e3f7ab76bebadefb8bde4d52ae32f7a" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::X11Gui::centerWindow</definition>
+        <argsstring>()</argsstring>
+        <name>centerWindow</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="219" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="218" bodyend="232"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_x11_gui_1a35c963735824bfc2276bb10718706f89" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::X11Gui::processEvents</definition>
+        <argsstring>()</argsstring>
+        <name>processEvents</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="235" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="234" bodyend="241"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_x11_gui_1a6f3df9bc02f35af76daa95adbaaf5a12" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::X11Gui::setWindowName</definition>
+        <argsstring>(const char *suiteName, const char *testName)</argsstring>
+        <name>setWindowName</name>
+        <param>
+          <type>const char *</type>
+          <declname>suiteName</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>testName</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="244" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="243" bodyend="250"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_x11_gui_1a1eb76c7cfd75fb035fbdcd99d13edfba" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::X11Gui::redraw</definition>
+        <argsstring>()</argsstring>
+        <name>redraw</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="253" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="252" bodyend="259"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_x11_gui_1afb4db80255c41b79e07810d84d0fe143" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::X11Gui::getWindowSize</definition>
+        <argsstring>()</argsstring>
+        <name>getWindowSize</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="262" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="261" bodyend="267"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_x11_gui_1a55f0bb56a4fdd948bc4f2975a64a98c5" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::X11Gui::drawSolidBar</definition>
+        <argsstring>()</argsstring>
+        <name>drawSolidBar</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="270" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="269" bodyend="278"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_x11_gui_1adbae713dec31d8facc2719c884b35575" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::X11Gui::drawDividers</definition>
+        <argsstring>()</argsstring>
+        <name>drawDividers</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="281" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="280" bodyend="288"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_x11_gui_1a521121cc3cd113e328099a2b5c91c057" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::X11Gui::drawPercentage</definition>
+        <argsstring>()</argsstring>
+        <name>drawPercentage</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="291" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="290" bodyend="303"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_x11_gui_1a976e2bc96aa3d7779135cca7000311c7" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::X11Gui::flush</definition>
+        <argsstring>()</argsstring>
+        <name>flush</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="306" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="305" bodyend="308"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_x11_gui_1a2c5e845434e885c6ff2f02523e34b7e4" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::X11Gui::destroyGc</definition>
+        <argsstring>()</argsstring>
+        <name>destroyGc</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="311" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="310" bodyend="313"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_x11_gui_1ac1d3cf12b370d6aad6a1bf637cfc8ca6" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::X11Gui::destroyWindow</definition>
+        <argsstring>()</argsstring>
+        <name>destroyWindow</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="316" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="315" bodyend="318"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_x11_gui_1a288b909a891a465f729fa45fce96bb01" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::X11Gui::closeDisplay</definition>
+        <argsstring>()</argsstring>
+        <name>closeDisplay</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="321" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="320" bodyend="323"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="466">
+        <label>CxxTest::X11Gui</label>
+        <link refid="class_cxx_test_1_1_x11_gui"/>
+        <childnode refid="467" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="468">
+        <label>CxxTest::TestListener</label>
+        <link refid="class_cxx_test_1_1_test_listener"/>
+      </node>
+      <node id="467">
+        <label>CxxTest::GuiListener</label>
+        <link refid="class_cxx_test_1_1_gui_listener"/>
+        <childnode refid="468" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="469">
+        <label>CxxTest::X11Gui</label>
+        <link refid="class_cxx_test_1_1_x11_gui"/>
+        <childnode refid="470" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="471">
+        <label>CxxTest::TestListener</label>
+        <link refid="class_cxx_test_1_1_test_listener"/>
+      </node>
+      <node id="470">
+        <label>CxxTest::GuiListener</label>
+        <link refid="class_cxx_test_1_1_gui_listener"/>
+        <childnode refid="471" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" line="26" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/X11Gui.h" bodystart="25" bodyend="324"/>
+    <listofallmembers>
+      <member refid="class_cxx_test_1_1_x11_gui_1aa478110a0e777f705345c2c4bda5b7eb" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>_background</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1ad5eac367345eb8e2758caacb28c3c222" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>_backgroundName</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1a92d7cb8416f431600b0d93ce224a27fd" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>_barColor</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1a7373013535e8568ea940c0f665d0577b" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>_colormap</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1a632c197547f9b235919c160c5bede817" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>_display</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1a1ed0c1761c0740ebfc12a56dc53d1789" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>_eventMask</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1a95b1586e81cd74402fbdfde18a4e4eca" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>_fontId</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1ab7546da743adae179f76bfdc6af9f9a2" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>_fontInfo</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1a8ad7725b3c0c4f232c7204494a9dbfad" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>_fontName</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1a53a5b7dbb86c9a4573d9aaa94bc11e4b" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>_foreground</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1af22a70c13a03a83cb3c303bb08bf9b27" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>_foregroundName</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1a41bbc4540d6ca5be342258db760953a5" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>_gc</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1a467bc13a5487a0ed287b48affb359a1c" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>_greenName</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1a45f36a5449465e5392b6c1084926c3c6" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>_height</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1a68df34891c847947eeb86f9788416ebe" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>_numTotalTests</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1ae10291ffc79324cd8ec86a7838d24dd5" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>_programName</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1ae842c9c6ba0300a973f551bc1b06db1d" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>_redName</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1a3547e013acbb899206c3daca64aeab7d" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>_strTotalTests</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1a0d4f3a697be082f5b11336c5363dbdb6" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>_testsDone</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1ac697b6e299dd83d7dcf1285550ae7c54" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>_textDescent</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1a510b3368d168ef40642ac20be0c5e175" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>_textHeight</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1a566327c21e2b6d6a00b733cda7f65779" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>_width</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1a8869f3983f712d7f9cf291f3d9258513" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>_window</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1adea98a6b21f053f931801716a7c82dd7" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>_yellowName</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1a7e3f7ab76bebadefb8bde4d52ae32f7a" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>centerWindow</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1a288b909a891a465f729fa45fce96bb01" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>closeDisplay</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1a1802232673d237928abc4532c1880c9e" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>createColors</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1ae5a87f9e3bf89c2222ec0ea9aec32275" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>createFont</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1a5b9b99a33b9a79fd91c3b76ef9674f2e" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>createGc</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1ab83640127f368ee142b1c25340a1f3bc" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>createWindow</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1a2c5e845434e885c6ff2f02523e34b7e4" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>destroyGc</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1ac1d3cf12b370d6aad6a1bf637cfc8ca6" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>destroyWindow</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1adbae713dec31d8facc2719c884b35575" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>drawDividers</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1a521121cc3cd113e328099a2b5c91c057" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>drawPercentage</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1a55f0bb56a4fdd948bc4f2975a64a98c5" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>drawSolidBar</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1ae2486eff18e9dde13abebf4e20686979" prot="public" virt="virtual"><scope>CxxTest::X11Gui</scope><name>enterGui</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1a7d826471e620c45526abcd702994ebb8" prot="public" virt="virtual"><scope>CxxTest::X11Gui</scope><name>enterSuite</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1a9cecb3a9fbd578cd377a5b6353a88a40" prot="public" virt="virtual"><scope>CxxTest::X11Gui</scope><name>enterTest</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1a130b274f2a763e99fee41b0ac397ab9d" prot="public" virt="virtual"><scope>CxxTest::X11Gui</scope><name>enterWorld</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1a061a48b4133776007f25b3ad03709508" prot="public" virt="virtual"><scope>CxxTest::X11Gui</scope><name>failedAssert</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1ab8fb717bf3d1048fafd8ad46f3d2aa75" prot="public" virt="virtual"><scope>CxxTest::X11Gui</scope><name>failedAssertDelta</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1afeab8a1ebf6a491bbc32d9c4d1f61957" prot="public" virt="virtual"><scope>CxxTest::X11Gui</scope><name>failedAssertDiffers</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1a0da4a8373d37735fd838d64c479e98b6" prot="public" virt="virtual"><scope>CxxTest::X11Gui</scope><name>failedAssertEquals</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1a8e4379c24f51a23a63be2aae01c1db15" prot="public" virt="virtual"><scope>CxxTest::X11Gui</scope><name>failedAssertLessThan</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1a10ddef187352aec4e20f6571f846c289" prot="public" virt="virtual"><scope>CxxTest::X11Gui</scope><name>failedAssertLessThanEquals</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1a16b2504f44d5bb31e11760f4910279d6" prot="public" virt="virtual"><scope>CxxTest::X11Gui</scope><name>failedAssertPredicate</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1adc47227eef4bb58df92e9bb3c323a0ce" prot="public" virt="virtual"><scope>CxxTest::X11Gui</scope><name>failedAssertRelation</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1ad22bc9507148994e099228e06e2320c3" prot="public" virt="virtual"><scope>CxxTest::X11Gui</scope><name>failedAssertSameData</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1ad7c260f27b673f4770d8ba016692f348" prot="public" virt="virtual"><scope>CxxTest::X11Gui</scope><name>failedAssertThrows</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1ab692ff5b9336e668e6133222c296951a" prot="public" virt="virtual"><scope>CxxTest::X11Gui</scope><name>failedAssertThrowsNot</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1a5620d327669b9e03112ac40dd443a9fc" prot="public" virt="virtual"><scope>CxxTest::X11Gui</scope><name>failedTest</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1a976e2bc96aa3d7779135cca7000311c7" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>flush</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1a5ac2e12cdfa8ed0256b719380e39c0f1" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>freeFontInfo</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1abe9310de4414f999dc9ccd196bbe061e" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>getColor</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1a23571e4e19b365df29c8c465fe874d46" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>getFontInfo</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1af4765a3a85ae5c377dcd56e9690c6cf9" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>getTotalTests</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1aaab828e277a82c63cbc1126154ae2b6b" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>getTotalTests</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1afb4db80255c41b79e07810d84d0fe143" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>getWindowSize</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1ab7f2ec233b21b16a6e080f50cc411695" prot="public" virt="virtual"><scope>CxxTest::X11Gui</scope><name>guiEnterSuite</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1a4e382d67854003eb82ca75738ec8789f" prot="public" virt="virtual"><scope>CxxTest::X11Gui</scope><name>guiEnterTest</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1af5f966a34f11f5e4ea4c59ecf83b01e2" prot="public" virt="virtual"><scope>CxxTest::X11Gui</scope><name>guiEnterWorld</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1a0166397e8eb7c7cf303cd91c4ebd92bf" prot="public" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>GuiListener</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1a924a7d37c156a4c2981a309a683f3feb" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>initializeBar</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1a28cc9f469010fb26efbb76336fce9fd3" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>initializeEvents</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1a046edf4f504ded2a365719bb65cfe8ab" prot="public" virt="virtual"><scope>CxxTest::X11Gui</scope><name>leaveGui</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1ae8d4756b071cb906eba66a7d2200c622" prot="public" virt="virtual"><scope>CxxTest::X11Gui</scope><name>leaveSuite</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1a88c2bea6cdf73ae460a76e795e46237f" prot="public" virt="virtual"><scope>CxxTest::X11Gui</scope><name>leaveTest</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1a33ddb18a7a501562303cbd071218f816" prot="public" virt="virtual"><scope>CxxTest::X11Gui</scope><name>leaveWorld</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1abd05c4fc7bc708617159e1c601999db2" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>loadFont</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1adee67bd63255a1bf8f5598e87bb5ad90" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>openDisplay</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1a7c5e48a8e5b115ea87e0e267777df060" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>parseCommandLine</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1a35c963735824bfc2276bb10718706f89" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>processEvents</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1a5897fd74481f9abba6cdbd2dfbd43145" prot="public" virt="virtual"><scope>CxxTest::X11Gui</scope><name>redBar</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1a1ef08c9cf0c21041ff9a024731ec68ca" prot="protected" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>redBarSafe</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1a1eb76c7cfd75fb035fbdcd99d13edfba" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>redraw</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1aa2473ba3fbc19514724487361761d7f9" prot="public" virt="virtual"><scope>CxxTest::X11Gui</scope><name>runGui</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1a6f3df9bc02f35af76daa95adbaaf5a12" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>setWindowName</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1ab5958bd800642f706c2a7a0e8741778f" prot="public" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>TestListener</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1a3bac16644da9c76c8fdb90a7a67b444d" prot="public" virt="virtual"><scope>CxxTest::X11Gui</scope><name>trace</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1a3889664244dd944238608d5c84cca126" prot="private" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>useDefaultFont</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1ac1328f483ef777fc05f5ec2b153464c7" prot="public" virt="virtual"><scope>CxxTest::X11Gui</scope><name>warning</name></member>
+      <member refid="class_cxx_test_1_1_x11_gui_1af9490e4a6a604a5fdd61cdac7fda5a54" prot="public" virt="virtual"><scope>CxxTest::X11Gui</scope><name>yellowBar</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1aa4ca06d3a9cf402fa01c51c4366c1b24" prot="protected" virt="non-virtual"><scope>CxxTest::X11Gui</scope><name>yellowBarSafe</name></member>
+      <member refid="class_cxx_test_1_1_gui_listener_1aa42f1f79be1a66434590a72a5246ffa2" prot="public" virt="virtual"><scope>CxxTest::X11Gui</scope><name>~GuiListener</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1a4d4cb5d990e0c4b0891f64f9e055b729" prot="public" virt="virtual"><scope>CxxTest::X11Gui</scope><name>~TestListener</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

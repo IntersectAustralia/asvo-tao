@@ -1,0 +1,208 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="modules_8hh" kind="file">
+    <compoundname>modules.hh</compoundname>
+    <includes refid="register_8hh" local="yes">register.hh</includes>
+    <includes refid="empty_8hh" local="yes">empty.hh</includes>
+    <includes refid="lightcone_8hh" local="yes">lightcone.hh</includes>
+    <includes refid="sed_8hh" local="yes">sed.hh</includes>
+    <includes refid="dust_8hh" local="yes">dust.hh</includes>
+    <includes refid="filter_8hh" local="yes">filter.hh</includes>
+    <includes refid="csv_8hh" local="yes">csv.hh</includes>
+    <includes refid="hdf5_8hh" local="yes">hdf5.hh</includes>
+    <includes refid="skymaker_8hh" local="yes">skymaker.hh</includes>
+    <includes refid="votable_8hh" local="yes">votable.hh</includes>
+    <includes refid="fits_8hh" local="yes">fits.hh</includes>
+    <includedby refid="register_8cc" local="yes">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/register.cc</includedby>
+    <incdepgraph>
+      <node id="1306">
+        <label>libhpc/libhpc.hh</label>
+      </node>
+      <node id="1308">
+        <label>hdf5.hh</label>
+        <link refid="hdf5_8hh_source"/>
+        <childnode refid="1306" relation="include">
+        </childnode>
+        <childnode refid="1301" relation="include">
+        </childnode>
+        <childnode refid="1307" relation="include">
+        </childnode>
+      </node>
+      <node id="1304">
+        <label>csv.hh</label>
+        <link refid="csv_8hh_source"/>
+        <childnode refid="1305" relation="include">
+        </childnode>
+        <childnode refid="1306" relation="include">
+        </childnode>
+        <childnode refid="1301" relation="include">
+        </childnode>
+        <childnode refid="1307" relation="include">
+        </childnode>
+        <childnode refid="1297" relation="include">
+        </childnode>
+      </node>
+      <node id="1312">
+        <label>fitsio.h</label>
+      </node>
+      <node id="1310">
+        <label>votable.hh</label>
+        <link refid="votable_8hh_source"/>
+        <childnode refid="1305" relation="include">
+        </childnode>
+        <childnode refid="1306" relation="include">
+        </childnode>
+        <childnode refid="1301" relation="include">
+        </childnode>
+        <childnode refid="1307" relation="include">
+        </childnode>
+        <childnode refid="1297" relation="include">
+        </childnode>
+      </node>
+      <node id="1295">
+        <label>empty.hh</label>
+        <link refid="empty_8hh_source"/>
+        <childnode refid="1296" relation="include">
+        </childnode>
+      </node>
+      <node id="1311">
+        <label>fits.hh</label>
+        <link refid="fits_8hh_source"/>
+        <childnode refid="1305" relation="include">
+        </childnode>
+        <childnode refid="1306" relation="include">
+        </childnode>
+        <childnode refid="1301" relation="include">
+        </childnode>
+        <childnode refid="1307" relation="include">
+        </childnode>
+        <childnode refid="1297" relation="include">
+        </childnode>
+        <childnode refid="1312" relation="include">
+        </childnode>
+      </node>
+      <node id="1294">
+        <label>tao/base/factory.hh</label>
+      </node>
+      <node id="1305">
+        <label>fstream</label>
+      </node>
+      <node id="1296">
+        <label>tao/base/base.hh</label>
+      </node>
+      <node id="1301">
+        <label>tao/base/module.hh</label>
+      </node>
+      <node id="1309">
+        <label>skymaker.hh</label>
+        <link refid="skymaker_8hh_source"/>
+        <childnode refid="1301" relation="include">
+        </childnode>
+      </node>
+      <node id="1300">
+        <label>gsl/gsl_integration.h</label>
+      </node>
+      <node id="1298">
+        <label>sed.hh</label>
+        <link refid="sed_8hh_source"/>
+        <childnode refid="1299" relation="include">
+        </childnode>
+        <childnode refid="1300" relation="include">
+        </childnode>
+        <childnode refid="1301" relation="include">
+        </childnode>
+      </node>
+      <node id="1292">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/modules.hh</label>
+        <link refid="modules.hh"/>
+        <childnode refid="1293" relation="include">
+        </childnode>
+        <childnode refid="1295" relation="include">
+        </childnode>
+        <childnode refid="1297" relation="include">
+        </childnode>
+        <childnode refid="1298" relation="include">
+        </childnode>
+        <childnode refid="1302" relation="include">
+        </childnode>
+        <childnode refid="1303" relation="include">
+        </childnode>
+        <childnode refid="1304" relation="include">
+        </childnode>
+        <childnode refid="1308" relation="include">
+        </childnode>
+        <childnode refid="1309" relation="include">
+        </childnode>
+        <childnode refid="1310" relation="include">
+        </childnode>
+        <childnode refid="1311" relation="include">
+        </childnode>
+      </node>
+      <node id="1307">
+        <label>tao/base/galaxy.hh</label>
+      </node>
+      <node id="1297">
+        <label>lightcone.hh</label>
+        <link refid="lightcone_8hh_source"/>
+        <childnode refid="1296" relation="include">
+        </childnode>
+      </node>
+      <node id="1299">
+        <label>gsl/gsl_math.h</label>
+      </node>
+      <node id="1302">
+        <label>dust.hh</label>
+        <link refid="dust_8hh_source"/>
+        <childnode refid="1301" relation="include">
+        </childnode>
+      </node>
+      <node id="1293">
+        <label>register.hh</label>
+        <link refid="register_8hh_source"/>
+        <childnode refid="1294" relation="include">
+        </childnode>
+      </node>
+      <node id="1303">
+        <label>filter.hh</label>
+        <link refid="filter_8hh_source"/>
+        <childnode refid="1296" relation="include">
+        </childnode>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="1313">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/modules.hh</label>
+        <link refid="modules.hh"/>
+        <childnode refid="1314" relation="include">
+        </childnode>
+      </node>
+      <node id="1314">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/register.cc</label>
+        <link refid="register_8cc_source"/>
+      </node>
+    </invincdepgraph>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#ifndef<sp/>tao_modules_modules_hh</highlight></codeline>
+<codeline lineno="2"><highlight class="preprocessor"></highlight><highlight class="preprocessor">#define<sp/>tao_modules_modules_hh</highlight></codeline>
+<codeline lineno="3"><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;register.hh&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;empty.hh&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;lightcone.hh&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;sed.hh&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;dust.hh&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;filter.hh&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;csv.hh&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;hdf5.hh&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;skymaker.hh&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;votable.hh&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;fits.hh&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight></codeline>
+    </programlisting>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/modules.hh"/>
+  </compounddef>
+</doxygen>

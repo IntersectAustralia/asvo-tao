@@ -1,6 +1,6 @@
 from django.test.client import Client
 from django.test.testcases import TestCase
-from tao.models import User, UserProfile
+from tao.models import TaoUser
 from django.core import mail
 from tao.tests.support.factories import GlobalParameterFactory
 
@@ -8,7 +8,7 @@ class RegisterUserTestCase(TestCase):
 
     def setUp(self):
         self.client = Client()
-        super_user = User(username='superman', email='email@super.com', first_name='super', last_name='man', is_active=True, is_staff=True)
+        super_user = TaoUser(username='superman', email='email@super.com', first_name='super', last_name='man', is_active=True, is_staff=True)
         super_user.set_password('superman')
         super_user.save()
         GlobalParameterFactory(parameter_name='approve.html', parameter_value='')
@@ -20,13 +20,11 @@ class RegisterUserTestCase(TestCase):
         mail.outbox = []
 
     def testApproveUser(self):
-        new_user = User(username='username', email='email@email.com', first_name='fname', last_name='lname', is_active=False)
+        new_user = TaoUser(username='username', email='email@email.com', first_name='fname', last_name='lname', is_active=False, institution='Intersect', scientific_interests='', title='Mr')
         new_user.set_password('password')
         new_user.save()
-        new_user_profile = UserProfile(user=new_user, institution='Intersect', scientific_interests='', title='Mr')
-        new_user_profile.save()
 
-        self.assertEquals(2, len(User.objects.all()))
+        self.assertEquals(2, len(TaoUser.objects.all()))
         self.assertFalse(new_user.is_active)
 
         self.assertTrue(self.client.login(username='superman', password='superman'))
@@ -39,18 +37,16 @@ class RegisterUserTestCase(TestCase):
         self.assertEqual(1, len(outbox))
         
         self.assertEqual(302, response.status_code)
-        self.assertTrue(User.objects.get(pk=new_user.id).is_active)
+        self.assertTrue(TaoUser.objects.get(pk=new_user.id).is_active)
 
     def testRejectUser(self):
-        new_user = User(username='username', email='email@email.com', first_name='fname', last_name='lname', is_active=False)
+        new_user = TaoUser(username='username', email='email@email.com', first_name='fname', last_name='lname', is_active=False, institution='Intersect', scientific_interests='', title='Mr')
         new_user.set_password('password')
         new_user.save()
-        new_user_profile = UserProfile(user=new_user, institution='Intersect', scientific_interests='', title='Mr')
-        new_user_profile.save()
 
-        self.assertEquals(2, len(User.objects.all()))
+        self.assertEquals(2, len(TaoUser.objects.all()))
         self.assertFalse(new_user.is_active)
-        self.assertFalse(new_user.get_profile().rejected)
+        self.assertFalse(new_user.rejected)
 
         self.assertTrue(self.client.login(username='superman', password='superman'))
 
@@ -65,6 +61,6 @@ class RegisterUserTestCase(TestCase):
         self.assertTrue(reject_reason in email_content)
 
         self.assertEqual(302, response.status_code)
-        rejected_user = User.objects.get(pk=new_user.id)
-        self.assertTrue(rejected_user.get_profile().rejected)
+        rejected_user = TaoUser.objects.get(pk=new_user.id)
+        self.assertTrue(rejected_user.rejected)
         self.assertFalse(rejected_user.is_active)

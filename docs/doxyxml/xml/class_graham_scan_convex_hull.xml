@@ -1,0 +1,228 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="class_graham_scan_convex_hull" kind="class" prot="public">
+    <compoundname>GrahamScanConvexHull</compoundname>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_graham_scan_convex_hull_1ab3176ef5d56ec8cae729676f4499dfaa" prot="private" static="no" mutable="no">
+        <type>std::vector&lt; <ref refid="structgs__point2d" kindref="compound">gs_point2d</ref> &gt;</type>
+        <definition>std::vector&lt;gs_point2d&gt; GrahamScanConvexHull::point</definition>
+        <argsstring></argsstring>
+        <name>point</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" line="116" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" bodystart="116" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_graham_scan_convex_hull_1ab2985c5e94ee951d00283af98b8ea6f0" prot="private" static="no" mutable="no">
+        <type><ref refid="structgs__point2d" kindref="compound">gs_point2d</ref></type>
+        <definition>gs_point2d GrahamScanConvexHull::anchor</definition>
+        <argsstring></argsstring>
+        <name>anchor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" line="117" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" bodystart="117" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_graham_scan_convex_hull_1a534597af2e267d73d9d64e463cf1bcc2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>GrahamScanConvexHull::GrahamScanConvexHull</definition>
+        <argsstring>()</argsstring>
+        <name>GrahamScanConvexHull</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" line="95" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" bodystart="95" bodyend="95"/>
+      </memberdef>
+      <memberdef kind="function" id="class_graham_scan_convex_hull_1aba5c91499efd519d2175ec5356e91cef" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>GrahamScanConvexHull::~GrahamScanConvexHull</definition>
+        <argsstring>()</argsstring>
+        <name>~GrahamScanConvexHull</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" line="96" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" bodystart="96" bodyend="96"/>
+      </memberdef>
+      <memberdef kind="function" id="class_graham_scan_convex_hull_1ac37484a57554ed7fe1c52b0e39f32986" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool GrahamScanConvexHull::operator()</definition>
+        <argsstring>(const std::vector&lt; point2d &gt; &amp;pnt, std::vector&lt; point2d &gt; &amp;final_hull)</argsstring>
+        <name>operator()</name>
+        <param>
+          <type>const std::vector&lt; <ref refid="structpoint2d" kindref="compound">point2d</ref> &gt; &amp;</type>
+          <declname>pnt</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; <ref refid="structpoint2d" kindref="compound">point2d</ref> &gt; &amp;</type>
+          <declname>final_hull</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" line="98" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.cpp" bodystart="3" bodyend="43"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="class_graham_scan_convex_hull_1a393f7c83b7ffaef74c0970036b39578f" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void GrahamScanConvexHull::graham_scan</definition>
+        <argsstring>(std::vector&lt; point2d &gt; &amp;final_hull)</argsstring>
+        <name>graham_scan</name>
+        <param>
+          <type>std::vector&lt; <ref refid="structpoint2d" kindref="compound">point2d</ref> &gt; &amp;</type>
+          <declname>final_hull</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" line="102" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.cpp" bodystart="46" bodyend="75"/>
+      </memberdef>
+      <memberdef kind="function" id="class_graham_scan_convex_hull_1ad965b00815fcfc087e6cf106bd93233f" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double GrahamScanConvexHull::cartesian_angle</definition>
+        <argsstring>(double x, double y)</argsstring>
+        <name>cartesian_angle</name>
+        <param>
+          <type>double</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" line="104" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.cpp" bodystart="78" bodyend="89"/>
+      </memberdef>
+      <memberdef kind="function" id="class_graham_scan_convex_hull_1a2b902769a85bb2dca1c255a9e11d5d47" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int GrahamScanConvexHull::orientation</definition>
+        <argsstring>(const gs_point2d &amp;p1, const gs_point2d &amp;p2, const gs_point2d &amp;p3)</argsstring>
+        <name>orientation</name>
+        <param>
+          <type>const <ref refid="structgs__point2d" kindref="compound">gs_point2d</ref> &amp;</type>
+          <declname>p1</declname>
+        </param>
+        <param>
+          <type>const <ref refid="structgs__point2d" kindref="compound">gs_point2d</ref> &amp;</type>
+          <declname>p2</declname>
+        </param>
+        <param>
+          <type>const <ref refid="structgs__point2d" kindref="compound">gs_point2d</ref> &amp;</type>
+          <declname>p3</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" line="108" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.cpp" bodystart="92" bodyend="95"/>
+      </memberdef>
+      <memberdef kind="function" id="class_graham_scan_convex_hull_1a6e3d1ea31abfc06bd47cc6feec394ecf" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int GrahamScanConvexHull::orientation</definition>
+        <argsstring>(const double x1, const double y1, const double x2, const double y2, const double px, const double py)</argsstring>
+        <name>orientation</name>
+        <param>
+          <type>const double</type>
+          <declname>x1</declname>
+        </param>
+        <param>
+          <type>const double</type>
+          <declname>y1</declname>
+        </param>
+        <param>
+          <type>const double</type>
+          <declname>x2</declname>
+        </param>
+        <param>
+          <type>const double</type>
+          <declname>y2</declname>
+        </param>
+        <param>
+          <type>const double</type>
+          <declname>px</declname>
+        </param>
+        <param>
+          <type>const double</type>
+          <declname>py</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" line="112" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.cpp" bodystart="98" bodyend="111"/>
+      </memberdef>
+      <memberdef kind="function" id="class_graham_scan_convex_hull_1a4eedb7210a8deea74ea028c33e08a9f8" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool GrahamScanConvexHull::is_equal</definition>
+        <argsstring>(const double v1, const double &amp;v2, const double epsilon=1.0e-12)</argsstring>
+        <name>is_equal</name>
+        <param>
+          <type>const double</type>
+          <declname>v1</declname>
+        </param>
+        <param>
+          <type>const double &amp;</type>
+          <declname>v2</declname>
+        </param>
+        <param>
+          <type>const double</type>
+          <declname>epsilon</declname>
+          <defval>1.0e-12</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" line="114" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.cpp" bodystart="114" bodyend="118"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" line="92" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" bodystart="91" bodyend="119"/>
+    <listofallmembers>
+      <member refid="class_graham_scan_convex_hull_1ab2985c5e94ee951d00283af98b8ea6f0" prot="private" virt="non-virtual"><scope>GrahamScanConvexHull</scope><name>anchor</name></member>
+      <member refid="class_graham_scan_convex_hull_1ad965b00815fcfc087e6cf106bd93233f" prot="private" virt="non-virtual"><scope>GrahamScanConvexHull</scope><name>cartesian_angle</name></member>
+      <member refid="class_graham_scan_convex_hull_1a393f7c83b7ffaef74c0970036b39578f" prot="private" virt="non-virtual"><scope>GrahamScanConvexHull</scope><name>graham_scan</name></member>
+      <member refid="class_graham_scan_convex_hull_1a534597af2e267d73d9d64e463cf1bcc2" prot="public" virt="non-virtual"><scope>GrahamScanConvexHull</scope><name>GrahamScanConvexHull</name></member>
+      <member refid="class_graham_scan_convex_hull_1a4eedb7210a8deea74ea028c33e08a9f8" prot="private" virt="non-virtual"><scope>GrahamScanConvexHull</scope><name>is_equal</name></member>
+      <member refid="class_graham_scan_convex_hull_1ac37484a57554ed7fe1c52b0e39f32986" prot="public" virt="non-virtual"><scope>GrahamScanConvexHull</scope><name>operator()</name></member>
+      <member refid="class_graham_scan_convex_hull_1a2b902769a85bb2dca1c255a9e11d5d47" prot="private" virt="non-virtual"><scope>GrahamScanConvexHull</scope><name>orientation</name></member>
+      <member refid="class_graham_scan_convex_hull_1a6e3d1ea31abfc06bd47cc6feec394ecf" prot="private" virt="non-virtual"><scope>GrahamScanConvexHull</scope><name>orientation</name></member>
+      <member refid="class_graham_scan_convex_hull_1ab3176ef5d56ec8cae729676f4499dfaa" prot="private" virt="non-virtual"><scope>GrahamScanConvexHull</scope><name>point</name></member>
+      <member refid="class_graham_scan_convex_hull_1aba5c91499efd519d2175ec5356e91cef" prot="public" virt="non-virtual"><scope>GrahamScanConvexHull</scope><name>~GrahamScanConvexHull</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

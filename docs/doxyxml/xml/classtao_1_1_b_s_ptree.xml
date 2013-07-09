@@ -1,0 +1,397 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="classtao_1_1_b_s_ptree" kind="class" prot="public">
+    <compoundname>tao::BSPtree</compoundname>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classtao_1_1_b_s_ptree_1a48641749cc2a4e959a39900652a1776a" prot="protected" static="no" mutable="no">
+        <type>std::vector&lt; <ref refid="structtao_1_1_b_s_p_rectangle" kindref="compound">BSPRectangle</ref> &gt;</type>
+        <definition>std::vector&lt;BSPRectangle&gt; tao::BSPtree::RectanglesList</definition>
+        <argsstring></argsstring>
+        <name>RectanglesList</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" line="63" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" bodystart="63" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1_b_s_ptree_1ac9d2b4ace3569197b29145909d4c87ad" prot="protected" static="no" mutable="no">
+        <type>soci::session</type>
+        <definition>soci::session tao::BSPtree::_sql</definition>
+        <argsstring></argsstring>
+        <name>_sql</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" line="64" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" bodystart="64" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1_b_s_ptree_1a499828aec7831d92b972e8c834354a9f" prot="protected" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool tao::BSPtree::IsConnected</definition>
+        <argsstring></argsstring>
+        <name>IsConnected</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" line="65" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" bodystart="65" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1_b_s_ptree_1aa8d5f3d61ec2deebde558d0e6936ea56" prot="protected" static="no" mutable="no">
+        <type>hpc::string</type>
+        <definition>hpc::string tao::BSPtree::_dbname</definition>
+        <argsstring></argsstring>
+        <name>_dbname</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" line="66" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" bodystart="66" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1_b_s_ptree_1a4c2c2cb01f92083ea6d322c09462954e" prot="protected" static="no" mutable="no">
+        <type>hpc::string</type>
+        <definition>hpc::string tao::BSPtree::_dbhost</definition>
+        <argsstring></argsstring>
+        <name>_dbhost</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" line="66" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" bodystart="66" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1_b_s_ptree_1a62c285be655520869f89808227361566" prot="protected" static="no" mutable="no">
+        <type>hpc::string</type>
+        <definition>hpc::string tao::BSPtree::_dbport</definition>
+        <argsstring></argsstring>
+        <name>_dbport</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" line="66" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" bodystart="66" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1_b_s_ptree_1ae94762d6d85c41d708b9ec57527ff778" prot="protected" static="no" mutable="no">
+        <type>hpc::string</type>
+        <definition>hpc::string tao::BSPtree::_dbuser</definition>
+        <argsstring></argsstring>
+        <name>_dbuser</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" line="66" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" bodystart="66" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1_b_s_ptree_1a765406f26c93dd3696042a62ba4cb989" prot="protected" static="no" mutable="no">
+        <type>hpc::string</type>
+        <definition>hpc::string tao::BSPtree::_dbpass</definition>
+        <argsstring></argsstring>
+        <name>_dbpass</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" line="66" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" bodystart="66" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1_b_s_ptree_1a593851b0347a372b273860bf6c2fee89" prot="protected" static="no" mutable="no">
+        <type>int</type>
+        <definition>int tao::BSPtree::_stepsize</definition>
+        <argsstring></argsstring>
+        <name>_stepsize</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" line="67" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" bodystart="67" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classtao_1_1_b_s_ptree_1a0fb54805f0715504999a1e2f83b022fe" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>tao::BSPtree::BSPtree</definition>
+        <argsstring>(int StepSize, hpc::string DBName, hpc::string DBHost, hpc::string DBPort, hpc::string DBUserName, hpc::string DBPassword)</argsstring>
+        <name>BSPtree</name>
+        <param>
+          <type>int</type>
+          <declname>StepSize</declname>
+        </param>
+        <param>
+          <type>hpc::string</type>
+          <declname>DBName</declname>
+        </param>
+        <param>
+          <type>hpc::string</type>
+          <declname>DBHost</declname>
+        </param>
+        <param>
+          <type>hpc::string</type>
+          <declname>DBPort</declname>
+        </param>
+        <param>
+          <type>hpc::string</type>
+          <declname>DBUserName</declname>
+        </param>
+        <param>
+          <type>hpc::string</type>
+          <declname>DBPassword</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" line="36" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.cc" bodystart="15" bodyend="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1_b_s_ptree_1afb1d4cc329912887596cee7ff823d15a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>tao::BSPtree::~BSPtree</definition>
+        <argsstring>()</argsstring>
+        <name>~BSPtree</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" line="37" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.cc" bodystart="27" bodyend="30"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1_b_s_ptree_1a11f2e03d276888f502d681a449f37d2f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::vector&lt; string &gt;</type>
+        <definition>std::vector&lt; string &gt; tao::BSPtree::GetTablesList</definition>
+        <argsstring>(std::vector&lt; BSP2DPoint &gt; PolyPoints)</argsstring>
+        <name>GetTablesList</name>
+        <param>
+          <type>std::vector&lt; <ref refid="classtao_1_1_b_s_p2_d_point" kindref="compound">BSP2DPoint</ref> &gt;</type>
+          <declname>PolyPoints</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" line="42" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.cc" bodystart="192" bodyend="236"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classtao_1_1_b_s_ptree_1abf20aaa64c47e610a9bd388668087918" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::BSPtree::GenerateRectangles</definition>
+        <argsstring>()</argsstring>
+        <name>GenerateRectangles</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+<para>Get Database Dimensions - Maximum Cube Size </para>        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" line="47" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.cc" bodystart="70" bodyend="102"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1_b_s_ptree_1ae6bc91c2944252da30f45d209cc0599b" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="structtao_1_1_b_s_p_rectangle" kindref="compound">BSPRectangle</ref></type>
+        <definition>BSPRectangle tao::BSPtree::GetBoundingRect</definition>
+        <argsstring>(std::vector&lt; BSP2DPoint &gt; PolyPoints)</argsstring>
+        <name>GetBoundingRect</name>
+        <param>
+          <type>std::vector&lt; <ref refid="classtao_1_1_b_s_p2_d_point" kindref="compound">BSP2DPoint</ref> &gt;</type>
+          <declname>PolyPoints</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" line="50" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.cc" bodystart="104" bodyend="134"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1_b_s_ptree_1aae59f59570b3f18c4179a90f6d1b3c59" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool tao::BSPtree::IntersectTwoRect</definition>
+        <argsstring>(BSPRectangle RectA, BSPRectangle RectB)</argsstring>
+        <name>IntersectTwoRect</name>
+        <param>
+          <type><ref refid="structtao_1_1_b_s_p_rectangle" kindref="compound">BSPRectangle</ref></type>
+          <declname>RectA</declname>
+        </param>
+        <param>
+          <type><ref refid="structtao_1_1_b_s_p_rectangle" kindref="compound">BSPRectangle</ref></type>
+          <declname>RectB</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" line="51" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.cc" bodystart="136" bodyend="144"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1_b_s_ptree_1a2e3fe175639f99bf8ae0ed4afae5706b" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::vector&lt; <ref refid="classtao_1_1_b_s_p2_d_point" kindref="compound">BSP2DPoint</ref> &gt;</type>
+        <definition>std::vector&lt; BSP2DPoint &gt; tao::BSPtree::GetRectIds</definition>
+        <argsstring>(std::vector&lt; BSP2DPoint &gt; PolyPoints)</argsstring>
+        <name>GetRectIds</name>
+        <param>
+          <type>std::vector&lt; <ref refid="classtao_1_1_b_s_p2_d_point" kindref="compound">BSP2DPoint</ref> &gt;</type>
+          <declname>PolyPoints</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" line="52" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.cc" bodystart="176" bodyend="190"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1_b_s_ptree_1a2898fdae7a4c6cb5f2ad7d4b4675a69d" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::BSPtree::_db_connect</definition>
+        <argsstring>()</argsstring>
+        <name>_db_connect</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" line="55" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.cc" bodystart="33" bodyend="59"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1_b_s_ptree_1a540d5f987f6162651edd2f1eefbd2cea" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::BSPtree::_db_disconnect</definition>
+        <argsstring>()</argsstring>
+        <name>_db_disconnect</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" line="56" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.cc" bodystart="60" bodyend="68"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1_b_s_ptree_1a363f2106f86770733b91a7067c839a49" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>float</type>
+        <definition>float tao::BSPtree::_ccw</definition>
+        <argsstring>(BSP2DPoint A, BSP2DPoint B, BSP2DPoint C)</argsstring>
+        <name>_ccw</name>
+        <param>
+          <type><ref refid="classtao_1_1_b_s_p2_d_point" kindref="compound">BSP2DPoint</ref></type>
+          <declname>A</declname>
+        </param>
+        <param>
+          <type><ref refid="classtao_1_1_b_s_p2_d_point" kindref="compound">BSP2DPoint</ref></type>
+          <declname>B</declname>
+        </param>
+        <param>
+          <type><ref refid="classtao_1_1_b_s_p2_d_point" kindref="compound">BSP2DPoint</ref></type>
+          <declname>C</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" line="58" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.cc" bodystart="146" bodyend="149"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1_b_s_ptree_1ab26d5db6e44d019e2305abdea0965c12" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool tao::BSPtree::_seg_intersect</definition>
+        <argsstring>(BSP2DPoint A, BSP2DPoint B, BSP2DPoint C, BSP2DPoint D)</argsstring>
+        <name>_seg_intersect</name>
+        <param>
+          <type><ref refid="classtao_1_1_b_s_p2_d_point" kindref="compound">BSP2DPoint</ref></type>
+          <declname>A</declname>
+        </param>
+        <param>
+          <type><ref refid="classtao_1_1_b_s_p2_d_point" kindref="compound">BSP2DPoint</ref></type>
+          <declname>B</declname>
+        </param>
+        <param>
+          <type><ref refid="classtao_1_1_b_s_p2_d_point" kindref="compound">BSP2DPoint</ref></type>
+          <declname>C</declname>
+        </param>
+        <param>
+          <type><ref refid="classtao_1_1_b_s_p2_d_point" kindref="compound">BSP2DPoint</ref></type>
+          <declname>D</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" line="59" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.cc" bodystart="151" bodyend="154"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1_b_s_ptree_1a475cc2ea01aa0e3cd290083f4bfe8ab9" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool tao::BSPtree::IntersectPolyRect</definition>
+        <argsstring>(std::vector&lt; BSP2DPoint &gt; PolyPoints, BSPRectangle BoundingRect, BSPRectangle Rect)</argsstring>
+        <name>IntersectPolyRect</name>
+        <param>
+          <type>std::vector&lt; <ref refid="classtao_1_1_b_s_p2_d_point" kindref="compound">BSP2DPoint</ref> &gt;</type>
+          <declname>PolyPoints</declname>
+        </param>
+        <param>
+          <type><ref refid="structtao_1_1_b_s_p_rectangle" kindref="compound">BSPRectangle</ref></type>
+          <declname>BoundingRect</declname>
+        </param>
+        <param>
+          <type><ref refid="structtao_1_1_b_s_p_rectangle" kindref="compound">BSPRectangle</ref></type>
+          <declname>Rect</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" line="61" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.cc" bodystart="156" bodyend="174"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" line="34" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" bodystart="33" bodyend="71"/>
+    <listofallmembers>
+      <member refid="classtao_1_1_b_s_ptree_1a363f2106f86770733b91a7067c839a49" prot="protected" virt="non-virtual"><scope>tao::BSPtree</scope><name>_ccw</name></member>
+      <member refid="classtao_1_1_b_s_ptree_1a2898fdae7a4c6cb5f2ad7d4b4675a69d" prot="protected" virt="non-virtual"><scope>tao::BSPtree</scope><name>_db_connect</name></member>
+      <member refid="classtao_1_1_b_s_ptree_1a540d5f987f6162651edd2f1eefbd2cea" prot="protected" virt="non-virtual"><scope>tao::BSPtree</scope><name>_db_disconnect</name></member>
+      <member refid="classtao_1_1_b_s_ptree_1a4c2c2cb01f92083ea6d322c09462954e" prot="protected" virt="non-virtual"><scope>tao::BSPtree</scope><name>_dbhost</name></member>
+      <member refid="classtao_1_1_b_s_ptree_1aa8d5f3d61ec2deebde558d0e6936ea56" prot="protected" virt="non-virtual"><scope>tao::BSPtree</scope><name>_dbname</name></member>
+      <member refid="classtao_1_1_b_s_ptree_1a765406f26c93dd3696042a62ba4cb989" prot="protected" virt="non-virtual"><scope>tao::BSPtree</scope><name>_dbpass</name></member>
+      <member refid="classtao_1_1_b_s_ptree_1a62c285be655520869f89808227361566" prot="protected" virt="non-virtual"><scope>tao::BSPtree</scope><name>_dbport</name></member>
+      <member refid="classtao_1_1_b_s_ptree_1ae94762d6d85c41d708b9ec57527ff778" prot="protected" virt="non-virtual"><scope>tao::BSPtree</scope><name>_dbuser</name></member>
+      <member refid="classtao_1_1_b_s_ptree_1ab26d5db6e44d019e2305abdea0965c12" prot="protected" virt="non-virtual"><scope>tao::BSPtree</scope><name>_seg_intersect</name></member>
+      <member refid="classtao_1_1_b_s_ptree_1ac9d2b4ace3569197b29145909d4c87ad" prot="protected" virt="non-virtual"><scope>tao::BSPtree</scope><name>_sql</name></member>
+      <member refid="classtao_1_1_b_s_ptree_1a593851b0347a372b273860bf6c2fee89" prot="protected" virt="non-virtual"><scope>tao::BSPtree</scope><name>_stepsize</name></member>
+      <member refid="classtao_1_1_b_s_ptree_1a0fb54805f0715504999a1e2f83b022fe" prot="public" virt="non-virtual"><scope>tao::BSPtree</scope><name>BSPtree</name></member>
+      <member refid="classtao_1_1_b_s_ptree_1abf20aaa64c47e610a9bd388668087918" prot="protected" virt="non-virtual"><scope>tao::BSPtree</scope><name>GenerateRectangles</name></member>
+      <member refid="classtao_1_1_b_s_ptree_1ae6bc91c2944252da30f45d209cc0599b" prot="protected" virt="non-virtual"><scope>tao::BSPtree</scope><name>GetBoundingRect</name></member>
+      <member refid="classtao_1_1_b_s_ptree_1a2e3fe175639f99bf8ae0ed4afae5706b" prot="protected" virt="non-virtual"><scope>tao::BSPtree</scope><name>GetRectIds</name></member>
+      <member refid="classtao_1_1_b_s_ptree_1a11f2e03d276888f502d681a449f37d2f" prot="public" virt="non-virtual"><scope>tao::BSPtree</scope><name>GetTablesList</name></member>
+      <member refid="classtao_1_1_b_s_ptree_1a475cc2ea01aa0e3cd290083f4bfe8ab9" prot="protected" virt="non-virtual"><scope>tao::BSPtree</scope><name>IntersectPolyRect</name></member>
+      <member refid="classtao_1_1_b_s_ptree_1aae59f59570b3f18c4179a90f6d1b3c59" prot="protected" virt="non-virtual"><scope>tao::BSPtree</scope><name>IntersectTwoRect</name></member>
+      <member refid="classtao_1_1_b_s_ptree_1a499828aec7831d92b972e8c834354a9f" prot="protected" virt="non-virtual"><scope>tao::BSPtree</scope><name>IsConnected</name></member>
+      <member refid="classtao_1_1_b_s_ptree_1a48641749cc2a4e959a39900652a1776a" prot="protected" virt="non-virtual"><scope>tao::BSPtree</scope><name>RectanglesList</name></member>
+      <member refid="classtao_1_1_b_s_ptree_1afb1d4cc329912887596cee7ff823d15a" prot="public" virt="non-virtual"><scope>tao::BSPtree</scope><name>~BSPtree</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

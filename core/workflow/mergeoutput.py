@@ -36,6 +36,7 @@ def HandleVOFiles(ListofFiles,OutputFileName):
     Closing=AllText[ClosingPos:]
     
     f.write(Header)
+    f.writelines(AllText[HeaderPos:ClosingPos])
     Reader.close()
     for i in range(1,len(ListofFiles)):
         logging.info('Merging File : '+ListofFiles[i])

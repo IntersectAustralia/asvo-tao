@@ -1,0 +1,392 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="classtao_1_1hdf5" kind="class" prot="public">
+    <compoundname>tao::hdf5</compoundname>
+    <basecompoundref refid="classtao_1_1module" prot="public" virt="non-virtual">tao::module</basecompoundref>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classtao_1_1hdf5_1a7de65315efe9dbd14c553717348c2d3a" prot="protected" static="no" mutable="no">
+        <type>h5::file</type>
+        <definition>h5::file tao::hdf5::_file</definition>
+        <argsstring></argsstring>
+        <name>_file</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/hdf5.hh" line="67" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/hdf5.hh" bodystart="67" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1hdf5_1a05dfeded6dd44c989fc6eb3c8fdb24cf" prot="protected" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::hdf5::_fn</definition>
+        <argsstring></argsstring>
+        <name>_fn</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/hdf5.hh" line="68" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/hdf5.hh" bodystart="68" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1hdf5_1ac4dedf82dc524d9f39bb2b34f0982ace" prot="protected" static="no" mutable="no">
+        <type>list&lt; string &gt;</type>
+        <definition>list&lt;string&gt; tao::hdf5::_fields</definition>
+        <argsstring></argsstring>
+        <name>_fields</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/hdf5.hh" line="69" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/hdf5.hh" bodystart="69" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1hdf5_1a3992db091f246acdb17f8855fc07d794" prot="protected" static="no" mutable="no">
+        <type>unsigned long long</type>
+        <definition>unsigned long long tao::hdf5::_records</definition>
+        <argsstring></argsstring>
+        <name>_records</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/hdf5.hh" line="70" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/hdf5.hh" bodystart="70" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1hdf5_1a984a71bffbe0ee8e106c3f5a5b04b574" prot="protected" static="no" mutable="no">
+        <type>list&lt; scoped_ptr&lt; h5::dataset &gt; &gt;</type>
+        <definition>list&lt;scoped_ptr&lt;h5::dataset&gt; &gt; tao::hdf5::_dsets</definition>
+        <argsstring></argsstring>
+        <name>_dsets</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/hdf5.hh" line="71" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/hdf5.hh" bodystart="71" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1hdf5_1a0604ea1b25f8c2cb94c2ebd10efe3ba9" prot="protected" static="no" mutable="no">
+        <type>hsize_t</type>
+        <definition>hsize_t tao::hdf5::_chunk_size</definition>
+        <argsstring></argsstring>
+        <name>_chunk_size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/hdf5.hh" line="72" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/hdf5.hh" bodystart="72" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1hdf5_1a4253e3ecd3f9a55eaf20fea2bfdaabc3" prot="protected" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool tao::hdf5::_ready</definition>
+        <argsstring></argsstring>
+        <name>_ready</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/hdf5.hh" line="73" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/hdf5.hh" bodystart="73" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classtao_1_1hdf5_1a6e0a9a4ef1fd4a4b56ecab13131b49f6" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classtao_1_1module" kindref="compound">module</ref> *</type>
+        <definition>module * tao::hdf5::factory</definition>
+        <argsstring>(const string &amp;name, pugi::xml_node base)</argsstring>
+        <name>factory</name>
+        <param>
+          <type>const string &amp;</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>pugi::xml_node</type>
+          <declname>base</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/hdf5.hh" line="19" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/hdf5.cc" bodystart="9" bodyend="13"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classtao_1_1hdf5_1abce3b6e78feb2fff465bfc5473f0b55d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>tao::hdf5::hdf5</definition>
+        <argsstring>(const string &amp;name=string(), pugi::xml_node base=pugi::xml_node())</argsstring>
+        <name>hdf5</name>
+        <param>
+          <type>const string &amp;</type>
+          <declname>name</declname>
+          <defval>string()</defval>
+        </param>
+        <param>
+          <type>pugi::xml_node</type>
+          <declname>base</declname>
+          <defval>pugi::xml_node()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/hdf5.hh" line="24" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/hdf5.cc" bodystart="15" bodyend="22"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1hdf5_1afeab3ff2ba3b724881200f4ce01b9f36" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>tao::hdf5::~hdf5</definition>
+        <argsstring>()</argsstring>
+        <name>~hdf5</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/hdf5.hh" line="27" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/hdf5.cc" bodystart="24" bodyend="26"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1hdf5_1af3c11bac03897f5beee08a92ea1b9681" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void tao::hdf5::initialise</definition>
+        <argsstring>(const options::xml_dict &amp;global_dict)</argsstring>
+        <name>initialise</name>
+        <reimplements refid="classtao_1_1module_1a023002eb7c268ecda8a230fd3e562a45">initialise</reimplements>
+        <param>
+          <type>const options::xml_dict &amp;</type>
+          <declname>global_dict</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/hdf5.hh" line="34" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/hdf5.cc" bodystart="32" bodyend="50"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1hdf5_1a35e2c6f65f37074297530cb42ac1caff" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void tao::hdf5::execute</definition>
+        <argsstring>()</argsstring>
+        <name>execute</name>
+        <reimplements refid="classtao_1_1module_1a21b4c2d748b31a7b39fbd0b6fbcc331a">execute</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/hdf5.hh" line="41" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/hdf5.cc" bodystart="56" bodyend="69"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1hdf5_1a4dbcd0ec8758134a0557e94f6f4fc78b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::hdf5::open</definition>
+        <argsstring>()</argsstring>
+        <name>open</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/hdf5.hh" line="44" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/hdf5.cc" bodystart="72" bodyend="76"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1hdf5_1a50e4d3997991203c808cf1bd4e5f5d66" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::hdf5::process_galaxy</definition>
+        <argsstring>(tao::galaxy &amp;galaxy)</argsstring>
+        <name>process_galaxy</name>
+        <param>
+          <type><ref refid="classtao_1_1galaxy" kindref="compound">tao::galaxy</ref> &amp;</type>
+          <declname>galaxy</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/hdf5.hh" line="47" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/hdf5.cc" bodystart="79" bodyend="138"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1hdf5_1a50db4c8740f1a781d33e6dec427c4347" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void tao::hdf5::log_metrics</definition>
+        <argsstring>()</argsstring>
+        <name>log_metrics</name>
+        <reimplements refid="classtao_1_1module_1a04a85ec8fb341115c9d99b5fdf54ed5a">log_metrics</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/hdf5.hh" line="51" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/hdf5.cc" bodystart="141" bodyend="145"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classtao_1_1hdf5_1ab29fdf61b1caed6b6f91b152e99d511d" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>h5::datatype</type>
+        <definition>h5::datatype tao::hdf5::_field_type</definition>
+        <argsstring>(const tao::galaxy &amp;galaxy, const string &amp;field)</argsstring>
+        <name>_field_type</name>
+        <param>
+          <type>const <ref refid="classtao_1_1galaxy" kindref="compound">tao::galaxy</ref> &amp;</type>
+          <declname>galaxy</declname>
+        </param>
+        <param>
+          <type>const string &amp;</type>
+          <declname>field</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/hdf5.hh" line="57" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/hdf5.cc" bodystart="148" bodyend="177"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1hdf5_1a75eb724ee50d9f9405d8b24596e99d47" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::hdf5::_write_field</definition>
+        <argsstring>(const tao::galaxy &amp;galaxy, const string &amp;field, h5::dataset &amp;dset, h5::dataspace &amp;dspace)</argsstring>
+        <name>_write_field</name>
+        <param>
+          <type>const <ref refid="classtao_1_1galaxy" kindref="compound">tao::galaxy</ref> &amp;</type>
+          <declname>galaxy</declname>
+        </param>
+        <param>
+          <type>const string &amp;</type>
+          <declname>field</declname>
+        </param>
+        <param>
+          <type>h5::dataset &amp;</type>
+          <declname>dset</declname>
+        </param>
+        <param>
+          <type>h5::dataspace &amp;</type>
+          <declname>dspace</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/hdf5.hh" line="63" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/hdf5.cc" bodystart="180" bodyend="229"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="177">
+        <label>tao::hdf5</label>
+        <link refid="classtao_1_1hdf5"/>
+        <childnode refid="178" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="178">
+        <label>tao::module</label>
+        <link refid="classtao_1_1module"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="181">
+        <label>string</label>
+      </node>
+      <node id="179">
+        <label>tao::hdf5</label>
+        <link refid="classtao_1_1hdf5"/>
+        <childnode refid="180" relation="public-inheritance">
+        </childnode>
+        <childnode refid="181" relation="usage">
+          <edgelabel>_fn</edgelabel>
+        </childnode>
+      </node>
+      <node id="180">
+        <label>tao::module</label>
+        <link refid="classtao_1_1module"/>
+        <childnode refid="181" relation="usage">
+          <edgelabel>_dbhost</edgelabel>
+          <edgelabel>_name</edgelabel>
+          <edgelabel>_dbname</edgelabel>
+          <edgelabel>_dbport</edgelabel>
+          <edgelabel>_dbuser</edgelabel>
+          <edgelabel>_tree_pre</edgelabel>
+          <edgelabel>_dbpass</edgelabel>
+          <edgelabel>_dbtype</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/hdf5.hh" line="13" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/hdf5.hh" bodystart="11" bodyend="74"/>
+    <listofallmembers>
+      <member refid="classtao_1_1module_1a1b9223e987716522f3d43dff398cb6c2" prot="protected" virt="non-virtual"><scope>tao::hdf5</scope><name>_base</name></member>
+      <member refid="classtao_1_1module_1aaa566598c72208d1b7222a5f8d61f9e1" prot="protected" virt="non-virtual"><scope>tao::hdf5</scope><name>_batch_size</name></member>
+      <member refid="classtao_1_1hdf5_1a0604ea1b25f8c2cb94c2ebd10efe3ba9" prot="protected" virt="non-virtual"><scope>tao::hdf5</scope><name>_chunk_size</name></member>
+      <member refid="classtao_1_1module_1ad36a3f632e13a7ebb16170da155e9f91" prot="protected" virt="non-virtual"><scope>tao::hdf5</scope><name>_complete</name></member>
+      <member refid="classtao_1_1module_1ab7902628daffb48f233c25c6b278a041" prot="protected" virt="non-virtual"><scope>tao::hdf5</scope><name>_connected</name></member>
+      <member refid="classtao_1_1module_1a0d2f74174e37e6dbbcbc590599c274b1" prot="protected" virt="non-virtual"><scope>tao::hdf5</scope><name>_cur_restart_it</name></member>
+      <member refid="classtao_1_1module_1a0b3144ec62a9790142779ec64e120b17" prot="protected" virt="non-virtual"><scope>tao::hdf5</scope><name>_db_connect</name></member>
+      <member refid="classtao_1_1module_1a7dcdf9a63725c2ba5cc46db7199003dd" prot="protected" virt="non-virtual"><scope>tao::hdf5</scope><name>_db_cycle</name></member>
+      <member refid="classtao_1_1module_1aad462a73697cd7a0944d5060555df81f" prot="protected" virt="non-virtual"><scope>tao::hdf5</scope><name>_db_disconnect</name></member>
+      <member refid="classtao_1_1module_1a11c834df4a7148ed692ff8f038959578" prot="protected" virt="non-virtual"><scope>tao::hdf5</scope><name>_db_timer</name></member>
+      <member refid="classtao_1_1module_1a8acfc87fe9a2ae5a07a0abec783eb923" prot="protected" virt="non-virtual"><scope>tao::hdf5</scope><name>_dbhost</name></member>
+      <member refid="classtao_1_1module_1a87d3363daa10b9963c0056de30f35fea" prot="protected" virt="non-virtual"><scope>tao::hdf5</scope><name>_dbname</name></member>
+      <member refid="classtao_1_1module_1aa13743158514ba39f639eee1e1d8d9ef" prot="protected" virt="non-virtual"><scope>tao::hdf5</scope><name>_dbpass</name></member>
+      <member refid="classtao_1_1module_1a062ee83e634269ebf464b185cf904be5" prot="protected" virt="non-virtual"><scope>tao::hdf5</scope><name>_dbport</name></member>
+      <member refid="classtao_1_1module_1ad6c4ae45e8382b53c130035028a2bf9b" prot="protected" virt="non-virtual"><scope>tao::hdf5</scope><name>_dbtype</name></member>
+      <member refid="classtao_1_1module_1a4148a925aa5fe1e6eb2cfd28de3d9c43" prot="protected" virt="non-virtual"><scope>tao::hdf5</scope><name>_dbuser</name></member>
+      <member refid="classtao_1_1module_1a83ff7c6af3b37d905e489a6f1dda1de4" prot="protected" virt="non-virtual"><scope>tao::hdf5</scope><name>_dict</name></member>
+      <member refid="classtao_1_1hdf5_1a984a71bffbe0ee8e106c3f5a5b04b574" prot="protected" virt="non-virtual"><scope>tao::hdf5</scope><name>_dsets</name></member>
+      <member refid="classtao_1_1hdf5_1ab29fdf61b1caed6b6f91b152e99d511d" prot="protected" virt="non-virtual"><scope>tao::hdf5</scope><name>_field_type</name></member>
+      <member refid="classtao_1_1hdf5_1ac4dedf82dc524d9f39bb2b34f0982ace" prot="protected" virt="non-virtual"><scope>tao::hdf5</scope><name>_fields</name></member>
+      <member refid="classtao_1_1hdf5_1a7de65315efe9dbd14c553717348c2d3a" prot="protected" virt="non-virtual"><scope>tao::hdf5</scope><name>_file</name></member>
+      <member refid="classtao_1_1hdf5_1a05dfeded6dd44c989fc6eb3c8fdb24cf" prot="protected" virt="non-virtual"><scope>tao::hdf5</scope><name>_fn</name></member>
+      <member refid="classtao_1_1module_1add5763e6abd9514b8a1fb277bacf7aa0" prot="protected" virt="non-virtual"><scope>tao::hdf5</scope><name>_global_dict</name></member>
+      <member refid="classtao_1_1module_1aee8d7601611bb1297410dce20c24a94f" prot="protected" virt="non-virtual"><scope>tao::hdf5</scope><name>_it</name></member>
+      <member refid="classtao_1_1module_1a068866a4eafd7bc6cf97c0dbddc1eabe" prot="protected" virt="non-virtual"><scope>tao::hdf5</scope><name>_name</name></member>
+      <member refid="classtao_1_1module_1a4dc48114767b3275d631d076f1e536ae" prot="protected" virt="non-virtual"><scope>tao::hdf5</scope><name>_num_restart_its</name></member>
+      <member refid="classtao_1_1module_1af247d18388488838d7919ca79423bab2" prot="protected" virt="non-virtual"><scope>tao::hdf5</scope><name>_parents</name></member>
+      <member refid="classtao_1_1module_1a3bcaa9defed890ddfa254e7a3bdbc954" prot="protected" virt="non-virtual"><scope>tao::hdf5</scope><name>_read_db_options</name></member>
+      <member refid="classtao_1_1hdf5_1a4253e3ecd3f9a55eaf20fea2bfdaabc3" prot="protected" virt="non-virtual"><scope>tao::hdf5</scope><name>_ready</name></member>
+      <member refid="classtao_1_1hdf5_1a3992db091f246acdb17f8855fc07d794" prot="protected" virt="non-virtual"><scope>tao::hdf5</scope><name>_records</name></member>
+      <member refid="classtao_1_1module_1abbd63eb3630af38531d35c485b59abc7" prot="protected" virt="non-virtual"><scope>tao::hdf5</scope><name>_sql</name></member>
+      <member refid="classtao_1_1module_1aa0a08453739811e1cd5ef0ed403be169" prot="protected" virt="non-virtual"><scope>tao::hdf5</scope><name>_timer</name></member>
+      <member refid="classtao_1_1module_1a055dbe05ca82475015b5c474ea666e91" prot="protected" virt="non-virtual"><scope>tao::hdf5</scope><name>_tree_pre</name></member>
+      <member refid="classtao_1_1hdf5_1a75eb724ee50d9f9405d8b24596e99d47" prot="protected" virt="non-virtual"><scope>tao::hdf5</scope><name>_write_field</name></member>
+      <member refid="classtao_1_1module_1af8fe67b903df825b119076e57ac9b9a7" prot="public" virt="non-virtual"><scope>tao::hdf5</scope><name>add_parent</name></member>
+      <member refid="classtao_1_1module_1a19feaef9bbe5f219344b07f1bd1bfa38" prot="public" virt="non-virtual"><scope>tao::hdf5</scope><name>complete</name></member>
+      <member refid="classtao_1_1module_1a4f85def6c0bbe44938d67230e9300093" prot="public" virt="non-virtual"><scope>tao::hdf5</scope><name>db_time</name></member>
+      <member refid="classtao_1_1hdf5_1a35e2c6f65f37074297530cb42ac1caff" prot="public" virt="virtual"><scope>tao::hdf5</scope><name>execute</name></member>
+      <member refid="classtao_1_1hdf5_1a6e0a9a4ef1fd4a4b56ecab13131b49f6" prot="public" virt="non-virtual"><scope>tao::hdf5</scope><name>factory</name></member>
+      <member refid="classtao_1_1module_1af0317008573ba52254e3e0267408cec2" prot="public" virt="virtual"><scope>tao::hdf5</scope><name>finalise</name></member>
+      <member refid="classtao_1_1module_1a0c6d0b7670a9dad3e566ccf2697c13be" prot="public" virt="virtual"><scope>tao::hdf5</scope><name>galaxy</name></member>
+      <member refid="classtao_1_1hdf5_1abce3b6e78feb2fff465bfc5473f0b55d" prot="public" virt="non-virtual"><scope>tao::hdf5</scope><name>hdf5</name></member>
+      <member refid="classtao_1_1hdf5_1af3c11bac03897f5beee08a92ea1b9681" prot="public" virt="virtual"><scope>tao::hdf5</scope><name>initialise</name></member>
+      <member refid="classtao_1_1module_1a93af84d540204ec448964a99baec2de4" prot="public" virt="non-virtual"><scope>tao::hdf5</scope><name>local_dict</name></member>
+      <member refid="classtao_1_1module_1a186257b8d6711e1f2cba7a5f3ce9e3b9" prot="public" virt="non-virtual"><scope>tao::hdf5</scope><name>local_xml_node</name></member>
+      <member refid="classtao_1_1hdf5_1a50db4c8740f1a781d33e6dec427c4347" prot="public" virt="virtual"><scope>tao::hdf5</scope><name>log_metrics</name></member>
+      <member refid="classtao_1_1module_1a5be311f8503aafb4e62735bddfc82aa2" prot="public" virt="non-virtual"><scope>tao::hdf5</scope><name>module</name></member>
+      <member refid="classtao_1_1module_1a75cf764bee3e92e306b56f96d1be25ad" prot="public" virt="non-virtual"><scope>tao::hdf5</scope><name>name</name></member>
+      <member refid="classtao_1_1hdf5_1a4dbcd0ec8758134a0557e94f6f4fc78b" prot="public" virt="non-virtual"><scope>tao::hdf5</scope><name>open</name></member>
+      <member refid="classtao_1_1module_1a3c8712c817e986905749497611d49a34" prot="public" virt="non-virtual"><scope>tao::hdf5</scope><name>parents</name></member>
+      <member refid="classtao_1_1module_1aeded5c4440e21754dd389ae5e23c4537" prot="public" virt="non-virtual"><scope>tao::hdf5</scope><name>process</name></member>
+      <member refid="classtao_1_1hdf5_1a50e4d3997991203c808cf1bd4e5f5d66" prot="public" virt="non-virtual"><scope>tao::hdf5</scope><name>process_galaxy</name></member>
+      <member refid="classtao_1_1module_1abdc09890519027e51fbd3603406b2e87" prot="public" virt="non-virtual"><scope>tao::hdf5</scope><name>real_type</name></member>
+      <member refid="classtao_1_1module_1ada65b8d273ab0139cba098ec0737d6f0" prot="public" virt="non-virtual"><scope>tao::hdf5</scope><name>time</name></member>
+      <member refid="classtao_1_1hdf5_1afeab3ff2ba3b724881200f4ce01b9f36" prot="public" virt="virtual"><scope>tao::hdf5</scope><name>~hdf5</name></member>
+      <member refid="classtao_1_1module_1a4ad3799129a4680da08760564810dd14" prot="public" virt="virtual"><scope>tao::hdf5</scope><name>~module</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

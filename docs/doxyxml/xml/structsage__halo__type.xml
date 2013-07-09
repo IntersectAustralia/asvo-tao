@@ -1,0 +1,282 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="structsage__halo__type" kind="struct" prot="public">
+    <compoundname>sage_halo_type</compoundname>
+    <includes refid="types_8hh" local="no">types.hh</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structsage__halo__type_1ad795008c10e6a939b807f5cd30e9c3ee" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int sage_halo_type::descendant</definition>
+        <argsstring></argsstring>
+        <name>descendant</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="64" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" bodystart="64" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsage__halo__type_1a267216d3946a8ebbe1fc0ebe03626840" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int sage_halo_type::first_progenitor</definition>
+        <argsstring></argsstring>
+        <name>first_progenitor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="65" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" bodystart="65" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsage__halo__type_1ae990b3636bc04dbb52531c5a5b8761bc" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int sage_halo_type::next_progenitor</definition>
+        <argsstring></argsstring>
+        <name>next_progenitor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="66" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" bodystart="66" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsage__halo__type_1aea3a5d6337a5bcddca56dd31ba9570f2" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int sage_halo_type::first_halo_in_fof_group</definition>
+        <argsstring></argsstring>
+        <name>first_halo_in_fof_group</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="67" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" bodystart="67" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsage__halo__type_1a59f9b1e9c290bb3b1f2fba1635aeb713" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int sage_halo_type::next_halo_in_fof_group</definition>
+        <argsstring></argsstring>
+        <name>next_halo_in_fof_group</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="68" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" bodystart="68" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsage__halo__type_1a358c10f9847d62ac07748fd7febe0d24" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int sage_halo_type::Len</definition>
+        <argsstring></argsstring>
+        <name>Len</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="71" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" bodystart="71" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsage__halo__type_1a0b1f3ca817829722d187f4db52076995" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float sage_halo_type::M_Mean200</definition>
+        <argsstring></argsstring>
+        <name>M_Mean200</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="72" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" bodystart="72" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsage__halo__type_1a2c3f0ded2a944ea0983954474d6005f2" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float sage_halo_type::Mvir</definition>
+        <argsstring></argsstring>
+        <name>Mvir</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="72" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" bodystart="72" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsage__halo__type_1a4b22304927fdfc6b7972726bc4947949" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float sage_halo_type::M_TopHat</definition>
+        <argsstring></argsstring>
+        <name>M_TopHat</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="72" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" bodystart="72" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsage__halo__type_1aedad229841d5e48ebc0b541ebb3e5d16" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float sage_halo_type::Pos[3]</definition>
+        <argsstring>[3]</argsstring>
+        <name>Pos</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="73" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" bodystart="73" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsage__halo__type_1a22be7b94aac0a47a7fcc4a7c32939e21" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float sage_halo_type::Vel[3]</definition>
+        <argsstring>[3]</argsstring>
+        <name>Vel</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="74" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" bodystart="74" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsage__halo__type_1ad87c7f6099e694725aabdd0cbf88ad82" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float sage_halo_type::VelDisp</definition>
+        <argsstring></argsstring>
+        <name>VelDisp</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="75" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" bodystart="75" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsage__halo__type_1aecaa3ae1378947a83d15950070b016fb" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float sage_halo_type::Vmax</definition>
+        <argsstring></argsstring>
+        <name>Vmax</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="76" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" bodystart="76" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsage__halo__type_1a3257f94b567781d77edeb335f6094cc3" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float sage_halo_type::Spin[3]</definition>
+        <argsstring>[3]</argsstring>
+        <name>Spin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="77" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" bodystart="77" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsage__halo__type_1a70c6ced5465493085f811442cecea0c4" prot="public" static="no" mutable="no">
+        <type>long long</type>
+        <definition>long long sage_halo_type::MostBoundID</definition>
+        <argsstring></argsstring>
+        <name>MostBoundID</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="78" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" bodystart="78" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsage__halo__type_1af2ab65b9dc78e027f68e33369aea252d" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int sage_halo_type::SnapNum</definition>
+        <argsstring></argsstring>
+        <name>SnapNum</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="81" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" bodystart="81" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsage__halo__type_1ae1d31bc5e549923ce1e709d74038789d" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int sage_halo_type::FileNr</definition>
+        <argsstring></argsstring>
+        <name>FileNr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="82" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" bodystart="82" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsage__halo__type_1ad201a56fa0664821dde2b08ecc947645" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int sage_halo_type::SubhaloIndex</definition>
+        <argsstring></argsstring>
+        <name>SubhaloIndex</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="83" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" bodystart="83" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structsage__halo__type_1abdec3bee7f0403205f1818938efc32af" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float sage_halo_type::SubHalfMass</definition>
+        <argsstring></argsstring>
+        <name>SubHalfMass</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="84" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" bodystart="84" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>The SAGE compatible halo finder structure. </para>    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="62" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" bodystart="61" bodyend="85"/>
+    <listofallmembers>
+      <member refid="structsage__halo__type_1ad795008c10e6a939b807f5cd30e9c3ee" prot="public" virt="non-virtual"><scope>sage_halo_type</scope><name>descendant</name></member>
+      <member refid="structsage__halo__type_1ae1d31bc5e549923ce1e709d74038789d" prot="public" virt="non-virtual"><scope>sage_halo_type</scope><name>FileNr</name></member>
+      <member refid="structsage__halo__type_1aea3a5d6337a5bcddca56dd31ba9570f2" prot="public" virt="non-virtual"><scope>sage_halo_type</scope><name>first_halo_in_fof_group</name></member>
+      <member refid="structsage__halo__type_1a267216d3946a8ebbe1fc0ebe03626840" prot="public" virt="non-virtual"><scope>sage_halo_type</scope><name>first_progenitor</name></member>
+      <member refid="structsage__halo__type_1a358c10f9847d62ac07748fd7febe0d24" prot="public" virt="non-virtual"><scope>sage_halo_type</scope><name>Len</name></member>
+      <member refid="structsage__halo__type_1a0b1f3ca817829722d187f4db52076995" prot="public" virt="non-virtual"><scope>sage_halo_type</scope><name>M_Mean200</name></member>
+      <member refid="structsage__halo__type_1a4b22304927fdfc6b7972726bc4947949" prot="public" virt="non-virtual"><scope>sage_halo_type</scope><name>M_TopHat</name></member>
+      <member refid="structsage__halo__type_1a70c6ced5465493085f811442cecea0c4" prot="public" virt="non-virtual"><scope>sage_halo_type</scope><name>MostBoundID</name></member>
+      <member refid="structsage__halo__type_1a2c3f0ded2a944ea0983954474d6005f2" prot="public" virt="non-virtual"><scope>sage_halo_type</scope><name>Mvir</name></member>
+      <member refid="structsage__halo__type_1a59f9b1e9c290bb3b1f2fba1635aeb713" prot="public" virt="non-virtual"><scope>sage_halo_type</scope><name>next_halo_in_fof_group</name></member>
+      <member refid="structsage__halo__type_1ae990b3636bc04dbb52531c5a5b8761bc" prot="public" virt="non-virtual"><scope>sage_halo_type</scope><name>next_progenitor</name></member>
+      <member refid="structsage__halo__type_1aedad229841d5e48ebc0b541ebb3e5d16" prot="public" virt="non-virtual"><scope>sage_halo_type</scope><name>Pos</name></member>
+      <member refid="structsage__halo__type_1af2ab65b9dc78e027f68e33369aea252d" prot="public" virt="non-virtual"><scope>sage_halo_type</scope><name>SnapNum</name></member>
+      <member refid="structsage__halo__type_1a3257f94b567781d77edeb335f6094cc3" prot="public" virt="non-virtual"><scope>sage_halo_type</scope><name>Spin</name></member>
+      <member refid="structsage__halo__type_1abdec3bee7f0403205f1818938efc32af" prot="public" virt="non-virtual"><scope>sage_halo_type</scope><name>SubHalfMass</name></member>
+      <member refid="structsage__halo__type_1ad201a56fa0664821dde2b08ecc947645" prot="public" virt="non-virtual"><scope>sage_halo_type</scope><name>SubhaloIndex</name></member>
+      <member refid="structsage__halo__type_1a22be7b94aac0a47a7fcc4a7c32939e21" prot="public" virt="non-virtual"><scope>sage_halo_type</scope><name>Vel</name></member>
+      <member refid="structsage__halo__type_1ad87c7f6099e694725aabdd0cbf88ad82" prot="public" virt="non-virtual"><scope>sage_halo_type</scope><name>VelDisp</name></member>
+      <member refid="structsage__halo__type_1aecaa3ae1378947a83d15950070b016fb" prot="public" virt="non-virtual"><scope>sage_halo_type</scope><name>Vmax</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

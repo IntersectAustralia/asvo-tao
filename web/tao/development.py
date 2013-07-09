@@ -29,3 +29,9 @@ DATABASES = {
         }
     }
 }
+
+AAF_DS_URL = 'https://ds.test.aaf.edu.au/discovery/DS'
+AAF_APP_ID = 'https://localhost:8000/shibboleth'
+AAF_SESSION_URL = 'https://localhost:8000/Shibboleth.sso/Login'
+AAF_LOGOUT_URL = 'https://localhost:8000/Shibboleth.sso/Logout'
+USE_CAPTCHA=True

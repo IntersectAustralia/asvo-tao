@@ -1,0 +1,152 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="class_g_s_point2_d_compare" kind="class" prot="public">
+    <compoundname>GSPoint2DCompare</compoundname>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_g_s_point2_d_compare_1a6565ae0a6cb40a412f5e72558ed3271f" prot="private" static="no" mutable="no">
+        <type><ref refid="structgs__point2d" kindref="compound">gs_point2d</ref> *</type>
+        <definition>gs_point2d* GSPoint2DCompare::anchor</definition>
+        <argsstring></argsstring>
+        <name>anchor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" line="86" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" bodystart="86" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_g_s_point2_d_compare_1a5f1ee29c548143850250ba4ff2a020a7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>GSPoint2DCompare::GSPoint2DCompare</definition>
+        <argsstring>(gs_point2d *_anchor)</argsstring>
+        <name>GSPoint2DCompare</name>
+        <param>
+          <type><ref refid="structgs__point2d" kindref="compound">gs_point2d</ref> *</type>
+          <declname>_anchor</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" line="53" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" bodystart="53" bodyend="53"/>
+      </memberdef>
+      <memberdef kind="function" id="class_g_s_point2_d_compare_1af1b994734c1817514087cd9d6a67341c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool GSPoint2DCompare::operator()</definition>
+        <argsstring>(const gs_point2d &amp;p1, const gs_point2d &amp;p2)</argsstring>
+        <name>operator()</name>
+        <param>
+          <type>const <ref refid="structgs__point2d" kindref="compound">gs_point2d</ref> &amp;</type>
+          <declname>p1</declname>
+        </param>
+        <param>
+          <type>const <ref refid="structgs__point2d" kindref="compound">gs_point2d</ref> &amp;</type>
+          <declname>p2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" line="56" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" bodystart="55" bodyend="64"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="class_g_s_point2_d_compare_1a79297396ba1d7e1b38c3ade487d1ccaf" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool GSPoint2DCompare::is_equal</definition>
+        <argsstring>(const gs_point2d p1, gs_point2d p2)</argsstring>
+        <name>is_equal</name>
+        <param>
+          <type>const <ref refid="structgs__point2d" kindref="compound">gs_point2d</ref></type>
+          <declname>p1</declname>
+        </param>
+        <param>
+          <type><ref refid="structgs__point2d" kindref="compound">gs_point2d</ref></type>
+          <declname>p2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" line="69" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" bodystart="68" bodyend="71"/>
+      </memberdef>
+      <memberdef kind="function" id="class_g_s_point2_d_compare_1a758a2bab4f965fbc52250d26e737f835" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool GSPoint2DCompare::is_equal</definition>
+        <argsstring>(const double v1, const double &amp;v2, const double epsilon=1.0e-12)</argsstring>
+        <name>is_equal</name>
+        <param>
+          <type>const double</type>
+          <declname>v1</declname>
+        </param>
+        <param>
+          <type>const double &amp;</type>
+          <declname>v2</declname>
+        </param>
+        <param>
+          <type>const double</type>
+          <declname>epsilon</declname>
+          <defval>1.0e-12</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" line="74" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" bodystart="73" bodyend="77"/>
+      </memberdef>
+      <memberdef kind="function" id="class_g_s_point2_d_compare_1aeff7984846aa78602f68eaea28b173dc" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>double GSPoint2DCompare::lay_distance</definition>
+        <argsstring>(const double &amp;x1, const double &amp;y1, const double &amp;x2, const double &amp;y2)</argsstring>
+        <name>lay_distance</name>
+        <param>
+          <type>const double &amp;</type>
+          <declname>x1</declname>
+        </param>
+        <param>
+          <type>const double &amp;</type>
+          <declname>y1</declname>
+        </param>
+        <param>
+          <type>const double &amp;</type>
+          <declname>x2</declname>
+        </param>
+        <param>
+          <type>const double &amp;</type>
+          <declname>y2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" line="80" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" bodystart="79" bodyend="84"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" line="50" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/GrahamScanConvexHull.h" bodystart="49" bodyend="88"/>
+    <listofallmembers>
+      <member refid="class_g_s_point2_d_compare_1a6565ae0a6cb40a412f5e72558ed3271f" prot="private" virt="non-virtual"><scope>GSPoint2DCompare</scope><name>anchor</name></member>
+      <member refid="class_g_s_point2_d_compare_1a5f1ee29c548143850250ba4ff2a020a7" prot="public" virt="non-virtual"><scope>GSPoint2DCompare</scope><name>GSPoint2DCompare</name></member>
+      <member refid="class_g_s_point2_d_compare_1a79297396ba1d7e1b38c3ade487d1ccaf" prot="private" virt="non-virtual"><scope>GSPoint2DCompare</scope><name>is_equal</name></member>
+      <member refid="class_g_s_point2_d_compare_1a758a2bab4f965fbc52250d26e737f835" prot="private" virt="non-virtual"><scope>GSPoint2DCompare</scope><name>is_equal</name></member>
+      <member refid="class_g_s_point2_d_compare_1aeff7984846aa78602f68eaea28b173dc" prot="private" virt="non-virtual"><scope>GSPoint2DCompare</scope><name>lay_distance</name></member>
+      <member refid="class_g_s_point2_d_compare_1af1b994734c1817514087cd9d6a67341c" prot="public" virt="non-virtual"><scope>GSPoint2DCompare</scope><name>operator()</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

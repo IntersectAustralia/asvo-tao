@@ -1,0 +1,255 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="class_cxx_test_1_1_real_world_description" kind="class" prot="public">
+    <compoundname>CxxTest::RealWorldDescription</compoundname>
+    <basecompoundref refid="class_cxx_test_1_1_world_description" prot="public" virt="non-virtual">CxxTest::WorldDescription</basecompoundref>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="class_cxx_test_1_1_real_world_description_1a8c1e967356e4c7ffb09d2ab411f168c9" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="struct_cxx_test_1_1_list" kindref="compound">List</ref> &amp;</type>
+        <definition>List &amp; CxxTest::RealWorldDescription::suites</definition>
+        <argsstring>()</argsstring>
+        <name>suites</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.h" line="204" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.cpp" bodystart="208" bodyend="211"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_real_world_description_1ac6226291ebf9799da9909e5c3ff56c55" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::RealWorldDescription::reportError</definition>
+        <argsstring>(const char *message)</argsstring>
+        <name>reportError</name>
+        <param>
+          <type>const char *</type>
+          <declname>message</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.h" line="215" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.cpp" bodystart="294" bodyend="297"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_cxx_test_1_1_real_world_description_1aaca249bcca07f618a34d0ba6ebd31574" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>unsigned</type>
+        <definition>unsigned CxxTest::RealWorldDescription::numSuites</definition>
+        <argsstring>(void) const </argsstring>
+        <name>numSuites</name>
+        <reimplements refid="class_cxx_test_1_1_world_description_1a525cc724abe3829196fe8cae148bb08d">numSuites</reimplements>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.h" line="205" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.cpp" bodystart="213" bodyend="216"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_real_world_description_1a3d2c1cea9a765a75ce9cdda97f86b08e" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>unsigned</type>
+        <definition>unsigned CxxTest::RealWorldDescription::numTotalTests</definition>
+        <argsstring>(void) const </argsstring>
+        <name>numTotalTests</name>
+        <reimplements refid="class_cxx_test_1_1_world_description_1ab79216449d209734acfcaf7f1c6d4846">numTotalTests</reimplements>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.h" line="206" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.cpp" bodystart="218" bodyend="224"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_real_world_description_1aa9af72569dbe6d0dd4fccc9f0bbd4b0d" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type><ref refid="class_cxx_test_1_1_suite_description" kindref="compound">SuiteDescription</ref> *</type>
+        <definition>SuiteDescription * CxxTest::RealWorldDescription::firstSuite</definition>
+        <argsstring>()</argsstring>
+        <name>firstSuite</name>
+        <reimplements refid="class_cxx_test_1_1_world_description_1a742d75a345bc7ff0ace6d48df6e64b59">firstSuite</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.h" line="207" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.cpp" bodystart="226" bodyend="229"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_real_world_description_1a56d95267a75db4aa353f06df22ca819c" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>const <ref refid="class_cxx_test_1_1_suite_description" kindref="compound">SuiteDescription</ref> *</type>
+        <definition>const SuiteDescription * CxxTest::RealWorldDescription::firstSuite</definition>
+        <argsstring>() const </argsstring>
+        <name>firstSuite</name>
+        <reimplements refid="class_cxx_test_1_1_world_description_1aab0c2fc965a9041ebfff872000db5636">firstSuite</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.h" line="208" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.cpp" bodystart="231" bodyend="234"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_real_world_description_1af55c9a0684886f191ee558435133425d" prot="public" static="no" const="yes" explicit="no" inline="no" virt="virtual">
+        <type>const <ref refid="class_cxx_test_1_1_suite_description" kindref="compound">SuiteDescription</ref> &amp;</type>
+        <definition>const SuiteDescription &amp; CxxTest::RealWorldDescription::suiteDescription</definition>
+        <argsstring>(unsigned i) const </argsstring>
+        <name>suiteDescription</name>
+        <reimplements refid="class_cxx_test_1_1_world_description_1a17d3c470d2c5eab9a2dab8542914ff9f">suiteDescription</reimplements>
+        <param>
+          <type>unsigned</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.h" line="209" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.cpp" bodystart="236" bodyend="239"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_real_world_description_1a4d413ee630a6dd87574174d8223cc423" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::RealWorldDescription::activateAllTests</definition>
+        <argsstring>()</argsstring>
+        <name>activateAllTests</name>
+        <reimplements refid="class_cxx_test_1_1_world_description_1afb0a2e1994aecafa541f18737e5918a6">activateAllTests</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.h" line="210" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.cpp" bodystart="241" bodyend="246"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_real_world_description_1a6095c390b15180cc3cd62f0990e178c9" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>bool</type>
+        <definition>bool CxxTest::RealWorldDescription::leaveOnly</definition>
+        <argsstring>(const char *suiteName, const char *testName=0)</argsstring>
+        <name>leaveOnly</name>
+        <reimplements refid="class_cxx_test_1_1_world_description_1ab7d5d74e073d9326929b8b57ceb91502">leaveOnly</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>suiteName</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>testName</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.h" line="211" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.cpp" bodystart="248" bodyend="260"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_real_world_description_1a0e5c1168073ab7f75439d2d56561abb7" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>bool</type>
+        <definition>bool CxxTest::RealWorldDescription::setUp</definition>
+        <argsstring>()</argsstring>
+        <name>setUp</name>
+        <reimplements refid="class_cxx_test_1_1_link_1aa540f5bc2bdc42aea499c5518c23f0b3">setUp</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.h" line="213" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.cpp" bodystart="262" bodyend="276"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_real_world_description_1ac3285f884a779c0d7d371a284fd8e19f" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>bool</type>
+        <definition>bool CxxTest::RealWorldDescription::tearDown</definition>
+        <argsstring>()</argsstring>
+        <name>tearDown</name>
+        <reimplements refid="class_cxx_test_1_1_link_1aefe59c002cd2fc0fac1b0e545d226dab">tearDown</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.h" line="214" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.cpp" bodystart="278" bodyend="292"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="297">
+        <label>CxxTest::Link</label>
+        <link refid="class_cxx_test_1_1_link"/>
+      </node>
+      <node id="296">
+        <label>CxxTest::WorldDescription</label>
+        <link refid="class_cxx_test_1_1_world_description"/>
+        <childnode refid="297" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="295">
+        <label>CxxTest::RealWorldDescription</label>
+        <link refid="class_cxx_test_1_1_real_world_description"/>
+        <childnode refid="296" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="300">
+        <label>CxxTest::Link</label>
+        <link refid="class_cxx_test_1_1_link"/>
+      </node>
+      <node id="299">
+        <label>CxxTest::WorldDescription</label>
+        <link refid="class_cxx_test_1_1_world_description"/>
+        <childnode refid="300" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="298">
+        <label>CxxTest::RealWorldDescription</label>
+        <link refid="class_cxx_test_1_1_real_world_description"/>
+        <childnode refid="299" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.h" line="202" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.h" bodystart="201" bodyend="216"/>
+    <listofallmembers>
+      <member refid="class_cxx_test_1_1_real_world_description_1a4d413ee630a6dd87574174d8223cc423" prot="public" virt="virtual"><scope>CxxTest::RealWorldDescription</scope><name>activateAllTests</name></member>
+      <member refid="class_cxx_test_1_1_link_1a2230eceb6d776394a32fddb1514cf93a" prot="public" virt="non-virtual"><scope>CxxTest::RealWorldDescription</scope><name>active</name></member>
+      <member refid="class_cxx_test_1_1_link_1ad69f02495f7a28842a4683ad436c5fb4" prot="public" virt="non-virtual"><scope>CxxTest::RealWorldDescription</scope><name>attach</name></member>
+      <member refid="class_cxx_test_1_1_link_1ad3544121b85766c6f4a8b5b6fa98599e" prot="public" virt="non-virtual"><scope>CxxTest::RealWorldDescription</scope><name>detach</name></member>
+      <member refid="class_cxx_test_1_1_real_world_description_1aa9af72569dbe6d0dd4fccc9f0bbd4b0d" prot="public" virt="virtual"><scope>CxxTest::RealWorldDescription</scope><name>firstSuite</name></member>
+      <member refid="class_cxx_test_1_1_real_world_description_1a56d95267a75db4aa353f06df22ca819c" prot="public" virt="virtual"><scope>CxxTest::RealWorldDescription</scope><name>firstSuite</name></member>
+      <member refid="class_cxx_test_1_1_link_1aa1c8015f02e8541749956f2d551dbed3" prot="public" virt="non-virtual"><scope>CxxTest::RealWorldDescription</scope><name>justNext</name></member>
+      <member refid="class_cxx_test_1_1_link_1ab77cb38969bd38f7b3491a455134c12c" prot="public" virt="non-virtual"><scope>CxxTest::RealWorldDescription</scope><name>justPrev</name></member>
+      <member refid="class_cxx_test_1_1_real_world_description_1a6095c390b15180cc3cd62f0990e178c9" prot="public" virt="virtual"><scope>CxxTest::RealWorldDescription</scope><name>leaveOnly</name></member>
+      <member refid="class_cxx_test_1_1_link_1aedaab303be994c92afb366f5e6476be5" prot="public" virt="non-virtual"><scope>CxxTest::RealWorldDescription</scope><name>Link</name></member>
+      <member refid="class_cxx_test_1_1_world_description_1aaa3db34161f33cba76ef6ad7d34c23f0a4ee2343844c40ffdcb94594a22fdaf6a" prot="public" virt="non-virtual"><scope>CxxTest::RealWorldDescription</scope><name>MAX_STRLEN_TOTAL_TESTS</name></member>
+      <member refid="class_cxx_test_1_1_link_1a4c03b844ac15861f40d2355d650e8ec7" prot="public" virt="non-virtual"><scope>CxxTest::RealWorldDescription</scope><name>next</name></member>
+      <member refid="class_cxx_test_1_1_link_1a949bdd1988b71318f3d58232344dc35a" prot="public" virt="non-virtual"><scope>CxxTest::RealWorldDescription</scope><name>next</name></member>
+      <member refid="class_cxx_test_1_1_real_world_description_1aaca249bcca07f618a34d0ba6ebd31574" prot="public" virt="virtual"><scope>CxxTest::RealWorldDescription</scope><name>numSuites</name></member>
+      <member refid="class_cxx_test_1_1_real_world_description_1a3d2c1cea9a765a75ce9cdda97f86b08e" prot="public" virt="virtual"><scope>CxxTest::RealWorldDescription</scope><name>numTotalTests</name></member>
+      <member refid="class_cxx_test_1_1_link_1aedc0d2dc3d6f11f5d566c8c21ac7b660" prot="public" virt="non-virtual"><scope>CxxTest::RealWorldDescription</scope><name>prev</name></member>
+      <member refid="class_cxx_test_1_1_link_1ac263414ff3438af00306bb2d0b6aa483" prot="public" virt="non-virtual"><scope>CxxTest::RealWorldDescription</scope><name>prev</name></member>
+      <member refid="class_cxx_test_1_1_real_world_description_1ac6226291ebf9799da9909e5c3ff56c55" prot="public" virt="non-virtual"><scope>CxxTest::RealWorldDescription</scope><name>reportError</name></member>
+      <member refid="class_cxx_test_1_1_link_1aa06c69998cd5c34348bab11d46577b51" prot="public" virt="non-virtual"><scope>CxxTest::RealWorldDescription</scope><name>setActive</name></member>
+      <member refid="class_cxx_test_1_1_real_world_description_1a0e5c1168073ab7f75439d2d56561abb7" prot="public" virt="virtual"><scope>CxxTest::RealWorldDescription</scope><name>setUp</name></member>
+      <member refid="class_cxx_test_1_1_world_description_1a780f7dc4f29637dbbcc06d93d52963e5" prot="public" virt="non-virtual"><scope>CxxTest::RealWorldDescription</scope><name>strTotalTests</name></member>
+      <member refid="class_cxx_test_1_1_real_world_description_1af55c9a0684886f191ee558435133425d" prot="public" virt="virtual"><scope>CxxTest::RealWorldDescription</scope><name>suiteDescription</name></member>
+      <member refid="class_cxx_test_1_1_real_world_description_1a8c1e967356e4c7ffb09d2ab411f168c9" prot="public" virt="non-virtual"><scope>CxxTest::RealWorldDescription</scope><name>suites</name></member>
+      <member refid="class_cxx_test_1_1_real_world_description_1ac3285f884a779c0d7d371a284fd8e19f" prot="public" virt="virtual"><scope>CxxTest::RealWorldDescription</scope><name>tearDown</name></member>
+      <member refid="class_cxx_test_1_1_link_1a8d1bb253d6975839d3c337bfcb8d744a" prot="public" virt="virtual"><scope>CxxTest::RealWorldDescription</scope><name>~Link</name></member>
+      <member refid="class_cxx_test_1_1_world_description_1acdc8f407e8bc17e8e85d3a3f426dfdcc" prot="public" virt="virtual"><scope>CxxTest::RealWorldDescription</scope><name>~WorldDescription</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

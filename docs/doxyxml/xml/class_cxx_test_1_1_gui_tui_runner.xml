@@ -1,0 +1,180 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="class_cxx_test_1_1_gui_tui_runner" kind="class" prot="public">
+    <compoundname>CxxTest::GuiTuiRunner</compoundname>
+    <basecompoundref refid="class_cxx_test_1_1_tee_listener" prot="public" virt="non-virtual">CxxTest::TeeListener</basecompoundref>
+    <templateparamlist>
+      <param>
+        <type>class GuiT</type>
+      </param>
+      <param>
+        <type>class TuiT</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_cxx_test_1_1_gui_tui_runner_1a4342a6f93b425095f9d4b5c6d01ffca5" prot="private" static="no" mutable="no">
+        <type>int &amp;</type>
+        <definition>int&amp; CxxTest::GuiTuiRunner&lt; GuiT, TuiT &gt;::_argc</definition>
+        <argsstring></argsstring>
+        <name>_argc</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Gui.h" line="156" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Gui.h" bodystart="156" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_gui_tui_runner_1afc1a140543c3620797b693e4a362c2bc" prot="private" static="no" mutable="no">
+        <type>char **</type>
+        <definition>char** CxxTest::GuiTuiRunner&lt; GuiT, TuiT &gt;::_argv</definition>
+        <argsstring></argsstring>
+        <name>_argv</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Gui.h" line="157" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Gui.h" bodystart="157" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_gui_tui_runner_1a78462a4a92a33e4739007c58beb7a25c" prot="private" static="no" mutable="no">
+        <type>GuiT</type>
+        <definition>GuiT CxxTest::GuiTuiRunner&lt; GuiT, TuiT &gt;::_gui</definition>
+        <argsstring></argsstring>
+        <name>_gui</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Gui.h" line="158" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Gui.h" bodystart="158" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_gui_tui_runner_1a31d8a0f8e331ba1936b4d3f2befb1700" prot="private" static="no" mutable="no">
+        <type>TuiT</type>
+        <definition>TuiT CxxTest::GuiTuiRunner&lt; GuiT, TuiT &gt;::_tui</definition>
+        <argsstring></argsstring>
+        <name>_tui</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Gui.h" line="159" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Gui.h" bodystart="159" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_cxx_test_1_1_gui_tui_runner_1ad70e2e94751d4ab932af090ca299ae3a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::GuiTuiRunner&lt; GuiT, TuiT &gt;::GuiTuiRunner</definition>
+        <argsstring>(int &amp;argc, char **argv)</argsstring>
+        <name>GuiTuiRunner</name>
+        <param>
+          <type>int &amp;</type>
+          <declname>argc</declname>
+        </param>
+        <param>
+          <type>char **</type>
+          <declname>argv</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Gui.h" line="165" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Gui.h" bodystart="162" bodyend="168"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_gui_tui_runner_1a0408e6e7a9768dd9dcca699b1c172552" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int CxxTest::GuiTuiRunner&lt; GuiT, TuiT &gt;::run</definition>
+        <argsstring>()</argsstring>
+        <name>run</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Gui.h" line="171" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Gui.h" bodystart="170" bodyend="174"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="167">
+        <label>CxxTest::GuiTuiRunner&lt; GuiT, TuiT &gt;</label>
+        <link refid="class_cxx_test_1_1_gui_tui_runner"/>
+        <childnode refid="168" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="169">
+        <label>CxxTest::TestListener</label>
+        <link refid="class_cxx_test_1_1_test_listener"/>
+      </node>
+      <node id="168">
+        <label>CxxTest::TeeListener</label>
+        <link refid="class_cxx_test_1_1_tee_listener"/>
+        <childnode refid="169" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="170">
+        <label>CxxTest::GuiTuiRunner&lt; GuiT, TuiT &gt;</label>
+        <link refid="class_cxx_test_1_1_gui_tui_runner"/>
+        <childnode refid="171" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="172">
+        <label>CxxTest::TestListener</label>
+        <link refid="class_cxx_test_1_1_test_listener"/>
+      </node>
+      <node id="171">
+        <label>CxxTest::TeeListener</label>
+        <link refid="class_cxx_test_1_1_tee_listener"/>
+        <childnode refid="172" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Gui.h" line="155" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/Gui.h" bodystart="154" bodyend="175"/>
+    <listofallmembers>
+      <member refid="class_cxx_test_1_1_gui_tui_runner_1a4342a6f93b425095f9d4b5c6d01ffca5" prot="private" virt="non-virtual"><scope>CxxTest::GuiTuiRunner</scope><name>_argc</name></member>
+      <member refid="class_cxx_test_1_1_gui_tui_runner_1afc1a140543c3620797b693e4a362c2bc" prot="private" virt="non-virtual"><scope>CxxTest::GuiTuiRunner</scope><name>_argv</name></member>
+      <member refid="class_cxx_test_1_1_gui_tui_runner_1a78462a4a92a33e4739007c58beb7a25c" prot="private" virt="non-virtual"><scope>CxxTest::GuiTuiRunner</scope><name>_gui</name></member>
+      <member refid="class_cxx_test_1_1_gui_tui_runner_1a31d8a0f8e331ba1936b4d3f2befb1700" prot="private" virt="non-virtual"><scope>CxxTest::GuiTuiRunner</scope><name>_tui</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1ac65623839949cc08dc8641b880267619" prot="public" virt="virtual"><scope>CxxTest::GuiTuiRunner</scope><name>enterSuite</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1a40cf28118bcd40ced4d6dfab8e33cc7e" prot="public" virt="virtual"><scope>CxxTest::GuiTuiRunner</scope><name>enterTest</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1ad5700c6452a09529bcdcac7ae566e039" prot="public" virt="virtual"><scope>CxxTest::GuiTuiRunner</scope><name>enterWorld</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1a7751be4a9be622f92fe7ba3157741b21" prot="public" virt="virtual"><scope>CxxTest::GuiTuiRunner</scope><name>failedAssert</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1a7074eaf638a7a8ceb0727dce15f56e13" prot="public" virt="virtual"><scope>CxxTest::GuiTuiRunner</scope><name>failedAssertDelta</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1a536d7f12ca72f2868f84acd73835104b" prot="public" virt="virtual"><scope>CxxTest::GuiTuiRunner</scope><name>failedAssertDiffers</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1a5ff8dcc7c553d804710f851438b20df0" prot="public" virt="virtual"><scope>CxxTest::GuiTuiRunner</scope><name>failedAssertEquals</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1ad1ccf0beefdccabf05fe63599e2f3869" prot="public" virt="virtual"><scope>CxxTest::GuiTuiRunner</scope><name>failedAssertLessThan</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1afef21509f32909144f440750b562b2ba" prot="public" virt="virtual"><scope>CxxTest::GuiTuiRunner</scope><name>failedAssertLessThanEquals</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1adee9f163d0803c289b967c5a5dfa5ff1" prot="public" virt="virtual"><scope>CxxTest::GuiTuiRunner</scope><name>failedAssertPredicate</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1ad6ff068c0e8b7807bb11691bfe5f6f3c" prot="public" virt="virtual"><scope>CxxTest::GuiTuiRunner</scope><name>failedAssertRelation</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1a9360d7a7b7a16104d215751061f85a8b" prot="public" virt="virtual"><scope>CxxTest::GuiTuiRunner</scope><name>failedAssertSameData</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1a29ecd619ba4297177e1994c7550fffec" prot="public" virt="virtual"><scope>CxxTest::GuiTuiRunner</scope><name>failedAssertThrows</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1a43a8cb93bb7bfcdd73006f4ddb851b1b" prot="public" virt="virtual"><scope>CxxTest::GuiTuiRunner</scope><name>failedAssertThrowsNot</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1ae5e14e4e4b38a80802fb737b52a98490" prot="public" virt="virtual"><scope>CxxTest::GuiTuiRunner</scope><name>failedTest</name></member>
+      <member refid="class_cxx_test_1_1_gui_tui_runner_1ad70e2e94751d4ab932af090ca299ae3a" prot="public" virt="non-virtual"><scope>CxxTest::GuiTuiRunner</scope><name>GuiTuiRunner</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1aab9624116110d6467880ccbcbe10d88b" prot="public" virt="virtual"><scope>CxxTest::GuiTuiRunner</scope><name>leaveSuite</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1ab969f02289bce8276b90f10def738561" prot="public" virt="virtual"><scope>CxxTest::GuiTuiRunner</scope><name>leaveTest</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1ac7902d501dac45dd267a43f0526c55cc" prot="public" virt="virtual"><scope>CxxTest::GuiTuiRunner</scope><name>leaveWorld</name></member>
+      <member refid="class_cxx_test_1_1_gui_tui_runner_1a0408e6e7a9768dd9dcca699b1c172552" prot="public" virt="non-virtual"><scope>CxxTest::GuiTuiRunner</scope><name>run</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1aa91dcb312fe21c395f1eb4cb488b0316" prot="public" virt="non-virtual"><scope>CxxTest::GuiTuiRunner</scope><name>setFirst</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1afde9102d8c0d6080dd2a10bb252c802d" prot="public" virt="non-virtual"><scope>CxxTest::GuiTuiRunner</scope><name>setSecond</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1a652c427abe1564e44698fadd0c78caf0" prot="public" virt="non-virtual"><scope>CxxTest::GuiTuiRunner</scope><name>TeeListener</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1ab5958bd800642f706c2a7a0e8741778f" prot="public" virt="non-virtual"><scope>CxxTest::GuiTuiRunner</scope><name>TestListener</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1ab98d4b8047dc6c6d4bf137ff60e5e2a0" prot="public" virt="virtual"><scope>CxxTest::GuiTuiRunner</scope><name>trace</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1a6d316d543696552b5e5420598fbe30ba" prot="public" virt="virtual"><scope>CxxTest::GuiTuiRunner</scope><name>warning</name></member>
+      <member refid="class_cxx_test_1_1_tee_listener_1a60f17c0352dc36c7c414cf9fb5d76007" prot="public" virt="virtual"><scope>CxxTest::GuiTuiRunner</scope><name>~TeeListener</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1a4d4cb5d990e0c4b0891f64f9e055b729" prot="public" virt="virtual"><scope>CxxTest::GuiTuiRunner</scope><name>~TestListener</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

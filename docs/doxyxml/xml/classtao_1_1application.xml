@@ -1,0 +1,255 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="classtao_1_1application" kind="class" prot="public">
+    <compoundname>tao::application</compoundname>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classtao_1_1application_1a002e95ee6ad13b9697343d6c4904f986" prot="protected" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::application::_xml_file</definition>
+        <argsstring></argsstring>
+        <name>_xml_file</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/application.hh" line="75" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/application.hh" bodystart="75" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1application_1a8088bbc76d0d7b4d5930020c7dfa8c14" prot="protected" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::application::_dbcfg_file</definition>
+        <argsstring></argsstring>
+        <name>_dbcfg_file</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/application.hh" line="76" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/application.hh" bodystart="76" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1application_1a8c8dcbf06c65c1268a1d38374f28e40b" prot="protected" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::application::_currentxml_version</definition>
+        <argsstring></argsstring>
+        <name>_currentxml_version</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/application.hh" line="77" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/application.hh" bodystart="77" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1application_1ae64e9fee6387951209fdb4d8c42463c2" prot="protected" static="no" mutable="no">
+        <type>pugi::xml_document</type>
+        <definition>pugi::xml_document tao::application::_doc</definition>
+        <argsstring></argsstring>
+        <name>_doc</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/application.hh" line="78" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/application.hh" bodystart="78" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classtao_1_1application_1a5e04594ca3b3e4534aa202d3f7277260" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>tao::application::application</definition>
+        <argsstring>()</argsstring>
+        <name>application</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/application.hh" line="20" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/application.cc" bodystart="12" bodyend="15"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1application_1a7973398365addd72160eb93f2b02268b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>tao::application::application</definition>
+        <argsstring>(int argc, char *argv[])</argsstring>
+        <name>application</name>
+        <param>
+          <type>int</type>
+          <declname>argc</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>argv</declname>
+          <array>[]</array>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/application.hh" line="23" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/application.cc" bodystart="17" bodyend="22"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1application_1a889e93ed6f19eb925eacb9588cdef53c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::application::arguments</definition>
+        <argsstring>(int argc, char *argv[])</argsstring>
+        <name>arguments</name>
+        <param>
+          <type>int</type>
+          <declname>argc</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>argv</declname>
+          <array>[]</array>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/application.hh" line="27" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/application.cc" bodystart="25" bodyend="58"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1application_1a1953437f1dcfdb7a5556ae1f33f087d9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::application::run</definition>
+        <argsstring>()</argsstring>
+        <name>run</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/application.hh" line="30" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/application.cc" bodystart="61" bodyend="115"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classtao_1_1application_1abd594e9fcbfd82b525f1010f8c503bf3" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::application::_load_modules</definition>
+        <argsstring>()</argsstring>
+        <name>_load_modules</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Load modules. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/application.hh" line="38" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/application.cc" bodystart="121" bodyend="155"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1application_1a8285ffd272b0be943f622277f6597a35" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::application::_connect_parents</definition>
+        <argsstring>()</argsstring>
+        <name>_connect_parents</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Connect parents. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/application.hh" line="44" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/application.cc" bodystart="161" bodyend="177"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1application_1a7753f5bf1e95d8289a2f4f21967491ea" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::application::_preprocess_xml</definition>
+        <argsstring>()</argsstring>
+        <name>_preprocess_xml</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Massage incoming XML. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/application.hh" line="51" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/application.cc" bodystart="184" bodyend="309"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1application_1ad6c535b103f738e96ed8251e42936942" prot="protected" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::application::_read_xml</definition>
+        <argsstring>(options::xml_dict &amp;xml) const </argsstring>
+        <name>_read_xml</name>
+        <param>
+          <type>options::xml_dict &amp;</type>
+          <declname>xml</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Read the XML file into a dictionary. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/application.hh" line="59" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/application.cc" bodystart="316" bodyend="327"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1application_1ace4cb2a73dd40751e91c7c361eba5d6b" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::application::_setup_log</definition>
+        <argsstring>(const string &amp;filename)</argsstring>
+        <name>_setup_log</name>
+        <param>
+          <type>const string &amp;</type>
+          <declname>filename</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Prepare log file. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/application.hh" line="65" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/application.cc" bodystart="333" bodyend="348"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1application_1a2bbaa52ea9ebe5d914cd515e9b936e50" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::application::_execute</definition>
+        <argsstring>()</argsstring>
+        <name>_execute</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Execute the application. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/application.hh" line="71" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/application.cc" bodystart="354" bodyend="385"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="12">
+        <label>string</label>
+      </node>
+      <node id="11">
+        <label>tao::application</label>
+        <link refid="classtao_1_1application"/>
+        <childnode refid="12" relation="usage">
+          <edgelabel>_currentxml_version</edgelabel>
+          <edgelabel>_dbcfg_file</edgelabel>
+          <edgelabel>_xml_file</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/application.hh" line="17" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/application.hh" bodystart="16" bodyend="79"/>
+    <listofallmembers>
+      <member refid="classtao_1_1application_1a8285ffd272b0be943f622277f6597a35" prot="protected" virt="non-virtual"><scope>tao::application</scope><name>_connect_parents</name></member>
+      <member refid="classtao_1_1application_1a8c8dcbf06c65c1268a1d38374f28e40b" prot="protected" virt="non-virtual"><scope>tao::application</scope><name>_currentxml_version</name></member>
+      <member refid="classtao_1_1application_1a8088bbc76d0d7b4d5930020c7dfa8c14" prot="protected" virt="non-virtual"><scope>tao::application</scope><name>_dbcfg_file</name></member>
+      <member refid="classtao_1_1application_1ae64e9fee6387951209fdb4d8c42463c2" prot="protected" virt="non-virtual"><scope>tao::application</scope><name>_doc</name></member>
+      <member refid="classtao_1_1application_1a2bbaa52ea9ebe5d914cd515e9b936e50" prot="protected" virt="non-virtual"><scope>tao::application</scope><name>_execute</name></member>
+      <member refid="classtao_1_1application_1abd594e9fcbfd82b525f1010f8c503bf3" prot="protected" virt="non-virtual"><scope>tao::application</scope><name>_load_modules</name></member>
+      <member refid="classtao_1_1application_1a7753f5bf1e95d8289a2f4f21967491ea" prot="protected" virt="non-virtual"><scope>tao::application</scope><name>_preprocess_xml</name></member>
+      <member refid="classtao_1_1application_1ad6c535b103f738e96ed8251e42936942" prot="protected" virt="non-virtual"><scope>tao::application</scope><name>_read_xml</name></member>
+      <member refid="classtao_1_1application_1ace4cb2a73dd40751e91c7c361eba5d6b" prot="protected" virt="non-virtual"><scope>tao::application</scope><name>_setup_log</name></member>
+      <member refid="classtao_1_1application_1a002e95ee6ad13b9697343d6c4904f986" prot="protected" virt="non-virtual"><scope>tao::application</scope><name>_xml_file</name></member>
+      <member refid="classtao_1_1application_1a5e04594ca3b3e4534aa202d3f7277260" prot="public" virt="non-virtual"><scope>tao::application</scope><name>application</name></member>
+      <member refid="classtao_1_1application_1a7973398365addd72160eb93f2b02268b" prot="public" virt="non-virtual"><scope>tao::application</scope><name>application</name></member>
+      <member refid="classtao_1_1application_1a889e93ed6f19eb925eacb9588cdef53c" prot="public" virt="non-virtual"><scope>tao::application</scope><name>arguments</name></member>
+      <member refid="classtao_1_1application_1a1953437f1dcfdb7a5556ae1f33f087d9" prot="public" virt="non-virtual"><scope>tao::application</scope><name>run</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="dir_870029406f19bbe9414b04be8cb20ce1" kind="dir">
+    <compoundname>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi</compoundname>
+    <innerfile refid="bolshoi__convert2_8cc">bolshoi_convert2.cc</innerfile>
+    <innerfile refid="bolshoi__forest__sizes_8cc">bolshoi_forest_sizes.cc</innerfile>
+    <innerfile refid="bolshoi__preprocess_8cc">bolshoi_preprocess.cc</innerfile>
+    <innerfile refid="exporter_8cc">exporter.cc</innerfile>
+    <innerfile refid="exporter_8hh">exporter.hh</innerfile>
+    <innerfile refid="to__hdf5_8cc">to_hdf5.cc</innerfile>
+    <innerfile refid="types_8cc">types.cc</innerfile>
+    <innerfile refid="types_8hh">types.hh</innerfile>
+    <innerfile refid="utils_8cc">utils.cc</innerfile>
+    <innerfile refid="utils_8hh">utils.hh</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,146 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="class_cxx_test_1_1_error_printer_1_1_adapter" kind="class" prot="private">
+    <compoundname>CxxTest::ErrorPrinter::Adapter</compoundname>
+    <basecompoundref refid="class_cxx_test_1_1_output_stream" prot="public" virt="non-virtual">CxxTest::OutputStream</basecompoundref>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="class_cxx_test_1_1_error_printer_1_1_adapter_1a26ce0dc4f34cd8bc1c26631db5f24ce1" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::ErrorPrinter::Adapter::CXXTEST_STD</definition>
+        <argsstring>(ostream)&amp;_o</argsstring>
+        <name>CXXTEST_STD</name>
+        <param>
+          <type>ostream</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorPrinter.h" line="38"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_cxx_test_1_1_error_printer_1_1_adapter_1a2998501e7f0fe04bfebbcde6e1db1789" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::ErrorPrinter::Adapter::Adapter</definition>
+        <argsstring>(CXXTEST_STD(ostream)&amp;o)</argsstring>
+        <name>Adapter</name>
+        <param>
+          <type>CXXTEST_STD(ostream)&amp;</type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorPrinter.h" line="40" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorPrinter.h" bodystart="40" bodyend="40"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_error_printer_1_1_adapter_1acd96f370652cfb910cd52a204489750b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::ErrorPrinter::Adapter::flush</definition>
+        <argsstring>()</argsstring>
+        <name>flush</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorPrinter.h" line="41" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorPrinter.h" bodystart="41" bodyend="41"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_error_printer_1_1_adapter_1a91a8fec85bc4e6390648015eab2be6cb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="class_cxx_test_1_1_output_stream" kindref="compound">OutputStream</ref> &amp;</type>
+        <definition>OutputStream&amp; CxxTest::ErrorPrinter::Adapter::operator&lt;&lt;</definition>
+        <argsstring>(const char *s)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>const char *</type>
+          <declname>s</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorPrinter.h" line="42" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorPrinter.h" bodystart="42" bodyend="45"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_error_printer_1_1_adapter_1ae32ef4dd0adab51070d1f02583e01293" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="class_cxx_test_1_1_output_stream" kindref="compound">OutputStream</ref> &amp;</type>
+        <definition>OutputStream&amp; CxxTest::ErrorPrinter::Adapter::operator&lt;&lt;</definition>
+        <argsstring>(Manipulator m)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>Manipulator</type>
+          <declname>m</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorPrinter.h" line="46" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorPrinter.h" bodystart="46" bodyend="46"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_error_printer_1_1_adapter_1ad655b3f8624aa56d351f25d0ae9df156" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="class_cxx_test_1_1_output_stream" kindref="compound">OutputStream</ref> &amp;</type>
+        <definition>OutputStream&amp; CxxTest::ErrorPrinter::Adapter::operator&lt;&lt;</definition>
+        <argsstring>(unsigned i)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>unsigned</type>
+          <declname>i</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorPrinter.h" line="48" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorPrinter.h" bodystart="47" bodyend="53"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="6">
+        <label>CxxTest::ErrorPrinter::Adapter</label>
+        <childnode refid="7" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>CxxTest::OutputStream</label>
+        <link refid="class_cxx_test_1_1_output_stream"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="8">
+        <label>CxxTest::ErrorPrinter::Adapter</label>
+        <childnode refid="9" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="9">
+        <label>CxxTest::OutputStream</label>
+        <link refid="class_cxx_test_1_1_output_stream"/>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorPrinter.h" line="37" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorPrinter.h" bodystart="36" bodyend="54"/>
+    <listofallmembers>
+      <member refid="class_cxx_test_1_1_error_printer_1_1_adapter_1a2998501e7f0fe04bfebbcde6e1db1789" prot="public" virt="non-virtual"><scope>CxxTest::ErrorPrinter::Adapter</scope><name>Adapter</name></member>
+      <member refid="class_cxx_test_1_1_error_printer_1_1_adapter_1a26ce0dc4f34cd8bc1c26631db5f24ce1" prot="private" virt="non-virtual"><scope>CxxTest::ErrorPrinter::Adapter</scope><name>CXXTEST_STD</name></member>
+      <member refid="class_cxx_test_1_1_output_stream_1ac87f8253aceba7da987d9a183c816789" prot="public" virt="non-virtual"><scope>CxxTest::ErrorPrinter::Adapter</scope><name>endl</name></member>
+      <member refid="class_cxx_test_1_1_error_printer_1_1_adapter_1acd96f370652cfb910cd52a204489750b" prot="public" virt="non-virtual"><scope>CxxTest::ErrorPrinter::Adapter</scope><name>flush</name></member>
+      <member refid="class_cxx_test_1_1_output_stream_1aea784ebaae63978d47df0766071da443" prot="public" virt="non-virtual"><scope>CxxTest::ErrorPrinter::Adapter</scope><name>Manipulator</name></member>
+      <member refid="class_cxx_test_1_1_error_printer_1_1_adapter_1a91a8fec85bc4e6390648015eab2be6cb" prot="public" virt="non-virtual"><scope>CxxTest::ErrorPrinter::Adapter</scope><name>operator&lt;&lt;</name></member>
+      <member refid="class_cxx_test_1_1_error_printer_1_1_adapter_1ae32ef4dd0adab51070d1f02583e01293" prot="public" virt="non-virtual"><scope>CxxTest::ErrorPrinter::Adapter</scope><name>operator&lt;&lt;</name></member>
+      <member refid="class_cxx_test_1_1_error_printer_1_1_adapter_1ad655b3f8624aa56d351f25d0ae9df156" prot="public" virt="non-virtual"><scope>CxxTest::ErrorPrinter::Adapter</scope><name>operator&lt;&lt;</name></member>
+      <member refid="class_cxx_test_1_1_output_stream_1ab6299a6420e6b35e0b6fbcfcc04b9980" prot="public" virt="virtual"><scope>CxxTest::ErrorPrinter::Adapter</scope><name>~OutputStream</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

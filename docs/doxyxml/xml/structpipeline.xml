@@ -1,0 +1,364 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="structpipeline" kind="struct" prot="public">
+    <compoundname>pipeline</compoundname>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structpipeline_1a6aa25bc2eefc064565f10a7d57591a84" prot="public" static="no">
+        <type>lightcone::real_type</type>
+        <definition>typedef lightcone::real_type pipeline::real_type</definition>
+        <argsstring></argsstring>
+        <name>real_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/apps/filter.cc" line="18" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/apps/filter.cc" bodystart="18" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structpipeline_1a4085c461549b4e8fc3562ffe54b96c23" prot="public" static="no">
+        <type>tao::lightcone::real_type</type>
+        <definition>typedef tao::lightcone::real_type pipeline::real_type</definition>
+        <argsstring></argsstring>
+        <name>real_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/apps/skymaker.cc" line="18" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/apps/skymaker.cc" bodystart="18" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structpipeline_1ae3d368814875dffdbf2731a2e3634a5b" prot="public" static="no" mutable="no">
+        <type><ref refid="classtao_1_1lightcone" kindref="compound">lightcone</ref></type>
+        <definition>lightcone pipeline::lc</definition>
+        <argsstring></argsstring>
+        <name>lc</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/apps/filter.cc" line="69" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/apps/filter.cc" bodystart="69" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structpipeline_1a984e4e05b6624d7245f25ff6cc3c3fe5" prot="public" static="no" mutable="no">
+        <type><ref refid="classtao_1_1sed" kindref="compound">tao::sed</ref></type>
+        <definition>tao::sed pipeline::sed</definition>
+        <argsstring></argsstring>
+        <name>sed</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/apps/filter.cc" line="70" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/apps/filter.cc" bodystart="70" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structpipeline_1a25a27b2d1c1ca40d75e1e00261ae3f1d" prot="public" static="no" mutable="no">
+        <type><ref refid="classtao_1_1filter" kindref="compound">tao::filter</ref></type>
+        <definition>tao::filter pipeline::filter</definition>
+        <argsstring></argsstring>
+        <name>filter</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/apps/filter.cc" line="71" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/apps/filter.cc" bodystart="71" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structpipeline_1a25962daea88c8ecd03e53c0a6515bd5a" prot="public" static="no" mutable="no">
+        <type><ref refid="classtao_1_1csv" kindref="compound">csv</ref></type>
+        <definition>csv pipeline::dump</definition>
+        <argsstring></argsstring>
+        <name>dump</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/apps/filter.cc" line="72" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/apps/filter.cc" bodystart="72" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structpipeline_1aaca07e9871cfb77e79c9edfb96dc4024" prot="public" static="no" mutable="no">
+        <type><ref refid="classtao_1_1lightcone" kindref="compound">tao::lightcone</ref></type>
+        <definition>tao::lightcone pipeline::lc</definition>
+        <argsstring></argsstring>
+        <name>lc</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/apps/skymaker.cc" line="87" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/apps/skymaker.cc" bodystart="87" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structpipeline_1a93ad88b4ddbc787f9c9ec34c831e6283" prot="public" static="no" mutable="no">
+        <type><ref refid="classtao_1_1skymaker" kindref="compound">tao::skymaker</ref></type>
+        <definition>tao::skymaker pipeline::skymaker</definition>
+        <argsstring></argsstring>
+        <name>skymaker</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/apps/skymaker.cc" line="90" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/apps/skymaker.cc" bodystart="90" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structpipeline_1a1bb0f8a1574c06f56835f60b9235ad8a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void pipeline::initialise</definition>
+        <argsstring>(const options::xml_dict &amp;dict)</argsstring>
+        <name>initialise</name>
+        <param>
+          <type>const options::xml_dict &amp;</type>
+          <declname>dict</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Persistent initialisation. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/apps/filter.cc" line="27" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/apps/filter.cc" bodystart="26" bodyend="32"/>
+      </memberdef>
+      <memberdef kind="function" id="structpipeline_1a5642fa3ea8498cbc622addf576bd3718" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void pipeline::run</definition>
+        <argsstring>()</argsstring>
+        <name>run</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Execute the pipeline. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/apps/filter.cc" line="39" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/apps/filter.cc" bodystart="38" bodyend="58"/>
+      </memberdef>
+      <memberdef kind="function" id="structpipeline_1ab3c32ac5885208ba3dc002f2c56e75aa" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void pipeline::log_timings</definition>
+        <argsstring>()</argsstring>
+        <name>log_timings</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/apps/filter.cc" line="62" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/apps/filter.cc" bodystart="61" bodyend="67"/>
+      </memberdef>
+      <memberdef kind="function" id="structpipeline_1a49ca46b67c5c0277ea1baf3bca0c75d5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void pipeline::initialise</definition>
+        <argsstring>(const hpc::options::xml_dict &amp;dict)</argsstring>
+        <name>initialise</name>
+        <param>
+          <type>const hpc::options::xml_dict &amp;</type>
+          <declname>dict</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Add options to dictionary. Persistent initialisation. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/apps/lightcone.cc" line="29" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/apps/lightcone.cc" bodystart="28" bodyend="32"/>
+      </memberdef>
+      <memberdef kind="function" id="structpipeline_1a5642fa3ea8498cbc622addf576bd3718" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void pipeline::run</definition>
+        <argsstring>()</argsstring>
+        <name>run</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Execute the pipeline. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/apps/lightcone.cc" line="39" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/apps/lightcone.cc" bodystart="38" bodyend="49"/>
+      </memberdef>
+      <memberdef kind="function" id="structpipeline_1ab3c32ac5885208ba3dc002f2c56e75aa" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void pipeline::log_timings</definition>
+        <argsstring>()</argsstring>
+        <name>log_timings</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/apps/lightcone.cc" line="53" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/apps/lightcone.cc" bodystart="52" bodyend="56"/>
+      </memberdef>
+      <memberdef kind="function" id="structpipeline_1a1bb0f8a1574c06f56835f60b9235ad8a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void pipeline::initialise</definition>
+        <argsstring>(const options::xml_dict &amp;dict)</argsstring>
+        <name>initialise</name>
+        <param>
+          <type>const options::xml_dict &amp;</type>
+          <declname>dict</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Add options to dictionary. Persistent initialisation. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/apps/skymaker.cc" line="37" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/apps/skymaker.cc" bodystart="36" bodyend="42"/>
+      </memberdef>
+      <memberdef kind="function" id="structpipeline_1a5642fa3ea8498cbc622addf576bd3718" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void pipeline::run</definition>
+        <argsstring>()</argsstring>
+        <name>run</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Execute the pipeline. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/apps/skymaker.cc" line="49" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/apps/skymaker.cc" bodystart="48" bodyend="76"/>
+      </memberdef>
+      <memberdef kind="function" id="structpipeline_1ab3c32ac5885208ba3dc002f2c56e75aa" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void pipeline::log_timings</definition>
+        <argsstring>()</argsstring>
+        <name>log_timings</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/apps/skymaker.cc" line="80" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/apps/skymaker.cc" bodystart="79" bodyend="85"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Filter pipeline.</para><para>Lightcone pipeline.</para><para>Full image pipeline using SkyMaker. </para>    </detaileddescription>
+    <collaborationgraph>
+      <node id="258">
+        <label>pipeline</label>
+        <link refid="structpipeline"/>
+        <childnode refid="259" relation="usage">
+          <edgelabel>sed</edgelabel>
+        </childnode>
+        <childnode refid="262" relation="usage">
+          <edgelabel>dump</edgelabel>
+        </childnode>
+        <childnode refid="263" relation="usage">
+          <edgelabel>skymaker</edgelabel>
+        </childnode>
+        <childnode refid="264" relation="usage">
+          <edgelabel>filter</edgelabel>
+        </childnode>
+        <childnode refid="265" relation="usage">
+          <edgelabel>lc</edgelabel>
+        </childnode>
+      </node>
+      <node id="261">
+        <label>string</label>
+      </node>
+      <node id="265">
+        <label>tao::lightcone</label>
+        <link refid="classtao_1_1lightcone"/>
+        <childnode refid="260" relation="public-inheritance">
+        </childnode>
+        <childnode refid="261" relation="usage">
+          <edgelabel>_basic_query</edgelabel>
+          <edgelabel>_query_template</edgelabel>
+          <edgelabel>_filter</edgelabel>
+          <edgelabel>_accel_method</edgelabel>
+          <edgelabel>_bin_filename</edgelabel>
+          <edgelabel>_filter_max</edgelabel>
+          <edgelabel>_decomp_method</edgelabel>
+          <edgelabel>_box_type</edgelabel>
+          <edgelabel>_snap_red_table</edgelabel>
+          <edgelabel>_box_repeat</edgelabel>
+          <edgelabel>...</edgelabel>
+        </childnode>
+        <childnode refid="266" relation="usage">
+          <edgelabel>_gal</edgelabel>
+        </childnode>
+      </node>
+      <node id="262">
+        <label>tao::csv</label>
+        <link refid="classtao_1_1csv"/>
+        <childnode refid="260" relation="public-inheritance">
+        </childnode>
+        <childnode refid="261" relation="usage">
+          <edgelabel>_fn</edgelabel>
+        </childnode>
+      </node>
+      <node id="266">
+        <label>tao::galaxy</label>
+        <link refid="classtao_1_1galaxy"/>
+        <childnode refid="261" relation="usage">
+          <edgelabel>_filter</edgelabel>
+          <edgelabel>_table</edgelabel>
+        </childnode>
+      </node>
+      <node id="260">
+        <label>tao::module</label>
+        <link refid="classtao_1_1module"/>
+        <childnode refid="261" relation="usage">
+          <edgelabel>_dbhost</edgelabel>
+          <edgelabel>_name</edgelabel>
+          <edgelabel>_dbname</edgelabel>
+          <edgelabel>_dbport</edgelabel>
+          <edgelabel>_dbuser</edgelabel>
+          <edgelabel>_tree_pre</edgelabel>
+          <edgelabel>_dbpass</edgelabel>
+          <edgelabel>_dbtype</edgelabel>
+        </childnode>
+      </node>
+      <node id="264">
+        <label>tao::filter</label>
+        <link refid="classtao_1_1filter"/>
+        <childnode refid="260" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="263">
+        <label>tao::skymaker</label>
+        <link refid="classtao_1_1skymaker"/>
+        <childnode refid="260" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="259">
+        <label>tao::sed</label>
+        <link refid="classtao_1_1sed"/>
+        <childnode refid="260" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/apps/filter.cc" line="16" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/apps/filter.cc" bodystart="15" bodyend="73"/>
+    <listofallmembers>
+      <member refid="structpipeline_1a25962daea88c8ecd03e53c0a6515bd5a" prot="public" virt="non-virtual"><scope>pipeline</scope><name>dump</name></member>
+      <member refid="structpipeline_1a25a27b2d1c1ca40d75e1e00261ae3f1d" prot="public" virt="non-virtual"><scope>pipeline</scope><name>filter</name></member>
+      <member refid="structpipeline_1a1bb0f8a1574c06f56835f60b9235ad8a" prot="public" virt="non-virtual"><scope>pipeline</scope><name>initialise</name></member>
+      <member refid="structpipeline_1a49ca46b67c5c0277ea1baf3bca0c75d5" prot="public" virt="non-virtual"><scope>pipeline</scope><name>initialise</name></member>
+      <member refid="structpipeline_1a1bb0f8a1574c06f56835f60b9235ad8a" prot="public" virt="non-virtual"><scope>pipeline</scope><name>initialise</name></member>
+      <member refid="structpipeline_1ae3d368814875dffdbf2731a2e3634a5b" prot="public" virt="non-virtual"><scope>pipeline</scope><name>lc</name></member>
+      <member refid="structpipeline_1aaca07e9871cfb77e79c9edfb96dc4024" prot="public" virt="non-virtual"><scope>pipeline</scope><name>lc</name></member>
+      <member refid="structpipeline_1ab3c32ac5885208ba3dc002f2c56e75aa" prot="public" virt="non-virtual"><scope>pipeline</scope><name>log_timings</name></member>
+      <member refid="structpipeline_1ab3c32ac5885208ba3dc002f2c56e75aa" prot="public" virt="non-virtual"><scope>pipeline</scope><name>log_timings</name></member>
+      <member refid="structpipeline_1ab3c32ac5885208ba3dc002f2c56e75aa" prot="public" virt="non-virtual"><scope>pipeline</scope><name>log_timings</name></member>
+      <member refid="structpipeline_1a6aa25bc2eefc064565f10a7d57591a84" prot="public" virt="non-virtual"><scope>pipeline</scope><name>real_type</name></member>
+      <member refid="structpipeline_1a4085c461549b4e8fc3562ffe54b96c23" prot="public" virt="non-virtual"><scope>pipeline</scope><name>real_type</name></member>
+      <member refid="structpipeline_1a5642fa3ea8498cbc622addf576bd3718" prot="public" virt="non-virtual"><scope>pipeline</scope><name>run</name></member>
+      <member refid="structpipeline_1a5642fa3ea8498cbc622addf576bd3718" prot="public" virt="non-virtual"><scope>pipeline</scope><name>run</name></member>
+      <member refid="structpipeline_1a5642fa3ea8498cbc622addf576bd3718" prot="public" virt="non-virtual"><scope>pipeline</scope><name>run</name></member>
+      <member refid="structpipeline_1a984e4e05b6624d7245f25ff6cc3c3fe5" prot="public" virt="non-virtual"><scope>pipeline</scope><name>sed</name></member>
+      <member refid="structpipeline_1a93ad88b4ddbc787f9c9ec34c831e6283" prot="public" virt="non-virtual"><scope>pipeline</scope><name>skymaker</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

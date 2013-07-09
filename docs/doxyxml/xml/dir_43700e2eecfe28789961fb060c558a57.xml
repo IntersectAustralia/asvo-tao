@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="dir_43700e2eecfe28789961fb060c558a57" kind="dir">
+    <compoundname>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src</compoundname>
+    <innerfile refid="_b_s_p_tree_8cc">BSPTree.cc</innerfile>
+    <innerfile refid="_b_s_p_tree_8hh">BSPTree.hh</innerfile>
+    <innerfile refid="clip_8hh">clip.hh</innerfile>
+    <innerfile refid="csv_8cc">csv.cc</innerfile>
+    <innerfile refid="csv_8hh">csv.hh</innerfile>
+    <innerfile refid="diff_8hh">diff.hh</innerfile>
+    <innerfile refid="dust_8cc">dust.cc</innerfile>
+    <innerfile refid="dust_8hh">dust.hh</innerfile>
+    <innerfile refid="empty_8cc">empty.cc</innerfile>
+    <innerfile refid="empty_8hh">empty.hh</innerfile>
+    <innerfile refid="src_2filter_8cc">filter.cc</innerfile>
+    <innerfile refid="filter_8hh">filter.hh</innerfile>
+    <innerfile refid="fits_8cc">fits.cc</innerfile>
+    <innerfile refid="fits_8hh">fits.hh</innerfile>
+    <innerfile refid="geometry__iterator_8hh">geometry_iterator.hh</innerfile>
+    <innerfile refid="_graham_scan_convex_hull_8cpp">GrahamScanConvexHull.cpp</innerfile>
+    <innerfile refid="_graham_scan_convex_hull_8h">GrahamScanConvexHull.h</innerfile>
+    <innerfile refid="hdf5_8cc">hdf5.cc</innerfile>
+    <innerfile refid="hdf5_8hh">hdf5.hh</innerfile>
+    <innerfile refid="src_2lightcone_8cc">lightcone.cc</innerfile>
+    <innerfile refid="lightcone_8hh">lightcone.hh</innerfile>
+    <innerfile refid="modules_8hh">modules.hh</innerfile>
+    <innerfile refid="register_8cc">register.cc</innerfile>
+    <innerfile refid="register_8hh">register.hh</innerfile>
+    <innerfile refid="sed_8cc">sed.cc</innerfile>
+    <innerfile refid="sed_8hh">sed.hh</innerfile>
+    <innerfile refid="setting_reader_8cc">settingReader.cc</innerfile>
+    <innerfile refid="setting_reader_8hh">settingReader.hh</innerfile>
+    <innerfile refid="src_2skymaker_8cc">skymaker.cc</innerfile>
+    <innerfile refid="skymaker_8hh">skymaker.hh</innerfile>
+    <innerfile refid="table__iterator_8hh">table_iterator.hh</innerfile>
+    <innerfile refid="votable_8cc">votable.cc</innerfile>
+    <innerfile refid="votable_8hh">votable.hh</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/"/>
+  </compounddef>
+</doxygen>

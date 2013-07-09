@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="structtao_1_1_b_s_p_rectangle" kind="struct" prot="public">
+    <compoundname>tao::BSPRectangle</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structtao_1_1_b_s_p_rectangle_1a07c783248f6da5fdfe9639b05e849b3f" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int tao::BSPRectangle::XMin</definition>
+        <argsstring></argsstring>
+        <name>XMin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" line="16" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" bodystart="16" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1_b_s_p_rectangle_1a1b25ff616f2132b7fda4681f8ae48288" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int tao::BSPRectangle::XMax</definition>
+        <argsstring></argsstring>
+        <name>XMax</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" line="17" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" bodystart="17" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1_b_s_p_rectangle_1acf98e17f46fff6e622961d6c04ae3fcb" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int tao::BSPRectangle::YMin</definition>
+        <argsstring></argsstring>
+        <name>YMin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" line="18" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" bodystart="18" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1_b_s_p_rectangle_1ad486d0eaac47dd7ab65b4d0ec8b27e17" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int tao::BSPRectangle::YMax</definition>
+        <argsstring></argsstring>
+        <name>YMax</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" line="19" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" bodystart="19" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1_b_s_p_rectangle_1aa1d254a06451dd0eafe2da4530d097d4" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int tao::BSPRectangle::XLocation</definition>
+        <argsstring></argsstring>
+        <name>XLocation</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" line="20" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" bodystart="20" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtao_1_1_b_s_p_rectangle_1a8b4455f68e8efafaf2a331f1f4fad87d" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int tao::BSPRectangle::YLocation</definition>
+        <argsstring></argsstring>
+        <name>YLocation</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" line="21" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" bodystart="21" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" line="15" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/src/BSPTree.hh" bodystart="14" bodyend="22"/>
+    <listofallmembers>
+      <member refid="structtao_1_1_b_s_p_rectangle_1aa1d254a06451dd0eafe2da4530d097d4" prot="public" virt="non-virtual"><scope>tao::BSPRectangle</scope><name>XLocation</name></member>
+      <member refid="structtao_1_1_b_s_p_rectangle_1a1b25ff616f2132b7fda4681f8ae48288" prot="public" virt="non-virtual"><scope>tao::BSPRectangle</scope><name>XMax</name></member>
+      <member refid="structtao_1_1_b_s_p_rectangle_1a07c783248f6da5fdfe9639b05e849b3f" prot="public" virt="non-virtual"><scope>tao::BSPRectangle</scope><name>XMin</name></member>
+      <member refid="structtao_1_1_b_s_p_rectangle_1a8b4455f68e8efafaf2a331f1f4fad87d" prot="public" virt="non-virtual"><scope>tao::BSPRectangle</scope><name>YLocation</name></member>
+      <member refid="structtao_1_1_b_s_p_rectangle_1ad486d0eaac47dd7ab65b4d0ec8b27e17" prot="public" virt="non-virtual"><scope>tao::BSPRectangle</scope><name>YMax</name></member>
+      <member refid="structtao_1_1_b_s_p_rectangle_1acf98e17f46fff6e622961d6c04ae3fcb" prot="public" virt="non-virtual"><scope>tao::BSPRectangle</scope><name>YMin</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

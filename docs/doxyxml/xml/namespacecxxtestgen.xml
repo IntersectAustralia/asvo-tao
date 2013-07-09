@@ -1,0 +1,1179 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="namespacecxxtestgen" kind="namespace">
+    <compoundname>cxxtestgen</compoundname>
+      <sectiondef kind="var">
+      <memberdef kind="variable" id="namespacecxxtestgen_1ae57ad354761055ff9936b5872a172d84" prot="public" static="no" mutable="no">
+        <type>list</type>
+        <definition>list cxxtestgen.suites</definition>
+        <argsstring></argsstring>
+        <name>suites</name>
+        <initializer>= []</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="30" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="30" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacecxxtestgen_1add744bf8708420b4325d7dc91eddc40c" prot="public" static="no" mutable="no">
+        <type></type>
+        <definition>cxxtestgen.suite</definition>
+        <argsstring></argsstring>
+        <name>suite</name>
+        <initializer>= None</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="31" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="31" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacecxxtestgen_1abb24a5979bc8c0a728a530e06f8d3ff3" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int cxxtestgen.inBlock</definition>
+        <argsstring></argsstring>
+        <name>inBlock</name>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="32" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="32" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacecxxtestgen_1afa166c3159d30eac87d472575b7192ee" prot="public" static="no" mutable="no">
+        <type></type>
+        <definition>cxxtestgen.outputFileName</definition>
+        <argsstring></argsstring>
+        <name>outputFileName</name>
+        <initializer>= None</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="34" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="34" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacecxxtestgen_1aa96d88b41d4328f2a6167a933d8344cc" prot="public" static="no" mutable="no">
+        <type></type>
+        <definition>cxxtestgen.runner</definition>
+        <argsstring></argsstring>
+        <name>runner</name>
+        <initializer>= None</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="35" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="35" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacecxxtestgen_1a4e9f620b6d34626b901bce7f3f579997" prot="public" static="no" mutable="no">
+        <type></type>
+        <definition>cxxtestgen.gui</definition>
+        <argsstring></argsstring>
+        <name>gui</name>
+        <initializer>= None</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="36" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="36" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacecxxtestgen_1af5f387f5435cb7731448560adbc3d642" prot="public" static="no" mutable="no">
+        <type></type>
+        <definition>cxxtestgen.root</definition>
+        <argsstring></argsstring>
+        <name>root</name>
+        <initializer>= None</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="37" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="37" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacecxxtestgen_1a5f285dfa1f97683995c75df60afece86" prot="public" static="no" mutable="no">
+        <type></type>
+        <definition>cxxtestgen.part</definition>
+        <argsstring></argsstring>
+        <name>part</name>
+        <initializer>= None</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="38" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacecxxtestgen_1ae9d3eb7152ebef873a258bc275aa866f" prot="public" static="no" mutable="no">
+        <type></type>
+        <definition>cxxtestgen.noStaticInit</definition>
+        <argsstring></argsstring>
+        <name>noStaticInit</name>
+        <initializer>= None</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="39" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacecxxtestgen_1a66bed8dc7389b4b982343b1bf6200c42" prot="public" static="no" mutable="no">
+        <type></type>
+        <definition>cxxtestgen.templateFileName</definition>
+        <argsstring></argsstring>
+        <name>templateFileName</name>
+        <initializer>= None</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="40" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="40" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacecxxtestgen_1a7b8677c6bc7fbe70b5820c2611d5c44f" prot="public" static="no" mutable="no">
+        <type>list</type>
+        <definition>list cxxtestgen.headers</definition>
+        <argsstring></argsstring>
+        <name>headers</name>
+        <initializer>= []</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="41" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="41" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacecxxtestgen_1a49ac8274fc58fea79c603c82c0206874" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int cxxtestgen.haveExceptionHandling</definition>
+        <argsstring></argsstring>
+        <name>haveExceptionHandling</name>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="43" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="43" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacecxxtestgen_1a613acca0ea538b4c8170020a215e335c" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int cxxtestgen.noExceptionHandling</definition>
+        <argsstring></argsstring>
+        <name>noExceptionHandling</name>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="44" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="44" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacecxxtestgen_1a2b5cf550d474e223265f9907f4db4eb2" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int cxxtestgen.haveStandardLibrary</definition>
+        <argsstring></argsstring>
+        <name>haveStandardLibrary</name>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="45" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="45" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacecxxtestgen_1ad1f3a8d0755082bd1873766d9bccac53" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int cxxtestgen.noStandardLibrary</definition>
+        <argsstring></argsstring>
+        <name>noStandardLibrary</name>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="46" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="46" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacecxxtestgen_1a538a8241df1eeb4949b8038ca8c468fd" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int cxxtestgen.abortOnFail</definition>
+        <argsstring></argsstring>
+        <name>abortOnFail</name>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="47" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacecxxtestgen_1a3b2865e5176dd243131bdc5b8e682924" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int cxxtestgen.factor</definition>
+        <argsstring></argsstring>
+        <name>factor</name>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="48" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacecxxtestgen_1a594cb334694d48faf4ffa00b23114646" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int cxxtestgen.longlong</definition>
+        <argsstring></argsstring>
+        <name>longlong</name>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="49" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="49" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacecxxtestgen_1a9aef07e67c81ca2cde7a1a721d00bb21" prot="public" static="no" mutable="no">
+        <type>tuple</type>
+        <definition>tuple cxxtestgen.std_re</definition>
+        <argsstring></argsstring>
+        <name>std_re</name>
+        <initializer>= re.compile( r&quot;\b(std\s*::|CXXTEST_STD|using\s+namespace\s+std\b|^\s*\#\s*include\s+&lt;[a-z0-9]+&gt;)&quot; )</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="223" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="223" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacecxxtestgen_1acfc2007be92b6ca34fc1f3f75b43d814" prot="public" static="no" mutable="no">
+        <type>tuple</type>
+        <definition>tuple cxxtestgen.exception_re</definition>
+        <argsstring></argsstring>
+        <name>exception_re</name>
+        <initializer>= re.compile( r&quot;\b(throw|try|catch|TSM?_ASSERT_THROWS[A-Z_]*)\b&quot; )</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="231" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="231" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacecxxtestgen_1afbdcfe4df360d863ed1ce81ddebe0897" prot="public" static="no" mutable="no">
+        <type>tuple</type>
+        <definition>tuple cxxtestgen.suite_re</definition>
+        <argsstring></argsstring>
+        <name>suite_re</name>
+        <initializer>= re.compile( r&apos;\bclass\s+(\w+)\s*:\s*public\s+((::)?\s*CxxTest\s*::\s*)?TestSuite\b&apos; )</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="239" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="239" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacecxxtestgen_1a55df2a25efe9ed9938c575975fd59cdf" prot="public" static="no" mutable="no">
+        <type>tuple</type>
+        <definition>tuple cxxtestgen.generatedSuite_re</definition>
+        <argsstring></argsstring>
+        <name>generatedSuite_re</name>
+        <initializer>= re.compile( r&apos;\bCXXTEST_SUITE\s*\(\s*(\w*)\s*\)&apos; )</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="240" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="240" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacecxxtestgen_1a80c85152cca5217bf3973eb62def9acb" prot="public" static="no" mutable="no">
+        <type>tuple</type>
+        <definition>tuple cxxtestgen.test_re</definition>
+        <argsstring></argsstring>
+        <name>test_re</name>
+        <initializer>= re.compile( r&apos;^([^/]|/[^/])*\bvoid\s+([Tt]est\w+)\s*\(\s*(void)?\s*\)&apos; )</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="270" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="270" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacecxxtestgen_1adbfc27d293f6c3b669e62de01b2f25e4" prot="public" static="no" mutable="no">
+        <type>tuple</type>
+        <definition>tuple cxxtestgen.create_re</definition>
+        <argsstring></argsstring>
+        <name>create_re</name>
+        <initializer>= re.compile( r&apos;\bstatic\s+\w+\s*\*\s*createSuite\s*\(\s*(void)?\s*\)&apos; )</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="304" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="304" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacecxxtestgen_1a2674efcdfe05c135a0b615d24c7d7a59" prot="public" static="no" mutable="no">
+        <type>tuple</type>
+        <definition>tuple cxxtestgen.destroy_re</definition>
+        <argsstring></argsstring>
+        <name>destroy_re</name>
+        <initializer>= re.compile( r&apos;\bstatic\s+void\s+destroySuite\s*\(\s*\w+\s*\*\s*\w*\s*\)&apos; )</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="310" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="310" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacecxxtestgen_1a2960aa6e64fbce23e9b5580f40a83dbb" prot="public" static="no" mutable="no">
+        <type>tuple</type>
+        <definition>tuple cxxtestgen.include_re</definition>
+        <argsstring></argsstring>
+        <name>include_re</name>
+        <initializer>= re.compile( r&quot;\s*\#\s*include\s+&lt;cxxtest/&quot; )</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="365" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="365" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacecxxtestgen_1a575d259b97be99a2e56d58f28e83cf81" prot="public" static="no" mutable="no">
+        <type>tuple</type>
+        <definition>tuple cxxtestgen.preamble_re</definition>
+        <argsstring></argsstring>
+        <name>preamble_re</name>
+        <initializer>= re.compile( r&quot;^\s*&lt;CxxTest\s+preamble&gt;\s*$&quot; )</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="366" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="366" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacecxxtestgen_1a3350417f3383d798da46a85b0259a731" prot="public" static="no" mutable="no">
+        <type>tuple</type>
+        <definition>tuple cxxtestgen.world_re</definition>
+        <argsstring></argsstring>
+        <name>world_re</name>
+        <initializer>= re.compile( r&quot;^\s*&lt;CxxTest\s+world&gt;\s*$&quot; )</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="367" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="367" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacecxxtestgen_1acefb87342e8d708c13e69ae6d1b0e61a" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int cxxtestgen.wrotePreamble</definition>
+        <argsstring></argsstring>
+        <name>wrotePreamble</name>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="397" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="397" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacecxxtestgen_1a6ceb201efa1cd865259c96b5f0ea054e" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int cxxtestgen.wroteWorld</definition>
+        <argsstring></argsstring>
+        <name>wroteWorld</name>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="456" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="456" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacecxxtestgen_1ac97b6f2b42f50661690b5a578e1aca92" prot="public" static="no" mutable="no">
+        <type>string</type>
+        <definition>string cxxtestgen.lastIncluded</definition>
+        <argsstring></argsstring>
+        <name>lastIncluded</name>
+        <initializer>= &apos;&apos;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="491" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="491" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacecxxtestgen_1a9ae4fe660efc5e954ac67c5a185f84e7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.main</definition>
+        <argsstring></argsstring>
+        <name>main</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>The main program</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="51" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="51" bodyend="56"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1abb6ef97a29a09f9e3470ab1dae8af5db" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.usage</definition>
+        <argsstring></argsstring>
+        <name>usage</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Print usage info and exit</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="57" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="57" bodyend="65"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1a74596322542029921765a42dcfab9d20" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.usageString</definition>
+        <argsstring></argsstring>
+        <name>usageString</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Construct program usage string</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="66" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="66" bodyend="69"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1a4081a79a75de0abd94ecb918cd5ad1d7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.abort</definition>
+        <argsstring></argsstring>
+        <name>abort</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Print error message and exit</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="70" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="70" bodyend="76"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1af96ca639970fce5289fde533c6822159" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.parseCommandline</definition>
+        <argsstring></argsstring>
+        <name>parseCommandline</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Analyze command line arguments</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="77" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="77" bodyend="89"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1abc37636d0d9428d681ad0bd185d2478c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.setOptions</definition>
+        <argsstring></argsstring>
+        <name>setOptions</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Set options specified on command line</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="90" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="90" bodyend="141"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1afe0b91fc2223546c7373a1b6bcb6fd00" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.printVersion</definition>
+        <argsstring></argsstring>
+        <name>printVersion</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Print CxxTest version and exit</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="142" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="142" bodyend="146"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1ae788acc57b4468a3293e7e45ba914908" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.setFiles</definition>
+        <argsstring></argsstring>
+        <name>setFiles</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Set input files specified on command line</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="147" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="147" bodyend="153"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1a58362ca9a05c60842a41e5e3755cfd86" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.expandWildcards</definition>
+        <argsstring></argsstring>
+        <name>expandWildcards</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Expand all wildcards in an array (glob)</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="154" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="154" bodyend="162"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1acf8b0f6bc0d97068816198f74700248d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.fixBackslashes</definition>
+        <argsstring></argsstring>
+        <name>fixBackslashes</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Convert backslashes to slashes in file name</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="163" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="163" bodyend="166"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1a78de3a1710b1ace8f02d290d93406f10" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.scanInputFiles</definition>
+        <argsstring></argsstring>
+        <name>scanInputFiles</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Scan all input files for test suites</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="167" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="167" bodyend="174"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1a17e8744c5e00202fbc5fca8877fa32c1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.scanInputFile</definition>
+        <argsstring></argsstring>
+        <name>scanInputFile</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Scan single input file for test suites</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="175" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="175" bodyend="188"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1a167c147de3a1b6af4c76109430367512" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.scanInputLine</definition>
+        <argsstring></argsstring>
+        <name>scanInputLine</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Scan single input line for interesting stuff</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="189" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="189" bodyend="199"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1a4460450708a336be5c97150410b7dda4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.scanLineInsideSuite</definition>
+        <argsstring></argsstring>
+        <name>scanLineInsideSuite</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Analyze line which is part of a suite</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="200" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="200" bodyend="207"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1a55c0f44e574c5de0dc89c4956490d721" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.lineBelongsToSuite</definition>
+        <argsstring></argsstring>
+        <name>lineBelongsToSuite</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Returns whether current line is part of the current suite.
+This can be false when we are in a generated suite outside of CXXTEST_CODE() blocks
+If the suite is generated, adds the line to the list of lines</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="208" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="208" bodyend="222"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1a835da27f48e27bad5dffd6f4d8fca25a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.scanLineForStandardLibrary</definition>
+        <argsstring></argsstring>
+        <name>scanLineForStandardLibrary</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Check if current line uses standard library</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="224" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="224" bodyend="230"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1a11621fa1364de18a715f9c06fbaf2b27" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.scanLineForExceptionHandling</definition>
+        <argsstring></argsstring>
+        <name>scanLineForExceptionHandling</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Check if current line uses exception handling</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="232" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="232" bodyend="238"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1a2d47749104b45f4bbdc4873ec2d0ef2f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.scanLineForSuiteStart</definition>
+        <argsstring></argsstring>
+        <name>scanLineForSuiteStart</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Check if current line starts a new test suite</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="241" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="241" bodyend="250"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1a9ecae73f5e761586f13b46dc2245d48e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.startSuite</definition>
+        <argsstring></argsstring>
+        <name>startSuite</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Start scanning a new suite</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="251" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="251" bodyend="265"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1a6b0bb864a72c772b3ca1bd059e7ed127" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.lineStartsBlock</definition>
+        <argsstring></argsstring>
+        <name>lineStartsBlock</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Check if current line starts a new CXXTEST_CODE() block</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="266" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="266" bodyend="269"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1a0e44bc58302f5eae0657327d070ea0dd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.scanLineForTest</definition>
+        <argsstring></argsstring>
+        <name>scanLineForTest</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Check if current line starts a test</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="271" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="271" bodyend="276"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1a514630d4f695d79167517e533b70e857" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.addTest</definition>
+        <argsstring></argsstring>
+        <name>addTest</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Add a test function to the current suite</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="277" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="277" bodyend="286"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1a34620da825fc84b74b53fbf561ac8c02" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.addLineToBlock</definition>
+        <argsstring></argsstring>
+        <name>addLineToBlock</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Append the line to the current CXXTEST_CODE() block</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="287" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="287" bodyend="297"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1ae8f0210f403abe13118d090b838d608b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.fixBlockLine</definition>
+        <argsstring></argsstring>
+        <name>fixBlockLine</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Change all [E]TS_ macros used in a line to _[E]TS_ macros with the correct file/line</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="298" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="298" bodyend="303"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1aff14d0f0bbf93dee9ecfde852ff7ccb1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.scanLineForCreate</definition>
+        <argsstring></argsstring>
+        <name>scanLineForCreate</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Check if current line defines a createSuite() function</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="305" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="305" bodyend="309"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1a0f45c1c5d1ebadd4da978a3a0c028622" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.scanLineForDestroy</definition>
+        <argsstring></argsstring>
+        <name>scanLineForDestroy</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Check if current line defines a destroySuite() function</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="311" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="311" bodyend="315"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1adb93dd0abbad02a9e01d067be6d64c8e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.cstr</definition>
+        <argsstring></argsstring>
+        <name>cstr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Convert a string to its C representation</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="316" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="316" bodyend="320"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1a2f50fdc3977bee6e42dcc66f192b2817" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.addSuiteCreateDestroy</definition>
+        <argsstring></argsstring>
+        <name>addSuiteCreateDestroy</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Add createSuite()/destroySuite() to current suite</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="321" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="321" bodyend="326"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1a122b305eb730bb477a2cc17ea4523c35" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.closeSuite</definition>
+        <argsstring></argsstring>
+        <name>closeSuite</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Close current suite and add it to the list if valid</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="327" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="327" bodyend="335"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1a1814345d022d94542e4b738256567d30" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.verifySuite</definition>
+        <argsstring></argsstring>
+        <name>verifySuite</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Verify current suite is legal</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="336" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="336" bodyend="344"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1a018c528416e0e00b75a09d75b31209f1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.rememberSuite</definition>
+        <argsstring></argsstring>
+        <name>rememberSuite</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Add current suite to list</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="345" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="345" bodyend="349"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1a7777853febee8b3ab503b224c3c426ca" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.writeOutput</definition>
+        <argsstring></argsstring>
+        <name>writeOutput</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Create output file</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="350" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="350" bodyend="356"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1a1414863dc3e5f32fa3d27ca3bd83fc0c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.writeSimpleOutput</definition>
+        <argsstring></argsstring>
+        <name>writeSimpleOutput</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Create output not based on template</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="357" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="357" bodyend="364"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1a6bef5006faddcd2baedf9697ec628322" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.writeTemplateOutput</definition>
+        <argsstring></argsstring>
+        <name>writeTemplateOutput</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Create output based on template file</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="368" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="368" bodyend="387"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1a2e4327da984a5e5e8fa624abb96bec22" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.startOutputFile</definition>
+        <argsstring></argsstring>
+        <name>startOutputFile</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Create output file and write header</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="388" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="388" bodyend="396"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1a117b1b0a6e70e7d7fa349e2b3307fb81" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.writePreamble</definition>
+        <argsstring></argsstring>
+        <name>writePreamble</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Write the CxxTest header (#includes and #defines)</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="398" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="398" bodyend="428"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1ab085824c2b17ddfc652ecffad8fd2ffd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.writeMain</definition>
+        <argsstring></argsstring>
+        <name>writeMain</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Write the main() function for the test runner</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="429" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="429" bodyend="455"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1ab0cf2b927e1ab1bf9e274be8f7816c28" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.writeWorld</definition>
+        <argsstring></argsstring>
+        <name>writeWorld</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Write the world definitions</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="457" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="457" bodyend="468"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1a4dd174eeebc6dcc66b7e2102de66caa0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.writeSuites</definition>
+        <argsstring></argsstring>
+        <name>writeSuites</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Write all TestDescriptions and SuiteDescriptions</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="469" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="469" bodyend="482"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1a2ca0b7f174790ff7516fcf2053a4fa25" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.isGenerated</definition>
+        <argsstring></argsstring>
+        <name>isGenerated</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Checks whether a suite class should be created</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="483" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="483" bodyend="486"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1ab6edf261f5586959b9fdbd61a931876b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.isDynamic</definition>
+        <argsstring></argsstring>
+        <name>isDynamic</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Checks whether a suite is dynamic</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="487" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="487" bodyend="490"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1a96c7c7ed5652444fe4a064ce4723e345" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.writeInclude</definition>
+        <argsstring></argsstring>
+        <name>writeInclude</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Add #include &quot;file&quot; statement</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="492" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="492" bodyend="498"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1aa41af63ee1f842ada9bd941464c47a0a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.generateSuite</definition>
+        <argsstring></argsstring>
+        <name>generateSuite</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Write a suite declared with CXXTEST_SUITE()</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="499" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="499" bodyend="506"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1a70ec40f8ee391a727b9dc39843bc693a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.writeSuitePointer</definition>
+        <argsstring></argsstring>
+        <name>writeSuitePointer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Create static suite pointer object for dynamic suites</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="507" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="507" bodyend="513"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1aad7206d48ed25a0b79e3ef5612688f9d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.writeSuiteObject</definition>
+        <argsstring></argsstring>
+        <name>writeSuiteObject</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Create static suite object for non-dynamic suites</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="514" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="514" bodyend="517"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1ad6245ea41a1dc19d1f49393a38ecb5ca" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.writeTestList</definition>
+        <argsstring></argsstring>
+        <name>writeTestList</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Write the head of the test linked list for a suite</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="518" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="518" bodyend="524"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1a545e96bdff622441cdb7fb6af291206d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.writeTestDescriptions</definition>
+        <argsstring></argsstring>
+        <name>writeTestDescriptions</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Write all test descriptions for a suite</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="525" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="525" bodyend="529"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1a26466dc1d3bf87a68f7ec6cab89d14f3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.writeTestDescription</definition>
+        <argsstring></argsstring>
+        <name>writeTestDescription</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Write test description object</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="530" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="530" bodyend="539"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1a7f92f3097bbdb286df1f0be77437790e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.runBody</definition>
+        <argsstring></argsstring>
+        <name>runBody</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Body of TestDescription::run()</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="540" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="540" bodyend="544"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1a4d63c702afc628e26495de52a7c85f5a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.dynamicRun</definition>
+        <argsstring></argsstring>
+        <name>dynamicRun</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Body of TestDescription::run() for test in a dynamic suite</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="545" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="545" bodyend="548"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1af0ab7b549572842f2ce2c198fdcfa12e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.staticRun</definition>
+        <argsstring></argsstring>
+        <name>staticRun</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Body of TestDescription::run() for test in a non-dynamic suite</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="549" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="549" bodyend="552"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1ab64ed5e4fd24ffc158ade20c45f1dcf0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.writeSuiteDescription</definition>
+        <argsstring></argsstring>
+        <name>writeSuiteDescription</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Write SuiteDescription object</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="553" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="553" bodyend="559"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1a5cab831fd7e89562bde5ff3d1e8876cb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.writeDynamicDescription</definition>
+        <argsstring></argsstring>
+        <name>writeDynamicDescription</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Write SuiteDescription for a dynamic suite</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="560" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="560" bodyend="568"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1a7c80adf430785fafa00a11f9f1501f01" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.writeStaticDescription</definition>
+        <argsstring></argsstring>
+        <name>writeStaticDescription</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Write SuiteDescription for a static suite</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="569" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="569" bodyend="576"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1ab26f3e9a9e0f1831b6b226a34e615a46" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.writeRoot</definition>
+        <argsstring></argsstring>
+        <name>writeRoot</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Write static members of CxxTest classes</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="577" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="577" bodyend="580"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacecxxtestgen_1a87fac26d98a0c7008de42daef87fc752" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>def</type>
+        <definition>def cxxtestgen.writeInitialize</definition>
+        <argsstring></argsstring>
+        <name>writeInitialize</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Write CxxTest::initialize(), which replaces static initialization</verbatim> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="581" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" bodystart="581" bodyend="607"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/scripts/cxxtestgen.py" line="1"/>
+  </compounddef>
+</doxygen>

@@ -25,13 +25,13 @@ class TaoUser(auth_models.AbstractUser):
 
     objects = UserManager()
 
-    institution = models.CharField(max_length=100)
-    scientific_interests = models.CharField(max_length=500)
-    title = models.CharField(max_length=5)
+    institution = models.CharField(max_length=100, null=True)
+    scientific_interests = models.CharField(max_length=500, null=True)
+    title = models.CharField(max_length=5, null=True)
     rejected = models.BooleanField(default=False)
-    aaf_shared_token = models.CharField(max_length=64,blank=True,default='')
+    aaf_shared_token = models.CharField(max_length=64, null=True, blank=True, default='')
     account_registration_status = models.CharField(max_length=3, blank=False, default=RS_NA)
-    account_registration_reason = models.TextField(blank=True, default='')
+    account_registration_reason = models.TextField(null=True, blank=True, default='')
     account_registration_date = models.DateTimeField(null=True)
 
     def display_name(self):
@@ -198,6 +198,22 @@ def initial_job_status():
         except AttributeError:
             return 'HELD'
 
+SUBMITTED = 'SUBMITTED'
+IN_PROGRESS = 'IN_PROGRESS'
+COMPLETED = 'COMPLETED'
+QUEUED = 'QUEUED'
+HELD = 'HELD'
+ERROR = 'ERROR'
+
+STATUS_CHOICES = (
+    (SUBMITTED, 'Submitted'),
+    (QUEUED, 'Queued'),
+    (IN_PROGRESS, 'In progress'),
+    (COMPLETED, 'Completed'),
+    (HELD, 'Held'),
+    (ERROR, 'Error'),
+)
+
 class Job(models.Model):
     SUBMITTED = 'SUBMITTED'
     IN_PROGRESS = 'IN_PROGRESS'
@@ -205,14 +221,6 @@ class Job(models.Model):
     QUEUED = 'QUEUED'
     HELD = 'HELD'
     ERROR = 'ERROR'
-    STATUS_CHOICES = (
-        (SUBMITTED, 'Submitted'),
-        (QUEUED, 'Queued'),
-        (IN_PROGRESS, 'In progress'),
-        (COMPLETED, 'Completed'),
-        (HELD, 'Held'),
-        (ERROR, 'Error'),
-    )
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     created_time = models.DateTimeField(auto_now_add=True)
@@ -327,6 +335,38 @@ class DustModel(models.Model):
     def __unicode__(self):
         return self.label
 
+class WorkflowCommand(models.Model):
+    JOB_STOP_ALL = "Job_Stop_All"
+    JOB_STOP = "Job_Stop"
+    WORKFLOW_STOP = "Workflow_Stop"
+    WORKFLOW_RESUME = "Workflow_Resume"
+    JOB_OUTPUT_DELETE = "Job_Output_Delete"
+    COMMAND_CHOICES = (
+        (JOB_STOP_ALL, "Job Stop All"),
+        (JOB_STOP, "Job Stop"),
+        (WORKFLOW_STOP, "Workflow Stop"),
+        (WORKFLOW_RESUME, "Workflow Resume"),
+        (JOB_OUTPUT_DELETE, "Job Output Delete"),
+    )
+
+    job_id = models.ForeignKey(Job)
+    issued = models.DateTimeField(auto_now_add=True)
+    submitted_by = models.ForeignKey(TaoUser)
+    command = models.CharField(choices=COMMAND_CHOICES, max_length=64)
+    parameters = models.CharField(max_length=1024, default='', blank=True)
+    executed = models.DateTimeField(null=True, blank=True)
+    execution_status = models.CharField(choices=STATUS_CHOICES, max_length=20)
+    execution_comment = models.TextField(null=True, blank=True)
+
+    def __unicode__(self):
+        return self.command
+
+    def jobid(self):
+        return self.job_id.pk
+
+    def submittedby(self):
+        return self.submitted_by.pk
+
 class GlobalParameter(models.Model):
     parameter_name = models.CharField(max_length=60, unique=True)
     parameter_value = models.TextField(default='')
@@ -334,3 +374,4 @@ class GlobalParameter(models.Model):
 
     def __str__(self):
         return self.parameter_name
+

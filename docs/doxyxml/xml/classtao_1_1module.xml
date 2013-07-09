@@ -1,0 +1,759 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="classtao_1_1module" kind="class" prot="public" abstract="yes">
+    <compoundname>tao::module</compoundname>
+    <derivedcompoundref refid="classtao_1_1csv" prot="public" virt="non-virtual">tao::csv</derivedcompoundref>
+    <derivedcompoundref refid="classtao_1_1dust" prot="public" virt="non-virtual">tao::dust</derivedcompoundref>
+    <derivedcompoundref refid="classtao_1_1empty" prot="public" virt="non-virtual">tao::empty</derivedcompoundref>
+    <derivedcompoundref refid="classtao_1_1filter" prot="public" virt="non-virtual">tao::filter</derivedcompoundref>
+    <derivedcompoundref refid="classtao_1_1fits" prot="public" virt="non-virtual">tao::fits</derivedcompoundref>
+    <derivedcompoundref refid="classtao_1_1hdf5" prot="public" virt="non-virtual">tao::hdf5</derivedcompoundref>
+    <derivedcompoundref refid="classtao_1_1lightcone" prot="public" virt="non-virtual">tao::lightcone</derivedcompoundref>
+    <derivedcompoundref refid="classtao_1_1sed" prot="public" virt="non-virtual">tao::sed</derivedcompoundref>
+    <derivedcompoundref refid="classtao_1_1skymaker" prot="public" virt="non-virtual">tao::skymaker</derivedcompoundref>
+    <derivedcompoundref refid="classtao_1_1votable" prot="public" virt="non-virtual">tao::votable</derivedcompoundref>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classtao_1_1module_1abdc09890519027e51fbd3603406b2e87" prot="public" static="no">
+        <type>double</type>
+        <definition>typedef double tao::module::real_type</definition>
+        <argsstring></argsstring>
+        <name>real_type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="18" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" bodystart="18" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classtao_1_1module_1a068866a4eafd7bc6cf97c0dbddc1eabe" prot="protected" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::module::_name</definition>
+        <argsstring></argsstring>
+        <name>_name</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="91" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" bodystart="91" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1module_1aee8d7601611bb1297410dce20c24a94f" prot="protected" static="no" mutable="no">
+        <type>unsigned long long</type>
+        <definition>unsigned long long tao::module::_it</definition>
+        <argsstring></argsstring>
+        <name>_it</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="92" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" bodystart="92" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1module_1af247d18388488838d7919ca79423bab2" prot="protected" static="no" mutable="no">
+        <type>list&lt; <ref refid="classtao_1_1module" kindref="compound">module</ref> * &gt;</type>
+        <definition>list&lt;module*&gt; tao::module::_parents</definition>
+        <argsstring></argsstring>
+        <name>_parents</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="93" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" bodystart="93" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1module_1ad36a3f632e13a7ebb16170da155e9f91" prot="protected" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool tao::module::_complete</definition>
+        <argsstring></argsstring>
+        <name>_complete</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="94" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" bodystart="94" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1module_1a1b9223e987716522f3d43dff398cb6c2" prot="protected" static="no" mutable="no">
+        <type>pugi::xml_node</type>
+        <definition>pugi::xml_node tao::module::_base</definition>
+        <argsstring></argsstring>
+        <name>_base</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="96" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" bodystart="96" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1module_1a83ff7c6af3b37d905e489a6f1dda1de4" prot="protected" static="no" mutable="no">
+        <type>const options::xml_dict</type>
+        <definition>const options::xml_dict tao::module::_dict</definition>
+        <argsstring></argsstring>
+        <name>_dict</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="97" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" bodystart="97" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1module_1add5763e6abd9514b8a1fb277bacf7aa0" prot="protected" static="no" mutable="no">
+        <type>const options::xml_dict *</type>
+        <definition>const options::xml_dict* tao::module::_global_dict</definition>
+        <argsstring></argsstring>
+        <name>_global_dict</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="98" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" bodystart="98" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1module_1ab7902628daffb48f233c25c6b278a041" prot="protected" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool tao::module::_connected</definition>
+        <argsstring></argsstring>
+        <name>_connected</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="99" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" bodystart="99" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1module_1abbd63eb3630af38531d35c485b59abc7" prot="protected" static="no" mutable="no">
+        <type>soci::session</type>
+        <definition>soci::session tao::module::_sql</definition>
+        <argsstring></argsstring>
+        <name>_sql</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="103" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" bodystart="103" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1module_1a4dc48114767b3275d631d076f1e536ae" prot="protected" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned tao::module::_num_restart_its</definition>
+        <argsstring></argsstring>
+        <name>_num_restart_its</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="105" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" bodystart="105" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1module_1a0d2f74174e37e6dbbcbc590599c274b1" prot="protected" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned tao::module::_cur_restart_it</definition>
+        <argsstring></argsstring>
+        <name>_cur_restart_it</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="106" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" bodystart="106" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1module_1ad6c4ae45e8382b53c130035028a2bf9b" prot="protected" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::module::_dbtype</definition>
+        <argsstring></argsstring>
+        <name>_dbtype</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="107" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" bodystart="107" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1module_1a87d3363daa10b9963c0056de30f35fea" prot="protected" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::module::_dbname</definition>
+        <argsstring></argsstring>
+        <name>_dbname</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="107" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" bodystart="107" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1module_1a8acfc87fe9a2ae5a07a0abec783eb923" prot="protected" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::module::_dbhost</definition>
+        <argsstring></argsstring>
+        <name>_dbhost</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="107" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" bodystart="107" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1module_1a062ee83e634269ebf464b185cf904be5" prot="protected" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::module::_dbport</definition>
+        <argsstring></argsstring>
+        <name>_dbport</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="107" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" bodystart="107" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1module_1a4148a925aa5fe1e6eb2cfd28de3d9c43" prot="protected" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::module::_dbuser</definition>
+        <argsstring></argsstring>
+        <name>_dbuser</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="107" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" bodystart="107" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1module_1aa13743158514ba39f639eee1e1d8d9ef" prot="protected" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::module::_dbpass</definition>
+        <argsstring></argsstring>
+        <name>_dbpass</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="107" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" bodystart="107" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1module_1a055dbe05ca82475015b5c474ea666e91" prot="protected" static="no" mutable="no">
+        <type>string</type>
+        <definition>string tao::module::_tree_pre</definition>
+        <argsstring></argsstring>
+        <name>_tree_pre</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="108" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" bodystart="108" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1module_1aaa566598c72208d1b7222a5f8d61f9e1" prot="protected" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned tao::module::_batch_size</definition>
+        <argsstring></argsstring>
+        <name>_batch_size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="109" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" bodystart="109" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1module_1aa0a08453739811e1cd5ef0ed403be169" prot="protected" static="no" mutable="no">
+        <type>profile::timer</type>
+        <definition>profile::timer tao::module::_timer</definition>
+        <argsstring></argsstring>
+        <name>_timer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="111" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" bodystart="111" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtao_1_1module_1a11c834df4a7148ed692ff8f038959578" prot="protected" static="no" mutable="no">
+        <type>profile::timer</type>
+        <definition>profile::timer tao::module::_db_timer</definition>
+        <argsstring></argsstring>
+        <name>_db_timer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="112" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" bodystart="112" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classtao_1_1module_1a5be311f8503aafb4e62735bddfc82aa2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>tao::module::module</definition>
+        <argsstring>(const string &amp;name=string(), pugi::xml_node base=pugi::xml_node())</argsstring>
+        <name>module</name>
+        <param>
+          <type>const string &amp;</type>
+          <declname>name</declname>
+          <defval>string()</defval>
+        </param>
+        <param>
+          <type>pugi::xml_node</type>
+          <declname>base</declname>
+          <defval>pugi::xml_node()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="23" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.cc" bodystart="9" bodyend="24"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1module_1a4ad3799129a4680da08760564810dd14" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>tao::module::~module</definition>
+        <argsstring>()</argsstring>
+        <name>~module</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="26" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.cc" bodystart="26" bodyend="28"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1module_1af8fe67b903df825b119076e57ac9b9a7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::module::add_parent</definition>
+        <argsstring>(module &amp;parent)</argsstring>
+        <name>add_parent</name>
+        <param>
+          <type><ref refid="classtao_1_1module" kindref="compound">module</ref> &amp;</type>
+          <declname>parent</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="29" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.cc" bodystart="31" bodyend="40"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1module_1a3c8712c817e986905749497611d49a34" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>list&lt; <ref refid="classtao_1_1module" kindref="compound">module</ref> * &gt; &amp;</type>
+        <definition>list&lt; module * &gt; &amp; tao::module::parents</definition>
+        <argsstring>()</argsstring>
+        <name>parents</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="32" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.cc" bodystart="43" bodyend="46"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1module_1aeded5c4440e21754dd389ae5e23c4537" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::module::process</definition>
+        <argsstring>(unsigned long long iteration)</argsstring>
+        <name>process</name>
+        <param>
+          <type>unsigned long long</type>
+          <declname>iteration</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="35" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.cc" bodystart="49" bodyend="86"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1module_1a023002eb7c268ecda8a230fd3e562a45" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void tao::module::initialise</definition>
+        <argsstring>(const options::xml_dict &amp;global_dict)</argsstring>
+        <name>initialise</name>
+        <reimplementedby refid="classtao_1_1votable_1a5ffbc8b780ef5ffba4c56c48a3ff5453">initialise</reimplementedby>
+        <reimplementedby refid="classtao_1_1hdf5_1af3c11bac03897f5beee08a92ea1b9681">initialise</reimplementedby>
+        <reimplementedby refid="classtao_1_1fits_1a05a0eb8fb6d8a20487379c9e2152308a">initialise</reimplementedby>
+        <reimplementedby refid="classtao_1_1csv_1a268f3ec6cef1f2ab53c322ae9428d6b2">initialise</reimplementedby>
+        <reimplementedby refid="classtao_1_1dust_1a8941bfd2aa810b43c7270b5d93c78d09">initialise</reimplementedby>
+        <reimplementedby refid="classtao_1_1filter_1aff783b8729cc7947a1e1a445d0e9db4f">initialise</reimplementedby>
+        <reimplementedby refid="classtao_1_1lightcone_1aa4acb03b7e50bf835f7f69c396184021">initialise</reimplementedby>
+        <reimplementedby refid="classtao_1_1empty_1a29d6af54d9c25fd57a59fc2061b20d71">initialise</reimplementedby>
+        <reimplementedby refid="classtao_1_1sed_1a3517fc1c615c370d26852e35bf1e552a">initialise</reimplementedby>
+        <reimplementedby refid="classtao_1_1skymaker_1a208cdd2659c4692dd12933f509d91c0f">initialise</reimplementedby>
+        <param>
+          <type>const options::xml_dict &amp;</type>
+          <declname>global_dict</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="39" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.cc" bodystart="89" bodyend="97"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1module_1a21b4c2d748b31a7b39fbd0b6fbcc331a" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void tao::module::execute</definition>
+        <argsstring>()=0</argsstring>
+        <name>execute</name>
+        <reimplementedby refid="classtao_1_1votable_1a1c3b5601207abbd4cf97666548d13837">execute</reimplementedby>
+        <reimplementedby refid="classtao_1_1fits_1af7731dd3bef64395ebf8300817e16c36">execute</reimplementedby>
+        <reimplementedby refid="classtao_1_1hdf5_1a35e2c6f65f37074297530cb42ac1caff">execute</reimplementedby>
+        <reimplementedby refid="classtao_1_1csv_1a43366cde783bccc79aa8d448d6fd2586">execute</reimplementedby>
+        <reimplementedby refid="classtao_1_1dust_1a42bf0a460d1ee6834f06fe90218d1a1b">execute</reimplementedby>
+        <reimplementedby refid="classtao_1_1filter_1abf642f5e58c0ada0c0e6ba733881aa49">execute</reimplementedby>
+        <reimplementedby refid="classtao_1_1lightcone_1afc174f18f28af8a0093092374af6a16e">execute</reimplementedby>
+        <reimplementedby refid="classtao_1_1empty_1adb92263083d1ad278257654acab79c4c">execute</reimplementedby>
+        <reimplementedby refid="classtao_1_1sed_1aac524fa5848125e3fd9eeee2d1f4ebb7">execute</reimplementedby>
+        <reimplementedby refid="classtao_1_1skymaker_1a063a7df8851120646c69a72b588297e5">execute</reimplementedby>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="43"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1module_1af0317008573ba52254e3e0267408cec2" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void tao::module::finalise</definition>
+        <argsstring>()</argsstring>
+        <name>finalise</name>
+        <reimplementedby refid="classtao_1_1votable_1a9da3324a3911b3ef49b5118f5184a480">finalise</reimplementedby>
+        <reimplementedby refid="classtao_1_1fits_1a713730512404c3aa915aef9caab567a8">finalise</reimplementedby>
+        <reimplementedby refid="classtao_1_1skymaker_1aeef7c10972a09547f8b781b301d9db23">finalise</reimplementedby>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="47" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.cc" bodystart="100" bodyend="102"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1module_1a0c6d0b7670a9dad3e566ccf2697c13be" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type><ref refid="classtao_1_1galaxy" kindref="compound">tao::galaxy</ref> &amp;</type>
+        <definition>tao::galaxy &amp; tao::module::galaxy</definition>
+        <argsstring>()</argsstring>
+        <name>galaxy</name>
+        <reimplementedby refid="classtao_1_1lightcone_1a4724c985fbdfc45adc1c4738d23b710c">galaxy</reimplementedby>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="51" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.cc" bodystart="105" bodyend="109"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1module_1a04a85ec8fb341115c9d99b5fdf54ed5a" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void tao::module::log_metrics</definition>
+        <argsstring>()</argsstring>
+        <name>log_metrics</name>
+        <reimplementedby refid="classtao_1_1votable_1ab9685a28e6855499e65fa825d506c772">log_metrics</reimplementedby>
+        <reimplementedby refid="classtao_1_1fits_1a4fef1cf04ec31401e59ab305c0be00ac">log_metrics</reimplementedby>
+        <reimplementedby refid="classtao_1_1hdf5_1a50db4c8740f1a781d33e6dec427c4347">log_metrics</reimplementedby>
+        <reimplementedby refid="classtao_1_1csv_1a280b66ac95ef90788ec16a0ebbe3ce1d">log_metrics</reimplementedby>
+        <reimplementedby refid="classtao_1_1lightcone_1ac17cb2147a4e17fc437522040ebbf09c">log_metrics</reimplementedby>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="55" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.cc" bodystart="112" bodyend="116"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1module_1a19feaef9bbe5f219344b07f1bd1bfa38" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool tao::module::complete</definition>
+        <argsstring>() const </argsstring>
+        <name>complete</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="58" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.cc" bodystart="119" bodyend="122"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1module_1a75cf764bee3e92e306b56f96d1be25ad" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>const string &amp;</type>
+        <definition>const string &amp; tao::module::name</definition>
+        <argsstring>() const </argsstring>
+        <name>name</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="61" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.cc" bodystart="125" bodyend="128"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1module_1a93af84d540204ec448964a99baec2de4" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>const options::xml_dict &amp;</type>
+        <definition>const options::xml_dict &amp; tao::module::local_dict</definition>
+        <argsstring>() const </argsstring>
+        <name>local_dict</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="64" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.cc" bodystart="131" bodyend="134"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1module_1a186257b8d6711e1f2cba7a5f3ce9e3b9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>pugi::xml_node</type>
+        <definition>pugi::xml_node tao::module::local_xml_node</definition>
+        <argsstring>()</argsstring>
+        <name>local_xml_node</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="67" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.cc" bodystart="137" bodyend="140"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1module_1ada65b8d273ab0139cba098ec0737d6f0" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>double</type>
+        <definition>double tao::module::time</definition>
+        <argsstring>() const </argsstring>
+        <name>time</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="70" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.cc" bodystart="143" bodyend="146"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1module_1a4f85def6c0bbe44938d67230e9300093" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>double</type>
+        <definition>double tao::module::db_time</definition>
+        <argsstring>() const </argsstring>
+        <name>db_time</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="73" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.cc" bodystart="149" bodyend="152"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classtao_1_1module_1a3bcaa9defed890ddfa254e7a3bdbc954" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::module::_read_db_options</definition>
+        <argsstring>(const options::xml_dict &amp;global_dict)</argsstring>
+        <name>_read_db_options</name>
+        <param>
+          <type>const options::xml_dict &amp;</type>
+          <declname>global_dict</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="78" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.cc" bodystart="155" bodyend="178"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1module_1a0b3144ec62a9790142779ec64e120b17" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::module::_db_connect</definition>
+        <argsstring>()</argsstring>
+        <name>_db_connect</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="81" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.cc" bodystart="181" bodyend="219"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1module_1aad462a73697cd7a0944d5060555df81f" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tao::module::_db_disconnect</definition>
+        <argsstring>()</argsstring>
+        <name>_db_disconnect</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="84" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.cc" bodystart="222" bodyend="235"/>
+      </memberdef>
+      <memberdef kind="function" id="classtao_1_1module_1a7dcdf9a63725c2ba5cc46db7199003dd" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool tao::module::_db_cycle</definition>
+        <argsstring>()</argsstring>
+        <name>_db_cycle</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="87" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.cc" bodystart="238" bodyend="254"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="223">
+        <label>tao::empty</label>
+        <link refid="classtao_1_1empty"/>
+        <childnode refid="220" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="227">
+        <label>tao::lightcone</label>
+        <link refid="classtao_1_1lightcone"/>
+        <childnode refid="220" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="230">
+        <label>tao::votable</label>
+        <link refid="classtao_1_1votable"/>
+        <childnode refid="220" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="222">
+        <label>tao::dust</label>
+        <link refid="classtao_1_1dust"/>
+        <childnode refid="220" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="225">
+        <label>tao::fits</label>
+        <link refid="classtao_1_1fits"/>
+        <childnode refid="220" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="221">
+        <label>tao::csv</label>
+        <link refid="classtao_1_1csv"/>
+        <childnode refid="220" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="226">
+        <label>tao::hdf5</label>
+        <link refid="classtao_1_1hdf5"/>
+        <childnode refid="220" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="220">
+        <label>tao::module</label>
+        <link refid="classtao_1_1module"/>
+      </node>
+      <node id="224">
+        <label>tao::filter</label>
+        <link refid="classtao_1_1filter"/>
+        <childnode refid="220" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="229">
+        <label>tao::skymaker</label>
+        <link refid="classtao_1_1skymaker"/>
+        <childnode refid="220" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="228">
+        <label>tao::sed</label>
+        <link refid="classtao_1_1sed"/>
+        <childnode refid="220" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="232">
+        <label>string</label>
+      </node>
+      <node id="231">
+        <label>tao::module</label>
+        <link refid="classtao_1_1module"/>
+        <childnode refid="232" relation="usage">
+          <edgelabel>_dbhost</edgelabel>
+          <edgelabel>_name</edgelabel>
+          <edgelabel>_dbname</edgelabel>
+          <edgelabel>_dbport</edgelabel>
+          <edgelabel>_dbuser</edgelabel>
+          <edgelabel>_tree_pre</edgelabel>
+          <edgelabel>_dbpass</edgelabel>
+          <edgelabel>_dbtype</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" line="15" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/base/src/module.hh" bodystart="14" bodyend="113"/>
+    <listofallmembers>
+      <member refid="classtao_1_1module_1a1b9223e987716522f3d43dff398cb6c2" prot="protected" virt="non-virtual"><scope>tao::module</scope><name>_base</name></member>
+      <member refid="classtao_1_1module_1aaa566598c72208d1b7222a5f8d61f9e1" prot="protected" virt="non-virtual"><scope>tao::module</scope><name>_batch_size</name></member>
+      <member refid="classtao_1_1module_1ad36a3f632e13a7ebb16170da155e9f91" prot="protected" virt="non-virtual"><scope>tao::module</scope><name>_complete</name></member>
+      <member refid="classtao_1_1module_1ab7902628daffb48f233c25c6b278a041" prot="protected" virt="non-virtual"><scope>tao::module</scope><name>_connected</name></member>
+      <member refid="classtao_1_1module_1a0d2f74174e37e6dbbcbc590599c274b1" prot="protected" virt="non-virtual"><scope>tao::module</scope><name>_cur_restart_it</name></member>
+      <member refid="classtao_1_1module_1a0b3144ec62a9790142779ec64e120b17" prot="protected" virt="non-virtual"><scope>tao::module</scope><name>_db_connect</name></member>
+      <member refid="classtao_1_1module_1a7dcdf9a63725c2ba5cc46db7199003dd" prot="protected" virt="non-virtual"><scope>tao::module</scope><name>_db_cycle</name></member>
+      <member refid="classtao_1_1module_1aad462a73697cd7a0944d5060555df81f" prot="protected" virt="non-virtual"><scope>tao::module</scope><name>_db_disconnect</name></member>
+      <member refid="classtao_1_1module_1a11c834df4a7148ed692ff8f038959578" prot="protected" virt="non-virtual"><scope>tao::module</scope><name>_db_timer</name></member>
+      <member refid="classtao_1_1module_1a8acfc87fe9a2ae5a07a0abec783eb923" prot="protected" virt="non-virtual"><scope>tao::module</scope><name>_dbhost</name></member>
+      <member refid="classtao_1_1module_1a87d3363daa10b9963c0056de30f35fea" prot="protected" virt="non-virtual"><scope>tao::module</scope><name>_dbname</name></member>
+      <member refid="classtao_1_1module_1aa13743158514ba39f639eee1e1d8d9ef" prot="protected" virt="non-virtual"><scope>tao::module</scope><name>_dbpass</name></member>
+      <member refid="classtao_1_1module_1a062ee83e634269ebf464b185cf904be5" prot="protected" virt="non-virtual"><scope>tao::module</scope><name>_dbport</name></member>
+      <member refid="classtao_1_1module_1ad6c4ae45e8382b53c130035028a2bf9b" prot="protected" virt="non-virtual"><scope>tao::module</scope><name>_dbtype</name></member>
+      <member refid="classtao_1_1module_1a4148a925aa5fe1e6eb2cfd28de3d9c43" prot="protected" virt="non-virtual"><scope>tao::module</scope><name>_dbuser</name></member>
+      <member refid="classtao_1_1module_1a83ff7c6af3b37d905e489a6f1dda1de4" prot="protected" virt="non-virtual"><scope>tao::module</scope><name>_dict</name></member>
+      <member refid="classtao_1_1module_1add5763e6abd9514b8a1fb277bacf7aa0" prot="protected" virt="non-virtual"><scope>tao::module</scope><name>_global_dict</name></member>
+      <member refid="classtao_1_1module_1aee8d7601611bb1297410dce20c24a94f" prot="protected" virt="non-virtual"><scope>tao::module</scope><name>_it</name></member>
+      <member refid="classtao_1_1module_1a068866a4eafd7bc6cf97c0dbddc1eabe" prot="protected" virt="non-virtual"><scope>tao::module</scope><name>_name</name></member>
+      <member refid="classtao_1_1module_1a4dc48114767b3275d631d076f1e536ae" prot="protected" virt="non-virtual"><scope>tao::module</scope><name>_num_restart_its</name></member>
+      <member refid="classtao_1_1module_1af247d18388488838d7919ca79423bab2" prot="protected" virt="non-virtual"><scope>tao::module</scope><name>_parents</name></member>
+      <member refid="classtao_1_1module_1a3bcaa9defed890ddfa254e7a3bdbc954" prot="protected" virt="non-virtual"><scope>tao::module</scope><name>_read_db_options</name></member>
+      <member refid="classtao_1_1module_1abbd63eb3630af38531d35c485b59abc7" prot="protected" virt="non-virtual"><scope>tao::module</scope><name>_sql</name></member>
+      <member refid="classtao_1_1module_1aa0a08453739811e1cd5ef0ed403be169" prot="protected" virt="non-virtual"><scope>tao::module</scope><name>_timer</name></member>
+      <member refid="classtao_1_1module_1a055dbe05ca82475015b5c474ea666e91" prot="protected" virt="non-virtual"><scope>tao::module</scope><name>_tree_pre</name></member>
+      <member refid="classtao_1_1module_1af8fe67b903df825b119076e57ac9b9a7" prot="public" virt="non-virtual"><scope>tao::module</scope><name>add_parent</name></member>
+      <member refid="classtao_1_1module_1a19feaef9bbe5f219344b07f1bd1bfa38" prot="public" virt="non-virtual"><scope>tao::module</scope><name>complete</name></member>
+      <member refid="classtao_1_1module_1a4f85def6c0bbe44938d67230e9300093" prot="public" virt="non-virtual"><scope>tao::module</scope><name>db_time</name></member>
+      <member refid="classtao_1_1module_1a21b4c2d748b31a7b39fbd0b6fbcc331a" prot="public" virt="pure-virtual"><scope>tao::module</scope><name>execute</name></member>
+      <member refid="classtao_1_1module_1af0317008573ba52254e3e0267408cec2" prot="public" virt="virtual"><scope>tao::module</scope><name>finalise</name></member>
+      <member refid="classtao_1_1module_1a0c6d0b7670a9dad3e566ccf2697c13be" prot="public" virt="virtual"><scope>tao::module</scope><name>galaxy</name></member>
+      <member refid="classtao_1_1module_1a023002eb7c268ecda8a230fd3e562a45" prot="public" virt="virtual"><scope>tao::module</scope><name>initialise</name></member>
+      <member refid="classtao_1_1module_1a93af84d540204ec448964a99baec2de4" prot="public" virt="non-virtual"><scope>tao::module</scope><name>local_dict</name></member>
+      <member refid="classtao_1_1module_1a186257b8d6711e1f2cba7a5f3ce9e3b9" prot="public" virt="non-virtual"><scope>tao::module</scope><name>local_xml_node</name></member>
+      <member refid="classtao_1_1module_1a04a85ec8fb341115c9d99b5fdf54ed5a" prot="public" virt="virtual"><scope>tao::module</scope><name>log_metrics</name></member>
+      <member refid="classtao_1_1module_1a5be311f8503aafb4e62735bddfc82aa2" prot="public" virt="non-virtual"><scope>tao::module</scope><name>module</name></member>
+      <member refid="classtao_1_1module_1a75cf764bee3e92e306b56f96d1be25ad" prot="public" virt="non-virtual"><scope>tao::module</scope><name>name</name></member>
+      <member refid="classtao_1_1module_1a3c8712c817e986905749497611d49a34" prot="public" virt="non-virtual"><scope>tao::module</scope><name>parents</name></member>
+      <member refid="classtao_1_1module_1aeded5c4440e21754dd389ae5e23c4537" prot="public" virt="non-virtual"><scope>tao::module</scope><name>process</name></member>
+      <member refid="classtao_1_1module_1abdc09890519027e51fbd3603406b2e87" prot="public" virt="non-virtual"><scope>tao::module</scope><name>real_type</name></member>
+      <member refid="classtao_1_1module_1ada65b8d273ab0139cba098ec0737d6f0" prot="public" virt="non-virtual"><scope>tao::module</scope><name>time</name></member>
+      <member refid="classtao_1_1module_1a4ad3799129a4680da08760564810dd14" prot="public" virt="virtual"><scope>tao::module</scope><name>~module</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

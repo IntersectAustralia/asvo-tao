@@ -1,0 +1,974 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="class_cxx_test_1_1_error_formatter" kind="class" prot="public">
+    <compoundname>CxxTest::ErrorFormatter</compoundname>
+    <basecompoundref refid="class_cxx_test_1_1_test_listener" prot="public" virt="non-virtual">CxxTest::TestListener</basecompoundref>
+    <derivedcompoundref refid="class_cxx_test_1_1_error_printer" prot="public" virt="non-virtual">CxxTest::ErrorPrinter</derivedcompoundref>
+    <derivedcompoundref refid="class_cxx_test_1_1_stdio_file_printer" prot="public" virt="non-virtual">CxxTest::StdioFilePrinter</derivedcompoundref>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_cxx_test_1_1_error_formatter_1aefac64edff2701f3dfe751d3c050a541" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool CxxTest::ErrorFormatter::_dotting</definition>
+        <argsstring></argsstring>
+        <name>_dotting</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" line="296" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" bodystart="296" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_error_formatter_1a7feeea15a39c22545144c29bf8e59d57" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool CxxTest::ErrorFormatter::_reported</definition>
+        <argsstring></argsstring>
+        <name>_reported</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" line="297" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" bodystart="297" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_error_formatter_1a4880528cac578338a04c8329d7ee0d6d" prot="private" static="no" mutable="no">
+        <type><ref refid="class_cxx_test_1_1_output_stream" kindref="compound">OutputStream</ref> *</type>
+        <definition>OutputStream* CxxTest::ErrorFormatter::_o</definition>
+        <argsstring></argsstring>
+        <name>_o</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" line="298" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" bodystart="298" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_error_formatter_1a6c67933c49dc70f7127e245c6779ac2d" prot="private" static="no" mutable="no">
+        <type>const char *</type>
+        <definition>const char* CxxTest::ErrorFormatter::_preLine</definition>
+        <argsstring></argsstring>
+        <name>_preLine</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" line="299" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" bodystart="299" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_cxx_test_1_1_error_formatter_1ac45f58635c4f5cd1d69ade23920684d4" prot="private" static="no" mutable="no">
+        <type>const char *</type>
+        <definition>const char* CxxTest::ErrorFormatter::_postLine</definition>
+        <argsstring></argsstring>
+        <name>_postLine</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" line="300" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" bodystart="300" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_cxx_test_1_1_error_formatter_1aa9ccfd2827519a72f03c2cd2b18a3fe1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::ErrorFormatter::ErrorFormatter</definition>
+        <argsstring>(OutputStream *o, const char *preLine=&quot;:&quot;, const char *postLine=&quot;&quot;)</argsstring>
+        <name>ErrorFormatter</name>
+        <param>
+          <type><ref refid="class_cxx_test_1_1_output_stream" kindref="compound">OutputStream</ref> *</type>
+          <declname>o</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>preLine</declname>
+          <defval>&quot;:&quot;</defval>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>postLine</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" line="47" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" bodystart="41" bodyend="48"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_error_formatter_1a864e271c4a95907866d483a460aa5f71" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int CxxTest::ErrorFormatter::run</definition>
+        <argsstring>()</argsstring>
+        <name>run</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" line="51" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" bodystart="50" bodyend="54"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_error_formatter_1ae0bfc9107f1c5c15d6f7ab112096afd5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::ErrorFormatter::enterWorld</definition>
+        <argsstring>(const WorldDescription &amp;)</argsstring>
+        <name>enterWorld</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a947f7954fbfeb604df5c183c92811bbd">enterWorld</reimplements>
+        <param>
+          <type>const <ref refid="class_cxx_test_1_1_world_description" kindref="compound">WorldDescription</ref> &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" line="57" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" bodystart="56" bodyend="66"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_error_formatter_1a72d81800df02cedef86fa3bb7e6a736f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::ErrorFormatter::enterSuite</definition>
+        <argsstring>(const SuiteDescription &amp;)</argsstring>
+        <name>enterSuite</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1aec118cbeef8ae759abf47a6c05c4edc0">enterSuite</reimplements>
+        <param>
+          <type>const <ref refid="class_cxx_test_1_1_suite_description" kindref="compound">SuiteDescription</ref> &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" line="80" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" bodystart="79" bodyend="82"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_error_formatter_1a4cf5c3068bcfe3478a02a16c5ab9dca3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::ErrorFormatter::enterTest</definition>
+        <argsstring>(const TestDescription &amp;)</argsstring>
+        <name>enterTest</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1af9a62cbee47da01007d1b14c46b32ae8">enterTest</reimplements>
+        <param>
+          <type>const <ref refid="class_cxx_test_1_1_test_description" kindref="compound">TestDescription</ref> &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" line="85" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" bodystart="84" bodyend="87"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_error_formatter_1a59d77ff2f2b8ff3715e7fb3938914dc5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::ErrorFormatter::leaveTest</definition>
+        <argsstring>(const TestDescription &amp;)</argsstring>
+        <name>leaveTest</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a46b4a76c5f0feb378c6b058e90d1508e">leaveTest</reimplements>
+        <param>
+          <type>const <ref refid="class_cxx_test_1_1_test_description" kindref="compound">TestDescription</ref> &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" line="90" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" bodystart="89" bodyend="99"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_error_formatter_1a68b02ba2222576fcdad50be38672b5c9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::ErrorFormatter::leaveWorld</definition>
+        <argsstring>(const WorldDescription &amp;desc)</argsstring>
+        <name>leaveWorld</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a9fdc72862efba6b9505a53044cb6b996">leaveWorld</reimplements>
+        <param>
+          <type>const <ref refid="class_cxx_test_1_1_world_description" kindref="compound">WorldDescription</ref> &amp;</type>
+          <declname>desc</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" line="102" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" bodystart="101" bodyend="117"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_error_formatter_1a568d420df1ea4972ff6122c304da5211" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::ErrorFormatter::trace</definition>
+        <argsstring>(const char *file, unsigned line, const char *expression)</argsstring>
+        <name>trace</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a3bac16644da9c76c8fdb90a7a67b444d">trace</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>expression</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" line="120" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" bodystart="119" bodyend="123"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_error_formatter_1a2cbcc99a3c79d9a612d5fd2d4261131c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::ErrorFormatter::warning</definition>
+        <argsstring>(const char *file, unsigned line, const char *expression)</argsstring>
+        <name>warning</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a9f186c3b4983959abc0b7f4a5839b5f3">warning</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>expression</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" line="126" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" bodystart="125" bodyend="129"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_error_formatter_1a66f5ad747c1e5e061b4504dfd20be5d9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::ErrorFormatter::failedTest</definition>
+        <argsstring>(const char *file, unsigned line, const char *expression)</argsstring>
+        <name>failedTest</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a7b6733b07a17c45b7b503d3b0c4ba9dd">failedTest</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>expression</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" line="132" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" bodystart="131" bodyend="135"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_error_formatter_1ab26f8b47e4069597685860e14c8221f1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::ErrorFormatter::failedAssert</definition>
+        <argsstring>(const char *file, unsigned line, const char *expression)</argsstring>
+        <name>failedAssert</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a5496f04ec411e4e56e2121ca279952d0">failedAssert</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>expression</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" line="138" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" bodystart="137" bodyend="141"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_error_formatter_1a8f1d2babd72ebd66d97300e749470783" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::ErrorFormatter::failedAssertEquals</definition>
+        <argsstring>(const char *file, unsigned line, const char *xStr, const char *yStr, const char *x, const char *y)</argsstring>
+        <name>failedAssertEquals</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a37c2df98ac833ff9b39c9ef06372574e">failedAssertEquals</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>xStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>yStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" line="146" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" bodystart="143" bodyend="150"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_error_formatter_1a7cd3a0dc84fe2b34ac128c56e34ad668" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::ErrorFormatter::failedAssertSameData</definition>
+        <argsstring>(const char *file, unsigned line, const char *xStr, const char *yStr, const char *sizeStr, const void *x, const void *y, unsigned size)</argsstring>
+        <name>failedAssertSameData</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1ac9bcebc7a6a77e87098d6342db1d18ff">failedAssertSameData</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>xStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>yStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>sizeStr</declname>
+        </param>
+        <param>
+          <type>const void *</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>const void *</type>
+          <declname>y</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" line="156" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" bodystart="152" bodyend="162"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_error_formatter_1a5efb8e87225bc8d32bb7ded8ca141640" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::ErrorFormatter::failedAssertDelta</definition>
+        <argsstring>(const char *file, unsigned line, const char *xStr, const char *yStr, const char *dStr, const char *x, const char *y, const char *d)</argsstring>
+        <name>failedAssertDelta</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a5f45960ba9e1065b61c0e232220f1b83">failedAssertDelta</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>xStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>yStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>dStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>y</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>d</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" line="167" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" bodystart="164" bodyend="171"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_error_formatter_1aef26050d912199df03b4c536c633d55f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::ErrorFormatter::failedAssertDiffers</definition>
+        <argsstring>(const char *file, unsigned line, const char *xStr, const char *yStr, const char *value)</argsstring>
+        <name>failedAssertDiffers</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a2b456f8d4b3f7c63653aa819b6480451">failedAssertDiffers</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>xStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>yStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" line="176" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" bodystart="173" bodyend="180"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_error_formatter_1a5f5aa461f86a7f4d46e9d1a56bf00098" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::ErrorFormatter::failedAssertLessThan</definition>
+        <argsstring>(const char *file, unsigned line, const char *xStr, const char *yStr, const char *x, const char *y)</argsstring>
+        <name>failedAssertLessThan</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a4d7bcffdcd7d78578bcbdba0c63c8a0d">failedAssertLessThan</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>xStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>yStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" line="185" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" bodystart="182" bodyend="189"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_error_formatter_1ad3885ac86c5f5e2a4177c5cf6491bd1d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::ErrorFormatter::failedAssertLessThanEquals</definition>
+        <argsstring>(const char *file, unsigned line, const char *xStr, const char *yStr, const char *x, const char *y)</argsstring>
+        <name>failedAssertLessThanEquals</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a1198d1a2c639008ba856d66ffc02f1ca">failedAssertLessThanEquals</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>xStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>yStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" line="194" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" bodystart="191" bodyend="198"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_error_formatter_1a1307fb012d68e5f4a5eb12b84dc9757a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::ErrorFormatter::failedAssertRelation</definition>
+        <argsstring>(const char *file, unsigned line, const char *relation, const char *xStr, const char *yStr, const char *x, const char *y)</argsstring>
+        <name>failedAssertRelation</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a784a1a7eca5008820fd7df46f2019bc9">failedAssertRelation</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>relation</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>xStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>yStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" line="203" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" bodystart="200" bodyend="206"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_error_formatter_1a99aee4be84f7b2d08caca4d5019d848a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::ErrorFormatter::failedAssertPredicate</definition>
+        <argsstring>(const char *file, unsigned line, const char *predicate, const char *xStr, const char *x)</argsstring>
+        <name>failedAssertPredicate</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1ab296234687d058a4ae3d0ad8c0d6f0b3">failedAssertPredicate</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>predicate</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>xStr</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" line="210" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" bodystart="208" bodyend="213"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_error_formatter_1a2d0c4bb47b08d9e871dc9ce9d0f2d321" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::ErrorFormatter::failedAssertThrows</definition>
+        <argsstring>(const char *file, unsigned line, const char *expression, const char *type, bool otherThrown)</argsstring>
+        <name>failedAssertThrows</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a9136ed0314ce55bb6b8dc2cca0e65c8b">failedAssertThrows</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>expression</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>type</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>otherThrown</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" line="218" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" bodystart="215" bodyend="222"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_error_formatter_1ac9fe1e21e03f8ae0ebc4d1de8dd742a2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>void CxxTest::ErrorFormatter::failedAssertThrowsNot</definition>
+        <argsstring>(const char *file, unsigned line, const char *expression)</argsstring>
+        <name>failedAssertThrowsNot</name>
+        <reimplements refid="class_cxx_test_1_1_test_listener_1a8416fe966f24ccef824b49090266a40c">failedAssertThrowsNot</reimplements>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>expression</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" line="225" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" bodystart="224" bodyend="228"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="class_cxx_test_1_1_error_formatter_1a9e81e6c50d0abb508eaaa256148fb271" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>static void CxxTest::ErrorFormatter::totalTests</definition>
+        <argsstring>(OutputStream &amp;o)</argsstring>
+        <name>totalTests</name>
+        <param>
+          <type><ref refid="class_cxx_test_1_1_output_stream" kindref="compound">OutputStream</ref> &amp;</type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" line="69" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" bodystart="68" bodyend="77"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="class_cxx_test_1_1_error_formatter_1a62580519afc8c1874ef1ad32ec0d57ad" prot="protected" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="class_cxx_test_1_1_output_stream" kindref="compound">OutputStream</ref> *</type>
+        <definition>OutputStream* CxxTest::ErrorFormatter::outputStream</definition>
+        <argsstring>() const </argsstring>
+        <name>outputStream</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" line="232" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" bodystart="231" bodyend="234"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="class_cxx_test_1_1_error_formatter_1afb1121b51b4c1c5c3f6129fb80c3f9d6" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::ErrorFormatter::ErrorFormatter</definition>
+        <argsstring>(const ErrorFormatter &amp;)</argsstring>
+        <name>ErrorFormatter</name>
+        <param>
+          <type>const <ref refid="class_cxx_test_1_1_error_formatter" kindref="compound">ErrorFormatter</ref> &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" line="237"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_error_formatter_1ad22273571bdb8f32aa5b82ab77b12415" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="class_cxx_test_1_1_error_formatter" kindref="compound">ErrorFormatter</ref> &amp;</type>
+        <definition>ErrorFormatter&amp; CxxTest::ErrorFormatter::operator=</definition>
+        <argsstring>(const ErrorFormatter &amp;)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type>const <ref refid="class_cxx_test_1_1_error_formatter" kindref="compound">ErrorFormatter</ref> &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" line="238"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_error_formatter_1acd7382cf271d9d94354f44b533faa574" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="class_cxx_test_1_1_output_stream" kindref="compound">OutputStream</ref> &amp;</type>
+        <definition>OutputStream&amp; CxxTest::ErrorFormatter::stop</definition>
+        <argsstring>(const char *file, unsigned line)</argsstring>
+        <name>stop</name>
+        <param>
+          <type>const char *</type>
+          <declname>file</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>line</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" line="241" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" bodystart="240" bodyend="245"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_error_formatter_1a4849c3d65e99a67952768f76cf4f94f4" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::ErrorFormatter::newLine</definition>
+        <argsstring>(void)</argsstring>
+        <name>newLine</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" line="248" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" bodystart="247" bodyend="253"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_error_formatter_1ac5572be91203f4b86a81566b13a1880d" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::ErrorFormatter::reportTest</definition>
+        <argsstring>(void)</argsstring>
+        <name>reportTest</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" line="256" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" bodystart="255" bodyend="261"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_error_formatter_1ad57022f4e88d5e54e27c0d28520aeeb4" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::ErrorFormatter::dump</definition>
+        <argsstring>(const void *buffer, unsigned size)</argsstring>
+        <name>dump</name>
+        <param>
+          <type>const void *</type>
+          <declname>buffer</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" line="264" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" bodystart="263" bodyend="269"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_error_formatter_1a78a948b7dc83808c1a480d32b83c6bde" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::ErrorFormatter::dumpNull</definition>
+        <argsstring>()</argsstring>
+        <name>dumpNull</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" line="272" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" bodystart="271" bodyend="274"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_error_formatter_1a9ed5f90b08cc02d38727f0706fd6e5d8" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::ErrorFormatter::dumpBuffer</definition>
+        <argsstring>(const void *buffer, unsigned size)</argsstring>
+        <name>dumpBuffer</name>
+        <param>
+          <type>const void *</type>
+          <declname>buffer</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" line="277" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" bodystart="276" bodyend="289"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-static-func">
+      <memberdef kind="function" id="class_cxx_test_1_1_error_formatter_1a7f03c098272b80d9d48d1b0ee613153c" prot="private" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>static void CxxTest::ErrorFormatter::endl</definition>
+        <argsstring>(OutputStream &amp;o)</argsstring>
+        <name>endl</name>
+        <param>
+          <type><ref refid="class_cxx_test_1_1_output_stream" kindref="compound">OutputStream</ref> &amp;</type>
+          <declname>o</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" line="292" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" bodystart="291" bodyend="294"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="98">
+        <label>CxxTest::StdioFilePrinter</label>
+        <link refid="class_cxx_test_1_1_stdio_file_printer"/>
+        <childnode refid="94" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="94">
+        <label>CxxTest::ErrorFormatter</label>
+        <link refid="class_cxx_test_1_1_error_formatter"/>
+        <childnode refid="95" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="96">
+        <label>CxxTest::ErrorPrinter</label>
+        <link refid="class_cxx_test_1_1_error_printer"/>
+        <childnode refid="94" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="95">
+        <label>CxxTest::TestListener</label>
+        <link refid="class_cxx_test_1_1_test_listener"/>
+      </node>
+      <node id="99">
+        <label>CxxTest::StdioPrinter</label>
+        <link refid="class_cxx_test_1_1_stdio_printer"/>
+        <childnode refid="98" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="97">
+        <label>CxxTest::ParenPrinter</label>
+        <link refid="class_cxx_test_1_1_paren_printer"/>
+        <childnode refid="96" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="100">
+        <label>CxxTest::ErrorFormatter</label>
+        <link refid="class_cxx_test_1_1_error_formatter"/>
+        <childnode refid="101" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="101">
+        <label>CxxTest::TestListener</label>
+        <link refid="class_cxx_test_1_1_test_listener"/>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" line="39" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/ErrorFormatter.h" bodystart="38" bodyend="301"/>
+    <listofallmembers>
+      <member refid="class_cxx_test_1_1_error_formatter_1aefac64edff2701f3dfe751d3c050a541" prot="private" virt="non-virtual"><scope>CxxTest::ErrorFormatter</scope><name>_dotting</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1a4880528cac578338a04c8329d7ee0d6d" prot="private" virt="non-virtual"><scope>CxxTest::ErrorFormatter</scope><name>_o</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1ac45f58635c4f5cd1d69ade23920684d4" prot="private" virt="non-virtual"><scope>CxxTest::ErrorFormatter</scope><name>_postLine</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1a6c67933c49dc70f7127e245c6779ac2d" prot="private" virt="non-virtual"><scope>CxxTest::ErrorFormatter</scope><name>_preLine</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1a7feeea15a39c22545144c29bf8e59d57" prot="private" virt="non-virtual"><scope>CxxTest::ErrorFormatter</scope><name>_reported</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1ad57022f4e88d5e54e27c0d28520aeeb4" prot="private" virt="non-virtual"><scope>CxxTest::ErrorFormatter</scope><name>dump</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1a9ed5f90b08cc02d38727f0706fd6e5d8" prot="private" virt="non-virtual"><scope>CxxTest::ErrorFormatter</scope><name>dumpBuffer</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1a78a948b7dc83808c1a480d32b83c6bde" prot="private" virt="non-virtual"><scope>CxxTest::ErrorFormatter</scope><name>dumpNull</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1a7f03c098272b80d9d48d1b0ee613153c" prot="private" virt="non-virtual"><scope>CxxTest::ErrorFormatter</scope><name>endl</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1a72d81800df02cedef86fa3bb7e6a736f" prot="public" virt="virtual"><scope>CxxTest::ErrorFormatter</scope><name>enterSuite</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1a4cf5c3068bcfe3478a02a16c5ab9dca3" prot="public" virt="virtual"><scope>CxxTest::ErrorFormatter</scope><name>enterTest</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1ae0bfc9107f1c5c15d6f7ab112096afd5" prot="public" virt="virtual"><scope>CxxTest::ErrorFormatter</scope><name>enterWorld</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1aa9ccfd2827519a72f03c2cd2b18a3fe1" prot="public" virt="non-virtual"><scope>CxxTest::ErrorFormatter</scope><name>ErrorFormatter</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1afb1121b51b4c1c5c3f6129fb80c3f9d6" prot="private" virt="non-virtual"><scope>CxxTest::ErrorFormatter</scope><name>ErrorFormatter</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1ab26f8b47e4069597685860e14c8221f1" prot="public" virt="virtual"><scope>CxxTest::ErrorFormatter</scope><name>failedAssert</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1a5efb8e87225bc8d32bb7ded8ca141640" prot="public" virt="virtual"><scope>CxxTest::ErrorFormatter</scope><name>failedAssertDelta</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1aef26050d912199df03b4c536c633d55f" prot="public" virt="virtual"><scope>CxxTest::ErrorFormatter</scope><name>failedAssertDiffers</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1a8f1d2babd72ebd66d97300e749470783" prot="public" virt="virtual"><scope>CxxTest::ErrorFormatter</scope><name>failedAssertEquals</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1a5f5aa461f86a7f4d46e9d1a56bf00098" prot="public" virt="virtual"><scope>CxxTest::ErrorFormatter</scope><name>failedAssertLessThan</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1ad3885ac86c5f5e2a4177c5cf6491bd1d" prot="public" virt="virtual"><scope>CxxTest::ErrorFormatter</scope><name>failedAssertLessThanEquals</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1a99aee4be84f7b2d08caca4d5019d848a" prot="public" virt="virtual"><scope>CxxTest::ErrorFormatter</scope><name>failedAssertPredicate</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1a1307fb012d68e5f4a5eb12b84dc9757a" prot="public" virt="virtual"><scope>CxxTest::ErrorFormatter</scope><name>failedAssertRelation</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1a7cd3a0dc84fe2b34ac128c56e34ad668" prot="public" virt="virtual"><scope>CxxTest::ErrorFormatter</scope><name>failedAssertSameData</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1a2d0c4bb47b08d9e871dc9ce9d0f2d321" prot="public" virt="virtual"><scope>CxxTest::ErrorFormatter</scope><name>failedAssertThrows</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1ac9fe1e21e03f8ae0ebc4d1de8dd742a2" prot="public" virt="virtual"><scope>CxxTest::ErrorFormatter</scope><name>failedAssertThrowsNot</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1a66f5ad747c1e5e061b4504dfd20be5d9" prot="public" virt="virtual"><scope>CxxTest::ErrorFormatter</scope><name>failedTest</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1aaac3ffc635abb616f7a2cd2cd460d265" prot="public" virt="virtual"><scope>CxxTest::ErrorFormatter</scope><name>leaveSuite</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1a59d77ff2f2b8ff3715e7fb3938914dc5" prot="public" virt="virtual"><scope>CxxTest::ErrorFormatter</scope><name>leaveTest</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1a68b02ba2222576fcdad50be38672b5c9" prot="public" virt="virtual"><scope>CxxTest::ErrorFormatter</scope><name>leaveWorld</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1a4849c3d65e99a67952768f76cf4f94f4" prot="private" virt="non-virtual"><scope>CxxTest::ErrorFormatter</scope><name>newLine</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1ad22273571bdb8f32aa5b82ab77b12415" prot="private" virt="non-virtual"><scope>CxxTest::ErrorFormatter</scope><name>operator=</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1a62580519afc8c1874ef1ad32ec0d57ad" prot="protected" virt="non-virtual"><scope>CxxTest::ErrorFormatter</scope><name>outputStream</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1ac5572be91203f4b86a81566b13a1880d" prot="private" virt="non-virtual"><scope>CxxTest::ErrorFormatter</scope><name>reportTest</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1a864e271c4a95907866d483a460aa5f71" prot="public" virt="non-virtual"><scope>CxxTest::ErrorFormatter</scope><name>run</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1acd7382cf271d9d94354f44b533faa574" prot="private" virt="non-virtual"><scope>CxxTest::ErrorFormatter</scope><name>stop</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1ab5958bd800642f706c2a7a0e8741778f" prot="public" virt="non-virtual"><scope>CxxTest::ErrorFormatter</scope><name>TestListener</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1a9e81e6c50d0abb508eaaa256148fb271" prot="public" virt="non-virtual"><scope>CxxTest::ErrorFormatter</scope><name>totalTests</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1a568d420df1ea4972ff6122c304da5211" prot="public" virt="virtual"><scope>CxxTest::ErrorFormatter</scope><name>trace</name></member>
+      <member refid="class_cxx_test_1_1_error_formatter_1a2cbcc99a3c79d9a612d5fd2d4261131c" prot="public" virt="virtual"><scope>CxxTest::ErrorFormatter</scope><name>warning</name></member>
+      <member refid="class_cxx_test_1_1_test_listener_1a4d4cb5d990e0c4b0891f64f9e055b729" prot="public" virt="virtual"><scope>CxxTest::ErrorFormatter</scope><name>~TestListener</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

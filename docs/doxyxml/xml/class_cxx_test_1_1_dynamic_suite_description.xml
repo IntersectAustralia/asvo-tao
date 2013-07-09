@@ -1,0 +1,332 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="class_cxx_test_1_1_dynamic_suite_description" kind="class" prot="public">
+    <compoundname>CxxTest::DynamicSuiteDescription</compoundname>
+    <basecompoundref refid="class_cxx_test_1_1_common_dynamic_suite_description" prot="public" virt="non-virtual">CxxTest::CommonDynamicSuiteDescription</basecompoundref>
+    <templateparamlist>
+      <param>
+        <type>class S</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_cxx_test_1_1_dynamic_suite_description_1a0f8a2f232189e456ac97ed65e86e8d18" prot="private" static="no" mutable="no">
+        <type>S **</type>
+        <definition>S** CxxTest::DynamicSuiteDescription&lt; S &gt;::_suite</definition>
+        <argsstring></argsstring>
+        <name>_suite</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.h" line="172" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.h" bodystart="172" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_cxx_test_1_1_dynamic_suite_description_1a935abcf827ce7523562c00d33f0242ab" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::DynamicSuiteDescription&lt; S &gt;::DynamicSuiteDescription</definition>
+        <argsstring>()</argsstring>
+        <name>DynamicSuiteDescription</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.h" line="130" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.h" bodystart="130" bodyend="130"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_dynamic_suite_description_1ab325f0a2e81ebbb6719f780d75471883" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>CxxTest::DynamicSuiteDescription&lt; S &gt;::DynamicSuiteDescription</definition>
+        <argsstring>(const char *argFile, unsigned argLine, const char *argSuiteName, List &amp;argTests, S *&amp;argSuite, unsigned argCreateLine, unsigned argDestroyLine)</argsstring>
+        <name>DynamicSuiteDescription</name>
+        <param>
+          <type>const char *</type>
+          <declname>argFile</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>argLine</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>argSuiteName</declname>
+        </param>
+        <param>
+          <type><ref refid="struct_cxx_test_1_1_list" kindref="compound">List</ref> &amp;</type>
+          <declname>argTests</declname>
+        </param>
+        <param>
+          <type>S *&amp;</type>
+          <declname>argSuite</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>argCreateLine</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>argDestroyLine</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.h" line="136" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.h" bodystart="131" bodyend="138"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_dynamic_suite_description_1a0f426c051f5ccaf14ebbd11c07329e57" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::DynamicSuiteDescription&lt; S &gt;::initialize</definition>
+        <argsstring>(const char *argFile, unsigned argLine, const char *argSuiteName, List &amp;argTests, S *&amp;argSuite, unsigned argCreateLine, unsigned argDestroyLine)</argsstring>
+        <name>initialize</name>
+        <param>
+          <type>const char *</type>
+          <declname>argFile</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>argLine</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>argSuiteName</declname>
+        </param>
+        <param>
+          <type><ref refid="struct_cxx_test_1_1_list" kindref="compound">List</ref> &amp;</type>
+          <declname>argTests</declname>
+        </param>
+        <param>
+          <type>S *&amp;</type>
+          <declname>argSuite</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>argCreateLine</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>argDestroyLine</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.h" line="144" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.h" bodystart="140" bodyend="149"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_dynamic_suite_description_1a524a9a8981a9c58aa09023d3bfba4dee" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type><ref refid="class_cxx_test_1_1_test_suite" kindref="compound">TestSuite</ref> *</type>
+        <definition>TestSuite* CxxTest::DynamicSuiteDescription&lt; S &gt;::suite</definition>
+        <argsstring>() const </argsstring>
+        <name>suite</name>
+        <reimplements refid="class_cxx_test_1_1_suite_description_1aded85c217f1ec960fec7aa406498bf01">suite</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.h" line="151" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.h" bodystart="151" bodyend="151"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_dynamic_suite_description_1a0cee600a803f0accaaa82a1e933d2266" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>bool</type>
+        <definition>bool CxxTest::DynamicSuiteDescription&lt; S &gt;::setUp</definition>
+        <argsstring>()</argsstring>
+        <name>setUp</name>
+        <reimplements refid="class_cxx_test_1_1_link_1aa540f5bc2bdc42aea499c5518c23f0b3">setUp</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.h" line="153" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.h" bodystart="176" bodyend="185"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_dynamic_suite_description_1a322a0b084882a891bc8cf12805a56f12" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>bool</type>
+        <definition>bool CxxTest::DynamicSuiteDescription&lt; S &gt;::tearDown</definition>
+        <argsstring>()</argsstring>
+        <name>tearDown</name>
+        <reimplements refid="class_cxx_test_1_1_link_1aefe59c002cd2fc0fac1b0e545d226dab">tearDown</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.h" line="154" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.h" bodystart="188" bodyend="199"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="class_cxx_test_1_1_dynamic_suite_description_1aafe8ea6a2aa5d53fa9072d11232b1bce" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>S *</type>
+        <definition>S* CxxTest::DynamicSuiteDescription&lt; S &gt;::realSuite</definition>
+        <argsstring>() const </argsstring>
+        <name>realSuite</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.h" line="157" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.h" bodystart="157" bodyend="157"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_dynamic_suite_description_1ab3c50c53ed58784e5f1b14651f1d5e27" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::DynamicSuiteDescription&lt; S &gt;::setSuite</definition>
+        <argsstring>(S *s)</argsstring>
+        <name>setSuite</name>
+        <param>
+          <type>S *</type>
+          <declname>s</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.h" line="158" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.h" bodystart="158" bodyend="158"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_dynamic_suite_description_1a7efa7079bddf12cbdf0f6572748a2d5f" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::DynamicSuiteDescription&lt; S &gt;::createSuite</definition>
+        <argsstring>()</argsstring>
+        <name>createSuite</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.h" line="161" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.h" bodystart="160" bodyend="163"/>
+      </memberdef>
+      <memberdef kind="function" id="class_cxx_test_1_1_dynamic_suite_description_1a3ea9b4d83916d99e5818ea053649ef44" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void CxxTest::DynamicSuiteDescription&lt; S &gt;::destroySuite</definition>
+        <argsstring>()</argsstring>
+        <name>destroySuite</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.h" line="166" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.h" bodystart="165" bodyend="170"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="83">
+        <label>CxxTest::Link</label>
+        <link refid="class_cxx_test_1_1_link"/>
+      </node>
+      <node id="81">
+        <label>CxxTest::RealSuiteDescription</label>
+        <link refid="class_cxx_test_1_1_real_suite_description"/>
+        <childnode refid="82" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="80">
+        <label>CxxTest::CommonDynamicSuiteDescription</label>
+        <link refid="class_cxx_test_1_1_common_dynamic_suite_description"/>
+        <childnode refid="81" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="79">
+        <label>CxxTest::DynamicSuiteDescription&lt; S &gt;</label>
+        <link refid="class_cxx_test_1_1_dynamic_suite_description"/>
+        <childnode refid="80" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="82">
+        <label>CxxTest::SuiteDescription</label>
+        <link refid="class_cxx_test_1_1_suite_description"/>
+        <childnode refid="83" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="88">
+        <label>CxxTest::Link</label>
+        <link refid="class_cxx_test_1_1_link"/>
+      </node>
+      <node id="86">
+        <label>CxxTest::RealSuiteDescription</label>
+        <link refid="class_cxx_test_1_1_real_suite_description"/>
+        <childnode refid="87" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="85">
+        <label>CxxTest::CommonDynamicSuiteDescription</label>
+        <link refid="class_cxx_test_1_1_common_dynamic_suite_description"/>
+        <childnode refid="86" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="84">
+        <label>CxxTest::DynamicSuiteDescription&lt; S &gt;</label>
+        <link refid="class_cxx_test_1_1_dynamic_suite_description"/>
+        <childnode refid="85" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="87">
+        <label>CxxTest::SuiteDescription</label>
+        <link refid="class_cxx_test_1_1_suite_description"/>
+        <childnode refid="88" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.h" line="128" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/cxxtest/include/cxxtest/RealDescriptions.h" bodystart="127" bodyend="173"/>
+    <listofallmembers>
+      <member refid="class_cxx_test_1_1_common_dynamic_suite_description_1a45066a52ecfbeb67b1147320a787a658" prot="protected" virt="non-virtual"><scope>CxxTest::DynamicSuiteDescription</scope><name>_createLine</name></member>
+      <member refid="class_cxx_test_1_1_common_dynamic_suite_description_1aec97970462595159ebe593628a3bef5a" prot="protected" virt="non-virtual"><scope>CxxTest::DynamicSuiteDescription</scope><name>_destroyLine</name></member>
+      <member refid="class_cxx_test_1_1_dynamic_suite_description_1a0f8a2f232189e456ac97ed65e86e8d18" prot="private" virt="non-virtual"><scope>CxxTest::DynamicSuiteDescription</scope><name>_suite</name></member>
+      <member refid="class_cxx_test_1_1_real_suite_description_1af488afa24150ddd0a13790438fcfb798" prot="public" virt="virtual"><scope>CxxTest::DynamicSuiteDescription</scope><name>activateAllTests</name></member>
+      <member refid="class_cxx_test_1_1_link_1a2230eceb6d776394a32fddb1514cf93a" prot="public" virt="non-virtual"><scope>CxxTest::DynamicSuiteDescription</scope><name>active</name></member>
+      <member refid="class_cxx_test_1_1_link_1ad69f02495f7a28842a4683ad436c5fb4" prot="public" virt="non-virtual"><scope>CxxTest::DynamicSuiteDescription</scope><name>attach</name></member>
+      <member refid="class_cxx_test_1_1_common_dynamic_suite_description_1a5527e99474f4d49b08a0f07deb84c6fd" prot="public" virt="non-virtual"><scope>CxxTest::DynamicSuiteDescription</scope><name>CommonDynamicSuiteDescription</name></member>
+      <member refid="class_cxx_test_1_1_common_dynamic_suite_description_1a442dfefd08799d9ae046535d070f53fb" prot="public" virt="non-virtual"><scope>CxxTest::DynamicSuiteDescription</scope><name>CommonDynamicSuiteDescription</name></member>
+      <member refid="class_cxx_test_1_1_dynamic_suite_description_1a7efa7079bddf12cbdf0f6572748a2d5f" prot="private" virt="non-virtual"><scope>CxxTest::DynamicSuiteDescription</scope><name>createSuite</name></member>
+      <member refid="class_cxx_test_1_1_dynamic_suite_description_1a3ea9b4d83916d99e5818ea053649ef44" prot="private" virt="non-virtual"><scope>CxxTest::DynamicSuiteDescription</scope><name>destroySuite</name></member>
+      <member refid="class_cxx_test_1_1_link_1ad3544121b85766c6f4a8b5b6fa98599e" prot="public" virt="non-virtual"><scope>CxxTest::DynamicSuiteDescription</scope><name>detach</name></member>
+      <member refid="class_cxx_test_1_1_dynamic_suite_description_1a935abcf827ce7523562c00d33f0242ab" prot="public" virt="non-virtual"><scope>CxxTest::DynamicSuiteDescription</scope><name>DynamicSuiteDescription</name></member>
+      <member refid="class_cxx_test_1_1_dynamic_suite_description_1ab325f0a2e81ebbb6719f780d75471883" prot="public" virt="non-virtual"><scope>CxxTest::DynamicSuiteDescription</scope><name>DynamicSuiteDescription</name></member>
+      <member refid="class_cxx_test_1_1_real_suite_description_1acd3a9e164527856223b0760f77b3c415" prot="public" virt="virtual"><scope>CxxTest::DynamicSuiteDescription</scope><name>file</name></member>
+      <member refid="class_cxx_test_1_1_real_suite_description_1a5abbe76febc9d17b111518209f11f82e" prot="public" virt="virtual"><scope>CxxTest::DynamicSuiteDescription</scope><name>firstTest</name></member>
+      <member refid="class_cxx_test_1_1_real_suite_description_1aed41029593801910a107b29767373c17" prot="public" virt="virtual"><scope>CxxTest::DynamicSuiteDescription</scope><name>firstTest</name></member>
+      <member refid="class_cxx_test_1_1_dynamic_suite_description_1a0f426c051f5ccaf14ebbd11c07329e57" prot="public" virt="non-virtual"><scope>CxxTest::DynamicSuiteDescription</scope><name>initialize</name></member>
+      <member refid="class_cxx_test_1_1_common_dynamic_suite_description_1a5a96dc7d24b2dfc45ebfc4e54eddc372" prot="public" virt="non-virtual" ambiguityscope="CxxTest::CommonDynamicSuiteDescription::"><scope>CxxTest::DynamicSuiteDescription</scope><name>initialize</name></member>
+      <member refid="class_cxx_test_1_1_real_suite_description_1a811890086af46b3ffb944d80d5aca732" prot="public" virt="non-virtual" ambiguityscope="CxxTest::RealSuiteDescription::"><scope>CxxTest::DynamicSuiteDescription</scope><name>initialize</name></member>
+      <member refid="class_cxx_test_1_1_link_1aa1c8015f02e8541749956f2d551dbed3" prot="public" virt="non-virtual"><scope>CxxTest::DynamicSuiteDescription</scope><name>justNext</name></member>
+      <member refid="class_cxx_test_1_1_link_1ab77cb38969bd38f7b3491a455134c12c" prot="public" virt="non-virtual"><scope>CxxTest::DynamicSuiteDescription</scope><name>justPrev</name></member>
+      <member refid="class_cxx_test_1_1_real_suite_description_1a1843823285947bf9127b9aa594660c04" prot="public" virt="virtual"><scope>CxxTest::DynamicSuiteDescription</scope><name>leaveOnly</name></member>
+      <member refid="class_cxx_test_1_1_real_suite_description_1ac120ae0ffd5fe078bd75fea841801121" prot="public" virt="virtual"><scope>CxxTest::DynamicSuiteDescription</scope><name>line</name></member>
+      <member refid="class_cxx_test_1_1_link_1aedaab303be994c92afb366f5e6476be5" prot="public" virt="non-virtual"><scope>CxxTest::DynamicSuiteDescription</scope><name>Link</name></member>
+      <member refid="class_cxx_test_1_1_real_suite_description_1a676d76debefe3fa77175c88a9e720d4e" prot="public" virt="virtual"><scope>CxxTest::DynamicSuiteDescription</scope><name>next</name></member>
+      <member refid="class_cxx_test_1_1_real_suite_description_1ad994243c5812bf505da82d5bc54fd29c" prot="public" virt="virtual"><scope>CxxTest::DynamicSuiteDescription</scope><name>next</name></member>
+      <member refid="class_cxx_test_1_1_real_suite_description_1a4052c11718fddb9bebe0c36a854aaa03" prot="public" virt="virtual"><scope>CxxTest::DynamicSuiteDescription</scope><name>numTests</name></member>
+      <member refid="class_cxx_test_1_1_link_1aedc0d2dc3d6f11f5d566c8c21ac7b660" prot="public" virt="non-virtual"><scope>CxxTest::DynamicSuiteDescription</scope><name>prev</name></member>
+      <member refid="class_cxx_test_1_1_link_1ac263414ff3438af00306bb2d0b6aa483" prot="public" virt="non-virtual"><scope>CxxTest::DynamicSuiteDescription</scope><name>prev</name></member>
+      <member refid="class_cxx_test_1_1_dynamic_suite_description_1aafe8ea6a2aa5d53fa9072d11232b1bce" prot="private" virt="non-virtual"><scope>CxxTest::DynamicSuiteDescription</scope><name>realSuite</name></member>
+      <member refid="class_cxx_test_1_1_real_suite_description_1a98e4161652c04034d7f173d6ff2b861f" prot="public" virt="non-virtual"><scope>CxxTest::DynamicSuiteDescription</scope><name>RealSuiteDescription</name></member>
+      <member refid="class_cxx_test_1_1_real_suite_description_1a61109fded427ee8026a361e9f68cef52" prot="public" virt="non-virtual"><scope>CxxTest::DynamicSuiteDescription</scope><name>RealSuiteDescription</name></member>
+      <member refid="class_cxx_test_1_1_link_1aa06c69998cd5c34348bab11d46577b51" prot="public" virt="non-virtual"><scope>CxxTest::DynamicSuiteDescription</scope><name>setActive</name></member>
+      <member refid="class_cxx_test_1_1_dynamic_suite_description_1ab3c50c53ed58784e5f1b14651f1d5e27" prot="private" virt="non-virtual"><scope>CxxTest::DynamicSuiteDescription</scope><name>setSuite</name></member>
+      <member refid="class_cxx_test_1_1_dynamic_suite_description_1a0cee600a803f0accaaa82a1e933d2266" prot="public" virt="virtual"><scope>CxxTest::DynamicSuiteDescription</scope><name>setUp</name></member>
+      <member refid="class_cxx_test_1_1_dynamic_suite_description_1a524a9a8981a9c58aa09023d3bfba4dee" prot="public" virt="virtual"><scope>CxxTest::DynamicSuiteDescription</scope><name>suite</name></member>
+      <member refid="class_cxx_test_1_1_real_suite_description_1a636ea7442f81dffd77d5e6c0b8e0905e" prot="public" virt="virtual"><scope>CxxTest::DynamicSuiteDescription</scope><name>suiteName</name></member>
+      <member refid="class_cxx_test_1_1_dynamic_suite_description_1a322a0b084882a891bc8cf12805a56f12" prot="public" virt="virtual"><scope>CxxTest::DynamicSuiteDescription</scope><name>tearDown</name></member>
+      <member refid="class_cxx_test_1_1_real_suite_description_1aa3b52049e0578a723d17e2cade43b41b" prot="public" virt="virtual"><scope>CxxTest::DynamicSuiteDescription</scope><name>testDescription</name></member>
+      <member refid="class_cxx_test_1_1_link_1a8d1bb253d6975839d3c337bfcb8d744a" prot="public" virt="virtual"><scope>CxxTest::DynamicSuiteDescription</scope><name>~Link</name></member>
+      <member refid="class_cxx_test_1_1_suite_description_1a21df88592657c353380b1f927f87d058" prot="public" virt="virtual"><scope>CxxTest::DynamicSuiteDescription</scope><name>~SuiteDescription</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

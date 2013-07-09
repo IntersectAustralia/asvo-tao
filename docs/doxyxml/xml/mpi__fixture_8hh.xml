@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="mpi__fixture_8hh" kind="file">
+    <compoundname>mpi_fixture.hh</compoundname>
+    <includedby refid="filter__suite_8t_8hh" local="yes">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/filter_suite.t.hh</includedby>
+    <includedby refid="lightcone__suite_8t_8hh" local="yes">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/lightcone_suite.t.hh</includedby>
+    <includedby refid="sed__suite_8t_8hh" local="yes">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/sed_suite.t.hh</includedby>
+    <includedby refid="skymaker__suite_8t_8hh" local="yes">/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/skymaker_suite.t.hh</includedby>
+    <invincdepgraph>
+      <node id="1527">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/sed_suite.t.hh</label>
+        <link refid="sed__suite_8t_8hh_source"/>
+      </node>
+      <node id="1528">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/skymaker_suite.t.hh</label>
+        <link refid="skymaker__suite_8t_8hh_source"/>
+      </node>
+      <node id="1524">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/mpi_fixture.hh</label>
+        <link refid="mpi_fixture.hh"/>
+        <childnode refid="1525" relation="include">
+        </childnode>
+        <childnode refid="1526" relation="include">
+        </childnode>
+        <childnode refid="1527" relation="include">
+        </childnode>
+        <childnode refid="1528" relation="include">
+        </childnode>
+      </node>
+      <node id="1526">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/lightcone_suite.t.hh</label>
+        <link refid="lightcone__suite_8t_8hh_source"/>
+      </node>
+      <node id="1525">
+        <label>/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/filter_suite.t.hh</label>
+        <link refid="filter__suite_8t_8hh_source"/>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="classmpi__fixture" prot="public">mpi_fixture</innerclass>
+      <sectiondef kind="var">
+      <memberdef kind="variable" id="mpi__fixture_8hh_1accaeaae2bcdc20646506f85932b7851f" prot="public" static="yes" mutable="no">
+        <type><ref refid="classmpi__fixture" kindref="compound">mpi_fixture</ref></type>
+        <definition>mpi_fixture mpi_fix</definition>
+        <argsstring></argsstring>
+        <name>mpi_fix</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/mpi_fixture.hh" line="16" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/mpi_fixture.hh" bodystart="16" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1" refid="classmpi__fixture" refkind="compound"><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classmpi__fixture" kindref="compound">mpi_fixture</ref><sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="class_cxx_test_1_1_global_fixture" kindref="compound">CxxTest::GlobalFixture</ref></highlight></codeline>
+<codeline lineno="2"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>setUpWorld()<sp/>{</highlight></codeline>
+<codeline lineno="6"><highlight class="normal"><sp/><sp/><sp/><sp/>hpc::mpi::initialise();</highlight></codeline>
+<codeline lineno="7"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="8"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>tearDownWorld()<sp/>{</highlight></codeline>
+<codeline lineno="11"><highlight class="normal"><sp/><sp/><sp/><sp/>hpc::mpi::finalise(</highlight><highlight class="keyword">false</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="12"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="13"><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline lineno="14"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="classmpi__fixture" kindref="compound">mpi_fixture</ref><sp/>mpi_fix;</highlight></codeline>
+    </programlisting>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/modules/tests/mpi_fixture.hh"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,282 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.3.1">
+  <compounddef id="structbolshoi__halo__type" kind="struct" prot="public">
+    <compoundname>bolshoi_halo_type</compoundname>
+    <includes refid="types_8hh" local="no">types.hh</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structbolshoi__halo__type_1ab3240ee9cc72d0556f16875d614d443f" prot="public" static="no" mutable="no">
+        <type>long long</type>
+        <definition>long long bolshoi_halo_type::id</definition>
+        <argsstring></argsstring>
+        <name>id</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="16" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" bodystart="16" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structbolshoi__halo__type_1a62dc15728fb143dd3758c2ab77e8c46b" prot="public" static="no" mutable="no">
+        <type>long long</type>
+        <definition>long long bolshoi_halo_type::desc_id</definition>
+        <argsstring></argsstring>
+        <name>desc_id</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="18" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" bodystart="18" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structbolshoi__halo__type_1a691e4b8cb017cda192fbdd59f7264782" prot="public" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned bolshoi_halo_type::num_prog</definition>
+        <argsstring></argsstring>
+        <name>num_prog</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="19" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" bodystart="19" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structbolshoi__halo__type_1a411096a3a527a8474c64ca6dc28646c6" prot="public" static="no" mutable="no">
+        <type>long long</type>
+        <definition>long long bolshoi_halo_type::pid</definition>
+        <argsstring></argsstring>
+        <name>pid</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="20" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" bodystart="20" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structbolshoi__halo__type_1a618f317c2187cc31d8d3bdd665c85b1c" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float bolshoi_halo_type::mvir</definition>
+        <argsstring></argsstring>
+        <name>mvir</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="28" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" bodystart="28" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structbolshoi__halo__type_1acf89f89652fff230a8eda7ce60d81e19" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float bolshoi_halo_type::rvir</definition>
+        <argsstring></argsstring>
+        <name>rvir</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="29" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" bodystart="29" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structbolshoi__halo__type_1ac32200d54b672d9652f29252a610ccc8" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float bolshoi_halo_type::vrms</definition>
+        <argsstring></argsstring>
+        <name>vrms</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="31" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" bodystart="31" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structbolshoi__halo__type_1a2bb3ba9a760e63f29e26a1001720fea9" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float bolshoi_halo_type::vmax</definition>
+        <argsstring></argsstring>
+        <name>vmax</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="34" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" bodystart="34" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structbolshoi__halo__type_1a90d50df23c45b94f7ff3e2ad28fb00c2" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float bolshoi_halo_type::x</definition>
+        <argsstring></argsstring>
+        <name>x</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="35" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" bodystart="35" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structbolshoi__halo__type_1aa2e9a335c03d19548d94d1dc37ede9a1" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float bolshoi_halo_type::y</definition>
+        <argsstring></argsstring>
+        <name>y</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="35" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" bodystart="35" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structbolshoi__halo__type_1a5611e1cf24e3175592b4b6d81b190b1e" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float bolshoi_halo_type::z</definition>
+        <argsstring></argsstring>
+        <name>z</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="35" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" bodystart="35" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structbolshoi__halo__type_1a5668f477b2d5da7d96e5de27cab0ec8b" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float bolshoi_halo_type::vx</definition>
+        <argsstring></argsstring>
+        <name>vx</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="36" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" bodystart="36" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structbolshoi__halo__type_1a97bcc9983b669eee277af5700fd84475" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float bolshoi_halo_type::vy</definition>
+        <argsstring></argsstring>
+        <name>vy</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="36" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" bodystart="36" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structbolshoi__halo__type_1a789a8940fdd919961f0bb977c0fd7e0c" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float bolshoi_halo_type::vz</definition>
+        <argsstring></argsstring>
+        <name>vz</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="36" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" bodystart="36" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structbolshoi__halo__type_1af25afd70f1d6266aafae4df6a8882997" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float bolshoi_halo_type::jx</definition>
+        <argsstring></argsstring>
+        <name>jx</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="37" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" bodystart="37" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structbolshoi__halo__type_1a8f41ac352110e34e1597cb02b3d448c0" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float bolshoi_halo_type::jy</definition>
+        <argsstring></argsstring>
+        <name>jy</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="37" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" bodystart="37" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structbolshoi__halo__type_1aff61e119bb1bb9e815cd6d95dff1d431" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float bolshoi_halo_type::jz</definition>
+        <argsstring></argsstring>
+        <name>jz</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="37" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" bodystart="37" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structbolshoi__halo__type_1ac607bc58f8ab88e0b7ae2397ece0d4c4" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float bolshoi_halo_type::spin</definition>
+        <argsstring></argsstring>
+        <name>spin</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="38" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structbolshoi__halo__type_1aed981de69cecf17bd5eb58b5034d7ee6" prot="public" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned bolshoi_halo_type::snap_num</definition>
+        <argsstring></argsstring>
+        <name>snap_num</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="43" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" bodystart="43" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>The Bolshoi halo data structure.</para><para>I&apos;ve commented out a lot of values to reduce the size. Unfortunately there is one enormous forest that consumes an awful lot of memory. </para>    </detaileddescription>
+    <location file="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" line="14" bodyfile="/Users/carlos/Devel/ASVO/asvo-tao/science_modules/apps/bolshoi/types.hh" bodystart="13" bodyend="56"/>
+    <listofallmembers>
+      <member refid="structbolshoi__halo__type_1a62dc15728fb143dd3758c2ab77e8c46b" prot="public" virt="non-virtual"><scope>bolshoi_halo_type</scope><name>desc_id</name></member>
+      <member refid="structbolshoi__halo__type_1ab3240ee9cc72d0556f16875d614d443f" prot="public" virt="non-virtual"><scope>bolshoi_halo_type</scope><name>id</name></member>
+      <member refid="structbolshoi__halo__type_1af25afd70f1d6266aafae4df6a8882997" prot="public" virt="non-virtual"><scope>bolshoi_halo_type</scope><name>jx</name></member>
+      <member refid="structbolshoi__halo__type_1a8f41ac352110e34e1597cb02b3d448c0" prot="public" virt="non-virtual"><scope>bolshoi_halo_type</scope><name>jy</name></member>
+      <member refid="structbolshoi__halo__type_1aff61e119bb1bb9e815cd6d95dff1d431" prot="public" virt="non-virtual"><scope>bolshoi_halo_type</scope><name>jz</name></member>
+      <member refid="structbolshoi__halo__type_1a618f317c2187cc31d8d3bdd665c85b1c" prot="public" virt="non-virtual"><scope>bolshoi_halo_type</scope><name>mvir</name></member>
+      <member refid="structbolshoi__halo__type_1a691e4b8cb017cda192fbdd59f7264782" prot="public" virt="non-virtual"><scope>bolshoi_halo_type</scope><name>num_prog</name></member>
+      <member refid="structbolshoi__halo__type_1a411096a3a527a8474c64ca6dc28646c6" prot="public" virt="non-virtual"><scope>bolshoi_halo_type</scope><name>pid</name></member>
+      <member refid="structbolshoi__halo__type_1acf89f89652fff230a8eda7ce60d81e19" prot="public" virt="non-virtual"><scope>bolshoi_halo_type</scope><name>rvir</name></member>
+      <member refid="structbolshoi__halo__type_1aed981de69cecf17bd5eb58b5034d7ee6" prot="public" virt="non-virtual"><scope>bolshoi_halo_type</scope><name>snap_num</name></member>
+      <member refid="structbolshoi__halo__type_1ac607bc58f8ab88e0b7ae2397ece0d4c4" prot="public" virt="non-virtual"><scope>bolshoi_halo_type</scope><name>spin</name></member>
+      <member refid="structbolshoi__halo__type_1a2bb3ba9a760e63f29e26a1001720fea9" prot="public" virt="non-virtual"><scope>bolshoi_halo_type</scope><name>vmax</name></member>
+      <member refid="structbolshoi__halo__type_1ac32200d54b672d9652f29252a610ccc8" prot="public" virt="non-virtual"><scope>bolshoi_halo_type</scope><name>vrms</name></member>
+      <member refid="structbolshoi__halo__type_1a5668f477b2d5da7d96e5de27cab0ec8b" prot="public" virt="non-virtual"><scope>bolshoi_halo_type</scope><name>vx</name></member>
+      <member refid="structbolshoi__halo__type_1a97bcc9983b669eee277af5700fd84475" prot="public" virt="non-virtual"><scope>bolshoi_halo_type</scope><name>vy</name></member>
+      <member refid="structbolshoi__halo__type_1a789a8940fdd919961f0bb977c0fd7e0c" prot="public" virt="non-virtual"><scope>bolshoi_halo_type</scope><name>vz</name></member>
+      <member refid="structbolshoi__halo__type_1a90d50df23c45b94f7ff3e2ad28fb00c2" prot="public" virt="non-virtual"><scope>bolshoi_halo_type</scope><name>x</name></member>
+      <member refid="structbolshoi__halo__type_1aa2e9a335c03d19548d94d1dc37ede9a1" prot="public" virt="non-virtual"><scope>bolshoi_halo_type</scope><name>y</name></member>
+      <member refid="structbolshoi__halo__type_1a5611e1cf24e3175592b4b6d81b190b1e" prot="public" virt="non-virtual"><scope>bolshoi_halo_type</scope><name>z</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>
