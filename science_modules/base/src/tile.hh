@@ -1,5 +1,5 @@
-#ifndef tao_base_box_hh
-#define tao_base_box_hh
+#ifndef tao_base_tile_hh
+#define tao_base_tile_hh
 
 #include <libhpc/containers/array.hh>
 
@@ -10,7 +10,7 @@ namespace tao {
    class lightcone;
 
    template< class T >
-   class box
+   class tile
    {
    public:
 
@@ -18,8 +18,8 @@ namespace tao {
 
    public:
 
-      box( lightcone<real_type>& lc,
-           const array<real_type,3>& offs )
+      tile( lightcone<real_type>& lc,
+            const array<real_type,3>& offs )
          : _lc( lc ),
            _offs( offs )
       {

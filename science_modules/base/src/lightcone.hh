@@ -2,23 +2,23 @@
 #define tao_base_lightcone_hh
 
 #include "simulation.hh"
-#include "box.hh"
+#include "tile.hh"
 
 namespace tao {
    using namespace hpc;
 
    template< class T >
-   class lightcone_box_iterator;
+   class lightcone_tile_iterator;
 
    template< class T >
    class lightcone
    {
-      friend lightcone_box_iterator<T>;
+      friend lightcone_tile_iterator<T>;
 
    public:
 
       typedef T real_type;
-      typedef lightcone_box_iterator<real_type> box_iterator;
+      typedef lightcone_tile_iterator<real_type> tile_iterator;
 
    public:
 
@@ -92,19 +92,61 @@ namespace tao {
          return *_sim;
       }
 
-      box_iterator
-      box_begin()
+      tile_iterator
+      tile_begin()
       {
          if( _is_set )
-            return box_iterator( *this, false );
+            return tile_iterator( *this, false );
          else
-            return box_end();
+            return tile_end();
       }
 
-      box_iterator
-      box_end()
+      tile_iterator
+      tile_end()
       {
-         return box_iterator( *this, true );
+         return tile_iterator( *this, true );
+      }
+
+      real_type
+      min_ra() const
+      {
+         return _ra[0];
+      }
+
+      real_type
+      max_ra() const
+      {
+         return _ra[1];
+      }
+
+      real_type
+      min_dec() const
+      {
+         return _dec[0];
+      }
+
+      real_type
+      max_dec() const
+      {
+         return _dec[1];
+      }
+
+      real_type
+      min_dist() const
+      {
+         return _dist[0];
+      }
+
+      real_type
+      max_dist() const
+      {
+         return _dist[1];
+      }
+
+      const typename vector<real_type>::view
+      snapshot_bins() const
+      {
+         return _z_bins;
       }
 
    protected:
@@ -114,9 +156,41 @@ namespace tao {
       {
          if( _is_set )
          {
+            LOGDLN( "Recalculating lightcone information.", setindent( 2 ) );
+
             ASSERT( _sim, "No simulation set." );
             _dist[0] = numerics::redshift_to_comoving_distance( _z[0], 1000, _sim->hubble(), _sim->omega_l(), _sim->omega_m() );
             _dist[1] = numerics::redshift_to_comoving_distance( _z[1], 1000, _sim->hubble(), _sim->omega_l(), _sim->omega_m() );
+
+            // Prepare the redshift distance bins. Note that I will incorporate the
+            // minimum and maximum redshift here. First calculate the
+            // number of bins in the redshift range.
+            _z_bins.deallocate();
+            _snap_bins.deallocate();
+            unsigned first, last;
+            {
+               unsigned ii = 0;
+               unsigned ns = _sim->num_snapshots();
+               while( ii < ns && _sim->redshift( ii ) > _z[1] )
+                  ++ii;
+               first = ii;
+               while( ii < ns && _sim->redshift( ii ) > _z[0] )
+                  ++ii;
+               last = ii + 1;
+            }
+
+            // Store the distances.
+            _z_bins.reallocate( last - first + 1 );
+            _snap_bins.reallocate( last - first );
+            _z_bins.back() = numerics::redshift_to_comoving_distance( std::min( _sim->redshift( 0 ), _z[0] ), 1000, _sim->hubble(), _sim->omega_l(), _sim->omega_m() );
+            _z_bins.front() = numerics::redshift_to_comoving_distance( std::max( _sim->redshift( _sim->num_snapshots() - 1 ), _z[1] ), 1000, _sim->hubble(), _sim->omega_l(), _sim->omega_m() );
+            for( unsigned ii = 1; ii < _z_bins.size() - 1; ++ii )
+               _z_bins[ii] = numerics::redshift_to_comoving_distance( _sim->redshift( first + ii - 1 ), 1000, _sim->hubble(), _sim->omega_l(), _sim->omega_m() );
+            for( unsigned ii = 0; ii < _snap_bins.size(); ++ii )
+               _snap_bins[ii] = first + ii;
+
+            LOGDLN( "Distance bins: ", _z_bins );
+            LOGDLN( "Snapshot bins: ", _snap_bins );
          }
       }
 
@@ -128,22 +202,24 @@ namespace tao {
       array<real_type,2> _ori;
       array<real_type,2> _z;
       array<real_type,2> _dist;
+      vector<real_type> _z_bins;
+      vector<unsigned> _snap_bins;
       bool _is_set;
    };
 
    template< class T >
-   class lightcone_box_iterator
-      : public boost::iterator_facade< lightcone_box_iterator<T>,
-                                       box<T>,
+   class lightcone_tile_iterator
+      : public boost::iterator_facade< lightcone_tile_iterator<T>,
+                                       tile<T>,
 				       std::forward_iterator_tag,
-                                       box<T> >
+                                       tile<T> >
    {
       friend class boost::iterator_core_access;
 
    public:
 
       typedef T real_type;
-      typedef box<real_type> value_type;
+      typedef tile<real_type> value_type;
       typedef value_type reference_type;
 
       enum check_result
@@ -155,7 +231,7 @@ namespace tao {
 
    public:
 
-      lightcone_box_iterator( lightcone<real_type>& lc,
+      lightcone_tile_iterator( lightcone<real_type>& lc,
                               bool done )
          : _lc( lc ),
            _done( done )
@@ -204,7 +280,7 @@ namespace tao {
       }
 
       bool
-      equal( const lightcone_box_iterator& op ) const
+      equal( const lightcone_tile_iterator& op ) const
       {
          return _done == op._done;
       }
@@ -212,7 +288,7 @@ namespace tao {
       reference_type
       dereference() const
       {
-         return box<real_type>( _lc, _cur );
+         return tile<real_type>( _lc, _cur );
       }
 
       check_result

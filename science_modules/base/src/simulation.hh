@@ -1,6 +1,9 @@
 #ifndef tao_base_simulation_hh
 #define tao_base_simulation_hh
 
+#include <stdarg.h>
+#include "utils.hh"
+
 namespace tao {
    using namespace hpc;
 
@@ -13,13 +16,38 @@ namespace tao {
 
    public:
 
-      simulation( real_type box_size = 500,
-                  real_type hubble = 73,
-                  real_type omega_m = 0.25,
-                  real_type omega_l = 0.75 )
-         : _box_size( box_size )
+      simulation()
+         : _box_size( 0 )
+      {
+      }
+
+      simulation( real_type box_size,
+                  real_type hubble,
+                  real_type omega_m,
+                  real_type omega_l,
+                  unsigned num_snaps,
+                  ... )
+         : _box_size( box_size ),
+           _zs( num_snaps )
       {
          set_cosmology( hubble, omega_m, omega_l );
+
+         // Extract the expansion list and convert to redshifts.
+         va_list vl;
+         va_start( vl, num_snaps );
+         for( unsigned ii = 0; ii < num_snaps; ++ii )
+            _zs[ii] = expansion_to_redshift( va_arg( vl, real_type ) );
+
+         // We really want these to be ordered by snapshots, and that
+         // usually means oldest (largest redshifts) first.
+#ifndef NDEBUG
+         for( unsigned ii = 1; ii < _zs.size(); ++ii )
+         {
+            ASSERT( _zs[ii] < _zs[ii - 1],
+                    "Expansion factor list must be supplied in snapshot order, "
+                    "which must be oldest first." );
+         }
+#endif
       }
 
       void
@@ -59,6 +87,18 @@ namespace tao {
          return _omega_l;
       }
 
+      unsigned
+      num_snapshots() const
+      {
+         return _zs.size();
+      }
+
+      real_type
+      redshift( unsigned snap ) const
+      {
+         return _zs[snap];
+      }
+
    protected:
 
       real_type _box_size;
@@ -68,6 +108,7 @@ namespace tao {
       real_type _omega_l;
       real_type _omega_r;
       real_type _omega_k;
+      vector<real_type> _zs;
    };
 
 }
