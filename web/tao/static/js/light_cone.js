@@ -281,6 +281,7 @@ jQuery(document).ready(function($) {
                 fill_in_summary('light_cone', 'simulation', data.fields.name);
                 fill_in_summary('light_cone', 'simulation_description', '<br><b>' + data.fields.name + ':</b><br>' + data.fields.details);
                 $(lc_id('number_of_light_cones')).data("simulation-box-size", data.fields.box_size);
+                window.simulation_box_size = parseFloat(data.fields.box_size);
             }
         });
     };
