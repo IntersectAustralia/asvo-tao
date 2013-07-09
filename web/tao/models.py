@@ -350,7 +350,7 @@ class WorkflowCommand(models.Model):
         (JOB_OUTPUT_DELETE, "Job Output Delete"),
     )
 
-    job_id = models.ForeignKey(Job)
+    job_id = models.ForeignKey(Job, blank=True, null=True)
     issued = models.DateTimeField(auto_now_add=True)
     submitted_by = models.ForeignKey(TaoUser)
     command = models.CharField(choices=COMMAND_CHOICES, max_length=64)
