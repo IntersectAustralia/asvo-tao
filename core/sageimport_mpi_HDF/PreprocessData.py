@@ -88,7 +88,10 @@ class PreprocessData(object):
         
         self.DBConnection.ExecuteNoQuerySQLStatment(CreateTable)
     
-    def GenerateTablesIndex(self):
+    
+    
+    
+    def GenerateTablesIndex(self,CommSize,CommRank):
         
         SimulationBoxX=float(self.Options['RunningSettings:SimulationBoxX'])
         SimulationBoxY=float(self.Options['RunningSettings:SimulationBoxX'])
@@ -103,11 +106,11 @@ class PreprocessData(object):
         
         
         NumberofTables=CellsInX*CellsInY
-        TableIDs=range(0,NumberofTables)
+        TableIDs=range(0,NumberofTables+1)
         
         for TableID in TableIDs:
-            logging.info("Updating Table ("+str(TableID)+")")
-            self.CreateTableIndex(TableID)
+            
+            self.CreateTableIndex(TableID,CommSize,CommRank)
     
     ## Generate All the tables required for the data importing process
     def GenerateAllTables(self): 
@@ -169,28 +172,40 @@ class PreprocessData(object):
             FieldName=field[2]
             self.CreateTableTemplate=self.CreateTableTemplate+ FieldName +' '+FieldDT+","
         self.CreateTableTemplate=self.CreateTableTemplate+"GlobalTreeID BIGINT,"
-        self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyGlobalID BIGINT)"     
-        #self.CreateTableTemplate=self.CreateTableTemplate+"LocalGalaxyID INT)"       
-        
+        self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyGlobalID BIGINT,"     
+        self.CreateTableTemplate=self.CreateTableTemplate+"LocalGalaxyID INT)"       
+     
+     
+    def CreateIndexOnTreeSummaryTable(self):
+        CreateIndexStatment="ALTER TABLE treesummary ADD PRIMARY KEY (globaltreeid);"
+        self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers(CreateIndexStatment)
+        logging.info("Table treesummary Index Created ...") 
+            
                 
-    def CreateTableIndex(self,TableIndex):
+    def CreateTableIndex(self,TableIndex,CommSize,CommRank):
         
-        TablePrefix=self.Options['PGDB:TreeTablePrefix']
-        NewTableName=TablePrefix+str(TableIndex)
+        
         HostIndex=self.DBConnection.MapTableIDToServerIndex(TableIndex)
-        CreateIndexStatment="ALTER TABLE  "+NewTableName+" ADD PRIMARY KEY (GlobalIndex);"
-        self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
-        CreateIndexStatment="Create Index SnapNum_Index_"+NewTableName+" on  "+NewTableName+" (SnapNum);"
-        self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
-        CreateIndexStatment="Create Index GlobalTreeID_Index_"+NewTableName+" on  "+NewTableName+" (GlobalTreeID);"
-        self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
-        CreateIndexStatment="Create Index GalaxyX_Index_"+NewTableName+" on  "+NewTableName+" (posx);"
-        self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
-        CreateIndexStatment="Create Index GalaxyY_Index_"+NewTableName+" on  "+NewTableName+" (posy);"
-        self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
-        CreateIndexStatment="Create Index GalaxyZ_Index_"+NewTableName+" on  "+NewTableName+" (posz);"
-        self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
-        logging.info("Table "+NewTableName+" Index Created ...")
+        
+        if HostIndex==CommRank:
+            logging.info("Updating Table ("+str(TableIndex)+")")
+            TablePrefix=self.Options['PGDB:TreeTablePrefix']
+            NewTableName=TablePrefix+str(TableIndex)
+            
+            
+            CreateIndexStatment="ALTER TABLE  "+NewTableName+" ADD PRIMARY KEY (GlobalIndex);"
+            self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
+            CreateIndexStatment="Create Index SnapNum_Index_"+NewTableName+" on  "+NewTableName+" (SnapNum);"
+            self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
+            CreateIndexStatment="Create Index GlobalTreeID_Index_"+NewTableName+" on  "+NewTableName+" (GlobalTreeID);"
+            self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
+            CreateIndexStatment="Create Index GalaxyX_Index_"+NewTableName+" on  "+NewTableName+" (posx);"
+            self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
+            CreateIndexStatment="Create Index GalaxyY_Index_"+NewTableName+" on  "+NewTableName+" (posy);"
+            self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
+            CreateIndexStatment="Create Index GalaxyZ_Index_"+NewTableName+" on  "+NewTableName+" (posz);"
+            self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
+            logging.info("Table "+NewTableName+" Index Created ...")
     ## Perform create table for a specific TableIndex            
     def CreateNewTable(self,TableIndex):        
         
