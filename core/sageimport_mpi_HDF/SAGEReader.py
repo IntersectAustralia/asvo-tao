@@ -98,19 +98,24 @@ class SAGEDataReader:
         pgcopy_dtype += [(FieldName + '_length', '>i4'),(FieldName, '>i8')]
         FieldName='CentralGalaxyGlobalID'
         pgcopy_dtype += [(FieldName + '_length', '>i4'),(FieldName, '>i8')]
+        FieldName='LocalGalaxyID'
+        pgcopy_dtype += [(FieldName + '_length', '>i4'),(FieldName, '>i4')]
+        
         
         pgcopy = numpy.empty(TreeData.shape, pgcopy_dtype)
-        pgcopy['num_fields'] = len(TreeData.dtype)+2
+        pgcopy['num_fields'] = len(TreeData.dtype)+3
         for i in range(0,len(TreeData.dtype)):
             field = self.CurrentSAGEStruct[i][0]                            
             pgcopy[field + '_length'] = TreeData.dtype[i].alignment
             pgcopy[field] = TreeData[TreeData.dtype.names[i]]
         
              
-        pgcopy['TreeID_length'] = pgcopy.dtype[-3].alignment
+        pgcopy['TreeID_length'] = pgcopy.dtype[-5].alignment
         
         pgcopy['TreeID'].fill(TreeLoadingID) 
-        pgcopy['CentralGalaxyGlobalID_length'] = pgcopy.dtype[-1].alignment
+        pgcopy['LocalGalaxyID']=range(0,len(TreeData))
+        pgcopy['CentralGalaxyGlobalID_length'] = pgcopy.dtype[-3].alignment
+        pgcopy['LocalGalaxyID_length'] = pgcopy.dtype[-1].alignment
         
         
             

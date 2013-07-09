@@ -8,12 +8,44 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        db.rename_column('tao_taouser_groups','user_id','taouser_id')
-        db.rename_column('tao_taouser_user_permissions','user_id','taouser_id')
+
+        # Changing field 'WorkflowCommand.job_id'
+        db.alter_column(u'tao_workflowcommand', 'job_id_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['tao.Job'], null=True))
+
+        # Changing field 'TaoUser.account_registration_reason'
+        db.alter_column(u'tao_taouser', 'account_registration_reason', self.gf('django.db.models.fields.TextField')(null=True))
+
+        # Changing field 'TaoUser.title'
+        db.alter_column(u'tao_taouser', 'title', self.gf('django.db.models.fields.CharField')(max_length=5, null=True))
+
+        # Changing field 'TaoUser.aaf_shared_token'
+        db.alter_column(u'tao_taouser', 'aaf_shared_token', self.gf('django.db.models.fields.CharField')(max_length=64, null=True))
+
+        # Changing field 'TaoUser.institution'
+        db.alter_column(u'tao_taouser', 'institution', self.gf('django.db.models.fields.CharField')(max_length=100, null=True))
+
+        # Changing field 'TaoUser.scientific_interests'
+        db.alter_column(u'tao_taouser', 'scientific_interests', self.gf('django.db.models.fields.CharField')(max_length=500, null=True))
 
     def backwards(self, orm):
-        db.rename_column('tao_taouser_groups','taouser_id','user_id')
-        db.rename_column('tao_taouser_user_permissions','taouser_id','user_id')
+
+        # Changing field 'WorkflowCommand.job_id'
+        db.alter_column(u'tao_workflowcommand', 'job_id_id', self.gf('django.db.models.fields.related.ForeignKey')(default='', to=orm['tao.Job']))
+
+        # Changing field 'TaoUser.account_registration_reason'
+        db.alter_column(u'tao_taouser', 'account_registration_reason', self.gf('django.db.models.fields.TextField')())
+
+        # Changing field 'TaoUser.title'
+        db.alter_column(u'tao_taouser', 'title', self.gf('django.db.models.fields.CharField')(default='', max_length=5))
+
+        # Changing field 'TaoUser.aaf_shared_token'
+        db.alter_column(u'tao_taouser', 'aaf_shared_token', self.gf('django.db.models.fields.CharField')(max_length=64))
+
+        # Changing field 'TaoUser.institution'
+        db.alter_column(u'tao_taouser', 'institution', self.gf('django.db.models.fields.CharField')(default='', max_length=100))
+
+        # Changing field 'TaoUser.scientific_interests'
+        db.alter_column(u'tao_taouser', 'scientific_interests', self.gf('django.db.models.fields.CharField')(default='', max_length=500))
 
     models = {
         u'auth.group': {
@@ -103,7 +135,7 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'output_path': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'parameters': ('django.db.models.fields.TextField', [], {'max_length': '1000000', 'blank': 'True'}),
-            'status': ('django.db.models.fields.CharField', [], {'default': "u'SUBMITTED'", 'max_length': '20'}),
+            'status': ('django.db.models.fields.CharField', [], {'default': "u'HELD'", 'max_length': '20'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['tao.TaoUser']"})
         },
         u'tao.simulation': {
@@ -130,16 +162,16 @@ class Migration(SchemaMigration):
         },
         u'tao.taouser': {
             'Meta': {'object_name': 'TaoUser'},
-            'aaf_shared_token': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '64', 'blank': 'True'}),
+            'aaf_shared_token': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '64', 'null': 'True', 'blank': 'True'}),
             'account_registration_date': ('django.db.models.fields.DateTimeField', [], {'null': 'True'}),
-            'account_registration_reason': ('django.db.models.fields.TextField', [], {'default': "''", 'blank': 'True'}),
+            'account_registration_reason': ('django.db.models.fields.TextField', [], {'default': "''", 'null': 'True', 'blank': 'True'}),
             'account_registration_status': ('django.db.models.fields.CharField', [], {'default': "'NA'", 'max_length': '3'}),
             'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
             'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
             'groups': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Group']", 'symmetrical': 'False', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'institution': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'institution': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True'}),
             'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
@@ -147,8 +179,8 @@ class Migration(SchemaMigration):
             'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
             'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
             'rejected': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'scientific_interests': ('django.db.models.fields.CharField', [], {'max_length': '500'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '5'}),
+            'scientific_interests': ('django.db.models.fields.CharField', [], {'max_length': '500', 'null': 'True'}),
+            'title': ('django.db.models.fields.CharField', [], {'max_length': '5', 'null': 'True'}),
             'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'}),
             'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
         },
@@ -160,7 +192,7 @@ class Migration(SchemaMigration):
             'execution_status': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'issued': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'job_id': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['tao.Job']"}),
+            'job_id': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['tao.Job']", 'null': 'True', 'blank': 'True'}),
             'parameters': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '1024', 'blank': 'True'}),
             'submitted_by': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['tao.TaoUser']"})
         }
