@@ -85,6 +85,28 @@ namespace tao {
          _recalc();
       }
 
+      void
+      set_min_ra( real_type ra_min )
+      {
+         ASSERT( ra_min >= 0.0 && ra_min <= 90.0,
+                 "Minimum RA cannot be less than zero or greater than 90 degrees." );
+         ASSERT( to_radians( ra_min ) < _ra[1],
+                 "Minimum RA must be less than maximum RA." );
+         _ra[0] = to_radians( ra_min );
+         _recalc();
+      }
+
+      void
+      set_max_ra( real_type ra_max )
+      {
+         ASSERT( ra_max >= 0.0 && ra_max <= 90.0,
+                 "Maximum RA cannot be less than zero or greater than 90 degrees." );
+         ASSERT( to_radians( ra_max ) > _ra[0],
+                 "Minimum RA must be less than maximum RA." );
+         _ra[1] = to_radians( ra_max );
+         _recalc();
+      }
+
       const tao::simulation<real_type>&
       simulation() const
       {

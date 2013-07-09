@@ -1,5 +1,6 @@
 #include <iostream>
 #include <glut.h>
+#include <AntTweakBar.h>
 #include <libhpc/libhpc.hh>
 #include "tao/base/types.hh"
 #include "tao/base/globals.hh"
@@ -17,6 +18,8 @@ float zoom = 1.0;
 
 lightcone<real_type> lc;
 list<tile<real_type>> tiles;
+
+TwBar* main_tb;
 
 void
 draw_tile( const tile<real_type>& tile )
@@ -303,6 +306,7 @@ reshape( GLint width,
    glLoadIdentity();
    gluPerspective( 65.0, (GLfloat)width/(GLfloat)height, near, far );
    glMatrixMode( GL_MODELVIEW );
+   TwWindowSize( width, height );
 }
 
 void
@@ -313,7 +317,9 @@ display()
    gluLookAt( 0, 0, 1.8, 0, 0, 0, 0, 1, 0 );
    render();
    glFlush();
+   TwDraw();
    glutSwapBuffers();
+   glutPostRedisplay();
 }
 
 void
@@ -322,7 +328,8 @@ mouse_button( int button,
               int x,
               int y )
 {
-   // std::cout << button << ", " << state << "\n";
+   if( TwEventMouseButtonGLUT( button, state, x, y ) )
+      return;
 
    switch( button )
    {
@@ -343,6 +350,9 @@ void
 mouse_motion( int x,
               int y )
 {
+   if( TwEventMouseMotionGLUT( x, y ) )
+      return;
+
    if( rotating )
    {
       int dx = x - old_x;
@@ -368,28 +378,11 @@ keyboard( unsigned char key,
           int x,
           int y )
 {
+   if( TwEventKeyboardGLUT( key, x, y ) )
+      return;
+
    switch( key )
    {
-      case 'w':
-      case 'W':
-         rotate_x -= 5;
-         break;
-
-      case 's':
-      case 'S':
-         rotate_x += 5;
-         break;
-
-      case 'd':
-      case 'D':
-         rotate_y += 5;
-         break;
-
-      case 'a':
-      case 'A':
-         rotate_y -= 5;
-         break;
-
       case 27:   // ESCAPE
          exit( 0 );
    };
@@ -413,20 +406,64 @@ calc_bounds()
 }
 
 void
-init_tao()
+update_tao()
 {
-   lc.set_simulation( &millennium );
-   lc.set_geometry( 40, 50, 40, 50, 0.6 );
-
    // Setup the number of segments used to render the cone
    // based on the geometry.
    num_segs = to_degrees( std::max( lc.max_ra() - lc.min_ra(), lc.max_dec() - lc.min_dec() ) );
    num_segs = 2.0*(0.1*(float)num_segs + 1.0);
 
+   tiles.clear();
    for( auto tile_it = lc.tile_begin(); tile_it != lc.tile_end(); ++tile_it )
       tiles.push_back( *tile_it );
 
    calc_bounds();
+
+   glutPostRedisplay();
+}
+
+void
+init_tao()
+{
+   lc.set_simulation( &millennium );
+   lc.set_geometry( 40, 50, 40, 50, 0.6 );
+   update_tao();
+}
+
+void TW_CALL
+set_min_ra( const void* val,
+            void* data )
+{
+   double _val = *(const double*)val;
+   lc.set_min_ra( _val );
+   string def = string( " Main/MaxRA min=" ) + to_string( _val + 1 ) + " ";
+   TwDefine( def.c_str() );
+   update_tao();
+}
+
+void TW_CALL
+get_min_ra( void* val,
+            void* data )
+{
+   *(double*)val = to_degrees( lc.min_ra() );
+}
+
+void TW_CALL
+set_max_ra( const void* val,
+            void* data )
+{
+   double _val = *(const double*)val;
+   lc.set_max_ra( _val );
+   string def = string( " Main/MinRA max=" ) + to_string( _val - 1 ) + " ";
+   TwDefine( def.c_str() );
+   update_tao();
+}
+
+void TW_CALL
+get_max_ra( void* val,
+            void* data )
+{
+   *(double*)val = to_degrees( lc.max_ra() );
 }
 
 void
@@ -437,17 +474,31 @@ start()
    glutInitWindowSize( 800, 600 );
    glutInitDisplayMode( GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH );
    glutCreateWindow( "Zen" );
-
-   // Initialise OpenGL.
-   init_opengl();
+   glutCreateMenu(NULL);
 
    // Register callbacks.
    glutDisplayFunc( display );
    glutReshapeFunc( reshape );
+
+   TwInit( TW_OPENGL, NULL );
    glutKeyboardFunc( keyboard );
    glutMouseFunc( mouse_button );
    glutMotionFunc( mouse_motion );
+   glutPassiveMotionFunc( (GLUTmousemotionfun)TwEventMouseMotionGLUT );
+   glutSpecialFunc( (GLUTspecialfun)TwEventSpecialGLUT );
    glutIdleFunc( idle );
+   TwGLUTModifiersFunc( glutGetModifiers );
+
+   main_tb = TwNewBar( "Main" );
+   TwDefine(" GLOBAL help='This example shows how to integrate AntTweakBar with GLUT and OpenGL.' "); // Message added to the help bar.
+   TwDefine(" TweakBar size='200 400' color='96 216 224' "); // change default tweak bar size and color
+   TwAddVarCB( main_tb, "MinRA", TW_TYPE_DOUBLE, set_min_ra, get_min_ra, NULL,
+               " label='Minimum RA' min=0 max=49 step=1 help='Minimum right-ascension.' " );
+   TwAddVarCB( main_tb, "MaxRA", TW_TYPE_DOUBLE, set_max_ra, get_max_ra, NULL,
+               " label='Maximum RA' min=41 max=90 step=1 help='Maximum right-ascension.' " );
+
+   // Initialise OpenGL.
+   init_opengl();
 
    // Initialise system.
    init_tao();
