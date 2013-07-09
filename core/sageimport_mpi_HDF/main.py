@@ -135,11 +135,7 @@ if __name__ == '__main__':
             PreprocessDataObj.InitDBConnection(False)
             ## 3) Create All tables required for the importing of the current dataset using the information in "DataFiles" table
             PreprocessDataObj.CreateIndexOnTreeSummaryTable()
-<<<<<<< HEAD
             PreprocessDataObj.GenerateTablesIndex(CommSize,CommRank)
-=======
-            PreprocessDataObj.GenerateTablesIndex()
->>>>>>> be3bd6a89d13f48fc1a0eccaae7b59ed2c0856d0
             ## 4) Close the DB connection
             PreprocessDataObj.DBConnection.CloseConnections()
         
