@@ -104,9 +104,10 @@
     }
 
     // TODO: This function needs a big re-write to decouple it from all submodules
-    var update_filter_options = function(fetch_data, use_default){
+    var update_filter_options = function(use_default){
         // TODO: Remove dependency on lc_id
         var data_set_id = $(lc_id('galaxy_model')).val();
+        fetch_data = update_filter_options.current_key != data_set_id;
 
         var isInt = function(value) {
             return !isNaN(parseInt(value)) && (parseFloat(value)+'' == parseInt(value)+'');
@@ -176,11 +177,10 @@
             $filter.change();
         }
 
-        if (!fetch_data && update_filter_options.current_data) {
+        if (!fetch_data) {
             refresh_select(update_filter_options.current_data, use_default);
             return;
         }
-        update_filter_options.current_data = undefined;
         $.ajax({
             url : TAO_JSON_CTX + 'filters/' + data_set_id,
             dataType: "json",
@@ -189,6 +189,7 @@
             },
             success: function(resp, status, xhr) {
                 update_filter_options.current_data = resp;
+                update_filter_options.current_key = data_set_id;
                 if (update_filter_options.output_props &&
                     update_filter_options.bandpass_props) {
                     refresh_select(resp, use_default);
@@ -196,6 +197,8 @@
             }
         });
     };
+    update_filter_options.current_data = undefined;
+    update_filter_options.current_key = null;
 
 
     // focus on tab (direction=0), next tab (direction=+1) or prev tab (direction=-1)
@@ -662,7 +665,7 @@ jQuery(document).ready(function($) {
     // }
 
     lc_output_props_widget.change_event(function(evt){
-        update_filter_options(false, false);
+        update_filter_options(false);
         var output_properties_count = list_multiple_selections_in_summary('light_cone', 'output_properties');
 
         if (output_properties_count == 1)
@@ -1665,6 +1668,8 @@ jQuery(document).ready(function($) {
         $('div.summary_light_cone .simulation_description, div.summary_light_cone .galaxy_model_description').hide();
 
         initialise_modules();
+
+        // move all these initial event triggers to another method
 
         // $(sed_id('apply_sed')).change();
         // $(sed_id('apply_dust')).change();
