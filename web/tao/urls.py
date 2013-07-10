@@ -58,6 +58,7 @@ json_patterns = patterns('tao.json.views',
     url(r'^dust_model/(?P<id>\d+)$', 'dust_model', name='json_dust_model'),
     url(r'^global_parameter/(?P<parameter_name>[-\w]+)/$', 'global_parameter', name='json_global_parameter'),
     url(r'^bandpass_filters/', 'bandpass_filters', name='json_bandpass_filters'),
+    url(r'^dataset/(?P<id>\d+)$', 'dataset', name='json_dataset'),
     url(r'^$', 'bad_request', name='json_ctx'),
 )
 

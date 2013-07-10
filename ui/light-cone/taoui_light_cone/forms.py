@@ -139,7 +139,7 @@ class Form(BetterForm):
     ra_opening_angle = forms.DecimalField(required=False, label=_('Right Ascension Opening Angle (degrees)'), min_value=0, max_value=360, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
     dec_opening_angle = forms.DecimalField(required=False, label=_('Declination Opening Angle (degrees)'), min_value=0, max_value=360, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
 
-    max_job_size = forms.DecimalField(required=False, label=_('Estimated job size'), widget=forms.TextInput(attrs={'readonly': True, 'class': 'light_cone_field'}))
+    max_job_size = forms.DecimalField(required=False, label=_('Estimated job size (box count)'), widget=forms.TextInput(attrs={'readonly': True, 'class': 'light_cone_field'}))
     light_cone_choices = [(UNIQUE, 'Unique'), (RANDOM, 'Random')]
     light_cone_type = forms.ChoiceField(required=False, initial=UNIQUE, label='', choices=light_cone_choices, widget=forms.RadioSelect(attrs={'class': 'light_cone_field'}))
 

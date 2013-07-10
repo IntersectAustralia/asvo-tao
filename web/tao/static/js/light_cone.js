@@ -976,6 +976,17 @@ jQuery(document).ready(function($) {
         }
     }
 
+    var validate_number_of_boxes = function() {
+        $job_size = $(lc_id('max_job_size'));
+        var error = $job_size.closest('div.control-group').find('span.help-inline').text();
+        if (error == "" || error == null) {
+            return true;
+        } else {
+            show_tab($job_size, 0);
+            return false;
+        }
+    }
+
     //
     // -- form handler
     //
@@ -984,7 +995,8 @@ jQuery(document).ready(function($) {
         cleanup_fields($form);
         var min_max_valid = validate_min_max();
         var number_of_light_cones_valid = validate_number_of_light_cones();
-        if (!min_max_valid || !number_of_light_cones_valid) {
+        var number_of_boxes_valid = validate_number_of_boxes();
+        if (!min_max_valid || !number_of_light_cones_valid || !number_of_boxes_valid) {
             return false;
         }
 
