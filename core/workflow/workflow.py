@@ -18,6 +18,7 @@ import emailreport
 import glob
 import pg
 import stat
+import ParseProfileData
 
 class WorkFlow(object):
 
@@ -57,9 +58,10 @@ class WorkFlow(object):
         JobParams=jsonObj['parameters']
         JobDatabase=jsonObj['database']
         JobUserName=jsonObj['username']
+        self.ProcessNewJob(UIJobReference, JobParams, JobDatabase, JobUserName)
         
         
-        
+    def ProcessNewJob(self,UIJobReference,JobParams,JobDatabase,JobUserName):       
         ## If a Job with the Same UI_ID exists ...ensure that it is out of the watch List (By Error State)
         self.dbaseobj.RemoveOldJobFromWatchList(UIJobReference)
         ## 1- Prepare the Job Directory
@@ -133,8 +135,16 @@ class WorkFlow(object):
         logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], 'jobs', JobUserName, str(UIJobReference),'log')                
         outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], 'jobs', JobUserName, str(UIJobReference),'output')
         old_dir = os.getcwd()
-        os.chdir(logpath)           
-                
+        os.chdir(logpath)  
+        ###################Profiling####################################################
+                 
+        self.ParseProfileDataObj=ParseProfileData.ParseProfileData(logpath,SubJobIndex,self.Options) 
+        [Boxes,Tables,Galaxies,Trees]=self.ParseProfileDataObj.ParseFile()       
+        logging.info('Number of Boxes='+str(Boxes))
+        logging.info( 'Total Queries='+str(Tables))
+        logging.info( 'Maximum Galaxies='+str(Galaxies))
+        logging.info( 'Maximum Trees='+str(Trees))
+        #############################################################################
         ############################################################
         ### Submit the Job to the PBS Queue
         PBSJobID=self.TorqueObj.Submit(JobUserName,JobID,logpath,outputpath,ParamXMLName,SubJobIndex)
@@ -209,7 +219,7 @@ class WorkFlow(object):
     
     def ChangePBSFilesmod(self,UserName,JobID,LocalJobID):
         
-        JobName='tao_'+UserName[:4]+'_'+str(LocalJobID)
+        JobName=self.Options['Torque:jobprefix']+UserName[:4]+'_'+str(LocalJobID)
         path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],'jobs', UserName, str(JobID),'log')
         old_dir = os.getcwd()
         os.chdir(path)
@@ -229,7 +239,7 @@ class WorkFlow(object):
     
     def GetJobstderrcontents(self,UserName,JobID,LocalJobID):
         
-        JobName='tao_'+UserName[:4]+'_'+str(LocalJobID)
+        JobName=self.Options['Torque:jobprefix']+UserName[:4]+'_'+str(LocalJobID)
         path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],'jobs', UserName, str(JobID),'log')
         old_dir = os.getcwd()
         os.chdir(path)

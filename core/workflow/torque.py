@@ -10,6 +10,7 @@ import locale
 import time
 import logging
 
+
 class TorqueInterface(object):
     
     
@@ -45,7 +46,7 @@ class TorqueInterface(object):
     def SetJobParams(self,UserName,JobID,nodes,ppn,path,outputpath,BasicSettingPath,ParamXMLName,SubJobIndex):    
             
         self.DefaultParams['executable'] = self.Options['Torque:ExecutableName']
-        self.DefaultParams['name']='tao_'+UserName[:4]+'_'+str(JobID)
+        self.DefaultParams['name']=self.Options['Torque:jobprefix']+UserName[:4]+'_'+str(JobID)
         self.DefaultParams['nodes'] = nodes        
         self.DefaultParams['ppn'] = ppn
         self.DefaultParams['subjobindex'] = SubJobIndex
@@ -128,7 +129,7 @@ class TorqueInterface(object):
         for line in lines:
             LineParts=shlex.split(line)
             JobName=LineParts[1]            
-            if JobName.find('tao_')==0:
+            if JobName.find(self.Options['Torque:jobprefix'])==0:
                 JobID=LineParts[0].split('.')[0]
                 CurrentJobs[JobID]=LineParts[4]
         
