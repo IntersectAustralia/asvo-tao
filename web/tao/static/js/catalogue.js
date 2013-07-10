@@ -1,11 +1,11 @@
-jQuery(document).ready(function($) {
-
-    var lc_id = function(bare_name) {
-        return '#id_light_cone-' + bare_name;
-    };
+   // TODO: move all these id functionts to their respective modules
 
     var sed_id = function(bare_name) {
-        return '#id_sed-' + bare_name;
+    return '#id_sed-' + bare_name;
+    }
+
+     var lc_id = function(bare_name) {
+        return '#id_light_cone-' + bare_name;
     };
 
     var mi_id = function(bare_name) {
@@ -20,57 +20,45 @@ jQuery(document).ready(function($) {
         return item.type + '-' + item.pk;
     }
 
-    // focus on tab (direction=0), next tab (direction=+1) or prev tab (direction=-1)
-    var show_tab = function($elem, direction) {
-        var this_tab = parseInt($elem.closest('div.tao-tab').attr('tao-number'));
-        $('#tao-tabs-' + (this_tab + direction)).click();
-    }
+    var bound;
 
-    var show_error = function($field, msg) {
-        var $enclosing = $field.closest('div.control-group');
-        $enclosing.find('span.help-inline').remove();
-        $enclosing.removeClass('error');
-        if (msg == null) return;
-        $field.after('<span class="help-inline"></span>');
-        $enclosing.find('span.help-inline').text(msg);
-        $enclosing.addClass('error');
-        show_tab($enclosing, 0);
-    }
+    // TODO: clean up globals and namespace
+    var lc_output_props_widget;
 
-    var display_maximum_number_light_cones = function($field, msg) {
-        var $enclosing = $field.closest('label.control-label');
-        $enclosing.find('span.lc_number-inline').remove();
-        if (msg == null) return;
-        $field.after('<span class="lc_number-inline"></span>');
-        $enclosing.find('span.lc_number-inline').text(msg);
-        show_tab($enclosing, 0);
-    }
+    var TAO_NO_FILTER = {'pk':'no_filter', 'type':'X', 'fields':{'label':'No Filter'}};
 
-    var lc_output_props_widget = new TwoSidedSelectWidget(lc_id('output_properties'), true);
+    var list_multiple_selections_in_summary = function(form_name, select_widget){
+        console.log("list_multiple_selections_in_summary for " + select_widget + " starts")
+        var selections_count = 0;
+        var selected_values = [];
 
-    var sed_band_pass_filters_widget = new TwoSidedSelectWidget(sed_id('band_pass_filters'), false);
+        selected_values.push('<ul>');
+        var $groups = $('#id_' + form_name + '-' + select_widget +' optgroup');
+        console.log(form_name + ' ' + select_widget + ' has group size: ' + $groups.size());
+        if ($groups.size() > 0) {
+            $groups.each(function(i, e) {
+                var name = $(e).attr('group-name');
+                if (name.length == 0) {
+                    name = "Ungrouped";
+                }
+                selected_values.push('<li>' + name + '<ul>');
+                $(e).find('option').each(function(i,option) {
+                    selected_values.push('<li>' + $(option).html() + '</li>');
+                    selections_count++;
+                })
+                selected_values.push('</ul></li>');
+            })
+        } else {
+            $('#id_' + form_name + '-' + select_widget +' option').each(function(i,option) {
+                selected_values.push('<li>' + $(option).html() + '</li>');
+                selections_count++;
+            });
+        }
+        selected_values.push('</ul>');
 
-    var update_output_options = function() {
-        var data_set_id = $(lc_id('galaxy_model')).find(':selected').attr('value');
-        var $to = $(lc_id('output_properties'));
-        var $from = $(lc_id('output_properties_from'));
-        $to.find('option').each(function(i) {
-            $(this).attr("selected", "selected");
-        });
-        var current = $to.val(); // in string format
-        $to.empty();
-        $from.empty();
-        $.ajax({
-            url : TAO_JSON_CTX + 'output_choices/' + data_set_id,
-            dataType: "json",
-            error: function() {
-                alert("Couldn't get output choices");
-            },
-            success: function(data, status, xhr) {
-                lc_output_props_widget.cache_store(data);
-                lc_output_props_widget.display_selected(current, true);
-            }
-        });
+        fill_in_summary(form_name, select_widget + '_list', selected_values.join(''));
+        console.log("list_multiple_selections_in_summary  " + select_widget + " ends")
+        return selections_count;
     }
 
     var fill_in_summary = function(form_name, field_name, input_data) {
@@ -80,48 +68,44 @@ jQuery(document).ready(function($) {
         $('div.summary_' + form_name + ' .' + field_name).html('None');
     }
 
-    var format_redshift = function(redshift_string) {
-        var redshift = parseFloat(redshift_string);
-        var whole_digit = parseInt(redshift).toString().length;
-        return redshift.toFixed(Math.max(5-whole_digit, 0));
-    };
-
-    var update_snapshot_options = function(){
-        var simulation_id = $(lc_id('dark_matter_simulation')).val();
-        var galaxy_model_id = $(lc_id('galaxy_model')).find(':selected').attr('data-galaxy_model_id');
-        var $snapshot = $(lc_id('snapshot'));
-        var current = $snapshot.val();
-        $snapshot.empty();
-
+    var show_stellar_model_info = function(stellar_id) {
         $.ajax({
-            url : TAO_JSON_CTX + 'snapshots/' + simulation_id + ',' + galaxy_model_id,
+            url : TAO_JSON_CTX + 'stellar_model/' + stellar_id,
             dataType: "json",
-            error: function() {
-                alert("Couldn't get snapshots");
+            error: function(){
+                $('div.stellar-model-info').hide();
+                alert("Couldn't get data for requested dust model");
             },
             success: function(data, status, xhr) {
-                for(i=0; i<data.length; i++) {
-                    var item = data[i];
-                    $option = $('<option/>');
-                    $option.attr('value',item.pk);
-                    // Redshift Formatting:
-                    // The age of the universe as a function of redshift is 1 / (1 + z) where z is the redshift.
-                    // So z=0 is the present, and z=Infinity is the Big Bang.
-                    // This is a non-linear relationship with more variation at smaller z values.
-                    // To present figures that are easy to read and have sensible precision, redshift will be displayed with up to 5 decimals.
-                    $option.html(format_redshift(item.fields.redshift));
-                    if (item.pk == current) {
-                        $option.attr('selected','selected');
-                    }
-                    $snapshot.append($option);
-                }
-                initial_snapshot = 0;
+                $('div.stellar-model-info .name').html(data.fields.label);
+                $('div.stellar-model-info .details').html(data.fields.description);
+                $('div.stellar-model-info').show();
+                fill_in_summary('sed', 'stellar_model_description', '<br>' + data.fields.description);
             }
         });
     };
 
-    var update_filter_options = function(fetch_data, use_default){
+    var show_output_property_info = function(cache_item) {
+        $('div.output-property-info .name').html(cache_item.text);
+        $('div.output-property-info .details').html(cache_item.description);
+        $('div.output-property-info').show();
+    }
 
+    var clear_info = function(form_name, name) {
+        $('div.' + name + '-info .name').html('');
+        $('div.' + name + '-info .details').html('');
+        $('div.' + name + '-info').show();
+    }
+
+    var show_bandpass_filter_info = function(cache_item) {
+        $('div.band-pass-info .name').html(cache_item.text);
+        $('div.band-pass-info .details').html(cache_item.description);
+        $('div.band-pass-info').show();
+    }
+
+    // TODO: This function needs a big re-write to decouple it from all submodules
+    var update_filter_options = function(fetch_data, use_default){
+        // TODO: Remove dependency on lc_id
         var data_set_id = $(lc_id('galaxy_model')).val();
 
         var isInt = function(value) {
@@ -156,8 +140,9 @@ jQuery(document).ready(function($) {
             $.each(lc_output_props_widget.selected(), function(i,value) {
                list.push('D-' + value);
             });
+            // TODO: Remove dependency
             if ($(sed_id('apply_sed')).is(':checked')) {
-                $.each(sed_band_pass_filters_widget.selected(), function(i,value) {
+                $.each(catalogue.modules.sed.sed_band_pass_filters_widget.selected(), function(i,value) {
                     list.push('B-' + value);
                 });
             }
@@ -204,10 +189,272 @@ jQuery(document).ready(function($) {
             },
             success: function(resp, status, xhr) {
                 update_filter_options.current_data = resp;
-                refresh_select(resp, use_default);
+                if (update_filter_options.output_props &&
+                    update_filter_options.bandpass_props) {
+                    refresh_select(resp, use_default);
+                }
             }
         });
     };
+
+
+    // focus on tab (direction=0), next tab (direction=+1) or prev tab (direction=-1)
+    var show_tab = function($elem, direction) {
+        var this_tab = parseInt($elem.closest('div.tao-tab').attr('tao-number'));
+        $('#tao-tabs-' + (this_tab + direction)).click();
+    }
+
+    var show_error = function($field, msg) {
+        var $enclosing = $field.closest('div.control-group');
+        $enclosing.find('span.help-inline').remove();
+        $enclosing.removeClass('error');
+        if (msg == null) return;
+        $field.after('<span class="help-inline"></span>');
+        $enclosing.find('span.help-inline').text(msg);
+        $enclosing.addClass('error');
+        show_tab($enclosing, 0);
+    }
+
+
+    var validate_min_max = function() {
+
+        var min = $(rf_id('min')).val();
+        var max = $(rf_id('max')).val();
+        var $filter = $(rf_id('filter'));
+        if ($filter.val() == item_to_value(TAO_NO_FILTER)) { return true; }
+        var $option = $filter.find('option:selected');
+        var is_valid = $option.data('is_valid');
+        var expected_type = $option.data('expected_type');
+        var error = false;
+        if (min && !is_valid(min)) {
+            show_error($(rf_id('min')),'Min in record filter should be ' + expected_type);
+            error = true;
+        } else {
+            show_error($(rf_id('min')), null);
+        }
+        if (max && !is_valid(max)) {
+            show_error($(rf_id('max')),'Max in record filter should be ' + expected_type);
+            error = true;
+        } else {
+            show_error($(rf_id('max')), null);
+        }
+
+        return !error;
+    }
+
+
+jQuery(document).ready(function($) {
+
+    // var lc_id = function(bare_name) {
+    //     return '#id_light_cone-' + bare_name;
+    // };
+
+    // var sed_id = function(bare_name) {
+    //     return '#id_sed-' + bare_name;
+    // };
+
+    // var mi_id = function(bare_name) {
+    //     return '#id_mock_image-' + bare_name;
+    // };
+
+    // var rf_id = function(bare_name) {
+    //     return '#id_record_filter-' + bare_name;
+    // }
+
+    // var item_to_value = function(item) {
+    //     return item.type + '-' + item.pk;
+    // }
+
+    // // focus on tab (direction=0), next tab (direction=+1) or prev tab (direction=-1)
+    // var show_tab = function($elem, direction) {
+    //     var this_tab = parseInt($elem.closest('div.tao-tab').attr('tao-number'));
+    //     $('#tao-tabs-' + (this_tab + direction)).click();
+    // }
+
+    // var show_error = function($field, msg) {
+    //     var $enclosing = $field.closest('div.control-group');
+    //     $enclosing.find('span.help-inline').remove();
+    //     $enclosing.removeClass('error');
+    //     if (msg == null) return;
+    //     $field.after('<span class="help-inline"></span>');
+    //     $enclosing.find('span.help-inline').text(msg);
+    //     $enclosing.addClass('error');
+    //     show_tab($enclosing, 0);
+    // }
+
+    var display_maximum_number_light_cones = function($field, msg) {
+        var $enclosing = $field.closest('label.control-label');
+        $enclosing.find('span.lc_number-inline').remove();
+        if (msg == null) return;
+        $field.after('<span class="lc_number-inline"></span>');
+        $enclosing.find('span.lc_number-inline').text(msg);
+        show_tab($enclosing, 0);
+    }
+
+    // var lc_output_props_widget = new TwoSidedSelectWidget(lc_id('output_properties'), true);
+    lc_output_props_widget = new TwoSidedSelectWidget(lc_id('output_properties'), true);
+
+    // var sed_band_pass_filters_widget = new TwoSidedSelectWidget(sed_id('band_pass_filters'), false);
+
+    var update_output_options = function() {
+        var data_set_id = $(lc_id('galaxy_model')).find(':selected').attr('value');
+        var $to = $(lc_id('output_properties'));
+        var $from = $(lc_id('output_properties_from'));
+        $to.find('option').each(function(i) {
+            $(this).attr("selected", "selected");
+        });
+        var current = $to.val(); // in string format
+        $to.empty();
+        $from.empty();
+        $.ajax({
+            url : TAO_JSON_CTX + 'output_choices/' + data_set_id,
+            dataType: "json",
+            error: function() {
+                alert("Couldn't get output choices");
+            },
+            success: function(data, status, xhr) {
+                lc_output_props_widget.cache_store(data);
+                update_filter_options.output_props = true;
+                lc_output_props_widget.display_selected(current, true);
+            }
+        });
+    }
+
+    // var fill_in_summary = function(form_name, field_name, input_data) {
+    //     $('div.summary_' + form_name + ' .' + field_name).html(input_data);
+    // }
+    // var clear_in_summary = function(form_name, field_name) {
+    //     $('div.summary_' + form_name + ' .' + field_name).html('None');
+    // }
+
+    var format_redshift = function(redshift_string) {
+        var redshift = parseFloat(redshift_string);
+        var whole_digit = parseInt(redshift).toString().length;
+        return redshift.toFixed(Math.max(5-whole_digit, 0));
+    };
+
+    var update_snapshot_options = function(){
+        var simulation_id = $(lc_id('dark_matter_simulation')).val();
+        var galaxy_model_id = $(lc_id('galaxy_model')).find(':selected').attr('data-galaxy_model_id');
+        var $snapshot = $(lc_id('snapshot'));
+        var current = $snapshot.val();
+        $snapshot.empty();
+
+        $.ajax({
+            url : TAO_JSON_CTX + 'snapshots/' + simulation_id + ',' + galaxy_model_id,
+            dataType: "json",
+            error: function() {
+                alert("Couldn't get snapshots");
+            },
+            success: function(data, status, xhr) {
+                for(i=0; i<data.length; i++) {
+                    var item = data[i];
+                    $option = $('<option/>');
+                    $option.attr('value',item.pk);
+                    // Redshift Formatting:
+                    // The age of the universe as a function of redshift is 1 / (1 + z) where z is the redshift.
+                    // So z=0 is the present, and z=Infinity is the Big Bang.
+                    // This is a non-linear relationship with more variation at smaller z values.
+                    // To present figures that are easy to read and have sensible precision, redshift will be displayed with up to 5 decimals.
+                    $option.html(format_redshift(item.fields.redshift));
+                    if (item.pk == current) {
+                        $option.attr('selected','selected');
+                    }
+                    $snapshot.append($option);
+                }
+                initial_snapshot = 0;
+            }
+        });
+    };
+
+    // var update_filter_options = function(fetch_data, use_default){
+
+    //     var data_set_id = $(lc_id('galaxy_model')).val();
+
+    //     var isInt = function(value) {
+    //         return !isNaN(parseInt(value)) && (parseFloat(value)+'' == parseInt(value)+'');
+    //     }
+    //     var isFloat = function(value) {
+    //         return !isNaN(parseFloat(value));
+    //     }
+
+    //     function add_option($filter, item, current_filter) {
+    //         $option = $('<option/>');
+    //         $option.attr('value',item_to_value(item));
+    //         if (item_to_value(item) == item_to_value(TAO_NO_FILTER)) {
+    //             $option.html(item.fields.label);
+    //         } else {
+    //             if (item.fields.units != '') {
+    //                 $option.html(item.fields.label + ' (' + item.fields.units + ')');
+    //             } else {
+    //                 $option.html(item.fields.label);
+    //             }
+    //         }
+    //         if (item_to_value(item) == current_filter) {
+    //             $option.attr('selected','selected');
+    //         }
+    //         $option.data('is_valid', item.fields.data_type==1? isFloat : isInt);
+    //         $option.data('expected_type', item.fields.data_type==1? 'float' : 'integer');
+    //         $filter.append($option);
+    //     }
+
+    //     function current_selection() {
+    //         var list = [];
+    //         $.each(lc_output_props_widget.selected(), function(i,value) {
+    //            list.push('D-' + value);
+    //         });
+    //         if ($(sed_id('apply_sed')).is(':checked')) {
+    //             $.each(sed_band_pass_filters_widget.selected(), function(i,value) {
+    //                 list.push('B-' + value);
+    //             });
+    //         }
+    //         return list;
+    //     }
+
+    //     function refresh_select(resp, use_default) {
+    //         var $filter = $(rf_id('filter'));
+    //         var current_filter = $filter.val();
+    //         var current = current_selection();
+    //         current.push(item_to_value(TAO_NO_FILTER));
+    //         current.push('D-' + resp.default_id.toString());
+    //         if (use_default || current.indexOf(current_filter) == -1) {
+    //             current_filter = 'D-' + resp.default_id;
+    //             if (current_filter == '' || current_filter == item_to_value(TAO_NO_FILTER)) {
+    //                 $(rf_id('min')).val('');
+    //                 $(rf_id('max')).val('');
+    //             } else {
+    //                 $(rf_id('min')).val(resp.default_min);
+    //                 $(rf_id('max')).val(resp.default_max);
+    //             }
+    //         }
+    //         $filter.empty();
+    //         add_option($filter, TAO_NO_FILTER, current_filter);
+    //         var data = resp.list;
+    //         for(i=0; i<data.length; i++) {
+    //             if (current.indexOf(item_to_value(data[i])) != -1) {
+    //                 add_option($filter, data[i], current_filter);
+    //             }
+    //         }
+    //         $filter.change();
+    //     }
+
+    //     if (!fetch_data && update_filter_options.current_data) {
+    //         refresh_select(update_filter_options.current_data, use_default);
+    //         return;
+    //     }
+    //     update_filter_options.current_data = undefined;
+    //     $.ajax({
+    //         url : TAO_JSON_CTX + 'filters/' + data_set_id,
+    //         dataType: "json",
+    //         error: function() {
+    //             alert("Couldn't get filters");
+    //         },
+    //         success: function(resp, status, xhr) {
+    //             update_filter_options.current_data = resp;
+    //             refresh_select(resp, use_default);
+    //         }
+    //     });
+    // };
 
     var show_galaxy_model_info = function(galaxy_model_id) {
         var $galaxy_model_info = $('div.galaxy-model-info');
@@ -285,58 +532,58 @@ jQuery(document).ready(function($) {
         });
     };
 
-    var show_stellar_model_info = function(stellar_id) {
-        $.ajax({
-            url : TAO_JSON_CTX + 'stellar_model/' + stellar_id,
-            dataType: "json",
-            error: function(){
-                $('div.stellar-model-info').hide();
-                alert("Couldn't get data for requested dust model");
-            },
-            success: function(data, status, xhr) {
-                $('div.stellar-model-info .name').html(data.fields.label);
-                $('div.stellar-model-info .details').html(data.fields.description);
-                $('div.stellar-model-info').show();
-                fill_in_summary('sed', 'stellar_model_description', '<br>' + data.fields.description);
-            }
-        });
-    };
+    // var show_stellar_model_info = function(stellar_id) {
+    //     $.ajax({
+    //         url : TAO_JSON_CTX + 'stellar_model/' + stellar_id,
+    //         dataType: "json",
+    //         error: function(){
+    //             $('div.stellar-model-info').hide();
+    //             alert("Couldn't get data for requested dust model");
+    //         },
+    //         success: function(data, status, xhr) {
+    //             $('div.stellar-model-info .name').html(data.fields.label);
+    //             $('div.stellar-model-info .details').html(data.fields.description);
+    //             $('div.stellar-model-info').show();
+    //             fill_in_summary('sed', 'stellar_model_description', '<br>' + data.fields.description);
+    //         }
+    //     });
+    // };
 
-    var show_dust_model_info = function(dust_id) {
-        $.ajax({
-            url : TAO_JSON_CTX + 'dust_model/' + dust_id,
-            dataType: "json",
-            error: function(){
-                $('div.dust-model-info').hide();
-                alert("Couldn't get data for requested dust model");
-            },
-            success: function(data, status, xhr) {
-                $('div.dust-model-info .name').html(data.fields.name);
-                $('div.dust-model-info .details').html(data.fields.details);
-                $('div.dust-model-info').show();
-                fill_in_summary('sed', 'dust_model', data.fields.name);
-                fill_in_summary('sed', 'dust_model_description', '<br>' + data.fields.details);
-            }
-        });
-    };
+    // var show_dust_model_info = function(dust_id) {
+    //     $.ajax({
+    //         url : TAO_JSON_CTX + 'dust_model/' + dust_id,
+    //         dataType: "json",
+    //         error: function(){
+    //             $('div.dust-model-info').hide();
+    //             alert("Couldn't get data for requested dust model");
+    //         },
+    //         success: function(data, status, xhr) {
+    //             $('div.dust-model-info .name').html(data.fields.name);
+    //             $('div.dust-model-info .details').html(data.fields.details);
+    //             $('div.dust-model-info').show();
+    //             fill_in_summary('sed', 'dust_model', data.fields.name);
+    //             fill_in_summary('sed', 'dust_model_description', '<br>' + data.fields.details);
+    //         }
+    //     });
+    // };
 
-    var show_output_property_info = function(cache_item) {
-        $('div.output-property-info .name').html(cache_item.text);
-        $('div.output-property-info .details').html(cache_item.description);
-        $('div.output-property-info').show();
-    }
+    // var show_output_property_info = function(cache_item) {
+    //     $('div.output-property-info .name').html(cache_item.text);
+    //     $('div.output-property-info .details').html(cache_item.description);
+    //     $('div.output-property-info').show();
+    // }
 
-    var clear_info = function(form_name, name) {
-        $('div.' + name + '-info .name').html('');
-        $('div.' + name + '-info .details').html('');
-        $('div.' + name + '-info').show();
-    }
+    // var clear_info = function(form_name, name) {
+    //     $('div.' + name + '-info .name').html('');
+    //     $('div.' + name + '-info .details').html('');
+    //     $('div.' + name + '-info').show();
+    // }
 
-    var show_bandpass_filter_info = function(cache_item) {
-        $('div.band-pass-info .name').html(cache_item.text);
-        $('div.band-pass-info .details').html(cache_item.description);
-        $('div.band-pass-info').show();
-    }
+    // var show_bandpass_filter_info = function(cache_item) {
+    //     $('div.band-pass-info .name').html(cache_item.text);
+    //     $('div.band-pass-info .details').html(cache_item.description);
+    //     $('div.band-pass-info').show();
+    // }
     //
     // - event handlers for fields -
     //
@@ -354,65 +601,65 @@ jQuery(document).ready(function($) {
         return false;
     });
 
-    $('#expand_stellar_model').click(function(e) {
-        e.preventDefault();
-        $this = $(this);
-        if ($this.html() === "&gt;&gt;") {
-            $('div.summary_sed .stellar_model_description').show();
-            $this.html("<<");
-        } else {
-            $('div.summary_sed .stellar_model_description').hide();
-            $this.html(">>");
-        }
-        return false;
-    });
+    // $('#expand_stellar_model').click(function(e) {
+    //     e.preventDefault();
+    //     $this = $(this);
+    //     if ($this.html() === "&gt;&gt;") {
+    //         $('div.summary_sed .stellar_model_description').show();
+    //         $this.html("<<");
+    //     } else {
+    //         $('div.summary_sed .stellar_model_description').hide();
+    //         $this.html(">>");
+    //     }
+    //     return false;
+    // });
 
-    $('#expand_dust_model').click(function(e) {
-        e.preventDefault();
-        $this = $(this);
-        if ($this.html() === "&gt;&gt;") {
-            $('div.summary_sed .dust_model_description').show();
-            $this.html("<<");
-        } else {
-            $('div.summary_sed .dust_model_description').hide();
-            $this.html(">>");
-        }
-        return false;
-    });
+    // $('#expand_dust_model').click(function(e) {
+    //     e.preventDefault();
+    //     $this = $(this);
+    //     if ($this.html() === "&gt;&gt;") {
+    //         $('div.summary_sed .dust_model_description').show();
+    //         $this.html("<<");
+    //     } else {
+    //         $('div.summary_sed .dust_model_description').hide();
+    //         $this.html(">>");
+    //     }
+    //     return false;
+    // });
 
-    var list_multiple_selections_in_summary = function(form_name, select_widget){
-        console.log("list_multiple_selections_in_summary for " + select_widget + " starts")
-        var selections_count = 0;
-        var selected_values = [];
+    // var list_multiple_selections_in_summary = function(form_name, select_widget){
+    //     console.log("list_multiple_selections_in_summary for " + select_widget + " starts")
+    //     var selections_count = 0;
+    //     var selected_values = [];
 
-        selected_values.push('<ul>');
-        var $groups = $('#id_' + form_name + '-' + select_widget +' optgroup');
-        console.log(form_name + ' ' + select_widget + ' has group size: ' + $groups.size());
-        if ($groups.size() > 0) {
-            $groups.each(function(i, e) {
-                var name = $(e).attr('group-name');
-                if (name.length == 0) {
-                    name = "Ungrouped";
-                }
-                selected_values.push('<li>' + name + '<ul>');
-                $(e).find('option').each(function(i,option) {
-                    selected_values.push('<li>' + $(option).html() + '</li>');
-                    selections_count++;
-                })
-                selected_values.push('</ul></li>');
-            })
-        } else {
-            $('#id_' + form_name + '-' + select_widget +' option').each(function(i,option) {
-                selected_values.push('<li>' + $(option).html() + '</li>');
-                selections_count++;
-            });
-        }
-        selected_values.push('</ul>');
+    //     selected_values.push('<ul>');
+    //     var $groups = $('#id_' + form_name + '-' + select_widget +' optgroup');
+    //     console.log(form_name + ' ' + select_widget + ' has group size: ' + $groups.size());
+    //     if ($groups.size() > 0) {
+    //         $groups.each(function(i, e) {
+    //             var name = $(e).attr('group-name');
+    //             if (name.length == 0) {
+    //                 name = "Ungrouped";
+    //             }
+    //             selected_values.push('<li>' + name + '<ul>');
+    //             $(e).find('option').each(function(i,option) {
+    //                 selected_values.push('<li>' + $(option).html() + '</li>');
+    //                 selections_count++;
+    //             })
+    //             selected_values.push('</ul></li>');
+    //         })
+    //     } else {
+    //         $('#id_' + form_name + '-' + select_widget +' option').each(function(i,option) {
+    //             selected_values.push('<li>' + $(option).html() + '</li>');
+    //             selections_count++;
+    //         });
+    //     }
+    //     selected_values.push('</ul>');
 
-        fill_in_summary(form_name, select_widget + '_list', selected_values.join(''));
-        console.log("list_multiple_selections_in_summary  " + select_widget + " ends")
-        return selections_count;
-    }
+    //     fill_in_summary(form_name, select_widget + '_list', selected_values.join(''));
+    //     console.log("list_multiple_selections_in_summary  " + select_widget + " ends")
+    //     return selections_count;
+    // }
 
     lc_output_props_widget.change_event(function(evt){
         update_filter_options(false, false);
@@ -441,36 +688,36 @@ jQuery(document).ready(function($) {
         show_output_property_info(cache_item);
     });
 
-    var display_band_pass_filters_summary = function() {
-        var band_pass_filter_count = list_multiple_selections_in_summary('sed', 'band_pass_filters');
+    // var display_band_pass_filters_summary = function() {
+    //     var band_pass_filter_count = list_multiple_selections_in_summary('sed', 'band_pass_filters');
 
-        if (band_pass_filter_count == 1)
-            fill_in_summary('sed', 'band_pass_filters', band_pass_filter_count + " filter selected");
-        else
-            fill_in_summary('sed', 'band_pass_filters', band_pass_filter_count + " filters selected");
-    }
+    //     if (band_pass_filter_count == 1)
+    //         fill_in_summary('sed', 'band_pass_filters', band_pass_filter_count + " filter selected");
+    //     else
+    //         fill_in_summary('sed', 'band_pass_filters', band_pass_filter_count + " filters selected");
+    // }
 
-    sed_band_pass_filters_widget.change_event(function(evt){
-        update_filter_options(false, false);
-        display_band_pass_filters_summary();
-    });
+    // sed_band_pass_filters_widget.change_event(function(evt){
+    //     update_filter_options(false, false);
+    //     display_band_pass_filters_summary();
+    // });
 
-    $('#expand_band_pass_filters').click(function(e) {
-        e.preventDefault();
-        $this = $(this);
-        if ($this.html() === "&gt;&gt;") {
-            $('div.summary_sed .band_pass_filters_list').show();
-            $this.html("<<");
-        } else {
-            $('div.summary_sed .band_pass_filters_list').hide();
-            $this.html(">>");
-        }
-        return false;
-    });
+    // $('#expand_band_pass_filters').click(function(e) {
+    //     e.preventDefault();
+    //     $this = $(this);
+    //     if ($this.html() === "&gt;&gt;") {
+    //         $('div.summary_sed .band_pass_filters_list').show();
+    //         $this.html("<<");
+    //     } else {
+    //         $('div.summary_sed .band_pass_filters_list').hide();
+    //         $this.html(">>");
+    //     }
+    //     return false;
+    // });
 
-    sed_band_pass_filters_widget.option_clicked_event(function(cache_item){
-        show_bandpass_filter_info(cache_item);
-    });
+    // sed_band_pass_filters_widget.option_clicked_event(function(cache_item){
+    //     show_bandpass_filter_info(cache_item);
+    // });
 
     $(lc_id('dark_matter_simulation')).change(function(evt){
         var $this = $(this);
@@ -479,13 +726,13 @@ jQuery(document).ready(function($) {
         update_galaxy_model_options(sim_id); // triggers galaxy_model.change
     });
 
-    $(sed_id('select_dust_model')).change(function(evt){
-        var $this = $(this);
-        var dust_id = $this.val();
-        show_dust_model_info(dust_id);
-    });
+    // $(sed_id('select_dust_model')).change(function(evt){
+    //     var $this = $(this);
+    //     var dust_id = $this.val();
+    //     show_dust_model_info(dust_id);
+    // });
 
-    var bound = $('#RF_BOUND').val() == 'True';
+    // var bound = $('#RF_BOUND').val() == 'True';
 
     $(lc_id('galaxy_model')).change(function(evt){
         var $this = $(this);
@@ -500,8 +747,8 @@ jQuery(document).ready(function($) {
                 $(lc_id('box_size')).change();
             }
         }
-        update_filter_options(true, use_default); // triggers filter.change
-        update_filter_options.initializing = false;
+        // update_filter_options(true, use_default); // triggers filter.change
+        // update_filter_options.initializing = false;
         update_output_options();
         update_snapshot_options();
     });
@@ -539,20 +786,20 @@ jQuery(document).ready(function($) {
         fill_in_selection_in_summary();
     });
 
-    $(sed_id('band_pass_filters_add_link')).change(function() {
-        fill_in_summary('sed', 'band_pass_filters', 'band_pass_filters_add_link.click()');
-        $(sed_id('band_pass_filters_to')).change();
-    });
-    $(sed_id('band_pass_filters_remove_link')).click(function() {
-        $(sed_id('band_pass_filters_to')).change();
-    });
-    $(sed_id('band_pass_filters_add_all_link')).click(function(evt) {
-        fill_in_summary('sed', 'band_pass_filters', 'band_pass_filters_add_all_link.click()');
-        $(sed_id('band_pass_filters_to')).change();
-    });
-    $(sed_id('band_pass_filters_remove_all_link')).click(function() {
-        $(sed_id('band_pass_filters_to')).change();
-    });
+    // $(sed_id('band_pass_filters_add_link')).change(function() {
+    //     fill_in_summary('sed', 'band_pass_filters', 'band_pass_filters_add_link.click()');
+    //     $(sed_id('band_pass_filters_to')).change();
+    // });
+    // $(sed_id('band_pass_filters_remove_link')).click(function() {
+    //     $(sed_id('band_pass_filters_to')).change();
+    // });
+    // $(sed_id('band_pass_filters_add_all_link')).click(function(evt) {
+    //     fill_in_summary('sed', 'band_pass_filters', 'band_pass_filters_add_all_link.click()');
+    //     $(sed_id('band_pass_filters_to')).change();
+    // });
+    // $(sed_id('band_pass_filters_remove_all_link')).click(function() {
+    //     $(sed_id('band_pass_filters_to')).change();
+    // });
 
     $(lc_id('catalogue_geometry')).change(function(evt){
         var $this = $(this);
@@ -595,28 +842,28 @@ jQuery(document).ready(function($) {
         return current;
     }
 
-    function init_bandpass_properties() {
-        var current = [];
-        $(sed_id('band_pass_filters') + ' option').each(function(){
-            var $this = $(this);
-            if ($this.attr('selected')) {
-                current.push($this.attr('value'));
-            }
-        });
-        $.ajax({
-            url : TAO_JSON_CTX + 'bandpass_filters/',
-            dataType: "json",
-            error: function(jqXHR, status, error) {
-                alert("Couldn't get bandpass filters");
-            },
-            success: function(data, status, xhr) {
-                sed_band_pass_filters_widget.cache_store(data);
-                sed_band_pass_filters_widget.display_selected(current, false);
-            }
-        });
-        console.log('Current bandpass filters: ' + current);
-        return current;
-    }
+    // function init_bandpass_properties() {
+    //     var current = [];
+    //     $(sed_id('band_pass_filters') + ' option').each(function(){
+    //         var $this = $(this);
+    //         if ($this.attr('selected')) {
+    //             current.push($this.attr('value'));
+    //         }
+    //     });
+    //     $.ajax({
+    //         url : TAO_JSON_CTX + 'bandpass_filters/',
+    //         dataType: "json",
+    //         error: function(jqXHR, status, error) {
+    //             alert("Couldn't get bandpass filters");
+    //         },
+    //         success: function(data, status, xhr) {
+    //             sed_band_pass_filters_widget.cache_store(data);
+    //             sed_band_pass_filters_widget.display_selected(current, false);
+    //         }
+    //     });
+    //     console.log('Current bandpass filters: ' + current);
+    //     return current;
+    // }
 
     var fill_in_ra_dec_in_summary = function() {
         var ra_opening_angle_value = $(lc_id('ra_opening_angle')).val();
@@ -855,68 +1102,68 @@ jQuery(document).ready(function($) {
     });
 
 
-    $(sed_id('single_stellar_population_model')).change(function(evt){
-        var $this = $(this);
-        show_stellar_model_info($this.val())
-        var single_stellar_population_model_value = $this.find('option:selected').html();
-        fill_in_summary('sed', 'single_stellar_population_model', single_stellar_population_model_value);
-    });
+    // $(sed_id('single_stellar_population_model')).change(function(evt){
+    //     var $this = $(this);
+    //     show_stellar_model_info($this.val())
+    //     var single_stellar_population_model_value = $this.find('option:selected').html();
+    //     fill_in_summary('sed', 'single_stellar_population_model', single_stellar_population_model_value);
+    // });
 
-    $(sed_id('apply_dust')).change(function(evt){
-        if ($(sed_id('apply_dust')).is(':checked')) {
-            $(sed_id('select_dust_model')).removeAttr('disabled');
-            $(sed_id('select_dust_model')).change();
-            $('#expand_dust_model').show();
-        }
-        else {
-            $(sed_id('select_dust_model')).attr('disabled', 'disabled');
-            clear_info('sed', 'dust-model');
-            clear_in_summary('sed', 'dust_model');
-            $('#expand_dust_model').hide();
-            $('div.summary_sed .dust_model_description').hide();
-        }
-    });
+    // $(sed_id('apply_dust')).change(function(evt){
+    //     if ($(sed_id('apply_dust')).is(':checked')) {
+    //         $(sed_id('select_dust_model')).removeAttr('disabled');
+    //         $(sed_id('select_dust_model')).change();
+    //         $('#expand_dust_model').show();
+    //     }
+    //     else {
+    //         $(sed_id('select_dust_model')).attr('disabled', 'disabled');
+    //         clear_info('sed', 'dust-model');
+    //         clear_in_summary('sed', 'dust_model');
+    //         $('#expand_dust_model').hide();
+    //         $('div.summary_sed .dust_model_description').hide();
+    //     }
+    // });
 
-    $(sed_id('apply_sed')).change(function(evt){
-        if ($(sed_id('apply_sed')).is(':checked')) {
-            $('#tao-tabs-2').css({"border-style": "solid"});
-            $('#tao-tabs-2').css({"color": "#2BA6CB"});
-            $(sed_id('single_stellar_population_model')).removeAttr('disabled');
-            $(sed_id('single_stellar_population_model')).change();
-            $(sed_id('band_pass_filters_filter')).removeAttr('disabled');
-            $(sed_id('band_pass_filters_from')).removeAttr('disabled');
-            sed_band_pass_filters_widget.set_enabled(true);
-            $(sed_id('band_pass_filters')).removeAttr('disabled');
-            $('div.summary_sed .apply_sed').show();
-            fill_in_summary('sed', 'select_sed', '');
-            display_band_pass_filters_summary();
-            $(sed_id('apply_dust')).removeAttr('disabled');
-            $(sed_id('apply_dust')).change();
-            update_filter_options(false, false); // triggers filter.change
-        }
-        else {
-            $('#tao-tabs-2').css({"border-style": "dashed"});
-            $('#tao-tabs-2').css({"color": "rgb(119, 221, 252)"});
-            $(sed_id('single_stellar_population_model')).attr('disabled', 'disabled');
-            clear_in_summary('sed', 'single_stellar_population_model');
-            $(sed_id('band_pass_filters_filter')).attr('disabled', 'disabled');
-            $(sed_id('band_pass_filters_from')).attr('disabled', 'disabled');
-            sed_band_pass_filters_widget.set_enabled(false);
-            $(sed_id('band_pass_filters')).attr('disabled', 'disabled');
-            clear_in_summary('sed', 'band_pass_filters');
-            $(sed_id('apply_dust')).attr('disabled', 'disabled');
-            $(sed_id('select_dust_model')).attr('disabled', 'disabled');
-            clear_info('sed', 'stellar-model');
-            clear_info('sed', 'band-pass');
-            clear_info('sed', 'dust-model');
-            $('div.summary_sed .apply_sed').hide();
-            fill_in_summary('sed', 'select_sed', 'Not selected');
-            var use_default = !update_filter_options.initializing || !bound;
-            update_filter_options(false, use_default); // triggers filter.change
-        }
-        $('#sed_params').slideToggle();
-        $('#sed_info').slideToggle();
-    });
+    // $(sed_id('apply_sed')).change(function(evt){
+    //     if ($(sed_id('apply_sed')).is(':checked')) {
+    //         $('#tao-tabs-2').css({"border-style": "solid"});
+    //         $('#tao-tabs-2').css({"color": "#2BA6CB"});
+    //         $(sed_id('single_stellar_population_model')).removeAttr('disabled');
+    //         $(sed_id('single_stellar_population_model')).change();
+    //         $(sed_id('band_pass_filters_filter')).removeAttr('disabled');
+    //         $(sed_id('band_pass_filters_from')).removeAttr('disabled');
+    //         sed_band_pass_filters_widget.set_enabled(true);
+    //         $(sed_id('band_pass_filters')).removeAttr('disabled');
+    //         $('div.summary_sed .apply_sed').show();
+    //         fill_in_summary('sed', 'select_sed', '');
+    //         display_band_pass_filters_summary();
+    //         $(sed_id('apply_dust')).removeAttr('disabled');
+    //         $(sed_id('apply_dust')).change();
+    //         update_filter_options(false, false); // triggers filter.change
+    //     }
+    //     else {
+    //         $('#tao-tabs-2').css({"border-style": "dashed"});
+    //         $('#tao-tabs-2').css({"color": "rgb(119, 221, 252)"});
+    //         $(sed_id('single_stellar_population_model')).attr('disabled', 'disabled');
+    //         clear_in_summary('sed', 'single_stellar_population_model');
+    //         $(sed_id('band_pass_filters_filter')).attr('disabled', 'disabled');
+    //         $(sed_id('band_pass_filters_from')).attr('disabled', 'disabled');
+    //         sed_band_pass_filters_widget.set_enabled(false);
+    //         $(sed_id('band_pass_filters')).attr('disabled', 'disabled');
+    //         clear_in_summary('sed', 'band_pass_filters');
+    //         $(sed_id('apply_dust')).attr('disabled', 'disabled');
+    //         $(sed_id('select_dust_model')).attr('disabled', 'disabled');
+    //         clear_info('sed', 'stellar-model');
+    //         clear_info('sed', 'band-pass');
+    //         clear_info('sed', 'dust-model');
+    //         $('div.summary_sed .apply_sed').hide();
+    //         fill_in_summary('sed', 'select_sed', 'Not selected');
+    //         var use_default = !update_filter_options.initializing || !bound;
+    //         update_filter_options(false, use_default); // triggers filter.change
+    //     }
+    //     $('#sed_params').slideToggle();
+    //     $('#sed_info').slideToggle();
+    // });
 
     $('#id_output_format-supported_formats').change(function(evt){
         var $this = $(this);
@@ -924,31 +1171,31 @@ jQuery(document).ready(function($) {
         fill_in_summary('output', 'output_format', output_format_value);
     });
 
-    var validate_min_max = function() {
+    // var validate_min_max = function() {
 
-        var min = $(rf_id('min')).val();
-        var max = $(rf_id('max')).val();
-        var $filter = $(rf_id('filter'));
-        if ($filter.val() == item_to_value(TAO_NO_FILTER)) { return true; }
-        var $option = $filter.find('option:selected');
-        var is_valid = $option.data('is_valid');
-        var expected_type = $option.data('expected_type');
-        var error = false;
-        if (min && !is_valid(min)) {
-            show_error($(rf_id('min')),'Min in record filter should be ' + expected_type);
-            error = true;
-        } else {
-            show_error($(rf_id('min')), null);
-        }
-        if (max && !is_valid(max)) {
-            show_error($(rf_id('max')),'Max in record filter should be ' + expected_type);
-            error = true;
-        } else {
-            show_error($(rf_id('max')), null);
-        }
+    //     var min = $(rf_id('min')).val();
+    //     var max = $(rf_id('max')).val();
+    //     var $filter = $(rf_id('filter'));
+    //     if ($filter.val() == item_to_value(TAO_NO_FILTER)) { return true; }
+    //     var $option = $filter.find('option:selected');
+    //     var is_valid = $option.data('is_valid');
+    //     var expected_type = $option.data('expected_type');
+    //     var error = false;
+    //     if (min && !is_valid(min)) {
+    //         show_error($(rf_id('min')),'Min in record filter should be ' + expected_type);
+    //         error = true;
+    //     } else {
+    //         show_error($(rf_id('min')), null);
+    //     }
+    //     if (max && !is_valid(max)) {
+    //         show_error($(rf_id('max')),'Max in record filter should be ' + expected_type);
+    //         error = true;
+    //     } else {
+    //         show_error($(rf_id('max')), null);
+    //     }
 
-        return !error;
-    }
+    //     return !error;
+    // }
 
     var validate_number_of_light_cones = function() {
         var geometry = $(lc_id('catalogue_geometry')).val();
@@ -1388,36 +1635,52 @@ jQuery(document).ready(function($) {
     // -- initialization, note that there is a chain of events triggered
     //    by dark_matter_simulation
     //
+
+    function initialise_modules() {
+        for (var module in catalogue.modules) { 
+            catalogue.modules[module].init();
+        }
+    }
+
     (function(){
         var current_output = init_output_properties();
-        var current_bandpass = init_bandpass_properties();
+        // var current_bandpass = init_bandpass_properties();
         lc_output_props_widget.display_selected(current_output, false);
 //        sed_band_pass_filters_widget.display_selected(current_bandpass, false);
         lc_output_props_widget.change();
-        sed_band_pass_filters_widget.change();
+        // sed_band_pass_filters_widget.change();
         init_wizard();
         var init_light_cone_type_value = $('input[name="light_cone-light_cone_type"][checked="checked"]').attr('value');
         fill_in_summary('light_cone', 'number_of_light_cones',  $(lc_id('number_of_light_cones')).val() +  " " + init_light_cone_type_value + " light cones");
         $(lc_id('number_of_light_cones')).attr('class', 'light_cone_field'); // needed to associate the spinner with light-cone only, not when selecting box
         update_filter_options.initializing = true;
+        update_filter_options.output_props = false;
+        update_filter_options.bandpass_props = false;
         $(lc_id('dark_matter_simulation')).change();
         $(lc_id('catalogue_geometry')).change();
         $('#id_output_format-supported_formats').change();
-        $(sed_id('apply_sed')).change();
-        $(sed_id('apply_dust')).change();
+        
 
         $('div.summary_light_cone .output_properties_list').hide();
-        $('div.summary_sed .band_pass_filters_list').hide();
         $('div.summary_light_cone .simulation_description, div.summary_light_cone .galaxy_model_description').hide();
-        $('div.summary_sed .stellar_model_description').hide();
-        $('div.summary_sed .dust_model_description').hide();
+
+        initialise_modules();
+
+        // $(sed_id('apply_sed')).change();
+        // $(sed_id('apply_dust')).change();
+
+        // $('div.summary_sed .band_pass_filters_list').hide();        
+        // $('div.summary_sed .stellar_model_description').hide();
+        // $('div.summary_sed .dust_model_description').hide();
+
         fill_in_ra_dec_in_summary();
         fill_in_redshift_in_summary();
         fill_in_summary('light_cone', 'box_size', $(lc_id('box_size')).val());
         fill_in_summary('light_cone', 'snapshot', format_redshift($(lc_id('snapshot')+' option:selected').html()));
-        setTimeout(function(){
-            display_band_pass_filters_summary();
-        }, 1000);
+        // setTimeout(function(){
+        //     display_band_pass_filters_summary();
+        // }, 1000);
+        fill_in_selection_in_summary();
 
         // Prepare the mock image formset.
         $('#mock_image_params .single-form').formset({
@@ -1450,5 +1713,7 @@ jQuery(document).ready(function($) {
 
         // Reevaluate all the magnitude fields.
         mock_image_update_magnitudes();
+
+
     })();
 });
