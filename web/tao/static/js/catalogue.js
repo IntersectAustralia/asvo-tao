@@ -158,6 +158,7 @@
             current.push('D-' + resp.default_id.toString());
             if (use_default || current.indexOf(current_filter) == -1) {
                 current_filter = 'D-' + resp.default_id;
+                // if (current_filter == '' || current_filter == item_to_value(TAO_NO_FILTER)) {
                 if (current_filter == '' || current_filter == item_to_value(TAO_NO_FILTER)) {
                     $(rf_id('min')).val('');
                     $(rf_id('max')).val('');
@@ -181,6 +182,7 @@
             refresh_select(update_filter_options.current_data, use_default);
             return;
         }
+        console.log('');
         $.ajax({
             url : TAO_JSON_CTX + 'filters/' + data_set_id,
             dataType: "json",
@@ -190,9 +192,12 @@
             success: function(resp, status, xhr) {
                 update_filter_options.current_data = resp;
                 update_filter_options.current_key = data_set_id;
+                console.log([update_filter_options.output_props,
+                    update_filter_options.bandpass_props]);
                 if (update_filter_options.output_props &&
                     update_filter_options.bandpass_props) {
                     refresh_select(resp, use_default);
+                    // $(rf_id('filter')).change();
                 }
             }
         });
@@ -666,6 +671,7 @@ jQuery(document).ready(function($) {
 
     lc_output_props_widget.change_event(function(evt){
         update_filter_options(false);
+
         var output_properties_count = list_multiple_selections_in_summary('light_cone', 'output_properties');
 
         if (output_properties_count == 1)
@@ -750,8 +756,7 @@ jQuery(document).ready(function($) {
                 $(lc_id('box_size')).change();
             }
         }
-        // update_filter_options(true, use_default); // triggers filter.change
-        // update_filter_options.initializing = false;
+
         update_output_options();
         update_snapshot_options();
     });
@@ -773,16 +778,16 @@ jQuery(document).ready(function($) {
     $(rf_id('filter')).change(function(evt){
         var $this = $(this);
         var filter_value = $this.val();
-
         if (filter_value == item_to_value(TAO_NO_FILTER)) {
             $(rf_id('max')).attr('disabled', 'disabled');
             $(rf_id('min')).attr('disabled', 'disabled')
-            fill_in_summary('record_filter', 'record_filter', 'No Filter');
+            // fill_in_summary('record_filter', 'record_filter', 'No Filter');
         } else {
             $(rf_id('max')).removeAttr('disabled');
             $(rf_id('min')).removeAttr('disabled');
-            fill_in_selection_in_summary();
+            // fill_in_selection_in_summary();
         }
+        fill_in_selection_in_summary();
     });
 
     $(rf_id('min') + ', ' + rf_id('max')).change(function(evt){
@@ -1646,20 +1651,24 @@ jQuery(document).ready(function($) {
     }
 
     (function(){
-        var current_output = init_output_properties();
+        // var current_output = init_output_properties();
         // var current_bandpass = init_bandpass_properties();
-        lc_output_props_widget.display_selected(current_output, false);
+        // lc_output_props_widget.display_selected(current_output, false);
 //        sed_band_pass_filters_widget.display_selected(current_bandpass, false);
-        lc_output_props_widget.change();
+        // lc_output_props_widget.change();
         // sed_band_pass_filters_widget.change();
-        init_wizard();
-        var init_light_cone_type_value = $('input[name="light_cone-light_cone_type"][checked="checked"]').attr('value');
-        fill_in_summary('light_cone', 'number_of_light_cones',  $(lc_id('number_of_light_cones')).val() +  " " + init_light_cone_type_value + " light cones");
-        $(lc_id('number_of_light_cones')).attr('class', 'light_cone_field'); // needed to associate the spinner with light-cone only, not when selecting box
         update_filter_options.initializing = true;
         update_filter_options.output_props = false;
         update_filter_options.bandpass_props = false;
+
+        init_wizard();
+        initialise_modules();
+
+        var init_light_cone_type_value = $('input[name="light_cone-light_cone_type"][checked="checked"]').attr('value');
+        fill_in_summary('light_cone', 'number_of_light_cones',  $(lc_id('number_of_light_cones')).val() +  " " + init_light_cone_type_value + " light cones");
+        $(lc_id('number_of_light_cones')).attr('class', 'light_cone_field'); // needed to associate the spinner with light-cone only, not when selecting box
         $(lc_id('dark_matter_simulation')).change();
+        $(lc_id('galaxy_model')).change();
         $(lc_id('catalogue_geometry')).change();
         $('#id_output_format-supported_formats').change();
         
@@ -1667,7 +1676,6 @@ jQuery(document).ready(function($) {
         $('div.summary_light_cone .output_properties_list').hide();
         $('div.summary_light_cone .simulation_description, div.summary_light_cone .galaxy_model_description').hide();
 
-        initialise_modules();
 
         // move all these initial event triggers to another method
 
@@ -1677,6 +1685,8 @@ jQuery(document).ready(function($) {
         // $('div.summary_sed .band_pass_filters_list').hide();        
         // $('div.summary_sed .stellar_model_description').hide();
         // $('div.summary_sed .dust_model_description').hide();
+        // update_filter_options(true);
+        // $(rf_id('filter')).change();
 
         fill_in_ra_dec_in_summary();
         fill_in_redshift_in_summary();
@@ -1685,7 +1695,7 @@ jQuery(document).ready(function($) {
         // setTimeout(function(){
         //     display_band_pass_filters_summary();
         // }, 1000);
-        fill_in_selection_in_summary();
+        // fill_in_selection_in_summary();
 
         // Prepare the mock image formset.
         $('#mock_image_params .single-form').formset({
