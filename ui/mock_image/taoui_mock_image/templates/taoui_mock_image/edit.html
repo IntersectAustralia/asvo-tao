@@ -1,6 +1,7 @@
 {% load bootstrap_tags %}
 {% load assets %}
-{% js_asset 'taoui_mock_image/mock_image.js' %}
+{% load staticfiles %}
+<script type="text/javascript" src="{% static 'js/taoui_mock_image/mock_image.js' %}"></script>
 
 <legend></legend>
 <div class="row-fluid">
@@ -27,16 +28,5 @@
         </div>
     </div>
     <div class="aside span4" id="sed_info">
-        <!-- <div class="boxed"> -->
-        <!--     <div class="mock-image-info"> -->
-        <!--         <div>Mock Image Configuration</div> -->
-        <!--         <div style="overflow-y: scroll;height: 178px"> -->
-        <!--             <p> -->
-        <!--                 <strong class="name"><\!-- -\-></strong> -->
-        <!--             </p> -->
-        <!--             <div class="details"><\!-- -\-></div> -->
-        <!--         </div> -->
-        <!--     </div> -->
-        <!-- </div> -->
     </div>
 </div>  
