@@ -12,16 +12,12 @@ catalogue.modules.sed = function($) {
     return catalogue.modules.sed.sed_band_pass_filters_widget;
   }
 
-  // function sed_id(bare_name) {
-  //   return '#id_sed-' + bare_name;
-  // }
-
   function display_band_pass_filters_summary(){
-    var band_pass_filter_count = list_multiple_selections_in_summary('sed', 'band_pass_filters');
+    var band_pass_filter_count = catalogue.util.list_multiple_selections_in_summary('sed', 'band_pass_filters');
     if (band_pass_filter_count == 1)
-      fill_in_summary('sed', 'band_pass_filters', band_pass_filter_count + " filter selected");
+      catalogue.util.fill_in_summary('sed', 'band_pass_filters', band_pass_filter_count + " filter selected");
     else
-      fill_in_summary('sed', 'band_pass_filters', band_pass_filter_count + " filters selected");
+      catalogue.util.fill_in_summary('sed', 'band_pass_filters', band_pass_filter_count + " filters selected");
   }
 
 
@@ -37,8 +33,8 @@ catalogue.modules.sed = function($) {
                 $('div.dust-model-info .name').html(data.fields.name);
                 $('div.dust-model-info .details').html(data.fields.details);
                 $('div.dust-model-info').show();
-                fill_in_summary('sed', 'dust_model', data.fields.name);
-                fill_in_summary('sed', 'dust_model_description', '<br>' + data.fields.details);
+                catalogue.util.fill_in_summary('sed', 'dust_model', data.fields.name);
+                catalogue.util.fill_in_summary('sed', 'dust_model_description', '<br>' + data.fields.details);
             }
         });
     };
@@ -59,13 +55,20 @@ catalogue.modules.sed = function($) {
           },
           success: function(data, status, xhr) {
               get_widget().cache_store(data);
-              update_filter_options.bandpass_props = true;
+              catalogue.util.update_filter_options.bandpass_props = true;
               get_widget().display_selected(current, true);
           }
       });
       console.log('Current bandpass filters: ' + current);
       return current;
   }
+
+
+  function show_bandpass_filter_info(cache_item) {
+        $('div.band-pass-info .name').html(cache_item.text);
+        $('div.band-pass-info .details').html(cache_item.description);
+        $('div.band-pass-info').show();
+    }
 
 
   function init_widget_events() {
@@ -130,14 +133,14 @@ catalogue.modules.sed = function($) {
     });
 
     $(sed_id('band_pass_filters_add_link')).change(function() {
-        fill_in_summary('sed', 'band_pass_filters', 'band_pass_filters_add_link.click()');
+        catalogue.util.fill_in_summary('sed', 'band_pass_filters', 'band_pass_filters_add_link.click()');
         $(sed_id('band_pass_filters_to')).change();
     });
     $(sed_id('band_pass_filters_remove_link')).click(function() {
         $(sed_id('band_pass_filters_to')).change();
     });
     $(sed_id('band_pass_filters_add_all_link')).click(function(evt) {
-        fill_in_summary('sed', 'band_pass_filters', 'band_pass_filters_add_all_link.click()');
+        catalogue.util.fill_in_summary('sed', 'band_pass_filters', 'band_pass_filters_add_all_link.click()');
         $(sed_id('band_pass_filters_to')).change();
     });
     $(sed_id('band_pass_filters_remove_all_link')).click(function() {
@@ -146,9 +149,9 @@ catalogue.modules.sed = function($) {
 
     $(sed_id('single_stellar_population_model')).change(function(evt){
         var $this = $(this);
-        show_stellar_model_info($this.val())
+        catalogue.util.show_stellar_model_info($this.val())
         var single_stellar_population_model_value = $this.find('option:selected').html();
-        fill_in_summary('sed', 'single_stellar_population_model', single_stellar_population_model_value);
+        catalogue.util.fill_in_summary('sed', 'single_stellar_population_model', single_stellar_population_model_value);
     });
 
     $(sed_id('apply_dust')).change(function(evt){
@@ -159,8 +162,8 @@ catalogue.modules.sed = function($) {
         }
         else {
             $(sed_id('select_dust_model')).attr('disabled', 'disabled');
-            clear_info('sed', 'dust-model');
-            clear_in_summary('sed', 'dust_model');
+            catalogue.util.clear_info('sed', 'dust-model');
+            catalogue.util.clear_in_summary('sed', 'dust_model');
             $('#expand_dust_model').hide();
             $('div.summary_sed .dust_model_description').hide();
         }
@@ -177,11 +180,11 @@ catalogue.modules.sed = function($) {
             get_widget().set_enabled(true);
             $(sed_id('band_pass_filters')).removeAttr('disabled');
             $('div.summary_sed .apply_sed').show();
-            fill_in_summary('sed', 'select_sed', '');
+            catalogue.util.fill_in_summary('sed', 'select_sed', '');
             display_band_pass_filters_summary();
             $(sed_id('apply_dust')).removeAttr('disabled');
             $(sed_id('apply_dust')).change();
-            update_filter_options(false); // triggers filter.change
+            catalogue.util.update_filter_options(false); // triggers filter.change
             $('#sed_params').slideDown();
             $('#sed_info').slideDown();
         }
@@ -189,29 +192,29 @@ catalogue.modules.sed = function($) {
             $('#tao-tabs-2').css({"border-style": "dashed"});
             $('#tao-tabs-2').css({"color": "rgb(119, 221, 252)"});
             $(sed_id('single_stellar_population_model')).attr('disabled', 'disabled');
-            clear_in_summary('sed', 'single_stellar_population_model');
+            catalogue.util.clear_in_summary('sed', 'single_stellar_population_model');
             $(sed_id('band_pass_filters_filter')).attr('disabled', 'disabled');
             $(sed_id('band_pass_filters_from')).attr('disabled', 'disabled');
             get_widget().set_enabled(false);
             $(sed_id('band_pass_filters')).attr('disabled', 'disabled');
-            clear_in_summary('sed', 'band_pass_filters');
+            catalogue.util.clear_in_summary('sed', 'band_pass_filters');
             $(sed_id('apply_dust')).attr('disabled', 'disabled');
             $(sed_id('select_dust_model')).attr('disabled', 'disabled');
-            clear_info('sed', 'stellar-model');
-            clear_info('sed', 'band-pass');
-            clear_info('sed', 'dust-model');
+            catalogue.util.clear_info('sed', 'stellar-model');
+            catalogue.util.clear_info('sed', 'band-pass');
+            catalogue.util.clear_info('sed', 'dust-model');
             $('div.summary_sed .apply_sed').hide();
-            fill_in_summary('sed', 'select_sed', 'Not selected');
-            var use_default = !update_filter_options.initializing || !bound;
-            update_filter_options(use_default); // triggers filter.change
-              $('#sed_params').slideUp();
+            catalogue.util.fill_in_summary('sed', 'select_sed', 'Not selected');
+            var use_default = !catalogue.util.update_filter_options.initializing || !bound;
+            catalogue.util.update_filter_options(use_default); // triggers filter.change
+            $('#sed_params').slideUp();
             $('#sed_info').slideUp();
         }
     });
 
 
     get_widget().change_event(function(evt){
-      update_filter_options(false);
+      catalogue.util.update_filter_options(false);
       display_band_pass_filters_summary();
     });
 

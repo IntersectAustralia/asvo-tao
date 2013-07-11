@@ -308,12 +308,12 @@ catalogue.modules.mock_image = function($) {
     function update_mock_image_summary() {
         if(mock_image_enabled()) {
             $('div.summary_mock_image .apply_mock_image').show();
-            fill_in_summary('mock_image', 'select_mock_image', '');
-            fill_in_summary('mock_image', 'num_images', $('#mock_image_params .single-form').length);
+            catalogue.util.fill_in_summary('mock_image', 'select_mock_image', '');
+            catalogue.util.fill_in_summary('mock_image', 'num_images', $('#mock_image_params .single-form').length);
         }
         else {
             $('div.summary_mock_image .apply_mock_image').hide();
-            fill_in_summary('mock_image', 'select_mock_image', 'Not selected');
+            catalogue.util.fill_in_summary('mock_image', 'select_mock_image', 'Not selected');
         }
     }
 

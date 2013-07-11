@@ -41,7 +41,7 @@ catalogue.modules.light_cone = function($) {
             },
             success: function(data, status, xhr) {
                 get_widget().cache_store(data);
-                update_filter_options.output_props = true;
+                catalogue.util.update_filter_options.output_props = true;
                 get_widget().display_selected(current, true);
             }
         });
@@ -106,8 +106,8 @@ catalogue.modules.light_cone = function($) {
                 $('div.galaxy-model-info .name').html(data.fields.name);
                 $('div.galaxy-model-info .details').html(data.fields.details);
                 $galaxy_model_info.show();
-                fill_in_summary('light_cone', 'galaxy_model', data.fields.name);
-                fill_in_summary('light_cone', 'galaxy_model_description', '<br><b>' + data.fields.name + ':</b><br>' + data.fields.details);
+                catalogue.util.fill_in_summary ('light_cone', 'galaxy_model', data.fields.name);
+                catalogue.util.fill_in_summary ('light_cone', 'galaxy_model_description', '<br><b>' + data.fields.name + ':</b><br>' + data.fields.details);
             }
         });
     };
@@ -158,8 +158,8 @@ catalogue.modules.light_cone = function($) {
                 $('div.simulation-info .name').html(data.fields.name);
                 $('div.simulation-info .details').html(data.fields.details);
                 $('div.simulation-info').show();
-                fill_in_summary('light_cone', 'simulation', data.fields.name);
-                fill_in_summary('light_cone', 'simulation_description', '<br><b>' + data.fields.name + ':</b><br>' + data.fields.details);
+                catalogue.util.fill_in_summary ('light_cone', 'simulation', data.fields.name);
+                catalogue.util.fill_in_summary ('light_cone', 'simulation_description', '<br><b>' + data.fields.name + ':</b><br>' + data.fields.details);
                 $(lc_id('number_of_light_cones')).data("simulation-box-size", data.fields.box_size);
             }
         });
@@ -170,13 +170,13 @@ catalogue.modules.light_cone = function($) {
         var filter_max = $(rf_id('max')).val();
         var filter_selected = $(rf_id('filter')).find('option:selected').html();
         if (!filter_min && !filter_max)
-            fill_in_summary('record_filter', 'record_filter', filter_selected);
+            catalogue.util.fill_in_summary ('record_filter', 'record_filter', filter_selected);
         else if (!filter_min)
-            fill_in_summary('record_filter', 'record_filter', filter_selected + ' &le; ' + filter_max);
+            catalogue.util.fill_in_summary ('record_filter', 'record_filter', filter_selected + ' &le; ' + filter_max);
         else if (!filter_max)
-            fill_in_summary('record_filter', 'record_filter', filter_min + ' &le; ' + filter_selected);
+            catalogue.util.fill_in_summary ('record_filter', 'record_filter', filter_min + ' &le; ' + filter_selected);
         else
-            fill_in_summary('record_filter', 'record_filter', filter_min + ' &le; ' + filter_selected + ' &le; ' + filter_max);
+            catalogue.util.fill_in_summary ('record_filter', 'record_filter', filter_min + ' &le; ' + filter_selected + ' &le; ' + filter_max);
     }
 
 
@@ -202,17 +202,17 @@ catalogue.modules.light_cone = function($) {
         var ra_opening_angle_value = $(lc_id('ra_opening_angle')).val();
         var dec_opening_angle_value = $(lc_id('dec_opening_angle')).val();
         if (!ra_opening_angle_value && !dec_opening_angle_value) {
-            fill_in_summary('light_cone', 'ra_opening_angle', '');
-            fill_in_summary('light_cone', 'dec_opening_angle', '');
+            catalogue.util.fill_in_summary ('light_cone', 'ra_opening_angle', '');
+            catalogue.util.fill_in_summary ('light_cone', 'dec_opening_angle', '');
         } else if (!ra_opening_angle_value) {
-            fill_in_summary('light_cone', 'ra_opening_angle', '');
-            fill_in_summary('light_cone', 'dec_opening_angle', 'Dec: ' + dec_opening_angle_value + '&deg;<br>');
+            catalogue.util.fill_in_summary ('light_cone', 'ra_opening_angle', '');
+            catalogue.util.fill_in_summary ('light_cone', 'dec_opening_angle', 'Dec: ' + dec_opening_angle_value + '&deg;<br>');
         } else if (!dec_opening_angle_value) {
-            fill_in_summary('light_cone', 'ra_opening_angle', 'RA: ' + ra_opening_angle_value + '&deg; <br>');
-            fill_in_summary('light_cone', 'dec_opening_angle', '');
+            catalogue.util.fill_in_summary ('light_cone', 'ra_opening_angle', 'RA: ' + ra_opening_angle_value + '&deg; <br>');
+            catalogue.util.fill_in_summary ('light_cone', 'dec_opening_angle', '');
         } else {
-            fill_in_summary('light_cone', 'ra_opening_angle', 'RA: ' + ra_opening_angle_value + '&deg;, ');
-            fill_in_summary('light_cone', 'dec_opening_angle', 'Dec: ' + dec_opening_angle_value + '&deg;<br>');
+            catalogue.util.fill_in_summary ('light_cone', 'ra_opening_angle', 'RA: ' + ra_opening_angle_value + '&deg;, ');
+            catalogue.util.fill_in_summary ('light_cone', 'dec_opening_angle', 'Dec: ' + dec_opening_angle_value + '&deg;<br>');
         }
     }
 
@@ -225,20 +225,20 @@ catalogue.modules.light_cone = function($) {
         var redshift_max_value = $(lc_id('redshift_max')).val();
         var redshift_min_value = $(lc_id('redshift_min')).val();
         if (!redshift_min_value && !redshift_max_value) {
-            fill_in_summary('light_cone', 'redshift_min', '')
-            fill_in_summary('light_cone', 'redshift_max', '')
+            catalogue.util.fill_in_summary ('light_cone', 'redshift_min', '')
+            catalogue.util.fill_in_summary ('light_cone', 'redshift_max', '')
         }
         else if (!redshift_min_value) {
-            fill_in_summary('light_cone', 'redshift_min', '')
-            fill_in_summary('light_cone', 'redshift_max', 'Redshift: z &le; ' + redshift_max_value);
+            catalogue.util.fill_in_summary ('light_cone', 'redshift_min', '')
+            catalogue.util.fill_in_summary ('light_cone', 'redshift_max', 'Redshift: z &le; ' + redshift_max_value);
         }
         else if (!redshift_max_value) {
-            fill_in_summary('light_cone', 'redshift_min', 'Redshift: ' + redshift_min_value + ' &le; z');
-            fill_in_summary('light_cone', 'redshift_max', '')
+            catalogue.util.fill_in_summary ('light_cone', 'redshift_min', 'Redshift: ' + redshift_min_value + ' &le; z');
+            catalogue.util.fill_in_summary ('light_cone', 'redshift_max', '')
         }
         else {
-            fill_in_summary('light_cone', 'redshift_min', 'Redshift: ' + redshift_min_value + ' &le; z &le; ');
-            fill_in_summary('light_cone', 'redshift_max', redshift_max_value);
+            catalogue.util.fill_in_summary ('light_cone', 'redshift_min', 'Redshift: ' + redshift_min_value + ' &le; z &le; ');
+            catalogue.util.fill_in_summary ('light_cone', 'redshift_max', redshift_max_value);
         }
     }
 
@@ -313,8 +313,8 @@ catalogue.modules.light_cone = function($) {
         var maximum = $(lc_id('number_of_light_cones')).data('spin-max');
         if (new_value <= 1) {
             if (new_value <= 0) {
-                show_error($spinner, "Please provide a positive number of light-cones");
-                fill_in_summary('light_cone', 'number_of_light_cones', 'Negative number of light-cones is invalid');
+                catalogue.util.show_error($spinner, "Please provide a positive number of light-cones");
+                catalogue.util.fill_in_summary ('light_cone', 'number_of_light_cones', 'Negative number of light-cones is invalid');
                 return false;
             }
         }
@@ -323,21 +323,21 @@ catalogue.modules.light_cone = function($) {
             $(lc_id('number_of_light_cones')).spinner("option", "max", maximum);
             if (new_value >= maximum) {
                 if (new_value > maximum) {
-                    show_error($spinner, "The maximum is " + maximum);
-                    fill_in_summary('light_cone', 'number_of_light_cones', 'Number of light cones selected exceeds the maximum');
+                    catalogue.util.show_error($spinner, "The maximum is " + maximum);
+                    catalogue.util.fill_in_summary ('light_cone', 'number_of_light_cones', 'Number of light cones selected exceeds the maximum');
                     return false;
                 }
             }
 
         }
         else if (ra != "" && dec != "" && redshift_min != "" && redshift_max != "") {
-            show_error($spinner, "Selection parameters can't be used to generate unique light-cones");
-            fill_in_summary('light_cone', 'number_of_light_cones', 'An invalid number of light cones is selected');
+            catalogue.util.show_error($spinner, "Selection parameters can't be used to generate unique light-cones");
+            catalogue.util.fill_in_summary ('light_cone', 'number_of_light_cones', 'An invalid number of light cones is selected');
             return false;
         }
 
-        show_error($spinner, null);
-        fill_in_summary('light_cone', 'number_of_light_cones', new_value +  " " + $("input[name='light_cone-light_cone_type']:checked").val() + " light cones");
+        catalogue.util.show_error($spinner, null);
+        catalogue.util.fill_in_summary ('light_cone', 'number_of_light_cones', new_value +  " " + $("input[name='light_cone-light_cone_type']:checked").val() + " light cones");
         return true;
     }
 
@@ -432,14 +432,14 @@ catalogue.modules.light_cone = function($) {
 
 
     get_widget().change_event(function(evt){
-        update_filter_options(false);
+        catalogue.util.update_filter_options(false);
 
-        var output_properties_count = list_multiple_selections_in_summary('light_cone', 'output_properties');
+        var output_properties_count = catalogue.util.list_multiple_selections_in_summary('light_cone', 'output_properties');
 
         if (output_properties_count == 1)
-            fill_in_summary('light_cone', 'output_properties', output_properties_count + " property selected");
+            catalogue.util.fill_in_summary ('light_cone', 'output_properties', output_properties_count + " property selected");
         else
-            fill_in_summary('light_cone', 'output_properties', output_properties_count + " properties selected");
+            catalogue.util.fill_in_summary ('light_cone', 'output_properties', output_properties_count + " properties selected");
     });
 
     $('#expand_output_properties').click(function(e) {
@@ -471,7 +471,7 @@ catalogue.modules.light_cone = function($) {
         var $this = $(this);
         var galaxy_model_id = $this.find(':selected').attr('data-galaxy_model_id');
         show_galaxy_model_info(galaxy_model_id);
-        var use_default = !update_filter_options.initializing || !bound;
+        var use_default = !catalogue.util.update_filter_options.initializing || !bound;
         if (use_default) {
             var catalogue_geometry_value = $(lc_id('catalogue_geometry')).val();
             if (catalogue_geometry_value == "box") {
@@ -493,7 +493,7 @@ catalogue.modules.light_cone = function($) {
         if (filter_value == item_to_value(TAO_NO_FILTER)) {
             $(rf_id('max')).attr('disabled', 'disabled');
             $(rf_id('min')).attr('disabled', 'disabled')
-            fill_in_summary('record_filter', 'record_filter', 'No Filter');
+            catalogue.util.fill_in_summary ('record_filter', 'record_filter', 'No Filter');
         } else {
             $(rf_id('max')).removeAttr('disabled');
             $(rf_id('min')).removeAttr('disabled');
@@ -515,14 +515,14 @@ catalogue.modules.light_cone = function($) {
         if (catalogue_geometry_value == "box") {
             light_box_fields.show();
             light_cone_fields.hide();
-            fill_in_summary('light_cone', 'geometry_type', 'Box');
+            catalogue.util.fill_in_summary ('light_cone', 'geometry_type', 'Box');
             $('div.summary_light_cone .box_fields').show();
             $('div.summary_light_cone .light_cone_fields').hide();
             $(lc_id('snapshot')).change();
         } else {
             light_box_fields.hide();
             light_cone_fields.show();
-            fill_in_summary('light_cone', 'geometry_type', 'Light-Cone');
+            catalogue.util.fill_in_summary ('light_cone', 'geometry_type', 'Light-Cone');
             $('div.summary_light_cone .box_fields').hide();
             $('div.summary_light_cone .light_cone_fields').show();
             calculate_max_number_of_cones();
@@ -540,7 +540,7 @@ catalogue.modules.light_cone = function($) {
 
     $(lc_id('light_cone_type_0')+', '+lc_id('light_cone_type_1')).click(function(evt){
         var $this = $(this);
-        fill_in_summary('light_cone', 'light_cone_type', $this.attr('value'));
+        catalogue.util.fill_in_summary ('light_cone', 'light_cone_type', $this.attr('value'));
         calculate_max_number_of_cones();
     });
 
@@ -561,28 +561,28 @@ catalogue.modules.light_cone = function($) {
         var box_size_value = parseFloat($this.val());
         var max_box_size = parseFloat($(lc_id('number_of_light_cones')).data("simulation-box-size"));
         if ($this.val() != "" && isNaN(box_size_value)) {
-            show_error($(lc_id('box_size')),'Box size must be a number');
+            catalogue.util.show_error($(lc_id('box_size')),'Box size must be a number');
             return false;
         }
         if (!isNaN(max_box_size) && parseFloat(box_size_value) > parseFloat(max_box_size)) {
-            show_error($(lc_id('box_size')),'Box size greater than simulation\'s box size');
+            catalogue.util.show_error($(lc_id('box_size')),'Box size greater than simulation\'s box size');
             return false;
         }
-        show_error($(lc_id('box_size')), null);
-        fill_in_summary('light_cone', 'box_size', box_size_value);
+        catalogue.util.show_error($(lc_id('box_size')), null);
+        catalogue.util.fill_in_summary ('light_cone', 'box_size', box_size_value);
     });
 
     $(lc_id('snapshot')).change(function(evt){
         var $this = $(this);
         var snapshot_value = $this.find('option:selected').html();
-        fill_in_summary('light_cone', 'snapshot', snapshot_value);
+        catalogue.util.fill_in_summary ('light_cone', 'snapshot', snapshot_value);
     });
 
 
     $('#id_output_format-supported_formats').change(function(evt){
         var $this = $(this);
         var output_format_value = $this.find('option:selected').text();
-        fill_in_summary('output', 'output_format', output_format_value);
+        catalogue.util.fill_in_summary ('output', 'output_format', output_format_value);
     });
 
 
@@ -618,9 +618,10 @@ catalogue.modules.light_cone = function($) {
 
     get_widget().init();
     init_event_handlers();
-    
+    // NOTE: A lot of event triggers here used to initialis state, probably not a good things
+    // as it's hard to track their side effects
     var init_light_cone_type_value = $('input[name="light_cone-light_cone_type"][checked="checked"]').attr('value');
-    fill_in_summary('light_cone', 'number_of_light_cones',  $(lc_id('number_of_light_cones')).val() +  " " + init_light_cone_type_value + " light cones");
+    catalogue.util.fill_in_summary('light_cone', 'number_of_light_cones',  $(lc_id('number_of_light_cones')).val() +  " " + init_light_cone_type_value + " light cones");
     $(lc_id('number_of_light_cones')).attr('class', 'light_cone_field'); // needed to associate the spinner with light-cone only, not when selecting box
     $(lc_id('dark_matter_simulation')).change();
     $(lc_id('galaxy_model')).change();
@@ -634,8 +635,8 @@ catalogue.modules.light_cone = function($) {
 
     fill_in_ra_dec_in_summary();
     fill_in_redshift_in_summary();
-    fill_in_summary('light_cone', 'box_size', $(lc_id('box_size')).val());
-    fill_in_summary('light_cone', 'snapshot', format_redshift($(lc_id('snapshot')+' option:selected').html()));
+    catalogue.util.fill_in_summary('light_cone', 'box_size', $(lc_id('box_size')).val());
+    catalogue.util.fill_in_summary('light_cone', 'snapshot', format_redshift($(lc_id('snapshot')+' option:selected').html()));
 
 
   }
