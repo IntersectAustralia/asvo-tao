@@ -71,20 +71,42 @@ class WorkFlow(object):
            CurrentJobType=EnumerationLookup.JobType.Complex     
         
         
+        logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], 'jobs', JobUserName, str(UIJobReference),'log')                
+        outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], 'jobs', JobUserName, str(UIJobReference),'output')
+        old_dir = os.getcwd()
+        os.chdir(logpath)
+        
+        
+        ###################Profiling####################################################
+                 
+        self.ParseProfileDataObj=ParseProfileData.ParseProfileData(logpath,0,self.Options) 
+        [Boxes,Tables,Galaxies,Trees]=self.ParseProfileDataObj.ParseFile()       
+        logging.info('Number of Boxes='+str(Boxes))
+        logging.info('Total Queries='+str(Tables))
+        logging.info('Maximum Galaxies='+str(Galaxies))
+        logging.info('Maximum Trees='+str(Trees))
+        #############################################################################
+        
+        
         
                              
-            
+              
         ## Submit the Job to PBS and get back its ID
         for i in range(0,SubJobsCount):
             ## Add new Job and return its ID
             JobID=self.dbaseobj.AddNewJob(UIJobReference,CurrentJobType,JobParams,JobUserName,JobDatabase,i)
-            ParamXMLName="params"+str(i)+".xml"
-            PBSJobID=self.SubmitJobToPBS(JobID,JobUserName,UIJobReference,ParamXMLName,i)
+            ParamXMLName="params"+str(i)+".xml"       
+            ############################################################
+            ### Submit the Job to the PBS Queue
+            PBSJobID=self.TorqueObj.Submit(JobUserName,JobID,logpath,outputpath,ParamXMLName,i)
             ## Store the Job PBS ID  
             self.dbaseobj.UpdateJob_PBSID(JobID,PBSJobID)
+            
+        os.chdir(old_dir)
                 
         ## Update the Job Status to Queued            
-        self.UpdateTAOUI(UIJobReference, CurrentJobType, data={'status': 'QUEUED'})
+        self.UpdateTAOUI(UIJobReference, CurrentJobType, data={'status': 'QUEUED'})        
+        
         return True
         
         
@@ -129,31 +151,9 @@ class WorkFlow(object):
             
         return SubJobsCount   
         
-    def SubmitJobToPBS(self,JobID,JobUserName,UIJobReference,ParamXMLName,SubJobIndex=0):
+    
         
-        ## Read User Settings      
-        logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], 'jobs', JobUserName, str(UIJobReference),'log')                
-        outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], 'jobs', JobUserName, str(UIJobReference),'output')
-        old_dir = os.getcwd()
-        os.chdir(logpath)  
-        ###################Profiling####################################################
-                 
-        self.ParseProfileDataObj=ParseProfileData.ParseProfileData(logpath,SubJobIndex,self.Options) 
-        [Boxes,Tables,Galaxies,Trees]=self.ParseProfileDataObj.ParseFile()       
-        logging.info('Number of Boxes='+str(Boxes))
-        logging.info( 'Total Queries='+str(Tables))
-        logging.info( 'Maximum Galaxies='+str(Galaxies))
-        logging.info( 'Maximum Trees='+str(Trees))
-        #############################################################################
-        ############################################################
-        ### Submit the Job to the PBS Queue
-        PBSJobID=self.TorqueObj.Submit(JobUserName,JobID,logpath,outputpath,ParamXMLName,SubJobIndex)
         
-        ### Return back to the previous folder    
-        os.chdir(old_dir)
-        
-        ## Return JobID
-        return PBSJobID
                 
     def UpdateTAOUI(self,UIJobID,JobType,data):
         ## If the job Type is Simple Update it without any checking  
@@ -303,6 +303,9 @@ class WorkFlow(object):
             SubJobIndex=PBsID['subjobindex']
             JobID=PBsID['jobid']
             
+            logging.info("Checking Job Status : JobID="+PID+"\tInPBSList="+str(PID in CurrentJobs))
+            if PID in CurrentJobs:
+                logging.info("Checking Job Status : JobID="+PID+"\tStatus="+str(CurrentJobs[PID]))
             
             ## Parse the Job Log File and Extract Current Job Status            
             JobDetails=self.LogReaderObj.ParseFile(UserName,UIReference_ID,SubJobIndex)
@@ -348,6 +351,7 @@ class WorkFlow(object):
                     logging.info ("Job ("+str(UIReference_ID)+") .. : Log File Does not exist")
 
     def UpdateJob_EndSuccessfully(self, JobID,SubJobIndex, JobType, UIReference_ID, UserName, JobDetails):
+        
         data = {}  
         path = os.path.join('jobs', UserName, str(UIReference_ID))
         self.dbaseobj.SetJobComplete(JobID, path, JobDetails['end'])

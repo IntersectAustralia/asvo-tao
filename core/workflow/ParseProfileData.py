@@ -7,6 +7,7 @@ from psycopg2 import extras
 import os, shlex, subprocess,string
 import logging
 
+
 class ParseProfileData(object):
 
     
@@ -55,15 +56,27 @@ class ParseProfileData(object):
         else:
             return []
     
+    def ParseXMLParams(self,FileName):
+        tree = ET.parse(FileName)
+        NameSpace=re.findall('\{.*\}',tree.xpath('.')[0].tag)[0]
+        NameSpace=NameSpace[1:-1]
+        Modules=tree.xpath("/ns:tao/ns:workflow/*[@id]",namespaces={'ns':NameSpace})
+        ListofModules=[]
+        for Module in Modules:
+             ListofModules.append(Module.tag.replace('{'+NameSpace+'}',''))
+        return ListofModules
     
     def RunProfiling(self,JobPath,SubJobIndex):
         #stdout = subprocess.check_output(shlex.split('ssh g2 \"cd %s; qsub -q %s %s\"'%(path.encode(locale.getpreferredencoding()), queuename.encode(locale.getpreferredencoding()), ScriptFileName.encode(locale.getpreferredencoding()))))
         os.chdir(JobPath)
         BasicSettingPath=self.Options['Torque:BasicSettingsPath']
         ProfilingExecPath=self.Options['Torque:ProfilingExecutableName']
-        CommandTxt=ProfilingExecPath+" "+JobPath+"/params"+str(SubJobIndex)+".xml "+BasicSettingPath
+        XMlParamsPath=JobPath+"/params"+str(SubJobIndex)+".xml"
+        self.ListofModules=self.ParseXMLParams(XMlParamsPath)
+        CommandTxt=ProfilingExecPath+" "+XMlParamsPath+" "+BasicSettingPath
         logging.info("Profiling String:"+CommandTxt)
         stdout = subprocess.check_output(shlex.split(CommandTxt))
+        os.remove(JobPath+"/tao.log."+str(SubJobIndex))
         logging.info("Profiling Execution Done")
             
     def ParseFile(self):
@@ -83,6 +96,18 @@ class ParseProfileData(object):
                 for Table in TablesList:
                     GalaxiesCount=GalaxiesCount+self.resultsdict[Table][1]
                     TotalTrees=TotalTrees+self.resultsdict[Table][2]
+         
+        f.close()            
+        f=open("Profile.txt",'wt')
+        
+        for Module in self.ListofModules:
+            f.write(str(Module)+"\n")
+            
+        f.write('Number of Boxes='+str(len(self.BoxesList))+'\n')
+        f.write('Total Queries='+str(SumTables)+'\n')
+        f.write('Maximum Galaxies='+str(GalaxiesCount)+'\n')
+        f.write('Maximum Trees='+str(TotalTrees)+'\n')
+        f.close()
         return [(len(self.BoxesList)),SumTables,GalaxiesCount,TotalTrees]
 
                 
