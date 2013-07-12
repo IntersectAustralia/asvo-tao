@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
 import sys
-from vo.table import parse_single_table
+import warnings
+from astropy.io.votable import parse_single_table
 
 if len(sys.argv) < 2:
     print "\nplease specify an input file.\n"
@@ -9,6 +10,9 @@ if len(sys.argv) < 2:
 
 filename = sys.argv[1]
 
+warnings.filterwarnings(action='ignore')
+reload(sys)
+sys.setdefaultencoding("utf-8")
 table = parse_single_table(filename)
 data = table.array
 
