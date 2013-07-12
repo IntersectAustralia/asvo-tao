@@ -1,10 +1,9 @@
-from django.conf.urls.defaults import url
 from tastypie import fields
 from tastypie.authentication import Authentication
 from tastypie.authorization import Authorization
 from tastypie.resources import ModelResource
 from tastypie.validation import Validation
-from tao.models import WorkflowCommand, Job, STATUS_CHOICES
+from tao.models import WorkflowCommand, Job, TaoUser, STATUS_CHOICES
 
 from django.conf import settings
 
@@ -29,16 +28,44 @@ class ExecutionStatusValidation(Validation):
                     errors[key] = ['Please input a valid execution status']
         return errors
 
+class TaoUserResource(ModelResource):
+    class Meta:
+        queryset = TaoUser.objects.all()
+        fields = ['username']
+        resource_name = 'jobusername'
+        allowed_methods = ['get']
+        authorization = Authorization()
+        authentication = IpBasedAuthentication()
+        validation = ExecutionStatusValidation()
+
 class JobResource(ModelResource):
+    user_id = fields.ToOneField(TaoUserResource, 'user', full=True)
+
     class Meta:
         queryset = Job.objects.all()
+        resource_name = 'job'
+        fields = ['id', 'username', 'database', 'status', 'parameters']#, 'error_message']
+        allowed_methods = ['get', 'put']
+        authorization = Authorization()
+        authentication = IpBasedAuthentication()
+        validation = ExecutionStatusValidation()
+        limit = 0
+        filtering = {
+            "status": 'exact',
+        }
+
+class WFJobResource(ModelResource):
+    class Meta:
+        queryset = Job.objects.all()
+        fields = ['id']
+        resource_name = 'wfjobid'
         allowed_methods = ['get', 'put']
         authorization = Authorization()
         authentication = IpBasedAuthentication()
         validation = ExecutionStatusValidation()
 
 class WorkflowCommandResource(ModelResource):
-    job_id = fields.ToOneField(JobResource, 'job_id', full=True)
+    job_id = fields.ToOneField(WFJobResource, 'job_id', full=True, null=True)
 
     class Meta:
         queryset = WorkflowCommand.objects.all()
@@ -52,6 +79,3 @@ class WorkflowCommandResource(ModelResource):
             "execution_status": 'exact',
             "job_id": 'exact',
         }
-
-    def get_resource_uri(self, bundle_or_obj=None, url_name='api_dispatch_list'):
-        return '/api/v1/%s/' % (self._meta.resource_name)
