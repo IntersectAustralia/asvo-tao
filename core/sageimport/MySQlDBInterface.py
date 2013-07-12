@@ -217,16 +217,17 @@ class DBInterface(object):
                 sys.stdout.write("\033[0;33m"+str(start)+":"+str(end)+" from "+str(len(TreeData))+"\033[0m\r")
                 sys.stdout.flush()
                 if start!=end:                    
-                    self.PrepareInsertStatement(TreeData[start:end])
+                    self.InsertTreeData(TreeData[start:end])
         else:            
-            self.PrepareInsertStatement(TreeData) 
+            self.InsertTreeData(TreeData) 
             print("Tree Processing .. Done")   
         
         self.CurrentGalaxiesCounter=self.CurrentGalaxiesCounter+len(TreeData)
         
         self.CurrentTreesCounter=self.CurrentTreesCounter+1
         print("\n")
-    def PrepareInsertStatement(self,TreeData):
+        
+    def InsertTreeData(self,TreeData):
         InsertStatment=""
         try:            
             TablePrefix=self.Options['PGDB:TreeTablePrefix']

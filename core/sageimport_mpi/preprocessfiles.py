@@ -224,7 +224,7 @@ class PreprocessFiles(object):
         #Process All the Non-Empty Files 
         ## The table "DataFiles" will work as a record keeper for which files has been processed and which has not been processed 
         ## It will be use to support continue in case of error
-        CreateTableSt="CREATE TABLE DataFiles "
+        CreateTableSt="DROP TABLE IF EXISTS DataFiles;CREATE TABLE DataFiles "
         CreateTableSt=CreateTableSt+"(FileID INT, FileName varchar(500),FileSize BIGINT, "
         CreateTableSt=CreateTableSt+" NumberofTrees INT, TotalNumberOfGalaxies BIGINT, TreeIDFrom INT,TreeIDTo INT,TableID INT, Processed boolean);"
         
