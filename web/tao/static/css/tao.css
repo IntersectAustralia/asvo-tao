@@ -443,6 +443,12 @@ color: #333; cursor: pointer; display: inline-block; font-family: inherit; font-
 #id_light_cone-output_properties-table.ui-resizable > tbody > tr > #id_light_cone-output_properties-buttons {
     text-align: center;
     width: 6%;
+    height: 80%;
+    vertical-align: bottom;
+}
+
+#id_light_cone-output_properties-table.ui-resizable > tbody > tr > td > #id_light_cone-output_properties_op_add_all, #id_light_cone-output_properties_op_add, #id_light_cone-output_properties_op_remove, #id_light_cone-output_properties_op_remove_all {
+    height: 20%;
 }
 
 /*Left sed band pass filters table*/
@@ -473,6 +479,12 @@ color: #333; cursor: pointer; display: inline-block; font-family: inherit; font-
 #id_sed-band_pass_filters-table.ui-resizable > tbody > tr > #id_sed-band_pass_filters-buttons {
     text-align: center;
     width: 6%;
+    height: 80%;
+    vertical-align: bottom;
+}
+
+#id_sed-band_pass_filters-table.ui-resizable > tbody > tr > td > #id_sed-band_pass_filters_op_add_all, #id_sed-band_pass_filters_op_add, #id_sed-band_pass_filters_op_remove, #id_sed-band_pass_filters_op_remove_all {
+    height: 20%;
 }
 
 .verticalLine {

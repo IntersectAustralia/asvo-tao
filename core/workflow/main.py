@@ -63,24 +63,24 @@ class WorkflowDaemon(Daemon):
         
         
         
-        try:
+        #try:
          
-            while True:
-                self.workflowObj.GetNewJobsFromMasterDB()
-                
-                self.workflowObj.ProcessJobs()
-                logging.info("Sleeping for "+str(self.SleepTime)+" Seconds")
-                logging.info('-----------------------------------------------------------------')
-                time.sleep(self.SleepTime)
-        except Exception as Exp: 
-            emailreport.SendEmailToAdmin(self.Options,"Error In WorkFlow",str(Exp.args))
-            logging.error("Error In Main")
-            logging.error(type(Exp))
-            logging.error(Exp.args)
-            logging.error(Exp)        
-        finally: 
-            logging.error('Finally: I will Terminate the DB Connection and Exit!' )       
-            self.dbaseObj.CloseConnections()
+        while True:
+            self.workflowObj.GetNewJobsFromMasterDB()
+            
+            self.workflowObj.ProcessJobs()
+            logging.info("Sleeping for "+str(self.SleepTime)+" Seconds")
+            logging.info('-----------------------------------------------------------------')
+            time.sleep(self.SleepTime)
+        #except Exception as Exp: 
+        #    emailreport.SendEmailToAdmin(self.Options,"Error In WorkFlow",str(Exp.args))
+        #    logging.error("Error In Main")
+        #    logging.error(type(Exp))
+        #    logging.error(Exp.args)
+        #    logging.error(Exp)        
+        #finally: 
+        #    logging.error('Finally: I will Terminate the DB Connection and Exit!' )       
+        #    self.dbaseObj.CloseConnections()
             
 
     def HandleExit(self,signum, frame):        
