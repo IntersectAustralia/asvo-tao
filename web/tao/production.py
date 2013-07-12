@@ -27,7 +27,7 @@ DATABASES = {
 SECRET_KEY = ''
 from taosecrets import *
 
-STATIC_URL = '/taodemo/static/'
+STATIC_URL = STATIC_CTX + '/static/'
 FILES_BASE = '/mnt/TAOAdmin/'  # please include a trailing slash
 
 EMAIL_HOST = 'gpo.swin.edu.au'
