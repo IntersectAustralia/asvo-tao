@@ -39,6 +39,8 @@ API_ALLOWED_IPS = (
                    '136.186.55.225', # tao01
                    '136.186.55.226', # tao02
                    '136.186.24.174', # Amr
+                   '150.101.126.143', # Intersect Internode
+                   '202.7.176.94', # Intersect TPG
                    )
 
 ALLOWED_HOSTS = ['tao.asvo.org.au']
