@@ -103,12 +103,6 @@ catalogue.util = function($) {
         $('div.' + name + '-info').show();
     }
 
-    this.show_bandpass_filter_info = function(cache_item) {
-        $('div.band-pass-info .name').html(cache_item.text);
-        $('div.band-pass-info .details').html(cache_item.description);
-        $('div.band-pass-info').show();
-    }
-
     // TODO: This function needs a big re-write to decouple it from all submodules
     this.update_filter_options = function(use_default){
         // TODO: Remove dependency on lc_id

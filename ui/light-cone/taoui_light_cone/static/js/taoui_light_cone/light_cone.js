@@ -456,7 +456,7 @@ catalogue.modules.light_cone = function($) {
     });
 
     get_widget().option_clicked_event(function(cache_item){
-        show_output_property_info(cache_item);
+        catalogue.util.show_output_property_info(cache_item);
     });
 
     $(lc_id('dark_matter_simulation')).change(function(evt){
