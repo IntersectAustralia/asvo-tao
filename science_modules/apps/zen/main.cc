@@ -241,6 +241,18 @@ draw_lightcone( const lightcone<real_type>& lc )
 }
 
 void
+draw_redshift_scale( const lightcone<real_type>& lc )
+{
+   glBegin( GL_POLYGON );
+   glColor3f( 1, 0, 0 );
+   glVertex3f( 1, -1, 1 );
+   glVertex3f( 1.2, -1, 1 );
+   glVertex3f( 1.2, 1, 1 );
+   glVertex3f( 1, 1, 1 );
+   glEnd();
+}
+
+void
 idle()
 {
 }
@@ -264,6 +276,7 @@ render()
                  -0.5*(bnd_min[2] + bnd_max[2]),
                   0.5*(bnd_min[1] + bnd_max[1]) );
 
+   glEnable( GL_DEPTH_TEST );
    glDisable( GL_CULL_FACE );
    glDisable( GL_LIGHTING );
    glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
@@ -272,6 +285,11 @@ render()
       draw_tile( tile );
 
    draw_lightcone( lc );
+
+   glLoadIdentity();
+   glDisable( GL_LIGHTING );
+   glDisable( GL_DEPTH_TEST );
+   draw_redshift_scale();
 }
 
 void
@@ -316,6 +334,7 @@ display()
    glLoadIdentity();
    gluLookAt( 0, 0, 1.8, 0, 0, 0, 0, 1, 0 );
    render();
+   gluOrtho2D(
    glFlush();
    TwDraw();
    glutSwapBuffers();
