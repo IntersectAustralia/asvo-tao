@@ -56,7 +56,7 @@ environment_setup() {
   echo ">> installing packages into $ENVIRONMENT"
   cd $TARGET/asvo-tao
   pip install -r tao.pip.reqs
-  if [ -z `pip show taosecrets` ]; then
+  if [ -z "`pip show taosecrets`" ]; then
     echo 'Please install taosecrets for this environment'
     exit 1
   fi
