@@ -13,7 +13,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib import admin
 
 from tastypie.api import Api
-from tao.api.resources import WorkflowCommandResource
+from tao.api.resources import WorkflowCommandResource, JobResource, TaoUserResource, WFJobResource
 
 admin.autodiscover()
 
@@ -64,6 +64,9 @@ json_patterns = patterns('tao.json.views',
 
 v1_api = Api(api_name='v1')
 v1_api.register(WorkflowCommandResource())
+v1_api.register(JobResource())
+v1_api.register(TaoUserResource())
+v1_api.register(WFJobResource())
 
 urlpatterns = patterns('',
     ('^admin/', include(admin.site.urls)),
@@ -77,7 +80,6 @@ urlpatterns = patterns('',
 
     url(r'^mgf/$', simple_view, {'template_name': 'mgf.html'}),
     url(r'^$', 'tao.views.home', name='home'),
-    url(r'^old_api/', include('tao.api.urls')),
     url(r'^api/', include(v1_api.urls)),
     url(r'^assets/(?P<path>.+)$', 'tao.assets.asset_handler', name='asset'),
 
