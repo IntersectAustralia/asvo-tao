@@ -23,6 +23,7 @@ Module             Version
 libxml2-dev
 libxslt-dev
 libmysqlclient-dev
+MySQL (1)          >= 5.5
 Python             >= 2.6.5
 Python-dev
 doxygen
@@ -30,7 +31,10 @@ virtualenv         >= 1.9.1
 Apache (optional)
 ================== ========
 
-The remaining python modules are listed in tao.pip.reqs.
+Notes:
+
+1. TAO should work with other DBs (through Django's ORM), but hasn't been tested.
+2. The remaining python modules are listed in tao.pip.reqs.
 
 Initial Environment Configuration
 ---------------------------------
