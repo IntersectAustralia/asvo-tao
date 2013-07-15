@@ -72,11 +72,11 @@ class TwoSidedSelectWidget(SelectMultiple):
         output.extend(['<td></td>'])
         output.extend(['<td>Selected</td></tr>'])
         output.extend(['<td>'] + output_filter + ['</td>'])
-        output.extend(['<td rowspan="2" id="' + widget_id + '-buttons">',
-                       u'<a href="#" id="%s_op_add_all" style="display:block;text-decoration:none;clear:both;">&gt;&gt;</a>' % widget_id,
-                       u'<a href="#" id="%s_op_add" style="display:block;text-decoration:none;clear:both;">&gt;</a>' % widget_id,
-                       u'<a href="#" id="%s_op_remove" style="display:block;text-decoration:none;clear:both;">&lt;</a>' % widget_id,
-                       u'<a href="#" id="%s_op_remove_all" style="display:block;text-decoration:none;clear:both;">&lt;&lt;</a>' % widget_id,
+        output.extend(['<td rowspan="2" id="' + widget_id + '-buttons" vertical-align="middle">',
+                       u'<a href="#" id="%s_op_add_all">&gt;&gt;</a>' % widget_id,
+                       u'<a href="#" id="%s_op_add">&gt;</a>' % widget_id,
+                       u'<a href="#" id="%s_op_remove">&lt;</a>' % widget_id,
+                       u'<a href="#" id="%s_op_remove_all">&lt;&lt;</a>' % widget_id,
                        '</td>'])
         output.extend(['<td rowspan="2" id="' + widget_id + '-right">'] + output_right + ['</td></tr>'])
         output.extend(['<tr><td style="height:100%" id="' + widget_id + '-left">'] + output_left + ['</td></tr>'])
