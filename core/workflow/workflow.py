@@ -7,6 +7,7 @@
 
 import os, shlex, subprocess, time, string,datetime,time
 import requests
+import json
 from torque import *
 import dbase
 import EnumerationLookup
@@ -19,6 +20,7 @@ import glob
 import pg
 import stat
 import ParseProfileData
+
 
 class WorkFlow(object):
 
@@ -35,8 +37,8 @@ class WorkFlow(object):
         
         self.CALLBackBase = Options['WorkFlowSettings:CallbackURL']
         self.api = {
-               'get': self.CALLBackBase + 'jobs/status/submitted',
-               'update': self.CALLBackBase + 'jobs/%d'}
+               'get': self.CALLBackBase + 'job/?status=SUBMITTED',
+               'update': self.CALLBackBase + 'job/%d/'}
         
 
       
@@ -44,7 +46,8 @@ class WorkFlow(object):
     def json_handler(self,resp):       
         
         JobsCounter=0
-        for json in resp.json:
+        logging.info("Meta Info for current Jobs="+str(resp.json['meta']['total_count']))
+        for json in resp.json['objects']:
             
             if self.AddNewJob(json)==True:
                 JobsCounter=JobsCounter+1            
@@ -57,8 +60,9 @@ class WorkFlow(object):
         UIJobReference=jsonObj['id']
         JobParams=jsonObj['parameters']
         JobDatabase=jsonObj['database']
-        JobUserName=jsonObj['username']
-        self.ProcessNewJob(UIJobReference, JobParams, JobDatabase, JobUserName)
+        JobUserName=jsonObj['user_id']['username']
+        return self.ProcessNewJob(UIJobReference, JobParams, JobDatabase, JobUserName)
+        
         
         
     def ProcessNewJob(self,UIJobReference,JobParams,JobDatabase,JobUserName):       
@@ -173,8 +177,12 @@ class WorkFlow(object):
                 
         
         if Update==True:
-            logging.info('Updating UI MasterDB. JobID ('+str(UIJobID)+').. '+data['status'])        
-            requests.put(self.api['update']%UIJobID, data) 
+            logging.info('Updating UI MasterDB. JobID ('+str(UIJobID)+').. '+data['status']) 
+            UpdateURL=self.api['update']%UIJobID
+            logging.info('Update Job Status:'+(self.api['update']%UIJobID))
+            logging.info(str(data))       
+            Response=requests.put(UpdateURL, json.dumps(data))
+            logging.info('Response: '+str(Response.text))
             
     def AllJobsInSameStatus(self,UIReference_ID,RequestedStatus):
         StatusMapping={'QUEUED':EnumerationLookup.JobState.Queued,'COMPLETED':EnumerationLookup.JobState.Completed,'ERROR':EnumerationLookup.JobState.Error}

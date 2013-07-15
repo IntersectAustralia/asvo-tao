@@ -6,6 +6,7 @@ import psycopg2
 from psycopg2 import extras
 import os, shlex, subprocess,string
 import logging
+import locale
 
 
 class ParseProfileData(object):
@@ -75,7 +76,8 @@ class ParseProfileData(object):
         self.ListofModules=self.ParseXMLParams(XMlParamsPath)
         CommandTxt=ProfilingExecPath+" "+XMlParamsPath+" "+BasicSettingPath
         logging.info("Profiling String:"+CommandTxt)
-        stdout = subprocess.check_output(shlex.split(CommandTxt))
+        logging.info(shlex.split(CommandTxt.encode(locale.getpreferredencoding())))
+        stdout = subprocess.check_output(shlex.split(CommandTxt.encode(locale.getpreferredencoding())))
         os.remove(JobPath+"/tao.log."+str(SubJobIndex))
         logging.info("Profiling Execution Done")
             
@@ -86,6 +88,7 @@ class ParseProfileData(object):
         SumTables=0
         GalaxiesCount=0
         TotalTrees=0
+        self.BoxesList=[]
         for line in Lines:
             LineParts=line.split(':')
             if LineParts[1].strip()=='Boxes':
@@ -102,6 +105,7 @@ class ParseProfileData(object):
         
         for Module in self.ListofModules:
             f.write(str(Module)+"\n")
+        
             
         f.write('Number of Boxes='+str(len(self.BoxesList))+'\n')
         f.write('Total Queries='+str(SumTables)+'\n')
