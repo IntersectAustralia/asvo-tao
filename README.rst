@@ -23,7 +23,7 @@ Module             Version
 libxml2-dev
 libxslt-dev
 libmysqlclient-dev
-MySQL (1)          >= 5.5
+MySQL :sup:`(1)`   >= 5.5
 Python             >= 2.6.5
 Python-dev
 doxygen
