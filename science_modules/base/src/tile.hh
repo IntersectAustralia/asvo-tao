@@ -21,11 +21,13 @@ namespace tao {
 
    public:
 
-      tile( lightcone<real_type>& lc,
+      tile( tao::lightcone<real_type>& lc,
             const array<real_type,3>& offs )
          : _lc( lc )
       {
          set_offset( offs );
+         std::iota( _rot.begin(), _rot.end(), 0 );
+         std::fill( _trans.begin(), _trans.end(), 0 );
       }
 
       void
@@ -48,6 +50,24 @@ namespace tao {
          return _max;
       }
 
+      const array<unsigned,3>&
+      rotation() const
+      {
+         return _rot;
+      }
+
+      const array<real_type,3>&
+      translation() const
+      {
+         return _trans;
+      }
+
+      const tao::lightcone<real_type>&
+      lightcone() const
+      {
+         return _lc;
+      }
+
       template< class Backend >
       tile_galaxy_iterator<typename Backend::galaxy_iterator>
       galaxy_begin( Backend& be ) const
@@ -66,8 +86,10 @@ namespace tao {
 
    protected:
 
-      lightcone<real_type>& _lc;
+      tao::lightcone<real_type>& _lc;
       array<real_type,3> _min, _max;
+      array<unsigned,3> _rot;
+      array<real_type,3> _trans;
    };
 
    template< class BGI >

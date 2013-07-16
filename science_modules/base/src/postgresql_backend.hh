@@ -5,6 +5,7 @@
 #include <soci/soci.h>
 #include <soci/postgresql/soci-postgresql.h>
 #include "rdb_backend.hh"
+#include "tile_table_iterator.hh"
 
 namespace tao {
    namespace backends {
@@ -26,7 +27,7 @@ namespace tao {
          typedef T real_type;
          typedef postgresql_galaxy_iterator<real_type> galaxy_iterator;
          typedef postgresql_table_iterator<real_type> table_iterator;
-         typedef tile_table_iterator<postgresql> tile_table_iterator;
+         typedef backends::tile_table_iterator<postgresql> tile_table_iterator;
 
       public:
 
@@ -35,21 +36,28 @@ namespace tao {
          }
 
          void
-         connect( const string& host,
-                  uint16 port,
-                  const string& dbname,
+         connect( const string& dbname,
                   const string& user,
-                  const string& passwd )
+                  const string& passwd,
+                  optional<const string&> host = optional<const string&>(),
+                  optional<uint16> port = optional<uint16>() )
          {
             // Connect to the table.
             LOGILN( "Connecting to postgresql database.", setindent( 2 ) );
-            LOGILN( "Host: ", host );
-            LOGILN( "Port: ", port );
+#ifndef NLOG
+            if( host )
+               LOGILN( "Host: ", *host );
+            if( port )
+               LOGILN( "Port: ", *port );
+#endif
             LOGILN( "Database: ", dbname );
             LOGILN( "User: ", user );
-            boost::format conn( "host=%1% port=%2% dbname=%3% user=%4% password='%5%'" );
-            conn % host % port % dbname % user % passwd;
-            _sql.open( soci::postgresql, conn.str() );
+            string conn = boost::str(boost::format( "dbname=%1% user=%2% password='%3%'" ) % dbname % user % passwd);
+            if( host )
+               conn += " host=" + *host;
+            if( port )
+               conn += " port=" + to_string( *port );
+            _sql.open( soci::postgresql, conn );
             LOGILN( "Done.", setindent( -2 ) );
 
             // Always load table information in one go.
@@ -268,16 +276,16 @@ namespace tao {
       template< class T >
       class postgresql_table_iterator
          : public boost::iterator_facade< postgresql_table_iterator<T>,
-                                          rdb<T>::table,
+                                          typename rdb<T>::table,
                                           std::forward_iterator_tag,
-                                          rdb<T>::table >
+                                          typename rdb<T>::table >
       {
          friend class boost::iterator_core_access;
 
       public:
 
          typedef T real_type;
-         typedef rdb<real_type>::table value_type;
+         typedef typename rdb<real_type>::table value_type;
          typedef value_type reference_type;
 
       public:
@@ -306,9 +314,9 @@ namespace tao {
          reference_type
          dereference() const
          {
-            return rdb<real_type>::table( _be._tbls[_idx],
-                                          _be._minx[_idx], _be._miny[_idx], _be._minz[_idx],
-                                          _be._maxx[_idx], _be._maxy[_idx], _be._maxz[_idx] );
+            return typename rdb<real_type>::table( _be._tbls[_idx],
+                                                   _be._minx[_idx], _be._miny[_idx], _be._minz[_idx],
+                                                   _be._maxx[_idx], _be._maxy[_idx], _be._maxz[_idx] );
          }
 
       protected:
