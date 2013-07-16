@@ -9,11 +9,15 @@ namespace tao {
    namespace backends {
 
       template< class T >
+      class rdb_table;
+
+      template< class T >
       class rdb
       {
       public:
 
          typedef T real_type;
+         typedef rdb_table<real_type> table;
 
       public:
 
@@ -52,6 +56,60 @@ namespace tao {
 
          std::unordered_map<string,string> _field_map;
          set<string> _out_fields;
+      };
+
+      template< class T >
+      class rdb_table
+      {
+      public:
+
+         typedef T real_type;
+
+      public:
+
+         rdb_table( const std::string& name,
+                    real_type minx,
+                    real_type miny,
+                    real_type minz,
+                    real_type maxx,
+                    real_type maxy,
+                    real_type maxz )
+            : _name( name )
+         {
+            _min[0] = minx; _min[1] = miny; _min[2] = minz;
+            _max[0] = maxx; _max[1] = maxy; _max[2] = maxz;
+         }
+
+         const std::string&
+         name() const
+         {
+            return _name;
+         }
+
+         const array<real_type,3>&
+         min() const
+         {
+            return _min;
+         }
+
+         const array<real_type,3>&
+         max() const
+         {
+            return _max;
+         }
+
+         // Define this to allow for storing tables in a set
+         // to eliminate duplicates.
+         bool
+         operator<( const rdb_table& op ) const
+         {
+            return _name < op._name;
+         }
+
+      protected:
+
+         std::string _name;
+         array<real_type,3> _min, _max;
       };
 
       // template< class T >
