@@ -200,15 +200,17 @@ $(function() {
     var show_error = function($field, msg) {
         var $enclosing = $field.closest('div.control-group');
         $enclosing.find('span.help-inline').remove();
-        $enclosing.removeClass('error');
+//        $enclosing.removeClass('error');
+        $field.removeClass('error');
         if (msg == null) return;
         $field.after('<span class="help-inline"></span>');
         $enclosing.find('span.help-inline').text(msg);
-        $enclosing.addClass('error');
+//        $enclosing.addClass('error');
+        $field.addClass('error');
         show_tab($enclosing, 0);
     }
 
-    var check_number_of_boxes = function() {
+    var check_number_of_boxes = function(num_boxes) {
         var dataset_id = $(lc_id('galaxy_model')).val();
         $.ajax({
             url: TAO_JSON_CTX + 'dataset/' + dataset_id,
@@ -218,13 +220,13 @@ $(function() {
             },
             success: function(data, status, xhr) {
                 var max_job_box_count = parseInt(data.fields.max_job_box_count);
-                var num_boxes = $(lc_id('max_job_size')).val();
+                $('#max_job_size').text('Estimated job size: ' + num_boxes + ' / ' + max_job_box_count);
                 if (num_boxes > max_job_box_count) {
-                    show_error($(lc_id('max_job_size')), 'The light-cone is too large based on current selections, please reduce the size of one or more of the following: right ascension / declination opening angles, or redshift range.');
+                    show_error($('#max_job_size'), 'Note this exceeds the maximum allowed size, please reduce the light-cone size (RA, Dec, Redshift range).');
                     return false;
                 }
                 else {
-                    show_error($(lc_id('max_job_size')), null);
+                    show_error($('#max_job_size'), null);
                     return true;
                 }
             }
@@ -241,8 +243,8 @@ $(function() {
 
         if (max_ra != 0 && max_dec != 0 && max_z != 0) {
             var num_boxes = count_boxes(box_size, min_ra, max_ra, min_dec, max_dec, max_z);
-            $(lc_id('max_job_size')).val(num_boxes);
-            check_number_of_boxes();
+//            $('#max_job_size').text('Estimated job size: ' + num_boxes + ' / 25');
+            check_number_of_boxes(num_boxes);
         }
     });
 });
