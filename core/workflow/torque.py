@@ -54,7 +54,7 @@ class TorqueInterface(object):
         self.DefaultParams['basicsettingpath'] = BasicSettingPath
         self.DefaultParams['outputpath'] = outputpath
         self.DefaultParams['MergeScriptName'] = self.Options['Torque:MergeScriptName']
-        
+        self.DefaultParams['BaseLibPath']=self.Options['Torque:BaseLibPath']
         
 
     ##
@@ -80,8 +80,8 @@ class TorqueInterface(object):
             module load boost gsl hdf5/x86_64/gnu/1.8.9-openmpi-1.6.4 postgresql            
             module load cfitsio/x86_64/gnu/3.290
             setenv PSM_SHAREDCONTEXTS_MAX %(ppn)d
-            setenv PATH /lustre/projects/p014_swin/programs/ScienceModules/bin:$PATH
-            setenv LD_LIBRARY_PATH /lustre/projects/p014_swin/programs/ScienceModules/lib:/lustre/projects/p014_swin/programs/ScienceModules/helperlib:$LD_LIBRARY_PATH
+            setenv PATH %(BaseLibPath)s/bin:$PATH
+            setenv LD_LIBRARY_PATH %(BaseLibPath)s/lib:%(BaseLibPath)s/helperlib:$LD_LIBRARY_PATH
             mpiexec %(executable)s %(path)s %(basicsettingpath)s
             %(MergeScriptName)s %(outputpath)s %(subjobindex)d
             '''%self.DefaultParams)

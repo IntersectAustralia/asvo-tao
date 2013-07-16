@@ -33,6 +33,7 @@ class WorkFlow(object):
         self.dbaseobj=dbaseobj
         self.TorqueObj=TorqueObj
         self.LogReaderObj=LogReader.LogReader(Options)
+        self.JobBaseDir=self.Options['Torque:outputbasedir']
         # Define the request API.
         
         self.CALLBackBase = Options['WorkFlowSettings:CallbackURL']
@@ -228,6 +229,7 @@ class WorkFlow(object):
     def ChangePBSFilesmod(self,UserName,JobID,LocalJobID):
         
         JobName=self.Options['Torque:jobprefix']+UserName[:4]+'_'+str(LocalJobID)
+        
         path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],'jobs', UserName, str(JobID),'log')
         old_dir = os.getcwd()
         os.chdir(path)
@@ -248,6 +250,7 @@ class WorkFlow(object):
     def GetJobstderrcontents(self,UserName,JobID,LocalJobID):
         
         JobName=self.Options['Torque:jobprefix']+UserName[:4]+'_'+str(LocalJobID)
+        
         path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],'jobs', UserName, str(JobID),'log')
         old_dir = os.getcwd()
         os.chdir(path)
@@ -361,10 +364,12 @@ class WorkFlow(object):
     def UpdateJob_EndSuccessfully(self, JobID,SubJobIndex, JobType, UIReference_ID, UserName, JobDetails):
         
         data = {}  
-        path = os.path.join('jobs', UserName, str(UIReference_ID))
+        
+        path = os.path.join(self.JobBaseDir, UserName, str(UIReference_ID))
         self.dbaseobj.SetJobComplete(JobID, path, JobDetails['end'])
         data['status'] = 'COMPLETED'
-        path = os.path.join('jobs', UserName, str(UIReference_ID), 'output')
+        
+        path = os.path.join(self.JobBaseDir, UserName, str(UIReference_ID), 'output')
         data['output_path'] = path
         
         self.UpdateTAOUI(UIReference_ID,JobType, data)
