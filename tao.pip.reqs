@@ -5,7 +5,6 @@ South
 flup
 django-recaptcha
 django-form-utils
-django-piston
 django-nose
 django-tastypie
 nosexcover
