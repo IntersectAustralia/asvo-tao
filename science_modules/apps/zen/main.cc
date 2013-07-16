@@ -5,6 +5,8 @@
 #include "tao/base/types.hh"
 #include "tao/base/globals.hh"
 #include "tao/base/lightcone.hh"
+#include "tao/base/postgresql_backend.hh"
+#include "colour_map.hh"
 
 using namespace hpc;
 using namespace tao;
@@ -22,12 +24,15 @@ float rotate_x = 0, rotate_y = 0;
 array<float,3> bnd_min, bnd_max;
 unsigned num_segs = 0;
 float zoom = 1;
-float gal_size = 10;
+float gal_size = 5;
 GLuint gal_tex_id;
 
 lightcone<real_type> lc;
 list<tile<real_type>> tiles;
 tile<real_type>* cur_box;
+colour_map<float> col_map;
+
+backends::postgresql<real_type> backend;
 
 TwBar* main_tb;
 
@@ -78,39 +83,40 @@ const unsigned char colors[11][3] = {
 //    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 // }
 
+void
+draw_box( const array<real_type,3>& min,
+          const array<real_type,3>& max )
+{
+   glBegin( GL_QUADS );
+
+   glVertex3f( min[0], min[2], -min[1] );
+   glVertex3f( max[0], min[2], -min[1] );
+   glVertex3f( max[0], max[2], -min[1] );
+   glVertex3f( min[0], max[2], -min[1] );
+
+   glVertex3f( min[0], min[2], -max[1] );
+   glVertex3f( max[0], min[2], -max[1] );
+   glVertex3f( max[0], max[2], -max[1] );
+   glVertex3f( min[0], max[2], -max[1] );
+
+   glVertex3f( min[0], min[2], -max[1] );
+   glVertex3f( min[0], min[2], -min[1] );
+   glVertex3f( min[0], max[2], -min[1] );
+   glVertex3f( min[0], max[2], -max[1] );
+
+   glVertex3f( max[0], min[2], -min[1] );
+   glVertex3f( max[0], min[2], -max[1] );
+   glVertex3f( max[0], max[2], -max[1] );
+   glVertex3f( max[0], max[2], -min[1] );
+
+   glEnd();
+}
+
 template< class Tile >
 void
 draw_tile( const Tile& tile )
 {
-   auto min = tile.min(), max = tile.max();
-
-   glBegin( GL_POLYGON );
-   glVertex3f( min[0], min[2], -min[1] );
-   glVertex3f( max[0], min[2], -min[1] );
-   glVertex3f( max[0], max[2], -min[1] );
-   glVertex3f( min[0], max[2], -min[1] );
-   glEnd();
-
-   glBegin( GL_POLYGON );
-   glVertex3f( min[0], min[2], -max[1] );
-   glVertex3f( max[0], min[2], -max[1] );
-   glVertex3f( max[0], max[2], -max[1] );
-   glVertex3f( min[0], max[2], -max[1] );
-   glEnd();
-
-   glBegin( GL_POLYGON );
-   glVertex3f( min[0], min[2], -max[1] );
-   glVertex3f( min[0], min[2], -min[1] );
-   glVertex3f( min[0], max[2], -min[1] );
-   glVertex3f( min[0], max[2], -max[1] );
-   glEnd();
-
-   glBegin( GL_POLYGON );
-   glVertex3f( max[0], min[2], -min[1] );
-   glVertex3f( max[0], min[2], -max[1] );
-   glVertex3f( max[0], max[2], -max[1] );
-   glVertex3f( max[0], max[2], -min[1] );
-   glEnd();
+   draw_box( tile.min(), tile.max() );
 }
 
 void
@@ -385,7 +391,7 @@ draw_galaxies()
       pos[0] = 500.0*((float)rand())/((float)RAND_MAX);
       pos[1] = 500.0*((float)rand())/((float)RAND_MAX);
       pos[2] = 500.0*((float)rand())/((float)RAND_MAX);
-      mass = 1e10*((float)rand()/(float)RAND_MAX);
+      float mass = 1e10 + 90e10*((float)rand()/(float)RAND_MAX);
 
       glPushMatrix();
       glTranslatef( pos[0], pos[2], -pos[1] );
@@ -405,6 +411,23 @@ draw_galaxies()
       glPopMatrix();
    }
    // glDisable( GL_TEXTURE_2D );
+}
+
+void
+draw_tables()
+{
+   glEnable( GL_DEPTH_TEST );
+   glDisable( GL_CULL_FACE );
+   glDisable( GL_LIGHTING );
+   glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+   glColor3ub( 0xe7, 0x64, 0x5a );
+   unsigned ii = 0;
+   for( auto it = backend.table_begin(); it != backend.table_end(); ++it )
+   {
+      draw_box( it->min(), it->max() );
+      if( ++ii == 100 )
+         break;
+   }
 }
 
 float
@@ -469,7 +492,8 @@ render_box_view()
    glColor3f( 0.43, 0.43, 0.43 );
    draw_tile( *cur_box );
 
-   draw_galaxies();
+   draw_tables();
+   // draw_galaxies();
 
    glEnable( GL_BLEND );
    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
@@ -654,9 +678,21 @@ update_tao()
 void
 init_tao()
 {
+   // Connect the backend.
+   backend.connect( "tao02.hpc.swin.edu.au",
+                    3306,
+                    "millennium_full_hdf5_dist",
+                    "taoadmin",
+                    "tao_admin_password_##" );
+
+   // Setup initial simulation.
    lc.set_simulation( &millennium );
    lc.set_geometry( 40, 50, 40, 50, 0.6, 0.15 );
    update_tao();
+
+   // Setup the colour map.
+   col_map.set_colours_diverging_11();
+   col_map.set_abscissa_linear( 1e10, 100e10 );
 }
 
 void TW_CALL
@@ -822,7 +858,7 @@ int
 main( int argc, char** argv )
 {
    mpi::initialise( argc, argv );
-   // LOG_CONSOLE();
+   LOG_CONSOLE();
    glutInit( &argc, argv );
    start();
    mpi::finalise();
