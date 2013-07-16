@@ -421,12 +421,15 @@ draw_tables()
    glDisable( GL_LIGHTING );
    glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
    glColor3ub( 0xe7, 0x64, 0x5a );
-   unsigned ii = 0;
-   for( auto it = backend.table_begin(); it != backend.table_end(); ++it )
+   for( auto it = backend.table_begin( *cur_box ); it != backend.table_end( *cur_box ); ++it )
    {
-      draw_box( it->min(), it->max() );
-      if( ++ii == 100 )
-         break;
+      array<real_type,3> min, max;
+      for( unsigned jj = 0; jj < 3; ++jj )
+      {
+         min[jj] = it->min()[jj] + cur_box->min()[jj];
+         max[jj] = it->max()[jj] + cur_box->min()[jj];
+      }
+      draw_box( min, max );
    }
 }
 
@@ -626,7 +629,7 @@ mouse_motion( int x,
       int dy = old_y - y;
       old_y = y;
       zoom += 0.1*(float)dy;
-      zoom = std::max<float>( zoom, 1.0 );
+      zoom = std::max<float>( zoom, 0.2 );
       glutPostRedisplay();
    }
 }
@@ -679,15 +682,12 @@ void
 init_tao()
 {
    // Connect the backend.
-   backend.connect( "tao02.hpc.swin.edu.au",
-                    3306,
-                    "millennium_full_hdf5_dist",
-                    "taoadmin",
-                    "tao_admin_password_##" );
+   backend.connect( "millennium_mini_1", "taoadmin", "taoadmin" );
 
    // Setup initial simulation.
-   lc.set_simulation( &millennium );
-   lc.set_geometry( 40, 50, 40, 50, 0.6, 0.15 );
+   lc.set_simulation( &mini_millennium );
+   // lc.set_geometry( 40, 50, 40, 50, 0.06 );
+   lc.set_geometry( 0, 10, 0, 10, 0.06 );
    update_tao();
 
    // Setup the colour map.
@@ -827,7 +827,7 @@ start()
 
    main_tb = TwNewBar( "Main" );
    TwDefine(" GLOBAL help='This example shows how to integrate AntTweakBar with GLUT and OpenGL.' "); // Message added to the help bar.
-   TwDefine(" Main size='200 400' color='96 216 224' "); // change default tweak bar size and color
+   TwDefine(" Main color='96 216 224' "); // change default tweak bar size and color
    TwAddVarCB( main_tb, "MinRA", TW_TYPE_DOUBLE, set_min_ra, get_min_ra, NULL,
                " label='Minimum RA' min=0 max=49 step=1 help='Minimum right-ascension.' " );
    TwAddVarCB( main_tb, "MaxRA", TW_TYPE_DOUBLE, set_max_ra, get_max_ra, NULL,
@@ -837,9 +837,9 @@ start()
    TwAddVarCB( main_tb, "MaxDEC", TW_TYPE_DOUBLE, set_max_dec, get_max_dec, NULL,
                " label='Maximum DEC' min=41 max=90 step=1 help='Maximum declination.' " );
    TwAddVarCB( main_tb, "MinZ", TW_TYPE_DOUBLE, set_min_z, get_min_z, NULL,
-               " label='Minimum redshift' min=0 max=0.49 step=0.01 help='Minimum redshift.' " );
+               " label='Minimum redshift' min=0 max=0.05 step=0.01 help='Minimum redshift.' " );
    TwAddVarCB( main_tb, "MaxZ", TW_TYPE_DOUBLE, set_max_z, get_max_z, NULL,
-               " label='Maximum redshift' min=0.14 max=127 step=0.01 help='Maximum redshift.' " );
+               " label='Maximum redshift' min=0.06 max=127 step=0.01 help='Maximum redshift.' " );
 
    // Initialise OpenGL.
    init_opengl();
@@ -858,7 +858,6 @@ int
 main( int argc, char** argv )
 {
    mpi::initialise( argc, argv );
-   LOG_CONSOLE();
    glutInit( &argc, argv );
    start();
    mpi::finalise();

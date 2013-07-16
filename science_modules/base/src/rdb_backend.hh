@@ -67,6 +67,10 @@ namespace tao {
 
       public:
 
+         rdb_table()
+         {
+         }
+
          rdb_table( const std::string& name,
                     real_type minx,
                     real_type miny,
