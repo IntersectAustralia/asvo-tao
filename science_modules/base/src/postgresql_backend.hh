@@ -26,6 +26,7 @@ namespace tao {
          typedef T real_type;
          typedef postgresql_galaxy_iterator<real_type> galaxy_iterator;
          typedef postgresql_table_iterator<real_type> table_iterator;
+         typedef tile_table_iterator<postgresql> tile_table_iterator;
 
       public:
 
@@ -93,6 +94,18 @@ namespace tao {
          table_end() const
          {
             return table_iterator( *this, _tbls.size() );
+         }
+
+         tile_table_iterator
+         table_begin( const tile<real_type>& tile ) const
+         {
+            return tile_table_iterator( tile, *this );
+         }
+
+         tile_table_iterator
+         table_end( const tile<real_type>& tile ) const
+         {
+            return tile_table_iterator( tile, *this, true );
          }
 
       protected:
@@ -253,64 +266,18 @@ namespace tao {
       // };
 
       template< class T >
-      class table
-      {
-      public:
-
-         typedef T real_type;
-
-      public:
-
-         table( const std::string& name,
-                real_type minx,
-                real_type miny,
-                real_type minz,
-                real_type maxx,
-                real_type maxy,
-                real_type maxz )
-            : _name( name )
-         {
-            _min[0] = minx; _min[1] = miny; _min[2] = minz;
-            _max[0] = maxx; _max[1] = maxy; _max[2] = maxz;
-         }
-
-         const std::string&
-         name() const
-         {
-            return _name;
-         }
-
-         const array<real_type,3>&
-         min() const
-         {
-            return _min;
-         }
-
-         const array<real_type,3>&
-         max() const
-         {
-            return _max;
-         }
-
-      protected:
-
-         std::string _name;
-         array<real_type,3> _min, _max;
-      };
-
-      template< class T >
       class postgresql_table_iterator
          : public boost::iterator_facade< postgresql_table_iterator<T>,
-                                          table<T>,
+                                          rdb<T>::table,
                                           std::forward_iterator_tag,
-                                          table<T> >
+                                          rdb<T>::table >
       {
          friend class boost::iterator_core_access;
 
       public:
 
          typedef T real_type;
-         typedef table<real_type> value_type;
+         typedef rdb<real_type>::table value_type;
          typedef value_type reference_type;
 
       public:
@@ -339,9 +306,9 @@ namespace tao {
          reference_type
          dereference() const
          {
-            return table<real_type>( _be._tbls[_idx],
-                                     _be._minx[_idx], _be._miny[_idx], _be._minz[_idx],
-                                     _be._maxx[_idx], _be._maxy[_idx], _be._maxz[_idx] );
+            return rdb<real_type>::table( _be._tbls[_idx],
+                                          _be._minx[_idx], _be._miny[_idx], _be._minz[_idx],
+                                          _be._maxx[_idx], _be._maxy[_idx], _be._maxz[_idx] );
          }
 
       protected:

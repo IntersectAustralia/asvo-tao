@@ -267,6 +267,7 @@ namespace tao {
 
             LOGDLN( "Distance bins: ", _z_bins );
             LOGDLN( "Snapshot bins: ", _snap_bins );
+            LOGD( setindent( -2 ) );
          }
       }
 
