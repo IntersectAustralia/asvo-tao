@@ -1,14 +1,18 @@
 #ifndef colour_map_hh
 #define colour_map_hh
 
+#include <libhpc/libhpc.hh>
+
+using namespace hpc;
+
 template< class S,
-          class C,
+          class C = float,
           int N = 3 >
 class colour_map
 {
 public:
 
-   enum { num_fields_const = N; }
+   enum { num_fields_const = N };
 
    typedef S source_type;
    typedef C colour_field_type;
@@ -63,12 +67,32 @@ public:
    }
 
    void
+   set_abscissa_linear( source_type min,
+                        source_type max )
+   {
+      _abs.reallocate( _cols.size() );
+      if( _abs.size() )
+      {
+         _abs.front() = min;
+         if( _abs.size() > 1 )
+         {
+            _abs.back() = max;
+            for( unsigned ii = 1; ii < _abs.size() - 1; ++ii )
+            {
+               source_type fac = (source_type)ii/(source_type)(_abs.size() - 1);
+               _abs[ii] = min + fac*(max - min);
+            }
+         }
+      }
+   }
+
+   void
    map( const source_type& src,
         colour_type& col )
    {
       auto idx = _index( src );
-      const colour_type& first = _col[idx.first];
-      const colour_type& last = _col[idx.first + 1];
+      const colour_type& first = _cols[idx.first];
+      const colour_type& last = _cols[idx.first + 1];
       for( unsigned ii = 0; ii < first.size(); ++ii )
          col[ii] = first[ii] + idx.second*(last[ii] - first[ii]);
    }
@@ -89,10 +113,12 @@ protected:
       auto it = std::lower_bound( _abs.begin(), _abs.end(), src );
       if( it == _abs.end() )
          return std::make_pair<unsigned,source_type>( _cols.size() - 2, 1.0 );
+      else if( it == _abs.begin() )
+         return std::make_pair<unsigned,source_type>( 0, 0.0 );
       else
       {
-         auto first = it++;
-         return std::make_pair<unsigned,source_type>( it - _cols.begin(), (src - *first)/(*it - *first) );
+         auto last = it--;
+         return std::make_pair<unsigned,source_type>( it - _abs.begin(), (src - *it)/(*last - *it) );
       }
    }
 
