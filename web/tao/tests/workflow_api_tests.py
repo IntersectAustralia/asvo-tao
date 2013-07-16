@@ -2,7 +2,7 @@ import json
 from django.core.urlresolvers import reverse
 from django.test import Client, TestCase
 from django.test.utils import override_settings
-from tao.tests.support.factories import JobFactory, UserFactory,WorkflowCommandFactory
+from tao.tests.support.factories import JobFactory, UserFactory, WorkflowCommandFactory
 
 class WorkflowApiTest(TestCase):
     def setUp(self):

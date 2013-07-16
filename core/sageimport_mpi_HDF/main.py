@@ -35,6 +35,9 @@ if __name__ == '__main__':
         print("Error Not Enough Arguments")
         exit()
     SettingFile=sys.argv[1]
+    ResumeProcessing=True
+    if len(sys.argv)==3:
+        ResumeProcessing=(sys.argv[1]=='True')
     
     ## MPI already initiated in the import statement
     ## Get The current Process Rank and the total number of processes
@@ -57,16 +60,19 @@ if __name__ == '__main__':
     
     ### Read Running Settings
     [CurrentSAGEStruct,Options]=settingReader.ParseParams(SettingFile)
-    
+    if ((int(Options['PGDB:ServersCount'])+1)>CommSize):
+        logging.info('Sorry you must have at least No of Servers +1 Processes ')
+        logging.info('System Aborting')
+        exit(-1)
      ## 1) Init the class with DB option 
     PreprocessDataObj=PreprocessData.PreprocessData(CurrentSAGEStruct,Options)
     ## 2) Open connection to the DB (ToMasterDB=True - Open connection to a default DB before creating the new DB)
-    PreprocessDataObj.InitDBConnection(True)        
+    if ResumeProcessing==False: PreprocessDataObj.InitDBConnection(True)        
     ## 3) Create New DB (If a DB with the same name exists user will be asked if he want to drop it)
     
     
     ## This section will be executed only by the server ... All the nodes must wait until this is performed
-    if CommRank==0:   
+    if CommRank==0 and ResumeProcessing==False:   
         
         PreprocessDataObj.CreateDB()    
          
@@ -86,13 +92,13 @@ if __name__ == '__main__':
     ## 4) a) Create "DataFiles" Table
     ##    b) read the header of each file and fill the table with the metadata ( the initial status of all the files is un-processed)
     ##    c) Each table will have an associated Table ID in this step 
-    PreprocessDataObj.FillTreeProcessingTable(CommSize,CommRank)
+    if ResumeProcessing==False: PreprocessDataObj.FillTreeProcessingTable(CommSize,CommRank)
     ## 6) Close the DB connection
     
     logging.info("Reaching Second Barrier")
     comm.Barrier()
     logging.info("Barrier Released")    
-    if CommRank==0:
+    if CommRank==0 and ResumeProcessing==False:
         PreprocessDataObj.AddTreeProcessingIndex()  
         
     comm.Barrier()  
@@ -111,10 +117,12 @@ if __name__ == '__main__':
     logging.info("Reaching Third Barrier")
     comm.Barrier()
     logging.info("Barrier Released")    
-    
-    
+    ProcessTablesObj=AnalyzeTables.ProcessTables(Options)
+    if CommRank==0:
+        ProcessTablesObj.CreateMainTables()
+    comm.Barrier()
     ## Analyze Tables Batch processing to Complete BSP missing Information
-    if CommRank==0:  
+    if CommRank<int(Options['PGDB:ServersCount']):  
         
              
         logging.info("Process (Server): All Nodes Finish ...")
@@ -127,7 +135,7 @@ if __name__ == '__main__':
             PreprocessDataObj.InitDBConnection(False)
             ## 3) Create All tables required for the importing of the current dataset using the information in "DataFiles" table
             PreprocessDataObj.CreateIndexOnTreeSummaryTable()
-            PreprocessDataObj.GenerateTablesIndex()
+            PreprocessDataObj.GenerateTablesIndex(CommSize,CommRank)
             ## 4) Close the DB connection
             PreprocessDataObj.DBConnection.CloseConnections()
         
@@ -135,19 +143,24 @@ if __name__ == '__main__':
         
             
         logging.info('Starting PostProcessing: Generate Tables Statistics and BSP Tree Information')
-        ProcessTablesObj=AnalyzeTables.ProcessTables(Options)
-        for si in range(0,ProcessTablesObj.DBConnection.serverscount):
-            ProcessTablesObj.GetTablesList(si)
-    
-        ProcessTablesObj.SummarizeLocationInfo()  
-        #ProcessTablesObj.ValidateImportProcess()       
-        ProcessTablesObj.CloseConnections()
-    
+        
+        
+        #for si in range(0,ProcessTablesObj.DBConnection.serverscount):
+        ProcessTablesObj.SummarizeTables(CommRank)
+    elif (CommRank==int(Options['PGDB:ServersCount'])):           
+        ProcessTablesObj.SummarizeLocationInfo()    
         MasterTablesUpdateObj=UpdateMasterTables.MasterTablesUpdate(Options,CurrentPGDB)
         MasterTablesUpdateObj.CreateRedshiftTable()
         MasterTablesUpdateObj.FillRedshiftData()
         MasterTablesUpdateObj.CreateMetadataTable()
         MasterTablesUpdateObj.FillMetadataTable()
+        
+    ProcessTablesObj.CloseConnections()
+    logging.info("Reaching Fourth Barrier")
+    comm.Barrier()
+    logging.info("Barrier Released")    
+    
+    if CommRank==0:
         end= time.clock()
         logging.info(str(CommRank)+": Total Processing Time="+str((end-start))+" seconds")
         SetupNewDatabaseObj= SetupNewDatabase.SetupNewDatabase(Options,CurrentSAGEStruct)

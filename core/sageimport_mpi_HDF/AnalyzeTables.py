@@ -19,12 +19,13 @@ class ProcessTables(object):
         self.Options=Options
         self.DBConnection=DBConnection.DBConnection(Options)
         logging.info('Connection to DB is open...Start Creating Tables')
-        self.CreateSummaryTable()
-        self.CreateTreeSummaryTable()
+        
         
         logging.info('Summary Table Created ...')
     
-    
+    def CreateMainTables(self):
+        self.CreateSummaryTable()
+        self.CreateTreeSummaryTable()
     def CloseConnections(self):        
         self.DBConnection.CloseConnections()       
         logging.info('Connection to DB is Closed...') 
@@ -188,7 +189,7 @@ class ProcessTables(object):
         
         
         
-    def GetTablesList(self,ServerID):
+    def SummarizeTables(self,ServerID):
         
         GetTablesListSt="select table_name from information_schema.tables where table_schema='public' order by table_name;"
         TablesList=self.DBConnection.ExecuteQuerySQLStatment(GetTablesListSt,ServerID)
