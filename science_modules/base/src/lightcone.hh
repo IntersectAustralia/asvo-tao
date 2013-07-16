@@ -107,6 +107,48 @@ namespace tao {
          _recalc();
       }
 
+      void
+      set_min_dec( real_type dec_min )
+      {
+         ASSERT( dec_min >= 0.0 && dec_min <= 90.0,
+                 "Minimum DEC cannot be less than zero or greater than 90 degrees." );
+         ASSERT( to_radians( dec_min ) < _dec[1],
+                 "Minimum DEC must be less than maximum DEC." );
+         _dec[0] = to_radians( dec_min );
+         _recalc();
+      }
+
+      void
+      set_max_dec( real_type dec_max )
+      {
+         ASSERT( dec_max >= 0.0 && dec_max <= 90.0,
+                 "Maximum DEC cannot be less than zero or greater than 90 degrees." );
+         ASSERT( to_radians( dec_max ) > _dec[0],
+                 "Minimum DEC must be less than maximum DEC." );
+         _dec[1] = to_radians( dec_max );
+         _recalc();
+      }
+
+      void
+      set_min_redshift( real_type z_min )
+      {
+         ASSERT( z_min >= 0.0,
+                 "Minimum redshift must be greater than or equal to zero." );
+         ASSERT( z_min < _z[1],
+                 "Minimum redshift must be less than maximum redshift." );
+         _z[0] = z_min;
+         _recalc();
+      }
+
+      void
+      set_max_redshift( real_type z_max )
+      {
+         ASSERT( _z[0] < z_max,
+                 "Minimum redshift must be less than maximum redshift." );
+         _z[1] = z_max;
+         _recalc();
+      }
+
       const tao::simulation<real_type>&
       simulation() const
       {
@@ -151,6 +193,18 @@ namespace tao {
       max_dec() const
       {
          return _dec[1];
+      }
+
+      real_type
+      min_redshift() const
+      {
+         return _z[0];
+      }
+
+      real_type
+      max_redshift() const
+      {
+         return _z[1];
       }
 
       real_type

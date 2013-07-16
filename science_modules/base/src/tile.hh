@@ -9,6 +9,9 @@ namespace tao {
    template< class T >
    class lightcone;
 
+   template< class BGI >
+   class tile_galaxy_iterator;
+
    template< class T >
    class tile
    {
@@ -20,22 +23,29 @@ namespace tao {
 
       tile( lightcone<real_type>& lc,
             const array<real_type,3>& offs )
-         : _lc( lc ),
-           _offs( offs )
+         : _lc( lc )
       {
+         set_offset( offs );
       }
 
-      array<real_type,3>
+      void
+      set_offset( const array<real_type,3>& offs )
+      {
+         _min = offs;
+         for( unsigned ii = 0; ii < 3; ++ii )
+            _max[ii] = _min[ii] + _lc.simulation().box_size();
+      }
+
+      const array<real_type,3>&
       min() const
       {
-         return _offs;
+         return _min;
       }
 
-      array<real_type,3>
+      const array<real_type,3>&
       max() const
       {
-         real_type bs = _lc.simulation().box_size();
-         return array<real_type,3>( _offs[0] + bs, _offs[1] + bs, _offs[2] + bs );
+         return _max;
       }
 
       template< class Backend >
@@ -57,7 +67,7 @@ namespace tao {
    protected:
 
       lightcone<real_type>& _lc;
-      array<real_type,3> _offs;
+      array<real_type,3> _min, _max;
    };
 
    template< class BGI >
@@ -92,7 +102,7 @@ namespace tao {
       }
 
       bool
-      equal( const galaxy_iterator& op ) const
+      equal( const tile_galaxy_iterator& op ) const
       {
          return _bgi == op._bgi;
       }
