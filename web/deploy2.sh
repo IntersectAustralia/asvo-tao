@@ -23,9 +23,11 @@ fi
 case $ENVIRONMENT in
   production)
     TARGET=/web/vhost/tao.asvo.org.au/taodemo
+    BACKUP_DIR=/home/taoadmin/sites/production
     ;;
   staging)
     TARGET=/web/vhost/tao.asvo.org.au/taostaging
+    BACKUP_DIR=/home/taoadmin/sites/staging
     ;;
   *)
     exit 1
@@ -40,6 +42,13 @@ case `which python` in
 esac
 
 echo "Deploying to $ENVIRONMENT version $TAG to $TARGET"
+}
+
+# backup master db
+backupdb() {
+  echo "Backup up master db..."
+  cd $TARGET/asvo-tao/web
+  ./manage.py dumpscript > $BACKUP_DIR/masterdb.py
 }
 
 # checks out code into TARGET
@@ -93,6 +102,8 @@ remote_restore() {
 #
 
 check_params
+
+backupdb
 
 checkout
 

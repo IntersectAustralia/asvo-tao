@@ -44,7 +44,7 @@ class JobResource(ModelResource):
     class Meta:
         queryset = Job.objects.all()
         resource_name = 'job'
-        fields = ['id', 'username', 'database', 'status', 'parameters']#, 'error_message']
+        fields = ['id', 'username', 'database', 'status', 'parameters', 'error_message', 'output_path']
         allowed_methods = ['get', 'put']
         authorization = Authorization()
         authentication = IpBasedAuthentication()
