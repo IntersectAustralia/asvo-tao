@@ -9,19 +9,30 @@
 	
 	<WorkFlowSettings>
 		<CallbackURL>http://tao.asvo.org.au/taodemo/api/</CallbackURL>
+		<ProcessID>daemon-workflow.pid</ProcessID>
+		<WatchDogProcessID>daemon-workflow-watchdog.pid</WatchDogProcessID>
 		<WorkingDir>/lustre/projects/p014_swin/FTP</WorkingDir>
 		<LogDir>/lustre/projects/p014_swin/logs/workflow.log</LogDir>
 		<SleepTime>30</SleepTime>
+		<Events>On</Events>
+		<TerminateSubJobsOnError>On</TerminateSubJobsOnError>
+		<enableemails>On</enableemails>
+		<emailserver>gpo.swin.edu.au</emailserver>
+		<senderEmail>admin@asvo.org.au</senderEmail>
+		<ToEmail>ahassan@swin.edu.au</ToEmail>			
 	</WorkFlowSettings>
 	<Torque>
 		<ServerAddress>pbs.hpc.swin.edu.au</ServerAddress>
-		<ScriptFileName>pbs_script</ScriptFileName>
-		<SmallJobsQueue>tao</SmallJobsQueue>
-		<LargeJobsQueue>gstar</LargeJobsQueue>
-		<UserName>taoadmin</UserName>
-		<password>********</password>
-		<ExecutableName>/lustre/projects/p014_swin/programs/ScienceModules/bin/filter</ExecutableName>
+		<ScriptFileName>pbs_script</ScriptFileName>		
+		<JobsQueue>sstar</JobsQueue>
+		<Nodes>1</Nodes>
+		<ProcessorNode>4</ProcessorNode>
+		<UserName>taoadmin</UserName>		
+		<ExecutableName>/lustre/projects/p014_swin/programs/ScienceModules/bin/tao</ExecutableName>
+		<MergeScriptName>python /lustre/projects/p014_swin/programs/Workflow/mergeoutput.py</MergeScriptName>
 		<AuxInputData>/lustre/projects/p014_swin/programs/ScienceModules/data</AuxInputData>		
+		<BasicSettingsPath>/lustre/projects/p014_swin/programs/Workflow/basicsetting.xml</BasicSettingsPath>
+		<maindatapath>/lustre/projects/p014_swin/programs/ScienceModules/maindata</maindatapath>
 	</Torque>
 	
 </settings>	
