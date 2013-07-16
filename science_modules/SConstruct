@@ -14,6 +14,8 @@ config.select(
     config.packages.Eigen(required=False),
     config.packages.libhpc(),
     config.packages.cfitsio(),
+    config.packages.glut(required=False),
+    config.packages.AntTweakBar(required=False),
 )
 
 vars = project.create_variables()

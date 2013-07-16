@@ -4,7 +4,7 @@ from sconsproject import helpers
 Import('env')
 
 # Declare subdirectories.
-sub_dirs = ['bolshoi']
+sub_dirs = ['zen']
 
 # Define destination subdirectory, i.e. where these binaries will
 # be placed.

@@ -18,6 +18,13 @@ namespace tao {
 
    template< class T >
    T
+   expansion_to_redshift( T ef )
+   {
+      return 1.0/ef - 1.0;
+   }
+
+   template< class T >
+   T
    redshift_to_age_func( double x,
                          void* param )
    {
