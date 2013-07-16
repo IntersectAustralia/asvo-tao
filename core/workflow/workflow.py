@@ -76,20 +76,23 @@ class WorkFlow(object):
            CurrentJobType=EnumerationLookup.JobType.Complex     
         
         
-        logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], 'jobs', JobUserName, str(UIJobReference),'log')                
-        outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], 'jobs', JobUserName, str(UIJobReference),'output')
+        logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], JobUserName, str(UIJobReference),'log')                
+        outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], JobUserName, str(UIJobReference),'output')
         old_dir = os.getcwd()
         os.chdir(logpath)
         
         
         ###################Profiling####################################################
-                 
-        self.ParseProfileDataObj=ParseProfileData.ParseProfileData(logpath,0,self.Options) 
-        [Boxes,Tables,Galaxies,Trees]=self.ParseProfileDataObj.ParseFile()       
-        logging.info('Number of Boxes='+str(Boxes))
-        logging.info('Total Queries='+str(Tables))
-        logging.info('Maximum Galaxies='+str(Galaxies))
-        logging.info('Maximum Trees='+str(Trees))
+        try:                 
+            self.ParseProfileDataObj=ParseProfileData.ParseProfileData(logpath,0,self.Options) 
+            [Boxes,Tables,Galaxies,Trees]=self.ParseProfileDataObj.ParseFile()       
+            logging.info('Number of Boxes='+str(Boxes))
+            logging.info('Total Queries='+str(Tables))
+            logging.info('Maximum Galaxies='+str(Galaxies))
+            logging.info('Maximum Trees='+str(Trees))
+        except Exception as Exp:
+             logging.error("Error In Profiling")
+             
         #############################################################################
         
         
@@ -117,9 +120,9 @@ class WorkFlow(object):
         
     def PrepareJobFolder(self,JobParams,JobUserName,UIJobReference,JobDatabase):
         ## Read User Settings 
-        BasedPath=os.path.join(self.Options['WorkFlowSettings:WorkingDir'], 'jobs', JobUserName, str(UIJobReference))
-        outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], 'jobs', JobUserName, str(UIJobReference),'output')
-        logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], 'jobs', JobUserName, str(UIJobReference),'log')
+        BasedPath=os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  JobUserName, str(UIJobReference))
+        outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  JobUserName, str(UIJobReference),'output')
+        logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  JobUserName, str(UIJobReference),'log')
         AudDataPath=os.path.join(self.Options['Torque:AuxInputData'])
         
         
@@ -230,7 +233,7 @@ class WorkFlow(object):
         
         JobName=self.Options['Torque:jobprefix']+UserName[:4]+'_'+str(LocalJobID)
         
-        path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],'jobs', UserName, str(JobID),'log')
+        path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserName, str(JobID),'log')
         old_dir = os.getcwd()
         os.chdir(path)
         
@@ -251,7 +254,7 @@ class WorkFlow(object):
         
         JobName=self.Options['Torque:jobprefix']+UserName[:4]+'_'+str(LocalJobID)
         
-        path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],'jobs', UserName, str(JobID),'log')
+        path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserName, str(JobID),'log')
         old_dir = os.getcwd()
         os.chdir(path)
         stderrstring=''
