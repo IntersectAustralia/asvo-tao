@@ -42,10 +42,10 @@ function integral(f, a, b, errorBound) {
   if (msg != '') {
     if (document.all) document.cookie = msg;  //  Explorer
     else document.cookie += msg;              //  Netscape
-    window.open("integralerror.html","","width=600," + 
-      "height=80,screenX=50,screenY=50,resizable=0," + 
-      "toolbar=0,directories=0," + 
-      "status=0,menubar=0,scrollbars=1");
+//    window.open("integralerror.html","","width=600," +
+//      "height=80,screenX=50,screenY=50,resizable=0," +
+//      "toolbar=0,directories=0," +
+//      "status=0,menubar=0,scrollbars=1");
     return NaN;
   }
   //  Return 0? 
@@ -188,11 +188,11 @@ function _integral(f, a, b, errorBound) {
                   integralBound + ') is too small.';
             if (document.all) document.cookie = msg;  //  Explorer
             else document.cookie += msg;              //  Netscape
-            window.open("integralerror.html","",
-              "width=600,height=40," +
-              "screenX=50,screenY=50," + 
-              "resizable=0,toolbar=0,directories=0," + 
-              "status=0,menubar=0,scrollbars=1");
+//            window.open("integralerror.html","",
+//              "width=600,height=40," +
+//              "screenX=50,screenY=50," +
+//              "resizable=0,toolbar=0,directories=0," +
+//              "status=0,menubar=0,scrollbars=1");
             integralError = true;
             return Math.NaN;
           }

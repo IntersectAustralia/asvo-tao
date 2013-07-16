@@ -977,13 +977,11 @@ jQuery(document).ready(function($) {
     }
 
     var validate_number_of_boxes = function() {
-        $job_size = $(lc_id('max_job_size'));
-        var error = $job_size.closest('div.control-group').find('span.help-inline').text();
-        if (error == "" || error == null) {
-            return true;
-        } else {
-            show_tab($job_size, 0);
+        if ($('#max_job_size').hasClass('job_too_large_error')) {
+            show_tab($('#max_job_size'), 0);
             return false;
+        } else {
+            return true;
         }
     }
 

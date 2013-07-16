@@ -132,7 +132,7 @@ class Form(BetterForm):
     catalogue_geometry = forms.ChoiceField(choices=[(BOX, 'Box'), (CONE, 'Light-Cone'), ])
 
     redshift_max = forms.DecimalField(required=False, label=_('Redshift Max'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
-    redshift_min = forms.DecimalField(required=False, label=_('Redshift Min'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}), help_text='<div id="max_job_size">Estimated job size: </div>')
+    redshift_min = forms.DecimalField(required=False, label=_('Redshift Min'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
 
     box_size = forms.DecimalField(required=False, label=_('Box Size (Mpc/h)'), widget=forms.TextInput(attrs={'class': 'light_box_field'}))
 
