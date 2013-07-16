@@ -204,7 +204,7 @@ namespace tao {
       bool _rows_exist;
       vector<void*> _field_stor;
       vector<galaxy::field_value_type> _field_types;
-      vector<real_type> _gal_z;
+      vector<real_type> _gal_z, _gal_ra, _gal_dec, _gal_dist;
       tao::galaxy _gal;
 
       string _accel_method;
