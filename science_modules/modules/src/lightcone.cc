@@ -9,6 +9,7 @@
 #include "BSPTree.hh"
 #include "geometry_iterator.hh"
 #include "table_iterator.hh"
+#include "tao/base/types.hh"
 
 using namespace hpc;
 using boost::format;
@@ -119,7 +120,7 @@ namespace tao {
 
 	 // The outer loop is over the boxes.
 	 _get_boxes( _boxes );
-	 LOGDLN( "Boxes: ", _boxes );
+	 LOGILN( "Boxes: ", _boxes );
 #ifdef PREPROCESSING
 	 LOGLN( logging::pushlevel( 100 ), "Boxes:",_boxes, logging::poplevel );
 #endif
@@ -359,7 +360,7 @@ namespace tao {
 	       " WHERE table_schema='public' AND SUBSTR(table_name,1," + 
 	       to_string( _tree_pre.length() ) + ")='" + _tree_pre + "'";
 	 }
-	 LOGDLN( "Query for number of table names: ", query );
+	 LOGTLN( "Query for number of table names: ", query );
 	 _db_timer.start();
 	 _sql << query, soci::into( num_tables );
 	 _db_timer.stop();
@@ -382,7 +383,7 @@ namespace tao {
 			    " WHERE table_schema='public' AND SUBSTR(table_name,1," + 
 			    to_string( _tree_pre.length() ) + ")='" ) + _tree_pre + string( "'" );
 	 }
-	 LOGDLN( "Query for table names: ", query );
+	 LOGTLN( "Query for table names: ", query );
 	 _db_timer.start();
 	 _sql << query, soci::into( (std::vector<std::string>&)table_names );
 	 _db_timer.stop();
@@ -402,7 +403,7 @@ namespace tao {
          table_names.swap( tmp_tbl_names );
       }
 
-      LOGDLN( "My table names: ", table_names );
+      LOGILN( "My table names: ", table_names );
 #ifdef PREPROCESSING
       LOGLN( logging::pushlevel( 100 ), "Tables:",table_names, logging::poplevel );
 #endif
@@ -421,11 +422,11 @@ namespace tao {
       do
       {
          LOGDLN( "Current table index: ", _cur_table );
-	 LOGDLN( "Current table name: ", _table_names[_cur_table] );
+	 LOGILN( "Looking at table: ", _table_names[_cur_table] );
 
 	 const array<real_type,3>& box = *_cur_box;
          _build_pixels( _x0 + box[0], _y0 + box[1], _z0 + box[2] );
-	 LOGDLN( "Any objects in this box/table: ", (_rows_exist ? "true" : "false") );
+	 LOGILN( "Any objects in this box/table: ", (_rows_exist ? "true" : "false") );
       }
       while( !_rows_exist && ++_cur_table != _table_names.size() );
 
@@ -620,11 +621,11 @@ namespace tao {
       }
 
       // Execute the query.
-      LOGDLN( "Executing query." );
+      LOGILN( "Executing lightcone query." );
       _db_timer.start();
       _st = new soci::statement( prep );
       _st->execute();
-      LOGDLN( "Finished executing query." );
+      LOGILN( "Finished executing lightcone query." );
       _fetch();
       _db_timer.stop();
 
@@ -724,7 +725,7 @@ namespace tao {
       replace_all( query, "Pos2", _field_map.get( "pos_y" ) );
       replace_all( query, "Pos3", _field_map.get( "pos_z" ) );
 
-      LOGDLN( "Query: ", query );
+      LOGTLN( "Query: ", query );
       LOG_EXIT();
       _timer.stop();
    }
@@ -956,7 +957,7 @@ namespace tao {
    ///
    ///
    ///
-   lightcone::real_type
+   real_type
    lightcone::_redshift_to_distance( real_type redshift ) const
    {
       LOG_ENTER();
@@ -1043,7 +1044,7 @@ namespace tao {
       // Get box repetition type.
       _box_repeat = dict.get<string>( "box-repetition", "unique");
       std::transform( _box_repeat.begin(), _box_repeat.end(), _box_repeat.begin(), ::tolower );
-      LOGDLN( "Box repetition type '", _box_repeat, "'" );
+      LOGILN( "Box repetition type '", _box_repeat, "'" );
       _unique = (_box_repeat == "unique");
       LOGDLN( "Internal unique flag set to: ", _unique );
 
@@ -1088,7 +1089,7 @@ namespace tao {
 	 _rng_seed = rand();
       }
       mpi::comm::world.bcast<int>( _rng_seed, 0 );
-      LOGDLN( "Random seed: ", _rng_seed );
+      LOGILN( "Random seed: ", _rng_seed );
       _real_rng.set_seed( _rng_seed );
       _int_rng.reset();
 
@@ -1429,7 +1430,7 @@ namespace tao {
       }
    }
 
-   lightcone::real_type
+   real_type
    lightcone::_distance_to_redshift( real_type dist ) const
    {
       auto it = std::lower_bound( _dist_to_z_tbl_dist.begin(), _dist_to_z_tbl_dist.end(), dist );
@@ -1473,6 +1474,7 @@ namespace tao {
       replace_all( query, "Pos1", _field_map.get( "pos_x" ) );
       replace_all( query, "Pos2", _field_map.get( "pos_y" ) );
       replace_all( query, "Pos3", _field_map.get( "pos_z" ) );
+      query += " LIMIT 1";
 #ifdef MULTIDB
       soci::rowset<soci::row> rows = ((*_db)["tree_1"].prepare << query);
 #else
