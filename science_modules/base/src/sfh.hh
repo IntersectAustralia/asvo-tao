@@ -34,7 +34,7 @@ namespace tao {
          : timed(),
            _snap_ages( NULL ),
            _bin_ages( NULL ),
-           _thresh( 1000000 ),
+           _thresh( 100000000 ),
            _accum( false ),
            _cur_tree_id( std::numeric_limits<unsigned long long>::max() )
       {
@@ -112,19 +112,19 @@ namespace tao {
             // Extract number of records in this tree.
             unsigned tree_size;
             db_timer_start();
-            sql << "SELECT COUNT(*) FROM " + table_name + " WHERE globaltreeid = :id",
+	    sql << "SELECT galaxycount FROM treesummary WHERE globaltreeid=:id",
                soci::into( tree_size ), soci::use( tree_id );
             db_timer_stop();
-            LOGDLN( "Tree size: ", tree_size );
+            LOGILN( "Tree size: ", tree_size );
 
             // If the tree size is greater than the threshold we should use a cumulative
             // method to form the history.
-            if( tree_size >= _thresh )
-            {
-               _accum = true;
-            }
-            else
-            {
+            // if( tree_size >= _thresh )
+            // {
+            //    _accum = true;
+            // }
+            // else
+            // {
                _accum = false;
 
                // Resize data arrays.
@@ -156,7 +156,7 @@ namespace tao {
 
                // Build the parents for each galaxy.
                _calc_parents();
-            }
+            // }
 
             // Set the current table/tree information.
             _cur_table = table_name;

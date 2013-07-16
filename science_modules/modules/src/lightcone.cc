@@ -120,7 +120,7 @@ namespace tao {
 
 	 // The outer loop is over the boxes.
 	 _get_boxes( _boxes );
-	 LOGDLN( "Boxes: ", _boxes );
+	 LOGILN( "Boxes: ", _boxes );
 #ifdef PREPROCESSING
 	 LOGLN( logging::pushlevel( 100 ), "Boxes:",_boxes, logging::poplevel );
 #endif
@@ -360,7 +360,7 @@ namespace tao {
 	       " WHERE table_schema='public' AND SUBSTR(table_name,1," + 
 	       to_string( _tree_pre.length() ) + ")='" + _tree_pre + "'";
 	 }
-	 LOGDLN( "Query for number of table names: ", query );
+	 LOGTLN( "Query for number of table names: ", query );
 	 _db_timer.start();
 	 _sql << query, soci::into( num_tables );
 	 _db_timer.stop();
@@ -383,7 +383,7 @@ namespace tao {
 			    " WHERE table_schema='public' AND SUBSTR(table_name,1," + 
 			    to_string( _tree_pre.length() ) + ")='" ) + _tree_pre + string( "'" );
 	 }
-	 LOGDLN( "Query for table names: ", query );
+	 LOGTLN( "Query for table names: ", query );
 	 _db_timer.start();
 	 _sql << query, soci::into( (std::vector<std::string>&)table_names );
 	 _db_timer.stop();
@@ -725,7 +725,7 @@ namespace tao {
       replace_all( query, "Pos2", _field_map.get( "pos_y" ) );
       replace_all( query, "Pos3", _field_map.get( "pos_z" ) );
 
-      LOGDLN( "Query: ", query );
+      LOGTLN( "Query: ", query );
       LOG_EXIT();
       _timer.stop();
    }
@@ -1044,7 +1044,7 @@ namespace tao {
       // Get box repetition type.
       _box_repeat = dict.get<string>( "box-repetition", "unique");
       std::transform( _box_repeat.begin(), _box_repeat.end(), _box_repeat.begin(), ::tolower );
-      LOGDLN( "Box repetition type '", _box_repeat, "'" );
+      LOGILN( "Box repetition type '", _box_repeat, "'" );
       _unique = (_box_repeat == "unique");
       LOGDLN( "Internal unique flag set to: ", _unique );
 
@@ -1089,7 +1089,7 @@ namespace tao {
 	 _rng_seed = rand();
       }
       mpi::comm::world.bcast<int>( _rng_seed, 0 );
-      LOGDLN( "Random seed: ", _rng_seed );
+      LOGILN( "Random seed: ", _rng_seed );
       _real_rng.set_seed( _rng_seed );
       _int_rng.reset();
 
