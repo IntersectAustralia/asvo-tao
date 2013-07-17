@@ -3,7 +3,7 @@
 
 HDF5_DIR=/usr
 FITS_DIR=/usr
-PUGIXML_DIR=/home/max/Downloads/pugixml
+PUGIXML_DIR=/home/user/Downloads/pugixml
 FOX_DIR=/usr
 
 
