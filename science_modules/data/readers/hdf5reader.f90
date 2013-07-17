@@ -7,7 +7,6 @@ PROGRAM read_hdf5
   INTEGER, PARAMETER :: num_fields = 3
 
   INTEGER, PARAMETER :: max_chunk_size = 100
-  ! NOTE: Change filename to your input file
   INTEGER, PARAMETER :: mem_rank = 1
 
   ! NOTE: Add storage for additional fields here.
@@ -34,9 +33,9 @@ PROGRAM read_hdf5
   ! from the HDF5 file. Notice that each call uses a dataset
   ! identifier that is numbered. Be sure to increment the index
   ! with each call.
-  CALL h5dopen_f( file_id, "k_apparent", dataset_ids(1), error )
-  CALL h5dopen_f( file_id, "v_apparent", dataset_ids(2), error )
-  CALL h5dopen_f( file_id, "bub_apparent", dataset_ids(3), error )
+  CALL h5dopen_f( file_id, "pos_x", dataset_ids(1), error )
+  CALL h5dopen_f( file_id, "pos_y", dataset_ids(2), error )
+  CALL h5dopen_f( file_id, "pos_z", dataset_ids(3), error )
 
   CALL h5dget_space_f( dataset_ids(1), dataspace_id, error )
   CALL h5sget_simple_extent_dims_f( dataspace_id, data_dims, max_data_dims, error )
