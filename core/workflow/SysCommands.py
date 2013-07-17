@@ -11,6 +11,7 @@ import glob
 import pg
 import settingReader
 import torque
+import json
 
 class SysCommands(object):
 # 1- From UI Id get JobID or Jobs IDs
@@ -27,30 +28,31 @@ class SysCommands(object):
         self.LogReaderObj=LogReader.LogReader(Options)
         # Define the request API.
         
-        self.CALLBackBase = Options['WorkFlowSettings:CommandsURL']
+        self.CommandCALLBackBase = Options['WorkFlowSettings:CallbackURL']
         self.commandapi = {
-               'get': self.CALLBackBase + 'commands/submitted',
-               'update': self.CALLBackBase + 'commands/%d'}
+               'get': self.CommandCALLBackBase + 'workflowcommand/?execution_status=SUBMITTED',
+               'update': self.CommandCALLBackBase + 'workflowcommand/%d/'}              
+        
+        self.CALLBackBase = Options['WorkFlowSettings:CallbackURL']
         self.api = {
-               'get': self.CALLBackBase + 'jobs/status/submitted',
-               'update': self.CALLBackBase + 'jobs/%d'}
+               'get': self.CALLBackBase + 'job/?status=SUBMITTED',
+               'update': self.CALLBackBase + 'job/%d/'}
+        
         self.FunctionsMap={
                  'Job_Stop_All':self.Job_Stop_All,
                  'Job_Stop':self.Job_Stop,
                  'Job_Resume':self.Job_Resume,
                  'Workflow_Stop':self.Workflow_Stop,
-                 'Worflow_Resume':self.Worflow_Resume,
-                 'Lighcone_acceleration_on':self.Lighcone_acceleration_on,
-                 'Lighcone_acceleration_off':self.Lighcone_acceleration_off,
+                 'Worflow_Resume':self.Worflow_Resume,                 
                  'Job_Output_Delete':self.Job_Output_Delete                 
                  }
         
     def json_handler(self,resp):       
         
         CommandsCounter=0
-        
-        for json in resp.json():
-            
+        print resp.json()        
+        logging.info("Meta Info for current Commands="+str(resp.json()['meta']['total_count']))        
+        for json in resp.json()['objects']:            
             if self.HandleNewCommand(json)==True:
                 CommandsCounter=CommandsCounter+1            
     
@@ -63,9 +65,7 @@ class SysCommands(object):
     def CheckForNewCommands(self):
         logging.info("Checking for UI Commands")
         new_jobs = 0
-        WebserviceResponse = requests.get(self.commandapi['get'])
-        
-        #ResponseType = string.replace(WebserviceResponse.headers['content-type'],"; charset=utf-8","")
+        WebserviceResponse = requests.get(self.commandapi['get'])     
         
         new_commands_count=self.json_handler(WebserviceResponse)
         if new_commands_count>0:
@@ -73,23 +73,28 @@ class SysCommands(object):
     
     def HandleNewCommand(self,jsonObj):
         
-        UICommandID=jsonObj['commandid']
-        UIJobID=jsonObj['jobid']
-        commandtext=jsonObj['commandtext']
-        CommandParams=jsonObj['commandparams']
+        command=jsonObj['command']        
+        UICommandID=jsonObj['id']        
+        UIJobID=-1
+        if jsonObj['job_id']!=None:
+            UIJobID=jsonObj['job_id']['id']        
+        CommandParams=jsonObj['parameters']
+                
         logging.info("New Command Found")
         logging.info("UICommandID:"+str(UICommandID))
         logging.info("UIJobID:"+str(UIJobID))
-        logging.info("commandtext:"+str(commandtext))
+        logging.info("commandtext:"+str(command))
         logging.info("CommandParams:"+str(CommandParams))
+               
+               
         
-        CommandID=self.dbaseobj.AddNewCommand(UICommandID,commandtext,UIJobID,CommandParams)
-        logging.info("Command Local ID:"+str(CommandID))        
+        #CommandID=self.dbaseobj.AddNewCommand(UICommandID,command,UIJobID,CommandParams)
+        #logging.info("Command Local ID:"+str(CommandID))        
         
-        CommandFunction=self.FunctionsMap[commandtext]
-        if CommandFunction(UICommandID,UIJobID,CommandParams)==True:
-            self.dbaseobj.UpdateCommandStatus(CommandID,EnumerationLookup.CommandState.Completed)
-            UpdateTAOCommandUI(CommandID)
+        CommandFunction=self.FunctionsMap[command]
+        #if CommandFunction(UICommandID,UIJobID,CommandParams)==True:
+        #self.dbaseobj.UpdateCommandStatus(CommandID,EnumerationLookup.CommandState.Completed)
+        self.UpdateTAOCommandUI(UICommandID)
     
     def Job_Stop_All(self,UICommandID,UIJobID,CommandParams):
         CurrentJobs_PBSID=self.dbaseobj.GetCurrentActiveJobs_pbsID()
@@ -112,7 +117,7 @@ class SysCommands(object):
         logging.info("COMMAND Job_Stop: JobID=" + str(JobID))
         logging.info("COMMAND Job_Stop: PBSID" + str(PBSID))
         logging.info("COMMAND Job_Stop: JobStatus=" + str(JobStatus))
-    ##If it is running stop it
+        ##If it is running stop it
         if (JobStatus <= EnumerationLookup.JobState.Running and JobStatus > EnumerationLookup.JobState.NewJob):
             logging.info("COMMAND Job_Stop: JobID=" + str(JobID) + " , Terminating Job From Queue")
             #self.TorqueObj.TerminateJob(PBSID) ##If its status is running or before set it to pause
@@ -147,8 +152,8 @@ class SysCommands(object):
     def Job_Output_Delete(self,UICommandID,UIJobID,CommandParams):
         print("Job_Output_Delete")
         JobUserName=CommandParams
-        BasedPath=os.path.join(self.Options['WorkFlowSettings:WorkingDir'], 'jobs', JobUserName, str(UIJobID))
-        outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], 'jobs', JobUserName, str(UIJobID),'output')
+        BasedPath=os.path.join(self.Options['WorkFlowSettings:WorkingDir'], JobUserName, str(UIJobID))
+        outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], JobUserName, str(UIJobID),'output')
         
         
         if(os.path.exists(outputpath)):
@@ -167,19 +172,23 @@ class SysCommands(object):
         data['status'] = 'HELD'             
         data['error_message'] = "Status:JOB WAS TERMINATED BY ADMIN COMMAND"                
         logging.info('Updating UI MasterDB. JobID ('+str(UIJobID)+').. '+data['status'])        
-        requests.put(self.api['update']%UIJobID, data)
+        requests.put(self.api['update']%UIJobID, json.dumps(data))
     
     def UpdateTAOCommandUI(self,CommandID):        
         
+        UpdateURL=self.commandapi['update']%CommandID
         data = {}                
-        data['status'] = 'EXECUTED'             
-        data['error_message'] = ""                
-        logging.info('Updating UI MasterDB. CommandID ('+str(CommandID)+').. '+data['status'])        
-        requests.put(self.commandapi['update']%CommandID, data)        
+        data['execution_status'] = 'COMPLETED'             
+        data['execution_comment'] = ""                
+        #logging.info('Updating UI MasterDB. CommandID ('+str(CommandID)+').. '+data['execution_status'])        
+        print('Updating UI MasterDB. CommandID ('+str(CommandID)+').. '+data['execution_status'])
+        print(UpdateURL)
+        print(data)
+        requests.put(UpdateURL, json.dumps(data))        
                  
     
 if __name__ == '__main__':
-     [Options]=settingReader.ParseParams("localsettings.xml")     
+     [Options]=settingReader.ParseParams("settings.xml")     
      dbaseObj=dbase.DBInterface(Options)
      TorqueObj=torque.TorqueInterface(Options,dbaseObj)
      SysCommandsObj=SysCommands(Options,dbaseObj,TorqueObj)
