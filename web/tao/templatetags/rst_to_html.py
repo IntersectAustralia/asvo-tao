@@ -5,8 +5,6 @@ register = template.Library()
 
 @register.simple_tag
 def rst_file_to_html(file_path):
-    # from code import interact
-    # interact(local=locals())
     with open(file_path) as f:
         content = f.readlines()
     a_line = ''.join(content)

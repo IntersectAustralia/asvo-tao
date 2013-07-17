@@ -131,8 +131,6 @@ class JobTest(LiveServerTest):
         self.assert_summary_field_correctly_shown('1 random light cones', 'light_cone', 'number_of_light_cones')
         self.assert_summary_field_correctly_shown(self.sed.label, 'sed', 'single_stellar_population_model')
         self.assert_summary_field_correctly_shown(self.dust.name, 'sed', 'dust_model')
-        from code import interact
-        interact(local=locals())
         self.assert_summary_field_correctly_shown(u"1000000 \u2264 %s (%s)" % (self.filter.label, self.filter.units), 'record_filter', 'record_filter')
 
         band_pass_filters = BandPassFilter.objects.all()

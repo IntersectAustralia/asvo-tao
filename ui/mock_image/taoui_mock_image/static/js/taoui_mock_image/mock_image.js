@@ -3,7 +3,7 @@ catalogue.modules = catalogue.modules || {};
 
 catalogue.modules.mock_image = function($) {
 
-    console.log('new mock_image modules');
+    console.log('New mock_image module');
 
 	function mock_image_enabled() {
         var ami = $('#id_mock_image-apply_mock_image');
@@ -282,9 +282,7 @@ catalogue.modules.mock_image = function($) {
         update_select(sel, $('#id_sed-band_pass_filters > option'));
     }
 
-    $(mi_id('apply_mock_image')).change(function(evt){
-        update_apply_mock_image();
-    });
+
 
     function update_mock_image_sub_cones(sel) {
         if(sel === undefined)
@@ -365,12 +363,28 @@ catalogue.modules.mock_image = function($) {
             $.validate_form('mock_image');
     }
 
+  this.cleanup_fields = function($form) {
+
+  }
+
+  this.validate = function($form) {
+     return $.validate_all(true) == undefined;
+  }
+
+  this.pre_submit = function($form) {
+
+  }
 
   this.init = function() {
    console.log('Initialising mock_image');
 
    $('#mock_image_params .single-form').formset({
         prefix: 'mock_image'
+    });
+
+
+    $(mi_id('apply_mock_image')).change(function(evt){
+        update_apply_mock_image();
     });
 
     // We always have an extra form at the end, so delete it

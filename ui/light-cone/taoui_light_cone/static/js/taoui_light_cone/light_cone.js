@@ -1,11 +1,10 @@
-
 var catalogue = catalogue || {};
 catalogue.modules = catalogue.modules || {};
 
 
 catalogue.modules.light_cone = function($) {
 
-  console.log('new light_cone modules');
+  console.log('New light_cone module');
 
   this.lc_output_props_widget = new TwoSidedSelectWidget(lc_id('output_properties'), true);
 
@@ -41,7 +40,7 @@ catalogue.modules.light_cone = function($) {
             },
             success: function(data, status, xhr) {
                 get_widget().cache_store(data);
-                catalogue.util.update_filter_options.output_props = true;
+                catalogue.modules.record_filter.update_filter_options.output_props = true;
                 get_widget().display_selected(current, true);
             }
         });
@@ -165,19 +164,6 @@ catalogue.modules.light_cone = function($) {
         });
     };
 
-    var fill_in_selection_in_summary = function() {
-        var filter_min = $(rf_id('min')).val();
-        var filter_max = $(rf_id('max')).val();
-        var filter_selected = $(rf_id('filter')).find('option:selected').html();
-        if (!filter_min && !filter_max)
-            catalogue.util.fill_in_summary ('record_filter', 'record_filter', filter_selected);
-        else if (!filter_min)
-            catalogue.util.fill_in_summary ('record_filter', 'record_filter', filter_selected + ' &le; ' + filter_max);
-        else if (!filter_max)
-            catalogue.util.fill_in_summary ('record_filter', 'record_filter', filter_min + ' &le; ' + filter_selected);
-        else
-            catalogue.util.fill_in_summary ('record_filter', 'record_filter', filter_min + ' &le; ' + filter_selected + ' &le; ' + filter_max);
-    }
 
 
     function init_output_properties() {
@@ -185,7 +171,6 @@ catalogue.modules.light_cone = function($) {
         var pseudo_json = [];
         $(lc_id('output_properties') + ' option').each(function(){
             var $this = $(this);
-            console.log($this);
             var item = {pk: $this.attr('value'), fields:{label: $this.text()}};
             pseudo_json.push(item);
             if($this.attr('selected')) {
@@ -216,10 +201,6 @@ catalogue.modules.light_cone = function($) {
         }
     }
 
-    // $(lc_id('ra_opening_angle') + ', ' + lc_id('dec_opening_angle')).change(function(evt){
-    //     fill_in_ra_dec_in_summary();
-    //     calculate_max_number_of_cones();
-    // });
 
     var fill_in_redshift_in_summary = function() {
         var redshift_max_value = $(lc_id('redshift_max')).val();
@@ -399,12 +380,6 @@ catalogue.modules.light_cone = function($) {
         } else {
             $('.light_box_field').val('');
         }
-        // cleanup record filter
-        var filter = $(rf_id('filter')).val();
-        if (filter == item_to_value(TAO_NO_FILTER)) {
-            $(rf_id('min')).val('');
-            $(rf_id('max')).val('');
-        }
     }
 
     // - event handlers for fields -
@@ -432,7 +407,7 @@ catalogue.modules.light_cone = function($) {
 
 
     get_widget().change_event(function(evt){
-        catalogue.util.update_filter_options(false);
+        catalogue.modules.record_filter.update_filter_options();
 
         var output_properties_count = catalogue.util.list_multiple_selections_in_summary('light_cone', 'output_properties');
 
@@ -471,7 +446,7 @@ catalogue.modules.light_cone = function($) {
         var $this = $(this);
         var galaxy_model_id = $this.find(':selected').attr('data-galaxy_model_id');
         show_galaxy_model_info(galaxy_model_id);
-        var use_default = !catalogue.util.update_filter_options.initializing || !bound;
+        var use_default = !bound;
         if (use_default) {
             var catalogue_geometry_value = $(lc_id('catalogue_geometry')).val();
             if (catalogue_geometry_value == "box") {
@@ -480,30 +455,12 @@ catalogue.modules.light_cone = function($) {
                 $(lc_id('box_size')).change();
             }
         }
-
         update_output_options();
         update_snapshot_options();
     });
 
 
 
-    $(rf_id('filter')).change(function(evt){
-        var $this = $(this);
-        var filter_value = $this.val();
-        if (filter_value == item_to_value(TAO_NO_FILTER)) {
-            $(rf_id('max')).attr('disabled', 'disabled');
-            $(rf_id('min')).attr('disabled', 'disabled')
-            catalogue.util.fill_in_summary ('record_filter', 'record_filter', 'No Filter');
-        } else {
-            $(rf_id('max')).removeAttr('disabled');
-            $(rf_id('min')).removeAttr('disabled');
-            fill_in_selection_in_summary();
-        }
-    });
-
-    $(rf_id('min') + ', ' + rf_id('max')).change(function(evt){
-        fill_in_selection_in_summary();
-    });
 
     $(lc_id('catalogue_geometry')).change(function(evt){
         var $this = $(this);
@@ -586,36 +543,41 @@ catalogue.modules.light_cone = function($) {
     });
 
 
-    //
-    // -- form handler
-    //
-    $('#mgf-form').submit(function(){
-        var $form = $(this);
-        cleanup_fields($form);
-        var min_max_valid = validate_min_max();
-        var number_of_light_cones_valid = validate_number_of_light_cones();
-        if (!min_max_valid || !number_of_light_cones_valid) {
-            return false;
-        }
-        
-        var failed = $.validate_all(true);
-        if(failed !== undefined) {
-            show_tab(failed, 0);
-            return false;
-        }
-
-        $(lc_id('output_properties')+' option').each(function(i) {
-            $(this).attr("selected", "selected");
-        });
-        $(sed_id('band_pass_filters')+' option').each(function(i) {
-            $(this).attr("selected", "selected");
-        });
-    });
 
   }
 
-  this.init = function() {
+  var empty_light_cone_variables = function() {
+    $(lc_id('ra_opening_angle')).attr('value', '');
+    $(lc_id('dec_opening_angle')).attr('value', '');
+    $(lc_id('redshift_min')).attr('value', '');
+    $(lc_id('redshift_max')).attr('value', '');
+  }
 
+  var empty_box_variables = function() {
+    $(lc_id('box_size')).attr('value', '');
+  }
+
+  this.cleanup_fields = function($form) {
+    var geometry = $(lc_id('catalogue_geometry')).val();
+    if (geometry == 'box') {
+        empty_light_cone_variables();
+    } else {
+        empty_box_variables();
+    }
+  }
+
+  this.validate = function($form) {
+    return validate_number_of_light_cones();
+  }
+
+  this.pre_submit = function($form) {
+    $(lc_id('output_properties')+' option').each(function(i) {
+        $(this).attr("selected", "selected");
+    });
+  }
+
+  this.init = function() {
+    console.log('Initialising light_cone');
     get_widget().init();
     init_event_handlers();
     // NOTE: A lot of event triggers here used to initialis state, probably not a good things

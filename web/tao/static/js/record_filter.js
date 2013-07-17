@@ -3,7 +3,7 @@ catalogue.modules = catalogue.modules || {};
 
 catalogue.modules.record_filter = function($) {
 
-    console.log('new record_filter module');
+    console.log('New record_filter module');
 
 	function me() {
 		return catalogue.modules.record_filter;
@@ -24,6 +24,8 @@ catalogue.modules.record_filter = function($) {
     }
 
   function init_event_handlers() {
+    fill_in_selection_in_summary();
+
   	$(rf_id('filter')).change(function(evt){
 	    var $this = $(this);
 	    var filter_value = $this.val();
@@ -39,18 +41,32 @@ catalogue.modules.record_filter = function($) {
     });
 
     $(rf_id('min') + ', ' + rf_id('max')).change(function(evt){
-        fill_in_selection_in_summary();
+        fill_in_selection_in_summary();;
     });
 
   }
 
+this.called = 0;
+
  // TODO: This function needs a big re-write to decouple it from all submodules
-this.update_filter_options = function(use_default){
-    // TODO: Remove dependency on lc_id
+this.update_filter_options = function(){
+
     var data_set_id = $(lc_id('galaxy_model')).val();
-    // fetch_data = update_filter_options.current_key != data_set_id;
+
     fetch_data = this.current_key != data_set_id;
 
+    var use_default = function() {
+        return !on_summary();
+    }
+
+    var on_summary = function() {
+        var viewing = $('h1').text();
+        var result = false;
+        if (viewing && viewing.indexOf('Viewing Job') != -1) {
+            result = true;
+        }
+        return result;
+    }
 
     var isInt = function(value) {
         return !isNaN(parseInt(value)) && (parseFloat(value)+'' == parseInt(value)+'');
@@ -93,13 +109,14 @@ this.update_filter_options = function(use_default){
         return list;
     }
 
-    function refresh_select(resp, use_default) {
+    function refresh_select(resp) {
         var $filter = $(rf_id('filter'));
         var current_filter = $filter.val();
         var current = current_selection();
         current.push(item_to_value(TAO_NO_FILTER));
         current.push('D-' + resp.default_id.toString());
-        if (use_default || current.indexOf(current_filter) == -1) {
+        console.log('Use default ' + use_default());
+        if (use_default() || current.indexOf(current_filter) == -1) {
             current_filter = 'D-' + resp.default_id;
             if (current_filter == '' || current_filter == item_to_value(TAO_NO_FILTER)) {
                 $(rf_id('min')).val('');
@@ -121,10 +138,10 @@ this.update_filter_options = function(use_default){
     }
 
     if (!fetch_data) {
-        refresh_select(this.update_filter_options.current_data, use_default);
+        refresh_select(this.update_filter_options.current_data);
         return;
     }
-    console.log('');
+    
     $.ajax({
         url : TAO_JSON_CTX + 'filters/' + data_set_id,
         dataType: "json",
@@ -134,17 +151,15 @@ this.update_filter_options = function(use_default){
         success: function(resp, status, xhr) {
             me().update_filter_options.current_data = resp;
             me().update_filter_options.current_key = data_set_id;
-            console.log([me().update_filter_options.output_props,
-                me().update_filter_options.bandpass_props]);
             if (me().update_filter_options.output_props &&
-                me().update_filter_options.bandpass_props) {
-                refresh_select(resp, use_default);
+                me().update_filter_options.bandpass_props &&
+                use_default()) {
+                refresh_select(resp);
             }
         }
     });
   };
 
-  this.update_filter_options.initializing = true;
   this.update_filter_options.output_props = false;
   this.update_filter_options.bandpass_props = false;
 
@@ -175,7 +190,12 @@ this.update_filter_options = function(use_default){
 }
 
   this.cleanup_fields = function($form) {
-
+    // cleanup record filter
+    var filter = $(rf_id('filter')).val();
+    if (filter == item_to_value(TAO_NO_FILTER)) {
+        $(rf_id('min')).val('');
+        $(rf_id('max')).val('');
+    }
   }
 
   this.validate = function($form) {
@@ -183,13 +203,11 @@ this.update_filter_options = function(use_default){
   }
 
   this.pre_submit = function($form) {
-    $(lc_id('output_properties')+' option').each(function(i) {
-        $(this).attr("selected", "selected");
-    });
+
   }
 
   this.init = function() {
-  	console.log('init record_filter module');
+  	console.log('Initialising record_filter');
   	init_event_handlers();
   }
 

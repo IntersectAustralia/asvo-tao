@@ -4,7 +4,7 @@ catalogue.modules = catalogue.modules || {}
 
 catalogue.modules.sed = function($) {
 
-  console.log('new sed module');
+  console.log('New sed module');
 
   this.sed_band_pass_filters_widget = null;
 
@@ -55,7 +55,7 @@ catalogue.modules.sed = function($) {
           },
           success: function(data, status, xhr) {
               get_widget().cache_store(data);
-              catalogue.util.update_filter_options.bandpass_props = true;
+              catalogue.modules.record_filter.update_filter_options.bandpass_props = true;
               get_widget().display_selected(current, true);
           }
       });
@@ -71,16 +71,16 @@ catalogue.modules.sed = function($) {
     }
 
 
-  function init_widget_events() {
-    get_widget().option_clicked_event(function(cache_item){
-      show_bandpass_filter_info(cache_item);
-    });
+  // function init_widget_events() {
+  //   get_widget().option_clicked_event(function(cache_item){
+  //     show_bandpass_filter_info(cache_item);
+  //   });
 
-    get_widget().change_event(function(evt){
-      update_filter_options(false);
-      display_band_pass_filters_summary();
-    });
-  }
+  //   get_widget().change_event(function(evt){
+  //     update_filter_options(false);
+  //     display_band_pass_filters_summary();
+  //   });
+  // }
 
 
   function init_event_handlers() {
@@ -184,7 +184,7 @@ catalogue.modules.sed = function($) {
             display_band_pass_filters_summary();
             $(sed_id('apply_dust')).removeAttr('disabled');
             $(sed_id('apply_dust')).change();
-            catalogue.util.update_filter_options(false); // triggers filter.change
+            catalogue.modules.record_filter.update_filter_options(); // triggers filter.change
             $('#sed_params').slideDown();
             $('#sed_info').slideDown();
         }
@@ -205,8 +205,7 @@ catalogue.modules.sed = function($) {
             catalogue.util.clear_info('sed', 'dust-model');
             $('div.summary_sed .apply_sed').hide();
             catalogue.util.fill_in_summary('sed', 'select_sed', 'Not selected');
-            var use_default = !catalogue.util.update_filter_options.initializing || !bound;
-            catalogue.util.update_filter_options(use_default); // triggers filter.change
+            catalogue.modules.record_filter.update_filter_options(); // triggers filter.change
             $('#sed_params').slideUp();
             $('#sed_info').slideUp();
         }
@@ -214,7 +213,7 @@ catalogue.modules.sed = function($) {
 
 
     get_widget().change_event(function(evt){
-      catalogue.util.update_filter_options(false);
+      catalogue.modules.record_filter.update_filter_options();
       display_band_pass_filters_summary();
     });
 
@@ -225,6 +224,19 @@ catalogue.modules.sed = function($) {
 
   }
 
+  this.cleanup_fields = function($form) {
+
+  }
+
+  this.validate = function($form) {
+    return true;
+  }
+
+  this.pre_submit = function($form) {
+    $(sed_id('band_pass_filters')+' option').each(function(i) {
+      $(this).attr("selected", "selected");
+    });
+  }
 
 
   this.init = function() {
