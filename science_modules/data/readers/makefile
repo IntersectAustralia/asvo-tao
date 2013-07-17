@@ -1,10 +1,10 @@
-# Set locations to point to HDF5, FITS and PUGIXML (required for VO) 
-# installed, if it is in a non-standard location. Otherwise leave it 
-# blank.
+# Set locations to point to HDF5, FITS, PUGIXML and FOX_DOM installed, 
+# if it is in a non-standard location. Otherwise leave it blank.
 
-HDF5_DIR=
-FITS_DIR=
-PUGIXML=
+HDF5_DIR=/usr
+FITS_DIR=/usr
+PUGIXML_DIR=/home/max/Downloads/pugixml
+FOX_DIR=/usr
 
 
 HDF5_LIBS=-lhdf5_fortran -lhdf5
@@ -23,13 +23,18 @@ FITS_FLAGS=
 endif
 
 
-ifdef PUGIXML
-VO_FLAGS=-I$(PUGIXML)/src
+ifdef PUGIXML_DIR
+VO_CC_FLAGS=$(PUGIXML_DIR)/src/pugixml.cpp -I$(PUGIXML_DIR)/src 
 else
-VO_FLAGS=
+VO_CC_FLAGS=
 endif
 
-VO_FORT_FLAGS=`FoX-config`
+
+ifdef FOX_DIR
+VO_FORT_FLAGS=`FoX-config` -I/home/max/Downloads/FoX-4.1.2/dom -I$(FOX_DIR)/include -L$(FOX_DIR)/lib 
+else
+VO_FORT_FLAGS=`FoX-config` -I/home/max/Downloads/FoX-4.1.2/dom -I$(FOX_DIR)/include -L$(FOX_DIR)/lib 
+endif
 
 
 all: hdf5readerF90 hdf5readerC fitsreaderF90 fitsreaderCC votablereaderF90 votablereaderCC
@@ -50,9 +55,10 @@ votablereaderF90 : votablereader.f90
 	gfortran -o votablereaderF90 votablereader.f90 $(VO_FORT_FLAGS) || true
 
 votablereaderCC: votablereader.cc
-	g++ -o votablereaderCC votablereader.cc $(VO_FLAGS) || true
+	g++ -o votablereaderCC votablereader.cc $(VO_CC_FLAGS) || true
 
 default: all
 
 clean:
 	rm hdf5readerF90 hdf5readerC fitsreaderF90 fitsreaderCC votablereaderF90 votablereaderCC
+

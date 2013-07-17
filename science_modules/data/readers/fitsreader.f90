@@ -7,7 +7,7 @@
       integer felem,nelems,nullj,nfound,irow,colnum,icol,fvalueint
       real nulle
       real*8 fvaluedbl	      
-      character filename*40,nullstr*1,fvaluestr*8,comment*80,format*5
+      character filename*100,nullstr*1,fvaluestr*8,comment*80,format*5
       character*10, pointer :: ttype(:)
       character*10, pointer :: tunit(:)
       character*5, pointer :: tformat(:)
@@ -21,8 +21,13 @@
 !  Get an unused Logical Unit Number to use to open the FITS file.
       call ftgiou(unit,status)
 
-!  Open the FITS file previously created by WRITEIMAGE
-      filename='tao.0.fits'
+!  Open the FITS file
+      if (iargc() .lt. 1) then
+        write(*,*)"please specify an input file."
+        call EXIT(0)
+      endif
+      CALL getarg(1, filename)
+
       rmode=0
       call ftopen(unit,filename,rmode,blocksize,status)
 

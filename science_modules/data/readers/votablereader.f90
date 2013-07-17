@@ -7,7 +7,15 @@
 	integer :: j
 	type(Node), pointer :: document, element,Field, datapoint, datacolumn 
 	type(NodeList), pointer :: fieldsList, dataList,childlist
-	document => parseFile("tao.0.xml")
+	CHARACTER(len=100) :: filename
+	
+	if (iargc() .lt. 1) then
+		write(*,*)"please specify an input file."
+		call EXIT(0)
+	endif
+	CALL getarg(1, filename)
+
+	document => parseFile(filename)
 
 	fieldsList => getElementsByTagname(document, "FIELD")
 	dataList => getElementsByTagname(document, "TR")
@@ -29,11 +37,8 @@
 	   print *,'    ',getTextContent(datacolumn)
 	 enddo
 	enddo
-
 	
 	call destroy(document)
-
-
 
       end
 
