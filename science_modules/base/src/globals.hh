@@ -2,6 +2,7 @@
 #define tao_base_globals_hh
 
 #include <libhpc/libhpc.hh>
+#include "simulation.hh"
 
 namespace tao {
    using namespace hpc;
@@ -13,7 +14,9 @@ namespace tao {
    double
    runtime();
 
-
+   // Simulations.
+   extern simulation<real_type> millennium;
+   extern simulation<real_type> mini_millennium;
 
 }
 
