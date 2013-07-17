@@ -1,11 +1,10 @@
+
 var catalogue = catalogue || {};
 catalogue.modules = catalogue.modules || {};
 
-catalogue.modules.mock_image = function($) {
+catalogue.modules.mock_image = function ($) {
 
-    console.log('New mock_image module');
-
-	function mock_image_enabled() {
+    function mock_image_enabled() {
         var ami = $('#id_mock_image-apply_mock_image');
         return ami.attr('disabled') === undefined && ami.is(':checked');
     }
@@ -46,23 +45,26 @@ catalogue.modules.mock_image = function($) {
             group: [form.find('input[name$="z_max"]')],
             form: 'mock_image'
         }).validate('test', {
-            check: function(val, cache) {
+            check: function (val, cache) {
                 return val >= cache.z_min;
             },
             message: ['Value must be greater than the minimum redshift of ',
-                      'the cone specified in General Properties.'].join('')
+                'the cone specified in General Properties.'
+            ].join('')
         }).validate('test', {
-            check: function(val, cache) {
+            check: function (val, cache) {
                 return val <= cache.z_max;
             },
             message: ['Value must be less than the maximum redshift of ',
-                      'the cone specified in General Properties.'].join('')
+                'the cone specified in General Properties.'
+            ].join('')
         }).validate('test', {
-            check: function(val, cache) {
+            check: function (val, cache) {
                 return val <= form.find('input[name$="z_max"]').val();
             },
             message: ['Value must be less than the maximum redshift of ',
-                      'this mock image.'].join('')
+                'this mock image.'
+            ].join('')
         });
 
         // z_max
@@ -76,23 +78,26 @@ catalogue.modules.mock_image = function($) {
             group: [form.find('input[name$="z_min"]')],
             form: 'mock_image'
         }).validate('test', {
-            check: function(val, cache) {
+            check: function (val, cache) {
                 return val <= cache.z_max;
             },
             message: ['Value must be less than the maximum redshift of ',
-                      'the cone specified in General Properties.'].join('')
+                'the cone specified in General Properties.'
+            ].join('')
         }).validate('test', {
-            check: function(val, cache) {
+            check: function (val, cache) {
                 return val >= cache.z_min;
             },
             message: ['Value must be greater than the minimum redshift of ',
-                      'the cone specified in General Properties.'].join('')
+                'the cone specified in General Properties.'
+            ].join('')
         }).validate('test', {
-            check: function(val, cache) {
+            check: function (val, cache) {
                 return val >= form.find('input[name$="z_min"]').val();
             },
             message: ['Value must be greater than the minimum redshift of ',
-                      'this mock image.'].join('')
+                'this mock image.'
+            ].join('')
         });
 
         // origin_ra
@@ -106,13 +111,13 @@ catalogue.modules.mock_image = function($) {
             group: [form.find('input[name$="fov_ra"]')],
             form: 'mock_image'
         }).validate('test', {
-            check: function(val, cache) {
-                return val + 0.5*cache.fov_ra <= cache.ra;
+            check: function (val, cache) {
+                return val + 0.5 * cache.fov_ra <= cache.ra;
             },
             message: 'Origin and field-of-view RAs exceed cone maximum.'
         }).validate('test', {
-            check: function(val, cache) {
-                return val - 0.5*cache.fov_ra >= 0;
+            check: function (val, cache) {
+                return val - 0.5 * cache.fov_ra >= 0;
             },
             message: 'Origin and field-of-view RAs are below cone minimum.'
         });
@@ -128,13 +133,13 @@ catalogue.modules.mock_image = function($) {
             group: [form.find('input[name$="fov_dec"]')],
             form: 'mock_image'
         }).validate('test', {
-            check: function(val, cache) {
-                return val + 0.5*cache.fov_dec <= cache.dec;
+            check: function (val, cache) {
+                return val + 0.5 * cache.fov_dec <= cache.dec;
             },
             message: 'Origin and field-of-view DECs exceed cone maximum.'
         }).validate('test', {
-            check: function(val, cache) {
-                return val - 0.5*cache.fov_dec >= 0;
+            check: function (val, cache) {
+                return val - 0.5 * cache.fov_dec >= 0;
             },
             message: 'Origin and field-of-view DECs are below cone minimum.'
         });
@@ -150,13 +155,13 @@ catalogue.modules.mock_image = function($) {
             group: [form.find('input[name$="origin_ra"]')],
             form: 'mock_image'
         }).validate('test', {
-            check: function(val, cache) {
-                return cache.o_ra + 0.5*val <= cache.ra;
+            check: function (val, cache) {
+                return cache.o_ra + 0.5 * val <= cache.ra;
             },
             message: 'Origin and field-of-view RAs exceed cone maximum.'
         }).validate('test', {
-            check: function(val, cache) {
-                return cache.o_ra - 0.5*val >= 0;
+            check: function (val, cache) {
+                return cache.o_ra - 0.5 * val >= 0;
             },
             message: 'Origin and field-of-view RAs are below cone minimum.'
         });
@@ -172,13 +177,13 @@ catalogue.modules.mock_image = function($) {
             group: [form.find('input[name$="origin_dec"]')],
             form: 'mock_image'
         }).validate('test', {
-            check: function(val, cache) {
-                return cache.o_dec + 0.5*val <= cache.dec;
+            check: function (val, cache) {
+                return cache.o_dec + 0.5 * val <= cache.dec;
             },
             message: 'Origin and field-of-view DECs exceed cone maximum.'
         }).validate('test', {
-            check: function(val, cache) {
-                return cache.o_dec - 0.5*val >= 0;
+            check: function (val, cache) {
+                return cache.o_dec - 0.5 * val >= 0;
             },
             message: 'Origin and field-of-view DECs are below cone minimum.'
         });
@@ -189,12 +194,12 @@ catalogue.modules.mock_image = function($) {
             required: true,
             form: 'mock_image'
         }).validate('test', {
-            check: function(val) {
+            check: function (val) {
                 return val > 1;
             },
             message: 'Image must have at least 1 pixel in width.'
         }).validate('test', {
-            check: function(val) {
+            check: function (val) {
                 return val < 4096;
             },
             message: 'Maximum image width is 4096 pixels.'
@@ -206,12 +211,12 @@ catalogue.modules.mock_image = function($) {
             required: true,
             form: 'mock_image'
         }).validate('test', {
-            check: function(val) {
+            check: function (val) {
                 return val > 1;
             },
             message: 'Image must have at least 1 pixel in height.'
         }).validate('test', {
-            check: function(val) {
+            check: function (val) {
                 return val < 4096;
             },
             message: 'Maximum image height is 4096 pixels.'
@@ -228,19 +233,19 @@ catalogue.modules.mock_image = function($) {
         form.find('input[name$="min_mag"]').val(7);
         form.find('input[name$="z_min"]').val(z_min);
         form.find('input[name$="z_max"]').val(z_max);
-        if(ra != "") {
-            form.find('input[name$="origin_ra"]').val(ra/2.0);
+        if (ra != "") {
+            form.find('input[name$="origin_ra"]').val(ra / 2.0);
             form.find('input[name$="fov_ra"]').val(ra);
         }
-        if(dec !== "") {
-            form.find('input[name$="origin_dec"]').val(dec/2.0);
+        if (dec !== "") {
+            form.find('input[name$="origin_dec"]').val(dec / 2.0);
             form.find('input[name$="fov_dec"]').val(dec);
         }
         form.find('input[name$="width"]').val(1024);
         form.find('input[name$="height"]').val(1024);
         update_mock_image_summary();
 
-        $('.delete-row:last').click(function(){
+        $('.delete-row:last').click(function () {
             update_mock_image_summary();
             return true;
         });
@@ -249,26 +254,33 @@ catalogue.modules.mock_image = function($) {
     }
 
     function update_apply_mock_image() {
-        if(mock_image_enabled()) {
-            $('#tao-tabs-3').css({"border-style": "solid"});
-            $('#tao-tabs-3').css({"color": "#2BA6CB"});
+        if (mock_image_enabled()) {
+            $('#tao-tabs-3').css({
+                "border-style": "solid"
+            });
+            $('#tao-tabs-3').css({
+                "color": "#2BA6CB"
+            });
 
             // Add an image if there is none there.
-            if($('#mock_image_params .single-form').length == 0)
+            if ($('#mock_image_params .single-form').length == 0)
                 $('#mock_image_params .add-row').click();
 
-	    // Enable all inputs except hidden ones.
-	    $('#mock_image_params input[type!="hidden"], #mock_image_params select').removeAttr('disabled');
+            // Enable all inputs except hidden ones.
+            $('#mock_image_params input[type!="hidden"], #mock_image_params select').removeAttr('disabled');
 
             $('#mock_image_params').slideDown();
             $('#mock_image_info').slideDown();
-        }
-        else {
-            $('#tao-tabs-3').css({"border-style": "dashed"});
-            $('#tao-tabs-3').css({"color": "rgb(119, 221, 252)"});
+        } else {
+            $('#tao-tabs-3').css({
+                "border-style": "dashed"
+            });
+            $('#tao-tabs-3').css({
+                "color": "rgb(119, 221, 252)"
+            });
 
-	    // Disable all inputs except hidden ones.
-	    $('#mock_image_params input[type!="hidden"], #mock_image_params select').attr('disabled', 'disabled');
+            // Disable all inputs except hidden ones.
+            $('#mock_image_params input[type!="hidden"], #mock_image_params select').attr('disabled', 'disabled');
 
             $('#mock_image_params').slideUp();
             $('#mock_image_info').slideUp();
@@ -276,26 +288,26 @@ catalogue.modules.mock_image = function($) {
         update_mock_image_summary();
     }
 
+
     function mock_image_update_magnitudes(sel) {
-        if(sel === undefined)
+        if (sel === undefined)
             sel = $('#mock_image_params select[name$="mag_field"]');
         update_select(sel, $('#id_sed-band_pass_filters > option'));
     }
 
 
-
     function update_mock_image_sub_cones(sel) {
-        if(sel === undefined)
+        if (sel === undefined)
             sel = $('#mock_image_params select[name$="sub_cone"]');
         var num_cones = parseInt($('#id_light_cone-number_of_light_cones').val());
-        sel.each(function(){
+        sel.each(function () {
             var cur = $(this).children('option:selected').attr('value');
             $(this).empty();
             $(this).append($('<option/>').attr('value', 'ALL').text('All'));
-            if(num_cones !== undefined && num_cones > 1) {
-                for(var ii=0; ii<num_cones; ii++) {
+            if (num_cones !== undefined && num_cones > 1) {
+                for (var ii = 0; ii < num_cones; ii++) {
                     var opt = $('<option/>').attr('value', ii).text(ii);
-                    if(opt.attr('value') == cur)
+                    if (opt.attr('value') == cur)
                         opt.prop('selected', true);
                     $(this).append(opt);
                 }
@@ -303,26 +315,27 @@ catalogue.modules.mock_image = function($) {
         });
     }
 
+
     function update_mock_image_summary() {
-        if(mock_image_enabled()) {
+        if (mock_image_enabled()) {
             $('div.summary_mock_image .apply_mock_image').show();
             catalogue.util.fill_in_summary('mock_image', 'select_mock_image', '');
             catalogue.util.fill_in_summary('mock_image', 'num_images', $('#mock_image_params .single-form').length);
-        }
-        else {
+        } else {
             $('div.summary_mock_image .apply_mock_image').hide();
             catalogue.util.fill_in_summary('mock_image', 'select_mock_image', 'Not selected');
         }
     }
 
+
     function update_select(sel, opts) {
-        sel.each(function() {
+        sel.each(function () {
             var cur_sel = $(this);
             var cur_opt = cur_sel.children('option:selected').attr('value');
             cur_sel.empty();
-            opts.each(function(){
+            opts.each(function () {
                 var opt = $('<option/>').attr('value', $(this).attr('value')).text($(this).text());
-                if($(this).attr('value') == cur_opt)
+                if ($(this).attr('value') == cur_opt)
                     opt.prop('selected', true);
                 cur_sel.append(opt);
             });
@@ -330,90 +343,91 @@ catalogue.modules.mock_image = function($) {
         });
     }
 
-    this.update_tabs = function(event, ui) {
+
+    this.update_tabs = function (event, ui) {
         var old_tab = $(ui.oldTab).children('a:first').attr('id');
         var new_tab = $(ui.newTab).children('a:first').attr('id');
 
         // Check if the mock-image tab should be enabled.
-        if(old_tab == 'tao-tabs-1' || old_tab == 'tao-tabs-2') {
+        if (old_tab == 'tao-tabs-1' || old_tab == 'tao-tabs-2') {
             var sel = $('#id_light_cone-catalogue_geometry option:selected').val();
-            if($('#id_light_cone-catalogue_geometry option:selected').val() == 'light-cone' &&
-               $('#id_sed-apply_sed').is(':checked')) {
+            if ($('#id_light_cone-catalogue_geometry option:selected').val() == 'light-cone' &&
+                $('#id_sed-apply_sed').is(':checked')) {
                 $(mi_id('apply_mock_image')).removeAttr('disabled');
                 update_apply_mock_image();
-            }
-            else {
+            } else {
                 $(mi_id('apply_mock_image')).attr('disabled', 'disabled');
                 update_apply_mock_image();
             }
         }
 
         // Update all mock image magnitudes.
-        if(old_tab == 'tao-tabs-2')
+        if (old_tab == 'tao-tabs-2')
             mock_image_update_magnitudes();
 
         // Update every mock image sub-cone option with appropriate
         // values from the general properties.
-        if(old_tab == 'tao-tabs-1')
+        if (old_tab == 'tao-tabs-1')
             update_mock_image_sub_cones();
 
         // Upon moving to a new tab, run validation in the tab to pick up
         // any changes from previous tab.
-        if(new_tab == 'tao-tabs-3')
+        if (new_tab == 'tao-tabs-3')
             $.validate_form('mock_image');
     }
 
-  this.cleanup_fields = function($form) {
-
-  }
-
-  this.validate = function($form) {
-     return $.validate_all(true) == undefined;
-  }
-
-  this.pre_submit = function($form) {
-
-  }
-
-  this.init = function() {
-   console.log('Initialising mock_image');
-
-   $('#mock_image_params .single-form').formset({
-        prefix: 'mock_image'
-    });
+    this.cleanup_fields = function ($form) {}
 
 
-    $(mi_id('apply_mock_image')).change(function(evt){
-        update_apply_mock_image();
-    });
+    this.validate = function ($form) {
+        return $.validate_all(true) == undefined;
+    }
 
-    // We always have an extra form at the end, so delete it
-    // now that we've initialised the formset.
-    $('#mock_image_params .single-form:last').remove();
-    $('#id_mock_image-TOTAL_FORMS').val(parseInt($('#id_mock_image-TOTAL_FORMS').val()) - 1);
 
-    // Pretty up the "add another" button and add my own click handler.
-    $('.add-row').button().click(function(){
-        mock_image_setup_form($('#mock_image_params .single-form:last'));
-        return true;
-    });
+    this.pre_submit = function ($form) {}
 
-    // Add behaviors to existing forms.
-    $('#mock_image_params .single-form').each(function() {
-        mock_image_setup_form_behaviors($(this));
-    });
 
-    // Run validation on all existing forms. Don't force anything here,
-    // as we don't know if this is a returning form or a new one. If it's
-    // returning, then any errors flagged in control groups will be picked
-    // up by jQuery.validate.
-    $('#mock_image_params .single-form').each(function() {
-        $.validate_form('mock_image');
-    });
+    this.init = function () {
 
-    // Reevaluate all the magnitude fields.
-    mock_image_update_magnitudes();
+        // TODO: perhaps move the event handlers to init_event_handlers()
+        // to be consistent with other modules
 
-  }
+        $('#mock_image_params .single-form').formset({
+            prefix: 'mock_image'
+        });
+
+
+        $(mi_id('apply_mock_image')).change(function (evt) {
+            update_apply_mock_image();
+        });
+
+        // We always have an extra form at the end, so delete it
+        // now that we've initialised the formset.
+        $('#mock_image_params .single-form:last').remove();
+        $('#id_mock_image-TOTAL_FORMS').val(parseInt($('#id_mock_image-TOTAL_FORMS').val()) - 1);
+
+        // Pretty up the "add another" button and add my own click handler.
+        $('.add-row').button().click(function () {
+            mock_image_setup_form($('#mock_image_params .single-form:last'));
+            return true;
+        });
+
+        // Add behaviors to existing forms.
+        $('#mock_image_params .single-form').each(function () {
+            mock_image_setup_form_behaviors($(this));
+        });
+
+        // Run validation on all existing forms. Don't force anything here,
+        // as we don't know if this is a returning form or a new one. If it's
+        // returning, then any errors flagged in control groups will be picked
+        // up by jQuery.validate.
+        $('#mock_image_params .single-form').each(function () {
+            $.validate_form('mock_image');
+        });
+
+        // Reevaluate all the magnitude fields.
+        mock_image_update_magnitudes();
+
+    }
 
 }
