@@ -222,7 +222,13 @@ namespace tao {
       const typename vector<real_type>::view
       snapshot_bins() const
       {
-         return _z_bins;
+         return _dist_bins;
+      }
+
+      const typename vector<real_type>::view
+      distance_bins() const
+      {
+         return _dist_bins;
       }
 
    protected:
@@ -241,7 +247,7 @@ namespace tao {
             // Prepare the redshift distance bins. Note that I will incorporate the
             // minimum and maximum redshift here. First calculate the
             // number of bins in the redshift range.
-            _z_bins.deallocate();
+            _dist_bins.deallocate();
             _snap_bins.deallocate();
             unsigned first, last;
             {
@@ -256,16 +262,16 @@ namespace tao {
             }
 
             // Store the distances.
-            _z_bins.reallocate( last - first + 1 );
+            _dist_bins.reallocate( last - first + 1 );
             _snap_bins.reallocate( last - first );
-            _z_bins.back() = numerics::redshift_to_comoving_distance( std::min( _sim->redshift( 0 ), _z[0] ), 1000, _sim->hubble(), _sim->omega_l(), _sim->omega_m() );
-            _z_bins.front() = numerics::redshift_to_comoving_distance( std::max( _sim->redshift( _sim->num_snapshots() - 1 ), _z[1] ), 1000, _sim->hubble(), _sim->omega_l(), _sim->omega_m() );
-            for( unsigned ii = 1; ii < _z_bins.size() - 1; ++ii )
-               _z_bins[ii] = numerics::redshift_to_comoving_distance( _sim->redshift( first + ii - 1 ), 1000, _sim->hubble(), _sim->omega_l(), _sim->omega_m() );
+            _dist_bins.back() = numerics::redshift_to_comoving_distance( std::min( _sim->redshift( 0 ), _z[0] ), 1000, _sim->hubble(), _sim->omega_l(), _sim->omega_m() );
+            _dist_bins.front() = numerics::redshift_to_comoving_distance( std::max( _sim->redshift( _sim->num_snapshots() - 1 ), _z[1] ), 1000, _sim->hubble(), _sim->omega_l(), _sim->omega_m() );
+            for( unsigned ii = 1; ii < _dist_bins.size() - 1; ++ii )
+               _dist_bins[ii] = numerics::redshift_to_comoving_distance( _sim->redshift( first + ii - 1 ), 1000, _sim->hubble(), _sim->omega_l(), _sim->omega_m() );
             for( unsigned ii = 0; ii < _snap_bins.size(); ++ii )
                _snap_bins[ii] = first + ii;
 
-            LOGDLN( "Distance bins: ", _z_bins );
+            LOGDLN( "Distance bins: ", _dist_bins );
             LOGDLN( "Snapshot bins: ", _snap_bins );
             LOGD( setindent( -2 ) );
          }
@@ -279,7 +285,7 @@ namespace tao {
       array<real_type,2> _ori;
       array<real_type,2> _z;
       array<real_type,2> _dist;
-      vector<real_type> _z_bins;
+      vector<real_type> _dist_bins;
       vector<unsigned> _snap_bins;
       bool _is_set;
    };

@@ -22,12 +22,61 @@ namespace tao {
    public:
 
       tile( tao::lightcone<real_type>& lc,
-            const array<real_type,3>& offs )
-         : _lc( lc )
+            const array<real_type,3>& offs,
+            bool random = false )
+         : _lc( lc ),
+           _rand( random )
       {
          set_offset( offs );
-         std::iota( _rot.begin(), _rot.end(), 0 );
-         std::fill( _trans.begin(), _trans.end(), 0 );
+
+         // If randomised, then randomise!
+         if( _rand )
+         {
+            // Generate translation.
+            for( unsigned ii = 0; ii < 3; ++ii )
+               _trans[ii] = generate_uniform<real_type>( 0.0, lc.simulation().box_size() );
+
+            // Generate rotations.
+            int rnd = generate_uniform<int>( 0, 5 );
+            switch( rnd )
+            {
+               case 0:
+                  _rot[0] = 0;
+                  _rot[1] = 1;
+                  _rot[2] = 2;
+                  break;
+               case 1:
+                  _rot[0] = 2;
+                  _rot[1] = 0;
+                  _rot[2] = 1;
+                  break;
+               case 2:
+                  _rot[0] = 1;
+                  _rot[1] = 2;
+                  _rot[2] = 0;
+                  break;
+               case 3:
+                  _rot[0] = 0;
+                  _rot[1] = 2;
+                  _rot[2] = 1;
+                  break;
+               case 4:
+                  _rot[0] = 1;
+                  _rot[1] = 0;
+                  _rot[2] = 2;
+                  break;
+               case 5:
+                  _rot[0] = 2;
+                  _rot[1] = 1;
+                  _rot[2] = 0;
+                  break;
+            };
+         }
+         else
+         {
+            std::iota( _rot.begin(), _rot.end(), 0 );
+            std::fill( _trans.begin(), _trans.end(), 0 );
+         }
       }
 
       void
@@ -48,6 +97,12 @@ namespace tao {
       max() const
       {
          return _max;
+      }
+
+      bool
+      random() const
+      {
+         return _rand;
       }
 
       const array<unsigned,3>&
@@ -88,6 +143,7 @@ namespace tao {
 
       tao::lightcone<real_type>& _lc;
       array<real_type,3> _min, _max;
+      bool _rand;
       array<unsigned,3> _rot;
       array<real_type,3> _trans;
    };

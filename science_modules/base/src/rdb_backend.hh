@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <libhpc/containers/set.hh>
 #include <libhpc/containers/string.hh>
+#include "query.hh"
 
 namespace tao {
    namespace backends {
@@ -37,25 +38,132 @@ namespace tao {
          //    return fmt.str();
          // }
 
-         // string
-         // make_output_field_query_string() const
-         // {
-         //    string query;
-         //    for( const auto& of : _out_fields )
-         //    {
-         //       ASSERT( _field_map.find( of ) != _field_map.end(),
-         //               "Failed to find output field name in mapping." );
-         //       if( !query.empty() )
-         //          query += " ";
-         //       query += of + " AS " + _field_map[of];
-         //    }
-         //    return query;
-         // }
+         string
+         make_tile_query_string( const tile<real_type>& tile,
+                                 tao::query<real_type>& query )
+         {
+            boost::format fmt(
+               "SELECT %1% FROM -table- "
+               "INNER JOIN redshift_ranges ON (-table-.%2% = redshift_ranges.snapshot) "
+               "(POW(-pos1-,2) + POW(-pos2-,2) + POW(-pos3-,2)) >= redshift_ranges.min AND "
+               "(POW(-pos1-,2) + POW(-pos2-,2) + POW(-pos3-,2)) < redshift_ranges.max AND "
+               "-pos1-/(SQRT(POW(-pos1-,2) + POW(-pos2-,2))) >= %3% AND "
+               "-pos1-/(SQRT(POW(-pos1-,2) + POW(-pos2-,2))) < %4% AND "
+               "SQRT(POW(-pos1-,2) + POW(-pos2-,2))/(SQRT(POW(-pos1-,2) + POW(-pos2-,2) + POW(-pos3-,2))) > %5% AND "
+               "SQRT(POW(-pos1-,2) + POW(-pos2-,2))/(SQRT(POW(-pos1-,2) + POW(-pos2-,2) + POW(-pos3-,2))) < %6%"
+               "%11%" // filter
+               );
+            if( tile.random() )
+               fmt % make_output_field_query_string( query, tile );
+            else
+               fmt % make_output_field_query_string( query );
+            fmt % _field_map.at( "snapshot" );
+            fmt % tile.lightcone().max_ra() % tile.lightcone().min_ra();
+            fmt % tile.lightcone().max_dec() % tile.lightcone().min_dec();
+            fmt % ""; // TODO
+            std::cout << fmt.str() << "\n";
+            return fmt.str();
+         }
+
+         string
+         make_snap_rng_query_string( const simulation<real_type>& sim ) const
+         {
+            ASSERT( sim.num_snapshots() >= 2, "Must be at least two snapshots." );
+
+            // Create a temporary table to hold values.
+            string query = "CREATE TEMPORARY TABLE redshift_ranges "
+               "(snapshot INTEGER, redshift DOUBLE PRECISION, min DOUBLE PRECISION, max DOUBLE PRECISION);";
+
+            // Insert all ranges.
+            for( unsigned ii = 0; ii < sim.num_snapshots() - 1; ++ii )
+            {
+               boost::format fmt( "\nINSERT INTO redshift_ranges VALUES(%1%, %2%, %3%, %4%);" );
+               real_type max = numerics::redshift_to_comoving_distance( sim.redshift( ii ), 1000, sim.hubble(), sim.omega_l(), sim.omega_m() );
+               real_type min = numerics::redshift_to_comoving_distance( sim.redshift( ii + 1 ), 1000, sim.hubble(), sim.omega_l(), sim.omega_m() );
+               fmt % (ii + 1) % sim.redshift( ii + 1 ) % (min*min) % (max*max);
+               query += fmt.str();
+            }
+
+            return query;
+         }
+
+         string
+         make_output_field_query_string( tao::query<real_type>& query,
+                                         optional<const tile<real_type>&> tile = optional<const tile<real_type>&>() ) const
+         {
+            string qs;
+            for( string of : query.output_fields() )
+            {
+               ASSERT( _field_map.find( of ) != _field_map.end(),
+                       "Failed to find output field name in mapping." );
+               if( !qs.empty() )
+                  qs += " ";
+
+               // Positions need to be handled specially to take care of translation.
+               if( tile && (of == "pos_x" || of == "pos_y" || of == "pos_z") )
+               {
+                  string mapped[3] = { "pos_x", "pos_y", "pos_z" };
+                  real_type box_size = tile.lightcone().simulation().box_size();
+                  string repl = "CASE WHEN %1% + %2% < %3% THEN %1% + %2% ELSE %1% + %2% - %3% END + %4%";
+                  string field;
+                  if( of == "pos_x" )
+                  {
+                     of = mapped[(*tile).rotation()[0]];
+                     field = boost::str( boost::format( repl ) % _field_map.at( of ) % (*tile).translation()[0] %
+                                         box_size % (*tile).min()[0] );
+                  }
+                  else if( of == "pos_y" )
+                  {
+                     of = mapped[(*tile).rotation()[1]];
+                     field = boost::str( boost::format( repl ) % _field_map.at( of ) % (*tile).translation()[1] %
+                                         box_size % (*tile).min()[1] );
+                  }
+                  else
+                  {
+                     of = mapped[(*tile).rotation()[2]];
+                     field = boost::str( boost::format( repl ) % _field_map.at( of ) % (*tile).translation()[2] %
+                                         box_size % (*tile).min()[2] );
+                  }
+
+                  // Add to query.
+                  qs += field + " AS " + of;
+               }
+               else
+               {
+                  // Velocity.
+                  if( tile && (of == "velx" || of == "vely" || of == "velz") )
+                  {
+                     string mapped[3] = { "velx", "vely", "velz" };
+                     if( of == "velx" )
+                        of = mapped[(*tile).rotation()[0]];
+                     else if( of == "vely" )
+                        of = mapped[(*tile).rotation()[1]];
+                     else
+                        of = mapped[(*tile).rotation()[2]];
+                  }
+
+                  // Spin.
+                  else if( tile && (of == "spinx" || of == "spiny" || of == "spinz") )
+                  {
+                     string mapped[3] = { "spinx", "spiny", "spinz" };
+                     if( of == "spinx" )
+                        of = mapped[(*tile).rotation()[0]];
+                     else if( of == "spiny" )
+                        of = mapped[(*tile).rotation()[1]];
+                     else
+                        of = mapped[(*tile).rotation()[2]];
+                  }
+
+                  // Add to the query.
+                  qs += _field_map.at( of ) + " AS " + of;
+               }
+            }
+            return qs;
+         }
 
       protected:
 
          std::unordered_map<string,string> _field_map;
-         set<string> _out_fields;
       };
 
       template< class T >
