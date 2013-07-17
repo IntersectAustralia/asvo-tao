@@ -305,12 +305,12 @@ namespace tao {
          // Construct a new image with the contents.
          _imgs.emplace_back(
 	    ii++,
-            sub.get<int>( "sub_cone" ), sub.get<string>( "format" ),
-            sub.get<string>( "mag_field" ), sub.get<real_type>( "min_mag" ),
-            sub.get<real_type>( "z_min" ), sub.get<real_type>( "z_max" ),
+            sub.get<int>( "sub_cone", 0 ), sub.get<string>( "format", "FITS" ),
+            sub.get<string>( "mag_field" ), sub.get<real_type>( "min_mag", 7 ),
+            sub.get<real_type>( "z_min", 0 ), sub.get<real_type>( "z_max", 127 ),
             sub.get<real_type>( "origin_ra" ), sub.get<real_type>( "origin_dec" ),
             sub.get<real_type>( "fov_ra" ), sub.get<real_type>( "fov_dec" ),
-            sub.get<unsigned>( "width" ), sub.get<unsigned>( "height" )
+            sub.get<unsigned>( "width", 1024 ), sub.get<unsigned>( "height", 1024 )
             );
       }
 
