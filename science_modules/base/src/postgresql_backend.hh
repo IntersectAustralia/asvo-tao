@@ -2,10 +2,12 @@
 #define tao_base_postgresql_backend_hh
 
 #include <boost/format.hpp>
+#include <boost/algorithm/string.hpp>
 #include <soci/soci.h>
 #include <soci/postgresql/soci-postgresql.h>
 #include "rdb_backend.hh"
 #include "tile_table_iterator.hh"
+#include "batch.hh"
 
 namespace tao {
    namespace backends {
@@ -25,6 +27,7 @@ namespace tao {
       public:
 
          typedef T real_type;
+         typedef tao::query<postgresql<real_type>> query_type;
          typedef postgresql_galaxy_iterator<real_type> galaxy_iterator;
          typedef postgresql_table_iterator<real_type> table_iterator;
          typedef backends::tile_table_iterator<postgresql> tile_table_iterator;
@@ -59,9 +62,6 @@ namespace tao {
                conn += " port=" + to_string( *port );
             _sql.open( soci::postgresql, conn );
             LOGILN( "Done.", setindent( -2 ) );
-
-            // Always load table information in one go.
-            _load_table_info();
          }
 
          void
@@ -72,22 +72,39 @@ namespace tao {
             LOGILN( "Done.", setindent( -2 ) );
          }
 
-         // galaxy_iterator
-         // galaxy_begin( const box<real_type>& box )
-         // {
-         //    string qs = make_box_query_string();
-         //    table_iterator ti = make_table_iterator();
-         //    return galaxy_iterator( qs, ti );
-         // }
+         void
+         initialise( const simulation<real_type>& sim )
+         {
+            // Always load table information in one go.
+            _load_table_info();
+
+            // Gotta get the types for all the fields.
+            _load_field_types();
+
+            // Create temporary snapshot range table.
+            LOGILN( "Making redshift range table.", setindent( 2 ) );
+            _sql << this->make_snap_rng_query_string( sim );
+            LOGILN( "Done.", setindent( -2 ) );
+         }
+
+         void
+         init_batch( batch<real_type>& bat,
+                     tao::query<real_type>& query )
+         {
+            for( const auto& field : query.output_fields() )
+               bat.set_scalar( field, _field_types.at( _field_map.at( field ) ) );
+         }
+
+         galaxy_iterator
+         galaxy_begin( query_type& query,
+                       const tile<real_type>& tile )
+         {
+            string qs = make_tile_query_string( tile, query );
+            return galaxy_iterator( *this, query, qs, table_begin( tile ), table_end( tile ) );
+         }
 
          // galaxy_iterator
-         // galaxy_begin( const tile<real_type>& tile )
-         // {
-         //    return galaxy_iterator();
-         // }
-
-         // galaxy_iterator
-         // galaxy_end() const
+         // galaxy_end( const tile<real_type>& tile ) const
          // {
          //    return galaxy_iterator();
          // }
@@ -144,134 +161,188 @@ namespace tao {
             LOGILN( "Done.", setindent( -2 ) );
          }
 
+         void
+         _load_field_types()
+         {
+            LOGILN( "Extracting field types.", setindent( 2 ) );
+            soci::rowset<soci::row> rs = _sql.prepare << "SELECT column_name, data_type FROM information_schema.columns"
+               " WHERE table_name = " + _tbls[0];
+            _field_types.clear();
+            for( soci::rowset<soci::row>::const_iterator it = rs.begin(); it != rs.end(); ++it )
+            {
+               batch::field_value_type type;
+               string type_str = it.get<std::string>( 1 );
+               LOGILN( it.get<std::string>( 0 ), ": ", type_str );
+               if( type_str == "string" )
+                  type = batch::STRING;
+               else if( type_str == "integer" )
+                  type = batch::INTEGER;
+               else if( type_str == "bigint" )
+                  type = batch::LONG_LONG;
+#ifndef NDEBUG
+               else
+                  ASSERT( 0, "Unknown field type." );
+#endif
+               _field_types.insert( it.get<std::string>( 0 ), type );
+            }
+            LOGILN( "Done.", setindent( -2 ) );
+         }
+
       protected:
 
          soci::session _sql;
+         map<string,batch<real_type>::field_value_type> _field_types;
          std::vector<double> _minx, _miny, _minz;
          std::vector<double> _maxx, _maxy, _maxz;
          std::vector<std::string> _tbls;
       };
 
-      // template< class T >
-      // class postgresql_galaxy_iterator
-      //    : public boost::iterator_facade< postgresql_galaxy_iterator<T>,
-      //                                     galaxy<T>&,
-      //                                     std::forward_iterator_tag,
-      //                                     galaxy<T>& >
-      // {
-      //    friend class boost::iterator_core_access;
+      template< class T >
+      class postgresql_galaxy_iterator
+         : public boost::iterator_facade< postgresql_galaxy_iterator<T>,
+                                          batch<T>&,
+                                          std::forward_iterator_tag,
+                                          batch<T>& >
+      {
+         friend class boost::iterator_core_access;
 
-      // public:
+      public:
 
-      //    typedef T real_type;
-      //    typedef galaxy<real_type>& value_type;
-      //    typedef value_type reference_type;
+         typedef T real_type;
+         typedef tao::query<postgresql<real_type>> query_type;
+         typedef typename postgresql<real_type>::table_iterator table_iterator;
+         typedef batch<real_type>& value_type;
+         typedef value_type reference_type;
 
-      // public:
+      public:
 
-      //    postgresql_galaxy_iterator()
-      //    {
-      //    }
+         postgresql_galaxy_iterator( postgresql<real_type>& be,
+                                     query_type& query )
+            : _be( be ),
+              _query( query ),
+              _done( true )
+         {
+         }
 
-      //    postgresql_galaxy_iterator( const string& query,
-      //                                const table_iterator& table_begin,
-      //                                const table_iterator& table_end )
-      //       : _query( query ),
-      //         _table_pos( table_begin ),
-      //         _table_end( table_end )
-      //    {
-      //    }
+         template< class Seq >
+         postgresql_galaxy_iterator( postgersql<real_type>& be,
+                                     query_type& query,
+                                     const string& query_str,
+                                     const table_iterator& table_begin,
+                                     const table_iterator& table_end )
+            : _be( be ),
+              _query( query ),
+              _query_str( query_str ),
+              _table_pos( table_begin ),
+              _table_end( table_end ),
+              _st( NULL ),
+              _done( false )
+         {
+            // Prepare the batch object.
+            be.init_batch( _bat, _query );
 
-      // protected:
+            // Need to get to first position.
+            _prepare();
+            increment();
+         }
 
-      //    void
-      //    increment()
-      //    {
-      //       // Try and fetch more rows. If there are none we need to move
-      //       // to the next table.
-      //       while( !_fetch() )
-      //       {
-      //          // Move on to the next table unless we've exhausted them.
-      //          ++_table_pos;
-      //          if( _table_pos == _table_end )
-      //             break;
-      //       }
-      //    }
+      protected:
 
-      //    bool
-      //    equal( const galaxy_iterator& op ) const
-      //    {
-      //       return _table_pos == op._table_pos;
-      //    }
+         void
+         increment()
+         {
+            // Try and fetch more rows. If there are none we need to move
+            // to the next table.
+            while( !_fetch() )
+            {
+               // Move on to the next table unless we've exhausted them.
+               ++_table_pos;
+               if( _table_pos == _table_end )
+                  break;
 
-      //    reference_type
-      //    dereference() const
-      //    {
-      //       return _gal;
-      //    }
+               // If we're not done yet, prepare the next statement.
+               _prepare();
+            }
+         }
 
-      //    void
-      //    _fetch()
-      //    {
-      //       ASSERT( _st, "No statement available on galaxy iterator." );
+         bool
+         equal( const postgresql_galaxy_iterator& op ) const
+         {
+            return _done == op._done;
+         }
 
-      //       // Clear out the current galaxy object.
-      //       _gal.clear();
-      //       _gal.set_table( *_table_pos );
+         reference_type
+         dereference() const
+         {
+            return _bat;
+         }
 
-      //       // Actually perform the fetch.
-      //       bool rows_exist = _st->fetch();
-      //       if( rows_exist )
-      //       {
-      //          // Update the galaxy object.
-      //          unsigned ii = 0;
-      //          for( const string& name : _out_fields )
-      //          {
-      //             switch( _field_types[ii] )
-      //             {
-      //                case galaxy::STRING:
-      //                   _gal.set_batch_size( ((vector<string>*)_field_stor[ii])->size() );
-      //                   _gal.set_field<string>( name, *(vector<string>*)_field_stor[ii] );
-      //                   break;
+         void
+         _prepare( const string& table )
+         {
+            // Delete any existing statement.
+            if( _st )
+               delete _st;
 
-      //                case galaxy::DOUBLE:
-      //                   _gal.set_batch_size( ((vector<double>*)_field_stor[ii])->size() );
-      //                   _gal.set_field<double>( name, *(vector<double>*)_field_stor[ii] );
-      //                   break;
+            auto prep = _sql->prepare << boost::algorithm::replace_all_copy( _query_str, "-table-", table );
+            for( unsigned ii = 0; ii < query.output_fields().size(); ++ii )
+            {
+               const auto& field = _bat.field( query.output_fields()[ii] );
+               const auto& type = std::get<2>( field );
+               switch( type )
+               {
+                  case galaxy::STRING:
+                     prep = prep, soci::into( *boost::any_cast<(std::vector<std::string>*)>( std::get<0>( field ) ) );
+                     break;
+                  case galaxy::DOUBLE:
+                     prep = prep, soci::into( *boost::any_cast<(std::vector<double>*)>( std::get<0>( field ) ) );
+                     break;
+                  case galaxy::INTEGER:
+                     prep = prep, soci::into( *boost::any_cast<(std::vector<int>*)>( std::get<0>( field ) ) );
+                     break;
+                  case galaxy::LONG_LONG:
+                     prep = prep, soci::into( *boost::any_cast<(std::vector<long long>*)>( std::get<0>( field ) ) );
+                     break;
+                  case galaxy::UNSIGNED_LONG_LONG:
+                     prep = prep, soci::into( *boost::any_cast<(std::vector<unsigned long long>*)>( std::get<0>( field ) ) );
+                     break;
+                  default:
+                     ASSERT( 0, "Unknown field type." );
+               }
+            }
 
-      //                case galaxy::INTEGER:
-      //                   _gal.set_batch_size( ((vector<int>*)_field_stor[ii])->size() );
-      //                   _gal.set_field<int>( name, *(vector<int>*)_field_stor[ii] );
-      //                   break;
+            // Prepare and execute the query without
+            // fetching anything yet.
+            _st = new soci::statement( prep );
+            _st->execute();
 
-      //                case galaxy::UNSIGNED_LONG_LONG:
-      //                   _gal.set_batch_size( ((vector<unsigned long long>*)_field_stor[ii])->size() );
-      //                   _gal.set_field<unsigned long long>( name, *(vector<unsigned long long>*)_field_stor[ii] );
-      //                   break;
+            // Store the current table on the object.
+            _bat.set_attribute( "table", table );
+         }
 
-      //                case galaxy::LONG_LONG:
-      //                   _gal.set_batch_size( ((vector<long long>*)_field_stor[ii])->size() );
-      //                   _gal.set_field<long long>( name, *(vector<long long>*)_field_stor[ii] );
-      //                   break;
+         bool
+         _fetch()
+         {
+            ASSERT( _st, "No statement available on galaxy iterator." );
 
-      //                default:
-      //                   ASSERT( 0, "Unknown field type." );
-      //             }
+            // Actually perform the fetch.
+            bool rows_exist = _st->fetch();
+            _bat.update_size();
 
-      //             // Don't forget to advance.
-      //             ++ii;
-      //          }
-      //       }
+            // Return whether we got any rows.
+            return rows_exist;
+         }
 
-      //       // Return whether we got any rows.
-      //       return rows_exist;
-      //    }
+      protected:
 
-      // protected:
-
-      //    soci::statement* _st;
-      //    galaxy<real_type> _gal;
-      // };
+         query_type* _query;
+         soci::session* _sql;
+         string _query_str;
+         table_iterator _table_pos, _table_end;
+         soci::statement* _st;
+         batch<real_type> _bat;
+         bool _done;
+      };
 
       template< class T >
       class postgresql_table_iterator

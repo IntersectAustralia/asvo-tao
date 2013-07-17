@@ -33,6 +33,9 @@ tile<real_type>* cur_box;
 colour_map<float> col_map;
 
 backends::postgresql<real_type> backend;
+tao::query<real_type> query;
+
+list<shared_ptr<batch<real_type>>> gals;
 
 TwBar* main_tb;
 
@@ -386,31 +389,35 @@ draw_galaxies()
    // glEnable( GL_BLEND );
    // glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
-   for( unsigned ii = 0; ii < 1000; ++ii )
+   for( auto it = cur_box->galaxy_begin( backend ); it != cur_box->galaxy_end( backend ); ++it )
    {
-      pos[0] = 500.0*((float)rand())/((float)RAND_MAX);
-      pos[1] = 500.0*((float)rand())/((float)RAND_MAX);
-      pos[2] = 500.0*((float)rand())/((float)RAND_MAX);
-      float mass = 1e10 + 90e10*((float)rand()/(float)RAND_MAX);
+      const galaxy<real_type>& gal = *it;
+      const vector<real_type>::view pos_x = gal.values( "pos_x" );
+      const vector<real_type>::view pos_y = gal.values( "pos_y" );
+      const vector<real_type>::view pos_z = gal.values( "pos_z" );
+      const vector<real_type>::view mass = gal.values( "stellarmass" );
 
-      glPushMatrix();
-      glTranslatef( pos[0], pos[2], -pos[1] );
-      glRotatef( -rotate_y, 0, 1, 0 );
-      glRotatef( -rotate_x, 1, 0, 0 );
-      glColor3fv( col_map[mass].data() );
-      glBegin( GL_POLYGON );
-      // glTexCoord2f( 0, 0 );
-      glVertex3f( -0.5*gal_size, -0.5*gal_size, 0 );
-      // glTexCoord2f( 1, 0 );
-      glVertex3f( 0.5*gal_size, -0.5*gal_size, 0 );
-      // glTexCoord2f( 1, 1 );
-      glVertex3f( 0.5*gal_size, 0.5*gal_size, 0 );
-      // glTexCoord2f( 0, 1 );
-      glVertex3f( -0.5*gal_size, 0.5*gal_size, 0 );
-      glEnd();
-      glPopMatrix();
+      for( unsigned idx : gal )
+      {
+         glPushMatrix();
+         glTranslatef( pos_x, pos_y, -pos_z );
+         glRotatef( -rotate_y, 0, 1, 0 );
+         glRotatef( -rotate_x, 1, 0, 0 );
+         glColor3fv( col_map[mass].data() );
+         glBegin( GL_POLYGON );
+         // glTexCoord2f( 0, 0 );
+         glVertex3f( -0.5*gal_size, -0.5*gal_size, 0 );
+         // glTexCoord2f( 1, 0 );
+         glVertex3f( 0.5*gal_size, -0.5*gal_size, 0 );
+         // glTexCoord2f( 1, 1 );
+         glVertex3f( 0.5*gal_size, 0.5*gal_size, 0 );
+         // glTexCoord2f( 0, 1 );
+         glVertex3f( -0.5*gal_size, 0.5*gal_size, 0 );
+         glEnd();
+         glPopMatrix();
+      }
    }
-   // glDisable( GL_TEXTURE_2D );
+   glDisable( GL_TEXTURE_2D );
 }
 
 void
@@ -495,8 +502,8 @@ render_box_view()
    glColor3f( 0.43, 0.43, 0.43 );
    draw_tile( *cur_box );
 
-   draw_tables();
-   // draw_galaxies();
+   // draw_tables();
+   draw_galaxies();
 
    glEnable( GL_BLEND );
    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
@@ -682,7 +689,11 @@ void
 init_tao()
 {
    // Connect the backend.
+#include "credentials.hh"
+   // backend.connect( "millennium_full_hdf5_dist", username, password, string( "tao02.hpc.swin.edu.au" ), 3306 );
    backend.connect( "millennium_mini_1", "taoadmin", "taoadmin" );
+   backend.initialise( mini_millennium );
+   query.add_base_output_fields();
 
    // Setup initial simulation.
    lc.set_simulation( &mini_millennium );
