@@ -212,6 +212,6 @@ var TwoSidedSelectWidget = function(to_id, enable) {
         enabled = enable;
     }
 
-    this.init();
+    // this.init();
 
 }
