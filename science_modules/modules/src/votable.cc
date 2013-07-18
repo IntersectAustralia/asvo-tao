@@ -46,7 +46,7 @@ namespace tao {
 	    _labels.push_back(**lblit);
 
 	 if(!*unitit)
-	    _units.push_back("unitless");
+	    _units.push_back("");
 	 else
 	    _units.push_back(**unitit);
 
@@ -130,27 +130,32 @@ namespace tao {
 	 switch( val.second )
 	 {
 	    case tao::galaxy::STRING:
-	       _file<<"datatype=\"char\" arraysize=\"*\" unit=\""+_xml_encode(*unitit)+"\"";
+	       _file<<"datatype=\"char\" arraysize=\"*\" ";
 	       break;
 
 	    case tao::galaxy::DOUBLE:
-	       _file<<"datatype=\"double\" unit=\""+_xml_encode(*unitit)+"\"";
+	       _file<<"datatype=\"double\" ";
 	       break;
 
 	    case tao::galaxy::INTEGER:
-	       _file<<"datatype=\"int\" unit=\""+_xml_encode(*unitit)+"\"";
+	       _file<<"datatype=\"int\" ";
 	       break;
 
 	    case tao::galaxy::UNSIGNED_LONG_LONG:
-	       _file<<"datatype=\"long\" unit=\""+_xml_encode(*unitit)+"\"";
+	       _file<<"datatype=\"long\" ";
 	       break;
 
 	    case tao::galaxy::LONG_LONG:
-	       _file<<"datatype=\"long\" unit=\""+_xml_encode(*unitit)+"\"";
+	       _file<<"datatype=\"long\" ";
 	       break;
 
 	    default:
 	       ASSERT( 0 );
+	 }
+
+	 if(*unitit!="")
+	 {
+		 _file<<"unit=\""+_xml_encode(*unitit)+"\"";
 	 }
 
 	 it++;
