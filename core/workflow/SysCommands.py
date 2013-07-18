@@ -88,12 +88,12 @@ class SysCommands(object):
                
                
         
-        #CommandID=self.dbaseobj.AddNewCommand(UICommandID,command,UIJobID,CommandParams)
-        #logging.info("Command Local ID:"+str(CommandID))        
+        CommandID=self.dbaseobj.AddNewCommand(UICommandID,command,UIJobID,CommandParams)
+        logging.info("Command Local ID:"+str(CommandID))        
         
         CommandFunction=self.FunctionsMap[command]
         #if CommandFunction(UICommandID,UIJobID,CommandParams)==True:
-        #self.dbaseobj.UpdateCommandStatus(CommandID,EnumerationLookup.CommandState.Completed)
+        self.dbaseobj.UpdateCommandStatus(CommandID,EnumerationLookup.CommandState.Completed)
         self.UpdateTAOCommandUI(UICommandID)
     
     def Job_Stop_All(self,UICommandID,UIJobID,CommandParams):
