@@ -55,7 +55,7 @@ namespace tao {
 	 }
 
 	 if(!*unitit)
-	    _units.push_back("unitless");
+	    _units.push_back("");
 	 else
 	 {
 	    _units.push_back(**unitit);
