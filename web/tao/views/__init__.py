@@ -110,7 +110,7 @@ def access_requests(request):
 @require_POST
 def approve_user(request, user_id):
     u = models.TaoUser.objects.get(pk=user_id)
-    u.is_active = True
+    u.activate_user()
     u.save()
 
     template_name = 'approve'
@@ -131,11 +131,11 @@ def approve_user(request, user_id):
 @admin_required
 @require_POST
 def reject_user(request, user_id):
+    reason = request.POST['reason']
     u = models.TaoUser.objects.get(pk=user_id)
-    u.rejected = True
+    u.reject_user(reason)
     u.save()
 
-    reason = request.POST['reason']
 
     template_name = 'reject'
     context = Context({'title': u.title, 'first_name': u.first_name, 'last_name': u.last_name, 'reason': reason})
