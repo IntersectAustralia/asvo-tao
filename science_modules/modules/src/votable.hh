@@ -42,13 +42,13 @@ namespace tao {
 
       void open();
 
-      void process_galaxy( const tao::galaxy& galaxy );
+      void process_galaxy( tao::galaxy& galaxy );
 
       virtual void log_metrics();
 
    protected:
       string _xml_encode(string _toencode_string);
-      void _write_field( const tao::galaxy& galaxy,const string& field,unsigned idx);
+      void _write_field( const tao::galaxy& galaxy,const string& field);
       void _write_file_header(const string& ResourceName,const string& TableName );
       void _write_footer();
 
