@@ -26,7 +26,11 @@ def login(request):
     if request.method == 'POST':
         if not request.POST.get('remember_me', None):
             request.session.set_expiry(0)  # expires on browser close
-    q_dict = {'target':request.build_absolute_uri(reverse('home'))}
+    nextP = request.GET.get('next', None)
+    if nextP is None:
+        q_dict = {'target':request.build_absolute_uri(reverse('home'))}
+    else:
+        q_dict = {'target':request.build_absolute_uri(nextP)}
     aaf_session_url = settings.AAF_SESSION_URL + "?" + django_urlencode(q_dict)
     return auth_views.login(request, authentication_form=LoginForm,extra_context={'aaf_session_url':aaf_session_url})
 
@@ -77,6 +81,8 @@ def home(request):
         if request.user.account_registration_status == TaoUser.RS_EMPTY:
             return redirect(register)
         elif request.user.account_registration_status == TaoUser.RS_PENDING:
+            return redirect(account_status)
+        elif request.user.account_registration_status == TaoUser.RS_REJECTED:
             return redirect(account_status)
     return render(request, 'home.html')
 
