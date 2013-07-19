@@ -1,10 +1,13 @@
 from sconsproject import helpers
+import sconsconfig as config
 
 # Bring in the SCons environment.
 Import('env')
 
 # Declare subdirectories.
-sub_dirs = ['bolshoi']
+sub_dirs = []
+if config.package(config.packages.glut).found:
+    sub_dirs.append('zen')
 
 # Define destination subdirectory, i.e. where these binaries will
 # be placed.

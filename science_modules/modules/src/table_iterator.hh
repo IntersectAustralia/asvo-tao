@@ -206,13 +206,13 @@ namespace tao {
 	    clip_min.begin(),
 	    clip_max.begin()
 	    );
-	 LOGDLN( "Original box: ", min, ", ", max );
-	 LOGDLN( "Clipped box:  ", clip_min, ", ", clip_max );
+	 LOGTLN( "Original box: ", min, ", ", max );
+	 LOGTLN( "Clipped box:  ", clip_min, ", ", clip_max );
 
 	 // If there is no volume left, return false.
 	 if( num::approx( box_volume( clip_min.begin(), clip_min.end(), clip_max.begin() ), 0.0, 1e-8 ) )
 	 {
-	    LOGDLN( "Zero sized box." );
+	    LOGTLN( "Zero sized box." );
 	    LOG_EXIT();
 	    return false;
 	 }
@@ -222,12 +222,12 @@ namespace tao {
 	 {
 	    if( !box_half_space_overlap( clip_min.begin(), clip_min.end(), clip_max.begin(), plane.begin() ) )
 	    {
-	       LOGDLN( "Box outside lightcone geometry." );
+	       LOGTLN( "Box outside lightcone geometry." );
 	       LOG_EXIT();
 	       return false;
 	    }
 	 }
-	 LOGDLN( "Box inside lightcone geometry." );
+	 LOGTLN( "Box inside lightcone geometry." );
 	 LOG_EXIT();
 	 return true;
       }
