@@ -8,7 +8,7 @@
         TAO - {% block subtitle %}subtitle goes here{% endblock %}
     </title>
 
-    <meta name="viewport" content="width=device-width; initial-scale=1;">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="shortcut icon" href="{% static "favicon.ico" %}" />
 
@@ -20,6 +20,9 @@
 
     <script src="{% static "js/jquery-1.8.0.min.js" %}" type="text/javascript"></script>
     <script src="{% static "bootstrap/js/bootstrap.min.js" %}" type="text/javascript"></script>
+    <script type="text/javascript">
+    var TAO_JSON_CTX = '{% json_ctx %}';
+    </script>
     {% block extrajs %}
     {% endblock %}
 </head>
