@@ -72,6 +72,23 @@ class JobTestCase(TestCase):
         merged_file_names_to_contents.update(file_names_to_contents2)
         self.assertEqual(sorted(merged_file_names_to_contents.keys()), sorted([job_file.file_name for job_file in j.files()]))
 
+    def pending_download_large_zip_file(self):
+        output_path = 'tao_test_files/large_number_of_small_files'
+        j = Job(user=self.user, status=Job.COMPLETED, output_path=output_path)
+        j.save()
+
+        from zipstream import ZipStream
+        dir_path = '/tmp/large_number_of_small_files'
+        zf = open('hugezip.zip', 'wb')
+        for data in ZipStream(dir_path):
+            zf.write(data)
+        zf.close()
+        # archive = zipstream.ZipStream(dir_path)
+        # response = StreamingHttpResponse(streaming_content=archive, content_type='application/zip')
+        # response['Content-Disposition'] = 'attachment; filename="tao_output.zip"'
+        from code import interact
+        interact(local=locals())
+
     def test_email_sent_only_when_completed(self):
         mail.outbox = []
         job = Job(user=self.user, status=Job.IN_PROGRESS, output_path='job_dir')
