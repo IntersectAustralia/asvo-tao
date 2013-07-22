@@ -151,6 +151,16 @@ def bandpass_filters(request):
     resp = json.dumps([d for d in gen_pairs(objects)])
     return HttpResponse(resp, mimetype="application/json")
 
+@researcher_required
+def dataset(request, id):
+    resp = '{}'
+    try:
+        object = DataSet.objects.get(pk=id)
+        resp = serializers.serialize('json', [object])[1:-1]
+    except DataSet.DoesNotExist:
+        pass
+    return HttpResponse(resp, mimetype="application/json")
+
 def bad_request(request):
     """
     returns an error to the browser
