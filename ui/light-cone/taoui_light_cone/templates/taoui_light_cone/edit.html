@@ -1,7 +1,7 @@
 {% load staticfiles %}
 {% load bootstrap_tags %}
 {% load assets %}
-{% js_asset 'taoui_light_cone/light_cone.js' %}
+<script type="text/javascript" src="{% static 'js/taoui_light_cone/light_cone.js' %}"></script>
 
 {% block extrajs %}
     <link rel="stylesheet" href="{% static 'css/jquery-ui/themes/base/jquery-ui.css' %}" />

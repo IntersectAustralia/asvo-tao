@@ -46,7 +46,7 @@ namespace tao {
 	    _labels.push_back(**lblit);
 
 	 if(!*unitit)
-	    _units.push_back("unitless");
+	    _units.push_back("");
 	 else
 	    _units.push_back(**unitit);
 
@@ -130,27 +130,32 @@ namespace tao {
 	 switch( val.second )
 	 {
 	    case tao::galaxy::STRING:
-	       _file<<"datatype=\"char\" arraysize=\"*\" unit=\""+_xml_encode(*unitit)+"\"";
+	       _file<<"datatype=\"char\" arraysize=\"*\" ";
 	       break;
 
 	    case tao::galaxy::DOUBLE:
-	       _file<<"datatype=\"double\" unit=\""+_xml_encode(*unitit)+"\"";
+	       _file<<"datatype=\"double\" ";
 	       break;
 
 	    case tao::galaxy::INTEGER:
-	       _file<<"datatype=\"int\" unit=\""+_xml_encode(*unitit)+"\"";
+	       _file<<"datatype=\"int\" ";
 	       break;
 
 	    case tao::galaxy::UNSIGNED_LONG_LONG:
-	       _file<<"datatype=\"long\" unit=\""+_xml_encode(*unitit)+"\"";
+	       _file<<"datatype=\"long\" ";
 	       break;
 
 	    case tao::galaxy::LONG_LONG:
-	       _file<<"datatype=\"long\" unit=\""+_xml_encode(*unitit)+"\"";
+	       _file<<"datatype=\"long\" ";
 	       break;
 
 	    default:
 	       ASSERT( 0 );
+	 }
+
+	 if(*unitit!="")
+	 {
+		 _file<<"unit=\""+_xml_encode(*unitit)+"\"";
 	 }
 
 	 it++;
@@ -245,11 +250,11 @@ namespace tao {
       }
 
    }
-   void votable::process_galaxy( const tao::galaxy& galaxy )
+   void votable::process_galaxy( tao::galaxy& galaxy )
    {
       _timer.start();
 
-      for( unsigned ii = 0; ii < galaxy.batch_size(); ++ii )
+      for( galaxy.begin(); !galaxy.done(); galaxy.next() )
       {
 	 auto it = _fields.cbegin();
 	 if( it != _fields.cend() )
@@ -258,7 +263,7 @@ namespace tao {
 
 	    while( it != _fields.cend() )
 	    {
-	       _write_field( galaxy, *it++,ii );
+	       _write_field( galaxy, *it++ );
 	    }
 	    _file<<"\t</TR>"<<std::endl;
 	 }
@@ -276,30 +281,30 @@ namespace tao {
       LOGILN( _name, " number of records written: ", mpi::comm::world.all_reduce( _records ) );
    }
 
-   void votable::_write_field( const tao::galaxy& galaxy, const string& field,unsigned idx )
+   void votable::_write_field( const tao::galaxy& galaxy, const string& field )
    {
       _file<<"\t\t<TD>";
       auto val = galaxy.field( field );
       switch( val.second )
       {
 	 case tao::galaxy::STRING:
-	    _file << galaxy.values<string>( field )[idx];
+	    _file << galaxy.current_value<string>( field );
 	    break;
 
 	 case tao::galaxy::DOUBLE:
-	    _file << galaxy.values<double>( field )[idx];
+	    _file << galaxy.current_value<double>( field );
 	    break;
 
 	 case tao::galaxy::INTEGER:
-	    _file << galaxy.values<int>( field )[idx];
+	    _file << galaxy.current_value<int>( field );
 	    break;
 
 	 case tao::galaxy::UNSIGNED_LONG_LONG:
-	    _file << galaxy.values<unsigned long long>( field )[idx];
+	    _file << galaxy.current_value<unsigned long long>( field );
 	    break;
 
 	 case tao::galaxy::LONG_LONG:
-	    _file << galaxy.values<long long>( field )[idx];
+	    _file << galaxy.current_value<long long>( field );
 	    break;
 
 	 default:
