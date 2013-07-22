@@ -1,15 +1,13 @@
 {% load staticfiles %}
 {% load bootstrap_tags %}
 {% load assets %}
-{% js_asset 'taoui_light_cone/light_cone.js' %}
+<script type="text/javascript" src="{% static 'js/taoui_light_cone/light_cone.js' %}"></script>
 
 {% block extrajs %}
     <link rel="stylesheet" href="{% static 'css/jquery-ui/themes/base/jquery-ui.css' %}" />
     <script type="text/javascript" src="{% static 'js/jquery-1.8.0.min.js' %}"></script>
     <!--<script src="/resources/demos/external/jquery.mousewheel.js"></script>-->
     <script type="text/javascript" src="{% static 'js/jquery-ui-1.10.1.custom.js' %}"></script>
-        <script type="text/javascript" src="{% static 'js/integral.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/count_boxes.js' %}"></script>
 {% endblock extrajs %}
 
 <legend></legend>

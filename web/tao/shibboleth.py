@@ -72,5 +72,7 @@ class ShibbolethUserBackend(ModelBackend):
             user.last_name = kwargs['surname']
             user.aaf_shared_token = username
             user.account_registration_status = UserModel.RS_EMPTY
+            user.is_active = False
+            user.is_rejected = False
             user.save()
         return user

@@ -11,5 +11,5 @@ if [ -n "$run_doxygen" ]; then
   doxygen Doxyfile.conf
 fi
 sphinx-build -b html ./source ./build
-test -d ../web/static/docs && rm -rf ../web/tao/static/docs
-cp -r build ../web/tao/static/docs
+test -d ../web/static/docs && rm -rf ../web/tao/static/docs && mkdir ../web/tao/static/docs && echo "Empty docs"
+cp -r build/* ../web/tao/static/docs

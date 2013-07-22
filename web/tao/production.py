@@ -27,20 +27,3 @@ DATABASES = {
 SECRET_KEY = ''
 from taosecrets import *
 
-STATIC_URL = '/taodemo/static/'
-FILES_BASE = '/mnt/TAOAdmin/'  # please include a trailing slash
-
-EMAIL_HOST = 'gpo.swin.edu.au'
-EMAIL_PORT = '25'
-
-EMAIL_FROM_ADDRESS = 'admin@asvo.org.au'
-
-API_ALLOWED_IPS = (
-                   '136.186.55.225', # tao01
-                   '136.186.55.226', # tao02
-                   '136.186.24.174', # Amr
-                   )
-
-ALLOWED_HOSTS = ['tao.asvo.org.au']
-USE_CAPTCHA=True
-
