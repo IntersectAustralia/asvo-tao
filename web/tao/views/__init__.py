@@ -152,9 +152,14 @@ def reject_user(request, user_id):
 
     return redirect(access_requests)
 
-@researcher_required
 @set_tab('support')
 def support(request):
+    if not hasattr(request,'user') or not hasattr(request.user,'is_aaf'):
+        return redirect(handle_403)
+    if request.user.is_aaf() and request.user.account_registration_status == TaoUser.RS_EMPTY:
+        return redirect(register)
+    if request.user.is_aaf() and request.user.account_registration_status == TaoUser.RS_REJECTED:
+        return redirect(account_status)
     from tao.forms import SupportForm
     if request.method == 'POST':
         form = SupportForm(request.POST)
