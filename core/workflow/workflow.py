@@ -328,13 +328,20 @@ class WorkFlow(object):
             
             
             ## 1- Change In Job Status to Running 
-            if  PID in CurrentJobs and (CurrentJobs[PID]=='R' and OldStatus!=EnumerationLookup.JobState.Running) : 
-                self.UpdateJob_Running(PID,SubJobIndex,JobType, OldStatus, UIReference_ID, JobID) 
+            if  PID in CurrentJobs and CurrentJobs[PID]=='R': 
+                if OldStatus!=EnumerationLookup.JobState.Running:
+                    self.UpdateJob_Running(PID,SubJobIndex,JobType, OldStatus, UIReference_ID, JobID)
+                elif JobDetails!=None:
+                    logging.info ("Job ("+str(UIReference_ID)+" ["+str(SubJobIndex)+"]) .. : Progress="+JobDetails['progress'])
+                else:
+                    logging.info ("Job ("+str(UIReference_ID)+") .. : Log File Does not exist") 
                
             ## 2-  Change In Job Status to Queued
-            elif  PID in CurrentJobs and (CurrentJobs[PID]=='Q' and OldStatus!=EnumerationLookup.JobState.Queued): 
-                self.UpdateJob_Queued(PID,SubJobIndex,JobType, OldStatus, UIReference_ID, JobID)
-            
+            elif  PID in CurrentJobs and CurrentJobs[PID]=='Q': 
+                if OldStatus!=EnumerationLookup.JobState.Queued:
+                    self.UpdateJob_Queued(PID,SubJobIndex,JobType, OldStatus, UIReference_ID, JobID)
+                else:
+                    logging.info("Jobs Still Queued ...")
             ## 3- Job Status Unknown ... It is still in the queue but it is not Q or R !     
             elif  PID in CurrentJobs and CurrentJobs[PID]!='R' and CurrentJobs[PID]!='Q' : 
                 logging.info('Job Status UNKnow '+str(UIReference_ID)+' :'+CurrentJobs[PID])              
@@ -359,10 +366,7 @@ class WorkFlow(object):
             ###############################################################################################################
             ## 5- The Job didn't change its status... Show its progess information if Exists!        
             else:
-                if JobDetails!=None:
-                    logging.info ("Job ("+str(UIReference_ID)+" ["+str(SubJobIndex)+"]) .. : Progress="+JobDetails['progress'])
-                else:
-                    logging.info ("Job ("+str(UIReference_ID)+") .. : Log File Does not exist")
+                logging.info("Job Status Checking is not known!!")
 
     def UpdateJob_EndSuccessfully(self, JobID,SubJobIndex, JobType, UIReference_ID, UserName, JobDetails):
         
