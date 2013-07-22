@@ -137,6 +137,9 @@ class DataSet(models.Model):
     default_filter_min = models.FloatField(null=True, blank=True)
     default_filter_max = models.FloatField(null=True, blank=True)
     max_job_box_count = models.IntegerField(default=0)
+    job_size_p1 = models.FloatField(default=0.06555053)
+    job_size_p2 = models.FloatField(default=-0.10355211)
+    job_size_p3 = models.FloatField(default=0.37135452)
     
     class Meta:
         unique_together = ('simulation', 'galaxy_model')
