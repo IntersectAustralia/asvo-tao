@@ -433,6 +433,13 @@ catalogue.modules.light_cone = function ($) {
         return num_boxes;
     }
 
+    var esttime = function(x, p1, p2, p3) {
+        return (p1 * x * x) + (p2 * x) + p3;
+    }
+    var job_size = function(estimated_count, max_boxes, p1, p2, p3) {
+        return esttime(estimated_count, p1, p2, p3) / esttime(max_boxes, p1, p2, p3);
+    }
+
     var check_number_of_boxes = function(num_boxes) {
         var dataset_id = $(lc_id('galaxy_model')).val();
         $.ajax({
@@ -443,14 +450,18 @@ catalogue.modules.light_cone = function ($) {
             },
             success: function(data, status, xhr) {
                 var max_job_box_count = parseInt(data.fields.max_job_box_count);
-                if (num_boxes > max_job_box_count) {
+                var job_size_p1 = parseFloat(data.fields.job_size_p1);
+                var job_size_p2 = parseFloat(data.fields.job_size_p2);
+                var job_size_p3 = parseFloat(data.fields.job_size_p3);
+                var job_size_percentage = job_size(num_boxes, max_job_box_count, job_size_p1, job_size_p2, job_size_p3)*100;
+                if (job_size_percentage > 100) { //num_boxes > max_job_box_count) {
                     $('#max_job_size').addClass('job_too_large_error');
-                    $('#max_job_size').text('Estimated job size: ' + num_boxes + ' / ' + max_job_box_count + '. Note this exceeds the maximum allowed size, please reduce the light-cone size (RA, Dec, Redshift range).');
+                    $('#max_job_size').text('Estimated job size: ' + job_size_percentage.toFixed(0) + '%. Note this exceeds the maximum allowed size, please reduce the light-cone size (RA, Dec, Redshift range).');
                     return false;
                 }
                 else {
                     $('#max_job_size').removeClass('job_too_large_error');
-                    $('#max_job_size').text('Estimated job size: ' + num_boxes + ' / ' + max_job_box_count);
+                    $('#max_job_size').text('Estimated job size: ' + job_size_percentage.toFixed(0) + '%'); //num_boxes + ' / ' + max_job_box_count);
                     return true;
                 }
             }
