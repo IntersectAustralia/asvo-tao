@@ -20,6 +20,7 @@ class Migration(SchemaMigration):
             db.rename_table('auth_user_groups', 'tao_taouser_groups')
             db.rename_column('tao_taouser_groups','user_id','taouser_id')
             db.rename_column('tao_taouser_user_permissions','user_id','taouser_id')
+            db.execute( db.foreign_key_sql('tao_job','user_id','tao_taouser','id') )
         else:
             # Presumably clean install with Django >= 1.5
             db.create_table('tao_taouser', (

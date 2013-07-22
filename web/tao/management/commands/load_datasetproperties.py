@@ -1,7 +1,7 @@
 # coding: utf-8
-"""Load / Replace the Properties (Fields) and Snapshots in to the specified DataSet.
+"""Load / Replace the Properties (Fields) and Snapshots in the specified DataSet.
 
-Note that this is a development utility (hack) and isn't intended for production use.
+Note that this is a development utility and is expected to be used with care!
 
 Example format:
 
@@ -30,16 +30,21 @@ from django.db import transaction
 from tao.models import DataSet, DataSetProperty, Snapshot
 
 _current_command = __name__.split('.')[-1]
+moddoc = __doc__
+
 
 class Command(NoArgsCommand):
     help = """
-        add parameters to the specified DataSet
+Manage DataSetProperty and Snapshot info in the specified DataSet
 
-        usage:
-            manage.py --list-available-datasets
-        or:
-            manage.py --dataset=<dataset_id> --file=<filename>
+List available datasets:
+    manage.py --list-available-datasets
 
+Load property and snapshot info from the supplied file:
+    manage.py --dataset=<dataset_id> --file=<filename>
+
+Replace property info in dataset X from the specified dataset Y:
+    manage.py --dataset=<dataset_X> --replace-properties=<dataset_Y>
 """
 
     option_list = NoArgsCommand.option_list + (
@@ -55,12 +60,12 @@ class Command(NoArgsCommand):
             default=None,
             help='the input XML filename containing the metadata',
         ),
-        make_option('--copy-properties',
+        make_option('--replace-properties',
             type="int",
             action='store',
-            dest='copy_id',
+            dest='replace_id',
             default=None,
-            help='copy dataset properties from the nominated dataset id',
+            help='replace dataset properties from the nominated dataset id',
         ),
         make_option('--dataset',
             type="int",
@@ -75,15 +80,25 @@ class Command(NoArgsCommand):
             default=False,
             help='load pdb and halt after parsing options',
         ),
+        make_option('--moddoc',
+            action='store_true',
+            dest='moddoc',
+            default=False,
+            help='print module doc and exit',
+        ),
     )
 
 
     def handle_noargs(self, **options):
+        self._options = options
         if options['debug']:
             import pdb
             pdb.set_trace()
         if options['list_available_datasets']:
             self._list_available_datasets()
+        elif options['moddoc']:
+            print moddoc
+            print self.help
         elif options['xml_filename'] and options['dataset_id']:
             try:
                 data_set = DataSet.objects.get(pk=options['dataset_id'])
@@ -92,8 +107,8 @@ class Command(NoArgsCommand):
                 self._list_available_datasets()
             else:
                 self._load_properties(data_set, options['xml_filename'])
-        elif options['copy_id'] and options['dataset_id']:
-            self._copy_properties(options['copy_id'], options['dataset_id'])
+        elif options['replace_id'] and options['dataset_id']:
+            self._replace_properties(options['replace_id'], options['dataset_id'])
         else:
             self.stderr.write(self.help)
 
@@ -142,25 +157,77 @@ class Command(NoArgsCommand):
             new_redshift.save()
 
     @transaction.commit_on_success
-    def _copy_properties(self, copy_id, dataset_id):
-        """Copy the dataset properties from the specified dataset"""
+    def _replace_properties(self, replace_id, dataset_id):
+        """Replace the dataset properties (dataset_id) from the specified 
+        dataset (replace_id)"""
+        # Look up the two datasets, exit on dataset not found
         try:
             data_set = DataSet.objects.get(pk=dataset_id)
         except DataSet.DoesNotExist:
             raise CommandError('DataSet not found: %s\n' % dataset_id)
         try:
-            copy_set = DataSet.objects.get(pk=copy_id)
+            replace_set = DataSet.objects.get(pk=replace_id)
         except DataSet.DoesNotExist:
-            raise CommandError('DataSet not found: %s\n' % copy_id)
+            raise CommandError('DataSet not found: %s\n' % replace_id)
 
-        properties = DataSetProperty.objects.filter(dataset=copy_set)
+        #
+        # Copy the properties from the replacement set in to the target set
+        #
+        # We can't simply delete the old properties and replace due to the
+        # default filter foreign key from the DataSet.
+        #
+        # Iterate over all the properties one by one and update the target
+        # dataset properties.  Then delete any missed properties, as long
+        # as they aren't part of the default filter.
+        #
+        properties = DataSetProperty.objects.filter(dataset=replace_set)
+        existing_properties = DataSetProperty.objects.filter(dataset=data_set)
+        existing_properties = [x.id for x in existing_properties]
         i = 0
-        for prop in properties:
-            prop.dataset = data_set
-            prop.pk = None
-            prop.save()
+        for source_prop in properties:
+            prop_id = source_prop.name
+            existing_prop = DataSetProperty.objects.filter(
+                dataset=data_set, name=prop_id)
+            if len(existing_prop) == 1:
+                existing_prop = existing_prop[0]
+                # Mark the property as processed
+                existing_properties.remove(existing_prop.id)
+            elif len(existing_prop) == 0:
+                existing_prop = DataSetProperty(dataset=data_set)
+            else:
+                raise CommandError("Multiple properties found - should never get here")
+            for field in source_prop._meta.fields:
+                # Don't copy relations or the primary key
+                if field.primary_key:
+                    continue
+                if field.rel is not None:
+                    continue
+                if self._options['verbosity'] > 1:
+                    print(u"Set {name} from {old} to {new}".format(
+                        name=field.name,
+                        old=getattr(existing_prop, field.name),
+                        new=getattr(source_prop, field.name)))
+                setattr(existing_prop, field.name, getattr(source_prop, field.name))
+            existing_prop.save()
             i += 1
-        print("Copied {i} properties from {copy} to {dest}".format(
+        print("Replaced {i} properties from {replace} to {dest}".format(
                 i=i,
-                copy=str(copy_set),
+                replace=str(replace_set),
                 dest=str(data_set)))
+        #
+        # Delete any remaining properties from the target dataset.
+        # If the property is a default filter, notify the user and
+        # remove the filter
+        #
+        for id in existing_properties:
+            print("Untested...")
+            import pdb; pdb.set_trace()
+            prop = DataSetProperty.objects.get(pk=id)
+            filters = DataSet.objects.filter(default_filter_field=prop)
+            if len(filters) > 0:
+                for filter in filters:
+                    print(u"Clearing default filter in: {0}".format(str(filter)))
+                    filter.default_filter_field = None
+                    filter.save()
+            print("Deleting old property: {0}".format(str(prop)))
+            prop.delete()

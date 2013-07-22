@@ -9,6 +9,7 @@ import django.contrib.auth.models as auth_models
 from django.conf import settings
 from django.db import models
 from tao.mail import send_mail
+from datetime import datetime
 
 import os
 
@@ -56,8 +57,22 @@ class TaoUser(auth_models.AbstractUser):
     def is_rejected(self):
         return self.account_registration_status == TaoUser.RS_REJECTED
 
+    def activate_user(self):
+        if self.is_aaf():
+            self.account_registration_status = TaoUser.RS_APPROVED
+        self.account_registration_date = datetime.now()
+        self.is_active = True
+
+    def reject_user(self, reason):
+        if self.is_aaf():
+            self.account_registration_status = TaoUser.RS_REJECTED
+            self.account_registration_reason = reason
+        self.account_registration_date = datetime.now()
+        self.is_active = False
+        self.rejected = True
+
     def __unicode__(self):
-        return "(%d) %s, %s" % (self.id, self.username, self.account_registration_status)
+        return "(%d) %s, %s, active:%r" % (self.id, self.username, self.account_registration_status, self.is_active)
 
 class Simulation(models.Model):        
 
