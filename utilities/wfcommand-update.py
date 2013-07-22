@@ -23,7 +23,7 @@ import sys
 import requests
 import json
 
-base_url = "http://127.0.0.1:8000/api/v1/workflowcommand/"
+base_url = "https://tao.asvo.org.au/taostaging/api/v1/workflowcommand/"
 
 if len(sys.argv) < 5:
     print("usage: {0} wf_id status comment job_id".format(sys.argv[0]))
