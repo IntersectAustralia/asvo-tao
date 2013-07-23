@@ -6,19 +6,19 @@ metadata in to a clean database, and not users or existing jobs.
 """
 import sys
 from django.contrib.auth.models import User as DjangoUser
-from tao.models import Job, TaoUser, GlobalParameter, Snapshot
+from tao.models import Job, TaoUser, GlobalParameter, Snapshot, WorkflowCommand
 
 # We only want to display some messages once.
 # displayed_messages can be used to hold a flag indicating that the message
 # has been displayed.
 displayed_messages = []
 
-ignored_classes = [DjangoUser, Job, TaoUser]
+ignored_classes = [DjangoUser, Job, TaoUser, WorkflowCommand]
 
 def locate_object(original_class, original_pk_name, the_class, pk_name, pk_value, obj_content):
     # Ignore Jobs, Users and UserProfiles
     if original_class in ignored_classes:
-        if original_class not in ignored_classes:
+        if original_class not in displayed_messages:
             print("Ignoring {0}".format(str(original_class)))
             displayed_messages.append(original_class)
         return original_class()
@@ -30,10 +30,11 @@ def locate_object(original_class, original_pk_name, the_class, pk_name, pk_value
 
 def save_or_locate(the_obj):
     # Ignore Jobs, Users and UserProfiles
-    if the_obj.__class__ in [DjangoUser, Job, TaoUser]:
-        if original_class not in ignored_classes:
-            print("Ignoring {0}".format(str(original_class)))
-            displayed_messages.append(original_class)
+    the_obj_class = the_obj.__class__
+    if the_obj_class in ignored_classes:
+        if the_obj_class not in displayed_messages:
+            print("Ignoring {0}".format(str(the_obj_class)))
+            displayed_messages.append(the_obj_class)
         return the_obj
 
     # Update existing GlobalParameters
