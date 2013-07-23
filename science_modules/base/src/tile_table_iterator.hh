@@ -8,6 +8,8 @@
 #include "rdb_backend.hh"
 #include "tile.hh"
 
+class tile_table_iterator_suite;
+
 namespace tao {
    namespace backends {
       using namespace hpc;
@@ -19,6 +21,7 @@ namespace tao {
                                           std::forward_iterator_tag,
                                           const typename rdb<typename Backend::real_type>::table& >
       {
+         friend class ::tile_table_iterator_suite;
          friend class boost::iterator_core_access;
 
       public:
@@ -58,6 +61,19 @@ namespace tao {
                // Get to the first position.
                _begin();
             }
+         }
+
+         tile_table_iterator( const tile_table_iterator& src )
+            : _be( src._be ),
+              _tile( src._tile ),
+              _ph( src._ph ),
+              _planes( src._planes ),
+              _walls( src._walls ),
+              _tables( src._tables ),
+              _done( src._done )
+         {
+            // Iterator needs to be modified.
+            _it = _tables.begin() + (src._it - src._tables.begin());
          }
 
          const typename vector<array<real_type,3>>::view
@@ -372,8 +388,8 @@ namespace tao {
          const backend_type& _be;
          const tile<real_type>& _tile;
          vector<array<real_type,3>> _ph;
-         list<array<real_type,4> > _planes;
-         vector<array<real_type,3> > _walls;
+         list<array<real_type,4>> _planes;
+         vector<array<real_type,3>> _walls;
          vector<table_type> _tables;
          typename vector<table_type>::const_iterator _it;
          bool _done;

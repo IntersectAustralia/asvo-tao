@@ -2,6 +2,7 @@
 #define tao_base_tile_hh
 
 #include <libhpc/containers/array.hh>
+#include "query.hh"
 
 namespace tao {
    using namespace hpc;
@@ -22,7 +23,7 @@ namespace tao {
    public:
 
       tile( tao::lightcone<real_type>& lc,
-            const array<real_type,3>& offs,
+            const array<real_type,3>& offs = array<real_type,3>( 0, 0, 0 ),
             bool random = false )
          : _lc( lc ),
            _rand( random )
@@ -124,19 +125,21 @@ namespace tao {
       }
 
       template< class Backend >
-      tile_galaxy_iterator<typename Backend::galaxy_iterator>
-      galaxy_begin( Backend& be ) const
+      tile_galaxy_iterator<typename Backend::tile_galaxy_iterator>
+      galaxy_begin( tao::query<real_type>& query,
+                    Backend& be ) const
       {
-         typedef typename Backend::galaxy_iterator bgi_type;
-         return tile_galaxy_iterator<bgi_type>( be.galaxy_begin( *this ) );
+         typedef typename Backend::tile_galaxy_iterator bgi_type;
+         return tile_galaxy_iterator<bgi_type>( be.galaxy_begin( query, *this ) );
       }
 
       template< class Backend >
-      tile_galaxy_iterator<typename Backend::galaxy_iterator>
-      galaxy_end( Backend& be ) const
+      tile_galaxy_iterator<typename Backend::tile_galaxy_iterator>
+      galaxy_end( tao::query<real_type>& query,
+                  Backend& be ) const
       {
-         typedef typename Backend::galaxy_iterator bgi_type;
-         return tile_galaxy_iterator<bgi_type>( be.galaxy_end() );
+         typedef typename Backend::tile_galaxy_iterator bgi_type;
+         return tile_galaxy_iterator<bgi_type>( be.galaxy_end( query, *this ) );
       }
 
    protected:
@@ -171,6 +174,12 @@ namespace tao {
       {
       }
 
+      reference_type
+      operator*()
+      {
+         return dereference();
+      }
+
    protected:
 
       void
@@ -186,7 +195,7 @@ namespace tao {
       }
 
       reference_type
-      dereference() const
+      dereference()
       {
          return *_bgi;
       }

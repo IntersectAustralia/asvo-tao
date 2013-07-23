@@ -22,25 +22,17 @@ namespace tao {
 
    public:
 
-      lightcone()
-         : _is_set( false )
+      lightcone( tao::simulation<real_type>* sim = NULL )
+         : _sim( NULL )
       {
-         set_simulation( NULL );
-      }
-
-      lightcone( tao::simulation<real_type>* )
-         : _is_set( false )
-      {
-         set_simulation( NULL );
+         set_simulation( sim );
+         set_geometry( 0, 10, 0, 10, 0.06 );
       }
 
       void
       set_simulation( tao::simulation<real_type>* sim )
       {
          _sim = sim;
-
-         // Setting the simulation requires recalculation of
-         // the dependant parts of the lightcone.
          _recalc();
       }
 
@@ -50,9 +42,7 @@ namespace tao {
                     real_type dec_min,
                     real_type dec_max,
                     real_type z_max,
-                    real_type z_min = 0,
-                    optional<real_type> ra_ori = optional<real_type>(),
-                    optional<real_type> dec_ori = optional<real_type>() )
+                    real_type z_min = 0 )
       {
          // Check values make sense.
          ASSERT( ra_min >= 0.0 && ra_min <= 90.0,
@@ -77,11 +67,8 @@ namespace tao {
          _ra[1] = to_radians( ra_max );
          _dec[0] = to_radians( dec_min );
          _dec[1] = to_radians( dec_max );
-         _ori[0] = ra_ori.get_value_or( 0.5*(_ra[0] + _ra[1]) );
-         _ori[1] = dec_ori.get_value_or( 0.5*(_dec[0] + _dec[1]) );
          _z[0] = z_min;
          _z[1] = z_max;
-         _is_set = true;
          _recalc();
       }
 
@@ -159,10 +146,7 @@ namespace tao {
       tile_iterator
       tile_begin()
       {
-         if( _is_set )
-            return tile_iterator( *this, false );
-         else
-            return tile_end();
+         return tile_iterator( *this, false );
       }
 
       tile_iterator
@@ -236,11 +220,10 @@ namespace tao {
       void
       _recalc()
       {
-         if( _is_set )
+         if( _sim )
          {
             LOGDLN( "Recalculating lightcone information.", setindent( 2 ) );
 
-            ASSERT( _sim, "No simulation set." );
             _dist[0] = numerics::redshift_to_comoving_distance( _z[0], 1000, _sim->hubble(), _sim->omega_l(), _sim->omega_m() );
             _dist[1] = numerics::redshift_to_comoving_distance( _z[1], 1000, _sim->hubble(), _sim->omega_l(), _sim->omega_m() );
 
@@ -282,12 +265,10 @@ namespace tao {
       tao::simulation<real_type>* _sim;
       array<real_type,2> _ra;
       array<real_type,2> _dec;
-      array<real_type,2> _ori;
       array<real_type,2> _z;
       array<real_type,2> _dist;
       vector<real_type> _dist_bins;
       vector<unsigned> _snap_bins;
-      bool _is_set;
    };
 
    template< class T >
@@ -315,7 +296,7 @@ namespace tao {
    public:
 
       lightcone_tile_iterator( lightcone<real_type>& lc,
-                              bool done )
+                               bool done )
          : _lc( lc ),
            _done( done )
       {
