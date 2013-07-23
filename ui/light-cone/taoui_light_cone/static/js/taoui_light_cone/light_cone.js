@@ -846,7 +846,8 @@ catalogue.modules.light_cone = function ($) {
 
     var validate_number_of_boxes = function() {
         if ($('#max_job_size').hasClass('job_too_large_error')) {
-            show_tab($('#max_job_size'), 0);
+            console.log($('#max_job_size').text());
+            catalogue.util.show_tab($('#max_job_size'), 0);
             return false;
         } else {
             return true;
