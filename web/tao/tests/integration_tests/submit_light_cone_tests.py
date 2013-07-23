@@ -14,7 +14,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
         GlobalParameterFactory(parameter_name='INITIAL_JOB_STATUS', parameter_value='HELD')
         simulation = SimulationFactory.create(box_size=500)
         galaxy_model = GalaxyModelFactory.create()
-        dataset = DataSetFactory.create(simulation=simulation, galaxy_model=galaxy_model, max_job_box_count=12)
+        dataset = DataSetFactory.create(simulation=simulation, galaxy_model=galaxy_model, max_job_box_count=15)
 
         self.redshifts = ['1.23456789', '2.987654321', '3.69154927', '4.567890123']
         for redshift in self.redshifts:
@@ -41,18 +41,43 @@ class SubmitLightConeTests(LiveServerMGFTest):
     def tearDown(self):
         super(SubmitLightConeTests, self).tearDown()
 
-    def test_box_count_too_large(self):
+    def test_display_job_estimate_on_cone_only(self):
+        self.assert_not_displayed('#max_job_size') # box is selected on initial load
+
         self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
-        # the box count calculated from these parameters is 15, exceeding the max_job_box_count set for this dataset, 12
+        self.assert_is_displayed('#max_job_size')
+
+    def test_job_estimate_displayed_correctly(self):
+        self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
+        # the box count calculated from these parameters is 15, within the max_job_box_count set for this dataset, 15
         self.fill_in_fields({
             'ra_opening_angle': '1',
             'dec_opening_angle': '2',
             'redshift_min': '3',
             'redshift_max': '4',
         }, id_wrap=self.lc_id)
+        self.click(self.lc_2select('op_add_all'))
+        self.assert_page_has_content('Estimated job size: 100%')
+        self.assert_page_does_not_contain("Note this exceeds the maximum allowed size, please reduce the light-cone size (RA, Dec, Redshift range).")
+
+        self.submit_mgf_form()
+        self.assert_on_page('job_index')
+
+    def test_job_estimated_too_large(self):
+        self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
+        # the box count calculated from these parameters is 16, exceeding the max_job_box_count set for this dataset, 15
+        self.fill_in_fields({
+            'ra_opening_angle': '1',
+            'dec_opening_angle': '2',
+            'redshift_min': '3',
+            'redshift_max': '5',
+        }, id_wrap=self.lc_id)
+        self.click(self.lc_2select('op_add_all'))
+        self.assert_page_has_content("Note this exceeds the maximum allowed size, please reduce the light-cone size (RA, Dec, Redshift range).")
         self.submit_mgf_form()
 
         self.assert_on_page('mock_galaxy_factory')
+        self.assert_page_has_content("Note this exceeds the maximum allowed size, please reduce the light-cone size (RA, Dec, Redshift range).")
 
     def test_submit_invalid_output_properties(self):
         ## fill in form (correctly)
@@ -121,7 +146,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
             'number_of_light_cones': '11', # this exceeds the maximum in db, 10
         }, id_wrap=self.lc_id)
         self.click(self.lc_2select('op_add_all')) # click somewhere else to shift focus out of the number of cones field (this shouldn't affect the current selection, as they are already all selected)
-        self.wait(1)
+        self.wait(1.5)
         self.assertEqual('10', self.get_selector_value(self.lc_id('number_of_light_cones'))) # resets to the maximum valid value
         self.submit_mgf_form()
 
