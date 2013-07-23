@@ -1,12 +1,19 @@
 #include <iostream>
 #include <glut.h>
-#include <AntTweakBar.h>
+#include <boost/lexical_cast.hpp>
+// #include <AntTweakBar.h>
 #include <libhpc/libhpc.hh>
 #include "tao/base/types.hh"
 #include "tao/base/globals.hh"
 #include "tao/base/lightcone.hh"
 #include "tao/base/postgresql_backend.hh"
+#include "tao/base/sfh.hh"
+#include "tao/base/stellar_population.hh"
+#include "tree.hh"
 #include "colour_map.hh"
+#include "console.hh"
+#include "command_chain.hh"
+#include "command_context.hh"
 
 using namespace hpc;
 using namespace tao;
@@ -14,30 +21,50 @@ using namespace tao;
 enum view_type
 {
    MAIN,
-   BOX
+   BOX,
+   TREE
 };
 
 view_type cur_view = MAIN;
-bool rotating = false, zooming = false;
+unsigned win_width, win_height;
+bool rotating = false, zooming = false, translating = false;
 int old_x = 0, old_y = 0;
 float rotate_x = 0, rotate_y = 0;
+float translate_x = 0, translate_y = 0;
 array<float,3> bnd_min, bnd_max;
 unsigned num_segs = 0;
 float zoom = 1;
-float gal_size = 5;
+float gal_size = 2.5;
 GLuint gal_tex_id;
 
-lightcone<real_type> lc;
+lightcone<real_type>* lc;
 list<tile<real_type>> tiles;
+simulation<real_type>* cur_sim = &mini_millennium;
 tile<real_type>* cur_box;
+string cur_table;
+unsigned long long cur_tree;
+unsigned cur_gal_id;
+tao::sfh<real_type> cur_sfh;
+tao::age_line<real_type> sfh_ages;
+tao::stellar_population ssp;
+vector<real_type> age_masses, age_bulge_masses, age_metals;
+
 colour_map<float> col_map;
 
 backends::postgresql<real_type> backend;
 tao::query<real_type> query;
 
-list<shared_ptr<batch<real_type>>> gals;
+vector<real_type> stellar_mass;
 
-TwBar* main_tb;
+list<scoped_ptr<batch<real_type>>> gals;
+bool thread_done = true;
+pthread_t thread_handle;
+
+tao::console cons;
+tao::chain cmd_chain;
+tao::context lc_ctx;
+
+// TwBar* main_tb;
 
 const unsigned char colors[11][3] = {
    {94, 79, 162},
@@ -298,48 +325,52 @@ draw_lightcone( const lightcone<real_type>& lc,
    }
 }
 
-void
-draw_redshift_scale( const lightcone<real_type>& lc )
-{
-   float len = 0.8;
-   int num_cols = 11;
+// void
+// draw_redshift_scale( const lightcone<real_type>& lc )
+// {
+//    float len = 0.8;
+//    int num_cols = 11;
 
-   glPolygonMode( GL_FRONT, GL_FILL );
-   for( unsigned ii = 0; ii < num_cols; ++ii )
-   {
-      float h = len/(float)num_cols;
-      float pos = -0.4 + ((float)ii)*h;
-      glColor3f( colors[ii][0]/255.0, colors[ii][1]/255.0, colors[ii][2]/255.0 );
-      glBegin( GL_POLYGON );
-      glVertex3f( 0.63,  pos, -1 );
-      glVertex3f( 0.7,  pos, -1 );
-      glVertex3f( 0.7, pos + h, -1 );
-      glVertex3f( 0.63, pos + h, -1 );
-      glEnd();
-   }
+//    glPolygonMode( GL_FRONT, GL_FILL );
+//    for( unsigned ii = 0; ii < num_cols; ++ii )
+//    {
+//       float h = len/(float)num_cols;
+//       float pos = -0.4 + ((float)ii)*h;
+//       glColor3f( colors[ii][0]/255.0, colors[ii][1]/255.0, colors[ii][2]/255.0 );
+//       glBegin( GL_POLYGON );
+//       glVertex3f( 0.63,  pos, -1 );
+//       glVertex3f( 0.7,  pos, -1 );
+//       glVertex3f( 0.7, pos + h, -1 );
+//       glVertex3f( 0.63, pos + h, -1 );
+//       glEnd();
+//    }
 
-   glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-   glColor3f( 0.7, 0.7, 0.7 );
-   glBegin( GL_POLYGON );
-   glVertex3f( 0.63, -0.4, -1 );
-   glVertex3f( 0.7, -0.4, -1 );
-   glVertex3f( 0.7, 0.4, -1 );
-   glVertex3f( 0.63, 0.4, -1 );
-   glEnd();
-   for( unsigned ii = 0; ii < num_cols + 1; ++ii )
-   {
-      float h = len/(float)num_cols;
-      float pos = -0.4 + ((float)ii)*h;
-      glBegin( GL_LINES );
-      glVertex3f( 0.63, pos, -1 );
-      glVertex3f( 0.71, pos, -1 );
-      glEnd();
-   }
-}
+//    glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+//    glColor3f( 0.7, 0.7, 0.7 );
+//    glBegin( GL_POLYGON );
+//    glVertex3f( 0.63, -0.4, -1 );
+//    glVertex3f( 0.7, -0.4, -1 );
+//    glVertex3f( 0.7, 0.4, -1 );
+//    glVertex3f( 0.63, 0.4, -1 );
+//    glEnd();
+//    for( unsigned ii = 0; ii < num_cols + 1; ++ii )
+//    {
+//       float h = len/(float)num_cols;
+//       float pos = -0.4 + ((float)ii)*h;
+//       glBegin( GL_LINES );
+//       glVertex3f( 0.63, pos, -1 );
+//       glVertex3f( 0.71, pos, -1 );
+//       glEnd();
+//    }
+// }
 
 void
 idle()
 {
+   bool redisplay = false;
+   redisplay = redisplay || cons.idle();
+   if( redisplay )
+      glutPostRedisplay();
 }
 
 // template< class T >
@@ -378,6 +409,9 @@ idle()
 void
 draw_galaxies()
 {
+   if( thread_done )
+      pthread_join( thread_handle, NULL );
+
    array<float,3> pos;
    srand( 1 );
    // glEnable( GL_TEXTURE_2D );
@@ -389,21 +423,20 @@ draw_galaxies()
    // glEnable( GL_BLEND );
    // glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
-   for( auto it = cur_box->galaxy_begin( backend ); it != cur_box->galaxy_end( backend ); ++it )
+   for( const auto& bat : gals )
    {
-      const galaxy<real_type>& gal = *it;
-      const vector<real_type>::view pos_x = gal.values( "pos_x" );
-      const vector<real_type>::view pos_y = gal.values( "pos_y" );
-      const vector<real_type>::view pos_z = gal.values( "pos_z" );
-      const vector<real_type>::view mass = gal.values( "stellarmass" );
+      const vector<real_type>::view pos_x = bat->scalar<real_type>( "pos_x" );
+      const vector<real_type>::view pos_y = bat->scalar<real_type>( "pos_y" );
+      const vector<real_type>::view pos_z = bat->scalar<real_type>( "pos_z" );
+      const vector<real_type>::view mass = bat->scalar<real_type>( "stellarmass" );
 
-      for( unsigned idx : gal )
+      for( unsigned ii = 0; ii < bat->size(); ++ii )
       {
          glPushMatrix();
-         glTranslatef( pos_x, pos_y, -pos_z );
+         glTranslatef( pos_x[ii], pos_z[ii], -pos_y[ii] );
          glRotatef( -rotate_y, 0, 1, 0 );
          glRotatef( -rotate_x, 1, 0, 0 );
-         glColor3fv( col_map[mass].data() );
+         glColor3fv( col_map[mass[ii]].data() );
          glBegin( GL_POLYGON );
          // glTexCoord2f( 0, 0 );
          glVertex3f( -0.5*gal_size, -0.5*gal_size, 0 );
@@ -480,13 +513,13 @@ render_main()
    for( const auto& tile : tiles )
       draw_tile( tile );
 
-   draw_lightcone( lc );
+   draw_lightcone( *lc );
 
-   glLoadIdentity();
-   glDisable( GL_LIGHTING );
-   glDisable( GL_DEPTH_TEST );
-   glDisable( GL_CULL_FACE );
-   draw_redshift_scale( lc );
+   // glLoadIdentity();
+   // glDisable( GL_LIGHTING );
+   // glDisable( GL_DEPTH_TEST );
+   // glDisable( GL_CULL_FACE );
+   // draw_redshift_scale( *lc );
 }
 
 void
@@ -507,7 +540,7 @@ render_box_view()
 
    glEnable( GL_BLEND );
    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-   draw_lightcone( lc, 0.2 );
+   draw_lightcone( *lc, 0.2 );
    glDisable( GL_BLEND );
 }
 
@@ -549,7 +582,7 @@ calc_bounds()
          }
       }
    }
-   else
+   else if( cur_view == BOX )
    {
       std::copy( cur_box->min().begin(), cur_box->min().end(), bnd_min.begin() );
       std::copy( cur_box->max().begin(), cur_box->max().end(), bnd_max.begin() );
@@ -560,13 +593,21 @@ void
 reshape( GLint width,
          GLint height )
 {
-   static const GLfloat near = 1e-1, far = 10;
+   win_width = width;
+   win_height = height;
+   cons.reshape( width, height );
    glViewport( 0, 0, width, height );
    glMatrixMode( GL_PROJECTION );
    glLoadIdentity();
-   gluPerspective( 65.0, (GLfloat)width/(GLfloat)height, near, far );
+   if( cur_view == TREE )
+      gluOrtho2D( 0, (GLfloat)width, 0, (GLfloat)height );
+   else
+   {
+      const GLfloat near = 1e-1, far = 10;
+      gluPerspective( 65.0, (GLfloat)width/(GLfloat)height, near, far );
+   }
    glMatrixMode( GL_MODELVIEW );
-   TwWindowSize( width, height );
+   // TwWindowSize( width, height );
 }
 
 void
@@ -574,7 +615,10 @@ display()
 {
    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
    glLoadIdentity();
-   gluLookAt( 0, 0, 1.8, 0, 0, 0, 0, 1, 0 );
+
+   if( cur_view != TREE )
+      gluLookAt( 0, 0, 1.8, 0, 0, 0, 0, 1, 0 );
+
    switch( cur_view )
    {
       case MAIN:
@@ -583,11 +627,24 @@ display()
       case BOX:
          render_box_view();
          break;
+      case TREE:
+         render_sfh_tree();
+         break;
    };
+
+   // Do we need to keep rendering?
+   bool done = true;
+
+   // Render console.
+   done = cons.display();
+
    glFlush();
-   TwDraw();
+   // TwDraw();
    glutSwapBuffers();
-   glutPostRedisplay();
+
+   // Do we need to redisplay?
+   if( !done )
+      glutPostRedisplay();
 }
 
 void
@@ -596,19 +653,23 @@ mouse_button( int button,
               int x,
               int y )
 {
-   if( TwEventMouseButtonGLUT( button, state, x, y ) )
-      return;
+   // if( TwEventMouseButtonGLUT( button, state, x, y ) )
+   //    return;
 
    switch( button )
    {
       case 0:
-         rotating = (state == 0);
+         if( cur_view == MAIN || cur_view == BOX )
+            rotating = (state == 0);
+         else if( cur_view == TREE )
+            translating = (state == 0);
          old_x = x;
          old_y = y;
          break;
 
       case 2:
-         zooming = (state == 0);
+         if( cur_view != TREE )
+            zooming = (state == 0);
          old_y = y;
          break;
    };
@@ -618,8 +679,8 @@ void
 mouse_motion( int x,
               int y )
 {
-   if( TwEventMouseMotionGLUT( x, y ) )
-      return;
+   // if( TwEventMouseMotionGLUT( x, y ) )
+   //    return;
 
    if( rotating )
    {
@@ -629,6 +690,16 @@ mouse_motion( int x,
       old_y = y;
       rotate_y += dx;
       rotate_x += dy;
+      glutPostRedisplay();
+   }
+   else if( translating )
+   {
+      int dx = x - old_x;
+      int dy = y - old_y;
+      old_x = x;
+      old_y = y;
+      translate_x += dx;
+      translate_y -= dy;
       glutPostRedisplay();
    }
    else if( zooming )
@@ -641,25 +712,108 @@ mouse_motion( int x,
    }
 }
 
+void*
+load_galaxies( void* data )
+{
+   for( auto it = backend.galaxy_begin( ::query, *cur_box );
+        it != backend.galaxy_end( ::query, *cur_box );
+        ++it )
+   {
+      const batch<real_type>& bat = *it;
+      gals.push_back( new batch<real_type>( bat ) );
+      glutPostRedisplay();
+   }
+   thread_done = true;
+   pthread_exit( NULL );
+}
+
 void
 keyboard( unsigned char key,
           int x,
           int y )
 {
-   if( TwEventKeyboardGLUT( key, x, y ) )
-      return;
+   // if( TwEventKeyboardGLUT( key, x, y ) )
+   //    return;
+
+   auto state = cons.keyboard( key );
+   switch( state )
+   {
+      case console::ACTION:
+      {
+         if( !cmd_chain( cons.line() ) )
+            cons.write( "Unknown command." );
+      }
+      case console::CAUGHT:
+         glutPostRedisplay();
+         return;
+   };
 
    switch( key )
    {
-      case 'b':
-         cur_view = BOX;
-         cur_box = &tiles.front();
-         calc_bounds();
+      case '`':
+      case '~':
+         cons.toggle();
          break;
+      // case 'b':
+      //    cur_view = BOX;
+      //    cur_box = &tiles.front();
+      //    calc_bounds();
+      //    if( !thread_done )
+      //       pthread_join( thread_handle, NULL );
+      //    thread_done = false;
+      //    pthread_create( &thread_handle, NULL, &load_galaxies, NULL );
+      //    break;
+      // case 't':
+      //    if( cur_view == BOX )
+      //    {
+      //       cur_view = TREE;
+      //       cur_table = gals.front()->attribute<string>( "table" );
+      //       tree_idx = 0;
+      //       cur_tree = gals.front()->scalar<long long>( "global_tree_id" )[tree_idx];
+      //       cur_gal_id = gals.front()->scalar<int>( "local_galaxy_id" )[tree_idx];
+      //       cur_sfh.load_tree_data( backend.session(), cur_table, cur_tree );
+
+      //       // Also transfer the stellar mass for each tree.
+      //       stellar_mass.resize( cur_sfh.size() );
+      //       string query = "SELECT stellarmass "
+      //          "FROM " + cur_table + " "
+      //          "WHERE globaltreeid = " + to_string( cur_tree ) + " "
+      //          "ORDER BY localgalaxyid";
+      //       backend.session() << query, soci::into( (std::vector<double>&)stellar_mass );
+      //       auto rng = std::minmax_element( stellar_mass.begin(), stellar_mass.end() );
+      //       col_map.set_abscissa_linear( *rng.first, *rng.second );
+
+      //       reshape( win_width, win_height );
+      //    }
+      //    break;
+      // case 'n':
+      //    if( cur_view == TREE )
+      //    {
+      //       ++tree_idx;
+      //       cur_tree = gals.front()->scalar<long long>( "global_tree_id" )[tree_idx];
+      //       cur_gal_id = gals.front()->scalar<int>( "local_galaxy_id" )[tree_idx];
+      //       cur_sfh.load_tree_data( backend.session(), cur_table, cur_tree );
+
+      //       // Also transfer the stellar mass for each tree.
+      //       stellar_mass.resize( cur_sfh.size() );
+      //       string query = "SELECT stellarmass "
+      //          "FROM " + cur_table + " "
+      //          "WHERE globaltreeid = " + to_string( cur_tree ) + " "
+      //          "ORDER BY localgalaxyid";
+      //       backend.session() << query, soci::into( (std::vector<double>&)stellar_mass );
+      //       auto rng = std::minmax_element( stellar_mass.begin(), stellar_mass.end() );
+      //       col_map.set_abscissa_linear( *rng.first, *rng.second );
+
+      //       // Reset translation.
+      //       translate_x = translate_y = 0;
+      //    }
+      //    break;
       case 'm':
          cur_view = MAIN;
          cur_box = NULL;
+         gals.clear();
          calc_bounds();
+         reshape( win_width, win_height );
          break;
       case 27:   // ESCAPE
          exit( 0 );
@@ -673,14 +827,17 @@ update_tao()
 {
    // Setup the number of segments used to render the cone
    // based on the geometry.
-   num_segs = to_degrees( std::max( lc.max_ra() - lc.min_ra(), lc.max_dec() - lc.min_dec() ) );
+   num_segs = to_degrees( std::max( lc->max_ra() - lc->min_ra(), lc->max_dec() - lc->min_dec() ) );
    num_segs = 2.0*(0.1*(float)num_segs + 1.0);
 
    tiles.clear();
-   for( auto tile_it = lc.tile_begin(); tile_it != lc.tile_end(); ++tile_it )
+   for( auto tile_it = lc->tile_begin(); tile_it != lc->tile_end(); ++tile_it )
       tiles.push_back( *tile_it );
 
    calc_bounds();
+
+   // Setup galaxy size based on box size.
+   gal_size = lc->simulation().box_size()/62.5;
 
    glutPostRedisplay();
 }
@@ -692,126 +849,210 @@ init_tao()
 #include "credentials.hh"
    // backend.connect( "millennium_full_hdf5_dist", username, password, string( "tao02.hpc.swin.edu.au" ), 3306 );
    backend.connect( "millennium_mini_1", "taoadmin", "taoadmin" );
-   backend.initialise( mini_millennium );
-   query.add_base_output_fields();
+   backend.initialise( *cur_sim );
+   ::query.add_base_output_fields();
+   ::query.add_output_field( "stellarmass" );
 
    // Setup initial simulation.
-   lc.set_simulation( &mini_millennium );
+   lc = new lightcone<real_type>( cur_sim );
    // lc.set_geometry( 40, 50, 40, 50, 0.06 );
-   lc.set_geometry( 0, 10, 0, 10, 0.06 );
    update_tao();
+
+   // Load ages and SSP.
+   sfh_ages.load_ages( backend.session(), lc->simulation().hubble(), lc->simulation().omega_m(), lc->simulation().omega_l() );
+   ssp.load( "wavelengths.dat", "ssp.ssz" );
+   cur_sfh.set_snapshot_ages( &sfh_ages );
+   cur_sfh.set_bin_ages( &ssp.bin_ages() );
+   age_masses.resize( ssp.bin_ages().size() );
+   age_bulge_masses.resize( ssp.bin_ages().size() );
+   age_metals.resize( ssp.bin_ages().size() );
 
    // Setup the colour map.
-   col_map.set_colours_diverging_11();
-   col_map.set_abscissa_linear( 1e10, 100e10 );
+   col_map.set_colours_diverging_blue_to_red_12();
+   col_map.set_abscissa_linear( 0, 1 );
 }
 
-void TW_CALL
-set_min_ra( const void* val,
-            void* data )
+optional<double>
+to_double( const string& str )
 {
-   double _val = *(const double*)val;
-   lc.set_min_ra( _val );
-   string def = string( " Main/MaxRA min=" ) + to_string( _val + 1 ) + " ";
-   TwDefine( def.c_str() );
-   update_tao();
+   double val;
+   try
+   {
+      val = boost::lexical_cast<double>( str );
+   }
+   catch( boost::bad_lexical_cast ex )
+   {
+      cons.write( "Failed to convert to double." );
+      return none;
+   }
+   return val;
 }
 
-void TW_CALL
-get_min_ra( void* val,
-            void* data )
+optional<unsigned>
+to_unsigned( const string& str )
 {
-   *(double*)val = to_degrees( lc.min_ra() );
+   unsigned val;
+   try
+   {
+      val = boost::lexical_cast<unsigned>( str );
+   }
+   catch( boost::bad_lexical_cast ex )
+   {
+      cons.write( "Failed to convert to unsigned integer." );
+      return none;
+   }
+   return val;
 }
 
-void TW_CALL
-set_max_ra( const void* val,
-            void* data )
+optional<unsigned>
+to_unsigned_long_long( const string& str )
 {
-   double _val = *(const double*)val;
-   lc.set_max_ra( _val );
-   string def = string( " Main/MinRA max=" ) + to_string( _val - 1 ) + " ";
-   TwDefine( def.c_str() );
-   update_tao();
+   unsigned val;
+   try
+   {
+      val = boost::lexical_cast<unsigned long long>( str );
+   }
+   catch( boost::bad_lexical_cast ex )
+   {
+      cons.write( "Failed to convert to unsigned long long integer." );
+      return none;
+   }
+   return val;
 }
 
-void TW_CALL
-get_max_ra( void* val,
-            void* data )
+void
+set_min_ra( const re::match& match )
 {
-   *(double*)val = to_degrees( lc.max_ra() );
+   auto val = to_double( match[1] );
+   if( val )
+   {
+      lc->set_min_ra( *val );
+      update_tao();
+   }
 }
 
-void TW_CALL
-set_min_dec( const void* val,
-             void* data )
+void
+set_max_ra( const re::match& match )
 {
-   double _val = *(const double*)val;
-   lc.set_min_dec( _val );
-   string def = string( " Main/MaxDEC min=" ) + to_string( _val + 1 ) + " ";
-   TwDefine( def.c_str() );
-   update_tao();
+   auto val = to_double( match[1] );
+   if( val )
+   {
+      lc->set_max_ra( *val );
+      update_tao();
+   }
 }
 
-void TW_CALL
-get_min_dec( void* val,
-             void* data )
+void
+set_min_dec( const re::match& match )
 {
-   *(double*)val = to_degrees( lc.min_dec() );
+   auto val = to_double( match[1] );
+   if( val )
+   {
+      lc->set_min_dec( *val );
+      update_tao();
+   }
 }
 
-void TW_CALL
-set_max_dec( const void* val,
-             void* data )
+void
+set_max_dec( const re::match& match )
 {
-   double _val = *(const double*)val;
-   lc.set_max_dec( _val );
-   string def = string( " Main/MinDEC max=" ) + to_string( _val - 1 ) + " ";
-   TwDefine( def.c_str() );
-   update_tao();
+   auto val = to_double( match[1] );
+   if( val )
+   {
+      lc->set_max_dec( *val );
+      update_tao();
+   }
 }
 
-void TW_CALL
-get_max_dec( void* val,
-             void* data )
+void
+set_min_z( const re::match& match )
 {
-   *(double*)val = to_degrees( lc.max_dec() );
+   auto val = to_double( match[1] );
+   if( val )
+   {
+      lc->set_min_redshift( *val );
+      update_tao();
+   }
 }
 
-void TW_CALL
-set_min_z( const void* val,
-           void* data )
+void
+set_max_z( const re::match& match )
 {
-   double _val = *(const double*)val;
-   lc.set_min_redshift( _val );
-   string def = string( " Main/MaxZ min=" ) + to_string( _val + 0.01 ) + " ";
-   TwDefine( def.c_str() );
-   update_tao();
+   auto val = to_double( match[1] );
+   if( val )
+   {
+      lc->set_max_redshift( *val );
+      update_tao();
+   }
 }
 
-void TW_CALL
-get_min_z( void* val,
-           void* data )
+void
+set_box( const re::match& match )
 {
-   *(double*)val = lc.min_redshift();
+   auto val = to_unsigned( match[1] );
+   if( val )
+   {
+      if( *val >= tiles.size() )
+      {
+         cons.write( "Box number outside range." );
+      }
+      else
+      {
+         gals.clear();
+         cur_view = BOX;
+         unsigned ii = 0;
+         auto it = tiles.begin();
+         while( ii++ < *val )
+            ++it;
+         cur_box = &*it;
+         calc_bounds();
+         if( !thread_done )
+            pthread_join( thread_handle, NULL );
+         thread_done = false;
+         pthread_create( &thread_handle, NULL, &load_galaxies, NULL );
+      }
+   }
 }
 
-void TW_CALL
-set_max_z( const void* val,
-           void* data )
+void
+load_sfh( const re::match& match )
 {
-   double _val = *(const double*)val;
-   lc.set_max_redshift( _val );
-   string def = string( " Main/MinZ max=" ) + to_string( _val - 0.01 ) + " ";
-   TwDefine( def.c_str() );
-   update_tao();
-}
+   auto val = to_unsigned_long_long( match[1] );
+   if( val )
+   {
+      cur_view = TREE;
 
-void TW_CALL
-get_max_z( void* val,
-           void* data )
-{
-   *(double*)val = lc.max_redshift();
+      // Must first find the table and tree first.
+      for( auto it = backend.table_begin(); it != backend.table_end(); ++it )
+      {
+         int size = 0;
+         backend.session() << "SELECT COUNT(globaltreeid) FROM " + it->name() + " WHERE globalindex = :gid",
+            soci::into( size ), soci::use( *val );
+         if( size )
+         {
+            backend.session() << "SELECT globaltreeid, localgalaxyid FROM " + it->name() + " WHERE globalindex = :gid",
+               soci::into( cur_tree ), soci::into( cur_gal_id ), soci::use( *val );
+            cur_table = it->name();
+            break;
+         }
+      }
+
+      // Load SFH.
+      cur_sfh.load_tree_data( backend.session(), cur_table, cur_tree );
+      cur_sfh.rebin<real_type>( backend.session(), cur_gal_id, age_masses, age_bulge_masses, age_metals );
+
+      // Also transfer the stellar mass for each tree.
+      stellar_mass.resize( cur_sfh.size() );
+      string query = "SELECT stellarmass "
+         "FROM " + cur_table + " "
+         "WHERE globaltreeid = " + to_string( cur_tree ) + " "
+         "ORDER BY localgalaxyid";
+      backend.session() << query, soci::into( (std::vector<double>&)stellar_mass );
+      auto rng = std::minmax_element( stellar_mass.begin(), stellar_mass.end() );
+      col_map.set_abscissa_linear( *rng.first, *rng.second );
+
+      reshape( win_width, win_height );
+   }
 }
 
 void
@@ -827,30 +1068,30 @@ start()
    glutDisplayFunc( display );
    glutReshapeFunc( reshape );
 
-   TwInit( TW_OPENGL, NULL );
+   // TwInit( TW_OPENGL, NULL );
    glutKeyboardFunc( keyboard );
    glutMouseFunc( mouse_button );
    glutMotionFunc( mouse_motion );
-   glutPassiveMotionFunc( (GLUTmousemotionfun)TwEventMouseMotionGLUT );
-   glutSpecialFunc( (GLUTspecialfun)TwEventSpecialGLUT );
+   // glutPassiveMotionFunc( (GLUTmousemotionfun)TwEventMouseMotionGLUT );
+   // glutSpecialFunc( (GLUTspecialfun)TwEventSpecialGLUT );
    glutIdleFunc( idle );
-   TwGLUTModifiersFunc( glutGetModifiers );
+   // TwGLUTModifiersFunc( glutGetModifiers );
 
-   main_tb = TwNewBar( "Main" );
-   TwDefine(" GLOBAL help='This example shows how to integrate AntTweakBar with GLUT and OpenGL.' "); // Message added to the help bar.
-   TwDefine(" Main color='96 216 224' "); // change default tweak bar size and color
-   TwAddVarCB( main_tb, "MinRA", TW_TYPE_DOUBLE, set_min_ra, get_min_ra, NULL,
-               " label='Minimum RA' min=0 max=49 step=1 help='Minimum right-ascension.' " );
-   TwAddVarCB( main_tb, "MaxRA", TW_TYPE_DOUBLE, set_max_ra, get_max_ra, NULL,
-               " label='Maximum RA' min=41 max=90 step=1 help='Maximum right-ascension.' " );
-   TwAddVarCB( main_tb, "MinDEC", TW_TYPE_DOUBLE, set_min_dec, get_min_dec, NULL,
-               " label='Minimum DEC' min=0 max=49 step=1 help='Minimum declination.' " );
-   TwAddVarCB( main_tb, "MaxDEC", TW_TYPE_DOUBLE, set_max_dec, get_max_dec, NULL,
-               " label='Maximum DEC' min=41 max=90 step=1 help='Maximum declination.' " );
-   TwAddVarCB( main_tb, "MinZ", TW_TYPE_DOUBLE, set_min_z, get_min_z, NULL,
-               " label='Minimum redshift' min=0 max=0.05 step=0.01 help='Minimum redshift.' " );
-   TwAddVarCB( main_tb, "MaxZ", TW_TYPE_DOUBLE, set_max_z, get_max_z, NULL,
-               " label='Maximum redshift' min=0.06 max=127 step=0.01 help='Maximum redshift.' " );
+   // main_tb = TwNewBar( "Main" );
+   // TwDefine(" GLOBAL help='This example shows how to integrate AntTweakBar with GLUT and OpenGL.' "); // Message added to the help bar.
+   // TwDefine(" Main color='96 216 224' "); // change default tweak bar size and color
+   // TwAddVarCB( main_tb, "MinRA", TW_TYPE_DOUBLE, set_min_ra, get_min_ra, NULL,
+   //             " label='Minimum RA' min=0 max=49 step=1 help='Minimum right-ascension.' " );
+   // TwAddVarCB( main_tb, "MaxRA", TW_TYPE_DOUBLE, set_max_ra, get_max_ra, NULL,
+   //             " label='Maximum RA' min=41 max=90 step=1 help='Maximum right-ascension.' " );
+   // TwAddVarCB( main_tb, "MinDEC", TW_TYPE_DOUBLE, set_min_dec, get_min_dec, NULL,
+   //             " label='Minimum DEC' min=0 max=49 step=1 help='Minimum declination.' " );
+   // TwAddVarCB( main_tb, "MaxDEC", TW_TYPE_DOUBLE, set_max_dec, get_max_dec, NULL,
+   //             " label='Maximum DEC' min=41 max=90 step=1 help='Maximum declination.' " );
+   // TwAddVarCB( main_tb, "MinZ", TW_TYPE_DOUBLE, set_min_z, get_min_z, NULL,
+   //             " label='Minimum redshift' min=0 max=0.05 step=0.01 help='Minimum redshift.' " );
+   // TwAddVarCB( main_tb, "MaxZ", TW_TYPE_DOUBLE, set_max_z, get_max_z, NULL,
+   //             " label='Maximum redshift' min=0.01 max=127 step=0.01 help='Maximum redshift.' " );
 
    // Initialise OpenGL.
    init_opengl();
@@ -861,6 +1102,17 @@ start()
    // Initialise system.
    init_tao();
 
+   // Setup commands.
+   lc_ctx.add( R"(\s*set\s+min_ra\s+([^\s]+)\s*)", set_min_ra );
+   lc_ctx.add( R"(\s*set\s+max_ra\s+([^\s]+)\s*)", set_max_ra );
+   lc_ctx.add( R"(\s*set\s+min_dec\s+([^\s]+)\s*)", set_min_dec );
+   lc_ctx.add( R"(\s*set\s+max_dec\s+([^\s]+)\s*)", set_max_dec );
+   lc_ctx.add( R"(\s*set\s+min_z\s+([^\s]+)\s*)", set_min_z );
+   lc_ctx.add( R"(\s*set\s+max_z\s+([^\s]+)\s*)", set_max_z );
+   lc_ctx.add( R"(\s*set\s+box\s+([^\s]+)\s*)", set_box );
+   lc_ctx.add( R"(\s*load\s+sfh\s+([^\s]+)\s*)", load_sfh );
+   cmd_chain.add( lc_ctx );
+
    // Hand over to GLUT.
    glutMainLoop();
 }
@@ -869,6 +1121,7 @@ int
 main( int argc, char** argv )
 {
    mpi::initialise( argc, argv );
+   LOG_PUSH( new logging::stdout( logging::debug ) );
    glutInit( &argc, argv );
    start();
    mpi::finalise();

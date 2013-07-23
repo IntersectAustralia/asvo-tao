@@ -1,6 +1,7 @@
 #ifndef tao_base_age_line_hh
 #define tao_base_age_line_hh
 
+#include <soci.h>
 #include <libhpc/logging/logging.hh>
 #include "timed.hh"
 #include "utils.hh"
@@ -32,7 +33,7 @@ namespace tao {
       {
       }
 
-      age_line( vector<real_type> ages )
+      age_line( vector<real_type>& ages )
       {
          set_ages( ages );
       }
@@ -66,7 +67,7 @@ namespace tao {
       /// of the universe.
       ///
       void
-      set_ages( vector<real_type> ages )
+      set_ages( vector<real_type>& ages )
       {
          timer_start();
          LOGTLN( "Setting ages on age line.", setindent( 2 ) );

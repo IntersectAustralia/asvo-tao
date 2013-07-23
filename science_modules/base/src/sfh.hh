@@ -64,12 +64,12 @@ namespace tao {
       }
 
       void
-      set_tree_data( vector<int> descs,
-                     vector<int> snaps,
-                     vector<real_type> sfrs,
-                     vector<real_type> bulge_sfrs,
-                     vector<real_type> cold_gas,
-                     vector<real_type> metals )
+      set_tree_data( vector<int>& descs,
+                     vector<int>& snaps,
+                     vector<real_type>& sfrs,
+                     vector<real_type>& bulge_sfrs,
+                     vector<real_type>& cold_gas,
+                     vector<real_type>& metals )
       {
          // All arrays must be of the same size.
          ASSERT( descs.size() == snaps.size() &&
@@ -162,7 +162,7 @@ namespace tao {
             _cur_table = table_name;
             _cur_tree_id = tree_id;
 
-            LOGI( setindent( -2 ) );
+            LOGILN( "Done.", setindent( -2 ) );
          }
          timer_stop();
       }
@@ -174,6 +174,7 @@ namespace tao {
              typename vector<U>::view age_masses,
              typename vector<U>::view bulge_age_masses,
              typename vector<U>::view age_metals )
+
       {
          LOGDLN( "Rebinning galaxy with local ID ", galaxy_id, " in tree with ID ", _cur_tree_id, " in table ", _cur_table, ".", setindent( 2 ) );
 
@@ -212,6 +213,31 @@ namespace tao {
          }
 
          LOGD( setindent( -2 ) );
+      }
+
+      unsigned
+      size() const
+      {
+         return _descs.size();
+      }
+
+      std::pair< multimap<unsigned,unsigned>::const_iterator,
+                 multimap<unsigned,unsigned>::const_iterator >
+      parents( unsigned gal_id ) const
+      {
+         return _parents.equal_range( gal_id );
+      }
+
+      unsigned
+      snapshot( unsigned gal_id ) const
+      {
+         return _snaps[gal_id];
+      }
+
+      real_type
+      sfr( unsigned gal_id ) const
+      {
+         return _sfrs[gal_id];
       }
 
    protected:
@@ -267,6 +293,9 @@ namespace tao {
          // of is how old the material will be when we get to the
          // time of the final galaxy.
          ASSERT( snap > 0, "Must have a previous snapshot." );
+         LOGDLN( "Oldest age in tree: ", oldest_age );
+         LOGDLN( "Age of current galaxy: ", (*_snap_ages)[snap] );
+         LOGDLN( "Age of previous snapshot: ", (*_snap_ages)[snap - 1] );
          real_type first_age = oldest_age - (*_snap_ages)[snap - 1];
          real_type last_age = oldest_age - (*_snap_ages)[snap];
          real_type age_size = first_age - last_age;

@@ -2,6 +2,7 @@
 #define tao_base_simulation_hh
 
 #include <stdarg.h>
+#include <libhpc/containers/vector.hh>
 #include "utils.hh"
 
 namespace tao {

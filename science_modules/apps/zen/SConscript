@@ -17,7 +17,9 @@ libs = ['tao'] + env.get('LIBS', [])
 #
 #   ('<binary name>', '<source 0>', '<source 1>', ...)
 sources = [
-    ('zen', 'main.cc'),
+    ('zen', 'main.cc', 'tree.cc',
+     'console.cc', 'command.cc', 'command_context.cc', 'command_chain.cc',
+     'algorithms.cc', 'text.cc'),
 ]
 
 # Call the helper.

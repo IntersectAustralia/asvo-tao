@@ -52,6 +52,93 @@ namespace tao {
       {
       }
 
+      batch( const batch& src )
+         : _max_size( src._max_size ),
+           _size( src._size )
+      {
+         for( const auto& item : src._fields )
+         {
+            const auto& name = item.first;
+            const auto& src_field = item.second;
+            auto& field = _fields[name];
+            std::get<1>( field ) = std::get<1>( src_field );
+            std::get<2>( field ) = std::get<2>( src_field );
+            const auto& val = std::get<0>( src_field );
+            if( std::get<1>( field ) == ATTRIBUTE )
+            {
+               switch( std::get<2>( field ) )
+               {
+                  case STRING:
+                     std::get<0>( field ) = boost::any_cast<string>( val );
+                     break;
+                  case DOUBLE:
+                     std::get<0>( field ) = boost::any_cast<double>( val );
+                     break;
+                  case INTEGER:
+                     std::get<0>( field ) = boost::any_cast<int>( val );
+                     break;
+                  case UNSIGNED_LONG:
+                     std::get<0>( field ) = boost::any_cast<unsigned long>( val );
+                     break;
+                  case LONG_LONG:
+                     std::get<0>( field ) = boost::any_cast<long long>( val );
+                     break;
+                  case UNSIGNED_LONG_LONG:
+                     std::get<0>( field ) = boost::any_cast<unsigned long long>( val );
+                     break;
+               };
+            }
+            else if( std::get<1>( field ) == SCALAR )
+            {
+               switch( std::get<2>( field ) )
+               {
+                  case STRING:
+                     std::get<0>( field ) = new hpc::vector<string>( *boost::any_cast<hpc::vector<string>*>( val ) );
+                     break;
+                  case DOUBLE:
+                     std::get<0>( field ) = new hpc::vector<double>( *boost::any_cast<hpc::vector<double>*>( val ) );
+                     break;
+                  case INTEGER:
+                     std::get<0>( field ) = new hpc::vector<int>( *boost::any_cast<hpc::vector<int>*>( val ) );
+                     break;
+                  case UNSIGNED_LONG:
+                     std::get<0>( field ) = new hpc::vector<unsigned long>( *boost::any_cast<hpc::vector<unsigned long>*>( val ) );
+                     break;
+                  case LONG_LONG:
+                     std::get<0>( field ) = new hpc::vector<long long>( *boost::any_cast<hpc::vector<long long>*>( val ) );
+                     break;
+                  case UNSIGNED_LONG_LONG:
+                     std::get<0>( field ) = new hpc::vector<unsigned long long>( *boost::any_cast<hpc::vector<unsigned long long>*>( val ) );
+                     break;
+               };
+            }
+            else
+            {
+               switch( std::get<2>( field ) )
+               {
+                  case STRING:
+                     std::get<0>( field ) = new fibre<string>( *boost::any_cast<fibre<string>*>( val ) );
+                     break;
+                  case DOUBLE:
+                     std::get<0>( field ) = new fibre<double>( *boost::any_cast<fibre<double>*>( val ) );
+                     break;
+                  case INTEGER:
+                     std::get<0>( field ) = new fibre<int>( *boost::any_cast<fibre<int>*>( val ) );
+                     break;
+                  case UNSIGNED_LONG:
+                     std::get<0>( field ) = new fibre<unsigned long>( *boost::any_cast<fibre<unsigned long>*>( val ) );
+                     break;
+                  case LONG_LONG:
+                     std::get<0>( field ) = new fibre<long long>( *boost::any_cast<fibre<long long>*>( val ) );
+                     break;
+                  case UNSIGNED_LONG_LONG:
+                     std::get<0>( field ) = new fibre<unsigned long long>( *boost::any_cast<fibre<unsigned long long>*>( val ) );
+                     break;
+               };
+            }
+         }
+      }
+
       void
       clear()
       {
@@ -87,48 +174,51 @@ namespace tao {
       update_size()
       {
          bool done = false;
-         for( const auto& field : _fields )
+         for( const auto& item : _fields )
          {
+            const auto& field = item.second;
             const auto& val = std::get<0>( field );
+            if( std::get<1>( field ) == ATTRIBUTE )
+               continue;
             switch( std::get<2>( field ) )
             {
                case STRING:
-                  if( std::get<1>( field ) == VECTOR )
+                  if( std::get<1>( field ) == SCALAR )
                      _size = boost::any_cast<hpc::vector<string>*>( val )->size();
                   else
                      _size = boost::any_cast<fibre<string>*>( val )->size();
                   done = true;
                   break;
                case DOUBLE:
-                  if( std::get<1>( field ) == VECTOR )
+                  if( std::get<1>( field ) == SCALAR )
                      _size = boost::any_cast<hpc::vector<double>*>( val )->size();
                   else
                      _size = boost::any_cast<fibre<double>*>( val )->size();
                   done = true;
                   break;
                case INTEGER:
-                  if( std::get<1>( field ) == VECTOR )
+                  if( std::get<1>( field ) == SCALAR )
                      _size = boost::any_cast<hpc::vector<int>*>( val )->size();
                   else
                      _size = boost::any_cast<fibre<int>*>( val )->size();
                   done = true;
                   break;
                case UNSIGNED_LONG:
-                  if( std::get<1>( field ) == VECTOR )
+                  if( std::get<1>( field ) == SCALAR )
                      _size = boost::any_cast<hpc::vector<unsigned long>*>( val )->size();
                   else
                      _size = boost::any_cast<fibre<unsigned long>*>( val )->size();
                   done = true;
                   break;
                case LONG_LONG:
-                  if( std::get<1>( field ) == VECTOR )
+                  if( std::get<1>( field ) == SCALAR )
                      _size = boost::any_cast<hpc::vector<long long>*>( val )->size();
                   else
                      _size = boost::any_cast<fibre<long long>*>( val )->size();
                   done = true;
                   break;
                case UNSIGNED_LONG_LONG:
-                  if( std::get<1>( field ) == VECTOR )
+                  if( std::get<1>( field ) == SCALAR )
                      _size = boost::any_cast<hpc::vector<unsigned long long>*>( val )->size();
                   else
                      _size = boost::any_cast<fibre<unsigned long long>*>( val )->size();
@@ -164,8 +254,9 @@ namespace tao {
                      const U& value )
       {
          field_type& field = _fields[name];
-         field.first = value;
-         field.second = (field_value_type)boost::mpl::at<type_map,U>::type::value;
+         std::get<0>( field ) = value;
+         std::get<1>( field ) = ATTRIBUTE;
+         std::get<2>( field ) = (field_value_type)boost::mpl::at<type_map,U>::type::value;
       }
 
       template< class U >
@@ -216,7 +307,6 @@ namespace tao {
             std::get<1>( field ) = (field_rank_type)SCALAR;
             std::get<2>( field ) = type;
          }
-         return *boost::any_cast<hpc::vector<U>*>( val );
       }
 
       template< class U >
@@ -236,20 +326,42 @@ namespace tao {
       }
 
       template< class U >
+      const U&
+      attribute( const string& name )
+      {
+         return boost::any_cast<U&>( std::get<0>( field( name ) ) );
+      }
+
+      template< class U >
       typename hpc::vector<U>::view
+      scalar( const string& name )
+      {
+         return *boost::any_cast<hpc::vector<U>*>( std::get<0>( field( name ) ) );
+      }
+
+      template< class U >
+      const typename hpc::vector<U>::view
       scalar( const string& name ) const
       {
          return *boost::any_cast<hpc::vector<U>*>( std::get<0>( field( name ) ) );
       }
 
       template< class U >
-      fibre<U>&
+      const fibre<U>&
       vector( const string& name ) const
       {
          return *boost::any_cast<fibre<U>*>( std::get<0>( field( name ) ) );
       }
 
       field_type&
+      field( const string& name )
+      {
+         auto it = _fields.find( name );
+         ASSERT( it != _fields.end(), "No field by that name on batch object." );
+         return it->second;
+      }
+
+      const field_type&
       field( const string& name ) const
       {
          auto it = _fields.find( name );

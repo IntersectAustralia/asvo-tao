@@ -5,6 +5,8 @@
 #include <libhpc/containers/set.hh>
 #include <libhpc/containers/string.hh>
 #include "query.hh"
+#include "tile.hh"
+#include "simulation.hh"
 
 namespace tao {
    namespace backends {
@@ -45,23 +47,26 @@ namespace tao {
             boost::format fmt(
                "SELECT %1% FROM -table- "
                "INNER JOIN redshift_ranges ON (-table-.%2% = redshift_ranges.snapshot) "
-               "(POW(-pos1-,2) + POW(-pos2-,2) + POW(-pos3-,2)) >= redshift_ranges.min AND "
-               "(POW(-pos1-,2) + POW(-pos2-,2) + POW(-pos3-,2)) < redshift_ranges.max AND "
-               "-pos1-/(SQRT(POW(-pos1-,2) + POW(-pos2-,2))) >= %3% AND "
-               "-pos1-/(SQRT(POW(-pos1-,2) + POW(-pos2-,2))) < %4% AND "
-               "SQRT(POW(-pos1-,2) + POW(-pos2-,2))/(SQRT(POW(-pos1-,2) + POW(-pos2-,2) + POW(-pos3-,2))) > %5% AND "
-               "SQRT(POW(-pos1-,2) + POW(-pos2-,2))/(SQRT(POW(-pos1-,2) + POW(-pos2-,2) + POW(-pos3-,2))) < %6%"
-               "%11%" // filter
+               "WHERE "
+               "(POW(%3%,2) + POW(%4%,2) + POW(%5%,2)) >= redshift_ranges.min AND "
+               "(POW(%3%,2) + POW(%4%,2) + POW(%5%,2)) < redshift_ranges.max AND "
+               "(%3%)/(SQRT(POW(%3%,2) + POW(%4%,2))) >= %6% AND "
+               "(%3%)/(SQRT(POW(%3%,2) + POW(%4%,2))) < %7% AND "
+               "SQRT(POW(%3%,2) + POW(%4%,2))/(SQRT(POW(%3%,2) + POW(%4%,2) + POW(%5%,2))) >= %8% AND "
+               "SQRT(POW(%3%,2) + POW(%4%,2))/(SQRT(POW(%3%,2) + POW(%4%,2) + POW(%5%,2))) < %9% AND "
+               "(POW(%3%,2) + POW(%4%,2) + POW(%5%,2)) >= %10% AND "
+               "(POW(%3%,2) + POW(%4%,2) + POW(%5%,2)) < %11%"
+               "%12%" // filter
                );
-            if( tile.random() )
-               fmt % make_output_field_query_string( query, tile );
-            else
-               fmt % make_output_field_query_string( query );
+            std::unordered_map<string,string> map;
+            make_field_map( map, query, tile );
+            fmt % make_output_field_query_string( query, map );
             fmt % _field_map.at( "snapshot" );
-            fmt % tile.lightcone().max_ra() % tile.lightcone().min_ra();
-            fmt % tile.lightcone().max_dec() % tile.lightcone().min_dec();
+            fmt % map["pos_x"] % map["pos_y"] % map["pos_z"];
+            fmt % cos( tile.lightcone().max_ra() ) % cos( tile.lightcone().min_ra() );
+            fmt % cos( tile.lightcone().max_dec() ) % cos( tile.lightcone().min_dec() );
+            fmt % pow( tile.lightcone().min_dist(), 2 ) % pow( tile.lightcone().max_dist(), 2 );
             fmt % ""; // TODO
-            std::cout << fmt.str() << "\n";
             return fmt.str();
          }
 
@@ -89,21 +94,34 @@ namespace tao {
 
          string
          make_output_field_query_string( tao::query<real_type>& query,
-                                         optional<const tile<real_type>&> tile = optional<const tile<real_type>&>() ) const
+                                         const std::unordered_map<string,string>& map )
          {
             string qs;
             for( string of : query.output_fields() )
             {
+               if( !qs.empty() )
+                  qs += ", ";
+               qs += map.at( of ) + " AS " + of;
+            }
+            return qs;
+         }
+
+         void
+         make_field_map( std::unordered_map<string,string>& map,
+                         tao::query<real_type>& query,
+                         optional<const tile<real_type>&> tile = optional<const tile<real_type>&>() ) const
+         {
+            map.clear();
+            for( string of : query.output_fields() )
+            {
                ASSERT( _field_map.find( of ) != _field_map.end(),
                        "Failed to find output field name in mapping." );
-               if( !qs.empty() )
-                  qs += " ";
 
                // Positions need to be handled specially to take care of translation.
                if( tile && (of == "pos_x" || of == "pos_y" || of == "pos_z") )
                {
                   string mapped[3] = { "pos_x", "pos_y", "pos_z" };
-                  real_type box_size = tile.lightcone().simulation().box_size();
+                  real_type box_size = (*tile).lightcone().simulation().box_size();
                   string repl = "CASE WHEN %1% + %2% < %3% THEN %1% + %2% ELSE %1% + %2% - %3% END + %4%";
                   string field;
                   if( of == "pos_x" )
@@ -125,8 +143,8 @@ namespace tao {
                                          box_size % (*tile).min()[2] );
                   }
 
-                  // Add to query.
-                  qs += field + " AS " + of;
+                  // Add to map.
+                  map[of] = field;
                }
                else
                {
@@ -154,11 +172,10 @@ namespace tao {
                         of = mapped[(*tile).rotation()[2]];
                   }
 
-                  // Add to the query.
-                  qs += _field_map.at( of ) + " AS " + of;
+                  // Add to the map.
+                  map[of] = _field_map.at( of );
                }
             }
-            return qs;
          }
 
       protected:
@@ -192,6 +209,17 @@ namespace tao {
             _max[0] = maxx; _max[1] = maxy; _max[2] = maxz;
          }
 
+         // rdb_table( const rdb_table& src )
+         //    : name( src._name ),
+         //      minx( src._minx ),
+         //      miny( src._miny ),
+         //      minz( src._minz ),
+         //      maxx( src._maxx ),
+         //      maxy( src._maxy ),
+         //      maxz( src._maxz )
+         // {
+         // }
+
          const std::string&
          name() const
          {
@@ -218,9 +246,15 @@ namespace tao {
             return _name < op._name;
          }
 
+         bool
+         operator==( const rdb_table& op ) const
+         {
+            return _name == op._name && _min == op._min && _max == op._max;
+         }
+
       protected:
 
-         std::string _name;
+         string _name;
          array<real_type,3> _min, _max;
       };
 
