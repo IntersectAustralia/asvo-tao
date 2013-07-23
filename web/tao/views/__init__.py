@@ -155,7 +155,7 @@ def reject_user(request, user_id):
 @set_tab('support')
 def support(request):
     if not hasattr(request,'user') or not hasattr(request.user,'is_aaf'):
-        return redirect(handle_403)
+        return redirect(login)
     if request.user.is_aaf() and request.user.account_registration_status == TaoUser.RS_EMPTY:
         return redirect(register)
     if request.user.is_aaf() and request.user.account_registration_status == TaoUser.RS_REJECTED:
