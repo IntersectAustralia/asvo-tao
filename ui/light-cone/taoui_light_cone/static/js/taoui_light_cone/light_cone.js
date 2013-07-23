@@ -291,7 +291,7 @@ catalogue.modules.light_cone = function ($) {
         var nh = Math.floor(box_side / hh);
         var n = nv * nh;
 
-        return 1; //n;
+        return n;
     }
 
 
@@ -351,16 +351,10 @@ catalogue.modules.light_cone = function ($) {
         var selection = $("input[name='light_cone-light_cone_type']:checked").val();
 
         if ("unique" == selection) {
-            var maximum = get_number_of_unique_light_cones();
+            var maximum = 1;//get_number_of_unique_light_cones();
             if (spinner_set_max(maximum)) {
                 $spinner_label.html("Select the number of light-cones: (maximum for the selected parameters is " + maximum + ")*");
-                $(lc_id('number_of_light_cones')).validate({
-                    type: 'int',
-                    required: true,
-                    form: 'light_cone'
-                }).validate('test', {
-                    message: 'Currently set to value 1'
-                });
+                $(lc_id('number_of_light_cones')).closest('div.control-group').hide();
             }
         } else {
             $.ajax({
@@ -373,6 +367,7 @@ catalogue.modules.light_cone = function ($) {
                     var maximum = parseInt(data.fields.parameter_value);
                     if (spinner_set_max(maximum)) {
                         $spinner_label.html("Select the number of light-cones: (maximum " + maximum + " random light-cones)*");
+                        $(lc_id('number_of_light_cones')).closest('div.control-group').show();
                     }
                 }
             });
