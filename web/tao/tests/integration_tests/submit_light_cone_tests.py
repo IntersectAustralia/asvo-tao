@@ -1,6 +1,6 @@
 from tao.models import Snapshot
 from tao.settings import MODULE_INDICES
-from tao.tests.integration_tests.helper import LiveServerMGFTest, interact
+from tao.tests.integration_tests.helper import LiveServerMGFTest
 from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, JobFactory, StellarModelFactory, SnapshotFactory, BandPassFilterFactory, GlobalParameterFactory
 
 from taoui_light_cone.forms import Form as LightConeForm
@@ -14,7 +14,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
         GlobalParameterFactory(parameter_name='INITIAL_JOB_STATUS', parameter_value='HELD')
         simulation = SimulationFactory.create(box_size=500)
         galaxy_model = GalaxyModelFactory.create()
-        dataset = DataSetFactory.create(simulation=simulation, galaxy_model=galaxy_model)
+        dataset = DataSetFactory.create(simulation=simulation, galaxy_model=galaxy_model, max_job_box_count=12)
 
         self.redshifts = ['1.23456789', '2.987654321', '3.69154927', '4.567890123']
         for redshift in self.redshifts:
@@ -40,6 +40,19 @@ class SubmitLightConeTests(LiveServerMGFTest):
 
     def tearDown(self):
         super(SubmitLightConeTests, self).tearDown()
+
+    def test_box_count_too_large(self):
+        self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
+        # the box count calculated from these parameters is 15, exceeding the max_job_box_count set for this dataset, 12
+        self.fill_in_fields({
+            'ra_opening_angle': '1',
+            'dec_opening_angle': '2',
+            'redshift_min': '3',
+            'redshift_max': '4',
+        }, id_wrap=self.lc_id)
+        self.submit_mgf_form()
+
+        self.assert_on_page('mock_galaxy_factory')
 
     def test_submit_invalid_output_properties(self):
         ## fill in form (correctly)
