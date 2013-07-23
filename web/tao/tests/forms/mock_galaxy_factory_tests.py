@@ -23,7 +23,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
 
         self.simulation = SimulationFactory.create()
         galaxy_model = GalaxyModelFactory.create()
-        self.dataset = DataSetFactory.create(simulation=self.simulation, galaxy_model=galaxy_model)
+        self.dataset = DataSetFactory.create(simulation=self.simulation, galaxy_model=galaxy_model, max_job_box_count=11)
         self.filter = DataSetPropertyFactory.create(dataset=self.dataset)
         self.filter_long = DataSetPropertyFactory.create(dataset=self.dataset, data_type=DataSetProperty.TYPE_LONG_LONG)
         self.filter_float = DataSetPropertyFactory.create(dataset=self.dataset, data_type=DataSetProperty.TYPE_FLOAT)
