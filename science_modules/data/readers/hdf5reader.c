@@ -1,11 +1,14 @@
 #include "hdf5.h"
 #include <string.h>
 
+#define MAX_FIELDS_COUNT 500
+#define MAX_PATH_LENGTH  200
+
 herr_t get_info(hid_t loc_id, const char *name, void *opdata);
 hid_t file;
 
-char fields[300][200];
-char path[100];
+char fields[MAX_FIELDS_COUNT][MAX_PATH_LENGTH];
+char path[MAX_PATH_LENGTH];
 int counter = 0;
 
 int main (int argc, char *argv[]) {
@@ -18,8 +21,8 @@ int main (int argc, char *argv[]) {
     
     herr_t status;
     hid_t dataset, space, memspace; 
-    hid_t spaces[200];
-    hid_t datasets[200];
+    hid_t spaces[MAX_FIELDS_COUNT];
+    hid_t datasets[MAX_FIELDS_COUNT];
     hsize_t dims[2];
     hsize_t offset[1];
     hsize_t slice[1];
@@ -95,4 +98,3 @@ herr_t get_info(hid_t loc_id, const char *name, void *opdata) {
     }
     return 0;
  }
-

@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
 import sys
-from vo.table import parse_single_table
+import warnings
+import astropy.io.votable.exceptions
+from astropy.io.votable import parse_single_table
 
 if len(sys.argv) < 2:
     print "\nplease specify an input file.\n"
@@ -9,6 +11,17 @@ if len(sys.argv) < 2:
 
 filename = sys.argv[1]
 
+# suppress version mismatch warning
+warnings.filterwarnings(action='ignore', category=astropy.io.votable.exceptions.W21)
+
+# suppress invalid unit warnings
+warnings.filterwarnings(action='ignore', category=astropy.io.votable.exceptions.W50)
+
+# enforce utf-8 encoding
+reload(sys)
+sys.setdefaultencoding("utf-8")
+
+# load data
 table = parse_single_table(filename)
 data = table.array
 

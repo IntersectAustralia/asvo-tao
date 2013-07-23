@@ -15,12 +15,8 @@
     <script src="{% static 'js/jquery.validate.js' %}"></script>
 
     <script type="text/javascript" src="{% static 'js/TwoSidedSelectWidget.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/light_cone.js' %}"></script>
-    <script type="text/javascript">
-        var TAO_SEMIREQUIRED_FIELD_IDS = '{% semirequired_field_ids %}';
-        var TAO_JSON_CTX = '{% json_ctx %}';
-        var TAO_NO_FILTER = {% no_filter %};
-    </script>
+    <!-- <script type="text/javascript" src="{% static 'js/light_cone.js' %}"></script> -->
+    <script type="text/javascript" src="{% static 'js/catalogue.js' %}"></script>
 {% endblock extrajs %}
 
 {%  comment %}

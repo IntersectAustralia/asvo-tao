@@ -5,7 +5,7 @@ from tao.forms import FormsGraph
 from tao.models import Job, BandPassFilter, Simulation
 from tao.tests import helper
 from tao.tests.integration_tests.helper import LiveServerTest
-from tao.tests.support.factories import JobFactory, UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, StellarModelFactory, DustModelFactory, BandPassFilterFactory, SnapshotFactory
+from tao.tests.support.factories import GlobalParameterFactory, JobFactory, UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, StellarModelFactory, DustModelFactory, BandPassFilterFactory, SnapshotFactory
 from tao.tests.support.xml import light_cone_xml
 
 import os, zipfile
@@ -26,6 +26,7 @@ class JobTest(LiveServerTest):
         self.user.save()
 
         self.job = JobFactory.create(user=self.user)
+        GlobalParameterFactory.create(parameter_name='maximum-random-light-cones',parameter_value='10000')
         
         self.output_paths = ['job1', 'large_job']
         self.dir_paths = [os.path.join(settings.FILES_BASE, output_path) for output_path in self.output_paths]
@@ -121,7 +122,7 @@ class JobTest(LiveServerTest):
         completed_job = JobFactory.create(user=self.user, status=Job.COMPLETED, output_path=self.output_paths[0],parameters=parameters)
         
         self.visit('view_job', completed_job.id)
-
+        self.wait(2)
         self.assert_page_has_content('Download')
         self.assert_page_has_content('Status')
         self.assert_page_has_content('Summary')
