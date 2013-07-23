@@ -12,9 +12,9 @@ config.select(
     config.packages.SOCI(backends=['postgres']),
     config.packages.pugixml(),
     config.packages.Eigen(required=False),
-    config.packages.libhpc(),
     config.packages.cfitsio(),
     config.packages.glut(required=False),
+    config.packages.libhpc(),
 )
 
 vars = project.create_variables()

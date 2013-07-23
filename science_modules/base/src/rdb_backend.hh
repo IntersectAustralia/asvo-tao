@@ -4,9 +4,10 @@
 #include <unordered_map>
 #include <libhpc/containers/set.hh>
 #include <libhpc/containers/string.hh>
+#include "backend.hh"
 #include "query.hh"
 #include "tile.hh"
-#include "simulation.hh"
+#include "batch.hh"
 
 namespace tao {
    namespace backends {
@@ -16,13 +17,43 @@ namespace tao {
 
       template< class T >
       class rdb
+         : public backend<T>
       {
       public:
 
          typedef T real_type;
-         typedef rdb_table<real_type> table;
+         typedef backend<real_type> super_type;
+         typedef rdb_table<real_type> table_type;
 
       public:
+
+         rdb( const simulation<real_type>* sim )
+            : super_type( sim ),
+              _con( false )
+         {
+         }
+
+         ///
+         /// Set the simulation. Overloaded to allow for loading table
+         /// information from the database when we have both a connection
+         /// and simulation available.
+         ///
+         virtual
+         void
+         set_simulation( const simulation<real_type>* sim )
+         {
+            super_type::set_simulation( sim );
+            if( sim && _con )
+               _initialise();
+         }
+
+         void
+         init_batch( batch<real_type>& bat,
+                     tao::query<real_type>& query )
+         {
+            for( const auto& field : query.output_fields() )
+               bat.set_scalar( field, _field_types.at( this->_field_map.at( field ) ) );
+         }
 
          // string
          // make_box_query_string( const box<real_type>& box ) const
@@ -180,7 +211,15 @@ namespace tao {
 
       protected:
 
+         virtual
+         void
+         _initialise() = 0;
+
+      protected:
+
          std::unordered_map<string,string> _field_map;
+         map<string,typename batch<real_type>::field_value_type> _field_types;
+         bool _con;
       };
 
       template< class T >
