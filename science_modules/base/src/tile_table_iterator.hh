@@ -17,9 +17,9 @@ namespace tao {
       template< class Backend >
       class tile_table_iterator
          : public boost::iterator_facade< tile_table_iterator<Backend>,
-                                          const typename rdb<typename Backend::real_type>::table&,
+                                          const typename rdb<typename Backend::real_type>::table_type&,
                                           std::forward_iterator_tag,
-                                          const typename rdb<typename Backend::real_type>::table& >
+                                          const typename rdb<typename Backend::real_type>::table_type& >
       {
          friend class ::tile_table_iterator_suite;
          friend class boost::iterator_core_access;
@@ -28,7 +28,7 @@ namespace tao {
 
          typedef Backend backend_type;
          typedef typename Backend::real_type real_type;
-         typedef typename rdb<real_type>::table table_type;
+         typedef typename rdb<real_type>::table_type table_type;
          typedef const table_type& value_type;
          typedef value_type reference_type;
 

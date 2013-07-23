@@ -1,19 +1,14 @@
 #include <iostream>
 #include <glut.h>
 #include <boost/lexical_cast.hpp>
-// #include <AntTweakBar.h>
 #include <libhpc/libhpc.hh>
 #include "tao/base/types.hh"
 #include "tao/base/globals.hh"
 #include "tao/base/lightcone.hh"
-#include "tao/base/postgresql_backend.hh"
+#include "tao/base/soci_backend.hh"
 #include "tao/base/sfh.hh"
 #include "tao/base/stellar_population.hh"
 #include "tree.hh"
-#include "colour_map.hh"
-#include "console.hh"
-#include "command_chain.hh"
-#include "command_context.hh"
 
 using namespace hpc;
 using namespace tao;
@@ -49,9 +44,9 @@ tao::age_line<real_type> sfh_ages;
 tao::stellar_population ssp;
 vector<real_type> age_masses, age_bulge_masses, age_metals;
 
-colour_map<float> col_map;
+gl::colour_map<float> col_map;
 
-backends::postgresql<real_type> backend;
+backends::soci<real_type> backend;
 tao::query<real_type> query;
 
 vector<real_type> stellar_mass;
@@ -60,11 +55,9 @@ list<scoped_ptr<batch<real_type>>> gals;
 bool thread_done = true;
 pthread_t thread_handle;
 
-tao::console cons;
-tao::chain cmd_chain;
-tao::context lc_ctx;
-
-// TwBar* main_tb;
+gl::console cons;
+command::chain cmd_chain;
+command::context lc_ctx;
 
 const unsigned char colors[11][3] = {
    {94, 79, 162},
@@ -456,6 +449,7 @@ draw_galaxies()
 void
 draw_tables()
 {
+   using ::backend;
    glEnable( GL_DEPTH_TEST );
    glDisable( GL_CULL_FACE );
    glDisable( GL_LIGHTING );
@@ -715,6 +709,7 @@ mouse_motion( int x,
 void*
 load_galaxies( void* data )
 {
+   using ::backend;
    for( auto it = backend.galaxy_begin( ::query, *cur_box );
         it != backend.galaxy_end( ::query, *cur_box );
         ++it )
@@ -738,12 +733,12 @@ keyboard( unsigned char key,
    auto state = cons.keyboard( key );
    switch( state )
    {
-      case console::ACTION:
+      case gl::console::ACTION:
       {
          if( !cmd_chain( cons.line() ) )
             cons.write( "Unknown command." );
       }
-      case console::CAUGHT:
+      case gl::console::CAUGHT:
          glutPostRedisplay();
          return;
    };
@@ -845,11 +840,13 @@ update_tao()
 void
 init_tao()
 {
+   using ::backend;
+
    // Connect the backend.
 #include "credentials.hh"
    // backend.connect( "millennium_full_hdf5_dist", username, password, string( "tao02.hpc.swin.edu.au" ), 3306 );
    backend.connect( "millennium_mini_1", "taoadmin", "taoadmin" );
-   backend.initialise( *cur_sim );
+   backend.set_simulation( cur_sim );
    ::query.add_base_output_fields();
    ::query.add_output_field( "stellarmass" );
 
@@ -1017,6 +1014,8 @@ set_box( const re::match& match )
 void
 load_sfh( const re::match& match )
 {
+   using ::backend;
+
    auto val = to_unsigned_long_long( match[1] );
    if( val )
    {
@@ -1048,8 +1047,6 @@ load_sfh( const re::match& match )
          "WHERE globaltreeid = " + to_string( cur_tree ) + " "
          "ORDER BY localgalaxyid";
       backend.session() << query, soci::into( (std::vector<double>&)stellar_mass );
-      auto rng = std::minmax_element( stellar_mass.begin(), stellar_mass.end() );
-      col_map.set_abscissa_linear( *rng.first, *rng.second );
 
       reshape( win_width, win_height );
    }
