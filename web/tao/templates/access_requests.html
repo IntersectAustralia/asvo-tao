@@ -31,7 +31,7 @@
                     <td> {{ user.title }}</td>
                     <td> {{ user.first_name}} </td>
                     <td> {{ user.last_name}} </td>
-                    <td> {{ user.username }} </td>
+                    <td> {{ user.display_name }} </td>
                     <td> {{ user.email }} </td>
                     <td>
                         <form action="{% url 'approve_user' user.id %}" method="POST" style="display:inline;">

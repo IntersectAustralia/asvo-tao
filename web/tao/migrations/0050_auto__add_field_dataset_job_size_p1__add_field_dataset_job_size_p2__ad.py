@@ -2,68 +2,38 @@
 import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import connection
 from django.db import models
 
-def db_table_exists(table_name):
-    return table_name in connection.introspection.table_names()
 
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        #import pdb; pdb.set_trace()
-        # Use auth_user as a proxy for all tables existing
-        if db_table_exists('auth_user'):
-            # Presumably migrating from Django < 1.5
-            db.rename_table('auth_user', 'tao_taouser')
-            db.rename_table('auth_user_user_permissions', 'tao_taouser_user_permissions')
-            db.rename_table('auth_user_groups', 'tao_taouser_groups')
-            db.rename_column('tao_taouser_groups','user_id','taouser_id')
-            db.rename_column('tao_taouser_user_permissions','user_id','taouser_id')
-            db.execute( db.foreign_key_sql('tao_job','user_id','tao_taouser','id') )
-        else:
-            # Presumably clean install with Django >= 1.5
-            db.create_table('tao_taouser', (
-                ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-                ('password', self.gf('django.db.models.fields.CharField')(max_length=128)),
-                ('last_login', self.gf('django.db.models.fields.DateTimeField')()),
-                ('is_superuser', self.gf('django.db.models.fields.BooleanField')(default=False)),
-                ('username', self.gf('django.db.models.fields.CharField')(max_length=30)),
-                ('first_name', self.gf('django.db.models.fields.CharField')(max_length=30)),
-                ('last_name', self.gf('django.db.models.fields.CharField')(max_length=30)),
-                ('email', self.gf('django.db.models.fields.CharField')(max_length=75)),
-                ('is_staff', self.gf('django.db.models.fields.BooleanField')(default=False)),
-                ('is_active', self.gf('django.db.models.fields.BooleanField')(default=False)),
-                ('date_joined', self.gf('django.db.models.fields.DateTimeField')()),
-                ))
-            db.create_unique('tao_taouser', ['username'])
+        # Adding field 'DataSet.job_size_p1'
+        db.add_column(u'tao_dataset', 'job_size_p1',
+                      self.gf('django.db.models.fields.FloatField')(default=0.065550529999999996),
+                      keep_default=False)
 
-            db.create_table('tao_taouser_user_permissions', (
-                ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-                ('taouser_id', self.gf('django.db.models.fields.IntegerField')()),
-                ('permission', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.Permission']))
-                ))
-            db.create_index('tao_taouser_user_permissions', ['taouser_id'])
-            db.create_index('tao_taouser_user_permissions', ['permission_id'])
-            db.create_unique('tao_taouser_user_permissions', ['taouser_id', 'permission_id'])
+        # Adding field 'DataSet.job_size_p2'
+        db.add_column(u'tao_dataset', 'job_size_p2',
+                      self.gf('django.db.models.fields.FloatField')(default=-0.10355211),
+                      keep_default=False)
 
-            db.create_table('tao_taouser_groups', (
-                ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-                ('taouser_id', self.gf('django.db.models.fields.IntegerField')()),
-                ('group', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.Group']))
-                ))
-            db.create_index('tao_taouser_groups', ['taouser_id'])
-            db.create_index('tao_taouser_groups', ['group_id'])
-        db.send_create_signal('tao', ['TaoUser'])
+        # Adding field 'DataSet.job_size_p3'
+        db.add_column(u'tao_dataset', 'job_size_p3',
+                      self.gf('django.db.models.fields.FloatField')(default=0.37135452000000002),
+                      keep_default=False)
+
 
     def backwards(self, orm):
-        # this would migrate the user model to django 1.4, probably breaking code
-        db.rename_table('tao_taouser', 'auth_user')
-        db.rename_table('tao_taouser_user_permissions', 'auth_user_user_permissions')
-        db.rename_table('tao_taouser_groups', 'auth_user_groups')
-        db.rename_column('tao_taouser_groups','taouser_id','user_id')
-        db.rename_column('tao_taouser_user_permissions','taouser_id','user_id')
-        db.send_create_signal('auth', ['User'])
+        # Deleting field 'DataSet.job_size_p1'
+        db.delete_column(u'tao_dataset', 'job_size_p1')
+
+        # Deleting field 'DataSet.job_size_p2'
+        db.delete_column(u'tao_dataset', 'job_size_p2')
+
+        # Deleting field 'DataSet.job_size_p3'
+        db.delete_column(u'tao_dataset', 'job_size_p3')
+
 
     models = {
         u'auth.group': {
@@ -78,22 +48,6 @@ class Migration(SchemaMigration):
             'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['contenttypes.ContentType']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
-        },
-        u'auth.user': {
-            'Meta': {'object_name': 'User'},
-            'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
-            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'groups': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Group']", 'symmetrical': 'False', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
-            'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'}),
-            'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
         },
         u'contenttypes.contenttype': {
             'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
@@ -121,6 +75,10 @@ class Migration(SchemaMigration):
             'galaxy_model': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['tao.GalaxyModel']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'import_date': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'blank': 'True'}),
+            'job_size_p1': ('django.db.models.fields.FloatField', [], {'default': '0.065550529999999996'}),
+            'job_size_p2': ('django.db.models.fields.FloatField', [], {'default': '-0.10355211'}),
+            'job_size_p3': ('django.db.models.fields.FloatField', [], {'default': '0.37135452000000002'}),
+            'max_job_box_count': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'simulation': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['tao.Simulation']"}),
             'version': ('django.db.models.fields.DecimalField', [], {'default': "'1.00'", 'max_digits': '10', 'decimal_places': '2'})
         },
@@ -169,8 +127,8 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'output_path': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'parameters': ('django.db.models.fields.TextField', [], {'max_length': '1000000', 'blank': 'True'}),
-            'status': ('django.db.models.fields.CharField', [], {'default': "'HELD'", 'max_length': '20'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"})
+            'status': ('django.db.models.fields.CharField', [], {'default': "u'HELD'", 'max_length': '20'}),
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['tao.TaoUser']"})
         },
         u'tao.simulation': {
             'Meta': {'ordering': "['name']", 'object_name': 'Simulation'},
@@ -194,14 +152,41 @@ class Migration(SchemaMigration):
             'label': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '200'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '200'})
         },
-        u'tao.userprofile': {
-            'Meta': {'object_name': 'UserProfile'},
+        u'tao.taouser': {
+            'Meta': {'object_name': 'TaoUser'},
+            'aaf_shared_token': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '64', 'null': 'True', 'blank': 'True'}),
+            'account_registration_date': ('django.db.models.fields.DateTimeField', [], {'null': 'True'}),
+            'account_registration_reason': ('django.db.models.fields.TextField', [], {'default': "''", 'null': 'True', 'blank': 'True'}),
+            'account_registration_status': ('django.db.models.fields.CharField', [], {'default': "'NA'", 'max_length': '3'}),
+            'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
+            'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
+            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
+            'groups': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Group']", 'symmetrical': 'False', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'institution': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'institution': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True'}),
+            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
+            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
+            'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
             'rejected': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'scientific_interests': ('django.db.models.fields.CharField', [], {'max_length': '500'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '5'}),
-            'user': ('django.db.models.fields.related.OneToOneField', [], {'to': u"orm['auth.User']", 'unique': 'True'})
+            'scientific_interests': ('django.db.models.fields.CharField', [], {'max_length': '500', 'null': 'True'}),
+            'title': ('django.db.models.fields.CharField', [], {'max_length': '5', 'null': 'True'}),
+            'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'}),
+            'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
+        },
+        u'tao.workflowcommand': {
+            'Meta': {'object_name': 'WorkflowCommand'},
+            'command': ('django.db.models.fields.CharField', [], {'max_length': '64'}),
+            'executed': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
+            'execution_comment': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'execution_status': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'issued': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
+            'job_id': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['tao.Job']", 'null': 'True', 'blank': 'True'}),
+            'parameters': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '1024', 'blank': 'True'}),
+            'submitted_by': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['tao.TaoUser']"})
         }
     }
 

@@ -43,13 +43,13 @@ namespace tao {
 
       void open();
 
-      void process_galaxy( const tao::galaxy& galaxy );
+      void process_galaxy( tao::galaxy& galaxy );
 
       virtual void log_metrics();
 
    protected:
 
-      void _write_field( const tao::galaxy& galaxy,const string& field,unsigned idx, int ColIndex);
+      void _write_field( const tao::galaxy& galaxy,const string& field, int ColIndex);
       void _write_table_header(const tao::galaxy& galaxy);
 
       void ReadFieldsInfo(const options::xml_dict& global_dict );

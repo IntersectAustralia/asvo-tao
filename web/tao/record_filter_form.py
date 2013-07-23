@@ -93,7 +93,7 @@ class RecordFilterForm(BetterForm):
                 obj = DataSetProperty.objects.get(pk = record_filter)
                 is_int = obj.data_type == DataSetProperty.TYPE_INT or obj.data_type == DataSetProperty.TYPE_LONG_LONG
         else:
-            choices = [('X-' + NO_FILTER, 'No Filter')]
+            choices = [] # [('X-' + NO_FILTER, 'No Filter')]
         if is_int:
             args = {'required': False,  'decimal_places': 0, 'max_digits': 20, 'widget': forms.TextInput(attrs={'maxlength': '20'})}
             val_class = forms.DecimalField

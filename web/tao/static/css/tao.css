@@ -593,3 +593,11 @@ footer {
 html, body {
     height: 100%;
 }
+
+#max_job_size {
+    clear: both;
+    margin-bottom: 10px;
+}
+.job_too_large_error {
+    color: #b94a48;
+}
