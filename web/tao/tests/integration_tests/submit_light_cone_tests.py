@@ -79,6 +79,21 @@ class SubmitLightConeTests(LiveServerMGFTest):
         self.assert_on_page('mock_galaxy_factory')
         self.assert_page_has_content("Note this exceeds the maximum allowed size, please reduce the light-cone size (RA, Dec, Redshift range).")
 
+    def test_job_estimate_with_invalid_parameters(self):
+        self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
+        self.fill_in_fields({
+            'ra_opening_angle': '0',
+            'dec_opening_angle': '0',
+            'redshift_min': '0',
+            'redshift_max': '5',
+        }, id_wrap=self.lc_id)
+        self.click(self.lc_2select('op_add_all'))
+        self.assert_page_has_content("invalid parameters, please adjust RA, Dec, redshift min or max")
+        self.submit_mgf_form()
+
+        self.assert_on_page('mock_galaxy_factory')
+        self.assert_page_has_content("invalid parameters, please adjust RA, Dec, redshift min or max")
+
     def test_submit_invalid_output_properties(self):
         ## fill in form (correctly)
         self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
