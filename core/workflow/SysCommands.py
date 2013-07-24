@@ -43,16 +43,16 @@ class SysCommands(object):
                  'Job_Stop':self.Job_Stop,
                  'Job_Resume':self.Job_Resume,
                  'Workflow_Stop':self.Workflow_Stop,
-                 'Worflow_Resume':self.Worflow_Resume,                 
+                 'Workflow_Resume':self.Workflow_Resume,                 
                  'Job_Output_Delete':self.Job_Output_Delete                 
                  }
         
     def json_handler(self,resp):       
         
         CommandsCounter=0
-        print resp.json()        
-        logging.info("Meta Info for current Commands="+str(resp.json()['meta']['total_count']))        
-        for json in resp.json()['objects']:            
+        logging.info(resp.json)        
+        logging.info("Meta Info for current Commands="+str(resp.json['meta']['total_count']))        
+        for json in resp.json['objects']:            
             if self.HandleNewCommand(json)==True:
                 CommandsCounter=CommandsCounter+1            
     
@@ -92,8 +92,8 @@ class SysCommands(object):
         logging.info("Command Local ID:"+str(CommandID))        
         
         CommandFunction=self.FunctionsMap[command]
-        #if CommandFunction(UICommandID,UIJobID,CommandParams)==True:
-        self.dbaseobj.UpdateCommandStatus(CommandID,EnumerationLookup.CommandState.Completed)
+        if CommandFunction(UICommandID,UIJobID,CommandParams)==True:
+            self.dbaseobj.UpdateCommandStatus(CommandID,EnumerationLookup.CommandState.Completed)
         self.UpdateTAOCommandUI(UICommandID)
     
     def Job_Stop_All(self,UICommandID,UIJobID,CommandParams):
@@ -110,7 +110,8 @@ class SysCommands(object):
             
             JobDetails={'start':-1,'progress':'0%','end':0,'error':'','endstate':''}
             self.PauseJob(UICommandID, JobID, PID, JobStatus)
-        print("Job_Stop_All")
+            self.UpdateTAOJobUI(UIReference_ID) 
+        logging.info("Job_Stop_All")
         return True
 
     def PauseJob(self, UICommandID, JobID, PBSID, JobStatus):
@@ -120,7 +121,7 @@ class SysCommands(object):
         ##If it is running stop it
         if (JobStatus <= EnumerationLookup.JobState.Running and JobStatus > EnumerationLookup.JobState.NewJob):
             logging.info("COMMAND Job_Stop: JobID=" + str(JobID) + " , Terminating Job From Queue")
-            #self.TorqueObj.TerminateJob(PBSID) ##If its status is running or before set it to pause
+            self.TorqueObj.TerminateJob(PBSID) ##If its status is running or before set it to pause
         if (JobStatus <= EnumerationLookup.JobState.Running):
             logging.info("COMMAND Job_Stop: JobID=" + str(JobID) + " , SetJob to Pause")
             self.dbaseobj.SetJobPaused(JobID, UICommandID)
@@ -136,21 +137,21 @@ class SysCommands(object):
             
             self.PauseJob(UICommandID, JobID, PBSID, JobStatus)
         self.UpdateTAOJobUI(UIJobID)        
-        print("Job_Stop")
+        logging.info("Job_Stop")
         return True
     def Job_Resume(self,UICommandID,UIJobID,CommandParams):
         logging.info("Job_Resume is not currently supported")
         return True
     def Workflow_Stop(self,UICommandID,UIJobID,CommandParams):
         self.KeepWorkFlowActive=False
-        print("Workflow_Stop")
+        logging.info("Workflow_Stop")
         return True
-    def Worflow_Resume(self,UICommandID,UIJobID,CommandParams):
+    def Workflow_Resume(self,UICommandID,UIJobID,CommandParams):
         self.KeepWorkFlowActive=True
-        print("Worflow_Resume")
+        logging.info("Workflow_Resume")
         return True    
     def Job_Output_Delete(self,UICommandID,UIJobID,CommandParams):
-        print("Job_Output_Delete")
+        logging.info("Job_Output_Delete")
         JobUserName=CommandParams
         BasedPath=os.path.join(self.Options['WorkFlowSettings:WorkingDir'], JobUserName, str(UIJobID))
         outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], JobUserName, str(UIJobID),'output')
@@ -181,9 +182,9 @@ class SysCommands(object):
         data['execution_status'] = 'COMPLETED'             
         data['execution_comment'] = ""                
         #logging.info('Updating UI MasterDB. CommandID ('+str(CommandID)+').. '+data['execution_status'])        
-        print('Updating UI MasterDB. CommandID ('+str(CommandID)+').. '+data['execution_status'])
-        print(UpdateURL)
-        print(data)
+        logging.info('Updating UI MasterDB. CommandID ('+str(CommandID)+').. '+data['execution_status'])
+        logging.info(UpdateURL)
+        logging.info(data)
         requests.put(UpdateURL, json.dumps(data))        
                  
     
