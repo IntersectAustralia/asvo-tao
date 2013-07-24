@@ -1,0 +1,21 @@
+{% load bootstrap_tags %}
+{% load assets %}
+{% load staticfiles %}
+<script type="text/javascript" src="{% static 'js/taoui_telescope/telescope.js' %}"></script>
+
+<legend></legend>
+
+<div class="row-fluid">
+    <div class="boxed span8">
+        <div>
+            {{ form.get_apply_telescope|as_bootstrap_field }}
+        </div>
+        <div id="telescope_params">
+			{% for fieldset in form.fieldsets %}
+			    {{ fieldset|as_bootstrap_fieldset }}
+			{% endfor %}
+        </div>
+    </div>
+</div>
+
+

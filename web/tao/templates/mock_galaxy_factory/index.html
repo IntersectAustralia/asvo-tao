@@ -35,8 +35,8 @@
             {% for form in forms %}
                 <div id="tabs-{{ forloop.counter }}" class="tao-tab" tao-number="{{ forloop.counter }}">
 
-                    <input type="button" value="Next &gt;" class="btn tao-next" />
                     {% if forloop.counter > 1 %}
+                        <input type="button" value="Next &gt;" class="btn tao-next" />
                         <input type="button" value="&lt; Previous" class="btn tao-prev" style="float: left;"/>
                     {% endif %}
 
@@ -44,9 +44,10 @@
 
                     <div class="form-actions">
                       {% if forloop.counter > 1 %}
+                          <input type="button" value="Next &gt;" class="btn tao-next" />
                           <input type="button" value="&lt; Previous" class="btn tao-prev" style="float: left;"/>
                       {% endif %}
-                      <input type="button" value="Next &gt;" class="btn tao-next" />
+                      
                     </div>
 
                 </div>
