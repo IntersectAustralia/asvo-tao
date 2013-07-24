@@ -230,9 +230,14 @@ INITIAL_JOB_MESSAGE = "Your job has been " + INITIAL_JOB_STATUS.lower() + " succ
 # set up the path and installed apps for the UI modules
 #
 UI_DIR = join(dirname(PROJECT_DIR), 'ui')
+
+# The order of the tuples here determines the order that the tabs are listed
+# in the UI
 MODULES_PATHS = (
+    ('job_type', 'job_type'),
     ('light_cone', 'light-cone'),
     ('sed', 'sed'),
+    ('telescope', 'telescope'),
     ('mock_image', 'mock_image'),
 )
 sys.path.extend([join(UI_DIR, module[1]) for module in MODULES_PATHS])
@@ -247,8 +252,14 @@ OUTPUT_FORMATS = [
     {'value': 'votable', 'text': 'VOTable', 'extension': 'xml'},
 ]
 
-MODULE_INDICES = {'light_cone': '1', 'sed': '2', 'mock_image': '3',
-                  'record_filter': '4', 'output_format': '5'}
+MODULE_INDICES = {
+                  'light_cone': '1',
+                  'sed': '2', 'mock_image': '3',
+                  'record_filter': '4',
+                  'output_format': '5',
+                  'telescope': '7',
+                  'job_type' : '8'
+                  }
 
 TAO_VERSION = '0.24.1-rc3'
 
