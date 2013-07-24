@@ -108,6 +108,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'tao.shibboleth.ShibbolethUserMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'activitylog.middleware.ActivityLogMiddleware',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -154,6 +155,7 @@ INSTALLED_APPS = (
     'django_rules',
     'django_extensions',
     'tastypie',
+    'activitylog',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
@@ -272,3 +274,12 @@ API_ALLOWED_IPS = (
 ALLOWED_HOSTS = ['localhost']
 USE_CAPTCHA=True
 
+#
+# Activity Log settings
+#
+#Ignore responses altogether?
+ACITIVITYLOG_LOG_RESPONSE=False
+#Should we log full HTML responses?
+ACTIVITYLOG_LOG_HTML_RESPONSE = False
+# If we how do we recognized a full HTML response 
+ACTIVITYLOG_HTML_START = "<!DOCTYPE html"
