@@ -155,6 +155,7 @@ class JobTest(LiveServerTest):
             filenames_with_sizes.append(file_name + " (" + file_size + ")")
         self.assertEqual(sorted(filenames_with_sizes), sorted([li.text for li in li_elements]))
 
+        self.wait(1)
         # test files download
         for li in li_elements:
             li.find_element_by_css_selector('a').click()

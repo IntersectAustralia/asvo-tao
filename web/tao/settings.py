@@ -224,7 +224,7 @@ API_ALLOWED_IPS = (
                    )
 
 INITIAL_JOB_STATUS = 'HELD'
-INITIAL_JOB_MESSAGE = "Your job has been " + INITIAL_JOB_STATUS.lower() + " successfully, you will receive an e-mail notifying you when it has been completed."
+INITIAL_JOB_MESSAGE = "Your job has been %s successfully, you will receive an e-mail notifying you when it has been completed."
 
 #
 # To avoid changing the directory structure until after we have confirmed
