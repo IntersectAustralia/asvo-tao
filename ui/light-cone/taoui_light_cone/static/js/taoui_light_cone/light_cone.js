@@ -279,6 +279,9 @@ catalogue.modules.light_cone = function ($) {
         var x = -(ab[1]*ac[2] - ab[2]*ac[1]);
         var y = -(-ab[0]*ac[2] + ab[2]*ac[0]);
         var z = -(ab[0]*ac[1] - ab[1]*ac[0]);
+        if ((x*x + y*y + z*z) == 0) {
+            throw new Error('Division by zero');
+        }
         var inv_mag = 1.0/Math.sqrt( x*x + y*y + z*z );
         x = x*inv_mag;
         y = y*inv_mag;
@@ -791,6 +794,7 @@ catalogue.modules.light_cone = function ($) {
                 $(lc_id('number_of_light_cones')).spinner("disable");
                 $(lc_id('number_of_light_cones')).data("spin-max", 0);
                 $spinner_label.html("Select the number of light-cones:*");
+                catalogue.util.fill_in_summary('light_cone', 'number_of_light_cones', 'Invalid light-cone parameters selected');
                 return false;
             } else {
                 $(lc_id('number_of_light_cones')).spinner("enable");
@@ -803,12 +807,18 @@ catalogue.modules.light_cone = function ($) {
         var selection = $("input[name='light_cone-light_cone_type']:checked").val();
 
         if ("unique" == selection) {
-            var maximum = 1;//get_number_of_unique_light_cones();
+            // TODO: remove lines below once observers point-of-view for multiple unique light cones has been fixed in science modules
+            $(lc_id('number_of_light_cones')).val('1');
+            $(lc_id('number_of_light_cones')).closest('div.control-group').hide();
+            //////
+            var maximum = get_number_of_unique_light_cones();
             if (spinner_set_max(maximum)) {
                 $spinner_label.html("Select the number of light-cones: (maximum for the selected parameters is " + maximum + ")*");
-                $(lc_id('number_of_light_cones')).closest('div.control-group').hide();
             }
         } else {
+            // TODO: remove line below once observers point-of-view for multiple unique light cones has been fixed in science modules
+            $(lc_id('number_of_light_cones')).closest('div.control-group').show();
+            //////
             $.ajax({
                 url: TAO_JSON_CTX + 'global_parameter/' + 'maximum-random-light-cones',
                 dataType: "json",
@@ -819,7 +829,6 @@ catalogue.modules.light_cone = function ($) {
                     var maximum = parseInt(data.fields.parameter_value);
                     if (spinner_set_max(maximum)) {
                         $spinner_label.html("Select the number of light-cones: (maximum " + maximum + " random light-cones)*");
-                        $(lc_id('number_of_light_cones')).closest('div.control-group').show();
                     }
                 }
             });
@@ -1029,9 +1038,15 @@ catalogue.modules.light_cone = function ($) {
             var max_dec = $(lc_id('dec_opening_angle')).val();                              // maximum declination in degrees
             var max_z = $(lc_id('redshift_max')).val();                                     // maximum redshift
 
-            if (max_ra != 0 && max_dec != 0 && max_z != 0) {
-                var num_boxes = count_boxes(box_size, min_ra, max_ra, min_dec, max_dec, max_z);
-                check_number_of_boxes(num_boxes);
+            if (max_ra != '' && max_dec != '' && max_z != '') {
+                try {
+                    var num_boxes = count_boxes(box_size, min_ra, max_ra, min_dec, max_dec, max_z);
+                    check_number_of_boxes(num_boxes);
+                } catch (err) {
+                    console.log(err);
+                    $('#max_job_size').addClass('job_too_large_error');
+                    $('#max_job_size').text('Estimated job size: invalid parameters, please adjust RA, Dec, redshift min or max');
+                }
             }
         });
 
