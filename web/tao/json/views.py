@@ -50,7 +50,9 @@ def galaxy_models(request, id):
     :return: HttpResponse in json format
     """
     data_sets = DataSet.objects.filter(simulation_id = id).select_related('galaxy_model').order_by('galaxy_model__name')
-    dicts = [{'id':x.id, 'name':x.galaxy_model.name, 'galaxy_model_id':x.galaxy_model_id} for x in data_sets]
+    dicts = [{'id':x.id, 'name':x.galaxy_model.name, 'galaxy_model_id':x.galaxy_model_id, 
+             'job_size_p1': x.job_size_p1, 'job_size_p2': x.job_size_p2, 'job_size_p3': x.job_size_p3,
+             'max_job_box_count': x.max_job_box_count} for x in data_sets]
     resp = json.dumps(dicts)
     return HttpResponse(resp, mimetype="application/json")
 

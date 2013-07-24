@@ -442,30 +442,18 @@ catalogue.modules.light_cone = function ($) {
 
     var check_number_of_boxes = function(num_boxes) {
         var dataset_id = $(lc_id('galaxy_model')).val();
-        $.ajax({
-            url: TAO_JSON_CTX + 'dataset/' + dataset_id,
-            dataType: "json",
-            error: function() {
-                alert("Couldn't get dataset for selected simulation and galaxy model");
-            },
-            success: function(data, status, xhr) {
-                var max_job_box_count = parseInt(data.fields.max_job_box_count);
-                var job_size_p1 = parseFloat(data.fields.job_size_p1);
-                var job_size_p2 = parseFloat(data.fields.job_size_p2);
-                var job_size_p3 = parseFloat(data.fields.job_size_p3);
-                var job_size_percentage = job_size(num_boxes, max_job_box_count, job_size_p1, job_size_p2, job_size_p3)*100;
-                if (job_size_percentage > 100) { //num_boxes > max_job_box_count) {
-                    $('#max_job_size').addClass('job_too_large_error');
-                    $('#max_job_size').text('Estimated job size: ' + job_size_percentage.toFixed(0) + '%. Note this exceeds the maximum allowed size, please reduce the light-cone size (RA, Dec, Redshift range).');
-                    return false;
-                }
-                else {
-                    $('#max_job_size').removeClass('job_too_large_error');
-                    $('#max_job_size').text('Estimated job size: ' + job_size_percentage.toFixed(0) + '%'); //num_boxes + ' / ' + max_job_box_count);
-                    return true;
-                }
-            }
-        });
+        var job_size_p1 = parseFloat( $(lc_id('galaxy_model option:selected')).attr('data-job_size_p1') );
+        var job_size_p2 = parseFloat( $(lc_id('galaxy_model option:selected')).attr('data-job_size_p2') );
+        var job_size_p3 = parseFloat( $(lc_id('galaxy_model option:selected')).attr('data-job_size_p3') );
+        var max_job_box_count = parseInt( $(lc_id('galaxy_model option:selected')).attr('data-max_job_box_count') );
+        var job_size_percentage = job_size(num_boxes, max_job_box_count, job_size_p1, job_size_p2, job_size_p3)*100;
+        if (job_size_percentage > 100) { //num_boxes > max_job_box_count) {
+             $('#max_job_size').addClass('job_too_large_error');
+             $('#max_job_size').text('Estimated job size: ' + job_size_percentage.toFixed(0) + '%. Note this exceeds the maximum allowed size, please reduce the light-cone size (RA, Dec, Redshift range).');
+        } else {
+             $('#max_job_size').removeClass('job_too_large_error');
+             $('#max_job_size').text('Estimated job size: ' + job_size_percentage.toFixed(0) + '%'); //num_boxes + ' / ' + max_job_box_count);
+        }
     }
 
 
@@ -599,6 +587,10 @@ catalogue.modules.light_cone = function ($) {
                     $option = $('<option/>');
                     $option.attr('value', item.id);
                     $option.attr('data-galaxy_model_id', item.galaxy_model_id);
+                    $option.attr('data-job_size_p1', item.job_size_p1);
+                    $option.attr('data-job_size_p2', item.job_size_p2);
+                    $option.attr('data-job_size_p3', item.job_size_p3);
+                    $option.attr('data-max_job_box_count', item.max_job_box_count);
                     if (item.id == initial_data_set_id) {
                         $option.attr('selected', 'selected');
                     }
