@@ -32,12 +32,18 @@ namespace tao {
          typedef const table_type& value_type;
          typedef value_type reference_type;
 
+         tile_table_iterator()
+            : _tile( NULL ),
+              _be( NULL ),
+              _done( true )
+         {
+         }
+
          tile_table_iterator( const tile<real_type>& tile,
-                              const backend_type& backend,
-                              bool done = false )
-            : _tile( tile ),
-              _be( backend ),
-              _done( done )
+                              const backend_type& backend )
+            : _tile( &tile ),
+              _be( &backend ),
+              _done( false )
          {
             // Only go through construction if this isn't the end
             // iterator.
@@ -114,20 +120,20 @@ namespace tao {
             for( auto& pnt : _ph )
             {
                for( unsigned ii = 0; ii < 3; ++ii )
-                  pnt[ii] -= _tile.min()[ii];
+                  pnt[ii] -= _tile->min()[ii];
             }
 
             // Now convert to planes.
             _calc_polygon_planes();
 
             // Cache some information.
-            const array<unsigned,3>& axis = _tile.rotation();
-            const array<real_type,3>& offs = _tile.translation();
+            const array<unsigned,3>& axis = _tile->rotation();
+            const array<real_type,3>& offs = _tile->translation();
 
             // Shift each table bounding box along each wall direction to
             // see if there is any periodic overlap with the cone.
             set<table_type> tables;
-            for( auto it = _be.table_begin(); it != _be.table_end(); ++it )
+            for( auto it = _be->table_begin(); it != _be->table_end(); ++it )
             {
                // Apply each periodic side to the box and check.
                for( const auto& wall : _walls )
@@ -135,7 +141,7 @@ namespace tao {
                   array<real_type,3> tmp_min, tmp_max;
                   for( unsigned jj = 0; jj < 3; ++jj )
                   {
-                     real_type box_size = _tile.max()[axis[jj]] - _tile.min()[axis[jj]];
+                     real_type box_size = _tile->max()[axis[jj]] - _tile->min()[axis[jj]];
                      tmp_min[jj] = it->min()[axis[jj]] + wall[axis[jj]]*box_size + offs[axis[jj]];
                      tmp_max[jj] = it->max()[axis[jj]] + wall[axis[jj]]*box_size + offs[axis[jj]];
                   }
@@ -162,7 +168,7 @@ namespace tao {
             // Clip the box against the parent box.
             array<real_type,3> par_min( 0, 0, 0), par_max;
             for( unsigned ii = 0; ii < 3; ++ii )
-               par_max[ii] = _tile.max()[ii] - _tile.min()[ii];
+               par_max[ii] = _tile->max()[ii] - _tile->min()[ii];
             array<real_type,3> clip_min, clip_max;
             box_box_clip(
                min.begin(), min.end(),
@@ -191,11 +197,11 @@ namespace tao {
          _calc_polyhedron()
          {
             // Cache some information from the lightcone.
-            real_type ra_min = _tile.lightcone().min_ra();
-            real_type ra_max = _tile.lightcone().max_ra();
-            real_type dec_min = _tile.lightcone().min_dec();
-            real_type dec_max = _tile.lightcone().max_dec();
-            real_type dist_max = _tile.lightcone().max_dist();
+            real_type ra_min = _tile->lightcone()->min_ra();
+            real_type ra_max = _tile->lightcone()->max_ra();
+            real_type dec_min = _tile->lightcone()->min_dec();
+            real_type dec_max = _tile->lightcone()->max_dec();
+            real_type dist_max = _tile->lightcone()->max_dist();
 
             // Use midpoints of the RA and DEC to find the center
             // point of the furthest plane.
@@ -385,8 +391,8 @@ namespace tao {
 
       protected:
 
-         const backend_type& _be;
-         const tile<real_type>& _tile;
+         const backend_type* _be;
+         const tile<real_type>* _tile;
          vector<array<real_type,3>> _ph;
          list<array<real_type,4>> _planes;
          vector<array<real_type,3>> _walls;

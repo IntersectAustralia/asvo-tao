@@ -29,7 +29,7 @@ float translate_x = 0, translate_y = 0;
 array<float,3> bnd_min, bnd_max;
 unsigned num_segs = 0;
 float zoom = 1;
-float gal_size = 2.5;
+float gal_size = 0.5;
 GLuint gal_tex_id;
 
 lightcone<real_type>* lc;
@@ -415,6 +415,7 @@ draw_galaxies()
    glDisable( GL_LIGHTING );
    // glEnable( GL_BLEND );
    // glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+   glPointSize( 2 );
 
    for( const auto& bat : gals )
    {
@@ -425,22 +426,25 @@ draw_galaxies()
 
       for( unsigned ii = 0; ii < bat->size(); ++ii )
       {
-         glPushMatrix();
-         glTranslatef( pos_x[ii], pos_z[ii], -pos_y[ii] );
-         glRotatef( -rotate_y, 0, 1, 0 );
-         glRotatef( -rotate_x, 1, 0, 0 );
+         // glPushMatrix();
+         // glTranslatef( pos_x[ii], pos_z[ii], -pos_y[ii] );
+         // glRotatef( -rotate_y, 0, 1, 0 );
+         // glRotatef( -rotate_x, 1, 0, 0 );
          glColor3fv( col_map[mass[ii]].data() );
-         glBegin( GL_POLYGON );
-         // glTexCoord2f( 0, 0 );
-         glVertex3f( -0.5*gal_size, -0.5*gal_size, 0 );
-         // glTexCoord2f( 1, 0 );
-         glVertex3f( 0.5*gal_size, -0.5*gal_size, 0 );
-         // glTexCoord2f( 1, 1 );
-         glVertex3f( 0.5*gal_size, 0.5*gal_size, 0 );
-         // glTexCoord2f( 0, 1 );
-         glVertex3f( -0.5*gal_size, 0.5*gal_size, 0 );
+         glBegin( GL_POINTS );
+         glVertex3f( pos_x[ii], pos_z[ii], -pos_y[ii] );
          glEnd();
-         glPopMatrix();
+         // glBegin( GL_POLYGON );
+         // // glTexCoord2f( 0, 0 );
+         // glVertex3f( -0.5*gal_size, -0.5*gal_size, 0 );
+         // // glTexCoord2f( 1, 0 );
+         // glVertex3f( 0.5*gal_size, -0.5*gal_size, 0 );
+         // // glTexCoord2f( 1, 1 );
+         // glVertex3f( 0.5*gal_size, 0.5*gal_size, 0 );
+         // // glTexCoord2f( 0, 1 );
+         // glVertex3f( -0.5*gal_size, 0.5*gal_size, 0 );
+         // glEnd();
+         // glPopMatrix();
       }
    }
    glDisable( GL_TEXTURE_2D );
@@ -832,7 +836,7 @@ update_tao()
    calc_bounds();
 
    // Setup galaxy size based on box size.
-   gal_size = lc->simulation().box_size()/62.5;
+   gal_size = lc->simulation()->box_size()/62.5;
 
    glutPostRedisplay();
 }
@@ -856,7 +860,7 @@ init_tao()
    update_tao();
 
    // Load ages and SSP.
-   sfh_ages.load_ages( backend.session(), lc->simulation().hubble(), lc->simulation().omega_m(), lc->simulation().omega_l() );
+   sfh_ages.load_ages( backend.session(), lc->simulation()->hubble(), lc->simulation()->omega_m(), lc->simulation()->omega_l() );
    ssp.load( "wavelengths.dat", "ssp.ssz" );
    cur_sfh.set_snapshot_ages( &sfh_ages );
    cur_sfh.set_bin_ages( &ssp.bin_ages() );

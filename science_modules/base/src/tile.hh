@@ -2,6 +2,7 @@
 #define tao_base_tile_hh
 
 #include <libhpc/containers/array.hh>
+#include "box.hh"
 #include "query.hh"
 
 namespace tao {
@@ -27,20 +28,19 @@ namespace tao {
             array<real_type,3> offs = array<real_type,3>( 0, 0, 0 ),
             bool random = false )
          : box<T>( NULL, random ),
-           _lc( lc ),
-           _rand( random )
+           _lc( lc )
       {
          if( _lc )
-            set_simulation( _lc->simulation() ):
+            this->set_simulation( _lc->simulation() );
          set_offset( offs );
       }
 
       void
       set_offset( const array<real_type,3>& offs )
       {
-         _min = offs;
+         this->_min = offs;
          for( unsigned ii = 0; ii < 3; ++ii )
-            _max[ii] = _min[ii] + _lc->simulation()->box_size();
+            this->_max[ii] = this->_min[ii] + _lc->simulation()->box_size();
       }
 
       const tao::lightcone<real_type>*
@@ -67,11 +67,7 @@ namespace tao {
 
    protected:
 
-      tao::lightcone<real_type>* _lc;
-      array<real_type,3> _min, _max;
-      bool _rand;
-      array<unsigned,3> _rot;
-      array<real_type,3> _trans;
+      const tao::lightcone<real_type>* _lc;
    };
 
 }

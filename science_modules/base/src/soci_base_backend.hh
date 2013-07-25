@@ -6,6 +6,8 @@
 #include <soci/soci.h>
 #include "rdb_backend.hh"
 #include "tile_table_iterator.hh"
+#include "box_table_iterator.hh"
+#include "lightcone_galaxy_iterator.hh"
 #include "batch.hh"
 
 namespace tao {
@@ -31,9 +33,10 @@ namespace tao {
          typedef tao::query<real_type> query_type;
          typedef soci_table_iterator<real_type> table_iterator;
          typedef backends::tile_table_iterator<soci_base> tile_table_iterator;
+         typedef backends::box_table_iterator<soci_base> box_table_iterator;
          typedef soci_galaxy_iterator<real_type,tile_table_iterator> tile_galaxy_iterator;
          typedef soci_galaxy_iterator<real_type,box_table_iterator> box_galaxy_iterator;
-         typedef lightcone_galaxy_iterator<soci_base<real_type>> lightcone_galaxy_iterator;
+         typedef tao::lightcone_galaxy_iterator<soci_base<real_type>> lightcone_galaxy_iterator;
 
       public:
 
@@ -50,6 +53,26 @@ namespace tao {
          ::soci::session&
          session( const string& table ) = 0;
 
+         real_type
+         box_size() const
+         {
+            real_type size;
+            session() << this->make_box_size_query_string(),
+               soci::into( size );
+            return size;
+         }
+
+         void
+         snapshot_redshifts( vector<real_type>& snap_zs ) const
+         {
+            unsigned size;
+            session() << "SELECT COUNT(*) FROM snap_redshift",
+               soci::into( size );
+            snap_zs.resize( size );
+            session() << "SELECT redshift FROM snap_redshift ORDER BY " + this->_field_map["snapshot"],
+               soci::into( (std::vector<real_type>&)snap_zs );
+         }
+
          tile_galaxy_iterator
          galaxy_begin( query_type& query,
                        const tile<real_type>& tile )
@@ -62,7 +85,36 @@ namespace tao {
          galaxy_end( query_type& query,
                      const tile<real_type>& tile )
          {
-            return tile_galaxy_iterator( *this, query, "", table_end( tile ), table_end( tile ), true );
+            return tile_galaxy_iterator();
+         }
+
+         box_galaxy_iterator
+         galaxy_begin( query_type& query,
+                       const box<real_type>& box )
+         {
+            string qs = this->make_box_query_string( box, query );
+            return box_galaxy_iterator( *this, query, qs, table_begin( box ), table_end( box ) );
+         }
+
+         box_galaxy_iterator
+         galaxy_end( query_type& query,
+                     const box<real_type>& box )
+         {
+            return box_galaxy_iterator();
+         }
+
+         lightcone_galaxy_iterator
+         galaxy_begin( query_type& query,
+                       const lightcone<real_type>& lc )
+         {
+            return lightcone_galaxy_iterator( lc, *this, query );
+         }
+
+         lightcone_galaxy_iterator
+         galaxy_end( query_type& query,
+                     const lightcone<real_type>& lc )
+         {
+            return lightcone_galaxy_iterator();
          }
 
          table_iterator
@@ -86,7 +138,19 @@ namespace tao {
          tile_table_iterator
          table_end( const tile<real_type>& tile ) const
          {
-            return tile_table_iterator( tile, *this, true );
+            return tile_table_iterator();
+         }
+
+         box_table_iterator
+         table_begin( const box<real_type>& box ) const
+         {
+            return box_table_iterator( &box, this );
+         }
+
+         box_table_iterator
+         table_end( const box<real_type>& box ) const
+         {
+            return box_table_iterator();
          }
 
       protected:
@@ -210,50 +274,38 @@ namespace tao {
 
       public:
 
+         soci_galaxy_iterator()
+            : _be( NULL ),
+              _query( NULL ),
+              _done( true )
+         {
+         }
+
          soci_galaxy_iterator( soci_base<real_type>& be,
                                query_type& query,
                                const string& query_str,
                                const table_iterator& table_start,
-                               const table_iterator& table_finish,
-                               bool done = false )
-            : _be( be ),
-              _query( query ),
+                               const table_iterator& table_finish )
+            : _be( &be ),
+              _query( &query ),
               _query_str( query_str ),
               _table_pos( table_start ),
               _table_end( table_finish ),
               _st( NULL ),
-              _done( done )
+              _done( false )
          {
             if( !_done )
             {
                if( _table_pos != _table_end )
                {
                   // Prepare the batch object.
-                  be.init_batch( _bat, _query );
+                  be.init_batch( _bat, *_query );
 
                   // Need to get to first position.
                   _prepare( _table_pos->name() );
                   increment();
                }
             }
-         }
-
-         soci_galaxy_iterator( const soci_galaxy_iterator& src )
-            : _be( src._be ),
-              _query( src._query ),
-              _table_pos( src._table_pos ),
-              _table_end( src._table_end )
-         {
-            ASSERT( 0, "Shouldn't be copying this iterator." );
-         }
-
-         soci_galaxy_iterator( soci_galaxy_iterator&& src )
-            : _be( src._be ),
-              _query( src._query ),
-              _table_pos( src._table_pos ),
-              _table_end( src._table_end )
-         {
-            ASSERT( 0, "Shouldn't be moving this iterator." );
          }
 
          reference_type
@@ -307,10 +359,10 @@ namespace tao {
 
             string qs = boost::algorithm::replace_all_copy( _query_str, "-table-", table );
             LOGDLN( "Query string: ", qs );
-            auto prep = _be.session( table ).prepare << qs;
-            for( unsigned ii = 0; ii < _query.output_fields().size(); ++ii )
+            auto prep = _be->session( table ).prepare << qs;
+            for( unsigned ii = 0; ii < _query->output_fields().size(); ++ii )
             {
-               const auto& field = _bat.field( _query.output_fields()[ii] );
+               const auto& field = _bat.field( _query->output_fields()[ii] );
                const auto& type = std::get<2>( field );
                switch( type )
                {
@@ -368,8 +420,8 @@ namespace tao {
 
       protected:
 
-         soci_base<real_type>& _be;
-         query_type& _query;
+         soci_base<real_type>* _be;
+         query_type* _query;
          string _query_str;
          table_iterator _table_pos, _table_end;
          soci::statement* _st;

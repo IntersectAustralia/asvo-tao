@@ -94,9 +94,9 @@ namespace tao {
             fmt % make_output_field_query_string( query, map );
             fmt % _field_map.at( "snapshot" );
             fmt % map["pos_x"] % map["pos_y"] % map["pos_z"];
-            fmt % cos( tile.lightcone().max_ra() ) % cos( tile.lightcone().min_ra() );
-            fmt % cos( tile.lightcone().max_dec() ) % cos( tile.lightcone().min_dec() );
-            fmt % pow( tile.lightcone().min_dist(), 2 ) % pow( tile.lightcone().max_dist(), 2 );
+            fmt % cos( tile.lightcone()->max_ra() ) % cos( tile.lightcone()->min_ra() );
+            fmt % cos( tile.lightcone()->max_dec() ) % cos( tile.lightcone()->min_dec() );
+            fmt % pow( tile.lightcone()->min_dist(), 2 ) % pow( tile.lightcone()->max_dist(), 2 );
             fmt % ""; // TODO
             return fmt.str();
          }
@@ -158,7 +158,7 @@ namespace tao {
                if( tile && (of == "pos_x" || of == "pos_y" || of == "pos_z") )
                {
                   string mapped[3] = { "pos_x", "pos_y", "pos_z" };
-                  real_type box_size = (*tile).lightcone().simulation().box_size();
+                  real_type box_size = (*tile).lightcone()->simulation()->box_size();
                   string repl = "CASE WHEN %1% + %2% < %3% THEN %1% + %2% ELSE %1% + %2% - %3% END + %4%";
                   string field;
                   if( of == "pos_x" )
