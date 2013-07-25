@@ -3,7 +3,7 @@
 
 #include "register.hh"
 #include "empty.hh"
-#include "lightcone.hh"
+// #include "lightcone.hh"
 // #include "sed.hh"
 // #include "dust.hh"
 // #include "filter.hh"

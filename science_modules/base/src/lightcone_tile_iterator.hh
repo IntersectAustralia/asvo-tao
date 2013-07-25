@@ -46,7 +46,7 @@ namespace tao {
       void
       increment()
       {
-         real_type bs = _lc.simulation().box_size();
+         real_type bs = _lc.simulation()->box_size();
          check_result res;
          do {
             do {
@@ -88,7 +88,7 @@ namespace tao {
       reference_type
       dereference() const
       {
-         return tile<real_type>( _lc, _cur );
+         return tile<real_type>( &_lc, _cur );
       }
 
       check_result

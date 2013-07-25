@@ -10,6 +10,7 @@
 #include "sfh.hh"
 #include "stellar_population.hh"
 #include "soci_backend.hh"
+#include "multidb_backend.hh"
 #include "factory.hh"
 #include "module.hh"
 #include "globals.hh"

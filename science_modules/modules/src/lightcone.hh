@@ -79,17 +79,18 @@ namespace tao {
          geometry_type _geom;
          real_type _box_size;
          int _rng_seed;
-         uniform_generator<real_type> _real_rng;
-         uniform_generator<int> _int_rng;
+         engine_type _eng;
+         bool _unique;
 
          tao::simulation<real_type> _sim;
          tao::query<real_type> _qry;
          tao::lightcone<real_type> _lc;
          tao::box<real_type> _box;
-         tao::backends::soci<real_type> _be;
-         tao::backends::soci<real_type>::lightcone_galaxy_iterator _c_it;
-         tao::backends::soci<real_type>::box_galaxy_iterator _b_it;
+         tao::backends::multidb<real_type> _be;
+         tao::backends::multidb<real_type>::lightcone_galaxy_iterator _c_it;
+         tao::backends::multidb<real_type>::box_galaxy_iterator _b_it;
 
+         unsigned _num_tiles;
          profile::progress _prog;
       };
 

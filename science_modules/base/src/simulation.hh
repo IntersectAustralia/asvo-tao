@@ -63,19 +63,19 @@ namespace tao {
                      real_type omega_m,
                      real_type omega_l )
       {
-         LOGILN( "Setting simulation cosmology:", setindent( 2 ) );
+         // LOGILN( "Setting simulation cosmology:", setindent( 2 ) );
          _hubble = hubble;
-         LOGILN( "Hubble: ", hubble );
+         // LOGILN( "Hubble: ", hubble );
          _h = _hubble/100;
          _omega_m = omega_m;
-         LOGILN( "Omega M: ", omega_m );
+         // LOGILN( "Omega M: ", omega_m );
          _omega_l = omega_l;
-         LOGILN( "Omega L: ", omega_l );
+         // LOGILN( "Omega L: ", omega_l );
          _omega_r = 4.165e-5/(_h*_h);
-         LOGILN( "Omega R: ", _omega_r );
+         // LOGILN( "Omega R: ", _omega_r );
          _omega_k = 1 - _omega_m - _omega_l - _omega_r;
-         LOGILN( "Omega K: ", _omega_k );
-         LOGILN( "Done.", setindent( -2 ) );
+         // LOGILN( "Omega K: ", _omega_k );
+         // LOGILN( "Done.", setindent( -2 ) );
       }
 
       void
@@ -125,6 +125,12 @@ namespace tao {
       redshift( unsigned snap ) const
       {
          return _zs[snap];
+      }
+
+      const typename vector<real_type>::view
+      redshifts() const
+      {
+         return _zs;
       }
 
    protected:

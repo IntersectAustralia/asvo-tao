@@ -28,9 +28,15 @@ namespace tao {
 
       public:
 
-         multidb( const simulation<real_type>* sim )
+         multidb( const simulation<real_type>* sim = NULL )
             : super_type( sim )
          {
+         }
+
+         void
+         connect( const options::xml_dict& global_dict )
+         {
+            // _mdb.connect( global_dict );
          }
 
          template< class Iterator >
@@ -52,10 +58,10 @@ namespace tao {
 #endif
                // _mdb.add_server( *start++ );
             }
-            _con = true;
+            this->_con = true;
 
             // Check for update.
-            if( _sim && _con )
+            if( this->_sim && this->_con )
                _initialise();
          }
 
@@ -90,19 +96,19 @@ namespace tao {
             ASSERT( this->_sim, "No simulation set." );
             ASSERT( this->_con, "Not connected to database." );
 
-            _load_table_info();
-            _load_field_types();
+            this->_load_table_info();
+            this->_load_field_types();
 
             // Create temporary snapshot range table.
             LOGILN( "Making redshift range tables.", setindent( 2 ) );
-            for( auto& pair : _db->CurrentServers )
-               pair.second->Connection << this->make_snap_rng_query_string( sim );
+            for( auto& pair : _mdb.CurrentServers )
+               pair.second->Connection << this->make_snap_rng_query_string( this->_sim );
             LOGILN( "Done.", setindent( -2 ) );
          }
 
       protected:
 
-         multidb _mdb;
+         tao::multidb _mdb;
       };
 
    }

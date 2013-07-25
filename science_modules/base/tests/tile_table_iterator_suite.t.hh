@@ -3,8 +3,8 @@
 #include <cxxtest/TestSuite.h>
 #include <cxxtest/GlobalFixture.h>
 #include "tao/base/tile_table_iterator.hh"
-#include "tao/base/postgresql_backend.hh"
 #include "tao/base/lightcone.hh"
+#include "tao/base/soci_backend.hh"
 #include "tao/base/globals.hh"
 #include "tao/base/types.hh"
 #include "mpi_fixture.hh"
@@ -25,20 +25,20 @@ public:
    ///
    void test_copy_constructor()
    {
-      backends::postgresql<real_type> be;
+      backends::soci<real_type> be;
       be.connect( "millennium_mini_1", "taoadmin", "taoadmin" );
-      be.initialise( mini_millennium );
+      be.set_simulation( &mini_millennium );
       lightcone<real_type> lc( &mini_millennium );
-      tao::tile<real_type> tile( lc );
+      tao::tile<real_type> tile( &lc );
       iterator_type src( tile, be );
 
       // Copy first iterator.
       iterator_type cpy( src );
 
-      TS_ASSERT_EQUALS( &cpy._be, &be );
-      TS_ASSERT_EQUALS( &cpy._be, &src._be );
-      TS_ASSERT_EQUALS( &cpy._tile, &tile );
-      TS_ASSERT_EQUALS( &cpy._tile, &src._tile );
+      TS_ASSERT_EQUALS( cpy._be, &be );
+      TS_ASSERT_EQUALS( cpy._be, src._be );
+      TS_ASSERT_EQUALS( cpy._tile, &tile );
+      TS_ASSERT_EQUALS( cpy._tile, src._tile );
 
       TS_ASSERT_EQUALS( cpy._ph.size(), src._ph.size() );
       for( unsigned ii = 0; ii < cpy._ph.size(); ++ii )
@@ -71,5 +71,5 @@ public:
    }
 
    // TODO: Change this to a more appropriate backend.
-   typedef backends::tile_table_iterator<backends::postgresql<real_type>> iterator_type;
+   typedef backends::tile_table_iterator<backends::soci<real_type>> iterator_type;
 };

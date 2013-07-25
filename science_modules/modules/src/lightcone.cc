@@ -26,8 +26,13 @@ namespace tao {
       lightcone::initialise( const options::xml_dict& global_dict )
       {
          LOGILN( "Initialising lightcone module.", setindent( 2 ) );
+
          module::initialise( global_dict );
          _read_options( global_dict );
+
+         // Clear out some values.
+         _num_tiles = 0;
+
          LOGILN( "Done.", setindent( -2 ) );
       }
 
@@ -43,9 +48,9 @@ namespace tao {
          if( _it == 0 )
          {
             if( _geom == CONE )
-               _c_it = _lc.galaxy_begin( _be );
+               _c_it = _lc.galaxy_begin( _qry, _be );
             else
-               _b_it = _box.galaxy_begin( _be );
+               _b_it = _box.galaxy_begin( _qry, _be );
          }
          else
          {
@@ -58,10 +63,10 @@ namespace tao {
          // Check for completion.
          if( _geom == CONE )
          {
-            if( _c_it == _lc.galaxy_end( _be ) )
+            if( _c_it == _lc.galaxy_end( _qry, _be ) )
                _complete = true;
          }
-         else if( _b_it == _box.galaxy_end( _be ) )
+         else if( _b_it == _box.galaxy_end( _qry, _be ) )
          {
             _complete = true;
          }
@@ -75,23 +80,17 @@ namespace tao {
       tao::batch<real_type>&
       lightcone::batch()
       {
-         if( _type == CONE )
+         if( _geom == CONE )
             return *_c_it;
          else
             return *_b_it;
-      }
-
-      unsigned
-      lightcone::num_boxes() const
-      {
-         return _boxes.size();
       }
 
       void
       lightcone::log_metrics()
       {
          module::log_metrics();
-         LOGILN( _name, " number of boxes: ", num_boxes() );
+         LOGILN( _name, " number of tiles: ", _num_tiles );
       }
 
       ///
@@ -144,8 +143,6 @@ namespace tao {
             _unique = (tile_repeat == "unique");
 
             // Extract the random number generator seed and set it.
-            _real_rng.set_range( 0, _sim.box_size() );
-            _int_rng.set_range( 1, 6 );
             optional<int> rng_seed = dict.opt<int>( "rng-seed" );
             if( rng_seed )
                _rng_seed = *rng_seed;
@@ -156,15 +153,14 @@ namespace tao {
             }
             mpi::comm::world.bcast<int>( _rng_seed, 0 );
             LOGILN( "Random seed: ", _rng_seed );
-            _real_rng.set_seed( _rng_seed );
-            _int_rng.reset();
+            _eng.seed( _rng_seed );
 
             // Redshift ranges.
             real_type snap_z_max = _sim.redshifts().front();
             real_type snap_z_min = _sim.redshifts().back();
             real_type max_z = std::min( dict.get<real_type>( "redshift-max", snap_z_max ), snap_z_max );
             real_type min_z = std::min( dict.get<real_type>( "redshift-min", snap_z_min ), snap_z_min );
-            LOGILN( "Redshift range: [", _z_min, ", ", _z_max, ")" );
+            LOGILN( "Redshift range: [", min_z, ", ", max_z, ")" );
 
             // Right ascension.
             real_type min_ra = std::min<real_type>( std::max<real_type>( dict.get<real_type>( "ra-min", 0.0 ), 0.0 ), 90.0 );
@@ -183,10 +179,10 @@ namespace tao {
             _geom = BOX;
 
             // Box size.
-            real_type box_size = dict.get<string>( "query-box-size", );
+            real_type box_size = dict.get<real_type>( "query-box-size", _sim.box_size() );
 
             // Snapshot.
-            real_type redshift = dict.get<real_type>( "redshift" );
+            real_type redshift = dict.get<real_type>( "redshift", _sim.redshifts().front() );
          }
 
          // Output field information.

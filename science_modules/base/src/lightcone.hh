@@ -26,7 +26,7 @@ namespace tao {
 
    public:
 
-      lightcone( tao::simulation<real_type>* sim = NULL )
+      lightcone( const tao::simulation<real_type>* sim = NULL )
          : _sim( NULL )
       {
          set_simulation( sim );
@@ -34,7 +34,7 @@ namespace tao {
       }
 
       void
-      set_simulation( tao::simulation<real_type>* sim )
+      set_simulation( const tao::simulation<real_type>* sim )
       {
          _sim = sim;
          _recalc();
@@ -74,6 +74,12 @@ namespace tao {
          _z[0] = z_min;
          _z[1] = z_max;
          _recalc();
+      }
+
+      const tao::simulation<real_type>*
+      simulation() const
+      {
+         return _sim;
       }
 
       void
@@ -140,13 +146,6 @@ namespace tao {
          _recalc();
       }
 
-      const tao::simulation<real_type>&
-      simulation() const
-      {
-         ASSERT( _sim, "No simulation set." );
-         return *_sim;
-      }
-
       tile_iterator
       tile_begin()
       {
@@ -157,6 +156,22 @@ namespace tao {
       tile_end()
       {
          return tile_iterator( *this, true );
+      }
+
+      template< class Backend >
+      typename Backend::lightcone_galaxy_iterator
+      galaxy_begin( query<real_type>& qry,
+                    Backend& be )
+      {
+         return be.galaxy_begin( qry, *this );
+      }
+
+      template< class Backend >
+      typename Backend::lightcone_galaxy_iterator
+      galaxy_end( query<real_type>& qry,
+                  Backend& be )
+      {
+         return be.galaxy_end( qry, *this );
       }
 
       real_type
@@ -292,7 +307,7 @@ namespace tao {
 
    protected:
 
-      tao::simulation<real_type>* _sim;
+      const tao::simulation<real_type>* _sim;
       array<real_type,2> _ra;
       array<real_type,2> _dec;
       array<real_type,2> _z;
