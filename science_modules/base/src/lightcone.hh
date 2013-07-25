@@ -10,6 +10,10 @@ namespace tao {
    template< class T >
    class lightcone_tile_iterator;
 
+   ///
+   /// Lightcone representation. Describes the geometry of a lightcone,
+   /// including redshift distance mappings.
+   ///
    template< class T >
    class lightcone
    {
@@ -215,6 +219,12 @@ namespace tao {
          return _dist_bins;
       }
 
+      real_type
+      distance_to_redshift( real_type dist ) const
+      {
+         return _dist_to_z[dist];
+      }
+
    protected:
 
       void
@@ -256,6 +266,26 @@ namespace tao {
 
             LOGDLN( "Distance bins: ", _dist_bins );
             LOGDLN( "Snapshot bins: ", _snap_bins );
+
+            // Build the distance to redshift interpolator.
+            {
+               // How many points do I need?
+               unsigned num_points = std::max<unsigned>( (unsigned)((_z[1] - _z[0])/0.001), 2 );
+
+               // Setup arrays.
+               vector<real_type> dists( num_points );
+               vector<real_type> zs( num_points );
+               for( unsigned ii = 0; ii < num_points; ++ii )
+               {
+                  zs[ii] = _z[0] + (_z[1] - _z[0])*((real_type)ii/(real_type)(num_points - 1));
+                  dists[ii] = numerics::redshift_to_comoving_distance( zs[ii], 1000, _sim->hubble(), _sim->omega_l(), _sim->omega_m() );
+               }
+
+               // Transfer to interpolator.
+               _dist_to_z.set_abscissa( dists );
+               _dist_to_z.set_values( zs );
+            }
+
             LOGD( setindent( -2 ) );
          }
       }
@@ -269,149 +299,7 @@ namespace tao {
       array<real_type,2> _dist;
       vector<real_type> _dist_bins;
       vector<unsigned> _snap_bins;
-   };
-
-   template< class T >
-   class lightcone_tile_iterator
-      : public boost::iterator_facade< lightcone_tile_iterator<T>,
-                                       tile<T>,
-				       std::forward_iterator_tag,
-                                       tile<T> >
-   {
-      friend class boost::iterator_core_access;
-
-   public:
-
-      typedef T real_type;
-      typedef tile<real_type> value_type;
-      typedef value_type reference_type;
-
-      enum check_result
-      {
-         BELOW,
-         ABOVE,
-         ON
-      };
-
-   public:
-
-      lightcone_tile_iterator( lightcone<real_type>& lc,
-                               bool done )
-         : _lc( lc ),
-           _done( done )
-      {
-         std::fill( _cur.begin(), _cur.end(), 0 );
-         if( _check() != ON )
-            increment();
-      }
-
-   protected:
-
-      void
-      increment()
-      {
-         real_type bs = _lc.simulation().box_size();
-         check_result res;
-         do {
-            do {
-               do
-               {
-                  _cur[2] += bs;
-                  res = _check();
-                  if( res == ON )
-                     return;
-               }
-               while( res == BELOW );
-
-               _cur[1] += bs;
-               _cur[2] = 0;
-               res = _check();
-               if( res == ON )
-                  return;
-            }
-            while( res == BELOW );
-
-            _cur[0] += bs;
-            _cur[1] = 0;
-            _cur[2] = 0;
-            res = _check();
-            if( res == ON )
-               return;
-         }
-         while( res == BELOW );
-
-         _done = true;
-      }
-
-      bool
-      equal( const lightcone_tile_iterator& op ) const
-      {
-         return _done == op._done;
-      }
-
-      reference_type
-      dereference() const
-      {
-         return tile<real_type>( _lc, _cur );
-      }
-
-      check_result
-      _check()
-      {
-         real_type bs = _lc._sim->box_size();
-
-         // Check that the farthest corner of the box is greater than the
-         // minimum distance.
-         if( sqrt( pow( _cur[0] + bs, 2.0 ) + 
-                   pow( _cur[1] + bs, 2.0 ) + 
-                   pow( _cur[2] + bs, 2.0 ) ) < _lc._dist[0] )
-         {
-            return BELOW;
-         }
-
-         // Check that the closest corner of the box is less than the
-         // maximum distance.
-         if( sqrt( pow( _cur[0], 2.0 ) + 
-                   pow( _cur[1], 2.0 ) + 
-                   pow( _cur[2], 2.0 ) ) > _lc._dist[1] )
-         {
-            return ABOVE;
-         }
-
-         // We can check lower RA and DEC bounds by converting the (0, 1, 0)
-         // vertex of the cube to ECS coordinates.
-         real_type ra, dec;
-         numerics::cartesian_to_ecs( _cur[0], _cur[1] + bs, _cur[2], ra, dec );
-         if( ra < _lc._ra[0] )
-            return BELOW;
-
-         // Similarly, we check the upper bounds by converting the (1, 0, 0)
-         // vertex of the cube to ECS coordinates.
-         numerics::cartesian_to_ecs( _cur[0] + bs, _cur[1], _cur[2], ra, dec );
-         if( ra > _lc._ra[1] )
-            return ABOVE;
-
-         // Similarly, we check the upper bounds by converting the (1, 0, 0)
-         // vertex of the cube to ECS coordinates.
-         numerics::cartesian_to_ecs( _cur[0], _cur[1], _cur[2] + bs, ra, dec );
-         if( dec < _lc._dec[0] )
-            return BELOW;
-
-         // We can check lower RA and DEC bounds by converting the (0, 1, 0)
-         // vertex of the cube to ECS coordinates.
-         numerics::cartesian_to_ecs( _cur[0] + bs, _cur[1] + bs, _cur[2], ra, dec );
-         if( dec > _lc._dec[1] )
-            return ABOVE;
-
-         // If we get here this box is in overlap.
-         return ON;
-      }
-
-   protected:
-
-      lightcone<real_type>& _lc;
-      array<real_type,3> _cur;
-      bool _done;
+      numerics::interp<real_type> _dist_to_z;
    };
 
 }

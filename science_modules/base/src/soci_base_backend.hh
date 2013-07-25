@@ -31,8 +31,9 @@ namespace tao {
          typedef tao::query<real_type> query_type;
          typedef soci_table_iterator<real_type> table_iterator;
          typedef backends::tile_table_iterator<soci_base> tile_table_iterator;
-         typedef soci_galaxy_iterator<real_type,table_iterator> galaxy_iterator;
          typedef soci_galaxy_iterator<real_type,tile_table_iterator> tile_galaxy_iterator;
+         typedef soci_galaxy_iterator<real_type,box_table_iterator> box_galaxy_iterator;
+         typedef lightcone_galaxy_iterator<soci_base<real_type>> lightcone_galaxy_iterator;
 
       public:
 
@@ -186,6 +187,9 @@ namespace tao {
          std::vector<std::string> _tbls;
       };
 
+      ///
+      ///
+      ///
       template< class T,
                 class TableIter >
       class soci_galaxy_iterator
@@ -373,6 +377,9 @@ namespace tao {
          bool _done;
       };
 
+      ///
+      ///
+      ///
       template< class T >
       class soci_table_iterator
          : public boost::iterator_facade< soci_table_iterator<T>,

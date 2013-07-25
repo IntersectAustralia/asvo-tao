@@ -16,6 +16,7 @@ extern float translate_x, translate_y;
 extern vector<tao::real_type> stellar_mass;
 extern tao::age_line<tao::real_type> sfh_ages;
 extern tao::stellar_population ssp;
+extern vector<tao::real_type> age_masses;
 float sfh_width, sfh_height;
 
 GLfloat norm;
@@ -25,7 +26,7 @@ namespace tao {
    void
    draw_colour_scale()
    {
-      GLfloat x_pos = 550;
+      GLfloat x_pos = 770;
       GLfloat width = 20;
 
       glPolygonMode( GL_FRONT, GL_FILL );
@@ -60,7 +61,7 @@ namespace tao {
          glEnd();
 
          std::stringstream ss;
-         ss << std::fixed << std::setprecision( 3 ) << col_map.abscissa( ii );
+         ss << std::fixed << std::setprecision( 1 ) << std::scientific << col_map.abscissa( ii );
          gl::draw_text( ss.str(), x_pos + width + 10, pos - 5 );
       }
    }
@@ -139,7 +140,6 @@ namespace tao {
       glLineStipple( 1, 0b1100001111000011 );
       glEnable( GL_LINE_STIPPLE );
       glColor3f( 0.43, 0.43, 0.43 );
-      GLfloat sep = 20;
       float oldest_age = ages[snap_rng[0]];
       unsigned age_idx = 0;
       unsigned line_pos = 0;
@@ -160,7 +160,7 @@ namespace tao {
             glDisable( GL_LINE_STIPPLE );
 
             std::stringstream ss;
-            ss << std::fixed << std::setprecision( 3 ) << bin_ages[age_idx];
+            ss << std::fixed << std::setprecision( 1 ) << std::scientific << bin_ages[age_idx];
             gl::draw_text( ss.str(), 505, pos - 5 );
 
             ++age_idx;
@@ -177,9 +177,68 @@ namespace tao {
          glDisable( GL_LINE_STIPPLE );
 
          std::stringstream ss;
-         ss << std::fixed << std::setprecision( 3 ) << sfh_age;
+         ss << std::fixed << std::setprecision( 1 ) << std::scientific << sfh_age;
          gl::draw_text( ss.str(), 505, pos - 5 );
       }
+   }
+
+   void
+   draw_bin_masses( const simulation<real_type>& sim,
+                    const age_line<real_type>& ages,
+                    const age_line<real_type>& bin_ages,
+                    const vector<real_type>& masses,
+                    const array<real_type,2>& snap_rng )
+   {
+      glDisable( GL_DEPTH_TEST );
+      glDisable( GL_LIGHTING );
+      glDisable( GL_BLEND );
+      float oldest_age = ages[snap_rng[0]];
+      unsigned age_idx = 0;
+      unsigned line_pos = 0;
+      real_type sum = std::accumulate( masses.begin(), masses.end(), 0.0 );
+      for( unsigned ii = snap_rng[0]; ii >= snap_rng[1] - 1; --ii )
+      {
+         GLfloat sfh_age = fabs( oldest_age - ages[ii] );
+
+         // Draw any ages from the rebinning set.
+         while( age_idx < bin_ages.size() && bin_ages[age_idx] < sfh_age )
+         {
+            GLfloat fac = masses[age_idx]/sum;
+            GLfloat pos = 50 + 20*line_pos++;
+            glColor3fv( col_map[masses[age_idx]*1e-10].data() );
+            glBegin( GL_QUADS );
+            glVertex2f( 580, pos - 9 );
+            glVertex2f( 580 + 80*fac, pos - 9 );
+            glVertex2f( 580 + 80*fac, pos + 9 );
+            glVertex2f( 580, pos + 9 );
+            glEnd();
+
+            glColor3f( 0.7, 0.7, 0.7 );
+            std::stringstream ss;
+            ss << std::fixed << std::setprecision( 1 ) << std::scientific << masses[age_idx]*1e-10;
+            ss << " (" << age_idx << ")";
+            gl::draw_text( ss.str(), 665, pos - 5 );
+
+            ++age_idx;
+         }
+
+         // Now draw the sfh age.
+         ++line_pos;
+      }
+
+      // Now draw the final summation.
+      glColor3fv( col_map[sum*1e-10].data() );
+      glBegin( GL_QUADS );
+      glVertex2f( 580, 50 - 9 );
+      glVertex2f( 580 + 80, 50 - 9 );
+      glVertex2f( 580 + 80, 50 + 9 );
+      glVertex2f( 580, 50 + 9 );
+      glEnd();
+
+      glColor3f( 0.7, 0.7, 0.7 );
+      std::stringstream ss;
+      ss << std::fixed << std::setprecision( 1 ) << std::scientific << sum*1e-10;
+      gl::draw_text( ss.str(), 665, 50 - 5 );
    }
 
    void
@@ -241,7 +300,7 @@ namespace tao {
       glLoadIdentity();
       array<GLdouble,4> plane( 1, 0, 0, -50 );
       glClipPlane( GL_CLIP_PLANE0, plane.data() );
-      plane[0] = -1; plane[3] = 550;
+      plane[0] = -1; plane[3] = 710;
       glClipPlane( GL_CLIP_PLANE1, plane.data() );
       plane[0] = 0; plane[1] = 1; plane[3] = -44;
       glClipPlane( GL_CLIP_PLANE2, plane.data() );
@@ -280,6 +339,9 @@ namespace tao {
       // Draw the tree.
       glPolygonMode( GL_FRONT, GL_FILL );
       _draw_tree_recurse( sfh, gal_id, widths, 275, 50, line_map );
+
+      // Plot bins.
+      draw_bin_masses( sim, sfh_ages, ssp.bin_ages(), age_masses, snap_rng );
 
       for( unsigned ii = 0; ii < 4; ++ii )
          glDisable( GL_CLIP_PLANE0 + ii );
