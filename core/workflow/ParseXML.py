@@ -123,11 +123,11 @@ class ParseXMLParameters(object):
         self.tree.xpath("/ns:tao",namespaces={'ns':self.NameSpace})[0].append(DBElement)
         
         DBElement=ET.Element("{"+self.NameSpace+"}outputdir")        
-        DBElement.text=self.WorkDirectory+"/jobs/"+JobUserName+"/"+str(JobID)+"/output/"        
+        DBElement.text=self.WorkDirectory+JobUserName+"/"+str(JobID)+"/output/"        
         self.tree.xpath("/ns:tao",namespaces={'ns':self.NameSpace})[0].append(DBElement)
         
         DBElement=ET.Element("{"+self.NameSpace+"}logdir")        
-        DBElement.text=self.WorkDirectory+"/jobs/"+JobUserName+"/"+str(JobID)+"/log/"        
+        DBElement.text=self.WorkDirectory+JobUserName+"/"+str(JobID)+"/log/"        
         self.tree.xpath("/ns:tao",namespaces={'ns':self.NameSpace})[0].append(DBElement)
         
         DBElement=ET.Element("{"+self.NameSpace+"}bandpassdatapath")        
