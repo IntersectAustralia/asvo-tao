@@ -852,7 +852,7 @@ init_tao()
 
    // Setup initial simulation.
    lc = new lightcone<real_type>( cur_sim );
-   // lc.set_geometry( 40, 50, 40, 50, 0.06 );
+   lc->set_geometry( 20, 70, 20, 70, 0.06 );
    update_tao();
 
    // Load ages and SSP.
@@ -1038,6 +1038,9 @@ load_sfh( const re::match& match )
 
       // Load SFH.
       cur_sfh.load_tree_data( backend.session(), cur_table, cur_tree );
+      std::fill( age_masses.begin(), age_masses.end(), 0 );
+      std::fill( age_bulge_masses.begin(), age_bulge_masses.end(), 0 );
+      std::fill( age_metals.begin(), age_metals.end(), 0 );
       cur_sfh.rebin<real_type>( backend.session(), cur_gal_id, age_masses, age_bulge_masses, age_metals );
 
       // Also transfer the stellar mass for each tree.
@@ -1057,7 +1060,7 @@ start()
 {
    // Prepare the window.
    glutInitWindowPosition( 200, 200 );
-   glutInitWindowSize( 800, 600 );
+   glutInitWindowSize( 900, 600 );
    glutInitDisplayMode( GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH );
    glutCreateWindow( "Zen" );
 

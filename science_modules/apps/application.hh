@@ -45,12 +45,10 @@ namespace tao {
 
 
       ///
-	  /// Massage incoming XML.
-	  ///
-	  void
-	  _preprocess_xml();
-
-
+      /// Massage incoming XML.
+      ///
+      void
+      _preprocess_xml();
 
       ///
       /// Read the XML file into a dictionary.

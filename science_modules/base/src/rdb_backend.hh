@@ -137,6 +137,12 @@ namespace tao {
             return qs;
          }
 
+         string
+         make_box_size_query_string()
+         {
+            return "SELECT metavalue FROM metadata WHERE metakey='boxsize'";
+         }
+
          void
          make_field_map( std::unordered_map<string,string>& map,
                          tao::query<real_type>& query,

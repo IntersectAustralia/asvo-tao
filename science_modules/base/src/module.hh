@@ -2,17 +2,17 @@
 #define tao_base_module_hh
 
 #include <pugixml.hpp>
-#include <soci/soci.h>
-#include <libhpc/libhpc.hh>
 #include <libhpc/options/xml_dict.hh>
-#include "galaxy.hh"
+#include "batch.hh"
 #include "multidb.hh"
+#include "timed.hh"
 #include "types.hh"
 
 namespace tao {
    using namespace hpc;
 
    class module
+      : public timed
    {
    public:
 
@@ -44,8 +44,8 @@ namespace tao {
       finalise();
 
       virtual
-      tao::galaxy&
-      galaxy();
+      tao::batch<real_type>&
+      batch();
 
       virtual
       void
@@ -63,26 +63,6 @@ namespace tao {
       pugi::xml_node
       local_xml_node();
 
-      double
-      time() const;
-
-      double
-      db_time() const;
-
-   protected:
-
-      void
-      _read_db_options( const options::xml_dict& global_dict );
-
-      void
-      _db_connect();
-
-      void
-      _db_disconnect();
-
-      bool
-      _db_cycle();
-
    protected:
 
       string _name;
@@ -93,20 +73,9 @@ namespace tao {
       pugi::xml_node _base;
       const options::xml_dict _dict;
       const options::xml_dict* _global_dict;
-      bool _connected;
-#ifdef MULTIDB
-      multidb* _db;
-#else
-      soci::session _sql;
-#endif
-      unsigned _num_restart_its;
-      unsigned _cur_restart_it;
-      string _dbtype, _dbname, _dbhost, _dbport, _dbuser, _dbpass;
-      string _tree_pre;
-      unsigned _batch_size;
 
-      profile::timer _timer;
-      profile::timer _db_timer;
+      profile::timer _my_timer;
+      profile::timer _my_db_timer;
    };
 
 }

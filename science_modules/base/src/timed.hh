@@ -7,14 +7,14 @@ namespace tao {
    using namespace hpc;
 
    ///
-   /// Star-formation History. Responsible for rebinning star-formation
-   /// history data into appropriate time bins.
+   ///
    ///
    class timed
    {
    public:
 
-      timed();
+      timed( profile::timer* timer = NULL,
+             profile::timer* db_timer = NULL );
 
       void
       set_timer( profile::timer* timer );
@@ -33,6 +33,12 @@ namespace tao {
 
       void
       db_timer_stop();
+
+      double
+      time() const;
+
+      double
+      db_time() const;
 
    protected:
 

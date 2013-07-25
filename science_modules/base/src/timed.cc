@@ -4,9 +4,10 @@ using namespace hpc;
 
 namespace tao {
 
-   timed::timed()
-      : _timer( NULL ),
-        _db_timer( NULL )
+   timed::timed( profile::timer* timer,
+                 profile::timer* db_timer )
+      : _timer( timer ),
+        _db_timer( db_timer )
    {
    }
 
@@ -44,6 +45,18 @@ namespace tao {
    timed::db_timer_stop()
    {
       _timer_stop( _db_timer );
+   }
+
+   double
+   timed::time() const
+   {
+      return _timer->total();
+   }
+
+   double
+   timed::db_time() const
+   {
+      return _db_timer->total();
    }
 
    void

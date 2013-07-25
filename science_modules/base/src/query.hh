@@ -33,8 +33,10 @@ namespace tao {
       void
       add_output_field( const string& field )
       {
+         string low = field;
+         to_lower( low );
          _out_fields.clear();
-         _of_set.insert( field );
+         _of_set.insert( low );
       }
 
       const vector<string>::view
