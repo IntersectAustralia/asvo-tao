@@ -39,8 +39,8 @@ public:
 		TS_TRACE("XML Read Done");
 
 		multidb db("bolshoi_full_dist","tree_");
-		db.AddNewServer("tao01.hpc.swin.edu.au","taoadmin","tao_admin_password_##","3306");
-		db.AddNewServer("tao02.hpc.swin.edu.au","taoadmin","tao_admin_password_##","3306");
+		db.AddNewServer("tao01.hpc.swin.edu.au","taoadmin","password","3306");
+		db.AddNewServer("tao02.hpc.swin.edu.au","taoadmin","password","3306");
 
 
 		db.OpenAllConnections();
