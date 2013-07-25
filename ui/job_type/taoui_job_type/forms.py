@@ -29,3 +29,11 @@ class Form(BetterForm):
         self.ui_holder = args[0]
         super(Form, self).__init__(*args[1:], **kwargs)
 
+        self.fields['params_file'] = forms.FileField(required=False, label='', widget=forms.FileInput(attrs={'form': 'file_upload'}))
+
+    @classmethod
+    def from_xml(cls, ui_holder, xml_root, prefix=None):
+        return cls(ui_holder, {}, prefix=prefix)
+
+    def to_xml(cls, ui_holder, xml_root, prefix=None):
+        pass

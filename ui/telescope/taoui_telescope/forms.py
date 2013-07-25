@@ -75,12 +75,47 @@ class Form(BetterForm):
 
         trackerror_type_choices = [('NONE', 'None'), ('DRIFT', 'Drift'), ('JITTER', 'Jitter')]
 
-        self.fields['trackerror_type'] = forms.ChoiceField(required=True, choices=trackerror_type_choices, initial='NONE', help_text="Tracking error model: NONE, DRIFT or JITTER")
-        self.fields['trackerror_maj'] = forms.FloatField(required=True, initial=0.0, help_text="Tracking RMS error (major axis) (in arcsec)")
-        self.fields['trackerror_min'] = forms.FloatField(required=True, initial=0.0, help_text="Tracking RMS error (minor axis) (in arcsec)")
-        self.fields['trackerror_ang'] = forms.FloatField(required=True, initial=0.0, help_text="Tracking angle (in deg, CC/horizontal)")
+        self.fields['trackerror_type'] = forms.ChoiceField(label='Track error type', required=True, choices=trackerror_type_choices, initial='NONE', help_text="Tracking error model: NONE, DRIFT or JITTER")
+        self.fields['trackerror_maj'] = forms.FloatField(label='Track error major', required=True, initial=0.0, help_text="Tracking RMS error (major axis) (in arcsec)")
+        self.fields['trackerror_min'] = forms.FloatField(label='Track error minor', required=True, initial=0.0, help_text="Tracking RMS error (minor axis) (in arcsec)")
+        self.fields['trackerror_ang'] = forms.FloatField(label='Track error angle',required=True, initial=0.0, help_text="Tracking angle (in deg, CC/horizontal)")
 
+        ### Pupil Features
+        self.fields['m1_diameter'] = forms.FloatField(required=True, initial=3.6, help_text="Diameter of the primary mirror (in meters)")
+        self.fields['m2_diameter'] = forms.FloatField(required=True, initial=1.0, help_text="Obstruction diam. from the 2nd mirror in m.")
+        self.fields['arm_count'] = forms.FloatField(required=True, initial=4, help_text="Number of spider arms (0 = none)")
+        self.fields['arm_thickness'] = forms.FloatField(required=True, initial=20.0, help_text="Thickness of the spider arms (in mm)")
+        self.fields['arm_posangle'] = forms.FloatField(required=True, initial=0.0, help_text="Position angle of the spider pattern / AXIS1")
+        self.fields['defoc_d80'] = forms.FloatField(required=True, initial=0.0, help_text="Defocusing d80% diameter (arcsec)")
+        self.fields['spher_d80'] = forms.FloatField(required=True, initial=0.0, help_text="Spherical d80% diameter (arcsec)")
+        self.fields['comax_d80'] = forms.FloatField(required=True, initial=0.0, help_text="Coma along X d80% diameter (arcsec)")
+        self.fields['comay_d80'] = forms.FloatField(required=True, initial=0.0, help_text="Coma along Y d80% diameter (arcsec)")
+        self.fields['ast00_d80'] = forms.FloatField(required=True, initial=0.0, help_text="0 deg. astigmatism d80% diameter (arcsec)")
+        self.fields['ast45_d80'] = forms.FloatField(required=True, initial=0.0, help_text="45 deg. astigmatism d80% diameter (arcsec)")
+        self.fields['tri00_d80'] = forms.FloatField(required=True, initial=0.0, help_text="0 deg. triangular d80% diameter (arcsec)")
+        self.fields['tri30_d80'] = forms.FloatField(required=True, initial=0.0, help_text="30 deg. triangular d80% diameter (arcsec)")
+        self.fields['qua00_d80'] = forms.FloatField(required=True, initial=0.0, help_text="0 deg. quadratic d80% diameter (arcsec)")
+        self.fields['qua22_d80'] = forms.FloatField(required=True, initial=0.0, help_text="22.5 deg. quadratic d80% diameter (arcsec)")
 
+        ### Signal
+        self.fields['wavelength'] = forms.FloatField(required=True, initial=0.8, help_text="average wavelength analysed (microns)")
+        self.fields['back_mag'] = forms.FloatField(required=True, initial=20.0, help_text="background surface brightness (mag/arcsec2)")
+
+        ### Stellar Field
+        self.fields['starcount_zp'] = forms.CharField(required=True, initial=3e4, help_text="nb of stars /deg2 brighter than MAG_LIMITS")
+        self.fields['starcount_slope'] = forms.FloatField(required=True, initial=0.2, help_text="slope of differential star counts (dexp/mag)")
+
+        self.fields['mag_range_start'] = forms.FloatField(required=True, initial=17.0, help_text="stellar magnitude range allowed")
+        self.fields['mag_range_end'] = forms.FloatField(required=True, initial=26.0, help_text="stellar magnitude range allowed")
+
+        ### Random Seeds
+        self.fields['seed_motion'] = forms.FloatField(required=True, initial=0, help_text="rand. seed for PSF turbulent motion (0=time)")
+        self.fields['seed_starpos'] = forms.FloatField(label='Seed star position', required=True, initial=0, help_text="random seed for star positions (0=time)")
+
+        ### Miscellaneous
+        verbose_type_choices = [('QUIET', 'Quiet'), ('NORMAL', 'Normal'), ('FULL', 'Full')]
+        self.fields['verbose_type'] = forms.ChoiceField(required=True, choices=verbose_type_choices, initial='NORMAL')
+        self.fields['nthreads'] = forms.FloatField(label='Number of threads', required=True, initial=0, help_text="Number of simultaneous threads for")
 
 
 
