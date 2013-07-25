@@ -12,12 +12,22 @@ from tao import models, workflow
 from tao.decorators import researcher_required, set_tab
 from tao.settings import INITIAL_JOB_MESSAGE
 from tao.ui_modules import UIModulesHolder
+from tao.xml_util import xml_parse
 
 
 @set_tab('mgf')
 @researcher_required
 def index(request):
     if request.method == 'POST':
+      if len(request.FILES) > 0:
+          parameter_file = request.FILES.itervalues().next().read()
+          ui_holder = UIModulesHolder(UIModulesHolder.XML, xml_parse(parameter_file))
+          return render(request, 'mock_galaxy_factory/index.html', {
+              'forms': ui_holder.forms(),
+              'forms_size' : len(ui_holder.forms())+1,
+          })
+
+      else:
         ui_holder = UIModulesHolder(UIModulesHolder.POST, request.POST)
         if ui_holder.validate():
             UserModel = get_user_model()

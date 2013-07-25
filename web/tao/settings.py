@@ -237,7 +237,7 @@ MODULES_PATHS = (
     ('job_type', 'job_type'),
     ('light_cone', 'light-cone'),
     ('sed', 'sed'),
-    ('telescope', 'telescope'),
+    # ('telescope', 'telescope'),
     ('mock_image', 'mock_image'),
 )
 sys.path.extend([join(UI_DIR, module[1]) for module in MODULES_PATHS])
