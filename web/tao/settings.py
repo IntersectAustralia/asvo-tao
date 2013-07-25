@@ -108,6 +108,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'tao.shibboleth.ShibbolethUserMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'activitylog.middleware.ActivityLogMiddleware',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -154,6 +155,7 @@ INSTALLED_APPS = (
     'django_rules',
     'django_extensions',
     'tastypie',
+    'activitylog',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
@@ -222,7 +224,7 @@ API_ALLOWED_IPS = (
                    )
 
 INITIAL_JOB_STATUS = 'HELD'
-INITIAL_JOB_MESSAGE = "Your job has been " + INITIAL_JOB_STATUS.lower() + " successfully, you will receive an e-mail notifying you when it has been completed."
+INITIAL_JOB_MESSAGE = "Your job has been %s successfully, you will receive an e-mail notifying you when it has been completed."
 
 #
 # To avoid changing the directory structure until after we have confirmed
@@ -250,9 +252,34 @@ OUTPUT_FORMATS = [
 MODULE_INDICES = {'light_cone': '1', 'sed': '2', 'mock_image': '3',
                   'record_filter': '4', 'output_format': '5'}
 
-TAO_VERSION = '0.23.1-rc1'
+TAO_VERSION = '0.24.1-rc3'
 
 AAF_DS_URL = 'https://ds.test.aaf.edu.au/discovery/DS'
 AAF_APP_ID = 'https://example.intersect.org.au/shibboleth'
 AAF_SESSION_URL = 'https://example.intersect.org.au/Shibboleth.sso/Login'
 AAF_LOGOUT_URL = 'https://example.intersect.org.au/Shibboleth.sso/Logout'
+
+STATIC_URL = '/static/'
+FILES_BASE = '/tmp/'  # please include a trailing slash
+
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = '25'
+
+EMAIL_FROM_ADDRESS = 'admin@localhost'
+
+API_ALLOWED_IPS = (
+                   '127.0.0.1'
+                   )
+
+ALLOWED_HOSTS = ['localhost']
+USE_CAPTCHA=True
+
+#
+# Activity Log settings
+#
+#Ignore responses altogether?
+ACITIVITYLOG_LOG_RESPONSE=False
+#Should we log full HTML responses?
+ACTIVITYLOG_LOG_HTML_RESPONSE = False
+# If we how do we recognized a full HTML response 
+ACTIVITYLOG_HTML_START = "<!DOCTYPE html"

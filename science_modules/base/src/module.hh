@@ -7,16 +7,13 @@
 #include <libhpc/options/xml_dict.hh>
 #include "galaxy.hh"
 #include "multidb.hh"
+#include "types.hh"
 
 namespace tao {
    using namespace hpc;
 
    class module
    {
-   public:
-
-      typedef double real_type;
-
    public:
 
       module( const string& name = string(),
