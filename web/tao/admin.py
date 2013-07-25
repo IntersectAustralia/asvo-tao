@@ -14,7 +14,7 @@ from tao.models import TaoUser
 from tao.models import Job, Simulation, GalaxyModel, DataSet, DataSetProperty, StellarModel, Snapshot, BandPassFilter, DustModel, GlobalParameter, WorkflowCommand
 
 for model in (Job, GalaxyModel, DataSetProperty, StellarModel, BandPassFilter,
-              DustModel, GlobalParameter, WorkflowCommand):
+              DustModel, GlobalParameter):
     admin.site.register(model)
 
 class SimulationAdmin(admin.ModelAdmin):
@@ -47,5 +47,11 @@ class UserAdmin(AuthUserAdmin):
     """
     UserAdmin
     """
+
+class WorkflowCommandAdmin(admin.ModelAdmin):
+    model = WorkflowCommand
+    readonly_fields = ('issued',)
+
+admin.site.register(WorkflowCommand, WorkflowCommandAdmin)
 
 admin.site.register(TaoUser, UserAdmin)

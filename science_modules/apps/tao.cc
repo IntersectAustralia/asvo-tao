@@ -15,7 +15,7 @@ main( int argc,
    string XMLFile=argv[1];
    int index=XMLFile.find(".xml");
    XMLFile.replace(index,4,"_tao.debug.log");
-   LOG_PUSH( new hpc::mpi::logger( XMLFile ) );
+   LOG_PUSH( new hpc::mpi::logger( XMLFile, hpc::logging::debug ) );
 #ifdef PREPROCESSING
    XMLFile=argv[1];
    index=XMLFile.find(".xml");

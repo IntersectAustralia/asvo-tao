@@ -5,8 +5,9 @@ from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 from optparse import make_option
 
+from tao import models
 from tao.models import Job, DataSet
-from tao.models import User
+from tao.models import TaoUser
 
 
 
@@ -42,7 +43,7 @@ Note that the description and xml parameter file can contain two variables as de
         make_option("--status", default="SUBMITTED",
                     dest='status',
                     help=('status: Held, Submitted, Queued, '
-                          'In_Progress, Completed.  Special values: All, NotCompleted')),
+                          'In_Progress, Error, Completed.')),
         make_option("--count", default=1,
                     dest='count',
                     help=('the number of jobs to generate. '
@@ -53,7 +54,7 @@ Note that the description and xml parameter file can contain two variables as de
         make_option("--show", default=None,
                     dest='show',
                     help=('show the current queue, one of valid status or '
-                          '"All", with optional list of ids')),
+                          '"All" or "NotCompleted", with optional list of ids')),
         make_option("--set_status", default=None,
                     dest='set_status',
                     help=('set the status of the supplied list of ids'))
@@ -65,7 +66,7 @@ Note that the description and xml parameter file can contain two variables as de
             import pdb
             pdb.set_trace()
 
-        self.valid_states = [x[0] for x in Job.STATUS_CHOICES]
+        self.valid_states = [x[0] for x in models.STATUS_CHOICES]
         status = options['status'].upper()
 
         if options['show']:
@@ -76,14 +77,14 @@ Note that the description and xml parameter file can contain two variables as de
             sys.exit()
 
         # Crash if invalid status
-        status_idx = self.valid_states.index(status)
+        status_idx = self.check_state_name(status)
         description = options['description']
         fn = args[0]
         with open(fn, 'r') as fp:
             params = fp.read()
         username = args[1]
         # Crash if the user doesn't exist
-        user = User.objects.get(username=username)
+        user = TaoUser.objects.get(username=username)
         database = args[2]
         if DataSet.objects.filter(database=database).count() != 1:
             raise CommandError("database '{db}' doesn't exist".format(db=database))
@@ -111,7 +112,7 @@ Note that the description and xml parameter file can contain two variables as de
             jobs = jobs.filter().exclude(status='COMPLETED').exclude(status='ERROR')
         elif status != 'ALL':
             # Check that a valid status has been requested
-            self.valid_states.index(status)
+            self.check_state_name(status)
             jobs = jobs.filter(status=status)
 
         for job in jobs:
@@ -128,7 +129,7 @@ Note that the description and xml parameter file can contain two variables as de
     def set_status(self, *args, **options):
         status = options['set_status'].upper()
         # Check that a valid status has been requested
-        self.valid_states.index(status)
+        self.check_state_name(status)
         jobs = Job.objects.filter(id__in=args)
         if jobs.count() != len(args):
             raise CommandError("Job ID mismatch: {jobs}".format(
@@ -136,5 +137,16 @@ Note that the description and xml parameter file can contain two variables as de
         for job in jobs:
             job.status = status
             job.save()
+        return
+
+
+    def check_state_name(self, state):
+        try:
+            self.valid_states.index(state)
+        except ValueError:
+            print("Unknown state: {0} not in {1}".format(
+                state, str(self.valid_states)))
+            print("Or special state: All, NotCompleted")
+            exit()
         return
 

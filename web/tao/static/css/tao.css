@@ -444,11 +444,36 @@ color: #333; cursor: pointer; display: inline-block; font-family: inherit; font-
     text-align: center;
     width: 6%;
     height: 80%;
-    vertical-align: bottom;
+    vertical-align: middle;
 }
 
-#id_light_cone-output_properties-table.ui-resizable > tbody > tr > td > #id_light_cone-output_properties_op_add_all, #id_light_cone-output_properties_op_add, #id_light_cone-output_properties_op_remove, #id_light_cone-output_properties_op_remove_all {
-    height: 20%;
+#id_light_cone-output_properties-table.ui-resizable > tbody > tr > td > #id_light_cone-output_properties_op_add_all {
+    display:block;
+    text-decoration:none;
+    margin-top:20px;
+    margin-bottom:40px;
+    height:1.25em;
+}
+#id_light_cone-output_properties-table.ui-resizable > tbody > tr > td > #id_light_cone-output_properties_op_add {
+    display:block;
+    text-decoration:none;
+    margin-top:40px;
+    margin-bottom:40px;
+    height:1.25em;
+}
+#id_light_cone-output_properties-table.ui-resizable > tbody > tr > td > #id_light_cone-output_properties_op_remove {
+    display:block;
+    text-decoration:none;
+    margin-top:40px;
+    margin-bottom:40px;
+    height:1.25em;
+}
+#id_light_cone-output_properties-table.ui-resizable > tbody > tr > td > #id_light_cone-output_properties_op_remove_all {
+    display:block;
+    text-decoration:none;
+    margin-top:40px;
+    margin-bottom:20px;
+    height:1.25em;
 }
 
 /*Left sed band pass filters table*/
@@ -480,11 +505,36 @@ color: #333; cursor: pointer; display: inline-block; font-family: inherit; font-
     text-align: center;
     width: 6%;
     height: 80%;
-    vertical-align: bottom;
+    vertical-align: middle;
 }
 
-#id_sed-band_pass_filters-table.ui-resizable > tbody > tr > td > #id_sed-band_pass_filters_op_add_all, #id_sed-band_pass_filters_op_add, #id_sed-band_pass_filters_op_remove, #id_sed-band_pass_filters_op_remove_all {
-    height: 20%;
+#id_sed-band_pass_filters-table.ui-resizable > tbody > tr > td > #id_sed-band_pass_filters_op_add_all {
+    display:block;
+    text-decoration:none;
+    margin-top:20px;
+    margin-bottom:40px;
+    height:1.25em;
+}
+#id_sed-band_pass_filters-table.ui-resizable > tbody > tr > td > #id_sed-band_pass_filters_op_add {
+    display:block;
+    text-decoration:none;
+    margin-top:40px;
+    margin-bottom:40px;
+    height:1.25em;
+}
+#id_sed-band_pass_filters-table.ui-resizable > tbody > tr > td > #id_sed-band_pass_filters_op_remove {
+    display:block;
+    text-decoration:none;
+    margin-top:40px;
+    margin-bottom:40px;
+    height:1.25em;
+}
+#id_sed-band_pass_filters-table.ui-resizable > tbody > tr > td > #id_sed-band_pass_filters_op_remove_all {
+    display:block;
+    text-decoration:none;
+    margin-top:40px;
+    margin-bottom:20px;
+    height:1.25em;
 }
 
 .verticalLine {
@@ -542,4 +592,12 @@ footer {
 
 html, body {
     height: 100%;
+}
+
+#max_job_size {
+    clear: both;
+    margin-bottom: 10px;
+}
+.job_too_large_error {
+    color: #b94a48;
 }
