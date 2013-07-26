@@ -151,66 +151,76 @@ namespace tao {
             map.clear();
             for( string of : query.output_fields() )
             {
-               ASSERT( _field_map.find( of ) != _field_map.end(),
-                       "Failed to find output field name in mapping." );
-
-               // Positions need to be handled specially to take care of translation.
-               if( tile && (of == "pos_x" || of == "pos_y" || of == "pos_z") )
+               // Only proceed if the field exists on the database.
+               if( _field_map.find( of ) != _field_map.end() )
                {
-                  string mapped[3] = { "pos_x", "pos_y", "pos_z" };
-                  real_type box_size = (*tile).lightcone()->simulation()->box_size();
-                  string repl = "CASE WHEN %1% + %2% < %3% THEN %1% + %2% ELSE %1% + %2% - %3% END + %4%";
-                  string field;
-                  if( of == "pos_x" )
+                  // Positions need to be handled specially to take care of translation.
+                  if( tile && (of == "pos_x" || of == "pos_y" || of == "pos_z") )
                   {
-                     of = mapped[(*tile).rotation()[0]];
-                     field = boost::str( boost::format( repl ) % _field_map.at( of ) % (*tile).translation()[0] %
-                                         box_size % (*tile).min()[0] );
-                  }
-                  else if( of == "pos_y" )
-                  {
-                     of = mapped[(*tile).rotation()[1]];
-                     field = boost::str( boost::format( repl ) % _field_map.at( of ) % (*tile).translation()[1] %
-                                         box_size % (*tile).min()[1] );
+                     string mapped[3] = { "pos_x", "pos_y", "pos_z" };
+                     real_type box_size = (*tile).lightcone()->simulation()->box_size();
+                     string repl = "CASE WHEN %1% + %2% < %3% THEN %1% + %2% ELSE %1% + %2% - %3% END + %4%";
+                     string field;
+                     if( of == "pos_x" )
+                     {
+                        of = mapped[(*tile).rotation()[0]];
+                        field = boost::str( boost::format( repl ) % _field_map.at( of ) % (*tile).translation()[0] %
+                                            box_size % (*tile).min()[0] );
+                     }
+                     else if( of == "pos_y" )
+                     {
+                        of = mapped[(*tile).rotation()[1]];
+                        field = boost::str( boost::format( repl ) % _field_map.at( of ) % (*tile).translation()[1] %
+                                            box_size % (*tile).min()[1] );
+                     }
+                     else
+                     {
+                        of = mapped[(*tile).rotation()[2]];
+                        field = boost::str( boost::format( repl ) % _field_map.at( of ) % (*tile).translation()[2] %
+                                            box_size % (*tile).min()[2] );
+                     }
+
+                     // Add to map.
+                     map[of] = field;
                   }
                   else
                   {
-                     of = mapped[(*tile).rotation()[2]];
-                     field = boost::str( boost::format( repl ) % _field_map.at( of ) % (*tile).translation()[2] %
-                                         box_size % (*tile).min()[2] );
-                  }
+                     // Velocity.
+                     if( tile && (of == "velx" || of == "vely" || of == "velz") )
+                     {
+                        string mapped[3] = { "velx", "vely", "velz" };
+                        if( of == "velx" )
+                           of = mapped[(*tile).rotation()[0]];
+                        else if( of == "vely" )
+                           of = mapped[(*tile).rotation()[1]];
+                        else
+                           of = mapped[(*tile).rotation()[2]];
+                     }
 
-                  // Add to map.
-                  map[of] = field;
+                     // Spin.
+                     else if( tile && (of == "spinx" || of == "spiny" || of == "spinz") )
+                     {
+                        string mapped[3] = { "spinx", "spiny", "spinz" };
+                        if( of == "spinx" )
+                           of = mapped[(*tile).rotation()[0]];
+                        else if( of == "spiny" )
+                           of = mapped[(*tile).rotation()[1]];
+                        else
+                           of = mapped[(*tile).rotation()[2]];
+                     }
+
+                     // Add to the map.
+                     map[of] = _field_map.at( of );
+                  }
                }
                else
                {
-                  // Velocity.
-                  if( tile && (of == "velx" || of == "vely" || of == "velz") )
-                  {
-                     string mapped[3] = { "velx", "vely", "velz" };
-                     if( of == "velx" )
-                        of = mapped[(*tile).rotation()[0]];
-                     else if( of == "vely" )
-                        of = mapped[(*tile).rotation()[1]];
-                     else
-                        of = mapped[(*tile).rotation()[2]];
-                  }
+                  // Warn the user if the database field does not exist in the
+                  // mapping.
+                  LOGWLN( "WARNING: Database does not have a mapped field for the name: ", of );
 
-                  // Spin.
-                  else if( tile && (of == "spinx" || of == "spiny" || of == "spinz") )
-                  {
-                     string mapped[3] = { "spinx", "spiny", "spinz" };
-                     if( of == "spinx" )
-                        of = mapped[(*tile).rotation()[0]];
-                     else if( of == "spiny" )
-                        of = mapped[(*tile).rotation()[1]];
-                     else
-                        of = mapped[(*tile).rotation()[2]];
-                  }
-
-                  // Add to the map.
-                  map[of] = _field_map.at( of );
+                  // Add the field to the set of fields we know are being calculated.
+                  query.add_calc_field( of );
                }
             }
          }
