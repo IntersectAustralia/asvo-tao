@@ -24,7 +24,8 @@ namespace tao {
          INTEGER,
          UNSIGNED_LONG,
          LONG_LONG,
-         UNSIGNED_LONG_LONG
+         UNSIGNED_LONG_LONG,
+         FIELD_VALUE_TERMINAL
       };
 
       enum field_rank_type

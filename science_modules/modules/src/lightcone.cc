@@ -194,24 +194,19 @@ namespace tao {
          }
          LOGDLN( "Extracting fields: ", _qry.output_fields() );
 
-         // // Filter information.
-         // _filter = global_dict.get<string>( "workflow:record-filter:filter:filter-attribute","" );
-         // std::transform( _filter.begin(), _filter.end(), _filter.begin(), ::tolower );
-         // _filter_min = global_dict.get<string>( "workflow:record-filter:filter:filter-min","" );
-         // _filter_max = global_dict.get<string>( "workflow:record-filter:filter:filter-max","" );
-         // LOGDLN( "Read filter name of: ", _filter );
-         // LOGDLN( "Read filter range of: ", _filter_min, " to ", _filter_max );
-         // if( !_output_fields.has( _filter ) )
-         // {
-         //    LOGDLN( "Record-filter: Couldn't locate record-filter name in lightcone output fields." );
-         //    _filter.clear();
-         // }
-
-         // // Setup the distance to redshift tables.
-         // _build_dist_to_z_tbl( 1000, _z_min, _z_max );
-
-         // // Have the galaxy prepare its options.
-         // _gal.read_record_filter( global_dict );
+         // Filter information.
+         string filt_field = global_dict.get<string>( "workflow:record-filter:filter:filter-attribute", "" );
+         to_lower( filt_field );
+         string filt_min = global_dict.get<string>( "workflow:record-filter:filter:filter-min", "" );
+         string filt_max = global_dict.get<string>( "workflow:record-filter:filter:filter-max", "" );
+         if( !filt_field.empty() && filt_field != "" )
+         {
+            _filt.set_field_name( filt_field );
+            _filt.set_minimum( filt_min );
+            _filt.set_maximum( filt_max );
+         }
+         LOGDLN( "Filter name of: ", filt_field );
+         LOGDLN( "Filter range of: [", filt_min, ", ", filt_max, ")" );
 
          timer_stop();
       }

@@ -81,6 +81,7 @@ namespace tao {
          int _rng_seed;
          engine_type _eng;
          bool _unique;
+         filter _filt;
 
          tao::simulation<real_type> _sim;
          tao::query<real_type> _qry;
