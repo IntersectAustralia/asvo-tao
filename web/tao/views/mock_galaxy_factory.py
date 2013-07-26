@@ -22,6 +22,7 @@ def index(request):
       if len(request.FILES) > 0:
           parameter_file = request.FILES.itervalues().next().read()
           ui_holder = UIModulesHolder(UIModulesHolder.XML, xml_parse(parameter_file))
+          print(ui_holder.forms()[1])
           return render(request, 'mock_galaxy_factory/index.html', {
               'forms': ui_holder.forms(),
               'forms_size' : len(ui_holder.forms())+1,
