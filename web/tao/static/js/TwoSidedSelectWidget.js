@@ -97,7 +97,6 @@ var TwoSidedSelectWidget = function(to_id, enable) {
                         }
                     }
                 }
-//                console.log('node value=' + node.value + ' node.text=' + node.text + ' displayed=' + node.displayed);
             }
             ref.redisplay(true);
         });
@@ -211,7 +210,5 @@ var TwoSidedSelectWidget = function(to_id, enable) {
     this.set_enabled = function(enable) {
         enabled = enable;
     }
-
-    // this.init();
 
 }

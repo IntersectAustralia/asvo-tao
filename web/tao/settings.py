@@ -257,7 +257,7 @@ MODULE_INDICES = {
                   'sed': '2', 'mock_image': '3',
                   'record_filter': '4',
                   'output_format': '5',
-                  'telescope': '7',
+                  # 'telescope': '7',
                   'job_type' : '8'
                   }
 
