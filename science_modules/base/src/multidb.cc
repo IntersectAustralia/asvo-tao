@@ -13,7 +13,7 @@ using namespace std;
 namespace tao
 {
 
-	ServerInfo::ServerInfo(string _DBName,string _Host,string _UserName,string _Password,string _Port)
+	ServerInfo::ServerInfo(const string& _DBName,const string& _Host,const string& _UserName,const string& _Password,const string& _Port)
 	{
 		ServerHost=_Host;
 		UserName=_UserName;
@@ -113,7 +113,7 @@ namespace tao
 		LOG_EXIT();
 
 	}
-	multidb::multidb(string dbname,string tree_pre)
+	multidb::multidb(const string& dbname,const string& tree_pre)
 	{
 		_serverscount=0;
 		_dbname=dbname;
@@ -154,7 +154,7 @@ namespace tao
 		}
 	}
 
-	bool multidb::AddNewServer(string _Host,string _UserName,string _Password,string _Port)
+	bool multidb::AddNewServer(const string& _Host,const string& _UserName,const string& _Password,const string& _Port)
 	{
 		ServerInfo* NewServer = new ServerInfo(_dbname, _Host,_UserName,_Password,_Port);
 		CurrentServers[NewServer->ServerHost] = NewServer;
@@ -232,13 +232,13 @@ namespace tao
 
 	}
 
-	bool multidb::TableExist(string TableName)
+	bool multidb::TableExist(const string& TableName)
 	{
 		ASSERT(_IsTableLoaded);
 		return (TablesMapping.count(TableName)>0);
 	}
 
-	bool multidb::ExecuteNoQuery_AllServers(string SQLStatement)
+	bool multidb::ExecuteNoQuery_AllServers(const string& SQLStatement)
 	{
 		ASSERT(!CurrentServers.empty());
 		ASSERT(_IsTableLoaded);
@@ -270,7 +270,7 @@ namespace tao
 
 	}
 
-	soci::session& multidb::operator [](string TableName)
+	soci::session& multidb::operator [](const string& TableName)
 	{
 		ASSERT(!CurrentServers.empty());
 		if(_IsTableLoaded==false)
