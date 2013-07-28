@@ -102,7 +102,7 @@ namespace tao {
             // Create temporary snapshot range table.
             LOGILN( "Making redshift range tables.", setindent( 2 ) );
             for( auto& pair : _mdb.CurrentServers )
-               pair.second->Connection << this->make_snap_rng_query_string( this->_sim );
+               pair.second->Connection << this->make_snap_rng_query_string( *this->_sim );
             LOGILN( "Done.", setindent( -2 ) );
          }
 

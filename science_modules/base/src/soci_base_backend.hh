@@ -54,7 +54,7 @@ namespace tao {
          session( const string& table ) = 0;
 
          real_type
-         box_size() const
+         box_size()
          {
             real_type size;
             session() << this->make_box_size_query_string(),
@@ -63,7 +63,7 @@ namespace tao {
          }
 
          void
-         snapshot_redshifts( vector<real_type>& snap_zs ) const
+         snapshot_redshifts( vector<real_type>& snap_zs )
          {
             unsigned size;
             session() << "SELECT COUNT(*) FROM snap_redshift",
@@ -312,6 +312,12 @@ namespace tao {
          operator*()
          {
             return _bat;
+         }
+
+         bool
+         done() const
+         {
+            return _done;
          }
 
       protected:

@@ -82,6 +82,23 @@ namespace tao {
             _it = _tables.begin() + (src._it - src._tables.begin());
          }
 
+         tile_table_iterator&
+         operator=( const tile_table_iterator& op )
+         {
+            _be = op._be;
+            _tile = op._tile;
+            _ph = op._ph;
+            _planes = op._planes;
+            _walls = op._walls;
+            _tables = op._tables;
+            _done = op._done;
+
+            // Iterator needs to be modified.
+            _it = _tables.begin() + (op._it - op._tables.begin());
+
+            return *this;
+         }
+
          const typename vector<array<real_type,3>>::view
          polyhedra() const
          {

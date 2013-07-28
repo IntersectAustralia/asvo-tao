@@ -60,6 +60,25 @@ namespace tao {
       return _age_bins;
    }
 
+   unsigned
+   stellar_population::_interp_metal( real_type metal ) const
+   {
+      if( metal <= 0.0005 )
+         return 0;
+      else if( metal <= 0.0025 )
+         return 1;
+      else if( metal <= 0.007 )
+         return 2;
+      else if( metal <= 0.015 )
+         return 3;
+      else if( metal <= 0.03 )
+         return 4;
+      else if( metal <= 0.055 )
+         return 5;
+      else
+         return 6;
+   }
+
    void
    stellar_population::_load_waves( const string& filename )
    {

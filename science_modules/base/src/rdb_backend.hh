@@ -49,31 +49,35 @@ namespace tao {
 
          void
          init_batch( batch<real_type>& bat,
-                     tao::query<real_type>& query )
+                     tao::query<real_type>& query ) const
          {
             for( const auto& field : query.output_fields() )
                bat.set_scalar( field, _field_types.at( this->_field_map.at( field ) ) );
          }
 
-         // string
-         // make_box_query_string( const box<real_type>& box ) const
-         // {
-         //    boost::format fmt( "SELECT %1% FROM -table- "
-         //                       "WHERE %2% = %3% AND "         // snapshot
-         //                       "%4% > %5% AND %4% < %6% AND " // x position
-         //                       "%7% > %8% AND %7% < %9% AND " // y position
-         //                       "%10% > %11% AND %10% < %12%" ); // z position
-         //    fmt % make_output_field_query_string();
-         //    fmt % _field_map["snapshot"] % box.snapshot();
-         //    fmt % _field_map["pos_x"] % box.min_pos()[0] % box.max_pos()[0];
-         //    fmt % _field_map["pos_y"] % box.min_pos()[1] % box.max_pos()[1];
-         //    fmt % _field_map["pos_z"] % box.min_pos()[2] % box.max_pos()[2];
-         //    return fmt.str();
-         // }
+         string
+         make_box_query_string( const box<real_type>& box,
+                                tao::query<real_type>& qry ) const
+         {
+            // boost::format fmt( "SELECT %1% FROM -table- "
+            //                    "WHERE %2% = %3% AND "         // snapshot
+            //                    "%4% > %5% AND %4% < %6% AND " // x position
+            //                    "%7% > %8% AND %7% < %9% AND " // y position
+            //                    "%10% > %11% AND %10% < %12%" ); // z position
+            // std::unordered_map<string,string> map;
+            // make_field_map( map, qry, tile );
+            // fmt % make_output_field_query_string( qry, map );
+            // fmt % _field_map["snapshot"] % box.snapshot();
+            // fmt % _field_map.at( "pos_x" ) % box.min_pos()[0] % box.max_pos()[0];
+            // fmt % _field_map.at( "pos_y" ) % box.min_pos()[1] % box.max_pos()[1];
+            // fmt % _field_map.at( "pos_z" ) % box.min_pos()[2] % box.max_pos()[2];
+            // return fmt.str();
+            return "";
+         }
 
          string
          make_tile_query_string( const tile<real_type>& tile,
-                                 tao::query<real_type>& query )
+                                 tao::query<real_type>& query ) const
          {
             boost::format fmt(
                "SELECT %1% FROM -table- "
@@ -125,7 +129,7 @@ namespace tao {
 
          string
          make_output_field_query_string( tao::query<real_type>& query,
-                                         const std::unordered_map<string,string>& map )
+                                         const std::unordered_map<string,string>& map ) const
          {
             string qs;
             for( string of : query.output_fields() )
@@ -138,7 +142,7 @@ namespace tao {
          }
 
          string
-         make_box_size_query_string()
+         make_box_size_query_string() const
          {
             return "SELECT metavalue FROM metadata WHERE metakey='boxsize'";
          }
