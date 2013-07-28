@@ -111,7 +111,7 @@ namespace tao {
             // Shift each table bounding box along each wall direction to
             // see if there is any periodic overlap with the box.
             set<table_type> tables;
-            for( auto it = _be.table_begin(); it != _be.table_end(); ++it )
+            for( auto it = _be->table_begin(); it != _be->table_end(); ++it )
             {
                // Apply each periodic side to the box and check.
                for( const auto& wall : _walls )

@@ -29,8 +29,8 @@ namespace tao {
       lightcone( const tao::simulation<real_type>* sim = NULL )
          : _sim( NULL )
       {
-         set_simulation( sim );
          set_geometry( 0, 10, 0, 10, 0.06 );
+         set_simulation( sim );
       }
 
       void
@@ -147,15 +147,15 @@ namespace tao {
       }
 
       tile_iterator
-      tile_begin()
+      tile_begin() const
       {
-         return tile_iterator( *this, false );
+         return tile_iterator( *this );
       }
 
       tile_iterator
-      tile_end()
+      tile_end() const
       {
-         return tile_iterator( *this, true );
+         return tile_iterator();
       }
 
       template< class Backend >

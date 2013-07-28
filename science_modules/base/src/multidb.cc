@@ -13,23 +13,18 @@ using namespace std;
 namespace tao
 {
 
-	ServerInfo::ServerInfo(string _DBName,pugi::xml_node node)
+	ServerInfo::ServerInfo(string _DBName,string _Host,string _UserName,string _Password,string _Port)
 	{
-
-		ServerHost=node.select_single_node("serverip").node().first_child().value();
-	    UserName=node.select_single_node("user").node().first_child().value();
-	    Password=node.select_single_node("password").node().first_child().value();
-	    Port=node.select_single_node("port").node().first_child().value();
-
-	    DBName=_DBName;
-	    _connected=false;
-	    _QueriesCount=0;
-
-
-
-
+		ServerHost=_Host;
+		UserName=_UserName;
+		Password=_Password;
+		Port=_Port;
+		DBName=_DBName;
+		_connected=false;
+		_QueriesCount=0;
 
 	}
+
 
 	ServerInfo::~ServerInfo()
 	{
@@ -107,12 +102,29 @@ namespace tao
 
 	}
 
+        multidb::multidb()
+	{
+		_serverscount=0;
+		_tree_pre="tree_";
+		_IsTableLoaded=false;
+	}
 
 	multidb::multidb(const options::xml_dict& dict)
 	{
+		LOG_ENTER();
+		_serverscount=0;
+		_IsTableLoaded=false;
 		_read_db_options(dict);
 		ReadTableMapping();
-		DefaultServerIterator=CurrentServers.begin();
+		LOG_EXIT();
+
+	}
+	multidb::multidb(string dbname,string tree_pre)
+	{
+		_serverscount=0;
+		_dbname=dbname;
+		_tree_pre=tree_pre;
+		_IsTableLoaded=false;
 	}
 
 	multidb::~multidb()
@@ -125,6 +137,7 @@ namespace tao
 
 	void  multidb::CloseAllConnections()
 	{
+		ASSERT(!CurrentServers.empty());
 		for (std::map<string,ServerInfo*>::iterator it=CurrentServers.begin(); it != CurrentServers.end(); ++it)
 			it->second->CloseConnection();
 
@@ -132,6 +145,7 @@ namespace tao
 
 	void multidb::RestartAllConnections()
 	{
+		ASSERT(!CurrentServers.empty());
 		for (std::map<string,ServerInfo*>::iterator it=CurrentServers.begin(); it != CurrentServers.end(); ++it)
 			it->second->RestartConnection();
 
@@ -139,13 +153,38 @@ namespace tao
 
 	void multidb::OpenAllConnections()
 	{
+		ASSERT(!CurrentServers.empty());
 		for (std::map<string,ServerInfo*>::iterator it=CurrentServers.begin(); it != CurrentServers.end(); ++it)
 		{
 			it->second->OpenConnection();
 		}
 	}
 
+        bool multidb::AddNewServer(string Dbname, string _Host,string _UserName,string _Password,string _Port)
+	{
+		ServerInfo* NewServer = new ServerInfo(Dbname, _Host,_UserName,_Password,_Port);
+		CurrentServers[NewServer->ServerHost] = NewServer;
+		if(_serverscount==0)
+		{
+			LOGDLN( "Setting Default Server Iterator!");
+			DefaultServerIterator=CurrentServers.begin();
+		}
+		LOGDLN( "ServerCount ", _serverscount );
+		_serverscount++;
+	}
 
+	bool multidb::AddNewServer(string _Host,string _UserName,string _Password,string _Port)
+	{
+		ServerInfo* NewServer = new ServerInfo(_dbname, _Host,_UserName,_Password,_Port);
+		CurrentServers[NewServer->ServerHost] = NewServer;
+		if(_serverscount==0)
+		{
+			LOGDLN( "Setting Default Server Iterator!");
+			DefaultServerIterator=CurrentServers.begin();
+		}
+		LOGDLN( "ServerCount ", _serverscount );
+		_serverscount++;
+	}
 
 	void multidb::_read_db_options(const options::xml_dict& dict)
 	{
@@ -153,8 +192,7 @@ namespace tao
 		// Extract database details.
 		_dbtype = dict.get < string > ("settings:database:type", "postgresql");
 		_dbname = dict.get < string > ("database");
-		_tree_pre = dict.get < string
-				> ("settings:database:treetableprefix", "tree_");
+		_tree_pre = dict.get < string> ("settings:database:treetableprefix", "tree_");
 		// _serverscount = dict.get<int>("settings:database:serverscount", 1);
 		xpath_node_set ServersSet = dict.get_nodes("settings/database/serverinfo");
 
@@ -162,20 +200,27 @@ namespace tao
 		ASSERT(!ServersSet.empty());
 		// If the number of servers claimed in settings:database:serverscount is no equal to number of serverinfo nodes
 		// also, raise exception
-		_serverscount = ServersSet.size();
+		//_serverscount = ServersSet.size();
 		// ASSERT(_serverscount==ServersSet.size());
 
 		for (xpath_node_set::const_iterator it = ServersSet.begin();it != ServersSet.end(); ++it)
 		{
 			pugi::xpath_node node = *it;
-			ServerInfo* NewServer = new ServerInfo(_dbname, node.node());
-			CurrentServers[NewServer->ServerHost] = NewServer;
+			pugi::xml_node CurrentNode=node.node();
+			string ServerHost=CurrentNode.select_single_node("serverip").node().first_child().value();
+			string UserName=CurrentNode.select_single_node("user").node().first_child().value();
+			string Password=CurrentNode.select_single_node("password").node().first_child().value();
+			string Port=CurrentNode.select_single_node("port").node().first_child().value();
+			AddNewServer(ServerHost,UserName,Password,Port);
+
 		}
 		LOG_EXIT();
 	}
 
 	void multidb::ReadTableMapping()
 	{
+		LOGDLN( "Reading Table Mapping");
+		ASSERT(!CurrentServers.empty());
 		// Get Object of the first DB Server to load the data from it
 		std::map<string, ServerInfo*>::iterator it = CurrentServers.begin();
 
@@ -188,6 +233,8 @@ namespace tao
 		TempDbServer->OpenConnection();
 		string query ="SELECT tablename, nodename  FROM table_db_mapping Where isactive=True;";
 		rowset < row > TablesMappingRowset = (TempDbServer->Connection.prepare << query);
+		TablesMapping.clear();
+		TableNames.clear();
 
 		for (rowset<row>::const_iterator it = TablesMappingRowset.begin();it != TablesMappingRowset.end(); ++it)
 		{
@@ -199,16 +246,21 @@ namespace tao
 		}
 
 		TempDbServer->CloseConnection();
+		_IsTableLoaded=true;
+		LOGDLN( "Table Mapping Done");
 
 	}
 
 	bool multidb::TableExist(string TableName)
 	{
+		ASSERT(_IsTableLoaded);
 		return (TablesMapping.count(TableName)>0);
 	}
 
 	bool multidb::ExecuteNoQuery_AllServers(string SQLStatement)
 	{
+		ASSERT(!CurrentServers.empty());
+		ASSERT(_IsTableLoaded);
 
 		for (std::map<string,ServerInfo*>::iterator it=CurrentServers.begin(); it != CurrentServers.end(); ++it)
 		{
@@ -221,11 +273,14 @@ namespace tao
 
 	soci::session* multidb::GetConnectionToAnyServer()
 	{
+		ASSERT(!CurrentServers.empty());
+		ASSERT(_IsTableLoaded);
 
 		if(DefaultServerIterator==CurrentServers.end())
 		{
 			DefaultServerIterator=CurrentServers.begin();
 		}
+
 		DefaultServerIterator->second->OpenConnection();
 		soci::session* OpenedSession= &DefaultServerIterator->second->Connection;
 
@@ -236,6 +291,12 @@ namespace tao
 
 	soci::session& multidb::operator [](string TableName)
 	{
+		ASSERT(!CurrentServers.empty());
+		if(_IsTableLoaded==false)
+		{
+			ReadTableMapping();
+		}
+
 		if(TablesMapping.count(TableName)>0)
 		{
 			TablesMapping[TableName]->OpenConnection();

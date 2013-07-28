@@ -31,14 +31,25 @@ namespace tao {
 
    public:
 
-      lightcone_tile_iterator( lightcone<real_type>& lc,
-                               bool done )
-         : _lc( lc ),
-           _done( done )
+      lightcone_tile_iterator()
+         : _lc( NULL ),
+           _done( true )
+      {
+      }
+
+      lightcone_tile_iterator( const lightcone<real_type>& lc )
+         : _lc( &lc ),
+           _done( false )
       {
          std::fill( _cur.begin(), _cur.end(), 0 );
          if( _check() != ON )
             increment();
+      }
+
+      bool
+      done() const
+      {
+         return _done;
       }
 
    protected:
@@ -46,7 +57,7 @@ namespace tao {
       void
       increment()
       {
-         real_type bs = _lc.simulation()->box_size();
+         real_type bs = _lc->simulation()->box_size();
          check_result res;
          do {
             do {
@@ -88,19 +99,19 @@ namespace tao {
       reference_type
       dereference() const
       {
-         return tile<real_type>( &_lc, _cur );
+         return tile<real_type>( _lc, _cur );
       }
 
       check_result
       _check()
       {
-         real_type bs = _lc._sim->box_size();
+         real_type bs = _lc->_sim->box_size();
 
          // Check that the farthest corner of the box is greater than the
          // minimum distance.
          if( sqrt( pow( _cur[0] + bs, 2.0 ) + 
                    pow( _cur[1] + bs, 2.0 ) + 
-                   pow( _cur[2] + bs, 2.0 ) ) < _lc._dist[0] )
+                   pow( _cur[2] + bs, 2.0 ) ) < _lc->_dist[0] )
          {
             return BELOW;
          }
@@ -109,7 +120,7 @@ namespace tao {
          // maximum distance.
          if( sqrt( pow( _cur[0], 2.0 ) + 
                    pow( _cur[1], 2.0 ) + 
-                   pow( _cur[2], 2.0 ) ) > _lc._dist[1] )
+                   pow( _cur[2], 2.0 ) ) > _lc->_dist[1] )
          {
             return ABOVE;
          }
@@ -118,25 +129,25 @@ namespace tao {
          // vertex of the cube to ECS coordinates.
          real_type ra, dec;
          numerics::cartesian_to_ecs( _cur[0], _cur[1] + bs, _cur[2], ra, dec );
-         if( ra < _lc._ra[0] )
+         if( ra < _lc->_ra[0] )
             return BELOW;
 
          // Similarly, we check the upper bounds by converting the (1, 0, 0)
          // vertex of the cube to ECS coordinates.
          numerics::cartesian_to_ecs( _cur[0] + bs, _cur[1], _cur[2], ra, dec );
-         if( ra > _lc._ra[1] )
+         if( ra > _lc->_ra[1] )
             return ABOVE;
 
          // Similarly, we check the upper bounds by converting the (1, 0, 0)
          // vertex of the cube to ECS coordinates.
          numerics::cartesian_to_ecs( _cur[0], _cur[1], _cur[2] + bs, ra, dec );
-         if( dec < _lc._dec[0] )
+         if( dec < _lc->_dec[0] )
             return BELOW;
 
          // We can check lower RA and DEC bounds by converting the (0, 1, 0)
          // vertex of the cube to ECS coordinates.
          numerics::cartesian_to_ecs( _cur[0] + bs, _cur[1] + bs, _cur[2], ra, dec );
-         if( dec > _lc._dec[1] )
+         if( dec > _lc->_dec[1] )
             return ABOVE;
 
          // If we get here this box is in overlap.
@@ -145,7 +156,7 @@ namespace tao {
 
    protected:
 
-      lightcone<real_type>& _lc;
+      const lightcone<real_type>* _lc;
       array<real_type,3> _cur;
       bool _done;
    };

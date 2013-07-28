@@ -31,7 +31,7 @@ namespace tao {
       real_type mag = 0.0;
       while( first != last )
       {
-	 mag += (*first)*(*first);
+         mag += (*first)*(*first);
          ++first;
       }
       return sqrt( mag );

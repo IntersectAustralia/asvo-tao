@@ -33,7 +33,7 @@ namespace tao {
       {
       }
 
-      lightcone_galaxy_iterator( lightcone<real_type>& lc,
+      lightcone_galaxy_iterator( const lightcone<real_type>& lc,
                                  backend_type& be,
                                  query<real_type>& qry )
          : _lc( &lc ),
@@ -41,8 +41,8 @@ namespace tao {
            _qry( &qry ),
            _done( false )
       {
-         _tile_it = _lc->tile_begin( *_be );
-         if( !_tile_it->done() )
+         _tile_it = _lc->tile_begin();
+         if( !_tile_it.done() )
          {
             _gal_it = _be->galaxy_begin( *_qry, *_tile_it );
             _settle();
@@ -61,6 +61,12 @@ namespace tao {
          _tile_it = op._tile_it;
          _gal_it = op._gal_it;
          return *this;
+      }
+
+      reference_type
+      operator*()
+      {
+         return *_gal_it;
       }
 
       bool
@@ -85,7 +91,7 @@ namespace tao {
       }
 
       reference_type
-      dereference() const
+      dereference()
       {
          return *_gal_it;
       }
@@ -98,20 +104,20 @@ namespace tao {
             do
             {
                ++_tile_it;
-               if( _tile_it->done() )
+               if( _tile_it.done() )
                {
                   _done = true;
                   break;
                }
                _gal_it = _be->galaxy_begin( *_qry, *_tile_it );
             }
-            while( _gal_it->done() );
+            while( _gal_it.done() );
          }
       }
 
    protected:
 
-      lightcone<real_type>* _lc;
+      const lightcone<real_type>* _lc;
       backend_type* _be;
       query<real_type>* _qry;
       tile_iterator _tile_it;
