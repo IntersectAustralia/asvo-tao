@@ -278,7 +278,7 @@ USE_CAPTCHA=True
 # Activity Log settings
 #
 #Ignore responses altogether?
-ACITIVITYLOG_LOG_RESPONSE=False
+ACTIVITYLOG_LOG_RESPONSE=False
 #Should we log full HTML responses?
 ACTIVITYLOG_LOG_HTML_RESPONSE = False
 # If we how do we recognized a full HTML response 
