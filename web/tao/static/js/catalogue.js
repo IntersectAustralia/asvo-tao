@@ -204,6 +204,29 @@ jQuery(document).ready(function ($) {
 
     function init() {
 
+        function setup_editable_text(elem_id) {
+            var $elem = $(elem_id);
+
+            $('#id-save_edit').click(function(evt){
+                var description = $elem.text().replace(/\s+/g, ' ');
+                $.ajax({
+                    url: TAO_JSON_CTX + 'edit_job_description/' + $('#csrf_token #job_id').val(),
+                    type: 'POST',
+                    data: {"job-description": description,
+                        'csrfmiddlewaretoken': $('#csrf_token input[name="csrfmiddlewaretoken"]').val()},
+                    error: function(data) {
+                        alert("Couldn't save job description to DB");
+                    }
+                });
+            });
+
+            $('#id-cancel_edit').click(function(evt){
+                document.execCommand('undo', false, null);
+            });
+        }
+
+        setup_editable_text('#id-job_description');
+
         function set_click(selector, direction) {
             $(selector).click(function (evt) {
                 var $this = $(this);

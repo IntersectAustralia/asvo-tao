@@ -1,11 +1,12 @@
 from django.core import serializers
-import json
 from django.http import HttpResponse
+from django.views.decorators.csrf import ensure_csrf_cookie
 
-from tao.models import Snapshot, Simulation, GalaxyModel, DataSet, DustModel, DataSetProperty, BandPassFilter, StellarModel, GlobalParameter
+from tao.models import Snapshot, Simulation, GalaxyModel, DataSet, DustModel, DataSetProperty, BandPassFilter, StellarModel, GlobalParameter, Job
 from tao import datasets
-from tao.decorators import researcher_required
+from tao.decorators import researcher_required, object_permission_required
 
+import json
 
 @researcher_required
 def snapshots(request, sid, gid):
@@ -171,3 +172,13 @@ def bad_request(request):
     """
     return HttpResponse("{'error':'wrong api request'}", mimetype="application/json")
 
+@researcher_required
+@object_permission_required('can_read_job')
+def edit_job_description(request, id):
+    if request.is_ajax():
+        job = Job.objects.get(id=id)
+        job_description = request.POST.get('job-description')
+        job.description = job_description
+        job.save()
+
+    return HttpResponse('{}', mimetype='application/json')
