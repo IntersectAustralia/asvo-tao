@@ -20,7 +20,8 @@ namespace tao {
 		   string DBName;
 		   soci::session Connection;
 
-		   ServerInfo(string _DBName,pugi::xml_node node);
+
+		   ServerInfo(const string& _DBName,const string& _Host,const string& _UserName,const string& _Password,const string& _Port);
 		   virtual ~ServerInfo();
 		   void OpenConnection();
 		   void CloseConnection();
@@ -37,24 +38,28 @@ namespace tao {
 
 	   public:
 	   	   multidb(const options::xml_dict& dict);
+	   	   multidb(const string& dbname,const string& tree_pre);
            virtual ~multidb();
            void CloseAllConnections();
            void RestartAllConnections();
            void OpenAllConnections();
-           soci::session& operator [](string TableName);
-           bool TableExist(string TableName);
-           bool ExecuteNoQuery_AllServers(string SQLStatement);
+           soci::session& operator [](const string& TableName);
+           bool TableExist(const string& TableName);
+           bool ExecuteNoQuery_AllServers(const string& SQLStatement);
+           bool AddNewServer(const string& _Host,const string& _UserName,const string& _Password,const string& _Port);
            soci::session* GetConnectionToAnyServer();
            list<string> TableNames;
            map<string,ServerInfo*> CurrentServers;
            map<string,ServerInfo*> TablesMapping;
+           void ReadTableMapping();
 	   protected:
            int _serverscount;
+           bool _IsTableLoaded;
            std::map<string,ServerInfo*>::iterator DefaultServerIterator;
 
            string _dbtype, _dbname;
            string _tree_pre;
-           void ReadTableMapping();
+
            void  _read_db_options( const options::xml_dict& dict );
 
 

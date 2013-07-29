@@ -21,7 +21,8 @@ def index(request):
         if ui_holder.validate():
             UserModel = get_user_model()
             user = UserModel.objects.get(username=request.user.username)
-            workflow.save(user, ui_holder)
+            job_description = request.POST.get('job-description')
+            workflow.save(user, ui_holder, job_description)
             messages.info(request, _(settings.INITIAL_JOB_MESSAGE % models.initial_job_status().lower()))
             return redirect(reverse('job_index'))
     else:
