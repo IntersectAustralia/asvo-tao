@@ -252,13 +252,16 @@ OUTPUT_FORMATS = [
     {'value': 'votable', 'text': 'VOTable', 'extension': 'xml'},
 ]
 
+# This is the 'tab-id' the module occupies in the interface
 MODULE_INDICES = {
-                  'light_cone': '1',
-                  'sed': '2', 'mock_image': '3',
-                  'record_filter': '4',
-                  'output_format': '5',
+                  'job_type': '1',
+                  'light_cone': '2',
+                  'sed': '3',
+                  'mock_image': '4',
+                  'record_filter': '5',
+                  'output_format': '6',
                   # 'telescope': '7',
-                  'job_type' : '8'
+                  
                   }
 
 TAO_VERSION = '0.24.1-rc3'

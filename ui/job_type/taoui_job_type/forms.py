@@ -35,5 +35,6 @@ class Form(BetterForm):
     def from_xml(cls, ui_holder, xml_root, prefix=None):
         return cls(ui_holder, {}, prefix=prefix)
 
-    def to_xml(cls, ui_holder, xml_root, prefix=None):
+    # Empty implementation to conform to module interface
+    def to_xml(self, root):
         pass
