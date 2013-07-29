@@ -26,7 +26,15 @@ namespace tao {
 	virtual	tao::galaxy& galaxy();
 
   protected:
-    void _read_db_options( const options::xml_dict& global_dict );
+    void _read_options( const options::xml_dict& global_dict );
+
+    string _sqlquery;
+    string _language;
+
+    bool _pass_through;
+
+    string _database;
+    string _server;
 
   };
 }

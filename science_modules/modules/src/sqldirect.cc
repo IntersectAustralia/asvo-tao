@@ -22,7 +22,11 @@ namespace tao {
 	sqldirect::sqldirect( const string& name, pugi::xml_node base )
 	: module( name, base )
 	{
-
+		_sqlquery="";
+		_language="";
+		_pass_through=true;
+		_database="";
+		_server="";
 	}
 
 	sqldirect::~sqldirect()
@@ -45,16 +49,49 @@ namespace tao {
 	///
 	void sqldirect::execute()
 	{
-
 	}
 
 	tao::galaxy& sqldirect::galaxy()
     {
-
     }
 
 	void  sqldirect::_read_options( const options::xml_dict& global_dict )
-   {
+    {
+		_timer.start();
+		LOG_ENTER();
 
-   }
+		// Cache the local dictionary.
+		const options::xml_dict& dict = _dict;
+
+		_sqlquery=dict.get<string>( "query", "sql" );
+		_language=dict.get<string>( "language", "sql" );
+
+
+		LOGDLN( "sqlQuery: ", _sqlquery );
+		LOGDLN( "query Language: ", _language );
+
+
+		_pass_through=(dict.get<string>( "pass-through", "sql" )=="True");
+
+		if(_pass_through==true)
+		{
+			_database=dict.get<string>( "database", "sql" );
+			_server=dict.get<string>( "server", "sql" );
+		}
+		else
+		{
+			_database="";
+			_server="";
+		}
+
+		LOGDLN( "database: ", _database );
+		LOGDLN( "server: ", _server );
+
+
+
+
+		LOG_EXIT();
+		_timer.stop();
+
+    }
 }
