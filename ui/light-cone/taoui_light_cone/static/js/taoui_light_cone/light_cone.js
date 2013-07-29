@@ -473,14 +473,34 @@ catalogue.modules.light_cone = function ($) {
     }
 
 
+    var cache_initial_data = function() {
+        var $to = $(lc_id('output_properties'));
+        $to.find('option[selected="selected"]').each(function () {
+            var current = [];
+            var pseudo_json = [];
+            var $this = $(this);
+            var item = {
+                pk: $this.attr('value'),
+                fields: {
+                    label: $this.text()
+                }
+            };
+            pseudo_json.push(item);
+            if ($this.attr('selected')) {
+                current.push(item.pk);
+            }
+            get_widget().cache_store(pseudo_json);
+        });
+    }
+
+
     var update_output_options = function () {
+        cache_initial_data();
         var data_set_id = $(lc_id('galaxy_model')).find(':selected').attr('value');
         var $to = $(lc_id('output_properties'));
         var $from = $(lc_id('output_properties_from'));
-        $to.find('option').each(function (i) {
-            $(this).attr("selected", "selected");
-        });
         var current = $to.val(); // in string format
+        console.log(current);
         $to.empty();
         $from.empty();
         $.ajax({
@@ -624,28 +644,6 @@ catalogue.modules.light_cone = function ($) {
             }
         });
     };
-
-
-    function init_output_properties() {
-        var current = [];
-        var pseudo_json = [];
-        $(lc_id('output_properties') + ' option').each(function () {
-            var $this = $(this);
-            var item = {
-                pk: $this.attr('value'),
-                fields: {
-                    label: $this.text()
-                }
-            };
-            pseudo_json.push(item);
-            if ($this.attr('selected')) {
-                current.push(item.pk);
-            }
-        });
-        get_widget().cache_store(pseudo_json);
-        console.log('Current output properties: ' + current);
-        return current;
-    }
 
 
     var fill_in_ra_dec_in_summary = function () {
@@ -1088,24 +1086,34 @@ catalogue.modules.light_cone = function ($) {
     }
 
 
-    this.init = function () {
-        catalogue.modules.light_cone.util = new catalogue.modules.light_cone.util();
-        get_widget().init();
-        init_event_handlers();
-        // NOTE: A lot of event triggers here used to initialise state, probably not a good thing
-        // as it's hard to track their side effects
+    var init_state = function() {
         var init_light_cone_type_value = $('input[name="light_cone-light_cone_type"][checked="checked"]').attr('value');
         catalogue.util.fill_in_summary('light_cone', 'number_of_light_cones', $(lc_id('number_of_light_cones')).val() + " " + init_light_cone_type_value + " light cones");
         $(lc_id('number_of_light_cones')).attr('class', 'light_cone_field'); // needed to associate the spinner with light-cone only, not when selecting box
         $(lc_id('dark_matter_simulation')).change();
-        $(lc_id('galaxy_model')).change();
-        $('#id_output_format-supported_formats').change();
+        // update_output_options(); // this is where the record filter update is triggere
+        //                          and where the selection gets wiped
+        // show_simulation_info($(lc_id('dark_matter_simulation')).val());
 
+
+        $(lc_id('galaxy_model')).change();
+
+
+
+        $('#id_output_format-supported_formats').change();
 
         $('div.summary_light_cone .output_properties_list').hide();
         $('div.summary_light_cone .simulation_description, div.summary_light_cone .galaxy_model_description').hide();
 
         $(lc_id('catalogue_geometry')).change();
+    }
+
+
+    this.init = function () {
+        catalogue.modules.light_cone.util = new catalogue.modules.light_cone.util();
+        get_widget().init();
+        init_event_handlers();
+        init_state();
 
     }
 

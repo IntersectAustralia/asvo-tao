@@ -40,6 +40,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.login(username, password)
 
         self.visit('mock_galaxy_factory')
+        self.click('tao-tabs-' + MODULE_INDICES['light_cone'])
         self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
 
     def tearDown(self):
