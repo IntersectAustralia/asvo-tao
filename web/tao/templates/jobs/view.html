@@ -35,6 +35,14 @@ the forms being hidden and all.
 {#                    {{ job.parameters|linebreaks }}#}
 {#                </span>#}
 {#            </div>#}
+
+            <div>
+                <strong>Optional Description:</strong>
+                <div contenteditable id="id-job_description" data-name="job-description">
+                    <em>{{ job.description }} </em>
+                </div>
+                <div><input id="id-save_edit" type="button" value="Save"/><input id="id-cancel_edit" type="button" value="Cancel"></div>
+           </div>
             <div>
                 <strong>Download</strong>
 
@@ -91,4 +99,8 @@ the forms being hidden and all.
             </div>
         </div>
     </div>
+    <form id="csrf_token">
+    {% csrf_token %}
+    <input type="hidden" id="job_id" value="{{ job.id }}" />
+    </form>
 {% endblock content %}
