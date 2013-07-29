@@ -12,7 +12,7 @@ class LogReader(object):
         self.Options=Options
     
     def GetFileName(self,UserName,JobID,SubJobIndex):
-        path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],'jobs', UserName, str(JobID),'log','tao.log.'+str(SubJobIndex))        
+        path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserName, str(JobID),'log','tao.log.'+str(SubJobIndex))        
         return path
     def ParseFile(self,UserName,JobID,SubJobIndex):
         FilePath=self.GetFileName(UserName, JobID,SubJobIndex)

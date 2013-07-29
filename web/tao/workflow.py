@@ -13,9 +13,12 @@ from tao.datasets import dataset_get
 from tao.xml_util import create_root, find_or_create, child_element, xml_print
 
 
-def save(user, ui_holder):
+def save(user, ui_holder, description=None):
     dataset = dataset_get(ui_holder.cleaned_data('light_cone', 'galaxy_model'))
-    job = models.Job(user=user, parameters=_make_parameters(user, ui_holder.forms()), database=dataset.database)
+    if description:
+        job = models.Job(user=user, parameters=_make_parameters(user, ui_holder.forms()), database=dataset.database, description=description)
+    else:
+        job = models.Job(user=user, parameters=_make_parameters(user, ui_holder.forms()), database=dataset.database)
     job.save()
     return job
 
