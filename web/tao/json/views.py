@@ -178,7 +178,6 @@ def edit_job_description(request, id):
     if request.is_ajax():
         job = Job.objects.get(id=id)
         job_description = request.POST.get('job-description')
-        print 'editing job ' + id + ' with ' + job_description
         job.description = job_description
         job.save()
 

@@ -178,7 +178,7 @@ jQuery(document).ready(function ($) {
             var $elem = $(elem_id);
 
             $('#id-save_edit').click(function(evt){
-                var description = $elem.text();
+                var description = $elem.text().replace(/\s+/g, ' ');
                 $.ajax({
                     url: TAO_JSON_CTX + 'edit_job_description/' + $('#csrf_token #job_id').val(),
                     type: 'POST',
@@ -188,12 +188,10 @@ jQuery(document).ready(function ($) {
                         alert("Couldn't save job description to DB");
                     }
                 });
-                console.log('>> Save button is clicked, data is ' + description);
             });
 
             $('#id-cancel_edit').click(function(evt){
                 document.execCommand('undo', false, null);
-                console.log('>> Cancel button is clicked');
             });
         }
 
