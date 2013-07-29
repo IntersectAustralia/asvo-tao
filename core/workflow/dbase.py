@@ -93,7 +93,7 @@ class DBInterface(object):
             INSERTEvent=INSERTEvent+"("+str(EventType)+","+str(AssociatedJobID)+",'"+EventDesc+"');"
             self.ExecuteNoQuerySQLStatment(INSERTEvent)
     def GetCurrentActiveJobs(self):
-        SELECTActive="SELECT * From Jobs where JobStatus<"+str(EnumerationLookup.JobState.Completed)
+        SELECTActive="SELECT * From Jobs where JobStatus<"+str(EnumerationLookup.JobState.Completed+" and latestjobversion=True ;")
         return self.ExecuteQuerySQLStatment(SELECTActive)
     
     def RemoveOldJobFromWatchList(self,UIReferenceID):
@@ -102,7 +102,7 @@ class DBInterface(object):
         self.ExecuteNoQuerySQLStatment(UpdateSt)
         
     def GetCurrentActiveJobs_pbsID(self):
-        SELECTActive="SELECT jobid,pbsreferenceid,JobStatus,uireferenceid,username,subjobindex,jobtype From Jobs where JobStatus<"+str(EnumerationLookup.JobState.Completed)
+        SELECTActive="SELECT jobid,pbsreferenceid,JobStatus,uireferenceid,username,subjobindex,jobtype From Jobs where latestjobversion=True and JobStatus<"+str(EnumerationLookup.JobState.Completed)
         return self.ExecuteQuerySQLStatmentAsDict(SELECTActive)
     
     def SetJobComplete(self,JobID,Comment,ExecTime):
@@ -120,20 +120,19 @@ class DBInterface(object):
         Updatest=Updatest+"INSERT INTO JobHistory(JobID,NewStatus,Comments) VALUES("+str(JobID)+","+str(EnumerationLookup.JobState.Error)+",'Error');"
         self.ExecuteNoQuerySQLStatment(Updatest)
             
-    def SetJobRunning(self,JobID,OldStatus,Comment,JobStartTime):        
-        if EnumerationLookup.JobState.Running!=OldStatus:
+    def SetJobRunning(self,JobID,Comment,JobStartTime):
             Updatest="UPDATE Jobs set JobStatus="+str(EnumerationLookup.JobState.Running)+",jobstatuscomment='"+Comment+"', startdate='"+time.strftime('%d/%m/'+str(date.today().year)+' %H:%M:%S',JobStartTime)+"' where JobID="+str(JobID)+";"
             Updatest=Updatest+"INSERT INTO JobHistory(JobID,NewStatus,Comments) VALUES("+str(JobID)+","+str(EnumerationLookup.JobState.Running)+",'JobRunning');"
             self.ExecuteNoQuerySQLStatment(Updatest)
                     
-    def SetJobQueued(self,JobID,OldStatus,Comment):        
-        if EnumerationLookup.JobState.Queued!=OldStatus:
+    def SetJobQueued(self,JobID,Comment):       
             Updatest="UPDATE Jobs set JobStatus="+str(EnumerationLookup.JobState.Queued)+",jobstatuscomment='"+Comment+"' where JobID="+str(JobID)+";"
             Updatest=Updatest+"INSERT INTO JobHistory(JobID,NewStatus,Comments) VALUES("+str(JobID)+","+str(EnumerationLookup.JobState.Queued)+",'JobWaiting');"
             self.ExecuteNoQuerySQLStatment(Updatest)
             
-        
-                
+    def SetJobPaused(self,JobID,UICommandID): 
+           Updatest="UPDATE Jobs set JobStatus="+str(EnumerationLookup.JobState.Paused)+",jobstatuscomment='PAUSED BY WORKFLOW COMMAND ID="+str(UICommandID)+"' where JobID="+str(JobID)+";"
+           self.ExecuteNoQuerySQLStatment(Updatest)     
     def AddNewJob(self,UIReferenceID,JobType,XMLParams,UserName,Database,SubJobIndex):
         
         ## Encode the XML Params and remove un-replaceable unicode chars    
@@ -169,13 +168,33 @@ class DBInterface(object):
     
     def GetJobbyUIReference(self,UIReferenceID):
         SELECTJob="SELECT * From Jobs where UIReferenceID="+str(UIReferenceID)+" and latestjobversion=True ;"
-        return self.ExecuteQuerySQLStatment(SELECTJob)
+        return self.ExecuteQuerySQLStatmentAsDict(SELECTJob)
     
     def GetJobsStatusbyUIReference(self,UIReferenceID):
         SELECTJob="SELECT jobid,jobstatus,subjobindex,pbsreferenceid From Jobs where UIReferenceID="+str(UIReferenceID)+" and latestjobversion=True;"
         return self.ExecuteQuerySQLStatmentAsDict(SELECTJob)
     
     
+#########################################################################################################################
+########## Commands DB Access ###############################################
 
-    
+    def AddNewCommand(self,UICommandID,commandtext,UIJobID,AdditionalParams):
+        
+          
+        INSERTJobSt="INSERT INTO COMMANDS(UICommandID,commandtext,UIJobID,AdditionalParams) VALUES ("
+        INSERTJobSt=INSERTJobSt+str(UICommandID)+",'"+commandtext+"',"+str(UIJobID)+",'"+AdditionalParams+"');"
+        INSERTJobSt=INSERTJobSt+"SELECT currval('NextCommandID');"
+            
+        ## Get Latest JobID
+        CommandID=self.ExecuteQuerySQLStatment(INSERTJobSt)[0][0]        
+        self.AddNewEvent(CommandID, 0, "Command Added")
+        
+        
+        return CommandID
+
+    def UpdateCommandStatus(self,CommandID,NewStatus):
+        
+        Updatest="UPDATE Commands set ExecStatus="+str(NewStatus)+",COMPELETEDATE=CURRENT_TIMESTAMP where CommandID="+str(CommandID)+";"
+            
+        self.ExecuteNoQuerySQLStatment(Updatest)
 

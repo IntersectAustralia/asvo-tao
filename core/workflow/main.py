@@ -8,6 +8,7 @@ import logging, logging.handlers
 from daemon import Daemon
 import signal
 import emailreport
+import SysCommands
 
 
 class WorkflowDaemon(Daemon):
@@ -51,7 +52,8 @@ class WorkflowDaemon(Daemon):
         self.dbaseObj=dbase.DBInterface(self.Options)
         self.TorqueObj=torque.TorqueInterface(self.Options,self.dbaseObj)
         self.workflowObj=workflow.WorkFlow(self.Options,self.dbaseObj,self.TorqueObj)
-        
+        self.SysCommandsObj=SysCommands.SysCommands(self.Options,self.dbaseObj,self.TorqueObj)
+     
         
         
         
@@ -66,9 +68,16 @@ class WorkflowDaemon(Daemon):
         #try:
          
         while True:
-            self.workflowObj.GetNewJobsFromMasterDB()
             
-            self.workflowObj.ProcessJobs()
+            self.SysCommandsObj.CheckForNewCommands()
+            
+            if self.SysCommandsObj.KeepWorkFlowActive==True:
+                logging.info("Workflow is Active")
+                self.workflowObj.GetNewJobsFromMasterDB()            
+                self.workflowObj.ProcessJobs()
+            else:
+                logging.info("Workflow disabled")
+                
             logging.info("Sleeping for "+str(self.SleepTime)+" Seconds")
             logging.info('-----------------------------------------------------------------')
             time.sleep(self.SleepTime)
