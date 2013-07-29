@@ -599,7 +599,7 @@ catalogue.modules.light_cone = function ($) {
         $(lc_id('number_of_light_cones')).attr('class', 'light_cone_field'); // needed to associate the spinner with light-cone only, not when selecting box
         $(lc_id('dark_matter_simulation')).change();
         // update_output_options(); // this is where the record filter update is triggere
-                                 // and where the selection gets wiped
+        //                          and where the selection gets wiped
         // show_simulation_info($(lc_id('dark_matter_simulation')).val());
 
 
