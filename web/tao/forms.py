@@ -24,6 +24,7 @@ class FormsGraph():
     BANDPASS_FILTER_ID = '4'
     OUTPUT_ID = '5'
     MOCK_IMAGE_ID = '6'
+    TELESCOPE_ID = '7'
 
 class LoginForm(auth_forms.AuthenticationForm):
     remember_me = forms.BooleanField(label=_("Remember Me"), required=False)
