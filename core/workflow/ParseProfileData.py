@@ -5,15 +5,21 @@ import StringIO
 import psycopg2
 from psycopg2 import extras
 import os, shlex, subprocess,string
+import logging
+import locale
+
 
 class ParseProfileData(object):
 
     
 
-    def __init__(self,FileName,Options):        
-        self.RunProfiling()
+    def __init__(self,JobPath,SubProcessID,Options):        
+        self.ProfileFileName=JobPath+"/params"+str(SubProcessID)+"_tao.Profile.log00000"
+        logging.info("Profile FileName:"+self.ProfileFileName)
         self.Options=Options
-        self.ProfileFileName=FileName
+        self.RunProfiling(JobPath,SubProcessID)
+        
+        
         self.LoadDBMetaData("millennium_full_hdf5_dist")
         
     def LoadDBMetaData(self,DatabaseName):
@@ -51,12 +57,29 @@ class ParseProfileData(object):
         else:
             return []
     
+    def ParseXMLParams(self,FileName):
+        tree = ET.parse(FileName)
+        NameSpace=re.findall('\{.*\}',tree.xpath('.')[0].tag)[0]
+        NameSpace=NameSpace[1:-1]
+        Modules=tree.xpath("/ns:tao/ns:workflow/*[@id]",namespaces={'ns':NameSpace})
+        ListofModules=[]
+        for Module in Modules:
+             ListofModules.append(Module.tag.replace('{'+NameSpace+'}',''))
+        return ListofModules
     
-    def RunProfiling(self):
+    def RunProfiling(self,JobPath,SubJobIndex):
         #stdout = subprocess.check_output(shlex.split('ssh g2 \"cd %s; qsub -q %s %s\"'%(path.encode(locale.getpreferredencoding()), queuename.encode(locale.getpreferredencoding()), ScriptFileName.encode(locale.getpreferredencoding()))))
-        os.chdir('/home/amr/workspace/AppRun')
-        stdout = subprocess.check_output(shlex.split('/home/amr/workspace/asvo-tao-science/science_modules/build-optimised/bin/tao /home/amr/workspace/AppRun/params0.xml /home/amr/workspace/AppRun/basicsetting.xml'))
-        print stdout
+        os.chdir(JobPath)
+        BasicSettingPath=self.Options['Torque:BasicSettingsPath']
+        ProfilingExecPath=self.Options['Torque:ProfilingExecutableName']
+        XMlParamsPath=JobPath+"/params"+str(SubJobIndex)+".xml"
+        self.ListofModules=self.ParseXMLParams(XMlParamsPath)
+        CommandTxt=ProfilingExecPath+" "+XMlParamsPath+" "+BasicSettingPath
+        logging.info("Profiling String:"+CommandTxt)
+        logging.info(shlex.split(CommandTxt.encode(locale.getpreferredencoding())))
+        stdout = subprocess.check_output(shlex.split(CommandTxt.encode(locale.getpreferredencoding())))
+        os.remove(JobPath+"/tao.log."+str(SubJobIndex))
+        logging.info("Profiling Execution Done")
             
     def ParseFile(self):
         f=open(self.ProfileFileName,'r')
@@ -65,6 +88,7 @@ class ParseProfileData(object):
         SumTables=0
         GalaxiesCount=0
         TotalTrees=0
+        self.BoxesList=[]
         for line in Lines:
             LineParts=line.split(':')
             if LineParts[1].strip()=='Boxes':
@@ -75,15 +99,28 @@ class ParseProfileData(object):
                 for Table in TablesList:
                     GalaxiesCount=GalaxiesCount+self.resultsdict[Table][1]
                     TotalTrees=TotalTrees+self.resultsdict[Table][2]
+         
+        f.close()            
+        f=open("Profile.txt",'wt')
+        
+        for Module in self.ListofModules:
+            f.write(str(Module)+"\n")
+        
+            
+        f.write('Number of Boxes='+str(len(self.BoxesList))+'\n')
+        f.write('Total Queries='+str(SumTables)+'\n')
+        f.write('Maximum Galaxies='+str(GalaxiesCount)+'\n')
+        f.write('Maximum Trees='+str(TotalTrees)+'\n')
+        f.close()
         return [(len(self.BoxesList)),SumTables,GalaxiesCount,TotalTrees]
 
                 
-if __name__ == '__main__':
+#if __name__ == '__main__':
     
-     [Options]=settingReader.ParseParams("settings.xml")
-     ParseProfileDataObj=ParseProfileData('/home/amr/workspace/AppRun/params0_tao.Profile.log00000',Options)
-     [Boxes,Tables,Galaxies,Trees]=ParseProfileDataObj.ParseFile()
-     print 'Number of Boxes='+str(Boxes)
-     print 'Total Queries='+str(Tables)
-     print 'Maximum Galaxies='+str(Galaxies)
-     print 'Maximum Trees='+str(Trees)
+#     [Options]=settingReader.ParseParams("settings.xml")
+#     ParseProfileDataObj=ParseProfileData('/home/amr/workspace/AppRun/params0_tao.Profile.log00000',Options)
+#     [Boxes,Tables,Galaxies,Trees]=ParseProfileDataObj.ParseFile()
+#     print 'Number of Boxes='+str(Boxes)
+#     print 'Total Queries='+str(Tables)
+#     print 'Maximum Galaxies='+str(Galaxies)
+#     print 'Maximum Trees='+str(Trees)
