@@ -18,31 +18,38 @@ using namespace tao;
 
 
 
-class SettingReader_suite : public CxxTest::TestSuite
+class MultiDB_suite : public CxxTest::TestSuite
 {
 public:
 
 
-	void test_SettingReader()
+	void test_MultiDB()
 	{
 
 
-		LOG_PUSH( new logging::file( "TestLog.log", logging::info ) );
-		TS_TRACE("Starting SettingReader Test");
-		string ParamXMLFile="params0.xml.processed";
+		LOG_PUSH( new logging::file( "TestLog.log" ) );
+		TS_TRACE("Starting MultiDB Test");
+		string ParamXMLFile="params0.xml";
 		string BasicXMLFile="basicsetting.xml";
 		options::xml_dict xml;
 
 		xml.read( ParamXMLFile, "/tao" );
 		xml.read( BasicXMLFile );
 
-		multidb db(xml);
-		/*db.OpenAllConnections();
+		TS_TRACE("XML Read Done");
+
+		multidb db("bolshoi_full_dist","tree_");
+		db.AddNewServer("tao01.hpc.swin.edu.au","taoadmin","password","3306");
+		db.AddNewServer("tao02.hpc.swin.edu.au","taoadmin","password","3306");
+
+
+		db.OpenAllConnections();
 		db.RestartAllConnections();
-		db.CloseAllConnections();*/
+		db.CloseAllConnections();
 
 		db["tree_1"];
 
+		TS_TRACE("Tree Loading Test");
 		soci::session* OldConnection=NULL;
 		for(int j=0;j<10;j++)
 		{
@@ -55,7 +62,7 @@ public:
 			else
 				ASSERT( 0 );
 		}
-
+		TS_TRACE("Start SQL");
 		db.ExecuteNoQuery_AllServers("Create Table Test(Id int);");
 		db.ExecuteNoQuery_AllServers("Drop Table Test;");
 
