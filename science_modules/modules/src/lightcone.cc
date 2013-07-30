@@ -166,13 +166,17 @@ namespace tao {
             real_type min_ra = std::min<real_type>( std::max<real_type>( dict.get<real_type>( "ra-min", 0.0 ), 0.0 ), 90.0 );
             real_type max_ra = std::min<real_type>( std::max<real_type>( dict.get<real_type>( "ra-max", 10.0 ), 0.0 ), 90.0 );
             min_ra = std::min<real_type>( min_ra, max_ra );
-            LOGILN( "Have right ascension range: [", min_ra, ", ", max_ra, ")" );
+            LOGILN( "Right ascension range: [", min_ra, ", ", max_ra, ")" );
 
             // Declination.
             real_type min_dec = std::min<real_type>( std::max<real_type>( dict.get<real_type>( "dec-min", 0.0 ), 0.0 ), 90.0 );
             real_type max_dec = std::min<real_type>( std::max<real_type>( dict.get<real_type>( "dec-max", 10.0 ), 0.0 ), 90.0 );
             min_dec = std::min<real_type>( min_dec, max_dec );
-            LOGILN( "Have declination range: [", min_dec, ", ", max_dec, ")" );
+            LOGILN( "Declination range: [", min_dec, ", ", max_dec, ")" );
+
+            // Prepare the lightcone object.
+            _lc.set_simulation( &_sim );
+            _lc.set_geometry( min_ra, max_ra, min_dec, max_dec, max_z, min_z );
          }
          else
          {
@@ -192,7 +196,7 @@ namespace tao {
             for( const auto& field : _fields )
                _qry.add_output_field( field );
          }
-         LOGDLN( "Extracting fields: ", _qry.output_fields() );
+         LOGILN( "Extracting fields: ", _qry.output_fields() );
 
          // Filter information.
          string filt_field = global_dict.get<string>( "workflow:record-filter:filter:filter-attribute", "" );
@@ -204,9 +208,9 @@ namespace tao {
             _filt.set_field_name( filt_field );
             _filt.set_minimum( filt_min );
             _filt.set_maximum( filt_max );
+            LOGILN( "Filter name: ", filt_field );
+            LOGILN( "Filter range: [", filt_min, ", ", filt_max, ")" );
          }
-         LOGDLN( "Filter name of: ", filt_field );
-         LOGDLN( "Filter range of: [", filt_min, ", ", filt_max, ")" );
 
          timer_stop();
       }

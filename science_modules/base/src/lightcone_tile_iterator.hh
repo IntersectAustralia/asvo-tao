@@ -66,7 +66,9 @@ namespace tao {
                   _cur[2] += bs;
                   res = _check();
                   if( res == ON )
+                  {
                      return;
+                  }
                }
                while( res == BELOW );
 

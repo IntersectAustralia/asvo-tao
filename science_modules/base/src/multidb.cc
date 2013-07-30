@@ -134,7 +134,14 @@ namespace tao
 		CurrentServers.erase(CurrentServers.begin(),CurrentServers.end());
 	}
 
-
+        void multidb::Connect(const options::xml_dict& dict)
+	{
+		_serverscount=0;
+		_IsTableLoaded=false;
+		_read_db_options(dict);
+		ReadTableMapping();
+                OpenAllConnections();
+	}
 	void  multidb::CloseAllConnections()
 	{
 		ASSERT(!CurrentServers.empty());

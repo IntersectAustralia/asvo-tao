@@ -72,14 +72,14 @@ namespace tao {
                                  real_type& min,
                                  real_type& max )
    {
+      if( stellar_mass[gal_id] < min )
+        min = stellar_mass[gal_id];
+      if( stellar_mass[gal_id] > max )
+        max = stellar_mass[gal_id];
       auto rng = sfh.parents( gal_id );
       while( rng.first != rng.second )
       {
          unsigned par_id = rng.first->second;
-         if( stellar_mass[gal_id] < min )
-            min = stellar_mass[gal_id];
-         if( stellar_mass[gal_id] > max )
-            max = stellar_mass[gal_id];
          calc_colour_abscissa_recurse( sfh, par_id, min, max );
          ++rng.first;
       }

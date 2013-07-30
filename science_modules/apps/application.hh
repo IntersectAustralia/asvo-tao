@@ -5,6 +5,7 @@
 #include <iostream>
 #include <libhpc/libhpc.hh>
 #include <libhpc/options/xml_dict.hh>
+#include <tao/base/factory.hh>
 
 //#define PREPROCESSING
 namespace tao {
@@ -74,6 +75,7 @@ namespace tao {
       string _dbcfg_file;
       string _currentxml_version;
       pugi::xml_document _doc;
+      factory_type _factory;
    };
 }
 

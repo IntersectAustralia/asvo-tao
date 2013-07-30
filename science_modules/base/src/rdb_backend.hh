@@ -52,7 +52,26 @@ namespace tao {
                      tao::query<real_type>& query ) const
          {
             for( const auto& field : query.output_fields() )
-               bat.set_scalar( field, _field_types.at( this->_field_map.at( field ) ) );
+            {
+               // Check that the field actually exists. Due to calculated fields
+               // it may not actually be on the database.
+               if( this->_field_map.find( field ) != this->_field_map.end() )
+                  bat.set_scalar( field, _field_types.at( this->_field_map.at( field ) ) );
+
+               // // This is a calculated field. Check what it is to see if we can
+               // // create it.
+               // else if( field == "redshift" )
+
+
+               // // Don't know what it is.
+               // else
+               // {
+               //    ASSERT( 0, "Don't know what that field is." );
+               // }
+            }
+
+            // Include redshift.
+            bat.template set_scalar<real_type>( "redshift" );
          }
 
          string
@@ -95,6 +114,7 @@ namespace tao {
                );
             std::unordered_map<string,string> map;
             make_field_map( map, query, tile );
+            map["redshift"] = "redshift_ranges.redshift";
             fmt % make_output_field_query_string( query, map );
             fmt % _field_map.at( "snapshot" );
             fmt % map["pos_x"] % map["pos_y"] % map["pos_z"];

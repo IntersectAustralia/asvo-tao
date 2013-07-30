@@ -6,7 +6,7 @@
 namespace tao {
 
    void
-   register_modules();
+   register_modules( factory_type& factory );
 
 }
 

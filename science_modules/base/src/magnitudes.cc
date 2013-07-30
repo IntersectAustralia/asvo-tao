@@ -1,3 +1,4 @@
+#include <libhpc/numerics/coords.hh>
 #include "magnitudes.hh"
 
 namespace tao {
@@ -24,7 +25,7 @@ namespace tao {
    {
       real_type spec_int = sed.integrate( bp );
       real_type bp_int = bp.integral();
-      return apparent( spec_int, bp_int, area );
+      return apparent_magnitude( spec_int, bp_int, area );
    }
 
    real_type
@@ -32,14 +33,17 @@ namespace tao {
                        real_type bp_int,
                        real_type area )
    {
-      return -2.5*(log10( spec_int ) - area - log10( bp_int )) - 48.6;
+      if( num::approx( spec_int, 0.0 ) || num::approx( bp_int, 0.0 ) )
+         return 100.0;
+      else
+         return -2.5*(log10( spec_int ) - area - log10( bp_int )) - 48.6;
    }
 
    real_type
    absolute_magnitude( const tao::sed& sed,
                        const bandpass& bp )
    {
-      return apparent( sed, bp, calc_abs_area() );
+      return apparent_magnitude( sed, bp, calc_abs_area() );
    }
 
 }

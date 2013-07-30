@@ -3,8 +3,6 @@
 namespace tao {
    using namespace hpc;
 
-   factory_type factory;
-
    factory_type::factory_type()
    {
    }

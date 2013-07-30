@@ -85,7 +85,7 @@ namespace tao {
       _setup_log( xml.get<string>( "logdir" ) + "tao.log."+ subjobindex);
 
       // Initialise all the modules.
-      for( auto module : tao::factory )
+      for( auto module : _factory )
          module->initialise( xml );
 
       // Mark the beginning of the run.
@@ -97,7 +97,7 @@ namespace tao {
       _execute();
 
       // Finalise all the modules.
-      for( auto module : tao::factory )
+      for( auto module : _factory )
          module->finalise();
 
       // Mark the conclusion of the run.
@@ -108,7 +108,7 @@ namespace tao {
 
       // Dump timing information to the end of the info file.
       LOGILN( "Module metrics:", setindent( 2 ) );
-      for( auto module : tao::factory )
+      for( auto module : _factory )
          module->log_metrics();
 
       LOG_EXIT();
@@ -120,11 +120,10 @@ namespace tao {
    void
    application::_load_modules()
    {
-      LOG_ENTER();
+      LOGILN( "Loading modules from file: ", _xml_file, setindent( 2 ) );
 
       // Register all the available science modules.
-      tao::register_modules();
-      LOGILN( "Load Modules From File",_xml_file );
+      tao::register_modules( _factory );
 
       // Open the primary XML file using pugixml.
       if( _currentxml_version != "1.0" )
@@ -139,19 +138,19 @@ namespace tao {
          xml_node cur = it->node();
          string name = cur.attribute( "id" ).value();
          string type = cur.name();
+         LOGILN( "Loading ", type, " module with name \"", name, "\"." );
 #ifdef PREPROCESSING
-         LOGILN( "Loading Module : ",type);
          if (type=="light-cone")
-        	 tao::factory.create_module( type, name, cur );
+        	 _factory.create_module( type, name, cur );
          else
         	 LOGILN( " Pre-Processing mode : Ignore Loading Module : ",type);
 #else
-         tao::factory.create_module( type, name, cur );
+         _factory.create_module( type, name, cur );
 #endif
 
       }
 
-      LOG_EXIT();
+      LOGILN( "Done.", setindent( -2 ) );
    }
 
    ///
@@ -163,13 +162,13 @@ namespace tao {
       LOG_ENTER();
 
       // Connect 'em all up!
-      for( auto module : tao::factory )
+      for( auto module : _factory )
       {
 	 auto nodes = module->local_xml_node().select_nodes( "parents/item" );
 	 for( const xpath_node* it = nodes.begin(); it != nodes.end(); ++it )
 	 {
 	    string name = it->node().first_child().value();
-	    module->add_parent( *tao::factory[name] );
+	    module->add_parent( *_factory[name] );
 	 }
       }
 
@@ -361,13 +360,13 @@ namespace tao {
 
       do
       {
-         LOGDLN( "Beginning iteration: ", it, hpc::setindent( 2 ) );
+         LOGDLN( "Beginning iteration: ", it, setindent( 2 ) );
 
          // Reset the complete flag.
          complete = true;
 
          // Loop over the modules.
-         for( auto module : tao::factory )
+         for( auto module : _factory )
          {
             module->process( it );
             if( !module->complete() )
@@ -377,7 +376,7 @@ namespace tao {
          // Advance the counter.
          ++it;
 
-         LOGD( hpc::setindent( -2 ) );
+         LOGDLN( "Done.", setindent( -2 ) );
       }
       while( !complete );
 

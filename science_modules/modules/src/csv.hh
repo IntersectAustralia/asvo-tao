@@ -4,68 +4,71 @@
 #include <fstream>
 #include <libhpc/libhpc.hh>
 #include "tao/base/module.hh"
-#include "tao/base/galaxy.hh"
-#include "lightcone.hh"
+#include "tao/base/batch.hh"
+#include "tao/base/types.hh"
 
 namespace tao {
-   using namespace hpc;
+   namespace modules {
+      using namespace hpc;
 
-   class csv
-      : public module
-   {
-   public:
+      class csv
+         : public module
+      {
+      public:
 
-      static
-      module*
-      factory( const string& name,
-	       pugi::xml_node base );
+         static
+         module*
+         factory( const string& name,
+                  pugi::xml_node base );
 
-   public:
+      public:
 
-     csv( const string& name = string(),
-	  pugi::xml_node base = pugi::xml_node() );
+         csv( const string& name = string(),
+              pugi::xml_node base = pugi::xml_node() );
 
-      virtual
-      ~csv();
+         virtual
+         ~csv();
 
-      ///
-      ///
-      ///
-      virtual
-      void
-      initialise( const options::xml_dict& global_dict );
+         ///
+         ///
+         ///
+         virtual
+         void
+         initialise( const options::xml_dict& global_dict );
 
-      ///
-      ///
-      ///
-      virtual
-      void
-      execute();
+         ///
+         ///
+         ///
+         virtual
+         void
+         execute();
 
-      void
-      open();
+         void
+         open();
 
-      void
-      process_galaxy( tao::galaxy& galaxy );
+         void
+         process_galaxy( const tao::batch<real_type>& bat );
 
-      virtual
-      void
-      log_metrics();
+         virtual
+         void
+         log_metrics();
 
-   protected:
+      protected:
 
-      void
-      _write_field( const tao::galaxy& galaxy,
-                    const string& field );
+         void
+         _write_field( const tao::batch<real_type>& bat,
+                       unsigned idx,
+                       const string& field );
 
-   protected:
+      protected:
 
-      std::ofstream _file;
-      string _fn;
-      list<string> _fields;
-      unsigned long long _records;
-   };
+         std::ofstream _file;
+         string _fn;
+         list<string> _fields;
+         unsigned long long _records;
+      };
 
+   }
 }
 
 #endif

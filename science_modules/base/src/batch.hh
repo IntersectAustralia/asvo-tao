@@ -249,6 +249,12 @@ namespace tao {
          return _max_size;
       }
 
+      bool
+      has_field( const string& name ) const
+      {
+         return _fields.find( name ) != _fields.end();
+      }
+
       template< class U >
       void
       set_attribute( const string& name,
