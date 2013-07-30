@@ -1166,6 +1166,9 @@ namespace tao {
          _output_fields.insert( "pos_x" );
          _output_fields.insert( "pos_y" );
          _output_fields.insert( "pos_z" );
+	 _output_fields.insert( "velx" );
+	 _output_fields.insert( "vely" );
+	 _output_fields.insert( "velz" );
          _output_fields.insert( _field_map.get( "global_id" ) );
          _output_fields.insert( _field_map.get( "local_id" ) );
          _output_fields.insert( _field_map.get( "tree_id" ) );
@@ -1598,7 +1601,11 @@ namespace tao {
          vector<real_type>::view pos_x = _gal.values<real_type>( "pos_x" );
          vector<real_type>::view pos_y = _gal.values<real_type>( "pos_y" );
          vector<real_type>::view pos_z = _gal.values<real_type>( "pos_z" );
+         vector<real_type>::view vel_x = _gal.values<real_type>( "velx" );
+         vector<real_type>::view vel_y = _gal.values<real_type>( "vely" );
+         vector<real_type>::view vel_z = _gal.values<real_type>( "velz" );
 	 _gal_z.resize( _gal.batch_size() );
+	 _gal_z_obs.resize( _gal.batch_size() );
          _gal_ra.resize( _gal.batch_size() );
          _gal_dec.resize( _gal.batch_size() );
          _gal_dist.resize( _gal.batch_size() );
@@ -1616,10 +1623,23 @@ namespace tao {
                // Set values.
 	       _gal_z[ii] = _distance_to_redshift( dist );
                numerics::cartesian_to_ecs( pos_x[ii], pos_y[ii], pos_z[ii], _gal_ra[ii], _gal_dec[ii] );
+	       _gal_ra[ii] = to_degrees( _gal_ra[ii] );
+	       _gal_dec[ii] = to_degrees( _gal_dec[ii] );
                _gal_dist[ii] = dist;
+
+	       // Calculate observed redshift.
+	       if( dist > 0.0 )
+	       {
+		  array<real_type,3> rad_vec( pos_x[ii]/dist, pos_y[ii]/dist, pos_z[ii]/dist );
+		  real_type obs = rad_vec[0]*vel_x[ii] + rad_vec[1]*vel_y[ii] + rad_vec[2]*vel_z[ii];
+		  _gal_z_obs[ii] = _gal_z[ii] + obs;
+	       }
+	       else
+		  _gal_z_obs[ii] = 0.0;
 	    }
 
             // Set cone specific fields.
+            _gal.set_field<real_type>( "redshift_observed", _gal_z_obs );
             _gal.set_field<real_type>( "ra", _gal_ra );
             _gal.set_field<real_type>( "dec", _gal_dec );
             _gal.set_field<real_type>( "distance", _gal_dist );
@@ -1630,7 +1650,7 @@ namespace tao {
 	 }
 
 	 // Set the field.
-	 _gal.set_field<real_type>( "redshift", _gal_z );
+	 _gal.set_field<real_type>( "redshift_cosmological", _gal_z );
       }
 
       LOG_EXIT();
