@@ -95,6 +95,7 @@ namespace tao {
 	   transformations['>']  = std::string("&gt;");
 	   transformations['<']  = std::string("&lt;");
 
+
 	   std::string reserved_chars;
 	   for (auto ti = transformations.begin(); ti != transformations.end(); ti++)
 	   {
@@ -114,6 +115,41 @@ namespace tao {
 
 
    }
+	string votable::_xml_encode_fieldName(string _toencode_string)
+	{
+		std::map<char, std::string> transformations;
+		transformations['&']  = std::string("_");
+		transformations['(']  = std::string("");
+		transformations[')']  = std::string("");
+		transformations['\''] = std::string("_");
+		transformations['"']  = std::string("_");
+		transformations['>']  = std::string("_");
+		transformations['<']  = std::string("_");
+		transformations['*']  = std::string("_");
+		transformations[' ']  = std::string("_");
+		transformations['/']  = std::string("_");
+
+
+
+		std::string reserved_chars;
+		for (auto ti = transformations.begin(); ti != transformations.end(); ti++)
+		{
+			reserved_chars += ti->first;
+		}
+
+		size_t pos = 0;
+		while (std::string::npos != (pos = _toencode_string.find_first_of(reserved_chars, pos)))
+		{
+			_toencode_string.replace(pos, 1, transformations[_toencode_string[pos]]);
+			pos++;
+		}
+
+		return _toencode_string;
+
+
+
+
+	}
    void votable::_write_table_header(const tao::galaxy& galaxy)
    {
       auto it = _fields.cbegin();
@@ -124,7 +160,7 @@ namespace tao {
       {
 	 string FieldName=*lblit;
 	 replace_all(FieldName," ","_");
-	 FieldName=_xml_encode(FieldName);
+	 FieldName=_xml_encode_fieldName(FieldName);
 	 _file<<"<FIELD name=\""+FieldName<<"\" ID=\"Col_"<<_xml_encode(*it)<<"\" ";
 	 auto val = galaxy.field( *it );
 	 switch( val.second )
