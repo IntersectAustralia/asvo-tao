@@ -15,7 +15,6 @@ namespace tao {
 
          struct server_type
          {
-            ::soci::backend_factory factory;
             string dbname;
             string user;
             string passwd;
@@ -36,7 +35,9 @@ namespace tao {
          void
          connect( const options::xml_dict& global_dict )
          {
-            // _mdb.connect( global_dict );
+            _mdb.Connect( global_dict );
+            this->_con = true;
+            this->_initialise();
          }
 
          template< class Iterator >
@@ -56,13 +57,17 @@ namespace tao {
                if( start->port )
                   LOGILN( "Port: ", *start->port );
 #endif
-               // _mdb.add_server( *start++ );
+               const auto& serv = *start++;
+               _mdb.AddNewServer( serv.dbname, *serv.host, serv.user, serv.passwd, to_string( *serv.port ) );
+               LOGILN( "Done.", setindent( -2 ) );
             }
+
+            // Open all the connections and mark as ready.
+            _mdb.OpenAllConnections();
             this->_con = true;
 
             // Check for update.
-            if( this->_sim && this->_con )
-               _initialise();
+            _initialise();
          }
 
          void
@@ -93,17 +98,25 @@ namespace tao {
          void
          _initialise()
          {
-            ASSERT( this->_sim, "No simulation set." );
             ASSERT( this->_con, "Not connected to database." );
 
-            this->_load_table_info();
-            this->_load_field_types();
+            if( this->_tbls.empty() )
+               this->_load_table_info();
+
+            if( this->_field_map.empty() )
+               this->_load_field_types();
 
             // Create temporary snapshot range table.
-            LOGILN( "Making redshift range tables.", setindent( 2 ) );
-            for( auto& pair : _mdb.CurrentServers )
-               pair.second->Connection << this->make_snap_rng_query_string( *this->_sim );
-            LOGILN( "Done.", setindent( -2 ) );
+            if( this->_sim )
+            {
+               LOGILN( "Making redshift range tables.", setindent( 2 ) );
+               for( auto& pair : _mdb.CurrentServers )
+               {
+                  pair.second->OpenConnection();
+                  pair.second->Connection << this->make_snap_rng_query_string( *this->_sim );
+               }
+               LOGILN( "Done.", setindent( -2 ) );
+            }
          }
 
       protected:

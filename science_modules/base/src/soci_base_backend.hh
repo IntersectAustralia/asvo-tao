@@ -69,7 +69,7 @@ namespace tao {
             session() << "SELECT COUNT(*) FROM snap_redshift",
                soci::into( size );
             snap_zs.resize( size );
-            session() << "SELECT redshift FROM snap_redshift ORDER BY " + this->_field_map["snapshot"],
+            session() << "SELECT redshift FROM snap_redshift ORDER BY " + this->_field_map.at( "snapshot" ),
                soci::into( (std::vector<real_type>&)snap_zs );
          }
 
@@ -78,7 +78,7 @@ namespace tao {
                        const tile<real_type>& tile )
          {
             string qs = this->make_tile_query_string( tile, query );
-            return tile_galaxy_iterator( *this, query, qs, table_begin( tile ), table_end( tile ) );
+            return tile_galaxy_iterator( *this, query, qs, table_begin( tile ), table_end( tile ), tile.lightcone() );
          }
 
          tile_galaxy_iterator
@@ -159,19 +159,24 @@ namespace tao {
          void
          _initialise()
          {
-            ASSERT( this->_sim, "No simulation set." );
             ASSERT( this->_con, "Not connected to database." );
 
-            // Always load table information in one go.
-            _load_table_info();
+            // Load tables if not already done.
+            if( _tbls.empty() )
+               _load_table_info();
 
             // Gotta get the types for all the fields.
-            _load_field_types();
+            if( this->_field_map.empty() )
+               _load_field_types();
 
-            // Create temporary snapshot range table.
-            LOGILN( "Making redshift range table.", setindent( 2 ) );
-            session() << this->make_snap_rng_query_string( *this->_sim );
-            LOGILN( "Done.", setindent( -2 ) );
+            // Create temporary snapshot range table if simulation
+            // is set.
+            if( this->_sim )
+            {
+               LOGILN( "Making redshift range table.", setindent( 2 ) );
+               session() << this->make_snap_rng_query_string( *this->_sim );
+               LOGILN( "Done.", setindent( -2 ) );
+            }
          }
 
          void
@@ -240,6 +245,7 @@ namespace tao {
             this->_field_map["snapshot"] = "snapnum";
             this->_field_map["global_tree_id"] = "globaltreeid";
             this->_field_map["local_galaxy_id"] = "localgalaxyid";
+            this->_field_map["snapshot"] = "snapnum";
 
             LOGILN( "Done.", setindent( -2 ) );
          }
@@ -285,12 +291,14 @@ namespace tao {
                                query_type& query,
                                const string& query_str,
                                const table_iterator& table_start,
-                               const table_iterator& table_finish )
+                               const table_iterator& table_finish,
+                               const lightcone<real_type>* lc = NULL )
             : _be( &be ),
               _query( &query ),
               _query_str( query_str ),
               _table_pos( table_start ),
               _table_end( table_finish ),
+              _lc( lc ),
               _st( NULL ),
               _done( false )
          {
@@ -357,7 +365,8 @@ namespace tao {
          void
          _prepare( const string& table )
          {
-            LOGILN( "Preparing query for table: ", table, setindent( 2 ) );
+            LOGILN( "Querying table: ", table );
+            LOGDLN( "Preparing query for table: ", table, setindent( 2 ) );
 
             // Delete any existing statement.
             if( _st )
@@ -405,7 +414,7 @@ namespace tao {
             // Store the current table on the object.
             _bat.set_attribute( "table", table );
 
-            LOGILN( "Done.", setindent( -2 ) );
+            LOGDLN( "Done.", setindent( -2 ) );
          }
 
          bool
@@ -419,14 +428,36 @@ namespace tao {
             _bat.update_size();
             LOGDLN( "Fetched ", _bat.size(), " rows." );
 
+            // If we found some rows perform any calculated field updates.
+            if( rows_exist )
+              _calc_fields();
+
             // Return whether we got any rows.
             LOGDLN( "Done.", setindent( -2 ) );
             return rows_exist;
          }
 
+        void
+        _calc_fields()
+        {
+           auto pos_x = _bat.template scalar<real_type>( "pos_x" );
+           auto pos_y = _bat.template scalar<real_type>( "pos_y" );
+           auto pos_z = _bat.template scalar<real_type>( "pos_z" );
+           auto redshift = _bat.template scalar<real_type>( "redshift" );
+           for( unsigned ii = 0; ii < _bat.size(); ++ii )
+           {
+              if( _lc )
+              {
+                 real_type dist = sqrt( pos_x[ii]*pos_x[ii] + pos_y[ii]*pos_y[ii] + pos_z[ii]*pos_z[ii] );
+                 redshift[ii] = _lc->distance_to_redshift( dist );
+              }
+           }
+        }
+
       protected:
 
          soci_base<real_type>* _be;
+         const lightcone<real_type>* _lc;
          query_type* _query;
          string _query_str;
          table_iterator _table_pos, _table_end;

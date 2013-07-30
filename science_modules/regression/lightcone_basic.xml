@@ -1,0 +1,24 @@
+<tao>
+  <workflow>
+    <schema-version>2</schema-version>
+    <light-cone id="light-cone">
+      <geometry>light-cone</geometry>
+      <box-repetition>random</box-repetition>
+      <redshift-min>0.01</redshift-min>
+      <redshift-max>0.06</redshift-max>
+      <ra-min>0</ra-min>
+      <ra-max>10</ra-max>
+      <dec-min>0</dec-min>
+      <dec-max>10</dec-max>
+      <output-fields>
+        <item>pos_x</item>
+        <item>pos_y</item>
+        <item>pos_z</item>
+      </output-fields>
+    </light-cone>
+  </workflow>
+  <subjobindex>0</subjobindex>
+  <logdir>log</logdir>
+  <outputdir>output</outputdir>
+  <database>millennium_mini_hdf5_dist</database>
+</tao>

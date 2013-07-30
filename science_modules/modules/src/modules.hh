@@ -7,7 +7,7 @@
 // #include "sed.hh"
 // #include "dust.hh"
 // #include "filter.hh"
-// #include "csv.hh"
+#include "csv.hh"
 // #include "hdf5.hh"
 // #include "skymaker.hh"
 // #include "votable.hh"

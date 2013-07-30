@@ -44,6 +44,7 @@ namespace tao {
          _tile_it = _lc->tile_begin();
          if( !_tile_it.done() )
          {
+            LOGILN( "Processing tile at: ", _tile_it->min(), setindent( 2 ) );
             _gal_it = _be->galaxy_begin( *_qry, *_tile_it );
             _settle();
          }
@@ -60,6 +61,7 @@ namespace tao {
          _done = op._done;
          _tile_it = op._tile_it;
          _gal_it = op._gal_it;
+         _done = op._done;
          return *this;
       }
 
@@ -103,12 +105,14 @@ namespace tao {
          {
             do
             {
+               LOGILN( "Done.", setindent( -2 ) );
                ++_tile_it;
                if( _tile_it.done() )
                {
                   _done = true;
                   break;
                }
+               LOGILN( "Processing tile at: ", _tile_it->min(), setindent( 2 ) );
                _gal_it = _be->galaxy_begin( *_qry, *_tile_it );
             }
             while( _gal_it.done() );

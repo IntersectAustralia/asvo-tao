@@ -49,8 +49,7 @@ namespace tao {
             LOGILN( "Done.", setindent( -2 ) );
 
             // Check for update.
-            if( this->_sim && this->_con )
-               this->_initialise();
+            this->_initialise();
          }
 
          void

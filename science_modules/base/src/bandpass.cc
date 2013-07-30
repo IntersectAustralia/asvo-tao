@@ -1,5 +1,7 @@
+#include <libhpc/logging/logging.hh>
 #include "bandpass.hh"
 #include "integration.hh"
+#include "sed.hh"
 
 namespace tao {
 
@@ -47,7 +49,7 @@ namespace tao {
       load_bandpass( filename, _trans );
 
       // Integrate the filter and cache the result.
-      _sum = integrate( _trans );
+      _sum = integ::integrate( _trans );
    }
 
    real_type
@@ -65,10 +67,10 @@ namespace tao {
    real_type
    bandpass::integrate( const numerics::spline<real_type>& op ) const
    {
-      return tao::integrate( _trans, op );
+      return integ::integrate( _trans, op );
    }
 
-   const numerics::splie<real_type>&
+   const numerics::spline<real_type>&
    bandpass::transmission() const
    {
       return _trans;

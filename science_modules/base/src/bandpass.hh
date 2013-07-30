@@ -6,6 +6,7 @@
 #include "types.hh"
 
 namespace tao {
+   using namespace hpc;
 
    class sed;
 

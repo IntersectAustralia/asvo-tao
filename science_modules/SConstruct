@@ -46,3 +46,8 @@ project.build(
     env=env,
     vars=vars
 )
+
+# Install data.
+env.Install('#' + env['BUILD'], env.Glob('data'))
+if env['PREFIX']:
+    env.Install(env['PREFIX'], env.Glob('data'))

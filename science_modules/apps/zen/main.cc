@@ -5,7 +5,7 @@
 #include "tao/base/types.hh"
 #include "tao/base/globals.hh"
 #include "tao/base/lightcone.hh"
-#include "tao/base/soci_backend.hh"
+#include "tao/base/multidb_backend.hh"
 #include "tao/base/sfh.hh"
 #include "tao/base/stellar_population.hh"
 #include "tao/base/projection.hh"
@@ -40,7 +40,7 @@ GLuint gal_tex_id;
 
 lightcone<real_type>* lc;
 list<tile<real_type>> tiles;
-simulation<real_type>* cur_sim = &mini_millennium;
+simulation<real_type>* cur_sim = &millennium;
 int cur_tile_idx = -1;
 tile<real_type>* cur_box;
 string cur_table;
@@ -54,14 +54,17 @@ tao::bandpass vbp;
 
 gl::colour_map<float> col_map;
 
-backends::soci<real_type> backend;
+backends::multidb<real_type> backend;
+backends::multidb<real_type> sfh_backend;
 tao::query<real_type> query;
 
 vector<real_type> stellar_mass;
 
 list<scoped_ptr<batch<real_type>>> gals;
-bool thread_done = true;
-pthread_t thread_handle;
+bool load_gals_done = true;
+pthread_t load_gals_handle;
+bool calc_mags_done = true;
+pthread_t calc_mags_handle;
 
 gl::console cons;
 command::chain cmd_chain;
@@ -496,8 +499,8 @@ idle()
 void
 draw_galaxies()
 {
-   if( thread_done )
-      pthread_join( thread_handle, NULL );
+   if( load_gals_done )
+      pthread_join( load_gals_handle, NULL );
 
    array<float,3> pos;
    srand( 1 );
@@ -548,6 +551,7 @@ void
 draw_tables()
 {
    using ::backend;
+
    glEnable( GL_DEPTH_TEST );
    glDisable( GL_CULL_FACE );
    glDisable( GL_LIGHTING );
@@ -665,35 +669,26 @@ render_box_view()
 void
 render_image()
 {
-   using ::backend;
+   if( calc_mags_done )
+      pthread_join( calc_mags_handle, NULL );
 
-   tao::sed sed( ssp.wavelengths() );
    projection proj( *lc, win_width, win_height );
    glBegin( GL_POINTS );
    for( const auto& bat : gals )
    {
-      for( auto it = proj.begin( *bat ); it != proj.end( *bat ); ++it )
+      if( bat->has_field( "apparent_magnitude" ) )
       {
-         const array<real_type,2>& pos = *it;
+         auto mags = bat->scalar<double>( "apparent_magnitude" );
+         for( auto it = proj.begin( *bat ); it != proj.end( *bat ); ++it )
+         {
+            const array<real_type,2>& pos = *it;
 
-         // Rebin star-formation history.
-         cur_sfh.load_tree_data( backend.session(), bat->attribute<string>( "table" ), bat->scalar<real_type>( "global_tree_id" )[it.index()] );
-         std::fill( age_masses.begin(), age_masses.end(), 0 );
-         std::fill( age_bulge_masses.begin(), age_bulge_masses.end(), 0 );
-         std::fill( age_metals.begin(), age_metals.end(), 0 );
-         cur_sfh.rebin<real_type>( backend.session(), bat->scalar<real_type>( "local_galaxy_id" )[it.index()], age_masses, age_bulge_masses, age_metals );
+            real_type mag = mags[it.index()]/50;
+            mag = 1.0 - std::max( std::min( mag, 1.0 ), 0.0 );
 
-         // Sum the spectrum.
-         ssp.sum( age_masses.begin(), age_masses.end(), age_metals.begin(), sed.spectrum().values_begin() );
-         sed.spectrum().update(); // rebuild spline
-
-         // Calculate the magnitude of this object.
-         real_type mag = apparent_magnitude( sed, vbp, calc_area( bat->scalar<real_type>( "redshift" )[it.index()] ) );
-         mag = (mag + 20.0)/20;
-         mag = std::max( std::min( mag, 1.0 ), 0.0 );
-
-         glColor3f( mag, mag, mag );
-         glVertex2f( pos[0], pos[1] );
+            glColor3f( mag, mag, mag );
+            glVertex2f( pos[0], pos[1] );
+         }
       }
    }
    glEnd();
@@ -870,6 +865,7 @@ void*
 load_galaxies( void* data )
 {
    using ::backend;
+
    if( show_galaxies && cur_view == MAIN )
    {
       for( auto it = backend.galaxy_begin( ::query, *lc );
@@ -879,6 +875,8 @@ load_galaxies( void* data )
          const batch<real_type>& bat = *it;
          gals.push_back( new batch<real_type>( bat ) );
          glutPostRedisplay();
+         if( load_gals_done )
+            break;
       }
    }
    else
@@ -890,9 +888,52 @@ load_galaxies( void* data )
          const batch<real_type>& bat = *it;
          gals.push_back( new batch<real_type>( bat ) );
          glutPostRedisplay();
+         if( load_gals_done )
+            break;
       }
    }
-   thread_done = true;
+   load_gals_done = true;
+   pthread_exit( NULL );
+}
+
+void*
+calc_mags( void* data )
+{
+   tao::sed sed( ssp.wavelengths() );
+   while( load_gals_done == false )
+   {
+      for( auto& bat : gals )
+      {
+         if( !bat->has_field( "apparent_magnitude" ) )
+         {
+            bat->set_scalar<double>( "apparent_magnitude" );
+            auto mags = bat->scalar<double>( "apparent_magnitude" );
+            std::fill( mags.begin(), mags.end(), 100.0 );
+            for( unsigned ii = 0; ii < bat->size(); ++ii )
+            {
+               // Rebin star-formation history.
+               cur_sfh.load_tree_data( sfh_backend.session(), bat->attribute<string>( "table" ), bat->scalar<long long>( "global_tree_id" )[ii] );
+               std::fill( age_masses.begin(), age_masses.end(), 0 );
+               std::fill( age_bulge_masses.begin(), age_bulge_masses.end(), 0 );
+               std::fill( age_metals.begin(), age_metals.end(), 0 );
+               cur_sfh.rebin<real_type>( sfh_backend.session(), bat->scalar<int>( "local_galaxy_id" )[ii], age_masses, age_bulge_masses, age_metals );
+
+               // Sum the spectrum.
+               ssp.sum( age_masses.begin(), age_metals.begin(), sed.spectrum().values_begin() );
+               sed.spectrum().update(); // rebuild spline
+
+               // Calculate the magnitude of this object.
+               mags[ii] = apparent_magnitude( sed, vbp, calc_area( bat->scalar<real_type>( "redshift" )[ii] ) );
+            }
+            glutPostRedisplay();
+         }
+         if( calc_mags_done )
+            break;
+      }
+      if( calc_mags_done )
+         break;
+   }
+   calc_mags_done = true;
    pthread_exit( NULL );
 }
 
@@ -1016,11 +1057,24 @@ init_tao()
 
    // Connect the backend.
 #include "credentials.hh"
-   // backend.connect( "millennium_full_hdf5_dist", username, password, string( "tao02.hpc.swin.edu.au" ), 3306 );
-   backend.connect( "millennium_mini_1", "taoadmin", "taoadmin" );
+   vector<backends::multidb<real_type>::server_type> servers( 2 );
+   servers[0].dbname = "millennium_full_hdf5_dist";
+   servers[0].user = username;
+   servers[0].passwd = password;
+   servers[0].host = string( "tao01.hpc.swin.edu.au" );
+   servers[0].port = 3306;
+   servers[1].dbname = "millennium_full_hdf5_dist";
+   servers[1].user = username;
+   servers[1].passwd = password;
+   servers[1].host = string( "tao02.hpc.swin.edu.au" );
+   servers[1].port = 3306;
+   backend.connect( servers.begin(), servers.end() );
    backend.set_simulation( cur_sim );
    ::query.add_base_output_fields();
    ::query.add_output_field( "stellarmass" );
+
+   // Preapre SFH backend.
+   sfh_backend.connect( servers.begin(), servers.end() );
 
    // Setup initial simulation.
    lc = new lightcone<real_type>( cur_sim );
@@ -1204,10 +1258,13 @@ set_tile_view( const re::match& match )
          ++it;
       cur_box = &*it;
       calc_bounds();
-      if( !thread_done )
-         pthread_join( thread_handle, NULL );
-      thread_done = false;
-      pthread_create( &thread_handle, NULL, &load_galaxies, NULL );
+      if( !load_gals_done )
+      {
+         load_gals_done = true;
+         pthread_join( load_gals_handle, NULL );
+      }
+      load_gals_done = false;
+      pthread_create( &load_gals_handle, NULL, &load_galaxies, NULL );
    }
 }
 
@@ -1215,6 +1272,8 @@ void
 set_image_view( const re::match& match )
 {
    cur_view = IMAGE;
+   calc_mags_done = false;
+   pthread_create( &calc_mags_handle, NULL, &calc_mags, NULL );
    reshape( win_width, win_height );
 }
 
@@ -1224,11 +1283,14 @@ set_load_gals( const re::match& match )
    if( cur_view == MAIN )
    {
       gals.clear();
-      if( !thread_done )
-         pthread_join( thread_handle, NULL );
-      thread_done = false;
+      if( !load_gals_done )
+      {
+         load_gals_done = true;
+         pthread_join( load_gals_handle, NULL );
+      }
       show_galaxies = true;
-      pthread_create( &thread_handle, NULL, &load_galaxies, NULL );
+      load_gals_done = false;
+      pthread_create( &load_gals_handle, NULL, &load_galaxies, NULL );
    }
 }
 
@@ -1255,11 +1317,11 @@ load_sfh( const re::match& match )
       for( auto it = backend.table_begin(); it != backend.table_end(); ++it )
       {
          int size = 0;
-         backend.session() << "SELECT COUNT(globaltreeid) FROM " + it->name() + " WHERE globalindex = :gid",
+         backend.session( it->name() ) << "SELECT COUNT(globaltreeid) FROM " + it->name() + " WHERE globalindex = :gid",
             soci::into( size ), soci::use( *val );
          if( size )
          {
-            backend.session() << "SELECT globaltreeid, localgalaxyid FROM " + it->name() + " WHERE globalindex = :gid",
+            backend.session( it->name() ) << "SELECT globaltreeid, localgalaxyid FROM " + it->name() + " WHERE globalindex = :gid",
                soci::into( cur_tree ), soci::into( cur_gal_id ), soci::use( *val );
             cur_table = it->name();
             break;
@@ -1267,11 +1329,11 @@ load_sfh( const re::match& match )
       }
 
       // Load SFH.
-      cur_sfh.load_tree_data( backend.session(), cur_table, cur_tree );
+      cur_sfh.load_tree_data( backend.session( cur_table ), cur_table, cur_tree );
       std::fill( age_masses.begin(), age_masses.end(), 0 );
       std::fill( age_bulge_masses.begin(), age_bulge_masses.end(), 0 );
       std::fill( age_metals.begin(), age_metals.end(), 0 );
-      cur_sfh.rebin<real_type>( backend.session(), cur_gal_id, age_masses, age_bulge_masses, age_metals );
+      cur_sfh.rebin<real_type>( backend.session( cur_table ), cur_gal_id, age_masses, age_bulge_masses, age_metals );
 
       // Also transfer the stellar mass for each tree.
       stellar_mass.resize( cur_sfh.size() );
@@ -1279,7 +1341,7 @@ load_sfh( const re::match& match )
          "FROM " + cur_table + " "
          "WHERE globaltreeid = " + to_string( cur_tree ) + " "
          "ORDER BY localgalaxyid";
-      backend.session() << query, soci::into( (std::vector<double>&)stellar_mass );
+      backend.session( cur_table ) << query, soci::into( (std::vector<double>&)stellar_mass );
 
       reshape( win_width, win_height );
    }
@@ -1335,7 +1397,7 @@ int
 main( int argc, char** argv )
 {
    mpi::initialise( argc, argv );
-   LOG_PUSH( new logging::stdout( logging::debug ) );
+   LOG_PUSH( new logging::stdout( logging::info ) );
    glutInit( &argc, argv );
    start();
    mpi::finalise();

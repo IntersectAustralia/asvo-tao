@@ -1,7 +1,11 @@
+#include <boost/algorithm/string/trim.hpp>
+#include <libhpc/logging/logging.hh>
 #include "sed.hh"
 #include "integration.hh"
+#include "bandpass.hh"
 
 namespace tao {
+   using namespace hpc;
 
    void
    load_sed( const string& filename,
@@ -46,12 +50,10 @@ namespace tao {
    }
 
    sed::sed()
-      : _sum( 0 )
    {
    }
 
    sed::sed( const vector<real_type>::view waves )
-      : _sum( 0 )
    {
       _spec.set_size( waves.size() );
       std::copy( waves.begin(), waves.end(), _spec.abscissa_begin() );
@@ -78,10 +80,16 @@ namespace tao {
    real_type
    sed::integrate( const numerics::spline<real_type>& op ) const
    {
-      return tao::integrate( _trans, op );
+      return integ::integrate( _spec, op );
    }
 
-   const numerics::splie<real_type>&
+   numerics::spline<real_type>&
+   sed::spectrum()
+   {
+      return _spec;
+   }
+
+   const numerics::spline<real_type>&
    sed::spectrum() const
    {
       return _spec;

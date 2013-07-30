@@ -23,6 +23,7 @@ main( int argc,
    LOG_PUSH( new hpc::mpi::logger( XMLFile,100 ) );
 #endif
 
+   LOG_PUSH( new hpc::logging::stdout( hpc::logging::info ) );
    tao::application app( argc, argv );
    app.run();
    hpc::mpi::finalise();

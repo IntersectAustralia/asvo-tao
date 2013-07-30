@@ -1,4 +1,9 @@
+#include <boost/iterator/transform_iterator.hpp>
+#include <libhpc/containers/range.hh>
+#include <libhpc/numerics/interp_iterator.hh>
 #include "integration.hh"
+
+#define M_C 2.99792458e18 // angstrom/s
 
 namespace tao {
    namespace integ {

@@ -10,10 +10,6 @@
 namespace tao {
    using namespace hpc;
 
-   class factory_type;
-
-   extern factory_type factory;
-
    class factory_type
    {
    public:

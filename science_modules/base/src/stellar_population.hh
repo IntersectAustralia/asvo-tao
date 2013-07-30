@@ -52,32 +52,38 @@ namespace tao {
                 class OutputIterator >
       void
       sum( MassIterator masses_start,
-           const MassIterator& masses_finish,
            MetalIterator metals_start,
            const OutputIterator& sed_start ) const
       {
-         while( masses_start != masses_finish )
+         // Erase sed values first.
          {
+            OutputIterator sed_it = sed_start;
+            for( unsigned ii = 0; ii < _waves.size(); ++ii, ++sed_it )
+               *sed_it = 0;
+         }
+
+         // Now sum spectra.
+         for( unsigned ii = 0; ii < _age_bins.size(); ++ii )
+         {
+            // Cache mass.
+            real_type mass = *masses_start;
+
             // Interpolate the metallicity to an index.
             unsigned metal_idx = _interp_metal( *metals_start );
-            ASSERT( metal_idx < _num_metals );
 
-            for( unsigned ii = 0; ii < _age_bins.size(); ++ii )
+            // Calculate the base index for the ssp table.
+            size_t base = ii*_waves.size()*_num_metals + metal_idx;
+
+            // Sum each spectra into the sed bin.
+            OutputIterator sed_it = sed_start;
+            for( unsigned ii = 0; ii < _waves.size(); ++ii )
             {
-               // Calculate the base index for the ssp table.
-               size_t base = ii*_waves.size()*_num_metals + metal_idx;
-
-               // Sum each spectra into the sed bin.
-               OutputIterator sed_it = sed_start;
-               for( unsigned ii = 0; ii < _waves.size(); ++ii )
-               {
-                  // The star formation histories read from the file are in
-                  // solar masses/1e10. The values in SSP are luminosity densities
-                  // in erg/s/angstrom, and they're really big. Scale them down
-                  // by 1e10 to make it more manageable.
-                  *sed_it += _spec[base + ii*_num_metals]*(*masses_start);
-                  ++sed_it;
-               }
+               // The star formation histories read from the file are in
+               // solar masses/1e10. The values in SSP are luminosity densities
+               // in erg/s/angstrom, and they're really big. Scale them down
+               // by 1e10 to make it more manageable.
+               *sed_it += _spec[base + ii*_num_metals]*mass;
+               ++sed_it;
             }
 
             ++masses_start;

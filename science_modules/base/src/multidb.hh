@@ -41,6 +41,7 @@ namespace tao {
 	   	   multidb(const options::xml_dict& dict);
 	   	   multidb(string dbname,string tree_pre);
            virtual ~multidb();
+           void Connect(const options::xml_dict& dict);
            void CloseAllConnections();
            void RestartAllConnections();
            void OpenAllConnections();

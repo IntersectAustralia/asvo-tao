@@ -6,6 +6,7 @@
 #include "bandpass.hh"
 
 namespace tao {
+   using namespace hpc;
 
    real_type
    calc_area( real_type redshift );
