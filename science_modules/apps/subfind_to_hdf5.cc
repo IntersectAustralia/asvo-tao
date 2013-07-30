@@ -122,7 +122,7 @@ main( int argc,
    LOG_PUSH( new mpi::logger( "log." ) );
 
    // Fire up some timers to track things.
-   profile::timer halo_write_timer, tree_write_timer, all_timer;
+   profile::timer halo_read_timer, halo_write_timer, tree_write_timer, all_timer;
 
    all_timer.start();
 
@@ -155,25 +155,25 @@ main( int argc,
       h5::datatype mem_type, file_type;
       subfind::make_hdf5_types( mem_type, file_type );
 
-      // Create a property list to split the halos dataset
-      // across multiple files.
-      h5::property_list props( H5P_DATASET_CREATE );
-      {
-         unsigned long long remain = tot_halos*file_type.size();
-         char name[15];
-         unsigned file_idx = 0;
-         while( remain )
-         {
-            sprintf( name, "halos.%04d", file_idx++ );
-            unsigned long long size = std::min<unsigned long long>( remain, (unsigned long long)1 << 31 );
-            props.set_external( name, size );
-            remain -= size;
+      // // Create a property list to split the halos dataset
+      // // across multiple files.
+      // h5::property_list props( H5P_DATASET_CREATE );
+      // {
+      //    unsigned long long remain = tot_halos*file_type.size();
+      //    char name[15];
+      //    unsigned file_idx = 0;
+      //    while( remain )
+      //    {
+      //       sprintf( name, "halos.%04d", file_idx++ );
+      //       unsigned long long size = std::min<unsigned long long>( remain, (unsigned long long)1 << 31 );
+      //       props.set_external( name, size );
+      //       remain -= size;
 
-            // Must create the files, HDF5 won't do it!
-            std::ofstream tmp( name );
-         }
-         LOGILN( "Splitting across ", file_idx, " files." );
-      }
+      //       // Must create the files, HDF5 won't do it!
+      //       std::ofstream tmp( name );
+      //    }
+      //    LOGILN( "Splitting across ", file_idx, " files." );
+      // }
 
       // Create the HDF5 file and a couple of groups.
       h5::file output( "output.h5", H5F_ACC_TRUNC, comm );
@@ -184,7 +184,7 @@ main( int argc,
       h5::dataset tree_count_dset( output, "tree_counts", h5::datatype::std_u32be, tree_file_space );
       h5::dataspace halo_file_space;
       halo_file_space.create( tot_halos );
-      h5::dataset halo_dset( output, "halos", file_type, halo_file_space, none, false, props );
+      h5::dataset halo_dset( output, "halos", file_type, halo_file_space, none, false ); //, props );
 
       // Track total number of trees/halos written.
       unsigned long long trees_written = 0, halos_written = 0;
@@ -216,7 +216,9 @@ main( int argc,
 
          // Read tree sizes.
          vector<unsigned> num_tree_halos( num_trees );
+	 halo_read_timer.start();
          file.read( (char*)num_tree_halos.data(), sizeof(unsigned)*num_trees );
+	 halo_read_timer.stop();
          EXCEPT( file );
 
 	 // Prepare the tree range.
@@ -256,7 +258,9 @@ main( int argc,
 	    }
 
 	    // Load the current tree range.
+	    halo_read_timer.start();
             file.read( (char*)halos.data(), halos.size()*sizeof(subfind::halo) );
+	    halo_read_timer.stop();
             EXCEPT( file );
 
             // Write out to HDF5.
@@ -281,10 +285,13 @@ main( int argc,
 	    // LOGILN( "Time spent in writing halos: ", halo_write_timer.total() );
 	    // LOGILN( "Total time spent: ", all_timer.total() );
 	    // LOGILN( "Tree write bandwidth: ", trees_written*sizeof(subfind::halo)/all_timer.total(), " b/s" );
-	    LOGILN( "Halo write bandwidth: ", halos_written*sizeof(subfind::halo)/all_timer.total(), " b/s" );
+	    LOGILN( "Halo read bandwidth: ", halos_written*sizeof(subfind::halo)/halo_read_timer.total(), " b/s" );
+	    LOGILN( "Halo read rate: ", halo_read_timer.total()/halos_written, " s/halo" );
+	    LOGILN( "Halo write bandwidth: ", halos_written*sizeof(subfind::halo)/halo_write_timer.total(), " b/s" );
+	    LOGILN( "Halo write rate: ", halo_write_timer.total()/halos_written, " s/halo" );
 	    all_timer.start();
 
-            LOGD( setindent( -2 ) );
+            LOGI( setindent( -2 ) );
          }
       }
    }
