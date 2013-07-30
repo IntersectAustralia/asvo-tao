@@ -95,7 +95,7 @@ namespace tao {
    {
       // Read magnitude and redshift from galaxy.
       real_type mag = gal.values<real_type>( _mag_field )[idx];
-      real_type redshift = gal.values<real_type>( "redshift" )[idx];
+      real_type redshift = gal.values<real_type>( "redshift_cosmological" )[idx];
 
       // Only process if within magnitude and redshift limits.
       if( mag >= _min_mag &&
@@ -194,7 +194,7 @@ namespace tao {
          ::system( cmd.c_str() );
 
 	 // Rename the output file.
-	 fs::path target = "image." + index_string( _idx ) + ".fits";
+	 fs::path target = "image." + index_string( _sub_cone ) + "." + index_string( _idx ) + ".fits";
 	 fs::rename( "sky.fits", target );
       }
       mpi::comm::world.barrier();
@@ -224,7 +224,10 @@ namespace tao {
       std::ofstream file( _conf_filename, std::ios::out );
       file << "IMAGE_SIZE " << _width << "," << _height << "\n";
       file << "STARCOUNT_ZP 0.0\n";  // no auto stars
-      file << "MAG_LIMITS 0.1 49.0"; // wider magnitude limits
+      file << "MAG_LIMITS 0.1 49.0\n"; // wider magnitude limits
+      file << "ARM_COUNT 4\n";
+      file << "ARM_THICKNESS 40\n";
+      file << "ARM_POSANGLE 30\n";
    }
 
    ///
@@ -302,16 +305,31 @@ namespace tao {
          // Create a sub XML dict.
 	 options::xml_dict sub( img.node() );
 
+	 // Sub-cone can be an integer or "ALL".
+	 string sc = sub.get<string>( "sub_cone", "ALL" );
+	 bool exe = false;
+	 if( sc == "ALL" )
+	    exe = true;
+	 else
+	 {
+	    int sc_val = boost::lexical_cast<int>( sc );
+	    if( sc_val == global_dict.get<int>( "subjobindex" ) )
+	       exe = true;
+	 }
+
          // Construct a new image with the contents.
-         _imgs.emplace_back(
-	    ii++,
-            sub.get<int>( "sub_cone", 0 ), sub.get<string>( "format", "FITS" ),
-            sub.get<string>( "mag_field" ), sub.get<real_type>( "min_mag", 7 ),
-            sub.get<real_type>( "z_min", 0 ), sub.get<real_type>( "z_max", 127 ),
-            sub.get<real_type>( "origin_ra" ), sub.get<real_type>( "origin_dec" ),
-            sub.get<real_type>( "fov_ra" ), sub.get<real_type>( "fov_dec" ),
-            sub.get<unsigned>( "width", 1024 ), sub.get<unsigned>( "height", 1024 )
-            );
+	 if( exe )
+	 {
+	    _imgs.emplace_back(
+	       ii++,
+	       global_dict.get<int>( "subjobindex" ), sub.get<string>( "format", "FITS" ),
+	       sub.get<string>( "mag_field" ), sub.get<real_type>( "min_mag", 7 ),
+	       sub.get<real_type>( "z_min", 0 ), sub.get<real_type>( "z_max", 127 ),
+	       sub.get<real_type>( "origin_ra" ), sub.get<real_type>( "origin_dec" ),
+	       sub.get<real_type>( "fov_ra" ), sub.get<real_type>( "fov_dec" ),
+	       sub.get<unsigned>( "width", 1024 ), sub.get<unsigned>( "height", 1024 )
+	       );
+	 }
       }
 
       // Flags.

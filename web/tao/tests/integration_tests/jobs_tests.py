@@ -25,15 +25,16 @@ class JobTest(LiveServerTest):
         self.user.set_password(self.password)
         self.user.save()
 
+        # self.job_description = 'This is a job description'
         self.job = JobFactory.create(user=self.user)
         GlobalParameterFactory.create(parameter_name='maximum-random-light-cones',parameter_value='10000')
-        
+
         self.output_paths = ['job1', 'large_job']
         self.dir_paths = [os.path.join(settings.FILES_BASE, output_path) for output_path in self.output_paths]
 
         self.file_names_to_contents = {
-                                       'file1': 'abc\n', 
-                                       'filez2.txt': 'pqr\n', 
+                                       'file1': 'abc\n',
+                                       'filez2.txt': 'pqr\n',
                                        'file3': 'xyz\n',
                                        'job2/fileA': 'aaaahhhh',
                                        'job2/fileB': 'baaaaaa',
@@ -45,7 +46,7 @@ class JobTest(LiveServerTest):
                                        'waybigfile4': 'xnfaihnehrawlrwerajelrjxmjaeimrjwmrejlxaljrxm;kjmrlakjemrajlejrljrljaereirje;rjmriarie;rirjijeaim;jea;ljmxirjwra;ojer',
                                        'waybigfile5': 'xnfaihnehrawlrwerajelrjxmjaeimrjwmrejlxaljrxm;kjmrlakjemrajlejrljrljaereirje;rjmriarie;rirjijeaim;jea;ljmxirjwra;ojer',
                                        }
-        
+
         for file_name in self.file_names_to_contents.keys():
             helper.create_file(self.dir_paths[0], file_name, self.file_names_to_contents)
         for file_name in self.file_names_to_contents2.keys():
@@ -60,6 +61,9 @@ class JobTest(LiveServerTest):
         self.dust = DustModelFactory.create()
         self.snapshot = SnapshotFactory.create(dataset=self.dataset, redshift='0.33')
         self.band_pass_filters = [BandPassFilterFactory.create(), BandPassFilterFactory.create()]
+        parameters = self.make_xml_parameters()
+        self.job.parameters = parameters
+        self.job.save()
 
     def tearDown(self):
         super(JobTest, self).tearDown()
@@ -123,6 +127,7 @@ class JobTest(LiveServerTest):
         
         self.visit('view_job', completed_job.id)
         self.wait(2)
+        self.assert_element_text_equals('#id-job_description', completed_job.description)
         self.assert_page_has_content('Download')
         self.assert_page_has_content('Status')
         self.assert_page_has_content('Summary')
@@ -241,6 +246,32 @@ class JobTest(LiveServerTest):
         self.visit('view_job', completed_job.id)
 
         self.assert_page_has_content('Download zip file')
+
+    def test_save_job_description_edit(self):
+        self.login(self.username, self.password)
+        self.visit('view_job', self.job.id)
+        self.assert_element_text_equals('#id-job_description', self.job.description)
+        new_description = 'This is an updated job description; '
+        old_description = self.job.description
+        self.fill_in_fields({'#id-job_description': new_description})# fill_in_fields sends text to the start of input field, without overriding the original input
+        self.click('id-save_edit')
+        self.assert_element_text_equals('#id-job_description', new_description + old_description)
+
+        self.selenium.refresh()
+        self.assert_element_text_equals('#id-job_description', new_description + old_description)
+
+    def test_cancel_job_description_edit(self):
+        self.login(self.username, self.password)
+        self.visit('view_job', self.job.id)
+        temp_description = "Here's some text that will be removed faweirhiclzklhrehure "
+        original_description = self.job.description
+        self.fill_in_fields({'#id-job_description': temp_description})
+        self.assert_element_text_equals('#id-job_description', temp_description + original_description)
+        self.click('id-cancel_edit')
+        self.assert_element_text_equals('#id-job_description', original_description)
+
+        self.selenium.refresh()
+        self.assert_element_text_equals('#id-job_description', original_description)
 
     def _extract_zipfile_to_dir(self, download_path, dirname):
         fullpathhandle = open(download_path, 'r')
