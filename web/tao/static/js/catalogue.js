@@ -41,6 +41,36 @@ var TAO_NO_FILTER = {
     }
 };
 
+function set_error($elem, msg) {
+    $elem.closest('.control-group').addClass('error');
+    $elem.popover({
+        trigger: 'focus',
+        title: 'Validation Error',
+        content: msg
+    });
+}
+
+function clear_error($elem) {
+    $elem.closest('.control-group').removeClass('error');
+    $elem.popover('destroy');
+    $elem.closest('.control-group .help-inline').remove();
+}
+
+function clean_inline($elem) {
+    $elem.closest('.control-group').find('.help-inline').remove();
+}
+
+function has_value($elem) {
+    if($elem.is('checkbox'))
+        return true;
+    else {
+        var val = $elem.val();
+        return val !== undefined && val !== null && val != '';
+    }
+}
+
+
+
 catalogue.util = function ($) {
 
     this.current_data = undefined;
@@ -227,8 +257,9 @@ jQuery(document).ready(function ($) {
 
             var is_valid = true;
             for (var module in catalogue.modules) {
-                console.log('IS_VALID ' + module);
-                is_valid = is_valid && catalogue.modules[module].validate($form);
+                var valid_module = catalogue.modules[module].validate($form);
+                is_valid = is_valid && valid_module;
+                console.log('IS_VALID ' + module + ': ' + valid_module);
             }
 
             if (!is_valid) {
