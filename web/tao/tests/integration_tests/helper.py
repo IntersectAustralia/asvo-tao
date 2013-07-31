@@ -193,6 +193,17 @@ class LiveServerTest(django.test.LiveServerTestCase):
             url = split_url[0]
             self.assertEqual(url, self.get_full_url(url_name))
 
+    def assert_multi_selected_text_equals(self, id_of_select, expected):
+        actual = self.get_multi_selected_option_text(id_of_select)
+        for value in expected:
+            if value not in actual:
+                break
+            else:
+                actual.remove(value)
+                expected.remove(value)
+        lists_equal =  not expected and not actual
+        self.assertTrue(lists_equal)
+
     def assert_summary_field_correctly_shown(self, expected_value, form_name, field_name):
         value_displayed = self.get_summary_field_text(form_name, field_name)
         self.assertEqual(expected_value, strip_tags(value_displayed))
@@ -275,7 +286,13 @@ class LiveServerTest(django.test.LiveServerTestCase):
         for option in options:
             if option.get_attribute('selected'):
                 selected_option = option
-        return selected_option.text      
+        return selected_option.text
+
+    def get_multi_selected_option_text(self, id_of_select):
+        select = self.selenium.find_element_by_css_selector(id_of_select)
+        options = select.find_elements_by_css_selector('option')
+        return [option.text for option in options]
+
         
     def get_selector_value(self, selector): 
         return self.selenium.find_element_by_css_selector(selector).get_attribute('value')
