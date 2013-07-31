@@ -262,6 +262,7 @@ MODULE_INDICES = {
                   'mock_image': '4',
                   'record_filter': '5',
                   'output_format': '6',
+                  'summary': '7',
                   # 'telescope': '7',
                   
                   }
