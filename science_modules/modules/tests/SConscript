@@ -18,7 +18,7 @@ suites = [
     ('diff_suite.t.hh',),
     ('geometry_iterator.t.hh', 'GrahamScanConvexHull.cpp'),
     ('MultiDB_Test.hh'),
-    ('SQLDirect_Test.hh'),
+    ('SQLDirect_Test.hh','sqldirect.cc'),
 ]
 
 # Define libraries to link against.

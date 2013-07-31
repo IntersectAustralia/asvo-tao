@@ -27,7 +27,7 @@ public:
 	{
 
 
-		LOG_PUSH( new logging::file( "TestLog.log" ) );
+		LOG_PUSH( new logging::file( "TestLog.log",logging::info ) );
 		TS_TRACE("Starting SQLDirect Test");
 		string ParamXMLFile="params0.xml";
 		string BasicXMLFile="basicsetting.xml";
