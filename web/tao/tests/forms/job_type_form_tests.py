@@ -93,7 +93,7 @@ class JobTypeFormTests(LiveServerTest):
         self.click('tao-tabs-' + MODULE_INDICES['record_filter'])
 
         rf_filter = self.get_selected_option_text(self.rf_id('filter'))
-        self.assertEqual('Band pass filter 000 (Absolute)', rf_filter)
+        self.assertEqual('Band pass filter 000', rf_filter)
         rf_expected = {
             self.rf_id('min'): '1',
             self.rf_id('max'): '12'
