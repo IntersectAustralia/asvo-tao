@@ -68,7 +68,8 @@ def to_xml_2(form, root):
             if op.units is not None and len(op.units) > 0: attrs['units'] = op.units
             child_element(fields_elem, 'item', text=op.name, **attrs)
             attrs.update({'description': op.description})
-            child_element(output_elem, 'item', text=op.name, **attrs)
+            if not op.is_computed:
+                child_element(output_elem, 'item', text=op.name, **attrs)
 
 def from_xml_2(cls, ui_holder, xml_root, prefix=None):
     simulation_name = module_xpath(xml_root, '//light-cone/simulation')

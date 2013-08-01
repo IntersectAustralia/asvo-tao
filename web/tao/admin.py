@@ -41,7 +41,8 @@ class DataSetAdmin(admin.ModelAdmin):
     inlines = [DataSetPropertyInline, SnapshotInline]
 
 class DataSetPropertyAdmin(admin.ModelAdmin):
-    list_display = ('label', 'dataset', 'is_filter', 'is_output', 'is_computed')
+    list_display = ('dataset', 'label', 'is_filter', 'is_output', 'is_computed')
+    ordering = ('dataset', 'label')
 
 admin.site.register(DataSet, DataSetAdmin)
 admin.site.register(DataSetProperty, DataSetPropertyAdmin)
