@@ -6,13 +6,21 @@
 #include <iostream>
 #include <pugixml.hpp>
 
+
 #include "tao/base/base.hh"
 #include "tao/modules/modules.hh"
 #include "tao/modules/sqldirect.hh"
 
+#include <cstdlib>
+#include <iostream>
+#include <libhpc/options/xml_dict.hh>
+
+
+
 using namespace std;
 using namespace hpc;
 using namespace tao;
+using namespace pugi;
 #define NDEBUG
 
 
@@ -27,7 +35,7 @@ public:
 	{
 
 
-		LOG_PUSH( new logging::file( "TestLog.log",logging::info ) );
+		LOG_PUSH( new logging::file( "TestLog.log",logging::debug ) );
 		TS_TRACE("Starting SQLDirect Test");
 		string ParamXMLFile="params0.xml";
 		string BasicXMLFile="basicsetting.xml";
@@ -35,10 +43,16 @@ public:
 
 		xml.read( ParamXMLFile, "/tao" );
 		xml.read( BasicXMLFile );
+		pugi::xml_document _doc;
+		_doc.load_file(ParamXMLFile.c_str());
+
+		xpath_node_set nodes = _doc.select_nodes( "/tao/workflow/sql[@id]" );
+		xml_node cur = nodes.begin()->node();
+
 
 		TS_TRACE("XML Read Done");
 
-		sqldirect sqlobject;
+		sqldirect sqlobject("sql",cur);
 		sqlobject.initialise(xml);
 		/*multidb db("bolshoi_full_dist","tree_");
 		db.AddNewServer("tao01.hpc.swin.edu.au","taoadmin","password","3306");
