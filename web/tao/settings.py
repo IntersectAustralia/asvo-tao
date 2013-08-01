@@ -257,6 +257,12 @@ AAF_APP_ID = 'https://example.intersect.org.au/shibboleth'
 AAF_SESSION_URL = 'https://example.intersect.org.au/Shibboleth.sso/Login'
 AAF_LOGOUT_URL = 'https://example.intersect.org.au/Shibboleth.sso/Logout'
 
+AAF_USERNAME = 'SHIB_auEdupersonSharedToken'
+AAF_FIRST_NAME = 'SHIB_givenName'
+AAF_LAST_NAME = 'SHIB_surname'
+AAF_EMAIL = 'SHIB_email'
+AAF_COOKIE_PREFIX = '_shibsession_'
+
 STATIC_URL = '/static/'
 FILES_BASE = '/tmp/'  # please include a trailing slash
 
