@@ -78,7 +78,7 @@ class TorqueInterface(object):
             #PBS -d .
             source /usr/local/modules/init/tcsh
             module load boost gsl hdf5/x86_64/gnu/1.8.9-openmpi-1.6.4 postgresql            
-            module load cfitsio/x86_64/gnu/3.290
+            module load cfitsio/x86_64/gnu/3.290 skymaker/x86_64/gnu/3.3.3
             setenv PSM_SHAREDCONTEXTS_MAX %(ppn)d
             setenv PATH %(BaseLibPath)s/bin:$PATH
             setenv LD_LIBRARY_PATH %(BaseLibPath)s/lib:%(BaseLibPath)s/helperlib:$LD_LIBRARY_PATH
