@@ -1,7 +1,6 @@
 #include <cstdio>
 #include <cmath>
 #include <fstream>
-#include <boost/filesystem.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/tokenizer.hpp>
 #include "skymaker.hh"
@@ -159,7 +158,8 @@ namespace tao {
    }
 
    void
-   skymaker::image::render( bool keep_files )
+   skymaker::image::render( const fs::path& output_dir,
+			    bool keep_files )
    {
       // Close the list file.
       _list_file.close();
@@ -195,6 +195,7 @@ namespace tao {
 
 	 // Rename the output file.
 	 fs::path target = "image." + index_string( _sub_cone ) + "." + index_string( _idx ) + ".fits";
+	 target = output_dir/target;
 	 fs::rename( "sky.fits", target );
       }
       mpi::comm::world.barrier();
@@ -274,7 +275,7 @@ namespace tao {
       _timer.start();
 
       for( auto& img : _imgs )
-	 img.render( _keep_files );
+	 img.render( _output_dir, _keep_files );
 
       _timer.stop();
    }
@@ -296,6 +297,9 @@ namespace tao {
    {
       // Cache the dictionary.
       const options::xml_dict& dict = _dict;
+
+      // Get the output path.
+      _output_dir = global_dict.get<string>( "outputdir" );
 
       // Get image list.
       auto imgs = dict.get_nodes( "images/item" );
