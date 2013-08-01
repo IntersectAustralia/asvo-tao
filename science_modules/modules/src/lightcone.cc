@@ -711,9 +711,12 @@ namespace tao {
       replace_all( query, "-pos1_min-", to_string( halo_pos1_min ) );
       replace_all( query, "-pos2_min-", to_string( halo_pos2_min ) );
       replace_all( query, "-pos3_min-", to_string( halo_pos3_min ) );
-      replace_all( query, "-vel1-", to_string( vel1 ) );
-      replace_all( query, "-vel2-", to_string( vel2 ) );
-      replace_all( query, "-vel3-", to_string( vel3 ) );
+      replace_all( query, "-vel1-", vel1 );
+      replace_all( query, "-vel2-", vel2 );
+      replace_all( query, "-vel3-", vel3 );
+      replace_all( query, "-spin1-", spin1 );
+      replace_all( query, "-spin2-", spin2 );
+      replace_all( query, "-spin3-", spin3 );
       replace_all( query, "-max_dist-", to_string( max_dist ) );
       replace_all( query, "-last_dist-", to_string( min_dist ) );
       replace_all( query, "-min_snap-", to_string( _min_snap ) );
@@ -724,6 +727,12 @@ namespace tao {
       replace_all( query, "Pos1", _field_map.get( "pos_x" ) );
       replace_all( query, "Pos2", _field_map.get( "pos_y" ) );
       replace_all( query, "Pos3", _field_map.get( "pos_z" ) );
+      replace_all( query, "Vel1", "velx" );
+      replace_all( query, "Vel2", "vely" );
+      replace_all( query, "Vel3", "velz" );
+      replace_all( query, "Spin1", "spinx" );
+      replace_all( query, "Spin2", "spiny" );
+      replace_all( query, "Spin3", "spinz" );
 
       LOGTLN( "Query: ", query );
       LOG_EXIT();
@@ -1166,6 +1175,9 @@ namespace tao {
          _output_fields.insert( "pos_x" );
          _output_fields.insert( "pos_y" );
          _output_fields.insert( "pos_z" );
+	 _output_fields.insert( "velx" );
+	 _output_fields.insert( "vely" );
+	 _output_fields.insert( "velz" );
          _output_fields.insert( _field_map.get( "global_id" ) );
          _output_fields.insert( _field_map.get( "local_id" ) );
          _output_fields.insert( _field_map.get( "tree_id" ) );
@@ -1216,13 +1228,7 @@ namespace tao {
       // Add the output fields.
       for( auto& field : _output_fields )
       {
-	 if( field != "pos_x" &&
-	     field != "pos_y" &&
-	     field != "pos_z" )
-	 {
-	    _query_template += ", " + string( "-table-." ) + field;
-	 }
-         else if ( field == "pos_x" )
+	 if ( field == "pos_x" )
 	 {
             _query_template += ", -pos1- AS pos_x";
 	 }
@@ -1234,9 +1240,33 @@ namespace tao {
 	 {
             _query_template += ", -pos3- AS pos_z";
 	 }
+	 else if ( field == "velx" )
+	 {
+            _query_template += ", -vel1- AS velx";
+	 }
+         else if ( field == "vely" )
+	 {
+            _query_template += ", -vel2- AS vely";
+	 }
+         else if ( field == "velz" )
+	 {
+            _query_template += ", -vel3- AS velz";
+	 }
+	 else if ( field == "spinx" )
+	 {
+            _query_template += ", -spin1- AS spinx";
+	 }
+         else if ( field == "spiny" )
+	 {
+            _query_template += ", -spin2- AS spiny";
+	 }
+         else if ( field == "spinz" )
+	 {
+            _query_template += ", -spin3- AS spinz";
+	 }
          else
          {
-            _query_template += ", " + field;
+	    _query_template += ", " + string( "-table-." ) + field;
          }
       }
 
@@ -1470,10 +1500,22 @@ namespace tao {
       replace_all( query, "-pos1-", "Pos1" );
       replace_all( query, "-pos2-", "Pos2" );
       replace_all( query, "-pos3-", "Pos3" );
+      replace_all( query, "-vel1-", "Vel1" );
+      replace_all( query, "-vel2-", "Vel2" );
+      replace_all( query, "-vel3-", "Vel3" );
+      replace_all( query, "-spin1-", "Spin1" );
+      replace_all( query, "-spin2-", "Spin2" );
+      replace_all( query, "-spin3-", "Spin3" );
       replace_all( query, "-table-", "tree_1" );
       replace_all( query, "Pos1", _field_map.get( "pos_x" ) );
       replace_all( query, "Pos2", _field_map.get( "pos_y" ) );
       replace_all( query, "Pos3", _field_map.get( "pos_z" ) );
+      replace_all( query, "Vel1", "velx" );
+      replace_all( query, "Vel2", "vely" );
+      replace_all( query, "Vel3", "velz" );
+      replace_all( query, "Spin1", "spinx" );
+      replace_all( query, "Spin2", "spiny" );
+      replace_all( query, "Spin3", "spinz" );
       query += " LIMIT 1";
 #ifdef MULTIDB
       soci::rowset<soci::row> rows = ((*_db)["tree_1"].prepare << query);
@@ -1598,7 +1640,11 @@ namespace tao {
          vector<real_type>::view pos_x = _gal.values<real_type>( "pos_x" );
          vector<real_type>::view pos_y = _gal.values<real_type>( "pos_y" );
          vector<real_type>::view pos_z = _gal.values<real_type>( "pos_z" );
+         vector<real_type>::view vel_x = _gal.values<real_type>( "velx" );
+         vector<real_type>::view vel_y = _gal.values<real_type>( "vely" );
+         vector<real_type>::view vel_z = _gal.values<real_type>( "velz" );
 	 _gal_z.resize( _gal.batch_size() );
+	 _gal_z_obs.resize( _gal.batch_size() );
          _gal_ra.resize( _gal.batch_size() );
          _gal_dec.resize( _gal.batch_size() );
          _gal_dist.resize( _gal.batch_size() );
@@ -1616,10 +1662,23 @@ namespace tao {
                // Set values.
 	       _gal_z[ii] = _distance_to_redshift( dist );
                numerics::cartesian_to_ecs( pos_x[ii], pos_y[ii], pos_z[ii], _gal_ra[ii], _gal_dec[ii] );
+	       _gal_ra[ii] = to_degrees( _gal_ra[ii] );
+	       _gal_dec[ii] = to_degrees( _gal_dec[ii] );
                _gal_dist[ii] = dist;
+
+	       // Calculate observed redshift.
+	       if( dist > 0.0 )
+	       {
+		  array<real_type,3> rad_vec( pos_x[ii]/dist, pos_y[ii]/dist, pos_z[ii]/dist );
+		  real_type dist_z = dist + (rad_vec[0]*vel_x[ii] + rad_vec[1]*vel_y[ii] + rad_vec[2]*vel_z[ii])/_h0;
+		  _gal_z_obs[ii] = _distance_to_redshift( dist_z );
+	       }
+	       else
+		  _gal_z_obs[ii] = 0.0;
 	    }
 
             // Set cone specific fields.
+            _gal.set_field<real_type>( "redshift_observed", _gal_z_obs );
             _gal.set_field<real_type>( "ra", _gal_ra );
             _gal.set_field<real_type>( "dec", _gal_dec );
             _gal.set_field<real_type>( "distance", _gal_dist );
@@ -1630,7 +1689,7 @@ namespace tao {
 	 }
 
 	 // Set the field.
-	 _gal.set_field<real_type>( "redshift", _gal_z );
+	 _gal.set_field<real_type>( "redshift_cosmological", _gal_z );
       }
 
       LOG_EXIT();

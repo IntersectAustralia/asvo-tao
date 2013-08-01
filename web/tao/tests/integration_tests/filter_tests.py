@@ -14,7 +14,7 @@ class FilterTests(LiveServerMGFTest):
 
         for unused in range(4):
             galaxy_model = GalaxyModelFactory.create()
-            dataset = DataSetFactory.create(simulation=simulation1, galaxy_model=galaxy_model)
+            dataset = DataSetFactory.create(simulation=simulation1, galaxy_model=galaxy_model, max_job_box_count=2)
             DataSetPropertyFactory.create(dataset=dataset)
             for redshift in self.redshifts:
                 SnapshotFactory.create(dataset=dataset, redshift=redshift)

@@ -593,3 +593,32 @@ footer {
 html, body {
     height: 100%;
 }
+
+#max_job_size {
+    clear: both;
+    margin-bottom: 10px;
+}
+.job_too_large_error {
+    color: #b94a48;
+}
+
+[contenteditable] {
+    margin: 4px;
+}
+[contenteditable]:hover:after {
+    content: ' click to edit';
+    font-style: italic;
+    font-size: 12px;
+    font-family: sans-serif;
+    color: #cccccc;
+    /*.text-stroke(0);*/
+}
+[contenteditable]:hover, [contenteditable]:focus {
+    background: #ffffd3;
+}
+[contenteditable]:focus {
+    padding: 1px;
+}
+[contenteditable]:focus:after {
+    content: '';
+}

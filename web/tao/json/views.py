@@ -1,11 +1,12 @@
 from django.core import serializers
-import json
 from django.http import HttpResponse
+from django.views.decorators.csrf import ensure_csrf_cookie
 
-from tao.models import Snapshot, Simulation, GalaxyModel, DataSet, DustModel, DataSetProperty, BandPassFilter, StellarModel, GlobalParameter
+from tao.models import Snapshot, Simulation, GalaxyModel, DataSet, DustModel, DataSetProperty, BandPassFilter, StellarModel, GlobalParameter, Job
 from tao import datasets
-from tao.decorators import researcher_required
+from tao.decorators import researcher_required, object_permission_required
 
+import json
 
 @researcher_required
 def snapshots(request, sid, gid):
@@ -50,7 +51,9 @@ def galaxy_models(request, id):
     :return: HttpResponse in json format
     """
     data_sets = DataSet.objects.filter(simulation_id = id).select_related('galaxy_model').order_by('galaxy_model__name')
-    dicts = [{'id':x.id, 'name':x.galaxy_model.name, 'galaxy_model_id':x.galaxy_model_id} for x in data_sets]
+    dicts = [{'id':x.id, 'name':x.galaxy_model.name, 'galaxy_model_id':x.galaxy_model_id, 
+             'job_size_p1': x.job_size_p1, 'job_size_p2': x.job_size_p2, 'job_size_p3': x.job_size_p3,
+             'max_job_box_count': x.max_job_box_count} for x in data_sets]
     resp = json.dumps(dicts)
     return HttpResponse(resp, mimetype="application/json")
 
@@ -151,6 +154,16 @@ def bandpass_filters(request):
     resp = json.dumps([d for d in gen_pairs(objects)])
     return HttpResponse(resp, mimetype="application/json")
 
+@researcher_required
+def dataset(request, id):
+    resp = '{}'
+    try:
+        object = DataSet.objects.get(pk=id)
+        resp = serializers.serialize('json', [object])[1:-1]
+    except DataSet.DoesNotExist:
+        pass
+    return HttpResponse(resp, mimetype="application/json")
+
 def bad_request(request):
     """
     returns an error to the browser
@@ -159,3 +172,13 @@ def bad_request(request):
     """
     return HttpResponse("{'error':'wrong api request'}", mimetype="application/json")
 
+@researcher_required
+@object_permission_required('can_read_job')
+def edit_job_description(request, id):
+    if request.is_ajax():
+        job = Job.objects.get(id=id)
+        job_description = request.POST.get('job-description')
+        job.description = job_description
+        job.save()
+
+    return HttpResponse('{}', mimetype='application/json')
