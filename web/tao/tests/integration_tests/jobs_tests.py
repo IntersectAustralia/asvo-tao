@@ -57,6 +57,7 @@ class JobTest(LiveServerTest):
         self.dataset = DataSetFactory.create(simulation=self.simulation, galaxy_model=self.galaxy)
         self.output_prop = DataSetPropertyFactory.create(dataset=self.dataset, name='Central op', is_filter=False)
         self.filter = DataSetPropertyFactory.create(name='CentralMvir rf', units="Msun/h", dataset=self.dataset)
+        self.computed_filter = DataSetPropertyFactory.create(name='Computed Property', dataset=self.dataset, is_computed=True)
         self.sed = StellarModelFactory.create()
         self.dust = DustModelFactory.create()
         self.snapshot = SnapshotFactory.create(dataset=self.dataset, redshift='0.33')
@@ -97,6 +98,9 @@ class JobTest(LiveServerTest):
             'output_properties_2_name' : self.output_prop.name,
             'output_properties_2_label' : self.output_prop.label,
             'output_properties_2_description' : self.output_prop.description,
+            'output_properties_3_name' : self.computed_filter.name,
+            'output_properties_3_label' : self.computed_filter.label,
+            'output_properties_3_description' : self.computed_filter.description,
             })
         xml_parameters.update({
             'filter': self.filter.name,
