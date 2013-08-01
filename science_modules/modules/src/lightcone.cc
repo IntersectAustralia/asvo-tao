@@ -1656,7 +1656,7 @@ namespace tao {
 	    for( unsigned ii = 0; ii < _gal.batch_size(); ++ii )
 	    {
 	       // Get the distance and check it actually belongs here.
-	       real_type dist = sqrt( pos_x[ii]*pos_x[ii] + pos_y[ii]*pos_y[ii] + pos_z[ii]*pos_z[ii] );
+	       real_type dist = sqrt( pos_x[ii]*pos_x[ii] + pos_y[ii]*pos_y[ii] + pos_z[ii]*pos_z[ii] )/(_h0/100.0);
 	       ASSERT( dist >= _dist_range.start() && dist < _dist_range.finish() );
 
                // Set values.
