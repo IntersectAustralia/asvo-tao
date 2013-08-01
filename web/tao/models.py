@@ -293,8 +293,6 @@ class Job(models.Model):
                 else:
                     yield (child_path, None)
 
-        #for data in traverse(job_base_dir):
-        #    yield data
         return traverse(job_base_dir)
 
     def username(self):
