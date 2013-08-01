@@ -500,7 +500,6 @@ catalogue.modules.light_cone = function ($) {
         var $to = $(lc_id('output_properties'));
         var $from = $(lc_id('output_properties_from'));
         var current = $to.val(); // in string format
-        console.log(current);
         $to.empty();
         $from.empty();
         $.ajax({
@@ -511,7 +510,8 @@ catalogue.modules.light_cone = function ($) {
             },
             success: function (data, status, xhr) {
                 get_widget().cache_store(data);
-                catalogue.modules.record_filter.update_filter_options.output_props = true;
+                // catalogue.modules.record_filter.update_filter_options.output_props = true;
+                catalogue.modules.record_filter.update_filter_options.output_props = $('#RF_BOUND').val() == false;
                 get_widget().display_selected(current, true);
             }
         });
@@ -931,7 +931,7 @@ catalogue.modules.light_cone = function ($) {
             var $this = $(this);
             var galaxy_model_id = $this.find(':selected').attr('data-galaxy_model_id');
             show_galaxy_model_info(galaxy_model_id);
-            var use_default = !bound;
+            var use_default = $('#RF_BOUND').val() == 'False'; // TODO: Investigate this
             if (use_default) {
                 var catalogue_geometry_value = $(lc_id('catalogue_geometry')).val();
                 if (catalogue_geometry_value == "box") {
