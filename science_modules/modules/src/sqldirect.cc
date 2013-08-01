@@ -27,7 +27,7 @@ namespace tao {
 		_language="";
 		_pass_through=true;
 		_database="";
-		_server="";
+
 	}
 
 	sqldirect::~sqldirect()
@@ -41,6 +41,7 @@ namespace tao {
 
 		module::initialise( global_dict );
 		_read_options( global_dict );
+		_serverscounter=0;
 
 		LOG_EXIT();
 	}
@@ -50,11 +51,76 @@ namespace tao {
 	///
 	void sqldirect::execute()
 	{
+		LOG_ENTER();
+
+
+		if( _it == 0 )
+		 begin();
+	    else
+		 ++(*this);
+
+	   if( done() )
+		 _complete = true;
+	   else
+	   {
+		 *(*this);
+	   }
+
+	   LOG_EXIT();
+
 	}
 
 	tao::galaxy& sqldirect::galaxy()
     {
+		LOG_ENTER();
+		LOG_EXIT();
     }
+
+
+
+	void sqldirect::begin()
+	{
+		LOG_ENTER();
+
+
+		_Tables_it=(*_db).TableNames.begin();
+		soci::rowset<soci::row> _rs = (*_db)[(*_Tables_it)].prepare << _sqlquery;
+		_rows_it=_rs.begin();
+		LOG_EXIT();
+	}
+
+
+	bool sqldirect::done()
+	{
+		LOG_ENTER();
+		LOG_EXIT();
+
+	}
+
+	void sqldirect::operator++()
+	{
+		LOG_ENTER();
+		LOG_EXIT();
+
+	}
+
+
+	tao::galaxy& sqldirect::operator*()
+	{
+		LOG_ENTER();
+		LOG_EXIT();
+
+	}
+
+	const set<string>&	sqldirect::get_output_fields() const
+	{
+		LOG_ENTER();
+		LOG_EXIT();
+
+	}
+
+
+
 
 	void  sqldirect::_read_options( const options::xml_dict& global_dict )
     {
@@ -78,16 +144,14 @@ namespace tao {
 		if(_pass_through==true)
 		{
 			_database=_dict.get<string>( "database" );
-			_server=_dict.get<string>( "server" );
 		}
 		else
 		{
 			_database="";
-			_server="";
 		}
 
 		LOGDLN( "database: ", _database );
-		LOGDLN( "server: ", _server );
+
 
 
 

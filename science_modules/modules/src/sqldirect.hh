@@ -7,11 +7,11 @@
 
 
 namespace tao {
-  using namespace hpc;
+using namespace hpc;
 
-  class sqldirect: public module
-  {
-  public:
+class sqldirect: public module
+{
+public:
 
 	sqldirect( const string& name = string(),pugi::xml_node base = pugi::xml_node() );
 
@@ -25,18 +25,44 @@ namespace tao {
 	virtual void execute();
 	virtual	tao::galaxy& galaxy();
 
-  protected:
-    void _read_options( const options::xml_dict& global_dict );
 
-    string _sqlquery;
-    string _language;
+	///
+	/// Begin iterating over galaxies.
+	///
+	void begin();
 
-    bool _pass_through;
+	///
+	/// Check for completed iteration.
+	///
+	bool done();
 
-    string _database;
-    string _server;
+	///
+	/// Advance to next galaxy.
+	///
+	void operator++();
 
-  };
+	///
+	/// Get current galaxy.
+	///
+	tao::galaxy& operator*();
+
+	const set<string>&	get_output_fields() const;
+
+
+protected:
+	void _read_options( const options::xml_dict& global_dict );
+
+	string _sqlquery;
+	string _language;
+
+	bool _pass_through;
+
+	string _database;
+	std::list<string>::iterator _Tables_it;
+	soci::rowset<soci::row>::const_iterator _rows_it;
+	int _serverscounter;
+
+};
 }
 
 
