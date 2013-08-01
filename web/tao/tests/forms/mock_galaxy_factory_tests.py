@@ -27,6 +27,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         self.filter = DataSetPropertyFactory.create(dataset=self.dataset)
         self.filter_long = DataSetPropertyFactory.create(dataset=self.dataset, data_type=DataSetProperty.TYPE_LONG_LONG)
         self.filter_float = DataSetPropertyFactory.create(dataset=self.dataset, data_type=DataSetProperty.TYPE_FLOAT)
+        self.computed_filter = DataSetPropertyFactory.create(dataset=self.dataset, is_computed=True)
         self.dataset.default_filter_field = self.filter
         self.dataset.save()
         SnapshotFactory.create(dataset=self.dataset)
