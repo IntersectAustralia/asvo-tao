@@ -10,30 +10,30 @@ class JobTypeFormTests(LiveServerTest):
     def setUp(self):
         super(JobTypeFormTests, self).setUp()
 
-
         GlobalParameterFactory.create(parameter_name='maximum-random-light-cones', parameter_value='10')
-        box_sim = SimulationFactory.create(box_size=500)
-        lc_sim = SimulationFactory.create(box_size=500)
+        box_sim = SimulationFactory.create(box_size=500, name='simulation_000')
+        lc_sim = SimulationFactory.create(box_size=60,name='simulation_001')
 
-        for unused in range(3):
-            g = GalaxyModelFactory.create()
+        for i in range(3):
+            g = GalaxyModelFactory.create(name='galaxy_model_%03d' % i)
             ds = DataSetFactory.create(simulation=box_sim, galaxy_model=g, max_job_box_count=25)
-            for _ in range(3):
-                DataSetPropertyFactory.create(dataset=ds)
+            for j in range(3):
+                DataSetPropertyFactory.create(dataset=ds, label='parameter_%03d label' % j, name='name_%03d' % j, description='description_%03d' % j)
 
 
-        for unused in range(4):
-            g = GalaxyModelFactory.create()
+        for i in range(4,8):
+            g = GalaxyModelFactory.create(name='galaxy_model_%03d' % i)
             ds = DataSetFactory.create(simulation=lc_sim, galaxy_model=g, max_job_box_count=25)
-            for _ in range(3):
-                dsp = DataSetPropertyFactory.create(dataset=ds)
+            for j in range(4,7):
+                dsp = DataSetPropertyFactory.create(dataset=ds, label='parameter_%03d label' % j, name='name_%03d' % j, description='description_%03d' % j)
                 ds.default_filter_field = dsp
                 ds.save()
 
-        for unused in range(3):
-            StellarModelFactory.create()
-            BandPassFilterFactory.create()
-            DustModelFactory.create()
+
+        for i in range(3):
+            StellarModelFactory.create(label='stellar_label_%03d' % i, name='stellar_name_%03d' % i, description='<p>Description %d </p>' % i)
+            BandPassFilterFactory.create(label='Band pass filter %03d' % i, filter_id='Band_pass_filter_%03d.txt' % i)
+            DustModelFactory.create(name='Dust_model_%03d.dat' % i, label='Dust model %03d' % i, details='<p>Detail %d </p>' % i)
 
         username = "person"
         password = "funnyfish"
@@ -62,7 +62,7 @@ class JobTypeFormTests(LiveServerTest):
         self.assertEqual('simulation_001', lc_sim)
 
         lc_galaxy = self.get_selected_option_text(self.lc_id('galaxy_model'))
-        self.assertEqual('galaxy_model_005', lc_galaxy)
+        self.assertEqual('galaxy_model_006', lc_galaxy)
 
         lc_expected = { 
             self.lc_id('ra_opening_angle'): '1',
@@ -77,15 +77,16 @@ class JobTypeFormTests(LiveServerTest):
 
         self.assert_is_checked(self.lc_id('light_cone_type_1'))
 
-        self.assert_multi_selected_text_equals(self.lc_id('output_properties'), ['name_016'])
+        self.assert_multi_selected_text_equals(self.lc_id('output_properties'), ['name_005'])
 
 
     def test_sed_params(self):
         self.click('tao-tabs-' + MODULE_INDICES['sed'])
 
         sed_pop = self.get_selected_option_text(self.sed_id('single_stellar_population_model'))
-        self.assertEqual('stellar_name_001', sed_pop)
-        self.assert_multi_selected_text_equals(self.sed_id('band_pass_filters'), ['Band pass filter 000 (Absolute)', ['Band pass filter 002 (Apparent)']])
+        self.assertEqual('stellar_label_001', sed_pop)
+
+        self.assert_multi_selected_text_equals(self.sed_id('band_pass_filters'), ['Band pass filter 000 (Absolute)','Band pass filter 002 (Apparent)'])
 
 
     def test_rf_params(self):
@@ -110,13 +111,13 @@ class JobTypeFormTests(LiveServerTest):
 
         self.assert_summary_field_correctly_shown('Light-Cone', 'light_cone', 'geometry_type')
         self.assert_summary_field_correctly_shown('simulation_001', 'light_cone', 'simulation')
-        self.assert_summary_field_correctly_shown('galaxy_model_005', 'light_cone', 'galaxy_model')
-        self.assert_summary_field_correctly_shown('2 properties selected', 'light_cone', 'output_properties')
+        self.assert_summary_field_correctly_shown('galaxy_model_006', 'light_cone', 'galaxy_model')
+        self.assert_summary_field_correctly_shown('1 property selected', 'light_cone', 'output_properties')
 
         self.assert_summary_field_correctly_shown('stellar_label_001', 'sed', 'single_stellar_population_model')
         self.assert_summary_field_correctly_shown('2 filters selected', 'sed', 'band_pass_filters')
         self.assert_summary_field_correctly_shown('None', 'sed', 'dust_model')
 
-        self.assert_summary_field_correctly_shown('parameter_017 label', 'record_filter', 'record_filter')
+        self.assert_summary_field_correctly_shown(u'1 \u2264 Band pass filter 000 (Absolute) \u2264 12', 'record_filter', 'record_filter')
 
         self.assert_summary_field_correctly_shown('FITS', 'output', 'output_format')

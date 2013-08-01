@@ -195,14 +195,13 @@ class LiveServerTest(django.test.LiveServerTestCase):
 
     def assert_multi_selected_text_equals(self, id_of_select, expected):
         actual = self.get_multi_selected_option_text(id_of_select)
+        remaining = []
         for value in expected:
             if value not in actual:
-                break
+                remaining.append(value)
             else:
                 actual.remove(value)
-                expected.remove(value)
-        lists_equal =  not expected and not actual
-        self.assertTrue(lists_equal)
+        self.assertTrue(not actual and not remaining)
 
     def assert_summary_field_correctly_shown(self, expected_value, form_name, field_name):
         value_displayed = self.get_summary_field_text(form_name, field_name)

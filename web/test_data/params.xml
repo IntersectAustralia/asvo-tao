@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<tao timestamp="2013-07-30T14:22:32+10:00" xmlns="http://tao.asvo.org.au/schema/module-parameters-v1">
+<tao timestamp="2013-08-01T10:26:40+10:00" xmlns="http://tao.asvo.org.au/schema/module-parameters-v1">
   <username>person</username>
   <workflow name="alpha-light-cone-image">
     <schema-version>2.0</schema-version>
@@ -7,7 +7,7 @@
       <module-version>1</module-version>
       <geometry>light-cone</geometry>
       <simulation>simulation_001</simulation>
-      <galaxy-model>galaxy_model_005</galaxy-model>
+      <galaxy-model>galaxy_model_006</galaxy-model>
       <box-repetition>random</box-repetition>
       <num-cones>3</num-cones>
       <redshift-min>3</redshift-min>
@@ -17,12 +17,12 @@
       <dec-min units="deg">0.0</dec-min>
       <dec-max units="deg">2</dec-max>
       <output-fields>
-        <item description="description_016" label="parameter_016 label">name_016</item>
+        <item description="description_005" label="parameter_005 label">name_005</item>
       </output-fields>
     </light-cone>
     <fits id="5">
       <fields>
-        <item label="parameter_016 label">name_016</item>
+        <item label="parameter_005 label">name_005</item>
         <item label="Band pass filter 000 (Absolute)">Band_pass_filter_000.txt_absolute</item>
         <item label="Band pass filter 002 (Apparent)">Band_pass_filter_002.txt_apparent</item>
       </fields>
