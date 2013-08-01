@@ -58,7 +58,11 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.assert_not_displayed(self.lc_id('box_size'))
 
     def test_max_number_light_cones_displayed(self):
-        self.assert_element_text_equals(unicode("label[for='id_light_cone-number_of_light_cones']"), unicode('Select the number of light-cones:*'))
+        # TODO: uncomment once multiple unique light-cones point-of-view is fixed in the science module
+        # self.assert_element_text_equals(unicode("label[for='id_light_cone-number_of_light_cones']"), unicode('Select the number of light-cones:*'))
+        # TODO: comment out once spinner is made visible again for unique selection
+        self.assert_not_displayed("label[for='id_light_cone-number_of_light_cones']")
+        self.assert_not_displayed(self.lc_id('number_of_light_cones'))
 
         ra_open = '1'
         dec_open = '2'
@@ -70,18 +74,23 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.assert_element_text_equals(unicode("label[for='id_light_cone-number_of_light_cones']"), 'Select the number of light-cones: (maximum 10 random light-cones)*')
 
         self.click_by_css(self.lc_id('light_cone_type_0')) # select "unique"
-        self.assert_element_text_equals(unicode("label[for='id_light_cone-number_of_light_cones']"), 'Select the number of light-cones: (maximum for the selected parameters is 8)*')
-
-        self.clear(self.lc_id('redshift_max'))
-        self.assert_element_text_equals(unicode("label[for='id_light_cone-number_of_light_cones']"), unicode('Select the number of light-cones:*'))
-
-        self.fill_in_fields({'redshift_max': rmin}, id_wrap=self.lc_id)
-        self.assert_element_text_equals(unicode("label[for='id_light_cone-number_of_light_cones']"), unicode('Select the number of light-cones:*'))
+        # TODO: uncomment once multiple unique light-cones point-of-view is fixed in the science module, and spinner is made visible for unique selection
+        # self.assert_element_text_equals(unicode("label[for='id_light_cone-number_of_light_cones']"), 'Select the number of light-cones: (maximum for the selected parameters is 8)*')
+        #
+        # self.clear(self.lc_id('redshift_max'))
+        # self.assert_element_text_equals(unicode("label[for='id_light_cone-number_of_light_cones']"), unicode('Select the number of light-cones:*'))
+        #
+        # self.fill_in_fields({'redshift_max': rmin}, id_wrap=self.lc_id)
+        # self.assert_element_text_equals(unicode("label[for='id_light_cone-number_of_light_cones']"), unicode('Select the number of light-cones:*'))
+        # TODO: comment out once spinner is made visible again for unique selection
+        self.assert_not_displayed(self.lc_id('number_of_light_cones'))
+        self.assert_not_displayed("label[for='id_light_cone-number_of_light_cones']")
 
     def test_spinner_arrows_disabled_out_of_range(self):
-        self.assertEqual('1', self.get_selector_value(self.lc_id('number_of_light_cones')))
-        self.click_by_class_name('ui-spinner-down')
-        self.assertEqual('1', self.get_selector_value(self.lc_id('number_of_light_cones')))
+        # TODO: uncomment once multiple unique light-cones point-of-view is fixed in the science module, and spinner is made visible for unique selection
+        # self.assertEqual('1', self.get_selector_value(self.lc_id('number_of_light_cones')))
+        # self.click_by_class_name('ui-spinner-down')
+        # self.assertEqual('1', self.get_selector_value(self.lc_id('number_of_light_cones')))
 
         self.click_by_css(self.lc_id('light_cone_type_1')) # select "random", whose maximum is 10
         for unused in range(15):
@@ -313,13 +322,13 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.assert_summary_field_correctly_shown('1 unique light cones', 'light_cone', 'number_of_light_cones')
 
         self.click('tao-tabs-' + MODULE_INDICES['light_cone'])
-        self.clear(self.lc_id('number_of_light_cones'))
-        self.fill_in_fields({'number_of_light_cones': number_of_light_cones}, id_wrap=self.lc_id)
         self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
-        self.assert_summary_field_correctly_shown(number_of_light_cones + ' unique light cones', 'light_cone', 'number_of_light_cones')
+        self.assert_summary_field_correctly_shown('1 unique light cones', 'light_cone', 'number_of_light_cones')
 
         self.click('tao-tabs-' + MODULE_INDICES['light_cone'])
         self.click_by_css(self.lc_id('light_cone_type_1')) # select "random"
+        self.clear(self.lc_id('number_of_light_cones'))
+        self.fill_in_fields({'number_of_light_cones': number_of_light_cones}, id_wrap=self.lc_id)
         self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
         self.assert_summary_field_correctly_shown(number_of_light_cones + ' random light cones', 'light_cone', 'number_of_light_cones')
 
