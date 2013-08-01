@@ -11,6 +11,7 @@
 
 using namespace hpc;
 
+
 namespace tao {
 
 	// Factory function used to create a new lightcone.
@@ -60,23 +61,24 @@ namespace tao {
 		_timer.start();
 		LOG_ENTER();
 
-		// Cache the local dictionary.
-		const options::xml_dict& dict = _dict;
 
-		_sqlquery=dict.get<string>( "query", "sql" );
-		_language=dict.get<string>( "language", "sql" );
+
+		// Cache the local dictionary.
+
+		_sqlquery=_dict.get<string>( "query" );
+		_language=_dict.get<string>( "language", "sql" );
 
 
 		LOGDLN( "sqlQuery: ", _sqlquery );
 		LOGDLN( "query Language: ", _language );
 
 
-		_pass_through=(dict.get<string>( "pass-through", "sql" )=="True");
+		_pass_through=(_dict.get<string>( "pass-through" )=="True");
 
 		if(_pass_through==true)
 		{
-			_database=dict.get<string>( "database", "sql" );
-			_server=dict.get<string>( "server", "sql" );
+			_database=_dict.get<string>( "database" );
+			_server=_dict.get<string>( "server" );
 		}
 		else
 		{
@@ -88,6 +90,12 @@ namespace tao {
 		LOGDLN( "server: ", _server );
 
 
+
+		// Extract database details.
+		_read_db_options( global_dict );
+
+		// Connect to the database.
+		_db_connect();
 
 
 		LOG_EXIT();
