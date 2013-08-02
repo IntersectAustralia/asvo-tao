@@ -92,8 +92,8 @@ namespace tao {
       {
          // Calculate the distance/area for this galaxy. Use 1000
          // points.
-         LOGDLN( "Using redshift of ", galaxy.values<real_type>( "redshift" )[ii], " to calculate distance." );
-         real_type dist = numerics::redshift_to_luminosity_distance( galaxy.values<real_type>( "redshift" )[ii], 1000 );
+         LOGDLN( "Using redshift of ", galaxy.values<real_type>( "redshift_cosmological" )[ii], " to calculate distance." );
+         real_type dist = numerics::redshift_to_luminosity_distance( galaxy.values<real_type>( "redshift_cosmological" )[ii], 1000 );
 	 if( dist < 1e-5 )  // Be careful! If dist is zero (which it can be) then resort to absolute
 	    dist = 1e-5;    // magnitudes.
 	 real_type area = log10( 4.0*M_PI ) + 2.0*log10( dist*3.08568025e24 ); // result in cm^2
