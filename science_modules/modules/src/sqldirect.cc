@@ -10,6 +10,7 @@
 
 
 using namespace hpc;
+using boost::algorithm::replace_all;
 
 
 namespace tao {
@@ -83,6 +84,16 @@ namespace tao {
 		LOG_ENTER();
 
 
+
+		string CurrentQuery=_sqlquery;
+
+		replace_all( CurrentQuery, "-table-", *_Tables_it );
+		LOGDLN( "Query: ", CurrentQuery );
+
+
+
+
+
 		_Tables_it=(*_db).TableNames.begin();
 		soci::rowset<soci::row> _rs = (*_db)[(*_Tables_it)].prepare << _sqlquery;
 		_rows_it=_rs.begin();
@@ -112,6 +123,10 @@ namespace tao {
 		if(_rows_it==_rows_end && _Tables_it!=(*_db).TableNames.end())
 		{
 			_Tables_it++;
+			string CurrentQuery=_sqlquery;
+
+			replace_all( CurrentQuery, "-table-", *_Tables_it );
+			LOGDLN( "Query: ", CurrentQuery );
 			soci::rowset<soci::row> _rs = (*_db)[(*_Tables_it)].prepare << _sqlquery;
 			_rows_it=_rs.begin();
 			_rows_end=_rs.end();
