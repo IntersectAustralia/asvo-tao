@@ -1,12 +1,14 @@
 #ifndef tao_modules_skymaker_hh
 #define tao_modules_skymaker_hh
 
+#include <boost/filesystem.hpp>
 #include "tao/base/module.hh"
 
 class skymaker_suite;
 
 namespace tao {
    using namespace hpc;
+   namespace fs = boost::filesystem;
 
    ///
    ///
@@ -68,7 +70,8 @@ namespace tao {
 		     unsigned idx );
 
 	 void
-	 render( bool keep_files );
+	 render( const fs::path& output_dir,
+		 bool keep_files );
 
       protected:
 
@@ -132,6 +135,7 @@ namespace tao {
    protected:
 
       list<image> _imgs;
+      fs::path _output_dir;
       bool _keep_files;
    };
 }
