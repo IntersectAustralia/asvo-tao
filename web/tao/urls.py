@@ -45,6 +45,7 @@ job_patterns = patterns('tao.views.jobs',
     url(r'^(?P<id>\d+)$', 'view_job', name='view_job'),
     url(r'^(?P<id>\d+)/file/(?P<file_path>.+)$', 'get_file', name='get_file'),
     url(r'^(?P<id>\d+)/download_zip$', 'get_zip_file', name='get_zip_file'),
+    url(r'^(?P<id>\d+)/summary_txt$', 'get_summary_txt_file', name='get_summary_txt_file'),
 )
 
 json_patterns = patterns('tao.json.views',
