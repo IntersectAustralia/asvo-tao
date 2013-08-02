@@ -30,7 +30,7 @@ class LiveServerTest(django.test.LiveServerTestCase):
     SUMMARY_INDEX = str(len(MODULE_INDICES)+1)
 
     def wait(self, secs=1):
-        time.sleep(secs)
+        time.sleep(secs * 1.25)
 
     def setUp(self):
         from selenium.webdriver.firefox.webdriver import FirefoxProfile

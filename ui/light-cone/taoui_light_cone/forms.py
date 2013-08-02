@@ -68,7 +68,8 @@ def to_xml_2(form, root):
             if op.units is not None and len(op.units) > 0: attrs['units'] = op.units
             child_element(fields_elem, 'item', text=op.name, **attrs)
             attrs.update({'description': op.description})
-            child_element(output_elem, 'item', text=op.name, **attrs)
+            if not op.is_computed:
+                child_element(output_elem, 'item', text=op.name, **attrs)
 
 def from_xml_2(cls, ui_holder, xml_root, prefix=None):
     simulation_name = module_xpath(xml_root, '//light-cone/simulation')
@@ -183,6 +184,10 @@ class Form(BetterForm):
                 'data_sets': tao_models.DataSet.objects.select_related('galaxy_model').all(),
             }
         self.fields['snapshot'].label = 'Redshift'
+        self.fields['catalogue_geometry'].widget.attrs['data-bind'] = 'value: catalogue_geometry'
+        self.fields['ra_opening_angle'].widget.attrs['data-bind'] = 'value: ra_opening_angle'
+        self.fields['dec_opening_angle'].widget.attrs['data-bind'] = 'value: dec_opening_angle'
+
 
     def check_redshift_min_less_than_redshift_max(self):
         redshift_min_field = self.cleaned_data.get('redshift_min')

@@ -3,7 +3,11 @@ from tao.xml_util import remove_comments
 from tao.tests.support import stripped_joined_lines
 
 def normalise_xml(xmlstring):
-    as_object = etree.fromstring(xmlstring)
+    try:
+        as_object = etree.fromstring(xmlstring)
+    except Exception, e:
+        print xmlstring
+        raise e
     as_object = remove_comments(as_object)
     normalised_string = etree.tostring(as_object, pretty_print=True)
     return normalised_string
@@ -38,8 +42,9 @@ def light_cone_xml(xml_parameters):
                     <!-- File output module -->
                     <csv id="%(csv_dump_id)s">
                         <fields>
-                            <item label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
-                            <item label="%(output_properties_2_label)s">%(output_properties_2_name)s</item>
+                            <item label="%(output_properties_1_label)s" units="%(output_properties_1_units)s" >%(output_properties_1_name)s</item>
+                            <item label="%(output_properties_2_label)s" >%(output_properties_2_name)s</item>
+                            <item label="%(output_properties_3_label)s" >%(output_properties_3_name)s</item>
                             <!-- <item label="bandpass (Absolute)">%(band_pass_filter_name)s_absolute</item> -->
                             <item label="bandpass (Apparent)">%(band_pass_filter_name)s_apparent</item>
                         </fields>

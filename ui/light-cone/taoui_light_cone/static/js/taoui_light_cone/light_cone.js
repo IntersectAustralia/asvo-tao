@@ -11,6 +11,13 @@ catalogue.modules.light_cone = function ($) {
         return catalogue.modules.light_cone.lc_output_props_widget;
     }
 
+    // KO ViewModel
+    var vm = {
+        catalogue_geometry : ko.observable(),
+        ra_opening_angle : ko.observable(),
+        dec_opening_angle : ko.observable()
+    }
+
 
     this.util = function() {
 
@@ -649,8 +656,8 @@ catalogue.modules.light_cone = function ($) {
 
 
     var fill_in_ra_dec_in_summary = function () {
-        var ra_opening_angle_value = $(lc_id('ra_opening_angle')).val();
-        var dec_opening_angle_value = $(lc_id('dec_opening_angle')).val();
+        var ra_opening_angle_value = vm.ra_opening_angle();
+        var dec_opening_angle_value = vm.dec_opening_angle();
         if (!ra_opening_angle_value && !dec_opening_angle_value) {
             catalogue.util.fill_in_summary('light_cone', 'ra_opening_angle', '');
             catalogue.util.fill_in_summary('light_cone', 'dec_opening_angle', '');
@@ -723,8 +730,8 @@ catalogue.modules.light_cone = function ($) {
     //     * Compute the maximum number of unique cones available for selected parameters
     //     */
     var get_number_of_unique_light_cones = function () {
-        var ra = $(lc_id('ra_opening_angle')).val();
-        var dec = $(lc_id('dec_opening_angle')).val();
+        var ra = vm.ra_opening_angle();
+        var dec = vm.dec_opening_angle();
         var redshift_min = $(lc_id('redshift_min')).val();
         var redshift_max = $(lc_id('redshift_max')).val();
 
@@ -751,8 +758,8 @@ catalogue.modules.light_cone = function ($) {
 
 
     var spinner_check_value = function (new_value) {
-        var ra = $(lc_id('ra_opening_angle')).val();
-        var dec = $(lc_id('dec_opening_angle')).val();
+        var ra = vm.ra_opening_angle();
+        var dec = vm.dec_opening_angle();
         var redshift_min = $(lc_id('redshift_min')).val();
         var redshift_max = $(lc_id('redshift_max')).val();
         var $spinner = $(lc_id('number_of_light_cones')).closest('span');
@@ -837,7 +844,7 @@ catalogue.modules.light_cone = function ($) {
 
 
     var validate_number_of_light_cones = function () {
-        var geometry = $(lc_id('catalogue_geometry')).val();
+        var geometry = vm.catalogue_geometry(); // $(lc_id('catalogue_geometry')).val();
         if (geometry == "light-cone") {
             var number_of_light_cones = parseInt($(lc_id('number_of_light_cones')).val());
             return spinner_check_value(number_of_light_cones);
@@ -857,7 +864,7 @@ catalogue.modules.light_cone = function ($) {
 
     var cleanup_fields = function ($form) {
         // cleanup geometry
-        var geometry = $(lc_id('catalogue_geometry')).val();
+        var geometry = vm.catalogue_geometry(); // $(lc_id('catalogue_geometry')).val();
         if (geometry == "box") {
             $('.light_cone_field').val('');
         } else {
@@ -867,14 +874,50 @@ catalogue.modules.light_cone = function ($) {
 
     // - event handlers for fields -
     //
+    var catalogue_geometry_change = function (newValue) {
 
-    function init_event_handlers() {
+        console.log('catalogue_geometry change: ' + newValue);
 
-        $(lc_id('ra_opening_angle') + ', ' + lc_id('dec_opening_angle')).change(function (evt) {
+        var light_cone_fields = $('.light_cone_field').closest('div.control-group');
+        var light_box_fields = $('.light_box_field').closest('div.control-group');
+
+        if (vm.catalogue_geometry() == "box") {
+            light_box_fields.show();
+            light_cone_fields.hide();
+            catalogue.util.fill_in_summary('light_cone', 'geometry_type', 'Box');
+            $('div.summary_light_cone .box_fields').show();
+            $('div.summary_light_cone .light_cone_fields').hide();
+            $(lc_id('snapshot')).change();
+        } else {
+            light_box_fields.hide();
+            light_cone_fields.show();
+            catalogue.util.fill_in_summary('light_cone', 'geometry_type', 'Light-Cone');
+            $('div.summary_light_cone .box_fields').hide();
+            $('div.summary_light_cone .light_cone_fields').show();
+            calculate_max_number_of_cones();
+        }
+    };
+
+    function put_handler_ra_and_dec(field_name) {
+        var event_handler = function(newValue) {
+            var $elem = $(lc_id(field_name));
+            if (vm.catalogue_geometry() == "box") {
+                clear_error($elem);
+                return;
+            }
+            if (parseFloat(newValue) <= 0. || parseFloat(newValue) > 90.0) {
+                set_error($elem, 'Value must be 0 < x <= 90');
+            } else {
+                clear_error($elem);
+            }
             fill_in_ra_dec_in_summary();
             calculate_max_number_of_cones();
-        });
+        }
+        clean_inline($(lc_id(field_name)));
+        vm[field_name].subscribe(event_handler);
+    }
 
+    function init_event_handlers() {
 
         $('#expand_dataset').click(function (e) {
             e.preventDefault();
@@ -935,8 +978,7 @@ catalogue.modules.light_cone = function ($) {
             show_galaxy_model_info(galaxy_model_id);
             var use_default = !bound;
             if (use_default) {
-                var catalogue_geometry_value = $(lc_id('catalogue_geometry')).val();
-                if (catalogue_geometry_value == "box") {
+                if (vm.catalogue_geometry() == "box") {
                     var simulation_box_size = $(lc_id('number_of_light_cones')).data("simulation-box-size");
                     $(lc_id('box_size')).val(simulation_box_size);
                     $(lc_id('box_size')).change();
@@ -945,32 +987,6 @@ catalogue.modules.light_cone = function ($) {
             update_output_options();
             update_snapshot_options();
         });
-
-
-        $(lc_id('catalogue_geometry')).change(function (evt) {
-            var $this = $(this);
-            var catalogue_geometry_value = $this.val();
-
-            var light_cone_fields = $('.light_cone_field').closest('div.control-group');
-            var light_box_fields = $('.light_box_field').closest('div.control-group');
-
-            if (catalogue_geometry_value == "box") {
-                light_box_fields.show();
-                light_cone_fields.hide();
-                catalogue.util.fill_in_summary('light_cone', 'geometry_type', 'Box');
-                $('div.summary_light_cone .box_fields').show();
-                $('div.summary_light_cone .light_cone_fields').hide();
-                $(lc_id('snapshot')).change();
-            } else {
-                light_box_fields.hide();
-                light_cone_fields.show();
-                catalogue.util.fill_in_summary('light_cone', 'geometry_type', 'Light-Cone');
-                $('div.summary_light_cone .box_fields').hide();
-                $('div.summary_light_cone .light_cone_fields').show();
-                calculate_max_number_of_cones();
-            }
-        });
-
 
         $(lc_id('redshift_min') + ', ' + lc_id('redshift_max')).change(function (evt) {
             fill_in_redshift_in_summary();
@@ -1033,7 +1049,7 @@ catalogue.modules.light_cone = function ($) {
         $(lc_id('ra_opening_angle') + ', ' + lc_id('dec_opening_angle') + ', ' + lc_id('redshift_max')).change(function(evt) {
             var box_size = parseFloat($(lc_id('number_of_light_cones')).data("simulation-box-size")); //window.simulation_box_size;   // size of the simulation box
             var min_ra = 0.0;                                                               // minimum right-ascension in degrees
-            var max_ra = $(lc_id('ra_opening_angle')).val();                                // maximum right-ascension in degrees
+            var max_ra = vm.ra_opening_angle();                                // maximum right-ascension in degrees
             var min_dec = 0.0;                                                              // minimum declination in degrees
             var max_dec = $(lc_id('dec_opening_angle')).val();                              // maximum declination in degrees
             var max_z = $(lc_id('redshift_max')).val();                                     // maximum redshift
@@ -1067,7 +1083,7 @@ catalogue.modules.light_cone = function ($) {
 
 
     this.cleanup_fields = function ($form) {
-        var geometry = $(lc_id('catalogue_geometry')).val();
+        var geometry = vm.catalogue_geometry(); // $(lc_id('catalogue_geometry')).val();
         if (geometry == 'box') {
             empty_light_cone_variables();
         } else {
@@ -1087,8 +1103,12 @@ catalogue.modules.light_cone = function ($) {
         });
     }
 
-
     this.init = function () {
+
+        vm.catalogue_geometry.subscribe(catalogue_geometry_change);
+        put_handler_ra_and_dec('ra_opening_angle');
+        put_handler_ra_and_dec('dec_opening_angle');
+
         catalogue.modules.light_cone.util = new catalogue.modules.light_cone.util();
         get_widget().init();
         init_event_handlers();
@@ -1105,7 +1125,12 @@ catalogue.modules.light_cone = function ($) {
         $('div.summary_light_cone .output_properties_list').hide();
         $('div.summary_light_cone .simulation_description, div.summary_light_cone .galaxy_model_description').hide();
 
-        $(lc_id('catalogue_geometry')).change();
+        // this.vm.catalogue_geometry($(lc_id('catalogue_geometry')).val());
+        ko.applyBindings(vm);
+
+        vm.catalogue_geometry( $(lc_id('catalogue_geometry')).val() );
+        vm.ra_opening_angle( $(lc_id('ra_opening_angle')).val() );
+        vm.dec_opening_angle( $(lc_id('dec_opening_angle')).val() );
 
     }
 
