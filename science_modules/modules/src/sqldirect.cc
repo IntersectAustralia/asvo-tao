@@ -42,7 +42,7 @@ namespace tao {
 
 		module::initialise( global_dict );
 		_read_options( global_dict );
-		_serverscounter=0;
+
 
 		LOG_EXIT();
 	}
@@ -53,7 +53,7 @@ namespace tao {
 	void sqldirect::execute()
 	{
 		LOG_ENTER();
-
+		LOGDLN( "Execute Iteration: ", _it );
 
 		if( _it == 0 )
 		 begin();
@@ -66,6 +66,10 @@ namespace tao {
 	   {
 		 *(*this);
 	   }
+
+
+	   _it++;
+
 
 	   LOG_EXIT();
 
@@ -83,31 +87,94 @@ namespace tao {
 	{
 		LOG_ENTER();
 
-
+		LOGDLN( "Start Begin: ", _it );
 
 		string CurrentQuery=_sqlquery;
 
-		replace_all( CurrentQuery, "-table-", *_Tables_it );
-		LOGDLN( "Query: ", CurrentQuery );
+
 
 
 
 
 
 		_Tables_it=(*_db).TableNames.begin();
-		soci::rowset<soci::row> _rs = (*_db)[(*_Tables_it)].prepare << _sqlquery;
-		_rows_it=_rs.begin();
-		_rows_end=_rs.end();
+
+
+		replace_all( CurrentQuery, "-table-", *_Tables_it );
+		LOGDLN( "Query: ", CurrentQuery );
+
+
+		FetchData(CurrentQuery,true);
+
+
+		LOGDLN( "End Begin: ", _it );
 		LOG_EXIT();
 	}
 
+	void sqldirect::FetchData(string query,bool IsFirstCall)
+	{
+		soci::rowset<soci::row> rs= (*_db)[(*_Tables_it)].prepare << query;
+		int rowscount=0;
+
+		if(IsFirstCall==true)
+		{
+			soci::row const& firstrow = *(rs.begin());
+
+			for(std::size_t i = 0; i != firstrow.size(); ++i)
+			{
+				const soci::column_properties & props = firstrow.get_properties(i);
+
+
+
+				switch(props.get_data_type())
+				{
+				case soci::dt_string:
+					LOGDLN( "Field Name: ", props.get_name(), " String" );
+					break;
+				case soci::dt_double:
+					LOGDLN( "Field Name: ", props.get_name(), " Double" );
+					break;
+				case soci::dt_integer:
+					LOGDLN( "Field Name: ", props.get_name(), " Integer" );
+					break;
+				case soci::dt_unsigned_long:
+					LOGDLN( "Field Name: ", props.get_name(), " Long" );
+					break;
+				case soci::dt_long_long:
+					LOGDLN( "Field Name: ", props.get_name(), " Long Long" );
+					break;
+				case soci::dt_date:
+					LOGDLN( "Field Name: ", props.get_name(), " Date" );
+
+					break;
+				}
+
+
+			}
+		}
+
+
+
+
+
+
+
+
+
+		for (soci::rowset<soci::row>::const_iterator it = rs.begin(); it != rs.end(); ++it)
+		{
+			soci::row const& currentrow = *it;
+			//LOGDLN( "New Row: ", rowscount++ );
+		}
+
+	}
 
 	bool sqldirect::done()
 	{
 
 		LOG_ENTER();
-
-		if(_rows_it==_rows_end && _Tables_it==(*_db).TableNames.end())
+		LOGDLN( "Done: ", (_Tables_it==(*_db).TableNames.end()) );
+		if(_Tables_it==(*_db).TableNames.end())
 			return true;
 		else
 			return false;
@@ -119,22 +186,20 @@ namespace tao {
 	void sqldirect::operator++()
 	{
 		LOG_ENTER();
-
-		if(_rows_it==_rows_end && _Tables_it!=(*_db).TableNames.end())
+		LOGDLN( "Operator++: ", _it );
+		_Tables_it++;
+		if(_Tables_it!=(*_db).TableNames.end())
 		{
-			_Tables_it++;
+
 			string CurrentQuery=_sqlquery;
 
 			replace_all( CurrentQuery, "-table-", *_Tables_it );
-			LOGDLN( "Query: ", CurrentQuery );
-			soci::rowset<soci::row> _rs = (*_db)[(*_Tables_it)].prepare << _sqlquery;
-			_rows_it=_rs.begin();
-			_rows_end=_rs.end();
+			LOGDLN( "++Query: ", CurrentQuery );
+			FetchData(CurrentQuery);
 		}
-		else
-			_rows_it++;
 
 
+		LOGDLN( "End Operator++: ", _it );
 
 		LOG_EXIT();
 
