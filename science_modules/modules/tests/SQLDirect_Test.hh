@@ -54,6 +54,30 @@ public:
 
 		sqldirect sqlobject("sql",cur);
 		sqlobject.initialise(xml);
+
+		bool complete;
+		unsigned long long it = 1;
+
+		do
+	  {
+		 LOGDLN( "Beginning iteration: ", it );
+
+		 // Reset the complete flag.
+		 complete = true;
+
+		 // Loop over the modules.
+
+		 sqlobject.process( it );
+		if( !sqlobject.complete() )
+		   complete = false;
+
+
+		 // Advance the counter.
+		 ++it;
+
+
+	  }
+	  while( !complete );
 		/*multidb db("bolshoi_full_dist","tree_");
 		db.AddNewServer("tao01.hpc.swin.edu.au","taoadmin","password","3306");
 		db.AddNewServer("tao02.hpc.swin.edu.au","taoadmin","password","3306");

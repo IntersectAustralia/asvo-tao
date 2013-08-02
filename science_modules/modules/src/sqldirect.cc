@@ -86,13 +86,21 @@ namespace tao {
 		_Tables_it=(*_db).TableNames.begin();
 		soci::rowset<soci::row> _rs = (*_db)[(*_Tables_it)].prepare << _sqlquery;
 		_rows_it=_rs.begin();
+		_rows_end=_rs.end();
 		LOG_EXIT();
 	}
 
 
 	bool sqldirect::done()
 	{
+
 		LOG_ENTER();
+
+		if(_rows_it==_rows_end && _Tables_it==(*_db).TableNames.end())
+			return true;
+		else
+			return false;
+
 		LOG_EXIT();
 
 	}
@@ -100,6 +108,19 @@ namespace tao {
 	void sqldirect::operator++()
 	{
 		LOG_ENTER();
+
+		if(_rows_it==_rows_end && _Tables_it!=(*_db).TableNames.end())
+		{
+			_Tables_it++;
+			soci::rowset<soci::row> _rs = (*_db)[(*_Tables_it)].prepare << _sqlquery;
+			_rows_it=_rs.begin();
+			_rows_end=_rs.end();
+		}
+		else
+			_rows_it++;
+
+
+
 		LOG_EXIT();
 
 	}
