@@ -1,7 +1,7 @@
 #include <soci/soci.h>
 #include "fits.hh"
 #include <boost/algorithm/string/replace.hpp>
-
+#include <boost/spirit/include/classic.hpp>
 
 using namespace hpc;
 using boost::algorithm::replace_all;
@@ -130,7 +130,7 @@ namespace tao {
 	 string FieldName=*lblit;
 
 	 replace_all(FieldName," ","_");
-
+	 FieldName=encode_fieldName(FieldName);
 	 ttype[index]=new char[80];
 	 tunit[index]=new char[80];
 
@@ -293,6 +293,42 @@ namespace tao {
       module::log_metrics();
       LOGILN( _name, " number of records written: ", mpi::comm::world.all_reduce( _records ) );
    }
+
+   string fits::encode_fieldName(string _toencode_string)
+   	{
+   		std::map<char, std::string> transformations;
+   		transformations['&']  = std::string("_");
+   		transformations['(']  = std::string("");
+   		transformations[')']  = std::string("");
+   		transformations['\''] = std::string("_");
+   		transformations['"']  = std::string("_");
+   		transformations['>']  = std::string("_");
+   		transformations['<']  = std::string("_");
+   		transformations['*']  = std::string("_");
+   		transformations[' ']  = std::string("_");
+   		transformations['/']  = std::string("_");
+
+
+
+   		std::string reserved_chars;
+   		for (auto ti = transformations.begin(); ti != transformations.end(); ti++)
+   		{
+   			reserved_chars += ti->first;
+   		}
+
+   		size_t pos = 0;
+   		while (std::string::npos != (pos = _toencode_string.find_first_of(reserved_chars, pos)))
+   		{
+   			_toencode_string.replace(pos, 1, transformations[_toencode_string[pos]]);
+   			pos++;
+   		}
+
+   		return _toencode_string;
+
+
+
+
+   	}
 
    void fits::_write_field( const tao::galaxy& galaxy, const string& field,int ColIndex )
    {
