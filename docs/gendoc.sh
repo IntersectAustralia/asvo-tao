@@ -16,8 +16,9 @@ fi
 
 # Generate sample script archive
 # This will be copied in to the downloads directory as part of the sphinx-build
+test -d "$BUILDDIR/tmp" && rm -rf "$BUILDDIR/tmp"
 mkdir $BUILDDIR/tmp
-cd $VIRTUAL_ENV/asvo-tao/science_modules/data
+cd $BUILDDIR/../science_modules/data
 zip -r $BUILDDIR/tmp/samplescripts.zip readers
 cd $BUILDDIR
 
@@ -26,5 +27,5 @@ test -d ../web/static/docs && rm -rf ../web/tao/static/docs && mkdir ../web/tao/
 cp -r build/* ../web/tao/static/docs
 
 # Tidy up
-rm -r $BUILDDIR/tmp
+rm -r "$BUILDDIR/tmp"
 

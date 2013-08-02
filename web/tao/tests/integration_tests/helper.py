@@ -37,7 +37,7 @@ class LiveServerTest(django.test.LiveServerTestCase):
         fp = FirefoxProfile()
         fp.set_preference("browser.download.folderList", 2)
         fp.set_preference("browser.download.dir", self.DOWNLOAD_DIRECTORY)
-        fp.set_preference("browser.helperApps.neverAsk.saveToDisk", "text/html, application/zip")
+        fp.set_preference("browser.helperApps.neverAsk.saveToDisk", "text/html, application/zip, text/plain")
         
         self.selenium = WebDriver(firefox_profile=fp)
         self.selenium.implicitly_wait(1) # wait one second before failing to find

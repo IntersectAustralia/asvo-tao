@@ -243,7 +243,7 @@ class Job(models.Model):
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     created_time = models.DateTimeField(auto_now_add=True)
-    description = models.TextField(max_length=500, default='')
+    description = models.TextField(max_length=500, default='', blank=True)
 
     status = models.CharField(choices=STATUS_CHOICES, default=initial_job_status, max_length=20)
     parameters = models.TextField(blank=True, max_length=1000000)
