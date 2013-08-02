@@ -61,9 +61,10 @@ protected:
 
 	string _database;
 	std::list<string>::iterator _Tables_it;
-	soci::rowset<soci::row>::const_iterator _rows_it;
-	soci::rowset<soci::row>::const_iterator _rows_end;
-	int _serverscounter;
+
+
+	void FetchData(string query,bool IsFirstCall=false);
+
 
 };
 }

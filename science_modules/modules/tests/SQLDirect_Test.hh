@@ -59,7 +59,7 @@ public:
 		unsigned long long it = 1;
 
 		do
-	  {
+	    {
 		 LOGDLN( "Beginning iteration: ", it );
 
 		 // Reset the complete flag.
@@ -67,17 +67,17 @@ public:
 
 		 // Loop over the modules.
 
-		 sqlobject.process( it );
-		if( !sqlobject.complete() )
+		 sqlobject.execute();
+		 if( !sqlobject.done() )
 		   complete = false;
 
+		 LOGDLN( "Complete: ",complete );
+		  // Advance the counter.
+		  ++it;
 
-		 // Advance the counter.
-		 ++it;
 
-
-	  }
-	  while( !complete );
+	    }
+	    while( !complete );
 		/*multidb db("bolshoi_full_dist","tree_");
 		db.AddNewServer("tao01.hpc.swin.edu.au","taoadmin","password","3306");
 		db.AddNewServer("tao02.hpc.swin.edu.au","taoadmin","password","3306");
