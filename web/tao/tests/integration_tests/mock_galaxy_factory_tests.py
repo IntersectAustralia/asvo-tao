@@ -190,7 +190,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.assertEquals(bandpass_filter.label + ' (' + extension.capitalize() + ')', name_displayed)
 
     def test_summary_on_initial_load(self):
-        self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
+        self.click('tao-tabs-' + MODULE_INDICES['summary'])
         init_simulation = Simulation.objects.all()[0]
         init_galaxy_model = init_simulation.galaxymodel_set.all()[0]
 
@@ -205,7 +205,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
 
     def test_summary_on_geometry_change(self):
         self.select(self.lc_id('catalogue_geometry'), 'Box')
-        self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
+        self.click('tao-tabs-' + MODULE_INDICES['summary'])
 
         self.assert_summary_field_correctly_shown('Box', 'light_cone', 'geometry_type')
         self.assert_is_displayed(self.get_summary_selector('light_cone', 'box_fields'))
@@ -222,7 +222,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
         max_input = "99"
         min_input = "9"
         self.fill_in_fields({'max': max_input, 'min': min_input}, id_wrap=self.rf_id)
-        self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
+        self.click('tao-tabs-' + MODULE_INDICES['summary'])
         self.wait(2)
         h = HTMLParser.HTMLParser()
         if filter.units != '':
@@ -240,7 +240,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
         init_simulation = Simulation.objects.all()[0];
         init_galaxy_model = init_simulation.galaxymodel_set.all()[0]
 
-        self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
+        self.click('tao-tabs-' + MODULE_INDICES['summary'])
         self.assert_not_displayed(self.get_summary_selector('light_cone', 'simulation_description'))
         self.assert_not_displayed(self.get_summary_selector('light_cone', 'galaxy_model_description'))
         self.assertEqual('>>', self.selenium.find_element_by_id('expand_dataset').text)
@@ -260,12 +260,12 @@ class MockGalaxyFactoryTest(LiveServerTest):
 
     def test_summary_on_filter_list_expand(self):
         # Clicking on ">>" in output properties or bandpass filters expands the div and lists the properties in an unordered list
-        self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
+        self.click('tao-tabs-' + MODULE_INDICES['summary'])
         self.assert_not_displayed(self.get_summary_selector('light_cone', 'output_properties_list'))
 
         self.click('tao-tabs-' + MODULE_INDICES['light_cone'])
         self.click(self.lc_2select('op_add_all'))
-        self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
+        self.click('tao-tabs-' + MODULE_INDICES['summary'])
         self.click('expand_output_properties')
 
         # check the right number of properties are displayed, and check if expanded all the right properties are listed
@@ -273,12 +273,12 @@ class MockGalaxyFactoryTest(LiveServerTest):
         galaxy_model = simulation.galaxymodel_set.all()[0]
         dataset = galaxy_model.dataset_set.all()[0]
         dataset_properties = dataset.datasetproperty_set.all()
-        self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
+        self.click('tao-tabs-' + MODULE_INDICES['summary'])
         self.assert_summary_field_correctly_shown(str(len(dataset_properties)) + ' properties selected', 'light_cone', 'output_properties')
         self.assert_summary_field_correctly_shown('\n'.join([dataset_property.label for dataset_property in dataset_properties]), 'light_cone', 'output_properties_list')
 
     def test_summary_on_light_cone_dimensions_change(self):
-        self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
+        self.click('tao-tabs-' + MODULE_INDICES['summary'])
         self.assert_summary_field_correctly_shown('', 'light_cone', 'ra_opening_angle')
         self.assert_summary_field_correctly_shown('', 'light_cone', 'dec_opening_angle')
         self.assert_summary_field_correctly_shown('', 'light_cone', 'redshift_min')
@@ -291,7 +291,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
         h = HTMLParser.HTMLParser()
         self.click('tao-tabs-' + MODULE_INDICES['light_cone'])
         self.fill_in_fields({'ra_opening_angle': ra_opening_angle, 'dec_opening_angle': dec_opening_angle, 'redshift_min': redshift_min, 'redshift_max': redshift_max}, id_wrap=self.lc_id)
-        self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
+        self.click('tao-tabs-' + MODULE_INDICES['summary'])
         self.wait(1)
         self.assert_summary_field_correctly_shown('RA: '+ra_opening_angle+h.unescape('&deg;')+',', 'light_cone', 'ra_opening_angle')
         self.assert_summary_field_correctly_shown('Dec: '+dec_opening_angle+h.unescape('&deg;'), 'light_cone', 'dec_opening_angle')
@@ -300,15 +300,15 @@ class MockGalaxyFactoryTest(LiveServerTest):
         #range displays should be intelligent, i.e. if the min or max is blank, it isn't displayed
         self.click('tao-tabs-' + MODULE_INDICES['light_cone'])
         self.clear(self.lc_id('redshift_min'))
-        self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
+        self.click('tao-tabs-' + MODULE_INDICES['summary'])
         self.assert_summary_range_correctly_shown('Redshift: z ' + h.unescape('&le;') + ' 4', 'light_cone', ['redshift_min', 'redshift_max'])
         self.click('tao-tabs-' + MODULE_INDICES['light_cone'])
         self.clear(self.lc_id('redshift_max'))
-        self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
+        self.click('tao-tabs-' + MODULE_INDICES['summary'])
         self.assert_summary_range_correctly_shown('', 'light_cone', ['redshift_min', 'redshift_max'])
         self.click('tao-tabs-' + MODULE_INDICES['light_cone'])
         self.fill_in_fields({'redshift_min': 5}, id_wrap=self.lc_id)
-        self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
+        self.click('tao-tabs-' + MODULE_INDICES['summary'])
         self.assert_summary_range_correctly_shown('Redshift: 5 ' + h.unescape('&le;') + ' z', 'light_cone', ['redshift_min', 'redshift_max'])
 
     def test_summary_on_light_cone_count_and_type(self):
@@ -319,18 +319,18 @@ class MockGalaxyFactoryTest(LiveServerTest):
         number_of_light_cones = '5'
         self.fill_in_fields({'ra_opening_angle': ra_opening_angle, 'dec_opening_angle': dec_opening_angle, 'redshift_min': redshift_min, 'redshift_max': redshift_max}, id_wrap=self.lc_id)
         self.wait(0.5)
-        self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
+        self.click('tao-tabs-' + MODULE_INDICES['summary'])
         self.assert_summary_field_correctly_shown('1 unique light cones', 'light_cone', 'number_of_light_cones')
 
         self.click('tao-tabs-' + MODULE_INDICES['light_cone'])
-        self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
+        self.click('tao-tabs-' + MODULE_INDICES['summary'])
         self.assert_summary_field_correctly_shown('1 unique light cones', 'light_cone', 'number_of_light_cones')
 
         self.click('tao-tabs-' + MODULE_INDICES['light_cone'])
         self.click_by_css(self.lc_id('light_cone_type_1')) # select "random"
         self.clear(self.lc_id('number_of_light_cones'))
         self.fill_in_fields({'number_of_light_cones': number_of_light_cones}, id_wrap=self.lc_id)
-        self.click('tao-tabs-' + LiveServerTest.SUMMARY_INDEX)
+        self.click('tao-tabs-' + MODULE_INDICES['summary'])
         self.assert_summary_field_correctly_shown(number_of_light_cones + ' random light cones', 'light_cone', 'number_of_light_cones')
 
     def get_field_by_value_in_control_group(self, value, name):
