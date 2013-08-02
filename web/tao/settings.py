@@ -262,8 +262,8 @@ AAF_LOGOUT_URL = 'https://example.intersect.org.au/Shibboleth.sso/Logout'
 STATIC_URL = '/static/'
 FILES_BASE = '/tmp/'  # please include a trailing slash
 
-EMAIL_HOST = 'localhost'
-EMAIL_PORT = '25'
+# EMAIL_HOST = 'localhost'
+# EMAIL_PORT = '25'
 
 EMAIL_FROM_ADDRESS = 'admin@localhost'
 
