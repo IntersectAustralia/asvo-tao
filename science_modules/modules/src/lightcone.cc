@@ -1670,7 +1670,7 @@ namespace tao {
 	       if( dist > 0.0 )
 	       {
 		  array<real_type,3> rad_vec( pos_x[ii]/dist, pos_y[ii]/dist, pos_z[ii]/dist );
-		  real_type dist_z = dist + (rad_vec[0]*vel_x[ii] + rad_vec[1]*vel_y[ii] + rad_vec[2]*vel_z[ii]);
+		  real_type dist_z = dist + ((rad_vec[0]*vel_x[ii] + rad_vec[1]*vel_y[ii] + rad_vec[2]*vel_z[ii])/_h0)*(_h0/100.0);
 		  _gal_z_obs[ii] = _distance_to_redshift( dist_z );
 	       }
 	       else
