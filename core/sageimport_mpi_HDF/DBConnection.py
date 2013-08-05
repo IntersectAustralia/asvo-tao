@@ -88,7 +88,8 @@ class DBConnection(object):
         return TableID%self.serverscount
     
     def ExecuteNoQuerySQLStatment(self,SQLStatment,DatabaseIndex=0,SQLParamsDict=None):
-        try:            
+        try:
+            logging.info(SQLStatment)            
             self.AutoRestartDBConnections()
             SQLStatment=string.lower(SQLStatment)  
             if SQLParamsDict==None:
@@ -106,6 +107,9 @@ class DBConnection(object):
     def ExecuteQuerySQLStatment(self,SQLStatment,DatabaseIndex=0,SQLParamsDict={}):
         
         try:
+            logging.info(SQLStatment)
+            logging.info(SQLParamsDict)
+            
             self.AutoRestartDBConnections()           
             self.ActiveCursors[DatabaseIndex].execute(SQLStatment,SQLParamsDict)
             resultsList= self.ActiveCursors[DatabaseIndex].fetchall()           

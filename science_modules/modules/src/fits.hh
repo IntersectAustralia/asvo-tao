@@ -48,7 +48,7 @@ namespace tao {
       virtual void log_metrics();
 
    protected:
-
+      string encode_fieldName(string _toencode_string);
       void _write_field( const tao::galaxy& galaxy,const string& field, int ColIndex);
       void _write_table_header(const tao::galaxy& galaxy);
 

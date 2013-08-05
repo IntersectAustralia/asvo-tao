@@ -267,18 +267,24 @@ MODULE_INDICES = {
                   
                   }
 
-TAO_VERSION = '0.24.1-rc3'
+TAO_VERSION = '0.25.1-rc1'
 
 AAF_DS_URL = 'https://ds.test.aaf.edu.au/discovery/DS'
 AAF_APP_ID = 'https://example.intersect.org.au/shibboleth'
 AAF_SESSION_URL = 'https://example.intersect.org.au/Shibboleth.sso/Login'
 AAF_LOGOUT_URL = 'https://example.intersect.org.au/Shibboleth.sso/Logout'
 
+AAF_USERNAME = 'SHIB_auEdupersonSharedToken'
+AAF_FIRST_NAME = 'SHIB_givenName'
+AAF_LAST_NAME = 'SHIB_surname'
+AAF_EMAIL = 'SHIB_email'
+AAF_COOKIE_PREFIX = '_shibsession_'
+
 STATIC_URL = '/static/'
 FILES_BASE = '/tmp/'  # please include a trailing slash
 
-EMAIL_HOST = 'localhost'
-EMAIL_PORT = '25'
+# EMAIL_HOST = 'localhost'
+# EMAIL_PORT = '25'
 
 EMAIL_FROM_ADDRESS = 'admin@localhost'
 

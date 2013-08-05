@@ -202,7 +202,7 @@ Replace property info in dataset X from the specified dataset Y:
                     continue
                 if field.rel is not None:
                     continue
-                if self._options['verbosity'] > 1:
+                if int(self._options['verbosity']) > 1:
                     print(u"Set {name} from {old} to {new}".format(
                         name=field.name,
                         old=getattr(existing_prop, field.name),
@@ -220,11 +220,11 @@ Replace property info in dataset X from the specified dataset Y:
         # remove the filter
         #
         for id in existing_properties:
-            print("Untested...")
-            import pdb; pdb.set_trace()
             prop = DataSetProperty.objects.get(pk=id)
             filters = DataSet.objects.filter(default_filter_field=prop)
             if len(filters) > 0:
+                print("Untested...")
+                import pdb; pdb.set_trace()
                 for filter in filters:
                     print(u"Clearing default filter in: {0}".format(str(filter)))
                     filter.default_filter_field = None
