@@ -57,6 +57,7 @@ class JobTest(LiveServerTest):
         self.dataset = DataSetFactory.create(simulation=self.simulation, galaxy_model=self.galaxy)
         self.output_prop = DataSetPropertyFactory.create(dataset=self.dataset, name='Central op', is_filter=False)
         self.filter = DataSetPropertyFactory.create(name='CentralMvir rf', units="Msun/h", dataset=self.dataset)
+        self.computed_filter = DataSetPropertyFactory.create(name='Computed Property', dataset=self.dataset, is_computed=True)
         self.sed = StellarModelFactory.create()
         self.dust = DustModelFactory.create()
         self.snapshot = SnapshotFactory.create(dataset=self.dataset, redshift='0.33')
@@ -64,6 +65,7 @@ class JobTest(LiveServerTest):
         parameters = self.make_xml_parameters()
         self.job.parameters = parameters
         self.job.save()
+        self.completed_job = JobFactory.create(user=self.user, status=Job.COMPLETED, output_path=self.output_paths[0], parameters=parameters)
 
     def tearDown(self):
         super(JobTest, self).tearDown()
@@ -73,8 +75,8 @@ class JobTest(LiveServerTest):
             for name in dirs:
                 os.rmdir(os.path.join(root, name))
 
-    def make_xml_parameters(self):
-        xml_parameters = {
+    def make_parameters(self):
+        parameters = {
             'catalogue_geometry': 'light-cone',
             'dark_matter_simulation': self.simulation.id,
             'galaxy_model': self.galaxy.id,
@@ -86,7 +88,7 @@ class JobTest(LiveServerTest):
             'light_cone_type': 'random', #'unique',
             'number_of_light_cones': 1,
             }
-        xml_parameters.update({
+        parameters.update({
             'username' : self.username,
             'dark_matter_simulation': self.simulation.name,
             'galaxy_model': self.galaxy.name,
@@ -97,37 +99,110 @@ class JobTest(LiveServerTest):
             'output_properties_2_name' : self.output_prop.name,
             'output_properties_2_label' : self.output_prop.label,
             'output_properties_2_description' : self.output_prop.description,
+            'output_properties_3_name' : self.computed_filter.name,
+            'output_properties_3_label' : self.computed_filter.label,
+            'output_properties_3_description' : self.computed_filter.description,
             })
-        xml_parameters.update({
+        parameters.update({
             'filter': self.filter.name,
             'filter_min' : '1000000',
             'filter_max' : 'None',
             })
-        xml_parameters.update({
+        parameters.update({
             'ssp_name': self.sed.name,
             'band_pass_filter_label': self.band_pass_filters[0].label + ' (Apparent)',
             'band_pass_filter_id': self.band_pass_filters[0].filter_id,
             'band_pass_filter_name': self.band_pass_filters[0].filter_id,
             'dust_model_name': self.dust.name,
             })
-        xml_parameters.update({
+        parameters.update({
             'light_cone_id': FormsGraph.LIGHT_CONE_ID,
             'csv_dump_id': FormsGraph.OUTPUT_ID,
             'bandpass_filter_id': FormsGraph.BANDPASS_FILTER_ID,
             'sed_id': FormsGraph.SED_ID,
             'dust_id': FormsGraph.DUST_ID,
             })
-        return light_cone_xml(xml_parameters)
+        parameters.update({
+            'geometry': 'Light-Cone',
+            'simulation_details': self.simulation.details,
+            'galaxy_model_details': self.galaxy.details,
+            'ssp_description': self.sed.description,
+            'dust_label': self.dust.label,
+            'dust_model_details': self.dust.details,
+            'filter_label': self.filter.label,
+            'filter_units': self.filter.units,
+        })
+        return parameters
+
+    def make_xml_parameters(self):
+        return light_cone_xml(self.make_parameters())
+
+    def make_job_summary_txt(self, parameters):
+        summary_txt = """General Properties
+==================
+
+Catalogue Geometry:	%(geometry)s
+Dataset: %(dark_matter_simulation)s / %(galaxy_model)s
+%(dark_matter_simulation)s
+%(simulation_details)s
+%(galaxy_model)s
+%(galaxy_model_details)s
+
+
+Dimensions
+RA: %(ra_opening_angle)s\xc2\xb0, Dec: %(dec_opening_angle)s\xc2\xb0
+Redshift: %(redshift_min)s \xe2\x89\xa4 z \xe2\x89\xa4 %(redshift_max)s
+
+Count: %(number_of_light_cones)s %(light_cone_type)s light cones
+
+
+Output Properties: 2 properties selected
+
+* %(output_properties_1_label)s
+
+* %(output_properties_2_label)s
+
+
+
+Spectral Energy Distribution
+============================
+
+Model: %(ssp_name)s
+%(ssp_description)s
+
+Bandpass Filters: 1 filters selected
+
+* %(band_pass_filter_label)s
+
+
+Dust: %(dust_label)s
+%(dust_model_details)s
+
+
+
+Mock Image
+==========
+
+Not selected
+
+
+Selection
+=========
+
+%(filter_min)s \xe2\x89\xa4 %(filter_label)s (%(filter_units)s)
+
+
+Output
+======
+
+CSV (Text)""" % parameters
+        return summary_txt
 
     def test_view_job_summary(self):
         self.login(self.username, self.password)
-
-        parameters = self.make_xml_parameters()
-        completed_job = JobFactory.create(user=self.user, status=Job.COMPLETED, output_path=self.output_paths[0],parameters=parameters)
-        
-        self.visit('view_job', completed_job.id)
+        self.visit('view_job', self.completed_job.id)
         self.wait(2)
-        self.assert_element_text_equals('#id-job_description', completed_job.description)
+        self.assert_element_text_equals('#id-job_description', self.completed_job.description)
         self.assert_page_has_content('Download')
         self.assert_page_has_content('Status')
         self.assert_page_has_content('Summary')
@@ -147,14 +222,10 @@ class JobTest(LiveServerTest):
 
     def test_job_with_files_downloads(self):
         self.login(self.username, self.password)
-
-        parameters = self.make_xml_parameters()
-        completed_job = JobFactory.create(user=self.user, status=Job.COMPLETED, output_path=self.output_paths[0], parameters=parameters)
-
-        self.visit('view_job', completed_job.id)
+        self.visit('view_job', self.completed_job.id)
 
         li_elements = self.selenium.find_elements_by_css_selector('#id_completed_jobs li')
-        filenames_with_sizes = []
+        filenames_with_sizes = ['summary.txt']
         for file_name in self.file_names_to_contents:
             file_size = helper.get_file_size(self.dir_paths[0],file_name)
             filenames_with_sizes.append(file_name + " (" + file_size + ")")
@@ -166,13 +237,38 @@ class JobTest(LiveServerTest):
             li.find_element_by_css_selector('a').click()
         self.wait(1)
 
-        for job_file in completed_job.files():
+        summary_txt_path = os.path.join(self.DOWNLOAD_DIRECTORY, 'summary.txt')
+        self.assertTrue(os.path.exists(summary_txt_path))
+
+        for job_file in self.completed_job.files():
             download_path = os.path.join(self.DOWNLOAD_DIRECTORY, job_file.file_name.replace('/','_'))
             self.assertTrue(os.path.exists(download_path))
             f = open(download_path)
             self.assertEqual(self.file_names_to_contents[job_file.file_name], f.read())
             f.close()
-            
+
+    def test_summary_txt_displayed(self):
+        self.login(self.username, self.password)
+        self.visit('view_job', self.completed_job.id)
+        self.assert_page_has_content('summary.txt')
+
+        self.visit('view_job', self.job.id)
+        self.assert_page_has_content('summary.txt')
+
+    def test_summary_txt_downloads_correctly(self):
+        self.login(self.username, self.password)
+        self.visit('view_job', self.completed_job.id)
+
+        self.wait(1)
+        expected_txt = self.make_job_summary_txt(self.make_parameters())
+        self.click('id_download_summary_txt')
+        summary_txt_path = os.path.join(self.DOWNLOAD_DIRECTORY, 'summary.txt')
+        f = open(summary_txt_path)
+        # from code import interact
+        # interact(local=locals())
+        self.assertEqual(expected_txt, f.read())
+        f.close()
+
     # test that anonymous user cannot view job or download files
     def test_anonymous_user_cannot_view_or_download(self):
         completed_job = JobFactory.create(user=self.user, status=Job.COMPLETED, output_path=self.output_paths[0])
@@ -219,11 +315,8 @@ class JobTest(LiveServerTest):
         self.assert_page_does_not_contain('(View)')
 
     def test_zip_file_download(self):
-        parameters = self.make_xml_parameters()
-        completed_job = JobFactory.create(user=self.user, status=Job.COMPLETED, output_path=self.output_paths[0], parameters=parameters)
-
         self.login(self.username, self.password)
-        self.visit('view_job', completed_job.id)
+        self.visit('view_job', self.completed_job.id)
             
         download_link = self.selenium.find_element_by_id('id_download_as_zip')
         download_link.click()
@@ -241,9 +334,7 @@ class JobTest(LiveServerTest):
                 
     def test_zip_file_displayed(self):
         self.login(self.username, self.password)
-        parameters = self.make_xml_parameters()
-        completed_job = JobFactory.create(user=self.user, status=Job.COMPLETED, output_path=self.output_paths[0],parameters=parameters)
-        self.visit('view_job', completed_job.id)
+        self.visit('view_job', self.completed_job.id)
 
         self.assert_page_has_content('Download zip file')
 

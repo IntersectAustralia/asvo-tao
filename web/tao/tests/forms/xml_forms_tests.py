@@ -30,6 +30,7 @@ class XmlFormsTests(TestCase):
         self.galaxy_model = GalaxyModelFactory.create()
         self.dataset = DataSetFactory.create(simulation=self.simulation, galaxy_model=self.galaxy_model)
         self.filter = DataSetPropertyFactory.create(name='CentralMvir rf', units="Msun/h", dataset=self.dataset)
+        self.computed_filter = DataSetPropertyFactory.create(name='Central Value', units="useless", dataset=self.dataset, is_computed=True)
         self.output_prop = DataSetPropertyFactory.create(name='Central op', dataset=self.dataset, is_filter=False)
         self.snapshot = SnapshotFactory.create(dataset=self.dataset, redshift='0.33')
         self.stellar_model = StellarModelFactory.create()
@@ -66,6 +67,9 @@ class XmlFormsTests(TestCase):
             'output_properties_2_name' : 'OPN', # self.output_prop.name,
             'output_properties_2_label' : 'OPL', # self.output_prop.label,
             'output_properties_2_description' : 'OD', # self.filter.units,
+            'output_properties_3_name' : self.computed_filter.name,
+            'output_properties_3_label' : self.computed_filter.label,
+            'output_properties_3_description' : self.computed_filter.description,
             })
         xml_parameters.update({
             'filter': 'FN', # self.filter.name,
@@ -162,6 +166,9 @@ class XmlFormsTests(TestCase):
             'output_properties_2_name' : 'OPN', # self.output_prop.name,
             'output_properties_2_label' : 'OPL', # self.output_prop.label,
             'output_properties_2_description' : 'OD', # self.filter.units,
+            'output_properties_3_name' : self.computed_filter.name,
+            'output_properties_3_label' : self.computed_filter.label,
+            'output_properties_3_description' : self.computed_filter.description,
         })
         xml_parameters.update({
             'filter': self.filter.name, #'D-'+str(self.filter.id),
@@ -216,6 +223,9 @@ class XmlFormsTests(TestCase):
             'output_properties_2_name' : 'OPN', # self.output_prop.name,
             'output_properties_2_label' : 'OPL', # self.output_prop.label,
             'output_properties_2_description' : 'OD', # self.filter.units,
+            'output_properties_3_name' : self.computed_filter.name,
+            'output_properties_3_label' : self.computed_filter.label,
+            'output_properties_3_description' : self.computed_filter.description,
         })
         xml_parameters.update({
             'filter': 'FN', # self.filter.name,
@@ -265,6 +275,9 @@ class XmlFormsTests(TestCase):
             'output_properties_2_name' : self.output_prop.name,
             'output_properties_2_label' : self.output_prop.label,
             'output_properties_2_description' : 'OD', # self.filter.units,
+            'output_properties_3_name' : self.computed_filter.name,
+            'output_properties_3_label' : self.computed_filter.label,
+            'output_properties_3_description' : self.computed_filter.description,
         })
         xml_parameters.update({
             'filter': self.filter.name,
@@ -322,6 +335,9 @@ class XmlFormsTests(TestCase):
             'output_properties_2_name' : self.output_prop.name,
             'output_properties_2_label' : self.output_prop.label,
             'output_properties_2_description' : 'OD', # self.filter.units,
+            'output_properties_3_name' : self.computed_filter.name,
+            'output_properties_3_label' : self.computed_filter.label,
+            'output_properties_3_description' : self.computed_filter.description,
             })
         xml_parameters.update({
             'filter': self.filter.name,
