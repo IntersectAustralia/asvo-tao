@@ -1134,7 +1134,6 @@ catalogue.modules.light_cone = function ($) {
         catalogue.modules.light_cone.util = new catalogue.modules.light_cone.util();
 
         get_widget().init();
-        catalogue.modules.light_cone.util = new catalogue.modules.light_cone.util();
         // get_widget().init();
         init_event_handlers();
         init_state();
