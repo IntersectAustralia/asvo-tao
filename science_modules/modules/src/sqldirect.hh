@@ -63,6 +63,12 @@ protected:
 	std::list<string>::iterator _Tables_it;
 
 
+
+	vector<void*> _field_stor;
+	vector<galaxy::field_value_type> _field_types;
+	vector<string> _field_names;
+
+
 	void FetchData(string query,bool IsFirstCall=false);
 
 
