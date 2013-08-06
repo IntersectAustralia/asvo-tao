@@ -149,23 +149,30 @@ catalogue.modules.record_filter = function ($) {
             return;
         }
 
-
-        $.ajax({
-            url: TAO_JSON_CTX + 'filters/' + data_set_id,
-            dataType: "json",
-            error: function () {
-                alert("Couldn't get filters");
-            },
-            success: function (resp, status, xhr) {
-                me().update_filter_options.current_data = resp;
-                me().update_filter_options.current_key = data_set_id;
-                if (me().update_filter_options.output_props &&
-                    me().update_filter_options.bandpass_props &&
-                    use_default()) {
-                    refresh_select(resp);
-                }
-            }
-        });
+        var data = catalogue.util.filters(data_set_id);
+        me().update_filter_options.current_data = data;
+        me().update_filter_options.current_key = data_set_id;
+        if (me().update_filter_options.output_props &&
+            me().update_filter_options.bandpass_props &&
+            use_default()) {
+            refresh_select(data);
+        }
+        // $.ajax({
+        //     url: TAO_JSON_CTX + 'filters/' + data_set_id,
+        //     dataType: "json",
+        //     error: function () {
+        //         alert("Couldn't get filters");
+        //     },
+        //     success: function (resp, status, xhr) {
+        //         me().update_filter_options.current_data = resp;
+        //         me().update_filter_options.current_key = data_set_id;
+        //         if (me().update_filter_options.output_props &&
+        //             me().update_filter_options.bandpass_props &&
+        //             use_default()) {
+        //             refresh_select(resp);
+        //         }
+        //     }
+        // });
 
     };
 

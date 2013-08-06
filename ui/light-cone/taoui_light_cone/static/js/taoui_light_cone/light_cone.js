@@ -511,19 +511,25 @@ catalogue.modules.light_cone = function ($) {
         var current = $to.val(); // in string format
         $to.empty();
         $from.empty();
-        $.ajax({
-            url: TAO_JSON_CTX + 'output_choices/' + data_set_id,
-            dataType: "json",
-            error: function () {
-                alert("Couldn't get output choices");
-            },
-            success: function (data, status, xhr) {
-                get_widget().cache_store(data);
-                catalogue.modules.record_filter.update_filter_options.output_props = true;
-                // catalogue.modules.record_filter.update_filter_options.output_props = $('#RF_BOUND').val() == false;
-                get_widget().display_selected(current, true);
-            }
-        });
+        var data = catalogue.util.output_choices(data_set_id);
+        get_widget().cache_store(data);
+        catalogue.modules.record_filter.update_filter_options.output_props = true;
+        // catalogue.modules.record_filter.update_filter_options.output_props = $('#RF_BOUND').val() == false;
+        get_widget().display_selected(current, true);
+
+        // $.ajax({
+        //     url: TAO_JSON_CTX + 'output_choices/' + data_set_id,
+        //     dataType: "json",
+        //     error: function () {
+        //         alert("Couldn't get output choices");
+        //     },
+        //     success: function (data, status, xhr) {
+        //         get_widget().cache_store(data);
+        //         catalogue.modules.record_filter.update_filter_options.output_props = true;
+        //         // catalogue.modules.record_filter.update_filter_options.output_props = $('#RF_BOUND').val() == false;
+        //         get_widget().display_selected(current, true);
+        //     }
+        // });
     }
 
 
@@ -541,34 +547,54 @@ catalogue.modules.light_cone = function ($) {
         var current = $snapshot.val();
         $snapshot.empty();
 
-        $.ajax({
-            url: TAO_JSON_CTX + 'snapshots/' + simulation_id + ',' + galaxy_model_id,
-            dataType: "json",
-            error: function () {
-                alert("Couldn't get snapshots");
-            },
-            success: function (data, status, xhr) {
-                for (i = 0; i < data.length; i++) {
-                    var item = data[i];
-                    $option = $('<option/>');
-                    $option.attr('value', item.pk);
-                    // Redshift Formatting:
-                    // The age of the universe as a function of redshift is 1 / (1 + z) where z is the redshift.
-                    // So z=0 is the present, and z=Infinity is the Big Bang.
-                    // This is a non-linear relationship with more variation at smaller z values.
-                    // To present figures that are easy to read and have sensible precision, redshift will be displayed with up to 5 decimals.
-                    $option.html(format_redshift(item.fields.redshift));
-                    if (item.pk == current) {
-                        $option.attr('selected', 'selected');
-                    }
-                    $snapshot.append($option);
-                }
-                // initial_snapshot = 0;
-
-                //test
-                $(lc_id('snapshot')).change();
+        data = catalogue.util.snapshots(simulation_id, galaxy_model_id)
+        for (i = 0; i < data.length; i++) {
+            var item = data[i];
+            $option = $('<option/>');
+            $option.attr('value', item.pk);
+            // Redshift Formatting:
+            // The age of the universe as a function of redshift is 1 / (1 + z) where z is the redshift.
+            // So z=0 is the present, and z=Infinity is the Big Bang.
+            // This is a non-linear relationship with more variation at smaller z values.
+            // To present figures that are easy to read and have sensible precision, redshift will be displayed with up to 5 decimals.
+            $option.html(format_redshift(item.fields.redshift));
+            if (item.pk == current) {
+                $option.attr('selected', 'selected');
             }
-        });
+            $snapshot.append($option);
+        }
+        $(lc_id('snapshot')).change();
+
+
+
+        // $.ajax({
+        //     url: TAO_JSON_CTX + 'snapshots/' + simulation_id + ',' + galaxy_model_id,
+        //     dataType: "json",
+        //     error: function () {
+        //         alert("Couldn't get snapshots");
+        //     },
+        //     success: function (data, status, xhr) {
+        //         for (i = 0; i < data.length; i++) {
+        //             var item = data[i];
+        //             $option = $('<option/>');
+        //             $option.attr('value', item.pk);
+        //             // Redshift Formatting:
+        //             // The age of the universe as a function of redshift is 1 / (1 + z) where z is the redshift.
+        //             // So z=0 is the present, and z=Infinity is the Big Bang.
+        //             // This is a non-linear relationship with more variation at smaller z values.
+        //             // To present figures that are easy to read and have sensible precision, redshift will be displayed with up to 5 decimals.
+        //             $option.html(format_redshift(item.fields.redshift));
+        //             if (item.pk == current) {
+        //                 $option.attr('selected', 'selected');
+        //             }
+        //             $snapshot.append($option);
+        //         }
+        //         // initial_snapshot = 0;
+
+        //         //test
+        //         $(lc_id('snapshot')).change();
+        //     }
+        // });
     };
 
 
@@ -578,21 +604,27 @@ catalogue.modules.light_cone = function ($) {
             $galaxy_model_info.hide();
             return;
         }
-        $.ajax({
-            url: TAO_JSON_CTX + 'galaxy_model/' + galaxy_model_id,
-            dataType: "json",
-            error: function () {
-                $galaxy_model_info.hide();
-                alert("Couldn't get data for requested galaxy model");
-            },
-            success: function (data, status, xhr) {
-                $('div.galaxy-model-info .name').html(data.fields.name);
-                $('div.galaxy-model-info .details').html(data.fields.details);
-                $galaxy_model_info.show();
-                catalogue.util.fill_in_summary('light_cone', 'galaxy_model', data.fields.name);
-                catalogue.util.fill_in_summary('light_cone', 'galaxy_model_description', '<br><b>' + data.fields.name + ':</b><br>' + data.fields.details);
-            }
-        });
+        data = catalogue.util.galaxy_model(galaxy_model_id)
+        $('div.galaxy-model-info .name').html(data.fields.name);
+        $('div.galaxy-model-info .details').html(data.fields.details);
+        $galaxy_model_info.show();
+        catalogue.util.fill_in_summary('light_cone', 'galaxy_model', data.fields.name);
+        catalogue.util.fill_in_summary('light_cone', 'galaxy_model_description', '<br><b>' + data.fields.name + ':</b><br>' + data.fields.details);
+        // $.ajax({
+        //     url: TAO_JSON_CTX + 'galaxy_model/' + galaxy_model_id,
+        //     dataType: "json",
+        //     error: function () {
+        //         $galaxy_model_info.hide();
+        //         alert("Couldn't get data for requested galaxy model");
+        //     },
+        //     success: function (data, status, xhr) {
+        //         $('div.galaxy-model-info .name').html(data.fields.name);
+        //         $('div.galaxy-model-info .details').html(data.fields.details);
+        //         $galaxy_model_info.show();
+        //         catalogue.util.fill_in_summary('light_cone', 'galaxy_model', data.fields.name);
+        //         catalogue.util.fill_in_summary('light_cone', 'galaxy_model_description', '<br><b>' + data.fields.name + ':</b><br>' + data.fields.details);
+        //     }
+        // });
     };
 
 
@@ -603,15 +635,8 @@ catalogue.modules.light_cone = function ($) {
             $galaxy_model.change();
             return;
         }
-        $.ajax({
-            url: TAO_JSON_CTX + 'galaxy_models/' + simulation_id,
-            dataType: "json",
-            error: function () {
-                $galaxy_model.empty();
-                $galaxy_model.change();
-                alert("Couldn't get data for requested simulation");
-            },
-            success: function (data, status, xhr) {
+
+        var upd = function (data) {
                 var initial_data_set_id = $galaxy_model.val();
                 $galaxy_model.empty();
                 for (i = 0; i < data.length; i++) {
@@ -630,28 +655,68 @@ catalogue.modules.light_cone = function ($) {
                     $galaxy_model.append($option);
                 }
                 $galaxy_model.change();
-            }
-        });
+            };
+
+        upd(catalogue.util.galaxy_models(simulation_id));
+
+        // $.ajax({
+        //     url: TAO_JSON_CTX + 'galaxy_models/' + simulation_id,
+        //     dataType: "json",
+        //     error: function () {
+        //         $galaxy_model.empty();
+        //         $galaxy_model.change();
+        //         alert("Couldn't get data for requested simulation");
+        //     },
+        //     success: function (data, status, xhr) {
+        //         var initial_data_set_id = $galaxy_model.val();
+        //         $galaxy_model.empty();
+        //         for (i = 0; i < data.length; i++) {
+        //             item = data[i];
+        //             $option = $('<option/>');
+        //             $option.attr('value', item.id);
+        //             $option.attr('data-galaxy_model_id', item.galaxy_model_id);
+        //             $option.attr('data-job_size_p1', item.job_size_p1);
+        //             $option.attr('data-job_size_p2', item.job_size_p2);
+        //             $option.attr('data-job_size_p3', item.job_size_p3);
+        //             $option.attr('data-max_job_box_count', item.max_job_box_count);
+        //             if (item.id == initial_data_set_id) {
+        //                 $option.attr('selected', 'selected');
+        //             }
+        //             $option.html(item.name);
+        //             $galaxy_model.append($option);
+        //         }
+        //         $galaxy_model.change();
+        //     }
+        // });
     };
 
 
     var show_simulation_info = function (simulation_id) {
-        $.ajax({
-            url: TAO_JSON_CTX + 'simulation/' + simulation_id,
-            dataType: "json",
-            error: function () {
-                $('div.simulation-info').hide();
-                alert("Couldn't get data for requested simulation");
-            },
-            success: function (data, status, xhr) {
-                $('div.simulation-info .name').html(data.fields.name);
-                $('div.simulation-info .details').html(data.fields.details);
-                $('div.simulation-info').show();
-                catalogue.util.fill_in_summary('light_cone', 'simulation', data.fields.name);
-                catalogue.util.fill_in_summary('light_cone', 'simulation_description', '<br><b>' + data.fields.name + ':</b><br>' + data.fields.details);
-                $(lc_id('number_of_light_cones')).data("simulation-box-size", data.fields.box_size);
-            }
-        });
+
+        data = catalogue.util.simulation(simulation_id);
+        $('div.simulation-info .name').html(data.fields.name);
+        $('div.simulation-info .details').html(data.fields.details);
+        $('div.simulation-info').show();
+        catalogue.util.fill_in_summary('light_cone', 'simulation', data.fields.name);
+        catalogue.util.fill_in_summary('light_cone', 'simulation_description', '<br><b>' + data.fields.name + ':</b><br>' + data.fields.details);
+        $(lc_id('number_of_light_cones')).data("simulation-box-size", data.fields.box_size);
+
+        // $.ajax({
+        //     url: TAO_JSON_CTX + 'simulation/' + simulation_id,
+        //     dataType: "json",
+        //     error: function () {
+        //         $('div.simulation-info').hide();
+        //         alert("Couldn't get data for requested simulation");
+        //     },
+        //     success: function (data, status, xhr) {
+        //         $('div.simulation-info .name').html(data.fields.name);
+        //         $('div.simulation-info .details').html(data.fields.details);
+        //         $('div.simulation-info').show();
+        //         catalogue.util.fill_in_summary('light_cone', 'simulation', data.fields.name);
+        //         catalogue.util.fill_in_summary('light_cone', 'simulation_description', '<br><b>' + data.fields.name + ':</b><br>' + data.fields.details);
+        //         $(lc_id('number_of_light_cones')).data("simulation-box-size", data.fields.box_size);
+        //     }
+        // });
     };
 
 
@@ -826,19 +891,26 @@ catalogue.modules.light_cone = function ($) {
             // TODO: remove line below once observers point-of-view for multiple unique light cones has been fixed in science modules
             $(lc_id('number_of_light_cones')).closest('div.control-group').show();
             //////
-            $.ajax({
-                url: TAO_JSON_CTX + 'global_parameter/' + 'maximum-random-light-cones',
-                dataType: "json",
-                error: function () {
-                    alert("Couldn't get data for maximum-random-light-cones");
-                },
-                success: function (data, status, xhr) {
-                    var maximum = parseInt(data.fields.parameter_value);
-                    if (spinner_set_max(maximum)) {
-                        $spinner_label.html("Select the number of light-cones: (maximum " + maximum + " random light-cones)*");
-                    }
-                }
-            });
+
+            var data = catalogue.util.global_parameter('maximum-random-light-cones');
+            var maximum = parseInt(data.fields.parameter_value);
+            if (spinner_set_max(maximum)) {
+                $spinner_label.html("Select the number of light-cones: (maximum " + maximum + " random light-cones)*");
+            }
+
+            // $.ajax({
+            //     url: TAO_JSON_CTX + 'global_parameter/' + 'maximum-random-light-cones',
+            //     dataType: "json",
+            //     error: function () {
+            //         alert("Couldn't get data for maximum-random-light-cones");
+            //     },
+            //     success: function (data, status, xhr) {
+            //         var maximum = parseInt(data.fields.parameter_value);
+            //         if (spinner_set_max(maximum)) {
+            //             $spinner_label.html("Select the number of light-cones: (maximum " + maximum + " random light-cones)*");
+            //         }
+            //     }
+            // });
         }
     }
 

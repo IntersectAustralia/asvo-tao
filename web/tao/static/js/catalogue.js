@@ -76,6 +76,163 @@ catalogue.util = function ($) {
     this.current_data = undefined;
     this.current_key = null;
 
+    var that = this;
+
+    this.snapshots = function(sid, gid) {
+        return $.grep(TaoMetadata.DataSet, function(elem, idx) { 
+            return elem.fields.simulation == sid && 
+            elem.fields.galaxy_model == gid 
+        })[0]
+    }
+
+    this.simulation = function(id) {
+        return $.grep(TaoMetadata.Simulation, function(elem, idx) { 
+            return elem.pk == id
+        })[0]
+    }
+
+
+    this.galaxy_model = function(id) {
+        return $.grep(TaoMetadata.GalaxyModel, function(elem, idx) { 
+            return elem.pk == id
+        })[0]
+    }
+
+
+    this.galaxy_models = function(sid) {
+        var datasets = $.grep(TaoMetadata.DataSet, function(elem, idx) { 
+            return elem.fields.simulation == sid 
+        });
+        return $.map(datasets, function(elem, idx) {
+            var gm = that.galaxy_model(elem.fields.galaxy_model); 
+            return {'id':elem.pk, 
+            'name':gm.fields.name, 
+            'galaxy_model_id':elem.fields.galaxy_model, 
+            'job_size_p1': elem.fields.job_size_p1,
+            'job_size_p2': elem.fields.job_size_p2,
+            'job_size_p3': elem.fields.job_size_p3,
+            'max_job_box_count': elem.fields.max_job_box_count}
+        });
+    }
+
+
+    this.global_parameter = function(parameter_name) {
+        return $.grep(TaoMetadata.GlobalParameter, function(elem, idx) {
+            return elem.fields.parameter_name == parameter_name;
+        })[0] || {}
+    }
+
+
+    this.output_choices = function(id) {
+        var resp = $.grep(TaoMetadata.DataSetProperty, function(elem, idx) { 
+            return elem.fields.dataset == id && elem.fields.is_output
+        });
+        return resp.sort(function (a, b) {
+            if (a.fields.group != b.fields.group)
+                return a.fields.group < b.fields.group ? -1 : 1;
+            if (a.fields.order != b.fields.order)
+                return a.fields.order < b.fields.order ? -1 : 1;
+            if (a.fields.label != b.fields.label)
+                return a.fields.label < b.fields.label ? -1 : 1;            
+            return 0;
+        });
+    }
+
+
+    this.dust_model = function(id) {
+        return $.grep(TaoMetadata.DustModel, function(elem, idx) { 
+            return elem.pk == id
+        })[0] || {}
+    }
+
+
+    this.bandpass_filters = function() {
+        var gen_pairs = function(bandpass_filters) {
+            function gen_dict(elem, extension) {
+                return {
+                    "pk": elem.pk + '_' + extension,
+                    "model": "tao.bandpassfilter",
+                    "fields": {
+                        "order": elem.fields.order,
+                        "filter_id": elem.fields.filter_id,
+                        "group": elem.fields.group,
+                        "description": elem.fields.description,
+                        "label": elem.fields.label + ' (' + extension.charAt(0).toUpperCase() + extension.slice(1) + ')'
+                    }
+                };
+            }
+            return $.map(bandpass_filters, function(elem, idx) {
+                return [gen_dict(elem, 'apparent'), gen_dict(elem, 'absolute')]
+            });
+        }
+        return gen_pairs(TaoMetadata.BandPassFilter);
+    }
+
+
+    this.stellar_model = function(id) {
+        return $.grep(TaoMetadata.StellarModel, function(elem, idx) { 
+            return elem.pk == id
+        })[0] || {}
+    }
+
+
+    this.filters = function(id) {
+        var data_set = $.grep(TaoMetadata.DataSet, function(elem, idx) { 
+            return elem.pk == id
+        })[0] || {};
+
+        var json_my_encode = function(obj, extension) {
+            if (obj.model == 'tao.datasetproperty') {
+                return {
+                    'type':'D',
+                    'pk':obj.pk, 
+                    'fields': {
+                        'name':obj.fields.name,
+                        'units':obj.fields.units,
+                        'label':obj.fields.label,
+                        'data_type':obj.fields.data_type
+                    }}
+            } else if (obj.model == 'tao.bandpassfilter') {
+                return {
+                    'type':'B',
+                    'pk': obj.pk + '_' + extension,
+                    'fields': {
+                        'name':obj.fields.filter_id,
+                        'units':'',
+                        'label':obj.fields.label + ' (' + extension.charAt(0).toUpperCase() + extension.slice(1) + ')',
+                        'data_type': 1
+                    }}
+            } else {
+                throw obj.model + " is not JSON known as filter property"
+            }
+        };
+
+        var gen_pairs = function(bandpass_filters) {
+            return $.map(bandpass_filters, function(elem, idx) {
+                return [json_my_encode(elem, 'apparent'), json_my_encode(elem, 'absolute')]
+            });
+        };
+
+        var filter_choices = function() {
+            var filters = $.grep(TaoMetadata.DataSetProperty, function(elem, idx){
+                return elem.fields.dataset == data_set.pk && 
+                (elem.fields.is_filter || elem.pk === data_set.fields.default_filter_field)
+            });
+            return $.map(filters, function(elem, idx){
+                return json_my_encode(elem);
+            });  
+        }
+        
+
+        return {
+            'list': $.merge(filter_choices(), gen_pairs(TaoMetadata.BandPassFilter)),
+            'default_id': data_set.pk,
+            'default_min': data_set.fields.default_filter_min,
+            'default_max': data_set.fields.default_filter_max
+        }
+    }
+
+
     this.fill_in_summary = function (form_name, field_name, input_data) {
         $('div.summary_' + form_name + ' .' + field_name).html(input_data);
     }
@@ -122,20 +279,25 @@ catalogue.util = function ($) {
 
 
     this.show_stellar_model_info = function (stellar_id) {
-        $.ajax({
-            url: TAO_JSON_CTX + 'stellar_model/' + stellar_id,
-            dataType: "json",
-            error: function () {
-                $('div.stellar-model-info').hide();
-                alert("Couldn't get data for requested dust model");
-            },
-            success: function (data, status, xhr) {
-                $('div.stellar-model-info .name').html(data.fields.label);
-                $('div.stellar-model-info .details').html(data.fields.description);
-                $('div.stellar-model-info').show();
-                catalogue.util.fill_in_summary('sed', 'stellar_model_description', '<br>' + data.fields.description);
-            }
-        });
+        var data = catalogue.util.stellar_model(stellar_id);
+        $('div.stellar-model-info .name').html(data.fields.label);
+        $('div.stellar-model-info .details').html(data.fields.description);
+        $('div.stellar-model-info').show();
+        catalogue.util.fill_in_summary('sed', 'stellar_model_description', '<br>' + data.fields.description);
+        // $.ajax({
+        //     url: TAO_JSON_CTX + 'stellar_model/' + stellar_id,
+        //     dataType: "json",
+        //     error: function () {
+        //         $('div.stellar-model-info').hide();
+        //         alert("Couldn't get data for requested dust model");
+        //     },
+        //     success: function (data, status, xhr) {
+        //         $('div.stellar-model-info .name').html(data.fields.label);
+        //         $('div.stellar-model-info .details').html(data.fields.description);
+        //         $('div.stellar-model-info').show();
+        //         catalogue.util.fill_in_summary('sed', 'stellar_model_description', '<br>' + data.fields.description);
+        //     }
+        // });
     };
 
 

@@ -4,6 +4,7 @@
 {% load staticfiles %}
 {% load bootstrap_tags %}
 {% load assets %}
+{% load ui_json %}
 
 {% block subtitle %}Viewing Job{% endblock subtitle %}
 
@@ -16,6 +17,9 @@
     <script type="text/javascript" src="{% static 'js/TwoSidedSelectWidget.js' %}"></script>
     <!-- <script type="text/javascript" src="{% static 'js/light_cone.js' %}"></script> -->
     <script type="text/javascript" src="{% static 'js/catalogue.js' %}"></script>
+    <script type="text/javascript" >
+    var TaoMetadata = {% metadata_json %}
+    </script>
 {% endblock extrajs %}
 
 {%  comment %}
