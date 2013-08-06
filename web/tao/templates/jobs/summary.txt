@@ -2,46 +2,42 @@ General Properties
 ==================
 
 Catalogue Geometry:	{{ catalogue_geometry.title }}
-Dataset: {{ simulation }} / {{ galaxy_model }}
-{{ simulation }}
-{{ simulation.details|safe }}
-{{ galaxy_model }}
-{{ galaxy_model.details|safe }}
+Dataset: {{ dark_matter_simulation }} / {{ galaxy_model }}
 
-{% if catalogue_geometry == 'light-cone' %}
-Dimensions
-RA: {{ ra_opening_angle }}, Dec: {{ dec_opening_angle }}
-Redshift: {{ redshift }}
+{{ dark_matter_simulation }}
+{{ simulation_details }}
+{{ galaxy_model }}
+{{ galaxy_model_details }}
+
+{% if catalogue_geometry == 'box' %}Box Size: {{ box_size }}
+Redshift: {{ snapshot }}
+{% else %}Dimensions
+RA: {{ ra_opening_angle }}°, Dec: {{ dec_opening_angle }}°
+Redshift: {{ redshift_min }} ≤ z ≤ {{ redshift_max }}
 
 Count: {{ number_of_light_cones }} {{ light_cone_type }} light cones
-{% else %}
-Box Size: {{ box_size }}
-Redshift: {{ snapshot }}
 {% endif %}
 
 Output Properties: {{ output_properties|length }} properties selected
 {% for property in output_properties %}
-* {{ property }}
-{% endfor %}
+* {{ property }}{% endfor %}
 
 
 Spectral Energy Distribution
 ============================
 {% if apply_sed %}
-Model: {{ single_stellar_population_model }}
-{{ single_stellar_population_model.description|safe }}
+Model: {{ ssp_name }}
+{{ ssp_description }}
 
 Bandpass Filters: {{ band_pass_filters|length }} filters selected
 {% for band_pass_filter in band_pass_filters %}
-* {{ band_pass_filter }}
-{% endfor %}
+* {{ band_pass_filter }}{% endfor %}
 
-Dust: {{ dust_model }}
-{{ dust_model.details|safe }}
+Dust: {{ dust_label }}
+{{ dust_model_details }}
 {% else %}
 Not selected
 {% endif %}
-
 
 Mock Image
 ==========
