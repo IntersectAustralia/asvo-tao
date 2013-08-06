@@ -145,8 +145,8 @@ namespace tao {
          }
          else
          {
-            apparent_mags[ii][gal_idx] = 0.0;
-            absolute_mags[ii][gal_idx] = 0.0;
+            apparent_mags[ii][gal_idx] = 100.0;
+            absolute_mags[ii][gal_idx] = 100.0;
          }
 
 	 // Make sure these are sane.
