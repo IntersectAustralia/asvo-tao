@@ -27,7 +27,7 @@ class JobTest(LiveServerTest):
 
         # self.job_description = 'This is a job description'
         self.job = JobFactory.create(user=self.user)
-        GlobalParameterFactory.create(parameter_name='maximum-random-light-cones',parameter_value='10000')
+        GlobalParameterFactory.create(parameter_name='maximum-random-light-cones', parameter_value='10000')
 
         self.output_paths = ['job1', 'large_job']
         self.dir_paths = [os.path.join(settings.FILES_BASE, output_path) for output_path in self.output_paths]
@@ -264,8 +264,6 @@ CSV (Text)""" % parameters
         self.click('id_download_summary_txt')
         summary_txt_path = os.path.join(self.DOWNLOAD_DIRECTORY, 'summary.txt')
         f = open(summary_txt_path)
-        # from code import interact
-        # interact(local=locals())
         self.assertEqual(expected_txt, f.read())
         f.close()
 
@@ -320,7 +318,7 @@ CSV (Text)""" % parameters
             
         download_link = self.selenium.find_element_by_id('id_download_as_zip')
         download_link.click()
-        
+
         download_path = os.path.join(self.DOWNLOAD_DIRECTORY, 'tao_output.zip')
 
         self.wait()
@@ -374,6 +372,7 @@ CSV (Text)""" % parameters
             
     def _assert_directories_match(self, expected_dir_path, actual_dir_path):
         expected_dir_list = self._list_all_files(expected_dir_path)
+        expected_dir_list += ['summary.txt']
         actual_dir_list = self._list_all_files(actual_dir_path)
         self.assertEqual(len(expected_dir_list), len(actual_dir_list))
         
@@ -382,11 +381,18 @@ CSV (Text)""" % parameters
         self.assertEqual(expected_dir_list, actual_dir_list)
         
         for first, second in zip(expected_dir_list, actual_dir_list):
-            first_path = os.path.join(expected_dir_path, first)
-            second_path = os.path.join(actual_dir_path, second)
-            with open(first_path, 'r') as f1:
-                with open(second_path, 'r') as f2:
-                    self.assertEqual(f1.read(), f2.read())
+            if first == 'summary.txt':
+                expected_summary_txt = self.make_job_summary_txt(self.make_parameters())
+                summary_txt_path = os.path.join(actual_dir_path, second)
+                f = open(summary_txt_path)
+                self.assertEqual(expected_summary_txt, f.read())
+                f.close()
+            else:
+                first_path = os.path.join(expected_dir_path, first)
+                second_path = os.path.join(actual_dir_path, second)
+                with open(first_path, 'r') as f1:
+                    with open(second_path, 'r') as f2:
+                        self.assertEqual(f1.read(), f2.read())
             
     def _click_view_job(self, job):
         job_id = job.id
