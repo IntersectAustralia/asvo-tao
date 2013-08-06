@@ -42,7 +42,7 @@ class DataSetAdmin(admin.ModelAdmin):
 
 class DataSetPropertyAdmin(admin.ModelAdmin):
     list_display = ('dataset', 'label', 'is_filter', 'is_output', 'is_computed')
-    ordering = ('dataset', 'label')
+    ordering = ('dataset', 'group', 'order', 'label')
 
 admin.site.register(DataSet, DataSetAdmin)
 admin.site.register(DataSetProperty, DataSetPropertyAdmin)

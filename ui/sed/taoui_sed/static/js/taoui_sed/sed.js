@@ -22,21 +22,27 @@ catalogue.modules.sed = function ($) {
 
 
     var show_dust_model_info = function (dust_id) {
-        $.ajax({
-            url: TAO_JSON_CTX + 'dust_model/' + dust_id,
-            dataType: "json",
-            error: function () {
-                $('div.dust-model-info').hide();
-                alert("Couldn't get data for requested dust model");
-            },
-            success: function (data, status, xhr) {
-                $('div.dust-model-info .name').html(data.fields.name);
-                $('div.dust-model-info .details').html(data.fields.details);
-                $('div.dust-model-info').show();
-                catalogue.util.fill_in_summary('sed', 'dust_model', data.fields.name);
-                catalogue.util.fill_in_summary('sed', 'dust_model_description', '<br>' + data.fields.details);
-            }
-        });
+        data = catalogue.util.dust_model(dust_id);
+        $('div.dust-model-info .name').html(data.fields.name);
+        $('div.dust-model-info .details').html(data.fields.details);
+        $('div.dust-model-info').show();
+        catalogue.util.fill_in_summary('sed', 'dust_model', data.fields.name);
+        catalogue.util.fill_in_summary('sed', 'dust_model_description', '<br>' + data.fields.details);
+        // $.ajax({
+        //     url: TAO_JSON_CTX + 'dust_model/' + dust_id,
+        //     dataType: "json",
+        //     error: function () {
+        //         $('div.dust-model-info').hide();
+        //         alert("Couldn't get data for requested dust model");
+        //     },
+        //     success: function (data, status, xhr) {
+        //         $('div.dust-model-info .name').html(data.fields.name);
+        //         $('div.dust-model-info .details').html(data.fields.details);
+        //         $('div.dust-model-info').show();
+        //         catalogue.util.fill_in_summary('sed', 'dust_model', data.fields.name);
+        //         catalogue.util.fill_in_summary('sed', 'dust_model_description', '<br>' + data.fields.details);
+        //     }
+        // });
     };
 
 
@@ -48,18 +54,22 @@ catalogue.modules.sed = function ($) {
                 current.push($this.attr('value'));
             }
         });
-        $.ajax({
-            url: TAO_JSON_CTX + 'bandpass_filters/',
-            dataType: "json",
-            error: function (jqXHR, status, error) {
-                alert("Couldn't get bandpass filters");
-            },
-            success: function (data, status, xhr) {
-                get_widget().cache_store(data);
-                catalogue.modules.record_filter.update_filter_options.bandpass_props = true;
-                get_widget().display_selected(current, true);
-            }
-        });
+        data = catalogue.util.bandpass_filters();
+        get_widget().cache_store(data);
+        catalogue.modules.record_filter.update_filter_options.bandpass_props = true;
+        get_widget().display_selected(current, true);
+        // $.ajax({
+        //     url: TAO_JSON_CTX + 'bandpass_filters/',
+        //     dataType: "json",
+        //     error: function (jqXHR, status, error) {
+        //         alert("Couldn't get bandpass filters");
+        //     },
+        //     success: function (data, status, xhr) {
+        //         get_widget().cache_store(data);
+        //         catalogue.modules.record_filter.update_filter_options.bandpass_props = true;
+        //         get_widget().display_selected(current, true);
+        //     }
+        // });
         console.log('Current bandpass filters: ' + current);
         return current;
     }
