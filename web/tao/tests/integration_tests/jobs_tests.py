@@ -1,14 +1,15 @@
 from django.conf import settings
+from django.template import Context, loader
 from django.test.utils import override_settings
 
 from tao.forms import FormsGraph
-from tao.models import Job, BandPassFilter, Simulation
+from tao.models import Job, BandPassFilter
 from tao.tests import helper
 from tao.tests.integration_tests.helper import LiveServerTest
 from tao.tests.support.factories import GlobalParameterFactory, JobFactory, UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, StellarModelFactory, DustModelFactory, BandPassFilterFactory, SnapshotFactory
 from tao.tests.support.xml import light_cone_xml
 
-import os, zipfile
+import os, zipfile, html2text, codecs
 
 
 class JobTest(LiveServerTest):
@@ -27,30 +28,7 @@ class JobTest(LiveServerTest):
 
         # self.job_description = 'This is a job description'
         self.job = JobFactory.create(user=self.user)
-        GlobalParameterFactory.create(parameter_name='maximum-random-light-cones',parameter_value='10000')
-
-        self.output_paths = ['job1', 'large_job']
-        self.dir_paths = [os.path.join(settings.FILES_BASE, output_path) for output_path in self.output_paths]
-
-        self.file_names_to_contents = {
-                                       'file1': 'abc\n',
-                                       'filez2.txt': 'pqr\n',
-                                       'file3': 'xyz\n',
-                                       'job2/fileA': 'aaaahhhh',
-                                       'job2/fileB': 'baaaaaa',
-                                       }
-        self.file_names_to_contents2 = {
-                                       'waybigfile1': 'xnfaihnehrawlrwerajelrjxmjaeimrjwmrejlxaljrxm;kjmrlakjemrajlejrljrljaereirje;rjmriarie;rirjijeaim;jea;ljmxirjwra;ojer',
-                                       'waybigfile2': 'xnfaihnehrawlrwerajelrjxmjaeimrjwmrejlxaljrxm;kjmrlakjemrajlejrljrljaereirje;rjmriarie;rirjijeaim;jea;ljmxirjwra;ojer',
-                                       'waybigfile3': 'xnfaihnehrawlrwerajelrjxmjaeimrjwmrejlxaljrxm;kjmrlakjemrajlejrljrljaereirje;rjmriarie;rirjijeaim;jea;ljmxirjwra;ojer',
-                                       'waybigfile4': 'xnfaihnehrawlrwerajelrjxmjaeimrjwmrejlxaljrxm;kjmrlakjemrajlejrljrljaereirje;rjmriarie;rirjijeaim;jea;ljmxirjwra;ojer',
-                                       'waybigfile5': 'xnfaihnehrawlrwerajelrjxmjaeimrjwmrejlxaljrxm;kjmrlakjemrajlejrljrljaereirje;rjmriarie;rirjijeaim;jea;ljmxirjwra;ojer',
-                                       }
-
-        for file_name in self.file_names_to_contents.keys():
-            helper.create_file(self.dir_paths[0], file_name, self.file_names_to_contents)
-        for file_name in self.file_names_to_contents2.keys():
-            helper.create_file(self.dir_paths[1], file_name, self.file_names_to_contents2)
+        GlobalParameterFactory.create(parameter_name='maximum-random-light-cones', parameter_value='10000')
 
         self.simulation = SimulationFactory.create()
         self.galaxy = GalaxyModelFactory.create()
@@ -62,6 +40,31 @@ class JobTest(LiveServerTest):
         self.dust = DustModelFactory.create()
         self.snapshot = SnapshotFactory.create(dataset=self.dataset, redshift='0.33')
         self.band_pass_filters = [BandPassFilterFactory.create(), BandPassFilterFactory.create()]
+
+        self.output_paths = ['job1', 'large_job']
+        self.dir_paths = [os.path.join(settings.FILES_BASE, output_path) for output_path in self.output_paths]
+        txt_template = loader.get_template('jobs/summary.txt')
+        summary_context = Context(self.make_parameters())
+        self.summary_text = txt_template.render(summary_context)
+        self.file_names_to_contents = {
+                                       'file1': 'abc\n',
+                                       'filez2.txt': 'pqr\n',
+                                       'file3': 'xyz\n',
+                                       'job2/fileA': 'aaaahhhh',
+                                       'job2/fileB': 'baaaaaa',
+                                       'summary.txt': self.summary_text,
+                                       }
+        self.file_names_to_contents2 = {
+                                       'waybigfile1': 'xnfaihnehrawlrwerajelrjxmjaeimrjwmrejlxaljrxm;kjmrlakjemrajlejrljrljaereirje;rjmriarie;rirjijeaim;jea;ljmxirjwra;ojer',
+                                       'waybigfile2': 'xnfaihnehrawlrwerajelrjxmjaeimrjwmrejlxaljrxm;kjmrlakjemrajlejrljrljaereirje;rjmriarie;rirjijeaim;jea;ljmxirjwra;ojer',
+                                       'waybigfile3': 'xnfaihnehrawlrwerajelrjxmjaeimrjwmrejlxaljrxm;kjmrlakjemrajlejrljrljaereirje;rjmriarie;rirjijeaim;jea;ljmxirjwra;ojer',
+                                       'waybigfile4': 'xnfaihnehrawlrwerajelrjxmjaeimrjwmrejlxaljrxm;kjmrlakjemrajlejrljrljaereirje;rjmriarie;rirjijeaim;jea;ljmxirjwra;ojer',
+                                       'waybigfile5': 'xnfaihnehrawlrwerajelrjxmjaeimrjwmrejlxaljrxm;kjmrlakjemrajlejrljrljaereirje;rjmriarie;rirjijeaim;jea;ljmxirjwra;ojer',
+                                       }
+        for file_name in self.file_names_to_contents.keys():
+            helper.create_file(self.dir_paths[0], file_name, self.file_names_to_contents)
+        for file_name in self.file_names_to_contents2.keys():
+            helper.create_file(self.dir_paths[1], file_name, self.file_names_to_contents2)
         parameters = self.make_xml_parameters()
         self.job.parameters = parameters
         self.job.save()
@@ -92,6 +95,7 @@ class JobTest(LiveServerTest):
             'username' : self.username,
             'dark_matter_simulation': self.simulation.name,
             'galaxy_model': self.galaxy.name,
+            'output_properties': [self.filter, self.output_prop],
             'output_properties_1_name' : self.filter.name,
             'output_properties_1_label' : self.filter.label,
             'output_properties_1_units' : self.filter.units,
@@ -105,11 +109,12 @@ class JobTest(LiveServerTest):
             })
         parameters.update({
             'filter': self.filter.name,
-            'filter_min' : '1000000',
-            'filter_max' : 'None',
+            'filter_min': '1000000',
+            'filter_max': 'None',
             })
         parameters.update({
             'ssp_name': self.sed.name,
+            'band_pass_filters': [self.band_pass_filters[0].label + ' (Apparent)'],
             'band_pass_filter_label': self.band_pass_filters[0].label + ' (Apparent)',
             'band_pass_filter_id': self.band_pass_filters[0].filter_id,
             'band_pass_filter_name': self.band_pass_filters[0].filter_id,
@@ -124,79 +129,83 @@ class JobTest(LiveServerTest):
             })
         parameters.update({
             'geometry': 'Light-Cone',
-            'simulation_details': self.simulation.details,
-            'galaxy_model_details': self.galaxy.details,
-            'ssp_description': self.sed.description,
+            'simulation_details': html2text.html2text(self.simulation.details),
+            'galaxy_model_details': html2text.html2text(self.galaxy.details),
+            'apply_sed': True,
+            'ssp_description': html2text.html2text(self.sed.description),
+            'apply_dust': True,
             'dust_label': self.dust.label,
-            'dust_model_details': self.dust.details,
+            'dust_model_details': html2text.html2text(self.dust.details),
             'filter_label': self.filter.label,
             'filter_units': self.filter.units,
+            'record_filter': '1000000 ' + u'\u2264' + ' ' + self.filter.label + ' (' + self.filter.units + ')',
+            'output_format': 'CSV (Text)',
         })
         return parameters
 
     def make_xml_parameters(self):
         return light_cone_xml(self.make_parameters())
 
-    def make_job_summary_txt(self, parameters):
-        summary_txt = """General Properties
-==================
-
-Catalogue Geometry:	%(geometry)s
-Dataset: %(dark_matter_simulation)s / %(galaxy_model)s
-%(dark_matter_simulation)s
-%(simulation_details)s
-%(galaxy_model)s
-%(galaxy_model_details)s
-
-
-Dimensions
-RA: %(ra_opening_angle)s\xc2\xb0, Dec: %(dec_opening_angle)s\xc2\xb0
-Redshift: %(redshift_min)s \xe2\x89\xa4 z \xe2\x89\xa4 %(redshift_max)s
-
-Count: %(number_of_light_cones)s %(light_cone_type)s light cones
-
-
-Output Properties: 2 properties selected
-
-* %(output_properties_1_label)s
-
-* %(output_properties_2_label)s
-
-
-
-Spectral Energy Distribution
-============================
-
-Model: %(ssp_name)s
-%(ssp_description)s
-
-Bandpass Filters: 1 filters selected
-
-* %(band_pass_filter_label)s
-
-
-Dust: %(dust_label)s
-%(dust_model_details)s
-
-
-
-Mock Image
-==========
-
-Not selected
-
-
-Selection
-=========
-
-%(filter_min)s \xe2\x89\xa4 %(filter_label)s (%(filter_units)s)
-
-
-Output
-======
-
-CSV (Text)""" % parameters
-        return summary_txt
+#     def make_job_summary_txt(self, parameters):
+#         summary_txt = """General Properties
+# ==================
+#
+# Catalogue Geometry:	%(geometry)s
+# Dataset: %(dark_matter_simulation)s / %(galaxy_model)s
+# %(dark_matter_simulation)s
+# %(simulation_details)s
+# %(galaxy_model)s
+# %(galaxy_model_details)s
+#
+#
+# Dimensions
+# RA: %(ra_opening_angle)s\xc2\xb0, Dec: %(dec_opening_angle)s\xc2\xb0
+# Redshift: %(redshift_min)s \xe2\x89\xa4 z \xe2\x89\xa4 %(redshift_max)s
+#
+# Count: %(number_of_light_cones)s %(light_cone_type)s light cones
+#
+#
+# Output Properties: 2 properties selected
+#
+# * %(output_properties_1_label)s
+#
+# * %(output_properties_2_label)s
+#
+#
+#
+# Spectral Energy Distribution
+# ============================
+#
+# Model: %(ssp_name)s
+# %(ssp_description)s
+#
+# Bandpass Filters: 1 filters selected
+#
+# * %(band_pass_filter_label)s
+#
+#
+# Dust: %(dust_label)s
+# %(dust_model_details)s
+#
+#
+#
+# Mock Image
+# ==========
+#
+# Not selected
+#
+#
+# Selection
+# =========
+#
+# %(filter_min)s \xe2\x89\xa4 %(filter_label)s (%(filter_units)s)
+#
+#
+# Output
+# ======
+#
+# CSV (Text)""" % parameters
+#         return summary_txt
 
     def test_view_job_summary(self):
         self.login(self.username, self.password)
@@ -243,9 +252,9 @@ CSV (Text)""" % parameters
         for job_file in self.completed_job.files():
             download_path = os.path.join(self.DOWNLOAD_DIRECTORY, job_file.file_name.replace('/','_'))
             self.assertTrue(os.path.exists(download_path))
-            f = open(download_path)
-            self.assertEqual(self.file_names_to_contents[job_file.file_name], f.read())
-            f.close()
+            with codecs.open(download_path, encoding='utf-8') as f:
+                self.assertEqual(self.file_names_to_contents[job_file.file_name], f.read())
+            # f.close()
 
     def test_summary_txt_displayed(self):
         self.login(self.username, self.password)
@@ -260,14 +269,14 @@ CSV (Text)""" % parameters
         self.visit('view_job', self.completed_job.id)
 
         self.wait(1)
-        expected_txt = self.make_job_summary_txt(self.make_parameters())
+        # expected_txt = self.make_job_summary_txt(self.make_parameters())
         self.click('id_download_summary_txt')
         summary_txt_path = os.path.join(self.DOWNLOAD_DIRECTORY, 'summary.txt')
-        f = open(summary_txt_path)
-        # from code import interact
-        # interact(local=locals())
-        self.assertEqual(expected_txt, f.read())
-        f.close()
+        with codecs.open(summary_txt_path, encoding='utf-8') as f: # f = open(download_path)
+            self.assertEqual(self.summary_text, f.read())
+        # f = open(summary_txt_path)
+        # self.assertEqual(self.summary_text, f.read())
+        # f.close()
 
     # test that anonymous user cannot view job or download files
     def test_anonymous_user_cannot_view_or_download(self):
@@ -320,7 +329,7 @@ CSV (Text)""" % parameters
             
         download_link = self.selenium.find_element_by_id('id_download_as_zip')
         download_link.click()
-        
+
         download_path = os.path.join(self.DOWNLOAD_DIRECTORY, 'tao_output.zip')
 
         self.wait()
