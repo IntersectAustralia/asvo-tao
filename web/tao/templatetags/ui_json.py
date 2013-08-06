@@ -22,6 +22,5 @@ def metadata_json():
         strs.append('"%s": %s' % (DBClass.__name__ , 
             serializers.serialize('json', DBClass.objects.all())))
     json_string =  '{' + ',\n'.join(strs) + '}'
-    print json_string
     json_dict = json.loads(json_string)
     return json.dumps(json_dict, sort_keys=True, indent=4, separators=(',', ': '))

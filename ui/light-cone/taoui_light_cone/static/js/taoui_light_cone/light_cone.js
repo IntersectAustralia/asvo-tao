@@ -13,9 +13,6 @@ catalogue.modules.light_cone = function ($) {
 
     // KO ViewModel
     var vm = {
-        catalogue_geometry : ko.observable(),
-        ra_opening_angle : ko.observable(),
-        dec_opening_angle : ko.observable()
     }
 
 
@@ -479,32 +476,41 @@ catalogue.modules.light_cone = function ($) {
         show_tab($enclosing, 0);
     }
 
-
-    var cache_initial_data = function() {
+    var init_model_output_properties = function() {
         var $to = $(lc_id('output_properties'));
+        var current = [];
         $to.find('option[selected="selected"]').each(function () {
-            // console.log($(this).attr('value'));
-            var current = [];
-            var pseudo_json = [];
-            var $this = $(this);
-            var item = {
-                pk: $this.attr('value'),
-                fields: {
-                    label: $this.text()
-                }
-            };
-            pseudo_json.push(item);
-            if ($this.attr('selected')) {
-                current.push(item.pk);
-            }
-            // console.log(pseudo_json);
-            get_widget().cache_store(pseudo_json);
+            current.push($(this).attr('value'));
         });
+        return current;
     }
 
 
+    // var cache_initial_data = function() {
+    //     var $to = $(lc_id('output_properties'));
+    //     $to.find('option[selected="selected"]').each(function () {
+    //         // console.log($(this).attr('value'));
+    //         var current = [];
+    //         var pseudo_json = [];
+    //         var $this = $(this);
+    //         var item = {
+    //             pk: $this.attr('value'),
+    //             fields: {
+    //                 label: $this.text()
+    //             }
+    //         };
+    //         pseudo_json.push(item);
+    //         if ($this.attr('selected')) {
+    //             current.push(item.pk);
+    //         }
+    //         // console.log(pseudo_json);
+    //         get_widget().cache_store(pseudo_json);
+    //     });
+    // }
+
+
     var update_output_options = function () {
-        // cache_initial_data();
+        cache_initial_data();
         var data_set_id = $(lc_id('galaxy_model')).find(':selected').attr('value');
         var $to = $(lc_id('output_properties'));
         var $from = $(lc_id('output_properties_from'));
@@ -1177,7 +1183,18 @@ catalogue.modules.light_cone = function ($) {
         });
     }
 
-    var init_state = function() {
+    this.init_model = function() {
+        vm.catalogue_geometry = ko.observable($(lc_id('catalogue_geometry')).val());
+        vm.ra_opening_angle = ko.observable($(lc_id('ra_opening_angle')).val());
+        vm.dec_opening_angle = ko.observable($(lc_id('dec_opening_angle')).val());
+        vm.output_properties = ko.observable(init_model_output_properties());
+    }
+
+    this.get_vm = function() {
+        return vm;
+    }
+
+    this.init_ui = function() {
         var init_light_cone_type_value = $('input[name="light_cone-light_cone_type"][checked="checked"]').attr('value');
         catalogue.util.fill_in_summary('light_cone', 'number_of_light_cones', $(lc_id('number_of_light_cones')).val() + " " + init_light_cone_type_value + " light cones");
         $(lc_id('number_of_light_cones')).attr('class', 'light_cone_field'); // needed to associate the spinner with light-cone only, not when selecting box
@@ -1198,7 +1215,7 @@ catalogue.modules.light_cone = function ($) {
     }
 
 
-    this.init = function () {
+    this.chain_events = function () {
 
         vm.catalogue_geometry.subscribe(catalogue_geometry_change);
         put_handler_ra_and_dec('ra_opening_angle');
@@ -1207,8 +1224,9 @@ catalogue.modules.light_cone = function ($) {
 
         get_widget().init();
         // get_widget().init();
+
         init_event_handlers();
-        init_state();
+
         // this.vm.catalogue_geometry($(lc_id('catalogue_geometry')).val());
         ko.applyBindings(vm);
 
