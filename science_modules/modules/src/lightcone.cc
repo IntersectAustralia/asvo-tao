@@ -1656,7 +1656,7 @@ namespace tao {
 	    for( unsigned ii = 0; ii < _gal.batch_size(); ++ii )
 	    {
 	       // Get the distance and check it actually belongs here.
-	       real_type dist = sqrt( pos_x[ii]*pos_x[ii] + pos_y[ii]*pos_y[ii] + pos_z[ii]*pos_z[ii] )/(_h0/100.0);
+	       real_type dist = sqrt( pos_x[ii]*pos_x[ii] + pos_y[ii]*pos_y[ii] + pos_z[ii]*pos_z[ii] );
 	       ASSERT( dist >= _dist_range.start() && dist < _dist_range.finish() );
 
                // Set values.
@@ -1670,7 +1670,7 @@ namespace tao {
 	       if( dist > 0.0 )
 	       {
 		  array<real_type,3> rad_vec( pos_x[ii]/dist, pos_y[ii]/dist, pos_z[ii]/dist );
-		  real_type dist_z = dist + (rad_vec[0]*vel_x[ii] + rad_vec[1]*vel_y[ii] + rad_vec[2]*vel_z[ii])/_h0;
+		  real_type dist_z = dist + ((rad_vec[0]*vel_x[ii] + rad_vec[1]*vel_y[ii] + rad_vec[2]*vel_z[ii])/_h0)*(_h0/100.0);
 		  _gal_z_obs[ii] = _distance_to_redshift( dist_z );
 	       }
 	       else
