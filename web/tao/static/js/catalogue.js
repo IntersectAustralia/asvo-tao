@@ -350,7 +350,13 @@ jQuery(document).ready(function ($) {
         }
         for (var module in catalogue.modules) {
             console.log('Initialising module: ' + module)
-            catalogue.modules[module].init();
+            if (module=='light_cone') {
+                catalogue.modules[module].init_model();
+                catalogue.modules[module].init_ui();
+                catalogue.modules[module].chain_events();
+            } else {
+                catalogue.modules[module].init();
+            }
         }
         console.log('Finished module initialisation')
     }

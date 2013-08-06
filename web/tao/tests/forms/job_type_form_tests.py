@@ -53,6 +53,10 @@ class JobTypeFormTests(LiveServerTest):
 
 
     def test_light_cone_params(self):
+
+        # from code import interact
+        # interact(local=locals())
+        
         self.click('tao-tabs-' + MODULE_INDICES['light_cone'])
 
         lc_geometry = self.get_selected_option_text(self.lc_id('catalogue_geometry'))
