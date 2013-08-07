@@ -1,4 +1,6 @@
-import os, errno
+import os
+import errno
+import codecs
 
 from tao.settings import MODULE_INDICES
 from tao.xml_util import xml_parse
@@ -6,7 +8,7 @@ from tao.xml_util import xml_parse
 def create_file(dir_path, filename, filenames_to_contents):    
     file_path = os.path.join(dir_path, filename)
     mkdir_p(os.path.dirname(file_path))
-    with open(file_path, 'w') as f:
+    with codecs.open(file_path, 'w', encoding='utf-8') as f:
         f.write(filenames_to_contents[filename])
 
 def get_file_size(dir_path, file_name):
