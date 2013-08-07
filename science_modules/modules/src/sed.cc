@@ -175,9 +175,21 @@ namespace tao {
       _db_connect();
 
       // Try to read H0, omega_m and omega_l from the lightcone module.
-      _hubble = global_dict.get<real_type>( "workflow:light-cone:H0", 73.0 );
-      _omega_m = global_dict.get<real_type>( "workflow:light-cone:omega_m", 0.25 );
-      _omega_l = global_dict.get<real_type>( "workflow:light-cone:omega_l", 0.75 );
+      {
+	 std::string h_val, m_val, l_val;
+#ifdef MULTIDB
+	 (*_db)["tree_1"] << "SELECT metavalue FROM metadata WHERE metakey='hubble'", soci::into( h_val );
+	 (*_db)["tree_1"] << "SELECT metavalue FROM metadata WHERE metakey='omega_m'", soci::into( m_val );
+	 (*_db)["tree_1"] << "SELECT metavalue FROM metadata WHERE metakey='omega_l'", soci::into( l_val );
+#else
+	 _sql << "SELECT metavalue FROM metadata WHERE metakey='hubble'", soci::into( h_val );
+	 _sql << "SELECT metavalue FROM metadata WHERE metakey='omega_m'", soci::into( m_val );
+	 _sql << "SELECT metavalue FROM metadata WHERE metakey='omega_l'", soci::into( l_val );
+#endif
+	 _hubble = boost::lexical_cast<real_type>( h_val );
+	 _omega_m = boost::lexical_cast<real_type>( m_val );
+	 _omega_l = boost::lexical_cast<real_type>( l_val );
+      }
       LOGILN( "SED: Hubble constant: ", _hubble );
       LOGILN( "SED: OmegaM: ", _omega_m );
       LOGILN( "SED: OmegaL: ", _omega_l );
