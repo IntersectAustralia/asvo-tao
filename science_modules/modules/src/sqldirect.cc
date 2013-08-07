@@ -68,7 +68,7 @@ namespace tao {
 	   }
 
 
-	   _it++;
+
 
 
 	   LOG_EXIT();
@@ -78,6 +78,7 @@ namespace tao {
 	tao::galaxy& sqldirect::galaxy()
     {
 		LOG_ENTER();
+		return _gal;
 		LOG_EXIT();
     }
 
@@ -136,36 +137,37 @@ namespace tao {
 					case soci::dt_string:
 						LOGDLN( "Field Name: ", props.get_name(), " String" );
 						_field_types[i] = galaxy::STRING;
-						_field_stor[i] = new vector<string>( _batch_size );
+						_field_stor[i] = new vector<string>();
 						_field_names[i]=props.get_name();
 						break;
 					case soci::dt_double:
 						LOGDLN( "Field Name: ", props.get_name(), " Double" );
 						_field_types[i] = galaxy::DOUBLE;
-						_field_stor[i] = new vector<double>( _batch_size );
+						_field_stor[i] = new vector<double>();
 						_field_names[i]=props.get_name();
 						break;
 					case soci::dt_integer:
 						LOGDLN( "Field Name: ", props.get_name(), " Integer" );
 						_field_types[i] = galaxy::INTEGER;
-						_field_stor[i] = new vector<int>( _batch_size );
+						_field_stor[i] = new vector<int>();
 						_field_names[i]=props.get_name();
 						break;
 					case soci::dt_unsigned_long_long:
 						LOGDLN( "Field Name: ", props.get_name(), " unsigned Long Long" );
 						_field_types[i] = galaxy::UNSIGNED_LONG_LONG;
-						_field_stor[i] = new vector<unsigned long long>( _batch_size );
+						_field_stor[i] = new vector<unsigned long long>();
 						_field_names[i]=props.get_name();
 						break;
 					case soci::dt_long_long:
 						LOGDLN( "Field Name: ", props.get_name(), " Long Long" );
 						_field_types[i] = galaxy::LONG_LONG;
-						_field_stor[i] = new vector<long long>( _batch_size );
+						_field_stor[i] = new vector<long long>();
 						_field_names[i]=props.get_name();
 						break;
 					default:
 						ASSERT( 0 );
 				}
+
 			}
 		}
 
@@ -184,24 +186,31 @@ namespace tao {
 				{
 					case soci::dt_string:
 						((vector<string>*)_field_stor[i])->push_back(currentrow.get<string>(i));
+						//LOGD(currentrow.get<string>(i));
 						break;
 					case soci::dt_double:
 						((vector<double>*)_field_stor[i])->push_back(currentrow.get<double>(i));
+						//LOGD(currentrow.get<double>(i));
 						break;
 					case soci::dt_integer:
 						((vector<int>*)_field_stor[i])->push_back(currentrow.get<int>(i));
+						//LOGD(currentrow.get<int>(i));
 						break;
 					case soci::dt_unsigned_long_long:
 						((vector<unsigned long long>*)_field_stor[i])->push_back(currentrow.get<unsigned long long>(i));
+						//LOGD(currentrow.get<unsigned long long>(i));
 						break;
 					case soci::dt_long_long:
 						((vector<long long>*)_field_stor[i])->push_back(currentrow.get<long long>(i));
+						//LOGD(currentrow.get<long long>(i));
 						break;
 					default:
 						ASSERT( 0 );
 				}
+				//LOGD(" , ");
 
 			}
+			//LOGD("\n");
 			rowscount++;
 			if (rowscount%10000==0)
 				LOGDLN( "New Row: ", rowscount);
@@ -239,6 +248,11 @@ namespace tao {
 				default:
 					ASSERT( 0 );
 			}
+		}
+
+		for (auto& x: _gal._fields)
+		{
+		LOGDLN(x.first);
 		}
 
 
@@ -287,16 +301,11 @@ namespace tao {
 	tao::galaxy& sqldirect::operator*()
 	{
 		LOG_ENTER();
+		return _gal;
 		LOG_EXIT();
 
 	}
 
-	const set<string>&	sqldirect::get_output_fields() const
-	{
-		LOG_ENTER();
-		LOG_EXIT();
-
-	}
 
 
 

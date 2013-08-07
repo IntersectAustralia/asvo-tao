@@ -46,7 +46,6 @@ public:
 	///
 	tao::galaxy& operator*();
 
-	const set<string>&	get_output_fields() const;
 
 
 protected:

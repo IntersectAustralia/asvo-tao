@@ -116,6 +116,7 @@ namespace tao {
    }
    void votable::_write_table_header(const tao::galaxy& galaxy)
    {
+	   LOGDLN( "VOTable: Write Table header ");
       auto it = _fields.cbegin();
       auto unitit = _units.cbegin();
 
@@ -125,28 +126,34 @@ namespace tao {
 	 string FieldName=*lblit;
 	 replace_all(FieldName," ","_");
 	 FieldName=_xml_encode(FieldName);
+	 LOGDLN( "VOTable: Field Name ",FieldName, " ID ", _xml_encode(*it));
 	 _file<<"<FIELD name=\""+FieldName<<"\" ID=\"Col_"<<_xml_encode(*it)<<"\" ";
 	 auto val = galaxy.field( *it );
 	 switch( val.second )
 	 {
 	    case tao::galaxy::STRING:
 	       _file<<"datatype=\"char\" arraysize=\"*\" ";
+	       LOGDLN( "VOTable: FieldType string");
 	       break;
 
 	    case tao::galaxy::DOUBLE:
 	       _file<<"datatype=\"double\" ";
+	       LOGDLN( "VOTable: FieldType double");
 	       break;
 
 	    case tao::galaxy::INTEGER:
 	       _file<<"datatype=\"int\" ";
+	       LOGDLN( "VOTable: FieldType int");
 	       break;
 
 	    case tao::galaxy::UNSIGNED_LONG_LONG:
 	       _file<<"datatype=\"long\" ";
+	       LOGDLN( "VOTable: FieldType unsigned long long");
 	       break;
 
 	    case tao::galaxy::LONG_LONG:
 	       _file<<"datatype=\"long\" ";
+	       LOGDLN( "VOTable: FieldType long long");
 	       break;
 
 	    default:
@@ -155,6 +162,7 @@ namespace tao {
 
 	 if(*unitit!="")
 	 {
+		 LOGDLN( "VOTable: Unit ",_xml_encode(*unitit));
 		 _file<<"unit=\""+_xml_encode(*unitit)+"\"";
 	 }
 
@@ -171,6 +179,7 @@ namespace tao {
 ///
    void votable::execute()
    {
+	   LOGDLN( "VOTable: Start Execute");
       _timer.start();
       LOG_ENTER();
       ASSERT( parents().size() == 1 );
@@ -183,9 +192,12 @@ namespace tao {
       // Is this the first galaxy? if so, please write the fields information
       if(_isfirstgalaxy)
       {
-	 _write_table_header(gal);
-	 _start_table();
-	 _isfirstgalaxy=false;
+    	  LOGDLN( "VOTable: First Galaxy ");
+    	  _write_table_header(gal);
+
+
+    	  _start_table();
+    	  _isfirstgalaxy=false;
       }
       //Process the galaxy as any other galaxy
       process_galaxy( gal );
