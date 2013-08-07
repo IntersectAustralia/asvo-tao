@@ -13,8 +13,8 @@
             <td>
                 <span class="simulation" data-bind='text: hr_simulation_name'><!-- --></span> / <span class="galaxy_model"><!-- --></span> <a id="expand_dataset" href="#">>></a>
                 <span class="simulation_description">
-                    <br><b><span data-bind='text: hr_simulation_name'></span></b><br>
-                    <span data-bind='html: hr_simulation_details'></span>
+                    <br><b><span data-bindx='text: hr_simulation_name'></span></b><br>
+                    <span data-bindx='html: hr_simulation_details'></span>
                 </span>
                 <span class="galaxy_model_description"><!-- --></span>
                 <!-- <span class="galaxy_model_description" data-bind='text: hr_galaxy_model_name'><!-- --></span> -->
@@ -39,7 +39,7 @@
         </tr>
         <tr class="box_fields">
             <td>Redshift</td>
-            <td><span class="snapshot"><!-- --></span></td>
+            <td><span class="snapshot" data-bind='text: snapshot'><!-- --></span></td>
         </tr>
         <tr>
             <td>Output Properties</td>
