@@ -1031,11 +1031,6 @@ namespace tao {
       _field_map.insert( "tree_id", dict.get<string>( "tree_id", "globaltreeid" ) );
       _field_map.insert( "snapshot", dict.get<string>( "snapshot", "snapnum") );
 
-      // Astronomical values. Get these first just in case
-      // we do any redshift calculations in here.
-      _h0 = dict.get<real_type>( "h0",73.0 );
-      LOGDLN( "Using h0 = ", _h0 );
-
       // Should we use the BSP tree system?
       _accel_method = global_dict.get<string>( "settings:database:acceleration","none" );
       std::transform( _accel_method.begin(), _accel_method.end(), _accel_method.begin(), ::tolower );
@@ -1046,6 +1041,19 @@ namespace tao {
 
       // Connect to the database.
       _db_connect();
+
+      // Astronomical values. Get these first just in case
+      // we do any redshift calculations in here.
+      {
+	 std::string val;
+#ifdef MULTIDB
+	 (*_db)["tree_1"] << "SELECT metavalue FROM metadata WHERE metakey='hubble'", soci::into( val );
+#else
+	 _sql << "SELECT metavalue FROM metadata WHERE metakey='hubble'", soci::into( val );
+#endif
+	 _h0 = boost::lexical_cast<real_type>( val );
+      }
+      LOGILN( "Using h0 = ", _h0 );
 
       // Get box type.
       _box_type = dict.get<string>( "geometry", "light-cone" );
