@@ -485,31 +485,8 @@ catalogue.modules.light_cone = function ($) {
     }
 
 
-    // var cache_initial_data = function() {
-    //     var $to = $(lc_id('output_properties'));
-    //     $to.find('option[selected="selected"]').each(function () {
-    //         // console.log($(this).attr('value'));
-    //         var current = [];
-    //         var pseudo_json = [];
-    //         var $this = $(this);
-    //         var item = {
-    //             pk: $this.attr('value'),
-    //             fields: {
-    //                 label: $this.text()
-    //             }
-    //         };
-    //         pseudo_json.push(item);
-    //         if ($this.attr('selected')) {
-    //             current.push(item.pk);
-    //         }
-    //         // console.log(pseudo_json);
-    //         get_widget().cache_store(pseudo_json);
-    //     });
-    // }
-
-
     var update_output_options = function () {
-        cache_initial_data();
+        // cache_initial_data();
         var data_set_id = $(lc_id('galaxy_model')).find(':selected').attr('value');
         var $to = $(lc_id('output_properties'));
         var $from = $(lc_id('output_properties_from'));
@@ -957,11 +934,11 @@ catalogue.modules.light_cone = function ($) {
         });
 
 
-        $(lc_id('snapshot')).change(function (evt) {
-            var $this = $(this);
-            var snapshot_value = $this.find('option:selected').html();
-            // catalogue.util.fill_in_summary('light_cone', 'snapshot', snapshot_value);
-        });
+        // $(lc_id('snapshot')).change(function (evt) {
+        //     var $this = $(this);
+        //     var snapshot_value = $this.find('option:selected').html();
+        //     // catalogue.util.fill_in_summary('light_cone', 'snapshot', snapshot_value);
+        // });
 
 
         $('#id_output_format-supported_formats').change(function (evt) {
@@ -1030,7 +1007,11 @@ catalogue.modules.light_cone = function ($) {
 
     this.init_model = function() {
         vm.catalogue_geometry = ko.observable($(lc_id('catalogue_geometry')).val());
+        // vm.dark_matter_simulation_id = ko.observable($(lc_id('dark_matter_simulation')).val());
         vm.dark_matter_simulation = ko.observable($(lc_id('dark_matter_simulation')).val());
+        // vm.dark_matter_simulation = ko.computed(function(){
+        //     return catalogue.util.simulation(vm.dark_matter_simulation_id());
+        // })
 
         console.log($(lc_id('galaxy_model')).val());
 
