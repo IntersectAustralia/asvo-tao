@@ -31,12 +31,15 @@ the forms being hidden and all.
     <div>
         <h1>Viewing Job {{ job.id }}</h1>
         <div>
-            <div>
                 <strong>Optional Description:</strong>
+            <div id="inlineedit">
                 <div contenteditable id="id-job_description" data-name="job-description">
                     <em>{{ job.description }} </em>
                 </div>
-                <div><input id="id-save_edit" type="button" value="Save"/><input id="id-cancel_edit" type="button" value="Cancel"></div>
+                <div id="savecancel">
+                  <div id="id-save_edit" class="btn" type="button" value="Save">&#10003;</div>
+                  <div id="id-cancel_edit" class="btn" type="button" value="Cancel">X</div>
+                </div>
            </div>
             <div>
                 <strong>Download</strong>
@@ -98,4 +101,13 @@ the forms being hidden and all.
     {% csrf_token %}
     <input type="hidden" id="job_id" value="{{ job.id }}" />
     </form>
+
+    <script>
+      $("#inlineedit").click(function() {
+        $('#savecancel').show();
+      });
+      $("#id-job_description").focusout(function() {
+        $('#savecancel').hide();
+      });
+    </script>
 {% endblock content %}
