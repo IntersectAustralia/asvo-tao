@@ -193,7 +193,6 @@ class JobTest(LiveServerTest):
             self.assertTrue(os.path.exists(download_path))
             with codecs.open(download_path, encoding='utf-8') as f:
                 self.assertEqual(self.file_names_to_contents[job_file.file_name], f.read())
-            # f.close()
 
     def test_summary_txt_displayed(self):
         self.login(self.username, self.password)
