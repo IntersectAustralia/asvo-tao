@@ -78,11 +78,11 @@ catalogue.util = function ($) {
 
     var that = this;
 
-    this.snapshots = function(sid, gid) {
-        return $.grep(TaoMetadata.DataSet, function(elem, idx) { 
-            return elem.fields.simulation == sid && 
-            elem.fields.galaxy_model == gid 
-        })[0]
+    this.snapshots = function(dsid) {
+    	res = $.grep(TaoMetadata.Snapshot, function(elem, idx) {
+    		return elem.fields.dataset == dsid;
+    	});
+    	return res
     }
 
     this.simulation = function(id) {
