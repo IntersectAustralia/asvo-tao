@@ -175,6 +175,12 @@ catalogue.util = function ($) {
         })[0] || {}
     }
 
+    this.dataset_property = function(id) {
+        return $.grep(TaoMetadata.DataSetProperty, function(elem, idx) {
+            return elem.pk == id
+        })[0] || {}
+    }
+
 
     this.filters = function(id) {
         var data_set = $.grep(TaoMetadata.DataSet, function(elem, idx) { 

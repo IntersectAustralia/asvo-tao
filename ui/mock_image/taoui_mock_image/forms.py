@@ -9,14 +9,11 @@ import os
 
 from django import forms
 from django.forms.formsets import formset_factory
-import form_utils.fields as bf_fields
 from form_utils.forms import BetterForm
 from django.utils.translation import ugettext_lazy as _
 
 from tao import datasets
-from tao import models as tao_models
 from tao.forms import FormsGraph
-from tao.widgets import ChoiceFieldWithOtherAttrs, TwoSidedSelectWidget
 from tao.xml_util import module_xpath, module_xpath_iterate
 
 def strip_namespace(tag):

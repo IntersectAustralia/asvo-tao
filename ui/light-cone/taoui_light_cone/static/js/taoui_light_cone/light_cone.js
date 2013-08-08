@@ -5,7 +5,6 @@ catalogue.modules = catalogue.modules || {};
 
 catalogue.modules.light_cone = function ($) {
 
-    this.lc_output_props_widget = new TwoSidedSelectWidget(lc_id('output_properties'), true);
 
     function get_widget() {
         return catalogue.modules.light_cone.lc_output_props_widget;
@@ -474,15 +473,6 @@ catalogue.modules.light_cone = function ($) {
         $field.after('<span class="lc_number-inline"></span>');
         $enclosing.find('span.lc_number-inline').text(msg);
         show_tab($enclosing, 0);
-    }
-
-    var init_model_output_properties = function() {
-        var $to = $(lc_id('output_properties'));
-        var current = [];
-        $to.find('option[selected="selected"]').each(function () {
-            current.push($(this).attr('value'));
-        });
-        return current;
     }
 
 
@@ -1010,7 +1000,7 @@ catalogue.modules.light_cone = function ($) {
             return false;
         });
 
-
+        /*
         get_widget().change_event(function (evt) {
             catalogue.modules.record_filter.update_filter_options();
 
@@ -1021,7 +1011,7 @@ catalogue.modules.light_cone = function ($) {
             else
                 catalogue.util.fill_in_summary('light_cone', 'output_properties', output_properties_count + " properties selected");
         });
-
+        */
 
         $('#expand_output_properties').click(function (e) {
             e.preventDefault();
@@ -1037,9 +1027,11 @@ catalogue.modules.light_cone = function ($) {
         });
 
 
+        /*
         get_widget().option_clicked_event(function (cache_item) {
             catalogue.util.show_output_property_info(cache_item);
         });
+        */
 
 
         $(lc_id('dark_matter_simulation')).change(function (evt) {
@@ -1183,11 +1175,41 @@ catalogue.modules.light_cone = function ($) {
         });
     }
 
+    function get_init_output_options() {
+        resp = {'selected': [], 'not_selected':[]}
+        $(lc_id('output_properties') + ' select option').each(function(idx, elem){
+            var value = $(elem).attr('value');
+            var where = $(elem).attr('selected') ? 'selected' : 'not_selected';
+            resp[where].push(catalogue.util.dataset_property(value));
+        });
+        console.log(resp);
+        return resp;
+    }
+
+    var dataset_property_to_option = function(dsp) {
+        return {
+            'value': dsp.pk,
+            'text' : dsp.fields.label,
+            'group': dsp.fields.group,
+            'units': dsp.fields.units
+        }
+    }
+
     this.init_model = function() {
         vm.catalogue_geometry = ko.observable($(lc_id('catalogue_geometry')).val());
         vm.ra_opening_angle = ko.observable($(lc_id('ra_opening_angle')).val());
         vm.dec_opening_angle = ko.observable($(lc_id('dec_opening_angle')).val());
-        vm.output_properties = ko.observable(init_model_output_properties());
+        vm.output_properties = TwoSidedSelectWidget(lc_id('output_properties'),
+            get_init_output_options(), dataset_property_to_option);
+        vm.current_output_property = ko.observable(undefined);
+        vm.output_properties.from_side.clicked_option.subscribe(function(v) {
+            var op = catalogue.util.dataset_property(v);
+            vm.current_output_property(op);
+        })
+        vm.output_properties.to_side.clicked_option.subscribe(function(v) {
+            var op = catalogue.util.dataset_property(v);
+            vm.current_output_property(op);
+        })
     }
 
     this.get_vm = function() {
@@ -1222,7 +1244,7 @@ catalogue.modules.light_cone = function ($) {
         put_handler_ra_and_dec('dec_opening_angle');
         catalogue.modules.light_cone.util = new catalogue.modules.light_cone.util();
 
-        get_widget().init();
+        // get_widget().init();
         // get_widget().init();
 
         init_event_handlers();

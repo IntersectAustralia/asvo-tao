@@ -166,13 +166,15 @@ class Form(BetterForm):
 
         if self.is_bound:
             dataset_id = self.data[self.prefix + '-galaxy_model']
-            objs = datasets.output_choices(dataset_id)
-            output_choices = [(x.id, x.label) for x in objs]
+            sid = kwargs['light_cone-dark_matter_simulation']
         else:
-            output_choices = []
+            sid = datasets.dark_matter_simulation_choices()[0][0]
+            dataset_id = datasets.galaxy_model_choices(sid)[0][0]
+        objs = datasets.output_choices(dataset_id)
+        output_choices = [(x.id, x.label) for x in objs]
 
         self.fields['dark_matter_simulation'] = ChoiceFieldWithOtherAttrs(choices=datasets.dark_matter_simulation_choices())
-        self.fields['galaxy_model'] = ChoiceFieldWithOtherAttrs(choices=datasets.galaxy_model_choices())
+        self.fields['galaxy_model'] = ChoiceFieldWithOtherAttrs(choices=datasets.galaxy_model_choices(sid))
         self.fields['snapshot'] = ChoiceFieldWithOtherAttrs(required=False, choices=datasets.snapshot_choices(), widget=SelectWithOtherAttrs(attrs={'class': 'light_box_field'}))
         self.fields['number_of_light_cones'] = forms.IntegerField(label=_('Select the number of light-cones:'), required=False, initial='1')
         self.fields['output_properties'] = bf_fields.forms.MultipleChoiceField(required=True, choices=output_choices, widget=TwoSidedSelectWidget)
@@ -184,10 +186,12 @@ class Form(BetterForm):
                 'data_sets': tao_models.DataSet.objects.select_related('galaxy_model').all(),
             }
         self.fields['snapshot'].label = 'Redshift'
+
+        ## Knockout data-bind
         self.fields['catalogue_geometry'].widget.attrs['data-bind'] = 'value: catalogue_geometry'
         self.fields['ra_opening_angle'].widget.attrs['data-bind'] = 'value: ra_opening_angle'
         self.fields['dec_opening_angle'].widget.attrs['data-bind'] = 'value: dec_opening_angle'
-        # print self.fields['catalogue_geometry']
+        self.fields['output_properties'].widget.attrs['ko_data'] = 'output_properties'
 
     def check_redshift_min_less_than_redshift_max(self):
         redshift_min_field = self.cleaned_data.get('redshift_min')

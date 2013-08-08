@@ -79,5 +79,45 @@
         </fieldset>
     </form>
 
+    <script type="text/html" id="select_with_groups">
+            <!-- ko if: !has_groups -->
+            <select multiple="multiple" data-bind="foreach: options, selectedOptions: options_selected">
+                <option data-bind="value: value, text: text, click: option_click" />
+            </select>
+            <!-- /ko -->
+            <!-- ko if: has_groups -->
+            <select multiple="multiple" data-bind="foreach: option_groups, selectedOptions: options_selected">
+              <optgroup data-bind="attr: {label: group_name}, foreach: options">
+                <option data-bind="value: value, text: text, click: option_click" />
+              </optgroup>
+            </select>
+            <!-- /ko -->
+    </script>
+    <script type="text/html" id="two_sided_select_widget">
+      <table data-bind="attr: {'id': id + '-table'}" class="ui-resizable" style="width: 492px; height: 294px;">
+        <tbody>
+        <tr>
+          <td>Available</td>
+          <td></td>
+          <td>Selected</td>
+        </tr>
+        <tr>
+          <td><input type="text" placeholder="Filter" data-bind="value: filter, valueUpdate: 'afterkeydown'"></td>
+          <td rowspan="2" data-bind="attr:{'id': id + '-buttons'}" vertical-align="middle">
+          <a href="#" data-bind="attr:{'id': id + '_op_add_all'}, click: op_add_all">&gt;&gt;</a>
+          <a href="#" data-bind="attr:{'id': id + '_op_add'}, click: op_add">&gt;</a>
+          <a href="#" data-bind="attr:{'id': id + '_op_remove'}, click: op_remove">&lt;</a>
+          <a href="#" data-bind="attr:{'id': id + '_op_remove_all'}, click: op_remove_all">&lt;&lt;</a>
+          </td>
+          <td rowspan="2" data-bind="template: { name: 'select_with_groups', data: to_side }, attr:{'id': id + '-right'}">
+          </td>
+        </tr>
+        <tr>
+          <td style="height:100%" data-bind="template: {name: 'select_with_groups', data: from_side }, attr:{'id': id + '-left'}">
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </script>
 
 {% endblock content %}
