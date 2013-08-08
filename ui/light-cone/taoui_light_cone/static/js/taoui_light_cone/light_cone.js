@@ -515,37 +515,6 @@ catalogue.modules.light_cone = function ($) {
     }
 
 
-
-
-//    var update_snapshot_options = function () {
-//        var simulation_id = $(lc_id('dark_matter_simulation')).val();
-//        var galaxy_model_id = $(lc_id('galaxy_model')).find(':selected').attr('data-galaxy_model_id');
-//        var $snapshot = $(lc_id('snapshot'));
-//        var current = $snapshot.val();
-//        $snapshot.empty();
-//
-//        console.log('Updating snapshot options')
-//        data = catalogue.util.snapshots(simulation_id, galaxy_model_id)
-//        for (i = 0; i < data.length; i++) {
-//            var item = data[i];
-//            $option = $('<option/>');
-//            $option.attr('value', item.pk);
-//            // Redshift Formatting:
-//            // The age of the universe as a function of redshift is 1 / (1 + z) where z is the redshift.
-//            // So z=0 is the present, and z=Infinity is the Big Bang.
-//            // This is a non-linear relationship with more variation at smaller z values.
-//            // To present figures that are easy to read and have sensible precision, redshift will be displayed with up to 5 decimals.
-//            $option.html(format_redshift(item.fields.redshift));
-//            if (item.pk == current) {
-//                $option.attr('selected', 'selected');
-//            }
-//            $snapshot.append($option);
-//        }
-//        $(lc_id('snapshot')).change();
-//
-//    };
-
-
     // var show_galaxy_model_info = function (galaxy_model_id) {
     //     var $galaxy_model_info = $('div.galaxy-model-info');
     //     if (galaxy_model_id === 0) {
@@ -1044,7 +1013,6 @@ catalogue.modules.light_cone = function ($) {
     this.format_redshift = format_redshift;
 
     var snapshot_id_to_redshift = function(snapshot_id) {
-    	console.log('snapshot_id_to_redshift')
         res = $.grep(TaoMetadata.Snapshot, function(elem, idx) { 
             return elem.pk == snapshot_id
         })[0].fields.redshift;
@@ -1052,11 +1020,8 @@ catalogue.modules.light_cone = function ($) {
     }
 
     this.init_model = function() {
-    	console.log("light_cone.init_module()")
         vm.catalogue_geometry = ko.observable($(lc_id('catalogue_geometry')).val());
         vm.dark_matter_simulation = ko.observable($(lc_id('dark_matter_simulation')).val());
-
-        console.log("light_cone.init_module(): galaxy_model = " + $(lc_id('galaxy_model')).val());
 
         vm.galaxy_model = ko.observable($(lc_id('galaxy_model')).val());
         // vm.galaxy_model_id = ko.observable($(lc_id('galaxy_model')).attr('data-galaxy_model_id');

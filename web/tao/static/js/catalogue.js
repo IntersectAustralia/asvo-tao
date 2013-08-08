@@ -83,17 +83,14 @@ catalogue.util = function ($) {
         // by Simulation ID & Galaxy Model ID
     	var dsid;
     	var res;
-    	console.log('catalogue.util.snapshots(sid=' + sid + ', gid=' + gid +')')
-    	//debugger;
+
         dsid = $.grep(TaoMetadata.DataSet, function(elem, idx) { 
             return elem.fields.simulation == sid && 
             	elem.fields.galaxy_model == gid 
         })[0].pk;
-    	console.log('catalogue.util.snapshots: dsid=' + dsid)
     	res = $.grep(TaoMetadata.Snapshot, function(elem, idx) {
     		return elem.fields.dataset == dsid;
     	});
-    	console.log('Length: ' + res.length)
     	return res
     }
 
