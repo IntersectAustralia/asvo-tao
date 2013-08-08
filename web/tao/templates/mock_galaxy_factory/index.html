@@ -42,7 +42,9 @@
                 <li><a href="#tabs-{{ forms_size }}" id="tao-tabs-{{ forms_size }}">Summary and Submit</a></li>
             </ul>
             {% for form in forms %}
-                <div id="tabs-{{ forloop.counter }}" class="tao-tab" tao-number="{{ forloop.counter }}">
+                <div id="tabs-{{ forloop.counter }}" class="tao-tab"
+                     tao-number="{{ forloop.counter }}"
+                     data-bind="blah: console.log('BINDING EDIT: {{ form.prefix }}'), bluh: console.log($data.{{ form.prefix }}), with: {{ form.prefix }}">
 
                     {% if forloop.counter > 1 %}
                         <input type="button" value="Next &gt;" class="btn tao-next" />
@@ -67,7 +69,9 @@
                 <div class="row-fluid">
                     <textarea name="job-description" placeholder="My description (optional)" cols="1500"></textarea>
                     {% for form in forms %}
+                    <div data-bind="blah: console.log('BINDING SUMMARY: {{ form.prefix }}'), bluh: console.log($data.{{ form.prefix }}), with: {{ form.prefix }}">
                         {% include form.SUMMARY_TEMPLATE %}
+                    </div>
                     {% endfor %}
                 </div>
                 <div class="form-actions">

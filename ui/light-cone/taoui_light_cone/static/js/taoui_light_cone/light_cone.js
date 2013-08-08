@@ -705,19 +705,7 @@ catalogue.modules.light_cone = function ($) {
     //
     var catalogue_geometry_change = function (newValue) {
 
-        var light_cone_fields = $('.light_cone_field').closest('div.control-group');
-        var light_box_fields = $('.light_box_field').closest('div.control-group');
-
-        if (vm.catalogue_geometry() == "box") {
-            light_box_fields.show();
-            light_cone_fields.hide();
-            $('div.summary_light_cone .box_fields').show();
-            $('div.summary_light_cone .light_cone_fields').hide();
-        } else {
-            light_box_fields.hide();
-            light_cone_fields.show();
-            $('div.summary_light_cone .box_fields').hide();
-            $('div.summary_light_cone .light_cone_fields').show();
+        if (vm.catalogue_geometry().id != "box") {
             calculate_max_number_of_cones();
         }
     };
@@ -903,12 +891,6 @@ catalogue.modules.light_cone = function ($) {
         }
     }
 
-    function get_output_options(did) {
-        resp = {'selected': [], 'not_selected':[]}
-        resp.selected = ko.utils.arrayMap(catalogue.util.output_choices(did),dataset_property_to_option);
-        return resp;
-    }
-
     var format_redshift = function(redshift_string) {
         var redshift = parseFloat(redshift_string);
         var whole_digit = parseInt(redshift).toString().length;
@@ -932,7 +914,8 @@ catalogue.modules.light_cone = function ($) {
         vm.catalogue_geometry = ko.observable(vm.catalogue_geometries()[1]);
 
         vm.dark_matter_simulations = ko.observableArray(TaoMetadata.Simulation);
-        vm.dark_matter_simulation = ko.observable(vm.dark_matter_simulations()[1]);
+        vm.dark_matter_simulation = ko.observable(vm.dark_matter_simulations()[1])
+            .extend({logger: 'simulation'});
 
         vm.datasets = ko.computed(function(){
             return catalogue.util.datasets(vm.dark_matter_simulation().pk)
@@ -940,9 +923,17 @@ catalogue.modules.light_cone = function ($) {
 
         vm.light_cone_type = ko.observable('unique');
 
-        vm.dataset = ko.observable($(lc_id('dataset')).val());
-        vm.dataset.subscribe(function(did) {
-            vm.output_properties.options_raw(get_output_options(did));
+        vm.dataset = ko.observable(vm.datasets()[0])
+            .extend({logger: 'dataset'});
+        vm.dataset.subscribe(function(dataset) {
+            var objs = catalogue.util.output_choices(dataset.id);
+            console.log('output_properties := ' + objs.length + ' objects, id=' + dataset.id);
+            vm.output_properties.new_options(objs);
+        });
+
+        vm.galaxy_model = ko.computed(function(){
+            var ds = catalogue.util.dataset(vm.dataset().id);
+            return catalogue.util.galaxy_model(ds.fields.galaxy_model);
         });
 
         vm.ra_opening_angle = ko.observable();
@@ -960,11 +951,7 @@ catalogue.modules.light_cone = function ($) {
             dataset_property_to_option);
 
         vm.current_output_property = ko.observable(undefined);
-        vm.output_properties.from_side.clicked_option.subscribe(function(v) {
-            var op = catalogue.util.dataset_property(v);
-            vm.current_output_property(op);
-        });
-        vm.output_properties.to_side.clicked_option.subscribe(function(v) {
+        vm.output_properties.clicked_option.subscribe(function(v) {
             var op = catalogue.util.dataset_property(v);
             vm.current_output_property(op);
         });
@@ -977,7 +964,7 @@ catalogue.modules.light_cone = function ($) {
         vm.number_of_light_cones = ko.observable();
 
         vm.snapshots = ko.computed(function (){ 
-            return catalogue.util.snapshots(vm.dataset())
+            return catalogue.util.snapshots(vm.dataset().id)
         });
         vm.snapshot = ko.observable(vm.snapshots()[0].pk);
         vm.snapshot_redshift = ko.computed(function() { 
@@ -1028,36 +1015,32 @@ catalogue.modules.light_cone = function ($) {
             return result;
         });
 
-
-    }
-
-    this.get_vm = function() {
         return vm;
-    }
-
-
-    this.init_ui = function() {
-        var init_light_cone_type_value = $('input[name="light_cone-light_cone_type"][checked="checked"]').attr('value');
-        catalogue.util.fill_in_summary('light_cone', 'number_of_light_cones', $(lc_id('number_of_light_cones')).val() + " " + init_light_cone_type_value + " light cones");
-        $(lc_id('number_of_light_cones')).attr('class', 'light_cone_field'); // needed to associate the spinner with light-cone only, not when selecting box
-
-        $('div.summary_light_cone .output_properties_list').hide();
-        $('div.summary_light_cone .simulation_description, div.summary_light_cone .galaxy_model_description').hide();
 
     }
 
-
-    this.chain_events = function () {
-
-        vm.catalogue_geometry.subscribe(catalogue_geometry_change);
-        put_handler_ra_and_dec('ra_opening_angle');
-        put_handler_ra_and_dec('dec_opening_angle');
-        catalogue.modules.light_cone.util = new catalogue.modules.light_cone.util();
-
-        init_event_handlers();
-
-        ko.applyBindings(vm);
-
-    }
+//    this.init_ui = function() {
+//        var init_light_cone_type_value = $('input[name="light_cone-light_cone_type"][checked="checked"]').attr('value');
+//        catalogue.util.fill_in_summary('light_cone', 'number_of_light_cones', $(lc_id('number_of_light_cones')).val() + " " + init_light_cone_type_value + " light cones");
+//        $(lc_id('number_of_light_cones')).attr('class', 'light_cone_field'); // needed to associate the spinner with light-cone only, not when selecting box
+//
+//        $('div.summary_light_cone .output_properties_list').hide();
+//        $('div.summary_light_cone .simulation_description, div.summary_light_cone .galaxy_model_description').hide();
+//
+//    }
+//
+//
+//    this.chain_events = function () {
+//
+//        vm.catalogue_geometry.subscribe(catalogue_geometry_change);
+//        put_handler_ra_and_dec('ra_opening_angle');
+//        put_handler_ra_and_dec('dec_opening_angle');
+//        catalogue.modules.light_cone.util = new catalogue.modules.light_cone.util();
+//
+//        init_event_handlers();
+//
+//        ko.applyBindings(vm);
+//
+//    }
 
 }
