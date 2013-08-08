@@ -175,7 +175,7 @@ class Form(BetterForm):
 
         self.fields['dark_matter_simulation'] = ChoiceFieldWithOtherAttrs(choices=datasets.dark_matter_simulation_choices())
         self.fields['galaxy_model'] = ChoiceFieldWithOtherAttrs(choices=datasets.galaxy_model_choices(sid))
-        self.fields['snapshot'] = ChoiceFieldWithOtherAttrs(required=False, choices=datasets.snapshot_choices(), widget=SelectWithOtherAttrs(attrs={'class': 'light_box_field'}))
+        self.fields['snapshot'] = ChoiceFieldWithOtherAttrs(required=False, label='Redshift', choices=datasets.snapshot_choices(), widget=SelectWithOtherAttrs(attrs={'class': 'light_box_field'}))
         self.fields['number_of_light_cones'] = forms.IntegerField(label=_('Select the number of light-cones:'), required=False, initial='1')
         self.fields['output_properties'] = bf_fields.forms.MultipleChoiceField(required=True, choices=output_choices, widget=TwoSidedSelectWidget)
 
@@ -185,13 +185,23 @@ class Form(BetterForm):
                 'simulations': tao_models.Simulation.objects.all(),
                 'data_sets': tao_models.DataSet.objects.select_related('galaxy_model').all(),
             }
-        self.fields['snapshot'].label = 'Redshift'
 
-        ## Knockout data-bind
+
+        # Knockout.js data bindings
         self.fields['catalogue_geometry'].widget.attrs['data-bind'] = 'value: catalogue_geometry'
+        self.fields['dark_matter_simulation'].widget.attrs['data-bind'] = 'value: dark_matter_simulation'
+        self.fields['galaxy_model'].widget.attrs['data-bind'] = 'value: galaxy_model'
         self.fields['ra_opening_angle'].widget.attrs['data-bind'] = 'value: ra_opening_angle'
         self.fields['dec_opening_angle'].widget.attrs['data-bind'] = 'value: dec_opening_angle'
         self.fields['output_properties'].widget.attrs['ko_data'] = 'output_properties'
+        self.fields['box_size'].widget.attrs['data-bind'] = 'value: box_size'
+        self.fields['snapshot'].widget.attrs['data-bind'] = 'value: snapshot'
+        self.fields['redshift_min'].widget.attrs['data-bind'] = 'value: redshift_min'
+        self.fields['redshift_max'].widget.attrs['data-bind'] = 'value: redshift_max'
+        self.fields['light_cone_type'].widget.attrs['data-bind'] = 'value: light_cone_type'
+        self.fields['number_of_light_cones'].widget.attrs['data-bind'] = 'value: number_of_light_cones'
+        self.fields['output_properties'].widget.attrs['data-bind'] = 'value: output_properties'
+        
 
     def check_redshift_min_less_than_redshift_max(self):
         redshift_min_field = self.cleaned_data.get('redshift_min')
