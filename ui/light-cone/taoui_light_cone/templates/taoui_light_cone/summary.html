@@ -6,18 +6,20 @@
         </tr>
         <tr>
             <td>Catalogue Geometry</td>
-            <td><span class="geometry_type" data-bind='text: hr_catalogue_geometry'><!-- --></span></td>
+            <td><span class="geometry_type" data-bind='text: catalogue_geometry().name'><!-- --></span></td>
         </tr>
         <tr>
             <td>Dataset</td>
             <td>
-                <span class="simulation" data-bind='text: hr_simulation_name'><!-- --></span> / <span class="galaxy_model"><!-- --></span> <a id="expand_dataset" href="#">>></a>
+                <span class="simulation" data-bind='text: dark_matter_simulation().fields.name'><!-- --></span> / <span class="galaxy_model" data-bind='text: galaxy_model().fields.name'><!-- --></span> <a id="expand_dataset" href="#">>></a>
                 <span class="simulation_description">
-                    <br><b><span data-bindx='text: hr_simulation_name'></span></b><br>
-                    <span data-bindx='html: hr_simulation_details'></span>
+                    <br><b><span data-bind='text: dark_matter_simulation().fields.name'></span></b><br>
+                    <span data-bind='html: dark_matter_simulation().fields.details'></span>
                 </span>
-                <span class="galaxy_model_description"><!-- --></span>
-                <!-- <span class="galaxy_model_description" data-bind='text: hr_galaxy_model_name'><!-- --></span> -->
+                <span class="galaxy_model_description">
+                <br><b><span data-bind='text: galaxy_model().fields.name'></span></b><br>
+                    <span data-bind='html: galaxy_model().fields.details'></span>
+                </span>
             </td>
         </tr>
         <tr class="light_cone_fields">
@@ -39,7 +41,8 @@
         </tr>
         <tr class="box_fields">
             <td>Redshift</td>
-            <td><span class="snapshot" data-bind='text: snapshot'><!-- --></span></td>
+            <td><span class="snapshot"></span></td>
+            <!-- <td><span class="snapshot" data-bind='text: hr_snapshot_name'><!--</span></td> --> -->
         </tr>
         <tr>
             <td>Output Properties</td>

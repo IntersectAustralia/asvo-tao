@@ -509,48 +509,33 @@ catalogue.modules.light_cone = function ($) {
     };
 
 
-    var update_snapshot_options = function () {
-        var simulation_id = $(lc_id('dark_matter_simulation')).val();
-        var galaxy_model_id = $(lc_id('galaxy_model')).find(':selected').attr('data-galaxy_model_id');
-        var $snapshot = $(lc_id('snapshot'));
-        var current = $snapshot.val();
-        $snapshot.empty();
+    // var update_snapshot_options = function () {
+    //     var simulation_id = $(lc_id('dark_matter_simulation')).val();
+    //     var galaxy_model_id = $(lc_id('galaxy_model')).find(':selected').attr('data-galaxy_model_id');
+    //     var $snapshot = $(lc_id('snapshot'));
+    //     var current = $snapshot.val();
+    //     $snapshot.empty();
 
-        data = catalogue.util.snapshots(simulation_id, galaxy_model_id)
-        for (i = 0; i < data.length; i++) {
-            var item = data[i];
-            $option = $('<option/>');
-            $option.attr('value', item.pk);
-            // Redshift Formatting:
-            // The age of the universe as a function of redshift is 1 / (1 + z) where z is the redshift.
-            // So z=0 is the present, and z=Infinity is the Big Bang.
-            // This is a non-linear relationship with more variation at smaller z values.
-            // To present figures that are easy to read and have sensible precision, redshift will be displayed with up to 5 decimals.
-            $option.html(format_redshift(item.fields.redshift));
-            if (item.pk == current) {
-                $option.attr('selected', 'selected');
-            }
-            $snapshot.append($option);
-        }
-        $(lc_id('snapshot')).change();
-
-    };
-
-
-    // var show_galaxy_model_info = function (galaxy_model_id) {
-    //     var $galaxy_model_info = $('div.galaxy-model-info');
-    //     if (galaxy_model_id === 0) {
-    //         $galaxy_model_info.hide();
-    //         return;
+    //     data = []
+    //     // data = catalogue.util.snapshots(simulation_id, vm.galaxy_model.pk)
+    //     for (i = 0; i < data.length; i++) {
+    //         var item = data[i];
+    //         $option = $('<option/>');
+    //         $option.attr('value', item.pk);
+    //         // Redshift Formatting:
+    //         // The age of the universe as a function of redshift is 1 / (1 + z) where z is the redshift.
+    //         // So z=0 is the present, and z=Infinity is the Big Bang.
+    //         // This is a non-linear relationship with more variation at smaller z values.
+    //         // To present figures that are easy to read and have sensible precision, redshift will be displayed with up to 5 decimals.
+    //         $option.html(format_redshift(item.fields.redshift));
+    //         if (item.pk == current) {
+    //             $option.attr('selected', 'selected');
+    //         }
+    //         $snapshot.append($option);
     //     }
-    //     data = catalogue.util.galaxy_model(galaxy_model_id)
-    //     $('div.galaxy-model-info .name').html(data.fields.name);
-    //     $('div.galaxy-model-info .details').html(data.fields.details);
-    //     $galaxy_model_info.show();
-    //     catalogue.util.fill_in_summary('light_cone', 'galaxy_model', data.fields.name);
-    //     catalogue.util.fill_in_summary('light_cone', 'galaxy_model_description', '<br><b>' + data.fields.name + ':</b><br>' + data.fields.details);
-    // };
+    //     $(lc_id('snapshot')).change();
 
+    // };
 
     var update_galaxy_model_options = function (simulation_id) {
         var $galaxy_model = $(lc_id('galaxy_model'));
@@ -754,7 +739,6 @@ catalogue.modules.light_cone = function ($) {
 
     var validate_number_of_boxes = function() {
         if ($('#max_job_size').hasClass('job_too_large_error')) {
-            console.log($('#max_job_size').text());
             catalogue.util.show_tab($('#max_job_size'), 0);
             return false;
         } else {
@@ -776,22 +760,17 @@ catalogue.modules.light_cone = function ($) {
     //
     var catalogue_geometry_change = function (newValue) {
 
-        console.log('catalogue_geometry change: ' + newValue);
-
         var light_cone_fields = $('.light_cone_field').closest('div.control-group');
         var light_box_fields = $('.light_box_field').closest('div.control-group');
 
         if (vm.catalogue_geometry() == "box") {
             light_box_fields.show();
             light_cone_fields.hide();
-            catalogue.util.fill_in_summary('light_cone', 'geometry_type', 'Box');
             $('div.summary_light_cone .box_fields').show();
             $('div.summary_light_cone .light_cone_fields').hide();
-            $(lc_id('snapshot')).change();
         } else {
             light_box_fields.hide();
             light_cone_fields.show();
-            catalogue.util.fill_in_summary('light_cone', 'geometry_type', 'Light-Cone');
             $('div.summary_light_cone .box_fields').hide();
             $('div.summary_light_cone .light_cone_fields').show();
             calculate_max_number_of_cones();
@@ -833,18 +812,6 @@ catalogue.modules.light_cone = function ($) {
         });
 
 
-        get_widget().change_event(function (evt) {
-            catalogue.modules.record_filter.update_filter_options();
-
-            var output_properties_count = catalogue.util.list_multiple_selections_in_summary('light_cone', 'output_properties');
-
-            if (output_properties_count == 1)
-                catalogue.util.fill_in_summary('light_cone', 'output_properties', output_properties_count + " property selected");
-            else
-                catalogue.util.fill_in_summary('light_cone', 'output_properties', output_properties_count + " properties selected");
-        });
-
-
         $('#expand_output_properties').click(function (e) {
             e.preventDefault();
             $this = $(this);
@@ -859,26 +826,18 @@ catalogue.modules.light_cone = function ($) {
         });
 
 
-        get_widget().option_clicked_event(function (cache_item) {
-            catalogue.util.show_output_property_info(cache_item);
-        });
-
-
         $(lc_id('dark_matter_simulation')).change(function (evt) {
             var $this = $(this);
             var sim_id = $this.val();
             // show_simulation_info(sim_id);
-            update_galaxy_model_options(sim_id); // triggers galaxy_model.change
+            // update_galaxy_model_options(sim_id); // triggers galaxy_model.change
         });
 
 
         $(lc_id('galaxy_model')).change(function (evt) {
             var $this = $(this);
             var galaxy_model_id = $this.find(':selected').attr('data-galaxy_model_id');
-            // show_galaxy_model_info(galaxy_model_id);
-            // var use_default = $('#RF_BOUND').val() == 'False'; // TODO: Investigate this
             var use_default = !bound;
-            // console.log('bound: ' + bound + ', !bound' + !bound)
             if (use_default) {
                 if (vm.catalogue_geometry() == "box") {
                     var simulation_box_size = $(lc_id('number_of_light_cones')).data("simulation-box-size");
@@ -886,19 +845,16 @@ catalogue.modules.light_cone = function ($) {
                     $(lc_id('box_size')).change();
                 }
             }
-            update_output_options();
-            update_snapshot_options();
+            // update_output_options();
+            // update_snapshot_options();
         });
 
-        // $(lc_id('redshift_min') + ', ' + lc_id('redshift_max')).change(function (evt) {
-        //     fill_in_redshift_in_summary();
-        //     calculate_max_number_of_cones();
-        // });
+        $(lc_id('redshift_min') + ', ' + lc_id('redshift_max')).change(function (evt) {
+            calculate_max_number_of_cones();
+        });
 
 
         $(lc_id('light_cone_type_0') + ', ' + lc_id('light_cone_type_1')).click(function (evt) {
-            var $this = $(this);
-            // catalogue.util.fill_in_summary('light_cone', 'light_cone_type', $this.attr('value'));
             calculate_max_number_of_cones();
         });
 
@@ -930,21 +886,12 @@ catalogue.modules.light_cone = function ($) {
                 return false;
             }
             catalogue.util.show_error($(lc_id('box_size')), null);
-            // catalogue.util.fill_in_summary('light_cone', 'box_size', box_size_value);
         });
-
-
-        // $(lc_id('snapshot')).change(function (evt) {
-        //     var $this = $(this);
-        //     var snapshot_value = $this.find('option:selected').html();
-        //     // catalogue.util.fill_in_summary('light_cone', 'snapshot', snapshot_value);
-        // });
 
 
         $('#id_output_format-supported_formats').change(function (evt) {
             var $this = $(this);
             var output_format_value = $this.find('option:selected').text();
-            // catalogue.util.fill_in_summary('output', 'output_format', output_format_value);
         });
 
 
@@ -961,7 +908,6 @@ catalogue.modules.light_cone = function ($) {
                     var num_boxes = count_boxes(box_size, min_ra, max_ra, min_dec, max_dec, max_z);
                     check_number_of_boxes(num_boxes);
                 } catch (err) {
-                    console.log(err);
                     $('#max_job_size').addClass('job_too_large_error');
                     $('#max_job_size').text('Estimated job size: invalid parameters, please adjust RA, Dec, redshift min or max');
                 }
@@ -1006,42 +952,36 @@ catalogue.modules.light_cone = function ($) {
     }
 
     this.init_model = function() {
-        vm.catalogue_geometry = ko.observable($(lc_id('catalogue_geometry')).val());
-        // vm.dark_matter_simulation_id = ko.observable($(lc_id('dark_matter_simulation')).val());
-        vm.dark_matter_simulation = ko.observable($(lc_id('dark_matter_simulation')).val());
-        // vm.dark_matter_simulation = ko.computed(function(){
-        //     return catalogue.util.simulation(vm.dark_matter_simulation_id());
-        // })
+        vm.catalogue_geometries = ko.observableArray([
+            { id: 'light_cone', name: 'Light Cone'},
+            { id: 'box', name: 'Box'}
+            ]);
+        vm.catalogue_geometry = ko.observable(vm.catalogue_geometries()[1]);
 
-        console.log($(lc_id('galaxy_model')).val());
+        vm.dark_matter_simulations = ko.observableArray(TaoMetadata.Simulation);
+        vm.dark_matter_simulation = ko.observable(vm.dark_matter_simulations()[1]);
 
-        vm.galaxy_model = ko.observable($(lc_id('galaxy_model')).val());
-        // vm.galaxy_model_id = ko.observable($(lc_id('galaxy_model')).attr('data-galaxy_model_id');
+        vm.galaxy_models = ko.observableArray(TaoMetadata.GalaxyModel)
+        vm.galaxy_model = ko.observable(vm.dark_matter_simulation()[0]);
+
+        vm.light_cone_type = ko.observable('unique');
 
         vm.ra_opening_angle = ko.observable($(lc_id('ra_opening_angle')).val());
         vm.dec_opening_angle = ko.observable($(lc_id('dec_opening_angle')).val());
 
-        vm.box_size = ko.observable($(lc_id('box_size')).val());
-
-        vm.snapshot = ko.observable($(lc_id('snapshot')).val());
-        vm.redshift_min = ko.observable($(lc_id('redshift_min')).val());
-        vm.redshift_max = ko.observable($(lc_id('redshift_max')).val());
-
-        vm.light_cone_type = ko.observable($(lc_id('light_cone_type')).val());
-        vm.number_of_light_cones = ko.observable($(lc_id('number_of_light_cones')).val());
-        vm.output_properties = ko.observable(init_model_output_properties());
-
-
-        // Computed Human-Readable Summary Fields
-        vm.hr_catalogue_geometry = ko.computed(function() {
-            var result = '';
-            if (vm.catalogue_geometry() == 'box') {
-                result = 'Box';
-            } else if (vm.catalogue_geometry() == 'light_cone') {
-                result = 'Light-Cone';
+        vm.box_size = ko.computed(function() {
+            if (!bound && vm.catalogue_geometry().id == 'box') {
+                return vm.dark_matter_simulation().fields.box_size;
             }
-            return result;
         });
+
+        vm.snapshot = ko.observable();
+        vm.redshift_min = ko.observable();
+        vm.redshift_max = ko.observable();
+
+        vm.light_cone_type = ko.observable();
+        vm.number_of_light_cones = ko.observable();
+        vm.output_properties = ko.observable(init_model_output_properties());
 
 
         vm.hr_ra_opening_angle = ko.computed(function(){
@@ -1081,33 +1021,6 @@ catalogue.modules.light_cone = function ($) {
             return result;
         });
 
-        // Calculated Info Fields
-
-        // vm.hr_galaxy_model_name = ko.observable(function() {
-        //     console.log(catalogue.util.galaxy_model(vm.galaxy_model_id()));
-        //     return = catalogue.util.galaxy_model(vm.galaxy_model()).fields.name;
-        // });
-
-        // vm.hr_galaxy_model_details = ko.observable(function() {
-        //    return = catalogue.util.galaxy_model(vm.galaxy_model_id()).fields.details; 
-        // });
-
-
-        vm.hr_simulation_name = ko.computed(function() {
-            return catalogue.util.simulation(vm.dark_matter_simulation()).fields.name;
-        });
-
-        vm.hr_simulation_details = ko.computed(function() {
-            return catalogue.util.simulation(vm.dark_matter_simulation()).fields.details;
-        });
-
-        // data = catalogue.util.simulation(simulation_id);
-        // $('div.simulation-info .name').html(data.fields.name);
-        // $('div.simulation-info .details').html(data.fields.details);
-        // $('div.simulation-info').show();
-        // catalogue.util.fill_in_summary('light_cone', 'simulation', data.fields.name);
-        // catalogue.util.fill_in_summary('light_cone', 'simulation_description', '<br><b>' + data.fields.name + ':</b><br>' + data.fields.details);
-        // $(lc_id('number_of_light_cones')).data("simulation-box-size", data.fields.box_size);
 
     }
 
@@ -1119,20 +1032,10 @@ catalogue.modules.light_cone = function ($) {
         var init_light_cone_type_value = $('input[name="light_cone-light_cone_type"][checked="checked"]').attr('value');
         catalogue.util.fill_in_summary('light_cone', 'number_of_light_cones', $(lc_id('number_of_light_cones')).val() + " " + init_light_cone_type_value + " light cones");
         $(lc_id('number_of_light_cones')).attr('class', 'light_cone_field'); // needed to associate the spinner with light-cone only, not when selecting box
-        $(lc_id('dark_matter_simulation')).change();
-        // update_output_options(); // this is where the record filter update is triggere
-        //                          and where the selection gets wiped
-        // show_simulation_info($(lc_id('dark_matter_simulation')).val());
-
-
-        $(lc_id('galaxy_model')).change();
-
-        $('#id_output_format-supported_formats').change();
 
         $('div.summary_light_cone .output_properties_list').hide();
         $('div.summary_light_cone .simulation_description, div.summary_light_cone .galaxy_model_description').hide();
 
-        $(lc_id('catalogue_geometry')).change();
     }
 
 
@@ -1144,16 +1047,10 @@ catalogue.modules.light_cone = function ($) {
         catalogue.modules.light_cone.util = new catalogue.modules.light_cone.util();
 
         get_widget().init();
-        // get_widget().init();
 
         init_event_handlers();
 
-        // this.vm.catalogue_geometry($(lc_id('catalogue_geometry')).val());
         ko.applyBindings(vm);
-
-        vm.catalogue_geometry( $(lc_id('catalogue_geometry')).val() );
-        vm.ra_opening_angle( $(lc_id('ra_opening_angle')).val() );
-        vm.dec_opening_angle( $(lc_id('dec_opening_angle')).val() );
 
     }
 

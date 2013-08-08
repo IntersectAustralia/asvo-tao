@@ -35,9 +35,9 @@
                 <div> Selected simulation details </div>
                 <div style="overflow-y: scroll;height: 210px">
                     <p>
-                        <strong class="name" data-bind='text: hr_simulation_name'><!-- --></strong>
+                        <strong class="name" data-bind='text: dark_matter_simulation().fields.name'><!-- --></strong>
                     </p>
-                    <div class="details" data-bind='html: hr_simulation_details'><!-- --></div>
+                    <div class="details" data-bind='html: dark_matter_simulation().fields.details'><!-- --></div>
                 </div>
             </div>
         </div>
@@ -46,9 +46,9 @@
                 <div> Selected galaxy model details </div>
                 <div style="overflow-y: scroll;height: 210px">
                     <p>
-                        <strong class="name"><!-- --></strong>
+                        <strong class="name" data-bind='text: galaxy_model().fields.name'><!-- --></strong>
                     </p>
-                    <div class="details"><!-- --></div>
+                    <div class="details" data-bind='html: galaxy_model().fields.details'><!-- --></div>
                 </div>
             </div>
         </div>
