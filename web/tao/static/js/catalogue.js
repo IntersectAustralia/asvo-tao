@@ -84,16 +84,7 @@ catalogue.util = function ($) {
         })[0]
     }
 
-    this.snapshots = function(sid, gid) {
-        // Answer the Snapshots (redshifts) matching for the supplied dataset , identified
-        // by Simulation ID & Galaxy Model ID
-    	var dsid;
-    	var res;
-
-        dsid = $.grep(TaoMetadata.DataSet, function(elem, idx) { 
-            return elem.fields.simulation == sid && 
-            	elem.fields.galaxy_model == gid 
-        })[0].pk;
+    this.snapshots = function(dsid) {
     	res = $.grep(TaoMetadata.Snapshot, function(elem, idx) {
     		return elem.fields.dataset == dsid;
     	});
@@ -114,7 +105,7 @@ catalogue.util = function ($) {
     }
 
 
-    this.galaxy_models = function(sid) {
+    this.datasets = function(sid) {
         var datasets = $.grep(TaoMetadata.DataSet, function(elem, idx) { 
             return elem.fields.simulation == sid 
         });

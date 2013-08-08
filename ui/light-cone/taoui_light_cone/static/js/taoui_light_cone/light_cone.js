@@ -446,19 +446,20 @@ catalogue.modules.light_cone = function ($) {
     }
 
     var check_number_of_boxes = function(num_boxes) {
-        var dataset_id = $(lc_id('galaxy_model')).val();
-        var job_size_p1 = parseFloat( $(lc_id('galaxy_model option:selected')).attr('data-job_size_p1') );
-        var job_size_p2 = parseFloat( $(lc_id('galaxy_model option:selected')).attr('data-job_size_p2') );
-        var job_size_p3 = parseFloat( $(lc_id('galaxy_model option:selected')).attr('data-job_size_p3') );
-        var max_job_box_count = parseInt( $(lc_id('galaxy_model option:selected')).attr('data-max_job_box_count') );
-        var job_size_percentage = job_size(num_boxes, max_job_box_count, job_size_p1, job_size_p2, job_size_p3)*100;
-        if (job_size_percentage > 100) { //num_boxes > max_job_box_count) {
-             $('#max_job_size').addClass('job_too_large_error');
-             $('#max_job_size').text('Estimated job size: ' + job_size_percentage.toFixed(0) + '%. Note this exceeds the maximum allowed size, please reduce the light-cone size (RA, Dec, Redshift range).');
-        } else {
-             $('#max_job_size').removeClass('job_too_large_error');
-             $('#max_job_size').text('Estimated job size: ' + job_size_percentage.toFixed(0) + '%'); //num_boxes + ' / ' + max_job_box_count);
-        }
+        // FIXME !!!
+        // var dataset_id = $(lc_id('dataset')).val();
+        // var job_size_p1 = parseFloat( $(lc_id('galaxy_model option:selected')).attr('data-job_size_p1') );
+        // var job_size_p2 = parseFloat( $(lc_id('galaxy_model option:selected')).attr('data-job_size_p2') );
+        // var job_size_p3 = parseFloat( $(lc_id('galaxy_model option:selected')).attr('data-job_size_p3') );
+        // var max_job_box_count = parseInt( $(lc_id('galaxy_model option:selected')).attr('data-max_job_box_count') );
+        // var job_size_percentage = job_size(num_boxes, max_job_box_count, job_size_p1, job_size_p2, job_size_p3)*100;
+        // if (job_size_percentage > 100) { //num_boxes > max_job_box_count) {
+        //      $('#max_job_size').addClass('job_too_large_error');
+        //      $('#max_job_size').text('Estimated job size: ' + job_size_percentage.toFixed(0) + '%. Note this exceeds the maximum allowed size, please reduce the light-cone size (RA, Dec, Redshift range).');
+        // } else {
+        //      $('#max_job_size').removeClass('job_too_large_error');
+        //      $('#max_job_size').text('Estimated job size: ' + job_size_percentage.toFixed(0) + '%'); //num_boxes + ' / ' + max_job_box_count);
+        // }
     }
 
 
@@ -475,61 +476,44 @@ catalogue.modules.light_cone = function ($) {
     }
 
 
-    var update_output_options = function () {
-        // cache_initial_data();
-        var data_set_id = $(lc_id('galaxy_model')).find(':selected').attr('value');
-        var $to = $(lc_id('output_properties'));
-        var $from = $(lc_id('output_properties_from'));
-        var current = $to.val(); // in string format
-        $to.empty();
-        $from.empty();
-        var data = catalogue.util.output_choices(data_set_id);
-        get_widget().cache_store(data);
-        catalogue.modules.record_filter.update_filter_options.output_props = true;
-        // catalogue.modules.record_filter.update_filter_options.output_props = $('#RF_BOUND').val() == false;
-        get_widget().display_selected(current, true);
-
-    }
-
-
     var format_redshift = function (redshift_string) {
         var redshift = parseFloat(redshift_string);
         var whole_digit = parseInt(redshift).toString().length;
         return redshift.toFixed(Math.max(5 - whole_digit, 0));
     };
 
-    var update_galaxy_model_options = function (simulation_id) {
-        var $galaxy_model = $(lc_id('galaxy_model'));
-        if (simulation_id === 0) {
-            $galaxy_model.empty();
-            $galaxy_model.change();
-            return;
-        }
+    // var update_galaxy_model_options = function (simulation_id) {
+    //     var $galaxy_model = $(lc_id('galaxy_model'));
+    //     if (simulation_id === 0) {
+    //         $galaxy_model.empty();
+    //         $galaxy_model.change();
+    //         return;
+    //     }
 
-        var upd = function (data) {
-                var initial_data_set_id = $galaxy_model.val();
-                $galaxy_model.empty();
-                for (i = 0; i < data.length; i++) {
-                    item = data[i];
-                    $option = $('<option/>');
-                    $option.attr('value', item.id);
-                    $option.attr('data-galaxy_model_id', item.galaxy_model_id);
-                    $option.attr('data-job_size_p1', item.job_size_p1);
-                    $option.attr('data-job_size_p2', item.job_size_p2);
-                    $option.attr('data-job_size_p3', item.job_size_p3);
-                    $option.attr('data-max_job_box_count', item.max_job_box_count);
-                    if (item.id == initial_data_set_id) {
-                        $option.attr('selected', 'selected');
-                    }
-                    $option.html(item.name);
-                    $galaxy_model.append($option);
-                }
-                $galaxy_model.change();
-            };
+    //     var upd = function (data) {
+    //             var initial_data_set_id = $galaxy_model.val();
+    //             $galaxy_model.empty();
+    //             for (i = 0; i < data.length; i++) {
+    //                 item = data[i];
+    //                 $option = $('<option/>');
+    //                 $option.attr('value', item.id);
+    //                 $option.attr('data-galaxy_model_id', item.galaxy_model_id);
+    //                 $option.attr('data-job_size_p1', item.job_size_p1);
+    //                 $option.attr('data-job_size_p2', item.job_size_p2);
+    //                 $option.attr('data-job_size_p3', item.job_size_p3);
+    //                 $option.attr('data-max_job_box_count', item.max_job_box_count);
+    //                 if (item.id == initial_data_set_id) {
+    //                     $option.attr('selected', 'selected');
+    //                 }
+    //                 $option.html(item.name);
+    //                 $galaxy_model.append($option);
+    //             }
+    //             $galaxy_model.change();
+    //         };
 
-        upd(catalogue.util.galaxy_models(simulation_id));
+    //     upd(catalogue.util.galaxy_models(simulation_id));
 
-    };
+    // };
 
 
     // var show_simulation_info = function (simulation_id) {
@@ -795,19 +779,18 @@ catalogue.modules.light_cone = function ($) {
         });
 
 
-        $(lc_id('galaxy_model')).change(function (evt) {
-            var $this = $(this);
-            var galaxy_model_id = $this.find(':selected').attr('data-galaxy_model_id');
-            var use_default = !bound;
-            if (use_default) {
-                if (vm.catalogue_geometry() == "box") {
-                    var simulation_box_size = $(lc_id('number_of_light_cones')).data("simulation-box-size");
-                    $(lc_id('box_size')).val(simulation_box_size);
-                    $(lc_id('box_size')).change();
-                }
-            }
-
-        });
+        // $(lc_id('galaxy_model')).change(function (evt) {
+        //     var $this = $(this);
+        //     var galaxy_model_id = $this.find(':selected').attr('data-galaxy_model_id');
+        //     var use_default = !bound;
+        //     if (use_default) {
+        //         if (vm.catalogue_geometry() == "box") {
+        //             var simulation_box_size = $(lc_id('number_of_light_cones')).data("simulation-box-size");
+        //             $(lc_id('box_size')).val(simulation_box_size);
+        //             $(lc_id('box_size')).change();
+        //         }
+        //     }
+        // });
 
         $(lc_id('redshift_min') + ', ' + lc_id('redshift_max')).change(function (evt) {
             calculate_max_number_of_cones();
@@ -911,17 +894,6 @@ catalogue.modules.light_cone = function ($) {
         });
     }
 
-    function get_init_output_options() {
-        resp = {'selected': [], 'not_selected':[]}
-        $(lc_id('output_properties') + ' select option').each(function(idx, elem){
-            var value = $(elem).attr('value');
-            var where = $(elem).attr('selected') ? 'selected' : 'not_selected';
-            resp[where].push(catalogue.util.dataset_property(value));
-        });
-        console.log(resp);
-        return resp;
-    }
-
     var dataset_property_to_option = function(dsp) {
         return {
             'value': dsp.pk,
@@ -929,6 +901,12 @@ catalogue.modules.light_cone = function ($) {
             'group': dsp.fields.group,
             'units': dsp.fields.units
         }
+    }
+
+    function get_output_options(did) {
+        resp = {'selected': [], 'not_selected':[]}
+        resp.selected = ko.utils.arrayMap(catalogue.util.output_choices(did),dataset_property_to_option);
+        return resp;
     }
 
     var format_redshift = function(redshift_string) {
@@ -956,14 +934,19 @@ catalogue.modules.light_cone = function ($) {
         vm.dark_matter_simulations = ko.observableArray(TaoMetadata.Simulation);
         vm.dark_matter_simulation = ko.observable(vm.dark_matter_simulations()[1]);
 
-        vm.galaxy_models = ko.observableArray(TaoMetadata.GalaxyModel)
-        vm.galaxy_model = ko.observable(vm.galaxy_models()[0]);
+        vm.datasets = ko.computed(function(){
+            return catalogue.util.datasets(vm.dark_matter_simulation().pk)
+        });
 
         vm.light_cone_type = ko.observable('unique');
 
+        vm.dataset = ko.observable($(lc_id('dataset')).val());
+        vm.dataset.subscribe(function(did) {
+            vm.output_properties.options_raw(get_output_options(did));
+        });
+
         vm.ra_opening_angle = ko.observable();
         vm.dec_opening_angle = ko.observable();
-
 
         vm.box_size = ko.computed(function() {
             if (!bound && vm.catalogue_geometry().id == 'box') {
@@ -971,8 +954,11 @@ catalogue.modules.light_cone = function ($) {
             }
         });
         // Twosided widget
-        vm.output_properties = TwoSidedSelectWidget(lc_id('output_properties'),
-            get_init_output_options(), dataset_property_to_option);
+        vm.output_properties = TwoSidedSelectWidget(
+            lc_id('output_properties'),
+            {not_selected:catalogue.util.output_choices($(lc_id('dataset')).val()),selected:[]},
+            dataset_property_to_option);
+
         vm.current_output_property = ko.observable(undefined);
         vm.output_properties.from_side.clicked_option.subscribe(function(v) {
             var op = catalogue.util.dataset_property(v);
@@ -990,13 +976,19 @@ catalogue.modules.light_cone = function ($) {
         vm.light_cone_type = ko.observable();
         vm.number_of_light_cones = ko.observable();
 
-        vm.snapshots = ko.computed(function () {
-            return catalogue.util.snapshots(vm.dark_matter_simulation().pk, vm.galaxy_model().pk);
+        vm.snapshots = ko.computed(function (){ 
+            return catalogue.util.snapshots(vm.dataset())
         });
-        vm.snapshot = ko.observable(1);
-        vm.snapshot_redshift = ko.computed( function() {
-            return snapshot_id_to_redshift(vm.snapshot());
+        vm.snapshot = ko.observable(vm.snapshots()[0].pk);
+        vm.snapshot_redshift = ko.computed(function() { 
+            return snapshot_id_to_redshift(vm.snapshot())
         });
+        vm.redshift_min = ko.observable($(lc_id('redshift_min')).val());
+        vm.redshift_max = ko.observable($(lc_id('redshift_max')).val());
+
+        vm.light_cone_type = ko.observable($(lc_id('light_cone_type')).val());
+        vm.number_of_light_cones = ko.observable($(lc_id('number_of_light_cones')).val());
+
 
         // Computed Human-Readable Summary Fields
         vm.hr_ra_opening_angle = ko.computed(function(){
