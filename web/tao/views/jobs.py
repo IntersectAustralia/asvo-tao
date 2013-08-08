@@ -44,7 +44,7 @@ def get_file(request, id, file_path):
     if not job_file.can_be_downloaded():
         raise PermissionDenied
 
-    response = StreamingHttpResponse(streaming_content=FileWrapper(open(job_file.file_path)))
+    response = StreamingHttpResponse(streaming_content=FileWrapper(open(job_file.file_path)), mimetype='application/force-download')
 
     # TODO sanitise filename
     response['Content-Disposition'] = 'attachment; filename="%s"' % job_file.file_name.replace('/','_')
