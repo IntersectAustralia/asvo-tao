@@ -117,30 +117,30 @@ catalogue.modules.record_filter = function ($) {
 
 
         function refresh_select(resp) {
-            var $filter = $(rf_id('filter'));
-            var current_filter = $filter.val();
-            var current = current_selection();
-            current.push(item_to_value(TAO_NO_FILTER));
-            current.push('D-' + resp.default_id.toString());
-            if (use_default() || current.indexOf(current_filter) == -1) {
-                current_filter = 'D-' + resp.default_id;
-                if (current_filter == '' || current_filter == item_to_value(TAO_NO_FILTER)) {
-                    $(rf_id('min')).val('');
-                    $(rf_id('max')).val('');
-                } else {
-                    $(rf_id('min')).val(resp.default_min);
-                    $(rf_id('max')).val(resp.default_max);
-                }
-            }
-            $filter.empty();
-            add_option($filter, TAO_NO_FILTER, current_filter);
-            var data = resp.list;
-            for (i = 0; i < data.length; i++) {
-                if (current.indexOf(item_to_value(data[i])) != -1) {
-                    add_option($filter, data[i], current_filter);
-                }
-            }
-            $filter.change();
+            // var $filter = $(rf_id('filter'));
+            // var current_filter = $filter.val();
+            // var current = current_selection();
+            // current.push(item_to_value(TAO_NO_FILTER));
+            // current.push('D-' + resp.default_id.toString());
+            // if (use_default() || current.indexOf(current_filter) == -1) {
+            //     current_filter = 'D-' + resp.default_id;
+            //     if (current_filter == '' || current_filter == item_to_value(TAO_NO_FILTER)) {
+            //         $(rf_id('min')).val('');
+            //         $(rf_id('max')).val('');
+            //     } else {
+            //         $(rf_id('min')).val(resp.default_min);
+            //         $(rf_id('max')).val(resp.default_max);
+            //     }
+            // }
+            // $filter.empty();
+            // add_option($filter, TAO_NO_FILTER, current_filter);
+            // var data = resp.list;
+            // for (i = 0; i < data.length; i++) {
+            //     if (current.indexOf(item_to_value(data[i])) != -1) {
+            //         add_option($filter, data[i], current_filter);
+            //     }
+            // }
+            // $filter.change();
         }
 
 
@@ -149,7 +149,8 @@ catalogue.modules.record_filter = function ($) {
             return;
         }
 
-        var data = catalogue.util.filters(data_set_id);
+        // var data = catalogue.util.filters(data_set_id);
+        data = []
         me().update_filter_options.current_data = data;
         me().update_filter_options.current_key = data_set_id;
         if (me().update_filter_options.output_props &&

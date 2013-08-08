@@ -140,8 +140,9 @@ class Form(BetterForm):
     ra_opening_angle = forms.DecimalField(required=False, label=_('Right Ascension Opening Angle (degrees)'), min_value=0, max_value=360, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
     dec_opening_angle = forms.DecimalField(required=False, label=_('Declination Opening Angle (degrees)'), min_value=0, max_value=360, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
 
-    light_cone_choices = [(UNIQUE, 'Unique'), (RANDOM, 'Random')]
-    light_cone_type = forms.ChoiceField(required=False, initial=UNIQUE, label='', choices=light_cone_choices, widget=forms.RadioSelect(attrs={'class': 'light_cone_field'}))
+    # light_cone_type = forms.ChoiceField(required=False, initial=UNIQUE, label='', choices=light_cone_choices, widget=forms.RadioSelect(attrs={'class': 'light_cone_field'}))
+    light_cone_type = forms.ChoiceField(required=False, label='', choices=[('unique', 'Unique'), ('random', 'Random')], initial='unique', widget=forms.RadioSelect(attrs={'class': 'light_cone_field'}))
+    # light_cone_type = forms.ChoiceField(required=False, label='', widget=forms.RadioSelect(attrs={'class': 'light_cone_field'}))
 
     LIGHT_CONE_REQUIRED_FIELDS = ('ra_opening_angle', 'dec_opening_angle', 'redshift_min', 'redshift_max', 'light_cone_type', 'number_of_light_cones')  # Ensure these fields have a class of 'light_cone_field'
     BOX_REQUIRED_FIELDS = ('box_size', 'snapshot',)
@@ -171,7 +172,7 @@ class Form(BetterForm):
         else:
             output_choices = []
 
-        self.fields['dark_matter_simulation'] = ChoiceFieldWithOtherAttrs(choices=datasets.dark_matter_simulation_choices())
+        self.fields['dark_matter_simulation'] = ChoiceFieldWithOtherAttrs()
         self.fields['galaxy_model'] = ChoiceFieldWithOtherAttrs(choices=datasets.galaxy_model_choices())
         self.fields['snapshot'] = ChoiceFieldWithOtherAttrs(required=False, label='Redshift', choices=datasets.snapshot_choices(), widget=SelectWithOtherAttrs(attrs={'class': 'light_box_field'}))
         self.fields['number_of_light_cones'] = forms.IntegerField(label=_('Select the number of light-cones:'), required=False, initial='1')
@@ -186,9 +187,9 @@ class Form(BetterForm):
         
 
         # Knockout.js data bindings
-        self.fields['catalogue_geometry'].widget.attrs['data-bind'] = 'value: catalogue_geometry'
-        self.fields['dark_matter_simulation'].widget.attrs['data-bind'] = 'value: dark_matter_simulation'
-        self.fields['galaxy_model'].widget.attrs['data-bind'] = 'value: galaxy_model'
+        self.fields['catalogue_geometry'].widget.attrs['data-bind'] = 'options: catalogue_geometries, value: catalogue_geometry, optionsText: function(i) { return i.name }'
+        self.fields['dark_matter_simulation'].widget.attrs['data-bind'] = 'options: dark_matter_simulations, value: dark_matter_simulation, optionsText: function(i) { return i.fields.name} '
+        self.fields['galaxy_model'].widget.attrs['data-bind'] = 'options: galaxy_models, value: galaxy_model, optionsText: function(i) { return i.fields.name }'
 
         self.fields['ra_opening_angle'].widget.attrs['data-bind'] = 'value: ra_opening_angle'
         self.fields['dec_opening_angle'].widget.attrs['data-bind'] = 'value: dec_opening_angle'
@@ -199,11 +200,10 @@ class Form(BetterForm):
         self.fields['redshift_min'].widget.attrs['data-bind'] = 'value: redshift_min'
         self.fields['redshift_max'].widget.attrs['data-bind'] = 'value: redshift_max'
         
-        self.fields['light_cone_type'].widget.attrs['data-bind'] = 'value: light_cone_type'
+        self.fields['light_cone_type'].widget.attrs['data-bind'] = 'checked: light_cone_type'
         self.fields['number_of_light_cones'].widget.attrs['data-bind'] = 'value: number_of_light_cones'
         self.fields['output_properties'].widget.attrs['data-bind'] = 'value: output_properties'
-        
-        # print self.fields['catalogue_geometry']
+
 
     def check_redshift_min_less_than_redshift_max(self):
         redshift_min_field = self.cleaned_data.get('redshift_min')

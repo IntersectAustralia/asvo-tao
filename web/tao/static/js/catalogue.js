@@ -78,6 +78,12 @@ catalogue.util = function ($) {
 
     var that = this;
 
+    this.snapshot = function(id) {
+        return $.grep(TaoMetadata.Snapshot, function(elem, idx) { 
+            return elem.pk == id
+        })[0]
+    }
+
     this.snapshots = function(sid, gid) {
         return $.grep(TaoMetadata.DataSet, function(elem, idx) { 
             return elem.fields.simulation == sid && 
@@ -232,6 +238,21 @@ catalogue.util = function ($) {
         }
     }
 
+    // this.ko_dark_matter_simulations = function () {
+    //     var DarkMatterSimulation = function(id, name, details, size, units, order) {
+    //         this.id = id;
+    //         this.name = name;
+    //         this.details = details;
+    //         this.size = size;
+    //         this.units = units;
+    //         this.order = order;
+    //     }
+
+    //     simulations = [];
+    //     for (var i = 0; i < TaoMetadata.Simulation.length; i++) {
+    //         simulations.push(new DarkMatterSimulation());
+    //     }
+    // }
 
     this.fill_in_summary = function (form_name, field_name, input_data) {
         $('div.summary_' + form_name + ' .' + field_name).html(input_data);
