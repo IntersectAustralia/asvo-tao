@@ -173,7 +173,11 @@ class Form(BetterForm):
 
         self.fields['dark_matter_simulation'] = ChoiceFieldWithOtherAttrs(choices=datasets.dark_matter_simulation_choices())
         self.fields['galaxy_model'] = ChoiceFieldWithOtherAttrs(choices=datasets.galaxy_model_choices())
-        self.fields['snapshot'] = ChoiceFieldWithOtherAttrs(required=False, label='Redshift', choices=datasets.snapshot_choices(), widget=SelectWithOtherAttrs(attrs={'class': 'light_box_field'}))
+        # self.fields['snapshot'] = ChoiceFieldWithOtherAttrs(required=False, label='Redshift', choices=datasets.snapshot_choices(), widget=SelectWithOtherAttrs(attrs={'class': 'light_box_field'}))
+        self.fields['snapshot'] = ChoiceFieldWithOtherAttrs(required=False,
+                                    label='Redshift',
+                                    choices=[(None, None, {"data-bind" : "attr: {value: pk}, text: catalogue.modules.light_cone.format_redshift($data.fields.redshift)"})],
+                                    widget=SelectWithOtherAttrs(attrs={'class': 'light_box_field'}))
         self.fields['number_of_light_cones'] = forms.IntegerField(label=_('Select the number of light-cones:'), required=False, initial='1')
         self.fields['output_properties'] = bf_fields.forms.MultipleChoiceField(required=True, choices=output_choices, widget=TwoSidedSelectWidget)
 
@@ -195,7 +199,7 @@ class Form(BetterForm):
 
         self.fields['box_size'].widget.attrs['data-bind'] = 'value: box_size'
 
-        self.fields['snapshot'].widget.attrs['data-bind'] = 'value: snapshot'
+        self.fields['snapshot'].widget.attrs['data-bind'] = 'foreach: snapshots, value: snapshot'
         self.fields['redshift_min'].widget.attrs['data-bind'] = 'value: redshift_min'
         self.fields['redshift_max'].widget.attrs['data-bind'] = 'value: redshift_max'
         

@@ -241,7 +241,7 @@ catalogue.modules.light_cone = function ($) {
         }
 
 
-    }
+    } // End: this.util
 
 
     // TODO: refactor helper methods into count_boxes local scope
@@ -525,39 +525,35 @@ catalogue.modules.light_cone = function ($) {
     }
 
 
-    var format_redshift = function (redshift_string) {
-        var redshift = parseFloat(redshift_string);
-        var whole_digit = parseInt(redshift).toString().length;
-        return redshift.toFixed(Math.max(5 - whole_digit, 0));
-    };
 
 
-    var update_snapshot_options = function () {
-        var simulation_id = $(lc_id('dark_matter_simulation')).val();
-        var galaxy_model_id = $(lc_id('galaxy_model')).find(':selected').attr('data-galaxy_model_id');
-        var $snapshot = $(lc_id('snapshot'));
-        var current = $snapshot.val();
-        $snapshot.empty();
-
-        data = catalogue.util.snapshots(simulation_id, galaxy_model_id)
-        for (i = 0; i < data.length; i++) {
-            var item = data[i];
-            $option = $('<option/>');
-            $option.attr('value', item.pk);
-            // Redshift Formatting:
-            // The age of the universe as a function of redshift is 1 / (1 + z) where z is the redshift.
-            // So z=0 is the present, and z=Infinity is the Big Bang.
-            // This is a non-linear relationship with more variation at smaller z values.
-            // To present figures that are easy to read and have sensible precision, redshift will be displayed with up to 5 decimals.
-            $option.html(format_redshift(item.fields.redshift));
-            if (item.pk == current) {
-                $option.attr('selected', 'selected');
-            }
-            $snapshot.append($option);
-        }
-        $(lc_id('snapshot')).change();
-
-    };
+//    var update_snapshot_options = function () {
+//        var simulation_id = $(lc_id('dark_matter_simulation')).val();
+//        var galaxy_model_id = $(lc_id('galaxy_model')).find(':selected').attr('data-galaxy_model_id');
+//        var $snapshot = $(lc_id('snapshot'));
+//        var current = $snapshot.val();
+//        $snapshot.empty();
+//
+//        console.log('Updating snapshot options')
+//        data = catalogue.util.snapshots(simulation_id, galaxy_model_id)
+//        for (i = 0; i < data.length; i++) {
+//            var item = data[i];
+//            $option = $('<option/>');
+//            $option.attr('value', item.pk);
+//            // Redshift Formatting:
+//            // The age of the universe as a function of redshift is 1 / (1 + z) where z is the redshift.
+//            // So z=0 is the present, and z=Infinity is the Big Bang.
+//            // This is a non-linear relationship with more variation at smaller z values.
+//            // To present figures that are easy to read and have sensible precision, redshift will be displayed with up to 5 decimals.
+//            $option.html(format_redshift(item.fields.redshift));
+//            if (item.pk == current) {
+//                $option.attr('selected', 'selected');
+//            }
+//            $snapshot.append($option);
+//        }
+//        $(lc_id('snapshot')).change();
+//
+//    };
 
 
     // var show_galaxy_model_info = function (galaxy_model_id) {
@@ -910,7 +906,7 @@ catalogue.modules.light_cone = function ($) {
                 }
             }
             update_output_options();
-            update_snapshot_options();
+            //update_snapshot_options();
         });
 
         // $(lc_id('redshift_min') + ', ' + lc_id('redshift_max')).change(function (evt) {
@@ -1029,10 +1025,11 @@ catalogue.modules.light_cone = function ($) {
     }
 
     this.init_model = function() {
+    	console.log("light_cone.init_module()")
         vm.catalogue_geometry = ko.observable($(lc_id('catalogue_geometry')).val());
         vm.dark_matter_simulation = ko.observable($(lc_id('dark_matter_simulation')).val());
 
-        console.log($(lc_id('galaxy_model')).val());
+        console.log("light_cone.init_module(): galaxy_model = " + $(lc_id('galaxy_model')).val());
 
         vm.galaxy_model = ko.observable($(lc_id('galaxy_model')).val());
         // vm.galaxy_model_id = ko.observable($(lc_id('galaxy_model')).attr('data-galaxy_model_id');
@@ -1042,7 +1039,9 @@ catalogue.modules.light_cone = function ($) {
 
         vm.box_size = ko.observable($(lc_id('box_size')).val());
 
-        vm.snapshot = ko.observable($(lc_id('snapshot')).val());
+        vm.snapshots = ko.computed(function (){ return catalogue.util.snapshots(vm.dark_matter_simulation(), vm.galaxy_model()) });
+        vm.snapshot = ko.observable(1);
+        vm.snapshot_redshift = ko.computed(/* to be supplied */)
         vm.redshift_min = ko.observable($(lc_id('redshift_min')).val());
         vm.redshift_max = ko.observable($(lc_id('redshift_max')).val());
 
@@ -1133,6 +1132,13 @@ catalogue.modules.light_cone = function ($) {
     this.get_vm = function() {
         return vm;
     }
+
+    this.format_redshift = function(redshift_string) {
+        var redshift = parseFloat(redshift_string);
+        var whole_digit = parseInt(redshift).toString().length;
+        return redshift.toFixed(Math.max(5 - whole_digit, 0));
+    };
+
 
     this.init_ui = function() {
         var init_light_cone_type_value = $('input[name="light_cone-light_cone_type"][checked="checked"]').attr('value');
