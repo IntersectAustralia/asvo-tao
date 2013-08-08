@@ -1048,8 +1048,10 @@ catalogue.modules.light_cone = function ($) {
         vm.ra_opening_angle = ko.observable($(lc_id('ra_opening_angle')).val());
         vm.dec_opening_angle = ko.observable($(lc_id('dec_opening_angle')).val());
 
-        vm.output_properties = TwoSidedSelectWidget(lc_id('output_properties'),
-            {selected:[],not_selected:[]}, dataset_property_to_option);
+        vm.output_properties = TwoSidedSelectWidget(
+            lc_id('output_properties'),
+            {not_selected:catalogue.util.output_choices($(lc_id('galaxy_model')).val()),selected:[]},
+            dataset_property_to_option);
         vm.current_output_property = ko.observable(undefined);
         vm.output_properties.from_side.clicked_option.subscribe(function(v) {
             var op = catalogue.util.dataset_property(v);
