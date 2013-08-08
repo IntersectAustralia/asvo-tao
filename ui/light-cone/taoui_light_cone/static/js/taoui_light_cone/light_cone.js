@@ -5,7 +5,6 @@ catalogue.modules = catalogue.modules || {};
 
 catalogue.modules.light_cone = function ($) {
 
-    this.lc_output_props_widget = new TwoSidedSelectWidget(lc_id('output_properties'), true);
 
     function get_widget() {
         return catalogue.modules.light_cone.lc_output_props_widget;
@@ -475,15 +474,6 @@ catalogue.modules.light_cone = function ($) {
         show_tab($enclosing, 0);
     }
 
-    var init_model_output_properties = function() {
-        var $to = $(lc_id('output_properties'));
-        var current = [];
-        $to.find('option[selected="selected"]').each(function () {
-            current.push($(this).attr('value'));
-        });
-        return current;
-    }
-
 
     var update_output_options = function () {
         // cache_initial_data();
@@ -951,6 +941,26 @@ catalogue.modules.light_cone = function ($) {
         });
     }
 
+    function get_init_output_options() {
+        resp = {'selected': [], 'not_selected':[]}
+        $(lc_id('output_properties') + ' select option').each(function(idx, elem){
+            var value = $(elem).attr('value');
+            var where = $(elem).attr('selected') ? 'selected' : 'not_selected';
+            resp[where].push(catalogue.util.dataset_property(value));
+        });
+        console.log(resp);
+        return resp;
+    }
+
+    var dataset_property_to_option = function(dsp) {
+        return {
+            'value': dsp.pk,
+            'text' : dsp.fields.label,
+            'group': dsp.fields.group,
+            'units': dsp.fields.units
+        }
+    }
+
     this.init_model = function() {
         vm.catalogue_geometries = ko.observableArray([
             { id: 'light_cone', name: 'Light Cone'},
@@ -969,20 +979,31 @@ catalogue.modules.light_cone = function ($) {
         vm.ra_opening_angle = ko.observable($(lc_id('ra_opening_angle')).val());
         vm.dec_opening_angle = ko.observable($(lc_id('dec_opening_angle')).val());
 
+
         vm.box_size = ko.computed(function() {
             if (!bound && vm.catalogue_geometry().id == 'box') {
                 return vm.dark_matter_simulation().fields.box_size;
             }
         });
-
+        // Twosided widget
+        vm.output_properties = TwoSidedSelectWidget(lc_id('output_properties'),
+            get_init_output_options(), dataset_property_to_option);
+        vm.current_output_property = ko.observable(undefined);
+        vm.output_properties.from_side.clicked_option.subscribe(function(v) {
+            var op = catalogue.util.dataset_property(v);
+            vm.current_output_property(op);
+        });
+        vm.output_properties.to_side.clicked_option.subscribe(function(v) {
+            var op = catalogue.util.dataset_property(v);
+            vm.current_output_property(op);
+        });
+        //
         vm.snapshot = ko.observable();
         vm.redshift_min = ko.observable();
         vm.redshift_max = ko.observable();
 
         vm.light_cone_type = ko.observable();
         vm.number_of_light_cones = ko.observable();
-        vm.output_properties = ko.observable(init_model_output_properties());
-
 
         vm.hr_ra_opening_angle = ko.computed(function(){
             var result = '';
@@ -1045,8 +1066,6 @@ catalogue.modules.light_cone = function ($) {
         put_handler_ra_and_dec('ra_opening_angle');
         put_handler_ra_and_dec('dec_opening_angle');
         catalogue.modules.light_cone.util = new catalogue.modules.light_cone.util();
-
-        get_widget().init();
 
         init_event_handlers();
 

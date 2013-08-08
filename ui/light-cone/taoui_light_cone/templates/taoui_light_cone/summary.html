@@ -47,10 +47,27 @@
         <tr>
             <td>Output Properties</td>
             <td>
-                <span class="output_properties"><!-- --></span>
+                <span class="output_properties" data-bind="text: output_properties.to_side.options_total() + ' properties selected'"><!-- --></span>
                 <a id="expand_output_properties" href="#">>></a>
-                <span class="output_properties_list"><!-- --></span>
+                <div class="output_properties_list" data-bind="template: { name: 'summary_output_properties_with_groups', data: output_properties.to_side }"><!-- --></div>
             </td>
         </tr>
     </table>
 </div>
+
+<script type="text/html" id="summary_output_properties_with_groups">
+        <!-- ko if: !has_groups -->
+        <ul data-bind="foreach: options">
+            <li><span data-bind="text: text"/> <i data-bind="text: units" style="font-size: small"></i></li>
+        </ul>
+        <!-- /ko -->
+        <!-- ko if: has_groups -->
+        <ul data-bind="foreach: option_groups">
+          <span data-bind="text: group_name"></span>
+          <ul data-bind="foreach: options">
+            <li><span data-bind="text: text"/> <i data-bind="text: units" style="font-size: small"></i></li>
+          </ul>
+        </ul>
+        <!-- /ko -->
+</script>
+
