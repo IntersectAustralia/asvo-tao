@@ -6,22 +6,27 @@
         </tr>
         <tr>
             <td>Catalogue Geometry</td>
-            <td><span class="geometry_type" data-bind="text: catalogue_geometry"><!-- --></span></td>
+            <td><span class="geometry_type" data-bind='text: hr_catalogue_geometry'><!-- --></span></td>
         </tr>
         <tr>
             <td>Dataset</td>
             <td>
-                <span class="simulation"><!-- --></span> / <span class="galaxy_model"><!-- --></span> <a id="expand_dataset" href="#">>></a>
-                <span class="simulation_description"><!-- --></span>
+                <span class="simulation" data-bind='text: hr_simulation_name'><!-- --></span> / <span class="galaxy_model"><!-- --></span> <a id="expand_dataset" href="#">>></a>
+                <span class="simulation_description">
+                    <br><b><span data-bind='text: hr_simulation_name'></span></b><br>
+                    <span data-bind='html: hr_simulation_details'></span>
+                </span>
                 <span class="galaxy_model_description"><!-- --></span>
+                <!-- <span class="galaxy_model_description" data-bind='text: hr_galaxy_model_name'><!-- --></span> -->
             </td>
         </tr>
         <tr class="light_cone_fields">
             <td>Dimensions</td>
             <td>
-                <span class="ra_opening_angle"><!-- --></span>
-                <span class="dec_opening_angle"><!-- --></span>
-                <span class="redshift_min"><!-- --></span> <span class="redshift_max"><!-- --></span>
+                <span class="ra_opening_angle" data-bind='html: hr_ra_opening_angle'><!-- --></span>
+                <span class="dec_opening_angle" data-bind='html: hr_dec_opening_angle'><!-- --></span>
+                <!-- <span class="redshift_min" data-bind='text: redshift_min'></span> <span class="redshift_max"></span> -->
+                <span class="redshift" data-bind='html: hr_redshift'><!-- --></span>
             </td>
         </tr>
         <tr class="light_cone_fields">
@@ -30,7 +35,7 @@
         </tr>
         <tr class="box_fields">
             <td>Box Size</td>
-            <td><span class="box_size"><!-- --></span></td>
+            <td><span class="box_size" data-bind='text: box_size'><!-- --></span></td>
         </tr>
         <tr class="box_fields">
             <td>Redshift</td>
