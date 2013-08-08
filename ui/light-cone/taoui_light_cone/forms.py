@@ -167,13 +167,19 @@ class Form(BetterForm):
 
         if self.is_bound:
             dataset_id = self.data[self.prefix + '-galaxy_model']
-            objs = datasets.output_choices(dataset_id)
-            output_choices = [(x.id, x.label) for x in objs]
+            sid = kwargs['light_cone-dark_matter_simulation']
         else:
-            output_choices = []
+            sid = datasets.dark_matter_simulation_choices()[0][0]
+            dataset_id = datasets.galaxy_model_choices(sid)[0][0]
+        objs = datasets.output_choices(dataset_id)
+        output_choices = [(x.id, x.label) for x in objs]
 
-        self.fields['dark_matter_simulation'] = ChoiceFieldWithOtherAttrs()
-        self.fields['galaxy_model'] = ChoiceFieldWithOtherAttrs(choices=datasets.galaxy_model_choices())
+        # self.fields['dark_matter_simulation'] = ChoiceFieldWithOtherAttrs()
+        # self.fields['galaxy_model'] = ChoiceFieldWithOtherAttrs(choices=datasets.galaxy_model_choices())
+
+        self.fields['dark_matter_simulation'] = ChoiceFieldWithOtherAttrs(choices=datasets.dark_matter_simulation_choices())
+        self.fields['galaxy_model'] = ChoiceFieldWithOtherAttrs(choices=datasets.galaxy_model_choices(sid))
+
         self.fields['snapshot'] = ChoiceFieldWithOtherAttrs(required=False, label='Redshift', choices=datasets.snapshot_choices(), widget=SelectWithOtherAttrs(attrs={'class': 'light_box_field'}))
         self.fields['number_of_light_cones'] = forms.IntegerField(label=_('Select the number of light-cones:'), required=False, initial='1')
         self.fields['output_properties'] = bf_fields.forms.MultipleChoiceField(required=True, choices=output_choices, widget=TwoSidedSelectWidget)
@@ -184,7 +190,7 @@ class Form(BetterForm):
                 'simulations': tao_models.Simulation.objects.all(),
                 'data_sets': tao_models.DataSet.objects.select_related('galaxy_model').all(),
             }
-        
+
 
         # Knockout.js data bindings
         self.fields['catalogue_geometry'].widget.attrs['data-bind'] = 'options: catalogue_geometries, value: catalogue_geometry, optionsText: function(i) { return i.name }'
@@ -193,12 +199,12 @@ class Form(BetterForm):
 
         self.fields['ra_opening_angle'].widget.attrs['data-bind'] = 'value: ra_opening_angle'
         self.fields['dec_opening_angle'].widget.attrs['data-bind'] = 'value: dec_opening_angle'
-
+        self.fields['output_properties'].widget.attrs['ko_data'] = 'output_properties'
         self.fields['box_size'].widget.attrs['data-bind'] = 'value: box_size'
-
         self.fields['snapshot'].widget.attrs['data-bind'] = 'value: snapshot'
         self.fields['redshift_min'].widget.attrs['data-bind'] = 'value: redshift_min'
         self.fields['redshift_max'].widget.attrs['data-bind'] = 'value: redshift_max'
+
         
         self.fields['light_cone_type'].widget.attrs['data-bind'] = 'checked: light_cone_type'
         self.fields['number_of_light_cones'].widget.attrs['data-bind'] = 'value: number_of_light_cones'
