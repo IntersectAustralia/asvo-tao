@@ -254,9 +254,17 @@ catalogue.modules.sed = function ($) {
         });
     }
 
+    function band_pass_filter_to_option(bpf) {
+        return {
+            'value': bpf.pk,
+            'text' : bpf.fields.label,
+            'group': bpf.fields.group
+        }
+    }
 
     this.init = function () {
-        this.sed_band_pass_filters_widget = new TwoSidedSelectWidget(sed_id('band_pass_filters'), false);
+        this.sed_band_pass_filters_widget = TwoSidedSelectWidget(sed_id('band_pass_filters'),
+            {'selected':[],'not_selected':[]}, band_pass_filter_to_option);
         this.sed_band_pass_filters_widget.init();
 
         var current_bandpass = init_bandpass_properties();
