@@ -85,10 +85,19 @@ catalogue.util = function ($) {
     }
 
     this.snapshots = function(sid, gid) {
-        return $.grep(TaoMetadata.DataSet, function(elem, idx) { 
+        // Answer the Snapshots (redshifts) matching for the supplied dataset , identified
+        // by Simulation ID & Galaxy Model ID
+    	var dsid;
+    	var res;
+
+        dsid = $.grep(TaoMetadata.DataSet, function(elem, idx) { 
             return elem.fields.simulation == sid && 
-            elem.fields.galaxy_model == gid 
-        })[0]
+            	elem.fields.galaxy_model == gid 
+        })[0].pk;
+    	res = $.grep(TaoMetadata.Snapshot, function(elem, idx) {
+    		return elem.fields.dataset == dsid;
+    	});
+    	return res
     }
 
     this.simulation = function(id) {
@@ -244,21 +253,7 @@ catalogue.util = function ($) {
         }
     }
 
-    // this.ko_dark_matter_simulations = function () {
-    //     var DarkMatterSimulation = function(id, name, details, size, units, order) {
-    //         this.id = id;
-    //         this.name = name;
-    //         this.details = details;
-    //         this.size = size;
-    //         this.units = units;
-    //         this.order = order;
-    //     }
 
-    //     simulations = [];
-    //     for (var i = 0; i < TaoMetadata.Simulation.length; i++) {
-    //         simulations.push(new DarkMatterSimulation());
-    //     }
-    // }
 
     this.fill_in_summary = function (form_name, field_name, input_data) {
         $('div.summary_' + form_name + ' .' + field_name).html(input_data);
