@@ -61,30 +61,15 @@ class TwoSidedSelectWidget(SelectMultiple):
     ## name and id are set by the framework
     def render(self, name, value, attrs=None, choices=()):
         if value is None: value = []
-        final_attrs = self.build_attrs(attrs, name=name)
-        widget_id = final_attrs['id']
-        left_attrs = {'id': widget_id+'_from'}
-        filter_attrs = {'id': widget_id+'_filter'}
-        output_filter = [u'<input type="text" placeholder="Filter" %s>' % flatatt(filter_attrs)]
-        output_left = [u'<select multiple="multiple"%s>' % flatatt(left_attrs), u'</select>',
-                       ]
-        output_right = [u'<select multiple="multiple"%s>' % flatatt(final_attrs)]
+        if 'ko_data' in self.attrs:
+            data_bind = "template: {name: 'two_sided_select_widget', data: %(ko_data)s}" % self.attrs
+            del self.attrs['ko_data']
+            attrs['data-bind'] = data_bind
+        final_attrs = self.build_attrs(attrs, id=name)
+        output_right = [u'<div %s><select>' % flatatt(final_attrs)]
         options = self.render_options(choices, value)
         if options:
             output_right.append(options)
-        output_right.append('</select>')
-        output = [u'<table id="' + widget_id + '-table">']
-        output.extend(['<tr><td>Available</td>'])
-        output.extend(['<td></td>'])
-        output.extend(['<td>Selected</td></tr>'])
-        output.extend(['<td>'] + output_filter + ['</td>'])
-        output.extend(['<td rowspan="2" id="' + widget_id + '-buttons" vertical-align="middle">',
-                       u'<a href="#" id="%s_op_add_all">&gt;&gt;</a>' % widget_id,
-                       u'<a href="#" id="%s_op_add">&gt;</a>' % widget_id,
-                       u'<a href="#" id="%s_op_remove">&lt;</a>' % widget_id,
-                       u'<a href="#" id="%s_op_remove_all">&lt;&lt;</a>' % widget_id,
-                       '</td>'])
-        output.extend(['<td rowspan="2" id="' + widget_id + '-right">'] + output_right + ['</td></tr>'])
-        output.extend(['<tr><td style="height:100%" id="' + widget_id + '-left">'] + output_left + ['</td></tr>'])
-        output.extend([u'</table>'])
-        return mark_safe(u'\n'.join(output))
+        output_right.append('</select></div>')
+        resp = u'\n'.join(output_right)
+        return mark_safe(resp)
