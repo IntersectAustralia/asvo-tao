@@ -20,7 +20,7 @@ Count: {{ number_of_light_cones }} {{ light_cone_type }} light cones
 
 Output Properties: {{ output_properties|length }} properties selected
 {% for property in output_properties %}
-* {{ property }}{% endfor %}
+* {{ property }} {% if property.units != '' %}({{ property.units }}){% endif %}{% endfor %}
 
 
 Spectral Energy Distribution

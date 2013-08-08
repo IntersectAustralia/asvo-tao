@@ -146,67 +146,6 @@ class JobTest(LiveServerTest):
     def make_xml_parameters(self):
         return light_cone_xml(self.make_parameters())
 
-#     def make_job_summary_txt(self, parameters):
-#         summary_txt = """General Properties
-# ==================
-#
-# Catalogue Geometry:	%(geometry)s
-# Dataset: %(dark_matter_simulation)s / %(galaxy_model)s
-# %(dark_matter_simulation)s
-# %(simulation_details)s
-# %(galaxy_model)s
-# %(galaxy_model_details)s
-#
-#
-# Dimensions
-# RA: %(ra_opening_angle)s\xc2\xb0, Dec: %(dec_opening_angle)s\xc2\xb0
-# Redshift: %(redshift_min)s \xe2\x89\xa4 z \xe2\x89\xa4 %(redshift_max)s
-#
-# Count: %(number_of_light_cones)s %(light_cone_type)s light cones
-#
-#
-# Output Properties: 2 properties selected
-#
-# * %(output_properties_1_label)s
-#
-# * %(output_properties_2_label)s
-#
-#
-#
-# Spectral Energy Distribution
-# ============================
-#
-# Model: %(ssp_name)s
-# %(ssp_description)s
-#
-# Bandpass Filters: 1 filters selected
-#
-# * %(band_pass_filter_label)s
-#
-#
-# Dust: %(dust_label)s
-# %(dust_model_details)s
-#
-#
-#
-# Mock Image
-# ==========
-#
-# Not selected
-#
-#
-# Selection
-# =========
-#
-# %(filter_min)s \xe2\x89\xa4 %(filter_label)s (%(filter_units)s)
-#
-#
-# Output
-# ======
-#
-# CSV (Text)""" % parameters
-#         return summary_txt
-
     def test_view_job_summary(self):
         self.login(self.username, self.password)
         self.visit('view_job', self.completed_job.id)
@@ -225,8 +164,8 @@ class JobTest(LiveServerTest):
         band_pass_filters = BandPassFilter.objects.all()
         self.wait(2)
         self.assert_summary_field_correctly_shown('1 filter selected', 'sed', 'band_pass_filters')
-        self.click('expand_band_pass_filters') # this click doesn't work, it just grabs the focus
-        self.click('expand_band_pass_filters') # need a second call to actually do the click
+        self.click('expand_band_pass_filters')  # this click doesn't work, it just grabs the focus
+        self.click('expand_band_pass_filters')  # need a second call to actually do the click
         self.assert_summary_field_correctly_shown(band_pass_filters[0].label + ' (Apparent)', 'sed', 'band_pass_filters_list')
 
     def test_job_with_files_downloads(self):
@@ -269,14 +208,10 @@ class JobTest(LiveServerTest):
         self.visit('view_job', self.completed_job.id)
 
         self.wait(1)
-        # expected_txt = self.make_job_summary_txt(self.make_parameters())
         self.click('id_download_summary_txt')
         summary_txt_path = os.path.join(self.DOWNLOAD_DIRECTORY, 'summary.txt')
-        with codecs.open(summary_txt_path, encoding='utf-8') as f: # f = open(download_path)
+        with codecs.open(summary_txt_path, encoding='utf-8') as f:
             self.assertEqual(self.summary_text, f.read())
-        # f = open(summary_txt_path)
-        # self.assertEqual(self.summary_text, f.read())
-        # f.close()
 
     # test that anonymous user cannot view job or download files
     def test_anonymous_user_cannot_view_or_download(self):
