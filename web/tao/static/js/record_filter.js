@@ -228,8 +228,9 @@ catalogue.modules.record_filter = function ($) {
     this.pre_submit = function ($form) {}
 
 
-    this.init = function () {
+    this.init_model = function () {
         init_event_handlers();
+        return {}
     }
 
 }

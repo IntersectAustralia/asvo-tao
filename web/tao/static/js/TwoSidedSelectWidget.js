@@ -11,31 +11,33 @@ var TwoSidedSelectWidget = function(elem_id, init_options, to_option) {
     //             will return a dictionary with: value, group & text
     var vm = {};
 
+    var option_click = function(data) {
+        vm.option_click(data);
+    }
+
+    function external_to_raw(arr) {
+        var resp = [];
+        for(var i = 0; i < arr.length; i++) {
+            var obj = to_option(arr[i]);
+            obj.option_click = option_click;
+            resp.push(obj);
+        }
+        return resp;
+    }
+
+    function has_groups(arr) {
+        for(var i = 0; i < arr.length; i++)
+          if ((typeof to_option(arr[i]).group == 'string') &&
+              to_option(arr[i]).group.length > 0) return true;
+        return false;
+    }
+
     function a_side_vm(initial_raw, filter) {
         var vm_side = {};
 
         // helper functions
 
-        var option_click = function(data) {
-            vm_side.option_click(data);
-        }
-
-        var has_groups = (function (arr) {
-            for(var i = 0; i < arr.length; i++)
-              if ((typeof to_option(arr[i]).group == 'string') &&
-                  to_option(arr[i]).group.length > 0) return true;
-            return false;
-        })(initial_raw);
-
-        var initial_options = (function(arr) {
-            var resp = [];
-            for(var i = 0; i < arr.length; i++) {
-                var obj = to_option(arr[i]);
-                obj.option_click = option_click;
-                resp.push(obj);
-            }
-            return resp;
-        })(initial_raw);
+        var initial_options = external_to_raw(initial_raw);
 
         function has_tokens(text, tokens) {
             var token;
@@ -62,7 +64,7 @@ var TwoSidedSelectWidget = function(elem_id, init_options, to_option) {
 
         // viewmodel observables
 
-        vm_side.has_groups = has_groups;
+        vm_side.has_groups = vm.has_groups;
 
         vm_side.options_raw = ko.observableArray(initial_options);
 
@@ -70,10 +72,8 @@ var TwoSidedSelectWidget = function(elem_id, init_options, to_option) {
             return vm_side.options_raw().length;
         });
 
-        vm_side.clicked_option = ko.observable(undefined);
-
         vm_side.options = ko.computed(function() {
-            if (has_groups) return [];
+            if (vm.has_groups()) return [];
             if (!filter) return vm_side.options_raw();
             var tokens = filter().trim().toLowerCase().split(/\s+/);
             if (tokens.length == 0) return vm_side.options_raw();
@@ -118,13 +118,6 @@ var TwoSidedSelectWidget = function(elem_id, init_options, to_option) {
 
         vm_side.options_selected = ko.observableArray([]);
 
-        // events
-
-        vm_side.option_click = function (data) {
-            vm_side.clicked_option(data.value);
-        }
-
-
         return vm_side;
     }
 
@@ -143,8 +136,15 @@ var TwoSidedSelectWidget = function(elem_id, init_options, to_option) {
 
     vm.id = elem_id.slice(1);
     vm.filter = ko.observable('');
+    vm.has_groups = ko.observable(has_groups(init_options['not_selected'].concat(init_options['selected'])));
     vm.from_side = a_side_vm(init_options['not_selected'], vm.filter);
     vm.to_side = a_side_vm(init_options['selected'], false);
+    vm.clicked_option = ko.observable(undefined);
+    vm.option_click = function (data) {
+       vm.clicked_option(data.value);
+    }
+
+
     vm.op_add = function() {
         var selection = vm.from_side.options_selected();
         if (selection.length == 0) return;
@@ -165,6 +165,12 @@ var TwoSidedSelectWidget = function(elem_id, init_options, to_option) {
         move_data(vm.to_side.options_raw, vm.from_side.options_raw,
             function(d) { return true});
     };
+
+    vm.new_options = function(objs) {
+        vm.has_groups(has_groups(objs));
+        vm.from_side.options_raw(external_to_raw(objs));
+        vm.to_side.options_raw([]);
+    }
 
     vm.init = function() {};
     vm.cache_store = function(s) {vm.from_side.options_raw(s)};
