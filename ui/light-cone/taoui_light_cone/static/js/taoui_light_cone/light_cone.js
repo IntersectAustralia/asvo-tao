@@ -1065,7 +1065,7 @@ catalogue.modules.light_cone = function ($) {
 
         vm.snapshots = ko.computed(function (){ return catalogue.util.snapshots(vm.dark_matter_simulation(), vm.galaxy_model()) });
         vm.snapshot = ko.observable(1);
-        vm.snapshot_redshift = ko.computed(/* to be supplied */)
+        // vm.snapshot_redshift = ko.computed(/* to be supplied */)
         vm.redshift_min = ko.observable($(lc_id('redshift_min')).val());
         vm.redshift_max = ko.observable($(lc_id('redshift_max')).val());
 

@@ -199,12 +199,7 @@ class Form(BetterForm):
         self.fields['dec_opening_angle'].widget.attrs['data-bind'] = 'value: dec_opening_angle'
         self.fields['output_properties'].widget.attrs['ko_data'] = 'output_properties'
         self.fields['box_size'].widget.attrs['data-bind'] = 'value: box_size'
-<<<<<<< HEAD
-
         self.fields['snapshot'].widget.attrs['data-bind'] = 'foreach: snapshots, value: snapshot'
-=======
-        self.fields['snapshot'].widget.attrs['data-bind'] = 'value: snapshot'
->>>>>>> 47f25edb8c38a5a239f63c79e5b9a6068d86a11e
         self.fields['redshift_min'].widget.attrs['data-bind'] = 'value: redshift_min'
         self.fields['redshift_max'].widget.attrs['data-bind'] = 'value: redshift_max'
         self.fields['light_cone_type'].widget.attrs['data-bind'] = 'value: light_cone_type'
