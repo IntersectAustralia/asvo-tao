@@ -55,12 +55,28 @@
         <div class="boxed">
             <div class="output-property-info">
                 <div> Selected output property details </div>
-                <div style="overflow-y: scroll;height: 210px">
+                <!-- ko if: current_output_property() !== undefined -->
+                <div data-bind="with: current_output_property" style="overflow-y: scroll;height: 210px">
                     <p>
-                        <strong class="name"><!-- --></strong>
+                        <strong class="name" data-bind="text: fields.label" > </strong>&nbsp;
+                        <!-- ko if: (typeof fields.units == 'string') && fields.units.length > 0 -->
+                        <span class="name" data-bind="text: '(' + fields.units + ')'" style="font-style:italic;"> </span>
+                        <!-- /ko -->
                     </p>
-                    <div class="details"><!-- --></div>
+                    <div class="details" data-bind="html: fields.description" >
+
+                    </div>
                 </div>
+                <!-- /ko -->
+                <!-- ko if: current_output_property() === undefined -->
+                <div data-bind="with: current_output_property" style="overflow-y: scroll;height: 210px">
+                    <p>&nbsp;
+                    </p>
+                    <div class="details" data-bind="html: fields.description" >
+
+                    </div>
+                </div>
+                <!-- /ko -->
             </div>
         </div>
     </div>
