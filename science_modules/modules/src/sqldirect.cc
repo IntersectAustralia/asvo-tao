@@ -320,16 +320,16 @@ namespace tao {
 		// Cache the local dictionary.
 
 		_sqlquery=_dict.get<string>( "query" );
-		_language=_dict.get<string>( "language", "sql" );
+		//_language=_dict.get<string>( "language", "sql" );
 
 
 		LOGDLN( "sqlQuery: ", _sqlquery );
-		LOGDLN( "query Language: ", _language );
+		//LOGDLN( "query Language: ", _language );
 
 
-		_pass_through=(_dict.get<string>( "pass-through" )=="True");
+		//_pass_through=(_dict.get<string>( "pass-through" )=="True");
 
-		if(_pass_through==true)
+		/*if(_pass_through==true)
 		{
 			_database=_dict.get<string>( "database" );
 		}
@@ -338,7 +338,7 @@ namespace tao {
 			_database="";
 		}
 
-		LOGDLN( "database: ", _database );
+		LOGDLN( "database: ", _database );*/
 
 
 
