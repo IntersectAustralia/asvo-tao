@@ -25,11 +25,17 @@ class SelectWithOtherAttrs(forms.Select):
         self.other_attrs = {}
 
     def render_option(self, selected_choices, option_value, option_label):
-        other_attrs_html = ' '.join('%s="%s"' % (escape(force_unicode(name)), escape(force_unicode(val))) for name, val in self.other_attrs[option_value].items())
-        option_value = escape(force_unicode(option_value))
-        selected_html = u' selected="selected"' if (option_value in selected_choices) else ''
-        option_label = conditional_escape(force_unicode(option_label))
-        return u'<option value="%s"%s%s>%s</option>' % (option_value, other_attrs_html, selected_html, option_label)
+        if option_value is None and option_label is None:
+            # Assume that we just want to supply the other attributes
+            other_attrs_html = ' '.join('%s="%s"' % (escape(force_unicode(name)), escape(force_unicode(val))) for name, val in self.other_attrs[option_value].items())
+            res = u'<option %s />' % other_attrs_html
+        else:
+            other_attrs_html = ' '.join('%s="%s"' % (escape(force_unicode(name)), escape(force_unicode(val))) for name, val in self.other_attrs[option_value].items())
+            selected_html = u' selected="selected"' if (option_value in selected_choices) else ''
+            option_label = conditional_escape(force_unicode(option_label))
+            option_value = escape(force_unicode(option_value))
+            res = u'<option value="%s"%s%s>%s</option>' % (option_value, other_attrs_html, selected_html, option_label)
+        return res
 
 
 class ChoiceFieldWithOtherAttrs(forms.ChoiceField):
