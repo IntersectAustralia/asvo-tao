@@ -5,9 +5,9 @@ Catalogue Geometry:	{{ catalogue_geometry.title }}
 Dataset: {{ dark_matter_simulation }} / {{ galaxy_model }}
 
 {{ dark_matter_simulation }}
-{{ simulation_details }}
+{{ simulation_details|safe }}
 {{ galaxy_model }}
-{{ galaxy_model_details }}
+{{ galaxy_model_details|safe }}
 
 {% if catalogue_geometry == 'box' %}Box Size: {{ box_size }}
 Redshift: {{ snapshot }}
@@ -19,22 +19,22 @@ Count: {{ number_of_light_cones }} {{ light_cone_type }} light cones
 {% endif %}
 
 Output Properties: {{ output_properties|length }} properties selected
-{% for property in output_properties %}
-* {{ property }} {% if property.units != '' %}({{ property.units }}){% endif %}{% endfor %}
+{% for property, units in output_properties %}
+* {{ property }} {% if units != '' %}({{ units|safe }}){% endif %}{% endfor %}
 
 
 Spectral Energy Distribution
 ============================
 {% if apply_sed %}
 Model: {{ ssp_name }}
-{{ ssp_description }}
+{{ ssp_description|safe }}
 
 Bandpass Filters: {{ band_pass_filters|length }} filters selected
 {% for band_pass_filter in band_pass_filters %}
 * {{ band_pass_filter }}{% endfor %}
 
 Dust: {{ dust_label }}
-{{ dust_model_details }}
+{{ dust_model_details|safe }}
 {% else %}
 Not selected
 {% endif %}

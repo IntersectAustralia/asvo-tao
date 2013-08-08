@@ -128,7 +128,13 @@ def _get_summary_as_text(id):
     dataset_id = ui_holder.raw_data('light_cone', 'galaxy_model')
     simulation = dataset_get(dataset_id).simulation
     galaxy_model = dataset_get(dataset_id).galaxy_model
-    output_properties = [DataSetProperty.objects.get(id=output_property_id) for output_property_id in ui_holder.raw_data('light_cone', 'output_properties')]
+    output_properties = []
+    for output_property_id in ui_holder.raw_data('light_cone', 'output_properties'):
+        output_property = DataSetProperty.objects.get(id=output_property_id)
+        units = html2text.html2text(output_property.units).rstrip()
+        print units
+        output_properties = output_properties + [(output_property, units)]
+    # output_properties = [(DataSetProperty.objects.get(id=output_property_id), html2text.html2text(getattr(DataSetProperty.objects.get(id=output_property_id), 'units')).rstrip()) for output_property_id in ui_holder.raw_data('light_cone', 'output_properties')]
     output_format = ''
     for x in settings.OUTPUT_FORMATS:
         if x['value'] == (ui_holder.raw_data('output_format', 'supported_formats')):
