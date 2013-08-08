@@ -1036,6 +1036,21 @@ catalogue.modules.light_cone = function ($) {
         }
     }
 
+    var format_redshift = function(redshift_string) {
+        var redshift = parseFloat(redshift_string);
+        var whole_digit = parseInt(redshift).toString().length;
+        return redshift.toFixed(Math.max(5 - whole_digit, 0));
+    };
+    this.format_redshift = format_redshift;
+
+    var snapshot_id_to_redshift = function(snapshot_id) {
+    	console.log('snapshot_id_to_redshift')
+        res = $.grep(TaoMetadata.Snapshot, function(elem, idx) { 
+            return elem.pk == snapshot_id
+        })[0].fields.redshift;
+        return format_redshift(res);
+    }
+
     this.init_model = function() {
     	console.log("light_cone.init_module()")
         vm.catalogue_geometry = ko.observable($(lc_id('catalogue_geometry')).val());
@@ -1065,7 +1080,7 @@ catalogue.modules.light_cone = function ($) {
 
         vm.snapshots = ko.computed(function (){ return catalogue.util.snapshots(vm.dark_matter_simulation(), vm.galaxy_model()) });
         vm.snapshot = ko.observable(1);
-        // vm.snapshot_redshift = ko.computed(/* to be supplied */)
+        vm.snapshot_redshift = ko.computed(function() { return snapshot_id_to_redshift(vm.snapshot()) });
         vm.redshift_min = ko.observable($(lc_id('redshift_min')).val());
         vm.redshift_max = ko.observable($(lc_id('redshift_max')).val());
 
@@ -1154,12 +1169,6 @@ catalogue.modules.light_cone = function ($) {
     this.get_vm = function() {
         return vm;
     }
-
-    this.format_redshift = function(redshift_string) {
-        var redshift = parseFloat(redshift_string);
-        var whole_digit = parseInt(redshift).toString().length;
-        return redshift.toFixed(Math.max(5 - whole_digit, 0));
-    };
 
 
     this.init_ui = function() {
