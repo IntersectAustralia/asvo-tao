@@ -178,7 +178,7 @@ class Form(BetterForm):
         # self.fields['galaxy_model'] = ChoiceFieldWithOtherAttrs(choices=datasets.galaxy_model_choices())
 
         self.fields['dark_matter_simulation'] = ChoiceFieldWithOtherAttrs(choices=datasets.dark_matter_simulation_choices())
-        self.fields['galaxy_model'] = ChoiceFieldWithOtherAttrs(choices=datasets.galaxy_model_choices(sid))
+        self.fields['dataset'] = ChoiceFieldWithOtherAttrs(choices=datasets.galaxy_model_choices(sid))
         self.fields['snapshot'] = ChoiceFieldWithOtherAttrs(required=False,
                                     label='Redshift',
                                     choices=[(None, None, {"data-bind" : "attr: {value: pk}, text: catalogue.modules.light_cone.format_redshift($data.fields.redshift)"})],
@@ -197,7 +197,7 @@ class Form(BetterForm):
         # Knockout.js data bindings
         self.fields['catalogue_geometry'].widget.attrs['data-bind'] = 'options: catalogue_geometries, value: catalogue_geometry, optionsText: function(i) { return i.name }'
         self.fields['dark_matter_simulation'].widget.attrs['data-bind'] = 'options: dark_matter_simulations, value: dark_matter_simulation, optionsText: function(i) { return i.fields.name} '
-        self.fields['galaxy_model'].widget.attrs['data-bind'] = 'options: galaxy_models, value: galaxy_model, optionsText: function(i) { return i.fields.name }'
+        self.fields['dataset'].widget.attrs['data-bind'] = 'options: datasets, value: dataset, optionsText: function(i) { return catalogue.utils.galaxy_model(i.fields.galaxy_model).fields.name }'
 
         self.fields['ra_opening_angle'].widget.attrs['data-bind'] = 'value: ra_opening_angle'
         self.fields['dec_opening_angle'].widget.attrs['data-bind'] = 'value: dec_opening_angle'
