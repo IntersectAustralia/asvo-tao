@@ -13,438 +13,6 @@ catalogue.modules.light_cone = function ($) {
     // KO ViewModel
     var vm = {}
 
-
-    this.util = function() {
-
-
-    /*
-    JavaScript Example -  Lucio Tavernini
-
-    Adaptive Simpson's Quadrature
-
-    integral(f, a, b, errorBound) attempts to integrate f from
-    a to b while keeping the asymptotic error estimate below
-    errorBound using an adaptive implementation of Simpson's rule.
-
-    The integrand can be unbounded and the limits can be infinite.
-    */
-
-        var integralError = false;
-        var integralBound = 0;
-        var ru = roundingUnit();
-
-        //  Compute the rounding unit.
-        function roundingUnit() {
-          var ru = 1
-          do {
-            ru = 0.5*ru
-            var value = 1 + ru
-          }
-          while (value != 1)
-          return 2*ru
-        }
-
-        this.integral = function(f, a, b, errorBound) {
-          var msg;
-          //  Test parameters.
-          msg = '';
-          if (isNaN(a))
-            msg = ' The lower limit is undefined.';
-          if (isNaN(b))
-            msg = msg + ' The upper limit is undefined.';
-          if (isNaN(errorBound))
-            msg = msg + ' The error bound is undefined.';
-          else if (errorBound <= 0)
-            msg = msg + ' The error bound must be positive.';
-          else if (errorBound == Number.POSITIVE_INFINITY)
-            msg = msg + ' The error bound cannot be +infinity.';
-          if (msg != '') {
-            if (document.all) document.cookie = msg;  //  Explorer
-            else document.cookie += msg;              //  Netscape
-        //    window.open("integralerror.html","","width=600," +
-        //      "height=80,screenX=50,screenY=50,resizable=0," +
-        //      "toolbar=0,directories=0," +
-        //      "status=0,menubar=0,scrollbars=1");
-            return NaN;
-          }
-          //  Return 0?
-          if (a == b) return 0;
-          //  Set globals.
-          integralBound = errorBound;
-          integralError = false;
-          //  Compute.
-          return _integral(f, a, b, errorBound);
-        }
-
-        function _integral(f, a, b, errorBound) {
-          var left, right, max, mstart, j;
-          var jend, step, m, m1, fa, fb, v1, v2;
-          var error, bound, h, h6, value, result;
-          if (integralError) return Math.NaN;
-
-          //  Swap integration limits?
-          if (a > b)  return -_integral(f, b, a, errorBound);
-
-          //  Integrate over ]-infinity,+infinity[?
-          if (a == Number.NEGATIVE_INFINITY &&
-            b == Number.POSITIVE_INFINITY)
-            return _integral(f, 0, b, 0.5*errorBound)
-                     + _integral(f, a, 0, 0.5*errorBound);
-
-          //  Integrate over [a,+infinity[?
-          if (b == Number.POSITIVE_INFINITY) {
-            h = 5;
-            left = a;
-            right = a + h;
-            result = 0;
-            do {
-              value = _integral(f, left, right, errorBound/h);
-              result += value;
-              h = 2*h;
-              left = right;
-              right = left + h;
-            }
-            while (!isNaN(value) &&
-              Math.abs(value) >= 0.5*errorBound/h && left < right)
-            if (integralError) result = Number.NaN;
-            return result;
-          }
-
-          //  Integrate over ]-infinity,b]?
-          if (a == Number.NEGATIVE_INFINITY) {
-            h = 5;
-            left = b - h;
-            right = b;
-            result = 0;
-            do {
-              value = _integral(f, left, right, errorBound/h);
-              result += value;
-              h = 2*h;
-              right = left;
-              left = right - h;
-            }
-            while (!isNaN(value) &&
-              Math.abs(value) >= 0.5*errorBound/h && left < right)
-            if (integralError) result = Number.NaN;
-            return result;
-          }
-
-          //  Integrate over [a,b].  Initialize.
-          if (integralError) return Number.NaN;
-          max = 1024;
-          var x = new Array(max);
-          var f1 = new Array(max);
-          var f2 = new Array(max);
-          var f3 = new Array(max);
-          var v = new Array(max);
-          step = 1;
-          m = 1;
-          bound = errorBound;
-          value = 0;
-          h = b - a;
-          x[0] = a;
-          f1[0] = f(a);
-          f2[0] = f(0.5*(a + b));
-          f3[0] = f(b);
-          v[0] = h*(f1[0] + 4*f2[0] + f3[0])/6;
-          do {
-            //  Are we going to go forward or backward?
-            if (step == -1) {
-              //  Forward: j = m,...,max
-              step = 1;
-              j = m + 1;
-              jend = max;
-              m = 0;
-              mstart = 0;
-            }
-            else {
-              //  Backward: j = m,...,1
-              step = -1;
-              j = m - 1;
-              jend = -1;
-              m = max - 1;
-              mstart = max - 1;
-            }
-            h = 0.5*h;
-            h6 = h/6;
-            bound = 0.5*bound;
-            do {
-              left = x[j];
-              right = x[j] + 0.5*h;
-              //  Complete loss of significance?
-              if (left >= right) {
-                alert('integral: Error 1');
-                return value;
-              }
-              fa = f(x[j] + 0.5*h);
-              fb = f(x[j] + 1.5*h);
-              v1 = h6*(f1[j] + 4*fa + f2[j]);
-              v2 = h6*(f2[j] + 4*fb + f3[j]);
-              error = (v[j] - v1 - v2)/15;
-              if (Math.abs(error) <= bound ||
-                Math.abs(v1 + v2) < Math.abs(value)*ru) {
-                value = ((v1 + v2) + value) - error;
-              }
-              else {
-                if (integralError) return Number.NaN;
-                //  Are we out of memory?
-                if (m == j) {
-                  left = x[j];
-                  right = x[j] + 0.5*h;
-                  //  Complete loss of significance?
-                  if (left >= right) {
-                    alert('integral: Error 2');
-                    return value;
-                  }
-                  value += _integral(f, left, x[j] + 2*h, bound);
-                }
-                else {
-                  //  No, we are not.
-                  left = x[j];
-                  right = x[j] + 0.125*h;
-                  if (left >= right) {
-                    msg = ' The error bound specified (' +
-                          integralBound + ') is too small.';
-                    if (document.all) document.cookie = msg;  //  Explorer
-                    else document.cookie += msg;              //  Netscape
-        //            window.open("integralerror.html","",
-        //              "width=600,height=40," +
-        //              "screenX=50,screenY=50," +
-        //              "resizable=0,toolbar=0,directories=0," +
-        //              "status=0,menubar=0,scrollbars=1");
-                    integralError = true;
-                    return Math.NaN;
-                  }
-                  m1 = m + step;
-                  x[m] = x[j];
-                  x[m1] = x[j] + h;
-                  v[m] = v1;
-                  v[m1] = v2;
-                  f1[m] = f1[j];
-                  f2[m] = fa;
-                  f3[m] = f2[j];
-                  f1[m1] = f2[j];
-                  f2[m1] = fb;
-                  f3[m1] = f3[j];
-                  m += 2*step;
-                }
-              }
-              j += step;
-            }
-            while (j != jend)
-          }
-          while (m != mstart)
-          result = value;
-          if (integralError) result = NaN;
-          return result;
-        }
-
-
-    } // End: this.util
-
-
-    // TODO: refactor helper methods into count_boxes local scope
-    // count boxes code start
-
-
-    Math.radians = function(degrees) {
-        return degrees * Math.PI / 180;
-    };
-
-    var mid = function(rng) {
-        return rng[0] + 0.5*(rng[1] - rng[0]);
-    }
-
-    var ecs_to_cart = function(ra, dec) {
-        dec = 0.5*Math.PI - dec;
-        var sint = Math.sin( dec );
-        var x = sint*Math.cos( ra );
-        var y = sint*Math.sin( ra );
-        var z = Math.cos( dec );
-        return [x, y, z];
-    }
-
-    var intersect = function(line_a, line_b, plane) {
-        var denom = (line_b[0] - line_a[0])*plane[0] +
-                    (line_b[1] - line_a[1])*plane[1] +
-                    (line_b[2] - line_a[2])*plane[2];
-        var enumr = line_a[0]*plane[0] + line_a[1]*plane[1] + line_a[2]*plane[2] - plane[3];
-        var x = line_a[0] - (line_b[0] - line_a[0])*enumr/denom;
-        var y = line_a[1] - (line_b[1] - line_a[1])*enumr/denom;
-        var z = line_a[2] - (line_b[2] - line_a[2])*enumr/denom;
-        return [x, y, z];
-    }
-
-    var points_to_plane = function(point_a, point_b, point_c) {
-        var ab = [point_b[0] - point_a[0], point_b[1] - point_a[1], point_b[2] - point_a[2]];
-        var ac = [point_c[0] - point_a[0], point_c[1] - point_a[1], point_c[2] - point_a[2]];
-        var x = -(ab[1]*ac[2] - ab[2]*ac[1]);
-        var y = -(-ab[0]*ac[2] + ab[2]*ac[0]);
-        var z = -(ab[0]*ac[1] - ab[1]*ac[0]);
-        if ((x*x + y*y + z*z) == 0) {
-            throw new Error('Division by zero');
-        }
-        var inv_mag = 1.0/Math.sqrt( x*x + y*y + z*z );
-        x = x*inv_mag;
-        y = y*inv_mag;
-        z = z*inv_mag;
-        var w = x*point_a[0] + y*point_a[1] + z*point_a[2];
-        return [x, y, z, w];
-    }
-
-    var inside = function(point, plane) {
-        return (point[0]*plane[0] + point[1]*plane[1] + point[2]*plane[2]) >= plane[3];
-    }
-
-//    from https://gist.github.com/ramn/3103615
-    var cartesian_product = function(param_array) {
-        if (!param_array || param_array.length < 1) {
-            return [];
-        }
-        else {
-            var head = param_array[0];
-            var tail = param_array.slice(1);
-            var result = [];
-            for (var i = 0; i < head.length; i++) {
-                var product_of_tail = cartesian_product(tail);
-                if (product_of_tail && product_of_tail.length > 0) {
-                    for (var j = 0; j < product_of_tail.length; j++) {
-                        result.push([head[i]].concat(product_of_tail[j]));
-                    }
-                }
-                else
-                    result.push([head[i]]);
-            }
-            return result;
-        }
-    }
-
-    var product = function(elem, repeats) {
-        arr = [];
-        for (var i = 0; i < repeats; i++) {
-            arr.push(elem);
-        }
-        return cartesian_product(arr);
-    }
-
-    var box_plane_overlap = function(box_low, box_upp, plane) {
-        var perms = product([0, 1], 3);
-        for (var i = 0; i < perms.length; i++) {
-            var point = [];
-            for (var ii = 0; ii < box_low.length; ii++) {
-                if (perms[i][ii]) {
-                    point.push(box_upp[ii]);
-                }
-                else {
-                    point.push(box_low[ii]);
-                }
-            }
-            if (inside(point, plane)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    var redshift_to_distance_func = function(z) {
-        var omega_v = 0.73;
-        var omega_m = 0.27;
-        var omega_k = 1.0 - omega_m - omega_v;
-        var z_sq = (1.0 + z)*(1.0 + z);
-        var e_z = Math.sqrt(z_sq*(1.0 + z)*omega_m + z_sq*omega_k + omega_v);
-        return 1.0/e_z;
-    }
-
-    // use Comoving Distance rather than Transeverse Comoving Distance
-    var box_redshift_to_distance = function(z) {
-        var hubble = 71.0;
-
-//      get integral by Adaptive Simpson's rule
-        var val = catalogue.modules.light_cone.util.integral(redshift_to_distance_func, 0.0, z, 0.5);
-        var dh = 300000.0/hubble;
-        val = val*dh;
-//        transverse
-//        if (omega_k > 1e-8) {
-//            val = Math.sinh(Math.sqrt(omega_k)*val/dh)*dh/Math.sqrt(omega_k);
-//        else if (omega_k < -1e-8) {
-//            val = math.sinh(math.sqrt(-omega_k)*val/dh )*dh/math.sqrt(omega_k)
-        return val;
-    }
-
-    var count_boxes = function(box_size, min_ra, max_ra, min_dec, max_dec, max_z) {
-        var ra_rng = [Math.radians(min_ra), Math.radians(max_ra)];
-        var dec_rng = [Math.radians(min_dec), Math.radians(max_dec)];
-        var max_dist = box_redshift_to_distance(max_z);
-
-        var ecs_mid = [mid(ra_rng), mid(dec_rng)];
-        var xyz = ecs_to_cart(ecs_mid[0], ecs_mid[1]);
-        var plane = [xyz[0], xyz[1], xyz[2], max_dist];
-
-        var poly = [];
-        var zero = [0, 0, 0];
-        poly.push(zero);
-        var line = ecs_to_cart(ra_rng[0], dec_rng[0]);
-        poly.push(intersect(zero, line, plane));
-        line = ecs_to_cart(ra_rng[1], dec_rng[0]);
-        poly.push(intersect(zero, line, plane));
-        line = ecs_to_cart(ra_rng[0], dec_rng[1]);
-        poly.push(intersect(zero, line, plane));
-        line = ecs_to_cart(ra_rng[1], dec_rng[1]);
-        poly.push(intersect(zero, line, plane));
-
-        var planes = [];
-        planes.push(points_to_plane(poly[0], poly[1], poly[3]));
-        planes.push(points_to_plane(poly[0], poly[3], poly[4]));
-        planes.push(points_to_plane(poly[0], poly[4], poly[2]));
-        planes.push(points_to_plane(poly[0], poly[2], poly[1]));
-        planes.push(points_to_plane(poly[1], poly[2], poly[3]));
-
-        var max = [null, null, null];
-        for (var i = 0; i < poly.length; i++) {
-            for (var ii = 0; ii < 3; ii++) {
-                if (max[ii] == null || poly[i][ii] > max[ii]) {
-                    max[ii] = poly[i][ii];
-                }
-            }
-        }
-
-        var num_boxes = 0;
-        var box = [0, 0, 0];
-        while (box[0] < max[0]) {
-            while (box[1] < max[1]) {
-                while (box[2] < max[2]) {
-                    if (Math.sqrt(box[0]*box[0] + box[1]*box[1] + box[2]*box[2]) <= max_dist) {
-                        var box_upp = [box[0] + box_size, box[1] + box_size, box[2] + box_size];
-                        var okay = true;
-                        for (var i = 0; i < planes.length; i++) {
-                            var plane = planes[i];
-                            if (!box_plane_overlap(box, box_upp, plane)) {
-                                okay = false;
-                                break;
-                            }
-                        }
-                        if (okay){
-                            num_boxes += 1;
-                        }
-                    }
-                    box[2] += box_size;
-                }
-                box[2] = 0;
-                box[1] += box_size;
-            }
-            box[1] = 0;
-            box[0] += box_size;
-        }
-        return num_boxes;
-    }
-
-    var esttime = function(x, p1, p2, p3) {
-        return (p1 * x * x) + (p2 * x) + p3;
-    }
-    var job_size = function(estimated_count, max_boxes, p1, p2, p3) {
-        return esttime(estimated_count, p1, p2, p3) / esttime(max_boxes, p1, p2, p3);
-    }
-
     var check_number_of_boxes = function(num_boxes) {
         // FIXME !!!
         // var dataset_id = $(lc_id('dataset')).val();
@@ -462,9 +30,6 @@ catalogue.modules.light_cone = function ($) {
         // }
     }
 
-
-
-    // count boxes code end
 
     var display_maximum_number_light_cones = function ($field, msg) {
         var $enclosing = $field.closest('label.control-label');
@@ -527,70 +92,6 @@ catalogue.modules.light_cone = function ($) {
     //     $(lc_id('number_of_light_cones')).data("simulation-box-size", data.fields.box_size);
 
     // };
-
-
-    // Max's algorithm for calculating the maximum allowed number of unique light-cones
-    //    /**
-    //     * Convert redshift to distance
-    //     * @param z redshift
-    //     * @return comoving distance
-    //     */
-    var redshift_to_distance = function (z) {
-        var n = 1000;
-
-        var c = 299792.458;
-        var H0 = 100.0;
-        var h = H0 / 100;
-        var WM = 0.25;
-        var WV = 1.0 - WM - 0.4165 / (H0 * H0);
-        var WR = 4.165E-5 / (h * h);
-        var WK = 1 - WM - WR - WV;
-        var az = 1.0 / (1 + 1.0 * z);
-        var DTT = 0.0;
-        var DCMR = 0.0;
-        for (var i = 0; i < n; i++) {
-            var a = az + (1 - az) * (i + 0.5) / n;
-            var adot = Math.sqrt(WK + (WM / a) + (WR / (a * a)) + (WV * a * a));
-            DTT = DTT + 1.0 / adot;
-            DCMR = DCMR + 1.0 / (a * adot);
-        }
-        DTT = (1. - az) * DTT / n;
-        DCMR = (1. - az) * DCMR / n;
-        var d = (c / H0) * DCMR;
-
-        return d;
-    }
-
-
-    //    /**
-    //     * Compute the maximum number of unique cones available for selected parameters
-    //     */
-    var get_number_of_unique_light_cones = function () {
-        var ra = vm.ra_opening_angle();
-        var dec = vm.dec_opening_angle();
-        var redshift_min = $(lc_id('redshift_min')).val();
-        var redshift_max = $(lc_id('redshift_max')).val();
-
-        var alfa1 = parseFloat(ra);
-        var box_side = $(lc_id('number_of_light_cones')).data("simulation-box-size");
-        var d1 = redshift_to_distance(parseFloat(redshift_min));
-        var d2 = redshift_to_distance(parseFloat(redshift_max));
-        var beta1;
-        for (beta1 = alfa1; beta1 < 90; beta1 = beta1 + 0.01) {
-            if ((d2 - box_side) * Math.sin((Math.PI / 180) * (beta1 + alfa1)) <= d2 * Math.sin((Math.PI / 180) * beta1)) {
-                break;
-            }
-        }
-        var hv = Math.floor(d2 * Math.sin((Math.PI / 180) * (alfa1 + beta1)) - d1 * Math.sin((Math.PI / 180) * (alfa1 + beta1)));
-
-        var hh = 2 * d2 * Math.sin((Math.PI / 180) * (parseFloat(dec)) / 2);
-
-        var nv = Math.floor(box_side / hv);
-        var nh = Math.floor(box_side / hh);
-        var n = nv * nh;
-
-        return n;
-    }
 
 
     var spinner_check_value = function (new_value) {
@@ -703,12 +204,12 @@ catalogue.modules.light_cone = function ($) {
 
     // - event handlers for fields -
     //
-    var catalogue_geometry_change = function (newValue) {
+    var catalogue_geometry_change = function () {
 
         var light_cone_fields = $('.light_cone_field').closest('div.control-group');
         var light_box_fields = $('.light_box_field').closest('div.control-group');
 
-        if (vm.catalogue_geometry() == "box") {
+        if (vm.catalogue_geometry().id == "box") {
             light_box_fields.show();
             light_cone_fields.hide();
             $('div.summary_light_cone .box_fields').show();
@@ -718,7 +219,8 @@ catalogue.modules.light_cone = function ($) {
             light_cone_fields.show();
             $('div.summary_light_cone .box_fields').hide();
             $('div.summary_light_cone .light_cone_fields').show();
-            calculate_max_number_of_cones();
+            // The max number of cones should be triggered through KO dependency
+            //calculate_max_number_of_cones();
         }
     };
 
@@ -735,7 +237,8 @@ catalogue.modules.light_cone = function ($) {
                 clear_error($elem);
             }
             // fill_in_ra_dec_in_summary();
-            calculate_max_number_of_cones();
+            // The max number of cones should be triggered through a KO dependency
+            // calculate_max_number_of_cones();
         }
         clean_inline($(lc_id(field_name)));
         vm[field_name].subscribe(event_handler);
@@ -792,70 +295,70 @@ catalogue.modules.light_cone = function ($) {
         //     }
         // });
 
-        $(lc_id('redshift_min') + ', ' + lc_id('redshift_max')).change(function (evt) {
-            calculate_max_number_of_cones();
-        });
+//        $(lc_id('redshift_min') + ', ' + lc_id('redshift_max')).change(function (evt) {
+//            calculate_max_number_of_cones();
+//        });
 
 
-        $(lc_id('light_cone_type_0') + ', ' + lc_id('light_cone_type_1')).click(function (evt) {
-            calculate_max_number_of_cones();
-        });
+//        $(lc_id('light_cone_type_0') + ', ' + lc_id('light_cone_type_1')).click(function (evt) {
+//            calculate_max_number_of_cones();
+//        });
 
 
-        $(lc_id('number_of_light_cones')).spinner({
-            spin: function (evt, ui) {
-                return spinner_check_value(ui.value);
-            },
-            min: 1
-        });
+//        $(lc_id('number_of_light_cones')).spinner({
+//            spin: function (evt, ui) {
+//                return spinner_check_value(ui.value);
+//            },
+//            min: 1
+//        });
 
 
-        $(lc_id('number_of_light_cones')).change(function () {
-            var new_value = parseInt($(this).val());
-            return spinner_check_value(new_value);
-        });
+//        $(lc_id('number_of_light_cones')).change(function () {
+//            var new_value = parseInt($(this).val());
+//            return spinner_check_value(new_value);
+//        });
 
 
-        $(lc_id('box_size')).change(function (evt) {
-            var $this = $(this);
-            var box_size_value = parseFloat($this.val());
-            var max_box_size = parseFloat($(lc_id('number_of_light_cones')).data("simulation-box-size"));
-            if ($this.val() != "" && isNaN(box_size_value)) {
-                catalogue.util.show_error($(lc_id('box_size')), 'Box size must be a number');
-                return false;
-            }
-            if (!isNaN(max_box_size) && parseFloat(box_size_value) > parseFloat(max_box_size)) {
-                catalogue.util.show_error($(lc_id('box_size')), 'Box size greater than simulation\'s box size');
-                return false;
-            }
-            catalogue.util.show_error($(lc_id('box_size')), null);
-        });
+//        $(lc_id('box_size')).change(function (evt) {
+//            var $this = $(this);
+//            var box_size_value = parseFloat($this.val());
+//            var max_box_size = parseFloat($(lc_id('number_of_light_cones')).data("simulation-box-size"));
+//            if ($this.val() != "" && isNaN(box_size_value)) {
+//                catalogue.util.show_error($(lc_id('box_size')), 'Box size must be a number');
+//                return false;
+//            }
+//            if (!isNaN(max_box_size) && parseFloat(box_size_value) > parseFloat(max_box_size)) {
+//                catalogue.util.show_error($(lc_id('box_size')), 'Box size greater than simulation\'s box size');
+//                return false;
+//            }
+//            catalogue.util.show_error($(lc_id('box_size')), null);
+//        });
 
 
-        $('#id_output_format-supported_formats').change(function (evt) {
-            var $this = $(this);
-            var output_format_value = $this.find('option:selected').text();
-        });
+//        $('#id_output_format-supported_formats').change(function (evt) {
+//            var $this = $(this);
+//            var output_format_value = $this.find('option:selected').text();
+//        });
 
 
-        $(lc_id('ra_opening_angle') + ', ' + lc_id('dec_opening_angle') + ', ' + lc_id('redshift_max')).change(function(evt) {
-            var box_size = parseFloat($(lc_id('number_of_light_cones')).data("simulation-box-size")); //window.simulation_box_size;   // size of the simulation box
-            var min_ra = 0.0;                                                               // minimum right-ascension in degrees
-            var max_ra = vm.ra_opening_angle();                                // maximum right-ascension in degrees
-            var min_dec = 0.0;                                                              // minimum declination in degrees
-            var max_dec = $(lc_id('dec_opening_angle')).val();                              // maximum declination in degrees
-            var max_z = $(lc_id('redshift_max')).val();                                     // maximum redshift
-
-            if (max_ra != '' && max_dec != '' && max_z != '') {
-                try {
-                    var num_boxes = count_boxes(box_size, min_ra, max_ra, min_dec, max_dec, max_z);
-                    check_number_of_boxes(num_boxes);
-                } catch (err) {
-                    $('#max_job_size').addClass('job_too_large_error');
-                    $('#max_job_size').text('Estimated job size: invalid parameters, please adjust RA, Dec, redshift min or max');
-                }
-            }
-        });
+//        $(lc_id('ra_opening_angle') + ', ' + lc_id('dec_opening_angle') + ', ' + lc_id('redshift_max')).change(function(evt) {
+//            var box_size = parseFloat($(lc_id('number_of_light_cones')).data("simulation-box-size")); //window.simulation_box_size;   // size of the simulation box
+//            var min_ra = 0.0;                                                               // minimum right-ascension in degrees
+//            var max_ra = vm.ra_opening_angle();                                // maximum right-ascension in degrees
+//            var min_dec = 0.0;                                                              // minimum declination in degrees
+//            var max_dec = $(lc_id('dec_opening_angle')).val();                              // maximum declination in degrees
+//            var max_z = $(lc_id('redshift_max')).val();                                     // maximum redshift
+//
+//            if (max_ra != '' && max_dec != '' && max_z != '') {
+//                try {
+//                    var num_boxes = count_boxes(box_size, min_ra, max_ra, min_dec, max_dec, max_z);
+//                    check_number_of_boxes(num_boxes);
+//                } catch (err) {
+//                    $('#max_job_size').addClass('job_too_large_error');
+//                    $('#max_job_size').text('Estimated job size: invalid parameters, please adjust RA, Dec, redshift min or max');
+//                }
+//            }
+//        });
 
     }
 
@@ -922,8 +425,23 @@ catalogue.modules.light_cone = function ($) {
             return elem.pk == snapshot_id
         })[0].fields.redshift;
         return format_redshift(res);
-    }
+    };
+    
+    var galaxy_model_from_dsid = function(dsid) {
+    	// Answer the galaxy model for the currently selected dataset
+    	debugger;
+    	var dsid = vm.dataset();
+    	var gmid = catalogue.util.dataset(dsid).fields.galaxy_model;
+    	return catalogue.util.galaxy_model(gmid);
+    };
 
+    var lookup_dataset = function(sid, gmid) {
+    	res = $.grep(TaoMetadata.DataSet, function(elem, idx) {
+    		return elem.fields.simulation == sid && elem.fields.galaxy_model == gmid;
+    	});
+    	return res[0];
+    };
+    
     this.init_model = function() {
         vm.catalogue_geometries = ko.observableArray([
             { id: 'light_cone', name: 'Light Cone'},
@@ -933,17 +451,23 @@ catalogue.modules.light_cone = function ($) {
 
         vm.dark_matter_simulations = ko.observableArray(TaoMetadata.Simulation);
         vm.dark_matter_simulation = ko.observable(vm.dark_matter_simulations()[1]);
+        
+        vm.galaxy_models = ko.observableArray(TaoMetadata.GalaxyModel);
+        vm.galaxy_model = ko.observable(vm.galaxy_models()[0]);
 
-        vm.datasets = ko.computed(function(){
-            return catalogue.util.datasets(vm.dark_matter_simulation().pk)
+        vm.datasets = ko.observableArray(TaoMetadata.DataSet);
+        // vm.dataset = ko.observable($(lc_id('dataset')).val());
+        vm.dataset = ko.computed(function() {
+        	// Answer the current dataset based on the current simulation and galaxy model
+        	return lookup_dataset(vm.dark_matter_simulation().pk,
+        						  vm.galaxy_model().pk);
         });
+        //vm.dataset.subscribe(function(did) {
+        //    vm.output_properties.options_raw(get_output_options(did));
+        //});
 
         vm.light_cone_type = ko.observable('unique');
-
-        vm.dataset = ko.observable($(lc_id('dataset')).val());
-        vm.dataset.subscribe(function(did) {
-            vm.output_properties.options_raw(get_output_options(did));
-        });
+        vm.number_of_light_cones = ko.observable();
 
         vm.ra_opening_angle = ko.observable();
         vm.dec_opening_angle = ko.observable();
@@ -953,6 +477,15 @@ catalogue.modules.light_cone = function ($) {
                 return vm.dark_matter_simulation().fields.box_size;
             }
         });
+
+        vm.snapshots = ko.computed(function (){ 
+            return catalogue.util.snapshots(vm.dataset().pk)
+        });
+        vm.snapshot = ko.observable(vm.snapshots()[0]);
+        vm.snapshot_redshift = ko.computed(function() { 
+            return format_redshift(vm.snapshot())
+        });
+
         // Twosided widget
         vm.output_properties = TwoSidedSelectWidget(
             lc_id('output_properties'),
@@ -969,26 +502,9 @@ catalogue.modules.light_cone = function ($) {
             vm.current_output_property(op);
         });
         //
-        vm.snapshot = ko.observable();
+
         vm.redshift_min = ko.observable();
         vm.redshift_max = ko.observable();
-
-        vm.light_cone_type = ko.observable();
-        vm.number_of_light_cones = ko.observable();
-
-        vm.snapshots = ko.computed(function (){ 
-            return catalogue.util.snapshots(vm.dataset())
-        });
-        vm.snapshot = ko.observable(vm.snapshots()[0].pk);
-        vm.snapshot_redshift = ko.computed(function() { 
-            return snapshot_id_to_redshift(vm.snapshot())
-        });
-        vm.redshift_min = ko.observable($(lc_id('redshift_min')).val());
-        vm.redshift_max = ko.observable($(lc_id('redshift_max')).val());
-
-        vm.light_cone_type = ko.observable($(lc_id('light_cone_type')).val());
-        vm.number_of_light_cones = ko.observable($(lc_id('number_of_light_cones')).val());
-
 
         // Computed Human-Readable Summary Fields
         vm.hr_ra_opening_angle = ko.computed(function(){
@@ -1052,11 +568,13 @@ catalogue.modules.light_cone = function ($) {
         vm.catalogue_geometry.subscribe(catalogue_geometry_change);
         put_handler_ra_and_dec('ra_opening_angle');
         put_handler_ra_and_dec('dec_opening_angle');
-        catalogue.modules.light_cone.util = new catalogue.modules.light_cone.util();
 
         init_event_handlers();
 
         ko.applyBindings(vm);
+        
+        // Not sure if this should be required, but ensure correct controls are hidden and shown
+        catalogue_geometry_change();
 
     }
 
