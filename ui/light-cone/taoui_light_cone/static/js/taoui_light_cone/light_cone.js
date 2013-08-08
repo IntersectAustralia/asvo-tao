@@ -901,7 +901,6 @@ catalogue.modules.light_cone = function ($) {
                     $(lc_id('box_size')).change();
                 }
             }
-            update_output_options();
             update_snapshot_options();
         });
 
@@ -1020,17 +1019,6 @@ catalogue.modules.light_cone = function ($) {
         });
     }
 
-    function get_init_output_options() {
-        resp = {'selected': [], 'not_selected':[]}
-        $(lc_id('output_properties') + ' select option').each(function(idx, elem){
-            var value = $(elem).attr('value');
-            var where = $(elem).attr('selected') ? 'selected' : 'not_selected';
-            resp[where].push(catalogue.util.dataset_property(value));
-        });
-        console.log(resp);
-        return resp;
-    }
-
     var dataset_property_to_option = function(dsp) {
         return {
             'value': dsp.pk,
@@ -1040,6 +1028,12 @@ catalogue.modules.light_cone = function ($) {
         }
     }
 
+    function get_output_options(did) {
+        resp = {'selected': [], 'not_selected':[]}
+        resp.selected = ko.utils.arrayMap(catalogue.util.output_choices(did),dataset_property_to_option);
+        return resp;
+    }
+
     this.init_model = function() {
         vm.catalogue_geometry = ko.observable($(lc_id('catalogue_geometry')).val());
         vm.dark_matter_simulation = ko.observable($(lc_id('dark_matter_simulation')).val());
@@ -1047,13 +1041,15 @@ catalogue.modules.light_cone = function ($) {
         console.log($(lc_id('galaxy_model')).val());
 
         vm.galaxy_model = ko.observable($(lc_id('galaxy_model')).val());
-        // vm.galaxy_model_id = ko.observable($(lc_id('galaxy_model')).attr('data-galaxy_model_id');
+        vm.galaxy_model.subscribe(function(did) {
+            vm.output_properties.options_raw(get_output_options(did));
+        });
 
         vm.ra_opening_angle = ko.observable($(lc_id('ra_opening_angle')).val());
         vm.dec_opening_angle = ko.observable($(lc_id('dec_opening_angle')).val());
 
         vm.output_properties = TwoSidedSelectWidget(lc_id('output_properties'),
-            get_init_output_options(), dataset_property_to_option);
+            {selected:[],not_selected:[]}, dataset_property_to_option);
         vm.current_output_property = ko.observable(undefined);
         vm.output_properties.from_side.clicked_option.subscribe(function(v) {
             var op = catalogue.util.dataset_property(v);
