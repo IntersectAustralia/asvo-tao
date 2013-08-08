@@ -240,7 +240,7 @@ catalogue.modules.light_cone = function ($) {
         }
 
 
-    }
+    } // End: this.util
 
 
     // TODO: refactor helper methods into count_boxes local scope
@@ -497,35 +497,6 @@ catalogue.modules.light_cone = function ($) {
         var whole_digit = parseInt(redshift).toString().length;
         return redshift.toFixed(Math.max(5 - whole_digit, 0));
     };
-
-
-    // var update_snapshot_options = function () {
-    //     var simulation_id = $(lc_id('dark_matter_simulation')).val();
-    //     var galaxy_model_id = $(lc_id('galaxy_model')).find(':selected').attr('data-galaxy_model_id');
-    //     var $snapshot = $(lc_id('snapshot'));
-    //     var current = $snapshot.val();
-    //     $snapshot.empty();
-
-    //     data = []
-    //     // data = catalogue.util.snapshots(simulation_id, vm.galaxy_model.pk)
-    //     for (i = 0; i < data.length; i++) {
-    //         var item = data[i];
-    //         $option = $('<option/>');
-    //         $option.attr('value', item.pk);
-    //         // Redshift Formatting:
-    //         // The age of the universe as a function of redshift is 1 / (1 + z) where z is the redshift.
-    //         // So z=0 is the present, and z=Infinity is the Big Bang.
-    //         // This is a non-linear relationship with more variation at smaller z values.
-    //         // To present figures that are easy to read and have sensible precision, redshift will be displayed with up to 5 decimals.
-    //         $option.html(format_redshift(item.fields.redshift));
-    //         if (item.pk == current) {
-    //             $option.attr('selected', 'selected');
-    //         }
-    //         $snapshot.append($option);
-    //     }
-    //     $(lc_id('snapshot')).change();
-
-    // };
 
     var update_galaxy_model_options = function (simulation_id) {
         var $galaxy_model = $(lc_id('galaxy_model'));
@@ -835,8 +806,7 @@ catalogue.modules.light_cone = function ($) {
                     $(lc_id('box_size')).change();
                 }
             }
-            // update_output_options();
-            // update_snapshot_options();
+
         });
 
         $(lc_id('redshift_min') + ', ' + lc_id('redshift_max')).change(function (evt) {
@@ -961,6 +931,21 @@ catalogue.modules.light_cone = function ($) {
         }
     }
 
+    var format_redshift = function(redshift_string) {
+        var redshift = parseFloat(redshift_string);
+        var whole_digit = parseInt(redshift).toString().length;
+        return redshift.toFixed(Math.max(5 - whole_digit, 0));
+    };
+    this.format_redshift = format_redshift;
+
+    var snapshot_id_to_redshift = function(snapshot_id) {
+        console.log(snapshot_id);
+        res = $.grep(TaoMetadata.Snapshot, function(elem, idx) { 
+            return elem.pk == snapshot_id
+        })[0].fields.redshift;
+        return format_redshift(res);
+    }
+
     this.init_model = function() {
         vm.catalogue_geometries = ko.observableArray([
             { id: 'light_cone', name: 'Light Cone'},
@@ -972,12 +957,12 @@ catalogue.modules.light_cone = function ($) {
         vm.dark_matter_simulation = ko.observable(vm.dark_matter_simulations()[1]);
 
         vm.galaxy_models = ko.observableArray(TaoMetadata.GalaxyModel)
-        vm.galaxy_model = ko.observable(vm.dark_matter_simulation()[0]);
+        vm.galaxy_model = ko.observable(vm.galaxy_models()[0]);
 
         vm.light_cone_type = ko.observable('unique');
 
-        vm.ra_opening_angle = ko.observable($(lc_id('ra_opening_angle')).val());
-        vm.dec_opening_angle = ko.observable($(lc_id('dec_opening_angle')).val());
+        vm.ra_opening_angle = ko.observable();
+        vm.dec_opening_angle = ko.observable();
 
 
         vm.box_size = ko.computed(function() {
@@ -1005,6 +990,15 @@ catalogue.modules.light_cone = function ($) {
         vm.light_cone_type = ko.observable();
         vm.number_of_light_cones = ko.observable();
 
+        vm.snapshots = ko.computed(function () {
+            return catalogue.util.snapshots(vm.dark_matter_simulation().pk, vm.galaxy_model().pk);
+        });
+        vm.snapshot = ko.observable(1);
+        vm.snapshot_redshift = ko.computed( function() {
+            return snapshot_id_to_redshift(vm.snapshot());
+        });
+
+        // Computed Human-Readable Summary Fields
         vm.hr_ra_opening_angle = ko.computed(function(){
             var result = '';
             if (/\S/.test(vm.ra_opening_angle())) {
@@ -1048,6 +1042,7 @@ catalogue.modules.light_cone = function ($) {
     this.get_vm = function() {
         return vm;
     }
+
 
     this.init_ui = function() {
         var init_light_cone_type_value = $('input[name="light_cone-light_cone_type"][checked="checked"]').attr('value');
