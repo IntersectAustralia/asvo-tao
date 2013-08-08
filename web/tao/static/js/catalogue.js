@@ -90,6 +90,14 @@ catalogue.util = function ($) {
     	});
     	return res
     }
+    
+    this.dataset = function(dsid) {
+    	// Answer the DataSet object for the given dsid
+    	res = $.grep(TaoMetadata.DataSet, function(elem, idx) {
+    		return elem.pk == dsid;
+    	});
+    	return res[0];
+    }
 
     this.simulation = function(id) {
         return $.grep(TaoMetadata.Simulation, function(elem, idx) { 

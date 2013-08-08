@@ -178,10 +178,12 @@ class Form(BetterForm):
         # self.fields['galaxy_model'] = ChoiceFieldWithOtherAttrs(choices=datasets.galaxy_model_choices())
 
         self.fields['dark_matter_simulation'] = ChoiceFieldWithOtherAttrs(choices=datasets.dark_matter_simulation_choices())
-        self.fields['dataset'] = ChoiceFieldWithOtherAttrs(choices=datasets.galaxy_model_choices(sid))
+        # AKG: I think that galaxy_model and dark_matter_simulation should follow the snapshot pattern.
+        # Still to be determined 
+        self.fields['galaxy_model'] = ChoiceFieldWithOtherAttrs(choices=[])
         self.fields['snapshot'] = ChoiceFieldWithOtherAttrs(required=False,
                                     label='Redshift',
-                                    choices=[(None, None, {"data-bind" : "attr: {value: pk}, text: catalogue.modules.light_cone.format_redshift($data.fields.redshift)"})],
+                                    choices=[(None, None, {"data-bind" : "value: $data, text: catalogue.modules.light_cone.format_redshift($data.fields.redshift)"})],
                                     widget=SelectWithOtherAttrs(attrs={'class': 'light_box_field'}))
         self.fields['number_of_light_cones'] = forms.IntegerField(label=_('Select the number of light-cones:'), required=False, initial='1')
         self.fields['output_properties'] = bf_fields.forms.MultipleChoiceField(required=True, choices=output_choices, widget=TwoSidedSelectWidget)
@@ -197,7 +199,8 @@ class Form(BetterForm):
         # Knockout.js data bindings
         self.fields['catalogue_geometry'].widget.attrs['data-bind'] = 'options: catalogue_geometries, value: catalogue_geometry, optionsText: function(i) { return i.name }'
         self.fields['dark_matter_simulation'].widget.attrs['data-bind'] = 'options: dark_matter_simulations, value: dark_matter_simulation, optionsText: function(i) { return i.fields.name} '
-        self.fields['dataset'].widget.attrs['data-bind'] = 'options: datasets, value: dataset, optionsText: function(i) { return catalogue.utils.galaxy_model(i.fields.galaxy_model).fields.name }'
+        #self.fields['galaxy_model'].widget.attrs['data-bind'] = 'options: datasets, value: dataset, optionsText: function(i) { return catalogue.utils.galaxy_model(i.fields.galaxy_model).fields.name }'
+        self.fields['galaxy_model'].widget.attrs['data-bind'] = 'options: galaxy_models, value: galaxy_model, optionsText: function(i) { return i.fields.name }'
 
         self.fields['ra_opening_angle'].widget.attrs['data-bind'] = 'value: ra_opening_angle'
         self.fields['dec_opening_angle'].widget.attrs['data-bind'] = 'value: dec_opening_angle'
