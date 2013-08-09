@@ -1031,11 +1031,6 @@ namespace tao {
       _field_map.insert( "tree_id", dict.get<string>( "tree_id", "globaltreeid" ) );
       _field_map.insert( "snapshot", dict.get<string>( "snapshot", "snapnum") );
 
-      // Astronomical values. Get these first just in case
-      // we do any redshift calculations in here.
-      _h0 = dict.get<real_type>( "h0",73.0 );
-      LOGDLN( "Using h0 = ", _h0 );
-
       // Should we use the BSP tree system?
       _accel_method = global_dict.get<string>( "settings:database:acceleration","none" );
       std::transform( _accel_method.begin(), _accel_method.end(), _accel_method.begin(), ::tolower );
@@ -1046,6 +1041,19 @@ namespace tao {
 
       // Connect to the database.
       _db_connect();
+
+      // Astronomical values. Get these first just in case
+      // we do any redshift calculations in here.
+      {
+	 std::string val;
+#ifdef MULTIDB
+	 (*_db)["tree_1"] << "SELECT metavalue FROM metadata WHERE metakey='hubble'", soci::into( val );
+#else
+	 _sql << "SELECT metavalue FROM metadata WHERE metakey='hubble'", soci::into( val );
+#endif
+	 _h0 = boost::lexical_cast<real_type>( val );
+      }
+      LOGILN( "Using h0 = ", _h0 );
 
       // Get box type.
       _box_type = dict.get<string>( "geometry", "light-cone" );
@@ -1670,7 +1678,7 @@ namespace tao {
 	       if( dist > 0.0 )
 	       {
 		  array<real_type,3> rad_vec( pos_x[ii]/dist, pos_y[ii]/dist, pos_z[ii]/dist );
-		  real_type dist_z = dist + (rad_vec[0]*vel_x[ii] + rad_vec[1]*vel_y[ii] + rad_vec[2]*vel_z[ii])/_h0;
+		  real_type dist_z = dist + ((rad_vec[0]*vel_x[ii] + rad_vec[1]*vel_y[ii] + rad_vec[2]*vel_z[ii])/_h0)*(_h0/100.0);
 		  _gal_z_obs[ii] = _distance_to_redshift( dist_z );
 	       }
 	       else

@@ -4,7 +4,6 @@
 {% load staticfiles %}
 {% load bootstrap_tags %}
 {% load assets %}
-{% load light_cone_tags  %}
 
 {% block subtitle %}Viewing Job{% endblock subtitle %}
 
@@ -36,18 +35,22 @@ the forms being hidden and all.
 {#                </span>#}
 {#            </div>#}
 
-            <div>
                 <strong>Optional Description:</strong>
+            <div id="inlineedit">
                 <div contenteditable id="id-job_description" data-name="job-description">
                     <em>{{ job.description }} </em>
                 </div>
-                <div><input id="id-save_edit" type="button" value="Save"/><input id="id-cancel_edit" type="button" value="Cancel"></div>
+                <div id="savecancel">
+                  <div id="id-save_edit" class="btn" type="button" value="Save">&#10003;</div>
+                  <div id="id-cancel_edit" class="btn" type="button" value="Cancel">X</div>
+                </div>
            </div>
             <div>
                 <strong>Download</strong>
 
-                {% if job.is_completed %}
-                    <ul id='id_completed_jobs'>
+                <ul id='id_completed_jobs'>
+                    <li><a id='id_download_summary_txt' href="{% url 'get_summary_txt_file' job.id %}">summary.txt</a></li>
+                    {% if job.is_completed %}
                         {% for file in job.files %}
                             <li>
                             {% if file.can_be_downloaded %}
@@ -68,9 +71,8 @@ the forms being hidden and all.
                         (Zip file exceeds maximum download size.)
                     {% endif %}
                 {% else %}
-                    <p>
-                        This job has not completed (and hence has no output).
-                    </p>
+                    <p>This job has not completed (and hence has no output).</p>
+                    </ul>
                 {% endif %}
             </div>
             <div>
@@ -103,4 +105,13 @@ the forms being hidden and all.
     {% csrf_token %}
     <input type="hidden" id="job_id" value="{{ job.id }}" />
     </form>
+
+    <script>
+      $("#inlineedit").click(function() {
+        $('#savecancel').show();
+      });
+      $("#id-job_description").focusout(function() {
+        $('#savecancel').hide();
+      });
+    </script>
 {% endblock content %}
