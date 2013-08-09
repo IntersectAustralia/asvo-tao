@@ -218,11 +218,31 @@ def get_summary_txt_file(request, id):
     response.write(_get_summary_as_text(id))
     return response
 
+STATUS_ORDERING = {
+    'HELD': 0,
+    'SUBMITTED': 1,
+    'QUEUED': 2,
+    'IN_PROGRESS': 3,
+    'COMPLETED': 4,
+    'ERROR': 5,
+}
+
+
+def _qsort_jobs(job_list):
+    if not job_list:
+        return []
+    else:
+        pivot = job_list[0]
+        less = _qsort_jobs([job for job in job_list[1:] if STATUS_ORDERING[job.status] <= STATUS_ORDERING[pivot.status]]) # since first ordered by ascending id, this equality places bigger id of the same status in front
+        greater = _qsort_jobs([job for job in job_list[1:] if STATUS_ORDERING[job.status] > STATUS_ORDERING[pivot.status]])
+        return less + [pivot] + greater
+
 
 @researcher_required
 @set_tab('jobs')
 def index(request):
-    user_jobs = Job.objects.filter(user=request.user).order_by('-id')
+    user_jobs = Job.objects.filter(user=request.user).order_by('id')
+
     return render(request, 'jobs/index.html', {
-        'jobs': user_jobs,
+        'jobs': _qsort_jobs(user_jobs),
     })
