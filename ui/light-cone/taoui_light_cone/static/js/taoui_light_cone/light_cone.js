@@ -456,9 +456,9 @@ catalogue.modules.light_cone = function ($) {
             return catalogue.util.snapshots(vm.dataset().pk)
         });
         vm.snapshot = ko.observable(vm.snapshots()[0]);
-        vm.snapshot_redshift = ko.computed(function() { 
-            return format_redshift(vm.snapshot())
-        });
+        // vm.snapshot_redshift = ko.computed(function() { 
+        //     return format_redshift(vm.snapshot().fields.redshift)
+        // });
 
         // Twosided widget
         vm.output_properties = TwoSidedSelectWidget(
@@ -481,9 +481,9 @@ catalogue.modules.light_cone = function ($) {
 
         vm.hr_ra_opening_angle = ko.computed(function(){
             var result = '';
-            if (/\S/.test(vm.ra_opening_angle())) {
+            if (vm.ra_opening_angle() != undefined && /\S/.test(vm.ra_opening_angle())) {
                 result += 'RA: ' + vm.ra_opening_angle() + '&deg;'
-                if (/\S/.test(vm.dec_opening_angle())) {
+                if (vm.dec_opening_angle() != undefined && /\S/.test(vm.dec_opening_angle())) {
                     result += ', '
                 } else {
                     result += '<br>'
@@ -495,7 +495,7 @@ catalogue.modules.light_cone = function ($) {
 
         vm.hr_dec_opening_angle = ko.computed(function() {
             var result = '';
-            if (/\S/.test(vm.dec_opening_angle())) {
+            if (vm.dec_opening_angle() != undefined && /\S/.test(vm.dec_opening_angle())) {
                 result += 'Dec: ' + vm.dec_opening_angle() + '&deg;<br>'
             }
             return result;
@@ -504,14 +504,18 @@ catalogue.modules.light_cone = function ($) {
 
         vm.hr_redshift = ko.computed(function() {
             var result = '';
-            var rs_min = /\S/.test(vm.redshift_min());
-            var rs_max = /\S/.test(vm.redshift_max());
-            if (rs_min && !rs_max) {
-                result = 'Redshift: ' + vm.redshift_min() + ' &le; z' ;
-            } else if (!rs_min && rs_max) {
-                result = 'Redshift: z &le; ' + vm.redshift_max();
-            } else if (rs_min && rs_max) {
-                result = 'Redshift: ' + vm.redshift_min() + ' &le; z &le; ' + vm.redshift_max();
+            if (vm.catalogue_geometry().id == 'light_cone') {
+                var rs_min = vm.redshift_min() != undefined && /\S/.test(vm.redshift_min());
+                var rs_max = vm.redshift_max() != undefined && /\S/.test(vm.redshift_max());
+                if (rs_min && !rs_max) {
+                    result = 'Redshift: ' + vm.redshift_min() + ' &le; z' ;
+                } else if (!rs_min && rs_max) {
+                    result = 'Redshift: z &le; ' + vm.redshift_max();
+                } else if (rs_min && rs_max) {
+                    result = 'Redshift: ' + vm.redshift_min() + ' &le; z &le; ' + vm.redshift_max();
+                }
+            } else {
+                result = format_redshift(vm.snapshot().fields.redshift);
             }
             return result;
         });
