@@ -18,27 +18,26 @@ from tao.xml_util import xml_parse
 @researcher_required
 def index(request):
     if request.method == 'POST':
-      if len(request.FILES) > 0:
-          parameter_file = request.FILES.itervalues().next().read()
-          ui_holder = UIModulesHolder(UIModulesHolder.XML, xml_parse(parameter_file))
-          # print(ui_holder.forms()[1])
-          return render(request, 'mock_galaxy_factory/index.html', {
-              'forms': ui_holder.forms(),
-              'forms_size' : len(ui_holder.forms())+1,
-          })
-
-      else:
-        ui_holder = UIModulesHolder(UIModulesHolder.POST, request.POST)
-        if ui_holder.validate():
-            UserModel = get_user_model()
-            user = UserModel.objects.get(username=request.user.username)
-            job_description = request.POST.get('job-description')
-            workflow.save(user, ui_holder, job_description)
-            messages.info(request, _(settings.INITIAL_JOB_MESSAGE % models.initial_job_status().lower()))
-            return redirect(reverse('job_index'))
+        if len(request.FILES) > 0:
+            parameter_file = request.FILES.itervalues().next().read()
+            ui_holder = UIModulesHolder(UIModulesHolder.XML, xml_parse(parameter_file))
+            # print(ui_holder.forms()[1])
+            return render(request, 'mock_galaxy_factory/index.html', {
+                'forms': ui_holder.forms(),
+                'forms_size' : len(ui_holder.forms())+1,
+            })
+        else:
+            ui_holder = UIModulesHolder(UIModulesHolder.POST, request.POST)
+            if ui_holder.validate():
+                UserModel = get_user_model()
+                user = UserModel.objects.get(username=request.user.username)
+                job_description = request.POST.get('job-description')
+                workflow.save(user, ui_holder, job_description)
+                messages.info(request, _(settings.INITIAL_JOB_MESSAGE % models.initial_job_status().lower()))
+                return redirect(reverse('job_index'))
     else:
         ui_holder = UIModulesHolder(UIModulesHolder.POST)
-
+    
     return render(request, 'mock_galaxy_factory/index.html', {
         'forms': ui_holder.forms(),
         'forms_size' : len(ui_holder.forms())+1,
@@ -74,38 +73,3 @@ def my_jobs_with_status(request, status=None):
         'show_field': show_field,
         'status': status or 'All',
     })
-
-@require_POST
-@researcher_required
-def fake_a_job(request):
-    # TODO remove me
-    parameters = """
-<lightcone>
-  <database_type>sqlite</database_type>
-  <database_name>random.db</database_name>
-  <catalogue_geometry>cone</catalogue_geometry>
-</lightcone>
-
-<sed>
-  <ssp_filename>ssp.ssz</ssp_filename>
-  <num_spectra>1221</num_spectra>
-  <num_metals>7</num_metals>
-</sed>
-
-<filter>
-  <waves_filename>wavelengths.dat</waves_filename>
-  <filter_filenames>u.dat,v.dat</filter_filenames>
-  <vega_filename>A0V_KUR_BB.SED</vega_filename>
-</filter>
-
-<skymaker>
-  <focal_x>1000</focal_x>
-  <focal_y>1000</focal_y>
-</skymaker>
-    """.strip()
-    u = models.User.objects.get(username=request.user)
-    j = models.Job(user=u, parameters=parameters)
-    j.save()
-
-    messages.info(request, _("You submitted a fake job successfully."))
-    return redirect(my_jobs_with_status, status='HELD')  # TODO shouldn't need an empty string for status?

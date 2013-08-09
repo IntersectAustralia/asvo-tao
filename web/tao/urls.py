@@ -37,7 +37,6 @@ account_patterns = patterns('',
 
 mock_galaxy_factory_patterns = patterns('tao.views.mock_galaxy_factory',
     url(r'^$', 'index', name='mock_galaxy_factory'),
-    url(r'^fake_a_job$', 'fake_a_job', name='fake_a_job'),
 )
 
 job_patterns = patterns('tao.views.jobs',

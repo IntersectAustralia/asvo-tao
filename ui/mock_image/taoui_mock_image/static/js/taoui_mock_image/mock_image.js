@@ -386,6 +386,11 @@ catalogue.modules.mock_image = function ($) {
 
     this.pre_submit = function ($form) {}
 
+    this.job_parameters = function() {
+    	var params = {
+    	}
+    	return params;
+    }
 
     this.init_model = function () {
 

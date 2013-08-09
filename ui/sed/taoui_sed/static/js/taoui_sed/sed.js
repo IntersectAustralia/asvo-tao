@@ -257,6 +257,12 @@ catalogue.modules.sed = function ($) {
         });
     }
 
+    this.job_parameters = function() {
+    	var params = {
+    	}
+    	return params;
+    }
+
     function band_pass_filter_to_option(bpf) {
         return {
             'value': bpf.pk,

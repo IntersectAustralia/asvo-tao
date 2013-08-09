@@ -384,7 +384,7 @@ catalogue.util = function ($) {
         this.show_tab($enclosing, 0);
     }
 
-}
+}	// End catalog.util
 
 jQuery(document).ready(function ($) {
 
@@ -480,6 +480,16 @@ jQuery(document).ready(function ($) {
             for (var module in catalogue.modules) {
                 catalogue.modules[module].pre_submit($form);
             }
+            
+            debugger;
+            var job_parameters = {
+            		'csrfmiddlewaretoken': $('#csrf_token input[name="csrfmiddlewaretoken"]').val()
+            };
+            for (var module in catalogue.modules) {
+            	jQuery.extend(job_parameters,
+            			catalogue.modules[module].job_parameters());
+            };
+            console.log(job_parameters);
         });
 
     }
