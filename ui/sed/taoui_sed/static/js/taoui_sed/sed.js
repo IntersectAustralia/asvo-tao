@@ -258,7 +258,17 @@ catalogue.modules.sed = function ($) {
     }
 
     this.job_parameters = function() {
+    	var apply_sed = $(sed_id('apply_sed')).val();
     	var params = {
+    		'sed-apply_sed': [apply_sed]
+    	};
+    	if (apply_sed) {
+    		jQuery.extend(params, {
+    			'sed-apply_dust': [$(sed_id('apply_dust')).val()],
+    			'sed-select_dust_model': [],
+    			'sed-bandpass_filters': [],
+    			'sed-single_stellar_population_model': [vm.stellar_model().pk]
+    		});
     	}
     	return params;
     }
