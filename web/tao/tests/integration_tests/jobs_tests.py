@@ -50,7 +50,7 @@ class JobTest(LiveServerTest):
                                        'file1': 'abc\n',
                                        'filez2.txt': 'pqr\n',
                                        'file3': 'xyz\n',
-                                       'job2/fileA': 'aaaahhhh',
+                                       'job2/fileA.html': 'aaaahhhh & aaaaa',
                                        'job2/fileB': 'baaaaaa',
                                        'summary.txt': self.summary_text,
                                        }
@@ -95,7 +95,7 @@ class JobTest(LiveServerTest):
             'username' : self.username,
             'dark_matter_simulation': self.simulation.name,
             'galaxy_model': self.galaxy.name,
-            'output_properties': [self.filter, self.output_prop],
+            'output_properties': [(self.filter, self.filter.units), (self.output_prop, self.output_prop.units)],
             'output_properties_1_name' : self.filter.name,
             'output_properties_1_label' : self.filter.label,
             'output_properties_1_units' : self.filter.units,
@@ -184,9 +184,6 @@ class JobTest(LiveServerTest):
         for li in li_elements:
             li.find_element_by_css_selector('a').click()
         self.wait(1)
-
-        summary_txt_path = os.path.join(self.DOWNLOAD_DIRECTORY, 'summary.txt')
-        self.assertTrue(os.path.exists(summary_txt_path))
 
         for job_file in self.completed_job.files():
             download_path = os.path.join(self.DOWNLOAD_DIRECTORY, job_file.file_name.replace('/','_'))
