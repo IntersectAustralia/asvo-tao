@@ -374,6 +374,12 @@ catalogue.modules.light_cone = function ($) {
         });
     }
 
+    this.job_parameters = function() {
+    	var params = {
+    	}
+    	return params;
+    }
+
     var dataset_property_to_option = function(dsp) {
         return {
             'value': dsp.pk,
