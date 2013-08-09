@@ -27,6 +27,7 @@ def index(request):
                 'forms_size' : len(ui_holder.forms())+1,
             })
         else:
+            #import pdb; pdb.set_trace()
             ui_holder = UIModulesHolder(UIModulesHolder.POST, request.POST)
             if ui_holder.validate():
                 UserModel = get_user_model()

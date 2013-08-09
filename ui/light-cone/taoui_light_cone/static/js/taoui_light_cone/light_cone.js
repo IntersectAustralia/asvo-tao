@@ -367,7 +367,33 @@ catalogue.modules.light_cone = function ($) {
     }
 
     this.job_parameters = function() {
+    	var geometry = vm.catalogue_geometry().id;
+    	var output_props = catalogue.modules.light_cone.the_vm.output_properties.to_side.options_raw();
+    	var output_ids = [];
+    	for (var i=0; i<output_props.length; i++) {
+    		output_ids.push(output_props[i].value);
+    	}
     	var params = {
+    		'light_cone-catalogue_geometry': [geometry],
+    		'light_cone-dataset_id' : [vm.dataset().pk],
+    		'light_cone-dark_matter_simulation': [vm.dark_matter_simulation().pk],
+    		'light_cone-galaxy_model': [vm.galaxy_model().pk],
+    		'light_cone-output_properties': output_ids
+    	};
+    	if (geometry == "box") {
+    		jQuery.extend(params, {
+    			'light_cone-snapshot': [vm.snapshot().pk],
+    			'light_cone-box_size': [vm.box_size()]
+    		});
+    	} else { // light-cone
+    		jQuery.extend(params, {
+    			'light_cone-light_cone_type': [vm.light_cone_type()],
+    			'light_cone-ra_opening_angle': [vm.ra_opening_angle()],
+    			'light_cone-dec_opening_angle': [vm.dec_opening_angle()],
+    			'light_cone-number_of_light_cones': [vm.number_of_light_cones()],
+    			'light_cone-redshift_min': [vm.redshift_min()],
+    			'light_cone-redshift_max': [vm.redshift_max()],
+    		});
     	}
     	return params;
     }
