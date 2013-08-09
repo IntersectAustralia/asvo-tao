@@ -387,7 +387,7 @@ catalogue.modules.mock_image = function ($) {
     this.pre_submit = function ($form) {}
 
 
-    this.init = function () {
+    this.init_model = function () {
 
         // TODO: perhaps move the event handlers to init_event_handlers()
         // to be consistent with other modules
@@ -427,6 +427,8 @@ catalogue.modules.mock_image = function ($) {
 
         // Reevaluate all the magnitude fields.
         mock_image_update_magnitudes();
+
+        return {};
 
     }
 

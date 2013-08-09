@@ -3,6 +3,15 @@ var catalogue = catalogue || {};
 catalogue.modules = catalogue.modules || {};
 
 
+ko.extenders.logger = function(target, option) {
+    target.subscribe(function(newValue) {
+       console.log(option + " := ");
+       console.log(newValue);
+    });
+    return target;
+};
+
+
 // TODO: at some point these should be moved to (or at least declared in) their respective modules
 
 var sed_id = function (bare_name) {
@@ -105,19 +114,25 @@ catalogue.util = function ($) {
         })[0]
     }
 
-
     this.galaxy_model = function(id) {
         return $.grep(TaoMetadata.GalaxyModel, function(elem, idx) { 
             return elem.pk == id
         })[0]
     }
 
+    this.dataset = function(id) {
+        return $.grep(TaoMetadata.DataSet, function(elem, idx) {
+            return elem.pk == id
+        })[0]
+    }
+
 
     this.datasets = function(sid) {
-        var datasets = $.grep(TaoMetadata.DataSet, function(elem, idx) { 
+        var data = $.grep(TaoMetadata.DataSet, function(elem, idx) {
             return elem.fields.simulation == sid 
         });
-        return $.map(datasets, function(elem, idx) {
+        if (data === undefined) return [];
+        return $.map(data, function(elem, idx) {
             var gm = that.galaxy_model(elem.fields.galaxy_model); 
             return {'id':elem.pk, 
             'name':gm.fields.name, 
@@ -361,8 +376,9 @@ catalogue.util = function ($) {
 
 }
 
-
 jQuery(document).ready(function ($) {
+
+    catalogue.vm = {}
 
     function initialise_modules() {
         for (var module in catalogue.modules) {
@@ -371,13 +387,7 @@ jQuery(document).ready(function ($) {
         }
         for (var module in catalogue.modules) {
             console.log('Initialising module: ' + module)
-            if (module=='light_cone') {
-                catalogue.modules[module].init_model();
-                catalogue.modules[module].init_ui();
-                catalogue.modules[module].chain_events();
-            } else {
-                catalogue.modules[module].init();
-            }
+            catalogue.vm[module] = catalogue.modules[module].init_model();
         }
         console.log('Finished module initialisation')
     }
@@ -469,6 +479,7 @@ jQuery(document).ready(function ($) {
         catalogue.util = new catalogue.util($);
         init();
         initialise_modules();
+        ko.applyBindings(catalogue.vm);
     })();
 
 });
