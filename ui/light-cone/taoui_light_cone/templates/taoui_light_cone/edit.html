@@ -24,7 +24,7 @@
         {% endfor %}
         <script type="text/javascript">
             // inject job size estimate as readonly text manually in a div after redshift_max, spanning 2 columns
-            $('<div class="control-group light_cone_field" data-bind="visible: catalogue_geometry().id == \'light_cone\'" id="max_job_size">Estimated job size: <span data-bind="text: estimated_cone_size"></span></div>').insertAfter($('.id_light_cone-redshift_max'));
+            $('<div class="control-group light_cone_field" data-bind="visible: catalogue_geometry().id == \'light_cone\', css: estimated_cone_size_css" id="max_job_size"><span data-bind="text: estimated_cone_size_msg"></span></div>').insertAfter($('.id_light_cone-redshift_max'));
         </script>
     </div>
     <div class="aside span4">

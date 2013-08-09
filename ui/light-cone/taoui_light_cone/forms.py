@@ -209,13 +209,13 @@ class Form(BetterForm):
 
         # Knockout.js data bindings
         self.fields['catalogue_geometry'].widget.attrs['data-bind'] = 'options: catalogue_geometries, value: catalogue_geometry, optionsText: function(i) { return i.name }'
-        self.fields['dark_matter_simulation'].widget.attrs['data-bind'] = 'options: dark_matter_simulations, value: dark_matter_simulation, optionsText: function(i) { return i.fields.name} '
-        #self.fields['galaxy_model'].widget.attrs['data-bind'] = 'options: datasets, value: dataset, optionsText: function(i) { return catalogue.utils.galaxy_model(i.fields.galaxy_model).fields.name }'
+        self.fields['dark_matter_simulation'].widget.attrs['data-bind'] = 'options: dark_matter_simulations, value: dark_matter_simulation, optionsText: function(i) { return i.fields.name}, event: {change: function() { box_size(dark_matter_simulation().fields.box_size); }}'
+        # self.fields['dark_matter_simulation'].widget.attrs['data-bind'] = 'options: dark_matter_simulations, value: dark_matter_simulation, optionsText: function(i) { return i.fields.name}'
         self.fields['galaxy_model'].widget.attrs['data-bind'] = 'options: galaxy_models, value: galaxy_model, optionsText: function(i) { return i.fields.name }'
         self.fields['ra_opening_angle'].widget.attrs['data-bind'] = 'value: ra_opening_angle'
         self.fields['dec_opening_angle'].widget.attrs['data-bind'] = 'value: dec_opening_angle'
         self.fields['output_properties'].widget.attrs['ko_data'] = 'output_properties'
-        self.fields['box_size'].widget.attrs['data-bind'] = 'value: box_size'
+        self.fields['box_size'].widget.attrs['data-bind'] = 'value: box_size, event: {change: check_input_box_size}'
         self.fields['snapshot'].widget.attrs['data-bind'] = 'foreach: snapshots, value: snapshot'
         self.fields['redshift_min'].widget.attrs['data-bind'] = 'value: redshift_min'
         self.fields['redshift_max'].widget.attrs['data-bind'] = 'value: redshift_max'

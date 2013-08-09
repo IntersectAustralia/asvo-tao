@@ -257,14 +257,6 @@ catalogue.modules.light_cone = function ($) {
         });
 
 
-//        $(lc_id('dark_matter_simulation')).change(function (evt) {
-//            var $this = $(this);
-//            var sim_id = $this.val();
-//            // show_simulation_info(sim_id);
-//            // update_galaxy_model_options(sim_id); // triggers galaxy_model.change
-//        });
-
-
         // $(lc_id('galaxy_model')).change(function (evt) {
         //     var $this = $(this);
         //     var galaxy_model_id = $this.find(':selected').attr('data-galaxy_model_id');
@@ -288,34 +280,34 @@ catalogue.modules.light_cone = function ($) {
 //        });
 
 
-        $(lc_id('number_of_light_cones')).spinner({
-            spin: function (evt, ui) {
-                return spinner_check_value(ui.value);
-            },
-            min: 1
-        });
+        // $(lc_id('number_of_light_cones')).spinner({
+        //     spin: function (evt, ui) {
+        //         return spinner_check_value(ui.value);
+        //     },
+        //     min: 1
+        // });
 
 
-        $(lc_id('number_of_light_cones')).change(function () {
-            var new_value = parseInt($(this).val());
-            return spinner_check_value(new_value);
-        });
+        // $(lc_id('number_of_light_cones')).change(function () {
+        //     var new_value = parseInt($(this).val());
+        //     return spinner_check_value(new_value);
+        // });
 
 
-//        $(lc_id('box_size')).change(function (evt) {
-//            var $this = $(this);
-//            var box_size_value = parseFloat($this.val());
-//            var max_box_size = parseFloat($(lc_id('number_of_light_cones')).data("simulation-box-size"));
-//            if ($this.val() != "" && isNaN(box_size_value)) {
-//                catalogue.util.show_error($(lc_id('box_size')), 'Box size must be a number');
-//                return false;
-//            }
-//            if (!isNaN(max_box_size) && parseFloat(box_size_value) > parseFloat(max_box_size)) {
-//                catalogue.util.show_error($(lc_id('box_size')), 'Box size greater than simulation\'s box size');
-//                return false;
-//            }
-//            catalogue.util.show_error($(lc_id('box_size')), null);
-//        });
+       // $(lc_id('box_size')).change(function (evt) {
+       //     var $this = $(this);
+       //     var box_size_value = parseFloat($this.val());
+       //     var max_box_size = parseFloat($(lc_id('number_of_light_cones')).data("simulation-box-size"));
+       //     if ($this.val() != "" && isNaN(box_size_value)) {
+       //         catalogue.util.show_error($(lc_id('box_size')), 'Box size must be a number');
+       //         return false;
+       //     }
+       //     if (!isNaN(max_box_size) && parseFloat(box_size_value) > parseFloat(max_box_size)) {
+       //         catalogue.util.show_error($(lc_id('box_size')), 'Box size greater than simulation\'s box size');
+       //         return false;
+       //     }
+       //     catalogue.util.show_error($(lc_id('box_size')), null);
+       // });
 
 
 //        $(lc_id('ra_opening_angle') + ', ' + lc_id('dec_opening_angle') + ', ' + lc_id('redshift_max')).change(function(evt) {
@@ -433,7 +425,6 @@ catalogue.modules.light_cone = function ($) {
         vm.galaxy_model = ko.observable(vm.galaxy_models()[0]);
 
         vm.datasets = ko.observableArray(TaoMetadata.DataSet);
-        // vm.dataset = ko.observable($(lc_id('dataset')).val());
         vm.dataset = ko.computed(function() {
         	// Answer the current dataset based on the current simulation and galaxy model
         	return lookup_dataset(vm.dark_matter_simulation().pk,
@@ -452,19 +443,12 @@ catalogue.modules.light_cone = function ($) {
         vm.ra_opening_angle = ko.observable();
         vm.dec_opening_angle = ko.observable();
 
-        vm.box_size = ko.computed(function() {
-            if (!bound && vm.catalogue_geometry().id == 'box') {
-                return vm.dark_matter_simulation().fields.box_size;
-            }
-        });
+        vm.box_size = ko.observable(vm.dark_matter_simulation().fields.box_size);
 
         vm.snapshots = ko.computed(function (){ 
             return catalogue.util.snapshots(vm.dataset().pk)
         });
         vm.snapshot = ko.observable(vm.snapshots()[0]);
-        // vm.snapshot_redshift = ko.computed(function() { 
-        //     return format_redshift(vm.snapshot().fields.redshift)
-        // });
 
         // Twosided widget
         vm.output_properties = TwoSidedSelectWidget(
@@ -484,6 +468,25 @@ catalogue.modules.light_cone = function ($) {
 
         // Computed Human-Readable Summary Fields
         vm.estimated_cone_size = ko.computed(calculate_job_size);
+
+
+        var job_too_large = function() {
+            return vm.estimated_cone_size() > 100;
+        }
+
+
+        vm.estimated_cone_size_css = ko.computed(function() {
+            return job_too_large() ? 'job_too_large_error' : '';
+        });
+
+
+        vm.estimated_cone_size_msg = ko.computed(function () {
+            result = 'Estimated job size: ' + vm.estimated_cone_size() + '%';
+            if (job_too_large()) {
+                result += '. Note this exceeds the maximum allowed size, please reduce the light-cone size (RA, Dec, Redshift range).';
+            }
+            return result;
+        });
 
         vm.hr_ra_opening_angle = ko.computed(function(){
             var result = '';
@@ -525,6 +528,19 @@ catalogue.modules.light_cone = function ($) {
             }
             return result;
         });
+
+        // Create Event Handlers
+
+        vm.check_input_box_size = function() {
+        error = null;
+        console.log(vm.box_size());
+            if (isNaN(vm.box_size())) {
+                error = 'Box size must be a number';
+            } else if (vm.box_size() > vm.dark_matter_simulation().fields.box_size) {
+                error = 'Box size greater than simulation\'s box size';
+            }
+            catalogue.util.show_error($(lc_id('box_size')), error);
+        }
 
         return vm;
 
