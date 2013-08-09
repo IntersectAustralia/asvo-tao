@@ -257,14 +257,6 @@ catalogue.modules.light_cone = function ($) {
         });
 
 
-//        $(lc_id('dark_matter_simulation')).change(function (evt) {
-//            var $this = $(this);
-//            var sim_id = $this.val();
-//            // show_simulation_info(sim_id);
-//            // update_galaxy_model_options(sim_id); // triggers galaxy_model.change
-//        });
-
-
         // $(lc_id('galaxy_model')).change(function (evt) {
         //     var $this = $(this);
         //     var galaxy_model_id = $this.find(':selected').attr('data-galaxy_model_id');
@@ -471,6 +463,25 @@ catalogue.modules.light_cone = function ($) {
         // Computed Human-Readable Summary Fields
         vm.estimated_cone_size = ko.computed(calculate_job_size);
 
+
+        var job_too_large = function() {
+            return vm.estimated_cone_size() > 100;
+        }
+
+
+        vm.estimated_cone_size_css = ko.computed(function() {
+            return job_too_large() ? 'job_too_large_error' : '';
+        });
+
+
+        vm.estimated_cone_size_msg = ko.computed(function () {
+            result = 'Estimated job size: ' + vm.estimated_cone_size() + '%';
+            if (job_too_large()) {
+                result += '. Note this exceeds the maximum allowed size, please reduce the light-cone size (RA, Dec, Redshift range).';
+            }
+            return result;
+        });
+
         vm.hr_ra_opening_angle = ko.computed(function(){
             var result = '';
             if (vm.ra_opening_angle() != undefined && /\S/.test(vm.ra_opening_angle())) {
@@ -514,7 +525,7 @@ catalogue.modules.light_cone = function ($) {
 
         // Create Event Handlers
 
-        vm.check_input_box_size = function () {
+        vm.check_input_box_size = function() {
         error = null;
         console.log(vm.box_size());
             if (isNaN(vm.box_size())) {
