@@ -217,33 +217,33 @@ def initial_job_status():
         except AttributeError:
             return 'HELD'
 
+HELD = 'HELD'
 SUBMITTED = 'SUBMITTED'
+QUEUED = 'QUEUED'
 IN_PROGRESS = 'IN_PROGRESS'
 COMPLETED = 'COMPLETED'
-QUEUED = 'QUEUED'
-HELD = 'HELD'
 ERROR = 'ERROR'
 
 STATUS_CHOICES = (
+    (HELD, 'Held'),
     (SUBMITTED, 'Submitted'),
     (QUEUED, 'Queued'),
     (IN_PROGRESS, 'In progress'),
     (COMPLETED, 'Completed'),
-    (HELD, 'Held'),
     (ERROR, 'Error'),
 )
 
 class Job(models.Model):
+    HELD = 'HELD'
     SUBMITTED = 'SUBMITTED'
+    QUEUED = 'QUEUED'
     IN_PROGRESS = 'IN_PROGRESS'
     COMPLETED = 'COMPLETED'
-    QUEUED = 'QUEUED'
-    HELD = 'HELD'
     ERROR = 'ERROR'
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     created_time = models.DateTimeField(auto_now_add=True)
-    description = models.TextField(max_length=500, default='')
+    description = models.TextField(max_length=500, default='', blank=True)
 
     status = models.CharField(choices=STATUS_CHOICES, default=initial_job_status, max_length=20)
     parameters = models.TextField(blank=True, max_length=1000000)
@@ -293,8 +293,6 @@ class Job(models.Model):
                 else:
                     yield (child_path, None)
 
-        #for data in traverse(job_base_dir):
-        #    yield data
         return traverse(job_base_dir)
 
     def username(self):
