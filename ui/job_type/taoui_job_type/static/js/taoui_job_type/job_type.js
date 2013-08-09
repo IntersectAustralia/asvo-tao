@@ -27,9 +27,11 @@ catalogue.modules.job_type = function ($) {
         });
     }
 
-    this.init = function () {
+    this.init_model = function () {
         // setup state
         // initialise event handlers
         init_event_handlers();
+
+        return {};
     }
 }
