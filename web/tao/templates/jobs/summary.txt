@@ -1,12 +1,12 @@
 General Properties
 ==================
 
-Catalogue Geometry:	{{ catalogue_geometry.title }}
-Dataset: {{ dark_matter_simulation }} / {{ galaxy_model }}
+Catalogue Geometry:	{{ catalogue_geometry.title|safe }}
+Dataset: {{ dark_matter_simulation|safe }} / {{ galaxy_model|safe }}
 
-{{ dark_matter_simulation }}
+{{ dark_matter_simulation|safe }}
 {{ simulation_details|safe }}
-{{ galaxy_model }}
+{{ galaxy_model|safe }}
 {{ galaxy_model_details|safe }}
 
 {% if catalogue_geometry == 'box' %}Box Size: {{ box_size }}
@@ -20,20 +20,20 @@ Count: {{ number_of_light_cones }} {{ light_cone_type }} light cones
 
 Output Properties: {{ output_properties|length }} properties selected
 {% for property, units in output_properties %}
-* {{ property }} {% if units != '' %}({{ units|safe }}){% endif %}{% endfor %}
+* {{ property|safe }} {% if units != '' %}({{ units|safe }}){% endif %}{% endfor %}
 
 
 Spectral Energy Distribution
 ============================
 {% if apply_sed %}
-Model: {{ ssp_name }}
+Model: {{ ssp_name|safe }}
 {{ ssp_description|safe }}
 
 Bandpass Filters: {{ band_pass_filters|length }} filters selected
 {% for band_pass_filter in band_pass_filters %}
-* {{ band_pass_filter }}{% endfor %}
+* {{ band_pass_filter|safe }}{% endfor %}
 
-Dust: {{ dust_label }}
+Dust: {{ dust_label|safe }}
 {{ dust_model_details|safe }}
 {% else %}
 Not selected
@@ -50,10 +50,10 @@ Number of Images: {{ number_of_images }}
 Selection
 =========
 
-{{ record_filter }}
+{{ record_filter|safe }}
 
 
 Output
 ======
 
-{{ output_format }}
+{{ output_format|safe }}
