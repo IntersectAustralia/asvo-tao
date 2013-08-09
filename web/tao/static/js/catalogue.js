@@ -151,6 +151,16 @@ catalogue.util = function ($) {
         })[0] || {}
     }
 
+    this.global_parameter_or_null = function(parameter_name) {
+        params = $.grep(TaoMetadata.GlobalParameter, function(elem, idx) {
+            return elem.fields.parameter_name == parameter_name;
+        });
+        if (params.length != 1) {
+        	return null;
+        }
+        return params[0];
+    }
+
 
     this.output_choices = function(id) {
         var resp = $.grep(TaoMetadata.DataSetProperty, function(elem, idx) { 
