@@ -217,28 +217,28 @@ def initial_job_status():
         except AttributeError:
             return 'HELD'
 
+HELD = 'HELD'
 SUBMITTED = 'SUBMITTED'
+QUEUED = 'QUEUED'
 IN_PROGRESS = 'IN_PROGRESS'
 COMPLETED = 'COMPLETED'
-QUEUED = 'QUEUED'
-HELD = 'HELD'
 ERROR = 'ERROR'
 
 STATUS_CHOICES = (
+    (HELD, 'Held'),
     (SUBMITTED, 'Submitted'),
     (QUEUED, 'Queued'),
     (IN_PROGRESS, 'In progress'),
     (COMPLETED, 'Completed'),
-    (HELD, 'Held'),
     (ERROR, 'Error'),
 )
 
 class Job(models.Model):
+    HELD = 'HELD'
     SUBMITTED = 'SUBMITTED'
+    QUEUED = 'QUEUED'
     IN_PROGRESS = 'IN_PROGRESS'
     COMPLETED = 'COMPLETED'
-    QUEUED = 'QUEUED'
-    HELD = 'HELD'
     ERROR = 'ERROR'
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
