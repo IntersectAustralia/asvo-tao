@@ -12,7 +12,8 @@
             <div class="controls">
               <input id="id_mock_image-apply_mock_image"
               name="mock_image-apply_mock_image" type="checkbox"
-              {% if form.apply_mock_image %}checked{% endif %} />
+              {% if form.apply_mock_image %}checked{% endif %}
+                data-bind="checked: apply_mock_image"/>
             </div>
           </div>
         </div>

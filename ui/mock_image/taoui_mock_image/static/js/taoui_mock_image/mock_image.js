@@ -4,11 +4,11 @@ catalogue.modules = catalogue.modules || {};
 
 catalogue.modules.mock_image = function ($) {
 
-    function mock_image_enabled() {
-        var ami = $('#id_mock_image-apply_mock_image');
-        return ami.attr('disabled') === undefined && ami.is(':checked');
-    }
-
+//    function mock_image_enabled() {
+//        var ami = $('#id_mock_image-apply_mock_image');
+//        return ami.attr('disabled') === undefined && ami.is(':checked');
+//    }
+//
 
     function mock_image_setup_form_behaviors(form) {
 
@@ -243,18 +243,18 @@ catalogue.modules.mock_image = function ($) {
         }
         form.find('input[name$="width"]').val(1024);
         form.find('input[name$="height"]').val(1024);
-        update_mock_image_summary();
+        // update_mock_image_summary();
 
         $('.delete-row:last').click(function () {
-            update_mock_image_summary();
+            // update_mock_image_summary();
             return true;
         });
 
         mock_image_setup_form_behaviors(form);
     }
 
-    function update_apply_mock_image() {
-        if (mock_image_enabled()) {
+    function update_apply_mock_image(apply_mock_image, vm) {
+        if (apply_mock_image) {
             $('#tao-tabs-3').css({
                 "border-style": "solid"
             });
@@ -271,6 +271,7 @@ catalogue.modules.mock_image = function ($) {
 
             $('#mock_image_params').slideDown();
             $('#mock_image_info').slideDown();
+
         } else {
             $('#tao-tabs-3').css({
                 "border-style": "dashed"
@@ -285,7 +286,6 @@ catalogue.modules.mock_image = function ($) {
             $('#mock_image_params').slideUp();
             $('#mock_image_info').slideUp();
         }
-        update_mock_image_summary();
     }
 
 
@@ -316,16 +316,16 @@ catalogue.modules.mock_image = function ($) {
     }
 
 
-    function update_mock_image_summary() {
-        if (mock_image_enabled()) {
-            $('div.summary_mock_image .apply_mock_image').show();
-            catalogue.util.fill_in_summary('mock_image', 'select_mock_image', '');
-            catalogue.util.fill_in_summary('mock_image', 'num_images', $('#mock_image_params .single-form').length);
-        } else {
-            $('div.summary_mock_image .apply_mock_image').hide();
-            catalogue.util.fill_in_summary('mock_image', 'select_mock_image', 'Not selected');
-        }
-    }
+//    function update_mock_image_summary() {
+//        if (mock_image_enabled()) {
+//            $('div.summary_mock_image .apply_mock_image').show();
+//            catalogue.util.fill_in_summary('mock_image', 'select_mock_image', '');
+//            catalogue.util.fill_in_summary('mock_image', 'num_images', $('#mock_image_params .single-form').length);
+//        } else {
+//            $('div.summary_mock_image .apply_mock_image').hide();
+//            catalogue.util.fill_in_summary('mock_image', 'select_mock_image', 'Not selected');
+//        }
+//    }
 
 
     function update_select(sel, opts) {
@@ -389,16 +389,25 @@ catalogue.modules.mock_image = function ($) {
 
     this.init_model = function () {
 
+        var vm = {}
+        this.the_vm = vm;
+
+        vm.apply_mock_image = ko.observable(false);
+        vm.apply_mock_image.subscribe(function(val){
+            update_apply_mock_image(val, vm);
+        }, vm);
+
+        vm.image_settings = ko.observableArray([]);
+
+        vm.number_of_images = ko.computed(function() {
+             return vm.image_settings().length;
+        });
+
         // TODO: perhaps move the event handlers to init_event_handlers()
         // to be consistent with other modules
 
         $('#mock_image_params .single-form').formset({
             prefix: 'mock_image'
-        });
-
-
-        $(mi_id('apply_mock_image')).change(function (evt) {
-            update_apply_mock_image();
         });
 
         // We always have an extra form at the end, so delete it
@@ -428,7 +437,7 @@ catalogue.modules.mock_image = function ($) {
         // Reevaluate all the magnitude fields.
         mock_image_update_magnitudes();
 
-        return {};
+        return vm;
 
     }
 
