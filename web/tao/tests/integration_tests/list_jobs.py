@@ -26,12 +26,12 @@ class ListJobsTests(LiveServerMGFTest):
         error_message = ['blah blah', 'wah wah', 'lah lah']
 
         self.held_job = JobFactory.create(user=self.user, parameters=parameters, status=Job.HELD)
-        self.submitted_job = JobFactory.create(user=self.user, parameters=parameters, status=Job.SUBMITTED)
-        self.queued_job = JobFactory.create(user=self.user, parameters=parameters, status=Job.QUEUED)
-        self.in_progress_job = JobFactory.create(user=self.user, parameters=parameters, status=Job.IN_PROGRESS)
-        self.completed_job = JobFactory.create(user=self.user, parameters=parameters, status=Job.COMPLETED)
         self.error_job = JobFactory.create(user=self.user, parameters=parameters, status=Job.ERROR, error_message=error_message[0])
-        self.error_job2 =  JobFactory.create(user=self.user, parameters=parameters, status=Job.ERROR, error_message=error_message[1])
+        self.in_progress_job = JobFactory.create(user=self.user, parameters=parameters, status=Job.IN_PROGRESS)
+        self.submitted_job = JobFactory.create(user=self.user, parameters=parameters, status=Job.SUBMITTED)
+        self.completed_job = JobFactory.create(user=self.user, parameters=parameters, status=Job.COMPLETED)
+        self.queued_job = JobFactory.create(user=self.user, parameters=parameters, status=Job.QUEUED)
+        self.error_job2 = JobFactory.create(user=self.user, parameters=parameters, status=Job.ERROR, error_message=error_message[1])
 
         self.visit('job_index')
 
@@ -39,7 +39,7 @@ class ListJobsTests(LiveServerMGFTest):
         super(ListJobsTests, self).tearDown()
 
     def test_all_jobs_in_a_single_table(self):
-        expected_jobs = [self.held_job, self.submitted_job, self.queued_job, self.in_progress_job, self.completed_job, self.error_job, self.error_job2]
+        expected_jobs = [self.held_job, self.submitted_job, self.queued_job, self.in_progress_job, self.completed_job, self.error_job2, self.error_job]
         self.assert_job_table_equals(expected_jobs)
 
     def test_error_message_displayed_in_popup(self):
@@ -60,6 +60,16 @@ class ListJobsTests(LiveServerMGFTest):
         self.click('view_job_' + str(completed_id))
         self.assert_page_has_content('Viewing Job ' + str(completed_id))
 
+    def test_history_table_job_order(self):
+        in_progress_job2 = JobFactory.create(user=self.user, status=Job.IN_PROGRESS)
+        held_job2 = JobFactory.create(user=self.user, status=Job.HELD, description='2nd held job (should appear first in list)')
+        in_progress_job3 = JobFactory.create(user=self.user, status=Job.IN_PROGRESS)
+        in_progress_job4 = JobFactory.create(user=self.user, status=Job.IN_PROGRESS, description='most recent in progress job (should appear before other in_progress jobs)')
+        self.visit('job_index')
+
+        expected_jobs = [held_job2, self.held_job, self.submitted_job, self.queued_job, in_progress_job4, in_progress_job3, in_progress_job2, self.in_progress_job, self.completed_job, self.error_job2, self.error_job]
+        self.assert_job_table_equals(expected_jobs)
+
     def assert_job_table_equals(self, expected_jobs):
         header_row = ['Id', 'Submitted Timestamp', 'Description', 'Status/Error Message']
         body = [self._get_job_tablebody(job) for job in expected_jobs]
@@ -73,7 +83,7 @@ class ListJobsTests(LiveServerMGFTest):
         if job.status == Job.ERROR:
             return body + [job.status+ ' ?']
         elif job.status == Job.COMPLETED:
-            return [str(job.id) + ' (View)', job.created_time.astimezone(get_default_timezone()).strftime('%a %d %b %Y %H:%M'), job.description, job.status]
+            return [str(job.id), job.created_time.astimezone(get_default_timezone()).strftime('%a %d %b %Y %H:%M'), job.description, job.status]
         else:
             return body + [job.status]
 
