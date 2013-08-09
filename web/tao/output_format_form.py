@@ -6,6 +6,8 @@ import tao.settings as tao_settings
 from tao.forms import FormsGraph
 from tao.xml_util import module_xpath
 
+from tao.widgets import ChoiceFieldWithOtherAttrs, SelectWithOtherAttrs
+
 #### XML version 2 ####
 
 def to_xml_2(form, root):
@@ -49,7 +51,12 @@ class OutputFormatForm(BetterForm):
 
     def __init__(self, *args, **kwargs):
         super(OutputFormatForm, self).__init__(*args[1:], **kwargs)
-        self.fields['supported_formats'] = forms.ChoiceField(choices=[(x['value'], x['text']) for x in tao_settings.OUTPUT_FORMATS])
+        self.fields['supported_formats'] = ChoiceFieldWithOtherAttrs(required=False,
+                                    label='Output Format',
+                                    choices=[(None, None, {"data-bind" : "value: $data, text: $data.fields.text"})],
+                                    widget=SelectWithOtherAttrs(attrs={'class': 'light_box_field'}))
+        self.fields['supported_formats'].widget.attrs['data-bind'] = 'foreach: output_formats, value: output_format'
+
 
     def to_xml(self, parent_xml_element):
         version = 2.0

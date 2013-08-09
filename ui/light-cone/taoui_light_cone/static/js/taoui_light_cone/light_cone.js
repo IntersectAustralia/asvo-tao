@@ -318,12 +318,6 @@ catalogue.modules.light_cone = function ($) {
 //        });
 
 
-//        $('#id_output_format-supported_formats').change(function (evt) {
-//            var $this = $(this);
-//            var output_format_value = $this.find('option:selected').text();
-//        });
-
-
 //        $(lc_id('ra_opening_angle') + ', ' + lc_id('dec_opening_angle') + ', ' + lc_id('redshift_max')).change(function(evt) {
 //            var box_size = parseFloat($(lc_id('number_of_light_cones')).data("simulation-box-size")); //window.simulation_box_size;   // size of the simulation box
 //            var min_ra = 0.0;                                                               // minimum right-ascension in degrees
