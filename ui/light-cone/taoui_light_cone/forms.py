@@ -177,24 +177,35 @@ class Form(BetterForm):
         super(Form, self).__init__(*args[1:], **kwargs)
 
         if self.is_bound:
-            # We're not ever returning the form with data
-            pass
+            # We need to load the valid choices for validation
+            gmid = self.data[self.prefix + '-galaxy_model']
+            sid = self.data[self.prefix + '-dark_matter_simulation']
+            dataset_id = tao_models.DataSet.objects.get(galaxy_model_id=gmid,
+                                                        simulation_id=sid).pk
+            dms_choices = datasets.dark_matter_simulation_choices()
+            gm_choices = datasets.galaxy_model_choices(sid)
+            snapshot_choices = datasets.snapshot_choices()
         else:
+            # The choices should be empty, since they are loaded in the wizard
+            # output_choices is here until Carlos sets up the View Model
             sid = datasets.dark_matter_simulation_choices()[0][0]
             dataset_id = datasets.galaxy_model_choices(sid)[0][0]
+            dms_choices = []
+            gm_choices = []
+            snapshot_choices = [(None, None, {"data-bind" : "value: $data, text: catalogue.modules.light_cone.format_redshift($data.fields.redshift)"})]
         objs = datasets.output_choices(dataset_id)
         output_choices = [(x.id, x.label) for x in objs]
 
         # self.fields['dark_matter_simulation'] = ChoiceFieldWithOtherAttrs()
         # self.fields['galaxy_model'] = ChoiceFieldWithOtherAttrs(choices=datasets.galaxy_model_choices())
 
-        self.fields['dark_matter_simulation'] = ChoiceFieldWithOtherAttrs(choices=[])
+        self.fields['dark_matter_simulation'] = ChoiceFieldWithOtherAttrs(choices=dms_choices)
         # AKG: I think that galaxy_model and dark_matter_simulation should follow the snapshot pattern.
         # Still to be determined 
-        self.fields['galaxy_model'] = ChoiceFieldWithOtherAttrs(choices=[])
+        self.fields['galaxy_model'] = ChoiceFieldWithOtherAttrs(choices=gm_choices)
         self.fields['snapshot'] = ChoiceFieldWithOtherAttrs(required=False,
                                     label='Redshift',
-                                    choices=[(None, None, {"data-bind" : "value: $data, text: catalogue.modules.light_cone.format_redshift($data.fields.redshift)"})],
+                                    choices=snapshot_choices,
                                     widget=SelectWithOtherAttrs(attrs={'class': 'light_box_field'}))
         self.fields['number_of_light_cones'] = forms.IntegerField(label=_('Select the number of light-cones:'),
                                     required=False,
@@ -253,7 +264,8 @@ class Form(BetterForm):
             snapshot = self.cleaned_data.get('snapshot')
             if (snapshot is None or snapshot == '') and 'snapshot' not in self._errors:
                 self.errors['snapshot'] = self.error_class(['This field is required.'])
-            simulation = tao_models.Simulation.objects.get(pk=self.cleaned_data['dark_matter_simulation'])
+            simulation = tao_models.Simulation.objects.get(
+                            pk=self.data['light_cone-dark_matter_simulation'])
             box_size = self.cleaned_data.get('box_size')
             if (box_size is not None) and box_size != '':
                 if simulation.box_size < box_size:
@@ -263,10 +275,9 @@ class Form(BetterForm):
 
     def check_dataset_id(self):
         "Ensure that the simulation and galaxy model ids point to a dataset"
-        import pdb; pdb.set_trace()
-        sid = self.cleaned_data.get('dark_matter_simulation')
-        gmid = self.cleaned_data.get('galaxy_model')
-        dsid = tao_models.DataSet.objects.filter(simulation_id=sid, galaxy_model=gmid)
+        sid = self.data['light_cone-dark_matter_simulation']
+        gmid = self.data['light_cone-galaxy_model']
+        dsid = tao_models.DataSet.objects.filter(simulation_id=sid, galaxy_model_id=gmid)
         if len(dsid) != 1:
             self.errors['dark_matter_simulation'] = self.error_class(['Simulation and Galaxy must identify a valid dataset.'])
             self.errors['galaxy_model'] = self.errors['dark_matter_simulation']

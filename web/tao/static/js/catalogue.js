@@ -421,7 +421,6 @@ catalogue.util = function ($) {
 	    	module_params = catalogue.modules[module].job_parameters(); 
 	    	jQuery.extend(job_parameters, module_params);
 	    };
-	    console.log(job_parameters);
 	    
 		$.ajax({
 			// TODO: use the current URL, not hard-coded string
@@ -432,9 +431,17 @@ catalogue.util = function ($) {
 			// is the same as the previous form submission.
 			data : jQuery.param(job_parameters, true),
 			success: function(response, textStatus, jqXHR) {
-				var saved_relationship;
-				console.log('Job SUBMITTED!');
-				debugger;
+				if (response.job_submitted) {
+					window.open(response.next_page, "_self");
+				} else {
+					// Save parameters for debugging purposes
+					catalogue.last_submit_error = {
+							response: response,
+							text_status: textStatus,
+							jqXHR: jqXHR
+					}
+					alert("Unexpected error.  Please notify Support.")
+				}
 			},
 			error: function(response, textStatus, jqXHR) {
 				// Save parameters for debugging purposes
