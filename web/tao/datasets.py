@@ -54,9 +54,9 @@ def snapshot_choices():
     return [(x.id, str(x.redshift), {'data-galaxy_model_id': str(x.dataset.galaxy_model_id), 'data-simulation_id': str(x.dataset.simulation_id)})
             for x in models.Snapshot.objects.order_by('redshift')]
 
-def filter_choices(data_set_id):
+def filter_choices(simulation_id, galaxy_model_id):
     try:
-        dataset = models.DataSet.objects.get(id=data_set_id)
+        dataset = models.DataSet.objects.get(simulation_id=simulation_id, galaxy_model_id=galaxy_model_id)
         dataset_id = dataset.id
         dataset_default_filter = dataset.default_filter_field
     except models.DataSet.DoesNotExist:
@@ -171,6 +171,13 @@ def simulation_from_xml(simulation_name):
         obj = models.Simulation.objects.get(name=simulation_name)
         return obj
     except models.Simulation.DoesNotExist:
+        return None
+
+def galaxy_model_from_xml(galaxy_model_name):
+    try:
+        obj = models.GalaxyModel.objects.get(name=galaxy_model_name)
+        return obj
+    except models.GalaxyModel.DoesNotExist:
         return None
 
 def data_set_property_from_xml(data_set, label, name):

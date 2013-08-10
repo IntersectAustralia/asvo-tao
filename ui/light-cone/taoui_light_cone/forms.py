@@ -73,19 +73,20 @@ def to_xml_2(form, root):
 
 def from_xml_2(cls, ui_holder, xml_root, prefix=None):
     simulation_name = module_xpath(xml_root, '//light-cone/simulation')
-    galaxy_model = module_xpath(xml_root, '//light-cone/galaxy-model')
+    galaxy_model_name = module_xpath(xml_root, '//light-cone/galaxy-model')
     simulation = datasets.simulation_from_xml(simulation_name)
-    data_set = datasets.dataset_find_from_xml(simulation_name, galaxy_model)
+    galaxy_model = datasets.galaxy_model_from_xml(galaxy_model_name)
+    data_set = datasets.dataset_find_from_xml(simulation_name, galaxy_model_name)
     geometry = module_xpath(xml_root, '//light-cone/geometry')
     simulation_id = None
     if simulation is not None: simulation_id = simulation.id
-    data_set_id = None
-    if data_set is not None: data_set_id = data_set.id
+    galaxy_model_id = None
+    if galaxy_model is not None: galaxy_model_id = galaxy_model.id
     if not (geometry in [Form.CONE, Form.BOX]):
         geometry = None
     params = {
         prefix+'-catalogue_geometry': geometry,
-        prefix+'-galaxy_model': data_set_id,
+        prefix+'-galaxy_model': galaxy_model_id,
         prefix+'-dark_matter_simulation': simulation_id,
         }
 
