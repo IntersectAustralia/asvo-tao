@@ -1,8 +1,11 @@
+import json
+
 from django.conf import settings
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import get_user_model
+from django.http import HttpResponse
 
 from django.core.urlresolvers import reverse
 
@@ -27,18 +30,29 @@ def index(request):
                 'forms_size' : len(ui_holder.forms())+1,
             })
         else:
-            #import pdb; pdb.set_trace()
             ui_holder = UIModulesHolder(UIModulesHolder.POST, request.POST)
+            response_dict = {}
+            response_dict['job_submitted'] = False
             if ui_holder.validate():
                 UserModel = get_user_model()
                 user = UserModel.objects.get(username=request.user.username)
                 job_description = request.POST.get('job-description')
-                workflow.save(user, ui_holder, job_description)
+                response_dict['job_id'] = workflow.save(user, ui_holder, job_description).pk
                 messages.info(request, _(settings.INITIAL_JOB_MESSAGE % models.initial_job_status().lower()))
-                return redirect(reverse('job_index'))
-    else:
-        ui_holder = UIModulesHolder(UIModulesHolder.POST)
-    
+                response_dict['job_submitted'] = True
+                response_dict['next_page'] = reverse('job_index')
+            else:
+                response_dict['errors'] = ui_holder.errors
+            # Simple answer the errors dictionary
+            # If the dictionary is empty, the client knows the job was created successfully
+            response = json.dumps(response_dict)
+            callback = request.GET.get('callback', None)
+            if callback is not None:
+                response = "%s(%s)" % (callback, response)
+            return HttpResponse(response, mimetype="application/json")
+
+    # Assume GET
+    ui_holder = UIModulesHolder(UIModulesHolder.POST)
     return render(request, 'mock_galaxy_factory/index.html', {
         'forms': ui_holder.forms(),
         'forms_size' : len(ui_holder.forms())+1,

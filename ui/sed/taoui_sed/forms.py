@@ -143,6 +143,7 @@ class Form(BetterForm):
         self.ui_holder = args[0]
         super(Form, self).__init__(*args[1:], **kwargs)
 
+        import pdb; pdb.set_trace()
         default_required = False
         dust_models = [(x.id, x.label) for x in datasets.dust_models_objects()]
 

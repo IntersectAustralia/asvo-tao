@@ -258,15 +258,16 @@ catalogue.modules.sed = function ($) {
     }
 
     this.job_parameters = function() {
-    	var apply_sed = $(sed_id('apply_sed')).val();
+    	// Dummy values until Value Model has been completed
+    	var apply_sed = true;
     	var params = {
     		'sed-apply_sed': [apply_sed]
     	};
     	if (apply_sed) {
     		jQuery.extend(params, {
-    			'sed-apply_dust': [$(sed_id('apply_dust')).val()],
-    			'sed-select_dust_model': [],
-    			'sed-bandpass_filters': [],
+    			'sed-apply_dust': [false],
+    			'sed-select_dust_model': ['1'],
+    			'sed-band_pass_filters': ['1_apparent'],
     			'sed-single_stellar_population_model': [vm.stellar_model().pk]
     		});
     	}
