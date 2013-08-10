@@ -84,7 +84,9 @@ class RecordFilterForm(BetterForm):
         super(RecordFilterForm, self).__init__(*args[1:], **kwargs)
         is_int = False
         if self.ui_holder.is_bound('light_cone'):
-            objs = datasets.filter_choices(self.ui_holder.raw_data('light_cone', 'galaxy_model'))
+            objs = datasets.filter_choices(
+                self.ui_holder.raw_data('light_cone', 'dark_matter_simulation'),
+                self.ui_holder.raw_data('light_cone', 'galaxy_model'))
             choices = [('X-' + NO_FILTER, 'No Filter')] + [('D-' + str(x.id), x.label + ' (' + x.units + ')') for x in objs] + \
                 [('B-' + str(x.id) + '_apparent', x.label) for x in datasets.band_pass_filters_objects()] + \
                 [('B-' + str(x.id) + '_absolute', x.label) for x in datasets.band_pass_filters_objects()]
