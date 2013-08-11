@@ -23,8 +23,16 @@ catalogue.modules.light_cone = function ($) {
     	var job_size_p2 = parseFloat(vm.dataset().fields.job_size_p2);
     	var job_size_p3 = parseFloat(vm.dataset().fields.job_size_p3);
     	var box_size = parseFloat(vm.dark_matter_simulation().fields.box_size);
+    	var H0; // This should be a dataset parameter
     	var max_job_box_count = parseInt(vm.dataset().fields.max_job_box_count);
 
+    	// Temporary hack for H0
+    	// This should be retrieved as a dataset parameter
+    	if (vm.dark_matter_simulation().fields.name == 'Bolshoi') {
+    		H0 = 70.0
+    	} else {
+    		H0 = 73.0
+    	}
     	// Get user input parameters
     	var ra_max = parseFloat(vm.ra_opening_angle());
     	var dec_max = parseFloat(vm.dec_opening_angle());
@@ -35,10 +43,9 @@ catalogue.modules.light_cone = function ($) {
     	if (isNaN(ra_max) || isNaN(dec_max) || isNaN(z_min) || isNaN(z_max)) {
     		return "(waiting for valid cone parameters)";
     	}
-    	cjs = job_size.job_size(box_size, 0, ra_max, 0, dec_max, z_min, z_max, 0.73,
+    	cjs = job_size.job_size(box_size, 0, ra_max, 0, dec_max, z_min, z_max, H0,
     			max_job_box_count, job_size_p1, job_size_p2, job_size_p3);
-    	console.log("Estimated size: " + cjs);
-    	return cjs;
+    	return Math.round(cjs * 100) + "%";
     }
 
 
@@ -507,7 +514,7 @@ catalogue.modules.light_cone = function ($) {
 
 
         vm.estimated_cone_size_msg = ko.computed(function () {
-            result = 'Estimated job size: ' + vm.estimated_cone_size() + '%';
+            result = 'Estimated job size: ' + vm.estimated_cone_size();
             if (job_too_large()) {
                 result += '. Note this exceeds the maximum allowed size, please reduce the light-cone size (RA, Dec, Redshift range).';
             }
