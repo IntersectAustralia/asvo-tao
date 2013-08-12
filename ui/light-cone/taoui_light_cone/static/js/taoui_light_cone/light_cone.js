@@ -907,6 +907,7 @@ catalogue.modules.light_cone = function ($) {
     }
 
     this.init_model = function() {
+        this.vm = vm;
         vm.catalogue_geometries = ko.observableArray([
             { id: 'light_cone', name: 'Light Cone'},
             { id: 'box', name: 'Box'}
