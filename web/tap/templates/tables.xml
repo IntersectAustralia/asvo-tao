@@ -1,0 +1,18 @@
+{% load tap %}<?xml version="1.0" encoding="UTF-8"?>
+<tableset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:vod="http://www.ivoa.net/xml/VODataService/v1.1" xsi:type="vod:TableSet">
+	<schema>
+		<name>public</name>{% for dataset in datasets %}
+		<table type="base_table">
+			<name>{{ dataset.name }}</name>{% for property in dataset.properties %}
+			<column std="true">
+				<name>{{ property.name }}</name>
+				<description>{{ property.description }}</description>
+				<unit>{{ property.units }}</unit>
+				<ucd>meta.id;meta.main</ucd>
+				<dataType xsi:type="vod:TAPType" size="1">{% data_type_tag property.data_type data_types %}</dataType>{% if property.is_index %} 
+				<flag>indexed</flag>{% endif %}{% if property.is_primary %}
+				<flag>primary</flag>{% endif %}
+			</column>{% endfor %}
+		</table>{% endfor %}
+	</schema>
+</tableset>

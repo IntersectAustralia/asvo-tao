@@ -84,7 +84,8 @@ urlpatterns = patterns('',
     url(r'^$', 'tao.views.home', name='home'),
     url(r'^api/', include(v1_api.urls)),
     url(r'^assets/(?P<path>.+)$', 'tao.assets.asset_handler', name='asset'),
-
+    
+    ('^tap/', include('tap.urls'))
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
