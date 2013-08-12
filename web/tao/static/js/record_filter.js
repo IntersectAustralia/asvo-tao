@@ -227,6 +227,16 @@ catalogue.modules.record_filter = function ($) {
 
     this.pre_submit = function ($form) {}
 
+    this.job_parameters = function() {
+    	var params = {
+    		// Use dummy value until Value Models are in place
+    		'record_filter-filter': ['D-1'],
+    		'record_filter-min': ['0.31'],
+    		'record_filter-max': ['']
+    	}
+    	return params;
+    }
+
 
     this.init_model = function () {
         init_event_handlers();

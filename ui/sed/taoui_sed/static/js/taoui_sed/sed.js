@@ -11,6 +11,9 @@ catalogue.modules.sed = function ($) {
         return catalogue.modules.sed.sed_band_pass_filters_widget;
     }
 
+    // KO ViewModel
+    var vm = {}
+    this.the_vm = vm;
 
     function display_band_pass_filters_summary() {
         var band_pass_filter_count = catalogue.util.list_multiple_selections_in_summary('sed', 'band_pass_filters');
@@ -254,6 +257,23 @@ catalogue.modules.sed = function ($) {
         });
     }
 
+    this.job_parameters = function() {
+    	// Dummy values until Value Model has been completed
+    	var apply_sed = true;
+    	var params = {
+    		'sed-apply_sed': [apply_sed]
+    	};
+    	if (apply_sed) {
+    		jQuery.extend(params, {
+    			'sed-apply_dust': [false],
+    			'sed-select_dust_model': ['1'],
+    			'sed-band_pass_filters': ['1_apparent'],
+    			'sed-single_stellar_population_model': [vm.stellar_model().pk]
+    		});
+    	}
+    	return params;
+    }
+
     function band_pass_filter_to_option(bpf) {
         return {
             'value': bpf.pk,
@@ -264,10 +284,13 @@ catalogue.modules.sed = function ($) {
 
     this.init_model = function () {
 
-        var vm = {}
-        this.vm = vm
+        var vm = {};
+        this.vm = vm;
 
         vm.apply_sed = ko.observable(false);
+    	vm.stellar_models = ko.observableArray(TaoMetadata.StellarModel);
+    	vm.stellar_model = ko.observable(vm.stellar_models()[0]);
+
 
         this.sed_band_pass_filters_widget = TwoSidedSelectWidget(sed_id('band_pass_filters'),
             {'selected':[],'not_selected':[]}, band_pass_filter_to_option);

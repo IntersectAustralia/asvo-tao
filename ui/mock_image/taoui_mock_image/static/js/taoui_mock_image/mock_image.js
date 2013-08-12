@@ -375,6 +375,15 @@ catalogue.modules.mock_image = function ($) {
 
     this.pre_submit = function ($form) {}
 
+    this.job_parameters = function() {
+    	var params = {
+    		// Use dummy values until the Value Models are in place
+    		'mock_image-MAX_NUM_FORMS': ['1000'],
+    		'mock_image-TOTAL_FORMS': ['0'],
+    		'mock_image-INITIAL_FORMS': ['0']
+    	}
+    	return params;
+    }
 
     this.init_model = function () {
 
