@@ -507,7 +507,7 @@ catalogue.modules.light_cone = function ($) {
         vm.number_of_light_cones = ko.observable(1);
             
         vm.dataset.subscribe(function(dataset) {
-            var objs = catalogue.util.output_choices(dataset.id);
+            var objs = catalogue.util.output_choices(dataset.pk);
             vm.output_properties.new_options(objs);
         });
 
