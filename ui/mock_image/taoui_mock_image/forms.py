@@ -174,7 +174,6 @@ class Form(BaseForm):
         # Set to None if we aren't bound.
         else:
             data = None
-
         super(Form, self).__init__(data, *args[2:], **kwargs)
 
     def clean(self):

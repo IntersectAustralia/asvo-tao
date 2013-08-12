@@ -19,6 +19,12 @@ catalogue.modules.job_type = function ($) {
         // final activities before submission
     }
  
+    this.job_parameters = function() {
+    	var params = {
+    	}
+    	return params;
+    }
+
     function init_event_handlers() {
         // attach event handlers
         $('#id_job_type-params_file').change(function() {

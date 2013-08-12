@@ -247,12 +247,6 @@ INSTALLED_APPS += tuple(['taoui_' + module[0] for module in MODULES_PATHS])
 MODULES = tuple([module[0] for module in MODULES_PATHS])
 #INSTALLED_APPS += tuple(('taoui_' + module_name for module_name in MODULES))
 
-OUTPUT_FORMATS = [
-    {'value':'csv', 'text':'CSV (Text)', 'extension':'csv'},
-    {'value':'hdf5', 'text':'HDF5', 'extension':'hdf5'},
-    {'value': 'fits', 'text': 'FITS', 'extension': 'fits'},
-    {'value': 'votable', 'text': 'VOTable', 'extension': 'xml'},
-]
 
 # This is the 'tab-id' the module occupies in the interface
 MODULE_INDICES = {

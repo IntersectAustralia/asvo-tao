@@ -552,6 +552,8 @@ border-left:thick solid #d0d0d0;
 @media only screen and (max-width : 1200px) {
   .navbar div.brand { display: none; }
   .navbar .brand.small { display: block; }
+  #banner { position: absolute; }
+  .navbar-fixed-top, .navbar-fixed-bottom { position: absolute; }
 }
 
 @media (max-width: 979px) {
@@ -610,11 +612,11 @@ html, body {
     font-style: italic;
     font-size: 12px;
     font-family: sans-serif;
-    color: #cccccc;
+    color: #666;
     /*.text-stroke(0);*/
 }
 [contenteditable]:hover, [contenteditable]:focus {
-    background: #ffffd3;
+    background: rgba(43, 166, 203, 0.1);
 }
 [contenteditable]:focus {
     padding: 1px;
@@ -622,3 +624,9 @@ html, body {
 [contenteditable]:focus:after {
     content: '';
 }
+
+
+#inlineedit { position: relative; }
+/* #inlineedit:hover #savecancel, #inlineedit:active #savecancel { display: block; } */
+#savecancel { position: absolute; bottom: 0px; right: 0px; margin-bottom: -40px; display: none; }
+#savecancel div { display: inline-block; }

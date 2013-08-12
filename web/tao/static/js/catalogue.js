@@ -189,6 +189,14 @@ catalogue.util = function ($) {
     	});
     	return res
     }
+    
+    this.dataset = function(dsid) {
+    	// Answer the DataSet object for the given dsid
+    	res = $.grep(TaoMetadata.DataSet, function(elem, idx) {
+    		return elem.pk == dsid;
+    	});
+    	return res[0];
+    }
 
     this.simulation = function(id) {
         return $.grep(TaoMetadata.Simulation, function(elem, idx) { 
@@ -231,6 +239,16 @@ catalogue.util = function ($) {
         return $.grep(TaoMetadata.GlobalParameter, function(elem, idx) {
             return elem.fields.parameter_name == parameter_name;
         })[0] || {}
+    }
+
+    this.global_parameter_or_null = function(parameter_name) {
+        params = $.grep(TaoMetadata.GlobalParameter, function(elem, idx) {
+            return elem.fields.parameter_name == parameter_name;
+        });
+        if (params.length != 1) {
+        	return null;
+        }
+        return params[0];
     }
 
 
@@ -456,7 +474,84 @@ catalogue.util = function ($) {
         this.show_tab($enclosing, 0);
     }
 
-}
+    this.submit_job = function() {
+	    var job_parameters = {};
+    	//
+    	// Run each module through:
+    	// 1. Cleanup (stuff that isn't required for submission)
+    	// 2. Validation
+    	// 3. Pre-Submit
+    	// Then request job data, collate and submit.
+    	//
+	    for (var module in catalogue.modules) {
+	        console.log('CLEANUP_FIELDS ' + module);
+	        catalogue.modules[module].cleanup_fields();
+	    }
+	
+	    var is_valid = true;
+	    for (var module in catalogue.modules) {
+	        var valid_module = catalogue.modules[module].validate();
+	        is_valid = is_valid && valid_module;
+	        console.log('IS_VALID ' + module + ': ' + valid_module);
+	    }
+	
+	    if (!is_valid) {
+	        console.log('ERROR FOUND');
+	        show_tab_error();
+	        return false;
+	    }
+	
+	    for (var module in catalogue.modules) {
+	        catalogue.modules[module].pre_submit();
+	    }
+
+	    for (var module in catalogue.modules) {
+	    	var module_params;
+	    	console.log("Job params for: " + module);
+	    	module_params = catalogue.modules[module].job_parameters(); 
+	    	jQuery.extend(job_parameters, module_params);
+	    };
+	    
+		$.ajax({
+			// TODO: use the current URL, not hard-coded string
+			url : '/mock_galaxy_factory/',
+			type : 'POST',
+			// We only supply simple data types in the parameters,
+			// so can use traditional=true when encoding them so the format
+			// is the same as the previous form submission.
+			data : jQuery.param(job_parameters, true),
+			success: function(response, textStatus, jqXHR) {
+				if (response.job_submitted) {
+					window.open(response.next_page, "_self");
+				} else {
+					// Save parameters for debugging purposes
+					catalogue.last_submit_error = {
+							response: response,
+							text_status: textStatus,
+							jqXHR: jqXHR
+					}
+					alert("Unexpected error.  Please notify Support.")
+				}
+			},
+			error: function(response, textStatus, jqXHR) {
+				// Save parameters for debugging purposes
+				catalogue.last_submit_error = {
+						response: response,
+						text_status: textStatus,
+						jqXHR: jqXHR
+				}
+				if (response.status == 0) {
+					// Network error?
+					alert("Error during job submission.  Please check your internet connection and try again.");
+				} else {
+					alert("Error during job submission.\nStatus = " + response.status +
+							"\nText = " + response.statusText);
+				}
+			}
+		});
+	}
+
+}	// End catalog.util
 
 jQuery(document).ready(function ($) {
 
@@ -573,35 +668,6 @@ jQuery(document).ready(function ($) {
         $("#tabs li").removeClass("ui-corner-top").addClass("ui-corner-left");
         // pre-select error
         show_tab_error();
-
-        //
-        // -- form handler
-        //
-        $('#mgf-form').submit(function () {
-            var $form = $(this);
-
-            for (var module in catalogue.modules) {
-                console.log('CLEANUP_FIELDS ' + module);
-                catalogue.modules[module].cleanup_fields($form);
-            }
-
-            var is_valid = true;
-            for (var module in catalogue.modules) {
-                var valid_module = catalogue.modules[module].validate($form);
-                is_valid = is_valid && valid_module;
-                console.log('IS_VALID ' + module + ': ' + valid_module);
-            }
-
-            if (!is_valid) {
-                console.log('ERROR FOUND');
-                show_tab_error();
-                return false;
-            }
-
-            for (var module in catalogue.modules) {
-                catalogue.modules[module].pre_submit($form);
-            }
-        });
 
     }
 
