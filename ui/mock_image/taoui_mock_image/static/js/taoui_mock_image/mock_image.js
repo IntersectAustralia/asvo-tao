@@ -385,7 +385,7 @@ catalogue.modules.mock_image = function ($) {
 		var param_names = ['format', 'fov_dec', 'fov_ra', 'height', 'mag_field',
 		    'min_mag', 'origin_dec', 'origin_ra', 'sub_cone', 'width',
 		    'z_max', 'z_min'];
-		debugger;
+
 		params['mock_image-MAX_NUM_FORMS'] = [max_allowed_images];
 		params['mock_image-INITIAL_FORMS'] = [0];
 		if (vm.apply_mock_image()) {
