@@ -37,6 +37,7 @@ class UIModulesHolder:
         # forms are created _and_stored_ one by one so later forms can use data in first ones via self._dict = {}
         self._forms = []
         self._dict = {}
+        self._errors = None
         for klass, module_name in UIModulesHolder.form_classes:
             form = method(self, klass, module_name, param)
             self._forms.append(form)
@@ -56,5 +57,18 @@ class UIModulesHolder:
         return self._dict[module_name].cleaned_data[var_name]
 
     def validate(self):
-        vals = [v.is_valid() for v in self._forms]
-        return all(vals)
+        valid = True
+        if self._errors is None:
+            self._errors = {}
+        for v in self._forms:
+            form_valid = v.is_valid()
+            if not form_valid:
+                self._errors.update(v.errors)
+            valid &= form_valid
+        return valid
+
+    @property
+    def errors(self):
+        if self._errors is None:
+            self.validate()
+        return self._errors

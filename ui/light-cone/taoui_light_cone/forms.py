@@ -73,19 +73,20 @@ def to_xml_2(form, root):
 
 def from_xml_2(cls, ui_holder, xml_root, prefix=None):
     simulation_name = module_xpath(xml_root, '//light-cone/simulation')
-    galaxy_model = module_xpath(xml_root, '//light-cone/galaxy-model')
+    galaxy_model_name = module_xpath(xml_root, '//light-cone/galaxy-model')
     simulation = datasets.simulation_from_xml(simulation_name)
-    data_set = datasets.dataset_find_from_xml(simulation_name, galaxy_model)
+    galaxy_model = datasets.galaxy_model_from_xml(galaxy_model_name)
+    data_set = datasets.dataset_find_from_xml(simulation_name, galaxy_model_name)
     geometry = module_xpath(xml_root, '//light-cone/geometry')
     simulation_id = None
     if simulation is not None: simulation_id = simulation.id
-    data_set_id = None
-    if data_set is not None: data_set_id = data_set.id
+    galaxy_model_id = None
+    if galaxy_model is not None: galaxy_model_id = galaxy_model.id
     if not (geometry in [Form.CONE, Form.BOX]):
         geometry = None
     params = {
         prefix+'-catalogue_geometry': geometry,
-        prefix+'-galaxy_model': data_set_id,
+        prefix+'-galaxy_model': galaxy_model_id,
         prefix+'-dark_matter_simulation': simulation_id,
         }
 
@@ -177,27 +178,42 @@ class Form(BetterForm):
         super(Form, self).__init__(*args[1:], **kwargs)
 
         if self.is_bound:
-            dataset_id = self.data[self.prefix + '-galaxy_model']
-            sid = kwargs['light_cone-dark_matter_simulation']
+            # We need to load the valid choices for validation
+            gmid = self.data[self.prefix + '-galaxy_model']
+            sid = self.data[self.prefix + '-dark_matter_simulation']
+            dataset_id = tao_models.DataSet.objects.get(galaxy_model_id=gmid,
+                                                        simulation_id=sid).pk
+            dms_choices = datasets.dark_matter_simulation_choices()
+            gm_choices = datasets.galaxy_model_choices(sid)
+            snapshot_choices = datasets.snapshot_choices()
         else:
+            # The choices should be empty, since they are loaded in the wizard
+            # output_choices is here until Carlos sets up the View Model
             sid = datasets.dark_matter_simulation_choices()[0][0]
             dataset_id = datasets.galaxy_model_choices(sid)[0][0]
+            dms_choices = []
+            gm_choices = []
+            snapshot_choices = [(None, None, {"data-bind" : "value: $data, text: catalogue.modules.light_cone.format_redshift($data.fields.redshift)"})]
         objs = datasets.output_choices(dataset_id)
         output_choices = [(x.id, x.label) for x in objs]
 
         # self.fields['dark_matter_simulation'] = ChoiceFieldWithOtherAttrs()
         # self.fields['galaxy_model'] = ChoiceFieldWithOtherAttrs(choices=datasets.galaxy_model_choices())
 
-        self.fields['dark_matter_simulation'] = ChoiceFieldWithOtherAttrs(choices=datasets.dark_matter_simulation_choices())
+        self.fields['dark_matter_simulation'] = ChoiceFieldWithOtherAttrs(choices=dms_choices)
         # AKG: I think that galaxy_model and dark_matter_simulation should follow the snapshot pattern.
         # Still to be determined 
-        self.fields['galaxy_model'] = ChoiceFieldWithOtherAttrs(choices=[])
+        self.fields['galaxy_model'] = ChoiceFieldWithOtherAttrs(choices=gm_choices)
         self.fields['snapshot'] = ChoiceFieldWithOtherAttrs(required=False,
                                     label='Redshift',
-                                    choices=[(None, None, {"data-bind" : "value: $data, text: catalogue.modules.light_cone.format_redshift($data.fields.redshift)"})],
+                                    choices=snapshot_choices,
                                     widget=SelectWithOtherAttrs(attrs={'class': 'light_box_field'}))
-        self.fields['number_of_light_cones'] = forms.IntegerField(label=_('Select the number of light-cones:'), required=False, initial='1')
-        self.fields['output_properties'] = bf_fields.forms.MultipleChoiceField(required=True, choices=output_choices, widget=TwoSidedSelectWidget)
+        self.fields['number_of_light_cones'] = forms.IntegerField(label=_('Select the number of light-cones:'),
+                                    required=False,
+                                    initial='1')
+        self.fields['output_properties'] = bf_fields.forms.MultipleChoiceField(required=True,
+                                    choices=output_choices,
+                                    widget=TwoSidedSelectWidget)
 
         for field_name in Form.SEMIREQUIRED_FIELDS:
             self.fields[field_name].semirequired = True
@@ -250,7 +266,8 @@ class Form(BetterForm):
             snapshot = self.cleaned_data.get('snapshot')
             if (snapshot is None or snapshot == '') and 'snapshot' not in self._errors:
                 self.errors['snapshot'] = self.error_class(['This field is required.'])
-            simulation = tao_models.Simulation.objects.get(pk=self.cleaned_data['dark_matter_simulation'])
+            simulation = tao_models.Simulation.objects.get(
+                            pk=self.data['light_cone-dark_matter_simulation'])
             box_size = self.cleaned_data.get('box_size')
             if (box_size is not None) and box_size != '':
                 if simulation.box_size < box_size:
@@ -258,11 +275,21 @@ class Form(BetterForm):
                 if box_size <= 0:
                     self.errors['box_size'] = self.error_class(['Must be greater than zero.'])
 
+    def check_dataset_id(self):
+        "Ensure that the simulation and galaxy model ids point to a dataset"
+        sid = self.data['light_cone-dark_matter_simulation']
+        gmid = self.data['light_cone-galaxy_model']
+        dsid = tao_models.DataSet.objects.filter(simulation_id=sid, galaxy_model_id=gmid)
+        if len(dsid) != 1:
+            self.errors['dark_matter_simulation'] = self.error_class(['Simulation and Galaxy must identify a valid dataset.'])
+            self.errors['galaxy_model'] = self.errors['dark_matter_simulation']
+
     def clean(self):
         self.cleaned_data = super(Form, self).clean()
         self.check_redshift_min_less_than_redshift_max()
         self.check_box_size_required_fields()
         self.check_light_cone_required_fields()
+        self.check_dataset_id()
         return self.cleaned_data
 
     def to_xml(self, root):
