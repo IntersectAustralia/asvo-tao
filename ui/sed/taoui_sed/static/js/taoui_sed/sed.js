@@ -28,7 +28,7 @@ catalogue.modules.sed = function ($) {
     		'sed-apply_sed': [apply_sed]
     	};
     	if (apply_sed) {
-    		selected_bpfs = catalogue.modules.sed.vm.bandpass_filters.to_side.outputs_raw();
+    		selected_bpfs = catalogue.modules.sed.vm.bandpass_filters.to_side.options_raw();
     		bpf_ids = []
     		for (var i=0; i<selected_bpfs.length; i++) {
     			bpf_ids.push(selected_bpfs[i].value);

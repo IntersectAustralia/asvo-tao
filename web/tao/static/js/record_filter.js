@@ -236,10 +236,61 @@ catalogue.modules.record_filter = function ($) {
     	return params;
     }
 
+    this.filter_choices = function () {
+    	// Build up the list of fields that the user can filter records on:
+    	// * Selected output properties with is_filter true
+    	// * Selected bandpass filters
+    	// * The dataset default filter
+    	//
+    	// Work in progress..
+    	var result = [];
+    	var default_filter_pk, default_filter;
+    	var output_properties;
+    	var bandpass_filters;
+    	var oppks;
+
+    	// Get the default filter
+    	default_filter_pk = catalogue.modules.light_cone.vm.dataset().fields.default_filter_field;
+    	default_filter = catalogue.util.dataset_property(default_filter_pk);
+    	result.push({
+    		value: 'D-'+default_filter_pk,
+    		label: default_filter.fields.label+' ('+default_filter.fields.units+')'
+    		});
+
+    	// Get the selected output properties with is_filter==true
+    	output_properties = catalogue.modules.light_cone.vm.output_properties.to_side.options_raw();
+    	for (var i=0; i<output_properties.length; i++) {
+    		var output_property_entry = output_properties[i];
+    		var output_property = catalogue.util.dataset_property(output_property_entry.value);
+    		if (output_property.pk == default_filter.pk) {
+    			continue; // It's already been added above
+    		}
+    		if (output_property.fields.is_filter) {
+    			result.push({
+    				value: 'D-'+output_property.pk,
+    				label: output_property.fields.label+' ('+output_property.fields.units+')'
+    			});
+    		}
+    	}
+
+    	// Get the selected bandpass filters
+    	bandpass_filters = catalogue.modules.sed.vm.bandpass_filters.to_side.options_raw();
+    	for (var i=0; i<bandpass_filters.length; i++) {
+    		var bandpass_filter = bandpass_filters[i];
+    		
+			result.push({
+				value: 'B-'+bandpass_filter.value,
+				label: bandpass_filter.text
+			});
+    	}
+
+
+    	return result;
+    }
 
     this.init_model = function () {
 
-    	vm.selections = ko.observableArray();
+    	vm.selections = ko.computed(this.filter_choices);
     	vm.selection = ko.observable();
     	vm.selection_min = ko.observable(null);
     	vm.selection_max = ko.observable(null);
