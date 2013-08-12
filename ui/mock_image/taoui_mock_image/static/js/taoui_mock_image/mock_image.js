@@ -10,246 +10,246 @@ catalogue.modules.mock_image = function ($) {
 //    }
 //
 
-    function mock_image_setup_form_behaviors(form) {
+//    function mock_image_setup_form_behaviors(form) {
 
         //
         // Setup validation on each input.
         //
 
         // sub_cone
-        form.find('select[name$="sub_cone"]').validate({
-            required: true,
-            form: 'mock_image'
-        });
+//        form.find('select[name$="sub_cone"]').validate({
+//            required: true,
+//            form: 'mock_image'
+//        });
 
         // format
-        form.find('select[name$="format"]').validate({
-            required: true,
-            form: 'mock_image'
-        });
+//        form.find('select[name$="format"]').validate({
+//            required: true,
+//            form: 'mock_image'
+//        });
 
         // mag_field
-        form.find('select[name$="mag_field"]').validate({
-            required: true,
-            form: 'mock_image'
-        });
+//        form.find('select[name$="mag_field"]').validate({
+//            required: true,
+//            form: 'mock_image'
+//        });
 
         // z_min
-        form.find('input[name$="z_min"]').validate({
-            type: 'float',
-            required: true,
-            cache: {
-                z_min: [$('#id_light_cone-redshift_min'), 'float'],
-                z_max: [$('#id_light_cone-redshift_max'), 'float']
-            },
-            group: [form.find('input[name$="z_max"]')],
-            form: 'mock_image'
-        }).validate('test', {
-            check: function (val, cache) {
-                return val >= cache.z_min;
-            },
-            message: ['Value must be greater than the minimum redshift of ',
-                'the cone specified in General Properties.'
-            ].join('')
-        }).validate('test', {
-            check: function (val, cache) {
-                return val <= cache.z_max;
-            },
-            message: ['Value must be less than the maximum redshift of ',
-                'the cone specified in General Properties.'
-            ].join('')
-        }).validate('test', {
-            check: function (val, cache) {
-                return val <= form.find('input[name$="z_max"]').val();
-            },
-            message: ['Value must be less than the maximum redshift of ',
-                'this mock image.'
-            ].join('')
-        });
+//        form.find('input[name$="z_min"]').validate({
+//            type: 'float',
+//            required: true,
+//            cache: {
+//                z_min: [$('#id_light_cone-redshift_min'), 'float'],
+//                z_max: [$('#id_light_cone-redshift_max'), 'float']
+//            },
+//            group: [form.find('input[name$="z_max"]')],
+//            form: 'mock_image'
+//        }).validate('test', {
+//            check: function (val, cache) {
+//                return val >= cache.z_min;
+//            },
+//            message: ['Value must be greater than the minimum redshift of ',
+//                'the cone specified in General Properties.'
+//            ].join('')
+//        }).validate('test', {
+//            check: function (val, cache) {
+//                return val <= cache.z_max;
+//            },
+//            message: ['Value must be less than the maximum redshift of ',
+//                'the cone specified in General Properties.'
+//            ].join('')
+//        }).validate('test', {
+//            check: function (val, cache) {
+//                return val <= form.find('input[name$="z_max"]').val();
+//            },
+//            message: ['Value must be less than the maximum redshift of ',
+//                'this mock image.'
+//            ].join('')
+//        });
 
         // z_max
-        form.find('input[name$="z_max"]').validate({
-            type: 'float',
-            required: true,
-            cache: {
-                z_min: [$('#id_light_cone-redshift_min'), 'float'],
-                z_max: [$('#id_light_cone-redshift_max'), 'float']
-            },
-            group: [form.find('input[name$="z_min"]')],
-            form: 'mock_image'
-        }).validate('test', {
-            check: function (val, cache) {
-                return val <= cache.z_max;
-            },
-            message: ['Value must be less than the maximum redshift of ',
-                'the cone specified in General Properties.'
-            ].join('')
-        }).validate('test', {
-            check: function (val, cache) {
-                return val >= cache.z_min;
-            },
-            message: ['Value must be greater than the minimum redshift of ',
-                'the cone specified in General Properties.'
-            ].join('')
-        }).validate('test', {
-            check: function (val, cache) {
-                return val >= form.find('input[name$="z_min"]').val();
-            },
-            message: ['Value must be greater than the minimum redshift of ',
-                'this mock image.'
-            ].join('')
-        });
+//        form.find('input[name$="z_max"]').validate({
+//            type: 'float',
+//            required: true,
+//            cache: {
+//                z_min: [$('#id_light_cone-redshift_min'), 'float'],
+//                z_max: [$('#id_light_cone-redshift_max'), 'float']
+//            },
+//            group: [form.find('input[name$="z_min"]')],
+//            form: 'mock_image'
+//        }).validate('test', {
+//            check: function (val, cache) {
+//                return val <= cache.z_max;
+//            },
+//            message: ['Value must be less than the maximum redshift of ',
+//                'the cone specified in General Properties.'
+//            ].join('')
+//        }).validate('test', {
+//            check: function (val, cache) {
+//                return val >= cache.z_min;
+//            },
+//            message: ['Value must be greater than the minimum redshift of ',
+//                'the cone specified in General Properties.'
+//            ].join('')
+//        }).validate('test', {
+//            check: function (val, cache) {
+//                return val >= form.find('input[name$="z_min"]').val();
+//            },
+//            message: ['Value must be greater than the minimum redshift of ',
+//                'this mock image.'
+//            ].join('')
+//        });
 
         // origin_ra
-        form.find('input[name$="origin_ra"]').validate({
-            type: 'float',
-            required: true,
-            cache: {
-                ra: [$('#id_light_cone-ra_opening_angle'), 'float'],
-                fov_ra: [form.find('input[name$="fov_ra"]'), 'float']
-            },
-            group: [form.find('input[name$="fov_ra"]')],
-            form: 'mock_image'
-        }).validate('test', {
-            check: function (val, cache) {
-                return val + 0.5 * cache.fov_ra <= cache.ra;
-            },
-            message: 'Origin and field-of-view RAs exceed cone maximum.'
-        }).validate('test', {
-            check: function (val, cache) {
-                return val - 0.5 * cache.fov_ra >= 0;
-            },
-            message: 'Origin and field-of-view RAs are below cone minimum.'
-        });
+//        form.find('input[name$="origin_ra"]').validate({
+//            type: 'float',
+//            required: true,
+//            cache: {
+//                ra: [$('#id_light_cone-ra_opening_angle'), 'float'],
+//                fov_ra: [form.find('input[name$="fov_ra"]'), 'float']
+//            },
+//            group: [form.find('input[name$="fov_ra"]')],
+//            form: 'mock_image'
+//        }).validate('test', {
+//            check: function (val, cache) {
+//                return val + 0.5 * cache.fov_ra <= cache.ra;
+//            },
+//            message: 'Origin and field-of-view RAs exceed cone maximum.'
+//        }).validate('test', {
+//            check: function (val, cache) {
+//                return val - 0.5 * cache.fov_ra >= 0;
+//            },
+//            message: 'Origin and field-of-view RAs are below cone minimum.'
+//        });
 
         // origin_dec
-        form.find('input[name$="origin_dec"]').validate({
-            type: 'float',
-            required: true,
-            cache: {
-                dec: [$('#id_light_cone-dec_opening_angle'), 'float'],
-                fov_dec: [form.find('input[name$="fov_dec"]'), 'float']
-            },
-            group: [form.find('input[name$="fov_dec"]')],
-            form: 'mock_image'
-        }).validate('test', {
-            check: function (val, cache) {
-                return val + 0.5 * cache.fov_dec <= cache.dec;
-            },
-            message: 'Origin and field-of-view DECs exceed cone maximum.'
-        }).validate('test', {
-            check: function (val, cache) {
-                return val - 0.5 * cache.fov_dec >= 0;
-            },
-            message: 'Origin and field-of-view DECs are below cone minimum.'
-        });
+//        form.find('input[name$="origin_dec"]').validate({
+//            type: 'float',
+//            required: true,
+//            cache: {
+//                dec: [$('#id_light_cone-dec_opening_angle'), 'float'],
+//                fov_dec: [form.find('input[name$="fov_dec"]'), 'float']
+//            },
+//            group: [form.find('input[name$="fov_dec"]')],
+//            form: 'mock_image'
+//        }).validate('test', {
+//            check: function (val, cache) {
+//                return val + 0.5 * cache.fov_dec <= cache.dec;
+//            },
+//            message: 'Origin and field-of-view DECs exceed cone maximum.'
+//        }).validate('test', {
+//            check: function (val, cache) {
+//                return val - 0.5 * cache.fov_dec >= 0;
+//            },
+//            message: 'Origin and field-of-view DECs are below cone minimum.'
+//        });
 
         // fov_ra
-        form.find('input[name$="fov_ra"]').validate({
-            type: 'float',
-            required: true,
-            cache: {
-                ra: [$('#id_light_cone-ra_opening_angle'), 'float'],
-                o_ra: [form.find('input[name$="origin_ra"]'), 'float']
-            },
-            group: [form.find('input[name$="origin_ra"]')],
-            form: 'mock_image'
-        }).validate('test', {
-            check: function (val, cache) {
-                return cache.o_ra + 0.5 * val <= cache.ra;
-            },
-            message: 'Origin and field-of-view RAs exceed cone maximum.'
-        }).validate('test', {
-            check: function (val, cache) {
-                return cache.o_ra - 0.5 * val >= 0;
-            },
-            message: 'Origin and field-of-view RAs are below cone minimum.'
-        });
+//        form.find('input[name$="fov_ra"]').validate({
+//            type: 'float',
+//            required: true,
+//            cache: {
+//                ra: [$('#id_light_cone-ra_opening_angle'), 'float'],
+//                o_ra: [form.find('input[name$="origin_ra"]'), 'float']
+//            },
+//            group: [form.find('input[name$="origin_ra"]')],
+//            form: 'mock_image'
+//        }).validate('test', {
+//            check: function (val, cache) {
+//                return cache.o_ra + 0.5 * val <= cache.ra;
+//            },
+//            message: 'Origin and field-of-view RAs exceed cone maximum.'
+//        }).validate('test', {
+//            check: function (val, cache) {
+//                return cache.o_ra - 0.5 * val >= 0;
+//            },
+//            message: 'Origin and field-of-view RAs are below cone minimum.'
+//        });
 
         // fov_dec
-        form.find('input[name$="fov_dec"]').validate({
-            type: 'float',
-            required: true,
-            cache: {
-                dec: [$('#id_light_cone-dec_opening_angle'), 'float'],
-                o_dec: [form.find('input[name$="origin_dec"]'), 'float']
-            },
-            group: [form.find('input[name$="origin_dec"]')],
-            form: 'mock_image'
-        }).validate('test', {
-            check: function (val, cache) {
-                return cache.o_dec + 0.5 * val <= cache.dec;
-            },
-            message: 'Origin and field-of-view DECs exceed cone maximum.'
-        }).validate('test', {
-            check: function (val, cache) {
-                return cache.o_dec - 0.5 * val >= 0;
-            },
-            message: 'Origin and field-of-view DECs are below cone minimum.'
-        });
+//        form.find('input[name$="fov_dec"]').validate({
+//            type: 'float',
+//            required: true,
+//            cache: {
+//                dec: [$('#id_light_cone-dec_opening_angle'), 'float'],
+//                o_dec: [form.find('input[name$="origin_dec"]'), 'float']
+//            },
+//            group: [form.find('input[name$="origin_dec"]')],
+//            form: 'mock_image'
+//        }).validate('test', {
+//            check: function (val, cache) {
+//                return cache.o_dec + 0.5 * val <= cache.dec;
+//            },
+//            message: 'Origin and field-of-view DECs exceed cone maximum.'
+//        }).validate('test', {
+//            check: function (val, cache) {
+//                return cache.o_dec - 0.5 * val >= 0;
+//            },
+//            message: 'Origin and field-of-view DECs are below cone minimum.'
+//        });
 
         // width
-        form.find('input[name$="width"]').validate({
-            type: 'int',
-            required: true,
-            form: 'mock_image'
-        }).validate('test', {
-            check: function (val) {
-                return val > 1;
-            },
-            message: 'Image must have at least 1 pixel in width.'
-        }).validate('test', {
-            check: function (val) {
-                return val < 4096;
-            },
-            message: 'Maximum image width is 4096 pixels.'
-        });
+//        form.find('input[name$="width"]').validate({
+//            type: 'int',
+//            required: true,
+//            form: 'mock_image'
+//        }).validate('test', {
+//            check: function (val) {
+//                return val > 1;
+//            },
+//            message: 'Image must have at least 1 pixel in width.'
+//        }).validate('test', {
+//            check: function (val) {
+//                return val < 4096;
+//            },
+//            message: 'Maximum image width is 4096 pixels.'
+//        });
 
         // height
-        form.find('input[name$="height"]').validate({
-            type: 'int',
-            required: true,
-            form: 'mock_image'
-        }).validate('test', {
-            check: function (val) {
-                return val > 1;
-            },
-            message: 'Image must have at least 1 pixel in height.'
-        }).validate('test', {
-            check: function (val) {
-                return val < 4096;
-            },
-            message: 'Maximum image height is 4096 pixels.'
-        });
-    }
+//        form.find('input[name$="height"]').validate({
+//            type: 'int',
+//            required: true,
+//            form: 'mock_image'
+//        }).validate('test', {
+//            check: function (val) {
+//                return val > 1;
+//            },
+//            message: 'Image must have at least 1 pixel in height.'
+//        }).validate('test', {
+//            check: function (val) {
+//                return val < 4096;
+//            },
+//            message: 'Maximum image height is 4096 pixels.'
+//        });
+//    }
 
-    function mock_image_setup_form(form) {
-        var ra = $('#id_light_cone-ra_opening_angle').val();
-        var dec = $('#id_light_cone-dec_opening_angle').val();
-        var z_min = $('#id_light_cone-redshift_min').val();
-        var z_max = $('#id_light_cone-redshift_max').val();
-        // update_mock_image_sub_cones(form.find('select[name$="sub_cone"]'));
-        mock_image_update_magnitudes(form.find('select[name$="mag_field"]'));
-        form.find('input[name$="min_mag"]').val(7);
-        form.find('input[name$="z_min"]').val(z_min);
-        form.find('input[name$="z_max"]').val(z_max);
-        if (ra != "") {
-            form.find('input[name$="origin_ra"]').val(ra / 2.0);
-            form.find('input[name$="fov_ra"]').val(ra);
-        }
-        if (dec !== "") {
-            form.find('input[name$="origin_dec"]').val(dec / 2.0);
-            form.find('input[name$="fov_dec"]').val(dec);
-        }
-        form.find('input[name$="width"]').val(1024);
-        form.find('input[name$="height"]').val(1024);
+//    function mock_image_setup_form(form) {
+//        var ra = $('#id_light_cone-ra_opening_angle').val();
+//        var dec = $('#id_light_cone-dec_opening_angle').val();
+//        var z_min = $('#id_light_cone-redshift_min').val();
+//        var z_max = $('#id_light_cone-redshift_max').val();
+//        // update_mock_image_sub_cones(form.find('select[name$="sub_cone"]'));
+//        mock_image_update_magnitudes(form.find('select[name$="mag_field"]'));
+//        form.find('input[name$="min_mag"]').val(7);
+//        form.find('input[name$="z_min"]').val(z_min);
+//        form.find('input[name$="z_max"]').val(z_max);
+//        if (ra != "") {
+//            form.find('input[name$="origin_ra"]').val(ra / 2.0);
+//            form.find('input[name$="fov_ra"]').val(ra);
+//        }
+//        if (dec !== "") {
+//            form.find('input[name$="origin_dec"]').val(dec / 2.0);
+//            form.find('input[name$="fov_dec"]').val(dec);
+//        }
+//        form.find('input[name$="width"]').val(1024);
+//        form.find('input[name$="height"]').val(1024);
 
-        $('.delete-row:last').click(function () {
-            return true;
-        });
+//        $('.delete-row:last').click(function () {
+//            return true;
+//        });
 
-        mock_image_setup_form_behaviors(form);
-    }
+//        mock_image_setup_form_behaviors(form);
+//    }
 
     function update_apply_mock_image(apply_mock_image, vm) {
         if (apply_mock_image) {
@@ -290,11 +290,11 @@ catalogue.modules.mock_image = function ($) {
     }
 
 
-    function mock_image_update_magnitudes(sel) {
-        if (sel === undefined)
-            sel = $('#mock_image_params select[name$="mag_field"]');
-        // update_select(sel, $('#id_sed-band_pass_filters > option'));
-    }
+//    function mock_image_update_magnitudes(sel) {
+//        if (sel === undefined)
+//            sel = $('#mock_image_params select[name$="mag_field"]');
+//        // update_select(sel, $('#id_sed-band_pass_filters > option'));
+//    }
 
 
 //    function update_mock_image_sub_cones(sel) {
@@ -411,6 +411,7 @@ catalogue.modules.mock_image = function ($) {
         this.vm = vm;
 
         function ImageParameters() {
+            var def = catalogue.validators.defined;
             var image_params = {};
             image_params.sub_cone = ko.observable(vm.sub_cone_options()[0]);
             image_params.format = ko.observable(vm.format_options[0]);
@@ -418,36 +419,80 @@ catalogue.modules.mock_image = function ($) {
                 // TODO, should link to SED
                 return catalogue.util.bandpass_filters();
             });
-            image_params.mag_field = ko.observable();
-            image_params.min_mag = ko.observable()
-                .extend({logger: 'min_max'})
+            image_params.mag_field = ko.observable()
+                .extend({validate: catalogue.validators.is_float});
+            image_params.fov_ra = ko.observable(catalogue.modules.light_cone.vm.ra_opening_angle());
+            image_params.fov_dec = ko.observable(catalogue.modules.light_cone.vm.dec_opening_angle());
+            image_params.width = ko.observable(1024)
+                .extend({validate: catalogue.validators.is_float})
+                .extend({validate: catalogue.validators.geq(1)})
+                .extend({validate: catalogue.validators.leq(4096)});
+            image_params.height = ko.observable(1024)
+                .extend({validate: catalogue.validators.is_float})
+                .extend({validate: catalogue.validators.geq(1)})
+                .extend({validate: catalogue.validators.leq(4096)});
+            image_params.min_mag = ko.observable(7)
                 .extend({validate: catalogue.validators.is_float})
                 .extend({validate: catalogue.validators.positive});
-            image_params.z_min = ko.observable()
+            image_params.z_min = ko.observable(catalogue.modules.light_cone.vm.redshift_min())
                 .extend({validate: catalogue.validators.is_float})
-                .extend({validate: catalogue.validators.greater_than(
+                .extend({validate: catalogue.validators.geq(
                     catalogue.modules.light_cone.vm.redshift_min
                     )})
-                .extend({validate: catalogue.validators.less_than(
+                .extend({validate: catalogue.validators.leq(
                     catalogue.modules.light_cone.vm.redshift_max
-                    )})
-            image_params.z_max = ko.observable()
+                    )});
+            image_params.z_max = ko.observable(catalogue.modules.light_cone.vm.redshift_max())
                 .extend({validate: catalogue.validators.is_float})
-                .extend({validate: catalogue.validators.greater_than(
+                .extend({validate: catalogue.validators.geq(
                     catalogue.modules.light_cone.vm.redshift_min
                     )})
-                .extend({validate: catalogue.validators.less_than(
+                .extend({validate: catalogue.validators.leq(
                     catalogue.modules.light_cone.vm.redshift_max
                     )})
                 .extend({validate: catalogue.validators.greater_than(
                     image_params.z_min
+                )});
+            image_params.origin_ra = ko.observable(catalogue.modules.light_cone.vm.ra_opening_angle()/2)
+                .extend({validate: catalogue.validators.is_float})
+                .extend({validate: catalogue.validators.test(
+                    ko.computed(function(){
+                        if (!def(image_params.fov_ra())
+                            || !def(catalogue.modules.light_cone.vm.ra_opening_angle()))
+                            return true;
+                        return image_params.origin_ra() + 0.5 * image_params.fov_ra()
+                            <= catalogue.modules.light_cone.vm.ra_opening_angle();
+                    }),
+                    "Origin and field-of-view RAs exceed cone maximum."
                 )})
-            image_params.origin_ra = ko.observable();
-            image_params.origin_dec = ko.observable();
-            image_params.fov_ra = ko.observable();
-            image_params.fov_dec = ko.observable();
-            image_params.width = ko.observable();
-            image_params.height = ko.observable();
+                .extend({validate: catalogue.validators.test(
+                    ko.computed(function(){
+                        if (!def(image_params.fov_ra()))
+                            return true;
+                        return image_params.origin_ra() - 0.5 * image_params.fov_ra() >= 0.0;
+                    }),
+                    "Origin and field-of-view RAs are below cone minimum."
+                )});
+            image_params.origin_dec = ko.observable(catalogue.modules.light_cone.vm.ra_opening_angle()/2)
+                .extend({validate: catalogue.validators.is_float})
+                .extend({validate: catalogue.validators.test(
+                    ko.computed(function(){
+                        if (!def(image_params.fov_dec())
+                            || !def(catalogue.modules.light_cone.vm.dec_opening_angle()))
+                            return true;
+                        return image_params.origin_dec() + 0.5 * image_params.fov_dec()
+                            <= catalogue.modules.light_cone.vm.dec_opening_angle();
+                    }),
+                    "Origin and field-of-view DECs exceed cone maximum.")})
+                .extend({validate: catalogue.validators.test(
+                    ko.computed(function(){
+                        if (!def(image_params.fov_dec()))
+                            return true;
+                        return image_params.origin_dec() - 0.5 * image_params.fov_dec() >= 0.0;
+                    }),
+                    "Origin and field-of-view DECs are below cone minimum."
+                )});
+
             return image_params;
         }
 
@@ -465,7 +510,7 @@ catalogue.modules.mock_image = function ($) {
         });
 
         vm.format_options = [
-                {value:'FITS', text:'FITS'},
+                {value:'FITS', text:'FITS'}
                 // png and jpg formats aren't working yet
                 // {value:'PNG', text:'PNG'},
                 // {value:'JPEG', text:'JPEG'}
@@ -507,10 +552,10 @@ catalogue.modules.mock_image = function ($) {
         $('#id_mock_image-TOTAL_FORMS').val(parseInt($('#id_mock_image-TOTAL_FORMS').val()) - 1);
 
         // Pretty up the "add another" button and add my own click handler.
-        $('.add-row').button().click(function () {
-            mock_image_setup_form($('#mock_image_params .single-form:last'));
-            return true;
-        });
+//        $('.add-row').button().click(function () {
+//            mock_image_setup_form($('#mock_image_params .single-form:last'));
+//            return true;
+//        });
 
         // Add behaviors to existing forms.
         // $('#mock_image_params .single-form').each(function () {

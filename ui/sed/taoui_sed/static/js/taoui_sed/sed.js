@@ -59,7 +59,7 @@ catalogue.modules.sed = function ($) {
         });
         data = catalogue.util.bandpass_filters();
         get_widget().cache_store(data);
-        catalogue.modules.record_filter.update_filter_options.bandpass_props = true;
+        // catalogue.modules.record_filter.update_filter_options.bandpass_props = true;
         get_widget().display_selected(current, true);
         // $.ajax({
         //     url: TAO_JSON_CTX + 'bandpass_filters/',
