@@ -14,7 +14,6 @@ catalogue.modules.light_cone = function ($) {
     var vm = {}
     this.the_vm = vm;
 
-    
     var calculate_job_size = function() {
     	// Calculate the job size (percentage of max allowed size) based on the current cone parameters
     	var cjs;
@@ -41,11 +40,11 @@ catalogue.modules.light_cone = function ($) {
 
     	// Return something useful if not all parameters have been entered
     	if (isNaN(ra_max) || isNaN(dec_max) || isNaN(z_min) || isNaN(z_max)) {
-    		return "(waiting for valid cone parameters)";
+    		return null;
     	}
     	cjs = job_size.job_size(box_size, 0, ra_max, 0, dec_max, z_min, z_max, H0,
     			max_job_box_count, job_size_p1, job_size_p2, job_size_p3);
-    	return Math.round(cjs * 100) + "%";
+    	return Math.round(cjs * 100);
     }
 
 
@@ -514,11 +513,17 @@ catalogue.modules.light_cone = function ($) {
 
 
         vm.estimated_cone_size_msg = ko.computed(function () {
-            result = 'Estimated job size: ' + vm.estimated_cone_size();
-            if (job_too_large()) {
-                result += '. Note this exceeds the maximum allowed size, please reduce the light-cone size (RA, Dec, Redshift range).';
-            }
-            return result;
+        	var ecs = vm.estimated_cone_size();
+        	var msg = 'Estimated job size: ';
+        	if (ecs == null) {
+        		msg += "(waiting for valid cone parameters)";
+        	} else {
+	            msg = msg + ecs + "%";
+	            if (job_too_large()) {
+	                msg += '. Note this exceeds the maximum allowed size, please reduce the light-cone size (RA, Dec, Redshift range).';
+	            }
+        	}
+            return msg;
         });
 
         vm.hr_ra_opening_angle = ko.computed(function(){
