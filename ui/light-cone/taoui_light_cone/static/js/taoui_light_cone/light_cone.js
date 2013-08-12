@@ -23,8 +23,16 @@ catalogue.modules.light_cone = function ($) {
     	var job_size_p2 = parseFloat(vm.dataset().fields.job_size_p2);
     	var job_size_p3 = parseFloat(vm.dataset().fields.job_size_p3);
     	var box_size = parseFloat(vm.dark_matter_simulation().fields.box_size);
+    	var H0; // This should be a dataset parameter
     	var max_job_box_count = parseInt(vm.dataset().fields.max_job_box_count);
 
+    	// Temporary hack for H0
+    	// This should be retrieved as a dataset parameter
+    	if (vm.dark_matter_simulation().fields.name == 'Bolshoi') {
+    		H0 = 70.0
+    	} else {
+    		H0 = 73.0
+    	}
     	// Get user input parameters
     	var ra_max = parseFloat(vm.ra_opening_angle());
     	var dec_max = parseFloat(vm.dec_opening_angle());
@@ -35,10 +43,9 @@ catalogue.modules.light_cone = function ($) {
     	if (isNaN(ra_max) || isNaN(dec_max) || isNaN(z_min) || isNaN(z_max)) {
     		return "(waiting for valid cone parameters)";
     	}
-    	cjs = job_size.job_size(box_size, 0, ra_max, 0, dec_max, z_min, z_max, 0.73,
+    	cjs = job_size.job_size(box_size, 0, ra_max, 0, dec_max, z_min, z_max, H0,
     			max_job_box_count, job_size_p1, job_size_p2, job_size_p3);
-    	console.log("Estimated size: " + cjs);
-    	return cjs;
+    	return Math.round(cjs * 100) + "%";
     }
 
 
@@ -406,7 +413,33 @@ catalogue.modules.light_cone = function ($) {
     }
 
     this.job_parameters = function() {
+    	var geometry = vm.catalogue_geometry().id;
+    	var output_props = catalogue.modules.light_cone.the_vm.output_properties.to_side.options_raw();
+    	var output_ids = [];
+    	for (var i=0; i<output_props.length; i++) {
+    		output_ids.push(output_props[i].value);
+    	}
     	var params = {
+    		'light_cone-catalogue_geometry': [geometry],
+    		'light_cone-dataset_id' : [vm.dataset().pk],
+    		'light_cone-dark_matter_simulation': [vm.dark_matter_simulation().pk],
+    		'light_cone-galaxy_model': [vm.galaxy_model().pk],
+    		'light_cone-output_properties': output_ids
+    	};
+    	if (geometry == "box") {
+    		jQuery.extend(params, {
+    			'light_cone-snapshot': [vm.snapshot().pk],
+    			'light_cone-box_size': [vm.box_size()]
+    		});
+    	} else { // light-cone
+    		jQuery.extend(params, {
+    			'light_cone-light_cone_type': [vm.light_cone_type()],
+    			'light_cone-ra_opening_angle': [vm.ra_opening_angle()],
+    			'light_cone-dec_opening_angle': [vm.dec_opening_angle()],
+    			'light_cone-number_of_light_cones': [vm.number_of_light_cones()],
+    			'light_cone-redshift_min': [vm.redshift_min()],
+    			'light_cone-redshift_max': [vm.redshift_max()],
+    		});
     	}
     	return params;
     }
@@ -520,7 +553,7 @@ catalogue.modules.light_cone = function ($) {
 
 
         vm.estimated_cone_size_msg = ko.computed(function () {
-            result = 'Estimated job size: ' + vm.estimated_cone_size() + '%';
+            result = 'Estimated job size: ' + vm.estimated_cone_size();
             if (job_too_large()) {
                 result += '. Note this exceeds the maximum allowed size, please reduce the light-cone size (RA, Dec, Redshift range).';
             }
