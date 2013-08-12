@@ -10,6 +10,8 @@ from os.path import abspath, dirname, join, split
 
 # Django settings for tao project.
 
+DEBUG = False
+
 PROJECT_PATH = abspath(split(__file__)[0])
 PROJECT_DIR = dirname(PROJECT_PATH)
 
@@ -298,3 +300,9 @@ ACTIVITYLOG_LOG_RESPONSE=False
 ACTIVITYLOG_LOG_HTML_RESPONSE = False
 # If we how do we recognized a full HTML response 
 ACTIVITYLOG_HTML_START = "<!DOCTYPE html"
+
+#
+# Pretty print the metadata being passed to the browser?
+# Useful for debugging, but much larger payload
+#
+METADATA_PRETTY_PRINT = DEBUG

@@ -224,10 +224,9 @@ catalogue.modules.record_filter = function ($) {
 
     this.job_parameters = function() {
     	var params = {
-    		// Use dummy value until Value Models are in place
-    		'record_filter-filter': ['D-1'],
-    		'record_filter-min': ['0.31'],
-    		'record_filter-max': ['']
+    		'record_filter-filter': [vm.selection().value],
+    		'record_filter-min': [vm.selection_min()],
+    		'record_filter-max': [vm.selection_max()]
     	}
     	return params;
     }
