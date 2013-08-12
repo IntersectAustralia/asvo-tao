@@ -68,9 +68,6 @@ catalogue.modules.sed = function ($) {
 
     this.init_model = function () {
 
-        var vm = {};
-        this.vm = vm;
-
         vm.apply_sed = ko.observable(false);
     	vm.stellar_models = ko.observableArray(TaoMetadata.StellarModel);
     	vm.stellar_model = ko.observable(vm.stellar_models()[0]);
