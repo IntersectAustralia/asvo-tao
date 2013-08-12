@@ -4,10 +4,9 @@ catalogue.modules = catalogue.modules || {};
 
 catalogue.modules.record_filter = function ($) {
 
-    function me() {
-        return catalogue.modules.record_filter;
-    }
-
+    // KO ViewModel
+    var vm = {}
+    this.vm = vm;
 
     var fill_in_selection_in_summary = function () {
         var filter_min = $(rf_id('min')).val();
@@ -239,8 +238,12 @@ catalogue.modules.record_filter = function ($) {
 
 
     this.init_model = function () {
-        init_event_handlers();
-        return {}
+
+    	vm.selections = ko.observableArray();
+    	vm.selection = ko.observable();
+    	vm.selection_min = ko.observable(null);
+    	vm.selection_max = ko.observable(null);
+        return vm
     }
 
 }
