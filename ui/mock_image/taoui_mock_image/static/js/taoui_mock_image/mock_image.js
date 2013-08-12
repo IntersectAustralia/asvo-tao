@@ -4,11 +4,11 @@ catalogue.modules = catalogue.modules || {};
 
 catalogue.modules.mock_image = function ($) {
 
-    function mock_image_enabled() {
-        var ami = $('#id_mock_image-apply_mock_image');
-        return ami.attr('disabled') === undefined && ami.is(':checked');
-    }
-
+//    function mock_image_enabled() {
+//        var ami = $('#id_mock_image-apply_mock_image');
+//        return ami.attr('disabled') === undefined && ami.is(':checked');
+//    }
+//
 
     function mock_image_setup_form_behaviors(form) {
 
@@ -228,7 +228,7 @@ catalogue.modules.mock_image = function ($) {
         var dec = $('#id_light_cone-dec_opening_angle').val();
         var z_min = $('#id_light_cone-redshift_min').val();
         var z_max = $('#id_light_cone-redshift_max').val();
-        update_mock_image_sub_cones(form.find('select[name$="sub_cone"]'));
+        // update_mock_image_sub_cones(form.find('select[name$="sub_cone"]'));
         mock_image_update_magnitudes(form.find('select[name$="mag_field"]'));
         form.find('input[name$="min_mag"]').val(7);
         form.find('input[name$="z_min"]').val(z_min);
@@ -243,18 +243,16 @@ catalogue.modules.mock_image = function ($) {
         }
         form.find('input[name$="width"]').val(1024);
         form.find('input[name$="height"]').val(1024);
-        update_mock_image_summary();
 
         $('.delete-row:last').click(function () {
-            update_mock_image_summary();
             return true;
         });
 
         mock_image_setup_form_behaviors(form);
     }
 
-    function update_apply_mock_image() {
-        if (mock_image_enabled()) {
+    function update_apply_mock_image(apply_mock_image, vm) {
+        if (apply_mock_image) {
             $('#tao-tabs-3').css({
                 "border-style": "solid"
             });
@@ -263,14 +261,18 @@ catalogue.modules.mock_image = function ($) {
             });
 
             // Add an image if there is none there.
-            if ($('#mock_image_params .single-form').length == 0)
-                $('#mock_image_params .add-row').click();
+            if (vm.number_of_images() == 0)
+                vm.add_image_settings();
+
+            // if ($('#mock_image_params .single-form').length == 0)
+            //    $('#mock_image_params .add-row').click();
 
             // Enable all inputs except hidden ones.
-            $('#mock_image_params input[type!="hidden"], #mock_image_params select').removeAttr('disabled');
+            // $('#mock_image_params input[type!="hidden"], #mock_image_params select').removeAttr('disabled');
 
             $('#mock_image_params').slideDown();
             $('#mock_image_info').slideDown();
+
         } else {
             $('#tao-tabs-3').css({
                 "border-style": "dashed"
@@ -280,68 +282,55 @@ catalogue.modules.mock_image = function ($) {
             });
 
             // Disable all inputs except hidden ones.
-            $('#mock_image_params input[type!="hidden"], #mock_image_params select').attr('disabled', 'disabled');
+            // $('#mock_image_params input[type!="hidden"], #mock_image_params select').attr('disabled', 'disabled');
 
             $('#mock_image_params').slideUp();
             $('#mock_image_info').slideUp();
         }
-        update_mock_image_summary();
     }
 
 
     function mock_image_update_magnitudes(sel) {
         if (sel === undefined)
             sel = $('#mock_image_params select[name$="mag_field"]');
-        update_select(sel, $('#id_sed-band_pass_filters > option'));
+        // update_select(sel, $('#id_sed-band_pass_filters > option'));
     }
 
 
-    function update_mock_image_sub_cones(sel) {
-        if (sel === undefined)
-            sel = $('#mock_image_params select[name$="sub_cone"]');
-        var num_cones = parseInt($('#id_light_cone-number_of_light_cones').val());
-        sel.each(function () {
-            var cur = $(this).children('option:selected').attr('value');
-            $(this).empty();
-            $(this).append($('<option/>').attr('value', 'ALL').text('All'));
-            if (num_cones !== undefined && num_cones > 1) {
-                for (var ii = 0; ii < num_cones; ii++) {
-                    var opt = $('<option/>').attr('value', ii).text(ii);
-                    if (opt.attr('value') == cur)
-                        opt.prop('selected', true);
-                    $(this).append(opt);
-                }
-            }
-        });
-    }
+//    function update_mock_image_sub_cones(sel) {
+//        if (sel === undefined)
+//            sel = $('#mock_image_params select[name$="sub_cone"]');
+//        var num_cones = parseInt($('#id_light_cone-number_of_light_cones').val());
+//        sel.each(function () {
+//            var cur = $(this).children('option:selected').attr('value');
+//            $(this).empty();
+//            $(this).append($('<option/>').attr('value', 'ALL').text('All'));
+//            if (num_cones !== undefined && num_cones > 1) {
+//                for (var ii = 0; ii < num_cones; ii++) {
+//                    var opt = $('<option/>').attr('value', ii).text(ii);
+//                    if (opt.attr('value') == cur)
+//                        opt.prop('selected', true);
+//                    $(this).append(opt);
+//                }
+//            }
+//        });
+//    }
 
 
-    function update_mock_image_summary() {
-        if (mock_image_enabled()) {
-            $('div.summary_mock_image .apply_mock_image').show();
-            catalogue.util.fill_in_summary('mock_image', 'select_mock_image', '');
-            catalogue.util.fill_in_summary('mock_image', 'num_images', $('#mock_image_params .single-form').length);
-        } else {
-            $('div.summary_mock_image .apply_mock_image').hide();
-            catalogue.util.fill_in_summary('mock_image', 'select_mock_image', 'Not selected');
-        }
-    }
-
-
-    function update_select(sel, opts) {
-        sel.each(function () {
-            var cur_sel = $(this);
-            var cur_opt = cur_sel.children('option:selected').attr('value');
-            cur_sel.empty();
-            opts.each(function () {
-                var opt = $('<option/>').attr('value', $(this).attr('value')).text($(this).text());
-                if ($(this).attr('value') == cur_opt)
-                    opt.prop('selected', true);
-                cur_sel.append(opt);
-            });
-            cur_sel.change();
-        });
-    }
+//    function update_select(sel, opts) {
+//        sel.each(function () {
+//            var cur_sel = $(this);
+//            var cur_opt = cur_sel.children('option:selected').attr('value');
+//            cur_sel.empty();
+//            opts.each(function () {
+//                var opt = $('<option/>').attr('value', $(this).attr('value')).text($(this).text());
+//                if ($(this).attr('value') == cur_opt)
+//                    opt.prop('selected', true);
+//                cur_sel.append(opt);
+//            });
+//            cur_sel.change();
+//        });
+//    }
 
 
     this.update_tabs = function (event, ui) {
@@ -367,8 +356,8 @@ catalogue.modules.mock_image = function ($) {
 
         // Update every mock image sub-cone option with appropriate
         // values from the general properties.
-        if (old_tab == 'tao-tabs-1')
-            update_mock_image_sub_cones();
+        // if (old_tab == 'tao-tabs-1')
+        //    update_mock_image_sub_cones();
 
         // Upon moving to a new tab, run validation in the tab to pick up
         // any changes from previous tab.
@@ -398,21 +387,102 @@ catalogue.modules.mock_image = function ($) {
 
     this.init_model = function () {
 
+        var vm = {}
+        this.vm = vm;
+
+        function ImageParameters() {
+            var image_params = {};
+            image_params.sub_cone = ko.observable(vm.sub_cone_options()[0]);
+            image_params.format = ko.observable(vm.format_options[0]);
+            image_params.mag_field_options = ko.computed(function(){
+                // TODO, should link to SED
+                return catalogue.util.bandpass_filters();
+            });
+            image_params.mag_field = ko.observable();
+            image_params.min_mag = ko.observable()
+                .extend({logger: 'min_max'})
+                .extend({validate: catalogue.validators.is_float})
+                .extend({validate: catalogue.validators.positive});
+            image_params.z_min = ko.observable()
+                .extend({validate: catalogue.validators.is_float})
+                .extend({validate: catalogue.validators.greater_than(
+                    catalogue.modules.light_cone.vm.redshift_min
+                    )})
+                .extend({validate: catalogue.validators.less_than(
+                    catalogue.modules.light_cone.vm.redshift_max
+                    )})
+            image_params.z_max = ko.observable()
+                .extend({validate: catalogue.validators.is_float})
+                .extend({validate: catalogue.validators.greater_than(
+                    catalogue.modules.light_cone.vm.redshift_min
+                    )})
+                .extend({validate: catalogue.validators.less_than(
+                    catalogue.modules.light_cone.vm.redshift_max
+                    )})
+                .extend({validate: catalogue.validators.greater_than(
+                    image_params.z_min
+                )})
+            image_params.origin_ra = ko.observable();
+            image_params.origin_dec = ko.observable();
+            image_params.fov_ra = ko.observable();
+            image_params.fov_dec = ko.observable();
+            image_params.width = ko.observable();
+            image_params.height = ko.observable();
+            return image_params;
+        }
+
+        vm.can_have_images = ko.computed(function(){
+            return catalogue.modules.sed.vm.apply_sed() &&
+                catalogue.modules.light_cone.vm.catalogue_geometry().id == 'light_cone';
+        });
+
+        vm.sub_cone_options = ko.computed(function(){
+            var n = catalogue.modules.light_cone.vm.number_of_light_cones();
+            var resp = [{value: 'ALL', text:'All'}]
+            for(var i = 1; i<=n; i++)
+                resp.push({value:i, text:i});
+            return resp;
+        });
+
+        vm.format_options = [
+                {value:'FITS', text:'FITS'},
+                {value:'PNG', text:'PNG'},
+                {value:'JPEG', text:'JPEG'}
+            ];
+
+        vm.apply_mock_image = ko.observable(false);
+
+        vm.apply_mock_image.subscribe(function(val){
+            update_apply_mock_image(val, vm);
+        });
+
+        vm.image_settings = ko.observableArray([]);
+
+        vm.number_of_images = ko.computed(function() {
+             return vm.image_settings().length;
+        });
+
+        vm.add_image_settings = function() {
+            var params = ImageParameters();
+            vm.image_settings.push(params);
+        }
+
+        vm.remove_image_settings = function(obj) {
+            vm.image_settings.remove(obj);
+            if (vm.image_settings().length == 0)
+                vm.add_image_settings();
+        }
+
         // TODO: perhaps move the event handlers to init_event_handlers()
         // to be consistent with other modules
 
-        $('#mock_image_params .single-form').formset({
-            prefix: 'mock_image'
-        });
-
-
-        $(mi_id('apply_mock_image')).change(function (evt) {
-            update_apply_mock_image();
-        });
+        // $('#mock_image_params .single-form').formset({
+        //     prefix: 'mock_image'
+        // });
 
         // We always have an extra form at the end, so delete it
         // now that we've initialised the formset.
-        $('#mock_image_params .single-form:last').remove();
+        // $('#mock_image_params .single-form:last').remove();
         $('#id_mock_image-TOTAL_FORMS').val(parseInt($('#id_mock_image-TOTAL_FORMS').val()) - 1);
 
         // Pretty up the "add another" button and add my own click handler.
@@ -422,22 +492,22 @@ catalogue.modules.mock_image = function ($) {
         });
 
         // Add behaviors to existing forms.
-        $('#mock_image_params .single-form').each(function () {
-            mock_image_setup_form_behaviors($(this));
-        });
+        // $('#mock_image_params .single-form').each(function () {
+        //     mock_image_setup_form_behaviors($(this));
+        // });
 
         // Run validation on all existing forms. Don't force anything here,
         // as we don't know if this is a returning form or a new one. If it's
         // returning, then any errors flagged in control groups will be picked
         // up by jQuery.validate.
-        $('#mock_image_params .single-form').each(function () {
-            $.validate_form('mock_image');
-        });
+        // $('#mock_image_params .single-form').each(function () {
+        //     $.validate_form('mock_image');
+        // });
 
         // Reevaluate all the magnitude fields.
-        mock_image_update_magnitudes();
+        // mock_image_update_magnitudes();
 
-        return {};
+        return vm;
 
     }
 

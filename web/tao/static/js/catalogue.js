@@ -11,6 +11,96 @@ ko.extenders.logger = function(target, option) {
     return target;
 };
 
+ko.extenders.validate = function(target, option) {
+
+    var valid = ko.computed(function(){
+        return option(target());
+    });
+
+    var old_error;
+
+    if (target.hasOwnProperty('error')) {
+        old_error = target.error;
+    }
+
+    target.error = ko.computed(function(){
+        if (old_error !== undefined) {
+            var old = old_error();
+            if (old && old.error) return old;
+        }
+        return valid();
+    });
+    //return the original observable
+    return target;
+};
+
+catalogue.validators = {};
+catalogue.validators.positive = function(val) {
+    if(val === undefined || val === null || val == '')
+        return {'error':false};
+    var f = parseFloat(val);
+    if (isNaN(f))
+        return {'error':false};
+    if (f <= 0.0)
+        return {'error':true, 'message':'This must be positive.'};
+    return {'error':false};
+};
+
+catalogue.validators.is_float = function(val) {
+    if(val === undefined || val === null || val == '')
+        return {'error':false};
+    var f = parseFloat(val);
+    if (isNaN(f))
+        return {'error':true, message:'Please input a number'};
+    return {'error':false};
+};
+
+catalogue.validators.greater_than = function(param) {
+    function check(v, min_v, msg) {
+        if(v === undefined || v === null || v === ''
+           || min_v === undefined || min_v === null || v === '')
+            return {'error':false};
+        var f = parseFloat(v);
+        if (isNaN(f) || isNaN(parseFloat(min_v)))
+            return {'error':false};
+        if (f < parseFloat(min_v))
+            return {'error':true, 'message': msg};
+        return {'error':false};
+    }
+    if (typeof param == "function") {
+        return function(val) {
+            return check(val, param(), 'Must be greater than ' + param());
+        }
+    } else {
+        return function(val) {
+            return check(val, param, 'Must be greater than ' + param);
+        }
+    }
+}
+
+catalogue.validators.less_than = function(param) {
+    function check(v, max_v, msg) {
+        if(v === undefined || v === null || v == ''
+           || max_v === undefined || max_v === null || max_v === '')
+            return {'error':false};
+        var f = parseFloat(v);
+        if (isNaN(f) || isNaN(parseFloat(max_v)))
+            return {'error':false};
+        if (f > parseFloat(max_v))
+            return {'error':true, 'message': msg};
+        return {'error':false};
+    }
+    if (typeof param == "function") {
+        return function(val) {
+            return check(val, param(), 'Must be less than ' + param());
+        }
+    } else {
+        return function(val) {
+            return check(val, param, 'Must be less than ' + param);
+        }
+    }
+}
+
 
 // TODO: at some point these should be moved to (or at least declared in) their respective modules
 
@@ -464,6 +554,55 @@ catalogue.util = function ($) {
 }	// End catalog.util
 
 jQuery(document).ready(function ($) {
+
+    //
+    // KO extension using a jQuery plugin
+    //
+    ko.bindingHandlers['value'] = (function(ko_value) {
+
+        function error_check(element, error) {
+            var $e = $(element);
+            $e.closest('.control-group').removeClass('error');
+            $e.popover('destroy');
+            $e.closest('.control-group .help-inline').remove();
+            if (error && error.error) {
+                $e.closest('.control-group').addClass('error');
+                $e.popover({
+                    trigger: 'focus',
+                    title: 'Validation Error',
+                    content: error.message
+                });
+            }
+        }
+
+        var pg = {}
+
+        pg.init = function(element, valueAccessor, allBindingsAccessor) {
+
+                ko_value.init(element, valueAccessor, allBindingsAccessor);
+
+                // This will be called when the binding is first applied to an element
+                // Set up any initial state, event handlers, etc. here
+                var va = valueAccessor();
+                if (!(va.hasOwnProperty('error'))) return;
+                va.error.subscribe(function(){
+                    error_check(element, va.error());
+                });
+            };
+
+        pg.update = function(element, valueAccessor) {
+
+                ko_value.update(element, valueAccessor);
+
+                var va = valueAccessor();
+                if (!(va.hasOwnProperty('error'))) return;
+
+                error_check(element, va.error());
+
+            };
+
+        return pg;
+    })(ko.bindingHandlers['value']);
 
     catalogue.vm = {}
 
