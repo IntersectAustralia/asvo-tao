@@ -4,6 +4,9 @@ catalogue.modules = catalogue.modules || {};
 
 catalogue.modules.mock_image = function ($) {
 
+    var vm = {}
+    this.vm = vm;
+
 //    function mock_image_enabled() {
 //        var ami = $('#id_mock_image-apply_mock_image');
 //        return ami.attr('disabled') === undefined && ami.is(':checked');
@@ -406,9 +409,6 @@ catalogue.modules.mock_image = function ($) {
     }
 
     this.init_model = function () {
-
-        var vm = {}
-        this.vm = vm;
 
         function ImageParameters() {
             var image_params = {};

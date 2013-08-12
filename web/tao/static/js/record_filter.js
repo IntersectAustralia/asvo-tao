@@ -180,6 +180,8 @@ catalogue.modules.record_filter = function ($) {
     this.update_filter_options.bandpass_props = false;
 
 
+    // To be converted to ko architecture
+    // Not called currently
     var validate_min_max = function () {
 
         var min = $(rf_id('min')).val();
@@ -210,17 +212,11 @@ catalogue.modules.record_filter = function ($) {
 
 
     this.cleanup_fields = function ($form) {
-        // cleanup record filter
-        var filter = $(rf_id('filter')).val();
-        if (filter == item_to_value(TAO_NO_FILTER)) {
-            $(rf_id('min')).val('');
-            $(rf_id('max')).val('');
-        }
     }
 
 
     this.validate = function ($form) {
-        return validate_min_max();
+    	return true;
     }
 
 
@@ -241,8 +237,8 @@ catalogue.modules.record_filter = function ($) {
     	// * Selected output properties with is_filter true
     	// * Selected bandpass filters
     	// * The dataset default filter
-    	//
-    	// Work in progress..
+    	// Note that a filter selection is required, i.e.
+    	// the No Filter options has been removed
     	var result = [];
     	var default_filter_pk, default_filter;
     	var output_properties;
@@ -287,14 +283,56 @@ catalogue.modules.record_filter = function ($) {
 
     	return result;
     }
+    
+    this.update_selections = function() {
+    	// Update the selections and handle selection
+    	var old_selection;
+    	var new_selections;
+    	var new_selection;
+    	var found = false;
+    	
+    	old_selection = vm.selection();
+    	new_selections = this.filter_choices();
+    	// Default is to use first available selection
+    	// This should be the dataset default selection,
+    	// as set in filter_choices()
+		new_selection = new_selections[0];
+    	// There has to be a better way to do this...
+		// If there is an existing selection:
+    	// Check if the old_selection is still part of the
+    	// new choices.
+		if (old_selection) {
+	    	for (var i=0; i<new_selections.length; i++) {
+	    		if (new_selections[i].value == old_selection.value) {
+	    			found=true;
+	    			new_selection = new_selections[i];
+	    			console.log("Found selection: "+new_selection.value)
+	    			break;
+	    		}
+	    	}
+		}
+
+    	// Done, update model
+    	vm.selections(new_selections);
+    	vm.selection(new_selection);
+    }
 
     this.init_model = function () {
+    	var current_dataset;
 
-    	vm.selections = ko.computed(this.filter_choices);
+    	vm.selections = ko.observableArray([]);
     	vm.selection = ko.observable();
-    	vm.selection_min = ko.observable(null);
-    	vm.selection_max = ko.observable(null);
-        return vm
+    	// The filter choices are dependent on the selected output properties
+    	// and bandpass filters
+    	catalogue.modules.light_cone.vm.output_properties.to_side.options_raw.subscribe(this.update_selections.bind(this));
+    	catalogue.modules.sed.vm.bandpass_filters.to_side.options_raw.subscribe(this.update_selections.bind(this));
+
+    	current_dataset = catalogue.modules.light_cone.vm.dataset();
+    	vm.selection_min = ko.observable(current_dataset.fields.default_filter_min);
+    	vm.selection_max = ko.observable(current_dataset.fields.default_filter_max);
+    	this.update_selections();
+
+    	return vm
     }
 
 }
