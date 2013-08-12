@@ -46,6 +46,7 @@ catalogue.validators.positive = function(val) {
     return {'error':false};
 };
 
+// NOTE: perhaps this should be renamed to 'is_numeric'
 catalogue.validators.is_float = function(val) {
     if(val === undefined || val === null || val == '')
         return {'error':false};
@@ -78,6 +79,32 @@ catalogue.validators.greater_than = function(param) {
     }
 }
 
+// Greater than or equal to
+catalogue.validators.geq = function(param) {
+    function check(v, min_v, msg) {
+        if(v === undefined || v === null || v === ''
+           || min_v === undefined || min_v === null || v === '')
+            return {'error':false};
+        var f = parseFloat(v);
+        if (isNaN(f) || isNaN(parseFloat(min_v)))
+            return {'error':false};
+        if (f < parseFloat(min_v))
+            return {'error':true, 'message': msg};
+        return {'error':false};
+    }
+    var base_msg = 'Must be greater than or equal to ';
+    if (typeof param == "function") {
+        return function(val) {
+            return check(val, param(), base_msg + param());
+        }
+    } else {
+        return function(val) {
+            return check(val, param, base_msg + param);
+        }
+    }
+}
+
+
 catalogue.validators.less_than = function(param) {
     function check(v, max_v, msg) {
         if(v === undefined || v === null || v == ''
@@ -100,6 +127,33 @@ catalogue.validators.less_than = function(param) {
         }
     }
 }
+
+
+// Less than or equal to
+catalogue.validators.leq = function(param) {
+    function check(v, max_v, msg) {
+        if(v === undefined || v === null || v == ''
+           || max_v === undefined || max_v === null || max_v === '')
+            return {'error':false};
+        var f = parseFloat(v);
+        if (isNaN(f) || isNaN(parseFloat(max_v)))
+            return {'error':false};
+        if (f > parseFloat(max_v))
+            return {'error':true, 'message': msg};
+        return {'error':false};
+    }
+    base_msg = 'Must be less than or equal to ';
+    if (typeof param == "function") {
+        return function(val) {
+            return check(val, param(), base_msg + param());
+        }
+    } else {
+        return function(val) {
+            return check(val, param, base_msg + param);
+        }
+    }
+}
+
 
 
 // TODO: at some point these should be moved to (or at least declared in) their respective modules
