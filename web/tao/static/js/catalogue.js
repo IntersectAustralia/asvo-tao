@@ -414,29 +414,6 @@ catalogue.util = function ($) {
     }
 
 
-    this.show_stellar_model_info = function (stellar_id) {
-        var data = catalogue.util.stellar_model(stellar_id);
-        $('div.stellar-model-info .name').html(data.fields.label);
-        $('div.stellar-model-info .details').html(data.fields.description);
-        $('div.stellar-model-info').show();
-        catalogue.util.fill_in_summary('sed', 'stellar_model_description', '<br>' + data.fields.description);
-        // $.ajax({
-        //     url: TAO_JSON_CTX + 'stellar_model/' + stellar_id,
-        //     dataType: "json",
-        //     error: function () {
-        //         $('div.stellar-model-info').hide();
-        //         alert("Couldn't get data for requested dust model");
-        //     },
-        //     success: function (data, status, xhr) {
-        //         $('div.stellar-model-info .name').html(data.fields.label);
-        //         $('div.stellar-model-info .details').html(data.fields.description);
-        //         $('div.stellar-model-info').show();
-        //         catalogue.util.fill_in_summary('sed', 'stellar_model_description', '<br>' + data.fields.description);
-        //     }
-        // });
-    };
-
-
     this.show_output_property_info = function (cache_item) {
         $('div.output-property-info .name').html(cache_item.text);
         $('div.output-property-info .details').html(cache_item.description);

@@ -52,7 +52,7 @@ var TwoSidedSelectWidget = function(elem_id, init_options, to_option) {
         }
 
         function filter_option(options) {
-            if (!filter) return option;
+            if (!filter()) return option;
             var tokens = filter().trim().toLowerCase().split(/\s+/);
             if (tokens.length == 0) return options;
             resp = [];
@@ -74,7 +74,7 @@ var TwoSidedSelectWidget = function(elem_id, init_options, to_option) {
 
         vm_side.options = ko.computed(function() {
             if (vm.has_groups()) return [];
-            if (!filter) return vm_side.options_raw();
+            if (!filter()) return vm_side.options_raw();
             var tokens = filter().trim().toLowerCase().split(/\s+/);
             if (tokens.length == 0) return vm_side.options_raw();
             resp = [];
@@ -87,7 +87,7 @@ var TwoSidedSelectWidget = function(elem_id, init_options, to_option) {
         });
 
         vm_side.option_groups = ko.computed(function(){
-            var tokens = filter? filter().trim().toLowerCase().split(/\s+/) : [];
+            var tokens = filter()? filter().trim().toLowerCase().split(/\s+/) : [];
 
             function filter1(option) {
                 if (tokens.length == 0
@@ -138,7 +138,7 @@ var TwoSidedSelectWidget = function(elem_id, init_options, to_option) {
     vm.filter = ko.observable('');
     vm.has_groups = ko.observable(has_groups(init_options['not_selected'].concat(init_options['selected'])));
     vm.from_side = a_side_vm(init_options['not_selected'], vm.filter);
-    vm.to_side = a_side_vm(init_options['selected'], false);
+    vm.to_side = a_side_vm(init_options['selected'], ko.observable(false));
     vm.clicked_option = ko.observable(undefined);
     vm.option_click = function (data) {
        vm.clicked_option(data.value);

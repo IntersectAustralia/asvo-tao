@@ -86,7 +86,7 @@
     </form>
 
     <script type="text/html" id="select_with_groups">
-            <!-- ko if: !has_groups -->
+            <!-- ko ifnot: has_groups -->
             <select multiple="multiple" data-bind="foreach: options, selectedOptions: options_selected">
                 <option data-bind="value: value, text: text, click: option_click" />
             </select>

@@ -144,11 +144,18 @@ class Form(BetterForm):
         super(Form, self).__init__(*args[1:], **kwargs)
 
         default_required = False
-        dust_models = [(x.id, x.label) for x in datasets.dust_models_objects()]
+        if self.is_bound:
+            sspm_choices = datasets.stellar_model_choices()
+            dust_models = [(x.id, x.label) for x in datasets.dust_models_objects()]
+        else:
+            sspm_choices = []
+            dust_models = []
 
         self.fields['apply_sed'] = forms.BooleanField(required=False, widget=forms.CheckboxInput(), label='Apply Spectral Energy Distribution')
-        self.fields['single_stellar_population_model'] = ChoiceFieldWithOtherAttrs(choices=datasets.stellar_model_choices(), required=default_required)
-        self.fields['band_pass_filters'] = bf_fields.forms.MultipleChoiceField(required=default_required, choices=datasets.band_pass_filters_enriched(), widget=TwoSidedSelectWidget)
+        self.fields['single_stellar_population_model'] = ChoiceFieldWithOtherAttrs(choices=sspm_choices, required=default_required)
+        self.fields['band_pass_filters'] = bf_fields.forms.MultipleChoiceField(required=default_required,
+                                choices=datasets.band_pass_filters_enriched(),
+                                widget=TwoSidedSelectWidget)
         self.fields['apply_dust'] = forms.BooleanField(required=default_required, widget=forms.CheckboxInput(attrs={'class': 'checkbox'}), label='Apply Dust')
         self.fields['select_dust_model'] = forms.ChoiceField(choices=dust_models, required=default_required, widget=forms.Select())
 
@@ -156,7 +163,11 @@ class Form(BetterForm):
             self.fields[field_name].semirequired = True
 
         self.fields['apply_sed'].widget.attrs['data-bind'] = 'checked: apply_sed'
-        # self.fields['band_pass_filters'].widget.attrs['ko_data'] = 'band_pass_filters'
+        self.fields['single_stellar_population_model'].widget.attrs['data-bind'] = 'options: stellar_models, value: stellar_model, optionsText: function(i) { return i.fields.label }'
+        self.fields['band_pass_filters'].widget.attrs['ko_data'] = 'bandpass_filters'
+        self.fields['band_pass_filters'].widget.attrs['data-bind'] = 'value: bandpass_filters'
+        self.fields['apply_dust'].widget.attrs['data-bind'] = 'checked: apply_dust'
+        self.fields['select_dust_model'].widget.attrs['data-bind'] = 'options: dust_models, value: dust_model, optionsText: function(i) { return i.fields.label }'
 
     def get_apply_sed(self):
         # use this to ensure a BoundField is returned
