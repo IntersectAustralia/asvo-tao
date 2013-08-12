@@ -460,7 +460,7 @@ catalogue.modules.light_cone = function ($) {
     this.format_redshift = format_redshift;
 
     var snapshot_id_to_redshift = function(snapshot_id) {
-        console.log(snapshot_id);
+        // console.log(snapshot_id);
         res = $.grep(TaoMetadata.Snapshot, function(elem, idx) { 
             return elem.pk == snapshot_id
         })[0].fields.redshift;
@@ -506,8 +506,6 @@ catalogue.modules.light_cone = function ($) {
         vm.number_of_light_cones = ko.observable(1);
             
         vm.dataset.subscribe(function(dataset) {
-            var objs = catalogue.util.output_choices(dataset.id);
-            console.log('output_properties := ' + objs.length + ' objects, id=' + dataset.id);
             vm.output_properties.new_options(objs);
         });
 
@@ -526,7 +524,6 @@ catalogue.modules.light_cone = function ($) {
                 lc_id('output_properties'),
                 {not_selected:catalogue.util.output_choices(vm.dataset().pk),selected:[]},
                 dataset_property_to_option);
-
         vm.current_output_property = ko.observable(undefined);
         vm.output_properties.clicked_option.subscribe(function(v) {
             var op = catalogue.util.dataset_property(v);
