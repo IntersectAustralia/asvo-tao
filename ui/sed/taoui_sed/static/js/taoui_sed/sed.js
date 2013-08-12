@@ -259,7 +259,7 @@ catalogue.modules.sed = function ($) {
 
     this.job_parameters = function() {
     	// Dummy values until Value Model has been completed
-    	var apply_sed = true;
+    	var apply_sed = vm.apply_sed();
     	var params = {
     		'sed-apply_sed': [apply_sed]
     	};

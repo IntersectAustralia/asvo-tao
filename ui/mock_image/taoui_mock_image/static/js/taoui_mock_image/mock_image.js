@@ -376,12 +376,32 @@ catalogue.modules.mock_image = function ($) {
     this.pre_submit = function ($form) {}
 
     this.job_parameters = function() {
-    	var params = {
-    		// Use dummy values until the Value Models are in place
-    		'mock_image-MAX_NUM_FORMS': ['1000'],
-    		'mock_image-TOTAL_FORMS': ['0'],
-    		'mock_image-INITIAL_FORMS': ['0']
-    	}
+		var max_allowed_images = 1000;
+		var image_params;
+		var params = {};
+		var param_names = ['format', 'fov_dec', 'fov_ra', 'height', 'mag_field',
+		    'min_mag', 'origin_dec', 'origin_ra', 'sub_cone', 'width',
+		    'z_max', 'z_min'];
+		debugger;
+		params['mock_image-MAX_NUM_FORMS'] = [max_allowed_images];
+		params['mock_image-INITIAL_FORMS'] = [0];
+		if (vm.apply_mock_image()) {
+			image_params = vm.image_settings();
+			// Assume that we haven't exceeded the max_allowed_images
+			// (which should be checked as part of wizard validation)
+			for (var i=0; i<image_params.length; i++) {
+				var current_image = image_params[i];
+				var key_prefix = 'mock_image-'+ i + '-';
+
+				for (var j=0; j<param_names.length; j++) {
+					pn = param_names[j];
+					params[key_prefix + pn] = [current_image[pn]];
+				}
+			}
+			params['mock_image-TOTAL_FORMS']  = [image_params.length];
+		} else {
+	    	params['mock_image-TOTAL_FORMS'] = [0];
+		}
     	return params;
     }
 
@@ -446,8 +466,9 @@ catalogue.modules.mock_image = function ($) {
 
         vm.format_options = [
                 {value:'FITS', text:'FITS'},
-                {value:'PNG', text:'PNG'},
-                {value:'JPEG', text:'JPEG'}
+                // png and jpg formats aren't working yet
+                // {value:'PNG', text:'PNG'},
+                // {value:'JPEG', text:'JPEG'}
             ];
 
         vm.apply_mock_image = ko.observable(false);
