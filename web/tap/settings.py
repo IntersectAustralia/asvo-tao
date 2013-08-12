@@ -1,3 +1,4 @@
+import os
 from tao import models
 
 TAP_IS_AVAILABLE = 'true'
@@ -48,5 +49,5 @@ class JOB_STATUS(dict):
         else:
             return dict.__getitem__(self,key)
             
-# Initialize statuses to use later below 
 UWS_JOB_STATUS = JOB_STATUS(uws_statuses)
+
