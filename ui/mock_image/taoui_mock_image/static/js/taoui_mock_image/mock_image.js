@@ -419,8 +419,7 @@ catalogue.modules.mock_image = function ($) {
                 // TODO, should link to SED
                 return catalogue.util.bandpass_filters();
             });
-            image_params.mag_field = ko.observable()
-                .extend({validate: catalogue.validators.is_float});
+            image_params.mag_field = ko.observable();
             image_params.fov_ra = ko.observable(catalogue.modules.light_cone.vm.ra_opening_angle());
             image_params.fov_dec = ko.observable(catalogue.modules.light_cone.vm.dec_opening_angle());
             image_params.width = ko.observable(1024)
@@ -453,7 +452,9 @@ catalogue.modules.mock_image = function ($) {
                 .extend({validate: catalogue.validators.greater_than(
                     image_params.z_min
                 )});
-            image_params.origin_ra = ko.observable(catalogue.modules.light_cone.vm.ra_opening_angle()/2)
+            image_params.origin_ra = ko.observable(
+                    def(catalogue.modules.light_cone.vm.ra_opening_angle()) ?
+                    catalogue.modules.light_cone.vm.ra_opening_angle()/2 : '')
                 .extend({validate: catalogue.validators.is_float})
                 .extend({validate: catalogue.validators.test(
                     ko.computed(function(){
@@ -473,7 +474,9 @@ catalogue.modules.mock_image = function ($) {
                     }),
                     "Origin and field-of-view RAs are below cone minimum."
                 )});
-            image_params.origin_dec = ko.observable(catalogue.modules.light_cone.vm.ra_opening_angle()/2)
+            image_params.origin_dec = ko.observable(
+                    def(catalogue.modules.light_cone.vm.ra_opening_angle()) ?
+                        catalogue.modules.light_cone.vm.ra_opening_angle()/2 : '')
                 .extend({validate: catalogue.validators.is_float})
                 .extend({validate: catalogue.validators.test(
                     ko.computed(function(){
