@@ -302,77 +302,10 @@ catalogue.modules.light_cone = function ($) {
         });
 
 
-        // $(lc_id('galaxy_model')).change(function (evt) {
-        //     var $this = $(this);
-        //     var galaxy_model_id = $this.find(':selected').attr('data-galaxy_model_id');
-        //     var use_default = !bound;
-        //     if (use_default) {
-        //         if (vm.catalogue_geometry() == "box") {
-        //             var simulation_box_size = $(lc_id('number_of_light_cones')).data("simulation-box-size");
-        //             $(lc_id('box_size')).val(simulation_box_size);
-        //             $(lc_id('box_size')).change();
-        //         }
-        //     }
-        // });
-
-//        $(lc_id('redshift_min') + ', ' + lc_id('redshift_max')).change(function (evt) {
-//            calculate_max_number_of_cones();
-//        });
-
-
-//        $(lc_id('light_cone_type_0') + ', ' + lc_id('light_cone_type_1')).click(function (evt) {
-//            calculate_max_number_of_cones();
-//        });
-
-
-        // $(lc_id('number_of_light_cones')).spinner({
-        //     spin: function (evt, ui) {
-        //         return spinner_check_value(ui.value);
-        //     },
-        //     min: 1
-        // });
-
-
         $(lc_id('number_of_light_cones')).change(function () {
             var new_value = parseInt($(this).val());
             return spinner_check_value(new_value);
         });
-
-
-       // $(lc_id('box_size')).change(function (evt) {
-       //     var $this = $(this);
-       //     var box_size_value = parseFloat($this.val());
-       //     var max_box_size = parseFloat($(lc_id('number_of_light_cones')).data("simulation-box-size"));
-       //     if ($this.val() != "" && isNaN(box_size_value)) {
-       //         catalogue.util.show_error($(lc_id('box_size')), 'Box size must be a number');
-       //         return false;
-       //     }
-       //     if (!isNaN(max_box_size) && parseFloat(box_size_value) > parseFloat(max_box_size)) {
-       //         catalogue.util.show_error($(lc_id('box_size')), 'Box size greater than simulation\'s box size');
-       //         return false;
-       //     }
-       //     catalogue.util.show_error($(lc_id('box_size')), null);
-       // });
-
-
-//        $(lc_id('ra_opening_angle') + ', ' + lc_id('dec_opening_angle') + ', ' + lc_id('redshift_max')).change(function(evt) {
-//            var box_size = parseFloat($(lc_id('number_of_light_cones')).data("simulation-box-size")); //window.simulation_box_size;   // size of the simulation box
-//            var min_ra = 0.0;                                                               // minimum right-ascension in degrees
-//            var max_ra = vm.ra_opening_angle();                                // maximum right-ascension in degrees
-//            var min_dec = 0.0;                                                              // minimum declination in degrees
-//            var max_dec = $(lc_id('dec_opening_angle')).val();                              // maximum declination in degrees
-//            var max_z = $(lc_id('redshift_max')).val();                                     // maximum redshift
-//
-//            if (max_ra != '' && max_dec != '' && max_z != '') {
-//                try {
-//                    var num_boxes = count_boxes(box_size, min_ra, max_ra, min_dec, max_dec, max_z);
-//                    check_number_of_boxes(num_boxes);
-//                } catch (err) {
-//                    $('#max_job_size').addClass('job_too_large_error');
-//                    $('#max_job_size').text('Estimated job size: invalid parameters, please adjust RA, Dec, redshift min or max');
-//                }
-//            }
-//        });
 
     }
 
@@ -511,10 +444,33 @@ catalogue.modules.light_cone = function ($) {
             vm.output_properties.new_options(objs);
         });
 
-        vm.ra_opening_angle = ko.observable();
-        vm.dec_opening_angle = ko.observable();
+        vm.ra_opening_angle = ko.observable()
+            .extend({validate: catalogue.validators.is_float})
+            .extend({validate: catalogue.validators.geq(0)})
+            .extend({validate: catalogue.validators.leq(90)});
 
-        vm.box_size = ko.observable(vm.dark_matter_simulation().fields.box_size);
+        vm.dec_opening_angle = ko.observable()
+            .extend({validate: catalogue.validators.is_float})
+            .extend({validate: catalogue.validators.geq(0)})
+            .extend({validate: catalogue.validators.leq(90)});
+
+        vm.redshift_min = ko.observable()
+            .extend({validate: catalogue.validators.is_float})
+            .extend({validate: catalogue.validators.geq(0)});
+
+        vm.redshift_max = ko.observable()
+            .extend({validate: catalogue.validators.is_float})
+            .extend({validate: catalogue.validators.geq(vm.redshift_min)});
+
+        vm.max_box_size = ko.computed(function() {
+            return vm.dark_matter_simulation().fields.box_size
+        });
+
+        vm.box_size = ko.observable(vm.max_box_size())
+            .extend({validate: catalogue.validators.is_float})
+            .extend({validate: catalogue.validators.geq(0)})
+            // .extend({validate: catalogue.validators.leq(vm.max_box_size)});
+            .extend({validate: catalogue.validators.leq(vm.max_box_size)});
 
         vm.snapshots = ko.computed(function (){ 
             return catalogue.util.snapshots(vm.dataset().pk)
@@ -531,10 +487,7 @@ catalogue.modules.light_cone = function ($) {
             var op = catalogue.util.dataset_property(v);
             vm.current_output_property(op);
         });
-        //
 
-        vm.redshift_min = ko.observable();
-        vm.redshift_max = ko.observable();
 
         // Computed Human-Readable Summary Fields
         vm.estimated_cone_size = ko.computed(calculate_job_size);
@@ -605,57 +558,6 @@ catalogue.modules.light_cone = function ($) {
             return result;
         });
 
-        // Create Event Handlers
-
-        vm.check_input_box_size = function() {
-            var error = null;
-            if (isNaN(vm.box_size())) {
-                error = 'Box size must be a number';
-            } else if (vm.box_size() > vm.dark_matter_simulation().fields.box_size) {
-                error = 'Box size greater than simulation\'s box size';
-            }
-            catalogue.util.show_error($(lc_id('box_size')), error);
-        }
-
-        vm.check_input_ra_dec = function(field) {
-            var data = field == 'RA' ? vm.ra_opening_angle : vm.dec_opening_angle;
-            var error = null;
-            if (data() != undefined && /\S/.test(data())) {
-                if (isNaN(data())) {
-                    error = field + ' must be a number';
-                } else if (data() < 0 || data() > 90) {
-                    error = field + ' must be between 0 and 90 inclusive'
-                }
-            }
-            var $elem = field == 'RA' ? $(lc_id('ra_opening_angle')) : $(lc_id('dec_opening_angle'));
-            catalogue.util.show_error($elem, error);
-        }
-
-        vm.check_input_redshift_min = function() {
-            var error = null;
-            var value = vm.redshift_min();
-            if (value != undefined && /\S/.test(value)) {
-                if (isNaN(value)) {
-                    error = 'Redshift min must be a number';
-                } else if (value < 0){
-                    error = 'Redshift min must be a greater than or equal to 0';
-                }
-            }
-            catalogue.util.show_error($(lc_id('redshift_min')), error);
-        }
-
-        vm.check_input_redshift_max = function() {
-            var error = null;
-            var value = vm.redshift_max();
-            if (value != undefined && /\S/.test(value)) {
-                if (isNaN(value)) {
-                    error = 'Redshift max must be a number';
-                } else if (value < vm.redshift_min()){
-                    error = 'Redshift max must be a greater than Redshift min';
-                }
-            }
-            catalogue.util.show_error($(lc_id('redshift_max')), error);
-        }
         // NOTE: This is a bit nasty because we're mixing jQuery widgets
         // with knouckout observables, but it works.
 
