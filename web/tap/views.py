@@ -11,11 +11,11 @@ from tao import models
 
 def tap(request):
     
-    return render(request, 'tap.html', {})
+    return render(request, 'tap/tap.html', {})
 
 def capabilities(request):
     
-    return render(request, 'capabilities.xml', 
+    return render(request, 'tap/capabilities.xml', 
                   {'baseUrl':           request.build_absolute_uri("/tap"), 
                    'languages':         TAP_LANGUAGES,
                    'formats':           TAP_FORMATS,
@@ -25,7 +25,7 @@ def capabilities(request):
                    'capabilities':      TAP_CAPABILITIES})
 
 def availability(request):
-    return render(request, 'availability.xml', 
+    return render(request, 'tap/availability.xml', 
                   {'available': TAP_IS_AVAILABLE, 'note': TAP_AVAILABILITY_NOTE})
 
 def tables(request):
@@ -36,12 +36,12 @@ def tables(request):
         properties = models.DataSetProperty.objects.filter(dataset_id = dataset.id, 
             is_output = True).order_by('group', 'order', 'label')
         dataset_properties.append({"name": dataset.database, "properties": properties})
-    return render(request, 'tables.xml', 
+    return render(request, 'tap/tables.xml', 
                   {'datasets': dataset_properties, 'data_types': data_types})
 
 def query(request):
     
-    return render(request, 'query.html', {})
+    return render(request, 'tap/query.html', {})
 
 @csrf_exempt
 @http_auth_required
@@ -91,7 +91,7 @@ def job(request, id):
         print 'DELETE'
     
     resultsURL = "%s/%d/results" % (request.build_absolute_uri("/tap/async"), job.id)
-    return render(request, 'uws-job.xml', {'job': job, 
+    return render(request, 'tap/uws-job.xml', {'job': job, 
                                                'status': UWS_JOB_STATUS[job.status], 
                                                'resultsURL': resultsURL,
                                                'duration': execution_duration})
@@ -106,26 +106,26 @@ def phase(request, id):
     if 'get' not in request.GET:
         return UWSRedirect(request, job.id, '/phase?get')
     else:
-        return render(request, 'async-response.html', 
+        return render(request, 'tap/http_response.html', 
                       {'message': UWS_JOB_STATUS[job.status]})
 
 @csrf_exempt
 @http_auth_required
 def quote(request, id):
     
-    return render(request, 'async-response.html', {'message': id})
+    return render(request, 'tap/http_response.html', {'message': id})
 
 @csrf_exempt
 @http_auth_required
 def termination(request, id):
     print 'DELETE'
-    return render(request, 'async-response.html', {'message': 'TERMINATED'})
+    return render(request, 'tap/http_response.html', {'message': 'TERMINATED'})
 
 @csrf_exempt
 @http_auth_required
 def destruction(request, id):
     print 'DELETE'
-    return render(request, 'async-response.html', {'message': 'DESTRUCTED'})
+    return render(request, 'tap/http_response.html', {'message': 'DESTRUCTED'})
 
 @csrf_exempt
 @http_auth_required
@@ -134,7 +134,7 @@ def error(request, id):
     if job is None:
         return HttpResponseBadRequest('Wrong URL')
     
-    return render(request, 'async-response.html', {'message': job.error_message})
+    return render(request, 'tap/http_response.html', {'message': job.error_message})
 
 @csrf_exempt
 @http_auth_required
@@ -143,7 +143,7 @@ def params(request, id):
     if job is None:
         return HttpResponseBadRequest('Wrong URL')
     
-    return render(request, 'async-response.html', {'message': job.parameters})
+    return render(request, 'tap/http_response.html', {'message': job.parameters})
 
 @csrf_exempt
 @http_auth_required
@@ -152,13 +152,13 @@ def results(request, id):
     if job is None:
         return HttpResponseBadRequest('Wrong URL')
     
-    return render(request, 'results.html', {'files': job.files})
+    return render(request, 'tap/results.html', {'files': job.files})
 
 @csrf_exempt
 @http_auth_required
 def result(request, id):
     
-    return render(request, 'async-response.html', {'message': id})
+    return render(request, 'tap/http_response.html', {'message': id})
 
 @csrf_exempt
 @http_auth_required
@@ -167,7 +167,7 @@ def owner(request, id):
     if job is None:
         return HttpResponseBadRequest('Wrong URL')
     
-    return render(request, 'async-response.html', {'message': job.username})
+    return render(request, 'tap/http_response.html', {'message': job.username})
 
 @csrf_exempt
 @http_auth_required
@@ -176,7 +176,7 @@ def executionduration(request, id):
     if job is None:
         return HttpResponseBadRequest('Wrong URL')
     
-    return render(request, 'async-response.html', {'message': EXECUTION_DURATION})
+    return render(request, 'tap/http_response.html', {'message': EXECUTION_DURATION})
 
 def make_parameters_xml(request):
     
