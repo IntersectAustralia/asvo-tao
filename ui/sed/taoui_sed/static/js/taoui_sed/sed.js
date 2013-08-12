@@ -263,6 +263,12 @@ catalogue.modules.sed = function ($) {
     }
 
     this.init_model = function () {
+
+        var vm = {}
+        this.vm = vm
+
+        vm.apply_sed = ko.observable(false);
+
         this.sed_band_pass_filters_widget = TwoSidedSelectWidget(sed_id('band_pass_filters'),
             {'selected':[],'not_selected':[]}, band_pass_filter_to_option);
         this.sed_band_pass_filters_widget.init();
@@ -282,7 +288,7 @@ catalogue.modules.sed = function ($) {
             display_band_pass_filters_summary()
         }, 1000);
 
-        return {};
+        return vm;
 
     }
 

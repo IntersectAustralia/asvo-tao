@@ -155,6 +155,7 @@ class Form(BetterForm):
         for field_name in Form.SED_REQUIRED_FIELDS:
             self.fields[field_name].semirequired = True
 
+        self.fields['apply_sed'].widget.attrs['data-bind'] = 'checked: apply_sed'
         # self.fields['band_pass_filters'].widget.attrs['ko_data'] = 'band_pass_filters'
 
     def get_apply_sed(self):

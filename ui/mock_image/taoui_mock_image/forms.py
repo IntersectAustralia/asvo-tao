@@ -104,12 +104,25 @@ class SingleForm(BetterForm):
         self.fields['width'] = forms.IntegerField(label=_('Image width in pixels:'), required=True)
         self.fields['height'] = forms.IntegerField(label=_('Image height in pixels:'), required=True)
 
+        self.fields['sub_cone'].widget.attrs['data-bind'] = "value: sub_cone, options: $parent.sub_cone_options, optionsText: 'text'"
+        self.fields['format'].widget.attrs['data-bind'] = "value: format, options: $parent.format_options, optionsText: 'text'"
+        self.fields['mag_field'].widget.attrs['data-bind'] = "value: mag_field, options: mag_field_options, optionsText: '$data.fields.label' "
+        self.fields['min_mag'].widget.attrs['data-bind'] = 'value: min_mag'
+        self.fields['z_min'].widget.attrs['data-bind'] = 'value: z_min'
+        self.fields['z_max'].widget.attrs['data-bind'] = 'value: z_max'
+        self.fields['origin_ra'].widget.attrs['data-bind'] = 'value: origin_ra'
+        self.fields['origin_dec'].widget.attrs['data-bind'] = 'value: origin_dec'
+        self.fields['fov_ra'].widget.attrs['data-bind'] = 'value: fov_ra'
+        self.fields['fov_dec'].widget.attrs['data-bind'] = 'value: fov_dec'
+        self.fields['width'].widget.attrs['data-bind'] = 'value: width'
+        self.fields['height'].widget.attrs['data-bind'] = 'value: height'
+
+
     def full_clean(self):
 
         # Update the choices before continuing.
         self.fields['sub_cone'].choices.append(('ALL', 'ALL'))
         self.fields['mag_field'].choices.append(('test', 'test')) # TODO: Remove.
-
         return super(SingleForm, self).full_clean()
 
 # Define a formset.
