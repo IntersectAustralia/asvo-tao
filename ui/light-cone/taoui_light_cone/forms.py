@@ -236,11 +236,8 @@ class Form(BetterForm):
         self.fields['snapshot'].widget.attrs['data-bind'] = 'foreach: snapshots, value: snapshot'
         self.fields['redshift_min'].widget.attrs['data-bind'] = 'value: redshift_min'
         self.fields['redshift_max'].widget.attrs['data-bind'] = 'value: redshift_max'
-
-        
-        # self.fields['light_cone_type'].widget.attrs['data-bind'] = 'checked: light_cone_type, event: { change: toggle_light_conne_spinner() }'
         self.fields['light_cone_type'].widget.attrs['data-bind'] = 'checked: light_cone_type'
-        self.fields['number_of_light_cones'].widget.attrs['data-bind'] = 'value: number_of_light_cones'
+        self.fields['number_of_light_cones'].widget.attrs['data-bind'] = 'spinner: number_of_light_cones, spinnerOptions: {min: 1, max: get_number_of_unique_light_cones}'
         self.fields['output_properties'].widget.attrs['data-bind'] = 'value: output_properties'
 
 

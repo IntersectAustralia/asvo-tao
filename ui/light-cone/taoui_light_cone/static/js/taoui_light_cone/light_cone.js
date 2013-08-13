@@ -462,19 +462,24 @@ catalogue.modules.light_cone = function ($) {
         // NOTE: This is a bit nasty because we're mixing jQuery widgets
         // with knouckout observables, but it works.
 
-        $(lc_id('number_of_light_cones')).spinner({
-            spin: function (evt, ui) {
-                return spinner_check_value(ui.value);
-            },
-            min: 1
-        });
+//        $(lc_id('number_of_light_cones')).spinner({
+//            spin: function (evt, ui) {
+//                // return spinner_check_value(ui.value);
+//                vm.number_of_light_cones(parseInt(ui.value));
+//                if (vm.number_of_light_cones.hasErrors()) {
+//                    return false;
+//                }
+//                return true;
+//            },
+//            min: 1
+//        });
 
-        vm.toggle_light_conne_spinner = ko.computed(function() {
+        vm.toggle_light_cone_spinner = ko.computed(function() {
             result = false
             if (vm.light_cone_type() == 'unique') {
-                $(lc_id('number_of_light_cones')).spinner("disable");
+                // $(lc_id('number_of_light_cones')).spinner("disable");
             } else {
-                $(lc_id('number_of_light_cones')).spinner("enable");
+                // $(lc_id('number_of_light_cones')).spinner("enable");
                 result = true;
             }
             return result;

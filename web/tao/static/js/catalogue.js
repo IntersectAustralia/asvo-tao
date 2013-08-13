@@ -673,6 +673,46 @@ jQuery(document).ready(function ($) {
     }
     }
 
+    ko.bindingHandlers.spinner = {
+        init: function(element, valueAccessor, allBindingsAccessor) {
+            //initialize datepicker with some optional options
+            var options = ko.computed(function(){
+                var resp = allBindingsAccessor().spinnerOptions;
+                var min_v = typeof (resp.min || undefined) == 'function' ? resp.min() : (resp.min || NaN);
+                var max_v = typeof (resp.max || undefined) == 'function' ? resp.max() : (resp.max || NaN);
+                return {min: min_v, max: max_v, disabled: !isNaN(min_v) && !isNaN(max_v) && min_v > max_v};
+            });
+
+            $(element).spinner(options());
+
+            //handle the field changing
+            ko.utils.registerEventHandler(element, "change", function () {
+                var observable = valueAccessor();
+                observable($(element).spinner("value"));
+            });
+
+            var subscription = options.subscribe(function(newOptions) {
+                $(element).spinner(newOptions);
+            });
+
+            //handle disposal (if KO removes by the template binding)
+            ko.utils.domNodeDisposal.addDisposeCallback(element, function() {
+                $(element).spinner("destroy");
+                subscription.dispose();
+            });
+
+        },
+        update: function(element, valueAccessor) {
+            var value = ko.utils.unwrapObservable(valueAccessor());
+
+            current = $(element).spinner("value");
+            if (value !== current) {
+                $(element).spinner("value", value);
+            }
+        }
+    };
+
+
     catalogue.vm = {}
 
     function initialise_modules() {
