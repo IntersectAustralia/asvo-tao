@@ -116,8 +116,7 @@ catalogue.modules.mock_image = function ($) {
             image_params.sub_cone = ko.observable(vm.sub_cone_options()[0]);
             image_params.format = ko.observable(vm.format_options[0]);
             image_params.mag_field_options = ko.computed(function(){
-                // TODO, should link to SED
-                return catalogue.util.bandpass_filters();
+                return catalogue.modules.sed.vm.bandpass_filters.to_side.options();
             });
             image_params.mag_field = ko.observable();
             image_params.fov_ra = ko.observable(catalogue.modules.light_cone.vm.ra_opening_angle());
@@ -201,7 +200,8 @@ catalogue.modules.mock_image = function ($) {
 
         vm.can_have_images = ko.computed(function(){
             return catalogue.modules.sed.vm.apply_sed() &&
-                catalogue.modules.light_cone.vm.catalogue_geometry().id == 'light-cone';
+                catalogue.modules.light_cone.vm.catalogue_geometry().id == 'light-cone' &&
+                catalogue.modules.sed.vm.bandpass_filters.to_side.options().length > 0;
         });
 
         vm.sub_cone_options = ko.computed(function(){
