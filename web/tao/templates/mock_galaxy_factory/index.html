@@ -46,7 +46,7 @@
             {% for form in forms %}
                 <div id="tabs-{{ forloop.counter }}" class="tao-tab"
                      tao-number="{{ forloop.counter }}"
-                     data-bind="blah: console.log('BINDING EDIT: {{ form.prefix }}'), bluh: console.log($data.{{ form.prefix }}), with: {{ form.prefix }}">
+                     data-bind="with: {{ form.prefix }}">
 
                     {% if forloop.counter > 1 %}
                         <input type="button" value="Next &gt;" class="btn tao-next" />
@@ -69,9 +69,10 @@
                 <input type="button" value="&lt; Previous" class="btn tao-prev" style="float: left;" />
                 <legend></legend>
                 <div class="row-fluid">
-                    <textarea name="job-description" placeholder="My description (optional)" style="width: 500px; height: 150px;"></textarea>
+                    <textarea name="job-description" placeholder="My description (optional)" style="width: 500px; height: 150px;"
+                    		data-bind="value: description"></textarea>
                     {% for form in forms %}
-                    <div data-bind="blah: console.log('BINDING SUMMARY: {{ form.prefix }}'), bluh: console.log($data.{{ form.prefix }}), with: {{ form.prefix }}">
+                    <div data-bind="with: {{ form.prefix }}">
                         {% include form.SUMMARY_TEMPLATE %}
                     </div>
                     {% endfor %}

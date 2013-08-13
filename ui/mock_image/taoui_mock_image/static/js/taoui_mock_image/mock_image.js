@@ -82,10 +82,11 @@ catalogue.modules.mock_image = function ($) {
 		var max_allowed_images = 1000;
 		var image_params;
 		var params = {};
-		var param_names = ['format', 'fov_dec', 'fov_ra', 'height', 'mag_field',
-		    'min_mag', 'origin_dec', 'origin_ra', 'sub_cone', 'width',
+		var param_names = ['fov_dec', 'fov_ra', 'height',
+		    'min_mag', 'origin_dec', 'origin_ra', 'width',
 		    'z_max', 'z_min'];
 
+		params['mock_image-apply_mock_image'] = [vm.apply_mock_image()];
 		params['mock_image-MAX_NUM_FORMS'] = [max_allowed_images];
 		params['mock_image-INITIAL_FORMS'] = [0];
 		if (vm.apply_mock_image()) {
@@ -97,9 +98,12 @@ catalogue.modules.mock_image = function ($) {
 				var key_prefix = 'mock_image-'+ i + '-';
 
 				for (var j=0; j<param_names.length; j++) {
-					pn = param_names[j];
+					var pn = param_names[j];
 					params[key_prefix + pn] = [current_image[pn]];
 				}
+				params[key_prefix + 'format'] = [current_image['format']().value];
+				params[key_prefix + 'mag_field'] = [current_image['mag_field']().value];
+				params[key_prefix + 'sub_cone'] = [current_image['sub_cone']().value];
 			}
 			params['mock_image-TOTAL_FORMS']  = [image_params.length];
 		} else {
@@ -153,7 +157,8 @@ catalogue.modules.mock_image = function ($) {
                 )});
             image_params.origin_ra = ko.observable(
                     def(catalogue.modules.light_cone.vm.ra_opening_angle()) ?
-                    catalogue.modules.light_cone.vm.ra_opening_angle()/2 : '')
+                    catalogue.modules.light_cone.vm.ra_opening_angle()/2 : '');
+            image_params.origin_ra
                 .extend({validate: catalogue.validators.is_float})
                 .extend({validate: catalogue.validators.test(
                     ko.computed(function(){
@@ -175,7 +180,8 @@ catalogue.modules.mock_image = function ($) {
                 )});
             image_params.origin_dec = ko.observable(
                     def(catalogue.modules.light_cone.vm.ra_opening_angle()) ?
-                        catalogue.modules.light_cone.vm.ra_opening_angle()/2 : '')
+                        catalogue.modules.light_cone.vm.ra_opening_angle()/2 : '');
+            image_params.origin_dec
                 .extend({validate: catalogue.validators.is_float})
                 .extend({validate: catalogue.validators.test(
                     ko.computed(function(){
