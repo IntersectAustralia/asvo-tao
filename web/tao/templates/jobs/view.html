@@ -25,17 +25,26 @@ the forms being hidden and all.
 
 {% block content %}
     <div>
-        <h1>Viewing Job {{ job.id }}</h1>
+        <h1>Viewing Job {{ job.id }} (owned by {{ job.user.display_name }})</h1>
         <div>
-{#        Maybe need this for QA testing at some stage #}
-{#            <div>#}
-{#                <strong>Parameters</strong>#}
-{#                <span>#}
-{#                    {{ job.parameters|linebreaks }}#}
-{#                </span>#}
-{#            </div>#}
-
-                <strong>Optional Description:</strong>
+            {% if job.status == 'SUBMITTED' or job.status == 'QUEUED' or job.status == 'IN_PROGRESS' %}
+                <a class="btn btn-primary" href="{% url 'stop_job' job.id %}" style="color: #ffffff" id='id-job_stop'><b>Stop</b></a>
+            {% else %}
+                <button type="button" class="btn btn-primary" id='id-job_stop' disabled>Stop</button>
+            {% endif %}
+            {% if job.status == 'COMPLETED' or job.status == 'ERROR' %}
+                <a class="btn btn-primary" href="{% url 'rerun_job' job.id %}" style="color: #ffffff" id='id-job_rerun'><b>Re-Run</b></a>
+            {% else %}
+                <button type="button" class="btn btn-primary" id='id-job_rerun' disabled>Re-Run</button>
+            {% endif %}
+            {% if job.status == 'HELD' %}
+                <a class="btn btn-primary" href="{% url 'release_job' job.id %}" style="color: #ffffff" id='id-job_release'><b>Release</b></a>
+            {% else %}
+                <button type="button" class="btn btn-primary" id='id-job_release' disabled>Release</button>
+            {% endif %}
+        </div>
+        <div>
+            <strong>Optional Description:</strong>
             <div id="inlineedit">
                 <div contenteditable id="id-job_description" data-name="job-description">
                     <em>{{ job.description }} </em>
