@@ -97,15 +97,21 @@ class RecordFilterForm(BetterForm):
         else:
             choices = [] # [('X-' + NO_FILTER, 'No Filter')]
         if is_int:
-            args = {'required': False,  'decimal_places': 0, 'max_digits': 20, 'widget': forms.TextInput(attrs={'maxlength': '20'})}
+            args = {'required': False,  'decimal_places': 0, 'max_digits': 20}
             val_class = forms.DecimalField
         else:
-            args = {'required': False,  'widget': forms.TextInput(attrs={'maxlength': '20'})}
+            args = {'required': False}
             val_class = forms.FloatField
+
         self.fields['filter'] = forms.ChoiceField(required=True, choices=choices)
-        self.fields['max'] = val_class(**dict(args.items()+{'label':_('Max'),}.items()))
-        self.fields['min'] = val_class(**dict(args.items()+{'label':_('Min'),}.items()))
+        self.fields['max'] = val_class(**dict(args.items()+{'label':_('Max'), 'widget': forms.TextInput(attrs={'maxlength': '20'})}.items()))
+        self.fields['min'] = val_class(**dict(args.items()+{'label':_('Min'), 'widget': forms.TextInput(attrs={'maxlength': '20'})}.items()))
         self.fields['filter'].label = 'Select by ...'
+
+        self.fields['filter'].widget.attrs['data-bind'] = 'options: selections, value: selection, optionsText: function(i) { return i.label }'
+        self.fields['min'].widget.attrs['data-bind'] = 'value: selection_min'
+        self.fields['max'].widget.attrs['data-bind'] = 'value: selection_max'
+
 
     def check_min_or_max_or_both(self):
         if 'filter' not in self.cleaned_data:

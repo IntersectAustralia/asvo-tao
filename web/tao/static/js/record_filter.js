@@ -4,10 +4,9 @@ catalogue.modules = catalogue.modules || {};
 
 catalogue.modules.record_filter = function ($) {
 
-    function me() {
-        return catalogue.modules.record_filter;
-    }
-
+    // KO ViewModel
+    var vm = {}
+    this.vm = vm;
 
     var fill_in_selection_in_summary = function () {
         var filter_min = $(rf_id('min')).val();
@@ -181,6 +180,8 @@ catalogue.modules.record_filter = function ($) {
     this.update_filter_options.bandpass_props = false;
 
 
+    // To be converted to ko architecture
+    // Not called currently
     var validate_min_max = function () {
 
         var min = $(rf_id('min')).val();
@@ -211,17 +212,11 @@ catalogue.modules.record_filter = function ($) {
 
 
     this.cleanup_fields = function ($form) {
-        // cleanup record filter
-        var filter = $(rf_id('filter')).val();
-        if (filter == item_to_value(TAO_NO_FILTER)) {
-            $(rf_id('min')).val('');
-            $(rf_id('max')).val('');
-        }
     }
 
 
     this.validate = function ($form) {
-        return validate_min_max();
+    	return true;
     }
 
 
@@ -229,18 +224,137 @@ catalogue.modules.record_filter = function ($) {
 
     this.job_parameters = function() {
     	var params = {
-    		// Use dummy value until Value Models are in place
-    		'record_filter-filter': ['D-1'],
-    		'record_filter-min': ['0.31'],
-    		'record_filter-max': ['']
+    		'record_filter-filter': [vm.selection().value],
+    		'record_filter-min': [vm.selection_min()],
+    		'record_filter-max': [vm.selection_max()]
     	}
     	return params;
     }
 
+    this.filter_choices = function () {
+    	// Build up the list of fields that the user can filter records on:
+    	// * Selected output properties with is_filter true
+    	// * Selected bandpass filters
+    	// * The dataset default filter
+    	// Note that a filter selection is required, i.e.
+    	// the No Filter options has been removed
+    	var result = [];
+    	var default_filter_pk, default_filter;
+    	var output_properties;
+    	var bandpass_filters;
+    	var oppks;
+
+    	// Get the default filter
+    	default_filter_pk = catalogue.modules.light_cone.vm.dataset().fields.default_filter_field;
+    	default_filter = catalogue.util.dataset_property(default_filter_pk);
+    	result.push({
+    		value: 'D-'+default_filter_pk,
+    		label: default_filter.fields.label+' ('+default_filter.fields.units+')'
+    		});
+
+    	// Get the selected output properties with is_filter==true
+    	output_properties = catalogue.modules.light_cone.vm.output_properties.to_side.options_raw();
+    	for (var i=0; i<output_properties.length; i++) {
+    		var output_property_entry = output_properties[i];
+    		var output_property = catalogue.util.dataset_property(output_property_entry.value);
+    		if (output_property.pk == default_filter.pk) {
+    			continue; // It's already been added above
+    		}
+    		if (output_property.fields.is_filter) {
+    			result.push({
+    				value: 'D-'+output_property.pk,
+    				label: output_property.fields.label+' ('+output_property.fields.units+')'
+    			});
+    		}
+    	}
+
+    	// Get the selected bandpass filters
+    	bandpass_filters = catalogue.modules.sed.vm.bandpass_filters.to_side.options_raw();
+    	for (var i=0; i<bandpass_filters.length; i++) {
+    		var bandpass_filter = bandpass_filters[i];
+    		
+			result.push({
+				value: 'B-'+bandpass_filter.value,
+				label: bandpass_filter.text
+			});
+    	}
+
+
+    	return result;
+    }
+    
+    this.update_selections = function() {
+    	// Update the selections and handle selection
+    	var old_selection;
+    	var new_selections;
+    	var new_selection;
+    	var found = false;
+    	
+    	old_selection = vm.selection();
+    	new_selections = this.filter_choices();
+    	// Default is to use first available selection
+    	// This should be the dataset default selection,
+    	// as set in filter_choices()
+		new_selection = new_selections[0];
+    	// There has to be a better way to do this...
+		// If there is an existing selection:
+    	// Check if the old_selection is still part of the
+    	// new choices.
+		if (old_selection) {
+	    	for (var i=0; i<new_selections.length; i++) {
+	    		if (new_selections[i].value == old_selection.value) {
+	    			found=true;
+	    			new_selection = new_selections[i];
+	    			console.log("Found selection: "+new_selection.value)
+	    			break;
+	    		}
+	    	}
+		}
+
+    	// Done, update model
+    	vm.selections(new_selections);
+    	vm.selection(new_selection);
+    }
+    
+    this.valid_min_max = function() {
+    	// Ensure that max is greater than min
+    	rs_max = vm.selection_max();
+    	rs_min = vm.selection_min();
+    	
+        if (rs_max === undefined || rs_max === null || rs_max == '')
+            return {'error': false};
+        if (rs_min === undefined || rs_min === null || rs_min == '')
+            return {'error': false};
+        if (parseFloat(rs_max) > parseFloat(rs_min))
+        	return {'error': false}
+        else
+        	return {'error': true, message: 'Selection max must be greater than Selection min'}
+    }
 
     this.init_model = function () {
-        init_event_handlers();
-        return {}
+    	var current_dataset;
+
+    	vm.selections = ko.observableArray([]);
+    	vm.selection = ko.observable();
+    	// The filter choices are dependent on the selected output properties
+    	// and bandpass filters
+    	catalogue.modules.light_cone.vm.output_properties.to_side.options_raw.subscribe(this.update_selections.bind(this));
+    	catalogue.modules.sed.vm.bandpass_filters.to_side.options_raw.subscribe(this.update_selections.bind(this));
+
+    	current_dataset = catalogue.modules.light_cone.vm.dataset();
+    	// Create the min and max observables
+    	// Set up validation after creation as we have a validator that refers to both observables
+    	vm.selection_min = ko.observable(current_dataset.fields.default_filter_min);
+    	vm.selection_max = ko.observable(current_dataset.fields.default_filter_max);
+    	vm.selection_min
+    		.extend({validate: catalogue.validators.is_numeric})
+    		.extend({validate: this.valid_min_max});
+    	vm.selection_max
+    		.extend({validate: catalogue.validators.is_numeric})
+    		.extend({validate: this.valid_min_max});
+    	this.update_selections();
+
+    	return vm
     }
 
 }
