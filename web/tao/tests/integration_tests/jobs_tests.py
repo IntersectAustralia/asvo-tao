@@ -3,7 +3,7 @@ from django.template import Context, loader
 from django.test.utils import override_settings
 
 from tao.forms import FormsGraph
-from tao.models import Job, BandPassFilter
+from tao.models import Job, BandPassFilter, WorkflowCommand
 from tao.tests import helper
 from tao.tests.integration_tests.helper import LiveServerTest
 from tao.tests.support.factories import GlobalParameterFactory, JobFactory, UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, StellarModelFactory, DustModelFactory, BandPassFilterFactory, SnapshotFactory
@@ -69,6 +69,11 @@ class JobTest(LiveServerTest):
         self.job.parameters = parameters
         self.job.save()
         self.completed_job = JobFactory.create(user=self.user, status=Job.COMPLETED, output_path=self.output_paths[0], parameters=parameters)
+        self.held_job = JobFactory.create(user=self.user, parameters=parameters, status=Job.HELD)
+        self.error_job = JobFactory.create(user=self.user, parameters=parameters, status=Job.ERROR, error_message="error")
+        self.in_progress_job = JobFactory.create(user=self.user, parameters=parameters, status=Job.IN_PROGRESS)
+        self.submitted_job = JobFactory.create(user=self.user, parameters=parameters, status=Job.SUBMITTED)
+        self.queued_job = JobFactory.create(user=self.user, parameters=parameters, status=Job.QUEUED)
 
     def tearDown(self):
         super(JobTest, self).tearDown()
@@ -87,7 +92,7 @@ class JobTest(LiveServerTest):
             'redshift_max': 0.3,
             'ra_opening_angle': 71.565,
             'dec_opening_angle': 41.811,
-            'output_properties' : [self.filter.id, self.output_prop.id],
+            'output_properties': [self.filter.id, self.output_prop.id],
             'light_cone_type': 'random', #'unique',
             'number_of_light_cones': 1,
             }
@@ -304,6 +309,58 @@ class JobTest(LiveServerTest):
         self.selenium.refresh()
         self.assert_element_text_equals('#id-job_description', original_description)
 
+    def test_stop_rerun_release_buttons_enabled_with_status(self):
+        self.login(self.username, self.password)
+
+        self.visit('view_job', self.submitted_job.id)
+        self._check_job_buttons_enabled_or_disabled({'enabled': ['stop'], 'disabled': ['rerun', 'release']})
+
+        self.visit('view_job', self.queued_job.id)
+        self._check_job_buttons_enabled_or_disabled({'enabled': ['stop'], 'disabled': ['rerun', 'release']})
+
+        self.visit('view_job', self.in_progress_job.id)
+        self._check_job_buttons_enabled_or_disabled({'enabled': ['stop'], 'disabled': ['rerun', 'release']})
+
+        self.visit('view_job', self.completed_job.id)
+        self._check_job_buttons_enabled_or_disabled({'enabled': ['rerun'], 'disabled': ['stop', 'release']})
+
+        self.visit('view_job', self.error_job.id)
+        self._check_job_buttons_enabled_or_disabled({'enabled': ['rerun'], 'disabled': ['stop', 'release']})
+
+        self.visit('view_job', self.held_job.id)
+        self._check_job_buttons_enabled_or_disabled({'enabled': ['release'], 'disabled': ['stop', 'rerun']})
+
+    def test_stop_job_button(self):
+        self.login(self.username, self.password)
+        self.visit('view_job', self.in_progress_job.id)
+        self.assertEqual(0, len(WorkflowCommand.objects.all()))
+
+        self.click('id-job_stop')
+        self.assertEqual(1, len(WorkflowCommand.objects.all()))
+        stop_job_command = WorkflowCommand.objects.get(pk=1)
+        self.assertEqual(self.in_progress_job, stop_job_command.job_id)
+        self.assertEqual(self.user, stop_job_command.submitted_by)
+        self.assertEqual('Job_Stop', stop_job_command.command)
+        self.assertEqual('SUBMITTED', stop_job_command.execution_status)
+
+    def test_rerun_job_button(self):
+        self.login(self.username, self.password)
+        self.visit('view_job', self.completed_job.id)
+        self.click(self.job_select('rerun'))
+        self._check_job_buttons_enabled_or_disabled({'enabled': ['stop'], 'disabled': ['rerun', 'release']})
+
+        updated_job = Job.objects.get(id=self.completed_job.id)
+        self.assertEqual('SUBMITTED', updated_job.status)
+
+    def test_release_job_button(self):
+        self.login(self.username, self.password)
+        self.visit('view_job', self.held_job.id)
+        self.click(self.job_select('release'))
+        self._check_job_buttons_enabled_or_disabled({'enabled': ['stop'], 'disabled': ['rerun', 'release']})
+
+        updated_job = Job.objects.get(id=self.held_job.id)
+        self.assertEqual('SUBMITTED', updated_job.status)
+
     def _extract_zipfile_to_dir(self, download_path, dirname):
         fullpathhandle = open(download_path, 'r')
         zipfile_obj = zipfile.ZipFile(fullpathhandle)
@@ -339,3 +396,11 @@ class JobTest(LiveServerTest):
             for name in filenames:
                 list_of_files.append(os.path.join(root[len(dir)+1:], name))
         return list_of_files
+
+    def _check_job_buttons_enabled_or_disabled(self, enabler):
+        self.wait(1.5)
+        for button in enabler['enabled']:
+            self.assert_is_enabled(self.job_id(button))
+
+        for button in enabler['disabled']:
+            self.assert_is_disabled(self.job_id(button))

@@ -2,6 +2,7 @@ from django_rules import utils
 
 rules_list = [
               {'codename': 'can_read_job', 'model': 'Job'},
+              {'codename': 'can_write_job', 'model': 'Job'},
               ]
 
 for rule in rules_list:
