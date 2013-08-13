@@ -301,12 +301,6 @@ catalogue.modules.light_cone = function ($) {
             return false;
         });
 
-
-        $(lc_id('number_of_light_cones')).change(function () {
-            var new_value = parseInt($(this).val());
-            return spinner_check_value(new_value);
-        });
-
     }
 
 
@@ -578,9 +572,6 @@ catalogue.modules.light_cone = function ($) {
             }
             return result;
         });
-
-
-        // init_event_handlers();
 
         return vm;
 

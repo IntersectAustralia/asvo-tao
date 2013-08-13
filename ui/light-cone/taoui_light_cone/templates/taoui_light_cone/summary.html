@@ -10,13 +10,14 @@
         </tr>
         <tr>
             <td>Dataset</td>
-            <td>
-                <span class="simulation" data-bind='text: dark_matter_simulation().fields.name'><!-- --></span> / <span class="galaxy_model" data-bind='text: galaxy_model().fields.name'><!-- --></span> <a id="expand_dataset" href="#">>></a>
-                <span class="simulation_description">
+            <td data-bind="toggler: true">
+                <span class="simulation" data-bind='text: dark_matter_simulation().fields.name'><!-- --></span> / <span class="galaxy_model" data-bind='text: galaxy_model().fields.name'><!-- 
+                --></span> <a id="expand_dataset" data-bind='text: toggler_text(), click: toggler_click' href="#"></a>
+                <span class="simulation_description" data-bind='visible: toggler_visible'>
                     <br><b><span data-bind='text: dark_matter_simulation().fields.name'></span></b><br>
                     <span data-bind='html: dark_matter_simulation().fields.details'></span>
                 </span>
-                <span class="galaxy_model_description">
+                <span class="galaxy_model_description" data-bind='visible: toggler_visible'>
                 <br><b><span data-bind='text: galaxy_model().fields.name'></span></b><br>
                     <span data-bind='html: galaxy_model().fields.details'></span>
                 </span>
@@ -44,10 +45,10 @@
         </tr>
         <tr>
             <td>Output Properties</td>
-            <td>
+            <td data-bind='toggler: true'>
                 <span class="output_properties" data-bind="text: output_properties.to_side.options_total() + ' properties selected'"><!-- --></span>
-                <a id="expand_output_properties" href="#">>></a>
-                <div class="output_properties_list" data-bind="template: { name: 'summary_output_properties_with_groups', data: output_properties.to_side }"><!-- --></div>
+                <a id="expand_output_properties" data-bind='text: toggler_text(), click: toggler_click' href="#"></a>
+                <div class="output_properties_list" data-bind="visible: toggler_visible, template: { name: 'summary_output_properties_with_groups', data: output_properties.to_side }"><!-- --></div>
             </td>
         </tr>
     </table>
