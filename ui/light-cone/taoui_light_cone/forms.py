@@ -23,8 +23,7 @@ def to_xml_2(form, root):
     light_cone_elem = find_or_create(root, 'light-cone', id=FormsGraph.LIGHT_CONE_ID)
 
     simulation = tao_models.Simulation.objects.get(pk=form.cleaned_data['dark_matter_simulation'])
-    dataset = tao_models.DataSet.objects.get(id=form.cleaned_data['galaxy_model'])
-    galaxy_model = dataset.galaxy_model
+    galaxy_model = tao_models.GalaxyModel.objects.get(id=form.cleaned_data['galaxy_model'])
 
     child_element(light_cone_elem, 'module-version', text=Form.MODULE_VERSION)
     child_element(light_cone_elem, 'geometry', text=form.cleaned_data['catalogue_geometry'])
@@ -165,10 +164,10 @@ class Form(BetterForm):
             }),
             ]
         row_attrs = {
-            'ra_opening_angle' : {'data-bind':'visible: catalogue_geometry().id == "light_cone"'},
-            'dec_opening_angle' : {'data-bind':'visible: catalogue_geometry().id == "light_cone"'},
-            'redshift_min' : {'data-bind':'visible: catalogue_geometry().id == "light_cone"'},
-            'redshift_max' : {'data-bind':'visible: catalogue_geometry().id == "light_cone"'},
+            'ra_opening_angle' : {'data-bind':'visible: catalogue_geometry().id == "light-cone"'},
+            'dec_opening_angle' : {'data-bind':'visible: catalogue_geometry().id == "light-cone"'},
+            'redshift_min' : {'data-bind':'visible: catalogue_geometry().id == "light-cone"'},
+            'redshift_max' : {'data-bind':'visible: catalogue_geometry().id == "light-cone"'},
             'box_size' : {'data-bind':'visible: catalogue_geometry().id == "box"'},
             'snapshot' : {'data-bind':'visible: catalogue_geometry().id == "box"'},
             }
