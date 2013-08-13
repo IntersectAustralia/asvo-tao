@@ -36,10 +36,10 @@ def to_xml_2(form, root):
    child_element(filter_elem, 'filter-attribute', filter_type)
    filter_min = form.cleaned_data['min']
    filter_max = form.cleaned_data['max']
-   default_filter = datasets.default_filter_choice(form.ui_holder.raw_data('light_cone', 'galaxy_model'))
+   default_filter = form.ui_holder.dataset.default_filter_field
    if default_filter is not None and filter_parameter.id == default_filter.id and filter_min is None and filter_max is None:
-       filter_min = datasets.default_filter_min(form.ui_holder.raw_data('light_cone', 'galaxy_model'))
-       filter_max = datasets.default_filter_max(form.ui_holder.raw_data('light_cone', 'galaxy_model'))
+       filter_min = form.ui_holder.dataset.default_filter_min
+       filter_max = form.ui_holder.dataset.default_filter_max
    child_element(filter_elem, 'filter-min', text=str(filter_min), units=units)
    child_element(filter_elem, 'filter-max', text=str(filter_max), units=units)
 

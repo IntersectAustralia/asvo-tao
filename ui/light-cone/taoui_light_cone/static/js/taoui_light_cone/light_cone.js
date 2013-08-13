@@ -412,7 +412,7 @@ catalogue.modules.light_cone = function ($) {
     this.init_model = function() {
         this.vm = vm;
         vm.catalogue_geometries = ko.observableArray([
-            { id: 'light_cone', name: 'Light Cone'},
+            { id: 'light-cone', name: 'Light Cone'},
             { id: 'box', name: 'Box'}
             ]);
         vm.catalogue_geometry = ko.observable(vm.catalogue_geometries()[1]);
@@ -536,7 +536,7 @@ catalogue.modules.light_cone = function ($) {
 
         vm.hr_redshift = ko.computed(function() {
             var result = '';
-            if (vm.catalogue_geometry().id == 'light_cone') {
+            if (vm.catalogue_geometry().id == 'light-cone') {
                 var rs_min = vm.redshift_min() != undefined && /\S/.test(vm.redshift_min());
                 var rs_max = vm.redshift_max() != undefined && /\S/.test(vm.redshift_max());
                 if (rs_min && !rs_max) {
