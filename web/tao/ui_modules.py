@@ -65,7 +65,12 @@ class UIModulesHolder:
         for v in self._forms:
             form_valid = v.is_valid()
             if not form_valid:
-                self._errors.update(v.errors)
+                if isinstance(v.errors, list):
+                    # Assume a list of errors from a FormSet
+                    for e in v.errors:
+                        self._errors.update(e)
+                else:
+                    self._errors.update(v.errors)
             valid &= form_valid
         return valid
 
