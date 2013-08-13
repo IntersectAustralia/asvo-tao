@@ -66,18 +66,6 @@ def filter_choices(simulation_id, galaxy_model_id):
     if dataset_default_filter is not None: q = q | Q(pk=dataset.default_filter_field.id)
     return models.DataSetProperty.objects.filter(q).exclude(data_type = models.DataSetProperty.TYPE_STRING).order_by('name')
 
-def default_filter_choice(data_set_id):
-    dataset = models.DataSet.objects.get(id=data_set_id)
-    return dataset.default_filter_field
-
-def default_filter_min(data_set_id):
-    dataset = models.DataSet.objects.get(id=data_set_id)
-    return dataset.default_filter_min
-
-def default_filter_max(data_set_id):
-    dataset = models.DataSet.objects.get(id=data_set_id)
-    return dataset.default_filter_max
-
 def output_choices(data_set_id):
     try:
         dataset = models.DataSet.objects.get(id=data_set_id)
