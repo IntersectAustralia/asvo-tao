@@ -81,78 +81,82 @@ catalogue.validators.greater_than = function(param) {
     }
 }
 
-// Greater than or equal to
-catalogue.validators.geq = function(param) {
-    function check(v, min_v, msg) {
-        if(v === undefined || v === null || v === ''
-           || min_v === undefined || min_v === null || v === '')
-            return {'error':false};
-        var f = parseFloat(v);
-        if (isNaN(f) || isNaN(parseFloat(min_v)))
-            return {'error':false};
-        if (f < parseFloat(min_v))
-            return {'error':true, 'message': msg};
+catalogue.validators._gt = function(v1,v2) {
+    return v1 > v2;
+}
+catalogue.validators._ge = function(v1,v2) {
+    return v1 >= v2;
+}
+catalogue.validators._lt = function(v1,v2) {
+    return v1 < v2;
+}
+catalogue.validators._le = function(v1,v2) {
+    return v1 <= v2;
+}
+catalogue.validators._gen_check_value = function(test, msg) {
+    if (!test())
+        return {'error':true, 'message': msg};
+    return {'error':false};
+}
+// utility func
+catalogue.validators.defined = function(v) {
+    return !(v === undefined || v === null || v === '');
+}
+catalogue.validators._check_value = function(comp_op, v, ref_v, msg) {
+    if(v === undefined || v === null || v === ''
+       || ref_v === undefined || ref_v === null || ref_v === '')
         return {'error':false};
+    var v1 = parseFloat(v);
+    var v2 = parseFloat(ref_v);
+    if (isNaN(v1) || isNaN(v2))
+        return {'error':false};
+    if (!comp_op(v1,v2))
+        return {'error':true, 'message': msg};
+    return {'error':false};
+};
+
+catalogue.validators._make_func = function(op, param, base_msg) {
+    var check = catalogue.validators._check_value;
+    if (typeof param == "function") {
+        return function(val) {
+            return check(op, val, param(), base_msg + param());
+        }
+    } else {
+        return function(val) {
+            return check(op, val, param, base_msg + param);
+        }
     }
+}
+
+catalogue.validators.geq = function(param, message) {
+    var op = catalogue.validators._ge;
     var base_msg = 'Must be greater than or equal to ';
-    if (typeof param == "function") {
-        return function(val) {
-            return check(val, param(), base_msg + param());
-        }
-    } else {
-        return function(val) {
-            return check(val, param, base_msg + param);
-        }
-    }
+    return catalogue.validators._make_func(op, param, base_msg);
 }
 
-
-catalogue.validators.less_than = function(param) {
-    function check(v, max_v, msg) {
-        if(v === undefined || v === null || v == ''
-           || max_v === undefined || max_v === null || max_v === '')
-            return {'error':false};
-        var f = parseFloat(v);
-        if (isNaN(f) || isNaN(parseFloat(max_v)))
-            return {'error':false};
-        if (f > parseFloat(max_v))
-            return {'error':true, 'message': msg};
-        return {'error':false};
-    }
-    if (typeof param == "function") {
-        return function(val) {
-            return check(val, param(), 'Must be less than ' + param());
-        }
-    } else {
-        return function(val) {
-            return check(val, param, 'Must be less than ' + param);
-        }
-    }
+catalogue.validators.greater_than = function(param, message) {
+    var op = catalogue.validators._gt;
+    var base_msg = 'Must be greater than ';
+    return catalogue.validators._make_func(op, param, base_msg);
 }
 
+catalogue.validators.less_than = function(param, message) {
+    var op = catalogue.validators._lt;
+    var base_msg = "Must be less than ";
+    return catalogue.validators._make_func(op, param, base_msg);
+}
 
-// Less than or equal to
-catalogue.validators.leq = function(param) {
-    function check(v, max_v, msg) {
-        if(v === undefined || v === null || v == ''
-           || max_v === undefined || max_v === null || max_v === '')
-            return {'error':false};
-        var f = parseFloat(v);
-        if (isNaN(f) || isNaN(parseFloat(max_v)))
-            return {'error':false};
-        if (f > parseFloat(max_v))
-            return {'error':true, 'message': msg};
-        return {'error':false};
-    }
-    base_msg = 'Must be less than or equal to ';
-    if (typeof param == "function") {
-        return function(val) {
-            return check(val, param(), base_msg + param());
-        }
-    } else {
-        return function(val) {
-            return check(val, param, base_msg + param);
-        }
+catalogue.validators.leq = function(param, message) {
+    var op = catalogue.validators._le;
+    var base_msg = "Must be less than or equal to ";
+    return catalogue.validators._make_func(op, param, base_msg);
+}
+
+// generic test (computed observable!) w fixed message
+catalogue.validators.test = function(test, message) {
+    var gen_check = catalogue.validators._gen_check_value;
+    return function(val) {
+        return gen_check(test, message);
     }
 }
 
