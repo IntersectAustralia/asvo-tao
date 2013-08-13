@@ -238,7 +238,7 @@ UI_DIR = join(dirname(PROJECT_DIR), 'ui')
 # The order of the tuples here determines the order that the tabs are listed
 # in the UI
 MODULES_PATHS = (
-    ('job_type', 'job_type'),
+    # ('job_type', 'job_type'),
     ('light_cone', 'light-cone'),
     ('sed', 'sed'),
     # ('telescope', 'telescope'),
