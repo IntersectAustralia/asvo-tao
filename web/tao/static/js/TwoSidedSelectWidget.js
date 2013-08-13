@@ -51,16 +51,6 @@ var TwoSidedSelectWidget = function(elem_id, init_options, to_option) {
             return true;
         }
 
-        function filter_option(options) {
-            if (!filter()) return option;
-            var tokens = filter().trim().toLowerCase().split(/\s+/);
-            if (tokens.length == 0) return options;
-            resp = [];
-            for(var i = 0; i < options.length; i++)
-                if (has_tokens(options.text, options[i]))
-                    resp.push()
-        }
-
 
         // viewmodel observables
 
@@ -80,7 +70,7 @@ var TwoSidedSelectWidget = function(elem_id, init_options, to_option) {
             resp = [];
             var options = vm_side.options_raw();
             for(var i = 0; i < options.length; i++) {
-                if (has_tokens(options.text, options[i]))
+                if (has_tokens(options[i].text, tokens))
                     resp.push(options[i]);
             }
             return resp;
