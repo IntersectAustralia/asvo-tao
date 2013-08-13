@@ -549,6 +549,9 @@ catalogue.util = function ($) {
 	    	jQuery.extend(job_parameters, module_params);
 	    };
 	    
+	    jQuery.extend(job_parameters,
+	    		{'job-description': catalogue.vm.description()});
+	    
 		$.ajax({
 			// TODO: use the current URL, not hard-coded string
 			url : '/mock_galaxy_factory/',
@@ -689,28 +692,33 @@ jQuery(document).ready(function ($) {
 
     function init() {
 
-        function setup_editable_text(elem_id) {
-            var $elem = $(elem_id);
+    	catalogue.vm.description = ko.observable();
 
-            $('#id-save_edit').click(function(evt){
-                var description = $elem.text().replace(/\s+/g, ' ');
-                $.ajax({
-                    url: TAO_JSON_CTX + 'edit_job_description/' + $('#csrf_token #job_id').val(),
-                    type: 'POST',
-                    data: {"job-description": description,
-                        'csrfmiddlewaretoken': $('#csrf_token input[name="csrfmiddlewaretoken"]').val()},
-                    error: function(data) {
-                        alert("Couldn't save job description to DB");
-                    }
-                });
-            });
-
-            $('#id-cancel_edit').click(function(evt){
-                document.execCommand('undo', false, null);
-            });
-        }
-
-        setup_editable_text('#id-job_description');
+//
+// This is associated with the job view page.  Still TODO...
+//
+//        function setup_editable_text(elem_id) {
+//            var $elem = $(elem_id);
+//
+//            $('#id-save_edit').click(function(evt){
+//                var description = $elem.text().replace(/\s+/g, ' ');
+//                $.ajax({
+//                    url: TAO_JSON_CTX + 'edit_job_description/' + $('#csrf_token #job_id').val(),
+//                    type: 'POST',
+//                    data: {"job-description": description,
+//                        'csrfmiddlewaretoken': $('#csrf_token input[name="csrfmiddlewaretoken"]').val()},
+//                    error: function(data) {
+//                        alert("Couldn't save job description to DB");
+//                    }
+//                });
+//            });
+//
+//            $('#id-cancel_edit').click(function(evt){
+//                document.execCommand('undo', false, null);
+//            });
+//        }
+//
+//        setup_editable_text('#id-job_description');
 
         function set_click(selector, direction) {
             $(selector).click(function (evt) {
