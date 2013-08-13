@@ -9,7 +9,6 @@ catalogue.modules.sed = function ($) {
     var vm = {}
     this.vm = vm;
 
-
     this.cleanup_fields = function () {}
 
     this.validate = function () {
