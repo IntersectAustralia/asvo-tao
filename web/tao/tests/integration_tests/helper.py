@@ -26,7 +26,7 @@ class LiveServerTest(django.test.LiveServerTestCase):
     DOWNLOAD_DIRECTORY = '/tmp/work/downloads'
 
     ## List all ajax enabled pages that have initialization code and must wait
-    AJAX_WAIT = ['mock_galaxy_factory']
+    AJAX_WAIT = ['mock_galaxy_factory', 'view_job']
     SUMMARY_INDEX = str(len(MODULE_INDICES)+1)
 
     def wait(self, secs=1):
@@ -77,6 +77,12 @@ class LiveServerTest(django.test.LiveServerTestCase):
 
     def sed_2select(self, bare_field):
         return 'id_sed-band_pass_filters_%s' % bare_field
+
+    def job_select(self, bare_field):
+        return 'id-job_%s' % bare_field
+
+    def job_id(self, bare_field):
+        return '#%s' % self.job_select(bare_field)
 
     def get_parent_element(self, element):
         return self.selenium.execute_script('return arguments[0].parentNode;', element)
