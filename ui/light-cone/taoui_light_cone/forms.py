@@ -169,6 +169,7 @@ class Form(BetterForm):
             'redshift_min' : {'data-bind':'visible: catalogue_geometry().id == "light-cone"'},
             'redshift_max' : {'data-bind':'visible: catalogue_geometry().id == "light-cone"'},
             'light_cone_type' : {'data-bind':'visible: catalogue_geometry().id == "light-cone"'},
+            'number_of_light_cones' : {'data-bind':'visible: catalogue_geometry().id == "light-cone"'},
             'box_size' : {'data-bind':'visible: catalogue_geometry().id == "box"'},
             'snapshot' : {'data-bind':'visible: catalogue_geometry().id == "box"'},
             }
