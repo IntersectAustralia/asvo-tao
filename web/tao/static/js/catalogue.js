@@ -46,7 +46,7 @@ catalogue.validators.positive = function(val) {
     return {'error':false};
 };
 
-// NOTE: perhaps this should be renamed to 'is_numeric'
+// Currently is_float really does an is_numeric
 catalogue.validators.is_float = function(val) {
     if(val === undefined || val === null || val == '')
         return {'error':false};
@@ -55,6 +55,8 @@ catalogue.validators.is_float = function(val) {
         return {'error':true, message:'Please input a number'};
     return {'error':false};
 };
+
+catalogue.validators.is_numeric = catalogue.validators.is_float;
 
 catalogue.validators.greater_than = function(param) {
     function check(v, min_v, msg) {
@@ -470,29 +472,6 @@ catalogue.util = function ($) {
         console.log("list_multiple_selections_in_summary  " + select_widget + " ends")
         return selections_count;
     }
-
-
-    this.show_stellar_model_info = function (stellar_id) {
-        var data = catalogue.util.stellar_model(stellar_id);
-        $('div.stellar-model-info .name').html(data.fields.label);
-        $('div.stellar-model-info .details').html(data.fields.description);
-        $('div.stellar-model-info').show();
-        catalogue.util.fill_in_summary('sed', 'stellar_model_description', '<br>' + data.fields.description);
-        // $.ajax({
-        //     url: TAO_JSON_CTX + 'stellar_model/' + stellar_id,
-        //     dataType: "json",
-        //     error: function () {
-        //         $('div.stellar-model-info').hide();
-        //         alert("Couldn't get data for requested dust model");
-        //     },
-        //     success: function (data, status, xhr) {
-        //         $('div.stellar-model-info .name').html(data.fields.label);
-        //         $('div.stellar-model-info .details').html(data.fields.description);
-        //         $('div.stellar-model-info').show();
-        //         catalogue.util.fill_in_summary('sed', 'stellar_model_description', '<br>' + data.fields.description);
-        //     }
-        // });
-    };
 
 
     this.show_output_property_info = function (cache_item) {
