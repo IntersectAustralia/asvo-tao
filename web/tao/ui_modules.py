@@ -8,6 +8,7 @@ Helper class to extension UI modules
 from django.conf import settings
 from tao.record_filter_form import RecordFilterForm
 from tao.output_format_form import OutputFormatForm
+from tao.models import Simulation, GalaxyModel, DataSet
 
 def _from_post(self, klass, module_name, param):
     if param is None:
@@ -38,6 +39,7 @@ class UIModulesHolder:
         self._forms = []
         self._dict = {}
         self._errors = None
+        self._dataset = None
         for klass, module_name in UIModulesHolder.form_classes:
             form = method(self, klass, module_name, param)
             self._forms.append(form)
@@ -72,3 +74,15 @@ class UIModulesHolder:
         if self._errors is None:
             self.validate()
         return self._errors
+
+    @property
+    def dataset(self):
+        """Answer the dataset referenced by the receiver
+        (through the selected Dark Matter Simulation and Galaxy Model)"""
+
+        if self._dataset is None:
+            sid = self.raw_data('light_cone', 'dark_matter_simulation')
+            gmid = self.raw_data('light_cone', 'galaxy_model')
+            self._dataset = DataSet.objects.get(simulation_id=sid, galaxy_model_id=gmid)
+        return self._dataset
+    
