@@ -46,7 +46,7 @@ catalogue.validators.positive = function(val) {
     return {'error':false};
 };
 
-// NOTE: perhaps this should be renamed to 'is_numeric'
+// Currently is_float really does an is_numeric
 catalogue.validators.is_float = function(val) {
     if(val === undefined || val === null || val == '')
         return {'error':false};
@@ -55,6 +55,8 @@ catalogue.validators.is_float = function(val) {
         return {'error':true, message:'Please input a number'};
     return {'error':false};
 };
+
+catalogue.validators.is_numeric = catalogue.validators.is_float;
 
 catalogue.validators.greater_than = function(param) {
     function check(v, min_v, msg) {
