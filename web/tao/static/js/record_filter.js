@@ -315,6 +315,21 @@ catalogue.modules.record_filter = function ($) {
     	vm.selections(new_selections);
     	vm.selection(new_selection);
     }
+    
+    this.valid_min_max = function() {
+    	// Ensure that max is greater than min
+    	rs_max = vm.selection_max();
+    	rs_min = vm.selection_min();
+    	
+        if (rs_max === undefined || rs_max === null || rs_max == '')
+            return {'error': false};
+        if (rs_min === undefined || rs_min === null || rs_min == '')
+            return {'error': false};
+        if (parseFloat(rs_max) > parseFloat(rs_min))
+        	return {'error': false}
+        else
+        	return {'error': true, message: 'Selection max must be greater than Selection min'}
+    }
 
     this.init_model = function () {
     	var current_dataset;
@@ -327,8 +342,16 @@ catalogue.modules.record_filter = function ($) {
     	catalogue.modules.sed.vm.bandpass_filters.to_side.options_raw.subscribe(this.update_selections.bind(this));
 
     	current_dataset = catalogue.modules.light_cone.vm.dataset();
+    	// Create the min and max observables
+    	// Set up validation after creation as we have a validator that refers to both observables
     	vm.selection_min = ko.observable(current_dataset.fields.default_filter_min);
     	vm.selection_max = ko.observable(current_dataset.fields.default_filter_max);
+    	vm.selection_min
+    		.extend({validate: catalogue.validators.is_numeric})
+    		.extend({validate: this.valid_min_max});
+    	vm.selection_max
+    		.extend({validate: catalogue.validators.is_numeric})
+    		.extend({validate: this.valid_min_max});
     	this.update_selections();
 
     	return vm
