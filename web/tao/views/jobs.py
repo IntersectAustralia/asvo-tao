@@ -1,14 +1,15 @@
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.core.servers.basehttp import FileWrapper # TODO use sendfile
+from django.core.urlresolvers import reverse
 from django.http import StreamingHttpResponse, Http404, HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.template import loader, Context
 
 from tao.datasets import dataset_get
 from tao.decorators import researcher_required, set_tab, \
     object_permission_required
-from tao.models import Job, Snapshot, DataSetProperty, StellarModel, BandPassFilter, DustModel
+from tao.models import Job, Snapshot, DataSetProperty, StellarModel, BandPassFilter, DustModel, WorkflowCommand
 from tao.ui_modules import UIModulesHolder
 from tao.xml_util import xml_parse
 
@@ -246,3 +247,27 @@ def index(request):
     return render(request, 'jobs/index.html', {
         'jobs': _qsort_jobs(user_jobs),
     })
+
+@researcher_required
+@object_permission_required('can_write_job')
+def stop_job(request, id):
+    job = Job.objects.get(id=id)
+    job_stop_command = WorkflowCommand(job_id=job, command='Job_Stop', submitted_by=request.user, execution_status='SUBMITTED')
+    job_stop_command.save()
+    return redirect(reverse('view_job', args=[id]))
+
+@researcher_required
+@object_permission_required('can_write_job')
+def rerun_job(request, id):
+    job = Job.objects.get(id=id)
+    job.status = 'SUBMITTED'
+    job.save()
+    return redirect(reverse('view_job', args=[id]))
+
+@researcher_required
+@object_permission_required('can_write_job')
+def release_job(request, id):
+    job = Job.objects.get(id=id)
+    job.status = 'SUBMITTED'
+    job.save()
+    return redirect(reverse('view_job', args=[id]))

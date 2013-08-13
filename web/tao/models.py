@@ -305,6 +305,9 @@ class Job(models.Model):
         """
         return self.user.id == user.id
 
+    def can_write_job(self, user):
+        return self.can_read_job(user)
+
     def can_download_zip_file(self):
         return True
 
