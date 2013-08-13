@@ -10,13 +10,13 @@ catalogue.modules.sed = function ($) {
     this.vm = vm;
 
 
-    this.cleanup_fields = function ($form) {}
+    this.cleanup_fields = function () {}
 
-    this.validate = function ($form) {
+    this.validate = function () {
         return true;
     }
 
-    this.pre_submit = function ($form) {
+    this.pre_submit = function () {
     }
 
     this.job_parameters = function() {
