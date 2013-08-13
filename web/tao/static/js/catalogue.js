@@ -635,6 +635,29 @@ jQuery(document).ready(function ($) {
         return pg;
     })(ko.bindingHandlers['value']);
 
+    ko.bindingHandlers['toggler'] = {
+        init: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+        // Make a modified binding context, with a extra properties, and apply it to descendant elements
+        var toggler_vm = {
+
+            toggler_text : function(){
+                return toggler_vm.toggler_visible() ? "<<" : ">>"
+            },
+            toggler_click : function() {
+                toggler_vm.toggler_visible(!toggler_vm.toggler_visible());
+            },
+            toggler_visible : ko.observable(false) 
+        };
+
+        var childBindingContext = bindingContext.createChildContext(viewModel);
+        ko.utils.extend(childBindingContext, toggler_vm);
+        ko.applyBindingsToDescendants(childBindingContext, element);
+ 
+        // Also tell KO *not* to bind the descendants itself, otherwise they will be bound twice
+        return { controlsDescendantBindings: true };
+    }
+    }
+
     catalogue.vm = {}
 
     function initialise_modules() {
