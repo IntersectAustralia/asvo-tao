@@ -305,7 +305,6 @@ catalogue.modules.record_filter = function ($) {
 	    		if (new_selections[i].value == old_selection.value) {
 	    			found=true;
 	    			new_selection = new_selections[i];
-	    			console.log("Found selection: "+new_selection.value)
 	    			break;
 	    		}
 	    	}
