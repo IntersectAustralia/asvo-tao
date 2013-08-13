@@ -56,6 +56,15 @@ catalogue.validators.is_float = function(val) {
     return {'error':false};
 };
 
+catalogue.validators.is_int = function(val) {
+    if(val === undefined || val === null || val == '')
+        return {'error':false};
+    var f = parseInt(val);
+    if (isNaN(f))
+        return {'error':true, message:'Please input a number'};
+    return {'error':false};
+};
+
 catalogue.validators.is_numeric = catalogue.validators.is_float;
 
 catalogue.validators.greater_than = function(param) {
