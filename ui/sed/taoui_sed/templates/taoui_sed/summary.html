@@ -6,24 +6,26 @@
         </tr>
         <tr class="apply_sed">
             <td>Model</td>
-            <td>
-                <span class="single_stellar_population_model"><!-- --></span> <a id="expand_stellar_model" href="#">>></a>
-                <span class="stellar_model_description"><!-- --></span>
+            <td data-bind="toggler: true">
+                <span class="single_stellar_population_model"><!-- --></span>
+                <a id="expand_stellar_model" href="#" data-bind='text: toggler_text(), click: toggler_click'></a>
+                <span class="stellar_model_description" data-bind="visible: toggler_visible"><!-- --></span>
             </td>
         </tr>
         <tr class="apply_sed">
             <td>Bandpass Filters</td>
-            <td>
+            <td data-bind="toggler: true">
                 <span class="band_pass_filters"><!-- --></span>
-                <a id="expand_band_pass_filters" href="#"> >> </a>
-                <span class="band_pass_filters_list"><!-- --></span>
+                <a id="expand_band_pass_filters" href="#" data-bind='text: toggler_text(), click: toggler_click'></a>
+                <span class="band_pass_filters_list" data-bind="visible: toggler_visible"><!-- --></span>
             </td>
         </tr>
         <tr class="apply_sed">
             <td>Dust</td>
-            <td>
-                <span class="dust_model"><!-- --></span> <a id="expand_dust_model" href="#">>></a>
-                <span class="dust_model_description"><!-- --></span>
+            <td data-bind="toggler: true">
+                <span class="dust_model"><!-- --></span>
+                <a id="expand_dust_model" href="#" data-bind='text: toggler_text(), click: toggler_click'></a>
+                <span class="dust_model_description" data-bind="visible: toggler_visible"><!-- --></span>
             </td>
         </tr>
     </table>
