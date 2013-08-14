@@ -71,9 +71,9 @@ catalogue.modules.mock_image = function ($) {
 				params[key_prefix + 'mag_field'] = [current_image['mag_field']().value];
 				params[key_prefix + 'sub_cone'] = [current_image['sub_cone']().value];
 			}
-			params['mock_image-TOTAL_FORMS']  = [image_params.length];
+			params['mock_image-TOTAL_FORMS']  = [image_params.length+1];
 		} else {
-	    	params['mock_image-TOTAL_FORMS'] = [0];
+	    	params['mock_image-TOTAL_FORMS'] = [1];
 		}
     	return params;
     }
@@ -216,7 +216,7 @@ catalogue.modules.mock_image = function ($) {
         	
         	num_images = parseInt(job['mock_image-INITIAL_FORMS']);
         	if (isNaN(num_images)) return;
-        	if (num_images == 0) return;
+        	if (num_images <= 1) return;
 
         	for (var i=0; i<num_images; i++) {
         		var prefix = 'mock_image' + i;
