@@ -33,7 +33,16 @@ catalogue.modules.output_format = function ($) {
 		
 		return output_formats;
 	}
-	
+
+    this.output_format = function(id) {
+    	return $.grep(this.configured_output_formats(), function(elem, idx) {
+    		// output formats is a constructed object, not from the db,
+    		// so we need to search on value, not pk
+    		return elem.fields.value == id;
+    	})[0]
+    }
+
+
     this.cleanup_fields = function ($form) {
         // always send everything from the Output Format tab through to the server
     	// i.e. nothing to do
@@ -58,10 +67,17 @@ catalogue.modules.output_format = function ($) {
     }
 
 
-    this.init_model = function () {
-    	
+    this.init_model = function (init_params) {
+    	// job is either an object containing the job parameters or null
+    	var job = init_params.job;
+    	var param; // Temporary variable for observable initialisation
+
     	this.vm.output_formats = ko.observableArray(this.configured_output_formats());
-    	this.vm.output_format = ko.observable(this.vm.output_formats()[0]);
+    	param = job['output_format-supported_formats'];
+    	if (param) {
+    		param = this.output_format(param);
+    	}
+    	this.vm.output_format = ko.observable(param ? param : this.vm.output_formats()[0]);
 
         return this.vm;
     }
