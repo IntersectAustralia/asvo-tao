@@ -34,13 +34,31 @@ if __name__ == '__main__':
     DataTypeLists=[]
     for dset in Outputs["Output1/nodeData"]:    
         DataTypeLists+=[(str(dset),(str(Outputs["Output1/nodeData/"+str(dset)].dtype)))]
-    Datadict = numpy.empty(shape=(1,),dtype=DataTypeLists)
+    
+    DataTypeLists+=[('zoneid',numpy.int32)]
+    
+    
+    DataTypeLists+=[('MetalsColdGas',numpy.float64)]
+    DataTypeLists+=[('sfr',numpy.float64)]  
+    
+    
+    
+    
+    
+    
+    TotalRecordsCount=0
+    for Output in Outputs:
+        FirstKey=Outputs[Output+"/nodeData"].keys()[0]        
+        TotalRecordsCount=TotalRecordsCount+ len(Outputs[Output+"/nodeData/"+FirstKey][:])
+    print "Total:"+str(TotalRecordsCount)
+    Datadict = numpy.zeros(shape=(TotalRecordsCount,),dtype=DataTypeLists)
     
 
     EndIndex=0
-    
+    OutputCounter=0
     for Output in Outputs:
-        print Output
+        print Output+"\t"+str(OutputCounter)+"/"+str(len(Outputs))
+        OutputCounter=OutputCounter+1
         for LocalIndex in range(0,len(Outputs[Output+'/mergerTreeStartIndex'])):
                        
             if Outputs[Output+'/mergerTreeCount'][LocalIndex]>0:               
@@ -50,21 +68,27 @@ if __name__ == '__main__':
                 NextItemIndex=NextItemIndex+Outputs[Output+'/mergerTreeCount'][LocalIndex]
             
             TotalCount=TotalCount+ Outputs[Output+'/mergerTreeCount'][LocalIndex]    
-        StartIndex=EndIndex
-        FirstField=True
-        
-        
-        for dset in Outputs[Output+"/nodeData"]:   
-            if FirstField==True:
-                EndIndex=StartIndex+len(Outputs[Output+"/nodeData/"+str(dset)][:]) 
-                Datadict.resize(EndIndex)
-                FirstField=False
-            print str(StartIndex)+":"+ str(EndIndex) 
-            print len(Outputs[Output+"/nodeData/"+str(dset)][:])
-                                
+        StartIndex=EndIndex        
+        FirstKey=Outputs[Output+"/nodeData"].keys()[0] 
+        EndIndex=StartIndex+len(Outputs[Output+"/nodeData/"+FirstKey][:])
+        print str(StartIndex)+":"+ str(EndIndex)
+        print len(Outputs[Output+"/nodeData/"+str(dset)][:])
+        for dset in Outputs[Output+"/nodeData"]:                                
             Datadict[dset][StartIndex:EndIndex]=Outputs[Output+"/nodeData/"+str(dset)][:]
-            #print dset+":"+str(len(Datadict[dset]))+"/"+str(TotalCount)+"\t\t"+str(TreeStartIndexData[-1])+"+"+str(GalaxyCountData[-1])
-        StartIndex=EndIndex
+        ZoneIndex=int(Output.replace("Output","")) 
+        print "ZoneIndex="+str(ZoneIndex)
+        Datadict['zoneid'][StartIndex:EndIndex]=ZoneIndex            
+        StartIndex=EndIndex+1
+    
+    Datadict['MetalsColdGas']=numpy.add(Datadict['diskAbundancesGasMetals'],Datadict['spheroidAbundancesGasMetals'])
+    Datadict['sfr']=numpy.add(Datadict['interOutputDiskStarFormationRate'],Datadict['interOutputSpheroidStarFormationRate'])
+         
+    
+
+
+    OutputFile.create_dataset("galaxies", data=Datadict)
+    OutputFile.create_dataset("tree_counts", data=GalaxyCountData)
+    OutputFile.create_dataset("tree_displs", data=TreeStartIndexData)
+
     InputFile.close()
     OutputFile.close()
-    
