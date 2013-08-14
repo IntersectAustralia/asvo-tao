@@ -36,37 +36,37 @@ catalogue.modules.mock_image = function ($) {
         }
     }
 
-    this.update_tabs = function (event, ui) {
-        var old_tab = $(ui.oldTab).children('a:first').attr('id');
-        var new_tab = $(ui.newTab).children('a:first').attr('id');
-
-        // Check if the mock-image tab should be enabled.
-        if (old_tab == 'tao-tabs-1' || old_tab == 'tao-tabs-2') {
-            var sel = $('#id_light_cone-catalogue_geometry option:selected').val();
-            if ($('#id_light_cone-catalogue_geometry option:selected').val() == 'light-cone' &&
-                $('#id_sed-apply_sed').is(':checked')) {
-                $(mi_id('apply_mock_image')).removeAttr('disabled');
-                update_apply_mock_image();
-            } else {
-                $(mi_id('apply_mock_image')).attr('disabled', 'disabled');
-                update_apply_mock_image();
-            }
-        }
-
-        // Update all mock image magnitudes.
-        if (old_tab == 'tao-tabs-2')
-            mock_image_update_magnitudes();
-
-        // Update every mock image sub-cone option with appropriate
-        // values from the general properties.
-        // if (old_tab == 'tao-tabs-1')
-        //    update_mock_image_sub_cones();
-
-        // Upon moving to a new tab, run validation in the tab to pick up
-        // any changes from previous tab.
-        if (new_tab == 'tao-tabs-3')
-            $.validate_form('mock_image');
-    }
+//    this.update_tabs = function (event, ui) {
+//        var old_tab = $(ui.oldTab).children('a:first').attr('id');
+//        var new_tab = $(ui.newTab).children('a:first').attr('id');
+//
+//        // Check if the mock-image tab should be enabled.
+//        if (old_tab == 'tao-tabs-1' || old_tab == 'tao-tabs-2') {
+//            var sel = $('#id_light_cone-catalogue_geometry option:selected').val();
+//            if ($('#id_light_cone-catalogue_geometry option:selected').val() == 'light-cone' &&
+//                $('#id_sed-apply_sed').is(':checked')) {
+//                $(mi_id('apply_mock_image')).removeAttr('disabled');
+//                update_apply_mock_image();
+//            } else {
+//                $(mi_id('apply_mock_image')).attr('disabled', 'disabled');
+//                update_apply_mock_image();
+//            }
+//        }
+//
+//        // Update all mock image magnitudes.
+//        if (old_tab == 'tao-tabs-2')
+//            mock_image_update_magnitudes();
+//
+//        // Update every mock image sub-cone option with appropriate
+//        // values from the general properties.
+//        // if (old_tab == 'tao-tabs-1')
+//        //    update_mock_image_sub_cones();
+//
+//        // Upon moving to a new tab, run validation in the tab to pick up
+//        // any changes from previous tab.
+//        if (new_tab == 'tao-tabs-3')
+//            $.validate_form('mock_image');
+//    }
 
     this.cleanup_fields = function ($form) {}
 

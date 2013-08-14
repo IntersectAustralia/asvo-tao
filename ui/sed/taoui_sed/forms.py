@@ -198,6 +198,23 @@ class Form(BetterForm):
         self.check_dust_required_fields()
         return self.cleaned_data
 
+    def to_json_dict(self):
+        """Answer the json dictionary representation of the receiver.
+        i.e. something that can easily be passed to json.dumps()"""
+        json_dict = {}
+        ffn = self.prefix + '-apply_sed'
+        apply_sed = self.data[ffn]
+        json_dict[ffn] = apply_sed
+        if apply_sed:
+            for fn in ['single_stellar_population_model', 'apply_dust',
+                       'select_dust_model']:
+                ffn = self.prefix + '-' + fn
+                val = self.data.get(ffn)
+                if val is not None:
+                    json_dict[ffn] = val
+        return json_dict
+
+
     def to_xml(self, root):
         version = 2.0
         to_xml_2(self, root)
