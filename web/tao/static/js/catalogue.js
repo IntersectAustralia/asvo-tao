@@ -336,7 +336,6 @@ catalogue.util = function ($) {
         });
     }
 
-
     this.dust_model = function(id) {
         return $.grep(TaoMetadata.DustModel, function(elem, idx) { 
             return elem.pk == id
@@ -364,6 +363,14 @@ catalogue.util = function ($) {
             });
         }
         return gen_pairs(TaoMetadata.BandPassFilter);
+    }
+    
+    this.bandpass_filter = function(filter_id) {
+    	// Lookup the supplied filter.
+    	// The id is in the format <pk>_(apparent|absolute)
+    	return $.grep(catalogue.util.bandpass_filters(), function(elem, idx) {
+    		return elem.pk == filter_id;
+    	})[0] || {}
     }
 
 

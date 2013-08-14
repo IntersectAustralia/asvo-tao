@@ -205,7 +205,7 @@ class Form(BetterForm):
         json_dict[ffn] = apply_sed
         if apply_sed:
             for fn in ['single_stellar_population_model', 'apply_dust',
-                       'select_dust_model']:
+                       'select_dust_model', 'band_pass_filters']:
                 ffn = self.prefix + '-' + fn
                 val = self.data.get(ffn)
                 if val is not None:
