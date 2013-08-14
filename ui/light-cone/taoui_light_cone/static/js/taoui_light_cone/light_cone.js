@@ -340,7 +340,7 @@ catalogue.modules.light_cone = function ($) {
 
     this.job_parameters = function() {
     	var geometry = vm.catalogue_geometry().id;
-    	var output_props = catalogue.modules.light_cone.the_vm.output_properties.to_side.options_raw();
+    	var output_props = vm.output_properties.to_side.options_raw();
     	var output_ids = [];
     	for (var i=0; i<output_props.length; i++) {
     		output_ids.push(output_props[i].value);
@@ -409,19 +409,42 @@ catalogue.modules.light_cone = function ($) {
     	return res[0];
     };
     
-    this.init_model = function() {
+    var lookup_geometry = function(gid) {
+    	res = $.grep(vm.catalogue_geometries(), function(elem, idx) {
+    		return elem.id == gid;
+    	});
+    	return res[0];
+    }
+    
+    this.init_model = function(init_params) {
+    	// job is either an object containing the job parameters or null
+    	var job = init_params.job;
+    	var param; // Temporary variable for observable initialisation
+
         this.vm = vm;
         vm.catalogue_geometries = ko.observableArray([
             { id: 'light-cone', name: 'Light Cone'},
             { id: 'box', name: 'Box'}
             ]);
-        vm.catalogue_geometry = ko.observable(vm.catalogue_geometries()[1]);
+        param = job['light_cone-catalogue_geometry']
+        if (param)
+        	param = lookup_geometry(param);
+        vm.catalogue_geometry = ko.observable(param ? param : vm.catalogue_geometries()[1]);
 
         vm.dark_matter_simulations = ko.observableArray(TaoMetadata.Simulation);
-        vm.dark_matter_simulation = ko.observable(vm.dark_matter_simulations()[1]).extend({logger: 'simulation'});
+        param = job['light_cone-dark_matter_simulation'];
+        if (param) {
+        	param = catalogue.util.simulation(param);
+        }
+        vm.dark_matter_simulation = ko.observable(param ? param : vm.dark_matter_simulations()[0])
+        	.extend({logger: 'simulation'});
         
         vm.galaxy_models = ko.observableArray(TaoMetadata.GalaxyModel);
-        vm.galaxy_model = ko.observable(vm.galaxy_models()[0]);
+        param = job['light_cone-galaxy_model'];
+        if (param) {
+        	param = catalogue.util.galaxy_model(param);
+        }
+        vm.galaxy_model = ko.observable(param ? param : vm.galaxy_models()[0]);
 
         vm.datasets = ko.observableArray(TaoMetadata.DataSet);
         vm.dataset = ko.computed(function() {
@@ -430,29 +453,35 @@ catalogue.modules.light_cone = function ($) {
         						  vm.galaxy_model().pk);
         }).extend({logger: 'dataset'});
 
-        vm.light_cone_type = ko.observable('unique');
-        vm.number_of_light_cones = ko.observable(1);
+        param = job['light_cone-light_cone_type'];
+        vm.light_cone_type = ko.observable(param ? param : 'unique');
+        param = job['light_cone-number_of_light_cones'];
+        vm.number_of_light_cones = ko.observable(param ? param : 1);
             
         vm.dataset.subscribe(function(dataset) {
             var objs = catalogue.util.output_choices(dataset.pk);
             vm.output_properties.new_options(objs);
         });
 
-        vm.ra_opening_angle = ko.observable()
+        param = job['light_cone-ra_opening_angle'];
+        vm.ra_opening_angle = ko.observable(param ? param : null)
             .extend({validate: catalogue.validators.is_float})
             .extend({validate: catalogue.validators.geq(0)})
             .extend({validate: catalogue.validators.leq(90)});
 
-        vm.dec_opening_angle = ko.observable()
+        param = job['light_cone-dec_opening_angle'];
+        vm.dec_opening_angle = ko.observable(param ? param : null)
             .extend({validate: catalogue.validators.is_float})
             .extend({validate: catalogue.validators.geq(0)})
             .extend({validate: catalogue.validators.leq(90)});
 
-        vm.redshift_min = ko.observable()
+        param = job['light_cone-redshift_min'];
+        vm.redshift_min = ko.observable(param ? param : null)
             .extend({validate: catalogue.validators.is_float})
             .extend({validate: catalogue.validators.geq(0)});
 
-        vm.redshift_max = ko.observable()
+        param = job['light_cone-redshift_max'];
+        vm.redshift_max = ko.observable(param ? param : null)
             .extend({validate: catalogue.validators.is_float})
             .extend({validate: catalogue.validators.geq(vm.redshift_min)});
 
@@ -460,7 +489,8 @@ catalogue.modules.light_cone = function ($) {
             return vm.dark_matter_simulation().fields.box_size
         });
 
-        vm.box_size = ko.observable(vm.max_box_size())
+        param = job['light_cone-box_size'];
+        vm.box_size = ko.observable(param ? param : vm.max_box_size())
             .extend({validate: catalogue.validators.is_float})
             .extend({validate: catalogue.validators.geq(0)})
             // .extend({validate: catalogue.validators.leq(vm.max_box_size)});
@@ -471,17 +501,31 @@ catalogue.modules.light_cone = function ($) {
         });
         vm.snapshot = ko.observable(vm.snapshots()[0]);
 
-        // Twosided widget
+        param = job['light_cone-output_properties'];
+        if (param) {
+        	// If output properties have been provided, assume that we are only displaying
+        	// the job, so we don't need to set up the TwoSidedSelectWidget
+        	var props = [];
+        	for (var i=0; i<param.length; i++) {
+        		props.push(catalogue.util.dataset_property(param[i]));
+        	}
+        	param = props;
+        }
         vm.output_properties = TwoSidedSelectWidget(
-                lc_id('output_properties'),
-                {not_selected:catalogue.util.output_choices(vm.dataset().pk),selected:[]},
+        		lc_id('output_properties'),
+                {not_selected: catalogue.util.output_choices(vm.dataset().pk),
+                 selected: param ? param : []},
                 dataset_property_to_option);
         vm.current_output_property = ko.observable(undefined);
-        vm.output_properties.clicked_option.subscribe(function(v) {
-            var op = catalogue.util.dataset_property(v);
-            vm.current_output_property(op);
-        });
-
+    	// if param is null assume that we are in the Catalogue wizard
+    	// so set up the dependencies to update the display
+        // otherwise leave it unlinked
+        if (!param) {
+	        vm.output_properties.clicked_option.subscribe(function(v) {
+	            var op = catalogue.util.dataset_property(v);
+	            vm.current_output_property(op);
+	        });
+        }
 
         // Computed Human-Readable Summary Fields
         vm.estimated_cone_size = ko.computed(calculate_job_size);

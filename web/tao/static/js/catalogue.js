@@ -670,14 +670,20 @@ jQuery(document).ready(function ($) {
     catalogue.vm = {}
 
     function initialise_modules() {
+    	var init_params = {
+    			'job' : TaoJob
+    	}
         for (var module in catalogue.modules) {
             console.log('Creating module: ' + module)
             catalogue.modules[module] = new catalogue.modules[module]($);
         }
         for (var module in catalogue.modules) {
             console.log('Initialising module: ' + module)
-            catalogue.vm[module] = catalogue.modules[module].init_model();
+            catalogue.vm[module] = catalogue.modules[module].init_model(init_params);
         }
+
+        catalogue.vm.description = ko.observable();
+
         console.log('Finished module initialisation')
     }
 
@@ -691,8 +697,6 @@ jQuery(document).ready(function ($) {
 
 
     function init() {
-
-    	catalogue.vm.description = ko.observable();
 
 //
 // This is associated with the job view page.  Still TODO...
@@ -730,9 +734,10 @@ jQuery(document).ready(function ($) {
         
         set_click('.tao-prev', -1);
         set_click('.tao-next', +1);
-        $("#tabs").tabs({
-            beforeActivate: catalogue.modules.mock_image.update_tabs
-        }).addClass("ui-tabs-vertical ui-helper-clearfix");
+//        $("#tabs").tabs({
+//            beforeActivate: catalogue.modules.mock_image.update_tabs
+//        }).addClass("ui-tabs-vertical ui-helper-clearfix");
+        $("#tabs").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
         $("#tabs li").removeClass("ui-corner-top").addClass("ui-corner-left");
         // pre-select error
         show_tab_error();
@@ -742,8 +747,8 @@ jQuery(document).ready(function ($) {
 
     (function () {
         catalogue.util = new catalogue.util($);
-        init();
         initialise_modules();
+        init();
         ko.applyBindings(catalogue.vm);
     })();
 
