@@ -52,6 +52,7 @@ catalogue.modules.light_cone = function ($) {
 
 
     this.validate = function ($form) {
+        return true;
     }
 
 
