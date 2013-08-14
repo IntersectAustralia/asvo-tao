@@ -7,9 +7,9 @@ Custom Django widgets
 """
 from django import forms
 from django.contrib.staticfiles.templatetags.staticfiles import static
-from django.forms.widgets import SelectMultiple
+from django.forms.widgets import SelectMultiple, TextInput
 from django.forms.util import flatatt
-from django.utils.html import conditional_escape, escape
+from django.utils.html import conditional_escape, escape, format_html, force_text
 from django.utils.encoding import force_unicode
 from django.utils.safestring import mark_safe
 
@@ -73,3 +73,31 @@ class TwoSidedSelectWidget(SelectMultiple):
         output_right.append('</select></div>')
         resp = u'\n'.join(output_right)
         return mark_safe(resp)
+
+class SpinnerWidget(TextInput):
+
+    def __init__(self, attrs=None):
+        super(SpinnerWidget, self).__init__(attrs)
+
+    ## name and id are set by the framework
+    def render(self, name, value, attrs=None):
+        if value is None:
+            value = ''
+        input_attrs = self.build_attrs(attrs, type=self.input_type, name=name)
+        span_attrs = {}
+        if value != '':
+            # Only add the 'value' attribute if a value is non-empty.
+            input_attrs['value'] = force_text(self._format_value(value))
+        if 'spinner_bind' in self.attrs:
+            input_attrs['data-bind'] = self.attrs['spinner_bind']
+            del input_attrs['spinner_bind']
+        if 'spinner_message' in self.attrs:
+            span_attrs['data-bind'] = self.attrs['spinner_message']
+        input_part = '<input{0} />'.format(flatatt(input_attrs))
+        span_part = '<span {0}></span>'.format(flatatt(span_attrs))
+        return mark_safe('<div>' + input_part + '<br/>' + span_part +'</div>')
+
+    def bind_label(self):
+        return True
+
+

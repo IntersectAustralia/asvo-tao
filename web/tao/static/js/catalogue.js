@@ -689,7 +689,7 @@ jQuery(document).ready(function ($) {
             $(element).spinner(options());
 
             //handle the field changing
-            ko.utils.registerEventHandler(element, "change", function () {
+            ko.utils.registerEventHandler(element, "spinchange", function () {
                 var observable = valueAccessor();
                 observable($(element).spinner("value"));
             });
