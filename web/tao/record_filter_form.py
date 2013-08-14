@@ -1,4 +1,5 @@
 from django import forms
+from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
 from form_utils.forms import BetterForm
@@ -72,6 +73,7 @@ class RecordFilterForm(BetterForm):
     MODULE_VERSION = 1
     SUMMARY_TEMPLATE = 'mock_galaxy_factory/record_filter_summary.html'
     LABEL = 'Selection'
+    TAB_ID = settings.MODULE_INDICES['record_filter']
 
     class Meta:
         fieldsets = [('primary', {

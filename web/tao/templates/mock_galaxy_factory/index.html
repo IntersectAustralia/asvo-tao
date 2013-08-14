@@ -42,23 +42,24 @@
                 {% for form in forms %}
                 <li><a href="#tabs-{{ form.TAB_ID }}" id="tao-tabs-{{ form.TAB_ID }}">{{ form.LABEL }}</a></li>
                 {%  endfor %}
-                <li><a href="#tabs-{{ forms_size }}" id="tao-tabs-{{ forms_size }}">Summary and Submit</a></li>
+                <li><a href="#tabs-{{ TAB_SUMMARY_ID }}" id="tao-tabs-{{ TAB_SUMMARY_ID }}">Summary and Submit</a></li>
             </ul>
             {% for form in forms %}
-                <div id="tabs-{{ forloop.counter }}" class="tao-tab"
-                     tao-number="{{ forloop.counter }}"
+                <div id="tabs-{{ form.TAB_ID }}" class="tao-tab"
+                     tao-number="{{ form.TAB_ID }}"
                      data-bind="with: {{ form.prefix }}">
 
-                    {% if forloop.counter > 1 %}
                         <input type="button" value="Next &gt;" class="btn tao-next" />
+                    {% if forloop.counter > 1 %}
                         <input type="button" value="&lt; Previous" class="btn tao-prev" style="float: left;"/>
                     {% endif %}
 
                     {% include form.EDIT_TEMPLATE %}
 
                     <div class="form-actions">
-                      {% if forloop.counter > 1 %}
+
                           <input type="button" value="Next &gt;" class="btn tao-next" />
+                      {% if forloop.counter > 1 %}
                           <input type="button" value="&lt; Previous" class="btn tao-prev" style="float: left;"/>
                       {% endif %}
                       
@@ -66,7 +67,9 @@
 
                 </div>
             {% endfor %}
-            <div id="tabs-{{ forms_size }}" class="tao-tab" tao-number="{{ forms_size }}">
+          <div id="tabs-{{ TAB_SUMMARY_ID }}" class="tao-tab"
+                   tao-number="{{ TAB_SUMMARY_ID }}">
+                 
                 <input type="button" value="&lt; Previous" class="btn tao-prev" style="float: left;" />
                 <legend></legend>
                 <div class="row-fluid">
