@@ -22,12 +22,10 @@ def metadata_json():
                     models.GlobalParameter]:
         strs.append('"%s": %s' % (DBClass.__name__ , 
             serializers.serialize('json', DBClass.objects.all())))
-    json_string =  '{' + ',\n'.join(strs) + '}'
-    json_dict = json.loads(json_string)
+    json_str =  '{' + ',\n'.join(strs) + '}'
     if settings.METADATA_PRETTY_PRINT:
+        json_dict = json.loads(json_str)
         json_str = json.dumps(json_dict, sort_keys=True, indent=4, separators=(',', ': '))
-    else:  
-        json_str = json.dumps(json_dict, sort_keys=True)
     return json_str
 
 
