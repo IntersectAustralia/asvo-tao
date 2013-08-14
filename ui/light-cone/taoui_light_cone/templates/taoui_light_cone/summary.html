@@ -23,7 +23,7 @@
                 </span>
             </td>
         </tr>
-        <tr class="light_cone_fields">
+        <tr class="light_cone_fields" data-bind="visible: catalogue_geometry().id == 'light-cone'">
             <td>Dimensions</td>
             <td>
                 <span class="ra_opening_angle" data-bind='html: hr_ra_opening_angle'><!-- --></span>
@@ -31,15 +31,15 @@
                 <span class="redshift" data-bind='html: hr_redshift'><!-- --></span>
             </td>
         </tr>
-        <tr class="light_cone_fields">
-            <td>Count</td>
-            <td><span class="number_of_light_cones"><!-- --></span></td>
+        <tr class="light_cone_fields" data-bind="visible: catalogue_geometry().id == 'light-cone'">
+            <td>Number of light cones</td>
+            <td><span class="number_of_light_cones" data-bind="text: number_of_light_cones"><!-- --></span></td>
         </tr>
-        <tr class="box_fields">
+        <tr class="box_fields" data-bind="visible: catalogue_geometry().id == 'box'">
             <td>Box Size</td>
             <td><span class="box_size" data-bind='text: box_size'><!-- --></span></td>
         </tr>
-        <tr class="box_fields">
+        <tr class="box_fields" data-bind="visible: catalogue_geometry().id == 'box'">
             <td>Redshift</td>
             <td><span class="snapshot" data-bind='html: hr_redshift'><!-- --></span></td>
         </tr>
@@ -55,7 +55,7 @@
 </div>
 
 <script type="text/html" id="summary_output_properties_with_groups">
-        <!-- ko if: !has_groups() -->
+        <!-- ko ifnot: has_groups() -->
         <ul data-bind="foreach: options">
             <li><span data-bind="text: text"/> <i data-bind="text: units" style="font-size: small"></i></li>
         </ul>

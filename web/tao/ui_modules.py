@@ -46,6 +46,9 @@ class UIModulesHolder:
             self._dict[module_name] = form
 
 
+    def form(self, module_name):
+        return self._dict[module_name]
+
     def forms(self):
         return self._forms
 
@@ -73,6 +76,14 @@ class UIModulesHolder:
                     self._errors.update(v.errors)
             valid &= form_valid
         return valid
+    
+    def to_json_dict(self):
+        """Answer a dictionary with all the job parameters in the same format
+        as used in the job submission form."""
+        json_dict = {}
+        for f in self._forms:
+            json_dict.update(f.to_json_dict())
+        return json_dict
 
     @property
     def errors(self):

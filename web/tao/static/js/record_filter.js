@@ -329,6 +329,25 @@ catalogue.modules.record_filter = function ($) {
         else
         	return {'error': true, message: 'Selection max must be greater than Selection min'}
     }
+    
+    this.hr_summary = function() {
+    	var res = '';
+    	if (vm.selection() == undefined) {
+    		return '';
+    	}
+    	var smin = vm.selection_min();
+    	var smax = vm.selection_max();
+    	var label = vm.selection().label;
+
+    	if (smin) {
+    		res = res + smin + ' ≤ ';
+    	}
+    	res = res + label; 
+    	if (smax) {
+    		res = res + ' ≤ ' + smax;
+    	}
+    	return res;
+    }
 
     this.init_model = function () {
     	var current_dataset;
@@ -351,6 +370,7 @@ catalogue.modules.record_filter = function ($) {
     	vm.selection_max
     		.extend({validate: catalogue.validators.is_numeric})
     		.extend({validate: this.valid_min_max});
+    	vm.hr_summary = ko.computed(this.hr_summary);
     	this.update_selections();
 
     	return vm
