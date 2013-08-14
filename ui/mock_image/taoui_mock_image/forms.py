@@ -156,14 +156,13 @@ class Form(BaseForm):
             data = args[1]
             data = data.copy()
 
-            # Removed the + 1 since it doesn't appear to have been subtracted
-            ## Get the management total forms count and add back in
-            ## the 1 we subtracted.
+            # Get the management total forms count and add back in
+            # the 1 we subtracted.
             total = data.get('mock_image-TOTAL_FORMS', 1)
-#             if total:
-#                 total = int(total) + 1
-#             else:
-#                 total = 1
+            if total:
+                total = int(total) + 1
+            else:
+                total = 1
 
             # Do a final check for the checkbox, if we are disabled
             # then set the count to 1.
