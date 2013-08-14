@@ -296,31 +296,6 @@ catalogue.util = function ($) {
         })[0]
     }
 
-    this.dataset = function(id) {
-        return $.grep(TaoMetadata.DataSet, function(elem, idx) {
-            return elem.pk == id
-        })[0]
-    }
-
-
-    this.datasets = function(sid) {
-        var data = $.grep(TaoMetadata.DataSet, function(elem, idx) {
-            return elem.fields.simulation == sid 
-        });
-        if (data === undefined) return [];
-        return $.map(data, function(elem, idx) {
-            var gm = that.galaxy_model(elem.fields.galaxy_model); 
-            return {'id':elem.pk, 
-            'name':gm.fields.name, 
-            'galaxy_model_id':elem.fields.galaxy_model, 
-            'job_size_p1': elem.fields.job_size_p1,
-            'job_size_p2': elem.fields.job_size_p2,
-            'job_size_p3': elem.fields.job_size_p3,
-            'max_job_box_count': elem.fields.max_job_box_count}
-        });
-    }
-
-
     this.global_parameter = function(parameter_name) {
         return $.grep(TaoMetadata.GlobalParameter, function(elem, idx) {
             return elem.fields.parameter_name == parameter_name;
@@ -506,7 +481,8 @@ catalogue.util = function ($) {
 	
 	    if (!is_valid) {
 	        console.log('ERROR FOUND');
-	        show_tab_error();
+	        // show_tab_error();
+	        alert("Validation fails - please check your parameters and try again.")
 	        return false;
 	    }
 	
