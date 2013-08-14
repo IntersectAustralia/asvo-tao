@@ -25,13 +25,21 @@ class FormsGraph():
     OUTPUT_ID = '5'
     MOCK_IMAGE_ID = '6'
 
+class PasswordResetForm(auth_forms.PasswordResetForm):
+    username = forms.CharField(max_length=254, label=_("Username"), required=True)
+
+    def __init__(self, *args, **kwargs):
+        from code import interact
+        interact(local=locals())
+        super(PasswordResetForm, self).__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs['autofocus'] = 'autofocus'
+
 class LoginForm(auth_forms.AuthenticationForm):
     remember_me = forms.BooleanField(label=_("Remember Me"), required=False)
     
     def __init__(self, *args, **kwargs):
         super(LoginForm, self).__init__(*args, **kwargs)
         self.fields['username'].widget.attrs['autofocus'] = 'autofocus'
-
 
 class UserCreationForm(forms.Form):
     # username
