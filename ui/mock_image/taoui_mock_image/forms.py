@@ -8,6 +8,7 @@ taoui_mock_image.forms
 import os
 
 from django import forms
+from django.conf import settings
 from django.forms.formsets import formset_factory
 from form_utils.forms import BetterForm
 from django.utils.translation import ugettext_lazy as _
@@ -133,6 +134,7 @@ class Form(BaseForm):
     MODULE_VERSION = 1
     SUMMARY_TEMPLATE = 'taoui_mock_image/summary.html'
     LABEL = 'Mock Image'
+    TAB_ID = settings.MODULE_INDICES['mock_image']
 
     def __init__(self, *args, **kwargs):
         self.ui_holder = args[0]

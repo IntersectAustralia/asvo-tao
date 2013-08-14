@@ -259,8 +259,7 @@ MODULE_INDICES = {
                   'record_filter': '5',
                   'output_format': '6',
                   'summary': '7',
-                  # 'telescope': '7',
-                  
+                  'telescope': '8'
                   }
 
 TAO_VERSION = '0.25.1-rc1'
