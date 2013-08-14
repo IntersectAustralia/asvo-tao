@@ -150,6 +150,9 @@ def dust_model_find_from_xml(name):
 
 def snapshot_from_xml(data_set, redshift):
     try:
+        # redshift may be a String, Decimal, Float or Integer
+        # MySQL doesn't like anything except Float or Integer
+        # so convert to float first
         obj = models.Snapshot.objects.get(dataset=data_set, redshift=float(redshift))
         return obj
     except models.Snapshot.DoesNotExist:
