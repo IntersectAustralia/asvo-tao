@@ -6,7 +6,6 @@ from tao import workflow, time
 from tao.forms import NO_FILTER
 from tao.models import Snapshot, DataSetProperty
 from tao.record_filter_form import RecordFilterForm
-# from tao.settings import OUTPUT_FORMATS
 from taoui_light_cone.forms import Form as LightConeForm
 from taoui_sed.forms import Form as SEDForm
 from tao.tests.support import stripped_joined_lines
