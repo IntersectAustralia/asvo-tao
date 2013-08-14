@@ -339,7 +339,6 @@ catalogue.modules.light_cone = function ($) {
         vm.number_of_light_cones = ko.observable(1)
             .extend({validate: catalogue.validators.is_int})
             .extend({validate: catalogue.validators.geq(1)});
-            
         vm.dataset.subscribe(function(dataset) {
             var objs = catalogue.util.output_choices(dataset.pk);
             vm.output_properties.new_options(objs);
@@ -373,7 +372,14 @@ catalogue.modules.light_cone = function ($) {
             // .extend({validate: catalogue.validators.leq(vm.max_box_size)});
             .extend({validate: catalogue.validators.leq(vm.max_box_size)});
 
-        vm.snapshots = ko.computed(function (){ 
+        vm.maximum_number_of_light_cones = ko.computed(function() {
+            if (vm.light_cone_type() == 'random') {
+                return get_global_maximum_light_cones();
+            }
+            return get_number_of_unique_light_cones();
+        });
+
+        vm.snapshots = ko.computed(function (){
             return catalogue.util.snapshots(vm.dataset().pk)
         });
         vm.snapshot = ko.observable(vm.snapshots()[0]);

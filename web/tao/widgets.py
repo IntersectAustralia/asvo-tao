@@ -94,7 +94,7 @@ class SpinnerWidget(TextInput):
         if 'spinner_message' in self.attrs:
             span_attrs['data-bind'] = self.attrs['spinner_message']
         input_part = '<input{0} />'.format(flatatt(input_attrs))
-        span_part = '<span {0}></span>'.format(flatatt(span_attrs))
+        span_part = '<span class="spinner-message" {0}></span>'.format(flatatt(span_attrs))
         return mark_safe('<div>' + input_part + '<br/>' + span_part +'</div>')
 
     def bind_label(self):

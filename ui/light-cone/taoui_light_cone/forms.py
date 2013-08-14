@@ -169,7 +169,7 @@ class Form(BetterForm):
             'redshift_min' : {'data-bind':'visible: catalogue_geometry().id == "light-cone"'},
             'redshift_max' : {'data-bind':'visible: catalogue_geometry().id == "light-cone"'},
             'light_cone_type' : {'data-bind':'visible: catalogue_geometry().id == "light-cone"'},
-            'number_of_light_cones' : {'data-bind':'visible: catalogue_geometry().id == "light-cone"'},
+            'number_of_light_cones' : {'data-bind':'visible: catalogue_geometry().id == "light-cone" && light_cone_type() == "random"'},
             'box_size' : {'data-bind':'visible: catalogue_geometry().id == "box"'},
             'snapshot' : {'data-bind':'visible: catalogue_geometry().id == "box"'},
             }
@@ -238,8 +238,8 @@ class Form(BetterForm):
         self.fields['redshift_min'].widget.attrs['data-bind'] = 'value: redshift_min'
         self.fields['redshift_max'].widget.attrs['data-bind'] = 'value: redshift_max'
         self.fields['light_cone_type'].widget.attrs['data-bind'] = 'checked: light_cone_type'
-        self.fields['number_of_light_cones'].widget.attrs['spinner_bind'] = 'spinner: number_of_light_cones, spinnerOptions: {min: 1, max: get_number_of_unique_light_cones}'
-        self.fields['number_of_light_cones'].widget.attrs['spinner_message'] = "text: 'maximum is ' + get_number_of_unique_light_cones()"
+        self.fields['number_of_light_cones'].widget.attrs['spinner_bind'] = 'spinner: number_of_light_cones, spinnerOptions: {min: 1, max: maximum_number_of_light_cones}'
+        self.fields['number_of_light_cones'].widget.attrs['spinner_message'] = "text: 'maximum is ' + maximum_number_of_light_cones()"
         self.fields['output_properties'].widget.attrs['data-bind'] = 'value: output_properties'
 
 
