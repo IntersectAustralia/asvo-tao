@@ -6,7 +6,7 @@ tao.urls
 Django's URL mapping definition
 """
 from django.conf.urls import patterns, url, include
-from django.contrib.auth.views import logout
+from django.contrib.auth.views import logout, password_reset, password_reset_done, password_reset_confirm, password_reset_complete, password_change, password_change_done
 from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import render
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
@@ -88,6 +88,16 @@ urlpatterns = patterns('',
     url(r'^api/', include(v1_api.urls)),
     url(r'^assets/(?P<path>.+)$', 'tao.assets.asset_handler', name='asset'),
 
+    url(r'^accounts/password/reset/$', password_reset,
+        {'post_reset_redirect': '/accounts/password/reset/done/'},
+        name="password_reset"),
+    (r'^accounts/password/reset/done/$', password_reset_done),
+    (r'^accounts/password/reset/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$', password_reset_confirm,
+        {'post_reset_redirect': '/accounts/password/done/'}),
+    (r'^accounts/password/done/$', password_reset_complete),
+    url(r'^accounts/password/change/$', password_change, {'post_change_redirect': '/accounts/password/change/done/'},
+        name='password_change'),
+    (r'^accounts/password/change/done/$', password_change_done),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
