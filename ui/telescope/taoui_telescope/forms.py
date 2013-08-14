@@ -4,6 +4,7 @@ taoui_telescope.forms
 ========================
 """
 from django import forms
+from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
 from form_utils.forms import BetterForm
@@ -23,6 +24,7 @@ class Form(BetterForm):
     MODULE_VERSION = 1
     SUMMARY_TEMPLATE = 'taoui_telescope/summary.html'
     LABEL = 'Telescope'
+    TAB_ID = settings.MODULE_INDICES['telescope']
 
 
     def __init__(self, *args, **kwargs):

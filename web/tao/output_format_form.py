@@ -3,6 +3,7 @@ from django import forms
 from form_utils.forms import BetterForm
 
 import tao.settings as tao_settings
+from django.conf import settings
 from tao.forms import FormsGraph
 from tao.xml_util import module_xpath
 from tao.models import GlobalParameter
@@ -47,6 +48,7 @@ class OutputFormatForm(BetterForm):
     MODULE_VERSION = 1
     SUMMARY_TEMPLATE = 'mock_galaxy_factory/output_format_summary.html'
     LABEL = 'Output format'
+    TAB_ID = settings.MODULE_INDICES['output_format']
 
     class Meta:
         fieldsets = [('primary', {

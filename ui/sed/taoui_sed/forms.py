@@ -8,6 +8,7 @@ taoui_sed.forms
 import os
 
 from django import forms
+from django.conf import settings
 import form_utils.fields as bf_fields
 from form_utils.forms import BetterForm
 
@@ -120,6 +121,7 @@ class Form(BetterForm):
     MODULE_VERSION = 1
     SUMMARY_TEMPLATE = 'taoui_sed/summary.html'
     LABEL = 'Spectral Energy Distribution'
+    TAB_ID = settings.MODULE_INDICES['sed']
 
     SED_REQUIRED_FIELDS = ('single_stellar_population_model', 'band_pass_filters')
 
