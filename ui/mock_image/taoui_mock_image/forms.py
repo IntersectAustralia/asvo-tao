@@ -163,6 +163,7 @@ class Form(BaseForm):
                 total = int(total) + 1
             else:
                 total = 1
+
             apply_mock_image = data.get('mock_image-apply_mock_image', False)
             if type(apply_mock_image) != bool:
                 apply_mock_image = 'true' == apply_mock_image
