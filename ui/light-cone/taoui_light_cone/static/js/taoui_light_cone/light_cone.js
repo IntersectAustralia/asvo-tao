@@ -233,7 +233,11 @@ catalogue.modules.light_cone = function ($) {
 
 
     this.validate = function ($form) {
-//        return validate_number_of_light_cones() && validate_number_of_boxes();
+    	var is_valid = true;
+    	
+    	is_valid &= catalogue.util.validate_vm(vm);
+    	is_valid &= vm.output_properties.to_side.options_raw().length > 0;
+    	return is_valid;
     }
 
 

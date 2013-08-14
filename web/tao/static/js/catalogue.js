@@ -246,6 +246,23 @@ catalogue.util = function ($) {
 
     var that = this;
 
+    this.validate_vm = function(vm) {
+    	// Validate the supplied vm
+    	// Iterate over every member and check for errors
+    	var attr, obj;
+    	var is_valid = true;
+
+    	for (attr in vm) {
+    		obj = vm[attr];
+    		if (obj.hasOwnProperty("error")) {
+    			is_valid &= !obj.error().error;
+    			if (!is_valid)
+    				break;
+    		}
+    	}
+    	return is_valid;
+    }
+
     this.snapshot = function(id) {
         return $.grep(TaoMetadata.Snapshot, function(elem, idx) { 
             return elem.pk == id

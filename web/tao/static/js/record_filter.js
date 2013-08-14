@@ -283,6 +283,12 @@ catalogue.modules.record_filter = function ($) {
     	return result;
     }
     
+    this.filter_choice = function(id) {
+    	return $.grep(this.filter_choices(), function(elem, idx) {
+    		return elem.value == id;
+    	})[0]
+    }
+    
     this.update_selections = function() {
     	// Update the selections and handle selection
     	var old_selection;
@@ -349,8 +355,11 @@ catalogue.modules.record_filter = function ($) {
     	return res;
     }
 
-    this.init_model = function () {
+    this.init_model = function (init_params) {
     	var current_dataset;
+    	// job is either an object containing the job parameters or null
+    	var job = init_params.job;
+    	var param; // Temporary variable for observable initialisation
 
     	vm.selections = ko.observableArray([]);
     	vm.selection = ko.observable();
@@ -372,6 +381,11 @@ catalogue.modules.record_filter = function ($) {
     		.extend({validate: this.valid_min_max});
     	vm.hr_summary = ko.computed(this.hr_summary);
     	this.update_selections();
+    	param = job['record_filter-filter'];
+    	if (param) {
+    		param = this.filter_choice(param);
+    	}
+    	vm.selection(param);
 
     	return vm
     }
