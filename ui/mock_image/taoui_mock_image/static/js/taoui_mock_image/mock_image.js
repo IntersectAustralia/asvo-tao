@@ -6,6 +6,9 @@ catalogue.modules.mock_image = function ($) {
 
     var vm = {}
     this.vm = vm;
+	var image_param_names = ['fov_dec', 'fov_ra', 'height',
+             'min_mag', 'origin_dec', 'origin_ra', 'width',
+             'z_max', 'z_min'];
 
     function update_apply_mock_image(apply_mock_image) {
         if (apply_mock_image) {
@@ -82,9 +85,6 @@ catalogue.modules.mock_image = function ($) {
 		var max_allowed_images = 1000;
 		var image_params;
 		var params = {};
-		var param_names = ['fov_dec', 'fov_ra', 'height',
-		    'min_mag', 'origin_dec', 'origin_ra', 'width',
-		    'z_max', 'z_min'];
 
 		params['mock_image-apply_mock_image'] = [vm.apply_mock_image()];
 		params['mock_image-MAX_NUM_FORMS'] = [max_allowed_images];
@@ -97,8 +97,8 @@ catalogue.modules.mock_image = function ($) {
 				var current_image = image_params[i];
 				var key_prefix = 'mock_image-'+ i + '-';
 
-				for (var j=0; j<param_names.length; j++) {
-					var pn = param_names[j];
+				for (var j=0; j<image_param_names.length; j++) {
+					var pn = image_param_names[j];
 					params[key_prefix + pn] = [current_image[pn]];
 				}
 				params[key_prefix + 'format'] = [current_image['format']().value];
@@ -112,31 +112,60 @@ catalogue.modules.mock_image = function ($) {
     	return params;
     }
 
-    this.init_model = function () {
+    this.init_model = function (init_params) {
+    	// job is either an object containing the job parameters or null
+    	var job = init_params.job;
+    	var param; // Temporary variable for observable initialisation
 
-        function ImageParameters() {
+        function ImageParameters(prefix, job) {
             var def = catalogue.validators.defined;
             var image_params = {};
-            image_params.sub_cone = ko.observable(vm.sub_cone_options()[0]);
-            image_params.format = ko.observable(vm.format_options[0]);
+            var param;
+            
+            function get_param(prefix, pn) {
+            	if (prefix == undefined) {
+            		return false;
+            	}
+            	return job[prefix+pn];
+            }
+
+            param = get_param(prefix, '-sub_cone');
+            image_params.sub_cone = ko.observable(param ? param : vm.sub_cone_options()[0]);
+            param = get_param(prefix, '-format');
+            image_params.format = ko.observable(param ? param : vm.format_options[0]);
             image_params.mag_field_options = ko.computed(function(){
                 return catalogue.modules.sed.vm.bandpass_filters.to_side.options();
             });
             image_params.mag_field = ko.observable();
-            image_params.fov_ra = ko.observable(catalogue.modules.light_cone.vm.ra_opening_angle());
-            image_params.fov_dec = ko.observable(catalogue.modules.light_cone.vm.dec_opening_angle());
-            image_params.width = ko.observable(1024)
+            // Note that mag_field is stored incorrectly
+            // Currently the entry id is stored, not the entry itself.
+            // Look-up could be an issue with respect to initialisation
+            // order.
+            // This isn't required as the Job View simply counts the number
+            // of images, and doesn't display any details, including
+            // the magnitude field.
+            param = get_param(prefix, '-mag_field');
+            if (param) image_params.mag_field(param);
+            param = get_param(prefix, '-fov_ra');
+            image_params.fov_ra = ko.observable(param ? param : catalogue.modules.light_cone.vm.ra_opening_angle());
+            param = get_param(prefix, '-fov_dec');
+            image_params.fov_dec = ko.observable(param ? param : catalogue.modules.light_cone.vm.dec_opening_angle());
+            param = get_param(prefix, '-width');
+            image_params.width = ko.observable(param ? param : 1024)
                 .extend({validate: catalogue.validators.is_float})
                 .extend({validate: catalogue.validators.geq(1)})
                 .extend({validate: catalogue.validators.leq(4096)});
-            image_params.height = ko.observable(1024)
+            param = get_param(prefix, '-height');
+            image_params.height = ko.observable(param ? param : 1024)
                 .extend({validate: catalogue.validators.is_float})
                 .extend({validate: catalogue.validators.geq(1)})
                 .extend({validate: catalogue.validators.leq(4096)});
-            image_params.min_mag = ko.observable(7)
+            param = get_param(prefix, '-min_mag');
+            image_params.min_mag = ko.observable(param ? param : 7)
                 .extend({validate: catalogue.validators.is_float})
                 .extend({validate: catalogue.validators.positive});
-            image_params.z_min = ko.observable(catalogue.modules.light_cone.vm.redshift_min())
+            param = get_param(prefix, '-z_min');
+            image_params.z_min = ko.observable(param ? param : catalogue.modules.light_cone.vm.redshift_min())
                 .extend({validate: catalogue.validators.is_float})
                 .extend({validate: catalogue.validators.geq(
                     catalogue.modules.light_cone.vm.redshift_min
@@ -144,7 +173,8 @@ catalogue.modules.mock_image = function ($) {
                 .extend({validate: catalogue.validators.leq(
                     catalogue.modules.light_cone.vm.redshift_max
                     )});
-            image_params.z_max = ko.observable(catalogue.modules.light_cone.vm.redshift_max())
+            param = get_param(prefix, '-z_max');
+            image_params.z_max = ko.observable(param ? param : catalogue.modules.light_cone.vm.redshift_max())
                 .extend({validate: catalogue.validators.is_float})
                 .extend({validate: catalogue.validators.geq(
                     catalogue.modules.light_cone.vm.redshift_min
@@ -155,9 +185,10 @@ catalogue.modules.mock_image = function ($) {
                 .extend({validate: catalogue.validators.greater_than(
                     image_params.z_min
                 )});
-            image_params.origin_ra = ko.observable(
-                    def(catalogue.modules.light_cone.vm.ra_opening_angle()) ?
-                    catalogue.modules.light_cone.vm.ra_opening_angle()/2 : '');
+            param = get_param(prefix, '-origin_ra');
+            image_params.origin_ra = ko.observable(param ? param :
+                    (def(catalogue.modules.light_cone.vm.ra_opening_angle()) ?
+                    catalogue.modules.light_cone.vm.ra_opening_angle()/2 : ''));
             image_params.origin_ra
                 .extend({validate: catalogue.validators.is_float})
                 .extend({validate: catalogue.validators.test(
@@ -178,9 +209,10 @@ catalogue.modules.mock_image = function ($) {
                     }),
                     "Origin and field-of-view RAs are below cone minimum."
                 )});
-            image_params.origin_dec = ko.observable(
-                    def(catalogue.modules.light_cone.vm.ra_opening_angle()) ?
-                        catalogue.modules.light_cone.vm.ra_opening_angle()/2 : '');
+            param = get_param(prefix, '-origin_dec');
+            image_params.origin_dec = ko.observable(param ? param :
+                    (def(catalogue.modules.light_cone.vm.ra_opening_angle()) ?
+                        catalogue.modules.light_cone.vm.ra_opening_angle()/2 : ''));
             image_params.origin_dec
                 .extend({validate: catalogue.validators.is_float})
                 .extend({validate: catalogue.validators.test(
@@ -202,6 +234,22 @@ catalogue.modules.mock_image = function ($) {
                 )});
 
             return image_params;
+        }
+        
+        function add_images_from(job) {
+        	// Add the images from the supplied job parameters
+        	var num_images;
+
+        	if (!vm.apply_mock_image()) return;
+        	
+        	num_images = parseInt(job['mock_image-TOTAL_FORMS']);
+        	if (isNaN(num_images)) return;
+        	if (num_images == 0) return;
+
+        	for (var i=0; i<num_images; i++) {
+        		var prefix = 'mock_image' + i;
+        		vm.image_settings.push(ImageParameters(prefix, job));
+        	}
         }
 
         vm.can_have_images = ko.computed(function(){
@@ -225,13 +273,15 @@ catalogue.modules.mock_image = function ($) {
                 // {value:'JPEG', text:'JPEG'}
             ];
 
-        vm.apply_mock_image = ko.observable(false);
+        param = job['mock_image-apply_mock_image']
+        vm.apply_mock_image = ko.observable(param ? param : false);
 
         vm.apply_mock_image.subscribe(function(val){
             update_apply_mock_image(val, vm);
         });
 
         vm.image_settings = ko.observableArray([]);
+        add_images_from(job);
 
         vm.number_of_images = ko.computed(function() {
              return vm.image_settings().length;
