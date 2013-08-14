@@ -460,67 +460,6 @@ catalogue.util = function ($) {
         }
     }
 
-
-
-    this.fill_in_summary = function (form_name, field_name, input_data) {
-        $('div.summary_' + form_name + ' .' + field_name).html(input_data);
-    }
-
-
-    this.clear_in_summary = function (form_name, field_name) {
-        $('div.summary_' + form_name + ' .' + field_name).html('None');
-    }
-
-
-    this.list_multiple_selections_in_summary = function (form_name, select_widget) {
-        console.log("list_multiple_selections_in_summary for " + select_widget + " starts")
-        var selections_count = 0;
-        var selected_values = [];
-
-        selected_values.push('<ul>');
-        var $groups = $('#id_' + form_name + '-' + select_widget + ' optgroup');
-        console.log(form_name + ' ' + select_widget + ' has group size: ' + $groups.size());
-        if ($groups.size() > 0) {
-            $groups.each(function (i, e) {
-                var name = $(e).attr('group-name');
-                if (name.length == 0) {
-                    name = "Ungrouped";
-                }
-                selected_values.push('<li>' + name + '<ul>');
-                $(e).find('option').each(function (i, option) {
-                    selected_values.push('<li>' + $(option).html() + '</li>');
-                    selections_count++;
-                })
-                selected_values.push('</ul></li>');
-            })
-        } else {
-            $('#id_' + form_name + '-' + select_widget + ' option').each(function (i, option) {
-                selected_values.push('<li>' + $(option).html() + '</li>');
-                selections_count++;
-            });
-        }
-        selected_values.push('</ul>');
-
-        this.fill_in_summary(form_name, select_widget + '_list', selected_values.join(''));
-        console.log("list_multiple_selections_in_summary  " + select_widget + " ends")
-        return selections_count;
-    }
-
-
-    this.show_output_property_info = function (cache_item) {
-        $('div.output-property-info .name').html(cache_item.text);
-        $('div.output-property-info .details').html(cache_item.description);
-        $('div.output-property-info').show();
-    }
-
-
-    this.clear_info = function (form_name, name) {
-        $('div.' + name + '-info .name').html('');
-        $('div.' + name + '-info .details').html('');
-        $('div.' + name + '-info').show();
-    }
-
-
     var get_tab_number = function ($elem) {
         return parseInt($elem.closest('div.tao-tab').attr('tao-number'));
     }
