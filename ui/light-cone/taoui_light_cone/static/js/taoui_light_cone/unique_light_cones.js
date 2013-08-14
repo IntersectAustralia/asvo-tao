@@ -30,6 +30,20 @@
         return d;
     }
 
+    var get_global_maximum_light_cones = function() {
+        if (typeof get_global_maximum_light_cones._max == 'undefined') {
+            var param = catalogue.util.global_parameter_or_null('maximum-random-light-cones');
+            var val = param == null ? NaN : parseInt(param.fields.parameter_value);
+            if (isNaN(val)) {
+                var msg = "'maximum-random-light-cones' not properly configured for this installation";
+                alert(msg);
+                console.log(msg);
+                val = 1;
+            }
+            get_global_maximum_light_cones._max = val;
+        }
+        return get_global_maximum_light_cones._max;
+    }
 
     //    /**
     //     * Compute the maximum number of unique cones available for selected parameters

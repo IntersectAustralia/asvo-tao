@@ -120,11 +120,21 @@ class SingleForm(BetterForm):
 
 
     def full_clean(self):
-
         # Update the choices before continuing.
         self.fields['sub_cone'].choices.append(('ALL', 'ALL'))
         self.fields['mag_field'].choices.append(('test', 'test')) # TODO: Remove.
         return super(SingleForm, self).full_clean()
+
+    def to_json_dict(self, prefix="mock_image"):
+        json_dict = {}
+        for fn in self.fields.keys():
+            val = self.data.get(self.prefix + '-' + fn)
+            if val is not None:
+                json_dict[prefix + '-' + fn] = val 
+        return json_dict
+
+
+
 
 # Define a formset.
 BaseForm = formset_factory(SingleForm, extra=1)
@@ -182,6 +192,27 @@ class Form(BaseForm):
 
         # Get the checkbox state.
         self.apply_mock_image = self.data.get('mock_image-apply_mock_image', False)
+
+    def to_json_dict(self):
+        """Answer the json dictionary representation of the receiver.
+        i.e. something that can easily be passed to json.dumps()"""
+        json_dict = {}
+        ffn = self.prefix + '-apply_mock_image'
+        apply_mock_image = self.data[ffn]
+        json_dict[ffn] = apply_mock_image
+        if apply_mock_image:
+            for fn in ['TOTAL_FORMS', 'INITIAL_FORMS', 'MAX_NUM_FORMS']:
+                ffn = self.prefix + '-' + fn
+                val = self.data.get(ffn)
+                if val is not None:
+                    json_dict[ffn] = val
+            i = 0 
+            for image in self.forms:
+                image_prefix = 'mock_image' + str(i)
+                image_dict = image.to_json_dict(prefix=image_prefix)
+                json_dict.update(image_dict)
+                i += 1
+        return json_dict
 
     def to_xml(self, root):
         version = 2.0

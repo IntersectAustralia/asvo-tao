@@ -67,6 +67,17 @@ class OutputFormatForm(BetterForm):
         self.fields['supported_formats'].widget.attrs['data-bind'] = 'foreach: output_formats, value: output_format'
 
 
+    def to_json_dict(self):
+        """Answer the json dictionary representation of the receiver.
+        i.e. something that can easily be passed to json.dumps()"""
+        json_dict = {}
+        for fn in self.fields.keys():
+            ffn = self.prefix + '-' + fn
+            val = self.data.get(ffn)
+            if val is not None:
+                json_dict[ffn] = val
+        return json_dict
+
     def to_xml(self, parent_xml_element):
         version = 2.0
         to_xml_2(self, parent_xml_element)
