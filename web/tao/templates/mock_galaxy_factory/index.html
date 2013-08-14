@@ -19,7 +19,8 @@
     <script type="text/javascript" src="{% static 'js/catalogue.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/catalogue_helper.js' %}"></script>
     <script type="text/javascript" >
-    var TaoMetadata = {% metadata_json %}
+    var TaoMetadata = {% metadata_json %};
+    var TaoJob = {};
     </script>
 {% endblock %}
 
