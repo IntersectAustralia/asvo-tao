@@ -47,101 +47,6 @@ catalogue.modules.light_cone = function ($) {
     	return Math.round(cjs * 100);
     }
 
-
-    var display_maximum_number_light_cones = function ($field, msg) {
-        var $enclosing = $field.closest('label.control-label');
-        $enclosing.find('span.lc_number-inline').remove();
-        if (msg == null) return;
-        $field.after('<span class="lc_number-inline"></span>');
-        $enclosing.find('span.lc_number-inline').text(msg);
-        show_tab($enclosing, 0);
-    }
-
-
-    // var update_galaxy_model_options = function (simulation_id) {
-    //     var $galaxy_model = $(lc_id('galaxy_model'));
-    //     if (simulation_id === 0) {
-    //         $galaxy_model.empty();
-    //         $galaxy_model.change();
-    //         return;
-    //     }
-
-    //     var upd = function (data) {
-    //             var initial_data_set_id = $galaxy_model.val();
-    //             $galaxy_model.empty();
-    //             for (i = 0; i < data.length; i++) {
-    //                 item = data[i];
-    //                 $option = $('<option/>');
-    //                 $option.attr('value', item.id);
-    //                 $option.attr('data-galaxy_model_id', item.galaxy_model_id);
-    //                 $option.attr('data-job_size_p1', item.job_size_p1);
-    //                 $option.attr('data-job_size_p2', item.job_size_p2);
-    //                 $option.attr('data-job_size_p3', item.job_size_p3);
-    //                 $option.attr('data-max_job_box_count', item.max_job_box_count);
-    //                 if (item.id == initial_data_set_id) {
-    //                     $option.attr('selected', 'selected');
-    //                 }
-    //                 $option.html(item.name);
-    //                 $galaxy_model.append($option);
-    //             }
-    //             $galaxy_model.change();
-    //         };
-
-    //     upd(catalogue.util.galaxy_models(simulation_id));
-
-    // };
-
-
-    // var show_simulation_info = function (simulation_id) {
-
-    //     data = catalogue.util.simulation(simulation_id);
-    //     $('div.simulation-info .name').html(data.fields.name);
-    //     $('div.simulation-info .details').html(data.fields.details);
-    //     $('div.simulation-info').show();
-    //     catalogue.util.fill_in_summary('light_cone', 'simulation', data.fields.name);
-    //     catalogue.util.fill_in_summary('light_cone', 'simulation_description', '<br><b>' + data.fields.name + ':</b><br>' + data.fields.details);
-    //     $(lc_id('number_of_light_cones')).data("simulation-box-size", data.fields.box_size);
-
-    // };
-
-
-    // var spinner_check_value = function (new_value) {
-    //     var ra = vm.ra_opening_angle();
-    //     var dec = vm.dec_opening_angle();
-    //     var redshift_min = $(lc_id('redshift_min')).val();
-    //     var redshift_max = $(lc_id('redshift_max')).val();
-    //     var $spinner = $(lc_id('number_of_light_cones')).closest('span');
-    //     var maximum = $(lc_id('number_of_light_cones')).data('spin-max');
-    //     if (new_value <= 1) {
-    //         if (new_value <= 0) {
-    //             catalogue.util.show_error($spinner, "Please provide a positive number of light-cones");
-    //             catalogue.util.fill_in_summary('light_cone', 'number_of_light_cones', 'Negative number of light-cones is invalid');
-    //             return false;
-    //         }
-    //     }
-
-    //     if (maximum > 0) {
-    //         $(lc_id('number_of_light_cones')).spinner("option", "max", maximum);
-    //         if (new_value >= maximum) {
-    //             if (new_value > maximum) {
-    //                 catalogue.util.show_error($spinner, "The maximum is " + maximum);
-    //                 catalogue.util.fill_in_summary('light_cone', 'number_of_light_cones', 'Number of light cones selected exceeds the maximum');
-    //                 return false;
-    //             }
-    //         }
-
-    //     } else if (ra != "" && dec != "" && redshift_min != "" && redshift_max != "") {
-    //         catalogue.util.show_error($spinner, "Selection parameters can't be used to generate unique light-cones");
-    //         catalogue.util.fill_in_summary('light_cone', 'number_of_light_cones', 'An invalid number of light cones is selected');
-    //         return false;
-    //     }
-
-    //     catalogue.util.show_error($spinner, null);
-    //     catalogue.util.fill_in_summary('light_cone', 'number_of_light_cones', new_value + " " + $("input[name='light_cone-light_cone_type']:checked").val() + " light cones");
-    //     return true;
-    // }
-
-
     var spinner_check_value = function (new_value) {
         var ra = vm.ra_opening_angle();
         var dec = vm.dec_opening_angle();
@@ -181,161 +86,161 @@ catalogue.modules.light_cone = function ($) {
         return true;
     }
 
-    var calculate_max_number_of_cones = function () {
-        function spinner_set_max(maximum) {
-            $spinner_label = $('label[for=id_light_cone-number_of_light_cones]');
-            if (isNaN(maximum) || maximum <= 0 || !isFinite(maximum)) {
-                $(lc_id('number_of_light_cones')).spinner("disable");
-                $(lc_id('number_of_light_cones')).data("spin-max", 0);
-                $spinner_label.html("Select the number of light-cones:*");
-                catalogue.util.fill_in_summary('light_cone', 'number_of_light_cones', 'Invalid light-cone parameters selected');
-                return false;
-            } else {
-                $(lc_id('number_of_light_cones')).spinner("enable");
-                $(lc_id('number_of_light_cones')).data("spin-max", maximum);
-            }
-            spinner_check_value(parseInt($(lc_id('number_of_light_cones')).val()));
-            return true;
-        }
+//    var calculate_max_number_of_cones = function () {
+//        function spinner_set_max(maximum) {
+//            $spinner_label = $('label[for=id_light_cone-number_of_light_cones]');
+//            if (isNaN(maximum) || maximum <= 0 || !isFinite(maximum)) {
+//                $(lc_id('number_of_light_cones')).spinner("disable");
+//                $(lc_id('number_of_light_cones')).data("spin-max", 0);
+//                $spinner_label.html("Select the number of light-cones:*");
+//                catalogue.util.fill_in_summary('light_cone', 'number_of_light_cones', 'Invalid light-cone parameters selected');
+//                return false;
+//            } else {
+//                $(lc_id('number_of_light_cones')).spinner("enable");
+//                $(lc_id('number_of_light_cones')).data("spin-max", maximum);
+//            }
+//            spinner_check_value(parseInt($(lc_id('number_of_light_cones')).val()));
+//            return true;
+//        }
 
-        var selection = $("input[name='light_cone-light_cone_type']:checked").val();
+//        var selection = $("input[name='light_cone-light_cone_type']:checked").val();
 
-        if ("unique" == selection) {
-            // TODO: remove lines below once observers point-of-view for multiple unique light cones has been fixed in science modules
-            $(lc_id('number_of_light_cones')).val('1');
-            $(lc_id('number_of_light_cones')).closest('div.control-group').hide();
-            //////
-            var maximum = get_number_of_unique_light_cones();
-            if (spinner_set_max(maximum)) {
-                $spinner_label.html("Select the number of light-cones: (maximum for the selected parameters is " + maximum + ")*");
-            }
-        } else {
-            // TODO: remove line below once observers point-of-view for multiple unique light cones has been fixed in science modules
-            $(lc_id('number_of_light_cones')).closest('div.control-group').show();
-            //////
-
-            var data = catalogue.util.global_parameter('maximum-random-light-cones');
-            var maximum = parseInt(data.fields.parameter_value);
-            if (spinner_set_max(maximum)) {
-                $spinner_label.html("Select the number of light-cones: (maximum " + maximum + " random light-cones)*");
-            }
-
-        }
-    }
-
-
-    var validate_number_of_light_cones = function () {
-        var geometry = vm.catalogue_geometry(); // $(lc_id('catalogue_geometry')).val();
-        if (geometry == "light-cone") {
-            var number_of_light_cones = parseInt($(lc_id('number_of_light_cones')).val());
-            return spinner_check_value(number_of_light_cones);
-        }
-        return true;
-    }
-
-    var validate_number_of_boxes = function() {
-        if ($('#max_job_size').hasClass('job_too_large_error')) {
-            catalogue.util.show_tab($('#max_job_size'), 0);
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    var cleanup_fields = function ($form) {
-        // cleanup geometry
-        var geometry = vm.catalogue_geometry(); // $(lc_id('catalogue_geometry')).val();
-        if (geometry == "box") {
-            $('.light_cone_field').val('');
-        } else {
-            $('.light_box_field').val('');
-        }
-    }
-
-    function put_handler_ra_and_dec(field_name) {
-        var event_handler = function(newValue) {
-            var $elem = $(lc_id(field_name));
-            if (vm.catalogue_geometry() == "box") {
-                clear_error($elem);
-                return;
-            }
-            if (parseFloat(newValue) <= 0. || parseFloat(newValue) > 90.0) {
-                set_error($elem, 'Value must be 0 < x <= 90');
-            } else {
-                clear_error($elem);
-            }
-            // fill_in_ra_dec_in_summary();
-            // The max number of cones should be triggered through a KO dependency
-            // calculate_max_number_of_cones();
-        }
-        clean_inline($(lc_id(field_name)));
-        vm[field_name].subscribe(event_handler);
-    }
-
-    function init_event_handlers() {
-
-        $('#expand_dataset').click(function (e) {
-            e.preventDefault();
-            $this = $(this);
-            if ($this.html() === "&gt;&gt;") {
-                $('div.summary_light_cone .simulation_description, div.summary_light_cone .galaxy_model_description').show();
-                $this.html("<<");
-            } else {
-                $('div.summary_light_cone .simulation_description, div.summary_light_cone .galaxy_model_description').hide();
-                $this.html(">>");
-            }
-            return false;
-        });
+//        if ("unique" == selection) {
+//            // TODO: remove lines below once observers point-of-view for multiple unique light cones has been fixed in science modules
+//            $(lc_id('number_of_light_cones')).val('1');
+//            $(lc_id('number_of_light_cones')).closest('div.control-group').hide();
+//            //////
+//            var maximum = get_number_of_unique_light_cones();
+//            if (spinner_set_max(maximum)) {
+//                $spinner_label.html("Select the number of light-cones: (maximum for the selected parameters is " + maximum + ")*");
+//            }
+//        } else {
+//            // TODO: remove line below once observers point-of-view for multiple unique light cones has been fixed in science modules
+//            $(lc_id('number_of_light_cones')).closest('div.control-group').show();
+//            //////
+//
+//            var data = catalogue.util.global_parameter('maximum-random-light-cones');
+//            var maximum = parseInt(data.fields.parameter_value);
+//            if (spinner_set_max(maximum)) {
+//                $spinner_label.html("Select the number of light-cones: (maximum " + maximum + " random light-cones)*");
+//            }
+//
+//        }
+//    }
 
 
-        $('#expand_output_properties').click(function (e) {
-            e.preventDefault();
-            $this = $(this);
-            if ($this.html() === "&gt;&gt;") {
-                $('div.summary_light_cone .output_properties_list').show();
-                $this.html("<<");
-            } else {
-                $('div.summary_light_cone .output_properties_list').hide();
-                $this.html(">>");
-            }
-            return false;
-        });
+//    var validate_number_of_light_cones = function () {
+//        var geometry = vm.catalogue_geometry(); // $(lc_id('catalogue_geometry')).val();
+//        if (geometry == "light-cone") {
+//            var number_of_light_cones = parseInt(vm.number_of_light_cones());  // $(lc_id('number_of_light_cones')).val());
+//            return spinner_check_value(number_of_light_cones);
+//        }
+//        return true;
+//    }
 
-    }
+//    var validate_number_of_boxes = function() {
+//        if ($('#max_job_size').hasClass('job_too_large_error')) {
+//            catalogue.util.show_tab($('#max_job_size'), 0);
+//            return false;
+//        } else {
+//            return true;
+//        }
+//    }
+
+//    var cleanup_fields = function ($form) {
+//        // cleanup geometry
+//        var geometry = vm.catalogue_geometry(); // $(lc_id('catalogue_geometry')).val();
+//        if (geometry == "box") {
+//            $('.light_cone_field').val('');
+//        } else {
+//            $('.light_box_field').val('');
+//        }
+//    }
+
+//    function put_handler_ra_and_dec(field_name) {
+//        var event_handler = function(newValue) {
+//            var $elem = $(lc_id(field_name));
+//            if (vm.catalogue_geometry() == "box") {
+//                clear_error($elem);
+//                return;
+//            }
+//            if (parseFloat(newValue) <= 0. || parseFloat(newValue) > 90.0) {
+//                set_error($elem, 'Value must be 0 < x <= 90');
+//            } else {
+//                clear_error($elem);
+//            }
+//            // fill_in_ra_dec_in_summary();
+//            // The max number of cones should be triggered through a KO dependency
+//            // calculate_max_number_of_cones();
+//        }
+//        clean_inline($(lc_id(field_name)));
+//        vm[field_name].subscribe(event_handler);
+//    }
+
+//    function init_event_handlers() {
+//
+//        $('#expand_dataset').click(function (e) {
+//            e.preventDefault();
+//            $this = $(this);
+//            if ($this.html() === "&gt;&gt;") {
+//                $('div.summary_light_cone .simulation_description, div.summary_light_cone .galaxy_model_description').show();
+//                $this.html("<<");
+//            } else {
+//                $('div.summary_light_cone .simulation_description, div.summary_light_cone .galaxy_model_description').hide();
+//                $this.html(">>");
+//            }
+//            return false;
+//        });
+//
+//
+//        $('#expand_output_properties').click(function (e) {
+//            e.preventDefault();
+//            $this = $(this);
+//            if ($this.html() === "&gt;&gt;") {
+//                $('div.summary_light_cone .output_properties_list').show();
+//                $this.html("<<");
+//            } else {
+//                $('div.summary_light_cone .output_properties_list').hide();
+//                $this.html(">>");
+//            }
+//            return false;
+//        });
+//
+//    }
+//
+
+//    var empty_light_cone_variables = function () {
+//        $(lc_id('ra_opening_angle')).attr('value', '');
+//        $(lc_id('dec_opening_angle')).attr('value', '');
+//        $(lc_id('redshift_min')).attr('value', '');
+//        $(lc_id('redshift_max')).attr('value', '');
+//    }
 
 
-    var empty_light_cone_variables = function () {
-        $(lc_id('ra_opening_angle')).attr('value', '');
-        $(lc_id('dec_opening_angle')).attr('value', '');
-        $(lc_id('redshift_min')).attr('value', '');
-        $(lc_id('redshift_max')).attr('value', '');
-    }
-
-
-    var empty_box_variables = function () {
-        $(lc_id('box_size')).attr('value', '');
-    }
-
+//    var empty_box_variables = function () {
+//        $(lc_id('box_size')).attr('value', '');
+//    }
+//
 
     this.cleanup_fields = function ($form) {
-        var geometry = vm.catalogue_geometry(); // $(lc_id('catalogue_geometry')).val();
-        if (geometry == 'box') {
-            empty_light_cone_variables();
-        } else {
-            empty_box_variables();
-        }
+//        var geometry = vm.catalogue_geometry(); // $(lc_id('catalogue_geometry')).val();
+//        if (geometry == 'box') {
+//            empty_light_cone_variables();
+//        } else {
+//            empty_box_variables();
+//        }
     }
 
 
     this.validate = function ($form) {
-        return validate_number_of_light_cones() && validate_number_of_boxes();
+//        return validate_number_of_light_cones() && validate_number_of_boxes();
     }
 
 
     this.pre_submit = function ($form) {
-        $(lc_id('output_properties') + ' option').each(function (i) {
-            $(this).attr("selected", "selected");
-        });
+//        $(lc_id('output_properties') + ' option').each(function (i) {
+//            $(this).attr("selected", "selected");
+//        });
     }
 
     this.job_parameters = function() {
@@ -394,13 +299,13 @@ catalogue.modules.light_cone = function ($) {
         return format_redshift(res);
     };
     
-    var galaxy_model_from_dsid = function(dsid) {
-    	// Answer the galaxy model for the currently selected dataset
-    	debugger;
-    	var dsid = vm.dataset();
-    	var gmid = catalogue.util.dataset(dsid).fields.galaxy_model;
-    	return catalogue.util.galaxy_model(gmid);
-    };
+//    var galaxy_model_from_dsid = function(dsid) {
+//    	// Answer the galaxy model for the currently selected dataset
+//    	debugger;
+//    	var dsid = vm.dataset();
+//    	var gmid = catalogue.util.dataset(dsid).fields.galaxy_model;
+//    	return catalogue.util.galaxy_model(gmid);
+//    };
 
     var lookup_dataset = function(sid, gmid) {
     	res = $.grep(TaoMetadata.DataSet, function(elem, idx) {
@@ -456,8 +361,9 @@ catalogue.modules.light_cone = function ($) {
         param = job['light_cone-light_cone_type'];
         vm.light_cone_type = ko.observable(param ? param : 'unique');
         param = job['light_cone-number_of_light_cones'];
-        vm.number_of_light_cones = ko.observable(param ? param : 1);
-            
+        vm.number_of_light_cones = ko.observable(param ? param : 1)
+            .extend({validate: catalogue.validators.is_int})
+            .extend({validate: catalogue.validators.geq(1)});
         vm.dataset.subscribe(function(dataset) {
             var objs = catalogue.util.output_choices(dataset.pk);
             vm.output_properties.new_options(objs);
@@ -496,7 +402,14 @@ catalogue.modules.light_cone = function ($) {
             // .extend({validate: catalogue.validators.leq(vm.max_box_size)});
             .extend({validate: catalogue.validators.leq(vm.max_box_size)});
 
-        vm.snapshots = ko.computed(function (){ 
+        vm.maximum_number_of_light_cones = ko.computed(function() {
+            if (vm.light_cone_type() == 'random') {
+                return get_global_maximum_light_cones();
+            }
+            return get_number_of_unique_light_cones();
+        });
+
+        vm.snapshots = ko.computed(function (){
             return catalogue.util.snapshots(vm.dataset().pk)
         });
         vm.snapshot = ko.observable(vm.snapshots()[0]);
@@ -599,19 +512,24 @@ catalogue.modules.light_cone = function ($) {
         // NOTE: This is a bit nasty because we're mixing jQuery widgets
         // with knouckout observables, but it works.
 
-        $(lc_id('number_of_light_cones')).spinner({
-            spin: function (evt, ui) {
-                return spinner_check_value(ui.value);
-            },
-            min: 1
-        });
+//        $(lc_id('number_of_light_cones')).spinner({
+//            spin: function (evt, ui) {
+//                // return spinner_check_value(ui.value);
+//                vm.number_of_light_cones(parseInt(ui.value));
+//                if (vm.number_of_light_cones.hasErrors()) {
+//                    return false;
+//                }
+//                return true;
+//            },
+//            min: 1
+//        });
 
-        vm.toggle_light_conne_spinner = ko.computed(function() {
+        vm.toggle_light_cone_spinner = ko.computed(function() {
             result = false
             if (vm.light_cone_type() == 'unique') {
-                $(lc_id('number_of_light_cones')).spinner("disable");
+                // $(lc_id('number_of_light_cones')).spinner("disable");
             } else {
-                $(lc_id('number_of_light_cones')).spinner("enable");
+                // $(lc_id('number_of_light_cones')).spinner("enable");
                 result = true;
             }
             return result;
