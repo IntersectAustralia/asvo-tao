@@ -10,12 +10,12 @@ from tao import workflow, time
 from tao.forms import FormsGraph
 from tao.output_format_form import OutputFormatForm
 from tao.record_filter_form import RecordFilterForm
-from tao.settings import OUTPUT_FORMATS
+# from tao.settings import OUTPUT_FORMATS
 from taoui_light_cone.forms import Form as LightConeForm
 from taoui_sed.forms import Form as SEDForm
 from tao.tests.support import stripped_joined_lines, UtcPlusTen
 from tao.tests.support.xml import light_cone_xml
-from tao.tests.support.factories import UserFactory, StellarModelFactory, SnapshotFactory, DataSetFactory, SimulationFactory, GalaxyModelFactory, DataSetPropertyFactory, BandPassFilterFactory, DustModelFactory
+from tao.tests.support.factories import UserFactory, StellarModelFactory, SnapshotFactory, DataSetFactory, SimulationFactory, GalaxyModelFactory, DataSetPropertyFactory, BandPassFilterFactory, DustModelFactory, GlobalParameterFactory
 from tao.tests.support.xml import XmlDiffMixin
 from tao.tests.helper import MockUIHolder, make_form
 
@@ -23,6 +23,14 @@ class WorkflowTests(TestCase, XmlDiffMixin):
     
     def setUp(self):
         super(WorkflowTests, self).setUp()
+
+        OUTPUT_FORMATS = [
+            {'value':'csv', 'text':'CSV (Text2)', 'extension':'csv'},
+            {'value':'hdf5', 'text':'HDF5', 'extension':'hdf5'},
+            {'value': 'fits', 'text': 'FITS', 'extension': 'fits'},
+            {'value': 'votable', 'text': 'VOTable', 'extension': 'xml'}
+        ]
+        self.output_formats = GlobalParameterFactory.create(parameter_name='output_formats', parameter_value=OUTPUT_FORMATS)
         # "2012-12-13T13:55:36+10:00"
         time.frozen_time = datetime.datetime(2012, 12, 20, 13, 55, 36, 0, UtcPlusTen())
         self.user = UserFactory.create()
@@ -57,6 +65,11 @@ class WorkflowTests(TestCase, XmlDiffMixin):
         self.sed_disabled = {'apply_sed': False}
         self.sed_parameters_no_dust = {'apply_sed': True, 'single_stellar_population_model': self.stellar_model.id,
                                        'band_pass_filters': [str(self.band_pass_filter.id) + '_absolute']}
+
+
+        # from code import interact
+        # interact(local=locals())
+
         self.output_format = OUTPUT_FORMATS[0]['value']
         self.output_format_parameters = {'supported_formats': self.output_format}
 

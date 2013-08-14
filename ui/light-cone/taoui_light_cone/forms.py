@@ -4,6 +4,7 @@ taoui_light_cone.forms
 ========================
 """
 from django import forms
+from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
 from form_utils.forms import BetterForm
@@ -129,6 +130,7 @@ class Form(BetterForm):
     MODULE_VERSION = 1
     SUMMARY_TEMPLATE = 'taoui_light_cone/summary.html'
     LABEL = 'General Properties'
+    TAB_ID = settings.MODULE_INDICES['light_cone']
 
     catalogue_geometry = forms.ChoiceField(choices=[(BOX, 'Box'), (CONE, 'Light-Cone'), ])
 

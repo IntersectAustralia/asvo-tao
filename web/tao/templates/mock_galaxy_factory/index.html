@@ -39,7 +39,7 @@
         <div id="tabs" class='row-fluid'>
             <ul>
                 {% for form in forms %}
-                <li><a href="#tabs-{{ forloop.counter }}" id="tao-tabs-{{ forloop.counter }}">{{ form.LABEL }}</a></li>
+                <li><a href="#tabs-{{ form.TAB_ID }}" id="tao-tabs-{{ form.TAB_ID }}">{{ form.LABEL }}</a></li>
                 {%  endfor %}
                 <li><a href="#tabs-{{ forms_size }}" id="tao-tabs-{{ forms_size }}">Summary and Submit</a></li>
             </ul>
