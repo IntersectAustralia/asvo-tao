@@ -12,7 +12,7 @@ import form_utils.fields as bf_fields
 from tao import datasets
 from tao import models as tao_models
 from tao.forms import FormsGraph
-from tao.widgets import ChoiceFieldWithOtherAttrs, SelectWithOtherAttrs, TwoSidedSelectWidget
+from tao.widgets import ChoiceFieldWithOtherAttrs, SelectWithOtherAttrs, TwoSidedSelectWidget, SpinnerWidget
 from tao.xml_util import module_xpath, module_xpath_iterate
 
 #### XML version 2 ####
@@ -170,7 +170,7 @@ class Form(BetterForm):
             'redshift_min' : {'data-bind':'visible: catalogue_geometry().id == "light-cone"'},
             'redshift_max' : {'data-bind':'visible: catalogue_geometry().id == "light-cone"'},
             'light_cone_type' : {'data-bind':'visible: catalogue_geometry().id == "light-cone"'},
-            'number_of_light_cones' : {'data-bind':'visible: catalogue_geometry().id == "light-cone"'},
+            'number_of_light_cones' : {'data-bind':'visible: catalogue_geometry().id == "light-cone" && light_cone_type() == "random"'},
             'box_size' : {'data-bind':'visible: catalogue_geometry().id == "box"'},
             'snapshot' : {'data-bind':'visible: catalogue_geometry().id == "box"'},
             }
@@ -212,7 +212,8 @@ class Form(BetterForm):
                                     widget=SelectWithOtherAttrs(attrs={'class': 'light_box_field'}))
         self.fields['number_of_light_cones'] = forms.IntegerField(label=_('Select the number of light-cones:'),
                                     required=False,
-                                    initial='1')
+                                    initial='1',
+                                    widget=SpinnerWidget)
         self.fields['output_properties'] = bf_fields.forms.MultipleChoiceField(required=True,
                                     choices=output_choices,
                                     widget=TwoSidedSelectWidget)
@@ -237,11 +238,9 @@ class Form(BetterForm):
         self.fields['snapshot'].widget.attrs['data-bind'] = 'foreach: snapshots, value: snapshot'
         self.fields['redshift_min'].widget.attrs['data-bind'] = 'value: redshift_min'
         self.fields['redshift_max'].widget.attrs['data-bind'] = 'value: redshift_max'
-
-        
-        # self.fields['light_cone_type'].widget.attrs['data-bind'] = 'checked: light_cone_type, event: { change: toggle_light_conne_spinner() }'
         self.fields['light_cone_type'].widget.attrs['data-bind'] = 'checked: light_cone_type'
-        self.fields['number_of_light_cones'].widget.attrs['data-bind'] = 'value: number_of_light_cones'
+        self.fields['number_of_light_cones'].widget.attrs['spinner_bind'] = 'spinner: number_of_light_cones, spinnerOptions: {min: 1, max: maximum_number_of_light_cones}'
+        self.fields['number_of_light_cones'].widget.attrs['spinner_message'] = "text: 'maximum is ' + maximum_number_of_light_cones()"
         self.fields['output_properties'].widget.attrs['data-bind'] = 'value: output_properties'
 
 
