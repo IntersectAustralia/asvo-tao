@@ -149,14 +149,15 @@ class Form(BetterForm):
     SEMIREQUIRED_FIELDS = LIGHT_CONE_REQUIRED_FIELDS + BOX_REQUIRED_FIELDS
 
     class Meta:
+        simple_fields = ['catalogue_geometry', 'dark_matter_simulation',
+                         'galaxy_model', 'ra_opening_angle',
+                         'dec_opening_angle', 'box_size', 'snapshot',
+                         'redshift_min', 'redshift_max', 'light_cone_type',
+                         'number_of_light_cones']
         fieldsets = [
             ('primary', {
                 'legend': 'Data Selection',
-                'fields': ['catalogue_geometry', 'dark_matter_simulation',
-                           'galaxy_model', 'dataset', 'ra_opening_angle',
-                           'dec_opening_angle', 'box_size', 'snapshot',
-                           'redshift_min', 'redshift_max', 'light_cone_type',
-                           'number_of_light_cones'],
+                'fields': simple_fields,
             }),
             ('secondary',{
                 'legend': 'Output properties',
@@ -296,6 +297,18 @@ class Form(BetterForm):
     def to_xml(self, root):
         version = 2.0
         to_xml_2(self, root)
+
+    def to_json_dict(self):
+        """Answer the json dictionary representation of the receiver.
+        i.e. something that can easily be passed to json.dumps()"""
+        json_dict = {}
+        for fn in self.fields.keys():
+            ffn = self.prefix + '-' + fn
+            val = self.data.get(ffn)
+            if val is not None:
+                json_dict[ffn] = val 
+        # TODO: Output Properties
+        return json_dict
 
     @classmethod
     def from_xml(cls, ui_holder, xml_root, prefix=None):
