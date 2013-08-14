@@ -53,10 +53,20 @@ def sync(request):
     parameters = make_parameters_xml(request)
     
     job = models.Job(user=request.user, parameters=parameters)
+    
+    errors = check_query(request.POST['QUERY'])
+    if errors != '':
+        job.error_message = errors
+        job.status = models.Job.ERROR
+    
     job.save()
+    
     while not (job.is_completed() or job.is_error()):
         time.sleep(30)
-        
+    
+    if job.is_error():
+        return render(request, 'tap/error.xml', {'error': job.error_message, 'timestamp': job.created_time, 'query': request.POST['QUERY']})
+    
     job_file = job.files()[1]
     if not job_file.can_be_downloaded():
         raise PermissionDenied
@@ -76,8 +86,14 @@ def async(request):
     parameters = make_parameters_xml(request)
     
     job = models.Job(user=request.user, parameters=parameters)
-    job.save()
     
+    errors = check_query(request.POST['QUERY'])
+    if errors != '':
+        job.error_message = errors
+        job.status = models.Job.ERROR
+    
+    job.save()
+        
     return UWSRedirect(request, job.id)
 
 @csrf_exempt
@@ -134,7 +150,9 @@ def error(request, id):
     if job is None:
         return HttpResponseBadRequest('Wrong URL')
     
-    return render(request, 'tap/http_response.html', {'message': job.error_message})
+    return render(request, 'tap/error.xml', {'error': job.error_message, 'timestamp': job.created_time})
+    
+    #return render(request, 'tap/http_response.html', {'message': job.error_message})
 
 @csrf_exempt
 @http_auth_required
@@ -152,7 +170,7 @@ def results(request, id):
     if job is None:
         return HttpResponseBadRequest('Wrong URL')
     
-    return render(request, 'tap/results.html', {'files': job.files})
+    return render(request, 'tap/results.xml', {'files': job.files})
 
 @csrf_exempt
 @http_auth_required
@@ -181,6 +199,7 @@ def executionduration(request, id):
 def make_parameters_xml(request):
     
     query = prepare_query(request.POST['QUERY'])
+    
     fields = parse_fields(query)
     dataset = parse_dataset_name(query)
 
