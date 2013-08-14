@@ -138,6 +138,42 @@ catalogue.modules.light_cone = function ($) {
     	return res[0];
     }
     
+    var available_datasets = function() {
+    	// Answer the set of available datasets
+    	res = $.grep(TaoMetadata.DataSet, function(elem, idx) {
+    		return elem.fields.available;
+    	});
+    	return res;
+    }
+
+    var available_simulations = function() {
+    	// Answer the set of simulations that are available
+    	// Only those that are associated with active datasets are available
+    	var sids = [];
+    	datasets = available_datasets();
+    	for (var i=0; i<datasets.length; i++) {
+    		sids.push(datasets[i].fields.simulation);
+    	}
+    	res = $.grep(TaoMetadata.Simulation, function(elem, idx) {
+    		return sids.indexOf(elem.pk) >= 0;
+    	});
+    	return res;
+    }
+    
+    var available_galaxy_models = function() {
+    	// Answer the set of galaxy models that are available
+    	// Only those that are associated with active datasets are available
+    	var sids = [];
+    	datasets = available_datasets();
+    	for (var i=0; i<datasets.length; i++) {
+    		sids.push(datasets[i].fields.galaxy_model);
+    	}
+    	res = $.grep(TaoMetadata.GalaxyModel, function(elem, idx) {
+    		return sids.indexOf(elem.pk) >= 0;
+    	});
+    	return res;
+    }
+    
     this.init_model = function(init_params) {
     	// job is either an object containing the job parameters or null
     	var job = init_params.job;
@@ -153,7 +189,7 @@ catalogue.modules.light_cone = function ($) {
         	param = lookup_geometry(param);
         vm.catalogue_geometry = ko.observable(param ? param : vm.catalogue_geometries()[1]);
 
-        vm.dark_matter_simulations = ko.observableArray(TaoMetadata.Simulation);
+        vm.dark_matter_simulations = ko.observableArray(available_simulations());
         param = job['light_cone-dark_matter_simulation'];
         if (param) {
         	param = catalogue.util.simulation(param);
@@ -161,14 +197,14 @@ catalogue.modules.light_cone = function ($) {
         vm.dark_matter_simulation = ko.observable(param ? param : vm.dark_matter_simulations()[0])
         	.extend({logger: 'simulation'});
         
-        vm.galaxy_models = ko.observableArray(TaoMetadata.GalaxyModel);
+        vm.galaxy_models = ko.observableArray(available_galaxy_models());
         param = job['light_cone-galaxy_model'];
         if (param) {
         	param = catalogue.util.galaxy_model(param);
         }
         vm.galaxy_model = ko.observable(param ? param : vm.galaxy_models()[0]);
 
-        vm.datasets = ko.observableArray(TaoMetadata.DataSet);
+        vm.datasets = ko.observableArray(available_datasets());
         vm.dataset = ko.computed(function() {
         	// Answer the current dataset based on the current simulation and galaxy model
         	return lookup_dataset(vm.dark_matter_simulation().pk,
