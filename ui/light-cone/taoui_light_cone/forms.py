@@ -131,7 +131,6 @@ class Form(BetterForm):
     SUMMARY_TEMPLATE = 'taoui_light_cone/summary.html'
     LABEL = 'General Properties'
     TAB_ID = settings.MODULE_INDICES['light_cone']
-    # TAB_SUMMARY_ID = settings.MODULE_INDICES['summary']
 
     catalogue_geometry = forms.ChoiceField(choices=[(BOX, 'Box'), (CONE, 'Light-Cone'), ])
 
