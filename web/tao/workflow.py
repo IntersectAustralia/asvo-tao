@@ -14,11 +14,15 @@ from tao.xml_util import create_root, find_or_create, child_element, xml_print
 
 
 def save(user, ui_holder, description=None):
-    dataset = dataset_get(ui_holder.cleaned_data('light_cone', 'galaxy_model'))
     if description:
-        job = models.Job(user=user, parameters=_make_parameters(user, ui_holder.forms()), database=dataset.database, description=description)
+        job = models.Job(user=user, 
+                         parameters=_make_parameters(user, ui_holder.forms()),
+                         database=ui_holder.dataset.database,
+                         description=description)
     else:
-        job = models.Job(user=user, parameters=_make_parameters(user, ui_holder.forms()), database=dataset.database)
+        job = models.Job(user=user,
+                         parameters=_make_parameters(user, ui_holder.forms()),
+                         database=ui_holder.dataset.database)
     job.save()
     return job
 

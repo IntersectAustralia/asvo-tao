@@ -86,7 +86,7 @@ class Simulation(models.Model):
         return self.name
     
     class Meta:
-        ordering = ['name']
+        ordering = ['order', 'name']
 
     def save(self, *args, **kwargs):
         if self.name:
