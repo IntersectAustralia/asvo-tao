@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core import serializers
 from django.template import Library
 from tao import models
@@ -23,4 +24,17 @@ def metadata_json():
             serializers.serialize('json', DBClass.objects.all())))
     json_string =  '{' + ',\n'.join(strs) + '}'
     json_dict = json.loads(json_string)
-    return json.dumps(json_dict, sort_keys=True, indent=4, separators=(',', ': '))
+    if settings.METADATA_PRETTY_PRINT:
+        json_str = json.dumps(json_dict, sort_keys=True, indent=4, separators=(',', ': '))
+    else:  
+        json_str = json.dumps(json_dict, sort_keys=True)
+    return json_str
+
+
+@register.simple_tag(takes_context=True)
+def current_job_json(context):
+    """Answer the string encoding of the job parameters, using the same format
+    as the job submission form."""
+    json_dict = context['ui_holder'].to_json_dict()
+    json_str = json.dumps(json_dict)
+    return json_str

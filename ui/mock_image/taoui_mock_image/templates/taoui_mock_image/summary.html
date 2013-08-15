@@ -2,12 +2,12 @@
     <table>
         <tr>
             <td><h4>Mock Image</h4></td>
-            <td><span class="select_mock_image"><!-- --></span></td>
+            <td><span class="select_mock_image" data-bind="text: apply_mock_image() ? '' : 'Not selected'"><!-- --></span></td>
         </tr>
-        <tr class="apply_mock_image">
+        <tr class="apply_mock_image" data-bind="visible: apply_mock_image">
             <td>Number of Images</td>
             <td>
-                <span class="num_images"><!-- --></span>
+                <span class="num_images" data-bind="text: number_of_images"><!-- --></span>
             </td>
         </tr>
     </table>
