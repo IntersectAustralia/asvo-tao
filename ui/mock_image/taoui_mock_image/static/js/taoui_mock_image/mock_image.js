@@ -39,47 +39,13 @@ catalogue.modules.mock_image = function ($) {
         }
     }
 
-//    this.update_tabs = function (event, ui) {
-//        var old_tab = $(ui.oldTab).children('a:first').attr('id');
-//        var new_tab = $(ui.newTab).children('a:first').attr('id');
-//
-//        // Check if the mock-image tab should be enabled.
-//        if (old_tab == 'tao-tabs-1' || old_tab == 'tao-tabs-2') {
-//            var sel = $('#id_light_cone-catalogue_geometry option:selected').val();
-//            if ($('#id_light_cone-catalogue_geometry option:selected').val() == 'light-cone' &&
-//                $('#id_sed-apply_sed').is(':checked')) {
-//                $(mi_id('apply_mock_image')).removeAttr('disabled');
-//                update_apply_mock_image();
-//            } else {
-//                $(mi_id('apply_mock_image')).attr('disabled', 'disabled');
-//                update_apply_mock_image();
-//            }
-//        }
-//
-//        // Update all mock image magnitudes.
-//        if (old_tab == 'tao-tabs-2')
-//            mock_image_update_magnitudes();
-//
-//        // Update every mock image sub-cone option with appropriate
-//        // values from the general properties.
-//        // if (old_tab == 'tao-tabs-1')
-//        //    update_mock_image_sub_cones();
-//
-//        // Upon moving to a new tab, run validation in the tab to pick up
-//        // any changes from previous tab.
-//        if (new_tab == 'tao-tabs-3')
-//            $.validate_form('mock_image');
-//    }
+    this.cleanup_fields = function () {}
 
-    this.cleanup_fields = function ($form) {}
-
-
-    this.validate = function ($form) {
+    this.validate = function () {
         return $.validate_all(true) == undefined;
     }
 
-
-    this.pre_submit = function ($form) {}
+    this.pre_submit = function () {}
 
     this.job_parameters = function() {
 		var max_allowed_images = 1000;
@@ -123,10 +89,16 @@ catalogue.modules.mock_image = function ($) {
             var param;
             
             function get_param(prefix, pn) {
-            	if (prefix == undefined) {
+            	var res;
+
+            	// If no prefix is provided, return negative
+            	if (prefix == undefined || prefix == null || prefix == "") {
             		return false;
             	}
-            	return job[prefix+pn];
+            	// But if a prefix is supplied, the parameter is mandatory
+            	res = job[prefix+pn];
+            	if (res == undefined) throw "mock_image missing parameter: " + prefix + pn;
+            	return res;
             }
 
             param = get_param(prefix, '-sub_cone');
@@ -242,7 +214,7 @@ catalogue.modules.mock_image = function ($) {
 
         	if (!vm.apply_mock_image()) return;
         	
-        	num_images = parseInt(job['mock_image-TOTAL_FORMS']);
+        	num_images = parseInt(job['mock_image-INITIAL_FORMS']);
         	if (isNaN(num_images)) return;
         	if (num_images == 0) return;
 
@@ -250,6 +222,17 @@ catalogue.modules.mock_image = function ($) {
         		var prefix = 'mock_image' + i;
         		vm.image_settings.push(ImageParameters(prefix, job));
         	}
+        }
+
+        vm.add_image_settings = function() {
+            var params = ImageParameters();
+            vm.image_settings.push(params);
+        }
+
+        vm.remove_image_settings = function(obj) {
+            vm.image_settings.remove(obj);
+            if (vm.image_settings().length == 0)
+                vm.add_image_settings();
         }
 
         vm.can_have_images = ko.computed(function(){
@@ -284,19 +267,8 @@ catalogue.modules.mock_image = function ($) {
         add_images_from(job);
 
         vm.number_of_images = ko.computed(function() {
-             return vm.image_settings().length;
+            return vm.image_settings().length;
         });
-
-        vm.add_image_settings = function() {
-            var params = ImageParameters();
-            vm.image_settings.push(params);
-        }
-
-        vm.remove_image_settings = function(obj) {
-            vm.image_settings.remove(obj);
-            if (vm.image_settings().length == 0)
-                vm.add_image_settings();
-        }
 
         // We always have an extra form at the end, so delete it
         // now that we've initialised the formset.
