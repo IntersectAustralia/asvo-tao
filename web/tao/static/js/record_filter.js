@@ -94,6 +94,12 @@ catalogue.modules.record_filter = function ($) {
     	return result;
     }
     
+    var filter_choice = function(id) {
+    	return $.grep(filter_choices(), function(elem, idx) {
+    		return elem.value == id;
+    	})[0];
+    }
+
     var valid_min_max = function() {
     	// Ensure that max is greater than min
     	rs_max = vm.selection_max();
@@ -128,10 +134,18 @@ catalogue.modules.record_filter = function ($) {
     	return res;
     }
 
-    this.init_model = function () {
+    this.init_model = function (init_params) {
     	var current_dataset;
+    	// job is either an object containing the job parameters or null
+    	var job = init_params.job;
+    	var param; // Temporary variable for observable initialisation
 
     	vm.selection = ko.observable();
+    	param = job['record_filter-filter'];
+    	if (param) {
+    		param = filter_choice(param);
+    		vm.selection(param);
+    	}
     	vm.selections = ko.computed(filter_choices);
     	current_dataset = catalogue.modules.light_cone.vm.dataset();
     	// Create the min and max observables

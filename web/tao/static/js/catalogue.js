@@ -246,6 +246,23 @@ catalogue.util = function ($) {
 
     var that = this;
 
+    this.validate_vm = function(vm) {
+    	// Validate the supplied vm
+    	// Iterate over every member and check for errors
+    	var attr, obj;
+    	var is_valid = true;
+
+    	for (attr in vm) {
+    		obj = vm[attr];
+    		if (obj.hasOwnProperty("error")) {
+    			is_valid &= !obj.error().error;
+    			if (!is_valid)
+    				break;
+    		}
+    	}
+    	return is_valid;
+    }
+
     this.snapshot = function(id) {
         return $.grep(TaoMetadata.Snapshot, function(elem, idx) { 
             return elem.pk == id
@@ -279,31 +296,6 @@ catalogue.util = function ($) {
         })[0]
     }
 
-    this.dataset = function(id) {
-        return $.grep(TaoMetadata.DataSet, function(elem, idx) {
-            return elem.pk == id
-        })[0]
-    }
-
-
-    this.datasets = function(sid) {
-        var data = $.grep(TaoMetadata.DataSet, function(elem, idx) {
-            return elem.fields.simulation == sid 
-        });
-        if (data === undefined) return [];
-        return $.map(data, function(elem, idx) {
-            var gm = that.galaxy_model(elem.fields.galaxy_model); 
-            return {'id':elem.pk, 
-            'name':gm.fields.name, 
-            'galaxy_model_id':elem.fields.galaxy_model, 
-            'job_size_p1': elem.fields.job_size_p1,
-            'job_size_p2': elem.fields.job_size_p2,
-            'job_size_p3': elem.fields.job_size_p3,
-            'max_job_box_count': elem.fields.max_job_box_count}
-        });
-    }
-
-
     this.global_parameter = function(parameter_name) {
         return $.grep(TaoMetadata.GlobalParameter, function(elem, idx) {
             return elem.fields.parameter_name == parameter_name;
@@ -336,7 +328,6 @@ catalogue.util = function ($) {
         });
     }
 
-
     this.dust_model = function(id) {
         return $.grep(TaoMetadata.DustModel, function(elem, idx) { 
             return elem.pk == id
@@ -364,6 +355,14 @@ catalogue.util = function ($) {
             });
         }
         return gen_pairs(TaoMetadata.BandPassFilter);
+    }
+    
+    this.bandpass_filter = function(filter_id) {
+    	// Lookup the supplied filter.
+    	// The id is in the format <pk>_(apparent|absolute)
+    	return $.grep(catalogue.util.bandpass_filters(), function(elem, idx) {
+    		return elem.pk == filter_id;
+    	})[0] || {}
     }
 
 
@@ -482,7 +481,8 @@ catalogue.util = function ($) {
 	
 	    if (!is_valid) {
 	        console.log('ERROR FOUND');
-	        show_tab_error();
+	        // show_tab_error();
+	        alert("Validation fails - please check your parameters and try again.")
 	        return false;
 	    }
 	
@@ -661,6 +661,10 @@ jQuery(document).ready(function ($) {
     	var init_params = {
     			'job' : TaoJob
     	}
+    	var param;
+
+        catalogue.vm.description = ko.observable(init_params.job['job-description']);
+
         for (var module in catalogue.modules) {
             console.log('Creating module: ' + module)
             catalogue.modules[module] = new catalogue.modules[module]($);
@@ -669,8 +673,6 @@ jQuery(document).ready(function ($) {
             console.log('Initialising module: ' + module)
             catalogue.vm[module] = catalogue.modules[module].init_model(init_params);
         }
-
-        catalogue.vm.description = ko.observable();
 
         console.log('Finished module initialisation')
     }
@@ -685,32 +687,6 @@ jQuery(document).ready(function ($) {
 
 
     function init() {
-
-//
-// This is associated with the job view page.  Still TODO...
-//
-//        function setup_editable_text(elem_id) {
-//            var $elem = $(elem_id);
-//
-//            $('#id-save_edit').click(function(evt){
-//                var description = $elem.text().replace(/\s+/g, ' ');
-//                $.ajax({
-//                    url: TAO_JSON_CTX + 'edit_job_description/' + $('#csrf_token #job_id').val(),
-//                    type: 'POST',
-//                    data: {"job-description": description,
-//                        'csrfmiddlewaretoken': $('#csrf_token input[name="csrfmiddlewaretoken"]').val()},
-//                    error: function(data) {
-//                        alert("Couldn't save job description to DB");
-//                    }
-//                });
-//            });
-//
-//            $('#id-cancel_edit').click(function(evt){
-//                document.execCommand('undo', false, null);
-//            });
-//        }
-//
-//        setup_editable_text('#id-job_description');
 
         function set_click(selector, direction) {
             $(selector).click(function (evt) {

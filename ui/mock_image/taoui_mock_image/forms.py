@@ -158,7 +158,7 @@ class Form(BaseForm):
 
             # Get the management total forms count and add back in
             # the 1 we subtracted.
-            total = data.get('mock_image-TOTAL_FORMS', 0)
+            total = data.get('mock_image-TOTAL_FORMS', 1)
             if total:
                 total = int(total) + 1
             else:
