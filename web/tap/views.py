@@ -11,7 +11,7 @@ from tao import models
 
 def tap(request):
     
-    return render(request, 'tap/tap.html', {})
+    return render(request, 'tap/http_response.html', {'message': 'TAO TAP Services entry point'})
 
 def capabilities(request):
     
@@ -64,17 +64,7 @@ def sync(request):
     while not (job.is_completed() or job.is_error()):
         time.sleep(30)
     
-    if job.is_error():
-        return render(request, 'tap/error.xml', {'error': job.error_message, 'timestamp': job.created_time, 'query': request.POST['QUERY']})
-    
-    job_file = job.files()[1]
-    if not job_file.can_be_downloaded():
-        raise PermissionDenied
-
-    response = StreamingHttpResponse(streaming_content=FileWrapper(open(job_file.file_path)))
-    response['Content-Disposition'] = 'attachment; filename="%s"' % job_file.file_name.replace('/','_')
-    
-    return response
+    return stream_job_results(request, job)
     
 @csrf_exempt
 @http_auth_required
@@ -151,8 +141,6 @@ def error(request, id):
         return HttpResponseBadRequest('Wrong URL')
     
     return render(request, 'tap/error.xml', {'error': job.error_message, 'timestamp': job.created_time})
-    
-    #return render(request, 'tap/http_response.html', {'message': job.error_message})
 
 @csrf_exempt
 @http_auth_required
@@ -170,13 +158,25 @@ def results(request, id):
     if job is None:
         return HttpResponseBadRequest('Wrong URL')
     
-    return render(request, 'tap/results.xml', {'files': job.files})
+    for file in job.files():
+        if file.file_name == TAP_OUTPUT_FILENAME:
+            job_file = file
+    
+    if (not job_file) or (not job_file.can_be_downloaded()):
+        raise PermissionDenied
+    
+    return render(request, 'tap/results.xml', 
+                  {'download_link': "%s/%s/results/result/%s" % (request.build_absolute_uri("/tap/async"), 
+                   str(id), job_file.file_name)})
 
 @csrf_exempt
 @http_auth_required
-def result(request, id):
+def result(request, id, file):
+    job = models.Job.objects.get(id=id)
+    if job is None:
+        return HttpResponseBadRequest('Wrong URL')
     
-    return render(request, 'tap/http_response.html', {'message': id})
+    return stream_job_results(request, job)
 
 @csrf_exempt
 @http_auth_required
@@ -254,6 +254,20 @@ def UWSRedirect(request, id, redirect=''):
                                         str(id), redirect)
     return response
 
-
+def stream_job_results(request, job):
     
+    if job.is_error():
+        return render(request, 'tap/error.xml', {'error': job.error_message, 'timestamp': job.created_time, 'query': request.POST['QUERY']})
+    
+    for file in job.files():
+        if file.file_name == TAP_OUTPUT_FILENAME:
+            job_file = file
+        
+    if (not job_file) or (not job_file.can_be_downloaded()):
+        raise PermissionDenied
+
+    response = StreamingHttpResponse(streaming_content=FileWrapper(open(job_file.file_path)))
+    response['Content-Disposition'] = 'attachment; filename="%s"' % job_file.file_name.replace('/','_')
+    
+    return response
     
