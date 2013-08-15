@@ -14,7 +14,7 @@ from tao.widgets import ChoiceFieldWithOtherAttrs, SelectWithOtherAttrs
 
 def configured_output_formats():
     "Answer the list of output formats from GlobalParameter output_formats"
-    return eval(GlobalParameter.objects.get(parameter_name='output_formats').parameter_value)
+    return eval(GlobalParameter.objects.get(parameter_name='output_formats').parameter_value.replace('\r',''))
 
 def to_xml_2(form, root):
    from tao.xml_util import find_or_create, child_element

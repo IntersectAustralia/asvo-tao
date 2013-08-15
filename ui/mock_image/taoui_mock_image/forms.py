@@ -159,15 +159,18 @@ class Form(BaseForm):
             # Removed the + 1 since it doesn't appear to have been subtracted
             ## Get the management total forms count and add back in
             ## the 1 we subtracted.
-            total = data.get('mock_image-TOTAL_FORMS', 1)
+            total = int(data.get('mock_image-TOTAL_FORMS', 1))
 #             if total:
 #                 total = int(total) + 1
 #             else:
 #                 total = 1
+            apply_mock_image = data.get('mock_image-apply_mock_image', False)
+            if type(apply_mock_image) != bool:
+                apply_mock_image = 'true' == apply_mock_image
 
             # Do a final check for the checkbox, if we are disabled
             # then set the count to 1.
-            if not data.get('mock_image-apply_mock_image', False):
+            if not apply_mock_image:
                 total = 1
 
             data['mock_image-TOTAL_FORMS'] = total
@@ -182,7 +185,7 @@ class Form(BaseForm):
 
             # Also need to check for the apply mock image checkbox, due
             # to not using "from_xml" in certain places.
-            self.apply_mock_image = data.get('mock_image-apply_mock_image', False)
+            self.apply_mock_image = apply_mock_image
 
         # Set to None if we aren't bound.
         else:
