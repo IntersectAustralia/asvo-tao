@@ -17,7 +17,7 @@
     </div>
     <div class="aside span4" id="sed_info" data-bind="visible: apply_sed()">
         <div class="boxed">
-            <div class="stellar-model-info">
+            <div class="stellar-model-info" data-bind="if: stellar_model">
                 <div> Selected stellar model details </div>
                 <div style="overflow-y: scroll;height: 178px">
                     <p>
@@ -39,7 +39,7 @@
             </div>
         </div>
         <div class="boxed">
-            <div class="dust-model-info">
+            <div class="dust-model-info" data-bind="if: dust_model">
                 <div> Selected dust model details </div>
                 <div style="overflow-y: scroll;height: 178px">
                     <p>

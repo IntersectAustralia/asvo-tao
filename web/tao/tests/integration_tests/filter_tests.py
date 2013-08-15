@@ -62,9 +62,10 @@ class FilterTests(LiveServerMGFTest):
         self.click('tao-tabs-' + MODULE_INDICES['sed'])
         self.click(self.sed('apply_sed'))
         self.click(self.sed_2select('op_add_all'))
-        expected_filter_options = self.get_expected_filter_options(self.initial_dataset.id)
+        expected_filter_options = self.get_expected_filter_options(self.initial_dataset)
         actual_filter_options = self.get_actual_filter_options()
-
+        from code import interact
+        interact(local=locals())
         self.assertEqual(expected_filter_options, actual_filter_options)
 
     def test_filter_options_with_band_pass_filter(self):

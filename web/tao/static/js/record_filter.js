@@ -21,7 +21,7 @@ catalogue.modules.record_filter = function ($) {
 
     this.job_parameters = function() {
     	var params = {
-    		'record_filter-filter': [vm.selection().value],
+    		'record_filter-filter': [vm.selection()],
     		'record_filter-min': [vm.selection_min()],
     		'record_filter-max': [vm.selection_max()]
     	}
@@ -35,12 +35,12 @@ catalogue.modules.record_filter = function ($) {
     			label: obj.fields.label + (catalogue.validators.defined(obj.fields.units) ?
                     ' ('+obj.fields.units+')' : '')
     		}
-        } else {
-            return {
-				value: 'B-'+obj.value,
-				label: obj.text
-			}
-        }
+        } else if (obj.hasOwnProperty('value')) {
+                return {
+                    value: 'B-'+obj.value,
+                    label: obj.text
+                }
+        } else return undefined;
     }
 
     var filter_choices = function () {
@@ -59,6 +59,7 @@ catalogue.modules.record_filter = function ($) {
         // If KO find the same object in the options, will keep it selected
         // so this helper function ensures that
         function add_to_result(obj) {
+            if (obj === undefined) return;
             if (current_selection !== undefined && obj.value == current_selection.value) {
                 result.push(current_selection)
             } else {
