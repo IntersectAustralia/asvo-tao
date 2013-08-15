@@ -46,7 +46,8 @@ if __name__ == '__main__':
     
     DataTypeLists+=[('MetalsColdGas',numpy.float64)]
     DataTypeLists+=[('sfr',numpy.float64)]  
-    DataTypeLists+=[('treeid',numpy.int64)]  
+    DataTypeLists+=[('treeid',numpy.int64)]
+    DataTypeLists+=[('galaxyglobalindex',numpy.int64)]  
     
     
     
@@ -63,11 +64,12 @@ if __name__ == '__main__':
 
     EndIndex=0
     OutputCounter=0
-   
+    GalaxyGlobalIndex=0
     for Output in Outputs:
         print Output+"\t"+str(OutputCounter)+"/"+str(len(Outputs))
         OutputCounter=OutputCounter+1
         TreeIDsList=[]
+        GalaxyGlobalIndexList=[]
         for LocalIndex in range(0,len(Outputs[Output+'/mergerTreeStartIndex'])):
                        
             if Outputs[Output+'/mergerTreeCount'][LocalIndex]>0:               
@@ -75,7 +77,9 @@ if __name__ == '__main__':
                 GalaxyCountData.append(Outputs[Output+'/mergerTreeCount'][LocalIndex])
                 TreeIndexData.append(Outputs[Output+'/mergerTreeIndex'][LocalIndex])  
                 for i in range(0,Outputs[Output+'/mergerTreeCount'][LocalIndex]):
-                    TreeIDsList.append(Outputs[Output+'/mergerTreeIndex'][LocalIndex])                          
+                    TreeIDsList.append(Outputs[Output+'/mergerTreeIndex'][LocalIndex])
+                    GalaxyGlobalIndexList.append(GalaxyGlobalIndex)  
+                    GalaxyGlobalIndex=GalaxyGlobalIndex+1                        
                 NextItemIndex=NextItemIndex+Outputs[Output+'/mergerTreeCount'][LocalIndex]
             
             TotalCount=TotalCount+ Outputs[Output+'/mergerTreeCount'][LocalIndex]    
@@ -89,7 +93,9 @@ if __name__ == '__main__':
         ZoneIndex=int(Output.replace("Output","")) 
         print "ZoneIndex="+str(ZoneIndex)
         Datadict['zoneid'][StartIndex:EndIndex]=ZoneIndex
-        Datadict['treeid'][StartIndex:EndIndex]=TreeIDsList            
+        Datadict['treeid'][StartIndex:EndIndex]=TreeIDsList 
+        Datadict['galaxyglobalindex'][StartIndex:EndIndex]= GalaxyGlobalIndexList  
+                
         StartIndex=EndIndex+1
     
     Datadict['MetalsColdGas']=numpy.add(Datadict['diskAbundancesGasMetals'],Datadict['spheroidAbundancesGasMetals'])

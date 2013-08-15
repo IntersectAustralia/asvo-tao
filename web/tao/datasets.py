@@ -33,6 +33,7 @@ def dark_matter_simulation_choices():
     """
     return [(x.id, x.name, {}) for x in models.Simulation.objects.order_by('order', 'name')]
 
+    # TODO: 'sid' doesn't do anything
 def galaxy_model_choices(sid):
     """
         return tuples of galaxy model choices suitable for use in a
