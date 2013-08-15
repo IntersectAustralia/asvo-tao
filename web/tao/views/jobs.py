@@ -28,6 +28,7 @@ def view_job(request, id):
 
     return render(request, 'jobs/view.html', {
         'job': job,
+        'ui_holder': ui_holder,
         'forms': forms,
         'forms_size' : len(forms)+1,
     })

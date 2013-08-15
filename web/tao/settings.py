@@ -10,6 +10,8 @@ from os.path import abspath, dirname, join, split
 
 # Django settings for tao project.
 
+DEBUG = False
+
 PROJECT_PATH = abspath(split(__file__)[0])
 PROJECT_DIR = dirname(PROJECT_PATH)
 
@@ -232,9 +234,14 @@ INITIAL_JOB_MESSAGE = "Your job has been %s successfully, you will receive an e-
 # set up the path and installed apps for the UI modules
 #
 UI_DIR = join(dirname(PROJECT_DIR), 'ui')
+
+# The order of the tuples here determines the order that the tabs are listed
+# in the UI
 MODULES_PATHS = (
+    # ('job_type', 'job_type'),
     ('light_cone', 'light-cone'),
     ('sed', 'sed'),
+    # ('telescope', 'telescope'),
     ('mock_image', 'mock_image'),
 )
 sys.path.extend([join(UI_DIR, module[1]) for module in MODULES_PATHS])
@@ -242,15 +249,18 @@ INSTALLED_APPS += tuple(['taoui_' + module[0] for module in MODULES_PATHS])
 MODULES = tuple([module[0] for module in MODULES_PATHS])
 #INSTALLED_APPS += tuple(('taoui_' + module_name for module_name in MODULES))
 
-OUTPUT_FORMATS = [
-    {'value':'csv', 'text':'CSV (Text)', 'extension':'csv'},
-    {'value':'hdf5', 'text':'HDF5', 'extension':'hdf5'},
-    {'value': 'fits', 'text': 'FITS', 'extension': 'fits'},
-    {'value': 'votable', 'text': 'VOTable', 'extension': 'xml'},
-]
 
-MODULE_INDICES = {'light_cone': '1', 'sed': '2', 'mock_image': '3',
-                  'record_filter': '4', 'output_format': '5'}
+# This is the 'tab-id' the module occupies in the interface
+MODULE_INDICES = {
+                  'job_type': '1',
+                  'light_cone': '2',
+                  'sed': '3',
+                  'mock_image': '4',
+                  'record_filter': '5',
+                  'output_format': '6',
+                  'summary': '7',
+                  'telescope': '8'
+                  }
 
 TAO_VERSION = '0.25.1-rc1'
 
@@ -289,3 +299,9 @@ ACTIVITYLOG_LOG_RESPONSE=False
 ACTIVITYLOG_LOG_HTML_RESPONSE = False
 # If we how do we recognized a full HTML response 
 ACTIVITYLOG_HTML_START = "<!DOCTYPE html"
+
+#
+# Pretty print the metadata being passed to the browser?
+# Useful for debugging, but much larger payload
+#
+METADATA_PRETTY_PRINT = DEBUG
