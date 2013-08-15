@@ -211,8 +211,8 @@ catalogue.modules.mock_image = function ($) {
                 )});
             param = get_param(prefix, '-origin_dec');
             image_params.origin_dec = ko.observable(param ? param :
-                    (def(catalogue.modules.light_cone.vm.ra_opening_angle()) ?
-                        catalogue.modules.light_cone.vm.ra_opening_angle()/2 : ''));
+                    (def(catalogue.modules.light_cone.vm.dec_opening_angle()) ?
+                        catalogue.modules.light_cone.vm.dec_opening_angle()/2 : ''));
             image_params.origin_dec
                 .extend({validate: catalogue.validators.is_float})
                 .extend({validate: catalogue.validators.test(
