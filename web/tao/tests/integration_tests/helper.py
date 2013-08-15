@@ -274,14 +274,14 @@ class LiveServerTest(django.test.LiveServerTestCase):
         option_selector = '%s option' % self.rf_id('filter')
         return [x.get_attribute('value').encode('ascii') for x in self.selenium.find_elements_by_css_selector(option_selector)]
     
-    def get_expected_filter_options(self, data_set_id):
+    def get_expected_filter_options(self, data_set):
         def gen_bp_pairs(objs):
             for obj in objs:
                 yield ('B-' + str(obj.id) + '_apparent')
                 yield ('B-' + str(obj.id) + '_absolute')
-        normal_parameters = datasets.filter_choices(data_set_id)
+        normal_parameters = datasets.filter_choices(data_set.simulation.id, data_set.galaxy_model.id)
         bandpass_parameters = datasets.band_pass_filters_objects()
-        return ['X-' + NO_FILTER] + ['D-' + str(x.id) for x in normal_parameters] + [pair for pair in gen_bp_pairs(bandpass_parameters)]
+        return ['D-' + str(x.id) for x in normal_parameters] + [pair for pair in gen_bp_pairs(bandpass_parameters)]
 
     def get_actual_snapshot_options(self):
         option_selector = '%s option' % self.lc_id('snapshot')
@@ -370,7 +370,7 @@ class LiveServerTest(django.test.LiveServerTestCase):
 
 class LiveServerMGFTest(LiveServerTest):
     def submit_mgf_form(self):
-        submit_button = self.selenium.find_element_by_css_selector('#mgf-form input[type="submit"]')
+        submit_button = self.selenium.find_element_by_css_selector('#mgf-form #form_submit')
         submit_button.submit()
         self.wait(1.5)
 

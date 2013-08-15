@@ -111,6 +111,16 @@ catalogue.validators._gen_check_value = function(test, msg) {
 catalogue.validators.defined = function(v) {
     return !(v === undefined || v === null || v === '');
 }
+
+catalogue.validators.is_ok = function(obs) {
+    if (!catalogue.validators.defined(obs()))
+        return false;
+    if (obj.hasOwnProperty("error")) {
+        return !obs.error().error;
+    }
+    return true;
+}
+
 catalogue.validators._check_value = function(comp_op, v, ref_v, msg) {
     if(v === undefined || v === null || v === ''
        || ref_v === undefined || ref_v === null || ref_v === '')
@@ -254,6 +264,23 @@ catalogue.util = function ($) {
 
     	for (attr in vm) {
     		obj = vm[attr];
+    		if (obj.hasOwnProperty("error")) {
+    			is_valid &= !obj.error().error;
+    			if (!is_valid)
+    				break;
+    		}
+    	}
+    	return is_valid;
+    }
+
+    this.validate_error = function(objs) {
+    	// Validate the supplied vm
+    	// Iterate over every member and check for errors
+    	var obj;
+    	var is_valid = true;
+
+    	for (var i = 0; i < obs.length; i++) {
+    		obj = objs[i];
     		if (obj.hasOwnProperty("error")) {
     			is_valid &= !obj.error().error;
     			if (!is_valid)

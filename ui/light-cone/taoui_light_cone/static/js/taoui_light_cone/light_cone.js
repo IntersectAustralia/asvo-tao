@@ -53,7 +53,13 @@ catalogue.modules.light_cone = function ($) {
 
     this.validate = function ($form) {
     	var is_valid = true;
-    	
+    	// var is_ok = catalogue.validators.is_ok;
+        // if (vm.catalogue_geometry() == 'box') {
+        //     if (!is_ok(vm.box_size)) return false;
+        // } else {
+        //     if (!is_ok(vm.box_size)) return false;
+        //    /// TODO !!!
+        // }
     	is_valid &= catalogue.util.validate_vm(vm);
     	is_valid &= vm.output_properties.to_side.options_raw().length > 0;
     	return is_valid;
