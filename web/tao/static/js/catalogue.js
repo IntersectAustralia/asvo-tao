@@ -563,7 +563,7 @@ catalogue.util = function ($) {
 					alert("Error during job submission.\nStatus = " + response.status +
 							"\nText = " + response.statusText);
 				}
-                                catalogue.modal_message(null);
+                catalogue.vm.modal_message(null);
 			}
 		});
 	}
