@@ -4,6 +4,7 @@ import codecs
 
 from tao.settings import MODULE_INDICES
 from tao.xml_util import xml_parse
+from tao.tests.support.factories import DataSetFactory, SimulationFactory, GalaxyModelFactory
 
 def create_file(dir_path, filename, filenames_to_contents):    
     file_path = os.path.join(dir_path, filename)
@@ -51,8 +52,10 @@ class MockUIHolder:
     """
     Just a very simple mock of the UI Holder to make sure the RecordFilterForm works
     """
+
     def __init__(self, **kwargs):
         self._forms = kwargs
+        self.dataset = DataSetFactory.create(simulation=SimulationFactory.create(), galaxy_model=GalaxyModelFactory.create())
 
     def update(self, **kwargs):
         self._forms.update(kwargs)
