@@ -10,6 +10,7 @@ import tao.datasets as datasets
 from tao.models import DataSetProperty, BandPassFilter, Simulation
 from tao.forms import NO_FILTER
 from tao.settings import MODULE_INDICES
+from tao.tests.support.factories import GlobalParameterFactory
 
 def interact(local):
     """
@@ -28,11 +29,19 @@ class LiveServerTest(django.test.LiveServerTestCase):
     ## List all ajax enabled pages that have initialization code and must wait
     AJAX_WAIT = ['mock_galaxy_factory', 'view_job']
     SUMMARY_INDEX = str(len(MODULE_INDICES)+1)
+    OUTPUT_FORMATS = [
+        {'value':'csv', 'text':'CSV (Text2)', 'extension':'csv'},
+        {'value':'hdf5', 'text':'HDF5', 'extension':'hdf5'},
+        {'value': 'fits', 'text': 'FITS', 'extension': 'fits'},
+        {'value': 'votable', 'text': 'VOTable', 'extension': 'xml'}
+    ]
 
     def wait(self, secs=1):
         time.sleep(secs * 1.25)
 
     def setUp(self):
+        self.output_formats = GlobalParameterFactory.create(parameter_name='output_formats', parameter_value=LiveServerTest.OUTPUT_FORMATS)
+
         from selenium.webdriver.firefox.webdriver import FirefoxProfile
         fp = FirefoxProfile()
         fp.set_preference("browser.download.folderList", 2)
@@ -199,6 +208,16 @@ class LiveServerTest(django.test.LiveServerTestCase):
             url = split_url[0]
             self.assertEqual(url, self.get_full_url(url_name))
 
+    def assert_multi_selected_text_equals(self, id_of_select, expected):
+        actual = self.get_multi_selected_option_text(id_of_select)
+        remaining = []
+        for value in expected:
+            if value not in actual:
+                remaining.append(value)
+            else:
+                actual.remove(value)
+        self.assertTrue(not actual and not remaining)
+
     def assert_summary_field_correctly_shown(self, expected_value, form_name, field_name):
         value_displayed = self.get_summary_field_text(form_name, field_name)
         self.assertEqual(expected_value, strip_tags(value_displayed))
@@ -281,7 +300,13 @@ class LiveServerTest(django.test.LiveServerTestCase):
         for option in options:
             if option.get_attribute('selected'):
                 selected_option = option
-        return selected_option.text      
+        return selected_option.text
+
+    def get_multi_selected_option_text(self, id_of_select):
+        select = self.selenium.find_element_by_css_selector(id_of_select)
+        options = select.find_elements_by_css_selector('option')
+        return [option.text for option in options]
+
         
     def get_selector_value(self, selector): 
         return self.selenium.find_element_by_css_selector(selector).get_attribute('value')

@@ -4,257 +4,14 @@ catalogue.modules = catalogue.modules || {};
 
 catalogue.modules.mock_image = function ($) {
 
-    function mock_image_enabled() {
-        var ami = $('#id_mock_image-apply_mock_image');
-        return ami.attr('disabled') === undefined && ami.is(':checked');
-    }
+    var vm = {}
+    this.vm = vm;
+	var image_param_names = ['fov_dec', 'fov_ra', 'height',
+             'min_mag', 'origin_dec', 'origin_ra', 'width',
+             'z_max', 'z_min'];
 
-
-    function mock_image_setup_form_behaviors(form) {
-
-        //
-        // Setup validation on each input.
-        //
-
-        // sub_cone
-        form.find('select[name$="sub_cone"]').validate({
-            required: true,
-            form: 'mock_image'
-        });
-
-        // format
-        form.find('select[name$="format"]').validate({
-            required: true,
-            form: 'mock_image'
-        });
-
-        // mag_field
-        form.find('select[name$="mag_field"]').validate({
-            required: true,
-            form: 'mock_image'
-        });
-
-        // z_min
-        form.find('input[name$="z_min"]').validate({
-            type: 'float',
-            required: true,
-            cache: {
-                z_min: [$('#id_light_cone-redshift_min'), 'float'],
-                z_max: [$('#id_light_cone-redshift_max'), 'float']
-            },
-            group: [form.find('input[name$="z_max"]')],
-            form: 'mock_image'
-        }).validate('test', {
-            check: function (val, cache) {
-                return val >= cache.z_min;
-            },
-            message: ['Value must be greater than the minimum redshift of ',
-                'the cone specified in General Properties.'
-            ].join('')
-        }).validate('test', {
-            check: function (val, cache) {
-                return val <= cache.z_max;
-            },
-            message: ['Value must be less than the maximum redshift of ',
-                'the cone specified in General Properties.'
-            ].join('')
-        }).validate('test', {
-            check: function (val, cache) {
-                return val <= form.find('input[name$="z_max"]').val();
-            },
-            message: ['Value must be less than the maximum redshift of ',
-                'this mock image.'
-            ].join('')
-        });
-
-        // z_max
-        form.find('input[name$="z_max"]').validate({
-            type: 'float',
-            required: true,
-            cache: {
-                z_min: [$('#id_light_cone-redshift_min'), 'float'],
-                z_max: [$('#id_light_cone-redshift_max'), 'float']
-            },
-            group: [form.find('input[name$="z_min"]')],
-            form: 'mock_image'
-        }).validate('test', {
-            check: function (val, cache) {
-                return val <= cache.z_max;
-            },
-            message: ['Value must be less than the maximum redshift of ',
-                'the cone specified in General Properties.'
-            ].join('')
-        }).validate('test', {
-            check: function (val, cache) {
-                return val >= cache.z_min;
-            },
-            message: ['Value must be greater than the minimum redshift of ',
-                'the cone specified in General Properties.'
-            ].join('')
-        }).validate('test', {
-            check: function (val, cache) {
-                return val >= form.find('input[name$="z_min"]').val();
-            },
-            message: ['Value must be greater than the minimum redshift of ',
-                'this mock image.'
-            ].join('')
-        });
-
-        // origin_ra
-        form.find('input[name$="origin_ra"]').validate({
-            type: 'float',
-            required: true,
-            cache: {
-                ra: [$('#id_light_cone-ra_opening_angle'), 'float'],
-                fov_ra: [form.find('input[name$="fov_ra"]'), 'float']
-            },
-            group: [form.find('input[name$="fov_ra"]')],
-            form: 'mock_image'
-        }).validate('test', {
-            check: function (val, cache) {
-                return val + 0.5 * cache.fov_ra <= cache.ra;
-            },
-            message: 'Origin and field-of-view RAs exceed cone maximum.'
-        }).validate('test', {
-            check: function (val, cache) {
-                return val - 0.5 * cache.fov_ra >= 0;
-            },
-            message: 'Origin and field-of-view RAs are below cone minimum.'
-        });
-
-        // origin_dec
-        form.find('input[name$="origin_dec"]').validate({
-            type: 'float',
-            required: true,
-            cache: {
-                dec: [$('#id_light_cone-dec_opening_angle'), 'float'],
-                fov_dec: [form.find('input[name$="fov_dec"]'), 'float']
-            },
-            group: [form.find('input[name$="fov_dec"]')],
-            form: 'mock_image'
-        }).validate('test', {
-            check: function (val, cache) {
-                return val + 0.5 * cache.fov_dec <= cache.dec;
-            },
-            message: 'Origin and field-of-view DECs exceed cone maximum.'
-        }).validate('test', {
-            check: function (val, cache) {
-                return val - 0.5 * cache.fov_dec >= 0;
-            },
-            message: 'Origin and field-of-view DECs are below cone minimum.'
-        });
-
-        // fov_ra
-        form.find('input[name$="fov_ra"]').validate({
-            type: 'float',
-            required: true,
-            cache: {
-                ra: [$('#id_light_cone-ra_opening_angle'), 'float'],
-                o_ra: [form.find('input[name$="origin_ra"]'), 'float']
-            },
-            group: [form.find('input[name$="origin_ra"]')],
-            form: 'mock_image'
-        }).validate('test', {
-            check: function (val, cache) {
-                return cache.o_ra + 0.5 * val <= cache.ra;
-            },
-            message: 'Origin and field-of-view RAs exceed cone maximum.'
-        }).validate('test', {
-            check: function (val, cache) {
-                return cache.o_ra - 0.5 * val >= 0;
-            },
-            message: 'Origin and field-of-view RAs are below cone minimum.'
-        });
-
-        // fov_dec
-        form.find('input[name$="fov_dec"]').validate({
-            type: 'float',
-            required: true,
-            cache: {
-                dec: [$('#id_light_cone-dec_opening_angle'), 'float'],
-                o_dec: [form.find('input[name$="origin_dec"]'), 'float']
-            },
-            group: [form.find('input[name$="origin_dec"]')],
-            form: 'mock_image'
-        }).validate('test', {
-            check: function (val, cache) {
-                return cache.o_dec + 0.5 * val <= cache.dec;
-            },
-            message: 'Origin and field-of-view DECs exceed cone maximum.'
-        }).validate('test', {
-            check: function (val, cache) {
-                return cache.o_dec - 0.5 * val >= 0;
-            },
-            message: 'Origin and field-of-view DECs are below cone minimum.'
-        });
-
-        // width
-        form.find('input[name$="width"]').validate({
-            type: 'int',
-            required: true,
-            form: 'mock_image'
-        }).validate('test', {
-            check: function (val) {
-                return val > 1;
-            },
-            message: 'Image must have at least 1 pixel in width.'
-        }).validate('test', {
-            check: function (val) {
-                return val < 4096;
-            },
-            message: 'Maximum image width is 4096 pixels.'
-        });
-
-        // height
-        form.find('input[name$="height"]').validate({
-            type: 'int',
-            required: true,
-            form: 'mock_image'
-        }).validate('test', {
-            check: function (val) {
-                return val > 1;
-            },
-            message: 'Image must have at least 1 pixel in height.'
-        }).validate('test', {
-            check: function (val) {
-                return val < 4096;
-            },
-            message: 'Maximum image height is 4096 pixels.'
-        });
-    }
-
-    function mock_image_setup_form(form) {
-        var ra = $('#id_light_cone-ra_opening_angle').val();
-        var dec = $('#id_light_cone-dec_opening_angle').val();
-        var z_min = $('#id_light_cone-redshift_min').val();
-        var z_max = $('#id_light_cone-redshift_max').val();
-        update_mock_image_sub_cones(form.find('select[name$="sub_cone"]'));
-        mock_image_update_magnitudes(form.find('select[name$="mag_field"]'));
-        form.find('input[name$="min_mag"]').val(7);
-        form.find('input[name$="z_min"]').val(z_min);
-        form.find('input[name$="z_max"]').val(z_max);
-        if (ra != "") {
-            form.find('input[name$="origin_ra"]').val(ra / 2.0);
-            form.find('input[name$="fov_ra"]').val(ra);
-        }
-        if (dec !== "") {
-            form.find('input[name$="origin_dec"]').val(dec / 2.0);
-            form.find('input[name$="fov_dec"]').val(dec);
-        }
-        form.find('input[name$="width"]').val(1024);
-        form.find('input[name$="height"]').val(1024);
-        update_mock_image_summary();
-
-        $('.delete-row:last').click(function () {
-            update_mock_image_summary();
-            return true;
-        });
-
-        mock_image_setup_form_behaviors(form);
-    }
-
-    function update_apply_mock_image() {
-        if (mock_image_enabled()) {
+    function update_apply_mock_image(apply_mock_image) {
+        if (apply_mock_image) {
             $('#tao-tabs-3').css({
                 "border-style": "solid"
             });
@@ -263,14 +20,12 @@ catalogue.modules.mock_image = function ($) {
             });
 
             // Add an image if there is none there.
-            if ($('#mock_image_params .single-form').length == 0)
-                $('#mock_image_params .add-row').click();
-
-            // Enable all inputs except hidden ones.
-            $('#mock_image_params input[type!="hidden"], #mock_image_params select').removeAttr('disabled');
+            if (vm.number_of_images() == 0)
+                vm.add_image_settings();
 
             $('#mock_image_params').slideDown();
             $('#mock_image_info').slideDown();
+
         } else {
             $('#tao-tabs-3').css({
                 "border-style": "dashed"
@@ -279,102 +34,42 @@ catalogue.modules.mock_image = function ($) {
                 "color": "rgb(119, 221, 252)"
             });
 
-            // Disable all inputs except hidden ones.
-            $('#mock_image_params input[type!="hidden"], #mock_image_params select').attr('disabled', 'disabled');
-
             $('#mock_image_params').slideUp();
             $('#mock_image_info').slideUp();
         }
-        update_mock_image_summary();
     }
 
-
-    function mock_image_update_magnitudes(sel) {
-        if (sel === undefined)
-            sel = $('#mock_image_params select[name$="mag_field"]');
-        update_select(sel, $('#id_sed-band_pass_filters > option'));
-    }
-
-
-    function update_mock_image_sub_cones(sel) {
-        if (sel === undefined)
-            sel = $('#mock_image_params select[name$="sub_cone"]');
-        var num_cones = parseInt($('#id_light_cone-number_of_light_cones').val());
-        sel.each(function () {
-            var cur = $(this).children('option:selected').attr('value');
-            $(this).empty();
-            $(this).append($('<option/>').attr('value', 'ALL').text('All'));
-            if (num_cones !== undefined && num_cones > 1) {
-                for (var ii = 0; ii < num_cones; ii++) {
-                    var opt = $('<option/>').attr('value', ii).text(ii);
-                    if (opt.attr('value') == cur)
-                        opt.prop('selected', true);
-                    $(this).append(opt);
-                }
-            }
-        });
-    }
-
-
-    function update_mock_image_summary() {
-        if (mock_image_enabled()) {
-            $('div.summary_mock_image .apply_mock_image').show();
-            catalogue.util.fill_in_summary('mock_image', 'select_mock_image', '');
-            catalogue.util.fill_in_summary('mock_image', 'num_images', $('#mock_image_params .single-form').length);
-        } else {
-            $('div.summary_mock_image .apply_mock_image').hide();
-            catalogue.util.fill_in_summary('mock_image', 'select_mock_image', 'Not selected');
-        }
-    }
-
-
-    function update_select(sel, opts) {
-        sel.each(function () {
-            var cur_sel = $(this);
-            var cur_opt = cur_sel.children('option:selected').attr('value');
-            cur_sel.empty();
-            opts.each(function () {
-                var opt = $('<option/>').attr('value', $(this).attr('value')).text($(this).text());
-                if ($(this).attr('value') == cur_opt)
-                    opt.prop('selected', true);
-                cur_sel.append(opt);
-            });
-            cur_sel.change();
-        });
-    }
-
-
-    this.update_tabs = function (event, ui) {
-        var old_tab = $(ui.oldTab).children('a:first').attr('id');
-        var new_tab = $(ui.newTab).children('a:first').attr('id');
-
-        // Check if the mock-image tab should be enabled.
-        if (old_tab == 'tao-tabs-1' || old_tab == 'tao-tabs-2') {
-            var sel = $('#id_light_cone-catalogue_geometry option:selected').val();
-            if ($('#id_light_cone-catalogue_geometry option:selected').val() == 'light-cone' &&
-                $('#id_sed-apply_sed').is(':checked')) {
-                $(mi_id('apply_mock_image')).removeAttr('disabled');
-                update_apply_mock_image();
-            } else {
-                $(mi_id('apply_mock_image')).attr('disabled', 'disabled');
-                update_apply_mock_image();
-            }
-        }
-
-        // Update all mock image magnitudes.
-        if (old_tab == 'tao-tabs-2')
-            mock_image_update_magnitudes();
-
-        // Update every mock image sub-cone option with appropriate
-        // values from the general properties.
-        if (old_tab == 'tao-tabs-1')
-            update_mock_image_sub_cones();
-
-        // Upon moving to a new tab, run validation in the tab to pick up
-        // any changes from previous tab.
-        if (new_tab == 'tao-tabs-3')
-            $.validate_form('mock_image');
-    }
+//    this.update_tabs = function (event, ui) {
+//        var old_tab = $(ui.oldTab).children('a:first').attr('id');
+//        var new_tab = $(ui.newTab).children('a:first').attr('id');
+//
+//        // Check if the mock-image tab should be enabled.
+//        if (old_tab == 'tao-tabs-1' || old_tab == 'tao-tabs-2') {
+//            var sel = $('#id_light_cone-catalogue_geometry option:selected').val();
+//            if ($('#id_light_cone-catalogue_geometry option:selected').val() == 'light-cone' &&
+//                $('#id_sed-apply_sed').is(':checked')) {
+//                $(mi_id('apply_mock_image')).removeAttr('disabled');
+//                update_apply_mock_image();
+//            } else {
+//                $(mi_id('apply_mock_image')).attr('disabled', 'disabled');
+//                update_apply_mock_image();
+//            }
+//        }
+//
+//        // Update all mock image magnitudes.
+//        if (old_tab == 'tao-tabs-2')
+//            mock_image_update_magnitudes();
+//
+//        // Update every mock image sub-cone option with appropriate
+//        // values from the general properties.
+//        // if (old_tab == 'tao-tabs-1')
+//        //    update_mock_image_sub_cones();
+//
+//        // Upon moving to a new tab, run validation in the tab to pick up
+//        // any changes from previous tab.
+//        if (new_tab == 'tao-tabs-3')
+//            $.validate_form('mock_image');
+//    }
 
     this.cleanup_fields = function ($form) {}
 
@@ -386,47 +81,229 @@ catalogue.modules.mock_image = function ($) {
 
     this.pre_submit = function ($form) {}
 
+    this.job_parameters = function() {
+		var max_allowed_images = 1000;
+		var image_params;
+		var params = {};
 
-    this.init = function () {
+		params['mock_image-apply_mock_image'] = [vm.apply_mock_image()];
+		params['mock_image-MAX_NUM_FORMS'] = [max_allowed_images];
+		params['mock_image-INITIAL_FORMS'] = [0];
+		if (vm.apply_mock_image()) {
+			image_params = vm.image_settings();
+			// Assume that we haven't exceeded the max_allowed_images
+			// (which should be checked as part of wizard validation)
+			for (var i=0; i<image_params.length; i++) {
+				var current_image = image_params[i];
+				var key_prefix = 'mock_image-'+ i + '-';
 
-        // TODO: perhaps move the event handlers to init_event_handlers()
-        // to be consistent with other modules
+				for (var j=0; j<image_param_names.length; j++) {
+					var pn = image_param_names[j];
+					params[key_prefix + pn] = [current_image[pn]];
+				}
+				params[key_prefix + 'format'] = [current_image['format']().value];
+				params[key_prefix + 'mag_field'] = [current_image['mag_field']().value];
+				params[key_prefix + 'sub_cone'] = [current_image['sub_cone']().value];
+			}
+			params['mock_image-TOTAL_FORMS']  = [image_params.length];
+		} else {
+	    	params['mock_image-TOTAL_FORMS'] = [0];
+		}
+    	return params;
+    }
 
-        $('#mock_image_params .single-form').formset({
-            prefix: 'mock_image'
+    this.init_model = function (init_params) {
+    	// job is either an object containing the job parameters or null
+    	var job = init_params.job;
+    	var param; // Temporary variable for observable initialisation
+
+        function ImageParameters(prefix, job) {
+            var def = catalogue.validators.defined;
+            var image_params = {};
+            var param;
+            
+            function get_param(prefix, pn) {
+            	if (prefix == undefined) {
+            		return false;
+            	}
+            	return job[prefix+pn];
+            }
+
+            param = get_param(prefix, '-sub_cone');
+            image_params.sub_cone = ko.observable(param ? param : vm.sub_cone_options()[0]);
+            param = get_param(prefix, '-format');
+            image_params.format = ko.observable(param ? param : vm.format_options[0]);
+            image_params.mag_field_options = ko.computed(function(){
+                return catalogue.modules.sed.vm.bandpass_filters.to_side.options();
+            });
+            image_params.mag_field = ko.observable();
+            // Note that mag_field is stored incorrectly
+            // Currently the entry id is stored, not the entry itself.
+            // Look-up could be an issue with respect to initialisation
+            // order.
+            // This isn't required as the Job View simply counts the number
+            // of images, and doesn't display any details, including
+            // the magnitude field.
+            param = get_param(prefix, '-mag_field');
+            if (param) image_params.mag_field(param);
+            param = get_param(prefix, '-fov_ra');
+            image_params.fov_ra = ko.observable(param ? param : catalogue.modules.light_cone.vm.ra_opening_angle());
+            param = get_param(prefix, '-fov_dec');
+            image_params.fov_dec = ko.observable(param ? param : catalogue.modules.light_cone.vm.dec_opening_angle());
+            param = get_param(prefix, '-width');
+            image_params.width = ko.observable(param ? param : 1024)
+                .extend({validate: catalogue.validators.is_float})
+                .extend({validate: catalogue.validators.geq(1)})
+                .extend({validate: catalogue.validators.leq(4096)});
+            param = get_param(prefix, '-height');
+            image_params.height = ko.observable(param ? param : 1024)
+                .extend({validate: catalogue.validators.is_float})
+                .extend({validate: catalogue.validators.geq(1)})
+                .extend({validate: catalogue.validators.leq(4096)});
+            param = get_param(prefix, '-min_mag');
+            image_params.min_mag = ko.observable(param ? param : 7)
+                .extend({validate: catalogue.validators.is_float})
+                .extend({validate: catalogue.validators.positive});
+            param = get_param(prefix, '-z_min');
+            image_params.z_min = ko.observable(param ? param : catalogue.modules.light_cone.vm.redshift_min())
+                .extend({validate: catalogue.validators.is_float})
+                .extend({validate: catalogue.validators.geq(
+                    catalogue.modules.light_cone.vm.redshift_min
+                    )})
+                .extend({validate: catalogue.validators.leq(
+                    catalogue.modules.light_cone.vm.redshift_max
+                    )});
+            param = get_param(prefix, '-z_max');
+            image_params.z_max = ko.observable(param ? param : catalogue.modules.light_cone.vm.redshift_max())
+                .extend({validate: catalogue.validators.is_float})
+                .extend({validate: catalogue.validators.geq(
+                    catalogue.modules.light_cone.vm.redshift_min
+                    )})
+                .extend({validate: catalogue.validators.leq(
+                    catalogue.modules.light_cone.vm.redshift_max
+                    )})
+                .extend({validate: catalogue.validators.greater_than(
+                    image_params.z_min
+                )});
+            param = get_param(prefix, '-origin_ra');
+            image_params.origin_ra = ko.observable(param ? param :
+                    (def(catalogue.modules.light_cone.vm.ra_opening_angle()) ?
+                    catalogue.modules.light_cone.vm.ra_opening_angle()/2 : ''));
+            image_params.origin_ra
+                .extend({validate: catalogue.validators.is_float})
+                .extend({validate: catalogue.validators.test(
+                    ko.computed(function(){
+                        if (!def(image_params.fov_ra())
+                            || !def(catalogue.modules.light_cone.vm.ra_opening_angle()))
+                            return true;
+                        return parseFloat(image_params.origin_ra()) + 0.5 * parseFloat(image_params.fov_ra())
+                            <= parseFloat(catalogue.modules.light_cone.vm.ra_opening_angle());
+                    }),
+                    "Origin and field-of-view RAs exceed cone maximum."
+                )})
+                .extend({validate: catalogue.validators.test(
+                    ko.computed(function(){
+                        if (!def(image_params.fov_ra()))
+                            return true;
+                        return parseFloat(image_params.origin_ra()) - 0.5 * parseFloat(image_params.fov_ra()) >= 0.0;
+                    }),
+                    "Origin and field-of-view RAs are below cone minimum."
+                )});
+            param = get_param(prefix, '-origin_dec');
+            image_params.origin_dec = ko.observable(param ? param :
+                    (def(catalogue.modules.light_cone.vm.dec_opening_angle()) ?
+                        catalogue.modules.light_cone.vm.dec_opening_angle()/2 : ''));
+            image_params.origin_dec
+                .extend({validate: catalogue.validators.is_float})
+                .extend({validate: catalogue.validators.test(
+                    ko.computed(function(){
+                        if (!def(image_params.fov_dec())
+                            || !def(catalogue.modules.light_cone.vm.dec_opening_angle()))
+                            return true;
+                        return parseFloat(image_params.origin_dec()) + 0.5 * parseFloat(image_params.fov_dec())
+                            <= parseFloat(catalogue.modules.light_cone.vm.dec_opening_angle());
+                    }),
+                    "Origin and field-of-view DECs exceed cone maximum.")})
+                .extend({validate: catalogue.validators.test(
+                    ko.computed(function(){
+                        if (!def(image_params.fov_dec()))
+                            return true;
+                        return parseFloat(image_params.origin_dec()) - 0.5 * parseFloat(image_params.fov_dec()) >= 0.0;
+                    }),
+                    "Origin and field-of-view DECs are below cone minimum."
+                )});
+
+            return image_params;
+        }
+        
+        function add_images_from(job) {
+        	// Add the images from the supplied job parameters
+        	var num_images;
+
+        	if (!vm.apply_mock_image()) return;
+        	
+        	num_images = parseInt(job['mock_image-TOTAL_FORMS']);
+        	if (isNaN(num_images)) return;
+        	if (num_images == 0) return;
+
+        	for (var i=0; i<num_images; i++) {
+        		var prefix = 'mock_image' + i;
+        		vm.image_settings.push(ImageParameters(prefix, job));
+        	}
+        }
+
+        vm.can_have_images = ko.computed(function(){
+            return catalogue.modules.sed.vm.apply_sed() &&
+                catalogue.modules.light_cone.vm.catalogue_geometry().id == 'light-cone' &&
+                catalogue.modules.sed.vm.bandpass_filters.to_side.options().length > 0;
         });
 
-
-        $(mi_id('apply_mock_image')).change(function (evt) {
-            update_apply_mock_image();
+        vm.sub_cone_options = ko.computed(function(){
+            var n = catalogue.modules.light_cone.vm.number_of_light_cones();
+            var resp = [{value: 'ALL', text:'All'}]
+            for(var i = 1; i<=n; i++)
+                resp.push({value:i, text:i});
+            return resp;
         });
+
+        vm.format_options = [
+                {value:'FITS', text:'FITS'}
+                // png and jpg formats aren't working yet
+                // {value:'PNG', text:'PNG'},
+                // {value:'JPEG', text:'JPEG'}
+            ];
+
+        param = job['mock_image-apply_mock_image']
+        vm.apply_mock_image = ko.observable(param ? param : false);
+
+        vm.apply_mock_image.subscribe(function(val){
+            update_apply_mock_image(val, vm);
+        });
+
+        vm.image_settings = ko.observableArray([]);
+        add_images_from(job);
+
+        vm.number_of_images = ko.computed(function() {
+             return vm.image_settings().length;
+        });
+
+        vm.add_image_settings = function() {
+            var params = ImageParameters();
+            vm.image_settings.push(params);
+        }
+
+        vm.remove_image_settings = function(obj) {
+            vm.image_settings.remove(obj);
+            if (vm.image_settings().length == 0)
+                vm.add_image_settings();
+        }
 
         // We always have an extra form at the end, so delete it
         // now that we've initialised the formset.
-        $('#mock_image_params .single-form:last').remove();
+        // $('#mock_image_params .single-form:last').remove();
         $('#id_mock_image-TOTAL_FORMS').val(parseInt($('#id_mock_image-TOTAL_FORMS').val()) - 1);
 
-        // Pretty up the "add another" button and add my own click handler.
-        $('.add-row').button().click(function () {
-            mock_image_setup_form($('#mock_image_params .single-form:last'));
-            return true;
-        });
-
-        // Add behaviors to existing forms.
-        $('#mock_image_params .single-form').each(function () {
-            mock_image_setup_form_behaviors($(this));
-        });
-
-        // Run validation on all existing forms. Don't force anything here,
-        // as we don't know if this is a returning form or a new one. If it's
-        // returning, then any errors flagged in control groups will be picked
-        // up by jQuery.validate.
-        $('#mock_image_params .single-form').each(function () {
-            $.validate_form('mock_image');
-        });
-
-        // Reevaluate all the magnitude fields.
-        mock_image_update_magnitudes();
+        return vm;
 
     }
 

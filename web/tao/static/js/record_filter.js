@@ -4,224 +4,165 @@ catalogue.modules = catalogue.modules || {};
 
 catalogue.modules.record_filter = function ($) {
 
-    function me() {
-        return catalogue.modules.record_filter;
-    }
-
-
-    var fill_in_selection_in_summary = function () {
-        var filter_min = $(rf_id('min')).val();
-        var filter_max = $(rf_id('max')).val();
-        var filter_selected = $(rf_id('filter')).find('option:selected').html();
-        if (!filter_min && !filter_max)
-            catalogue.util.fill_in_summary('record_filter', 'record_filter', filter_selected);
-        else if (!filter_min)
-            catalogue.util.fill_in_summary('record_filter', 'record_filter', filter_selected + ' &le; ' + filter_max);
-        else if (!filter_max)
-            catalogue.util.fill_in_summary('record_filter', 'record_filter', filter_min + ' &le; ' + filter_selected);
-        else
-            catalogue.util.fill_in_summary('record_filter', 'record_filter', filter_min + ' &le; ' + filter_selected + ' &le; ' + filter_max);
-    }
-
-
-    function init_event_handlers() {
-        fill_in_selection_in_summary();
-
-        $(rf_id('filter')).change(function (evt) {
-            var $this = $(this);
-            var filter_value = $this.val();
-            if (filter_value == item_to_value(TAO_NO_FILTER)) {
-                $(rf_id('max')).attr('disabled', 'disabled');
-                $(rf_id('min')).attr('disabled', 'disabled')
-                catalogue.util.fill_in_summary('record_filter', 'record_filter', 'No Filter');
-            } else {
-                $(rf_id('max')).removeAttr('disabled');
-                $(rf_id('min')).removeAttr('disabled');
-                fill_in_selection_in_summary();
-            }
-        });
-
-        $(rf_id('min') + ', ' + rf_id('max')).change(function (evt) {
-            fill_in_selection_in_summary();;
-        });
-
-    }
-
-
-    // TODO: This function needs a big re-write to decouple it from all submodules
-    this.update_filter_options = function () {
-
-        var data_set_id = $(lc_id('galaxy_model')).val();
-
-        fetch_data = this.current_key != data_set_id;
-
-        var use_default = function () {
-            return !on_summary();
-        }
-
-        // NOTE: This is a complete hack, it checks whether the current page is the job summary page
-        var on_summary = function () {
-            var viewing = $('h1').text();
-            var result = false;
-            if (viewing && viewing.indexOf('Viewing Job') != -1) {
-                result = true;
-            }
-            return result;
-        }
-
-
-        var isInt = function (value) {
-            return !isNaN(parseInt(value)) && (parseFloat(value) + '' == parseInt(value) + '');
-        }
-
-
-        var isFloat = function (value) {
-            return !isNaN(parseFloat(value));
-        }
-
-
-        function add_option($filter, item, current_filter) {
-            $option = $('<option/>');
-            $option.attr('value', item_to_value(item));
-            if (item_to_value(item) == item_to_value(TAO_NO_FILTER)) {
-                $option.html(item.fields.label);
-            } else {
-                if (item.fields.units != '') {
-                    $option.html(item.fields.label + ' (' + item.fields.units + ')');
-                } else {
-                    $option.html(item.fields.label);
-                }
-            }
-            if (item_to_value(item) == current_filter) {
-                $option.attr('selected', 'selected');
-            }
-            $option.data('is_valid', item.fields.data_type == 1 ? isFloat : isInt);
-            $option.data('expected_type', item.fields.data_type == 1 ? 'float' : 'integer');
-            $filter.append($option);
-        }
-
-
-        function current_selection() {
-            var list = [];
-            $.each(catalogue.modules.light_cone.lc_output_props_widget.selected(), function (i, value) {
-                list.push('D-' + value);
-            });
-            // TODO: Remove dependency
-            if ($(sed_id('apply_sed')).is(':checked')) {
-                $.each(catalogue.modules.sed.sed_band_pass_filters_widget.selected(), function (i, value) {
-                    list.push('B-' + value);
-                });
-            }
-            return list;
-        }
-
-
-        function refresh_select(resp) {
-            var $filter = $(rf_id('filter'));
-            var current_filter = $filter.val();
-            var current = current_selection();
-            current.push(item_to_value(TAO_NO_FILTER));
-            current.push('D-' + resp.default_id.toString());
-            if (use_default() || current.indexOf(current_filter) == -1) {
-                current_filter = 'D-' + resp.default_id;
-                if (current_filter == '' || current_filter == item_to_value(TAO_NO_FILTER)) {
-                    $(rf_id('min')).val('');
-                    $(rf_id('max')).val('');
-                } else {
-                    $(rf_id('min')).val(resp.default_min);
-                    $(rf_id('max')).val(resp.default_max);
-                }
-            }
-            $filter.empty();
-            add_option($filter, TAO_NO_FILTER, current_filter);
-            var data = resp.list;
-            for (i = 0; i < data.length; i++) {
-                if (current.indexOf(item_to_value(data[i])) != -1) {
-                    add_option($filter, data[i], current_filter);
-                }
-            }
-            $filter.change();
-        }
-
-
-        if (!fetch_data) {
-            refresh_select(this.update_filter_options.current_data);
-            return;
-        }
-
-
-        $.ajax({
-            url: TAO_JSON_CTX + 'filters/' + data_set_id,
-            dataType: "json",
-            error: function () {
-                alert("Couldn't get filters");
-            },
-            success: function (resp, status, xhr) {
-                me().update_filter_options.current_data = resp;
-                me().update_filter_options.current_key = data_set_id;
-                if (me().update_filter_options.output_props &&
-                    me().update_filter_options.bandpass_props &&
-                    use_default()) {
-                    refresh_select(resp);
-                }
-            }
-        });
-
-    };
-
-    this.update_filter_options.output_props = false;
-    this.update_filter_options.bandpass_props = false;
-
-
-    var validate_min_max = function () {
-
-        var min = $(rf_id('min')).val();
-        var max = $(rf_id('max')).val();
-        var $filter = $(rf_id('filter'));
-        if ($filter.val() == item_to_value(TAO_NO_FILTER)) {
-            return true;
-        }
-        var $option = $filter.find('option:selected');
-        var is_valid = $option.data('is_valid');
-        var expected_type = $option.data('expected_type');
-        var error = false;
-        if (min && !is_valid(min)) {
-            catalogue.util.show_error($(rf_id('min')), 'Min in record filter should be ' + expected_type);
-            error = true;
-        } else {
-            catalogue.util.show_error($(rf_id('min')), null);
-        }
-        if (max && !is_valid(max)) {
-            catalogue.util.show_error($(rf_id('max')), 'Max in record filter should be ' + expected_type);
-            error = true;
-        } else {
-            catalogue.util.show_error($(rf_id('max')), null);
-        }
-
-        return !error;
-    }
-
+    // KO ViewModel
+    var vm = {}
+    this.vm = vm;
 
     this.cleanup_fields = function ($form) {
-        // cleanup record filter
-        var filter = $(rf_id('filter')).val();
-        if (filter == item_to_value(TAO_NO_FILTER)) {
-            $(rf_id('min')).val('');
-            $(rf_id('max')).val('');
+    }
+
+    this.validate = function ($form) {
+    	return true;
+    }
+
+    this.pre_submit = function ($form) {
+
+    }
+
+    this.job_parameters = function() {
+    	var params = {
+    		'record_filter-filter': [vm.selection().value],
+    		'record_filter-min': [vm.selection_min()],
+    		'record_filter-max': [vm.selection_max()]
+    	}
+    	return params;
+    }
+
+    var to_option = function(obj) {
+        if (obj.model === "tao.datasetproperty") {
+            return {
+    			value: 'D-'+obj.pk,
+    			label: obj.fields.label + (catalogue.validators.defined(obj.fields.units) ?
+                    ' ('+obj.fields.units+')' : '')
+    		}
+        } else {
+            return {
+				value: 'B-'+obj.value,
+				label: obj.text
+			}
         }
     }
 
+    var filter_choices = function () {
+    	// Build up the list of fields that the user can filter records on:
+    	// * Selected output properties with is_filter true
+    	// * Selected bandpass filters
+    	// * The dataset default filter
+    	// Note that a filter selection is required, i.e.
+    	// the No Filter options has been removed
+    	var default_filter_pk;
+    	var output_properties;
+    	var bandpass_filters;
+    	var current_selection = vm.selection();
+        var result = [];
 
-    this.validate = function ($form) {
-        return validate_min_max();
+        // If KO find the same object in the options, will keep it selected
+        // so this helper function ensures that
+        function add_to_result(obj) {
+            if (current_selection !== undefined && obj.value == current_selection.value) {
+                result.push(current_selection)
+            } else {
+                result.push(obj);
+            }
+        }
+
+    	// Get the default filter
+    	default_filter_pk = catalogue.modules.light_cone.vm.dataset().fields.default_filter_field;
+    	add_to_result(to_option(catalogue.util.dataset_property(default_filter_pk)));
+
+    	// Get the selected output properties with is_filter==true
+    	output_properties = catalogue.modules.light_cone.vm.output_properties.to_side.options_raw();
+    	for (var i=0; i<output_properties.length; i++) {
+    		var output_property_entry = output_properties[i];
+    		var output_property = catalogue.util.dataset_property(output_property_entry.value);
+    		if (output_property.pk == default_filter_pk) {
+    			continue; // It's already been added above
+    		}
+    		if (output_property.fields.is_filter) {
+    			add_to_result(to_option(output_property));
+    		}
+    	}
+
+        if (catalogue.modules.sed.vm.apply_sed()) {
+            // Get the selected bandpass filters
+            bandpass_filters = catalogue.modules.sed.vm.bandpass_filters.to_side.options_raw();
+            for (var i=0; i<bandpass_filters.length; i++) {
+                add_to_result(to_option(bandpass_filters[i]));
+            }
+        }
+
+    	return result;
+    }
+    
+    var filter_choice = function(id) {
+    	return $.grep(filter_choices(), function(elem, idx) {
+    		return elem.value == id;
+    	})[0];
     }
 
+    var valid_min_max = function() {
+    	// Ensure that max is greater than min
+    	rs_max = vm.selection_max();
+    	rs_min = vm.selection_min();
+    	
+        if (rs_max === undefined || rs_max === null || rs_max == '')
+            return {'error': false};
+        if (rs_min === undefined || rs_min === null || rs_min == '')
+            return {'error': false};
+        if (parseFloat(rs_max) > parseFloat(rs_min))
+        	return {'error': false}
+        else
+        	return {'error': true, message: 'Selection max must be greater than Selection min'}
+    }
+    
+    this.hr_summary = function() {
+    	var res = '';
+    	if (vm.selection() == undefined) {
+    		return '';
+    	}
+    	var smin = vm.selection_min();
+    	var smax = vm.selection_max();
+    	var label = vm.selection().label;
 
-    this.pre_submit = function ($form) {}
+    	if (smin) {
+    		res = res + smin + ' ≤ ';
+    	}
+    	res = res + label; 
+    	if (smax) {
+    		res = res + ' ≤ ' + smax;
+    	}
+    	return res;
+    }
 
+    this.init_model = function (init_params) {
+    	var current_dataset;
+    	// job is either an object containing the job parameters or null
+    	var job = init_params.job;
+    	var param; // Temporary variable for observable initialisation
 
-    this.init = function () {
-        init_event_handlers();
+    	vm.selection = ko.observable();
+    	param = job['record_filter-filter'];
+    	if (param) {
+    		param = filter_choice(param);
+    		vm.selection(param);
+    	}
+    	vm.selections = ko.computed(filter_choices);
+    	current_dataset = catalogue.modules.light_cone.vm.dataset();
+    	// Create the min and max observables
+    	// Set up validation after creation as we have a validator that refers to both observables
+    	vm.selection_min = ko.observable(current_dataset.fields.default_filter_min);
+    	vm.selection_max = ko.observable(current_dataset.fields.default_filter_max);
+    	vm.selection_min
+            .extend({validate: catalogue.validators.is_float})
+            .extend({validate: catalogue.validators.geq(0)})
+    		.extend({validate: valid_min_max});
+    	vm.selection_max
+    		.extend({validate: catalogue.validators.is_float})
+            .extend({validate: catalogue.validators.geq(0)})
+    		.extend({validate: valid_min_max});
+    	vm.hr_summary = ko.computed(this.hr_summary);
+
+    	return vm
     }
 
 }
