@@ -186,6 +186,7 @@ class Form(BaseForm):
             # Also need to check for the apply mock image checkbox, due
             # to not using "from_xml" in certain places.
             self.apply_mock_image = apply_mock_image
+            data['mock_image-apply_mock_image'] = apply_mock_image
 
         # Set to None if we aren't bound.
         else:
