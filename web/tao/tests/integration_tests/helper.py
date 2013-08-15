@@ -10,6 +10,7 @@ import tao.datasets as datasets
 from tao.models import DataSetProperty, BandPassFilter, Simulation
 from tao.forms import NO_FILTER
 from tao.settings import MODULE_INDICES
+from tao.tests.support.factories import GlobalParameterFactory
 
 def interact(local):
     """
@@ -28,11 +29,19 @@ class LiveServerTest(django.test.LiveServerTestCase):
     ## List all ajax enabled pages that have initialization code and must wait
     AJAX_WAIT = ['mock_galaxy_factory', 'view_job']
     SUMMARY_INDEX = str(len(MODULE_INDICES)+1)
+    OUTPUT_FORMATS = [
+        {'value':'csv', 'text':'CSV (Text2)', 'extension':'csv'},
+        {'value':'hdf5', 'text':'HDF5', 'extension':'hdf5'},
+        {'value': 'fits', 'text': 'FITS', 'extension': 'fits'},
+        {'value': 'votable', 'text': 'VOTable', 'extension': 'xml'}
+    ]
 
     def wait(self, secs=1):
         time.sleep(secs * 1.25)
 
     def setUp(self):
+        self.output_formats = GlobalParameterFactory.create(parameter_name='output_formats', parameter_value=LiveServerTest.OUTPUT_FORMATS)
+
         from selenium.webdriver.firefox.webdriver import FirefoxProfile
         fp = FirefoxProfile()
         fp.set_preference("browser.download.folderList", 2)
