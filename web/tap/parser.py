@@ -20,17 +20,26 @@ def parse_dataset_name(sql):
     if found:
         split_definitions = re.compile('\s+AS\s+|\s+', re.I|re.M)
         dataset_description = re.split(split_definitions, found[0][1])
-        label = ''
+        name = dataset_description[0]
+        label = name
         if len(dataset_description) > 1:
             label = dataset_description[1]
-        else:
-            label = dataset_description[0]
-        return {'name': dataset_description[0], 'label': label}
-    else:
-        return None
+            
+        try:
+            models.DataSet.objects.get(database=name)
+            return {'name': name, 'label': label}
+        except models.DataSet.DoesNotExist:
+            pass
 
-# TODO: add units
-def parse_fields(sql):
+    return None
+
+def parse_fields(sql, _dataset = None):
+    dataset_id = None
+    if _dataset:
+        dataset = models.DataSet.objects.get(database=_dataset['name'])
+        if dataset:
+            dataset_id = dataset.id
+        
     fields = []
     regex = re.compile('^(SELECT\s+(.*?))(\s+FROM)', re.I|re.M)
     found = regex.findall(sql)
@@ -39,17 +48,26 @@ def parse_fields(sql):
         split_definitions = re.compile('\s+AS\s+|\s+', re.I|re.M)
         for field in re.split(split_fields, found[0][1]):
             field_description = re.split(split_definitions, field)
+            name = field_description[0]
             label = ''
+            units = ''
             if len(field_description) > 1:
                 label = field_description[1]
-            else:
-                label = field_description[0]
-            fields.append({'value': field_description[0], 'label': label, 'units': ''})
+            if dataset_id:
+                try:
+                    datatype = models.DataSetProperty.objects.get(dataset_id=dataset_id, name=name)
+                    units = datatype.units
+                    if label == '':
+                        label = datatype.description
+                except models.DataSetProperty.DoesNotExist:
+                    pass
+            
+            fields.append({'value': name, 'label': label, 'units': units})
             
     return fields
 
 def parse_conditions(sql):
-    regex = re.compile('(\s+WHERE\s(.*?)\s+?(GROUP BY|ORDER BY|LIMIT|\s+$))', re.I|re.M)
+    regex = re.compile('(\s+WHERE\s(.*?)\s*?(GROUP BY|ORDER BY|LIMIT|$))', re.I|re.M)
     found = regex.findall(sql)
     if found:
         regex = re.compile('\s+AND\s+', re.I|re.M)
@@ -58,12 +76,12 @@ def parse_conditions(sql):
         return []
     
 def parse_order(sql):
-    regex = re.compile('(ORDER\s+BY\s+(.*?))(\s+?LIMIT|\s+$)', re.I|re.M)
+    regex = re.compile('(ORDER\s+BY\s+(.*?))\s*?(LIMIT|$)', re.I|re.M)
     found = regex.findall(sql)
     if found:
         return found[0][1]
     else:
-        return ''
+        return None
 
 def parse_limit(sql):
     regex = re.compile('(LIMIT\s+(.*))', re.I|re.M)
@@ -71,7 +89,7 @@ def parse_limit(sql):
     if found:
         return found[0][1]
     else:
-        return ''
+        return None
     
 def parse_joins(sql):
     regex = re.compile('JOIN+', re.I|re.M)
@@ -80,4 +98,5 @@ def parse_joins(sql):
         return found[0][1]
     else:
         return []
+    
     

@@ -11,7 +11,8 @@ from tao import models
 
 def tap(request):
     
-    return render(request, 'tap/http_response.html', {'message': 'TAO TAP Services entry point'})
+    return render(request, 'tap/http_response.html', 
+                  {'message': 'TAO TAP Services entry point'})
 
 def capabilities(request):
     
@@ -47,6 +48,9 @@ def query(request):
 @http_auth_required
 def sync(request):
     
+    if ('REQUEST' not in request.POST) or (request.POST['REQUEST'] != 'doQuery'):
+        return HttpResponseBadRequest('Missing request')
+    
     if 'QUERY' not in request.POST:
         return HttpResponseBadRequest('Missing query')
         
@@ -69,6 +73,9 @@ def sync(request):
 @csrf_exempt
 @http_auth_required
 def async(request):
+    
+    if ('REQUEST' not in request.POST) or (request.POST['REQUEST'] != 'doQuery'):
+        return HttpResponseBadRequest('Missing request')
     
     if 'QUERY' not in request.POST:
         return HttpResponseBadRequest('Missing query')
@@ -93,7 +100,7 @@ def job(request, id):
     if job is None:
         return HttpResponseBadRequest('Wrong URL')
     
-    if 'REQUEST_METHOD' in request.META and request.META['REQUEST_METHOD'] == 'DELETE':
+    if request.method == 'DELETE':
         print 'DELETE'
     
     resultsURL = "%s/%d/results" % (request.build_absolute_uri("/tap/async"), job.id)
@@ -140,7 +147,8 @@ def error(request, id):
     if job is None:
         return HttpResponseBadRequest('Wrong URL')
     
-    return render(request, 'tap/error.xml', {'error': job.error_message, 'timestamp': job.created_time})
+    return render(request, 'tap/error.xml', {'error': job.error_message, 
+                                             'timestamp': job.created_time})
 
 @csrf_exempt
 @http_auth_required
@@ -166,7 +174,8 @@ def results(request, id):
         raise PermissionDenied
     
     return render(request, 'tap/results.xml', 
-                  {'download_link': "%s/%s/results/result/%s" % (request.build_absolute_uri("/tap/async"), 
+                  {'download_link': "%s/%s/results/result/%s" % 
+                   (request.build_absolute_uri("/tap/async"), 
                    str(id), job_file.file_name)})
 
 @csrf_exempt
@@ -200,9 +209,15 @@ def make_parameters_xml(request):
     
     query = prepare_query(request.POST['QUERY'])
     
-    fields = parse_fields(query)
-    dataset = parse_dataset_name(query)
-
+    dataset    = parse_dataset_name(query)
+    fields     = parse_fields(query, dataset)
+    order      = parse_order(query)
+    limit      = parse_limit(query)
+    if ('MAXREC' in request.POST) and (request.POST['MAXREC'] != ''):
+        limit = request.POST['MAXREC']
+        
+    conditions = parse_conditions(query)
+    
     params_xml = etree.Element("tao")
     params_xml.set('timestamp', timestamp())
     params_xml.set('xmlns', 'http://tao.asvo.org.au/schema/module-parameters-v1')
@@ -221,6 +236,19 @@ def make_parameters_xml(request):
     
     query_node = etree.SubElement(sql, 'query')
     query_node.text = query
+    
+    if order:
+        order_node = etree.SubElement(sql, 'order')
+        order_node.text = order
+    
+    if limit:
+        limit_node = etree.SubElement(sql, 'limit')
+        limit_node.text = limit
+    
+    condition_items = etree.SubElement(sql, 'conditions')
+    for condition in conditions:
+        item = etree.SubElement(condition_items, 'item')
+        item.text = condition
     
     module_version_node = etree.SubElement(sql, 'module-version')
     module_version_node.text = str(TAP_MODULE_VERSION)
@@ -257,7 +285,8 @@ def UWSRedirect(request, id, redirect=''):
 def stream_job_results(request, job):
     
     if job.is_error():
-        return render(request, 'tap/error.xml', {'error': job.error_message, 'timestamp': job.created_time, 'query': request.POST['QUERY']})
+        return render(request, 'tap/error.xml', {'error': job.error_message, 'timestamp': 
+                                                 job.created_time, 'query': request.POST['QUERY']})
     
     for file in job.files():
         if file.file_name == TAP_OUTPUT_FILENAME:
@@ -270,4 +299,5 @@ def stream_job_results(request, job):
     response['Content-Disposition'] = 'attachment; filename="%s"' % job_file.file_name.replace('/','_')
     
     return response
+    
     
