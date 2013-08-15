@@ -701,7 +701,7 @@ jQuery(document).ready(function ($) {
         	y = window.pageYOffset;
             setTimeout(function(){
                 console.log("Setting offset to "+x+" "+y);
-                $('#modal_message').height(document.height);
+                $('#modal_message').height($(document).height());
                 $('#modal_message_text').offset({
                 	top: y+200,
                 	left: x});
