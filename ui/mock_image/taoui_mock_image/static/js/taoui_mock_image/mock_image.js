@@ -196,8 +196,8 @@ catalogue.modules.mock_image = function ($) {
                         if (!def(image_params.fov_ra())
                             || !def(catalogue.modules.light_cone.vm.ra_opening_angle()))
                             return true;
-                        return image_params.origin_ra() + 0.5 * image_params.fov_ra()
-                            <= catalogue.modules.light_cone.vm.ra_opening_angle();
+                        return parseFloat(image_params.origin_ra()) + 0.5 * parseFloat(image_params.fov_ra())
+                            <= parseFloat(catalogue.modules.light_cone.vm.ra_opening_angle());
                     }),
                     "Origin and field-of-view RAs exceed cone maximum."
                 )})
@@ -205,14 +205,14 @@ catalogue.modules.mock_image = function ($) {
                     ko.computed(function(){
                         if (!def(image_params.fov_ra()))
                             return true;
-                        return image_params.origin_ra() - 0.5 * image_params.fov_ra() >= 0.0;
+                        return parseFloat(image_params.origin_ra()) - 0.5 * parseFloat(image_params.fov_ra()) >= 0.0;
                     }),
                     "Origin and field-of-view RAs are below cone minimum."
                 )});
             param = get_param(prefix, '-origin_dec');
             image_params.origin_dec = ko.observable(param ? param :
-                    (def(catalogue.modules.light_cone.vm.ra_opening_angle()) ?
-                        catalogue.modules.light_cone.vm.ra_opening_angle()/2 : ''));
+                    (def(catalogue.modules.light_cone.vm.dec_opening_angle()) ?
+                        catalogue.modules.light_cone.vm.dec_opening_angle()/2 : ''));
             image_params.origin_dec
                 .extend({validate: catalogue.validators.is_float})
                 .extend({validate: catalogue.validators.test(
@@ -220,15 +220,15 @@ catalogue.modules.mock_image = function ($) {
                         if (!def(image_params.fov_dec())
                             || !def(catalogue.modules.light_cone.vm.dec_opening_angle()))
                             return true;
-                        return image_params.origin_dec() + 0.5 * image_params.fov_dec()
-                            <= catalogue.modules.light_cone.vm.dec_opening_angle();
+                        return parseFloat(image_params.origin_dec()) + 0.5 * parseFloat(image_params.fov_dec())
+                            <= parseFloat(catalogue.modules.light_cone.vm.dec_opening_angle());
                     }),
                     "Origin and field-of-view DECs exceed cone maximum.")})
                 .extend({validate: catalogue.validators.test(
                     ko.computed(function(){
                         if (!def(image_params.fov_dec()))
                             return true;
-                        return image_params.origin_dec() - 0.5 * image_params.fov_dec() >= 0.0;
+                        return parseFloat(image_params.origin_dec()) - 0.5 * parseFloat(image_params.fov_dec()) >= 0.0;
                     }),
                     "Origin and field-of-view DECs are below cone minimum."
                 )});
