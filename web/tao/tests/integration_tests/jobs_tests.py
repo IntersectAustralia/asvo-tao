@@ -3,7 +3,7 @@ from django.template import Context, loader
 from django.test.utils import override_settings
 
 from tao.forms import FormsGraph
-from tao.models import Job, BandPassFilter
+from tao.models import Job, BandPassFilter, WorkflowCommand
 from tao.tests import helper
 from tao.tests.integration_tests.helper import LiveServerTest
 from tao.tests.support.factories import GlobalParameterFactory, JobFactory, UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, StellarModelFactory, DustModelFactory, BandPassFilterFactory, SnapshotFactory
@@ -50,7 +50,7 @@ class JobTest(LiveServerTest):
                                        'file1': 'abc\n',
                                        'filez2.txt': 'pqr\n',
                                        'file3': 'xyz\n',
-                                       'job2/fileA': 'aaaahhhh',
+                                       'job2/fileA.html': 'aaaahhhh & aaaaa',
                                        'job2/fileB': 'baaaaaa',
                                        'summary.txt': self.summary_text,
                                        }
@@ -69,6 +69,11 @@ class JobTest(LiveServerTest):
         self.job.parameters = parameters
         self.job.save()
         self.completed_job = JobFactory.create(user=self.user, status=Job.COMPLETED, output_path=self.output_paths[0], parameters=parameters)
+        self.held_job = JobFactory.create(user=self.user, parameters=parameters, status=Job.HELD)
+        self.error_job = JobFactory.create(user=self.user, parameters=parameters, status=Job.ERROR, error_message="error")
+        self.in_progress_job = JobFactory.create(user=self.user, parameters=parameters, status=Job.IN_PROGRESS)
+        self.submitted_job = JobFactory.create(user=self.user, parameters=parameters, status=Job.SUBMITTED)
+        self.queued_job = JobFactory.create(user=self.user, parameters=parameters, status=Job.QUEUED)
 
     def tearDown(self):
         super(JobTest, self).tearDown()
@@ -87,7 +92,7 @@ class JobTest(LiveServerTest):
             'redshift_max': 0.3,
             'ra_opening_angle': 71.565,
             'dec_opening_angle': 41.811,
-            'output_properties' : [self.filter.id, self.output_prop.id],
+            'output_properties': [self.filter.id, self.output_prop.id],
             'light_cone_type': 'random', #'unique',
             'number_of_light_cones': 1,
             }
@@ -95,7 +100,7 @@ class JobTest(LiveServerTest):
             'username' : self.username,
             'dark_matter_simulation': self.simulation.name,
             'galaxy_model': self.galaxy.name,
-            'output_properties': [self.filter, self.output_prop],
+            'output_properties': [(self.filter, self.filter.units), (self.output_prop, self.output_prop.units)],
             'output_properties_1_name' : self.filter.name,
             'output_properties_1_label' : self.filter.label,
             'output_properties_1_units' : self.filter.units,
@@ -146,67 +151,6 @@ class JobTest(LiveServerTest):
     def make_xml_parameters(self):
         return light_cone_xml(self.make_parameters())
 
-#     def make_job_summary_txt(self, parameters):
-#         summary_txt = """General Properties
-# ==================
-#
-# Catalogue Geometry:	%(geometry)s
-# Dataset: %(dark_matter_simulation)s / %(galaxy_model)s
-# %(dark_matter_simulation)s
-# %(simulation_details)s
-# %(galaxy_model)s
-# %(galaxy_model_details)s
-#
-#
-# Dimensions
-# RA: %(ra_opening_angle)s\xc2\xb0, Dec: %(dec_opening_angle)s\xc2\xb0
-# Redshift: %(redshift_min)s \xe2\x89\xa4 z \xe2\x89\xa4 %(redshift_max)s
-#
-# Count: %(number_of_light_cones)s %(light_cone_type)s light cones
-#
-#
-# Output Properties: 2 properties selected
-#
-# * %(output_properties_1_label)s
-#
-# * %(output_properties_2_label)s
-#
-#
-#
-# Spectral Energy Distribution
-# ============================
-#
-# Model: %(ssp_name)s
-# %(ssp_description)s
-#
-# Bandpass Filters: 1 filters selected
-#
-# * %(band_pass_filter_label)s
-#
-#
-# Dust: %(dust_label)s
-# %(dust_model_details)s
-#
-#
-#
-# Mock Image
-# ==========
-#
-# Not selected
-#
-#
-# Selection
-# =========
-#
-# %(filter_min)s \xe2\x89\xa4 %(filter_label)s (%(filter_units)s)
-#
-#
-# Output
-# ======
-#
-# CSV (Text)""" % parameters
-#         return summary_txt
-
     def test_view_job_summary(self):
         self.login(self.username, self.password)
         self.visit('view_job', self.completed_job.id)
@@ -225,8 +169,8 @@ class JobTest(LiveServerTest):
         band_pass_filters = BandPassFilter.objects.all()
         self.wait(2)
         self.assert_summary_field_correctly_shown('1 filter selected', 'sed', 'band_pass_filters')
-        self.click('expand_band_pass_filters') # this click doesn't work, it just grabs the focus
-        self.click('expand_band_pass_filters') # need a second call to actually do the click
+        self.click('expand_band_pass_filters')  # this click doesn't work, it just grabs the focus
+        self.click('expand_band_pass_filters')  # need a second call to actually do the click
         self.assert_summary_field_correctly_shown(band_pass_filters[0].label + ' (Apparent)', 'sed', 'band_pass_filters_list')
 
     def test_job_with_files_downloads(self):
@@ -246,15 +190,11 @@ class JobTest(LiveServerTest):
             li.find_element_by_css_selector('a').click()
         self.wait(1)
 
-        summary_txt_path = os.path.join(self.DOWNLOAD_DIRECTORY, 'summary.txt')
-        self.assertTrue(os.path.exists(summary_txt_path))
-
         for job_file in self.completed_job.files():
             download_path = os.path.join(self.DOWNLOAD_DIRECTORY, job_file.file_name.replace('/','_'))
             self.assertTrue(os.path.exists(download_path))
             with codecs.open(download_path, encoding='utf-8') as f:
                 self.assertEqual(self.file_names_to_contents[job_file.file_name], f.read())
-            # f.close()
 
     def test_summary_txt_displayed(self):
         self.login(self.username, self.password)
@@ -269,14 +209,10 @@ class JobTest(LiveServerTest):
         self.visit('view_job', self.completed_job.id)
 
         self.wait(1)
-        # expected_txt = self.make_job_summary_txt(self.make_parameters())
         self.click('id_download_summary_txt')
         summary_txt_path = os.path.join(self.DOWNLOAD_DIRECTORY, 'summary.txt')
-        with codecs.open(summary_txt_path, encoding='utf-8') as f: # f = open(download_path)
+        with codecs.open(summary_txt_path, encoding='utf-8') as f:
             self.assertEqual(self.summary_text, f.read())
-        # f = open(summary_txt_path)
-        # self.assertEqual(self.summary_text, f.read())
-        # f.close()
 
     # test that anonymous user cannot view job or download files
     def test_anonymous_user_cannot_view_or_download(self):
@@ -373,6 +309,58 @@ class JobTest(LiveServerTest):
         self.selenium.refresh()
         self.assert_element_text_equals('#id-job_description', original_description)
 
+    def test_stop_rerun_release_buttons_enabled_with_status(self):
+        self.login(self.username, self.password)
+
+        self.visit('view_job', self.submitted_job.id)
+        self._check_job_buttons_enabled_or_disabled({'enabled': ['stop'], 'disabled': ['rerun', 'release']})
+
+        self.visit('view_job', self.queued_job.id)
+        self._check_job_buttons_enabled_or_disabled({'enabled': ['stop'], 'disabled': ['rerun', 'release']})
+
+        self.visit('view_job', self.in_progress_job.id)
+        self._check_job_buttons_enabled_or_disabled({'enabled': ['stop'], 'disabled': ['rerun', 'release']})
+
+        self.visit('view_job', self.completed_job.id)
+        self._check_job_buttons_enabled_or_disabled({'enabled': ['rerun'], 'disabled': ['stop', 'release']})
+
+        self.visit('view_job', self.error_job.id)
+        self._check_job_buttons_enabled_or_disabled({'enabled': ['rerun'], 'disabled': ['stop', 'release']})
+
+        self.visit('view_job', self.held_job.id)
+        self._check_job_buttons_enabled_or_disabled({'enabled': ['release'], 'disabled': ['stop', 'rerun']})
+
+    def test_stop_job_button(self):
+        self.login(self.username, self.password)
+        self.visit('view_job', self.in_progress_job.id)
+        self.assertEqual(0, len(WorkflowCommand.objects.all()))
+
+        self.click('id-job_stop')
+        self.assertEqual(1, len(WorkflowCommand.objects.all()))
+        stop_job_command = WorkflowCommand.objects.get(pk=1)
+        self.assertEqual(self.in_progress_job, stop_job_command.job_id)
+        self.assertEqual(self.user, stop_job_command.submitted_by)
+        self.assertEqual('Job_Stop', stop_job_command.command)
+        self.assertEqual('SUBMITTED', stop_job_command.execution_status)
+
+    def test_rerun_job_button(self):
+        self.login(self.username, self.password)
+        self.visit('view_job', self.completed_job.id)
+        self.click(self.job_select('rerun'))
+        self._check_job_buttons_enabled_or_disabled({'enabled': ['stop'], 'disabled': ['rerun', 'release']})
+
+        updated_job = Job.objects.get(id=self.completed_job.id)
+        self.assertEqual('SUBMITTED', updated_job.status)
+
+    def test_release_job_button(self):
+        self.login(self.username, self.password)
+        self.visit('view_job', self.held_job.id)
+        self.click(self.job_select('release'))
+        self._check_job_buttons_enabled_or_disabled({'enabled': ['stop'], 'disabled': ['rerun', 'release']})
+
+        updated_job = Job.objects.get(id=self.held_job.id)
+        self.assertEqual('SUBMITTED', updated_job.status)
+
     def _extract_zipfile_to_dir(self, download_path, dirname):
         fullpathhandle = open(download_path, 'r')
         zipfile_obj = zipfile.ZipFile(fullpathhandle)
@@ -408,3 +396,11 @@ class JobTest(LiveServerTest):
             for name in filenames:
                 list_of_files.append(os.path.join(root[len(dir)+1:], name))
         return list_of_files
+
+    def _check_job_buttons_enabled_or_disabled(self, enabler):
+        self.wait(1.5)
+        for button in enabler['enabled']:
+            self.assert_is_enabled(self.job_id(button))
+
+        for button in enabler['disabled']:
+            self.assert_is_disabled(self.job_id(button))

@@ -120,7 +120,7 @@ Note that the description and xml parameter file can contain two variables as de
                 id=job.id,
                 user=job.user.username,
                 status=job.status,
-                description=job.description)
+                description=job.description[:48].replace(u"\n", u" "))
         sys.exit()
 
 
