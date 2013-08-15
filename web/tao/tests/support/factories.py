@@ -44,6 +44,7 @@ class GalaxyModelFactory(factory.Factory):
 
 class DataSetFactory(factory.Factory):
     FACTORY_FOR = DataSet
+    available = True
     
 class DataSetPropertyFactory(factory.Factory):
     FACTORY_FOR = DataSetProperty

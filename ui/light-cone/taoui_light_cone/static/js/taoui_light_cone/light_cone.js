@@ -89,7 +89,7 @@ catalogue.modules.light_cone = function ($) {
     			'light_cone-box_size': [vm.box_size()]
     		});
     	} else { // light-cone
-    		var noc = vm.number_of_light_cones();
+    		var noc = parseInt(vm.number_of_light_cones());
     		// Work-around: Hiding the spinner seems to set the count to 0
     		if (noc == 0) {
     			noc = 1;
@@ -98,7 +98,7 @@ catalogue.modules.light_cone = function ($) {
     			'light_cone-light_cone_type': [vm.light_cone_type()],
     			'light_cone-ra_opening_angle': [vm.ra_opening_angle()],
     			'light_cone-dec_opening_angle': [vm.dec_opening_angle()],
-    			'light_cone-number_of_light_cones': [vm.number_of_light_cones()],
+    			'light_cone-number_of_light_cones': [noc],
     			'light_cone-redshift_min': [vm.redshift_min()],
     			'light_cone-redshift_max': [vm.redshift_max()],
     		});
