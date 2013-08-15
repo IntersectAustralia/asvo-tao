@@ -688,6 +688,8 @@ jQuery(document).ready(function ($) {
     	var init_params = {
     			'job' : TaoJob
     	}
+        catalogue.vm.description = ko.observable(init_params.job['job-description']);
+
         for (var module in catalogue.modules) {
             console.log('Creating module: ' + module)
             catalogue.modules[module] = new catalogue.modules[module]($);
@@ -696,8 +698,6 @@ jQuery(document).ready(function ($) {
             console.log('Initialising module: ' + module)
             catalogue.vm[module] = catalogue.modules[module].init_model(init_params);
         }
-
-        catalogue.vm.description = ko.observable();
 
         console.log('Finished module initialisation')
     }
