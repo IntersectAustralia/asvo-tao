@@ -125,7 +125,7 @@ var TwoSidedSelectWidget = function(elem_id, init_options, to_option) {
     }
 
     // Store elem_id for use by the template
-    vm.id = elem_id;
+    vm.id = elem_id.slice(1);
     vm.filter = ko.observable('');
     vm.has_groups = ko.observable(has_groups(init_options['not_selected'].concat(init_options['selected'])));
     vm.from_side = a_side_vm(init_options['not_selected'], vm.filter);
