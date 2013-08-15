@@ -6,16 +6,16 @@ def prepare_query(query):
 
 def check_query(query):
     errors = ''
-    if parse_dataset_name(query) == '':
+    if not parse_dataset_name(query):
         errors += "Dataset is not found.\n"
-    if parse_fields(query) == '':
+    if len(parse_fields(query)) == 0:
         errors += "Nothing to select.\n"
-    if parse_joins(query) != []:
+    if len(parse_joins(query)) > 0:
         errors += "Joins are not supported.\n"
     return errors
 
 def parse_dataset_name(sql):
-    regex = re.compile('(\s+FROM\s+(.*?)\s+?($|WHERE|ORDER|LIMIT))', re.I|re.M)
+    regex = re.compile('(\s+FROM\s+(.*?)\s*?($|WHERE|ORDER|LIMIT))', re.I|re.M)
     found = regex.findall(sql)
     if found:
         split_definitions = re.compile('\s+AS\s+|\s+', re.I|re.M)
@@ -27,7 +27,7 @@ def parse_dataset_name(sql):
             label = dataset_description[0]
         return {'name': dataset_description[0], 'label': label}
     else:
-        return ''
+        return None
 
 # TODO: add units
 def parse_fields(sql):
