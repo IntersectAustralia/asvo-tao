@@ -15,18 +15,17 @@ def check_query(query):
     return errors
 
 def parse_dataset_name(sql):
-    regex = re.compile('(\s+FROM\s+(.*?)\s*?($|WHERE|ORDER|LIMIT))', re.I|re.M)
+    regex = re.compile('\s+FROM\s+(.*?)\s*?($|WHERE|ORDER|LIMIT|;)', re.I|re.M)
     found = regex.findall(sql)
     if found:
         split_definitions = re.compile('\s+AS\s+|\s+', re.I|re.M)
-        dataset_description = re.split(split_definitions, found[0][1])
-        name = dataset_description[0]
+        dataset = re.split(split_definitions, found[0][0])
+        name = dataset[0].encode('utf-8')
         label = name
-        if len(dataset_description) > 1:
-            label = dataset_description[1]
-            
+        if len(dataset) > 1:
+            label = dataset[1].encode('utf-8')
         try:
-            models.DataSet.objects.get(database=name)
+            models.DataSet.objects.get(database=name, available=1)
             return {'name': name, 'label': label}
         except models.DataSet.DoesNotExist:
             pass
@@ -36,38 +35,41 @@ def parse_dataset_name(sql):
 def parse_fields(sql, _dataset = None):
     dataset_id = None
     if _dataset:
-        dataset = models.DataSet.objects.get(database=_dataset['name'])
-        if dataset:
-            dataset_id = dataset.id
+        try:
+            dataset = models.DataSet.objects.get(database=_dataset['name'])
+            if dataset:
+                dataset_id = dataset.id
+        except models.DataSet.DoesNotExist:
+            pass
         
     fields = []
-    regex = re.compile('^(SELECT\s+(.*?))(\s+FROM)', re.I|re.M)
+    regex = re.compile('^SELECT\s+(.*?)(\s+FROM)', re.I|re.M)
     found = regex.findall(sql)
     if found:
         split_fields = re.compile('\s?[,]\s?', re.I|re.M)
         split_definitions = re.compile('\s+AS\s+|\s+', re.I|re.M)
-        for field in re.split(split_fields, found[0][1]):
+        for field in re.split(split_fields, found[0][0]):
             field_description = re.split(split_definitions, field)
-            name = field_description[0]
-            label = ''
+            name = field_description[0].encode('utf-8')
+            label = name
             units = ''
             if len(field_description) > 1:
                 label = field_description[1]
             if dataset_id:
                 try:
                     datatype = models.DataSetProperty.objects.get(dataset_id=dataset_id, name=name)
-                    units = datatype.units
-                    if label == '':
-                        label = datatype.description
+                    units = datatype.units.encode('utf-8')
+                    if label == name:
+                        label = datatype.label.encode('utf-8')
                 except models.DataSetProperty.DoesNotExist:
                     pass
             
             fields.append({'value': name, 'label': label, 'units': units})
-            
+    
     return fields
 
 def parse_conditions(sql):
-    regex = re.compile('(\s+WHERE\s(.*?)\s*?(GROUP BY|ORDER BY|LIMIT|$))', re.I|re.M)
+    regex = re.compile('(\s+WHERE\s(.*?)\s*?(GROUP BY|ORDER BY|LIMIT|$|;))', re.I|re.M)
     found = regex.findall(sql)
     if found:
         regex = re.compile('\s+AND\s+', re.I|re.M)
@@ -76,7 +78,7 @@ def parse_conditions(sql):
         return []
     
 def parse_order(sql):
-    regex = re.compile('(ORDER\s+BY\s+(.*?))\s*?(LIMIT|$)', re.I|re.M)
+    regex = re.compile('(ORDER\s+BY\s+(.*?))\s*?(LIMIT|$|;)', re.I|re.M)
     found = regex.findall(sql)
     if found:
         return found[0][1]

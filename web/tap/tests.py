@@ -1,11 +1,12 @@
 import base64
+from tap.parser import *
 from django.test import TestCase
 from django.test.client import Client
 from tao import models
-from tao.tests.support.factories import UserFactory
+from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory
 
 
-class TapServerTests(TestCase):
+class TAPServicesTests(TestCase):
 
     def setUp(self):
         super(TapServerTests, self).setUp()
@@ -47,5 +48,41 @@ class SQLParsingTests(TestCase):
     def setUp(self):
         super(SQLParsingTests, self).setUp()
         
+        self.dataset = {'name': u'dataset_name', 'label': u'dataset_label'}
+        self.property = {'name': u'property_name', 'label': u'property_label', 'units': u'property_units'}
+        sim = SimulationFactory.create()
+        gal = GalaxyModelFactory.create(id=1, name='gm')
+        dat = DataSetFactory.create(simulation=sim, galaxy_model=gal, database=self.dataset['name'])
+        DataSetPropertyFactory.create(dataset=dat, name=self.property['name'], label=self.property['label'], units=self.property['units'])
         
+    def test_dataset_name_parsing(self):
+        query = 'select * from %s %s' % (self.dataset['name'], self.dataset['label'])
+        self.assertEqual(parse_dataset_name(query), self.dataset)
+        
+    def test_fields_parsing(self):
+        fields = [{'value': '1', 'label': '1', 'units': ''},
+                  {'value': self.property['name'], 'label': self.property['label'], 'units': self.property['units']}] 
+        query = 'select %s, %s from %s' % (fields[0]['value'], fields[1]['value'], self.dataset['name'])
+        self.assertEqual(parse_fields(query, self.dataset), fields)
+        
+    def test_conditions_parsing(self):
+        conditions = [self.property['name'] + ' > 0.1', self.property['name'] + ' < 10']
+        query = 'select * from %s where %s' % (self.dataset['name'], ' and '.join(conditions))
+        self.assertEqual(parse_conditions(query), conditions)
+        
+    def test_order_parsing(self):
+        order = self.property['name'] + ' desc' 
+        query = 'select * from %s order by %s' % (self.dataset['name'], order)
+        self.assertEqual(parse_order(query), order)
+        
+    def test_limit_parsing(self):
+        limit = '10,20' 
+        query = 'select * from %s limit %s' % (self.dataset['name'], limit)
+        self.assertEqual(parse_limit(query), limit)
+    
+    
+    
+    
+    
+    
         
