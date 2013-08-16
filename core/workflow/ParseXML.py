@@ -17,6 +17,7 @@ class ParseXMLParameters(object):
         self.WorkDirectory=self.Options['WorkFlowSettings:WorkingDir']
     
     def ParseFile(self,JobID,DatabaseName,JobUserName):
+        
         #self.GetCurrentUser()
         #self.GetDocumentSignature()    
         self.SubJobsCount=self.GetSubJobsCount()
