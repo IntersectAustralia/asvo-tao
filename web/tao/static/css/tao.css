@@ -625,8 +625,37 @@ html, body {
     content: '';
 }
 
+#id-job_description {
+	height: auto;
+	width: 100%;
+	box-shadow: none;
+	border: 0;
+	margin-left: 0;
+}
 
 #inlineedit { position: relative; }
 /* #inlineedit:hover #savecancel, #inlineedit:active #savecancel { display: block; } */
 #savecancel { position: absolute; bottom: 0px; right: 0px; margin-bottom: -40px; display: none; }
 #savecancel div { display: inline-block; }
+
+#modal_message {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    opacity: 0.4;
+}
+
+#modal_message_text {
+    position: absolute;
+    left: 30%;
+    top: 10%;
+    width: 40%;
+    border: 0;
+    box-shadow: none;
+    resize: none;
+    height: auto;
+}
+

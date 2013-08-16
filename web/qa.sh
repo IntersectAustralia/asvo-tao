@@ -55,6 +55,7 @@ cd $CUR_DIR/
 migrate() {
 source $WORKSPACE/TAO/bin/activate-qa
 $CUR_DIR/manage.py syncdb --noinput
+$CUR_DIR/manage.py sync_rules
 $CUR_DIR/manage.py migrate --noinput
 }
 
