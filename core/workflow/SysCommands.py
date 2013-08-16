@@ -63,14 +63,20 @@ class SysCommands(object):
         return AssociatedJobs
     
     def CheckForNewCommands(self):
-        logging.info("Checking for UI Commands")
-        new_jobs = 0
-        WebserviceResponse = requests.get(self.commandapi['get'])     
         
-        new_commands_count=self.json_handler(WebserviceResponse)
-        if new_commands_count>0:
-            logging.info(str(new_commands_count)+" Commands Recieved From the UI")
-    
+        try:
+            logging.info("Checking for UI Commands")
+            new_jobs = 0
+            WebserviceResponse = requests.get(self.commandapi['get'])     
+            
+            new_commands_count=self.json_handler(WebserviceResponse)
+            if new_commands_count>0:
+                logging.info(str(new_commands_count)+" Commands Recieved From the UI")
+        except Exception as Exp: 
+            logging.error("Error in CheckForNewCommands")
+            logging.error(type(Exp))
+            logging.error(Exp.args)
+            logging.error(Exp) 
     def HandleNewCommand(self,jsonObj):
         
         command=jsonObj['command']        
