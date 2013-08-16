@@ -150,7 +150,7 @@ def dust_model_find_from_xml(name):
 
 def snapshot_from_xml(data_set, redshift):
     try:
-        obj = models.Snapshot.objects.get(dataset=data_set, redshift=redshift)
+        obj = models.Snapshot.objects.get(dataset=data_set, redshift=float(redshift))
         return obj
     except models.Snapshot.DoesNotExist:
         return None
