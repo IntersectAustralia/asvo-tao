@@ -530,7 +530,7 @@ catalogue.util = function ($) {
 
 		$.ajax({
 			// TODO: use the current URL, not hard-coded string
-			url : '/mock_galaxy_factory/',
+			url : TAO_JSON_CTX + '../mock_galaxy_factory/',
 			type : 'POST',
 			// We only supply simple data types in the parameters,
 			// so can use traditional=true when encoding them so the format
