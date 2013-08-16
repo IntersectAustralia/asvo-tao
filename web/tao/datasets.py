@@ -4,8 +4,13 @@ tao.datasets
 ================
 
 """
+from decimal import Decimal
 from django.db.models import Q
 from tao import models
+
+
+def remove_exponent(d):
+    return d.quantize(Decimal(1)) if d == d.to_integral() else d.normalize()
 
 def dataset_get(dataset_id):
     return models.DataSet.objects.get(pk=dataset_id)
@@ -151,9 +156,10 @@ def dust_model_find_from_xml(name):
 def snapshot_from_xml(data_set, redshift):
     try:
         # redshift may be a String, Decimal, Float or Integer
-        # MySQL doesn't like anything except Float or Integer
-        # so convert to float first
-        obj = models.Snapshot.objects.get(dataset=data_set, redshift=float(redshift))
+        # If a string, it may be simple or scientific format
+        # MySQL / Python 2.6 is a problem...
+        # Convert to normalised Decimal and hope for the best
+        obj = models.Snapshot.objects.get(dataset=data_set, redshift=remove_exponent(Decimal(redshift)))
         return obj
     except models.Snapshot.DoesNotExist:
         return None
