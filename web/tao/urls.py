@@ -14,6 +14,7 @@ from django.contrib import admin
 
 from tastypie.api import Api
 from tao.api.resources import WorkflowCommandResource, JobResource, TaoUserResource, WFJobResource
+from tao.forms import PasswordResetForm
 
 admin.autodiscover()
 
@@ -89,12 +90,9 @@ urlpatterns = patterns('',
     url(r'^assets/(?P<path>.+)$', 'tao.assets.asset_handler', name='asset'),
 
     url(r'^accounts/password/reset/$', password_reset,
-        {'post_reset_redirect': '/accounts/password/reset/done/'},
+        {'post_reset_redirect': '/accounts/password/reset/done/', 'password_reset_form': PasswordResetForm},
         name="password_reset"),
-    (r'^accounts/password/reset/done/$', password_reset_done),
-    (r'^accounts/password/reset/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$', password_reset_confirm,
-        {'post_reset_redirect': '/accounts/password/done/'}),
-    (r'^accounts/password/done/$', password_reset_complete),
+    url(r'^accounts/password/reset/done/$', password_reset_done, name='password_reset_done'),
     url(r'^accounts/password/change/$', password_change, {'post_change_redirect': '/accounts/password/change/done/'},
         name='password_change'),
     (r'^accounts/password/change/done/$', password_change_done),
