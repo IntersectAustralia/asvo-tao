@@ -278,7 +278,8 @@ catalogue.modules.light_cone = function ($) {
         vm.snapshots = ko.computed(function (){
             return catalogue.util.snapshots(vm.dataset().pk)
         });
-        vm.snapshot = ko.observable(vm.snapshots()[0]);
+        param = catalogue.util.snapshot(job['light_cone-snapshot']);
+        vm.snapshot = ko.observable(param ? param : vm.snapshots()[0]);
 
         param = job['light_cone-output_properties'];
         if (param) {
