@@ -10,7 +10,7 @@ if __name__ == '__main__':
         print("Error Not Enough Arguments")
         exit()
     InputFilePath=sys.argv[1]
-    OutputFilePath=sys.argv[1]+".output.h5"
+    OutputFilePath=sys.argv[1]+".output2.h5"
     #DataMapping={'float64':'>f8','int64':'>i8'}
     #DataMapping={'float64':'float64','int64':'int64'}
     print("Start Loading HDF5 File Done....")
@@ -73,14 +73,14 @@ if __name__ == '__main__':
         for LocalIndex in range(0,len(Outputs[Output+'/mergerTreeStartIndex'])):
                        
             if Outputs[Output+'/mergerTreeCount'][LocalIndex]>0:               
-                TreeStartIndexData.append(NextItemIndex)
-                GalaxyCountData.append(Outputs[Output+'/mergerTreeCount'][LocalIndex])
+                #TreeStartIndexData.append(NextItemIndex)
+                #GalaxyCountData.append(Outputs[Output+'/mergerTreeCount'][LocalIndex])
                 TreeIndexData.append(Outputs[Output+'/mergerTreeIndex'][LocalIndex])  
                 for i in range(0,Outputs[Output+'/mergerTreeCount'][LocalIndex]):
                     TreeIDsList.append(Outputs[Output+'/mergerTreeIndex'][LocalIndex])
                     GalaxyGlobalIndexList.append(GalaxyGlobalIndex)  
                     GalaxyGlobalIndex=GalaxyGlobalIndex+1                        
-                NextItemIndex=NextItemIndex+Outputs[Output+'/mergerTreeCount'][LocalIndex]
+                #NextItemIndex=NextItemIndex+Outputs[Output+'/mergerTreeCount'][LocalIndex]
             
             TotalCount=TotalCount+ Outputs[Output+'/mergerTreeCount'][LocalIndex]    
         StartIndex=EndIndex        
@@ -100,10 +100,16 @@ if __name__ == '__main__':
     
     Datadict['MetalsColdGas']=numpy.add(Datadict['diskAbundancesGasMetals'],Datadict['spheroidAbundancesGasMetals'])
     Datadict['sfr']=numpy.add(Datadict['interOutputDiskStarFormationRate'],Datadict['interOutputSpheroidStarFormationRate'])
-         
     
+    numpy.save('numpyDataunsorted.npy', Datadict)     
+    numpy.sort(Datadict, order='treeid')
+    numpy.save('numpyData.npy', Datadict)
 
     OutputFile.create_dataset("galaxies", data=Datadict)
+    
+    for row in Datadict:
+        print row
+    
     OutputFile.create_dataset("tree_counts", data=GalaxyCountData)
     OutputFile.create_dataset("tree_displs", data=TreeStartIndexData)
     OutputFile.create_dataset("snapshot_redshifts", data=[1]*64)
