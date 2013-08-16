@@ -9,7 +9,7 @@ from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyMo
 class TAPServicesTests(TestCase):
 
     def setUp(self):
-        super(TapServerTests, self).setUp()
+        super(TAPServicesTests, self).setUp()
         
         self.username = 'user'
         self.password = 'password'
