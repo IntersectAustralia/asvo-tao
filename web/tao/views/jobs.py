@@ -130,9 +130,9 @@ def _get_summary_as_text(id):
     ui_holder = UIModulesHolder(UIModulesHolder.XML, xml_parse(job.parameters.encode('utf-8')))
 
     geometry = ui_holder.raw_data('light_cone', 'catalogue_geometry')
-    dataset_id = ui_holder.raw_data('light_cone', 'galaxy_model')
-    simulation = dataset_get(dataset_id).simulation
-    galaxy_model = dataset_get(dataset_id).galaxy_model
+    dataset = ui_holder.dataset
+    simulation = dataset.simulation
+    galaxy_model = dataset.galaxy_model
     output_properties = []
     for output_property_id in ui_holder.raw_data('light_cone', 'output_properties'):
         output_property = DataSetProperty.objects.get(id=output_property_id)
