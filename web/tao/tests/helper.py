@@ -43,7 +43,7 @@ def make_form(defaults, form_class, values, prefix=None, ui_holder=None):
 
 def make_form_xml(form_class, xml_str, prefix=None, ui_holder=None):
     xml_root = xml_parse(xml_str)
-    print xml_root
+    # print xml_root
     return form_class.from_xml(ui_holder, xml_root, prefix=prefix)
 
 
