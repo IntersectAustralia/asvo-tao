@@ -28,6 +28,7 @@ class FormsGraph():
     BANDPASS_FILTER_ID = '4'
     OUTPUT_ID = '5'
     MOCK_IMAGE_ID = '6'
+    TELESCOPE_ID = '7'
 
 
 class PasswordResetForm(auth_forms.PasswordResetForm):
