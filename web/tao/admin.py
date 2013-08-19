@@ -51,15 +51,17 @@ class UserAdmin(AuthUserAdmin):
     """
     UserAdmin
     """
+    search_fields = ['username', 'first_name', 'last_name', 'email']
 
 class JobAdmin(admin.ModelAdmin):
-    search_fields = ['id', 'user__username', 'status']
+    search_fields = ['id', 'user__username', 'status', 'description']
 
 admin.site.register(Job, JobAdmin)
 
 class WorkflowCommandAdmin(admin.ModelAdmin):
     model = WorkflowCommand
     readonly_fields = ('issued',)
+    search_fields = ['id', 'job_id', 'command', 'execution_status']
 
 admin.site.register(WorkflowCommand, WorkflowCommandAdmin)
 
