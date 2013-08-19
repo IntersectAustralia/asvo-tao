@@ -2,7 +2,7 @@ import re
 from tao import models
 
 def prepare_query(query):
-    return query.replace('"', '').replace("'",'').replace("`",'')
+    return query.replace('"', '').replace("'",'').replace("`",'').replace("\n",' ')
 
 def check_query(query):
     errors = ''
@@ -69,13 +69,19 @@ def parse_fields(sql, _dataset = None):
     return fields
 
 def parse_conditions(sql):
-    regex = re.compile('(\s+WHERE\s(.*?)\s*?(GROUP BY|ORDER BY|LIMIT|$|;))', re.I|re.M)
+    regex = re.compile('WHERE\s+(.*)\s*(GROUP BY|ORDER BY|LIMIT|;|$)', re.I|re.M|re.S)
     found = regex.findall(sql)
+    conditions = []
     if found:
-        regex = re.compile('\s+AND\s+', re.I|re.M)
-        return re.split(regex, found[0][1])
-    else:
-        return []
+        # find all 'and' in 'between' statements
+        regex = re.compile('AND\s+(.+BETWEEN\s+[0-9\.eE]+\s+AND\s+[0-9\.eE]+)', re.I)
+        betweens = regex.findall(found[0][0])
+        # separate and process the rest
+        remaining_cond = regex.sub('', found[0][0])
+        regex = re.compile('\s+AND\s+', re.I)
+        conditions = re.split(regex, remaining_cond) + betweens
+        
+    return conditions
     
 def parse_order(sql):
     regex = re.compile('(ORDER\s+BY\s+(.*?))\s*?(LIMIT|$|;)', re.I|re.M)

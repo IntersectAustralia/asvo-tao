@@ -5,7 +5,8 @@ from tap.settings import *
 from tap.decorators import http_auth_required
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseBadRequest, StreamingHttpResponse
+from django.core.servers.basehttp import FileWrapper
 from tao.time import timestamp
 from tao import models
 
@@ -26,6 +27,7 @@ def capabilities(request):
                    'capabilities':      TAP_CAPABILITIES})
 
 def availability(request):
+    
     return render(request, 'tap/availability.xml', 
                   {'available': TAP_IS_AVAILABLE, 'note': TAP_AVAILABILITY_NOTE})
 
@@ -37,6 +39,7 @@ def tables(request):
         properties = models.DataSetProperty.objects.filter(dataset_id = dataset.id, 
             is_output = True).order_by('group', 'order', 'label')
         dataset_properties.append({"name": dataset.database, "properties": properties})
+        
     return render(request, 'tap/tables.xml', 
                   {'datasets': dataset_properties, 'data_types': data_types})
 
@@ -47,63 +50,47 @@ def query(request):
 @csrf_exempt
 @http_auth_required
 def sync(request):
-    
     if ('REQUEST' not in request.POST) or (request.POST['REQUEST'] != 'doQuery'):
         return HttpResponseBadRequest('Missing request')
     
     if 'QUERY' not in request.POST:
         return HttpResponseBadRequest('Missing query')
-        
-    parameters = make_parameters_xml(request)
     
-    job = models.Job(user=request.user, parameters=parameters)
-    
-    errors = check_query(request.POST['QUERY'])
-    if errors != '':
-        job.error_message = errors
-        job.status = models.Job.ERROR
-    
-    job.save()
+    job = createTAPjob(request)
     
     while not (job.is_completed() or job.is_error()):
-        time.sleep(30)
+        time.sleep(15)
+        models.Job.objects.update()
+        job = models.Job.objects.get(id=job.id)
     
     return stream_job_results(request, job)
     
 @csrf_exempt
 @http_auth_required
 def async(request):
-    
     if ('REQUEST' not in request.POST) or (request.POST['REQUEST'] != 'doQuery'):
         return HttpResponseBadRequest('Missing request')
     
     if 'QUERY' not in request.POST:
         return HttpResponseBadRequest('Missing query')
     
-    parameters = make_parameters_xml(request)
-    
-    job = models.Job(user=request.user, parameters=parameters)
-    
-    errors = check_query(request.POST['QUERY'])
-    if errors != '':
-        job.error_message = errors
-        job.status = models.Job.ERROR
-    
-    job.save()
+    job = createTAPjob(request)
         
     return UWSRedirect(request, job.id)
 
 @csrf_exempt
 @http_auth_required
 def job(request, id):
-    job = models.Job.objects.get(id=id)
-    if job is None:
+    try:
+        job = models.Job.objects.get(id=id)
+    except models.Job.DoesNotExist:
         return HttpResponseBadRequest('Wrong URL')
     
     if request.method == 'DELETE':
         print 'DELETE'
     
     resultsURL = "%s/%d/results" % (request.build_absolute_uri("/tap/async"), job.id)
+    
     return render(request, 'tap/uws-job.xml', {'job': job, 
                                                'status': UWS_JOB_STATUS[job.status], 
                                                'resultsURL': resultsURL,
@@ -112,8 +99,9 @@ def job(request, id):
 @csrf_exempt
 @http_auth_required
 def phase(request, id):
-    job = models.Job.objects.get(id=id)
-    if job is None:
+    try:
+        job = models.Job.objects.get(id=id)
+    except models.Job.DoesNotExist:
         return HttpResponseBadRequest('Wrong URL')
     
     if 'get' not in request.GET:
@@ -143,8 +131,9 @@ def destruction(request, id):
 @csrf_exempt
 @http_auth_required
 def error(request, id):
-    job = models.Job.objects.get(id=id)
-    if job is None:
+    try:
+        job = models.Job.objects.get(id=id)
+    except models.Job.DoesNotExist:
         return HttpResponseBadRequest('Wrong URL')
     
     return render(request, 'tap/error.xml', {'error': job.error_message, 
@@ -153,8 +142,9 @@ def error(request, id):
 @csrf_exempt
 @http_auth_required
 def params(request, id):
-    job = models.Job.objects.get(id=id)
-    if job is None:
+    try:
+        job = models.Job.objects.get(id=id)
+    except models.Job.DoesNotExist:
         return HttpResponseBadRequest('Wrong URL')
     
     return render(request, 'tap/http_response.html', {'message': job.parameters})
@@ -162,8 +152,9 @@ def params(request, id):
 @csrf_exempt
 @http_auth_required
 def results(request, id):
-    job = models.Job.objects.get(id=id)
-    if job is None:
+    try:
+        job = models.Job.objects.get(id=id)
+    except models.Job.DoesNotExist:
         return HttpResponseBadRequest('Wrong URL')
     
     for file in job.files():
@@ -171,7 +162,7 @@ def results(request, id):
             job_file = file
     
     if (not job_file) or (not job_file.can_be_downloaded()):
-        raise PermissionDenied
+        return HttpResponseBadRequest('File not found')
     
     return render(request, 'tap/results.xml', 
                   {'download_link': "%s/%s/results/result/%s" % 
@@ -180,9 +171,10 @@ def results(request, id):
 
 @csrf_exempt
 @http_auth_required
-def result(request, id, file):
-    job = models.Job.objects.get(id=id)
-    if job is None:
+def result(request, id, file=None):
+    try:
+        job = models.Job.objects.get(id=id)
+    except models.Job.DoesNotExist:
         return HttpResponseBadRequest('Wrong URL')
     
     return stream_job_results(request, job)
@@ -190,8 +182,9 @@ def result(request, id, file):
 @csrf_exempt
 @http_auth_required
 def owner(request, id):
-    job = models.Job.objects.get(id=id)
-    if job is None:
+    try:
+        job = models.Job.objects.get(id=id)
+    except models.Job.DoesNotExist:
         return HttpResponseBadRequest('Wrong URL')
     
     return render(request, 'tap/http_response.html', {'message': job.username})
@@ -199,14 +192,14 @@ def owner(request, id):
 @csrf_exempt
 @http_auth_required
 def executionduration(request, id):
-    job = models.Job.objects.get(id=id)
-    if job is None:
+    try:
+        job = models.Job.objects.get(id=id)
+    except models.Job.DoesNotExist:
         return HttpResponseBadRequest('Wrong URL')
     
     return render(request, 'tap/http_response.html', {'message': EXECUTION_DURATION})
 
 def make_parameters_xml(request):
-    
     query = prepare_query(request.POST['QUERY'])
     
     dataset    = parse_dataset_name(query)
@@ -214,8 +207,7 @@ def make_parameters_xml(request):
     order      = parse_order(query)
     limit      = parse_limit(query)
     if ('MAXREC' in request.POST) and (request.POST['MAXREC'] != ''):
-        limit = request.POST['MAXREC']
-        
+        limit  = request.POST['MAXREC']
     conditions = parse_conditions(query)
     
     params_xml = etree.Element("tao")
@@ -237,18 +229,20 @@ def make_parameters_xml(request):
     query_node = etree.SubElement(sql, 'query')
     query_node.text = query
     
-    if order:
-        order_node = etree.SubElement(sql, 'order')
-        order_node.text = order
-    
-    if limit:
-        limit_node = etree.SubElement(sql, 'limit')
-        limit_node.text = limit
-    
-    condition_items = etree.SubElement(sql, 'conditions')
-    for condition in conditions:
-        item = etree.SubElement(condition_items, 'item')
-        item.text = condition
+    #===========================================================================
+    # if order:
+    #     order_node = etree.SubElement(sql, 'order')
+    #     order_node.text = order
+    # 
+    # if limit:
+    #     limit_node = etree.SubElement(sql, 'limit')
+    #     limit_node.text = limit
+    # 
+    # condition_items = etree.SubElement(sql, 'conditions')
+    # for condition in conditions:
+    #     item = etree.SubElement(condition_items, 'item')
+    #     item.text = condition
+    #===========================================================================
     
     module_version_node = etree.SubElement(sql, 'module-version')
     module_version_node.text = str(TAP_MODULE_VERSION)
@@ -283,21 +277,37 @@ def UWSRedirect(request, id, redirect=''):
     return response
 
 def stream_job_results(request, job):
-    
     if job.is_error():
         return render(request, 'tap/error.xml', {'error': job.error_message, 'timestamp': 
                                                  job.created_time, 'query': request.POST['QUERY']})
-    
+    job_file = None
     for file in job.files():
         if file.file_name == TAP_OUTPUT_FILENAME:
             job_file = file
         
     if (not job_file) or (not job_file.can_be_downloaded()):
-        raise PermissionDenied
+        job.error_message += "Can't get the job file.\n"
+        job.save()
+        return HttpResponseBadRequest('File not found')
 
-    response = StreamingHttpResponse(streaming_content=FileWrapper(open(job_file.file_path)))
-    response['Content-Disposition'] = 'attachment; filename="%s"' % job_file.file_name.replace('/','_')
+    response = StreamingHttpResponse(streaming_content=FileWrapper(open(job_file.file_path)), 
+                                     mimetype='application/force-download')
+    response['Content-Disposition'] = 'attachment; filename="%s"' % file.file_name
     
     return response
+
+def createTAPjob(request):
+    parameters = make_parameters_xml(request)
+    
+    job = models.Job(user=request.user, parameters=parameters)
+    
+    errors = check_query(request.POST['QUERY'])
+    if errors != '':
+        job.error_message = errors
+        job.status = models.Job.ERROR
+    
+    job.save()
+    
+    return job
     
     
