@@ -14,11 +14,19 @@ class TAPServicesTests(TestCase):
         self.username = 'user'
         self.password = 'password'
         
-        self.query = {'QUERY':'select 1'}
+        self.query = {'QUERY':'select property_name from dataset_name where property_name > 0 and property_name < 10 limit 0,100',
+                      'REQUEST': 'doQuery'}
 
         self.user = UserFactory.create(username=self.username)
         self.user.set_password(self.password)
         self.user.save()
+        
+        self.dataset = {'name': u'dataset_name', 'label': u'dataset_label'}
+        self.property = {'name': u'property_name', 'label': u'property_label', 'units': u'property_units'}
+        sim = SimulationFactory.create()
+        gal = GalaxyModelFactory.create(id=1, name='gm')
+        dat = DataSetFactory.create(simulation=sim, galaxy_model=gal, database=self.dataset['name'])
+        DataSetPropertyFactory.create(dataset=dat, name=self.property['name'], label=self.property['label'], units=self.property['units'])
         
         self.client = Client()
 
@@ -38,22 +46,17 @@ class TAPServicesTests(TestCase):
         response = self.client.post('/tap/sync')
         self.assertEqual(response.status_code, 400)
         
-    #def test_submit(self):
-    #    self.client.defaults['HTTP_AUTHORIZATION'] = self.http_auth(self.username, self.password)
-    #    response = self.client.post('/tap/sync', self.query)
-    #    self.assertEqual(response.status_code, 200)
-    
-class SQLParsingTests(TestCase):
-    
-    def setUp(self):
-        super(SQLParsingTests, self).setUp()
-        
-        self.dataset = {'name': u'dataset_name', 'label': u'dataset_label'}
-        self.property = {'name': u'property_name', 'label': u'property_label', 'units': u'property_units'}
-        sim = SimulationFactory.create()
-        gal = GalaxyModelFactory.create(id=1, name='gm')
-        dat = DataSetFactory.create(simulation=sim, galaxy_model=gal, database=self.dataset['name'])
-        DataSetPropertyFactory.create(dataset=dat, name=self.property['name'], label=self.property['label'], units=self.property['units'])
+    #===========================================================================
+    # def test_sync_submit(self):
+    #     self.client.defaults['HTTP_AUTHORIZATION'] = self.http_auth(self.username, self.password)
+    #     response = self.client.post('/tap/sync', self.query)
+    #     self.assertEqual(response.status_code, 200)
+    #       
+    # def test_async_submit(self):
+    #     self.client.defaults['HTTP_AUTHORIZATION'] = self.http_auth(self.username, self.password)
+    #     response = self.client.post('/tap/async', self.query)
+    #     self.assertEqual(response.status_code, 303)
+    #===========================================================================
         
     def test_dataset_name_parsing(self):
         query = 'select * from %s %s' % (self.dataset['name'], self.dataset['label'])
@@ -83,6 +86,3 @@ class SQLParsingTests(TestCase):
     
     
     
-    
-    
-        
