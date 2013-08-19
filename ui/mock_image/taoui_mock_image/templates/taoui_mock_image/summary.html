@@ -10,8 +10,8 @@
             <td>Image <span data-bind="text: $index()+1"></span> </td>
             <td>
                 <a href="#" data-bind='text: toggler_text(), click: toggler_click'></a>
-                <pre data-bind="visible: toggler_visible">Format: <!-- ko text: format --><!-- /ko -->
-Sub-cone: <!-- ko text: sub_cone --><!-- /ko -->
+                <pre data-bind="visible: toggler_visible">Format: <!-- ko text: format().text --><!-- /ko -->
+Sub-cone: <!-- ko text: sub_cone().text --><!-- /ko -->
 Magnitude field: <!-- ko text: (catalogue.util.bandpass_filter(mag_field()).fields !== undefined ? catalogue.util.bandpass_filter(mag_field()).fields.label : 'Undefined') --><!-- /ko -->
 Min magnitude: <!-- ko text: min_mag --><!-- /ko -->
 Redshift min: <!-- ko text: z_min --><!-- /ko -->
