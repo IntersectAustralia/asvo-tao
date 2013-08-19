@@ -10,6 +10,8 @@ from os.path import abspath, dirname, join, split
 
 # Django settings for tao project.
 
+DEBUG = False
+
 PROJECT_PATH = abspath(split(__file__)[0])
 PROJECT_DIR = dirname(PROJECT_PATH)
 
@@ -108,6 +110,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'tao.shibboleth.ShibbolethUserMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'activitylog.middleware.ActivityLogMiddleware',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -154,6 +157,7 @@ INSTALLED_APPS = (
     'django_rules',
     'django_extensions',
     'tastypie',
+    'activitylog',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
@@ -222,7 +226,7 @@ API_ALLOWED_IPS = (
                    )
 
 INITIAL_JOB_STATUS = 'HELD'
-INITIAL_JOB_MESSAGE = "Your job has been " + INITIAL_JOB_STATUS.lower() + " successfully, you will receive an e-mail notifying you when it has been completed."
+INITIAL_JOB_MESSAGE = "Your job has been %s successfully, you will receive an e-mail notifying you when it has been completed."
 
 #
 # To avoid changing the directory structure until after we have confirmed
@@ -230,9 +234,14 @@ INITIAL_JOB_MESSAGE = "Your job has been " + INITIAL_JOB_STATUS.lower() + " succ
 # set up the path and installed apps for the UI modules
 #
 UI_DIR = join(dirname(PROJECT_DIR), 'ui')
+
+# The order of the tuples here determines the order that the tabs are listed
+# in the UI
 MODULES_PATHS = (
+    # ('job_type', 'job_type'),
     ('light_cone', 'light-cone'),
     ('sed', 'sed'),
+    # ('telescope', 'telescope'),
     ('mock_image', 'mock_image'),
 )
 sys.path.extend([join(UI_DIR, module[1]) for module in MODULES_PATHS])
@@ -240,28 +249,37 @@ INSTALLED_APPS += tuple(['taoui_' + module[0] for module in MODULES_PATHS])
 MODULES = tuple([module[0] for module in MODULES_PATHS])
 #INSTALLED_APPS += tuple(('taoui_' + module_name for module_name in MODULES))
 
-OUTPUT_FORMATS = [
-    {'value':'csv', 'text':'CSV (Text)', 'extension':'csv'},
-    {'value':'hdf5', 'text':'HDF5', 'extension':'hdf5'},
-    {'value': 'fits', 'text': 'FITS', 'extension': 'fits'},
-    {'value': 'votable', 'text': 'VOTable', 'extension': 'xml'},
-]
 
-MODULE_INDICES = {'light_cone': '1', 'sed': '2', 'mock_image': '3',
-                  'record_filter': '4', 'output_format': '5'}
+# This is the 'tab-id' the module occupies in the interface
+MODULE_INDICES = {
+                  'job_type': '1',
+                  'light_cone': '2',
+                  'sed': '3',
+                  'mock_image': '4',
+                  'record_filter': '5',
+                  'output_format': '6',
+                  'summary': '7',
+                  'telescope': '8'
+                  }
 
-TAO_VERSION = '0.24.1-rc3'
+TAO_VERSION = '0.26.1-rc7'
 
 AAF_DS_URL = 'https://ds.test.aaf.edu.au/discovery/DS'
 AAF_APP_ID = 'https://example.intersect.org.au/shibboleth'
 AAF_SESSION_URL = 'https://example.intersect.org.au/Shibboleth.sso/Login'
 AAF_LOGOUT_URL = 'https://example.intersect.org.au/Shibboleth.sso/Logout'
 
+AAF_USERNAME = 'SHIB_auEdupersonSharedToken'
+AAF_FIRST_NAME = 'SHIB_givenName'
+AAF_LAST_NAME = 'SHIB_surname'
+AAF_EMAIL = 'SHIB_email'
+AAF_COOKIE_PREFIX = '_shibsession_'
+
 STATIC_URL = '/static/'
 FILES_BASE = '/tmp/'  # please include a trailing slash
 
-EMAIL_HOST = 'localhost'
-EMAIL_PORT = '25'
+# EMAIL_HOST = 'localhost'
+# EMAIL_PORT = '25'
 
 EMAIL_FROM_ADDRESS = 'admin@localhost'
 
@@ -272,3 +290,18 @@ API_ALLOWED_IPS = (
 ALLOWED_HOSTS = ['localhost']
 USE_CAPTCHA=True
 
+#
+# Activity Log settings
+#
+#Ignore responses altogether?
+ACTIVITYLOG_LOG_RESPONSE=False
+#Should we log full HTML responses?
+ACTIVITYLOG_LOG_HTML_RESPONSE = False
+# If we how do we recognized a full HTML response 
+ACTIVITYLOG_HTML_START = "<!DOCTYPE html"
+
+#
+# Pretty print the metadata being passed to the browser?
+# Useful for debugging, but much larger payload
+#
+METADATA_PRETTY_PRINT = DEBUG

@@ -14,7 +14,7 @@ class FilterTests(LiveServerMGFTest):
 
         for unused in range(4):
             galaxy_model = GalaxyModelFactory.create()
-            dataset = DataSetFactory.create(simulation=simulation1, galaxy_model=galaxy_model)
+            dataset = DataSetFactory.create(simulation=simulation1, galaxy_model=galaxy_model, max_job_box_count=2)
             DataSetPropertyFactory.create(dataset=dataset)
             for redshift in self.redshifts:
                 SnapshotFactory.create(dataset=dataset, redshift=redshift)
@@ -41,6 +41,7 @@ class FilterTests(LiveServerMGFTest):
         self.login(username, password)
 
         self.visit('mock_galaxy_factory')
+        self.click('tao-tabs-' + MODULE_INDICES['light_cone'])
         self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
         self.select_dark_matter_simulation(simulation1)
         self.select_galaxy_model(simulation1.galaxymodel_set.all().order_by('id')[0])
@@ -61,9 +62,10 @@ class FilterTests(LiveServerMGFTest):
         self.click('tao-tabs-' + MODULE_INDICES['sed'])
         self.click(self.sed('apply_sed'))
         self.click(self.sed_2select('op_add_all'))
-        expected_filter_options = self.get_expected_filter_options(self.initial_dataset.id)
+        expected_filter_options = self.get_expected_filter_options(self.initial_dataset)
         actual_filter_options = self.get_actual_filter_options()
-
+        from code import interact
+        interact(local=locals())
         self.assertEqual(expected_filter_options, actual_filter_options)
 
     def test_filter_options_with_band_pass_filter(self):

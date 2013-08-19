@@ -1,7 +1,7 @@
 #include <soci/soci.h>
 #include "fits.hh"
 #include <boost/algorithm/string/replace.hpp>
-
+#include <boost/spirit/include/classic.hpp>
 
 using namespace hpc;
 using boost::algorithm::replace_all;
@@ -55,7 +55,7 @@ namespace tao {
 	 }
 
 	 if(!*unitit)
-	    _units.push_back("unitless");
+	    _units.push_back("");
 	 else
 	 {
 	    _units.push_back(**unitit);
@@ -130,7 +130,7 @@ namespace tao {
 	 string FieldName=*lblit;
 
 	 replace_all(FieldName," ","_");
-
+	 FieldName=encode_fieldName(FieldName);
 	 ttype[index]=new char[80];
 	 tunit[index]=new char[80];
 
@@ -252,11 +252,11 @@ namespace tao {
 
 
 
-   void fits::process_galaxy( const tao::galaxy& galaxy )
+   void fits::process_galaxy( tao::galaxy& galaxy )
    {
       _timer.start();
 
-      for( unsigned ii = 0; ii < galaxy.batch_size(); ++ii )
+      for( galaxy.begin(); !galaxy.done(); galaxy.next() )
       {
 
 	 int ColIndex=1;
@@ -275,7 +275,7 @@ namespace tao {
 
 	    while( it != _fields.cend() )
 	    {
-	       _write_field( galaxy, *it++,ii,ColIndex );
+	       _write_field( galaxy, *it++,ColIndex );
 	       ColIndex++;
 	    }
 
@@ -294,7 +294,43 @@ namespace tao {
       LOGILN( _name, " number of records written: ", mpi::comm::world.all_reduce( _records ) );
    }
 
-   void fits::_write_field( const tao::galaxy& galaxy, const string& field,unsigned idx,int ColIndex )
+   string fits::encode_fieldName(string _toencode_string)
+   	{
+   		std::map<char, std::string> transformations;
+   		transformations['&']  = std::string("_");
+   		transformations['(']  = std::string("");
+   		transformations[')']  = std::string("");
+   		transformations['\''] = std::string("_");
+   		transformations['"']  = std::string("_");
+   		transformations['>']  = std::string("_");
+   		transformations['<']  = std::string("_");
+   		transformations['*']  = std::string("_");
+   		transformations[' ']  = std::string("_");
+   		transformations['/']  = std::string("_");
+
+
+
+   		std::string reserved_chars;
+   		for (auto ti = transformations.begin(); ti != transformations.end(); ti++)
+   		{
+   			reserved_chars += ti->first;
+   		}
+
+   		size_t pos = 0;
+   		while (std::string::npos != (pos = _toencode_string.find_first_of(reserved_chars, pos)))
+   		{
+   			_toencode_string.replace(pos, 1, transformations[_toencode_string[pos]]);
+   			pos++;
+   		}
+
+   		return _toencode_string;
+
+
+
+
+   	}
+
+   void fits::_write_field( const tao::galaxy& galaxy, const string& field,int ColIndex )
    {
       int status=0;
 
@@ -303,14 +339,14 @@ namespace tao {
       switch( val.second )
       {
 	 case tao::galaxy::STRING:
-	    fits_write_col(_file,TSTRING,ColIndex,_records+1,1,1,(void*)galaxy.values<string>(field)[idx].c_str(),&status);
+	    fits_write_col(_file,TSTRING,ColIndex,_records+1,1,1,(void*)galaxy.current_value<string>(field).c_str(),&status);
 	    LOGDLN(status);
 	    ASSERT(status==0);
 	    break;
 
 	 case tao::galaxy::DOUBLE:
 	 {
-	    double FieldVal=galaxy.values<double>( field )[idx];
+	    double FieldVal=galaxy.current_value<double>( field );
 	    fits_write_col(_file,TDOUBLE,ColIndex,_records+1,1,1,(void*)&FieldVal,&status);
 	    LOGDLN(status);
 	    ASSERT(status==0);
@@ -319,7 +355,7 @@ namespace tao {
 
 	 case tao::galaxy::INTEGER:
 	 {
-	    int FieldVal=galaxy.values<int>(field)[idx];
+	    int FieldVal=galaxy.current_value<int>(field);
 	    fits_write_col(_file,TINT,ColIndex,_records+1,1,1,(void*)&FieldVal,&status);
 	    LOGDLN(status);
 	    ASSERT(status==0);
@@ -328,7 +364,7 @@ namespace tao {
 
 	 case tao::galaxy::UNSIGNED_LONG_LONG:
 	 {
-	    unsigned long long FieldVal=galaxy.values<unsigned long long>(field)[idx];
+	    unsigned long long FieldVal=galaxy.current_value<unsigned long long>(field);
 	    fits_write_col(_file,TLONG,ColIndex,_records+1,1,1,(void*)&FieldVal,&status);
 	    LOGDLN(status);
 	    ASSERT(status==0);
@@ -337,7 +373,7 @@ namespace tao {
 
 	 case tao::galaxy::LONG_LONG:
 	 {
-	    long long FieldVal=galaxy.values<long long>(field)[idx];
+	    long long FieldVal=galaxy.current_value<long long>(field);
 	    fits_write_col(_file,TLONG,ColIndex,_records+1,1,1,(void*)&FieldVal,&status);
 	    LOGDLN(status);
 	    ASSERT(status==0);

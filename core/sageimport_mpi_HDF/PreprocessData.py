@@ -39,6 +39,8 @@ class PreprocessData(object):
         ## Check if the database already exists
         
         ResultsList=self.DBConnection.ExecuteQuerySQLStatment("SELECT datname FROM pg_database where datistemplate=false and datname=%(dbname)s;",0,{'dbname':self.DBName})
+        
+        logging.info(ResultsList)
           
         ## If the database already exists - give the user the option to drop it
         if len(ResultsList)>0:

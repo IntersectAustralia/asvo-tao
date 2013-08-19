@@ -7,6 +7,7 @@
 
 import os, shlex, subprocess, time, string,datetime,time
 import requests
+import json
 from torque import *
 import dbase
 import EnumerationLookup
@@ -18,6 +19,8 @@ import emailreport
 import glob
 import pg
 import stat
+import ParseProfileData
+
 
 class WorkFlow(object):
 
@@ -30,12 +33,13 @@ class WorkFlow(object):
         self.dbaseobj=dbaseobj
         self.TorqueObj=TorqueObj
         self.LogReaderObj=LogReader.LogReader(Options)
+        self.JobBaseDir=self.Options['Torque:outputbasedir']
         # Define the request API.
         
         self.CALLBackBase = Options['WorkFlowSettings:CallbackURL']
         self.api = {
-               'get': self.CALLBackBase + 'jobs/status/submitted',
-               'update': self.CALLBackBase + 'jobs/%d'}
+               'get': self.CALLBackBase + 'job/?status=SUBMITTED',
+               'update': self.CALLBackBase + 'job/%d/'}
         
 
       
@@ -43,7 +47,8 @@ class WorkFlow(object):
     def json_handler(self,resp):       
         
         JobsCounter=0
-        for json in resp.json:
+        logging.info("Meta Info for current Jobs="+str(resp.json['meta']['total_count']))
+        for json in resp.json['objects']:
             
             if self.AddNewJob(json)==True:
                 JobsCounter=JobsCounter+1            
@@ -56,41 +61,76 @@ class WorkFlow(object):
         UIJobReference=jsonObj['id']
         JobParams=jsonObj['parameters']
         JobDatabase=jsonObj['database']
-        JobUserName=jsonObj['username']
+        JobUserName=jsonObj['user_id']['username']
+        return self.ProcessNewJob(UIJobReference, JobParams, JobDatabase, JobUserName)
         
         
         
-        ## If a Job with the Same UI_ID exists ...ensure that it is out of the watch List (By Error State)
-        self.dbaseobj.RemoveOldJobFromWatchList(UIJobReference)
-        ## 1- Prepare the Job Directory
-        SubJobsCount=self.PrepareJobFolder(JobParams,JobUserName,UIJobReference,JobDatabase)
-        CurrentJobType=EnumerationLookup.JobType.Simple
-        if SubJobsCount>1:
-           CurrentJobType=EnumerationLookup.JobType.Complex     
+    def ProcessNewJob(self,UIJobReference,JobParams,JobDatabase,JobUserName):       
+        
+        try:
+            ## If a Job with the Same UI_ID exists ...ensure that it is out of the watch List (By Error State)
+            self.dbaseobj.RemoveOldJobFromWatchList(UIJobReference)
+            ## 1- Prepare the Job Directory
+            SubJobsCount=self.PrepareJobFolder(JobParams,JobUserName,UIJobReference,JobDatabase)
+            CurrentJobType=EnumerationLookup.JobType.Simple
+            if SubJobsCount>1:
+               CurrentJobType=EnumerationLookup.JobType.Complex     
+            
+            
+            logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], JobUserName, str(UIJobReference),'log')                
+            outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], JobUserName, str(UIJobReference),'output')
+            old_dir = os.getcwd()
+            os.chdir(logpath)
+        except Exception as Exp:             
+            data = {}              
+            data['status'] = 'ERROR'
+            data['error_message']="Workflow Cannot start this job. Please check the params " + str(Exp.args) 
+            self.UpdateTAOUI(UIJobReference,EnumerationLookup.JobType.Simple, data)  
+            
+            return False
+        
+        ###################Profiling####################################################
+        try:                 
+            self.ParseProfileDataObj=ParseProfileData.ParseProfileData(logpath,0,self.Options) 
+            [Boxes,Tables,Galaxies,Trees]=self.ParseProfileDataObj.ParseFile()       
+            logging.info('Number of Boxes='+str(Boxes))
+            logging.info('Total Queries='+str(Tables))
+            logging.info('Maximum Galaxies='+str(Galaxies))
+            logging.info('Maximum Trees='+str(Trees))
+        except Exception as Exp:
+             logging.error("Error In Profiling")
+             
+        #############################################################################
         
         
         
                              
-            
+              
         ## Submit the Job to PBS and get back its ID
         for i in range(0,SubJobsCount):
             ## Add new Job and return its ID
             JobID=self.dbaseobj.AddNewJob(UIJobReference,CurrentJobType,JobParams,JobUserName,JobDatabase,i)
-            ParamXMLName="params"+str(i)+".xml"
-            PBSJobID=self.SubmitJobToPBS(JobID,JobUserName,UIJobReference,ParamXMLName,i)
+            ParamXMLName="params"+str(i)+".xml"       
+            ############################################################
+            ### Submit the Job to the PBS Queue
+            PBSJobID=self.TorqueObj.Submit(JobUserName,JobID,logpath,outputpath,ParamXMLName,i)
             ## Store the Job PBS ID  
             self.dbaseobj.UpdateJob_PBSID(JobID,PBSJobID)
+            
+        os.chdir(old_dir)
                 
         ## Update the Job Status to Queued            
-        self.UpdateTAOUI(UIJobReference, CurrentJobType, data={'status': 'QUEUED'})
+        self.UpdateTAOUI(UIJobReference, CurrentJobType, data={'status': 'QUEUED'})        
+        
         return True
         
         
     def PrepareJobFolder(self,JobParams,JobUserName,UIJobReference,JobDatabase):
         ## Read User Settings 
-        BasedPath=os.path.join(self.Options['WorkFlowSettings:WorkingDir'], 'jobs', JobUserName, str(UIJobReference))
-        outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], 'jobs', JobUserName, str(UIJobReference),'output')
-        logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], 'jobs', JobUserName, str(UIJobReference),'log')
+        BasedPath=os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  JobUserName, str(UIJobReference))
+        outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  JobUserName, str(UIJobReference),'output')
+        logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  JobUserName, str(UIJobReference),'log')
         AudDataPath=os.path.join(self.Options['Torque:AuxInputData'])
         
         
@@ -127,23 +167,9 @@ class WorkFlow(object):
             
         return SubJobsCount   
         
-    def SubmitJobToPBS(self,JobID,JobUserName,UIJobReference,ParamXMLName,SubJobIndex=0):
+    
         
-        ## Read User Settings      
-        logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], 'jobs', JobUserName, str(UIJobReference),'log')                
-        outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], 'jobs', JobUserName, str(UIJobReference),'output')
-        old_dir = os.getcwd()
-        os.chdir(logpath)           
-                
-        ############################################################
-        ### Submit the Job to the PBS Queue
-        PBSJobID=self.TorqueObj.Submit(JobUserName,JobID,logpath,outputpath,ParamXMLName,SubJobIndex)
         
-        ### Return back to the previous folder    
-        os.chdir(old_dir)
-        
-        ## Return JobID
-        return PBSJobID
                 
     def UpdateTAOUI(self,UIJobID,JobType,data):
         ## If the job Type is Simple Update it without any checking  
@@ -163,8 +189,12 @@ class WorkFlow(object):
                 
         
         if Update==True:
-            logging.info('Updating UI MasterDB. JobID ('+str(UIJobID)+').. '+data['status'])        
-            requests.put(self.api['update']%UIJobID, data) 
+            logging.info('Updating UI MasterDB. JobID ('+str(UIJobID)+').. '+data['status']) 
+            UpdateURL=self.api['update']%UIJobID
+            logging.info('Update Job Status:'+(self.api['update']%UIJobID))
+            logging.info(str(data))       
+            Response=requests.put(UpdateURL, json.dumps(data))
+            logging.info('Response: '+str(Response.text))
             
     def AllJobsInSameStatus(self,UIReference_ID,RequestedStatus):
         StatusMapping={'QUEUED':EnumerationLookup.JobState.Queued,'COMPLETED':EnumerationLookup.JobState.Completed,'ERROR':EnumerationLookup.JobState.Error}
@@ -209,8 +239,9 @@ class WorkFlow(object):
     
     def ChangePBSFilesmod(self,UserName,JobID,LocalJobID):
         
-        JobName='tao_'+UserName[:4]+'_'+str(LocalJobID)
-        path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],'jobs', UserName, str(JobID),'log')
+        JobName=self.Options['Torque:jobprefix']+UserName[:4]+'_'+str(LocalJobID)
+        
+        path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserName, str(JobID),'log')
         old_dir = os.getcwd()
         os.chdir(path)
         
@@ -229,8 +260,9 @@ class WorkFlow(object):
     
     def GetJobstderrcontents(self,UserName,JobID,LocalJobID):
         
-        JobName='tao_'+UserName[:4]+'_'+str(LocalJobID)
-        path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],'jobs', UserName, str(JobID),'log')
+        JobName=self.Options['Torque:jobprefix']+UserName[:4]+'_'+str(LocalJobID)
+        
+        path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserName, str(JobID),'log')
         old_dir = os.getcwd()
         os.chdir(path)
         stderrstring=''
@@ -293,6 +325,9 @@ class WorkFlow(object):
             SubJobIndex=PBsID['subjobindex']
             JobID=PBsID['jobid']
             
+            logging.info("Checking Job Status : JobID="+PID+"\tInPBSList="+str(PID in CurrentJobs))
+            if PID in CurrentJobs:
+                logging.info("Checking Job Status : JobID="+PID+"\tStatus="+str(CurrentJobs[PID]))
             
             ## Parse the Job Log File and Extract Current Job Status            
             JobDetails=self.LogReaderObj.ParseFile(UserName,UIReference_ID,SubJobIndex)
@@ -301,13 +336,20 @@ class WorkFlow(object):
             
             
             ## 1- Change In Job Status to Running 
-            if  PID in CurrentJobs and (CurrentJobs[PID]=='R' and OldStatus!=EnumerationLookup.JobState.Running) : 
-                self.UpdateJob_Running(PID,SubJobIndex,JobType, OldStatus, UIReference_ID, JobID) 
+            if  PID in CurrentJobs and CurrentJobs[PID]=='R': 
+                if OldStatus!=EnumerationLookup.JobState.Running:
+                    self.UpdateJob_Running(PID,SubJobIndex,JobType, OldStatus, UIReference_ID, JobID)
+                elif JobDetails!=None:
+                    logging.info ("Job ("+str(UIReference_ID)+" ["+str(SubJobIndex)+"]) .. : Progress="+JobDetails['progress'])
+                else:
+                    logging.info ("Job ("+str(UIReference_ID)+") .. : Log File Does not exist") 
                
             ## 2-  Change In Job Status to Queued
-            elif  PID in CurrentJobs and (CurrentJobs[PID]=='Q' and OldStatus!=EnumerationLookup.JobState.Queued): 
-                self.UpdateJob_Queued(PID,SubJobIndex,JobType, OldStatus, UIReference_ID, JobID)
-            
+            elif  PID in CurrentJobs and CurrentJobs[PID]=='Q': 
+                if OldStatus!=EnumerationLookup.JobState.Queued:
+                    self.UpdateJob_Queued(PID,SubJobIndex,JobType, OldStatus, UIReference_ID, JobID)
+                else:
+                    logging.info("Jobs Still Queued ...")
             ## 3- Job Status Unknown ... It is still in the queue but it is not Q or R !     
             elif  PID in CurrentJobs and CurrentJobs[PID]!='R' and CurrentJobs[PID]!='Q' : 
                 logging.info('Job Status UNKnow '+str(UIReference_ID)+' :'+CurrentJobs[PID])              
@@ -332,17 +374,17 @@ class WorkFlow(object):
             ###############################################################################################################
             ## 5- The Job didn't change its status... Show its progess information if Exists!        
             else:
-                if JobDetails!=None:
-                    logging.info ("Job ("+str(UIReference_ID)+" ["+str(SubJobIndex)+"]) .. : Progress="+JobDetails['progress'])
-                else:
-                    logging.info ("Job ("+str(UIReference_ID)+") .. : Log File Does not exist")
+                logging.info("Job Status Checking is not known!!")
 
     def UpdateJob_EndSuccessfully(self, JobID,SubJobIndex, JobType, UIReference_ID, UserName, JobDetails):
+        
         data = {}  
-        path = os.path.join('jobs', UserName, str(UIReference_ID))
+        
+        path = os.path.join(self.JobBaseDir, UserName, str(UIReference_ID))
         self.dbaseobj.SetJobComplete(JobID, path, JobDetails['end'])
         data['status'] = 'COMPLETED'
-        path = os.path.join('jobs', UserName, str(UIReference_ID), 'output')
+        
+        path = os.path.join(self.JobBaseDir, UserName, str(UIReference_ID), 'output')
         data['output_path'] = path
         
         self.UpdateTAOUI(UIReference_ID,JobType, data)
@@ -397,7 +439,8 @@ class WorkFlow(object):
         except Exception as Exp:
             logging.error('Error In Getting Start time for Job ' + str(PID))
             logging.error(Exp)
-        self.dbaseobj.SetJobRunning(JobID, OldStatus, "Job Running- PBSID" + PID, JobStartTime)
+        if EnumerationLookup.JobState.Running!=OldStatus:
+            self.dbaseobj.SetJobRunning(JobID, "Job Running- PBSID" + PID, JobStartTime)
         data['status'] = 'IN_PROGRESS'        
         self.UpdateTAOUI(UIReference_ID,JobType, data)
         self.dbaseobj.AddNewEvent(JobID, EnumerationLookup.EventType.Normal, 'Updating Job (UI ID:' + str(UIReference_ID) + ', Status:' + data['status'] + ')')
@@ -405,8 +448,9 @@ class WorkFlow(object):
 
     ## Update the Back-end DB and the UI that the job is Queued. In case of Multiple Lightcones, the UI will be updated with the last job
     def UpdateJob_Queued(self, PID,SubJobIndex, JobType, OldStatus, UIReference_ID, JobID):
-        data = {}  
-        self.dbaseobj.SetJobQueued(JobID, OldStatus, "Job Queued- PBSID" + PID)
+        data = {} 
+        if EnumerationLookup.JobState.Queued!=OldStatus: 
+            self.dbaseobj.SetJobQueued(JobID, "Job Queued- PBSID" + PID)
         data['status'] = 'QUEUED' 
         
         

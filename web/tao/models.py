@@ -9,6 +9,7 @@ import django.contrib.auth.models as auth_models
 from django.conf import settings
 from django.db import models
 from tao.mail import send_mail
+from datetime import datetime
 
 import os
 
@@ -56,8 +57,22 @@ class TaoUser(auth_models.AbstractUser):
     def is_rejected(self):
         return self.account_registration_status == TaoUser.RS_REJECTED
 
+    def activate_user(self):
+        if self.is_aaf():
+            self.account_registration_status = TaoUser.RS_APPROVED
+        self.account_registration_date = datetime.now()
+        self.is_active = True
+
+    def reject_user(self, reason):
+        if self.is_aaf():
+            self.account_registration_status = TaoUser.RS_REJECTED
+            self.account_registration_reason = reason
+        self.account_registration_date = datetime.now()
+        self.is_active = False
+        self.rejected = True
+
     def __unicode__(self):
-        return "(%d) %s, %s" % (self.id, self.username, self.account_registration_status)
+        return "(%d) %s, %s, active:%r" % (self.id, self.username, self.account_registration_status, self.is_active)
 
 class Simulation(models.Model):        
 
@@ -71,7 +86,7 @@ class Simulation(models.Model):
         return self.name
     
     class Meta:
-        ordering = ['name']
+        ordering = ['order', 'name']
 
     def save(self, *args, **kwargs):
         if self.name:
@@ -121,6 +136,10 @@ class DataSet(models.Model):
     default_filter_field = models.ForeignKey('DataSetProperty', related_name='DataSetProperty', null=True, blank=True)
     default_filter_min = models.FloatField(null=True, blank=True)
     default_filter_max = models.FloatField(null=True, blank=True)
+    max_job_box_count = models.IntegerField(default=0)
+    job_size_p1 = models.FloatField(default=0.06555053)
+    job_size_p2 = models.FloatField(default=-0.10355211)
+    job_size_p3 = models.FloatField(default=0.37135452)
     
     class Meta:
         unique_together = ('simulation', 'galaxy_model')
@@ -198,33 +217,33 @@ def initial_job_status():
         except AttributeError:
             return 'HELD'
 
+HELD = 'HELD'
 SUBMITTED = 'SUBMITTED'
+QUEUED = 'QUEUED'
 IN_PROGRESS = 'IN_PROGRESS'
 COMPLETED = 'COMPLETED'
-QUEUED = 'QUEUED'
-HELD = 'HELD'
 ERROR = 'ERROR'
 
 STATUS_CHOICES = (
+    (HELD, 'Held'),
     (SUBMITTED, 'Submitted'),
     (QUEUED, 'Queued'),
     (IN_PROGRESS, 'In progress'),
     (COMPLETED, 'Completed'),
-    (HELD, 'Held'),
     (ERROR, 'Error'),
 )
 
 class Job(models.Model):
+    HELD = 'HELD'
     SUBMITTED = 'SUBMITTED'
+    QUEUED = 'QUEUED'
     IN_PROGRESS = 'IN_PROGRESS'
     COMPLETED = 'COMPLETED'
-    QUEUED = 'QUEUED'
-    HELD = 'HELD'
     ERROR = 'ERROR'
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     created_time = models.DateTimeField(auto_now_add=True)
-    description = models.TextField(max_length=500, default='')
+    description = models.TextField(max_length=500, default='', blank=True)
 
     status = models.CharField(choices=STATUS_CHOICES, default=initial_job_status, max_length=20)
     parameters = models.TextField(blank=True, max_length=1000000)
@@ -274,8 +293,6 @@ class Job(models.Model):
                 else:
                     yield (child_path, None)
 
-        #for data in traverse(job_base_dir):
-        #    yield data
         return traverse(job_base_dir)
 
     def username(self):
@@ -287,6 +304,9 @@ class Job(models.Model):
         Checks if the given user is the user of this job
         """
         return self.user.id == user.id
+
+    def can_write_job(self, user):
+        return self.can_read_job(user)
 
     def can_download_zip_file(self):
         return True

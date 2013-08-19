@@ -1,7 +1,6 @@
 #include <cstdio>
 #include <cmath>
 #include <fstream>
-#include <boost/filesystem.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/tokenizer.hpp>
 #include "skymaker.hh"
@@ -95,7 +94,7 @@ namespace tao {
    {
       // Read magnitude and redshift from galaxy.
       real_type mag = gal.values<real_type>( _mag_field )[idx];
-      real_type redshift = gal.values<real_type>( "redshift" )[idx];
+      real_type redshift = gal.values<real_type>( "redshift_cosmological" )[idx];
 
       // Only process if within magnitude and redshift limits.
       if( mag >= _min_mag &&
@@ -159,7 +158,8 @@ namespace tao {
    }
 
    void
-   skymaker::image::render( bool keep_files )
+   skymaker::image::render( const fs::path& output_dir,
+			    bool keep_files )
    {
       // Close the list file.
       _list_file.close();
@@ -194,7 +194,8 @@ namespace tao {
          ::system( cmd.c_str() );
 
 	 // Rename the output file.
-	 fs::path target = "image." + index_string( _idx ) + ".fits";
+	 fs::path target = "image." + index_string( _sub_cone ) + "." + index_string( _idx ) + ".fits";
+	 target = output_dir/target;
 	 fs::rename( "sky.fits", target );
       }
       mpi::comm::world.barrier();
@@ -224,7 +225,10 @@ namespace tao {
       std::ofstream file( _conf_filename, std::ios::out );
       file << "IMAGE_SIZE " << _width << "," << _height << "\n";
       file << "STARCOUNT_ZP 0.0\n";  // no auto stars
-      file << "MAG_LIMITS 0.1 49.0"; // wider magnitude limits
+      file << "MAG_LIMITS 0.1 49.0\n"; // wider magnitude limits
+      file << "ARM_COUNT 4\n";
+      file << "ARM_THICKNESS 40\n";
+      file << "ARM_POSANGLE 30\n";
    }
 
    ///
@@ -271,7 +275,7 @@ namespace tao {
       _timer.start();
 
       for( auto& img : _imgs )
-	 img.render( _keep_files );
+	 img.render( _output_dir, _keep_files );
 
       _timer.stop();
    }
@@ -294,6 +298,9 @@ namespace tao {
       // Cache the dictionary.
       const options::xml_dict& dict = _dict;
 
+      // Get the output path.
+      _output_dir = global_dict.get<string>( "outputdir" );
+
       // Get image list.
       auto imgs = dict.get_nodes( "images/item" );
       unsigned ii = 0;
@@ -302,16 +309,31 @@ namespace tao {
          // Create a sub XML dict.
 	 options::xml_dict sub( img.node() );
 
+	 // Sub-cone can be an integer or "ALL".
+	 string sc = sub.get<string>( "sub_cone", "ALL" );
+	 bool exe = false;
+	 if( sc == "ALL" )
+	    exe = true;
+	 else
+	 {
+	    int sc_val = boost::lexical_cast<int>( sc );
+	    if( sc_val == global_dict.get<int>( "subjobindex" ) )
+	       exe = true;
+	 }
+
          // Construct a new image with the contents.
-         _imgs.emplace_back(
-	    ii++,
-            sub.get<int>( "sub_cone" ), sub.get<string>( "format" ),
-            sub.get<string>( "mag_field" ), sub.get<real_type>( "min_mag" ),
-            sub.get<real_type>( "z_min" ), sub.get<real_type>( "z_max" ),
-            sub.get<real_type>( "origin_ra" ), sub.get<real_type>( "origin_dec" ),
-            sub.get<real_type>( "fov_ra" ), sub.get<real_type>( "fov_dec" ),
-            sub.get<unsigned>( "width" ), sub.get<unsigned>( "height" )
-            );
+	 if( exe )
+	 {
+	    _imgs.emplace_back(
+	       ii++,
+	       global_dict.get<int>( "subjobindex" ), sub.get<string>( "format", "FITS" ),
+	       sub.get<string>( "mag_field" ), sub.get<real_type>( "min_mag", 7 ),
+	       sub.get<real_type>( "z_min", 0 ), sub.get<real_type>( "z_max", 127 ),
+	       sub.get<real_type>( "origin_ra" ), sub.get<real_type>( "origin_dec" ),
+	       sub.get<real_type>( "fov_ra" ), sub.get<real_type>( "fov_dec" ),
+	       sub.get<unsigned>( "width", 1024 ), sub.get<unsigned>( "height", 1024 )
+	       );
+	 }
       }
 
       // Flags.

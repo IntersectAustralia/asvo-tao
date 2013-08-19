@@ -17,7 +17,8 @@ from tao.output_format_form import OutputFormatForm
 from tao.record_filter_form import RecordFilterForm
 from taoui_light_cone.forms import Form as LightConeForm
 from taoui_sed.forms import Form as SedForm
-from tao.tests.support.factories import UserFactory, StellarModelFactory, SnapshotFactory, DataSetFactory, SimulationFactory, GalaxyModelFactory, DataSetPropertyFactory, BandPassFilterFactory, DustModelFactory
+# from tao.tests.support.factories import UserFactory, StellarModelFactory, SnapshotFactory, DataSetFactory, SimulationFactory, GalaxyModelFactory, DataSetPropertyFactory, BandPassFilterFactory, DustModelFactory, GlobalParameterFactory
+from tao.tests.support.factories import UserFactory, StellarModelFactory, SnapshotFactory, DataSetFactory, SimulationFactory, GalaxyModelFactory, DataSetPropertyFactory, BandPassFilterFactory, DustModelFactory, GlobalParameterFactory
 from unittest import TestCase
 #
 # from tao.tests.support import UtcPlusTen
@@ -26,10 +27,20 @@ from unittest import TestCase
 class XmlFormsTests(TestCase):
 
     def setUp(self):
+
+        OUTPUT_FORMATS = [
+            {'value':'csv', 'text':'CSV (Text2)', 'extension':'csv'},
+            {'value':'hdf5', 'text':'HDF5', 'extension':'hdf5'},
+            {'value': 'fits', 'text': 'FITS', 'extension': 'fits'},
+            {'value': 'votable', 'text': 'VOTable', 'extension': 'xml'}
+        ]
+        self.output_formats = GlobalParameterFactory.create(parameter_name='output_formats', parameter_value=OUTPUT_FORMATS)
+
         self.simulation = SimulationFactory.create(box_size=500)
         self.galaxy_model = GalaxyModelFactory.create()
         self.dataset = DataSetFactory.create(simulation=self.simulation, galaxy_model=self.galaxy_model)
         self.filter = DataSetPropertyFactory.create(name='CentralMvir rf', units="Msun/h", dataset=self.dataset)
+        self.computed_filter = DataSetPropertyFactory.create(name='Central Value', units="useless", dataset=self.dataset, is_computed=True)
         self.output_prop = DataSetPropertyFactory.create(name='Central op', dataset=self.dataset, is_filter=False)
         self.snapshot = SnapshotFactory.create(dataset=self.dataset, redshift='0.33')
         self.stellar_model = StellarModelFactory.create()
@@ -38,6 +49,9 @@ class XmlFormsTests(TestCase):
 
     def tearDown(self):
         super(XmlFormsTests, self).tearDown()
+        from tao.models import GlobalParameter
+        for param in GlobalParameter.objects.all():
+            param.delete()
         from tao.models import Simulation
         for sim in Simulation.objects.all():
             sim.delete()
@@ -66,6 +80,9 @@ class XmlFormsTests(TestCase):
             'output_properties_2_name' : 'OPN', # self.output_prop.name,
             'output_properties_2_label' : 'OPL', # self.output_prop.label,
             'output_properties_2_description' : 'OD', # self.filter.units,
+            'output_properties_3_name' : self.computed_filter.name,
+            'output_properties_3_label' : self.computed_filter.label,
+            'output_properties_3_description' : self.computed_filter.description,
             })
         xml_parameters.update({
             'filter': 'FN', # self.filter.name,
@@ -162,6 +179,9 @@ class XmlFormsTests(TestCase):
             'output_properties_2_name' : 'OPN', # self.output_prop.name,
             'output_properties_2_label' : 'OPL', # self.output_prop.label,
             'output_properties_2_description' : 'OD', # self.filter.units,
+            'output_properties_3_name' : self.computed_filter.name,
+            'output_properties_3_label' : self.computed_filter.label,
+            'output_properties_3_description' : self.computed_filter.description,
         })
         xml_parameters.update({
             'filter': self.filter.name, #'D-'+str(self.filter.id),
@@ -216,6 +236,9 @@ class XmlFormsTests(TestCase):
             'output_properties_2_name' : 'OPN', # self.output_prop.name,
             'output_properties_2_label' : 'OPL', # self.output_prop.label,
             'output_properties_2_description' : 'OD', # self.filter.units,
+            'output_properties_3_name' : self.computed_filter.name,
+            'output_properties_3_label' : self.computed_filter.label,
+            'output_properties_3_description' : self.computed_filter.description,
         })
         xml_parameters.update({
             'filter': 'FN', # self.filter.name,
@@ -265,6 +288,9 @@ class XmlFormsTests(TestCase):
             'output_properties_2_name' : self.output_prop.name,
             'output_properties_2_label' : self.output_prop.label,
             'output_properties_2_description' : 'OD', # self.filter.units,
+            'output_properties_3_name' : self.computed_filter.name,
+            'output_properties_3_label' : self.computed_filter.label,
+            'output_properties_3_description' : self.computed_filter.description,
         })
         xml_parameters.update({
             'filter': self.filter.name,
@@ -322,6 +348,9 @@ class XmlFormsTests(TestCase):
             'output_properties_2_name' : self.output_prop.name,
             'output_properties_2_label' : self.output_prop.label,
             'output_properties_2_description' : 'OD', # self.filter.units,
+            'output_properties_3_name' : self.computed_filter.name,
+            'output_properties_3_label' : self.computed_filter.label,
+            'output_properties_3_description' : self.computed_filter.description,
             })
         xml_parameters.update({
             'filter': self.filter.name,

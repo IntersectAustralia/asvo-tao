@@ -2,6 +2,7 @@
 #define tao_lightcone_lightcone_hh
 
 #include "tao/base/base.hh"
+#include "tao/base/types.hh"
 
 // Forward declaration of test suites to allow direct
 // access to the lightcone module.
@@ -203,7 +204,7 @@ namespace tao {
       bool _rows_exist;
       vector<void*> _field_stor;
       vector<galaxy::field_value_type> _field_types;
-      vector<real_type> _gal_z;
+      vector<real_type> _gal_z, _gal_z_obs, _gal_ra, _gal_dec, _gal_dist;
       tao::galaxy _gal;
 
       string _accel_method;
