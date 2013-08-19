@@ -102,9 +102,9 @@ catalogue.modules.mock_image = function ($) {
             }
 
             param = get_param(prefix, '-sub_cone');
-            image_params.sub_cone = ko.observable(param ? param : vm.sub_cone_options()[0]);
+            image_params.sub_cone = ko.observable(param ? {value:param,text:param} : vm.sub_cone_options()[0]);
             param = get_param(prefix, '-format');
-            image_params.format = ko.observable(param ? param : vm.format_options[0]);
+            image_params.format = ko.observable(param ? {value:param,text:param} : vm.format_options[0]);
             image_params.mag_field_options = ko.computed(function(){
                 return catalogue.modules.sed.vm.bandpass_filters.to_side.options();
             });
