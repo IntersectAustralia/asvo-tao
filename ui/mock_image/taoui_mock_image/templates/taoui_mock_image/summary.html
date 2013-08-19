@@ -2,13 +2,28 @@
     <table>
         <tr>
             <td><h4>Mock Image</h4></td>
-            <td><span class="select_mock_image" data-bind="text: apply_mock_image() ? '' : 'Not selected'"><!-- --></span></td>
+            <td><span class="select_mock_image" data-bind="text: apply_mock_image() ? image_settings().length + ' images' : 'Not selected'"><!-- --></span></td>
         </tr>
-        <tr class="apply_mock_image" data-bind="visible: apply_mock_image">
-            <td>Number of Images</td>
+        <!-- ko if: apply_mock_image -->
+        <!-- ko foreach: image_settings -->
+        <tr class="apply_mock_image" data-bind="toggler: true">
+            <td>Image <span data-bind="text: $index()+1"></span> </td>
             <td>
-                <span class="num_images" data-bind="text: number_of_images"><!-- --></span>
+                <a href="#" data-bind='text: toggler_text(), click: toggler_click'></a>
+                <pre data-bind="visible: toggler_visible">Format: <!-- ko text: format --><!-- /ko -->
+Sub-cone: <!-- ko text: sub_cone --><!-- /ko -->
+Magnitude field: <!-- ko text: (catalogue.util.bandpass_filter(mag_field()).fields !== undefined ? catalogue.util.bandpass_filter(mag_field()).fields.label : 'Undefined') --><!-- /ko -->
+Min magnitude: <!-- ko text: min_mag --><!-- /ko -->
+Redshift min: <!-- ko text: z_min --><!-- /ko -->
+Redshift max: <!-- ko text: z_max --><!-- /ko -->
+Center on RA: <!-- ko text: origin_ra --><!-- /ko -->
+Center on DEC: <!-- ko text: origin_dec --><!-- /ko -->
+FOV range RA: <!-- ko text: fov_ra --><!-- /ko -->
+FOV range DEC: <!-- ko text: fov_dec --><!-- /ko -->
+Image size: <!-- ko text: width --><!-- /ko -->W x <!-- ko text: height --><!-- /ko -->H</pre>
             </td>
         </tr>
+        <!-- /ko -->
+        <!-- /ko -->
     </table>
-</div>  
+</div>
