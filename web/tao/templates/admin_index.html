@@ -5,12 +5,17 @@
 {% block subtitle %}Admin{% endblock %}
 {% block content %}
     <h1> Administration </h1>
-    <p>
-        Admin content goes here
-    </p>
     <ul>
         <li>
             <a href="{% url 'access_requests' %}">Approve and Reject users</a>
+        </li>
+        <li>
+        	Jobs by status:
+        	<ul>
+        	{% for status in statuses %}
+                    <li><a href="../admin/tao/job/?q={{status.0}}">{{status.1}}</a></li>
+        	{% endfor %}
+                </ul>
         </li>
     </ul>
 {% endblock content %}
