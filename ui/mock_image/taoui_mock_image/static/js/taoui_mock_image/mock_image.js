@@ -42,7 +42,7 @@ catalogue.modules.mock_image = function ($) {
     this.cleanup_fields = function () {}
 
     this.validate = function () {
-        return $.validate_all(true) == undefined;
+        return true; // TODO !!!
     }
 
     this.pre_submit = function () {}
