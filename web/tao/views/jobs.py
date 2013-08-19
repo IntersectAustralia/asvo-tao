@@ -245,10 +245,10 @@ def _qsort_jobs(job_list):
 @researcher_required
 @set_tab('jobs')
 def index(request):
-    user_jobs = Job.objects.filter(user=request.user).order_by('id')
+    user_jobs = Job.objects.filter(user=request.user).order_by('-id')
 
     return render(request, 'jobs/index.html', {
-        'jobs': _qsort_jobs(user_jobs),
+        'jobs': user_jobs,
     })
 
 @researcher_required

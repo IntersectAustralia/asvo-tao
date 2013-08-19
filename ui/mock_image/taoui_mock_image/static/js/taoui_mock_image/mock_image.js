@@ -71,9 +71,9 @@ catalogue.modules.mock_image = function ($) {
 				params[key_prefix + 'mag_field'] = [current_image['mag_field']().value];
 				params[key_prefix + 'sub_cone'] = [current_image['sub_cone']().value];
 			}
-			params['mock_image-TOTAL_FORMS']  = [image_params.length+1];
+			params['mock_image-TOTAL_FORMS']  = [image_params.length];
 		} else {
-	    	params['mock_image-TOTAL_FORMS'] = [1];
+	    	params['mock_image-TOTAL_FORMS'] = [0];
 		}
     	return params;
     }
@@ -216,8 +216,6 @@ catalogue.modules.mock_image = function ($) {
         	
         	num_images = parseInt(job['mock_image-INITIAL_FORMS']);
         	if (isNaN(num_images)) return;
-        	if (num_images <= 1) return;
-
         	for (var i=0; i<num_images; i++) {
         		var prefix = 'mock_image' + i;
         		vm.image_settings.push(ImageParameters(prefix, job));
@@ -269,11 +267,6 @@ catalogue.modules.mock_image = function ($) {
         vm.number_of_images = ko.computed(function() {
             return vm.image_settings().length;
         });
-
-        // We always have an extra form at the end, so delete it
-        // now that we've initialised the formset.
-        // $('#mock_image_params .single-form:last').remove();
-        $('#id_mock_image-TOTAL_FORMS').val(parseInt($('#id_mock_image-TOTAL_FORMS').val()) - 1);
 
         return vm;
 
