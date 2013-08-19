@@ -67,20 +67,28 @@ class WorkFlow(object):
         
         
     def ProcessNewJob(self,UIJobReference,JobParams,JobDatabase,JobUserName):       
-        ## If a Job with the Same UI_ID exists ...ensure that it is out of the watch List (By Error State)
-        self.dbaseobj.RemoveOldJobFromWatchList(UIJobReference)
-        ## 1- Prepare the Job Directory
-        SubJobsCount=self.PrepareJobFolder(JobParams,JobUserName,UIJobReference,JobDatabase)
-        CurrentJobType=EnumerationLookup.JobType.Simple
-        if SubJobsCount>1:
-           CurrentJobType=EnumerationLookup.JobType.Complex     
         
-        
-        logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], JobUserName, str(UIJobReference),'log')                
-        outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], JobUserName, str(UIJobReference),'output')
-        old_dir = os.getcwd()
-        os.chdir(logpath)
-        
+        try:
+            ## If a Job with the Same UI_ID exists ...ensure that it is out of the watch List (By Error State)
+            self.dbaseobj.RemoveOldJobFromWatchList(UIJobReference)
+            ## 1- Prepare the Job Directory
+            SubJobsCount=self.PrepareJobFolder(JobParams,JobUserName,UIJobReference,JobDatabase)
+            CurrentJobType=EnumerationLookup.JobType.Simple
+            if SubJobsCount>1:
+               CurrentJobType=EnumerationLookup.JobType.Complex     
+            
+            
+            logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], JobUserName, str(UIJobReference),'log')                
+            outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], JobUserName, str(UIJobReference),'output')
+            old_dir = os.getcwd()
+            os.chdir(logpath)
+        except Exception as Exp:             
+            data = {}              
+            data['status'] = 'ERROR'
+            data['error_message']="Workflow Cannot start this job. Please check the params " + str(Exp.args) 
+            self.UpdateTAOUI(UIJobReference,EnumerationLookup.JobType.Simple, data)  
+            
+            return False
         
         ###################Profiling####################################################
         try:                 

@@ -32,6 +32,9 @@ class WorkflowDaemon(Daemon):
         handler.setFormatter(logging.Formatter('%(asctime)s - %(message)s'))
         self.TAOLoger.addHandler(handler)
         
+        
+        
+        
     def Workflow(self):
         #self.BackupLogFile()
         self.PrepareLogFile()
@@ -65,31 +68,39 @@ class WorkflowDaemon(Daemon):
         
         
         
-        #try:
+        ErrorCounter=0
          
         while True:
             
-            self.SysCommandsObj.CheckForNewCommands()
-            
-            if self.SysCommandsObj.KeepWorkFlowActive==True:
-                logging.info("Workflow is Active")
-                self.workflowObj.GetNewJobsFromMasterDB()            
-                self.workflowObj.ProcessJobs()
-            else:
-                logging.info("Workflow disabled")
+            try:            
+                self.SysCommandsObj.CheckForNewCommands()
                 
-            logging.info("Sleeping for "+str(self.SleepTime)+" Seconds")
-            logging.info('-----------------------------------------------------------------')
-            time.sleep(self.SleepTime)
-        #except Exception as Exp: 
-        #    emailreport.SendEmailToAdmin(self.Options,"Error In WorkFlow",str(Exp.args))
-        #    logging.error("Error In Main")
-        #    logging.error(type(Exp))
-        #    logging.error(Exp.args)
-        #    logging.error(Exp)        
-        #finally: 
-        #    logging.error('Finally: I will Terminate the DB Connection and Exit!' )       
-        #    self.dbaseObj.CloseConnections()
+                if self.SysCommandsObj.KeepWorkFlowActive==True:
+                    logging.info("Workflow is Active")
+                    self.workflowObj.GetNewJobsFromMasterDB()            
+                    self.workflowObj.ProcessJobs()
+                else:
+                    logging.info("Workflow disabled")
+                    
+                logging.info("Sleeping for "+str(self.SleepTime)+" Seconds")
+                logging.info('-----------------------------------------------------------------')
+                time.sleep(self.SleepTime+(ErrorCounter*10))
+                ErrorCounter=0
+            except Exception as Exp:
+                if ErrorCounter<=5:
+                    emailreport.SendEmailToAdmin(self.Options,"Error In WorkFlow",str(Exp.args))
+                logging.error("Error In Main")
+                logging.error(type(Exp))
+                logging.error(Exp.args)
+                logging.error(Exp)
+                ErrorCounter=ErrorCounter+1
+            finally:
+                # Restart All Objects
+                self.dbaseObj=dbase.DBInterface(self.Options)
+                self.TorqueObj=torque.TorqueInterface(self.Options,self.dbaseObj)
+                self.workflowObj=workflow.WorkFlow(self.Options,self.dbaseObj,self.TorqueObj)
+                self.SysCommandsObj=SysCommands.SysCommands(self.Options,self.dbaseObj,self.TorqueObj)
+                        
             
 
     def HandleExit(self,signum, frame):        

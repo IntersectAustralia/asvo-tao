@@ -13,7 +13,6 @@
     <script type="text/javascript" src="{% static 'js/jquery-ui-1.10.1.custom.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/PopUp.js' %}"></script>
     <script type='text/javascript' src="{% static 'js/knockout-2.3.0.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/jquery.validate.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/jquery-cookie-1.3.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/TwoSidedSelectWidget.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/catalogue.js' %}"></script>
@@ -89,6 +88,10 @@
         </div>
         </fieldset>
     </form>
+    <div data-bind="visible: modal_message() != null">
+            <div id="modal_message"></div>
+            <textarea readonly id="modal_message_text" data-bind="value: modal_message">Loading...</textarea>
+    </div>
 
     <script type="text/html" id="select_with_groups">
             <!-- ko ifnot: has_groups -->

@@ -28,7 +28,7 @@
             <!-- /ko -->
             <!-- ko if: apply_dust -->
             <td data-bind="toggler: true">
-                <span class="dust_model" data-bind="blah: console.log(dust_model()), text: dust_model().fields.name"><!-- --></span>
+                <span class="dust_model" data-bind="text: dust_model().fields.name"><!-- --></span>
                 <a id="expand_dust_model" href="#" data-bind='text: toggler_text(), click: toggler_click'></a>
                 <span class="dust_model_description" data-bind="visible: toggler_visible, html: '<br/>' + dust_model().fields.details"><!-- --></span>
             </td>
