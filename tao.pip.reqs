@@ -16,5 +16,6 @@ werkzeug
 breathe
 mimeparse
 MySQL_python
+tastypie
 -e git+https://github.com/IntersectAustralia/SpiderOak-zipstream.git#egg=zipstream
 -e git+https://github.com/aaronsw/html2text.git#egg=html2text
