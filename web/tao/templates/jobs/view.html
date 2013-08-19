@@ -39,13 +39,14 @@ the forms being hidden and all.
 
 {% block content %}
     <div>
-        <h1>Viewing Job {{ job.id }} (owned by {{ job.user.display_name }})</h1>
+        <h1>Viewing Job {{ job.id }} {% if job.user.username != user.username %}(owned by {{ job.user.display_name }}){% endif %}</h1>
         <div>
             {% if job.status == 'SUBMITTED' or job.status == 'QUEUED' or job.status == 'IN_PROGRESS' %}
                 <a class="btn btn-primary" href="{% url 'stop_job' job.id %}" style="color: #ffffff" id='id-job_stop'><b>Stop</b></a>
             {% else %}
                 <button type="button" class="btn btn-primary" id='id-job_stop' disabled>Stop</button>
             {% endif %}
+            {% if user.is_superuser %}
             {% if job.status == 'COMPLETED' or job.status == 'ERROR' %}
                 <a class="btn btn-primary" href="{% url 'rerun_job' job.id %}" style="color: #ffffff" id='id-job_rerun'><b>Re-Run</b></a>
             {% else %}
@@ -56,6 +57,7 @@ the forms being hidden and all.
             {% else %}
                 <button type="button" class="btn btn-primary" id='id-job_release' disabled>Release</button>
             {% endif %}
+            {% endif %}{% comment %}if user.is_superuser{% endcomment %}
         </div>
         <div>
             <strong>Optional Description:</strong>
