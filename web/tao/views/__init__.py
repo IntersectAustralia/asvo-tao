@@ -2,7 +2,6 @@ import re
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import views as auth_views
-from django.core import mail
 from django.core.urlresolvers import reverse
 from django.shortcuts import render, redirect
 from django.template.context import Context
@@ -32,7 +31,7 @@ def login(request):
     else:
         q_dict = {'target':request.build_absolute_uri(nextP)}
     aaf_session_url = settings.AAF_SESSION_URL + "?" + django_urlencode(q_dict)
-    return auth_views.login(request, authentication_form=LoginForm,extra_context={'aaf_session_url':aaf_session_url})
+    return auth_views.login(request, authentication_form=LoginForm,extra_context={'aaf_session_url': aaf_session_url})
 
 def fail(request):
     print request.METAS

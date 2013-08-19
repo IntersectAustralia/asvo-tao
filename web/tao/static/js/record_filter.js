@@ -21,7 +21,7 @@ catalogue.modules.record_filter = function ($) {
 
     this.job_parameters = function() {
     	var params = {
-    		'record_filter-filter': [vm.selection()],
+    		'record_filter-filter': [vm.selection().value],
     		'record_filter-min': [vm.selection_min()],
     		'record_filter-max': [vm.selection_max()]
     	}
