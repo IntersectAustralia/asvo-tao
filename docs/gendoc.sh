@@ -23,8 +23,8 @@ zip -r $BUILDDIR/tmp/samplescripts.zip readers
 cd $BUILDDIR
 
 sphinx-build -b html ./source ./build
-test -d ../web/static/docs && rm -rf ../web/tao/static/docs && mkdir ../web/tao/static/docs && echo "Empty docs"
-cp -r build/* ../web/tao/static/docs
+test -d ../web/static/docs && mkdir ../web/tao/static/docs && echo "New docs"
+rsync -av --delete build/ ../web/tao/static/docs/
 
 # Tidy up
 rm -r "$BUILDDIR/tmp"
