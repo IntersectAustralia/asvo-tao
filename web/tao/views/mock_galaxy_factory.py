@@ -6,6 +6,7 @@ from django.shortcuts import render, redirect
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import get_user_model
 from django.http import HttpResponse
+from django.utils.safestring import mark_safe
 
 from django.core.urlresolvers import reverse
 
@@ -14,7 +15,8 @@ from django.views.decorators.http import require_POST
 from tao import models, workflow
 from tao.decorators import researcher_required, set_tab
 from tao.ui_modules import UIModulesHolder
-from tao.xml_util import xml_parse
+from tao.xml_util import xml_parse, etree_to_dict
+import json
 
 
 @set_tab('mgf')
@@ -23,11 +25,16 @@ def index(request):
     if request.method == 'POST':
         if len(request.FILES) > 0:
             parameter_file = request.FILES.itervalues().next().read()
-            ui_holder = UIModulesHolder(UIModulesHolder.XML, xml_parse(parameter_file))
+            ui_holder = UIModulesHolder(UIModulesHolder.POST)
+            loaded_params = etree_to_dict(xml_parse(parameter_file))
+            loaded_params_json = mark_safe(json.dumps(loaded_params['tao']))
+            print loaded_params_json
+            # ui_holder = UIModulesHolder(UIModulesHolder.XML, xml_parse(parameter_file))
             return render(request, 'mock_galaxy_factory/index.html', {
                 'forms': ui_holder.forms(),
                 # 'forms_size' : len(ui_holder.forms())+1,
-                'TAB_SUMMARY_ID': settings.MODULE_INDICES['summary']
+                'TAB_SUMMARY_ID': settings.MODULE_INDICES['summary'],
+                'loaded_params_json': loaded_params_json
             })
         else:
             ui_holder = UIModulesHolder(UIModulesHolder.POST, request.POST)
@@ -89,3 +96,6 @@ def my_jobs_with_status(request, status=None):
         'show_field': show_field,
         'status': status or 'All',
     })
+
+
+
