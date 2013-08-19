@@ -1,5 +1,7 @@
 {% load bootstrap_tags %}
 {% load assets %}
+{% load staticfiles %}
+<script type="text/javascript" src="{% static 'js/taoui_sed/sed.js' %}"></script>
 
 <legend></legend>
 <div class="row-fluid">
@@ -7,43 +9,43 @@
         <div>
             {{ form.get_apply_sed|as_bootstrap_field }}
         </div>
-        <div id="sed_params">
+        <div id="sed_params" data-bind="visible: apply_sed()">
 	{% for fieldset in form.fieldsets %}
 	    {{ fieldset|as_bootstrap_fieldset }}
 	{% endfor %}
         </div>
     </div>
-    <div class="aside span4" id="sed_info">
+    <div class="aside span4" id="sed_info" data-bind="visible: apply_sed()">
         <div class="boxed">
-            <div class="stellar-model-info">
+            <div class="stellar-model-info" data-bind="if: stellar_model">
                 <div> Selected stellar model details </div>
                 <div style="overflow-y: scroll;height: 178px">
                     <p>
-                        <strong class="name"><!-- --></strong>
+                        <strong class="name" data-bind='text: stellar_model().fields.label'><!-- --></strong>
                     </p>
-                    <div class="details"><!-- --></div>
+                    <div class="details" data-bind='html: stellar_model().fields.description'><!-- --></div>
                 </div>
             </div>
         </div>
         <div class="boxed">
             <div class="band-pass-info">
                 <div> Selected band-pass filter details </div>
-                <div style="overflow-y: scroll;height: 178px">
+                <div data-bind="with: current_bandpass_filter" style="overflow-y: scroll;height: 178px">
                     <p>
-                        <strong class="name"><!-- --></strong>
+                        <strong data-bind="text: fields.label" class="name"><!-- --></strong>
                     </p>
-                    <div class="details"><!-- --></div>
+                    <div class="details" data-bind="html: fields.description"><!-- --></div>
                 </div>
             </div>
         </div>
         <div class="boxed">
-            <div class="dust-model-info">
+            <div class="dust-model-info" data-bind="if: dust_model">
                 <div> Selected dust model details </div>
                 <div style="overflow-y: scroll;height: 178px">
                     <p>
-                        <strong class="name"><!-- --></strong>
+                        <strong class="name" data-bind='text: dust_model().fields.label'><!-- --></strong>
                     </p>
-                    <div class="details"><!-- --></div>
+                    <div class="details" data-bind='html: dust_model().fields.description'><!-- --></div>
                 </div>
             </div>
         </div>

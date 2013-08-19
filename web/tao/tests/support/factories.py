@@ -44,6 +44,7 @@ class GalaxyModelFactory(factory.Factory):
 
 class DataSetFactory(factory.Factory):
     FACTORY_FOR = DataSet
+    available = True
     
 class DataSetPropertyFactory(factory.Factory):
     FACTORY_FOR = DataSetProperty
@@ -51,6 +52,8 @@ class DataSetPropertyFactory(factory.Factory):
     name = factory.Sequence(lambda n: 'name_%03d' % int(n))
     description = factory.Sequence(lambda n: 'description_%03d' % int(n))
     data_type = DataSetProperty.TYPE_INT
+    is_filter = True
+    is_output = True
 
 class StellarModelFactory(factory.Factory):
     FACTORY_FOR = StellarModel

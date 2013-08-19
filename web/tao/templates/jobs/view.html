@@ -4,7 +4,7 @@
 {% load staticfiles %}
 {% load bootstrap_tags %}
 {% load assets %}
-{% load light_cone_tags  %}
+{% load ui_json %}
 
 {% block subtitle %}Viewing Job{% endblock subtitle %}
 
@@ -12,14 +12,23 @@
     <link rel="stylesheet" href="{% static 'css/jquery-ui/themes/base/jquery-ui.css' %}" />
     <script src="{% static 'js/jquery-ui-1.10.1.custom.min.js' %}"></script>
     <script src="{% static 'js/jquery.formset.min.js' %}"></script>
-    <script src="{% static 'js/jquery.validate.js' %}"></script>
-
+    <script src="{% static 'js/jquery-cookie-1.3.js' %}"></script>
+    <script type='text/javascript' src="{% static 'js/knockout-2.3.0.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/TwoSidedSelectWidget.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/light_cone.js' %}"></script>
-    <script type="text/javascript">
-        var TAO_SEMIREQUIRED_FIELD_IDS = '{% semirequired_field_ids %}';
-        var TAO_JSON_CTX = '{% json_ctx %}';
-        var TAO_NO_FILTER = {% no_filter %};
+    <script type="text/javascript" src="{% static 'js/textarea_height.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/taoui_light_cone/light_cone.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/taoui_light_cone/unique_light_cones.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/job_size.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/taoui_sed/sed.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/taoui_mock_image/mock_image.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/record_filter.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/output_format.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/catalogue.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/catalogue_helper.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/view_job.js' %}"></script>
+    <script type="text/javascript" >
+    var TaoMetadata = {% metadata_json %}
+    var TaoJob = {% current_job_json %}
     </script>
 {% endblock extrajs %}
 
@@ -30,20 +39,40 @@ the forms being hidden and all.
 
 {% block content %}
     <div>
-        <h1>Viewing Job {{ job.id }}</h1>
+        <h1>Viewing Job {{ job.id }} (owned by {{ job.user.display_name }})</h1>
         <div>
-{#        Maybe need this for QA testing at some stage #}
-{#            <div>#}
-{#                <strong>Parameters</strong>#}
-{#                <span>#}
-{#                    {{ job.parameters|linebreaks }}#}
-{#                </span>#}
-{#            </div>#}
+            {% if job.status == 'SUBMITTED' or job.status == 'QUEUED' or job.status == 'IN_PROGRESS' %}
+                <a class="btn btn-primary" href="{% url 'stop_job' job.id %}" style="color: #ffffff" id='id-job_stop'><b>Stop</b></a>
+            {% else %}
+                <button type="button" class="btn btn-primary" id='id-job_stop' disabled>Stop</button>
+            {% endif %}
+            {% if job.status == 'COMPLETED' or job.status == 'ERROR' %}
+                <a class="btn btn-primary" href="{% url 'rerun_job' job.id %}" style="color: #ffffff" id='id-job_rerun'><b>Re-Run</b></a>
+            {% else %}
+                <button type="button" class="btn btn-primary" id='id-job_rerun' disabled>Re-Run</button>
+            {% endif %}
+            {% if job.status == 'HELD' %}
+                <a class="btn btn-primary" href="{% url 'release_job' job.id %}" style="color: #ffffff" id='id-job_release'><b>Release</b></a>
+            {% else %}
+                <button type="button" class="btn btn-primary" id='id-job_release' disabled>Release</button>
+            {% endif %}
+        </div>
+        <div>
+            <strong>Optional Description:</strong>
+            <div id="inlineedit">
+                <textarea contenteditable id="id-job_description" data-bind="value: description">
+                </textarea>
+                <div id="savecancel">
+                  <div id="id-save_edit" class="btn" type="button" onClick="catalogue.modules.view_job.save_description()">&#10003;</div>
+                  <div id="id-cancel_edit" class="btn" type="button" onClick="catalogue.modules.view_job.cancel_description()">X</div>
+                </div>
+           </div>
             <div>
                 <strong>Download</strong>
 
-                {% if job.is_completed %}
-                    <ul id='id_completed_jobs'>
+                <ul id='id_completed_jobs'>
+                    <li><a id='id_download_summary_txt' href="{% url 'get_summary_txt_file' job.id %}">summary.txt</a></li>
+                    {% if job.is_completed %}
                         {% for file in job.files %}
                             <li>
                             {% if file.can_be_downloaded %}
@@ -64,9 +93,8 @@ the forms being hidden and all.
                         (Zip file exceeds maximum download size.)
                     {% endif %}
                 {% else %}
-                    <p>
-                        This job has not completed (and hence has no output).
-                    </p>
+                    <p>This job has not completed (and hence has no output).</p>
+                    </ul>
                 {% endif %}
             </div>
             <div>
@@ -81,16 +109,11 @@ the forms being hidden and all.
             <div>
                 <strong>Summary</strong>
             </div>
-            <div class="row-fluid" style="display: none;">
-                {% for form in forms %}
-                    <form action="" method="">
-                        {% include form.EDIT_TEMPLATE %}
-                    </form>
-                {% endfor %}
-            </div>
             <div class="job_view">
                 {% for form in forms %}
-                    {% include form.SUMMARY_TEMPLATE %}
+                	<div data-bind="with: {{ form.prefix }}">
+                    	{% include form.SUMMARY_TEMPLATE %}
+                    </div>
                 {% endfor %}
             </div>
         </div>

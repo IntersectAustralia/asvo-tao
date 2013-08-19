@@ -9,6 +9,7 @@
 #include "BSPTree.hh"
 #include "geometry_iterator.hh"
 #include "table_iterator.hh"
+#include "tao/base/types.hh"
 
 using namespace hpc;
 using boost::format;
@@ -119,7 +120,7 @@ namespace tao {
 
 	 // The outer loop is over the boxes.
 	 _get_boxes( _boxes );
-	 LOGDLN( "Boxes: ", _boxes );
+	 LOGILN( "Boxes: ", _boxes );
 #ifdef PREPROCESSING
 	 LOGLN( logging::pushlevel( 100 ), "Boxes:",_boxes, logging::poplevel );
 #endif
@@ -359,7 +360,7 @@ namespace tao {
 	       " WHERE table_schema='public' AND SUBSTR(table_name,1," + 
 	       to_string( _tree_pre.length() ) + ")='" + _tree_pre + "'";
 	 }
-	 LOGDLN( "Query for number of table names: ", query );
+	 LOGTLN( "Query for number of table names: ", query );
 	 _db_timer.start();
 	 _sql << query, soci::into( num_tables );
 	 _db_timer.stop();
@@ -382,7 +383,7 @@ namespace tao {
 			    " WHERE table_schema='public' AND SUBSTR(table_name,1," + 
 			    to_string( _tree_pre.length() ) + ")='" ) + _tree_pre + string( "'" );
 	 }
-	 LOGDLN( "Query for table names: ", query );
+	 LOGTLN( "Query for table names: ", query );
 	 _db_timer.start();
 	 _sql << query, soci::into( (std::vector<std::string>&)table_names );
 	 _db_timer.stop();
@@ -402,7 +403,7 @@ namespace tao {
          table_names.swap( tmp_tbl_names );
       }
 
-      LOGDLN( "My table names: ", table_names );
+      LOGILN( "My table names: ", table_names );
 #ifdef PREPROCESSING
       LOGLN( logging::pushlevel( 100 ), "Tables:",table_names, logging::poplevel );
 #endif
@@ -421,11 +422,11 @@ namespace tao {
       do
       {
          LOGDLN( "Current table index: ", _cur_table );
-	 LOGDLN( "Current table name: ", _table_names[_cur_table] );
+	 LOGILN( "Looking at table: ", _table_names[_cur_table] );
 
 	 const array<real_type,3>& box = *_cur_box;
          _build_pixels( _x0 + box[0], _y0 + box[1], _z0 + box[2] );
-	 LOGDLN( "Any objects in this box/table: ", (_rows_exist ? "true" : "false") );
+	 LOGILN( "Any objects in this box/table: ", (_rows_exist ? "true" : "false") );
       }
       while( !_rows_exist && ++_cur_table != _table_names.size() );
 
@@ -620,11 +621,11 @@ namespace tao {
       }
 
       // Execute the query.
-      LOGDLN( "Executing query." );
+      LOGILN( "Executing lightcone query." );
       _db_timer.start();
       _st = new soci::statement( prep );
       _st->execute();
-      LOGDLN( "Finished executing query." );
+      LOGILN( "Finished executing lightcone query." );
       _fetch();
       _db_timer.stop();
 
@@ -710,9 +711,12 @@ namespace tao {
       replace_all( query, "-pos1_min-", to_string( halo_pos1_min ) );
       replace_all( query, "-pos2_min-", to_string( halo_pos2_min ) );
       replace_all( query, "-pos3_min-", to_string( halo_pos3_min ) );
-      replace_all( query, "-vel1-", to_string( vel1 ) );
-      replace_all( query, "-vel2-", to_string( vel2 ) );
-      replace_all( query, "-vel3-", to_string( vel3 ) );
+      replace_all( query, "-vel1-", vel1 );
+      replace_all( query, "-vel2-", vel2 );
+      replace_all( query, "-vel3-", vel3 );
+      replace_all( query, "-spin1-", spin1 );
+      replace_all( query, "-spin2-", spin2 );
+      replace_all( query, "-spin3-", spin3 );
       replace_all( query, "-max_dist-", to_string( max_dist ) );
       replace_all( query, "-last_dist-", to_string( min_dist ) );
       replace_all( query, "-min_snap-", to_string( _min_snap ) );
@@ -723,8 +727,14 @@ namespace tao {
       replace_all( query, "Pos1", _field_map.get( "pos_x" ) );
       replace_all( query, "Pos2", _field_map.get( "pos_y" ) );
       replace_all( query, "Pos3", _field_map.get( "pos_z" ) );
+      replace_all( query, "Vel1", "velx" );
+      replace_all( query, "Vel2", "vely" );
+      replace_all( query, "Vel3", "velz" );
+      replace_all( query, "Spin1", "spinx" );
+      replace_all( query, "Spin2", "spiny" );
+      replace_all( query, "Spin3", "spinz" );
 
-      LOGDLN( "Query: ", query );
+      LOGTLN( "Query: ", query );
       LOG_EXIT();
       _timer.stop();
    }
@@ -956,7 +966,7 @@ namespace tao {
    ///
    ///
    ///
-   lightcone::real_type
+   real_type
    lightcone::_redshift_to_distance( real_type redshift ) const
    {
       LOG_ENTER();
@@ -1021,11 +1031,6 @@ namespace tao {
       _field_map.insert( "tree_id", dict.get<string>( "tree_id", "globaltreeid" ) );
       _field_map.insert( "snapshot", dict.get<string>( "snapshot", "snapnum") );
 
-      // Astronomical values. Get these first just in case
-      // we do any redshift calculations in here.
-      _h0 = dict.get<real_type>( "h0",73.0 );
-      LOGDLN( "Using h0 = ", _h0 );
-
       // Should we use the BSP tree system?
       _accel_method = global_dict.get<string>( "settings:database:acceleration","none" );
       std::transform( _accel_method.begin(), _accel_method.end(), _accel_method.begin(), ::tolower );
@@ -1037,13 +1042,26 @@ namespace tao {
       // Connect to the database.
       _db_connect();
 
+      // Astronomical values. Get these first just in case
+      // we do any redshift calculations in here.
+      {
+	 std::string val;
+#ifdef MULTIDB
+	 (*_db)["tree_1"] << "SELECT metavalue FROM metadata WHERE metakey='hubble'", soci::into( val );
+#else
+	 _sql << "SELECT metavalue FROM metadata WHERE metakey='hubble'", soci::into( val );
+#endif
+	 _h0 = boost::lexical_cast<real_type>( val );
+      }
+      LOGILN( "Using h0 = ", _h0 );
+
       // Get box type.
       _box_type = dict.get<string>( "geometry", "light-cone" );
       LOGDLN( "Box type '", _box_type );
       // Get box repetition type.
       _box_repeat = dict.get<string>( "box-repetition", "unique");
       std::transform( _box_repeat.begin(), _box_repeat.end(), _box_repeat.begin(), ::tolower );
-      LOGDLN( "Box repetition type '", _box_repeat, "'" );
+      LOGILN( "Box repetition type '", _box_repeat, "'" );
       _unique = (_box_repeat == "unique");
       LOGDLN( "Internal unique flag set to: ", _unique );
 
@@ -1088,7 +1106,7 @@ namespace tao {
 	 _rng_seed = rand();
       }
       mpi::comm::world.bcast<int>( _rng_seed, 0 );
-      LOGDLN( "Random seed: ", _rng_seed );
+      LOGILN( "Random seed: ", _rng_seed );
       _real_rng.set_seed( _rng_seed );
       _int_rng.reset();
 
@@ -1165,6 +1183,9 @@ namespace tao {
          _output_fields.insert( "pos_x" );
          _output_fields.insert( "pos_y" );
          _output_fields.insert( "pos_z" );
+	 _output_fields.insert( "velx" );
+	 _output_fields.insert( "vely" );
+	 _output_fields.insert( "velz" );
          _output_fields.insert( _field_map.get( "global_id" ) );
          _output_fields.insert( _field_map.get( "local_id" ) );
          _output_fields.insert( _field_map.get( "tree_id" ) );
@@ -1215,13 +1236,7 @@ namespace tao {
       // Add the output fields.
       for( auto& field : _output_fields )
       {
-	 if( field != "pos_x" &&
-	     field != "pos_y" &&
-	     field != "pos_z" )
-	 {
-	    _query_template += ", " + string( "-table-." ) + field;
-	 }
-         else if ( field == "pos_x" )
+	 if ( field == "pos_x" )
 	 {
             _query_template += ", -pos1- AS pos_x";
 	 }
@@ -1233,9 +1248,33 @@ namespace tao {
 	 {
             _query_template += ", -pos3- AS pos_z";
 	 }
+	 else if ( field == "velx" )
+	 {
+            _query_template += ", -vel1- AS velx";
+	 }
+         else if ( field == "vely" )
+	 {
+            _query_template += ", -vel2- AS vely";
+	 }
+         else if ( field == "velz" )
+	 {
+            _query_template += ", -vel3- AS velz";
+	 }
+	 else if ( field == "spinx" )
+	 {
+            _query_template += ", -spin1- AS spinx";
+	 }
+         else if ( field == "spiny" )
+	 {
+            _query_template += ", -spin2- AS spiny";
+	 }
+         else if ( field == "spinz" )
+	 {
+            _query_template += ", -spin3- AS spinz";
+	 }
          else
          {
-            _query_template += ", " + field;
+	    _query_template += ", " + string( "-table-." ) + field;
          }
       }
 
@@ -1429,7 +1468,7 @@ namespace tao {
       }
    }
 
-   lightcone::real_type
+   real_type
    lightcone::_distance_to_redshift( real_type dist ) const
    {
       auto it = std::lower_bound( _dist_to_z_tbl_dist.begin(), _dist_to_z_tbl_dist.end(), dist );
@@ -1469,10 +1508,23 @@ namespace tao {
       replace_all( query, "-pos1-", "Pos1" );
       replace_all( query, "-pos2-", "Pos2" );
       replace_all( query, "-pos3-", "Pos3" );
+      replace_all( query, "-vel1-", "Vel1" );
+      replace_all( query, "-vel2-", "Vel2" );
+      replace_all( query, "-vel3-", "Vel3" );
+      replace_all( query, "-spin1-", "Spin1" );
+      replace_all( query, "-spin2-", "Spin2" );
+      replace_all( query, "-spin3-", "Spin3" );
       replace_all( query, "-table-", "tree_1" );
       replace_all( query, "Pos1", _field_map.get( "pos_x" ) );
       replace_all( query, "Pos2", _field_map.get( "pos_y" ) );
       replace_all( query, "Pos3", _field_map.get( "pos_z" ) );
+      replace_all( query, "Vel1", "velx" );
+      replace_all( query, "Vel2", "vely" );
+      replace_all( query, "Vel3", "velz" );
+      replace_all( query, "Spin1", "spinx" );
+      replace_all( query, "Spin2", "spiny" );
+      replace_all( query, "Spin3", "spinz" );
+      query += " LIMIT 1";
 #ifdef MULTIDB
       soci::rowset<soci::row> rows = ((*_db)["tree_1"].prepare << query);
 #else
@@ -1596,7 +1648,14 @@ namespace tao {
          vector<real_type>::view pos_x = _gal.values<real_type>( "pos_x" );
          vector<real_type>::view pos_y = _gal.values<real_type>( "pos_y" );
          vector<real_type>::view pos_z = _gal.values<real_type>( "pos_z" );
+         vector<real_type>::view vel_x = _gal.values<real_type>( "velx" );
+         vector<real_type>::view vel_y = _gal.values<real_type>( "vely" );
+         vector<real_type>::view vel_z = _gal.values<real_type>( "velz" );
 	 _gal_z.resize( _gal.batch_size() );
+	 _gal_z_obs.resize( _gal.batch_size() );
+         _gal_ra.resize( _gal.batch_size() );
+         _gal_dec.resize( _gal.batch_size() );
+         _gal_dist.resize( _gal.batch_size() );
 
 	 // Update the galaxy's redshift. This is dependant on using a box
 	 // or a light-cone.
@@ -1608,8 +1667,29 @@ namespace tao {
 	       real_type dist = sqrt( pos_x[ii]*pos_x[ii] + pos_y[ii]*pos_y[ii] + pos_z[ii]*pos_z[ii] );
 	       ASSERT( dist >= _dist_range.start() && dist < _dist_range.finish() );
 
+               // Set values.
 	       _gal_z[ii] = _distance_to_redshift( dist );
+               numerics::cartesian_to_ecs( pos_x[ii], pos_y[ii], pos_z[ii], _gal_ra[ii], _gal_dec[ii] );
+	       _gal_ra[ii] = to_degrees( _gal_ra[ii] );
+	       _gal_dec[ii] = to_degrees( _gal_dec[ii] );
+               _gal_dist[ii] = dist;
+
+	       // Calculate observed redshift.
+	       if( dist > 0.0 )
+	       {
+		  array<real_type,3> rad_vec( pos_x[ii]/dist, pos_y[ii]/dist, pos_z[ii]/dist );
+		  real_type dist_z = dist + ((rad_vec[0]*vel_x[ii] + rad_vec[1]*vel_y[ii] + rad_vec[2]*vel_z[ii])/_h0)*(_h0/100.0);
+		  _gal_z_obs[ii] = _distance_to_redshift( dist_z );
+	       }
+	       else
+		  _gal_z_obs[ii] = 0.0;
 	    }
+
+            // Set cone specific fields.
+            _gal.set_field<real_type>( "redshift_observed", _gal_z_obs );
+            _gal.set_field<real_type>( "ra", _gal_ra );
+            _gal.set_field<real_type>( "dec", _gal_dec );
+            _gal.set_field<real_type>( "distance", _gal_dist );
          }
 	 else
 	 {
@@ -1617,7 +1697,7 @@ namespace tao {
 	 }
 
 	 // Set the field.
-	 _gal.set_field<real_type>( "redshift", _gal_z );
+	 _gal.set_field<real_type>( "redshift_cosmological", _gal_z );
       }
 
       LOG_EXIT();

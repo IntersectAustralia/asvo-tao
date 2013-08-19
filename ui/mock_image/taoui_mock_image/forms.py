@@ -8,15 +8,13 @@ taoui_mock_image.forms
 import os
 
 from django import forms
+from django.conf import settings
 from django.forms.formsets import formset_factory
-import form_utils.fields as bf_fields
 from form_utils.forms import BetterForm
 from django.utils.translation import ugettext_lazy as _
 
 from tao import datasets
-from tao import models as tao_models
 from tao.forms import FormsGraph
-from tao.widgets import ChoiceFieldWithOtherAttrs, TwoSidedSelectWidget
 from tao.xml_util import module_xpath, module_xpath_iterate
 
 def strip_namespace(tag):
@@ -107,13 +105,36 @@ class SingleForm(BetterForm):
         self.fields['width'] = forms.IntegerField(label=_('Image width in pixels:'), required=True)
         self.fields['height'] = forms.IntegerField(label=_('Image height in pixels:'), required=True)
 
-    def full_clean(self):
+        self.fields['sub_cone'].widget.attrs['data-bind'] = "value: sub_cone, options: $parent.sub_cone_options, optionsText: 'text'"
+        self.fields['format'].widget.attrs['data-bind'] = "value: format, options: $parent.format_options, optionsText: 'text'"
+        self.fields['mag_field'].widget.attrs['data-bind'] = "value: mag_field, options: mag_field_options, optionsText: 'text'"
+        self.fields['min_mag'].widget.attrs['data-bind'] = 'value: min_mag'
+        self.fields['z_min'].widget.attrs['data-bind'] = 'value: z_min'
+        self.fields['z_max'].widget.attrs['data-bind'] = 'value: z_max'
+        self.fields['origin_ra'].widget.attrs['data-bind'] = 'value: origin_ra'
+        self.fields['origin_dec'].widget.attrs['data-bind'] = 'value: origin_dec'
+        self.fields['fov_ra'].widget.attrs['data-bind'] = 'value: fov_ra'
+        self.fields['fov_dec'].widget.attrs['data-bind'] = 'value: fov_dec'
+        self.fields['width'].widget.attrs['data-bind'] = 'value: width'
+        self.fields['height'].widget.attrs['data-bind'] = 'value: height'
 
+
+    def full_clean(self):
         # Update the choices before continuing.
         self.fields['sub_cone'].choices.append(('ALL', 'ALL'))
         self.fields['mag_field'].choices.append(('test', 'test')) # TODO: Remove.
-
         return super(SingleForm, self).full_clean()
+
+    def to_json_dict(self, prefix="mock_image"):
+        json_dict = {}
+        for fn in self.fields.keys():
+            val = self.data.get(self.prefix + '-' + fn)
+            if val is not None:
+                json_dict[prefix + '-' + fn] = val 
+        return json_dict
+
+
+
 
 # Define a formset.
 BaseForm = formset_factory(SingleForm, extra=1)
@@ -123,6 +144,7 @@ class Form(BaseForm):
     MODULE_VERSION = 1
     SUMMARY_TEMPLATE = 'taoui_mock_image/summary.html'
     LABEL = 'Mock Image'
+    TAB_ID = settings.MODULE_INDICES['mock_image']
 
     def __init__(self, *args, **kwargs):
         self.ui_holder = args[0]
@@ -136,15 +158,19 @@ class Form(BaseForm):
 
             # Get the management total forms count and add back in
             # the 1 we subtracted.
-            total = data.get('mock_image-TOTAL_FORMS', 0)
+            total = int(data.get('mock_image-TOTAL_FORMS', 1))
             if total:
                 total = int(total) + 1
             else:
                 total = 1
 
+            apply_mock_image = data.get('mock_image-apply_mock_image', False)
+            if type(apply_mock_image) != bool:
+                apply_mock_image = 'true' == apply_mock_image
+
             # Do a final check for the checkbox, if we are disabled
             # then set the count to 1.
-            if not data.get('mock_image-apply_mock_image', False):
+            if not apply_mock_image:
                 total = 1
 
             data['mock_image-TOTAL_FORMS'] = total
@@ -159,18 +185,39 @@ class Form(BaseForm):
 
             # Also need to check for the apply mock image checkbox, due
             # to not using "from_xml" in certain places.
-            self.apply_mock_image = data.get('mock_image-apply_mock_image', False)
+            self.apply_mock_image = apply_mock_image
+            data['mock_image-apply_mock_image'] = apply_mock_image
 
         # Set to None if we aren't bound.
         else:
             data = None
-
         super(Form, self).__init__(data, *args[2:], **kwargs)
 
     def clean(self):
 
         # Get the checkbox state.
         self.apply_mock_image = self.data.get('mock_image-apply_mock_image', False)
+
+    def to_json_dict(self):
+        """Answer the json dictionary representation of the receiver.
+        i.e. something that can easily be passed to json.dumps()"""
+        json_dict = {}
+        ffn = self.prefix + '-apply_mock_image'
+        apply_mock_image = self.data[ffn]
+        json_dict[ffn] = apply_mock_image
+        if apply_mock_image:
+            for fn in ['TOTAL_FORMS', 'INITIAL_FORMS', 'MAX_NUM_FORMS']:
+                ffn = self.prefix + '-' + fn
+                val = self.data.get(ffn)
+                if val is not None:
+                    json_dict[ffn] = val
+            i = 0 
+            for image in self.forms:
+                image_prefix = 'mock_image' + str(i)
+                image_dict = image.to_json_dict(prefix=image_prefix)
+                json_dict.update(image_dict)
+                i += 1
+        return json_dict
 
     def to_xml(self, root):
         version = 2.0

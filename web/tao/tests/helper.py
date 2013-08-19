@@ -1,4 +1,6 @@
-import os, errno
+import os
+import errno
+import codecs
 
 from tao.settings import MODULE_INDICES
 from tao.xml_util import xml_parse
@@ -6,7 +8,7 @@ from tao.xml_util import xml_parse
 def create_file(dir_path, filename, filenames_to_contents):    
     file_path = os.path.join(dir_path, filename)
     mkdir_p(os.path.dirname(file_path))
-    with open(file_path, 'w') as f:
+    with codecs.open(file_path, 'w', encoding='utf-8') as f:
         f.write(filenames_to_contents[filename])
 
 def get_file_size(dir_path, file_name):
@@ -41,7 +43,7 @@ def make_form(defaults, form_class, values, prefix=None, ui_holder=None):
 
 def make_form_xml(form_class, xml_str, prefix=None, ui_holder=None):
     xml_root = xml_parse(xml_str)
-    print xml_root
+    # print xml_root
     return form_class.from_xml(ui_holder, xml_root, prefix=prefix)
 
 

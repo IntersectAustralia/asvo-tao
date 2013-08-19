@@ -1,7 +1,9 @@
 {% load staticfiles %}
 {% load bootstrap_tags %}
 {% load assets %}
-{% js_asset 'taoui_light_cone/light_cone.js' %}
+<script type="text/javascript" src="{% static 'js/taoui_light_cone/unique_light_cones.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/taoui_light_cone/light_cone.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/job_size.js' %}"></script>
 
 {% block extrajs %}
     <link rel="stylesheet" href="{% static 'css/jquery-ui/themes/base/jquery-ui.css' %}" />
@@ -21,16 +23,23 @@
             {% endfor %}
         </fieldset>
         {% endfor %}
+        <script type="text/javascript">
+            // inject job size estimate as readonly text manually in a div after redshift_max, spanning 2 columns
+            $('<div class="control-group light_cone_field" data-bind="visible: catalogue_geometry().id == \'light-cone\', css: estimated_cone_size_css" id="max_job_size"><span data-bind="text: estimated_cone_size_msg"></span></div>').insertAfter($('.id_light_cone-redshift_max'));
+        </script>
     </div>
     <div class="aside span4">
+        <!-- div class="boxed">
+            <pre data-bind="text: ko.toJSON($data, null, 2)"></pre>
+        </div -->
         <div class="boxed">
             <div class="simulation-info">
                 <div> Selected simulation details </div>
                 <div style="overflow-y: scroll;height: 210px">
                     <p>
-                        <strong class="name"><!-- --></strong>
+                        <strong class="name" data-bind='text: dark_matter_simulation().fields.name'><!-- --></strong>
                     </p>
-                    <div class="details"><!-- --></div>
+                    <div class="details" data-bind='html: dark_matter_simulation().fields.details'><!-- --></div>
                 </div>
             </div>
         </div>
@@ -39,21 +48,37 @@
                 <div> Selected galaxy model details </div>
                 <div style="overflow-y: scroll;height: 210px">
                     <p>
-                        <strong class="name"><!-- --></strong>
+                        <strong class="name" data-bind='text: galaxy_model().fields.name'><!-- --></strong>
                     </p>
-                    <div class="details"><!-- --></div>
+                    <div class="details" data-bind='html: galaxy_model().fields.details'><!-- --></div>
                 </div>
             </div>
         </div>
         <div class="boxed">
             <div class="output-property-info">
                 <div> Selected output property details </div>
-                <div style="overflow-y: scroll;height: 210px">
+                <!-- ko if: current_output_property() !== undefined -->
+                <div data-bind="with: current_output_property" style="overflow-y: scroll;height: 210px">
                     <p>
-                        <strong class="name"><!-- --></strong>
+                        <strong class="name" data-bind="text: fields.label" > </strong>&nbsp;
+                        <!-- ko if: (typeof fields.units == 'string') && fields.units.length > 0 -->
+                        <span class="name" data-bind="text: '(' + fields.units + ')'" style="font-style:italic;"> </span>
+                        <!-- /ko -->
                     </p>
-                    <div class="details"><!-- --></div>
+                    <div class="details" data-bind="html: fields.description" >
+
+                    </div>
                 </div>
+                <!-- /ko -->
+                <!-- ko if: current_output_property() === undefined -->
+                <div data-bind="with: current_output_property" style="overflow-y: scroll;height: 210px">
+                    <p>&nbsp;
+                    </p>
+                    <div class="details" data-bind="html: fields.description" >
+
+                    </div>
+                </div>
+                <!-- /ko -->
             </div>
         </div>
     </div>

@@ -10,6 +10,7 @@ import locale
 import time
 import logging
 
+
 class TorqueInterface(object):
     
     
@@ -45,7 +46,7 @@ class TorqueInterface(object):
     def SetJobParams(self,UserName,JobID,nodes,ppn,path,outputpath,BasicSettingPath,ParamXMLName,SubJobIndex):    
             
         self.DefaultParams['executable'] = self.Options['Torque:ExecutableName']
-        self.DefaultParams['name']='tao_'+UserName[:4]+'_'+str(JobID)
+        self.DefaultParams['name']=self.Options['Torque:jobprefix']+UserName[:4]+'_'+str(JobID)
         self.DefaultParams['nodes'] = nodes        
         self.DefaultParams['ppn'] = ppn
         self.DefaultParams['subjobindex'] = SubJobIndex
@@ -53,7 +54,7 @@ class TorqueInterface(object):
         self.DefaultParams['basicsettingpath'] = BasicSettingPath
         self.DefaultParams['outputpath'] = outputpath
         self.DefaultParams['MergeScriptName'] = self.Options['Torque:MergeScriptName']
-        
+        self.DefaultParams['BaseLibPath']=self.Options['Torque:BaseLibPath']
         
 
     ##
@@ -77,10 +78,10 @@ class TorqueInterface(object):
             #PBS -d .
             source /usr/local/modules/init/tcsh
             module load boost gsl hdf5/x86_64/gnu/1.8.9-openmpi-1.6.4 postgresql            
-            module load cfitsio/x86_64/gnu/3.290
+            module load cfitsio/x86_64/gnu/3.290 skymaker/x86_64/gnu/3.3.3
             setenv PSM_SHAREDCONTEXTS_MAX %(ppn)d
-            setenv PATH /lustre/projects/p014_swin/programs/ScienceModules/bin:$PATH
-            setenv LD_LIBRARY_PATH /lustre/projects/p014_swin/programs/ScienceModules/lib:/lustre/projects/p014_swin/programs/ScienceModules/helperlib:$LD_LIBRARY_PATH
+            setenv PATH %(BaseLibPath)s/bin:$PATH
+            setenv LD_LIBRARY_PATH %(BaseLibPath)s/lib:%(BaseLibPath)s/helperlib:$LD_LIBRARY_PATH
             mpiexec %(executable)s %(path)s %(basicsettingpath)s
             %(MergeScriptName)s %(outputpath)s %(subjobindex)d
             '''%self.DefaultParams)
@@ -128,7 +129,7 @@ class TorqueInterface(object):
         for line in lines:
             LineParts=shlex.split(line)
             JobName=LineParts[1]            
-            if JobName.find('tao_')==0:
+            if JobName.find(self.Options['Torque:jobprefix'])==0:
                 JobID=LineParts[0].split('.')[0]
                 CurrentJobs[JobID]=LineParts[4]
         

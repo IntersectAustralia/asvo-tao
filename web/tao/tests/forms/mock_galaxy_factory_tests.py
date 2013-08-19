@@ -6,11 +6,10 @@ from tao import workflow, time
 from tao.forms import NO_FILTER
 from tao.models import Snapshot, DataSetProperty
 from tao.record_filter_form import RecordFilterForm
-from tao.settings import OUTPUT_FORMATS
 from taoui_light_cone.forms import Form as LightConeForm
 from taoui_sed.forms import Form as SEDForm
 from tao.tests.support import stripped_joined_lines
-from tao.tests.support.factories import SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, UserFactory, StellarModelFactory, SnapshotFactory, BandPassFilterFactory
+from tao.tests.support.factories import SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, UserFactory, StellarModelFactory, SnapshotFactory, BandPassFilterFactory, GlobalParameterFactory
 from tao.tests.support.xml import XmlDiffMixin
 
 from tao.tests.support import UtcPlusTen
@@ -21,12 +20,21 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
     def setUp(self):
         super(MockGalaxyFactoryTests, self).setUp()
 
+        OUTPUT_FORMATS = [
+            {'value':'csv', 'text':'CSV (Text2)', 'extension':'csv'},
+            {'value':'hdf5', 'text':'HDF5', 'extension':'hdf5'},
+            {'value': 'fits', 'text': 'FITS', 'extension': 'fits'},
+            {'value': 'votable', 'text': 'VOTable', 'extension': 'xml'}
+        ]
+        self.output_formats = GlobalParameterFactory.create(parameter_name='output_formats', parameter_value=OUTPUT_FORMATS)
+
         self.simulation = SimulationFactory.create()
         galaxy_model = GalaxyModelFactory.create()
-        self.dataset = DataSetFactory.create(simulation=self.simulation, galaxy_model=galaxy_model)
+        self.dataset = DataSetFactory.create(simulation=self.simulation, galaxy_model=galaxy_model, max_job_box_count=11)
         self.filter = DataSetPropertyFactory.create(dataset=self.dataset)
         self.filter_long = DataSetPropertyFactory.create(dataset=self.dataset, data_type=DataSetProperty.TYPE_LONG_LONG)
         self.filter_float = DataSetPropertyFactory.create(dataset=self.dataset, data_type=DataSetProperty.TYPE_FLOAT)
+        self.computed_filter = DataSetPropertyFactory.create(dataset=self.dataset, is_computed=True)
         self.dataset.default_filter_field = self.filter
         self.dataset.save()
         SnapshotFactory.create(dataset=self.dataset)

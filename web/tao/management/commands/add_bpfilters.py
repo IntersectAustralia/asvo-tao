@@ -1,4 +1,5 @@
-"""Populate / extend the BandPass Filter table & documentation, and associated utilties
+"""Populate / extend the BandPass Filter table & documentation,
+and associated utilities
 
 add_bpfilters has three modes of operation:
 
@@ -8,13 +9,13 @@ add_bpfilters has three modes of operation:
 
 In the first mode, the command takes two parameters:
 
-1. A CSV file containing the bandpass filter information, see below
+1. A Excel 2007 file containing the bandpass filter information, see below
 2. The root document directory (typically /path/to/asvo-tao/docs/)
 
 By default, bandpass filter documentation is generated as described below.
 This may be disabled with the --no-doco flag.
 
-The input bandpass file is a CSV file with columns:
+The input bandpass file is a spreadsheet with columns:
 
 1. Filename
 2. Label
@@ -51,11 +52,12 @@ the CSV file containing the bandpass filter information
 """
 
 import sys
-import csv
 import os
+import codecs
 from os import listdir
 from os.path import abspath, isdir, join, splitext, dirname
 from optparse import make_option
+import pandas as pd
 
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
@@ -67,7 +69,7 @@ from utilities.plot_filter import plot_filter
 
 
 class Command(BaseCommand):
-    args = "<filters.csv filename> <doc root directory>"
+    args = "<filters.xlsx filename> <doc root directory>"
     help = """Populate / extend the BandPass Filter table"""
     option_list = BaseCommand.option_list + (
         make_option("-d", action='store_true', default=False,
@@ -119,37 +121,35 @@ class Command(BaseCommand):
     @transaction.commit_on_success
     def populate_filters(self):
         """Process each entry in the filter file and then generate the index"""
-        with open(self._args[0], 'r') as csvfile:
-            dialect = csv.Sniffer().sniff(csvfile.read(1024))
-            csvfile.seek(0)
-            csvreader = csv.reader(csvfile, dialect)
-            url_root = '..' + settings.STATIC_URL + 'docs/bpfilters/'
-            for record in csvreader:
-                #
-                # Read the record
-                #
-                if len(record) < 2 or len(record) > 3:
-                    raise CommandError("Expected 2 or 3 columns")
-                print "Processing: {0}...".format(record[0])
-                filter_fn = record[0].strip()
-                label = record[1].strip()
-                if len(record) == 3:
-                    description = record[2].strip()
-                else:
-                    description = ''
-                flattened_fn = filter_fn.replace(os.sep, '_')
-                if self._options['gendoco']:
-                    details = ("<p>{description}</p>\n"
-                               "<p>Additional Details: <a href=\"{url_root}"
-                               "{ffn}.html\">{label}</a>.</p>").format(
-                                    description=description, url_root=url_root,
-                                    ffn=flattened_fn, label=label)
-                    spectra_fn = self.generate_spectra(filter_fn, flattened_fn, label, description)
-                    self.generate_doco(filter_fn, flattened_fn, label, description, spectra_fn)
-                else:
-                    details = ("<p>{description}</p>\n").format(
-                                    description=description)
-                self.save_filter(filter_fn, label, details)
+        xlsx = pd.ExcelFile(self._args[0])
+        filters = xlsx.parse('Sheet1', index_col=None, na_values=['NA'])
+        url_root = '..' + settings.STATIC_URL + 'docs/bpfilters/'
+        for idx, record in filters.iterrows():
+            #
+            # Read the record
+            #
+            if len(record) < 2 or len(record) > 3:
+                raise CommandError("Expected 2 or 3 columns")
+            print "Processing: {0}...".format(record['file'])
+            filter_fn = record['file'].strip()
+            label = record['label'].strip()
+            if len(record) == 3:
+                description = record['description'].strip().replace(u'\u201d', '"')
+            else:
+                description = ''
+            flattened_fn = filter_fn.replace(os.sep, '_')
+            if self._options['gendoco']:
+                details = (u"{description}\n"
+                           "<p>Additional Details: <a href=\"{url_root}"
+                           "{ffn}.html\">{label}</a>.</p>").format(
+                                description=description, url_root=url_root,
+                                ffn=flattened_fn, label=label)
+                spectra_fn = self.generate_spectra(filter_fn, flattened_fn, label, description)
+                self.generate_doco(filter_fn, flattened_fn, label, description, spectra_fn)
+            else:
+                details = (u"{description}\n").format(
+                                description=description)
+            self.save_filter(filter_fn, label, details)
         if self._options['gendoco']:
             self.generate_index()
 
@@ -184,15 +184,21 @@ class Command(BaseCommand):
     
     def generate_doco(self, filename, flattened_fn, label, description, spectra_fn):
         fn = join(self._doc_dir, flattened_fn + '.rst')
-        with open(fn, 'w') as fp:
-            fp.write(label + '\n')
+        with codecs.open(fn, mode='w', encoding='utf-8') as fp:
+            fp.write(label + u'\n')
             # There must be a better way to do this...
             for i in range(0,len(label)):
-                fp.write('=')
-            fp.write('\n')
-            fp.write(description)
-            fp.write('\n\n')
-            fp.write('.. image:: spectra/' + flattened_fn + '.png\n')
+                fp.write(u'=')
+            fp.write(u'\n\n')
+            # The description can be raw html, wrap it all up in a paragraph
+            # and feed to sphinx as raw html
+            fp.write(u'.. raw:: html\n\n')
+            fp.write(u'  <p>\n')
+            for line in description.split(u'\n'):
+                fp.write(u'  {0}'.format(line))
+            fp.write(u'  </p>\n')
+            fp.write(u'\n')
+            fp.write(u'.. image:: spectra/' + flattened_fn + u'.png\n')
         return
 
 
@@ -200,8 +206,8 @@ class Command(BaseCommand):
         """Generate index.rst in the doco directory from all the other
         .rst files found"""
         index_fn = join(self._doc_dir, 'index.rst')
-        with open(index_fn, 'w') as ifp:
-            ifp.write("""BandPass Filters
+        with codecs.open(index_fn, mode='w', encoding='utf-8') as ifp:
+            ifp.write(u"""BandPass Filters
 ================
 
 .. toctree::
@@ -214,33 +220,30 @@ class Command(BaseCommand):
                 fn, ft = splitext(file)
                 if file == 'index.rst' or ft != '.rst':
                     continue
-                ifp.write("    " + fn + "\n")
+                ifp.write(u"    " + fn + u"\n")
         return
 
 
     def check_dups(self):
         """Iterate over all the filters and flag if a duplicate wavelength is found"""
-        csvfn = self._args[0]
-        csv_root = dirname(csvfn) 
-        with open(self._args[0], 'r') as csvfile:
-            dialect = csv.Sniffer().sniff(csvfile.read(1024))
-            csvfile.seek(0)
-            csvreader = csv.reader(csvfile, dialect)
-            for record in csvreader:
-                #
-                # Read the record
-                #
-                if len(record) < 2 or len(record) > 3:
-                    raise CommandError("Expected 2 or 3 columns")
-                print "Processing: {0}...".format(record[0])
-                filter_fn = record[0].strip()
-                label = record[1].strip()
-                bpfn = join(csv_root, filter_fn)
-                previous = None
-                with open(bpfn, 'r') as bpfile:
-                    for filter in bpfile:
-                        current = filter.split()[0]
-                        if current == previous:
-                            print "   duplicate wavelength: {0}".format(filter.strip())
-                        previous = current
+        xlsx = pd.ExcelFile(self._args[0])
+        filters = xlsx.parse('Sheet1', index_col=None, na_values=['NA'])
+        filters_root = dirname(self._args[0])
+        for idx, record in filters.iterrows():
+            #
+            # Read the record
+            #
+            if len(record) < 2 or len(record) > 3:
+                raise CommandError("Expected 2 or 3 columns")
+            print "Processing: {0}...".format(record['file'])
+            filter_fn = record['file'].strip()
+            label = record['label'].strip()
+            bpfn = join(filters_root, filter_fn)
+            previous = None
+            with open(bpfn, 'r') as bpfile:
+                for filter in bpfile:
+                    current = filter.split()[0]
+                    if current == previous:
+                        print "   duplicate wavelength: {0}".format(filter.strip())
+                    previous = current
         return

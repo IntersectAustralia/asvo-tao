@@ -2,7 +2,6 @@ import re
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import views as auth_views
-from django.core import mail
 from django.core.urlresolvers import reverse
 from django.shortcuts import render, redirect
 from django.template.context import Context
@@ -26,9 +25,13 @@ def login(request):
     if request.method == 'POST':
         if not request.POST.get('remember_me', None):
             request.session.set_expiry(0)  # expires on browser close
-    q_dict = {'target':request.build_absolute_uri(reverse('home'))}
+    nextP = request.GET.get('next', None)
+    if nextP is None:
+        q_dict = {'target':request.build_absolute_uri(reverse('home'))}
+    else:
+        q_dict = {'target':request.build_absolute_uri(nextP)}
     aaf_session_url = settings.AAF_SESSION_URL + "?" + django_urlencode(q_dict)
-    return auth_views.login(request, authentication_form=LoginForm,extra_context={'aaf_session_url':aaf_session_url})
+    return auth_views.login(request, authentication_form=LoginForm,extra_context={'aaf_session_url': aaf_session_url})
 
 def fail(request):
     print request.METAS
@@ -78,6 +81,8 @@ def home(request):
             return redirect(register)
         elif request.user.account_registration_status == TaoUser.RS_PENDING:
             return redirect(account_status)
+        elif request.user.account_registration_status == TaoUser.RS_REJECTED:
+            return redirect(account_status)
     return render(request, 'home.html')
 
 
@@ -110,7 +115,7 @@ def access_requests(request):
 @require_POST
 def approve_user(request, user_id):
     u = models.TaoUser.objects.get(pk=user_id)
-    u.is_active = True
+    u.activate_user()
     u.save()
 
     template_name = 'approve'
@@ -131,11 +136,11 @@ def approve_user(request, user_id):
 @admin_required
 @require_POST
 def reject_user(request, user_id):
+    reason = request.POST['reason']
     u = models.TaoUser.objects.get(pk=user_id)
-    u.rejected = True
+    u.reject_user(reason)
     u.save()
 
-    reason = request.POST['reason']
 
     template_name = 'reject'
     context = Context({'title': u.title, 'first_name': u.first_name, 'last_name': u.last_name, 'reason': reason})
@@ -146,9 +151,14 @@ def reject_user(request, user_id):
 
     return redirect(access_requests)
 
-@researcher_required
 @set_tab('support')
 def support(request):
+    if not hasattr(request,'user') or not hasattr(request.user,'is_aaf'):
+        return redirect(login)
+    if request.user.is_aaf() and request.user.account_registration_status == TaoUser.RS_EMPTY:
+        return redirect(register)
+    if request.user.is_aaf() and request.user.account_registration_status == TaoUser.RS_REJECTED:
+        return redirect(account_status)
     from tao.forms import SupportForm
     if request.method == 'POST':
         form = SupportForm(request.POST)
