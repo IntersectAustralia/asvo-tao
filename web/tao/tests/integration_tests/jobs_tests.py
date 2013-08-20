@@ -22,7 +22,7 @@ class JobTest(LiveServerTest):
         self.username = 'user'
         self.password = 'password'
 
-        self.user = UserFactory.create(username=self.username)
+        self.user = UserFactory.create(username=self.username, is_superuser=True)
         self.user.set_password(self.password)
         self.user.save()
 
