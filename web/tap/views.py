@@ -2,10 +2,11 @@ import time
 from lxml import etree
 from tap.parser import *
 from tap.settings import *
-from tap.decorators import http_auth_required
+from tap.decorators import http_auth_required, tap_job_submission_request
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseBadRequest, StreamingHttpResponse
+from django.core.exceptions import PermissionDenied
 from django.core.servers.basehttp import FileWrapper
 from tao.time import timestamp
 from tao import models
@@ -49,13 +50,8 @@ def query(request):
 
 @csrf_exempt
 @http_auth_required
+@tap_job_submission_request
 def sync(request):
-    if ('REQUEST' not in request.POST) or (request.POST['REQUEST'] != 'doQuery'):
-        return HttpResponseBadRequest('Missing request')
-    
-    if 'QUERY' not in request.POST:
-        return HttpResponseBadRequest('Missing query')
-    
     job = createTAPjob(request)
     
     while not (job.is_completed() or job.is_error()):
@@ -67,13 +63,8 @@ def sync(request):
     
 @csrf_exempt
 @http_auth_required
+@tap_job_submission_request
 def async(request):
-    if ('REQUEST' not in request.POST) or (request.POST['REQUEST'] != 'doQuery'):
-        return HttpResponseBadRequest('Missing request')
-    
-    if 'QUERY' not in request.POST:
-        return HttpResponseBadRequest('Missing query')
-    
     job = createTAPjob(request)
         
     return UWSRedirect(request, job.id)
@@ -81,10 +72,7 @@ def async(request):
 @csrf_exempt
 @http_auth_required
 def job(request, id):
-    try:
-        job = models.Job.objects.get(id=id)
-    except models.Job.DoesNotExist:
-        return HttpResponseBadRequest('Wrong URL')
+    job = findTAPjob(request, id)
     
     if request.method == 'DELETE':
         print 'DELETE'
@@ -99,10 +87,7 @@ def job(request, id):
 @csrf_exempt
 @http_auth_required
 def phase(request, id):
-    try:
-        job = models.Job.objects.get(id=id)
-    except models.Job.DoesNotExist:
-        return HttpResponseBadRequest('Wrong URL')
+    job = findTAPjob(request, id)
     
     if 'get' not in request.GET:
         return UWSRedirect(request, job.id, '/phase?get')
@@ -131,10 +116,7 @@ def destruction(request, id):
 @csrf_exempt
 @http_auth_required
 def error(request, id):
-    try:
-        job = models.Job.objects.get(id=id)
-    except models.Job.DoesNotExist:
-        return HttpResponseBadRequest('Wrong URL')
+    job = findTAPjob(request, id)
     
     return render(request, 'tap/error.xml', {'error': job.error_message, 
                                              'timestamp': job.created_time})
@@ -142,20 +124,14 @@ def error(request, id):
 @csrf_exempt
 @http_auth_required
 def params(request, id):
-    try:
-        job = models.Job.objects.get(id=id)
-    except models.Job.DoesNotExist:
-        return HttpResponseBadRequest('Wrong URL')
+    job = findTAPjob(request, id)
     
     return render(request, 'tap/http_response.html', {'message': job.parameters})
 
 @csrf_exempt
 @http_auth_required
 def results(request, id):
-    try:
-        job = models.Job.objects.get(id=id)
-    except models.Job.DoesNotExist:
-        return HttpResponseBadRequest('Wrong URL')
+    job = findTAPjob(request, id)
     
     for file in job.files():
         if file.file_name == TAP_OUTPUT_FILENAME:
@@ -172,30 +148,21 @@ def results(request, id):
 @csrf_exempt
 @http_auth_required
 def result(request, id, file=None):
-    try:
-        job = models.Job.objects.get(id=id)
-    except models.Job.DoesNotExist:
-        return HttpResponseBadRequest('Wrong URL')
+    job = findTAPjob(request, id)
     
     return stream_job_results(request, job)
 
 @csrf_exempt
 @http_auth_required
 def owner(request, id):
-    try:
-        job = models.Job.objects.get(id=id)
-    except models.Job.DoesNotExist:
-        return HttpResponseBadRequest('Wrong URL')
+    job = findTAPjob(request, id)
     
     return render(request, 'tap/http_response.html', {'message': job.username})
 
 @csrf_exempt
 @http_auth_required
 def executionduration(request, id):
-    try:
-        job = models.Job.objects.get(id=id)
-    except models.Job.DoesNotExist:
-        return HttpResponseBadRequest('Wrong URL')
+    job = findTAPjob(request, id)
     
     return render(request, 'tap/http_response.html', {'message': EXECUTION_DURATION})
 
@@ -310,4 +277,14 @@ def createTAPjob(request):
     
     return job
     
+def findTAPjob(request, id):
+    try:
+        job = models.Job.objects.get(id=id)
+    except models.Job.DoesNotExist:
+        raise PermissionDenied
+    
+    if not job.can_read_job(request.user):
+        raise PermissionDenied
+    
+    return job
     

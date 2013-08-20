@@ -2,6 +2,24 @@ import base64
 from django.http import HttpResponse
 from django.contrib.sites.models import Site
 from django.contrib.auth import authenticate, login
+from django.http import HttpResponseBadRequest
+
+def tap_job_submission_request(function):
+    """ Decorator for the TAP job submission that requires 
+        doQuery and QUERY in the POST data
+    """
+    def wrapper(request, *args, **kwargs):
+        if ('REQUEST' not in request.POST) or (request.POST['REQUEST'] != 'doQuery'):
+            return HttpResponseBadRequest('Request is missing')
+    
+        if 'QUERY' not in request.POST:
+            return HttpResponseBadRequest('Query is missing')
+        
+        return function(request, *args, **kwargs)
+        
+    wrapper.__doc__ = function.__doc__
+    wrapper.__name__ = function.__name__
+    return wrapper
 
 def http_auth_required(function):
     """ Decorator that requires HTTP Basic authentication
@@ -35,4 +53,5 @@ class HttpResponseNotAuthorized(HttpResponse):
     def __init__(self, redirect_to):
         HttpResponse.__init__(self)
         self['WWW-Authenticate'] = 'Basic realm="%s"' % Site.objects.get_current().name
+        
         
