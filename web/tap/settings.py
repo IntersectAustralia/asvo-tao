@@ -1,5 +1,5 @@
 import os
-from tao import models
+from tao.models import Job
 
 TAP_IS_AVAILABLE = 'true'
 TAP_AVAILABILITY_NOTE = 'TAO TAP Server is available'
@@ -33,12 +33,12 @@ TAP_BACKEND_SERVER = 'tao01'
 
 # Map TAO Job statuses to UWS standard
 uws_statuses = {
-                models.Job.SUBMITTED:   'QUEUED',
-                models.Job.QUEUED:      'QUEUED',
-                models.Job.IN_PROGRESS: 'EXECUTING',
-                models.Job.COMPLETED:   'COMPLETED',
-                models.Job.ERROR:       'ERROR',
-                models.Job.HELD:        'SUSPENDED'
+                Job.SUBMITTED:   'QUEUED',
+                Job.QUEUED:      'QUEUED',
+                Job.IN_PROGRESS: 'EXECUTING',
+                Job.COMPLETED:   'COMPLETED',
+                Job.ERROR:       'ERROR',
+                Job.HELD:        'SUSPENDED'
                 }
 
 # Return 'UNKNOWN' status safely if something strange happens 
