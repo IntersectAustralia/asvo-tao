@@ -70,15 +70,3 @@ def module_xpath_iterate(xml_root, path, text=True, attribute=None):
         else:
             yield elem
 
-
-def etree_to_dict(t):
-    """
-    Converts an elementtree element to a dict
-    """
-    ns = '{http://tao.asvo.org.au/schema/module-parameters-v1}'
-    if len(t.getchildren()) > 0:
-        d = {t.tag.replace(ns, '') : map(etree_to_dict, t.iterchildren())}
-    elif not t.text.isspace():
-        d = {t.tag.replace(ns, '') : t.text }
-    d.update(('@' + k, v) for k, v in t.attrib.iteritems())
-    return d
