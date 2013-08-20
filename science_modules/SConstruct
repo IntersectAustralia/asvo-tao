@@ -47,3 +47,8 @@ project.build(
     env=env,
     vars=vars
 )
+
+data_files = env.Glob('data/*')
+env.Install('#' + env['BUILD'] + '/data', data_files)
+if env['PREFIX']:
+    env.Install(env['PREFIX'] + '/data', data_files)
