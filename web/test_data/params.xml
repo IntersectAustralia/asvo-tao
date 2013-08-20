@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='utf-8'?>
+<tao timestamp="2013-08-01T10:26:40+10:00" xmlns="http://tao.asvo.org.au/schema/module-parameters-v1">
+  <username>person</username>
+  <workflow name="alpha-light-cone-image">
+    <schema-version>2.0</schema-version>
+    <light-cone id="1">
+      <module-version>1</module-version>
+      <geometry>light-cone</geometry>
+      <simulation>simulation_001</simulation>
+      <galaxy-model>galaxy_model_006</galaxy-model>
+      <box-repetition>random</box-repetition>
+      <num-cones>3</num-cones>
+      <redshift-min>3</redshift-min>
+      <redshift-max>4</redshift-max>
+      <ra-min units="deg">0.0</ra-min>
+      <ra-max units="deg">1</ra-max>
+      <dec-min units="deg">0.0</dec-min>
+      <dec-max units="deg">2</dec-max>
+      <output-fields>
+        <item description="description_005" label="parameter_005 label">name_005</item>
+      </output-fields>
+    </light-cone>
+    <fits id="5">
+      <fields>
+        <item label="parameter_005 label">name_005</item>
+        <item label="Band pass filter 000 (Absolute)">Band_pass_filter_000.txt_absolute</item>
+        <item label="Band pass filter 002 (Apparent)">Band_pass_filter_002.txt_apparent</item>
+      </fields>
+      <parents>
+        <item>4</item>
+      </parents>
+      <module-version>1</module-version>
+      <filename>tao.output.fits</filename>
+    </fits>
+    <sed id="2">
+      <module-version>1</module-version>
+      <parents>
+        <item>1</item>
+      </parents>
+      <single-stellar-population-model>stellar_name_001</single-stellar-population-model>
+    </sed>
+    <filter id="4">
+      <module-version>1</module-version>
+      <parents>
+        <item>2</item>
+      </parents>
+      <bandpass-filters>
+        <item description="" label="Band pass filter 000" selected="absolute">Band_pass_filter_000.txt</item>
+        <item description="" label="Band pass filter 002" selected="apparent">Band_pass_filter_002.txt</item>
+      </bandpass-filters>
+    </filter>
+    <record-filter>
+      <module-version>1</module-version>
+      <filter>
+        <filter-attribute>Band_pass_filter_000.txt_absolute</filter-attribute>
+        <filter-min units="bpunits">1.0</filter-min>
+        <filter-max units="bpunits">12.0</filter-max>
+      </filter>
+    </record-filter>
+  </workflow>
+  <signature>base64encodedsignature</signature>
+</tao>

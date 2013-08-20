@@ -38,6 +38,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
         
         self.login(self.username, password)
         self.visit('mock_galaxy_factory')
+        self.click('tao-tabs-' + MODULE_INDICES['light_cone'])
 
     def tearDown(self):
         super(SubmitLightConeTests, self).tearDown()
