@@ -134,8 +134,7 @@ catalogue.modules.mock_image = function ($) {
                 .extend({validate: catalogue.validators.leq(4096)});
             param = get_param(prefix, '-min_mag');
             image_params.min_mag = ko.observable(param ? param : 7)
-                .extend({validate: catalogue.validators.is_float})
-                .extend({validate: catalogue.validators.positive});
+                .extend({validate: catalogue.validators.is_float});
             param = get_param(prefix, '-z_min');
             image_params.z_min = ko.observable(param ? param : catalogue.modules.light_cone.vm.redshift_min())
                 .extend({validate: catalogue.validators.is_float})
