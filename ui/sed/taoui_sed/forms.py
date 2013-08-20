@@ -203,7 +203,7 @@ class Form(BetterForm):
         i.e. something that can easily be passed to json.dumps()"""
         json_dict = {}
         ffn = self.prefix + '-apply_sed'
-        apply_sed = self.data[ffn]
+        apply_sed = ffn in self.data and self.data[ffn]
         json_dict[ffn] = apply_sed
         if apply_sed:
             for fn in ['single_stellar_population_model', 'apply_dust',

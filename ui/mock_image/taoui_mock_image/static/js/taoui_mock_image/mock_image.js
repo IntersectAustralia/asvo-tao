@@ -42,7 +42,7 @@ catalogue.modules.mock_image = function ($) {
     this.cleanup_fields = function () {}
 
     this.validate = function () {
-        return $.validate_all(true) == undefined;
+        return true; // TODO !!!
     }
 
     this.pre_submit = function () {}
@@ -71,9 +71,9 @@ catalogue.modules.mock_image = function ($) {
 				params[key_prefix + 'mag_field'] = [current_image['mag_field']().value];
 				params[key_prefix + 'sub_cone'] = [current_image['sub_cone']().value];
 			}
-			params['mock_image-TOTAL_FORMS']  = [image_params.length+1];
+			params['mock_image-TOTAL_FORMS']  = [image_params.length];
 		} else {
-	    	params['mock_image-TOTAL_FORMS'] = [1];
+	    	params['mock_image-TOTAL_FORMS'] = [0];
 		}
     	return params;
     }
@@ -102,9 +102,9 @@ catalogue.modules.mock_image = function ($) {
             }
 
             param = get_param(prefix, '-sub_cone');
-            image_params.sub_cone = ko.observable(param ? param : vm.sub_cone_options()[0]);
+            image_params.sub_cone = ko.observable(param ? {value:param,text:param} : vm.sub_cone_options()[0]);
             param = get_param(prefix, '-format');
-            image_params.format = ko.observable(param ? param : vm.format_options[0]);
+            image_params.format = ko.observable(param ? {value:param,text:param} : vm.format_options[0]);
             image_params.mag_field_options = ko.computed(function(){
                 return catalogue.modules.sed.vm.bandpass_filters.to_side.options();
             });
@@ -134,8 +134,7 @@ catalogue.modules.mock_image = function ($) {
                 .extend({validate: catalogue.validators.leq(4096)});
             param = get_param(prefix, '-min_mag');
             image_params.min_mag = ko.observable(param ? param : 7)
-                .extend({validate: catalogue.validators.is_float})
-                .extend({validate: catalogue.validators.positive});
+                .extend({validate: catalogue.validators.is_float});
             param = get_param(prefix, '-z_min');
             image_params.z_min = ko.observable(param ? param : catalogue.modules.light_cone.vm.redshift_min())
                 .extend({validate: catalogue.validators.is_float})
@@ -216,8 +215,6 @@ catalogue.modules.mock_image = function ($) {
         	
         	num_images = parseInt(job['mock_image-INITIAL_FORMS']);
         	if (isNaN(num_images)) return;
-        	if (num_images <= 1) return;
-
         	for (var i=0; i<num_images; i++) {
         		var prefix = 'mock_image' + i;
         		vm.image_settings.push(ImageParameters(prefix, job));
@@ -269,11 +266,6 @@ catalogue.modules.mock_image = function ($) {
         vm.number_of_images = ko.computed(function() {
             return vm.image_settings().length;
         });
-
-        // We always have an extra form at the end, so delete it
-        // now that we've initialised the formset.
-        // $('#mock_image_params .single-form:last').remove();
-        $('#id_mock_image-TOTAL_FORMS').val(parseInt($('#id_mock_image-TOTAL_FORMS').val()) - 1);
 
         return vm;
 

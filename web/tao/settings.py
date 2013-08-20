@@ -238,7 +238,7 @@ UI_DIR = join(dirname(PROJECT_DIR), 'ui')
 # The order of the tuples here determines the order that the tabs are listed
 # in the UI
 MODULES_PATHS = (
-    # ('job_type', 'job_type'),
+    ('job_type', 'job_type'),
     ('light_cone', 'light-cone'),
     ('sed', 'sed'),
     # ('telescope', 'telescope'),
@@ -262,7 +262,7 @@ MODULE_INDICES = {
                   'telescope': '8'
                   }
 
-TAO_VERSION = '0.26.1-rc6'
+TAO_VERSION = '0.26.8'
 
 AAF_DS_URL = 'https://ds.test.aaf.edu.au/discovery/DS'
 AAF_APP_ID = 'https://example.intersect.org.au/shibboleth'

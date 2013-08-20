@@ -180,6 +180,34 @@ catalogue.modules.light_cone = function ($) {
     	return res;
     }
     
+
+    // this.find_params_set = function(params_name) {
+    //     var result = null;
+    //     for(i = 0; i < TaoLoadedParams.length; i++) {
+    //         if(params_name in TaoLoadedParams[i]) {
+    //             result = TaoLoadedParams[i];
+    //             break;
+    //         }
+    //     }
+    //     return result;
+    // }
+
+    // this.get_param_value = function(key, params_set) {
+    //     var result = null;
+    //     for(i = 0; i < params_set.length; i++) {
+    //         if(params_name in params_set[i]) {
+    //             result = TaoLoadedParams[i].params_name;
+    //             break;
+    //         }
+    //     }
+    //     return result;
+    // }
+
+    // this.load_params = function() {
+    //     var lc_params = this.find_params_set('light-cone');
+    //     console.log(lc_params);
+    // }
+
     this.init_model = function(init_params) {
     	// job is either an object containing the job parameters or null
     	var job = init_params.job;
@@ -278,7 +306,8 @@ catalogue.modules.light_cone = function ($) {
         vm.snapshots = ko.computed(function (){
             return catalogue.util.snapshots(vm.dataset().pk)
         });
-        vm.snapshot = ko.observable(vm.snapshots()[0]);
+        param = catalogue.util.snapshot(job['light_cone-snapshot']);
+        vm.snapshot = ko.observable(param ? param : vm.snapshots()[0]);
 
         param = job['light_cone-output_properties'];
         if (param) {

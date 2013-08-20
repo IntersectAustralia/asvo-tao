@@ -70,5 +70,3 @@ def module_xpath_iterate(xml_root, path, text=True, attribute=None):
         else:
             yield elem
 
-
-
