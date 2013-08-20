@@ -49,14 +49,8 @@ the forms being hidden and all.
             {% if user.is_superuser %}
             {% if job.status == 'COMPLETED' or job.status == 'ERROR' %}
                 <button type="button" class="btn btn-primary" id='id-job_rerun'>Re-Run</button>
-                {% if job.status == 'COMPLETED' %}
-                    <button type="button" class="btn btn-primary" id="id-job_output_delete">Delete Output</button>
-                {% else %}
-                    <button type="button" class="btn btn-primary" id="id-job_output_delete" disabled>Delete Output</button>
-                {% endif %}
             {% else %}
                 <button type="button" class="btn btn-primary" id='id-job_rerun' disabled>Re-Run</button>
-                <button type="button" class="btn btn-primary" id="id-job_output_delete" disabled>Delete Output</button>
             {% endif %}
             {% if job.status == 'HELD' %}
                 <button type="button" class="btn btn-primary" id='id-job_release'>Release</button>
@@ -64,6 +58,11 @@ the forms being hidden and all.
                 <button type="button" class="btn btn-primary" id='id-job_release' disabled>Release</button>
             {% endif %}
             {% endif %}{% comment %}if user.is_superuser{% endcomment %}
+            {% if job.status == 'COMPLETED' %}
+                <button type="button" class="btn btn-primary" id="id-job_output_delete">Delete Output</button>
+            {% else %}
+                <button type="button" class="btn btn-primary" id="id-job_output_delete" disabled>Delete Output</button>
+            {% endif %}
         </div>
         <div>
             <strong>Optional Description:</strong>

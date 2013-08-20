@@ -1,7 +1,7 @@
 [
     {
         "pk": 1,
-        "model": "auth.user",
+        "model": "tao.TaoUser",
         "fields": {
             "username": "test", 
             "is_active": true,
