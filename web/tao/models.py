@@ -203,6 +203,9 @@ class StellarModel(models.Model):
     name = models.CharField(max_length=200, unique=True)
     label = models.CharField(max_length=200, unique=True)
     description = models.TextField(default='')
+    # The name is no longer used to generate the params xml,
+    # simply insert the xml fragment in encoding
+    encoding = models.TextField(default='')
 
     def __unicode__(self):
         return self.name
