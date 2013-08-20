@@ -206,7 +206,7 @@ namespace tao {
 
       // Load the metallicities.
       {
-	 string filename = _dict.get<string>( "metallicities-file", "m05/metallicites.dat" );
+	 string filename = _dict.get<string>( "metallicities-file", "m05/metallicities.dat" );
 	 LOGILN( "SED: Metallicity filename: ", filename );
 	 _read_metals( filename );
       }
