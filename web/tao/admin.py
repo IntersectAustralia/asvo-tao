@@ -13,7 +13,7 @@ from tao.models import TaoUser
 
 from tao.models import Job, Simulation, GalaxyModel, DataSet, DataSetProperty, StellarModel, Snapshot, BandPassFilter, DustModel, GlobalParameter, WorkflowCommand
 
-for model in (Job, GalaxyModel, StellarModel, BandPassFilter, DustModel, GlobalParameter):
+for model in (GalaxyModel, StellarModel, BandPassFilter, DustModel, GlobalParameter):
     admin.site.register(model)
 
 class SimulationAdmin(admin.ModelAdmin):
@@ -42,7 +42,7 @@ class DataSetAdmin(admin.ModelAdmin):
 
 class DataSetPropertyAdmin(admin.ModelAdmin):
     list_display = ('dataset', 'label', 'is_filter', 'is_output', 'is_computed')
-    ordering = ('dataset', 'label')
+    ordering = ('dataset', 'group', 'order', 'label')
 
 admin.site.register(DataSet, DataSetAdmin)
 admin.site.register(DataSetProperty, DataSetPropertyAdmin)
@@ -51,10 +51,17 @@ class UserAdmin(AuthUserAdmin):
     """
     UserAdmin
     """
+    search_fields = ['username', 'first_name', 'last_name', 'email']
+
+class JobAdmin(admin.ModelAdmin):
+    search_fields = ['id', 'user__username', 'status', 'description']
+
+admin.site.register(Job, JobAdmin)
 
 class WorkflowCommandAdmin(admin.ModelAdmin):
     model = WorkflowCommand
     readonly_fields = ('issued',)
+    search_fields = ['id', 'job_id', 'command', 'execution_status']
 
 admin.site.register(WorkflowCommand, WorkflowCommandAdmin)
 

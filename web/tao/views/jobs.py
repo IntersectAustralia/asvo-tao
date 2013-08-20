@@ -1,16 +1,19 @@
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.core.servers.basehttp import FileWrapper # TODO use sendfile
+from django.core.urlresolvers import reverse
 from django.http import StreamingHttpResponse, Http404, HttpResponse
-from django.shortcuts import render
-from django.template import loader, Context
+from django.shortcuts import render, redirect
+from django.template import loader, Context, RequestContext
 
 from tao.datasets import dataset_get
 from tao.decorators import researcher_required, set_tab, \
     object_permission_required
-from tao.models import Job, Snapshot, DataSetProperty, StellarModel, BandPassFilter, DustModel
+from tao.models import Job, Snapshot, DataSetProperty, StellarModel, BandPassFilter, DustModel, WorkflowCommand
 from tao.ui_modules import UIModulesHolder
 from tao.xml_util import xml_parse
+from tao.utils import output_formats
+
 
 import os, StringIO
 import zipstream, html2text
@@ -26,9 +29,13 @@ def view_job(request, id):
     forms = ui_holder.forms()
 
     return render(request, 'jobs/view.html', {
+        'id': id,
+        'user': request.user,
         'job': job,
+        'ui_holder': ui_holder,
         'forms': forms,
-        'forms_size' : len(forms)+1,
+        'forms_size': len(forms)+1,
+        'user': request.user,
     })
 
 @researcher_required
@@ -44,7 +51,7 @@ def get_file(request, id, file_path):
     if not job_file.can_be_downloaded():
         raise PermissionDenied
 
-    response = StreamingHttpResponse(streaming_content=FileWrapper(open(job_file.file_path)))
+    response = StreamingHttpResponse(streaming_content=FileWrapper(open(job_file.file_path)), mimetype='application/force-download')
 
     # TODO sanitise filename
     response['Content-Disposition'] = 'attachment; filename="%s"' % job_file.file_name.replace('/','_')
@@ -125,12 +132,17 @@ def _get_summary_as_text(id):
     ui_holder = UIModulesHolder(UIModulesHolder.XML, xml_parse(job.parameters.encode('utf-8')))
 
     geometry = ui_holder.raw_data('light_cone', 'catalogue_geometry')
-    dataset_id = ui_holder.raw_data('light_cone', 'galaxy_model')
-    simulation = dataset_get(dataset_id).simulation
-    galaxy_model = dataset_get(dataset_id).galaxy_model
-    output_properties = [DataSetProperty.objects.get(id=output_property_id) for output_property_id in ui_holder.raw_data('light_cone', 'output_properties')]
+    dataset = ui_holder.dataset
+    simulation = dataset.simulation
+    galaxy_model = dataset.galaxy_model
+    output_properties = []
+    for output_property_id in ui_holder.raw_data('light_cone', 'output_properties'):
+        output_property = DataSetProperty.objects.get(id=output_property_id)
+        units = html2text.html2text(output_property.units).rstrip()
+        output_properties = output_properties + [(output_property, units)]
+    # output_properties = [(DataSetProperty.objects.get(id=output_property_id), html2text.html2text(getattr(DataSetProperty.objects.get(id=output_property_id), 'units')).rstrip()) for output_property_id in ui_holder.raw_data('light_cone', 'output_properties')]
     output_format = ''
-    for x in settings.OUTPUT_FORMATS:
+    for x in output_formats():
         if x['value'] == (ui_holder.raw_data('output_format', 'supported_formats')):
             output_format = x['text']
 
@@ -212,11 +224,65 @@ def get_summary_txt_file(request, id):
     response.write(_get_summary_as_text(id))
     return response
 
+STATUS_ORDERING = {
+    'HELD': 0,
+    'SUBMITTED': 1,
+    'QUEUED': 2,
+    'IN_PROGRESS': 3,
+    'COMPLETED': 4,
+    'ERROR': 5,
+}
+
+
+def _qsort_jobs(job_list):
+    if not job_list:
+        return []
+    else:
+        pivot = job_list[0]
+        less = _qsort_jobs([job for job in job_list[1:] if STATUS_ORDERING[job.status] <= STATUS_ORDERING[pivot.status]]) # since first ordered by ascending id, this equality places bigger id of the same status in front
+        greater = _qsort_jobs([job for job in job_list[1:] if STATUS_ORDERING[job.status] > STATUS_ORDERING[pivot.status]])
+        return less + [pivot] + greater
+
 
 @researcher_required
 @set_tab('jobs')
 def index(request):
     user_jobs = Job.objects.filter(user=request.user).order_by('-id')
+
     return render(request, 'jobs/index.html', {
         'jobs': user_jobs,
     })
+
+@researcher_required
+@object_permission_required('can_write_job')
+def stop_job(request, id):
+    job = Job.objects.get(id=id)
+    job_stop_command = WorkflowCommand(job_id=job, command='Job_Stop', submitted_by=request.user, execution_status='SUBMITTED')
+    job_stop_command.save()
+    return HttpResponse('{}', mimetype='application/json')
+
+@researcher_required
+@object_permission_required('can_write_job')
+def rerun_job(request, id):
+    job = Job.objects.get(id=id)
+    job.status = 'SUBMITTED'
+    job.save()
+    return HttpResponse('{}', mimetype='application/json')
+
+@researcher_required
+@object_permission_required('can_write_job')
+def release_job(request, id):
+    job = Job.objects.get(id=id)
+    job.status = 'SUBMITTED'
+    job.save()
+    return HttpResponse('{}', mimetype='application/json')
+
+@researcher_required
+@object_permission_required('can_write_job')
+def delete_job_output(request, id):
+    if request.method == "POST":
+        job = Job.objects.get(id=id)
+        job_output_delete_command = WorkflowCommand(job_id=job, command='Job_Output_Delete', submitted_by=request.user, execution_status='SUBMITTED')
+        job_output_delete_command.save()
+
+    return HttpResponse('{}', mimetype='application/json')

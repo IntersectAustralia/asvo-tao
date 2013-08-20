@@ -10,6 +10,7 @@ import tao.datasets as datasets
 from tao.models import DataSetProperty, BandPassFilter, Simulation
 from tao.forms import NO_FILTER
 from tao.settings import MODULE_INDICES
+from tao.tests.support.factories import GlobalParameterFactory
 
 def interact(local):
     """
@@ -26,18 +27,26 @@ class LiveServerTest(django.test.LiveServerTestCase):
     DOWNLOAD_DIRECTORY = '/tmp/work/downloads'
 
     ## List all ajax enabled pages that have initialization code and must wait
-    AJAX_WAIT = ['mock_galaxy_factory']
+    AJAX_WAIT = ['mock_galaxy_factory', 'view_job']
     SUMMARY_INDEX = str(len(MODULE_INDICES)+1)
+    OUTPUT_FORMATS = [
+        {'value':'csv', 'text':'CSV (Text2)', 'extension':'csv'},
+        {'value':'hdf5', 'text':'HDF5', 'extension':'hdf5'},
+        {'value': 'fits', 'text': 'FITS', 'extension': 'fits'},
+        {'value': 'votable', 'text': 'VOTable', 'extension': 'xml'}
+    ]
 
     def wait(self, secs=1):
         time.sleep(secs * 1.25)
 
     def setUp(self):
+        self.output_formats = GlobalParameterFactory.create(parameter_name='output_formats', parameter_value=LiveServerTest.OUTPUT_FORMATS)
+
         from selenium.webdriver.firefox.webdriver import FirefoxProfile
         fp = FirefoxProfile()
         fp.set_preference("browser.download.folderList", 2)
         fp.set_preference("browser.download.dir", self.DOWNLOAD_DIRECTORY)
-        fp.set_preference("browser.helperApps.neverAsk.saveToDisk", "text/html, application/zip, text/plain")
+        fp.set_preference("browser.helperApps.neverAsk.saveToDisk", "text/html, application/zip, text/plain, application/force-download")
         
         self.selenium = WebDriver(firefox_profile=fp)
         self.selenium.implicitly_wait(1) # wait one second before failing to find
@@ -77,6 +86,12 @@ class LiveServerTest(django.test.LiveServerTestCase):
 
     def sed_2select(self, bare_field):
         return 'id_sed-band_pass_filters_%s' % bare_field
+
+    def job_select(self, bare_field):
+        return 'id-job_%s' % bare_field
+
+    def job_id(self, bare_field):
+        return '#%s' % self.job_select(bare_field)
 
     def get_parent_element(self, element):
         return self.selenium.execute_script('return arguments[0].parentNode;', element)
@@ -193,6 +208,16 @@ class LiveServerTest(django.test.LiveServerTestCase):
             url = split_url[0]
             self.assertEqual(url, self.get_full_url(url_name))
 
+    def assert_multi_selected_text_equals(self, id_of_select, expected):
+        actual = self.get_multi_selected_option_text(id_of_select)
+        remaining = []
+        for value in expected:
+            if value not in actual:
+                remaining.append(value)
+            else:
+                actual.remove(value)
+        self.assertTrue(not actual and not remaining)
+
     def assert_summary_field_correctly_shown(self, expected_value, form_name, field_name):
         value_displayed = self.get_summary_field_text(form_name, field_name)
         self.assertEqual(expected_value, strip_tags(value_displayed))
@@ -249,14 +274,14 @@ class LiveServerTest(django.test.LiveServerTestCase):
         option_selector = '%s option' % self.rf_id('filter')
         return [x.get_attribute('value').encode('ascii') for x in self.selenium.find_elements_by_css_selector(option_selector)]
     
-    def get_expected_filter_options(self, data_set_id):
+    def get_expected_filter_options(self, data_set):
         def gen_bp_pairs(objs):
             for obj in objs:
                 yield ('B-' + str(obj.id) + '_apparent')
                 yield ('B-' + str(obj.id) + '_absolute')
-        normal_parameters = datasets.filter_choices(data_set_id)
+        normal_parameters = datasets.filter_choices(data_set.simulation.id, data_set.galaxy_model.id)
         bandpass_parameters = datasets.band_pass_filters_objects()
-        return ['X-' + NO_FILTER] + ['D-' + str(x.id) for x in normal_parameters] + [pair for pair in gen_bp_pairs(bandpass_parameters)]
+        return ['D-' + str(x.id) for x in normal_parameters] + [pair for pair in gen_bp_pairs(bandpass_parameters)]
 
     def get_actual_snapshot_options(self):
         option_selector = '%s option' % self.lc_id('snapshot')
@@ -275,7 +300,13 @@ class LiveServerTest(django.test.LiveServerTestCase):
         for option in options:
             if option.get_attribute('selected'):
                 selected_option = option
-        return selected_option.text      
+        return selected_option.text
+
+    def get_multi_selected_option_text(self, id_of_select):
+        select = self.selenium.find_element_by_css_selector(id_of_select)
+        options = select.find_elements_by_css_selector('option')
+        return [option.text for option in options]
+
         
     def get_selector_value(self, selector): 
         return self.selenium.find_element_by_css_selector(selector).get_attribute('value')
@@ -339,7 +370,7 @@ class LiveServerTest(django.test.LiveServerTestCase):
 
 class LiveServerMGFTest(LiveServerTest):
     def submit_mgf_form(self):
-        submit_button = self.selenium.find_element_by_css_selector('#mgf-form input[type="submit"]')
+        submit_button = self.selenium.find_element_by_css_selector('#mgf-form #form_submit')
         submit_button.submit()
         self.wait(1.5)
 

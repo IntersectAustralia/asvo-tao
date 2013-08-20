@@ -86,7 +86,7 @@ class Simulation(models.Model):
         return self.name
     
     class Meta:
-        ordering = ['name']
+        ordering = ['order', 'name']
 
     def save(self, *args, **kwargs):
         if self.name:
@@ -217,28 +217,28 @@ def initial_job_status():
         except AttributeError:
             return 'HELD'
 
+HELD = 'HELD'
 SUBMITTED = 'SUBMITTED'
+QUEUED = 'QUEUED'
 IN_PROGRESS = 'IN_PROGRESS'
 COMPLETED = 'COMPLETED'
-QUEUED = 'QUEUED'
-HELD = 'HELD'
 ERROR = 'ERROR'
 
 STATUS_CHOICES = (
+    (HELD, 'Held'),
     (SUBMITTED, 'Submitted'),
     (QUEUED, 'Queued'),
     (IN_PROGRESS, 'In progress'),
     (COMPLETED, 'Completed'),
-    (HELD, 'Held'),
     (ERROR, 'Error'),
 )
 
 class Job(models.Model):
+    HELD = 'HELD'
     SUBMITTED = 'SUBMITTED'
+    QUEUED = 'QUEUED'
     IN_PROGRESS = 'IN_PROGRESS'
     COMPLETED = 'COMPLETED'
-    QUEUED = 'QUEUED'
-    HELD = 'HELD'
     ERROR = 'ERROR'
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
@@ -304,6 +304,9 @@ class Job(models.Model):
         Checks if the given user is the user of this job
         """
         return self.user.id == user.id
+
+    def can_write_job(self, user):
+        return self.can_read_job(user)
 
     def can_download_zip_file(self):
         return True
