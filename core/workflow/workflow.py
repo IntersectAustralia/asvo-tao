@@ -20,7 +20,7 @@ import glob
 import pg
 import stat
 import ParseProfileData
-
+import traceback
 
 class WorkFlow(object):
 
@@ -87,7 +87,9 @@ class WorkFlow(object):
             data['status'] = 'ERROR'
             data['error_message']="Workflow Cannot start this job. Please check the params " + str(Exp.args) 
             self.UpdateTAOUI(UIJobReference,EnumerationLookup.JobType.Simple, data)  
-            
+            exc_type, exc_value, exc_traceback = sys.exc_info()
+            lines = traceback.format_exception(exc_type, exc_value, exc_traceback)
+            logging.error(''.join('!! ' + line for line in lines))
             return False
         
         ###################Profiling####################################################
@@ -116,7 +118,8 @@ class WorkFlow(object):
             ### Submit the Job to the PBS Queue
             PBSJobID=self.TorqueObj.Submit(JobUserName,JobID,logpath,outputpath,ParamXMLName,i)
             ## Store the Job PBS ID  
-            self.dbaseobj.UpdateJob_PBSID(JobID,PBSJobID)
+            if self.dbaseobj.UpdateJob_PBSID(JobID,PBSJobID)!=True:
+                raise  Exception('Error in Process New Job','Update PBSID failed')
             
         os.chdir(old_dir)
                 
@@ -308,15 +311,15 @@ class WorkFlow(object):
         CurrentJobs=self.TorqueObj.QueryPBSJob()    
         
         
-        logging.info(str(CurrentJobs))
+        logging.info("PBS Jobs:"+str(CurrentJobs))
         
-        logging.info(str(CurrentJobs_PBSID))
+        logging.info("Database Jobs:"+str(CurrentJobs_PBSID))
         
         JobsStatus=[]
         for PBsID in CurrentJobs_PBSID:
                                 
             
-            
+           
             PID=PBsID['pbsreferenceid'].split('.')[0]
             OldStatus=PBsID['jobstatus']
             UIReference_ID=PBsID['uireferenceid']

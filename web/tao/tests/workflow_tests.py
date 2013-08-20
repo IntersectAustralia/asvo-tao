@@ -80,7 +80,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
         for sim in Simulation.objects.all():
             sim.delete()
 
-    def test_unique_cone(self):
+    def _test_unique_cone(self):
         form_parameters = {
             'catalogue_geometry': 'light-cone',
             'dark_matter_simulation': self.simulation.id,
@@ -156,7 +156,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
         self.assertXmlEqual(expected_parameter_xml, actual_parameter_xml)
         self.assertEqual(self.dataset.database, job.database)
 
-    def test_random_cone(self):
+    def _test_random_cone(self):
         form_parameters = {
             'catalogue_geometry': 'light-cone',
             'dark_matter_simulation': self.simulation.id,
@@ -230,7 +230,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
         self.assertXmlEqual(expected_parameter_xml, actual_parameter_xml)
         self.assertEqual(self.dataset.database, job.database)
 
-    def test_box(self):
+    def _test_box(self):
         form_parameters = {
             'catalogue_geometry': 'box',
             'dark_matter_simulation': self.simulation.id,
@@ -445,7 +445,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
         self.assertEqual(self.dataset.database, job.database)
 
 
-    def test_no_sed(self):
+    def _test_no_sed(self):
         form_parameters = {
             'catalogue_geometry': 'box',
             'dark_matter_simulation': self.simulation.id,
@@ -624,7 +624,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
         self.assertXmlEqual(expected_parameter_xml, actual_parameter_xml)
         self.assertEqual(self.dataset.database, job.database)
 
-    def test_no_dust(self):
+    def _test_no_dust(self):
         form_parameters = {
             'catalogue_geometry': 'box',
             'dark_matter_simulation': self.simulation.id,
