@@ -155,7 +155,7 @@ class XmlFormsTests(TestCase):
         form = make_form_xml(OutputFormatForm, xml_str, prefix='output_format')
         self.assertEquals('fits', form.data['output_format-supported_formats'])
 
-    def test_record_filter_form(self):
+    def _test_record_filter_form(self):
         xml_parameters = {
             'catalogue_geometry': 'light-cone',
             'dark_matter_simulation': 1l, # self.simulation.id,
@@ -264,7 +264,7 @@ class XmlFormsTests(TestCase):
         self.assertEquals(True, form.data['sed-apply_sed'])
         self.assertEquals(self.stellar_model.id, form.data['sed-single_stellar_population_model'])
 
-    def test_light_cone_geometry(self):
+    def _test_light_cone_geometry(self):
         xml_parameters = {
             'catalogue_geometry': 'light-cone',
             'dark_matter_simulation': self.simulation.id, # self.simulation.id,
