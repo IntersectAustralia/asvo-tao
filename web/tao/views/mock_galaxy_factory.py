@@ -15,7 +15,7 @@ from django.views.decorators.http import require_POST
 from tao import models, workflow
 from tao.decorators import researcher_required, set_tab
 from tao.ui_modules import UIModulesHolder
-from tao.xml_util import xml_parse, etree_to_dict
+from tao.xml_util import xml_parse
 import json
 
 
@@ -25,16 +25,12 @@ def index(request):
     if request.method == 'POST':
         if len(request.FILES) > 0:
             parameter_file = request.FILES.itervalues().next().read()
+            params_ui_holder = UIModulesHolder(UIModulesHolder.XML, xml_parse(parameter_file))
             ui_holder = UIModulesHolder(UIModulesHolder.POST)
-            loaded_params = etree_to_dict(xml_parse(parameter_file))
-            loaded_params_json = mark_safe(json.dumps(loaded_params['tao']))
-            print loaded_params_json
-            # ui_holder = UIModulesHolder(UIModulesHolder.XML, xml_parse(parameter_file))
             return render(request, 'mock_galaxy_factory/index.html', {
                 'forms': ui_holder.forms(),
-                # 'forms_size' : len(ui_holder.forms())+1,
+                'ui_holder': params_ui_holder,
                 'TAB_SUMMARY_ID': settings.MODULE_INDICES['summary'],
-                'loaded_params_json': loaded_params_json
             })
         else:
             ui_holder = UIModulesHolder(UIModulesHolder.POST, request.POST)

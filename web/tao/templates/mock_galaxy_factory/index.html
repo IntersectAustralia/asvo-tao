@@ -19,10 +19,8 @@
     <script type="text/javascript" src="{% static 'js/catalogue_helper.js' %}"></script>
     <script type="text/javascript" >
     var TaoMetadata = {% metadata_json %};
-    var TaoJob = {};
-    {% if loaded_params_json %}
-    var TaoLoadedParams = {{ loaded_params_json }}
-    {% endif %}
+    var TaoJob = {% loaded_job_json %};
+
     </script>
 {% endblock %}
 
