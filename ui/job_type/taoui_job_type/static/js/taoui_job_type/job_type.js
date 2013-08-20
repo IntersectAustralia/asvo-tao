@@ -5,6 +5,7 @@ catalogue.modules = catalogue.modules || {};
 // jQuery is passed as a parameter to ensure jQuery plugins work correctly
 catalogue.modules.job_type = function ($) {
  
+ 
     this.cleanup_fields = function ($form) {
         // clear values from exluded fields
     }
@@ -33,7 +34,7 @@ catalogue.modules.job_type = function ($) {
         });
     }
 
-    this.init_model = function () {
+    this.init_model = function (init_params) {
         // setup state
         // initialise event handlers
         init_event_handlers();

@@ -22,7 +22,7 @@ fi
 
 case $ENVIRONMENT in
   production)
-    TARGET=/web/vhost/tao.asvo.org.au/taodemo
+    TARGET=/web/vhost/tao.asvo.org.au/tao
     BACKUP_DIR=/home/taoadmin/sites/production
     ;;
   staging)
@@ -58,6 +58,7 @@ checkout() {
     git clone -b $GIT_BRANCH $GIT_URL asvo-tao
   fi
   cd asvo-tao
+  git fetch
   git checkout $TAG
 }
 
@@ -74,6 +75,8 @@ environment_setup() {
 generate_documentation() {
   cd $TARGET/asvo-tao/docs
   ./gendoc.sh
+  cd $TARGET/asvo-tao/web
+  ./manage.py collectstatic
 }
 
 # usage: remote_stop <host> <htaccess_flag (optional)>
@@ -110,6 +113,11 @@ checkout
 environment_setup
 
 generate_documentation
+
+echo "Killing service in this host, it restarts automatically"
+killall /home/taoadmin/sites/$ENVIRONMENT/TAO/bin/python
+cd $TARGET/asvo-tao/web
+find . -name "*.pyc" -exec rm -f {} \;
 
 # update htaccess in transfer node and stop that one, then stop the other
 # remote_stop asv1 htaccess

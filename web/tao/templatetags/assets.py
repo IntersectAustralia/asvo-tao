@@ -20,6 +20,10 @@ def json_ctx():
     return reverse('json_ctx')
 
 @register.simple_tag
+def job_ctx():
+    return reverse('job_index')
+
+@register.simple_tag
 def setting(key):
     if key in ['AAF_DS_URL', 'AFF_APP_ID', 'TAO_VERSION'] and hasattr(settings,key):
         return getattr(settings, key)
