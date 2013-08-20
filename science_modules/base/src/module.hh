@@ -3,6 +3,7 @@
 
 #include <pugixml.hpp>
 #include <soci/soci.h>
+#include <libhpc/system/timer.hh>
 #include <libhpc/libhpc.hh>
 #include <libhpc/options/xml_dict.hh>
 #include "galaxy.hh"
