@@ -40,3 +40,8 @@ class Form(BetterForm):
     # Empty implementation to conform to module interface
     def to_xml(self, root):
         pass
+
+    # Empty implementation to conform to module interface
+    def to_json_dict(self):
+        return {}
+

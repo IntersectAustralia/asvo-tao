@@ -1,4 +1,6 @@
 #include <fstream>
+#include <boost/filesystem.hpp>
+#include <libhpc/system/exe.hh>
 #include "sed.hh"
 
 using namespace hpc;
@@ -151,20 +153,21 @@ namespace tao {
    unsigned
    sed::_interp_metal( real_type metal )
    {
-      if( metal <= 0.0005 )
-         return 0;
-      else if( metal <= 0.0025 )
-         return 1;
-      else if( metal <= 0.007 )
-         return 2;
-      else if( metal <= 0.015 )
-         return 3;
-      else if( metal <= 0.03 )
-         return 4;
-      else if( metal <= 0.055 )
-         return 5;
-      else
-         return 6;
+      return algorithm::bin( _metal_bins.begin(), _metal_bins.end(), metal );
+      // if( metal <= 0.0005 )
+      //    return 0;
+      // else if( metal <= 0.0025 )
+      //    return 1;
+      // else if( metal <= 0.007 )
+      //    return 2;
+      // else if( metal <= 0.015 )
+      //    return 3;
+      // else if( metal <= 0.03 )
+      //    return 4;
+      // else if( metal <= 0.055 )
+      //    return 5;
+      // else
+      //    return 6;
    }
 
    void
@@ -194,15 +197,29 @@ namespace tao {
       LOGILN( "SED: OmegaM: ", _omega_m );
       LOGILN( "SED: OmegaL: ", _omega_l );
 
-      // Extract the counts.
-      _num_spectra = _dict.get<unsigned>( "num-spectra", 1221 );
-      _num_metals = _dict.get<unsigned>( "num-metals", 7 );
-      LOGILN( "SED: Number of times: ", _bin_ages.size() );
-      LOGILN( "SED: Number of spectra: ", _num_spectra );
-      LOGILN( "SED: Number of metals: ", _num_metals );
+      // Extract number of wavelengths from file.
+      {
+	 string filename = _dict.get<string>( "wavelengths-file", "m05/wavelengths.dat" );
+	 LOGILN( "SED: Wavelengths filename: ", filename );
+	 _read_waves( filename );
+      }
 
-      // Get the SSP filename.
-      string ssp_fn = _dict.get<string>( "single-stellar-population-model" );
+      // Load the metallicities.
+      {
+	 string filename = _dict.get<string>( "metallicities-file", "m05/metallicites.dat" );
+	 LOGILN( "SED: Metallicity filename: ", filename );
+	 _read_metals( filename );
+      }
+
+      // Load the ages.
+      {
+	 string filename = _dict.get<string>( "ages-file", "m05/ages.dat" );
+	 LOGILN( "SED: Ages filename: ", filename );
+	 _read_ages( filename );
+      }
+
+      // Load the SSP.
+      string ssp_fn = _dict.get<string>( "stellar-population-file", "m05/ssp.ssz" );
       LOGILN( "SED: SSP filename: ", ssp_fn );
       _read_ssp( ssp_fn );
 
@@ -217,19 +234,20 @@ namespace tao {
    }
 
    void
-   sed::_read_ssp( const string& filename )
+   sed::_read_ages( const string& filename )
    {
       // The SSP file contains the age grid information first.
-      std::ifstream file( filename, std::ios::in );
+      boost::filesystem::path fn = nix::executable_path().parent_path().parent_path()/"data/stellar_populations/"/filename;
+      std::ifstream file( fn.c_str(), std::ios::in );
       unsigned num_ages;
       file >> num_ages;
-      ASSERT( file.good(), "Error reading SSP file." );
+      ASSERT( file.good(), "Error reading ages file." );
       {
          vector<real_type> bin_ages( num_ages );
          for( unsigned ii = 0; ii < num_ages; ++ii )
          {
             file >> bin_ages[ii];
-            ASSERT( file.good(), "Error reading SSP file." );
+            ASSERT( file.good(), "Error reading ages file." );
          }
 
 #ifndef NDEBUG
@@ -242,6 +260,18 @@ namespace tao {
          _bin_ages.set_ages( bin_ages );
       }
 
+      // Allocate history bin arrays.
+      _age_masses.reallocate( _bin_ages.size() );
+      _bulge_age_masses.reallocate( _bin_ages.size() );
+      _age_metals.reallocate( _bin_ages.size() );
+   }
+
+   void
+   sed::_read_ssp( const string& filename )
+   {
+      boost::filesystem::path fn = nix::executable_path().parent_path().parent_path()/"data/stellar_populations/"/filename;
+      std::ifstream file( fn.c_str(), std::ios::in );
+
       // Allocate. Note that the ordering goes time,spectra,metals.
       _ssp.reallocate( _bin_ages.size()*_num_spectra*_num_metals );
 
@@ -252,10 +282,70 @@ namespace tao {
          file >> _ssp[ii];
          ASSERT( file.good(), "Error reading SSP file." );
       }
+   }
 
-      // Allocate history bin arrays.
-      _age_masses.reallocate( _bin_ages.size() );
-      _bulge_age_masses.reallocate( _bin_ages.size() );
-      _age_metals.reallocate( _bin_ages.size() );
+   void
+   sed::_read_metals( const string& filename )
+   {
+      boost::filesystem::path fn = nix::executable_path().parent_path().parent_path()/"data/stellar_populations/"/filename;
+      std::ifstream file( fn.c_str(), std::ios::in );
+
+      // The first line can be the word "dual", indicating
+      // the dual has already been taken.
+      string dual;
+      file >> dual;
+      ASSERT( file, "Error reading metallicity file." );
+
+      if( dual == "dual" )
+      {
+	 file >> _num_metals;
+	 ASSERT( file, "Error reading metallicity file." );
+      }
+      else
+	 _num_metals = boost::lexical_cast<unsigned>( dual );
+      ASSERT( file, "Error reading metallicity file." );
+      if( _num_metals )
+      {
+         vector<real_type> metals( _num_metals );
+         for( unsigned ii = 0; ii < _num_metals; ++ii )
+         {
+            file >> metals[ii];
+            ASSERT( file, "Error reading metallicity file." );
+         }
+	 ASSERT( std::is_sorted( metals.begin(), metals.end() ),
+		 "Metallicities must be in ascending order." );
+
+	 // Store the duals if not already in that format.
+	 if( dual == "dual" )
+	 {
+	    _metal_bins.resize( _num_metals++ );
+	    std::copy( metals.begin(), metals.end(), _metal_bins.begin() );
+	 }
+	 else
+	 {
+	    _metal_bins.resize( _num_metals - 1 );
+	    algorithm::dual( metals.begin(), metals.end(), _metal_bins.begin() );
+	 }
+      }
+   }
+
+   void
+   sed::_read_waves( const string& filename )
+   {
+      boost::filesystem::path fn = nix::executable_path().parent_path().parent_path()/"data/stellar_populations/"/filename;
+      std::ifstream file( fn.c_str(), std::ios::in );
+      ASSERT( file, "Couldn't find wavelengths file.") ;
+
+      // Need to get number of lines in file first.
+      _num_spectra = 0;
+      {
+         string line;
+         while( !file.eof() )
+         {
+            std::getline( file, line );
+            if( boost::trim_copy( line ).length() )
+               ++_num_spectra;
+         }
+      }
    }
 }
