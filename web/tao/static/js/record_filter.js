@@ -151,16 +151,26 @@ catalogue.modules.record_filter = function ($) {
     	current_dataset = catalogue.modules.light_cone.vm.dataset();
     	// Create the min and max observables
     	// Set up validation after creation as we have a validator that refers to both observables
-    	vm.selection_min = ko.observable(current_dataset.fields.default_filter_min);
-    	vm.selection_max = ko.observable(current_dataset.fields.default_filter_max);
-    	vm.selection_min
+        
+        param = job['record_filter-min']
+        vm.selection_min = ko.observable(param ? param : current_dataset.fields.default_filter_min)
+        
+        param = job['record_filter-max']
+        vm.selection_max = ko.observable(param ? param : current_dataset.fields.default_filter_max)
+
+        vm.selection_min
             .extend({validate: catalogue.validators.is_float})
             .extend({validate: catalogue.validators.geq(0)})
-    		.extend({validate: valid_min_max});
-    	vm.selection_max
+            .extend({validate: valid_min_max});
+
+        
+        
+    	
+        vm.selection_max
     		.extend({validate: catalogue.validators.is_float})
             .extend({validate: catalogue.validators.geq(0)})
     		.extend({validate: valid_min_max});
+
     	vm.hr_summary = ko.computed(this.hr_summary);
 
     	return vm

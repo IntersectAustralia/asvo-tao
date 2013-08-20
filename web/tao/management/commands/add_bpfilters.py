@@ -189,9 +189,15 @@ class Command(BaseCommand):
             # There must be a better way to do this...
             for i in range(0,len(label)):
                 fp.write(u'=')
-            fp.write(u'\n')
-            fp.write(description)
             fp.write(u'\n\n')
+            # The description can be raw html, wrap it all up in a paragraph
+            # and feed to sphinx as raw html
+            fp.write(u'.. raw:: html\n\n')
+            fp.write(u'  <p>\n')
+            for line in description.split(u'\n'):
+                fp.write(u'  {0}'.format(line))
+            fp.write(u'  </p>\n')
+            fp.write(u'\n')
             fp.write(u'.. image:: spectra/' + flattened_fn + u'.png\n')
         return
 
