@@ -26,6 +26,147 @@ catalogue.modules.view_job = function ($) {
     	$("#inlineedit").click(function() {
     		$('#savecancel').show();
     	});
+        $('#stop_job_confirm').dialog({
+            resizable: false,
+            modal: true,
+            autoOpen: false,
+            buttons: {
+                Ok: {
+                    text: "Stop",
+                    id: "id_confirm_stop",
+                    click: function() {
+                        $.ajax({
+                            url: TAO_JOB_CTX + 'stop_job/' + TaoJob['job-id'],
+                            type: 'POST',
+                            error: function(response, textStatus, jqXHR) {
+                                console.log("Couldn't stop SUBMITTED job: " + response + textStatus);
+                            }
+                        });
+                        $(this).dialog("close");
+                    }
+                },
+                Cancel: {
+                    text: "Cancel",
+                    id: "id_cancel_stop",
+                    click: function() {
+                        $(this).dialog("close");
+                    }
+                }
+            }
+        });
+        $('#rerun_job_confirm').dialog({
+            resizable: false,
+            modal: true,
+            autoOpen: false,
+            buttons: {
+                Ok: {
+                    text: "Re-run",
+                    id: "id_confirm_rerun",
+                    click: function() {
+                        $.ajax({
+                            url: TAO_JOB_CTX + 'rerun_job/' + TaoJob['job-id'],
+                            type: 'POST',
+                            success: function(response, textStatus, jqXHR) {
+                                location.reload();
+                            },
+                            error: function(response, textStatus, jqXHR) {
+                                console.log("Couldn't change job status from COMPLETED to SUBMITTED: " + response + textStatus);
+                            }
+                        });
+                        $(this).dialog("close");
+                    }
+                },
+                Cancel: {
+                    text: "Cancel",
+                    id: "id_cancel_rerun",
+                    click: function() {
+                        $(this).dialog("close");
+                    }
+                }
+            }
+        });
+        $('#delete_job_output_confirm').dialog({
+            resizable: false,
+            height: 210,
+            width: 510,
+            modal: true,
+            autoOpen: false,
+            buttons: {
+                Ok: {
+                    text: "Remove all job output",
+                    id: "id_confirm_delete_output",
+                    click: function() {
+                        $.ajax({
+                            url: TAO_JOB_CTX + 'delete_job_output/' + TaoJob['job-id'],
+                            type: 'POST',
+                            error: function(response, textStatus, jqXHR) {
+                                console.log("Couldn't create job_output_delete workflow command: " + response + textStatus);
+                            }
+                        });
+                        $(this).dialog("close");
+                    }
+                },
+                Cancel: {
+                    text: "Cancel",
+                    id: "id_cancel_delete_output",
+                    click: function() {
+                        $(this).dialog("close");
+                    }
+                }
+            }
+        });
+        $('#release_job_confirm').dialog({
+            resizable: false,
+            modal: true,
+            autoOpen: false,
+            buttons: {
+                Ok: {
+                    text: "Release",
+                    id: "id_confirm_release",
+                    click: function() {
+                        $.ajax({
+                            url: TAO_JOB_CTX + 'release_job/' + TaoJob['job-id'],
+                            type: 'POST',
+                            success: function(response, textStatus, jqXHR) {
+                                location.reload();
+                            },
+                            error: function(response, textStatus, jqXHR) {
+                                console.log("Couldn't change job status from HELD to SUBMITTED: " + response + textStatus);
+                            }
+                        });
+                        $(this).dialog("close");
+                    }
+                },
+                Cancel: {
+                    text: "Cancel",
+                    id: "id_cancel_release",
+                    click: function() {
+                        $(this).dialog("close");
+                    }
+                }
+            }
+        });
+        $("#id-job_stop").click(function(e) {
+            e.preventDefault();
+            $('#stop_job_confirm').dialog("open");
+            return false;
+        });
+        $("#id-job_rerun").click(function(e) {
+            e.preventDefault();
+            $('#rerun_job_confirm').dialog("open");
+            return false;
+        });
+        $("#id-job_output_delete").click(function(e) {
+            e.preventDefault();
+            $("#delete_job_output_confirm").dialog("open");
+            return false;
+        });
+        $("#id-job_release").click(function(e) {
+            e.preventDefault();
+            $('#release_job_confirm').dialog("open");
+            return false;
+        });
+
     	// Set up the auto-height handler for the job description textarea
     	new TextareaHeight({textarea: $('#id-job_description')[0]});
     }

@@ -18,6 +18,7 @@
 	<script type="text/javascript" src="{% static 'js/taoui_light_cone/light_cone.js' %}"></script>
 	<script type="text/javascript" src="{% static 'js/taoui_light_cone/unique_light_cones.js' %}"></script>
 	<script type="text/javascript" src="{% static 'js/job_size.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/taoui_job_type/job_type.js' %}"></script>
 	<script type="text/javascript" src="{% static 'js/taoui_sed/sed.js' %}"></script>
 	<script type="text/javascript" src="{% static 'js/taoui_mock_image/mock_image.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/record_filter.js' %}"></script>
@@ -41,18 +42,24 @@ the forms being hidden and all.
         <h1>Viewing Job {{ job.id }} {% if job.user.username != user.username %}(owned by {{ job.user.display_name }}){% endif %}</h1>
         <div>
             {% if job.status == 'SUBMITTED' or job.status == 'QUEUED' or job.status == 'IN_PROGRESS' %}
-                <a class="btn btn-primary" href="{% url 'stop_job' job.id %}" style="color: #ffffff" id='id-job_stop'><b>Stop</b></a>
+                <button type="button" class="btn btn-primary" id='id-job_stop'>Stop</button>
             {% else %}
                 <button type="button" class="btn btn-primary" id='id-job_stop' disabled>Stop</button>
             {% endif %}
             {% if user.is_superuser %}
             {% if job.status == 'COMPLETED' or job.status == 'ERROR' %}
-                <a class="btn btn-primary" href="{% url 'rerun_job' job.id %}" style="color: #ffffff" id='id-job_rerun'><b>Re-Run</b></a>
+                <button type="button" class="btn btn-primary" id='id-job_rerun'>Re-Run</button>
+                {% if job.status == 'COMPLETED' %}
+                    <button type="button" class="btn btn-primary" id="id-job_output_delete">Delete Output</button>
+                {% else %}
+                    <button type="button" class="btn btn-primary" id="id-job_output_delete" disabled>Delete Output</button>
+                {% endif %}
             {% else %}
                 <button type="button" class="btn btn-primary" id='id-job_rerun' disabled>Re-Run</button>
+                <button type="button" class="btn btn-primary" id="id-job_output_delete" disabled>Delete Output</button>
             {% endif %}
             {% if job.status == 'HELD' %}
-                <a class="btn btn-primary" href="{% url 'release_job' job.id %}" style="color: #ffffff" id='id-job_release'><b>Release</b></a>
+                <button type="button" class="btn btn-primary" id='id-job_release'>Release</button>
             {% else %}
                 <button type="button" class="btn btn-primary" id='id-job_release' disabled>Release</button>
             {% endif %}
@@ -119,4 +126,27 @@ the forms being hidden and all.
             </div>
         </div>
     </div>
+    <div id="stop_job_confirm" title="Stop this job?" style="display: none;">
+        <p><span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>
+            The current {{ job.status }} job will be stopped. Are you sure?<br>
+            Please note: the job will stay in its current state until your request has been processed by the workflow.
+        </p>
+    </div>
+    <div id="rerun_job_confirm" title="Re-run this job?" style="display: none;">
+        <p><span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>
+            The current {{ job.status }} job will be re-run. Are you sure?
+        </p>
+    </div>
+    <div id="delete_job_output_confirm" title="Delete the output of this job?" style="display: none;">
+        <p><span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>
+            The data stored for the current {{ job.status }} job will be permanently deleted. Are you sure?<br>
+            It might take some time for the delete to take effect.
+        </p>
+    </div>
+    <div id="release_job_confirm" title="Release this job?" style="display: none;">
+        <p><span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>
+            The current {{ job.status }} job will be released. Are you sure?
+        </p>
+    </div>
 {% endblock content %}
+

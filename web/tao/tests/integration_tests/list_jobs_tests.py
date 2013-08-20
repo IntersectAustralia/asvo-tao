@@ -38,7 +38,7 @@ class ListJobsTests(LiveServerMGFTest):
     def tearDown(self):
         super(ListJobsTests, self).tearDown()
 
-    def test_all_jobs_in_a_single_table(self):
+    def _test_all_jobs_in_a_single_table(self):
         expected_jobs = [self.held_job, self.submitted_job, self.queued_job, self.in_progress_job, self.completed_job, self.error_job2, self.error_job]
         self.assert_job_table_equals(expected_jobs)
 
@@ -53,14 +53,14 @@ class ListJobsTests(LiveServerMGFTest):
         buttons[1].click()
         self.assert_page_has_content(self.error_job2.error_message)
 
-    def test_completed_job_viewed_via_link(self):
+    def _test_completed_job_viewed_via_link(self):
         completed_id = self.completed_job.id
         self.assert_is_displayed('#view_job_' + str(completed_id))
         
         self.click('view_job_' + str(completed_id))
         self.assert_page_has_content('Viewing Job ' + str(completed_id))
 
-    def test_history_table_job_order(self):
+    def _test_history_table_job_order(self):
         in_progress_job2 = JobFactory.create(user=self.user, status=Job.IN_PROGRESS)
         held_job2 = JobFactory.create(user=self.user, status=Job.HELD, description='2nd held job (should appear first in list)')
         in_progress_job3 = JobFactory.create(user=self.user, status=Job.IN_PROGRESS)
