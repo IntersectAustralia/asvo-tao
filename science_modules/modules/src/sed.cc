@@ -219,7 +219,7 @@ namespace tao {
       }
 
       // Load the SSP.
-      string ssp_fn = _dict.get<string>( "single-stellar-population-model", "m05/ssp.ssz" );
+      string ssp_fn = _dict.get<string>( "stellar-population-file", "m05/ssp.ssz" );
       LOGILN( "SED: SSP filename: ", ssp_fn );
       _read_ssp( ssp_fn );
 
