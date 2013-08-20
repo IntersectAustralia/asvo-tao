@@ -66,7 +66,16 @@ namespace tao {
       _interp_metal( real_type metal );
 
       void
+      _read_ages( const string& filename );
+
+      void
       _read_ssp( const string& filename );
+
+      void
+      _read_metals( const string& filename );
+
+      void
+      _read_waves( const string& filename );
 
       void
       _read_options( const options::xml_dict& global_dict );
@@ -80,6 +89,7 @@ namespace tao {
       unsigned _num_spectra, _num_metals;
       fibre<real_type> _disk_spectra, _bulge_spectra, _total_spectra;
       vector<real_type> _ssp;
+      vector<real_type> _metal_bins;
       real_type _omega_m, _omega_l, _hubble;
    };
 }
