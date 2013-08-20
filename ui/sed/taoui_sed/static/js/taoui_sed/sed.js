@@ -46,10 +46,11 @@ catalogue.modules.sed = function ($) {
         return {
             'value': bpf.pk,
             'text' : bpf.fields.label,
-            'group': bpf.fields.group
+            'group': bpf.fields.group,
+            'order': bpf.fields.order
         }
     }
-    
+
     function bandpass_filter_from_id(bpfid) {
     	// Answer the selected bpf record from the supplied encoded id
     	// bpfid = <bpf primary key>_(apparent|absolute)

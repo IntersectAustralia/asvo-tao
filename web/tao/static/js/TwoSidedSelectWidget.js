@@ -15,6 +15,14 @@ var TwoSidedSelectWidget = function(elem_id, init_options, to_option) {
         vm.option_click(data);
     }
 
+    var option_order = function(o1,o2) {
+        var c1 = o1.group > o2.group ? 1 : o1.group < o2.group ? -1 : 0;
+        if (c1 != 0) return c1;
+        c1 = o1.order > o2.order ? 1 : o1.order < o2.order ? -1 : 0;
+        if (c1 != 0) return c1;
+        return o1.text > o2.text ? 1 : o1.text < o2.text ? -1 : 0;
+    };
+
     function external_to_raw(arr) {
         var resp = [];
         for(var i = 0; i < arr.length; i++) {
@@ -22,6 +30,7 @@ var TwoSidedSelectWidget = function(elem_id, init_options, to_option) {
             obj.option_click = option_click;
             resp.push(obj);
         }
+        resp.sort(option_order);
         return resp;
     }
 
@@ -32,24 +41,24 @@ var TwoSidedSelectWidget = function(elem_id, init_options, to_option) {
         return false;
     }
 
+    function has_tokens(text, tokens) {
+        var token;
+        if (typeof text != 'string') return false;
+        text = text.toLowerCase();
+        for (var j = 0; (token = tokens[j]); j++) {
+            if (text.indexOf(token) == -1) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     function a_side_vm(initial_raw, filter) {
         var vm_side = {};
 
         // helper functions
 
         var initial_options = external_to_raw(initial_raw);
-
-        function has_tokens(text, tokens) {
-            var token;
-            if (typeof text != 'string') return false;
-            text = text.toLowerCase();
-            for (var j = 0; (token = tokens[j]); j++) {
-                if (text.indexOf(token) == -1) {
-                    return false;
-                }
-            }
-            return true;
-        }
 
 
         // viewmodel observables
@@ -112,16 +121,21 @@ var TwoSidedSelectWidget = function(elem_id, init_options, to_option) {
     }
 
     function move_data(from_obs, to_obs, criterion) {
-        var arr = []
+        var from_arr = []
+        var to_arr = []
         $.each(from_obs(), function(idx, option) {
             if (option === undefined) return;
             if (criterion(option)) {
-                to_obs.push(option);
+                to_arr.push(option);
             } else {
-                arr.push(option);
+                from_arr.push(option);
             }
         });
-        from_obs(arr);
+        from_arr.sort(option_order);
+        to_arr = to_obs().concat(to_arr);
+        to_arr.sort(option_order);
+        from_obs(from_arr);
+        to_obs(to_arr);
     }
 
     // Store elem_id for use by the template
@@ -135,7 +149,6 @@ var TwoSidedSelectWidget = function(elem_id, init_options, to_option) {
        vm.clicked_option(data.value);
     }
 
-
     vm.op_add = function() {
         var selection = vm.from_side.options_selected();
         if (selection.length == 0) return;
@@ -143,8 +156,14 @@ var TwoSidedSelectWidget = function(elem_id, init_options, to_option) {
             function(d) { return $.inArray(d.value, selection) != -1});
     };
     vm.op_add_all = function() {
-        move_data(vm.from_side.options_raw, vm.to_side.options_raw,
-            function(d) { return true});
+        var tokens = vm.filter().trim().toLowerCase().split(/\s+/);
+        var filter1 = function(obj) {
+            if (tokens.length == 0
+                || has_tokens(obj.text, tokens)) return true;
+            return false;
+        };
+        move_data(vm.from_side.options_raw, vm.to_side.options_raw, filter1);
+        vm.filter('');
     };
     vm.op_remove = function() {
         var selection = vm.to_side.options_selected();
@@ -155,6 +174,7 @@ var TwoSidedSelectWidget = function(elem_id, init_options, to_option) {
     vm.op_remove_all = function() {
         move_data(vm.to_side.options_raw, vm.from_side.options_raw,
             function(d) { return true});
+        vm.filter('');
     };
 
     vm.new_options = function(objs) {
