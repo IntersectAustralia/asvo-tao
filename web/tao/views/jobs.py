@@ -4,7 +4,7 @@ from django.core.servers.basehttp import FileWrapper # TODO use sendfile
 from django.core.urlresolvers import reverse
 from django.http import StreamingHttpResponse, Http404, HttpResponse
 from django.shortcuts import render, redirect
-from django.template import loader, Context
+from django.template import loader, Context, RequestContext
 
 from tao.datasets import dataset_get
 from tao.decorators import researcher_required, set_tab, \
@@ -33,7 +33,8 @@ def view_job(request, id):
         'job': job,
         'ui_holder': ui_holder,
         'forms': forms,
-        'forms_size' : len(forms)+1,
+        'forms_size': len(forms)+1,
+        'user': request.user,
     })
 
 @researcher_required
@@ -257,7 +258,7 @@ def stop_job(request, id):
     job = Job.objects.get(id=id)
     job_stop_command = WorkflowCommand(job_id=job, command='Job_Stop', submitted_by=request.user, execution_status='SUBMITTED')
     job_stop_command.save()
-    return redirect(reverse('view_job', args=[id]))
+    return HttpResponse('{}', mimetype='application/json')
 
 @researcher_required
 @object_permission_required('can_write_job')
@@ -265,7 +266,7 @@ def rerun_job(request, id):
     job = Job.objects.get(id=id)
     job.status = 'SUBMITTED'
     job.save()
-    return redirect(reverse('view_job', args=[id]))
+    return HttpResponse('{}', mimetype='application/json')
 
 @researcher_required
 @object_permission_required('can_write_job')
@@ -273,4 +274,14 @@ def release_job(request, id):
     job = Job.objects.get(id=id)
     job.status = 'SUBMITTED'
     job.save()
-    return redirect(reverse('view_job', args=[id]))
+    return HttpResponse('{}', mimetype='application/json')
+
+@researcher_required
+@object_permission_required('can_write_job')
+def delete_job_output(request, id):
+    if request.method == "POST":
+        job = Job.objects.get(id=id)
+        job_output_delete_command = WorkflowCommand(job_id=job, command='Job_Output_Delete', submitted_by=request.user, execution_status='SUBMITTED')
+        job_output_delete_command.save()
+
+    return HttpResponse('{}', mimetype='application/json')

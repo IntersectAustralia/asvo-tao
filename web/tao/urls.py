@@ -6,7 +6,7 @@ tao.urls
 Django's URL mapping definition
 """
 from django.conf.urls import patterns, url, include
-from django.contrib.auth.views import logout, password_reset, password_reset_done, password_reset_confirm, password_reset_complete, password_change, password_change_done
+from django.contrib.auth.views import logout, password_reset, password_reset_done, password_change, password_change_done
 from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import render
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
@@ -49,6 +49,7 @@ job_patterns = patterns('tao.views.jobs',
     url(r'^stop_job/(?P<id>\d+)$', 'stop_job', name='stop_job'),
     url(r'^rerun_job/(?P<id>\d+)$', 'rerun_job', name='rerun_job'),
     url(r'^release_job/(?P<id>\d+)$', 'release_job', name='release_job'),
+    url(r'^delete_job_output/(?P<id>\d+)$', 'delete_job_output', name='delete_job_output'),
 )
 
 json_patterns = patterns('tao.json.views',
