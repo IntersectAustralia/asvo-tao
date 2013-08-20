@@ -37,15 +37,14 @@ def to_xml_2(form, root):
         # be one extra empty form, so don't include it.
         assert form.total_form_count() > 0, 'Internal error, this should never happen!'
         for ii, sub in enumerate(form):
-            if ii < form.total_form_count() - 1:
-                sub_elem = child_element(list_elem, 'item')
-                for field, val in sub.cleaned_data.iteritems():
-                    if field[-9:] == 'mag_field':
-                        item_id, item_extension = val.split('_')
-                        op = datasets.band_pass_filter(item_id)
-                        child_element(sub_elem, field, op.filter_id + '_' + item_extension)
-                    else:
-                        child_element(sub_elem, field, str(val))
+            sub_elem = child_element(list_elem, 'item')
+            for field, val in sub.cleaned_data.iteritems():
+                if field[-9:] == 'mag_field':
+                    item_id, item_extension = val.split('_')
+                    op = datasets.band_pass_filter(item_id)
+                    child_element(sub_elem, field, op.filter_id + '_' + item_extension)
+                else:
+                    child_element(sub_elem, field, str(val))
 
 def from_xml_2(cls, ui_holder, xml_root, prefix=None):
     mi = module_xpath(xml_root, '//workflow/skymaker', False)
@@ -137,7 +136,7 @@ class SingleForm(BetterForm):
 
 
 # Define a formset.
-BaseForm = formset_factory(SingleForm, extra=1)
+BaseForm = formset_factory(SingleForm, extra=0)
 
 class Form(BaseForm):
     EDIT_TEMPLATE = 'taoui_mock_image/edit.html'
@@ -158,11 +157,7 @@ class Form(BaseForm):
 
             # Get the management total forms count and add back in
             # the 1 we subtracted.
-            total = int(data.get('mock_image-TOTAL_FORMS', 1))
-            if total:
-                total = int(total) + 1
-            else:
-                total = 1
+            total = int(data.get('mock_image-TOTAL_FORMS', 0))
 
             apply_mock_image = data.get('mock_image-apply_mock_image', False)
             if type(apply_mock_image) != bool:
@@ -171,7 +166,7 @@ class Form(BaseForm):
             # Do a final check for the checkbox, if we are disabled
             # then set the count to 1.
             if not apply_mock_image:
-                total = 1
+                total = 0
 
             data['mock_image-TOTAL_FORMS'] = total
 

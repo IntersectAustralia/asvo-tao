@@ -14,7 +14,7 @@ from tao import models
 from tao.decorators import researcher_required, admin_required, set_tab
 from tao.mail import send_mail
 from tao.pagination import paginate
-from tao.models import TaoUser, GlobalParameter
+from tao.models import TaoUser, GlobalParameter, STATUS_CHOICES
 
 import logging
 
@@ -97,7 +97,9 @@ def home(request):
 
 @admin_required
 def admin_index(request):
-    return render(request, 'admin_index.html')
+    return render(request, 'admin_index.html', {
+        'statuses': STATUS_CHOICES,
+    })
 
 
 @admin_required
