@@ -137,7 +137,7 @@ legend {
   -webkit-border-radius: 0; -moz-border-radius: 0; border-radius: 0;
 }
 #tabs.ui-tabs .ui-tabs-nav li {
-    margin: 0; padding: 0;
+    margin: 5px 0 0 0; padding: 0;
     margin-bottom: -2px;
     width: auto;
     top: none;
@@ -173,12 +173,13 @@ legend {
 }
 
 #tabs.ui-tabs li.ui-state-active a, #tabs.ui-tabs li.ui-state-active a:hover {
-    color: #555;
-    cursor: default;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-bottom-color: transparent;
-    margin-bottom: -1px;
+  margin: 0;
+  color: #555;
+  cursor: default;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-bottom-color: transparent;
+  margin-bottom: -1px;
 }
 
 
@@ -567,11 +568,21 @@ border-left:thick solid #d0d0d0;
   .nav-collapse .dropdown-menu { display: inline-block; }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 950px) {
   body {
     padding-right: 0px;
     padding-left: 0px;
   }
+  .row-fluid {
+    width: 100%;
+  }
+  [class*="span"], .row-fluid [class*="span"] {
+    display: block;
+    float: none;
+    width: auto;
+    margin-left: 0;
+  }
+  .aside { margin-top: 20px; }
 }
 
 footer {
