@@ -94,7 +94,8 @@ class SingleForm(BetterForm):
                                                   required=True)
         self.fields['mag_field'] = forms.ChoiceField(label=_('Magnitude field:'),
                                                      choices=datasets.band_pass_filters_enriched(), required=True)
-        self.fields['min_mag'] = forms.DecimalField(label=_('Minimum magnitude:'), required=True)
+        self.fields['min_mag'] = forms.DecimalField(label=_('Minimum magnitude:'), required=False)
+        self.fields['max_mag'] = forms.DecimalField(label=_('Maximum magnitude:'), required=False)
         self.fields['z_min'] = forms.DecimalField(label=_('Minimum redshift:'), required=True)
         self.fields['z_max'] = forms.DecimalField(label=_('Maximum redshift:'), required=True)
         self.fields['origin_ra'] = forms.DecimalField(label=_('Center on RA:'), required=True)
@@ -108,6 +109,7 @@ class SingleForm(BetterForm):
         self.fields['format'].widget.attrs['data-bind'] = "value: format, options: $parent.format_options, optionsText: 'text'"
         self.fields['mag_field'].widget.attrs['data-bind'] = "value: mag_field, options: mag_field_options, optionsText: 'text'"
         self.fields['min_mag'].widget.attrs['data-bind'] = 'value: min_mag'
+        self.fields['max_mag'].widget.attrs['data-bind'] = 'value: max_mag'
         self.fields['z_min'].widget.attrs['data-bind'] = 'value: z_min'
         self.fields['z_max'].widget.attrs['data-bind'] = 'value: z_max'
         self.fields['origin_ra'].widget.attrs['data-bind'] = 'value: origin_ra'
