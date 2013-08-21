@@ -5,6 +5,7 @@ tao.xml_util
 
 Helper methods for XML
 """
+from copy import copy
 from lxml import etree
 import re
 
@@ -29,7 +30,7 @@ def add_encoding(parent, xml_fragments):
     """Append the supplied xml_fragments string to the parent."""
     new_elements = etree.fromstring('<x>' + xml_fragments + '</x>')
     for elem in new_elements:
-        parent.append(elem)
+        parent.append(copy(elem))
     return new_elements
 
 
