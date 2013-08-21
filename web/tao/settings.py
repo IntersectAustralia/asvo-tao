@@ -156,6 +156,7 @@ INSTALLED_APPS = (
     'django_extensions',
     'tastypie',
     'activitylog',
+    'tap',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
@@ -277,7 +278,7 @@ API_ALLOWED_IPS = (
                    '127.0.0.1'
                    )
 
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 USE_CAPTCHA=True
 
 #

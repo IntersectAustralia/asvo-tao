@@ -171,6 +171,8 @@ class DataSetProperty(models.Model):
     description = models.TextField(default='', blank=True)
     group = models.CharField(max_length=80, default='', blank=True)
     order = models.IntegerField(default=0)
+    is_index = models.BooleanField(default=False)
+    is_primary = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['group', 'order', 'label']
