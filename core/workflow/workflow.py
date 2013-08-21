@@ -163,9 +163,12 @@ class WorkFlow(object):
         
         
         src_files = os.listdir(AudDataPath)
+        logging.info("AudDataPath:"+AudDataPath)
         for file_name in src_files:
             full_file_name = os.path.join(AudDataPath, file_name)
+            logging.info(full_file_name)
             if (os.path.isfile(full_file_name)):
+                logging.info(full_file_name+"->"+logpath)
                 shutil.copy(full_file_name, logpath)
             
         return SubJobsCount   

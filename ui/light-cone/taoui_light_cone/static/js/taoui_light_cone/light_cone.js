@@ -111,7 +111,8 @@ catalogue.modules.light_cone = function ($) {
             'value': dsp.pk,
             'text' : dsp.fields.label,
             'group': dsp.fields.group,
-            'units': dsp.fields.units
+            'units': dsp.fields.units,
+            'order': dsp.fields.order
         }
     }
 
