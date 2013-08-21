@@ -390,6 +390,15 @@ class WorkflowCommand(models.Model):
     def submittedby(self):
         return self.submitted_by.pk
 
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        if self.execution_status in [COMPLETED, ERROR]:
+            prev = WorkflowCommand.objects.get(pk=self.id)
+            if self.execution_status != prev.execution_status:
+                self.executed = datetime.now()
+        super(WorkflowCommand, self).save(force_insert=force_insert, force_update=force_update, using=using,
+                                          update_fields=update_fields)
+
 class GlobalParameter(models.Model):
     parameter_name = models.CharField(max_length=60, unique=True)
     parameter_value = models.TextField(default='')
