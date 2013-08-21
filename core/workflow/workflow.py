@@ -18,7 +18,7 @@ import LogReader
 import emailreport
 import glob
 import pg
-import stat
+import stat,sys
 import ParseProfileData
 import traceback
 
@@ -161,17 +161,28 @@ class WorkFlow(object):
         ## Generate params?.xml files based on the requested jobscounts
         ParseXMLParametersObj.ExportTrees(logpath+"/params<index>.xml")    
         
+        #self.CopyDirectoryContents(AudDataPath+"/stellar_populations",logpath)     
+        self.CopyDirectoryContents(AudDataPath+"/bandpass_filters",logpath)
         
-        src_files = os.listdir(AudDataPath)
-        for file_name in src_files:
-            full_file_name = os.path.join(AudDataPath, file_name)
-            if (os.path.isfile(full_file_name)):
-                shutil.copy(full_file_name, logpath)
             
         return SubJobsCount   
         
     
-        
+    def CopyDirectoryContents(self,SrcPath,DstPath):
+        src_files = os.listdir(SrcPath)
+        logging.info("Copying File - Source Path:"+SrcPath)
+        logging.info("Copying File - Dest Path:"+DstPath)
+        for file_name in src_files:
+            full_file_name = os.path.join(SrcPath, file_name)
+            logging.info(full_file_name)
+            if (os.path.isfile(full_file_name)):
+                logging.info(full_file_name+"->"+DstPath)
+                shutil.copy(full_file_name, DstPath)
+            else:
+                DstSubFolder=os.path.join(DstPath,file_name)
+                logging.info("Content is a directory - Dest Path:"+DstSubFolder)
+                os.makedirs(DstSubFolder)
+                self.CopyDirectoryContents(full_file_name, DstSubFolder)    
         
                 
     def UpdateTAOUI(self,UIJobID,JobType,data):
