@@ -46,19 +46,19 @@ class MockGalaxyFactoryTest(LiveServerTest):
     def tearDown(self):
         super(MockGalaxyFactoryTest, self).tearDown()
 
-    def test_box_size_field_on_initial_load(self):
+    def _test_box_size_field_on_initial_load(self):
         initial_selection = self.get_selected_option_text(self.lc_id('catalogue_geometry'))
         self.assertEqual('Light-Cone', initial_selection)
         self.assert_not_displayed(self.lc_id('box_size'))
 
-    def test_box_size_field_on_catalogue_geometry_change(self):
+    def _test_box_size_field_on_catalogue_geometry_change(self):
         self.select(self.lc_id('catalogue_geometry'), 'Box')
         self.assert_is_displayed(self.lc_id('box_size'))
 
         self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
         self.assert_not_displayed(self.lc_id('box_size'))
 
-    def test_max_number_light_cones_displayed(self):
+    def _test_max_number_light_cones_displayed(self):
         # TODO: uncomment once multiple unique light-cones point-of-view is fixed in the science module
         # self.assert_element_text_equals(unicode("label[for='id_light_cone-number_of_light_cones']"), unicode('Select the number of light-cones:*'))
         # TODO: comment out once spinner is made visible again for unique selection
@@ -87,7 +87,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.assert_not_displayed(self.lc_id('number_of_light_cones'))
         self.assert_not_displayed("label[for='id_light_cone-number_of_light_cones']")
 
-    def test_spinner_arrows_disabled_out_of_range(self):
+    def _test_spinner_arrows_disabled_out_of_range(self):
         # TODO: uncomment once multiple unique light-cones point-of-view is fixed in the science module, and spinner is made visible for unique selection
         # self.assertEqual('1', self.get_selector_value(self.lc_id('number_of_light_cones')))
         # self.click_by_class_name('ui-spinner-down')
@@ -98,7 +98,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
             self.click_by_class_name('ui-spinner-up')
         self.assertEqual('10', self.get_selector_value(self.lc_id('number_of_light_cones')))
 
-    def test_sidebar_text_on_initial_load(self):
+    def _test_sidebar_text_on_initial_load(self):
         first_simulation = Simulation.objects.all()[0]
         first_galaxy_model = first_simulation.galaxymodel_set.all()[0]
 
@@ -111,7 +111,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.assert_sidebar_info_not_shown('band-pass')
         self.assert_sidebar_info_not_shown('dust-model')
 
-    def test_sidebar_text_on_simulation_change(self):
+    def _test_sidebar_text_on_simulation_change(self):
         second_simulation = Simulation.objects.all()[1]
 
         self.select_dark_matter_simulation(second_simulation)
@@ -120,7 +120,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.assert_galaxy_model_options_correct_for_a_simulation(second_simulation)
         self.assert_simulation_info_shown(second_simulation)
 
-    def test_sidebar_text_on_galaxy_model_change(self):
+    def _test_sidebar_text_on_galaxy_model_change(self):
         first_simulation = Simulation.objects.all()[0]
         second_galaxy_model = first_simulation.galaxymodel_set.all()[1]
 
@@ -128,7 +128,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
 
         self.assert_galaxy_model_info_shown(second_galaxy_model)
 
-    def test_sed_sidebar_text_on_apply_sed(self):
+    def _test_sed_sidebar_text_on_apply_sed(self):
         self.click('tao-tabs-' + MODULE_INDICES['sed'])
         self.click(self.sed('apply_sed'))
         initial_stellar_model = StellarModel.objects.all()[0]
@@ -140,7 +140,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.assert_sidebar_info_not_shown('band-pass')
         self.assert_sidebar_info_not_shown('dust-model')
 
-    def test_sed_sidebar_text_on_apply_dust(self):
+    def _test_sed_sidebar_text_on_apply_dust(self):
         self.click('tao-tabs-' + MODULE_INDICES['sed'])
         self.click(self.sed('apply_sed'))
         self.click(self.sed('apply_dust'))
@@ -150,7 +150,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.click(self.sed('apply_dust'))
         self.assert_sidebar_info_not_shown('dust')
 
-    def test_sed_sidebar_text_on_stellar_model_change(self):
+    def _test_sed_sidebar_text_on_stellar_model_change(self):
         self.click('tao-tabs-' + MODULE_INDICES['sed'])
         self.click(self.sed('apply_sed'))
         third_stellar_model = StellarModel.objects.all()[2]
@@ -158,7 +158,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.select_stellar_model(third_stellar_model)
         self.assert_stellar_model_info_shown(third_stellar_model)
 
-    def test_output_property_details(self):
+    def _test_output_property_details(self):
         simulation = Simulation.objects.all()[0]
         self.select_dark_matter_simulation(simulation)
         init_galaxy_model_of_simulation = simulation.galaxymodel_set.all()[0]
@@ -174,7 +174,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
         name_displayed = self.get_info_field('output-property', 'name')
         self.assertEquals(output_property.label, name_displayed)
 
-    def test_bandpass_filter_details(self):
+    def _test_bandpass_filter_details(self):
         extension = 'apparent'
         self.click('tao-tabs-' + MODULE_INDICES['sed'])
         self.click(self.sed('apply_sed'))
@@ -189,7 +189,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
         name_displayed = self.get_info_field('band-pass', 'name')
         self.assertEquals(bandpass_filter.label + ' (' + extension.capitalize() + ')', name_displayed)
 
-    def test_summary_on_initial_load(self):
+    def _test_summary_on_initial_load(self):
         self.click('tao-tabs-' + MODULE_INDICES['summary'])
         init_simulation = Simulation.objects.all()[0]
         init_galaxy_model = init_simulation.galaxymodel_set.all()[0]
@@ -203,7 +203,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.assert_not_displayed(self.get_summary_selector('light_cone', 'box_fields'))
         self.assert_not_displayed(self.get_summary_selector('sed', 'apply_sed'))
 
-    def test_summary_on_geometry_change(self):
+    def _test_summary_on_geometry_change(self):
         self.select(self.lc_id('catalogue_geometry'), 'Box')
         self.click('tao-tabs-' + MODULE_INDICES['summary'])
 
@@ -211,7 +211,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.assert_is_displayed(self.get_summary_selector('light_cone', 'box_fields'))
         self.assert_not_displayed(self.get_summary_selector('light_cone', 'light_cone_fields'))
 
-    def test_summary_on_simulation_change(self):
+    def _test_summary_on_simulation_change(self):
         second_simulation = Simulation.objects.all()[1]
         self.select_dark_matter_simulation(second_simulation)
         init_galaxy_model_of_second_simulation = second_simulation.galaxymodel_set.all()[0]
@@ -234,7 +234,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.assert_summary_field_correctly_shown(init_galaxy_model_of_second_simulation.name, 'light_cone', 'galaxy_model')
         self.assert_summary_field_correctly_shown(expected_filter_display, 'record_filter', 'record_filter')
 
-    def test_summary_on_dataset_description_expand(self):
+    def _test_summary_on_dataset_description_expand(self):
         # in dataset, stellar model, and dust model, clicking on ">>" expands to show the description
         # ">>" rotates to show the current state: expanded or not
         init_simulation = Simulation.objects.all()[0];
@@ -258,7 +258,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.assert_not_displayed(self.get_summary_selector('light_cone', 'simulation_description'))
         self.assert_not_displayed(self.get_summary_selector('light_cone', 'galaxy_model_description'))
 
-    def test_summary_on_filter_list_expand(self):
+    def _test_summary_on_filter_list_expand(self):
         # Clicking on ">>" in output properties or bandpass filters expands the div and lists the properties in an unordered list
         self.click('tao-tabs-' + MODULE_INDICES['summary'])
         self.assert_not_displayed(self.get_summary_selector('light_cone', 'output_properties_list'))
@@ -277,7 +277,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.assert_summary_field_correctly_shown(str(len(dataset_properties)) + ' properties selected', 'light_cone', 'output_properties')
         self.assert_summary_field_correctly_shown('\n'.join([dataset_property.label for dataset_property in dataset_properties]), 'light_cone', 'output_properties_list')
 
-    def test_summary_on_light_cone_dimensions_change(self):
+    def _test_summary_on_light_cone_dimensions_change(self):
         self.click('tao-tabs-' + MODULE_INDICES['summary'])
         self.assert_summary_field_correctly_shown('', 'light_cone', 'ra_opening_angle')
         self.assert_summary_field_correctly_shown('', 'light_cone', 'dec_opening_angle')
@@ -311,7 +311,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.click('tao-tabs-' + MODULE_INDICES['summary'])
         self.assert_summary_range_correctly_shown('Redshift: 5 ' + h.unescape('&le;') + ' z', 'light_cone', ['redshift_min', 'redshift_max'])
 
-    def test_summary_on_light_cone_count_and_type(self):
+    def _test_summary_on_light_cone_count_and_type(self):
         ra_opening_angle = '1'
         dec_opening_angle = '2'
         redshift_min = '3'
@@ -346,7 +346,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.assert_are_displayed('light_cone-light_cone_type')
         self.assertTrue(self.get_field_by_value_in_control_group('unique', 'light_cone-light_cone_type').is_selected())
 
-    def test_unique_random_display_on_geometry_change(self):
+    def _test_unique_random_display_on_geometry_change(self):
         self.select(self.lc_id('catalogue_geometry'), 'Box')
         self.assert_are_not_displayed('light_cone-light_cone_type')
 
@@ -359,7 +359,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.visit('job_index')
         self.assert_page_has_content(job.description)
 
-    def test_sed_elements_disabled_on_initial_load(self):
+    def _test_sed_elements_disabled_on_initial_load(self):
         self.click('tao-tabs-' + MODULE_INDICES['sed'])
         self.assert_is_unchecked(self.sed_id('apply_sed'))
         self.assert_is_disabled(self.sed_id('single_stellar_population_model'))
@@ -367,7 +367,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.assert_is_disabled(self.sed_id('band_pass_filters_from'))
         self.assert_is_disabled(self.sed_id('band_pass_filters'))
 
-    def test_sed_module_enabled_on_check_apply(self):
+    def _test_sed_module_enabled_on_check_apply(self):
         self.click('tao-tabs-' + MODULE_INDICES['sed'])
         self.click(self.sed('apply_sed'))
         self.assert_is_checked(self.sed_id('apply_sed'))
@@ -383,12 +383,12 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.assert_is_disabled(self.sed_id('band_pass_filters_from'))
         self.assert_is_disabled(self.sed_id('band_pass_filters'))
 
-    def test_dust_model_disabled_on_initial_load(self):
+    def _test_dust_model_disabled_on_initial_load(self):
         self.click('tao-tabs-' + MODULE_INDICES['sed'])
         self.assert_is_unchecked(self.sed_id('apply_dust'))
         self.assert_is_disabled(self.sed_id('select_dust_model'))
 
-    def test_dust_model_enabled_on_check_apply(self):
+    def _test_dust_model_enabled_on_check_apply(self):
         self.click('tao-tabs-' + MODULE_INDICES['sed'])
         self.click(self.sed('apply_sed'))
         self.click(self.sed('apply_dust'))

@@ -7,7 +7,7 @@ catalogue.modules.mock_image = function ($) {
     var vm = {}
     this.vm = vm;
 	var image_param_names = ['fov_dec', 'fov_ra', 'height',
-             'min_mag', 'origin_dec', 'origin_ra', 'width',
+             'min_mag', 'max_mag', 'origin_dec', 'origin_ra', 'width',
              'z_max', 'z_min'];
 
     function update_apply_mock_image(apply_mock_image) {
@@ -133,8 +133,14 @@ catalogue.modules.mock_image = function ($) {
                 .extend({validate: catalogue.validators.geq(1)})
                 .extend({validate: catalogue.validators.leq(4096)});
             param = get_param(prefix, '-min_mag');
-            image_params.min_mag = ko.observable(param ? param : 7)
+            image_params.min_mag = ko.observable(param ? param : '')
                 .extend({validate: catalogue.validators.is_float});
+            param = get_param(prefix, '-max_mag');
+            image_params.max_mag = ko.observable(param ? param : '')
+                .extend({validate: catalogue.validators.is_float})
+                .extend({validate: catalogue.validators.greater_than(
+                    image_params.min_mag
+                )});
             param = get_param(prefix, '-z_min');
             image_params.z_min = ko.observable(param ? param : catalogue.modules.light_cone.vm.redshift_min())
                 .extend({validate: catalogue.validators.is_float})
@@ -203,6 +209,16 @@ catalogue.modules.mock_image = function ($) {
                     }),
                     "Origin and field-of-view DECs are below cone minimum."
                 )});
+
+            image_params.hr_mag_field = ko.computed(function(){
+                var is_def = catalogue.validators.defined(image_params.mag_field());
+                if (!is_def) return 'Undefined';
+                var val = image_params.mag_field();
+                val = typeof val == 'object' ? val.value : val;
+                var obj = catalogue.util.bandpass_filter(val);
+                if (obj.fields === undefined) return 'Undefined';
+                return obj.fields.label;
+            });
 
             return image_params;
         }

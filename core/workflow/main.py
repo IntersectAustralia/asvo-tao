@@ -9,7 +9,7 @@ from daemon import Daemon
 import signal
 import emailreport
 import SysCommands
-
+import traceback
 
 class WorkflowDaemon(Daemon):
 
@@ -84,7 +84,7 @@ class WorkflowDaemon(Daemon):
                     
                 logging.info("Sleeping for "+str(self.SleepTime)+" Seconds")
                 logging.info('-----------------------------------------------------------------')
-                time.sleep(self.SleepTime+(ErrorCounter*10))
+                
                 ErrorCounter=0
             except Exception as Exp:
                 if ErrorCounter<=5:
@@ -93,13 +93,17 @@ class WorkflowDaemon(Daemon):
                 logging.error(type(Exp))
                 logging.error(Exp.args)
                 logging.error(Exp)
+                exc_type, exc_value, exc_traceback = sys.exc_info()
+                lines = traceback.format_exception(exc_type, exc_value, exc_traceback)
+                logging.error(''.join('!! ' + line for line in lines))
                 ErrorCounter=ErrorCounter+1
-            finally:
                 # Restart All Objects
                 self.dbaseObj=dbase.DBInterface(self.Options)
                 self.TorqueObj=torque.TorqueInterface(self.Options,self.dbaseObj)
                 self.workflowObj=workflow.WorkFlow(self.Options,self.dbaseObj,self.TorqueObj)
                 self.SysCommandsObj=SysCommands.SysCommands(self.Options,self.dbaseObj,self.TorqueObj)
+            finally:
+                time.sleep(self.SleepTime+(ErrorCounter*10))
                         
             
 

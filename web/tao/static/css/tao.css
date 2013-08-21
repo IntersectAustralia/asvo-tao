@@ -232,8 +232,8 @@ fieldset legend {
 .id_light_cone-redshift_min, .id_light_cone-redshift_max,
 [class*="id_mock_image"][class*="sub_cone"],
 [class*="id_mock_image"][class*="format"],
-[class*="id_mock_image"][class*="mag_field"],
 [class*="id_mock_image"][class*="min_mag"],
+[class*="id_mock_image"][class*="max_mag"],
 [class*="id_mock_image"][class*="z_min"],
 [class*="id_mock_image"][class*="z_max"],
 [class*="id_mock_image"][class*="origin_ra"],
@@ -251,6 +251,18 @@ fieldset legend {
     box-sizing: border-box;
     clear: after;
 }
+
+[class*="id_mock_image"][class*="mag_field"] {
+    width: 100%;
+    display: block;
+    float: left;
+    min-height: 30px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    clear: after;
+}
+
 .id_light_cone-ra_opening_angle input, .id_light_cone-dec_opening_angle input,
 .id_light_cone-redshift_min input, .id_light_cone-redshift_max input,
 .id_mock_image-min_mag input, .id_mock_image-max_mag input,
