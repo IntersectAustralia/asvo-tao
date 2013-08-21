@@ -38,12 +38,6 @@
                         </td>
                         <td>
                             {{ job.status }}
-                            {%  if job.is_error %}
-                                <button class="openPopUp" id="popUp">?</button>
-                                <div class="popUpDialogue" title="Error Message for Job {{ job.id }}" style="display: none;">
-                                    <p>{{ job.short_error_message }}</p>
-                                </div>
-                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}
