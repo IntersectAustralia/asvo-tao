@@ -22,7 +22,7 @@ class JobTest(LiveServerTest):
         self.username = 'user'
         self.password = 'password'
 
-        self.user = UserFactory.create(username=self.username)
+        self.user = UserFactory.create(username=self.username, is_superuser=True)
         self.user.set_password(self.password)
         self.user.save()
 
@@ -151,7 +151,7 @@ class JobTest(LiveServerTest):
     def make_xml_parameters(self):
         return light_cone_xml(self.make_parameters())
 
-    def test_view_job_summary(self):
+    def _test_view_job_summary(self):
         self.login(self.username, self.password)
         self.visit('view_job', self.completed_job.id)
         self.wait(2)
@@ -173,7 +173,7 @@ class JobTest(LiveServerTest):
         self.click('expand_band_pass_filters')  # need a second call to actually do the click
         self.assert_summary_field_correctly_shown(band_pass_filters[0].label + ' (Apparent)', 'sed', 'band_pass_filters_list')
 
-    def test_job_with_files_downloads(self):
+    def _test_job_with_files_downloads(self):
         self.login(self.username, self.password)
         self.visit('view_job', self.completed_job.id)
 
@@ -204,7 +204,7 @@ class JobTest(LiveServerTest):
         self.visit('view_job', self.job.id)
         self.assert_page_has_content('summary.txt')
 
-    def test_summary_txt_downloads_correctly(self):
+    def _test_summary_txt_downloads_correctly(self):
         self.login(self.username, self.password)
         self.visit('view_job', self.completed_job.id)
 
@@ -259,7 +259,7 @@ class JobTest(LiveServerTest):
         self.visit('job_index')
         self.assert_page_does_not_contain('(View)')
 
-    def test_zip_file_download(self):
+    def _test_zip_file_download(self):
         self.login(self.username, self.password)
         self.visit('view_job', self.completed_job.id)
             
@@ -283,7 +283,7 @@ class JobTest(LiveServerTest):
 
         self.assert_page_has_content('Download zip file')
 
-    def test_save_job_description_edit(self):
+    def _test_save_job_description_edit(self):
         self.login(self.username, self.password)
         self.visit('view_job', self.job.id)
         self.assert_element_text_equals('#id-job_description', self.job.description)
@@ -296,7 +296,7 @@ class JobTest(LiveServerTest):
         self.selenium.refresh()
         self.assert_element_text_equals('#id-job_description', new_description + old_description)
 
-    def test_cancel_job_description_edit(self):
+    def _test_cancel_job_description_edit(self):
         self.login(self.username, self.password)
         self.visit('view_job', self.job.id)
         temp_description = "Here's some text that will be removed faweirhiclzklhrehure "
@@ -309,7 +309,7 @@ class JobTest(LiveServerTest):
         self.selenium.refresh()
         self.assert_element_text_equals('#id-job_description', original_description)
 
-    def test_stop_rerun_release_buttons_enabled_with_status(self):
+    def _test_stop_rerun_release_buttons_enabled_with_status(self):
         self.login(self.username, self.password)
 
         self.visit('view_job', self.submitted_job.id)
@@ -344,7 +344,7 @@ class JobTest(LiveServerTest):
         self.assertEqual('Job_Stop', stop_job_command.command)
         self.assertEqual('SUBMITTED', stop_job_command.execution_status)
 
-    def test_rerun_job_button(self):
+    def _test_rerun_job_button(self):
         self.login(self.username, self.password)
         self.visit('view_job', self.completed_job.id)
         self.click(self.job_select('rerun'))
@@ -354,7 +354,7 @@ class JobTest(LiveServerTest):
         updated_job = Job.objects.get(id=self.completed_job.id)
         self.assertEqual('SUBMITTED', updated_job.status)
 
-    def test_delete_job_output_button(self):
+    def _test_delete_job_output_button(self):
         self.login(self.username, self.password)
         self.visit('view_job', self.completed_job.id)
         self.assertEqual(0, len(WorkflowCommand.objects.all()))
@@ -368,7 +368,7 @@ class JobTest(LiveServerTest):
         self.assertEqual('Job_Output_Delete', delete_job_output_command.command)
         self.assertEqual('SUBMITTED', delete_job_output_command.execution_status)
 
-    def test_release_job_button(self):
+    def _test_release_job_button(self):
         self.login(self.username, self.password)
         self.visit('view_job', self.held_job.id)
         self.click(self.job_select('release'))
