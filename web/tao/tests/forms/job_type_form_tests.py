@@ -1,11 +1,13 @@
 from tao.models import Simulation, StellarModel, DustModel, BandPassFilter
 from tao.settings import MODULE_INDICES, PROJECT_DIR
 from tao.tests.integration_tests.helper import LiveServerTest
-from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, JobFactory, DataSetPropertyFactory, DustModelFactory, StellarModelFactory, BandPassFilterFactory, GlobalParameterFactory
+from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, JobFactory, DataSetPropertyFactory, DustModelFactory, StellarModelFactory, BandPassFilterFactory, GlobalParameterFactory, SnapshotFactory
 
 import os.path
 
 class JobTypeFormTests(LiveServerTest):
+
+
 
     def setUp(self):
         super(JobTypeFormTests, self).setUp()
@@ -23,7 +25,7 @@ class JobTypeFormTests(LiveServerTest):
 
         for i in range(4,8):
             g = GalaxyModelFactory.create(name='galaxy_model_%03d' % i)
-            ds = DataSetFactory.create(simulation=lc_sim, galaxy_model=g, max_job_box_count=25)
+            ds = DataSetFactory.create(simulation=lc_sim, galaxy_model=g, max_job_box_count=25, id__exact=i)
             for j in range(4,7):
                 dsp = DataSetPropertyFactory.create(dataset=ds, label='parameter_%03d label' % j, name='name_%03d' % j, description='description_%03d' % j)
                 ds.default_filter_field = dsp
@@ -32,8 +34,9 @@ class JobTypeFormTests(LiveServerTest):
 
         for i in range(3):
             StellarModelFactory.create(label='stellar_label_%03d' % i, name='stellar_name_%03d' % i, description='<p>Description %d </p>' % i)
-            BandPassFilterFactory.create(label='Band pass filter %03d' % i, filter_id='Band_pass_filter_%03d.txt' % i)
+            BandPassFilterFactory.create(label='Band pass filter %03d' % i, filter_id='%d' % i)
             DustModelFactory.create(name='Dust_model_%03d.dat' % i, label='Dust model %03d' % i, details='<p>Detail %d </p>' % i)
+            SnapshotFactory.create(dataset_id=i);
 
         username = "person"
         password = "funnyfish"
@@ -89,8 +92,19 @@ class JobTypeFormTests(LiveServerTest):
         self.assert_multi_selected_text_equals(self.sed_id('band_pass_filters-right'), ['Band pass filter 000 (Absolute)','Band pass filter 002 (Apparent)'])
 
     def test_mock_image_params(self):
-        from code import interact
-        interact(local=locals())
+        # from code import interact
+        # interact(local=locals())
+        self.click('tao-tabs-' + MODULE_INDICES['mock_image'])
+
+        self.assertEqual([u'ALL', 1, 2, 3], self.get_ko_array('catalogue.vm.mock_image.sub_cone_options()'))
+        # self.assertEqual([u'1_absolute', u'3_apparent'], self.get_ko_array('catalogue.vm.mock_image.mag_field_options()'))
+        self.assertEqual([u'FITS'], self.get_ko_array('catalogue.vm.mock_image.format_options'))
+        # from code import interact
+        # interact(local=locals())
+        print self.get_image_setting_ko_value(0,'sub_cone')
+        # print self.get_image_setting_ko_value(0,'output_format')
+        print self.get_image_setting_ko_value(0,'mag_field')
+
 
 
     def test_rf_params(self):
@@ -121,8 +135,18 @@ class JobTypeFormTests(LiveServerTest):
         self.assert_summary_field_correctly_shown('stellar_label_001', 'sed', 'single_stellar_population_model')
         self.assert_summary_field_correctly_shown('2 properties selected', 'sed', 'band_pass_filters')
         self.assert_summary_field_correctly_shown('Not selected', 'sed', 'apply_dust')
-        self.assert_summary_field_correctly_shown('Not selected', 'mock_image', 'select_mock_image')
+        self.assert_summary_field_correctly_shown('2 images', 'mock_image', 'select_mock_image')
 
         self.assert_summary_field_correctly_shown(u'1.0 \u2264 Band pass filter 000 (Absolute) \u2264 12.0', 'record_filter', 'record_filter')
 
         self.assert_summary_field_correctly_shown('FITS', 'output', 'output_format')
+
+    def get_ko_array(self, vm_ko_array):
+        js = 'return $.map(' + vm_ko_array + ', function(v, i) { return v.value; });'
+        return self.selenium.execute_script(js);
+
+    def get_image_setting_ko_value(self, index, setting):
+        js = 'return catalogue.modules.mock_image.vm.image_settings()[%d].%s().value' % (index, setting)
+        print js
+        return self.selenium.execute_script(js);
+
