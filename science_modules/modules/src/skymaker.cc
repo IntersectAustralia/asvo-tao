@@ -196,7 +196,7 @@ namespace tao {
 	 // Rename the output file.
 	 fs::path target = "image." + index_string( _sub_cone ) + "." + index_string( _idx ) + ".fits";
 	 target = output_dir/target;
-	 fs::rename( "sky.fits", target );
+	 fs::rename( _sky_filename, target );
       }
       mpi::comm::world.barrier();
 
@@ -206,6 +206,7 @@ namespace tao {
 	 ::remove( master_filename.c_str() );
 	 ::remove( _list_filename.c_str() );
 	 ::remove( _conf_filename.c_str() );
+	 ::remove( _sky_filename.c_str() );
       }
    }
 
@@ -221,8 +222,10 @@ namespace tao {
    skymaker::image::setup_conf()
    {
       _conf_filename ="tao_sky." + index_string( _idx ) + "." + mpi::rank_string() + ".conf";
+      _sky_filename = "tao_sky." + index_string( _idx ) + ".fits";
       LOGDLN( "Opening config file: ", _conf_filename );
       std::ofstream file( _conf_filename, std::ios::out );
+      file << "IMAGE_NAME " << _sky_filename << "\n";
       file << "IMAGE_SIZE " << _width << "," << _height << "\n";
       file << "STARCOUNT_ZP 0.0\n";  // no auto stars
       file << "MAG_LIMITS 0.1 49.0\n"; // wider magnitude limits
