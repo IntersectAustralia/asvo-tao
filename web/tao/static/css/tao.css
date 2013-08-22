@@ -315,6 +315,10 @@ fieldset legend {
   cursor: pointer;
  }
 
+#id_sed-single_stellar_population_model {
+  width: auto;
+}
+
 .id_sed-apply_dust {
       width: 25%;
   display: block;

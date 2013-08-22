@@ -199,6 +199,11 @@ class LiveServerTest(django.test.LiveServerTestCase):
     def assert_not_displayed(self, selector):
         field = self.selenium.find_element_by_css_selector(selector)
         self.assertFalse(field.is_displayed())
+
+    def assert_not_in_page(self, selector):
+        "Assert that the supplied selector is not part of the page content"
+        elements = self.selenium.find_elements_by_css_selector(selector)
+        self.assertTrue(len(elements) == 0)
         
     def assert_on_page(self, url_name, ignore_query_string=False):
         if not ignore_query_string:
