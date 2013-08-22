@@ -93,6 +93,9 @@ class LiveServerTest(django.test.LiveServerTestCase):
     def job_id(self, bare_field):
         return '#%s' % self.job_select(bare_field)
 
+    def mi_id(self, prefix, bare_field):
+        return 'id_mock_image-%s-%s' % (prefix, bare_field)
+
     def get_parent_element(self, element):
         return self.selenium.execute_script('return arguments[0].parentNode;', element)
 
