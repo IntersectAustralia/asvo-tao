@@ -49,6 +49,28 @@
         <item description="" label="Band pass filter 002" selected="apparent">Band_pass_filter_002.txt</item>
       </bandpass-filters>
     </filter>
+    <skymaker id="6">
+      <module-version>1</module-version>
+      <parents>
+        <item>4</item>
+      </parents>
+      <images>
+        <item>
+          <format>FITS</format>
+          <origin_ra>0.5</origin_ra>
+          <z_max>4</z_max>
+          <origin_dec>1</origin_dec>
+          <height>66</height>
+          <width>66</width>
+          <z_min>3</z_min>
+          <fov_ra>1</fov_ra>
+          <min_mag>7</min_mag>
+          <sub_cone>2</sub_cone>
+          <fov_dec>2</fov_dec>
+          <mag_field>3_apparent</mag_field>
+        </item>
+      </images>
+    </skymaker>
     <record-filter>
       <module-version>1</module-version>
       <filter>

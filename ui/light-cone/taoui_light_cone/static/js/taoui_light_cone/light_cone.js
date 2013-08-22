@@ -179,34 +179,6 @@ catalogue.modules.light_cone = function ($) {
     	});
     	return res;
     }
-    
-
-    // this.find_params_set = function(params_name) {
-    //     var result = null;
-    //     for(i = 0; i < TaoLoadedParams.length; i++) {
-    //         if(params_name in TaoLoadedParams[i]) {
-    //             result = TaoLoadedParams[i];
-    //             break;
-    //         }
-    //     }
-    //     return result;
-    // }
-
-    // this.get_param_value = function(key, params_set) {
-    //     var result = null;
-    //     for(i = 0; i < params_set.length; i++) {
-    //         if(params_name in params_set[i]) {
-    //             result = TaoLoadedParams[i].params_name;
-    //             break;
-    //         }
-    //     }
-    //     return result;
-    // }
-
-    // this.load_params = function() {
-    //     var lc_params = this.find_params_set('light-cone');
-    //     console.log(lc_params);
-    // }
 
     this.init_model = function(init_params) {
     	// job is either an object containing the job parameters or null
@@ -255,9 +227,10 @@ catalogue.modules.light_cone = function ($) {
         // submission.
         //    .extend({validate: catalogue.validators.geq(1)});
         // Debugging
-        vm.number_of_light_cones.subscribe(function(n) {
-        	if (n==0) { console.log('WARN: Number of light-cones = 0'); }
-        });
+        // vm.number_of_light_cones.subscribe(function(n) {
+        //     console.log('Number of LC=' + n);
+        // 	if (n==0) { console.log('WARN: Number of light-cones = 0'); }
+        // });
         vm.dataset.subscribe(function(dataset) {
             var objs = catalogue.util.output_choices(dataset.pk);
             vm.output_properties.new_options(objs);
