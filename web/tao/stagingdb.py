@@ -89,7 +89,7 @@ def run():
     tao_simulation_1.name = u'Bolshoi'
     tao_simulation_1.box_size_units = u'Mpc/h'
     tao_simulation_1.box_size = Decimal('250.000')
-    tao_simulation_1.details = u'<p>Cosmology: WMAP5<br/>\r\nCosmological parameters: \u03a9m = 0.25, \u03a9\u039b = 0.75, \u03a9b = 0.0469, \u03c38 = 0.82, h = 0.73, n=0.95<br/>\r\nBox Size: 250 Mpc/h<br/>\r\nMass resolution: 1.35x10^8 Msun/h<br/>\r\nForce resolution: 1 Mpc/h\r\n</p>\r\n\r\n<p>Web Site: <a href="http://hipacc.ucsc.edu/Bolshoi/">Bolshoi Cosmological Simulations</a><br/>\r\nPaper: <a href="http://arxiv.org/abs/1002.3660">Klypin, Trujillo-Gomez & Primack 2011</a>\r\n</p>'
+    tao_simulation_1.details = u'<p>Cosmology: WMAP5<br/>\r\nCosmological parameters: = 0.25, = 0.75, = 0.0469, = 0.82, h = 0.73, n=0.95<br/>\r\nBox Size: 250 Mpc/h<br/>\r\nMass resolution: 1.35x10^8 Msun/h<br/>\r\nForce resolution: 1 Mpc/h\r\n</p>\r\n\r\n<p>Web Site: <a href="http://hipacc.ucsc.edu/Bolshoi/">Bolshoi Cosmological Simulations</a><br/>\r\nPaper: <a href="http://arxiv.org/abs/1002.3660">Klypin, Trujillo-Gomez & Primack 2011</a>\r\n</p>'
     tao_simulation_1.order = 3L
     tao_simulation_1 = save_or_locate(tao_simulation_1)
 
@@ -97,7 +97,7 @@ def run():
     tao_simulation_2.name = u'Millennium'
     tao_simulation_2.box_size_units = u'Mpc/h'
     tao_simulation_2.box_size = Decimal('500.000')
-    tao_simulation_2.details = u'<p>\r\nCosmology: WMAP-1<br/>\r\nCosmological parameters: \u03a9m = 0.25, \u03a9\u039b = 0.75, \u03a9b = 0.045, \u03c38 = 0.9, h = 0.73, n = 1<br/>\r\nBox size: 500 Mpc/h<br/>\r\nMass resolution: 8.6x10^8 Msun/h<br/>\r\nForce resolution: 5 Mpc/h\r\n</p>\r\n<p>Paper: <a href="http://arxiv.org/abs/astro-ph/0504097">Springel et al. 2005</a><br/>\r\nExternal Link: <a href="http://www.mpa-garching.mpg.de/galform/millennium/">Simulating the joint evolution of quasars, galaxies and their large-scale distribution</a>\r\nWeb site: <a href="http://www.mpa-garching.mpg.de/millennium/">Public release of a VO-oriented and SQL-queryable database for studying the evolution of galaxies in the \u039bCDM cosmogony</a>\r\n</p>'
+    tao_simulation_2.details = u'<p>\r\nCosmology: WMAP-1<br/>\r\nCosmological parameters:  = 0.25,  = 0.75,  = 0.045,  = 0.9, h = 0.73, n = 1<br/>\r\nBox size: 500 Mpc/h<br/>\r\nMass resolution: 8.6x10^8 Msun/h<br/>\r\nForce resolution: 5 Mpc/h\r\n</p>\r\n<p>Paper: <a href="http://arxiv.org/abs/astro-ph/0504097">Springel et al. 2005</a><br/>\r\nExternal Link: <a href="http://www.mpa-garching.mpg.de/galform/millennium/">Simulating the joint evolution of quasars, galaxies and their large-scale distribution</a>\r\nWeb site: <a href="http://www.mpa-garching.mpg.de/millennium/">Public release of a VO-oriented and SQL-queryable database for studying the evolution of galaxies in the LCDM cosmogony</a>\r\n</p>'
     tao_simulation_2.order = 0L
     tao_simulation_2 = save_or_locate(tao_simulation_2)
 
@@ -105,7 +105,7 @@ def run():
     tao_simulation_3.name = u'Mini-Millennium'
     tao_simulation_3.box_size_units = u'Mpc/h'
     tao_simulation_3.box_size = Decimal('62.500')
-    tao_simulation_3.details = u'<p>\r\nCosmology: WMAP-1<br/>\r\nCosmological parameters: \u03a9m = 0.25, \u03a9\u039b = 0.75, \u03a9b = 0.045, \u03c38 = 0.9, h = 0.73, n = 1<br/>\r\nBox size: 62.5 Mpc/h<br/>\r\nMass resolution: 8.6x10^8 Msun/h<br/>\r\nForce resolution: 5 Mpc/h\r\n</p>\r\n\r\n<p>Paper: <a href="http://arxiv.org/abs/astro-ph/0504097">Springel et al. 2005</a><br/>\r\nExternal Link: <a href="http://www.mpa-garching.mpg.de/galform/millennium/">Simulating the joint evolution of quasars, galaxies and their large-scale distribution</a>\r\nWeb site: <a href="http://www.mpa-garching.mpg.de/millennium/">Public release of a VO-oriented and SQL-queryable database for studying the evolution of galaxies in the \u039bCDM cosmogony</a>\r\n</p>'
+    tao_simulation_3.details = u'<p>\r\nCosmology: WMAP-1<br/>\r\nCosmological parameters: ,  = 0.75,  = 0.045,  = 0.9, h = 0.73, n = 1<br/>\r\nBox size: 62.5 Mpc/h<br/>\r\nMass resolution: 8.6x10^8 Msun/h<br/>\r\nForce resolution: 5 Mpc/h\r\n</p>\r\n\r\n<p>Paper: <a href="http://arxiv.org/abs/astro-ph/0504097">Springel et al. 2005</a><br/>\r\nExternal Link: <a href="http://www.mpa-garching.mpg.de/galform/millennium/">Simulating the joint evolution of quasars, galaxies and their large-scale distribution</a>\r\nWeb site: <a href="http://www.mpa-garching.mpg.de/millennium/">Public release of a VO-oriented and SQL-queryable database for studying the evolution of galaxies in the LCDM cosmogony</a>\r\n</p>'
     tao_simulation_3.order = 0L
     tao_simulation_3 = save_or_locate(tao_simulation_3)
 

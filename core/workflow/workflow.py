@@ -162,13 +162,13 @@ class WorkFlow(object):
         ParseXMLParametersObj.ExportTrees(logpath+"/params<index>.xml")    
         
         #self.CopyDirectoryContents(AudDataPath+"/stellar_populations",logpath)     
-        self.CopyDirectoryContents(AudDataPath+"/bandpass_filters",logpath)
-        
+        self.CopyDirectoryContents(AudDataPath+"/bandpass_filters",logpath,True)
+        self.CopyDirectoryContents(AudDataPath,logpath,False)
             
         return SubJobsCount   
         
     
-    def CopyDirectoryContents(self,SrcPath,DstPath):
+    def CopyDirectoryContents(self,SrcPath,DstPath,CopySubDirs):
         src_files = os.listdir(SrcPath)
         logging.info("Copying File - Source Path:"+SrcPath)
         logging.info("Copying File - Dest Path:"+DstPath)
@@ -178,7 +178,7 @@ class WorkFlow(object):
             if (os.path.isfile(full_file_name)):
                 logging.info(full_file_name+"->"+DstPath)
                 shutil.copy(full_file_name, DstPath)
-            else:
+            elif CopySubDirs==True:
                 DstSubFolder=os.path.join(DstPath,file_name)
                 logging.info("Content is a directory - Dest Path:"+DstSubFolder)
                 os.makedirs(DstSubFolder)

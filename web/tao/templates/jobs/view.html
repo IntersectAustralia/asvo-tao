@@ -106,12 +106,13 @@ the forms being hidden and all.
             </div>
             <div>
                 <strong>Status</strong>
-                <p>{{ job.status }}</p>
+                <p>{{ job.status }}
                 {% if job.is_error %}
-                    <pre>
-                    {{ job.error_message|linebreaks  }}
-                    </pre>
+                	<span id="id-job_error_enquiry">
+                    (please use the <a id="id-job_error_support" href="../accounts/support_page/">Support</a> form if you would like to enquire about this error)
+                    </span>
                 {% endif %}
+                </p>
             </div>
             <div>
                 <strong>Summary</strong>
