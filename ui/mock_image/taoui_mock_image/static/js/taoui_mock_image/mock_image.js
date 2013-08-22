@@ -101,23 +101,44 @@ catalogue.modules.mock_image = function ($) {
             	return res;
             }
 
+
             param = get_param(prefix, '-sub_cone');
-            image_params.sub_cone = ko.observable(param ? {value:param,text:param} : vm.sub_cone_options()[0]);
+            param = catalogue.util.get_observable_by_attribute('value', param, vm.sub_cone_options);
+            image_params.sub_cone = ko.observable(param ? param : vm.sub_cone_options()[0]);
+
+            // vm.sub_cone_options.subscribe(function(arr){
+            //     var sc_value = image_params.sub_cone().value;
+            //     var new_obj;
+            //     for(var i=0; i<arr.length; i++) {
+            //         if (arr[i].value == sc_value) {
+            //             new_obj = arr[i];
+            //             break;
+            //         }
+            //     }
+            //     console.log(new_obj);
+            //     if (new_obj !== image_params.sub_cone()) {
+            //         image_params.sub_cone(new_obj);
+            //     }
+            // });
+            
+            vm.sub_cone_options.subscribe(function(arr){
+                var new_obj = catalogue.util.get_observable_by_attribute('value', image_params.sub_cone().value, vm.sub_cone_options);
+                if (new_obj !== image_params.sub_cone()) {
+                    image_params.sub_cone(new_obj);
+                }
+            });
+
             param = get_param(prefix, '-format');
-            image_params.format = ko.observable(param ? {value:param,text:param} : vm.format_options[0]);
+            param = catalogue.util.get_element_by_attribute('value', param, vm.format_options);
+            image_params.format = ko.observable(param ? param : vm.format_options[0]);
+
             image_params.mag_field_options = ko.computed(function(){
                 return catalogue.modules.sed.vm.bandpass_filters.to_side.options();
             });
-            image_params.mag_field = ko.observable();
-            // Note that mag_field is stored incorrectly
-            // Currently the entry id is stored, not the entry itself.
-            // Look-up could be an issue with respect to initialisation
-            // order.
-            // This isn't required as the Job View simply counts the number
-            // of images, and doesn't display any details, including
-            // the magnitude field.
             param = get_param(prefix, '-mag_field');
-            if (param) image_params.mag_field(param);
+            param = catalogue.util.get_observable_by_attribute('value', param, image_params.mag_field_options);
+            image_params.mag_field = ko.observable(param ? param : mag_field_options[0]);
+
             param = get_param(prefix, '-fov_ra');
             image_params.fov_ra = ko.observable(param ? param : catalogue.modules.light_cone.vm.ra_opening_angle());
             param = get_param(prefix, '-fov_dec');
@@ -238,7 +259,17 @@ catalogue.modules.mock_image = function ($) {
                 catalogue.modules.sed.vm.bandpass_filters.to_side.options().length > 0;
         });
 
+        param = job['mock_image-apply_mock_image']
+        vm.apply_mock_image = ko.observable(param ? param : false);
+
+        vm.apply_mock_image.subscribe(function(val){
+            update_apply_mock_image(val, vm);
+        });
+
+        vm.image_settings = ko.observableArray([]);
+
         vm.sub_cone_options = ko.computed(function(){
+            console.log('sub_cone_options CALLED!');
             var n = catalogue.modules.light_cone.vm.number_of_light_cones();
             var resp = [{value: 'ALL', text:'All'}]
             for(var i = 1; i<=n; i++)
@@ -251,16 +282,8 @@ catalogue.modules.mock_image = function ($) {
                 // png and jpg formats aren't working yet
                 // {value:'PNG', text:'PNG'},
                 // {value:'JPEG', text:'JPEG'}
-            ];
+        ];
 
-        param = job['mock_image-apply_mock_image']
-        vm.apply_mock_image = ko.observable(param ? param : false);
-
-        vm.apply_mock_image.subscribe(function(val){
-            update_apply_mock_image(val, vm);
-        });
-
-        vm.image_settings = ko.observableArray([]);
         add_images_from(job);
 
         vm.number_of_images = ko.computed(function() {
