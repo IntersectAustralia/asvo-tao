@@ -96,7 +96,9 @@ urlpatterns = patterns('',
     url(r'^accounts/password/change/$', password_change, {'post_change_redirect': '/accounts/password/change/done/'},
         name='password_change'),
     (r'^accounts/password/change/done/$', password_change_done),
-
+    
+    ('^tap/', include('tap.urls')),
+     
     # Uncomment the admin/doc line below to enable admin documentation:
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
 )
