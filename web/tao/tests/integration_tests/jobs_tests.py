@@ -424,9 +424,11 @@ class JobTest(LiveServerTest):
 
     def test_job_status_is_error(self):
         self.login(self.username, self.password)
-        self.visit('view_job', id=self.error_job.id)
-        self.assert_page_has_content('ERROR')
-        self.assert_is_displayed('#id-job_error_enquiry')
         self.visit('view_job', id=self.completed_job.id)
         self.assert_page_does_not_contain('ERROR')
         self.assert_not_in_page('#id-job_error_enquiry')
+        self.visit('view_job', id=self.error_job.id)
+        self.assert_page_has_content('ERROR')
+        self.assert_is_displayed('#id-job_error_enquiry')
+        self.click('id-job_error_support')
+        self.assert_on_page('support_page')

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE xmlns="http://www.ivoa.net/xml/VOTable/v1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.2" version="1.2">
+	<RESOURCE type="results">
+		<INFO name="QUERY_STATUS" value="ERROR">
+			<![CDATA[{{ error }}]]>
+		</INFO>
+		<INFO name="DATE" value="{{ timestamp }}" />
+		<INFO name="PROVIDER" value="TAO">
+			<![CDATA[All-Sky Virtual Observatory - Theoretical Astrophysical Observatory]]>
+		</INFO>{% if query %}
+		<INFO name="QUERY">
+			<![CDATA[{{ query }}]]>
+		</INFO>{% endif %}
+	</RESOURCE>
+</VOTABLE>
