@@ -340,9 +340,9 @@ catalogue.util = function ($) {
     }
 
 
-    this.output_choices = function(id) {
-        var resp = $.grep(TaoMetadata.DataSetProperty, function(elem, idx) { 
-            return elem.fields.dataset == id && elem.fields.is_output
+    this.output_choices = function(id, geometry_mask) {
+        var resp = $.grep(TaoMetadata.DataSetProperty, function(elem, idx) {
+            return elem.fields.dataset == id && elem.fields.is_output && (elem.fields.flags & geometry_mask)
         });
         return resp.sort(function (a, b) {
             if (a.fields.group != b.fields.group)
