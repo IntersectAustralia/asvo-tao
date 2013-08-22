@@ -40,7 +40,7 @@ class PasswordResetForm(auth_forms.PasswordResetForm):
         self.fields.keyOrder = ['username', 'email']
         self.error_messages['unknown_user'] = _("That username doesn't have an associated "
                                                 "user account. Are you sure you've registered?")
-        self.error_messages['wrong_email'] = _("That emil doesn't match that of the user. "
+        self.error_messages['wrong_email'] = _("That email doesn't match that of the user. "
                                                "Please check you have provided the email that you registered.")
 
     def clean_username(self):
@@ -55,27 +55,15 @@ class PasswordResetForm(auth_forms.PasswordResetForm):
         if not any(user.is_active for user in self.users_cache):
             # none of the filtered users are active
             raise forms.ValidationError(self.error_messages['unknown_user'])
-        # if any((user.password == UNUSABLE_PASSWORD)
-        #        for user in self.users_cache):
-        #     raise forms.ValidationError(self.error_messages['unusable'])
         return username
 
     def clean_email(self):
         """
         Validates that the given email address matches that of the given user.
         """
-        UserModel = get_user_model()
-        username = self.cleaned_data["username"]
         email = self.cleaned_data["email"]
-        self.users_cache = UserModel._default_manager.filter(username__iexact=username, email__iexact=email)
-        if not len(self.users_cache):
+        if not any(user.email == email for user in self.users_cache):
             raise forms.ValidationError(self.error_messages['wrong_email'])
-        if not any(user.is_active for user in self.users_cache):
-            # none of the filtered users are active
-            raise forms.ValidationError(self.error_messages['wrong_email'])
-        # if any((user.password == UNUSABLE_PASSWORD)
-        #        for user in self.users_cache):
-        #     raise forms.ValidationError(self.error_messages['unusable'])
         return email
 
     def save(self, domain_override=None,

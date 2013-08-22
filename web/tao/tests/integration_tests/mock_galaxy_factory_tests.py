@@ -399,6 +399,15 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.assert_is_unchecked(self.sed_id('apply_dust'))
         self.assert_is_disabled(self.sed_id('select_dust_model'))
 
+    def _test_box_output_properties_not_shown_for_light_cone(self):
+        pass
+
+    def _test_light_cone_output_properties_not_shown_for_box(self):
+        pass
+
+    def _test_both_output_properties_shown_for_both_geometries(self):
+        pass
+    
     def assert_summary_range_correctly_shown(self, expected_value, form_name, field_names):
         value_displayed = ''
         for field_name in field_names:

@@ -216,8 +216,8 @@ catalogue.modules.light_cone = function ($) {
 
         this.vm = vm;
         vm.catalogue_geometries = ko.observableArray([
-            { id: 'light-cone', name: 'Light-Cone'},
-            { id: 'box', name: 'Box'}
+            { id: 'light-cone', name: 'Light-Cone', bit_mask:1},
+            { id: 'box', name: 'Box', bit_mask:2}
             ]);
         param = job['light_cone-catalogue_geometry']
         if (param)
@@ -259,8 +259,10 @@ catalogue.modules.light_cone = function ($) {
         vm.number_of_light_cones.subscribe(function(n) {
         	if (n==0) { console.log('WARN: Number of light-cones = 0'); }
         });
-        vm.dataset.subscribe(function(dataset) {
-            var objs = catalogue.util.output_choices(dataset.pk);
+        vm.available_output_properties = ko.computed(function(){
+            return catalogue.util.output_choices(vm.dataset().pk, vm.catalogue_geometry().bit_mask);
+        });
+        vm.available_output_properties.subscribe(function(objs) {
             vm.output_properties.new_options(objs);
         });
 
@@ -322,7 +324,7 @@ catalogue.modules.light_cone = function ($) {
         }
         vm.output_properties = TwoSidedSelectWidget(
         		lc_id('output_properties'),
-                {not_selected: catalogue.util.output_choices(vm.dataset().pk),
+                {not_selected: catalogue.util.output_choices(vm.dataset().pk, vm.catalogue_geometry().bit_mask),
                  selected: param ? param : []},
                 dataset_property_to_option);
         vm.current_output_property = ko.observable(undefined);

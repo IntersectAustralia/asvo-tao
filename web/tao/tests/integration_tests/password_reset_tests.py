@@ -49,6 +49,7 @@ class PasswordResetTests(helper.LiveServerTest):
         }
         self.fill_in_fields(field_data)
         self.click_by_css('button[type="submit"]')
+        self.assert_on_page('password_change_done')
 
         self.click('id-account_settings_menu')
         self.click('id-logout')

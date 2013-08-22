@@ -168,7 +168,7 @@ namespace tao {
       string master_filename;
       if( mpi::comm::world.rank() == 0 )
       {
-	 master_filename = "tao_sky.master." + index_string( _idx ) + ".list";
+	 master_filename = "tao_sky.master." + index_string( _sub_cone ) + "." + index_string( _idx ) + ".list";
          ::remove( master_filename.c_str() );
       }
       mpi::comm::world.bcast( master_filename, 0 );
@@ -196,7 +196,7 @@ namespace tao {
 	 // Rename the output file.
 	 fs::path target = "image." + index_string( _sub_cone ) + "." + index_string( _idx ) + ".fits";
 	 target = output_dir/target;
-	 fs::rename( "sky.fits", target );
+	 fs::rename( _sky_filename, target );
       }
       mpi::comm::world.barrier();
 
@@ -206,29 +206,35 @@ namespace tao {
 	 ::remove( master_filename.c_str() );
 	 ::remove( _list_filename.c_str() );
 	 ::remove( _conf_filename.c_str() );
+	 ::remove( _sky_filename.c_str() );
       }
    }
 
    void
    skymaker::image::setup_list()
    {
-      _list_filename = "tao_sky." + index_string( _idx ) + "." + mpi::rank_string() + ".list";
-      LOGDLN( "Opening parameter file: ", _list_filename );
+      _list_filename = "tao_sky." + index_string( _sub_cone ) + "." + index_string( _idx ) + "." + mpi::rank_string() + ".list";
+      LOGILN( "Opening parameter file: ", _list_filename );
       _list_file.open( _list_filename, std::ios::out );
    }
 
    void
    skymaker::image::setup_conf()
    {
-      _conf_filename ="tao_sky." + index_string( _idx ) + "." + mpi::rank_string() + ".conf";
-      LOGDLN( "Opening config file: ", _conf_filename );
-      std::ofstream file( _conf_filename, std::ios::out );
-      file << "IMAGE_SIZE " << _width << "," << _height << "\n";
-      file << "STARCOUNT_ZP 0.0\n";  // no auto stars
-      file << "MAG_LIMITS 0.1 49.0\n"; // wider magnitude limits
-      file << "ARM_COUNT 4\n";
-      file << "ARM_THICKNESS 40\n";
-      file << "ARM_POSANGLE 30\n";
+      if( mpi::comm::world.rank() == 0 )
+      {
+	 _conf_filename ="tao_sky." + index_string( _sub_cone ) + "." + index_string( _idx ) + ".conf";
+	 _sky_filename = "tao_sky." + index_string( _sub_cone ) + "." + index_string( _idx ) + ".fits";
+	 LOGDLN( "Opening config file: ", _conf_filename );
+	 std::ofstream file( _conf_filename, std::ios::out );
+	 file << "IMAGE_NAME " << _sky_filename << "\n";
+	 file << "IMAGE_SIZE " << _width << "," << _height << "\n";
+	 file << "STARCOUNT_ZP 0.0\n";  // no auto stars
+	 file << "MAG_LIMITS 0.1 49.0\n"; // wider magnitude limits
+	 file << "ARM_COUNT 4\n";
+	 file << "ARM_THICKNESS 40\n";
+	 file << "ARM_POSANGLE 30\n";
+      }
    }
 
    ///
