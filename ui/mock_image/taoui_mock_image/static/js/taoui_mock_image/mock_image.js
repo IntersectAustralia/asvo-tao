@@ -106,7 +106,7 @@ catalogue.modules.mock_image = function ($) {
             param = get_param(prefix, '-format');
             image_params.format = ko.observable(param ? {value:param,text:param} : vm.format_options[0]);
             image_params.mag_field_options = ko.computed(function(){
-                return catalogue.modules.sed.vm.bandpass_filters.to_side.options();
+                return catalogue.modules.sed.vm.bandpass_filters.to_side.options_raw();
             });
             image_params.mag_field = ko.observable();
             // Note that mag_field is stored incorrectly
@@ -251,7 +251,7 @@ catalogue.modules.mock_image = function ($) {
         vm.can_have_images = ko.computed(function(){
             return catalogue.modules.sed.vm.apply_sed() &&
                 catalogue.modules.light_cone.vm.catalogue_geometry().id == 'light-cone' &&
-                catalogue.modules.sed.vm.bandpass_filters.to_side.options().length > 0;
+                catalogue.modules.sed.vm.bandpass_filters.to_side.options_raw().length > 0;
         });
 
         vm.sub_cone_options = ko.computed(function(){
