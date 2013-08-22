@@ -42,17 +42,6 @@ class ListJobsTests(LiveServerMGFTest):
         expected_jobs = [self.held_job, self.submitted_job, self.queued_job, self.in_progress_job, self.completed_job, self.error_job2, self.error_job]
         self.assert_job_table_equals(expected_jobs)
 
-    def test_error_message_displayed_in_popup(self):
-        self.assert_are_displayed_by_class_name('openPopUp')
-        buttons = self.selenium.find_elements_by_class_name('openPopUp')
-
-        buttons[0].click()
-        self.assert_page_has_content(self.error_job.error_message)
-        self.click_by_class_name('ui-button-text')
-
-        buttons[1].click()
-        self.assert_page_has_content(self.error_job2.error_message)
-
     def _test_completed_job_viewed_via_link(self):
         completed_id = self.completed_job.id
         self.assert_is_displayed('#view_job_' + str(completed_id))
