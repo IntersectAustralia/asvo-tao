@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vosi:capabilities xmlns:vosi="http://www.ivoa.net/xml/VOSICapabilities/v1.0" xmlns:tr="http://www.ivoa.net/xml/TAP/v0.1" xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0" xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ivoa.net/xml/TAP/v0.1 http://www.ivoa.net/xml/TAP/v0.1">
+<capability standardID="ivo://ivoa.net/std/TAP" xsi:type="tr:TableAccess">
+	<interface role="std" xsi:type="vs:ParamHTTP">
+		<accessURL use="base">{{ baseUrl }}</accessURL>
+	</interface>{% for language in languages %}
+	<language>
+		<name>{{ language.name }}</name>
+		<version>{{ language.version }}</version>
+		<description>{{ language.description }}</description>
+	</language>{% endfor %}{% for format in formats %}
+	<outputFormat>
+		<mime>{{ format.mime }}</mime>
+		<alias>{{ format.name }}</alias>
+		<description>{{ format.description }}</description>
+	</outputFormat>{% endfor %}
+	<retentionPeriod>
+		<default>{{ retentionPeriod.default }}</default>
+		<hard>{{ retentionPeriod.hard }}</hard>
+	</retentionPeriod>
+	<executionDuration>
+		<default>{{ executionDuration.default }}</default>
+		<hard>{{ executionDuration.hard }}</hard>
+	</executionDuration>
+	<outputLimit>
+		<default unit="{{ outputLimit.units }}">{{ outputLimit.default }}</default>
+		<hard unit="{{ outputLimit.units }}">{{ outputLimit.hard }}</hard>
+	</outputLimit>
+	</capability>{% for capability in capabilities %}
+	<capability standardID="ivo://ivoa.net/std/VOSI#{{ capability.id }}">
+		<interface xsi:type="vs:ParamHTTP" role="std">
+			<accessURL use="{{ capability.use }}">{{ baseUrl }}/{{ capability.url }}</accessURL>
+		</interface>
+	</capability>{% endfor %}
+</vosi:capabilities>
