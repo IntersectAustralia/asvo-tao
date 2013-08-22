@@ -1,0 +1,13 @@
+<uws:job xsi:schemaLocation="http://www.ivoa.net/xml/UWS/v1.0 UWS.xsd " xmlns:xml="http://www.w3.org/XML/1998/namespace" xmlns:uws="http://www.ivoa.net/xml/UWS/v1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<uws:jobId>{{ job.id }}</uws:jobId>
+	<uws:ownerId>{{ job.username }}</uws:ownerId>
+	<uws:phase>{{ status }}</uws:phase>
+	<uws:startTime>{{ job.created_time }}</uws:startTime>
+	<uws:executionDuration>{{ duration }}</uws:executionDuration>
+	<uws:results>
+		<uws:result id="data" xlink:href="{{ resultsURL }}"/>
+	</uws:results>{% if job.error_message != '' %}
+	<uws:errorSummary type="transient" hasDetail="true">
+		<uws:message>{{ job.error_message }}</uws:message>
+	</uws:errorSummary>{% endif %}
+</uws:job>
