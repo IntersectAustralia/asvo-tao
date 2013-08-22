@@ -35,7 +35,7 @@ def availability(request):
 def tables(request):
     available_datasets = models.DataSet.objects.filter(available=1)
     dataset_properties = []
-    data_types = {i:t for i,t in models.DataSetProperty.DATA_TYPES}
+    data_types = dict([(i,t) for i,t in models.DataSetProperty.DATA_TYPES])
     for dataset in available_datasets:
         properties = models.DataSetProperty.objects.filter(dataset_id = dataset.id, 
             is_output = True).order_by('group', 'order', 'label')
