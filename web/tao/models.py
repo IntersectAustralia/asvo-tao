@@ -173,6 +173,7 @@ class DataSetProperty(models.Model):
     order = models.IntegerField(default=0)
     is_index = models.BooleanField(default=False)
     is_primary = models.BooleanField(default=False)
+    flags = models.IntegerField(default=3)  # property bit flags: 0 = light-cone, 1 = box
 
     class Meta:
         ordering = ['group', 'order', 'label']
