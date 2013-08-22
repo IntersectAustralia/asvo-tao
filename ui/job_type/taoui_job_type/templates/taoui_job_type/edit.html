@@ -1,0 +1,21 @@
+{% load bootstrap_tags %}
+{% load assets %}
+{% load staticfiles %}
+
+<script type="text/javascript" src="{% static 'js/taoui_job_type/job_type.js' %}"></script>
+
+<legend></legend>
+
+<div class="row-fluid">
+    <div class="boxed span8">
+        <input type="button" value="Custom Job" class="btn tao-next" />
+        <div>
+            {{ form.get_job_type|as_bootstrap_field }}
+        </div>
+        <div id="telescope_params">
+            {% for fieldset in form.fieldsets %}
+                {{ fieldset|as_bootstrap_fieldset }}
+            {% endfor %}
+        </div>
+    </div>
+</div>

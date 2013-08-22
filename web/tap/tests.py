@@ -3,11 +3,13 @@ from tap.parser import *
 from django.test import TestCase
 from django.test.client import Client
 from tao import models
+from django.test.utils import override_settings
 from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory
 
 
 class TAPServicesTests(TestCase):
-
+    
+    @override_settings(AUTH_USER_MODEL='tao.TaoUser')
     def setUp(self):
         super(TAPServicesTests, self).setUp()
         
@@ -46,17 +48,16 @@ class TAPServicesTests(TestCase):
         response = self.client.post('/tap/sync')
         self.assertEqual(response.status_code, 400)
         
-    #===========================================================================
-    # def test_sync_submit(self):
-    #     self.client.defaults['HTTP_AUTHORIZATION'] = self.http_auth(self.username, self.password)
-    #     response = self.client.post('/tap/sync', self.query)
-    #     self.assertEqual(response.status_code, 200)
-    #       
-    # def test_async_submit(self):
-    #     self.client.defaults['HTTP_AUTHORIZATION'] = self.http_auth(self.username, self.password)
-    #     response = self.client.post('/tap/async', self.query)
-    #     self.assertEqual(response.status_code, 303)
-    #===========================================================================
+#     def test_sync_submit(self):
+#         self.client.defaults['HTTP_AUTHORIZATION'] = self.http_auth(self.username, self.password)
+#         response = self.client.post('/tap/sync', self.query)
+#         self.assertEqual(response.status_code, 200)
+           
+    @override_settings(AUTH_USER_MODEL='tao.TaoUser')
+    def test_async_submit(self):
+        self.client.defaults['HTTP_AUTHORIZATION'] = self.http_auth(self.username, self.password)
+        response = self.client.post('/tap/async', self.query)
+        self.assertEqual(response.status_code, 303)
         
     def test_dataset_name_parsing(self):
         query = 'select * from %s %s' % (self.dataset['name'], self.dataset['label'])

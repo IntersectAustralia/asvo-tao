@@ -1,7 +1,9 @@
 {% load bootstrap_tags %}
 {% load assets %}
 {% load staticfiles %}
+{% block extrajs %}
 <script type="text/javascript" src="{% static 'js/taoui_mock_image/mock_image.js' %}"></script>
+{% endblock extrajs %}
 
 <legend></legend>
 <div class="row-fluid">
@@ -11,22 +13,25 @@
             <label class="control-label" for="id_mock_image-apply_mock_image">Generate Mock Image</label>
             <div class="controls">
               <input id="id_mock_image-apply_mock_image"
-              name="mock_image-apply_mock_image" type="checkbox"
-              {% if form.apply_mock_image %}checked{% endif %} />
+                name="mock_image-apply_mock_image" type="checkbox"
+                data-bind="checked: apply_mock_image, enable: can_have_images" />
             </div>
           </div>
         </div>
-        <div id="mock_image_params">
-          {% for sf in form %}
-          <div class="single-form boxed">
-            {% for field in sf %}
-            {{ field|as_bootstrap_field }}
-            {% endfor %}
-          </div>
-	  {% endfor %}
-          {{ form.management_form }}
+        <div id="mock_image_params" data-bind="template: {name: 'single_form_template', foreach: image_settings}, visible: can_have_images() && apply_mock_image()"
+                style="display: block;">
         </div>
+        <button data-bind="click: add_image_settings, visible: can_have_images() && apply_mock_image()">Add</button>
     </div>
     <div class="aside span4" id="sed_info">
     </div>
-</div>  
+</div>
+
+<script type="text/html" id="single_form_template">
+          <div class="single-form boxed dynamic-form">
+            {% for field in form.empty_form %}
+            {{ field|as_bootstrap_field }}
+            {% endfor %}
+            <button data-bind="click: function(){$parent.remove_image_settings($data)}">Remove</button>
+          </div>
+</script>

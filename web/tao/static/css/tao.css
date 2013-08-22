@@ -137,7 +137,7 @@ legend {
   -webkit-border-radius: 0; -moz-border-radius: 0; border-radius: 0;
 }
 #tabs.ui-tabs .ui-tabs-nav li {
-    margin: 0; padding: 0;
+    margin: 5px 0 0 0; padding: 0;
     margin-bottom: -2px;
     width: auto;
     top: none;
@@ -173,12 +173,13 @@ legend {
 }
 
 #tabs.ui-tabs li.ui-state-active a, #tabs.ui-tabs li.ui-state-active a:hover {
-    color: #555;
-    cursor: default;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-bottom-color: transparent;
-    margin-bottom: -1px;
+  margin: 0;
+  color: #555;
+  cursor: default;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-bottom-color: transparent;
+  margin-bottom: -1px;
 }
 
 
@@ -231,8 +232,8 @@ fieldset legend {
 .id_light_cone-redshift_min, .id_light_cone-redshift_max,
 [class*="id_mock_image"][class*="sub_cone"],
 [class*="id_mock_image"][class*="format"],
-[class*="id_mock_image"][class*="mag_field"],
 [class*="id_mock_image"][class*="min_mag"],
+[class*="id_mock_image"][class*="max_mag"],
 [class*="id_mock_image"][class*="z_min"],
 [class*="id_mock_image"][class*="z_max"],
 [class*="id_mock_image"][class*="origin_ra"],
@@ -250,6 +251,18 @@ fieldset legend {
     box-sizing: border-box;
     clear: after;
 }
+
+[class*="id_mock_image"][class*="mag_field"] {
+    width: 100%;
+    display: block;
+    float: left;
+    min-height: 30px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    clear: after;
+}
+
 .id_light_cone-ra_opening_angle input, .id_light_cone-dec_opening_angle input,
 .id_light_cone-redshift_min input, .id_light_cone-redshift_max input,
 .id_mock_image-min_mag input, .id_mock_image-max_mag input,
@@ -544,12 +557,12 @@ border-left:thick solid #d0d0d0;
 .brand.small { display: none; }
 
 
-.navbar .brand { padding: 10px; }
+.navbar .brand { padding: 10px 10px 8px 10px; }
 .navbar .nav > li > a { padding: 10px 15px 10px; }
 .navbar-text { margin-bottom: 0; line-height: 20px; }
 .brand.small { display: none; }
 
-@media only screen and (max-width : 1200px) {
+@media only screen and (max-width : 1280px) {
   .navbar div.brand { display: none; }
   .navbar .brand.small { display: block; }
   #banner { position: absolute; }
@@ -567,11 +580,21 @@ border-left:thick solid #d0d0d0;
   .nav-collapse .dropdown-menu { display: inline-block; }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 950px) {
   body {
     padding-right: 0px;
     padding-left: 0px;
   }
+  .row-fluid {
+    width: 100%;
+  }
+  [class*="span"], .row-fluid [class*="span"] {
+    display: block;
+    float: none;
+    width: auto;
+    margin-left: 0;
+  }
+  .aside { margin-top: 20px; }
 }
 
 footer {
@@ -625,8 +648,37 @@ html, body {
     content: '';
 }
 
+#id-job_description {
+	height: auto;
+	width: 100%;
+	box-shadow: none;
+	border: 0;
+	margin-left: 0;
+}
 
 #inlineedit { position: relative; }
 /* #inlineedit:hover #savecancel, #inlineedit:active #savecancel { display: block; } */
 #savecancel { position: absolute; bottom: 0px; right: 0px; margin-bottom: -40px; display: none; }
 #savecancel div { display: inline-block; }
+
+#modal_message {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    opacity: 0.4;
+}
+
+#modal_message_text {
+    position: absolute;
+    left: 30%;
+    top: 10%;
+    width: 40%;
+    border: 0;
+    box-shadow: none;
+    resize: none;
+    height: auto;
+}
+
