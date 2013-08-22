@@ -86,7 +86,7 @@ class Simulation(models.Model):
         return self.name
     
     class Meta:
-        ordering = ['name']
+        ordering = ['order', 'name']
 
     def save(self, *args, **kwargs):
         if self.name:
@@ -306,6 +306,9 @@ class Job(models.Model):
         Checks if the given user is the user of this job
         """
         return self.user.id == user.id
+
+    def can_write_job(self, user):
+        return self.can_read_job(user)
 
     def can_download_zip_file(self):
         return True

@@ -64,7 +64,7 @@ class ShibbolethUserMiddleware(object):
             except KeyError:
                 attrs[field] = ''
                 username = _INVALID_AAF
-        attrs.update({'username': username})
+        attrs.update({'username': username, '_IS_AAF_': True})
         return auth.authenticate(**attrs)
 
     def process_username(self, request):
@@ -77,6 +77,7 @@ class ShibbolethUserMiddleware(object):
 
 class ShibbolethUserBackend(ModelBackend):
     def authenticate(self, **kwargs):
+        if not '_IS_AAF_' in kwargs: return None
         username = kwargs.get('username')
         UserModel = get_user_model()
         user, created = UserModel.objects.get_or_create(**{"username": username})
