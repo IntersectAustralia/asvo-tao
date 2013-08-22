@@ -214,7 +214,7 @@ namespace tao {
    skymaker::image::setup_list()
    {
       _list_filename = "tao_sky." + index_string( _sub_cone ) + "." + index_string( _idx ) + "." + mpi::rank_string() + ".list";
-      LOGDLN( "Opening parameter file: ", _list_filename );
+      LOGILN( "Opening parameter file: ", _list_filename );
       _list_file.open( _list_filename, std::ios::out );
    }
 
