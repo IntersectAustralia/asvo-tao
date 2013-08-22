@@ -142,6 +142,7 @@ class Migration(SchemaMigration):
         u'tao.stellarmodel': {
             'Meta': {'object_name': 'StellarModel'},
             'description': ('django.db.models.fields.TextField', [], {'default': "''"}),
+            'encoding': ('django.db.models.fields.TextField', [], {'default': "''"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'label': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '200'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '200'})
