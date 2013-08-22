@@ -52,10 +52,10 @@ catalogue.modules.mock_image = function ($) {
 		var image_params;
 		var params = {};
 
-		params['mock_image-apply_mock_image'] = [vm.apply_mock_image()];
+		params['mock_image-apply_mock_image'] = [vm.can_have_images() && vm.apply_mock_image()];
 		params['mock_image-MAX_NUM_FORMS'] = [max_allowed_images];
 		params['mock_image-INITIAL_FORMS'] = [0];
-		if (vm.apply_mock_image()) {
+		if (vm.can_have_images() && vm.apply_mock_image()) {
 			image_params = vm.image_settings();
 			// Assume that we haven't exceeded the max_allowed_images
 			// (which should be checked as part of wizard validation)
