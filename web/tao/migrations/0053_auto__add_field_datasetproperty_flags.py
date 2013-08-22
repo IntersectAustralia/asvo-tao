@@ -8,23 +8,15 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding field 'DataSetProperty.is_index'
-        db.add_column(u'tao_datasetproperty', 'is_index',
-                      self.gf('django.db.models.fields.BooleanField')(default=False),
-                      keep_default=False)
-
-        # Adding field 'DataSetProperty.is_primary'
-        db.add_column(u'tao_datasetproperty', 'is_primary',
-                      self.gf('django.db.models.fields.BooleanField')(default=False),
+        # Adding field 'DataSetProperty.flags'
+        db.add_column(u'tao_datasetproperty', 'flags',
+                      self.gf('django.db.models.fields.IntegerField')(default=3),
                       keep_default=False)
 
 
     def backwards(self, orm):
-        # Deleting field 'DataSetProperty.is_index'
-        db.delete_column(u'tao_datasetproperty', 'is_index')
-
-        # Deleting field 'DataSetProperty.is_primary'
-        db.delete_column(u'tao_datasetproperty', 'is_primary')
+        # Deleting field 'DataSetProperty.flags'
+        db.delete_column(u'tao_datasetproperty', 'flags')
 
 
     models = {
@@ -67,9 +59,9 @@ class Migration(SchemaMigration):
             'galaxy_model': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['tao.GalaxyModel']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'import_date': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'job_size_p1': ('django.db.models.fields.FloatField', [], {'default': '0.06555053'}),
+            'job_size_p1': ('django.db.models.fields.FloatField', [], {'default': '0.065550529999999996'}),
             'job_size_p2': ('django.db.models.fields.FloatField', [], {'default': '-0.10355211'}),
-            'job_size_p3': ('django.db.models.fields.FloatField', [], {'default': '0.37135452'}),
+            'job_size_p3': ('django.db.models.fields.FloatField', [], {'default': '0.37135452000000002'}),
             'max_job_box_count': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'simulation': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['tao.Simulation']"}),
             'version': ('django.db.models.fields.DecimalField', [], {'default': "'1.00'", 'max_digits': '10', 'decimal_places': '2'})
@@ -79,6 +71,7 @@ class Migration(SchemaMigration):
             'data_type': ('django.db.models.fields.IntegerField', [], {}),
             'dataset': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['tao.DataSet']"}),
             'description': ('django.db.models.fields.TextField', [], {'default': "''", 'blank': 'True'}),
+            'flags': ('django.db.models.fields.IntegerField', [], {'default': '3'}),
             'group': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '80', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'is_computed': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
@@ -125,7 +118,7 @@ class Migration(SchemaMigration):
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['tao.TaoUser']"})
         },
         u'tao.simulation': {
-            'Meta': {'ordering': "['name']", 'object_name': 'Simulation'},
+            'Meta': {'ordering': "['order', 'name']", 'object_name': 'Simulation'},
             'box_size': ('django.db.models.fields.DecimalField', [], {'max_digits': '10', 'decimal_places': '3'}),
             'box_size_units': ('django.db.models.fields.CharField', [], {'default': "'Mpc'", 'max_length': '10'}),
             'details': ('django.db.models.fields.TextField', [], {'default': "''"}),
