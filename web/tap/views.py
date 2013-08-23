@@ -75,7 +75,7 @@ def job(request, id):
     job = findTAPjob(request, id)
     
     if request.method == 'DELETE':
-        print 'DELETE'
+        deleteTAPJob(job)
     
     resultsURL = "%s/%d/results" % (request.build_absolute_uri("/tap/async"), job.id)
     
@@ -88,6 +88,9 @@ def job(request, id):
 @http_auth_required
 def phase(request, id):
     job = findTAPjob(request, id)
+    
+    if 'PHASE' in request.POST and request.POST['PHASE'] == 'ABORT':
+        deleteTAPJob(job, 'Aborted')
     
     if 'get' not in request.GET:
         return UWSRedirect(request, job.id, '/phase?get')
@@ -104,13 +107,17 @@ def quote(request, id):
 @csrf_exempt
 @http_auth_required
 def termination(request, id):
-    print 'DELETE'
+    job = findTAPjob(request, id)
+    deleteTAPJob(job, 'Terminated')
+    
     return render(request, 'tap/http_response.html', {'message': 'TERMINATED'})
 
 @csrf_exempt
 @http_auth_required
 def destruction(request, id):
-    print 'DELETE'
+    job = findTAPjob(request, id)
+    deleteTAPJob(job, 'Destructed')
+    
     return render(request, 'tap/http_response.html', {'message': 'DESTRUCTED'})
 
 @csrf_exempt
@@ -196,21 +203,6 @@ def make_parameters_xml(request):
     query_node = etree.SubElement(sql, 'query')
     query_node.text = query
     
-    #===========================================================================
-    # if order:
-    #     order_node = etree.SubElement(sql, 'order')
-    #     order_node.text = order
-    # 
-    # if limit:
-    #     limit_node = etree.SubElement(sql, 'limit')
-    #     limit_node.text = limit
-    # 
-    # condition_items = etree.SubElement(sql, 'conditions')
-    # for condition in conditions:
-    #     item = etree.SubElement(condition_items, 'item')
-    #     item.text = condition
-    #===========================================================================
-    
     module_version_node = etree.SubElement(sql, 'module-version')
     module_version_node.text = str(TAP_MODULE_VERSION)
     
@@ -287,4 +279,13 @@ def findTAPjob(request, id):
         raise PermissionDenied
     
     return job
+    
+def deleteTAPJob(job, action='Deleted'):
+    job_stop_command = models.WorkflowCommand(job_id=job, command='Job_Stop', 
+                                              submitted_by=job.user, execution_status='SUBMITTED')
+    job_stop_command.save()
+    job.status = models.Job.ERROR
+    job.error_message = "%s by user" % action
+    job.save()
+    
     
