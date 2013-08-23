@@ -34,7 +34,7 @@ namespace tao {
 		int sub_cone,
                 const string& format,
                 const string& mag_field,
-                real_type min_mag,
+                optional<real_type> min_mag,
                 real_type z_min,
                 real_type z_max,
                 real_type origin_ra,
@@ -49,7 +49,7 @@ namespace tao {
 		int sub_cone,
 		const string& format,
 		const string& mag_field,
-		real_type min_mag,
+		optional<real_type> min_mag,
 		real_type z_min,
 		real_type z_max,
 		real_type origin_ra,
@@ -83,7 +83,7 @@ namespace tao {
 	 unsigned _sub_cone;
 	 string _format;
          string _mag_field;
-         real_type _min_mag;
+         optional<real_type> _min_mag;
 	 real_type _z_min, _z_max;
 	 real_type _origin_ra, _origin_dec;
 	 real_type _fov_ra, _fov_dec;
