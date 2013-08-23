@@ -34,6 +34,7 @@ class TaoUser(auth_models.AbstractUser):
     account_registration_status = models.CharField(max_length=3, blank=False, default=RS_NA)
     account_registration_reason = models.TextField(null=True, blank=True, default='')
     account_registration_date = models.DateTimeField(null=True)
+    disk_quota = models.IntegerField(null=True, blank=True, default=0)
 
     def display_name(self):
         if self.aaf_shared_token is not None and len(self.aaf_shared_token)>0:
@@ -173,7 +174,7 @@ class DataSetProperty(models.Model):
     order = models.IntegerField(default=0)
     is_index = models.BooleanField(default=False)
     is_primary = models.BooleanField(default=False)
-    flags = models.IntegerField(default=3)  # property bit flags: 0 = light-cone, 1 = box
+    flags = models.IntegerField(default=3)  # property bit flags: 0-th bit sets light-cone, 1-th bit sets box
 
     class Meta:
         ordering = ['group', 'order', 'label']
@@ -256,6 +257,7 @@ class Job(models.Model):
     output_path = models.TextField(blank=True)  # without a trailing slash, please
     database = models.CharField(max_length=200)
     error_message = models.TextField(blank=True, max_length=1000000, default='')
+    disk_usage = models.IntegerField(null=True, blank=True, default=0)
 
     def __init__(self, *args, **kwargs):
         super(Job, self).__init__(*args, **kwargs)
@@ -275,10 +277,20 @@ class Job(models.Model):
     def short_error_message(self):
         return self.error_message[:80]
 
+    def disk_size(self):
+        if self.disk_usage is not None:
+            return self.disk_usage
+        else:
+            sum_file_sizes = 0
+            for file in self.files():
+                sum_file_sizes += file.file_size
+            self.disk_usage = sum_file_sizes
+            return sum_file_sizes
+
     def files(self):
         if not self.is_completed():
             raise Exception("can't look at files of job that is not completed")
-        
+
         all_files = []
         job_base_dir = os.path.join(settings.FILES_BASE, self.output_path)
         for root, dirs, files in os.walk(job_base_dir):
