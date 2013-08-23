@@ -58,6 +58,16 @@ class TAPServicesTests(TestCase):
         jobs = models.Job.objects.all()
         self.assertEqual(jobs[0].user, self.user)
         
+    def test_async_delete(self):
+        self.client.defaults['HTTP_AUTHORIZATION'] = self.http_auth(self.username, self.password)
+        job = models.Job(user=self.user, status=models.Job.SUBMITTED)
+        job.save()
+        response = self.client.delete('/tap/async/%s' % job.id)
+        models.Job.objects.update()
+        job = models.Job.objects.get(id=job.id)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(job.status, models.Job.ERROR)
+        
     def test_dataset_name_parsing(self):
         query = 'select * from %s %s' % (self.dataset['name'], self.dataset['label'])
         self.assertEqual(parse_dataset_name(query), self.dataset)
