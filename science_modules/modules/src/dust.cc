@@ -141,11 +141,11 @@ namespace tao {
    void
    dust::_read_wavelengths( const string& filename )
    {
-      LOG_ENTER();
-
       // Open the file.
-      std::ifstream file( filename );
-      ASSERT( file.is_open() );
+      boost::filesystem::path fn = nix::executable_path().parent_path().parent_path()/"data/stellar_populations/"/filename;
+      LOGILN( "Filter: Reading wavelengths: ", fn );
+      std::ifstream file( fn.c_str(), std::ios::in );
+      ASSERT( file, "Couldn't find wavelengths file.") ;
 
       // Need to get number of lines in file first.
       unsigned num_waves = 0;
@@ -167,15 +167,13 @@ namespace tao {
       file.seekg( 0 );
       for( unsigned ii = 0; ii < _waves.size(); ++ii )
          file >> _waves[ii];
-
-      LOG_EXIT();
    }
 
    void
    dust::_read_options( const options::xml_dict& global_dict )
    {
       // Get the wavelengths filename.
-      _waves_filename = _dict.get<string>( "wavelengths", "wavelengths.dat" );
+      _waves_filename = _dict.get<string>( "wavelengths", "m05/wavelengths.dat" );
       LOGLN( "Using wavelengths filename \"", _waves_filename, "\"" );
    }
 }

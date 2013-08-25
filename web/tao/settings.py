@@ -158,6 +158,7 @@ INSTALLED_APPS = (
     'django_extensions',
     'tastypie',
     'activitylog',
+    'tap',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
@@ -262,7 +263,7 @@ MODULE_INDICES = {
                   'telescope': '8'
                   }
 
-TAO_VERSION = '0.26.8'
+TAO_VERSION = '0.27.2'
 
 AAF_DS_URL = 'https://ds.test.aaf.edu.au/discovery/DS'
 AAF_APP_ID = 'https://example.intersect.org.au/shibboleth'
@@ -287,7 +288,7 @@ API_ALLOWED_IPS = (
                    '127.0.0.1'
                    )
 
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 USE_CAPTCHA=True
 
 #

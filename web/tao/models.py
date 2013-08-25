@@ -34,6 +34,7 @@ class TaoUser(auth_models.AbstractUser):
     account_registration_status = models.CharField(max_length=3, blank=False, default=RS_NA)
     account_registration_reason = models.TextField(null=True, blank=True, default='')
     account_registration_date = models.DateTimeField(null=True)
+    disk_quota = models.IntegerField(null=True, blank=True, default=0)
 
     def display_name(self):
         if self.aaf_shared_token is not None and len(self.aaf_shared_token)>0:
@@ -171,6 +172,9 @@ class DataSetProperty(models.Model):
     description = models.TextField(default='', blank=True)
     group = models.CharField(max_length=80, default='', blank=True)
     order = models.IntegerField(default=0)
+    is_index = models.BooleanField(default=False)
+    is_primary = models.BooleanField(default=False)
+    flags = models.IntegerField(default=3)  # property bit flags: 0-th bit sets light-cone, 1-th bit sets box
 
     class Meta:
         ordering = ['group', 'order', 'label']
@@ -203,6 +207,9 @@ class StellarModel(models.Model):
     name = models.CharField(max_length=200, unique=True)
     label = models.CharField(max_length=200, unique=True)
     description = models.TextField(default='')
+    # The name is no longer used to generate the params xml,
+    # simply insert the xml fragment in encoding
+    encoding = models.TextField(default='')
 
     def __unicode__(self):
         return self.name
@@ -250,6 +257,7 @@ class Job(models.Model):
     output_path = models.TextField(blank=True)  # without a trailing slash, please
     database = models.CharField(max_length=200)
     error_message = models.TextField(blank=True, max_length=1000000, default='')
+    disk_usage = models.IntegerField(null=True, blank=True, default=0)
 
     def __init__(self, *args, **kwargs):
         super(Job, self).__init__(*args, **kwargs)
@@ -269,10 +277,20 @@ class Job(models.Model):
     def short_error_message(self):
         return self.error_message[:80]
 
+    def disk_size(self):
+        if self.disk_usage is not None:
+            return self.disk_usage
+        else:
+            sum_file_sizes = 0
+            for file in self.files():
+                sum_file_sizes += file.file_size
+            self.disk_usage = sum_file_sizes
+            return sum_file_sizes
+
     def files(self):
         if not self.is_completed():
             raise Exception("can't look at files of job that is not completed")
-        
+
         all_files = []
         job_base_dir = os.path.join(settings.FILES_BASE, self.output_path)
         for root, dirs, files in os.walk(job_base_dir):
@@ -386,6 +404,15 @@ class WorkflowCommand(models.Model):
 
     def submittedby(self):
         return self.submitted_by.pk
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        if self.execution_status in [COMPLETED, ERROR]:
+            prev = WorkflowCommand.objects.get(pk=self.id)
+            if self.execution_status != prev.execution_status:
+                self.executed = datetime.now()
+        super(WorkflowCommand, self).save(force_insert=force_insert, force_update=force_update, using=using,
+                                          update_fields=update_fields)
 
 class GlobalParameter(models.Model):
     parameter_name = models.CharField(max_length=60, unique=True)

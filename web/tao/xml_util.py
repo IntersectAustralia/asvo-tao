@@ -5,6 +5,7 @@ tao.xml_util
 
 Helper methods for XML
 """
+from copy import copy
 from lxml import etree
 import re
 
@@ -23,6 +24,15 @@ def child_element(parent, tag, text=None, **attrs):
     if text is not None:
         elem.text = str(text)
     return elem
+
+
+def add_encoding(parent, xml_fragments):
+    """Append the supplied xml_fragments string to the parent."""
+    new_elements = etree.fromstring('<x>' + xml_fragments + '</x>')
+    for elem in new_elements:
+        parent.append(copy(elem))
+    return new_elements
+
 
 def xml_print(root):
     return etree.tostring(root, pretty_print=True, encoding='utf-8', xml_declaration=True)
