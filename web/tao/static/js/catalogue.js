@@ -716,8 +716,87 @@ jQuery(document).ready(function ($) {
         }
     };
 
+    ko.bindingHandlers['tabs'] = {
+        init: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+            var $e = $(element);
+            // Make a modified binding context, with a extra properties, and apply it to descendant elements
+            var tabs_vm = {
+                tabs : {},
+                tabs_by_number : {}
+            };
+            var childBindingContext = bindingContext.createChildContext(viewModel);
+            ko.utils.extend(childBindingContext, tabs_vm);
+            ko.applyBindingsToDescendants(childBindingContext, element);
+
+            // order is important here; let KO manage/create DOM (above)
+            // then we call jQueryUI (below)
+            $e.tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
+            $e.find("li").removeClass("ui-corner-top").addClass("ui-corner-left");
+
+            // Also tell KO *not* to bind the descendants itself, otherwise they will be bound twice
+            catalogue.tabs_vm = tabs_vm;
+            return { controlsDescendantBindings: true };
+        }
+    }
+
+    ko.bindingHandlers['tab_handle'] = {
+        init: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+            var $e = $(element);
+            var $a = $('<a />');
+            $a.attr('href','#tabs-' + valueAccessor().id);
+            $a.text(valueAccessor().label);
+            var tab_def = {
+                'tab_element': $a,
+                'tab_number': Object.keys(bindingContext.tabs).length,
+                'tab_status': ko.observable(0)
+            };
+            bindingContext.tabs[valueAccessor().id] = tab_def;
+            bindingContext.tabs_by_number[tab_def.tab_number] = tab_def;
+            $e.append($a);
+            tab_def.tab_status.subscribe(function(tab_status){
+                for(var i=0;i<=2;i++) {$a.removeClass('status_'+i);}
+                $a.addClass('status_'+tab_status);
+            })
+        },
+
+        update: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+            // need to do ?
+        }
+    }
+
+    ko.bindingHandlers['tab_form'] = {
+        init: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+            $(element).attr('id','tabs-' + valueAccessor().id);
+            // Make a modified binding context, with a extra properties, and apply it to descendant elements
+            var tabObj = bindingContext.tabs[valueAccessor().id];
+            var next_tab = bindingContext.tabs_by_number[tabObj.tab_number+1];
+            var previous_tab = bindingContext.tabs_by_number[tabObj.tab_number-1];
+            tabObj.next_tab = function() {
+                if (next_tab !== undefined)
+                    next_tab.tab_element.click();
+            }
+            tabObj.previous_tab = function() {
+                if (previous_tab !== undefined)
+                    previous_tab.tab_element.click();
+            }
+            var childBindingContext = bindingContext.createChildContext(viewModel);
+            ko.utils.extend(childBindingContext, tabObj);
+            ko.applyBindingsToDescendants(childBindingContext, element);
+
+            // Also tell KO *not* to bind the descendants itself, otherwise they will be bound twice
+            return { controlsDescendantBindings: true };
+        },
+
+        update: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+
+        }
+    }
 
     catalogue.vm = {}
+
+    catalogue.vm.get_tab = function(form) {
+        catalogue.modules[form].id;
+    }
 
     function initialise_modules() {
     	var init_params = {
@@ -754,10 +833,13 @@ jQuery(document).ready(function ($) {
     }
 
 
-    var show_tab_error = function () {
-        var $errors = $('div.control-group').filter('.error');
-        if ($errors.length > 0) {
-            catalogue.util.show_tab($errors.first(), 0);
+    catalogue.show_tab_error = function () {
+        var tabs = catalogue.tabs_vm.tabs_by_number;
+        for(var i=0; tabs[i]!==undefined; i++) {
+            if (tabs[i].tab_status()!=0) {
+                tabs[i].tab_element.click();
+                break;
+            }
         }
     }
 
@@ -771,13 +853,7 @@ jQuery(document).ready(function ($) {
             })
         }
 
-        
-        set_click('.tao-prev', -1);
-        set_click('.tao-next', +1);
-        $("#tabs").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
-        $("#tabs li").removeClass("ui-corner-top").addClass("ui-corner-left");
-        // pre-select error
-        show_tab_error();
+        // catalogue.show_tab_error();
 
     }
 
