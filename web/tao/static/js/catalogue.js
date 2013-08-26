@@ -495,29 +495,6 @@ catalogue.util = function ($) {
         }
     }
 
-    var get_tab_number = function ($elem) {
-        return parseInt($elem.closest('div.tao-tab').attr('tao-number'));
-    }
-
-
-    // focus on tab (direction=0), next tab (direction=+1) or prev tab (direction=-1)
-    this.show_tab = function ($elem, direction) {
-        var this_tab = get_tab_number($elem);
-        $('#tao-tabs-' + (this_tab + direction)).click();
-    }
-
-
-    this.show_error = function ($field, msg) {
-        var $enclosing = $field.closest('div.control-group');
-        $enclosing.find('span.help-inline').remove();
-        $enclosing.removeClass('error');
-        if (msg == null) return;
-        $field.after('<span class="help-inline"></span>');
-        $enclosing.find('span.help-inline').text(msg);
-        $enclosing.addClass('error');
-        this.show_tab($enclosing, 0);
-    }
-
     this.submit_job = function() {
 	    var job_parameters = {};
     	//
@@ -734,6 +711,14 @@ jQuery(document).ready(function ($) {
             $e.find("li").removeClass("ui-corner-top").addClass("ui-corner-left");
 
             // Also tell KO *not* to bind the descendants itself, otherwise they will be bound twice
+            var tabs = tabs_vm.tabs_by_number;
+            for(var i=0; tabs[i]!==undefined; i++) {
+                if (tabs[i].tab_status()!=0) {
+                    tabs[i].tab_element.click();
+                    break;
+                }
+
+            }
             catalogue.tabs_vm = tabs_vm;
             return { controlsDescendantBindings: true };
         }
@@ -832,39 +817,11 @@ jQuery(document).ready(function ($) {
         console.log('Finished module initialisation')
     }
 
-
-    catalogue.show_tab_error = function () {
-        var tabs = catalogue.tabs_vm.tabs_by_number;
-        for(var i=0; tabs[i]!==undefined; i++) {
-            if (tabs[i].tab_status()!=0) {
-                tabs[i].tab_element.click();
-                break;
-            }
-        }
-    }
-
-
-    function init() {
-
-        function set_click(selector, direction) {
-            $(selector).click(function (evt) {
-                var $this = $(this);
-                catalogue.util.show_tab($this, direction);
-            })
-        }
-
-        // catalogue.show_tab_error();
-
-    }
-
-
     (function () {
         catalogue.util = new catalogue.util($);
         initialise_modules();
-        init();
         ko.applyBindings(catalogue.vm);
         catalogue.vm.modal_message(null);
-
     })();
 
 });

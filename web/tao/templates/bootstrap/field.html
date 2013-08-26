@@ -4,7 +4,7 @@
 {% else %}
   <div class="control-group{% if field.errors %} error{% endif %} {{ field.auto_id }}" {{ field.row_attrs }}>
     {% if field.label %}
-      <label class="control-label" for="{{ field.auto_id }}">{{ field.label|safe }}{% if field.field.required or field.field.semirequired %}*{% endif %}</label>
+      <label class="control-label" for="{{ field.auto_id }}">{{ field.label|safe }}{% if field.field.required or field.field.semirequired %}<span class="required">*</span>{% endif %}</label>
     {% endif %}
     <div class="controls">
       {{ field }}
