@@ -105,21 +105,6 @@ catalogue.modules.mock_image = function ($) {
             param = get_param(prefix, '-sub_cone');
             param = catalogue.util.get_observable_by_attribute('value', param, vm.sub_cone_options);
             image_params.sub_cone = ko.observable(param ? param : vm.sub_cone_options()[0]);
-
-            // vm.sub_cone_options.subscribe(function(arr){
-            //     var sc_value = image_params.sub_cone().value;
-            //     var new_obj;
-            //     for(var i=0; i<arr.length; i++) {
-            //         if (arr[i].value == sc_value) {
-            //             new_obj = arr[i];
-            //             break;
-            //         }
-            //     }
-            //     console.log(new_obj);
-            //     if (new_obj !== image_params.sub_cone()) {
-            //         image_params.sub_cone(new_obj);
-            //     }
-            // });
             
             vm.sub_cone_options.subscribe(function(arr){
                 var new_obj = catalogue.util.get_observable_by_attribute('value', image_params.sub_cone().value, vm.sub_cone_options);
@@ -136,8 +121,9 @@ catalogue.modules.mock_image = function ($) {
                 return catalogue.modules.sed.vm.bandpass_filters.to_side.options();
             });
             param = get_param(prefix, '-mag_field');
+            // NOTE: should the mag_field_options be recreated for each mock image?
             param = catalogue.util.get_observable_by_attribute('value', param, image_params.mag_field_options);
-            image_params.mag_field = ko.observable(param ? param : mag_field_options[0]);
+            image_params.mag_field = ko.observable(param ? param : image_params.mag_field_options[0]);
 
             param = get_param(prefix, '-fov_ra');
             image_params.fov_ra = ko.observable(param ? param : catalogue.modules.light_cone.vm.ra_opening_angle());
