@@ -202,7 +202,10 @@ def make_parameters_xml(request):
     sql.set('id', '1')
     
     query_node = etree.SubElement(sql, 'query')
-    query_node.text = query
+    query_node.text = query.replace(dataset, '-table-')
+    
+    limit_node = etree.SubElement(sql, 'limit')
+    limit_node.text = limit
     
     module_version_node = etree.SubElement(sql, 'module-version')
     module_version_node.text = str(TAP_MODULE_VERSION)
@@ -265,7 +268,10 @@ def createTAPjob(request):
     if errors != '':
         job.error_message = errors
         job.status = models.Job.ERROR
-    
+    else:
+        job.database = parse_dataset_name(request.POST['QUERY'])
+        job.status = models.Job.HELD
+        
     job.save()
     
     return job
