@@ -634,13 +634,85 @@ html, body {
 [contenteditable] {
     margin: 4px;
 }
+
+.editable-field.inactive {
+display: block;
+cursor: text;
+position: relative;
+outline-color: #fff;
+vertical-align: top;
+box-sizing: border-box;
+background-color: #fff;
+padding: 2px 24px 3px 3px;
+max-width: 100%;
+-moz-transition: outline 200ms ease;
+-webkit-transition: outline 200ms ease;
+-o-transition: outline 200ms ease;
+-ms-transition: outline 200ms ease;
+transition: outline 200ms ease;
+}
+
+.editable-field.inactive:hover {
+background: #fff;
+color: #000;
+/*outline: 1px solid #aaa;*/
+}
+
+.editable-field .icon-edit-sml {
+background-color: #f0f0f0;
+background-position: -132px -34px;
+border: 1px solid #fff;
+border-color: #ddd #ddd #ddd #ddd;
+}
+
+.editable-field .icon-edit-sml:hover {
+cursor: pointer;
+background-position: -132px -134px;
+border-color: #bbb #bbb #bbb #bbb;
+}
+
+.editable-field .overlay-icon {
+display: block;
+position: absolute;
+top: -1em;
+left: auto;
+right: -2px;
+text-indent: 100%;
+white-space: nowrap;
+overflow: hidden;
+visibility: visible;
+width: 20px;
+height: 20px;
+}
+
+.icon {
+    background: transparent url("../images/asvo-icons.png") no-repeat 0 0;
+}
+
+.overlay-text {
+display: block;
+position: absolute;
+top: -1.1em;
+left: -5em;
+right: -2px;
+text-indent: 100%;
+white-space: nowrap;
+visibility: visible;
+width: 100%;
+height: 10px;
+color: #888;
+}
+
+#inlineedit { width: 600px; }
+
+/*
 [contenteditable]:hover:after {
     content: ' click to edit';
     font-style: italic;
     font-size: 12px;
     font-family: sans-serif;
     color: #666;
-    /*.text-stroke(0);*/
+    /- *.text-stroke(0);* -/
 }
 [contenteditable]:hover, [contenteditable]:focus {
     background: rgba(43, 166, 203, 0.1);
@@ -659,8 +731,8 @@ html, body {
 	border: 0;
 	margin-left: 0;
 }
-
-#inlineedit { position: relative; }
+*/
+/* #inlineedit { position: relative; } */
 /* #inlineedit:hover #savecancel, #inlineedit:active #savecancel { display: block; } */
 #savecancel { position: absolute; bottom: 0px; right: 0px; margin-bottom: -40px; display: none; }
 #savecancel div { display: inline-block; }
