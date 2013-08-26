@@ -75,7 +75,7 @@ def job(request, id):
     job = findTAPjob(request, id)
     
     if request.method == 'DELETE':
-        print 'DELETE'
+        deleteTAPJob(job)
     
     resultsURL = "%s/%d/results" % (request.build_absolute_uri("/tap/async"), job.id)
     
@@ -88,6 +88,9 @@ def job(request, id):
 @http_auth_required
 def phase(request, id):
     job = findTAPjob(request, id)
+    
+    if 'PHASE' in request.POST and request.POST['PHASE'] == 'ABORT':
+        deleteTAPJob(job, 'Aborted')
     
     if 'get' not in request.GET:
         return UWSRedirect(request, job.id, '/phase?get')
@@ -104,13 +107,17 @@ def quote(request, id):
 @csrf_exempt
 @http_auth_required
 def termination(request, id):
-    print 'DELETE'
+    job = findTAPjob(request, id)
+    deleteTAPJob(job, 'Terminated')
+    
     return render(request, 'tap/http_response.html', {'message': 'TERMINATED'})
 
 @csrf_exempt
 @http_auth_required
 def destruction(request, id):
-    print 'DELETE'
+    job = findTAPjob(request, id)
+    deleteTAPJob(job, 'Destructed')
+    
     return render(request, 'tap/http_response.html', {'message': 'DESTRUCTED'})
 
 @csrf_exempt
@@ -133,6 +140,7 @@ def params(request, id):
 def results(request, id):
     job = findTAPjob(request, id)
     
+    job_file = None
     for file in job.files():
         if file.file_name == TAP_OUTPUT_FILENAME:
             job_file = file
@@ -194,22 +202,10 @@ def make_parameters_xml(request):
     sql.set('id', '1')
     
     query_node = etree.SubElement(sql, 'query')
-    query_node.text = query
+    query_node.text = query.replace(dataset['name'], '-table-')
     
-    #===========================================================================
-    # if order:
-    #     order_node = etree.SubElement(sql, 'order')
-    #     order_node.text = order
-    # 
-    # if limit:
-    #     limit_node = etree.SubElement(sql, 'limit')
-    #     limit_node.text = limit
-    # 
-    # condition_items = etree.SubElement(sql, 'conditions')
-    # for condition in conditions:
-    #     item = etree.SubElement(condition_items, 'item')
-    #     item.text = condition
-    #===========================================================================
+    limit_node = etree.SubElement(sql, 'limit')
+    limit_node.text = limit
     
     module_version_node = etree.SubElement(sql, 'module-version')
     module_version_node.text = str(TAP_MODULE_VERSION)
@@ -272,7 +268,11 @@ def createTAPjob(request):
     if errors != '':
         job.error_message = errors
         job.status = models.Job.ERROR
-    
+    else:
+        dataset = parse_dataset_name(request.POST['QUERY'])
+        job.database = dataset['name']
+        job.status = models.Job.HELD
+        
     job.save()
     
     return job
@@ -287,4 +287,13 @@ def findTAPjob(request, id):
         raise PermissionDenied
     
     return job
+    
+def deleteTAPJob(job, action='Deleted'):
+    job_stop_command = models.WorkflowCommand(job_id=job, command='Job_Stop', 
+                                              submitted_by=job.user, execution_status='SUBMITTED')
+    job_stop_command.save()
+    job.status = models.Job.ERROR
+    job.error_message = "%s by user" % action
+    job.save()
+    
     

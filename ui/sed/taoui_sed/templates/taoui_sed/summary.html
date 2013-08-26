@@ -24,10 +24,10 @@
         <tr class="apply_sed">
             <td>Dust</td>
             <!-- ko if: !apply_dust() -->
-            <td>Not selected</td>
+            <td class="apply_dust">Not selected</td>
             <!-- /ko -->
             <!-- ko if: apply_dust -->
-            <td data-bind="toggler: true">
+            <td class="apply_dust" data-bind="toggler: true">
                 <span class="dust_model" data-bind="text: dust_model().fields.name"><!-- --></span>
                 <a id="expand_dust_model" href="#" data-bind='text: toggler_text(), click: toggler_click'></a>
                 <span class="dust_model_description" data-bind="visible: toggler_visible, html: '<br/>' + dust_model().fields.details"><!-- --></span>
