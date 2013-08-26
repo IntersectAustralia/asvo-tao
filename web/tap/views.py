@@ -140,6 +140,7 @@ def params(request, id):
 def results(request, id):
     job = findTAPjob(request, id)
     
+    job_file = None
     for file in job.files():
         if file.file_name == TAP_OUTPUT_FILENAME:
             job_file = file
