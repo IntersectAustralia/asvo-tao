@@ -1,4 +1,4 @@
-#include <soci/sqlite3/soci-sqlite3.h>
+#include <soci/soci.h>
 #include <soci/postgresql/soci-postgresql.h>
 #include <pugixml.hpp>
 #include "multidb.hh"

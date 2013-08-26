@@ -4,7 +4,6 @@
 #include <boost/iterator/transform_iterator.hpp>
 #include <soci/soci.h>
 #include <libhpc/libhpc.hh>
-#include "galaxy.hh"
 #include "module.hh"
 
 namespace tao {
@@ -31,7 +30,7 @@ namespace tao {
       module&
       create_module( const string& name,
                      const string& inst_name = string(),
-		     pugi::xml_node base = NULL );
+		     pugi::xml_node base = (pugi::xml_node)0 );
 
       iterator
       begin();
