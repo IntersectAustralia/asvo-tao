@@ -25,7 +25,7 @@ class JobTypeFormTests(LiveServerTest):
 
         for i in range(4,8):
             g = GalaxyModelFactory.create(name='galaxy_model_%03d' % i)
-            ds = DataSetFactory.create(simulation=lc_sim, galaxy_model=g, max_job_box_count=25, id__exact=i)
+            ds = DataSetFactory.create(simulation=lc_sim, galaxy_model=g, max_job_box_count=25, id=i)
             for j in range(4,7):
                 dsp = DataSetPropertyFactory.create(dataset=ds, label='parameter_%03d label' % j, name='name_%03d' % j, description='description_%03d' % j)
                 ds.default_filter_field = dsp
@@ -97,13 +97,34 @@ class JobTypeFormTests(LiveServerTest):
         self.click('tao-tabs-' + MODULE_INDICES['mock_image'])
 
         self.assertEqual([u'ALL', 1, 2, 3], self.get_ko_array('catalogue.vm.mock_image.sub_cone_options()'))
-        # self.assertEqual([u'1_absolute', u'3_apparent'], self.get_ko_array('catalogue.vm.mock_image.mag_field_options()'))
+        self.assertEqual([u'1_absolute', u'3_apparent'], self.get_ko_array('catalogue.modules.mock_image.vm.image_settings()[0].mag_field_options()'))
         self.assertEqual([u'FITS'], self.get_ko_array('catalogue.vm.mock_image.format_options'))
-        # from code import interact
-        # interact(local=locals())
-        print self.get_image_setting_ko_value(0,'sub_cone')
-        # print self.get_image_setting_ko_value(0,'output_format')
-        print self.get_image_setting_ko_value(0,'mag_field')
+
+        self.assertEqual(2, self.get_image_setting_ko_field(0,'sub_cone'))
+        self.assertEqual('3_apparent', self.get_image_setting_ko_field(0,'mag_field'))
+
+        self.assertEqual('7', self.get_image_setting_ko_value(0, 'min_mag'))
+        self.assertEqual('3', self.get_image_setting_ko_value(0, 'z_min'))
+        self.assertEqual('4', self.get_image_setting_ko_value(0, 'z_max'))
+        self.assertEqual('0.5', self.get_image_setting_ko_value(0, 'origin_ra'))
+        self.assertEqual('1', self.get_image_setting_ko_value(0, 'origin_dec'))
+        self.assertEqual('1', self.get_image_setting_ko_value(0, 'fov_ra'))
+        self.assertEqual('2', self.get_image_setting_ko_value(0, 'fov_dec'))
+        self.assertEqual('66', self.get_image_setting_ko_value(0, 'width'))
+        self.assertEqual('66', self.get_image_setting_ko_value(0, 'height'))
+
+        self.assertEqual(3, self.get_image_setting_ko_field(1,'sub_cone'))
+        self.assertEqual('1_absolute', self.get_image_setting_ko_field(1,'mag_field'))
+
+        self.assertEqual('7', self.get_image_setting_ko_value(1, 'min_mag'))
+        self.assertEqual('3', self.get_image_setting_ko_value(1, 'z_min'))
+        self.assertEqual('4', self.get_image_setting_ko_value(1, 'z_max'))
+        self.assertEqual('0.5', self.get_image_setting_ko_value(1, 'origin_ra'))
+        self.assertEqual('1', self.get_image_setting_ko_value(1, 'origin_dec'))
+        self.assertEqual('1', self.get_image_setting_ko_value(1, 'fov_ra'))
+        self.assertEqual('2', self.get_image_setting_ko_value(1, 'fov_dec'))
+        self.assertEqual('77', self.get_image_setting_ko_value(1, 'width'))
+        self.assertEqual('77', self.get_image_setting_ko_value(1, 'height'))
 
 
 
@@ -141,12 +162,16 @@ class JobTypeFormTests(LiveServerTest):
 
         self.assert_summary_field_correctly_shown('FITS', 'output', 'output_format')
 
+
     def get_ko_array(self, vm_ko_array):
         js = 'return $.map(' + vm_ko_array + ', function(v, i) { return v.value; });'
         return self.selenium.execute_script(js);
 
+    def get_image_setting_ko_field(self, index, setting, field='value'):
+        js = 'return catalogue.modules.mock_image.vm.image_settings()[%d].%s().%s' % (index, setting, field)
+        return self.selenium.execute_script(js);
+
     def get_image_setting_ko_value(self, index, setting):
-        js = 'return catalogue.modules.mock_image.vm.image_settings()[%d].%s().value' % (index, setting)
-        print js
+        js = 'return catalogue.modules.mock_image.vm.image_settings()[%d].%s()' % (index, setting)
         return self.selenium.execute_script(js);
 
