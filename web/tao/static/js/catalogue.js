@@ -256,6 +256,39 @@ catalogue.util = function ($) {
 
     var that = this;
 
+    this.get_observable_by_field = function(field, value, ko_array) {
+        var result = null;
+        for (var i = 0; i < ko_array().length; i++) {
+            if(ko_array()[i]['fields'][field] == value) {
+                result = ko_array()[i];
+                break;
+            }
+        }
+        return result;
+    }
+
+    this.get_observable_by_attribute = function(attr, value, ko_array) {
+        var result = null;
+        for (var i = 0; i < ko_array().length; i++) {
+            if(ko_array()[i][attr] == value) {
+                result = ko_array()[i];
+                break;
+            }
+        }
+        return result;
+    }
+
+    this.get_element_by_attribute = function(attr, value, array) {
+        var result = null;
+        for (var i = 0; i < array.length; i++) {
+            if(array[i][attr] == value) {
+                result = array[i];
+                break;
+            }
+        }
+        return result;
+    }
+
     this.validate_vm = function(vm) {
     	// Validate the supplied vm
     	// Iterate over every member and check for errors
