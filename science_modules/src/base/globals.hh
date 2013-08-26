@@ -7,7 +7,7 @@
 namespace tao {
    using namespace hpc;
 
-   extern posix::time_type tao_start_time;
+   extern time_type tao_start_time;
 
    typedef double real_type;
 
