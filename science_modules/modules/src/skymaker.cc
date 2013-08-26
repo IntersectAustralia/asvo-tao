@@ -36,7 +36,7 @@ namespace tao {
 			   int sub_cone,
                            const string& format,
                            const string& mag_field,
-                           real_type min_mag,
+                           optional<real_type> min_mag,
                            real_type z_min,
                            real_type z_max,
                            real_type origin_ra,
@@ -58,7 +58,7 @@ namespace tao {
 			   int sub_cone,
                            const string& format,
                            const string& mag_field,
-                           real_type min_mag,
+                           optional<real_type> min_mag,
                            real_type z_min,
                            real_type z_max,
                            real_type origin_ra,
@@ -97,7 +97,7 @@ namespace tao {
       real_type redshift = gal.values<real_type>( "redshift_cosmological" )[idx];
 
       // Only process if within magnitude and redshift limits.
-      if( mag >= _min_mag &&
+      if( (!_min_mag || mag >= *_min_mag) &&
 	  redshift >= _z_min && redshift <= _z_max )
       {
          // Convert the cartesian coordiantes to right-ascension and
@@ -327,13 +327,21 @@ namespace tao {
 	       exe = true;
 	 }
 
+	 // Minimum magnitude can be "none" or a real value.
+	 optional<real_type> min_mag = none;
+	 {
+	    string val_str = sub.get<string>( "min_mag", "None" );
+	    if( val_str != "None" )
+	       min_mag = boost::lexical_cast<real_type>( val_str );
+	 }
+
          // Construct a new image with the contents.
 	 if( exe )
 	 {
 	    _imgs.emplace_back(
 	       ii++,
 	       global_dict.get<int>( "subjobindex" ), sub.get<string>( "format", "FITS" ),
-	       sub.get<string>( "mag_field" ), sub.get<real_type>( "min_mag", 7 ),
+	       sub.get<string>( "mag_field" ), min_mag,
 	       sub.get<real_type>( "z_min", 0 ), sub.get<real_type>( "z_max", 127 ),
 	       sub.get<real_type>( "origin_ra" ), sub.get<real_type>( "origin_dec" ),
 	       sub.get<real_type>( "fov_ra" ), sub.get<real_type>( "fov_dec" ),
