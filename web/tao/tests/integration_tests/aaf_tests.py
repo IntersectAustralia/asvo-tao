@@ -21,7 +21,7 @@ class AAFTests(helper.LiveServerTest):
         super(AAFTests, self).tearDown()
         del os.environ['SHIB_auEdupersonSharedToken']
 
-    def test_aaf_registered(self):
+    def _test_aaf_registered(self):
         ## go to home
         ## check that TaoUser with username = aafsharedtokenthingy exists
         self.visit('home')
