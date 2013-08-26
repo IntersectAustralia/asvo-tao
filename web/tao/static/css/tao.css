@@ -193,6 +193,10 @@ legend {
   margin-bottom: -1px;
 }
 
+span.required.required_error {
+  color: red;
+}
+
 
 
 
