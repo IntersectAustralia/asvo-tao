@@ -95,7 +95,11 @@ namespace tao {
 	   transformations['>']  = std::string("&gt;");
 	   transformations['<']  = std::string("&lt;");
 
+>>>>>>>>>>>>>>>>>>>> File 1
 
+>>>>>>>>>>>>>>>>>>>> File 2
+>>>>>>>>>>>>>>>>>>>> File 3
+<<<<<<<<<<<<<<<<<<<<
 	   std::string reserved_chars;
 	   for (auto ti = transformations.begin(); ti != transformations.end(); ti++)
 	   {
@@ -152,6 +156,11 @@ namespace tao {
 	}
    void votable::_write_table_header(const tao::galaxy& galaxy)
    {
+>>>>>>>>>>>>>>>>>>>> File 1
+>>>>>>>>>>>>>>>>>>>> File 2
+>>>>>>>>>>>>>>>>>>>> File 3
+	   LOGDLN( "VOTable: Write Table header ");
+<<<<<<<<<<<<<<<<<<<<
       auto it = _fields.cbegin();
       auto unitit = _units.cbegin();
 
@@ -167,22 +176,47 @@ namespace tao {
 	 {
 	    case tao::galaxy::STRING:
 	       _file<<"datatype=\"char\" arraysize=\"*\" ";
+>>>>>>>>>>>>>>>>>>>> File 1
+>>>>>>>>>>>>>>>>>>>> File 2
+>>>>>>>>>>>>>>>>>>>> File 3
+	       LOGDLN( "VOTable: FieldType string");
+<<<<<<<<<<<<<<<<<<<<
 	       break;
 
 	    case tao::galaxy::DOUBLE:
 	       _file<<"datatype=\"double\" ";
+>>>>>>>>>>>>>>>>>>>> File 1
+>>>>>>>>>>>>>>>>>>>> File 2
+>>>>>>>>>>>>>>>>>>>> File 3
+	       LOGDLN( "VOTable: FieldType double");
+<<<<<<<<<<<<<<<<<<<<
 	       break;
 
 	    case tao::galaxy::INTEGER:
 	       _file<<"datatype=\"int\" ";
+>>>>>>>>>>>>>>>>>>>> File 1
+>>>>>>>>>>>>>>>>>>>> File 2
+>>>>>>>>>>>>>>>>>>>> File 3
+	       LOGDLN( "VOTable: FieldType int");
+<<<<<<<<<<<<<<<<<<<<
 	       break;
 
 	    case tao::galaxy::UNSIGNED_LONG_LONG:
 	       _file<<"datatype=\"long\" ";
+>>>>>>>>>>>>>>>>>>>> File 1
+>>>>>>>>>>>>>>>>>>>> File 2
+>>>>>>>>>>>>>>>>>>>> File 3
+	       LOGDLN( "VOTable: FieldType unsigned long long");
+<<<<<<<<<<<<<<<<<<<<
 	       break;
 
 	    case tao::galaxy::LONG_LONG:
 	       _file<<"datatype=\"long\" ";
+>>>>>>>>>>>>>>>>>>>> File 1
+>>>>>>>>>>>>>>>>>>>> File 2
+>>>>>>>>>>>>>>>>>>>> File 3
+	       LOGDLN( "VOTable: FieldType long long");
+<<<<<<<<<<<<<<<<<<<<
 	       break;
 
 	    default:
@@ -191,6 +225,11 @@ namespace tao {
 
 	 if(*unitit!="")
 	 {
+>>>>>>>>>>>>>>>>>>>> File 1
+>>>>>>>>>>>>>>>>>>>> File 2
+>>>>>>>>>>>>>>>>>>>> File 3
+		 LOGDLN( "VOTable: Unit ",_xml_encode(*unitit));
+<<<<<<<<<<<<<<<<<<<<
 		 _file<<"unit=\""+_xml_encode(*unitit)+"\"";
 	 }
 
@@ -207,6 +246,11 @@ namespace tao {
 ///
    void votable::execute()
    {
+>>>>>>>>>>>>>>>>>>>> File 1
+>>>>>>>>>>>>>>>>>>>> File 2
+>>>>>>>>>>>>>>>>>>>> File 3
+	   LOGDLN( "VOTable: Start Execute");
+<<<<<<<<<<<<<<<<<<<<
       _timer.start();
       LOG_ENTER();
       ASSERT( parents().size() == 1 );
@@ -219,9 +263,12 @@ namespace tao {
       // Is this the first galaxy? if so, please write the fields information
       if(_isfirstgalaxy)
       {
-	 _write_table_header(gal);
-	 _start_table();
-	 _isfirstgalaxy=false;
+    	  LOGDLN( "VOTable: First Galaxy ");
+    	  _write_table_header(gal);
+
+
+    	  _start_table();
+    	  _isfirstgalaxy=false;
       }
       //Process the galaxy as any other galaxy
       process_galaxy( gal );
