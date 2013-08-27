@@ -140,6 +140,7 @@ def params(request, id):
 def results(request, id):
     job = findTAPjob(request, id)
     
+    job_file = None
     for file in job.files():
         if file.file_name == TAP_OUTPUT_FILENAME:
             job_file = file
@@ -201,7 +202,10 @@ def make_parameters_xml(request):
     sql.set('id', '1')
     
     query_node = etree.SubElement(sql, 'query')
-    query_node.text = query
+    query_node.text = query.replace(dataset['name'], '-table-')
+    
+    limit_node = etree.SubElement(sql, 'limit')
+    limit_node.text = limit
     
     module_version_node = etree.SubElement(sql, 'module-version')
     module_version_node.text = str(TAP_MODULE_VERSION)
@@ -264,7 +268,11 @@ def createTAPjob(request):
     if errors != '':
         job.error_message = errors
         job.status = models.Job.ERROR
-    
+    else:
+        dataset = parse_dataset_name(request.POST['QUERY'])
+        job.database = dataset['name']
+        job.status = models.Job.HELD
+        
     job.save()
     
     return job
