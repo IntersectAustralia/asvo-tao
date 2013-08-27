@@ -93,7 +93,7 @@ class JobTypeFormTests(LiveServerTest):
 
     def test_mock_image_params(self):
         self.click('tao-tabs-' + MODULE_INDICES['mock_image'])
-
+        
         self.assertEqual([u'ALL', 1, 2, 3], self.get_ko_array('catalogue.vm.mock_image.sub_cone_options()'))
         self.assertEqual([u'1_absolute', u'3_apparent'], self.get_ko_array('catalogue.modules.mock_image.vm.image_settings()[0].mag_field_options()'))
         self.assertEqual([u'FITS'], self.get_ko_array('catalogue.vm.mock_image.format_options'))
@@ -115,7 +115,7 @@ class JobTypeFormTests(LiveServerTest):
         self.assertEqual(3, self.get_image_setting_ko_field(1,'sub_cone'))
         self.assertEqual('1_absolute', self.get_image_setting_ko_field(1,'mag_field'))
 
-        self.assertEqual('7', self.get_image_setting_ko_value(1, 'min_mag'))
+        self.assertEqual('', self.get_image_setting_ko_value(1, 'min_mag'))
         self.assertEqual('11', self.get_image_setting_ko_value(1, 'max_mag'))
         self.assertEqual('3', self.get_image_setting_ko_value(1, 'z_min'))
         self.assertEqual('4', self.get_image_setting_ko_value(1, 'z_max'))
