@@ -36,8 +36,8 @@ var TwoSidedSelectWidget = function(params) {
         }
     }
 
-    function from_option(opt){
-        return opt._obj
+    function from_selected_option(value){
+        return vm._all_by_value()[value]._obj;
     }
 
     function option_order(o1,o2) {
@@ -115,6 +115,12 @@ var TwoSidedSelectWidget = function(params) {
         arr.sort(option_order);
         return arr;
     });
+    vm._all_by_value = ko.computed(function(){
+        var arr = vm._all_options();
+        var resp = {};
+        for(var i=0; i<arr.length; i++) resp[arr[i].value] = arr[i];
+        return resp;
+    });
 
     vm.has_groups = ko.observable(has_groups(vm._all_options()));
     vm.id = elem_id.slice(1);
@@ -129,9 +135,9 @@ var TwoSidedSelectWidget = function(params) {
     }
 
     vm.op_add = function() {
-        var selection = ko.utils.arrayMap(vm.from_side.options_selected(), from_option);
+        var selection = ko.utils.arrayMap(vm.from_side.options_selected(), from_selected_option);
         if (selection.length == 0) return;
-        selection.concat(selectedOptions());
+        selection = selection.concat(selectedOptions());
         selectedOptions(selection);
     };
     vm.op_add_all = function() {
@@ -139,10 +145,10 @@ var TwoSidedSelectWidget = function(params) {
         vm.filter('');
     };
     vm.op_remove = function() {
-        var selection = ko.utils.arrayMap(vm.to_side.options_selected(), from_option);
+        var selection = ko.utils.arrayMap(vm.to_side.options_selected(), from_selected_option);
         if (selection.length == 0) return;
-        var arr = ko.utils.arrayFilter(selectedOptions(), function(opt){
-            return $.inArray(opt._obj, selection) != -1;
+        var arr = ko.utils.arrayFilter(selectedOptions(), function(obj){
+            return $.inArray(obj, selection) == -1;
         })
         selectedOptions(arr);
     };
