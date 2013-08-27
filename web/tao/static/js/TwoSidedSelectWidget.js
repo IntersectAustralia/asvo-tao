@@ -183,14 +183,6 @@ var TwoSidedSelectWidget = function(elem_id, init_options, to_option) {
         vm.to_side.options_raw([]);
     }
 
-    vm.init = function() {};
-    vm.cache_store = function(s) {vm.from_side.options_raw(s)};
-    vm.display_selected = function() {};
-    vm.change_event = function(f) {};
-    vm.option_clicked_event = function(f) {};
-    vm.set_enabled = function(v) {};
-
-
     return vm;
 
 }

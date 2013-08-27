@@ -245,23 +245,27 @@ catalogue.modules.light_cone = function ($) {
 
         param = job['light_cone-ra_opening_angle'];
         vm.ra_opening_angle = ko.observable(param ? param : null)
+            .extend({required: function(){return vm.catalogue_geometry().id == 'light-cone'}})
             .extend({validate: catalogue.validators.is_float})
             .extend({validate: catalogue.validators.geq(0)})
             .extend({validate: catalogue.validators.leq(90)});
 
         param = job['light_cone-dec_opening_angle'];
         vm.dec_opening_angle = ko.observable(param ? param : null)
+            .extend({required: function(){return vm.catalogue_geometry().id == 'light-cone'}})
             .extend({validate: catalogue.validators.is_float})
             .extend({validate: catalogue.validators.geq(0)})
             .extend({validate: catalogue.validators.leq(90)});
 
         param = job['light_cone-redshift_min'];
         vm.redshift_min = ko.observable(param ? param : null)
+            .extend({required: function(){return vm.catalogue_geometry().id == 'light-cone'}})
             .extend({validate: catalogue.validators.is_float})
             .extend({validate: catalogue.validators.geq(0)});
 
         param = job['light_cone-redshift_max'];
         vm.redshift_max = ko.observable(param ? param : null)
+            .extend({required: function(){return vm.catalogue_geometry().id == 'light-cone'}})
             .extend({validate: catalogue.validators.is_float})
             .extend({validate: catalogue.validators.geq(vm.redshift_min)});
 
@@ -271,6 +275,7 @@ catalogue.modules.light_cone = function ($) {
 
         param = job['light_cone-box_size'];
         vm.box_size = ko.observable(param ? param : vm.max_box_size())
+            .extend({required: function(){return vm.catalogue_geometry().id == 'box'}})
             .extend({validate: catalogue.validators.is_float})
             .extend({validate: catalogue.validators.geq(0)})
             // .extend({validate: catalogue.validators.leq(vm.max_box_size)});
@@ -304,6 +309,7 @@ catalogue.modules.light_cone = function ($) {
                 {not_selected: catalogue.util.output_choices(vm.dataset().pk, vm.catalogue_geometry().bit_mask),
                  selected: param ? param : []},
                 dataset_property_to_option);
+
         vm.current_output_property = ko.observable(undefined);
     	// if param is null assume that we are in the Catalogue wizard
     	// so set up the dependencies to update the display

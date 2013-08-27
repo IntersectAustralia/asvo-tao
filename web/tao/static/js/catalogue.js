@@ -11,6 +11,26 @@ ko.extenders.logger = function(target, option) {
     return target;
 };
 
+ko.extenders.required = function(target, option) {
+
+    if (target.hasOwnProperty('required')) {
+        throw "Software error: just one required function is allowed"
+    }
+
+    target.required = ko.computed(function(){
+        if (!option()) return 'OK';
+        var v = target();
+        if (v === undefined || v === null || v === '') {
+            return 'ERROR';
+        }
+        return 'VALIDATE';
+    });
+
+    //return the original observable
+    return target;
+
+}
+
 ko.extenders.validate = function(target, option) {
 
     var valid = ko.computed(function(){
@@ -36,8 +56,6 @@ ko.extenders.validate = function(target, option) {
 
 catalogue.validators = {};
 catalogue.validators.positive = function(val) {
-    if(val === undefined || val === null || val == '')
-        return {'error':false};
     var f = parseFloat(val);
     if (isNaN(f))
         return {'error':false};
@@ -48,8 +66,6 @@ catalogue.validators.positive = function(val) {
 
 // Currently is_float really does an is_numeric
 catalogue.validators.is_float = function(val) {
-    if(val === undefined || val === null || val == '')
-        return {'error':false};
     var f = parseFloat(val);
     if (isNaN(f))
         return {'error':true, message:'Please input a number'};
@@ -57,8 +73,6 @@ catalogue.validators.is_float = function(val) {
 };
 
 catalogue.validators.is_int = function(val) {
-    if(val === undefined || val === null || val == '')
-        return {'error':false};
     var f = parseInt(val);
     if (isNaN(f))
         return {'error':true, message:'Please input a number'};
@@ -66,29 +80,6 @@ catalogue.validators.is_int = function(val) {
 };
 
 catalogue.validators.is_numeric = catalogue.validators.is_float;
-
-catalogue.validators.greater_than = function(param) {
-    function check(v, min_v, msg) {
-        if(v === undefined || v === null || v === ''
-           || min_v === undefined || min_v === null || v === '')
-            return {'error':false};
-        var f = parseFloat(v);
-        if (isNaN(f) || isNaN(parseFloat(min_v)))
-            return {'error':false};
-        if (f < parseFloat(min_v))
-            return {'error':true, 'message': msg};
-        return {'error':false};
-    }
-    if (typeof param == "function") {
-        return function(val) {
-            return check(val, param(), 'Must be greater than ' + param());
-        }
-    } else {
-        return function(val) {
-            return check(val, param, 'Must be greater than ' + param);
-        }
-    }
-}
 
 catalogue.validators._gt = function(v1,v2) {
     return v1 > v2;
@@ -112,23 +103,15 @@ catalogue.validators.defined = function(v) {
     return !(v === undefined || v === null || v === '');
 }
 
-catalogue.validators.is_ok = function(obs) {
-    if (!catalogue.validators.defined(obs()))
-        return false;
-    if (obj.hasOwnProperty("error")) {
-        return !obs.error().error;
-    }
-    return true;
-}
-
 catalogue.validators._check_value = function(comp_op, v, ref_v, msg) {
-    if(v === undefined || v === null || v === ''
-       || ref_v === undefined || ref_v === null || ref_v === '')
+    if(!catalogue.validators.defined(ref_v))
         return {'error':false};
     var v1 = parseFloat(v);
     var v2 = parseFloat(ref_v);
-    if (isNaN(v1) || isNaN(v2))
-        return {'error':false};
+    if (isNaN(v1))
+        return {'error':true, 'message': 'A number must be provided'};
+    if (isNaN(v2))
+        return {'error':true, 'message': 'A number to compare to is not defined'};
     if (!comp_op(v1,v2))
         return {'error':true, 'message': msg};
     return {'error':false};
@@ -231,11 +214,6 @@ function set_error($elem, msg) {
 function clear_error($elem) {
     $elem.closest('.control-group').removeClass('error');
     $elem.popover('destroy');
-    $elem.closest('.control-group .help-inline').remove();
-}
-
-function clean_inline($elem) {
-    $elem.closest('.control-group').find('.help-inline').remove();
 }
 
 function has_value($elem) {
@@ -591,14 +569,21 @@ jQuery(document).ready(function ($) {
             var $e = $(element);
             $e.closest('.control-group').removeClass('error');
             $e.popover('destroy');
-            $e.closest('.control-group .help-inline').remove();
-            if (error && error.error) {
-                $e.closest('.control-group').addClass('error');
-                $e.popover({
-                    trigger: 'focus',
-                    title: 'Validation Error',
-                    content: error.message
-                });
+            $e.closest('.control-group').find('span.required').removeClass('error');
+            switch(error.status) {
+                case 'OK':
+                    break;
+                case 'REQUIRED':
+                    var $star = $e.closest('.control-group').find('span.required');
+                    $star.addClass('error');
+                    break;
+                default: /* INVALID */
+                    $e.closest('.control-group').addClass('error');
+                    $e.popover({
+                        trigger: 'focus',
+                        title: 'Validation Error',
+                        content: error.message
+                    });
             }
         }
 
@@ -611,20 +596,43 @@ jQuery(document).ready(function ($) {
                 // This will be called when the binding is first applied to an element
                 // Set up any initial state, event handlers, etc. here
                 var va = valueAccessor();
-                if (!(va.hasOwnProperty('error'))) return;
-                va.error.subscribe(function(){
-                    error_check(element, va.error());
-                });
+                if (va.hasOwnProperty('required') || va.hasOwnProperty('error')) {
+                    ko.computed(function(){
+                        var req;
+                        if (va.hasOwnProperty('required')) {
+                            req = va.required();
+                        } else {
+                            var v = va();
+                            req = catalogue.validators.defined(v) ? 'VALIDATE' : 'OK';
+                        }
+                        switch(req) {
+                            case 'OK':
+                                return {status: 'OK'};
+                            case 'ERROR':
+                                return {status: 'REQUIRED'}
+                            default:
+                                var err = {error: false};
+                                if (va.hasOwnProperty('error')) {
+                                    err = va.error();
+                                }
+                                return err.error?
+                                    {status: 'INVALID', message: err.message}
+                                    : {status: 'OK'};
+                        }
+                    }).subscribe(function(resp){
+                        error_check(element, resp);
+                    })
+                }
             };
 
         pg.update = function(element, valueAccessor) {
 
                 ko_value.update(element, valueAccessor);
 
-                var va = valueAccessor();
-                if (!(va.hasOwnProperty('error'))) return;
-
-                error_check(element, va.error());
+//                var va = valueAccessor();
+//                if (!(va.hasOwnProperty('error'))) return;
+//
+//                error_check(element, va.error());
 
             };
 
@@ -717,7 +725,6 @@ jQuery(document).ready(function ($) {
                     tabs[i].tab_element.click();
                     break;
                 }
-
             }
             catalogue.tabs_vm = tabs_vm;
             return { controlsDescendantBindings: true };
@@ -741,7 +748,7 @@ jQuery(document).ready(function ($) {
             tab_def.tab_status.subscribe(function(tab_status){
                 for(var i=0;i<=2;i++) {$a.removeClass('status_'+i);}
                 $a.addClass('status_'+tab_status);
-            })
+            });
         },
 
         update: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
