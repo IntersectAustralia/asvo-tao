@@ -57,6 +57,7 @@ protected:
 	bool _pass_through;
 
 	tao::galaxy _gal;
+	profile::progress _prog;
 
 	string _database;
 	std::list<string>::iterator _Tables_it;
@@ -68,7 +69,8 @@ protected:
 	vector<string> _field_names;
 
 
-	void FetchData(string query,bool IsFirstCall=false);
+	void FetchData(string query);
+	void PrepareGalaxyObject(string query);
 
 
 };
