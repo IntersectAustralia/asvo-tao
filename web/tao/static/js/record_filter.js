@@ -35,12 +35,12 @@ catalogue.modules.record_filter = function ($) {
     			label: obj.fields.label + (catalogue.validators.defined(obj.fields.units) ?
                     ' ('+obj.fields.units+')' : '')
     		}
-        } else if (obj.hasOwnProperty('value')) {
+        } else if (obj.model === "tao.bandpassfilter") {
                 return {
                     value: 'B-'+obj.value,
-                    label: obj.text
+                    label: obj.fields.label
                 }
-        } else return undefined;
+        } else throw {cant_filter_on: obj};
     }
 
     var filter_choices = function () {
