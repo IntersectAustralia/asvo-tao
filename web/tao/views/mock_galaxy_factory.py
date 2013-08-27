@@ -24,9 +24,11 @@ import json
 def index(request):
     if request.method == 'POST':
         if len(request.FILES) > 0:
-            parameter_file = request.FILES.itervalues().next().read()
-            params_ui_holder = UIModulesHolder(UIModulesHolder.XML, xml_parse(parameter_file))
+            parameter_file = request.FILES.itervalues().next()
+            params_ui_holder = UIModulesHolder(UIModulesHolder.XML, xml_parse(parameter_file.read()))
             ui_holder = UIModulesHolder(UIModulesHolder.POST)
+            message = "Parameter file '%s' uploaded successfully." % parameter_file.name
+            messages.info(request, message)
             return render(request, 'mock_galaxy_factory/index.html', {
                 'forms': ui_holder.forms(),
                 'ui_holder': params_ui_holder,

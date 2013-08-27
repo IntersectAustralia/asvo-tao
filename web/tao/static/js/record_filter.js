@@ -163,9 +163,6 @@ catalogue.modules.record_filter = function ($) {
             .extend({validate: catalogue.validators.geq(0)})
             .extend({validate: valid_min_max});
 
-        
-        
-    	
         vm.selection_max
     		.extend({validate: catalogue.validators.is_float})
             .extend({validate: catalogue.validators.geq(0)})
