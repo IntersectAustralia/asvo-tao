@@ -304,18 +304,23 @@ catalogue.modules.light_cone = function ($) {
         	}
         	param = props;
         }
-        vm.output_properties = TwoSidedSelectWidget(
-        		lc_id('output_properties'),
-                {not_selected: catalogue.util.output_choices(vm.dataset().pk, vm.catalogue_geometry().bit_mask),
-                 selected: param ? param : []},
-                dataset_property_to_option);
+        vm.output_properties_options = ko.computed(function(){
+            return catalogue.util.output_choices(vm.dataset().pk, vm.catalogue_geometry().bit_mask);
+        });
+        vm.output_properties = ko.observableArray(param ? param : []);
+        vm.output_properties_widget = TwoSidedSelectWidget({
+            elem_id: lc_id('output_properties'),
+            options: vm.output_properties_options,
+            selectedOptions: vm.output_properties,
+            to_option: dataset_property_to_option
+        });
 
         vm.current_output_property = ko.observable(undefined);
     	// if param is null assume that we are in the Catalogue wizard
     	// so set up the dependencies to update the display
         // otherwise leave it unlinked
         if (!param) {
-	        vm.output_properties.clicked_option.subscribe(function(v) {
+	        vm.output_properties_widget.clicked_option.subscribe(function(v) {
 	            var op = catalogue.util.dataset_property(v);
 	            vm.current_output_property(op);
 	        });

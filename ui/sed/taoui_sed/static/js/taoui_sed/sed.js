@@ -90,20 +90,22 @@ catalogue.modules.sed = function ($) {
         	}
         	param = bpfilters;
         }
-        vm.bandpass_filters = TwoSidedSelectWidget(
-        		sed_id('band_pass_filters'),
-        		{
-        			selected: param? param : [],
-        			not_selected: catalogue.util.bandpass_filters()
-        		},
-        		band_pass_filter_to_option);
-        //this.sed_band_pass_filters_widget.init();
+        vm.bandpass_filters_options = ko.computed(function(){
+            return catalogue.util.bandpass_filters();
+        });
+        vm.bandpass_filters = ko.observableArray(param ? param : []);
+        vm.bandpass_filters_widget = TwoSidedSelectWidget({
+            elem_id: sed_id('band_pass_filters'),
+            options: vm.bandpass_filters_options,
+            selectedOptions: vm.bandpass_filters,
+            to_option: band_pass_filter_to_option
+        });
         vm.current_bandpass_filter = ko.observable(undefined);
     	// if param is null assume that we are in the Catalogue wizard
     	// so set up the dependencies to update the display
         // otherwise leave it unlinked
         if (!param) {
-	        vm.bandpass_filters.clicked_option.subscribe(function(v) {
+	        vm.bandpass_filters_widget.clicked_option.subscribe(function(v) {
 	        	var bpf = bandpass_filter_from_id(v);
 	        	vm.current_bandpass_filter(bpf);
 	        });
