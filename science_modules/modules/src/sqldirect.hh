@@ -67,8 +67,10 @@ protected:
 	vector<void*> _field_stor;
 	vector<galaxy::field_value_type> _field_types;
 	vector<string> _field_names;
-
-
+	long _OutputLimit;
+	long _RecordsCount;
+	bool _IsRecordLimitReached;
+	bool RecordLimitReached();
 	void FetchData(string query);
 	void PrepareGalaxyObject(string query);
 
