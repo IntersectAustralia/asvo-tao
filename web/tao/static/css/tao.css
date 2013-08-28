@@ -678,6 +678,18 @@ background-position: -132px -134px;
 border-color: #bbb #bbb #bbb #bbb;
 }
 
+.disk-usage-field .icon-refresh-sml {
+    background-color: #f0f0f0;
+    background-position: -300px -134px;
+    height: 20px;
+    width: 20px;
+    /*border: 1px solid #fff;*/
+    /*border-color: #bbb #bbb #bbb #bbb;*/
+}
+.disk-usage-field .icon-refresh-sml:hover {
+    cursor: pointer;
+}
+
 .editable-field .overlay-icon {
 display: block;
 position: absolute;
