@@ -25,6 +25,7 @@ catalogue.modules.view_job = function ($) {
     	// Manage visibility of the job description save / cancel buttons 
     	$("#inlineedit").click(function() {
     		$('#savecancel').show();
+            $('.overlay-item').hide();
     	});
         $('#stop_job_confirm').dialog({
             resizable: false,
@@ -182,6 +183,7 @@ catalogue.modules.view_job = function ($) {
 			data: {"job-description": catalogue.vm.description()},
 			success: function(response, textStatus, jqXHR) {
 				$('#savecancel').hide();
+                $('.overlay-item').show();
 			},
 			error: function(response, textStatus, jqXHR) {
 				// Save parameters for debugging purposes
@@ -198,6 +200,7 @@ catalogue.modules.view_job = function ($) {
     this.cancel_description = function(evt) {
     	catalogue.vm.description(vm.description_bak());
     	setTimeout("$('#savecancel').hide()", 100);
+        setTimeout("$('.overlay-item').show()", 100);
    	}
 
 }

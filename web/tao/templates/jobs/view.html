@@ -73,9 +73,11 @@ the forms being hidden and all.
         </div>
         <div>
             <strong>Optional Description:</strong>
-            <div id="inlineedit">
-                <textarea contenteditable id="id-job_description" data-bind="value: description">
+            <div id="inlineedit" class="editable-field inactive">
+                <textarea contenteditable id="id-job_description" data-bind="value: description" style="width: 580px; margin:0px; height:4em;">
                 </textarea>
+                <span class="overlay-text overlay-item">click to edit</span>
+                <span class="overlay-icon icon icon-edit-sml overlay-item"></span>
                 <div id="savecancel">
                   <div id="id-save_edit" class="btn" type="button" onClick="catalogue.modules.view_job.save_description()">&#10003;</div>
                   <div id="id-cancel_edit" class="btn" type="button" onClick="catalogue.modules.view_job.cancel_description()">X</div>

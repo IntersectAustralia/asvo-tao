@@ -8,14 +8,16 @@
 
 <div class="row-fluid">
     <div class="boxed span8">
-        <input type="button" value="Custom Job" class="btn tao-next" />
-        <div>
-            {{ form.get_job_type|as_bootstrap_field }}
-        </div>
+
         <div id="telescope_params">
-            {% for fieldset in form.fieldsets %}
-                {{ fieldset|as_bootstrap_fieldset }}
-            {% endfor %}
+            <input type="button" value="Custom Job" class="btn tao-next" />
+            <br />
+            <br />
+            <div id='file_upload_proxy' class="btn">
+                Upload Paramters
+                <input class="hidden_file_input" form="file_upload" id="id_job_type-params_file" name="job_type-params_file" type="file">
+            </div>
         </div>
+        
     </div>
 </div>
