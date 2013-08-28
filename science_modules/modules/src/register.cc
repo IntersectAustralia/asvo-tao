@@ -15,6 +15,7 @@ namespace tao {
       factory.register_module( "skymaker", skymaker::factory );
       factory.register_module( "votable", votable::factory );
       factory.register_module( "fits", fits::factory );
+      factory.register_module( "sql", sqldirect::factory );
    }
 
 }

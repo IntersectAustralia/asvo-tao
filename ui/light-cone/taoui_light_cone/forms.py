@@ -189,7 +189,8 @@ class Form(BetterForm):
                                                         simulation_id=sid).pk
             dms_choices = datasets.dark_matter_simulation_choices()
             gm_choices = datasets.galaxy_model_choices(sid)
-            snapshot_choices = datasets.snapshot_choices()
+            # snapshot_choices = datasets.snapshot_choices()
+            snapshot_choices = [(None, None, {"data-bind" : "value: $data, text: catalogue.modules.light_cone.format_redshift($data.fields.redshift)"})]
         else:
             # The choices should be empty, since they are loaded in the wizard
             # output_choices is here until Carlos sets up the View Model

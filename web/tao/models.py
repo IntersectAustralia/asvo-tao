@@ -197,6 +197,8 @@ class DataSetProperty(models.Model):
     TYPE_FLOAT = 1
     TYPE_LONG_LONG = 2
     TYPE_STRING = 3
+    TYPE_DOUBLE = 4
+    TYPE_LONG = 5
     # Note: The values listed below are used by the import code,
     # and thus must match.
     DATA_TYPES = (
@@ -204,6 +206,8 @@ class DataSetProperty(models.Model):
                   (TYPE_FLOAT, 'float'),
                   (TYPE_LONG_LONG, 'long long'),
                   (TYPE_STRING, 'string'),
+                  (TYPE_DOUBLE, 'double'),
+                  (TYPE_LONG, 'long'),
                   )
     name = models.CharField(max_length=200)
     units = models.CharField(max_length=20, default='', blank=True)
@@ -224,7 +228,7 @@ class DataSetProperty(models.Model):
         ordering = ['group', 'order', 'label']
 
     def __unicode__(self):
-        return self.label
+        return u"{0} in {1}".format(self.label, self.dataset.__unicode__())
 
     def option_label(self):
         if (self.units is not None and self.units != ''):
@@ -237,7 +241,7 @@ class DataSetProperty(models.Model):
         for dtype in cls.DATA_TYPES:
             if dtype[1] == val:
                 return dtype[0]
-        raise ValueError('Unknown data type')
+        raise ValueError('Unknown data type: {0}'.format(val))
 
 
 class Snapshot(models.Model):
