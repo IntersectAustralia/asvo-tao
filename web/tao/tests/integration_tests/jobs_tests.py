@@ -432,3 +432,10 @@ class JobTest(LiveServerTest):
         self.assert_is_displayed('#id-job_error_enquiry')
         self.click('id-job_error_support')
         self.assert_on_page('support_page')
+
+    def test_refresh_disk_usage(self):
+        self.login(self.username, self.password)
+        self.visit('view_job', self.completed_job.id)
+        # from code import interact
+        # interact(local=locals())
+        self.assert_page_has_content('<strong>Disk Usage:</strong> 854.0B')

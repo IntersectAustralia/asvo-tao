@@ -41,6 +41,7 @@ the forms being hidden and all.
     <div>
         <h1>Viewing Job {{ job.id }} {% if job.user.username != user.username %}(owned by {{ job.user.display_name }}){% endif %}</h1>
         <div>
+            <p>
             {% if job.status == 'SUBMITTED' or job.status == 'QUEUED' or job.status == 'IN_PROGRESS' %}
                 <button type="button" class="btn btn-primary" id='id-job_stop'>Stop</button>
             {% else %}
@@ -63,6 +64,12 @@ the forms being hidden and all.
             {% else %}
                 <button type="button" class="btn btn-primary" id="id-job_output_delete" disabled>Delete Output</button>
             {% endif %}
+            </p>
+        </div>
+        <div>
+            <p>
+                <strong>Disk Usage:</strong> {{ job.display_disk_size }} <a href="{% url 'refresh_disk_usage' job.id %}"><b>&#10227;</b></a>
+            </p>
         </div>
         <div>
             <strong>Optional Description:</strong>

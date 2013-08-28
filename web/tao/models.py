@@ -13,10 +13,22 @@ from datetime import datetime
 
 import os
 
+
+def format_human_readable_file_size(file_size):
+    size = file_size
+    units = ['B', 'kB', 'MB']
+    for x in units:
+        if size < 1000:
+            return '%3.1f%s' % (size, x)
+        size /= 1000
+    return '%3.1f%s' % (size, 'GB')
+
+
 class UserManager(auth_models.UserManager):
     def admin_emails(self):
         return [x[0] for x in TaoUser.objects.filter(is_active=True, is_staff=True).values_list('email')]
-    
+
+
 class TaoUser(auth_models.AbstractUser):
     RS_NA = 'NA'
     RS_EMPTY = 'EMP'
@@ -49,7 +61,7 @@ class TaoUser(auth_models.AbstractUser):
             TaoUser.RS_PENDING: 'Pending approval',
             TaoUser.RS_APPROVED: 'Account approved',
             TaoUser.RS_REJECTED: 'Registration rejected',
-            }
+        }
         return messages[self.account_registration_status]
 
     def is_aaf(self):
@@ -74,6 +86,38 @@ class TaoUser(auth_models.AbstractUser):
 
     def __unicode__(self):
         return "(%d) %s, %s, active:%r" % (self.id, self.username, self.account_registration_status, self.is_active)
+
+    def user_disk_quota(self):
+        if self.disk_quota is None or self.disk_quota == 0:
+            try:
+                obj = GlobalParameter.objects.get(parameter_name='default_disk_quota')
+                return obj.parameter_value
+            except GlobalParameter.DoesNotExist:
+                return -1
+        return self.disk_quota  # in MB
+
+    def display_user_disk_quota(self):
+        return format_human_readable_file_size(float(self.user_disk_quota()) * 1000**2)
+
+    def get_current_disk_usage(self):
+        user_jobs = Job.objects.filter(user=self)
+        current_disk_usage = 0
+        for job in user_jobs:
+            if job.is_completed():
+                current_disk_usage += job.disk_size() # disk size in B
+
+        return current_disk_usage
+
+    def display_current_disk_usage(self):
+        return format_human_readable_file_size(self.get_current_disk_usage())  # input file size in B
+
+    def check_disk_usage_within_quota(self):
+        user_quota = float(self.user_disk_quota())
+        if user_quota == -1:  # user has unlimited disk quota
+            return True
+        else:
+            disk_usage_in_MB = self.get_current_disk_usage() / 1000.0**2
+            return disk_usage_in_MB <= user_quota
 
 class Simulation(models.Model):        
 
@@ -214,6 +258,7 @@ class StellarModel(models.Model):
     def __unicode__(self):
         return self.name
 
+
 def initial_job_status():
     try:
         obj = GlobalParameter.objects.get(parameter_name='INITIAL_JOB_STATUS')
@@ -257,7 +302,7 @@ class Job(models.Model):
     output_path = models.TextField(blank=True)  # without a trailing slash, please
     database = models.CharField(max_length=200)
     error_message = models.TextField(blank=True, max_length=1000000, default='')
-    disk_usage = models.IntegerField(null=True, blank=True, default=0)
+    disk_usage = models.IntegerField(null=True, blank=True, default=-1)
 
     def __init__(self, *args, **kwargs):
         super(Job, self).__init__(*args, **kwargs)
@@ -277,15 +322,25 @@ class Job(models.Model):
     def short_error_message(self):
         return self.error_message[:80]
 
+    def recalculate_disk_usage(self):
+        sum_file_sizes = 0
+        for f in self.files():
+            sum_file_sizes += f.get_file_size_in_B()
+        # sum_file_sizes /= 1000.0**2
+        self.disk_usage = sum_file_sizes  # round(sum_file_sizes, 1)
+        return self.disk_usage
+
     def disk_size(self):
-        if self.disk_usage is not None:
+        if not self.is_completed():
+            return 0
+
+        if self.disk_usage is not None and self.disk_usage > 0:
             return self.disk_usage
         else:
-            sum_file_sizes = 0
-            for file in self.files():
-                sum_file_sizes += file.file_size
-            self.disk_usage = sum_file_sizes
-            return sum_file_sizes
+            return self.recalculate_disk_usage()
+
+    def display_disk_size(self):
+        return format_human_readable_file_size(self.disk_size()) #* 1000**2)  # input file size in B
 
     def files(self):
         if not self.is_completed():
@@ -295,6 +350,7 @@ class Job(models.Model):
         job_base_dir = os.path.join(settings.FILES_BASE, self.output_path)
         for root, dirs, files in os.walk(job_base_dir):
             all_files += [JobFile(job_base_dir, os.path.join(root, filename)) for filename in files]
+
         return sorted(all_files, key=lambda job_file: job_file.file_name)
 
     def files_tree(self):
@@ -344,13 +400,17 @@ class JobFile(object):
         return True
 
     def get_file_size(self):
-        size = self.file_size
-        units = ['B', 'kB', 'MB']
-        for x in units:
-            if size < 1000:
-                return '%3.1f%s' % (size, x)
-            size /= 1000
-        return '%3.1f%s' % (size, 'GB')
+        return format_human_readable_file_size(self.file_size)
+        # size = self.file_size
+        # units = ['B', 'kB', 'MB']
+        # for x in units:
+        #     if size < 1000:
+        #         return '%3.1f%s' % (size, x)
+        #     size /= 1000
+        # return '%3.1f%s' % (size, 'GB')
+
+    def get_file_size_in_B(self):
+        return self.file_size
 
 class BandPassFilter(models.Model):
     label = models.CharField(max_length=80) # displays the user-friendly file name for the filter, without file extension
