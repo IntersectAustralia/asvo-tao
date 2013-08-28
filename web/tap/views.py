@@ -142,7 +142,7 @@ def results(request, id):
     
     job_file = None
     for file in job.files():
-        if file.file_name == TAP_OUTPUT_FILENAME:
+        if file.file_name[0:len(TAP_OUTPUT_PREFIX)] == TAP_OUTPUT_PREFIX:
             job_file = file
     
     if (not job_file) or (not job_file.can_be_downloaded()):
@@ -228,7 +228,7 @@ def make_parameters_xml(request):
     votable_module_version_node.text = str(TAP_MODULE_VERSION)
     
     filename_node = etree.SubElement(votable, 'filename')
-    filename_node.text = TAP_OUTPUT_FILENAME
+    filename_node.text = TAP_OUTPUT_PREFIX + "." + TAP_OUTPUT_EXT
     
     return etree.tostring(params_xml, pretty_print=True, encoding='utf-8', 
                           xml_declaration=True)
@@ -245,7 +245,7 @@ def stream_job_results(request, job):
                                                  job.created_time, 'query': request.POST['QUERY']})
     job_file = None
     for file in job.files():
-        if file.file_name == TAP_OUTPUT_FILENAME:
+        if file.file_name[0:len(TAP_OUTPUT_PREFIX)] == TAP_OUTPUT_PREFIX:
             job_file = file
         
     if (not job_file) or (not job_file.can_be_downloaded()):
@@ -271,7 +271,7 @@ def createTAPjob(request):
     else:
         dataset = parse_dataset_name(request.POST['QUERY'])
         job.database = dataset['name']
-        job.status = models.Job.HELD
+        job.status = INITIAL_JOB_STATUS
         
     job.save()
     
