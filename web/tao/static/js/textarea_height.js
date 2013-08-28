@@ -19,9 +19,13 @@ function TextareaHeight(params) {
 	if (params.max_height) {
 		this.max_height = params.max_height;
 	} else {
-		this.max_height = 20;
+		this.max_height = 50;
 	}
-	// Attach ourself to the widget for easy debugging
+    setTimeout( function() {
+        var h = Math.max($(params.textarea)[0].scrollHeight, this.max_height);
+        $(params.textarea).height( h );
+       }, 1);
+    // Attach ourself to the widget for easy debugging
 	this.textarea.textarea_height_mgr = this;
 	this.textarea.onkeyup = this.update.bind(this);
 	// The page may not be ready yet.
@@ -38,7 +42,7 @@ TextareaHeight.prototype = {
 
 		textarea_rows = this.textarea.value.split("\n");
 		if (textarea_rows[0] == undefined) {
-			setrows = 1;
+			setrows = 2;
 		} else {
 			setrows = Math.min(textarea_rows.length, this.max_height)
 		}

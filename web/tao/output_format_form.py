@@ -61,12 +61,14 @@ class OutputFormatForm(BetterForm):
         if self.is_bound:
             format_choices = [(x['value'], x['text'], {}) for x in configured_output_formats()]
         else:
-            format_choices = [(None, None, {"data-bind" : "value: $data, text: $data.fields.text"})]
+            # format_choices = [(None, None, {"data-bind" : "value: $data, text: $data.fields.text"})]
+            format_choices = []
         self.fields['supported_formats'] = ChoiceFieldWithOtherAttrs(required=False,
                                     label='Output Format',
                                     choices=format_choices,
                                     widget=SelectWithOtherAttrs(attrs={'class': 'light_box_field'}))
-        self.fields['supported_formats'].widget.attrs['data-bind'] = 'foreach: output_formats, value: output_format'
+        # self.fields['supported_formats'].widget.attrs['data-bind'] = 'foreach: output_formats, value: output_format'
+        self.fields['supported_formats'].widget.attrs['data-bind'] = "options: output_formats, optionsText: 'text', value: output_format"
 
 
     def to_json_dict(self):

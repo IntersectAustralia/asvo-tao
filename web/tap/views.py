@@ -10,6 +10,7 @@ from django.core.exceptions import PermissionDenied
 from django.core.servers.basehttp import FileWrapper
 from tao.time import timestamp
 from tao import models
+from tao.settings import INITIAL_JOB_STATUS
 
 def tap(request):
     
@@ -140,8 +141,9 @@ def params(request, id):
 def results(request, id):
     job = findTAPjob(request, id)
     
+    job_file = None
     for file in job.files():
-        if file.file_name == TAP_OUTPUT_FILENAME:
+        if file.file_name[0:len(TAP_OUTPUT_PREFIX)] == TAP_OUTPUT_PREFIX:
             job_file = file
     
     if (not job_file) or (not job_file.can_be_downloaded()):
@@ -201,7 +203,10 @@ def make_parameters_xml(request):
     sql.set('id', '1')
     
     query_node = etree.SubElement(sql, 'query')
-    query_node.text = query
+    query_node.text = query.replace(dataset['name'], '-table-')
+    
+    limit_node = etree.SubElement(sql, 'limit')
+    limit_node.text = limit
     
     module_version_node = etree.SubElement(sql, 'module-version')
     module_version_node.text = str(TAP_MODULE_VERSION)
@@ -224,7 +229,7 @@ def make_parameters_xml(request):
     votable_module_version_node.text = str(TAP_MODULE_VERSION)
     
     filename_node = etree.SubElement(votable, 'filename')
-    filename_node.text = TAP_OUTPUT_FILENAME
+    filename_node.text = TAP_OUTPUT_PREFIX + "." + TAP_OUTPUT_EXT
     
     return etree.tostring(params_xml, pretty_print=True, encoding='utf-8', 
                           xml_declaration=True)
@@ -241,7 +246,7 @@ def stream_job_results(request, job):
                                                  job.created_time, 'query': request.POST['QUERY']})
     job_file = None
     for file in job.files():
-        if file.file_name == TAP_OUTPUT_FILENAME:
+        if file.file_name[0:len(TAP_OUTPUT_PREFIX)] == TAP_OUTPUT_PREFIX:
             job_file = file
         
     if (not job_file) or (not job_file.can_be_downloaded()):
@@ -264,7 +269,11 @@ def createTAPjob(request):
     if errors != '':
         job.error_message = errors
         job.status = models.Job.ERROR
-    
+    else:
+        dataset = parse_dataset_name(request.POST['QUERY'])
+        job.database = dataset['name']
+        job.status = INITIAL_JOB_STATUS
+        
     job.save()
     
     return job
