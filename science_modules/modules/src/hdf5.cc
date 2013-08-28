@@ -85,11 +85,14 @@ namespace tao {
    void
    hdf5::process_galaxy( tao::galaxy& galaxy )
    {
+	   if(galaxy.batch_size()==0)
+	       	  return;
       _timer.start();
 
       // Create datasets for the field names. Note that I can only
       // do this when I have a galaxy object, hence doing it once
       // here.
+
       if( !_ready )
       {
 	 for( const auto& field : _fields )
