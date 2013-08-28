@@ -37,40 +37,41 @@
     <form id="mgf-form" action="" method="POST">
         <fieldset>
         {% csrf_token %}
-        <div id="tabs" class='row-fluid'>
+        <div id="tabs" class='row-fluid' data-bind="tabs: true">
             <ul>
                 {% for form in forms %}
-                <li><a href="#tabs-{{ form.TAB_ID }}" id="tao-tabs-{{ form.TAB_ID }}">{{ form.LABEL }}</a></li>
+                <li data-bind="tab_handle: {'id':'{{ form.prefix }}', 'label':'{{ form.LABEL }}'} " ></li>
                 {%  endfor %}
-                <li><a href="#tabs-{{ TAB_SUMMARY_ID }}" id="tao-tabs-{{ TAB_SUMMARY_ID }}">Summary and Submit</a></li>
+                <li data-bind="tab_handle: {'id':'summary_submit', 'label':'Summary and submit'}"></li>
             </ul>
             {% for form in forms %}
-                <div id="tabs-{{ form.TAB_ID }}" class="tao-tab"
-                     tao-number="{{ form.TAB_ID }}"
-                     data-bind="with: {{ form.prefix }}">
+                <!-- ko with: {{ form.prefix }} -->
+                <div class="tao-tab"
+                     data-bind="tab_form: {'id': '{{ form.prefix }}'}">
 
-                        <input type="button" value="Next &gt;" class="btn tao-next" />
+                        <input type="button" value="Next &gt;" class="btn tao-next"  data-bind="click: next_tab"/>
                     {% if forloop.counter > 1 %}
-                        <input type="button" value="&lt; Previous" class="btn tao-prev" style="float: left;"/>
+                        <input type="button" value="&lt; Previous" class="btn tao-prev" style="float: left;"  data-bind="click: previous_tab"/>
                     {% endif %}
 
                     {% include form.EDIT_TEMPLATE %}
 
                     <div class="form-actions">
 
-                          <input type="button" value="Next &gt;" class="btn tao-next" />
+                      <input type="button" value="Next &gt;" class="btn tao-next" data-bind="click: next_tab"/>
                       {% if forloop.counter > 1 %}
-                          <input type="button" value="&lt; Previous" class="btn tao-prev" style="float: left;"/>
+                          <input type="button" value="&lt; Previous" class="btn tao-prev" style="float: left;" data-bind="click: previous_tab"/>
                       {% endif %}
                       
                     </div>
 
                 </div>
+                <!-- /ko -->
             {% endfor %}
-          <div id="tabs-{{ TAB_SUMMARY_ID }}" class="tao-tab"
-                   tao-number="{{ TAB_SUMMARY_ID }}">
+          <div class="tao-tab"
+               data-bind="tab_form: {'id': 'summary_submit'}">
                  
-                <input type="button" value="&lt; Previous" class="btn tao-prev" style="float: left;" />
+                <input type="button" value="&lt; Previous" class="btn tao-prev" style="float: left;" data-bind="click: previous_tab"/>
                 <legend></legend>
                 <div class="row-fluid">
                     <textarea name="job-description" placeholder="My description (optional)" style="width: 500px; height: 150px;"
@@ -82,8 +83,8 @@
                     {% endfor %}
                 </div>
                 <div class="form-actions">
-                    <input type="button" value="&lt; Previous" class="btn tao-prev" style="float: left;" />
-                    <input id="form_submit" type="button" value="Submit Job" class="btn btn-primary" onClick="catalogue.util.submit_job()" />
+                    <input type="button" value="&lt; Previous" class="btn tao-prev" style="float: left;" data-bind="click: previous_tab"/>
+                    <input id="form_submit" type="button" value="Submit Job" class="btn btn-primary" data-bind="click: catalogue.util.submit_job" />
                 </div>
             </div>
         </div>
