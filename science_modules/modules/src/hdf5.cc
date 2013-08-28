@@ -34,7 +34,14 @@ namespace tao {
       LOG_ENTER();
 
       // Get our information.
-      _fn = global_dict.get<string>( "outputdir" ) + "/" + _dict.get<string>( "filename" ) + "." + mpi::rank_string();
+
+      if(mpi::comm::world.size()==1)
+    	  _fn = global_dict.get<string>( "outputdir" ) + "/" + _dict.get<string>( "filename" ) ;
+      else
+    	  _fn = global_dict.get<string>( "outputdir" ) + "/" + _dict.get<string>( "filename" ) + "." + mpi::rank_string();
+
+
+      //_fn = global_dict.get<string>( "outputdir" ) + "/" + _dict.get<string>( "filename" ) + "." + mpi::rank_string();
       _fields = _dict.get_list<string>( "fields" );
 
       // Open the file.
@@ -78,11 +85,14 @@ namespace tao {
    void
    hdf5::process_galaxy( tao::galaxy& galaxy )
    {
+	   if(galaxy.batch_size()==0)
+	       	  return;
       _timer.start();
 
       // Create datasets for the field names. Note that I can only
       // do this when I have a galaxy object, hence doing it once
       // here.
+
       if( !_ready )
       {
 	 for( const auto& field : _fields )
