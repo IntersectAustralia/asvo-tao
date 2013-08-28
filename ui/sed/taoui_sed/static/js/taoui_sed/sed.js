@@ -27,10 +27,10 @@ catalogue.modules.sed = function ($) {
     		'sed-apply_sed': [apply_sed]
     	};
     	if (apply_sed) {
-    		selected_bpfs = catalogue.modules.sed.vm.bandpass_filters.to_side.options_raw();
+    		selected_bpfs = catalogue.modules.sed.vm.bandpass_filters();
     		bpf_ids = []
     		for (var i=0; i<selected_bpfs.length; i++) {
-    			bpf_ids.push(selected_bpfs[i].value);
+    			bpf_ids.push(selected_bpfs[i].pk);
     		}
     		jQuery.extend(params, {
     			'sed-single_stellar_population_model': [vm.stellar_model().pk],
@@ -93,7 +93,8 @@ catalogue.modules.sed = function ($) {
         vm.bandpass_filters_options = ko.computed(function(){
             return catalogue.util.bandpass_filters();
         });
-        vm.bandpass_filters = ko.observableArray(param ? param : []);
+        vm.bandpass_filters = ko.observableArray(param ? param : [])
+            .extend({required: function(){return true;}});
         vm.bandpass_filters_widget = TwoSidedSelectWidget({
             elem_id: sed_id('band_pass_filters'),
             options: vm.bandpass_filters_options,

@@ -61,7 +61,6 @@ catalogue.modules.light_cone = function ($) {
         //    /// TODO !!!
         // }
     	is_valid &= catalogue.util.validate_vm(vm);
-    	is_valid &= vm.output_properties.to_side.options_raw().length > 0;
     	return is_valid;
     }
 
@@ -71,10 +70,10 @@ catalogue.modules.light_cone = function ($) {
 
     this.job_parameters = function() {
     	var geometry = vm.catalogue_geometry().id;
-    	var output_props = vm.output_properties.to_side.options_raw();
+    	var output_props = vm.output_properties();
     	var output_ids = [];
     	for (var i=0; i<output_props.length; i++) {
-    		output_ids.push(output_props[i].value);
+    		output_ids.push(output_props[i].pk);
     	}
     	var params = {
     		'light_cone-catalogue_geometry': [geometry],
@@ -232,17 +231,6 @@ catalogue.modules.light_cone = function ($) {
         vm.number_of_light_cones.subscribe(function(n) {
         	if (n==0) { console.log('WARN: Number of light-cones = 0'); }
         });
-        vm.available_output_properties = ko.computed(function(){
-            return catalogue.util.output_choices(vm.dataset().pk, vm.catalogue_geometry().bit_mask);
-        });
-        vm.available_output_properties.subscribe(function(objs) {
-            vm.output_properties.new_options(objs);
-        });
-        vm.dataset.subscribe(function(dataset) {
-            var objs = catalogue.util.output_choices(dataset.pk);
-            vm.output_properties.new_options(objs);
-        });
-
         param = job['light_cone-ra_opening_angle'];
         vm.ra_opening_angle = ko.observable(param ? param : null)
             .extend({required: function(){return vm.catalogue_geometry().id == 'light-cone'}})
@@ -278,7 +266,6 @@ catalogue.modules.light_cone = function ($) {
             .extend({required: function(){return vm.catalogue_geometry().id == 'box'}})
             .extend({validate: catalogue.validators.is_float})
             .extend({validate: catalogue.validators.geq(0)})
-            // .extend({validate: catalogue.validators.leq(vm.max_box_size)});
             .extend({validate: catalogue.validators.leq(vm.max_box_size)});
 
         vm.maximum_number_of_light_cones = ko.computed(function() {
@@ -307,7 +294,8 @@ catalogue.modules.light_cone = function ($) {
         vm.output_properties_options = ko.computed(function(){
             return catalogue.util.output_choices(vm.dataset().pk, vm.catalogue_geometry().bit_mask);
         });
-        vm.output_properties = ko.observableArray(param ? param : []);
+        vm.output_properties = ko.observableArray(param ? param : [])
+            .extend({required: function(){return true;}});
         vm.output_properties_widget = TwoSidedSelectWidget({
             elem_id: lc_id('output_properties'),
             options: vm.output_properties_options,
