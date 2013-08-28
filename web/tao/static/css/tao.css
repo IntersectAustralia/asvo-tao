@@ -693,7 +693,7 @@ border-color: #bbb #bbb #bbb #bbb;
 .editable-field .overlay-icon {
 display: block;
 position: absolute;
-top: -1em;
+top: -22px;
 left: auto;
 right: -2px;
 text-indent: 100%;
@@ -711,7 +711,7 @@ height: 20px;
 .overlay-text {
 display: block;
 position: absolute;
-top: -1.1em;
+top: -22px;
 left: -5em;
 right: -2px;
 text-indent: 100%;
