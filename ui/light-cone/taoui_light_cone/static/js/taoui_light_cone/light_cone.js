@@ -61,7 +61,6 @@ catalogue.modules.light_cone = function ($) {
         //    /// TODO !!!
         // }
     	is_valid &= catalogue.util.validate_vm(vm);
-    	is_valid &= vm.output_properties.to_side.options_raw().length > 0;
     	return is_valid;
     }
 
@@ -71,10 +70,10 @@ catalogue.modules.light_cone = function ($) {
 
     this.job_parameters = function() {
     	var geometry = vm.catalogue_geometry().id;
-    	var output_props = vm.output_properties.to_side.options_raw();
+    	var output_props = vm.output_properties();
     	var output_ids = [];
     	for (var i=0; i<output_props.length; i++) {
-    		output_ids.push(output_props[i].value);
+    		output_ids.push(output_props[i].pk);
     	}
     	var params = {
     		'light_cone-catalogue_geometry': [geometry],
@@ -180,34 +179,6 @@ catalogue.modules.light_cone = function ($) {
     	});
     	return res;
     }
-    
-
-    // this.find_params_set = function(params_name) {
-    //     var result = null;
-    //     for(i = 0; i < TaoLoadedParams.length; i++) {
-    //         if(params_name in TaoLoadedParams[i]) {
-    //             result = TaoLoadedParams[i];
-    //             break;
-    //         }
-    //     }
-    //     return result;
-    // }
-
-    // this.get_param_value = function(key, params_set) {
-    //     var result = null;
-    //     for(i = 0; i < params_set.length; i++) {
-    //         if(params_name in params_set[i]) {
-    //             result = TaoLoadedParams[i].params_name;
-    //             break;
-    //         }
-    //     }
-    //     return result;
-    // }
-
-    // this.load_params = function() {
-    //     var lc_params = this.find_params_set('light-cone');
-    //     console.log(lc_params);
-    // }
 
     this.init_model = function(init_params) {
     	// job is either an object containing the job parameters or null
@@ -256,35 +227,33 @@ catalogue.modules.light_cone = function ($) {
         // submission.
         //    .extend({validate: catalogue.validators.geq(1)});
         // Debugging
+
         vm.number_of_light_cones.subscribe(function(n) {
         	if (n==0) { console.log('WARN: Number of light-cones = 0'); }
         });
-        vm.available_output_properties = ko.computed(function(){
-            return catalogue.util.output_choices(vm.dataset().pk, vm.catalogue_geometry().bit_mask);
-        });
-        vm.available_output_properties.subscribe(function(objs) {
-            vm.output_properties.new_options(objs);
-        });
-
         param = job['light_cone-ra_opening_angle'];
         vm.ra_opening_angle = ko.observable(param ? param : null)
+            .extend({required: function(){return vm.catalogue_geometry().id == 'light-cone'}})
             .extend({validate: catalogue.validators.is_float})
             .extend({validate: catalogue.validators.geq(0)})
             .extend({validate: catalogue.validators.leq(90)});
 
         param = job['light_cone-dec_opening_angle'];
         vm.dec_opening_angle = ko.observable(param ? param : null)
+            .extend({required: function(){return vm.catalogue_geometry().id == 'light-cone'}})
             .extend({validate: catalogue.validators.is_float})
             .extend({validate: catalogue.validators.geq(0)})
             .extend({validate: catalogue.validators.leq(90)});
 
         param = job['light_cone-redshift_min'];
         vm.redshift_min = ko.observable(param ? param : null)
+            .extend({required: function(){return vm.catalogue_geometry().id == 'light-cone'}})
             .extend({validate: catalogue.validators.is_float})
             .extend({validate: catalogue.validators.geq(0)});
 
         param = job['light_cone-redshift_max'];
         vm.redshift_max = ko.observable(param ? param : null)
+            .extend({required: function(){return vm.catalogue_geometry().id == 'light-cone'}})
             .extend({validate: catalogue.validators.is_float})
             .extend({validate: catalogue.validators.geq(vm.redshift_min)});
 
@@ -294,9 +263,9 @@ catalogue.modules.light_cone = function ($) {
 
         param = job['light_cone-box_size'];
         vm.box_size = ko.observable(param ? param : vm.max_box_size())
+            .extend({required: function(){return vm.catalogue_geometry().id == 'box'}})
             .extend({validate: catalogue.validators.is_float})
             .extend({validate: catalogue.validators.geq(0)})
-            // .extend({validate: catalogue.validators.leq(vm.max_box_size)});
             .extend({validate: catalogue.validators.leq(vm.max_box_size)});
 
         vm.maximum_number_of_light_cones = ko.computed(function() {
@@ -322,17 +291,24 @@ catalogue.modules.light_cone = function ($) {
         	}
         	param = props;
         }
-        vm.output_properties = TwoSidedSelectWidget(
-        		lc_id('output_properties'),
-                {not_selected: catalogue.util.output_choices(vm.dataset().pk, vm.catalogue_geometry().bit_mask),
-                 selected: param ? param : []},
-                dataset_property_to_option);
+        vm.output_properties_options = ko.computed(function(){
+            return catalogue.util.output_choices(vm.dataset().pk, vm.catalogue_geometry().bit_mask);
+        });
+        vm.output_properties = ko.observableArray(param ? param : [])
+            .extend({required: function(){return true;}});
+        vm.output_properties_widget = TwoSidedSelectWidget({
+            elem_id: lc_id('output_properties'),
+            options: vm.output_properties_options,
+            selectedOptions: vm.output_properties,
+            to_option: dataset_property_to_option
+        });
+
         vm.current_output_property = ko.observable(undefined);
     	// if param is null assume that we are in the Catalogue wizard
     	// so set up the dependencies to update the display
         // otherwise leave it unlinked
         if (!param) {
-	        vm.output_properties.clicked_option.subscribe(function(v) {
+	        vm.output_properties_widget.clicked_option.subscribe(function(v) {
 	            var op = catalogue.util.dataset_property(v);
 	            vm.current_output_property(op);
 	        });

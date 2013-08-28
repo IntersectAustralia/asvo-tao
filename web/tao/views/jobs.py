@@ -251,6 +251,7 @@ def index(request):
 
     return render(request, 'jobs/index.html', {
         'jobs': user_jobs,
+        'user': request.user
     })
 
 @researcher_required
@@ -286,3 +287,10 @@ def delete_job_output(request, id):
         job_output_delete_command.save()
 
     return HttpResponse('{}', mimetype='application/json')
+
+@researcher_required
+@object_permission_required('can_write_job')
+def refresh_disk_usage(request, id):
+    job = Job.objects.get(id=id)
+    job.recalculate_disk_usage()
+    return redirect(reverse('view_job', args=[id]))
