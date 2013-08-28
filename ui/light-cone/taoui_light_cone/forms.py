@@ -189,7 +189,8 @@ class Form(BetterForm):
                                                         simulation_id=sid).pk
             dms_choices = datasets.dark_matter_simulation_choices()
             gm_choices = datasets.galaxy_model_choices(sid)
-            snapshot_choices = datasets.snapshot_choices()
+            # snapshot_choices = datasets.snapshot_choices()
+            snapshot_choices = [(None, None, {"data-bind" : "value: $data, text: catalogue.modules.light_cone.format_redshift($data.fields.redshift)"})]
         else:
             # The choices should be empty, since they are loaded in the wizard
             # output_choices is here until Carlos sets up the View Model
@@ -235,7 +236,6 @@ class Form(BetterForm):
         self.fields['galaxy_model'].widget.attrs['data-bind'] = 'options: galaxy_models, value: galaxy_model, optionsText: function(i) { return i.fields.name }'
         self.fields['ra_opening_angle'].widget.attrs['data-bind'] = 'value: ra_opening_angle'
         self.fields['dec_opening_angle'].widget.attrs['data-bind'] = 'value: dec_opening_angle'
-        self.fields['output_properties'].widget.attrs['ko_data'] = 'output_properties'
         self.fields['box_size'].widget.attrs['data-bind'] = 'value: box_size'
         self.fields['snapshot'].widget.attrs['data-bind'] = 'foreach: snapshots, value: snapshot'
         self.fields['redshift_min'].widget.attrs['data-bind'] = 'value: redshift_min'
@@ -243,7 +243,7 @@ class Form(BetterForm):
         self.fields['light_cone_type'].widget.attrs['data-bind'] = 'checked: light_cone_type'
         self.fields['number_of_light_cones'].widget.attrs['spinner_bind'] = 'spinner: number_of_light_cones, spinnerOptions: {min: 1, max: maximum_number_of_light_cones}'
         self.fields['number_of_light_cones'].widget.attrs['spinner_message'] = "text: 'maximum is ' + maximum_number_of_light_cones()"
-        self.fields['output_properties'].widget.attrs['data-bind'] = 'value: output_properties'
+        self.fields['output_properties'].widget.attrs['ko_data'] = {'widget':'output_properties_widget','value':'output_properties'}
 
 
     def check_redshift_min_less_than_redshift_max(self):

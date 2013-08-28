@@ -18,10 +18,7 @@ if __name__ == '__main__':
     OutputFile=h5py.File(OutputFilePath,'w')
     
 
-    '''cosgroup=OutputFile.create_group("cosmology")
-    cosgroup.create_dataset("hubble",  data=[0.0])
-    cosgroup.create_dataset("omega_l",  data=[0.0])
-    cosgroup.create_dataset("omega_m",  data=[0.0])
+    
     
     
     
@@ -108,23 +105,34 @@ if __name__ == '__main__':
     Datadict['MetalsColdGas']=numpy.add(Datadict['diskAbundancesGasMetals'],Datadict['spheroidAbundancesGasMetals'])
     Datadict['sfr']=numpy.add(Datadict['interOutputDiskStarFormationRate'],Datadict['interOutputSpheroidStarFormationRate'])
     
-    numpy.save('numpyDataunsorted.npy', Datadict)     
-    numpy.sort(Datadict, order='mergerTreeIndex')
-    numpy.save('numpyData.npy', Datadict)'''
-    Datadict=numpy.load('numpyData.npy')
+    numpy.save('numpyDataunsorted.npy', Datadict)  
+     
+    Datadict=numpy.sort(Datadict, order='mergerTreeIndex')
+    numpy.save('numpyData.npy', Datadict)
+    #Datadict=numpy.load('numpyData.npy')  
+    
     OutputFile.create_dataset("galaxies", data=Datadict)
     ListOfUnique=numpy.unique(Datadict['mergerTreeIndex'])
     ArrayList=Datadict['mergerTreeIndex']
-        
+    GalaxyCountData=[]
+    TreeStartIndexData=[]    
         
     for TreeId in  ListOfUnique:
         itemindex=numpy.where(Datadict['mergerTreeIndex']==TreeId)
-        print itemindex
+        StartIndex=itemindex[0][0]
+        TreeCount=len(itemindex[0])
+        GalaxyCountData.append(TreeCount)
+        TreeStartIndexData.append(StartIndex)
+        print str(StartIndex)+":"+str(TreeCount)
         
-    
+        
+    RedshiftData=[127, 79.9978940547546, 49.999592003264, 30.000062000124, 19.9156888582125, 18.2437217357837, 16.7245254258317, 15.3430738053213, 14.0859142818351,12.9407795683935, 11.8965695125097, 10.9438638399522, 10.0734613425465, 9.277914816642, 8.54991261829954, 7.88320363856021, 7.27218807646811,6.71158665895508, 6.19683339330695, 5.72386433931309, 5.28883354715367, 4.88844921801394, 4.51955578615033, 4.17946858652302, 3.86568282559933,3.57590511403156, 3.30809793168218, 3.06041903524444, 2.83118276274251, 2.61886150617016, 2.42204412383693, 2.23948544013269, 2.07002732324318,1.91263267041814, 1.76633590510361, 1.63027073376663, 1.50363653206282, 1.38571813694499, 1.27584621651946, 1.17341693743819, 1.07787458364588,0.988708115321206, 0.905462389030634, 0.827699146098959, 0.755035635998589, 0.687108801646618, 0.623590114933944, 0.564176601795049,0.508591428183505, 0.45657724738945, 0.407899442190241, 0.362340282631115, 0.319703436243807, 0.279801784299648, 0.242469084263011,0.207548627983249, 0.174897607673491, 0.144383423377236, 0.115883372333457, 0.0892878345066779, 0.0644933969474588, 0.0414030615167202,0.0199325416616944, 0]
     OutputFile.create_dataset("tree_counts", data=GalaxyCountData)
     OutputFile.create_dataset("tree_displs", data=TreeStartIndexData)
-    OutputFile.create_dataset("snapshot_redshifts", data=[1]*64)
-
-    InputFile.close()
+    OutputFile.create_dataset("snapshot_redshifts", data=RedshiftData)
+    cosgroup=OutputFile.create_group("cosmology")
+    cosgroup.create_dataset("hubble",  data=[73])
+    cosgroup.create_dataset("omega_l",  data=[0.75])
+    cosgroup.create_dataset("omega_m",  data=[0.25])
+    #InputFile.close()
     OutputFile.close()

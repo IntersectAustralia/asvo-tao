@@ -12,5 +12,5 @@
 #include "skymaker.hh"
 #include "votable.hh"
 #include "fits.hh"
-
+#include "sqldirect.hh"
 #endif

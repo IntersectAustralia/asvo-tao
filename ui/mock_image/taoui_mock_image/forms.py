@@ -69,7 +69,7 @@ def from_xml_2(cls, ui_holder, xml_root, prefix=None):
                     if filter is not None:
                         params[pre + tag] = str(filter.id) + '_' + ext
                 else:
-                    params[pre + tag] = field.text
+                    params[pre + tag] = field.text if field.text != 'None' else ''
 
     # Create the class.
     return cls(ui_holder, params, prefix=prefix)

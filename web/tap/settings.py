@@ -23,7 +23,8 @@ TAP_CAPABILITIES = ({'id':'tables', 'url':'tables', 'use':'full'},
                     {'id':'availability', 'url':'availability', 'use':'full'})
 
 TAP_WORKFLOW = 'alpha-light-cone-image'
-TAP_OUTPUT_FILENAME = 'tao.output.votable.0.xml'
+TAP_OUTPUT_PREFIX = 'tao.output'
+TAP_OUTPUT_EXT = 'xml'
 TAP_SCHEMA_VERSION = '2.0'
 
 TAP_PASS_THROUGH = True
