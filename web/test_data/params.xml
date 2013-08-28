@@ -79,7 +79,7 @@
           <width>77</width>
           <z_min>3</z_min>
           <fov_ra>1</fov_ra>
-          <min_mag>7</min_mag>
+          <min_mag>None</min_mag>
           <max_mag>11</max_mag>
           <sub_cone>3</sub_cone>
           <fov_dec>2</fov_dec>

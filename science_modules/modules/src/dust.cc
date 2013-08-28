@@ -173,7 +173,7 @@ namespace tao {
    dust::_read_options( const options::xml_dict& global_dict )
    {
       // Get the wavelengths filename.
-      _waves_filename = _dict.get<string>( "wavelengths", "m05/wavelengths.dat" );
-      LOGLN( "Using wavelengths filename \"", _waves_filename, "\"" );
+      _waves_filename = global_dict.get<string>( "workflow:sed:wavelengths-file" );
+      LOGLN( "Dust: Wavelengths filename: ", _waves_filename );
    }
 }

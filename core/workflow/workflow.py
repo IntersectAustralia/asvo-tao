@@ -116,7 +116,9 @@ class WorkFlow(object):
             ParamXMLName="params"+str(i)+".xml"       
             ############################################################
             ### Submit the Job to the PBS Queue
-            PBSJobID=self.TorqueObj.Submit(JobUserName,JobID,logpath,outputpath,ParamXMLName,i)
+            IsSquentialJob=self.ParseXMLParametersObj.IsSquentialJob()
+            
+            PBSJobID=self.TorqueObj.Submit(JobUserName,JobID,logpath,outputpath,ParamXMLName,i,IsSquentialJob)
             ## Store the Job PBS ID  
             if self.dbaseobj.UpdateJob_PBSID(JobID,PBSJobID)!=True:
                 raise  Exception('Error in Process New Job','Update PBSID failed')
@@ -155,11 +157,11 @@ class WorkFlow(object):
         
         
         ## Parse the XML file to extract job Information and get if the job is complex or single lightcone
-        ParseXMLParametersObj=ParseXML.ParseXMLParameters(outputpath+'/params.xml',self.Options)
-        SubJobsCount=ParseXMLParametersObj.ParseFile(UIJobReference,JobDatabase,JobUserName)    
+        self.ParseXMLParametersObj=ParseXML.ParseXMLParameters(outputpath+'/params.xml',self.Options)
+        SubJobsCount=self.ParseXMLParametersObj.ParseFile(UIJobReference,JobDatabase,JobUserName)    
         
         ## Generate params?.xml files based on the requested jobscounts
-        ParseXMLParametersObj.ExportTrees(logpath+"/params<index>.xml")    
+        self.ParseXMLParametersObj.ExportTrees(logpath+"/params<index>.xml")    
         
         #self.CopyDirectoryContents(AudDataPath+"/stellar_populations",logpath)     
         self.CopyDirectoryContents(AudDataPath+"/bandpass_filters",logpath,True)
