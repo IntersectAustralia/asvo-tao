@@ -48,18 +48,16 @@
                 <div id="tabs-{{ form.TAB_ID }}" class="tao-tab"
                      tao-number="{{ form.TAB_ID }}"
                      data-bind="with: {{ form.prefix }}">
-
-                        <input type="button" value="Next &gt;" class="btn tao-next" />
                     {% if forloop.counter > 1 %}
+                        <input type="button" value="Next &gt;" class="btn tao-next" />                    
                         <input type="button" value="&lt; Previous" class="btn tao-prev" style="float: left;"/>
                     {% endif %}
 
                     {% include form.EDIT_TEMPLATE %}
 
                     <div class="form-actions">
-
-                          <input type="button" value="Next &gt;" class="btn tao-next" />
                       {% if forloop.counter > 1 %}
+                          <input type="button" value="Next &gt;" class="btn tao-next" />
                           <input type="button" value="&lt; Previous" class="btn tao-prev" style="float: left;"/>
                       {% endif %}
                       

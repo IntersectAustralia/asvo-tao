@@ -32,6 +32,10 @@ catalogue.modules.job_type = function ($) {
             // console.log('submit');
             $('#file_upload').submit();
         });
+
+        $('#presets_button').click(function() {
+            $('#survey_presets').toggle('slide', {direction: 'up'});
+        });
     }
 
     this.init_model = function (init_params) {
