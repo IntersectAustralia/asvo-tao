@@ -17,10 +17,17 @@ ko.extenders.required = function(target, option) {
         throw "Software error: just one required function is allowed"
     }
 
+    var check = typeof option == 'function' ?
+        option
+        : function() {return option};
+
     target.required = ko.computed(function(){
-        if (!option()) return 'OK';
+        if (!check()) return 'OK';
         var v = target();
         if (v === undefined || v === null || v === '') {
+            return 'ERROR';
+        }
+        if (v.hasOwnProperty('length') && v.length == 0) {
             return 'ERROR';
         }
         return 'VALIDATE';
@@ -190,6 +197,9 @@ var item_to_value = function (item) {
     return item.type + '-' + item.pk;
 }
 
+var debug_thing = function() {
+    console.log('debug');
+}
 
 var bound;
 
@@ -265,6 +275,18 @@ catalogue.util = function ($) {
             }
         }
         return result;
+    }
+
+    this.log_vm = function(msg, vm) {
+        var vars = Object.keys(vm);
+        ko.utils.arrayForEach(vars, function(var_id){
+            var obs = vm[var_id];
+            if (ko.isObservable(obs)) {
+                obs.subscribe(function(v){
+                    console.log([msg, var_id, v])
+                });
+            }
+        });
     }
 
     this.validate_vm = function(vm) {
@@ -589,7 +611,7 @@ jQuery(document).ready(function ($) {
 
         var pg = {}
 
-        pg.init = function(element, valueAccessor, allBindingsAccessor) {
+        pg.init = function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
 
                 ko_value.init(element, valueAccessor, allBindingsAccessor);
 
@@ -597,7 +619,7 @@ jQuery(document).ready(function ($) {
                 // Set up any initial state, event handlers, etc. here
                 var va = valueAccessor();
                 if (va.hasOwnProperty('required') || va.hasOwnProperty('error')) {
-                    ko.computed(function(){
+                    var aux = ko.computed(function(){
                         var req;
                         if (va.hasOwnProperty('required')) {
                             req = va.required();
@@ -621,7 +643,8 @@ jQuery(document).ready(function ($) {
                         }
                     }).subscribe(function(resp){
                         error_check(element, resp);
-                    })
+                    });
+                    error_check(element, aux.target());
                 }
             };
 

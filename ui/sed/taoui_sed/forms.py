@@ -167,8 +167,7 @@ class Form(BetterForm):
 
         self.fields['apply_sed'].widget.attrs['data-bind'] = 'checked: apply_sed'
         self.fields['single_stellar_population_model'].widget.attrs['data-bind'] = 'options: stellar_models, value: stellar_model, optionsText: function(i) { return i.fields.label }'
-        self.fields['band_pass_filters'].widget.attrs['ko_data'] = 'bandpass_filters_widget'
-        self.fields['band_pass_filters'].widget.attrs['data-bind'] = 'value: bandpass_filters'
+        self.fields['band_pass_filters'].widget.attrs['ko_data'] = {'widget':'bandpass_filters_widget','value':'bandpass_filters'}
         self.fields['apply_dust'].widget.attrs['data-bind'] = 'checked: apply_dust'
         self.fields['select_dust_model'].widget.attrs['data-bind'] = 'options: dust_models, value: dust_model, optionsText: function(i) { return i.fields.label }'
 
