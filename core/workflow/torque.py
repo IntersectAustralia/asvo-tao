@@ -93,11 +93,13 @@ class TorqueInterface(object):
     ## @param[IN]  params  Parameter dictionary.
     ## @returns PBS job identifier.
     ##
-    def Submit(self,UserName,JobID,path,outputpath,ParamXMLName,SubJobIndex):
+    def Submit(self,UserName,JobID,path,outputpath,ParamXMLName,SubJobIndex,IsSquentialJob=False):
         BasicSettingPath=self.Options['Torque:BasicSettingsPath']
         
-        nodes=int(self.Options['Torque:Nodes'])        
-        ppn=int(self.Options['Torque:ProcessorNode'])
+        nodes=int(self.Options['Torque:Nodes'])  
+        ppn=1
+        if IsSquentialJob==False:      
+            ppn=int(self.Options['Torque:ProcessorNode'])
         queuename=self.Options['Torque:JobsQueue']
         
         

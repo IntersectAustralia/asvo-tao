@@ -11,6 +11,33 @@ ko.extenders.logger = function(target, option) {
     return target;
 };
 
+ko.extenders.required = function(target, option) {
+
+    if (target.hasOwnProperty('required')) {
+        throw "Software error: just one required function is allowed"
+    }
+
+    var check = typeof option == 'function' ?
+        option
+        : function() {return option};
+
+    target.required = ko.computed(function(){
+        if (!check()) return 'OK';
+        var v = target();
+        if (v === undefined || v === null || v === '') {
+            return 'ERROR';
+        }
+        if (v.hasOwnProperty('length') && v.length == 0) {
+            return 'ERROR';
+        }
+        return 'VALIDATE';
+    });
+
+    //return the original observable
+    return target;
+
+}
+
 ko.extenders.validate = function(target, option) {
 
     var valid = ko.computed(function(){
@@ -36,8 +63,6 @@ ko.extenders.validate = function(target, option) {
 
 catalogue.validators = {};
 catalogue.validators.positive = function(val) {
-    if(val === undefined || val === null || val == '')
-        return {'error':false};
     var f = parseFloat(val);
     if (isNaN(f))
         return {'error':false};
@@ -48,8 +73,6 @@ catalogue.validators.positive = function(val) {
 
 // Currently is_float really does an is_numeric
 catalogue.validators.is_float = function(val) {
-    if(val === undefined || val === null || val == '')
-        return {'error':false};
     var f = parseFloat(val);
     if (isNaN(f))
         return {'error':true, message:'Please input a number'};
@@ -57,8 +80,6 @@ catalogue.validators.is_float = function(val) {
 };
 
 catalogue.validators.is_int = function(val) {
-    if(val === undefined || val === null || val == '')
-        return {'error':false};
     var f = parseInt(val);
     if (isNaN(f))
         return {'error':true, message:'Please input a number'};
@@ -66,29 +87,6 @@ catalogue.validators.is_int = function(val) {
 };
 
 catalogue.validators.is_numeric = catalogue.validators.is_float;
-
-catalogue.validators.greater_than = function(param) {
-    function check(v, min_v, msg) {
-        if(v === undefined || v === null || v === ''
-           || min_v === undefined || min_v === null || v === '')
-            return {'error':false};
-        var f = parseFloat(v);
-        if (isNaN(f) || isNaN(parseFloat(min_v)))
-            return {'error':false};
-        if (f < parseFloat(min_v))
-            return {'error':true, 'message': msg};
-        return {'error':false};
-    }
-    if (typeof param == "function") {
-        return function(val) {
-            return check(val, param(), 'Must be greater than ' + param());
-        }
-    } else {
-        return function(val) {
-            return check(val, param, 'Must be greater than ' + param);
-        }
-    }
-}
 
 catalogue.validators._gt = function(v1,v2) {
     return v1 > v2;
@@ -112,23 +110,15 @@ catalogue.validators.defined = function(v) {
     return !(v === undefined || v === null || v === '');
 }
 
-catalogue.validators.is_ok = function(obs) {
-    if (!catalogue.validators.defined(obs()))
-        return false;
-    if (obj.hasOwnProperty("error")) {
-        return !obs.error().error;
-    }
-    return true;
-}
-
 catalogue.validators._check_value = function(comp_op, v, ref_v, msg) {
-    if(v === undefined || v === null || v === ''
-       || ref_v === undefined || ref_v === null || ref_v === '')
+    if(!catalogue.validators.defined(ref_v))
         return {'error':false};
     var v1 = parseFloat(v);
     var v2 = parseFloat(ref_v);
-    if (isNaN(v1) || isNaN(v2))
-        return {'error':false};
+    if (isNaN(v1))
+        return {'error':true, 'message': 'A number must be provided'};
+    if (isNaN(v2))
+        return {'error':true, 'message': 'A number to compare to is not defined'};
     if (!comp_op(v1,v2))
         return {'error':true, 'message': msg};
     return {'error':false};
@@ -207,6 +197,9 @@ var item_to_value = function (item) {
     return item.type + '-' + item.pk;
 }
 
+var debug_thing = function() {
+    console.log('debug');
+}
 
 var bound;
 
@@ -231,11 +224,6 @@ function set_error($elem, msg) {
 function clear_error($elem) {
     $elem.closest('.control-group').removeClass('error');
     $elem.popover('destroy');
-    $elem.closest('.control-group .help-inline').remove();
-}
-
-function clean_inline($elem) {
-    $elem.closest('.control-group').find('.help-inline').remove();
 }
 
 function has_value($elem) {
@@ -287,6 +275,18 @@ catalogue.util = function ($) {
             }
         }
         return result;
+    }
+
+    this.log_vm = function(msg, vm) {
+        var vars = Object.keys(vm);
+        ko.utils.arrayForEach(vars, function(var_id){
+            var obs = vm[var_id];
+            if (ko.isObservable(obs)) {
+                obs.subscribe(function(v){
+                    console.log([msg, var_id, v])
+                });
+            }
+        });
     }
 
     this.validate_vm = function(vm) {
@@ -495,29 +495,6 @@ catalogue.util = function ($) {
         }
     }
 
-    var get_tab_number = function ($elem) {
-        return parseInt($elem.closest('div.tao-tab').attr('tao-number'));
-    }
-
-
-    // focus on tab (direction=0), next tab (direction=+1) or prev tab (direction=-1)
-    this.show_tab = function ($elem, direction) {
-        var this_tab = get_tab_number($elem);
-        $('#tao-tabs-' + (this_tab + direction)).click();
-    }
-
-
-    this.show_error = function ($field, msg) {
-        var $enclosing = $field.closest('div.control-group');
-        $enclosing.find('span.help-inline').remove();
-        $enclosing.removeClass('error');
-        if (msg == null) return;
-        $field.after('<span class="help-inline"></span>');
-        $enclosing.find('span.help-inline').text(msg);
-        $enclosing.addClass('error');
-        this.show_tab($enclosing, 0);
-    }
-
     this.submit_job = function() {
 	    var job_parameters = {};
     	//
@@ -614,40 +591,71 @@ jQuery(document).ready(function ($) {
             var $e = $(element);
             $e.closest('.control-group').removeClass('error');
             $e.popover('destroy');
-            $e.closest('.control-group .help-inline').remove();
-            if (error && error.error) {
-                $e.closest('.control-group').addClass('error');
-                $e.popover({
-                    trigger: 'focus',
-                    title: 'Validation Error',
-                    content: error.message
-                });
+            $e.closest('.control-group').find('span.required').removeClass('error');
+            switch(error.status) {
+                case 'OK':
+                    break;
+                case 'REQUIRED':
+                    var $star = $e.closest('.control-group').find('span.required');
+                    $star.addClass('error');
+                    break;
+                default: /* INVALID */
+                    $e.closest('.control-group').addClass('error');
+                    $e.popover({
+                        trigger: 'focus',
+                        title: 'Validation Error',
+                        content: error.message
+                    });
             }
         }
 
         var pg = {}
 
-        pg.init = function(element, valueAccessor, allBindingsAccessor) {
+        pg.init = function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
 
                 ko_value.init(element, valueAccessor, allBindingsAccessor);
 
                 // This will be called when the binding is first applied to an element
                 // Set up any initial state, event handlers, etc. here
                 var va = valueAccessor();
-                if (!(va.hasOwnProperty('error'))) return;
-                va.error.subscribe(function(){
-                    error_check(element, va.error());
-                });
+                if (va.hasOwnProperty('required') || va.hasOwnProperty('error')) {
+                    var aux = ko.computed(function(){
+                        var req;
+                        if (va.hasOwnProperty('required')) {
+                            req = va.required();
+                        } else {
+                            var v = va();
+                            req = catalogue.validators.defined(v) ? 'VALIDATE' : 'OK';
+                        }
+                        switch(req) {
+                            case 'OK':
+                                return {status: 'OK'};
+                            case 'ERROR':
+                                return {status: 'REQUIRED'}
+                            default:
+                                var err = {error: false};
+                                if (va.hasOwnProperty('error')) {
+                                    err = va.error();
+                                }
+                                return err.error?
+                                    {status: 'INVALID', message: err.message}
+                                    : {status: 'OK'};
+                        }
+                    }).subscribe(function(resp){
+                        error_check(element, resp);
+                    });
+                    error_check(element, aux.target());
+                }
             };
 
         pg.update = function(element, valueAccessor) {
 
                 ko_value.update(element, valueAccessor);
 
-                var va = valueAccessor();
-                if (!(va.hasOwnProperty('error'))) return;
-
-                error_check(element, va.error());
+//                var va = valueAccessor();
+//                if (!(va.hasOwnProperty('error'))) return;
+//
+//                error_check(element, va.error());
 
             };
 
@@ -716,8 +724,94 @@ jQuery(document).ready(function ($) {
         }
     };
 
+    ko.bindingHandlers['tabs'] = {
+        init: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+            var $e = $(element);
+            // Make a modified binding context, with a extra properties, and apply it to descendant elements
+            var tabs_vm = {
+                tabs : {},
+                tabs_by_number : {}
+            };
+            var childBindingContext = bindingContext.createChildContext(viewModel);
+            ko.utils.extend(childBindingContext, tabs_vm);
+            ko.applyBindingsToDescendants(childBindingContext, element);
+
+            // order is important here; let KO manage/create DOM (above)
+            // then we call jQueryUI (below)
+            $e.tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
+            $e.find("li").removeClass("ui-corner-top").addClass("ui-corner-left");
+
+            // Also tell KO *not* to bind the descendants itself, otherwise they will be bound twice
+            var tabs = tabs_vm.tabs_by_number;
+            for(var i=0; tabs[i]!==undefined; i++) {
+                if (tabs[i].tab_status()!=0) {
+                    tabs[i].tab_element.click();
+                    break;
+                }
+            }
+            catalogue.tabs_vm = tabs_vm;
+            return { controlsDescendantBindings: true };
+        }
+    }
+
+    ko.bindingHandlers['tab_handle'] = {
+        init: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+            var $e = $(element);
+            var $a = $('<a />');
+            $a.attr('href','#tabs-' + valueAccessor().id);
+            $a.text(valueAccessor().label);
+            var tab_def = {
+                'tab_element': $a,
+                'tab_number': Object.keys(bindingContext.tabs).length,
+                'tab_status': ko.observable(0)
+            };
+            bindingContext.tabs[valueAccessor().id] = tab_def;
+            bindingContext.tabs_by_number[tab_def.tab_number] = tab_def;
+            $e.append($a);
+            tab_def.tab_status.subscribe(function(tab_status){
+                for(var i=0;i<=2;i++) {$a.removeClass('status_'+i);}
+                $a.addClass('status_'+tab_status);
+            });
+        },
+
+        update: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+            // need to do ?
+        }
+    }
+
+    ko.bindingHandlers['tab_form'] = {
+        init: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+            $(element).attr('id','tabs-' + valueAccessor().id);
+            // Make a modified binding context, with a extra properties, and apply it to descendant elements
+            var tabObj = bindingContext.tabs[valueAccessor().id];
+            var next_tab = bindingContext.tabs_by_number[tabObj.tab_number+1];
+            var previous_tab = bindingContext.tabs_by_number[tabObj.tab_number-1];
+            tabObj.next_tab = function() {
+                if (next_tab !== undefined)
+                    next_tab.tab_element.click();
+            }
+            tabObj.previous_tab = function() {
+                if (previous_tab !== undefined)
+                    previous_tab.tab_element.click();
+            }
+            var childBindingContext = bindingContext.createChildContext(viewModel);
+            ko.utils.extend(childBindingContext, tabObj);
+            ko.applyBindingsToDescendants(childBindingContext, element);
+
+            // Also tell KO *not* to bind the descendants itself, otherwise they will be bound twice
+            return { controlsDescendantBindings: true };
+        },
+
+        update: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+
+        }
+    }
 
     catalogue.vm = {}
+
+    catalogue.vm.get_tab = function(form) {
+        catalogue.modules[form].id;
+    }
 
     function initialise_modules() {
     	var init_params = {
@@ -753,42 +847,11 @@ jQuery(document).ready(function ($) {
         console.log('Finished module initialisation')
     }
 
-
-    var show_tab_error = function () {
-        var $errors = $('div.control-group').filter('.error');
-        if ($errors.length > 0) {
-            catalogue.util.show_tab($errors.first(), 0);
-        }
-    }
-
-
-    function init() {
-
-        function set_click(selector, direction) {
-            $(selector).click(function (evt) {
-                var $this = $(this);
-                catalogue.util.show_tab($this, direction);
-            })
-        }
-
-        
-        set_click('.tao-prev', -1);
-        set_click('.tao-next', +1);
-        $("#tabs").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
-        $("#tabs li").removeClass("ui-corner-top").addClass("ui-corner-left");
-        // pre-select error
-        show_tab_error();
-
-    }
-
-
     (function () {
         catalogue.util = new catalogue.util($);
         initialise_modules();
-        init();
         ko.applyBindings(catalogue.vm);
         catalogue.vm.modal_message(null);
-
     })();
 
 });

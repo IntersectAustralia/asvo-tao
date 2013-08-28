@@ -236,7 +236,6 @@ class Form(BetterForm):
         self.fields['galaxy_model'].widget.attrs['data-bind'] = 'options: galaxy_models, value: galaxy_model, optionsText: function(i) { return i.fields.name }'
         self.fields['ra_opening_angle'].widget.attrs['data-bind'] = 'value: ra_opening_angle'
         self.fields['dec_opening_angle'].widget.attrs['data-bind'] = 'value: dec_opening_angle'
-        self.fields['output_properties'].widget.attrs['ko_data'] = 'output_properties'
         self.fields['box_size'].widget.attrs['data-bind'] = 'value: box_size'
         self.fields['snapshot'].widget.attrs['data-bind'] = 'foreach: snapshots, value: snapshot'
         self.fields['redshift_min'].widget.attrs['data-bind'] = 'value: redshift_min'
@@ -244,7 +243,7 @@ class Form(BetterForm):
         self.fields['light_cone_type'].widget.attrs['data-bind'] = 'checked: light_cone_type'
         self.fields['number_of_light_cones'].widget.attrs['spinner_bind'] = 'spinner: number_of_light_cones, spinnerOptions: {min: 1, max: maximum_number_of_light_cones}'
         self.fields['number_of_light_cones'].widget.attrs['spinner_message'] = "text: 'maximum is ' + maximum_number_of_light_cones()"
-        self.fields['output_properties'].widget.attrs['data-bind'] = 'value: output_properties'
+        self.fields['output_properties'].widget.attrs['ko_data'] = {'widget':'output_properties_widget','value':'output_properties'}
 
 
     def check_redshift_min_less_than_redshift_max(self):

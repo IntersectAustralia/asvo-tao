@@ -199,27 +199,27 @@ namespace tao {
 
       // Extract number of wavelengths from file.
       {
-	 string filename = _dict.get<string>( "wavelengths-file", "m05/wavelengths.dat" );
+	 string filename = _dict.get<string>( "wavelengths-file" );
 	 LOGILN( "SED: Wavelengths filename: ", filename );
 	 _read_waves( filename );
       }
 
       // Load the metallicities.
       {
-	 string filename = _dict.get<string>( "metallicities-file", "m05/metallicities.dat" );
+	 string filename = _dict.get<string>( "metallicities-file" );
 	 LOGILN( "SED: Metallicity filename: ", filename );
 	 _read_metals( filename );
       }
 
       // Load the ages.
       {
-	 string filename = _dict.get<string>( "ages-file", "m05/ages.dat" );
+	 string filename = _dict.get<string>( "ages-file" );
 	 LOGILN( "SED: Ages filename: ", filename );
 	 _read_ages( filename );
       }
 
       // Load the SSP.
-      string ssp_fn = _dict.get<string>( "stellar-population-file", "m05/ssp.ssz" );
+      string ssp_fn = _dict.get<string>( "single-stellar-population-model" );
       LOGILN( "SED: SSP filename: ", ssp_fn );
       _read_ssp( ssp_fn );
 

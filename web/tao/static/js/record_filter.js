@@ -35,12 +35,12 @@ catalogue.modules.record_filter = function ($) {
     			label: obj.fields.label + (catalogue.validators.defined(obj.fields.units) ?
                     ' ('+obj.fields.units+')' : '')
     		}
-        } else if (obj.hasOwnProperty('value')) {
+        } else if (obj.model === "tao.bandpassfilter") {
                 return {
                     value: 'B-'+obj.value,
-                    label: obj.text
+                    label: obj.fields.label
                 }
-        } else return undefined;
+        } else throw {cant_filter_on: obj};
     }
 
     var filter_choices = function () {
@@ -72,10 +72,9 @@ catalogue.modules.record_filter = function ($) {
     	add_to_result(to_option(catalogue.util.dataset_property(default_filter_pk)));
 
     	// Get the selected output properties with is_filter==true
-    	output_properties = catalogue.modules.light_cone.vm.output_properties.to_side.options_raw();
+    	output_properties = catalogue.modules.light_cone.vm.output_properties();
     	for (var i=0; i<output_properties.length; i++) {
-    		var output_property_entry = output_properties[i];
-    		var output_property = catalogue.util.dataset_property(output_property_entry.value);
+    		var output_property = output_properties[i];
     		if (output_property.pk == default_filter_pk) {
     			continue; // It's already been added above
     		}
@@ -86,7 +85,7 @@ catalogue.modules.record_filter = function ($) {
 
         if (catalogue.modules.sed.vm.apply_sed()) {
             // Get the selected bandpass filters
-            bandpass_filters = catalogue.modules.sed.vm.bandpass_filters.to_side.options_raw();
+            bandpass_filters = catalogue.modules.sed.vm.bandpass_filters();
             for (var i=0; i<bandpass_filters.length; i++) {
                 add_to_result(to_option(bandpass_filters[i]));
             }
