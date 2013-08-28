@@ -92,36 +92,38 @@ namespace tao {
 
 		string CurrentQuery=_sqlquery;
 
-
-
-
-
-
-
 		_Tables_it=(*_db).TableNames.begin();
 
+		_prog.set_local_size( (*_db).TableNames.size() );
+		LOG_PUSH_TAG( "progress" );
+		LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
+		LOG_POP_TAG( "progress" );
 
 		replace_all( CurrentQuery, "-table-", *_Tables_it );
 		LOGDLN( "Query: ", CurrentQuery );
 
-
-		FetchData(CurrentQuery,true);
+		PrepareGalaxyObject(CurrentQuery);
+		FetchData(CurrentQuery);
 
 
 		LOGDLN( "End Begin: ", _it );
 		LOG_EXIT();
 	}
 
-	void sqldirect::FetchData(string query,bool IsFirstCall)
+
+	void sqldirect::PrepareGalaxyObject(string query)
 	{
-		soci::rowset<soci::row> rs= (*_db)[(*_Tables_it)].prepare << query;
-		int rowscount=0;
+		std::size_t pos=query.find("where");
+		string modquery=query;
+		if(pos!=std::string::npos)
+			modquery=query.substr(0,pos);
 
-		_gal.clear();
-		_gal.set_table( *_Tables_it );
-
-		if(IsFirstCall==true)
+		soci::rowset<soci::row> rs= (*_db)[(*_Tables_it)].prepare << modquery;
+		if (rs.begin()==rs.end())
+			LOGDLN( "Fetch Data: No Data. Query : ",modquery);
+		if(rs.begin()!=rs.end() )
 		{
+			LOGDLN( "Fetch Data: Query : ",modquery);
 			soci::row const& firstrow = *(rs.begin());
 			_field_stor.reallocate( firstrow.size() );
 			_field_types.reallocate( firstrow.size() );
@@ -134,44 +136,53 @@ namespace tao {
 
 				switch(props.get_data_type())
 				{
-					case soci::dt_string:
-						LOGDLN( "Field Name: ", props.get_name(), " String" );
-						_field_types[i] = galaxy::STRING;
-						_field_stor[i] = new vector<string>();
-						_field_names[i]=props.get_name();
-						break;
-					case soci::dt_double:
-						LOGDLN( "Field Name: ", props.get_name(), " Double" );
-						_field_types[i] = galaxy::DOUBLE;
-						_field_stor[i] = new vector<double>();
-						_field_names[i]=props.get_name();
-						break;
-					case soci::dt_integer:
-						LOGDLN( "Field Name: ", props.get_name(), " Integer" );
-						_field_types[i] = galaxy::INTEGER;
-						_field_stor[i] = new vector<int>();
-						_field_names[i]=props.get_name();
-						break;
-					case soci::dt_unsigned_long_long:
-						LOGDLN( "Field Name: ", props.get_name(), " unsigned Long Long" );
-						_field_types[i] = galaxy::UNSIGNED_LONG_LONG;
-						_field_stor[i] = new vector<unsigned long long>();
-						_field_names[i]=props.get_name();
-						break;
-					case soci::dt_long_long:
-						LOGDLN( "Field Name: ", props.get_name(), " Long Long" );
-						_field_types[i] = galaxy::LONG_LONG;
-						_field_stor[i] = new vector<long long>();
-						_field_names[i]=props.get_name();
-						break;
-					default:
-						ASSERT( 0 );
+				case soci::dt_string:
+					LOGDLN( "Field Name: ", props.get_name(), " String" );
+					_field_types[i] = galaxy::STRING;
+					_field_stor[i] = new vector<string>();
+					_field_names[i]=props.get_name();
+					break;
+				case soci::dt_double:
+					LOGDLN( "Field Name: ", props.get_name(), " Double" );
+					_field_types[i] = galaxy::DOUBLE;
+					_field_stor[i] = new vector<double>();
+					_field_names[i]=props.get_name();
+					break;
+				case soci::dt_integer:
+					LOGDLN( "Field Name: ", props.get_name(), " Integer" );
+					_field_types[i] = galaxy::INTEGER;
+					_field_stor[i] = new vector<int>();
+					_field_names[i]=props.get_name();
+					break;
+				case soci::dt_unsigned_long_long:
+					LOGDLN( "Field Name: ", props.get_name(), " unsigned Long Long" );
+					_field_types[i] = galaxy::UNSIGNED_LONG_LONG;
+					_field_stor[i] = new vector<unsigned long long>();
+					_field_names[i]=props.get_name();
+					break;
+				case soci::dt_long_long:
+					LOGDLN( "Field Name: ", props.get_name(), " Long Long" );
+					_field_types[i] = galaxy::LONG_LONG;
+					_field_stor[i] = new vector<long long>();
+					_field_names[i]=props.get_name();
+					break;
+				default:
+					ASSERT( 0 );
 				}
 
 			}
+
 		}
 
 
+	}
+
+
+	void sqldirect::FetchData(string query)
+	{
+
+		soci::rowset<soci::row> rs= (*_db)[(*_Tables_it)].prepare << query;
+		int rowscount=0;
 
 		for (soci::rowset<soci::row>::const_iterator it = rs.begin(); it != rs.end(); ++it)
 		{
@@ -215,6 +226,13 @@ namespace tao {
 			if (rowscount%10000==0)
 				LOGDLN( "New Row: ", rowscount);
 		}
+
+		if (rowscount>0)
+		{
+			_gal.clear();
+			_gal.set_table( *_Tables_it );
+		}
+
 
 		for(int i = 0; i < _field_types.size(); i++)
 		{
@@ -288,6 +306,15 @@ namespace tao {
 			replace_all( CurrentQuery, "-table-", *_Tables_it );
 			LOGDLN( "++Query: ", CurrentQuery );
 			FetchData(CurrentQuery);
+
+			_prog.set_delta( 1 );
+			_prog.update();
+
+			LOG_PUSH_TAG( "progress" );
+			LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
+			LOG_POP_TAG( "progress" );
+
+
 		}
 
 
