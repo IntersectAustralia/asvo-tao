@@ -16,15 +16,6 @@ function TextareaHeight(params) {
 	if (params.textarea == undefined)
 		throw "TextareaHeight requires the textarea";
 	this.textarea = params.textarea;
-	if (params.max_height) {
-		this.max_height = params.max_height;
-	} else {
-		this.max_height = 50;
-	}
-    setTimeout( function() {
-        var h = Math.max($(params.textarea)[0].scrollHeight, this.max_height);
-        $(params.textarea).height( h );
-       }, 1);
     // Attach ourself to the widget for easy debugging
 	this.textarea.textarea_height_mgr = this;
 	this.textarea.onkeyup = this.update.bind(this);
@@ -37,15 +28,10 @@ function TextareaHeight(params) {
 
 TextareaHeight.prototype = {
 	update: function textarea_height_dom() {
-		var setrows;
-		var textarea_rows;
-
-		textarea_rows = this.textarea.value.split("\n");
-		if (textarea_rows[0] == undefined) {
-			setrows = 2;
-		} else {
-			setrows = Math.min(textarea_rows.length, this.max_height)
-		}
-		this.textarea.rows = setrows;
+        setTimeout( function() {
+            console.log($(params.textarea));
+            var h = $(this.textarea)[0].scrollHeight;
+            $(this.textarea).height( h );
+        }, 1);
 	}
 }
