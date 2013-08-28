@@ -4,18 +4,43 @@
  * Date: 13/02/13
  * Time: 6:20 PM
  */
-var TwoSidedSelectWidget = function(elem_id, init_options, to_option) {
+var TwoSidedSelectWidget = function(params) {
 
-    // to_id : id of select element that will be replaced by UI interface
+    // elem_id : id of select element that will be replaced by UI interface (including #)
+    // options : observable array with options (read)
+    // selectedOption : observable array with selected (write)
     // to_option : function that given an element of the options_raw array
     //             will return a dictionary with: value, group & text
-    var vm = {};
 
-    var option_click = function(data) {
+    var elem_id = params['elem_id'];
+    var options = params['options'];
+    var selectedOptions = params['selectedOptions'];
+    var to_option = params['to_option'];
+
+    var vm = {};
+    vm.from_side = {};
+    vm.to_side = {};
+
+    function option_click(data) {
         vm.option_click(data);
     }
 
-    var option_order = function(o1,o2) {
+    function make_to_option(selected_observable) {
+        var arr = selected_observable();
+        return function(obj) {
+            var resp = to_option(obj);
+            resp['_obj'] = obj;
+            resp['_selected'] = $.inArray(obj, arr) != -1;
+            resp['option_click'] = option_click;
+            return resp;
+        }
+    }
+
+    function from_selected_option(value){
+        return vm._all_by_value()[value]._obj;
+    }
+
+    function option_order(o1,o2) {
         var c1 = o1.group > o2.group ? 1 : o1.group < o2.group ? -1 : 0;
         if (c1 != 0) return c1;
         c1 = o1.order > o2.order ? 1 : o1.order < o2.order ? -1 : 0;
@@ -23,22 +48,11 @@ var TwoSidedSelectWidget = function(elem_id, init_options, to_option) {
         return o1.text > o2.text ? 1 : o1.text < o2.text ? -1 : 0;
     };
 
-    function external_to_raw(arr) {
-        var resp = [];
-        for(var i = 0; i < arr.length; i++) {
-            var obj = to_option(arr[i]);
-            obj.option_click = option_click;
-            resp.push(obj);
-        }
-        resp.sort(option_order);
-        return resp;
-    }
-
     function has_groups(arr) {
-        for(var i = 0; i < arr.length; i++)
-          if ((typeof to_option(arr[i]).group == 'string') &&
-              to_option(arr[i]).group.length > 0) return true;
-        return false;
+        var arr = ko.utils.arrayFilter(arr, function(opt){
+            return (typeof opt.group == 'string') && opt.group.length > 0;
+        });
+        return arr.length > 0;
     }
 
     function has_tokens(text, tokens) {
@@ -53,50 +67,28 @@ var TwoSidedSelectWidget = function(elem_id, init_options, to_option) {
         return true;
     }
 
-    function a_side_vm(initial_raw, filter) {
+    function make_side(is_selected, filter) {
+
         var vm_side = {};
-
-        // helper functions
-
-        var initial_options = external_to_raw(initial_raw);
-
-
-        // viewmodel observables
-
         vm_side.has_groups = vm.has_groups;
-
-        vm_side.options_raw = ko.observableArray(initial_options);
-
-        vm_side.options_total = ko.computed(function(){
-            return vm_side.options_raw().length;
-        });
-
         vm_side.options = ko.computed(function() {
-            if (vm.has_groups()) return [];
-            if (!filter()) return vm_side.options_raw();
+            if (vm.has_groups())
+                return [];
             var tokens = filter().trim().toLowerCase().split(/\s+/);
-            if (tokens.length == 0) return vm_side.options_raw();
-            resp = [];
-            var options = vm_side.options_raw();
-            for(var i = 0; i < options.length; i++) {
-                if (has_tokens(options[i].text, tokens))
-                    resp.push(options[i]);
-            }
-            return resp;
+            var arr = ko.utils.arrayFilter(vm._all_options(), function(opt){
+                return opt._selected == is_selected && (tokens.length == 0 || has_tokens(opt.text, tokens));
+            });
+            return arr;
         });
-
         vm_side.option_groups = ko.computed(function(){
-            var tokens = filter()? filter().trim().toLowerCase().split(/\s+/) : [];
-
-            function filter1(option) {
-                if (tokens.length == 0
-                    || has_tokens(option.text, tokens)) return option;
-                return false;
+            var tokens = filter().trim().toLowerCase().split(/\s+/);
+            function filter1(opt) {
+                return opt._selected == is_selected && (tokens.length == 0 || has_tokens(opt.text, tokens));
             }
 
             var resp = [];
             var group_name_set = {};
-            var arr = vm_side.options_raw();
+            var arr = vm._all_options();
             for(var i = 0; i < arr.length; i++) {
                 var option = arr[i];
                 var group_name = ((typeof option.group == 'string') &&
@@ -114,82 +106,54 @@ var TwoSidedSelectWidget = function(elem_id, init_options, to_option) {
             }
             return resp;
         });
-
         vm_side.options_selected = ko.observableArray([]);
-
         return vm_side;
     }
 
-    function move_data(from_obs, to_obs, criterion) {
-        var from_arr = []
-        var to_arr = []
-        $.each(from_obs(), function(idx, option) {
-            if (option === undefined) return;
-            if (criterion(option)) {
-                to_arr.push(option);
-            } else {
-                from_arr.push(option);
-            }
-        });
-        from_arr.sort(option_order);
-        to_arr = to_obs().concat(to_arr);
-        to_arr.sort(option_order);
-        from_obs(from_arr);
-        to_obs(to_arr);
-    }
+    vm._all_options = ko.computed(function(){
+        var arr = ko.utils.arrayMap(options(), make_to_option(selectedOptions));
+        arr.sort(option_order);
+        var resp = {};
+        for(var i=0; i<arr.length; i++) resp[arr[i].value] = arr[i];
+        vm._all_by_value = resp;
+        return arr;
+    });
+    vm._all_by_value = {};
 
-    // Store elem_id for use by the template
+    vm.has_groups = ko.observable(has_groups(vm._all_options()));
     vm.id = elem_id.slice(1);
     vm.filter = ko.observable('');
-    vm.has_groups = ko.observable(has_groups(init_options['not_selected'].concat(init_options['selected'])));
-    vm.from_side = a_side_vm(init_options['not_selected'], vm.filter);
-    vm.to_side = a_side_vm(init_options['selected'], ko.observable(false));
+
+    vm.from_side = make_side(false, vm.filter);
+    vm.to_side = make_side(true, function(){return ''});
+
     vm.clicked_option = ko.observable(undefined);
     vm.option_click = function (data) {
        vm.clicked_option(data.value);
     }
 
     vm.op_add = function() {
-        var selection = vm.from_side.options_selected();
+        var selection = ko.utils.arrayMap(vm.from_side.options_selected(), from_selected_option);
         if (selection.length == 0) return;
-        move_data(vm.from_side.options_raw, vm.to_side.options_raw,
-            function(d) { return $.inArray(d.value, selection) != -1});
+        selection = selection.concat(selectedOptions());
+        selectedOptions(selection);
     };
     vm.op_add_all = function() {
-        var tokens = vm.filter().trim().toLowerCase().split(/\s+/);
-        var filter1 = function(obj) {
-            if (tokens.length == 0
-                || has_tokens(obj.text, tokens)) return true;
-            return false;
-        };
-        move_data(vm.from_side.options_raw, vm.to_side.options_raw, filter1);
+        selectedOptions(options());
         vm.filter('');
     };
     vm.op_remove = function() {
-        var selection = vm.to_side.options_selected();
+        var selection = ko.utils.arrayMap(vm.to_side.options_selected(), from_selected_option);
         if (selection.length == 0) return;
-        move_data(vm.to_side.options_raw, vm.from_side.options_raw,
-            function(d) { return $.inArray(d.value, selection) != -1});
+        var arr = ko.utils.arrayFilter(selectedOptions(), function(obj){
+            return $.inArray(obj, selection) == -1;
+        })
+        selectedOptions(arr);
     };
     vm.op_remove_all = function() {
-        move_data(vm.to_side.options_raw, vm.from_side.options_raw,
-            function(d) { return true});
+        selectedOptions([]);
         vm.filter('');
     };
-
-    vm.new_options = function(objs) {
-        vm.has_groups(has_groups(objs));
-        vm.from_side.options_raw(external_to_raw(objs));
-        vm.to_side.options_raw([]);
-    }
-
-    vm.init = function() {};
-    vm.cache_store = function(s) {vm.from_side.options_raw(s)};
-    vm.display_selected = function() {};
-    vm.change_event = function(f) {};
-    vm.option_clicked_event = function(f) {};
-    vm.set_enabled = function(v) {};
-
 
     return vm;
 

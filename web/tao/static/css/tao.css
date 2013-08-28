@@ -153,6 +153,7 @@ legend {
     background-image: none;
     -webkit-border-radius: 0; -moz-border-radius: 0; border-radius: 0;
 }
+
 #tabs.ui-tabs .ui-tabs-nav li a {
   margin: 0 0 0 2px; padding: 8px 12px;
   width: auto;
@@ -164,7 +165,6 @@ legend {
     -moz-border-radius: 4px 4px 0 0;
     border-radius: 4px 4px 0 0;
     line-height: 14px;
-  color: #2ba6cb;
   font: normal normal normal 14px/22px "Helvetica Neue", "HelveticaNeue", Helvetica, Arial, sans-serif;
 }
 
@@ -172,9 +172,20 @@ legend {
   background: #EFEFEF;
 }
 
+#tabs.ui-tabs .ui-tabs-nav li a.status_0 {
+  color: #2ba6cb;
+}
+
+#tabs.ui-tabs .ui-tabs-nav li a.status_1 {
+  color: orange;
+}
+
+#tabs.ui-tabs .ui-tabs-nav li a.status_2 {
+  color: red;
+}
+
 #tabs.ui-tabs li.ui-state-active a, #tabs.ui-tabs li.ui-state-active a:hover {
   margin: 0;
-  color: #555;
   cursor: default;
   background-color: #fff;
   border: 1px solid #ddd;
@@ -182,11 +193,10 @@ legend {
   margin-bottom: -1px;
 }
 
-
-
-
-
-
+span.required.error {
+  color: red;
+  font-weight: bold;
+}
 
 #tabs.ui-tabs .ui-tabs-panel {
   padding: 0px;;
@@ -398,9 +408,6 @@ color: #333; cursor: pointer; display: inline-block; font-family: inherit; font-
 
 .btn-primary { background: #2ba6cb; color: #FFF; border: 1px solid #1e728c; }
 .btn-primary:hover { background-color: #2284a1; color: #FFF; border: 1px solid #1e728c; }
-
-
-.ui-spinner .help-inline { display: block; padding-right: 25px; }
 
 .summary_light_cone td,
 .summary_sed td,
