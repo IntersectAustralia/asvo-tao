@@ -68,7 +68,7 @@ the forms being hidden and all.
         <div class="disk-usage-field">
             <p>
                 <strong>Disk Usage:</strong> <span id="id_disk_usage">{{ job.display_disk_size }}</span>
-                <a href="{% url 'refresh_disk_usage' job.id %}" id="id_refresh_disk_usage"><span class="overlay-icon icon icon-refresh-sml overlay-item"></span></a>
+                <a href="{% url 'refresh_disk_usage' job.id %}" id="id_refresh_disk_usage"><span class="icon icon-refresh-sml"></span> click to refresh</a>
             </p>
         </div>
         <div>

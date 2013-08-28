@@ -441,6 +441,7 @@ class JobTest(LiveServerTest):
 
         file_content = 'abc' * 2000000
         helper.create_file(os.path.join(settings.FILES_BASE, self.output_paths[0]), 'file_name', {'file_name': file_content})
+        self.completed_job.save()
         self.click('id_refresh_disk_usage')
-        from code import interact
-        interact(local=locals())
+        self.wait()
+        self.assert_element_text_equals('#id_disk_usage', self.completed_job.display_disk_size())
