@@ -320,9 +320,10 @@ class Form(BetterForm):
         else:
             return cls(ui_holder, prefix=prefix)
 
+
     @classmethod
     def _map_elems(cls, xml_root, data_set):
-        for elem in module_xpath_iterate(xml_root, '//light-cone/output-fields/item', text=False):
+        for elem in module_xpath_iterate(xml_root, '//fields/item', text=False):
             label = elem.get('label')
             name = elem.text
             data_set_property = datasets.data_set_property_from_xml(data_set, label, name)
