@@ -436,6 +436,11 @@ class JobTest(LiveServerTest):
     def test_refresh_disk_usage(self):
         self.login(self.username, self.password)
         self.visit('view_job', self.completed_job.id)
-        # from code import interact
-        # interact(local=locals())
-        self.assert_page_has_content('<strong>Disk Usage:</strong> 854.0B')
+        # self.assert_page_has_content('<strong>Disk Usage:</strong> 854.0B')
+        self.assert_element_text_equals('#id_disk_usage', self.completed_job.display_disk_size())
+
+        file_content = 'abc' * 2000000
+        helper.create_file(os.path.join(settings.FILES_BASE, self.output_paths[0]), 'file_name', {'file_name': file_content})
+        self.click('id_refresh_disk_usage')
+        from code import interact
+        interact(local=locals())

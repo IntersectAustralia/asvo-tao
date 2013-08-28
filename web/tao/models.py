@@ -330,8 +330,7 @@ class Job(models.Model):
         sum_file_sizes = 0
         for f in self.files():
             sum_file_sizes += f.get_file_size_in_B()
-        # sum_file_sizes /= 1000.0**2
-        self.disk_usage = sum_file_sizes  # round(sum_file_sizes, 1)
+        self.disk_usage = sum_file_sizes
         return self.disk_usage
 
     def disk_size(self):
@@ -344,7 +343,7 @@ class Job(models.Model):
             return self.recalculate_disk_usage()
 
     def display_disk_size(self):
-        return format_human_readable_file_size(self.disk_size()) #* 1000**2)  # input file size in B
+        return format_human_readable_file_size(self.disk_size())  # input file size in B
 
     def files(self):
         if not self.is_completed():
