@@ -32,9 +32,9 @@ cc_opts = (
             header_dirs=['build/optimised/include'],
             optimise=3,
             symbols=False,
-            define=['NDEBUG']) +
+            define=['NDEBUG', 'NLOGTRIVIAL', 'NLOGDEBUG']) +
     options(args.instrument == False,   define=['NINSTRUMENT']) +
-    options(args.logging == False,          define=['NLOG']) +
+    options(args.logging == False,      define=['NLOG']) +
     options(args.stacktrace == False,   define=['NSTACKTRACE']) +
     options(args.memory_debug == False, define=['NMEMDEBUG']) +
     options(args.memory_ops == False,   define=['NMEMOPS']) +
@@ -65,7 +65,7 @@ soci    = use('soci')
 pugixml = use('pugixml')
 cfitsio = use('cfitsio')
 libhpc = use('libhpc')
-cp      = files.feature('copy', cp_opts)
+cp_hdr  = files.feature('copy', cp_opts)
 hdr_inst = files.feature('copy', None, targets.contains('install'), prefix=args.prefix + '/include/tao')
 lib_inst = files.feature('copy', None, targets.contains('install'), prefix=args.prefix)
 
@@ -76,8 +76,8 @@ sl  = sl  + pkgs
 bin = bin + pkgs
 
 # Copy all headers.
-hdrs = rule(r'src/.+\.hh$', cp & hdr_inst, target_strip_dirs=1)
-tccs = rule(r'src/.+\.tcc$', cp & hdr_inst, target_strip_dirs=1)
+hdrs = rule(r'src/.+\.hh$', cp_hdr & hdr_inst, target_strip_dirs=1)
+tccs = rule(r'src/.+\.tcc$', cp_hdr & hdr_inst, target_strip_dirs=1)
 
 # Build all sources.
 objs = rule(r'src/.+\.cc$', cc)
@@ -92,4 +92,4 @@ rule(r'tests/.+\.cc$', bin, target='bin/tao_unit', libraries=['tao'])
 
 # Build all the applications.
 rule(r'apps/(?:tao|application)\.cc$', bin, target='bin/tao', libraries=['tao'])
-# rule(r'apps/zen/.+\.cc$', bin, target='bin/zen', libraries=['tao'])
+rule(r'apps/zen/.+\.cc$', bin, target='bin/zen', libraries=['tao'])

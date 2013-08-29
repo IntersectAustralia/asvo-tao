@@ -27,6 +27,7 @@ namespace tao {
 		   void CloseConnection();
 		   void RestartConnection();
 		   void IncrementConnectionUsage();
+                   bool Connected();
    	   private:
 		   bool _connected;
 		   bool _QueriesCount;

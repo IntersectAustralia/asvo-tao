@@ -146,12 +146,18 @@ namespace tao {
          }
       }
 
+      ~batch()
+      {
+         clear();
+      }
+
       void
       clear()
       {
          _size = 0;
-         for( auto& field : _fields )
+         for( auto& item : _fields )
          {
+            auto& field = item.second;
             switch( std::get<1>( field ) )
             {
                case SCALAR:
@@ -353,6 +359,9 @@ namespace tao {
       typename hpc::vector<U>::view
       scalar( const string& name )
       {
+         ASSERT( std::get<1>( field( name ) ) == SCALAR, "Assertion in batch object. Requesting "
+                 "field \"", name, "\" as SCALAR, however field is ",
+                 ((std::get<1>( field( name ) ) == 0) ? "ATTRIBUTE" : "VECTOR"), "." );
          return *boost::any_cast<hpc::vector<U>*>( std::get<0>( field( name ) ) );
       }
 
@@ -360,7 +369,20 @@ namespace tao {
       const typename hpc::vector<U>::view
       scalar( const string& name ) const
       {
+         ASSERT( std::get<1>( field( name ) ) == SCALAR, "Assertion in batch object. Requesting "
+                 "field \"", name, "\" as SCALAR, however field is ",
+                 ((std::get<1>( field( name ) ) == 0) ? "ATTRIBUTE" : "VECTOR"), "." );
          return *boost::any_cast<hpc::vector<U>*>( std::get<0>( field( name ) ) );
+      }
+
+      template< class U >
+      fibre<U>&
+      vector( const string& name )
+      {
+         ASSERT( std::get<1>( field( name ) ) == VECTOR, "Assertion in batch object. Requesting "
+                 "field \"", name, "\" as VECTOR, however field is ",
+                 ((std::get<1>( field( name ) ) == 0) ? "ATTRIBUTE" : "SCALAR"), "." );
+         return *boost::any_cast<fibre<U>*>( std::get<0>( field( name ) ) );
       }
 
       template< class U >
@@ -374,7 +396,7 @@ namespace tao {
       field( const string& name )
       {
          auto it = _fields.find( name );
-         ASSERT( it != _fields.end(), "No field by that name on batch object." );
+         ASSERT( it != _fields.end(), "Field not found on batch object: ", name );
          return it->second;
       }
 

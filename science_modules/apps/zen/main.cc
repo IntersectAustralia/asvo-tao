@@ -1,5 +1,5 @@
 #include <iostream>
-#include <glut.h>
+#include <GL/glut.h>
 #include <boost/lexical_cast.hpp>
 #include <libhpc/libhpc.hh>
 #include "tao/base/types.hh"
@@ -1399,7 +1399,16 @@ main( int argc, char** argv )
    mpi::initialise( argc, argv );
    LOG_PUSH( new logging::stdout( logging::info ) );
    glutInit( &argc, argv );
-   start();
+
+   try
+   {
+      start();
+   }
+   catch( const hpc::exception& ex )
+   {
+      std::cout << "ERROR: " << ex.message() << "\n";
+   }
+
    mpi::finalise();
    return EXIT_SUCCESS;
 }

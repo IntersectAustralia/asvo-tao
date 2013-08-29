@@ -1,6 +1,7 @@
 <tao>
   <workflow>
     <schema-version>2</schema-version>
+
     <light-cone id="light-cone">
       <geometry>light-cone</geometry>
       <box-repetition>random</box-repetition>
@@ -16,7 +17,9 @@
         <item>pos_z</item>
       </output-fields>
     </light-cone>
+
   </workflow>
+
   <subjobindex>0</subjobindex>
   <logdir>log</logdir>
   <outputdir>output</outputdir>

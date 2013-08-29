@@ -68,6 +68,8 @@ namespace tao {
 
             // Check for update.
             _initialise();
+
+            LOGILN( "Done.", setindent( -2 ) );
          }
 
          void

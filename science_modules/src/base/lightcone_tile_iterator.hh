@@ -44,6 +44,7 @@ namespace tao {
          std::fill( _cur.begin(), _cur.end(), 0 );
          if( _check() != ON )
             increment();
+         _idx = 0;
       }
 
       bool
@@ -52,11 +53,21 @@ namespace tao {
          return _done;
       }
 
+      unsigned
+      index() const
+      {
+         return _idx;
+      }
+
    protected:
 
       void
       increment()
       {
+         // Increment the index here. I do this because it's a little
+         // easier than putting the increment on every return.
+         ++_idx;
+
          real_type bs = _lc->simulation()->box_size();
          check_result res;
          do {
@@ -161,6 +172,7 @@ namespace tao {
       const lightcone<real_type>* _lc;
       array<real_type,3> _cur;
       bool _done;
+      unsigned _idx;
    };
 
 }

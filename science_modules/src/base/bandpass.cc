@@ -12,7 +12,7 @@ namespace tao {
       LOGILN( "Loading bandpass filter at: ", filename, setindent( 2 ) );
 
       std::ifstream file( filename, std::ios::in );
-      ASSERT( (bool)file );
+      EXCEPT( file.is_open(), "Couldn't find bandpass filter: ", filename );
 
       // First entry is number of spectral bands.
       unsigned num_spectra;

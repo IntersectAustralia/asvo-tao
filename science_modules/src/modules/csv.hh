@@ -46,9 +46,6 @@ namespace tao {
          void
          open();
 
-         void
-         process_galaxy( const tao::batch<real_type>& bat );
-
          virtual
          void
          log_metrics();

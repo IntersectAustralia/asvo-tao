@@ -1,5 +1,5 @@
-#ifndef tao_lightcone_lightcone_hh
-#define tao_lightcone_lightcone_hh
+#ifndef tao_modules_lightcone_hh
+#define tao_modules_lightcone_hh
 
 #include "tao/base/base.hh"
 
@@ -83,16 +83,18 @@ namespace tao {
          bool _unique;
          filter _filt;
 
-         tao::simulation<real_type> _sim;
-         tao::query<real_type> _qry;
+         simulation<real_type> _sim;
+         query<real_type> _qry;
          tao::lightcone<real_type> _lc;
-         tao::box<real_type> _box;
-         tao::backends::multidb<real_type> _be;
-         tao::backends::multidb<real_type>::lightcone_galaxy_iterator _c_it;
-         tao::backends::multidb<real_type>::box_galaxy_iterator _b_it;
+         box<real_type> _box;
+         backends::multidb<real_type> _be;
+         backends::multidb<real_type>::lightcone_galaxy_iterator _c_it;
+         backends::multidb<real_type>::box_galaxy_iterator _b_it;
+         tao::batch<real_type> _bat;
 
+         unsigned _tile_idx;
          unsigned _num_tiles;
-         profile::progress _prog;
+         // profile::progress _prog;
       };
 
    }

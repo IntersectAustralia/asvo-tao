@@ -308,7 +308,6 @@ namespace tao {
    void
    application::_read_xml( options::xml_dict& xml ) const
    {
-      LOG_ENTER();
       LOGDLN( "XML File:", _xml_file );
       LOGDLN( "Basic Config XML File:", _dbcfg_file );
       if (_currentxml_version!="1.0")
@@ -316,7 +315,6 @@ namespace tao {
       else
 	 xml.read( _xml_file+".processed", "/tao" );
       xml.read( _dbcfg_file );
-      LOG_EXIT();
    }
 
    ///
@@ -325,8 +323,6 @@ namespace tao {
    void
    application::_setup_log( const string& filename )
    {
-      LOG_ENTER();
-
       if( mpi::comm::world.rank() == 0 )
       {
 #ifndef NLOG
@@ -336,8 +332,6 @@ namespace tao {
          LOG_PUSH(Logf);
 #endif
       }
-
-      LOG_EXIT();
    }
 
    ///
@@ -346,8 +340,6 @@ namespace tao {
    void
    application::_execute()
    {
-      LOG_ENTER();
-
       // Keep looping over modules until all report being complete.
       bool complete;
       unsigned long long it = 1;
@@ -373,8 +365,6 @@ namespace tao {
          LOGDLN( "Done.", setindent( -2 ) );
       }
       while( !complete );
-
-      LOG_EXIT();
    }
 
 }

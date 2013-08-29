@@ -10,7 +10,8 @@ namespace tao {
         _name( name ),
 	_base( base ),
 	_dict( base ),
-	_global_dict( NULL )
+	_global_dict( NULL ),
+        _it( 0 )
    {
       set_timer( &_my_timer );
       set_db_timer( &_my_db_timer );
@@ -86,6 +87,9 @@ namespace tao {
       // Reset timers.
       _my_timer.reset();
       _my_db_timer.reset();
+
+      // Reset the iteration.
+      _it = 0;
    }
 
    void

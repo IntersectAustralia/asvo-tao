@@ -75,10 +75,11 @@ namespace tao {
 
          tile_galaxy_iterator
          galaxy_begin( query_type& query,
-                       const tile<real_type>& tile )
+                       const tile<real_type>& tile,
+                       tao::batch<real_type>* bat = 0 )
          {
             string qs = this->make_tile_query_string( tile, query );
-            return tile_galaxy_iterator( *this, query, qs, table_begin( tile ), table_end( tile ), tile.lightcone() );
+            return tile_galaxy_iterator( *this, query, qs, table_begin( tile ), table_end( tile ), tile.lightcone(), bat );
          }
 
          tile_galaxy_iterator
@@ -90,10 +91,11 @@ namespace tao {
 
          box_galaxy_iterator
          galaxy_begin( query_type& query,
-                       const box<real_type>& box )
+                       const box<real_type>& box,
+                       tao::batch<real_type>* bat = 0 )
          {
             string qs = this->make_box_query_string( box, query );
-            return box_galaxy_iterator( *this, query, qs, table_begin( box ), table_end( box ) );
+            return box_galaxy_iterator( *this, query, qs, table_begin( box ), table_end( box ), 0, bat );
          }
 
          box_galaxy_iterator
@@ -105,9 +107,10 @@ namespace tao {
 
          lightcone_galaxy_iterator
          galaxy_begin( query_type& query,
-                       const lightcone<real_type>& lc )
+                       const lightcone<real_type>& lc,
+                       tao::batch<real_type>* bat = 0 )
          {
-            return lightcone_galaxy_iterator( lc, *this, query );
+            return lightcone_galaxy_iterator( lc, *this, query, bat );
          }
 
          lightcone_galaxy_iterator
@@ -283,6 +286,7 @@ namespace tao {
          soci_galaxy_iterator()
             : _be( NULL ),
               _query( NULL ),
+              _my_bat( false ),
               _done( true )
          {
          }
@@ -292,7 +296,8 @@ namespace tao {
                                const string& query_str,
                                const table_iterator& table_start,
                                const table_iterator& table_finish,
-                               const lightcone<real_type>* lc = NULL )
+                               const lightcone<real_type>* lc = 0,
+                               tao::batch<real_type>* bat = 0 )
             : _be( &be ),
               _query( &query ),
               _query_str( query_str ),
@@ -300,14 +305,21 @@ namespace tao {
               _table_end( table_finish ),
               _lc( lc ),
               _st( NULL ),
-              _done( false )
+              _done( false ),
+              _my_bat( false ),
+              _bat( bat )
          {
             if( !_done )
             {
                if( _table_pos != _table_end )
                {
                   // Prepare the batch object.
-                  be.init_batch( _bat, *_query );
+                  if( !_bat )
+                  {
+                     _my_bat = true;
+                     _bat = new tao::batch<real_type>();
+                  }
+                  be.init_batch( *_bat, *_query );
 
                   // Need to get to first position.
                   _prepare( _table_pos->name() );
@@ -316,10 +328,41 @@ namespace tao {
             }
          }
 
+         soci_galaxy_iterator( const soci_galaxy_iterator& src )
+            : _be( src._be ),
+              _query( src._query ),
+              _query_str( src._query_str ),
+              _table_pos( src._table_pos ),
+              _table_end( src._table_end ),
+              _lc( src._lc ),
+              _st( src._st ),
+              _done( src._done )
+         {
+            std::cout << "COPYING\n";
+            if( src._my_bat )
+            {
+               _my_bat = true;
+               _bat = new tao::batch<real_type>( *src._bat );
+            }
+            else
+            {
+               _my_bat = false;
+               _bat = src._bat;
+            }
+         }
+
+         ~soci_galaxy_iterator()
+         {
+            std::cout << "DELETING\n";
+            // Delete the batch object if we own it.
+            if( _my_bat )
+               delete _bat;
+         }
+
          reference_type
          operator*()
          {
-            return _bat;
+            return *_bat;
          }
 
          bool
@@ -359,7 +402,7 @@ namespace tao {
          reference_type
          dereference() const
          {
-            return _bat;
+            return *_bat;
          }
 
          void
@@ -377,28 +420,28 @@ namespace tao {
             auto prep = _be->session( table ).prepare << qs;
             for( unsigned ii = 0; ii < _query->output_fields().size(); ++ii )
             {
-               const auto& field = _bat.field( _query->output_fields()[ii] );
+               const auto& field = _bat->field( _query->output_fields()[ii] );
                const auto& type = std::get<2>( field );
                switch( type )
                {
                   case batch<real_type>::STRING:
-                     boost::any_cast<vector<string>*>( std::get<0>( field ) )->resize( _bat.max_size() );
+                     boost::any_cast<vector<string>*>( std::get<0>( field ) )->resize( _bat->max_size() );
                      prep = prep, soci::into( *(std::vector<std::string>*)boost::any_cast<vector<string>*>( std::get<0>( field ) ) );
                      break;
                   case batch<real_type>::DOUBLE:
-                     boost::any_cast<vector<double>*>( std::get<0>( field ) )->resize( _bat.max_size() );
+                     boost::any_cast<vector<double>*>( std::get<0>( field ) )->resize( _bat->max_size() );
                      prep = prep, soci::into( *(std::vector<double>*)boost::any_cast<vector<double>*>( std::get<0>( field ) ) );
                      break;
                   case batch<real_type>::INTEGER:
-                     boost::any_cast<vector<int>*>( std::get<0>( field ) )->resize( _bat.max_size() );
+                     boost::any_cast<vector<int>*>( std::get<0>( field ) )->resize( _bat->max_size() );
                      prep = prep, soci::into( *(std::vector<int>*)boost::any_cast<vector<int>*>( std::get<0>( field ) ) );
                      break;
                   case batch<real_type>::LONG_LONG:
-                     boost::any_cast<vector<long long>*>( std::get<0>( field ) )->resize( _bat.max_size() );
+                     boost::any_cast<vector<long long>*>( std::get<0>( field ) )->resize( _bat->max_size() );
                      prep = prep, soci::into( *(std::vector<long long>*)boost::any_cast<vector<long long>*>( std::get<0>( field ) ) );
                      break;
                   case batch<real_type>::UNSIGNED_LONG_LONG:
-                     boost::any_cast<vector<unsigned long long>*>( std::get<0>( field ) )->resize( _bat.max_size() );
+                     boost::any_cast<vector<unsigned long long>*>( std::get<0>( field ) )->resize( _bat->max_size() );
                      prep = prep, soci::into( *(std::vector<unsigned long long>*)boost::any_cast<vector<unsigned long long>*>( std::get<0>( field ) ) );
                      break;
                   default:
@@ -412,7 +455,7 @@ namespace tao {
             _st->execute();
 
             // Store the current table on the object.
-            _bat.set_attribute( "table", table );
+            _bat->set_attribute( "table", table );
 
             LOGDLN( "Done.", setindent( -2 ) );
          }
@@ -425,8 +468,8 @@ namespace tao {
 
             // Actually perform the fetch.
             bool rows_exist = _st->fetch();
-            _bat.update_size();
-            LOGDLN( "Fetched ", _bat.size(), " rows." );
+            _bat->update_size();
+            LOGDLN( "Fetched ", _bat->size(), " rows." );
 
             // If we found some rows perform any calculated field updates.
             if( rows_exist )
@@ -440,11 +483,11 @@ namespace tao {
         void
         _calc_fields()
         {
-           auto pos_x = _bat.template scalar<real_type>( "pos_x" );
-           auto pos_y = _bat.template scalar<real_type>( "pos_y" );
-           auto pos_z = _bat.template scalar<real_type>( "pos_z" );
-           auto redshift = _bat.template scalar<real_type>( "redshift" );
-           for( unsigned ii = 0; ii < _bat.size(); ++ii )
+           auto pos_x = _bat->template scalar<real_type>( "pos_x" );
+           auto pos_y = _bat->template scalar<real_type>( "pos_y" );
+           auto pos_z = _bat->template scalar<real_type>( "pos_z" );
+           auto redshift = _bat->template scalar<real_type>( "redshift" );
+           for( unsigned ii = 0; ii < _bat->size(); ++ii )
            {
               if( _lc )
               {
@@ -462,7 +505,8 @@ namespace tao {
          string _query_str;
          table_iterator _table_pos, _table_end;
          soci::statement* _st;
-         batch<real_type> _bat;
+         bool _my_bat;
+         batch<real_type>* _bat;
          bool _done;
       };
 

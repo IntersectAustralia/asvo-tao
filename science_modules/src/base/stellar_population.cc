@@ -86,7 +86,7 @@ namespace tao {
 
       // Open the file.
       std::ifstream file( filename );
-      ASSERT( file.is_open(), "Couldn't find wavelengths file." );
+      EXCEPT( file.is_open(), "Couldn't find wavelengths file: ", filename );
 
       // Need to get number of lines in file first.
       unsigned num_waves = 0;
@@ -120,9 +120,10 @@ namespace tao {
 
       // The SSP file contains the age grid information first.
       std::ifstream file( filename );
+      EXCEPT( file.is_open(), "Couldn't find SSP file: ", filename );
       unsigned num_ages;
       file >> num_ages;
-      ASSERT( file.good(), "Error reading SSP file." );
+      EXCEPT( file.good(), "Bad SSP file." );
       LOGILN( "Number of ages: ", num_ages );
 
       // Read the bin ages.
@@ -131,7 +132,7 @@ namespace tao {
          for( unsigned ii = 0; ii < num_ages; ++ii )
          {
             file >> bin_ages[ii];
-            ASSERT( file.good(), "Error reading SSP file." );
+            EXCEPT( file.good(), "Bad SSP file." );
          }
 
 #ifndef NDEBUG
@@ -153,7 +154,7 @@ namespace tao {
       {
          // These values are luminosity densities, in erg/s/angstrom.
          file >> _spec[ii];
-         ASSERT( file.good(), "Error reading SSP file." );
+         EXCEPT( file.good(), "Bad SSP file." );
       }
 
       LOGILN( "Done.", setindent( -2 ) );
