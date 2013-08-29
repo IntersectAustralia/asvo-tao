@@ -108,6 +108,7 @@ var TwoSidedSelectWidget = function(params) {
         return vm_side;
     }
 
+    vm._all_by_value = {};
     vm._all_options = ko.computed(function(){
         var arr = ko.utils.arrayMap(options(), make_to_option(selectedOptions));
         arr.sort(option_order);
@@ -116,7 +117,6 @@ var TwoSidedSelectWidget = function(params) {
         vm._all_by_value = resp;
         return arr;
     });
-    vm._all_by_value = {};
 
     vm.has_groups = ko.observable(has_groups(vm._all_options()));
     vm.id = elem_id.slice(1);
