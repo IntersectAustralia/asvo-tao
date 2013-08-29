@@ -37,7 +37,7 @@ var TwoSidedSelectWidget = function(params) {
     }
 
     function from_selected_option(value){
-        return vm._all_by_value()[value]._obj;
+        return vm._all_by_value[value]._obj;
     }
 
     function option_order(o1,o2) {

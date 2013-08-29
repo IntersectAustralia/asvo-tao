@@ -37,7 +37,8 @@ catalogue.modules.record_filter = function ($) {
     		}
         } else if (obj.model === "tao.bandpassfilter") {
                 return {
-                    value: 'B-'+obj.value,
+                    // value: 'B-'+obj.value,
+                    value: 'B-'+obj.pk,
                     label: obj.fields.label
                 }
         } else throw {cant_filter_on: obj};
@@ -141,13 +142,18 @@ catalogue.modules.record_filter = function ($) {
     	var param; // Temporary variable for observable initialisation
 
     	vm.selection = ko.observable();
-    	param = job['record_filter-filter'];
-    	if (param) {
-    		param = filter_choice(param);
-    		vm.selection(param);
-    	}
+    	
     	vm.selections = ko.computed(filter_choices);
     	current_dataset = catalogue.modules.light_cone.vm.dataset();
+
+        param = job['record_filter-filter'];
+        if (param) {
+            param = catalogue.util.get_observable_by_attribute('value', param, vm.selections);
+            if(param) {
+                vm.selection(param);
+            }
+        }
+
     	// Create the min and max observables
     	// Set up validation after creation as we have a validator that refers to both observables
         
