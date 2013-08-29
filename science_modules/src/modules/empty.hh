@@ -32,7 +32,7 @@ namespace tao {
          /// @param[in] name The unique name for this module.
          ///
          empty( const string& name = string(),
-                pugi::xml_node base = NULL );
+                pugi::xml_node base = (pugi::xml_node)0 );
 
          ///
          /// Read options, perform required setup.

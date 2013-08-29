@@ -60,7 +60,7 @@ namespace tao {
                }
                do
                {
-                  _walls.emplace_back( perms[0], perms[1], perms[2] );
+                  _walls.emplace_back( array<real_type,3>{ { perms[0], perms[1], perms[2] } } );
                }
                while( boost::next_partial_permutation( perms.begin(), perms.begin() + 3, perms.end() ) );
 
@@ -183,7 +183,7 @@ namespace tao {
                          const array<real_type,3>& max )
          {
             // Clip the box against the parent box.
-            array<real_type,3> par_min( 0, 0, 0), par_max;
+            array<real_type,3> par_min{ { 0, 0, 0 } }, par_max;
             for( unsigned ii = 0; ii < 3; ++ii )
                par_max[ii] = _tile->max()[ii] - _tile->min()[ii];
             array<real_type,3> clip_min, clip_max;
@@ -241,7 +241,7 @@ namespace tao {
                   );
 
                // Cross products to get proper plane.
-               array<real_type,3> z_axis( 0, 0, 1 );
+               array<real_type,3> z_axis{ { 0, 0, 1 } };
                array<real_type,3> left;
                cross_product_3( low_plane, z_axis, left );
                cross_product_3( low_plane, left, z_axis );
@@ -255,7 +255,7 @@ namespace tao {
             // Calculate the intersection of each of the four lines
             // coming from the edges of my light cone with the
             // plane.
-            array<real_type,3> zero( 0, 0, 0 );
+            array<real_type,3> zero{ { 0, 0, 0 } };
             array<real_type,3> line;
             array<real_type,3> pnt;
             array<real_type,3> top0, top1, low0, low1;
@@ -315,7 +315,7 @@ namespace tao {
 
             // Push points into the list.
             _ph.clear();
-            _ph.push_back( array<real_type,3>( 0, 0, 0 ) );
+            _ph.push_back( array<real_type,3>{ { 0, 0, 0 } } );
             _ph.push_back( low0 );
             _ph.push_back( low1 );
             _ph.push_back( top0 );
@@ -342,22 +342,22 @@ namespace tao {
 #ifndef NDEBUG
             // Do a quick sanity check. Pick two points, one inside
             // and one outside and check they work correctly.
-            array<real_type,3> in_pnt(
+            array<real_type,3> in_pnt{ {
                0.2*_ph[0][0],
                0.2*_ph[0][1],
                0.2*_ph[0][2]
-               );
+               } };
             for( unsigned ii = 1; ii < 5; ++ii )
             {
                in_pnt[0] += 0.2*_ph[ii][0];
                in_pnt[1] += 0.2*_ph[ii][1];
                in_pnt[2] += 0.2*_ph[ii][2];
             }
-            array<real_type,3> out_pnt(
+            array<real_type,3> out_pnt{ {
                _ph[0][0] - 1.0,
                _ph[0][1] - 1.0,
                _ph[0][2] - 1.0
-               );
+               } };
             bool in = true;
             for( const auto& plane : _planes )
             {
@@ -394,8 +394,14 @@ namespace tao {
                       const Point& point_c,
                       Plane& plane )
          {
-            Point ab( point_b[0] - point_a[0], point_b[1] - point_a[1], point_b[2] - point_a[2] );
-            Point ac( point_c[0] - point_a[0], point_c[1] - point_a[1], point_c[2] - point_a[2] );
+            Point ab;
+            ab[0] = point_b[0] - point_a[0];
+            ab[1] = point_b[1] - point_a[1];
+            ab[2] = point_b[2] - point_a[2];
+            Point ac;
+            ac[0] = point_c[0] - point_a[0];
+            ac[1] = point_c[1] - point_a[1];
+            ac[2] = point_c[2] - point_a[2];
             plane[0] = -(ab[1]*ac[2] - ab[2]*ac[1]);
             plane[1] = -(-ab[0]*ac[2] + ab[2]*ac[0]);
             plane[2] = -(ab[0]*ac[1] - ab[1]*ac[0]);

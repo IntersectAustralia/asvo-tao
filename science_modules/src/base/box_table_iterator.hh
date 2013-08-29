@@ -58,7 +58,7 @@ namespace tao {
                }
                do
                {
-                  _walls.emplace_back( perms[0], perms[1], perms[2] );
+                  _walls.emplace_back( array<real_type,3>{ { perms[0], perms[1], perms[2] } } );
                }
                while( boost::next_partial_permutation( perms.begin(), perms.begin() + 3, perms.end() ) );
 
@@ -144,7 +144,7 @@ namespace tao {
                          const array<real_type,3>& max )
          {
             // Clip the box against the parent box.
-            array<real_type,3> par_min( 0, 0, 0), par_max;
+            array<real_type,3> par_min{ { 0, 0, 0 } }, par_max;
             for( unsigned ii = 0; ii < 3; ++ii )
                par_max[ii] = _box->max()[ii] - _box->min()[ii];
             array<real_type,3> clip_min, clip_max;

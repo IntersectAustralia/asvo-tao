@@ -1,10 +1,8 @@
 #ifndef tao_apps_application_hh
 #define tao_apps_application_hh
 
-#include <cstdlib>
-#include <iostream>
 #include <libhpc/libhpc.hh>
-#include <libhpc/options/xml_dict.hh>
+#include <libhpc/mpi/application.hh>
 #include <tao/base/factory.hh>
 
 //#define PREPROCESSING
@@ -15,10 +13,9 @@ namespace tao {
    ///
    ///
    class application
+      : public mpi::application
    {
    public:
-
-      application();
 
       application( int argc,
                    char* argv[] );
@@ -28,7 +25,7 @@ namespace tao {
                  char* argv[] );
 
       void
-      run();
+      operator()();
 
    protected:
 
