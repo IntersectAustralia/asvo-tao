@@ -91,8 +91,8 @@ class TaoUser(auth_models.AbstractUser):
         if self.disk_quota is None or self.disk_quota == 0:
             try:
                 obj = GlobalParameter.objects.get(parameter_name='default_disk_quota')
-                return obj.parameter_value
-            except GlobalParameter.DoesNotExist:
+                return float(obj.parameter_value)
+            except (GlobalParameter.DoesNotExist, ValueError):
                 return -1
         return self.disk_quota  # in MB
 
