@@ -2,66 +2,62 @@
 #include "application.hh"
 #include "tao/base/base.hh"
 #include "tao/modules/modules.hh"
-#include <libhpc/logging/file.hh>
 
 using namespace hpc;
 using namespace pugi;
 
 namespace tao {
 
-   application::application()
-   {
-      tao_start_time = posix::timer();
-   }
-
    application::application( int argc,
                              char* argv[] )
+      : mpi::application( argc, argv )
    {
-      tao_start_time = posix::timer();
-      arguments( argc, argv );
-   }
+      // Start the timer straight away.
+      tao_start_time = timer();
 
-   void
-   application::arguments( int argc,
-                           char* argv[] )
-   {
-      // Check for insufficient arguments.
-      if( argc != 3 || !argv[1] || !argv[2] )
-      {
-         std::cout << "Insufficient arguments.\n";
-         std::cout << "Please supply a path to an input XML and a database\n";
-         std::cout << "configuration XML.\n";
-         exit( 1 );
-      }
+      // Check for missing arguments.
+      EXCEPT( argc >= 3, "Insufficient arguments. "
+              "Please supply an XML parameter file and "
+              "a database settings XML file." );
+
+      // Cache arguments.
+      string xml = argv[1], db = argv[2];
+
+      // Prepare the debugging log.
+      int index = xml.find( ".xml" );
+      EXCEPT( index != -1, "Invalid filename, \"", xml, "\", (must have \".xml\" extension)." );
+      xml.replace( index, 4, "_tao.debug.log" );
+      LOG_PUSH( new mpi::logger( xml, logging::debug ) );
+
+      // Prepare the preprocessing log, if selected.
+#ifdef PREPROCESSING
+      xml = argv[1];
+      index = xml.find( ".xml" );
+      xml.replace( index, 4, "_tao.Profile.log" );
+      LOG_PUSH( new hpc::mpi::logger( xml, 100 ) );
+#endif
+
+      // Dump information to the console.
+      LOG_PUSH( new hpc::logging::stdout( hpc::logging::info ) );
 
       // Check that the files exists.
       {
          std::ifstream file( argv[1] );
-         if( !file )
-         {
-            std::cout << "Could not open XML file.\n";
-            exit( 1 );
-         }
+         EXCEPT( (bool)file, "Unable to open parameter file." );
       }
       {
          std::ifstream file( argv[2] );
-         if( !file )
-         {
-            std::cout << "Could not open DB config file.\n";
-            exit( 1 );
-         }
+         EXCEPT( (bool)file, "Unable to open database configuration file." );
       }
 
-      // Cache the filename.
+      // Cache the filenames.
       _xml_file = argv[1];
       _dbcfg_file = argv[2];
    }
 
    void
-   application::run()
+   application::operator()()
    {
-      LOG_ENTER();
-
       // Preprocess the incoming XML file, only if we're
       // the root process, as we don't want any conflicts
       // in writing the processed file.
@@ -110,8 +106,6 @@ namespace tao {
       LOGILN( "Module metrics:", setindent( 2 ) );
       for( auto module : _factory )
          module->log_metrics();
-
-      LOG_EXIT();
    }
 
    ///
@@ -141,9 +135,9 @@ namespace tao {
          LOGILN( "Loading ", type, " module with name \"", name, "\"." );
 #ifdef PREPROCESSING
          if (type=="light-cone")
-        	 _factory.create_module( type, name, cur );
+            _factory.create_module( type, name, cur );
          else
-        	 LOGILN( " Pre-Processing mode : Ignore Loading Module : ",type);
+            LOGILN( " Pre-Processing mode : Ignore Loading Module : ",type);
 #else
          _factory.create_module( type, name, cur );
 #endif

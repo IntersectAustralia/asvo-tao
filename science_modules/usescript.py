@@ -7,7 +7,7 @@ args = (arguments()
         ('--enable-memory-debug', dest='memory_debug', action='boolean', default=False, help='Enable/disable memory debugging.')
         ('--enable-memory-ops', dest='memory_ops', action='boolean', default=False, help='Enable/disable memory operation logging.')
         ('--enable-memory-stats', dest='memory_stats', action='boolean', default=False, help='Enable/disable memory statistics logging.')
-        ('--enable-logging', dest='nlog', action='boolean', default=True, help='Enable/disable all logging routines.'))
+        ('--enable-logging', dest='logging', action='boolean', default=True, help='Enable/disable all logging routines.'))
 
 # Need to define optional packages ahead of some options
 # so we can include preprocessor definitions.
@@ -34,7 +34,7 @@ cc_opts = (
             symbols=False,
             define=['NDEBUG']) +
     options(args.instrument == False,   define=['NINSTRUMENT']) +
-    options(args.nlog == True,          define=['NLOG']) +
+    options(args.logging == False,          define=['NLOG']) +
     options(args.stacktrace == False,   define=['NSTACKTRACE']) +
     options(args.memory_debug == False, define=['NMEMDEBUG']) +
     options(args.memory_ops == False,   define=['NMEMOPS']) +
@@ -70,7 +70,7 @@ hdr_inst = files.feature('copy', None, targets.contains('install'), prefix=args.
 lib_inst = files.feature('copy', None, targets.contains('install'), prefix=args.prefix)
 
 # Setup flows.
-pkgs = boost + mpi + hdf5 + gsl + postgresql + soci + pugixml + cfitsio + libhpc + (glut | identity)
+pkgs = libhpc + boost + mpi + hdf5 + gsl + postgresql + soci + pugixml + cfitsio + (glut | identity)
 cc  = cc  + pkgs
 sl  = sl  + pkgs
 bin = bin + pkgs
@@ -83,12 +83,13 @@ tccs = rule(r'src/.+\.tcc$', cp & hdr_inst, target_strip_dirs=1)
 objs = rule(r'src/.+\.cc$', cc)
 
 # Link into static/shared library.
-static_lib = rule(objs, ar, target=platform.make_static_library('lib/hpc'))
-shared_lib = rule(objs, sl & sl_inst, target=platform.make_shared_library('lib/hpc'))
+static_lib = rule(objs, ar, target=platform.make_static_library('lib/tao'))
+shared_lib = rule(objs, sl & sl_inst, target=platform.make_shared_library('lib/tao'))
 rule(static_lib, lib_inst, target_strip_dirs=2)
 
 # Build the unit test runner.
 rule(r'tests/.+\.cc$', bin, target='bin/tao_unit', libraries=['tao'])
 
 # Build all the applications.
-rule(r'apps/tao\.cc$', bin, target='bin/tao', libraries=['tao'])
+rule(r'apps/(?:tao|application)\.cc$', bin, target='bin/tao', libraries=['tao'])
+# rule(r'apps/zen/.+\.cc$', bin, target='bin/zen', libraries=['tao'])

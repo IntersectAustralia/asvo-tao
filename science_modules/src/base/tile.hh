@@ -25,7 +25,7 @@ namespace tao {
    public:
 
       tile( const tao::lightcone<real_type>* lc,
-            array<real_type,3> offs = array<real_type,3>( 0, 0, 0 ),
+            array<real_type,3> offs = { 0, 0, 0 },
             bool random = false )
          : box<T>( NULL, random ),
            _lc( lc )

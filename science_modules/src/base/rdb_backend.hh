@@ -170,7 +170,7 @@ namespace tao {
          void
          make_field_map( std::unordered_map<string,string>& map,
                          tao::query<real_type>& query,
-                         optional<const tile<real_type>&> tile = optional<const tile<real_type>&>() ) const
+                         optional<const tao::tile<real_type>&> tile = optional<const tao::tile<real_type>&>() ) const
          {
             map.clear();
             for( string of : query.output_fields() )

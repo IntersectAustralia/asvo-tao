@@ -11,7 +11,7 @@ namespace tao {
    projection::projection( const lightcone<real_type>& lc,
                            unsigned width,
                            unsigned height )
-      : _dim( width, height )
+      : _dim{ { width, height } }
    {
       _fov[0] = lc.max_ra() - lc.min_ra();
       _fov[1] = lc.max_dec() - lc.min_dec();

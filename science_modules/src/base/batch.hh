@@ -87,6 +87,8 @@ namespace tao {
                   case UNSIGNED_LONG_LONG:
                      std::get<0>( field ) = boost::any_cast<unsigned long long>( val );
                      break;
+                  case FIELD_VALUE_TERMINAL:
+                     break;
                };
             }
             else if( std::get<1>( field ) == SCALAR )
@@ -111,6 +113,8 @@ namespace tao {
                   case UNSIGNED_LONG_LONG:
                      std::get<0>( field ) = new hpc::vector<unsigned long long>( *boost::any_cast<hpc::vector<unsigned long long>*>( val ) );
                      break;
+                  case FIELD_VALUE_TERMINAL:
+                     break;
                };
             }
             else
@@ -134,6 +138,8 @@ namespace tao {
                      break;
                   case UNSIGNED_LONG_LONG:
                      std::get<0>( field ) = new fibre<unsigned long long>( *boost::any_cast<fibre<unsigned long long>*>( val ) );
+                     break;
+                  case FIELD_VALUE_TERMINAL:
                      break;
                };
             }
@@ -225,6 +231,8 @@ namespace tao {
                      _size = boost::any_cast<fibre<unsigned long long>*>( val )->size();
                   done = true;
                   break;
+               case FIELD_VALUE_TERMINAL:
+                  break;
             };
 
             // Only need one.
@@ -309,6 +317,8 @@ namespace tao {
                   break;
                case UNSIGNED_LONG_LONG:
                   val = new hpc::vector<unsigned long long>( _max_size );
+                  break;
+               case FIELD_VALUE_TERMINAL:
                   break;
             }
             std::get<1>( field ) = (field_rank_type)SCALAR;
@@ -409,6 +419,8 @@ namespace tao {
             case UNSIGNED_LONG_LONG:
                delete boost::any_cast<hpc::vector<unsigned long long>*>( val );
                break;
+            case FIELD_VALUE_TERMINAL:
+               break;
          };
       }
 
@@ -435,6 +447,8 @@ namespace tao {
                break;
             case UNSIGNED_LONG_LONG:
                delete boost::any_cast<fibre<unsigned long long>*>( val );
+               break;
+            case FIELD_VALUE_TERMINAL:
                break;
          };
       }
