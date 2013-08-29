@@ -337,53 +337,6 @@ namespace tao {
          array<real_type,3> _min, _max;
       };
 
-      // template< class T >
-      // class postgresql_galaxy_iterator
-      //    : public boost::iterator_facade< postgresql_galaxy_iterator<T>,
-      //                                     galaxy<T>&,
-      //                                     std::forward_iterator_tag,
-      //                                     galaxy<T>& >
-      // {
-      //    friend class boost::iterator_core_access;
-
-      // public:
-
-      //    typedef T real_type;
-      //    typedef galaxy<real_type>& value_type;
-      //    typedef value_type reference_type;
-
-      // public:
-
-      //    galaxy_iterator()
-      //    {
-      //    }
-
-      // protected:
-
-      //    void
-      //    increment()
-      //    {
-      //       _be.fetch( _src, _gal );
-      //    }
-
-      //    bool
-      //    equal( const galaxy_iterator& op ) const
-      //    {
-      //       return ;
-      //    }
-
-      //    reference_type
-      //    dereference() const
-      //    {
-      //       return _gal;
-      //    }
-
-      // protected:
-
-      //    soci::session _sql;
-      //    galaxy<real_type> _gal;
-      // };
-
    }
 }
 

@@ -30,8 +30,12 @@ namespace tao {
          module::initialise( global_dict );
          _read_options( global_dict );
 
-         // Clear out some values.
+         // We need to calculate the total number of tiles in the
+         // cone that we will be querying so we can give a meaningful
+         // progress indicator (I say meaningful...).
          _num_tiles = 0;
+         for( auto it = _lc.tile_begin(); it != _lc.tile_end(); ++it )
+            ++_num_tiles;
 
          LOGILN( "Done.", setindent( -2 ) );
       }
@@ -48,16 +52,35 @@ namespace tao {
          if( _it == 0 )
          {
             if( _geom == CONE )
-               _c_it = _lc.galaxy_begin( _qry, _be );
+               _c_it = _lc.galaxy_begin( _qry, _be, &_bat );
             else
-               _b_it = _box.galaxy_begin( _qry, _be );
+               _b_it = _box.galaxy_begin( _qry, _be, &_bat );
          }
          else
          {
             if( _geom == CONE )
+            {
                ++_c_it;
+
+               // Dump updates about how many tiles we've completed.
+               // TODO: This is only dumping for rank 0. We should
+               // probably come up with a better way of handling
+               // distributed progress.
+               if( _c_it.tile_index() != _tile_idx )
+               {
+                  _tile_idx = _c_it.tile_index();
+                  if( _tile_idx != _num_tiles )
+                  {
+                     LOG_PUSH_TAG( "progress" );
+                     LOGILN( runtime(), ",", (float)_tile_idx*100.0/(float)_num_tiles, "%" );
+                     LOG_POP_TAG( "progress" );
+                  }
+               }
+            }
             else
+            {
                ++_b_it;
+            }
          }
 
          // Check for completion.
@@ -80,10 +103,7 @@ namespace tao {
       tao::batch<real_type>&
       lightcone::batch()
       {
-         if( _geom == CONE )
-            return *_c_it;
-         else
-            return *_b_it;
+         return _bat;
       }
 
       void

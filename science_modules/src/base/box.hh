@@ -74,9 +74,10 @@ namespace tao {
       template< class Backend >
       typename Backend::box_galaxy_iterator
       galaxy_begin( tao::query<real_type>& query,
-                    Backend& be ) const
+                    Backend& be,
+                    tao::batch<real_type>* bat = 0 ) const
       {
-         return be.galaxy_begin( query, *this );
+         return be.galaxy_begin( query, *this, bat );
       }
 
       template< class Backend >

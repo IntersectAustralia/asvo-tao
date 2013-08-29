@@ -161,9 +161,10 @@ namespace tao {
       template< class Backend >
       typename Backend::lightcone_galaxy_iterator
       galaxy_begin( query<real_type>& qry,
-                    Backend& be )
+                    Backend& be,
+                    tao::batch<real_type>* bat = 0 )
       {
-         return be.galaxy_begin( qry, *this );
+        return be.galaxy_begin( qry, *this, bat );
       }
 
       template< class Backend >

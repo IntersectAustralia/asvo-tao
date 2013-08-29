@@ -102,6 +102,11 @@ namespace tao
 
 	}
 
+	bool ServerInfo::Connected()
+	{
+           return _connected;
+	}
+
         multidb::multidb()
 	{
 		_serverscount=0;
@@ -237,22 +242,32 @@ namespace tao
 		// I can get at least one server
 		ASSERT(TempDbServer!=NULL);
 
-		TempDbServer->OpenConnection();
-		string query ="SELECT tablename, nodename  FROM table_db_mapping Where isactive=True;";
-		rowset < row > TablesMappingRowset = (TempDbServer->Connection.prepare << query);
-		TablesMapping.clear();
-		TableNames.clear();
+                bool old_state = TempDbServer->Connected();
+                if( !old_state )
+                   TempDbServer->OpenConnection();
 
-		for (rowset<row>::const_iterator it = TablesMappingRowset.begin();it != TablesMappingRowset.end(); ++it)
-		{
-			const row& row = *it;
-			string TableName=row.get<string>(0);
-			if(TablesMapping.count(TableName)==0)
-				TablesMapping[TableName]=CurrentServers[row.get<string>(1)];
-			TableNames.push_back(TableName);
-		}
+                // Must destroy rowset before disconnection.
+                {
 
-		TempDbServer->CloseConnection();
+                   string query ="SELECT tablename, nodename  FROM table_db_mapping Where isactive=True;";
+                   rowset < row > TablesMappingRowset = (TempDbServer->Connection.prepare << query);
+                   TablesMapping.clear();
+                   TableNames.clear();
+
+                   for (rowset<row>::const_iterator it = TablesMappingRowset.begin();it != TablesMappingRowset.end(); ++it)
+                   {
+                      const row& row = *it;
+                      string TableName=row.get<string>(0);
+                      if(TablesMapping.count(TableName)==0)
+                         TablesMapping[TableName]=CurrentServers[row.get<string>(1)];
+                      TableNames.push_back(TableName);
+                   }
+
+                }
+
+                if( !old_state )
+                   TempDbServer->CloseConnection();
+
 		_IsTableLoaded=true;
 		LOGDLN( "Table Mapping Done");
 

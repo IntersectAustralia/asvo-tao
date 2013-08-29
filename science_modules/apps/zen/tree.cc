@@ -298,7 +298,7 @@ namespace tao {
    {
       // Put four additional clipping planes in place.
       glLoadIdentity();
-      array<GLdouble,4> plane( 1, 0, 0, -50 );
+      array<GLdouble,4> plane{ { 1, 0, 0, -50 } };
       glClipPlane( GL_CLIP_PLANE0, plane.data() );
       plane[0] = -1; plane[3] = 710;
       glClipPlane( GL_CLIP_PLANE1, plane.data() );
@@ -314,7 +314,7 @@ namespace tao {
       algorithms::tree_widths( sfh, gal_id, widths );
 
       // Get snapshot range.
-      array<real_type,2> snap_rng( sfh.snapshot( gal_id ), calc_max_snapshot( sfh, gal_id ) );
+      array<real_type,2> snap_rng{ { sfh.snapshot( gal_id ), calc_max_snapshot( sfh, gal_id ) } };
 
       // Calculate pane size.
       vector<unsigned> line_map;
