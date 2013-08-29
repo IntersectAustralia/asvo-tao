@@ -131,7 +131,7 @@ class Simulation(models.Model):
         return self.name
     
     class Meta:
-        ordering = ['order', 'name']
+        ordering = ['name', 'order']
 
     def save(self, *args, **kwargs):
         if self.name:
@@ -188,6 +188,7 @@ class DataSet(models.Model):
     
     class Meta:
         unique_together = ('simulation', 'galaxy_model')
+        ordering = ['id']
 
     def __unicode__(self):
         return "%s : %s" % (self.simulation.name, self.galaxy_model.name)
