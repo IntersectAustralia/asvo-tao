@@ -585,32 +585,65 @@ catalogue.util = function ($) {
 
 jQuery(document).ready(function ($) {
 
+    function error_check(element, error) {
+        var $e = $(element);
+        $e.closest('.control-group').removeClass('error');
+        $e.popover('destroy');
+        $e.closest('.control-group').find('span.required').removeClass('error');
+        switch(error.status) {
+            case 'OK':
+                break;
+            case 'REQUIRED':
+                var $star = $e.closest('.control-group').find('span.required');
+                $star.addClass('error');
+                break;
+            default: /* INVALID */
+                $e.closest('.control-group').addClass('error');
+                $e.popover({
+                    trigger: 'focus',
+                    title: 'Validation Error',
+                    content: error.message
+                });
+        }
+    }
+
+    function check_bind(element, valueAccessor) {
+        var va = valueAccessor();
+        if (va.hasOwnProperty('required') || va.hasOwnProperty('error')) {
+            var aux = ko.computed(function(){
+                var req;
+                if (va.hasOwnProperty('required')) {
+                    req = va.required();
+                } else {
+                    var v = va();
+                    req = catalogue.validators.defined(v) ? 'VALIDATE' : 'OK';
+                }
+                switch(req) {
+                    case 'OK':
+                        return {status: 'OK'};
+                    case 'ERROR':
+                        return {status: 'REQUIRED'}
+                    default:
+                        var err = {error: false};
+                        if (va.hasOwnProperty('error')) {
+                            err = va.error();
+                        }
+                        return err.error?
+                            {status: 'INVALID', message: err.message}
+                            : {status: 'OK'};
+                }
+            }).subscribe(function(resp){
+                error_check(element, resp);
+            });
+            error_check(element, aux.target());
+        }
+    }
+
+
     //
     // KO extension using a jQuery plugin
     //
     ko.bindingHandlers['value'] = (function(ko_value) {
-
-        function error_check(element, error) {
-            var $e = $(element);
-            $e.closest('.control-group').removeClass('error');
-            $e.popover('destroy');
-            $e.closest('.control-group').find('span.required').removeClass('error');
-            switch(error.status) {
-                case 'OK':
-                    break;
-                case 'REQUIRED':
-                    var $star = $e.closest('.control-group').find('span.required');
-                    $star.addClass('error');
-                    break;
-                default: /* INVALID */
-                    $e.closest('.control-group').addClass('error');
-                    $e.popover({
-                        trigger: 'focus',
-                        title: 'Validation Error',
-                        content: error.message
-                    });
-            }
-        }
 
         var pg = {}
 
@@ -618,52 +651,26 @@ jQuery(document).ready(function ($) {
 
                 ko_value.init(element, valueAccessor, allBindingsAccessor);
 
-                // This will be called when the binding is first applied to an element
-                // Set up any initial state, event handlers, etc. here
-                var va = valueAccessor();
-                if (va.hasOwnProperty('required') || va.hasOwnProperty('error')) {
-                    var aux = ko.computed(function(){
-                        var req;
-                        if (va.hasOwnProperty('required')) {
-                            req = va.required();
-                        } else {
-                            var v = va();
-                            req = catalogue.validators.defined(v) ? 'VALIDATE' : 'OK';
-                        }
-                        switch(req) {
-                            case 'OK':
-                                return {status: 'OK'};
-                            case 'ERROR':
-                                return {status: 'REQUIRED'}
-                            default:
-                                var err = {error: false};
-                                if (va.hasOwnProperty('error')) {
-                                    err = va.error();
-                                }
-                                return err.error?
-                                    {status: 'INVALID', message: err.message}
-                                    : {status: 'OK'};
-                        }
-                    }).subscribe(function(resp){
-                        error_check(element, resp);
-                    });
-                    error_check(element, aux.target());
-                }
+                check_bind(element, valueAccessor);
+
             };
 
         pg.update = function(element, valueAccessor) {
 
                 ko_value.update(element, valueAccessor);
 
-//                var va = valueAccessor();
-//                if (!(va.hasOwnProperty('error'))) return;
-//
-//                error_check(element, va.error());
+                check_bind(element, valueAccessor);
 
             };
 
         return pg;
     })(ko.bindingHandlers['value']);
+
+    ko.bindingHandlers['error_check'] = {
+        init : function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                check_bind(element, valueAccessor);
+        }
+    };
 
     ko.bindingHandlers['toggler'] = {
         init: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {

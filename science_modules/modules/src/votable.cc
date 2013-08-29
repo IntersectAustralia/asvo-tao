@@ -73,7 +73,10 @@ namespace tao {
    {
       LOG_ENTER();
 
-      _fn = global_dict.get<string>( "outputdir" ) + "/" + _dict.get<string>( "filename" ) + "." + mpi::rank_string();
+      if(mpi::comm::world.size()==1)
+    	  _fn = global_dict.get<string>( "outputdir" ) + "/" + _dict.get<string>( "filename" ) ;
+      else
+    	  _fn = global_dict.get<string>( "outputdir" ) + "/" + _dict.get<string>( "filename" ) + "." + mpi::rank_string();
       _fields = _dict.get_list<string>( "fields" );
 
 
@@ -318,6 +321,7 @@ namespace tao {
 
       for( galaxy.begin(); !galaxy.done(); galaxy.next() )
       {
+
 	 auto it = _fields.cbegin();
 	 if( it != _fields.cend() )
 	 {

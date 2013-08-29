@@ -678,10 +678,20 @@ background-position: -132px -134px;
 border-color: #bbb #bbb #bbb #bbb;
 }
 
+.disk-usage-field .icon-refresh-sml {
+    background-color: #f0f0f0;
+    background-position: -358px -134px;
+    height: 18px;
+    width: 18px;
+}
+.disk-usage-field .icon-refresh-sml:hover {
+    cursor: pointer;
+}
+
 .editable-field .overlay-icon {
 display: block;
 position: absolute;
-top: -1em;
+top: -22px;
 left: auto;
 right: -2px;
 text-indent: 100%;
@@ -699,7 +709,7 @@ height: 20px;
 .overlay-text {
 display: block;
 position: absolute;
-top: -1.1em;
+top: -22px;
 left: -5em;
 right: -2px;
 text-indent: 100%;

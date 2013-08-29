@@ -49,10 +49,10 @@ var TwoSidedSelectWidget = function(params) {
     };
 
     function has_groups(arr) {
-        var arr = ko.utils.arrayFilter(arr, function(opt){
+        var aux = ko.utils.arrayFilter(arr, function(opt){
             return (typeof opt.group == 'string') && opt.group.length > 0;
         });
-        return arr.length > 0;
+        return aux.length > 0;
     }
 
     function has_tokens(text, tokens) {
@@ -72,8 +72,6 @@ var TwoSidedSelectWidget = function(params) {
         var vm_side = {};
         vm_side.has_groups = vm.has_groups;
         vm_side.options = ko.computed(function() {
-            if (vm.has_groups())
-                return [];
             var tokens = filter().trim().toLowerCase().split(/\s+/);
             var arr = ko.utils.arrayFilter(vm._all_options(), function(opt){
                 return opt._selected == is_selected && (tokens.length == 0 || has_tokens(opt.text, tokens));
@@ -110,6 +108,7 @@ var TwoSidedSelectWidget = function(params) {
         return vm_side;
     }
 
+    vm._all_by_value = {};
     vm._all_options = ko.computed(function(){
         var arr = ko.utils.arrayMap(options(), make_to_option(selectedOptions));
         arr.sort(option_order);
@@ -118,7 +117,6 @@ var TwoSidedSelectWidget = function(params) {
         vm._all_by_value = resp;
         return arr;
     });
-    vm._all_by_value = {};
 
     vm.has_groups = ko.observable(has_groups(vm._all_options()));
     vm.id = elem_id.slice(1);

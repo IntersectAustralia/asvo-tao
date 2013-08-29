@@ -89,9 +89,13 @@ namespace tao {
       LOG_ENTER();
 
 
+      if(mpi::comm::world.size()==1)
+    	  _fn = global_dict.get<string>( "outputdir" ) + "/" + _dict.get<hpc::string>( "filename" ) ;
+      else
+    	  _fn = global_dict.get<string>( "outputdir" ) + "/" + _dict.get<hpc::string>( "filename" ) + "." + mpi::rank_string();
 
 
-      _fn = global_dict.get<string>( "outputdir" ) + "/" + _dict.get<hpc::string>( "filename" ) + "." + mpi::rank_string();
+
       _fields = _dict.get_list<hpc::string>( "fields" );
 
       ReadFieldsInfo(_dict );
