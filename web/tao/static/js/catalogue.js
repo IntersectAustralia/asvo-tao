@@ -107,7 +107,8 @@ catalogue.validators._gen_check_value = function(test, msg) {
 }
 // utility func
 catalogue.validators.defined = function(v) {
-    return !(v === undefined || v === null || v === '');
+    return !(v === undefined || v === null || v === ''
+        || (typeof v == "object" && Object.keys(v).length == 0));
 }
 
 catalogue.validators._check_value = function(comp_op, v, ref_v, msg) {

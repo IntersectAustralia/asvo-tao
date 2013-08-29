@@ -271,7 +271,8 @@ catalogue.modules.mock_image = function ($) {
         vm.image_settings = ko.observableArray([]);
 
         vm.sub_cone_options = ko.computed(function(){
-            console.log('sub_cone_options CALLED!');
+            if (catalogue.modules.light_cone.vm.catalogue_geometry() == 'box')
+                return [];
             var n = catalogue.modules.light_cone.vm.number_of_light_cones();
             var resp = [{value: 'ALL', text:'All'}]
             for(var i = 1; i<=n; i++)
