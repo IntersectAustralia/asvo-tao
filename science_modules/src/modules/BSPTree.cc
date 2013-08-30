@@ -42,7 +42,9 @@ namespace tao
 			connect += " user=" + _dbuser;
 			connect += " password='" + _dbpass + "'";
 			//cout<<"Connection String:"<<connect<<endl;
+#ifdef HAVE_POSTGRESQL
 			_sql.open( soci::postgresql, connect );
+#endif
 			//cout<<"Connection Open"<<endl;
 
 		}
