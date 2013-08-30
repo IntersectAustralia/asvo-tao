@@ -387,3 +387,7 @@ class LiveServerMGFTest(LiveServerTest):
         div_container = self.get_closest_by_class(field_elem, 'control-group')
         self.assertEquals(what, 'error' in self.get_element_css_classes(div_container))
 
+    def assert_required_on_field(self, what, field_id):
+        field_elem = self.selenium.find_element_by_css_selector(field_id)
+        div_container = self.get_closest_by_class(field_elem, 'control-group')
+        self.assertEquals(what, 'error' in self.get_element_css_classes(div_container))
