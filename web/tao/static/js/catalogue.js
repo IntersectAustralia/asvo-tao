@@ -414,7 +414,10 @@ catalogue.util = function ($) {
                 return [gen_dict(elem, 'apparent'), gen_dict(elem, 'absolute')]
             });
         }
-        return gen_pairs(TaoMetadata.BandPassFilter);
+        if (this.bandpass_filters._resp === undefined) {
+            this.bandpass_filters._resp = gen_pairs(TaoMetadata.BandPassFilter);
+        }
+        return this.bandpass_filters._resp;
     }
     
     this.bandpass_filter = function(filter_id) {
