@@ -105,9 +105,9 @@ class SubmitLightConeTests(LiveServerMGFTest):
             'redshift_min': '1',
             'redshift_max': '2',
             }, id_wrap=self.lc_id)
-        self.submit_mgf_form()
-
-        self.assert_on_page('mock_galaxy_factory')
+        self.assert_required_on_field(True, self.lc_id('output_properties'))
+        #self.submit_mgf_form()
+        #self.assert_required_on_field(True, self.lc_id('output_properties'))
 
     def _test_submit_valid_unique_cone_job(self):
         ## fill in form (correctly)
