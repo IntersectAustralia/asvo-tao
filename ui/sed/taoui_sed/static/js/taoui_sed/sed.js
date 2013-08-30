@@ -86,7 +86,8 @@ catalogue.modules.sed = function ($) {
         	// the job, so we don't need to set up the TwoSidedSelectWidget
         	var bpfilters = [];
         	for (var i=0; i<param.length; i++) {
-        		bpfilters.push(catalogue.util.bandpass_filter(param[i]));
+                var bpf = catalogue.util.bandpass_filter(param[i]);
+        		bpfilters.push(bpf);
         	}
         	param = bpfilters;
         }
