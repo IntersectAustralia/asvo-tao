@@ -1,4 +1,5 @@
 import sys,os
+import shlex, subprocess
 
 import string
 from distutils.filelist import FileList
@@ -161,6 +162,13 @@ def ProcessFiles(FilesList,OutputFileName):
 def RemoveFiles(FilesList): 
     for DataFile in FilesList:
         os.remove(DataFile)
+def CompressFile(CurrentFolderPath,OutputFileName):
+    InputFileName=OutputFileName.replace(CurrentFolderPath,"")
+    InputFileName=InputFileName.strip('/')
+    CompressedFileName=InputFileName+".tar.gz"
+    os.chdir(CurrentFolderPath)    
+    stdout = subprocess.check_output(shlex.split('tar -czf \"%s\" \"%s\"'%(CompressedFileName,InputFileName)))
+    os.remove(InputFileName)    
                
 if __name__ == '__main__':
     if len(sys.argv) != 3:
@@ -190,9 +198,12 @@ if __name__ == '__main__':
     
     logging.info('Merging Output for sub-task ['+str(str(SubJobIndex))+']')
     FilesList=map[str(SubJobIndex)]
-    FilesList.sort()        
+    FilesList.sort()  
+          
     OutputFileName=".".join(FilesList[0].split('.')[0:-1])
+    
     if (ProcessFiles(FilesList,OutputFileName)==True):        
+        CompressFile(CurrentFolderPath,OutputFileName)
         RemoveFiles(FilesList)
         
        
