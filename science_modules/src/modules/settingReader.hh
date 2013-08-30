@@ -1,7 +1,9 @@
 #ifndef tao_modules_settingreader_hh
 #define tao_modules_settingreader_hh
 
+#ifdef HAVE_POSTGRESQL
 #include <soci/postgresql/soci-postgresql.h>
+#endif
 #include <soci/soci.h>
 #include <libhpc/libhpc.hh>
 #include <vector>

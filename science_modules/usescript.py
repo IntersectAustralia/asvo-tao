@@ -12,6 +12,7 @@ args = (arguments()
 # Need to define optional packages ahead of some options
 # so we can include preprocessor definitions.
 glut = use('glut')
+soci = use('soci')
 
 # Define some options.
 cc_opts = (
@@ -33,13 +34,15 @@ cc_opts = (
             optimise=3,
             symbols=False,
             define=['NDEBUG', 'NLOGTRIVIAL', 'NLOGDEBUG']) +
-    options(args.instrument == False,   define=['NINSTRUMENT']) +
-    options(args.logging == False,      define=['NLOG']) +
-    options(args.stacktrace == False,   define=['NSTACKTRACE']) +
+    options(args.instrument   == False, define=['NINSTRUMENT']) +
+    options(args.logging      == False, define=['NLOG']) +
+    options(args.stacktrace   == False, define=['NSTACKTRACE']) +
     options(args.memory_debug == False, define=['NMEMDEBUG']) +
-    options(args.memory_ops == False,   define=['NMEMOPS']) +
+    options(args.memory_ops   == False, define=['NMEMOPS']) +
     options(args.memory_stats == False, define=['NMEMSTATS']) +
-    options(glut.have == True, define=['HAVE_GLUT'])
+    options(glut.have         == True,  define=['HAVE_GLUT']) +
+    options(soci.has_feature('sqlite3') == True, define=['HAVE_SQLITE3']) +
+    options(soci.has_feature('postgresql') == True, define=['HAVE_POSTGRESQL'])
 )
 cp_opts = (
     options(args.debug == True,
@@ -60,17 +63,17 @@ boost   = use('boost')
 mpi     = use('mpi')
 hdf5    = use('hdf5')
 gsl    = use('gsl')
-postgresql = use('postgresql')
-soci    = use('soci')
 pugixml = use('pugixml')
 cfitsio = use('cfitsio')
 libhpc = use('libhpc')
 cp_hdr  = files.feature('copy', cp_opts)
 hdr_inst = files.feature('copy', None, targets.contains('install'), prefix=args.prefix + '/include/tao')
 lib_inst = files.feature('copy', None, targets.contains('install'), prefix=args.prefix)
+run_tests = files.feature('run', None, targets.contains('check'))
 
 # Setup flows.
-pkgs = libhpc + boost + mpi + hdf5 + gsl + postgresql + soci + pugixml + cfitsio + (glut | identity)
+pkgs  = libhpc + boost + mpi + hdf5 + gsl + soci + pugixml + cfitsio
+pkgs += (glut | identity)
 cc  = cc  + pkgs
 sl  = sl  + pkgs
 bin = bin + pkgs
@@ -87,9 +90,10 @@ static_lib = rule(objs, ar, target=platform.make_static_library('lib/tao'))
 shared_lib = rule(objs, sl & sl_inst, target=platform.make_shared_library('lib/tao'))
 rule(static_lib, lib_inst, target_strip_dirs=2)
 
-# Build the unit test runner.
-rule(r'tests/.+\.cc$', bin, target='bin/tao_unit', libraries=['tao'])
+# Build invdividual unit tests.
+tests = rule(r'tests/.+\.cc$', bin, libraries=['tao'], single=False, suffix='')
+rule(tests, run_tests, target=dummies.always)
 
 # Build all the applications.
 rule(r'apps/(?:tao|application)\.cc$', bin, target='bin/tao', libraries=['tao'])
-rule(r'apps/zen/.+\.cc$', bin, target='bin/zen', libraries=['tao'])
+rule(r'apps/zen/.+\.cc$', bin, glut.have == True, target='bin/zen', libraries=['tao'])

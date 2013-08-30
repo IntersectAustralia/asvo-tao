@@ -1,5 +1,7 @@
 #include <soci/soci.h>
+#ifdef HAVE_POSTGRESQL
 #include <soci/postgresql/soci-postgresql.h>
+#endif
 #include <pugixml.hpp>
 #include "multidb.hh"
 #include <stdio.h>
@@ -50,7 +52,9 @@ namespace tao
 
 				LOGDLN( "Connect string: ", ConnectionString );
 
+#ifdef HAVE_POSTGRESQL
 				Connection.open( soci::postgresql, ConnectionString );
+#endif
 
 				_connected=true;
 			}
