@@ -184,6 +184,7 @@ catalogue.modules.light_cone = function ($) {
     	// job is either an object containing the job parameters or null
     	var job = init_params.job;
     	var param; // Temporary variable for observable initialisation
+        var default_dataset_id;
 
         this.vm = vm;
         vm.catalogue_geometries = ko.observableArray([
@@ -195,10 +196,24 @@ catalogue.modules.light_cone = function ($) {
         	param = lookup_geometry(param);
         vm.catalogue_geometry = ko.observable(param ? param : vm.catalogue_geometries()[1]);
 
+        var default_dataset_param = catalogue.util.global_parameter('default_dataset');
+        if (default_dataset_param) {
+            default_dataset_id = default_dataset_param.fields.parameter_value;
+        } else {
+            default_dataset_id = TaoMetadata.DataSet[0]['pk'];
+            console.log("No default_dataset value supplied in GlobalParameters. Using the first dataset stored in the Database as default.");
+        }
+        var default_dataset = catalogue.util.dataset(parseInt(default_dataset_id));
+        if (typeof default_dataset === 'undefined') {
+            default_dataset = TaoMetadata.DataSet[0];
+            console.log("No dataset found for the default_dataset ID supplied. Using the first dataset stored in the Database as default.");
+        }
         vm.dark_matter_simulations = ko.observableArray(available_simulations());
         param = job['light_cone-dark_matter_simulation'];
         if (param) {
         	param = catalogue.util.simulation(param);
+        } else {
+            param = catalogue.util.simulation(default_dataset.fields['simulation']);
         }
         vm.dark_matter_simulation = ko.observable(param ? param : vm.dark_matter_simulations()[0])
         	.extend({logger: 'simulation'});
@@ -207,6 +222,8 @@ catalogue.modules.light_cone = function ($) {
         param = job['light_cone-galaxy_model'];
         if (param) {
         	param = catalogue.util.galaxy_model(param);
+        } else {
+            param = catalogue.util.galaxy_model(default_dataset.fields['galaxy_model']);
         }
         vm.galaxy_model = ko.observable(param ? param : vm.galaxy_models()[0]);
 

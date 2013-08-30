@@ -2,7 +2,6 @@ from django.conf import settings
 
 from tao.models import Job
 from tao.tests import helper
-from tao.tests.integration_tests.jobs_tests import JobTest
 from tao.tests.integration_tests.helper import LiveServerTest
 from tao.tests.support.factories import UserFactory, JobFactory, GlobalParameterFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, SnapshotFactory
 

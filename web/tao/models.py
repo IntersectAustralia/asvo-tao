@@ -91,8 +91,8 @@ class TaoUser(auth_models.AbstractUser):
         if self.disk_quota is None or self.disk_quota == 0:
             try:
                 obj = GlobalParameter.objects.get(parameter_name='default_disk_quota')
-                return obj.parameter_value
-            except GlobalParameter.DoesNotExist:
+                return float(obj.parameter_value)
+            except (GlobalParameter.DoesNotExist, ValueError):
                 return -1
         return self.disk_quota  # in MB
 
@@ -131,7 +131,7 @@ class Simulation(models.Model):
         return self.name
     
     class Meta:
-        ordering = ['order', 'name']
+        ordering = ['name', 'order']
 
     def save(self, *args, **kwargs):
         if self.name:
@@ -188,6 +188,7 @@ class DataSet(models.Model):
     
     class Meta:
         unique_together = ('simulation', 'galaxy_model')
+        ordering = ['id']
 
     def __unicode__(self):
         return "%s : %s" % (self.simulation.name, self.galaxy_model.name)
