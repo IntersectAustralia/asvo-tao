@@ -177,7 +177,19 @@ namespace tao {
             if( this->_sim )
             {
                LOGILN( "Making redshift range table.", setindent( 2 ) );
-               session() << this->make_snap_rng_query_string( *this->_sim );
+
+               // Try and drop the redshift range table.
+               try
+               {
+                  session() << this->make_drop_snap_rng_query_string();
+               }
+               catch( const ::soci::soci_error& ex )
+               {
+               }
+
+               auto queries = this->make_snap_rng_query_string( *this->_sim );
+               for( const auto& query : queries )
+                  session() << query;
                LOGILN( "Done.", setindent( -2 ) );
             }
          }
@@ -212,33 +224,48 @@ namespace tao {
          _load_field_types()
          {
             LOGILN( "Extracting field types.", setindent( 2 ) );
-            soci::rowset<soci::row> rs = session( _tbls[0] ).prepare << "SELECT column_name, data_type FROM information_schema.columns"
-               " WHERE table_name = '" + _tbls[0] + "'";
+
+            // Perform the correct query.
+            auto& sql = session( _tbls[0] );
+            string be_name = sql.get_backend_name();
+            soci::rowset<soci::row>* rs;
+            if( be_name == "sqlite3" )
+               rs = new soci::rowset<soci::row>( sql.prepare << "PRAGMA TABLE_INFO(" + _tbls[0] + ")" );
+            else
+            {
+               rs = new soci::rowset<soci::row>( sql.prepare << "SELECT column_name, data_type FROM information_schema.columns"
+                  " WHERE table_name = '" + _tbls[0] + "'" );
+            }
+
+            // Buld field types.
             this->_field_types.clear();
-            for( soci::rowset<soci::row>::const_iterator it = rs.begin(); it != rs.end(); ++it )
+            for( soci::rowset<soci::row>::const_iterator it = rs->begin(); it != rs->end(); ++it )
             {
                typename batch<real_type>::field_value_type type;
-               string type_str = it->get<std::string>( 1 );
-               LOGILN( it->get<std::string>( 0 ), ": ", type_str );
-               if( type_str == "string" )
+               string type_str = ((be_name == "sqlite3") ? it->get<std::string>( 2 ) : it->get<std::string>( 1 ));
+               to_lower( type_str );
+               string field_str = ((be_name == "sqlite3") ? it->get<std::string>( 1 ) : it->get<std::string>( 0 ));
+               LOGILN( field_str, ": ", type_str );
+               if( type_str == "string" || type_str == "varchar" )
                   type = batch<real_type>::STRING;
                else if( type_str == "integer" )
                   type = batch<real_type>::INTEGER;
                else if( type_str == "bigint" )
                   type = batch<real_type>::LONG_LONG;
-               else if( type_str == "real" )
+               else if( type_str == "real" || type_str == "double precision" )
                   type = batch<real_type>::DOUBLE;
-#ifndef NDEBUG
                else
-                  ASSERT( 0, "Unknown field type." );
-#endif
+                  EXCEPT( 0, "Unknown field type for field '", field_str, "': ", type_str );
 
                // Insert into field types.
-               this->_field_types.insert( it->get<std::string>( 0 ), type );
+               this->_field_types.insert( field_str, type );
 
                // Prepare default mapping.
-               this->_field_map[it->get<std::string>( 0 )] = it->get<std::string>( 0 );
+               this->_field_map[field_str] = field_str;
             }
+
+            // Destroy the rowset.
+            delete rs;
 
             // Before finishing, insert the known mapping conversions.
             // TODO: Generalise.
@@ -246,9 +273,14 @@ namespace tao {
             this->_field_map["pos_y"] = "posy";
             this->_field_map["pos_z"] = "posz";
             this->_field_map["snapshot"] = "snapnum";
+            this->_field_map["global_index"] = "globalindex";
             this->_field_map["global_tree_id"] = "globaltreeid";
             this->_field_map["local_galaxy_id"] = "localgalaxyid";
-            this->_field_map["snapshot"] = "snapnum";
+
+            // Make sure we have all the essential fields available. Do this by
+            // checking that all the mapped fields exist in the field types.
+            for( const auto& item : this->_field_map )
+               EXCEPT( this->_field_types.has( item.second ), "Database is missing essential field: ", item.second );
 
             LOGILN( "Done.", setindent( -2 ) );
          }
@@ -338,7 +370,6 @@ namespace tao {
               _st( src._st ),
               _done( src._done )
          {
-            std::cout << "COPYING\n";
             if( src._my_bat )
             {
                _my_bat = true;
@@ -351,12 +382,30 @@ namespace tao {
             }
          }
 
+         soci_galaxy_iterator( soci_galaxy_iterator&& src )
+            : _be( src._be ),
+              _query( src._query ),
+              _query_str( src._query_str ),
+              _table_pos( src._table_pos ),
+              _table_end( src._table_end ),
+              _lc( src._lc ),
+              _st( src._st ),
+              _done( src._done ),
+              _my_bat( src._my_bat ),
+              _bat( src._bat )
+         {
+            src._my_bat = false;
+            src._bat = 0;
+         }
+
          ~soci_galaxy_iterator()
          {
-            std::cout << "DELETING\n";
             // Delete the batch object if we own it.
-            if( _my_bat )
+            if( _my_bat && _bat )
+            {
                delete _bat;
+               _bat = 0;
+            }
          }
 
          reference_type
@@ -369,6 +418,48 @@ namespace tao {
          done() const
          {
             return _done;
+         }
+
+         soci_galaxy_iterator&
+         operator=( const soci_galaxy_iterator& op )
+         {
+            _be = op._be;
+            _query = op._query;
+            _query_str = op._query_str;
+            _table_pos = op._table_pos;
+            _table_end = op._table_end;
+            _lc = op._lc;
+            _st = op._st;
+            _done = op._done;
+
+            if( op._my_bat )
+            {
+               _my_bat = true;
+               _bat = new tao::batch<real_type>( *op._bat );
+            }
+            else
+            {
+               _my_bat = false;
+               _bat = op._bat;
+            }
+         }
+
+         soci_galaxy_iterator&
+         operator=( soci_galaxy_iterator&& op )
+         {
+            _be = op._be;
+            _query = op._query;
+            _query_str = op._query_str;
+            _table_pos = op._table_pos;
+            _table_end = op._table_end;
+            _lc = op._lc;
+            _st = op._st;
+            _done = op._done;
+            _my_bat = op._my_bat;
+            _bat = op._bat;
+
+            op._my_bat = false;
+            op._bat = 0;
          }
 
       protected:

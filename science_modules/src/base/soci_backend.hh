@@ -1,6 +1,7 @@
 #ifndef tao_base_soci_backend_hh
 #define tao_base_soci_backend_hh
 
+#include <libhpc/libhpc.hh>
 #include "soci_base_backend.hh"
 #ifdef HAVE_POSTGRESQL
 #include <soci/postgresql/soci-postgresql.h>
@@ -45,7 +46,7 @@ namespace tao {
          void
          disconnect()
          {
-            LOGILN( "Disconnecting from database.\n" );
+            LOGILN( "Disconnecting from database." );
             if( _my_sql )
                delete _sql;
             _my_sql = false;
@@ -59,6 +60,8 @@ namespace tao {
                   optional<const string&> host = optional<const string&>(),
                   optional<uint16> port = optional<uint16>() )
          {
+            disconnect();
+
             // Connect to the database.
             LOGILN( "Connecting to database via SOCI.", setindent( 2 ) );
 #ifndef NLOG
@@ -79,7 +82,6 @@ namespace tao {
                conn += " port=" + to_string( *port );
 
             // Create a session.
-            disconnect();
             _my_sql = true;
             _sql = new ::soci::session;
 #ifdef HAVE_POSTGRESQL
@@ -104,11 +106,23 @@ namespace tao {
          }
 
          void
+         connect( const options::xml_dict& global_dict )
+         {
+            ASSERT( 0, "Not implemented yet." );
+         }
+
+         void
          connect( ::soci::session& sql )
          {
             disconnect();
+
+            LOGILN( "Connecting to database via SOCI.", setindent( 2 ) );
+            LOGILN( "Aliasing existing session." );
             _my_sql = false;
             _sql = &sql;
+            this->_con = true;
+            this->_initialise();
+            LOGILN( "Done." );
          }
 
          void

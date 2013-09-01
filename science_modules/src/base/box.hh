@@ -20,7 +20,7 @@ namespace tao {
 
    public:
 
-      box( const tao::simulation<real_type>* sim = NULL,
+      box( const tao::simulation<real_type>* sim = 0,
            bool random = false )
          : _sim( sim ),
            _rand( random )

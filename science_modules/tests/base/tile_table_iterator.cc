@@ -1,7 +1,7 @@
 #include <libhpc/debug/unit_test_main.hh>
 #include "tao/base/tile_table_iterator.hh"
 #include "tao/base/soci_backend.hh"
-#include "db_fixture.hh"
+#include "../fixtures/db_fixture.hh"
 
 using namespace hpc;
 using namespace hpc::test;
@@ -14,48 +14,38 @@ test_case<db_fixture> ANON(
    "",
    []( db_fixture& db )
    {
-      // backends::soci<real_type> be;
-      // be.connect( "millennium_mini_1", "taoadmin", "taoadmin" );
-      // be.set_simulation( &mini_millennium );
-      // lightcone<real_type> lc( &mini_millennium );
-      // tao::tile<real_type> tile( &lc );
+      // Create first iterator.
+      iterator_type src( db.tile, db.be );
 
-      // // Create first iterator.
-      // iterator_type src( tile, be );
+      // Copy first iterator.
+      iterator_type cpy( src );
 
-      // // Copy first iterator.
-      // iterator_type cpy( src );
+      TEST( cpy.backend() == &db.be );
+      TEST( cpy.backend() == src.backend() );
+      TEST( cpy.tile() == &db.tile );
+      TEST( cpy.tile() == src.tile() );
 
-      // TEST( cpy._be == &be );
-      // TEST( cpy._be == src._be );
-      // TEST( cpy._tile == &tile );
-      // TEST( cpy._tile == src._tile );
+      TEST( cpy.polyhedra().size() == src.polyhedra().size() );
+      for( unsigned ii = 0; ii < cpy.polyhedra().size(); ++ii )
+         TEST( cpy.polyhedra()[ii] == src.polyhedra()[ii] );
 
-      // TEST( cpy._ph.size() == src._ph.size() );
-      // for( unsigned ii = 0; ii < cpy._ph.size(); ++ii )
-      //    TEST( cpy._ph[ii] == src._ph[ii] );
+      TEST( cpy.planes().size() == src.planes().size() );
+      {
+         auto cpy_it = cpy.planes().begin();
+         auto src_it = src.planes().begin();
+         TEST( *cpy_it == *src_it );
+         ++cpy_it;
+         ++src_it;
+      }
 
-      // TEST( cpy._planes.size() == src._planes.size() );
-      // {
-      //    auto cpy_it = cpy._planes.begin();
-      //    auto src_it = src._planes.begin();
-      //    TEST( *cpy_it == *src_it );
-      //    ++cpy_it;
-      //    ++src_it;
-      // }
+      TEST( cpy.walls().size() == src.walls().size() );
+      for( unsigned ii = 0; ii < cpy.walls().size(); ++ii )
+         TEST( cpy.walls()[ii] == src.walls()[ii] );
 
-      // TEST( cpy._walls.size() == src._walls.size() );
-      // for( unsigned ii = 0; ii < cpy._walls.size(); ++ii )
-      // {
-      //    TEST( cpy._walls[ii] == src._walls[ii] );
-      // }
+      TEST( cpy.tables().size() == src.tables().size() );
+      for( unsigned ii = 0; ii < cpy.tables().size(); ++ii )
+         TEST( cpy.tables()[ii] == src.tables()[ii] );
 
-      // TEST( cpy._tables.size(), src._tables.size() );
-      // for( unsigned ii = 0; ii < cpy._tables.size(); ++ii )
-      // {
-      //    TEST( cpy._tables[ii] == src._tables[ii] );
-      // }
-
-      // TEST( (cpy._it - cpy._tables.begin()) == (src._it - src._tables.begin()) );
+      TEST( (cpy.table_iter() - cpy.tables().begin()) == (src.table_iter() - src.tables().begin()) );
    }
    );

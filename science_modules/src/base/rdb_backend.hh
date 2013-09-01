@@ -57,17 +57,6 @@ namespace tao {
                // it may not actually be on the database.
                if( this->_field_map.find( field ) != this->_field_map.end() )
                   bat.set_scalar( field, _field_types.at( this->_field_map.at( field ) ) );
-
-               // // This is a calculated field. Check what it is to see if we can
-               // // create it.
-               // else if( field == "redshift" )
-
-
-               // // Don't know what it is.
-               // else
-               // {
-               //    ASSERT( 0, "Don't know what that field is." );
-               // }
             }
 
             // Include redshift.
@@ -126,13 +115,22 @@ namespace tao {
          }
 
          string
+         make_drop_snap_rng_query_string() const
+         {
+            return "DROP TABLE redshift_ranges";
+         }
+
+         list<string>
          make_snap_rng_query_string( const simulation<real_type>& sim ) const
          {
             ASSERT( sim.num_snapshots() >= 2, "Must be at least two snapshots." );
 
+            // Store in a list each command.
+            list<string> queries;
+
             // Create a temporary table to hold values.
-            string query = "CREATE TEMPORARY TABLE redshift_ranges "
-               "(snapshot INTEGER, redshift DOUBLE PRECISION, min DOUBLE PRECISION, max DOUBLE PRECISION);";
+            queries.emplace_back( "CREATE TEMPORARY TABLE redshift_ranges "
+                                  "(snapshot INTEGER, redshift DOUBLE PRECISION, min DOUBLE PRECISION, max DOUBLE PRECISION);" );
 
             // Insert all ranges.
             for( unsigned ii = 0; ii < sim.num_snapshots() - 1; ++ii )
@@ -140,11 +138,12 @@ namespace tao {
                boost::format fmt( "\nINSERT INTO redshift_ranges VALUES(%1%, %2%, %3%, %4%);" );
                real_type max = numerics::redshift_to_comoving_distance( sim.redshift( ii ), 1000, sim.hubble(), sim.omega_l(), sim.omega_m() );
                real_type min = numerics::redshift_to_comoving_distance( sim.redshift( ii + 1 ), 1000, sim.hubble(), sim.omega_l(), sim.omega_m() );
+               LOGDLN( "Inserting range for snapshot ", ii + 1, ": [", min*min, ", ", max*max, ")" );
                fmt % (ii + 1) % sim.redshift( ii + 1 ) % (min*min) % (max*max);
-               query += fmt.str();
+               queries.emplace_back( fmt.str() );
             }
 
-            return query;
+            return queries;
          }
 
          string
@@ -188,20 +187,35 @@ namespace tao {
                      if( of == "pos_x" )
                      {
                         of = mapped[(*tile).rotation()[0]];
-                        field = boost::str( boost::format( repl ) % _field_map.at( of ) % (*tile).translation()[0] %
-                                            box_size % (*tile).min()[0] );
+                        if( (*tile).random() )
+                        {
+                           field = boost::str( boost::format( repl ) % _field_map.at( of ) % (*tile).translation()[0] %
+                                               box_size % (*tile).min()[0] );
+                        }
+                        else
+                           field = _field_map.at( of );
                      }
                      else if( of == "pos_y" )
                      {
                         of = mapped[(*tile).rotation()[1]];
-                        field = boost::str( boost::format( repl ) % _field_map.at( of ) % (*tile).translation()[1] %
-                                            box_size % (*tile).min()[1] );
+                        if( (*tile).random() )
+                        {
+                           field = boost::str( boost::format( repl ) % _field_map.at( of ) % (*tile).translation()[1] %
+                                               box_size % (*tile).min()[1] );
+                        }
+                        else
+                           field = _field_map.at( of );
                      }
                      else
                      {
-                        of = mapped[(*tile).rotation()[2]];
-                        field = boost::str( boost::format( repl ) % _field_map.at( of ) % (*tile).translation()[2] %
-                                            box_size % (*tile).min()[2] );
+                        if( (*tile).random() )
+                        {
+                           of = mapped[(*tile).rotation()[2]];
+                           field = boost::str( boost::format( repl ) % _field_map.at( of ) % (*tile).translation()[2] %
+                                               box_size % (*tile).min()[2] );
+                        }
+                        else
+                           field = _field_map.at( of );
                      }
 
                      // Add to map.
@@ -329,6 +343,15 @@ namespace tao {
          operator==( const rdb_table& op ) const
          {
             return _name == op._name && _min == op._min && _max == op._max;
+         }
+
+         friend
+         std::ostream&
+         operator<<( std::ostream& strm,
+                     const rdb_table& obj )
+         {
+            strm << "rdb_table(" << obj._name << ", " << obj._min << ", " << obj._max << ")";
+            return strm;
          }
 
       protected:

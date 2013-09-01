@@ -14,6 +14,11 @@ namespace tao {
 
    public:
 
+      query()
+      {
+         add_base_output_fields();
+      }
+
       void
       clear()
       {

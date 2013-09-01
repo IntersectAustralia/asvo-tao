@@ -39,7 +39,7 @@ namespace tao {
          {
          }
 
-         tile_table_iterator( const tile<real_type>& tile,
+         tile_table_iterator( const tao::tile<real_type>& tile,
                               const backend_type& backend )
             : _tile( &tile ),
               _be( &backend ),
@@ -103,6 +103,42 @@ namespace tao {
          polyhedra() const
          {
             return _ph;
+         }
+
+         const list<array<real_type,4>>&
+         planes() const
+         {
+            return _planes;
+         }
+
+         const backend_type*
+         backend() const
+         {
+            return _be;
+         }
+
+         const tao::tile<real_type>*
+         tile() const
+         {
+            return _tile;
+         }
+
+         const vector<array<real_type,3>>&
+         walls() const
+         {
+            return _walls;
+         }
+
+         const vector<table_type>&
+         tables() const
+         {
+            return _tables;
+         }
+
+         const typename vector<table_type>::const_iterator&
+         table_iter() const
+         {
+            return _it;
          }
 
       protected:
@@ -415,7 +451,7 @@ namespace tao {
       protected:
 
          const backend_type* _be;
-         const tile<real_type>* _tile;
+         const tao::tile<real_type>* _tile;
          vector<array<real_type,3>> _ph;
          list<array<real_type,4>> _planes;
          vector<array<real_type,3>> _walls;

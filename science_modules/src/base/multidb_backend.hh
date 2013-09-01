@@ -115,6 +115,16 @@ namespace tao {
                for( auto& pair : _mdb.CurrentServers )
                {
                   pair.second->OpenConnection();
+
+                  // Try and drop the redshift range table.
+                  try
+                  {
+                     pair.second->Connection << this->make_drop_snap_rng_query_string();
+                  }
+                  catch( const ::soci::soci_error& ex )
+                  {
+                  }
+
                   pair.second->Connection << this->make_snap_rng_query_string( *this->_sim );
                }
                LOGILN( "Done.", setindent( -2 ) );

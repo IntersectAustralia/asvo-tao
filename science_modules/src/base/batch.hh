@@ -281,7 +281,7 @@ namespace tao {
       }
 
       template< class U >
-      void
+      typename hpc::vector<U>::view
       set_scalar( const string& name )
       {
          ASSERT( _max_size, "Cannot set fields on batches with zero maximum size." );
@@ -293,6 +293,7 @@ namespace tao {
             std::get<1>( field ) = (field_rank_type)SCALAR;
             std::get<2>( field ) = (field_value_type)boost::mpl::at<type_map,U>::type::value;
          }
+         return *boost::any_cast<hpc::vector<U>*>( val );
       }
 
       void
@@ -334,14 +335,15 @@ namespace tao {
 
       template< class U >
       fibre<U>&
-      set_vector( const string& name )
+      set_vector( const string& name,
+                  size_t size )
       {
          ASSERT( _max_size, "Cannot set fields on batches with zero maximum size." );
          field_type& field = _fields[name];
          boost::any& val = std::get<0>( field );
          if( val.empty() )
          {
-            val = new hpc::vector<U>( _max_size );
+            val = new hpc::fibre<U>( size, _max_size );
             std::get<1>( field ) = (field_rank_type)VECTOR;
             std::get<2>( field ) = (field_value_type)boost::mpl::at<type_map,U>::type::value;
          }

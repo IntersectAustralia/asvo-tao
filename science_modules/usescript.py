@@ -63,6 +63,8 @@ boost   = use('boost')
 mpi     = use('mpi')
 hdf5    = use('hdf5')
 gsl    = use('gsl')
+sqlite = use('sqlite3')
+pq = use('postgresql')
 pugixml = use('pugixml')
 cfitsio = use('cfitsio')
 libhpc = use('libhpc')
@@ -72,7 +74,7 @@ lib_inst = files.feature('copy', None, targets.contains('install'), prefix=args.
 run_tests = files.feature('run', None, targets.contains('check'))
 
 # Setup flows.
-pkgs  = libhpc + boost + mpi + hdf5 + gsl + soci + pugixml + cfitsio
+pkgs  = libhpc + boost + mpi + hdf5 + gsl + soci + pq + sqlite + pugixml + cfitsio
 pkgs += (glut | identity)
 cc  = cc  + pkgs
 sl  = sl  + pkgs
@@ -90,8 +92,12 @@ static_lib = rule(objs, ar, target=platform.make_static_library('lib/tao'))
 shared_lib = rule(objs, sl & sl_inst, target=platform.make_shared_library('lib/tao'))
 rule(static_lib, lib_inst, target_strip_dirs=2)
 
+# Build unit test fixtures.
+fix_objs = rule(r'tests/fixtures/.+\.cc$', cc)
+fix_lib = rule(fix_objs, ar, target=platform.make_static_library('lib/tao_fixtures'))
+
 # Build invdividual unit tests.
-tests = rule(r'tests/.+\.cc$', bin, libraries=['tao'], single=False, suffix='')
+tests = rule(r'tests/(?!fixtures).+\.cc$', bin, libraries=['tao', 'tao_fixtures'], single=False, suffix='')
 rule(tests, run_tests, target=dummies.always)
 
 # Build all the applications.
