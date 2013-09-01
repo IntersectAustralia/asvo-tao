@@ -45,9 +45,9 @@ namespace tao {
 
          // Prepare the batch object.
          tao::batch<real_type>& bat = parents().front()->batch();
-         bat.set_vector<real_type>( "disk_spectra" ).reallocate( _num_spectra, bat.size() );
-         bat.set_vector<real_type>( "bulge_spectra" ).reallocate( _num_spectra, bat.size() );
-         bat.set_vector<real_type>( "total_spectra" ).reallocate( _num_spectra, bat.size() );
+         bat.set_vector<real_type>( "disk_spectra", _num_spectra );
+         bat.set_vector<real_type>( "bulge_spectra", _num_spectra );
+         bat.set_vector<real_type>( "total_spectra", _num_spectra );
 
          LOGILN( "Done.", setindent( -2 ) );
       }

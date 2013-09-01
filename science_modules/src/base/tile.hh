@@ -24,15 +24,31 @@ namespace tao {
 
    public:
 
-      tile( const tao::lightcone<real_type>* lc,
-            array<real_type,3> offs = { 0, 0, 0 },
+      tile( const tao::lightcone<real_type>* lc = 0,
+            array<real_type,3> offs = { { 0, 0, 0 } },
             bool random = false )
          : box<T>( NULL, random ),
            _lc( lc )
       {
          if( _lc )
+         {
             this->set_simulation( _lc->simulation() );
-         set_offset( offs );
+            set_offset( offs );
+         }
+      }
+
+      void
+      set_lightcone( const lightcone<real_type>* lc,
+                     array<real_type,3> offs = { { 0, 0, 0 } } )
+      {
+         if( lc )
+         {
+            _lc = lc;
+            this->set_simulation( lc->simulation() );
+            set_offset( offs );
+         }
+         else
+            this->set_simulation( 0 );
       }
 
       void
