@@ -59,19 +59,23 @@ test_case<xml_fixture> ANON(
    "",
    []( xml_fixture& xml )
    {
-      options::xml_dict dict = xml.make_box_dict();
+     options::xml_dict dict = xml.make_lightcone_dict( "unique", 0, 0.0, 0.001, 0.0, 89.0, 0.0, 89.0 );
       lightcone_type lc( "light-cone", dict.get_node( "/tao/workflow/light-cone" ).node() );
       lc.initialise( dict, &xml.db.be );
 
-      list<tao::batch<real_type>> bats;
+      int ii = 1;
       while( !lc.complete() )
       {
-         lc.execute();
-         bats.push_back( lc.batch() );
+         lc.process( ii );
+
+         if( ii == 1 )
+            TEST( lc.batch().size() == 1 );
+         else
+            TEST( lc.batch().size() == 0 );
+
+         ++ii;
       }
 
-      TEST( bats.size() == 1 );
-      TEST( bats.first().size() == 1 );
-      TEST( bats.first().scalar( "global_index" )[0] == 100 );
+      TEST( ii != 0, "Must have at least tried some tiles." );
    }
    );

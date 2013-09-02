@@ -211,6 +211,9 @@ namespace tao {
             std::copy( tables.begin(), tables.end(), _tables.begin() );
             _it = _tables.begin();
 
+            // If there are no tables flag that we're done.
+            _done = _tables.empty();
+
             LOGDLN( "Done.", setindent( -2 ) );
          }
 

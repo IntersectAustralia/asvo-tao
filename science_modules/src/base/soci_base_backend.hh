@@ -341,23 +341,22 @@ namespace tao {
               _my_bat( false ),
               _bat( bat )
          {
-            if( !_done )
+            if( _table_pos != _table_end )
             {
-               if( _table_pos != _table_end )
+               // Prepare the batch object.
+               if( !_bat )
                {
-                  // Prepare the batch object.
-                  if( !_bat )
-                  {
-                     _my_bat = true;
-                     _bat = new tao::batch<real_type>();
-                  }
-                  be.init_batch( *_bat, *_query );
-
-                  // Need to get to first position.
-                  _prepare( _table_pos->name() );
-                  increment();
+                  _my_bat = true;
+                  _bat = new tao::batch<real_type>();
                }
+               be.init_batch( *_bat, *_query );
+
+               // Need to get to first position.
+               _prepare( _table_pos->name() );
+               increment();
             }
+            else
+               _done = true;
          }
 
          soci_galaxy_iterator( const soci_galaxy_iterator& src )
