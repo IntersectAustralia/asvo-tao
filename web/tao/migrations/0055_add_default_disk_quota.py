@@ -10,7 +10,7 @@ class Migration(DataMigration):
         objs = orm.GlobalParameter.objects.filter(parameter_name='default_disk_quota')
         if len(objs) == 0:
             description = "This will be the default quota applied unless over-ridden for an individual user. " \
-                          "Values are in MB, and interpreted as per user quota. If absent, disk quotas aren't enforced."
+                          "Values are in MB, and interpreted as per user quota. If absent or equal to -1, disk quotas aren't enforced."
             obj = orm.GlobalParameter(parameter_name='default_disk_quota', parameter_value='', description=description)
             obj.save()
 
