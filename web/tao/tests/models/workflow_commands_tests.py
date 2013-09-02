@@ -2,8 +2,8 @@ from datetime import datetime
 
 from django.test.testcases import TestCase
 
-from tao.models import Job
-from tao.tests.support.factories import UserFactory, WorkflowCommandFactory
+from tao.models import Job, WorkflowCommand
+from tao.tests.support.factories import JobFactory, UserFactory, WorkflowCommandFactory
 
 import time
 
@@ -11,7 +11,9 @@ class WorkflowCommandsTests(TestCase):
     def setUp(self):
         super(WorkflowCommandsTests, self).setUp()
         user = UserFactory.create()
-        self.wfcommand = WorkflowCommandFactory.create(submitted_by=user)
+        job = JobFactory.create(user=user)
+        self.jobID = job.id
+        self.wfcommand = WorkflowCommandFactory.create(submitted_by=user, job_id=job, execution_comment='')
 
     def test_executed_time_initially_blank(self):
         self.assertEqual(None, self.wfcommand.executed)
@@ -52,6 +54,16 @@ class WorkflowCommandsTests(TestCase):
         self.wfcommand.save()
         executed_completed_time = datetime.now()
         self.assert_date_time_equal(executed_completed_time, self.wfcommand.executed)
+
+    def test_job_delete_command(self):
+        self.wfcommand.command = WorkflowCommand.JOB_OUTPUT_DELETE
+        self.wfcommand.execution_status = Job.COMPLETED
+        self.wfcommand.save()
+
+        jobs = Job.objects.all()
+        self.assertEqual(0, len(jobs))
+
+        self.wfcommand.execution_comment = 'Job %(id)s successfully deleted.' % {'id': self.jobID}
 
     def assert_date_time_equal(self, expected_datetime, actual_datetime):
         self.assertEqual(expected_datetime.date(), actual_datetime.date())
