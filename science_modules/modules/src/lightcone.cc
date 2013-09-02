@@ -734,7 +734,7 @@ namespace tao {
       replace_all( query, "Spin2", "spiny" );
       replace_all( query, "Spin3", "spinz" );
 
-      LOGTLN( "Query: ", query );
+      LOGDLN( "Query: ", query );
       LOG_EXIT();
       _timer.stop();
    }
@@ -1010,7 +1010,6 @@ namespace tao {
    lightcone::_read_options( const options::xml_dict& global_dict )
    {
       _timer.start();
-      LOG_ENTER();
 
       // Cache the local dictionary.
       const options::xml_dict& dict = _dict;
@@ -1133,6 +1132,11 @@ namespace tao {
       _dist_range.set( _redshift_to_distance( _z_min ), _redshift_to_distance( _z_max ) );
       LOGDLN( "Distance range: (", _dist_range.start(), ", ", _dist_range.finish(), ")" );
 
+      // Read cone offset.
+      _x0 = dict.get<real_type>( "origin-x", 0.0 );
+      _y0 = dict.get<real_type>( "origin-y", 0.0 );
+      _z0 = dict.get<real_type>( "origin-z", 0.0 );
+
       // Right ascension.
       _ra_min = dict.get<real_type>( "ra-min",0.0 );
       if( _ra_min < 0.0 )
@@ -1218,7 +1222,6 @@ namespace tao {
       // Have the galaxy prepare its options.
       _gal.read_record_filter( global_dict );
 
-      LOG_EXIT();
       _timer.stop();
    }
 

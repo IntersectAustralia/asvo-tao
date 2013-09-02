@@ -39,7 +39,7 @@ class DatasetTests(LiveServerTest):
         GlobalParameterFactory.create(parameter_name='default_dataset', parameter_value=self.default_dataset.pk)
         self.visit('mock_galaxy_factory')
         self.assert_on_page('mock_galaxy_factory')
-        self.click('ui-id-2')
+        self.click('tao-tabs-light_cone')
         selected_simulation = self.get_selected_option_text(self.lc_id('dark_matter_simulation'))
         self.assertEqual(self.default_dataset.simulation.name, selected_simulation)
         selected_galaxy_model = self.get_selected_option_text(self.lc_id('galaxy_model'))
