@@ -118,7 +118,7 @@ class WorkFlow(object):
             ### Submit the Job to the PBS Queue
             IsSquentialJob=self.ParseXMLParametersObj.IsSquentialJob()
             
-            PBSJobID=self.TorqueObj.Submit(JobUserName,JobID,logpath,outputpath,ParamXMLName,i,IsSquentialJob)
+            PBSJobID=self.TorqueObj.Submit(UIJobReference,JobUserName,JobID,logpath,outputpath,ParamXMLName,i,IsSquentialJob)
             ## Store the Job PBS ID  
             if self.dbaseobj.UpdateJob_PBSID(JobID,PBSJobID)!=True:
                 raise  Exception('Error in Process New Job','Update PBSID failed')
@@ -392,7 +392,12 @@ class WorkFlow(object):
             else:
                 logging.info("Job Status Checking is not known!!")
 
+    
+
     def UpdateJob_EndSuccessfully(self, JobID,SubJobIndex, JobType, UIReference_ID, UserName, JobDetails):
+        
+        
+        
         
         data = {}  
         
