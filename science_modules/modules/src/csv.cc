@@ -38,6 +38,10 @@ namespace tao {
 
       _fields = _dict.get_list<string>( "fields" );
 
+      // Lowercase them all.
+      for( auto& field : _fields )
+	 to_lower( field );
+
       // Open the file.
       open();
 
