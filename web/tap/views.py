@@ -10,7 +10,6 @@ from django.core.exceptions import PermissionDenied
 from django.core.servers.basehttp import FileWrapper
 from tao.time import timestamp
 from tao import models
-from tao.settings import INITIAL_JOB_STATUS
 
 def tap(request):
     
@@ -205,6 +204,12 @@ def make_parameters_xml(request):
     query_node = etree.SubElement(sql, 'query')
     query_node.text = query.replace(dataset['name'], '-table-')
     
+    simulation_node = etree.SubElement(sql, 'simulation')
+    simulation_node.text = dataset['simulation']
+    
+    galaxy_model_node = etree.SubElement(sql, 'galaxy-model')
+    galaxy_model_node.text = dataset['galaxy_model']
+    
     limit_node = etree.SubElement(sql, 'limit')
     limit_node.text = limit
     
@@ -217,7 +222,7 @@ def make_parameters_xml(request):
     field_items = etree.SubElement(votable, 'fields')
     for field in fields:
         item = etree.SubElement(field_items, 'item')
-        item.set('lebel', field['label'])
+        item.set('label', field['label'])
         item.set('units', field['units'])
         item.text = field['value']
     
@@ -272,7 +277,6 @@ def createTAPjob(request):
     else:
         dataset = parse_dataset_name(request.POST['QUERY'])
         job.database = dataset['name']
-        job.status = INITIAL_JOB_STATUS
         
     job.save()
     
