@@ -8,7 +8,9 @@ Helper class to extension UI modules
 from django.conf import settings
 from tao.record_filter_form import RecordFilterForm
 from tao.output_format_form import OutputFormatForm
+from tao.sql_job_form import SQLJobForm
 from tao.models import Simulation, GalaxyModel, DataSet
+from tao.xml_util import module_xpath
 
 def _from_post(self, klass, module_name, param):
     if param is None:
@@ -29,6 +31,8 @@ class UIModulesHolder:
     form_classes = [(__import__('taoui_%s.forms' % module_name).forms.Form, module_name)
                     for module_name in settings.MODULES] + \
                    [(RecordFilterForm,'record_filter'), (OutputFormatForm, 'output_format')]
+                   
+    sql_classes  = [(SQLJobForm,'sql_job')]
 
     # this 'constants' are methods that will become instance methods
     POST = _from_post
@@ -40,7 +44,13 @@ class UIModulesHolder:
         self._dict = {}
         self._errors = None
         self._dataset = None
-        for klass, module_name in UIModulesHolder.form_classes:
+        
+        classes = UIModulesHolder.form_classes
+        
+        if module_xpath(param, '//workflow', attribute='name') == 'sql-job':
+            classes = UIModulesHolder.sql_classes
+            
+        for klass, module_name in classes:
             form = method(self, klass, module_name, param)
             self._forms.append(form)
             self._dict[module_name] = form
