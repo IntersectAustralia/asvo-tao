@@ -96,11 +96,25 @@ class DatasetTestCase(TransactionTestCase):
 
         snapshot1 = SnapshotFactory.create(dataset=d1, redshift='0.123')
         snapshot2 = SnapshotFactory.create(dataset=d2, redshift='0.012')
-        snapshot3 = SnapshotFactory.create(dataset=d3, redshift='0.3')
+        snapshot3 = SnapshotFactory.create(dataset=d2, redshift='0.3')
+        snapshot4 = SnapshotFactory.create(dataset=d3, redshift='0.123')
+        snapshot5 = SnapshotFactory.create(dataset=d3, redshift='0.012')
+        snapshot6 = SnapshotFactory.create(dataset=d3, redshift='0.3')
 
         self.assertEqual([
-                          (snapshot2.id, snapshot2.redshift, {'data-simulation_id': str(s2.id), 'data-galaxy_model_id': str(g1.id)}),
-                          (snapshot1.id, snapshot1.redshift, {'data-simulation_id': str(s1.id), 'data-galaxy_model_id': str(g3.id)}),
-                          (snapshot3.id, snapshot3.redshift, {'data-simulation_id': str(s2.id), 'data-galaxy_model_id': str(g2.id)})
+                          (snapshot1.id, snapshot1.redshift, {}),
                           ],
-                         snapshot_choices())
+                         snapshot_choices(d1.id))
+
+        self.assertEqual([
+                          (snapshot2.id, snapshot2.redshift, {}),
+                          (snapshot3.id, snapshot3.redshift, {}),
+                          ],
+                         snapshot_choices(d2.id))
+
+        self.assertEqual([
+                          (snapshot5.id, snapshot5.redshift, {}),
+                          (snapshot4.id, snapshot4.redshift, {}),
+                          (snapshot6.id, snapshot6.redshift, {})
+                          ],
+                         snapshot_choices(d3.id))

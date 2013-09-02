@@ -37,7 +37,7 @@ class LiveServerTest(django.test.LiveServerTestCase):
     ]
 
     def wait(self, secs=1):
-        time.sleep(secs * 1.25)
+        time.sleep(secs * 1.5)
 
     def setUp(self):
         self.output_formats = GlobalParameterFactory.create(parameter_name='output_formats', parameter_value=LiveServerTest.OUTPUT_FORMATS)
@@ -277,7 +277,9 @@ class LiveServerTest(django.test.LiveServerTestCase):
         self.selenium.get(self.get_full_url(url_name, *args, **kwargs))
         if url_name in LiveServerTest.AJAX_WAIT:
             self.wait(1)
-        
+            self.assertTrue(self.selenium.execute_script('return (window.catalogue !== undefined ? catalogue._loaded : true)'),
+                            'catalogue.js loading error')
+
     def get_actual_filter_options(self):
         option_selector = '%s option' % self.rf_id('filter')
         return [x.get_attribute('value').encode('ascii') for x in self.selenium.find_elements_by_css_selector(option_selector)]

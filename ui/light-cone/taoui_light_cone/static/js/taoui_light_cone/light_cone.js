@@ -88,11 +88,12 @@ catalogue.modules.light_cone = function ($) {
     			'light_cone-box_size': [vm.box_size()]
     		});
     	} else { // light-cone
-    		var noc = parseInt(vm.number_of_light_cones());
-    		// Work-around: Hiding the spinner seems to set the count to 0
-    		if (noc == 0) {
-    			noc = 1;
-    		}
+            var noc;
+            if (vm.light_cone_type() == 'unique') {
+                noc = 1;
+            } else {
+                noc = parseInt(vm.number_of_light_cones());
+            }
     		jQuery.extend(params, {
     			'light_cone-light_cone_type': [vm.light_cone_type()],
     			'light_cone-ra_opening_angle': [vm.ra_opening_angle()],
@@ -239,6 +240,7 @@ catalogue.modules.light_cone = function ($) {
         vm.light_cone_type = ko.observable(param ? param : 'unique');
         param = job['light_cone-number_of_light_cones'];
         vm.number_of_light_cones = ko.observable(param ? param : 1)
+            .extend({required: function(){return vm.catalogue_geometry() == 'light-cone' && vm.light_cone_type() != 'unique'}})
             .extend({validate: catalogue.validators.is_int});
         // Disable geq 1 check until we can figure out why it is being 
         // set to 0.  job_params ensures that it is at least 1 before
@@ -396,7 +398,9 @@ catalogue.modules.light_cone = function ($) {
                     result = 'Redshift: ' + vm.redshift_min() + ' &le; z &le; ' + vm.redshift_max();
                 }
             } else {
-                result = format_redshift(vm.snapshot().fields.redshift);
+                var snapshot = vm.snapshot();
+                if (snapshot !== undefined)
+                    result = format_redshift(vm.snapshot().fields.redshift);
             }
             return result;
         });

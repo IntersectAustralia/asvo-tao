@@ -68,7 +68,7 @@ class SupportTests(helper.LiveServerTest):
         self.assertEqual(0, len(mail.outbox))
         self.assert_on_page('support_page')
         self.assert_page_does_not_contain("Thank you -- your email has been sent")
-        self.assert_page_has_content('Enter a valid value')
+        self.assert_page_has_content('Please fill in required fields')
 
     def test_link_to_support_page(self):
         "Test that clicking the Support link on the top banner takes the user to the support page"

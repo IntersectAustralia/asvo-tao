@@ -38,10 +38,12 @@ catalogue.modules.record_filter = function ($) {
         } else if (obj.model === "tao.bandpassfilter") {
                 return {
                     // value: 'B-'+obj.value,
-                    value: 'B-'+obj.pk,
+                    value: 'B-'+obj.value,
                     label: obj.fields.label
                 }
-        } else throw {cant_filter_on: obj};
+        } else {
+            throw "cant_filter_on " + obj.model;
+        }
     }
 
     var filter_choices = function () {
@@ -56,6 +58,7 @@ catalogue.modules.record_filter = function ($) {
     	var bandpass_filters;
     	var current_selection = vm.selection();
         var result = [];
+        var defined = catalogue.validators.defined;
 
         // If KO find the same object in the options, will keep it selected
         // so this helper function ensures that
@@ -70,7 +73,11 @@ catalogue.modules.record_filter = function ($) {
 
     	// Get the default filter
     	default_filter_pk = catalogue.modules.light_cone.vm.dataset().fields.default_filter_field;
-    	add_to_result(to_option(catalogue.util.dataset_property(default_filter_pk)));
+        if (defined(default_filter_pk)) {
+            var def_dataset = catalogue.util.dataset_property(default_filter_pk);
+            if (defined(def_dataset))
+               add_to_result(to_option(catalogue.util.dataset_property(default_filter_pk)));
+        }
 
     	// Get the selected output properties with is_filter==true
     	output_properties = catalogue.modules.light_cone.vm.output_properties();
@@ -165,12 +172,10 @@ catalogue.modules.record_filter = function ($) {
 
         vm.selection_min
             .extend({validate: catalogue.validators.is_float})
-            .extend({validate: catalogue.validators.geq(0)})
             .extend({validate: valid_min_max});
 
         vm.selection_max
     		.extend({validate: catalogue.validators.is_float})
-            .extend({validate: catalogue.validators.geq(0)})
     		.extend({validate: valid_min_max});
 
     	vm.hr_summary = ko.computed(this.hr_summary);
