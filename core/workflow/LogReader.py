@@ -14,7 +14,11 @@ class LogReader(object):
     def GetFileName(self,UserName,JobID,SubJobIndex):
         path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserName, str(JobID),'log','tao.log.'+str(SubJobIndex))        
         return path
-    def ParseFile(self,UserName,JobID,SubJobIndex):
+    def ParseFile(self,CurrentJobRecord):
+	UserName=CurrentJobRecord['username']
+	JobID=CurrentJobRecord['uireferenceid']
+	SubJobIndex=CurrentJobRecord['subjobindex']
+
         FilePath=self.GetFileName(UserName, JobID,SubJobIndex)
         JobDetails={'start':-1,'progress':'0%','end':-1,'error':'','endstate':''}
         counter=10

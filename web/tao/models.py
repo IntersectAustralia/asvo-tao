@@ -396,7 +396,10 @@ class Job(models.Model):
             send_mail('job-status', {'job': self, 'user': self.user}, 'Job status update', (self.user.email,))
 
     def status_help_text(self):
-        last_command = WorkflowCommand.objects.filter(job_id=self).latest('issued')
+        last_command = WorkflowCommand.objects.filter(
+            job_id=self,
+            execution_status__in=[SUBMITTED, QUEUED, IN_PROGRESS]
+            ).latest('issued')
         if last_command is None:
             return ''
         elif last_command.command == WorkflowCommand.JOB_OUTPUT_DELETE:
