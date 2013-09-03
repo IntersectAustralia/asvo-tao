@@ -118,7 +118,7 @@ catalogue.modules.mock_image = function ($) {
             image_params.format = ko.observable(param ? param : vm.format_options[0]);
 
             image_params.mag_field_options = ko.computed(function(){
-                return catalogue.modules.sed.vm.bandpass_filters.to_side.options_raw();
+                return catalogue.vm.sed.bandpass_filters();
             });
             param = get_param(prefix, '-mag_field');
             // NOTE: should the mag_field_options be recreated for each mock image?
@@ -258,7 +258,7 @@ catalogue.modules.mock_image = function ($) {
         vm.can_have_images = ko.computed(function(){
             return catalogue.modules.sed.vm.apply_sed() &&
                 catalogue.modules.light_cone.vm.catalogue_geometry().id == 'light-cone' &&
-                catalogue.modules.sed.vm.bandpass_filters.to_side.options_raw().length > 0;
+                catalogue.vm.sed.bandpass_filters().length > 0;
         });
 
         param = job['mock_image-apply_mock_image']

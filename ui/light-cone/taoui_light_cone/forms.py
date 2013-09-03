@@ -189,8 +189,7 @@ class Form(BetterForm):
                                                         simulation_id=sid).pk
             dms_choices = datasets.dark_matter_simulation_choices()
             gm_choices = datasets.galaxy_model_choices(sid)
-            # snapshot_choices = datasets.snapshot_choices()
-            snapshot_choices = [(None, None, {"data-bind" : "value: $data, text: catalogue.modules.light_cone.format_redshift($data.fields.redshift)"})]
+            snapshot_choices = datasets.snapshot_choices(dataset_id)
         else:
             # The choices should be empty, since they are loaded in the wizard
             # output_choices is here until Carlos sets up the View Model
@@ -211,8 +210,7 @@ class Form(BetterForm):
         self.fields['galaxy_model'] = ChoiceFieldWithOtherAttrs(choices=gm_choices)
         self.fields['snapshot'] = ChoiceFieldWithOtherAttrs(required=False,
                                     label='Redshift',
-                                    choices=snapshot_choices,
-                                    widget=SelectWithOtherAttrs(attrs={'class': 'light_box_field'}))
+                                    choices=snapshot_choices)
         self.fields['number_of_light_cones'] = forms.IntegerField(label=_('Select the number of light-cones:'),
                                     required=False,
                                     initial='1',
@@ -319,9 +317,10 @@ class Form(BetterForm):
         else:
             return cls(ui_holder, prefix=prefix)
 
+
     @classmethod
     def _map_elems(cls, xml_root, data_set):
-        for elem in module_xpath_iterate(xml_root, '//light-cone/output-fields/item', text=False):
+        for elem in module_xpath_iterate(xml_root, '//fields/item', text=False):
             label = elem.get('label')
             name = elem.text
             data_set_property = datasets.data_set_property_from_xml(data_set, label, name)

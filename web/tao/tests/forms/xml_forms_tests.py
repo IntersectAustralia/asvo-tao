@@ -328,7 +328,7 @@ class XmlFormsTests(TestCase):
         self.assertTrue(self.filter.id in op_list)
         self.assertTrue(self.output_prop.id in op_list)
 
-    def test_box_geometry(self):
+    def _test_box_geometry(self):
         xml_parameters = {
             'catalogue_geometry': 'box',
             'dark_matter_simulation': self.simulation.id, # self.simulation.id,

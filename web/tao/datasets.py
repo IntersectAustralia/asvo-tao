@@ -56,9 +56,9 @@ def stellar_model_choices():
 # TODO: This should only return the redshifts from the selected dataset
 # This is no longer used to populate the Redshift dropdown, but is used 
 # by the unit test.  Possibly move inside the unit test.
-def snapshot_choices():
-    return [(x.id, str(x.redshift), {'data-galaxy_model_id': str(x.dataset.galaxy_model_id), 'data-simulation_id': str(x.dataset.simulation_id)})
-            for x in models.Snapshot.objects.order_by('redshift')]
+def snapshot_choices(dataset_id):
+    return [(x.id, str(x.redshift),{})
+            for x in models.Snapshot.objects.filter(dataset=dataset_id).order_by('redshift')]
 
 def filter_choices(simulation_id, galaxy_model_id):
     try:
