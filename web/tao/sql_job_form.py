@@ -33,7 +33,7 @@ def from_xml_2(cls, ui_holder, xml_root, prefix=None):
     return cls(ui_holder, params, prefix=prefix)
 
 class SQLJobForm(BetterForm):
-    SUMMARY_TEMPLATE = 'jobs/sql_job_summary.html'
+    SUMMARY_TEMPLATE = 'mock_galaxy_factory/sql_job_summary.html'
     simple_fields = ['dark_matter_simulation', 'galaxy_model']
     fieldsets = [
             ('primary', {
