@@ -19,7 +19,7 @@ def format_human_readable_file_size(file_size):
     units = ['B', 'kB', 'MB']
     for x in units:
         if size < 1000:
-            return '%3.1f%s' % (size, x)
+            return '%3d%s' % (size, x)
         size /= 1000
     return '%3.1f%s' % (size, 'GB')
 
@@ -309,6 +309,7 @@ class Job(models.Model):
     error_message = models.TextField(blank=True, max_length=1000000, default='')
     disk_usage = models.IntegerField(null=True, blank=True, default=-1)
 
+
     def __init__(self, *args, **kwargs):
         super(Job, self).__init__(*args, **kwargs)
         self.var_cache = {}
@@ -393,7 +394,24 @@ class Job(models.Model):
         super(Job, self).save(*args, **kwargs)
         if self.var_cache['status'] != getattr(self, 'status') and getattr(self, 'status') == Job.COMPLETED:
             send_mail('job-status', {'job': self, 'user': self.user}, 'Job status update', (self.user.email,))
-    
+
+    def status_help_text(self):
+        last_command = WorkflowCommand.objects.filter(
+            job_id=self,
+            execution_status__in=[SUBMITTED, QUEUED, IN_PROGRESS]
+            ).latest('issued')
+        if last_command is None:
+            return ''
+        elif last_command.command == WorkflowCommand.JOB_OUTPUT_DELETE:
+            return '(catalogue is being deleted)'
+        elif last_command.command == WorkflowCommand.JOB_STOP:
+            return '(catalogue generation is being terminated)'
+
+    def has_wf_commands_in_progress(self):
+        commands_in_progress = WorkflowCommand.objects.filter(job_id=self).exclude(execution_status=COMPLETED).exclude(execution_status=ERROR)
+        return commands_in_progress
+
+
 class JobFile(object):
     def __init__(self, job_dir, file_name):
         self.file_name = file_name[len(job_dir)+1:]
@@ -405,13 +423,6 @@ class JobFile(object):
 
     def get_file_size(self):
         return format_human_readable_file_size(self.file_size)
-        # size = self.file_size
-        # units = ['B', 'kB', 'MB']
-        # for x in units:
-        #     if size < 1000:
-        #         return '%3.1f%s' % (size, x)
-        #     size /= 1000
-        # return '%3.1f%s' % (size, 'GB')
 
     def get_file_size_in_B(self):
         return self.file_size
@@ -475,6 +486,11 @@ class WorkflowCommand(models.Model):
             prev = WorkflowCommand.objects.get(pk=self.id)
             if self.execution_status != prev.execution_status:
                 self.executed = datetime.now()
+                if self.command == self.JOB_OUTPUT_DELETE:
+                    job_id = self.job_id.pk
+                    self.job_id = None
+                    Job.objects.get(id=job_id).delete()
+                    self.execution_comment += 'Job %(job_id)s successfully deleted.' % locals()
         super(WorkflowCommand, self).save(force_insert=force_insert, force_update=force_update, using=using,
                                           update_fields=update_fields)
 

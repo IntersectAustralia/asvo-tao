@@ -35,3 +35,11 @@ def setting(key):
 #def aaf_ds(target):
 #    q_dict = {'target': target}
 #    return mark_safe(settings.AAF_SESSION_URL + "?" + django_urlencode(q_dict))
+
+@register.simple_tag
+def custom_error_message(request_path):
+    import re
+    job_path = re.compile("^/jobs/\d+$")
+    m = job_path.match(request_path)
+    if m and m.group() == request_path:
+        return 'No such job exists'
