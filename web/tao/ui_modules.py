@@ -32,11 +32,15 @@ class UIModulesHolder:
                     for module_name in settings.MODULES] + \
                    [(RecordFilterForm,'record_filter'), (OutputFormatForm, 'output_format')]
                    
-    sql_classes  = [(SQLJobForm,'sql_job')]
+    sql_classes = [(SQLJobForm,'sql_job'), (OutputFormatForm, 'output_format')]
 
     # this 'constants' are methods that will become instance methods
     POST = _from_post
     XML = _from_xml
+
+    # Job Type
+    LIGHT_CONE_JOB = 'alpha-light-cone-image'
+    SQL_JOB = 'sql-job'
 
     def __init__(self, method, param=None):
         # forms are created _and_stored_ one by one so later forms can use data in first ones via self._dict = {}
@@ -46,9 +50,11 @@ class UIModulesHolder:
         self._dataset = None
         
         classes = UIModulesHolder.form_classes
+        self.job_type = UIModulesHolder.LIGHT_CONE_JOB
         
-        if module_xpath(param, '//workflow', attribute='name') == 'sql-job':
+        if method == UIModulesHolder.XML and module_xpath(param, '//workflow', attribute='name') == 'sql-job':
             classes = UIModulesHolder.sql_classes
+            self.job_type = UIModulesHolder.SQL_JOB
             
         for klass, module_name in classes:
             form = method(self, klass, module_name, param)
