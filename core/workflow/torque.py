@@ -43,13 +43,14 @@ class TorqueInterface(object):
         self.DefaultParams = {'nodes': 1,'ppn': 1,
                               'wt_hours': 48,'wt_minutes': 0,'wt_seconds': 0}
 
-    def SetJobParams(self,UserName,JobID,nodes,ppn,path,outputpath,BasicSettingPath,ParamXMLName,SubJobIndex):    
+    def SetJobParams(self,UIJobReference,UserName,JobID,nodes,ppn,path,outputpath,BasicSettingPath,ParamXMLName,SubJobIndex):    
             
         self.DefaultParams['executable'] = self.Options['Torque:ExecutableName']
         self.DefaultParams['name']=self.Options['Torque:jobprefix']+UserName[:4]+'_'+str(JobID)
         self.DefaultParams['nodes'] = nodes        
         self.DefaultParams['ppn'] = ppn
         self.DefaultParams['subjobindex'] = SubJobIndex
+        self.DefaultParams['UIJobReference'] = UIJobReference
         self.DefaultParams['path'] = path+"/"+ParamXMLName
         self.DefaultParams['basicsettingpath'] = BasicSettingPath
         self.DefaultParams['outputpath'] = outputpath
@@ -63,8 +64,8 @@ class TorqueInterface(object):
     ## @param[IN]  params  Dictionary of parameters.
     ## @param[IN]  path    Where to write PBS script.
     ##
-    def WritePBSScriptFile(self,UserName,JobID, nodes,ppn, path,outputpath,BasicSettingPath,ParamXMLName,SubJobIndex):
-        self.SetJobParams(UserName, JobID,nodes, ppn,path,outputpath,BasicSettingPath,ParamXMLName,SubJobIndex)
+    def WritePBSScriptFile(self,UIJobReference,UserName,JobID, nodes,ppn, path,outputpath,BasicSettingPath,ParamXMLName,SubJobIndex):
+        self.SetJobParams(UIJobReference,UserName, JobID,nodes, ppn,path,outputpath,BasicSettingPath,ParamXMLName,SubJobIndex)
         FileName = os.path.join(path, self.ScriptFileName+str(SubJobIndex))
         ##
         self.dbaseobj.AddNewEvent(JobID,EnumerationLookup.EventType.PBSEvent,"Adding New Job to PBS, Script Name="+self.ScriptFileName+str(SubJobIndex))
@@ -83,7 +84,10 @@ class TorqueInterface(object):
             setenv PATH %(BaseLibPath)s/bin:$PATH
             setenv LD_LIBRARY_PATH %(BaseLibPath)s/lib:%(BaseLibPath)s/helperlib:$LD_LIBRARY_PATH
             mpiexec %(executable)s %(path)s %(basicsettingpath)s
-            %(MergeScriptName)s %(outputpath)s %(subjobindex)d
+            %(MergeScriptName)s %(outputpath)s %(subjobindex)d %(UIJobReference)d
+            cd %(outputpath)s
+            tar -czf images.%(UIJobReference)d.tar.gz image.*.fits
+            rm image.*.fits
             '''%self.DefaultParams)
         return FileName
 
@@ -93,15 +97,17 @@ class TorqueInterface(object):
     ## @param[IN]  params  Parameter dictionary.
     ## @returns PBS job identifier.
     ##
-    def Submit(self,UserName,JobID,path,outputpath,ParamXMLName,SubJobIndex):
+    def Submit(self,UIJobReference,UserName,JobID,path,outputpath,ParamXMLName,SubJobIndex,IsSquentialJob=False):
         BasicSettingPath=self.Options['Torque:BasicSettingsPath']
         
-        nodes=int(self.Options['Torque:Nodes'])        
-        ppn=int(self.Options['Torque:ProcessorNode'])
+        nodes=int(self.Options['Torque:Nodes'])  
+        ppn=1
+        if IsSquentialJob==False:      
+            ppn=int(self.Options['Torque:ProcessorNode'])
         queuename=self.Options['Torque:JobsQueue']
         
         
-        ScriptFileName = self.WritePBSScriptFile(UserName,JobID, nodes,ppn, path,outputpath,BasicSettingPath,ParamXMLName,SubJobIndex)
+        ScriptFileName = self.WritePBSScriptFile(UIJobReference,UserName,JobID, nodes,ppn, path,outputpath,BasicSettingPath,ParamXMLName,SubJobIndex)
         
         
         stdout = subprocess.check_output(shlex.split('ssh g2 \"cd %s; qsub -q %s %s\"'%(path.encode(locale.getpreferredencoding()), queuename.encode(locale.getpreferredencoding()), ScriptFileName.encode(locale.getpreferredencoding()))))

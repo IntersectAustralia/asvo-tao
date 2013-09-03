@@ -46,9 +46,9 @@
         <tr>
             <td>Output Properties</td>
             <td data-bind='toggler: true'>
-                <span class="output_properties" data-bind="text: output_properties.to_side.options_total() + ' properties selected'"><!-- --></span>
+                <span class="output_properties" data-bind="text: output_properties().length + ' properties selected'"><!-- --></span>
                 <a id="expand_output_properties" data-bind='text: toggler_text(), click: toggler_click' href="#"></a>
-                <div class="output_properties_list" data-bind="visible: toggler_visible, template: { name: 'summary_output_properties_with_groups', data: output_properties.to_side }"><!-- --></div>
+                <div class="output_properties_list" data-bind="visible: toggler_visible, template: { name: 'summary_output_properties_with_groups', data: output_properties_widget.to_side }"><!-- --></div>
             </td>
         </tr>
     </table>

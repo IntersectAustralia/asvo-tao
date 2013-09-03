@@ -16,17 +16,29 @@ from tao import models, workflow
 from tao.decorators import researcher_required, set_tab
 from tao.ui_modules import UIModulesHolder
 from tao.xml_util import xml_parse
+from tao.views import jobs
 import json
 
 
 @set_tab('mgf')
 @researcher_required
 def index(request):
+    user = request.user
+    if not user.check_disk_usage_within_quota():
+        message = 'Please reduce your disk usage below ' + user.display_user_disk_quota() + '. ' \
+                  'If you would like additional quota, please <a href="' + reverse('support_page') + '">submit</a> ' \
+                  'a request with the reason for the request.'
+        messages.info(request, mark_safe(message))
+        # return jobs.index(request)
+        return redirect(reverse('job_index'))
+
     if request.method == 'POST':
         if len(request.FILES) > 0:
-            parameter_file = request.FILES.itervalues().next().read()
-            params_ui_holder = UIModulesHolder(UIModulesHolder.XML, xml_parse(parameter_file))
+            parameter_file = request.FILES.itervalues().next()
+            params_ui_holder = UIModulesHolder(UIModulesHolder.XML, xml_parse(parameter_file.read()))
             ui_holder = UIModulesHolder(UIModulesHolder.POST)
+            message = "Parameter file '%s' uploaded successfully." % parameter_file.name
+            messages.info(request, message)
             return render(request, 'mock_galaxy_factory/index.html', {
                 'forms': ui_holder.forms(),
                 'ui_holder': params_ui_holder,

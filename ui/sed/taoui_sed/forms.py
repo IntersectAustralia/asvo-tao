@@ -25,7 +25,7 @@ def to_xml_2(form, root):
     output_format = form.ui_holder.cleaned_data('output_format', 'supported_formats')
 
     if apply_sed:
-        from tao.xml_util import find_or_create, child_element
+        from tao.xml_util import find_or_create, child_element, add_encoding
 
         sed_elem = find_or_create(root, 'sed', id=FormsGraph.SED_ID)
         child_element(sed_elem, 'module-version', text=Form.MODULE_VERSION)
@@ -35,8 +35,9 @@ def to_xml_2(form, root):
 
         child_element(child_element(find_or_create(root, output_format, id=FormsGraph.OUTPUT_ID), 'parents'), 'item', text=FormsGraph.BANDPASS_FILTER_ID)
 
-        single_stellar_population_model = tao_models.StellarModel.objects.get(pk=form.cleaned_data['single_stellar_population_model'])
-        child_element(sed_elem, 'single-stellar-population-model', text=single_stellar_population_model.name)
+        single_stellar_population_model = tao_models.StellarModel.objects.get(
+            pk=form.cleaned_data['single_stellar_population_model'])
+        add_encoding(sed_elem, single_stellar_population_model.encoding)
 
         # Create an independant filter module.
         filter_elem = find_or_create(root, 'filter', id=FormsGraph.BANDPASS_FILTER_ID)
@@ -166,8 +167,7 @@ class Form(BetterForm):
 
         self.fields['apply_sed'].widget.attrs['data-bind'] = 'checked: apply_sed'
         self.fields['single_stellar_population_model'].widget.attrs['data-bind'] = 'options: stellar_models, value: stellar_model, optionsText: function(i) { return i.fields.label }'
-        self.fields['band_pass_filters'].widget.attrs['ko_data'] = 'bandpass_filters'
-        self.fields['band_pass_filters'].widget.attrs['data-bind'] = 'value: bandpass_filters'
+        self.fields['band_pass_filters'].widget.attrs['ko_data'] = {'widget':'bandpass_filters_widget','value':'bandpass_filters'}
         self.fields['apply_dust'].widget.attrs['data-bind'] = 'checked: apply_dust'
         self.fields['select_dust_model'].widget.attrs['data-bind'] = 'options: dust_models, value: dust_model, optionsText: function(i) { return i.fields.label }'
 

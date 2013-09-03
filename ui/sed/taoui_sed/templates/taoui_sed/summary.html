@@ -16,18 +16,18 @@
         <tr class="apply_sed">
             <td>Bandpass Filters</td>
             <td data-bind="toggler: true">
-                <span class="band_pass_filters" data-bind="text: bandpass_filters.to_side.options_total() + ' properties selected'"><!-- --></span>
+                <span class="band_pass_filters" data-bind="text: bandpass_filters().length + ' properties selected'"><!-- --></span>
                 <a id="expand_band_pass_filters" href="#" data-bind='text: toggler_text(), click: toggler_click'></a>
-                <span class="band_pass_filters_list" data-bind="template: { name: 'summary_bandpass_filters_with_groups', data: bandpass_filters.to_side }, visible: toggler_visible"><!-- --></span>
+                <span class="band_pass_filters_list" data-bind="template: { name: 'summary_bandpass_filters_with_groups', data: bandpass_filters_widget.to_side }, visible: toggler_visible"><!-- --></span>
             </td>
         </tr>
         <tr class="apply_sed">
             <td>Dust</td>
             <!-- ko if: !apply_dust() -->
-            <td>Not selected</td>
+            <td class="apply_dust">Not selected</td>
             <!-- /ko -->
             <!-- ko if: apply_dust -->
-            <td data-bind="toggler: true">
+            <td class="apply_dust" data-bind="toggler: true">
                 <span class="dust_model" data-bind="text: dust_model().fields.name"><!-- --></span>
                 <a id="expand_dust_model" href="#" data-bind='text: toggler_text(), click: toggler_click'></a>
                 <span class="dust_model_description" data-bind="visible: toggler_visible, html: '<br/>' + dust_model().fields.details"><!-- --></span>

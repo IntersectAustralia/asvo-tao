@@ -14,7 +14,6 @@
     <script src="{% static 'js/jquery-cookie-1.3.js' %}"></script>
     <script type='text/javascript' src="{% static 'js/knockout-2.3.0.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/TwoSidedSelectWidget.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/textarea_height.js' %}"></script>
 	<script type="text/javascript" src="{% static 'js/taoui_light_cone/light_cone.js' %}"></script>
 	<script type="text/javascript" src="{% static 'js/taoui_light_cone/unique_light_cones.js' %}"></script>
 	<script type="text/javascript" src="{% static 'js/job_size.js' %}"></script>
@@ -41,34 +40,45 @@ the forms being hidden and all.
     <div>
         <h1>Viewing Job {{ job.id }} {% if job.user.username != user.username %}(owned by {{ job.user.display_name }}){% endif %}</h1>
         <div>
-            {% if job.status == 'SUBMITTED' or job.status == 'QUEUED' or job.status == 'IN_PROGRESS' %}
-                <button type="button" class="btn btn-primary" id='id-job_stop'>Stop</button>
-            {% else %}
+            <p>
+            {% if job.has_wf_commands_in_progress %}
                 <button type="button" class="btn btn-primary" id='id-job_stop' disabled>Stop</button>
-            {% endif %}
-            {% if user.is_superuser %}
-            {% if job.status == 'COMPLETED' or job.status == 'ERROR' %}
-                <button type="button" class="btn btn-primary" id='id-job_rerun'>Re-Run</button>
-            {% else %}
                 <button type="button" class="btn btn-primary" id='id-job_rerun' disabled>Re-Run</button>
-            {% endif %}
-            {% if job.status == 'HELD' %}
-                <button type="button" class="btn btn-primary" id='id-job_release'>Release</button>
-            {% else %}
                 <button type="button" class="btn btn-primary" id='id-job_release' disabled>Release</button>
-            {% endif %}
-            {% endif %}{% comment %}if user.is_superuser{% endcomment %}
-            {% if job.status == 'COMPLETED' %}
-                <button type="button" class="btn btn-primary" id="id-job_output_delete">Delete Output</button>
+                <button type="button" class="btn btn-primary" id="id-job_output_delete" disabled>Delete</button>
             {% else %}
-                <button type="button" class="btn btn-primary" id="id-job_output_delete" disabled>Delete Output</button>
+                {% if job.status == 'SUBMITTED' or job.status == 'QUEUED' or job.status == 'IN_PROGRESS' %}
+                    <button type="button" class="btn btn-primary" id='id-job_stop'>Stop</button>
+                {% else %}
+                    <button type="button" class="btn btn-primary" id='id-job_stop' disabled>Stop</button>
+                {% endif %}
+                {% if user.is_superuser %}
+                    {% if job.status == 'COMPLETED' or job.status == 'ERROR' %}
+                        <button type="button" class="btn btn-primary" id='id-job_rerun'>Re-Run</button>
+                    {% else %}
+                        <button type="button" class="btn btn-primary" id='id-job_rerun' disabled>Re-Run</button>
+                    {% endif %}
+                    {% if job.status == 'HELD' %}
+                        <button type="button" class="btn btn-primary" id='id-job_release'>Release</button>
+                    {% else %}
+                        <button type="button" class="btn btn-primary" id='id-job_release' disabled>Release</button>
+                    {% endif %}
+                {% endif %}{% comment %}if user.is_superuser{% endcomment %}
+                {% if job.status == 'COMPLETED' %}
+                    <button type="button" class="btn btn-primary" id="id-job_output_delete">Delete</button>
+                {% else %}
+                    <button type="button" class="btn btn-primary" id="id-job_output_delete" disabled>Delete</button>
+                {% endif %}
             {% endif %}
+            </p>
         </div>
         <div>
             <strong>Optional Description:</strong>
-            <div id="inlineedit">
-                <textarea contenteditable id="id-job_description" data-bind="value: description">
+            <div id="inlineedit" class="editable-field inactive">
+                <textarea contenteditable id="id-job_description" data-bind="value: description" style="width: 580px; margin:0px; height:4em;">
                 </textarea>
+                <span class="overlay-text overlay-item">click to edit</span>
+                <span class="overlay-icon icon icon-edit-sml overlay-item"></span>
                 <div id="savecancel">
                   <div id="id-save_edit" class="btn" type="button" onClick="catalogue.modules.view_job.save_description()">&#10003;</div>
                   <div id="id-cancel_edit" class="btn" type="button" onClick="catalogue.modules.view_job.cancel_description()">X</div>
@@ -93,9 +103,11 @@ the forms being hidden and all.
                         {% endfor %}
                     </ul>
                     {% if job.can_download_zip_file %}
-                        <a id='id_download_as_zip' href="{% url 'get_zip_file' job.id %}">
-                            Download zip file
-                        </a>
+                        <p>
+                            <a id='id_download_as_zip' href="{% url 'get_zip_file' job.id %}">
+                                Download zip file
+                            </a>
+                        </p>
                     {% else %}
                         (Zip file exceeds maximum download size.)
                     {% endif %}
@@ -104,14 +116,21 @@ the forms being hidden and all.
                     </ul>
                 {% endif %}
             </div>
+            <div class="disk-usage-field">
+                <p>
+                    <strong>Disk Usage:</strong> <span id="id_disk_usage">{{ job.display_disk_size }}</span>
+                    <a href="{% url 'refresh_disk_usage' job.id %}" id="id_refresh_disk_usage"><span class="icon icon-refresh-sml"></span></a>
+                </p>
+            </div>
             <div>
                 <strong>Status</strong>
-                <p>{{ job.status }}</p>
+                <p>{{ job.status }} {{ job.status_help_text }}
                 {% if job.is_error %}
-                    <pre>
-                    {{ job.error_message|linebreaks  }}
-                    </pre>
+                	<span id="id-job_error_enquiry">
+                    (please use the <a id="id-job_error_support" href="../accounts/support_page/">Support</a> form if you would like to enquire about this error)
+                    </span>
                 {% endif %}
+                </p>
             </div>
             <div>
                 <strong>Summary</strong>
@@ -136,10 +155,10 @@ the forms being hidden and all.
             The current {{ job.status }} job will be re-run. Are you sure?
         </p>
     </div>
-    <div id="delete_job_output_confirm" title="Delete the output of this job?" style="display: none;">
+    <div id="delete_job_output_confirm" title="Delete this job?" style="display: none;">
         <p><span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>
-            The data stored for the current {{ job.status }} job will be permanently deleted. Are you sure?<br>
-            It might take some time for the delete to take effect.
+            All information and data for the current job will be permanently deleted. Are you sure?<br>
+            It may take some time for your request to be executed.
         </p>
     </div>
     <div id="release_job_confirm" title="Release this job?" style="display: none;">
