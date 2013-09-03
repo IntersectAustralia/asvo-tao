@@ -10,9 +10,11 @@ from django.shortcuts import render, redirect
 from django.template.context import Context
 from django.template.response import TemplateResponse
 from django.utils.translation import ugettext_lazy as _
+from django.utils.safestring import mark_safe
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.decorators.http import require_POST
+
 
 from django.utils.http import urlencode as django_urlencode
 
@@ -90,15 +92,6 @@ def home(request):
         elif request.user.account_registration_status == TaoUser.RS_REJECTED:
             return redirect(account_status)
     return render(request, 'home.html')
-
-
-#@aaf_empty_required
-#def register_aaf(request):
-#    pass
-
-#@aaf_registered_required
-#def registration_view(request):
-#    pass
 
 
 @admin_required
@@ -182,6 +175,9 @@ def support(request):
             logger.info('Message: ' + message)
             send_mail('support-template', context, 'TAO Support: ' + subject, [user_email], bcc=to_addrs)
             return render(request, 'email_sent.html')
+        else:
+            message = 'Please fill in required fields'
+            messages.info(request, mark_safe(message))
     else:
         form = SupportForm()
 

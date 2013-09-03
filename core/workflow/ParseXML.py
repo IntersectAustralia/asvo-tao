@@ -2,7 +2,8 @@ import re,os
 import lxml.etree as ET
 import settingReader # Read the XML settings
 import StringIO
-
+#from psycopg2.extras import logging
+import logging
 
 class ParseXMLParameters(object):
 
@@ -21,11 +22,20 @@ class ParseXMLParameters(object):
         #self.GetCurrentUser()
         #self.GetDocumentSignature()    
         self.SubJobsCount=self.GetSubJobsCount()
-        self.ModifySEDFilePath()
+        #self.ModifySEDFilePath()
         #self.ModifyFilterFilePath()
         self.ModifyOutputPath()
         self.SetBasicInformation(JobID,DatabaseName,JobUserName)
         return self.SubJobsCount
+    def IsSquentialJob(self):
+        
+        sqlModuleInstance=self.tree.xpath("ns:workflow/ns:sql",namespaces={'ns':self.NameSpace})
+        if len(sqlModuleInstance)==0:
+            logging.info("----- Parallel Job -----")
+            return False
+        else:
+            logging.info("----- Sequential Job -----")
+            return True    
         
     def ExportTrees(self,FileName):
             

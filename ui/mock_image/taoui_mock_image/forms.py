@@ -107,7 +107,7 @@ class SingleForm(BetterForm):
 
         self.fields['sub_cone'].widget.attrs['data-bind'] = "value: sub_cone, options: $parent.sub_cone_options, optionsText: 'text'"
         self.fields['format'].widget.attrs['data-bind'] = "value: format, options: $parent.format_options, optionsText: 'text'"
-        self.fields['mag_field'].widget.attrs['data-bind'] = "value: mag_field, options: mag_field_options, optionsText: 'text'"
+        self.fields['mag_field'].widget.attrs['data-bind'] = "value: mag_field, options: mag_field_options, optionsText: function(obj) {return obj.fields.label}"
         self.fields['min_mag'].widget.attrs['data-bind'] = 'value: min_mag'
         self.fields['max_mag'].widget.attrs['data-bind'] = 'value: max_mag'
         self.fields['z_min'].widget.attrs['data-bind'] = 'value: z_min'

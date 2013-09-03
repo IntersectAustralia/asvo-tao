@@ -51,6 +51,7 @@ job_patterns = patterns('tao.views.jobs',
     url(r'^rerun_job/(?P<id>\d+)$', 'rerun_job', name='rerun_job'),
     url(r'^release_job/(?P<id>\d+)$', 'release_job', name='release_job'),
     url(r'^delete_job_output/(?P<id>\d+)$', 'delete_job_output', name='delete_job_output'),
+    url(r'^refresh_disk_usage/(?P<id>\d+)$', 'refresh_disk_usage', name='refresh_disk_usage'),
 )
 
 json_patterns = patterns('tao.json.views',

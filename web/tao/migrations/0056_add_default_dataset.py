@@ -7,11 +7,15 @@ from django.db import models
 class Migration(DataMigration):
 
     def forwards(self, orm):
-        objs = orm.GlobalParameter.objects.filter(parameter_name='default_disk_quota')
-        if len(objs) == 0:
-            description = "This will be the default quota applied unless over-ridden for an individual user. " \
-                          "Values are in MB, and interpreted as per user quota. If absent or equal to -1, disk quotas aren't enforced."
-            obj = orm.GlobalParameter(parameter_name='default_disk_quota', parameter_value='', description=description)
+        obj = orm.GlobalParameter.objects.filter(parameter_name='default_dataset')
+        if len(obj) == 0:
+            description = 'This contains the id (pk) of the default dataset. ' \
+                          'The selected Simulation and GalaxyModel are taken from the default dataset.'
+            first_dataset = orm.DataSet.objects.all()[0]
+            if first_dataset:
+                obj = orm.GlobalParameter(parameter_name='default_dataset', parameter_value=str(first_dataset.id), description=description)
+            else:
+                obj = orm.GlobalParameter(parameter_name='default_dataset', parameter_value='0', description=description)
             obj.save()
 
     def backwards(self, orm):
@@ -108,7 +112,7 @@ class Migration(DataMigration):
             'created_time': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'database': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'description': ('django.db.models.fields.TextField', [], {'default': "''", 'max_length': '500', 'blank': 'True'}),
-            'disk_usage': ('django.db.models.fields.IntegerField', [], {'default': '0', 'null': 'True', 'blank': 'True'}),
+            'disk_usage': ('django.db.models.fields.IntegerField', [], {'default': '-1', 'null': 'True', 'blank': 'True'}),
             'error_message': ('django.db.models.fields.TextField', [], {'default': "''", 'max_length': '1000000', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'output_path': ('django.db.models.fields.TextField', [], {'blank': 'True'}),

@@ -28,6 +28,8 @@ namespace tao {
 		_language="";
 		_pass_through=true;
 		_database="";
+		_RecordsCount=0;
+		_IsRecordLimitReached=false;
 
 	}
 
@@ -35,6 +37,16 @@ namespace tao {
 	{
 	}
 
+	bool sqldirect::RecordLimitReached()
+	{
+
+		if(_OutputLimit!=-1 && _RecordsCount>=_OutputLimit)
+		{
+			return true;
+		}
+		else
+			return false;
+	}
 
 	void  sqldirect::initialise( const options::xml_dict& global_dict )
 	{
@@ -181,16 +193,68 @@ namespace tao {
 	void sqldirect::FetchData(string query)
 	{
 
+
+
+
+		for(int i = 0; i < _field_types.size(); i++)
+		{
+			switch( _field_types[i] )
+			{
+				case galaxy::STRING:
+
+					((vector<string>*)_field_stor[i])->clear();
+					break;
+				case galaxy::DOUBLE:
+					((vector<double>*)_field_stor[i])->clear();
+					break;
+				case galaxy::INTEGER:
+					((vector<int>*)_field_stor[i])->clear();
+					break;
+				case galaxy::UNSIGNED_LONG_LONG:
+					((vector<unsigned long long>*)_field_stor[i])->clear();
+				case galaxy::LONG_LONG:
+					((vector<long long>*)_field_stor[i])->clear();
+					break;
+				default:
+					ASSERT( 0 );
+			}
+		}
+
+
+		_gal.clear();
+		_gal.set_table( *_Tables_it );
+
+
+
+		if(RecordLimitReached())
+		{
+			LOGDLN( "Record Limit Reached = ", _RecordsCount," Terminating" );
+			_IsRecordLimitReached=true;
+			return;
+		}
+
 		soci::rowset<soci::row> rs= (*_db)[(*_Tables_it)].prepare << query;
 		int rowscount=0;
 
+
 		for (soci::rowset<soci::row>::const_iterator it = rs.begin(); it != rs.end(); ++it)
 		{
+
+			if(RecordLimitReached())
+			{
+				LOGDLN( "Record Limit Reached = ", _RecordsCount," Terminating" );
+
+				break;
+			}
+
+			LOGDLN( "Record Count= ", _RecordsCount );
+			_RecordsCount++;
 			soci::row const& currentrow = *it;
 
 
 			for(std::size_t i = 0; i != currentrow.size(); ++i)
 			{
+
 				const soci::column_properties & props = currentrow.get_properties(i);
 
 				switch(props.get_data_type())
@@ -227,11 +291,7 @@ namespace tao {
 				LOGDLN( "New Row: ", rowscount);
 		}
 
-		if (rowscount>0)
-		{
-			_gal.clear();
-			_gal.set_table( *_Tables_it );
-		}
+
 
 
 		for(int i = 0; i < _field_types.size(); i++)
@@ -239,27 +299,27 @@ namespace tao {
 			switch( _field_types[i] )
 			{
 				case galaxy::STRING:
-					LOGDLN( "Set Field Name: ", _field_names[i], " To Galaxy" );
+					LOGDLN( "Set Field Name: ", _field_names[i], " To Galaxy ... Size=",((vector<string>*)_field_stor[i])->size() );
 					_gal.set_batch_size( ((vector<string>*)_field_stor[i])->size() );
 					_gal.set_field<string>( _field_names[i], *(vector<string>*)_field_stor[i] );
 					break;
 				case galaxy::DOUBLE:
-					LOGDLN( "Set Field Name: ", _field_names[i], " To Galaxy" );
+					LOGDLN( "Set Field Name: ", _field_names[i], " To Galaxy ... Size=",((vector<double>*)_field_stor[i])->size()  );
 					_gal.set_batch_size( ((vector<double>*)_field_stor[i])->size() );
 					_gal.set_field<double>( _field_names[i], *(vector<double>*)_field_stor[i] );
 					break;
 				case galaxy::INTEGER:
-					LOGDLN( "Set Field Name: ", _field_names[i], " To Galaxy" );
+					LOGDLN( "Set Field Name: ", _field_names[i], " To Galaxy ... Size=",((vector<int>*)_field_stor[i])->size()  );
 					_gal.set_batch_size( ((vector<int>*)_field_stor[i])->size() );
 					_gal.set_field<int>( _field_names[i], *(vector<int>*)_field_stor[i] );
 					break;
 				case galaxy::UNSIGNED_LONG_LONG:
-					LOGDLN( "Set Field Name: ", _field_names[i], " To Galaxy" );
+					LOGDLN( "Set Field Name: ", _field_names[i], " To Galaxy ... Size=",((vector<unsigned long long>*)_field_stor[i])->size()  );
 					_gal.set_batch_size( ((vector<unsigned long long>*)_field_stor[i])->size() );
 					_gal.set_field<unsigned long long>( _field_names[i], *(vector<unsigned long long>*)_field_stor[i] );
 					break;
 				case galaxy::LONG_LONG:
-					LOGDLN( "Set Field Name: ", _field_names[i], " To Galaxy" );
+					LOGDLN( "Set Field Name: ", _field_names[i], " To Galaxy ... Size=",((vector<long long>*)_field_stor[i])->size()  );
 					_gal.set_batch_size( ((vector<long long>*)_field_stor[i])->size() );
 					_gal.set_field<long long>( _field_names[i], *(vector<long long>*)_field_stor[i] );
 					break;
@@ -268,10 +328,10 @@ namespace tao {
 			}
 		}
 
-		for (auto& x: _gal._fields)
+		/*for (auto& x: _gal._fields)
 		{
-		LOGDLN(x.first);
-		}
+			LOGDLN(x.first);
+		}*/
 
 
 
@@ -284,7 +344,8 @@ namespace tao {
 
 		LOG_ENTER();
 		LOGDLN( "Done: ", (_Tables_it==(*_db).TableNames.end()) );
-		if(_Tables_it==(*_db).TableNames.end())
+
+		if(_Tables_it==(*_db).TableNames.end()  || _IsRecordLimitReached)
 			return true;
 		else
 			return false;
@@ -347,10 +408,11 @@ namespace tao {
 		// Cache the local dictionary.
 
 		_sqlquery=_dict.get<string>( "query" );
-		//_language=_dict.get<string>( "language", "sql" );
+		_OutputLimit=_dict.get<long>( "limit", -1 );
 
 
 		LOGDLN( "sqlQuery: ", _sqlquery );
+		LOGDLN( "outputRecord Limit: ", _OutputLimit );
 		//LOGDLN( "query Language: ", _language );
 
 

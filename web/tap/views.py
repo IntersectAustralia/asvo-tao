@@ -10,6 +10,7 @@ from django.core.exceptions import PermissionDenied
 from django.core.servers.basehttp import FileWrapper
 from tao.time import timestamp
 from tao import models
+from tao.settings import INITIAL_JOB_STATUS
 
 def tap(request):
     
