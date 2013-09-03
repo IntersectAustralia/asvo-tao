@@ -22,17 +22,11 @@ namespace tao {
       void
       set_db_timer( profile::timer* timer );
 
-      void
-      timer_start();
+      profile::timer::handle
+      timer_start( profile::timer::handle::stop_type stop = profile::timer::handle::NORMAL );
 
-      void
-      timer_stop();
-
-      void
-      db_timer_start();
-
-      void
-      db_timer_stop();
+      profile::timer::handle
+      db_timer_start( profile::timer::handle::stop_type stop = profile::timer::handle::NORMAL );
 
       double
       time() const;
@@ -42,11 +36,13 @@ namespace tao {
 
    protected:
 
-      void
-      _timer_start( profile::timer* timer );
+      profile::timer::handle
+      _timer_start( profile::timer* timer,
+                    profile::timer::handle::stop_type stop );
 
-      void
-      _timer_stop( profile::timer* timer );
+      profile::timer::handle
+      _db_timer_start( profile::timer* timer,
+                       profile::timer::handle::stop_type stop );
 
    protected:
 

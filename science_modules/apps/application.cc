@@ -81,7 +81,7 @@ namespace tao {
       _setup_log( xml.get<string>( "logdir" ) + "tao.log."+ subjobindex);
 
       // Initialise all the modules.
-      for( auto module : _factory )
+      for( auto module : _fact )
          module->initialise( xml );
 
       // Mark the beginning of the run.
@@ -93,7 +93,7 @@ namespace tao {
       _execute();
 
       // Finalise all the modules.
-      for( auto module : _factory )
+      for( auto module : _fact )
          module->finalise();
 
       // Mark the conclusion of the run.
@@ -104,7 +104,7 @@ namespace tao {
 
       // Dump timing information to the end of the info file.
       LOGILN( "Module metrics:", setindent( 2 ) );
-      for( auto module : _factory )
+      for( auto module : _fact )
          module->log_metrics();
    }
 
@@ -117,7 +117,7 @@ namespace tao {
       LOGILN( "Loading modules from file: ", _xml_file, setindent( 2 ) );
 
       // Register all the available science modules.
-      tao::register_modules( _factory );
+      tao::register_modules( _fact );
 
       // Open the primary XML file using pugixml.
       if( _currentxml_version != "1.0" )
@@ -135,11 +135,11 @@ namespace tao {
          LOGILN( "Loading ", type, " module with name \"", name, "\"." );
 #ifdef PREPROCESSING
          if (type=="light-cone")
-            _factory.create_module( type, name, cur );
+            _fact.create_module( type, name, cur );
          else
             LOGILN( " Pre-Processing mode : Ignore Loading Module : ",type);
 #else
-         _factory.create_module( type, name, cur );
+         _fact.create_module( type, name, cur );
 #endif
 
       }
@@ -156,13 +156,13 @@ namespace tao {
       LOG_ENTER();
 
       // Connect 'em all up!
-      for( auto module : _factory )
+      for( auto module : _fact )
       {
 	 auto nodes = module->local_xml_node().select_nodes( "parents/item" );
 	 for( const xpath_node* it = nodes.begin(); it != nodes.end(); ++it )
 	 {
 	    string name = it->node().first_child().value();
-	    module->add_parent( *_factory[name] );
+	    module->add_parent( *_fact[name] );
 	 }
       }
 
@@ -352,7 +352,7 @@ namespace tao {
          complete = true;
 
          // Loop over the modules.
-         for( auto module : _factory )
+         for( auto module : _fact )
          {
             module->process( it );
             if( !module->complete() )

@@ -99,7 +99,7 @@ namespace tao {
                       const string& table_name,
                       unsigned long long tree_id )
       {
-         timer_start();
+         auto timer = timer_start();
 
          // We only want to reload if this isn't the same tree.
          if( _cur_tree_id != tree_id )
@@ -111,10 +111,11 @@ namespace tao {
 
             // Extract number of records in this tree.
             unsigned tree_size;
-            db_timer_start();
-	    sql << "SELECT galaxycount FROM treesummary WHERE globaltreeid=:id",
-               soci::into( tree_size ), soci::use( tree_id );
-            db_timer_stop();
+            {
+               auto db_timer = db_timer_start();
+               sql << "SELECT galaxycount FROM treesummary WHERE globaltreeid=:id",
+                  soci::into( tree_size ), soci::use( tree_id );
+            }
             LOGILN( "Tree size: ", tree_size );
 
             // If the tree size is greater than the threshold we should use a cumulative
@@ -140,13 +141,14 @@ namespace tao {
                   "sfr, sfrbulge, snapnum FROM  " + table_name +
                   " WHERE globaltreeid = :id"
                   " ORDER BY localgalaxyid";
-               db_timer_start();
-               sql << query, soci::into( (std::vector<int>&)_descs ),
-                  soci::into( (std::vector<double>&)_metals ), soci::into( (std::vector<double>&)_cold_gas ),
-                  soci::into( (std::vector<double>&)_sfrs ), soci::into( (std::vector<double>&)_bulge_sfrs ),
-                  soci::into( (std::vector<int>&)_snaps ),
-                  soci::use( tree_id );
-               db_timer_stop();
+               {
+                  auto db_timer = db_timer_start();
+                  sql << query, soci::into( (std::vector<int>&)_descs ),
+                     soci::into( (std::vector<double>&)_metals ), soci::into( (std::vector<double>&)_cold_gas ),
+                     soci::into( (std::vector<double>&)_sfrs ), soci::into( (std::vector<double>&)_bulge_sfrs ),
+                     soci::into( (std::vector<int>&)_snaps ),
+                     soci::use( tree_id );
+               }
                LOGTLN( "Descendant: ", _descs );
                LOGTLN( "Star formation rates: ", _sfrs );
                LOGTLN( "Bulge star formation rates: ", _bulge_sfrs );
@@ -164,7 +166,6 @@ namespace tao {
 
             LOGILN( "Done.", setindent( -2 ) );
          }
-         timer_stop();
       }
 
       template< class U >
@@ -374,21 +375,23 @@ namespace tao {
          // Must query the database to get parents.
          string query = str( format( "SELECT localgalaxyid, sfr, sfrbulge, coldgas, metalscoldgas, snapnum "
                                      "FROM %1% WHERE descendant=%2% AND globaltreeid=%3%" ) % _cur_table % id % _cur_tree_id );
-         db_timer_start();
+         // auto db_timer = db_timer_start();
          soci::rowset<soci::row> rs = sql.prepare << query;
-         db_timer_stop();
 
          // Now process each parent directly.
          for( soci::rowset<soci::row>::const_iterator it = rs.begin(); it != rs.end(); ++it )
          {
-            db_timer_start();
-            int pid = it->get<int>( 0 );
-            double psfr = it->get<double>( 1 );
-            double pbulge_sfr = it->get<double>( 2 );
-            double pcold_gas = it->get<double>( 3 );
-            double pmetal = it->get<double>( 4 );
-            unsigned psnap = it->get<int>( 5 );
-            db_timer_stop();
+            int pid;
+            double psfr, pbulge_sfr, pcold_gas, pmetal, psnap;
+            {
+               auto db_timer = db_timer_start();
+               pid = it->get<int>( 0 );
+               psfr = it->get<double>( 1 );
+               pbulge_sfr = it->get<double>( 2 );
+               pcold_gas = it->get<double>( 3 );
+               pmetal = it->get<double>( 4 );
+               psnap = it->get<int>( 5 );
+            }
             _rebin_recurse<U>( sql, pid, psfr, pbulge_sfr, pcold_gas, pmetal, psnap,
                                oldest_age, age_masses, bulge_age_masses, age_metals );
          }

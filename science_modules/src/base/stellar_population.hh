@@ -1,6 +1,7 @@
 #ifndef tao_base_stellar_population_hh
 #define tao_base_stellar_population_hh
 
+#include <boost/filesystem.hpp>
 #include "timed.hh"
 #include "age_line.hh"
 #include "types.hh"
@@ -9,6 +10,7 @@
 class stellar_population_suite;
 
 namespace tao {
+   namespace fs = boost::filesystem;
    using namespace hpc;
 
    ///
@@ -33,8 +35,10 @@ namespace tao {
       set_spectra( vector<real_type>& spectra );
 
       void
-      load( const string& wave_filename,
-            const string& ssp_filename );
+      load( const fs::path& ages_filename,
+            const fs::path& waves_filename,
+            const fs::path& metals_filename,
+            const fs::path& ssp_filename );
 
       real_type
       at( unsigned age_idx,
@@ -72,7 +76,7 @@ namespace tao {
             unsigned metal_idx = _interp_metal( *metals_start );
 
             // Calculate the base index for the ssp table.
-            size_t base = ii*_waves.size()*_num_metals + metal_idx;
+            size_t base = ii*_waves.size()*_metal_bins.size() + metal_idx;
 
             // Sum each spectra into the sed bin.
             OutputIterator sed_it = sed_start;
@@ -82,7 +86,7 @@ namespace tao {
                // solar masses/1e10. The values in SSP are luminosity densities
                // in erg/s/angstrom, and they're really big. Scale them down
                // by 1e10 to make it more manageable.
-               *sed_it += _spec[base + ii*_num_metals]*mass;
+               *sed_it += _spec[base + ii*_metal_bins.size()]*mass;
                ++sed_it;
             }
 
@@ -98,16 +102,22 @@ namespace tao {
       _interp_metal( real_type metal ) const;
 
       void
-      _load_waves( const string& filename );
+      _load_metals( const fs::path& filename );
 
       void
-      _load_ssp( const string& filename );
+      _load_ages( const fs::path& filename );
+
+      void
+      _load_waves( const fs::path& filename );
+
+      void
+      _load_ssp( const fs::path& filename );
 
    protected:
 
-      unsigned _num_metals;
       vector<real_type> _waves;
       vector<real_type> _spec;
+      vector<real_type> _metal_bins;
       age_line<real_type> _age_bins;
    };
 

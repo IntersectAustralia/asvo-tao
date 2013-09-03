@@ -1,6 +1,7 @@
 #ifndef tao_base_utils_hh
 #define tao_base_utils_hh
 
+#include <boost/filesystem.hpp>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_integration.h>
 
@@ -67,6 +68,9 @@ namespace tao {
 
       return res;
    }
+
+   boost::filesystem::path
+   data_prefix();
 
 }
 

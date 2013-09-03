@@ -26,7 +26,8 @@ test_case<xml_fixture> ANON(
    {
       options::xml_dict dict = xml.make_lightcone_dict();
       lightcone_type lc( "light-cone", dict.get_node( "/tao/workflow/light-cone" ).node() );
-      lc.initialise( dict, &xml.db.be );
+      lc.set_backend( &xml.db.be );
+      lc.initialise( dict );
       TEST( lc.geometry() == lightcone_type::CONE );
       TEST( lc.tile_repetition_random() == false );
       TEST( lc.random_seed() == 0.0 );
@@ -46,7 +47,8 @@ test_case<xml_fixture> ANON(
    {
       options::xml_dict dict = xml.make_box_dict();
       lightcone_type lc( "light-cone", dict.get_node( "/tao/workflow/light-cone" ).node() );
-      lc.initialise( dict, &xml.db.be );
+      lc.set_backend( &xml.db.be );
+      lc.initialise( dict );
       TEST( lc.geometry() == lightcone_type::BOX );
       TEST( lc.random_seed() == 0 );
       TEST( lc.box_size() == 10.0 );
@@ -61,7 +63,8 @@ test_case<xml_fixture> ANON(
    {
      options::xml_dict dict = xml.make_lightcone_dict( "unique", 0, 0.0, 0.001, 0.0, 89.0, 0.0, 89.0 );
       lightcone_type lc( "light-cone", dict.get_node( "/tao/workflow/light-cone" ).node() );
-      lc.initialise( dict, &xml.db.be );
+      lc.set_backend( &xml.db.be );
+      lc.initialise( dict );
 
       int ii = 1;
       while( !lc.complete() )

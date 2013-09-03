@@ -69,7 +69,7 @@ namespace tao {
       void
       set_ages( vector<real_type>& ages )
       {
-         timer_start();
+         auto timer = timer_start();
          LOGTLN( "Setting ages on age line.", setindent( 2 ) );
 
          // Clear existing values.
@@ -93,7 +93,6 @@ namespace tao {
          }
 
          LOGT( setindent( -2 ) );
-         timer_stop();
       }
 
       ///
@@ -106,7 +105,7 @@ namespace tao {
                  real_type omega_m = 0.25,
                  real_type omega_l = 0.75 )
       {
-         timer_start();
+         auto timer = timer_start();
          LOGDLN( "Loading ages from database.", setindent( 2 ) );
 
          // Clear existing values.
@@ -114,19 +113,21 @@ namespace tao {
 
          // Find number of snapshots and resize the containers.
          unsigned num_snaps;
-         db_timer_start();
-         sql << "SELECT COUNT(*) FROM snap_redshift", soci::into( num_snaps );
-         db_timer_stop();
+         {
+            auto db_timer = db_timer_start();
+            sql << "SELECT COUNT(*) FROM snap_redshift", soci::into( num_snaps );
+         }
          LOGDLN( "Number of snapshots: ", num_snaps );
 
          // Need space to store the snapshots.
          _ages.reallocate( num_snaps );
 
          // Read meta data.
-         db_timer_start();
-         sql << "SELECT redshift FROM snap_redshift ORDER BY snapnum",
-            soci::into( (std::vector<real_type>&)_ages );
-         db_timer_stop();
+         {
+            auto db_timer = db_timer_start();
+            sql << "SELECT redshift FROM snap_redshift ORDER BY snapnum",
+               soci::into( (std::vector<real_type>&)_ages );
+         }
          LOGTLN( "Redshifts: ", _ages );
 
          // Convert to ages.
@@ -138,7 +139,6 @@ namespace tao {
          _calc_dual();
 
          LOGD( setindent( -2 ) );
-         timer_stop();
       }
 
       unsigned
