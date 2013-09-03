@@ -852,6 +852,10 @@ jQuery(document).ready(function ($) {
         catalogue.modules[form].id;
     }
 
+    function manual_modal(message) {
+        $('#modal_message_text').val(message);
+    }
+
     function initialise_modules() {
     	var init_params = {
     			'job' : TaoJob
@@ -888,10 +892,19 @@ jQuery(document).ready(function ($) {
 
     (function () {
         catalogue.util = new catalogue.util($);
-        initialise_modules();
-        ko.applyBindings(catalogue.vm);
-        catalogue.vm.modal_message(null);
-        catalogue._loaded = true;
+        try {
+            initialise_modules();
+            ko.applyBindings(catalogue.vm);
+            catalogue.vm.modal_message(null);
+            catalogue._loaded = true;
+        } catch(e) {
+            var stack = e.stack.replace(/^[^\(]+?[\n$]/gm, '')
+                  .replace(/^\s+at\s+/gm, '')
+                  .replace(/^Object.<anonymous>\s*\(/gm, '{anonymous}()@')
+                  .split('\n');
+            for(var i = 0; i < stack.length; i++) console.log(stack[i]);
+            manual_modal('Fatal error initialising the UI, please contact support');
+        }
     })();
 
 });
