@@ -22,11 +22,7 @@
             <input id="presets_button" type="button" value="Survey Preset" class="btn" />
             <br />
             <br />
-            <select id="survey_presets" name="survey_presets" size="4" style="display: none;">
-                <option>Test</option>
-                <option>Test</option>
-                <option>Test</option>
-                <option>Test</option>
+            <select id="survey_presets" name="survey_presets" data-bind="options: survey_presets, optionsText: 'name', value: selected_preset, attr: {size: survey_presets().length}" style="display: none;">
             </select>
         </div>
         
