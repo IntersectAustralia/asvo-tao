@@ -90,7 +90,7 @@
         </div>
         </fieldset>
     </form>
-    <div data-bind="visible: modal_message() != null">
+    <div id="modal_message_container" data-bind="visible: modal_message() != null">
             <div id="modal_message"></div>
             <textarea readonly id="modal_message_text" data-bind="value: modal_message">Loading...</textarea>
     </div>
