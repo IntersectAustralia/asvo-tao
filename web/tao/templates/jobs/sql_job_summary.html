@@ -28,17 +28,17 @@
         <tr>
             <td>Selected Properties</td>
             <td data-bind='toggler: true'>
-                <span class="output_properties" data-bind="text: output_properties().length + ' properties selected'"><!-- --></span>
+                <span class="output_properties" data-bind="text: sql_output_properties().length + ' properties selected'"><!-- --></span>
                 <a id="expand_output_properties" data-bind='text: toggler_text(), click: toggler_click' href="#"></a>
-                <div class="output_properties_list" data-bind="visible: toggler_visible, template: { name: 'summary_output_properties', data: output_properties_widget.to_side }"><!-- --></div>
+                <div class="output_properties_list" data-bind="visible: toggler_visible, template: { name: 'sql_summary_output_properties', data: sql_output_properties_data }"><!-- --></div>
             </td>
         </tr>
     </table>
 </div>
 
-<script type="text/html" id="summary_output_properties">
+<script type="text/html" id="sql_summary_output_properties">
         <ul data-bind="foreach: options">
-            <li><span data-bind="text: text"/> <i data-bind="text: units" style="font-size: small"></i></li>
+            <li><span data-bind="text: label"/> <i data-bind="text: units" style="font-size: small"></i></li>
         </ul>
 </script>
 

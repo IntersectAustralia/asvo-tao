@@ -18,7 +18,7 @@ def from_xml_2(cls, ui_holder, xml_root, prefix=None):
     simulation = datasets.simulation_from_xml(simulation_name)
     galaxy_model = datasets.galaxy_model_from_xml(galaxy_model_name)
     data_set = datasets.dataset_find_from_xml(simulation, galaxy_model)
-    output_properties = [dsp.id for dsp in SQLJobForm._map_elems(xml_root, data_set)]
+    output_properties = [dsp for dsp in SQLJobForm._map_elems(xml_root)]
     query = query.replace('-table-', data_set.database)
     simulation_id = None
     if simulation is not None: simulation_id = simulation.id
@@ -86,11 +86,11 @@ class SQLJobForm(BetterForm):
             return cls(ui_holder, {}, prefix=prefix)
         
     @classmethod
-    def _map_elems(cls, xml_root, data_set):
+    def _map_elems(cls, xml_root):
         for elem in module_xpath_iterate(xml_root, '//votable/fields/item', text=False):
             label = elem.get('label')
-            name = elem.text
-            data_set_property = datasets.data_set_property_from_xml(data_set, label, name)
-            if data_set_property is not None:
-                yield data_set_property
+            units = elem.get('units')
+            name  = elem.text
+            yield {'label': label, 'units': units, 'name': name}
+            
         
