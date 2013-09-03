@@ -2,6 +2,7 @@ from django.core.urlresolvers import reverse
 from django.utils.html import strip_tags
 
 from selenium.webdriver.firefox.webdriver import WebDriver
+from selenium.common.exceptions import NoSuchElementException
 
 import django.test
 
@@ -37,7 +38,7 @@ class LiveServerTest(django.test.LiveServerTestCase):
     ]
 
     def wait(self, secs=1):
-        time.sleep(secs * 1.25)
+        time.sleep(secs * 1.0)
 
     def setUp(self):
         self.output_formats = GlobalParameterFactory.create(parameter_name='output_formats', parameter_value=LiveServerTest.OUTPUT_FORMATS)
@@ -93,6 +94,9 @@ class LiveServerTest(django.test.LiveServerTestCase):
     def job_id(self, bare_field):
         return '#%s' % self.job_select(bare_field)
 
+    def mi_id(self, prefix, bare_field):
+        return 'id_mock_image-%s-%s' % (prefix, bare_field)
+
     def get_parent_element(self, element):
         return self.selenium.execute_script('return arguments[0].parentNode;', element)
 
@@ -120,6 +124,30 @@ class LiveServerTest(django.test.LiveServerTestCase):
     def get_info_field(self, section, field):
         elem = self.selenium.find_element_by_css_selector("div.%(section)s-info .%(field)s" % {'section': section, 'field': field})
         return elem.text
+
+    def find_element_by_css_selector(self, selector):
+        retries = 3
+        while retries > 0:
+            try:
+                elem = self.selenium.find_element_by_css_selector(selector)
+                return elem
+            except NoSuchElementException:
+                retries -= 1
+                self.wait(3)
+        # If it hasn't been found by now, try one more time and let the exception through
+        return self.selenium.find_element_by_css_selector(selector)
+
+    def find_element_by_id(self, elem_id):
+        retries = 3
+        while retries > 0:
+            try:
+                elem = self.selenium.find_element_by_id(elem_id)
+                return elem
+            except NoSuchElementException:
+                retries -= 1
+                self.wait(3)
+        # If it hasn't been found by now, try one more time and let the exception through
+        return self.selenium.find_element_by_id(elem_id)
 
     def assert_email_body_contains(self, email, text):
         pattern = re.escape(text)
@@ -199,6 +227,11 @@ class LiveServerTest(django.test.LiveServerTestCase):
     def assert_not_displayed(self, selector):
         field = self.selenium.find_element_by_css_selector(selector)
         self.assertFalse(field.is_displayed())
+
+    def assert_not_in_page(self, selector):
+        "Assert that the supplied selector is not part of the page content"
+        elements = self.selenium.find_elements_by_css_selector(selector)
+        self.assertTrue(len(elements) == 0)
         
     def assert_on_page(self, url_name, ignore_query_string=False):
         if not ignore_query_string:
@@ -238,7 +271,7 @@ class LiveServerTest(django.test.LiveServerTestCase):
         elem.clear()
 
     def click(self, elem_id):
-        elem = self.selenium.find_element_by_id(elem_id)
+        elem = self.find_element_by_id(elem_id)
         elem.click()
         self.wait(0.5)
 
@@ -268,8 +301,10 @@ class LiveServerTest(django.test.LiveServerTestCase):
         """ self.visit(name_of_url_as_defined_in_your_urlconf) """
         self.selenium.get(self.get_full_url(url_name, *args, **kwargs))
         if url_name in LiveServerTest.AJAX_WAIT:
-            self.wait(1)
-        
+            self.wait(2)
+            self.assertTrue(self.selenium.execute_script('return (window.catalogue !== undefined ? catalogue._loaded : true)'),
+                            'catalogue.js loading error')
+
     def get_actual_filter_options(self):
         option_selector = '%s option' % self.rf_id('filter')
         return [x.get_attribute('value').encode('ascii') for x in self.selenium.find_elements_by_css_selector(option_selector)]

@@ -62,7 +62,7 @@ class TwoSidedSelectWidget(SelectMultiple):
     def render(self, name, value, attrs=None, choices=()):
         if value is None: value = []
         if 'ko_data' in self.attrs:
-            data_bind = "template: {name: 'two_sided_select_widget', data: %(ko_data)s}" % self.attrs
+            data_bind = "error_check: %(value)s, template: {name: 'two_sided_select_widget', data: %(widget)s}" % self.attrs['ko_data']
             del self.attrs['ko_data']
             attrs['data-bind'] = data_bind
         final_attrs = self.build_attrs(attrs, id=name)

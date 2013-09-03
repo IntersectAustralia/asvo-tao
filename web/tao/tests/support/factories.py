@@ -58,8 +58,14 @@ class DataSetPropertyFactory(factory.Factory):
 class StellarModelFactory(factory.Factory):
     FACTORY_FOR = StellarModel
     label = factory.Sequence(lambda n: 'stellar_label_%03d' % int(n))
-    name = factory.Sequence(lambda n: 'stellar_name_%03d' % int(n))
+    name = factory.Sequence(lambda n: 'model{n}/sspm.dat'.format(n=n))
     description = factory.Sequence(lambda n: '<p>Description ' + n + '</p>')
+    encoding = factory.Sequence(lambda n: """
+<single-stellar-population-model>model{n}/sspm.dat</single-stellar-population-model>
+<wavelengths-file>model{n}/wavelengths.dat</wavelengths-file>
+<ages-file>model{n}/ages.dat</ages-file>
+<metallicities-file>model{n}/metallicites.dat</metallicities-file>
+""".format(n=n))
 
 class SnapshotFactory(factory.Factory):
     FACTORY_FOR = Snapshot

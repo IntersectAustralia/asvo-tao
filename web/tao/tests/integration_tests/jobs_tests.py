@@ -421,3 +421,27 @@ class JobTest(LiveServerTest):
 
         for button in enabler['disabled']:
             self.assert_is_disabled(self.job_id(button))
+
+    def test_job_status_is_error(self):
+        self.login(self.username, self.password)
+        self.visit('view_job', id=self.completed_job.id)
+        self.assert_page_does_not_contain('ERROR')
+        self.assert_not_in_page('#id-job_error_enquiry')
+        self.visit('view_job', id=self.error_job.id)
+        self.assert_page_has_content('ERROR')
+        self.assert_is_displayed('#id-job_error_enquiry')
+        self.click('id-job_error_support')
+        self.assert_on_page('support_page')
+
+    def test_refresh_disk_usage(self):
+        self.login(self.username, self.password)
+        self.visit('view_job', self.completed_job.id)
+        # self.assert_page_has_content('<strong>Disk Usage:</strong> 854.0B')
+        self.assert_element_text_equals('#id_disk_usage', self.completed_job.display_disk_size())
+
+        file_content = 'abc' * 2000000
+        helper.create_file(os.path.join(settings.FILES_BASE, self.output_paths[0]), 'file_name', {'file_name': file_content})
+        self.completed_job.save()
+        self.click('id_refresh_disk_usage')
+        self.wait()
+        self.assert_element_text_equals('#id_disk_usage', self.completed_job.display_disk_size())

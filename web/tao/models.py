@@ -13,10 +13,22 @@ from datetime import datetime
 
 import os
 
+
+def format_human_readable_file_size(file_size):
+    size = file_size
+    units = ['B', 'kB', 'MB']
+    for x in units:
+        if size < 1000:
+            return '%3d%s' % (size, x)
+        size /= 1000
+    return '%3.1f%s' % (size, 'GB')
+
+
 class UserManager(auth_models.UserManager):
     def admin_emails(self):
         return [x[0] for x in TaoUser.objects.filter(is_active=True, is_staff=True).values_list('email')]
-    
+
+
 class TaoUser(auth_models.AbstractUser):
     RS_NA = 'NA'
     RS_EMPTY = 'EMP'
@@ -34,6 +46,7 @@ class TaoUser(auth_models.AbstractUser):
     account_registration_status = models.CharField(max_length=3, blank=False, default=RS_NA)
     account_registration_reason = models.TextField(null=True, blank=True, default='')
     account_registration_date = models.DateTimeField(null=True)
+    disk_quota = models.IntegerField(null=True, blank=True, default=0)
 
     def display_name(self):
         if self.aaf_shared_token is not None and len(self.aaf_shared_token)>0:
@@ -48,7 +61,7 @@ class TaoUser(auth_models.AbstractUser):
             TaoUser.RS_PENDING: 'Pending approval',
             TaoUser.RS_APPROVED: 'Account approved',
             TaoUser.RS_REJECTED: 'Registration rejected',
-            }
+        }
         return messages[self.account_registration_status]
 
     def is_aaf(self):
@@ -74,6 +87,38 @@ class TaoUser(auth_models.AbstractUser):
     def __unicode__(self):
         return "(%d) %s, %s, active:%r" % (self.id, self.username, self.account_registration_status, self.is_active)
 
+    def user_disk_quota(self):
+        if self.disk_quota is None or self.disk_quota == 0:
+            try:
+                obj = GlobalParameter.objects.get(parameter_name='default_disk_quota')
+                return float(obj.parameter_value)
+            except (GlobalParameter.DoesNotExist, ValueError):
+                return -1
+        return self.disk_quota  # in MB
+
+    def display_user_disk_quota(self):
+        return format_human_readable_file_size(float(self.user_disk_quota()) * 1000**2)
+
+    def get_current_disk_usage(self):
+        user_jobs = Job.objects.filter(user=self)
+        current_disk_usage = 0
+        for job in user_jobs:
+            if job.is_completed():
+                current_disk_usage += job.disk_size() # disk size in B
+
+        return current_disk_usage
+
+    def display_current_disk_usage(self):
+        return format_human_readable_file_size(self.get_current_disk_usage())  # input file size in B
+
+    def check_disk_usage_within_quota(self):
+        user_quota = float(self.user_disk_quota())
+        if user_quota == -1:  # user has unlimited disk quota
+            return True
+        else:
+            disk_usage_in_MB = self.get_current_disk_usage() / 1000.0**2
+            return disk_usage_in_MB <= user_quota
+
 class Simulation(models.Model):        
 
     name = models.CharField(max_length=100, unique=True)
@@ -86,7 +131,7 @@ class Simulation(models.Model):
         return self.name
     
     class Meta:
-        ordering = ['order', 'name']
+        ordering = ['name', 'order']
 
     def save(self, *args, **kwargs):
         if self.name:
@@ -143,6 +188,7 @@ class DataSet(models.Model):
     
     class Meta:
         unique_together = ('simulation', 'galaxy_model')
+        ordering = ['id']
 
     def __unicode__(self):
         return "%s : %s" % (self.simulation.name, self.galaxy_model.name)
@@ -152,6 +198,8 @@ class DataSetProperty(models.Model):
     TYPE_FLOAT = 1
     TYPE_LONG_LONG = 2
     TYPE_STRING = 3
+    TYPE_DOUBLE = 4
+    TYPE_LONG = 5
     # Note: The values listed below are used by the import code,
     # and thus must match.
     DATA_TYPES = (
@@ -159,6 +207,8 @@ class DataSetProperty(models.Model):
                   (TYPE_FLOAT, 'float'),
                   (TYPE_LONG_LONG, 'long long'),
                   (TYPE_STRING, 'string'),
+                  (TYPE_DOUBLE, 'double'),
+                  (TYPE_LONG, 'long'),
                   )
     name = models.CharField(max_length=200)
     units = models.CharField(max_length=20, default='', blank=True)
@@ -171,12 +221,15 @@ class DataSetProperty(models.Model):
     description = models.TextField(default='', blank=True)
     group = models.CharField(max_length=80, default='', blank=True)
     order = models.IntegerField(default=0)
+    is_index = models.BooleanField(default=False)
+    is_primary = models.BooleanField(default=False)
+    flags = models.IntegerField(default=3)  # property bit flags: 0-th bit sets light-cone, 1-th bit sets box
 
     class Meta:
         ordering = ['group', 'order', 'label']
 
     def __unicode__(self):
-        return self.label
+        return u"{0} in {1}".format(self.label, self.dataset.__unicode__())
 
     def option_label(self):
         if (self.units is not None and self.units != ''):
@@ -189,7 +242,7 @@ class DataSetProperty(models.Model):
         for dtype in cls.DATA_TYPES:
             if dtype[1] == val:
                 return dtype[0]
-        raise ValueError('Unknown data type')
+        raise ValueError('Unknown data type: {0}'.format(val))
 
 
 class Snapshot(models.Model):
@@ -203,9 +256,13 @@ class StellarModel(models.Model):
     name = models.CharField(max_length=200, unique=True)
     label = models.CharField(max_length=200, unique=True)
     description = models.TextField(default='')
+    # The name is no longer used to generate the params xml,
+    # simply insert the xml fragment in encoding
+    encoding = models.TextField(default='')
 
     def __unicode__(self):
         return self.name
+
 
 def initial_job_status():
     try:
@@ -250,6 +307,8 @@ class Job(models.Model):
     output_path = models.TextField(blank=True)  # without a trailing slash, please
     database = models.CharField(max_length=200)
     error_message = models.TextField(blank=True, max_length=1000000, default='')
+    disk_usage = models.IntegerField(null=True, blank=True, default=-1)
+
 
     def __init__(self, *args, **kwargs):
         super(Job, self).__init__(*args, **kwargs)
@@ -269,14 +328,34 @@ class Job(models.Model):
     def short_error_message(self):
         return self.error_message[:80]
 
+    def recalculate_disk_usage(self):
+        sum_file_sizes = 0
+        for f in self.files():
+            sum_file_sizes += f.get_file_size_in_B()
+        self.disk_usage = sum_file_sizes
+        return self.disk_usage
+
+    def disk_size(self):
+        if not self.is_completed():
+            return 0
+
+        if self.disk_usage is not None and self.disk_usage > 0:
+            return self.disk_usage
+        else:
+            return self.recalculate_disk_usage()
+
+    def display_disk_size(self):
+        return format_human_readable_file_size(self.disk_size())  # input file size in B
+
     def files(self):
         if not self.is_completed():
             raise Exception("can't look at files of job that is not completed")
-        
+
         all_files = []
         job_base_dir = os.path.join(settings.FILES_BASE, self.output_path)
         for root, dirs, files in os.walk(job_base_dir):
             all_files += [JobFile(job_base_dir, os.path.join(root, filename)) for filename in files]
+
         return sorted(all_files, key=lambda job_file: job_file.file_name)
 
     def files_tree(self):
@@ -315,7 +394,21 @@ class Job(models.Model):
         super(Job, self).save(*args, **kwargs)
         if self.var_cache['status'] != getattr(self, 'status') and getattr(self, 'status') == Job.COMPLETED:
             send_mail('job-status', {'job': self, 'user': self.user}, 'Job status update', (self.user.email,))
-    
+
+    def status_help_text(self):
+        last_command = WorkflowCommand.objects.filter(job_id=self).latest('issued')
+        if last_command is None:
+            return ''
+        elif last_command.command == WorkflowCommand.JOB_OUTPUT_DELETE:
+            return '(catalogue is being deleted)'
+        elif last_command.command == WorkflowCommand.JOB_STOP:
+            return '(catalogue generation is being terminated)'
+
+    def has_wf_commands_in_progress(self):
+        commands_in_progress = WorkflowCommand.objects.filter(job_id=self).exclude(execution_status=COMPLETED).exclude(execution_status=ERROR)
+        return commands_in_progress
+
+
 class JobFile(object):
     def __init__(self, job_dir, file_name):
         self.file_name = file_name[len(job_dir)+1:]
@@ -326,13 +419,10 @@ class JobFile(object):
         return True
 
     def get_file_size(self):
-        size = self.file_size
-        units = ['B', 'kB', 'MB']
-        for x in units:
-            if size < 1000:
-                return '%3.1f%s' % (size, x)
-            size /= 1000
-        return '%3.1f%s' % (size, 'GB')
+        return format_human_readable_file_size(self.file_size)
+
+    def get_file_size_in_B(self):
+        return self.file_size
 
 class BandPassFilter(models.Model):
     label = models.CharField(max_length=80) # displays the user-friendly file name for the filter, without file extension
@@ -386,6 +476,20 @@ class WorkflowCommand(models.Model):
 
     def submittedby(self):
         return self.submitted_by.pk
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        if self.execution_status in [COMPLETED, ERROR]:
+            prev = WorkflowCommand.objects.get(pk=self.id)
+            if self.execution_status != prev.execution_status:
+                self.executed = datetime.now()
+                if self.command == self.JOB_OUTPUT_DELETE:
+                    job_id = self.job_id.pk
+                    self.job_id = None
+                    Job.objects.get(id=job_id).delete()
+                    self.execution_comment += 'Job %(job_id)s successfully deleted.' % locals()
+        super(WorkflowCommand, self).save(force_insert=force_insert, force_update=force_update, using=using,
+                                          update_fields=update_fields)
 
 class GlobalParameter(models.Model):
     parameter_name = models.CharField(max_length=60, unique=True)

@@ -6,7 +6,7 @@ tao.urls
 Django's URL mapping definition
 """
 from django.conf.urls import patterns, url, include
-from django.contrib.auth.views import logout, password_reset, password_reset_done, password_change, password_change_done
+from django.contrib.auth.views import logout, password_reset, password_reset_done, password_change_done
 from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import render
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
@@ -15,6 +15,7 @@ from django.contrib import admin
 from tastypie.api import Api
 from tao.api.resources import WorkflowCommandResource, JobResource, TaoUserResource, WFJobResource
 from tao.forms import PasswordResetForm
+from tao.views import password_change
 
 admin.autodiscover()
 
@@ -50,6 +51,7 @@ job_patterns = patterns('tao.views.jobs',
     url(r'^rerun_job/(?P<id>\d+)$', 'rerun_job', name='rerun_job'),
     url(r'^release_job/(?P<id>\d+)$', 'release_job', name='release_job'),
     url(r'^delete_job_output/(?P<id>\d+)$', 'delete_job_output', name='delete_job_output'),
+    url(r'^refresh_disk_usage/(?P<id>\d+)$', 'refresh_disk_usage', name='refresh_disk_usage'),
 )
 
 json_patterns = patterns('tao.json.views',
@@ -90,12 +92,14 @@ urlpatterns = patterns('',
     url(r'^assets/(?P<path>.+)$', 'tao.assets.asset_handler', name='asset'),
 
     url(r'^accounts/password/reset/$', password_reset,
-        {'post_reset_redirect': '/accounts/password/reset/done/', 'password_reset_form': PasswordResetForm},
+        {'post_reset_redirect': reverse_lazy('password_reset_done'), 'password_reset_form': PasswordResetForm},
         name="password_reset"),
     url(r'^accounts/password/reset/done/$', password_reset_done, name='password_reset_done'),
-    url(r'^accounts/password/change/$', password_change, {'post_change_redirect': '/accounts/password/change/done/'},
+    url(r'^accounts/password/change/$', password_change, {'post_change_redirect': reverse_lazy('password_change_done')},
         name='password_change'),
-    (r'^accounts/password/change/done/$', password_change_done),
+    url(r'^accounts/password/change/done/$', password_change_done, name='password_change_done'),
+
+    ('^tap/', include('tap.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),

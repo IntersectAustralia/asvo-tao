@@ -14,6 +14,7 @@
 
 {% block content %}
     <h1>History</h1>
+    <p><strong>Total disk usage:</strong> <span id="id_current_disk_usage">{{ user.display_current_disk_usage }}</span></p>
     <div>
         <table id="jobs_table" class="table table-bordered table-striped">
             <thead>
@@ -21,7 +22,8 @@
                     <th>Id</th>
                     <th>Submitted Timestamp</th>
                     <th>Description</th>
-                    <th>Status/Error Message</th>
+                    <th>Status</th>
+                    <th>Disk Usage</th>
                 </tr>
             </thead>
             <tbody>
@@ -37,13 +39,10 @@
                             {{ job.description|linebreaks }}
                         </td>
                         <td>
-                            {{ job.status }}
-                            {%  if job.is_error %}
-                                <button class="openPopUp" id="popUp">?</button>
-                                <div class="popUpDialogue" title="Error Message for Job {{ job.id }}" style="display: none;">
-                                    <p>{{ job.short_error_message }}</p>
-                                </div>
-                            {% endif %}
+                            {{ job.status }} {{ job.status_help_text }}
+                        </td>
+                        <td>
+                            {{ job.display_disk_size }}
                         </td>
                     </tr>
                 {% endfor %}

@@ -18,7 +18,7 @@ import LogReader
 import emailreport
 import glob
 import pg
-import stat
+import stat,sys
 import ParseProfileData
 import traceback
 
@@ -116,7 +116,9 @@ class WorkFlow(object):
             ParamXMLName="params"+str(i)+".xml"       
             ############################################################
             ### Submit the Job to the PBS Queue
-            PBSJobID=self.TorqueObj.Submit(JobUserName,JobID,logpath,outputpath,ParamXMLName,i)
+            IsSquentialJob=self.ParseXMLParametersObj.IsSquentialJob()
+            
+            PBSJobID=self.TorqueObj.Submit(UIJobReference,JobUserName,JobID,logpath,outputpath,ParamXMLName,i,IsSquentialJob)
             ## Store the Job PBS ID  
             if self.dbaseobj.UpdateJob_PBSID(JobID,PBSJobID)!=True:
                 raise  Exception('Error in Process New Job','Update PBSID failed')
@@ -155,26 +157,34 @@ class WorkFlow(object):
         
         
         ## Parse the XML file to extract job Information and get if the job is complex or single lightcone
-        ParseXMLParametersObj=ParseXML.ParseXMLParameters(outputpath+'/params.xml',self.Options)
-        SubJobsCount=ParseXMLParametersObj.ParseFile(UIJobReference,JobDatabase,JobUserName)    
+        self.ParseXMLParametersObj=ParseXML.ParseXMLParameters(outputpath+'/params.xml',self.Options)
+        SubJobsCount=self.ParseXMLParametersObj.ParseFile(UIJobReference,JobDatabase,JobUserName)    
         
         ## Generate params?.xml files based on the requested jobscounts
-        ParseXMLParametersObj.ExportTrees(logpath+"/params<index>.xml")    
+        self.ParseXMLParametersObj.ExportTrees(logpath+"/params<index>.xml")    
         
-        
-        src_files = os.listdir(AudDataPath)
-        logging.info("AudDataPath:"+AudDataPath)
-        for file_name in src_files:
-            full_file_name = os.path.join(AudDataPath, file_name)
-            logging.info(full_file_name)
-            if (os.path.isfile(full_file_name)):
-                logging.info(full_file_name+"->"+logpath)
-                shutil.copy(full_file_name, logpath)
+        #self.CopyDirectoryContents(AudDataPath+"/stellar_populations",logpath)     
+        self.CopyDirectoryContents(AudDataPath+"/bandpass_filters",logpath,True)
+        self.CopyDirectoryContents(AudDataPath,logpath,False)
             
         return SubJobsCount   
         
     
-        
+    def CopyDirectoryContents(self,SrcPath,DstPath,CopySubDirs):
+        src_files = os.listdir(SrcPath)
+        logging.info("Copying File - Source Path:"+SrcPath)
+        logging.info("Copying File - Dest Path:"+DstPath)
+        for file_name in src_files:
+            full_file_name = os.path.join(SrcPath, file_name)
+            logging.info(full_file_name)
+            if (os.path.isfile(full_file_name)):
+                logging.info(full_file_name+"->"+DstPath)
+                shutil.copy(full_file_name, DstPath)
+            elif CopySubDirs==True:
+                DstSubFolder=os.path.join(DstPath,file_name)
+                logging.info("Content is a directory - Dest Path:"+DstSubFolder)
+                os.makedirs(DstSubFolder)
+                self.CopyDirectoryContents(full_file_name, DstSubFolder)    
         
                 
     def UpdateTAOUI(self,UIJobID,JobType,data):
@@ -382,7 +392,12 @@ class WorkFlow(object):
             else:
                 logging.info("Job Status Checking is not known!!")
 
+    
+
     def UpdateJob_EndSuccessfully(self, JobID,SubJobIndex, JobType, UIReference_ID, UserName, JobDetails):
+        
+        
+        
         
         data = {}  
         

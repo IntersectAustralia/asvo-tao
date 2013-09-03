@@ -25,6 +25,7 @@ catalogue.modules.view_job = function ($) {
     	// Manage visibility of the job description save / cancel buttons 
     	$("#inlineedit").click(function() {
     		$('#savecancel').show();
+            $('.overlay-item').hide();
     	});
         $('#stop_job_confirm').dialog({
             resizable: false,
@@ -38,7 +39,11 @@ catalogue.modules.view_job = function ($) {
                         $.ajax({
                             url: TAO_JOB_CTX + 'stop_job/' + TaoJob['job-id'],
                             type: 'POST',
+                            success: function(response, textStatus, jqXHR) {
+                                location.reload();
+                            },
                             error: function(response, textStatus, jqXHR) {
+                                console.log(response.responseText);
                                 console.log("Couldn't stop SUBMITTED job: " + response + textStatus);
                             }
                         });
@@ -93,12 +98,15 @@ catalogue.modules.view_job = function ($) {
             autoOpen: false,
             buttons: {
                 Ok: {
-                    text: "Remove all job output",
+                    text: "Delete",
                     id: "id_confirm_delete_output",
                     click: function() {
                         $.ajax({
                             url: TAO_JOB_CTX + 'delete_job_output/' + TaoJob['job-id'],
                             type: 'POST',
+                            success: function(response, textStatus, jqXHR) {
+                                location.reload();
+                            },
                             error: function(response, textStatus, jqXHR) {
                                 console.log("Couldn't create job_output_delete workflow command: " + response + textStatus);
                             }
@@ -168,8 +176,14 @@ catalogue.modules.view_job = function ($) {
         });
 
     	// Set up the auto-height handler for the job description textarea
-    	new TextareaHeight({textarea: $('#id-job_description')[0]});
+        $('#id-job_description').bind('keyup', function(){
+            var h = $(this)[0].scrollHeight - 8;
+            $(this).height( Math.min(h, 300) );
+        });
+    	// new TextareaHeight({textarea: $('#id-job_description')[0]});
     }
+
+    var original_height = $('#id-job_description')[0].scrollHeight;
 
     this.save_description = function(evt) {
     	// KO takes care of the core model (catalogue.vm.description),
@@ -181,7 +195,9 @@ catalogue.modules.view_job = function ($) {
 			type: 'POST',
 			data: {"job-description": catalogue.vm.description()},
 			success: function(response, textStatus, jqXHR) {
+                $('#id-job_description').height(original_height);
 				$('#savecancel').hide();
+                $('.overlay-item').show();
 			},
 			error: function(response, textStatus, jqXHR) {
 				// Save parameters for debugging purposes
@@ -197,7 +213,9 @@ catalogue.modules.view_job = function ($) {
 
     this.cancel_description = function(evt) {
     	catalogue.vm.description(vm.description_bak());
+        $('#id-job_description').height(original_height);
     	setTimeout("$('#savecancel').hide()", 100);
+        setTimeout("$('.overlay-item').show()", 100);
    	}
 
 }
