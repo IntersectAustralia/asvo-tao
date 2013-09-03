@@ -1,7 +1,7 @@
 
 var catalogue = catalogue || {};
 catalogue.modules = catalogue.modules || {};
-
+catalogue._loaded = false;
 
 ko.extenders.logger = function(target, option) {
     target.subscribe(function(newValue) {
@@ -10,6 +10,10 @@ ko.extenders.logger = function(target, option) {
     });
     return target;
 };
+
+var TAO_REQUIRED_NO = 'NOT-REQUIRED'; // value not required, no validation necessary
+var TAO_REQUIRED_ERROR = 'REQUIRED-ERROR'; // value required and not provided, error
+var TAO_REQUIRED_VALIDATE = 'REQUIRED-OK' // value required and provided, must be validated
 
 ko.extenders.required = function(target, option) {
 
@@ -22,15 +26,15 @@ ko.extenders.required = function(target, option) {
         : function() {return option};
 
     target.required = ko.computed(function(){
-        if (!check()) return 'OK';
+        if (!check()) return TAO_REQUIRED_NO;
         var v = target();
         if (v === undefined || v === null || v === '') {
-            return 'ERROR';
+            return TAO_REQUIRED_ERROR;
         }
         if (v.hasOwnProperty('length') && v.length == 0) {
-            return 'ERROR';
+            return TAO_REQUIRED_ERROR;
         }
-        return 'VALIDATE';
+        return TAO_REQUIRED_VALIDATE;
     });
 
     //return the original observable
@@ -107,7 +111,8 @@ catalogue.validators._gen_check_value = function(test, msg) {
 }
 // utility func
 catalogue.validators.defined = function(v) {
-    return !(v === undefined || v === null || v === '');
+    return !(v === undefined || v === null || v === ''
+        || (typeof v == 'object' && Object.keys(v).length == 0));
 }
 
 catalogue.validators._check_value = function(comp_op, v, ref_v, msg) {
@@ -297,10 +302,32 @@ catalogue.util = function ($) {
 
     	for (attr in vm) {
     		obj = vm[attr];
-    		if (obj.hasOwnProperty("error")) {
-    			is_valid &= !obj.error().error;
-    			if (!is_valid)
-    				break;
+    		if (obj.hasOwnProperty("error") || obj.hasOwnProperty('required')) {
+                var valid_field = true;
+                if (obj.hasOwnProperty('required')) {
+                    var req = obj.required();
+                } else {
+                    var v = obj();
+                    req = catalogue.validators.defined(v) ? TAO_REQUIRED_VALIDATE : TAO_REQUIRED_NO;
+                }
+                switch(req) {
+                    case TAO_REQUIRED_NO:
+                        break;
+                    case TAO_REQUIRED_ERROR:
+                        valid_field = false;
+                        break;
+                    default:
+                        var err = {error: false};
+                        if (obj.hasOwnProperty('error')) {
+                            err = obj.error();
+                        }
+                        valid_field = !err.error;
+                }
+                if (!valid_field) {
+                    console.log('error on: ' + attr);
+                    is_valid = false;
+                    break;
+                }
     		}
     	}
     	return is_valid;
@@ -414,7 +441,10 @@ catalogue.util = function ($) {
                 return [gen_dict(elem, 'apparent'), gen_dict(elem, 'absolute')]
             });
         }
-        return gen_pairs(TaoMetadata.BandPassFilter);
+        if (this.bandpass_filters._resp === undefined) {
+            this.bandpass_filters._resp = gen_pairs(TaoMetadata.BandPassFilter);
+        }
+        return this.bandpass_filters._resp;
     }
     
     this.bandpass_filter = function(filter_id) {
@@ -582,13 +612,14 @@ catalogue.util = function ($) {
 
 jQuery(document).ready(function ($) {
 
+    // error : dictionary as returned by computable in check_bind
     function error_check(element, error) {
         var $e = $(element);
         $e.closest('.control-group').removeClass('error');
         $e.popover('destroy');
         $e.closest('.control-group').find('span.required').removeClass('error');
         switch(error.status) {
-            case 'OK':
+            case 'NOT-REQUIRED':
                 break;
             case 'REQUIRED':
                 var $star = $e.closest('.control-group').find('span.required');
@@ -613,12 +644,12 @@ jQuery(document).ready(function ($) {
                     req = va.required();
                 } else {
                     var v = va();
-                    req = catalogue.validators.defined(v) ? 'VALIDATE' : 'OK';
+                    req = catalogue.validators.defined(v) ? TAO_REQUIRED_VALIDATE : TAO_REQUIRED_NO;
                 }
                 switch(req) {
-                    case 'OK':
-                        return {status: 'OK'};
-                    case 'ERROR':
+                    case TAO_REQUIRED_NO:
+                        return {status: 'NOT-REQUIRED'};
+                    case TAO_REQUIRED_ERROR:
                         return {status: 'REQUIRED'}
                     default:
                         var err = {error: false};
@@ -627,7 +658,7 @@ jQuery(document).ready(function ($) {
                         }
                         return err.error?
                             {status: 'INVALID', message: err.message}
-                            : {status: 'OK'};
+                            : {status: 'NOT-REQUIRED'};
                 }
             }).subscribe(function(resp){
                 error_check(element, resp);
@@ -766,6 +797,7 @@ jQuery(document).ready(function ($) {
             var $e = $(element);
             var $a = $('<a />');
             $a.attr('href','#tabs-' + valueAccessor().id);
+            $a.attr('id','tao-tabs-' + valueAccessor().id);
             $a.text(valueAccessor().label);
             var tab_def = {
                 'tab_element': $a,
@@ -859,6 +891,7 @@ jQuery(document).ready(function ($) {
         initialise_modules();
         ko.applyBindings(catalogue.vm);
         catalogue.vm.modal_message(null);
+        catalogue._loaded = true;
     })();
 
 });
