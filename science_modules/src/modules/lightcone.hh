@@ -12,11 +12,12 @@ namespace tao {
       ///
       template< class Backend >
       class lightcone
-         : public module
+         : public module<Backend>
       {
       public:
 
          typedef Backend backend_type;
+         typedef module<backend_type> module_type;
 
          // Type of geometry to use.
          enum geometry_type
@@ -27,7 +28,7 @@ namespace tao {
 
          // Factory function used to create a new module.
          static
-         module*
+         module_type*
          factory( const string& name,
                   pugi::xml_node base )
          {
@@ -38,7 +39,7 @@ namespace tao {
 
          lightcone( const string& name = string(),
                     pugi::xml_node base = pugi::xml_node() )
-            : module( name, base ),
+            : module_type( name, base ),
               _my_be( false ),
               _be( 0 )
          {
@@ -51,27 +52,30 @@ namespace tao {
                delete _be;
          }
 
+         void
+         set_backend( backend_type* be )
+         {
+            _my_be = (be == 0);
+            _be = be;
+         }
+
          ///
          ///
          ///
          virtual
          void
-         initialise( const options::xml_dict& global_dict,
-                     backend_type* backend = 0 )
+         initialise( const options::xml_dict& global_dict )
          {
-            timer_start();
+            // Don't initialise if we're already doing so.
+            if( this->_init )
+               return;
+            module_type::initialise( global_dict );
+
+            auto timer = this->timer_start();
             LOGILN( "Initialising lightcone module.", setindent( 2 ) );
 
-            // General initialisation.
-            module::initialise( global_dict );
-
             // If we have been given an existing backend then use that.
-            if( backend )
-            {
-               _my_be = false;
-               _be = backend;
-            }
-            else
+            if( !_be )
             {
                _my_be = true;
                _be = new backend_type;
@@ -94,7 +98,6 @@ namespace tao {
                _num_tiles = 1;
 
             LOGILN( "Done.", setindent( -2 ) );
-            timer_stop();
          }
 
          ///
@@ -104,10 +107,10 @@ namespace tao {
          void
          execute()
          {
-            timer_start();
+            auto timer = this->timer_start();
 
             // Is this my first time through? If so begin iterating.
-            if( _it == 0 )
+            if( this->_it == 0 )
             {
                if( _geom == CONE )
                   _c_it = _lc.galaxy_begin( _qry, *_be, &_bat );
@@ -145,14 +148,12 @@ namespace tao {
             if( _geom == CONE )
             {
                if( _c_it == _lc.galaxy_end( _qry, *_be ) )
-                  _complete = true;
+                  this->_complete = true;
             }
             else if( _b_it == _box.galaxy_end( _qry, *_be ) )
             {
-               _complete = true;
+               this->_complete = true;
             }
-
-            timer_stop();
          }
 
          ///
@@ -165,11 +166,28 @@ namespace tao {
             return _bat;
          }
 
-         const set<string>&
-         output_fields() const;
+         virtual
+         backend_type*
+         backend()
+         {
+            return _be;
+         }
 
-         unsigned
-         num_boxes() const;
+         virtual
+         optional<boost::any>
+         find_attribute( const string& name )
+         {
+            if( name == "simulation" )
+               return boost::any( &((const simulation<real_type>&)_sim) );
+            else
+               return module_type::find_attribute( name );
+         }
+
+         // const set<string>&
+         // output_fields() const;
+
+         // unsigned
+         // num_boxes() const;
 
          geometry_type
          geometry() const
@@ -211,8 +229,8 @@ namespace tao {
          void
          log_metrics()
          {
-            module::log_metrics();
-            LOGILN( _name, " number of tiles: ", _num_tiles );
+            module_type::log_metrics();
+            LOGILN( this->_name, " number of tiles: ", _num_tiles );
          }
 
       protected:
@@ -221,7 +239,7 @@ namespace tao {
          _read_options( const options::xml_dict& global_dict )
          {
             // Cache the local dictionary.
-            const options::xml_dict& dict = _dict;
+            const options::xml_dict& dict = this->_dict;
 
             // Simulation box size comes from backend.
             _sim.set_box_size( _be->box_size() );

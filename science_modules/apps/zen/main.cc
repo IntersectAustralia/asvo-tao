@@ -1083,7 +1083,7 @@ init_tao()
 
    // Load ages and SSP.
    sfh_ages.load_ages( backend.session(), lc->simulation()->hubble(), lc->simulation()->omega_m(), lc->simulation()->omega_l() );
-   ssp.load( "wavelengths.dat", "ssp.ssz" );
+   ssp.load( "ages.dat", "wavelengths.dat", "metallicities.dat", "ssp.ssz" );
    cur_sfh.set_snapshot_ages( &sfh_ages );
    cur_sfh.set_bin_ages( &ssp.bin_ages() );
    age_masses.resize( ssp.bin_ages().size() );

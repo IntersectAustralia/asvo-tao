@@ -4,6 +4,7 @@
 #include <libhpc/libhpc.hh>
 #include <libhpc/mpi/application.hh>
 #include <tao/base/factory.hh>
+#include <tao/base/multidb_backend.hh>
 
 //#define PREPROCESSING
 namespace tao {
@@ -72,7 +73,7 @@ namespace tao {
       string _dbcfg_file;
       string _currentxml_version;
       pugi::xml_document _doc;
-      factory_type _factory;
+      factory<backends::multidb<real_type>> _fact;
    };
 }
 

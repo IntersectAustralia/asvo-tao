@@ -1,10 +1,8 @@
 #ifndef tao_modules_sed_hh
 #define tao_modules_sed_hh
 
+#include <libhpc/libhpc.hh>
 #include "tao/base/base.hh"
-
-// Forward declaration of test suites to allow direct access.
-class sed_suite;
 
 namespace tao {
    namespace modules {
@@ -14,71 +12,151 @@ namespace tao {
       /// SED science module. The SED module is responsible for calculating the
       /// energy spectra of each galaxy.
       ///
+      template< class Backend >
       class sed
-         : public module
+         : public module<Backend>
       {
-         friend class ::sed_suite;
-
       public:
 
+         typedef Backend backend_type;
+         typedef module<backend_type> module_type;
+
          static
-         module*
+         module_type*
          factory( const string& name,
-                  pugi::xml_node base );
+                  pugi::xml_node base )
+         {
+            return new sed( name, base );
+         }
 
       public:
 
          sed( const string& name = string(),
-              pugi::xml_node base = pugi::xml_node() );
+              pugi::xml_node base = pugi::xml_node() )
+            : module_type( name, base )
+         {
+         }
 
-         ~sed();
+         virtual
+         ~sed()
+         {
+         }
 
          ///
          /// Initialise the module.
          ///
          virtual
          void
-         initialise( const options::xml_dict& global_dict );
+         initialise( const options::xml_dict& global_dict )
+         {
+            // Don't initialise if we're already doing so.
+            if( this->_init )
+               return;
+            module_type::initialise( global_dict );
+
+            auto timer = this->timer_start();
+            LOGILN( "Initialising SED module.", setindent( 2 ) );
+
+            // Locate the backend and the simulation.
+            _be = this->parents().front()->backend();
+            _sim = this->template attribute<const simulation<real_type>*>( "simulation" );
+
+            // Handle optinos.
+            _read_options( global_dict );
+
+            // Setup my SFH age line.
+            _snap_ages.load_ages( _be->session(), _sim->hubble(), _sim->omega_m(), _sim->omega_l() );
+            _sfh.set_snapshot_ages( &_snap_ages );
+            _sfh.set_bin_ages( &_ssp.bin_ages() );
+
+            // Allocate history bin arrays.
+            _age_masses.reallocate( _ssp.bin_ages().size() );
+            _bulge_age_masses.reallocate( _ssp.bin_ages().size() );
+            _age_metals.reallocate( _ssp.bin_ages().size() );
+
+            // Prepare the batch object.
+            tao::batch<real_type>& bat = this->parents().front()->batch();
+            bat.set_vector<real_type>( "disk_spectra", _ssp.wavelengths().size() );
+            bat.set_vector<real_type>( "bulge_spectra", _ssp.wavelengths().size() );
+            bat.set_vector<real_type>( "total_spectra", _ssp.wavelengths().size() );
+
+            LOGILN( "Done.", setindent( -2 ) );
+         }
 
          ///
          /// Run the module.
          ///
          virtual
          void
-         execute();
+         execute()
+         {
+            auto timer = this->timer_start();
+            ASSERT( this->parents().size() == 1 );
+
+            // Cache some information.
+            tao::batch<real_type>& bat = this->parents().front()->batch();
+            const auto& table_name = bat.attribute<string>( "table" );
+            const auto tree_gids = bat.scalar<long long>( "global_tree_id" );
+            const auto gal_lids = bat.scalar<int>( "local_galaxy_id" );
+            auto total_spectra = bat.vector<real_type>( "total_spectra" );
+            auto disk_spectra = bat.vector<real_type>( "disk_spectra" );
+            auto bulge_spectra = bat.vector<real_type>( "bulge_spectra" );
+            soci::session& sql = _be->session( table_name );
+
+            // Perform the processing.
+            for( unsigned ii = 0; ii < bat.size(); ++ii )
+            {
+               // Be sure we're on the correct tree.
+               _sfh.load_tree_data( sql, table_name, tree_gids[ii] );
+
+               // Rebin the star-formation history.
+               _sfh.rebin<real_type>( sql, gal_lids[ii], _age_masses, _bulge_age_masses, _age_metals );
+
+               // Sum contributions from the SSP.
+               _ssp.sum( _age_masses.begin(), _age_metals.begin(), total_spectra[ii].begin() );
+               _ssp.sum( _bulge_age_masses.begin(), _age_metals.begin(), bulge_spectra[ii].begin() );
+
+               // Create disk spectra.
+               for( unsigned jj = 0; jj < _ssp.wavelengths().size(); ++jj )
+                  disk_spectra[ii][jj] = total_spectra[ii][jj] - bulge_spectra[ii][jj];
+            }
+         }
+
+         virtual
+         backend_type*
+         backend()
+         {
+            return _be;
+         }
 
       protected:
 
          void
-         _process_time( mpi::lindex time_idx,
-                        unsigned gal_idx );
+         _read_options( const options::xml_dict& global_dict )
+         {
+            // Cache dictionary.
+            const options::xml_dict& dict = this->_dict;
 
-         void
-         _sum_spectra( mpi::lindex time_idx,
-                       real_type metal,
-                       real_type sfh,
-                       vector<real_type>::view galaxy_spectra );
+            // Get the filenames for SSP information.
+            auto path = data_prefix()/"stellar_populations";
+            auto ages_fn = path/dict.get<string>( "ages-file" );
+            auto waves_fn = path/dict.get<string>( "wavelengths-file" );
+            auto metals_fn = path/dict.get<string>( "metallicities-file" );
+            auto ssp_fn = path/dict.get<string>( "single-stellar-population-model" );
 
-         unsigned
-         _interp_metal( real_type metal );
-
-         void
-         _read_ssp( const string& filename );
-
-         void
-         _read_options( const options::xml_dict& global_dict );
+            // Prepare the SSP.
+            _ssp.load( ages_fn, waves_fn, metals_fn, ssp_fn );
+         }
 
       protected:
 
-         backends::multidb<real_type>* _be;
-         simulation<real_type>* _sim;
+         backend_type* _be;
+         const simulation<real_type>* _sim;
          stellar_population _ssp;
-         age_line<real_type> _snap_ages, _bin_ages;
+         age_line<real_type> _snap_ages;
          sfh<real_type> _sfh;
          vector<real_type> _age_masses, _bulge_age_masses;
          vector<real_type> _age_metals;
-         unsigned _num_spectra, _num_metals;
-         fibre<real_type> _disk_spectra, _bulge_spectra, _total_spectra;
       };
 
    }

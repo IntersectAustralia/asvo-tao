@@ -23,28 +23,16 @@ namespace tao {
       _db_timer = timer;
    }
 
-   void
-   timed::timer_start()
+   profile::timer::handle
+   timed::timer_start( profile::timer::handle::stop_type stop )
    {
-      _timer_start( _timer );
+      return _timer_start( _timer, stop );
    }
 
-   void
-   timed::timer_stop()
+   profile::timer::handle
+   timed::db_timer_start( profile::timer::handle::stop_type stop )
    {
-      _timer_stop( _timer );
-   }
-
-   void
-   timed::db_timer_start()
-   {
-      _timer_start( _db_timer );
-   }
-
-   void
-   timed::db_timer_stop()
-   {
-      _timer_stop( _db_timer );
+      return _timer_start( _db_timer, stop );
    }
 
    double
@@ -59,18 +47,14 @@ namespace tao {
       return _db_timer->total();
    }
 
-   void
-   timed::_timer_start( profile::timer* timer )
+   profile::timer::handle
+   timed::_timer_start( profile::timer* timer,
+                        profile::timer::handle::stop_type stop )
    {
       if( timer )
-         timer->start();
-   }
-
-   void
-   timed::_timer_stop( profile::timer* timer )
-   {
-      if( timer )
-         timer->stop();
+         return timer->start( stop );
+      else
+         return profile::timer::handle();
    }
 
 }

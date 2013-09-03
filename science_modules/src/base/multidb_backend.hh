@@ -125,7 +125,9 @@ namespace tao {
                   {
                   }
 
-                  pair.second->Connection << this->make_snap_rng_query_string( *this->_sim );
+                  auto queries = this->make_snap_rng_query_string( *this->_sim );
+                  for( const auto& query : queries )
+                     pair.second->Connection << query;
                }
                LOGILN( "Done.", setindent( -2 ) );
             }

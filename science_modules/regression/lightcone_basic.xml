@@ -17,14 +17,15 @@
         <item>pos_y</item>
         <item>pos_z</item>
       </output-fields>
-      <record-filter>
-        <filter>
-          <filter-attribute>None</filter-attribute>
-          <filter-min>0</filter-min>
-          <filter-max>0</filter-max>
-        </filter>
-      </record-filter>
     </light-cone>
+
+    <record-filter>
+      <filter>
+        <filter-attribute>None</filter-attribute>
+        <filter-min>0</filter-min>
+        <filter-max>0</filter-max>
+      </filter>
+    </record-filter>
 
   </workflow>
 
