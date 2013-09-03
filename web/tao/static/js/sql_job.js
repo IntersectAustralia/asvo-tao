@@ -38,14 +38,6 @@ catalogue.modules.sql_job = function ($) {
     	};
     	return params;
     }
-    
-    var dataset_property_to_option = function(dsp) {
-        return {
-            'value': dsp.pk,
-            'text' : dsp.fields.label,
-            'units': dsp.fields.units
-        }
-    }
 
     var lookup_dataset = function(sid, gmid) {
     	res = $.grep(TaoMetadata.DataSet, function(elem, idx) {
@@ -53,13 +45,6 @@ catalogue.modules.sql_job = function ($) {
     	});
     	return res[0];
     };
-    
-    var lookup_geometry = function(gid) {
-    	res = $.grep(vm.catalogue_geometries(), function(elem, idx) {
-    		return elem.id == gid;
-    	});
-    	return res[0];
-    }
     
     var available_datasets = function() {
     	// Answer the set of available datasets
@@ -126,39 +111,19 @@ catalogue.modules.sql_job = function ($) {
 
         param = job['sql_job-output_properties'];
         if (param) {
-        	// If output properties have been provided, assume that we are only displaying
-        	// the job, so we don't need to set up the TwoSidedSelectWidget
         	var props = [];
-        	for (var i=0; i<param.length; i++) {
-        		props.push(catalogue.util.dataset_property(param[i]));
+        	for (var i=0; i < param.length; i++) {
+        		props.push(param[i]);
         	}
         	param = props;
         }
         
-        vm.output_properties_options = ko.computed(function(){
-            return catalogue.util.output_choices(vm.dataset().pk, bit_mask);
-        });
-        
-        vm.output_properties = ko.observableArray(param ? param : [])
+        vm.sql_output_properties = ko.observableArray(param ? param : [])
             .extend({required: function(){return true;}});
-        vm.output_properties_widget = TwoSidedSelectWidget({
-            elem_id: '#id_sql_job-output_properties',
-            options: vm.output_properties_options,
-            selectedOptions: vm.output_properties,
-            to_option: dataset_property_to_option
-        });
-
-        vm.current_output_property = ko.observable(undefined);
-    	
-        // if param is null assume that we are in the Catalogue wizard
-    	// so set up the dependencies to update the display
-        // otherwise leave it unlinked
-        if (!param) {
-	        vm.output_properties_widget.clicked_option.subscribe(function(v) {
-	            var op = catalogue.util.dataset_property(v);
-	            vm.current_output_property(op);
-	        });
-        }
+        
+        vm.sql_output_properties_data = {
+            options: vm.sql_output_properties
+        };
         
         param = job['sql_job-query'];
         vm.query = ko.observable(param ? param : '');
