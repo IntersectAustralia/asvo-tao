@@ -14,7 +14,6 @@ def from_xml_2(cls, ui_holder, xml_root, prefix=None):
     query = module_xpath(xml_root, '//sql/query')
     simulation_name = module_xpath(xml_root, '//sql/simulation')
     galaxy_model_name = module_xpath(xml_root, '//sql/galaxy-model')
-    output_properties = module_xpath(xml_root, '//votable/fields/item')
     simulation = datasets.simulation_from_xml(simulation_name)
     galaxy_model = datasets.galaxy_model_from_xml(galaxy_model_name)
     data_set = datasets.dataset_find_from_xml(simulation, galaxy_model)
