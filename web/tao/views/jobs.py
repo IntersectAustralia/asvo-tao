@@ -133,11 +133,26 @@ def _get_summary_as_text(id):
 
     if ui_holder.job_type == UIModulesHolder.SQL_JOB:
         txt_template = loader.get_template('jobs/sql_job-summary.txt')
-        #
-        # TODO !!!
-        # fill-in context for sql_job
-        #
-        context = Context({})
+        query = ui_holder.raw_data('sql_job', 'query')
+        dataset = ui_holder.dataset
+        simulation = dataset.simulation
+        galaxy_model = dataset.galaxy_model
+        output_properties = []
+        for output_property in ui_holder.raw_data('sql_job', 'output_properties'):
+            print output_property
+            output_properties = output_properties + [(output_property['label'], output_property['units'])]
+        output_format = ''
+        for x in output_formats():
+            if x['value'] == (ui_holder.raw_data('output_format', 'supported_formats')):
+                output_format = x['text']
+        context = Context({
+            'query': query,
+            'dark_matter_simulation': simulation,
+            'simulation_details': html2text.html2text(simulation.details),
+            'galaxy_model': galaxy_model,
+            'galaxy_model_details': html2text.html2text(galaxy_model.details),
+            'output_properties': output_properties,
+            'output_format': output_format,})
     else:
         geometry = ui_holder.raw_data('light_cone', 'catalogue_geometry')
         dataset = ui_holder.dataset

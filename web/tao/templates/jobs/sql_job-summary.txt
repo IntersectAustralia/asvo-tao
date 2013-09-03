@@ -1,1 +1,21 @@
-SQL Job
+TAP Job Properties
+==================
+
+SQL query: 
+{{ query|safe }}
+
+Dataset: {{ dark_matter_simulation|safe }} / {{ galaxy_model|safe }}
+
+{{ dark_matter_simulation|safe }}
+{{ simulation_details|safe }}
+{{ galaxy_model|safe }}
+{{ galaxy_model_details|safe }}
+
+Output Properties: {{ output_properties|length }} properties selected
+{% for property, units in output_properties %}
+* {{ property|safe }} {% if units != '' %}({{ units|safe }}){% endif %}{% endfor %}
+
+Output
+======
+
+{{ output_format|safe }}

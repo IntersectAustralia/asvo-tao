@@ -113,8 +113,13 @@ class UIModulesHolder:
         (through the selected Dark Matter Simulation and Galaxy Model)"""
 
         if self._dataset is None:
-            sid = self.raw_data('light_cone', 'dark_matter_simulation')
-            gmid = self.raw_data('light_cone', 'galaxy_model')
-            self._dataset = DataSet.objects.get(simulation_id=sid, galaxy_model_id=gmid)
+            if self.job_type == UIModulesHolder.LIGHT_CONE_JOB:
+                sid = self.raw_data('light_cone', 'dark_matter_simulation')
+                gmid = self.raw_data('light_cone', 'galaxy_model')
+                self._dataset = DataSet.objects.get(simulation_id=sid, galaxy_model_id=gmid)
+            if self.job_type == UIModulesHolder.SQL_JOB:
+                sid = self.raw_data('sql_job', 'dark_matter_simulation')
+                gmid = self.raw_data('sql_job', 'galaxy_model')
+                self._dataset = DataSet.objects.get(simulation_id=sid, galaxy_model_id=gmid)
         return self._dataset
     
