@@ -2,7 +2,6 @@ from django.conf import settings
 
 from tao.models import Job
 from tao.tests import helper
-from tao.tests.integration_tests.jobs_tests import JobTest
 from tao.tests.integration_tests.helper import LiveServerTest
 from tao.tests.support.factories import UserFactory, JobFactory, GlobalParameterFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, SnapshotFactory
 
@@ -82,4 +81,4 @@ class DiskStorageTests(LiveServerTest):
 
     def test_current_disk_usage_displayed_on_history_page(self):
         self.visit('job_index')
-        self.assert_element_text_equals('#id_current_disk_usage', self.user.display_current_disk_usage())
+        self.assert_element_text_equals('#id_current_disk_usage', self.user.display_current_disk_usage().strip())

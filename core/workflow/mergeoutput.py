@@ -1,4 +1,5 @@
 import sys,os
+import shlex, subprocess
 
 import string
 from distutils.filelist import FileList
@@ -12,11 +13,14 @@ def ValidateAllSameExtension(FilesList):
     logging.info('Start Validating File List (Length and Extension)')
     if len(FilesList)==0:
         return False
-    
+    logging.info('Not an empty List')
     FirstItemExt=FilesList[0][1][-2]
+    logging.info('First Item Ext='+FirstItemExt)
     FileExtLen=len(FilesList[0][1])
     for FileDetail in FilesList:
-        if(FileDetail[1][-2]!=FirstItemExt) or (FileExtLen!= len(FileDetail[1])):                        
+        
+        if(FileDetail[1][-2]!=FirstItemExt) or (FileExtLen!= len(FileDetail[1])):
+            logging.info('File List Validation Because '+FileDetail[1][-2]+"!="+FirstItemExt)                       
             return False
     logging.info('End Validating File List (Length and Extension)')
     return True
@@ -158,16 +162,28 @@ def ProcessFiles(FilesList,OutputFileName):
         return HandleFITSFiles(FilesList,OutputFileName)
     elif FilesList[0].split('.')[-2]=='hdf5':
         return HandleHDF5Files(FilesList,OutputFileName)
-def RemoveFiles(FilesList): 
+def RemoveFiles(FilesList):
+    logging.info("Removing Files:") 
+    logging.info(FilesList)
     for DataFile in FilesList:
+        logging.info("Delete File:"+DataFile)
         os.remove(DataFile)
+def CompressFile(CurrentFolderPath,OutputFileName,JobIndex):
+    InputFileName=OutputFileName.replace(CurrentFolderPath,"")
+    InputFileName=InputFileName.strip('/')
+    CompressedFileName=InputFileName+".tar.gz"
+    os.chdir(CurrentFolderPath)    
+    #stdout = subprocess.check_output(shlex.split('tar -czf \"%s\" \"%s\"'%(CompressedFileName,InputFileName)))
+    stdout = subprocess.check_output(shlex.split('gzip \"%s\"'%(InputFileName)))
+    #os.remove(InputFileName)    
                
 if __name__ == '__main__':
-    if len(sys.argv) != 3:
+    if len(sys.argv) != 4:
         exit(-100);
     CurrentFolderPath=sys.argv[1]
     CurrentLogPath=sys.argv[1].replace("/output","/log")
     SubJobIndex=sys.argv[2]
+    JobIndex=sys.argv[3]
     TAOLoger=PrepareLog(CurrentLogPath) 
     logging.info('Merging Files in '+CurrentFolderPath)   
     dirList=os.listdir(CurrentFolderPath)    
@@ -175,7 +191,7 @@ if __name__ == '__main__':
     map={}
     for fname in dirList:
         FileDetailsList=fname.split('.')
-        if len(FileDetailsList)==5:            
+        if len(FileDetailsList)==5 and FileDetailsList[-1]!='gz':            
             fullPathArray.append([CurrentFolderPath+'/'+fname,FileDetailsList])
             logging.info('File Added to List '+CurrentFolderPath+'/'+fname)
             if FileDetailsList[2] in map:
@@ -190,9 +206,14 @@ if __name__ == '__main__':
     
     logging.info('Merging Output for sub-task ['+str(str(SubJobIndex))+']')
     FilesList=map[str(SubJobIndex)]
-    FilesList.sort()        
-    OutputFileName=".".join(FilesList[0].split('.')[0:-1])
+    FilesList.sort()  
+    FileNameParts=FilesList[0].split('.')[0:-1]
+    FileNameParts[1]=str(JobIndex)      
+    OutputFileName=".".join(FileNameParts)
+    
     if (ProcessFiles(FilesList,OutputFileName)==True):        
+        CompressFile(CurrentFolderPath,OutputFileName,JobIndex)
+        
         RemoveFiles(FilesList)
         
        

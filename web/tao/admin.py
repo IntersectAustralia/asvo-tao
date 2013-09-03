@@ -57,6 +57,10 @@ class UserChangeForm(forms.ModelForm):
     class Meta:
         model = TaoUser
 
+    def __init__(self, *args, **kwargs):
+        super(UserChangeForm, self).__init__(*args, **kwargs)
+        self.fields['disk_quota'].help_text = "Value is in MB"
+
     def clean_password(self):
         return self.initial['password']
 

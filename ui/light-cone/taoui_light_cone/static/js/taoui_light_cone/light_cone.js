@@ -88,11 +88,12 @@ catalogue.modules.light_cone = function ($) {
     			'light_cone-box_size': [vm.box_size()]
     		});
     	} else { // light-cone
-    		var noc = parseInt(vm.number_of_light_cones());
-    		// Work-around: Hiding the spinner seems to set the count to 0
-    		if (noc == 0) {
-    			noc = 1;
-    		}
+            var noc;
+            if (vm.light_cone_type() == 'unique') {
+                noc = 1;
+            } else {
+                noc = parseInt(vm.number_of_light_cones());
+            }
     		jQuery.extend(params, {
     			'light_cone-light_cone_type': [vm.light_cone_type()],
     			'light_cone-ra_opening_angle': [vm.ra_opening_angle()],
@@ -184,6 +185,7 @@ catalogue.modules.light_cone = function ($) {
     	// job is either an object containing the job parameters or null
     	var job = init_params.job;
     	var param; // Temporary variable for observable initialisation
+        var default_dataset_id;
 
         this.vm = vm;
         vm.catalogue_geometries = ko.observableArray([
@@ -195,10 +197,25 @@ catalogue.modules.light_cone = function ($) {
         	param = lookup_geometry(param);
         vm.catalogue_geometry = ko.observable(param ? param : vm.catalogue_geometries()[1]);
 
+        var default_dataset_param = catalogue.util.global_parameter('default_dataset');
+        var defined = catalogue.validators.defined
+        if (defined(default_dataset_param)) {
+            default_dataset_id = default_dataset_param.fields.parameter_value;
+        } else {
+            default_dataset_id = TaoMetadata.DataSet[0]['pk'];
+            console.log("No default_dataset value supplied in GlobalParameters. Using the first dataset stored in the Database as default.");
+        }
+        var default_dataset = catalogue.util.dataset(parseInt(default_dataset_id));
+        if (!defined(default_dataset)) {
+            default_dataset = TaoMetadata.DataSet[0];
+            console.log("No dataset found for the default_dataset ID supplied. Using the first dataset stored in the Database as default.");
+        }
         vm.dark_matter_simulations = ko.observableArray(available_simulations());
         param = job['light_cone-dark_matter_simulation'];
         if (param) {
         	param = catalogue.util.simulation(param);
+        } else {
+            param = catalogue.util.simulation(default_dataset.fields['simulation']);
         }
         vm.dark_matter_simulation = ko.observable(param ? param : vm.dark_matter_simulations()[0])
         	.extend({logger: 'simulation'});
@@ -207,6 +224,8 @@ catalogue.modules.light_cone = function ($) {
         param = job['light_cone-galaxy_model'];
         if (param) {
         	param = catalogue.util.galaxy_model(param);
+        } else {
+            param = catalogue.util.galaxy_model(default_dataset.fields['galaxy_model']);
         }
         vm.galaxy_model = ko.observable(param ? param : vm.galaxy_models()[0]);
 
@@ -221,6 +240,7 @@ catalogue.modules.light_cone = function ($) {
         vm.light_cone_type = ko.observable(param ? param : 'unique');
         param = job['light_cone-number_of_light_cones'];
         vm.number_of_light_cones = ko.observable(param ? param : 1)
+            .extend({required: function(){return vm.catalogue_geometry() == 'light-cone' && vm.light_cone_type() != 'unique'}})
             .extend({validate: catalogue.validators.is_int});
         // Disable geq 1 check until we can figure out why it is being 
         // set to 0.  job_params ensures that it is at least 1 before
@@ -378,7 +398,9 @@ catalogue.modules.light_cone = function ($) {
                     result = 'Redshift: ' + vm.redshift_min() + ' &le; z &le; ' + vm.redshift_max();
                 }
             } else {
-                result = format_redshift(vm.snapshot().fields.redshift);
+                var snapshot = vm.snapshot();
+                if (snapshot !== undefined)
+                    result = format_redshift(vm.snapshot().fields.redshift);
             }
             return result;
         });
