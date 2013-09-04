@@ -125,14 +125,14 @@ catalogue.modules.light_cone = function ($) {
     this.format_redshift = format_redshift;
 
     var lookup_dataset = function(sid, gmid) {
-    	res = $.grep(TaoMetadata.DataSet, function(elem, idx) {
+    	var res = $.grep(TaoMetadata.DataSet, function(elem, idx) {
     		return elem.fields.simulation == sid && elem.fields.galaxy_model == gmid;
     	});
     	return res[0];
     };
     
     var lookup_geometry = function(gid) {
-    	res = $.grep(vm.catalogue_geometries(), function(elem, idx) {
+    	var res = $.grep(vm.catalogue_geometries(), function(elem, idx) {
     		return elem.id == gid;
     	});
     	return res[0];
@@ -140,7 +140,7 @@ catalogue.modules.light_cone = function ($) {
     
     var available_datasets = function() {
     	// Answer the set of available datasets
-    	res = $.grep(TaoMetadata.DataSet, function(elem, idx) {
+    	var res = $.grep(TaoMetadata.DataSet, function(elem, idx) {
     		return elem.fields.available;
     	});
     	return res;
@@ -150,25 +150,28 @@ catalogue.modules.light_cone = function ($) {
     	// Answer the set of simulations that are available
     	// Only those that are associated with active datasets are available
     	var sids = [];
-    	datasets = available_datasets();
+    	var datasets = available_datasets();
     	for (var i=0; i<datasets.length; i++) {
     		sids.push(datasets[i].fields.simulation);
     	}
-    	res = $.grep(TaoMetadata.Simulation, function(elem, idx) {
+    	var res = $.grep(TaoMetadata.Simulation, function(elem, idx) {
     		return sids.indexOf(elem.pk) >= 0;
     	});
     	return res;
     }
     
-    var available_galaxy_models = function() {
+    var available_galaxy_models = function(sid) {
     	// Answer the set of galaxy models that are available
-    	// Only those that are associated with active datasets are available
+    	// Only those that are associated with active datasets from current simulation id (sid)
+    	// are available
     	var sids = [];
-    	datasets = available_datasets();
+    	var datasets = available_datasets();
     	for (var i=0; i<datasets.length; i++) {
-    		sids.push(datasets[i].fields.galaxy_model);
+            if (datasets[i].fields.simulation == sid) {
+    		    sids.push(datasets[i].fields.galaxy_model);
+            }
     	}
-    	res = $.grep(TaoMetadata.GalaxyModel, function(elem, idx) {
+    	var res = $.grep(TaoMetadata.GalaxyModel, function(elem, idx) {
     		return sids.indexOf(elem.pk) >= 0;
     	});
     	return res;
@@ -213,7 +216,9 @@ catalogue.modules.light_cone = function ($) {
         vm.dark_matter_simulation = ko.observable(param ? param : vm.dark_matter_simulations()[0])
         	.extend({logger: 'simulation'});
         
-        vm.galaxy_models = ko.observableArray(available_galaxy_models());
+        vm.galaxy_models = ko.computed(function(){
+            return available_galaxy_models(vm.dark_matter_simulation().pk);
+        });
         param = job['light_cone-galaxy_model'];
         if (param) {
         	param = catalogue.util.galaxy_model(param);
