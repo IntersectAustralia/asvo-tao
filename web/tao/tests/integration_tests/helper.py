@@ -133,7 +133,7 @@ class LiveServerTest(django.test.LiveServerTestCase):
                 return elem
             except NoSuchElementException:
                 retries -= 1
-                self.wait(3)
+                self.wait(1)
         # If it hasn't been found by now, try one more time and let the exception through
         return self.selenium.find_element_by_css_selector(selector)
 
@@ -145,7 +145,7 @@ class LiveServerTest(django.test.LiveServerTestCase):
                 return elem
             except NoSuchElementException:
                 retries -= 1
-                self.wait(3)
+                self.wait(1)
         # If it hasn't been found by now, try one more time and let the exception through
         return self.selenium.find_element_by_id(elem_id)
 
@@ -232,8 +232,20 @@ class LiveServerTest(django.test.LiveServerTestCase):
         "Assert that the supplied selector is not part of the page content"
         elements = self.selenium.find_elements_by_css_selector(selector)
         self.assertTrue(len(elements) == 0)
-        
+
     def assert_on_page(self, url_name, ignore_query_string=False):
+        retries = 3
+        while retries > 0:
+            try:
+                self._assert_on_page(url_name, ignore_query_string)
+                return
+            except AssertionError:
+                retries -= 1
+                print "assert_on_page: retry"
+                self.wait(1)
+        self._assert_on_page(url_name, ignore_query_string)
+
+    def _assert_on_page(self, url_name, ignore_query_string=False):
         if not ignore_query_string:
             self.assertEqual(self.selenium.current_url, self.get_full_url(url_name))
         else:
