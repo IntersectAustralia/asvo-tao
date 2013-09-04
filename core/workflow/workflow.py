@@ -21,6 +21,7 @@ import pg
 import stat,sys
 import ParseProfileData
 import traceback
+import JobRestart
 
 class WorkFlow(object):
 
@@ -41,7 +42,7 @@ class WorkFlow(object):
                'get': self.CALLBackBase + 'job/?status=SUBMITTED',
                'update': self.CALLBackBase + 'job/%d/'}
         
-
+        self.JobRestartObj=JobRestart.JobRestart(Options,dbaseobj,TorqueObj)
       
         
     def json_handler(self,resp):       
@@ -108,6 +109,8 @@ class WorkFlow(object):
                 return False
             ## If a Job with the Same UI_ID exists ...ensure that it is out of the watch List (By Error State)
             self.dbaseobj.RemoveOldJobFromWatchList(UIJobReference)
+            self.dbaseobj.RemoveAllJobsWithUIReferenceID(UIJobReference)
+        
             ## 1- Prepare the Job Directory
             [SubJobsCount,IsSequential]=self.PrepareJobFolder(JobParams,JobUserName,UIJobReference,JobDatabase)
             CurrentJobType=EnumerationLookup.JobType.Simple
@@ -315,7 +318,26 @@ class WorkFlow(object):
     
     
     
-    
+    def RestartJob(self,RestartJobRecrod):
+        logging.info("####### Restarting Job #####")
+        logging.info(RestartJobRecrod)
+        
+        JobID=RestartJobRecrod['jobid']
+        JobUserName=RestartJobRecrod['jobusername']
+        UIJobReference=RestartJobRecrod['uireferenceid']
+        IsSequential=RestartJobRecrod['issequential']
+        SubJobID=RestartJobRecrod['subjobindex']
+        
+        
+        PBSJobID=self.TorqueObj.Submit(UIJobReference,JobUserName,JobID,SubJobID,IsSequential)
+        ## Store the Job PBS ID  
+        if self.dbaseobj.UpdateJob_PBSID(JobID,PBSJobID)!=True:
+            raise  Exception('Error in Process New Job','Update PBSID failed')
+                
+        self.dbaseobj.SetJobNew(JobID,'Job Restart')          
+        ## Update the Job Status to Queued            
+        self.UpdateTAOUI(UIJobReference, EnumerationLookup.JobType.Complex, data={'status': 'QUEUED'})
+        
     
     
     def GetJobstderrcontents(self,UserName,JobID,LocalJobID):
@@ -435,7 +457,7 @@ class WorkFlow(object):
             else:
                 logging.info("Job Status Checking is not known!!")
 
-    
+        self.JobRestartObj.CheckPendingJobs(self.RestartJob)
 
     def UpdateJob_EndSuccessfully(self, CurrentJobRecord, JobDetails):
         
@@ -464,6 +486,7 @@ class WorkFlow(object):
     def UpdateJob_EndWithError(self,CurrentJobRecord , JobDetails):
         
         
+        self.JobRestartObj.AddNewJob(CurrentJobRecord)
         JobID=CurrentJobRecord['jobid']
         SubJobIndex=CurrentJobRecord['subjobindex']
         JobType=CurrentJobRecord['jobtype']
@@ -493,6 +516,9 @@ class WorkFlow(object):
                     self.TorqueObj.TerminateJob(JobItem['pbsreferenceid'].split('.')[0])
                     logging.info("Job (" + str(JobItem['jobid']) +" ["+str(JobItem['subjobindex'])+"]) ... Force Delete")
                     self.dbaseobj.SetJobFinishedWithError(JobItem['jobid'], 'Force Deleted', JobDetails['end'])
+                    self.JobRestartObj.AddNewJob(JobItem)
+                    
+                        
         
         if TerminateAllOnError==True and JobType==EnumerationLookup.JobType.Complex:
            data['error_message']=data['error_message']+" Please note that all other subjobs will be deleted also" 
