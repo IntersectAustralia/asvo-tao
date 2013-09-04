@@ -11,10 +11,6 @@ catalogue.modules.sed = function ($) {
 
     this.cleanup_fields = function () {}
 
-    this.validate = function () {
-        return true;
-    }
-
     this.pre_submit = function () {
     }
 
