@@ -15,12 +15,12 @@ import os
 
 
 def format_human_readable_file_size(file_size):
-    size = file_size
+    size = float(file_size)
     units = ['B', 'kB', 'MB']
     for x in units:
-        if size < 1000:
-            return '%3d%s' % (size, x)
-        size /= 1000
+        if size < 1000.0:
+            return '%3d%s' % (round(size), x)
+        size /= 1000.0
     return '%3.1f%s' % (size, 'GB')
 
 
