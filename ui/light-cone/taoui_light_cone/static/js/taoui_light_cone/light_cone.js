@@ -121,15 +121,8 @@ catalogue.modules.light_cone = function ($) {
         var whole_digit = parseInt(redshift).toString().length;
         return redshift.toFixed(Math.max(5 - whole_digit, 0));
     };
-    this.format_redshift = format_redshift;
 
-    var snapshot_id_to_redshift = function(snapshot_id) {
-        // console.log(snapshot_id);
-        res = $.grep(TaoMetadata.Snapshot, function(elem, idx) { 
-            return elem.pk == snapshot_id
-        })[0].fields.redshift;
-        return format_redshift(res);
-    };
+    this.format_redshift = format_redshift;
 
     var lookup_dataset = function(sid, gmid) {
     	res = $.grep(TaoMetadata.DataSet, function(elem, idx) {
@@ -300,6 +293,9 @@ catalogue.modules.light_cone = function ($) {
         });
         param = catalogue.util.snapshot(job['light_cone-snapshot']);
         vm.snapshot = ko.observable(param ? param : vm.snapshots()[0]);
+        vm.snapshots.subscribe(function(arr){
+                vm.snapshot(arr[0]);
+        });
 
         param = job['light_cone-output_properties'];
         if (param) {
