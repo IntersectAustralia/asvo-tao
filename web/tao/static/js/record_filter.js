@@ -37,8 +37,7 @@ catalogue.modules.record_filter = function ($) {
     		}
         } else if (obj.model === "tao.bandpassfilter") {
                 return {
-                    // value: 'B-'+obj.value,
-                    value: 'B-'+obj.value,
+                    value: 'B-'+obj.pk,
                     label: obj.fields.label
                 }
         } else {
