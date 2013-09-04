@@ -37,7 +37,8 @@ def presets_json():
         json_dict = {}
         params_ui_holder = UIModulesHolder(UIModulesHolder.XML, xml_parse(preset.parameters.encode()))
         json_dict['name'] = preset.name
-        json_dict['parameters'] = params_ui_holder.to_json_dict()
+        json_dict['pk'] = preset.pk
+        # json_dict['parameters'] = params_ui_holder.to_json_dict()
         json_list.append(json_dict)
     return json.dumps(json_list)
 

@@ -42,7 +42,6 @@ catalogue.modules.job_type = function ($) {
     this.init_model = function (init_params) {
         // setup state
         vm.survey_presets = ko.observableArray(TaoMetadata['SurveyPreset']);
-        vm.selected_preset = ko.observable();
         // initialise event handlers
         init_event_handlers();
 
