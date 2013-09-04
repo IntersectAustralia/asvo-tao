@@ -298,12 +298,19 @@ catalogue.util = function ($) {
     	// Validate the supplied vm
     	// Iterate over every member and check for errors
     	var attr, obj;
-    	var is_valid = true;
+        var errors = [];
+        function status_on_tab(status) {
+            if (!vm.hasOwnProperty('tab_handle')) return;
+            if (vm.tab_handle.tab_status() < status)
+                vm.tab_handle.tab_status(status);
+        }
 
     	for (attr in vm) {
     		obj = vm[attr];
+            var ui_name = attr;
+            if (attr.hasOwnProperty('ui_name'))
+                ui_name = typeof obj.ui_name == 'function' ? obj.ui_name() : obj.ui_name;
     		if (obj.hasOwnProperty("error") || obj.hasOwnProperty('required')) {
-                var valid_field = true;
                 if (obj.hasOwnProperty('required')) {
                     var req = obj.required();
                 } else {
@@ -314,40 +321,23 @@ catalogue.util = function ($) {
                     case TAO_REQUIRED_NO:
                         break;
                     case TAO_REQUIRED_ERROR:
-                        valid_field = false;
+                        status_on_tab(1);
+                        errors.push(ui_name + ' is required');
                         break;
                     default:
                         var err = {error: false};
                         if (obj.hasOwnProperty('error')) {
                             err = obj.error();
                         }
-                        valid_field = !err.error;
-                }
-                if (!valid_field) {
-                    console.log('error on: ' + attr);
-                    is_valid = false;
-                    break;
+                        if (err.error) {
+                            status_on_tab(2);
+                            errors.push(ui_name + ': ' + err.message);
+                        }
                 }
     		}
     	}
-    	return is_valid;
-    }
-
-    this.validate_error = function(objs) {
-    	// Validate the supplied vm
-    	// Iterate over every member and check for errors
-    	var obj;
-    	var is_valid = true;
-
-    	for (var i = 0; i < obs.length; i++) {
-    		obj = objs[i];
-    		if (obj.hasOwnProperty("error")) {
-    			is_valid &= !obj.error().error;
-    			if (!is_valid)
-    				break;
-    		}
-    	}
-    	return is_valid;
+        vm.errors(errors);
+        return errors.length == 0;
     }
 
     this.snapshot = function(id) {
@@ -541,14 +531,15 @@ catalogue.util = function ($) {
 	
 	    var is_valid = true;
 	    for (var module in catalogue.modules) {
-	        var valid_module = catalogue.modules[module].validate();
+            var module_vm = catalogue.modules[module].vm;
+	        var valid_module = that.validate_vm(module_vm);
 	        is_valid = is_valid && valid_module;
 	        console.log('IS_VALID ' + module + ': ' + valid_module);
 	    }
 	
 	    if (!is_valid) {
 	        console.log('ERROR FOUND');
-	        // show_tab_error();
+            // TODO !!! show_tab_error()
 	        alert("Validation fails - please check your parameters and try again.")
 	        return false;
 	    }
@@ -723,7 +714,7 @@ jQuery(document).ready(function ($) {
     }
     }
 
-    ko.bindingHandlers.spinner = {
+    ko.bindingHandlers['spinner'] = {
         init: function(element, valueAccessor, allBindingsAccessor) {
             //initialize datepicker with some optional options
             var options = ko.computed(function(){
@@ -833,6 +824,9 @@ jQuery(document).ready(function ($) {
                 if (previous_tab !== undefined)
                     previous_tab.tab_element.click();
             }
+            if (!viewModel.hasOwnProperty('tab_handle')) {
+                viewModel['tab_handle'] = tabObj;
+            }
             var childBindingContext = bindingContext.createChildContext(viewModel);
             ko.utils.extend(childBindingContext, tabObj);
             ko.applyBindingsToDescendants(childBindingContext, element);
@@ -885,6 +879,9 @@ jQuery(document).ready(function ($) {
         for (var module in catalogue.modules) {
             console.log('Initialising module: ' + module)
             catalogue.vm[module] = catalogue.modules[module].init_model(init_params);
+            if (catalogue.vm[module].hasOwnProperty('errors')) throw module + ' implements `errors` and it should not.';
+            catalogue.vm[module]._name = module;
+            catalogue.vm[module].errors = ko.observableArray([]);
         }
 
         console.log('Finished module initialisation')

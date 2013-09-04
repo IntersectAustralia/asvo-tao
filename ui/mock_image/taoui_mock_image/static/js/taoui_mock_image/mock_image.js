@@ -41,10 +41,6 @@ catalogue.modules.mock_image = function ($) {
 
     this.cleanup_fields = function () {}
 
-    this.validate = function () {
-        return true; // TODO !!!
-    }
-
     this.pre_submit = function () {}
 
     this.job_parameters = function() {

@@ -50,21 +50,6 @@ catalogue.modules.light_cone = function ($) {
     this.cleanup_fields = function ($form) {
     }
 
-
-    this.validate = function ($form) {
-    	var is_valid = true;
-    	// var is_ok = catalogue.validators.is_ok;
-        // if (vm.catalogue_geometry() == 'box') {
-        //     if (!is_ok(vm.box_size)) return false;
-        // } else {
-        //     if (!is_ok(vm.box_size)) return false;
-        //    /// TODO !!!
-        // }
-    	is_valid &= catalogue.util.validate_vm(vm);
-    	return is_valid;
-    }
-
-
     this.pre_submit = function ($form) {
     }
 

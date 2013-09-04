@@ -4,16 +4,13 @@ catalogue.modules = catalogue.modules || {};
  
 // jQuery is passed as a parameter to ensure jQuery plugins work correctly
 catalogue.modules.job_type = function ($) {
- 
+
+    // KO ViewModel
+    var vm = {}
+
  
     this.cleanup_fields = function ($form) {
         // clear values from exluded fields
-    }
- 
-    this.validate = function ($form) {
-        // perform validations and
-        // attach error messages
-        return true;
     }
  
     this.pre_submit = function ($form) {
@@ -36,9 +33,11 @@ catalogue.modules.job_type = function ($) {
 
     this.init_model = function (init_params) {
         // setup state
+        this.vm = vm;
+
         // initialise event handlers
         init_event_handlers();
 
-        return {};
+        return vm;
     }
 }
