@@ -5,6 +5,7 @@ catalogue.modules = catalogue.modules || {};
 // jQuery is passed as a parameter to ensure jQuery plugins work correctly
 catalogue.modules.job_type = function ($) {
  
+    var vm = {}
  
     this.cleanup_fields = function ($form) {
         // clear values from exluded fields
@@ -32,13 +33,18 @@ catalogue.modules.job_type = function ($) {
             // console.log('submit');
             $('#file_upload').submit();
         });
+
+        $('#presets_button').click(function() {
+            $('#survey_presets').toggle('slide', {direction: 'up'});
+        });
     }
 
     this.init_model = function (init_params) {
         // setup state
+        vm.survey_presets = ko.observableArray(TaoMetadata['SurveyPreset']);
         // initialise event handlers
         init_event_handlers();
 
-        return {};
+        return vm;
     }
 }
