@@ -196,7 +196,7 @@ class SysCommands(object):
         else:
             data['execution_status'] = 'ERROR'             
             data['execution_comment'] = ""
-        #logging.info('Updating UI MasterDB. CommandID ('+str(CommandID)+').. '+data['execution_status'])        
+                
         logging.info('Updating UI MasterDB. CommandID ('+str(CommandID)+').. '+data['execution_status'])
         logging.info(UpdateURL)
         logging.info(data)

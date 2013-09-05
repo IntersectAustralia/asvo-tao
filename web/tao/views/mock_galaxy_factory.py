@@ -17,6 +17,7 @@ from tao.decorators import researcher_required, set_tab
 from tao.ui_modules import UIModulesHolder
 from tao.xml_util import xml_parse
 from tao.views import jobs
+from tao.models import SurveyPreset
 import json
 
 
@@ -38,6 +39,17 @@ def index(request):
             params_ui_holder = UIModulesHolder(UIModulesHolder.XML, xml_parse(parameter_file.read()))
             ui_holder = UIModulesHolder(UIModulesHolder.POST)
             message = "Parameter file '%s' uploaded successfully." % parameter_file.name
+            messages.info(request, message)
+            return render(request, 'mock_galaxy_factory/index.html', {
+                'forms': ui_holder.forms(),
+                'ui_holder': params_ui_holder,
+                'TAB_SUMMARY_ID': settings.MODULE_INDICES['summary'],
+            })
+        elif 'survey_presets' in request.POST:
+            preset = SurveyPreset.objects.get(pk=request.POST.get('survey_presets'))
+            params_ui_holder = UIModulesHolder(UIModulesHolder.XML, xml_parse(preset.parameters.encode()))
+            ui_holder = UIModulesHolder(UIModulesHolder.POST)
+            message = "Survey Preset '%s' loaded successfully." % preset.name
             messages.info(request, message)
             return render(request, 'mock_galaxy_factory/index.html', {
                 'forms': ui_holder.forms(),

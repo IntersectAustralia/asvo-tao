@@ -1,7 +1,7 @@
 import factory
 # http://factoryboy.readthedocs.org/en/latest/index.html
 
-from tao.models import Job, TaoUser, Simulation, GalaxyModel, DataSet, DataSetProperty, StellarModel, Snapshot, BandPassFilter, DustModel, GlobalParameter, WorkflowCommand
+from tao.models import Job, TaoUser, Simulation, GalaxyModel, DataSet, DataSetProperty, StellarModel, Snapshot, BandPassFilter, DustModel, GlobalParameter, WorkflowCommand, SurveyPreset
 
 class UserFactory(factory.Factory):
     FACTORY_FOR = TaoUser
@@ -106,3 +106,9 @@ class GlobalParameterFactory(factory.Factory):
 
 class WorkflowCommandFactory(factory.Factory):
     FACTORY_FOR = WorkflowCommand
+
+
+class SurveyPresetFactory(factory.Factory):
+    FACTORY_FOR = SurveyPreset
+    name = factory.Sequence(lambda n: 'Preset %d' % int(n))
+    parameters = ''

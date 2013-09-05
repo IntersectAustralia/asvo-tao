@@ -10,12 +10,22 @@
     <div class="boxed span8">
 
         <div id="telescope_params">
-            <input type="button" value="Custom Job" class="btn tao-next" />
+            <input type="button" value="Custom Job" class="btn tao-next" data-bind="click: next_tab" />
             <br />
             <br />
             <div id='file_upload_proxy' class="btn">
                 Upload Paramters
                 <input class="hidden_file_input" form="file_upload" id="id_job_type-params_file" name="job_type-params_file" type="file">
+            </div>
+            <br />
+            <br />
+            <input id="presets_button" type="button" value="Survey Preset" class="btn" />
+            <br />
+            <br />
+            <div id="survey_presets" style="display: none;">
+                <select name="survey_presets" form="survey_preset" data-bind="options: survey_presets, optionsText: 'name', optionsValue: 'pk', attr: {size: survey_presets().length}" ></select>
+                <br />
+                <button id="load_survey_preset_button" type="submit" class="btn" form="survey_preset">Load Preset</button>
             </div>
         </div>
         
