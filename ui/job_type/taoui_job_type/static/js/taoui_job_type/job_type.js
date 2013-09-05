@@ -28,9 +28,12 @@ catalogue.modules.job_type = function ($) {
     }
 
     function init_event_handlers() {
-        // attach event handlers
+        // makes it possible to load a file after clicking 'back'
+        $(document).ready(function() {
+            $('#id_job_type-params_file').val("");
+        });
+
         $('#id_job_type-params_file').change(function() {
-            // console.log('submit');
             $('#file_upload').submit();
         });
 
