@@ -250,7 +250,8 @@ class DBInterface(object):
             return False
         ## Check How Many time it was restarted
         selectst="Select * from jobrestartlist where jobid="+str(JobID)+";"
-        if (len(self.ExecuteQuerySQLStatmentAsDict(selectst))>2):
+        MaximumRestartTime=int(self.Options['WorkFlowSettings:MaximumRestartTime'])
+        if (len(self.ExecuteQuerySQLStatmentAsDict(selectst))>=MaximumRestartTime):
             logging.info(str(JobID)+": Excluded because number of restart times exceeded")
             return False
         

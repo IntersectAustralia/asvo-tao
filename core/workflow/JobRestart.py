@@ -35,7 +35,8 @@ class JobRestart(object):
         
     def CheckPendingJobs(self,JobRestartFunctionptr):
         logging.info("#####**** Begin Checking Pending Jobs")
-        ListofJobs=self.dbaseobj.GetPendingJobsToRestart(30)
+        RestartTimeLimit=int(self.Options['WorkFlowSettings:RestartWaitTime'])
+        ListofJobs=self.dbaseobj.GetPendingJobsToRestart(RestartTimeLimit)
         for jobrecord in ListofJobs: 
             self.dbaseobj.SetJobAsRestarted(jobrecord['jobrestartid'])           
             JobRestartFunctionptr(jobrecord)
@@ -47,19 +48,19 @@ class JobRestart(object):
     def AddNewJob(self,JobRecord):
         
         
-        #if (self.dbaseobj.AddJobToRestartList(JobRecord)==True):
-        #    logging.info('Job ('+str(JobRecord['jobid'])+') Added to Restart List')
-        #    return True
-        #else:
-        #    logging.info(JobRecord)            
-        #    logging.info('Job ('+str(JobRecord['jobid'])+') Not added to Restart List')
-        #    return False
+        if (self.dbaseobj.AddJobToRestartList(JobRecord)==True):
+            logging.info('Job ('+str(JobRecord['jobid'])+') Added to Restart List')
+            return True
+        else:
+            logging.info(JobRecord)            
+            logging.info('Job ('+str(JobRecord['jobid'])+') Not added to Restart List')
+            return False
         
-        JobID=JobRecord['jobid']
-        SubJobIndex=JobRecord['subjobindex']
-        issequential=JobRecord['issequential']
-        UIReference_ID=JobRecord['uireferenceid']
-        UserName=JobRecord['username']
+        #JobID=JobRecord['jobid']
+        #SubJobIndex=JobRecord['subjobindex']
+        #issequential=JobRecord['issequential']
+        #UIReference_ID=JobRecord['uireferenceid']
+        #UserName=JobRecord['username']
         
         
         return True;
