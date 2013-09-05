@@ -21,6 +21,7 @@ import pg
 import stat,sys
 import ParseProfileData
 import traceback
+import JobRestart
 
 class WorkFlow(object):
 
@@ -41,7 +42,7 @@ class WorkFlow(object):
                'get': self.CALLBackBase + 'job/?status=SUBMITTED',
                'update': self.CALLBackBase + 'job/%d/'}
         
-
+        self.JobRestartObj=JobRestart.JobRestart(Options,dbaseobj,TorqueObj)
       
         
     def json_handler(self,resp):       
@@ -64,15 +65,54 @@ class WorkFlow(object):
         JobUserName=jsonObj['user_id']['username']
         return self.ProcessNewJob(UIJobReference, JobParams, JobDatabase, JobUserName)
         
+    def JobWithSameIDRunning(self,UIJobReference):    
+        ListOfJobs=self.dbaseobj.GetRunningJobsWithTheSameUIReferenceID(UIJobReference)
+        if len(ListOfJobs)==0:
+            logging.info("## No Jobs with the same ID exists ##")
+            return False
+        else:
+            logging.info("## **** Jobs with the same ID exists **** ##")
+            logging.info("## **** Checking if these jobs are really running **** ##")
+        logging.info("List of Jobs with the same ID:"+str(ListOfJobs))
+        ## Query PBS for current Jobs that belong to TAO
+        CurrentJobs=self.TorqueObj.QueryPBSJob()          
         
+        logging.info("Current PBS Jobs:"+str(CurrentJobs))
+        JobRunning=False
+        for JobRecord in ListOfJobs:
+            if JobRecord['pbsreferenceid'].split('.')[0] in CurrentJobs:
+                JobRunning=True
+        
+        
+        if JobRunning==True:
+            data = {}  
+            logging.info("Fatal Error .. Job of the same UIreferenceID is running or in a new state")           
+            logging.info("###### Fatal Error : Job With the same UI ReferneceID is running ! I can't accept this new Job request ######")
+            logging.info("###### I will have to set this job to Error State ######")
+            data['status'] = 'ERROR'
+            data['error_message'] = 'Error: Job With the same UI Reference ID is already running'
+            self.UpdateTAOUI(UIJobReference,EnumerationLookup.JobType.Simple, data)
+            Message = "Job (" + str(UIJobReference) +" Finished With Error. The Error Message is:" + data['error_message']
+            emailreport.SendEmailToAdmin(self.Options, "Job ReferenceID Replicated!", Message)       
+            return True
+        else:
+            logging.info("There is no jobs actually running on PBS")
+            return False
         
     def ProcessNewJob(self,UIJobReference,JobParams,JobDatabase,JobUserName):       
         
+        IsSequential=False
         try:
+            ## Handling for a very special case. Job Status turned to submitted while it is already running or queued! 
+            ## In this case the job Will be rejected and an email to the Admin will be sent to indicate this
+            if(self.JobWithSameIDRunning(UIJobReference)==True):                         
+                return False
             ## If a Job with the Same UI_ID exists ...ensure that it is out of the watch List (By Error State)
             self.dbaseobj.RemoveOldJobFromWatchList(UIJobReference)
+            self.dbaseobj.RemoveAllJobsWithUIReferenceID(UIJobReference)
+        
             ## 1- Prepare the Job Directory
-            SubJobsCount=self.PrepareJobFolder(JobParams,JobUserName,UIJobReference,JobDatabase)
+            [SubJobsCount,IsSequential]=self.PrepareJobFolder(JobParams,JobUserName,UIJobReference,JobDatabase)
             CurrentJobType=EnumerationLookup.JobType.Simple
             if SubJobsCount>1:
                CurrentJobType=EnumerationLookup.JobType.Complex     
@@ -107,18 +147,21 @@ class WorkFlow(object):
         
         
         
-                             
+        JobInformation = {'UIJobReference': UIJobReference,'CurrentJobType': CurrentJobType,
+                              'JobParams': JobParams,'JobUserName': JobUserName,'JobDatabase': JobDatabase,
+                              'SubJobIndex':0,'Issequential':str(IsSequential).lower()}                     
               
         ## Submit the Job to PBS and get back its ID
         for i in range(0,SubJobsCount):
             ## Add new Job and return its ID
-            JobID=self.dbaseobj.AddNewJob(UIJobReference,CurrentJobType,JobParams,JobUserName,JobDatabase,i)
-            ParamXMLName="params"+str(i)+".xml"       
+            JobInformation['SubJobIndex']=i
+            JobID=self.dbaseobj.AddNewJob(JobInformation)
+                   
             ############################################################
             ### Submit the Job to the PBS Queue
-            IsSquentialJob=self.ParseXMLParametersObj.IsSquentialJob()
             
-            PBSJobID=self.TorqueObj.Submit(UIJobReference,JobUserName,JobID,logpath,outputpath,ParamXMLName,i,IsSquentialJob)
+            
+            PBSJobID=self.TorqueObj.Submit(UIJobReference,JobUserName,JobID,i,IsSequential)
             ## Store the Job PBS ID  
             if self.dbaseobj.UpdateJob_PBSID(JobID,PBSJobID)!=True:
                 raise  Exception('Error in Process New Job','Update PBSID failed')
@@ -157,17 +200,17 @@ class WorkFlow(object):
         
         
         ## Parse the XML file to extract job Information and get if the job is complex or single lightcone
-        self.ParseXMLParametersObj=ParseXML.ParseXMLParameters(outputpath+'/params.xml',self.Options)
-        SubJobsCount=self.ParseXMLParametersObj.ParseFile(UIJobReference,JobDatabase,JobUserName)    
+        ParseXMLParametersObj=ParseXML.ParseXMLParameters(outputpath+'/params.xml',self.Options)
+        SubJobsCount=ParseXMLParametersObj.ParseFile(UIJobReference,JobDatabase,JobUserName)    
         
         ## Generate params?.xml files based on the requested jobscounts
-        self.ParseXMLParametersObj.ExportTrees(logpath+"/params<index>.xml")    
+        ParseXMLParametersObj.ExportTrees(logpath+"/params<index>.xml")    
         
         #self.CopyDirectoryContents(AudDataPath+"/stellar_populations",logpath)     
         self.CopyDirectoryContents(AudDataPath+"/bandpass_filters",logpath,True)
         self.CopyDirectoryContents(AudDataPath,logpath,False)
             
-        return SubJobsCount   
+        return [SubJobsCount,ParseXMLParametersObj.IsSquentialJob()]   
         
     
     def CopyDirectoryContents(self,SrcPath,DstPath,CopySubDirs):
@@ -253,7 +296,11 @@ class WorkFlow(object):
     
     
     
-    def ChangePBSFilesmod(self,UserName,JobID,LocalJobID):
+    def ChangePBSFilesmod(self,CurrentJobRecord):
+
+        UserName=CurrentJobRecord['username']
+        JobID=CurrentJobRecord['uireferenceid']
+        LocalJobID=CurrentJobRecord['jobid']
         
         JobName=self.Options['Torque:jobprefix']+UserName[:4]+'_'+str(LocalJobID)
         
@@ -271,7 +318,26 @@ class WorkFlow(object):
     
     
     
-    
+    def RestartJob(self,RestartJobRecrod):
+        logging.info("####### Restarting Job #####")
+        logging.info(RestartJobRecrod)
+        
+        JobID=RestartJobRecrod['jobid']
+        JobUserName=RestartJobRecrod['jobusername']
+        UIJobReference=RestartJobRecrod['uireferenceid']
+        IsSequential=RestartJobRecrod['issequential']
+        SubJobID=RestartJobRecrod['subjobindex']
+        
+        
+        PBSJobID=self.TorqueObj.Submit(UIJobReference,JobUserName,JobID,SubJobID,IsSequential)
+        ## Store the Job PBS ID  
+        if self.dbaseobj.UpdateJob_PBSID(JobID,PBSJobID)!=True:
+            raise  Exception('Error in Process New Job','Update PBSID failed')
+                
+        self.dbaseobj.SetJobNew(JobID,'Job Restart')          
+        ## Update the Job Status to Queued            
+        self.UpdateTAOUI(UIJobReference, EnumerationLookup.JobType.Complex, data={'status': 'QUEUED'})
+        
     
     
     def GetJobstderrcontents(self,UserName,JobID,LocalJobID):
@@ -329,49 +395,48 @@ class WorkFlow(object):
         logging.info("Database Jobs:"+str(CurrentJobs_PBSID))
         
         JobsStatus=[]
-        for PBsID in CurrentJobs_PBSID:
+        for CurrentJobRecord in CurrentJobs_PBSID:
                                 
             
            
-            PID=PBsID['pbsreferenceid'].split('.')[0]
-            OldStatus=PBsID['jobstatus']
-            UIReference_ID=PBsID['uireferenceid']
-            UserName=PBsID['username']
-            JobType=PBsID['jobtype']
-            SubJobIndex=PBsID['subjobindex']
-            JobID=PBsID['jobid']
+            CurrentJobRecord['pbsreferenceid']=CurrentJobRecord['pbsreferenceid'].split('.')[0]
+            pbsreferenceid=CurrentJobRecord['pbsreferenceid']
+            jobstatus=CurrentJobRecord['jobstatus']          
+            uireferenceid=CurrentJobRecord['uireferenceid']
             
-            logging.info("Checking Job Status : JobID="+PID+"\tInPBSList="+str(PID in CurrentJobs))
-            if PID in CurrentJobs:
-                logging.info("Checking Job Status : JobID="+PID+"\tStatus="+str(CurrentJobs[PID]))
+            
+            
+            logging.info("Checking Job Status : JobID="+pbsreferenceid+"\tInPBSList="+str(pbsreferenceid in CurrentJobs))
+            if pbsreferenceid in CurrentJobs:
+                logging.info("Checking Job Status : JobID="+pbsreferenceid+"\tStatus="+str(CurrentJobs[pbsreferenceid]))
             
             ## Parse the Job Log File and Extract Current Job Status            
-            JobDetails=self.LogReaderObj.ParseFile(UserName,UIReference_ID,SubJobIndex)
+            JobDetails=self.LogReaderObj.ParseFile(CurrentJobRecord)
              
             
             
             
             ## 1- Change In Job Status to Running 
-            if  PID in CurrentJobs and CurrentJobs[PID]=='R': 
-                if OldStatus!=EnumerationLookup.JobState.Running:
-                    self.UpdateJob_Running(PID,SubJobIndex,JobType, OldStatus, UIReference_ID, JobID)
+            if  pbsreferenceid in CurrentJobs and CurrentJobs[pbsreferenceid]=='R': 
+                if jobstatus!=EnumerationLookup.JobState.Running:
+                    self.UpdateJob_Running(CurrentJobRecord)
                 elif JobDetails!=None:
-                    logging.info ("Job ("+str(UIReference_ID)+" ["+str(SubJobIndex)+"]) .. : Progress="+JobDetails['progress'])
+                    logging.info ("Job ("+str(uireferenceid)+" ["+str(CurrentJobRecord['subjobindex'])+"]) .. : Progress="+JobDetails['progress'])
                 else:
-                    logging.info ("Job ("+str(UIReference_ID)+") .. : Log File Does not exist") 
+                    logging.info ("Job ("+str(uireferenceid)+") .. : Log File Does not exist") 
                
             ## 2-  Change In Job Status to Queued
-            elif  PID in CurrentJobs and CurrentJobs[PID]=='Q': 
-                if OldStatus!=EnumerationLookup.JobState.Queued:
-                    self.UpdateJob_Queued(PID,SubJobIndex,JobType, OldStatus, UIReference_ID, JobID)
+            elif  pbsreferenceid in CurrentJobs and CurrentJobs[pbsreferenceid]=='Q': 
+                if jobstatus!=EnumerationLookup.JobState.Queued:
+                    self.UpdateJob_Queued(CurrentJobRecord)
                 else:
                     logging.info("Jobs Still Queued ...")
             ## 3- Job Status Unknown ... It is still in the queue but it is not Q or R !     
-            elif  PID in CurrentJobs and CurrentJobs[PID]!='R' and CurrentJobs[PID]!='Q' : 
-                logging.info('Job Status UNKnow '+str(UIReference_ID)+' :'+CurrentJobs[PID])              
+            elif  pbsreferenceid in CurrentJobs and CurrentJobs[pbsreferenceid]!='R' and CurrentJobs[pbsreferenceid]!='Q' : 
+                logging.info('Job Status UNKnow '+str(uireferenceid)+' :'+CurrentJobs[pbsreferenceid])              
             
             ## 4- Job Cannot Be Found in the queue ... In this case the Log File Status determine how its termination status    
-            elif (PID not in CurrentJobs):
+            elif (pbsreferenceid not in CurrentJobs):
                 
                 ###### If The log file does not exist, Please put a dummy JobDetails
                 if JobDetails==None:
@@ -380,23 +445,27 @@ class WorkFlow(object):
                     
                 if  JobDetails['endstate']=='successful':
                     ##### Job Terminated Successfully 
-                    self.UpdateJob_EndSuccessfully(JobID,SubJobIndex,JobType, UIReference_ID, UserName, JobDetails) 
-                    self.ChangePBSFilesmod(UserName, UIReference_ID, JobID)                   
+                    self.UpdateJob_EndSuccessfully(CurrentJobRecord, JobDetails) 
+                    self.ChangePBSFilesmod(CurrentJobRecord)                   
                 else:
                     ##### Job Terminated with error or was killed by the Job Queue                    
-                    self.UpdateJob_EndWithError(JobID,SubJobIndex,JobType, UIReference_ID, UserName, JobDetails)
-                    self.ChangePBSFilesmod(UserName, UIReference_ID, JobID)  
+                    self.UpdateJob_EndWithError(CurrentJobRecord, JobDetails)
+                    self.ChangePBSFilesmod(CurrentJobRecord)  
                     break    
             ###############################################################################################################
             ## 5- The Job didn't change its status... Show its progess information if Exists!        
             else:
                 logging.info("Job Status Checking is not known!!")
 
-    
+        self.JobRestartObj.CheckPendingJobs(self.RestartJob)
 
-    def UpdateJob_EndSuccessfully(self, JobID,SubJobIndex, JobType, UIReference_ID, UserName, JobDetails):
+    def UpdateJob_EndSuccessfully(self, CurrentJobRecord, JobDetails):
         
-        
+        JobID=CurrentJobRecord['jobid']
+        SubJobIndex=CurrentJobRecord['subjobindex']
+        JobType=CurrentJobRecord['jobtype']
+        UIReference_ID=CurrentJobRecord['uireferenceid']
+        UserName=CurrentJobRecord['username']
         
         
         data = {}  
@@ -414,7 +483,16 @@ class WorkFlow(object):
         Message = "Job (" + str(UIReference_ID) +" ["+str(SubJobIndex)+"]) Path:" + path + " Finished Successfully"
         emailreport.SendEmailToAdmin(self.Options, "Workflow update", Message)
 
-    def UpdateJob_EndWithError(self, JobID,SubJobIndex, JobType, UIReference_ID, UserName, JobDetails):
+    def UpdateJob_EndWithError(self,CurrentJobRecord , JobDetails):
+        
+        
+        self.JobRestartObj.AddNewJob(CurrentJobRecord)
+        JobID=CurrentJobRecord['jobid']
+        SubJobIndex=CurrentJobRecord['subjobindex']
+        JobType=CurrentJobRecord['jobtype']
+        UIReference_ID=CurrentJobRecord['uireferenceid']
+        UserName=CurrentJobRecord['username']
+        
         data = {}  
         
         TerminateAllOnError=(self.Options['WorkFlowSettings:TerminateSubJobsOnError']=='On')
@@ -438,6 +516,9 @@ class WorkFlow(object):
                     self.TorqueObj.TerminateJob(JobItem['pbsreferenceid'].split('.')[0])
                     logging.info("Job (" + str(JobItem['jobid']) +" ["+str(JobItem['subjobindex'])+"]) ... Force Delete")
                     self.dbaseobj.SetJobFinishedWithError(JobItem['jobid'], 'Force Deleted', JobDetails['end'])
+                    self.JobRestartObj.AddNewJob(JobItem)
+                    
+                        
         
         if TerminateAllOnError==True and JobType==EnumerationLookup.JobType.Complex:
            data['error_message']=data['error_message']+" Please note that all other subjobs will be deleted also" 
@@ -451,7 +532,17 @@ class WorkFlow(object):
 
     ## Update the Back-end DB and the UI that the job is running. There is no need for special handling in case of complex Jobs
     ## In this case one job is enough to turn the sate to running
-    def UpdateJob_Running(self, PID,SubJobIndex, JobType, OldStatus, UIReference_ID, JobID):
+    def UpdateJob_Running(self, CurrentJobRecord):
+        
+        PID=CurrentJobRecord['pbsreferenceid']
+        SubJobIndex=CurrentJobRecord['subjobindex']
+        JobType=CurrentJobRecord['jobtype']
+        OldStatus=CurrentJobRecord['jobstatus']
+        UIReference_ID=CurrentJobRecord['uireferenceid']
+        JobID=CurrentJobRecord['jobid']
+        
+        
+        
         
         JobStartTime = datetime.datetime.now().timetuple()
         data = {}  
@@ -468,7 +559,18 @@ class WorkFlow(object):
         logging.info("Job (" + str(UIReference_ID) +" ["+str(SubJobIndex)+"]) ... Running")
 
     ## Update the Back-end DB and the UI that the job is Queued. In case of Multiple Lightcones, the UI will be updated with the last job
-    def UpdateJob_Queued(self, PID,SubJobIndex, JobType, OldStatus, UIReference_ID, JobID):
+    def UpdateJob_Queued(self,CurrentJobRecord):
+        
+        
+        PID=CurrentJobRecord['pbsreferenceid']
+        SubJobIndex=CurrentJobRecord['subjobindex']
+        JobType=CurrentJobRecord['jobtype']
+        OldStatus=CurrentJobRecord['jobstatus']
+        UIReference_ID=CurrentJobRecord['uireferenceid']
+        JobID=CurrentJobRecord['jobid']
+        
+        
+        
         data = {} 
         if EnumerationLookup.JobState.Queued!=OldStatus: 
             self.dbaseobj.SetJobQueued(JobID, "Job Queued- PBSID" + PID)

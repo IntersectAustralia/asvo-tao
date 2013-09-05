@@ -283,7 +283,12 @@ def release_job(request, id):
 def delete_job_output(request, id):
     if request.method == "POST":
         job = Job.objects.get(id=id)
-        job_output_delete_command = WorkflowCommand(job_id=job, command='Job_Output_Delete', submitted_by=request.user, execution_status='SUBMITTED')
+        job_output_delete_command = WorkflowCommand(
+                job_id=job,
+                command='Job_Output_Delete',
+                parameters=job.user.username,
+                submitted_by=request.user,
+                execution_status='SUBMITTED')
         job_output_delete_command.save()
 
     return HttpResponse('{}', mimetype='application/json')
