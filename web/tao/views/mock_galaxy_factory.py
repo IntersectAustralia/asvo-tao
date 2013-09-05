@@ -36,15 +36,24 @@ def index(request):
     if request.method == 'POST':
         if len(request.FILES) > 0:
             parameter_file = request.FILES.itervalues().next()
-            params_ui_holder = UIModulesHolder(UIModulesHolder.XML, xml_parse(parameter_file.read()))
             ui_holder = UIModulesHolder(UIModulesHolder.POST)
-            message = "Parameter file '%s' uploaded successfully." % parameter_file.name
-            messages.info(request, message)
-            return render(request, 'mock_galaxy_factory/index.html', {
-                'forms': ui_holder.forms(),
-                'ui_holder': params_ui_holder,
-                'TAB_SUMMARY_ID': settings.MODULE_INDICES['summary'],
-            })
+            try:
+                params_ui_holder = UIModulesHolder(UIModulesHolder.XML, xml_parse(parameter_file.read()))
+                message = "Parameter file '%s' uploaded successfully." % parameter_file.name
+                messages.info(request, message)
+                return render(request, 'mock_galaxy_factory/index.html', {
+                    'forms': ui_holder.forms(),
+                    'ui_holder': params_ui_holder,
+                    'TAB_SUMMARY_ID': settings.MODULE_INDICES['summary'],
+                })
+            except:
+                message = "Failed to process parameter file: '%s'." % parameter_file.name
+                messages.error(request, message)
+                return render(request, 'mock_galaxy_factory/index.html', {
+                    'forms': ui_holder.forms(),
+                    # 'ui_holder': params_ui_holder,
+                    'TAB_SUMMARY_ID': settings.MODULE_INDICES['summary'],
+                })
         elif 'survey_presets' in request.POST:
             preset = SurveyPreset.objects.get(pk=request.POST.get('survey_presets'))
             params_ui_holder = UIModulesHolder(UIModulesHolder.XML, xml_parse(preset.parameters.encode()))
