@@ -317,7 +317,8 @@ class Job(models.Model):
             self.var_cache[var] = getattr(self, var)
 
     def __unicode__(self):
-        return "%s %s %s" % (self.user, self.created_time, self.description)
+        return "%s %s %s %s" % (self.id, self.user.display_name(),
+                                self.created_time, self.description)
 
     def is_completed(self):
         return self.status == Job.COMPLETED
