@@ -68,7 +68,7 @@ catalogue.modules.output_format = function ($) {
     	this.vm.output_formats = ko.observableArray(this.configured_output_formats());
     	param = job['output_format-supported_formats'];
     	if (param) {
-    		param = catalogue.util.get_observable_by_field('extension', param, this.vm.output_formats);
+    		param = catalogue.util.get_observable_by_field('value', param, this.vm.output_formats);
     	}
     	this.vm.output_format = ko.observable(param ? param : this.vm.output_formats()[0]);
 

@@ -68,7 +68,7 @@ catalogue.modules.mock_image = function ($) {
 					params[key_prefix + pn] = [current_image[pn]];
 				}
 				params[key_prefix + 'format'] = [current_image['format']().value];
-				params[key_prefix + 'mag_field'] = [current_image['mag_field']().value];
+				params[key_prefix + 'mag_field'] = [current_image['mag_field']().pk];
 				params[key_prefix + 'sub_cone'] = [current_image['sub_cone']().value];
 			}
 			params['mock_image-TOTAL_FORMS']  = [image_params.length];
@@ -122,7 +122,7 @@ catalogue.modules.mock_image = function ($) {
             });
             param = get_param(prefix, '-mag_field');
             // NOTE: should the mag_field_options be recreated for each mock image?
-            param = catalogue.util.get_observable_by_attribute('value', param, image_params.mag_field_options);
+            param = catalogue.util.get_observable_by_attribute('pk', param, image_params.mag_field_options);
             image_params.mag_field = ko.observable(param ? param : image_params.mag_field_options[0]);
 
             param = get_param(prefix, '-fov_ra');
@@ -221,7 +221,7 @@ catalogue.modules.mock_image = function ($) {
                 var is_def = catalogue.validators.defined(image_params.mag_field());
                 if (!is_def) return 'Undefined';
                 var val = image_params.mag_field();
-                val = typeof val == 'object' ? val.value : val;
+                val = typeof val == 'object' ? val.pk : val;
                 var obj = catalogue.util.bandpass_filter(val);
                 if (obj.fields === undefined) return 'Undefined';
                 return obj.fields.label;

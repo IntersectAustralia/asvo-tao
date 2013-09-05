@@ -64,7 +64,7 @@ the forms being hidden and all.
                         <button type="button" class="btn btn-primary" id='id-job_release' disabled>Release</button>
                     {% endif %}
                 {% endif %}{% comment %}if user.is_superuser{% endcomment %}
-                {% if job.status == 'COMPLETED' %}
+                {% if job.status == 'COMPLETED' or job.status == 'HELD' or job.status == 'ERROR' %}
                     <button type="button" class="btn btn-primary" id="id-job_output_delete">Delete</button>
                 {% else %}
                     <button type="button" class="btn btn-primary" id="id-job_output_delete" disabled>Delete</button>
