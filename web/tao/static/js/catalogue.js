@@ -586,7 +586,8 @@ catalogue.util = function ($) {
 							text_status: textStatus,
 							jqXHR: jqXHR
 					}
-					alert("Unexpected error.  Please notify Support.")
+					alert("Unexpected error.  Please notify Support.");
+	                catalogue.vm.modal_message(null);
 				}
 			},
 			error: function(response, textStatus, jqXHR) {

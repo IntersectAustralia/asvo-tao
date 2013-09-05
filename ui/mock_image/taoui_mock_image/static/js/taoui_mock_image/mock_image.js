@@ -68,7 +68,7 @@ catalogue.modules.mock_image = function ($) {
 					params[key_prefix + pn] = [current_image[pn]];
 				}
 				params[key_prefix + 'format'] = [current_image['format']().value];
-				params[key_prefix + 'mag_field'] = [current_image['mag_field']().value];
+				params[key_prefix + 'mag_field'] = [current_image['mag_field']().pk];
 				params[key_prefix + 'sub_cone'] = [current_image['sub_cone']().value];
 			}
 			params['mock_image-TOTAL_FORMS']  = [image_params.length];
