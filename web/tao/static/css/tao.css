@@ -1,3 +1,8 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
 body { padding-top: 0px; }
 #body { padding-top: 120px; }
 
@@ -432,7 +437,7 @@ color: #333; cursor: pointer; display: inline-block; font-family: inherit; font-
 }
 
 #id_light_cone-output_properties-table.ui-resizable {
-    width: 500px;
+    width: 520px;
     height: 300px;
 }
 #id_sed-band_pass_filters-table.ui-resizable {
@@ -775,6 +780,25 @@ color: #888;
     height: auto;
 }
 
+.ouput-properties {
+ width: 492px;
+ height: 294px;
+}
+
+.ouput-properties div { display: inline-block; }
+.output-properties .six { width: 244px; display: inline-block; vertical-align: top; }
+.output-properties .five { width: 201px; display: inline-block; vertical-align: top; }
+.output-properties .one { width: 30px; margin: 0 0 0 10px; display: inline-block; vertical-align: top; }
+
+.id_light_cone-output_properties { height: 400px; }
+
+.output-properties select { width: 100%; height: 300px; }
+.output-properties a { display: block; margin: 50px 0 0 0; height: 10%; }
+#id_light_cone-output_properties-buttons { height: 348px; }
+#id_light_cone-output_properties-right { height: 340px; }
+#id_light_cone-output_properties-right select { height: 100%; }
+
+.available-tr { display: block; height: 41px; }
 
 .hidden_file_input {
   height: 30px;
