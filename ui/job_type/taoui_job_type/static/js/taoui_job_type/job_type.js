@@ -39,6 +39,7 @@ catalogue.modules.job_type = function ($) {
 
         $('#presets_button').click(function() {
             $('#survey_presets').toggle('slide', {direction: 'up'});
+            $('#survey_presets_info_box').toggle('slide', {direction: 'right'});
         });
 
     }

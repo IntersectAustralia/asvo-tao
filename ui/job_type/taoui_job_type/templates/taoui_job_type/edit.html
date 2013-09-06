@@ -29,14 +29,14 @@
             </div>
         </div>  
     </div>
-    <div class="boxed span4">
+    <div id="survey_presets_info_box" class="boxed span4" style="display: none;">
         <div class="survey-preset-info">
             <div> Selected survey preset details </div>
                 <div data-bind="with: selected_survey_preset" style="overflow-y: scroll;height: 210px">
                 <p>
                     <strong class="name" data-bind="text: name" > </strong>
-
                 </p>
+                <div class="details" data-bind="html: description" ></div>
             </div>
         </div>
     </div>
