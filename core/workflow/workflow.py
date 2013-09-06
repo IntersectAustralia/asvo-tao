@@ -486,7 +486,7 @@ class WorkFlow(object):
     def UpdateJob_EndWithError(self,CurrentJobRecord , JobDetails):
         
         
-        self.JobRestartObj.AddNewJob(CurrentJobRecord)
+        
         JobID=CurrentJobRecord['jobid']
         SubJobIndex=CurrentJobRecord['subjobindex']
         JobType=CurrentJobRecord['jobtype']
@@ -504,7 +504,7 @@ class WorkFlow(object):
         if JobDetails['error'] == '':
             JobDetails['error'] = stderr
         
-        
+        self.JobRestartObj.AddNewJob(CurrentJobRecord,stderr)
         
         self.dbaseobj.SetJobFinishedWithError(JobID, JobDetails['error'], JobDetails['end'])
         data['error_message'] = 'Error:' + JobDetails['error']        
@@ -516,7 +516,7 @@ class WorkFlow(object):
                     self.TorqueObj.TerminateJob(JobItem['pbsreferenceid'].split('.')[0])
                     logging.info("Job (" + str(JobItem['jobid']) +" ["+str(JobItem['subjobindex'])+"]) ... Force Delete")
                     self.dbaseobj.SetJobFinishedWithError(JobItem['jobid'], 'Force Deleted', JobDetails['end'])
-                    self.JobRestartObj.AddNewJob(JobItem)
+                    self.JobRestartObj.AddNewJob(JobItem,stderr)
                     
                         
         
