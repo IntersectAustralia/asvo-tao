@@ -325,15 +325,10 @@ catalogue.modules.light_cone = function ($) {
         });
 
         vm.current_output_property = ko.observable(undefined);
-    	// if param is null assume that we are in the Catalogue wizard
-    	// so set up the dependencies to update the display
-        // otherwise leave it unlinked
-        if (!param) {
-	        vm.output_properties_widget.clicked_option.subscribe(function(v) {
-	            var op = catalogue.util.dataset_property(v);
-	            vm.current_output_property(op);
-	        });
-        }
+        vm.output_properties_widget.clicked_option.subscribe(function(v) {
+            var op = catalogue.util.dataset_property(v);
+            vm.current_output_property(op);
+        });
 
         // Computed Human-Readable Summary Fields
         vm.estimated_cone_size = ko.computed(calculate_job_size);

@@ -34,8 +34,9 @@
         {% csrf_token %}
     </form>
 
-    <form id='survey_preset' hidden='true' action='' method='POST'>
+    <form id='survey_preset_form' hidden='true' action='' method='POST'>
         {% csrf_token %}
+        <input type="hidden" name="survey_presets" data-bind="value: catalogue.vm.job_type.selected_survey_preset().pk" />
     </form>
 
     <form id="mgf-form" action="" method="POST">
