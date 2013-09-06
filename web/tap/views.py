@@ -2,11 +2,10 @@ import time
 from lxml import etree
 from tap.parser import *
 from tap.settings import *
-from tap.decorators import http_auth_required, tap_job_submission_request
+from tap.decorators import http_auth, tap_job_submission_request, access_job
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseBadRequest, StreamingHttpResponse
-from django.core.exceptions import PermissionDenied
 from django.core.servers.basehttp import FileWrapper
 from tao.time import timestamp
 from tao import models
@@ -19,7 +18,7 @@ def tap(request):
 def capabilities(request):
     
     return render(request, 'tap/capabilities.xml', 
-                  {'baseUrl':           request.build_absolute_uri("/tap"), 
+                  {'baseUrl':           request.build_absolute_uri(request.path).replace('/capabilities',''), 
                    'languages':         TAP_LANGUAGES,
                    'formats':           TAP_FORMATS,
                    'retentionPeriod':   TAP_RETENTION_PERIOD,
@@ -49,7 +48,7 @@ def query(request):
     return render(request, 'tap/query.html', {})
 
 @csrf_exempt
-@http_auth_required
+@http_auth
 @tap_job_submission_request
 def sync(request):
     job = createTAPjob(request)
@@ -62,7 +61,7 @@ def sync(request):
     return stream_job_results(request, job)
     
 @csrf_exempt
-@http_auth_required
+@http_auth
 @tap_job_submission_request
 def async(request):
     job = createTAPjob(request)
@@ -70,14 +69,14 @@ def async(request):
     return UWSRedirect(request, job.id)
 
 @csrf_exempt
-@http_auth_required
-def job(request, id):
-    job = findTAPjob(request, id)
+@http_auth
+@access_job
+def job(request, id, job):
     
     if request.method == 'DELETE':
         deleteTAPJob(job)
     
-    resultsURL = "%s/%d/results" % (request.build_absolute_uri("/tap/async"), job.id)
+    resultsURL = "%s/results" % request.build_absolute_uri(request.path)
     
     return render(request, 'tap/uws-job.xml', {'job': job, 
                                                'status': UWS_JOB_STATUS[job.status], 
@@ -85,9 +84,9 @@ def job(request, id):
                                                'duration': execution_duration})
 
 @csrf_exempt
-@http_auth_required
-def phase(request, id):
-    job = findTAPjob(request, id)
+@http_auth
+@access_job
+def phase(request, id, job):
     
     if 'PHASE' in request.POST and request.POST['PHASE'] == 'ABORT':
         deleteTAPJob(job, 'Aborted')
@@ -99,46 +98,46 @@ def phase(request, id):
                       {'message': UWS_JOB_STATUS[job.status]})
 
 @csrf_exempt
-@http_auth_required
+@http_auth
 def quote(request, id):
     
     return render(request, 'tap/http_response.html', {'message': id})
 
 @csrf_exempt
-@http_auth_required
-def termination(request, id):
-    job = findTAPjob(request, id)
+@http_auth
+@access_job
+def termination(request, id, job):
     deleteTAPJob(job, 'Terminated')
     
     return render(request, 'tap/http_response.html', {'message': 'TERMINATED'})
 
 @csrf_exempt
-@http_auth_required
-def destruction(request, id):
-    job = findTAPjob(request, id)
+@http_auth
+@access_job
+def destruction(request, id, job):
     deleteTAPJob(job, 'Destructed')
     
     return render(request, 'tap/http_response.html', {'message': 'DESTRUCTED'})
 
 @csrf_exempt
-@http_auth_required
-def error(request, id):
-    job = findTAPjob(request, id)
+@http_auth
+@access_job
+def error(request, id, job):
     
     return render(request, 'tap/error.xml', {'error': job.error_message, 
                                              'timestamp': job.created_time})
 
 @csrf_exempt
-@http_auth_required
-def params(request, id):
-    job = findTAPjob(request, id)
+@http_auth
+@access_job
+def params(request, id, job):
     
     return render(request, 'tap/http_response.html', {'message': job.parameters})
 
 @csrf_exempt
-@http_auth_required
-def results(request, id):
-    job = findTAPjob(request, id)
+@http_auth
+@access_job
+def results(request, id, job):
     
     job_file = None
     for file in job.files():
@@ -148,29 +147,28 @@ def results(request, id):
     if (not job_file) or (not job_file.can_be_downloaded()):
         return HttpResponseBadRequest('File not found')
     
-    return render(request, 'tap/results.xml', 
-                  {'download_link': "%s/%s/results/result/%s" % 
-                   (request.build_absolute_uri("/tap/async"), 
-                   str(id), job_file.file_name)})
+    return render(request, 'tap/results.xml', {'download_link': "%s/result/%s" % 
+                                               (request.build_absolute_uri(request.path), 
+                                                job_file.file_name)})
 
 @csrf_exempt
-@http_auth_required
+@http_auth
+@access_job
 def result(request, id, file=None):
-    job = findTAPjob(request, id)
     
     return stream_job_results(request, job)
 
 @csrf_exempt
-@http_auth_required
-def owner(request, id):
-    job = findTAPjob(request, id)
+@http_auth
+@access_job
+def owner(request, id, job):
     
     return render(request, 'tap/http_response.html', {'message': job.username})
 
 @csrf_exempt
-@http_auth_required
-def executionduration(request, id):
-    job = findTAPjob(request, id)
+@http_auth
+@access_job
+def executionduration(request, id, job):
     
     return render(request, 'tap/http_response.html', {'message': EXECUTION_DURATION})
 
@@ -241,8 +239,18 @@ def make_parameters_xml(request):
     
 def UWSRedirect(request, id, redirect=''):
     response = HttpResponse(status=303)
-    response["Location"] = "%s/%s%s" % (request.build_absolute_uri("/tap/async"), 
-                                        str(id), redirect)
+    uri = request.build_absolute_uri(request.path)
+    # Need to make sure we catch correct URL with full application prefix.
+    # Note: UWSRedirect is expected to be used only inside 'async' part of 
+    # the TAP server.
+    tap_async_prefix = '/tap/async'
+    if uri.find(tap_async_prefix) > 0:
+        uri = uri[0:uri.find(tap_async_prefix)] + tap_async_prefix
+    else:
+        return HttpResponseBadRequest('Can not redirect')
+    
+    response["Location"] = "%s/%s%s" % (uri, str(id), redirect)
+    
     return response
 
 def stream_job_results(request, job):
@@ -279,17 +287,6 @@ def createTAPjob(request):
         job.database = dataset['name']
         
     job.save()
-    
-    return job
-    
-def findTAPjob(request, id):
-    try:
-        job = models.Job.objects.get(id=id)
-    except models.Job.DoesNotExist:
-        raise PermissionDenied
-    
-    if not job.can_read_job(request.user):
-        raise PermissionDenied
     
     return job
     
