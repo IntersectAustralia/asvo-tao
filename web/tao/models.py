@@ -512,5 +512,6 @@ class GlobalParameter(models.Model):
 class SurveyPreset(models.Model):
     name = models.CharField(max_length=100, unique=True)
     parameters = models.TextField(max_length=1000000)
+    description = models.TextField(default='')
 
 

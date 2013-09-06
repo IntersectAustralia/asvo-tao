@@ -28,20 +28,26 @@ catalogue.modules.job_type = function ($) {
     }
 
     function init_event_handlers() {
-        // attach event handlers
+        // makes it possible to load a file after clicking 'back'
+        $(document).ready(function() {
+            $('#id_job_type-params_file').val("");
+        });
+
         $('#id_job_type-params_file').change(function() {
-            // console.log('submit');
             $('#file_upload').submit();
         });
 
         $('#presets_button').click(function() {
-            $('#survey_presets').toggle('slide', {direction: 'up'});
+            $('#survey_presets').toggle();
+            $('#survey_presets_info_box').toggle();
         });
+
     }
 
     this.init_model = function (init_params) {
         // setup state
         vm.survey_presets = ko.observableArray(TaoMetadata['SurveyPreset']);
+        vm.selected_survey_preset = ko.observable(vm.survey_presets()[0]);
         // initialise event handlers
         init_event_handlers();
 
