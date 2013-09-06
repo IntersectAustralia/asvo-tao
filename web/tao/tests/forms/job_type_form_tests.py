@@ -1,13 +1,11 @@
 from tao.models import Simulation, StellarModel, DustModel, BandPassFilter
 from tao.settings import PROJECT_DIR
 from tao.tests.integration_tests.helper import LiveServerTest
-from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, JobFactory, DataSetPropertyFactory, DustModelFactory, StellarModelFactory, BandPassFilterFactory, GlobalParameterFactory, SnapshotFactory
+from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, JobFactory, DataSetPropertyFactory, DustModelFactory, StellarModelFactory, BandPassFilterFactory, GlobalParameterFactory, SnapshotFactory, SurveyPresetFactory
 
 import os.path
 
 class JobTypeFormTests(LiveServerTest):
-
-
 
     def setUp(self):
         super(JobTypeFormTests, self).setUp()
@@ -15,6 +13,9 @@ class JobTypeFormTests(LiveServerTest):
         GlobalParameterFactory.create(parameter_name='maximum-random-light-cones', parameter_value='10')
         box_sim = SimulationFactory.create(box_size=500, name='simulation_000')
         lc_sim = SimulationFactory.create(box_size=60,name='simulation_001')
+
+        params_path = os.path.join(PROJECT_DIR, 'test_data', 'params.xml')
+        params_string = open(params_path).read()
 
         for i in range(3):
             g = GalaxyModelFactory.create(name='galaxy_model_%03d' % i)
@@ -39,6 +40,7 @@ class JobTypeFormTests(LiveServerTest):
             BandPassFilterFactory.create(label='Band pass filter %03d' % i, filter_id='%d' % i)
             DustModelFactory.create(name='Dust_model_%03d.dat' % i, label='Dust model %03d' % i, details='<p>Detail %d </p>' % i)
             SnapshotFactory.create(dataset_id=i);
+            SurveyPresetFactory.create(name='Preset %d' % i, parameters=params_string)
 
         username = "person"
         password = "funnyfish"
@@ -48,8 +50,6 @@ class JobTypeFormTests(LiveServerTest):
         self.visit('mock_galaxy_factory')
         self.click('tao-tabs-job_type')
 
-        params_path = os.path.join(PROJECT_DIR, 'test_data', 'params.xml')
-        params_file = open(params_path)
         self.selenium.find_element_by_id('id_job_type-params_file').send_keys(params_path)
 
 
@@ -164,6 +164,12 @@ class JobTypeFormTests(LiveServerTest):
 
         self.assert_summary_field_correctly_shown('FITS', 'output', 'output_format')
 
+
+    def test_load_preset(self):
+        self.click('presets_button')
+        self.click('load_survey_preset_button')
+        self.assert_page_has_content("Survey Preset 'Preset 0' loaded successfully.")
+        
 
     def get_ko_array(self, vm_ko_array, field):
         js = 'return $.map(' + vm_ko_array + ', function(v, i) { return v.' + field + '; });'

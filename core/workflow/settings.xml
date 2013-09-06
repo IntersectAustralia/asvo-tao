@@ -3,15 +3,15 @@
 		<serverip>tao02.hpc.swin.edu.au</serverip>
 		<port>3306</port>
 		<user>taoadmin</user>
-		<password>tao_admin_password_##</password>
-		<NewDBName>master</NewDBName>					
+		<password></password>
+		<NewDBName>masterstaging</NewDBName>					
 	</PGDB>
 	
 	<WorkFlowSettings>
-		<CallbackURL>http://tao.asvo.org.au/taodemo/api/</CallbackURL>
-		<ProcessID>daemon-workflow.pid</ProcessID>
-		<WatchDogProcessID>daemon-workflow-watchdog.pid</WatchDogProcessID>
-		<WorkingDir>/lustre/projects/p014_swin/FTP</WorkingDir>
+		<CallbackURL>https://tao.asvo.org.au/taostaging/api/v1/</CallbackURL>
+		<ProcessID>daemon-workflow-staging.pid</ProcessID>
+		<WatchDogProcessID>daemon-workflow-watchdog-staging.pid</WatchDogProcessID>
+		<WorkingDir>/lustre/projects/p014_swin/FTP/stagingjobs/</WorkingDir>
 		<LogDir>/lustre/projects/p014_swin/logs/workflow.log</LogDir>
 		<SleepTime>30</SleepTime>
 		<Events>On</Events>
@@ -19,20 +19,26 @@
 		<enableemails>On</enableemails>
 		<emailserver>gpo.swin.edu.au</emailserver>
 		<senderEmail>admin@asvo.org.au</senderEmail>
-		<ToEmail>ahassan@swin.edu.au</ToEmail>			
+		<ToEmail>ahassan@swin.edu.au</ToEmail>	
+		<RestartWaitTime>30</RestartWaitTime>
+		<MaximumRestartTime>2</MaximumRestartTime>	
 	</WorkFlowSettings>
 	<Torque>
 		<ServerAddress>pbs.hpc.swin.edu.au</ServerAddress>
 		<ScriptFileName>pbs_script</ScriptFileName>		
 		<JobsQueue>sstar</JobsQueue>
+		<outputbasedir>stagingjobs</outputbasedir>
 		<Nodes>1</Nodes>
 		<ProcessorNode>4</ProcessorNode>
-		<UserName>taoadmin</UserName>		
-		<ExecutableName>/lustre/projects/p014_swin/programs/ScienceModules/bin/tao</ExecutableName>
-		<MergeScriptName>python /lustre/projects/p014_swin/programs/Workflow/mergeoutput.py</MergeScriptName>
-		<AuxInputData>/lustre/projects/p014_swin/programs/ScienceModules/data</AuxInputData>		
-		<BasicSettingsPath>/lustre/projects/p014_swin/programs/Workflow/basicsetting.xml</BasicSettingsPath>
-		<maindatapath>/lustre/projects/p014_swin/programs/ScienceModules/maindata</maindatapath>
+		<UserName>taoadmin</UserName>
+		<jobprefix>stao_</jobprefix>
+		<ExecutableName>/lustre/projects/p014_swin/programs/ScienceModulesStaging/bin/tao</ExecutableName>
+		<BaseLibPath>/lustre/projects/p014_swin/programs/ScienceModulesStaging/</BaseLibPath>
+		<ProfilingExecutableName>/lustre/projects/p014_swin/programs/WorkflowStaging/tao_profiling</ProfilingExecutableName>
+		<MergeScriptName>python /lustre/projects/p014_swin/programs/WorkflowStaging/mergeoutput.py</MergeScriptName>
+		<AuxInputData>/lustre/projects/p014_swin/programs/ScienceModulesStaging/data</AuxInputData>		
+		<BasicSettingsPath>/lustre/projects/p014_swin/programs/WorkflowStaging/basicsetting.xml</BasicSettingsPath>
+		<maindatapath>/lustre/projects/p014_swin/programs/ScienceModulesStaging/maindata</maindatapath>
 	</Torque>
 	
 </settings>	
