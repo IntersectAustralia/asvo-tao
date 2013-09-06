@@ -15,12 +15,12 @@ import os
 
 
 def format_human_readable_file_size(file_size):
-    size = file_size
+    size = float(file_size)
     units = ['B', 'kB', 'MB']
     for x in units:
-        if size < 1000:
-            return '%3d%s' % (size, x)
-        size /= 1000
+        if size < 1000.0:
+            return '%3d%s' % (round(size), x)
+        size /= 1000.0
     return '%3.1f%s' % (size, 'GB')
 
 
@@ -317,7 +317,8 @@ class Job(models.Model):
             self.var_cache[var] = getattr(self, var)
 
     def __unicode__(self):
-        return "%s %s %s" % (self.user, self.created_time, self.description)
+        return "%s %s %s %s" % (self.id, self.user.display_name(),
+                                self.created_time, self.description)
 
     def is_completed(self):
         return self.status == Job.COMPLETED
@@ -472,7 +473,11 @@ class WorkflowCommand(models.Model):
     execution_comment = models.TextField(null=True, blank=True)
 
     def __unicode__(self):
-        return self.command
+        if self.job_id is not None:
+            jid = " on {0}".format(self.job_id.id)
+        else:
+            jid = ""
+        return u"{cmd}{jid}".format(cmd=self.command, jid=jid)
 
     def jobid(self):
         return self.job_id.pk
@@ -486,11 +491,13 @@ class WorkflowCommand(models.Model):
             prev = WorkflowCommand.objects.get(pk=self.id)
             if self.execution_status != prev.execution_status:
                 self.executed = datetime.now()
-                if self.command == self.JOB_OUTPUT_DELETE:
-                    job_id = self.job_id.pk
-                    self.job_id = None
-                    Job.objects.get(id=job_id).delete()
-                    self.execution_comment += 'Job %(job_id)s successfully deleted.' % locals()
+                if self.command == self.JOB_OUTPUT_DELETE and \
+                    self.execution_status == COMPLETED:
+                        job_id = self.job_id.pk
+                        self.job_id = None
+                        Job.objects.get(id=job_id).delete()
+                        self.execution_comment += u'{0}\nJob {job_id} successfully deleted.'.format(
+                            self.execution_comment, job_id=job_id).strip()
         super(WorkflowCommand, self).save(force_insert=force_insert, force_update=force_update, using=using,
                                           update_fields=update_fields)
 
@@ -501,4 +508,9 @@ class GlobalParameter(models.Model):
 
     def __str__(self):
         return self.parameter_name
+
+class SurveyPreset(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    parameters = models.TextField(max_length=1000000)
+
 
