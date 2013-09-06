@@ -169,19 +169,23 @@ legend {
 }
 
 #tabs.ui-tabs .ui-tabs-nav li a:hover {
-  background: #EFEFEF;
+  text-decoration: underline;
 }
 
 #tabs.ui-tabs .ui-tabs-nav li a.status_0 {
-  color: #2ba6cb;
+  color: #7f7f7f;
 }
 
 #tabs.ui-tabs .ui-tabs-nav li a.status_1 {
-  color: orange;
+  color: #2ba6cb;
 }
 
 #tabs.ui-tabs .ui-tabs-nav li a.status_2 {
-  color: red;
+  color: #be6e00;
+}
+
+#tabs.ui-tabs .ui-tabs-nav li a.status_3 {
+  color: #b94a48;
 }
 
 #tabs.ui-tabs li.ui-state-active a, #tabs.ui-tabs li.ui-state-active a:hover {
@@ -193,9 +197,12 @@ legend {
   margin-bottom: -1px;
 }
 
-span.required.error {
-  color: red;
-  font-weight: bold;
+span.required {
+  color: #b94a48;
+}
+
+div.control-group label.error {
+    color: #b94a48;
 }
 
 #tabs.ui-tabs .ui-tabs-panel {
@@ -408,6 +415,12 @@ color: #333; cursor: pointer; display: inline-block; font-family: inherit; font-
 
 .btn-primary { background: #2ba6cb; color: #FFF; border: 1px solid #1e728c; }
 .btn-primary:hover { background-color: #2284a1; color: #FFF; border: 1px solid #1e728c; }
+
+.btn-primary-errors { background: #b94a48; color: #FFF; border: 1px solid #803937; }
+.btn-primary-errors:hover { background-color: #803937; color: #FFF; border: 1px solid #803937; }
+
+span.see-form-errors { color:#b94a48; font-size: 0.8em; }
+span.see-form-errors:hover { text-decoration: underline; cursor: pointer;}
 
 .summary_light_cone td,
 .summary_sed td,

@@ -127,11 +127,13 @@ catalogue.modules.mock_image = function ($) {
             image_params.fov_dec = ko.observable(param ? param : catalogue.modules.light_cone.vm.dec_opening_angle());
             param = get_param(prefix, '-width');
             image_params.width = ko.observable(param ? param : 1024)
+                .extend({required: true})
                 .extend({validate: catalogue.validators.is_float})
                 .extend({validate: catalogue.validators.geq(1)})
                 .extend({validate: catalogue.validators.leq(4096)});
             param = get_param(prefix, '-height');
             image_params.height = ko.observable(param ? param : 1024)
+                .extend({required: true})
                 .extend({validate: catalogue.validators.is_float})
                 .extend({validate: catalogue.validators.geq(1)})
                 .extend({validate: catalogue.validators.leq(4096)});
@@ -264,7 +266,12 @@ catalogue.modules.mock_image = function ($) {
             update_apply_mock_image(val, vm);
         });
 
+        vm.enabled = ko.computed(function(){
+            return vm.can_have_images() && vm.apply_mock_image();
+        });
+
         vm.image_settings = ko.observableArray([]);
+        vm.image_settings.validate_array = true;
 
         vm.sub_cone_options = ko.computed(function(){
             if (catalogue.modules.light_cone.vm.catalogue_geometry() == 'box')
