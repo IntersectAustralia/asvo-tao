@@ -180,7 +180,8 @@ catalogue.modules.view_job = function ($) {
             var h = $(this)[0].scrollHeight - 8;
             $(this).height( Math.min(h, 300) );
         });
-    	// new TextareaHeight({textarea: $('#id-job_description')[0]});
+
+        return vm;
     }
 
     var original_height = $('#id-job_description')[0].scrollHeight;

@@ -979,6 +979,7 @@ jQuery(document).ready(function ($) {
             resizable: true,
             modal: true,
             autoOpen: false,
+            width: 500,
             buttons: {
                 Ok: {
                     text: "Ok",
