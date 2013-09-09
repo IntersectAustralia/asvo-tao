@@ -70,7 +70,7 @@ def parse_fields(sql, _dataset = None):
             
             fields.append({'value': name, 'label': label, 'units': units})
             
-        return fields
+    return fields
 
 def parse_conditions(sql):
     regex = re.compile('WHERE\s+(.*)\s*(GROUP BY|ORDER BY|LIMIT|;|$)', re.I|re.M|re.S)
