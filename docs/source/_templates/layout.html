@@ -3,4 +3,9 @@
     <li><a href="../..">Theoretical Astrophysical Observatory</a> &raquo;</li>
     {{ super() }}
 {% endblock %}
+{% block linktags %}
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/tao.css" type="text/css">
+    {{ super() }}
+{% endblock %}
 
