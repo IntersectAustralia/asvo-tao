@@ -28,6 +28,7 @@
         </div>  
     </div>
     <div class="aside span4">
+        <!-- ko if: catalogue.vm.job_type.survey_presets().length > 0 -->
         <div id="survey_presets_info_box" class="boxed" style="display: none;">
             <div class="survey-preset-info">
                 <div> Selected survey preset details </div>
@@ -39,5 +40,6 @@
                 </div>
             </div>
         </div>
+        <!-- /ko -->
     </div>
 </div>
