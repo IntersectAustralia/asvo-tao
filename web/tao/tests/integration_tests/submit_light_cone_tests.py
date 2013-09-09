@@ -2,7 +2,7 @@ from django.conf import settings
 from tao.models import Snapshot
 from tao.settings import MODULE_INDICES
 from tao.tests.integration_tests.helper import LiveServerMGFTest
-from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, JobFactory, StellarModelFactory, SnapshotFactory, BandPassFilterFactory, GlobalParameterFactory
+from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, JobFactory, StellarModelFactory, SnapshotFactory, BandPassFilterFactory, GlobalParameterFactory, SurveyPresetFactory
 
 from taoui_light_cone.forms import Form as LightConeForm
 
@@ -24,10 +24,12 @@ class SubmitLightConeTests(LiveServerMGFTest):
         DataSetPropertyFactory.create(dataset=dataset)
         StellarModelFactory.create()
         BandPassFilterFactory.create()
+        self.survey_preset = SurveyPresetFactory.create(name='Preset 1', parameters='<xml></xml>')
 
         self.username = "user"
         password = "password"
         self.user = UserFactory.create(username=self.username, password=password)
+
         
         self.parameters = """<lightcone>
                         <database_type>sqlite</database_type>
