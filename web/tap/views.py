@@ -182,6 +182,7 @@ def make_parameters_xml(request):
     if ('MAXREC' in request.POST) and (request.POST['MAXREC'] != ''):
         limit  = request.POST['MAXREC']
     conditions = parse_conditions(query)
+    query      = remove_limits(query)
     
     params_xml = etree.Element("tao")
     params_xml.set('timestamp', timestamp())
