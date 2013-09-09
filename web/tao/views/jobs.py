@@ -27,7 +27,7 @@ def view_job(request, id):
     # xml_string = job.parameters
     ui_holder = UIModulesHolder(UIModulesHolder.XML, xml_parse(job.parameters.encode('utf-8')))
     forms = ui_holder.forms()
-
+    
     return render(request, 'jobs/view.html', {
         'id': id,
         'user': request.user,
@@ -35,7 +35,6 @@ def view_job(request, id):
         'ui_holder': ui_holder,
         'forms': forms,
         'forms_size': len(forms)+1,
-        'user': request.user,
     })
 
 @researcher_required
@@ -139,7 +138,6 @@ def _get_summary_as_text(id):
         galaxy_model = dataset.galaxy_model
         output_properties = []
         for output_property in ui_holder.raw_data('sql_job', 'output_properties'):
-            print output_property
             output_properties = output_properties + [(output_property['label'], output_property['units'])]
         output_format = ''
         for x in output_formats():

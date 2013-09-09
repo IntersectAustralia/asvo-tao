@@ -92,7 +92,7 @@ class TAPServicesTests(TestCase):
     def test_limit_parsing(self):
         limit = '10,20' 
         query = 'select * from %s limit %s' % (self.dataset['name'], limit)
-        self.assertEqual(parse_limit(query), limit)
+        self.assertEqual(parse_limit(query), u'20')
     
     
     
