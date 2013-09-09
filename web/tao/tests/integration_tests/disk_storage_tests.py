@@ -3,7 +3,7 @@ from django.conf import settings
 from tao.models import Job
 from tao.tests import helper
 from tao.tests.integration_tests.helper import LiveServerTest
-from tao.tests.support.factories import UserFactory, JobFactory, GlobalParameterFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, SnapshotFactory
+from tao.tests.support.factories import UserFactory, JobFactory, GlobalParameterFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, SnapshotFactory, SurveyPresetFactory
 
 import os
 
@@ -36,6 +36,7 @@ class DiskStorageTests(LiveServerTest):
         self.filter = DataSetPropertyFactory.create(name='CentralMvir rf', units="Msun/h", dataset=self.dataset)
         self.computed_filter = DataSetPropertyFactory.create(name='Computed Property', dataset=self.dataset, is_computed=True)
         self.snapshot = SnapshotFactory.create(dataset=self.dataset, redshift='0.33')
+        self.survey_preset = SurveyPresetFactory.create(name='Preset 1', parameters='<xml></xml>')
 
         self.default_disk_quota = GlobalParameterFactory.create(parameter_name='default_disk_quota', parameter_value='6')
 
@@ -50,6 +51,8 @@ class DiskStorageTests(LiveServerTest):
     def test_under_disk_quota_can_get_new_catalogue(self):
         # check for both default_disk_quota and disk_quota allocated to the user
         self.visit('mock_galaxy_factory')
+
+
         self.assert_on_page('mock_galaxy_factory')
 
         self.visit('job_index')
