@@ -9,7 +9,7 @@ from tao.record_filter_form import RecordFilterForm
 from taoui_light_cone.forms import Form as LightConeForm
 from taoui_sed.forms import Form as SEDForm
 from tao.tests.support import stripped_joined_lines
-from tao.tests.support.factories import SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, UserFactory, StellarModelFactory, SnapshotFactory, BandPassFilterFactory, GlobalParameterFactory
+from tao.tests.support.factories import SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, UserFactory, StellarModelFactory, SnapshotFactory, BandPassFilterFactory, GlobalParameterFactory, SurveyPresetFactory
 from tao.tests.support.xml import XmlDiffMixin
 
 from tao.tests.support import UtcPlusTen
@@ -38,9 +38,11 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         self.dataset.default_filter_field = self.filter
         self.dataset.save()
         SnapshotFactory.create(dataset=self.dataset)
+        self.survey_preset = SurveyPresetFactory.create(name='Preset 1', parameters='<xml></xml>')
 
         self.stellar_model = StellarModelFactory.create()
         self.bandpass = BandPassFilterFactory.create()
+
 
         self.user = UserFactory.create()
         #expected_timestamp = "2012-11-13 13:45:32+1000"
@@ -62,6 +64,7 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
             'apply_sed': False,
         }
         self.default_form_values['record_filter'] = {'filter' : 'X-'+NO_FILTER}
+        
 
     def tearDown(self):
         super(MockGalaxyFactoryTests, self).tearDown()
