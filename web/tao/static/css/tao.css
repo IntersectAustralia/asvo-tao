@@ -821,10 +821,14 @@ color: #888;
   right: 0px;
   font-size: 100px;
   z-index: 2;
-
+  width: 18em;
   opacity: 0.0; /* Standard: FF gt 1.5, Opera, Safari */
   filter: alpha(opacity=0); /* IE lt 8 */
   -ms-filter: "alpha(opacity=0)"; /* IE 8 */
   -khtml-opacity: 0.0; /* Safari 1.x */
   -moz-opacity: 0.0; /* FF lt 1.5, Netscape */
+}
+
+.btn.upload_parameters {
+    width: 12em;
 }
