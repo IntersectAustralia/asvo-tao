@@ -34,12 +34,14 @@
         {% csrf_token %}
     </form>
 
+    <!-- ko if: catalogue.vm.job_type.survey_presets().length > 0 -->
     <form id='survey_preset_form' hidden='true' action='' method='POST'>
         {% csrf_token %}
         <input type="hidden" name="survey_presets" data-bind="value: catalogue.vm.job_type.selected_survey_preset().pk" />
     </form>
+    <!-- /ko -->
 
-    <form id="mgf-form" action="" method="POST">
+    <form id="mgf-form" action="" method="POST" data-bind="log: console.log('FORM START')">
         <fieldset>
         {% csrf_token %}
         <div id="tabs" class='row-fluid'>
