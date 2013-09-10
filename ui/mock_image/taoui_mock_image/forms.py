@@ -88,7 +88,6 @@ class SingleForm(BetterForm):
 
     def __init__(self, *args, **kwargs):
         super(SingleForm, self).__init__(*args, **kwargs)
-
         self.fields['sub_cone'] = forms.ChoiceField(label=_('Sub-cone index:'), choices=self.SUB_CONE_CHOICES, required=True)
         self.fields['format'] = forms.ChoiceField(label=_('Output format:'), choices=self.FORMAT_CHOICES,
                                                   required=True)
@@ -119,12 +118,15 @@ class SingleForm(BetterForm):
         self.fields['width'].widget.attrs['data-bind'] = 'value: width'
         self.fields['height'].widget.attrs['data-bind'] = 'value: height'
 
-
     def full_clean(self):
         # Update the choices before continuing.
         self.fields['sub_cone'].choices.append(('ALL', 'ALL'))
         self.fields['mag_field'].choices.append(('test', 'test')) # TODO: Remove.
         return super(SingleForm, self).full_clean()
+
+    def is_valid(self):
+        self.full_clean()
+        return super(SingleForm, self).is_valid()
 
     def to_json_dict(self, prefix="mock_image"):
         json_dict = {}
@@ -188,12 +190,20 @@ class Form(BaseForm):
         # Set to None if we aren't bound.
         else:
             data = None
-        super(Form, self).__init__(data, *args[2:], **kwargs)
+        super(Form, self).__init__(data=data, **kwargs)
 
     def clean(self):
-
         # Get the checkbox state.
         self.apply_mock_image = self.data.get('mock_image-apply_mock_image', False)
+        super(Form, self).clean()
+
+    def is_valid(self):
+        self.clean()
+        if not self.apply_mock_image == (self.total_form_count() > 0):
+            return False
+        if not self.total_form_count() == self.initial_form_count():
+            return False
+        return super(Form, self).is_valid()
 
     def to_json_dict(self):
         """Answer the json dictionary representation of the receiver.

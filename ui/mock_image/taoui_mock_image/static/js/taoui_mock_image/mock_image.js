@@ -50,7 +50,6 @@ catalogue.modules.mock_image = function ($) {
 
 		params['mock_image-apply_mock_image'] = [vm.can_have_images() && vm.apply_mock_image()];
 		params['mock_image-MAX_NUM_FORMS'] = [max_allowed_images];
-		params['mock_image-INITIAL_FORMS'] = [0];
 		if (vm.can_have_images() && vm.apply_mock_image()) {
 			image_params = vm.image_settings();
 			// Assume that we haven't exceeded the max_allowed_images
@@ -68,6 +67,7 @@ catalogue.modules.mock_image = function ($) {
 				params[key_prefix + 'sub_cone'] = [current_image['sub_cone']().value];
 			}
 			params['mock_image-TOTAL_FORMS']  = [image_params.length];
+		    params['mock_image-INITIAL_FORMS'] = [image_params.length];
 		} else {
 	    	params['mock_image-TOTAL_FORMS'] = [0];
 		}
