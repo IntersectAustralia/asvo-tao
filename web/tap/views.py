@@ -154,7 +154,7 @@ def results(request, id, job):
 @csrf_exempt
 @http_auth
 @access_job
-def result(request, id, file=None):
+def result(request, id, job, file=None):
     
     return stream_job_results(request, job)
 
@@ -296,7 +296,7 @@ def deleteTAPJob(job, action='Deleted'):
                                               submitted_by=job.user, execution_status='SUBMITTED')
     job_stop_command.save()
     job.status = models.Job.ERROR
-    job.error_message = "%s by user" % action
+    job.error_message = "%s by user.\n" % action
     job.save()
     
     
