@@ -132,7 +132,7 @@ class JobTypeFormTests(LiveServerTest):
 
 
 
-    def _test_rf_params(self):
+    def test_rf_params(self):
         self.upload_params_file()
 
         self.click('tao-tabs-record_filter')
@@ -152,7 +152,7 @@ class JobTypeFormTests(LiveServerTest):
         self.assertEqual('FITS', out_format)
         
 
-    def _test_summary_params(self):
+    def test_summary_params(self):
         self.upload_params_file()
 
         self.click('tao-tabs-summary_submit')
