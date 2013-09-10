@@ -19,16 +19,6 @@ namespace tao {
    }
 
    real_type
-   apparent_magnitude( const tao::sed& sed,
-                       const bandpass& bp,
-                       real_type area )
-   {
-      real_type spec_int = sed.integrate( bp );
-      real_type bp_int = bp.integral();
-      return apparent_magnitude( spec_int, bp_int, area );
-   }
-
-   real_type
    apparent_magnitude( real_type spec_int,
                        real_type bp_int,
                        real_type area )
@@ -37,13 +27,6 @@ namespace tao {
          return 100.0;
       else
          return -2.5*(log10( spec_int ) - area - log10( bp_int )) - 48.6;
-   }
-
-   real_type
-   absolute_magnitude( const tao::sed& sed,
-                       const bandpass& bp )
-   {
-      return apparent_magnitude( sed, bp, calc_abs_area() );
    }
 
 }

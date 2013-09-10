@@ -899,7 +899,11 @@ load_galaxies( void* data )
 void*
 calc_mags( void* data )
 {
-   tao::sed sed( ssp.wavelengths() );
+   auto wave = ssp.wavelengths();
+   tao::sed<> sed;
+   sed.spectrum().knot_points().resize( wave.size() );
+   std::copy( wave.begin(), wave.end(), sed.spectruM().knot_points().begin() );
+
    while( load_gals_done == false )
    {
       for( auto& bat : gals )
