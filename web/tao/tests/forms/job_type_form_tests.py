@@ -93,7 +93,7 @@ class JobTypeFormTests(LiveServerTest):
 
         self.assert_multi_selected_text_equals(self.sed_id('band_pass_filters-right'), ['Band pass filter 000 (Absolute)','Band pass filter 002 (Apparent)'])
 
-    def _test_mock_image_params(self):
+    def test_mock_image_params(self):
         self.upload_params_file()
 
         self.click('tao-tabs-mock_image')
@@ -103,7 +103,7 @@ class JobTypeFormTests(LiveServerTest):
         self.assertEqual([u'FITS'], self.get_ko_array('catalogue.vm.mock_image.format_options', 'value'))
 
         self.assertEqual(2, self.get_image_setting_ko_field(0,'sub_cone'))
-        self.assertEqual('3_apparent', self.get_image_setting_ko_field(0,'mag_field'))
+        self.assertEqual('3_apparent', self.get_image_setting_ko_field(0, 'mag_field', field='pk'))
 
         self.assertEqual('7', self.get_image_setting_ko_value(0, 'min_mag'))
         self.assertEqual('12', self.get_image_setting_ko_value(0, 'max_mag'))
@@ -117,7 +117,7 @@ class JobTypeFormTests(LiveServerTest):
         self.assertEqual('66', self.get_image_setting_ko_value(0, 'height'))
 
         self.assertEqual(3, self.get_image_setting_ko_field(1,'sub_cone'))
-        self.assertEqual('1_absolute', self.get_image_setting_ko_field(1,'mag_field'))
+        self.assertEqual('1_absolute', self.get_image_setting_ko_field(1, 'mag_field', field='pk'))
 
         self.assertEqual('', self.get_image_setting_ko_value(1, 'min_mag'))
         self.assertEqual('11', self.get_image_setting_ko_value(1, 'max_mag'))
