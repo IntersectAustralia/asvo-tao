@@ -74,8 +74,9 @@ catalogue.modules.record_filter = function ($) {
     	default_filter_pk = catalogue.modules.light_cone.vm.dataset().fields.default_filter_field;
         if (defined(default_filter_pk)) {
             var def_dataset = catalogue.util.dataset_property(default_filter_pk);
-            if (defined(def_dataset))
-               add_to_result(to_option(catalogue.util.dataset_property(default_filter_pk)));
+            if (defined(def_dataset)) {
+    	        add_to_result(to_option(catalogue.util.dataset_property(default_filter_pk)));
+            }
         }
 
     	// Get the selected output properties with is_filter==true
@@ -146,6 +147,7 @@ catalogue.modules.record_filter = function ($) {
     	// job is either an object containing the job parameters or null
     	var job = init_params.job;
     	var param; // Temporary variable for observable initialisation
+        var defined = catalogue.validators.defined;
 
     	vm.selection = ko.observable();
     	
@@ -170,16 +172,22 @@ catalogue.modules.record_filter = function ($) {
         vm.selection_max = ko.observable(param ? param : current_dataset.fields.default_filter_max)
 
         vm.selection_min
+            .extend({required: function(){
+                return !defined(vm.selection_max());
+            }})
             .extend({validate: catalogue.validators.is_float})
             .extend({validate: valid_min_max});
 
         vm.selection_max
+            .extend({required: function(){
+                return !defined(vm.selection_min());
+            }})
     		.extend({validate: catalogue.validators.is_float})
     		.extend({validate: valid_min_max});
 
     	vm.hr_summary = ko.computed(this.hr_summary);
 
-    	return vm
+    	return vm;
     }
 
 }

@@ -14,8 +14,8 @@ class JobTypeFormTests(LiveServerTest):
         box_sim = SimulationFactory.create(box_size=500, name='simulation_000')
         lc_sim = SimulationFactory.create(box_size=60,name='simulation_001')
 
-        params_path = os.path.join(PROJECT_DIR, 'test_data', 'params.xml')
-        params_string = open(params_path).read()
+        self.params_path = os.path.join(PROJECT_DIR, 'test_data', 'params.xml')
+        params_string = open(self.params_path).read()
 
         for i in range(3):
             g = GalaxyModelFactory.create(name='galaxy_model_%03d' % i)
@@ -50,15 +50,13 @@ class JobTypeFormTests(LiveServerTest):
         self.visit('mock_galaxy_factory')
         self.click('tao-tabs-job_type')
 
-        self.selenium.find_element_by_id('id_job_type-params_file').send_keys(params_path)
-
 
     def tearDown(self):
         super(JobTypeFormTests, self).tearDown()
 
 
     def test_light_cone_params(self):
-        self.click('tao-tabs-light_cone')
+        self.upload_params_file()
 
         lc_geometry = self.get_selected_option_text(self.lc_id('catalogue_geometry'))
         self.assertEqual('Light-Cone', lc_geometry)
@@ -86,6 +84,8 @@ class JobTypeFormTests(LiveServerTest):
 
 
     def test_sed_params(self):
+        self.upload_params_file()
+
         self.click('tao-tabs-sed')
 
         sed_pop = self.get_selected_option_text(self.sed_id('single_stellar_population_model'))
@@ -94,6 +94,8 @@ class JobTypeFormTests(LiveServerTest):
         self.assert_multi_selected_text_equals(self.sed_id('band_pass_filters-right'), ['Band pass filter 000 (Absolute)','Band pass filter 002 (Apparent)'])
 
     def _test_mock_image_params(self):
+        self.upload_params_file()
+
         self.click('tao-tabs-mock_image')
 
         self.assertEqual([u'ALL', 1, 2, 3], self.get_ko_array('catalogue.vm.mock_image.sub_cone_options()', 'value'))
@@ -131,6 +133,8 @@ class JobTypeFormTests(LiveServerTest):
 
 
     def _test_rf_params(self):
+        self.upload_params_file()
+
         self.click('tao-tabs-record_filter')
 
         rf_filter = self.get_selected_option_text(self.rf_id('filter'))
@@ -142,12 +146,15 @@ class JobTypeFormTests(LiveServerTest):
         
 
     def test_output_params(self):
+        self.upload_params_file()
         self.click('tao-tabs-output_format')
         out_format = self.get_selected_option_text('#id_output_format-supported_formats')
         self.assertEqual('FITS', out_format)
         
 
     def _test_summary_params(self):
+        self.upload_params_file()
+
         self.click('tao-tabs-summary_submit')
 
         self.assert_summary_field_correctly_shown('Light-Cone', 'light_cone', 'geometry_type')
@@ -183,3 +190,5 @@ class JobTypeFormTests(LiveServerTest):
         js = 'return catalogue.modules.mock_image.vm.image_settings()[%d].%s()' % (index, setting)
         return self.selenium.execute_script(js)
 
+    def upload_params_file(self):
+        self.selenium.find_element_by_id('id_job_type-params_file').send_keys(self.params_path)
