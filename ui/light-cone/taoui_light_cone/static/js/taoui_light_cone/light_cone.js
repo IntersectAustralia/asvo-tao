@@ -50,21 +50,6 @@ catalogue.modules.light_cone = function ($) {
     this.cleanup_fields = function ($form) {
     }
 
-
-    this.validate = function ($form) {
-    	var is_valid = true;
-    	// var is_ok = catalogue.validators.is_ok;
-        // if (vm.catalogue_geometry() == 'box') {
-        //     if (!is_ok(vm.box_size)) return false;
-        // } else {
-        //     if (!is_ok(vm.box_size)) return false;
-        //    /// TODO !!!
-        // }
-    	is_valid &= catalogue.util.validate_vm(vm);
-    	return is_valid;
-    }
-
-
     this.pre_submit = function ($form) {
     }
 
@@ -88,11 +73,12 @@ catalogue.modules.light_cone = function ($) {
     			'light_cone-box_size': [vm.box_size()]
     		});
     	} else { // light-cone
-    		var noc = parseInt(vm.number_of_light_cones());
-    		// Work-around: Hiding the spinner seems to set the count to 0
-    		if (noc == 0) {
-    			noc = 1;
-    		}
+            var noc;
+            if (vm.light_cone_type() == 'unique') {
+                noc = 1;
+            } else {
+                noc = parseInt(vm.number_of_light_cones());
+            }
     		jQuery.extend(params, {
     			'light_cone-light_cone_type': [vm.light_cone_type()],
     			'light_cone-ra_opening_angle': [vm.ra_opening_angle()],
@@ -120,33 +106,26 @@ catalogue.modules.light_cone = function ($) {
         var whole_digit = parseInt(redshift).toString().length;
         return redshift.toFixed(Math.max(5 - whole_digit, 0));
     };
+
     this.format_redshift = format_redshift;
 
-    var snapshot_id_to_redshift = function(snapshot_id) {
-        // console.log(snapshot_id);
-        res = $.grep(TaoMetadata.Snapshot, function(elem, idx) { 
-            return elem.pk == snapshot_id
-        })[0].fields.redshift;
-        return format_redshift(res);
-    };
-
     var lookup_dataset = function(sid, gmid) {
-    	res = $.grep(TaoMetadata.DataSet, function(elem, idx) {
+    	var res = $.grep(TaoMetadata.DataSet, function(elem, idx) {
     		return elem.fields.simulation == sid && elem.fields.galaxy_model == gmid;
     	});
     	return res[0];
     };
-    
+
     var lookup_geometry = function(gid) {
-    	res = $.grep(vm.catalogue_geometries(), function(elem, idx) {
+    	var res = $.grep(vm.catalogue_geometries(), function(elem, idx) {
     		return elem.id == gid;
     	});
     	return res[0];
     }
-    
+
     var available_datasets = function() {
     	// Answer the set of available datasets
-    	res = $.grep(TaoMetadata.DataSet, function(elem, idx) {
+    	var res = $.grep(TaoMetadata.DataSet, function(elem, idx) {
     		return elem.fields.available;
     	});
     	return res;
@@ -156,25 +135,28 @@ catalogue.modules.light_cone = function ($) {
     	// Answer the set of simulations that are available
     	// Only those that are associated with active datasets are available
     	var sids = [];
-    	datasets = available_datasets();
+    	var datasets = available_datasets();
     	for (var i=0; i<datasets.length; i++) {
     		sids.push(datasets[i].fields.simulation);
     	}
-    	res = $.grep(TaoMetadata.Simulation, function(elem, idx) {
+    	var res = $.grep(TaoMetadata.Simulation, function(elem, idx) {
     		return sids.indexOf(elem.pk) >= 0;
     	});
     	return res;
     }
-    
-    var available_galaxy_models = function() {
+
+    var available_galaxy_models = function(sid) {
     	// Answer the set of galaxy models that are available
-    	// Only those that are associated with active datasets are available
+    	// Only those that are associated with active datasets from current simulation id (sid)
+    	// are available
     	var sids = [];
-    	datasets = available_datasets();
+    	var datasets = available_datasets();
     	for (var i=0; i<datasets.length; i++) {
-    		sids.push(datasets[i].fields.galaxy_model);
+            if (datasets[i].fields.simulation == sid) {
+    		    sids.push(datasets[i].fields.galaxy_model);
+            }
     	}
-    	res = $.grep(TaoMetadata.GalaxyModel, function(elem, idx) {
+    	var res = $.grep(TaoMetadata.GalaxyModel, function(elem, idx) {
     		return sids.indexOf(elem.pk) >= 0;
     	});
     	return res;
@@ -218,8 +200,10 @@ catalogue.modules.light_cone = function ($) {
         }
         vm.dark_matter_simulation = ko.observable(param ? param : vm.dark_matter_simulations()[0])
         	.extend({logger: 'simulation'});
-        
-        vm.galaxy_models = ko.observableArray(available_galaxy_models());
+
+        vm.galaxy_models = ko.computed(function(){
+            return available_galaxy_models(vm.dark_matter_simulation().pk);
+        });
         param = job['light_cone-galaxy_model'];
         if (param) {
         	param = catalogue.util.galaxy_model(param);
@@ -239,8 +223,9 @@ catalogue.modules.light_cone = function ($) {
         vm.light_cone_type = ko.observable(param ? param : 'unique');
         param = job['light_cone-number_of_light_cones'];
         vm.number_of_light_cones = ko.observable(param ? param : 1)
+            .extend({required: function(){return vm.catalogue_geometry() == 'light-cone' && vm.light_cone_type() != 'unique'}})
             .extend({validate: catalogue.validators.is_int});
-        // Disable geq 1 check until we can figure out why it is being 
+        // Disable geq 1 check until we can figure out why it is being
         // set to 0.  job_params ensures that it is at least 1 before
         // submission.
         //    .extend({validate: catalogue.validators.geq(1)});
@@ -298,6 +283,9 @@ catalogue.modules.light_cone = function ($) {
         });
         param = catalogue.util.snapshot(job['light_cone-snapshot']);
         vm.snapshot = ko.observable(param ? param : vm.snapshots()[0]);
+        vm.snapshots.subscribe(function(arr){
+                vm.snapshot(arr[0]);
+        });
 
         param = job['light_cone-output_properties'];
         if (param) {
@@ -322,18 +310,30 @@ catalogue.modules.light_cone = function ($) {
         });
 
         vm.current_output_property = ko.observable(undefined);
-    	// if param is null assume that we are in the Catalogue wizard
-    	// so set up the dependencies to update the display
-        // otherwise leave it unlinked
-        if (!param) {
-	        vm.output_properties_widget.clicked_option.subscribe(function(v) {
-	            var op = catalogue.util.dataset_property(v);
-	            vm.current_output_property(op);
-	        });
-        }
+        vm.output_properties_widget.clicked_option.subscribe(function(v) {
+            var op = catalogue.util.dataset_property(v);
+            vm.current_output_property(op);
+        });
 
         // Computed Human-Readable Summary Fields
-        vm.estimated_cone_size = ko.computed(calculate_job_size);
+        vm.estimated_cone_size = ko.computed(function(){
+            try {
+                return calculate_job_size();
+            } catch(e) {
+                return NaN;
+            }
+        });
+        vm.estimated_cone_size
+            .extend({validate: catalogue.validators.test(function(){
+                if (vm.catalogue_geometry().id == 'box') return true;
+                return !isNaN(vm.estimated_cone_size());
+            },
+            "Please provide light-cone parameters to estimate job size")})
+            .extend({validate: catalogue.validators.test(function(){
+                if (vm.catalogue_geometry().id == 'box') return true;
+                return vm.estimated_cone_size() <= 100;
+            },
+            "Estimated job size for this Light-cone is beyond allowed maximum")});
 
 
         var job_too_large = function() {
@@ -349,7 +349,7 @@ catalogue.modules.light_cone = function ($) {
         vm.estimated_cone_size_msg = ko.computed(function () {
         	var ecs = vm.estimated_cone_size();
         	var msg = 'Estimated job size: ';
-        	if (ecs == null) {
+        	if (isNaN(ecs)) {
         		msg += "(waiting for valid cone parameters)";
         	} else {
 	            msg = msg + ecs + "%";
@@ -396,7 +396,9 @@ catalogue.modules.light_cone = function ($) {
                     result = 'Redshift: ' + vm.redshift_min() + ' &le; z &le; ' + vm.redshift_max();
                 }
             } else {
-                result = format_redshift(vm.snapshot().fields.redshift);
+                var snapshot = vm.snapshot();
+                if (snapshot !== undefined)
+                    result = format_redshift(vm.snapshot().fields.redshift);
             }
             return result;
         });

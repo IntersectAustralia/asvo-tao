@@ -18,5 +18,5 @@ urlpatterns = patterns('tap.views',
     url(r'^async/(?P<id>\d+)/params$',                       'params'),
     url(r'^async/(?P<id>\d+)/results$',                      'results'),
     url(r'^async/(?P<id>\d+)/results/result$',               'result'),
-    url(r'^async/(?P<id>\d+)/results/result/(?P<file>\w+)$', 'result'),
+    url(r'^async/(?P<id>\d+)/results/result/(?P<file>.+)$',  'result'),
 )

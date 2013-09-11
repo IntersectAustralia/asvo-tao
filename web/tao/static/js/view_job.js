@@ -39,7 +39,11 @@ catalogue.modules.view_job = function ($) {
                         $.ajax({
                             url: TAO_JOB_CTX + 'stop_job/' + TaoJob['job-id'],
                             type: 'POST',
+                            success: function(response, textStatus, jqXHR) {
+                                location.reload();
+                            },
                             error: function(response, textStatus, jqXHR) {
+                                console.log(response.responseText);
                                 console.log("Couldn't stop SUBMITTED job: " + response + textStatus);
                             }
                         });
@@ -94,12 +98,15 @@ catalogue.modules.view_job = function ($) {
             autoOpen: false,
             buttons: {
                 Ok: {
-                    text: "Remove all job output",
+                    text: "Delete",
                     id: "id_confirm_delete_output",
                     click: function() {
                         $.ajax({
                             url: TAO_JOB_CTX + 'delete_job_output/' + TaoJob['job-id'],
                             type: 'POST',
+                            success: function(response, textStatus, jqXHR) {
+                                location.reload();
+                            },
                             error: function(response, textStatus, jqXHR) {
                                 console.log("Couldn't create job_output_delete workflow command: " + response + textStatus);
                             }
@@ -173,7 +180,8 @@ catalogue.modules.view_job = function ($) {
             var h = $(this)[0].scrollHeight - 8;
             $(this).height( Math.min(h, 300) );
         });
-    	// new TextareaHeight({textarea: $('#id-job_description')[0]});
+
+        return vm;
     }
 
     var original_height = $('#id-job_description')[0].scrollHeight;

@@ -34,23 +34,27 @@
         {% csrf_token %}
     </form>
 
-    <form id="mgf-form" action="" method="POST">
+    <!-- ko if: catalogue.vm.job_type.survey_presets().length > 0 -->
+    <form id='survey_preset_form' hidden='true' action='' method='POST'>
+        {% csrf_token %}
+        <input type="hidden" name="survey_presets" data-bind="value: catalogue.vm.job_type.selected_survey_preset().pk" />
+    </form>
+    <!-- /ko -->
+
+    <form id="mgf-form" action="" method="POST" data-bind="log: console.log('FORM START')">
         <fieldset>
         {% csrf_token %}
-        <div id="tabs" class='row-fluid' data-bind="tabs: true">
-            <ul>
+        <div id="tabs" class='row-fluid'>
+            <ul class="tabs_row">
                 {% for form in forms %}
-                <li data-bind="tab_handle: {'id':'{{ form.prefix }}', 'label':'{{ form.LABEL }}'} " ></li>
+                <li data-bind="tab_handle: {'model': {{ form.prefix }}, 'label':'{{ form.LABEL }}'}" ></li>
                 {%  endfor %}
-                <li data-bind="tab_handle: {'id':'summary_submit', 'label':'Summary and submit'}"></li>
+                <li data-bind="tab_handle: {'model': summary_submit, 'label':'Summary and submit'}"></li>
             </ul>
             {% for form in forms %}
-                <!-- ko with: {{ form.prefix }} -->
-                <div class="tao-tab"
-                     data-bind="tab_form: {'id': '{{ form.prefix }}'}">
-
+                <div class="tao-tab" id="tabs-{{ form.prefix }}" data-bind="log: console.log('FORM EDIT {{ form.prefix }}'), with: {{ form.prefix }}">
+                     {% if forloop.counter > 1 %}
                         <input type="button" value="Next &gt;" class="btn tao-next"  data-bind="click: next_tab"/>
-                    {% if forloop.counter > 1 %}
                         <input type="button" value="&lt; Previous" class="btn tao-prev" style="float: left;"  data-bind="click: previous_tab"/>
                     {% endif %}
 
@@ -58,42 +62,71 @@
 
                     <div class="form-actions">
 
-                      <input type="button" value="Next &gt;" class="btn tao-next" data-bind="click: next_tab"/>
                       {% if forloop.counter > 1 %}
-                          <input type="button" value="&lt; Previous" class="btn tao-prev" style="float: left;" data-bind="click: previous_tab"/>
+                          <input type="button" value="Next &gt;" class="btn tao-next" />
+                          <input type="button" value="&lt; Previous" class="btn tao-prev" style="float: left;"/>
                       {% endif %}
                       
                     </div>
 
                 </div>
-                <!-- /ko -->
             {% endfor %}
-          <div class="tao-tab"
-               data-bind="tab_form: {'id': 'summary_submit'}">
+          <div class="tao-tab" id='tabs-summary_submit' data-bind="log: console.log('FORM EDIT summary_submit'), with: summary_submit">
                  
                 <input type="button" value="&lt; Previous" class="btn tao-prev" style="float: left;" data-bind="click: previous_tab"/>
                 <legend></legend>
                 <div class="row-fluid">
                     <textarea name="job-description" placeholder="My description (optional)" style="width: 500px; height: 150px;"
-                    		data-bind="value: description"></textarea>
+                    		data-bind="value: $parent.description"></textarea>
+                    <!-- ko with: $root -->
                     {% for form in forms %}
-                    <div data-bind="with: {{ form.prefix }}">
+                    <div data-bind="log: console.log('FORM SUMMARY {{ form.prefix }}'), with: {{ form.prefix }}">
                         {% include form.SUMMARY_TEMPLATE %}
                     </div>
                     {% endfor %}
+                    <!-- /ko -->
                 </div>
                 <div class="form-actions">
                     <input type="button" value="&lt; Previous" class="btn tao-prev" style="float: left;" data-bind="click: previous_tab"/>
+                    <!-- ko ifnot: $root.has_errors -->
                     <input id="form_submit" type="button" value="Submit Job" class="btn btn-primary" data-bind="click: catalogue.util.submit_job" />
+                    <!-- /ko -->
+                    <!-- ko if: $root.has_errors -->
+                    <input id="form_errors" type="button" value="See errors" class="btn btn-primary-errors" data-bind="click: catalogue.util.show_errors" />
+                    <span class="see-form-errors" data-bind="click: catalogue.util.show_errors">Click to see errors</span>
+                    <!-- /ko -->
                 </div>
             </div>
         </div>
         </fieldset>
     </form>
-    <div data-bind="visible: modal_message() != null">
+
+    <div id="modal_message_container" data-bind="visible: modal_message() != null">
             <div id="modal_message"></div>
             <textarea readonly id="modal_message_text" data-bind="value: modal_message">Loading...</textarea>
     </div>
+
+    <div id="error_report" title="Errors" style="display: none;">
+        <p><span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>
+            <ul data-bind="foreach: $root.all_errors">
+                <li><!-- ko text: module --><!-- /ko --> (<!-- ko text: errors.length --><!-- /ko --> errors)</li>
+                <ul data-bind="foreach: errors">
+                    <!-- ko if: $data.constructor == {}.constructor -->
+                    <!-- ko with: $data -->
+                        <!-- ko text: item --><!-- /ko -->
+                        <ul data-bind="foreach: errors">
+                            <li data-bind="text: $data"></li>
+                        </ul>
+                        <!-- /ko -->
+                    <!-- /ko -->
+                    <!-- ko ifnot: $data.constructor == {}.constructor -->
+                    <li data-bind="text: $data"></li>
+                    <!-- /ko -->
+                </ul>
+            </ul>
+        </p>
+    </div>
+
 
     <script type="text/html" id="select_with_groups">
             <!-- ko ifnot: has_groups -->
@@ -109,31 +142,29 @@
             </select>
             <!-- /ko -->
     </script>
+
     <script type="text/html" id="two_sided_select_widget">
-      <table data-bind="attr: {'id': id + '-table'}" class="ui-resizable" style="width: 492px; height: 294px;">
-        <tbody>
-        <tr>
-          <td>Available</td>
-          <td></td>
-          <td>Selected</td>
-        </tr>
-        <tr>
-          <td><input type="text" placeholder="Filter" data-bind="value: filter, valueUpdate: 'afterkeydown'"></td>
-          <td rowspan="2" data-bind="attr:{'id': id + '-buttons'}" vertical-align="middle">
-          <a href="#" data-bind="attr:{'id': id + '_op_add_all'}, click: op_add_all">&gt;&gt;</a>
-          <a href="#" data-bind="attr:{'id': id + '_op_add'}, click: op_add">&gt;</a>
-          <a href="#" data-bind="attr:{'id': id + '_op_remove'}, click: op_remove">&lt;</a>
-          <a href="#" data-bind="attr:{'id': id + '_op_remove_all'}, click: op_remove_all">&lt;&lt;</a>
-          </td>
-          <td rowspan="2" data-bind="template: { name: 'select_with_groups', data: to_side }, attr:{'id': id + '-right'}">
-          </td>
-        </tr>
-        <tr>
-          <td style="height:100%" data-bind="template: {name: 'select_with_groups', data: from_side }, attr:{'id': id + '-left'}">
-          </td>
-        </tr>
-        </tbody>
-      </table>
+      <div data-bind="attr: {'id': id + '-table'}" class="ui-resizable output-properties" >
+        <div>
+          <span class="six">Available</span>
+          <span class="six">Selected</span>
+        </div>
+        <div>
+          <div class="five">
+            <input class="input-block-level" type="text" placeholder="Filter" data-bind="value: filter, valueUpdate: 'afterkeydown'">
+            <div class="input-block-level" data-bind="template: {name: 'select_with_groups', data: from_side }, attr:{'id': id + '-left'}">
+            </div>
+          </div>
+          <div class="one" data-bind="attr:{'id': id + '-buttons'}" vertical-align="middle">
+            <a href="#" data-bind="attr:{'id': id + '_op_add_all'}, click: op_add_all">&gt;&gt;</a>
+            <a href="#" data-bind="attr:{'id': id + '_op_add'}, click: op_add">&gt;</a>
+            <a href="#" data-bind="attr:{'id': id + '_op_remove'}, click: op_remove">&lt;</a>
+            <a href="#" data-bind="attr:{'id': id + '_op_remove_all'}, click: op_remove_all">&lt;&lt;</a>
+          </div>
+          <div class="six" data-bind="template: { name: 'select_with_groups', data: to_side }, attr:{'id': id + '-right'}">
+          </div>
+        </div>
+      </div>
     </script>
 
 {% endblock content %}

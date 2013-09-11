@@ -14,9 +14,9 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.utils.translation import ugettext_lazy as _
 from tao.models import TaoUser
 
-from tao.models import Job, Simulation, GalaxyModel, DataSet, DataSetProperty, StellarModel, Snapshot, BandPassFilter, DustModel, GlobalParameter, WorkflowCommand
+from tao.models import Job, Simulation, GalaxyModel, DataSet, DataSetProperty, StellarModel, Snapshot, BandPassFilter, DustModel, GlobalParameter, WorkflowCommand, SurveyPreset
 
-for model in (GalaxyModel, StellarModel, BandPassFilter, DustModel, GlobalParameter):
+for model in (GalaxyModel, StellarModel, BandPassFilter, DustModel, GlobalParameter, SurveyPreset):
     admin.site.register(model)
 
 class SimulationAdmin(admin.ModelAdmin):
@@ -56,6 +56,10 @@ class UserChangeForm(forms.ModelForm):
 
     class Meta:
         model = TaoUser
+
+    def __init__(self, *args, **kwargs):
+        super(UserChangeForm, self).__init__(*args, **kwargs)
+        self.fields['disk_quota'].help_text = "Value is in MB"
 
     def clean_password(self):
         return self.initial['password']

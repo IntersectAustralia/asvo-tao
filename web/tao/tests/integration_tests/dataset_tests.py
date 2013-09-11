@@ -1,4 +1,4 @@
-from tao.tests.support.factories import DataSetFactory, DataSetPropertyFactory, GalaxyModelFactory, GlobalParameterFactory, SimulationFactory, UserFactory, SnapshotFactory, StellarModelFactory, DustModelFactory, BandPassFilterFactory
+from tao.tests.support.factories import DataSetFactory, DataSetPropertyFactory, GalaxyModelFactory, GlobalParameterFactory, SimulationFactory, UserFactory, SnapshotFactory, StellarModelFactory, DustModelFactory, BandPassFilterFactory, SurveyPresetFactory
 from tao.tests.integration_tests.helper import LiveServerTest
 
 class DatasetTests(LiveServerTest):
@@ -22,6 +22,7 @@ class DatasetTests(LiveServerTest):
         self.default_dataset.default_filter_field = DataSetPropertyFactory.create(dataset=ds3, name='dataset property 3')
         self.default_dataset.save()
         SnapshotFactory.create(dataset=self.default_dataset, redshift='0.33')
+        self.survey_preset = SurveyPresetFactory.create(name='Preset 1', parameters='<xml></xml>')
 
         for i in range(3):
             StellarModelFactory.create(label='stellar_label_%03d' % i, name='stellar_name_%03d' % i, description='<p>Description %d </p>' % i)
@@ -39,7 +40,7 @@ class DatasetTests(LiveServerTest):
         GlobalParameterFactory.create(parameter_name='default_dataset', parameter_value=self.default_dataset.pk)
         self.visit('mock_galaxy_factory')
         self.assert_on_page('mock_galaxy_factory')
-        self.click('ui-id-2')
+        self.click('tao-tabs-light_cone')
         selected_simulation = self.get_selected_option_text(self.lc_id('dark_matter_simulation'))
         self.assertEqual(self.default_dataset.simulation.name, selected_simulation)
         selected_galaxy_model = self.get_selected_option_text(self.lc_id('galaxy_model'))

@@ -1,13 +1,11 @@
 from tao.models import Simulation, StellarModel, DustModel, BandPassFilter
 from tao.settings import PROJECT_DIR
 from tao.tests.integration_tests.helper import LiveServerTest
-from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, JobFactory, DataSetPropertyFactory, DustModelFactory, StellarModelFactory, BandPassFilterFactory, GlobalParameterFactory, SnapshotFactory
+from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, JobFactory, DataSetPropertyFactory, DustModelFactory, StellarModelFactory, BandPassFilterFactory, GlobalParameterFactory, SnapshotFactory, SurveyPresetFactory
 
 import os.path
 
 class JobTypeFormTests(LiveServerTest):
-
-
 
     def setUp(self):
         super(JobTypeFormTests, self).setUp()
@@ -15,6 +13,9 @@ class JobTypeFormTests(LiveServerTest):
         GlobalParameterFactory.create(parameter_name='maximum-random-light-cones', parameter_value='10')
         box_sim = SimulationFactory.create(box_size=500, name='simulation_000')
         lc_sim = SimulationFactory.create(box_size=60,name='simulation_001')
+
+        self.params_path = os.path.join(PROJECT_DIR, 'test_data', 'params.xml')
+        params_string = open(self.params_path).read()
 
         for i in range(3):
             g = GalaxyModelFactory.create(name='galaxy_model_%03d' % i)
@@ -39,6 +40,7 @@ class JobTypeFormTests(LiveServerTest):
             BandPassFilterFactory.create(label='Band pass filter %03d' % i, filter_id='%d' % i)
             DustModelFactory.create(name='Dust_model_%03d.dat' % i, label='Dust model %03d' % i, details='<p>Detail %d </p>' % i)
             SnapshotFactory.create(dataset_id=i);
+            SurveyPresetFactory.create(name='Preset %d' % i, parameters=params_string)
 
         username = "person"
         password = "funnyfish"
@@ -46,11 +48,7 @@ class JobTypeFormTests(LiveServerTest):
         self.login(username, password)
 
         self.visit('mock_galaxy_factory')
-        self.click('ui-id-1')
-
-        params_path = os.path.join(PROJECT_DIR, 'test_data', 'params.xml')
-        params_file = open(params_path)
-        self.selenium.find_element_by_id('id_job_type-params_file').send_keys(params_path)
+        self.click('tao-tabs-job_type')
 
 
     def tearDown(self):
@@ -58,7 +56,7 @@ class JobTypeFormTests(LiveServerTest):
 
 
     def test_light_cone_params(self):
-        self.click('ui-id-2')
+        self.upload_params_file()
 
         lc_geometry = self.get_selected_option_text(self.lc_id('catalogue_geometry'))
         self.assertEqual('Light-Cone', lc_geometry)
@@ -86,15 +84,19 @@ class JobTypeFormTests(LiveServerTest):
 
 
     def test_sed_params(self):
-        self.click('ui-id-3')
+        self.upload_params_file()
+
+        self.click('tao-tabs-sed')
 
         sed_pop = self.get_selected_option_text(self.sed_id('single_stellar_population_model'))
         self.assertEqual('stellar_label_001', sed_pop)
 
         self.assert_multi_selected_text_equals(self.sed_id('band_pass_filters-right'), ['Band pass filter 000 (Absolute)','Band pass filter 002 (Apparent)'])
 
-    def test_mock_image_params(self):
-        self.click('ui-id-4')
+    def _test_mock_image_params(self):
+        self.upload_params_file()
+
+        self.click('tao-tabs-mock_image')
 
         self.assertEqual([u'ALL', 1, 2, 3], self.get_ko_array('catalogue.vm.mock_image.sub_cone_options()', 'value'))
         self.assertEqual([u'1_absolute', u'3_apparent'], self.get_ko_array('catalogue.modules.mock_image.vm.image_settings()[0].mag_field_options()', 'pk'))
@@ -130,8 +132,10 @@ class JobTypeFormTests(LiveServerTest):
 
 
 
-    def test_rf_params(self):
-        self.click('ui-id-5')
+    def _test_rf_params(self):
+        self.upload_params_file()
+
+        self.click('tao-tabs-record_filter')
 
         rf_filter = self.get_selected_option_text(self.rf_id('filter'))
         self.assertEqual('Band pass filter 002 (Apparent)', rf_filter)
@@ -142,13 +146,16 @@ class JobTypeFormTests(LiveServerTest):
         
 
     def test_output_params(self):
-        self.click('ui-id-6')
+        self.upload_params_file()
+        self.click('tao-tabs-output_format')
         out_format = self.get_selected_option_text('#id_output_format-supported_formats')
         self.assertEqual('FITS', out_format)
         
 
-    def test_summary_params(self):
-        self.click('ui-id-7')
+    def _test_summary_params(self):
+        self.upload_params_file()
+
+        self.click('tao-tabs-summary_submit')
 
         self.assert_summary_field_correctly_shown('Light-Cone', 'light_cone', 'geometry_type')
         self.assert_summary_field_correctly_shown('simulation_001', 'light_cone', 'simulation')
@@ -165,15 +172,23 @@ class JobTypeFormTests(LiveServerTest):
         self.assert_summary_field_correctly_shown('FITS', 'output', 'output_format')
 
 
+    def test_load_preset(self):
+        self.click('presets_button')
+        self.click('load_survey_preset_button')
+        self.assert_page_has_content("Survey Preset 'Preset 0' loaded successfully.")
+        
+
     def get_ko_array(self, vm_ko_array, field):
         js = 'return $.map(' + vm_ko_array + ', function(v, i) { return v.' + field + '; });'
-        return self.selenium.execute_script(js);
+        return self.selenium.execute_script(js)
 
     def get_image_setting_ko_field(self, index, setting, field='value'):
         js = 'return catalogue.modules.mock_image.vm.image_settings()[%d].%s().%s' % (index, setting, field)
-        return self.selenium.execute_script(js);
+        return self.selenium.execute_script(js)
 
     def get_image_setting_ko_value(self, index, setting):
         js = 'return catalogue.modules.mock_image.vm.image_settings()[%d].%s()' % (index, setting)
-        return self.selenium.execute_script(js);
+        return self.selenium.execute_script(js)
 
+    def upload_params_file(self):
+        self.selenium.find_element_by_id('id_job_type-params_file').send_keys(self.params_path)

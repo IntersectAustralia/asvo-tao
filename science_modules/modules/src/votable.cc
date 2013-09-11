@@ -283,7 +283,8 @@ namespace tao {
 	 _file<<"<?xml version=\"1.0\"?>"<<std::endl;
 	 _file<<"<VOTABLE version=\"1.3\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.ivoa.net/xml/VOTable/v1.3\"";
 	 _file<<" xmlns:stc=\"http://www.ivoa.net/xml/STC/v1.30\" >"<<std::endl;
-	 _file<<"<RESOURCE name=\""<<ResourceName<<"\">"<<std::endl;
+	 _file<<"<RESOURCE name=\""<<ResourceName<<"\" type=\"results\">"<<std::endl;
+	 _file<<"<INFO name=\"QUERY_STATUS\" value=\"OK\"/>"<<std::endl;
 	 _file<<"<TABLE name=\""<<TableName<<"\">"<<std::endl;
       }
 

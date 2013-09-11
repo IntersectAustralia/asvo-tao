@@ -85,24 +85,21 @@ class DBInterface(object):
             logging.error(Exp)            
             logging.error("Current SQL Statement =\n"+SQLStatment)
             
+    ########################################################################################################################################   
+    ########################################################################################################################################
+    #######################################No Query Functions###############################################################################
     
     def AddNewEvent(self,AssociatedJobID,EventType,EventDesc):
         if self.Options['WorkFlowSettings:Events']=='On':
             INSERTEvent="INSERT INTO EVENTS (EventType,ASSOCIATEDJOBID,EVENTDESC) VALUES "
             INSERTEvent=INSERTEvent+"("+str(EventType)+","+str(AssociatedJobID)+",'"+EventDesc+"');"
             return self.ExecuteNoQuerySQLStatment(INSERTEvent)
-    def GetCurrentActiveJobs(self):
-        SELECTActive="SELECT * From Jobs where JobStatus<"+str(EnumerationLookup.JobState.Completed+" and latestjobversion=True ;")
-        return self.ExecuteQuerySQLStatment(SELECTActive)
     
     def RemoveOldJobFromWatchList(self,UIReferenceID):
         UpdateSt='Update Jobs set JobStatus='+str(EnumerationLookup.JobState.Error)+' Where uireferenceid='+str(UIReferenceID)+' and JobStatus<'+str(EnumerationLookup.JobState.Completed)+';'
         UpdateSt=UpdateSt+' Update Jobs set latestjobversion=False where uireferenceid='+str(UIReferenceID)+';'
         return self.ExecuteNoQuerySQLStatment(UpdateSt)
-        
-    def GetCurrentActiveJobs_pbsID(self):
-        SELECTActive="SELECT jobid,pbsreferenceid,JobStatus,uireferenceid,username,subjobindex,jobtype From Jobs where latestjobversion=True and JobStatus<"+str(EnumerationLookup.JobState.Completed)+" and pbsreferenceid is not null"
-        return self.ExecuteQuerySQLStatmentAsDict(SELECTActive)
+    
     
     def SetJobComplete(self,JobID,Comment,ExecTime):
         logging.info('Job ('+str(JobID)+') Completed .... '+Comment)
@@ -118,7 +115,8 @@ class DBInterface(object):
         Updatest="UPDATE Jobs set JobStatus="+str(EnumerationLookup.JobState.Error)+",completedate=insertdate+INTERVAL '"+str(ExecTime)+" seconds',jobstatuscomment='"+Comment+"' where JobID="+str(JobID)+";"
         Updatest=Updatest+"INSERT INTO JobHistory(JobID,NewStatus,Comments) VALUES("+str(JobID)+","+str(EnumerationLookup.JobState.Error)+",'Error');"
         return self.ExecuteNoQuerySQLStatment(Updatest)
-            
+    
+    
     def SetJobRunning(self,JobID,Comment,JobStartTime):
             Updatest="UPDATE Jobs set JobStatus="+str(EnumerationLookup.JobState.Running)+",jobstatuscomment='"+Comment+"', startdate='"+time.strftime('%d/%m/'+str(date.today().year)+' %H:%M:%S',JobStartTime)+"' where JobID="+str(JobID)+";"
             Updatest=Updatest+"INSERT INTO JobHistory(JobID,NewStatus,Comments) VALUES("+str(JobID)+","+str(EnumerationLookup.JobState.Running)+",'JobRunning');"
@@ -128,17 +126,26 @@ class DBInterface(object):
             Updatest="UPDATE Jobs set JobStatus="+str(EnumerationLookup.JobState.Queued)+",jobstatuscomment='"+Comment+"' where JobID="+str(JobID)+";"
             Updatest=Updatest+"INSERT INTO JobHistory(JobID,NewStatus,Comments) VALUES("+str(JobID)+","+str(EnumerationLookup.JobState.Queued)+",'JobWaiting');"
             return self.ExecuteNoQuerySQLStatment(Updatest)
+    def SetJobNew(self,JobID,Comment):       
+            Updatest="UPDATE Jobs set JobStatus="+str(EnumerationLookup.JobState.NewJob)+",jobstatuscomment='"+Comment+"' where JobID="+str(JobID)+";"
+            Updatest=Updatest+"INSERT INTO JobHistory(JobID,NewStatus,Comments) VALUES("+str(JobID)+","+str(EnumerationLookup.JobState.NewJob)+",'Job Restarted');"
+            return self.ExecuteNoQuerySQLStatment(Updatest)
             
     def SetJobPaused(self,JobID,UICommandID): 
            Updatest="UPDATE Jobs set JobStatus="+str(EnumerationLookup.JobState.Paused)+",jobstatuscomment='PAUSED BY WORKFLOW COMMAND ID="+str(UICommandID)+"' where JobID="+str(JobID)+";"
            return self.ExecuteNoQuerySQLStatment(Updatest)     
-    def AddNewJob(self,UIReferenceID,JobType,XMLParams,UserName,Database,SubJobIndex):
-        
+    
+    def AddNewJob(self,JobInformation):       
+            
         ## Encode the XML Params and remove un-replaceable unicode chars    
-        XMLParamsASCII=XMLParams.encode('ascii','ignore')
-        XMLParamsASCII=XMLParamsASCII.replace("\'","\"")       
-        INSERTJobSt="INSERT INTO JOBS(UIReferenceID,JobType,UserName,XMLParams,Database,subjobindex) VALUES ("
-        INSERTJobSt=INSERTJobSt+str(UIReferenceID)+","+str(JobType)+",'"+UserName+"','"+XMLParamsASCII+"','"+Database+"',"+str(SubJobIndex)+");"
+        XMLParamsASCII=JobInformation['JobParams'].encode('ascii','ignore')
+        XMLParamsASCII=XMLParamsASCII.replace("\'","\"")
+        
+               
+        INSERTJobSt="INSERT INTO JOBS(UIReferenceID,JobType,UserName,XMLParams,Database,subjobindex,issequential) VALUES ("
+
+        INSERTJobSt=INSERTJobSt+str(JobInformation['UIJobReference'])+","+str(JobInformation['CurrentJobType'])+",'"
+        INSERTJobSt=INSERTJobSt+JobInformation['JobUserName']+"','"+XMLParamsASCII+"','"+JobInformation['JobDatabase']+"',"+str(JobInformation['SubJobIndex'])+","+JobInformation['Issequential']+");"           
         INSERTJobSt=INSERTJobSt+"SELECT currval('nextjobid');"
             
         ## Get Latest JobID
@@ -147,7 +154,7 @@ class DBInterface(object):
         self.AddNewJobStatus(JobID,0, "JobAdded")
         
         return JobID
-        
+
 
     def UpdateJob_PBSID(self,JobID,PBSID):
         UpdateStat=" update jobs set pbsreferenceid='"+PBSID+"' where jobid="+str(JobID)+";"
@@ -160,6 +167,23 @@ class DBInterface(object):
         INSERTJobSt=INSERTJobSt+str(JobID)+","+str(NewStatus)+",'"+Comment+"');"
         
         return self.ExecuteNoQuerySQLStatment(INSERTJobSt)
+    
+    ########################################################################################################################################   
+    ########################################################################################################################################
+    #######################################Query Functions#################################################################################    
+        
+    def GetCurrentActiveJobs(self):
+        SELECTActive="SELECT * From Jobs where JobStatus<"+str(EnumerationLookup.JobState.Completed+" and latestjobversion=True ;")
+        return self.ExecuteQuerySQLStatment(SELECTActive)    
+    
+    
+    def GetRunningJobsWithTheSameUIReferenceID(self,UIReferenceID):
+        SelectSt='SELECT jobid,pbsreferenceid,JobStatus,uireferenceid,username from jobs Where uireferenceid='+str(UIReferenceID)+' and JobStatus<'+str(EnumerationLookup.JobState.Completed)+';'        
+        return self.ExecuteQuerySQLStatmentAsDict(SelectSt)
+        
+    def GetCurrentActiveJobs_pbsID(self):
+        SELECTActive="SELECT jobid,pbsreferenceid,JobStatus,uireferenceid,username,subjobindex,jobtype,issequential From Jobs where latestjobversion=True and JobStatus<"+str(EnumerationLookup.JobState.Completed)+" and pbsreferenceid is not null"
+        return self.ExecuteQuerySQLStatmentAsDict(SELECTActive)
         
     def GetJob(self,JobID):
         SELECTJob="SELECT * From Jobs where JobID="+str(JobID)+";"
@@ -170,12 +194,13 @@ class DBInterface(object):
         return self.ExecuteQuerySQLStatmentAsDict(SELECTJob)
     
     def GetJobsStatusbyUIReference(self,UIReferenceID):
-        SELECTJob="SELECT jobid,jobstatus,subjobindex,pbsreferenceid From Jobs where UIReferenceID="+str(UIReferenceID)+" and latestjobversion=True;"
+        
+        SELECTJob="SELECT jobid,jobstatus,subjobindex,pbsreferenceid,uireferenceid,username,jobtype,issequential From Jobs where UIReferenceID="+str(UIReferenceID)+" and latestjobversion=True;"
         return self.ExecuteQuerySQLStatmentAsDict(SELECTJob)
     
-    
-#########################################################################################################################
-########## Commands DB Access ###############################################
+   
+    #########################################################################################################################
+    ########## Commands DB Access ###############################################
 
     def AddNewCommand(self,UICommandID,commandtext,UIJobID,AdditionalParams):
         
@@ -197,3 +222,51 @@ class DBInterface(object):
             
         return self.ExecuteNoQuerySQLStatment(Updatest)
 
+    #########################################################################################################################
+    ########## Job Restart  #######################################################
+    def SetJobAsRestarted(self,RestartJobID):
+        Updatest="update jobrestartlist set hasbeenrestarted=true where jobrestartid="+str(RestartJobID)+";"
+        self.ExecuteNoQuerySQLStatment(Updatest)
+    
+    def RemoveAllJobsWithUIReferenceID(self,UIReferenceID):
+        
+        DeletedJobs="DELETE From jobrestartlist where UIReferenceID="+str(UIReferenceID)+";"
+        return self.ExecuteNoQuerySQLStatment(DeletedJobs)    
+    def GetPendingJobsToRestart(self,MinutesLimit):
+        selectst="select * from jobrestartlist where inserttimestamp <= (now() - interval '"+str(MinutesLimit)+" minutes') and hasbeenrestarted=false;"
+        return self.ExecuteQuerySQLStatmentAsDict(selectst)
+        
+    def AddJobToRestartList(self,JobRecord):
+        JobID=JobRecord['jobid']
+        SubJobIndex=JobRecord['subjobindex']
+        issequential=JobRecord['issequential']
+        UIReference_ID=JobRecord['uireferenceid']
+        UserName=JobRecord['username']
+        
+        ## Check if this Job Already exists
+        selectst="Select * from jobrestartlist where jobid="+str(JobID)+"  and hasbeenrestarted=false;"
+        if (len(self.ExecuteQuerySQLStatmentAsDict(selectst))>0):
+            logging.info(str(JobID)+": Excluded because and active job with the same ID is already there")
+            return False
+        ## Check How Many time it was restarted
+        selectst="Select * from jobrestartlist where jobid="+str(JobID)+";"
+        MaximumRestartTime=int(self.Options['WorkFlowSettings:MaximumRestartTime'])
+        if (len(self.ExecuteQuerySQLStatmentAsDict(selectst))>=MaximumRestartTime):
+            logging.info(str(JobID)+": Excluded because number of restart times exceeded")
+            return False
+        
+        
+        
+        
+        InsertSt="insert into jobrestartlist(jobid,uireferenceid,jobusername,subjobindex,issequential) values"
+        InsertSt=InsertSt+"("+str(JobID)+","+str(UIReference_ID)+",'"+UserName+"',"+ str(SubJobIndex)+","+str(issequential=='t').lower()+" );"
+        self.ExecuteNoQuerySQLStatment(InsertSt)
+        
+        return True
+        
+        
+        
+        
+        
+        
+    
