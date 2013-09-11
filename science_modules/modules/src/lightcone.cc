@@ -1132,11 +1132,6 @@ namespace tao {
       _dist_range.set( _redshift_to_distance( _z_min ), _redshift_to_distance( _z_max ) );
       LOGDLN( "Distance range: (", _dist_range.start(), ", ", _dist_range.finish(), ")" );
 
-      // Read cone offset.
-      _x0 = dict.get<real_type>( "origin-x", 0.0 );
-      _y0 = dict.get<real_type>( "origin-y", 0.0 );
-      _z0 = dict.get<real_type>( "origin-z", 0.0 );
-
       // Right ascension.
       _ra_min = dict.get<real_type>( "ra-min",0.0 );
       if( _ra_min < 0.0 )
@@ -1164,6 +1159,13 @@ namespace tao {
       if( _dec_min > _dec_max )
          _dec_min = _dec_max;
       LOGDLN( "Have declination range ", _dec_min, " - ", _dec_max );
+
+      // Read cone offset.
+      _x0 = dict.get<real_type>( "origin-x", 0.0 );
+      _y0 = dict.get<real_type>( "origin-y", 0.0 );
+      _z0 = dict.get<real_type>( "origin-z", 0.0 );
+      if( _unique )
+	 _calc_origin();
 
       // For the box type.
       if( _box_type == "box" )
@@ -1705,6 +1707,34 @@ namespace tao {
 
       LOG_EXIT();
       _timer.stop();
+   }
+
+   void
+   lightcone::_calc_origin()
+   {
+      ASSERT( _ra_min == 0.0, "Cannot compute multiple unique cones when "
+	      "minimum RA is not 0." );
+      ASSERT( _dec_min == 0.0, "Cannot compute multiple unique cones when "
+	      "minimum DEC is not 0." );
+
+      // Based on my RA, what is the peak of the cone in the Y and Z directions?
+      real_type y_peak = tan( _ra_max - _ra_min )*_dist_range.finish();
+      real_type z_peak = tan( _dec_max - _dec_min )*_dist_range.finish();
+
+      // How many can I fit in each direction?
+      unsigned y_num = (unsigned)(_domain_size/y_peak);
+      unsigned z_num = (unsigned)(_domain_size/z_peak);
+
+      // Total number I can fit?
+      unsigned tot = y_num*z_num;
+      if( tot == 0 )
+	 ++tot;
+      ASSERT( _sub_idx < tot, "Too many cones for simulation box size." );
+
+      // Place my origin accordingly.
+      _x0 = 0.0;
+      _z0 = ((y_num > 0) ? _sub_idx/y_num : 0.0);
+      _y0 = ((z_num > 0) ? (_sub_idx - _z0*y_num) : 0.0);
    }
 
 }
