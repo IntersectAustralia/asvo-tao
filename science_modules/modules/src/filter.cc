@@ -80,30 +80,37 @@ namespace tao {
 
    void
    filter::process_galaxy( const tao::galaxy& galaxy,
-                           const fibre<real_type>& total_spectra,
-                           const fibre<real_type>& disk_spectra,
-                           const fibre<real_type>& bulge_spectra )
+                           fibre<real_type>& total_spectra,
+                           fibre<real_type>& disk_spectra,
+                           fibre<real_type>& bulge_spectra )
    {
       _timer.start();
       LOG_ENTER();
+
+      // Need a place to store the wavelengths.
+      vector<real_type> waves( _waves.size() );
 
       // Process each object individually to save space.
       for( unsigned ii = 0; ii < galaxy.batch_size(); ++ii )
       {
          // Calculate the distance/area for this galaxy. Use 1000
          // points.
-         LOGDLN( "Using redshift of ", galaxy.values<real_type>( "redshift_cosmological" )[ii], " to calculate distance." );
-         real_type dist = numerics::redshift_to_luminosity_distance( galaxy.values<real_type>( "redshift_cosmological" )[ii], 1000 );
+	 real_type redshift = galaxy.values<real_type>( "redshift_cosmological" )[ii];
+         LOGDLN( "Using redshift of ", redshift, " to calculate distance." );
+         real_type dist = numerics::redshift_to_luminosity_distance( redshift, 1000 );
 	 if( dist < 1e-5 )  // Be careful! If dist is zero (which it can be) then resort to absolute
 	    dist = 1e-5;    // magnitudes.
 	 real_type area = log10( 4.0*M_PI ) + 2.0*log10( dist*3.08568025e24 ); // result in cm^2
 	 LOGDLN( "Distance: ", dist );
 	 LOGDLN( "Log area: ", area );
 
+	 // Apply redshift to wavelengths.
+	 _apply_redshift_to_wavelengths( redshift, _waves.begin(), _waves.end(), waves.begin() );
+
          // Process total, disk and bulge.
-         _process_spectra( total_spectra[ii], area, _total_lum[ii], _total_app_mags, _total_abs_mags, ii );
-         _process_spectra( disk_spectra[ii], area, _disk_lum[ii], _disk_app_mags, _bulge_abs_mags, ii );
-         _process_spectra( bulge_spectra[ii], area, _bulge_lum[ii], _bulge_app_mags, _bulge_abs_mags, ii );
+         _process_spectra( total_spectra[ii], waves, redshift, area, _total_lum[ii], _total_app_mags, _total_abs_mags, ii );
+         _process_spectra( disk_spectra[ii], waves, redshift, area, _disk_lum[ii], _disk_app_mags, _bulge_abs_mags, ii );
+         _process_spectra( bulge_spectra[ii], waves, redshift, area, _bulge_lum[ii], _bulge_app_mags, _bulge_abs_mags, ii );
       }
 
       LOG_EXIT();
@@ -111,7 +118,9 @@ namespace tao {
    }
 
    void
-   filter::_process_spectra( const vector<real_type>::view& spectra,
+   filter::_process_spectra( vector<real_type>::view spectra,
+			     const vector<real_type>& waves,
+			     real_type redshift,
                              real_type area,
                              real_type& luminosity,
                              fibre<real_type>& apparent_mags,
@@ -120,12 +129,15 @@ namespace tao {
    {
       LOGDLN( "Using spectra of: ", spectra );
 
+      // Perform redenning of spectrum.
+      _apply_redshift_to_spectrum( redshift, spectra.begin(), spectra.end() );
+
       // TODO: Shift this elsewhere to save some time.
       real_type abs_area = log10( 4.0*M_PI ) + 2.0*log10( (10.0/1e6)*3.08568025e24 ); // result in cm^2
 
       // Prepare the spectra.
       numerics::spline<real_type> spectra_spline;
-      _prepare_spectra( spectra, spectra_spline );
+      _prepare_spectra( spectra, waves, spectra_spline );
 
       // Calculate luminosity.
       luminosity = _integrate( spectra_spline );
@@ -166,13 +178,14 @@ namespace tao {
 
    void
    filter::_prepare_spectra( const vector<real_type>::view& spectra,
+			     const vector<real_type>& waves,
                              numerics::spline<real_type>& spline )
    {
       ASSERT( spectra.size() == _waves.size() );
       fibre<real_type> knots( 2, spectra.size() );
       for( unsigned ii = 0; ii < _waves.size(); ++ii )
       {
-         knots(ii,0) = _waves[ii];
+         knots(ii,0) = waves[ii];
          knots(ii,1) = spectra[ii];
       }
       spline.set_knots( knots );
@@ -325,6 +338,7 @@ namespace tao {
 
             // Store the field names.
             _filter_names[ii] = fn;
+	    to_lower( _filter_names[ii] );
             LOGDLN( "Adding filter by the name: ", _filter_names[ii] );
             ++ii;
          }
