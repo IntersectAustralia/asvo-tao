@@ -485,7 +485,7 @@ class WorkFlow(object):
 
     def UpdateJob_EndWithError(self,CurrentJobRecord , JobDetails):
         
-        
+        JobAddedForRestart=False
         
         JobID=CurrentJobRecord['jobid']
         SubJobIndex=CurrentJobRecord['subjobindex']
@@ -504,7 +504,9 @@ class WorkFlow(object):
         if JobDetails['error'] == '':
             JobDetails['error'] = stderr
         
-        self.JobRestartObj.AddNewJob(CurrentJobRecord,stderr)
+        if (self.JobRestartObj.AddNewJob(CurrentJobRecord,stderr)==True):
+            JobAddedForRestart=True
+        
         
         self.dbaseobj.SetJobFinishedWithError(JobID, JobDetails['error'], JobDetails['end'])
         data['error_message'] = 'Error:' + JobDetails['error']        
@@ -522,12 +524,15 @@ class WorkFlow(object):
         
         if TerminateAllOnError==True and JobType==EnumerationLookup.JobType.Complex:
            data['error_message']=data['error_message']+" Please note that all other subjobs will be deleted also" 
+           if JobAddedForRestart==True:
+               data['error_message']=data['error_message']+"  \n\r Please note that this job will be restarted Automatically after 30 Minutes"
         
         
         self.UpdateTAOUI(UIReference_ID,JobType, data)
         self.dbaseobj.AddNewEvent(JobID, EnumerationLookup.EventType.Normal, 'Updating Job (UI ID:' + str(UIReference_ID) + ', Status:' + data['status'] + ')')
         
         Message = "Job (" + str(UIReference_ID) +" ["+str(SubJobIndex)+"])  Finished With Error. The Error Message is:" + data['error_message']
+        
         emailreport.SendEmailToAdmin(self.Options, "Job Finished With Error", Message)
 
     ## Update the Back-end DB and the UI that the job is running. There is no need for special handling in case of complex Jobs
