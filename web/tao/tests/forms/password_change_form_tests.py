@@ -4,8 +4,10 @@ from django.test import TransactionTestCase
 from tao.forms import PasswordResetForm
 from tao.models import TaoUser
 from tao.tests.support.factories import UserFactory
+from tao.tests.helper import TaoModelsCleanUpMixin
 
-class PasswordChangeFormTests(TransactionTestCase):
+
+class PasswordChangeFormTests(TransactionTestCase, TaoModelsCleanUpMixin):
 
     def setUp(self):
         super(PasswordChangeFormTests, self).setUp()

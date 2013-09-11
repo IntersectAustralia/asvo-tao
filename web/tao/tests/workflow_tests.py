@@ -333,7 +333,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                         <fields>
                             <item label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
                             <!-- <item label="bandpass (Absolute)">Band_pass_filter_000_absolute</item> -->
-                            <item label="bandpass (Apparent)">Band_pass_filter_000.txt_apparent</item>
+                            <item label="bandpass (Apparent)">%(band_pass_filter_id)s_%(band_pass_extension)s</item>
                         </fields>
 
                         <!-- Module Version Number -->

@@ -17,14 +17,14 @@ from tao.output_format_form import OutputFormatForm
 from tao.record_filter_form import RecordFilterForm
 from taoui_light_cone.forms import Form as LightConeForm
 from taoui_sed.forms import Form as SedForm
-# from tao.tests.support.factories import UserFactory, StellarModelFactory, SnapshotFactory, DataSetFactory, SimulationFactory, GalaxyModelFactory, DataSetPropertyFactory, BandPassFilterFactory, DustModelFactory, GlobalParameterFactory
+from tao.tests.helper import TaoModelsCleanUpMixin
 from tao.tests.support.factories import UserFactory, StellarModelFactory, SnapshotFactory, DataSetFactory, SimulationFactory, GalaxyModelFactory, DataSetPropertyFactory, BandPassFilterFactory, DustModelFactory, GlobalParameterFactory
 from unittest import TestCase
 #
 # from tao.tests.support import UtcPlusTen
 # from tao.tests.helper import MockUIHolder, make_form
 
-class XmlFormsTests(TestCase):
+class XmlFormsTests(TestCase, TaoModelsCleanUpMixin):
 
     def setUp(self):
 

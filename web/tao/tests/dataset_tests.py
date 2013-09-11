@@ -2,8 +2,10 @@ from django.test.testcases import TransactionTestCase
 
 from tao.tests.support.factories import SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, SnapshotFactory
 from tao.models import DataSetProperty
+from tao.tests.helper import TaoModelsCleanUpMixin
 
-class DatasetTestCase(TransactionTestCase):
+
+class DatasetTestCase(TransactionTestCase, TaoModelsCleanUpMixin):
 
     def setUp(self):
         super(DatasetTestCase, self).setUp()

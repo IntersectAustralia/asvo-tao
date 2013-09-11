@@ -96,3 +96,13 @@ class MockUIHolder:
         self._dataset = v
 
     dataset = property(get_dataset, set_dataset)
+
+class TaoModelsCleanUpMixin(object):
+    def tearDown(self):
+        m = __import__('tao.models')
+        for name in ['Simulation', 'GalaxyModel', 'DataSet', 'DataSetProperty', 'StellarModel', 'DustModel',
+                     'Snapshot', 'BandPassFilter', 'WorkflowCommand', 'Job', 'GlobalParameter', 'SurveyPreset']:
+            klass = getattr(m.models, name)
+            for obj in klass.objects.all(): obj.delete()
+
+
