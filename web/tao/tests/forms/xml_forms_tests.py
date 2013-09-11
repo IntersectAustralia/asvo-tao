@@ -155,7 +155,7 @@ class XmlFormsTests(TestCase):
         form = make_form_xml(OutputFormatForm, xml_str, prefix='output_format')
         self.assertEquals('fits', form.data['output_format-supported_formats'])
 
-    def _test_record_filter_form(self):
+    def test_record_filter_form(self):
         xml_parameters = {
             'catalogue_geometry': 'light-cone',
             'dark_matter_simulation': 1l, # self.simulation.id,
@@ -204,7 +204,7 @@ class XmlFormsTests(TestCase):
         })
         mock_ui_holder = MockUIHolder()
         xml_str = light_cone_xml(xml_parameters)
-        light_cone_form = make_form({}, LightConeForm, {'simulation':self.simulation.id, 'galaxy_model':self.dataset.id}, prefix='light_cone')
+        light_cone_form = make_form({}, LightConeForm, {'dark_matter_simulation':self.simulation.id, 'galaxy_model':self.dataset.id}, prefix='light_cone')
         mock_ui_holder.update(light_cone = light_cone_form)
         rf_form = make_form_xml(RecordFilterForm, xml_str, prefix='record_filter', ui_holder=mock_ui_holder)
 
@@ -264,7 +264,7 @@ class XmlFormsTests(TestCase):
         self.assertEquals(True, form.data['sed-apply_sed'])
         self.assertEquals(self.stellar_model.id, form.data['sed-single_stellar_population_model'])
 
-    def _test_light_cone_geometry(self):
+    def test_light_cone_geometry(self):
         xml_parameters = {
             'catalogue_geometry': 'light-cone',
             'dark_matter_simulation': self.simulation.id, # self.simulation.id,
@@ -324,11 +324,11 @@ class XmlFormsTests(TestCase):
         self.assertEquals('71.565', form.data['light_cone-ra_opening_angle'])
         self.assertEquals('41.811', form.data['light_cone-dec_opening_angle'])
         op_list = form.data['light_cone-output_properties']
-        self.assertEquals(2, len(op_list))
+        self.assertEquals(3, len(op_list))
         self.assertTrue(self.filter.id in op_list)
         self.assertTrue(self.output_prop.id in op_list)
 
-    def _test_box_geometry(self):
+    def test_box_geometry(self):
         xml_parameters = {
             'catalogue_geometry': 'box',
             'dark_matter_simulation': self.simulation.id, # self.simulation.id,
@@ -379,7 +379,7 @@ class XmlFormsTests(TestCase):
         self.assertEquals(self.snapshot.id, form.data['light_cone-snapshot'])
         self.assertEquals(11.3, float(form.data['light_cone-box_size']))
         op_list = form.data['light_cone-output_properties']
-        self.assertEquals(2, len(op_list))
+        self.assertEquals(3, len(op_list))
         self.assertTrue(self.filter.id in op_list)
         self.assertTrue(self.output_prop.id in op_list)
 
