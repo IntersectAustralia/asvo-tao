@@ -53,9 +53,9 @@ namespace tao {
       ///
       void
       process_galaxy( const tao::galaxy& galaxy,
-                      const fibre<real_type>& total_spectra,
-                      const fibre<real_type>& disk_spectra,
-                      const fibre<real_type>& bulge_spectra );
+                      fibre<real_type>& total_spectra,
+                      fibre<real_type>& disk_spectra,
+                      fibre<real_type>& bulge_spectra );
 
       ///
       ///
@@ -66,7 +66,9 @@ namespace tao {
    protected:
 
       void
-      _process_spectra( const vector<real_type>::view& spectra,
+      _process_spectra( vector<real_type>::view spectra,
+			const vector<real_type>& waves,
+			real_type redshift,
                         real_type area,
 			real_type& luminosity,
 			fibre<real_type>& apparent_mags,
@@ -81,6 +83,7 @@ namespace tao {
 
       void
       _prepare_spectra( const vector<real_type>::view& spectra,
+			const vector<real_type>& waves,
                         numerics::spline<real_type>& spline );
 
       real_type
@@ -105,6 +108,38 @@ namespace tao {
 
       void
       _process_vega( const string& filename );
+
+      template< class Iter >
+      void
+      _apply_redshift_to_spectrum( real_type redshift,
+				   Iter spec_start,
+				   const Iter& spec_finish )
+      {
+	 std::transform(
+	    spec_start, spec_finish, spec_start,
+	    [redshift]( real_type val )
+	    {
+	       return val/(1.0 + redshift);
+	    }
+	    );
+      }
+
+      template< class InputIter,
+		class OutputIter >
+      void
+      _apply_redshift_to_wavelengths( real_type redshift,
+				      InputIter waves_start,
+				      const InputIter& waves_finish,
+				      OutputIter result )
+      {
+	 std::transform(
+	    waves_start, waves_finish, result,
+	    [redshift]( real_type val )
+	    {
+	       return val*(1.0 + redshift);
+	    }
+	    );
+      }
 
    protected:
 
