@@ -3,6 +3,7 @@
 taoui_light_cone.forms
 ========================
 """
+import re
 from django import forms
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
@@ -39,6 +40,7 @@ def to_xml_2(form, root):
         if box_size is None or box_size == '':
             box_size = simulation.box_size
         child_element(light_cone_elem, 'query-box-size', text=box_size, units='Mpc')
+        child_element(light_cone_elem, 'rng-seed', text=form.cleaned_data['rng_seed'])
 
     else:  # == Form.CONE
 
@@ -50,6 +52,14 @@ def to_xml_2(form, root):
         child_element(light_cone_elem, 'ra-max', text=form.cleaned_data['ra_opening_angle'], units='deg')
         child_element(light_cone_elem, 'dec-min', text='0.0', units='deg')
         child_element(light_cone_elem, 'dec-max', text=form.cleaned_data['dec_opening_angle'], units='deg')
+        if form.cleaned_data['light_cone_type'] == 'random':
+            rng_seeds_elem = child_element(light_cone_elem, 'rng-seeds')
+            rng_seeds_string = form.cleaned_data['rng_seeds']
+            rng_seeds = re.sub(r"[\[\]\su']", '', rng_seeds_string).split(',')
+            i = 0
+            for rng_seed in rng_seeds:
+                child_element(rng_seeds_elem, 'rng-seed-%d' % i, text=rng_seed)
+                i += 1
 
     output_properties = form.cleaned_data['output_properties']
     if len(output_properties) > 0:
@@ -98,6 +108,10 @@ def from_xml_2(cls, ui_holder, xml_root, prefix=None):
             params.update({prefix+'-snapshot':snapshot.id})
         box_size = module_xpath(xml_root, '//light-cone/query-box-size')
         params.update({prefix+'-box_size': box_size})
+        rng_seed_param = module_xpath(xml_root, '//light-cone/rng-seed')
+        rng_seed = rng_seed_param if rng_seed_param else ''
+        params.update({prefix + '-rng_seed': rng_seed})
+
 
     else: ## == Form.CONE
 
@@ -107,6 +121,13 @@ def from_xml_2(cls, ui_holder, xml_root, prefix=None):
         redshift_max = module_xpath(xml_root, '//light-cone/redshift-max')
         ra_max = module_xpath(xml_root, '//light-cone/ra-max')
         dec_max = module_xpath(xml_root, '//light-cone/dec-max')
+        if light_cone_type == 'random':
+            rng_seeds = []
+            rng_seeds_params = [elem for elem in module_xpath_iterate(xml_root, '//light-cone/rng-seeds/*', False)]
+            if rng_seeds_params:
+                rng_seeds_dict = dict((rng_seed.tag.split('}')[1], rng_seed.text) for rng_seed in rng_seeds_params)
+                rng_seeds = [rng_seeds_dict[x] for x in sorted(rng_seeds_dict.keys())]
+            params.update({prefix + '-rng_seeds': rng_seeds})
         params.update({
             prefix+'-light_cone_type': light_cone_type,
             prefix+'-number_of_light_cones': num_cones,
@@ -115,7 +136,6 @@ def from_xml_2(cls, ui_holder, xml_root, prefix=None):
             prefix+'-ra_opening_angle': ra_max,
             prefix+'-dec_opening_angle': dec_max,
             })
-
     params.update({prefix+'-output_properties': [dsp.id for dsp in Form._map_elems(xml_root, data_set)]})
     return cls(ui_holder, params, prefix=prefix)
 
@@ -142,9 +162,10 @@ class Form(BetterForm):
     ra_opening_angle = forms.DecimalField(required=False, label=_('Right Ascension Opening Angle (degrees)'), min_value=0, max_value=360, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
     dec_opening_angle = forms.DecimalField(required=False, label=_('Declination Opening Angle (degrees)'), min_value=0, max_value=360, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
 
-    # light_cone_type = forms.ChoiceField(required=False, initial=UNIQUE, label='', choices=light_cone_choices, widget=forms.RadioSelect(attrs={'class': 'light_cone_field'}))
     light_cone_type = forms.ChoiceField(required=False, label='', choices=[('unique', 'Unique'), ('random', 'Random')], initial='unique', widget=forms.RadioSelect(attrs={'class': 'light_cone_field'}))
-    # light_cone_type = forms.ChoiceField(required=False, label='', widget=forms.RadioSelect(attrs={'class': 'light_cone_field'}))
+
+    rng_seeds = forms.CharField(required=False, widget=forms.SelectMultiple)
+    rng_seed = forms.IntegerField(required=False)
 
     LIGHT_CONE_REQUIRED_FIELDS = ('ra_opening_angle', 'dec_opening_angle', 'redshift_min', 'redshift_max', 'light_cone_type', 'number_of_light_cones')  # Ensure these fields have a class of 'light_cone_field'
     BOX_REQUIRED_FIELDS = ('box_size', 'snapshot',)
@@ -155,7 +176,7 @@ class Form(BetterForm):
                          'galaxy_model', 'ra_opening_angle',
                          'dec_opening_angle', 'box_size', 'snapshot',
                          'redshift_min', 'redshift_max', 'light_cone_type',
-                         'number_of_light_cones']
+                         'number_of_light_cones', 'rng_seeds', 'rng_seed']
         fieldsets = [
             ('primary', {
                 'legend': 'Data Selection',
@@ -175,11 +196,14 @@ class Form(BetterForm):
             'number_of_light_cones' : {'data-bind':'visible: catalogue_geometry().id == "light-cone" && light_cone_type() == "random"'},
             'box_size' : {'data-bind':'visible: catalogue_geometry().id == "box"'},
             'snapshot' : {'data-bind':'visible: catalogue_geometry().id == "box"'},
+            'rng_seed' : {'hidden': 'hidden'},
+            'rng_seeds': {'hidden': 'hidden'},
             }
 
     def __init__(self, *args, **kwargs):
         self.ui_holder = args[0]
         super(Form, self).__init__(*args[1:], **kwargs)
+
 
         if self.is_bound:
             # We need to load the valid choices for validation
@@ -190,6 +214,11 @@ class Form(BetterForm):
             dms_choices = datasets.dark_matter_simulation_choices()
             gm_choices = datasets.galaxy_model_choices(sid)
             snapshot_choices = datasets.snapshot_choices(dataset_id)
+            if self.data[self.prefix + '-catalogue_geometry'] == 'light-cone' and \
+                self.data[self.prefix + '-light_cone_type'] == 'random':
+                self.fields['rng_seeds'].initial = self.data[self.prefix + '-rng_seeds']
+            elif self.data[self.prefix + '-catalogue_geometry'] == 'box':
+                self.fields['rng_seed'].initial = self.data[self.prefix+ '-rng_seed']
         else:
             # The choices should be empty, since they are loaded in the wizard
             # output_choices is here until Carlos sets up the View Model
@@ -200,9 +229,6 @@ class Form(BetterForm):
             snapshot_choices = [(None, None, {"data-bind" : "value: $data, text: catalogue.modules.light_cone.format_redshift($data.fields.redshift)"})]
         objs = datasets.output_choices(dataset_id)
         output_choices = [(x.id, x.label) for x in objs]
-
-        # self.fields['dark_matter_simulation'] = ChoiceFieldWithOtherAttrs()
-        # self.fields['galaxy_model'] = ChoiceFieldWithOtherAttrs(choices=datasets.galaxy_model_choices())
 
         self.fields['dark_matter_simulation'] = ChoiceFieldWithOtherAttrs(choices=dms_choices)
         # AKG: I think that galaxy_model and dark_matter_simulation should follow the snapshot pattern.
@@ -230,7 +256,6 @@ class Form(BetterForm):
         # Knockout.js data bindings
         self.fields['catalogue_geometry'].widget.attrs['data-bind'] = 'options: catalogue_geometries, value: catalogue_geometry, optionsText: function(i) { return i.name }'
         self.fields['dark_matter_simulation'].widget.attrs['data-bind'] = 'options: dark_matter_simulations, value: dark_matter_simulation, optionsText: function(i) { return i.fields.name}, event: {change: function() { box_size(dark_matter_simulation().fields.box_size); }}'
-        # self.fields['dark_matter_simulation'].widget.attrs['data-bind'] = 'options: dark_matter_simulations, value: dark_matter_simulation, optionsText: function(i) { return i.fields.name}'
         self.fields['galaxy_model'].widget.attrs['data-bind'] = 'options: galaxy_models, value: galaxy_model, optionsText: function(i) { return i.fields.name }'
         self.fields['ra_opening_angle'].widget.attrs['data-bind'] = 'value: ra_opening_angle'
         self.fields['dec_opening_angle'].widget.attrs['data-bind'] = 'value: dec_opening_angle'
@@ -242,6 +267,10 @@ class Form(BetterForm):
         self.fields['number_of_light_cones'].widget.attrs['spinner_bind'] = 'spinner: number_of_light_cones, spinnerOptions: {min: 1, max: maximum_number_of_light_cones}'
         self.fields['number_of_light_cones'].widget.attrs['spinner_message'] = "text: 'maximum is ' + maximum_number_of_light_cones()"
         self.fields['output_properties'].widget.attrs['ko_data'] = {'widget':'output_properties_widget','value':'output_properties'}
+        self.fields['rng_seed'].widget.attrs['data-bind'] = 'value: rng_seed'
+        self.fields['rng_seeds'].widget.attrs['data-bind'] = 'options: rng_seeds, selectedOptions: rng_seeds'
+
+            
 
 
     def check_redshift_min_less_than_redshift_max(self):
@@ -301,6 +330,7 @@ class Form(BetterForm):
         """Answer the json dictionary representation of the receiver.
         i.e. something that can easily be passed to json.dumps()"""
         json_dict = {}
+
         for fn in self.fields.keys():
             ffn = self.prefix + '-' + fn
             val = self.data.get(ffn)
