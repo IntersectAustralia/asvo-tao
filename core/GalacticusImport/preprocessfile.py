@@ -134,5 +134,5 @@ if __name__ == '__main__':
     cosgroup.create_dataset("hubble",  data=[73])
     cosgroup.create_dataset("omega_l",  data=[0.75])
     cosgroup.create_dataset("omega_m",  data=[0.25])
-    #InputFile.close()
+    InputFile.close()
     OutputFile.close()

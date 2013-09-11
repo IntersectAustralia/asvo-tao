@@ -100,7 +100,11 @@ class SysCommands(object):
         CommandFunction=self.FunctionsMap[command]
         if CommandFunction(UICommandID,UIJobID,CommandParams)==True:
             self.dbaseobj.UpdateCommandStatus(CommandID,EnumerationLookup.CommandState.Completed)
-        self.UpdateTAOCommandUI(UICommandID)
+            self.UpdateTAOCommandUI(UICommandID,True)
+        else:
+            self.dbaseobj.UpdateCommandStatus(CommandID,EnumerationLookup.CommandState.Error)
+            self.UpdateTAOCommandUI(UICommandID,False)
+        
     
     def Job_Stop_All(self,UICommandID,UIJobID,CommandParams):
         CurrentJobs_PBSID=self.dbaseobj.GetCurrentActiveJobs_pbsID()
@@ -160,12 +164,13 @@ class SysCommands(object):
         logging.info("Job_Output_Delete")
         JobUserName=CommandParams
         BasedPath=os.path.join(self.Options['WorkFlowSettings:WorkingDir'], JobUserName, str(UIJobID))
-        outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], JobUserName, str(UIJobID),'output')
+        #outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], JobUserName, str(UIJobID),'output')
         
-        
-        if(os.path.exists(outputpath)):
-           logging.info('Path already exists ... Clearing Files....'+outputpath) 
-           shutil.rmtree(outputpath)
+        if (JobUserName==""):
+            return False
+        if(os.path.exists(BasedPath)):
+           logging.info('Path already exists ... Clearing Files....'+BasedPath) 
+           shutil.rmtree(BasedPath)
         
         
         
@@ -181,13 +186,17 @@ class SysCommands(object):
         logging.info('Updating UI MasterDB. JobID ('+str(UIJobID)+').. '+data['status'])        
         requests.put(self.api['update']%UIJobID, json.dumps(data))
     
-    def UpdateTAOCommandUI(self,CommandID):        
+    def UpdateTAOCommandUI(self,CommandID,IsCompleted):        
         
         UpdateURL=self.commandapi['update']%CommandID
-        data = {}                
-        data['execution_status'] = 'COMPLETED'             
-        data['execution_comment'] = ""                
-        #logging.info('Updating UI MasterDB. CommandID ('+str(CommandID)+').. '+data['execution_status'])        
+        data = {}      
+        if IsCompleted==True:          
+            data['execution_status'] = 'COMPLETED'             
+            data['execution_comment'] = ""
+        else:
+            data['execution_status'] = 'ERROR'             
+            data['execution_comment'] = ""
+                
         logging.info('Updating UI MasterDB. CommandID ('+str(CommandID)+').. '+data['execution_status'])
         logging.info(UpdateURL)
         logging.info(data)

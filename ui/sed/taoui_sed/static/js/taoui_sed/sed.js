@@ -11,10 +11,6 @@ catalogue.modules.sed = function ($) {
 
     this.cleanup_fields = function () {}
 
-    this.validate = function () {
-        return true;
-    }
-
     this.pre_submit = function () {
     }
 
@@ -103,15 +99,10 @@ catalogue.modules.sed = function ($) {
             to_option: band_pass_filter_to_option
         });
         vm.current_bandpass_filter = ko.observable(undefined);
-    	// if param is null assume that we are in the Catalogue wizard
-    	// so set up the dependencies to update the display
-        // otherwise leave it unlinked
-        if (!param) {
-	        vm.bandpass_filters_widget.clicked_option.subscribe(function(v) {
-	        	var bpf = bandpass_filter_from_id(v);
-	        	vm.current_bandpass_filter(bpf);
-	        });
-        }
+        vm.bandpass_filters_widget.clicked_option.subscribe(function(v) {
+        	var bpf = bandpass_filter_from_id(v);
+        	vm.current_bandpass_filter(bpf);
+        });
 
         param = job['sed-apply_dust'];
         vm.apply_dust = ko.observable(param ? param : false);

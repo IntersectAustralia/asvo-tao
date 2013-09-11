@@ -27,7 +27,7 @@ def view_job(request, id):
     # xml_string = job.parameters
     ui_holder = UIModulesHolder(UIModulesHolder.XML, xml_parse(job.parameters.encode('utf-8')))
     forms = ui_holder.forms()
-
+    
     return render(request, 'jobs/view.html', {
         'id': id,
         'user': request.user,
@@ -35,7 +35,6 @@ def view_job(request, id):
         'ui_holder': ui_holder,
         'forms': forms,
         'forms_size': len(forms)+1,
-        'user': request.user,
     })
 
 @researcher_required
@@ -131,66 +130,89 @@ def _get_summary_as_text(id):
     job = Job.objects.get(pk=id)
     ui_holder = UIModulesHolder(UIModulesHolder.XML, xml_parse(job.parameters.encode('utf-8')))
 
-    geometry = ui_holder.raw_data('light_cone', 'catalogue_geometry')
-    dataset = ui_holder.dataset
-    simulation = dataset.simulation
-    galaxy_model = dataset.galaxy_model
-    output_properties = []
-    for output_property_id in ui_holder.raw_data('light_cone', 'output_properties'):
-        output_property = DataSetProperty.objects.get(id=output_property_id)
-        units = html2text.html2text(output_property.units).rstrip()
-        output_properties = output_properties + [(output_property, units)]
-    # output_properties = [(DataSetProperty.objects.get(id=output_property_id), html2text.html2text(getattr(DataSetProperty.objects.get(id=output_property_id), 'units')).rstrip()) for output_property_id in ui_holder.raw_data('light_cone', 'output_properties')]
-    output_format = ''
-    for x in output_formats():
-        if x['value'] == (ui_holder.raw_data('output_format', 'supported_formats')):
-            output_format = x['text']
-
-    txt_template = loader.get_template('jobs/summary.txt')
-    context = Context({
-        'catalogue_geometry': geometry,
-        'dark_matter_simulation': simulation,
-        'simulation_details': html2text.html2text(simulation.details),
-        'galaxy_model': galaxy_model,
-        'galaxy_model_details': html2text.html2text(galaxy_model.details),
-        'output_properties': output_properties,
-        'record_filter': display_selection(ui_holder.raw_data('record_filter', 'filter'), ui_holder.raw_data('record_filter', 'min'), ui_holder.raw_data('record_filter', 'max')),
-        'output_format': output_format,
-    })
-    if geometry == 'light-cone':
-        ra_opening_angle = ui_holder.raw_data('light_cone', 'ra_opening_angle')
-        dec_opening_angle = ui_holder.raw_data('light_cone', 'dec_opening_angle')
-        context['ra_opening_angle'] = ra_opening_angle
-        context['dec_opening_angle'] = dec_opening_angle
-        context['redshift_min'] = ui_holder.raw_data('light_cone', 'redshift_min')
-        context['redshift_max'] = ui_holder.raw_data('light_cone', 'redshift_max')
-        context['number_of_light_cones'] = ui_holder.raw_data('light_cone', 'number_of_light_cones')
-        context['light_cone_type'] = ui_holder.raw_data('light_cone', 'light_cone_type')
+    if ui_holder.job_type == UIModulesHolder.SQL_JOB:
+        txt_template = loader.get_template('jobs/sql_job-summary.txt')
+        query = ui_holder.raw_data('sql_job', 'query')
+        dataset = ui_holder.dataset
+        simulation = dataset.simulation
+        galaxy_model = dataset.galaxy_model
+        output_properties = []
+        for output_property in ui_holder.raw_data('sql_job', 'output_properties'):
+            output_properties = output_properties + [(output_property['label'], output_property['units'])]
+        output_format = ''
+        for x in output_formats():
+            if x['value'] == (ui_holder.raw_data('output_format', 'supported_formats')):
+                output_format = x['text']
+        context = Context({
+            'query': query,
+            'dark_matter_simulation': simulation,
+            'simulation_details': html2text.html2text(simulation.details),
+            'galaxy_model': galaxy_model,
+            'galaxy_model_details': html2text.html2text(galaxy_model.details),
+            'output_properties': output_properties,
+            'output_format': output_format,})
     else:
-        snapshot = Snapshot.objects.get(id=ui_holder.raw_data('light_cone', 'snapshot')).redshift
-        context['box_size'] = ui_holder.raw_data('light_cone', 'box_size')
-        context['snapshot'] = format_redshit(snapshot)
+        geometry = ui_holder.raw_data('light_cone', 'catalogue_geometry')
+        dataset = ui_holder.dataset
+        simulation = dataset.simulation
+        galaxy_model = dataset.galaxy_model
+        output_properties = []
+        for output_property_id in ui_holder.raw_data('light_cone', 'output_properties'):
+            output_property = DataSetProperty.objects.get(id=output_property_id)
+            units = html2text.html2text(output_property.units).rstrip()
+            output_properties = output_properties + [(output_property, units)]
+        # output_properties = [(DataSetProperty.objects.get(id=output_property_id), html2text.html2text(getattr(DataSetProperty.objects.get(id=output_property_id), 'units')).rstrip()) for output_property_id in ui_holder.raw_data('light_cone', 'output_properties')]
+        output_format = ''
+        for x in output_formats():
+            if x['value'] == (ui_holder.raw_data('output_format', 'supported_formats')):
+                output_format = x['text']
 
-    if ui_holder.raw_data('sed', 'apply_sed'):
-        single_stellar_population_model = StellarModel.objects.get(id=ui_holder.raw_data('sed', 'single_stellar_population_model'))
-        band_pass_ids = ui_holder.raw_data('sed', 'band_pass_filters')
-        context['apply_sed'] = True
-        context['ssp_name'] = single_stellar_population_model
-        context['ssp_description'] = html2text.html2text(single_stellar_population_model.description)
-        context['band_pass_filters'] = [get_bandpass_filter(band_pass_id) for band_pass_id in band_pass_ids]
-        if ui_holder.raw_data('sed', 'apply_dust'):
-            dust_model = DustModel.objects.get(id=ui_holder.raw_data('sed', 'select_dust_model'))
-            context['dust_label'] = dust_model
-            context['dust_model_details'] = html2text.html2text(dust_model.details)
+        txt_template = loader.get_template('jobs/light_cone_job-summary.txt')
+        context = Context({
+            'catalogue_geometry': geometry,
+            'dark_matter_simulation': simulation,
+            'simulation_details': html2text.html2text(simulation.details),
+            'galaxy_model': galaxy_model,
+            'galaxy_model_details': html2text.html2text(galaxy_model.details),
+            'output_properties': output_properties,
+            'record_filter': display_selection(ui_holder.raw_data('record_filter', 'filter'), ui_holder.raw_data('record_filter', 'min'), ui_holder.raw_data('record_filter', 'max')),
+            'output_format': output_format,
+        })
+        if geometry == 'light-cone':
+            ra_opening_angle = ui_holder.raw_data('light_cone', 'ra_opening_angle')
+            dec_opening_angle = ui_holder.raw_data('light_cone', 'dec_opening_angle')
+            context['ra_opening_angle'] = ra_opening_angle
+            context['dec_opening_angle'] = dec_opening_angle
+            context['redshift_min'] = ui_holder.raw_data('light_cone', 'redshift_min')
+            context['redshift_max'] = ui_holder.raw_data('light_cone', 'redshift_max')
+            context['number_of_light_cones'] = ui_holder.raw_data('light_cone', 'number_of_light_cones')
+            context['light_cone_type'] = ui_holder.raw_data('light_cone', 'light_cone_type')
         else:
-            context['dust_label'] = 'None'
+            snapshot = Snapshot.objects.get(id=ui_holder.raw_data('light_cone', 'snapshot')).redshift
+            context['box_size'] = ui_holder.raw_data('light_cone', 'box_size')
+            context['snapshot'] = format_redshit(snapshot)
 
-    else:
-        context['apply_sed'] = False
-    if ui_holder.raw_data('mock_image', 'apply_mock_image'):
-        context['number_of_images'] = ui_holder.raw_data('mock_image', 'TOTAL_FORMS')
-    else:
-        context['number_of_images'] = None
+        if ui_holder.raw_data('sed', 'apply_sed'):
+            single_stellar_population_model = StellarModel.objects.get(id=ui_holder.raw_data('sed', 'single_stellar_population_model'))
+            band_pass_ids = ui_holder.raw_data('sed', 'band_pass_filters')
+            context['apply_sed'] = True
+            context['ssp_name'] = single_stellar_population_model
+            context['ssp_description'] = html2text.html2text(single_stellar_population_model.description)
+            context['band_pass_filters'] = [get_bandpass_filter(band_pass_id) for band_pass_id in band_pass_ids]
+            if ui_holder.raw_data('sed', 'apply_dust'):
+                dust_model = DustModel.objects.get(id=ui_holder.raw_data('sed', 'select_dust_model'))
+                context['dust_label'] = dust_model
+                context['dust_model_details'] = html2text.html2text(dust_model.details)
+            else:
+                context['dust_label'] = 'None'
+
+        else:
+            context['apply_sed'] = False
+        if ui_holder.raw_data('mock_image', 'apply_mock_image'):
+            context['number_of_images'] = ui_holder.raw_data('mock_image', 'TOTAL_FORMS')
+        else:
+            context['number_of_images'] = None
+
     return txt_template.render(context)
 
 @researcher_required
@@ -283,7 +305,12 @@ def release_job(request, id):
 def delete_job_output(request, id):
     if request.method == "POST":
         job = Job.objects.get(id=id)
-        job_output_delete_command = WorkflowCommand(job_id=job, command='Job_Output_Delete', submitted_by=request.user, execution_status='SUBMITTED')
+        job_output_delete_command = WorkflowCommand(
+                job_id=job,
+                command='Job_Output_Delete',
+                parameters=job.user.username,
+                submitted_by=request.user,
+                execution_status='SUBMITTED')
         job_output_delete_command.save()
 
     return HttpResponse('{}', mimetype='application/json')

@@ -1,4 +1,10 @@
 {% extends '_base.html' %}
+
+{% load assets %}
+
 {% block content %}
     <h1>404 - Page Not Found</h1>
+
+    {% custom_error_message request_path %}
+
 {% endblock %}

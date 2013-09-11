@@ -1,21 +1,23 @@
 # -*- coding: utf-8 -*-
 import datetime
 from south.db import db
-from south.v2 import DataMigration
+from south.v2 import SchemaMigration
 from django.db import models
 
-class Migration(DataMigration):
+
+class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        objs = orm.GlobalParameter.objects.filter(parameter_name='default_disk_quota')
-        if len(objs) == 0:
-            description = "This will be the default quota applied unless over-ridden for an individual user. " \
-                          "Values are in MB, and interpreted as per user quota. If absent or equal to -1, disk quotas aren't enforced."
-            obj = orm.GlobalParameter(parameter_name='default_disk_quota', parameter_value='', description=description)
-            obj.save()
+        # Adding field 'SurveyPreset.description'
+        db.add_column(u'tao_surveypreset', 'description',
+                      self.gf('django.db.models.fields.TextField')(default=''),
+                      keep_default=False)
+
 
     def backwards(self, orm):
-        pass
+        # Deleting field 'SurveyPreset.description'
+        db.delete_column(u'tao_surveypreset', 'description')
+
 
     models = {
         u'auth.group': {
@@ -48,7 +50,7 @@ class Migration(DataMigration):
             'order': ('django.db.models.fields.IntegerField', [], {'default': '0'})
         },
         u'tao.dataset': {
-            'Meta': {'unique_together': "(('simulation', 'galaxy_model'),)", 'object_name': 'DataSet'},
+            'Meta': {'ordering': "['id']", 'unique_together': "(('simulation', 'galaxy_model'),)", 'object_name': 'DataSet'},
             'available': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'database': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'default_filter_field': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'DataSetProperty'", 'null': 'True', 'to': u"orm['tao.DataSetProperty']"}),
@@ -108,7 +110,7 @@ class Migration(DataMigration):
             'created_time': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'database': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'description': ('django.db.models.fields.TextField', [], {'default': "''", 'max_length': '500', 'blank': 'True'}),
-            'disk_usage': ('django.db.models.fields.IntegerField', [], {'default': '0', 'null': 'True', 'blank': 'True'}),
+            'disk_usage': ('django.db.models.fields.IntegerField', [], {'default': '-1', 'null': 'True', 'blank': 'True'}),
             'error_message': ('django.db.models.fields.TextField', [], {'default': "''", 'max_length': '1000000', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'output_path': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
@@ -117,7 +119,7 @@ class Migration(DataMigration):
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['tao.TaoUser']"})
         },
         u'tao.simulation': {
-            'Meta': {'ordering': "['order', 'name']", 'object_name': 'Simulation'},
+            'Meta': {'ordering': "['name', 'order']", 'object_name': 'Simulation'},
             'box_size': ('django.db.models.fields.DecimalField', [], {'max_digits': '10', 'decimal_places': '3'}),
             'box_size_units': ('django.db.models.fields.CharField', [], {'default': "'Mpc'", 'max_length': '10'}),
             'details': ('django.db.models.fields.TextField', [], {'default': "''"}),
@@ -138,6 +140,13 @@ class Migration(DataMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'label': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '200'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '200'})
+        },
+        u'tao.surveypreset': {
+            'Meta': {'object_name': 'SurveyPreset'},
+            'description': ('django.db.models.fields.TextField', [], {'default': "''"}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'}),
+            'parameters': ('django.db.models.fields.TextField', [], {'max_length': '1000000'})
         },
         u'tao.taouser': {
             'Meta': {'object_name': 'TaoUser'},
@@ -179,4 +188,3 @@ class Migration(DataMigration):
     }
 
     complete_apps = ['tao']
-    symmetrical = True

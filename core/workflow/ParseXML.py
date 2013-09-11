@@ -19,14 +19,35 @@ class ParseXMLParameters(object):
     
     def ParseFile(self,JobID,DatabaseName,JobUserName):
         
-        #self.GetCurrentUser()
-        #self.GetDocumentSignature()    
-        self.SubJobsCount=self.GetSubJobsCount()
-        #self.ModifySEDFilePath()
-        #self.ModifyFilterFilePath()
+        
+            
+        self.SubJobsCount=self.GetSubJobsCount()       
         self.ModifyOutputPath()
+        self.ReadRNGSeeds()
         self.SetBasicInformation(JobID,DatabaseName,JobUserName)
         return self.SubJobsCount
+    
+    def ReadRNGSeeds(self):
+        self.RNGSeedsArr=[]
+        RNGSeedFields=self.tree.xpath("ns:workflow/ns:light-cone/ns:rng-seeds/ns:*",namespaces={'ns':self.NameSpace})
+        if(len(RNGSeedFields)>0):
+            if len(RNGSeedFields)!=self.SubJobsCount:
+                raise  Exception('Incorect Number of RNG Seeds','SubJobsCount=='+str(self.SubJobsCount)+' while RNG Count ='+str(len(RNGSeedFields))+'!')
+            for RNGSeed in RNGSeedFields:                
+                self.RNGSeedsArr.append(RNGSeed.text)
+                
+            ParentNode=self.tree.xpath("ns:workflow/ns:light-cone/ns:rng-seeds",namespaces={'ns':self.NameSpace})[0]
+            RNGNewNode=ET.Element("{"+self.NameSpace+"}rng-seed")        
+            RNGNewNode.text="#RNGSeedValue" 
+            ParentNode.getparent().append(RNGNewNode)
+            ParentNode.getparent().remove(ParentNode)
+        print self.RNGSeedsArr
+          
+        
+            
+        
+        
+    
     def IsSquentialJob(self):
         
         sqlModuleInstance=self.tree.xpath("ns:workflow/ns:sql",namespaces={'ns':self.NameSpace})
@@ -44,8 +65,7 @@ class ParseXMLParameters(object):
             for i in range(0,self.SubJobsCount):
                 FileNameWithIndex=FileName.replace('<index>',str(i))
                 self.ExportTree(FileNameWithIndex,i)
-        else:
-            print("Error")
+        else:            
             raise  Exception('Error in SubJobsCount','SubJobsCount<=0!')        
     def ExportTree(self,FileName,SubJobIndex): 
          
@@ -53,6 +73,9 @@ class ParseXMLParameters(object):
         with open(FileName,'w') as f:
             strTree=ET.tostring(self.tree,encoding='UTF-8',xml_declaration=True,pretty_print=True)
             strTree=strTree.replace("&lt;OutputFileIndex&gt;",str(SubJobIndex))
+            if len(self.RNGSeedsArr)>SubJobIndex:
+                strTree=strTree.replace("#RNGSeedValue",str(self.RNGSeedsArr[SubJobIndex]))
+            
             f.write(strTree)       
         
            
@@ -170,7 +193,6 @@ class ParseXMLParameters(object):
 if __name__ == '__main__':
      [Options]=settingReader.ParseParams("settings.xml")
      ParseXMLParametersObj=ParseXMLParameters('/home/amr/workspace/params.xml',Options)
-     ParseXMLParametersObj.ModifySEDFilePath()
-     ParseXMLParametersObj.ModifyOutputPath()
-     ParseXMLParametersObj.SetBasicInformation(110, "Database", "TestUser")
-     ParseXMLParametersObj.ExportTree('/home/amr/workspace/params.processed.xml', 0)
+     
+     ParseXMLParametersObj.ParseFile(110, "Database", "TestUser")
+     ParseXMLParametersObj.ExportTrees('/home/amr/workspace/params.<index>.processed.xml')

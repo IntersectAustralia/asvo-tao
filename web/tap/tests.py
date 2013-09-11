@@ -70,7 +70,8 @@ class TAPServicesTests(TestCase):
         
     def test_dataset_name_parsing(self):
         query = 'select * from %s %s' % (self.dataset['name'], self.dataset['label'])
-        self.assertEqual(parse_dataset_name(query), self.dataset)
+        parsed_dataset = parse_dataset_name(query)
+        self.assertEqual(parsed_dataset['name'], self.dataset['name'])
         
     def test_fields_parsing(self):
         fields = [{'value': '1', 'label': '1', 'units': ''},
@@ -91,7 +92,7 @@ class TAPServicesTests(TestCase):
     def test_limit_parsing(self):
         limit = '10,20' 
         query = 'select * from %s limit %s' % (self.dataset['name'], limit)
-        self.assertEqual(parse_limit(query), limit)
+        self.assertEqual(parse_limit(query), u'20')
     
     
     

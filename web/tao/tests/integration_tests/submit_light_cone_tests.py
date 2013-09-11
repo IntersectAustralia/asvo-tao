@@ -2,7 +2,7 @@ from django.conf import settings
 from tao.models import Snapshot
 from tao.settings import MODULE_INDICES
 from tao.tests.integration_tests.helper import LiveServerMGFTest
-from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, JobFactory, StellarModelFactory, SnapshotFactory, BandPassFilterFactory, GlobalParameterFactory
+from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, JobFactory, StellarModelFactory, SnapshotFactory, BandPassFilterFactory, GlobalParameterFactory, SurveyPresetFactory
 
 from taoui_light_cone.forms import Form as LightConeForm
 
@@ -24,10 +24,12 @@ class SubmitLightConeTests(LiveServerMGFTest):
         DataSetPropertyFactory.create(dataset=dataset)
         StellarModelFactory.create()
         BandPassFilterFactory.create()
+        self.survey_preset = SurveyPresetFactory.create(name='Preset 1', parameters='<xml></xml>')
 
         self.username = "user"
         password = "password"
         self.user = UserFactory.create(username=self.username, password=password)
+
         
         self.parameters = """<lightcone>
                         <database_type>sqlite</database_type>
@@ -38,7 +40,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
         
         self.login(self.username, password)
         self.visit('mock_galaxy_factory')
-        self.click('tao-tabs-' + MODULE_INDICES['light_cone'])
+        self.click('tao-tabs-' + 'light_cone')
 
     def tearDown(self):
         super(SubmitLightConeTests, self).tearDown()
@@ -105,9 +107,9 @@ class SubmitLightConeTests(LiveServerMGFTest):
             'redshift_min': '1',
             'redshift_max': '2',
             }, id_wrap=self.lc_id)
-        self.submit_mgf_form()
-
-        self.assert_on_page('mock_galaxy_factory')
+        self.assert_required_on_field(True, self.lc_id('output_properties'))
+        #self.submit_mgf_form()
+        #self.assert_required_on_field(True, self.lc_id('output_properties'))
 
     def _test_submit_valid_unique_cone_job(self):
         ## fill in form (correctly)

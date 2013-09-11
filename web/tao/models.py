@@ -15,12 +15,12 @@ import os
 
 
 def format_human_readable_file_size(file_size):
-    size = file_size
+    size = float(file_size)
     units = ['B', 'kB', 'MB']
     for x in units:
-        if size < 1000:
-            return '%3.1f%s' % (size, x)
-        size /= 1000
+        if size < 1000.0:
+            return '%3d%s' % (round(size), x)
+        size /= 1000.0
     return '%3.1f%s' % (size, 'GB')
 
 
@@ -309,6 +309,7 @@ class Job(models.Model):
     error_message = models.TextField(blank=True, max_length=1000000, default='')
     disk_usage = models.IntegerField(null=True, blank=True, default=-1)
 
+
     def __init__(self, *args, **kwargs):
         super(Job, self).__init__(*args, **kwargs)
         self.var_cache = {}
@@ -316,7 +317,8 @@ class Job(models.Model):
             self.var_cache[var] = getattr(self, var)
 
     def __unicode__(self):
-        return "%s %s %s" % (self.user, self.created_time, self.description)
+        return "%s %s %s %s" % (self.id, self.user.display_name(),
+                                self.created_time, self.description)
 
     def is_completed(self):
         return self.status == Job.COMPLETED
@@ -393,7 +395,24 @@ class Job(models.Model):
         super(Job, self).save(*args, **kwargs)
         if self.var_cache['status'] != getattr(self, 'status') and getattr(self, 'status') == Job.COMPLETED:
             send_mail('job-status', {'job': self, 'user': self.user}, 'Job status update', (self.user.email,))
-    
+
+    def status_help_text(self):
+        last_command = WorkflowCommand.objects.filter(
+            job_id=self,
+            execution_status__in=[SUBMITTED, QUEUED, IN_PROGRESS]
+            ).latest('issued')
+        if last_command is None:
+            return ''
+        elif last_command.command == WorkflowCommand.JOB_OUTPUT_DELETE:
+            return '(catalogue is being deleted)'
+        elif last_command.command == WorkflowCommand.JOB_STOP:
+            return '(catalogue generation is being terminated)'
+
+    def has_wf_commands_in_progress(self):
+        commands_in_progress = WorkflowCommand.objects.filter(job_id=self).exclude(execution_status=COMPLETED).exclude(execution_status=ERROR)
+        return commands_in_progress
+
+
 class JobFile(object):
     def __init__(self, job_dir, file_name):
         self.file_name = file_name[len(job_dir)+1:]
@@ -405,13 +424,6 @@ class JobFile(object):
 
     def get_file_size(self):
         return format_human_readable_file_size(self.file_size)
-        # size = self.file_size
-        # units = ['B', 'kB', 'MB']
-        # for x in units:
-        #     if size < 1000:
-        #         return '%3.1f%s' % (size, x)
-        #     size /= 1000
-        # return '%3.1f%s' % (size, 'GB')
 
     def get_file_size_in_B(self):
         return self.file_size
@@ -461,7 +473,11 @@ class WorkflowCommand(models.Model):
     execution_comment = models.TextField(null=True, blank=True)
 
     def __unicode__(self):
-        return self.command
+        if self.job_id is not None:
+            jid = " on {0}".format(self.job_id.id)
+        else:
+            jid = ""
+        return u"{cmd}{jid}".format(cmd=self.command, jid=jid)
 
     def jobid(self):
         return self.job_id.pk
@@ -475,6 +491,13 @@ class WorkflowCommand(models.Model):
             prev = WorkflowCommand.objects.get(pk=self.id)
             if self.execution_status != prev.execution_status:
                 self.executed = datetime.now()
+                if self.command == self.JOB_OUTPUT_DELETE and \
+                    self.execution_status == COMPLETED:
+                        job_id = self.job_id.pk
+                        self.job_id = None
+                        Job.objects.get(id=job_id).delete()
+                        self.execution_comment += u'{0}\nJob {job_id} successfully deleted.'.format(
+                            self.execution_comment, job_id=job_id).strip()
         super(WorkflowCommand, self).save(force_insert=force_insert, force_update=force_update, using=using,
                                           update_fields=update_fields)
 
@@ -485,4 +508,10 @@ class GlobalParameter(models.Model):
 
     def __str__(self):
         return self.parameter_name
+
+class SurveyPreset(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    parameters = models.TextField(max_length=1000000)
+    description = models.TextField(default='')
+
 

@@ -8,7 +8,9 @@ Helper class to extension UI modules
 from django.conf import settings
 from tao.record_filter_form import RecordFilterForm
 from tao.output_format_form import OutputFormatForm
+from tao.sql_job_form import SQLJobForm
 from tao.models import Simulation, GalaxyModel, DataSet
+from tao.xml_util import module_xpath
 
 def _from_post(self, klass, module_name, param):
     if param is None:
@@ -29,10 +31,16 @@ class UIModulesHolder:
     form_classes = [(__import__('taoui_%s.forms' % module_name).forms.Form, module_name)
                     for module_name in settings.MODULES] + \
                    [(RecordFilterForm,'record_filter'), (OutputFormatForm, 'output_format')]
+                   
+    sql_classes = [(SQLJobForm,'sql_job'), (OutputFormatForm, 'output_format')]
 
     # this 'constants' are methods that will become instance methods
     POST = _from_post
     XML = _from_xml
+
+    # Job Type
+    LIGHT_CONE_JOB = 'alpha-light-cone-image'
+    SQL_JOB = 'sql-job'
 
     def __init__(self, method, param=None):
         # forms are created _and_stored_ one by one so later forms can use data in first ones via self._dict = {}
@@ -40,7 +48,15 @@ class UIModulesHolder:
         self._dict = {}
         self._errors = None
         self._dataset = None
-        for klass, module_name in UIModulesHolder.form_classes:
+        
+        classes = UIModulesHolder.form_classes
+        self.job_type = UIModulesHolder.LIGHT_CONE_JOB
+        
+        if method == UIModulesHolder.XML and module_xpath(param, '//workflow', attribute='name') == 'sql-job':
+            classes = UIModulesHolder.sql_classes
+            self.job_type = UIModulesHolder.SQL_JOB
+            
+        for klass, module_name in classes:
             form = method(self, klass, module_name, param)
             self._forms.append(form)
             self._dict[module_name] = form
@@ -97,8 +113,13 @@ class UIModulesHolder:
         (through the selected Dark Matter Simulation and Galaxy Model)"""
 
         if self._dataset is None:
-            sid = self.raw_data('light_cone', 'dark_matter_simulation')
-            gmid = self.raw_data('light_cone', 'galaxy_model')
-            self._dataset = DataSet.objects.get(simulation_id=sid, galaxy_model_id=gmid)
+            if self.job_type == UIModulesHolder.LIGHT_CONE_JOB:
+                sid = self.raw_data('light_cone', 'dark_matter_simulation')
+                gmid = self.raw_data('light_cone', 'galaxy_model')
+                self._dataset = DataSet.objects.get(simulation_id=sid, galaxy_model_id=gmid)
+            if self.job_type == UIModulesHolder.SQL_JOB:
+                sid = self.raw_data('sql_job', 'dark_matter_simulation')
+                gmid = self.raw_data('sql_job', 'galaxy_model')
+                self._dataset = DataSet.objects.get(simulation_id=sid, galaxy_model_id=gmid)
         return self._dataset
     

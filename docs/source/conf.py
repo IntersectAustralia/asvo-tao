@@ -109,12 +109,17 @@ pygments_style = 'sphinx'
 # a list of builtin themes.
 html_theme = 'default'
 html_theme_options = {
+    "bgcolor": "#FFF",
+    "textcolor": "#333",
     "relbarbgcolor": "#222",
     "relbarlinkcolor": "#999",
-    "sidebarbgcolor": "#333",
+    "sidebartextcolor": "#333",
+    "sidebarbgcolor": "#DDD",
     "sidebarlinkcolor": "#2ba6cb",
     "headtextcolor": "#333",
     "headlinkcolor": "#999",
+    "footertextcolor": "#666",
+    "footerbgcolor": "#EFEFEF",
     "headfont": "'Helvetica Neue', Helvetica, Arial, sans-serif;",
     "bodyfont": "Helvetica Neue"
 }
