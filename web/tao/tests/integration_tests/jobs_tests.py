@@ -43,7 +43,7 @@ class JobTest(LiveServerTest):
 
         self.output_paths = ['job1', 'large_job']
         self.dir_paths = [os.path.join(settings.FILES_BASE, output_path) for output_path in self.output_paths]
-        txt_template = loader.get_template('jobs/summary.txt')
+        txt_template = loader.get_template('jobs/light_cone_job-summary.txt')
         summary_context = Context(self.make_parameters())
         self.summary_text = txt_template.render(summary_context)
         self.file_names_to_contents = {
