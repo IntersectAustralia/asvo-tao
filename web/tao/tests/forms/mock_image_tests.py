@@ -1,10 +1,11 @@
 from lxml.html import document_fromstring as fromstring
 from lxml.cssselect import CSSSelector as css
 from django.test import TestCase
-from django.core.exceptions import ValidationError
 from tao.ui_modules import UIModulesHolder
 from taoui_mock_image.forms import Form, SingleForm
 from tao.xml_util import create_root, child_element
+from tao.tests.support.factories import SimulationFactory, GalaxyModelFactory, DataSetFactory, BandPassFilterFactory
+from tao.xml_util import xml_print, xml_parse
 
 ##
 ## Test server responses.
@@ -44,49 +45,61 @@ class ResponseTestCase(TestCase):
 ##    
 class FormTestCase(TestCase):
 
-    def _test_broken_management_form(self):
-        def do_it():
-            Form(self.uih, {
-                'mock_image-apply_mock_image': True,
-                'mock-TOTAL_FORMS': 0,
-                'mock_image-INITIAL_FORMS': 0,
-                'mock_image-MAX_NUM_FORMS': 1000
-            }, prefix=self.prefix)
+    def setUp(self):
+        simulation = SimulationFactory.create()
+        galaxy_model = GalaxyModelFactory.create()
+        dataset = DataSetFactory.create(simulation=simulation, galaxy_model=galaxy_model, max_job_box_count=11)
+        BandPassFilterFactory.create()
+        self.uih = UIModulesHolder(UIModulesHolder.POST)
+        self.prefix = 'mock_image'
+        self.mgmt_data = {
+            'mock_image-apply_mock_image': True,
+            'mock_image-TOTAL_FORMS': 1,
+            'mock_image-INITIAL_FORMS': 1,
+            'mock_image-MAX_NUM_FORMS': 1000,
+            ## 'mock_image-0-sub_cone': 'blah',
+        }
+        form = SingleForm()
+        self.fields = [f.name for f in form]
 
-        # Really should throw a ValidationError, but we
-        # silence it.
-        do_it();
-        # self.assertRaises(ValidationError, do_it)
-
-    def _test_no_forms(self):
+    def test_no_forms(self):
+        form = Form(self.uih, {
+            'mock_image-apply_mock_image': True,
+            'mock_image-TOTAL_FORMS': 1,
+            'mock_image-INITIAL_FORMS': 0,
+            'mock_image-MAX_NUM_FORMS': 1000
+        }, prefix=self.prefix)
+        self.assertFalse(form.is_valid(), msg='Must not accept zero forms.')
         form = Form(self.uih, {
             'mock_image-apply_mock_image': True,
             'mock_image-TOTAL_FORMS': 0,
             'mock_image-INITIAL_FORMS': 0,
             'mock_image-MAX_NUM_FORMS': 1000
         }, prefix=self.prefix)
-        self.assertTrue(form.is_valid(), msg='Must accept zero forms.')
-        self.assertEqual(form.total_form_count(), 1, msg='Must always have a form.')
+        self.assertFalse(form.is_valid(), msg='Must not accept zero forms.')
 
-    def _test_missing_sub_forms(self):
+    def test_missing_sub_forms(self):
         form = Form(self.uih, self.mgmt_data, prefix=self.prefix)
-        self.assertTrue(form.is_valid())
-        self.assertEqual(form.total_form_count(), 2, msg='Missing forms must be filled in.')
+        self.assertEqual(1, form.total_form_count())
+        self.assertFalse(form.is_valid(), msg='Empty form is not accepted')
 
-    def _test_missing_field(self):
+    def test_missing_field(self):
+        sf = SingleForm()
         for field in self.fields:
+            if not sf.fields[field].required: continue
             data = dict(self.mgmt_data.items() + self.make_sub_form_data(0).items())
             del data['mock_image-0-' + field]
             form = Form(self.uih, data, prefix=self.prefix)
-            self.assertFalse(form.is_valid())
-            self.assertTrue(field in form.errors[0])
+            self.assertFalse(form.is_valid(), field + ' is required')
+            self.assertTrue(field in form.errors[0], field + ' not in error')
 
-    def _test_missing_apply_check(self):
+    def test_missing_apply_check(self):
         data = dict(self.mgmt_data.items() + self.make_sub_form_data(0).items())
         del data['mock_image-apply_mock_image']
+        Form(self.uih, data, prefix=self.prefix)
         self.assertRaises(lambda: Form(self.uih, data, prefix=self.prefix))
 
-    def _test_to_xml_single_form(self):
+    def test_to_xml_single_form(self):
         data = dict(self.mgmt_data.items() + self.make_sub_form_data(0).items())
         form = Form(self.uih, data, prefix=self.prefix)
         self.assertTrue(form.is_valid())
@@ -98,7 +111,7 @@ class FormTestCase(TestCase):
         self.assertTrue(css('skymaker parents item')(root))
         self.assertEqual(len(css('skymaker images item')(root)), 1)
 
-    def _test_to_xml_multi_form(self):
+    def test_to_xml_multi_form(self):
         data = dict(self.make_mgmt_data(2).items() + self.make_sub_form_data(0).items() + self.make_sub_form_data(1).items())
         form = Form(self.uih, data, prefix=self.prefix)
         self.assertTrue(form.is_valid())
@@ -110,7 +123,7 @@ class FormTestCase(TestCase):
         self.assertTrue(css('skymaker parents item')(root))
         self.assertEqual(len(css('skymaker images item')(root)), 2)
 
-    def _test_from_xml_multi_form(self):
+    def test_from_xml_multi_form(self):
         data = dict(self.make_mgmt_data(2).items() + self.make_sub_form_data(0).items() + self.make_sub_form_data(1).items())
         form = Form(self.uih, data, prefix=self.prefix)
         self.assertTrue(form.is_valid())
@@ -118,25 +131,15 @@ class FormTestCase(TestCase):
         work = child_element(root, 'workflow')
         child_element(work, 'schema-version', '2.0')
         form.to_xml(work)
+        root = xml_parse(xml_print(root)) ## do this to recover namespace info not explicit above
         form = Form.from_xml(self.uih, root, self.prefix)
         self.assertTrue(form.is_valid())
-        self.assertEqual(form.total_form_count(), 3, msg='Must create extra form.')
-
-    def setUp(self):
-        self.uih = UIModulesHolder(UIModulesHolder.POST)
-        self.prefix = 'mock_image'
-        self.mgmt_data = {
-            'mock_image-apply_mock_image': True,
-            'mock_image-TOTAL_FORMS': 1,
-            'mock_image-INITIAL_FORMS': 0,
-            'mock_image-MAX_NUM_FORMS': 1000
-        }
-        form = SingleForm()
-        self.fields = [f.name for f in form]
+        self.assertEqual(form.total_form_count(), 2, msg='Must create extra form.')
 
     def make_mgmt_data(self, total):
         data = dict(self.mgmt_data)
         data['mock_image-TOTAL_FORMS'] = total
+        data['mock_image-INITIAL_FORMS'] = total
         return data
 
     def make_sub_form_data(self, idx):
