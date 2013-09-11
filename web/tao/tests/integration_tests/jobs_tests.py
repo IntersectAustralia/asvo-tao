@@ -118,7 +118,7 @@ class JobTest(LiveServerTest):
             'filter_max': 'None',
             })
         parameters.update({
-            'ssp_name': self.sed.name,
+            'ssp_encoding': self.sed.encoding,
             'band_pass_filters': [self.band_pass_filters[0].label + ' (Apparent)'],
             'band_pass_filter_label': self.band_pass_filters[0].label + ' (Apparent)',
             'band_pass_filter_id': self.band_pass_filters[0].filter_id,
