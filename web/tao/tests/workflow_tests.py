@@ -10,7 +10,7 @@ from tao import workflow, time
 from tao.forms import FormsGraph
 from tao.output_format_form import OutputFormatForm
 from tao.record_filter_form import RecordFilterForm
-# from tao.settings import OUTPUT_FORMATS
+from tao.xml_util import xml_print, xml_parse
 from taoui_light_cone.forms import Form as LightConeForm
 from taoui_sed.forms import Form as SEDForm
 from tao.tests.support import stripped_joined_lines, UtcPlusTen
@@ -80,7 +80,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
         for sim in Simulation.objects.all():
             sim.delete()
 
-    def _test_unique_cone(self):
+    def test_unique_cone(self):
         form_parameters = {
             'catalogue_geometry': 'light-cone',
             'dark_matter_simulation': self.simulation.id,
@@ -118,7 +118,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'apply_sed': False,
         })
         xml_parameters.update({
-            'ssp_name': self.stellar_model.name,
+            'ssp_encoding': self.stellar_model.encoding,
             'band_pass_filter_label': self.band_pass_filter.label,
             'band_pass_filter_id': self.band_pass_filter.filter_id,
             'band_pass_filter_name': self.band_pass_filter.filter_id,
@@ -150,13 +150,14 @@ class WorkflowTests(TestCase, XmlDiffMixin):
         self.assertEqual({}, output_form.errors)
 
         mock_ui_holder.update(record_filter = record_filter_form)
+        mock_ui_holder.dataset = self.dataset
         job = workflow.save(self.user, mock_ui_holder)
         actual_parameter_xml = job.parameters
 
-        self.assertXmlEqual(expected_parameter_xml, actual_parameter_xml)
         self.assertEqual(self.dataset.database, job.database)
+        self.assertXmlEqual(expected_parameter_xml, actual_parameter_xml)
 
-    def _test_random_cone(self):
+    def test_random_cone(self):
         form_parameters = {
             'catalogue_geometry': 'light-cone',
             'dark_matter_simulation': self.simulation.id,
@@ -191,7 +192,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'filter_max' : 'None',
         })
         xml_parameters.update({
-            'ssp_name': self.stellar_model.name,
+            'ssp_encoding': self.stellar_model.encoding,
             'band_pass_filter_label': self.band_pass_filter.label,
             'band_pass_filter_id': self.band_pass_filter.filter_id,
             'band_pass_filter_name': self.band_pass_filter.filter_id,
@@ -216,6 +217,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
         output_form = make_form({}, OutputFormatForm, {'supported_formats': 'csv'}, ui_holder=mock_ui_holder,
                                     prefix='output_format')
         mock_ui_holder.update(light_cone = light_cone_form, sed = sed_form, output_format = output_form)
+        mock_ui_holder.dataset = self.dataset
         record_filter_form = make_form({}, RecordFilterForm, {'filter':'D-'+str(self.filter.id),'min':str(1000000)},
                                            ui_holder=mock_ui_holder, prefix='record_filter')
         self.assertEqual({}, light_cone_form.errors)
@@ -230,7 +232,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
         self.assertXmlEqual(expected_parameter_xml, actual_parameter_xml)
         self.assertEqual(self.dataset.database, job.database)
 
-    def _test_box(self):
+    def test_box(self):
         form_parameters = {
             'catalogue_geometry': 'box',
             'dark_matter_simulation': self.simulation.id,
@@ -257,7 +259,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             })
         # TODO: there are commented out elements which are not implemented yet
         xml_parameters.update({
-            'ssp_name': self.stellar_model.name,
+            'ssp_encoding': self.stellar_model.encoding,
             'band_pass_filter_label': self.band_pass_filter.label,
             'band_pass_filter_id': self.band_pass_filter.filter_id,
             'band_pass_filter_description': self.band_pass_filter.description,
@@ -272,8 +274,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'dust_id': FormsGraph.DUST_ID,
         })
         # comments are ignored by assertXmlEqual
-        expected_parameter_xml = stripped_joined_lines("""
-            <?xml version="1.0"?>
+        expected_parameter_xml = stripped_joined_lines("""<?xml version="1.0"?>
             <!-- Using the XML namespace provides a version for future modifiability.  The timestamp allows
                  a researcher to know when this parameter file was generated.  -->
             <tao xmlns="http://tao.asvo.org.au/schema/module-parameters-v1" timestamp="2012-12-20T13:55:36+10:00">
@@ -356,7 +357,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                             <item>%(light_cone_id)s</item>
                         </parents>
 
-                        <single-stellar-population-model>%(ssp_name)s</single-stellar-population-model>
+                        %(ssp_encoding)s
                     </sed>
 
                     <filter id="%(bandpass_filter_id)s">
@@ -430,6 +431,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
         output_form = make_form({}, OutputFormatForm, {'supported_formats': 'csv'}, prefix='output_format')
         sed_form = make_form({}, SEDForm, self.sed_parameters, ui_holder=mock_ui_holder, prefix='sed')
         mock_ui_holder.update(light_cone = light_cone_form, sed = sed_form, output_format = output_form)
+        mock_ui_holder.dataset = self.dataset
         record_filter_form = make_form({}, RecordFilterForm, {'filter':'D-'+str(self.filter.id),'max':str(1000000)},
                                            ui_holder=mock_ui_holder, prefix='record_filter')
         self.assertEqual({}, light_cone_form.errors)
@@ -445,7 +447,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
         self.assertEqual(self.dataset.database, job.database)
 
 
-    def _test_no_sed(self):
+    def test_no_sed(self):
         form_parameters = {
             'catalogue_geometry': 'box',
             'dark_matter_simulation': self.simulation.id,
@@ -475,7 +477,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'band_pass_filter_name': self.band_pass_filter.filter_id,
             })
         xml_parameters.update({
-            'ssp_name': self.stellar_model.name,
+            'ssp_encoding': self.stellar_model.encoding,
             'band_pass_filter_label': self.band_pass_filter.label,
             'band_pass_filter_id': self.band_pass_filter.filter_id,
             'band_pass_filter_name': self.band_pass_filter.filter_id,
@@ -489,8 +491,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'dust_id': FormsGraph.DUST_ID,
             })
 
-        expected_parameter_xml = stripped_joined_lines("""
-            <?xml version="1.0" encoding="UTF-8"?>
+        expected_parameter_xml = stripped_joined_lines("""<?xml version="1.0" encoding="UTF-8"?>
             <!-- Using the XML namespace provides a version for future modifiability.  The timestamp allows
                  a researcher to know when this parameter file was generated.  -->
             <tao xmlns="http://tao.asvo.org.au/schema/module-parameters-v1" timestamp="2012-12-20T13:55:36+10:00">
@@ -610,6 +611,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
         sed_form = make_form({}, SEDForm, self.sed_disabled, ui_holder=mock_ui_holder, prefix='sed')
         output_form = make_form({}, OutputFormatForm, {'supported_formats': 'csv'}, ui_holder=mock_ui_holder, prefix='output_format')
         mock_ui_holder.update(light_cone = light_cone_form, sed = sed_form, output_format = output_form)
+        mock_ui_holder.dataset = self.dataset
         record_filter_form = make_form({}, RecordFilterForm, {'filter':'D-'+str(self.filter.id),'max':str(1000000)},
                                            ui_holder=mock_ui_holder, prefix='record_filter')
         self.assertEqual({}, light_cone_form.errors)
@@ -624,7 +626,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
         self.assertXmlEqual(expected_parameter_xml, actual_parameter_xml)
         self.assertEqual(self.dataset.database, job.database)
 
-    def _test_no_dust(self):
+    def test_no_dust(self):
         form_parameters = {
             'catalogue_geometry': 'box',
             'dark_matter_simulation': self.simulation.id,
@@ -651,7 +653,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             })
         # TODO: there are commented out elements which are not implemented yet
         xml_parameters.update({
-            'ssp_name': self.stellar_model.name,
+            'ssp_encoding': self.stellar_model.encoding,
             'band_pass_filter_label': self.band_pass_filter.label,
             'band_pass_filter_id': self.band_pass_filter.filter_id,
             'band_pass_filter_name': self.band_pass_filter.filter_id,
@@ -666,8 +668,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'dust_id': FormsGraph.DUST_ID,
             })
         # comments are ignored by assertXmlEqual
-        expected_parameter_xml = stripped_joined_lines("""
-            <?xml version="1.0"?>
+        expected_parameter_xml = stripped_joined_lines("""<?xml version="1.0"?>
             <!-- Using the XML namespace provides a version for future modifiability.  The timestamp allows
                  a researcher to know when this parameter file was generated.  -->
             <tao xmlns="http://tao.asvo.org.au/schema/module-parameters-v1" timestamp="2012-12-20T13:55:36+10:00">
@@ -750,7 +751,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                             <item>%(light_cone_id)s</item>
                         </parents>
 
-                        <single-stellar-population-model>%(ssp_name)s</single-stellar-population-model>
+                        %(ssp_encoding)s
                     </sed>
 
                     <filter id="%(bandpass_filter_id)s">
@@ -813,6 +814,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
         sed_form = make_form({}, SEDForm, self.sed_parameters_no_dust, ui_holder=mock_ui_holder, prefix='sed')
         output_form = make_form({}, OutputFormatForm, {'supported_formats': 'csv'}, ui_holder=mock_ui_holder, prefix='output_format')
         mock_ui_holder.update(light_cone = light_cone_form, sed = sed_form, output_format = output_form)
+        mock_ui_holder.dataset = self.dataset
         record_filter_form = make_form({}, RecordFilterForm, {'filter':'D-'+str(self.filter.id),'max':str(1000000)},
                                            ui_holder=mock_ui_holder, prefix='record_filter')
         self.assertEqual({}, light_cone_form.errors)
