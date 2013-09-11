@@ -49,12 +49,10 @@ class XmlFormsTests(TestCase):
 
     def tearDown(self):
         super(XmlFormsTests, self).tearDown()
-        from tao.models import GlobalParameter
-        for param in GlobalParameter.objects.all():
-            param.delete()
-        from tao.models import Simulation
-        for sim in Simulation.objects.all():
-            sim.delete()
+        m = __import__('tao.models')
+        for name in ['GlobalParameter', 'Simulation', 'GalaxyModel', 'DataSet', 'DataSetProperty', 'Snapshot', 'StellarModel', 'DustModel', 'Snapshot', 'BandPassFilter', 'Job', 'GlobalParameter']:
+            klass = getattr(m.models, name)
+            for obj in klass.objects.all(): obj.delete()
 
     def test_output_format_form(self):
         xml_parameters = {
@@ -90,7 +88,7 @@ class XmlFormsTests(TestCase):
             'filter_max' : 'None',
             })
         xml_parameters.update({
-            'ssp_name': 'SM', # self.stellar_model.name,
+            'ssp_encoding': self.stellar_model.encoding,
             'band_pass_filter_label': 'BPFN', # self.band_pass_filter.label,
             'band_pass_filter_id': 1L, # self.band_pass_filter.filter_id,
             'band_pass_filter_name': 'BPFN',
@@ -138,7 +136,7 @@ class XmlFormsTests(TestCase):
             'filter_max' : 'None',
             })
         xml_parameters.update({
-            'ssp_name': 'SM', # self.stellar_model.name,
+            'ssp_encoding': self.stellar_model.encoding,
             'band_pass_filter_label': 'BPFN', # self.band_pass_filter.label,
             'band_pass_filter_id': 1L, # self.band_pass_filter.filter_id,
             'band_pass_filter_name': 'BPFN',
@@ -189,7 +187,7 @@ class XmlFormsTests(TestCase):
             'filter_max' : 'None',
             })
         xml_parameters.update({
-            'ssp_name': 'SM', # self.stellar_model.name,
+            'ssp_encoding': self.stellar_model.encoding,
             'band_pass_filter_label': 'BPFN', # self.band_pass_filter.label,
             'band_pass_filter_id': 1L, # self.band_pass_filter.filter_id,
             'band_pass_filter_name': 'BPFN',
@@ -206,6 +204,7 @@ class XmlFormsTests(TestCase):
         xml_str = light_cone_xml(xml_parameters)
         light_cone_form = make_form({}, LightConeForm, {'dark_matter_simulation':self.simulation.id, 'galaxy_model':self.dataset.id}, prefix='light_cone')
         mock_ui_holder.update(light_cone = light_cone_form)
+        mock_ui_holder.dataset = self.dataset
         rf_form = make_form_xml(RecordFilterForm, xml_str, prefix='record_filter', ui_holder=mock_ui_holder)
 
         self.assertEquals('D-' + str(self.filter.id), rf_form.data['record_filter-filter'])
@@ -246,7 +245,7 @@ class XmlFormsTests(TestCase):
             'filter_max' : 'None',
             })
         xml_parameters.update({
-            'ssp_name': self.stellar_model.name,
+            'ssp_encoding': self.stellar_model.encoding,
             'band_pass_filter_label': self.band_pass_filter.label,
             'band_pass_filter_id': self.band_pass_filter.filter_id,
             'band_pass_filter_name': self.band_pass_filter.filter_id,
@@ -267,13 +266,13 @@ class XmlFormsTests(TestCase):
     def test_light_cone_geometry(self):
         xml_parameters = {
             'catalogue_geometry': 'light-cone',
-            'dark_matter_simulation': self.simulation.id, # self.simulation.id,
-            'galaxy_model': self.galaxy_model.id, #self.galaxy_model.id,
+            'dark_matter_simulation': self.simulation.id,
+            'galaxy_model': self.galaxy_model.id,
             'redshift_min': 0.2,
             'redshift_max': 0.3,
             'ra_opening_angle': 71.565,
             'dec_opening_angle': 41.811,
-            'output_properties' : [self.filter.id, self.output_prop.id],
+            'output_properties': [self.filter.id, self.output_prop.id],
             'light_cone_type': 'unique',
             'number_of_light_cones': 1,
             }
@@ -284,10 +283,10 @@ class XmlFormsTests(TestCase):
             'output_properties_1_name' : self.filter.name,
             'output_properties_1_label' : self.filter.label,
             'output_properties_1_units' : self.filter.units,
-            'output_properties_1_description' : 'FD', # self.filter.units,
+            'output_properties_1_description' : self.filter.description,
             'output_properties_2_name' : self.output_prop.name,
             'output_properties_2_label' : self.output_prop.label,
-            'output_properties_2_description' : 'OD', # self.filter.units,
+            'output_properties_2_description' : self.filter.description,
             'output_properties_3_name' : self.computed_filter.name,
             'output_properties_3_label' : self.computed_filter.label,
             'output_properties_3_description' : self.computed_filter.description,
@@ -298,7 +297,7 @@ class XmlFormsTests(TestCase):
             'filter_max' : 'None',
             })
         xml_parameters.update({
-            'ssp_name': self.stellar_model.name,
+            'ssp_encoding': self.stellar_model.encoding,
             'band_pass_filter_label': self.band_pass_filter.label,
             'band_pass_filter_id': self.band_pass_filter.filter_id,
             'band_pass_filter_name': self.band_pass_filter.filter_id,
@@ -312,7 +311,10 @@ class XmlFormsTests(TestCase):
             'dust_id': FormsGraph.DUST_ID,
         })
         xml_str = light_cone_xml(xml_parameters)
-        form = make_form_xml(LightConeForm, xml_str, prefix='light_cone')
+        mock_ui_holder = MockUIHolder()
+        mock_ui_holder.dataset = self.dataset
+        form = make_form_xml(LightConeForm, xml_str, prefix='light_cone', ui_holder=mock_ui_holder)
+
         self.assertEquals(LightConeForm.CONE, form.data['light_cone-catalogue_geometry'])
         self.assertEquals(self.dataset.id, form.data['light_cone-galaxy_model'])
         self.assertEquals(self.simulation.id, form.data['light_cone-dark_matter_simulation'])
@@ -358,7 +360,7 @@ class XmlFormsTests(TestCase):
             'filter_max' : 'None',
             })
         xml_parameters.update({
-            'ssp_name': self.stellar_model.name,
+            'ssp_encoding': self.stellar_model.encoding,
             'band_pass_filter_label': self.band_pass_filter.label,
             'band_pass_filter_id': self.band_pass_filter.filter_id,
             'band_pass_filter_name': self.band_pass_filter.filter_id,
