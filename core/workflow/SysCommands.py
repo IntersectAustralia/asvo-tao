@@ -110,7 +110,13 @@ class SysCommands(object):
         CurrentJobs_PBSID=self.dbaseobj.GetCurrentActiveJobs_pbsID()
         
         for PBsID in CurrentJobs_PBSID:
-            PID=PBsID['pbsreferenceid'].split('.')[0]
+            PID=""
+            if JobRow['pbsreferenceid']!=None:                
+                PID=PBsID['pbsreferenceid'].split('.')[0]
+            else:
+                logging.info("Sorry This Job doesn't have pbsID. Job ID"+str(JobID))
+                return False
+            
             JobStatus=PBsID['jobstatus']
             UIReference_ID=PBsID['uireferenceid']
             UserName=PBsID['username']
@@ -142,7 +148,12 @@ class SysCommands(object):
         
         for JobRow in AssociatedJobsData:
             JobID=JobRow['jobid']
-            PBSID=JobRow['pbsreferenceid'].split('.')[0]
+            PBSID=""
+            if JobRow['pbsreferenceid']!=None:                
+                PBSID=JobRow['pbsreferenceid'].split('.')[0]
+            else:
+                logging.info("Sorry This Job doesn't have pbsID. Job ID"+str(JobID))
+                return False
             JobStatus=JobRow['jobstatus']
             
             self.PauseJob(UICommandID, JobID, PBSID, JobStatus)
