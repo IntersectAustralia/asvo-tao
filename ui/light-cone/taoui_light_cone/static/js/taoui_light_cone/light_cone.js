@@ -70,7 +70,8 @@ catalogue.modules.light_cone = function ($) {
     	if (geometry == "box") {
     		jQuery.extend(params, {
     			'light_cone-snapshot': [vm.snapshot().pk],
-    			'light_cone-box_size': [vm.box_size()]
+    			'light_cone-box_size': [vm.box_size()],
+                'light_cone-rng_seed': vm.rng_seed
     		});
     	} else { // light-cone
             var noc;
@@ -78,6 +79,7 @@ catalogue.modules.light_cone = function ($) {
                 noc = 1;
             } else {
                 noc = parseInt(vm.number_of_light_cones());
+                jQuery.extend(params, {'light_cone-rng_seeds': vm.rng_seeds()});
             }
     		jQuery.extend(params, {
     			'light_cone-light_cone_type': [vm.light_cone_type()],
@@ -382,6 +384,26 @@ catalogue.modules.light_cone = function ($) {
                 var snapshot = vm.snapshot();
                 if (snapshot !== undefined)
                     result = format_redshift(vm.snapshot().fields.redshift);
+            }
+            return result;
+        });
+
+        var int_width = Math.pow(2, 32);
+
+        var random_seed = function() {
+            return Math.floor(Math.random() * int_width);
+        }
+
+        vm.rng_seed = TaoJob['light_cone-rng_seed'] ? TaoJob['light_cone-rng_seed'] : random_seed();
+        vm.rng_seeds = ko.computed(function() {
+            result = [];
+            var i = 0;
+            for (i; i < vm.number_of_light_cones(); i++) {
+                if(TaoJob['light_cone-rng_seeds'] && TaoJob['light_cone-rng_seeds'][i]) {
+                    result.push(parseInt(TaoJob['light_cone-rng_seeds'][i]));
+                } else {
+                    result.push(random_seed());
+                }
             }
             return result;
         });
