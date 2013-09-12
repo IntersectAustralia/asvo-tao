@@ -77,10 +77,11 @@ class JobTypeFormTests(LiveServerTest):
         }
 
         self.assert_attribute_equals('value', lc_expected)
-
         self.assert_is_checked(self.lc_id('light_cone_type_1'))
-
         self.assert_multi_selected_text_equals(self.lc_id('output_properties-right'), ['parameter_005 label'])
+        rng_seeds_expected = [111111, 222222, 333333]
+        rng_seeds_actual = self.selenium.execute_script('return catalogue.vm.light_cone.rng_seeds()')
+        self.assertEqual(rng_seeds_expected, rng_seeds_actual)
 
 
     def test_sed_params(self):

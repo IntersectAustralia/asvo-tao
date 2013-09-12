@@ -19,6 +19,11 @@
       <output-fields>
         <item description="description_005" label="parameter_005 label">name_005</item>
       </output-fields>
+      <rng-seeds>
+        <rng-seed-0>111111</rng-seed-0>
+        <rng-seed-1>222222</rng-seed-1>
+        <rng-seed-2>333333</rng-seed-2>
+      </rng-seeds>
     </light-cone>
     <fits id="5">
       <fields>
