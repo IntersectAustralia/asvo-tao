@@ -53,13 +53,15 @@ def to_xml_2(form, root):
         child_element(light_cone_elem, 'dec-min', text='0.0', units='deg')
         child_element(light_cone_elem, 'dec-max', text=form.cleaned_data['dec_opening_angle'], units='deg')
         if form.cleaned_data['light_cone_type'] == 'random':
-            rng_seeds_elem = child_element(light_cone_elem, 'rng-seeds')
             rng_seeds_string = form.cleaned_data['rng_seeds']
             rng_seeds = re.sub(r"[\[\]\su']", '', rng_seeds_string).split(',')
-            i = 0
-            for rng_seed in rng_seeds:
-                child_element(rng_seeds_elem, 'rng-seed-%d' % i, text=rng_seed)
-                i += 1
+            rng_seeds = [r for r in rng_seeds if r] # removes empty strings
+            if len(rng_seeds) > 0:
+                rng_seeds_elem = child_element(light_cone_elem, 'rng-seeds')
+                i = 0
+                for rng_seed in rng_seeds:
+                    child_element(rng_seeds_elem, 'rng-seed-%d' % i, text=rng_seed)
+                    i += 1
 
     output_properties = form.cleaned_data['output_properties']
     if len(output_properties) > 0:
@@ -216,11 +218,12 @@ class Form(BetterForm):
             snapshot_choices = datasets.snapshot_choices(dataset_id)
             if self.data[self.prefix + '-catalogue_geometry'] == 'light-cone' and \
                 self.prefix + '-light_cone_type' in self.data and \
-                self.data[self.prefix + '-light_cone_type'] == 'random':
+                self.data[self.prefix + '-light_cone_type'] == 'random' and\
+                self.prefix + '-rng_seeds' in self.data:
                 self.fields['rng_seeds'].initial = self.data[self.prefix + '-rng_seeds']
             elif self.data[self.prefix + '-catalogue_geometry'] == 'box' and \
                 self.prefix + '-rng_seed' in self.data:
-                self.fields['rng_seed'].initial = self.data[self.prefix+ '-rng_seed']
+                self.fields['rng_seed'].initial = self.data[self.prefix + '-rng_seed']
         else:
             # The choices should be empty, since they are loaded in the wizard
             # output_choices is here until Carlos sets up the View Model
