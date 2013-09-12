@@ -10,7 +10,7 @@ Helper that saves a job from form data (in UI Holder). See :class:`tao.ui_module
 
 from tao import models, time
 from tao.datasets import dataset_get
-from tao.xml_util import create_root, find_or_create, child_element, xml_print
+from tao.xml_util import create_root, find_or_create, child_element, xml_print, NAMESPACE
 
 
 def save(user, ui_holder, description=None):
@@ -29,7 +29,7 @@ def save(user, ui_holder, description=None):
 def _make_parameters(user, forms):
     # precondition: forms are valid
 
-    root = create_root('tao', xmlns='http://tao.asvo.org.au/schema/module-parameters-v1', timestamp=time.timestamp())
+    root = create_root('tao', timestamp=time.timestamp(), nsmap={None:NAMESPACE})
 
     child_element(root, 'username', text=user.username)
 
