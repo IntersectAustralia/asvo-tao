@@ -50,21 +50,6 @@ catalogue.modules.light_cone = function ($) {
     this.cleanup_fields = function ($form) {
     }
 
-
-    this.validate = function ($form) {
-    	var is_valid = true;
-    	// var is_ok = catalogue.validators.is_ok;
-        // if (vm.catalogue_geometry() == 'box') {
-        //     if (!is_ok(vm.box_size)) return false;
-        // } else {
-        //     if (!is_ok(vm.box_size)) return false;
-        //    /// TODO !!!
-        // }
-    	is_valid &= catalogue.util.validate_vm(vm);
-    	return is_valid;
-    }
-
-
     this.pre_submit = function ($form) {
     }
 
@@ -130,14 +115,14 @@ catalogue.modules.light_cone = function ($) {
     	});
     	return res[0];
     };
-    
+
     var lookup_geometry = function(gid) {
     	var res = $.grep(vm.catalogue_geometries(), function(elem, idx) {
     		return elem.id == gid;
     	});
     	return res[0];
     }
-    
+
     var available_datasets = function() {
     	// Answer the set of available datasets
     	var res = $.grep(TaoMetadata.DataSet, function(elem, idx) {
@@ -159,7 +144,7 @@ catalogue.modules.light_cone = function ($) {
     	});
     	return res;
     }
-    
+
     var available_galaxy_models = function(sid) {
     	// Answer the set of galaxy models that are available
     	// Only those that are associated with active datasets from current simulation id (sid)
@@ -215,7 +200,7 @@ catalogue.modules.light_cone = function ($) {
         }
         vm.dark_matter_simulation = ko.observable(param ? param : vm.dark_matter_simulations()[0])
         	.extend({logger: 'simulation'});
-        
+
         vm.galaxy_models = ko.computed(function(){
             return available_galaxy_models(vm.dark_matter_simulation().pk);
         });
@@ -240,7 +225,7 @@ catalogue.modules.light_cone = function ($) {
         vm.number_of_light_cones = ko.observable(param ? param : 1)
             .extend({required: function(){return vm.catalogue_geometry() == 'light-cone' && vm.light_cone_type() != 'unique'}})
             .extend({validate: catalogue.validators.is_int});
-        // Disable geq 1 check until we can figure out why it is being 
+        // Disable geq 1 check until we can figure out why it is being
         // set to 0.  job_params ensures that it is at least 1 before
         // submission.
         //    .extend({validate: catalogue.validators.geq(1)});
@@ -325,18 +310,30 @@ catalogue.modules.light_cone = function ($) {
         });
 
         vm.current_output_property = ko.observable(undefined);
-    	// if param is null assume that we are in the Catalogue wizard
-    	// so set up the dependencies to update the display
-        // otherwise leave it unlinked
-        if (!param) {
-	        vm.output_properties_widget.clicked_option.subscribe(function(v) {
-	            var op = catalogue.util.dataset_property(v);
-	            vm.current_output_property(op);
-	        });
-        }
+        vm.output_properties_widget.clicked_option.subscribe(function(v) {
+            var op = catalogue.util.dataset_property(v);
+            vm.current_output_property(op);
+        });
 
         // Computed Human-Readable Summary Fields
-        vm.estimated_cone_size = ko.computed(calculate_job_size);
+        vm.estimated_cone_size = ko.computed(function(){
+            try {
+                return calculate_job_size();
+            } catch(e) {
+                return NaN;
+            }
+        });
+        vm.estimated_cone_size
+            .extend({validate: catalogue.validators.test(function(){
+                if (vm.catalogue_geometry().id == 'box') return true;
+                return !isNaN(vm.estimated_cone_size());
+            },
+            "Please provide light-cone parameters to estimate job size")})
+            .extend({validate: catalogue.validators.test(function(){
+                if (vm.catalogue_geometry().id == 'box') return true;
+                return vm.estimated_cone_size() <= 100;
+            },
+            "Estimated job size for this Light-cone is beyond allowed maximum")});
 
 
         var job_too_large = function() {
@@ -352,7 +349,7 @@ catalogue.modules.light_cone = function ($) {
         vm.estimated_cone_size_msg = ko.computed(function () {
         	var ecs = vm.estimated_cone_size();
         	var msg = 'Estimated job size: ';
-        	if (ecs == null) {
+        	if (isNaN(ecs)) {
         		msg += "(waiting for valid cone parameters)";
         	} else {
 	            msg = msg + ecs + "%";

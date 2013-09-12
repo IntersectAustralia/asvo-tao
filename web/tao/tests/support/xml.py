@@ -9,7 +9,7 @@ def normalise_xml(xmlstring):
         print xmlstring
         raise e
     as_object = remove_comments(as_object)
-    normalised_string = etree.tostring(as_object, pretty_print=True)
+    normalised_string = etree.tostring(as_object, pretty_print=True, encoding='utf-8', xml_declaration=True)
     return normalised_string
 
 def light_cone_xml(xml_parameters):
@@ -20,8 +20,7 @@ def light_cone_xml(xml_parameters):
     xml_parameters.update({'geometry_fragment': geometry_fragment})
     if 'band_pass_filter_description' not in xml_parameters:
         xml_parameters.update({'band_pass_filter_description': ''})
-    xml = stripped_joined_lines("""
-            <?xml version="1.0" encoding="UTF-8"?>
+    xml = stripped_joined_lines("""<?xml version="1.0" encoding="UTF-8"?>
             <!-- Using the XML namespace provides a version for future modifiability.  The timestamp allows
                  a researcher to know when this parameter file was generated.  -->
             <tao xmlns="http://tao.asvo.org.au/schema/module-parameters-v1" timestamp="2012-12-20T13:55:36+10:00">
@@ -70,7 +69,7 @@ def light_cone_xml(xml_parameters):
                             <item>%(light_cone_id)s</item>
                         </parents>
 
-                        <single-stellar-population-model>%(ssp_name)s</single-stellar-population-model>
+                        %(ssp_encoding)s
                     </sed>
 
                     <filter id="%(bandpass_filter_id)s">
@@ -225,8 +224,7 @@ def fits_output_format_xml(xml_parameters):
     xml_parameters.update({'geometry_fragment': geometry_fragment})
     if 'band_pass_filter_description' not in xml_parameters:
         xml_parameters.update({'band_pass_filter_description': ''})
-    xml = stripped_joined_lines("""
-            <?xml version="1.0" encoding="UTF-8"?>
+    xml = stripped_joined_lines("""<?xml version="1.0" encoding="UTF-8"?>
             <!-- Using the XML namespace provides a version for future modifiability.  The timestamp allows
                  a researcher to know when this parameter file was generated.  -->
             <tao xmlns="http://tao.asvo.org.au/schema/module-parameters-v1" timestamp="2012-12-20T13:55:36+10:00">
@@ -272,7 +270,7 @@ def fits_output_format_xml(xml_parameters):
                             <item>%(light_cone_id)s</item>
                         </parents>
 
-                        <single-stellar-population-model>%(ssp_name)s</single-stellar-population-model>
+                        %(ssp_encoding)s
                     </sed>
 
                     <filter id="%(bandpass_filter_id)s">
@@ -348,8 +346,8 @@ class XmlDiffMixin(object):
         normalised_expected = normalise_xml(expected)
         normalised_actual = normalise_xml(actual)
 
-        expected_lines = normalised_expected.split('\n')
-        actual_lines = normalised_actual.split('\n')
+        expected_lines = [l.strip() for l in normalised_expected.split('\n') if len(l.strip()) > 0]
+        actual_lines = [l.strip() for l in normalised_actual.split('\n') if len(l.strip()) > 0]
         maxDiff = self.maxDiff
         self.maxDiff = None
         self.assertEqual(expected_lines, actual_lines)

@@ -5,7 +5,7 @@ from django.utils.html import strip_tags
 from tao.models import Simulation, StellarModel, DustModel, BandPassFilter
 from tao.settings import MODULE_INDICES
 from tao.tests.integration_tests.helper import LiveServerTest
-from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, JobFactory, DataSetPropertyFactory, DustModelFactory, StellarModelFactory, BandPassFilterFactory, GlobalParameterFactory
+from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, JobFactory, DataSetPropertyFactory, DustModelFactory, StellarModelFactory, BandPassFilterFactory, GlobalParameterFactory, SurveyPresetFactory
 
 class MockGalaxyFactoryTest(LiveServerTest):
 
@@ -34,6 +34,8 @@ class MockGalaxyFactoryTest(LiveServerTest):
             BandPassFilterFactory.create()
             DustModelFactory.create()
 
+        self.survey_preset = SurveyPresetFactory.create(name='Preset 1', parameters='<xml></xml>')
+        
         username = "person"
         password = "funnyfish"
         self.user = UserFactory.create(username=username, password=password)
@@ -42,6 +44,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.visit('mock_galaxy_factory')
         self.click('tao-tabs-' + 'light_cone')
         self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
+        
 
     def tearDown(self):
         super(MockGalaxyFactoryTest, self).tearDown()

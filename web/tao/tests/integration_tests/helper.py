@@ -11,6 +11,7 @@ import tao.datasets as datasets
 from tao.models import DataSetProperty, BandPassFilter, Simulation
 from tao.forms import NO_FILTER
 from tao.settings import MODULE_INDICES
+from tao.tests.helper import TaoModelsCleanUpMixin
 from tao.tests.support.factories import GlobalParameterFactory
 
 def interact(local):
@@ -24,7 +25,7 @@ def interact(local):
 def visit(client, view_name, *args, **kwargs):
     return client.get(reverse(view_name, args=args), follow=True)
 
-class LiveServerTest(django.test.LiveServerTestCase):
+class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
     DOWNLOAD_DIRECTORY = '/tmp/work/downloads'
 
     ## List all ajax enabled pages that have initialization code and must wait
@@ -58,10 +59,6 @@ class LiveServerTest(django.test.LiveServerTestCase):
 
     def tearDown(self):
         self.selenium.quit()
-        m = __import__('tao.models')
-        for name in ['Simulation', 'GalaxyModel', 'DataSet', 'DataSetProperty', 'StellarModel', 'DustModel', 'Snapshot', 'BandPassFilter', 'Job', 'GlobalParameter']:
-            klass = getattr(m.models, name)
-            for obj in klass.objects.all(): obj.delete()
         # remove the download dir
         for root, dirs, files in os.walk(self.DOWNLOAD_DIRECTORY, topdown=False):
             for name in files:
@@ -426,3 +423,8 @@ class LiveServerMGFTest(LiveServerTest):
         div_container = self.get_closest_by_class(field_elem, 'control-group')
         self.assertEquals(what, 'error' in self.get_element_css_classes(div_container))
 
+    def assert_required_on_field(self, what, field_id):
+        field_elem = self.selenium.find_element_by_css_selector(field_id)
+        div_container = self.get_closest_by_class(field_elem, 'control-group')
+        label = div_container.find_element_by_css_selector('label')
+        self.assertTrue(label.get_attribute('class').find('error') != -1, '%s label is not in error' % (field_id,))

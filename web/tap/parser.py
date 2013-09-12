@@ -25,8 +25,8 @@ def parse_dataset_name(sql):
         if len(dataset) > 1:
             label = dataset[1].encode('utf-8')
         try:
-            models.DataSet.objects.get(database=name, available=1)
-            return {'name': name, 'label': label}
+            dataset = models.DataSet.objects.get(database=name, available=1)
+            return {'name': name, 'label': label, 'simulation': dataset.simulation.name, 'galaxy_model': dataset.galaxy_model.name}
         except models.DataSet.DoesNotExist:
             pass
 
@@ -43,18 +43,22 @@ def parse_fields(sql, _dataset = None):
             pass
         
     fields = []
-    regex = re.compile('^SELECT\s+(.*?)(\s+FROM)', re.I|re.M)
+    regex = re.compile('^(SELECT\s+TOP\s+[0-9]+\s+|SELECT\s+)(.*?)\s+FROM', re.I|re.M)   
     found = regex.findall(sql)
     if found:
-        split_fields = re.compile('\s?[,]\s?', re.I|re.M)
+        split_fields = re.compile('\s?,\s?', re.I|re.M)
+        field_labels = re.compile('\s*(.*?)(\s+AS\s+|\s+)(.*)', re.I|re.M)
         split_definitions = re.compile('\s+AS\s+|\s+', re.I|re.M)
-        for field in re.split(split_fields, found[0][0]):
-            field_description = re.split(split_definitions, field)
-            name = field_description[0].encode('utf-8')
-            label = name
+        for field in re.split(split_fields, found[0][1]):
+            name = label = field
             units = ''
-            if len(field_description) > 1:
-                label = field_description[1]
+            labels = field_labels.findall(field)
+            if labels:
+                name   = labels[0][0].encode('utf-8')
+                label  = labels[0][2].encode('utf-8')
+                if name == '':
+                    name = label
+
             if dataset_id:
                 try:
                     datatype = models.DataSetProperty.objects.get(dataset_id=dataset_id, name=name)
@@ -65,7 +69,7 @@ def parse_fields(sql, _dataset = None):
                     pass
             
             fields.append({'value': name, 'label': label, 'units': units})
-    
+            
     return fields
 
 def parse_conditions(sql):
@@ -92,12 +96,22 @@ def parse_order(sql):
         return None
 
 def parse_limit(sql):
-    regex = re.compile('(LIMIT\s+(.*))', re.I|re.M)
+    regex = re.compile('^SELECT\s+TOP\s+([0-9]+)', re.I|re.M)
     found = regex.findall(sql)
     if found:
-        return found[0][1]
-    else:
-        return None
+        return found[0]
+
+    regex = re.compile('LIMIT\s+(.*)', re.I|re.M)
+    found = regex.findall(sql)
+    if found:
+        regex = re.compile('([0-9]+)\s?,\s*?([0-9]+)', re.I|re.M)
+        pages = regex.findall(found[0])
+        if pages and len(pages[0]) == 2:
+            return pages[0][1]
+        else:
+            return found[0]
+    
+    return None
     
 def parse_joins(sql):
     regex = re.compile('JOIN+', re.I|re.M)
@@ -107,4 +121,18 @@ def parse_joins(sql):
     else:
         return []
     
-    
+def remove_limits(sql):
+    regex = re.compile('^SELECT\s+(TOP\s+[0-9]+)', re.I|re.M)
+    found = regex.findall(sql)
+    if found:
+        sql = sql.replace(found[0], '')
+
+    regex = re.compile('(LIMIT\s+.*)', re.I|re.M)
+    found = regex.findall(sql)
+    if found:
+        sql = sql.replace(found[0], '')
+
+    while sql.find('  ') > 0:
+        sql = sql.replace('  ', ' ')
+
+    return sql

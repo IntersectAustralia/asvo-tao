@@ -1,4 +1,4 @@
-from tao.tests.support.factories import DataSetFactory, DataSetPropertyFactory, GalaxyModelFactory, GlobalParameterFactory, SimulationFactory, UserFactory, SnapshotFactory, StellarModelFactory, DustModelFactory, BandPassFilterFactory
+from tao.tests.support.factories import DataSetFactory, DataSetPropertyFactory, GalaxyModelFactory, GlobalParameterFactory, SimulationFactory, UserFactory, SnapshotFactory, StellarModelFactory, DustModelFactory, BandPassFilterFactory, SurveyPresetFactory
 from tao.tests.integration_tests.helper import LiveServerTest
 
 class DatasetTests(LiveServerTest):
@@ -22,6 +22,7 @@ class DatasetTests(LiveServerTest):
         self.default_dataset.default_filter_field = DataSetPropertyFactory.create(dataset=ds3, name='dataset property 3')
         self.default_dataset.save()
         SnapshotFactory.create(dataset=self.default_dataset, redshift='0.33')
+        self.survey_preset = SurveyPresetFactory.create(name='Preset 1', parameters='<xml></xml>')
 
         for i in range(3):
             StellarModelFactory.create(label='stellar_label_%03d' % i, name='stellar_name_%03d' % i, description='<p>Description %d </p>' % i)

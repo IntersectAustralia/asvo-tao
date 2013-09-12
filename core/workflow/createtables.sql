@@ -4,6 +4,7 @@
 CREATE SEQUENCE NextJobID;
 CREATE SEQUENCE NextCommandID;
 CREATE SEQUENCE NextEventID;
+CREATE SEQUENCE NextJobRestartID;
 
 CREATE TABLE JOBS
 (
@@ -61,11 +62,12 @@ AdditionalParams varchar(200) DEFAULT NULL
 
 CREATE TABLE JobRestartList
 (
-JobID INTEGER CONSTRAINT JobsRestart_PK PRIMARY KEY,
+JobRestartID INTEGER CONSTRAINT JobRestart_PK PRIMARY KEY DEFAULT nextval('NextJobRestartID'),
+JobID INTEGER,
 UIReferenceID INTEGER, 
 JobUserName varchar(50) DEFAULT NULL,
-SubJobsCount INTEGER DEFAULT 1,
+subjobindex INTEGER DEFAULT 1,
 InsertTimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-LastErrorTimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-RestartCounter SMALLINT DEFAULT 0
+Issequential boolean DEFAULT false,
+HasBeenRestarted boolean DEFAULT false
 );

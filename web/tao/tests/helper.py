@@ -53,6 +53,7 @@ class MockUIHolder:
     """
     def __init__(self, **kwargs):
         self._forms = kwargs
+        self._dataset = None
 
     def update(self, **kwargs):
         self._forms.update(kwargs)
@@ -82,3 +83,26 @@ class MockUIHolder:
 
     def set_forms(self, forms):
         self._forms = forms
+
+    def get_dataset(self):
+        """Answer the dataset referenced by the receiver
+        (through the selected Dark Matter Simulation and Galaxy Model)"""
+
+        if self._dataset is None:
+            raise Exception("I am poorly configured mock without _dataset")
+        return self._dataset
+
+    def set_dataset(self, v):
+        self._dataset = v
+
+    dataset = property(get_dataset, set_dataset)
+
+class TaoModelsCleanUpMixin(object):
+    def tearDown(self):
+        m = __import__('tao.models')
+        for name in ['Simulation', 'GalaxyModel', 'DataSet', 'DataSetProperty', 'StellarModel', 'DustModel',
+                     'Snapshot', 'BandPassFilter', 'WorkflowCommand', 'Job', 'GlobalParameter', 'SurveyPreset']:
+            klass = getattr(m.models, name)
+            for obj in klass.objects.all(): obj.delete()
+
+

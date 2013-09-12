@@ -1,7 +1,7 @@
 import factory
 # http://factoryboy.readthedocs.org/en/latest/index.html
 
-from tao.models import Job, TaoUser, Simulation, GalaxyModel, DataSet, DataSetProperty, StellarModel, Snapshot, BandPassFilter, DustModel, GlobalParameter, WorkflowCommand
+from tao.models import Job, TaoUser, Simulation, GalaxyModel, DataSet, DataSetProperty, StellarModel, Snapshot, BandPassFilter, DustModel, GlobalParameter, WorkflowCommand, SurveyPreset
 
 class UserFactory(factory.Factory):
     FACTORY_FOR = TaoUser
@@ -61,7 +61,7 @@ class StellarModelFactory(factory.Factory):
     name = factory.Sequence(lambda n: 'model{n}/sspm.dat'.format(n=n))
     description = factory.Sequence(lambda n: '<p>Description ' + n + '</p>')
     encoding = factory.Sequence(lambda n: """
-<single-stellar-population-model>model{n}/sspm.dat</single-stellar-population-model>
+<single-stellar-population-model width="{n}">model{n}/sspm.dat</single-stellar-population-model>
 <wavelengths-file>model{n}/wavelengths.dat</wavelengths-file>
 <ages-file>model{n}/ages.dat</ages-file>
 <metallicities-file>model{n}/metallicites.dat</metallicities-file>
@@ -106,3 +106,9 @@ class GlobalParameterFactory(factory.Factory):
 
 class WorkflowCommandFactory(factory.Factory):
     FACTORY_FOR = WorkflowCommand
+
+
+class SurveyPresetFactory(factory.Factory):
+    FACTORY_FOR = SurveyPreset
+    name = factory.Sequence(lambda n: 'Preset %d' % int(n))
+    parameters = ''
