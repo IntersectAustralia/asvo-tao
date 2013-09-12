@@ -11,6 +11,7 @@ import tao.datasets as datasets
 from tao.models import DataSetProperty, BandPassFilter, Simulation
 from tao.forms import NO_FILTER
 from tao.settings import MODULE_INDICES
+from tao.tests.helper import TaoModelsCleanUpMixin
 from tao.tests.support.factories import GlobalParameterFactory
 
 def interact(local):
@@ -24,7 +25,7 @@ def interact(local):
 def visit(client, view_name, *args, **kwargs):
     return client.get(reverse(view_name, args=args), follow=True)
 
-class LiveServerTest(django.test.LiveServerTestCase):
+class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
     DOWNLOAD_DIRECTORY = '/tmp/work/downloads'
 
     ## List all ajax enabled pages that have initialization code and must wait
@@ -58,10 +59,6 @@ class LiveServerTest(django.test.LiveServerTestCase):
 
     def tearDown(self):
         self.selenium.quit()
-        m = __import__('tao.models')
-        for name in ['Simulation', 'GalaxyModel', 'DataSet', 'DataSetProperty', 'StellarModel', 'DustModel', 'Snapshot', 'BandPassFilter', 'Job', 'GlobalParameter']:
-            klass = getattr(m.models, name)
-            for obj in klass.objects.all(): obj.delete()
         # remove the download dir
         for root, dirs, files in os.walk(self.DOWNLOAD_DIRECTORY, topdown=False):
             for name in files:

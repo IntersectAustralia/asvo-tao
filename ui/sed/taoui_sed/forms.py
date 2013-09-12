@@ -31,7 +31,8 @@ def to_xml_2(form, root):
         child_element(sed_elem, 'module-version', text=Form.MODULE_VERSION)
 
         # Add a hard-coded connection to the light-cone and the CSV output.
-        child_element(child_element(sed_elem, 'parents'), 'item', text=FormsGraph.LIGHT_CONE_ID)
+        elem = child_element(sed_elem, 'parents')
+        child_element(elem, 'item', text=FormsGraph.LIGHT_CONE_ID)
 
         child_element(child_element(find_or_create(root, output_format, id=FormsGraph.OUTPUT_ID), 'parents'), 'item', text=FormsGraph.BANDPASS_FILTER_ID)
 
