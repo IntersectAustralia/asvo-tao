@@ -399,8 +399,9 @@ catalogue.modules.light_cone = function ($) {
             result = [];
             var i = 0;
             for (i; i < vm.number_of_light_cones(); i++) {
-                if(TaoJob['light_cone-rng_seeds'] && TaoJob['light_cone-rng_seeds'][i]) {
-                    result.push(parseInt(TaoJob['light_cone-rng_seeds'][i]));
+                var key = 'rng-seed-' + i
+                if(TaoJob['light_cone-rng_seeds'] && TaoJob['light_cone-rng_seeds'][key]) {
+                    result.push(parseInt(TaoJob['light_cone-rng_seeds'][key]));
                 } else {
                     result.push(random_seed());
                 }

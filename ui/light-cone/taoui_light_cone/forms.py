@@ -126,7 +126,7 @@ def from_xml_2(cls, ui_holder, xml_root, prefix=None):
             rng_seeds_params = [elem for elem in module_xpath_iterate(xml_root, '//light-cone/rng-seeds/*', False)]
             if rng_seeds_params:
                 rng_seeds_dict = dict((rng_seed.tag.split('}')[1], rng_seed.text) for rng_seed in rng_seeds_params)
-                rng_seeds = [rng_seeds_dict[x] for x in sorted(rng_seeds_dict.keys())]
+                rng_seeds = rng_seeds_dict
             params.update({prefix + '-rng_seeds': rng_seeds})
         params.update({
             prefix+'-light_cone_type': light_cone_type,
@@ -215,9 +215,11 @@ class Form(BetterForm):
             gm_choices = datasets.galaxy_model_choices(sid)
             snapshot_choices = datasets.snapshot_choices(dataset_id)
             if self.data[self.prefix + '-catalogue_geometry'] == 'light-cone' and \
+                self.prefix + '-light_cone_type' in self.data and \
                 self.data[self.prefix + '-light_cone_type'] == 'random':
                 self.fields['rng_seeds'].initial = self.data[self.prefix + '-rng_seeds']
-            elif self.data[self.prefix + '-catalogue_geometry'] == 'box':
+            elif self.data[self.prefix + '-catalogue_geometry'] == 'box' and \
+                self.prefix + '-rng_seed' in self.data:
                 self.fields['rng_seed'].initial = self.data[self.prefix+ '-rng_seed']
         else:
             # The choices should be empty, since they are loaded in the wizard
