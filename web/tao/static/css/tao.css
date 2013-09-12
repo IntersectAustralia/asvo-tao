@@ -835,3 +835,7 @@ color: #888;
 
 #body.flex { padding-top: 20px; }
 div.breadcrumbs { padding: 120px 60px 0 60px; }
+
+#survey_presets_select {
+  width: auto;
+}
