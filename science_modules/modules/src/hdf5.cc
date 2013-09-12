@@ -44,8 +44,7 @@ namespace tao {
       //_fn = global_dict.get<string>( "outputdir" ) + "/" + _dict.get<string>( "filename" ) + "." + mpi::rank_string();
       _fields = _dict.get_list<string>( "fields" );
 
-      // Open the file.
-      open();
+
 
       // Reset the number of records.
       _records = 0;
@@ -95,6 +94,8 @@ namespace tao {
 
       if( !_ready )
       {
+    	  // Open the file.
+    	   open();
 	 for( const auto& field : _fields )
 	 {
 	    h5::datatype dtype = _field_type( galaxy, field );
