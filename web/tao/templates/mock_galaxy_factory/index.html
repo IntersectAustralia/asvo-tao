@@ -63,8 +63,8 @@
                     <div class="form-actions">
 
                       {% if forloop.counter > 1 %}
-                          <input type="button" value="Next &gt;" class="btn tao-next" />
-                          <input type="button" value="&lt; Previous" class="btn tao-prev" style="float: left;"/>
+                          <input type="button" value="Next &gt;" class="btn tao-next" data-bind="click: next_tab"/>
+                          <input type="button" value="&lt; Previous" class="btn tao-prev" style="float: left;"  data-bind="click: previous_tab/>
                       {% endif %}
                       
                     </div>
