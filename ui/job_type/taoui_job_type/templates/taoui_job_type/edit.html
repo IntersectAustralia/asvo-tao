@@ -20,7 +20,7 @@
             <button type="button" id="presets_button" class="btn" >Survey Preset</button>
             <br />
             <div id="survey_presets" style="display: none;">
-                <select name="survey_presets_select" form="survey_preset_form" data-bind="value: selected_survey_preset, options: survey_presets, optionsText: 'name', attr: {size: survey_presets().length}" ></select>
+                <select id="survey_presets_select" name="survey_presets_select" form="survey_preset_form" data-bind="value: selected_survey_preset, options: survey_presets, optionsText: 'name', attr: {size: survey_presets().length}" ></select>
                 <br />
                 <button id="load_survey_preset_button" class="btn" form="survey_preset_form">Load Preset</button>    
             </div>
