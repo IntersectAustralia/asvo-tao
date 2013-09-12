@@ -234,7 +234,7 @@ def get_zip_file(request, id):
 
     archive = zipstream.ZipStream(to_tao_zip_path(job.files_tree(), True))
     response = StreamingHttpResponse(streaming_content=archive, content_type='application/zip')
-    response['Content-Disposition'] = 'attachment; filename="tao_output.zip"'
+    response['Content-Disposition'] = 'attachment; filename="tao_%s_catalogue_%d.zip"' % (job.username(), job.id)
     return response
 
 
