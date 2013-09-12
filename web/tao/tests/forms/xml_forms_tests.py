@@ -202,7 +202,7 @@ class XmlFormsTests(TestCase, TaoModelsCleanUpMixin):
         })
         mock_ui_holder = MockUIHolder()
         xml_str = light_cone_xml(xml_parameters)
-        light_cone_form = make_form({}, LightConeForm, {'dark_matter_simulation':self.simulation.id, 'galaxy_model':self.dataset.id}, prefix='light_cone')
+        light_cone_form = make_form({}, LightConeForm, {'dark_matter_simulation':self.simulation.id, 'galaxy_model':self.dataset.id, 'catalogue_geometry': 'light-cone'}, prefix='light_cone')
         mock_ui_holder.update(light_cone = light_cone_form)
         mock_ui_holder.dataset = self.dataset
         rf_form = make_form_xml(RecordFilterForm, xml_str, prefix='record_filter', ui_holder=mock_ui_holder)
