@@ -134,7 +134,7 @@ class Form(BetterForm):
                 'fields': ['single_stellar_population_model',],
             }),
             ('secondary', {
-                'legend': 'Output Band Pass Filters',
+                'legend': 'Output Magnitudes',
                 'fields': ['band_pass_filters'],
             }),
             ('tertiary', {
