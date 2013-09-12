@@ -41,10 +41,6 @@ catalogue.modules.mock_image = function ($) {
 
     this.cleanup_fields = function () {}
 
-    this.validate = function () {
-        return true; // TODO !!!
-    }
-
     this.pre_submit = function () {}
 
     this.job_parameters = function() {
@@ -54,7 +50,6 @@ catalogue.modules.mock_image = function ($) {
 
 		params['mock_image-apply_mock_image'] = [vm.can_have_images() && vm.apply_mock_image()];
 		params['mock_image-MAX_NUM_FORMS'] = [max_allowed_images];
-		params['mock_image-INITIAL_FORMS'] = [0];
 		if (vm.can_have_images() && vm.apply_mock_image()) {
 			image_params = vm.image_settings();
 			// Assume that we haven't exceeded the max_allowed_images
@@ -72,6 +67,7 @@ catalogue.modules.mock_image = function ($) {
 				params[key_prefix + 'sub_cone'] = [current_image['sub_cone']().value];
 			}
 			params['mock_image-TOTAL_FORMS']  = [image_params.length];
+		    params['mock_image-INITIAL_FORMS'] = [image_params.length];
 		} else {
 	    	params['mock_image-TOTAL_FORMS'] = [0];
 		}
@@ -131,11 +127,13 @@ catalogue.modules.mock_image = function ($) {
             image_params.fov_dec = ko.observable(param ? param : catalogue.modules.light_cone.vm.dec_opening_angle());
             param = get_param(prefix, '-width');
             image_params.width = ko.observable(param ? param : 1024)
+                .extend({required: true})
                 .extend({validate: catalogue.validators.is_float})
                 .extend({validate: catalogue.validators.geq(1)})
                 .extend({validate: catalogue.validators.leq(4096)});
             param = get_param(prefix, '-height');
             image_params.height = ko.observable(param ? param : 1024)
+                .extend({required: true})
                 .extend({validate: catalogue.validators.is_float})
                 .extend({validate: catalogue.validators.geq(1)})
                 .extend({validate: catalogue.validators.leq(4096)});
@@ -218,12 +216,9 @@ catalogue.modules.mock_image = function ($) {
                 )});
 
             image_params.hr_mag_field = ko.computed(function(){
-                var is_def = catalogue.validators.defined(image_params.mag_field());
+                var obj = image_params.mag_field();
+                var is_def = catalogue.validators.defined(obj);
                 if (!is_def) return 'Undefined';
-                var val = image_params.mag_field();
-                val = typeof val == 'object' ? val.pk : val;
-                var obj = catalogue.util.bandpass_filter(val);
-                if (obj.fields === undefined) return 'Undefined';
                 return obj.fields.label;
             });
 
@@ -268,10 +263,16 @@ catalogue.modules.mock_image = function ($) {
             update_apply_mock_image(val, vm);
         });
 
+        vm.enabled = ko.computed(function(){
+            return vm.can_have_images() && vm.apply_mock_image();
+        });
+
         vm.image_settings = ko.observableArray([]);
+        vm.image_settings.validate_array = true;
 
         vm.sub_cone_options = ko.computed(function(){
-            console.log('sub_cone_options CALLED!');
+            if (catalogue.modules.light_cone.vm.catalogue_geometry() == 'box')
+                return [];
             var n = catalogue.modules.light_cone.vm.number_of_light_cones();
             var resp = [{value: 'ALL', text:'All'}]
             for(var i = 1; i<=n; i++)

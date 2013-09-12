@@ -158,6 +158,9 @@ namespace tao {
       void
       _fetch();
 
+      void
+      _calc_origin();
+
    protected:
 
       string _box_type;
@@ -165,6 +168,7 @@ namespace tao {
       vector<string> _table_names;
       vector<real_type> _snap_redshifts;
       real_type _domain_size;
+      unsigned _sub_idx;
       real_type _x0, _y0, _z0;
       real_type _z_min, _z_max;
       real_type _ra_min, _ra_max;

@@ -43,7 +43,7 @@ class JobTest(LiveServerTest):
 
         self.output_paths = ['job1', 'large_job']
         self.dir_paths = [os.path.join(settings.FILES_BASE, output_path) for output_path in self.output_paths]
-        txt_template = loader.get_template('jobs/summary.txt')
+        txt_template = loader.get_template('jobs/light_cone_job-summary.txt')
         summary_context = Context(self.make_parameters())
         self.summary_text = txt_template.render(summary_context)
         self.file_names_to_contents = {
@@ -118,7 +118,7 @@ class JobTest(LiveServerTest):
             'filter_max': 'None',
             })
         parameters.update({
-            'ssp_name': self.sed.name,
+            'ssp_encoding': self.sed.encoding,
             'band_pass_filters': [self.band_pass_filters[0].label + ' (Apparent)'],
             'band_pass_filter_label': self.band_pass_filters[0].label + ' (Apparent)',
             'band_pass_filter_id': self.band_pass_filters[0].filter_id,

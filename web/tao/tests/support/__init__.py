@@ -1,7 +1,7 @@
 import datetime
 
 def stripped_joined_lines(string):
-    return ''.join([line.strip() for line in string.split('\n')])
+    return '\n'.join([line.strip() for line in string.split('\n')])
 
 class UtcPlusTen(datetime.tzinfo):
     """ timezone UTC+10 """

@@ -126,6 +126,10 @@ class DBInterface(object):
             Updatest="UPDATE Jobs set JobStatus="+str(EnumerationLookup.JobState.Queued)+",jobstatuscomment='"+Comment+"' where JobID="+str(JobID)+";"
             Updatest=Updatest+"INSERT INTO JobHistory(JobID,NewStatus,Comments) VALUES("+str(JobID)+","+str(EnumerationLookup.JobState.Queued)+",'JobWaiting');"
             return self.ExecuteNoQuerySQLStatment(Updatest)
+    def SetJobNew(self,JobID,Comment):       
+            Updatest="UPDATE Jobs set JobStatus="+str(EnumerationLookup.JobState.NewJob)+",jobstatuscomment='"+Comment+"' where JobID="+str(JobID)+";"
+            Updatest=Updatest+"INSERT INTO JobHistory(JobID,NewStatus,Comments) VALUES("+str(JobID)+","+str(EnumerationLookup.JobState.NewJob)+",'Job Restarted');"
+            return self.ExecuteNoQuerySQLStatment(Updatest)
             
     def SetJobPaused(self,JobID,UICommandID): 
            Updatest="UPDATE Jobs set JobStatus="+str(EnumerationLookup.JobState.Paused)+",jobstatuscomment='PAUSED BY WORKFLOW COMMAND ID="+str(UICommandID)+"' where JobID="+str(JobID)+";"
@@ -190,10 +194,11 @@ class DBInterface(object):
         return self.ExecuteQuerySQLStatmentAsDict(SELECTJob)
     
     def GetJobsStatusbyUIReference(self,UIReferenceID):
-        SELECTJob="SELECT jobid,jobstatus,subjobindex,pbsreferenceid From Jobs where UIReferenceID="+str(UIReferenceID)+" and latestjobversion=True;"
+        
+        SELECTJob="SELECT jobid,jobstatus,subjobindex,pbsreferenceid,uireferenceid,username,jobtype,issequential From Jobs where UIReferenceID="+str(UIReferenceID)+" and latestjobversion=True;"
         return self.ExecuteQuerySQLStatmentAsDict(SELECTJob)
     
-    
+   
     #########################################################################################################################
     ########## Commands DB Access ###############################################
 
@@ -217,3 +222,51 @@ class DBInterface(object):
             
         return self.ExecuteNoQuerySQLStatment(Updatest)
 
+    #########################################################################################################################
+    ########## Job Restart  #######################################################
+    def SetJobAsRestarted(self,RestartJobID):
+        Updatest="update jobrestartlist set hasbeenrestarted=true where jobrestartid="+str(RestartJobID)+";"
+        self.ExecuteNoQuerySQLStatment(Updatest)
+    
+    def RemoveAllJobsWithUIReferenceID(self,UIReferenceID):
+        
+        DeletedJobs="DELETE From jobrestartlist where UIReferenceID="+str(UIReferenceID)+";"
+        return self.ExecuteNoQuerySQLStatment(DeletedJobs)    
+    def GetPendingJobsToRestart(self,MinutesLimit):
+        selectst="select * from jobrestartlist where inserttimestamp <= (now() - interval '"+str(MinutesLimit)+" minutes') and hasbeenrestarted=false;"
+        return self.ExecuteQuerySQLStatmentAsDict(selectst)
+        
+    def AddJobToRestartList(self,JobRecord):
+        JobID=JobRecord['jobid']
+        SubJobIndex=JobRecord['subjobindex']
+        issequential=JobRecord['issequential']
+        UIReference_ID=JobRecord['uireferenceid']
+        UserName=JobRecord['username']
+        
+        ## Check if this Job Already exists
+        selectst="Select * from jobrestartlist where jobid="+str(JobID)+"  and hasbeenrestarted=false;"
+        if (len(self.ExecuteQuerySQLStatmentAsDict(selectst))>0):
+            logging.info(str(JobID)+": Excluded because and active job with the same ID is already there")
+            return False
+        ## Check How Many time it was restarted
+        selectst="Select * from jobrestartlist where jobid="+str(JobID)+";"
+        MaximumRestartTime=int(self.Options['WorkFlowSettings:MaximumRestartTime'])
+        if (len(self.ExecuteQuerySQLStatmentAsDict(selectst))>=MaximumRestartTime):
+            logging.info(str(JobID)+": Excluded because number of restart times exceeded")
+            return False
+        
+        
+        
+        
+        InsertSt="insert into jobrestartlist(jobid,uireferenceid,jobusername,subjobindex,issequential) values"
+        InsertSt=InsertSt+"("+str(JobID)+","+str(UIReference_ID)+",'"+UserName+"',"+ str(SubJobIndex)+","+str(issequential=='t').lower()+" );"
+        self.ExecuteNoQuerySQLStatment(InsertSt)
+        
+        return True
+        
+        
+        
+        
+        
+        
+    

@@ -1,0 +1,44 @@
+<div class="summary_light_cone">
+    <table>
+        <tr>
+            <td><h4 xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">TAP job details</h4></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>SQL query</td>
+            <td data-bind='toggler: true'>
+                <span class="query" style="font-family: monospace" data-bind="text: query()"><!-- --></span>
+            </td>
+        </tr>
+        <tr>
+            <td>Dataset</td>
+            <td data-bind="toggler: true">
+                <span class="simulation" data-bind='text: dark_matter_simulation().fields.name'><!-- --></span> / <span class="galaxy_model" data-bind='text: galaxy_model().fields.name'><!-- 
+                --></span> <a id="expand_dataset" data-bind='text: toggler_text(), click: toggler_click' href="#"></a>
+                <span class="simulation_description" data-bind='visible: toggler_visible'>
+                    <br><b><span data-bind='text: dark_matter_simulation().fields.name'></span></b><br>
+                    <span data-bind='html: dark_matter_simulation().fields.details'></span>
+                </span>
+                <span class="galaxy_model_description" data-bind='visible: toggler_visible'>
+                <br><b><span data-bind='text: galaxy_model().fields.name'></span></b><br>
+                    <span data-bind='html: galaxy_model().fields.details'></span>
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>Selected Properties</td>
+            <td data-bind='toggler: true'>
+                <span class="output_properties" data-bind="text: sql_output_properties().length + ' properties selected'"><!-- --></span>
+                <a id="expand_output_properties" data-bind='text: toggler_text(), click: toggler_click' href="#"></a>
+                <div class="output_properties_list" data-bind="visible: toggler_visible, template: { name: 'sql_summary_output_properties', data: sql_output_properties_data }"><!-- --></div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<script type="text/html" id="sql_summary_output_properties">
+        <ul data-bind="foreach: options">
+            <li><span data-bind="text: label"/> <i data-bind="text: units" style="font-size: small"></i></li>
+        </ul>
+</script>
+
