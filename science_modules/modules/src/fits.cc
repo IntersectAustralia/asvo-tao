@@ -99,7 +99,8 @@ namespace tao {
       _fields = _dict.get_list<hpc::string>( "fields" );
 
       ReadFieldsInfo(_dict );
-
+      // Open the file.
+      open();
 
       // Reset the number of records.
       _records = 0;
@@ -216,11 +217,9 @@ namespace tao {
       // Is this the first galaxy? if so, please write the fields information
       if(_isfirstgalaxy)
       {
-    	  // Open the file.
-    	   open();
-    	   _write_table_header(gal);
+	 _write_table_header(gal);
 
-    	   _isfirstgalaxy=false;
+	 _isfirstgalaxy=false;
       }
       //Process the galaxy as any other galaxy
       process_galaxy( gal );
