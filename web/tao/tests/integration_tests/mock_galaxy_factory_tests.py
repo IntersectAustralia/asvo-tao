@@ -62,7 +62,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.assert_not_displayed(self.lc_id('box_size'))
 
     def test_max_number_light_cones_displayed(self):
-        self.assert_element_text_equals(unicode("label[for='id_light_cone-number_of_light_cones']"), unicode('Select the number of light-cones:  * '))
+        self.assert_element_text_equals(unicode("label[for='id_light_cone-number_of_light_cones']"), unicode('Select the number of light-cones:  *'))
 
         ra_open = '1'
         dec_open = '2'
@@ -78,10 +78,10 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.assert_element_text_equals(unicode("span.spinner-message"), 'maximum is 8')
 
         self.clear(self.lc_id('redshift_max'))
-        self.assert_element_text_equals(unicode("label[for='id_light_cone-number_of_light_cones']"), unicode('Select the number of light-cones:  * '))
+        self.assert_element_text_equals(unicode("label[for='id_light_cone-number_of_light_cones']"), unicode('Select the number of light-cones:  *'))
 
         self.fill_in_fields({'redshift_max': rmin}, id_wrap=self.lc_id)
-        self.assert_element_text_equals(unicode("label[for='id_light_cone-number_of_light_cones']"), unicode('Select the number of light-cones:  * ' ))
+        self.assert_element_text_equals(unicode("label[for='id_light_cone-number_of_light_cones']"), unicode('Select the number of light-cones:  *' ))
 
 
     def test_spinner_arrows_disabled_out_of_range(self):
