@@ -240,6 +240,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'output_properties' : [self.filter.id],
             'snapshot': self.snapshot.id,
             'box_size': 20,
+            'rng_seed': 12345678901234567890
             }
         xml_parameters = form_parameters.copy()
         xml_parameters.update({
@@ -313,18 +314,17 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                         <!-- Size of box to return -->
                         <query-box-size units="Mpc">%(box_size)d</query-box-size>
 
-                        <!-- List of fields to be included in the output file -->
-                        <output-fields>
-                            <item description="%(output_properties_1_description)s" label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
-                        </output-fields>
-
-
                         <!-- RNG Seed -->
                         <!-- This will be added by the workflow after the job has been completed
                              to enable the job to be repeated.
                              The information stored may change, the intent is to store whatever is
-                             required to re-run the job and obtain the same results.
-                        <rng-seed>12345678901234567890</rng-seed> -->
+                             required to re-run the job and obtain the same results. -->
+                        <rng-seed>12345678901234567890</rng-seed>
+
+                        <!-- List of fields to be included in the output file -->
+                        <output-fields>
+                            <item description="%(output_properties_1_description)s" label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
+                        </output-fields>
 
                     </light-cone>
 
@@ -455,6 +455,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'output_properties' : [self.filter.id],
             'snapshot': self.snapshot.id,
             'box_size': 20,
+            'rng_seed': 12345678901234567890
             }
         xml_parameters = form_parameters.copy()
         xml_parameters.update({
@@ -530,18 +531,17 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                         <!-- Size of box to return -->
                         <query-box-size units="Mpc">%(box_size)d</query-box-size>
 
-                        <!-- List of fields to be included in the output file -->
-                        <output-fields>
-                            <item description="%(output_properties_1_description)s" label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
-                        </output-fields>
-
-
                         <!-- RNG Seed -->
                         <!-- This will be added by the workflow after the job has been completed
                              to enable the job to be repeated.
                              The information stored may change, the intent is to store whatever is
-                             required to re-run the job and obtain the same results.
-                        <rng-seed>12345678901234567890</rng-seed> -->
+                             required to re-run the job and obtain the same results. -->
+                        <rng-seed>12345678901234567890</rng-seed>
+
+                        <!-- List of fields to be included in the output file -->
+                        <output-fields>
+                            <item description="%(output_properties_1_description)s" label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
+                        </output-fields>
 
                     </light-cone>
 
@@ -634,6 +634,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
             'output_properties' : [self.filter.id],
             'snapshot': self.snapshot.id,
             'box_size': 20,
+            'rng_seed': 12345678901234567890
             }
         xml_parameters = form_parameters.copy()
         xml_parameters.update({
@@ -707,18 +708,17 @@ class WorkflowTests(TestCase, XmlDiffMixin):
                         <!-- Size of box to return -->
                         <query-box-size units="Mpc">%(box_size)d</query-box-size>
 
-                        <!-- List of fields to be included in the output file -->
-                        <output-fields>
-                            <item description="%(output_properties_1_description)s" label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
-                        </output-fields>
-
-
                         <!-- RNG Seed -->
                         <!-- This will be added by the workflow after the job has been completed
                              to enable the job to be repeated.
                              The information stored may change, the intent is to store whatever is
-                             required to re-run the job and obtain the same results.
-                        <rng-seed>12345678901234567890</rng-seed> -->
+                             required to re-run the job and obtain the same results.-->
+                        <rng-seed>12345678901234567890</rng-seed> 
+
+                        <!-- List of fields to be included in the output file -->
+                        <output-fields>
+                            <item description="%(output_properties_1_description)s" label="%(output_properties_1_label)s" units="%(output_properties_1_units)s">%(output_properties_1_name)s</item>
+                        </output-fields>
 
                     </light-cone>
 
@@ -808,7 +808,7 @@ class WorkflowTests(TestCase, XmlDiffMixin):
 
             </tao>
         """) % xml_parameters
-
+        
         mock_ui_holder = MockUIHolder()
         light_cone_form = make_form({}, LightConeForm, form_parameters, ui_holder=mock_ui_holder, prefix='light_cone')
         sed_form = make_form({}, SEDForm, self.sed_parameters_no_dust, ui_holder=mock_ui_holder, prefix='sed')

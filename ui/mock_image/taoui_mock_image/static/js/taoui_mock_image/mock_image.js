@@ -216,9 +216,9 @@ catalogue.modules.mock_image = function ($) {
                 )});
 
             image_params.hr_mag_field = ko.computed(function(){
-                var is_def = catalogue.validators.defined(image_params.mag_field());
-                if (!is_def) return 'Undefined';
                 var obj = image_params.mag_field();
+                var is_def = catalogue.validators.defined(obj);
+                if (!is_def) return 'Undefined';
                 return obj.fields.label;
             });
 
