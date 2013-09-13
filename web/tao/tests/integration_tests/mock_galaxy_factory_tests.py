@@ -84,11 +84,10 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.assert_element_text_equals(unicode("label[for='id_light_cone-number_of_light_cones']"), unicode('Select the number of light-cones:  * ' ))
 
 
-    def _test_spinner_arrows_disabled_out_of_range(self):
-        # TODO: uncomment once multiple unique light-cones point-of-view is fixed in the science module, and spinner is made visible for unique selection
-        # self.assertEqual('1', self.get_selector_value(self.lc_id('number_of_light_cones')))
-        # self.click_by_class_name('ui-spinner-down')
-        # self.assertEqual('1', self.get_selector_value(self.lc_id('number_of_light_cones')))
+    def test_spinner_arrows_disabled_out_of_range(self):
+        self.assertEqual('1', self.get_selector_value(self.lc_id('number_of_light_cones')))
+        self.click_by_class_name('ui-spinner-down')
+        self.assertEqual('1', self.get_selector_value(self.lc_id('number_of_light_cones')))
 
         self.click_by_css(self.lc_id('light_cone_type_1')) # select "random", whose maximum is 10
         for unused in range(15):
