@@ -394,7 +394,10 @@ class Job(models.Model):
     def save(self, *args, **kwargs):
         super(Job, self).save(*args, **kwargs)
         if self.var_cache['status'] != getattr(self, 'status') and getattr(self, 'status') == Job.COMPLETED:
-            send_mail('job-status', {'job': self, 'user': self.user}, 'Job status update', (self.user.email,))
+            send_mail('job-status',
+                      {'job': self, 'user': self.user},
+                      '[ASVO-TAO] Catalogue status update',
+                      (self.user.email,))
 
     def status_help_text(self):
         last_command = WorkflowCommand.objects.filter(
