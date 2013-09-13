@@ -61,12 +61,8 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
         self.assert_not_displayed(self.lc_id('box_size'))
 
-    def _test_max_number_light_cones_displayed(self):
-        # TODO: uncomment once multiple unique light-cones point-of-view is fixed in the science module
-        # self.assert_element_text_equals(unicode("label[for='id_light_cone-number_of_light_cones']"), unicode('Select the number of light-cones:*'))
-        # TODO: comment out once spinner is made visible again for unique selection
-        self.assert_not_displayed("label[for='id_light_cone-number_of_light_cones']")
-        self.assert_not_displayed(self.lc_id('number_of_light_cones'))
+    def test_max_number_light_cones_displayed(self):
+        self.assert_element_text_equals(unicode("label[for='id_light_cone-number_of_light_cones']"), unicode('Select the number of light-cones:  * '))
 
         ra_open = '1'
         dec_open = '2'
@@ -75,20 +71,18 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.fill_in_fields({'ra_opening_angle': ra_open, 'dec_opening_angle': dec_open, 'redshift_min': rmin, 'redshift_max': rmax}, id_wrap=self.lc_id)
 
         self.click_by_css(self.lc_id('light_cone_type_1')) # select "random"
-        self.assert_element_text_equals(unicode("label[for='id_light_cone-number_of_light_cones']"), 'Select the number of light-cones: (maximum 10 random light-cones)*')
+
+        self.assert_element_text_equals(unicode("span.spinner-message"), 'maximum is 10')
 
         self.click_by_css(self.lc_id('light_cone_type_0')) # select "unique"
-        # TODO: uncomment once multiple unique light-cones point-of-view is fixed in the science module, and spinner is made visible for unique selection
-        # self.assert_element_text_equals(unicode("label[for='id_light_cone-number_of_light_cones']"), 'Select the number of light-cones: (maximum for the selected parameters is 8)*')
-        #
-        # self.clear(self.lc_id('redshift_max'))
-        # self.assert_element_text_equals(unicode("label[for='id_light_cone-number_of_light_cones']"), unicode('Select the number of light-cones:*'))
-        #
-        # self.fill_in_fields({'redshift_max': rmin}, id_wrap=self.lc_id)
-        # self.assert_element_text_equals(unicode("label[for='id_light_cone-number_of_light_cones']"), unicode('Select the number of light-cones:*'))
-        # TODO: comment out once spinner is made visible again for unique selection
-        self.assert_not_displayed(self.lc_id('number_of_light_cones'))
-        self.assert_not_displayed("label[for='id_light_cone-number_of_light_cones']")
+        self.assert_element_text_equals(unicode("span.spinner-message"), 'maximum is 8')
+
+        self.clear(self.lc_id('redshift_max'))
+        self.assert_element_text_equals(unicode("label[for='id_light_cone-number_of_light_cones']"), unicode('Select the number of light-cones:  * '))
+
+        self.fill_in_fields({'redshift_max': rmin}, id_wrap=self.lc_id)
+        self.assert_element_text_equals(unicode("label[for='id_light_cone-number_of_light_cones']"), unicode('Select the number of light-cones:  * ' ))
+
 
     def _test_spinner_arrows_disabled_out_of_range(self):
         # TODO: uncomment once multiple unique light-cones point-of-view is fixed in the science module, and spinner is made visible for unique selection
