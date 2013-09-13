@@ -106,6 +106,7 @@ namespace tao {
 
 	 // Apply redshift to wavelengths.
 	 _apply_redshift_to_wavelengths( redshift, _waves.begin(), _waves.end(), waves.begin() );
+	 // std::copy( _waves.begin(), _waves.end(), waves.begin() );
 
          // Process total, disk and bulge.
          _process_spectra( total_spectra[ii], waves, redshift, area, _total_lum[ii], _total_app_mags, _total_abs_mags, ii );
@@ -129,14 +130,38 @@ namespace tao {
    {
       LOGDLN( "Using spectra of: ", spectra );
 
-      // Perform redenning of spectrum.
-      _apply_redshift_to_spectrum( redshift, spectra.begin(), spectra.end() );
-
       // TODO: Shift this elsewhere to save some time.
       real_type abs_area = log10( 4.0*M_PI ) + 2.0*log10( (10.0/1e6)*3.08568025e24 ); // result in cm^2
 
-      // Prepare the spectra.
+      // Prepare the spectra for absolute magnitudes.
       numerics::spline<real_type> spectra_spline;
+      _prepare_spectra( spectra, _waves, spectra_spline );
+
+      // Loop over each filter band.
+      for( unsigned ii = 0; ii < _filters.size(); ++ii )
+      {
+         real_type spec_int = _integrate( spectra_spline, _filters[ii] );
+         LOGDLN( "For filter ", ii, " calculated F_\\nu of ", spec_int );
+
+         // Need to check that there is in fact a spectra.
+         if( !num::approx( spec_int, 0.0, 1e-12 ) &&
+             !num::approx( _filt_int[ii], 0.0, 1e-12 ) )
+         {
+            absolute_mags[ii][gal_idx] = -2.5*(log10( spec_int ) - abs_area - log10( _filt_int[ii] )) - 48.6;
+         }
+         else
+         {
+            absolute_mags[ii][gal_idx] = 100.0;
+         }
+
+	 // Make sure these are sane.
+	 ASSERT( absolute_mags[ii][gal_idx] == absolute_mags[ii][gal_idx], "NaN" );
+      }
+
+      // Perform redenning of spectrum.
+      _apply_redshift_to_spectrum( redshift, spectra.begin(), spectra.end() );
+
+      // Prepare the spectra for apparent magnitudes.
       _prepare_spectra( spectra, waves, spectra_spline );
 
       // Calculate luminosity.
@@ -153,17 +178,14 @@ namespace tao {
              !num::approx( _filt_int[ii], 0.0, 1e-12 ) )
          {
 	    apparent_mags[ii][gal_idx] = -2.5*(log10( spec_int ) - area - log10( _filt_int[ii] )) - 48.6;
-            absolute_mags[ii][gal_idx] = -2.5*(log10( spec_int ) - abs_area - log10( _filt_int[ii] )) - 48.6;
          }
          else
          {
             apparent_mags[ii][gal_idx] = 100.0;
-            absolute_mags[ii][gal_idx] = 100.0;
          }
 
 	 // Make sure these are sane.
 	 ASSERT( apparent_mags[ii][gal_idx] == apparent_mags[ii][gal_idx], "NaN" );
-	 ASSERT( absolute_mags[ii][gal_idx] == absolute_mags[ii][gal_idx], "NaN" );
       }
    }
 
