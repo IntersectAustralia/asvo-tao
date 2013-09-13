@@ -233,8 +233,9 @@ def get_zip_file(request, id):
             yield TaoZipPath('summary.txt', None, {'stream': summary_io, 'size': len(summary_blob)})
 
     archive = zipstream.ZipStream(to_tao_zip_path(job.files_tree(), True))
+    filename = 'tao_%s_catalogue_%d.zip' % (job.user.username, job.id)
     response = StreamingHttpResponse(streaming_content=archive, content_type='application/zip')
-    response['Content-Disposition'] = 'attachment; filename="tao_output.zip"'
+    response['Content-Disposition'] = 'attachment; filename="%s"' % (filename,)
     return response
 
 
