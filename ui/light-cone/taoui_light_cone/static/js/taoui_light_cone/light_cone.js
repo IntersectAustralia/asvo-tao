@@ -74,18 +74,14 @@ catalogue.modules.light_cone = function ($) {
                 'light_cone-rng_seed': vm.rng_seed
     		});
     	} else { // light-cone
-            var noc;
-            if (vm.light_cone_type() == 'unique') {
-                noc = 1;
-            } else {
-                noc = parseInt(vm.number_of_light_cones());
+            if (vm.light_cone_type() == 'random') {
                 jQuery.extend(params, {'light_cone-rng_seeds': vm.rng_seeds()});
             }
     		jQuery.extend(params, {
     			'light_cone-light_cone_type': [vm.light_cone_type()],
     			'light_cone-ra_opening_angle': [vm.ra_opening_angle()],
     			'light_cone-dec_opening_angle': [vm.dec_opening_angle()],
-    			'light_cone-number_of_light_cones': [noc],
+    			'light_cone-number_of_light_cones': [parseInt(vm.number_of_light_cones())],
     			'light_cone-redshift_min': [vm.redshift_min()],
     			'light_cone-redshift_max': [vm.redshift_max()],
     		});
@@ -422,6 +418,14 @@ catalogue.modules.light_cone = function ($) {
                 } else {
                     result.push(random_seed());
                 }
+            }
+            return result;
+        });
+
+        vm.number_of_light_cones_msg = ko.computed(function() {
+            var result = '';
+            if (!isNaN(vm.maximum_number_of_light_cones())) {
+                result = 'maximum is ' + vm.maximum_number_of_light_cones();
             }
             return result;
         });
