@@ -375,87 +375,85 @@ class WorkFlow(object):
         CurrentJobs_PBSID=self.dbaseobj.GetCurrentActiveJobs_pbsID()
         
         
-        if len(CurrentJobs_PBSID)==0:
-            ## Nothing to do ... There are no Jobs in my Watch List
-            return
+        if len(CurrentJobs_PBSID)>0:          
         
-        now=datetime.datetime.now()
-        logging.info(str(len(CurrentJobs_PBSID))+" Jobs Found in the current watch list")
-        self.dbaseobj.AddNewEvent(0,EnumerationLookup.EventType.Normal,'Checking for Current Jobs. Jobs Count='+str(len(CurrentJobs_PBSID)))
-        
+            now=datetime.datetime.now()
+            logging.info(str(len(CurrentJobs_PBSID))+" Jobs Found in the current watch list")
+            self.dbaseobj.AddNewEvent(0,EnumerationLookup.EventType.Normal,'Checking for Current Jobs. Jobs Count='+str(len(CurrentJobs_PBSID)))
             
-        
-        
-        ## Query PBS for current Jobs that belong to TAO
-        CurrentJobs=self.TorqueObj.QueryPBSJob()    
-        
-        
-        logging.info("PBS Jobs:"+str(CurrentJobs))
-        
-        logging.info("Database Jobs:"+str(CurrentJobs_PBSID))
-        
-        JobsStatus=[]
-        for CurrentJobRecord in CurrentJobs_PBSID:
-                                
-            
-           
-            CurrentJobRecord['pbsreferenceid']=CurrentJobRecord['pbsreferenceid'].split('.')[0]
-            pbsreferenceid=CurrentJobRecord['pbsreferenceid']
-            jobstatus=CurrentJobRecord['jobstatus']          
-            uireferenceid=CurrentJobRecord['uireferenceid']
+                
             
             
-            
-            logging.info("Checking Job Status : JobID="+pbsreferenceid+"\tInPBSList="+str(pbsreferenceid in CurrentJobs))
-            if pbsreferenceid in CurrentJobs:
-                logging.info("Checking Job Status : JobID="+pbsreferenceid+"\tStatus="+str(CurrentJobs[pbsreferenceid]))
-            
-            ## Parse the Job Log File and Extract Current Job Status            
-            JobDetails=self.LogReaderObj.ParseFile(CurrentJobRecord)
-             
+            ## Query PBS for current Jobs that belong to TAO
+            CurrentJobs=self.TorqueObj.QueryPBSJob()    
             
             
+            logging.info("PBS Jobs:"+str(CurrentJobs))
             
-            ## 1- Change In Job Status to Running 
-            if  pbsreferenceid in CurrentJobs and CurrentJobs[pbsreferenceid]=='R': 
-                if jobstatus!=EnumerationLookup.JobState.Running:
-                    self.UpdateJob_Running(CurrentJobRecord)
-                elif JobDetails!=None:
-                    logging.info ("Job ("+str(uireferenceid)+" ["+str(CurrentJobRecord['subjobindex'])+"]) .. : Progress="+JobDetails['progress'])
-                else:
-                    logging.info ("Job ("+str(uireferenceid)+") .. : Log File Does not exist") 
+            logging.info("Database Jobs:"+str(CurrentJobs_PBSID))
+            
+            JobsStatus=[]
+            for CurrentJobRecord in CurrentJobs_PBSID:
+                                    
+                
                
-            ## 2-  Change In Job Status to Queued
-            elif  pbsreferenceid in CurrentJobs and CurrentJobs[pbsreferenceid]=='Q': 
-                if jobstatus!=EnumerationLookup.JobState.Queued:
-                    self.UpdateJob_Queued(CurrentJobRecord)
-                else:
-                    logging.info("Jobs Still Queued ...")
-            ## 3- Job Status Unknown ... It is still in the queue but it is not Q or R !     
-            elif  pbsreferenceid in CurrentJobs and CurrentJobs[pbsreferenceid]!='R' and CurrentJobs[pbsreferenceid]!='Q' : 
-                logging.info('Job Status UNKnow '+str(uireferenceid)+' :'+CurrentJobs[pbsreferenceid])              
-            
-            ## 4- Job Cannot Be Found in the queue ... In this case the Log File Status determine how its termination status    
-            elif (pbsreferenceid not in CurrentJobs):
+                CurrentJobRecord['pbsreferenceid']=CurrentJobRecord['pbsreferenceid'].split('.')[0]
+                pbsreferenceid=CurrentJobRecord['pbsreferenceid']
+                jobstatus=CurrentJobRecord['jobstatus']          
+                uireferenceid=CurrentJobRecord['uireferenceid']
                 
-                ###### If The log file does not exist, Please put a dummy JobDetails
-                if JobDetails==None:
-                    JobDetails={'start':-1,'progress':'0%','end':0,'error':'','endstate':''}
                 
+                
+                logging.info("Checking Job Status : JobID="+pbsreferenceid+"\tInPBSList="+str(pbsreferenceid in CurrentJobs))
+                if pbsreferenceid in CurrentJobs:
+                    logging.info("Checking Job Status : JobID="+pbsreferenceid+"\tStatus="+str(CurrentJobs[pbsreferenceid]))
+                
+                ## Parse the Job Log File and Extract Current Job Status            
+                JobDetails=self.LogReaderObj.ParseFile(CurrentJobRecord)
+                 
+                
+                
+                
+                ## 1- Change In Job Status to Running 
+                if  pbsreferenceid in CurrentJobs and CurrentJobs[pbsreferenceid]=='R': 
+                    if jobstatus!=EnumerationLookup.JobState.Running:
+                        self.UpdateJob_Running(CurrentJobRecord)
+                    elif JobDetails!=None:
+                        logging.info ("Job ("+str(uireferenceid)+" ["+str(CurrentJobRecord['subjobindex'])+"]) .. : Progress="+JobDetails['progress'])
+                    else:
+                        logging.info ("Job ("+str(uireferenceid)+") .. : Log File Does not exist") 
+                   
+                ## 2-  Change In Job Status to Queued
+                elif  pbsreferenceid in CurrentJobs and CurrentJobs[pbsreferenceid]=='Q': 
+                    if jobstatus!=EnumerationLookup.JobState.Queued:
+                        self.UpdateJob_Queued(CurrentJobRecord)
+                    else:
+                        logging.info("Jobs Still Queued ...")
+                ## 3- Job Status Unknown ... It is still in the queue but it is not Q or R !     
+                elif  pbsreferenceid in CurrentJobs and CurrentJobs[pbsreferenceid]!='R' and CurrentJobs[pbsreferenceid]!='Q' : 
+                    logging.info('Job Status UNKnow '+str(uireferenceid)+' :'+CurrentJobs[pbsreferenceid])              
+                
+                ## 4- Job Cannot Be Found in the queue ... In this case the Log File Status determine how its termination status    
+                elif (pbsreferenceid not in CurrentJobs):
                     
-                if  JobDetails['endstate']=='successful':
-                    ##### Job Terminated Successfully 
-                    self.UpdateJob_EndSuccessfully(CurrentJobRecord, JobDetails) 
-                    self.ChangePBSFilesmod(CurrentJobRecord)                   
+                    ###### If The log file does not exist, Please put a dummy JobDetails
+                    if JobDetails==None:
+                        JobDetails={'start':-1,'progress':'0%','end':0,'error':'','endstate':''}
+                    
+                        
+                    if  JobDetails['endstate']=='successful':
+                        ##### Job Terminated Successfully 
+                        self.UpdateJob_EndSuccessfully(CurrentJobRecord, JobDetails) 
+                        self.ChangePBSFilesmod(CurrentJobRecord)                   
+                    else:
+                        ##### Job Terminated with error or was killed by the Job Queue                    
+                        self.UpdateJob_EndWithError(CurrentJobRecord, JobDetails)
+                        self.ChangePBSFilesmod(CurrentJobRecord)  
+                        break    
+                ###############################################################################################################
+                ## 5- The Job didn't change its status... Show its progess information if Exists!        
                 else:
-                    ##### Job Terminated with error or was killed by the Job Queue                    
-                    self.UpdateJob_EndWithError(CurrentJobRecord, JobDetails)
-                    self.ChangePBSFilesmod(CurrentJobRecord)  
-                    break    
-            ###############################################################################################################
-            ## 5- The Job didn't change its status... Show its progess information if Exists!        
-            else:
-                logging.info("Job Status Checking is not known!!")
+                    logging.info("Job Status Checking is not known!!")
 
         self.JobRestartObj.CheckPendingJobs(self.RestartJob)
 
