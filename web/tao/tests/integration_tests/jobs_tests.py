@@ -100,7 +100,7 @@ class JobTest(LiveServerTest):
             'username' : self.username,
             'dark_matter_simulation': self.simulation.name,
             'galaxy_model': self.galaxy.name,
-            'output_properties': [(self.filter, self.filter.units), (self.output_prop, self.output_prop.units)],
+            'output_properties': [(self.filter, self.filter.units), (self.output_prop, self.output_prop.units), (self.computed_filter, self.computed_filter.units)],
             'output_properties_1_name' : self.filter.name,
             'output_properties_1_label' : self.filter.label,
             'output_properties_1_units' : self.filter.units,
@@ -119,6 +119,7 @@ class JobTest(LiveServerTest):
             })
         parameters.update({
             'ssp_encoding': self.sed.encoding,
+            'ssp_name': self.sed.name,
             'band_pass_filters': [self.band_pass_filters[0].label + ' (Apparent)'],
             'band_pass_filter_label': self.band_pass_filters[0].label + ' (Apparent)',
             'band_pass_filter_id': self.band_pass_filters[0].filter_id,
@@ -259,17 +260,17 @@ class JobTest(LiveServerTest):
         self.visit('job_index')
         self.assert_page_does_not_contain('(View)')
 
-    def _test_zip_file_download(self):
+    def test_zip_file_download(self):
         self.login(self.username, self.password)
         self.visit('view_job', self.completed_job.id)
             
         download_link = self.selenium.find_element_by_id('id_download_as_zip')
         download_link.click()
 
-        download_path = os.path.join(self.DOWNLOAD_DIRECTORY, 'tao_output.zip')
+        download_path = os.path.join(self.DOWNLOAD_DIRECTORY, 'tao_%s_catalogue_%d.zip' % (self.user.username, self.completed_job.id))
 
         self.wait()
-        self.assertTrue(os.path.exists(download_path))
+        self.assertTrue(os.path.exists(download_path), "%s not found" % (download_path,))
         
         # extract the files
         extract_path = os.path.join(self.DOWNLOAD_DIRECTORY, 'tao_output')
@@ -400,7 +401,9 @@ class JobTest(LiveServerTest):
             second_path = os.path.join(actual_dir_path, second)
             with open(first_path, 'r') as f1:
                 with open(second_path, 'r') as f2:
-                    self.assertEqual(f1.read(), f2.read())
+                    str1 = f1.read()
+                    str2 = f2.read()
+                    self.assertEqual(str1, str2, msg="%s and %s differ" % (first_path, second_path))
             
     def _click_view_job(self, job):
         job_id = job.id
@@ -444,4 +447,4 @@ class JobTest(LiveServerTest):
         self.completed_job.save()
         self.click('id_refresh_disk_usage')
         self.wait()
-        self.assert_element_text_equals('#id_disk_usage', self.completed_job.display_disk_size())
+        self.assert_element_text_equals('#id_disk_usage', self.completed_job.display_disk_size().strip())
