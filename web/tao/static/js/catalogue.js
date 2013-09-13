@@ -78,16 +78,19 @@ catalogue.validators.positive = function(val) {
     return {'error':false};
 };
 
-// Currently is_float really does an is_numeric
+// note: The expression below accepts single . for fraction part, but it is Ok
+// as we are still running parseFloat (or the regex would be more complex)
+catalogue.validators._float_regex = /^[-+]?[0-9]*([.][0-9]*)?([eE][-+]?[0-9]+)?$/;
+catalogue.validators._int_regex = /^[-+]?[0-9]+$/;
 catalogue.validators.is_float = function(val) {
-    var f = parseFloat(val);
+    var f = catalogue.validators._float_regex.test(val) ? parseFloat(val): NaN;
     if (isNaN(f))
         return {'error':true, message:'Please input a number'};
     return {'error':false};
 };
 
 catalogue.validators.is_int = function(val) {
-    var f = parseInt(val);
+    var f = catalogue.validators._int_regex.test(val) ? parseInt(val) : NaN;
     if (isNaN(f))
         return {'error':true, message:'Please input a number'};
     return {'error':false};
@@ -1018,6 +1021,7 @@ jQuery(document).ready(function ($) {
                 for(var i = 0; i < stack.length; i++) console.log(stack[i]);
             }
             manual_modal('Fatal error initialising the UI, please contact support');
+            throw e;
         }
     })();
 
