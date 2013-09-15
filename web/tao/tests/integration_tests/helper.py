@@ -32,7 +32,7 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
     AJAX_WAIT = ['mock_galaxy_factory', 'view_job']
     SUMMARY_INDEX = str(len(MODULE_INDICES)+1)
     OUTPUT_FORMATS = [
-        {'value':'csv', 'text':'CSV (Text2)', 'extension':'csv'},
+        {'value':'csv', 'text':'CSV (Text)', 'extension':'csv'},
         {'value':'hdf5', 'text':'HDF5', 'extension':'hdf5'},
         {'value': 'fits', 'text': 'FITS', 'extension': 'fits'},
         {'value': 'votable', 'text': 'VOTable', 'extension': 'xml'}
@@ -174,8 +174,8 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
         self.assertFalse(re.search(pattern, page_source), "page source contained %s" % pattern)
         
     def assert_element_text_equals(self, selector, expected_value):
-        element = self.find_visible_element(selector)
-        self.assertEqual(expected_value, element.text)
+        text = self.find_visible_element(selector).text.strip()
+        self.assertEqual(expected_value, text)
 
     def assert_selector_texts_equals_expected_values(self, selector_value):
         # selector_value is a dict of selectors to expected text values
