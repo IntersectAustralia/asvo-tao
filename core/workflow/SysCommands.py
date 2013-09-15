@@ -98,12 +98,13 @@ class SysCommands(object):
         logging.info("Command Local ID:"+str(CommandID))        
         
         CommandFunction=self.FunctionsMap[command]
-        if CommandFunction(UICommandID,UIJobID,CommandParams)==True:
+        [ExecutionSucceeded,Message]=CommandFunction(UICommandID,UIJobID,CommandParams)
+        if ExecutionSucceeded==True:
             self.dbaseobj.UpdateCommandStatus(CommandID,EnumerationLookup.CommandState.Completed)
-            self.UpdateTAOCommandUI(UICommandID,True)
+            self.UpdateTAOCommandUI(UICommandID,True,Message)
         else:
             self.dbaseobj.UpdateCommandStatus(CommandID,EnumerationLookup.CommandState.Error)
-            self.UpdateTAOCommandUI(UICommandID,False)
+            self.UpdateTAOCommandUI(UICommandID,False,Message)
         
     
     def Job_Stop_All(self,UICommandID,UIJobID,CommandParams):
@@ -115,7 +116,7 @@ class SysCommands(object):
                 PID=PBsID['pbsreferenceid'].split('.')[0]
             else:
                 logging.info("Sorry This Job doesn't have pbsID. Job ID"+str(JobID))
-                return False
+                return [False,'Job '+str(JobID)+' is Missing its PBSID!']
             
             JobStatus=PBsID['jobstatus']
             UIReference_ID=PBsID['uireferenceid']
@@ -125,10 +126,11 @@ class SysCommands(object):
             JobID=PBsID['jobid']
             
             JobDetails={'start':-1,'progress':'0%','end':0,'error':'','endstate':''}
-            self.PauseJob(UICommandID, JobID, PID, JobStatus)
-            self.UpdateTAOJobUI(UIReference_ID) 
+            [ExecutionResult,Message]=self.PauseJob(UICommandID, JobID, PID, JobStatus)
+            if ExecutionResult==True:
+                self.UpdateTAOJobUI(UIReference_ID) 
         logging.info("Job_Stop_All")
-        return True
+        return [True,'']
 
     def PauseJob(self, UICommandID, JobID, PBSID, JobStatus):
         logging.info("COMMAND Job_Stop: JobID=" + str(JobID))
@@ -138,54 +140,65 @@ class SysCommands(object):
         if (JobStatus <= EnumerationLookup.JobState.Running and JobStatus > EnumerationLookup.JobState.NewJob):
             logging.info("COMMAND Job_Stop: JobID=" + str(JobID) + " , Terminating Job From Queue")
             self.TorqueObj.TerminateJob(PBSID) ##If its status is running or before set it to pause
+            return [True,'']
         if (JobStatus <= EnumerationLookup.JobState.Running):
             logging.info("COMMAND Job_Stop: JobID=" + str(JobID) + " , SetJob to Pause")
             self.dbaseobj.SetJobPaused(JobID, UICommandID)
-
+            return [True,'']
+        else:
+            return [False,'Job Is Not Running!']
+        
     def Job_Stop(self,UICommandID,UIJobID,CommandParams):
         AssociatedJobsData=self.GetJobData(UIJobID)
         logging.info("COMMAND Job_Stop: JobUIID="+str(UIJobID)+" - Associated Jobs="+str(len(AssociatedJobsData)))
-        
+        ExecutionResult=False
+        Message=''
         for JobRow in AssociatedJobsData:
             JobID=JobRow['jobid']
+            
+            
             PBSID=""
             if JobRow['pbsreferenceid']!=None:                
                 PBSID=JobRow['pbsreferenceid'].split('.')[0]
             else:
                 logging.info("Sorry This Job doesn't have pbsID. Job ID"+str(JobID))
-                return False
+                return [False,'The job does not have a queue ID!']
             JobStatus=JobRow['jobstatus']
             
-            self.PauseJob(UICommandID, JobID, PBSID, JobStatus)
-        self.UpdateTAOJobUI(UIJobID)        
-        logging.info("Job_Stop")
-        return True
+            [ExecutionResult,Message]=self.PauseJob(UICommandID, JobID, PBSID, JobStatus)
+        if ExecutionResult==True:
+            self.UpdateTAOJobUI(UIJobID)
+                    
+            logging.info("Job_Stop")
+            return [True,'']
+        else:
+            return [False,Message]
     def Job_Resume(self,UICommandID,UIJobID,CommandParams):
         logging.info("Job_Resume is not currently supported")
-        return True
+        return [False,'Not Supported']
     def Workflow_Stop(self,UICommandID,UIJobID,CommandParams):
         self.KeepWorkFlowActive=False
         logging.info("Workflow_Stop")
-        return True
+        return [True,'']
     def Workflow_Resume(self,UICommandID,UIJobID,CommandParams):
         self.KeepWorkFlowActive=True
         logging.info("Workflow_Resume")
-        return True    
+        return [True,'']    
     def Job_Output_Delete(self,UICommandID,UIJobID,CommandParams):
         logging.info("Job_Output_Delete")
         JobUserName=CommandParams
         BasedPath=os.path.join(self.Options['WorkFlowSettings:WorkingDir'], JobUserName, str(UIJobID))
-        #outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], JobUserName, str(UIJobID),'output')
+        
         
         if (JobUserName==""):
-            return False
+            return [False,'User Name was not provided!']
         if(os.path.exists(BasedPath)):
            logging.info('Path already exists ... Clearing Files....'+BasedPath) 
            shutil.rmtree(BasedPath)
         
         
         
-        return True
+        return [True,'']
         
     
         
@@ -197,16 +210,16 @@ class SysCommands(object):
         logging.info('Updating UI MasterDB. JobID ('+str(UIJobID)+').. '+data['status'])        
         requests.put(self.api['update']%UIJobID, json.dumps(data))
     
-    def UpdateTAOCommandUI(self,CommandID,IsCompleted):        
+    def UpdateTAOCommandUI(self,CommandID,IsCompleted,Message):        
         
         UpdateURL=self.commandapi['update']%CommandID
         data = {}      
         if IsCompleted==True:          
             data['execution_status'] = 'COMPLETED'             
-            data['execution_comment'] = ""
+            data['execution_comment'] = Message
         else:
             data['execution_status'] = 'ERROR'             
-            data['execution_comment'] = ""
+            data['execution_comment'] = Message
                 
         logging.info('Updating UI MasterDB. CommandID ('+str(CommandID)+').. '+data['execution_status'])
         logging.info(UpdateURL)

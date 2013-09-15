@@ -144,8 +144,8 @@ def HandleCSVFiles(ListofFiles,OutputFileName):
     f.close()
     logging.info('Merging Done >> '+OutputFileName)
     return True
-def PrepareLog(OutputFolder):
-    LOG_FILENAME = OutputFolder+'/merging_logfile.log'
+def PrepareLog(OutputFolder,SubJobIndex):
+    LOG_FILENAME = OutputFolder+'/merging_logfile.'+str(SubJobIndex)+'.log'
     TAOLoger = logging.getLogger() 
     TAOLoger.setLevel(logging.DEBUG)      
     handler = logging.handlers.RotatingFileHandler(LOG_FILENAME, maxBytes=10485760, backupCount=5)
@@ -153,7 +153,9 @@ def PrepareLog(OutputFolder):
     TAOLoger.addHandler(handler)
     return TAOLoger
 def ProcessFiles(FilesList,OutputFileName):
-    
+    logging.info("## Start Process Files ...") 
+    logging.info("## Merging files with extension :"+FilesList[0].split('.')[-2])
+    logging.info(FilesList)
     if FilesList[0].split('.')[-2]=='csv':        
         return HandleCSVFiles(FilesList,OutputFileName)
     elif FilesList[0].split('.')[-2]=='xml':
@@ -162,6 +164,9 @@ def ProcessFiles(FilesList,OutputFileName):
         return HandleFITSFiles(FilesList,OutputFileName)
     elif FilesList[0].split('.')[-2]=='hdf5':
         return HandleHDF5Files(FilesList,OutputFileName)
+    else:
+        logging.info("This Format is not Known for me ! "+FilesList[0].split('.')[-2])
+    logging.info("## End Process Files ...") 
 def RemoveFiles(FilesList):
     logging.info("Removing Files:") 
     logging.info(FilesList)
@@ -184,7 +189,7 @@ if __name__ == '__main__':
     CurrentLogPath=sys.argv[1].replace("/output","/log")
     SubJobIndex=sys.argv[2]
     JobIndex=sys.argv[3]
-    TAOLoger=PrepareLog(CurrentLogPath) 
+    TAOLoger=PrepareLog(CurrentLogPath,SubJobIndex) 
     logging.info('Merging Files in '+CurrentFolderPath)   
     dirList=os.listdir(CurrentFolderPath)    
     fullPathArray=[]
