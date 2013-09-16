@@ -97,6 +97,11 @@ namespace tao {
             else
                _num_tiles = 1;
 
+            // Make sure the local batch object is prepared. I need to
+            // do this here because other modules will likely need
+            // to access and cache values.
+            _be->init_batch( _bat, _qry );
+
             LOGILN( "Done.", setindent( -2 ) );
          }
 
@@ -116,6 +121,9 @@ namespace tao {
                   _c_it = _lc.galaxy_begin( _qry, *_be, &_bat );
                else
                   _b_it = _box.galaxy_begin( _qry, *_be, &_bat );
+
+               // Initialise the tile index.
+               _tile_idx = std::numeric_limits<unsigned>::max();
             }
             else
             {

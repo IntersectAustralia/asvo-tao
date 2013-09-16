@@ -901,8 +901,7 @@ calc_mags( void* data )
 {
    auto wave = ssp.wavelengths();
    tao::sed<> sed;
-   sed.spectrum().knot_points().resize( wave.size() );
-   std::copy( wave.begin(), wave.end(), sed.spectruM().knot_points().begin() );
+   sed.spectrum().set_knot_points( wave );
 
    while( load_gals_done == false )
    {
@@ -923,7 +922,7 @@ calc_mags( void* data )
                cur_sfh.rebin<real_type>( sfh_backend.session(), bat->scalar<int>( "local_galaxy_id" )[ii], age_masses, age_bulge_masses, age_metals );
 
                // Sum the spectrum.
-               ssp.sum( age_masses.begin(), age_metals.begin(), sed.spectrum().values_begin() );
+               ssp.sum( age_masses.begin(), age_metals.begin(), sed.spectrum().values().begin() );
                sed.spectrum().update(); // rebuild spline
 
                // Calculate the magnitude of this object.

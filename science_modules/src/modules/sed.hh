@@ -42,6 +42,16 @@ namespace tao {
          {
          }
 
+         virtual
+         optional<boost::any>
+         find_attribute( const string& name )
+         {
+            if( name == "wavelengths" )
+               return boost::any( _ssp.wavelengths() );
+            else
+               return module_type::find_attribute( name );
+         }
+
          ///
          /// Initialise the module.
          ///
@@ -98,9 +108,9 @@ namespace tao {
             const auto& table_name = bat.attribute<string>( "table" );
             const auto tree_gids = bat.scalar<long long>( "global_tree_id" );
             const auto gal_lids = bat.scalar<int>( "local_galaxy_id" );
-            auto total_spectra = bat.vector<real_type>( "total_spectra" );
-            auto disk_spectra = bat.vector<real_type>( "disk_spectra" );
-            auto bulge_spectra = bat.vector<real_type>( "bulge_spectra" );
+            auto& total_spectra = bat.vector<real_type>( "total_spectra" );
+            auto& disk_spectra = bat.vector<real_type>( "disk_spectra" );
+            auto& bulge_spectra = bat.vector<real_type>( "bulge_spectra" );
             soci::session& sql = _be->session( table_name );
 
             // Perform the processing.

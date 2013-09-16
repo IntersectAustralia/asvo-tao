@@ -174,6 +174,8 @@ namespace tao {
 
       // Setup the bin ages.
       _age_bins.set_ages( bin_ages );
+
+      LOGILN( "Done.", setindent( -2 ) );
    }
 
    void

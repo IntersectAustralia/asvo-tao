@@ -138,7 +138,7 @@ namespace tao {
          // Calculate the dual.
          _calc_dual();
 
-         LOGD( setindent( -2 ) );
+         LOGD( "Done.", setindent( -2 ) );
       }
 
       unsigned

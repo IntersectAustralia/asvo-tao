@@ -187,6 +187,7 @@ namespace tao {
       update_size()
       {
          bool done = false;
+         _size = _max_size;
          for( const auto& item : _fields )
          {
             const auto& field = item.second;
@@ -197,53 +198,53 @@ namespace tao {
             {
                case STRING:
                   if( std::get<1>( field ) == SCALAR )
-                     _size = boost::any_cast<hpc::vector<string>*>( val )->size();
+                     _size = std::min<unsigned>( _size, boost::any_cast<hpc::vector<string>*>( val )->size() );
                   else
-                     _size = boost::any_cast<fibre<string>*>( val )->size();
+                     _size = std::min<unsigned>( _size, boost::any_cast<fibre<string>*>( val )->size() );
                   done = true;
                   break;
                case DOUBLE:
                   if( std::get<1>( field ) == SCALAR )
-                     _size = boost::any_cast<hpc::vector<double>*>( val )->size();
+                     _size = std::min<unsigned>( _size, boost::any_cast<hpc::vector<double>*>( val )->size() );
                   else
-                     _size = boost::any_cast<fibre<double>*>( val )->size();
+                     _size = std::min<unsigned>( _size, boost::any_cast<fibre<double>*>( val )->size() );
                   done = true;
                   break;
                case INTEGER:
                   if( std::get<1>( field ) == SCALAR )
-                     _size = boost::any_cast<hpc::vector<int>*>( val )->size();
+                     _size = std::min<unsigned>( _size, boost::any_cast<hpc::vector<int>*>( val )->size() );
                   else
-                     _size = boost::any_cast<fibre<int>*>( val )->size();
+                     _size = std::min<unsigned>( _size, boost::any_cast<fibre<int>*>( val )->size() );
                   done = true;
                   break;
                case UNSIGNED_LONG:
                   if( std::get<1>( field ) == SCALAR )
-                     _size = boost::any_cast<hpc::vector<unsigned long>*>( val )->size();
+                     _size = std::min<unsigned>( _size, boost::any_cast<hpc::vector<unsigned long>*>( val )->size() );
                   else
-                     _size = boost::any_cast<fibre<unsigned long>*>( val )->size();
+                     _size = std::min<unsigned>( _size, boost::any_cast<fibre<unsigned long>*>( val )->size() );
                   done = true;
                   break;
                case LONG_LONG:
                   if( std::get<1>( field ) == SCALAR )
-                     _size = boost::any_cast<hpc::vector<long long>*>( val )->size();
+                     _size = std::min<unsigned>( _size, boost::any_cast<hpc::vector<long long>*>( val )->size() );
                   else
-                     _size = boost::any_cast<fibre<long long>*>( val )->size();
+                     _size = std::min<unsigned>( _size, boost::any_cast<fibre<long long>*>( val )->size() );
                   done = true;
                   break;
                case UNSIGNED_LONG_LONG:
                   if( std::get<1>( field ) == SCALAR )
-                     _size = boost::any_cast<hpc::vector<unsigned long long>*>( val )->size();
+                     _size = std::min<unsigned>( _size, boost::any_cast<hpc::vector<unsigned long long>*>( val )->size() );
                   else
-                     _size = boost::any_cast<fibre<unsigned long long>*>( val )->size();
+                     _size = std::min<unsigned>( _size, boost::any_cast<fibre<unsigned long long>*>( val )->size() );
                   done = true;
                   break;
                case FIELD_VALUE_TERMINAL:
                   break;
             };
 
-            // Only need one.
-            if( done )
-               break;
+            // // Only need one.
+            // if( done )
+            //    break;
          }
 
          // If we couldn't find anything, set batch size to 0.
