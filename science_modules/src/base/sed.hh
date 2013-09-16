@@ -36,7 +36,6 @@ namespace tao {
          if( boost::trim_copy( line ).length() )
             ++num_waves;
       }
-      EXCEPT( (bool)file, "Error reading SED file." );
       LOGILN( "Have ", num_waves, " wavelength entries." );
 
       // Allocate.
@@ -54,7 +53,7 @@ namespace tao {
          // I first need to multiply by 2e-17 to get to erg/s/angstrom.
          vals[ii] *= 2e-17;
       }
-      EXCEPT( (bool)file, "Error reading SED file." );
+      EXCEPT( !file.fail(), "Error reading SED file." );
 
       // Convert the spectrum to a spline.
       spec.set_knot_points( pnts );

@@ -29,7 +29,8 @@ namespace tao {
            _base( base ),
            _dict( base ),
            _global_dict( NULL ),
-           _it( 0 )
+           _it( 0 ),
+           _complete( false )
       {
          set_timer( &_my_timer );
          set_db_timer( &_my_db_timer );
@@ -107,6 +108,7 @@ namespace tao {
 
          // Flag myself as having commenced initialisation.
          _init = true;
+         _complete = false;
 
          // Initialise parents first.
          for( auto par : _parents )

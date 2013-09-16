@@ -53,9 +53,17 @@ namespace tao {
             LOGILN( "Initialising filter module.", setindent( 2 ) );
 
             // Find the wavelengths from my parents.
-            _waves = this->template attribute<const vector<real_type>*>( "wavelengths" );
+            _waves = this->template attribute<const vector<real_type>::view>( "wavelengths" );
 
             _read_options( global_dict );
+
+            // Allocate for batch references.
+            _total_app_mags.resize( _bpf_names.size() );
+            _total_abs_mags.resize( _bpf_names.size() );
+            _disk_app_mags.resize( _bpf_names.size() );
+            _disk_abs_mags.resize( _bpf_names.size() );
+            _bulge_app_mags.resize( _bpf_names.size() );
+            _bulge_abs_mags.resize( _bpf_names.size() );
 
             // Prepare the batch object.
             ASSERT( this->parents().size() == 1, "Must have at least one parent defined." );
@@ -140,7 +148,7 @@ namespace tao {
             // Prepare the SED.
             typedef hpc::view<std::vector<real_type>>::type view_type;
             typedef numerics::spline<real_type,view_type,view_type> spline_type;
-            tao::sed<spline_type> sed( (const vector<real_type>&)*_waves, (const vector_view<std::vector<real_type>>&)spectra );
+            tao::sed<spline_type> sed( (const view<std::vector<real_type>>::type&)_waves, (const vector_view<std::vector<real_type>>&)spectra );
 
             // Calculate luminosity.
             luminosity = integrate( sed.spectrum() );
@@ -186,7 +194,7 @@ namespace tao {
             }
 
             // Get the Vega filename and perform processing.
-            path = data_prefix()/"vega";
+            path = data_prefix()/"spectra";
             _process_vega( path/dict.get<string>( "vega-spectrum", "A0V_KUR_BB.SED" ) );
          }
 
@@ -218,7 +226,7 @@ namespace tao {
 
       protected:
 
-         const vector<real_type>* _waves;
+         vector<real_type>::view _waves;
 
          vector<real_type>::view _spec;
          vector<bandpass> _bpfs;
