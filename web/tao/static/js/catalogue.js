@@ -763,12 +763,11 @@ jQuery(document).ready(function ($) {
 
     ko.bindingHandlers['spinner'] = {
         init: function(element, valueAccessor, allBindingsAccessor) {
-            //initialize datepicker with some optional options
             var options = ko.computed(function(){
                 var resp = allBindingsAccessor().spinnerOptions;
                 var min_v = typeof (resp.min || undefined) == 'function' ? resp.min() : (resp.min || NaN);
                 var max_v = typeof (resp.max || undefined) == 'function' ? resp.max() : (resp.max || NaN);
-                return {min: min_v, max: max_v, disabled: !isNaN(min_v) && !isNaN(max_v) && min_v > max_v};
+                return {min: min_v, max: max_v, disabled: !isNaN(min_v) && !isNaN(max_v) && min_v > max_v || min_v < 1};
             });
 
             $(element).spinner(options());
@@ -792,7 +791,6 @@ jQuery(document).ready(function ($) {
         },
         update: function(element, valueAccessor) {
             var value = ko.utils.unwrapObservable(valueAccessor());
-
             current = $(element).spinner("value");
             if (value !== current) {
                 $(element).spinner("value", value);
