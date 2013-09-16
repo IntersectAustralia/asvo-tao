@@ -447,4 +447,4 @@ class JobTest(LiveServerTest):
         self.completed_job.save()
         self.click('id_refresh_disk_usage')
         self.wait()
-        self.assert_element_text_equals('#id_disk_usage', self.completed_job.display_disk_size().strip())
+        self.assert_element_text_equals('#id_disk_usage', self.completed_job.display_disk_size())

@@ -175,7 +175,7 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
         
     def assert_element_text_equals(self, selector, expected_value):
         text = self.find_visible_element(selector).text.strip()
-        self.assertEqual(expected_value, text)
+        self.assertEqual(expected_value.strip(), text.strip())
 
     def assert_selector_texts_equals_expected_values(self, selector_value):
         # selector_value is a dict of selectors to expected text values
