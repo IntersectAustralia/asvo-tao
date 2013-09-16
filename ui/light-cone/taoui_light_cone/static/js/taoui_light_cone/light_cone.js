@@ -271,7 +271,8 @@ catalogue.modules.light_cone = function ($) {
         });
 
         vm.minimum_number_of_light_cones = ko.computed(function() {
-
+            // NOTE: This is a bit of a hack
+            return vm.maximum_number_of_light_cones() < 1 ? vm.maximum_number_of_light_cones() : 1;
         });
 
         vm.snapshots = ko.computed(function (){
@@ -425,7 +426,7 @@ catalogue.modules.light_cone = function ($) {
             var lc = vm.maximum_number_of_light_cones();
             if (!isNaN(lc) && lc > 0) {
                 result = 'maximum is ' + lc;
-            } else {
+            } else if (lc < 1) {
                 result = 'The current light-cone dimension exceeds the available simulation space.<br/>Please reduce the light-cone dimensions or change to random light-cones.';
             }
             return result;

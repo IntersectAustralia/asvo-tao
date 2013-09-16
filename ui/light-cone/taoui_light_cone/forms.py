@@ -269,7 +269,7 @@ class Form(BetterForm):
         self.fields['redshift_min'].widget.attrs['data-bind'] = 'value: redshift_min'
         self.fields['redshift_max'].widget.attrs['data-bind'] = 'value: redshift_max'
         self.fields['light_cone_type'].widget.attrs['data-bind'] = 'checked: light_cone_type'
-        self.fields['number_of_light_cones'].widget.attrs['spinner_bind'] = 'spinner: number_of_light_cones, spinnerOptions: {min: 1, max: maximum_number_of_light_cones}'
+        self.fields['number_of_light_cones'].widget.attrs['spinner_bind'] = 'spinner: number_of_light_cones, spinnerOptions: {min: minimum_number_of_light_cones, max: maximum_number_of_light_cones}'
         self.fields['number_of_light_cones'].widget.attrs['spinner_message'] = "css: {error: number_of_light_cones() < 1}, html: number_of_light_cones_msg()"
         self.fields['output_properties'].widget.attrs['ko_data'] = {'widget':'output_properties_widget','value':'output_properties'}
         self.fields['rng_seed'].widget.attrs['data-bind'] = 'value: rng_seed'
