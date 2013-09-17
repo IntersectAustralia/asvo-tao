@@ -837,8 +837,9 @@ color: #888;
     width: 12em;
 }
 
-#body.flex { padding-top: 20px; }
-div.breadcrumbs { padding: 120px 60px 0 60px; }
+/* #body.flex { padding-top: 20px; } */
+div.breadcrumbs { position: fixed; top: 40px; left: 0; right: 0; padding: 50px 60px 0 60px; }
+ul.messagelist { position: fixed; top: 48px; left: 0; right: 0; }
 
 #survey_presets_select {
   width: auto;
