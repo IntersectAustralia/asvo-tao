@@ -45,6 +45,30 @@ ko.extenders.required = function(target, option) {
 
 }
 
+ko.extenders.only_if = function(target, option) {
+
+    var only_if = typeof option == 'function' ? option
+        : function() {return option};
+
+    var old_error;
+
+    if (target.hasOwnProperty('error')) {
+        old_error = target.error;
+    }
+
+    target.error = ko.computed(function(){
+        if (old_error !== undefined) {
+            var old = old_error();
+            if (old && old.error) return old;
+            if (old && old.skip) return {skip: true};
+        }
+        return only_if() ? {error: false} : {skip: true};
+    });
+    //return the original observable
+    return target;
+
+}
+
 ko.extenders.validate = function(target, option) {
 
     var valid = ko.computed(function(){
@@ -61,6 +85,7 @@ ko.extenders.validate = function(target, option) {
         if (old_error !== undefined) {
             var old = old_error();
             if (old && old.error) return old;
+            if (old && old.skip) return {skip: true};
         }
         return valid();
     });
