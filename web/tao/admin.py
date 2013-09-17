@@ -46,6 +46,7 @@ class DataSetAdmin(admin.ModelAdmin):
 class DataSetPropertyAdmin(admin.ModelAdmin):
     list_display = ('dataset', 'label', 'is_filter', 'is_output', 'is_computed')
     ordering = ('dataset', 'group', 'order', 'label')
+    search_fields = ['id', 'name', 'label']
 
 admin.site.register(DataSet, DataSetAdmin)
 admin.site.register(DataSetProperty, DataSetPropertyAdmin)
