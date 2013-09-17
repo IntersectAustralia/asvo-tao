@@ -210,6 +210,10 @@ div.control-group label.error {
     color: #b94a48;
 }
 
+div.control-group span.error {
+    color: #b94a48;
+}
+
 #tabs.ui-tabs .ui-tabs-panel {
   padding: 0px;;
   display: block;

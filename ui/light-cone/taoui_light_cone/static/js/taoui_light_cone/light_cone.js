@@ -220,21 +220,16 @@ catalogue.modules.light_cone = function ($) {
         param = job['light_cone-light_cone_type'];
         vm.light_cone_type = ko.observable(param ? param : 'unique');
         param = job['light_cone-number_of_light_cones'];
-        vm.number_of_light_cones = ko.observable(param ? param : 1)
-            .extend({required: function(){return vm.catalogue_geometry() == 'light-cone' && vm.light_cone_type() != 'unique'}})
-            .extend({validate: catalogue.validators.is_int});
-        // Disable geq 1 check until we can figure out why it is being
-        // set to 0.  job_params ensures that it is at least 1 before
-        // submission.
-        //    .extend({validate: catalogue.validators.geq(1)});
-        // Debugging
 
-        vm.number_of_light_cones.subscribe(function(n) {
-        	if (n==0) { console.log('WARN: Number of light-cones = 0'); }
-        });
+        vm.number_of_light_cones = ko.observable(param ? param : 1)
+            .extend({required: function(){return vm.catalogue_geometry() == 'light-cone'}})
+            .extend({validate: catalogue.validators.is_int})
+            .extend({validate: catalogue.validators.geq(1)});
+
         param = job['light_cone-ra_opening_angle'];
         vm.ra_opening_angle = ko.observable(param ? param : null)
             .extend({required: function(){return vm.catalogue_geometry().id == 'light-cone'}})
+            .extend({only_if: function(){return vm.catalogue_geometry().id == 'light-cone'}})
             .extend({validate: catalogue.validators.is_float})
             .extend({validate: catalogue.validators.geq(0)})
             .extend({validate: catalogue.validators.leq(90)});
@@ -242,6 +237,7 @@ catalogue.modules.light_cone = function ($) {
         param = job['light_cone-dec_opening_angle'];
         vm.dec_opening_angle = ko.observable(param ? param : null)
             .extend({required: function(){return vm.catalogue_geometry().id == 'light-cone'}})
+            .extend({only_if: function(){return vm.catalogue_geometry().id == 'light-cone'}})
             .extend({validate: catalogue.validators.is_float})
             .extend({validate: catalogue.validators.geq(0)})
             .extend({validate: catalogue.validators.leq(90)});
@@ -249,12 +245,14 @@ catalogue.modules.light_cone = function ($) {
         param = job['light_cone-redshift_min'];
         vm.redshift_min = ko.observable(param ? param : null)
             .extend({required: function(){return vm.catalogue_geometry().id == 'light-cone'}})
+            .extend({only_if: function(){return vm.catalogue_geometry().id == 'light-cone'}})
             .extend({validate: catalogue.validators.is_float})
             .extend({validate: catalogue.validators.geq(0)});
 
         param = job['light_cone-redshift_max'];
         vm.redshift_max = ko.observable(param ? param : null)
             .extend({required: function(){return vm.catalogue_geometry().id == 'light-cone'}})
+            .extend({only_if: function(){return vm.catalogue_geometry().id == 'light-cone'}})
             .extend({validate: catalogue.validators.is_float})
             .extend({validate: catalogue.validators.geq(vm.redshift_min)});
 
@@ -265,6 +263,7 @@ catalogue.modules.light_cone = function ($) {
         param = job['light_cone-box_size'];
         vm.box_size = ko.observable(param ? param : vm.max_box_size())
             .extend({required: function(){return vm.catalogue_geometry().id == 'box'}})
+            .extend({only_if: function(){return vm.catalogue_geometry().id == 'box'}})
             .extend({validate: catalogue.validators.is_float})
             .extend({validate: catalogue.validators.geq(0)})
             .extend({validate: catalogue.validators.leq(vm.max_box_size)});
@@ -274,6 +273,11 @@ catalogue.modules.light_cone = function ($) {
                 return get_global_maximum_light_cones();
             }
             return get_number_of_unique_light_cones();
+        });
+
+        vm.minimum_number_of_light_cones = ko.computed(function() {
+            // NOTE: This is a bit of a hack
+            return vm.maximum_number_of_light_cones() < 1 ? vm.maximum_number_of_light_cones() : 1;
         });
 
         vm.snapshots = ko.computed(function (){
@@ -316,45 +320,32 @@ catalogue.modules.light_cone = function ($) {
         // Computed Human-Readable Summary Fields
         vm.estimated_cone_size = ko.computed(function(){
             try {
-                return calculate_job_size();
+                var resp = calculate_job_size();
+                if (resp == null)
+                    return NaN;
+                return resp;
             } catch(e) {
                 return NaN;
             }
         });
-        vm.estimated_cone_size
-            .extend({validate: catalogue.validators.test(function(){
-                if (vm.catalogue_geometry().id == 'box') return true;
-                return !isNaN(vm.estimated_cone_size());
-            },
-            "Please provide light-cone parameters to estimate job size")})
-            .extend({validate: catalogue.validators.test(function(){
-                if (vm.catalogue_geometry().id == 'box') return true;
-                return vm.estimated_cone_size() <= 100;
-            },
-            "Estimated job size for this Light-cone is beyond allowed maximum")});
-
-
-        var job_too_large = function() {
-            return vm.estimated_cone_size() > 100;
-        }
-
-
-        vm.estimated_cone_size_css = ko.computed(function() {
-            return job_too_large() ? 'job_too_large_error' : '';
-        });
-
 
         vm.estimated_cone_size_msg = ko.computed(function () {
         	var ecs = vm.estimated_cone_size();
         	var msg = 'Estimated job size: ';
         	if (isNaN(ecs)) {
         		msg += "(waiting for valid cone parameters)";
-        	} else {
-	            msg = msg + ecs + "%";
-	            if (job_too_large()) {
-	                msg += '. Note this exceeds the maximum allowed size, please reduce the light-cone size (RA, Dec, Redshift range).';
-	            }
+                return msg;
         	}
+            msg = msg + ecs + "%";
+            if (ecs > 100) {
+                var warning = catalogue.util.global_parameter_or_null('job_too_large_warning');
+                if (warning == null) {
+                    warning = '<i><em>NOTE:</em> This job may not complete within the allowed time.</i>';
+                } else {
+                    warning = warning.fields.parameter_value;
+                }
+                msg += ' ' + warning;
+            }
             return msg;
         });
 
@@ -424,8 +415,11 @@ catalogue.modules.light_cone = function ($) {
 
         vm.number_of_light_cones_msg = ko.computed(function() {
             var result = '';
-            if (!isNaN(vm.maximum_number_of_light_cones())) {
-                result = 'maximum is ' + vm.maximum_number_of_light_cones();
+            var lc = vm.maximum_number_of_light_cones();
+            if (!isNaN(lc) && lc > 0) {
+                result = 'maximum is ' + lc;
+            } else if (lc < 1) {
+                result = 'The current light-cone dimension exceeds the available simulation space.<br/>Please reduce the light-cone dimensions or change to random light-cones.';
             }
             return result;
         });

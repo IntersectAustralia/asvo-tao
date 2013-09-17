@@ -45,6 +45,30 @@ ko.extenders.required = function(target, option) {
 
 }
 
+ko.extenders.only_if = function(target, option) {
+
+    var only_if = typeof option == 'function' ? option
+        : function() {return option};
+
+    var old_error;
+
+    if (target.hasOwnProperty('error')) {
+        old_error = target.error;
+    }
+
+    target.error = ko.computed(function(){
+        if (old_error !== undefined) {
+            var old = old_error();
+            if (old && old.error) return old;
+            if (old && old.skip) return {skip: true};
+        }
+        return only_if() ? {error: false} : {skip: true};
+    });
+    //return the original observable
+    return target;
+
+}
+
 ko.extenders.validate = function(target, option) {
 
     var valid = ko.computed(function(){
@@ -61,6 +85,7 @@ ko.extenders.validate = function(target, option) {
         if (old_error !== undefined) {
             var old = old_error();
             if (old && old.error) return old;
+            if (old && old.skip) return {skip: true};
         }
         return valid();
     });
@@ -78,16 +103,19 @@ catalogue.validators.positive = function(val) {
     return {'error':false};
 };
 
-// Currently is_float really does an is_numeric
+// note: The expression below accepts single . for fraction part, but it is Ok
+// as we are still running parseFloat (or the regex would be more complex)
+catalogue.validators._float_regex = /^[-+]?[0-9]*([.][0-9]*)?([eE][-+]?[0-9]+)?$/;
+catalogue.validators._int_regex = /^[-+]?[0-9]+$/;
 catalogue.validators.is_float = function(val) {
-    var f = parseFloat(val);
+    var f = catalogue.validators._float_regex.test(val) ? parseFloat(val): NaN;
     if (isNaN(f))
         return {'error':true, message:'Please input a number'};
     return {'error':false};
 };
 
 catalogue.validators.is_int = function(val) {
-    var f = parseInt(val);
+    var f = catalogue.validators._int_regex.test(val) ? parseInt(val) : NaN;
     if (isNaN(f))
         return {'error':true, message:'Please input a number'};
     return {'error':false};
@@ -760,12 +788,11 @@ jQuery(document).ready(function ($) {
 
     ko.bindingHandlers['spinner'] = {
         init: function(element, valueAccessor, allBindingsAccessor) {
-            //initialize datepicker with some optional options
             var options = ko.computed(function(){
                 var resp = allBindingsAccessor().spinnerOptions;
                 var min_v = typeof (resp.min || undefined) == 'function' ? resp.min() : (resp.min || NaN);
                 var max_v = typeof (resp.max || undefined) == 'function' ? resp.max() : (resp.max || NaN);
-                return {min: min_v, max: max_v, disabled: !isNaN(min_v) && !isNaN(max_v) && min_v > max_v};
+                return {min: min_v, max: max_v, disabled: !isNaN(min_v) && !isNaN(max_v) && min_v > max_v || min_v < 1};
             });
 
             $(element).spinner(options());
@@ -789,7 +816,6 @@ jQuery(document).ready(function ($) {
         },
         update: function(element, valueAccessor) {
             var value = ko.utils.unwrapObservable(valueAccessor());
-
             current = $(element).spinner("value");
             if (value !== current) {
                 $(element).spinner("value", value);
@@ -1018,6 +1044,7 @@ jQuery(document).ready(function ($) {
                 for(var i = 0; i < stack.length; i++) console.log(stack[i]);
             }
             manual_modal('Fatal error initialising the UI, please contact support');
+            throw e;
         }
     })();
 
