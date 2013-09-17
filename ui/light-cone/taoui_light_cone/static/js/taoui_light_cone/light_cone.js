@@ -316,45 +316,32 @@ catalogue.modules.light_cone = function ($) {
         // Computed Human-Readable Summary Fields
         vm.estimated_cone_size = ko.computed(function(){
             try {
-                return calculate_job_size();
+                var resp = calculate_job_size();
+                if (resp == null)
+                    return NaN;
+                return resp;
             } catch(e) {
                 return NaN;
             }
         });
-        vm.estimated_cone_size
-            .extend({validate: catalogue.validators.test(function(){
-                if (vm.catalogue_geometry().id == 'box') return true;
-                return !isNaN(vm.estimated_cone_size());
-            },
-            "Please provide light-cone parameters to estimate job size")})
-            .extend({validate: catalogue.validators.test(function(){
-                if (vm.catalogue_geometry().id == 'box') return true;
-                return vm.estimated_cone_size() <= 100;
-            },
-            "Estimated job size for this Light-cone is beyond allowed maximum")});
-
-
-        var job_too_large = function() {
-            return vm.estimated_cone_size() > 100;
-        }
-
-
-        vm.estimated_cone_size_css = ko.computed(function() {
-            return job_too_large() ? 'job_too_large_error' : '';
-        });
-
 
         vm.estimated_cone_size_msg = ko.computed(function () {
         	var ecs = vm.estimated_cone_size();
         	var msg = 'Estimated job size: ';
         	if (isNaN(ecs)) {
         		msg += "(waiting for valid cone parameters)";
-        	} else {
-	            msg = msg + ecs + "%";
-	            if (job_too_large()) {
-	                msg += '. Note this exceeds the maximum allowed size, please reduce the light-cone size (RA, Dec, Redshift range).';
-	            }
+                return msg;
         	}
+            msg = msg + ecs + "%";
+            if (ecs > 100) {
+                var warning = catalogue.util.global_parameter_or_null('job_too_large_warning');
+                if (warning == null) {
+                    warning = '<i><em>NOTE:</em> This job may not complete within the allowed time.</i>';
+                } else {
+                    warning = warning.fields.parameter_value;
+                }
+                msg += ' ' + warning;
+            }
             return msg;
         });
 
