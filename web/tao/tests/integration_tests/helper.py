@@ -9,7 +9,6 @@ import django.test
 import re, os, time
 import tao.datasets as datasets
 from tao.models import DataSetProperty, BandPassFilter, Simulation
-from tao.forms import NO_FILTER
 from tao.settings import MODULE_INDICES
 from tao.tests.helper import TaoModelsCleanUpMixin
 from tao.tests.support.factories import GlobalParameterFactory

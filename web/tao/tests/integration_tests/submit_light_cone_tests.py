@@ -13,6 +13,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
 
         GlobalParameterFactory.create(parameter_name='maximum-random-light-cones', parameter_value='10')
         GlobalParameterFactory(parameter_name='INITIAL_JOB_STATUS', parameter_value='HELD')
+        GlobalParameterFactory(parameter_name='job_too_large_warning', parameter_value='JOB_WARNING')
         simulation = SimulationFactory.create(box_size=500)
         galaxy_model = GalaxyModelFactory.create()
         dataset = DataSetFactory.create(simulation=simulation, galaxy_model=galaxy_model, max_job_box_count=15)
@@ -51,52 +52,38 @@ class SubmitLightConeTests(LiveServerMGFTest):
         self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
         self.assert_is_displayed('#max_job_size')
 
-    def _test_job_estimate_displayed_correctly(self):
+    def test_job_estimate_displayed_correctly(self):
         self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
         # the box count calculated from these parameters is 15, within the max_job_box_count set for this dataset, 15
         self.fill_in_fields({
-            'ra_opening_angle': '1',
-            'dec_opening_angle': '2',
-            'redshift_min': '3',
-            'redshift_max': '4',
+            'ra_opening_angle': '1\n',
+            'dec_opening_angle': '2\n',
+            'redshift_min': '3\n',
+            'redshift_max': '4\n',
         }, id_wrap=self.lc_id)
-        self.click(self.lc_2select('op_add_all'))
-        self.assert_page_has_content('Estimated job size: 100%')
-        self.assert_page_does_not_contain("Note this exceeds the maximum allowed size, please reduce the light-cone size (RA, Dec, Redshift range).")
+        self.assert_page_has_content('Estimated job size: 3%')
+        self.assert_page_does_not_contain("job tool argue earning")
 
-        self.submit_mgf_form()
-        self.assert_on_page('job_index')
-
-    def _test_job_estimated_too_large(self):
+    def test_job_estimated_too_large(self):
         self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
         # the box count calculated from these parameters is 16, exceeding the max_job_box_count set for this dataset, 15
         self.fill_in_fields({
-            'ra_opening_angle': '1',
-            'dec_opening_angle': '2',
-            'redshift_min': '3',
-            'redshift_max': '5',
+            'ra_opening_angle': '1\n',
+            'dec_opening_angle': '2\n',
+            'redshift_min': '3\n',
+            'redshift_max': '5\n',
         }, id_wrap=self.lc_id)
-        self.click(self.lc_2select('op_add_all'))
-        self.assert_page_has_content("Note this exceeds the maximum allowed size, please reduce the light-cone size (RA, Dec, Redshift range).")
-        self.submit_mgf_form()
+        self.assert_page_has_content("JOB_WARNING")
 
-        self.assert_on_page('mock_galaxy_factory')
-        self.assert_page_has_content("Note this exceeds the maximum allowed size, please reduce the light-cone size (RA, Dec, Redshift range).")
-
-    def _test_job_estimate_with_invalid_parameters(self):
+    def test_job_estimate_with_invalid_parameters(self):
         self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
         self.fill_in_fields({
-            'ra_opening_angle': '0',
-            'dec_opening_angle': '0',
-            'redshift_min': '0',
-            'redshift_max': '5',
+            'ra_opening_angle': 'zero\n',
+            'dec_opening_angle': '0\n',
+            'redshift_min': '0\n',
+            'redshift_max': '5\n',
         }, id_wrap=self.lc_id)
-        self.click(self.lc_2select('op_add_all'))
-        self.assert_page_has_content("invalid parameters, please adjust RA, Dec, redshift min or max")
-        self.submit_mgf_form()
-
-        self.assert_on_page('mock_galaxy_factory')
-        self.assert_page_has_content("invalid parameters, please adjust RA, Dec, redshift min or max")
+        self.assert_page_has_content("waiting for valid cone parameters")
 
     def test_submit_invalid_output_properties(self):
         ## fill in form (correctly)
