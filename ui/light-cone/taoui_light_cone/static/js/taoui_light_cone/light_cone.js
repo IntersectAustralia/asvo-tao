@@ -70,20 +70,18 @@ catalogue.modules.light_cone = function ($) {
     	if (geometry == "box") {
     		jQuery.extend(params, {
     			'light_cone-snapshot': [vm.snapshot().pk],
-    			'light_cone-box_size': [vm.box_size()]
+    			'light_cone-box_size': [vm.box_size()],
+                'light_cone-rng_seed': vm.rng_seed
     		});
     	} else { // light-cone
-            var noc;
-            if (vm.light_cone_type() == 'unique') {
-                noc = 1;
-            } else {
-                noc = parseInt(vm.number_of_light_cones());
+            if (vm.light_cone_type() == 'random') {
+                jQuery.extend(params, {'light_cone-rng_seeds': vm.rng_seeds()});
             }
     		jQuery.extend(params, {
     			'light_cone-light_cone_type': [vm.light_cone_type()],
     			'light_cone-ra_opening_angle': [vm.ra_opening_angle()],
     			'light_cone-dec_opening_angle': [vm.dec_opening_angle()],
-    			'light_cone-number_of_light_cones': [noc],
+    			'light_cone-number_of_light_cones': [parseInt(vm.number_of_light_cones())],
     			'light_cone-redshift_min': [vm.redshift_min()],
     			'light_cone-redshift_max': [vm.redshift_max()],
     		});
@@ -391,6 +389,35 @@ catalogue.modules.light_cone = function ($) {
                 var snapshot = vm.snapshot();
                 if (snapshot !== undefined)
                     result = format_redshift(vm.snapshot().fields.redshift);
+            }
+            return result;
+        });
+
+        var int_width = Math.pow(2, 32);
+
+        var random_seed = function() {
+            return Math.floor(Math.random() * int_width);
+        }
+
+        vm.rng_seed = TaoJob['light_cone-rng_seed'] ? TaoJob['light_cone-rng_seed'] : random_seed();
+        vm.rng_seeds = ko.computed(function() {
+            result = [];
+            var i = 0;
+            for (i; i < vm.number_of_light_cones(); i++) {
+                var key = 'rng-seed-' + i
+                if(TaoJob['light_cone-rng_seeds'] && TaoJob['light_cone-rng_seeds'][key]) {
+                    result.push(parseInt(TaoJob['light_cone-rng_seeds'][key]));
+                } else {
+                    result.push(random_seed());
+                }
+            }
+            return result;
+        });
+
+        vm.number_of_light_cones_msg = ko.computed(function() {
+            var result = '';
+            if (!isNaN(vm.maximum_number_of_light_cones())) {
+                result = 'maximum is ' + vm.maximum_number_of_light_cones();
             }
             return result;
         });

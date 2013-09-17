@@ -35,7 +35,6 @@ def presets_json():
     json_list = []
     for preset in models.SurveyPreset.objects.all():
         json_dict = {}
-        params_ui_holder = UIModulesHolder(UIModulesHolder.XML, xml_parse(preset.parameters.encode()))
         json_dict['name'] = preset.name
         json_dict['pk'] = preset.pk
         json_dict['description'] = preset.description
