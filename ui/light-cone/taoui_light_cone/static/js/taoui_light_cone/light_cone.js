@@ -226,6 +226,12 @@ catalogue.modules.light_cone = function ($) {
             .extend({validate: catalogue.validators.is_int})
             .extend({validate: catalogue.validators.geq(1)});
 
+        vm.light_cones_msg = ko.computed( function() {
+            result = vm.number_of_light_cones() + ' ' + vm.light_cone_type() + ' light-cone';
+            result += vm.number_of_light_cones() > 1 ? 's' : '';
+            return result;
+        });
+
         param = job['light_cone-ra_opening_angle'];
         vm.ra_opening_angle = ko.observable(param ? param : null)
             .extend({required: function(){return vm.catalogue_geometry().id == 'light-cone'}})
