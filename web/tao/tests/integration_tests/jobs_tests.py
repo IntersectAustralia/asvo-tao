@@ -10,6 +10,7 @@ from tao.tests.support.factories import GlobalParameterFactory, JobFactory, User
 from tao.tests.support.xml import light_cone_xml
 
 import os, zipfile, html2text, codecs
+from subprocess import call
 
 
 class JobTest(LiveServerTest):
@@ -273,7 +274,7 @@ class JobTest(LiveServerTest):
         self.assertTrue(os.path.exists(download_path), "%s not found" % (download_path,))
         
         # extract the files
-        extract_path = os.path.join(self.DOWNLOAD_DIRECTORY, 'tao_output')
+        extract_path = os.path.join(self.DOWNLOAD_DIRECTORY, 'tao_output_zip')
         self._extract_zipfile_to_dir(download_path, extract_path)
         
         self._assert_directories_match(self.dir_paths[0], extract_path)
@@ -283,6 +284,32 @@ class JobTest(LiveServerTest):
         self.visit('view_job', self.completed_job.id)
 
         self.assert_page_has_content('Download zip file')
+
+    def test_tar_file_download(self):
+        self.login(self.username, self.password)
+        self.visit('view_job', self.completed_job.id)
+            
+        download_link = self.selenium.find_element_by_id('id_download_as_tar')
+        download_link.click()
+
+        filename = 'tao_%s_catalogue_%d.tar.gz' % (self.completed_job.username(), self.completed_job.id)
+        download_path = os.path.join(self.DOWNLOAD_DIRECTORY, filename)
+        
+        self.wait()
+        self.assertTrue(os.path.exists(download_path))
+        
+        # extract the files
+        extract_path = os.path.join(self.DOWNLOAD_DIRECTORY, 'tao_output_tar')
+        self._extract_tarfile_to_dir(download_path, extract_path)
+        exctracted_files = _list_all_files(extract_path)
+        output_files = [f.file_name for f in self.completed_job.files()] + ['summary.txt']
+        self.assertEqual(exctracted_files, output_files)
+        
+    def test_tar_file_displayed(self):
+        self.login(self.username, self.password)
+        self.visit('view_job', self.completed_job.id)
+
+        self.assert_page_has_content('Download tar file')
 
     def _test_save_job_description_edit(self):
         self.login(self.username, self.password)
@@ -386,7 +413,13 @@ class JobTest(LiveServerTest):
             fullpath = os.path.join(dirname, filename)
             helper.mkdir_p(os.path.dirname(fullpath))
             helper.write_file_from_zip(zipfile_obj, filename, fullpath)
-            
+          
+    def _extract_tarfile_to_dir(self, download_path, dirname):
+        fullpathhandle = open(download_path, 'r')
+        helper.mkdir_p(os.path.dirname(dirname))
+        os.chdir(dirname)
+        call(["tar", "xvjf", fullpathhandle])
+              
     def _assert_directories_match(self, expected_dir_path, actual_dir_path):
         expected_dir_list = self._list_all_files(expected_dir_path)
         actual_dir_list = self._list_all_files(actual_dir_path)
