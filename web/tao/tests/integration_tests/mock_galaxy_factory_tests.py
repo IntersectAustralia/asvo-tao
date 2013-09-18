@@ -307,7 +307,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.click('tao-tabs-' + 'summary')
         self.assert_summary_range_correctly_shown('Redshift: 5 ' + h.unescape('&le;') + ' z', 'light_cone', ['redshift_min', 'redshift_max'])
 
-    def _test_summary_on_light_cone_count_and_type(self):
+    def test_summary_on_light_cone_count_and_type(self):
         ra_opening_angle = '1'
         dec_opening_angle = '2'
         redshift_min = '3'
@@ -315,19 +315,15 @@ class MockGalaxyFactoryTest(LiveServerTest):
         number_of_light_cones = '5'
         self.fill_in_fields({'ra_opening_angle': ra_opening_angle, 'dec_opening_angle': dec_opening_angle, 'redshift_min': redshift_min, 'redshift_max': redshift_max}, id_wrap=self.lc_id)
         self.wait(0.5)
-        self.click('tao-tabs-' + 'summary')
-        self.assert_summary_field_correctly_shown('1 unique light cones', 'light_cone', 'number_of_light_cones')
-
-        self.click('tao-tabs-' + 'light_cone')
-        self.click('tao-tabs-' + 'summary')
-        self.assert_summary_field_correctly_shown('1 unique light cones', 'light_cone', 'number_of_light_cones')
+        self.click('tao-tabs-' + 'summary_submit')
+        self.assert_summary_field_correctly_shown('1 unique light-cone', 'light_cone', 'number_of_light_cones')
 
         self.click('tao-tabs-' + 'light_cone')
         self.click_by_css(self.lc_id('light_cone_type_1')) # select "random"
         self.clear(self.lc_id('number_of_light_cones'))
         self.fill_in_fields({'number_of_light_cones': number_of_light_cones}, id_wrap=self.lc_id)
-        self.click('tao-tabs-' + 'summary')
-        self.assert_summary_field_correctly_shown(number_of_light_cones + ' random light cones', 'light_cone', 'number_of_light_cones')
+        self.click('tao-tabs-' + 'summary_submit')
+        self.assert_summary_field_correctly_shown(number_of_light_cones + ' random light-cones', 'light_cone', 'number_of_light_cones')
 
     def get_field_by_value_in_control_group(self, value, name):
         control_group = self.selenium.find_elements_by_name(name)
