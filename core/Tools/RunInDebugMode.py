@@ -2,13 +2,13 @@ import os, shlex, subprocess, time, logging,sys
 import settingReader # Read the XML settings
 import shutil
 import glob
-
+import locale
 
 if __name__ == '__main__': 
     [Options]=settingReader.ParseParams("settings.xml")  
     
     JobUserName='Amr'
-    JobID=178
+    JobID=204
     
     
     JobPath=JobUserName+"/"+str(JobID)
@@ -24,8 +24,10 @@ if __name__ == '__main__':
     
     #SrcJobPathLog=os.path.join(Options['WorkFlowSettings:WorkingDir'],  JobUserName, str(JobID))
     #DstJobPathLog=os.path.join(Options['WorkFlowSettings:DebugDir'],  JobUserName, str(JobID))
-    
-    
+    if (os.path.exists(DebugPathLog)):
+        shutil.rmtree(DebugPathLog)
+    if (os.path.exists(DebugPathOutput)):    
+        shutil.rmtree(DebugPathOutput)
     ########################################################################
     ## Copy the files and clean un-used files
     shutil.copytree(JobPathLog,DebugPathLog)
@@ -56,8 +58,28 @@ if __name__ == '__main__':
         f2.write(strText)
         f2.close()
         print "Reading: "+fl
+    for fl in glob.glob(DebugPathLog+"/pbs_script*"):
+        print "Reading: "+fl
+        
+        f1=open(fl,'r')
+        strText=f1.read()
+        f1.close()
+        strText=strText.replace(Options['Torque:ExecutableName'],Options['Torque:DebugName'])
+        
+        strText=strText.replace(Options['Torque:BaseLibPath'],Options['Torque:DebugLibPath'])
+        
+        strText=strText.replace(Options['WorkFlowSettings:WorkingDir'],Options['WorkFlowSettings:DebugDir'])
+        
+        f2=open(fl,'w')
+        f2.write(strText)
+        f2.close()
     
-    
+        ExecutionCommand='ssh g2 \"cd %s; qsub -q %s %s\"'%(DebugPathLog.encode(locale.getpreferredencoding()), "sstar".encode(locale.getpreferredencoding()), fl.encode(locale.getpreferredencoding()))
+                                                            
+        print ExecutionCommand
+        stdout = subprocess.check_output(shlex.split(ExecutionCommand))
+        pbs_id = stdout[:-1]
+        print "PBSID: "+pbs_id
     
     
     
