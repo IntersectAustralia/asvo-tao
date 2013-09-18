@@ -112,6 +112,11 @@ the forms being hidden and all.
                     {% else %}
                         (Zip file exceeds maximum download size.)
                     {% endif %}
+                    	<p>
+                            <a id='id_download_as_tar' href="{% url 'get_tar_file' job.id %}">
+                                Download tar file
+                            </a>
+                        </p>
                 {% else %}
                     <p>This job has not completed (and hence has no output).</p>
                     </ul>
