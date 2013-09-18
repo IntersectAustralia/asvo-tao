@@ -27,17 +27,17 @@ def child_element(parent, tag, text=None, **attrs):
         elem.text = str(text)
     return elem
 
-def add_encoding(parent, xml_fragments):
-    """Append the supplied xml_fragments string to the parent."""
-    new_elements = etree.XML('<x>' + xml_fragments + '</x>')
-    for elem in new_elements:
-        attrs = dict([(k,elem.get(k)) for k in elem.keys()])
-        child_element(parent, elem.tag, elem.text, **attrs)
-        # print 'dir(elem)>>', dir(elem)
-        # from code import interact
-        # interact(local=locals())
-        # parent.append(deepcopy(elem))
-    return new_elements
+# def add_encoding(parent, xml_fragments):
+#     """Append the supplied xml_fragments string to the parent."""
+#     new_elements = etree.XML('<x>' + xml_fragments + '</x>')
+#     for elem in new_elements:
+#         attrs = dict([(k,elem.get(k)) for k in elem.keys()])
+#         child_element(parent, elem.tag, elem.text, **attrs)
+#         # print 'dir(elem)>>', dir(elem)
+#         # from code import interact
+#         # interact(local=locals())
+#         # parent.append(deepcopy(elem))
+#     return new_elements
 
 
 def xml_print(root):

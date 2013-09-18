@@ -25,7 +25,7 @@ def to_xml_2(form, root):
     output_format = form.ui_holder.cleaned_data('output_format', 'supported_formats')
 
     if apply_sed:
-        from tao.xml_util import find_or_create, child_element, add_encoding
+        from tao.xml_util import find_or_create, child_element
 
         sed_elem = find_or_create(root, 'sed', id=FormsGraph.SED_ID)
         child_element(sed_elem, 'module-version', text=Form.MODULE_VERSION)
@@ -38,7 +38,7 @@ def to_xml_2(form, root):
 
         single_stellar_population_model = tao_models.StellarModel.objects.get(
             pk=form.cleaned_data['single_stellar_population_model'])
-        add_encoding(sed_elem, single_stellar_population_model.encoding)
+        child_element(sed_elem, 'single-stellar-population-model', text=single_stellar_population_model)
 
         # Create an independant filter module.
         filter_elem = find_or_create(root, 'filter', id=FormsGraph.BANDPASS_FILTER_ID)
