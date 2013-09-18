@@ -32,7 +32,11 @@
             </td>
         </tr>
         <tr class="light_cone_fields" data-bind="visible: catalogue_geometry().id == 'light-cone'">
-            <td>Number of light cones</td>
+            <td>Light-Cone Type</td>
+            <td><span class="number_of_light_cones" data-bind="text: light_cone_type().substring(0,1).toUpperCase() + light_cone_type().substring(1,light_cone_type().length)"><!-- --></span></td>
+        </tr>
+        <tr class="light_cone_fields" data-bind="visible: catalogue_geometry().id == 'light-cone'">
+            <td>Number of Light-Cones</td>
             <td><span class="number_of_light_cones" data-bind="text: number_of_light_cones"><!-- --></span></td>
         </tr>
         <tr class="box_fields" data-bind="visible: catalogue_geometry().id == 'box'">
