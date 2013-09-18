@@ -9,7 +9,7 @@ from tao.tests.integration_tests.helper import LiveServerTest
 from tao.tests.support.factories import GlobalParameterFactory, JobFactory, UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, StellarModelFactory, DustModelFactory, BandPassFilterFactory, SnapshotFactory
 from tao.tests.support.xml import light_cone_xml
 
-import os, zipfile, html2text, codecs
+import os, zipfile, html2text, codecs, fnmatch
 from subprocess import call
 
 
@@ -291,18 +291,25 @@ class JobTest(LiveServerTest):
             
         download_link = self.selenium.find_element_by_id('id_download_as_tar')
         download_link.click()
-
-        filename = 'tao_%s_catalogue_%d.tar.gz' % (self.completed_job.username(), self.completed_job.id)
+        
+        filename = 'tao_%s_catalogue_%d.tar.gz' % (self.user.username, self.completed_job.id)
         download_path = os.path.join(self.DOWNLOAD_DIRECTORY, filename)
         
         self.wait()
+        files = os.listdir(self.DOWNLOAD_DIRECTORY)
+        if fnmatch.filter(files, "*.gz.part") and not os.path.exists(download_path):
+            while fnmatch.filter(files, "*.gz.part") and not fnmatch.filter(files, filename):
+                self.wait()
+                files = os.listdir(self.DOWNLOAD_DIRECTORY)
+            
         self.assertTrue(os.path.exists(download_path))
         
         # extract the files
         extract_path = os.path.join(self.DOWNLOAD_DIRECTORY, 'tao_output_tar')
         self._extract_tarfile_to_dir(download_path, extract_path)
-        exctracted_files = _list_all_files(extract_path)
-        output_files = [f.file_name for f in self.completed_job.files()] + ['summary.txt']
+        exctracted_files = os.listdir(extract_path)
+        
+        output_files = [f.file_name for f in self.completed_job.files()]
         self.assertEqual(exctracted_files, output_files)
         
     def test_tar_file_displayed(self):
@@ -415,10 +422,12 @@ class JobTest(LiveServerTest):
             helper.write_file_from_zip(zipfile_obj, filename, fullpath)
           
     def _extract_tarfile_to_dir(self, download_path, dirname):
-        fullpathhandle = open(download_path, 'r')
         helper.mkdir_p(os.path.dirname(dirname))
-        os.chdir(dirname)
-        call(["tar", "xvjf", fullpathhandle])
+        if not os.path.isdir(dirname):
+            os.mkdir(dirname)
+            os.chmod(dirname, 0700)
+            
+        call(["cd", dirname, "&&", "tar", "xvjf", download_path])
               
     def _assert_directories_match(self, expected_dir_path, actual_dir_path):
         expected_dir_list = self._list_all_files(expected_dir_path)
