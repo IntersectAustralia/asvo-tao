@@ -9,7 +9,6 @@ import django.test
 import re, os, time
 import tao.datasets as datasets
 from tao.models import DataSetProperty, BandPassFilter, Simulation
-from tao.forms import NO_FILTER
 from tao.settings import MODULE_INDICES
 from tao.tests.helper import TaoModelsCleanUpMixin
 from tao.tests.support.factories import GlobalParameterFactory
@@ -273,7 +272,7 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
                 self.select(selector, str(text_to_input))
             else:
                 elem.send_keys(str(text_to_input))
-        self.wait(2.5)
+        self.wait(0.5)
 
     def clear(self, selector):
         elem = self.selenium.find_element_by_css_selector(selector)
@@ -414,8 +413,9 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
 
 class LiveServerMGFTest(LiveServerTest):
     def submit_mgf_form(self):
+        self.click('tao-tabs-summary_submit')
         submit_button = self.selenium.find_element_by_css_selector('#mgf-form #form_submit')
-        submit_button.submit()
+        submit_button.click()
         self.wait(1.5)
 
     def assert_errors_on_field(self, what, field_id):
