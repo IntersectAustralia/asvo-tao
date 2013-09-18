@@ -395,7 +395,9 @@ catalogue.modules.light_cone = function ($) {
         var int_width = Math.pow(2, 32);
 
         var random_seed = function() {
-            return Math.floor(Math.random() * int_width);
+            // signed 32 bit integer
+            return Math.floor((Math.random() * int_width) -
+			(int_width / 2));
         }
 
         vm.rng_seed = TaoJob['light_cone-rng_seed'] ? TaoJob['light_cone-rng_seed'] : random_seed();
