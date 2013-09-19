@@ -51,6 +51,13 @@
     var get_number_of_unique_light_cones = function () {
         var vm = catalogue.modules.light_cone.vm;
 
+        // forces KO dependencies, even if algorithm fails halfway through
+        vm.ra_opening_angle();
+        vm.dark_matter_simulation();
+        vm.redshift_min();
+        vm.redshift_max();
+        vm.dec_opening_angle();
+
         var alpha1 = parseFloat(vm.ra_opening_angle());
         var box_side = vm.dark_matter_simulation().fields.box_size;
         var d1 = redshift_to_distance(parseFloat(vm.redshift_min()));

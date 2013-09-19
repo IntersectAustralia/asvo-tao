@@ -27,6 +27,7 @@
     <script type="text/javascript" src="{% static 'js/catalogue_helper.js' %}"></script>
 	<script type="text/javascript" src="{% static 'js/view_job.js' %}"></script>
     <script type="text/javascript" >
+    var TaoJobView = true;
     var TaoMetadata = {% metadata_json %}
     var TaoJob = {% current_job_json %}
     </script>
@@ -88,33 +89,29 @@ the forms being hidden and all.
             <div>
                 <strong>Download</strong>
 
-                <ul id='id_completed_jobs'>
+                {% if job.is_completed %}
+                	<ul id='id_completed_jobs'>
                     <li><a id='id_download_summary_txt' href="{% url 'get_summary_txt_file' job.id %}">summary.txt</a></li>
-                    {% if job.is_completed %}
-                        {% for file in job.files %}
-                            <li>
-                            {% if file.can_be_downloaded %}
-                                <a href="{% url 'get_file' job.id file.file_name %}">
-                                    {{ file.file_name }}
-                                </a> ({{ file.get_file_size }})
-                            {% else %}
-                                {{ file.file_name }} ({{file.get_file_size }}. File size exceeds download limit.)
-                            {% endif %}
-                            </li>
-                        {% endfor %}
+                    {% for file in job.files %}
+                        <li>
+                        {% if file.can_be_downloaded %}
+                            <a href="{% url 'get_file' job.id file.file_name %}">
+                                {{ file.file_name }}
+                            </a> ({{ file.get_file_size }})
+                        {% else %}
+                            {{ file.file_name }} ({{file.get_file_size }}. File size exceeds download limit.)
+                        {% endif %}
+                        </li>
+                    {% endfor %}
                     </ul>
-                    {% if job.can_download_zip_file %}
-                        <p>
-                            <a id='id_download_as_zip' href="{% url 'get_zip_file' job.id %}">
-                                Download zip file
-                            </a>
-                        </p>
-                    {% else %}
-                        (Zip file exceeds maximum download size.)
-                    {% endif %}
+                   	<p>Download catalogue as a single file: 
+                    	<a id='id_download_as_tar' href="{% url 'get_tar_file' job.id %}">.tar (recommended)</a>
+                    	{% if job.can_download_zip_file %}
+                            or <a id='id_download_as_zip' href="{% url 'get_zip_file' job.id %}">.zip</a>
+                        {% endif %}
+                    </p>
                 {% else %}
                     <p>This job has not completed (and hence has no output).</p>
-                    </ul>
                 {% endif %}
             </div>
             <div class="disk-usage-field">

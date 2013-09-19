@@ -39,9 +39,9 @@
             </div>
         </div>
         <div class="boxed">
-            <div class="dust-model-info" data-bind="if: dust_model">
+            <div class="dust-model-info">
                 <div> Selected dust model details </div>
-                <div style="overflow-y: scroll;height: 178px">
+                <div data-bind="if: apply_dust() && dust_model()" style="overflow-y: scroll;height: 178px">
                     <p>
                         <strong class="name" data-bind='text: dust_model().fields.label'><!-- --></strong>
                     </p>
