@@ -1,3 +1,4 @@
+{% load dict_filter %}
 General Properties
 ==================
 
@@ -45,6 +46,22 @@ Mock Image
 Not selected
 {% else %}
 Number of Images: {{ number_of_images }}
+{% for image in images %}
+Image {{ forloop.counter }}
+-------
+Format: {{ image|get_item:'format' }}
+Sub-cone: {{ image|get_item:'sub_cone' }}
+Magnitude field: {{ image|get_item:'mag_field'|safe }}
+Min. magnitude: {{ image|get_item:'min_mag' }}
+Max. magnitude: {{ image|get_item:'max_mag' }}
+Redshift min: {{ image|get_item:'z_min' }}
+Redshift max: {{ image|get_item:'z_max' }}
+Center on RA: {{ image|get_item:'origin_ra' }}
+Center on DEC: {{ image|get_item:'origin_dec' }}
+FOV range RA: {{ image|get_item:'fov_ra' }}
+FOV range DEC: {{ image|get_item:'fov_dec' }}
+Image size: {{ image|get_item:'width' }}W x {{ image|get_item:'height' }}H
+{% endfor %}
 {% endif %}
 
 Selection
