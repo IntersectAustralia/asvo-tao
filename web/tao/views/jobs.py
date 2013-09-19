@@ -371,8 +371,8 @@ def delete_job_output(request, id):
                 submitted_by=request.user,
                 execution_status='SUBMITTED')
         job_output_delete_command.save()
-
-    return HttpResponse('{}', mimetype='application/json')
+    response = '{{"next_url":"{0}"}}'.format(reverse('job_index'))
+    return HttpResponse(response, mimetype='application/json')
 
 @researcher_required
 @object_permission_required('can_write_job')
