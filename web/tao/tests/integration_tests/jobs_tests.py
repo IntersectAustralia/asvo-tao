@@ -10,7 +10,6 @@ from tao.tests.support.factories import GlobalParameterFactory, JobFactory, User
 from tao.tests.support.xml import light_cone_xml
 
 import os, zipfile, html2text, codecs, fnmatch
-from subprocess import call
 
 
 class JobTest(LiveServerTest):
@@ -297,20 +296,23 @@ class JobTest(LiveServerTest):
         
         self.wait()
         files = os.listdir(self.DOWNLOAD_DIRECTORY)
+        max_wait = 10 
+        iter = 0
         if fnmatch.filter(files, "*.gz.part") and not os.path.exists(download_path):
-            while fnmatch.filter(files, "*.gz.part") and not fnmatch.filter(files, filename):
+            while fnmatch.filter(files, "*.gz.part") and not fnmatch.filter(files, filename) and iter < max_wait:
                 self.wait()
                 files = os.listdir(self.DOWNLOAD_DIRECTORY)
+                iter += 1
             
         self.assertTrue(os.path.exists(download_path))
         
-        # extract the files
         extract_path = os.path.join(self.DOWNLOAD_DIRECTORY, 'tao_output_tar')
         self._extract_tarfile_to_dir(download_path, extract_path)
-        exctracted_files = os.listdir(extract_path)
+        dir_list = self._list_all_files(extract_path)
         
-        output_files = [f.file_name for f in self.completed_job.files()]
-        self.assertEqual(exctracted_files, output_files)
+        expected_dir_list = [f.file_name for f in self.completed_job.files()]
+        
+        self.assertEqual(sorted(dir_list), sorted(expected_dir_list))
         
     def test_tar_file_displayed(self):
         self.login(self.username, self.password)
@@ -427,7 +429,7 @@ class JobTest(LiveServerTest):
             os.mkdir(dirname)
             os.chmod(dirname, 0700)
             
-        call(["cd", dirname, "&&", "tar", "xvjf", download_path])
+        os.system(" ".join(["cd", dirname, "&&", "tar", "xvjf", download_path]))
               
     def _assert_directories_match(self, expected_dir_path, actual_dir_path):
         expected_dir_list = self._list_all_files(expected_dir_path)
