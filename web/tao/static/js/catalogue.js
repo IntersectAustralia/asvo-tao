@@ -1051,7 +1051,7 @@ jQuery(document).ready(function ($) {
             jquery_ui();
             catalogue.vm.modal_message(null);
             catalogue._loaded = true;
-            if (catalogue.validators.defined(TaoJob)) {
+            if (catalogue.validators.defined(TaoJob) && catalogue.vm.light_cone.this_tab !== undefined) {
                 catalogue.vm.light_cone.this_tab();
             }
         } catch(e) {
