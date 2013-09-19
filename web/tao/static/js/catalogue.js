@@ -1046,14 +1046,18 @@ jQuery(document).ready(function ($) {
         try {
             initialise_catalogue_vm_and_tabs(init_params);
             initialise_modules(init_params);
-            prebinding_enrichment();
+            if (!catalogue.validators.defined(window.TaoJobView)) {
+                // add tab, error and status support to models
+                prebinding_enrichment();
+            }
             ko.applyBindings(catalogue.vm);
             jquery_ui();
             catalogue.vm.modal_message(null);
-            catalogue._loaded = true;
-            if (catalogue.validators.defined(TaoJob) && catalogue.vm.light_cone.this_tab !== undefined) {
+            if (catalogue.validators.defined(window.TaoJob)
+                && catalogue.validators.defined(catalogue.vm.light_cone.this_tab)) {
                 catalogue.vm.light_cone.this_tab();
             }
+            catalogue._loaded = true;
         } catch(e) {
             if (e.stack !== undefined) {
                 var stack = e.stack.replace(/^[^\(]+?[\n$]/gm, '')
