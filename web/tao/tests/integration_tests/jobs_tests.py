@@ -204,7 +204,7 @@ class JobTest(LiveServerTest):
         self.assert_page_has_content('summary.txt')
 
         self.visit('view_job', self.job.id)
-        self.assert_page_has_content('summary.txt')
+        self.assert_page_has_content('This job has not completed')
 
     def _test_summary_txt_downloads_correctly(self):
         self.login(self.username, self.password)
@@ -283,7 +283,8 @@ class JobTest(LiveServerTest):
         self.login(self.username, self.password)
         self.visit('view_job', self.completed_job.id)
 
-        self.assert_page_has_content('Download zip file')
+        self.assert_page_has_content('Download catalogue')
+        self.assert_page_has_content('.zip')
 
     def test_tar_file_download(self):
         self.login(self.username, self.password)
@@ -309,7 +310,7 @@ class JobTest(LiveServerTest):
         self.login(self.username, self.password)
         self.visit('view_job', self.completed_job.id)
 
-        self.assert_page_has_content('Download tar file')
+        self.assert_page_has_content('.tar (recommended)')
 
     def _test_save_job_description_edit(self):
         self.login(self.username, self.password)
