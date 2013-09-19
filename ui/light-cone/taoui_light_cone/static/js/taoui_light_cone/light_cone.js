@@ -220,12 +220,6 @@ catalogue.modules.light_cone = function ($) {
         param = job['light_cone-light_cone_type'];
         vm.light_cone_type = ko.observable(param ? param : 'unique');
 
-        vm.light_cones_msg = ko.computed( function() {
-            result = vm.number_of_light_cones() + ' ' + vm.light_cone_type() + ' light-cone';
-            result += vm.number_of_light_cones() > 1 ? 's' : '';
-            return result;
-        });
-
         param = job['light_cone-ra_opening_angle'];
         vm.ra_opening_angle = ko.observable(param ? param : null)
             .extend({required: function(){return vm.catalogue_geometry().id == 'light-cone'}})
@@ -298,6 +292,11 @@ catalogue.modules.light_cone = function ($) {
             .extend({validate: catalogue.validators.leq(vm.maximum_number_of_light_cones)})
             .extend({logger: 'number_of_light_cones'});
 
+        vm.light_cones_msg = ko.computed( function() {
+            result = vm.number_of_light_cones() + ' ' + vm.light_cone_type() + ' light-cone';
+            result += vm.number_of_light_cones() > 1 ? 's' : '';
+            return result;
+        });
 
         vm.snapshots = ko.computed(function (){
             return catalogue.util.snapshots(vm.dataset().pk)
