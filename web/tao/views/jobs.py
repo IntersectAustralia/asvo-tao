@@ -15,7 +15,7 @@ from tao.xml_util import xml_parse
 from tao.utils import output_formats
 
 
-import os, StringIO
+import os, StringIO, subprocess
 import zipstream, html2text
 
 @researcher_required
@@ -238,6 +238,45 @@ def get_zip_file(request, id):
     response['Content-Disposition'] = 'attachment; filename="%s"' % (filename,)
     return response
 
+def stream_from_pipe(command):
+    pipe = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    content = None
+    while content != '':
+        content = pipe.stdout.read(1024)
+        yield content
+    
+def summary_temp_location(job):
+    tmp_dir      = os.path.dirname('/tmp/taosummarries/')
+    job_tmp_dir  = os.path.join(tmp_dir, str(job.id))
+    summary_path = os.path.join(job_tmp_dir, 'summary.txt')
+    
+    if not os.path.isfile(summary_path):
+        mode = 0700
+        if not os.path.isdir(tmp_dir):
+            os.mkdir(tmp_dir)
+            os.chmod(tmp_dir, mode)
+        if not os.path.isdir(job_tmp_dir):
+            os.mkdir(job_tmp_dir)
+            os.chmod(job_tmp_dir, mode)
+            
+        summary_text = _get_summary_as_text(job.id).encode('utf8')
+        f = open(summary_path, "w")
+        f.write(summary_text)
+        f.close()
+    
+    return job_tmp_dir
+
+@researcher_required
+@object_permission_required('can_read_job')
+def get_tar_file(request, id):
+    job = Job.objects.get(pk=id)
+    summary_dir = summary_temp_location(job)
+    output_path = os.path.dirname(os.path.join(settings.FILES_BASE, job.output_path, 'output'))
+    tar_command = ['tar', '-cvzf', '-', '-C', output_path, '.', '-C', summary_dir, '.']
+    response = StreamingHttpResponse(streaming_content=stream_from_pipe(tar_command), 
+                                     content_type='application/x-gzip')
+    response['Content-Disposition'] = 'attachment; filename="tao_%s_catalogue_%d.tar.gz"' % (job.username(), job.id)
+    return response
 
 @researcher_required
 @object_permission_required('can_read_job')
