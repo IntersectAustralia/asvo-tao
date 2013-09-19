@@ -105,7 +105,7 @@ catalogue.modules.view_job = function ($) {
                             url: TAO_JOB_CTX + 'delete_job_output/' + TaoJob['job-id'],
                             type: 'POST',
                             success: function(response, textStatus, jqXHR) {
-                                location.reload();
+                                window.open(response.next_url, '_top');
                             },
                             error: function(response, textStatus, jqXHR) {
                                 console.log("Couldn't create job_output_delete workflow command: " + response + textStatus);

@@ -674,10 +674,12 @@ catalogue.modules.summary_submit = function ($) {
 jQuery(document).ready(function ($) {
 
     // error : dictionary as returned by computable in check_bind
-    function error_display(element, error) {
+    function error_display(element, error, popover) {
         var $e = $(element);
         $e.closest('.control-group').removeClass('error');
-        $e.popover('destroy');
+        if (popover) {
+            $e.popover('destroy');
+        }
         $e.closest('.control-group').find('label').removeClass('error');
         switch(error.status) {
             case 'OK':
@@ -688,45 +690,51 @@ jQuery(document).ready(function ($) {
                 break;
             default: /* INVALID */
                 $e.closest('.control-group').addClass('error');
-                $e.popover({
-                    trigger: 'focus',
-                    title: 'Validation Error',
-                    content: error.message
-                });
+                if (popover) {
+                    $e.popover({
+                        trigger: 'focus',
+                        title: 'Validation Error',
+                        content: error.message
+                    });
+                }
         }
     }
 
-    function bind_check(element, valueAccessor) {
+    function bind_check(element, valueAccessor, popover) {
         var prop = valueAccessor();
         if (prop.hasOwnProperty('required') || prop.hasOwnProperty('error')) {
-            var is_required = prop.hasOwnProperty('required');
-            var has_error_check =  prop.hasOwnProperty('error');
-            var aux = function() {
-                var req;
-                if (is_required) {
-                    req = prop.required();
-                } else {
-                    req = catalogue.validators.defined(prop()) ? TAO_REQUIRED_VALIDATE : TAO_REQUIRED_NO;
-                }
-                switch(req) {
-                    case TAO_REQUIRED_NO:
-                        return {status: 'OK'};
-                    case TAO_REQUIRED_ERROR:
-                        return {status: 'REQUIRED'};
-                    default:
-                        var err = {error: false};
-                        if (has_error_check) {
-                            err = prop.error();
-                        }
-                        return err.error?
-                            {status: 'INVALID', message: err.message}
-                            : {status: 'OK'};
-                }
-            };
-            ko.computed(aux).subscribe(function(resp){
-                error_display(element, resp);
-            });
-            error_display(element, aux());
+            if (!prop.hasOwnProperty('_bind_check') || prop._bind_element != element) {
+                var is_required = prop.hasOwnProperty('required');
+                var has_error_check =  prop.hasOwnProperty('error');
+                var aux = function() {
+                    var req;
+                    if (is_required) {
+                        req = prop.required();
+                    } else {
+                        req = catalogue.validators.defined(prop()) ? TAO_REQUIRED_VALIDATE : TAO_REQUIRED_NO;
+                    }
+                    switch(req) {
+                        case TAO_REQUIRED_NO:
+                            return {status: 'OK'};
+                        case TAO_REQUIRED_ERROR:
+                            return {status: 'REQUIRED'};
+                        default:
+                            var err = {error: false};
+                            if (has_error_check) {
+                                err = prop.error();
+                            }
+                            return err.error?
+                                {status: 'INVALID', message: err.message}
+                                : {status: 'OK'};
+                    }
+                };
+                prop._bind_element = element;
+                prop._bind_check = ko.computed(aux);
+                prop._bind_check.subscribe(function(resp){
+                    error_display(element, resp, popover);
+                });
+            }
+            error_display(element, prop._bind_check(), popover);
         }
     }
 
@@ -742,7 +750,7 @@ jQuery(document).ready(function ($) {
 
                 ko_value.init(element, valueAccessor, allBindingsAccessor);
 
-                bind_check(element, valueAccessor);
+                bind_check(element, valueAccessor, true);
 
             };
 
@@ -750,7 +758,7 @@ jQuery(document).ready(function ($) {
 
                 ko_value.update(element, valueAccessor);
 
-                bind_check(element, valueAccessor);
+                bind_check(element, valueAccessor, true);
 
             };
 
@@ -759,7 +767,12 @@ jQuery(document).ready(function ($) {
 
     ko.bindingHandlers['error_check'] = {
         init : function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                bind_check(element, valueAccessor);
+            var nopop = allBindingsAccessor().error_check_nopop;
+            bind_check(element, valueAccessor, nopop === undefined || !nopop);
+        },
+        update : function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+            var nopop = allBindingsAccessor().error_check_nopop;
+            bind_check(element, valueAccessor, nopop === undefined || !nopop);
         }
     };
 
@@ -788,37 +801,43 @@ jQuery(document).ready(function ($) {
 
     ko.bindingHandlers['spinner'] = {
         init: function(element, valueAccessor, allBindingsAccessor) {
-            var options = ko.computed(function(){
+
+            var options = function(){
                 var resp = allBindingsAccessor().spinnerOptions;
-                var min_v = typeof (resp.min || undefined) == 'function' ? resp.min() : (resp.min || NaN);
-                var max_v = typeof (resp.max || undefined) == 'function' ? resp.max() : (resp.max || NaN);
-                return {min: min_v, max: max_v, disabled: !isNaN(min_v) && !isNaN(max_v) && min_v > max_v || min_v < 1};
-            });
+                var max_v = typeof resp.max == 'function' ? resp.max() : resp.max;
+                if (max_v === undefined || max_v == null)
+                    max_v = NaN;
+                return {min: 1, max: max_v, disabled: isNaN(max_v) || 1 > max_v };
+            };
 
             $(element).spinner(options());
 
             //handle the field changing
-            ko.utils.registerEventHandler(element, "spinchange", function () {
+            ko.utils.registerEventHandler(element, "spinchange change", function () {
                 var observable = valueAccessor();
-                observable($(element).spinner("value"));
-            });
-
-            var subscription = options.subscribe(function(newOptions) {
-                $(element).spinner(newOptions);
+                var val = $(element).spinner("value");
+                observable(val);
             });
 
             //handle disposal (if KO removes by the template binding)
             ko.utils.domNodeDisposal.addDisposeCallback(element, function() {
                 $(element).spinner("destroy");
-                subscription.dispose();
             });
 
         },
-        update: function(element, valueAccessor) {
-            var value = ko.utils.unwrapObservable(valueAccessor());
-            current = $(element).spinner("value");
-            if (value !== current) {
-                $(element).spinner("value", value);
+        update: function(element, valueAccessor, allBindingsAccessor) {
+            var options = function(){
+                var resp = allBindingsAccessor().spinnerOptions;
+                var max_v = typeof resp.max == 'function' ? resp.max() : resp.max;
+                if (max_v === undefined || max_v == null)
+                    max_v = NaN;
+                return {min: 1, max: max_v, disabled: isNaN(max_v) || 1 > max_v };
+            };
+            $(element).spinner(options());
+            var value = valueAccessor();
+            var current = $(element).spinner("value");
+            if (value() !== current) {
+                $(element).spinner("value", value());
             }
         }
     };
@@ -1027,14 +1046,18 @@ jQuery(document).ready(function ($) {
         try {
             initialise_catalogue_vm_and_tabs(init_params);
             initialise_modules(init_params);
-            prebinding_enrichment();
+            if (!catalogue.validators.defined(window.TaoJobView)) {
+                // add tab, error and status support to models
+                prebinding_enrichment();
+            }
             ko.applyBindings(catalogue.vm);
             jquery_ui();
             catalogue.vm.modal_message(null);
-            catalogue._loaded = true;
-            if (catalogue.validators.defined(TaoJob)) {
+            if (catalogue.validators.defined(window.TaoJob)
+                && catalogue.validators.defined(catalogue.vm.light_cone.this_tab)) {
                 catalogue.vm.light_cone.this_tab();
             }
+            catalogue._loaded = true;
         } catch(e) {
             if (e.stack !== undefined) {
                 var stack = e.stack.replace(/^[^\(]+?[\n$]/gm, '')

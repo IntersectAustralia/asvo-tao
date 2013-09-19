@@ -14,7 +14,6 @@ from tao.ui_modules import UIModulesHolder
 from tao.xml_util import xml_parse
 from tao.utils import output_formats
 
-
 import os, StringIO, subprocess
 import zipstream, html2text
 
@@ -210,9 +209,29 @@ def _get_summary_as_text(id):
             context['apply_sed'] = False
         if ui_holder.raw_data('mock_image', 'apply_mock_image'):
             context['number_of_images'] = ui_holder.raw_data('mock_image', 'TOTAL_FORMS')
+            images = []
+            for i in xrange(0, context['number_of_images']):
+                image = {} 
+                image['fov_dec'] = ui_holder.raw_data('mock_image', '%d-fov_dec' % i)
+                image['sub_cone'] = ui_holder.raw_data('mock_image', '%d-sub_cone' % i)
+                image['height'] = ui_holder.raw_data('mock_image', '%d-height' % i)
+                image['origin_ra'] = ui_holder.raw_data('mock_image', '%d-origin_ra' % i)
+                image['min_mag'] = ui_holder.raw_data('mock_image', '%d-min_mag' % i)
+                image['origin_dec'] = ui_holder.raw_data('mock_image', '%d-origin_dec' % i)
+                image['width'] = ui_holder.raw_data('mock_image', '%d-width' % i)
+                image['z_min'] = ui_holder.raw_data('mock_image', '%d-z_min' % i)
+                image['max_mag'] = ui_holder.raw_data('mock_image', '%d-max_mag' % i)
+                image['z_max'] = ui_holder.raw_data('mock_image', '%d-z_max' % i)
+                image['fov_ra'] = ui_holder.raw_data('mock_image', '%d-fov_ra' % i)
+                image['format'] = ui_holder.raw_data('mock_image', '%d-format' % i)
+                mag_fields = ui_holder.raw_data('mock_image','%d-mag_field' % i).split('_')
+                mag_field = BandPassFilter.objects.get(pk=mag_fields[0]).label
+                mag_field += ' (%s)' % mag_fields[1].title()
+                image['mag_field'] = mag_field
+                images.append(image)
+            context['images'] = images
         else:
             context['number_of_images'] = None
-
     return txt_template.render(context)
 
 @researcher_required
@@ -352,8 +371,8 @@ def delete_job_output(request, id):
                 submitted_by=request.user,
                 execution_status='SUBMITTED')
         job_output_delete_command.save()
-
-    return HttpResponse('{}', mimetype='application/json')
+    response = '{{"next_url":"{0}"}}'.format(reverse('job_index'))
+    return HttpResponse(response, mimetype='application/json')
 
 @researcher_required
 @object_permission_required('can_write_job')

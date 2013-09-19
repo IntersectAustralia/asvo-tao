@@ -219,18 +219,6 @@ catalogue.modules.light_cone = function ($) {
 
         param = job['light_cone-light_cone_type'];
         vm.light_cone_type = ko.observable(param ? param : 'unique');
-        param = job['light_cone-number_of_light_cones'];
-
-        vm.number_of_light_cones = ko.observable(param ? param : 1)
-            .extend({required: function(){return vm.catalogue_geometry() == 'light-cone'}})
-            .extend({validate: catalogue.validators.is_int})
-            .extend({validate: catalogue.validators.geq(1)});
-
-        vm.light_cones_msg = ko.computed( function() {
-            result = vm.number_of_light_cones() + ' ' + vm.light_cone_type() + ' light-cone';
-            result += vm.number_of_light_cones() > 1 ? 's' : '';
-            return result;
-        });
 
         param = job['light_cone-ra_opening_angle'];
         vm.ra_opening_angle = ko.observable(param ? param : null)
@@ -274,16 +262,40 @@ catalogue.modules.light_cone = function ($) {
             .extend({validate: catalogue.validators.geq(0)})
             .extend({validate: catalogue.validators.leq(vm.max_box_size)});
 
+        // Note: these KO observables rely on observables defined above
+        // so keep them here
         vm.maximum_number_of_light_cones = ko.computed(function() {
-            if (vm.light_cone_type() == 'random') {
-                return get_global_maximum_light_cones();
+            if (vm.catalogue_geometry().id == 'box') return NaN;
+            try {
+                var resp = vm.light_cone_type() == 'random' ?
+                    get_global_maximum_light_cones()
+                    : get_number_of_unique_light_cones();
+                return resp == null || resp === undefined ? NaN : resp;
+            } catch (e) {
+                return NaN;
             }
-            return get_number_of_unique_light_cones();
         });
 
-        vm.minimum_number_of_light_cones = ko.computed(function() {
-            // NOTE: This is a bit of a hack
-            return vm.maximum_number_of_light_cones() < 1 ? vm.maximum_number_of_light_cones() : 1;
+        param = job['light_cone-number_of_light_cones'];
+        vm.number_of_light_cones = ko.observable(param ? param : 1)
+            .extend({required: function(){return vm.catalogue_geometry().id == 'light-cone'}})
+            .extend({only_if: function(){return vm.catalogue_geometry().id == 'light-cone'}})
+            .extend({validate: catalogue.validators.test(ko.computed(
+                function(){
+                    var max = vm.maximum_number_of_light_cones();
+                    return max != null && !isNaN(max) && max >= 1;
+                }
+            ),
+            "Cannot validate number of light cones.")})
+            .extend({validate: catalogue.validators.is_int})
+            .extend({validate: catalogue.validators.geq(1)})
+            .extend({validate: catalogue.validators.leq(vm.maximum_number_of_light_cones)})
+            .extend({logger: 'number_of_light_cones'});
+
+        vm.light_cones_msg = ko.computed( function() {
+            result = vm.number_of_light_cones() + ' ' + vm.light_cone_type() + ' light-cone';
+            result += vm.number_of_light_cones() > 1 ? 's' : '';
+            return result;
         });
 
         vm.snapshots = ko.computed(function (){
@@ -424,10 +436,12 @@ catalogue.modules.light_cone = function ($) {
         vm.number_of_light_cones_msg = ko.computed(function() {
             var result = '';
             var lc = vm.maximum_number_of_light_cones();
-            if (!isNaN(lc) && lc > 0) {
-                result = 'maximum is ' + lc;
+            if (isNaN(lc)) {
+                result = '(waiting for valid cone parameters)';
             } else if (lc < 1) {
                 result = 'The current light-cone dimension exceeds the available simulation space.<br/>Please reduce the light-cone dimensions or change to random light-cones.';
+            } else {
+                result = 'maximum is ' + lc;
             }
             return result;
         });

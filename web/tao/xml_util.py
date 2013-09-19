@@ -33,10 +33,6 @@ def add_encoding(parent, xml_fragments):
     for elem in new_elements:
         attrs = dict([(k,elem.get(k)) for k in elem.keys()])
         child_element(parent, elem.tag, elem.text, **attrs)
-        # print 'dir(elem)>>', dir(elem)
-        # from code import interact
-        # interact(local=locals())
-        # parent.append(deepcopy(elem))
     return new_elements
 
 
