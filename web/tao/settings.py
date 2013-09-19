@@ -290,6 +290,7 @@ API_ALLOWED_IPS = (
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 USE_CAPTCHA=True
+MIN_PASSWORD_LENGTH=6
 
 #
 # Activity Log settings

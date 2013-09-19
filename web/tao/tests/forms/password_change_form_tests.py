@@ -1,5 +1,6 @@
 from django.contrib.auth.forms import PasswordChangeForm
 from django.test import TransactionTestCase
+from django.test.utils import override_settings
 
 from tao.forms import PasswordResetForm
 from tao.models import TaoUser
@@ -22,16 +23,46 @@ class PasswordChangeFormTests(TransactionTestCase, TaoModelsCleanUpMixin):
         super(PasswordChangeFormTests, self).tearDown()
 
     def test_verify_old_password_on_change(self):
-        password_change_form = PasswordChangeForm({
+        password_change_form = PasswordChangeForm(
+            user=self.user1,
+            data={
             'old_password': 'wrong_password',
             'new_password1': 'blah',
             'new_password2': 'blah',
         })
         self.assertFalse(password_change_form.is_valid())
 
+    @override_settings(MIN_PASSWORD_LENGTH=4)
+    def test_new_passwords_length_valid(self):
+        password_change_form = PasswordChangeForm(
+            user=self.user1,
+            data={
+            'user': self.user1,
+            'old_password': 'password1',
+            'new_password1': 'blah',
+            'new_password2': 'blah',
+        })
+        self.assertTrue(password_change_form.is_valid())
+        password_change_form.save()
+        self.assertTrue(TaoUser.objects.get(pk=self.user1.pk).check_password('blah'))
+
+    @override_settings(MIN_PASSWORD_LENGTH=8)
+    def test_new_passwords_length_invalid(self):
+        password_change_form = PasswordChangeForm(
+            user=self.user1,
+            data={
+            'old_password': 'password1',
+            'new_password1': 'blah',
+            'new_password2': 'blah',
+        })
+        self.assertTrue(password_change_form.is_valid()) ## form is Ok, but check is done during save
+        self.assertRaises(ValueError, password_change_form.save)
+
     def test_new_passwords_match_on_change(self):
-        password_change_form = PasswordChangeForm({
-            'old_password': 'password',
+        password_change_form = PasswordChangeForm(
+            user=self.user1,
+            data={
+            'old_password': 'password1',
             'new_password1': 'blahblah',
             'new_password2': 'somethingelse',
         })
