@@ -295,15 +295,6 @@ class JobTest(LiveServerTest):
         download_path = os.path.join(self.DOWNLOAD_DIRECTORY, filename)
         
         self.wait()
-        files = os.listdir(self.DOWNLOAD_DIRECTORY)
-        max_wait = 10 
-        iter = 0
-        if fnmatch.filter(files, "*.gz.part") and not os.path.exists(download_path):
-            while fnmatch.filter(files, "*.gz.part") and not fnmatch.filter(files, filename) and iter < max_wait:
-                self.wait()
-                files = os.listdir(self.DOWNLOAD_DIRECTORY)
-                iter += 1
-            
         self.assertTrue(os.path.exists(download_path))
         
         extract_path = os.path.join(self.DOWNLOAD_DIRECTORY, 'tao_output_tar')
