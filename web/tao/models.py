@@ -111,6 +111,11 @@ class TaoUser(auth_models.AbstractUser):
     def display_current_disk_usage(self):
         return format_human_readable_file_size(self.get_current_disk_usage())  # input file size in B
 
+    def set_password(self, raw_password):
+        if len(raw_password) < settings.MIN_PASSWORD_LENGTH:
+            raise ValueError("Password length must be at least " + str(settings.MIN_PASSWORD_LENGTH))
+        super(TaoUser, self).set_password(raw_password)
+
     def check_disk_usage_within_quota(self):
         user_quota = float(self.user_disk_quota())
         if user_quota == -1:  # user has unlimited disk quota

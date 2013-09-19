@@ -179,7 +179,7 @@ class UserCreationForm(forms.Form):
         if self.is_aaf():
             return ''
         password = self.cleaned_data.get('password1')
-        if len(password) < 8:
+        if len(password) < settings.MIN_PASSWORD_LENGTH:
             raise ValidationError(_('Password must be at least 8 characters long'))
         return password
 
