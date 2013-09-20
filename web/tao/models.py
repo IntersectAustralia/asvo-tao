@@ -522,4 +522,6 @@ class SurveyPreset(models.Model):
     parameters = models.TextField(max_length=1000000)
     description = models.TextField(default='')
 
+    def __str__(self):
+        return self.name
 
