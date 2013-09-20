@@ -276,6 +276,8 @@ AAF_LAST_NAME = 'SHIB_surname'
 AAF_EMAIL = 'SHIB_email'
 AAF_COOKIE_PREFIX = '_shibsession_'
 
+STATIC_CTX = ''
+
 STATIC_URL = '/static/'
 FILES_BASE = '/tmp/'  # please include a trailing slash
 
