@@ -213,6 +213,7 @@ RECAPTCHA_USE_SSL = True
 NUM_RECORDS_PER_PAGE = 10
 
 FILES_BASE = '/tmp/'  # please include a trailing slash
+SUMMARY_TMP = '/tmp/taosummarries/'
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',

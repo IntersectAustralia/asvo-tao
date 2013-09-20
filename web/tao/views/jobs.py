@@ -265,7 +265,7 @@ def stream_from_pipe(command):
         yield content
     
 def summary_temp_location(job):
-    tmp_dir      = os.path.dirname('/tmp/taosummarries/')
+    tmp_dir      = os.path.dirname(settings.SUMMARY_TMP)
     job_tmp_dir  = os.path.join(tmp_dir, str(job.id))
     summary_path = os.path.join(job_tmp_dir, 'summary.txt')
     
@@ -291,10 +291,10 @@ def get_tar_file(request, id):
     job = Job.objects.get(pk=id)
     summary_dir = summary_temp_location(job)
     output_path = os.path.dirname(os.path.join(settings.FILES_BASE, job.output_path, 'output'))
-    tar_command = ['tar', '-cvzf', '-', '-C', output_path, '.', '-C', summary_dir, '.']
+    tar_command = ['tar', '-cvf', '-', '-C', output_path, '.', '-C', summary_dir, '.']
     response = StreamingHttpResponse(streaming_content=stream_from_pipe(tar_command), 
-                                     content_type='application/x-gzip')
-    response['Content-Disposition'] = 'attachment; filename="tao_%s_catalogue_%d.tar.gz"' % (job.username(), job.id)
+                                     content_type='application/x-tar')
+    response['Content-Disposition'] = 'attachment; filename="tao_%s_catalogue_%d.tar"' % (job.username(), job.id)
     return response
 
 @researcher_required
