@@ -24,5 +24,6 @@ web/build
 web/tao/static/docs
 docs/build
 docs/source/bpfilters
+taosecrets/
 .idea
 akg_*

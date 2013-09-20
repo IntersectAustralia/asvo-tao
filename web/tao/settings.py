@@ -213,6 +213,7 @@ RECAPTCHA_USE_SSL = True
 NUM_RECORDS_PER_PAGE = 10
 
 FILES_BASE = '/tmp/'  # please include a trailing slash
+SUMMARY_TMP = '/tmp/taosummarries/'
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
@@ -275,6 +276,8 @@ AAF_FIRST_NAME = 'SHIB_givenName'
 AAF_LAST_NAME = 'SHIB_surname'
 AAF_EMAIL = 'SHIB_email'
 AAF_COOKIE_PREFIX = '_shibsession_'
+
+STATIC_CTX = ''
 
 STATIC_URL = '/static/'
 FILES_BASE = '/tmp/'  # please include a trailing slash
