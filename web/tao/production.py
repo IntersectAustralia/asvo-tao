@@ -24,6 +24,9 @@ DATABASES = {
     }
 }
 
+# Set this variable in taosecrets to enable google analytics tracking
+# TRACKING_ID='UA-999999-99'
+
 SECRET_KEY = ''
 from taosecrets import *
 
