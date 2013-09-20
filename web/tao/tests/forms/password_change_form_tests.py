@@ -1,8 +1,7 @@
-from django.contrib.auth.forms import PasswordChangeForm
 from django.test import TransactionTestCase
 from django.test.utils import override_settings
 
-from tao.forms import PasswordResetForm
+from tao.forms import PasswordResetForm, TaoPasswordChangeForm
 from tao.models import TaoUser
 from tao.tests.support.factories import UserFactory
 from tao.tests.helper import TaoModelsCleanUpMixin
@@ -23,7 +22,7 @@ class PasswordChangeFormTests(TransactionTestCase, TaoModelsCleanUpMixin):
         super(PasswordChangeFormTests, self).tearDown()
 
     def test_verify_old_password_on_change(self):
-        password_change_form = PasswordChangeForm(
+        password_change_form = TaoPasswordChangeForm(
             user=self.user1,
             data={
             'old_password': 'wrong_password',
@@ -34,7 +33,7 @@ class PasswordChangeFormTests(TransactionTestCase, TaoModelsCleanUpMixin):
 
     @override_settings(MIN_PASSWORD_LENGTH=4)
     def test_new_passwords_length_valid(self):
-        password_change_form = PasswordChangeForm(
+        password_change_form = TaoPasswordChangeForm(
             user=self.user1,
             data={
             'user': self.user1,
@@ -48,18 +47,17 @@ class PasswordChangeFormTests(TransactionTestCase, TaoModelsCleanUpMixin):
 
     @override_settings(MIN_PASSWORD_LENGTH=8)
     def test_new_passwords_length_invalid(self):
-        password_change_form = PasswordChangeForm(
+        password_change_form = TaoPasswordChangeForm(
             user=self.user1,
             data={
             'old_password': 'password1',
             'new_password1': 'blah',
             'new_password2': 'blah',
         })
-        self.assertTrue(password_change_form.is_valid()) ## form is Ok, but check is done during save
-        self.assertRaises(ValueError, password_change_form.save)
+        self.assertFalse(password_change_form.is_valid())
 
     def test_new_passwords_match_on_change(self):
-        password_change_form = PasswordChangeForm(
+        password_change_form = TaoPasswordChangeForm(
             user=self.user1,
             data={
             'old_password': 'password1',

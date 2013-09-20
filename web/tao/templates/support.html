@@ -18,6 +18,6 @@
     <a href="https://groups.google.com/forum/?hl=en&fromgroups#!forum/asvo-tao-users">join here</a>.</p>
     <form action="" method="POST">
         {% csrf_token %}
-        {{ form|as_bootstrap }}
+        {% include 'bootstrap/form_with_errors.html' %}
     </form>
 {% endblock content %}

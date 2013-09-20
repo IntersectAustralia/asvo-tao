@@ -29,7 +29,7 @@
         <div class="boxed span8">
             <form action="" method="POST">
                 {% csrf_token %}
-                {{ form|as_bootstrap }}
+                {% include "bootstrap/form_with_errors.html" %}
             </form>
         </div>
         <!-- HIDDEN / POP-UP DIV -->
