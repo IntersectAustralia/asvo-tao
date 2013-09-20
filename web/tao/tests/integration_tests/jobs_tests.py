@@ -421,7 +421,7 @@ class JobTest(LiveServerTest):
             os.mkdir(dirname)
             os.chmod(dirname, 0700)
             
-        os.system(" ".join(["cd", dirname, "&&", "tar", "xvjf", download_path]))
+        os.system(" ".join(["cd", dirname, "&&", "tar", "-xf", download_path]))
               
     def _assert_directories_match(self, expected_dir_path, actual_dir_path):
         expected_dir_list = self._list_all_files(expected_dir_path)
