@@ -291,7 +291,7 @@ def get_tar_file(request, id):
     job = Job.objects.get(pk=id)
     summary_dir = summary_temp_location(job)
     output_path = os.path.dirname(os.path.join(settings.FILES_BASE, job.output_path, 'output'))
-    tar_command = ['tar', '-cvf', '-', '-C', output_path, '.', '-C', summary_dir, '.']
+    tar_command = ['tar', '-cf', '-', '-C', output_path, '.', '-C', summary_dir, '.']
     response = StreamingHttpResponse(streaming_content=stream_from_pipe(tar_command), 
                                      content_type='application/x-tar')
     response['Content-Disposition'] = 'attachment; filename="tao_%s_catalogue_%d.tar"' % (job.username(), job.id)
