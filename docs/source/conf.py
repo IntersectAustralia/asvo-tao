@@ -12,7 +12,7 @@
 # serve to show the default.
 
 import sys, os
-from django.conf import settings
+
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -28,11 +28,10 @@ sys.path[0:0] = [ os.path.abspath(p) for p in [
     '../../web',
     ] ]
 
-# Set up the Django settings/environment
-from django.core.management import setup_environ
-from tao import settings
-setup_environ(settings)
+from django.conf import settings
 
+# Set up the Django settings/environment
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "tao.settings") 
 
 # -- General configuration -----------------------------------------------------
 
@@ -58,6 +57,8 @@ master_doc = 'index'
 # General information about the project.
 project = u'TAO'
 copyright = u'2013, ASVO Team'
+
+html_context = {'tao_path': settings.STATIC_CTX}
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
