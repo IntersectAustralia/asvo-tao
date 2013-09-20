@@ -453,135 +453,73 @@ span.see-form-errors:hover { text-decoration: underline; cursor: pointer;}
     color: #555555;
 }
 
-#id_light_cone-output_properties-table.ui-resizable {
+.two_lists_widget.ui-resizable {
     width: 520px;
     height: 300px;
 }
+
 #id_sed-band_pass_filters-table.ui-resizable {
     height: 300px;
 }
 
 /*Left light cone output properties table*/
-#id_light_cone-output_properties-table.ui-resizable > tbody > tr > #id_light_cone-output_properties-left {
+.two_lists_widget.ui-resizable > tbody > tr > .widget-left {
     width: 47%;
 }
 
-#id_light_cone-output_properties-table.ui-resizable > tbody > tr > td> input#id_light_cone-output_properties_filter {
+.two_lists_widget.ui-resizable > tbody > tr > td> input.widget-filter {
     padding: 4px 0px 6px 0px;
     width: 100%;
 }
 
-#id_light_cone-output_properties-table.ui-resizable > tbody > tr > #id_light_cone-output_properties-left > select {
+.two_lists_widget.ui-resizable > tbody > tr > .widget-left > select {
     height: 100%;
     width: 100%;
 }
 
 /*Right light cone output properties table*/
-#id_light_cone-output_properties-table.ui-resizable > tbody > tr > #id_light_cone-output_properties-right {
+.two_lists_widget.ui-resizable > tbody > tr > .widget-right {
     width: 47%;
 }
-
-#id_light_cone-output_properties-table.ui-resizable > tbody > tr > #id_light_cone-output_properties-right > select {
+.two_lists_widget.ui-resizable > tbody > tr > .widget-right > select {
     height: 100%;
     width: 100%;
 }
-
-#id_light_cone-output_properties-table.ui-resizable > tbody > tr > #id_light_cone-output_properties-buttons {
+.two_lists_widget.ui-resizable > tbody > tr > .widget-buttons {
     text-align: center;
     width: 6%;
     height: 80%;
     vertical-align: middle;
 }
-
-#id_light_cone-output_properties-table.ui-resizable > tbody > tr > td > #id_light_cone-output_properties_op_add_all {
+.two_lists_widget.ui-resizable > tbody > tr > .widget-buttons > a.op_add_all {
     display:block;
     text-decoration:none;
-    margin-top:20px;
-    margin-bottom:40px;
+    margin-top:10px;
+    margin-bottom:30px;
     height:1.25em;
 }
-#id_light_cone-output_properties-table.ui-resizable > tbody > tr > td > #id_light_cone-output_properties_op_add {
+.two_lists_widget.ui-resizable > tbody > tr > .widget-buttons > a.op_add {
     display:block;
     text-decoration:none;
-    margin-top:40px;
-    margin-bottom:40px;
+    margin-top:30px;
+    margin-bottom:30px;
     height:1.25em;
 }
-#id_light_cone-output_properties-table.ui-resizable > tbody > tr > td > #id_light_cone-output_properties_op_remove {
+.two_lists_widget.ui-resizable > tbody > tr > .widget-buttons > a.op_remove {
     display:block;
     text-decoration:none;
-    margin-top:40px;
-    margin-bottom:40px;
+    margin-top:30px;
+    margin-bottom:30px;
     height:1.25em;
 }
-#id_light_cone-output_properties-table.ui-resizable > tbody > tr > td > #id_light_cone-output_properties_op_remove_all {
+.two_lists_widget.ui-resizable > tbody > tr > td > a.op_remove_all {
     display:block;
     text-decoration:none;
-    margin-top:40px;
-    margin-bottom:20px;
+    margin-top:30px;
+    margin-bottom:10px;
     height:1.25em;
 }
 
-/*Left sed band pass filters table*/
-#id_sed-band_pass_filters-table.ui-resizable > tbody > tr > #id_sed-band_pass_filters-left {
-    width: 47%;
-}
-
-#id_sed-band_pass_filters-table.ui-resizable > tbody > tr > td> input#id_sed-band_pass_filters_filter {
-    padding: 4px 0px 6px 0px;
-    width: 100%;
-}
-
-#id_sed-band_pass_filters-table.ui-resizable > tbody > tr > #id_sed-band_pass_filters-left > select {
-    height: 100%;
-    width: 100%;
-}
-
-/*Right sed band pass filters table*/
-#id_sed-band_pass_filters-table.ui-resizable > tbody > tr > #id_sed-band_pass_filters-right {
-    width: 47%;
-}
-
-#id_sed-band_pass_filters-table.ui-resizable > tbody > tr > #id_sed-band_pass_filters-right > select {
-    height: 100%;
-    width: 100%;
-}
-
-#id_sed-band_pass_filters-table.ui-resizable > tbody > tr > #id_sed-band_pass_filters-buttons {
-    text-align: center;
-    width: 6%;
-    height: 80%;
-    vertical-align: middle;
-}
-
-#id_sed-band_pass_filters-table.ui-resizable > tbody > tr > td > #id_sed-band_pass_filters_op_add_all {
-    display:block;
-    text-decoration:none;
-    margin-top:20px;
-    margin-bottom:40px;
-    height:1.25em;
-}
-#id_sed-band_pass_filters-table.ui-resizable > tbody > tr > td > #id_sed-band_pass_filters_op_add {
-    display:block;
-    text-decoration:none;
-    margin-top:40px;
-    margin-bottom:40px;
-    height:1.25em;
-}
-#id_sed-band_pass_filters-table.ui-resizable > tbody > tr > td > #id_sed-band_pass_filters_op_remove {
-    display:block;
-    text-decoration:none;
-    margin-top:40px;
-    margin-bottom:40px;
-    height:1.25em;
-}
-#id_sed-band_pass_filters-table.ui-resizable > tbody > tr > td > #id_sed-band_pass_filters_op_remove_all {
-    display:block;
-    text-decoration:none;
-    margin-top:40px;
-    margin-bottom:20px;
-    height:1.25em;
-}
 
 .verticalLine {
 border-left:thick solid #d0d0d0;
@@ -802,6 +740,7 @@ color: #888;
  height: 294px;
 }
 
+/*
 .ouput-properties div { display: inline-block; }
 .output-properties .six { width: 244px; display: inline-block; vertical-align: top; }
 .output-properties .five { width: 201px; display: inline-block; vertical-align: top; }
@@ -811,9 +750,7 @@ color: #888;
 
 .output-properties select { width: 100%; height: 300px; }
 .output-properties a { display: block; margin: 50px 0 0 0; height: 10%; }
-#id_light_cone-output_properties-buttons { height: 348px; }
-#id_light_cone-output_properties-right { height: 340px; }
-#id_light_cone-output_properties-right select { height: 100%; }
+*/
 
 .available-tr { display: block; height: 41px; }
 
