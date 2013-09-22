@@ -295,12 +295,40 @@
     } ());
 
     (function () {
+        var postInit;
+
+        postInit = function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+            /// <summary>Ensures the width and height are sync-ed
+            /// </summary>
+
+            var flag, $e;
+
+            flag = 'ko_resizable_width';
+            $e = $(element);
+
+            if (!bindingContext.$data[flag]) {
+                bindingContext.$data[flag] = {width:$e.css('width'), height:$e.css('height')};
+            }
+
+            if (!element[flag]) {
+                var dims = bindingContext.$data[flag];
+                $e.css('width', dims.width);
+                $e.css('height', dims.height);
+                $e.on('resize', function(event, ui){
+                    bindingContext.$data[flag] = ui.size;
+                });
+                element[flag] = true;
+            }
+
+        };
+
         bindingFactory.create({
             name: 'resizable',
             options: ['alsoResize', 'animate', 'aspectRatio', 'autoHide', 'cancel', 'containment',
                       'delay', 'disabled', 'distance', 'ghost', 'grid', 'handles', 'helper', 'maxHeight',
                       'maxWidth', 'minWidth', 'minHeight'],
             events: ['create', 'resize', 'start', 'stop'],
+            postInit: postInit,
             hasRefresh: false
         });
     }());
