@@ -5,6 +5,7 @@ This is currently more of a dumping ground than an organised guide - it should i
 
 .. toctree::
    :maxdepth: 2
+   
    system_architecture
    devenv
    scimodules
@@ -17,6 +18,7 @@ This is currently more of a dumping ground than an organised guide - it should i
    sed
    mockimage
    telescope
+   tap
 
 
 =============
