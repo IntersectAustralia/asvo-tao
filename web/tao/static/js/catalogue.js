@@ -280,6 +280,10 @@ catalogue.util = function ($) {
 
     var that = this;
 
+    this.show_errors = function() {
+        $('#error_report').dialog("open");
+    }
+
     this.get_observable_by_field = function(field, value, ko_array) {
         var result = null;
         for (var i = 0; i < ko_array().length; i++) {
@@ -969,9 +973,15 @@ jQuery(document).ready(function ($) {
             console.log('Creating module: ' + module)
             catalogue.modules[module] = new catalogue.modules[module]($);
         }
+        catalogue.vm.param_errors = ko.observableArray();
         for (var module in catalogue.modules) {
             console.log('Initialising module: ' + module);
-            catalogue.vm[module] = catalogue.modules[module].init_model(init_params);
+            try {
+                catalogue.vm[module] = catalogue.modules[module].init_model(init_params);
+            } catch (e) {
+                catalogue.vm.param_errors.push({'module': module, 'errors': [e]})
+                catalogue.vm[module] = catalogue.modules[module].init_model({ 'job' : {} });
+            }
             catalogue.vm[module]._name = module;
         }
         console.log('Finished module initialisation')
@@ -1005,11 +1015,9 @@ jQuery(document).ready(function ($) {
         catalogue.vm.has_errors = ko.computed(function(){
             return catalogue.vm.all_errors().length != 0;
         });
-        catalogue.util.show_errors = function() {
-            $('#error_report').dialog("open");
-        }
         console.log('Finished module enrichment');
     }
+
 
     // after KO has done all the binding, we can do
     // some jquery_ui. Use with care! Keep in mind that
@@ -1038,37 +1046,41 @@ jQuery(document).ready(function ($) {
         });
     }
 
-    (function () {
-        catalogue.util = new catalogue.util($);
-        var init_params = {
-            'job' : TaoJob
-        };
-        try {
-            initialise_catalogue_vm_and_tabs(init_params);
-            initialise_modules(init_params);
-            if (!catalogue.validators.defined(window.TaoJobView)) {
-                // add tab, error and status support to models
-                prebinding_enrichment();
-            }
-            ko.applyBindings(catalogue.vm);
-            jquery_ui();
-            catalogue.vm.modal_message(null);
-            if (catalogue.validators.defined(window.TaoJob)
-                && catalogue.validators.defined(catalogue.vm.light_cone.this_tab)) {
-                catalogue.vm.light_cone.this_tab();
-            }
-            catalogue._loaded = true;
-        } catch(e) {
-            if (e.stack !== undefined) {
-                var stack = e.stack.replace(/^[^\(]+?[\n$]/gm, '')
-                      .replace(/^\s+at\s+/gm, '')
-                      .replace(/^Object.<anonymous>\s*\(/gm, '{anonymous}()@')
-                      .split('\n');
-                for(var i = 0; i < stack.length; i++) console.log(stack[i]);
-            }
-            manual_modal('Fatal error initialising the UI, please contact support');
-            throw e;
+
+
+    catalogue.util = new catalogue.util($);
+    var init_params = {
+        'job' : TaoJob
+    };
+    try {
+        initialise_catalogue_vm_and_tabs(init_params);
+        initialise_modules(init_params);    
+        if (!catalogue.validators.defined(window.TaoJobView)) {
+            // add tab, error and status support to models
+            prebinding_enrichment();
         }
-    })();
+        ko.applyBindings(catalogue.vm);
+        jquery_ui();
+        catalogue.vm.modal_message(null);
+        if (catalogue.validators.defined(window.TaoJob)
+            && catalogue.validators.defined(catalogue.vm.light_cone.this_tab)) {
+            catalogue.vm.light_cone.this_tab();
+        }
+        if (catalogue.vm.param_errors().length > 0) {
+            catalogue.util.show_errors();
+        }
+        catalogue._loaded = true;
+    } catch(e) {
+        if (e.stack !== undefined) {
+            var stack = e.stack.replace(/^[^\(]+?[\n$]/gm, '')
+                  .replace(/^\s+at\s+/gm, '')
+                  .replace(/^Object.<anonymous>\s*\(/gm, '{anonymous}()@')
+                  .split('\n');
+            for(var i = 0; i < stack.length; i++) console.log(stack[i]);
+        }
+        manual_modal('Fatal error initialising the UI, please contact support');
+        throw e;
+    }
+    
 
 });
