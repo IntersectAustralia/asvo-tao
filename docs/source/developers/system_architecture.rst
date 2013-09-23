@@ -21,4 +21,20 @@ Design Decisions
   * One low-end Web-Server (Node A in figure 1)
   * Two identical medium class application/database-servers (Node B and C in figure 1)
   
-The functionality and details of these nodes will be discussed in details in the next section.
+   The functionality and details of these nodes will be discussed in details in the next section.
+- The main system storage will be an integrated part of the gStar lustre file system with at least Node B and C connected to it via an infiniband connection. The usage of the lustre file system speeds-up the data access and query processes.
+
+Hardware Components 
+-------------------
+
+**Web-Server Node (NODE A)**
+
+- Hosts the main system interface and web-services. This separates the interface rendering and interaction from the main system processing, which means that the UI interfactions will not be affected (in terms of response time and stability) with the systems Back-End processing load.
+- Hosts *TAOMaster* database (MySQL Community Server). The *TAOMaster* database stores the following information:
+
+ • The users’ information including different login details and quota mapping.
+ • Information about different processing requests and their status.
+ • Meta-data about different dataset available in the systems and different science module.
+ • Information about different intermediate or final data products and its physical location.
+
+
