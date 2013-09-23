@@ -31,3 +31,5 @@ AAF_DS_URL = 'https://ds.test.aaf.edu.au/discovery/DS'
 AAF_APP_ID = 'https://asvo-qa.intersect.org.au/shibboleth'
 AAF_SESSION_URL = 'https://asvo-qa.intersect.org.au/Shibboleth.sso/Login'
 AAF_LOGOUT_URL = 'https://asvo-qa.intersect.org.au/Shibboleth.sso/Logout'
+
+TRACKING_ID='UA-999999-99'
