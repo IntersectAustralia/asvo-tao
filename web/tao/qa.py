@@ -21,6 +21,7 @@ DATABASES = {
     }
 }
 
+STATIC_CTX = '/tao'
 STATIC_URL = '/tao/static/'
 
 EMAIL_HOST = 'localhost'

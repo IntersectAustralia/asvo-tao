@@ -28,10 +28,12 @@ sys.path[0:0] = [ os.path.abspath(p) for p in [
     '../../web',
     ] ]
 
-from django.conf import settings
 
 # Set up the Django settings/environment
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "tao.settings") 
+from django.conf import settings
+
+print 'DEPLOYMENT CONTEXT >', settings.STATIC_CTX
 
 # -- General configuration -----------------------------------------------------
 

@@ -301,9 +301,13 @@
             /// <summary>Ensures the width and height are sync-ed
             /// </summary>
 
-            var flag, $e;
+            var options, flag, $e;
 
-            flag = 'ko_resizable_width';
+            options = valueAccessor();
+            flag = 'ko_resizable_size';
+            if (options.name) {
+                flag += '_' + options.name;
+            }
             $e = $(element);
 
             if (!bindingContext.$data[flag]) {
