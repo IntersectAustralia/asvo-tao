@@ -21,7 +21,7 @@ Design Decisions
   * One low-end Web-Server (Node A in figure 1)
   * Two identical medium class application/database-servers (Node B and C in figure 1)
   
-   The functionality and details of these nodes will be discussed in details in the next section.
+    The functionality and details of these nodes will be discussed in details in the next section.
 - The main system storage will be an integrated part of the gStar lustre file system with at least Node B and C connected to it via an infiniband connection. The usage of the lustre file system speeds-up the data access and query processes.
 
 Hardware Components 
@@ -32,9 +32,21 @@ Hardware Components
 - Hosts the main system interface and web-services. This separates the interface rendering and interaction from the main system processing, which means that the UI interfactions will not be affected (in terms of response time and stability) with the systems Back-End processing load.
 - Hosts *TAOMaster* database (MySQL Community Server). The *TAOMaster* database stores the following information:
 
- • The users’ information including different login details and quota mapping.
- • Information about different processing requests and their status.
- • Meta-data about different dataset available in the systems and different science module.
- • Information about different intermediate or final data products and its physical location.
+  * The users’ information including different login details and quota mapping.
+  * Information about different processing requests and their status.
+  * Meta-data about different dataset available in the systems and different science module.
+  * Information about different intermediate or final data products and its physical location.
+- Handle different data downloading/uploading via HTTP.
+- Invoke and provide monitoring facilities for science module jobs 
+
+**Application/Database-servers (Node B and C)**
+
+- Host multiple instances of PostgreSQL Database ( an instance per server  - currently 2 servers)
+- Host the *Workflow Scheduler* application, which handles different data processing tasks' invocation and monitoring.
+- Perform main database operations including indexing, partitioning, query, insert, update.
+- Acts as a secured bredge between the UI components and the science modules running on SwinSTAR.
+
+
+
 
 
