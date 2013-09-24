@@ -53,5 +53,26 @@ TAO Software Architecture
 .. figure:: ../_static/mainsystemsoftware.png
    :alt: Main system software design
 
+The figure describes the main system software modules and the expected communication patterns between them. These modules are:
+
+- **Interface Modules (Outside SwinSTAR Firewall)**:
+
+	* The user UI Interface (Node A)
+	* The Virtual Observatory interface and TAP Asynchronous results (Node A)
+	* TAP interpreter ( Node A)
+	* The Admin UI interface
+		
+- **System/Core Modules**:
+
+	* Workflow Module ( Node B)		
+	
+- **Science Modules**:
+
+	* Direct SQL Query Module (Single Process - SwinSTAR)	
+	* Light-Cone Module (Multiple Processes - SwinSTAR)
+	* Spectral Energy distribution Module (Multiple Processes - SwinSTAR)
+	* Mock Image Generation Module (Multiple Processes - SwinSTAR)	
+	
+- **Data Import Module (Multiple Processes - SwinSTAR – Administrator Access Only)** 
 
 
