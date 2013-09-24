@@ -10,6 +10,7 @@ from tao.tests.support.factories import GlobalParameterFactory, JobFactory, User
 from tao.tests.support.xml import light_cone_xml
 
 import os, zipfile, html2text, codecs, fnmatch
+from lxml import etree
 
 
 class JobTest(LiveServerTest):
@@ -484,3 +485,14 @@ class JobTest(LiveServerTest):
         self.click('id_refresh_disk_usage')
         self.wait()
         self.assert_element_text_equals('#id_disk_usage', self.completed_job.display_disk_size())
+
+    def test_handle_bad_xml(self):
+        bad_params = str.replace(self.job.parameters, '</record-filter>','</record-filter><skymaker id="6"><images><item><format>PNG</format></item></images></skymaker>')
+        self.completed_job = JobFactory.create(user=self.user, status=Job.COMPLETED, output_path=self.output_paths[0], parameters=bad_params)
+        self.login(self.username, self.password)
+        self.visit('view_job', id=self.completed_job.id)
+        self.assert_page_has_content('mock_image missing parameter')
+        self.click('id_error_report_ok')
+        self.click('id-job_output_delete')
+        self.click('id_confirm_delete_output')
+        self.assert_on_page('job_index')
