@@ -1,0 +1,96 @@
+<tao>
+  <workflow>
+    <schema-version>2</schema-version>
+
+    <light-cone id="light-cone">
+      <geometry>light-cone</geometry>
+      <box-repetition>random</box-repetition>
+      <rng-seed>0</rng-seed>
+      <redshift-min>0.01</redshift-min>
+      <redshift-max>0.06</redshift-max>
+      <ra-min>0</ra-min>
+      <ra-max>10</ra-max>
+      <dec-min>0</dec-min>
+      <dec-max>10</dec-max>
+      <output-fields>
+        <item>pos_x</item>
+        <item>pos_y</item>
+        <item>pos_z</item>
+      </output-fields>
+    </light-cone>
+
+    <sed id="sed">
+      <parents>
+        <item>light-cone</item>
+      </parents>
+      <ages-file>m05/ages.dat</ages-file>
+      <wavelengths-file>m05/wavelengths.dat</wavelengths-file>
+      <metallicities-file>m05/metallicities.dat</metallicities-file>
+      <single-stellar-population-model>m05/ssp.ssz</single-stellar-population-model>
+    </sed>
+
+    <filter id="filter">
+      <parents>
+        <item>sed</item>
+      </parents>
+      <bandpass-filters>
+        <item>v.dat</item>
+        <item>b.dat</item>
+        <item>k.dat</item>
+      </bandpass-filters>
+    </filter>
+
+    <skymaker id="skymaker">
+      <parents>
+        <item>filter</item>
+      </parents>
+      <images>
+        <item>
+          <mag_field>v.dat_apparent</mag_field>
+          <origin_ra>5</origin_ra>
+          <origin_dec>5</origin_dec>
+          <fov_ra>10</fov_ra>
+          <fov_dec>10</fov_dec>
+        </item>
+      </images>
+      <images>
+        <item>
+          <mag_field>k.dat_apparent</mag_field>
+          <origin_ra>5</origin_ra>
+          <origin_dec>5</origin_dec>
+          <fov_ra>10</fov_ra>
+          <fov_dec>10</fov_dec>
+        </item>
+      </images>
+    </skymaker>
+
+    <csv id="csv">
+      <parents>
+        <item>filter</item>
+      </parents>
+      <filename>result</filename>
+      <fields>
+        <item>pos_x</item>
+        <item>pos_y</item>
+        <item>pos_z</item>
+        <item>v.dat_apparent</item>
+        <item>b.dat_absolute</item>
+        <item>k.dat_apparent</item>
+      </fields>
+    </csv>
+
+    <record-filter>
+      <filter>
+        <filter-attribute>None</filter-attribute>
+        <filter-min>0</filter-min>
+        <filter-max>0</filter-max>
+       </filter>
+    </record-filter>
+
+  </workflow>
+
+  <subjobindex>0</subjobindex>
+  <logdir>log</logdir>
+  <outputdir>output</outputdir>
+  <database>millennium_mini_hdf5_dist</database>
+</tao>

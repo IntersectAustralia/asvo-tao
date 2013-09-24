@@ -37,6 +37,8 @@ namespace tao {
       {
          file >> pnts[ii];
          file >> vals[ii];
+         EXCEPT( pnts[ii] >= 0.0, "Found an invalid wavelength in bandpass filter: ", filename );
+         EXCEPT( vals[ii] >= 0.0, "Found an invalid transmission in bandpass filter: ", filename );
       }
 
       // Convert the spectrum to a spline.

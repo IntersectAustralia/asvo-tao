@@ -71,6 +71,7 @@ namespace tao {
          {
             // Cache mass.
             real_type mass = *masses_start;
+            ASSERT( mass == mass, "Found NaN for mass during stellar population summation." );
 
             // Interpolate the metallicity to an index.
             unsigned metal_idx = _interp_metal( *metals_start );
@@ -87,6 +88,7 @@ namespace tao {
                // in erg/s/angstrom, and they're really big. Scale them down
                // by 1e10 to make it more manageable.
                *sed_it += _spec[base + ii*_metal_bins.size()]*mass;
+               ASSERT( *sed_it == *sed_it, "Produced NaN during stellar population summation." );
                ++sed_it;
             }
 

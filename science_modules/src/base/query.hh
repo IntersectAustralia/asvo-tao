@@ -32,10 +32,12 @@ namespace tao {
          add_output_field( "pos_x" );
          add_output_field( "pos_y" );
          add_output_field( "pos_z" );
+         add_output_field( "vel_x" );
+         add_output_field( "vel_y" );
+         add_output_field( "vel_z" );
          add_output_field( "snapshot" );
          add_output_field( "global_tree_id" );
          add_output_field( "local_galaxy_id" );
-         add_output_field( "redshift" );
       }
 
       void
@@ -58,17 +60,17 @@ namespace tao {
          return _out_fields;
       }
 
-      void
-      add_calc_field( const string& field )
-      {
-         _calc_fields.insert( field );
-      }
+      // void
+      // add_calc_field( const string& field )
+      // {
+      //    _calc_fields.insert( field );
+      // }
 
-      const set<string>&
-      calc_fields() const
-      {
-         return _calc_fields;
-      }
+      // const set<string>&
+      // calc_fields() const
+      // {
+      //    return _calc_fields;
+      // }
 
       void
       set_filter( const tao::filter& filt )
@@ -86,7 +88,7 @@ namespace tao {
 
       set<string> _of_set;
       vector<string> _out_fields;
-      set<string> _calc_fields;
+      // set<string> _calc_fields;
       tao::filter _filt;
    };
 

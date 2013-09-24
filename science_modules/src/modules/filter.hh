@@ -82,10 +82,12 @@ namespace tao {
             _bulge_lum = bat.set_scalar<real_type>( "bulge_luminosity" );
 
             // Extract things from the batch object.
-            _redshift = bat.scalar<real_type>( "redshift" );
+            _redshift = bat.scalar<real_type>( "redshift_cosmological" );
             _total_spectra = &bat.vector<real_type>( "total_spectra" );
             _disk_spectra = &bat.vector<real_type>( "disk_spectra" );
             _bulge_spectra = &bat.vector<real_type>( "bulge_spectra" );
+
+            LOGILN( "Done.", setindent( -2 ) );
          }
 
          ///
@@ -120,13 +122,8 @@ namespace tao {
             {
                // Calculate the distance/area for this galaxy. Use 1000
                // points.
-               LOGDLN( "Using redshift of ", _redshift[ii], " to calculate distance." );
-               real_type dist = numerics::redshift_to_luminosity_distance( _redshift[ii], 1000 );
-               if( dist < 1e-5 )  // Be careful! If dist is zero (which it can be) then resort to absolute
-                  dist = 1e-5;    // magnitudes.
-               real_type area = log10( 4.0*M_PI ) + 2.0*log10( dist*3.08568025e24 ); // result in cm^2
-               LOGDLN( "Distance: ", dist );
-               LOGDLN( "Log area: ", area );
+               LOGDLN( "Using redshift of ", _redshift[ii], " to calculate area." );
+               real_type area = calc_area( _redshift[ii] );
 
                // Process total, disk and bulge.
                _process_spectra( total_spectra[ii], area, _total_lum[ii], _total_app_mags, _total_abs_mags, ii );
@@ -160,8 +157,10 @@ namespace tao {
                absolute_mags[ii][gal_idx] = absolute_magnitude( sed, _bpfs[ii] );
 
                // Make sure these are sane.
-               ASSERT( apparent_mags[ii][gal_idx] == apparent_mags[ii][gal_idx], "NaN" );
-               ASSERT( absolute_mags[ii][gal_idx] == absolute_mags[ii][gal_idx], "NaN" );
+               ASSERT( apparent_mags[ii][gal_idx] == apparent_mags[ii][gal_idx],
+                       "Produced NaN for apparent magnitude." );
+               ASSERT( absolute_mags[ii][gal_idx] == absolute_mags[ii][gal_idx],
+                       "Produced NaN for absolute magnitude." );
             }
          }
 

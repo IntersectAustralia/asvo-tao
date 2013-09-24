@@ -126,38 +126,38 @@ namespace tao {
             // }
             // else
             // {
-               _accum = false;
+            _accum = false;
 
-               // Resize data arrays.
-               _descs.resize( tree_size );
-               _sfrs.resize( tree_size );
-               _bulge_sfrs.resize( tree_size );
-               _cold_gas.resize( tree_size );
-               _metals.resize( tree_size );
-               _snaps.resize( tree_size );
+            // Resize data arrays.
+            _descs.resize( tree_size );
+            _sfrs.resize( tree_size );
+            _bulge_sfrs.resize( tree_size );
+            _cold_gas.resize( tree_size );
+            _metals.resize( tree_size );
+            _snaps.resize( tree_size );
 
-               // Extract the table.
-               string query = "SELECT descendant, metalscoldgas, coldgas, "
-                  "sfr, sfrbulge, snapnum FROM  " + table_name +
-                  " WHERE globaltreeid = :id"
-                  " ORDER BY localgalaxyid";
-               {
-                  auto db_timer = db_timer_start();
-                  sql << query, soci::into( (std::vector<int>&)_descs ),
-                     soci::into( (std::vector<double>&)_metals ), soci::into( (std::vector<double>&)_cold_gas ),
-                     soci::into( (std::vector<double>&)_sfrs ), soci::into( (std::vector<double>&)_bulge_sfrs ),
-                     soci::into( (std::vector<int>&)_snaps ),
-                     soci::use( tree_id );
-               }
-               LOGTLN( "Descendant: ", _descs );
-               LOGTLN( "Star formation rates: ", _sfrs );
-               LOGTLN( "Bulge star formation rates: ", _bulge_sfrs );
-               LOGTLN( "Metals cold gas: ", _metals );
-               LOGTLN( "Cold gas: ", _cold_gas );
-               LOGTLN( "Snapshots: ", _snaps );
+            // Extract the table.
+            string query = "SELECT descendant, metalscoldgas, coldgas, "
+               "sfr, sfrbulge, snapnum FROM  " + table_name +
+               " WHERE globaltreeid = :id"
+               " ORDER BY localgalaxyid";
+            {
+               auto db_timer = db_timer_start();
+               sql << query, soci::into( (std::vector<int>&)_descs ),
+                  soci::into( (std::vector<double>&)_metals ), soci::into( (std::vector<double>&)_cold_gas ),
+                  soci::into( (std::vector<double>&)_sfrs ), soci::into( (std::vector<double>&)_bulge_sfrs ),
+                  soci::into( (std::vector<int>&)_snaps ),
+                  soci::use( tree_id );
+            }
+            LOGTLN( "Descendant: ", _descs );
+            LOGTLN( "Star formation rates: ", _sfrs );
+            LOGTLN( "Bulge star formation rates: ", _bulge_sfrs );
+            LOGTLN( "Metals cold gas: ", _metals );
+            LOGTLN( "Cold gas: ", _cold_gas );
+            LOGTLN( "Snapshots: ", _snaps );
 
-               // Build the parents for each galaxy.
-               _calc_parents();
+            // Build the parents for each galaxy.
+            _calc_parents();
             // }
 
             // Set the current table/tree information.
@@ -310,7 +310,9 @@ namespace tao {
          real_type new_bulge_mass = bulge_sfr*age_size*1e9;
          LOGDLN( "New mass: ", new_mass );
          LOGDLN( "New bulge mass: ", new_bulge_mass );
-         ASSERT( new_mass >= 0.0 && new_bulge_mass >= 0.0, "What does it mean to have lost mass?" );
+         ASSERT( new_mass >= 0.0 && new_bulge_mass >= 0.0, "Mass has been lost during rebinning." );
+         ASSERT( new_mass == new_mass, "Have NaN for new total mass during rebinning." );
+         ASSERT( new_bulge_mass == new_bulge_mass, "Have NaN for new bulge mass during rebinning." );
 
          // Add the new mass to the appropriate bins. Find the first bin
          // that has overlap with this age range.
@@ -339,17 +341,30 @@ namespace tao {
             LOGD( "Bulge mass from ", bulge_age_masses[first_bin], " to " );
             bulge_age_masses[first_bin] += frac*new_bulge_mass;
             LOGDLN( bulge_age_masses[first_bin], "." );
+            ASSERT( age_masses[first_bin] == age_masses[first_bin],
+                    "Have NaN for rebinned total masses for bin: ", first_bin );
+            ASSERT( bulge_age_masses[first_bin] == bulge_age_masses[first_bin],
+                    "Have NaN for rebinned bulge masses for bin: ", first_bin );
+            ASSERT( age_masses[first_bin] >= 0.0,
+                    "Produced negative value for rebinned total masses for bin: ", first_bin );
+            ASSERT( bulge_age_masses[first_bin] >= 0.0,
+                    "Produced negative value for rebinned bulge masses for bin: ", first_bin );
 
             // Update the metal bins. This is impossible when no masses
             // have been added to the bin at all.
-            if( age_masses[first_bin] > 0.0 )
+            if( age_masses[first_bin] > 0.0 && cold_gas > 0.0 )
             {
                LOGD( "Metals from ", age_metals[first_bin], " to " );
+               // ASSERT( cold_gas > 0.0, "Cannot have zero cold gas for metallicity rebinning." );
                age_metals[first_bin] =
                   (cur_bin_mass*age_metals[first_bin] +
                    frac*new_mass*(metal/cold_gas))/
                   age_masses[first_bin];
                LOGDLN( age_metals[first_bin], "." );
+               ASSERT( age_metals[first_bin] == age_metals[first_bin],
+                       "Have NaN for rebinned metallicities for bin: ", first_bin );
+               ASSERT( age_metals[first_bin] >= 0.0,
+                       "Produced negative value for rebinned metallicities for bin: ", first_bin );
             }
 
             // Move to the next bin.

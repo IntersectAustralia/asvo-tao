@@ -407,7 +407,7 @@ namespace tao {
       field( const string& name ) const
       {
          auto it = _fields.find( name );
-         ASSERT( it != _fields.end() );
+         ASSERT( it != _fields.end(), "Field not found on batch object: ", name );
          return it->second;
       }
 
