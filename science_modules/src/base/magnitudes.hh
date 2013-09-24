@@ -26,6 +26,7 @@ namespace tao {
                        real_type area )
    {
       real_type spec_int = sed.integrate( bp );
+      ASSERT( spec_int == spec_int, "Produced NaN for integration of SED and bandpass filter." );
       real_type bp_int = bp.integral();
       return apparent_magnitude( spec_int, bp_int, area );
    }

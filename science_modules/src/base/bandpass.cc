@@ -22,6 +22,7 @@ namespace tao {
    {
       load_bandpass( filename, _trans );
       _sum = tao::integrate( _trans );
+      ASSERT( _sum == _sum, "Produced NaN for integration of bandpass filter: ", filename );
    }
 
    real_type

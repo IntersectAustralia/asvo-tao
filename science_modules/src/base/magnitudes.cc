@@ -9,7 +9,9 @@ namespace tao {
       real_type dist = numerics::redshift_to_luminosity_distance( redshift, 1000 );
       if( dist < 1e-5 )  // Be careful! If dist is zero (which it can be) then resort to absolute
          dist = 1e-5;    // magnitudes.
-      return log10( 4.0*M_PI ) + 2.0*log10( dist*3.08568025e24 ); // result in cm^2
+      real_type area = log10( 4.0*M_PI ) + 2.0*log10( dist*3.08568025e24 ); // result in cm^2
+      ASSERT( area == area, "Produced NaN during area calculation." );
+      return area;
    }
 
    real_type

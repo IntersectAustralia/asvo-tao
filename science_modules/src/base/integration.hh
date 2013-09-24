@@ -18,6 +18,7 @@ namespace tao {
          sp,
          []( double x, double val )
          {
+            val = std::max( val, 0.0 );
             return val*M_C/(x*x);
          }
          );
@@ -42,6 +43,8 @@ namespace tao {
          sp0, sp1,
          []( double x, double val0, double val1 )
          {
+            val0 = std::max( val0, 0.0 );
+            val1 = std::max( val1, 0.0 );
             return val0*val1;
          }
          );

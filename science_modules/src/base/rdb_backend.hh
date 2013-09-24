@@ -59,8 +59,12 @@ namespace tao {
                   bat.set_scalar( field, _field_types.at( this->_field_map.at( field ) ) );
             }
 
-            // Include redshift.
-            bat.template set_scalar<real_type>( "redshift" );
+            // Add fields that will need to be calculated.
+            bat.template set_scalar<real_type>( "redshift_cosmological" );
+            bat.template set_scalar<real_type>( "redshift_observed" );
+            bat.template set_scalar<real_type>( "ra" );
+            bat.template set_scalar<real_type>( "dec" );
+            bat.template set_scalar<real_type>( "distance" );
          }
 
          string
@@ -153,9 +157,15 @@ namespace tao {
             string qs;
             for( string of : query.output_fields() )
             {
+               // // Skip anything which is thought to be calculated later.
+               // if( query.calc_fields().find( of ) == query.calc_fields().end() )
+               // {
+
                if( !qs.empty() )
                   qs += ", ";
                qs += map.at( of ) + " AS " + of;
+
+               // }
             }
             return qs;
          }
@@ -257,8 +267,8 @@ namespace tao {
                   // mapping.
                   LOGWLN( "WARNING: Database does not have a mapped field for the name: ", of );
 
-                  // Add the field to the set of fields we know are being calculated.
-                  query.add_calc_field( of );
+                  // // Add the field to the set of fields we know are being calculated.
+                  // query.add_calc_field( of );
                }
             }
          }

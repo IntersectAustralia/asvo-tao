@@ -272,6 +272,9 @@ namespace tao {
             this->_field_map["pos_x"] = "posx";
             this->_field_map["pos_y"] = "posy";
             this->_field_map["pos_z"] = "posz";
+            this->_field_map["vel_x"] = "velx";
+            this->_field_map["vel_y"] = "vely";
+            this->_field_map["vel_z"] = "velz";
             this->_field_map["snapshot"] = "snapnum";
             this->_field_map["global_index"] = "globalindex";
             this->_field_map["global_tree_id"] = "globaltreeid";
@@ -576,13 +579,40 @@ namespace tao {
            auto pos_x = _bat->template scalar<real_type>( "pos_x" );
            auto pos_y = _bat->template scalar<real_type>( "pos_y" );
            auto pos_z = _bat->template scalar<real_type>( "pos_z" );
-           auto redshift = _bat->template scalar<real_type>( "redshift" );
+           auto vel_x = _bat->template scalar<real_type>( "vel_x" );
+           auto vel_y = _bat->template scalar<real_type>( "vel_y" );
+           auto vel_z = _bat->template scalar<real_type>( "vel_z" );
+           auto z_cos = _bat->template scalar<real_type>( "redshift_cosmological" );
+           auto z_obs = _bat->template scalar<real_type>( "redshift_observed" );
+           auto ra = _bat->template scalar<real_type>( "ra" );
+           auto dec = _bat->template scalar<real_type>( "dec" );
+           auto dist = _bat->template scalar<real_type>( "distance" );
            for( unsigned ii = 0; ii < _bat->size(); ++ii )
            {
               if( _lc )
               {
-                 real_type dist = sqrt( pos_x[ii]*pos_x[ii] + pos_y[ii]*pos_y[ii] + pos_z[ii]*pos_z[ii] );
-                 redshift[ii] = _lc->distance_to_redshift( dist );
+                 real_type h0 = _lc->simulation()->hubble();
+
+                 // Compute distance.
+                 dist[ii] = sqrt( pos_x[ii]*pos_x[ii] + pos_y[ii]*pos_y[ii] + pos_z[ii]*pos_z[ii] );
+
+                 // Compute cosmological redshift.
+                 z_cos[ii] = _lc->distance_to_redshift( dist[ii] );
+
+                 // Compute RA and DEC.
+                 numerics::cartesian_to_ecs( pos_x[ii], pos_y[ii], pos_z[ii], ra[ii], dec[ii] );
+                 ra[ii] = to_degrees( ra[ii] );
+                 dec[ii] = to_degrees( dec[ii] );
+
+                 // Calculate observed redshift.
+                 if( dist[ii] > 0.0 )
+                 {
+                    array<real_type,3> rad_vec{ { pos_x[ii]/dist[ii], pos_y[ii]/dist[ii], pos_z[ii]/dist[ii] } };
+                    real_type dist_z = dist[ii] + ((rad_vec[0]*vel_x[ii] + rad_vec[1]*vel_y[ii] + rad_vec[2]*vel_z[ii])/h0)*(h0/100.0);
+                    z_obs[ii] = _lc->distance_to_redshift( dist_z );
+                 }
+                 else
+                    z_obs[ii] = 0.0;
               }
            }
         }
