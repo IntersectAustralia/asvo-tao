@@ -47,6 +47,11 @@ Hardware Components
 - Acts as a secured bredge between the UI components and the science modules running on SwinSTAR.
 
 
+TAO Software Architecture
+=========================
+
+.. figure:: ../_static/mainsystemsoftware.png
+   :alt: Main system software design
 
 
 
