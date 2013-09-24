@@ -15,4 +15,5 @@ Detailed information on using TAO is available in the sections listed below.
    mockimage
    output
    scriptlib
+   ../tap/index
 

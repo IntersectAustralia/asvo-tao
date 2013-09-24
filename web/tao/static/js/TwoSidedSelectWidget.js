@@ -137,7 +137,10 @@ var TwoSidedSelectWidget = function(params) {
         selectedOptions(selection);
     };
     vm.op_add_all = function() {
-        selectedOptions(options());
+        var selection = ko.utils.arrayMap(vm.from_side.options(), function(obj){return obj._obj});
+        if (selection.length == 0) return;
+        selection = selection.concat(selectedOptions());
+        selectedOptions(selection);
         vm.filter('');
     };
     vm.op_remove = function() {

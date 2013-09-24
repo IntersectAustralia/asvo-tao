@@ -322,6 +322,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.click_by_css(self.lc_id('light_cone_type_1')) # select "random"
         self.clear(self.lc_id('number_of_light_cones'))
         self.fill_in_fields({'number_of_light_cones': number_of_light_cones}, id_wrap=self.lc_id)
+        self.wait(0.5)
         self.click('tao-tabs-' + 'summary_submit')
         self.assert_summary_field_correctly_shown(number_of_light_cones + ' random light-cones', 'light_cone', 'number_of_light_cones')
 

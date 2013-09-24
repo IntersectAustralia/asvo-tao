@@ -13,14 +13,14 @@ class ParseProfileData(object):
 
     
 
-    def __init__(self,JobPath,SubProcessID,Options):        
+    def __init__(self,JobPath,SubProcessID,Options,DatabaseName):        
         self.ProfileFileName=JobPath+"/params"+str(SubProcessID)+"_tao.Profile.log00000"
         logging.info("Profile FileName:"+self.ProfileFileName)
         self.Options=Options
         self.RunProfiling(JobPath,SubProcessID)
         
         
-        self.LoadDBMetaData("millennium_full_hdf5_dist")
+        self.LoadDBMetaData(DatabaseName)
         
     def LoadDBMetaData(self,DatabaseName):
         self.serverip=self.Options['PGDB:serverip']

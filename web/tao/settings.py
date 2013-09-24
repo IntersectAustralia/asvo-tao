@@ -213,6 +213,7 @@ RECAPTCHA_USE_SSL = True
 NUM_RECORDS_PER_PAGE = 10
 
 FILES_BASE = '/tmp/'  # please include a trailing slash
+SUMMARY_TMP = '/tmp/taosummarries/'
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
@@ -276,6 +277,8 @@ AAF_LAST_NAME = 'SHIB_surname'
 AAF_EMAIL = 'SHIB_email'
 AAF_COOKIE_PREFIX = '_shibsession_'
 
+STATIC_CTX = ''
+
 STATIC_URL = '/static/'
 FILES_BASE = '/tmp/'  # please include a trailing slash
 
@@ -290,6 +293,7 @@ API_ALLOWED_IPS = (
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 USE_CAPTCHA=True
+MIN_PASSWORD_LENGTH=6
 
 #
 # Activity Log settings

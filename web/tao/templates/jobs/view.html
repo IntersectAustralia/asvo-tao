@@ -164,5 +164,20 @@ the forms being hidden and all.
             The current {{ job.status }} job will be released. Are you sure?
         </p>
     </div>
+
+    <div id="error_report" title="Errors" style="display: none;">
+        <p>
+            <span>There were errors loading job parameters. <br>
+                Use the Support page to report this issue. <br><br>
+                Defaults were loaded for modules with errors.</span>
+        </p>
+        <p><span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>
+            <ul data-bind="foreach: $root.param_errors">
+                <ul data-bind="foreach: errors">
+                    <li data-bind="text: $data"></li>
+                </ul>
+            </ul>
+        </p>
+    </div>
 {% endblock content %}
 

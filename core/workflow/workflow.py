@@ -134,7 +134,7 @@ class WorkFlow(object):
         
         ###################Profiling####################################################
         try:                 
-            self.ParseProfileDataObj=ParseProfileData.ParseProfileData(logpath,0,self.Options) 
+            self.ParseProfileDataObj=ParseProfileData.ParseProfileData(logpath,0,self.Options,JobDatabase) 
             [Boxes,Tables,Galaxies,Trees]=self.ParseProfileDataObj.ParseFile()       
             logging.info('Number of Boxes='+str(Boxes))
             logging.info('Total Queries='+str(Tables))
@@ -142,6 +142,9 @@ class WorkFlow(object):
             logging.info('Maximum Trees='+str(Trees))
         except Exception as Exp:
              logging.error("Error In Profiling")
+             exc_type, exc_value, exc_traceback = sys.exc_info()
+             lines = traceback.format_exception(exc_type, exc_value, exc_traceback)
+             logging.error(''.join('!! ' + line for line in lines))
              
         #############################################################################
         

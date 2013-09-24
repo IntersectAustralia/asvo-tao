@@ -80,3 +80,23 @@ class ListJobsTests(LiveServerMGFTest):
         parameter_lines = job.parameters.split("\n")
         stripped_lines = [line.strip() for line in parameter_lines]
         return "\n".join(stripped_lines).strip()
+
+    def test_user_disk_quota_no_limit(self):
+        self.user.disk_quota = 0
+        self.user.save()
+        self.visit('job_index')
+        
+        disk_usage = self.user.display_current_disk_usage()
+        self.assert_page_has_content(disk_usage)
+        disk_quota = "of %s" % self.user.display_user_disk_quota()
+        self.assert_page_does_not_contain(disk_quota)
+        
+    def test_user_disk_quota_limited(self):
+        self.user.disk_quota = 10
+        self.user.save()
+        self.visit('job_index')
+        
+        disk_quota = self.user.display_user_disk_quota()
+        self.assert_page_has_content(disk_quota)
+    
+    

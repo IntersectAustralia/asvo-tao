@@ -6,6 +6,7 @@ tao.forms
 Settings for development environment
 """
 from django import forms
+from django.contrib.auth.forms import PasswordChangeForm
 from django.conf import settings
 from django.contrib.auth import forms as auth_forms, get_user_model
 from django.contrib.auth.tokens import default_token_generator
@@ -29,6 +30,18 @@ class FormsGraph():
     OUTPUT_ID = '5'
     MOCK_IMAGE_ID = '6'
     TELESCOPE_ID = '7'
+
+
+class TaoPasswordChangeForm(PasswordChangeForm):
+
+    def clean_new_password1(self):
+        if hasattr(super(TaoPasswordChangeForm, self), 'clean_new_password1'):
+            password1 = super(TaoPasswordChangeForm, self).clean_new_password1()
+        else:
+            password1 = self.cleaned_data['new_password1']
+        if len(password1) < settings.MIN_PASSWORD_LENGTH:
+            raise forms.ValidationError(_('Password must be at least %d characters long') % settings.MIN_PASSWORD_LENGTH)
+        return password1
 
 
 class PasswordResetForm(auth_forms.PasswordResetForm):
@@ -179,8 +192,8 @@ class UserCreationForm(forms.Form):
         if self.is_aaf():
             return ''
         password = self.cleaned_data.get('password1')
-        if len(password) < 8:
-            raise ValidationError(_('Password must be at least 8 characters long'))
+        if len(password) < settings.MIN_PASSWORD_LENGTH:
+            raise ValidationError(_('Password must be at least %d characters long') % settings.MIN_PASSWORD_LENGTH)
         return password
 
     def clean_password2(self):

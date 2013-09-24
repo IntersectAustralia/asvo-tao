@@ -292,7 +292,7 @@ class JobTest(LiveServerTest):
         download_link = self.selenium.find_element_by_id('id_download_as_tar')
         download_link.click()
         
-        filename = 'tao_%s_catalogue_%d.tar.gz' % (self.user.username, self.completed_job.id)
+        filename = 'tao_%s_catalogue_%d.tar' % (self.user.username, self.completed_job.id)
         download_path = os.path.join(self.DOWNLOAD_DIRECTORY, filename)
         
         self.wait()
@@ -421,7 +421,7 @@ class JobTest(LiveServerTest):
             os.mkdir(dirname)
             os.chmod(dirname, 0700)
             
-        os.system(" ".join(["cd", dirname, "&&", "tar", "xvjf", download_path]))
+        os.system(" ".join(["cd", dirname, "&&", "tar", "-xf", download_path]))
               
     def _assert_directories_match(self, expected_dir_path, actual_dir_path):
         expected_dir_list = self._list_all_files(expected_dir_path)

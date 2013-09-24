@@ -16,12 +16,12 @@ import os
 
 def format_human_readable_file_size(file_size):
     size = float(file_size)
-    units = ['B', 'kB', 'MB']
+    units = ['MB', 'GB', 'TB']
     for x in units:
         if size < 1000.0:
             return '%3d%s' % (round(size), x)
         size /= 1000.0
-    return '%3.1f%s' % (size, 'GB')
+    return '%3.1f%s' % (size, 'PB')
 
 
 class UserManager(auth_models.UserManager):
@@ -97,27 +97,31 @@ class TaoUser(auth_models.AbstractUser):
         return self.disk_quota  # in MB
 
     def display_user_disk_quota(self):
-        return format_human_readable_file_size(float(self.user_disk_quota()) * 1000**2)
+        return format_human_readable_file_size(self.user_disk_quota())
 
     def get_current_disk_usage(self):
         user_jobs = Job.objects.filter(user=self)
         current_disk_usage = 0
         for job in user_jobs:
             if job.is_completed():
-                current_disk_usage += job.disk_size() # disk size in B
+                current_disk_usage += job.disk_size() # disk size in MB
 
         return current_disk_usage
 
     def display_current_disk_usage(self):
         return format_human_readable_file_size(self.get_current_disk_usage())  # input file size in B
 
+    def set_password(self, raw_password):
+        if len(raw_password) < settings.MIN_PASSWORD_LENGTH:
+            raise ValueError("Password length must be at least " + str(settings.MIN_PASSWORD_LENGTH))
+        super(TaoUser, self).set_password(raw_password)
+
     def check_disk_usage_within_quota(self):
         user_quota = float(self.user_disk_quota())
         if user_quota == -1:  # user has unlimited disk quota
             return True
         else:
-            disk_usage_in_MB = self.get_current_disk_usage() / 1000.0**2
-            return disk_usage_in_MB <= user_quota
+            return self.get_current_disk_usage() <= user_quota
 
 class Simulation(models.Model):        
 
@@ -332,7 +336,7 @@ class Job(models.Model):
     def recalculate_disk_usage(self):
         sum_file_sizes = 0
         for f in self.files():
-            sum_file_sizes += f.get_file_size_in_B()
+            sum_file_sizes += f.get_file_size_in_MB()
         self.disk_usage = sum_file_sizes
         return self.disk_usage
 
@@ -346,7 +350,8 @@ class Job(models.Model):
             return self.recalculate_disk_usage()
 
     def display_disk_size(self):
-        return format_human_readable_file_size(self.disk_size())  # input file size in B
+        return format_human_readable_file_size(self.disk_size())  # input file size in MB
+    
 
     def files(self):
         if not self.is_completed():
@@ -428,8 +433,8 @@ class JobFile(object):
     def get_file_size(self):
         return format_human_readable_file_size(self.file_size)
 
-    def get_file_size_in_B(self):
-        return self.file_size
+    def get_file_size_in_MB(self):
+        return self.file_size / 1000 ** 2
 
 class BandPassFilter(models.Model):
     label = models.CharField(max_length=80) # displays the user-friendly file name for the filter, without file extension
@@ -517,4 +522,6 @@ class SurveyPreset(models.Model):
     parameters = models.TextField(max_length=1000000)
     description = models.TextField(default='')
 
+    def __str__(self):
+        return self.name
 

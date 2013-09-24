@@ -14,7 +14,7 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.utils.translation import ugettext_lazy as _
 from tao.models import TaoUser
 
-from tao.models import Job, Simulation, GalaxyModel, DataSet, DataSetProperty, StellarModel, Snapshot, BandPassFilter, DustModel, GlobalParameter, WorkflowCommand, SurveyPreset
+from tao.models import Job, Simulation, GalaxyModel, DataSet, DataSetProperty, StellarModel, Snapshot, BandPassFilter, DustModel, GlobalParameter, WorkflowCommand, SurveyPreset, format_human_readable_file_size
 
 for model in (GalaxyModel, StellarModel, BandPassFilter, DustModel, GlobalParameter, SurveyPreset):
     admin.site.register(model)
@@ -76,9 +76,15 @@ class UserAdmin(AuthUserAdmin):
     fieldsets = AuthUserAdmin.fieldsets + ((_('Disk quota'), {'fields': ('disk_quota',)}),)
     readonly_fields = AuthUserAdmin.readonly_fields + ('username',)
 
-
 class JobAdmin(admin.ModelAdmin):
+    readonly_fields = ('display_disk_usage',)
+
+    def display_disk_usage(self, instance):
+        return instance.display_disk_size()
+    display_disk_usage.short_description = 'Disk usage'
+    exclude = ('disk_usage',)
     search_fields = ['id', 'user__username', 'status', 'description']
+    
 
 admin.site.register(Job, JobAdmin)
 

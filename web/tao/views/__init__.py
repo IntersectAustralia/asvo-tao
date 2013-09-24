@@ -2,8 +2,6 @@ import re
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import views as auth_views
-from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib.auth.forms import PasswordChangeForm
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
@@ -19,7 +17,8 @@ from django.views.decorators.http import require_POST
 from django.utils.http import urlencode as django_urlencode
 
 from tao import models
-from tao.decorators import researcher_required, admin_required, set_tab, user_login_required
+from tao.forms import TaoPasswordChangeForm
+from tao.decorators import admin_required, set_tab, user_login_required
 from tao.mail import send_mail
 from tao.pagination import paginate
 from tao.models import TaoUser, GlobalParameter, STATUS_CHOICES
@@ -185,13 +184,15 @@ def support(request):
         'form': form,
     })
 
+
+
 @user_login_required
 @sensitive_post_parameters()
 @csrf_protect
 def password_change(request,
                     template_name='registration/password_change_form.html',
                     post_change_redirect=None,
-                    password_change_form=PasswordChangeForm,
+                    password_change_form=TaoPasswordChangeForm,
                     current_app=None, extra_context=None):
     if post_change_redirect is None:
         post_change_redirect = reverse('django.contrib.auth.views.password_change_done')

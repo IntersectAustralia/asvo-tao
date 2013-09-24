@@ -14,7 +14,7 @@
 
 {% block content %}
     <h1>History</h1>
-    <p><strong>Total disk usage:</strong> <span id="id_current_disk_usage">{{ user.display_current_disk_usage }}</span></p>
+    <p><strong>Total disk usage:</strong> <span id="id_current_disk_usage">{{ user.display_current_disk_usage }} {% if user.disk_quota > 0 %} of {{ user.display_user_disk_quota }} {% endif %}</span></p>
     <div>
         <table id="jobs_table" class="table table-bordered table-striped">
             <thead>

@@ -43,3 +43,24 @@ def custom_error_message(request_path):
     m = job_path.match(request_path)
     if m and m.group() == request_path:
         return 'No such job exists'
+
+@register.simple_tag
+def google_analytics():
+    if hasattr(settings, 'TRACKING_ID') and settings.TRACKING_ID != '':
+        return """
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', '%s']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+""" % settings.TRACKING_ID
+    else:
+        return ''
