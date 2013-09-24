@@ -313,31 +313,32 @@ class JobTest(LiveServerTest):
 
         self.assert_page_has_content('.tar (recommended)')
 
-    def _test_save_job_description_edit(self):
+    def test_save_job_description_edit(self):
         self.login(self.username, self.password)
         self.visit('view_job', self.job.id)
-        self.assert_element_text_equals('#id-job_description', self.job.description)
+        self.assert_element_value_equals('#id-job_description', self.job.description)
         new_description = 'This is an updated job description; '
         old_description = self.job.description
+        self.click('id-job_description')
         self.fill_in_fields({'#id-job_description': new_description})# fill_in_fields sends text to the start of input field, without overriding the original input
         self.click('id-save_edit')
-        self.assert_element_text_equals('#id-job_description', new_description + old_description)
-
+        self.assert_element_value_equals('#id-job_description', old_description + new_description)
         self.selenium.refresh()
-        self.assert_element_text_equals('#id-job_description', new_description + old_description)
+        self.assert_element_value_equals('#id-job_description',  old_description + new_description)
 
-    def _test_cancel_job_description_edit(self):
+    def test_cancel_job_description_edit(self):
         self.login(self.username, self.password)
         self.visit('view_job', self.job.id)
         temp_description = "Here's some text that will be removed faweirhiclzklhrehure "
         original_description = self.job.description
+        self.click('id-job_description')
         self.fill_in_fields({'#id-job_description': temp_description})
-        self.assert_element_text_equals('#id-job_description', temp_description + original_description)
+        self.assert_element_value_equals('#id-job_description', original_description + temp_description)
         self.click('id-cancel_edit')
-        self.assert_element_text_equals('#id-job_description', original_description)
+        self.assert_element_value_equals('#id-job_description', original_description)
 
         self.selenium.refresh()
-        self.assert_element_text_equals('#id-job_description', original_description)
+        self.assert_element_value_equals('#id-job_description', original_description)
 
     def _test_stop_rerun_release_buttons_enabled_with_status(self):
         self.login(self.username, self.password)
