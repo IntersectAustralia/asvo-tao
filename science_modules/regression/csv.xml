@@ -5,14 +5,9 @@
     <light-cone id="light-cone">
       <geometry>light-cone</geometry>
       <box-repetition>random</box-repetition>
-<<<<<<< HEAD
-      <redshift-min>0.01</redshift-min>
-      <redshift-max>0.06</redshift-max>
-=======
-      <rng-seed>0</rng-seed>
       <redshift-min>0.01</redshift-min>
       <redshift-max>0.02</redshift-max>
->>>>>>> fa30c41d3e1396b50c914895c470a5b76f7d228f
+      <rng-seed>0</rng-seed>
       <ra-min>0</ra-min>
       <ra-max>10</ra-max>
       <dec-min>0</dec-min>
@@ -30,11 +25,8 @@
         <item>pos_x</item>
         <item>pos_y</item>
         <item>pos_z</item>
-<<<<<<< HEAD
-=======
 	<item>distance</item>
 	<item>redshift_cosmological</item>
->>>>>>> fa30c41d3e1396b50c914895c470a5b76f7d228f
       </fields>
       <parents>
         <item>light-cone</item>
