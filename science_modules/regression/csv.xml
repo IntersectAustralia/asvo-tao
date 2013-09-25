@@ -13,6 +13,7 @@
       <dec-min>0</dec-min>
       <dec-max>10</dec-max>
       <output-fields>
+	<item>globalindex</item>
         <item>pos_x</item>
         <item>pos_y</item>
         <item>pos_z</item>
@@ -22,6 +23,7 @@
     <csv id="csv">
       <filename>result</filename>
       <fields>
+	<item>globalindex</item>
         <item>pos_x</item>
         <item>pos_y</item>
         <item>pos_z</item>

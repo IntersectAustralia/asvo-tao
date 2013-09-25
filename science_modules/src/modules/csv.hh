@@ -119,6 +119,7 @@ namespace tao {
          {
             // Open the file, truncating.
             _file.open( _fn, std::fstream::trunc );
+	    EXCEPT( _file.is_open(), "Unable to open output file: ", _fn );
 
             // Dump out a list of field names first.
             auto it = _fields.cbegin();
