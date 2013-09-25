@@ -282,6 +282,11 @@ namespace tao {
             for( unsigned ii = 0; ii < _snap_bins.size(); ++ii )
                _snap_bins[ii] = first + ii;
 
+	    // The distances I've calculated are all in Mpc. I really want them in Mpc/h.
+	    std::transform( _dist_bins.begin(), _dist_bins.end(),
+			    [this]( real_type d ) { d/this->_sim->h() } );
+
+	    // Log to debugging stream.
             LOGDLN( "Distance bins: ", _dist_bins );
             LOGDLN( "Snapshot bins: ", _snap_bins );
 
