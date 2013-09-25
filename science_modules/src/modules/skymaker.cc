@@ -154,7 +154,7 @@ namespace tao {
          if( mpi::comm::world.rank() == 0 )
          {
             master_filename = "tao_sky.master." + index_string( _sub_cone ) + "." + index_string( _idx ) + ".list";
-            ::remove( master_filename.c_str() );
+            fs::remove( master_filename );
          }
          mpi::comm::world.bcast( master_filename, 0 );
          LOGDLN( "Skymaker master filename: ", master_filename );
@@ -198,10 +198,11 @@ namespace tao {
          // Delete the files we used.
          if( !keep_files )
          {
-            ::remove( master_filename.c_str() );
-            ::remove( _list_filename.c_str() );
-            ::remove( _conf_filename.c_str() );
-            ::remove( _sky_filename.c_str() );
+            fs::remove( master_filename );
+            fs::remove( _list_filename );
+            fs::remove( _conf_filename );
+            fs::remove( _sky_filename );
+            fs::remove( _sky_list_filename );
          }
 
          LOGILN( "Done.", setindent( -2 ) );
@@ -228,6 +229,7 @@ namespace tao {
          {
             _conf_filename ="tao_sky." + index_string( _sub_cone ) + "." + index_string( _idx ) + ".conf";
             _sky_filename = "tao_sky." + index_string( _sub_cone ) + "." + index_string( _idx ) + ".fits";
+            _sky_list_filename = "tao_sky." + index_string( _sub_cone ) + "." + index_string( _idx ) + ".list";
             LOGDLN( "Opening config file: ", _conf_filename );
             std::ofstream file( _conf_filename, std::ios::out );
             file << "IMAGE_NAME " << _sky_filename << "\n";

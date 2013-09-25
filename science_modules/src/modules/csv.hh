@@ -6,6 +6,7 @@
 #include "tao/base/module.hh"
 #include "tao/base/batch.hh"
 #include "tao/base/types.hh"
+#include "tao/base/filter.hh"
 
 namespace tao {
    namespace modules {
@@ -70,6 +71,9 @@ namespace tao {
             // Reset the number of records.
             _records = 0;
 
+            // Get the filter from the lightcone module.
+            _filt = this->template attribute<tao::filter const*>( "filter" );
+
             LOGILN( "Done.", setindent( -2 ) );
          }
 
@@ -86,9 +90,13 @@ namespace tao {
             // Grab the batch from the parent object.
             const tao::batch<real_type>& bat = this->parents().front()->batch();
 
-            // Repeat for each galaxy in the batch.
-            for( unsigned ii = 0; ii < bat.size(); ++ii )
+            // Repeat for each galaxy in the batch, passing through
+            // the filter on the way.
+            for( auto bat_it = _filt->begin( bat ); bat_it != _filt->end( bat ); ++bat_it )
             {
+               unsigned ii = *bat_it;
+
+               // Process each field.
                auto it = _fields.cbegin();
                if( it != _fields.cend() )
                {
@@ -171,6 +179,7 @@ namespace tao {
          string _fn;
          list<string> _fields;
          unsigned long long _records;
+         tao::filter const* _filt;
       };
 
    }

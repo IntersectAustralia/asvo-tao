@@ -1,7 +1,9 @@
 #ifndef tao_base_query_hh
 #define tao_base_query_hh
 
-#include "filter.hh"
+#include <libhpc/containers/string.hh>
+#include <libhpc/containers/set.hh>
+#include <libhpc/system/helpers.hh>
 
 namespace tao {
 
@@ -72,24 +74,11 @@ namespace tao {
       //    return _calc_fields;
       // }
 
-      void
-      set_filter( const tao::filter& filt )
-      {
-         _filt = filt;
-      }
-
-      const tao::filter&
-      filter() const
-      {
-         return _filt;
-      }
-
    protected:
 
       set<string> _of_set;
       vector<string> _out_fields;
       // set<string> _calc_fields;
-      tao::filter _filt;
    };
 
 }

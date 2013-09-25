@@ -75,10 +75,11 @@ namespace tao {
 
          tile_galaxy_iterator
          galaxy_begin( query_type& query,
-                       const tile<real_type>& tile,
-                       tao::batch<real_type>* bat = 0 )
+                       tile<real_type> const& tile,
+                       tao::batch<real_type>* bat = 0,
+                       filter const* filt = 0 )
          {
-            string qs = this->make_tile_query_string( tile, query );
+            string qs = this->make_tile_query_string( tile, query, filt );
             return tile_galaxy_iterator( *this, query, qs, table_begin( tile ), table_end( tile ), tile.lightcone(), bat );
          }
 
@@ -108,9 +109,10 @@ namespace tao {
          lightcone_galaxy_iterator
          galaxy_begin( query_type& query,
                        const lightcone<real_type>& lc,
-                       tao::batch<real_type>* bat = 0 )
+                       tao::batch<real_type>* bat = 0,
+                       filter const* filt = 0 )
          {
-            return lightcone_galaxy_iterator( lc, *this, query, bat );
+            return lightcone_galaxy_iterator( lc, *this, query, bat, filt );
          }
 
          lightcone_galaxy_iterator

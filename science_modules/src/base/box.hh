@@ -4,6 +4,7 @@
 #include <libhpc/containers/array.hh>
 #include <libhpc/containers/random.hh>
 #include "query.hh"
+#include "batch.hh"
 
 namespace tao {
    using namespace hpc;

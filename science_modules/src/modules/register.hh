@@ -16,7 +16,7 @@ namespace tao {
       fact.register_module( "filter", modules::filter<Backend>::factory );
       fact.register_module( "skymaker", modules::skymaker<Backend>::factory );
       fact.register_module( "csv", modules::csv<Backend>::factory );
-      // fact.register_module( "hdf5", hdf5::factory );
+      fact.register_module( "hdf5", modules::hdf5<Backend>::factory );
       // fact.register_module( "votable", votable::factory );
       // fact.register_module( "fits", fits::factory );
    }
