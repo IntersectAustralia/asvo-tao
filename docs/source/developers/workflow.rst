@@ -18,9 +18,9 @@ The expression "Workflow Job" is used to refer to a Synchronous task that was re
 Workflow Module Main Functionality
 ----------------------------------
 
-The workflow component works as a background service on one of the back-end nodes (Node B or C). It acts as an interface between the UI components and the SwinSTAR Torque Queue. It convert the jobs description provided by the UI components (via a JSON web-service) into a Torque Queue job. 
+The workflow component works as a background service on one of the back-end nodes (Node B or C). It acts as an interface between the UI components and the SwinSTAR Torque Queue. It converts the jobs description provided by the UI components (via a JSON web-service) into a Torque Queue job. 
 
-To achieve this job, it runs an event-loop with a customizable sleep-interval between each run. The following steps explain the process of handling new Workflow Job:  
+To achieve this job, it runs an event-loop with a configurable delay between each run. The following steps explain the process of handling new Workflow Job:  
 
 - The UI component prepares all the jobs parameters and dataset specification in a XML file and submit it with an identifier for the requested job to the workflow queue on the TAOMaster DB. 
 - The workflow module should be working as a consumer for this job queue on the TAO servers (B or C).
@@ -30,3 +30,10 @@ To achieve this job, it runs an event-loop with a customizable sleep-interval be
 - The workflow will keep updating the job status (e.g Pending for resources, and running) until the job is finished. 
 - The workflow will notify the UI component to send email when the job is finished. 
 - If there is a waiting dependence for the current job the workflow will initiate it with the appropriate parameters.  
+
+
+.. figure:: ../_static/workflow.png
+   :alt: Workflow Design
+   
+.. figure:: ../_static/workflow_NewJobs.png
+   :alt: Workflow - Adding new Job
