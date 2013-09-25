@@ -418,6 +418,15 @@ class LiveServerMGFTest(LiveServerTest):
         submit_button.click()
         self.wait(1.5)
 
+    def assert_cant_submit_mgf_form(self):
+        self.click('tao-tabs-summary_submit')
+        try:
+            submit_button = self.selenium.find_element_by_css_selector('#mgf-form #form_submit')
+            self.fail('Submit button present')
+        except NoSuchElementException:
+            pass
+        self.selenium.find_element_by_css_selector('#mgf-form #form_errors')
+
     def assert_errors_on_field(self, what, field_id):
         field_elem = self.selenium.find_element_by_css_selector(field_id)
         div_container = self.get_closest_by_class(field_elem, 'control-group')
