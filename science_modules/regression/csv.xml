@@ -5,9 +5,9 @@
     <light-cone id="light-cone">
       <geometry>light-cone</geometry>
       <box-repetition>random</box-repetition>
-      <rng-seed>0</rng-seed>
       <redshift-min>0.01</redshift-min>
       <redshift-max>0.02</redshift-max>
+      <rng-seed>0</rng-seed>
       <ra-min>0</ra-min>
       <ra-max>10</ra-max>
       <dec-min>0</dec-min>
