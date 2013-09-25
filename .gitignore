@@ -26,3 +26,4 @@ docs/build
 docs/source/bpfilters
 .idea
 akg_*
+science_modules/regression/database.xml
