@@ -21,7 +21,7 @@
         <div id="mock_image_params" data-bind="template: {name: 'single_form_template', foreach: image_settings}, visible: can_have_images() && apply_mock_image()"
                 style="display: block;">
         </div>
-        <button data-bind="click: add_image_settings, visible: can_have_images() && apply_mock_image()">Add</button>
+        <button id="id_mock_image-add_image_button" data-bind="click: add_image_settings, visible: can_have_images() && apply_mock_image()">Add</button>
     </div>
     <div class="aside span4" id="sed_info">
     </div>

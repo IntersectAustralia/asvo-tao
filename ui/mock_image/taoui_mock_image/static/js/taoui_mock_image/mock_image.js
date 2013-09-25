@@ -164,7 +164,7 @@ catalogue.modules.mock_image = function ($) {
                 .extend({validate: catalogue.validators.leq(
                     catalogue.modules.light_cone.vm.redshift_max
                     )})
-                .extend({validate: catalogue.validators.greater_than(
+                .extend({validate: catalogue.validators.geq(
                     image_params.z_min
                 )});
             param = get_param(prefix, '-origin_ra');

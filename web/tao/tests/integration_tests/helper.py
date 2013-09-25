@@ -25,7 +25,10 @@ def visit(client, view_name, *args, **kwargs):
     return client.get(reverse(view_name, args=args), follow=True)
 
 class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
+    fixtures = ['rules.json']
+
     DOWNLOAD_DIRECTORY = '/tmp/work/downloads'
+
 
     ## List all ajax enabled pages that have initialization code and must wait
     AJAX_WAIT = ['mock_galaxy_factory', 'view_job']
@@ -78,6 +81,9 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
     def sed(self, bare_field):
         return 'id_sed-%s' % bare_field
 
+    def mi_id(self, bare_field):
+        return 'id_mock_image-%s' % bare_field
+
     def sed_id(self, bare_field):
         return '#%s' % self.sed(bare_field)
 
@@ -89,9 +95,6 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
 
     def job_id(self, bare_field):
         return '#%s' % self.job_select(bare_field)
-
-    def mi_id(self, prefix, bare_field):
-        return 'id_mock_image-%s-%s' % (prefix, bare_field)
 
     def get_parent_element(self, element):
         return self.selenium.execute_script('return arguments[0].parentNode;', element)
@@ -263,7 +266,8 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
         value_displayed = self.get_summary_field_text(form_name, field_name)
         self.assertEqual(expected_value, strip_tags(value_displayed))
 
-    def fill_in_fields(self, field_data, id_wrap=None):
+    def fill_in_fields(self, field_data, id_wrap=None, clear=False):
+        from code import interact
         for selector, text_to_input in field_data.items():
             if id_wrap:
                 selector = id_wrap(selector)
@@ -271,6 +275,8 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
             if elem.tag_name == 'select':
                 self.select(selector, str(text_to_input))
             else:
+                if clear:
+                    elem.clear()
                 elem.send_keys(str(text_to_input))
         self.wait(0.5)
 
