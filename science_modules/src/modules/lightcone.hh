@@ -118,7 +118,7 @@ namespace tao {
             if( this->_it == 0 )
             {
                if( _geom == CONE )
-                  _c_it = _lc.galaxy_begin( _qry, *_be, &_bat );
+                  _c_it = _lc.galaxy_begin( _qry, *_be, &_bat, &_filt );
                else
                   _b_it = _box.galaxy_begin( _qry, *_be, &_bat );
 
@@ -187,6 +187,8 @@ namespace tao {
          {
             if( name == "simulation" )
                return boost::any( &((const simulation<real_type>&)_sim) );
+            else if( name == "filter" )
+               return boost::any( &((filter const&)_filt) );
             else
                return module_type::find_attribute( name );
          }
@@ -339,17 +341,29 @@ namespace tao {
             LOGILN( "Extracting fields: ", _qry.output_fields() );
 
             // Filter information.
-            string filt_field = global_dict.get<string>( "workflow:record-filter:filter:filter-attribute", "" );
-            to_lower( filt_field );
-            string filt_min = global_dict.get<string>( "workflow:record-filter:filter:filter-min", "" );
-            string filt_max = global_dict.get<string>( "workflow:record-filter:filter:filter-max", "" );
-            if( !filt_field.empty() && filt_field != "" )
             {
-               _filt.set_field_name( filt_field );
-               _filt.set_minimum( filt_min );
-               _filt.set_maximum( filt_max );
-               LOGILN( "Filter name: ", filt_field );
-               LOGILN( "Filter range: [", filt_min, ", ", filt_max, ")" );
+               string filt_field = global_dict.get<string>( "workflow:record-filter:filter:filter-attribute", "" );
+               to_lower( filt_field );
+               string filt_min = global_dict.get<string>( "workflow:record-filter:filter:filter-min", "" );
+               string filt_max = global_dict.get<string>( "workflow:record-filter:filter:filter-max", "" );
+               if( !filt_field.empty() && filt_field != "" )
+               {
+                  _filt.set_field_name( filt_field );
+                  try
+                  {
+                     real_type val = boost::lexical_cast<real_type>( filt_min );
+                     _filt.set_minimum( val );
+                  }
+                  catch( const boost::bad_lexical_cast& ex ) {}
+                  try
+                  {
+                     real_type val = boost::lexical_cast<real_type>( filt_max );
+                     _filt.set_maximum( val );
+                  }
+                  catch( const boost::bad_lexical_cast& ex ) {}
+                  LOGILN( "Filter name: ", filt_field );
+                  LOGILN( "Filter range: [", filt_min, ", ", filt_max, ")" );
+               }
             }
          }
 
@@ -361,10 +375,10 @@ namespace tao {
          int _rng_seed;
          engine_type _eng;
          bool _unique;
-         filter _filt;
 
          simulation<real_type> _sim;
          query<real_type> _qry;
+         filter _filt;
          tao::lightcone<real_type> _lc;
          box<real_type> _box;
          bool _my_be;

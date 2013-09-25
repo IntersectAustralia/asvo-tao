@@ -63,25 +63,27 @@ struct db_fixture
       this->sql << "CREATE TABLE tree_1 (globalindex BIGINT, localgalaxyid INTEGER, globaltreeid BIGINT, "
          "descendant INTEGER, snapnum INTEGER, sfr DOUBLE PRECISION, sfrbulge DOUBLE PRECISION, "
          "coldgas DOUBLE PRECISION, metalscoldgas DOUBLE PRECISION, "
-         "posx DOUBLE PRECISION, posy DOUBLE PRECISION, posz DOUBLE PRECISION)";
+         "posx DOUBLE PRECISION, posy DOUBLE PRECISION, posz DOUBLE PRECISION, "
+         "velx DOUBLE PRECISION, vely DOUBLE PRECISION, velz DOUBLE PRECISION)";
       this->sql << "CREATE TABLE tree_2 (globalindex BIGINT, localgalaxyid INTEGER, globaltreeid BIGINT, "
          "descendant INTEGER, snapnum INTEGER, sfr DOUBLE PRECISION, sfrbulge DOUBLE PRECISION, "
          "coldgas DOUBLE PRECISION, metalscoldgas DOUBLE PRECISION, "
-         "posx DOUBLE PRECISION, posy DOUBLE PRECISION, posz DOUBLE PRECISION)";
+         "posx DOUBLE PRECISION, posy DOUBLE PRECISION, posz DOUBLE PRECISION, "
+         "velx DOUBLE PRECISION, vely DOUBLE PRECISION, velz DOUBLE PRECISION)";
 
       // Tree 1.
-      sql << "INSERT INTO tree_1 VALUES(100, 0, 1, -1, 4, 1, 1, 1, 1, 1, 1, 1)";
-      sql << "INSERT INTO tree_1 VALUES(101, 1, 1,  0, 3, 1, 1, 1, 1, 1, 0, 0)";
-      sql << "INSERT INTO tree_1 VALUES(102, 2, 1,  1, 2, 1, 1, 1, 1, 2, 0, 0)";
-      sql << "INSERT INTO tree_1 VALUES(103, 3, 1,  1, 2, 1, 1, 1, 1, 0, 1, 0)";
-      sql << "INSERT INTO tree_1 VALUES(104, 4, 1,  2, 1, 1, 1, 1, 1, 0, 2, 0)";
-      sql << "INSERT INTO tree_1 VALUES(105, 5, 1,  3, 1, 1, 1, 1, 1, 0, 3, 0)";
-      sql << "INSERT INTO tree_1 VALUES(106, 6, 1,  3, 1, 1, 1, 1, 1, 0, 0, 1)";
+      sql << "INSERT INTO tree_1 VALUES(100, 0, 1, -1, 4, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0)";
+      sql << "INSERT INTO tree_1 VALUES(101, 1, 1,  0, 3, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0)";
+      sql << "INSERT INTO tree_1 VALUES(102, 2, 1,  1, 2, 1, 1, 1, 1, 2, 0, 0, 0, 0, 0)";
+      sql << "INSERT INTO tree_1 VALUES(103, 3, 1,  1, 2, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0)";
+      sql << "INSERT INTO tree_1 VALUES(104, 4, 1,  2, 1, 1, 1, 1, 1, 0, 2, 0, 0, 0, 0)";
+      sql << "INSERT INTO tree_1 VALUES(105, 5, 1,  3, 1, 1, 1, 1, 1, 0, 3, 0, 0, 0, 0)";
+      sql << "INSERT INTO tree_1 VALUES(106, 6, 1,  3, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0)";
 
       // Tree 2.
-      sql << "INSERT INTO tree_1 VALUES(200, 0, 2, -1, 4, 1, 1, 1, 1, 0, 0, 2)";
-      sql << "INSERT INTO tree_1 VALUES(201, 1, 2,  0, 3, 1, 1, 1, 1, 0, 0, 3)";
-      sql << "INSERT INTO tree_1 VALUES(202, 2, 2,  0, 3, 1, 1, 1, 1, 1, 1, 1)";
+      sql << "INSERT INTO tree_1 VALUES(200, 0, 2, -1, 4, 1, 1, 1, 1, 0, 0, 2, 0, 0, 0)";
+      sql << "INSERT INTO tree_1 VALUES(201, 1, 2,  0, 3, 1, 1, 1, 1, 0, 0, 3, 0, 0, 0)";
+      sql << "INSERT INTO tree_1 VALUES(202, 2, 2,  0, 3, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0)";
    }
 
    void

@@ -67,6 +67,7 @@ namespace tao {
          string _list_filename;
          string _conf_filename;
          string _sky_filename;
+         string _sky_list_filename;
          std::ofstream _list_file;
          unsigned _sub_cone;
          string _format;

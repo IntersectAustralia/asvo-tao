@@ -36,17 +36,20 @@ namespace tao {
       lightcone_galaxy_iterator( const lightcone<real_type>& lc,
                                  backend_type& be,
                                  query<real_type>& qry,
-                                 tao::batch<real_type>* bat = 0 )
+                                 tao::batch<real_type>* bat = 0,
+                                 filter const* filt = 0 )
          : _lc( &lc ),
            _be( &be ),
            _qry( &qry ),
+           _bat( bat ),
+           _filt( filt ),
            _done( false )
       {
          _tile_it = _lc->tile_begin();
          if( !_tile_it.done() )
          {
             LOGILN( "Processing tile at: ", _tile_it->min(), setindent( 2 ) );
-            _gal_it = _be->galaxy_begin( *_qry, *_tile_it, bat );
+            _gal_it = _be->galaxy_begin( *_qry, *_tile_it, _bat, _filt );
             _settle();
          }
          else
@@ -120,7 +123,7 @@ namespace tao {
                   break;
                }
                LOGILN( "Processing tile at: ", _tile_it->min(), setindent( 2 ) );
-               _gal_it = _be->galaxy_begin( *_qry, *_tile_it );
+               _gal_it = _be->galaxy_begin( *_qry, *_tile_it, _bat, _filt );
             }
             while( _gal_it.done() );
          }
@@ -131,6 +134,8 @@ namespace tao {
       const lightcone<real_type>* _lc;
       backend_type* _be;
       query<real_type>* _qry;
+      tao::batch<real_type>* _bat;
+      filter const* _filt;
       tile_iterator _tile_it;
       tile_galaxy_iterator _gal_it;
       bool _done;

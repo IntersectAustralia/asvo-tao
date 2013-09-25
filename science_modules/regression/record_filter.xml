@@ -1,0 +1,48 @@
+<tao>
+  <workflow>
+    <schema-version>2</schema-version>
+
+    <light-cone id="light-cone">
+      <geometry>light-cone</geometry>
+      <box-repetition>random</box-repetition>
+      <rng-seed>0</rng-seed>
+      <redshift-min>0.01</redshift-min>
+      <redshift-max>0.06</redshift-max>
+      <ra-min>0</ra-min>
+      <ra-max>10</ra-max>
+      <dec-min>0</dec-min>
+      <dec-max>10</dec-max>
+      <output-fields>
+        <item>pos_x</item>
+        <item>pos_y</item>
+        <item>pos_z</item>
+      </output-fields>
+    </light-cone>
+
+    <record-filter>
+      <filter>
+        <filter-attribute>pos_x</filter-attribute>
+        <!-- <filter-min>60</filter-min> -->
+        <filter-max>62</filter-max>
+      </filter>
+    </record-filter>
+
+    <csv id="csv">
+      <filename>result</filename>
+      <fields>
+        <item>pos_x</item>
+        <item>pos_y</item>
+        <item>pos_z</item>
+      </fields>
+      <parents>
+        <item>light-cone</item>
+      </parents>
+    </csv>
+
+  </workflow>
+
+  <subjobindex>0</subjobindex>
+  <logdir>log</logdir>
+  <outputdir>output</outputdir>
+  <database>millennium_mini_hdf5_dist</database>
+</tao>

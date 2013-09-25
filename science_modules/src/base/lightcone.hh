@@ -3,6 +3,7 @@
 
 #include "simulation.hh"
 #include "tile.hh"
+#include "filter.hh"
 
 namespace tao {
    using namespace hpc;
@@ -162,9 +163,10 @@ namespace tao {
       typename Backend::lightcone_galaxy_iterator
       galaxy_begin( query<real_type>& qry,
                     Backend& be,
-                    tao::batch<real_type>* bat = 0 )
+                    tao::batch<real_type>* bat = 0,
+                    filter const* filt = 0 )
       {
-        return be.galaxy_begin( qry, *this, bat );
+        return be.galaxy_begin( qry, *this, bat, filt );
       }
 
       template< class Backend >

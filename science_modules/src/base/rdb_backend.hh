@@ -8,6 +8,7 @@
 #include "query.hh"
 #include "tile.hh"
 #include "batch.hh"
+#include "filter.hh"
 
 namespace tao {
    namespace backends {
@@ -89,7 +90,8 @@ namespace tao {
 
          string
          make_tile_query_string( const tile<real_type>& tile,
-                                 tao::query<real_type>& query ) const
+                                 tao::query<real_type>& query,
+                                 filter const* filt = 0 ) const
          {
             boost::format fmt(
                "SELECT %1% FROM -table- "
@@ -114,7 +116,10 @@ namespace tao {
             fmt % cos( tile.lightcone()->max_ra() ) % cos( tile.lightcone()->min_ra() );
             fmt % cos( tile.lightcone()->max_dec() ) % cos( tile.lightcone()->min_dec() );
             fmt % pow( tile.lightcone()->min_dist(), 2 ) % pow( tile.lightcone()->max_dist(), 2 );
-            fmt % ""; // TODO
+            string filt_str = make_filter_query_string( filt );
+            if( !filt_str.empty() )
+               filt_str = " AND " + filt_str; 
+            fmt % filt_str;
             return fmt.str();
          }
 
@@ -174,6 +179,28 @@ namespace tao {
          make_box_size_query_string() const
          {
             return "SELECT metavalue FROM metadata WHERE metakey='boxsize'";
+         }
+
+         string
+         make_filter_query_string( filter const* filt ) const
+         {
+            string qry;
+            if( filt &&
+                !filt->field_name().empty() &&
+                _field_map.find( filt->field_name() ) != _field_map.end() && // must have this field in DB
+                (filt->minimum<real_type>() || filt->maximum<real_type>()) )
+            {
+               string fn = _field_map.at( filt->field_name() );
+               if( filt->minimum<real_type>() )
+                  qry += boost::str( boost::format( "%1% >= %2%" ) % fn % *filt->minimum<real_type>() );
+               if( filt->maximum<real_type>() )
+               {
+                  if( filt->minimum<real_type>() )
+                     qry += " AND ";
+                  qry += boost::str( boost::format( "%1% < %2%" ) % fn % *filt->maximum<real_type>() );
+               }
+            }
+            return qry;
          }
 
          void
