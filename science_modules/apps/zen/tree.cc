@@ -314,7 +314,7 @@ namespace tao {
       algorithms::tree_widths( sfh, gal_id, widths );
 
       // Get snapshot range.
-      array<real_type,2> snap_rng{ { sfh.snapshot( gal_id ), calc_max_snapshot( sfh, gal_id ) } };
+      array<real_type,2> snap_rng{ { (real_type)sfh.snapshot( gal_id ), (real_type)calc_max_snapshot( sfh, gal_id ) } };
 
       // Calculate pane size.
       vector<unsigned> line_map;
