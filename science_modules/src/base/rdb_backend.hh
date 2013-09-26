@@ -145,8 +145,8 @@ namespace tao {
             for( unsigned ii = 0; ii < sim.num_snapshots() - 1; ++ii )
             {
                boost::format fmt( "\nINSERT INTO redshift_ranges VALUES(%1%, %2%, %3%, %4%);" );
-               real_type max = numerics::redshift_to_comoving_distance( sim.redshift( ii ), 1000, sim.hubble(), sim.omega_l(), sim.omega_m() );
-               real_type min = numerics::redshift_to_comoving_distance( sim.redshift( ii + 1 ), 1000, sim.hubble(), sim.omega_l(), sim.omega_m() );
+               real_type max = numerics::redshift_to_comoving_distance( sim.redshift( ii ), 1000, sim.hubble(), sim.omega_l(), sim.omega_m() )*sim.h();
+               real_type min = numerics::redshift_to_comoving_distance( sim.redshift( ii + 1 ), 1000, sim.hubble(), sim.omega_l(), sim.omega_m() )*sim.h();
                LOGDLN( "Inserting range for snapshot ", ii + 1, ": [", min*min, ", ", max*max, ")" );
                fmt % (ii + 1) % sim.redshift( ii + 1 ) % (min*min) % (max*max);
                queries.emplace_back( fmt.str() );

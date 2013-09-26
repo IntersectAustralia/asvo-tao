@@ -77,6 +77,14 @@ namespace tao {
          _recalc();
       }
 
+      void
+      set_random( bool rand,
+		  engine_type* engine = &hpc::engine )
+      {
+	 _rand = rand;
+	 _eng = engine;
+      }
+
       const tao::simulation<real_type>*
       simulation() const
       {
@@ -243,6 +251,18 @@ namespace tao {
          return _dist_to_z[dist];
       }
 
+      bool
+      random() const
+      {
+	 return _rand;
+      }
+
+      engine_type*
+      rng_engine() const
+      {
+	 return _eng;
+      }
+
    protected:
 
       void
@@ -252,8 +272,9 @@ namespace tao {
          {
             LOGDLN( "Recalculating lightcone information.", setindent( 2 ) );
 
-            _dist[0] = numerics::redshift_to_comoving_distance( _z[0], 1000, _sim->hubble(), _sim->omega_l(), _sim->omega_m() );
-            _dist[1] = numerics::redshift_to_comoving_distance( _z[1], 1000, _sim->hubble(), _sim->omega_l(), _sim->omega_m() );
+            _dist[0] = numerics::redshift_to_comoving_distance( _z[0], 1000, _sim->hubble(), _sim->omega_l(), _sim->omega_m() )*_sim->h();
+            _dist[1] = numerics::redshift_to_comoving_distance( _z[1], 1000, _sim->hubble(), _sim->omega_l(), _sim->omega_m() )*_sim->h();
+	    LOGDLN( "Distance range: [", _dist[0], ", ", _dist[1], ")" );
 
             // Prepare the redshift distance bins. Note that I will incorporate the
             // minimum and maximum redshift here. First calculate the
@@ -283,8 +304,8 @@ namespace tao {
                _snap_bins[ii] = first + ii;
 
 	    // The distances I've calculated are all in Mpc. I really want them in Mpc/h.
-	    std::transform( _dist_bins.begin(), _dist_bins.end(),
-			    [this]( real_type d ) { d/this->_sim->h() } );
+	    std::transform( _dist_bins.begin(), _dist_bins.end(), _dist_bins.begin(),
+			    [this]( real_type d ) { return d*this->_sim->h(); } );
 
 	    // Log to debugging stream.
             LOGDLN( "Distance bins: ", _dist_bins );
@@ -301,7 +322,7 @@ namespace tao {
                for( unsigned ii = 0; ii < num_points; ++ii )
                {
                   zs[ii] = _z[0] + (_z[1] - _z[0])*((real_type)ii/(real_type)(num_points - 1));
-                  dists[ii] = numerics::redshift_to_comoving_distance( zs[ii], 1000, _sim->hubble(), _sim->omega_l(), _sim->omega_m() );
+                  dists[ii] = numerics::redshift_to_comoving_distance( zs[ii], 1000, _sim->hubble(), _sim->omega_l(), _sim->omega_m() )*_sim->h(); // don't forget to put in Mpc/h
                }
 
                // Transfer to interpolator.
@@ -323,6 +344,8 @@ namespace tao {
       vector<real_type> _dist_bins;
       vector<unsigned> _snap_bins;
       numerics::interp<real_type> _dist_to_z;
+      bool _rand;
+      engine_type* _eng;
    };
 
 }

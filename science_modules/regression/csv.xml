@@ -4,7 +4,7 @@
 
     <light-cone id="light-cone">
       <geometry>light-cone</geometry>
-      <box-repetition>random</box-repetition>
+      <box-repetition>unique</box-repetition>
       <redshift-min>0.01</redshift-min>
       <redshift-max>0.02</redshift-max>
       <rng-seed>0</rng-seed>

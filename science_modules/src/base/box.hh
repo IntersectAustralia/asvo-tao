@@ -21,10 +21,10 @@ namespace tao {
 
    public:
 
-      box( const tao::simulation<real_type>* sim = 0,
-           bool random = false )
+      box( const tao::simulation<real_type>* sim = 0 )
          : _sim( sim ),
-           _rand( random )
+           _rand( false ),
+	   _eng( 0 )
       {
          _update();
       }
@@ -34,6 +34,15 @@ namespace tao {
       {
          _sim = sim;
          _update();
+      }
+
+      void
+      set_random( bool rand,
+		  engine_type* engine = &hpc::engine )
+      {
+	 _rand = rand;
+	 _eng = engine;
+	 _update();
       }
 
       const tao::simulation<real_type>*
@@ -90,7 +99,7 @@ namespace tao {
       }
 
       void
-      randomise( engine_type& engine = hpc::engine )
+      randomise()
       {
          // Only do this if we have a simulation set.
          if( _sim )
@@ -99,11 +108,11 @@ namespace tao {
 
             // Generate translation.
             for( unsigned ii = 0; ii < 3; ++ii )
-               _trans[ii] = generate_uniform<real_type>( 0.0, _sim->box_size(), engine );
+               _trans[ii] = generate_uniform<real_type>( 0.0, _sim->box_size(), *_eng );
             LOGDLN( "Translation: ", _trans );
 
             // Generate rotations.
-            int rnd = generate_uniform<int>( 0, 5, engine );
+            int rnd = generate_uniform<int>( 0, 5, *_eng );
             switch( rnd )
             {
                case 0:
@@ -172,6 +181,7 @@ namespace tao {
       const tao::simulation<real_type>* _sim;
       array<real_type,3> _min, _max;
       bool _rand;
+      engine_type* _eng;
       array<unsigned,3> _rot;
       array<real_type,3> _trans;
    };

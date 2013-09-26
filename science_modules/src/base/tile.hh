@@ -25,16 +25,11 @@ namespace tao {
    public:
 
       tile( const tao::lightcone<real_type>* lc = 0,
-            array<real_type,3> offs = { { 0, 0, 0 } },
-            bool random = false )
-         : box<T>( NULL, random ),
-           _lc( lc )
+            array<real_type,3> offs = { { 0, 0, 0 } } )
+         : box<T>( 0 ),
+           _lc( 0 )
       {
-         if( _lc )
-         {
-            this->set_simulation( _lc->simulation() );
-            set_offset( offs );
-         }
+	 set_lightcone( lc, offs );
       }
 
       void
@@ -46,6 +41,7 @@ namespace tao {
             _lc = lc;
             this->set_simulation( lc->simulation() );
             set_offset( offs );
+	    this->set_random( _lc->random(), _lc->rng_engine() );
          }
          else
             this->set_simulation( 0 );
