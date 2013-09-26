@@ -70,22 +70,27 @@ namespace tao {
 
          string
          make_box_query_string( const box<real_type>& box,
-                                tao::query<real_type>& qry ) const
+                                tao::query<real_type>& qry,
+                                filter const* filt = 0 ) const
          {
-            // boost::format fmt( "SELECT %1% FROM -table- "
-            //                    "WHERE %2% = %3% AND "         // snapshot
-            //                    "%4% > %5% AND %4% < %6% AND " // x position
-            //                    "%7% > %8% AND %7% < %9% AND " // y position
-            //                    "%10% > %11% AND %10% < %12%" ); // z position
-            // std::unordered_map<string,string> map;
-            // make_field_map( map, qry, tile );
-            // fmt % make_output_field_query_string( qry, map );
-            // fmt % _field_map["snapshot"] % box.snapshot();
-            // fmt % _field_map.at( "pos_x" ) % box.min_pos()[0] % box.max_pos()[0];
-            // fmt % _field_map.at( "pos_y" ) % box.min_pos()[1] % box.max_pos()[1];
-            // fmt % _field_map.at( "pos_z" ) % box.min_pos()[2] % box.max_pos()[2];
-            // return fmt.str();
-            return "";
+            boost::format fmt( "SELECT %1% FROM -table- "
+                               "WHERE %2% = %3% AND "         // snapshot
+                               "%4% > %5% AND %4% < %6% AND " // x position
+                               "%7% > %8% AND %7% < %9% AND " // y position
+                               "%10% > %11% AND %10% < %12%" // z position
+                               "%13%" ); // filter
+            std::unordered_map<string,string> map;
+            make_field_map( map, qry, box );
+            fmt % make_output_field_query_string( qry, map );
+            fmt % _field_map.at( "snapshot" ) % box.snapshot();
+            fmt % _field_map.at( "pos_x" ) % box.min()[0] % box.max()[0];
+            fmt % _field_map.at( "pos_y" ) % box.min()[1] % box.max()[1];
+            fmt % _field_map.at( "pos_z" ) % box.min()[2] % box.max()[2];
+            string filt_str = make_filter_query_string( filt );
+            if( !filt_str.empty() )
+               filt_str = " AND " + filt_str; 
+            fmt % filt_str;
+            return fmt.str();
          }
 
          string
@@ -206,7 +211,7 @@ namespace tao {
          void
          make_field_map( std::unordered_map<string,string>& map,
                          tao::query<real_type>& query,
-                         optional<const tao::tile<real_type>&> tile = optional<const tao::tile<real_type>&>() ) const
+                         optional<const tao::box<real_type>&> box = optional<const tao::box<real_type>&>() ) const
          {
             map.clear();
             for( string of : query.output_fields() )
@@ -215,41 +220,41 @@ namespace tao {
                if( _field_map.find( of ) != _field_map.end() )
                {
                   // Positions need to be handled specially to take care of translation.
-                  if( tile && (of == "pos_x" || of == "pos_y" || of == "pos_z") )
+                  if( box && (of == "pos_x" || of == "pos_y" || of == "pos_z") )
                   {
                      string mapped[3] = { "pos_x", "pos_y", "pos_z" };
-                     real_type box_size = (*tile).lightcone()->simulation()->box_size();
+                     real_type box_size = (*box).simulation()->box_size();
                      string repl = "CASE WHEN %1% + %2% < %3% THEN %1% + %2% ELSE %1% + %2% - %3% END + %4%";
                      string field;
                      if( of == "pos_x" )
                      {
-                        of = mapped[(*tile).rotation()[0]];
-                        if( (*tile).random() )
+                        of = mapped[(*box).rotation()[0]];
+                        if( (*box).random() )
                         {
-                           field = boost::str( boost::format( repl ) % _field_map.at( of ) % (*tile).translation()[0] %
-                                               box_size % (*tile).min()[0] );
+                           field = boost::str( boost::format( repl ) % _field_map.at( of ) % (*box).translation()[0] %
+                                               box_size % (*box).min()[0] );
                         }
                         else
                            field = _field_map.at( of );
                      }
                      else if( of == "pos_y" )
                      {
-                        of = mapped[(*tile).rotation()[1]];
-                        if( (*tile).random() )
+                        of = mapped[(*box).rotation()[1]];
+                        if( (*box).random() )
                         {
-                           field = boost::str( boost::format( repl ) % _field_map.at( of ) % (*tile).translation()[1] %
-                                               box_size % (*tile).min()[1] );
+                           field = boost::str( boost::format( repl ) % _field_map.at( of ) % (*box).translation()[1] %
+                                               box_size % (*box).min()[1] );
                         }
                         else
                            field = _field_map.at( of );
                      }
                      else
                      {
-                        if( (*tile).random() )
+                        if( (*box).random() )
                         {
-                           of = mapped[(*tile).rotation()[2]];
-                           field = boost::str( boost::format( repl ) % _field_map.at( of ) % (*tile).translation()[2] %
-                                               box_size % (*tile).min()[2] );
+                           of = mapped[(*box).rotation()[2]];
+                           field = boost::str( boost::format( repl ) % _field_map.at( of ) % (*box).translation()[2] %
+                                               box_size % (*box).min()[2] );
                         }
                         else
                            field = _field_map.at( of );
@@ -261,27 +266,27 @@ namespace tao {
                   else
                   {
                      // Velocity.
-                     if( tile && (of == "velx" || of == "vely" || of == "velz") )
+                     if( box && (of == "velx" || of == "vely" || of == "velz") )
                      {
                         string mapped[3] = { "velx", "vely", "velz" };
                         if( of == "velx" )
-                           of = mapped[(*tile).rotation()[0]];
+                           of = mapped[(*box).rotation()[0]];
                         else if( of == "vely" )
-                           of = mapped[(*tile).rotation()[1]];
+                           of = mapped[(*box).rotation()[1]];
                         else
-                           of = mapped[(*tile).rotation()[2]];
+                           of = mapped[(*box).rotation()[2]];
                      }
 
                      // Spin.
-                     else if( tile && (of == "spinx" || of == "spiny" || of == "spinz") )
+                     else if( box && (of == "spinx" || of == "spiny" || of == "spinz") )
                      {
                         string mapped[3] = { "spinx", "spiny", "spinz" };
                         if( of == "spinx" )
-                           of = mapped[(*tile).rotation()[0]];
+                           of = mapped[(*box).rotation()[0]];
                         else if( of == "spiny" )
-                           of = mapped[(*tile).rotation()[1]];
+                           of = mapped[(*box).rotation()[1]];
                         else
-                           of = mapped[(*tile).rotation()[2]];
+                           of = mapped[(*box).rotation()[2]];
                      }
 
                      // Add to the map.

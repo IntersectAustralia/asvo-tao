@@ -126,9 +126,9 @@ namespace tao {
                real_type area = calc_area( _redshift[ii] );
 
                // Process total, disk and bulge.
-               _process_spectra( total_spectra[ii], area, _total_lum[ii], _total_app_mags, _total_abs_mags, ii );
-               _process_spectra( disk_spectra[ii], area, _disk_lum[ii], _disk_app_mags, _bulge_abs_mags, ii );
-               _process_spectra( bulge_spectra[ii], area, _bulge_lum[ii], _bulge_app_mags, _bulge_abs_mags, ii );
+               _process_spectra( total_spectra[ii], _redshift[ii], area, _total_lum[ii], _total_app_mags, _total_abs_mags, ii );
+               _process_spectra( disk_spectra[ii], _redshift[ii], area, _disk_lum[ii], _disk_app_mags, _bulge_abs_mags, ii );
+               _process_spectra( bulge_spectra[ii], _redshift[ii], area, _bulge_lum[ii], _bulge_app_mags, _bulge_abs_mags, ii );
             }
          }
 
@@ -136,31 +136,81 @@ namespace tao {
 
          void
          _process_spectra( const vector<real_type>::view& spectra,
+                           real_type redshift,
                            real_type area,
                            real_type& luminosity,
                            vector<vector<real_type>::view>& apparent_mags,
                            vector<vector<real_type>::view>& absolute_mags,
                            unsigned gal_idx )
          {
-            // Prepare the SED.
             typedef hpc::view<std::vector<real_type>>::type view_type;
             typedef numerics::spline<real_type,view_type,view_type> spline_type;
-            tao::sed<spline_type> sed( (const view<std::vector<real_type>>::type&)_waves, (const vector_view<std::vector<real_type>>&)spectra );
 
-            // Calculate luminosity.
-            luminosity = integrate( sed.spectrum() );
-
-            // Loop over each filter band.
-            for( unsigned ii = 0; ii < _bpfs.size(); ++ii )
+            // Calculate absolute magnitudes.
             {
-               apparent_mags[ii][gal_idx] = apparent_magnitude( sed, _bpfs[ii], area );
-               absolute_mags[ii][gal_idx] = absolute_magnitude( sed, _bpfs[ii] );
+               // Prepare the normal SED.
+               tao::sed<spline_type> sed( (const view<std::vector<real_type>>::type&)_waves,
+                                          (const vector_view<std::vector<real_type>>&)spectra );
 
-               // Make sure these are sane.
-               ASSERT( apparent_mags[ii][gal_idx] == apparent_mags[ii][gal_idx],
-                       "Produced NaN for apparent magnitude." );
-               ASSERT( absolute_mags[ii][gal_idx] == absolute_mags[ii][gal_idx],
-                       "Produced NaN for absolute magnitude." );
+               // Calculate luminosity.
+               luminosity = integrate( sed.spectrum() );
+
+               // Each bandpass filter.
+               for( unsigned ii = 0; ii < _bpfs.size(); ++ii )
+               {
+                  absolute_mags[ii][gal_idx] = absolute_magnitude( sed, _bpfs[ii] );
+                  ASSERT( absolute_mags[ii][gal_idx] == absolute_mags[ii][gal_idx],
+                          "Produced NaN for absolute magnitude." );
+               }
+            }
+
+            // Now to calculate apparent magnitudes.
+            if( _k_cor )
+            {
+               // Transform the spectra.
+               std::vector<real_type> new_spec( spectra.size() );
+               std::transform(
+                  spectra.begin(), spectra.end(), new_spec.begin(),
+                  [redshift]( real_type val )
+                  {
+                     return val/(1.0 + redshift);
+                  }
+                  );
+
+               // Transform the wavelengths.
+               std::vector<real_type> new_waves( _waves.size() );
+               std::transform(
+                  _waves.begin(), _waves.end(), new_waves.begin(),
+                  [redshift]( real_type val )
+                  {
+                     return val*(1.0 + redshift);
+                  }
+                  );
+
+               // Prepare new SED.
+               tao::sed<> sed( new_waves, new_spec );
+
+               // Each bandpass filter.
+               for( unsigned ii = 0; ii < _bpfs.size(); ++ii )
+               {
+                  apparent_mags[ii][gal_idx] = apparent_magnitude( sed, _bpfs[ii], area );
+                  ASSERT( apparent_mags[ii][gal_idx] == apparent_mags[ii][gal_idx],
+                          "Produced NaN for apparent magnitude." );
+               }
+            }
+            else
+            {
+               // Prepare the normal SED.
+               tao::sed<spline_type> sed( (const view<std::vector<real_type>>::type&)_waves,
+                                          (const vector_view<std::vector<real_type>>&)spectra );
+
+               // Each bandpass filter.
+               for( unsigned ii = 0; ii < _bpfs.size(); ++ii )
+               {
+                  apparent_mags[ii][gal_idx] = apparent_magnitude( sed, _bpfs[ii], area );
+                  ASSERT( apparent_mags[ii][gal_idx] == apparent_mags[ii][gal_idx],
+                          "Produced NaN for apparent magnitude." );
+               }
             }
          }
 
@@ -195,6 +245,10 @@ namespace tao {
             // Get the Vega filename and perform processing.
             path = data_prefix()/"spectra";
             _process_vega( path/dict.get<string>( "vega-spectrum", "A0V_KUR_BB.SED" ) );
+
+            // Read k-correction.
+            _k_cor = dict.get<bool>( "k-correction", true );
+            LOGILN( "Using inverse k-correction: ", (_k_cor ? "yes" : "no") );
          }
 
          void
@@ -232,6 +286,7 @@ namespace tao {
          vector<string> _bpf_names;
          vector<real_type> _vega_int;
          vector<real_type> _vega_mag;
+         bool _k_cor;
 
          vector<vector<real_type>::view> _total_app_mags, _total_abs_mags;
          vector<vector<real_type>::view> _disk_app_mags, _disk_abs_mags;

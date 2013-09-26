@@ -20,17 +20,15 @@ namespace tao {
               "Please supply an XML parameter file and "
               "a database settings XML file." );
 
-      // Cache arguments.
-      string xml = argv[1], db = argv[2];
-
-      // Prepare the debugging log.
-      int index = xml.find( ".xml" );
-      EXCEPT( index != -1, "Invalid filename, \"", xml, "\", (must have \".xml\" extension)." );
-      xml.replace( index, 4, "_tao.debug.log" );
-      LOG_PUSH( new mpi::logger( xml, logging::debug ) );
+      // // Prepare the debugging log.
+      // int index = xml.find( ".xml" );
+      // EXCEPT( index != -1, "Invalid filename, \"", xml, "\", (must have \".xml\" extension)." );
+      // xml.replace( index, 4, "_tao.debug.log" );
+      // LOG_PUSH( new mpi::logger( xml, logging::debug ) );
 
       // Prepare the preprocessing log, if selected.
 #ifdef PREPROCESSING
+      string xml = argv[1], db = argv[2];
       xml = argv[1];
       index = xml.find( ".xml" );
       xml.replace( index, 4, "_tao.Profile.log" );
@@ -78,7 +76,8 @@ namespace tao {
       string subjobindex=xml.get<string>( "subjobindex" );
       LOGDLN("LOG DIRECTORY:"+xml.get<string>( "logdir" ) );
       LOGDLN("SubJobIndex:"+xml.get<string>( "subjobindex" ) );
-      _setup_log( xml.get<string>( "logdir" ) + "tao.log."+ subjobindex);
+      _setup_log( xml.get<string>( "logdir" ) + "/tao.log."+ subjobindex);
+      LOG_PUSH( new mpi::logger( xml.get<string>( "logdir" ) + "/debug.log." + subjobindex, logging::debug ) );
 
       // Initialise all the modules.
       for( auto module : _fact )

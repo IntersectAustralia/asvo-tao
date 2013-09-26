@@ -4,6 +4,7 @@
 
     <light-cone id="light-cone">
       <geometry>box</geometry>
+      <box-repetition>random</box-repetition>
       <rng-seed>0</rng-seed>
       <query-box-size>10</query-box-size>
       <redshift>0</redshift>
@@ -12,6 +13,7 @@
         <item>pos_y</item>
         <item>pos_z</item>
       </output-fields>
+
       <record-filter>
         <filter>
           <filter-attribute>None</filter-attribute>
