@@ -1,9 +1,9 @@
 
 var catalogue = catalogue || {};
-catalogue.modules = catalogue.modules || {};
+catalogue.module_defs = catalogue.module_defs || {};
 
 
-catalogue.modules.light_cone = function ($) {
+catalogue.module_defs.light_cone = function ($) {
 
 
     function get_widget() {
