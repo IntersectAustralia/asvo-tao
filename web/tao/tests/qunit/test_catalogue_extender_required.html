@@ -114,6 +114,17 @@
         ok(catalogue.vm.test.required_observable.required() == TAO_REQUIRED_ERROR, 'Required working with function');
     });
 
+    test("An observable is accepted for required", function() {
+        var required = ko.observable(true);
+        catalogue.vm.test.required_observable.extend({required: required});
+        catalogue.vm.test.required_observable(null);
+        ok(catalogue.vm.test.required_observable.required() == TAO_REQUIRED_ERROR, 'Required working with observable');
+        required(false);
+        ok(catalogue.vm.test.required_observable.required() == TAO_REQUIRED_NO, 'Required working with observable set to false');
+        required(true);
+        ok(catalogue.vm.test.required_observable.required() == TAO_REQUIRED_ERROR, 'Required working with observable set to true');
+    });
+
   </script>
 
 </body>
