@@ -119,6 +119,9 @@ namespace tao {
                      dspace.select_one( ii );
                      _write_field( bat, *it, field, *dset, dspace );
                   }
+
+		  // Set number written for first batch.
+		  _records = ii;
                }
 
                // Flag as complete.
@@ -144,12 +147,11 @@ namespace tao {
                      dspace.select_one( old_size );
                      _write_field( bat, *it, field, *dset, dspace );
                   }
+
+		  // Increment records.
+		  ++_records;
                }
             }
-
-            // Increment number of written records.
-            // TODO: Should be able to do the following:
-            // _records += _filt->size();
          }
 
          virtual

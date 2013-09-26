@@ -271,6 +271,19 @@ namespace tao {
             // Now set the simulation on the backend.
             _be->set_simulation( &_sim );
 
+            // Extract the random number generator seed and set it.
+            optional<int> rng_seed = dict.opt<int>( "rng-seed" );
+            if( rng_seed )
+               _rng_seed = *rng_seed;
+            else
+            {
+               ::srand( ::time( NULL ) );
+               _rng_seed = rand();
+            }
+            mpi::comm::world.bcast<int>( _rng_seed, 0 );
+            LOGILN( "Random seed: ", _rng_seed );
+            _eng.seed( _rng_seed );
+
             // Get box type.
             string box_type = dict.get<string>( "geometry", "light-cone" );
             to_lower( box_type );
@@ -289,7 +302,7 @@ namespace tao {
                real_type snap_z_max = _sim.redshifts().front();
                real_type snap_z_min = _sim.redshifts().back();
                real_type max_z = std::min( dict.get<real_type>( "redshift-max", snap_z_max ), snap_z_max );
-               real_type min_z = std::min( dict.get<real_type>( "redshift-min", snap_z_min ), snap_z_min );
+               real_type min_z = std::max( dict.get<real_type>( "redshift-min", snap_z_min ), snap_z_min );
                LOGILN( "Redshift range: [", min_z, ", ", max_z, ")" );
 
                // Right ascension.
@@ -307,6 +320,7 @@ namespace tao {
                // Prepare the lightcone object.
                _lc.set_simulation( &_sim );
                _lc.set_geometry( min_ra, max_ra, min_dec, max_dec, max_z, min_z );
+	       _lc.set_random( !_unique, &_eng );
             }
             else
             {
@@ -318,19 +332,6 @@ namespace tao {
                // Snapshot.
                _box_z = dict.get<real_type>( "redshift", _sim.redshifts().front() );
             }
-
-            // Extract the random number generator seed and set it.
-            optional<int> rng_seed = dict.opt<int>( "rng-seed" );
-            if( rng_seed )
-               _rng_seed = *rng_seed;
-            else
-            {
-               ::srand( ::time( NULL ) );
-               _rng_seed = rand();
-            }
-            mpi::comm::world.bcast<int>( _rng_seed, 0 );
-            LOGILN( "Random seed: ", _rng_seed );
-            _eng.seed( _rng_seed );
 
             // Output field information.
             {
