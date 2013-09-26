@@ -120,7 +120,7 @@ namespace tao {
                if( _geom == CONE )
                   _c_it = _lc.galaxy_begin( _qry, *_be, &_bat, &_filt );
                else
-                  _b_it = _box.galaxy_begin( _qry, *_be, &_bat );
+                  _b_it = _box.galaxy_begin( _qry, *_be, &_bat, &_filt );
 
                // Initialise the tile index.
                _tile_idx = std::numeric_limits<unsigned>::max();
@@ -328,9 +328,29 @@ namespace tao {
 
                // Box size.
                _box_size = dict.get<real_type>( "query-box-size", _sim.box_size() );
+               LOGILN( "Box size: ", _box_size );
 
                // Snapshot.
                _box_z = dict.get<real_type>( "redshift", _sim.redshifts().front() );
+               LOGILN( "Redshift: ", _box_z );
+
+               // Try to coerce the redshift into a snapshot index.
+               unsigned ii = 0;
+               for( ; ii < _sim.redshifts().size(); ++ii )
+               {
+                  if( num::approx( _box_z, _sim.redshifts()[ii], 1e-6 ) )
+                     break;
+               }
+               EXCEPT( ii < _sim.redshifts().size(),
+                       "Unable to match specified box redshift, ", _box_z, ", to snapshot.\n"
+                       "Available redshifts for selected simulation are: ", _sim.redshifts() );
+               LOGILN( "Matched redshift to snapshot: ", ii );
+
+               // Prepare box object.
+               _box.set_simulation( &_sim );
+               _box.set_size( _box_size );
+               _box.set_snapshot( ii );
+               _box.set_random( !_unique, &_eng );
             }
 
             // Output field information.

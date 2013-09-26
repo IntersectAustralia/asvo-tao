@@ -28,6 +28,12 @@ namespace tao {
    filter::set_field_name( const string& name )
    {
       _field_name = name;
+
+      // Check if the field name has been set to none.
+      string tmp = _field_name;
+      to_lower( tmp );
+      if( tmp == "none" )
+         _field_name.clear();
    }
 
    filter::iterator

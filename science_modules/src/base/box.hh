@@ -5,6 +5,7 @@
 #include <libhpc/containers/random.hh>
 #include "query.hh"
 #include "batch.hh"
+#include "filter.hh"
 
 namespace tao {
    using namespace hpc;
@@ -23,6 +24,7 @@ namespace tao {
 
       box( const tao::simulation<real_type>* sim = 0 )
          : _sim( sim ),
+           _snap( 0 ),
            _rand( false ),
 	   _eng( 0 )
       {
@@ -34,6 +36,19 @@ namespace tao {
       {
          _sim = sim;
          _update();
+      }
+
+      void
+      set_size( real_type size )
+      {
+         std::fill( _min.begin(), _min.end(), 0.0 );
+         std::fill( _max.begin(), _max.end(), size );
+      }
+
+      void
+      set_snapshot( unsigned snap )
+      {
+         _snap = snap;
       }
 
       void
@@ -63,6 +78,12 @@ namespace tao {
          return _max;
       }
 
+      unsigned
+      snapshot() const
+      {
+         return _snap;
+      }
+
       bool
       random() const
       {
@@ -85,9 +106,10 @@ namespace tao {
       typename Backend::box_galaxy_iterator
       galaxy_begin( tao::query<real_type>& query,
                     Backend& be,
-                    tao::batch<real_type>* bat = 0 ) const
+                    tao::batch<real_type>* bat = 0,
+                    tao::filter const* filt = 0 )
       {
-         return be.galaxy_begin( query, *this, bat );
+         return be.galaxy_begin( query, *this, bat, filt );
       }
 
       template< class Backend >
@@ -184,6 +206,7 @@ namespace tao {
       engine_type* _eng;
       array<unsigned,3> _rot;
       array<real_type,3> _trans;
+      unsigned _snap;
    };
 
 }

@@ -93,9 +93,10 @@ namespace tao {
          box_galaxy_iterator
          galaxy_begin( query_type& query,
                        const box<real_type>& box,
-                       tao::batch<real_type>* bat = 0 )
+                       tao::batch<real_type>* bat = 0,
+                       filter const* filt = 0 )
          {
-            string qs = this->make_box_query_string( box, query );
+            string qs = this->make_box_query_string( box, query, filt );
             return box_galaxy_iterator( *this, query, qs, table_begin( box ), table_end( box ), 0, bat );
          }
 
