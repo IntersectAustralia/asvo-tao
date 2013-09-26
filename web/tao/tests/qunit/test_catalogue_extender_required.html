@@ -106,6 +106,14 @@
         ok(catalogue.vm.test.required_observable.required() == TAO_REQUIRED_VALIDATE, 'Required working for a number');
     });
 
+    test("A function is also accepted as required", function() {
+        catalogue.vm.test.required_observable.extend({required: function(){return true;}});
+        catalogue.vm.test.required_observable('some');
+        ok(catalogue.vm.test.required_observable.required() == TAO_REQUIRED_VALIDATE, 'Required working with function');
+        catalogue.vm.test.required_observable(null);
+        ok(catalogue.vm.test.required_observable.required() == TAO_REQUIRED_ERROR, 'Required working with function');
+    });
+
   </script>
 
 </body>
