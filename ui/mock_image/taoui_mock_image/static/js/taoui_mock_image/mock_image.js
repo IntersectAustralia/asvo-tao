@@ -1,8 +1,8 @@
 
 var catalogue = catalogue || {};
-catalogue.modules = catalogue.modules || {};
+catalogue.module_defs = catalogue.module_defs || {};
 
-catalogue.modules.mock_image = function ($) {
+catalogue.module_defs.mock_image = function ($) {
 
     var vm = {}
     this.vm = vm;

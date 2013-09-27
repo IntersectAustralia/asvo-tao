@@ -273,7 +273,7 @@ function has_value($elem) {
 
 
 
-catalogue.util = function ($) {
+catalogue.util_def = function ($) {
 
     this.current_data = undefined;
     this.current_key = null;
@@ -653,7 +653,8 @@ catalogue.util = function ($) {
 }	// End catalog.util
 
 ////// summary_submit
-catalogue.modules.summary_submit = function ($) {
+catalogue.module_defs = catalogue.module_defs || {};
+catalogue.module_defs.summary_submit = function ($) {
 
     // KO ViewModel
     var vm = {}
@@ -675,7 +676,8 @@ catalogue.modules.summary_submit = function ($) {
 }
 ////// end summary_submit
 
-jQuery(document).ready(function ($) {
+// expose doc_ready function for unit tests
+catalogue.doc_ready = function ($) {
 
     // error : dictionary as returned by computable in check_bind
     function error_display(element, error, popover) {
@@ -969,9 +971,9 @@ jQuery(document).ready(function ($) {
 
     function initialise_modules(init_params) {
         // create module
-        for (var module in catalogue.modules) {
+        for (var module in catalogue.module_defs) {
             console.log('Creating module: ' + module)
-            catalogue.modules[module] = new catalogue.modules[module]($);
+            catalogue.modules[module] = new catalogue.module_defs[module]($);
         }
         catalogue.vm.param_errors = ko.observableArray();
         for (var module in catalogue.modules) {
@@ -1048,9 +1050,9 @@ jQuery(document).ready(function ($) {
 
 
 
-    catalogue.util = new catalogue.util($);
+    catalogue.util = new catalogue.util_def($);
     var init_params = {
-        'job' : TaoJob
+        'job' : window.TaoJob || {}
     };
     try {
         initialise_catalogue_vm_and_tabs(init_params);
@@ -1059,7 +1061,7 @@ jQuery(document).ready(function ($) {
             // add tab, error and status support to models
             prebinding_enrichment();
         }
-        ko.applyBindings(catalogue.vm);
+        ko.applyBindings(catalogue.vm, document.body);
         jquery_ui();
         catalogue.vm.modal_message(null);
         if (catalogue.validators.defined(window.TaoJob)
@@ -1083,4 +1085,6 @@ jQuery(document).ready(function ($) {
     }
     
 
-});
+};
+
+jQuery(document).ready(catalogue.doc_ready);

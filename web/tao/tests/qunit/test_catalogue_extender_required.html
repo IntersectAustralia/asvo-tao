@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>TAO Javascript test</title>
+  <link rel="stylesheet" href="qunit-1.11.0.css">
+</head>
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+  <script src="../../../tao/static/js/jquery-1.8.0.min.js"></script>
+  <script src="../../../tao/static/bootstrap/js/bootstrap.min.js"></script>
+  <script src="../../../tao/static/js/knockout-2.3.0.js"></script>
+  <script src="../../../tao/static/js/jquery-ui-1.10.1.custom.js"></script>
+  <script src="../../../tao/static/js/catalogue.js"></script>
+  <script src="qunit-1.11.0.js"></script>
+  <script type="text/javascript">
+    function setup() {
+        console.log('SETUP');
+
+        catalogue.module_defs.test = function ($) {
+
+            // KO ViewModel
+            var vm = {};
+            var that = this;
+            this.vm = vm;
+
+            this.cleanup_fields = function ($form) {
+                return;
+            }
+
+            this.validate = function ($form) {
+                return true;
+            }
+
+            this.pre_submit = function ($form) {
+                return;
+            }
+
+            this.job_parameters = function() {
+                return {};
+            }
+
+            this.init_model = function (init_params) {
+                this.vm.required_observable = ko.observable(null);
+                return this.vm;
+            }
+        };
+        ko.cleanNode(document.body);
+        catalogue.doc_ready($);
+    };
+
+    module('catalogue.extender.required', {
+        setup: setup
+    });
+
+    test("Not rebinding", function() {
+        var failed;
+        catalogue.vm.test.required_observable.extend({required: true});
+        try{
+            catalogue.vm.test.required_observable.extend({required: false});
+            failed = false;
+        } catch(e) {
+            failed = true;
+        }
+        ok(failed, "It does not set a required twice.");
+    });
+
+    test("Required flags error when there is no data", function() {
+        catalogue.vm.test.required_observable.extend({required: true});
+        catalogue.vm.test.required_observable('');
+        ok(catalogue.vm.test.required_observable.required() == TAO_REQUIRED_ERROR, 'Required working for empty strings');
+        catalogue.vm.test.required_observable(null);
+        ok(catalogue.vm.test.required_observable.required() == TAO_REQUIRED_ERROR, 'Required working for null');
+        catalogue.vm.test.required_observable(undefined);
+        ok(catalogue.vm.test.required_observable.required() == TAO_REQUIRED_ERROR, 'Required working for undefined');
+        catalogue.vm.test.required_observable([]);
+        ok(catalogue.vm.test.required_observable.required() == TAO_REQUIRED_ERROR, 'Required working for array');
+    });
+
+    test("Required is OK when there is no data but it is not required", function() {
+        catalogue.vm.test.required_observable.extend({required: false});
+        catalogue.vm.test.required_observable('');
+        ok(catalogue.vm.test.required_observable.required() == TAO_REQUIRED_NO, 'Non-required working for empty strings');
+        catalogue.vm.test.required_observable(null);
+        ok(catalogue.vm.test.required_observable.required() == TAO_REQUIRED_NO, 'Non-required working for null');
+        catalogue.vm.test.required_observable(undefined);
+        ok(catalogue.vm.test.required_observable.required() == TAO_REQUIRED_NO, 'Non-required working for undefined');
+        catalogue.vm.test.required_observable([]);
+        ok(catalogue.vm.test.required_observable.required() == TAO_REQUIRED_NO, 'Non-required working for array');
+    });
+
+    test("Required returns 'validate' when there is data regardless of required", function() {
+        catalogue.vm.test.required_observable.extend({required: false});
+        catalogue.vm.test.required_observable('some');
+        ok(catalogue.vm.test.required_observable.required() == TAO_REQUIRED_VALIDATE, 'Non-required working for non-empty strings');
+        catalogue.vm.test.required_observable(0);
+        ok(catalogue.vm.test.required_observable.required() == TAO_REQUIRED_VALIDATE, 'Non-required working for a number');
+    });
+
+    test("Required returns 'validate' when there is data and it is required", function() {
+        catalogue.vm.test.required_observable.extend({required: true});
+        catalogue.vm.test.required_observable('some');
+        ok(catalogue.vm.test.required_observable.required() == TAO_REQUIRED_VALIDATE, 'Required working for non-empty strings');
+        catalogue.vm.test.required_observable(0);
+        ok(catalogue.vm.test.required_observable.required() == TAO_REQUIRED_VALIDATE, 'Required working for a number');
+    });
+
+    test("A function is also accepted as required", function() {
+        catalogue.vm.test.required_observable.extend({required: function(){return true;}});
+        catalogue.vm.test.required_observable('some');
+        ok(catalogue.vm.test.required_observable.required() == TAO_REQUIRED_VALIDATE, 'Required working with function');
+        catalogue.vm.test.required_observable(null);
+        ok(catalogue.vm.test.required_observable.required() == TAO_REQUIRED_ERROR, 'Required working with function');
+    });
+
+    test("An observable is accepted for required", function() {
+        var required = ko.observable(true);
+        catalogue.vm.test.required_observable.extend({required: required});
+        catalogue.vm.test.required_observable(null);
+        ok(catalogue.vm.test.required_observable.required() == TAO_REQUIRED_ERROR, 'Required working with observable');
+        required(false);
+        ok(catalogue.vm.test.required_observable.required() == TAO_REQUIRED_NO, 'Required working with observable set to false');
+        required(true);
+        ok(catalogue.vm.test.required_observable.required() == TAO_REQUIRED_ERROR, 'Required working with observable set to true');
+    });
+
+  </script>
+
+</body>
+</html>

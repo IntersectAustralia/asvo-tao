@@ -5,10 +5,10 @@
 // 
 
 var catalogue = catalogue || {};
-catalogue.modules = catalogue.modules || {};
+catalogue.module_defs = catalogue.module_defs || {};
 
 
-catalogue.modules.view_job = function ($) {
+catalogue.module_defs.view_job = function ($) {
     // KO ViewModel
     var vm = {}
     this.vm = vm;

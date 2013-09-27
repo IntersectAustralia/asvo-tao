@@ -1,9 +1,9 @@
 
 var catalogue = catalogue || {}
-catalogue.modules = catalogue.modules || {}
+catalogue.module_defs = catalogue.module_defs || {}
 
 
-catalogue.modules.sed = function ($) {
+catalogue.module_defs.sed = function ($) {
 
     // KO ViewModel
     var vm = {}

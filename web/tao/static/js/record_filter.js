@@ -1,8 +1,8 @@
 
 var catalogue = catalogue || {};
-catalogue.modules = catalogue.modules || {};
+catalogue.module_defs = catalogue.module_defs || {};
 
-catalogue.modules.record_filter = function ($) {
+catalogue.module_defs.record_filter = function ($) {
 
     // KO ViewModel
     var vm = {}
