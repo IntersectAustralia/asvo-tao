@@ -35,8 +35,12 @@ namespace tao {
       LOG_PUSH( new hpc::mpi::logger( xml, 100 ) );
 #endif
 
-      // Dump information to the console.
-      LOG_PUSH( new hpc::logging::stdout( hpc::logging::info ) );
+      // Dump information to the console if there is just
+      // one rank.
+#ifndef NLOG
+      if( mpi::comm::world.size() == 1 )
+	 LOG_PUSH( new hpc::logging::stdout( hpc::logging::info ) );
+#endif
 
       // Check that the files exists.
       {

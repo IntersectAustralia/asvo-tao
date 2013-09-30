@@ -206,9 +206,19 @@ namespace tao {
                }
             }
 
-            // Transfer to a vector.
-            _tables.reallocate( tables.size() );
-            std::copy( tables.begin(), tables.end(), _tables.begin() );
+            // Transfer to a vector, leaving out any tables not in my
+	    // parallel set.
+	    unsigned first_table = (mpi::comm::world.rank()*tables.size())/mpi::comm::world.size();
+	    unsigned last_table = ((mpi::comm::world.rank() + 1)*tables.size())/mpi::comm::world.size();
+            _tables.reallocate( last_table - first_table );
+	    {
+	       auto it = tables.begin();
+	       unsigned ii;
+	       for( ii = 0; ii < first_table; ++ii, ++it );
+	       for( ; ii < last_table; ++ii, ++it )
+		  _tables[ii - first_table] = *it;
+	    }
+	    LOGILN( "Overlapping tables: ", _tables );
             _it = _tables.begin();
 
             // If there are no tables flag that we're done.
