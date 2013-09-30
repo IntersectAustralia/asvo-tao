@@ -153,26 +153,25 @@ class JobTest(LiveServerTest):
     def make_xml_parameters(self):
         return light_cone_xml(self.make_parameters())
 
-    def _test_view_job_summary(self):
+    def test_view_job_summary(self):
         self.login(self.username, self.password)
         self.visit('view_job', self.completed_job.id)
         self.wait(2)
-        self.assert_element_text_equals('#id-job_description', self.completed_job.description)
+        self.assert_element_value_equals('#id-job_description', self.completed_job.description)
         self.assert_page_has_content('Download')
         self.assert_page_has_content('Status')
         self.assert_page_has_content('Summary')
         self.assert_summary_field_correctly_shown(self.simulation.name, 'light_cone', 'simulation')
         self.assert_summary_field_correctly_shown(self.galaxy.name, 'light_cone', 'galaxy_model')
-        self.assert_summary_field_correctly_shown('1 random light cones', 'light_cone', 'number_of_light_cones')
+        self.assert_summary_field_correctly_shown('1 random light-cone', 'light_cone', 'number_of_light_cones')
         self.assert_summary_field_correctly_shown(self.sed.label, 'sed', 'single_stellar_population_model')
         self.assert_summary_field_correctly_shown(self.dust.name, 'sed', 'dust_model')
         self.assert_summary_field_correctly_shown(u"1000000 \u2264 %s (%s)" % (self.filter.label, self.filter.units), 'record_filter', 'record_filter')
 
         band_pass_filters = BandPassFilter.objects.all()
         self.wait(2)
-        self.assert_summary_field_correctly_shown('1 filter selected', 'sed', 'band_pass_filters')
-        self.click('expand_band_pass_filters')  # this click doesn't work, it just grabs the focus
-        self.click('expand_band_pass_filters')  # need a second call to actually do the click
+        self.assert_summary_field_correctly_shown('1 properties selected', 'sed', 'band_pass_filters')
+        self.click('expand_band_pass_filters')
         self.assert_summary_field_correctly_shown(band_pass_filters[0].label + ' (Apparent)', 'sed', 'band_pass_filters_list')
 
     def _test_job_with_files_downloads(self):
@@ -206,7 +205,7 @@ class JobTest(LiveServerTest):
         self.visit('view_job', self.job.id)
         self.assert_page_has_content('This job has not completed')
 
-    def _test_summary_txt_downloads_correctly(self):
+    def test_summary_txt_downloads_correctly(self):
         self.login(self.username, self.password)
         self.visit('view_job', self.completed_job.id)
 
@@ -340,7 +339,7 @@ class JobTest(LiveServerTest):
         self.selenium.refresh()
         self.assert_element_value_equals('#id-job_description', original_description)
 
-    def _test_stop_rerun_release_buttons_enabled_with_status(self):
+    def test_stop_rerun_release_buttons_enabled_with_status(self):
         self.login(self.username, self.password)
 
         self.visit('view_job', self.submitted_job.id)
@@ -375,7 +374,7 @@ class JobTest(LiveServerTest):
         self.assertEqual('Job_Stop', stop_job_command.command)
         self.assertEqual('SUBMITTED', stop_job_command.execution_status)
 
-    def _test_rerun_job_button(self):
+    def test_rerun_job_button(self):
         self.login(self.username, self.password)
         self.visit('view_job', self.completed_job.id)
         self.click(self.job_select('rerun'))
@@ -385,7 +384,7 @@ class JobTest(LiveServerTest):
         updated_job = Job.objects.get(id=self.completed_job.id)
         self.assertEqual('SUBMITTED', updated_job.status)
 
-    def _test_delete_job_output_button(self):
+    def test_delete_job_output_button(self):
         self.login(self.username, self.password)
         self.visit('view_job', self.completed_job.id)
         self.assertEqual(0, len(WorkflowCommand.objects.all()))
@@ -399,7 +398,7 @@ class JobTest(LiveServerTest):
         self.assertEqual('Job_Output_Delete', delete_job_output_command.command)
         self.assertEqual('SUBMITTED', delete_job_output_command.execution_status)
 
-    def _test_release_job_button(self):
+    def test_release_job_button(self):
         self.login(self.username, self.password)
         self.visit('view_job', self.held_job.id)
         self.click(self.job_select('release'))
@@ -474,12 +473,11 @@ class JobTest(LiveServerTest):
         self.click('id-job_error_support')
         self.assert_on_page('support_page')
 
+
     def test_refresh_disk_usage(self):
         self.login(self.username, self.password)
         self.visit('view_job', self.completed_job.id)
-        # self.assert_page_has_content('<strong>Disk Usage:</strong> 854.0B')
         self.assert_element_text_equals('#id_disk_usage', self.completed_job.display_disk_size())
-
         file_content = 'abc' * 2000000
         helper.create_file(os.path.join(settings.FILES_BASE, self.output_paths[0]), 'file_name', {'file_name': file_content})
         self.completed_job.save()

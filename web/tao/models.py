@@ -16,7 +16,7 @@ import os
 
 def format_human_readable_file_size(file_size):
     size = float(file_size)
-    units = ['MB', 'GB', 'TB']
+    units = ['B', 'kB', 'MB', 'GB', 'TB']
     for x in units:
         if size < 1000.0:
             return '%3d%s' % (round(size), x)
@@ -97,7 +97,7 @@ class TaoUser(auth_models.AbstractUser):
         return self.disk_quota  # in MB
 
     def display_user_disk_quota(self):
-        return format_human_readable_file_size(self.user_disk_quota())
+        return format_human_readable_file_size(self.user_disk_quota() * 1000.0 ** 2) # convert MB to B for formatting
 
     def get_current_disk_usage(self):
         user_jobs = Job.objects.filter(user=self)
@@ -327,6 +327,9 @@ class Job(models.Model):
     def is_completed(self):
         return self.status == Job.COMPLETED
 
+    def is_in_progress(self):
+        return self.status == Job.IN_PROGRESS        
+
     def is_error(self):
         return self.status == Job.ERROR
 
@@ -343,14 +346,12 @@ class Job(models.Model):
     def disk_size(self):
         if not self.is_completed():
             return 0
-
-        if self.disk_usage is not None and self.disk_usage > 0:
-            return self.disk_usage
         else:
             return self.recalculate_disk_usage()
 
+
     def display_disk_size(self):
-        return format_human_readable_file_size(self.disk_size())  # input file size in MB
+        return format_human_readable_file_size(self.disk_size() * 1000.0 ** 2)  # convert MB to B when formatting
     
 
     def files(self):
@@ -434,7 +435,7 @@ class JobFile(object):
         return format_human_readable_file_size(self.file_size)
 
     def get_file_size_in_MB(self):
-        return self.file_size / 1000 ** 2
+        return self.file_size / 1000.0 ** 2
 
 class BandPassFilter(models.Model):
     label = models.CharField(max_length=80) # displays the user-friendly file name for the filter, without file extension
