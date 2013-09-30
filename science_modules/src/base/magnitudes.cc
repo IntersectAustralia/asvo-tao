@@ -17,7 +17,9 @@ namespace tao {
    real_type
    calc_abs_area()
    {
-      return calc_area( 10.0/1e6 );
+      real_type area = log10( 4.0*M_PI ) + 2.0*log10( (10.0/1e6)*3.08568025e24 ); // result in cm^2
+      ASSERT( area == area, "Produced NaN during area calculation." );
+      return area;
    }
 
    real_type

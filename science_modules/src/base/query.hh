@@ -40,6 +40,7 @@ namespace tao {
          add_output_field( "snapshot" );
          add_output_field( "global_tree_id" );
          add_output_field( "local_galaxy_id" );
+	 add_output_field( "global_index" );
       }
 
       void

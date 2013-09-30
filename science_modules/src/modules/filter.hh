@@ -116,19 +116,33 @@ namespace tao {
                         const fibre<real_type>& bulge_spectra )
          {
             auto timer = this->timer_start();
+	    LOGDLN( "Processing batch in filter module.", setindent( 2 ) );
+
+#ifndef NLOGDEBUG
+	    auto ids = bat.scalar<long long>( "global_index" );
+#endif
 
             // Process each object individually to save space.
             for( unsigned ii = 0; ii < bat.size(); ++ii )
             {
+	       LOGDLN( "Galaxy global index: ", ids[ii] );
+
                // Calculate the distance/area for this galaxy. Use 1000
                // points.
                LOGDLN( "Using redshift of ", _redshift[ii], " to calculate area." );
                real_type area = calc_area( _redshift[ii] );
+	       LOGDLN( "Calculated area: ", area );
 
                // Process total, disk and bulge.
+	       LOGDLN( "Processing total spectra.", setindent( 2 ) );
                _process_spectra( total_spectra[ii], _redshift[ii], area, _total_lum[ii], _total_app_mags, _total_abs_mags, ii );
+	       LOGDLN( "Done.", setindent( -2 ) );
+	       LOGDLN( "Processing disk spectra.", setindent( 2 ) );
                _process_spectra( disk_spectra[ii], _redshift[ii], area, _disk_lum[ii], _disk_app_mags, _bulge_abs_mags, ii );
+	       LOGDLN( "Done.", setindent( -2 ) );
+	       LOGDLN( "Processing bulge spectra.", setindent( 2 ) );
                _process_spectra( bulge_spectra[ii], _redshift[ii], area, _bulge_lum[ii], _bulge_app_mags, _bulge_abs_mags, ii );
+	       LOGDLN( "Done.", setindent( -2 ) );
             }
          }
 
@@ -146,6 +160,8 @@ namespace tao {
             typedef hpc::view<std::vector<real_type>>::type view_type;
             typedef numerics::spline<real_type,view_type,view_type> spline_type;
 
+	    LOGDLN( "Spectra: ", spectra );
+
             // Calculate absolute magnitudes.
             {
                // Prepare the normal SED.
@@ -161,6 +177,7 @@ namespace tao {
                   absolute_mags[ii][gal_idx] = absolute_magnitude( sed, _bpfs[ii] );
                   ASSERT( absolute_mags[ii][gal_idx] == absolute_mags[ii][gal_idx],
                           "Produced NaN for absolute magnitude." );
+		  LOGDLN( "Absolute magnitude: ", absolute_mags[ii][gal_idx] );
                }
             }
 
@@ -196,6 +213,7 @@ namespace tao {
                   apparent_mags[ii][gal_idx] = apparent_magnitude( sed, _bpfs[ii], area );
                   ASSERT( apparent_mags[ii][gal_idx] == apparent_mags[ii][gal_idx],
                           "Produced NaN for apparent magnitude." );
+		  LOGDLN( "Apparent magnitude: ", apparent_mags[ii][gal_idx] );
                }
             }
             else
@@ -210,6 +228,7 @@ namespace tao {
                   apparent_mags[ii][gal_idx] = apparent_magnitude( sed, _bpfs[ii], area );
                   ASSERT( apparent_mags[ii][gal_idx] == apparent_mags[ii][gal_idx],
                           "Produced NaN for apparent magnitude." );
+		  LOGDLN( "Apparent magnitude: ", apparent_mags[ii][gal_idx] );
                }
             }
          }

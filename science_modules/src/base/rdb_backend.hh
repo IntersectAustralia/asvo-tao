@@ -235,7 +235,7 @@ namespace tao {
                                                box_size % (*box).min()[0] );
                         }
                         else
-                           field = _field_map.at( of );
+			   field = boost::str( boost::format( "%1% + %2%" ) % _field_map.at( of ) % (*box).min()[0] );
                      }
                      else if( of == "pos_y" )
                      {
@@ -246,7 +246,7 @@ namespace tao {
                                                box_size % (*box).min()[1] );
                         }
                         else
-                           field = _field_map.at( of );
+			   field = boost::str( boost::format( "%1% + %2%" ) % _field_map.at( of ) % (*box).min()[1] );
                      }
                      else
                      {
@@ -257,7 +257,7 @@ namespace tao {
                                                box_size % (*box).min()[2] );
                         }
                         else
-                           field = _field_map.at( of );
+			   field = boost::str( boost::format( "%1% + %2%" ) % _field_map.at( of ) % (*box).min()[2] );
                      }
 
                      // Add to map.

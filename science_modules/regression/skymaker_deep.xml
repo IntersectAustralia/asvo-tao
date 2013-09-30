@@ -7,13 +7,12 @@
       <box-repetition>unique</box-repetition>
       <rng-seed>0</rng-seed>
       <redshift-min>0.01</redshift-min>
-      <redshift-max>0.06</redshift-max>
+      <redshift-max>0.1</redshift-max>
       <ra-min>0</ra-min>
       <ra-max>10</ra-max>
       <dec-min>0</dec-min>
       <dec-max>10</dec-max>
       <output-fields>
-	<item>globalindex</item>
         <item>pos_x</item>
         <item>pos_y</item>
         <item>pos_z</item>
@@ -36,10 +35,23 @@
       </parents>
       <bandpass-filters>
         <item>v.dat</item>
-        <item>b.dat</item>
-        <item>k.dat</item>
       </bandpass-filters>
     </filter>
+
+    <skymaker id="skymaker">
+      <parents>
+        <item>filter</item>
+      </parents>
+      <images>
+        <item>
+          <mag_field>v.dat_apparent</mag_field>
+          <origin_ra>5</origin_ra>
+          <origin_dec>5</origin_dec>
+          <fov_ra>10</fov_ra>
+          <fov_dec>10</fov_dec>
+        </item>
+      </images>
+    </skymaker>
 
     <csv id="csv">
       <parents>
@@ -47,23 +59,12 @@
       </parents>
       <filename>result</filename>
       <fields>
-	<item>globalindex</item>
         <item>pos_x</item>
         <item>pos_y</item>
         <item>pos_z</item>
         <item>v.dat_apparent</item>
-        <item>b.dat_absolute</item>
-        <item>k.dat_apparent</item>
       </fields>
     </csv>
-
-    <record-filter>
-      <filter>
-        <filter-attribute>None</filter-attribute>
-        <filter-min>0</filter-min>
-        <filter-max>0</filter-max>
-       </filter>
-    </record-filter>
 
   </workflow>
 

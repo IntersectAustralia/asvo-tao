@@ -4,7 +4,7 @@
 
     <light-cone id="light-cone">
       <geometry>light-cone</geometry>
-      <box-repetition>random</box-repetition>
+      <box-repetition>unique</box-repetition>
       <rng-seed>0</rng-seed>
       <redshift-min>0.01</redshift-min>
       <redshift-max>0.06</redshift-max>
@@ -92,5 +92,5 @@
   <subjobindex>0</subjobindex>
   <logdir>log</logdir>
   <outputdir>output</outputdir>
-  <database>millennium_mini_hdf5_dist</database>
+  <database>millennium_mini_galacticus_2</database>
 </tao>

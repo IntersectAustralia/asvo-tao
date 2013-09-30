@@ -77,7 +77,7 @@ namespace tao {
             unsigned metal_idx = _interp_metal( *metals_start );
 
             // Calculate the base index for the ssp table.
-            size_t base = ii*_waves.size()*_metal_bins.size() + metal_idx;
+            size_t base = ii*_waves.size()*(_metal_bins.size() + 1) + metal_idx;
 
             // Sum each spectra into the sed bin.
             OutputIterator sed_it = sed_start;
@@ -87,7 +87,7 @@ namespace tao {
                // solar masses/1e10. The values in SSP are luminosity densities
                // in erg/s/angstrom, and they're really big. Scale them down
                // by 1e10 to make it more manageable.
-               *sed_it += _spec[base + ii*_metal_bins.size()]*mass;
+               *sed_it += _spec[base + ii*(_metal_bins.size() + 1)]*mass;
                ASSERT( *sed_it == *sed_it, "Produced NaN during stellar population summation." );
                ++sed_it;
             }

@@ -566,6 +566,10 @@ namespace tao {
             bool rows_exist = _st->fetch();
             _bat->update_size();
             LOGDLN( "Fetched ", _bat->size(), " rows." );
+	    if( _bat->size() == 74 )
+	    {
+	       std::cout << "HERE\n";
+	    }
 
             // If we found some rows perform any calculated field updates.
             if( rows_exist )

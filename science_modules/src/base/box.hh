@@ -57,7 +57,7 @@ namespace tao {
       {
 	 _rand = rand;
 	 _eng = engine;
-	 _update();
+	 _update_random();
       }
 
       const tao::simulation<real_type>*
@@ -179,6 +179,19 @@ namespace tao {
       void
       _update()
       {
+	 _update_random();
+
+         // If simulation is set, update min and max.
+         if( _sim )
+         {
+            std::fill( _min.begin(), _min.end(), 0 );
+            std::fill( _max.begin(), _max.end(), _sim->box_size() );
+         }
+      }
+
+      void
+      _update_random()
+      {
          // If randomised, then randomise!
          if( _rand )
          {
@@ -188,13 +201,6 @@ namespace tao {
          {
             std::iota( _rot.begin(), _rot.end(), 0 );
             std::fill( _trans.begin(), _trans.end(), 0 );
-         }
-
-         // If simulation is set, update min and max.
-         if( _sim )
-         {
-            std::fill( _min.begin(), _min.end(), 0 );
-            std::fill( _max.begin(), _max.end(), _sim->box_size() );
          }
       }
 

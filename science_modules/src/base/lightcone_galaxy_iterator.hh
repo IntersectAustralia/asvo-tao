@@ -62,6 +62,7 @@ namespace tao {
          _lc = op._lc;
          _be = op._be;
          _qry = op._qry;
+	 _bat = op._bat;
          _done = op._done;
          _tile_it = op._tile_it;
          _gal_it = op._gal_it;
