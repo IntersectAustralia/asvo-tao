@@ -7,7 +7,7 @@
       <box-repetition>unique</box-repetition>
       <rng-seed>0</rng-seed>
       <redshift-min>0.01</redshift-min>
-      <redshift-max>0.1</redshift-max>
+      <redshift-max>0.2</redshift-max>
       <ra-min>0</ra-min>
       <ra-max>10</ra-max>
       <dec-min>0</dec-min>

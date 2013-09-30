@@ -154,7 +154,8 @@ namespace tao {
          if( mpi::comm::world.rank() == 0 )
          {
             master_filename = "tao_sky.master." + index_string( _sub_cone ) + "." + index_string( _idx ) + ".list";
-            fs::remove( master_filename );
+	    if( fs::exists( master_filename ) )
+	       fs::remove( master_filename );
          }
          mpi::comm::world.bcast( master_filename, 0 );
          LOGDLN( "Skymaker master filename: ", master_filename );
@@ -174,7 +175,8 @@ namespace tao {
          if( mpi::comm::world.rank() == 0 )
          {
             // Be sure the destination filename does not already exist.
-            fs::remove( _sky_filename );
+	    if( fs::exists( _sky_filename ) )
+	       fs::remove( _sky_filename );
 
             // Run Skymaker.
             string cmd = string( "sky " ) + master_filename + string( " -c " ) + _conf_filename;
@@ -198,10 +200,10 @@ namespace tao {
          // Delete the files we used.
          if( !keep_files )
          {
-            fs::remove( master_filename );
+	    if( mpi::comm::world.rank() == 0 )
+	       fs::remove( master_filename );
             fs::remove( _list_filename );
             fs::remove( _conf_filename );
-            fs::remove( _sky_filename );
             fs::remove( _sky_list_filename );
          }
 

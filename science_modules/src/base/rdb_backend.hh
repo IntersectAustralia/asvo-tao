@@ -392,7 +392,8 @@ namespace tao {
          operator<<( std::ostream& strm,
                      const rdb_table& obj )
          {
-            strm << "rdb_table(" << obj._name << ", " << obj._min << ", " << obj._max << ")";
+            // strm << "rdb_table(" << obj._name << ", " << obj._min << ", " << obj._max << ")";
+	    strm << obj._name;
             return strm;
          }
 
