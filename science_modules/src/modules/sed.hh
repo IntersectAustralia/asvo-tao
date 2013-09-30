@@ -102,6 +102,7 @@ namespace tao {
          {
             auto timer = this->timer_start();
             ASSERT( this->parents().size() == 1 );
+	    LOGDLN( "Processing batch in SED module.", setindent( 2 ) );
 
             // Cache some information.
             tao::batch<real_type>& bat = this->parents().front()->batch();
@@ -130,6 +131,8 @@ namespace tao {
                for( unsigned jj = 0; jj < _ssp.wavelengths().size(); ++jj )
                   disk_spectra[ii][jj] = total_spectra[ii][jj] - bulge_spectra[ii][jj];
             }
+
+	    LOGDLN( "Done.", setindent( -2 ) );
          }
 
          virtual

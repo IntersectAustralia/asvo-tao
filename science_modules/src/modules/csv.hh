@@ -92,6 +92,7 @@ namespace tao {
 
             // Repeat for each galaxy in the batch, passing through
             // the filter on the way.
+	    unsigned cur_count = 0;
             for( auto bat_it = _filt->begin( bat ); bat_it != _filt->end( bat ); ++bat_it )
             {
                unsigned ii = *bat_it;
@@ -110,8 +111,10 @@ namespace tao {
                }
 
                // Increment number of written records.
+	       ++cur_count;
                ++_records;
             }
+	    LOGDLN( "Wrote ", cur_count, " records to CSV: ", _fn );
          }
 
          void

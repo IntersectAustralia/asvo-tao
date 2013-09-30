@@ -102,6 +102,9 @@ namespace tao {
             // to access and cache values.
             _be->init_batch( _bat, _qry );
 
+	    // Show in the logs what we're querying.
+	    LOGILN( "Querying the following fields: ", _qry.output_fields() );
+
             LOGILN( "Done.", setindent( -2 ) );
          }
 

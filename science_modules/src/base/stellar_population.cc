@@ -44,8 +44,8 @@ namespace tao {
    {
       ASSERT( age_idx < _age_bins.size(), "Invalid age index." );
       ASSERT( spec_idx < _waves.size(), "Invalid wavelength index." );
-      ASSERT( metal_idx < _metal_bins.size(), "Invalid metallicity index." );
-      return _spec[age_idx*_waves.size()*_metal_bins.size() + spec_idx*_metal_bins.size() + metal_idx];
+      ASSERT( metal_idx <= _metal_bins.size(), "Invalid metallicity index." );
+      return _spec[age_idx*_waves.size()*(_metal_bins.size() + 1) + spec_idx*(_metal_bins.size() + 1) + metal_idx];
    }
 
    const vector<real_type>::view
@@ -98,7 +98,7 @@ namespace tao {
 	 // Store the duals if not already in that format.
 	 if( dual == "dual" )
 	 {
-	    _metal_bins.resize( num_metals++ );
+	    _metal_bins.resize( num_metals );
 	    std::copy( metals.begin(), metals.end(), _metal_bins.begin() );
 	 }
 	 else
@@ -187,7 +187,7 @@ namespace tao {
       EXCEPT( file.is_open(), "Couldn't find SSP file: ", filename );
 
       // Allocate. Note that the ordering goes time,spectra,metals.
-      _spec.reallocate( _age_bins.size()*_waves.size()*_metal_bins.size() );
+      _spec.reallocate( _age_bins.size()*_waves.size()*(_metal_bins.size() + 1) );
       LOGILN( "Number of spectra entries: ", _spec.size() );
 
       // Read in the file in one big go.
