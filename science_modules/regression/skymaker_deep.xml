@@ -7,7 +7,7 @@
       <box-repetition>unique</box-repetition>
       <rng-seed>0</rng-seed>
       <redshift-min>0.01</redshift-min>
-      <redshift-max>0.2</redshift-max>
+      <redshift-max>0.06</redshift-max>
       <ra-min>0</ra-min>
       <ra-max>10</ra-max>
       <dec-min>0</dec-min>
@@ -39,6 +39,7 @@
     </filter>
 
     <skymaker id="skymaker">
+      <keep-files>1</keep-files>
       <parents>
         <item>filter</item>
       </parents>
@@ -71,5 +72,5 @@
   <subjobindex>0</subjobindex>
   <logdir>log</logdir>
   <outputdir>output</outputdir>
-  <database>millennium_mini_galacticus_2</database>
+  <database>millennium_full_hdf5_dist</database>
 </tao>
