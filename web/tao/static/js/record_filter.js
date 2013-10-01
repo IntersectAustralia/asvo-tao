@@ -154,22 +154,11 @@ catalogue.module_defs.record_filter = function ($) {
     	vm.selections = ko.computed(filter_choices);
     	current_dataset = catalogue.modules.light_cone.vm.dataset();
 
-        param = job['record_filter-filter'];
-        if (param) {
-            param = catalogue.util.get_observable_by_attribute('value', param, vm.selections);
-            if(param) {
-                vm.selection(param);
-            }
-        }
+        vm.selection_min = ko.observable(current_dataset.fields.default_filter_min);
+        vm.selection_max = ko.observable(current_dataset.fields.default_filter_max);
 
-    	// Create the min and max observables
-    	// Set up validation after creation as we have a validator that refers to both observables
-        
-        param = job['record_filter-min']
-        vm.selection_min = ko.observable(param ? param : current_dataset.fields.default_filter_min)
-        
-        param = job['record_filter-max']
-        vm.selection_max = ko.observable(param ? param : current_dataset.fields.default_filter_max)
+        // Create the min and max observables
+        // Set up validation after creation as we have a validator that refers to both observables
 
         vm.selection_min
             .extend({required: function(){
@@ -182,8 +171,22 @@ catalogue.module_defs.record_filter = function ($) {
             .extend({required: function(){
                 return !defined(vm.selection_min());
             }})
-    		.extend({validate: catalogue.validators.is_float})
-    		.extend({validate: valid_min_max});
+            .extend({validate: catalogue.validators.is_float})
+            .extend({validate: valid_min_max});
+
+        param = job['record_filter-filter'];
+        if (param) {
+            param = catalogue.util.get_observable_by_attribute('value', param, vm.selections);
+            if(param) {
+                vm.selection(param);
+                if ('record_filter-min' in job) {
+                    vm.selection_min(job['record_filter-min'])
+                }
+                if ('record_filter-max' in job) {
+                    vm.selection_max(job['record_filter-max'])
+                }
+            }
+        }
 
     	vm.hr_summary = ko.computed(this.hr_summary);
 

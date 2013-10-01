@@ -142,7 +142,7 @@ class JobTypeFormTests(LiveServerTest):
         rf_filter = self.get_selected_option_text(self.rf_id('filter'))
         self.assertEqual('Band pass filter 002 (Apparent)', rf_filter)
         rf_expected = {
-            self.rf_id('min'): '1',
+            self.rf_id('min'): '',
             self.rf_id('max'): '12'
         }
         
@@ -169,7 +169,7 @@ class JobTypeFormTests(LiveServerTest):
         self.assert_summary_field_correctly_shown('Not selected', 'sed', 'apply_dust')
         self.assert_summary_field_correctly_shown('2 images', 'mock_image', 'select_mock_image')
 
-        self.assert_summary_field_correctly_shown(u'1.0 \u2264 Band pass filter 002 (Apparent) \u2264 12.0', 'record_filter', 'record_filter')
+        self.assert_summary_field_correctly_shown(u'Band pass filter 002 (Apparent) \u2264 12.0', 'record_filter', 'record_filter')
 
         self.assert_summary_field_correctly_shown('FITS', 'output', 'output_format')
 
