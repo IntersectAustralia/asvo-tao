@@ -86,5 +86,26 @@ The following steps explain the process of handling new Workflow Job:
 .. figure:: ../_static/workflow_NewJobs.png
    :alt: Workflow - Adding new Job
 
+================================
+Workflow Commands Functionality
+================================
 
+Design Assumptions
+------------------
+
+- Workflow will try to execute theses commands with the highest priority within each time step (controlled by the workflow configuration parameters). 
+- Commands with Jobs that are not submitted before to the workflow will return error (*Job not available*). 
+- Workflow will not retry commands that finished with errors automatically. They can be resubmitted by changing their *ExecutionStatus* to **submitted**.
+- In case of workflow control commands (e.g. workflow stop or resume) *JobID* will be ignored and should be **0**. 
+- AdditionalParamters field will be used in case additional commands parameters are needed. In case more than one parameters are required, comma delimited text can be used. The only commands, which will use this field for now is the Job Output delete Commands. The additional parameter should contain the username who own this job output.
+- In case the command was executed successfully, the system UI should reflect the current workflow and job status for the admin and the users (if applicable). For example, if the job output is deleted, the UI should remove its associated link. Or if the workflow has been stopped, the system should show the workflow status *Paused*. Given that this is not a synchronous call, The system doesn't assume that the commands will be executed successfully. 
+- The commands are executed based on their order. If the user issue contradicting commands, they will be evaluated according to their order. For example, if the user issues a stop all command and then a job stop command for a specific job, the last command will fail.  
+
+Supported Commands
+-------------------
+
+.. figure:: ../_static/supportedcommands.png
+   :alt: Workflow - supported commands
+
+   
    
