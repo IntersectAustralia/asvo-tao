@@ -74,6 +74,9 @@ namespace tao {
             auto timer = this->timer_start();
             LOGILN( "Initialising lightcone module.", setindent( 2 ) );
 
+            // Add timers to sub-objects.
+            
+
             // If we have been given an existing backend then use that.
             if( !_be )
             {

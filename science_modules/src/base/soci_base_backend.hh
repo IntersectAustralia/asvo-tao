@@ -57,8 +57,11 @@ namespace tao {
          box_size()
          {
             real_type size;
-            session() << this->make_box_size_query_string(),
-               soci::into( size );
+            auto query = this->make_box_size_query_string();
+            {
+               auto db_timer = this->db_timer().start();
+               session() << query, soci::into( size );
+            }
             return size;
          }
 
@@ -66,11 +69,16 @@ namespace tao {
          snapshot_redshifts( vector<real_type>& snap_zs )
          {
             unsigned size;
-            session() << "SELECT COUNT(*) FROM snap_redshift",
-               soci::into( size );
+            {
+               auto db_timer = this->db_timer().start();
+               session() << "SELECT COUNT(*) FROM snap_redshift", soci::into( size );
+            }
             snap_zs.resize( size );
-            session() << "SELECT redshift FROM snap_redshift ORDER BY " + this->_field_map.at( "snapshot" ),
-               soci::into( (std::vector<real_type>&)snap_zs );
+            {
+               auto db_timer = this->db_timer().start();
+               session() << "SELECT redshift FROM snap_redshift ORDER BY " + this->_field_map.at( "snapshot" ),
+                  soci::into( (std::vector<real_type>&)snap_zs );
+            }
          }
 
          tile_galaxy_iterator
@@ -184,6 +192,7 @@ namespace tao {
                // Try and drop the redshift range table.
                try
                {
+                  auto db_timer = this->db_timer().start();
                   session() << this->make_drop_snap_rng_query_string();
                }
                catch( const ::soci::soci_error& ex )
@@ -191,8 +200,12 @@ namespace tao {
                }
 
                auto queries = this->make_snap_rng_query_string( *this->_sim );
-               for( const auto& query : queries )
-                  session() << query;
+               {
+                  auto db_timer = this->db_timer().start();
+                  for( const auto& query : queries )
+                     session() << query;
+               }
+
                LOGILN( "Done.", setindent( -2 ) );
             }
          }
@@ -204,7 +217,10 @@ namespace tao {
 
             // Extract the size and allocate.
             int size;
-            session() << "SELECT COUNT(*) FROM summary", soci::into( size );
+            {
+               auto db_timer = this->db_timer().start();
+               session() << "SELECT COUNT(*) FROM summary", soci::into( size );
+            }
             _minx.resize( size );
             _miny.resize( size );
             _minz.resize( size );
@@ -215,10 +231,13 @@ namespace tao {
             LOGILN( "Number of tables: ", size );
 
             // Now extract table info.
-            session() << "SELECT minx, miny, minz, maxx, maxy, maxz, tablename FROM summary",
-               soci::into( _minx ), soci::into( _miny ), soci::into( _minz ),
-               soci::into( _maxx ), soci::into( _maxy ), soci::into( _maxz ),
-               soci::into( _tbls );
+            {
+               auto db_timer = this->db_timer().start();
+               session() << "SELECT minx, miny, minz, maxx, maxy, maxz, tablename FROM summary",
+                  soci::into( _minx ), soci::into( _miny ), soci::into( _minz ),
+                  soci::into( _maxx ), soci::into( _maxy ), soci::into( _maxz ),
+                  soci::into( _tbls );
+            }
 
             LOGILN( "Done.", setindent( -2 ) );
          }
@@ -232,12 +251,15 @@ namespace tao {
             auto& sql = session( _tbls[0] );
             string be_name = sql.get_backend_name();
             soci::rowset<soci::row>* rs;
-            if( be_name == "sqlite3" )
-               rs = new soci::rowset<soci::row>( sql.prepare << "PRAGMA TABLE_INFO(" + _tbls[0] + ")" );
-            else
             {
-               rs = new soci::rowset<soci::row>( sql.prepare << "SELECT column_name, data_type FROM information_schema.columns"
-                  " WHERE table_name = '" + _tbls[0] + "'" );
+               auto db_timer = this->db_timer().start();
+               if( be_name == "sqlite3" )
+                  rs = new soci::rowset<soci::row>( sql.prepare << "PRAGMA TABLE_INFO(" + _tbls[0] + ")" );
+               else
+               {
+                  rs = new soci::rowset<soci::row>( sql.prepare << "SELECT column_name, data_type FROM information_schema.columns"
+                                                    " WHERE table_name = '" + _tbls[0] + "'" );
+               }
             }
 
             // Buld field types.
@@ -258,7 +280,9 @@ namespace tao {
                else if( type_str == "real" || type_str == "double precision" )
                   type = batch<real_type>::DOUBLE;
                else
+               {
                   EXCEPT( 0, "Unknown field type for field '", field_str, "': ", type_str );
+               }
 
                // Insert into field types.
                this->_field_types.insert( field_str, type );
@@ -547,8 +571,11 @@ namespace tao {
 
             // Prepare and execute the query without
             // fetching anything yet.
-            _st = new soci::statement( prep );
-            _st->execute();
+            {
+               auto db_timer = _be->db_timer().start();
+               _st = new soci::statement( prep );
+               _st->execute();
+            }
 
             // Store the current table on the object.
             _bat->set_attribute( "table", table );
@@ -563,7 +590,11 @@ namespace tao {
             ASSERT( _st, "No statement available on galaxy iterator." );
 
             // Actually perform the fetch.
-            bool rows_exist = _st->fetch();
+            bool rows_exist;
+            {
+               auto db_timer = _be->db_timer().start();
+               rows_exist = _st->fetch();
+            }
             _bat->update_size();
             LOGDLN( "Fetched ", _bat->size(), " rows." );
 

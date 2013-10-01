@@ -83,21 +83,25 @@ namespace tao {
 
             // Create a session.
             _my_sql = true;
-            _sql = new ::soci::session;
+            {
+               auto db_timer = this->db_timer().start();
+
+               _sql = new ::soci::session;
 #ifdef HAVE_POSTGRESQL
-            if( user )
-               session().open( ::soci::postgresql, conn );
+               if( user )
+                  session().open( ::soci::postgresql, conn );
 #ifdef HAVE_SQLITE3
-            else
+               else
 #endif
 #endif
 #ifdef HAVE_SQLITE3
-            if( !user )
-               session().open( ::soci::sqlite3, conn );
+               if( !user )
+                  session().open( ::soci::sqlite3, conn );
 #elif !defined( NDEBUG )
-            else
-               ASSERT( 0, "Could not detect database connection type." );
+               else
+                  ASSERT( 0, "Could not detect database connection type." );
 #endif
+            }
             this->_con = true;
             LOGILN( "Done.", setindent( -2 ) );
 
@@ -129,7 +133,10 @@ namespace tao {
          reconnect()
          {
             LOGILN( "Reconnecting to database via SOCI.", setindent( 2 ) );
-            session().reconnect();
+            {
+               auto db_timer = this->db_timer().start();
+               session().reconnect();
+            }
             LOGILN( "Done.", setindent( -2 ) );
          }
 

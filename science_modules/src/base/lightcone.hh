@@ -28,7 +28,9 @@ namespace tao {
    public:
 
       lightcone( const tao::simulation<real_type>* sim = NULL )
-         : _sim( NULL )
+         : _sim( NULL ),
+           _rand( true ),
+           _eng( &hpc::engine )
       {
          set_geometry( 0, 10, 0, 10, 0.06 );
          set_simulation( sim );
