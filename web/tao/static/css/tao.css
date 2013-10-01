@@ -46,6 +46,8 @@ a:active, a:hover {
   background-color: rgba(0, 0, 0, 0.85);
 }
 
+#telescope_params button { width: 260px; }
+
 .navbar .brand { padding: 20px 20px 20px; }
 #skymapperlogo { padding: 10px 20px 10px; }
 #asvologo { padding: 5px 20px; }
