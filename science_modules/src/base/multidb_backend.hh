@@ -63,7 +63,10 @@ namespace tao {
             }
 
             // Open all the connections and mark as ready.
-            _mdb.OpenAllConnections();
+            {
+               auto db_timer = this->db_timer().start();
+               _mdb.OpenAllConnections();
+            }
             this->_con = true;
 
             // Check for update.
@@ -111,6 +114,8 @@ namespace tao {
             // Create temporary snapshot range table.
             if( this->_sim )
             {
+               auto db_timer = this->db_timer().start();
+
                LOGILN( "Making redshift range tables.", setindent( 2 ) );
                for( auto& pair : _mdb.CurrentServers )
                {

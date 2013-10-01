@@ -224,7 +224,7 @@ namespace tao {
                   {
                      string mapped[3] = { "pos_x", "pos_y", "pos_z" };
                      real_type box_size = (*box).simulation()->box_size();
-                     string repl = "CASE WHEN %1% + %2% < %3% THEN %1% + %2% ELSE %1% + %2% - %3% END + %4%";
+                     string repl = "(CASE WHEN %1% + %2% < %3% THEN %1% + %2% ELSE %1% + %2% - %3% END - %4%)";
                      string field;
                      if( of == "pos_x" )
                      {
@@ -373,6 +373,12 @@ namespace tao {
             return _max;
          }
 
+         profile::timer&
+         db_timer()
+         {
+            return _db_timer;
+         }
+
          // Define this to allow for storing tables in a set
          // to eliminate duplicates.
          bool
@@ -401,6 +407,7 @@ namespace tao {
 
          string _name;
          array<real_type,3> _min, _max;
+         profile::timer _db_timer;
       };
 
    }

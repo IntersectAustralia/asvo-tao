@@ -26,9 +26,16 @@ namespace tao {
          _sim = sim;
       }
 
+      profile::timer&
+      timer()
+      {
+         return _timer;
+      }
+
    protected:
 
       const simulation<real_type>* _sim;
+      profile::timer _timer;
    };
 
 }
