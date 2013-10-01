@@ -775,7 +775,7 @@ color: #888;
 }
 
 /* #body.flex { padding-top: 20px; } */
-div.breadcrumbs { position: fixed; top: 40px; left: 0; right: 0; padding: 50px 60px 0 60px; }
+div.breadcrumbs { position: absolute; top: 40px; left: 0; right: 0; padding: 50px 60px 0 60px; }
 ul.messagelist { position: fixed; top: 48px; left: 0; right: 0; }
 
 #survey_presets_select {
