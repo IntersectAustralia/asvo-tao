@@ -7,7 +7,8 @@ args = (arguments()
         ('--enable-memory-debug', dest='memory_debug', action='boolean', default=False, help='Enable/disable memory debugging.')
         ('--enable-memory-ops', dest='memory_ops', action='boolean', default=False, help='Enable/disable memory operation logging.')
         ('--enable-memory-stats', dest='memory_stats', action='boolean', default=False, help='Enable/disable memory statistics logging.')
-        ('--enable-logging', dest='logging', action='boolean', default=True, help='Enable/disable all logging routines.'))
+        ('--enable-logging', dest='logging', action='boolean', default=True, help='Enable/disable all logging routines.')
+        ('--enable-debug-logging', dest='debug_logging', action='boolean', default=True, help='Enable/disable debug logging routines.'))
 
 # Need to define optional packages ahead of some options
 # so we can include preprocessor definitions.
@@ -34,13 +35,14 @@ cc_opts = (
             optimise=3,
             symbols=False,
             define=['NDEBUG', 'NLOGTRIVIAL', 'NLOGDEBUG']) +
-    options(args.instrument   == False, define=['NINSTRUMENT']) +
-    options(args.logging      == False, define=['NLOG']) +
-    options(args.stacktrace   == False, define=['NSTACKTRACE']) +
-    options(args.memory_debug == False, define=['NMEMDEBUG']) +
-    options(args.memory_ops   == False, define=['NMEMOPS']) +
-    options(args.memory_stats == False, define=['NMEMSTATS']) +
-    options(glut.have         == True,  define=['HAVE_GLUT']) +
+    options(args.instrument    == False, define=['NINSTRUMENT']) +
+    options(args.logging       == False, define=['NLOG', 'NLOGDEBUG']) +
+    options(args.debug_logging == False, define=['NLOGDEBUG']) +
+    options(args.stacktrace    == False, define=['NSTACKTRACE']) +
+    options(args.memory_debug  == False, define=['NMEMDEBUG']) +
+    options(args.memory_ops    == False, define=['NMEMOPS']) +
+    options(args.memory_stats  == False, define=['NMEMSTATS']) +
+    options(glut.have          == True,  define=['HAVE_GLUT']) +
     options(soci.has_feature('sqlite3') == True, define=['HAVE_SQLITE3']) +
     options(soci.has_feature('postgresql') == True, define=['HAVE_POSTGRESQL'])
 )

@@ -113,10 +113,15 @@ namespace tao {
             auto& disk_spectra = bat.vector<real_type>( "disk_spectra" );
             auto& bulge_spectra = bat.vector<real_type>( "bulge_spectra" );
             soci::session& sql = _be->session( table_name );
+#ifndef NLOG
+	    auto gal_gids = bat.scalar<long long>( "global_index" );
+#endif
 
             // Perform the processing.
             for( unsigned ii = 0; ii < bat.size(); ++ii )
             {
+	       LOGILN( "Calculating SED for galaxy with global index: ", gal_gids[ii] );
+
                // Be sure we're on the correct tree.
                _sfh.load_tree_data( sql, table_name, tree_gids[ii] );
 
