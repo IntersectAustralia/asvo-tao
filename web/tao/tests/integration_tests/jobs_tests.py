@@ -9,7 +9,7 @@ from tao.tests.integration_tests.helper import LiveServerTest
 from tao.tests.support.factories import GlobalParameterFactory, JobFactory, UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, StellarModelFactory, DustModelFactory, BandPassFilterFactory, SnapshotFactory
 from tao.tests.support.xml import light_cone_xml
 
-import os, zipfile, html2text, codecs, fnmatch
+import os, zipfile, html2text, codecs, fnmatch, re
 from lxml import etree
 
 
@@ -174,7 +174,7 @@ class JobTest(LiveServerTest):
         self.click('expand_band_pass_filters')
         self.assert_summary_field_correctly_shown(band_pass_filters[0].label + ' (Apparent)', 'sed', 'band_pass_filters_list')
 
-    def _test_job_with_files_downloads(self):
+    def test_job_with_files_downloads(self):
         self.login(self.username, self.password)
         self.visit('view_job', self.completed_job.id)
 
@@ -182,7 +182,8 @@ class JobTest(LiveServerTest):
         filenames_with_sizes = ['summary.txt']
         for file_name in self.file_names_to_contents:
             file_size = helper.get_file_size(self.dir_paths[0],file_name)
-            filenames_with_sizes.append(file_name + " (" + file_size + ")")
+            file_size = re.sub('\s+', ' ', file_size)
+            filenames_with_sizes.append(u"%s (%s)" % (file_name, file_size))
         self.assertEqual(sorted(filenames_with_sizes), sorted([li.text for li in li_elements]))
 
         self.wait(1)
