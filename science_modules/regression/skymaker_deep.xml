@@ -7,15 +7,18 @@
       <box-repetition>random</box-repetition>
       <rng-seed>0</rng-seed>
       <redshift-min>0.01</redshift-min>
-      <redshift-max>0.5</redshift-max>
+      <redshift-max>0.2</redshift-max>
       <ra-min>0</ra-min>
       <ra-max>10</ra-max>
       <dec-min>0</dec-min>
       <dec-max>10</dec-max>
       <output-fields>
-        <item>pos_x</item>
-        <item>pos_y</item>
-        <item>pos_z</item>
+        <item>posx</item>
+        <item>posy</item>
+        <item>posz</item>
+        <item>velx</item>
+        <item>vely</item>
+        <item>velz</item>
       </output-fields>
     </light-cone>
 
@@ -59,9 +62,9 @@
       </parents>
       <filename>result</filename>
       <fields>
-        <item>pos_x</item>
-        <item>pos_y</item>
-        <item>pos_z</item>
+        <item>posx</item>
+        <item>posy</item>
+        <item>posz</item>
         <item>v.dat_apparent</item>
       </fields>
     </csv>
@@ -71,5 +74,5 @@
   <subjobindex>0</subjobindex>
   <logdir>log</logdir>
   <outputdir>output</outputdir>
-  <database>millennium_full_hdf5_dist</database>
+  <database>millennium_mini_galacticus_2</database>
 </tao>

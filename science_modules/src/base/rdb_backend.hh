@@ -82,10 +82,10 @@ namespace tao {
             std::unordered_map<string,string> map;
             make_field_map( map, qry, box );
             fmt % make_output_field_query_string( qry, map );
-            fmt % _field_map.at( "snapshot" ) % box.snapshot();
-            fmt % _field_map.at( "pos_x" ) % box.min()[0] % box.max()[0];
-            fmt % _field_map.at( "pos_y" ) % box.min()[1] % box.max()[1];
-            fmt % _field_map.at( "pos_z" ) % box.min()[2] % box.max()[2];
+            fmt % _field_map.at( "snapnum" ) % box.snapshot();
+            fmt % _field_map.at( "posx" ) % box.min()[0] % box.max()[0];
+            fmt % _field_map.at( "posy" ) % box.min()[1] % box.max()[1];
+            fmt % _field_map.at( "posz" ) % box.min()[2] % box.max()[2];
             string filt_str = make_filter_query_string( filt );
             if( !filt_str.empty() )
                filt_str = " AND " + filt_str; 
@@ -116,8 +116,8 @@ namespace tao {
             make_field_map( map, query, tile );
             map["redshift"] = "redshift_ranges.redshift";
             fmt % make_output_field_query_string( query, map );
-            fmt % _field_map.at( "snapshot" );
-            fmt % map["pos_x"] % map["pos_y"] % map["pos_z"];
+            fmt % _field_map.at( "snapnum" );
+            fmt % map["posx"] % map["posy"] % map["posz"];
             fmt % cos( tile.lightcone()->max_ra() ) % cos( tile.lightcone()->min_ra() );
             fmt % cos( tile.lightcone()->max_dec() ) % cos( tile.lightcone()->min_dec() );
             fmt % pow( tile.lightcone()->min_dist(), 2 ) % pow( tile.lightcone()->max_dist(), 2 );
@@ -220,29 +220,31 @@ namespace tao {
                if( _field_map.find( of ) != _field_map.end() )
                {
                   // Positions need to be handled specially to take care of translation.
-                  if( box && (of == "pos_x" || of == "pos_y" || of == "pos_z") )
+                  if( box && (of == "posx" || of == "posy" || of == "posz") )
                   {
-                     string mapped[3] = { "pos_x", "pos_y", "pos_z" };
+                     string mapped[3] = { "posx", "posy", "posz" };
                      real_type box_size = (*box).simulation()->box_size();
-                     string repl = "(CASE WHEN %1% + %2% < %3% THEN %1% + %2% ELSE %1% + %2% - %3% END - %4%)";
+                     string repl = "(CASE WHEN %1% + %2% < %3% THEN %1% + %2% ELSE %1% + %2% - %3% END + %4%)";
                      string field;
-                     if( of == "pos_x" )
+                     if( of == "posx" )
                      {
-                        of = mapped[(*box).rotation()[0]];
                         if( (*box).random() )
                         {
-                           field = boost::str( boost::format( repl ) % _field_map.at( of ) % (*box).translation()[0] %
+                           field = boost::str( boost::format( repl ) %
+					       _field_map.at( mapped[(*box).rotation()[0]] ) %
+					       (*box).translation()[(*box).rotation()[0]] %
                                                box_size % (*box).min()[0] );
                         }
                         else
 			   field = boost::str( boost::format( "%1% + %2%" ) % _field_map.at( of ) % (*box).min()[0] );
                      }
-                     else if( of == "pos_y" )
+                     else if( of == "posy" )
                      {
-                        of = mapped[(*box).rotation()[1]];
                         if( (*box).random() )
                         {
-                           field = boost::str( boost::format( repl ) % _field_map.at( of ) % (*box).translation()[1] %
+                           field = boost::str( boost::format( repl ) %
+					       _field_map.at( mapped[(*box).rotation()[1]] ) %
+					       (*box).translation()[(*box).rotation()[1]] %
                                                box_size % (*box).min()[1] );
                         }
                         else
@@ -252,8 +254,9 @@ namespace tao {
                      {
                         if( (*box).random() )
                         {
-                           of = mapped[(*box).rotation()[2]];
-                           field = boost::str( boost::format( repl ) % _field_map.at( of ) % (*box).translation()[2] %
+                           field = boost::str( boost::format( repl ) %
+					       _field_map.at( mapped[(*box).rotation()[2]] ) %
+					       (*box).translation()[(*box).rotation()[2]] %
                                                box_size % (*box).min()[2] );
                         }
                         else
@@ -265,16 +268,18 @@ namespace tao {
                   }
                   else
                   {
+		     string field;
+
                      // Velocity.
                      if( box && (of == "velx" || of == "vely" || of == "velz") )
                      {
                         string mapped[3] = { "velx", "vely", "velz" };
                         if( of == "velx" )
-                           of = mapped[(*box).rotation()[0]];
+                           field = mapped[(*box).rotation()[0]];
                         else if( of == "vely" )
-                           of = mapped[(*box).rotation()[1]];
+                           field = mapped[(*box).rotation()[1]];
                         else
-                           of = mapped[(*box).rotation()[2]];
+                           field = mapped[(*box).rotation()[2]];
                      }
 
                      // Spin.
@@ -282,15 +287,19 @@ namespace tao {
                      {
                         string mapped[3] = { "spinx", "spiny", "spinz" };
                         if( of == "spinx" )
-                           of = mapped[(*box).rotation()[0]];
+                           field = mapped[(*box).rotation()[0]];
                         else if( of == "spiny" )
-                           of = mapped[(*box).rotation()[1]];
+                           field = mapped[(*box).rotation()[1]];
                         else
-                           of = mapped[(*box).rotation()[2]];
+                           field = mapped[(*box).rotation()[2]];
                      }
 
+		     // Anything else.
+		     else
+			field = of;
+
                      // Add to the map.
-                     map[of] = _field_map.at( of );
+                     map[of] = _field_map.at( field );
                   }
                }
                else
@@ -305,6 +314,12 @@ namespace tao {
             }
          }
 
+         profile::timer&
+         db_timer()
+         {
+            return _db_timer;
+         }
+
       protected:
 
          virtual
@@ -316,6 +331,7 @@ namespace tao {
          std::unordered_map<string,string> _field_map;
          map<string,typename batch<real_type>::field_value_type> _field_types;
          bool _con;
+         profile::timer _db_timer;
       };
 
       template< class T >
@@ -373,12 +389,6 @@ namespace tao {
             return _max;
          }
 
-         profile::timer&
-         db_timer()
-         {
-            return _db_timer;
-         }
-
          // Define this to allow for storing tables in a set
          // to eliminate duplicates.
          bool
@@ -407,7 +417,6 @@ namespace tao {
 
          string _name;
          array<real_type,3> _min, _max;
-         profile::timer _db_timer;
       };
 
    }

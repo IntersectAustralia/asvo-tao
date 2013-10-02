@@ -86,9 +86,9 @@ namespace tao {
             // Convert the cartesian coordiantes to right-ascension and
             // declination.
             real_type ra, dec;
-            numerics::cartesian_to_ecs( bat.scalar<real_type>( "pos_x" )[idx],
-                                        bat.scalar<real_type>( "pos_y" )[idx],
-                                        bat.scalar<real_type>( "pos_z" )[idx],
+            numerics::cartesian_to_ecs( bat.scalar<real_type>( "posx" )[idx],
+                                        bat.scalar<real_type>( "posy" )[idx],
+                                        bat.scalar<real_type>( "posz" )[idx],
                                         ra,
                                         dec );
             LOGDLN( "Converted to (", ra, ", ", dec, ")" );
