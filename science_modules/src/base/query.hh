@@ -31,16 +31,16 @@ namespace tao {
       void
       add_base_output_fields()
       {
-         add_output_field( "pos_x" );
-         add_output_field( "pos_y" );
-         add_output_field( "pos_z" );
-         add_output_field( "vel_x" );
-         add_output_field( "vel_y" );
-         add_output_field( "vel_z" );
-         add_output_field( "snapshot" );
-         add_output_field( "global_tree_id" );
-         add_output_field( "local_galaxy_id" );
-	 add_output_field( "global_index" );
+         add_output_field( "posx" );
+         add_output_field( "posy" );
+         add_output_field( "posz" );
+         add_output_field( "velx" );
+         add_output_field( "vely" );
+         add_output_field( "velz" );
+         add_output_field( "snapnum" );
+         add_output_field( "globaltreeid" );
+         add_output_field( "localgalaxyid" );
+	 add_output_field( "globalindex" );
       }
 
       void

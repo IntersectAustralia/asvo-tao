@@ -76,7 +76,7 @@ namespace tao {
             snap_zs.resize( size );
             {
                auto db_timer = this->db_timer().start();
-               session() << "SELECT redshift FROM snap_redshift ORDER BY " + this->_field_map.at( "snapshot" ),
+               session() << "SELECT redshift FROM snap_redshift ORDER BY " + this->_field_map.at( "snapnum" ),
                   soci::into( (std::vector<real_type>&)snap_zs );
             }
          }
@@ -296,16 +296,16 @@ namespace tao {
 
             // Before finishing, insert the known mapping conversions.
             // TODO: Generalise.
-            this->_field_map["pos_x"] = "posx";
-            this->_field_map["pos_y"] = "posy";
-            this->_field_map["pos_z"] = "posz";
-            this->_field_map["vel_x"] = "velx";
-            this->_field_map["vel_y"] = "vely";
-            this->_field_map["vel_z"] = "velz";
-            this->_field_map["snapshot"] = "snapnum";
-            this->_field_map["global_index"] = "globalindex";
-            this->_field_map["global_tree_id"] = "globaltreeid";
-            this->_field_map["local_galaxy_id"] = "localgalaxyid";
+            // this->_field_map["pos_x"] = "posx";
+            // this->_field_map["pos_y"] = "posy";
+            // this->_field_map["pos_z"] = "posz";
+            // this->_field_map["vel_x"] = "velx";
+            // this->_field_map["vel_y"] = "vely";
+            // this->_field_map["vel_z"] = "velz";
+            // this->_field_map["snapshot"] = "snapnum";
+            // this->_field_map["global_index"] = "globalindex";
+            // this->_field_map["global_tree_id"] = "globaltreeid";
+            // this->_field_map["local_galaxy_id"] = "localgalaxyid";
 
             // Make sure we have all the essential fields available. Do this by
             // checking that all the mapped fields exist in the field types.
@@ -610,12 +610,12 @@ namespace tao {
         void
         _calc_fields()
         {
-           auto pos_x = _bat->template scalar<real_type>( "pos_x" );
-           auto pos_y = _bat->template scalar<real_type>( "pos_y" );
-           auto pos_z = _bat->template scalar<real_type>( "pos_z" );
-           auto vel_x = _bat->template scalar<real_type>( "vel_x" );
-           auto vel_y = _bat->template scalar<real_type>( "vel_y" );
-           auto vel_z = _bat->template scalar<real_type>( "vel_z" );
+           auto pos_x = _bat->template scalar<real_type>( "posx" );
+           auto pos_y = _bat->template scalar<real_type>( "posy" );
+           auto pos_z = _bat->template scalar<real_type>( "posz" );
+           auto vel_x = _bat->template scalar<real_type>( "velx" );
+           auto vel_y = _bat->template scalar<real_type>( "vely" );
+           auto vel_z = _bat->template scalar<real_type>( "velz" );
            auto z_cos = _bat->template scalar<real_type>( "redshift_cosmological" );
            auto z_obs = _bat->template scalar<real_type>( "redshift_observed" );
            auto ra = _bat->template scalar<real_type>( "ra" );
