@@ -167,8 +167,8 @@ class SysCommands(object):
             
             [ExecutionResult,Message]=self.PauseJob(UICommandID, JobID, PBSID, JobStatus)
         if ExecutionResult==True:
-            self.UpdateTAOJobUI(UIJobID)
-                    
+            self.dbaseobj.RemoveAllJobsWithUIReferenceID(UIJobID)
+            self.UpdateTAOJobUI(UIJobID)                    
             logging.info("Job_Stop")
             return [True,'']
         else:
