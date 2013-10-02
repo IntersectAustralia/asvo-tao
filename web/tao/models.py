@@ -424,7 +424,9 @@ class Job(models.Model):
 
 class JobFile(object):
     def __init__(self, job_dir, file_name):
-        self.file_name = file_name[len(job_dir)+1:]
+        self.file_name = file_name[len(job_dir):]
+        if self.file_name[0] == '/':
+            self.file_name = self.file_name[1:]
         self.file_path = os.path.join(job_dir, file_name)
         self.file_size = os.path.getsize(self.file_path)
     
