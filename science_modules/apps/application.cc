@@ -137,10 +137,10 @@ namespace tao {
          string type = cur.name();
          LOGILN( "Loading ", type, " module with name \"", name, "\"." );
 #ifdef PREPROCESSING
-         if (type=="light-cone")
+         if( type == "light-cone" )
             _fact.create_module( type, name, cur );
          else
-            LOGILN( " Pre-Processing mode : Ignore Loading Module : ",type);
+            LOGILN( "Pre-Processing mode : Ignore Loading Module : ",type);
 #else
          _fact.create_module( type, name, cur );
 #endif

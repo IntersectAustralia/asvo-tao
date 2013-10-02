@@ -107,14 +107,14 @@ namespace tao {
             // Cache some information.
             tao::batch<real_type>& bat = this->parents().front()->batch();
             const auto& table_name = bat.attribute<string>( "table" );
-            const auto tree_gids = bat.scalar<long long>( "global_tree_id" );
-            const auto gal_lids = bat.scalar<int>( "local_galaxy_id" );
+            const auto tree_gids = bat.scalar<long long>( "globaltreeid" );
+            const auto gal_lids = bat.scalar<int>( "localgalaxyid" );
             auto& total_spectra = bat.vector<real_type>( "total_spectra" );
             auto& disk_spectra = bat.vector<real_type>( "disk_spectra" );
             auto& bulge_spectra = bat.vector<real_type>( "bulge_spectra" );
             soci::session& sql = _be->session( table_name );
 #ifndef NLOG
-	    auto gal_gids = bat.scalar<long long>( "global_index" );
+	    auto gal_gids = bat.scalar<long long>( "globalindex" );
 #endif
 
             // Perform the processing.

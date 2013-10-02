@@ -78,9 +78,9 @@ namespace tao {
         _bat( &bat ),
         _gal_idx( 0 )
    {
-      _x = _bat->scalar<real_type>( "pos_x" );
-      _y = _bat->scalar<real_type>( "pos_y" );
-      _z = _bat->scalar<real_type>( "pos_z" );
+      _x = _bat->scalar<real_type>( "posx" );
+      _y = _bat->scalar<real_type>( "posy" );
+      _z = _bat->scalar<real_type>( "posz" );
       // _mag = &_bat->scalar<real_type>( _proj->magnitude_field() );
    }
 
