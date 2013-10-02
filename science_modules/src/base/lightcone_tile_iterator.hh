@@ -44,6 +44,8 @@ namespace tao {
          std::fill( _cur.begin(), _cur.end(), 0 );
          if( _check() != ON )
             increment();
+	 else
+	    _tile = tile<real_type>( _lc, _cur );
          _idx = 0;
       }
 
@@ -78,6 +80,7 @@ namespace tao {
                   res = _check();
                   if( res == ON )
                   {
+		     _tile = tile<real_type>( _lc, _cur );
                      return;
                   }
                }
@@ -87,7 +90,10 @@ namespace tao {
                _cur[2] = 0;
                res = _check();
                if( res == ON )
+	       {
+		  _tile = tile<real_type>( _lc, _cur );
                   return;
+	       }
             }
             while( res == BELOW );
 
@@ -96,7 +102,10 @@ namespace tao {
             _cur[2] = 0;
             res = _check();
             if( res == ON )
+	    {
+	       _tile = tile<real_type>( _lc, _cur );
                return;
+	    }
          }
          while( res == BELOW );
 
@@ -112,7 +121,7 @@ namespace tao {
       reference_type
       dereference() const
       {
-         return tile<real_type>( _lc, _cur );
+         return _tile;
       }
 
       check_result
@@ -173,6 +182,7 @@ namespace tao {
       array<real_type,3> _cur;
       bool _done;
       unsigned _idx;
+      value_type _tile;
    };
 
 }

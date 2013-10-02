@@ -119,7 +119,7 @@ namespace tao {
 	    LOGDLN( "Processing batch in filter module.", setindent( 2 ) );
 
 #ifndef NLOGDEBUG
-	    auto ids = bat.scalar<long long>( "global_index" );
+	    auto ids = bat.scalar<long long>( "globalindex" );
 #endif
 
             // Process each object individually to save space.

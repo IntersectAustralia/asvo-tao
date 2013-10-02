@@ -74,9 +74,6 @@ namespace tao {
             auto timer = this->timer_start();
             LOGILN( "Initialising lightcone module.", setindent( 2 ) );
 
-            // Add timers to sub-objects.
-            
-
             // If we have been given an existing backend then use that.
             if( !_be )
             {
@@ -105,8 +102,52 @@ namespace tao {
             // to access and cache values.
             _be->init_batch( _bat, _qry );
 
+	    // Set the random seed now, so that we actually start from
+	    // the seed given.
+            _eng.seed( _rng_seed );
+
 	    // Show in the logs what we're querying.
 	    LOGILN( "Querying the following fields: ", _qry.output_fields() );
+
+	    // If we have been built to be a preprocessing version,
+	    // dump each tile/box to be used and the tables in each.
+#ifdef PREPROCESSING
+	    LOG( logging::pushlevel( 100 ) );
+	    if( _geom == CONE )
+            {
+	       LOG( "Boxes:[" );
+	       bool first = true;
+               for( auto it = _lc.tile_begin(); it != _lc.tile_end(); ++it )
+	       {
+		  if( !first )
+		     LOG( ", " );
+		  LOG( it->min() );
+		  first = false;
+	       }
+	       LOGLN( "]" );
+
+               for( auto it = _lc.tile_begin(); it != _lc.tile_end(); ++it )
+	       {
+		  LOGLN( "Using box:", it->min() );
+		  LOG( "Tables:[" );
+		  bool first = true;
+		  for( auto tbl_it = _be->table_begin( *it ); tbl_it != _be->table_end( *it ); ++tbl_it )
+		  {
+		     if( !first )
+			LOG( ", " );
+		     LOG( tbl_it->name() );
+		     first = false;
+		  }
+		  LOGLN( "]" );
+	       }
+            }
+            else
+	    {
+	       LOGLN( "Boxes:[(0, 0, 0)]" );
+	       LOGLN( "Using box:[(0, 0, 0)]" );
+	    }
+	    LOG( logging::poplevel );
+#endif
 
             LOGILN( "Done.", setindent( -2 ) );
          }
@@ -118,6 +159,7 @@ namespace tao {
          void
          execute()
          {
+#ifndef PREPROCESSING
             auto timer = this->timer_start();
 
             // Is this my first time through? If so begin iterating.
@@ -168,6 +210,7 @@ namespace tao {
             {
                this->_complete = true;
             }
+#endif
          }
 
          ///
@@ -288,7 +331,6 @@ namespace tao {
             }
             mpi::comm::world.bcast<int>( _rng_seed, 0 );
             LOGILN( "Random seed: ", _rng_seed );
-            _eng.seed( _rng_seed );
 
             // Get box type.
             string box_type = dict.get<string>( "geometry", "light-cone" );
