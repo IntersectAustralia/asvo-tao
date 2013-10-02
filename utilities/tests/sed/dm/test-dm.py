@@ -38,7 +38,7 @@ if len(ids) != len(required_fields):
    print "can't find all required fields in the catalogue."
    sys.exit()
 
-print "   z(TAO)          d(TAO)           d(z)           d(DM)       diff %"
+print "   z(TAO)          d(TAO)           d(z)            d(DM)      diff %"
 for i in range(0,n):
     line = data.readline()
     values = line.split(csv_delimiter)
