@@ -66,6 +66,7 @@ sl  = use('cxx_compiler', cc_opts, shared_lib=True)
 sl_inst = use('cxx_compiler', cc_opts, targets.contains('install'), shared_lib=True, prefix=args.prefix)
 bin = use('cxx_compiler', cc_opts)
 tao_bin = use('cxx_compiler', cc_opts + tao_bin_opts)
+tao_bin_inst = use('cxx_compiler', cc_opts + tao_bin_opts, targets.contains('install'), prefix=args.prefix)
 ar  = use('ar', cc_opts, add=True)
 
 # Which packages will we be using?
@@ -88,6 +89,7 @@ pkgs += (glut | identity) + (sqlite3 | identity)
 cc  = cc  + pkgs
 sl  = sl  + pkgs
 bin = bin + pkgs
+bin_inst = bin_inst + pkgs
 
 # Copy all headers.
 hdrs = rule(r'src/.+\.hh$', cp_hdr & hdr_inst, target_strip_dirs=1)
@@ -110,6 +112,6 @@ tests = rule(r'tests/(?!fixtures).+\.cc$', bin, sqlite3.have == True, libraries=
 rule(tests, run_tests, sqlite3.have == True, target=dummies.always)
 
 # Build all the applications.
-rule(r'apps/(?:tao|application)\.cc$', tao_bin, target='bin/tao', libraries=['tao'])
+rule(r'apps/(?:tao|application)\.cc$', tao_bin & tao_bin_inst, target='bin/tao', libraries=['tao'])
 # rule(r'apps/zen/.+\.cc$', bin, glut.have == True, target='bin/zen', libraries=['tao'])
 # rule(r'apps/rebin/.+\.cc$', bin, target='bin/rebin', libraries=['tao'])
