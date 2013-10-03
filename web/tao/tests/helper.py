@@ -1,4 +1,6 @@
-import os, errno
+import os
+import errno
+import codecs
 
 from tao.settings import MODULE_INDICES
 from tao.xml_util import xml_parse
@@ -6,7 +8,7 @@ from tao.xml_util import xml_parse
 def create_file(dir_path, filename, filenames_to_contents):    
     file_path = os.path.join(dir_path, filename)
     mkdir_p(os.path.dirname(file_path))
-    with open(file_path, 'w') as f:
+    with codecs.open(file_path, 'w', encoding='utf-8') as f:
         f.write(filenames_to_contents[filename])
 
 def get_file_size(dir_path, file_name):
@@ -41,7 +43,7 @@ def make_form(defaults, form_class, values, prefix=None, ui_holder=None):
 
 def make_form_xml(form_class, xml_str, prefix=None, ui_holder=None):
     xml_root = xml_parse(xml_str)
-    print xml_root
+    # print xml_root
     return form_class.from_xml(ui_holder, xml_root, prefix=prefix)
 
 
@@ -51,6 +53,7 @@ class MockUIHolder:
     """
     def __init__(self, **kwargs):
         self._forms = kwargs
+        self._dataset = None
 
     def update(self, **kwargs):
         self._forms.update(kwargs)
@@ -80,3 +83,26 @@ class MockUIHolder:
 
     def set_forms(self, forms):
         self._forms = forms
+
+    def get_dataset(self):
+        """Answer the dataset referenced by the receiver
+        (through the selected Dark Matter Simulation and Galaxy Model)"""
+
+        if self._dataset is None:
+            raise Exception("I am poorly configured mock without _dataset")
+        return self._dataset
+
+    def set_dataset(self, v):
+        self._dataset = v
+
+    dataset = property(get_dataset, set_dataset)
+
+class TaoModelsCleanUpMixin(object):
+    def tearDown(self):
+        m = __import__('tao.models')
+        for name in ['Simulation', 'GalaxyModel', 'DataSet', 'DataSetProperty', 'StellarModel', 'DustModel',
+                     'Snapshot', 'BandPassFilter', 'WorkflowCommand', 'Job', 'GlobalParameter', 'SurveyPreset']:
+            klass = getattr(m.models, name)
+            for obj in klass.objects.all(): obj.delete()
+
+

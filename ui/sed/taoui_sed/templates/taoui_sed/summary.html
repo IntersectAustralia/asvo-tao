@@ -2,29 +2,55 @@
     <table>
         <tr>
             <td><h4>Spectral Energy Distribution</h4></td>
-            <td><span class="select_sed"><!-- --></span></td>
+            <td><span class="select_mock_image" data-bind="text: apply_sed() ? '' : 'Not selected'"><!-- --></span></td>
         </tr>
+        <!-- ko if: apply_sed -->
         <tr class="apply_sed">
             <td>Model</td>
-            <td>
-                <span class="single_stellar_population_model"><!-- --></span> <a id="expand_stellar_model" href="#">>></a>
-                <span class="stellar_model_description"><!-- --></span>
+            <td data-bind="toggler: true">
+                <span class="single_stellar_population_model" data-bind="text: apply_sed() ? stellar_model().fields.label : 'Not selected'"><!-- --></span>
+                <a id="expand_stellar_model" href="#" data-bind='text: toggler_text(), click: toggler_click, visible: apply_sed()'></a>
+                <span class="stellar_model_description" data-bind="html: '<br/>' + stellar_model().fields.description, visible: toggler_visible"><!-- --></span>
             </td>
         </tr>
         <tr class="apply_sed">
             <td>Bandpass Filters</td>
-            <td>
-                <span class="band_pass_filters"><!-- --></span>
-                <a id="expand_band_pass_filters" href="#"> >> </a>
-                <span class="band_pass_filters_list"><!-- --></span>
+            <td data-bind="toggler: true">
+                <span class="band_pass_filters" data-bind="text: bandpass_filters().length + ' properties selected'"><!-- --></span>
+                <a id="expand_band_pass_filters" href="#" data-bind='text: toggler_text(), click: toggler_click'></a>
+                <span class="band_pass_filters_list" data-bind="template: { name: 'summary_bandpass_filters_with_groups', data: bandpass_filters_widget.to_side }, visible: toggler_visible"><!-- --></span>
             </td>
         </tr>
         <tr class="apply_sed">
             <td>Dust</td>
-            <td>
-                <span class="dust_model"><!-- --></span> <a id="expand_dust_model" href="#">>></a>
-                <span class="dust_model_description"><!-- --></span>
+            <!-- ko if: !apply_dust() -->
+            <td class="apply_dust">Not selected</td>
+            <!-- /ko -->
+            <!-- ko if: apply_dust -->
+            <td class="apply_dust" data-bind="toggler: true">
+                <span class="dust_model" data-bind="text: dust_model().fields.name"><!-- --></span>
+                <a id="expand_dust_model" href="#" data-bind='text: toggler_text(), click: toggler_click'></a>
+                <span class="dust_model_description" data-bind="visible: toggler_visible, html: '<br/>' + dust_model().fields.details"><!-- --></span>
             </td>
+            <!-- /ko -->
         </tr>
+        <!-- /ko -->
     </table>
 </div>  
+
+
+<script type="text/html" id="summary_bandpass_filters_with_groups">
+        <!-- ko if: !has_groups() -->
+        <ul data-bind="foreach: options">
+            <li><span data-bind="text: text"/></li>
+        </ul>
+        <!-- /ko -->
+        <!-- ko if: has_groups -->
+        <ul data-bind="foreach: option_groups">
+          <span data-bind="text: group_name"></span>
+          <ul data-bind="foreach: options">
+            <li><span data-bind="text: text"/></li>
+          </ul>
+        </ul>
+        <!-- /ko -->
+</script>

@@ -2,8 +2,10 @@ from django.test.testcases import TransactionTestCase
 
 from tao.tests.support.factories import SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, SnapshotFactory
 from tao.models import DataSetProperty
+from tao.tests.helper import TaoModelsCleanUpMixin
 
-class DatasetTestCase(TransactionTestCase):
+
+class DatasetTestCase(TransactionTestCase, TaoModelsCleanUpMixin):
 
     def setUp(self):
         super(DatasetTestCase, self).setUp()
@@ -26,12 +28,15 @@ class DatasetTestCase(TransactionTestCase):
             dark_matter_simulation_choices()
         )
 
+    # TODO: Currently this logic is largely done client
+    # side in the UI, so this test should probably be ported
+    # to a javascript testing framework
     def test_galaxy_model_choices(self):
         from tao.datasets import galaxy_model_choices
-        self.assertEqual(0, len(galaxy_model_choices()))
+        self.assertEqual(0, len(galaxy_model_choices(1)))
 
-        s1 = SimulationFactory.create()
-        s2 = SimulationFactory.create()
+        s1 = SimulationFactory.create(id=1)
+        s2 = SimulationFactory.create(id=2)
 
         g1 = GalaxyModelFactory.create(id=1, name='boo')
         g2 = GalaxyModelFactory.create(id=2, name='aoo')
@@ -42,11 +47,11 @@ class DatasetTestCase(TransactionTestCase):
         DataSetFactory.create(simulation=s1, galaxy_model=g3)
 
         self.assertEqual([
-               (2, u'aoo', {'data-galaxy_model_id': u'2'}),
-               (1, u'boo', {'data-galaxy_model_id': u'1'}),
-               (3, u'coo', {'data-galaxy_model_id': u'3'})
+               (2, u'aoo', {}),
+               (1, u'boo', {}),
+               (3, u'coo', {})
            ],
-           galaxy_model_choices())
+           galaxy_model_choices(s1.id))
 
     def test_filter_choices(self):
         from tao.datasets import filter_choices
@@ -65,8 +70,17 @@ class DatasetTestCase(TransactionTestCase):
         dp3 = DataSetPropertyFactory.create(dataset=d2, units='dp3u')
         DataSetPropertyFactory.create(dataset=d2, units='', data_type = DataSetProperty.TYPE_STRING)
 
-        self.assertEqual([dp1.id],[x.id for x in filter_choices(d1.id)])
-        self.assertEqual([dp2.id,dp3.id],[x.id for x in filter_choices(d2.id)])
+        galaxies = [g1, g3]
+
+        filtered1 = [filter_choices(s1.id, g.id) for g in galaxies]
+        filtered1 = [val for galaxies in filtered1 for val in galaxies]
+
+        self.assertEqual([dp1.id],[x.id for x in filtered1])
+
+        filtered2 = [filter_choices(s2.id, g.id) for g in galaxies]
+        filtered2 = [val for galaxies in filtered2 for val in galaxies]
+
+        self.assertEqual([dp2.id,dp3.id],[x.id for x in filtered2])
 
     def test_snapshot_choices(self):
         from tao.datasets import snapshot_choices
@@ -84,11 +98,25 @@ class DatasetTestCase(TransactionTestCase):
 
         snapshot1 = SnapshotFactory.create(dataset=d1, redshift='0.123')
         snapshot2 = SnapshotFactory.create(dataset=d2, redshift='0.012')
-        snapshot3 = SnapshotFactory.create(dataset=d3, redshift='0.3')
+        snapshot3 = SnapshotFactory.create(dataset=d2, redshift='0.3')
+        snapshot4 = SnapshotFactory.create(dataset=d3, redshift='0.123')
+        snapshot5 = SnapshotFactory.create(dataset=d3, redshift='0.012')
+        snapshot6 = SnapshotFactory.create(dataset=d3, redshift='0.3')
 
         self.assertEqual([
-                          (snapshot2.id, snapshot2.redshift, {'data-simulation_id': str(s2.id), 'data-galaxy_model_id': str(g1.id)}),
-                          (snapshot1.id, snapshot1.redshift, {'data-simulation_id': str(s1.id), 'data-galaxy_model_id': str(g3.id)}),
-                          (snapshot3.id, snapshot3.redshift, {'data-simulation_id': str(s2.id), 'data-galaxy_model_id': str(g2.id)})
+                          (snapshot1.id, snapshot1.redshift, {}),
                           ],
-                         snapshot_choices())
+                         snapshot_choices(d1.id))
+
+        self.assertEqual([
+                          (snapshot2.id, snapshot2.redshift, {}),
+                          (snapshot3.id, snapshot3.redshift, {}),
+                          ],
+                         snapshot_choices(d2.id))
+
+        self.assertEqual([
+                          (snapshot5.id, snapshot5.redshift, {}),
+                          (snapshot4.id, snapshot4.redshift, {}),
+                          (snapshot6.id, snapshot6.redshift, {})
+                          ],
+                         snapshot_choices(d3.id))

@@ -7,8 +7,6 @@ PROGRAM read_hdf5
   INTEGER, PARAMETER :: num_fields = 3
 
   INTEGER, PARAMETER :: max_chunk_size = 100
-  ! NOTE: Change filename to your input file
-  CHARACTER(LEN=12), PARAMETER :: filename = "tao.output.0"
   INTEGER, PARAMETER :: mem_rank = 1
 
   ! NOTE: Add storage for additional fields here.
@@ -17,21 +15,27 @@ PROGRAM read_hdf5
   INTEGER(HID_T) :: file_id, memspace_id, dataspace_id
   INTEGER(HID_T), DIMENSION(num_fields) :: dataset_ids
   INTEGER(HSIZE_T), DIMENSION(1) :: mem_dims = (/ max_chunk_size /)
-  INTEGER :: chunk_size, chunk_start, ii, jj, size
+  INTEGER :: chunk_size, chunk_start, ii, jj, size, argc
   INTEGER :: error
   INTEGER(HSIZE_T), DIMENSION(1) :: data_dims, max_data_dims, offset, count
 
+  CHARACTER(len=100) :: filename
+  if (iargc() .lt. 1) then
+    write(*,*)"please specify an input file."
+    call EXIT(0)
+  endif
+  CALL getarg(1, filename)
+  
   CALL h5open_f(error)
-
   CALL h5fopen_f( filename, H5F_ACC_RDONLY_F, file_id, error )
 
   ! NOTE: Add extra copies of these lines to open the dataset
   ! from the HDF5 file. Notice that each call uses a dataset
   ! identifier that is numbered. Be sure to increment the index
   ! with each call.
-  CALL h5dopen_f( file_id, "k_apparent", dataset_ids(1), error )
-  CALL h5dopen_f( file_id, "v_apparent", dataset_ids(2), error )
-  CALL h5dopen_f( file_id, "bub_apparent", dataset_ids(3), error )
+  CALL h5dopen_f( file_id, "pos_x", dataset_ids(1), error )
+  CALL h5dopen_f( file_id, "pos_y", dataset_ids(2), error )
+  CALL h5dopen_f( file_id, "pos_z", dataset_ids(3), error )
 
   CALL h5dget_space_f( dataset_ids(1), dataspace_id, error )
   CALL h5sget_simple_extent_dims_f( dataspace_id, data_dims, max_data_dims, error )

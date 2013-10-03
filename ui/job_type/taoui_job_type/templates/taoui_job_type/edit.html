@@ -1,0 +1,45 @@
+{% load bootstrap_tags %}
+{% load assets %}
+{% load staticfiles %}
+
+<script type="text/javascript" src="{% static 'js/taoui_job_type/job_type.js' %}"></script>
+
+<legend></legend>
+
+<div class="row-fluid">
+    <div class="boxed span8">
+        <div id="telescope_params" class="span2 btn-group btn-group-vertical">
+            <button type="button" class="btn tao-next" data-bind="click: next_tab" />Custom Job</button>
+            <br />
+            <button type="button" id='file_upload_proxy' class="btn upload_parameters">
+                Upload Parameters
+                <input class="hidden_file_input" form="file_upload" id="id_job_type-params_file" name="job_type-params_file" type="file">
+            </button>
+            <br />
+            <!-- ko if: catalogue.vm.job_type.survey_presets().length > 0 -->
+            <button type="button" id="presets_button" class="btn" >Survey Preset</button>
+            <br />
+            <div id="survey_presets" style="display: none;">
+                <select id="survey_presets_select" name="survey_presets_select" form="survey_preset_form" data-bind="value: selected_survey_preset, options: survey_presets, optionsText: 'name', attr: {size: survey_presets().length}" ></select>
+                <br />
+                <button id="load_survey_preset_button" class="btn" form="survey_preset_form">Load Preset</button>    
+            </div>
+            <!-- /ko -->
+        </div>  
+    </div>
+    <div class="aside span4">
+        <!-- ko if: catalogue.vm.job_type.survey_presets().length > 0 -->
+        <div id="survey_presets_info_box" class="boxed" style="display: none;">
+            <div class="survey-preset-info">
+                <div> Selected survey preset details </div>
+                    <div data-bind="with: selected_survey_preset" style="overflow-y: scroll;height: 210px">
+                    <p>
+                        <strong class="name" data-bind="text: name" > </strong>
+                    </p>
+                    <div class="details" data-bind="html: description" ></div>
+                </div>
+            </div>
+        </div>
+        <!-- /ko -->
+    </div>
+</div>

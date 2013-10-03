@@ -7,11 +7,11 @@
       <box-repetition>random</box-repetition>
       <rng-seed>0</rng-seed>
       <redshift-min>0.01</redshift-min>
-      <redshift-max>0.2</redshift-max>
+      <redshift-max>0.4</redshift-max>
       <ra-min>0</ra-min>
-      <ra-max>10</ra-max>
+      <ra-max>20</ra-max>
       <dec-min>0</dec-min>
-      <dec-max>10</dec-max>
+      <dec-max>20</dec-max>
       <output-fields>
         <item>posx</item>
         <item>posy</item>
@@ -48,10 +48,10 @@
       <images>
         <item>
           <mag_field>v.dat_apparent</mag_field>
-          <origin_ra>5</origin_ra>
-          <origin_dec>5</origin_dec>
-          <fov_ra>10</fov_ra>
-          <fov_dec>10</fov_dec>
+          <origin_ra>10</origin_ra>
+          <origin_dec>10</origin_dec>
+          <fov_ra>18</fov_ra>
+          <fov_dec>18</fov_dec>
         </item>
       </images>
     </skymaker>

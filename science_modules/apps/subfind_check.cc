@@ -74,6 +74,18 @@ main( int argc,
 	    // Descendants cannot point to themselves.
 	    ASSERT( halos[jj].descendant != jj );
 
+	    // The descendant of my progenitor must be me.
+	    if( halos[jj].first_progenitor != -1 )
+	    {
+	       ASSERT( halos[halos[jj].first_progenitor].descendant == jj,
+		       "Progenitor does not point to descendant." );
+	    }
+
+	    // The first halo in the FOF group must be the central one,
+	    // thus, it must point to itself.
+	    ASSERT( halos[halos[jj].first_fof].first_fof == halos[jj].first_fof,
+		    "First halo in FOF group is not central." );
+
             // All snapshot numbers must be < specified value.
             ASSERT( halos[jj].snap_num < num_snapshots,
                     "Bad snapshot number." );

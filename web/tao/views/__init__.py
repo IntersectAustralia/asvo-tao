@@ -2,20 +2,27 @@ import re
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import views as auth_views
-from django.core import mail
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.forms import PasswordChangeForm
 from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.template.context import Context
+from django.template.response import TemplateResponse
 from django.utils.translation import ugettext_lazy as _
+from django.utils.safestring import mark_safe
+from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.debug import sensitive_post_parameters
 from django.views.decorators.http import require_POST
+
 
 from django.utils.http import urlencode as django_urlencode
 
 from tao import models
-from tao.decorators import researcher_required, admin_required, set_tab
+from tao.decorators import researcher_required, admin_required, set_tab, user_login_required
 from tao.mail import send_mail
 from tao.pagination import paginate
-from tao.models import TaoUser, GlobalParameter
+from tao.models import TaoUser, GlobalParameter, STATUS_CHOICES
 
 import logging
 
@@ -26,9 +33,13 @@ def login(request):
     if request.method == 'POST':
         if not request.POST.get('remember_me', None):
             request.session.set_expiry(0)  # expires on browser close
-    q_dict = {'target':request.build_absolute_uri(reverse('home'))}
+    nextP = request.GET.get('next', None)
+    if nextP is None:
+        q_dict = {'target':request.build_absolute_uri(reverse('home'))}
+    else:
+        q_dict = {'target':request.build_absolute_uri(nextP)}
     aaf_session_url = settings.AAF_SESSION_URL + "?" + django_urlencode(q_dict)
-    return auth_views.login(request, authentication_form=LoginForm,extra_context={'aaf_session_url':aaf_session_url})
+    return auth_views.login(request, authentication_form=LoginForm,extra_context={'aaf_session_url': aaf_session_url})
 
 def fail(request):
     print request.METAS
@@ -78,21 +89,16 @@ def home(request):
             return redirect(register)
         elif request.user.account_registration_status == TaoUser.RS_PENDING:
             return redirect(account_status)
+        elif request.user.account_registration_status == TaoUser.RS_REJECTED:
+            return redirect(account_status)
     return render(request, 'home.html')
-
-
-#@aaf_empty_required
-#def register_aaf(request):
-#    pass
-
-#@aaf_registered_required
-#def registration_view(request):
-#    pass
 
 
 @admin_required
 def admin_index(request):
-    return render(request, 'admin_index.html')
+    return render(request, 'admin_index.html', {
+        'statuses': STATUS_CHOICES,
+    })
 
 
 @admin_required
@@ -110,7 +116,7 @@ def access_requests(request):
 @require_POST
 def approve_user(request, user_id):
     u = models.TaoUser.objects.get(pk=user_id)
-    u.is_active = True
+    u.activate_user()
     u.save()
 
     template_name = 'approve'
@@ -131,11 +137,11 @@ def approve_user(request, user_id):
 @admin_required
 @require_POST
 def reject_user(request, user_id):
+    reason = request.POST['reason']
     u = models.TaoUser.objects.get(pk=user_id)
-    u.rejected = True
+    u.reject_user(reason)
     u.save()
 
-    reason = request.POST['reason']
 
     template_name = 'reject'
     context = Context({'title': u.title, 'first_name': u.first_name, 'last_name': u.last_name, 'reason': reason})
@@ -146,9 +152,14 @@ def reject_user(request, user_id):
 
     return redirect(access_requests)
 
-@researcher_required
 @set_tab('support')
 def support(request):
+    if not hasattr(request,'user') or not hasattr(request.user,'is_aaf'):
+        return redirect(login)
+    if request.user.is_aaf() and request.user.account_registration_status == TaoUser.RS_EMPTY:
+        return redirect(register)
+    if request.user.is_aaf() and request.user.account_registration_status == TaoUser.RS_REJECTED:
+        return redirect(account_status)
     from tao.forms import SupportForm
     if request.method == 'POST':
         form = SupportForm(request.POST)
@@ -164,12 +175,40 @@ def support(request):
             logger.info('Message: ' + message)
             send_mail('support-template', context, 'TAO Support: ' + subject, [user_email], bcc=to_addrs)
             return render(request, 'email_sent.html')
+        else:
+            message = 'Please fill in required fields'
+            messages.info(request, mark_safe(message))
     else:
         form = SupportForm()
 
     return render(request, 'support.html', {
         'form': form,
     })
+
+@user_login_required
+@sensitive_post_parameters()
+@csrf_protect
+def password_change(request,
+                    template_name='registration/password_change_form.html',
+                    post_change_redirect=None,
+                    password_change_form=PasswordChangeForm,
+                    current_app=None, extra_context=None):
+    if post_change_redirect is None:
+        post_change_redirect = reverse('django.contrib.auth.views.password_change_done')
+    if request.method == "POST":
+        form = password_change_form(user=request.user, data=request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(post_change_redirect)
+    else:
+        form = password_change_form(user=request.user)
+    context = {
+        'form': form,
+    }
+    if extra_context is not None:
+        context.update(extra_context)
+    return TemplateResponse(request, template_name, context,
+                            current_app=current_app)
 
 def handle_403(request):
     return render(request, '403.html', status=403)
