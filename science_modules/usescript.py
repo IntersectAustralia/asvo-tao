@@ -89,7 +89,8 @@ pkgs += (glut | identity) + (sqlite3 | identity)
 cc  = cc  + pkgs
 sl  = sl  + pkgs
 bin = bin + pkgs
-bin_inst = bin_inst + pkgs
+tao_bin = tao_bin + pkgs
+tao_bin_inst = tao_bin_inst + pkgs
 
 # Copy all headers.
 hdrs = rule(r'src/.+\.hh$', cp_hdr & hdr_inst, target_strip_dirs=1)
