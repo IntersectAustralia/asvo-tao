@@ -21,7 +21,7 @@ namespace tao {
 		   soci::session Connection;
 
 
-		   ServerInfo(string _DBName,string _Host,string _UserName,string _Password,string _Port);
+		   ServerInfo(const string& _DBName,const string& _Host,const string& _UserName,const string& _Password,const string& _Port);
 		   virtual ~ServerInfo();
 		   void OpenConnection();
 		   void CloseConnection();
@@ -40,17 +40,17 @@ namespace tao {
 	   public:
                    multidb();
 	   	   multidb(const options::xml_dict& dict);
-	   	   multidb(string dbname,string tree_pre);
+	   	   multidb(const string& dbname,const string& tree_pre);
            virtual ~multidb();
            void Connect(const options::xml_dict& dict);
            void CloseAllConnections();
            void RestartAllConnections();
            void OpenAllConnections();
-           soci::session& operator [](string TableName);
-           bool TableExist(string TableName);
-           bool ExecuteNoQuery_AllServers(string SQLStatement);
+           soci::session& operator [](const string& TableName);
+           bool TableExist(const string& TableName);
+           bool ExecuteNoQuery_AllServers(const string& SQLStatement);
            bool AddNewServer(string Dbname, string _Host,string _UserName,string _Password,string _Port);
-           bool AddNewServer(string _Host,string _UserName,string _Password,string _Port);
+           bool AddNewServer(const string& _Host,const string& _UserName,const string& _Password,const string& _Port);
            soci::session* GetConnectionToAnyServer();
            list<string> TableNames;
            map<string,ServerInfo*> CurrentServers;

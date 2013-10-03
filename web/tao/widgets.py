@@ -7,9 +7,9 @@ Custom Django widgets
 """
 from django import forms
 from django.contrib.staticfiles.templatetags.staticfiles import static
-from django.forms.widgets import SelectMultiple
+from django.forms.widgets import SelectMultiple, TextInput
 from django.forms.util import flatatt
-from django.utils.html import conditional_escape, escape
+from django.utils.html import conditional_escape, escape, format_html, force_text
 from django.utils.encoding import force_unicode
 from django.utils.safestring import mark_safe
 
@@ -25,11 +25,17 @@ class SelectWithOtherAttrs(forms.Select):
         self.other_attrs = {}
 
     def render_option(self, selected_choices, option_value, option_label):
-        other_attrs_html = ' '.join('%s="%s"' % (escape(force_unicode(name)), escape(force_unicode(val))) for name, val in self.other_attrs[option_value].items())
-        option_value = escape(force_unicode(option_value))
-        selected_html = u' selected="selected"' if (option_value in selected_choices) else ''
-        option_label = conditional_escape(force_unicode(option_label))
-        return u'<option value="%s"%s%s>%s</option>' % (option_value, other_attrs_html, selected_html, option_label)
+        if option_value is None and option_label is None:
+            # Assume that we just want to supply the other attributes
+            other_attrs_html = ' '.join('%s="%s"' % (escape(force_unicode(name)), escape(force_unicode(val))) for name, val in self.other_attrs[option_value].items())
+            res = u'<option %s />' % other_attrs_html
+        else:
+            other_attrs_html = ' '.join('%s="%s"' % (escape(force_unicode(name)), escape(force_unicode(val))) for name, val in self.other_attrs[option_value].items())
+            selected_html = u' selected="selected"' if (option_value in selected_choices) else ''
+            option_label = conditional_escape(force_unicode(option_label))
+            option_value = escape(force_unicode(option_value))
+            res = u'<option value="%s"%s%s>%s</option>' % (option_value, other_attrs_html, selected_html, option_label)
+        return res
 
 
 class ChoiceFieldWithOtherAttrs(forms.ChoiceField):
@@ -55,30 +61,43 @@ class TwoSidedSelectWidget(SelectMultiple):
     ## name and id are set by the framework
     def render(self, name, value, attrs=None, choices=()):
         if value is None: value = []
-        final_attrs = self.build_attrs(attrs, name=name)
-        widget_id = final_attrs['id']
-        left_attrs = {'id': widget_id+'_from'}
-        filter_attrs = {'id': widget_id+'_filter'}
-        output_filter = [u'<input type="text" placeholder="Filter" %s>' % flatatt(filter_attrs)]
-        output_left = [u'<select multiple="multiple"%s>' % flatatt(left_attrs), u'</select>',
-                       ]
-        output_right = [u'<select multiple="multiple"%s>' % flatatt(final_attrs)]
+        if 'ko_data' in self.attrs:
+            data_bind = "error_check: %(value)s, template: {name: 'two_sided_select_widget', data: %(widget)s}" % self.attrs['ko_data']
+            del self.attrs['ko_data']
+            attrs['data-bind'] = data_bind
+        final_attrs = self.build_attrs(attrs, id=name)
+        output_right = [u'<div %s><select>' % flatatt(final_attrs)]
         options = self.render_options(choices, value)
         if options:
             output_right.append(options)
-        output_right.append('</select>')
-        output = [u'<table id="' + widget_id + '-table">']
-        output.extend(['<tr><td>Available</td>'])
-        output.extend(['<td></td>'])
-        output.extend(['<td>Selected</td></tr>'])
-        output.extend(['<td>'] + output_filter + ['</td>'])
-        output.extend(['<td rowspan="2" id="' + widget_id + '-buttons" vertical-align="middle">',
-                       u'<a href="#" id="%s_op_add_all">&gt;&gt;</a>' % widget_id,
-                       u'<a href="#" id="%s_op_add">&gt;</a>' % widget_id,
-                       u'<a href="#" id="%s_op_remove">&lt;</a>' % widget_id,
-                       u'<a href="#" id="%s_op_remove_all">&lt;&lt;</a>' % widget_id,
-                       '</td>'])
-        output.extend(['<td rowspan="2" id="' + widget_id + '-right">'] + output_right + ['</td></tr>'])
-        output.extend(['<tr><td style="height:100%" id="' + widget_id + '-left">'] + output_left + ['</td></tr>'])
-        output.extend([u'</table>'])
-        return mark_safe(u'\n'.join(output))
+        output_right.append('</select></div>')
+        resp = u'\n'.join(output_right)
+        return mark_safe(resp)
+
+class SpinnerWidget(TextInput):
+
+    def __init__(self, attrs=None):
+        super(SpinnerWidget, self).__init__(attrs)
+
+    ## name and id are set by the framework
+    def render(self, name, value, attrs=None):
+        if value is None:
+            value = ''
+        input_attrs = self.build_attrs(attrs, type=self.input_type, name=name)
+        span_attrs = {}
+        if value != '':
+            # Only add the 'value' attribute if a value is non-empty.
+            input_attrs['value'] = force_text(self._format_value(value))
+        if 'spinner_bind' in self.attrs:
+            input_attrs['data-bind'] = self.attrs['spinner_bind']
+            del input_attrs['spinner_bind']
+        if 'spinner_message' in self.attrs:
+            span_attrs['data-bind'] = self.attrs['spinner_message']
+        input_part = '<input{0} />'.format(flatatt(input_attrs))
+        span_part = '<span class="spinner-message" {0}></span>'.format(flatatt(span_attrs))
+        return mark_safe('<div>' + input_part + '<br/>' + span_part +'</div>')
+
+    def bind_label(self):
+        return True
+
+

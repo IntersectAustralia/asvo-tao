@@ -8,9 +8,13 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-
-
 	xml_document inp_doc;
+
+	if (argc < 2)
+	{
+		printf("please specify an input file.\n");
+		return 0;
+	}
 	if( inp_doc.load_file(argv[1]) == false )
 	{
 		printf("Error! I can't open the file as an XML doc\n");

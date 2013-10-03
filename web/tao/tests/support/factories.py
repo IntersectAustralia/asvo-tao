@@ -1,7 +1,7 @@
 import factory
 # http://factoryboy.readthedocs.org/en/latest/index.html
 
-from tao.models import Job, TaoUser, Simulation, GalaxyModel, DataSet, DataSetProperty, StellarModel, Snapshot, BandPassFilter, DustModel, GlobalParameter, WorkflowCommand
+from tao.models import Job, TaoUser, Simulation, GalaxyModel, DataSet, DataSetProperty, StellarModel, Snapshot, BandPassFilter, DustModel, GlobalParameter, WorkflowCommand, SurveyPreset
 
 class UserFactory(factory.Factory):
     FACTORY_FOR = TaoUser
@@ -44,6 +44,7 @@ class GalaxyModelFactory(factory.Factory):
 
 class DataSetFactory(factory.Factory):
     FACTORY_FOR = DataSet
+    available = True
     
 class DataSetPropertyFactory(factory.Factory):
     FACTORY_FOR = DataSetProperty
@@ -51,12 +52,20 @@ class DataSetPropertyFactory(factory.Factory):
     name = factory.Sequence(lambda n: 'name_%03d' % int(n))
     description = factory.Sequence(lambda n: 'description_%03d' % int(n))
     data_type = DataSetProperty.TYPE_INT
+    is_filter = True
+    is_output = True
 
 class StellarModelFactory(factory.Factory):
     FACTORY_FOR = StellarModel
     label = factory.Sequence(lambda n: 'stellar_label_%03d' % int(n))
-    name = factory.Sequence(lambda n: 'stellar_name_%03d' % int(n))
+    name = factory.Sequence(lambda n: 'model{n}/sspm.dat'.format(n=n))
     description = factory.Sequence(lambda n: '<p>Description ' + n + '</p>')
+    encoding = factory.Sequence(lambda n: """
+<single-stellar-population-model width="{n}">model{n}/sspm.dat</single-stellar-population-model>
+<wavelengths-file>model{n}/wavelengths.dat</wavelengths-file>
+<ages-file>model{n}/ages.dat</ages-file>
+<metallicities-file>model{n}/metallicites.dat</metallicities-file>
+""".format(n=n))
 
 class SnapshotFactory(factory.Factory):
     FACTORY_FOR = Snapshot
@@ -97,3 +106,9 @@ class GlobalParameterFactory(factory.Factory):
 
 class WorkflowCommandFactory(factory.Factory):
     FACTORY_FOR = WorkflowCommand
+
+
+class SurveyPresetFactory(factory.Factory):
+    FACTORY_FOR = SurveyPreset
+    name = factory.Sequence(lambda n: 'Preset %d' % int(n))
+    parameters = ''

@@ -2,6 +2,7 @@ from django.core.urlresolvers import reverse
 from django.utils.html import strip_tags
 
 from selenium.webdriver.firefox.webdriver import WebDriver
+from selenium.common.exceptions import NoSuchElementException
 
 import django.test
 
@@ -10,6 +11,8 @@ import tao.datasets as datasets
 from tao.models import DataSetProperty, BandPassFilter, Simulation
 from tao.forms import NO_FILTER
 from tao.settings import MODULE_INDICES
+from tao.tests.helper import TaoModelsCleanUpMixin
+from tao.tests.support.factories import GlobalParameterFactory
 
 def interact(local):
     """
@@ -22,22 +25,30 @@ def interact(local):
 def visit(client, view_name, *args, **kwargs):
     return client.get(reverse(view_name, args=args), follow=True)
 
-class LiveServerTest(django.test.LiveServerTestCase):
+class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
     DOWNLOAD_DIRECTORY = '/tmp/work/downloads'
 
     ## List all ajax enabled pages that have initialization code and must wait
-    AJAX_WAIT = ['mock_galaxy_factory']
+    AJAX_WAIT = ['mock_galaxy_factory', 'view_job']
     SUMMARY_INDEX = str(len(MODULE_INDICES)+1)
+    OUTPUT_FORMATS = [
+        {'value':'csv', 'text':'CSV (Text)', 'extension':'csv'},
+        {'value':'hdf5', 'text':'HDF5', 'extension':'hdf5'},
+        {'value': 'fits', 'text': 'FITS', 'extension': 'fits'},
+        {'value': 'votable', 'text': 'VOTable', 'extension': 'xml'}
+    ]
 
     def wait(self, secs=1):
-        time.sleep(secs)
+        time.sleep(secs * 1.0)
 
     def setUp(self):
+        self.output_formats = GlobalParameterFactory.create(parameter_name='output_formats', parameter_value=LiveServerTest.OUTPUT_FORMATS)
+
         from selenium.webdriver.firefox.webdriver import FirefoxProfile
         fp = FirefoxProfile()
         fp.set_preference("browser.download.folderList", 2)
         fp.set_preference("browser.download.dir", self.DOWNLOAD_DIRECTORY)
-        fp.set_preference("browser.helperApps.neverAsk.saveToDisk", "text/html, application/zip")
+        fp.set_preference("browser.helperApps.neverAsk.saveToDisk", "text/html, application/zip, text/plain, application/force-download")
         
         self.selenium = WebDriver(firefox_profile=fp)
         self.selenium.implicitly_wait(1) # wait one second before failing to find
@@ -48,10 +59,6 @@ class LiveServerTest(django.test.LiveServerTestCase):
 
     def tearDown(self):
         self.selenium.quit()
-        m = __import__('tao.models')
-        for name in ['Simulation', 'GalaxyModel', 'DataSet', 'DataSetProperty', 'StellarModel', 'DustModel', 'Snapshot', 'BandPassFilter', 'Job', 'GlobalParameter']:
-            klass = getattr(m.models, name)
-            for obj in klass.objects.all(): obj.delete()
         # remove the download dir
         for root, dirs, files in os.walk(self.DOWNLOAD_DIRECTORY, topdown=False):
             for name in files:
@@ -77,6 +84,15 @@ class LiveServerTest(django.test.LiveServerTestCase):
 
     def sed_2select(self, bare_field):
         return 'id_sed-band_pass_filters_%s' % bare_field
+
+    def job_select(self, bare_field):
+        return 'id-job_%s' % bare_field
+
+    def job_id(self, bare_field):
+        return '#%s' % self.job_select(bare_field)
+
+    def mi_id(self, prefix, bare_field):
+        return 'id_mock_image-%s-%s' % (prefix, bare_field)
 
     def get_parent_element(self, element):
         return self.selenium.execute_script('return arguments[0].parentNode;', element)
@@ -106,6 +122,30 @@ class LiveServerTest(django.test.LiveServerTestCase):
         elem = self.selenium.find_element_by_css_selector("div.%(section)s-info .%(field)s" % {'section': section, 'field': field})
         return elem.text
 
+    def find_element_by_css_selector(self, selector):
+        retries = 3
+        while retries > 0:
+            try:
+                elem = self.selenium.find_element_by_css_selector(selector)
+                return elem
+            except NoSuchElementException:
+                retries -= 1
+                self.wait(1)
+        # If it hasn't been found by now, try one more time and let the exception through
+        return self.selenium.find_element_by_css_selector(selector)
+
+    def find_element_by_id(self, elem_id):
+        retries = 3
+        while retries > 0:
+            try:
+                elem = self.selenium.find_element_by_id(elem_id)
+                return elem
+            except NoSuchElementException:
+                retries -= 1
+                self.wait(1)
+        # If it hasn't been found by now, try one more time and let the exception through
+        return self.selenium.find_element_by_id(elem_id)
+
     def assert_email_body_contains(self, email, text):
         pattern = re.escape(text)
         matches = re.search(pattern, email.body)
@@ -134,8 +174,8 @@ class LiveServerTest(django.test.LiveServerTestCase):
         self.assertFalse(re.search(pattern, page_source), "page source contained %s" % pattern)
         
     def assert_element_text_equals(self, selector, expected_value):
-        element = self.find_visible_element(selector)
-        self.assertEqual(expected_value, element.text)
+        text = self.find_visible_element(selector).text.strip()
+        self.assertEqual(expected_value.strip(), text.strip())
 
     def assert_selector_texts_equals_expected_values(self, selector_value):
         # selector_value is a dict of selectors to expected text values
@@ -184,14 +224,41 @@ class LiveServerTest(django.test.LiveServerTestCase):
     def assert_not_displayed(self, selector):
         field = self.selenium.find_element_by_css_selector(selector)
         self.assertFalse(field.is_displayed())
-        
+
+    def assert_not_in_page(self, selector):
+        "Assert that the supplied selector is not part of the page content"
+        elements = self.selenium.find_elements_by_css_selector(selector)
+        self.assertTrue(len(elements) == 0)
+
     def assert_on_page(self, url_name, ignore_query_string=False):
+        retries = 3
+        while retries > 0:
+            try:
+                self._assert_on_page(url_name, ignore_query_string)
+                return
+            except AssertionError:
+                retries -= 1
+                print "assert_on_page: retry"
+                self.wait(1)
+        self._assert_on_page(url_name, ignore_query_string)
+
+    def _assert_on_page(self, url_name, ignore_query_string=False):
         if not ignore_query_string:
             self.assertEqual(self.selenium.current_url, self.get_full_url(url_name))
         else:
             split_url = self.selenium.current_url.split('?')
             url = split_url[0]
             self.assertEqual(url, self.get_full_url(url_name))
+
+    def assert_multi_selected_text_equals(self, id_of_select, expected):
+        actual = self.get_multi_selected_option_text(id_of_select)
+        remaining = []
+        for value in expected:
+            if value not in actual:
+                remaining.append(value)
+            else:
+                actual.remove(value)
+        self.assertTrue(not actual and not remaining)
 
     def assert_summary_field_correctly_shown(self, expected_value, form_name, field_name):
         value_displayed = self.get_summary_field_text(form_name, field_name)
@@ -213,7 +280,7 @@ class LiveServerTest(django.test.LiveServerTestCase):
         elem.clear()
 
     def click(self, elem_id):
-        elem = self.selenium.find_element_by_id(elem_id)
+        elem = self.find_element_by_id(elem_id)
         elem.click()
         self.wait(0.5)
 
@@ -243,20 +310,22 @@ class LiveServerTest(django.test.LiveServerTestCase):
         """ self.visit(name_of_url_as_defined_in_your_urlconf) """
         self.selenium.get(self.get_full_url(url_name, *args, **kwargs))
         if url_name in LiveServerTest.AJAX_WAIT:
-            self.wait(1)
-        
+            self.wait(2)
+            self.assertTrue(self.selenium.execute_script('return (window.catalogue !== undefined ? catalogue._loaded : true)'),
+                            'catalogue.js loading error')
+
     def get_actual_filter_options(self):
         option_selector = '%s option' % self.rf_id('filter')
         return [x.get_attribute('value').encode('ascii') for x in self.selenium.find_elements_by_css_selector(option_selector)]
     
-    def get_expected_filter_options(self, data_set_id):
+    def get_expected_filter_options(self, data_set):
         def gen_bp_pairs(objs):
             for obj in objs:
                 yield ('B-' + str(obj.id) + '_apparent')
                 yield ('B-' + str(obj.id) + '_absolute')
-        normal_parameters = datasets.filter_choices(data_set_id)
+        normal_parameters = datasets.filter_choices(data_set.simulation.id, data_set.galaxy_model.id)
         bandpass_parameters = datasets.band_pass_filters_objects()
-        return ['X-' + NO_FILTER] + ['D-' + str(x.id) for x in normal_parameters] + [pair for pair in gen_bp_pairs(bandpass_parameters)]
+        return ['D-' + str(x.id) for x in normal_parameters] + [pair for pair in gen_bp_pairs(bandpass_parameters)]
 
     def get_actual_snapshot_options(self):
         option_selector = '%s option' % self.lc_id('snapshot')
@@ -275,7 +344,13 @@ class LiveServerTest(django.test.LiveServerTestCase):
         for option in options:
             if option.get_attribute('selected'):
                 selected_option = option
-        return selected_option.text      
+        return selected_option.text
+
+    def get_multi_selected_option_text(self, id_of_select):
+        select = self.selenium.find_element_by_css_selector(id_of_select)
+        options = select.find_elements_by_css_selector('option')
+        return [option.text for option in options]
+
         
     def get_selector_value(self, selector): 
         return self.selenium.find_element_by_css_selector(selector).get_attribute('value')
@@ -339,7 +414,7 @@ class LiveServerTest(django.test.LiveServerTestCase):
 
 class LiveServerMGFTest(LiveServerTest):
     def submit_mgf_form(self):
-        submit_button = self.selenium.find_element_by_css_selector('#mgf-form input[type="submit"]')
+        submit_button = self.selenium.find_element_by_css_selector('#mgf-form #form_submit')
         submit_button.submit()
         self.wait(1.5)
 
@@ -348,3 +423,8 @@ class LiveServerMGFTest(LiveServerTest):
         div_container = self.get_closest_by_class(field_elem, 'control-group')
         self.assertEquals(what, 'error' in self.get_element_css_classes(div_container))
 
+    def assert_required_on_field(self, what, field_id):
+        field_elem = self.selenium.find_element_by_css_selector(field_id)
+        div_container = self.get_closest_by_class(field_elem, 'control-group')
+        label = div_container.find_element_by_css_selector('label')
+        self.assertTrue(label.get_attribute('class').find('error') != -1, '%s label is not in error' % (field_id,))
