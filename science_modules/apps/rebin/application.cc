@@ -1,3 +1,4 @@
+#include <libhpc/libhpc.hh>
 #include "application.hh"
 
 namespace tao {
@@ -15,6 +16,11 @@ namespace tao {
 	 {
 	    EXCEPT( 0, "Invalid galaxy global index." );
 	 }
+      }
+
+      void
+      application::operator()()
+      {
       }
 
    }

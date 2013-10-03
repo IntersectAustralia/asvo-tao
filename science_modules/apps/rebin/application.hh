@@ -6,14 +6,17 @@ namespace tao {
 
       class application
       {
-	 public:
+      public:
 
-	    application( int argc,
-			 char* argv[] );
+	 application( int argc,
+		      char* argv[] );
 
-	 protected:
+	 void
+	 operator()();
 
-	    long long _gid;
+      protected:
+
+	 long long _gid;
       };
 
    }
