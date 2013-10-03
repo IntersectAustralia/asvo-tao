@@ -14,6 +14,7 @@ args = (arguments()
 # so we can include preprocessor definitions.
 glut = use('glut')
 soci = use('soci')
+sqlite3 = use('sqlite3')
 
 # Define some options.
 cc_opts = (
@@ -43,7 +44,7 @@ cc_opts = (
     options(args.memory_ops    == False, define=['NMEMOPS']) +
     options(args.memory_stats  == False, define=['NMEMSTATS']) +
     options(glut.have          == True,  define=['HAVE_GLUT']) +
-    options(soci.has_feature('sqlite3') == True, define=['HAVE_SQLITE3']) +
+    options((soci.has_feature('sqlite3') == True) & (sqlite3.have == True), define=['HAVE_SQLITE3']) +
     options(soci.has_feature('postgresql') == True, define=['HAVE_POSTGRESQL'])
 )
 cp_opts = (
@@ -65,7 +66,6 @@ boost   = use('boost')
 mpi     = use('mpi')
 hdf5    = use('hdf5')
 gsl    = use('gsl')
-sqlite3 = use('sqlite3')
 pq = use('postgresql')
 pugixml = use('pugixml')
 cfitsio = use('cfitsio')
