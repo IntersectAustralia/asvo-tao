@@ -109,7 +109,7 @@ class TaoUser(auth_models.AbstractUser):
         return current_disk_usage
 
     def display_current_disk_usage(self):
-        return format_human_readable_file_size(self.get_current_disk_usage())  # input file size in B
+        return format_human_readable_file_size(self.get_current_disk_usage()  * 1000.0 ** 2)  # convert MB to B for formatting
 
     def set_password(self, raw_password):
         if len(raw_password) < settings.MIN_PASSWORD_LENGTH:

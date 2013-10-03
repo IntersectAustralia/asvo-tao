@@ -1,8 +1,13 @@
 from django.utils.timezone import get_default_timezone
+from django.conf import settings
 
 from tao.models import Job, GlobalParameter
+
+from tao.tests import helper
 from tao.tests.integration_tests.helper import LiveServerMGFTest
 from tao.tests.support.factories import UserFactory, JobFactory
+
+import os
 
 class ListJobsTests(LiveServerMGFTest):
 
@@ -129,3 +134,14 @@ class ListJobsTests(LiveServerMGFTest):
         self.assert_page_has_content(usage_text)
     
     
+    def test_user_disk_usage_displays_correctly(self):
+        output_path = 'job_output'
+        file_content = 'abc' * 2000000
+        file_name_to_content = {'file_name': file_content}
+        helper.create_file(os.path.join(settings.FILES_BASE, output_path), 'file_name', file_name_to_content)
+        self.user.disk_quota = 10
+        self.user.save()
+        self.visit('job_index')
+        usage_text = "%s  of  %s" % ('6MB', '10MB')
+        self.assert_page_has_content(usage_text)
+
