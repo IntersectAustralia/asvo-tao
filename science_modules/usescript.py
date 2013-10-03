@@ -2,6 +2,7 @@
 args = (arguments()
         ('--prefix', default='/usr/local', help='Installation path.')
         ('--enable-debug', dest='debug', action='boolean', default=False, help='Enable/disable debugging mode.')
+        ('--enable-preprocess', dest='preprocess', action='boolean', default=False, help='Build in special preprocessing mode.')
         ('--enable-instrument', dest='instrument', action='boolean', default=False, help='Enable/disable instrumentation.')
         ('--enable-stacktrace', dest='stacktrace', action='boolean', default=False, help='Enable/disable debugging stacktrace.')
         ('--enable-memory-debug', dest='memory_debug', action='boolean', default=False, help='Enable/disable memory debugging.')
@@ -36,6 +37,7 @@ cc_opts = (
             optimise=3,
             symbols=False,
             define=['NDEBUG', 'NLOGTRIVIAL', 'NLOGDEBUG']) +
+    options(args.preprocess    == True, define=['PREPROCESSING']) +
     options(args.instrument    == False, define=['NINSTRUMENT']) +
     options(args.logging       == False, define=['NLOG', 'NLOGDEBUG']) +
     options(args.debug_logging == False, define=['NLOGDEBUG']) +
@@ -53,20 +55,25 @@ cp_opts = (
     options(args.debug == False,
             prefix='build/optimised/include/tao')
 )
+tao_bin_opts = (
+    options(args.preprocess == True, target='bin/tao_preprocess') +
+    options(args.preprocess == False, target='bin/tao')
+)
 
 # Define compilers/linkers.
 cc  = use('cxx_compiler', cc_opts, compile=True)
 sl  = use('cxx_compiler', cc_opts, shared_lib=True)
 sl_inst = use('cxx_compiler', cc_opts, targets.contains('install'), shared_lib=True, prefix=args.prefix)
 bin = use('cxx_compiler', cc_opts)
+tao_bin = use('cxx_compiler', cc_opts + tao_bin_opts)
 ar  = use('ar', cc_opts, add=True)
 
 # Which packages will we be using?
 boost   = use('boost')
 mpi     = use('mpi')
 hdf5    = use('hdf5')
-gsl    = use('gsl')
-pq = use('postgresql')
+gsl     = use('gsl')
+pq      = use('postgresql')
 pugixml = use('pugixml')
 cfitsio = use('cfitsio')
 libhpc = use('libhpc')
@@ -103,6 +110,6 @@ tests = rule(r'tests/(?!fixtures).+\.cc$', bin, sqlite3.have == True, libraries=
 rule(tests, run_tests, sqlite3.have == True, target=dummies.always)
 
 # Build all the applications.
-rule(r'apps/(?:tao|application)\.cc$', bin, target='bin/tao', libraries=['tao'])
+rule(r'apps/(?:tao|application)\.cc$', tao_bin, target='bin/tao', libraries=['tao'])
 # rule(r'apps/zen/.+\.cc$', bin, glut.have == True, target='bin/zen', libraries=['tao'])
 # rule(r'apps/rebin/.+\.cc$', bin, target='bin/rebin', libraries=['tao'])
