@@ -337,6 +337,8 @@ class Job(models.Model):
         return self.error_message[:80]
 
     def recalculate_disk_usage(self):
+        if not self.is_completed():
+            return 0
         sum_file_sizes = 0
         for f in self.files():
             sum_file_sizes += f.get_file_size_in_MB()
