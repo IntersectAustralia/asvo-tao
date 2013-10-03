@@ -113,6 +113,6 @@ tests = rule(r'tests/(?!fixtures).+\.cc$', bin, sqlite3.have == True, libraries=
 rule(tests, run_tests, sqlite3.have == True, target=dummies.always)
 
 # Build all the applications.
-rule(r'apps/(?:tao|application)\.cc$', tao_bin & tao_bin_inst, target='bin/tao', libraries=['tao'])
+rule(r'apps/(?:tao|application)\.cc$', tao_bin & tao_bin_inst, libraries=['tao'])
 # rule(r'apps/zen/.+\.cc$', bin, glut.have == True, target='bin/zen', libraries=['tao'])
 # rule(r'apps/rebin/.+\.cc$', bin, target='bin/rebin', libraries=['tao'])
