@@ -17,6 +17,8 @@ and custom developed redshift calculator:
 Catalogue requirements
 ----------------------
 
+IMPORTANT! Photometry should not include dust modeling!
+
 Catalogues must be in TAO CSV format, using ", " as a delimiter.
 
 Tested catalogues must include:
@@ -40,12 +42,12 @@ Results
 -------
 
 The script will output following columns:
-z   d(z)   d(TAO)   d(DM)   diff %
+z(TAO)   d(TAO)   d(z)   d(DM)   diff %
 
 where:
-    z      - redshift from TAO catalogue
-    d(z)   - distance calculated from the redshift
+    z(TAO) - redshift from TAO catalogue
     d(TAO) - distance from the TAO catalogue
+    d(z)   - distance calculated from the redshift
     d(DM)  - distance calculated from distance modulus
     diff % - difference between distances d(TAO) and d(DM) in [%]
 
@@ -53,6 +55,6 @@ where:
 Interpreting the results
 ------------------------
 
-The difference between d(TAO) and d(DM) should be approaching to 0. This value
-can grow with higher redshift values.
+The difference between d(TAO) and d(DM) should be approaching to 0. But the 
+difference can grow with higher redshift values.
 
