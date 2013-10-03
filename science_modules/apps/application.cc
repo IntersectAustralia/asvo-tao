@@ -30,8 +30,8 @@ namespace tao {
 #ifdef PREPROCESSING
       string xml = argv[1], db = argv[2];
       xml = argv[1];
-      index = xml.find( ".xml" );
-      xml.replace( index, 4, "_tao.Profile.log" );
+      int idx = xml.find( ".xml" );
+      xml.replace( idx, 4, "_tao.Profile.log" );
       LOG_PUSH( new hpc::mpi::logger( xml, 100 ) );
 #endif
 
