@@ -42,7 +42,6 @@ namespace tao {
          add_output_field( "localgalaxyid" );
 	 add_output_field( "globalindex" );
 	 add_output_field( "sfr" );
-	 add_output_field( "stellarmass" );
       }
 
       void

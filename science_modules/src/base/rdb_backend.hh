@@ -1,4 +1,4 @@
-#ifndef tao_base_rdb_backend_hh
+#ifndef tao_base_rdb_backend_hh 
 #define tao_base_rdb_backend_hh
 
 #include <unordered_map>
@@ -173,7 +173,14 @@ namespace tao {
 
                if( !qs.empty() )
                   qs += ", ";
-               qs += map.at( of ) + " AS " + of;
+	       try
+	       {
+		  qs += map.at( of ) + " AS " + of;
+	       }
+	       catch( ... )
+	       {
+		  EXCEPT( 0, "Database does not contain a field named: ", of );
+	       }
 
                // }
             }
