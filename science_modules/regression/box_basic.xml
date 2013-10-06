@@ -4,7 +4,7 @@
 
     <light-cone id="light-cone">
       <geometry>box</geometry>
-      <box-repetition>random</box-repetition>
+      <box-repetition>unique</box-repetition>
       <rng-seed>0</rng-seed>
       <query-box-size>10</query-box-size>
       <redshift>0</redshift>
@@ -22,6 +22,18 @@
         </filter>
       </record-filter>
     </light-cone>
+
+    <csv id="csv">
+      <filename>result</filename>
+      <fields>
+        <item>posx</item>
+        <item>posy</item>
+        <item>posz</item>
+      </fields>
+      <parents>
+        <item>light-cone</item>
+      </parents>
+    </csv>
 
   </workflow>
 
