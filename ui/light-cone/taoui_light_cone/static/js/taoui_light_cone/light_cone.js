@@ -248,6 +248,7 @@ catalogue.module_defs.light_cone = function ($) {
             .extend({required: function(){return vm.catalogue_geometry().id == 'light-cone'}})
             .extend({only_if: function(){return vm.catalogue_geometry().id == 'light-cone'}})
             .extend({validate: catalogue.validators.is_float})
+            .extend({validate: catalogue.validators.geq(0)})
             .extend({validate: catalogue.validators.geq(vm.redshift_min)});
 
         vm.max_box_size = ko.computed(function() {

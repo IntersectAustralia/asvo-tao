@@ -210,8 +210,8 @@ class WorkFlow(object):
         ParseXMLParametersObj.ExportTrees(logpath+"/params<index>.xml")    
         
         #self.CopyDirectoryContents(AudDataPath+"/stellar_populations",logpath)     
-        self.CopyDirectoryContents(AudDataPath+"/bandpass_filters",logpath,True)
-        self.CopyDirectoryContents(AudDataPath,logpath,False)
+        #self.CopyDirectoryContents(AudDataPath+"/bandpass_filters",logpath,True)
+        #self.CopyDirectoryContents(AudDataPath,logpath,False)
             
         return [SubJobsCount,ParseXMLParametersObj.IsSquentialJob()]   
         
@@ -230,7 +230,7 @@ class WorkFlow(object):
                 DstSubFolder=os.path.join(DstPath,file_name)
                 logging.info("Content is a directory - Dest Path:"+DstSubFolder)
                 os.makedirs(DstSubFolder)
-                self.CopyDirectoryContents(full_file_name, DstSubFolder)    
+                self.CopyDirectoryContents(full_file_name, DstSubFolder,CopySubDirs)    
         
                 
     def UpdateTAOUI(self,UIJobID,JobType,data):

@@ -78,7 +78,7 @@ class JobTypeFormTests(LiveServerTest):
 
         self.assert_attribute_equals('value', lc_expected)
         self.assert_is_checked(self.lc_id('light_cone_type_1'))
-        self.assert_multi_selected_text_equals(self.lc_id('output_properties-table') + ' .widget-right select', ['parameter_005 label'])
+        self.assert_multi_selected_text_equals(self.lc_id('output_properties-right'), ['parameter_005 label'])
         rng_seeds_expected = [111111, 222222, 333333]
         rng_seeds_actual = self.selenium.execute_script('return catalogue.vm.light_cone.rng_seeds()')
         self.assertEqual(rng_seeds_expected, rng_seeds_actual)
@@ -92,8 +92,7 @@ class JobTypeFormTests(LiveServerTest):
         sed_pop = self.get_selected_option_text(self.sed_id('single_stellar_population_model'))
         self.assertEqual('stellar_label_001', sed_pop)
 
-        # self.assert_multi_selected_text_equals(self.sed_id('band_pass_filters-right'), ['Band pass filter 000 (Absolute)','Band pass filter 002 (Apparent)'])
-        self.assert_multi_selected_text_equals(self.sed_id('band_pass_filters-table') + ' .widget-right select', ['Band pass filter 000 (Absolute)','Band pass filter 002 (Apparent)'])
+        self.assert_multi_selected_text_equals(self.sed_id('band_pass_filters-right'), ['Band pass filter 000 (Absolute)','Band pass filter 002 (Apparent)'])
 
     def test_mock_image_params(self):
         self.upload_params_file()
@@ -142,7 +141,7 @@ class JobTypeFormTests(LiveServerTest):
         rf_filter = self.get_selected_option_text(self.rf_id('filter'))
         self.assertEqual('Band pass filter 002 (Apparent)', rf_filter)
         rf_expected = {
-            self.rf_id('min'): '1',
+            self.rf_id('min'): '',
             self.rf_id('max'): '12'
         }
         
@@ -169,7 +168,7 @@ class JobTypeFormTests(LiveServerTest):
         self.assert_summary_field_correctly_shown('Not selected', 'sed', 'apply_dust')
         self.assert_summary_field_correctly_shown('2 images', 'mock_image', 'select_mock_image')
 
-        self.assert_summary_field_correctly_shown(u'1.0 \u2264 Band pass filter 002 (Apparent) \u2264 12.0', 'record_filter', 'record_filter')
+        self.assert_summary_field_correctly_shown(u'Band pass filter 002 (Apparent) \u2264 12.0', 'record_filter', 'record_filter')
 
         self.assert_summary_field_correctly_shown('FITS', 'output', 'output_format')
 

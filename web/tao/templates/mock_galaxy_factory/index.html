@@ -145,33 +145,27 @@
     </script>
 
     <script type="text/html" id="two_sided_select_widget">
-      <table data-bind="attr: {'id': id + '-table'}, resizable:{handles:'se,s,e', maxWidth:815, minWidth:500, minHeight:250}" class="two_lists_widget" >
-      <tbody>
-        <tr>
-          <td>Available</td>
-          <td>&nbsp;</td>
-          <td>Selected</td>
-        </tr>
-        <tr>
-          <td class="widget-left">
-            <input class="input-block-level widget-filter" type="text" placeholder="Filter" data-bind="value: filter, valueUpdate: 'afterkeydown'">
-          </td>
-          <td>&nbsp;</td>
-          <td class="widget-right" rowspan="2" data-bind="template: { name: 'select_with_groups', data: to_side }">
-          </td>
-        </tr>
-        <tr>
-          <td class="widget-left" data-bind="template: {name: 'select_with_groups', data: from_side }, attr:{'id': id + '-left'}">
-          </td>
-          <td data-bind="attr:{'id': id + '-buttons'}" class="widget-buttons">
-            <a href="#" class="op_add_all" data-bind="attr:{'id': id + '_op_add_all'}, click: op_add_all">&gt;&gt;</a>
-            <a href="#" class="op_add" data-bind="attr:{'id': id + '_op_add'}, click: op_add">&gt;</a>
-            <a href="#" class="op_remove" data-bind="attr:{'id': id + '_op_remove'}, click: op_remove">&lt;</a>
-            <a href="#" class="op_remove_all" data-bind="attr:{'id': id + '_op_remove_all'}, click: op_remove_all">&lt;&lt;</a>
-          </td>
-        </tr>
-      </tbody>
-      </table>
+      <div data-bind="attr: {'id': id + '-table'}" class="ui-resizable output-properties" >
+        <div>
+          <span class="six">Available</span>
+          <span class="six">Selected</span>
+        </div>
+        <div>
+          <div class="five">
+            <input class="input-block-level" type="text" placeholder="Filter" data-bind="value: filter, valueUpdate: 'afterkeydown'">
+            <div class="input-block-level" data-bind="template: {name: 'select_with_groups', data: from_side }, attr:{'id': id + '-left'}">
+            </div>
+          </div>
+          <div class="one" data-bind="attr:{'id': id + '-buttons'}" vertical-align="middle">
+            <a href="#" data-bind="attr:{'id': id + '_op_add_all'}, click: op_add_all">&gt;&gt;</a>
+            <a href="#" data-bind="attr:{'id': id + '_op_add'}, click: op_add">&gt;</a>
+            <a href="#" data-bind="attr:{'id': id + '_op_remove'}, click: op_remove">&lt;</a>
+            <a href="#" data-bind="attr:{'id': id + '_op_remove_all'}, click: op_remove_all">&lt;&lt;</a>
+          </div>
+          <div class="six" data-bind="template: { name: 'select_with_groups', data: to_side }, attr:{'id': id + '-right'}">
+          </div>
+        </div>
+      </div>
     </script>
 
 {% endblock content %}

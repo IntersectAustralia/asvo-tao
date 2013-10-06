@@ -96,7 +96,7 @@
       <module-version>1</module-version>
       <filter>
         <filter-attribute>2_apparent</filter-attribute>
-        <filter-min units="bpunits">1.0</filter-min>
+        <filter-min units="bpunits">None</filter-min>
         <filter-max units="bpunits">12.0</filter-max>
       </filter>
     </record-filter>

@@ -26,7 +26,15 @@ catalogue.module_defs.job_type = function ($) {
         $(document).ready(function() {
             $('#id_job_type-params_file').val("");
         });
-
+        
+        // Firefox v 21.x event propagation bug workaround
+        $('#file_upload_proxy').click(function(event) {
+        	if (event.target.id != 'id_job_type-params_file') {
+	        	event.stopPropagation();
+	            jQuery("#id_job_type-params_file").trigger(jQuery.Event("click"));
+        	}
+        });
+        
         $('#id_job_type-params_file').change(function() {
             $('#file_upload').submit();
         });
