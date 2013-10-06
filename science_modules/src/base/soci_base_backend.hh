@@ -296,9 +296,9 @@ namespace tao {
 
             // Before finishing, insert the known mapping conversions.
             // TODO: Generalise.
-            // this->_field_map["pos_x"] = "posx";
-            // this->_field_map["pos_y"] = "posy";
-            // this->_field_map["pos_z"] = "posz";
+            this->_field_map["pos_x"] = "posx";
+            this->_field_map["pos_y"] = "posy";
+            this->_field_map["pos_z"] = "posz";
             // this->_field_map["vel_x"] = "velx";
             // this->_field_map["vel_y"] = "vely";
             // this->_field_map["vel_z"] = "velz";
