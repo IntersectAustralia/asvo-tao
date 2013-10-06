@@ -332,6 +332,12 @@ namespace tao {
             mpi::comm::world.bcast<int>( _rng_seed, 0 );
             LOGILN( "Random seed: ", _rng_seed );
 
+	    // Get tile repetition type.
+	    string tile_repeat = dict.get<string>( "box-repetition", "unique" );
+	    to_lower( tile_repeat );
+	    LOGILN( "Tile/box repetition type: ", tile_repeat );
+	    _unique = (tile_repeat == "unique");
+
             // Get box type.
             string box_type = dict.get<string>( "geometry", "light-cone" );
             to_lower( box_type );
@@ -339,12 +345,6 @@ namespace tao {
             if( box_type == "light-cone" )
             {
                _geom = CONE;
-
-               // Get tile repetition type.
-               string tile_repeat = dict.get<string>( "box-repetition", "unique" );
-               to_lower( tile_repeat );
-               LOGILN( "Tile repetition type: ", tile_repeat );
-               _unique = (tile_repeat == "unique");
 
                // Redshift ranges.
                real_type snap_z_max = _sim.redshifts().front();
