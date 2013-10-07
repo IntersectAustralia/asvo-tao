@@ -386,7 +386,7 @@ namespace tao {
                unsigned ii = 0;
                for( ; ii < _sim.redshifts().size(); ++ii )
                {
-                  if( num::approx( _box_z, _sim.redshifts()[ii], 1e-6 ) )
+                  if( num::approx( _box_z, _sim.redshifts()[ii], 1e-3 ) )
                      break;
                }
                EXCEPT( ii < _sim.redshifts().size(),

@@ -7,7 +7,7 @@
       <box-repetition>unique</box-repetition>
       <rng-seed>0</rng-seed>
       <query-box-size>10</query-box-size>
-      <redshift>0</redshift>
+      <redshift>2.0700273232</redshift>
       <output-fields>
         <item>pos_x</item>
         <item>pos_y</item>
