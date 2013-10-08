@@ -829,6 +829,14 @@ catalogue.doc_ready = function ($) {
             ko.utils.domNodeDisposal.addDisposeCallback(element, function() {
                 $(element).spinner("destroy");
             });
+            
+            $(element).bind("keydown", function (event) { 
+            	// prevent non digits in the input
+            	// allow enter, backspace and delete
+            	if ((event.keyCode < 48 || event.keyCode > 57) && event.keyCode != 13 && event.keyCode != 8 && event.keyCode != 46) {
+            		event.preventDefault();
+            	}
+            });
 
         },
         update: function(element, valueAccessor, allBindingsAccessor) {
