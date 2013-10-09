@@ -24,7 +24,7 @@ namespace tao {
 
       // Open the file and check it exists.
       std::ifstream file( filename.c_str() );
-      EXCEPT( (bool)file, "Unable to locate SED file: ", filename );
+      EXCEPT( file.is_open(), "Unable to locate SED file: ", filename );
 
       // The Vega file is a spectrum. First column is wavelength and
       // second column is luminosity density.

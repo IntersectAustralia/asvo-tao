@@ -68,6 +68,8 @@ namespace tao {
 
             // Find the wavelengths from my parents.
             _waves = this->template attribute<const vector<real_type>::view>( "wavelengths" );
+
+	    LOGILN( "Done.", setindent( -2 ) );
          }
 
          ///
@@ -104,11 +106,11 @@ namespace tao {
             }
             else
                adust = 0.0;
-            LOGDLN( "adust: ", adust );
+            // LOGDLN( "adust: ", adust );
 
             // K-band unchanged by dust with this value (?).
             real_type rdust = 3.675;
-            LOGDLN( "rdust: ", rdust );
+            // LOGDLN( "rdust: ", rdust );
             ASSERT( adust/rdust >= 0.0, "Some dust problem... ?" );
 
             for( unsigned ii = 0; ii < spectra.size(); ++ii )
@@ -126,14 +128,14 @@ namespace tao {
                {
                   kdust = 2.659*(-1.857 + 1.040*1e4/wl) + rdust;
                }
-               LOGDLN( "kdust: ", kdust );
+               // LOGDLN( "kdust: ", kdust );
 
                real_type expdust;
                if( adust >= 0.0 )
                   expdust = kdust*adust/rdust;
                else
                   expdust = 0.0;
-               LOGDLN( "expdust: ", expdust );
+               // LOGDLN( "expdust: ", expdust );
 
                // Stomp on spectra.
                spectra[ii] = spectra[ii]*pow( 10.0, -0.4*expdust );
