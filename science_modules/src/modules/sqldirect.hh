@@ -121,10 +121,10 @@ namespace tao {
 
 	    _Tables_it=_be->table_begin();
 
-	    // _prog.set_local_size( _db->num_tables() );
-	    // LOG_PUSH_TAG( "progress" );
-	    // LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
-	    // LOG_POP_TAG( "progress" );
+	    _prog.set_local_size( _be->num_tables() );
+	    LOG_PUSH_TAG( "progress" );
+	    LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
+	    LOG_POP_TAG( "progress" );
 
 	    replace_all( CurrentQuery, "-table-", _Tables_it->name() );
 	    LOGDLN( "Query: ", CurrentQuery );
