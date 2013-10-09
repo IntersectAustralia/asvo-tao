@@ -63,7 +63,7 @@ namespace tao {
 
             // Get our information.
             _fn = global_dict.get<string>( "outputdir" ) + "/" +
-               dict.get<string>( "filename" ) + "." + mpi::rank_string() + ".h5";
+	       dict.get<string>( "filename" ) + "." + mpi::rank_string();
             _fields = dict.get_list<string>( "fields" );
 
             // Open the file.
