@@ -8,8 +8,6 @@
 #include "rdb_backend.hh"
 #include "tile.hh"
 
-class tile_table_iterator_suite;
-
 namespace tao {
    namespace backends {
       using namespace hpc;
@@ -21,7 +19,6 @@ namespace tao {
                                           std::forward_iterator_tag,
                                           const typename rdb<typename Backend::real_type>::table_type& >
       {
-         friend class ::tile_table_iterator_suite;
          friend class boost::iterator_core_access;
 
       public:

@@ -81,6 +81,12 @@ namespace tao {
             }
          }
 
+         unsigned
+         num_tables() const
+         {
+            return _tbls.size();
+         }
+
          tile_galaxy_iterator
          galaxy_begin( query_type& query,
                        tile<real_type> const& tile,
@@ -134,13 +140,13 @@ namespace tao {
          table_iterator
          table_begin() const
          {
-            return table_iterator( *this, 0 );
+            return table_iterator( this, 0 );
          }
 
          table_iterator
          table_end() const
          {
-            return table_iterator( *this, _tbls.size() );
+            return table_iterator( this, _tbls.size() );
          }
 
          tile_table_iterator
@@ -296,9 +302,9 @@ namespace tao {
 
             // Before finishing, insert the known mapping conversions.
             // TODO: Generalise.
-            // this->_field_map["pos_x"] = "posx";
-            // this->_field_map["pos_y"] = "posy";
-            // this->_field_map["pos_z"] = "posz";
+            this->_field_map["pos_x"] = "posx";
+            this->_field_map["pos_y"] = "posy";
+            this->_field_map["pos_z"] = "posz";
             // this->_field_map["vel_x"] = "velx";
             // this->_field_map["vel_y"] = "vely";
             // this->_field_map["vel_z"] = "velz";
@@ -684,8 +690,8 @@ namespace tao {
 
       public:
 
-         soci_table_iterator( const soci_base<real_type>& be,
-                              unsigned idx )
+         soci_table_iterator( soci_base<real_type> const* be = 0,
+                              unsigned idx = 0 )
             : _be( be ),
               _idx( idx )
          {
@@ -700,7 +706,7 @@ namespace tao {
          }
 
          bool
-         equal( const soci_table_iterator& op ) const
+         equal( soci_table_iterator const& op ) const
          {
             return _idx == op._idx;
          }
@@ -708,14 +714,14 @@ namespace tao {
          reference_type
          dereference() const
          {
-            return typename rdb<real_type>::table_type( _be._tbls[_idx],
-                                                        _be._minx[_idx], _be._miny[_idx], _be._minz[_idx],
-                                                        _be._maxx[_idx], _be._maxy[_idx], _be._maxz[_idx] );
+            return typename rdb<real_type>::table_type( _be->_tbls[_idx],
+                                                        _be->_minx[_idx], _be->_miny[_idx], _be->_minz[_idx],
+                                                        _be->_maxx[_idx], _be->_maxy[_idx], _be->_maxz[_idx] );
          }
 
       protected:
 
-         const soci_base<real_type>& _be;
+         soci_base<real_type> const* _be;
          unsigned _idx;
       };
 
