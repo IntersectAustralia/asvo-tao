@@ -8,6 +8,7 @@ taoui_sed.forms
 import os
 
 from django import forms
+from django.conf import settings
 import form_utils.fields as bf_fields
 from form_utils.forms import BetterForm
 
@@ -24,18 +25,20 @@ def to_xml_2(form, root):
     output_format = form.ui_holder.cleaned_data('output_format', 'supported_formats')
 
     if apply_sed:
-        from tao.xml_util import find_or_create, child_element
+        from tao.xml_util import find_or_create, child_element, add_encoding
 
         sed_elem = find_or_create(root, 'sed', id=FormsGraph.SED_ID)
         child_element(sed_elem, 'module-version', text=Form.MODULE_VERSION)
 
         # Add a hard-coded connection to the light-cone and the CSV output.
-        child_element(child_element(sed_elem, 'parents'), 'item', text=FormsGraph.LIGHT_CONE_ID)
+        elem = child_element(sed_elem, 'parents')
+        child_element(elem, 'item', text=FormsGraph.LIGHT_CONE_ID)
 
         child_element(child_element(find_or_create(root, output_format, id=FormsGraph.OUTPUT_ID), 'parents'), 'item', text=FormsGraph.BANDPASS_FILTER_ID)
 
-        single_stellar_population_model = tao_models.StellarModel.objects.get(pk=form.cleaned_data['single_stellar_population_model'])
-        child_element(sed_elem, 'single-stellar-population-model', text=single_stellar_population_model.name)
+        single_stellar_population_model = tao_models.StellarModel.objects.get(
+            pk=form.cleaned_data['single_stellar_population_model'])
+        add_encoding(sed_elem, single_stellar_population_model.encoding)
 
         # Create an independant filter module.
         filter_elem = find_or_create(root, 'filter', id=FormsGraph.BANDPASS_FILTER_ID)
@@ -120,6 +123,7 @@ class Form(BetterForm):
     MODULE_VERSION = 1
     SUMMARY_TEMPLATE = 'taoui_sed/summary.html'
     LABEL = 'Spectral Energy Distribution'
+    TAB_ID = settings.MODULE_INDICES['sed']
 
     SED_REQUIRED_FIELDS = ('single_stellar_population_model', 'band_pass_filters')
 
@@ -130,7 +134,7 @@ class Form(BetterForm):
                 'fields': ['single_stellar_population_model',],
             }),
             ('secondary', {
-                'legend': 'Output Band Pass Filters',
+                'legend': 'Output Magnitudes',
                 'fields': ['band_pass_filters'],
             }),
             ('tertiary', {
@@ -144,16 +148,29 @@ class Form(BetterForm):
         super(Form, self).__init__(*args[1:], **kwargs)
 
         default_required = False
-        dust_models = [(x.id, x.label) for x in datasets.dust_models_objects()]
+        if self.is_bound:
+            sspm_choices = datasets.stellar_model_choices()
+            dust_models = [(x.id, x.label) for x in datasets.dust_models_objects()]
+        else:
+            sspm_choices = []
+            dust_models = []
 
         self.fields['apply_sed'] = forms.BooleanField(required=False, widget=forms.CheckboxInput(), label='Apply Spectral Energy Distribution')
-        self.fields['single_stellar_population_model'] = ChoiceFieldWithOtherAttrs(choices=datasets.stellar_model_choices(), required=default_required)
-        self.fields['band_pass_filters'] = bf_fields.forms.MultipleChoiceField(required=default_required, choices=datasets.band_pass_filters_enriched(), widget=TwoSidedSelectWidget)
+        self.fields['single_stellar_population_model'] = ChoiceFieldWithOtherAttrs(choices=sspm_choices, required=default_required)
+        self.fields['band_pass_filters'] = bf_fields.forms.MultipleChoiceField(required=default_required,
+                                choices=datasets.band_pass_filters_enriched(),
+                                widget=TwoSidedSelectWidget)
         self.fields['apply_dust'] = forms.BooleanField(required=default_required, widget=forms.CheckboxInput(attrs={'class': 'checkbox'}), label='Apply Dust')
         self.fields['select_dust_model'] = forms.ChoiceField(choices=dust_models, required=default_required, widget=forms.Select())
 
         for field_name in Form.SED_REQUIRED_FIELDS:
             self.fields[field_name].semirequired = True
+
+        self.fields['apply_sed'].widget.attrs['data-bind'] = 'checked: apply_sed'
+        self.fields['single_stellar_population_model'].widget.attrs['data-bind'] = 'options: stellar_models, value: stellar_model, optionsText: function(i) { return i.fields.label }'
+        self.fields['band_pass_filters'].widget.attrs['ko_data'] = {'widget':'bandpass_filters_widget','value':'bandpass_filters'}
+        self.fields['apply_dust'].widget.attrs['data-bind'] = 'checked: apply_dust'
+        self.fields['select_dust_model'].widget.attrs['data-bind'] = 'options: dust_models, value: dust_model, optionsText: function(i) { return i.fields.label }'
 
     def get_apply_sed(self):
         # use this to ensure a BoundField is returned
@@ -181,6 +198,23 @@ class Form(BetterForm):
         self.check_sed_required_fields()
         self.check_dust_required_fields()
         return self.cleaned_data
+
+    def to_json_dict(self):
+        """Answer the json dictionary representation of the receiver.
+        i.e. something that can easily be passed to json.dumps()"""
+        json_dict = {}
+        ffn = self.prefix + '-apply_sed'
+        apply_sed = ffn in self.data and self.data[ffn]
+        json_dict[ffn] = apply_sed
+        if apply_sed:
+            for fn in ['single_stellar_population_model', 'apply_dust',
+                       'select_dust_model', 'band_pass_filters']:
+                ffn = self.prefix + '-' + fn
+                val = self.data.get(ffn)
+                if val is not None:
+                    json_dict[ffn] = val
+        return json_dict
+
 
     def to_xml(self, root):
         version = 2.0

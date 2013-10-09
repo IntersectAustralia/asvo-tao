@@ -5,8 +5,11 @@ tao.xml_util
 
 Helper methods for XML
 """
+from copy import deepcopy
 from lxml import etree
 import re
+
+NAMESPACE = 'http://tao.asvo.org.au/schema/module-parameters-v1'
 
 def create_root(tag, **attrs):
     return etree.Element(tag, **attrs)
@@ -23,6 +26,19 @@ def child_element(parent, tag, text=None, **attrs):
     if text is not None:
         elem.text = str(text)
     return elem
+
+def add_encoding(parent, xml_fragments):
+    """Append the supplied xml_fragments string to the parent."""
+    new_elements = etree.XML('<x>' + xml_fragments + '</x>')
+    for elem in new_elements:
+        attrs = dict([(k,elem.get(k)) for k in elem.keys()])
+        child_element(parent, elem.tag, elem.text, **attrs)
+        # print 'dir(elem)>>', dir(elem)
+        # from code import interact
+        # interact(local=locals())
+        # parent.append(deepcopy(elem))
+    return new_elements
+
 
 def xml_print(root):
     return etree.tostring(root, pretty_print=True, encoding='utf-8', xml_declaration=True)
@@ -48,7 +64,7 @@ def module_xpath(xml_root, path, text=True, attribute=None):
     :return: the text (if true), or an attribute (if provided) or the element
     """
     path = _XPATH_SLASH_BEFORE_TOKEN.sub('/m:', path)
-    elems = xml_root.xpath(path, namespaces={'m':'http://tao.asvo.org.au/schema/module-parameters-v1'})
+    elems = xml_root.xpath(path, namespaces={'m':NAMESPACE})
     resp = None
     if elems is not None and len(elems) == 1:
         if attribute is not None:
@@ -61,7 +77,7 @@ def module_xpath(xml_root, path, text=True, attribute=None):
 
 def module_xpath_iterate(xml_root, path, text=True, attribute=None):
     path = _XPATH_SLASH_BEFORE_TOKEN.sub('/m:', path)
-    elems = xml_root.xpath(path, namespaces={'m':'http://tao.asvo.org.au/schema/module-parameters-v1'})
+    elems = xml_root.xpath(path, namespaces={'m':NAMESPACE})
     for elem in elems:
         if attribute is not None:
             yield elem.get(attribute)
@@ -69,6 +85,4 @@ def module_xpath_iterate(xml_root, path, text=True, attribute=None):
             yield elem.text
         else:
             yield elem
-
-
 

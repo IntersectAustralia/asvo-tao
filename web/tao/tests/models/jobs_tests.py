@@ -80,7 +80,7 @@ class JobTestCase(TestCase):
         job.status = Job.COMPLETED
         job.save()
         self.assertEqual(1, len(mail.outbox))
-        self.assertEquals('Job status update', mail.outbox[0].subject)
+        self.assertEquals('[ASVO-TAO] Catalogue status update',
+                          mail.outbox[0].subject)
         mail_content = str(mail.outbox[0].body)
         self.assertTrue((str(job.id) in mail_content) and (self.user.username in mail_content))
-

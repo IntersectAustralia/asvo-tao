@@ -4,214 +4,155 @@
  * Date: 13/02/13
  * Time: 6:20 PM
  */
-var TwoSidedSelectWidget = function(to_id, enable) {
-    var $from = $(to_id + '_from');
-    var $to = $(to_id);
-    var $filter_field = $(to_id + '_filter');
-    var $select_option = $(to_id + '_op_add');
-    var $remove_option = $(to_id + '_op_remove');
-    var $select_all = $(to_id + '_op_add_all');
-    var $remove_all = $(to_id + '_op_remove_all');
-    var cache = new Array();
-    var must_group = false;
-    var ref = this;
-    var enabled = enable;
+var TwoSidedSelectWidget = function(params) {
 
-    var option_clicked = function(evt) {
-        if (ref.option_click_handler) {
-            var cache_index = $(evt.target).data('cache_index');
-            ref.option_click_handler(cache[cache_index]);
+    // elem_id : id of select element that will be replaced by UI interface (including #)
+    // options : observable array with options (read)
+    // selectedOption : observable array with selected (write)
+    // to_option : function that given an element of the options_raw array
+    //             will return a dictionary with: value, group & text
+
+    var elem_id = params['elem_id'];
+    var options = params['options'];
+    var selectedOptions = params['selectedOptions'];
+    var to_option = params['to_option'];
+
+    var vm = {};
+    vm.from_side = {};
+    vm.to_side = {};
+
+    function option_click(data) {
+        vm.option_click(data);
+    }
+
+    function make_to_option(selected_observable) {
+        var arr = selected_observable();
+        return function(obj) {
+            var resp = to_option(obj);
+            resp['_obj'] = obj;
+            resp['_selected'] = $.inArray(obj, arr) != -1;
+            resp['option_click'] = option_click;
+            return resp;
         }
+    }
+
+    function from_selected_option(value){
+        return vm._all_by_value[value]._obj;
+    }
+
+    function option_order(o1,o2) {
+        var c1 = o1.group > o2.group ? 1 : o1.group < o2.group ? -1 : 0;
+        if (c1 != 0) return c1;
+        c1 = o1.order > o2.order ? 1 : o1.order < o2.order ? -1 : 0;
+        if (c1 != 0) return c1;
+        return o1.text > o2.text ? 1 : o1.text < o2.text ? -1 : 0;
     };
 
-    $(to_id + '-table').resizable({
-        maxWidth: $("#tabs-1 > .row-fluid > .boxed.span8").width()
+    function has_groups(arr) {
+        var aux = ko.utils.arrayFilter(arr, function(opt){
+            return (typeof opt.group == 'string') && opt.group.length > 0;
+        });
+        return aux.length > 0;
+    }
+
+    function has_tokens(text, tokens) {
+        var token;
+        if (typeof text != 'string') return false;
+        text = text.toLowerCase();
+        for (var j = 0; (token = tokens[j]); j++) {
+            if (text.indexOf(token) == -1) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    function make_side(is_selected, filter) {
+
+        var vm_side = {};
+        vm_side.has_groups = vm.has_groups;
+        vm_side.options = ko.computed(function() {
+            var tokens = filter().trim().toLowerCase().split(/\s+/);
+            var arr = ko.utils.arrayFilter(vm._all_options(), function(opt){
+                return opt._selected == is_selected && (tokens.length == 0 || has_tokens(opt.text, tokens));
+            });
+            return arr;
+        });
+        vm_side.option_groups = ko.computed(function(){
+            var tokens = filter().trim().toLowerCase().split(/\s+/);
+            function filter1(opt) {
+                return opt._selected == is_selected && (tokens.length == 0 || has_tokens(opt.text, tokens));
+            }
+
+            var resp = [];
+            var group_name_set = {};
+            var arr = vm._all_options();
+            for(var i = 0; i < arr.length; i++) {
+                var option = arr[i];
+                var group_name = ((typeof option.group == 'string') &&
+                    option.group.length > 0) ? option.group : 'No group';
+                var group;
+                if (!filter1(option)) continue;
+                if (group_name in group_name_set) {
+                    group = group_name_set[group_name];
+                } else {
+                    group = {'group_name': group_name, 'options':[]};
+                    group_name_set[group_name] = group;
+                    resp.push(group);
+                }
+                group.options.push(option);
+            }
+            return resp;
+        });
+        vm_side.options_selected = ko.observableArray([]);
+        return vm_side;
+    }
+
+    vm._all_by_value = {};
+    vm._all_options = ko.computed(function(){
+        var arr = ko.utils.arrayMap(options(), make_to_option(selectedOptions));
+        arr.sort(option_order);
+        var resp = {};
+        for(var i=0; i<arr.length; i++) resp[arr[i].value] = arr[i];
+        vm._all_by_value = resp;
+        return arr;
     });
 
-    this.init = function() {
+    vm.has_groups = ko.observable(has_groups(vm._all_options()));
+    vm.id = elem_id.slice(1);
+    vm.filter = ko.observable('');
 
-        function status_helper($where, selector, status) {
-            var $selected_option = $where.find(selector);
-            ref.update_displayed_status($selected_option, status);
-            $filter_field.keyup();
-            return false;
-        }
+    vm.from_side = make_side(false, vm.filter);
+    vm.to_side = make_side(true, function(){return ''});
 
-        $select_option.click(function(e) {
-            if (!enabled) {
-                e.preventDefault();
-            }
-            else {
-                return status_helper($from, 'option:selected', 2);
-            }
-        });
-
-        $select_all.click(function(e) {
-            if (!enabled) {
-                e.preventDefault();
-            }
-            else {
-                return status_helper($from, 'option', 2);
-            }
-        });
-
-        $remove_option.click(function(e) {
-            if (!enabled) {
-                e.preventDefault();
-            }
-            else {
-                $filter_field.val('');
-                return status_helper($to, 'option:selected', 1);
-            }
-        });
-
-        $remove_all.click(function(e) {
-            if (!enabled) {
-                e.preventDefault();
-            }
-            else {
-                $filter_field.val('');
-                return status_helper($to, 'option', 1);
-            }
-        });
-
-        $filter_field.keyup(function(e) {
-            $this = $(this);
-            var tokens = $this.val().toLowerCase().split(/\s+/);
-            console.log('keyup() triggered, tokens: ' + tokens);
-
-            // Redisplay the HTML available select box to display only the choices containing all the words in filter text
-            // (i.e. it's an AND search).
-            var node;
-            for (var i = 0; (node = cache[i]); i++) {
-                if (node.displayed == 0) {
-                    node.displayed = 1;
-                }
-            }
-            for (var i = 0; (node = cache[i]); i++) {
-                if (node.displayed != 2) {
-                    for (var j = 0; (token = tokens[j]); j++) {
-                        if (node.text.toLowerCase().indexOf(token) == -1) {
-                            node.displayed = 0;
-                            $(to_id+'_from'+' option[value='+node.value+']').remove();
-                        }
-                    }
-                }
-//                console.log('node value=' + node.value + ' node.text=' + node.text + ' displayed=' + node.displayed);
-            }
-            ref.redisplay(true);
-        });
-    };
-
-    this.cache_store = function(data) {
-        cache = [];
-        must_group = false;
-        for (var i = 0; i < data.length; i++) {
-            var item = data[i];
-            cache.push({value: item.pk, text: item.fields.label, description: item.fields.description, displayed: 1, group: item.fields.group});
-            must_group = must_group || (typeof(item.fields.group)=="string" && item.fields.group.length > 0);
-        }
-    };
-
-    this.selected = function() {
-        var selected = [];
-        for(i=0; i<cache.length; i++) {
-            var item = cache[i];
-            if (item.displayed == 2) {
-                selected.push(item.value + '')
-            }
-        }
-        return selected;
+    vm.clicked_option = ko.observable(undefined);
+    vm.option_click = function (data) {
+       vm.clicked_option(data.value);
     }
 
-    this.display_selected = function(current, trigger) {
-        $filter_field.empty();
-        for(i=0; i<cache.length; i++) {
-            var item = cache[i];
-            if ($.inArray(item.value + '', current) == -1) { // convert to string
-                item.displayed = 1;
-            } else {
-                item.displayed = 2;
-            }
-        }
-        ref.redisplay(trigger);
+    vm.op_add = function() {
+        var selection = ko.utils.arrayMap(vm.from_side.options_selected(), from_selected_option);
+        if (selection.length == 0) return;
+        selection = selection.concat(selectedOptions());
+        selectedOptions(selection);
+    };
+    vm.op_add_all = function() {
+        selectedOptions(options());
+        vm.filter('');
+    };
+    vm.op_remove = function() {
+        var selection = ko.utils.arrayMap(vm.to_side.options_selected(), from_selected_option);
+        if (selection.length == 0) return;
+        var arr = ko.utils.arrayFilter(selectedOptions(), function(obj){
+            return $.inArray(obj, selection) == -1;
+        })
+        selectedOptions(arr);
+    };
+    vm.op_remove_all = function() {
+        selectedOptions([]);
+        vm.filter('');
     };
 
-    this.redisplay = function(trigger) {
-
-        function create_or_current_and_append($group_ptr, name, $option, $side) {
-            var $g = null;
-            if (($group_ptr[0] == null /* first time */
-                || $group_ptr[0].attr('group-name') != name /* current is not same */)
-                && must_group /* have to create */) {
-                var $g = $('<optgroup/>');
-                $g.attr('group-name', name);
-                $g.appendTo($side);
-                if (name.length == 0) name = 'Ungrouped';
-                $g.attr('label', name);
-                $group_ptr[0] = $g;
-            } else {
-                $g = $group_ptr[0];
-            }
-            if ($g != null) {
-                $option.appendTo($g);
-            } else {
-                $option.appendTo($side);
-            }
-        }
-
-        $from.empty();
-        $to.empty();
-
-        var $current_group_from = [null];
-        var $current_group_to = [null];
-
-        $.each(cache, function(i,v){
-
-            var $option = $('<option/>');
-            $option.attr('value', v.value);
-            $option.text(v.text);
-            $option.data('cache_index', i);
-            $option.click(option_clicked);
-            if (v.displayed == 1) {
-                create_or_current_and_append($current_group_from, v.group, $option, $from);
-            }
-            if (v.displayed == 2) {
-                create_or_current_and_append($current_group_to, v.group, $option, $to);
-            }
-        });
-
-        if (trigger) {
-            $to.change();
-        }
-    }
-
-    this.change = function() {
-        $to.change();
-    }
-
-    this.change_event = function(handler) {
-        $to.change(handler);
-    };
-
-    this.option_clicked_event = function(handler) {
-        ref.option_click_handler = handler;
-    }
-
-    this.update_displayed_status = function($options, status) {
-        var opts = [];
-        $options.each(function(){opts.push($(this).attr('value'))});
-        $.each(cache, function(i,v){
-            if ($.inArray('' + v.value, opts) != -1) {
-                cache[i].displayed = status;
-            }
-        });
-    };
-
-    this.set_enabled = function(enable) {
-        enabled = enable;
-    }
-
-    this.init();
+    return vm;
 
 }

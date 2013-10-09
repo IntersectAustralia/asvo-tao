@@ -10,6 +10,7 @@ import locale
 import time
 import logging
 
+
 class TorqueInterface(object):
     
     
@@ -42,29 +43,32 @@ class TorqueInterface(object):
         self.DefaultParams = {'nodes': 1,'ppn': 1,
                               'wt_hours': 48,'wt_minutes': 0,'wt_seconds': 0}
 
-    def SetJobParams(self,UserName,JobID,nodes,ppn,path,outputpath,BasicSettingPath,ParamXMLName,SubJobIndex):    
-            
-        self.DefaultParams['executable'] = self.Options['Torque:ExecutableName']
-        self.DefaultParams['name']='tao_'+UserName[:4]+'_'+str(JobID)
-        self.DefaultParams['nodes'] = nodes        
-        self.DefaultParams['ppn'] = ppn
-        self.DefaultParams['subjobindex'] = SubJobIndex
-        self.DefaultParams['path'] = path+"/"+ParamXMLName
-        self.DefaultParams['basicsettingpath'] = BasicSettingPath
-        self.DefaultParams['outputpath'] = outputpath
-        self.DefaultParams['MergeScriptName'] = self.Options['Torque:MergeScriptName']
-        
-        
-
     ##
     ## Write a PBS script from a parameters dictionary.
     ##
     ## @param[IN]  params  Dictionary of parameters.
     ## @param[IN]  path    Where to write PBS script.
     ##
-    def WritePBSScriptFile(self,UserName,JobID, nodes,ppn, path,outputpath,BasicSettingPath,ParamXMLName,SubJobIndex):
-        self.SetJobParams(UserName, JobID,nodes, ppn,path,outputpath,BasicSettingPath,ParamXMLName,SubJobIndex)
-        FileName = os.path.join(path, self.ScriptFileName+str(SubJobIndex))
+    def WritePBSScriptFile(self,UIJobReference,UserName,JobID, ppn,SubJobIndex):
+                
+        logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserName, str(UIJobReference),'log')  
+        outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserName, str(UIJobReference),'output')
+        
+        
+        self.DefaultParams['executable'] = self.Options['Torque:ExecutableName']
+        self.DefaultParams['name']=self.Options['Torque:jobprefix']+UserName[:4]+'_'+str(JobID)
+        self.DefaultParams['nodes'] = int(self.Options['Torque:Nodes'])        
+        self.DefaultParams['ppn'] = ppn
+        self.DefaultParams['subjobindex'] = SubJobIndex
+        self.DefaultParams['UIJobReference'] = UIJobReference
+        self.DefaultParams['path'] = logpath+"/"+"params"+str(SubJobIndex)+".xml"
+        self.DefaultParams['basicsettingpath'] = self.Options['Torque:BasicSettingsPath']
+        self.DefaultParams['outputpath'] = outputpath
+        self.DefaultParams['MergeScriptName'] = self.Options['Torque:MergeScriptName']
+        self.DefaultParams['BaseLibPath']=self.Options['Torque:BaseLibPath']
+        
+        
+        FileName = os.path.join(logpath, self.ScriptFileName+str(SubJobIndex))
         ##
         self.dbaseobj.AddNewEvent(JobID,EnumerationLookup.EventType.PBSEvent,"Adding New Job to PBS, Script Name="+self.ScriptFileName+str(SubJobIndex))
         ##
@@ -77,12 +81,15 @@ class TorqueInterface(object):
             #PBS -d .
             source /usr/local/modules/init/tcsh
             module load boost gsl hdf5/x86_64/gnu/1.8.9-openmpi-1.6.4 postgresql            
-            module load cfitsio/x86_64/gnu/3.290
+            module load cfitsio/x86_64/gnu/3.290 skymaker/x86_64/gnu/3.3.3
             setenv PSM_SHAREDCONTEXTS_MAX %(ppn)d
-            setenv PATH /lustre/projects/p014_swin/programs/ScienceModules/bin:$PATH
-            setenv LD_LIBRARY_PATH /lustre/projects/p014_swin/programs/ScienceModules/lib:/lustre/projects/p014_swin/programs/ScienceModules/helperlib:$LD_LIBRARY_PATH
+            setenv PATH %(BaseLibPath)s/bin:$PATH
+            setenv LD_LIBRARY_PATH %(BaseLibPath)s/lib:%(BaseLibPath)s/helperlib:$LD_LIBRARY_PATH
             mpiexec %(executable)s %(path)s %(basicsettingpath)s
-            %(MergeScriptName)s %(outputpath)s %(subjobindex)d
+            %(MergeScriptName)s %(outputpath)s %(subjobindex)d %(UIJobReference)d
+            cd %(outputpath)s
+            tar -czf images.%(UIJobReference)d.tar.gz image.*.fits
+            rm image.*.fits
             '''%self.DefaultParams)
         return FileName
 
@@ -92,18 +99,20 @@ class TorqueInterface(object):
     ## @param[IN]  params  Parameter dictionary.
     ## @returns PBS job identifier.
     ##
-    def Submit(self,UserName,JobID,path,outputpath,ParamXMLName,SubJobIndex):
-        BasicSettingPath=self.Options['Torque:BasicSettingsPath']
-        
-        nodes=int(self.Options['Torque:Nodes'])        
-        ppn=int(self.Options['Torque:ProcessorNode'])
-        queuename=self.Options['Torque:JobsQueue']
+    def Submit(self,UIJobReference,UserName,JobID,SubJobIndex,IsSquentialJob=False):
         
         
-        ScriptFileName = self.WritePBSScriptFile(UserName,JobID, nodes,ppn, path,outputpath,BasicSettingPath,ParamXMLName,SubJobIndex)
         
+        ppn=1
+        if IsSquentialJob==False:      
+            ppn=int(self.Options['Torque:ProcessorNode'])
+        queuename=self.Options['Torque:JobsQueue']        
         
-        stdout = subprocess.check_output(shlex.split('ssh g2 \"cd %s; qsub -q %s %s\"'%(path.encode(locale.getpreferredencoding()), queuename.encode(locale.getpreferredencoding()), ScriptFileName.encode(locale.getpreferredencoding()))))
+        ScriptFileName = self.WritePBSScriptFile(UIJobReference,UserName,JobID, ppn,SubJobIndex)        
+        logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserName, str(UIJobReference),'log')  
+               
+        
+        stdout = subprocess.check_output(shlex.split('ssh g2 \"cd %s; qsub -q %s %s\"'%(logpath.encode(locale.getpreferredencoding()), queuename.encode(locale.getpreferredencoding()), ScriptFileName.encode(locale.getpreferredencoding()))))
         pbs_id = stdout[:-1] # remove trailing \n
         
         return pbs_id
@@ -128,7 +137,7 @@ class TorqueInterface(object):
         for line in lines:
             LineParts=shlex.split(line)
             JobName=LineParts[1]            
-            if JobName.find('tao_')==0:
+            if JobName.find(self.Options['Torque:jobprefix'])==0:
                 JobID=LineParts[0].split('.')[0]
                 CurrentJobs[JobID]=LineParts[4]
         

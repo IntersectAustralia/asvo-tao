@@ -6,16 +6,20 @@ tao.forms
 Settings for development environment
 """
 from django import forms
-from django.utils.translation import ugettext_lazy as _
-
 from django.conf import settings
 from django.contrib.auth import forms as auth_forms, get_user_model
-from tao.models import TaoUser
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.sites.models import get_current_site
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
+from django.template import loader
+from django.utils.http import int_to_base36
+from django.utils.translation import ugettext_lazy as _
 from captcha.fields import ReCaptchaField
 
+from tao.models import TaoUser
 NO_FILTER = 'no_filter'
+
 
 class FormsGraph():
     LIGHT_CONE_ID = '1'
@@ -24,6 +28,82 @@ class FormsGraph():
     BANDPASS_FILTER_ID = '4'
     OUTPUT_ID = '5'
     MOCK_IMAGE_ID = '6'
+    TELESCOPE_ID = '7'
+
+
+class PasswordResetForm(auth_forms.PasswordResetForm):
+    username = forms.CharField(max_length=254, label=_("Username"), required=True)
+
+    def __init__(self, *args, **kwargs):
+        super(PasswordResetForm, self).__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs['autofocus'] = 'autofocus'
+        self.fields.keyOrder = ['username', 'email']
+        self.error_messages['unknown_user'] = _("That username doesn't have an associated "
+                                                "user account. Are you sure you've registered?")
+        self.error_messages['wrong_email'] = _("That email doesn't match that of the user. "
+                                               "Please check you have provided the email that you registered.")
+
+    def clean_username(self):
+        """
+        Validates that an active user exists with the given username.
+        """
+        UserModel = get_user_model()
+        username = self.cleaned_data["username"]
+        self.users_cache = UserModel._default_manager.filter(username__iexact=username)
+        if not len(self.users_cache):
+            raise forms.ValidationError(self.error_messages['unknown_user'])
+        if not any(user.is_active for user in self.users_cache):
+            # none of the filtered users are active
+            raise forms.ValidationError(self.error_messages['unknown_user'])
+        return username
+
+    def clean_email(self):
+        """
+        Validates that the given email address matches that of the given user.
+        """
+        email = self.cleaned_data["email"]
+        if not any(user.email == email for user in self.users_cache):
+            raise forms.ValidationError(self.error_messages['wrong_email'])
+        return email
+
+    def save(self, domain_override=None,
+             subject_template_name='registration/password_reset_subject.txt',
+             email_template_name='registration/password_reset_email.html',
+             use_https=False, token_generator=default_token_generator,
+             from_email=None, request=None):
+        """
+        Generates a new random password, saves it, and sends to the
+        user.
+        """
+        from django.core.mail import send_mail
+        UserModel = get_user_model()
+        for user in self.users_cache:
+            print domain_override
+            if not domain_override:
+                current_site = get_current_site(request)
+                site_name = current_site.name
+                domain = current_site.domain
+            else:
+                site_name = domain = domain_override
+            new_password = UserModel.objects.make_random_password()
+            user.set_password(new_password)
+            user.save()
+            c = {
+                'email': user.email,
+                'domain': domain,
+                'site_name': site_name,
+                'uid': int_to_base36(user.pk),
+                'user': user,
+                # 'token': token_generator.make_token(user),
+                'protocol': use_https and 'https' or 'http',
+                'password': new_password,
+            }
+            subject = loader.render_to_string(subject_template_name, c)
+            # Email subject *must not* contain newlines
+            subject = ''.join(subject.splitlines())
+            email = loader.render_to_string(email_template_name, c)
+            send_mail(subject, email, from_email, [user.email])
+
 
 class LoginForm(auth_forms.AuthenticationForm):
     remember_me = forms.BooleanField(label=_("Remember Me"), required=False)
@@ -146,8 +226,10 @@ class UserCreationForm(forms.Form):
             user.save()
         return user
 
+
 class RejectForm(forms.Form):
     reason = forms.CharField(widget=forms.Textarea(attrs={'rows': 3}), required=False)
+
 
 class SupportForm(forms.Form):
     subject = forms.CharField(max_length=80, validators=[RegexValidator(regex='[^ \t\n\r\f\v,]', message="This field cannot be blank")], required=True)

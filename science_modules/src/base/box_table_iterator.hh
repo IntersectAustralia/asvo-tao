@@ -8,8 +8,6 @@
 #include "rdb_backend.hh"
 #include "box.hh"
 
-class box_table_iterator_suite;
-
 namespace tao {
    namespace backends {
       using namespace hpc;
@@ -21,7 +19,6 @@ namespace tao {
                                           std::forward_iterator_tag,
                                           const typename rdb<typename Backend::real_type>::table_type& >
       {
-         friend class ::box_table_iterator_suite;
          friend class boost::iterator_core_access;
 
       public:
@@ -33,7 +30,9 @@ namespace tao {
          typedef value_type reference_type;
 
          box_table_iterator()
-            : _done( true )
+	    : _box( 0 ),
+	      _be( 0 ),
+	      _done( true )
          {
          }
 
@@ -47,21 +46,6 @@ namespace tao {
             // iterator.
             if( !_done )
             {
-               // Construct the walls I'll be using to clip the lightcone
-               // approximation.
-               vector<real_type> perms( 9 );
-               for( unsigned ii = 0; ii < 3; ++ii )
-               {
-                  perms[ii] = -1;
-                  perms[ii + 3] = 0;
-                  perms[ii + 6] = 1;
-               }
-               do
-               {
-                  _walls.emplace_back( array<real_type,3>{ { perms[0], perms[1], perms[2] } } );
-               }
-               while( boost::next_partial_permutation( perms.begin(), perms.begin() + 3, perms.end() ) );
-
                // Get to the first position.
                _begin();
             }
@@ -70,12 +54,25 @@ namespace tao {
          box_table_iterator( const box_table_iterator& src )
             : _be( src._be ),
               _box( src._box ),
-              _walls( src._walls ),
               _tbls( src._tbls ),
               _done( src._done )
          {
             // Iterator needs to be modified.
             _it = _tbls.begin() + (src._it - src._tbls.begin());
+         }
+
+         box_table_iterator&
+         operator=( const box_table_iterator& op )
+         {
+            _be = op._be;
+            _box = op._box;
+            _tbls = op._tbls;
+            _done = op._done;
+
+            // Iterator needs to be modified.
+            _it = _tbls.begin() + (op._it - op._tbls.begin());
+
+            return *this;
          }
 
       protected:
@@ -104,71 +101,50 @@ namespace tao {
          {
             LOGDLN( "Calculating overlapping tables.", setindent( 2 ) );
 
-            // Cache some information.
-            const array<unsigned,3>& axis = _box->rotation();
-            const array<real_type,3>& offs = _box->translation();
-
             // Shift each table bounding box along each wall direction to
             // see if there is any periodic overlap with the box.
             set<table_type> tables;
             for( auto it = _be->table_begin(); it != _be->table_end(); ++it )
             {
-               // Apply each periodic side to the box and check.
-               for( const auto& wall : _walls )
-               {
-                  array<real_type,3> tmp_min, tmp_max;
-                  for( unsigned jj = 0; jj < 3; ++jj )
-                  {
-                     real_type box_size = _box->max()[axis[jj]] - _box->min()[axis[jj]];
-                     tmp_min[jj] = it->min()[axis[jj]] + wall[axis[jj]]*box_size + offs[axis[jj]];
-                     tmp_max[jj] = it->max()[axis[jj]] + wall[axis[jj]]*box_size + offs[axis[jj]];
-                  }
-                  if( _check_overlap( tmp_min, tmp_max ) )
-                  {
-                     tables.insert( *it );
-                     break;
-                  }
-               }
+	       // Check if the table overlaps the box size.
+	       bool okay = true;
+	       for( unsigned ii = 0; ii < 3; ++ii )
+	       {
+		  if( it->min()[ii] > _box->max()[ii] || it->max()[ii] < _box->min()[ii] )
+		  {
+		     okay = false;
+		     break;
+		  }
+	       }
+	       if( okay )
+		  tables.insert( *it );
             }
 
-            // Transfer to a vector.
-            _tbls.reallocate( tables.size() );
-            std::copy( tables.begin(), tables.end(), _tbls.begin() );
+            // Transfer to a vector, leaving out any tables not in my
+	    // parallel set.
+	    unsigned first_table = (mpi::comm::world.rank()*tables.size())/mpi::comm::world.size();
+	    unsigned last_table = ((mpi::comm::world.rank() + 1)*tables.size())/mpi::comm::world.size();
+            _tbls.reallocate( last_table - first_table );
+	    {
+	       auto it = tables.begin();
+	       unsigned ii;
+	       for( ii = 0; ii < first_table; ++ii, ++it );
+	       for( ; ii < last_table; ++ii, ++it )
+		  _tbls[ii - first_table] = *it;
+	    }
+	    LOGILN( "Overlapping tables: ", _tbls );
             _it = _tbls.begin();
 
+            // If there are no tables flag that we're done.
+            _done = _tbls.empty();
+
             LOGDLN( "Done.", setindent( -2 ) );
-         }
-
-         bool
-         _check_overlap( const array<real_type,3>& min,
-                         const array<real_type,3>& max )
-         {
-            // Clip the box against the parent box.
-            array<real_type,3> par_min{ { 0, 0, 0 } }, par_max;
-            for( unsigned ii = 0; ii < 3; ++ii )
-               par_max[ii] = _box->max()[ii] - _box->min()[ii];
-            array<real_type,3> clip_min, clip_max;
-            box_box_clip(
-               min.begin(), min.end(),
-               max.begin(),
-               par_min.begin(),
-               par_max.begin(),
-               clip_min.begin(),
-               clip_max.begin()
-               );
-
-            // If there is no volume left, return false.
-            if( num::approx( box_volume( clip_min.begin(), clip_min.end(), clip_max.begin() ), 0.0, 1e-8 ) )
-               return false;
-
-            return true;
          }
 
       protected:
 
          const backend_type* _be;
          const box<real_type>* _box;
-         vector<array<real_type,3>> _walls;
          vector<table_type> _tbls;
          typename vector<table_type>::const_iterator _it;
          bool _done;

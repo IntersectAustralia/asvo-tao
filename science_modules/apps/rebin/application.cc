@@ -1,3 +1,4 @@
+#include <libhpc/libhpc.hh>
 #include "application.hh"
 
 namespace tao {
@@ -18,7 +19,7 @@ namespace tao {
       }
 
       void
-      operator()()
+      application::operator()()
       {
 	 // Pick a simulation.
 	 tao::simulation<tao::real_type>* sim = &mini_millennium;

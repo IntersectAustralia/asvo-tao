@@ -21,6 +21,11 @@
     <form action='.' method='post'>
         {% csrf_token %}
         {{ form|as_bootstrap }}
+        <a href="{% url 'password_reset' %}" id="id_password_reset">I forgot my password</a>
+        <br/>
+        <br/>
+        Or <a href="{% url 'register' %}">register</a> if you don't have an account.
+{#        <button class="btn btn-primary">I forgot my password</button>#}
         <input type="hidden" name="next" value="{{ next }}" />
     </form>
     </td>

@@ -6,43 +6,67 @@
         </tr>
         <tr>
             <td>Catalogue Geometry</td>
-            <td><span class="geometry_type"><!-- --></span></td>
+            <td><span class="geometry_type" data-bind='text: catalogue_geometry().name'><!-- --></span></td>
         </tr>
         <tr>
             <td>Dataset</td>
-            <td>
-                <span class="simulation"><!-- --></span> / <span class="galaxy_model"><!-- --></span> <a id="expand_dataset" href="#">>></a>
-                <span class="simulation_description"><!-- --></span>
-                <span class="galaxy_model_description"><!-- --></span>
+            <td data-bind="toggler: true">
+                <span class="simulation" data-bind='text: dark_matter_simulation().fields.name'><!-- --></span> / <span class="galaxy_model" data-bind='text: galaxy_model().fields.name'><!-- 
+                --></span> <a id="expand_dataset" data-bind='text: toggler_text(), click: toggler_click' href="#"></a>
+                <span class="simulation_description" data-bind='visible: toggler_visible'>
+                    <br><b><span data-bind='text: dark_matter_simulation().fields.name'></span></b><br>
+                    <span data-bind='html: dark_matter_simulation().fields.details'></span>
+                </span>
+                <span class="galaxy_model_description" data-bind='visible: toggler_visible'>
+                <br><b><span data-bind='text: galaxy_model().fields.name'></span></b><br>
+                    <span data-bind='html: galaxy_model().fields.details'></span>
+                </span>
             </td>
         </tr>
-        <tr class="light_cone_fields">
+        <tr class="light_cone_fields" data-bind="visible: catalogue_geometry().id == 'light-cone'">
             <td>Dimensions</td>
             <td>
-                <span class="ra_opening_angle"><!-- --></span>
-                <span class="dec_opening_angle"><!-- --></span>
-                <span class="redshift_min"><!-- --></span> <span class="redshift_max"><!-- --></span>
+                <span class="ra_opening_angle" data-bind='html: hr_ra_opening_angle'><!-- --></span>
+                <span class="dec_opening_angle" data-bind='html: hr_dec_opening_angle'><!-- --></span>
+                <span class="redshift" data-bind='html: hr_redshift'><!-- --></span>
             </td>
         </tr>
-        <tr class="light_cone_fields">
-            <td>Count</td>
-            <td><span class="number_of_light_cones"><!-- --></span></td>
+        <tr class="light_cone_fields" data-bind="visible: catalogue_geometry().id == 'light-cone'">
+            <td>Number of light cones</td>
+            <td><span class="number_of_light_cones" data-bind="text: number_of_light_cones"><!-- --></span></td>
         </tr>
-        <tr class="box_fields">
+        <tr class="box_fields" data-bind="visible: catalogue_geometry().id == 'box'">
             <td>Box Size</td>
-            <td><span class="box_size"><!-- --></span></td>
+            <td><span class="box_size" data-bind='text: box_size'><!-- --></span></td>
         </tr>
-        <tr class="box_fields">
+        <tr class="box_fields" data-bind="visible: catalogue_geometry().id == 'box'">
             <td>Redshift</td>
-            <td><span class="snapshot"><!-- --></span></td>
+            <td><span class="snapshot" data-bind='html: hr_redshift'><!-- --></span></td>
         </tr>
         <tr>
             <td>Output Properties</td>
-            <td>
-                <span class="output_properties"><!-- --></span>
-                <a id="expand_output_properties" href="#">>></a>
-                <span class="output_properties_list"><!-- --></span>
+            <td data-bind='toggler: true'>
+                <span class="output_properties" data-bind="text: output_properties().length + ' properties selected'"><!-- --></span>
+                <a id="expand_output_properties" data-bind='text: toggler_text(), click: toggler_click' href="#"></a>
+                <div class="output_properties_list" data-bind="visible: toggler_visible, template: { name: 'summary_output_properties_with_groups', data: output_properties_widget.to_side }"><!-- --></div>
             </td>
         </tr>
     </table>
 </div>
+
+<script type="text/html" id="summary_output_properties_with_groups">
+        <!-- ko ifnot: has_groups() -->
+        <ul data-bind="foreach: options">
+            <li><span data-bind="text: text"/> <i data-bind="text: units" style="font-size: small"></i></li>
+        </ul>
+        <!-- /ko -->
+        <!-- ko if: has_groups -->
+        <ul data-bind="foreach: option_groups">
+          <span data-bind="text: group_name"></span>
+          <ul data-bind="foreach: options">
+            <li><span data-bind="text: text"/> <i data-bind="text: units" style="font-size: small"></i></li>
+          </ul>
+        </ul>
+        <!-- /ko -->
+</script>
+

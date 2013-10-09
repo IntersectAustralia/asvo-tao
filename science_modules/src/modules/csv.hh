@@ -62,7 +62,7 @@ namespace tao {
             const options::xml_dict& dict = this->_dict;
 
             _fn = global_dict.get<string>( "outputdir" ) + "/" +
-               dict.get<string>( "filename" ) + "." + mpi::rank_string() + ".csv";
+	       dict.get<string>( "filename" ) + "." + mpi::rank_string();
             _fields = dict.get_list<string>( "fields" );
 
             // Open the file.
