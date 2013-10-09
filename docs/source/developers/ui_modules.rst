@@ -1,16 +1,8 @@
 TAO Science modules Web interface
-
-High Level design
-
-Carlos Aya, Ryan Braganza and Cindy Wang Intersect
-
-Friday, December 28, 2012
-
-This document discusses how to create new user interface in the TAO web component for new science modules.
-
-TAO Science modules - Web interface
+=================================
 
 Introduction
+------------
 
 This document describes how the user interface to TAO science modules is structured in the web component and therefore how a new science module can be integrated into the TAO system.
 
@@ -19,6 +11,7 @@ It is expected the reader will be familiar with development concepts for the web
 A companion document “TAO science modules” describes the work required to extend the TAO system in the backend, where the computational framework resides. The reader should also get familiar with that.
 
 UI modules overview
+-------------------
 
 A UI module is in charge of capturing and displaying specification parameters that will configure a particular execution of one or multiple backend modules. Putting together the specification provided by each module and submitting it to the backend is the job of 
 the TAO web interface.
@@ -38,10 +31,12 @@ The TAO system, at the time of writing, comes with two defined TAO UI modules (L
 The rest of the document is organized as follows. “Form lifecycle” provides an account of the lifecycle of a UI module inside the TAO web interface and its data flow. “How to add a new module” presents a more detailed picture of what a UI module looks like and how integration happens for a basic module. “XML processing” has a few specific aspects to consider when writing the XML specification of a module. “Complex modules” mentions how to use the power of Django to write more complex modules that require database integration. “Conclusions” draws some final remarks about the modular UI capability of the TAO system.
 
 Form lifecycle
+--------------
 
 As stated above, UI modules are responsible for capturing and displaying specification parameters for a job. Central to a UI module is a Form class. In existing modules it is inherited from BetterForm (from django-form-utils; details of this to be explained in next chapter), although any implementation of Django form can be used. The Form class is instantiated and used at different moments of the user’s interaction with the TAO web component as outlined below:
 
 User creating a new job
+^^^^^^^^^^^^^^^^^^^^^^^
 
 To create a new job, the researcher goes through the following steps:
 
@@ -53,11 +48,10 @@ To create a new job, the researcher goes through the following steps:
 6. If ok, then a job is created with the specification values
 7. Otherwise the job form is re-displayed with errors.
 
-TAO Science modules - Web interface
-
 From a UI module developer’s perspective, steps 2 (form display), 5 (form validation), 6 (XML generation) and 7 (form display) are the ones relevant for implementation. The following sections outline how the Form object is used in each instance, so an appropriate implementation can be written.
 
 Form display
+""""""""""""
 
 Displaying a form involves two actions:
 
@@ -67,6 +61,7 @@ Displaying a form involves two actions:
 Developer’s main concerns here are implementing default values in the constructor, defining the fields in the form, and displaying the fields properly in the template. When re-displaying the form after validation fails, the only difference is that the Form object is instantiated with values from the request (see next), the template used is the same.
 
 Form validation
+"""""""""""""""
 
 When data is received, two steps also occur in this case:
 
@@ -76,10 +71,12 @@ When data is received, two steps also occur in this case:
 The developer’s main concern here is to grab the corresponding values from the request. This should of course match whatever is displayed in the template. Much of the work, however, can be handled by the django-form-utils if the developer uses it, and the he/she can implement custom validation by extending Form.clean instance method. Upon errors, the same instance of the Form object (created with values from the request), gets passed to the template for re-display (see previous.)
 
 XML generation
+""""""""""""""
 
 If the validation succeeds, the very same Form instance is used to generate the XML fragment for the job specification and saved to the database. It is assumed that the generated XML follows the guidelines where a module’s XML is distinguished from others by module-id. This will be explained in greater detail in “XML processing”.
 
 User viewing a previously submitted job
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 To view an existing job, the researcher goes through the following steps:
 
@@ -91,6 +88,7 @@ To view an existing job, the researcher goes through the following steps:
 From a UI module developer’s perspective, the only step that matters is 4, job display. This implies that, at least for now, a UI module cannot participate in the list page proving a custom overview for a submitted job.
 
 Job display
+^^^^^^^^^^^
 
 Displaying a stored job involves several actions in the web application:
 
@@ -101,12 +99,15 @@ Displaying a stored job involves several actions in the web application:
 The developer’s main concerns here are implementing the from_xml class method with the XML document as parameter, and displaying the fields properly in the view template.
 
 How to add a new module
+-----------------------
 
 UI modules are Django applications.The following section briefly outline the steps to create a UI module and link it to the TAO web component. Next, the following sections come with some notes for UI module developers that further explain the API.
 
 Basic steps
+^^^^^^^^^^^
 
 1. Create new module source
+"""""""""""""""""""""""""""
 
 Create a new branch in repository (asvo-tao-ui-modules). The recommended way is to create an orphan branch, like git checkout --orphan light-cone. Notes: you need git version >= 1.7.2 to do this; and, you can use other repository if compatible with buildout.
 
@@ -118,13 +119,12 @@ taoui_dark_cone/
 __init__.py admin.py forms.py models.py templates/
 taoui_dark_cone/
 edit.html
-
-TAO Science modules - Web interface
 view.html assets/
 taoui_dark_cone/
 special.js static/
 taoui_dark_cone/
 icon.png style.css main.js
+
 forms.py must define a Form class. It is recommended to inherit from BetterForm (django- form-utils), although this is not compulsory as long as the API is respected. The recommend library, django-forms-util, has a number of field types and helpers which facilitates the creation of web forms. Note that Django’s Form API has the concept of ‘prefix’ to provide namespacing for fields. We strongly recommend to use this feature (see existing modules for an example.) The reader should read its documentation as mentioned at the end, in “References”
 
 models.py can contain extensions to the web component database (see corresponding chapter.) It is required by the Django framework, so even if there are no extensions, an empty file needs to be there.
@@ -140,6 +140,7 @@ The static directory gets added by the Django framework to the static search pat
 The reader is strongly encouraged to inspect the code of already included UI modules before creating his/her own.
 
 2. Configure new UI module in TAO web
+"""""""""""""""""""""""""""""""""""""
 
 This is done in two steps. First, one needs to modify buildout.cfg and include the pointers to the new module’s source repository, and settings.py needs to list the newly included module in the MODULES variable, like:
 
@@ -153,6 +154,7 @@ That’s it. If the Django TAO web was already built (see development documentat
 Note that the order in which modules are listed in the MODULES variable is the order in which they are processed, rendered and displayed to the user.
 
 Form API
+^^^^^^^^
 
 The Form class needs to implement the following methods:
 
@@ -165,6 +167,7 @@ The Form class needs to implement the following methods:
 * VIEW_TEMPLATE: name of the viewing template, e.g. “taoui_dark_code/view.html”
 
 Integrating with TAO web
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 Both the form code and the XML code can import any part of the TAO base application and use them as required. For example, to query the model objects, the developer can import models from the tao package and use models.GalaxyModel.objects.all() to load the GalaxyModel instances.
 
@@ -181,6 +184,7 @@ Finally, TAO web extends native Django facilities providing:
 * workflow’s param and add_parameters: helper methods to generate XML <param.../> elements.
 
 Validation
+^^^^^^^^^^
 
 There are two parts to validation - live client-side JavaScript and server-side validation.
 
@@ -189,6 +193,7 @@ JavaScript validation can be done by custom Javascript injected by the templates
 Server-side validation is done using Django’s form validation framework and has been discussed previously. See references for more details.
 
 XML processing
+--------------
 
 As mentioned “Form lifecycle”, XML processing is necessary to store a job specification into the database and also to display a job already stored in the database. The particulars of the XML schema used are not in scope for this document and described elsewhere.
 
@@ -200,16 +205,19 @@ The generated XML document is then stored in the database and retrieved by the w
 Finally, when it comes to displaying an stored job in the TAO web component, as said before, the from_xml class method is called with the whole XML document, which should populate the internal fields so they get displayed properly in the template. The reason it is called with the full document tree is that a UI module can actually create multiple elements in the document tree and there needs the whole document to be able to retrieve the element relevant to it. As just said above, developers need to be aware of this to avoid clashing with other module’s elements.
 
 Complex modules
+---------------
 
 TAO web comes with a number of defined concepts: simulation, dataset, galaxy_model, etc. A UI module developer can make use of those, as some of the existing modules do. However, it may happen that a new module requires new options that are better described and stored in a database table. This chapter provides an overview of the steps involved in creating such a module.
 
 Existing models
+^^^^^^^^^^^^^^^
 
 In django parlance, a model is a class mapped to a database (usually a single table.) The database for TAO web (known as MasterDB) contains mappings for GalaxyModel, Simulation, DataSet, Snapshot, DataSetParameter, and StellarModel. The GalaxyModel, Simulation, and StellarModel are metadata classes. Their information is displayed at the side of the form when they are selected. The DataSet, and its associated related models Snapshot and DataSetParameter contain options.
 
 As mentioned in “Integrating with TAO web”, one can simply import those classes into a form and start using Django’s database mapping features. If the ones above are not sufficient, the following sections describe how to add new models.
 
 Adding tables to the database
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The TAO web component is a South-enabled project. This means it uses South (see references) to manage the evolution of the database schema. To create new tables, it is strongly recommended that you take advantage of Django’s models and South. To do so, there are a few things to be done:
 
@@ -220,10 +228,12 @@ The TAO web component is a South-enabled project. This means it uses South (see 
 South will scan your <module> for newly created models and create and apply the database migrations accordingly. Note that those migrations will become part of the main TAO web project! For more details on how to migrate the database and use your new model(s), please see references.
 
 Using new models
+^^^^^^^^^^^^^^^^
 
 Newly created models in your UI module can be imported in the Form definition as any other module in the TAO web project. As said above, the reader should be familiar with Django’s models API to do this.
 
 Django’s admin
+^^^^^^^^^^^^^^
 
 As final remark, if Django’s native admin interface is suitable for editing data in the added tables, one only needs to add the following in the admin.py script inside the module.
 
@@ -232,11 +242,13 @@ admin.site.register(model)
 where <Model_> are the actual mapping classes defined in your code, and <module> is your module name as discussed before. See the references for further customization.
 
 Conclusions
+-----------
 
 It is expected that this document will evolve in the future as there are requirements as versioning of scientific modules that are still under discussion.
 
 Also, the current testing infrastructure refers to linked UI modules directly, and including new modules will surely break tests, forcing the developer to amend the tests themselves to include the new UI elements in place. It is still unclear at this stage if testing should be split between the TAO web framework and the UI modules, or if an integrated UI testing harness would be safer.
 
 References
+----------
 
 Software repository
