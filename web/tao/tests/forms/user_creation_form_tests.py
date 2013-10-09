@@ -3,9 +3,11 @@ from django.test.utils import override_settings
 
 from tao.forms import UserCreationForm
 from tao.tests.support.factories import UserFactory
+from tao.tests.helper import TaoModelsCleanUpMixin
 
 
-class UserCreationFormTest(TransactionTestCase):
+
+class UserCreationFormTest(TransactionTestCase, TaoModelsCleanUpMixin):
 
     def testCreateUser(self):
         print "TODO add tests to %s " % __name__

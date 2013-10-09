@@ -10,6 +10,7 @@
 #include "hdf5.hh"
 #include "votable.hh"
 #include "fits.hh"
+// #include "sqldirect.hh"
 #include "register.hh"
 
 #endif

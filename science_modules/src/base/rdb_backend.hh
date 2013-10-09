@@ -1,4 +1,4 @@
-#ifndef tao_base_rdb_backend_hh
+#ifndef tao_base_rdb_backend_hh 
 #define tao_base_rdb_backend_hh
 
 #include <unordered_map>
@@ -83,9 +83,9 @@ namespace tao {
             make_field_map( map, qry, box );
             fmt % make_output_field_query_string( qry, map );
             fmt % _field_map.at( "snapnum" ) % box.snapshot();
-            fmt % _field_map.at( "posx" ) % box.min()[0] % box.max()[0];
-            fmt % _field_map.at( "posy" ) % box.min()[1] % box.max()[1];
-            fmt % _field_map.at( "posz" ) % box.min()[2] % box.max()[2];
+            fmt % map.at( "posx" ) % box.min()[0] % box.max()[0];
+            fmt % map.at( "posy" ) % box.min()[1] % box.max()[1];
+            fmt % map.at( "posz" ) % box.min()[2] % box.max()[2];
             string filt_str = make_filter_query_string( filt );
             if( !filt_str.empty() )
                filt_str = " AND " + filt_str; 
@@ -173,7 +173,14 @@ namespace tao {
 
                if( !qs.empty() )
                   qs += ", ";
-               qs += map.at( of ) + " AS " + of;
+	       try
+	       {
+		  qs += map.at( of ) + " AS " + of;
+	       }
+	       catch( ... )
+	       {
+		  EXCEPT( 0, "Database does not contain a field named: ", of );
+	       }
 
                // }
             }
@@ -220,7 +227,8 @@ namespace tao {
                if( _field_map.find( of ) != _field_map.end() )
                {
                   // Positions need to be handled specially to take care of translation.
-                  if( box && (of == "posx" || of == "posy" || of == "posz") )
+                  if( box && (of == "posx" || of == "posy" || of == "posz" ||
+			      of == "pos_x" || of == "pos_y" || of == "pos_z") )
                   {
                      string mapped[3] = { "posx", "posy", "posz" };
                      real_type box_size = (*box).simulation()->box_size();
@@ -236,7 +244,7 @@ namespace tao {
                                                box_size % (*box).min()[0] );
                         }
                         else
-			   field = boost::str( boost::format( "%1% + %2%" ) % _field_map.at( of ) % (*box).min()[0] );
+			   field = boost::str( boost::format( "(%1% + %2%)" ) % _field_map.at( of ) % (*box).min()[0] );
                      }
                      else if( of == "posy" )
                      {
@@ -248,7 +256,7 @@ namespace tao {
                                                box_size % (*box).min()[1] );
                         }
                         else
-			   field = boost::str( boost::format( "%1% + %2%" ) % _field_map.at( of ) % (*box).min()[1] );
+			   field = boost::str( boost::format( "(%1% + %2%)" ) % _field_map.at( of ) % (*box).min()[1] );
                      }
                      else
                      {
@@ -260,7 +268,7 @@ namespace tao {
                                                box_size % (*box).min()[2] );
                         }
                         else
-			   field = boost::str( boost::format( "%1% + %2%" ) % _field_map.at( of ) % (*box).min()[2] );
+			   field = boost::str( boost::format( "(%1% + %2%)" ) % _field_map.at( of ) % (*box).min()[2] );
                      }
 
                      // Add to map.

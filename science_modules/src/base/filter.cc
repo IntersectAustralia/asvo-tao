@@ -103,7 +103,7 @@ namespace tao {
    void
    filter_iterator::_settle()
    {
-      while( _idx < _vals.size() && !(*_filt)( _vals[_idx] ) )
+      while( _idx < _bat->size() && !(*_filt)( _vals[_idx] ) )
          ++_idx;
    }
 

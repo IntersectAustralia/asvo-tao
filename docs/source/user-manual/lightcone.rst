@@ -4,13 +4,13 @@ Light Cone Module
 The light cone module facilitates the selection of a subset of the simulated universe in one of two geometries:
 
 #. Box: Returns a single snapshot (redshift) of the simulated universe.
-#. Cone: Maps the geometry of the simulated data cube on to the observer cone
+#. Light Cone: Maps the geometry of the simulated data cube on to the observer cone
 
 Common Parameters
 -----------------
 
 Dark Matter Simulation and Galaxy Model
-   Together the Dark Matter Simulation and Galaxy Model select the dataset.
+   Together the Dark Matter Simulation and Galaxy Model select the simulated universe (dataset).
 
 
 
@@ -23,7 +23,7 @@ Right Ascension, Declination and Redshift
 
 Unique / Random
 
-   If the dimensions of the light-cone exceed the dimensions of the simulation the simulated space is simply repeated out to the required dimensions.
+   If the dimensions of the light-cone exceed the dimensions of the simulation, the simulated space is repeated out to the required dimensions.  Selecting between Unique and Random light-cones specifies how the simulated space is expanded.
 
    Selecting Unique ensures that no volume from the original simulation space is used multiple times in the resulting light-cone.
 

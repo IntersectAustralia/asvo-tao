@@ -4,8 +4,13 @@ tao.datasets
 ================
 
 """
+from decimal import Decimal
 from django.db.models import Q
 from tao import models
+
+
+def remove_exponent(d):
+    return d.quantize(Decimal(1)) if d == d.to_integral() else d.normalize()
 
 def dataset_get(dataset_id):
     return models.DataSet.objects.get(pk=dataset_id)
@@ -33,13 +38,14 @@ def dark_matter_simulation_choices():
     """
     return [(x.id, x.name, {}) for x in models.Simulation.objects.order_by('order', 'name')]
 
-
-def galaxy_model_choices():
+    # TODO: 'sid' doesn't do anything
+def galaxy_model_choices(sid):
     """
         return tuples of galaxy model choices suitable for use in a
         tao.widgets.ChoiceFieldWithOtherAttrs
     """
-    return [(x.id, x.galaxy_model.name, {'data-galaxy_model_id': str(x.galaxy_model_id)}) for x in models.DataSet.objects.all().select_related('galaxy_model').order_by('galaxy_model__name')]
+    return [(x.id, x.name, {})
+            for x in models.GalaxyModel.objects.order_by('name')]
 
 def stellar_model_choices():
     """
@@ -47,13 +53,16 @@ def stellar_model_choices():
     """
     return [(x.id, x.label, {}) for x in models.StellarModel.objects.order_by('label')]
 
-def snapshot_choices():
-    return [(x.id, str(x.redshift), {'data-galaxy_model_id': str(x.dataset.galaxy_model_id), 'data-simulation_id': str(x.dataset.simulation_id)})
-            for x in models.Snapshot.objects.order_by('redshift')]
+# TODO: This should only return the redshifts from the selected dataset
+# This is no longer used to populate the Redshift dropdown, but is used 
+# by the unit test.  Possibly move inside the unit test.
+def snapshot_choices(dataset_id):
+    return [(x.id, str(x.redshift),{})
+            for x in models.Snapshot.objects.filter(dataset=dataset_id).order_by('redshift')]
 
-def filter_choices(data_set_id):
+def filter_choices(simulation_id, galaxy_model_id):
     try:
-        dataset = models.DataSet.objects.get(id=data_set_id)
+        dataset = models.DataSet.objects.get(simulation_id=simulation_id, galaxy_model_id=galaxy_model_id)
         dataset_id = dataset.id
         dataset_default_filter = dataset.default_filter_field
     except models.DataSet.DoesNotExist:
@@ -62,18 +71,6 @@ def filter_choices(data_set_id):
     q = Q(dataset_id = dataset_id, is_filter=True)
     if dataset_default_filter is not None: q = q | Q(pk=dataset.default_filter_field.id)
     return models.DataSetProperty.objects.filter(q).exclude(data_type = models.DataSetProperty.TYPE_STRING).order_by('name')
-
-def default_filter_choice(data_set_id):
-    dataset = models.DataSet.objects.get(id=data_set_id)
-    return dataset.default_filter_field
-
-def default_filter_min(data_set_id):
-    dataset = models.DataSet.objects.get(id=data_set_id)
-    return dataset.default_filter_min
-
-def default_filter_max(data_set_id):
-    dataset = models.DataSet.objects.get(id=data_set_id)
-    return dataset.default_filter_max
 
 def output_choices(data_set_id):
     try:
@@ -158,7 +155,11 @@ def dust_model_find_from_xml(name):
 
 def snapshot_from_xml(data_set, redshift):
     try:
-        obj = models.Snapshot.objects.get(dataset=data_set, redshift=redshift)
+        # redshift may be a String, Decimal, Float or Integer
+        # If a string, it may be simple or scientific format
+        # MySQL / Python 2.6 is a problem...
+        # Convert to normalised Decimal and hope for the best
+        obj = models.Snapshot.objects.get(dataset=data_set, redshift=remove_exponent(Decimal(redshift)))
         return obj
     except models.Snapshot.DoesNotExist:
         return None
@@ -168,6 +169,13 @@ def simulation_from_xml(simulation_name):
         obj = models.Simulation.objects.get(name=simulation_name)
         return obj
     except models.Simulation.DoesNotExist:
+        return None
+
+def galaxy_model_from_xml(galaxy_model_name):
+    try:
+        obj = models.GalaxyModel.objects.get(name=galaxy_model_name)
+        return obj
+    except models.GalaxyModel.DoesNotExist:
         return None
 
 def data_set_property_from_xml(data_set, label, name):

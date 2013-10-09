@@ -5,8 +5,6 @@
 
 using namespace std;
 
-
-
 int main(int argc, char *argv[])
 {
 	fitsfile *fptr;      /* FITS file pointer, defined in fitsio.h */
@@ -15,6 +13,12 @@ int main(int argc, char *argv[])
 	int status = 0;   /*  CFITSIO status value MUST be initialized to zero!  */
 	int hdunum, hdutype, ncols, anynul;
 	long nrows;
+
+	if (argc < 2)
+	{
+		printf("please specify an input file.\n");
+		return 0;
+	}
 
 	if (!fits_open_file(&fptr, argv[1], READONLY, &status))
 	{
