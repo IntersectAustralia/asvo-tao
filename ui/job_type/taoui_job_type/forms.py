@@ -23,7 +23,7 @@ class Form(BetterForm):
     EDIT_TEMPLATE = 'taoui_job_type/edit.html'
     MODULE_VERSION = 1
     SUMMARY_TEMPLATE = 'taoui_job_type/summary.html'
-    LABEL = 'Job Type'
+    LABEL = 'Start'
     TAB_ID = settings.MODULE_INDICES['job_type']
 
 
