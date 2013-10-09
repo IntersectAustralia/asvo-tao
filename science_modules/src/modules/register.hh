@@ -19,6 +19,7 @@ namespace tao {
       fact.register_module( "hdf5", modules::hdf5<Backend>::factory );
       fact.register_module( "votable", modules::votable<Backend>::factory );
       fact.register_module( "fits", modules::fits<Backend>::factory );
+      fact.register_module( "sql", modules::sqldirect<Backend>::factory );
    }
 
 }
