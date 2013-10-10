@@ -43,22 +43,23 @@ To create a new job, the researcher goes through the following steps:
 1. User visits new job page
 2. The new job page is displayed by the web application
 3. The form is filled with specification values for each module by the user
-4. The user submits the form
-5. The web application receives the form data and validates it
-6. If ok, then a job is created with the specification values
-7. Otherwise the job form is re-displayed with errors.
+4. If the all the required fields are supplied and valid on the client-side, the submit button is enabled, otherwise it informs the user of errors
+5. Once the form is valid, the user submits the form
+6. The web application receives the form data and validates it
+7. If ok, then a job is created with the specification values
+8. Otherwise the job form is re-displayed with errors.
 
-From a UI module developer’s perspective, steps 2 (form display), 5 (form validation), 6 (XML generation) and 7 (form display) are the ones relevant for implementation. The following sections outline how the Form object is used in each instance, so an appropriate implementation can be written.
+From a UI module developer’s perspective, steps 2 (form display), 4 and 6 (form validation), 7 (XML generation) and 8 (form display) are the ones relevant for implementation. The following sections outline how the ``Form`` object is used in each instance, so an appropriate implementation can be written.
 
 Form display
 """"""""""""
 
 Displaying a form involves two actions:
 
-1. The module’s Form object is instantiated with empty parameters
-2. The module’s edit.html template is rendered inside the job-edit page
+1. The module’s ``Form`` object is instantiated with empty parameters
+2. The module’s ``edit.html`` template is rendered inside the job-edit page
 
-Developer’s main concerns here are implementing default values in the constructor, defining the fields in the form, and displaying the fields properly in the template. When re-displaying the form after validation fails, the only difference is that the Form object is instantiated with values from the request (see next), the template used is the same.
+Developer’s main concerns here are implementing default values in the constructor, defining the fields in the form, and displaying the fields properly in the template. When re-displaying the form after validation fails, the only difference is that the ``Form`` object is instantiated with values from the request (see next), the template used is the same.
 
 Form validation
 """""""""""""""
@@ -93,8 +94,8 @@ Job display
 Displaying a stored job involves several actions in the web application:
 
 1. The full job description is grabbed from the database in XML format.
-2. Each "module" element is processed in turn: based on the module-id, the corresponding Form module object gets created using the ``Form.from_xml`` class method with the full XML document as parameter.
-3. The module’s ``view.html`` template is rendered inside the job-view page with the corresponding form object.
+2. Each "module" element is processed in turn: based on the module-id, the corresponding ``Form`` module object gets created using the ``Form.from_xml`` class method with the full XML document as parameter.
+3. The module’s ``view.html`` template is rendered inside the job-view page with the corresponding ``Form`` object.
 
 The developer’s main concerns here are implementing the ``from_xml`` class method with the XML document as parameter, and displaying the fields properly in the view template.
 
@@ -169,7 +170,7 @@ The Form class needs to implement the following methods:
 * ``is_valid``: called by TAO web to trigger validation.
 * ``clean``: implemented by ``BetterForm``; can be overridden by ``Form`` subclass. Called as part of the ``is_valid`` implementation.
 * ``to_xml``: instance method that adds XML elements to a provided XML document.
-* ``from_xml``: class method that receives a ``<module .../>`` fragment to instantiate the Form object from it.
+* ``from_xml``: class method that receives a ``<module .../>`` fragment to instantiate the ``Form`` object from it.
 * ``EDIT_TEMPLATE``: name of the editing template, e.g. ``taoui_dark_code/edit.html``
 * ``VIEW_TEMPLATE``: name of the viewing template, e.g. ``taoui_dark_code/view.html``
 
