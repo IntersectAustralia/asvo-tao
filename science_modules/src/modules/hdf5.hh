@@ -162,7 +162,7 @@ namespace tao {
          log_metrics()
          {
             module_type::log_metrics();
-            LOGILN( this->_name, " number of records written: ", mpi::comm::world.all_reduce( _records ) );
+            LOGILN( this->_name, " number of records written: ", _records );
          }
 
       protected:

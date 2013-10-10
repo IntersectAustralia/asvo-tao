@@ -123,14 +123,23 @@ namespace tao {
 	       LOGILN( "Calculating SED for galaxy with global index: ", gal_gids[ii] );
 
                // Be sure we're on the correct tree.
-               _sfh.load_tree_data( sql, table_name, tree_gids[ii] );
+               {
+                  auto db_timer = this->db_timer_start();
+                  _sfh.load_tree_data( sql, table_name, tree_gids[ii] );
+               }
 
                // Rebin the star-formation history.
-               _sfh.rebin<real_type>( sql, gal_lids[ii], _age_masses, _bulge_age_masses, _age_metals );
+               {
+                  auto rebin_timer = _rebin_timer.start();
+                  _sfh.rebin<real_type>( sql, gal_lids[ii], _age_masses, _bulge_age_masses, _age_metals );
+               }
 
                // Sum contributions from the SSP.
-               _ssp.sum( _age_masses.begin(), _age_metals.begin(), total_spectra[ii].begin() );
-               _ssp.sum( _bulge_age_masses.begin(), _age_metals.begin(), bulge_spectra[ii].begin() );
+               {
+                  auto sum_timer = _sum_timer.start();
+                  _ssp.sum( _age_masses.begin(), _age_metals.begin(), total_spectra[ii].begin() );
+                  _ssp.sum( _bulge_age_masses.begin(), _age_metals.begin(), bulge_spectra[ii].begin() );
+               }
 
                // Create disk spectra.
                for( unsigned jj = 0; jj < _ssp.wavelengths().size(); ++jj )
@@ -145,6 +154,15 @@ namespace tao {
          backend()
          {
             return _be;
+         }
+
+         virtual
+         void
+         log_metrics()
+         {
+            module_type::log_metrics();
+            LOGILN( this->_name, " rebinning time: ", _rebin_timer.total(), " (s)" );
+            LOGILN( this->_name, " summation time: ", _sum_timer.total(), " (s)" );
          }
 
       protected:
@@ -175,6 +193,9 @@ namespace tao {
          sfh<real_type> _sfh;
          vector<real_type> _age_masses, _bulge_age_masses;
          vector<real_type> _age_metals;
+
+         profile::timer _rebin_timer;
+         profile::timer _sum_timer;
       };
 
    }
