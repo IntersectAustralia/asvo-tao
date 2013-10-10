@@ -61,8 +61,11 @@ namespace tao {
             // Cache dictionary.
             const options::xml_dict& dict = this->_dict;
 
-            _fn = global_dict.get<string>( "outputdir" ) + "/" +
-               dict.get<string>( "filename" ) + "." + mpi::rank_string() + ".csv";
+            if(mpi::comm::world.size()==1)
+                      _fn = global_dict.get<string>( "outputdir" ) + "/" + dict.get<hpc::string>( "filename" ) ;
+                  else
+                      _fn = global_dict.get<string>( "outputdir" ) + "/" + dict.get<hpc::string>( "filename" ) + "." + mpi::rank_string();
+            LOGILN( "File Name:",_fn, setindent( 2 ) );
             _fields = dict.get_list<string>( "fields" );
 
             // Open the file.

@@ -3,7 +3,7 @@
 
 #include <boost/algorithm/string/replace.hpp>
 #include "tao/base/base.hh"
-#include "tao/base/types.hh"
+
 
 namespace tao {
    namespace modules {
@@ -63,6 +63,7 @@ namespace tao {
 
             // Create the backend.
             _be = new backend_type;
+            _be->connect( global_dict );
 
 	    _read_options( global_dict );
 	 }
@@ -90,6 +91,18 @@ namespace tao {
 	 }
 
 	 virtual
+	 	  optional<boost::any>
+	 	  find_attribute( const string& name )
+	 	  {
+
+	 		 if( name == "filter" )
+	 			 return boost::any( &((tao::filter const&)_filt) );
+	 		 else
+	 			return module_type::find_attribute( name );
+	 	  }
+
+
+	 virtual
 	 tao::batch<real_type>&
 	 batch()
 	 {
@@ -108,10 +121,10 @@ namespace tao {
 
 	    _Tables_it=_be->table_begin();
 
-	    // _prog.set_local_size( _db->num_tables() );
-	    // LOG_PUSH_TAG( "progress" );
-	    // LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
-	    // LOG_POP_TAG( "progress" );
+	    _prog.set_local_size( _be->num_tables() );
+	    LOG_PUSH_TAG( "progress" );
+	    LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
+	    LOG_POP_TAG( "progress" );
 
 	    replace_all( CurrentQuery, "-table-", _Tables_it->name() );
 	    LOGDLN( "Query: ", CurrentQuery );
@@ -432,6 +445,7 @@ namespace tao {
 	 long _OutputLimit;
 	 long _RecordsCount;
 	 bool _IsRecordLimitReached;
+	 tao::filter _filt;
       };
 
    }
