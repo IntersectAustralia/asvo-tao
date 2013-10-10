@@ -78,6 +78,7 @@ namespace tao {
             if( !_be )
             {
                _my_be = true;
+               auto db_timer = this->db_timer_start();
                _be = new backend_type;
                _be->connect( global_dict );
             }
@@ -165,10 +166,13 @@ namespace tao {
             // Is this my first time through? If so begin iterating.
             if( this->_it == 0 )
             {
-               if( _geom == CONE )
-                  _c_it = _lc.galaxy_begin( _qry, *_be, &_bat, &_filt );
-               else
-                  _b_it = _box.galaxy_begin( _qry, *_be, &_bat, &_filt );
+               {
+                  auto db_timer = this->db_timer_start();
+                  if( _geom == CONE )
+                     _c_it = _lc.galaxy_begin( _qry, *_be, &_bat, &_filt );
+                  else
+                     _b_it = _box.galaxy_begin( _qry, *_be, &_bat, &_filt );
+               }
 
                // Initialise the tile index.
                _tile_idx = std::numeric_limits<unsigned>::max();
@@ -177,7 +181,10 @@ namespace tao {
             {
                if( _geom == CONE )
                {
-                  ++_c_it;
+                  {
+                     auto db_timer = this->db_timer_start();
+                     ++_c_it;
+                  }
 
                   // Dump updates about how many tiles we've completed.
                   // TODO: This is only dumping for rank 0. We should
@@ -196,6 +203,7 @@ namespace tao {
                }
                else
                {
+                  auto db_timer = this->db_timer_start();
                   ++_b_it;
                }
             }
@@ -241,12 +249,6 @@ namespace tao {
             else
                return module_type::find_attribute( name );
          }
-
-         // const set<string>&
-         // output_fields() const;
-
-         // unsigned
-         // num_boxes() const;
 
          geometry_type
          geometry() const
@@ -313,12 +315,18 @@ namespace tao {
             // be set on the simulation.
             {
                vector<real_type> snap_zs;
-               _be->snapshot_redshifts( snap_zs );
+               {
+                  auto db_timer = this->db_timer_start();
+                  _be->snapshot_redshifts( snap_zs );
+               }
                _sim.set_snapshot_redshifts( snap_zs );
             }
 
             // Now set the simulation on the backend.
-            _be->set_simulation( &_sim );
+            {
+               auto db_timer = this->db_timer_start();
+               _be->set_simulation( &_sim );
+            }
 
             // Extract the random number generator seed and set it.
             optional<int> rng_seed = dict.opt<int>( "rng-seed" );
