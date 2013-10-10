@@ -11,6 +11,9 @@ namespace fs = boost::filesystem;
 namespace tao {
    namespace modules {
 
+      double const skymaker_image::default_back_magnitude = 20.0;
+      double const skymaker_image::default_exposure_time = 300.0;
+
       skymaker_image::skymaker_image()
       {
       }
@@ -27,10 +30,13 @@ namespace tao {
                                       real_type fov_ra,
                                       real_type fov_dec,
                                       unsigned width,
-                                      unsigned height )
+                                      unsigned height,
+                                      double back_mag,
+                                      double exposure_time )
       {
          setup( index, sub_cone, format, mag_field, min_mag, z_min, z_max,
-                origin_ra, origin_dec, fov_ra, fov_dec, width, height );
+                origin_ra, origin_dec, fov_ra, fov_dec, width, height,
+                back_mag, exposure_time );
       }
 
       ///
@@ -49,8 +55,12 @@ namespace tao {
                              real_type fov_ra,
                              real_type fov_dec,
                              unsigned width,
-                             unsigned height )
+                             unsigned height,
+                             double back_mag,
+                             double exposure_time )
       {
+         LOGILN( "Setting up Skykmaker image.", setindent( 2 ) );
+
          _idx = index;
          _sub_cone = sub_cone;
          _format = format;
@@ -64,11 +74,18 @@ namespace tao {
          _fov_dec = to_radians( fov_dec );
          _width = width;
          _height = height;
+         _back_mag = back_mag;
+         _exp_time = exposure_time;
          _cnt = 0;
 
          // Calculate the required scale factors.
          _scale_x = 0.5*_width/tan( 0.5*_fov_ra );
          _scale_y = 0.5*_height/tan( 0.5*_fov_dec );
+
+         LOGILN( "Magnitude field: ", _mag_field );
+         LOGILN( "Background magnitude: ", _back_mag );
+         LOGILN( "Exposure time: ", _exp_time );
+         LOGILN( "Done.", setindent( -2 ) );
       }
 
       void
@@ -241,6 +258,8 @@ namespace tao {
             file << "ARM_COUNT 4\n";
             file << "ARM_THICKNESS 40\n";
             file << "ARM_POSANGLE 30\n";
+            file << "BACK_MAG " << _back_mag << "\n";
+            file << "EXPOSURE_TIME " << _exp_time << "\n";
          }
       }
 

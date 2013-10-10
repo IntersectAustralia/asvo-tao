@@ -13,6 +13,11 @@ namespace tao {
       {
       public:
 
+         static double const default_back_magnitude;
+         static double const default_exposure_time;
+
+      public:
+
          skymaker_image();
 
          skymaker_image( unsigned index,
@@ -27,7 +32,9 @@ namespace tao {
                          real_type fov_ra,
                          real_type fov_dec,
                          unsigned width,
-                         unsigned height );
+                         unsigned height,
+                         double back_mag = default_back_magnitude,
+                         double exp_time = default_exposure_time );
 
          void
          setup( unsigned index,
@@ -42,7 +49,9 @@ namespace tao {
                 real_type fov_ra,
                 real_type fov_dec,
                 unsigned width,
-                unsigned height );
+                unsigned height,
+                double back_mag = default_back_magnitude,
+                double exp_time = default_exposure_time );
 
          void
          setup_list();
@@ -78,6 +87,8 @@ namespace tao {
          real_type _fov_ra, _fov_dec;
          unsigned _width, _height;
          real_type _scale_x, _scale_y;
+         double _back_mag; // background magnitude
+         double _exp_time; // exposure time in seconds
          unsigned _cnt;
       };
 
@@ -228,7 +239,9 @@ namespace tao {
                      sub.get<real_type>( "z_min", 0 ), sub.get<real_type>( "z_max", 127 ),
                      sub.get<real_type>( "origin_ra" ), sub.get<real_type>( "origin_dec" ),
                      sub.get<real_type>( "fov_ra" ), sub.get<real_type>( "fov_dec" ),
-                     sub.get<unsigned>( "width", 1024 ), sub.get<unsigned>( "height", 1024 )
+                     sub.get<unsigned>( "width", 1024 ), sub.get<unsigned>( "height", 1024 ),
+                     sub.get<double>( "back_mag", image_type::default_back_magnitude ),
+                     sub.get<double>( "exp_time", image_type::default_exposure_time )
                      );
                   LOGILN( "Added image for magnitude field: ", _imgs.back().mag_field() );
                }
