@@ -251,9 +251,14 @@ catalogue.module_defs.mock_image = function ($) {
         }
 
         vm.can_have_images = ko.computed(function(){
+        	light_cone_is_valid = false; 
+        	if (typeof(catalogue.modules.light_cone.vm.error_status) === "function") {
+        		errors = catalogue.modules.light_cone.vm.error_status();
+        		light_cone_is_valid = !errors.field_errors;
+        	}
             return catalogue.modules.sed.vm.apply_sed() &&
                 catalogue.modules.light_cone.vm.catalogue_geometry().id == 'light-cone' &&
-                catalogue.vm.sed.bandpass_filters().length > 0;
+                catalogue.vm.sed.bandpass_filters().length > 0 && light_cone_is_valid;
         });
 
         param = job['mock_image-apply_mock_image']
