@@ -412,7 +412,7 @@ namespace tao {
             // Filter information.
             {
                string filt_field = global_dict.get<string>( "workflow:record-filter:filter:filter-attribute", "" );
-               to_lower( filt_field );
+               // to_lower( filt_field );
                string filt_min = global_dict.get<string>( "workflow:record-filter:filter:filter-min", "" );
                string filt_max = global_dict.get<string>( "workflow:record-filter:filter:filter-max", "" );
                if( !filt_field.empty() && filt_field != "" )
