@@ -1,8 +1,8 @@
 
 var catalogue = catalogue || {};
-catalogue.modules = catalogue.modules || {};
+catalogue.module_defs = catalogue.module_defs || {};
 
-catalogue.modules.mock_image = function ($) {
+catalogue.module_defs.mock_image = function ($) {
 
     var vm = {}
     this.vm = vm;
@@ -164,7 +164,7 @@ catalogue.modules.mock_image = function ($) {
                 .extend({validate: catalogue.validators.leq(
                     catalogue.modules.light_cone.vm.redshift_max
                     )})
-                .extend({validate: catalogue.validators.greater_than(
+                .extend({validate: catalogue.validators.geq(
                     image_params.z_min
                 )});
             param = get_param(prefix, '-origin_ra');
@@ -251,9 +251,14 @@ catalogue.modules.mock_image = function ($) {
         }
 
         vm.can_have_images = ko.computed(function(){
+        	light_cone_is_valid = false; 
+        	if (typeof(catalogue.modules.light_cone.vm.error_status) === "function") {
+        		errors = catalogue.modules.light_cone.vm.error_status();
+        		light_cone_is_valid = !errors.field_errors;
+        	}
             return catalogue.modules.sed.vm.apply_sed() &&
                 catalogue.modules.light_cone.vm.catalogue_geometry().id == 'light-cone' &&
-                catalogue.vm.sed.bandpass_filters().length > 0;
+                catalogue.vm.sed.bandpass_filters().length > 0 && light_cone_is_valid;
         });
 
         param = job['mock_image-apply_mock_image']

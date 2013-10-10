@@ -1,9 +1,9 @@
 // create the namespace if it doesn't exist
 var catalogue = catalogue || {}; 
-catalogue.modules = catalogue.modules || {};
+catalogue.module_defs = catalogue.module_defs || {};
  
 // jQuery is passed as a parameter to ensure jQuery plugins work correctly
-catalogue.modules.job_type = function ($) {
+catalogue.module_defs.job_type = function ($) {
     // KO ViewModel
     var vm = {}
 
@@ -26,7 +26,15 @@ catalogue.modules.job_type = function ($) {
         $(document).ready(function() {
             $('#id_job_type-params_file').val("");
         });
-
+        
+        // Firefox v 21.x event propagation bug workaround
+        $('#file_upload_proxy').click(function(event) {
+        	if (event.target.id != 'id_job_type-params_file') {
+	        	event.stopPropagation();
+	            jQuery("#id_job_type-params_file").trigger(jQuery.Event("click"));
+        	}
+        });
+        
         $('#id_job_type-params_file').change(function() {
             $('#file_upload').submit();
         });

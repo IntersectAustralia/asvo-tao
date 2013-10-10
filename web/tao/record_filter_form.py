@@ -149,8 +149,7 @@ class RecordFilterForm(BetterForm):
         for fn in self.fields.keys():
             ffn = self.prefix + '-' + fn
             val = self.data.get(ffn)
-            if val is not None:
-                json_dict[ffn] = val
+            json_dict[ffn] = val 
         return json_dict
 
     def to_xml(self, parent_xml_element):

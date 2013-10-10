@@ -47,6 +47,39 @@ Hardware Components
 - Acts as a secured bredge between the UI components and the science modules running on SwinSTAR.
 
 
+TAO Software Architecture
+=========================
 
+.. figure:: ../_static/mainsystemsoftware.png
+   :alt: Main system software design
+
+The figure describes the main system software modules and the expected communication patterns between them. These modules are:
+
+- **Interface Modules (Outside SwinSTAR Firewall)**:
+
+  * The user UI Interface (Node A)
+  * The Virtual Observatory interface and TAP Asynchronous results (Node A)
+  * TAP interpreter ( Node A)
+  * The Admin UI interface
+		
+- **System/Core Modules**:
+
+  * Workflow Module ( Node B)		
+	
+- **Science Modules**:
+
+  * Direct SQL Query Module (Single Process - SwinSTAR)	
+  * Light-Cone Module (Multiple Processes - SwinSTAR)
+  * Spectral Energy distribution Module (Multiple Processes - SwinSTAR)
+  * Mock Image Generation Module (Multiple Threads- SwinSTAR)	
+	
+- **Data Import Module (Multiple Processes - SwinSTAR – Administrator Access Only)** 
+
+Design Assumptions
+------------------
+
+- User interface is decoupled from the back-end components. The UI component works on a separate hardware node (Node A), for security reasons this node is outside the SwinSTAR system and the back-end (Application/Database) nodes of TAO. The UI does not interact directly with the back-end components (i.e: it cannot directly access back-end PostgreSQL Cluster databases, and it cannot issue ssh command or directly enqueue tasks to the job queue). The system back-end components are allowed to access the MasterDB (there is no restriction on the ongoing traffic but ingoing traffic will be completely blocked) via two main web services access points (will be discussed later). 
+- Component on Node (A) will be responsible for all the user's interactions including email notifications and interfacing with VO users. A limited access from Node (A) to the main TAO storage is available to provide a read-only access to the TAO storage from the UI components.
+- The user interface modules has been developed using the python web framework `Django <http://wiki.python.org/moin/Django>`_ with MySQL Database as a host for the MasterDB.
 
 

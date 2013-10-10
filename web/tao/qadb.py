@@ -245,7 +245,7 @@ def run():
 
     tao_globalparameter_12 = GlobalParameter()
     tao_globalparameter_12.parameter_name = u'support-recipients'
-    tao_globalparameter_12.parameter_value = u'alistair@intersect.org.au, dcroton@astro.swin.edu.au'
+    tao_globalparameter_12.parameter_value = u'kali@intersect.org.au'
     tao_globalparameter_12.description = u'List of recipients to send support emails'
     tao_globalparameter_12 = save_or_locate(tao_globalparameter_12)
 

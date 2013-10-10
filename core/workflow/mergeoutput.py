@@ -9,18 +9,23 @@ import h5py
 import shutil
 import numpy
 
-def ValidateAllSameExtension(FilesList):
+ExtensionLocation=-1
+
+
+def ValidateAllSameExtension(FilesList,SubJobIndexLocation):
+    
+    
     logging.info('Start Validating File List (Length and Extension)')
     if len(FilesList)==0:
         return False
     logging.info('Not an empty List')
-    FirstItemExt=FilesList[0][1][-2]
+    FirstItemExt=FilesList[0][1][ExtensionLocation]
     logging.info('First Item Ext='+FirstItemExt)
     FileExtLen=len(FilesList[0][1])
     for FileDetail in FilesList:
         
-        if(FileDetail[1][-2]!=FirstItemExt) or (FileExtLen!= len(FileDetail[1])):
-            logging.info('File List Validation Because '+FileDetail[1][-2]+"!="+FirstItemExt)                       
+        if(FileDetail[1][ExtensionLocation]!=FirstItemExt) or (FileExtLen!= len(FileDetail[1])):
+            logging.info('File List Validation Because '+FileDetail[1][ExtensionLocation]+"!="+FirstItemExt)                       
             return False
     logging.info('End Validating File List (Length and Extension)')
     return True
@@ -156,13 +161,13 @@ def ProcessFiles(FilesList,OutputFileName):
     logging.info("## Start Process Files ...") 
     logging.info("## Merging files with extension :"+FilesList[0].split('.')[-2])
     logging.info(FilesList)
-    if FilesList[0].split('.')[-2]=='csv':        
+    if FilesList[0].split('.')[ExtensionLocation]=='csv':        
         return HandleCSVFiles(FilesList,OutputFileName)
-    elif FilesList[0].split('.')[-2]=='xml':
+    elif FilesList[0].split('.')[ExtensionLocation]=='xml':
         return HandleVOFiles(FilesList,OutputFileName)
-    elif FilesList[0].split('.')[-2]=='fits':
+    elif FilesList[0].split('.')[ExtensionLocation]=='fits':
         return HandleFITSFiles(FilesList,OutputFileName)
-    elif FilesList[0].split('.')[-2]=='hdf5':
+    elif FilesList[0].split('.')[ExtensionLocation]=='hdf5':
         return HandleHDF5Files(FilesList,OutputFileName)
     else:
         logging.info("This Format is not Known for me ! "+FilesList[0].split('.')[-2])
@@ -193,18 +198,21 @@ if __name__ == '__main__':
     logging.info('Merging Files in '+CurrentFolderPath)   
     dirList=os.listdir(CurrentFolderPath)    
     fullPathArray=[]
+    
+    SubJobIndexLocation=2
+    
     map={}
     for fname in dirList:
         FileDetailsList=fname.split('.')
         if len(FileDetailsList)==5 and FileDetailsList[-1]!='gz':            
             fullPathArray.append([CurrentFolderPath+'/'+fname,FileDetailsList])
             logging.info('File Added to List '+CurrentFolderPath+'/'+fname)
-            if FileDetailsList[2] in map:
-                map[FileDetailsList[2]].append(CurrentFolderPath+'/'+fname)
+            if FileDetailsList[SubJobIndexLocation] in map:
+                map[FileDetailsList[SubJobIndexLocation]].append(CurrentFolderPath+'/'+fname)
             else:
-                map[FileDetailsList[2]]=[CurrentFolderPath+'/'+fname]
+                map[FileDetailsList[SubJobIndexLocation]]=[CurrentFolderPath+'/'+fname]
                 
-    if ValidateAllSameExtension(fullPathArray)!=True:  
+    if ValidateAllSameExtension(fullPathArray,SubJobIndexLocation)!=True:  
         logging.info('Validating File List Failed')      
         exit(-100)
     

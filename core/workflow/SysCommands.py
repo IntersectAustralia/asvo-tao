@@ -140,6 +140,7 @@ class SysCommands(object):
         if (JobStatus <= EnumerationLookup.JobState.Running and JobStatus > EnumerationLookup.JobState.NewJob):
             logging.info("COMMAND Job_Stop: JobID=" + str(JobID) + " , Terminating Job From Queue")
             self.TorqueObj.TerminateJob(PBSID) ##If its status is running or before set it to pause
+            self.dbaseobj.SetJobPaused(JobID, UICommandID)
             return [True,'']
         if (JobStatus <= EnumerationLookup.JobState.Running):
             logging.info("COMMAND Job_Stop: JobID=" + str(JobID) + " , SetJob to Pause")
@@ -167,8 +168,8 @@ class SysCommands(object):
             
             [ExecutionResult,Message]=self.PauseJob(UICommandID, JobID, PBSID, JobStatus)
         if ExecutionResult==True:
-            self.UpdateTAOJobUI(UIJobID)
-                    
+            self.dbaseobj.RemoveAllJobsWithUIReferenceID(UIJobID)
+            self.UpdateTAOJobUI(UIJobID)                    
             logging.info("Job_Stop")
             return [True,'']
         else:

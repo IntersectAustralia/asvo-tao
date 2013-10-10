@@ -1,8 +1,13 @@
 from django.utils.timezone import get_default_timezone
+from django.conf import settings
 
-from tao.models import Job
+from tao.models import Job, GlobalParameter
+
+from tao.tests import helper
 from tao.tests.integration_tests.helper import LiveServerMGFTest
 from tao.tests.support.factories import UserFactory, JobFactory
+
+import os
 
 class ListJobsTests(LiveServerMGFTest):
 
@@ -82,21 +87,61 @@ class ListJobsTests(LiveServerMGFTest):
         return "\n".join(stripped_lines).strip()
 
     def test_user_disk_quota_no_limit(self):
-        self.user.disk_quota = 0
-        self.user.save()
+        try:
+            param = GlobalParameter.objects.get(parameter_name='default_disk_quota')
+            param.delete()
+        except (GlobalParameter.DoesNotExist, ValueError):
+            pass
+        
+        quota = self.user.user_disk_quota()
+        self.assertEqual(quota, -1)
+        
         self.visit('job_index')
         
         disk_usage = self.user.display_current_disk_usage()
         self.assert_page_has_content(disk_usage)
+        
         disk_quota = "of %s" % self.user.display_user_disk_quota()
         self.assert_page_does_not_contain(disk_quota)
         
-    def test_user_disk_quota_limited(self):
+    def test_user_disk_quota_default(self):
+        try:
+            param = GlobalParameter.objects.get(parameter_name='default_disk_quota')
+            param.parameter_value = 100
+            param.save()
+        except (GlobalParameter.DoesNotExist, ValueError):
+            param = GlobalParameter(parameter_name='default_disk_quota', parameter_value=100)
+            param.save()
+        
+        self.user.disk_quota = 0
+        self.user.save()
+        
+        self.visit('job_index')
+            
+        disk_usage = self.user.display_current_disk_usage()
+        disk_quota = self.user.display_user_disk_quota()
+        usage_text = "%s  of %s" % (disk_usage, disk_quota)
+        self.assert_page_has_content(usage_text)
+            
+    def test_user_disk_quota_limit(self):
         self.user.disk_quota = 10
         self.user.save()
         self.visit('job_index')
         
+        disk_usage = self.user.display_current_disk_usage()
         disk_quota = self.user.display_user_disk_quota()
-        self.assert_page_has_content(disk_quota)
+        usage_text = "%s  of %s" % (disk_usage, disk_quota)
+        self.assert_page_has_content(usage_text)
     
     
+    def test_user_disk_usage_displays_correctly(self):
+        output_path = 'job_output'
+        file_content = 'abc' * 2000000
+        file_name_to_content = {'file_name': file_content}
+        helper.create_file(os.path.join(settings.FILES_BASE, output_path), 'file_name', file_name_to_content)
+        self.user.disk_quota = 10
+        self.user.save()
+        self.visit('job_index')
+        usage_text = "%s  of  %s" % ('6MB', '10MB')
+        self.assert_page_has_content(usage_text)
+

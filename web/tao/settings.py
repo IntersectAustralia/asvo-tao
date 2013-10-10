@@ -199,9 +199,6 @@ LOGIN_URL = reverse_lazy('tao.views.login')
 ## AUTH_PROFILE_MODULE = 'tao.UserProfile'  # appname.modelname
 AUTH_USER_MODEL = 'tao.TaoUser'
 
-EMAIL_HOST = 'gpo.swin.edu.au'
-EMAIL_PORT = '25'
-
 EMAIL_ACCEPT_SUBJECT = 'Welcome to ASVO TAO'
 EMAIL_REJECT_SUBJECT = 'Your request for access to ASVO TAO has been rejected'
 EMAIL_FROM_ADDRESS = 'admin@asvo.org.au'
@@ -264,7 +261,7 @@ MODULE_INDICES = {
                   'telescope': '8'
                   }
 
-TAO_VERSION = '1.0.3'
+TAO_VERSION = '1.0.5'
 
 AAF_DS_URL = 'https://ds.test.aaf.edu.au/discovery/DS'
 AAF_APP_ID = 'https://example.intersect.org.au/shibboleth'
@@ -282,8 +279,8 @@ STATIC_CTX = ''
 STATIC_URL = '/static/'
 FILES_BASE = '/tmp/'  # please include a trailing slash
 
-# EMAIL_HOST = 'localhost'
-# EMAIL_PORT = '25'
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = '25'
 
 EMAIL_FROM_ADDRESS = 'admin@localhost'
 

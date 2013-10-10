@@ -21,7 +21,7 @@
         <div id="mock_image_params" data-bind="template: {name: 'single_form_template', foreach: image_settings}, visible: can_have_images() && apply_mock_image()"
                 style="display: block;">
         </div>
-        <button data-bind="click: add_image_settings, visible: can_have_images() && apply_mock_image()">Add</button>
+        <input type="button" id="id_mock_image-add_image_button" class="btn" value="Add" data-bind="click: add_image_settings, visible: can_have_images() && apply_mock_image()"/>
     </div>
     <div class="aside span4" id="sed_info">
     </div>
@@ -32,6 +32,6 @@
             {% for field in form.empty_form %}
             {{ field|as_bootstrap_field }}
             {% endfor %}
-            <button data-bind="click: function(){$parent.remove_image_settings($data)}">Remove</button>
+            <input type="button" class="btn" value="Remove" data-bind="click: function(){$parent.remove_image_settings($data)}"/>
           </div>
 </script>

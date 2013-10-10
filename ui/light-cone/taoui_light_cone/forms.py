@@ -276,15 +276,39 @@ class Form(BetterForm):
         self.fields['rng_seeds'].widget.attrs['data-bind'] = 'options: rng_seeds, selectedOptions: rng_seeds'
 
             
-
+    def check_redshift_min_greater_than_zero(self):
+        catalogue_geometry = self.cleaned_data.get('catalogue_geometry')
+        if catalogue_geometry == self.BOX:
+            return
+        redshift_min_field = self.cleaned_data.get('redshift_min')
+        if redshift_min_field is None:
+            return
+        if redshift_min_field < 0:
+            msg = _('The minimum redshift must be greater or equal to zero.')
+            self._errors["redshift_min"] = self.error_class([msg])
+    
+    def check_redshift_max_greater_than_zero(self):
+        catalogue_geometry = self.cleaned_data.get('catalogue_geometry')
+        if catalogue_geometry == self.BOX:
+            return
+        redshift_max_field = self.cleaned_data.get('redshift_max')
+        if redshift_max_field is None:
+            return
+        if redshift_max_field < 0:
+            msg = _('The maximum redshift must be greater or equal to zero.')
+            self._errors["redshift_max"] = self.error_class([msg])        
 
     def check_redshift_min_less_than_redshift_max(self):
+        catalogue_geometry = self.cleaned_data.get('catalogue_geometry')
+        if catalogue_geometry == self.BOX:
+            return
         redshift_min_field = self.cleaned_data.get('redshift_min')
         redshift_max_field = self.cleaned_data.get('redshift_max')
-        if redshift_min_field is not None and redshift_max_field is not None and redshift_min_field >= redshift_max_field:
-            msg = _('The minimum redshift must be less than the maximum redshift.')
+        if redshift_min_field is None or redshift_max_field is None:
+            return
+        if redshift_min_field > redshift_max_field:
+            msg = _('The minimum redshift must be less than or equal to the maximum redshift.')
             self._errors["redshift_min"] = self.error_class([msg])
-            del self.cleaned_data["redshift_min"]
 
     def check_light_cone_required_fields(self):
         catalogue_geometry = self.cleaned_data.get('catalogue_geometry')
@@ -321,6 +345,8 @@ class Form(BetterForm):
 
     def clean(self):
         self.cleaned_data = super(Form, self).clean()
+        self.check_redshift_min_greater_than_zero()
+        self.check_redshift_max_greater_than_zero()
         self.check_redshift_min_less_than_redshift_max()
         self.check_box_size_required_fields()
         self.check_light_cone_required_fields()

@@ -116,6 +116,40 @@ class SubmitLightConeTests(LiveServerMGFTest):
         self.submit_mgf_form()
         self.assert_on_page('job_index')
 
+    def test_submit_min_max_redshift_equal(self):
+        ## fill in form (correctly)
+        self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
+        self.fill_in_fields({
+            'ra_opening_angle': '2',
+            'dec_opening_angle': '2',
+            'redshift_min': '1',
+            'redshift_max': '1',
+        }, id_wrap=self.lc_id)
+        self.click(self.lc_2select('op_add_all'))
+        self.click('tao-tabs-record_filter')
+        self.fill_in_fields({
+            'min': '1\n',
+            'max': '10\n',
+        }, id_wrap=self.rf_id)
+        self.assert_cant_submit_mgf_form()
+
+    def test_invalid_min_max_redshift(self):
+        ## fill in form (correctly)
+        self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
+        self.fill_in_fields({
+            'ra_opening_angle': '2',
+            'dec_opening_angle': '2',
+            'redshift_min': '2',
+            'redshift_max': '1',
+        }, id_wrap=self.lc_id)
+        self.click(self.lc_2select('op_add_all'))
+        self.click('tao-tabs-record_filter')
+        self.fill_in_fields({
+            'min': '1\n',
+            'max': '10\n',
+        }, id_wrap=self.rf_id)
+        self.assert_cant_submit_mgf_form()
+
     def test_submit_valid_random_cone_job(self):
         self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
         self.click_by_css(self.lc_id('light_cone_type_1')) # select "random"

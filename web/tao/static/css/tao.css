@@ -46,6 +46,8 @@ a:active, a:hover {
   background-color: rgba(0, 0, 0, 0.85);
 }
 
+#telescope_params button { width: 260px; }
+
 .navbar .brand { padding: 20px 20px 20px; }
 #skymapperlogo { padding: 10px 20px 10px; }
 #asvologo { padding: 5px 20px; }
@@ -75,7 +77,7 @@ a:active, a:hover {
         .ui-tabs-vertical .ui-tabs-nav li {
             clear: left;
             width: 100%;
-            border-bottom-width: 1px !important;
+            border-bottom-width: 0px !important;
             border-right-width: 0 !important;
             margin: 0 -1px .2em 0;
         }
@@ -123,6 +125,13 @@ legend {
   border-bottom: 0px solid #e5e5e5;
 }
 
+.ui-widget-header {
+  border: 0px solid #aaaaaa/*{borderColorHeader}*/;
+  background: #FFF/*{bgColorHeader}*/ url(images/ui-bg_highlight-soft_75_cccccc_1x100.png)/*{bgImgUrlHeader}*/ 50%/*{bgHeaderXPos}*/ 50%/*{bgHeaderYPos}*/ repeat-x/*{bgHeaderRepeat}*/;
+  color: #222222/*{fcHeader}*/;
+  font-weight: bold;
+}
+
 #tabs.ui-widget-content {
   margin: 0; padding: 0;
   width: auto;
@@ -136,25 +145,30 @@ legend {
 
 #tabs.ui-tabs .ui-tabs-nav {
   margin: 0 0 20px 0; padding: 0px; width: auto;
-  border: 0px solid; background: none; color: #333;
   float: none;
+  border: 0px solid #aaaaaa/*{borderColorHeader}*/;
   border-bottom: 1px solid #ddd;
   -webkit-border-radius: 0; -moz-border-radius: 0; border-radius: 0;
+  margin-left: 0;
+  list-style: none;
+  background: none;
 }
 #tabs.ui-tabs .ui-tabs-nav li {
-    margin: 5px 0 0 0; padding: 0;
-    margin-bottom: -2px;
+    margin: 0; padding: 0;
+    margin-bottom: -1px;
     width: auto;
     top: none;
+    bottom: none;
     display: inline-block;
     list-style: none;
     float: left;
+    line-height: 20px;
+    list-style: none;
     clear: none;
     position: static;
     white-space: nowrap;
-    line-height: 20px;
     border: 0px solid #d3d3d3/*{borderColorDefault}*/;
-    background: #FFF;
+    background: none;
     background-image: none;
     -webkit-border-radius: 0; -moz-border-radius: 0; border-radius: 0;
 }
@@ -165,7 +179,8 @@ legend {
     float: none;
     text-decoration: none;
     line-height: 20px;
-    border: 0px solid transparent;
+    border: 1px solid transparent;
+    border-bottom: 1px solid #DDD;
     -webkit-border-radius: 4px 4px 0 0;
     -moz-border-radius: 4px 4px 0 0;
     border-radius: 4px 4px 0 0;
@@ -194,12 +209,12 @@ legend {
 }
 
 #tabs.ui-tabs li.ui-state-active a, #tabs.ui-tabs li.ui-state-active a:hover {
-  margin: 0;
+  margin: 0 0 0 2px;
   cursor: default;
   background-color: #fff;
   border: 1px solid #ddd;
   border-bottom-color: transparent;
-  margin-bottom: -1px;
+  margin-bottom: 0px;
 }
 
 span.required {
@@ -215,7 +230,7 @@ div.control-group span.error {
 }
 
 #tabs.ui-tabs .ui-tabs-panel {
-  padding: 0px;;
+  padding: 0px;
   display: block;
   border: 0px solid;
   background: none;
@@ -752,6 +767,24 @@ color: #888;
 .output-properties a { display: block; margin: 50px 0 0 0; height: 10%; }
 */
 
+  .ouput-properties {
+ width: 492px;
+ height: 294px;
+}
+
+.ouput-properties div { display: inline-block; }
+.output-properties .six { width: 244px; display: inline-block; vertical-align: top; }
+.output-properties .five { width: 201px; display: inline-block; vertical-align: top; }
+.output-properties .one { width: 30px; margin: 0 0 0 10px; display: inline-block; vertical-align: top; }
+
+.id_light_cone-output_properties { height: 400px; }
+
+.output-properties select { width: 100%; height: 300px; }
+.output-properties a { display: block; margin: 50px 0 0 0; height: 10%; }
+#id_light_cone-output_properties-buttons { height: 348px; }
+#id_light_cone-output_properties-right { height: 340px; }
+#id_light_cone-output_properties-right select { height: 100%; }
+
 .available-tr { display: block; height: 41px; }
 
 .hidden_file_input {
@@ -775,7 +808,7 @@ color: #888;
 }
 
 /* #body.flex { padding-top: 20px; } */
-div.breadcrumbs { position: fixed; top: 40px; left: 0; right: 0; padding: 50px 60px 0 60px; }
+div.breadcrumbs { position: absolute; top: 40px; left: 0; right: 0; padding: 50px 60px 0 60px; }
 ul.messagelist { position: fixed; top: 48px; left: 0; right: 0; }
 
 #survey_presets_select {

@@ -25,7 +25,10 @@ def visit(client, view_name, *args, **kwargs):
     return client.get(reverse(view_name, args=args), follow=True)
 
 class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
+    fixtures = ['rules.json']
+
     DOWNLOAD_DIRECTORY = '/tmp/work/downloads'
+
 
     ## List all ajax enabled pages that have initialization code and must wait
     AJAX_WAIT = ['mock_galaxy_factory', 'view_job']
@@ -78,6 +81,9 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
     def sed(self, bare_field):
         return 'id_sed-%s' % bare_field
 
+    def mi_id(self, bare_field):
+        return 'id_mock_image-%s' % bare_field
+
     def sed_id(self, bare_field):
         return '#%s' % self.sed(bare_field)
 
@@ -89,9 +95,6 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
 
     def job_id(self, bare_field):
         return '#%s' % self.job_select(bare_field)
-
-    def mi_id(self, prefix, bare_field):
-        return 'id_mock_image-%s-%s' % (prefix, bare_field)
 
     def get_parent_element(self, element):
         return self.selenium.execute_script('return arguments[0].parentNode;', element)
@@ -174,6 +177,10 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
         
     def assert_element_text_equals(self, selector, expected_value):
         text = self.find_visible_element(selector).text.strip()
+        self.assertEqual(expected_value.strip(), text.strip())
+
+    def assert_element_value_equals(self, selector, expected_value):
+        text = self.find_visible_element(selector).get_attribute('value')
         self.assertEqual(expected_value.strip(), text.strip())
 
     def assert_selector_texts_equals_expected_values(self, selector_value):
@@ -263,7 +270,8 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
         value_displayed = self.get_summary_field_text(form_name, field_name)
         self.assertEqual(expected_value, strip_tags(value_displayed))
 
-    def fill_in_fields(self, field_data, id_wrap=None):
+    def fill_in_fields(self, field_data, id_wrap=None, clear=False):
+        from code import interact
         for selector, text_to_input in field_data.items():
             if id_wrap:
                 selector = id_wrap(selector)
@@ -271,6 +279,8 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
             if elem.tag_name == 'select':
                 self.select(selector, str(text_to_input))
             else:
+                if clear:
+                    elem.clear()
                 elem.send_keys(str(text_to_input))
         self.wait(0.5)
 
@@ -417,6 +427,15 @@ class LiveServerMGFTest(LiveServerTest):
         submit_button = self.selenium.find_element_by_css_selector('#mgf-form #form_submit')
         submit_button.click()
         self.wait(1.5)
+
+    def assert_cant_submit_mgf_form(self):
+        self.click('tao-tabs-summary_submit')
+        try:
+            submit_button = self.selenium.find_element_by_css_selector('#mgf-form #form_submit')
+            self.fail('Submit button present')
+        except NoSuchElementException:
+            pass
+        self.selenium.find_element_by_css_selector('#mgf-form #form_errors')
 
     def assert_errors_on_field(self, what, field_id):
         field_elem = self.selenium.find_element_by_css_selector(field_id)
