@@ -48,8 +48,17 @@ namespace tao {
          _tile_it = _lc->tile_begin();
          if( !_tile_it.done() )
          {
+            // Initialise the work vector.
+            _work.resize( mpi::comm::world.size() );
+            for( unsigned ii = 0; ii < _work.size(); ++ii )
+            {
+               _work[ii].first = 0;
+               _work[ii].second = ii;
+            }
+
+            // Pepare an iterator.
             LOGILN( "Processing tile at: ", _tile_it->min(), setindent( 2 ) );
-            _gal_it = _be->galaxy_begin( *_qry, *_tile_it, _bat, _filt );
+            _gal_it = _be->galaxy_begin( *_qry, *_tile_it, _bat, _filt, view<std::vector<std::pair<unsigned long long,int>>>::type( _work ) );
             _settle();
          }
          else
@@ -66,6 +75,7 @@ namespace tao {
          _done = op._done;
          _tile_it = op._tile_it;
          _gal_it = op._gal_it;
+         _work = op._work;
          _done = op._done;
          return *this;
       }
@@ -124,7 +134,7 @@ namespace tao {
                   break;
                }
                LOGILN( "Processing tile at: ", _tile_it->min(), setindent( 2 ) );
-               _gal_it = _be->galaxy_begin( *_qry, *_tile_it, _bat, _filt );
+               _gal_it = _be->galaxy_begin( *_qry, *_tile_it, _bat, _filt, view<std::vector<std::pair<unsigned long long,int>>>::type( _work ) );
             }
             while( _gal_it.done() );
          }
@@ -139,6 +149,7 @@ namespace tao {
       filter const* _filt;
       tile_iterator _tile_it;
       tile_galaxy_iterator _gal_it;
+      std::vector<std::pair<unsigned long long,int>> _work;
       bool _done;
    };
 
