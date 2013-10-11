@@ -91,10 +91,11 @@ namespace tao {
          galaxy_begin( query_type& query,
                        tile<real_type> const& tile,
                        tao::batch<real_type>* bat = 0,
-                       filter const* filt = 0 )
+                       filter const* filt = 0,
+                       optional<view<std::vector<std::pair<unsigned long long,int>>>::type> work = optional<view<std::vector<std::pair<unsigned long long,int>>>::type>() )
          {
             string qs = this->make_tile_query_string( tile, query, filt );
-            return tile_galaxy_iterator( *this, query, qs, table_begin( tile ), table_end( tile ), tile.lightcone(), bat );
+            return tile_galaxy_iterator( *this, query, qs, table_begin( tile, work ), table_end( tile ), tile.lightcone(), bat );
          }
 
          tile_galaxy_iterator
@@ -150,9 +151,10 @@ namespace tao {
          }
 
          tile_table_iterator
-         table_begin( const tile<real_type>& tile ) const
+         table_begin( const tile<real_type>& tile,
+                      optional<view<std::vector<std::pair<unsigned long long,int>>>::type> work = optional<view<std::vector<std::pair<unsigned long long,int>>>::type>() ) const
          {
-            return tile_table_iterator( tile, *this );
+            return tile_table_iterator( tile, *this, work );
          }
 
          tile_table_iterator
@@ -234,15 +236,16 @@ namespace tao {
             _maxy.resize( size );
             _maxz.resize( size );
             _tbls.resize( size );
+            _tbl_sizes.resize( size );
             LOGILN( "Number of tables: ", size );
 
             // Now extract table info.
             {
                auto db_timer = this->db_timer().start();
-               session() << "SELECT minx, miny, minz, maxx, maxy, maxz, tablename FROM summary",
+               session() << "SELECT minx, miny, minz, maxx, maxy, maxz, galaxycount, tablename FROM summary",
                   soci::into( _minx ), soci::into( _miny ), soci::into( _minz ),
                   soci::into( _maxx ), soci::into( _maxy ), soci::into( _maxz ),
-                  soci::into( _tbls );
+                  soci::into( _tbl_sizes ), soci::into( _tbls );
             }
 
             LOGILN( "Done.", setindent( -2 ) );
@@ -325,6 +328,7 @@ namespace tao {
 
          std::vector<double> _minx, _miny, _minz;
          std::vector<double> _maxx, _maxy, _maxz;
+         std::vector<unsigned long long> _tbl_sizes;
          std::vector<std::string> _tbls;
       };
 
@@ -716,7 +720,8 @@ namespace tao {
          {
             return typename rdb<real_type>::table_type( _be->_tbls[_idx],
                                                         _be->_minx[_idx], _be->_miny[_idx], _be->_minz[_idx],
-                                                        _be->_maxx[_idx], _be->_maxy[_idx], _be->_maxz[_idx] );
+                                                        _be->_maxx[_idx], _be->_maxy[_idx], _be->_maxz[_idx],
+                                                        _be->_tbl_sizes[_idx] );
          }
 
       protected:

@@ -361,8 +361,10 @@ namespace tao {
                     real_type minz,
                     real_type maxx,
                     real_type maxy,
-                    real_type maxz )
-            : _name( name )
+                    real_type maxz,
+                    unsigned long long size )
+            : _name( name ),
+              _size( size )
          {
             _min[0] = minx; _min[1] = miny; _min[2] = minz;
             _max[0] = maxx; _max[1] = maxy; _max[2] = maxz;
@@ -397,6 +399,12 @@ namespace tao {
             return _max;
          }
 
+         unsigned long long
+         size() const
+         {
+            return _size;
+         }
+
          // Define this to allow for storing tables in a set
          // to eliminate duplicates.
          bool
@@ -425,6 +433,7 @@ namespace tao {
 
          string _name;
          array<real_type,3> _min, _max;
+         unsigned long long _size;
       };
 
    }

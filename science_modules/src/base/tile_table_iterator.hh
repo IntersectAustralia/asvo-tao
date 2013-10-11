@@ -37,33 +37,30 @@ namespace tao {
          }
 
          tile_table_iterator( const tao::tile<real_type>& tile,
-                              const backend_type& backend )
+                              const backend_type& backend,
+                              optional<view<std::vector<std::pair<unsigned long long,int>>>::type> work = optional<view<std::vector<std::pair<unsigned long long,int>>>::type>() )
             : _tile( &tile ),
               _be( &backend ),
+              _work( work ),
               _done( false )
          {
-            // Only go through construction if this isn't the end
-            // iterator.
-            if( !_done )
+            // Construct the walls I'll be using to clip the lightcone
+            // approximation.
+            vector<real_type> perms( 9 );
+            for( unsigned ii = 0; ii < 3; ++ii )
             {
-               // Construct the walls I'll be using to clip the lightcone
-               // approximation.
-               vector<real_type> perms( 9 );
-               for( unsigned ii = 0; ii < 3; ++ii )
-               {
-                  perms[ii] = -1;
-                  perms[ii + 3] = 0;
-                  perms[ii + 6] = 1;
-               }
-               do
-               {
-                  _walls.emplace_back( array<real_type,3>{ { perms[0], perms[1], perms[2] } } );
-               }
-               while( boost::next_partial_permutation( perms.begin(), perms.begin() + 3, perms.end() ) );
-
-               // Get to the first position.
-               _begin();
+               perms[ii] = -1;
+               perms[ii + 3] = 0;
+               perms[ii + 6] = 1;
             }
+            do
+            {
+               _walls.emplace_back( array<real_type,3>{ { perms[0], perms[1], perms[2] } } );
+            }
+            while( boost::next_partial_permutation( perms.begin(), perms.begin() + 3, perms.end() ) );
+
+            // Get to the first position.
+            _begin();
          }
 
          tile_table_iterator( const tile_table_iterator& src )
@@ -73,6 +70,7 @@ namespace tao {
               _planes( src._planes ),
               _walls( src._walls ),
               _tables( src._tables ),
+              _work( src._work ),
               _done( src._done )
          {
             // Iterator needs to be modified.
@@ -88,6 +86,7 @@ namespace tao {
             _planes = op._planes;
             _walls = op._walls;
             _tables = op._tables;
+            _work = op._work;
             _done = op._done;
 
             // Iterator needs to be modified.
@@ -203,19 +202,77 @@ namespace tao {
                }
             }
 
-            // Transfer to a vector, leaving out any tables not in my
-	    // parallel set.
-	    unsigned first_table = (mpi::comm::world.rank()*tables.size())/mpi::comm::world.size();
-	    unsigned last_table = ((mpi::comm::world.rank() + 1)*tables.size())/mpi::comm::world.size();
-            _tables.reallocate( last_table - first_table );
-	    {
-	       auto it = tables.begin();
-	       unsigned ii;
-	       for( ii = 0; ii < first_table; ++ii, ++it );
-	       for( ; ii < last_table; ++ii, ++it )
-		  _tables[ii - first_table] = *it;
-	    }
-	    LOGILN( "Overlapping tables: ", _tables );
+            // If we've been given a work vector to use, then do so.
+            if( _work )
+            {
+               LOGDLN( "Using a work vector to balance tables.", setindent( 2 ) );
+               auto work = *_work;
+
+               // Transfer to a vector and sort on size.
+               std::vector<table_type> tbl_vec( tables.size() );
+               std::copy( tables.begin(), tables.end(), tbl_vec.begin() );
+               std::sort( tbl_vec.begin(), tbl_vec.end(),
+                          []( const table_type& x, const table_type& y )
+                          {
+                             return y.size() < x.size();
+                          } );
+#ifndef NLOGDEBUG
+               LOGD( "Ordered table vector: " );
+               for( const auto& tbl : tbl_vec )
+                  LOGD( "(", tbl.name(), ", ", tbl.size(), "), " );
+               LOGDLN( "" );
+#endif
+
+               // Sort the work vector based on lowest amount of work done.
+               std::sort( work.begin(), work.end(),
+                          []( const std::pair<unsigned long long,int>& x,
+                              const std::pair<unsigned long long,int>& y )
+                          {
+                             return x.first < y.first;
+                          } );
+               LOGDLN( "Ordered work vector: ", work );
+
+               // Cache maximum work.
+               unsigned long long max_work = work.back().first;
+
+               // Start adding tables to each process.
+               _tables.clear();
+               auto tbl_it = tbl_vec.begin();
+               auto work_it = work.begin();
+               while( tbl_it != tbl_vec.end() )
+               {
+                  do
+                  {
+                     work_it->first += tbl_it->size();
+                     if( work_it->second == mpi::comm::world.rank() )
+                        _tables.push_back( *tbl_it );
+                     ++tbl_it;
+                  }
+                  while( tbl_it != tbl_vec.end() && work_it->first < max_work );
+                  ++work_it;
+                  if( work_it == work.end() )
+                     work_it = work.begin();
+               }
+
+               LOGILN( "Parallel work vector: ", work );
+               LOGDLN( "Done.", setindent( -2 ) );
+            }
+            else
+            {
+               unsigned first_table = (mpi::comm::world.rank()*tables.size())/mpi::comm::world.size();
+               unsigned last_table = ((mpi::comm::world.rank() + 1)*tables.size())/mpi::comm::world.size();
+               _tables.reallocate( last_table - first_table );
+               {
+                  auto it = tables.begin();
+                  unsigned ii;
+                  for( ii = 0; ii < first_table; ++ii, ++it );
+                  for( ; ii < last_table; ++ii, ++it )
+                     _tables[ii - first_table] = *it;
+               }
+            }
+
+            // Set table iterator.
+            LOGILN( "Overlapping tables: ", _tables );
             _it = _tables.begin();
 
             // If there are no tables flag that we're done.
@@ -466,6 +523,7 @@ namespace tao {
          list<array<real_type,4>> _planes;
          vector<array<real_type,3>> _walls;
          vector<table_type> _tables;
+         optional<view<std::vector<std::pair<unsigned long long,int>>>::type> _work;
          typename vector<table_type>::const_iterator _it;
          bool _done;
       };

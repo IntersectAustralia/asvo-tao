@@ -1,0 +1,66 @@
+<tao>
+  <workflow>
+    <schema-version>2</schema-version>
+
+    <light-cone id="light-cone">
+      <geometry>light-cone</geometry>
+      <box-repetition>random</box-repetition>
+      <rng-seed>0</rng-seed>
+      <redshift-min>2.01</redshift-min>
+      <redshift-max>2.015</redshift-max>
+      <ra-min>0</ra-min>
+      <ra-max>0.6</ra-max>
+      <dec-min>0</dec-min>
+      <dec-max>0.1</dec-max>
+      <output-fields>
+        <item>stellarmass</item>
+        <item>posx</item>
+        <item>posy</item>
+        <item>posz</item>
+      </output-fields>
+    </light-cone>
+
+    <sed id="sed">
+      <parents>
+        <item>light-cone</item>
+      </parents>
+      <ages-file>m05/ages.dat</ages-file>
+      <wavelengths-file>m05/wavelengths.dat</wavelengths-file>
+      <metallicities-file>m05/metallicities.dat</metallicities-file>
+      <single-stellar-population-model>m05/ssp.ssz</single-stellar-population-model>
+    </sed>
+
+    <filter id="filter">
+      <parents>
+        <item>sed</item>
+      </parents>
+      <bandpass-filters>
+        <item>WFC3/f105w.IR.dati</item>
+        <item>WFC3/f125w.IR.dati</item>
+        <item>WFC3/f160w.IR.dati</item>
+      </bandpass-filters>
+    </filter>
+
+    <skymaker id="skymaker">
+      <parents>
+        <item>filter</item>
+      </parents>
+      <images>
+        <item>
+          <mag_field>WFC3/f105w.IR.dati_apparent</mag_field>
+          <origin_ra>0.3</origin_ra>
+          <origin_dec>0.05</origin_dec>
+          <fov_ra>0.6</fov_ra>
+          <fov_dec>0.1</fov_dec>
+          <back_mag>40</back_mag>
+        </item>
+      </images>
+    </skymaker>
+
+  </workflow>
+
+  <subjobindex>0</subjobindex>
+  <logdir>log</logdir>
+  <outputdir>output</outputdir>
+  <database>millennium_full_hdf5_dist</database>
+</tao>
