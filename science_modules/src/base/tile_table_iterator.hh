@@ -249,6 +249,7 @@ namespace tao {
                      ++tbl_it;
                   }
                   while( tbl_it != tbl_vec.end() && work_it->first < max_work );
+		  max_work = std::max( max_work, work_it->first );
                   ++work_it;
                   if( work_it == work.end() )
                      work_it = work.begin();
