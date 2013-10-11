@@ -14,9 +14,9 @@
       <dec-max>10</dec-max>
       <output-fields>
 	<item>globalindex</item>
-        <item>pos_x</item>
-        <item>pos_y</item>
-        <item>pos_z</item>
+        <item>posx</item>
+        <item>posy</item>
+        <item>posz</item>
       </output-fields>
     </light-cone>
 
@@ -35,9 +35,7 @@
         <item>sed</item>
       </parents>
       <bandpass-filters>
-        <item>v.dat</item>
-        <item>b.dat</item>
-        <item>k.dat</item>
+        <item>Johnson/Johnson_V.dati</item>
       </bandpass-filters>
     </filter>
 
@@ -48,27 +46,19 @@
       <filename>result</filename>
       <fields>
 	<item>globalindex</item>
-        <item>pos_x</item>
-        <item>pos_y</item>
-        <item>pos_z</item>
-        <item>v.dat_apparent</item>
-        <item>b.dat_absolute</item>
-        <item>k.dat_apparent</item>
+        <item>posx</item>
+        <item>posy</item>
+        <item>posz</item>
+	<item>redshift_cosmological</item>
+        <item>Johnson/Johnson_V.dati_apparent</item>
+        <item>Johnson/Johnson_V.dati_absolute</item>
       </fields>
     </csv>
-
-    <record-filter>
-      <filter>
-        <filter-attribute>None</filter-attribute>
-        <filter-min>0</filter-min>
-        <filter-max>0</filter-max>
-       </filter>
-    </record-filter>
 
   </workflow>
 
   <subjobindex>0</subjobindex>
   <logdir>log</logdir>
   <outputdir>output</outputdir>
-  <database>millennium_mini_galacticus_2</database>
+  <database>millennium_mini_hdf5_dist</database>
 </tao>

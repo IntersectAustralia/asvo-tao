@@ -5,9 +5,7 @@
 #include <libhpc/logging/logging.hh>
 #include "timed.hh"
 #include "utils.hh"
-
-// Forward declaration of test suites to allow direct access.
-class age_line_suite;
+#include "simulation.hh"
 
 namespace tao {
    using namespace hpc;
@@ -20,8 +18,6 @@ namespace tao {
    class age_line
       : public timed
    {
-      friend class ::age_line_suite;
-
    public:
 
       typedef T real_type;
@@ -38,9 +34,18 @@ namespace tao {
          set_ages( ages );
       }
 
-      age_line( soci::session& sql )
+      age_line( soci::session& sql,
+		real_type hubble = 73.0,
+		real_type omega_m = 0.25,
+		real_type omega_l = 0.75 )
       {
-         load_ages( sql );
+         load_ages( sql, hubble, omega_m, omega_l );
+      }
+
+      age_line( soci::session& sql,
+		const simulation<real_type>& sim )
+      {
+         load_ages( sql, sim.hubble(), sim.omega_m(), sim.omega_l() );
       }
 
       void
