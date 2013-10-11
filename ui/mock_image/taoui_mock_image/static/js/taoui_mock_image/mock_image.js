@@ -148,6 +148,14 @@ catalogue.module_defs.mock_image = function ($) {
                 )});
             param = get_param(prefix, '-z_min');
             image_params.z_min = ko.observable(param ? param : catalogue.modules.light_cone.vm.redshift_min())
+            	.extend({required: true})
+	            .extend({validate: catalogue.validators.test(ko.computed(
+	                function(){
+	                	z_min = catalogue.modules.light_cone.vm.redshift_min();
+	                	return z_min != null && z_min >= 0;
+	                }
+	            ),
+	            "Light-cone minimum redshift is required.")})
                 .extend({validate: catalogue.validators.is_float})
                 .extend({validate: catalogue.validators.geq(
                     catalogue.modules.light_cone.vm.redshift_min
@@ -157,6 +165,14 @@ catalogue.module_defs.mock_image = function ($) {
                     )});
             param = get_param(prefix, '-z_max');
             image_params.z_max = ko.observable(param ? param : catalogue.modules.light_cone.vm.redshift_max())
+            	.extend({required: true})
+            	.extend({validate: catalogue.validators.test(ko.computed(
+	                function(){
+	                	z_max = catalogue.modules.light_cone.vm.redshift_max();
+	                	return z_max != null && z_max > 0;
+	                }
+	            ),
+	            "Light-cone maximum redshift is required.")})
                 .extend({validate: catalogue.validators.is_float})
                 .extend({validate: catalogue.validators.geq(
                     catalogue.modules.light_cone.vm.redshift_min
@@ -172,6 +188,14 @@ catalogue.module_defs.mock_image = function ($) {
                     (def(catalogue.modules.light_cone.vm.ra_opening_angle()) ?
                     catalogue.modules.light_cone.vm.ra_opening_angle()/2 : ''));
             image_params.origin_ra
+            	.extend({required: true})
+            	.extend({validate: catalogue.validators.test(ko.computed(
+	                function(){
+	                	ra = catalogue.modules.light_cone.vm.ra_opening_angle()
+	                	return ra != null && ra >= 0;
+	                }
+	            ),
+	            "Light-cone right ascension opening angle is required.")})
                 .extend({validate: catalogue.validators.is_float})
                 .extend({validate: catalogue.validators.test(
                     ko.computed(function(){
@@ -196,6 +220,14 @@ catalogue.module_defs.mock_image = function ($) {
                     (def(catalogue.modules.light_cone.vm.dec_opening_angle()) ?
                         catalogue.modules.light_cone.vm.dec_opening_angle()/2 : ''));
             image_params.origin_dec
+            	.extend({required: true})
+            	.extend({validate: catalogue.validators.test(ko.computed(
+	                function(){
+	                	dec = catalogue.modules.light_cone.vm.dec_opening_angle()
+	                	return dec != null && dec >= 0;
+	                }
+	            ),
+	            "Light-cone declination opening angle is required.")})
                 .extend({validate: catalogue.validators.is_float})
                 .extend({validate: catalogue.validators.test(
                     ko.computed(function(){
