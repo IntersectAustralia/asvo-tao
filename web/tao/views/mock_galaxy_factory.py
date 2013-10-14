@@ -38,6 +38,8 @@ def index(request):
             parameter_file = request.FILES.itervalues().next()
             ui_holder = UIModulesHolder(UIModulesHolder.POST)
             try:
+                if parameter_file.content_type != "text/xml":
+                    raise Exception("Wrong mime-type")
                 params_ui_holder = UIModulesHolder(UIModulesHolder.XML, xml_parse(parameter_file.read()))
                 message = "Parameter file '%s' uploaded successfully." % parameter_file.name
                 messages.info(request, message)

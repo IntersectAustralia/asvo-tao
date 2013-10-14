@@ -248,8 +248,8 @@ catalogue.module_defs.light_cone = function ($) {
             .extend({required: function(){return vm.catalogue_geometry().id == 'light-cone'}})
             .extend({only_if: function(){return vm.catalogue_geometry().id == 'light-cone'}})
             .extend({validate: catalogue.validators.is_float})
-            .extend({validate: catalogue.validators.geq(0)})
-            .extend({validate: catalogue.validators.geq(vm.redshift_min)});
+            .extend({validate: catalogue.validators.greater_than(vm.redshift_min)})
+            .extend({validate: catalogue.validators.greater_than(0)});
 
         vm.max_box_size = ko.computed(function() {
             return vm.dark_matter_simulation().fields.box_size
@@ -268,10 +268,16 @@ catalogue.module_defs.light_cone = function ($) {
         vm.maximum_number_of_light_cones = ko.computed(function() {
             if (vm.catalogue_geometry().id == 'box') return NaN;
             try {
-                var resp = vm.light_cone_type() == 'random' ?
-                    get_global_maximum_light_cones()
+            	__max = get_global_maximum_light_cones();
+                var resp = vm.light_cone_type() == 'random' ? __max
                     : get_number_of_unique_light_cones();
-                return resp == null || resp === undefined ? NaN : resp;
+                if (resp == null || resp === undefined || isNaN(resp)) {
+                	return NaN;
+                } else if (resp > __max) {
+                	return __max;
+                } else {
+                	return resp;
+                }
             } catch (e) {
                 return NaN;
             }

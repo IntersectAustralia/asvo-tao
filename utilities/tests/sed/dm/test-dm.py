@@ -51,8 +51,8 @@ for i in range(0,n):
     d_z    = z2d(z, 1)  # [Mpc/h]
     color  = b_app - r_app
     k_corr = calc_kcor('B', z, 'B - Rc', color)
-    dm     = b_app - b_abs - k_corr
-    d_dm   = math.pow(10, 0.2*dm + 1)/1e6;  # [Mpc]
-    d_dm   = h*d_dm  # [Mpc/h]
-    diff   = 100*d_dm/d - 100; # %
-    print "%e\t%e\t%e\t%e\t%.2f" % (z, d, d_z, d_dm, diff)
+    dm     = b_app - b_abs - k_corr # distance modulus
+    d_lum  = math.pow(10, 0.2*dm + 1)/1e6  # luminosity distance [Mpc]
+    d_m    = h*d_lum/(1+z)  # co-moving distance [Mpc/h]
+    diff   = 100*d_m/d - 100; # %
+    print "%e\t%e\t%e\t%e\t%.2f" % (z, d, d_z, d_m, diff)

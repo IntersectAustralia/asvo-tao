@@ -131,8 +131,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
             'min': '1\n',
             'max': '10\n',
         }, id_wrap=self.rf_id)
-        self.submit_mgf_form()
-        self.assert_on_page('job_index')
+        self.assert_cant_submit_mgf_form()
 
     def test_invalid_min_max_redshift(self):
         ## fill in form (correctly)
