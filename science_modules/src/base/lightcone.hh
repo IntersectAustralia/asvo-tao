@@ -87,6 +87,18 @@ namespace tao {
 	 _eng = engine;
       }
 
+      void
+      set_origin( const array<real_type,3>& orig )
+      {
+         _orig = orig;
+      }
+
+      const array<real_type,3>&
+      origin() const
+      {
+         return _orig;
+      }
+
       const tao::simulation<real_type>*
       simulation() const
       {
@@ -176,7 +188,7 @@ namespace tao {
                     tao::batch<real_type>* bat = 0,
                     filter const* filt = 0 )
       {
-        return be.galaxy_begin( qry, *this, bat, filt );
+         return be.galaxy_begin( qry, *this, bat, filt );
       }
 
       template< class Backend >
@@ -347,6 +359,7 @@ namespace tao {
       vector<unsigned> _snap_bins;
       numerics::interp<real_type> _dist_to_z;
       bool _rand;
+      array<real_type,3> _orig;
       engine_type* _eng;
    };
 

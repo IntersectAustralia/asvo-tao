@@ -442,6 +442,42 @@ namespace tao {
                   LOGILN( "Filter range: [", filt_min, ", ", filt_max, ")" );
                }
             }
+
+            // Prepare the origin.
+            _calc_origin( global_dict );
+         }
+
+         void
+         _calc_origin( const options::xml_dict& global_dict )
+         {
+            EXCEPT( _lc.min_ra() == 0.0, "Cannot compute multiple unique cones when "
+                    "minimum RA is not 0." );
+            EXCEPT( _lc.min_dec() == 0.0, "Cannot compute multiple unique cones when "
+                    "minimum DEC is not 0." );
+
+            // Get the subjobindex.
+            unsigned sub_idx = global_dict.get<unsigned>( "subjobindex" );
+
+            // Based on my RA, what is the peak of the cone in the Y and Z directions?
+            real_type y_peak = tan( _lc.max_ra() - _lc.min_ra() )*_lc.max_dist();
+            real_type z_peak = tan( _lc.max_dec() - _lc.min_dec() )*_lc.max_dist();
+
+            // How many can I fit in each direction?
+            unsigned y_num = (unsigned)(_sim.box_size()/y_peak);
+            unsigned z_num = (unsigned)(_sim.box_size()/z_peak);
+
+            // Total number I can fit?
+            unsigned tot = y_num*z_num;
+            if( tot == 0 )
+               ++tot;
+            EXCEPT( sub_idx < tot, "Too many cones for simulation box size." );
+
+            // Place my origin accordingly.
+            real_type x0 = 0.0;
+            real_type z0 = ((y_num > 0) ? sub_idx/y_num : 0.0)*z_peak;
+            real_type y0 = ((z_num > 0) ? (sub_idx - z0*y_num) : 0.0)*y_peak;
+            _lc.set_origin( array<real_type,3>{ { x0, y0, z0 } } );
+            LOGILN( "Origin set to: (", x0, ", ", y0, ", ", z0, ")" );
          }
 
       protected:

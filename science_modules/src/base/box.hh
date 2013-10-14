@@ -26,7 +26,8 @@ namespace tao {
          : _sim( sim ),
            _snap( 0 ),
            _rand( false ),
-	   _eng( 0 )
+	   _eng( 0 ),
+           _orig{ { 0.0, 0.0, 0.0 } }
       {
          _update();
       }
@@ -58,6 +59,18 @@ namespace tao {
 	 _rand = rand;
 	 _eng = engine;
 	 _update_random();
+      }
+
+      void
+      set_origin( const array<real_type,3>& orig )
+      {
+         _orig = orig;
+      }
+
+      const array<real_type,3>&
+      origin() const
+      {
+         return _orig;
       }
 
       const tao::simulation<real_type>*
@@ -212,6 +225,7 @@ namespace tao {
       engine_type* _eng;
       array<unsigned,3> _rot;
       array<real_type,3> _trans;
+      array<real_type,3> _orig;
       unsigned _snap;
    };
 
