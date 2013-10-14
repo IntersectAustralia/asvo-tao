@@ -8,6 +8,7 @@ import sys
 from django.contrib.auth.models import User as DjangoUser
 from tao.models import Job, TaoUser, GlobalParameter, Snapshot, WorkflowCommand
 from tao.models import Simulation, GalaxyModel, DataSet, DataSetProperty
+from tao.models import StellarModel
 
 
 # We only want to display some messages once.
@@ -71,6 +72,16 @@ def save_or_locate(the_obj):
         orig_objs = DataSetProperty.objects.filter(
                 name=the_obj.name,
                 dataset=the_obj.dataset)
+        if len(orig_objs) > 1:
+            raise Exception("Found more than one original object")
+        if len(orig_objs) == 1:
+            orig_obj = orig_objs[0]
+            the_obj.pk = orig_obj.pk
+
+    # Update existing StellarModels
+    if the_obj.__class__ == StellarModel:
+        orig_objs = StellarModel.objects.filter(
+                name=the_obj.name)
         if len(orig_objs) > 1:
             raise Exception("Found more than one original object")
         if len(orig_objs) == 1:
