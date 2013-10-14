@@ -42,6 +42,7 @@ namespace tao {
             this->set_simulation( lc->simulation() );
             set_offset( offs );
 	    this->set_random( _lc->random(), _lc->rng_engine() );
+            this->set_origin( _lc->origin() );
          }
          else
             this->set_simulation( 0 );

@@ -117,7 +117,7 @@ namespace tao {
             map["redshift"] = "redshift_ranges.redshift";
             fmt % make_output_field_query_string( query, map );
             fmt % _field_map.at( "snapnum" );
-            fmt % map["posx"] % map["posy"] % map["posz"];
+            fmt % map.at( "posx" ) % map.at( "posy" ) % map.at( "posz" );
             fmt % cos( tile.lightcone()->max_ra() ) % cos( tile.lightcone()->min_ra() );
             fmt % cos( tile.lightcone()->max_dec() ) % cos( tile.lightcone()->min_dec() );
             fmt % pow( tile.lightcone()->min_dist(), 2 ) % pow( tile.lightcone()->max_dist(), 2 );
@@ -232,7 +232,7 @@ namespace tao {
                   {
                      string mapped[3] = { "posx", "posy", "posz" };
                      real_type box_size = (*box).simulation()->box_size();
-                     string repl = "(CASE WHEN %1% + %2% < %3% THEN %1% + %2% ELSE %1% + %2% - %3% END + %4%)";
+                     string repl = "(CASE WHEN %1% + %2% < %3% THEN %1% + %2% ELSE %1% + %2% - %3% END + %4% - %5%)";
                      string field;
                      if( of == "posx" )
                      {
@@ -241,10 +241,16 @@ namespace tao {
                            field = boost::str( boost::format( repl ) %
 					       _field_map.at( mapped[(*box).rotation()[0]] ) %
 					       (*box).translation()[(*box).rotation()[0]] %
-                                               box_size % (*box).min()[0] );
+                                               box_size % (*box).min()[0] %
+                                               (*box).origin()[0] );
                         }
                         else
-			   field = boost::str( boost::format( "(%1% + %2%)" ) % _field_map.at( of ) % (*box).min()[0] );
+                        {
+			   field = boost::str( boost::format( "(%1% + %2% - %3%)" ) %
+                                               _field_map.at( of ) %
+                                               (*box).min()[0] %
+                                               (*box).origin()[0] );
+                        }
                      }
                      else if( of == "posy" )
                      {
@@ -253,22 +259,34 @@ namespace tao {
                            field = boost::str( boost::format( repl ) %
 					       _field_map.at( mapped[(*box).rotation()[1]] ) %
 					       (*box).translation()[(*box).rotation()[1]] %
-                                               box_size % (*box).min()[1] );
+                                               box_size % (*box).min()[1] %
+                                               (*box).origin()[1] );
                         }
                         else
-			   field = boost::str( boost::format( "(%1% + %2%)" ) % _field_map.at( of ) % (*box).min()[1] );
+                        {
+			   field = boost::str( boost::format( "(%1% + %2% - %3%)" ) %
+                                               _field_map.at( of ) %
+                                               (*box).min()[1] %
+                                               (*box).origin()[1] );
+                        }
                      }
                      else
                      {
                         if( (*box).random() )
                         {
                            field = boost::str( boost::format( repl ) %
-					       _field_map.at( mapped[(*box).rotation()[2]] ) %
-					       (*box).translation()[(*box).rotation()[2]] %
-                                               box_size % (*box).min()[2] );
+                                               _field_map.at( mapped[(*box).rotation()[2]] ) %
+                                               (*box).translation()[(*box).rotation()[2]] %
+                                               box_size % (*box).min()[2] %
+                                               (*box).origin()[2] );
                         }
                         else
-			   field = boost::str( boost::format( "(%1% + %2%)" ) % _field_map.at( of ) % (*box).min()[2] );
+                        {
+                           field = boost::str( boost::format( "(%1% + %2% - %3%)" ) %
+                                               _field_map.at( of ) %
+                                               (*box).min()[2] %
+                                               (*box).origin()[2] );
+                        }
                      }
 
                      // Add to map.
@@ -276,7 +294,7 @@ namespace tao {
                   }
                   else
                   {
-		     string field;
+                     string field;
 
                      // Velocity.
                      if( box && (of == "velx" || of == "vely" || of == "velz") )
@@ -302,9 +320,9 @@ namespace tao {
                            field = mapped[(*box).rotation()[2]];
                      }
 
-		     // Anything else.
-		     else
-			field = of;
+                     // Anything else.
+                     else
+                        field = of;
 
                      // Add to the map.
                      map[of] = _field_map.at( field );
@@ -425,7 +443,7 @@ namespace tao {
                      const rdb_table& obj )
          {
             // strm << "rdb_table(" << obj._name << ", " << obj._min << ", " << obj._max << ")";
-	    strm << obj._name;
+            strm << obj._name;
             return strm;
          }
 
