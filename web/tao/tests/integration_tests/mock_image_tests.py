@@ -98,6 +98,4 @@ class MockImageTests(LiveServerMGFTest):
         job = Job.objects.latest('created_time')
         self.assertTrue(job.user.username == self.user.username, 'Job created does not belong to user!')
         self.visit('view_job', job.id)
-        # from code import interact
-        # interact(local=locals())
         self.assert_page_has_content('2 images')

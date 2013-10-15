@@ -255,7 +255,9 @@ catalogue.module_defs.mock_image = function ($) {
         	if (typeof(catalogue.modules.light_cone.vm.error_status) === "function") {
         		errors = catalogue.modules.light_cone.vm.error_status();
         		light_cone_is_valid = !errors.field_errors;
-        	}
+        	} else if (catalogue.modules.light_cone.vm.error_status == undefined) {
+                light_cone_is_valid = true;
+            }
             return catalogue.modules.sed.vm.apply_sed() &&
                 catalogue.modules.light_cone.vm.catalogue_geometry().id == 'light-cone' &&
                 catalogue.vm.sed.bandpass_filters().length > 0 && light_cone_is_valid;
