@@ -104,10 +104,14 @@ namespace tao {
                "WHERE "
                "(POW(%3%,2) + POW(%4%,2) + POW(%5%,2)) >= redshift_ranges.min AND "
                "(POW(%3%,2) + POW(%4%,2) + POW(%5%,2)) < redshift_ranges.max AND "
-               "(%3%)/(SQRT(POW(%3%,2) + POW(%4%,2))) >= %6% AND "
-               "(%3%)/(SQRT(POW(%3%,2) + POW(%4%,2))) < %7% AND "
-               "SQRT(POW(%3%,2) + POW(%4%,2))/(SQRT(POW(%3%,2) + POW(%4%,2) + POW(%5%,2))) >= %8% AND "
-               "SQRT(POW(%3%,2) + POW(%4%,2))/(SQRT(POW(%3%,2) + POW(%4%,2) + POW(%5%,2))) < %9% AND "
+               "ATAN2(%4%,%3%) >= %6% AND "
+               "ATAN2(%4%,%3%) < %7% AND "
+               "(0.5*PI() - ACOS(%5%/(SQRT(POW(%3%,2) + POW(%4%,2) + POW(%5%,2))))) >= %6% AND "
+               "(0.5*PI() - ACOS(%5%/(SQRT(POW(%3%,2) + POW(%4%,2) + POW(%5%,2))))) < %7% AND "
+               // "(%3%)/(SQRT(POW(%3%,2) + POW(%4%,2))) >= %6% AND "
+               // "(%3%)/(SQRT(POW(%3%,2) + POW(%4%,2))) < %7% AND "
+               // "SQRT(POW(%3%,2) + POW(%4%,2))/(SQRT(POW(%3%,2) + POW(%4%,2) + POW(%5%,2))) >= %8% AND "
+               // "SQRT(POW(%3%,2) + POW(%4%,2))/(SQRT(POW(%3%,2) + POW(%4%,2) + POW(%5%,2))) < %9% AND "
                "(POW(%3%,2) + POW(%4%,2) + POW(%5%,2)) >= %10% AND "
                "(POW(%3%,2) + POW(%4%,2) + POW(%5%,2)) < %11%"
                "%12%" // filter
@@ -118,8 +122,10 @@ namespace tao {
             fmt % make_output_field_query_string( query, map );
             fmt % _field_map.at( "snapnum" );
             fmt % map.at( "posx" ) % map.at( "posy" ) % map.at( "posz" );
-            fmt % cos( tile.lightcone()->max_ra() ) % cos( tile.lightcone()->min_ra() );
-            fmt % cos( tile.lightcone()->max_dec() ) % cos( tile.lightcone()->min_dec() );
+            fmt % tile.lightcone()->min_ra() % tile.lightcone()->max_ra();
+            fmt % tile.lightcone()->min_dec() % tile.lightcone()->max_dec();
+            // fmt % cos( tile.lightcone()->max_ra() ) % cos( tile.lightcone()->min_ra() );
+            // fmt % cos( tile.lightcone()->max_dec() ) % cos( tile.lightcone()->min_dec() );
             fmt % pow( tile.lightcone()->min_dist(), 2 ) % pow( tile.lightcone()->max_dist(), 2 );
             string filt_str = make_filter_query_string( filt );
             if( !filt_str.empty() )
