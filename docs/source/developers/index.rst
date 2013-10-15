@@ -11,6 +11,7 @@ This is currently more of a dumping ground than an organised guide - it should i
    scimodules
    mysql
    macnotes
+   ui_modules
    ../installation/index
    ../api/web/modindex
    ../api/modules/modindex
