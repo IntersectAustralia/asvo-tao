@@ -110,6 +110,34 @@ namespace tao {
 		  }
 
 
+         string
+		  _encode( string _toencode_string )
+		  {
+			 std::map<char, std::string> transformations;
+			 transformations['&']  = std::string("_");
+			 transformations[' ']  = std::string("_");
+			 transformations['\''] = std::string("_");
+			 transformations['"']  = std::string("_");
+			 transformations['>']  = std::string("_");
+			 transformations['<']  = std::string("_");
+			 transformations['/']  = std::string("_");
+
+
+			 std::string reserved_chars;
+			 for (auto ti = transformations.begin(); ti != transformations.end(); ti++)
+			 {
+				reserved_chars += ti->first;
+			 }
+
+			 size_t pos = 0;
+			 while (std::string::npos != (pos = _toencode_string.find_first_of(reserved_chars, pos)))
+			 {
+				_toencode_string.replace(pos, 1, transformations[_toencode_string[pos]]);
+				pos++;
+			 }
+
+			 return _toencode_string;
+		  }
 
 
 
@@ -139,6 +167,7 @@ namespace tao {
 
                for( const auto& field : _fields )
                {
+            	  string FieldName=_encode(*lblit);
                   h5::datatype dtype = _field_type( bat, field );
                   h5::dataspace dspace;
                   dspace.create( 1, true );
@@ -146,7 +175,7 @@ namespace tao {
                   props.set_chunk_size( _chunk_size );
                   props.set_deflate();
                   //h5::dataset* dset = new h5::dataset( _file, field, dtype, dspace, none, false, props );
-                  h5::dataset* dset = new h5::dataset( _file, *lblit, dtype, dspace, none, false, props );
+                  h5::dataset* dset = new h5::dataset( _file, FieldName, dtype, dspace, none, false, props );
                   _dsets.push_back( dset );
 
                   // Dump first chunk.
