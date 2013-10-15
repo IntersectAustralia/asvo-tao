@@ -149,6 +149,36 @@ namespace tao {
 	    LOGDLN( "Wrote ", cur_count, " records to CSV: ", _fn );
          }
 
+
+
+         string
+		  _encode( string _toencode_string )
+		  {
+			 std::map<char, std::string> transformations;
+			 transformations['&']  = std::string("_");
+			 transformations[' ']  = std::string("_");
+			 transformations['\''] = std::string("_");
+			 transformations['"']  = std::string("_");
+			 transformations['>']  = std::string("_");
+			 transformations['<']  = std::string("_");
+			 transformations['/']  = std::string("_");
+
+			 std::string reserved_chars;
+			 for (auto ti = transformations.begin(); ti != transformations.end(); ti++)
+			 {
+				reserved_chars += ti->first;
+			 }
+
+			 size_t pos = 0;
+			 while (std::string::npos != (pos = _toencode_string.find_first_of(reserved_chars, pos)))
+			 {
+				_toencode_string.replace(pos, 1, transformations[_toencode_string[pos]]);
+				pos++;
+			 }
+
+			 return _toencode_string;
+		  }
+
          void
          open()
          {
@@ -163,11 +193,13 @@ namespace tao {
 			auto lblit = _labels.cbegin();
 
 			string FieldName=*lblit++;
+			FieldName=_encode(FieldName);
   		    _file<<FieldName;
 
 			while( lblit != _labels.cend() )
 			{
 			   string FieldName=*lblit++;
+			   FieldName=_encode(FieldName);
 			   _file<<","<<FieldName;
 			}
 			_file<<std::endl;
