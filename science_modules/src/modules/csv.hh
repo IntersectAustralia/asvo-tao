@@ -67,7 +67,7 @@ namespace tao {
                       _fn = global_dict.get<string>( "outputdir" ) + "/" + dict.get<hpc::string>( "filename" ) + "." + mpi::rank_string();
             LOGILN( "File Name:",_fn, setindent( 2 ) );
             _fields = dict.get_list<string>( "fields" );
-
+            ReadFieldsInfo(dict );
             // Open the file.
             open();
 
@@ -79,6 +79,35 @@ namespace tao {
 
             LOGILN( "Done.", setindent( -2 ) );
          }
+
+         void
+		  ReadFieldsInfo( const options::xml_dict& dict )
+		  {
+			 list<optional<hpc::string>> Templabels = dict.get_list_attributes<string>( "fields","label" );
+
+
+
+			 auto lblit = Templabels.cbegin();
+
+			 auto fldsit = _fields.cbegin();
+			 while( lblit != Templabels.cend() )
+			 {
+
+				if(!*lblit)
+				   _labels.push_back(*fldsit);
+				else
+				   _labels.push_back(**lblit);
+
+				// Increment all the iterators at the same time
+				lblit++;
+				fldsit++;
+			 }
+		  }
+
+
+
+
+
 
          ///
          ///
@@ -125,17 +154,40 @@ namespace tao {
          {
             // Open the file, truncating.
             _file.open( _fn, std::fstream::trunc );
-	    EXCEPT( _file.is_open(), "Unable to open output file: ", _fn );
+            EXCEPT( _file.is_open(), "Unable to open output file: ", _fn );
+
+
+
+
+
+			auto lblit = _labels.cbegin();
+
+			string FieldName=*lblit++;
+  		    _file<<FieldName;
+
+			while( lblit != _labels.cend() )
+			{
+			   string FieldName=*lblit++;
+			   _file<<","<<FieldName;
+			}
+			_file<<std::endl;
+
+
+
+
+
+
+
 
             // Dump out a list of field names first.
-            auto it = _fields.cbegin();
+            /*auto it = _fields.cbegin();
             if( it != _fields.cend() )
             {
                _file << *it++;
                while( it != _fields.cend() )
                   _file << ", " << *it++;
                _file << "\n";
-            }
+            }*/
          }
 
          virtual
@@ -185,6 +237,7 @@ namespace tao {
          std::ofstream _file;
          string _fn;
          list<string> _fields;
+         list<hpc::string> _labels;
          unsigned long long _records;
          tao::filter const* _filt;
       };
