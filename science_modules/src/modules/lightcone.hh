@@ -474,8 +474,8 @@ namespace tao {
 
             // Place my origin accordingly.
             real_type x0 = 0.0;
+            real_type y0 = ((z_num > 0) ? (sub_idx - (sub_idx/y_num)*y_num) : 0.0)*y_peak;
             real_type z0 = ((y_num > 0) ? sub_idx/y_num : 0.0)*z_peak;
-            real_type y0 = ((z_num > 0) ? (sub_idx - z0*y_num) : 0.0)*y_peak;
             _lc.set_origin( array<real_type,3>{ { x0, y0, z0 } } );
             LOGILN( "Origin set to: (", x0, ", ", y0, ", ", z0, ")" );
          }
