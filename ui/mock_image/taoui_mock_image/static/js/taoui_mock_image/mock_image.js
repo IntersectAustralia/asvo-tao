@@ -122,20 +122,24 @@ catalogue.module_defs.mock_image = function ($) {
             image_params.mag_field = ko.observable(param ? param : image_params.mag_field_options[0]);
 
             param = get_param(prefix, '-fov_ra');
-            image_params.fov_ra = ko.observable(param ? param : catalogue.modules.light_cone.vm.ra_opening_angle());
+            image_params.fov_ra = ko.observable(param ? param : catalogue.modules.light_cone.vm.ra_opening_angle())
+                .extend({validate: catalogue.validators.positive});
             param = get_param(prefix, '-fov_dec');
-            image_params.fov_dec = ko.observable(param ? param : catalogue.modules.light_cone.vm.dec_opening_angle());
+            image_params.fov_dec = ko.observable(param ? param : catalogue.modules.light_cone.vm.dec_opening_angle())
+                .extend({validate: catalogue.validators.positive});
             param = get_param(prefix, '-width');
+            min_mock_image_pixels = catalogue.util.global_parameter_or_null('min_mock_image_pixels');
+            min_mock_image_pixels = min_mock_image_pixels ? min_mock_image_pixels.fields.parameter_value : 512;
             image_params.width = ko.observable(param ? param : 1024)
                 .extend({required: true})
                 .extend({validate: catalogue.validators.is_float})
-                .extend({validate: catalogue.validators.geq(1)})
+                .extend({validate: catalogue.validators.geq(min_mock_image_pixels)})
                 .extend({validate: catalogue.validators.leq(4096)});
             param = get_param(prefix, '-height');
             image_params.height = ko.observable(param ? param : 1024)
                 .extend({required: true})
                 .extend({validate: catalogue.validators.is_float})
-                .extend({validate: catalogue.validators.geq(1)})
+                .extend({validate: catalogue.validators.geq(min_mock_image_pixels)})
                 .extend({validate: catalogue.validators.leq(4096)});
             param = get_param(prefix, '-min_mag');
             image_params.min_mag = ko.observable(param ? param : '')
@@ -172,6 +176,7 @@ catalogue.module_defs.mock_image = function ($) {
                     (def(catalogue.modules.light_cone.vm.ra_opening_angle()) ?
                     catalogue.modules.light_cone.vm.ra_opening_angle()/2 : ''));
             image_params.origin_ra
+                .extend({validate: catalogue.validators.positive})
                 .extend({validate: catalogue.validators.is_float})
                 .extend({validate: catalogue.validators.test(
                     ko.computed(function(){
@@ -196,6 +201,7 @@ catalogue.module_defs.mock_image = function ($) {
                     (def(catalogue.modules.light_cone.vm.dec_opening_angle()) ?
                         catalogue.modules.light_cone.vm.dec_opening_angle()/2 : ''));
             image_params.origin_dec
+                .extend({validate: catalogue.validators.positive})
                 .extend({validate: catalogue.validators.is_float})
                 .extend({validate: catalogue.validators.test(
                     ko.computed(function(){
