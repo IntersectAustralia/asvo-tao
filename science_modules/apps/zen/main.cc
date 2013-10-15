@@ -516,9 +516,9 @@ draw_galaxies()
 
    for( const auto& bat : gals )
    {
-      const vector<real_type>::view pos_x = bat->scalar<real_type>( "pos_x" );
-      const vector<real_type>::view pos_y = bat->scalar<real_type>( "pos_y" );
-      const vector<real_type>::view pos_z = bat->scalar<real_type>( "pos_z" );
+      const vector<real_type>::view pos_x = bat->scalar<real_type>( "posx" );
+      const vector<real_type>::view pos_y = bat->scalar<real_type>( "posy" );
+      const vector<real_type>::view pos_z = bat->scalar<real_type>( "posz" );
       const vector<real_type>::view mass = bat->scalar<real_type>( "stellarmass" );
 
       for( unsigned ii = 0; ii < bat->size(); ++ii )
@@ -1307,6 +1307,21 @@ set_pencil_lc( const re::match& match )
 }
 
 void
+set_origin( const re::match& match )
+{
+   auto x_val = to_double( match[1] );
+   auto y_val = to_double( match[2] );
+   auto z_val = to_double( match[3] );
+   if( x_val && y_val && z_val )
+   {
+      lc->set_origin( array<real_type,3>{ *x_val, *y_val, *z_val } );
+      calc_bounds();
+      reshape( win_width, win_height );
+      update_tao();
+   }
+}
+
+void
 load_sfh( const re::match& match )
 {
    using ::backend;
@@ -1390,6 +1405,7 @@ start()
    lc_ctx.add( R"(\s*view\s+tile\s*)", set_tile_view );
    lc_ctx.add( R"(\s*view\s+image\s*)", set_image_view );
    lc_ctx.add( R"(\s*set\s+pencil\s*)", set_pencil_lc );
+   lc_ctx.add( R"(\s*set\s+origin\s+(\d+)\s+(\d+)\s+(\d+)\s*)", set_origin );
    cmd_chain.add( lc_ctx );
 
    // Hand over to GLUT.
