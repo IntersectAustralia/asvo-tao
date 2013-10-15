@@ -68,6 +68,7 @@ namespace tao {
                       _fn = global_dict.get<string>( "outputdir" ) + "/" + dict.get<hpc::string>( "filename" ) + "." + mpi::rank_string();
 
             _fields = dict.get_list<string>( "fields" );
+            ReadFieldsInfo(dict );
 
             // Open the file.
             _file.open( _fn, H5F_ACC_TRUNC );
@@ -83,6 +84,38 @@ namespace tao {
 
             LOGILN( "Done.", setindent( -2 ) );
          }
+
+         void
+		  ReadFieldsInfo( const options::xml_dict& dict )
+		  {
+			 list<optional<hpc::string>> Templabels = dict.get_list_attributes<string>( "fields","label" );
+
+
+
+			 auto lblit = Templabels.cbegin();
+
+			 auto fldsit = _fields.cbegin();
+			 while( lblit != Templabels.cend() )
+			 {
+
+				if(!*lblit)
+				   _labels.push_back(*fldsit);
+				else
+				   _labels.push_back(**lblit);
+
+				// Increment all the iterators at the same time
+				lblit++;
+				fldsit++;
+			 }
+		  }
+
+
+
+
+
+
+
+
 
          ///
          ///
@@ -102,6 +135,8 @@ namespace tao {
             // here.
             if( !_ready )
             {
+            	auto lblit = _labels.cbegin();
+
                for( const auto& field : _fields )
                {
                   h5::datatype dtype = _field_type( bat, field );
@@ -110,7 +145,8 @@ namespace tao {
                   h5::property_list props( H5P_DATASET_CREATE );
                   props.set_chunk_size( _chunk_size );
                   props.set_deflate();
-                  h5::dataset* dset = new h5::dataset( _file, field, dtype, dspace, none, false, props );
+                  //h5::dataset* dset = new h5::dataset( _file, field, dtype, dspace, none, false, props );
+                  h5::dataset* dset = new h5::dataset( _file, *lblit, dtype, dspace, none, false, props );
                   _dsets.push_back( dset );
 
                   // Dump first chunk.
@@ -122,6 +158,7 @@ namespace tao {
                      dspace.select_one( ii );
                      _write_field( bat, *it, field, *dset, dspace );
                   }
+                  lblit++;
 
 		  // Set number written for first batch.
 		  _records = ii;
@@ -258,6 +295,7 @@ namespace tao {
          string _fn;
          list<string> _fields;
          unsigned long long _records;
+         list<hpc::string> _labels;
          list<scoped_ptr<h5::dataset>> _dsets;
          hsize_t _chunk_size;
          bool _ready;
