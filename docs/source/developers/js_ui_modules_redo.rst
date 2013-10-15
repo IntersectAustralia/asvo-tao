@@ -1,6 +1,7 @@
 Introduction
 
-This section describes the framework used to manage the JavaScript which accompanies a UI module, and how to implement the interface when creating additional modules. In addition to the commonly used jQuery library, the interface relies heavily on the `Knockout.js <http://knockoutjs.com/>_` library and it is recommended that you familiarise yourself with its concepts before delving into this section.
+This section describes the framework used to manage the JavaScript which accompanies a UI module, and how to implement the interface when creating additional modules. In addition to the commonly used jQuery library, the interface relies heavily on the `Knockout.js <http://knockoutjs.com/>`_
+ library and it is recommended that you familiarise yourself with its concepts before delving into this section.
 
 UI Module Lifecycle
 
@@ -10,7 +11,7 @@ There are two important javascript variables sent from the server, ``TaoMetadata
 
 Catalogue.js
 
-Each UI Mmodule has its own javascript file located deep in its static subfolder, for the SED module the file is located in ``ui/sed/taoui_sed/static/js/taoui_sed/sed.js``. These modules conform to a simple interface that allows ``catalogue.js`` to control the initialisation of modules::
+Each UI Mmodule has its own javascript file located deep in its static subfolder, for the SED module the file is located in ``ui/sed/taoui_sed/static/js/taoui_sed/sed.js``. These modules conform to a simple interface that allows ``catalogue.js`` to control the initialisation of modules, below is a snippet of ``light_cone.js``::
 
     // Setup the namespace in case it hasn't been created
     var catalogue = catalogue || {};
@@ -42,5 +43,4 @@ Below is an example of a field from the Light-Cone module being initialised with
         .extend({only_if: function(){return vm.catalogue_geometry().id == 'light-cone'}})
         .extend({validate: catalogue.validators.is_float})
         .extend({validate: catalogue.validators.geq(0)});
-
 
