@@ -119,13 +119,16 @@ catalogue.module_defs.mock_image = function ($) {
             param = get_param(prefix, '-mag_field');
             // NOTE: should the mag_field_options be recreated for each mock image?
             param = catalogue.util.get_observable_by_attribute('pk', param, image_params.mag_field_options);
-            image_params.mag_field = ko.observable(param ? param : image_params.mag_field_options[0]);
+            image_params.mag_field = ko.observable(param ? param : image_params.mag_field_options[0])
+                .extend({required: true});
 
             param = get_param(prefix, '-fov_ra');
             image_params.fov_ra = ko.observable(param ? param : catalogue.modules.light_cone.vm.ra_opening_angle())
+                .extend({required: true})
                 .extend({validate: catalogue.validators.positive});
             param = get_param(prefix, '-fov_dec');
             image_params.fov_dec = ko.observable(param ? param : catalogue.modules.light_cone.vm.dec_opening_angle())
+                .extend({required: true})
                 .extend({validate: catalogue.validators.positive});
             param = get_param(prefix, '-width');
             min_mock_image_pixels = catalogue.util.global_parameter_or_null('min_mock_image_pixels');
@@ -152,6 +155,7 @@ catalogue.module_defs.mock_image = function ($) {
                 )});
             param = get_param(prefix, '-z_min');
             image_params.z_min = ko.observable(param ? param : catalogue.modules.light_cone.vm.redshift_min())
+                .extend({required: true})
                 .extend({validate: catalogue.validators.is_float})
                 .extend({validate: catalogue.validators.geq(
                     catalogue.modules.light_cone.vm.redshift_min
@@ -161,6 +165,7 @@ catalogue.module_defs.mock_image = function ($) {
                     )});
             param = get_param(prefix, '-z_max');
             image_params.z_max = ko.observable(param ? param : catalogue.modules.light_cone.vm.redshift_max())
+                .extend({required: true})
                 .extend({validate: catalogue.validators.is_float})
                 .extend({validate: catalogue.validators.geq(
                     catalogue.modules.light_cone.vm.redshift_min
@@ -176,6 +181,7 @@ catalogue.module_defs.mock_image = function ($) {
                     (def(catalogue.modules.light_cone.vm.ra_opening_angle()) ?
                     catalogue.modules.light_cone.vm.ra_opening_angle()/2 : ''));
             image_params.origin_ra
+                .extend({required: true})
                 .extend({validate: catalogue.validators.positive})
                 .extend({validate: catalogue.validators.is_float})
                 .extend({validate: catalogue.validators.test(
@@ -201,6 +207,7 @@ catalogue.module_defs.mock_image = function ($) {
                     (def(catalogue.modules.light_cone.vm.dec_opening_angle()) ?
                         catalogue.modules.light_cone.vm.dec_opening_angle()/2 : ''));
             image_params.origin_dec
+                .extend({required: true})
                 .extend({validate: catalogue.validators.positive})
                 .extend({validate: catalogue.validators.is_float})
                 .extend({validate: catalogue.validators.test(
@@ -257,16 +264,8 @@ catalogue.module_defs.mock_image = function ($) {
         }
 
         vm.can_have_images = ko.computed(function(){
-        	light_cone_is_valid = false; 
-        	if (typeof(catalogue.modules.light_cone.vm.error_status) === "function") {
-        		errors = catalogue.modules.light_cone.vm.error_status();
-        		light_cone_is_valid = !errors.field_errors;
-        	} else if (catalogue.modules.light_cone.vm.error_status == undefined) {
-                light_cone_is_valid = true;
-            }
             return catalogue.modules.sed.vm.apply_sed() &&
-                catalogue.modules.light_cone.vm.catalogue_geometry().id == 'light-cone' &&
-                catalogue.vm.sed.bandpass_filters().length > 0 && light_cone_is_valid;
+                catalogue.modules.light_cone.vm.catalogue_geometry().id == 'light-cone'
         });
 
         param = job['mock_image-apply_mock_image']
