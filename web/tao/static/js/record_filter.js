@@ -153,9 +153,8 @@ catalogue.module_defs.record_filter = function ($) {
     	vm.selection = ko.observable().extend({required: true});
     	
     	vm.selections = ko.computed(filter_choices);
-    	current_dataset = catalogue.modules.light_cone.vm.dataset();
-
         // Disabled for ticket ASVO-640
+    	// current_dataset = catalogue.modules.light_cone.vm.dataset();
         // vm.selection_min = ko.observable(current_dataset.fields.default_filter_min);
         // vm.selection_max = ko.observable(current_dataset.fields.default_filter_max);
         vm.selection_min = ko.observable();
