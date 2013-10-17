@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>TAO Javascript test</title>
+  <link rel="stylesheet" href="qunit-1.11.0.css">
+</head>
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+  <script src="../../../tao/static/js/jquery-1.8.0.min.js"></script>
+  <script src="../../../tao/static/bootstrap/js/bootstrap.min.js"></script>
+  <script src="../../../tao/static/js/knockout-2.3.0.js"></script>
+  <script src="../../../tao/static/js/jquery-ui-1.10.1.custom.js"></script>
+  <script src="../../../tao/static/js/catalogue.js"></script>
+  <script type="text/javascript">
+      catalogue.module_defs.light_cone = function ($) {
+
+          // KO ViewModel
+          var vm = {};
+          var that = this;
+          this.vm = vm;
+
+          this.init_model = function (init_params) {
+              vm.catalogue_geometry = ko.observable({id:'box'});
+              vm.number_of_light_cones = ko.observable(1);
+              vm.ra_opening_angle = ko.observable();
+              vm.dec_opening_angle = ko.observable();
+              vm.redshift_min = ko.observable();
+              vm.redshift_max = ko.observable();
+              return this.vm;
+          }
+      };
+
+      catalogue.module_defs.sed = function ($) {
+
+          // KO ViewModel
+          var vm = {};
+          var that = this;
+          this.vm = vm;
+
+          this.init_model = function (init_params) {
+              vm.apply_sed = ko.observable(false);
+              vm.bandpass_filters = ko.observable([]  );
+              return this.vm;
+          }
+      };
+  </script>
+  <script src="../../../../ui/mock_image/taoui_mock_image/static/js/taoui_mock_image/mock_image.js"></script>
+  <script src="qunit-1.11.0.js"></script>
+  <script src="tao_metadata.js"></script>
+  <script type="text/javascript">
+
+    function setup() {
+      console.log('SETUP');
+      ko.cleanNode(document.body);
+      catalogue.doc_ready($);
+    };
+
+
+    module('catalogue.modules.mock_image', {
+        setup: setup
+    });
+
+    test('Cannot select mock image without light cone geometry', function() {
+      catalogue.modules.sed.vm.apply_sed(true);
+      equal(true, catalogue.modules.sed.vm.apply_sed(), 'SED is applied');
+      equal('box', catalogue.modules.light_cone.vm.catalogue_geometry().id, 'Catalogue geometry is "Box"');
+      equal(false, catalogue.modules.mock_image.vm.can_have_images(), 'Job can not have images');
+      catalogue.modules.light_cone.vm.catalogue_geometry({id: 'light-cone'});
+      equal('light-cone', catalogue.modules.light_cone.vm.catalogue_geometry().id, 'Catalogue geometry is "Light-Cone"');
+      ok(catalogue.modules.mock_image.vm.can_have_images(), 'Job can have images');
+      catalogue.modules.mock_image.vm.apply_mock_image(true);
+      ok(catalogue.modules.mock_image.vm.apply_mock_image(), 'Mock images is applied');
+    });
+
+
+    test('Cannot select mock image without sed enabled', function() {
+      catalogue.modules.light_cone.vm.catalogue_geometry({id: 'light-cone'});
+      equal('light-cone', catalogue.modules.light_cone.vm.catalogue_geometry().id, 'Catalogue geometry is "Light-Cone"');
+      equal(false, catalogue.modules.sed.vm.apply_sed(), 'SED is not applied');
+      equal(false, catalogue.modules.mock_image.vm.can_have_images(), 'Job can NOT have images');
+      catalogue.modules.sed.vm.apply_sed(true);
+      equal(true, catalogue.modules.sed.vm.apply_sed(), 'SED is applied');
+      ok(catalogue.modules.mock_image.vm.can_have_images(), 'Job can have images');
+      catalogue.modules.mock_image.vm.apply_mock_image(true);
+      ok(catalogue.modules.mock_image.vm.apply_mock_image(), 'Mock images is applied');
+    });
+
+
+    test('New mock images adopt current lightcone values as defaults', function() {
+      catalogue.modules.light_cone.vm.ra_opening_angle(1);
+      equal(1, catalogue.modules.light_cone.vm.ra_opening_angle(), 'Light-Cone RA opening angle is 1');
+      catalogue.modules.light_cone.vm.dec_opening_angle(2);
+      equal(2, catalogue.modules.light_cone.vm.dec_opening_angle(), 'Light-Cone DEC opening angle is 2');
+      catalogue.modules.light_cone.vm.redshift_min(3);
+      equal(3, catalogue.modules.light_cone.vm.redshift_min(), 'Light-Cone Redshift min is 3');
+      catalogue.modules.light_cone.vm.redshift_max(4);
+      equal(4, catalogue.modules.light_cone.vm.redshift_max(), 'Light-Cone Redshift max is 4');
+      catalogue.modules.sed.vm.apply_sed(true);
+      catalogue.modules.light_cone.vm.catalogue_geometry({id: 'light-cone'});
+      catalogue.modules.mock_image.vm.apply_mock_image(true);
+      ok(catalogue.modules.mock_image.vm.apply_mock_image(), 'Mock Image is applied');
+      var image = catalogue.modules.mock_image.vm.image_settings()[0];
+      equal(1, image.fov_ra(),'Mock Image FOV RA is 1');
+      equal(2, image.fov_dec(),'Mock Image FOV DEC is 2');
+      equal(3, image.z_min(),'Mock Image min redshift is 3');
+      equal(4, image.z_max(),'Mock Image max redshift is 4');
+    });
+
+
+  </script>
+
+</body>
+</html>
+
