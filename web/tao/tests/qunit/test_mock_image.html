@@ -59,15 +59,23 @@
 
     test('Cannot select mock image without light cone geometry', function() {
       catalogue.modules.sed.vm.apply_sed(true);
-      equal('box', catalogue.modules.light_cone.vm.catalogue_geometry());
-      equal(false, catalogue.modules.mock_image.vm.can_have_images());
+      equal(true, catalogue.modules.sed.vm.apply_sed(), 'SED is applied');
+      equal('box', catalogue.modules.light_cone.vm.catalogue_geometry(), 'Catalogue geometry is "Box"');
+      equal(false, catalogue.modules.mock_image.vm.can_have_images(), 'Job can not have images');
       catalogue.modules.light_cone.vm.catalogue_geometry('light_cone');
-      ok(catalogue.modules.light_cone.vm.catalogue_geometry());
+      equal('light_cone', catalogue.modules.light_cone.vm.catalogue_geometry(), 'Catalogue geometry is "Light-Cone"');
+      ok(catalogue.modules.light_cone.vm.catalogue_geometry(), 'Job can have images');
     });
 
 
     test('Cannot select mock image without sed enabled', function() {
-      ok(true, 'This is a test');
+      catalogue.modules.light_cone.vm.catalogue_geometry('light_cone');
+      equal('light_cone', catalogue.modules.light_cone.vm.catalogue_geometry(), 'Catalogue geometry is "Light-Cone"');
+      equal(false, catalogue.modules.sed.vm.apply_sed(), 'SED is not applied');
+      equal(false, catalogue.modules.mock_image.vm.can_have_images(), 'Job can NOT have images');
+      catalogue.modules.sed.vm.apply_sed(true);
+      equal(true, catalogue.modules.sed.vm.apply_sed(), 'SED is applied');
+      ok(catalogue.modules.light_cone.vm.catalogue_geometry(), 'Job can have images');
     });
 
 
