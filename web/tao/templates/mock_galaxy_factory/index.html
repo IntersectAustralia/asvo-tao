@@ -77,7 +77,7 @@
                 <input type="button" value="&lt; Previous" class="btn tao-prev" style="float: left;" data-bind="click: previous_tab"/>
                 <legend></legend>
                 <div class="row-fluid">
-                    <textarea name="job-description" placeholder="My description (optional)" style="width: 500px; height: 150px;"
+                    <textarea id="job_description" name="job-description" placeholder="My description (optional)" style="width: 500px; height: 150px;"
                     		data-bind="value: $parent.description"></textarea>
                     <!-- ko with: $root -->
                     {% for form in forms %}
@@ -152,7 +152,7 @@
         </div>
         <div>
           <div class="five">
-            <input class="input-block-level" type="text" placeholder="Filter" data-bind="value: filter, valueUpdate: 'afterkeydown'">
+            <input class="input-block-level" type="text" placeholder="Filter" data-bind="value: filter, valueUpdate: 'afterkeydown', attr: {'id': id + '-filter'}">
             <div class="input-block-level" data-bind="template: {name: 'select_with_groups', data: from_side }, attr:{'id': id + '-left'}">
             </div>
           </div>
