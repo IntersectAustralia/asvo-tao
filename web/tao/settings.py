@@ -261,7 +261,7 @@ MODULE_INDICES = {
                   'telescope': '8'
                   }
 
-TAO_VERSION = '1.0.6'
+TAO_VERSION = '1.0.7'
 
 AAF_DS_URL = 'https://ds.test.aaf.edu.au/discovery/DS'
 AAF_APP_ID = 'https://example.intersect.org.au/shibboleth'
