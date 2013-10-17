@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>TAO Javascript test</title>
+  <link rel="stylesheet" href="qunit-1.11.0.css">
+</head>
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+  <script src="../../../tao/static/js/jquery-1.8.0.min.js"></script>
+  <script src="../../../tao/static/bootstrap/js/bootstrap.min.js"></script>
+  <script src="../../../tao/static/js/knockout-2.3.0.js"></script>
+  <script src="../../../tao/static/js/jquery-ui-1.10.1.custom.js"></script>
+  <script src="../../../tao/static/js/catalogue.js"></script>
+  <script type="text/javascript">
+      catalogue.module_defs.light_cone = function ($) {
+
+          // KO ViewModel
+          var vm = {};
+          var that = this;
+          this.vm = vm;
+
+          this.init_model = function (init_params) {
+              vm.output_properties = ko.observableArray([]);
+              return this.vm;
+          }
+      };
+
+      catalogue.module_defs.sed = function ($) {
+
+          // KO ViewModel
+          var vm = {};
+          var that = this;
+          this.vm = vm;
+
+          this.init_model = function (init_params) {
+              vm.apply_sed = ko.observable(false);
+              vm.bandpass_filters = ko.observableArray([]);
+              return this.vm;
+          }
+      };
+  </script>
+  <script src="../../static/js/record_filter.js"></script>
+  <script src="qunit-1.11.0.js"></script>
+  <script src="tao_metadata.js"></script>
+  <script type="text/javascript">
+
+    function setup() {
+      console.log('SETUP');
+      ko.cleanNode(document.body);
+      catalogue.doc_ready($);
+    };
+
+
+    module('catalogue.modules.record_filter', {
+        setup: setup
+    });
+
+    test('Record Filter selection initializes empty', function() {
+      equal(0, catalogue.modules.light_cone.vm.output_properties().length, 'No Output Properties selected');
+      equal(0, catalogue.modules.sed.vm.bandpass_filters().length, 'No Bandpass Filters selected');
+      equal(undefined, catalogue.modules.record_filter.vm.selection(),'Record Filter selection is undefined');
+    });
+
+    test('Record Filter selection required', function() {
+      equal(undefined, catalogue.modules.record_filter.vm.selection(),'Record Filter selection is undefined');
+      var error = catalogue.vm.all_errors()[0].errors[0].indexOf('selection is required') > -1;
+      equal(true, error, 'Record Filter selection is required');
+      catalogue.modules.record_filter.vm.selection({value: 'D-123', label: 'Test 123'});
+      ok(catalogue.modules.record_filter.vm.selection(), 'Record filter selected');
+      error = catalogue.vm.all_errors()[0].errors[0].indexOf('selection is required') > -1;
+      equal(false, error, 'Record filter has no selection errors')
+    });
+
+  </script>
+
+</body>
+</html>
+

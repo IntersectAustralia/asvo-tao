@@ -125,12 +125,14 @@ class SAGEDataReader:
     def ComputeFields(self,TreeData):
         
         #print TreeData
-        for TreeField in TreeData:
-            CentralGalaxyLocalID=TreeField['CentralGal']  
-                     
-            CentralGalaxy=TreeData[CentralGalaxyLocalID]
-            TreeField['CentralGalaxyGlobalID']=CentralGalaxy['GlobalIndex']    
-                        
+        if "CentralGal" in TreeData.dtype.fields:
+            for TreeField in TreeData:
+                CentralGalaxyLocalID=TreeField['CentralGal']  
+                         
+                CentralGalaxy=TreeData[CentralGalaxyLocalID]
+                TreeField['CentralGalaxyGlobalID']=CentralGalaxy['GlobalIndex']    
+        else:
+            logging.info('#### Central Galaxy Field Does not exist. Skipping Compute Fields #####')                
         return TreeData
       
             
@@ -207,7 +209,8 @@ class SAGEDataReader:
         StepSize=self.BSPCellSize
         
         PossibleTables=[]
-        
+        if MaxX>self.SimulationBoxX or MaxY>self.SimulationBoxY:
+            raise Exception("Error In Coordinate Values or in the simulation Box Size:("+str(MaxX)+","+str(MaxY)+") > ("+str(self.SimulationBoxX)+","+str(self.SimulationBoxY))
         ### Intersection between two Rectangles 
         ### http://silentmatt.com/rectangle-intersection/
         for X in numpy.arange(0,self.SimulationBoxX,StepSize):
@@ -234,7 +237,7 @@ class SAGEDataReader:
         
         if len(PossibleTables)==1:
             FinalTableID=int(PossibleTables[0])
-        elif len(PossibleTables)<=10:
+        elif len(PossibleTables)<=10 and len(PossibleTables)>0:
             FinalTableID=int(PossibleTables[randrange(len(PossibleTables))])
         else:                        
             FinalTableID=self.CellsInX*self.CellsInY

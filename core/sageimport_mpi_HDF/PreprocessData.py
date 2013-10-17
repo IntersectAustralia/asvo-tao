@@ -13,7 +13,7 @@ import numpy
 class PreprocessData(object):
 
     ## Mapping between SAGE (C/C++) data types to Database data types 
-    FormatMapping={'int':'INT','float':'FLOAT4','long long':'BIGINT'}
+    FormatMapping={'int':'INT','float':'FLOAT4','long long':'BIGINT','double':'FLOAT8','long':'int8'}
     
     
     ## Init the class with XML Options 

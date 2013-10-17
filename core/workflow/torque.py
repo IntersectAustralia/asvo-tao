@@ -41,7 +41,7 @@ class TorqueInterface(object):
     ##
     def InitDefaultparams(self):
         self.DefaultParams = {'nodes': 1,'ppn': 1,
-                              'wt_hours': 48,'wt_minutes': 0,'wt_seconds': 0}
+                              'wt_hours': 168,'wt_minutes': 0,'wt_seconds': 0}
 
     ##
     ## Write a PBS script from a parameters dictionary.
