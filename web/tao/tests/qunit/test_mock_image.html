@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>TAO Javascript test</title>
+  <link rel="stylesheet" href="qunit-1.11.0.css">
+</head>
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+  <script src="../../../tao/static/js/jquery-1.8.0.min.js"></script>
+  <script src="../../../tao/static/bootstrap/js/bootstrap.min.js"></script>
+  <script src="../../../tao/static/js/knockout-2.3.0.js"></script>
+  <script src="../../../tao/static/js/jquery-ui-1.10.1.custom.js"></script>
+  <script src="../../../tao/static/js/catalogue.js"></script>
+  <script type="text/javascript">
+      catalogue.module_defs.light_cone = function ($) {
+
+          // KO ViewModel
+          var vm = {};
+          var that = this;
+          this.vm = vm;
+
+          this.init_model = function (init_params) {
+              vm.catalogue_geometry = ko.observable('box');
+              vm.number_of_light_cones = ko.observable(1);
+              return this.vm;
+          }
+      };
+
+      catalogue.module_defs.sed = function ($) {
+
+          // KO ViewModel
+          var vm = {};
+          var that = this;
+          this.vm = vm;
+
+          this.init_model = function (init_params) {
+              vm.apply_sed = ko.observable(false);
+              return this.vm;
+          }
+      };
+  </script>
+  <script src="../../../../ui/mock_image/taoui_mock_image/static/js/taoui_mock_image/mock_image.js"></script>
+  <script src="qunit-1.11.0.js"></script>
+  <script src="tao_metadata.js"></script>
+  <script type="text/javascript">
+
+    function setup() {
+      console.log('SETUP');
+      ko.cleanNode(document.body);
+      catalogue.doc_ready($);
+    };
+
+
+    module('catalogue.modules.mock_image', {
+        setup: setup
+    });
+
+    test('Cannot select mock image without light cone geometry', function() {
+      catalogue.modules.sed.vm.apply_sed(true);
+      equal('box', catalogue.modules.light_cone.vm.catalogue_geometry());
+      equal(false, catalogue.modules.mock_image.vm.can_have_images());
+      catalogue.modules.light_cone.vm.catalogue_geometry('light_cone');
+      ok(catalogue.modules.light_cone.vm.catalogue_geometry());
+    });
+
+
+    test('Cannot select mock image without sed enabled', function() {
+      ok(true, 'This is a test');
+    });
+
+
+    test('New mock images adopt current lightcone values as defaults', function() {
+      ok(true, 'This is a test');
+    });
+
+
+    // test('', function() {
+      
+    // });
+
+  </script>
+
+</body>
+</html>
+
