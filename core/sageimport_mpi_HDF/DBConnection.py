@@ -102,7 +102,7 @@ class DBConnection(object):
             logging.info(Exp.args)
             logging.info(Exp)            
             logging.info("Current SQL Statement =\n"+SQLStatment)
-            raw_input("PLease press enter to continue.....")
+            
             
     def ExecuteQuerySQLStatment(self,SQLStatment,DatabaseIndex=0,SQLParamsDict={}):
         
@@ -120,7 +120,7 @@ class DBConnection(object):
             logging.info(Exp.args)
             logging.info(Exp)            
             logging.info("Current SQL Statement =\n"+SQLStatment)
-            raw_input("PLease press enter to continue.....")                            
+                                    
         
         
 
