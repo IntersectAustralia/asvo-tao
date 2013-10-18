@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>TAO Javascript test</title>
+  <link rel="stylesheet" href="qunit-1.11.0.css">
+</head>
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+  <script src="../../../tao/static/js/jquery-1.8.0.min.js"></script>
+  <script src="../../../tao/static/bootstrap/js/bootstrap.min.js"></script>
+  <script src="../../../tao/static/js/knockout-2.3.0.js"></script>
+  <script src="../../../tao/static/js/jquery-ui-1.10.1.custom.js"></script>
+  <script src="../../../tao/static/js/catalogue.js"></script>
+  <script src="../../../tao/static/js/TwoSidedSelectWidget.js"></script>
+  <script type="text/javascript">
+    var TaoJob = {};
+  </script>
+  <script src="tao_metadata.js"></script>
+  <script src="../../../../ui/light-cone/taoui_light_cone/static/js/taoui_light_cone/light_cone.js"></script>
+  <script src="qunit-1.11.0.js"></script>
+  <script type="text/javascript">
+
+    function setup() {
+      console.log('SETUP');
+      ko.cleanNode(document.body);
+      catalogue.doc_ready($);
+      vm = catalogue.modules.light_cone.vm;
+    };
+
+
+    module('catalogue.modules.light_cone', {
+        setup: setup
+    });
+
+    test('Max Redshift is constrained by Snapshot parameter', function() {
+      vm.catalogue_geometry({id: "light-cone", name: "Light-Cone", bit_mask: 1});
+      equal("light-cone", vm.catalogue_geometry().id, 'Catalogue geometry set to Light-Cone');
+      equal(127, vm.simulation_redshift_max(), 'Simulation max Redshift is 127');
+      vm.redshift_max(128);
+      equal(128, vm.redshift_max(), 'Redshift max set to 128');
+      error = catalogue.vm.all_errors()[0].errors.indexOf('redshift_max: Must be less than or equal to 127.0000000000') > -1;
+      equal(true, error, 'Redshift max must be less than or equal to 127')
+      vm.redshift_max(127);
+      equal(127, vm.redshift_max(), 'Redshift max set to 127');
+      error = catalogue.vm.all_errors()[0].errors.indexOf('redshift_max: Must be less than or equal to 127.0000000000') > -1;
+      equal(false, error, 'Redshift max is within Simulation max Redshift');
+    });
+
+
+  </script>
+</body>
+</html>
+
