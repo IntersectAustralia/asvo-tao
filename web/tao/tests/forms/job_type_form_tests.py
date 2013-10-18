@@ -178,7 +178,14 @@ class JobTypeFormTests(LiveServerTest):
         self.click('presets_button')
         self.click('load_survey_preset_button')
         self.assert_page_has_content("Survey Preset 'Preset 0' loaded successfully.")
-        
+    
+    def test_handles_malformed_xml(self):
+        from selenium.webdriver.support.wait import WebDriverWait
+        timeout = 2
+        json_path = os.path.join(PROJECT_DIR, 'test_data', 'test_data.json')
+        self.selenium.find_element_by_id('id_job_type-params_file').send_keys(json_path)
+        WebDriverWait(self.selenium, timeout).until(lambda driver: driver.find_element_by_css_selector('.alert-error'))
+        self.assert_page_has_content("Failed to process parameter file: 'test_data.json'.")
 
     def get_ko_array(self, vm_ko_array, field):
         js = 'return $.map(' + vm_ko_array + ', function(v, i) { return v.' + field + '; });'
