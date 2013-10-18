@@ -20,6 +20,7 @@ class JobTypeFormTests(LiveServerTest):
         for i in range(3):
             g = GalaxyModelFactory.create(name='galaxy_model_%03d' % i)
             ds = DataSetFactory.create(simulation=box_sim, galaxy_model=g, max_job_box_count=25)
+            SnapshotFactory.create(dataset=ds)
             for j in range(3):
                 dsp = DataSetPropertyFactory.create(dataset=ds, label='parameter_%03d label' % j, name='name_%03d' % j, description='description_%03d' % j)
                 ds.default_filter_field = dsp
@@ -29,6 +30,7 @@ class JobTypeFormTests(LiveServerTest):
         for i in range(4,8):
             g = GalaxyModelFactory.create(name='galaxy_model_%03d' % i)
             ds = DataSetFactory.create(simulation=lc_sim, galaxy_model=g, max_job_box_count=25, id=i)
+            SnapshotFactory.create(dataset=ds)
             for j in range(4,7):
                 dsp = DataSetPropertyFactory.create(dataset=ds, label='parameter_%03d label' % j, name='name_%03d' % j, description='description_%03d' % j)
                 ds.default_filter_field = dsp
@@ -39,7 +41,6 @@ class JobTypeFormTests(LiveServerTest):
             StellarModelFactory.create(label='stellar_label_%03d' % i, name='stellar_name_%03d' % i, description='<p>Description %d </p>' % i)
             BandPassFilterFactory.create(label='Band pass filter %03d' % i, filter_id='%d' % i)
             DustModelFactory.create(name='Dust_model_%03d.dat' % i, label='Dust model %03d' % i, details='<p>Detail %d </p>' % i)
-            SnapshotFactory.create(dataset_id=i);
             SurveyPresetFactory.create(name='Preset %d' % i, parameters=params_string)
 
         username = "person"

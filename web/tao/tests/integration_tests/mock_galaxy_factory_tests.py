@@ -5,7 +5,7 @@ from django.utils.html import strip_tags
 from tao.models import Simulation, StellarModel, DustModel, BandPassFilter
 from tao.settings import MODULE_INDICES
 from tao.tests.integration_tests.helper import LiveServerTest
-from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, JobFactory, DataSetPropertyFactory, DustModelFactory, StellarModelFactory, BandPassFilterFactory, GlobalParameterFactory, SurveyPresetFactory
+from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, JobFactory, DataSetPropertyFactory, DustModelFactory, StellarModelFactory, BandPassFilterFactory, GlobalParameterFactory, SurveyPresetFactory, SnapshotFactory
 
 class MockGalaxyFactoryTest(LiveServerTest):
 
@@ -21,6 +21,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
             ds = DataSetFactory.create(simulation=simulation, galaxy_model=g)
             DataSetPropertyFactory.create(dataset=ds)
             DataSetPropertyFactory.create(dataset=ds)
+            SnapshotFactory.create(dataset=ds)
 
         for unused in range(4):
             g = GalaxyModelFactory.create()
@@ -33,6 +34,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
             StellarModelFactory.create()
             BandPassFilterFactory.create()
             DustModelFactory.create()
+
 
         self.survey_preset = SurveyPresetFactory.create(name='Preset 1', parameters='<xml></xml>')
         
