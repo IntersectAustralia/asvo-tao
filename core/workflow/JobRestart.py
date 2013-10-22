@@ -52,9 +52,9 @@ class JobRestart(object):
         
         
         
-        #if(ErrorMessage.find('Could not detect network connectivity')==-1):
-        #    logging.info('Job ('+str(JobRecord['jobid'])+') is not a network error Job - Not added to Restart List')
-        #    return False;
+        if(ErrorMessage.find('Could not detect network connectivity')==-1):
+            logging.info('Job ('+str(JobRecord['jobid'])+') is not a network error Job - Not added to Restart List')
+            return False;
         
         if (self.dbaseobj.AddJobToRestartList(JobRecord)==True):
             logging.info('Job ('+str(JobRecord['jobid'])+') Added to Restart List')
