@@ -22,6 +22,7 @@ import stat,sys
 import ParseProfileData
 import traceback
 import JobRestart
+import os
 
 class WorkFlow(object):
 
@@ -332,7 +333,18 @@ class WorkFlow(object):
         SubJobID=RestartJobRecrod['subjobindex']
         
         
-        PBSJobID=self.TorqueObj.Submit(UIJobReference,JobUserName,JobID,SubJobID,IsSequential)
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        PBSJobID=self.TorqueObj.Submit(UIJobReference,JobUserName,JobID,SubJobID,IsSequential=='t')
         ## Store the Job PBS ID  
         if self.dbaseobj.UpdateJob_PBSID(JobID,PBSJobID)!=True:
             raise  Exception('Error in Process New Job','Update PBSID failed')
@@ -477,6 +489,7 @@ class WorkFlow(object):
         
         path = os.path.join(self.JobBaseDir, UserName, str(UIReference_ID), 'output')
         data['output_path'] = path
+        data['error_message']=''
         
         self.UpdateTAOUI(UIReference_ID,JobType, data)
         self.dbaseobj.AddNewEvent(JobID, EnumerationLookup.EventType.Normal, 'Updating Job (UI ID:' + str(UIReference_ID) + ', Status:' + data['status'] + ')')
@@ -526,15 +539,70 @@ class WorkFlow(object):
         if TerminateAllOnError==True and JobType==EnumerationLookup.JobType.Complex:
            data['error_message']=data['error_message']+" Please note that all other subjobs will be deleted also" 
            if JobAddedForRestart==True:
-               data['error_message']=data['error_message']+"  \n\r Please note that this job will be restarted Automatically after 30 Minutes"
+               data['error_message']=data['error_message']+"  \n\r Please note that this job will be restarted Automatically after "+str(self.Options['WorkFlowSettings:RestartWaitTime'])+" Minutes"
+               data['status'] = 'IN_PROGRESS'
+               
         
         
         self.UpdateTAOUI(UIReference_ID,JobType, data)
         self.dbaseobj.AddNewEvent(JobID, EnumerationLookup.EventType.Normal, 'Updating Job (UI ID:' + str(UIReference_ID) + ', Status:' + data['status'] + ')')
         
         Message = "Job (" + str(UIReference_ID) +" ["+str(SubJobIndex)+"])  Finished With Error. The Error Message is:" + data['error_message']
+        if JobAddedForRestart!=True:
+            emailreport.SendEmailToAdmin(self.Options, "Job Finished With Error", Message)
+        else:
+            
+            
+            old_dir = os.getcwd()
         
-        emailreport.SendEmailToAdmin(self.Options, "Job Finished With Error", Message)
+            logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserName, str(UIReference_ID),'log')  
+            outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserName, str(UIReference_ID),'output')
+            
+            
+            logging.info("Adding Job to Restarting List")
+            logging.info("logPath:"+logpath)
+            logging.info("outputpath:"+outputpath)
+            
+            
+            
+            
+            os.chdir(outputpath)
+            
+            filelist = [ f for f in os.listdir(".") if f!="params.xml" ]
+            for f in filelist:
+                logging.info("Removing File:"+f)
+                os.remove(f)
+            
+            os.chdir(logpath)
+            filelist = [ f for f in os.listdir(".") ]
+            for f in filelist:
+                if (not(f.endswith(".xml")) and not(f.startswith("pbs_script"))):
+                    logging.info("Removing File:"+f)
+                    os.remove(f)
+            
+            
+            
+            os.chdir(old_dir)  
+            
+            
+                
+            
+            
+            
+            
+            
+            emailreport.SendEmailToAdmin(self.Options, "Job Finished With Error (To be restarted)", Message)
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
 
     ## Update the Back-end DB and the UI that the job is running. There is no need for special handling in case of complex Jobs
     ## In this case one job is enough to turn the sate to running
