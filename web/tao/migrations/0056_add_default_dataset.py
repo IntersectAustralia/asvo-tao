@@ -7,12 +7,14 @@ from django.db import models
 class Migration(DataMigration):
 
     def forwards(self, orm):
+        import pdb; pdb.set_trace()
         obj = orm.GlobalParameter.objects.filter(parameter_name='default_dataset')
         if len(obj) == 0:
             description = 'This contains the id (pk) of the default dataset. ' \
                           'The selected Simulation and GalaxyModel are taken from the default dataset.'
-            first_dataset = orm.DataSet.objects.all()[0]
-            if first_dataset:
+            datasets = orm.DataSet.objects.all()
+            if datasets.count() > 0:
+                first_dataset = datasets[0]
                 obj = orm.GlobalParameter(parameter_name='default_dataset', parameter_value=str(first_dataset.id), description=description)
             else:
                 obj = orm.GlobalParameter(parameter_name='default_dataset', parameter_value='0', description=description)
