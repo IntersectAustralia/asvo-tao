@@ -123,7 +123,7 @@ if __name__ == '__main__':
     [Options]=settingReader.ParseParams("settings.xml")    
     ProcessIDFile=Options['WorkFlowSettings:ProcessID']
        
-    daemonobj = WorkflowDaemon('/tmp/'+ProcessIDFile,'/dev/null','log/out.log','log/err.log')
+    daemonobj = WorkflowDaemon(ProcessIDFile,'/dev/null','log/out.log','log/err.log')
     signal.signal(signal.SIGTERM, daemonobj.HandleExit)
     if len(sys.argv) == 2:
             if 'start' == sys.argv[1]:

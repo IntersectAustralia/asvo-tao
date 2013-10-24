@@ -71,13 +71,14 @@ catalogue.module_defs.record_filter = function ($) {
         }
 
     	// Get the default filter
-    	default_filter_pk = catalogue.modules.light_cone.vm.dataset().fields.default_filter_field;
-        if (defined(default_filter_pk)) {
-            var def_dataset = catalogue.util.dataset_property(default_filter_pk);
-            if (defined(def_dataset)) {
-    	        add_to_result(to_option(catalogue.util.dataset_property(default_filter_pk)));
-            }
-        }
+        // Disabled for ticket ASVO-640
+    	// default_filter_pk = catalogue.modules.light_cone.vm.dataset().fields.default_filter_field;
+     //    if (defined(default_filter_pk)) {
+     //        var def_dataset = catalogue.util.dataset_property(default_filter_pk);
+     //        if (defined(def_dataset)) {
+    	//         add_to_result(to_option(catalogue.util.dataset_property(default_filter_pk)));
+     //        }
+     //    }
 
     	// Get the selected output properties with is_filter==true
     	output_properties = catalogue.modules.light_cone.vm.output_properties();
@@ -149,13 +150,15 @@ catalogue.module_defs.record_filter = function ($) {
     	var param; // Temporary variable for observable initialisation
         var defined = catalogue.validators.defined;
 
-    	vm.selection = ko.observable();
+    	vm.selection = ko.observable().extend({required: true});
     	
     	vm.selections = ko.computed(filter_choices);
-    	current_dataset = catalogue.modules.light_cone.vm.dataset();
-
-        vm.selection_min = ko.observable(current_dataset.fields.default_filter_min);
-        vm.selection_max = ko.observable(current_dataset.fields.default_filter_max);
+        // Disabled for ticket ASVO-640
+    	// current_dataset = catalogue.modules.light_cone.vm.dataset();
+        // vm.selection_min = ko.observable(current_dataset.fields.default_filter_min);
+        // vm.selection_max = ko.observable(current_dataset.fields.default_filter_max);
+        vm.selection_min = ko.observable();
+        vm.selection_max = ko.observable();
 
         // Create the min and max observables
         // Set up validation after creation as we have a validator that refers to both observables

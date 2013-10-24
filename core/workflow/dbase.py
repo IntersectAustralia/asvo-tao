@@ -133,6 +133,7 @@ class DBInterface(object):
             
     def SetJobPaused(self,JobID,UICommandID): 
            Updatest="UPDATE Jobs set JobStatus="+str(EnumerationLookup.JobState.Paused)+",jobstatuscomment='PAUSED BY WORKFLOW COMMAND ID="+str(UICommandID)+"' where JobID="+str(JobID)+";"
+           logging.info(Updatest)
            return self.ExecuteNoQuerySQLStatment(Updatest)     
     
     def AddNewJob(self,JobInformation):       

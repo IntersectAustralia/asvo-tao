@@ -37,6 +37,7 @@ class JobRestart(object):
         logging.info("#####**** Begin Checking Pending Jobs")
         RestartTimeLimit=int(self.Options['WorkFlowSettings:RestartWaitTime'])
         ListofJobs=self.dbaseobj.GetPendingJobsToRestart(RestartTimeLimit)
+           
         for jobrecord in ListofJobs: 
             self.dbaseobj.SetJobAsRestarted(jobrecord['jobrestartid'])           
             JobRestartFunctionptr(jobrecord)
@@ -46,6 +47,10 @@ class JobRestart(object):
    
         
     def AddNewJob(self,JobRecord,ErrorMessage):
+        
+        
+        
+        
         
         if(ErrorMessage.find('Could not detect network connectivity')==-1):
             logging.info('Job ('+str(JobRecord['jobid'])+') is not a network error Job - Not added to Restart List')
@@ -59,11 +64,7 @@ class JobRestart(object):
             logging.info('Job ('+str(JobRecord['jobid'])+') Not added to Restart List')
             return False
         
-        #JobID=JobRecord['jobid']
-        #SubJobIndex=JobRecord['subjobindex']
-        #issequential=JobRecord['issequential']
-        #UIReference_ID=JobRecord['uireferenceid']
-        #UserName=JobRecord['username']
+       
         
         
         return True;

@@ -154,6 +154,7 @@ if __name__ == '__main__':
         MasterTablesUpdateObj.FillRedshiftData()
         MasterTablesUpdateObj.CreateMetadataTable()
         MasterTablesUpdateObj.FillMetadataTable()
+        MasterTablesUpdateObj.SetupSecurity()
         
     ProcessTablesObj.CloseConnections()
     logging.info("Reaching Fourth Barrier")

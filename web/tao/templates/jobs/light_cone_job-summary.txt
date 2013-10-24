@@ -27,7 +27,7 @@ Output Properties: {{ output_properties|length }} properties selected
 Spectral Energy Distribution
 ============================
 {% if apply_sed %}
-Model: {{ ssp_name|safe }}
+Model: {{ ssp_name.label|safe }}
 {{ ssp_description|safe }}
 
 Bandpass Filters: {{ band_pass_filters|length }} filters selected

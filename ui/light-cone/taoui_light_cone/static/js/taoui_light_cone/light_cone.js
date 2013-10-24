@@ -217,6 +217,18 @@ catalogue.module_defs.light_cone = function ($) {
         						  vm.galaxy_model().pk);
         }).extend({logger: 'dataset'});
 
+        vm.snapshots = ko.computed(function (){
+            return catalogue.util.snapshots(vm.dataset().pk)
+        });
+        param = catalogue.util.snapshot(job['light_cone-snapshot']);
+        vm.snapshot = ko.observable(param ? param : vm.snapshots()[0]);
+        vm.simulation_redshift_max = ko.observable(vm.snapshots()[vm.snapshots().length-1].fields.redshift);
+        vm.snapshots.subscribe(function(arr){
+            vm.snapshot(arr[0]);
+            vm.simulation_redshift_max(arr[arr.length-1].fields.redshift);
+        });
+        
+
         param = job['light_cone-light_cone_type'];
         vm.light_cone_type = ko.observable(param ? param : 'unique');
 
@@ -249,7 +261,8 @@ catalogue.module_defs.light_cone = function ($) {
             .extend({only_if: function(){return vm.catalogue_geometry().id == 'light-cone'}})
             .extend({validate: catalogue.validators.is_float})
             .extend({validate: catalogue.validators.greater_than(vm.redshift_min)})
-            .extend({validate: catalogue.validators.greater_than(0)});
+            .extend({validate: catalogue.validators.greater_than(0)})
+            .extend({validate: catalogue.validators.leq(vm.simulation_redshift_max)});
 
         vm.max_box_size = ko.computed(function() {
             return vm.dark_matter_simulation().fields.box_size
@@ -305,14 +318,7 @@ catalogue.module_defs.light_cone = function ($) {
             return result;
         });
 
-        vm.snapshots = ko.computed(function (){
-            return catalogue.util.snapshots(vm.dataset().pk)
-        });
-        param = catalogue.util.snapshot(job['light_cone-snapshot']);
-        vm.snapshot = ko.observable(param ? param : vm.snapshots()[0]);
-        vm.snapshots.subscribe(function(arr){
-                vm.snapshot(arr[0]);
-        });
+
 
         param = job['light_cone-output_properties'];
         if (param) {
