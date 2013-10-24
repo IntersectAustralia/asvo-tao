@@ -44,7 +44,7 @@ class SubmitJob(DeploymentTester):
 
         properties = getattr(self.job_params, 'OUTPUT_PROPERTIES', None)
         if properties == 'All':
-            self.click(self.sed_2select('op_add_all'))
+            self.click(self.lc_2select('op_add_all'))
         elif properties is not None:
             for prop_filter in properties:
                 self.fill_in_fields({
