@@ -120,7 +120,7 @@ class JobTest(LiveServerTest):
             })
         parameters.update({
             'ssp_encoding': self.sed.encoding,
-            'ssp_name': self.sed.name,
+            'ssp_name': self.sed,
             'band_pass_filters': [self.band_pass_filters[0].label + ' (Apparent)'],
             'band_pass_filter_label': self.band_pass_filters[0].label + ' (Apparent)',
             'band_pass_filter_id': self.band_pass_filters[0].filter_id,
@@ -214,7 +214,8 @@ class JobTest(LiveServerTest):
         self.click('id_download_summary_txt')
         summary_txt_path = os.path.join(self.DOWNLOAD_DIRECTORY, 'summary.txt')
         with codecs.open(summary_txt_path, encoding='utf-8') as f:
-            self.assertEqual(self.summary_text, f.read())
+            f_contents = f.read()
+            self.assertEqual(self.summary_text, f_contents)
 
     # test that anonymous user cannot view job or download files
     def test_anonymous_user_cannot_view_or_download(self):

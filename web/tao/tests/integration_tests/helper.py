@@ -58,6 +58,11 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
         # create the download dir
         if not os.path.exists(self.DOWNLOAD_DIRECTORY):
             os.makedirs(self.DOWNLOAD_DIRECTORY)
+        # ensure that it is empty
+        for root, dirs, files in os.walk(self.DOWNLOAD_DIRECTORY):
+            for file in files:
+                os.remove(os.path.join(root, file))
+        return
 
     def tearDown(self):
         self.selenium.quit()
@@ -125,7 +130,7 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
         return elem.text
 
     def find_element_by_css_selector(self, selector):
-        retries = 3
+        retries = 30
         while retries > 0:
             try:
                 elem = self.selenium.find_element_by_css_selector(selector)
@@ -137,7 +142,7 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
         return self.selenium.find_element_by_css_selector(selector)
 
     def find_element_by_id(self, elem_id):
-        retries = 3
+        retries = 30
         while retries > 0:
             try:
                 elem = self.selenium.find_element_by_id(elem_id)
@@ -237,7 +242,7 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
         self.assertTrue(len(elements) == 0)
 
     def assert_on_page(self, url_name, ignore_query_string=False):
-        retries = 3
+        retries = 30
         while retries > 0:
             try:
                 self._assert_on_page(url_name, ignore_query_string)
