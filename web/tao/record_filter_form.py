@@ -108,7 +108,7 @@ class RecordFilterForm(BetterForm):
         self.fields['filter'] = forms.ChoiceField(required=True, choices=choices)
         self.fields['max'] = val_class(**dict(args.items()+{'label':_('Max'), 'widget': forms.TextInput(attrs={'maxlength': '20'})}.items()))
         self.fields['min'] = val_class(**dict(args.items()+{'label':_('Min'), 'widget': forms.TextInput(attrs={'maxlength': '20'})}.items()))
-        self.fields['filter'].label = 'Select by ...'
+        self.fields['filter'].label = 'Apply global catalogue selection using...'
 
         self.fields['filter'].widget.attrs['data-bind'] = 'options: selections, value: selection, optionsText: function(i) { return i.label }'
         self.fields['min'].widget.attrs['data-bind'] = 'value: selection_min'
