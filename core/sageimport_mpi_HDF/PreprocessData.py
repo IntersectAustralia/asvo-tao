@@ -168,15 +168,23 @@ class PreprocessData(object):
         
     ## Use Statement concatenation and the  CurrentSAGEStrcuture loaded from the XML settings to create a new table template
     def CreateNewTableTemplate(self):
+        FieldsList=[]
+        
         self.CreateTableTemplate="CREATE TABLE @TABLEName ("
         for field in self.CurrentSAGEStruct:            
             FieldDT=self.FormatMapping[field[1]]
             FieldName=field[2]
+            FieldsList+=[field[0]]
             self.CreateTableTemplate=self.CreateTableTemplate+ FieldName +' '+FieldDT+","
         self.CreateTableTemplate=self.CreateTableTemplate+"GlobalTreeID BIGINT,"
-        self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyGlobalID BIGINT,"     
-        self.CreateTableTemplate=self.CreateTableTemplate+"LocalGalaxyID INT)"       
+        self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyGlobalID BIGINT"
+        
+        if FieldsList.count('LocalGalaxyID')==0:         
+            self.CreateTableTemplate=self.CreateTableTemplate+",LocalGalaxyID INT)"
+        else:
+            self.CreateTableTemplate=self.CreateTableTemplate+")"
      
+        
      
     def CreateIndexOnTreeSummaryTable(self):
         CreateIndexStatment="ALTER TABLE treesummary ADD PRIMARY KEY (globaltreeid);"

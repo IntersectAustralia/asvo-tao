@@ -1,5 +1,5 @@
-import xml.etree.ElementTree as ET
 import logging
+import xml.etree.ElementTree as ET
 
 ## Helps reading XML setting file into a Hash Table of Running options and Tuples array which describes the SAGE fields and their data types
 def ParseParams(FilePath):
@@ -16,9 +16,19 @@ def ParseParams(FilePath):
     #### The first Node contain the sage fields and their data type mapping
     #### Load them into tuple list (ordered list- The order is important)
     sageFieldsNode=SettingsNode[0]
+    FieldsList=[]
     for sagefield in sageFieldsNode:       
         CurrentSAGEStruct.append([sagefield.text,sagefield.attrib['Type'],sagefield.text])
-          
+        FieldsList+=[sagefield.text.lower()]
+    logging.info(FieldsList)
+    f=open("MandatoryList.txt",'r')
+    ListOfMandatoryFields=f.readlines()
+    for Field in ListOfMandatoryFields:
+        logging.info("Checking for Field "+Field)
+        if(FieldsList.count(Field.strip('\n'))==0):
+            logging.info("Current Fields List")
+            logging.info(FieldsList)    
+            raise Exception(Field.strip('\n')+" is missing! ")      
     ##################################################################################
     ## Load PostGres information
     ## Running Options and PostgreSQL DB information will take the form of ["Header"."Child"]
