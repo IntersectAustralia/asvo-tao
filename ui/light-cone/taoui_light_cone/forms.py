@@ -156,13 +156,13 @@ class Form(BetterForm):
 
     catalogue_geometry = forms.ChoiceField(choices=[(BOX, 'Box'), (CONE, 'Light-Cone'), ])
 
-    redshift_max = forms.DecimalField(required=False, label=_('Redshift Max'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
-    redshift_min = forms.DecimalField(required=False, label=_('Redshift Min'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
+    redshift_max = forms.DecimalField(required=False, label=_('Redshift max'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
+    redshift_min = forms.DecimalField(required=False, label=_('Redshift min'), max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
 
-    box_size = forms.DecimalField(required=False, label=_('Box Size (Mpc/h)'), widget=forms.TextInput(attrs={'class': 'light_box_field'}))
+    box_size = forms.DecimalField(required=False, label=_('Box size (Mpc/h)'), widget=forms.TextInput(attrs={'class': 'light_box_field'}))
 
-    ra_opening_angle = forms.DecimalField(required=False, label=_('Right Ascension Opening Angle (degrees)'), min_value=0, max_value=360, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
-    dec_opening_angle = forms.DecimalField(required=False, label=_('Declination Opening Angle (degrees)'), min_value=0, max_value=360, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
+    ra_opening_angle = forms.DecimalField(required=False, label=_('Right ascension opening angle (degrees)'), min_value=0, max_value=360, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
+    dec_opening_angle = forms.DecimalField(required=False, label=_('Declination opening angle (degrees)'), min_value=0, max_value=360, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
 
     light_cone_type = forms.ChoiceField(required=False, label='', choices=[('unique', 'Unique'), ('random', 'Random')], initial='unique', widget=forms.RadioSelect(attrs={'class': 'light_cone_field'}))
 

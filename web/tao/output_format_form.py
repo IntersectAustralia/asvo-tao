@@ -47,7 +47,7 @@ class OutputFormatForm(BetterForm):
     EDIT_TEMPLATE = 'mock_galaxy_factory/output_format.html'
     MODULE_VERSION = 1
     SUMMARY_TEMPLATE = 'mock_galaxy_factory/output_format_summary.html'
-    LABEL = 'Output format'
+    LABEL = 'Output Format'
     TAB_ID = settings.MODULE_INDICES['output_format']
 
     class Meta:
@@ -64,7 +64,7 @@ class OutputFormatForm(BetterForm):
             # format_choices = [(None, None, {"data-bind" : "value: $data, text: $data.fields.text"})]
             format_choices = []
         self.fields['supported_formats'] = ChoiceFieldWithOtherAttrs(required=False,
-                                    label='Output Format',
+                                    label='Output format',
                                     choices=format_choices,
                                     widget=SelectWithOtherAttrs(attrs={'class': 'light_box_field'}))
         # self.fields['supported_formats'].widget.attrs['data-bind'] = 'foreach: output_formats, value: output_format'
