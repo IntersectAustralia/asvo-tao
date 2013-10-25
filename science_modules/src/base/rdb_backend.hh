@@ -73,12 +73,14 @@ namespace tao {
                                 tao::query<real_type>& qry,
                                 filter const* filt = 0 ) const
          {
-            boost::format fmt( "SELECT %1% FROM -table- "
-                               "WHERE %2% = %3% AND "         // snapshot
-                               "%4% > %5% AND %4% < %6% AND " // x position
-                               "%7% > %8% AND %7% < %9% AND " // y position
-                               "%10% > %11% AND %10% < %12%" // z position
-                               "%13%" ); // filter
+            boost::format fmt(
+	       "SELECT %1% FROM -table- "
+	       "WHERE %2% = %3% AND "         // snapshot
+	       "%4% > %5% AND %4% < %6% AND " // x position
+	       "%7% > %8% AND %7% < %9% AND " // y position
+	       "%10% > %11% AND %10% < %12%" // z position
+	       "%13%" // filter
+	       );
             std::unordered_map<string,string> map;
             make_field_map( map, qry, box );
             fmt % make_output_field_query_string( qry, map );

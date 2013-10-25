@@ -67,6 +67,12 @@ namespace tao {
          return _dual[idx];
       }
 
+      typename view<vector<real_type>>::type const
+      ages() const
+      {
+	 return _ages;
+      }
+
       ///
       /// Set age values. Ages must be given as giga-years from the beginning
       /// of the universe.

@@ -6,9 +6,6 @@
 #include "timed.hh"
 #include "age_line.hh"
 
-// Forward declaration of test suites to allow direct access.
-class sfh_suite;
-
 namespace tao {
    using namespace hpc;
    using boost::format;
@@ -22,8 +19,6 @@ namespace tao {
    class sfh
       : public timed
    {
-      friend class ::sfh_suite;
-
    public:
 
       typedef T real_type;
