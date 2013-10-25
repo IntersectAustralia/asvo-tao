@@ -639,6 +639,7 @@ namespace tao {
 
                  // Compute distance.
                  dist[ii] = sqrt( pos_x[ii]*pos_x[ii] + pos_y[ii]*pos_y[ii] + pos_z[ii]*pos_z[ii] );
+                 ASSERT( dist[ii] <= _lc->max_dist(), "Calculated distance exceeds maximum: ", dist[ii] );
 
                  // Compute cosmological redshift.
                  z_cos[ii] = _lc->distance_to_redshift( dist[ii] );
@@ -647,6 +648,8 @@ namespace tao {
                  numerics::cartesian_to_ecs( pos_x[ii], pos_y[ii], pos_z[ii], ra[ii], dec[ii] );
                  ra[ii] = to_degrees( ra[ii] );
                  dec[ii] = to_degrees( dec[ii] );
+                 ASSERT( ra[ii] >= 0.0 && ra[ii] <= 90.0, "Calculated RA exceeds limits: ", ra[ii] );
+                 ASSERT( dec[ii] >= 0.0 && dec[ii] <= 90.0, "Calculated RA exceeds limits: ", dec[ii] );
 
                  // Calculate observed redshift.
                  if( dist[ii] > 0.0 )

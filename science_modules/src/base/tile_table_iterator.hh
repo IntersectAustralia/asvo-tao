@@ -163,13 +163,16 @@ namespace tao {
          {
             LOGDLN( "Calculating overlapping tables.", setindent( 2 ) );
 
-            // Need the points of the polyhedron. Don't foget to
-            // offset by the box we're using.
+            // Need the points of the polyhedron. Don't forget to
+            // offset by the tile we're using.
             _calc_polyhedron();
             for( auto& pnt : _ph )
             {
                for( unsigned ii = 0; ii < 3; ++ii )
+               {
                   pnt[ii] -= _tile->min()[ii];
+                  pnt[ii] += _tile->origin()[ii];
+               }
             }
 
             // Now convert to planes.
