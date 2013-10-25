@@ -1,6 +1,7 @@
 #include <boost/algorithm/string/trim.hpp>
 #include <libhpc/algorithm/bin.hh>
 #include <libhpc/algorithm/dual.hh>
+#include <libhpc/logging/block.hh>
 #include "stellar_population.hh"
 
 namespace tao {
@@ -35,6 +36,18 @@ namespace tao {
       _load_waves( waves_filename );
       _load_metals( metals_filename );
       _load_ssp( ssp_filename );
+   }
+
+   void
+   stellar_population::save( const fs::path& ages_filename,
+                             const fs::path& waves_filename,
+                             const fs::path& metals_filename,
+                             const fs::path& ssp_filename )
+   {
+      _save_ages( ages_filename );
+      _save_waves( waves_filename );
+      _save_metals( metals_filename );
+      _save_ssp( ssp_filename );
    }
 
    real_type
@@ -199,6 +212,76 @@ namespace tao {
       EXCEPT( file.good(), "Error reading SSP file." );
 
       LOGILN( "Done.", setindent( -2 ) );
+   }
+
+   void
+   stellar_population::_save_metals( const fs::path& filename )
+   {
+      LOGBLOCKI( "Saving metallicities to: ", filename );
+
+      std::ofstream file( filename.c_str() );
+      EXCEPT( file.is_open(), "Couldn't open metallicities file: ", filename );
+
+      // Store the dual values.
+      file << "dual\n";
+      file << _metal_bins.size() << "\n";
+      for( auto met : _metal_bins )
+	 file << met << "\n";
+
+      ASSERT( file, "Failed to write metallicities file: ", filename );
+   }
+
+   void
+   stellar_population::_save_waves( const fs::path& filename )
+   {
+      LOGBLOCKI( "Saving wavelengths to: ", filename );
+
+      // Open the file.
+      std::ofstream file( filename.c_str() );
+      EXCEPT( file.is_open(), "Couldn't open wavelengths file: ", filename );
+
+      // Dump wavelengths.
+      for( auto wave : _waves )
+	 file << wave << "\n";
+   }
+
+   void
+   stellar_population::_save_ages( const fs::path& filename )
+   {
+      LOGBLOCKI( "Saving ages to: ", filename );
+
+      // Open the file.
+      std::ofstream file( filename.c_str() );
+      EXCEPT( file.is_open(), "Couldn't open ages file: ", filename );
+
+      // Dump the ages.
+      file << _age_bins.size() << "\n";
+      for( auto age : _age_bins.ages() )
+	 file << age << "\n";
+   }
+
+   void
+   stellar_population::_save_ssp( const fs::path& filename )
+   {
+      LOGBLOCKI( "Saving stellar population to: ", filename );
+
+      std::ofstream file( filename.c_str() );
+      EXCEPT( file.is_open(), "Couldn't open SSP file: ", filename );
+
+      // Dump the SSP data in the same kind of format as
+      // the originals.
+      unsigned pos = 0;
+      for( auto val : _spec )
+      {
+	 file << val;
+	 if( ++pos == _waves.size() )
+	 {
+	    file << "\n";
+	    pos = 0;
+	 }
+	 else
+	    file << " ";
+      }
    }
 
 }

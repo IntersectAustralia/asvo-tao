@@ -40,6 +40,12 @@ namespace tao {
             const fs::path& metals_filename,
             const fs::path& ssp_filename );
 
+      void
+      save( const fs::path& ages_filename,
+	    const fs::path& waves_filename,
+	    const fs::path& metals_filename,
+	    const fs::path& ssp_filename );
+
       real_type
       at( unsigned age_idx,
           unsigned spec_idx,
@@ -57,8 +63,13 @@ namespace tao {
       void
       sum( MassIterator masses_start,
            MetalIterator metals_start,
-           const OutputIterator& sed_start ) const
+           const OutputIterator& sed_start,
+	   real_type recycle_fraction = 0.0 ) const
       {
+	 ASSERT( recycle_fraction >= 0.0 && recycle_fraction <= 1.0,
+		 "Invalid recycle fraction given to SSP summation: ", recycle_fraction );
+	 recycle_fraction = 1.0 - recycle_fraction;
+
          // Erase sed values first.
          {
             OutputIterator sed_it = sed_start;
@@ -72,6 +83,9 @@ namespace tao {
             // Cache mass.
             real_type mass = *masses_start;
             ASSERT( mass == mass, "Found NaN for mass during stellar population summation." );
+
+	    // Update with recycle fraction.
+	    mass *= recycle_fraction;
 
             // Interpolate the metallicity to an index.
             unsigned metal_idx = _interp_metal( *metals_start );
@@ -114,6 +128,18 @@ namespace tao {
 
       void
       _load_ssp( const fs::path& filename );
+
+      void
+      _save_metals( const fs::path& filename );
+
+      void
+      _save_ages( const fs::path& filename );
+
+      void
+      _save_waves( const fs::path& filename );
+
+      void
+      _save_ssp( const fs::path& filename );
 
    protected:
 
