@@ -443,8 +443,9 @@ namespace tao {
                }
             }
 
-            // Prepare the origin.
-            _calc_origin( global_dict );
+            // Prepare the origin if we're running a unique cone.
+	    if( _unique )
+	       _calc_origin( global_dict );
          }
 
          void
