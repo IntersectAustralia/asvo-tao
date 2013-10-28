@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from django.http import StreamingHttpResponse, Http404, HttpResponse
 from django.shortcuts import render, redirect
 from django.template import loader, Context, RequestContext
+from django.views.decorators.csrf import csrf_exempt
 
 from tao.datasets import dataset_get
 from tao.decorators import researcher_required, set_tab, \
@@ -13,6 +14,8 @@ from tao.models import Job, Snapshot, DataSetProperty, StellarModel, BandPassFil
 from tao.ui_modules import UIModulesHolder
 from tao.xml_util import xml_parse
 from tao.utils import output_formats
+
+from tap.decorators import http_auth, access_job
 
 import os, StringIO, subprocess
 import zipstream, html2text
@@ -288,6 +291,10 @@ def summary_temp_location(job):
 @researcher_required
 @object_permission_required('can_read_job')
 def get_tar_file(request, id):
+    return _get_tar_file(request, id)
+
+
+def _get_tar_file(request, id):
     job = Job.objects.get(pk=id)
     summary_dir = summary_temp_location(job)
     output_path = os.path.dirname(os.path.join(settings.FILES_BASE, job.output_path, 'output'))
@@ -296,6 +303,13 @@ def get_tar_file(request, id):
                                      content_type='application/x-tar')
     response['Content-Disposition'] = 'attachment; filename="tao_%s_catalogue_%d.tar"' % (job.username(), job.id)
     return response
+
+@csrf_exempt
+@http_auth
+def basic_tar_file(request, id):
+    "Allow download with basic auth"
+    return _get_tar_file(request, id)
+
 
 @researcher_required
 @object_permission_required('can_read_job')

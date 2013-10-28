@@ -8,12 +8,11 @@ import django.test
 
 import re, os, time
 import tao.datasets as datasets
-from tao.models import DataSetProperty, BandPassFilter, Simulation
+#from tao.models import DataSetProperty, BandPassFilter, Simulation
 from tao.settings import MODULE_INDICES
 from tao.tests.helper import TaoModelsCleanUpMixin
-from tao.tests.support.factories import GlobalParameterFactory
 
-def interact(local):
+def interact(local=locals()):
     """
         drop into an interactive shell - can be helpful for debugging
         call like interact(local=locals())
@@ -24,7 +23,7 @@ def interact(local):
 def visit(client, view_name, *args, **kwargs):
     return client.get(reverse(view_name, args=args), follow=True)
 
-class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
+class LiveServerTest(object):
     fixtures = ['rules.json']
 
     DOWNLOAD_DIRECTORY = '/tmp/work/downloads'
@@ -44,7 +43,6 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
         time.sleep(secs * 1.0)
 
     def setUp(self):
-        self.output_formats = GlobalParameterFactory.create(parameter_name='output_formats', parameter_value=LiveServerTest.OUTPUT_FORMATS)
 
         from selenium.webdriver.firefox.webdriver import FirefoxProfile
         fp = FirefoxProfile()
@@ -58,11 +56,6 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
         # create the download dir
         if not os.path.exists(self.DOWNLOAD_DIRECTORY):
             os.makedirs(self.DOWNLOAD_DIRECTORY)
-        # ensure that it is empty
-        for root, dirs, files in os.walk(self.DOWNLOAD_DIRECTORY):
-            for file in files:
-                os.remove(os.path.join(root, file))
-        return
 
     def tearDown(self):
         self.selenium.quit()
@@ -72,7 +65,6 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
                 os.remove(os.path.join(root, name))
             for name in dirs:
                 os.rmdir(os.path.join(root, name))
-        super(LiveServerTest, self).tearDown()
 
     def lc_id(self, bare_field):
         return '#id_light_cone-%s' % bare_field
@@ -130,7 +122,7 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
         return elem.text
 
     def find_element_by_css_selector(self, selector):
-        retries = 30
+        retries = 3
         while retries > 0:
             try:
                 elem = self.selenium.find_element_by_css_selector(selector)
@@ -142,7 +134,7 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
         return self.selenium.find_element_by_css_selector(selector)
 
     def find_element_by_id(self, elem_id):
-        retries = 30
+        retries = 3
         while retries > 0:
             try:
                 elem = self.selenium.find_element_by_id(elem_id)
@@ -168,6 +160,18 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
                     self.selenium.switch_to_alert().accept()
                 except:
                     return self.selenium.page_source
+
+    def assertTrue(self, value, msg):
+        if not value:
+            raise AssertionError(msg)
+        return
+
+    def assertEqual(self, vala, valb):
+        if vala != valb:
+            msg = 'FAIL: "{0}" != "{1}"'.format(vala, valb)
+            raise AssertionError(msg)
+        return
+
 
     def assert_page_has_content(self, string):
         page_source = self.get_page_source()
@@ -276,7 +280,6 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
         self.assertEqual(expected_value, strip_tags(value_displayed))
 
     def fill_in_fields(self, field_data, id_wrap=None, clear=False):
-        from code import interact
         for selector, text_to_input in field_data.items():
             if id_wrap:
                 selector = id_wrap(selector)
@@ -309,7 +312,7 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
         self.wait(0.5)
 
     def login(self, username, password):
-        self.visit('login')
+        self.visit('accounts/login')
 
         username_input = self.selenium.find_element_by_id('id_username')
         password_input = self.selenium.find_element_by_id('id_password')
@@ -349,7 +352,7 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
         return [str("%.5g" % snapshot.redshift) for snapshot in snapshots]
         
     def get_full_url(self, url_name, *args, **kwargs):
-        return "%s%s" % (self.live_server_url, reverse(url_name, args=args, kwargs=kwargs))
+        return "%s%s" % (self.job_params.BASE_URL, url_name)
     
     def get_selected_option_text(self, id_of_select):
         select = self.selenium.find_element_by_css_selector(id_of_select)
@@ -426,12 +429,15 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
         submit_button = self.selenium.find_element_by_css_selector('button[type="submit"]')
         submit_button.submit()
 
-class LiveServerMGFTest(LiveServerTest):
-    def submit_mgf_form(self):
+class DeploymentTester(LiveServerTest):
+    def submit_mgf_form(self, description=''):
         self.click('tao-tabs-summary_submit')
+        #self.click('id-job_description')
+        self.fill_in_fields({'#job_description': description},
+                            clear=True)
+ 
         submit_button = self.selenium.find_element_by_css_selector('#mgf-form #form_submit')
         submit_button.click()
-        self.wait(1.5)
 
     def assert_cant_submit_mgf_form(self):
         self.click('tao-tabs-summary_submit')
