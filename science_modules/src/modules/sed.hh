@@ -179,9 +179,10 @@ namespace tao {
             auto waves_fn = path/dict.get<string>( "wavelengths-file" );
             auto metals_fn = path/dict.get<string>( "metallicities-file" );
             auto ssp_fn = path/dict.get<string>( "single-stellar-population-model" );
+	    auto meta_fn = ages_fn.parent_path()/"meta.dat";
 
             // Prepare the SSP.
-            _ssp.load( ages_fn, waves_fn, metals_fn, ssp_fn );
+            _ssp.load( ages_fn, waves_fn, metals_fn, ssp_fn, meta_fn );
          }
 
       protected:

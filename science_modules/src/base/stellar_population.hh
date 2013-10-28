@@ -35,16 +35,26 @@ namespace tao {
       set_spectra( vector<real_type>& spectra );
 
       void
+      set_recycle_fraction( real_type rec_frac )
+      {
+	 ASSERT( rec_frac >= 0.0 && rec_frac <= 1.0,
+		 "Invalid recycle fraction given to SSP summation: ", rec_frac );
+	 _com_rec_frac = 1.0 - rec_frac;
+      }
+
+      void
       load( const fs::path& ages_filename,
             const fs::path& waves_filename,
             const fs::path& metals_filename,
-            const fs::path& ssp_filename );
+            const fs::path& ssp_filename,
+	    const fs::path& meta_filename );
 
       void
       save( const fs::path& ages_filename,
 	    const fs::path& waves_filename,
 	    const fs::path& metals_filename,
-	    const fs::path& ssp_filename );
+	    const fs::path& ssp_filename,
+	    const fs::path& meta_filename );
 
       real_type
       at( unsigned age_idx,
@@ -63,13 +73,8 @@ namespace tao {
       void
       sum( MassIterator masses_start,
            MetalIterator metals_start,
-           const OutputIterator& sed_start,
-	   real_type recycle_fraction = 0.0 ) const
+           const OutputIterator& sed_start ) const
       {
-	 ASSERT( recycle_fraction >= 0.0 && recycle_fraction <= 1.0,
-		 "Invalid recycle fraction given to SSP summation: ", recycle_fraction );
-	 recycle_fraction = 1.0 - recycle_fraction;
-
          // Erase sed values first.
          {
             OutputIterator sed_it = sed_start;
@@ -84,8 +89,8 @@ namespace tao {
             real_type mass = *masses_start;
             ASSERT( mass == mass, "Found NaN for mass during stellar population summation." );
 
-	    // Update with recycle fraction.
-	    mass *= recycle_fraction;
+	    // Update with recycle fraction compliment.
+	    mass *= _com_rec_frac;
 
             // Interpolate the metallicity to an index.
             unsigned metal_idx = _interp_metal( *metals_start );
@@ -130,6 +135,9 @@ namespace tao {
       _load_ssp( const fs::path& filename );
 
       void
+      _load_meta( const fs::path& filename );
+
+      void
       _save_metals( const fs::path& filename );
 
       void
@@ -141,12 +149,16 @@ namespace tao {
       void
       _save_ssp( const fs::path& filename );
 
+      void
+      _save_meta( const fs::path& filename );
+
    protected:
 
       vector<real_type> _waves;
       vector<real_type> _spec;
       vector<real_type> _metal_bins;
       age_line<real_type> _age_bins;
+      real_type _com_rec_frac;
    };
 
 }
