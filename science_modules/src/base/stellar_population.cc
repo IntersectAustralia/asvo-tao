@@ -28,31 +28,35 @@ namespace tao {
    }
 
    void
+   stellar_population::set_recycle_fraction( real_type rec_frac )
+   {
+      ASSERT( rec_frac >= 0.0 && rec_frac <= 1.0,
+              "Invalid recycle fraction given to SSP summation: ", rec_frac );
+      _com_rec_frac = 1.0 - rec_frac;
+   }
+
+   void
    stellar_population::load( const fs::path& ages_filename,
                              const fs::path& waves_filename,
                              const fs::path& metals_filename,
-                             const fs::path& ssp_filename,
-			     const fs::path& meta_filename )
+                             const fs::path& ssp_filename )
    {
       _load_ages( ages_filename );
       _load_waves( waves_filename );
       _load_metals( metals_filename );
       _load_ssp( ssp_filename );
-      _load_meta( meta_filename );
    }
 
    void
    stellar_population::save( const fs::path& ages_filename,
                              const fs::path& waves_filename,
                              const fs::path& metals_filename,
-                             const fs::path& ssp_filename,
-			     const fs::path& meta_filename )
+                             const fs::path& ssp_filename )
    {
       _save_ages( ages_filename );
       _save_waves( waves_filename );
       _save_metals( metals_filename );
       _save_ssp( ssp_filename );
-      _save_meta( meta_filename );
    }
 
    real_type
@@ -204,6 +208,13 @@ namespace tao {
       std::ifstream file( filename.c_str() );
       EXCEPT( file.is_open(), "Couldn't find SSP file: ", filename );
 
+      // Read recycling fraction first.
+      real_type rec_frac;
+      file >> rec_frac;
+      EXCEPT( !file.fail(), "Failed while reading recycling fraction." );
+      set_recycle_fraction( rec_frac );
+      LOGILN( "Set recycling fraction to: ", rec_frac );
+
       // Allocate. Note that the ordering goes time,spectra,metals.
       _spec.reallocate( _age_bins.size()*_waves.size()*(_metal_bins.size() + 1) );
       LOGILN( "Number of spectra entries: ", _spec.size() );
@@ -217,22 +228,6 @@ namespace tao {
       EXCEPT( file.good(), "Error reading SSP file." );
 
       LOGILN( "Done.", setindent( -2 ) );
-   }
-
-   void
-   stellar_population::_load_meta( const fs::path& filename )
-   {
-      LOGBLOCKI( "Loading stellar population meta data from: ", filename );
-
-      // Open the file.
-      std::ifstream file( filename.c_str() );
-      EXCEPT( file.is_open(), "Couldn't find SSP meta file: ", filename );
-
-      // Read recycling fraction first.
-      real_type rec_frac;
-      file >> rec_frac;
-      EXCEPT( !file.fail(), "Failed while reading recycling fraction." );
-      set_recycle_fraction( rec_frac );
    }
 
    void
@@ -289,6 +284,11 @@ namespace tao {
       std::ofstream file( filename.c_str() );
       EXCEPT( file.is_open(), "Couldn't open SSP file: ", filename );
 
+      // Write recycling fraction first.
+      real_type rec_frac = 1.0 - _com_rec_frac;
+      file << rec_frac;
+      EXCEPT( !file.fail(), "Failed while writing recycling fraction." );
+
       // Dump the SSP data in the same kind of format as
       // the originals.
       unsigned pos = 0;
@@ -303,21 +303,6 @@ namespace tao {
 	 else
 	    file << " ";
       }
-   }
-
-   void
-   stellar_population::_save_meta( const fs::path& filename )
-   {
-      LOGBLOCKI( "Saving stellar population meta data to: ", filename );
-
-      // Open the file.
-      std::ofstream file( filename.c_str() );
-      EXCEPT( file.is_open(), "Couldn't open SSP meta file: ", filename );
-
-      // Read recycling fraction first.
-      real_type rec_frac = 1.0 - _com_rec_frac;
-      file << rec_frac;
-      EXCEPT( !file.fail(), "Failed while writing recycling fraction." );
    }
 
 }
