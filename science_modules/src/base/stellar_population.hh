@@ -35,26 +35,19 @@ namespace tao {
       set_spectra( vector<real_type>& spectra );
 
       void
-      set_recycle_fraction( real_type rec_frac )
-      {
-	 ASSERT( rec_frac >= 0.0 && rec_frac <= 1.0,
-		 "Invalid recycle fraction given to SSP summation: ", rec_frac );
-	 _com_rec_frac = 1.0 - rec_frac;
-      }
+      set_recycle_fraction( real_type rec_frac );
 
       void
       load( const fs::path& ages_filename,
             const fs::path& waves_filename,
             const fs::path& metals_filename,
-            const fs::path& ssp_filename,
-	    const fs::path& meta_filename );
+            const fs::path& ssp_filename );
 
       void
       save( const fs::path& ages_filename,
 	    const fs::path& waves_filename,
 	    const fs::path& metals_filename,
-	    const fs::path& ssp_filename,
-	    const fs::path& meta_filename );
+	    const fs::path& ssp_filename );
 
       real_type
       at( unsigned age_idx,
@@ -135,9 +128,6 @@ namespace tao {
       _load_ssp( const fs::path& filename );
 
       void
-      _load_meta( const fs::path& filename );
-
-      void
       _save_metals( const fs::path& filename );
 
       void
@@ -148,9 +138,6 @@ namespace tao {
 
       void
       _save_ssp( const fs::path& filename );
-
-      void
-      _save_meta( const fs::path& filename );
 
    protected:
 
