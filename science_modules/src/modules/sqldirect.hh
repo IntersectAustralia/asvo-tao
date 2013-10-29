@@ -205,6 +205,7 @@ namespace tao {
 	 void
 	 PrepareGalaxyObject(string query)
 	 {
+
 	    std::size_t pos=query.find("where");
 	    string modquery=query;
 	    if(pos!=std::string::npos)
@@ -418,6 +419,7 @@ namespace tao {
 	 _read_options( const options::xml_dict& global_dict )
 	 {
 	    _sqlquery=this->_dict.template get<string>( "query" );
+	    std::transform(_sqlquery.begin(), _sqlquery.end(), _sqlquery.begin(), ::tolower);
 	    _OutputLimit=this->_dict.template get<long>( "limit", -1 );
 	    LOGDLN( "sqlQuery: ", _sqlquery );
 	    LOGDLN( "outputRecord Limit: ", _OutputLimit );
