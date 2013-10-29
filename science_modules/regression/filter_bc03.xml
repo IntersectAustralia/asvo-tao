@@ -1,0 +1,64 @@
+<tao>
+  <workflow>
+    <schema-version>2</schema-version>
+
+    <light-cone id="light-cone">
+      <geometry>light-cone</geometry>
+      <box-repetition>unique</box-repetition>
+      <rng-seed>0</rng-seed>
+      <redshift-min>0.01</redshift-min>
+      <redshift-max>0.06</redshift-max>
+      <ra-min>0</ra-min>
+      <ra-max>10</ra-max>
+      <dec-min>0</dec-min>
+      <dec-max>10</dec-max>
+      <output-fields>
+	<item>globalindex</item>
+        <item>posx</item>
+        <item>posy</item>
+        <item>posz</item>
+      </output-fields>
+    </light-cone>
+
+    <sed id="sed">
+      <parents>
+        <item>light-cone</item>
+      </parents>
+      <ages-file>bc03_half/ages.dat</ages-file>
+      <wavelengths-file>bc03_half/wavelengths.dat</wavelengths-file>
+      <metallicities-file>bc03_half/metallicities.dat</metallicities-file>
+      <single-stellar-population-model>bc03_half/ssp_salpeter.dat</single-stellar-population-model>
+    </sed>
+
+    <filter id="filter">
+      <parents>
+        <item>sed</item>
+      </parents>
+      <bandpass-filters>
+        <item>Johnson/Johnson_V.dati</item>
+      </bandpass-filters>
+    </filter>
+
+    <csv id="csv">
+      <parents>
+        <item>filter</item>
+      </parents>
+      <filename>result</filename>
+      <fields>
+	<item>globalindex</item>
+        <item>posx</item>
+        <item>posy</item>
+        <item>posz</item>
+	<item>redshift_cosmological</item>
+        <item>Johnson/Johnson_V.dati_apparent</item>
+        <item>Johnson/Johnson_V.dati_absolute</item>
+      </fields>
+    </csv>
+
+  </workflow>
+
+  <subjobindex>0</subjobindex>
+  <logdir>log</logdir>
+  <outputdir>output</outputdir>
+  <database>millennium_mini_hdf5_dist</database>
+</tao>
