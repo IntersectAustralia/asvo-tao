@@ -59,6 +59,37 @@ namespace tao {
       _save_ssp( ssp_filename );
    }
 
+   void
+   stellar_population::restrict()
+   {
+      // Just use new vectors for simplicity.
+      vector<real_type> new_waves( _waves.size()/2 );
+      vector<real_type> new_ages( _age_bins.size()/2 );
+      vector<real_type> new_spec( new_waves.size()*new_ages.size()*(_metal_bins.size() + 1) );
+
+      // Halve things.
+      for( unsigned ii = 0; ii < new_waves.size(); ++ii )
+      {
+	 new_waves[ii] = _waves[2*ii];
+
+	 for( unsigned jj = 0; jj < new_ages.size(); ++jj )
+	 {
+	    new_ages[jj] = _age_bins[2*jj];
+
+	    for( unsigned kk = 0; kk <= _metal_bins.size(); ++kk )
+	    {
+	       new_spec[jj*new_waves.size()*(_metal_bins.size() + 1) + ii*(_metal_bins.size() + 1) + kk]
+		  = at( 2*jj, 2*ii, kk );
+	    }
+	 }
+      }
+
+      // Swap everything out.
+      _waves.swap( new_waves );
+      _spec.swap( new_spec );
+      _age_bins.set_ages( new_ages );
+   }
+
    real_type
    stellar_population::at( unsigned age_idx,
                            unsigned spec_idx,
@@ -208,12 +239,14 @@ namespace tao {
       std::ifstream file( filename.c_str() );
       EXCEPT( file.is_open(), "Couldn't find SSP file: ", filename );
 
+#if 0
       // Read recycling fraction first.
       real_type rec_frac;
       file >> rec_frac;
       EXCEPT( !file.fail(), "Failed while reading recycling fraction." );
       set_recycle_fraction( rec_frac );
       LOGILN( "Set recycling fraction to: ", rec_frac );
+#endif
 
       // Allocate. Note that the ordering goes time,spectra,metals.
       _spec.reallocate( _age_bins.size()*_waves.size()*(_metal_bins.size() + 1) );
@@ -284,10 +317,12 @@ namespace tao {
       std::ofstream file( filename.c_str() );
       EXCEPT( file.is_open(), "Couldn't open SSP file: ", filename );
 
+#if 0
       // Write recycling fraction first.
       real_type rec_frac = 1.0 - _com_rec_frac;
       file << rec_frac;
       EXCEPT( !file.fail(), "Failed while writing recycling fraction." );
+#endif
 
       // Dump the SSP data in the same kind of format as
       // the originals.
@@ -295,7 +330,7 @@ namespace tao {
       for( auto val : _spec )
       {
 	 file << val;
-	 if( ++pos == _waves.size() )
+	 if( ++pos == _metal_bins.size() + 1 )
 	 {
 	    file << "\n";
 	    pos = 0;
