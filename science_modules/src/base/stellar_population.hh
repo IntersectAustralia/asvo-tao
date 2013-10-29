@@ -49,6 +49,9 @@ namespace tao {
 	    const fs::path& metals_filename,
 	    const fs::path& ssp_filename );
 
+      void
+      restrict();
+
       real_type
       at( unsigned age_idx,
           unsigned spec_idx,
