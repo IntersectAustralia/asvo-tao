@@ -18,17 +18,17 @@ The data importing process expect its input data in a single HDF5 File according
 
 If such data format is not available, the developer is required to write a data conversion code to produce the described HDF5 data before using the data importing code. The array snapshot_displs are not mandatory and can safely be ignored. Other components are mandatory. These components are:
 
-  * Cosmology group : these values present the cosmological constants used to produce the data and is provided to the science modules as a metadata. 
+* Cosmology group : these values present the cosmological constants used to produce the data and is provided to the science modules as a metadata. 
 
     * hubble: the hubble constant value used ( single value)
     * omega_l: the omega_l constant value used (single value)
     * omega_m: the omega_m contact value used (single value) 
 
-  * galaxies: is a compound data array with each column present a field and each row present a single data record. It is an n *x* m matrix where n is the number of records and m is the number of fields. Different fields can have different data types. The importing code handle that and convert them to a suitable database datatype. 
-  * snapshot_displs : It groups the data records (in galaxies) by their snapshot index. This is ignored by the data importing code.
-  * snapshot_redshift: an array present the mapping between the snapshot index used and their redshift value.
-  * tree_count: The data are grouped by their treeid in galaxies. The tree_count 1D array present for each tree the number of galaxies in that tree.
-  * tree_displs: For each tree this 1D array contain the start index in the galaxies dataset for each tree. Both tree_count and tree_displs must be consistence.       
+* galaxies: is a compound data array with each column present a field and each row present a single data record. It is an n *x* m matrix where n is the number of records and m is the number of fields. Different fields can have different data types. The importing code handle that and convert them to a suitable database datatype. 
+* snapshot_displs : It groups the data records (in galaxies) by their snapshot index. This is ignored by the data importing code.
+* snapshot_redshift: an array present the mapping between the snapshot index used and their redshift value.
+* tree_count: The data are grouped by their treeid in galaxies. The tree_count 1D array present for each tree the number of galaxies in that tree.
+* tree_displs: For each tree this 1D array contain the start index in the galaxies dataset for each tree. Both tree_count and tree_displs must be consistence.       
 
 Data Import Process
 -------------------
@@ -45,11 +45,11 @@ The details of the HDF file reading and data copying to database are presented i
 
 **The data importing process assume the following**:
 
-  * The code assume that the data will be imported to more than one server. The mapping between table IDs and the server ID happens implicitly in a round-robin fashion.
-  * The code assumes that the Number of MPI processes used >= Number of Database Servers +1 
-  * Galaxies are grouped by tree id
-  * Galaxies are assumed to be sorted by their local galaxies ID inside each tree (if no local galaxy id is provided)
-  * The code assumes that Both tree_count and tree_displs are consistence.
+* The code assume that the data will be imported to more than one server. The mapping between table IDs and the server ID happens implicitly in a round-robin fashion.
+* The code assumes that the Number of MPI processes used >= Number of Database Servers +1 
+* Galaxies are grouped by tree id
+* Galaxies are assumed to be sorted by their local galaxies ID inside each tree (if no local galaxy id is provided)
+* The code assumes that Both tree_count and tree_displs are consistence.
 
 The import code as shown in the cross functional diagram figure use barriers to synchronize between different processes. different sequential tasks are performed. These tasks are mainly performed by process (0) such as creating new database or adding indices to database tables.  The actual data importing process happen in the **import tree** task, which is described in more details in the second flowchart. The code support *resume* if the there was a failure in the previous importing trial. if the user select the *resume* flag to be active the code will not re-create any of the data importing helper tables or the database. It will go directly to the data importing process and continue to handle un-processed trees. Each tree is imported in a single database transaction. 
 
@@ -67,8 +67,51 @@ See `COPY <http://www.postgresql.org/docs/9.2/static/sql-copy.html>`_ (Binary Fo
 
 Settings for the data importing module
 --------------------------------------
+
+The following two figures show a sample setting file content for the import process. The import process can run through interactive session via command line or as a job using qsub. All the messages and progress reports are written into log files in the "/log" directory. Each MPI process write its own log file. So there will be N log files (where N is the number of MPI processes).
+
+
 .. figure:: ../_static/import_setting1.jpg
    :alt: import setting(a)
 
 .. figure:: ../_static/import_setting2.jpg
    :alt: import setting(b)
+
+The setting file contains three main sections: 
+
+* **sageinput**: Contain the mapping between the HDF5 fields and the database fields
+* **PGDB**: contain the postgresql servers connection information.
+* **RunningSettings**: contains the path of the HDF5 input file and the metadata required for the importing process.
+
+The field names in the input HDF5 file are completly ignored by the importing code. The importing code will do a direct mapping, based on the field index, between the fields specified in the sageinput section of the setting file and the fields in the HDF5 file. The importing code expect an exact match between the fields specified in the XML and their data types and the fields in the HDF5 file and their data type.
+
+The following fields are mandatory. The importing code will abort with exception if they are not in the list of fields: 
+
+* posx, posy, and posz
+* velx, vely, and velz
+* snapnum
+* treeindex
+* coldgas
+* metalscoldgas
+* sfr
+* sfrbulge
+* descendant
+* stellarmass
+* globalgalaxyid
+
+The code will not validate the field mapping for these fields (i.e. no checking is made to validate that *coldgas* is within the reasonable limit). However, the code validates *posx, posy, and posz* against the specified simulation box size.   
+
+Mapping Trees to Tables
+-----------------------
+
+.. figure:: ../_static/Treemapping.jpg
+   :alt: Tree mapping
+
+The process of mapping trees to tables is vital to determine how the data is distributed over different tables and servers. The simulation box is projected into a two dimensional rectangle which is then partitioned into a structured grid as shown in the figure. The number of cells in this structured grid is determined by *BSPCellSize* value in the setting file. So, the number of cells in the X direction is equal to *SimulationBoxX/BSPCellSize* and the number of cells in the Y Direction is equal to *SimulationBoxY/BSPCellSize*    Each call of this grid is mapped to a single database table. For each tree, the importing code determine its bounding rectangle after projecting all of its galaxies into a two dimensional domain. The intersection between this bounding rectangle and the structured grid cells determine where this tree will be stored based on the following rules:
+
+* If the tree is contained by a single cell  (**Case A**) , the table associated to this cell will be used .
+* If the tree bounding table intersects with more than one cell but less than 10 tables (**Case B**), a random table will be selected from the intersection list and the tree will be assigned to it. 
+* If the tree bounding box is huge and intersect with more than 10 cells (**Case C**), the tree will be associated with a special table (with index outside the cells indices).
+
+ 
+
