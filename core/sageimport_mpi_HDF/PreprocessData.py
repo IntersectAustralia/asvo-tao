@@ -150,14 +150,17 @@ class PreprocessData(object):
         
         ## Get List of all tables expected from "datafiles" table
         #TableIDs=self.ExecuteQuerySQLStatment("select distinct tableid from datafiles order by tableid;")
-        TableIDs=range(0,NumberofTables)
+        serverscount=int(self.Options['PGDB:ServersCount'])
+        TableIDs=range(0,NumberofTables+serverscount)
+        logging.info("Tables To Be Created:")
+        logging.info(TableIDs)        
         self.CreateTable_DB_Mapping()
         ## for each tableID create New Table 
         for TableID in TableIDs:
             logging.info("Creating Table ("+str(TableID)+")")
             self.CreateNewTable(TableID)
         
-        self.CreateNewTable(NumberofTables)
+        #self.CreateNewTable(NumberofTables)
     def CreateTable_DB_Mapping(self):
         DropTable="SET client_min_messages TO WARNING; DROP TABLE IF EXISTS Table_DB_Mapping;"
         self.DBConnection.ExecuteNoQuerySQLStatment_On_AllServers(DropTable)
