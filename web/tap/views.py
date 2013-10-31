@@ -208,9 +208,10 @@ def make_parameters_xml(request):
     
     galaxy_model_node = etree.SubElement(sql, 'galaxy-model')
     galaxy_model_node.text = dataset['galaxy_model']
-    
-    limit_node = etree.SubElement(sql, 'limit')
-    limit_node.text = limit
+
+    if limit is not None:
+        limit_node = etree.SubElement(sql, 'limit')
+        limit_node.text = limit
     
     module_version_node = etree.SubElement(sql, 'module-version')
     module_version_node.text = str(TAP_MODULE_VERSION)
