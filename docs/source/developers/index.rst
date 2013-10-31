@@ -20,7 +20,10 @@ This is currently more of a dumping ground than an organised guide - it should i
    mockimage
    telescope
    tap
-
+   workflow
+   uimasterdb
+   HDF5Mapping
+   dataimport
 
 =============
 Galaxy Models
