@@ -108,7 +108,9 @@ class PreprocessData(object):
         
         
         NumberofTables=CellsInX*CellsInY
-        TableIDs=range(0,NumberofTables+1)
+        serverscount=int(self.Options['PGDB:ServersCount'])
+        TableIDs=range(0,NumberofTables+serverscount)
+        #TableIDs=range(0,NumberofTables+1)
         
         for TableID in TableIDs:
             
