@@ -1,6 +1,8 @@
 #ifndef tao_base_rdb_backend_hh 
 #define tao_base_rdb_backend_hh
 
+#include <iomanip>
+#include <boost/format.hpp>
 #include <unordered_map>
 #include <libhpc/containers/set.hh>
 #include <libhpc/containers/string.hh>
@@ -73,6 +75,9 @@ namespace tao {
                                 tao::query<real_type>& qry,
                                 filter const* filt = 0 ) const
          {
+	    using boost::io::group;
+	    using std::setprecision;
+
             boost::format fmt(
 	       "SELECT %1% FROM -table- "
 	       "WHERE %2% = %3% AND "         // snapshot
@@ -85,9 +90,9 @@ namespace tao {
             make_field_map( map, qry, box );
             fmt % make_output_field_query_string( qry, map );
             fmt % _field_map.at( "snapnum" ) % box.snapshot();
-            fmt % map.at( "posx" ) % box.min()[0] % box.max()[0];
-            fmt % map.at( "posy" ) % box.min()[1] % box.max()[1];
-            fmt % map.at( "posz" ) % box.min()[2] % box.max()[2];
+            fmt % map.at( "posx" ) % group( setprecision( 12 ), box.min()[0] ) % group( setprecision( 12 ), box.max()[0] );
+            fmt % map.at( "posy" ) % group( setprecision( 12 ), box.min()[1] ) % group( setprecision( 12 ), box.max()[1] );
+            fmt % map.at( "posz" ) % group( setprecision( 12 ), box.min()[2] ) % group( setprecision( 12 ), box.max()[2] );
             string filt_str = make_filter_query_string( filt );
             if( !filt_str.empty() )
                filt_str = " AND " + filt_str; 
@@ -100,6 +105,9 @@ namespace tao {
                                  tao::query<real_type>& query,
                                  filter const* filt = 0 ) const
          {
+	    using boost::io::group;
+	    using std::setprecision;
+
             boost::format fmt(
                "SELECT %1% FROM -table- "
                "INNER JOIN redshift_ranges ON (-table-.%2% = redshift_ranges.snapshot) "
@@ -108,8 +116,8 @@ namespace tao {
                "(POW(%3%,2) + POW(%4%,2) + POW(%5%,2)) < redshift_ranges.max AND "
                "ATAN2(%4%,%3%) >= %6% AND "
                "ATAN2(%4%,%3%) < %7% AND "
-               "(0.5*PI() - ACOS(%5%/(SQRT(POW(%3%,2) + POW(%4%,2) + POW(%5%,2))))) >= %6% AND "
-               "(0.5*PI() - ACOS(%5%/(SQRT(POW(%3%,2) + POW(%4%,2) + POW(%5%,2))))) < %7% AND "
+               "(0.5*PI() - ACOS(%5%/(SQRT(POW(%3%,2) + POW(%4%,2) + POW(%5%,2))))) >= %8% AND "
+               "(0.5*PI() - ACOS(%5%/(SQRT(POW(%3%,2) + POW(%4%,2) + POW(%5%,2))))) < %9% AND "
                // "(%3%)/(SQRT(POW(%3%,2) + POW(%4%,2))) >= %6% AND "
                // "(%3%)/(SQRT(POW(%3%,2) + POW(%4%,2))) < %7% AND "
                // "SQRT(POW(%3%,2) + POW(%4%,2))/(SQRT(POW(%3%,2) + POW(%4%,2) + POW(%5%,2))) >= %8% AND "
@@ -124,11 +132,11 @@ namespace tao {
             fmt % make_output_field_query_string( query, map );
             fmt % _field_map.at( "snapnum" );
             fmt % map.at( "posx" ) % map.at( "posy" ) % map.at( "posz" );
-            fmt % tile.lightcone()->min_ra() % tile.lightcone()->max_ra();
-            fmt % tile.lightcone()->min_dec() % tile.lightcone()->max_dec();
+            fmt % group( setprecision( 12 ), tile.lightcone()->min_ra() ) % group( setprecision( 12 ), tile.lightcone()->max_ra() );
+	    fmt % group( setprecision( 12 ), tile.lightcone()->min_dec() ) % group( setprecision( 12 ), tile.lightcone()->max_dec() );
             // fmt % cos( tile.lightcone()->max_ra() ) % cos( tile.lightcone()->min_ra() );
             // fmt % cos( tile.lightcone()->max_dec() ) % cos( tile.lightcone()->min_dec() );
-            fmt % pow( tile.lightcone()->min_dist(), 2 ) % pow( tile.lightcone()->max_dist(), 2 );
+            fmt % group( setprecision( 12 ), pow( tile.lightcone()->min_dist(), 2 ) ) % group( setprecision( 12 ), pow( tile.lightcone()->max_dist(), 2 ) );
             string filt_str = make_filter_query_string( filt );
             if( !filt_str.empty() )
                filt_str = " AND " + filt_str; 
@@ -145,6 +153,9 @@ namespace tao {
          list<string>
          make_snap_rng_query_string( const simulation<real_type>& sim ) const
          {
+	    using boost::io::group;
+	    using std::setprecision;
+
             ASSERT( sim.num_snapshots() >= 2, "Must be at least two snapshots." );
 
             // Store in a list each command.
@@ -161,7 +172,7 @@ namespace tao {
                real_type max = numerics::redshift_to_comoving_distance( sim.redshift( ii ), 1000, sim.hubble(), sim.omega_l(), sim.omega_m() )*sim.h();
                real_type min = numerics::redshift_to_comoving_distance( sim.redshift( ii + 1 ), 1000, sim.hubble(), sim.omega_l(), sim.omega_m() )*sim.h();
                LOGDLN( "Inserting range for snapshot ", ii + 1, ": [", min*min, ", ", max*max, ")" );
-               fmt % (ii + 1) % sim.redshift( ii + 1 ) % (min*min) % (max*max);
+               fmt % (ii + 1) % group( setprecision( 12 ), sim.redshift( ii + 1 ) ) % group( setprecision( 12 ), (min*min) ) % group( setprecision( 12 ), (max*max) );
                queries.emplace_back( fmt.str() );
             }
 
@@ -204,6 +215,9 @@ namespace tao {
          string
          make_filter_query_string( filter const* filt ) const
          {
+	    using boost::io::group;
+	    using std::setprecision;
+
             string qry;
             if( filt &&
                 !filt->field_name().empty() &&
@@ -212,12 +226,12 @@ namespace tao {
             {
                string fn = _field_map.at( filt->field_name() );
                if( filt->minimum<real_type>() )
-                  qry += boost::str( boost::format( "%1% >= %2%" ) % fn % *filt->minimum<real_type>() );
+		 qry += boost::str( boost::format( "%1% >= %2%" ) % fn % group( setprecision( 12 ), *filt->minimum<real_type>() ) );
                if( filt->maximum<real_type>() )
                {
                   if( filt->minimum<real_type>() )
                      qry += " AND ";
-                  qry += boost::str( boost::format( "%1% < %2%" ) % fn % *filt->maximum<real_type>() );
+                  qry += boost::str( boost::format( "%1% < %2%" ) % fn % group( setprecision( 12 ), *filt->maximum<real_type>() ) );
                }
             }
             return qry;
@@ -228,6 +242,9 @@ namespace tao {
                          tao::query<real_type>& query,
                          optional<const tao::box<real_type>&> box = optional<const tao::box<real_type>&>() ) const
          {
+	    using boost::io::group;
+	    using std::setprecision;
+
             map.clear();
             for( string of : query.output_fields() )
             {
@@ -248,16 +265,16 @@ namespace tao {
                         {
                            field = boost::str( boost::format( repl ) %
 					       _field_map.at( mapped[(*box).rotation()[0]] ) %
-					       (*box).translation()[(*box).rotation()[0]] %
-                                               box_size % (*box).min()[0] %
-                                               (*box).origin()[0] );
+					       group( setprecision( 12 ), (*box).translation()[(*box).rotation()[0]] ) %
+                                               group( setprecision( 12 ), box_size ) % group( setprecision( 12 ), (*box).min()[0] ) %
+                                               group( setprecision( 12 ), (*box).origin()[0] ) );
                         }
                         else
                         {
 			   field = boost::str( boost::format( "(%1% + %2% - %3%)" ) %
                                                _field_map.at( of ) %
-                                               (*box).min()[0] %
-                                               (*box).origin()[0] );
+                                               group( setprecision( 12 ), (*box).min()[0] ) %
+                                               group( setprecision( 12 ), (*box).origin()[0] ) );
                         }
                      }
                      else if( of == "posy" )
@@ -266,16 +283,16 @@ namespace tao {
                         {
                            field = boost::str( boost::format( repl ) %
 					       _field_map.at( mapped[(*box).rotation()[1]] ) %
-					       (*box).translation()[(*box).rotation()[1]] %
-                                               box_size % (*box).min()[1] %
-                                               (*box).origin()[1] );
+					       group( setprecision( 12 ), (*box).translation()[(*box).rotation()[1]] ) %
+                                               group( setprecision( 12 ), box_size ) % group( setprecision( 12 ), (*box).min()[1] ) %
+                                               group( setprecision( 12 ), (*box).origin()[1] ) );
                         }
                         else
                         {
 			   field = boost::str( boost::format( "(%1% + %2% - %3%)" ) %
                                                _field_map.at( of ) %
-                                               (*box).min()[1] %
-                                               (*box).origin()[1] );
+                                               group( setprecision( 12 ), (*box).min()[1] ) %
+                                               group( setprecision( 12 ), (*box).origin()[1] ) );
                         }
                      }
                      else
@@ -284,16 +301,16 @@ namespace tao {
                         {
                            field = boost::str( boost::format( repl ) %
                                                _field_map.at( mapped[(*box).rotation()[2]] ) %
-                                               (*box).translation()[(*box).rotation()[2]] %
-                                               box_size % (*box).min()[2] %
-                                               (*box).origin()[2] );
+                                               group( setprecision( 12 ), (*box).translation()[(*box).rotation()[2]] ) %
+                                               group( setprecision( 12 ), box_size ) % group( setprecision( 12 ), (*box).min()[2] ) %
+                                               group( setprecision( 12 ), (*box).origin()[2] ) );
                         }
                         else
                         {
                            field = boost::str( boost::format( "(%1% + %2% - %3%)" ) %
                                                _field_map.at( of ) %
-                                               (*box).min()[2] %
-                                               (*box).origin()[2] );
+                                               group( setprecision( 12 ), (*box).min()[2] ) %
+                                               group( setprecision( 12 ), (*box).origin()[2] ) );
                         }
                      }
 
