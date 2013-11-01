@@ -466,6 +466,9 @@ namespace tao {
             // How many can I fit in each direction?
             unsigned y_num = (unsigned)(_sim.box_size()/y_peak);
             unsigned z_num = (unsigned)(_sim.box_size()/z_peak);
+	    EXCEPT( y_num && z_num, "Unable to fit any lightcones of the specified size "
+		    "in the simulation box size. Please reduce RA, DEC and/or maximum "
+		    "redshift." );
 
             // Total number I can fit?
             unsigned tot = y_num*z_num;
