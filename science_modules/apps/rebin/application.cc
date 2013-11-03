@@ -1,3 +1,4 @@
+#include <boost/lexical_cast.hpp>
 #include <libhpc/libhpc.hh>
 #include <tao/tao.hh>
 #include "application.hh"
@@ -96,9 +97,10 @@ namespace tao {
 	 std::fill( age_metals.begin(), age_metals.end(), 0 );
 	 sfh.rebin<real_type>( be.session( table ), gal_id, age_masses, age_bulge_masses, age_metals );
 
-         // Dump output.
-         std::cout << "MASSES: " << age_masses << "\n";
-         std::cout << "METALS: " << age_metals << "\n";
+         // Dump output to file.
+         std::ofstream outf( boost::lexical_cast<std::string>( _gid ) + ".dat" );
+         outf << "MASSES: " << age_masses << "\n";
+         outf << "METALS: " << age_metals << "\n";
       }
 
    }
