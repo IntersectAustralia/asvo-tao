@@ -70,6 +70,9 @@ namespace tao {
          const string&
          mag_field() const;
 
+	 bool
+	 okay() const;
+
       protected:
 
          unsigned _idx;
@@ -90,6 +93,7 @@ namespace tao {
          double _back_mag; // background magnitude
          double _exp_time; // exposure time in seconds
          unsigned _cnt;
+	 bool _okay;
       };
 
       template< class Backend >
@@ -175,8 +179,21 @@ namespace tao {
             auto timer = this->timer_start();
             LOGILN( "Rendering skymaker images.", setindent( 2 ) );
 
+	    bool okay = true;
             for( auto& img : _imgs )
+	    {
                img.render( _output_dir, _keep_files );
+	       if( !img.okay() )
+		  okay = false;
+	    }
+
+	    // Check for any failures and write a report to output.
+	    if( !okay )
+	    {
+	       std::ofstream outf( (_output_dir/"image_errors.txt").string() );
+	       outf << "There were errors generating one or more images, ";
+	       outf << "some images may be missing or corrupted.\n";
+	    }
 
             LOGILN( "Done.", setindent( -2 ) );
          }
