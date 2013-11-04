@@ -80,8 +80,8 @@ class WorkFlow(object):
         
         logging.info("Current PBS Jobs:"+str(CurrentJobs))
         JobRunning=False
-        for JobRecord in ListOfJobs:
-            if JobRecord['pbsreferenceid'].split('.')[0] in CurrentJobs:
+        for JobRecord in ListOfJobs:            
+            if JobRecord['pbsreferenceid']!= None and  (JobRecord['pbsreferenceid'].split('.')[0] in CurrentJobs):
                 JobRunning=True
         
         
@@ -103,6 +103,7 @@ class WorkFlow(object):
     def ProcessNewJob(self,UIJobReference,JobParams,JobDatabase,JobUserName):       
         
         IsSequential=False
+        SimulationName=''
         try:
             ## Handling for a very special case. Job Status turned to submitted while it is already running or queued! 
             ## In this case the job Will be rejected and an email to the Admin will be sent to indicate this
@@ -113,7 +114,7 @@ class WorkFlow(object):
             self.dbaseobj.RemoveAllJobsWithUIReferenceID(UIJobReference)
         
             ## 1- Prepare the Job Directory
-            [SubJobsCount,IsSequential]=self.PrepareJobFolder(JobParams,JobUserName,UIJobReference,JobDatabase)
+            [SubJobsCount,IsSequential,SimulationName]=self.PrepareJobFolder(JobParams,JobUserName,UIJobReference,JobDatabase)
             CurrentJobType=EnumerationLookup.JobType.Simple
             if SubJobsCount>1:
                CurrentJobType=EnumerationLookup.JobType.Complex     
@@ -165,7 +166,7 @@ class WorkFlow(object):
             ### Submit the Job to the PBS Queue
             
             
-            PBSJobID=self.TorqueObj.Submit(UIJobReference,JobUserName,JobID,i,IsSequential)
+            PBSJobID=self.TorqueObj.Submit(UIJobReference,JobUserName,JobID,SimulationName,i,IsSequential)
             ## Store the Job PBS ID  
             if self.dbaseobj.UpdateJob_PBSID(JobID,PBSJobID)!=True:
                 raise  Exception('Error in Process New Job','Update PBSID failed')
@@ -205,7 +206,7 @@ class WorkFlow(object):
         
         ## Parse the XML file to extract job Information and get if the job is complex or single lightcone
         ParseXMLParametersObj=ParseXML.ParseXMLParameters(outputpath+'/params.xml',self.Options)
-        SubJobsCount=ParseXMLParametersObj.ParseFile(UIJobReference,JobDatabase,JobUserName)    
+        [SubJobsCount,SimulationName]=ParseXMLParametersObj.ParseFile(UIJobReference,JobDatabase,JobUserName)    
         
         ## Generate params?.xml files based on the requested jobscounts
         ParseXMLParametersObj.ExportTrees(logpath+"/params<index>.xml")    
@@ -214,7 +215,7 @@ class WorkFlow(object):
         #self.CopyDirectoryContents(AudDataPath+"/bandpass_filters",logpath,True)
         #self.CopyDirectoryContents(AudDataPath,logpath,False)
             
-        return [SubJobsCount,ParseXMLParametersObj.IsSquentialJob()]   
+        return [SubJobsCount,ParseXMLParametersObj.IsSquentialJob(),SimulationName]   
         
     
     def CopyDirectoryContents(self,SrcPath,DstPath,CopySubDirs):
