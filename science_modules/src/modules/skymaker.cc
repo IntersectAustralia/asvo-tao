@@ -3,6 +3,7 @@
 #include <fstream>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/tokenizer.hpp>
+// #include <boost/process.hpp>
 #include "skymaker.hh"
 
 using namespace hpc;
@@ -199,18 +200,22 @@ namespace tao {
             string cmd = string( "sky " ) + master_filename + string( " -c " ) + _conf_filename;
             cmd += " > /dev/null";
             LOGDLN( "Running: ", cmd );
-            ::system( cmd.c_str() );
+	    ::system( cmd.c_str() );
 
-            // Check if the destination file exists. If not, there was an
-            // error with Skymaker.
-            EXCEPT( fs::exists( _sky_filename ),
-                    "There was an error running Skymaker on this system. Please \n"
-                    "make sure the 'sky' binary is available in your path." );
-
-            // Rename the output file.
-            fs::path target = "image." + index_string( _sub_cone ) + "." + index_string( _idx ) + ".fits";
-            target = output_dir/target;
-            fs::rename( _sky_filename, target );
+	    if( fs::exists( _sky_filename ) )
+	    {
+	       // Rename the output file.
+	       fs::path target = "image." + index_string( _sub_cone ) + "." + index_string( _idx ) + ".fits";
+	       target = output_dir/target;
+	       fs::rename( _sky_filename, target );
+	       _okay = true;
+	    }
+	    else
+	    {
+	       LOGILN( "There was an error running Skymaker on this system. Please \n"
+		       "make sure the 'sky' binary is available in your path." );
+	       _okay = false;
+	    }
          }
          mpi::comm::world.barrier();
 
@@ -231,6 +236,12 @@ namespace tao {
       skymaker_image::mag_field() const
       {
          return _mag_field;
+      }
+
+      bool
+      skymaker_image::okay() const
+      {
+	 return _okay;
       }
 
       void
