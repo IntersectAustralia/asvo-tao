@@ -1,0 +1,16 @@
+<settings>
+  <database>
+    <serverinfo>
+      <serverip>tao01.hpc.swin.edu.au</serverip>
+      <port>3306</port>
+      <user>taoadmin</user>
+      <password>tao_admin_password_##</password>
+    </serverinfo>
+    <serverinfo>
+      <serverip>tao02.hpc.swin.edu.au</serverip>
+      <port>3306</port>
+      <user>taoadmin</user>
+      <password>tao_admin_password_##</password>
+    </serverinfo>
+  </database>
+</settings>
