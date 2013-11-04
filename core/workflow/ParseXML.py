@@ -25,8 +25,20 @@ class ParseXMLParameters(object):
         self.ModifyOutputPath()
         self.ReadRNGSeeds()
         self.SetBasicInformation(JobID,DatabaseName,JobUserName)
-        return self.SubJobsCount
+        SimulationName=self.GetSimulationName()
+        return [self.SubJobsCount,SimulationName.lower()]
     
+    def GetSimulationName(self):
+        
+        SimulationNode=self.tree.xpath("ns:workflow/ns:light-cone/ns:simulation",namespaces={'ns':self.NameSpace})
+        SimulationName=""
+        if len(SimulationNode)>0:
+            SimulationName=SimulationNode[0].text
+            return SimulationName
+        else:
+            raise  Exception('Cannot Retrieved the simulation Name!')
+            
+
     def ReadRNGSeeds(self):
         self.RNGSeedsArr=[]
         RNGSeedFields=self.tree.xpath("ns:workflow/ns:light-cone/ns:rng-seeds/ns:*",namespaces={'ns':self.NameSpace})
