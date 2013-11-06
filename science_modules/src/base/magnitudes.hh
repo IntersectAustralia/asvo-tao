@@ -39,6 +39,40 @@ namespace tao {
       return apparent_magnitude( sed, bp, calc_abs_area() );
    }
 
+   template< class SpectraIter,
+             class OutputIter >
+   void
+   spectra_k_correction( SpectraIter spec_start,
+                         const SpectraIter& spec_finish,
+                         real_type redshift,
+                         OutputIter out )
+   {
+      std::transform(
+         spec_start, spec_finish, out,
+         [redshift]( real_type val )
+         {
+            return val/(1.0 + redshift);
+         }
+         );
+   }
+
+   template< class WavesIter,
+             class OutputIter >
+   void
+   wavelengths_k_correction( WavesIter waves_start,
+                             const WavesIter& waves_finish,
+                             real_type redshift,
+                             OutputIter out )
+   {
+      std::transform(
+         waves_start, waves_finish, out,
+         [redshift]( real_type val )
+         {
+            return val*(1.0 + redshift);
+         }
+         );
+   }
+
 }
 
 #endif

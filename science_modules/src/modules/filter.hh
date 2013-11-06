@@ -52,8 +52,9 @@ namespace tao {
             auto timer = this->timer_start();
             LOGILN( "Initialising filter module.", setindent( 2 ) );
 
-            // Find the wavelengths from my parents.
+            // Find the wavelengths and simulation from my parents.
             _waves = this->template attribute<const vector<real_type>::view>( "wavelengths" );
+            _sim = this->template attribute<tao::simulation<real_type> const*>( "simulation" );
 
             _read_options( global_dict );
 
@@ -130,7 +131,7 @@ namespace tao {
                // Calculate the distance/area for this galaxy. Use 1000
                // points.
                LOGDLN( "Using redshift of ", _redshift[ii], " to calculate area." );
-               real_type area = calc_area( _redshift[ii] );
+               real_type area = calc_area( _redshift[ii], *_sim );
 	       LOGDLN( "Calculated area: ", area );
 
                // Process total, disk and bulge.
@@ -306,6 +307,7 @@ namespace tao {
 
       protected:
 
+	 tao::simulation<real_type>* _sim;
          vector<real_type>::view _waves;
 
          vector<real_type>::view _spec;
