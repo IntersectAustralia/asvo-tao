@@ -4,9 +4,10 @@
 namespace tao {
 
    real_type
-   calc_area( real_type redshift )
+   calc_area( real_type redshift,
+              tao::simulation<real_type> const& sim )
    {
-      real_type dist = numerics::redshift_to_luminosity_distance( redshift, 1000 );
+      real_type dist = numerics::redshift_to_luminosity_distance( redshift, 1000, sim.hubble(), sim.omega_l(), sim.omega_m() );
       if( dist < 1e-5 )  // Be careful! If dist is zero (which it can be) then resort to absolute
          dist = 1e-5;    // magnitudes.
       real_type area = log10( 4.0*M_PI ) + 2.0*log10( dist*3.08568025e24 ); // result in cm^2
