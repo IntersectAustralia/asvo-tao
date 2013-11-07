@@ -7,7 +7,6 @@ from django.db import models
 class Migration(DataMigration):
 
     def forwards(self, orm):
-        import pdb; pdb.set_trace()
         obj = orm.GlobalParameter.objects.filter(parameter_name='default_dataset')
         if len(obj) == 0:
             description = 'This contains the id (pk) of the default dataset. ' \

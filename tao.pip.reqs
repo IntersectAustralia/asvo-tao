@@ -6,7 +6,7 @@ flup
 django-recaptcha
 django-form-utils
 django-nose
-django-tastypie
+django-tastypie<0.10
 nosexcover
 django-rules
 lxml
