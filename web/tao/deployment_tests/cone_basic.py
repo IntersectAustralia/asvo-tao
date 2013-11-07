@@ -23,7 +23,9 @@ class Validator(ValidateJob):
 
         self.catalogues = []
         for i in range(self.job_params.NUMBER_OF_CONES):
-            self.catalogues.append(self.load_csv(i))
+            self.catalogues.append(self.load_csv(i,
+                usecols=['Galaxy_ID', 'Right_Ascension', 'Declination',
+                         'Redshift_(Cosmological)']))
             self.check_geometry(self.catalogues[i])
 
         self.check_galaxy_count(self.catalogues[0])

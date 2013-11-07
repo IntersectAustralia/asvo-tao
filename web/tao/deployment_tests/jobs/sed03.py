@@ -51,7 +51,7 @@ BP_FILTERS = ['Johnson']
 #
 # Record Selection properties
 #
-FILTER_MIN = '0.031'
+FILTER_MIN = '0.31'
 FILTER_MAX = ''
 
 

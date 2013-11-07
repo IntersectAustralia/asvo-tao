@@ -69,7 +69,7 @@ class ValidateJob(object):
         logger.info("Test Description:\n{0}".format(self.doc))
         return
 
-    def load_csv(self, subcone):
+    def load_csv(self, subcone, usecols=None):
         "Load the specified subcone index as a pandas DataFrame"
         fn = join(self.download_dir,
                   u"tao.{job}.{subcone}.csv".format(job=self.args.catalogue_id,
@@ -85,7 +85,7 @@ class ValidateJob(object):
                 logger.fatal(msg)
                 raise Exception(msg)
             logger.debug(u"unzipped: {0}".format(gz))
-        df = pd.read_csv(fn)
+        df = pd.read_csv(fn, usecols=usecols)
         df.columns = [x.strip() for x in df.columns]
         logger.debug("Catalogue stats:\n{0}".format(df.describe()))
         return df
