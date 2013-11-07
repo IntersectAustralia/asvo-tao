@@ -341,6 +341,10 @@ catalogue.module_defs.light_cone = function ($) {
             selectedOptions: vm.output_properties,
             to_option: dataset_property_to_option
         });
+        vm.dataset.subscribe(function(v) {
+        	// Any change in the dataset clears the selected output properties
+        	vm.output_properties([]);
+        })
 
         vm.current_output_property = ko.observable(undefined);
         vm.output_properties_widget.clicked_option.subscribe(function(v) {

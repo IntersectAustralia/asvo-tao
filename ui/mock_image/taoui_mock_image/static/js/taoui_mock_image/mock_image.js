@@ -287,7 +287,7 @@ catalogue.module_defs.mock_image = function ($) {
                 return [];
             var n = catalogue.modules.light_cone.vm.number_of_light_cones();
             var resp = [{value: 'ALL', text:'All'}]
-            for(var i = 1; i<=n; i++)
+            for(var i = 0; i<n; i++)
                 resp.push({value:i, text:i});
             return resp;
         });

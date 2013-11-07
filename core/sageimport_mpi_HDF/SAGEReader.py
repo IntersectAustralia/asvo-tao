@@ -36,7 +36,21 @@ class SAGEDataReader:
         self.CommSize=CommSize
         self.CommRank=CommRank
         
-            
+        
+        self.SimulationBoxX=float(self.Options['RunningSettings:SimulationBoxX'])
+        self.SimulationBoxY=float(self.Options['RunningSettings:SimulationBoxX'])
+        self.BSPCellSize=float(self.Options['RunningSettings:BSPCellSize'])
+        
+        
+        
+        self.CellsInX=int(math.ceil(self.SimulationBoxX/self.BSPCellSize))
+        self.CellsInY=int(math.ceil(self.SimulationBoxY/self.BSPCellSize))
+        
+        
+        
+        serverscount=int(self.Options['PGDB:ServersCount'])
+        self.BigTableID=(self.CellsInX*self.CellsInY)+(CommRank%serverscount)
+        logging.info("Big Table ID="+str(self.BigTableID))    
         
         
   
@@ -49,14 +63,7 @@ class SAGEDataReader:
     def ProcessAllTrees(self):
         
                
-        self.SimulationBoxX=float(self.Options['RunningSettings:SimulationBoxX'])
-        self.SimulationBoxY=float(self.Options['RunningSettings:SimulationBoxX'])
-        self.BSPCellSize=float(self.Options['RunningSettings:BSPCellSize'])
         
-        
-        
-        self.CellsInX=int(math.ceil(self.SimulationBoxX/self.BSPCellSize))
-        self.CellsInY=int(math.ceil(self.SimulationBoxY/self.BSPCellSize))
         
         self.InputFile=h5py.File(self.CurrentInputFilePath,'r')
         
@@ -257,8 +264,8 @@ class SAGEDataReader:
             FinalTableID=int(PossibleTables[0])
         elif len(PossibleTables)<=10 and len(PossibleTables)>0:
             FinalTableID=int(PossibleTables[randrange(len(PossibleTables))])
-        else:                        
-            FinalTableID=self.CellsInX*self.CellsInY
+        else:                                    
+            FinalTableID=self.BigTableID#self.CellsInX*self.CellsInY
         logging.info("Final Table ID="+str(FinalTableID))                
         return FinalTableID
         
