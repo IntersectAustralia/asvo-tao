@@ -377,6 +377,10 @@ namespace tao {
                _lc.set_simulation( &_sim );
                _lc.set_geometry( min_ra, max_ra, min_dec, max_dec, max_z, min_z );
 	       _lc.set_random( !_unique, &_eng );
+
+	       // Prepare the origin if we're running a unique cone.
+	       if( _unique )
+		 _calc_origin( global_dict );
             }
             else
             {
@@ -442,10 +446,6 @@ namespace tao {
                   LOGILN( "Filter range: [", filt_min, ", ", filt_max, ")" );
                }
             }
-
-            // Prepare the origin if we're running a unique cone.
-	    if( _unique )
-	       _calc_origin( global_dict );
          }
 
          void

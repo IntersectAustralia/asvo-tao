@@ -4,12 +4,14 @@
 #include "types.hh"
 #include "sed.hh"
 #include "bandpass.hh"
+#include "simulation.hh"
 
 namespace tao {
    using namespace hpc;
 
    real_type
-   calc_area( real_type redshift );
+   calc_area( real_type redshift,
+              tao::simulation<real_type> const& sim );
 
    real_type
    calc_abs_area();

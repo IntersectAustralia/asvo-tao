@@ -145,12 +145,12 @@ namespace tao {
                for( unsigned jj = 0; jj < _ssp.wavelengths().size(); ++jj )
                   disk_spectra[ii][jj] = total_spectra[ii][jj] - bulge_spectra[ii][jj];
 
-#if 0
+// #if 0
 	       // Dump stuff.
 	       std::ofstream outf( boost::lexical_cast<std::string>( gal_gids[ii] ) + ".dat" );
 	       outf << "MASSES: " << _age_masses << "\n";
 	       outf << "METALS: " << _age_metals << "\n";
-#endif
+// #endif
             }
 
 	    LOGDLN( "Done.", setindent( -2 ) );
