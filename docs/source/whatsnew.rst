@@ -4,6 +4,16 @@ What's New
 .. contents::
    :depth: 2
 
+7 Nov 2013: 1.0.11
+------------------
+
+Bug Fixes:
+
+* The selected Output Properties in the General Properties tab are cleared when changing datasets.
+* Mock Image now uses 0 based indexing when referencing the sub-cone.
+* Cone geometry has been fixed for light-cones with an opening angle of 90 degrees.
+
+
 4 Nov 2013: 1.0.10
 ------------------
 
