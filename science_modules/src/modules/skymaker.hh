@@ -151,6 +151,7 @@ namespace tao {
                img.setup_list();
                img.setup_conf();
             }
+	    LOGILN( "Found ", _imgs.size(), " images." );
 
             LOGILN( "Done.", setindent( -2 ) );
          }

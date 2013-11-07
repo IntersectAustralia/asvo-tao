@@ -61,13 +61,14 @@ namespace tao {
             // Cache dictionary.
             const options::xml_dict& dict = this->_dict;
 
-            if(mpi::comm::world.size()==1)
-                      _fn = global_dict.get<string>( "outputdir" ) + "/" + dict.get<hpc::string>( "filename" ) ;
-                  else
-                      _fn = global_dict.get<string>( "outputdir" ) + "/" + dict.get<hpc::string>( "filename" ) + "." + mpi::rank_string();
-            LOGILN( "File Name:",_fn, setindent( 2 ) );
+            if( mpi::comm::world.size() == 1 )
+	       _fn = global_dict.get<string>( "outputdir" ) + "/" + dict.get<hpc::string>( "filename" ) ;
+	    else
+	       _fn = global_dict.get<string>( "outputdir" ) + "/" + dict.get<hpc::string>( "filename" ) + "." + mpi::rank_string();
+            LOGILN( "File Name: ", _fn );
             _fields = dict.get_list<string>( "fields" );
             ReadFieldsInfo(dict );
+
             // Open the file.
             open();
 
@@ -81,28 +82,28 @@ namespace tao {
          }
 
          void
-		  ReadFieldsInfo( const options::xml_dict& dict )
-		  {
-			 list<optional<hpc::string>> Templabels = dict.get_list_attributes<string>( "fields","label" );
+	 ReadFieldsInfo( const options::xml_dict& dict )
+	 {
+	    list<optional<hpc::string>> Templabels = dict.get_list_attributes<string>( "fields","label" );
 
 
 
-			 auto lblit = Templabels.cbegin();
+	    auto lblit = Templabels.cbegin();
 
-			 auto fldsit = _fields.cbegin();
-			 while( lblit != Templabels.cend() )
-			 {
+	    auto fldsit = _fields.cbegin();
+	    while( lblit != Templabels.cend() )
+	    {
 
-				if(!*lblit)
-				   _labels.push_back(*fldsit);
-				else
-				   _labels.push_back(**lblit);
+	       if(!*lblit)
+		  _labels.push_back(*fldsit);
+	       else
+		  _labels.push_back(**lblit);
 
-				// Increment all the iterators at the same time
-				lblit++;
-				fldsit++;
-			 }
-		  }
+	       // Increment all the iterators at the same time
+	       lblit++;
+	       fldsit++;
+	    }
+	 }
 
 
 
@@ -152,32 +153,32 @@ namespace tao {
 
 
          string
-		  _encode( string _toencode_string )
-		  {
-			 std::map<char, std::string> transformations;
-			 transformations['&']  = std::string("_");
-			 transformations[' ']  = std::string("_");
-			 transformations['\''] = std::string("_");
-			 transformations['"']  = std::string("_");
-			 transformations['>']  = std::string("_");
-			 transformations['<']  = std::string("_");
-			 transformations['/']  = std::string("_");
+	 _encode( string _toencode_string )
+	 {
+	    std::map<char, std::string> transformations;
+	    transformations['&']  = std::string("_");
+	    transformations[' ']  = std::string("_");
+	    transformations['\''] = std::string("_");
+	    transformations['"']  = std::string("_");
+	    transformations['>']  = std::string("_");
+	    transformations['<']  = std::string("_");
+	    transformations['/']  = std::string("_");
 
-			 std::string reserved_chars;
-			 for (auto ti = transformations.begin(); ti != transformations.end(); ti++)
-			 {
-				reserved_chars += ti->first;
-			 }
+	    std::string reserved_chars;
+	    for (auto ti = transformations.begin(); ti != transformations.end(); ti++)
+	    {
+	       reserved_chars += ti->first;
+	    }
 
-			 size_t pos = 0;
-			 while (std::string::npos != (pos = _toencode_string.find_first_of(reserved_chars, pos)))
-			 {
-				_toencode_string.replace(pos, 1, transformations[_toencode_string[pos]]);
-				pos++;
-			 }
+	    size_t pos = 0;
+	    while (std::string::npos != (pos = _toencode_string.find_first_of(reserved_chars, pos)))
+	    {
+	       _toencode_string.replace(pos, 1, transformations[_toencode_string[pos]]);
+	       pos++;
+	    }
 
-			 return _toencode_string;
-		  }
+	    return _toencode_string;
+	 }
 
          void
          open()
@@ -190,19 +191,19 @@ namespace tao {
 
 
 
-			auto lblit = _labels.cbegin();
+	    auto lblit = _labels.cbegin();
 
-			string FieldName=*lblit++;
-			FieldName=_encode(FieldName);
-  		    _file<<FieldName;
+	    string FieldName=*lblit++;
+	    FieldName=_encode(FieldName);
+	    _file<<FieldName;
 
-			while( lblit != _labels.cend() )
-			{
-			   string FieldName=*lblit++;
-			   FieldName=_encode(FieldName);
-			   _file<<","<<FieldName;
-			}
-			_file<<std::endl;
+	    while( lblit != _labels.cend() )
+	    {
+	       string FieldName=*lblit++;
+	       FieldName=_encode(FieldName);
+	       _file<<","<<FieldName;
+	    }
+	    _file<<std::endl;
 
 
 
@@ -213,13 +214,13 @@ namespace tao {
 
             // Dump out a list of field names first.
             /*auto it = _fields.cbegin();
-            if( it != _fields.cend() )
-            {
-               _file << *it++;
-               while( it != _fields.cend() )
-                  _file << ", " << *it++;
-               _file << "\n";
-            }*/
+	      if( it != _fields.cend() )
+	      {
+	      _file << *it++;
+	      while( it != _fields.cend() )
+	      _file << ", " << *it++;
+	      _file << "\n";
+	      }*/
          }
 
          virtual
