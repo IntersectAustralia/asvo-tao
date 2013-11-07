@@ -25,17 +25,25 @@ class ParseXMLParameters(object):
         self.ModifyOutputPath()
         self.ReadRNGSeeds()
         self.SetBasicInformation(JobID,DatabaseName,JobUserName)
+        
         SimulationName=self.GetSimulationName()
         return [self.SubJobsCount,SimulationName.lower()]
     
     def GetSimulationName(self):
+        SimulationNode=None
+        if self.IsSquentialJob()==False:
+            logging.info("Parallel Job - Getting Simulation name from the Lightcone")
+            SimulationNode=self.tree.xpath("ns:workflow/ns:light-cone/ns:simulation",namespaces={'ns':self.NameSpace})
+        else:
+            logging.info("Sequential Job - Getting Simulation name from the SQL")
+            SimulationNode=self.tree.xpath("ns:workflow/ns:sql/ns:simulation",namespaces={'ns':self.NameSpace})
+            logging.info(SimulationNode)
         
-        SimulationNode=self.tree.xpath("ns:workflow/ns:light-cone/ns:simulation",namespaces={'ns':self.NameSpace})
         SimulationName=""
         if len(SimulationNode)>0:
             SimulationName=SimulationNode[0].text
             return SimulationName
-        else:
+        else:            
             raise  Exception('Cannot Retrieved the simulation Name!')
             
 
