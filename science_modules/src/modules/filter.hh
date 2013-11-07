@@ -145,13 +145,13 @@ namespace tao {
                _process_spectra( bulge_spectra[ii], _redshift[ii], area, _bulge_lum[ii], _bulge_app_mags, _bulge_abs_mags, ii );
 	       LOGDLN( "Done.", setindent( -2 ) );
 
-// #if 0
+#if 0
 	       // Dump some stuff.
 	       std::ofstream outf( boost::lexical_cast<std::string>( ids[ii] ) + ".dat", std::ios::app );
 	       outf << "REDSHIFT (COSMOLOGICAL): " << _redshift[ii] << "\n";
 	       outf << "APPARENT MAGNITUDE: " << _total_app_mags[0][ii] << "\n";
 	       outf << "ABSOLUTE MAGNITUDE: " << _total_abs_mags[0][ii] << "\n";
-// #endif
+#endif
             }
          }
 
