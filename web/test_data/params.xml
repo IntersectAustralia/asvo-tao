@@ -88,7 +88,7 @@
           <max_mag>11</max_mag>
           <sub_cone>2</sub_cone>
           <fov_dec>2</fov_dec>
-          <mag_field>1_absolute</mag_field>
+          <mag_field>2_apparent</mag_field>
         </item>
       </images>
     </skymaker>
