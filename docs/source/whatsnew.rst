@@ -4,6 +4,20 @@ What's New
 .. contents::
    :depth: 2
 
+11 Nov 2013: 1.0.12
+-------------------
+
+Improvements:
+
+* Disallow Absolute magnitudes in the Mock Image module.
+  These tend to over expose the image or cause the job to fail due to SkyMaker running out of time or memory.
+* Change History page sub-title to "TAO - Catalogues" (and avoid IT jargon)
+
+Bug Fix:
+
+* Undo production.py accidental over-write
+
+
 7 Nov 2013: 1.0.11
 ------------------
 
