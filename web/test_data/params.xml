@@ -71,7 +71,7 @@
           <fov_ra>1</fov_ra>
           <min_mag>7</min_mag>
           <max_mag>12</max_mag>
-          <sub_cone>2</sub_cone>
+          <sub_cone>1</sub_cone>
           <fov_dec>2</fov_dec>
           <mag_field>2_apparent</mag_field>
         </item>
@@ -86,9 +86,9 @@
           <fov_ra>1</fov_ra>
           <min_mag>None</min_mag>
           <max_mag>11</max_mag>
-          <sub_cone>3</sub_cone>
+          <sub_cone>2</sub_cone>
           <fov_dec>2</fov_dec>
-          <mag_field>1_absolute</mag_field>
+          <mag_field>2_apparent</mag_field>
         </item>
       </images>
     </skymaker>
