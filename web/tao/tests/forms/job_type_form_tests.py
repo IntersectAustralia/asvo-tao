@@ -100,7 +100,7 @@ class JobTypeFormTests(LiveServerTest):
 
         self.click('tao-tabs-mock_image')
 
-        self.assertEqual([u'ALL', 1, 2, 3], self.get_ko_array('catalogue.vm.mock_image.sub_cone_options()', 'value'))
+        self.assertEqual([u'ALL', 0, 1, 2], self.get_ko_array('catalogue.vm.mock_image.sub_cone_options()', 'value'))
         self.assertEqual([u'1_absolute', u'3_apparent'], self.get_ko_array('catalogue.modules.mock_image.vm.image_settings()[0].mag_field_options()', 'pk'))
         self.assertEqual([u'FITS'], self.get_ko_array('catalogue.vm.mock_image.format_options', 'value'))
 
