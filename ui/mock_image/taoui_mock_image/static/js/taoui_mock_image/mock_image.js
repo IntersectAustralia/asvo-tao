@@ -38,6 +38,17 @@ catalogue.module_defs.mock_image = function ($) {
             $('#mock_image_info').slideUp();
         }
     }
+    
+    function get_mag_field_options() {
+    	// Absolute filters aren't allowed for image generation
+    	var all_filters = catalogue.vm.sed.bandpass_filters();
+    	var app_filters;
+
+    	app_filters = $.grep(all_filters, function(elem, idx) { 
+            return elem.fields.label.indexOf("(Absolute)") == -1;
+        });
+    	return app_filters;
+    }
 
     this.cleanup_fields = function () {}
 
@@ -114,7 +125,7 @@ catalogue.module_defs.mock_image = function ($) {
             image_params.format = ko.observable(param ? param : vm.format_options[0]);
 
             image_params.mag_field_options = ko.computed(function(){
-                return catalogue.vm.sed.bandpass_filters();
+                return get_mag_field_options();
             });
             param = get_param(prefix, '-mag_field');
             // NOTE: should the mag_field_options be recreated for each mock image?
@@ -287,7 +298,7 @@ catalogue.module_defs.mock_image = function ($) {
                 return [];
             var n = catalogue.modules.light_cone.vm.number_of_light_cones();
             var resp = [{value: 'ALL', text:'All'}]
-            for(var i = 1; i<=n; i++)
+            for(var i = 0; i<n; i++)
                 resp.push({value:i, text:i});
             return resp;
         });
