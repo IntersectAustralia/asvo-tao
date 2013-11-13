@@ -9,10 +9,11 @@ import DBConnection # Interaction with the postgreSQL DB
 from collections import deque
 
 class Node(object):
-    def __init__(self, data):
-        self.data = data
+    def __init__(self, LocalIndex=None,GlobalIndex=None,Descendant=None,SnapNum=None,BreadthFirstIndex=None,DepthFirstIndex=None,SubTreeSize=None):
+        self.data = {'LocalIndex':LocalIndex,'GlobalIndex':GlobalIndex,'Descendant':Descendant,'SnapNum':SnapNum,'BreadthFirstIndex':BreadthFirstIndex,'DepthFirstIndex':DepthFirstIndex,'SubTreeSize':SubTreeSize}
         self.children = []
-
+    
+        
     def add_child(self, obj):
         self.children.append(obj)    
 class ManageTreeIndex(object):
@@ -21,32 +22,44 @@ class ManageTreeIndex(object):
         self.DBConnection=DBConnection
         self.Options=Options   
 
-    def FieldExists(self,ServerID, TableName):
+    def FieldExists(self,ServerID, TableName,FieldName):
                
-        
-        SqlStmt="SELECT column_name FROM information_schema.columns WHERE table_name='"+TableName+"' and column_name='traversalorder';"
+        FieldName=FieldName.lower()
+        SqlStmt="SELECT column_name FROM information_schema.columns WHERE table_name='"+TableName+"' and column_name='"+FieldName+"';"
         resultsList=self.DBConnection.ExecuteQuerySQLStatment(SqlStmt,ServerID)
         if len(resultsList)>0:
             return True
         else:
             return False
-        
-    def AddTreeTraversalField(self,TableName):
+    def AddTreeTraversalFields(self,TableName):
+        self.AddTreeTraversalField(TableName,'BreadthFirst_traversalorder')
+        self.AddTreeTraversalField(TableName,'DepthFirst_traversalorder')
+        self.AddTreeTraversalField(TableName,'Subtree_Count')
+    
+    def AddTreeIndices(self,TableName):
+        self.AddIndexToTreeTraversalField(TableName,'BreadthFirst_traversalorder')  
+        self.AddIndexToTreeTraversalField(TableName,'DepthFirst_traversalorder')
+          
+    def AddTreeTraversalField(self,TableName,FieldName):
         
         ServerID=self.DBConnection.GetServerID(TableName)
         
-        if self.FieldExists(ServerID,TableName)==False:
-            SQLStmt="ALTER TABLE "+TableName+" ADD COLUMN traversalorder bigint;"
+        if self.FieldExists(ServerID,TableName,FieldName)==False:
+            SQLStmt="ALTER TABLE "+TableName+" ADD COLUMN "+FieldName+" bigint;"
             self.DBConnection.ExecuteNoQuerySQLStatment(SQLStmt,ServerID)    
             logging.info("Table Altered!")
         else:
-            IndexStatment="DROP Index  IF EXISTS traversalorder_Index_"+TableName+";"
+            IndexStatment="DROP Index  IF EXISTS "+FieldName+"_Index_"+TableName+";"
+            
             DBConnection.ExecuteNoQuerySQLStatment(IndexStatment,ServerID)
+            IndexStatment="Update "+TableName+" set "+FieldName+"=null ;"
+            DBConnection.ExecuteNoQuerySQLStatment(IndexStatment,ServerID)
+            
             logging.info("Field Already Exists!")
     
-    def AddIndexToTreeTraversal(self,TableName):
+    def AddIndexToTreeTraversalField(self,TableName,FieldName):
         ServerID=self.DBConnection.GetServerID(TableName)
-        CreateIndexStatment="Create Index traversalorder_Index_"+TableName+" on  "+TableName+" (traversalorder);"
+        CreateIndexStatment="Create Index "+FieldName+"_Index_"+TableName+" on  "+TableName+" ("+FieldName+");"
         DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,ServerID)  
     
     def BuildTree(self,TreeID,TreeData):
@@ -69,19 +82,22 @@ class ManageTreeIndex(object):
             if ParentID>=0:      
                 ParentsList[ParentID].append(i)
             else:
-                TopLevelList.append(Node([i,TreeData[i]]))
                 
-        #for i  in range(0,len(TreeData)):
-        #    print(str(NodesList[i])+"-->"+str(ParentsList[i]))    
-        
-        
+                LocalIndex=i
+                GlobalIndex=TreeData[i][0]
+                Descendant=TreeData[i][1]
+                SnapNum=TreeData[i][2]
+                
+                
+                TopLevelList.append(Node(LocalIndex,GlobalIndex,Descendant,SnapNum))
+                
+      
         i=0
         stack=[]
-        ParentNode=Node(None)
-        ParentNode.children=TopLevelList
+        self.ParentNode=Node()
+        self.ParentNode.children=TopLevelList
         
-        for P in TopLevelList:
-            #print("***"+str(P.data))
+        for P in TopLevelList:      
             stack.append(P)
         
         
@@ -89,37 +105,77 @@ class ManageTreeIndex(object):
             CurrentNode=stack.pop()        
             
             
-            for Child in ParentsList[CurrentNode.data[0]]:
-                ChildNode=Node(NodesList[Child])
+            for Child in ParentsList[CurrentNode.data['LocalIndex']]:
+                
+                
+                LocalIndex=NodesList[Child][0]
+                GlobalIndex=NodesList[Child][1][0]
+                Descendant=NodesList[Child][1][1]
+                SnapNum=NodesList[Child][1][2]
+                
+                
+                
+                ChildNode=Node(LocalIndex,GlobalIndex,Descendant,SnapNum)
                 stack.append(ChildNode)
                 CurrentNode.children.append(ChildNode)
-        #print("<tree>")       
-        #self.PrintNodes(ParentNode, 0)
-        #print("</tree>")
-        return self.BreadthFirst(ParentNode)         
+        
+                 
 
     def BreadthFirst(self,ParentNode):
-        IDsList=[]
+        
         index=0
         queue=deque([])
         for P in ParentNode.children:
             queue.append(P)
         while (len(queue)>0):
-            CurrentNode=queue.popleft()
-            IDsList.append([CurrentNode.data[1][0],index])
+            CurrentNode=queue.popleft()        
+            CurrentNode.data['BreadthFirstIndex']=index
             index=index+1        
             for child in CurrentNode.children:
                 queue.append(child)
       
-        return IDsList      
         
         
+    def DepthFirst_PreOrder(self,ParentNode):
+        
+        
+        index=0
+        stack=[]
+        
+        for P in ParentNode.children:
+            stack.append(P)
+            
+        while (len(stack)>0):
+            CurrentNode=stack.pop()
+            CurrentNode.data['DepthFirstIndex']=index
+        
+            index=index+1        
+            for child in CurrentNode.children:
+                stack.append(child)
       
+           
+      
+    
+    
+    def CountChildNodes(self,CurrentNode):
+        
+        if(len(CurrentNode.children)==0):
+            CurrentNode.data['SubTreeSize']=1
+            return 1;
+        else:
+            Counter=1   
+            for child in CurrentNode.children:
+                Counter=Counter+self.CountChildNodes(child)
+            CurrentNode.data['SubTreeSize']=Counter
+            return Counter
+         
+    
+    
     
     
     def PrintNodes(self,CurrentNode,Level):
         Emptystr=" "*Level
-        if(CurrentNode.data!=None):
+        if(CurrentNode.data['GlobalIndex']!=None):
             if len(CurrentNode.children)==0:
                 print("<L"+str(Level)+" name=\""+str(CurrentNode.data)+"\"/>")
             else:
@@ -127,9 +183,16 @@ class ManageTreeIndex(object):
             
         for child in CurrentNode.children:
             self.PrintNodes(child, Level+1)        
-        if(CurrentNode.data!=None and len(CurrentNode.children)>0):
+        if(CurrentNode.data['GlobalIndex']!=None and len(CurrentNode.children)>0):
             print("</L"+str(Level)+">")   
     
+    def TreeToList(self,CurrentNode,CurrentList):
+        CurrentList.append(CurrentNode.data)
+        for child in CurrentNode.children:
+            self.TreeToList(child, CurrentList)
+            
+        
+        
 
 def SetupLogFile():
     FilePath='log/logfile_traversal.log'
@@ -156,7 +219,7 @@ if __name__ == '__main__':
     ManageTreeIndexObj=ManageTreeIndex(DBConnection,Options)
     #############################################################
     ##### 1- Alter Table
-    ManageTreeIndexObj.AddTreeTraversalField(TableName)
+    ManageTreeIndexObj.AddTreeTraversalFields(TableName)
     
     ###############################################################
     ##### 2- Get List of Trees
@@ -177,31 +240,44 @@ if __name__ == '__main__':
         TreeDetails=DBConnection.ExecuteQuerySQLStatment(SQLStmt,ServerID)
         
         logging.info(str(Counter)+"/"+str(len(TreesList))+":"+str(len(TreeDetails))+"\t"+str(TreeID[0]))
-        MappingList=ManageTreeIndexObj.BuildTree(TreeID[0],TreeDetails)
         
-        UpdateSt="Update "+TableName+" set traversalorder= CASE globalgalaxyid \n"
-        if len(MappingList)!=len(TreeDetails):
-            print( str(TreeID[0])+": Error:"+str(len(MappingList))+"!="+str(len(TreeDetails)))
-        #Count=0
-        #for Record in TreeDetails:
-        #    Found=False
-            
-        #    for Map in MappingList:
-        #        if Map[0]==Record[0]:
-        #            Found=True
-        #            break
-        #    if Found==False:
-        #        print "Missing:"+str(Count)+":"+str(Record)
-        #    Count=Count+1    
+        ManageTreeIndexObj.BuildTree(TreeID[0],TreeDetails)
+        BreadthFirstMappingList= ManageTreeIndexObj.BreadthFirst(ManageTreeIndexObj.ParentNode)
+        DepthFirstMappingList=ManageTreeIndexObj.DepthFirst_PreOrder(ManageTreeIndexObj.ParentNode)
+        ManageTreeIndexObj.CountChildNodes(ManageTreeIndexObj.ParentNode)
+        #ManageTreeIndexObj.PrintNodes(ManageTreeIndexObj.ParentNode,0)
         
-        for Map in MappingList:
-            UpdateSt=UpdateSt+" WHEN "+str(Map[0])+" THEN "+str(Map[1])+"\n"
-            #print(str(Map[0])+":"+str(Map[1]))
-        UpdateSt=UpdateSt+" END where globaltreeid="+str(TreeID[0])+";"    
+        ################## Get the Nodes as a List #####################################
+        NodesList=[]
+        ManageTreeIndexObj.TreeToList(ManageTreeIndexObj.ParentNode,NodesList)            
+        TotalNodes=NodesList[0]['SubTreeSize']-1
+        del NodesList[0]
+        #################################################################################            
+        
+        
+        UpdateSt=""
+    
+        if len(NodesList)!=len(TreeDetails) or len(TreeDetails)!=TotalNodes:
+            print( str(TreeID[0])+": Error:"+str(len(NodesList))+"!="+str(len(TreeDetails)))
+     
+        
+        #for Node in NodesList:            
+        #    UpdateSt=UpdateSt+" Update "+TableName+" set BreadthFirst_traversalorder="+str(Node['BreadthFirstIndex'])+" , DepthFirst_traversalorder="+str(Node['DepthFirstIndex'])+" , Subtree_Count="+str(Node['SubTreeSize'])+"  where globalgalaxyid="+str(Node['GlobalIndex'])+"; \n"
+        UpdateSt="UPDATE "+TableName+" SET BreadthFirst_traversalorder=myvalues.BreadthFirstIndex, \n"
+        UpdateSt=UpdateSt+" DepthFirst_traversalorder=myvalues.DepthFirstIndex, \n"
+        UpdateSt=UpdateSt+" Subtree_Count=myvalues.SubTreeSize From (VALUES  \n"
+        
+        for Node in NodesList:
+            UpdateSt=UpdateSt+" ("+str(Node['GlobalIndex'])+","+str(Node['BreadthFirstIndex'])+","+str(Node['DepthFirstIndex'])+","+ str(Node['SubTreeSize'])+"),\n"
+        
+        UpdateSt=UpdateSt[:-2]
+        UpdateSt=UpdateSt+") AS myvalues(GlobalIndex,BreadthFirstIndex,DepthFirstIndex,SubTreeSize)"
+        UpdateSt=UpdateSt+" Where "+TableName+".globalgalaxyid=myvalues.GlobalIndex"
+        
         DBConnection.ExecuteNoQuerySQLStatment(UpdateSt,ServerID)
         logging.info(".*.")
     
-    ManageTreeIndexObj.AddIndexToTreeTraversal(TableName)
+    ManageTreeIndexObj.AddTreeIndices(TableName)
     
     
     DBConnection.CloseConnections()
