@@ -182,7 +182,10 @@ class PreprocessData(object):
             FieldsList+=[field[0]]
             self.CreateTableTemplate=self.CreateTableTemplate+ FieldName +' '+FieldDT+","
         self.CreateTableTemplate=self.CreateTableTemplate+"GlobalTreeID BIGINT,"
-        self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyGlobalID BIGINT"
+        self.CreateTableTemplate=self.CreateTableTemplate+"CentralGalaxyGlobalID BIGINT,"
+        self.CreateTableTemplate=self.CreateTableTemplate+"breadthfirst_traversalorder BIGINT,"
+        self.CreateTableTemplate=self.CreateTableTemplate+"depthfirst_traversalorder BIGINT,"
+        self.CreateTableTemplate=self.CreateTableTemplate+"subtree_count BIGINT"
         
         if FieldsList.count('LocalGalaxyID')==0:         
             self.CreateTableTemplate=self.CreateTableTemplate+",LocalGalaxyID INT)"
@@ -218,8 +221,20 @@ class PreprocessData(object):
             self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
             CreateIndexStatment="Create Index GalaxyY_Index_"+NewTableName+" on  "+NewTableName+" (posy);"
             self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
+            
             CreateIndexStatment="Create Index GalaxyZ_Index_"+NewTableName+" on  "+NewTableName+" (posz);"
             self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
+            
+            ###########################################################
+            CreateIndexStatment="Create Index breadthfirst_traversalorder_Index_"+NewTableName+" on  "+NewTableName+" (breadthfirst_traversalorder);"
+            self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
+            CreateIndexStatment="Create Index depthfirst_traversalorder_Index_"+NewTableName+" on  "+NewTableName+" (depthfirst_traversalorder);"
+            self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
+            CreateIndexStatment="Create Index subtree_count_Index_"+NewTableName+" on  "+NewTableName+" (subtree_count);"
+            self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
+            
+            
+            
             logging.info("Table "+NewTableName+" Index Created ...")
     ## Perform create table for a specific TableIndex            
     def CreateNewTable(self,TableIndex):        

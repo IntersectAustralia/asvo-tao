@@ -102,14 +102,38 @@ class SAGEDataReader:
             pgcopy_dtype += [(FieldName + '_length', '>i4'),(FieldName, dtype.replace('<', '>'))]
             FieldsIndex=FieldsIndex+1
         
+        
+        
+        ####### Add Generated Fields (Computed) ###############################
+        
+        FieldName='breadthfirst_traversalorder'        
+        pgcopy_dtype += [(FieldName + '_length', '>i4'),(FieldName, '>i8')]
+        
+        FieldName='depthfirst_traversalorder'        
+        pgcopy_dtype += [(FieldName + '_length', '>i4'),(FieldName, '>i8')]
+        
+        FieldName='subtree_count'        
+        pgcopy_dtype += [(FieldName + '_length', '>i4'),(FieldName, '>i8')]       
+        
+        
         FieldName='TreeID'        
         pgcopy_dtype += [(FieldName + '_length', '>i4'),(FieldName, '>i8')]
+        
         FieldName='CentralGalaxyGlobalID'        
         pgcopy_dtype += [(FieldName + '_length', '>i4'),(FieldName, '>i8')]
         
         
+        
+        
+        FieldsList+=['breadthfirst_traversalorder']
+        FieldsList+=['depthfirst_traversalorder']
+        FieldsList+=['subtree_count']
         FieldsList+=['treeid']
-        FieldsList+=['centralgalaxyglobalid']
+        FieldsList+=['centralgalaxyglobalid']       
+        
+        #########################################################################
+        
+        
         if(FieldsList.count('LocalGalaxyID')>0):
             logging.info("### LocalGalaxyID already Exists. No Data Will be generated")
         else:
@@ -121,10 +145,27 @@ class SAGEDataReader:
         
         
         pgcopy = numpy.empty(TreeData.shape, pgcopy_dtype)
+        
+        
+        
+        pgcopy['TreeID_length'] = numpy.dtype('>i8').alignment    
+        pgcopy['CentralGalaxyGlobalID_length'] = numpy.dtype('>i8').alignment
+                       
+        pgcopy['breadthfirst_traversalorder_length']=numpy.dtype('>i8').alignment
+        pgcopy['depthfirst_traversalorder_length']=numpy.dtype('>i8').alignment
+        pgcopy['subtree_count_length']=numpy.dtype('>i8').alignment
+        
+        
+        
+        
+        GeneratedFields=0
         if(FieldsList.count('LocalGalaxyID')==0): 
-            pgcopy['num_fields'] = len(TreeData.dtype)+3
+            GeneratedFields=6
         else:
-            pgcopy['num_fields'] = len(TreeData.dtype)+2
+            GeneratedFields=5
+        
+        
+        pgcopy['num_fields'] = len(TreeData.dtype)+GeneratedFields
             
         for i in range(0,len(TreeData.dtype)):
             field = self.CurrentSAGEStruct[i][0]                            
@@ -132,16 +173,18 @@ class SAGEDataReader:
             pgcopy[field] = TreeData[TreeData.dtype.names[i]]
         
              
-        pgcopy['TreeID_length'] = pgcopy.dtype[-5].alignment
         
-        pgcopy['TreeID'].fill(TreeLoadingID) 
+        
+        pgcopy['TreeID'].fill(TreeLoadingID)        
+              
+                
+        
+        
         if(FieldsList.count('LocalGalaxyID')==0):                       
             pgcopy['LocalGalaxyID']=range(0,len(TreeData))
-            
-        pgcopy['CentralGalaxyGlobalID_length'] = pgcopy.dtype[-3].alignment
+            pgcopy['LocalGalaxyID_length'] = numpy.dtype('>i4').alignment
         
-        if(FieldsList.count('LocalGalaxyID')==0):
-            pgcopy['LocalGalaxyID_length'] = pgcopy.dtype[-1].alignment 
+             
         
             
             

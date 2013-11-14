@@ -53,8 +53,7 @@ class ManageTreeIndex(object):
             
             DBConnection.ExecuteNoQuerySQLStatment(IndexStatment,ServerID)
             IndexStatment="Update "+TableName+" set "+FieldName+"=null ;"
-            DBConnection.ExecuteNoQuerySQLStatment(IndexStatment,ServerID)
-            
+            DBConnection.ExecuteNoQuerySQLStatment(IndexStatment,ServerID)            
             logging.info("Field Already Exists!")
     
     def AddIndexToTreeTraversalField(self,TableName,FieldName):
@@ -64,7 +63,7 @@ class ManageTreeIndex(object):
     
     def BuildTree(self,TreeID,TreeData):
         
-        ParentNode=None
+        self.ParentNode=None
         NodesList=[]
         ParentsList=[]
         for i  in range(0,len(TreeData)):
@@ -217,67 +216,71 @@ if __name__ == '__main__':
     logging.info("Connection Open!")
     
     ManageTreeIndexObj=ManageTreeIndex(DBConnection,Options)
-    #############################################################
-    ##### 1- Alter Table
-    ManageTreeIndexObj.AddTreeTraversalFields(TableName)
-    
-    ###############################################################
-    ##### 2- Get List of Trees
-    ServerID=DBConnection.GetServerID(TableName)
-    SQLStmt="select distinct globaltreeid from "+TableName+";"
-    TreesList=DBConnection.ExecuteQuerySQLStatment(SQLStmt,ServerID)
-    
-    Counter=0
-    
-    
-    #TreeID=TreesList[0]
-    #TreeID[0]=18602
     #if 1==1:
-    for TreeID in TreesList:  
+    for TableIndex in range(0,51):
+        TableName="tree_"+str(TableIndex)
+        logging.info("******** Processing Table "+TableName+" **********")
+        #############################################################
+        ##### 1- Alter Table
+        ManageTreeIndexObj.AddTreeTraversalFields(TableName)
         
-        Counter=Counter+1
-        SQLStmt="select globalgalaxyid,descendant,snapnum from "+TableName+" where globaltreeid="+str(TreeID[0])+" order by localgalaxyid;"
-        TreeDetails=DBConnection.ExecuteQuerySQLStatment(SQLStmt,ServerID)
+        ###############################################################
+        ##### 2- Get List of Trees
+        ServerID=DBConnection.GetServerID(TableName)
+        SQLStmt="select distinct globaltreeid from "+TableName+";"
+        TreesList=DBConnection.ExecuteQuerySQLStatment(SQLStmt,ServerID)
         
-        logging.info(str(Counter)+"/"+str(len(TreesList))+":"+str(len(TreeDetails))+"\t"+str(TreeID[0]))
-        
-        ManageTreeIndexObj.BuildTree(TreeID[0],TreeDetails)
-        BreadthFirstMappingList= ManageTreeIndexObj.BreadthFirst(ManageTreeIndexObj.ParentNode)
-        DepthFirstMappingList=ManageTreeIndexObj.DepthFirst_PreOrder(ManageTreeIndexObj.ParentNode)
-        ManageTreeIndexObj.CountChildNodes(ManageTreeIndexObj.ParentNode)
-        #ManageTreeIndexObj.PrintNodes(ManageTreeIndexObj.ParentNode,0)
-        
-        ################## Get the Nodes as a List #####################################
-        NodesList=[]
-        ManageTreeIndexObj.TreeToList(ManageTreeIndexObj.ParentNode,NodesList)            
-        TotalNodes=NodesList[0]['SubTreeSize']-1
-        del NodesList[0]
-        #################################################################################            
+        Counter=0
         
         
-        UpdateSt=""
-    
-        if len(NodesList)!=len(TreeDetails) or len(TreeDetails)!=TotalNodes:
-            print( str(TreeID[0])+": Error:"+str(len(NodesList))+"!="+str(len(TreeDetails)))
-     
+        #TreeID=TreesList[0]
+        #TreeID[0]=24341
+        #if 1==1:
+        for TreeID in TreesList:  
+            
+            Counter=Counter+1
+            SQLStmt="select globalindex,descendant,snapnum from "+TableName+" where globaltreeid="+str(TreeID[0])+" order by localgalaxyid;"
+            TreeDetails=DBConnection.ExecuteQuerySQLStatment(SQLStmt,ServerID)
+            
+            logging.info(str(Counter)+"/"+str(len(TreesList))+":"+str(len(TreeDetails))+"\t"+str(TreeID[0]))
+            
+            ManageTreeIndexObj.BuildTree(TreeID[0],TreeDetails)
+            BreadthFirstMappingList= ManageTreeIndexObj.BreadthFirst(ManageTreeIndexObj.ParentNode)
+            DepthFirstMappingList=ManageTreeIndexObj.DepthFirst_PreOrder(ManageTreeIndexObj.ParentNode)
+            ManageTreeIndexObj.CountChildNodes(ManageTreeIndexObj.ParentNode)
+            #ManageTreeIndexObj.PrintNodes(ManageTreeIndexObj.ParentNode,0)
+            
+            ################## Get the Nodes as a List #####################################
+            NodesList=[]
+            ManageTreeIndexObj.TreeToList(ManageTreeIndexObj.ParentNode,NodesList)            
+            TotalNodes=NodesList[0]['SubTreeSize']-1
+            del NodesList[0]
+            #################################################################################            
+            
+            
+            UpdateSt=""
         
-        #for Node in NodesList:            
-        #    UpdateSt=UpdateSt+" Update "+TableName+" set BreadthFirst_traversalorder="+str(Node['BreadthFirstIndex'])+" , DepthFirst_traversalorder="+str(Node['DepthFirstIndex'])+" , Subtree_Count="+str(Node['SubTreeSize'])+"  where globalgalaxyid="+str(Node['GlobalIndex'])+"; \n"
-        UpdateSt="UPDATE "+TableName+" SET BreadthFirst_traversalorder=myvalues.BreadthFirstIndex, \n"
-        UpdateSt=UpdateSt+" DepthFirst_traversalorder=myvalues.DepthFirstIndex, \n"
-        UpdateSt=UpdateSt+" Subtree_Count=myvalues.SubTreeSize From (VALUES  \n"
+            if len(NodesList)!=len(TreeDetails) or len(TreeDetails)!=TotalNodes:
+                print( str(TreeID[0])+": Error:"+str(len(NodesList))+"!="+str(len(TreeDetails)))
+         
+            
+            #for Node in NodesList:            
+            #    UpdateSt=UpdateSt+" Update "+TableName+" set BreadthFirst_traversalorder="+str(Node['BreadthFirstIndex'])+" , DepthFirst_traversalorder="+str(Node['DepthFirstIndex'])+" , Subtree_Count="+str(Node['SubTreeSize'])+"  where globalindex="+str(Node['GlobalIndex'])+"; \n"
+            UpdateSt="UPDATE "+TableName+" SET BreadthFirst_traversalorder=myvalues.BreadthFirstIndex, \n"
+            UpdateSt=UpdateSt+" DepthFirst_traversalorder=myvalues.DepthFirstIndex, \n"
+            UpdateSt=UpdateSt+" Subtree_Count=myvalues.SubTreeSize From (VALUES  \n"
+            
+            for NodeI in NodesList:
+                UpdateSt=UpdateSt+" ("+str(NodeI['GlobalIndex'])+","+str(NodeI['BreadthFirstIndex'])+","+str(NodeI['DepthFirstIndex'])+","+ str(NodeI['SubTreeSize'])+"),\n"
+            
+            UpdateSt=UpdateSt[:-2]
+            UpdateSt=UpdateSt+") AS myvalues(GlobalIndex,BreadthFirstIndex,DepthFirstIndex,SubTreeSize)"
+            UpdateSt=UpdateSt+" Where "+TableName+".globalindex=myvalues.GlobalIndex"
+            
+            DBConnection.ExecuteNoQuerySQLStatment(UpdateSt,ServerID)
+            logging.info(".*.")
         
-        for Node in NodesList:
-            UpdateSt=UpdateSt+" ("+str(Node['GlobalIndex'])+","+str(Node['BreadthFirstIndex'])+","+str(Node['DepthFirstIndex'])+","+ str(Node['SubTreeSize'])+"),\n"
-        
-        UpdateSt=UpdateSt[:-2]
-        UpdateSt=UpdateSt+") AS myvalues(GlobalIndex,BreadthFirstIndex,DepthFirstIndex,SubTreeSize)"
-        UpdateSt=UpdateSt+" Where "+TableName+".globalgalaxyid=myvalues.GlobalIndex"
-        
-        DBConnection.ExecuteNoQuerySQLStatment(UpdateSt,ServerID)
-        logging.info(".*.")
-    
-    ManageTreeIndexObj.AddTreeIndices(TableName)
+        ManageTreeIndexObj.AddTreeIndices(TableName)
     
     
     DBConnection.CloseConnections()
