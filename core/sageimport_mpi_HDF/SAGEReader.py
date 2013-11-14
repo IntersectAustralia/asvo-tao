@@ -93,16 +93,7 @@ class SAGEDataReader:
         
     def GenerateDictFromFields(self,TreeLoadingID,TreeData):
         TreeDict=[]
-        
-        
-        
-              
-        
-        
-        
-        
-        
-        
+                
         
         
         
@@ -120,6 +111,14 @@ class SAGEDataReader:
         
         ####### Add Generated Fields (Computed) ###############################
         
+        FieldName='TreeID'        
+        pgcopy_dtype += [(FieldName + '_length', '>i4'),(FieldName, '>i8')]
+        
+        FieldName='CentralGalaxyGlobalID'        
+        pgcopy_dtype += [(FieldName + '_length', '>i4'),(FieldName, '>i8')]
+        
+        
+        
         FieldName='breadthfirst_traversalorder'        
         pgcopy_dtype += [(FieldName + '_length', '>i4'),(FieldName, '>i8')]
         
@@ -129,21 +128,17 @@ class SAGEDataReader:
         FieldName='subtree_count'        
         pgcopy_dtype += [(FieldName + '_length', '>i4'),(FieldName, '>i8')]       
                 
-        FieldName='TreeID'        
-        pgcopy_dtype += [(FieldName + '_length', '>i4'),(FieldName, '>i8')]
-        
-        FieldName='CentralGalaxyGlobalID'        
-        pgcopy_dtype += [(FieldName + '_length', '>i4'),(FieldName, '>i8')]
         
         
         
         
+        
+        
+        FieldsList+=['treeid']
+        FieldsList+=['centralgalaxyglobalid']       
         FieldsList+=['breadthfirst_traversalorder']
         FieldsList+=['depthfirst_traversalorder']
         FieldsList+=['subtree_count']
-        FieldsList+=['treeid']
-        FieldsList+=['centralgalaxyglobalid']       
-        
         #########################################################################
         
         
