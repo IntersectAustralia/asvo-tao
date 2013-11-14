@@ -15,6 +15,7 @@ import PGDBInterface
 import h5py
 import numpy
 import time
+import ProcessTreeTraversal
 
 class SAGEDataReader:    
     #The Module handles the data reading from SAGE output to a memory data structure.
@@ -93,6 +94,19 @@ class SAGEDataReader:
     def GenerateDictFromFields(self,TreeLoadingID,TreeData):
         TreeDict=[]
         
+        
+        
+              
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         pgcopy_dtype = [('num_fields','>i2')]
         FieldsList=[]
         FieldsIndex=0
@@ -114,8 +128,7 @@ class SAGEDataReader:
         
         FieldName='subtree_count'        
         pgcopy_dtype += [(FieldName + '_length', '>i4'),(FieldName, '>i8')]       
-        
-        
+                
         FieldName='TreeID'        
         pgcopy_dtype += [(FieldName + '_length', '>i4'),(FieldName, '>i8')]
         
@@ -177,6 +190,8 @@ class SAGEDataReader:
         
         pgcopy['TreeID'].fill(TreeLoadingID)        
               
+        
+        
                 
         
         
@@ -184,7 +199,33 @@ class SAGEDataReader:
             pgcopy['LocalGalaxyID']=range(0,len(TreeData))
             pgcopy['LocalGalaxyID_length'] = numpy.dtype('>i4').alignment
         
-             
+        
+        
+        
+        
+        ManageTreeIndexObj=ProcessTreeTraversal.ManageTreeIndex()
+        
+        
+        ManageTreeIndexObj.BuildTree(TreeData)
+        
+        ManageTreeIndexObj.BreadthFirst(ManageTreeIndexObj.ParentNode)
+        ManageTreeIndexObj.DepthFirst_PreOrder(ManageTreeIndexObj.ParentNode)
+        ManageTreeIndexObj.CountChildNodes(ManageTreeIndexObj.ParentNode)
+        
+        NodesList={}
+        ManageTreeIndexObj.TreeToList(ManageTreeIndexObj.ParentNode,NodesList)      
+        
+        
+        
+        
+        for TreeField in pgcopy:         
+            
+            GlobalIndex=TreeField['GlobalIndex']  
+            
+            TreeField['breadthfirst_traversalorder']=NodesList[GlobalIndex]['BreadthFirstIndex']
+            TreeField['depthfirst_traversalorder']=NodesList[GlobalIndex]['DepthFirstIndex']
+            TreeField['subtree_count']=NodesList[GlobalIndex]['SubTreeSize']           
+           
         
             
             
