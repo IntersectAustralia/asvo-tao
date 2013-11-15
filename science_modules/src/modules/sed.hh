@@ -125,13 +125,13 @@ namespace tao {
                // Be sure we're on the correct tree.
                {
                   auto db_timer = this->db_timer_start();
-                  _sfh.load_tree_data( sql, table_name, tree_gids[ii] );
+                  _sfh.load_tree_data( sql, table_name, tree_gids[ii], gal_gids[ii] );
                }
 
                // Rebin the star-formation history.
                {
                   auto rebin_timer = _rebin_timer.start();
-                  _sfh.rebin<real_type>( sql, gal_lids[ii], _age_masses, _bulge_age_masses, _age_metals );
+                  _sfh.rebin<real_type>( _age_masses, _bulge_age_masses, _age_metals );
                }
 
                // Sum contributions from the SSP.
