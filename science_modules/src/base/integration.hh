@@ -14,13 +14,18 @@ namespace tao {
    integrate( const numerics::spline_integrator<real_type>& integ,
               const Spline& sp )
    {
+      // Do it in reverse to sum smaller values first.
       return integ(
          sp,
          []( double x, double val )
          {
             val = std::max( val, 0.0 );
-            return val*M_C/(x*x);
-         }
+            return val;
+         },
+	 []( double x )
+	 {
+	    return 1.0/x;
+	 }
          );
    }
 
@@ -29,7 +34,7 @@ namespace tao {
    integrate( const Spline& sp )
    {
       numerics::spline_integrator<real_type> integ;
-      return integrate( integ, sp );
+      return -M_C*integrate( integ, sp );
    }
 
    template< class Spline0,
