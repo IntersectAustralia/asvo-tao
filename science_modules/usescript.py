@@ -16,6 +16,7 @@ args = (arguments()
 glut = use('glut')
 soci = use('soci')
 sqlite3 = use('sqlite3')
+hdf5 = use('hdf5')
 
 # Define some options.
 cc_opts = (
@@ -47,7 +48,8 @@ cc_opts = (
     options(args.memory_stats  == False, define=['NMEMSTATS']) +
     options(glut.have          == True,  define=['HAVE_GLUT']) +
     options((soci.has_feature('sqlite3') == True) & (sqlite3.have == True), define=['HAVE_SQLITE3']) +
-    options(soci.has_feature('postgresql') == True, define=['HAVE_POSTGRESQL'])
+    options(soci.has_feature('postgresql') == True, define=['HAVE_POSTGRESQL']) +
+    options(hdf5.has_feature('parallel') == True, define=['PARALLELHDF5'])
 )
 cp_opts = (
     options(args.debug == True,
@@ -117,3 +119,4 @@ rule(r'apps/(?:tao|application)\.cc$', tao_bin & tao_bin_inst, libraries=['tao']
 # rule(r'apps/zen/.+\.cc$', bin, glut.have == True, target='bin/zen', libraries=['tao'])
 # rule(r'apps/rebin/.+\.cc$', bin, target='bin/rebin', libraries=['tao'])
 # rule(r'apps/ssp_restrict/.+\.cc$', bin, target='bin/ssp_restrict', libraries=['tao'])
+# rule(r'apps/analytic/.+\.cc$', bin, target='bin/analytic', libraries=['tao'])
