@@ -1,10 +1,14 @@
 #ifndef tao_rebin_application_hh
 #define tao_rebin_application_hh
 
+#include <string>
+#include <libhpc/main/application.hh>
+
 namespace tao {
    namespace rebin {
 
       class application
+	 : public hpc::application
       {
       public:
 
@@ -16,7 +20,9 @@ namespace tao {
 
       protected:
 
-	 long long _gid;
+	 std::string _tbl;
+	 long long _tree;
+	 int _lid;
       };
 
    }
