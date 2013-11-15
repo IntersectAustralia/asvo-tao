@@ -201,34 +201,7 @@ namespace tao {
    void
    stellar_population::_load_ages( const fs::path& filename )
    {
-      LOGILN( "Loading ages from: ", filename, setindent( 2 ) );
-
-      // Open the file.
-      std::ifstream file( filename.c_str() );
-      EXCEPT( file.is_open(), "Couldn't find ages file: ", filename );
-
-      // Read the number of ages.
-      unsigned num_ages;
-      file >> num_ages;
-      EXCEPT( file.good(), "Error reading ages file." );
-      LOGILN( "Number of ages: ", num_ages );
-
-      // Read the ages.
-      vector<real_type> bin_ages( num_ages );
-      for( unsigned ii = 0; ii < num_ages; ++ii )
-         file >> bin_ages[ii];
-      EXCEPT( file.good(), "Error reading ages file." );
-
-#ifndef NDEBUG
-      // Must be ordered.
-      for( unsigned ii = 1; ii < bin_ages.size(); ++ii )
-         ASSERT( bin_ages[ii] >= bin_ages[ii - 1], "Bin ages must be descending ordered." );
-#endif
-
-      // Setup the bin ages.
-      _age_bins.set_ages( bin_ages );
-
-      LOGILN( "Done.", setindent( -2 ) );
+      _age_bins.load( filename );
    }
 
    void

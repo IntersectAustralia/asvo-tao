@@ -57,7 +57,7 @@ namespace tao {
           unsigned spec_idx,
           unsigned metal_idx ) const;
 
-      const vector<real_type>::view
+      vector<real_type>::view const
       wavelengths() const;
 
       const age_line<real_type>&
@@ -96,13 +96,12 @@ namespace tao {
 
             // Sum each spectra into the sed bin.
             OutputIterator sed_it = sed_start;
-            for( unsigned ii = 0; ii < _waves.size(); ++ii )
+            for( unsigned jj = 0; jj < _waves.size(); ++jj )
             {
                // The star formation histories read from the file are in
                // solar masses/1e10. The values in SSP are luminosity densities
-               // in erg/s/angstrom, and they're really big. Scale them down
-               // by 1e10 to make it more manageable.
-               *sed_it += _spec[base + ii*(_metal_bins.size() + 1)]*mass;
+               // in erg/s/angstrom, and they're really big.
+               *sed_it += _spec[base + jj*(_metal_bins.size() + 1)]*mass;
                ASSERT( *sed_it == *sed_it, "Produced NaN during stellar population summation." );
                ++sed_it;
             }

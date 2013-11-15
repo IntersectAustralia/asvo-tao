@@ -1,6 +1,7 @@
 #ifndef tao_base_age_line_hh
 #define tao_base_age_line_hh
 
+#include <boost/filesystem/path.hpp>
 #include <soci.h>
 #include <libhpc/logging/logging.hh>
 #include "timed.hh"
@@ -8,6 +9,7 @@
 #include "simulation.hh"
 
 namespace tao {
+   namespace fs = boost::filesystem;
    using namespace hpc;
 
    ///
@@ -40,6 +42,11 @@ namespace tao {
 		real_type omega_l = 0.75 )
       {
          load_ages( sql, hubble, omega_m, omega_l );
+      }
+
+      age_line( fs::path const& path )
+      {
+	 load( path );
       }
 
       age_line( soci::session& sql,
@@ -106,6 +113,31 @@ namespace tao {
          LOGT( setindent( -2 ) );
       }
 
+      void
+      load( fs::path const& path )
+      {
+	 LOGBLOCKI( "Loading ages from: ", path );
+
+	 // Open the file.
+	 std::ifstream file( path.c_str() );
+	 EXCEPT( file.is_open(), "Couldn't find ages file: ", path );
+
+	 // Read the number of ages.
+	 unsigned num_ages;
+	 file >> num_ages;
+	 EXCEPT( file.good(), "Error reading ages file." );
+	 LOGILN( "Number of ages: ", num_ages );
+
+	 // Read the ages.
+	 vector<real_type> bin_ages( num_ages );
+	 for( unsigned ii = 0; ii < num_ages; ++ii )
+	    file >> bin_ages[ii];
+	 EXCEPT( file.good(), "Error reading ages file." );
+
+	 // Setup the bin ages.
+	 set_ages( bin_ages );
+      }
+
       ///
       /// Load ages from database. Attempts to load ages from a connected
       /// database under the table name "snap_redshift".
@@ -117,7 +149,7 @@ namespace tao {
                  real_type omega_l = 0.75 )
       {
          auto timer = timer_start();
-         LOGDLN( "Loading ages from database.", setindent( 2 ) );
+         LOGBLOCKD( "Loading ages from database." );
 
          // Clear existing values.
          clear();
@@ -148,8 +180,6 @@ namespace tao {
 
          // Calculate the dual.
          _calc_dual();
-
-         LOGD( "Done.", setindent( -2 ) );
       }
 
       unsigned
