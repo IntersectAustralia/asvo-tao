@@ -69,6 +69,6 @@ Follow the steps below to set up your virtual environment and check out the code
    gnome-open build/index.html
    # Continue with the instructions in the Developer's Guide:
    # - asvo-tao/docs/build/developers/index.rst
-   # - http://tao.asvo.org.au/taodemo/static/docs/developers/index.html
+   # - http://tao.asvo.org.au/tao/static/docs/developers/index.html
 
 
