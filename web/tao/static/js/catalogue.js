@@ -505,7 +505,7 @@ catalogue.util_def = function ($) {
     this.dataset_property = function(id) {
         return $.grep(TaoMetadata.DataSetProperty, function(elem, idx) {
             return elem.pk == id
-        })[0] || {}
+        })[0] || null;
     }
 
 

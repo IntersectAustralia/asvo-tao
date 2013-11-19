@@ -21,6 +21,12 @@ var TwoSidedSelectWidget = function(params) {
     vm.from_side = {};
     vm.to_side = {};
 
+    var curr_selections = [];
+    var prev_selections = [];
+    Array.prototype.diff = function(a) {
+        return this.filter(function(i) {return a.indexOf(i) < 0;});
+    };
+
     function option_click(data) {
         vm.option_click(data);
     }
@@ -105,6 +111,17 @@ var TwoSidedSelectWidget = function(params) {
             return resp;
         });
         vm_side.options_selected = ko.observableArray([]);
+        vm_side.options_selected.subscribe(function(new_val) {
+            curr_selections = new_val;
+            if (curr_selections.length > 1) {
+                var curr_elem = curr_selections.diff(prev_selections);
+                vm.clicked_option(curr_elem);
+            }
+            else {
+                vm.clicked_option(curr_selections);
+            }
+            prev_selections = curr_selections;
+        });
         return vm_side;
     }
 

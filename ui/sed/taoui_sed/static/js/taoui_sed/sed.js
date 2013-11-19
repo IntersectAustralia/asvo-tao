@@ -50,13 +50,13 @@ catalogue.module_defs.sed = function ($) {
     function bandpass_filter_from_id(bpfid) {
     	// Answer the selected bpf record from the supplied encoded id
     	// bpfid = <bpf primary key>_(apparent|absolute)
-    	idx = bpfid.indexOf("_");
-    	if (idx < 0) {
-    		console.log("bandpass_filter_from_id: couldn't find _");
-    		return undefined;
-    	}
-    	id = bpfid.slice(0,idx);
-        return $.grep(TaoMetadata.BandPassFilter, function(elem, idx) { 
+        idx = bpfid.toString().indexOf("_");
+        id = bpfid.toString().slice(0,idx);
+        if (idx < 0) {
+            console.log("bandpass_filter_from_id: couldn't find _ in " + bpfid + ", idx=" + idx);
+            return undefined;
+        }
+        return $.grep(TaoMetadata.BandPassFilter, function(elem, idx) {
             return elem.pk == id
         })[0] || null;
 
