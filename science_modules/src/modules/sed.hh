@@ -120,19 +120,23 @@ namespace tao {
             // Perform the processing.
             for( unsigned ii = 0; ii < bat.size(); ++ii )
             {
-	       LOGILN( "Calculating SED for galaxy with global index: ", gal_gids[ii] );
+	       LOGBLOCKI( "Calculating SED for galaxy with global index: ", gal_gids[ii] );
 
                // Be sure we're on the correct tree.
                {
                   auto db_timer = this->db_timer_start();
                   _sfh.load_tree_data( sql, table_name, tree_gids[ii], gal_gids[ii] );
                }
+	       LOGILN( "Tree size: ", _sfh.size() );
 
                // Rebin the star-formation history.
+	       hpc::profile::timer local_rebin_timer;
                {
                   auto rebin_timer = _rebin_timer.start();
+		  auto ANON = local_rebin_timer.start();
                   _sfh.rebin<real_type>( _age_masses, _bulge_age_masses, _age_metals );
                }
+	       LOGILN( "Rebinning took: ", local_rebin_timer.total(), " s" );
 
                // Sum contributions from the SSP.
                {

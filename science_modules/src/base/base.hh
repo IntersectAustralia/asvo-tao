@@ -18,5 +18,6 @@
 #include "factory.hh"
 #include "module.hh"
 #include "globals.hh"
+#include "subcones.hh"
 
 #endif

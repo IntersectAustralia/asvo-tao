@@ -1,3 +1,7 @@
+# Grab a default version hash.
+import subprocess
+default_version = subprocess.check_output(['git', 'rev-parse', 'HEAD'])
+
 # Define some arguments.
 args = (arguments()
         ('--prefix', default='/usr/local', help='Installation path.')
@@ -9,7 +13,8 @@ args = (arguments()
         ('--enable-memory-ops', dest='memory_ops', action='boolean', default=False, help='Enable/disable memory operation logging.')
         ('--enable-memory-stats', dest='memory_stats', action='boolean', default=False, help='Enable/disable memory statistics logging.')
         ('--enable-logging', dest='logging', action='boolean', default=True, help='Enable/disable all logging routines.')
-        ('--enable-debug-logging', dest='debug_logging', action='boolean', default=True, help='Enable/disable debug logging routines.'))
+        ('--enable-debug-logging', dest='debug_logging', action='boolean', default=True, help='Enable/disable debug logging routines.')
+        ('--version', dest='version', default=default_version, help='Set version number'))
 
 # Need to define optional packages ahead of some options
 # so we can include preprocessor definitions.
@@ -22,7 +27,7 @@ hdf5 = use('hdf5')
 cc_opts = (
     options(cxx11=True,
             pic=True,
-            define=[platform.os_name.upper()]) + 
+            define=[platform.os_name.upper(), ('VERSION', args.version)]) +
     options(args.debug == True,
             prefix='build/debug',
             library_dirs=['build/debug/lib'],
@@ -120,3 +125,4 @@ rule(r'apps/(?:tao|application)\.cc$', tao_bin & tao_bin_inst, libraries=['tao']
 # rule(r'apps/rebin/.+\.cc$', bin, target='bin/rebin', libraries=['tao'])
 # rule(r'apps/ssp_restrict/.+\.cc$', bin, target='bin/ssp_restrict', libraries=['tao'])
 # rule(r'apps/analytic/.+\.cc$', bin, target='bin/analytic', libraries=['tao'])
+rule(r'apps/subcones/.+\.cc$', bin, target='bin/subcones', libraries=['tao'])

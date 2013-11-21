@@ -24,6 +24,7 @@ namespace tao {
                                       const string& format,
                                       const string& mag_field,
                                       optional<real_type> min_mag,
+                                      optional<real_type> max_mag,
                                       real_type z_min,
                                       real_type z_max,
                                       real_type origin_ra,
@@ -35,7 +36,7 @@ namespace tao {
                                       double back_mag,
                                       double exposure_time )
       {
-         setup( index, sub_cone, format, mag_field, min_mag, z_min, z_max,
+         setup( index, sub_cone, format, mag_field, min_mag, max_mag, z_min, z_max,
                 origin_ra, origin_dec, fov_ra, fov_dec, width, height,
                 back_mag, exposure_time );
       }
@@ -49,6 +50,7 @@ namespace tao {
                              const string& format,
                              const string& mag_field,
                              optional<real_type> min_mag,
+                             optional<real_type> max_mag,
                              real_type z_min,
                              real_type z_max,
                              real_type origin_ra,
@@ -67,6 +69,7 @@ namespace tao {
          _format = format;
          _mag_field = mag_field;
          _min_mag = min_mag;
+         _max_mag = max_mag;
          _z_min = z_min;
          _z_max = z_max;
          _origin_ra = to_radians( origin_ra );
@@ -99,6 +102,7 @@ namespace tao {
 
          // Only process if within magnitude and redshift limits.
          if( (!_min_mag || mag >= *_min_mag) &&
+	     (!_max_mag || mag < *_max_mag) &&
              redshift >= _z_min && redshift <= _z_max )
          {
             // Convert the cartesian coordiantes to right-ascension and

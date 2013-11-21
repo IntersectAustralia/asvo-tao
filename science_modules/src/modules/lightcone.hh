@@ -459,29 +459,17 @@ namespace tao {
             // Get the subjobindex.
             unsigned sub_idx = global_dict.get<unsigned>( "subjobindex" );
 
-            // Based on my RA, what is the peak of the cone in the Y and Z directions?
-            real_type y_peak = tan( _lc.max_ra() - _lc.min_ra() )*_lc.max_dist();
-            real_type z_peak = tan( _lc.max_dec() - _lc.min_dec() )*_lc.max_dist();
+	    // Check this index is okay.
+	    unsigned max_subcones = tao::calc_max_subcones( _lc );
+	    EXCEPT( sub_idx < max_subcones, "Subcone with index ", sub_idx,
+		    " is outside the maximum range of ", max_subcones );
 
-            // How many can I fit in each direction?
-            unsigned y_num = (unsigned)(_sim.box_size()/y_peak);
-            unsigned z_num = (unsigned)(_sim.box_size()/z_peak);
-	    EXCEPT( y_num && z_num, "Unable to fit any lightcones of the specified size "
-		    "in the simulation box size. Please reduce RA, DEC and/or maximum "
-		    "redshift." );
+	    // Calculate subcone origin.
+	    std::array<real_type,3> ori = tao::calc_subcone_origin<real_type>( lc, sub_idx );
 
-            // Total number I can fit?
-            unsigned tot = y_num*z_num;
-            if( tot == 0 )
-               ++tot;
-            EXCEPT( sub_idx < tot, "Too many cones for simulation box size." );
-
-            // Place my origin accordingly.
-            real_type x0 = 0.0;
-            real_type y0 = ((z_num > 0) ? (sub_idx - (sub_idx/y_num)*y_num) : 0.0)*y_peak;
-            real_type z0 = ((y_num > 0) ? sub_idx/y_num : 0.0)*z_peak;
-            _lc.set_origin( array<real_type,3>{ { x0, y0, z0 } } );
-            LOGILN( "Origin set to: (", x0, ", ", y0, ", ", z0, ")" );
+	    // Set origin.
+            _lc.set_origin( ori );
+            LOGILN( "Origin set to: (", ori[0], ", ", ori[1], ", ", ori[2], ")" );
          }
 
       protected:

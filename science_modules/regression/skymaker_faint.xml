@@ -7,7 +7,7 @@
       <box-repetition>random</box-repetition>
       <rng-seed>0</rng-seed>
       <redshift-min>2.01</redshift-min>
-      <redshift-max>2.015</redshift-max>
+      <redshift-max>2.03</redshift-max>
       <ra-min>0</ra-min>
       <ra-max>0.6</ra-max>
       <dec-min>0</dec-min>
@@ -35,27 +35,9 @@
         <item>sed</item>
       </parents>
       <bandpass-filters>
-        <item>WFC3/f105w.IR.dati</item>
-        <item>WFC3/f125w.IR.dati</item>
-        <item>WFC3/f160w.IR.dati</item>
+        <item>Johnson/Johnson_V.dati</item>
       </bandpass-filters>
     </filter>
-
-    <skymaker id="skymaker">
-      <parents>
-        <item>filter</item>
-      </parents>
-      <images>
-        <item>
-          <mag_field>WFC3/f105w.IR.dati_apparent</mag_field>
-          <origin_ra>0.3</origin_ra>
-          <origin_dec>0.05</origin_dec>
-          <fov_ra>0.6</fov_ra>
-          <fov_dec>0.1</fov_dec>
-          <back_mag>40</back_mag>
-        </item>
-      </images>
-    </skymaker>
 
   </workflow>
 

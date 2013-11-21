@@ -3,6 +3,9 @@
 #include "tao/base/base.hh"
 #include "tao/modules/modules.hh"
 
+#define STRINGIFY( x ) #x
+#define TOSTRING( x ) STRINGIFY( x )
+
 using namespace hpc;
 using namespace pugi;
 
@@ -55,6 +58,9 @@ namespace tao {
       // Cache the filenames.
       _xml_file = argv[1];
       _dbcfg_file = argv[2];
+
+      // First thing, dump the version number.
+      LOGILN( "TAO version: ", TOSTRING( VERSION ) );
    }
 
    void

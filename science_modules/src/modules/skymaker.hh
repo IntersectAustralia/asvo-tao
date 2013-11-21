@@ -25,6 +25,7 @@ namespace tao {
                          const string& format,
                          const string& mag_field,
                          optional<real_type> min_mag,
+                         optional<real_type> max_mag,
                          real_type z_min,
                          real_type z_max,
                          real_type origin_ra,
@@ -42,6 +43,7 @@ namespace tao {
                 const string& format,
                 const string& mag_field,
                 optional<real_type> min_mag,
+                optional<real_type> max_mag,
                 real_type z_min,
                 real_type z_max,
                 real_type origin_ra,
@@ -85,6 +87,7 @@ namespace tao {
          string _format;
          string _mag_field;
          optional<real_type> _min_mag;
+         optional<real_type> _max_mag;
          real_type _z_min, _z_max;
          real_type _origin_ra, _origin_dec;
          real_type _fov_ra, _fov_dec;
@@ -240,11 +243,14 @@ namespace tao {
                }
 
                // Minimum magnitude can be "none" or a real value.
-               optional<real_type> min_mag = none;
+               optional<real_type> min_mag = none, max_mag = none;
                {
                   string val_str = sub.get<string>( "min_mag", "None" );
                   if( val_str != "None" )
                      min_mag = boost::lexical_cast<real_type>( val_str );
+                  val_str = sub.get<string>( "max_mag", "None" );
+                  if( val_str != "None" )
+                     max_mag = boost::lexical_cast<real_type>( val_str );
                }
 
                // Construct a new image with the contents.
@@ -253,7 +259,7 @@ namespace tao {
                   _imgs.emplace_back(
                      ii++,
                      global_dict.get<int>( "subjobindex" ), sub.get<string>( "format", "FITS" ),
-                     sub.get<string>( "mag_field" ), min_mag,
+                     sub.get<string>( "mag_field" ), min_mag, max_mag,
                      sub.get<real_type>( "z_min", 0 ), sub.get<real_type>( "z_max", 127 ),
                      sub.get<real_type>( "origin_ra" ), sub.get<real_type>( "origin_dec" ),
                      sub.get<real_type>( "fov_ra" ), sub.get<real_type>( "fov_dec" ),
