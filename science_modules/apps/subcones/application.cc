@@ -24,6 +24,7 @@ namespace tao {
 	 // Create a lightcone.
 	 tao::lightcone<real_type> lc( &sim );
 	 lc.set_geometry( 0.0, _ra, 0.0, _dec, _z );
+	 std::cout << "Cone distance    = " << lc.max_dist() << "\n";
 
 	 // Calculate origin and things.
 	 unsigned max_cones = tao::calc_max_subcones( lc );
