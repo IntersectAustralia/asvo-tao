@@ -144,7 +144,7 @@ def results(request, id, job):
         if file.file_name[0:len(TAP_OUTPUT_PREFIX)] == TAP_OUTPUT_PREFIX:
             job_file = file
     
-    if (not job_file) or (not job_file.can_be_downloaded()):
+    if not job_file:
         return HttpResponseBadRequest('File not found')
     
     return render(request, 'tap/results.xml', {'download_link': "%s/result/%s" % 
@@ -264,7 +264,7 @@ def stream_job_results(request, job):
         if file.file_name[0:len(TAP_OUTPUT_PREFIX)] == TAP_OUTPUT_PREFIX:
             job_file = file
         
-    if (not job_file) or (not job_file.can_be_downloaded()):
+    if not job_file:
         job.error_message += "Can't get the job file.\n"
         job.save()
         return HttpResponseBadRequest('File not found')

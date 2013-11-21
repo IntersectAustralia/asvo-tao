@@ -20,7 +20,8 @@ class JobTypeFormTests(LiveServerTest):
         for i in range(3):
             g = GalaxyModelFactory.create(name='galaxy_model_%03d' % i)
             ds = DataSetFactory.create(simulation=box_sim, galaxy_model=g, max_job_box_count=25)
-            SnapshotFactory.create(dataset=ds)
+            for j in range(10):
+                SnapshotFactory.create(dataset=ds, redshift=str(j)+".0")
             for j in range(3):
                 dsp = DataSetPropertyFactory.create(dataset=ds, label='parameter_%03d label' % j, name='name_%03d' % j, description='description_%03d' % j)
                 ds.default_filter_field = dsp
@@ -30,7 +31,8 @@ class JobTypeFormTests(LiveServerTest):
         for i in range(4,8):
             g = GalaxyModelFactory.create(name='galaxy_model_%03d' % i)
             ds = DataSetFactory.create(simulation=lc_sim, galaxy_model=g, max_job_box_count=25, id=i)
-            SnapshotFactory.create(dataset=ds)
+            for j in range(10):
+                SnapshotFactory.create(dataset=ds, redshift=str(j)+".0")
             for j in range(4,7):
                 dsp = DataSetPropertyFactory.create(dataset=ds, label='parameter_%03d label' % j, name='name_%03d' % j, description='description_%03d' % j)
                 ds.default_filter_field = dsp
@@ -38,7 +40,9 @@ class JobTypeFormTests(LiveServerTest):
 
 
         for i in range(3):
-            StellarModelFactory.create(label='stellar_label_%03d' % i, name='stellar_name_%03d' % i, description='<p>Description %d </p>' % i)
+            StellarModelFactory.create(label='stellar_label_%03d' % i,
+                                       name='model{0}/sspm.dat'.format(i),
+                                       description='<p>Description %d </p>' % i)
             BandPassFilterFactory.create(label='Band pass filter %03d' % i, filter_id='%d' % i)
             DustModelFactory.create(name='Dust_model_%03d.dat' % i, label='Dust model %03d' % i, details='<p>Detail %d </p>' % i)
             SurveyPresetFactory.create(name='Preset %d' % i, parameters=params_string)
@@ -93,14 +97,15 @@ class JobTypeFormTests(LiveServerTest):
         sed_pop = self.get_selected_option_text(self.sed_id('single_stellar_population_model'))
         self.assertEqual('stellar_label_001', sed_pop)
 
-        self.assert_multi_selected_text_equals(self.sed_id('band_pass_filters-right'), ['Band pass filter 000 (Absolute)','Band pass filter 002 (Apparent)'])
+        self.assert_multi_selected_text_equals(self.sed_id('band_pass_filters-right'), ['Band pass filter 000 (Apparent)','Band pass filter 002 (Apparent)'])
 
     def test_mock_image_params(self):
         self.upload_params_file()
 
         self.click('tao-tabs-mock_image')
         self.assertEqual([u'ALL', 0, 1, 2], self.get_ko_array('catalogue.vm.mock_image.sub_cone_options()', 'value'))
-        self.assertEqual([u'3_apparent'], self.get_ko_array('catalogue.modules.mock_image.vm.image_settings()[0].mag_field_options()', 'pk'))
+        self.assertEqual([u'1_apparent', u'3_apparent'],
+            self.get_ko_array('catalogue.modules.mock_image.vm.image_settings()[0].mag_field_options()', 'pk'))
         self.assertEqual([u'FITS'], self.get_ko_array('catalogue.vm.mock_image.format_options', 'value'))
 
         self.assertEqual(1, self.get_image_setting_ko_field(0,'sub_cone'))
@@ -114,8 +119,8 @@ class JobTypeFormTests(LiveServerTest):
         self.assertEqual('1', self.get_image_setting_ko_value(0, 'origin_dec'))
         self.assertEqual('1', self.get_image_setting_ko_value(0, 'fov_ra'))
         self.assertEqual('2', self.get_image_setting_ko_value(0, 'fov_dec'))
-        self.assertEqual('66', self.get_image_setting_ko_value(0, 'width'))
-        self.assertEqual('66', self.get_image_setting_ko_value(0, 'height'))
+        self.assertEqual('667', self.get_image_setting_ko_value(0, 'width'))
+        self.assertEqual('666', self.get_image_setting_ko_value(0, 'height'))
 
         self.assertEqual(2, self.get_image_setting_ko_field(1,'sub_cone'))
         self.assertEqual('3_apparent', self.get_image_setting_ko_field(1, 'mag_field', field='pk'))
@@ -128,8 +133,8 @@ class JobTypeFormTests(LiveServerTest):
         self.assertEqual('1', self.get_image_setting_ko_value(1, 'origin_dec'))
         self.assertEqual('1', self.get_image_setting_ko_value(1, 'fov_ra'))
         self.assertEqual('2', self.get_image_setting_ko_value(1, 'fov_dec'))
-        self.assertEqual('77', self.get_image_setting_ko_value(1, 'width'))
-        self.assertEqual('77', self.get_image_setting_ko_value(1, 'height'))
+        self.assertEqual('778', self.get_image_setting_ko_value(1, 'width'))
+        self.assertEqual('777', self.get_image_setting_ko_value(1, 'height'))
 
 
 
@@ -137,9 +142,8 @@ class JobTypeFormTests(LiveServerTest):
         self.upload_params_file()
 
         self.click('tao-tabs-record_filter')
-
         rf_filter = self.get_selected_option_text(self.rf_id('filter'))
-        self.assertEqual('Band pass filter 002 (Apparent)', rf_filter)
+        self.assertEqual('parameter_005 label', rf_filter)
         rf_expected = {
             self.rf_id('min'): '',
             self.rf_id('max'): '12'
@@ -157,7 +161,6 @@ class JobTypeFormTests(LiveServerTest):
         self.upload_params_file()
 
         self.click('tao-tabs-summary_submit')
-
         self.assert_summary_field_correctly_shown('Light-Cone', 'light_cone', 'geometry_type')
         self.assert_summary_field_correctly_shown('simulation_001', 'light_cone', 'simulation')
         self.assert_summary_field_correctly_shown('galaxy_model_006', 'light_cone', 'galaxy_model')
@@ -168,7 +171,7 @@ class JobTypeFormTests(LiveServerTest):
         self.assert_summary_field_correctly_shown('Not selected', 'sed', 'apply_dust')
         self.assert_summary_field_correctly_shown('2 images', 'mock_image', 'select_mock_image')
 
-        self.assert_summary_field_correctly_shown(u'Band pass filter 002 (Apparent) \u2264 12.0', 'record_filter', 'record_filter')
+        self.assert_summary_field_correctly_shown(u'parameter_005 label \u2264 12.0', 'record_filter', 'record_filter')
 
         self.assert_summary_field_correctly_shown('FITS', 'output', 'output_format')
 

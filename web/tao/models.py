@@ -337,8 +337,6 @@ class Job(models.Model):
         return self.error_message[:80]
 
     def recalculate_disk_usage(self):
-        if not self.is_completed():
-            return 0
         sum_file_sizes = 0
         for f in self.files():
             sum_file_sizes += f.get_file_size_in_MB()
@@ -346,10 +344,12 @@ class Job(models.Model):
         return self.disk_usage
 
     def disk_size(self):
-        if not self.is_completed():
-            return 0
-        else:
-            return self.recalculate_disk_usage()
+        """Answer the receiver's disk usage.
+        This originally returned 0 for non-completed jobs.
+        It now returns the actual usage.
+        Neither are ideal since for ASVO-661 params.xml is displayed during execution.
+        We could test the state and display params.xml, however that is starting to make the code brittle."""
+        return self.recalculate_disk_usage()
 
 
     def display_disk_size(self):
@@ -357,9 +357,8 @@ class Job(models.Model):
     
 
     def files(self):
-        if not self.is_completed():
-            raise Exception("can't look at files of job that is not completed")
-
+        """Answer the sorted list of files for the receiver.
+        It is up to the caller to check that the job is in the appropriate state."""
         all_files = []
         job_base_dir = os.path.join(settings.FILES_BASE, self.output_path)
         for root, dirs, files in os.walk(job_base_dir):
@@ -433,6 +432,7 @@ class JobFile(object):
         self.file_size = os.path.getsize(self.file_path)
     
     def can_be_downloaded(self):
+        """Deprecated.  This was originally used to limit download file size"""
         return True
 
     def get_file_size(self):
