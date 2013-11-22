@@ -49,8 +49,6 @@ def get_file(request, id, file_path):
         raise Http404
     
     job_file = the_one[0]
-    if not job_file.can_be_downloaded():
-        raise PermissionDenied
 
     response = StreamingHttpResponse(streaming_content=FileWrapper(open(job_file.file_path)), mimetype='application/force-download')
 

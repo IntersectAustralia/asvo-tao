@@ -25,19 +25,6 @@ class JobTestCase(TestCase):
         GlobalParameterFactory(parameter_name='INITIAL_JOB_STATUS', parameter_value='SUBMITTED')
         job = Job(user=self.user)
         self.assertEquals('SUBMITTED', job.status)
-        
-    def test_not_available_unless_completed(self):
-        self.jobs = dict((status, Job(status=status, user=self.user)) for (status, _) in models.STATUS_CHOICES)
-
-        for status, job in self.jobs.iteritems():
-            job.save()
-
-
-        for status, _ in models.STATUS_CHOICES:
-            if status != Job.COMPLETED:
-                self.assertRaises(Exception, self.jobs[status].files)
-            else:
-                self.jobs[status].files()
 
     def test_files(self):
         output_path = 'job_dir'
