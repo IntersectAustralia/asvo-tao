@@ -51,7 +51,11 @@ def ParseParams(FilePath):
     for settingfield in RunningSettingsNode:
        RunningOptions[RunningSettingsNode.tag+':'+settingfield.tag]= settingfield.text
        
-    
-    
+    RunningSettingsNode=SettingsNode[3]
+    Counter=0
+    for TreeMapping in RunningSettingsNode:
+        RunningOptions['TreeMapping_'+str(Counter)]=TreeMapping.text
+        Counter=Counter+1
+        
     
     return [CurrentSAGEStruct,RunningOptions]
