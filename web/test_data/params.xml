@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<tao timestamp="2013-08-01T10:26:40+10:00" xmlns="http://tao.asvo.org.au/schema/module-parameters-v1">
+<tao xmlns="http://tao.asvo.org.au/schema/module-parameters-v1" timestamp="2013-11-21T16:22:32+11:00">
   <username>person</username>
   <workflow name="alpha-light-cone-image">
     <schema-version>2.0</schema-version>
@@ -16,20 +16,20 @@
       <ra-max units="deg">1</ra-max>
       <dec-min units="deg">0.0</dec-min>
       <dec-max units="deg">2</dec-max>
-      <output-fields>
-        <item description="description_005" label="parameter_005 label">name_005</item>
-      </output-fields>
       <rng-seeds>
         <rng-seed-0>111111</rng-seed-0>
         <rng-seed-1>222222</rng-seed-1>
         <rng-seed-2>333333</rng-seed-2>
       </rng-seeds>
+      <output-fields>
+        <item description="description_005" label="parameter_005 label">name_005</item>
+      </output-fields>
     </light-cone>
     <fits id="5">
       <fields>
         <item label="parameter_005 label">name_005</item>
-        <item label="Band pass filter 000 (Absolute)">0_absolute</item>
-        <item label="Band pass filter 002 (Apparent)">26_apparent</item>
+        <item label="Band pass filter 000 (Apparent)">0_apparent</item>
+        <item label="Band pass filter 002 (Apparent)">2_apparent</item>
       </fields>
       <parents>
         <item>4</item>
@@ -42,7 +42,10 @@
       <parents>
         <item>1</item>
       </parents>
-      <single-stellar-population-model>stellar_name_001</single-stellar-population-model>
+      <single-stellar-population-model width="1">model1/sspm.dat</single-stellar-population-model>
+      <wavelengths-file>model1/wavelengths.dat</wavelengths-file>
+      <ages-file>model1/ages.dat</ages-file>
+      <metallicities-file>model1/metallicites.dat</metallicities-file>
     </sed>
     <filter id="4">
       <module-version>1</module-version>
@@ -50,7 +53,7 @@
         <item>2</item>
       </parents>
       <bandpass-filters>
-        <item description="" label="Band pass filter 000" selected="absolute">0</item>
+        <item description="" label="Band pass filter 000" selected="apparent">0</item>
         <item description="" label="Band pass filter 002" selected="apparent">2</item>
       </bandpass-filters>
     </filter>
@@ -61,31 +64,31 @@
       </parents>
       <images>
         <item>
+          <max_mag>12</max_mag>
           <format>FITS</format>
           <origin_ra>0.5</origin_ra>
           <z_max>4</z_max>
           <origin_dec>1</origin_dec>
-          <height>66</height>
-          <width>66</width>
+          <height>666</height>
+          <width>667</width>
           <z_min>3</z_min>
           <fov_ra>1</fov_ra>
           <min_mag>7</min_mag>
-          <max_mag>12</max_mag>
           <sub_cone>1</sub_cone>
           <fov_dec>2</fov_dec>
           <mag_field>2_apparent</mag_field>
         </item>
         <item>
+          <max_mag>11</max_mag>
           <format>FITS</format>
           <origin_ra>0.5</origin_ra>
           <z_max>4</z_max>
           <origin_dec>1</origin_dec>
-          <height>77</height>
-          <width>77</width>
+          <height>777</height>
+          <width>778</width>
           <z_min>3</z_min>
           <fov_ra>1</fov_ra>
           <min_mag>None</min_mag>
-          <max_mag>11</max_mag>
           <sub_cone>2</sub_cone>
           <fov_dec>2</fov_dec>
           <mag_field>2_apparent</mag_field>
@@ -95,11 +98,12 @@
     <record-filter>
       <module-version>1</module-version>
       <filter>
-        <filter-attribute>2_apparent</filter-attribute>
-        <filter-min units="bpunits">None</filter-min>
-        <filter-max units="bpunits">12.0</filter-max>
+        <filter-attribute>name_005</filter-attribute>
+        <filter-min units="">None</filter-min>
+        <filter-max units="">12.0</filter-max>
       </filter>
     </record-filter>
   </workflow>
   <signature>base64encodedsignature</signature>
 </tao>
+

@@ -72,9 +72,9 @@ class DBConnection(object):
         SelectStm='select nodename from table_db_mapping where isactive=True and tablename=\''+TableName+'\';'
         Results=self.ExecuteQuerySQLStatment(SelectStm);
         if len(Results)>0:
-            ServerIP=Results[0]
+            ServerIP=Results[0][0]
             for i in range(0,self.serverscount):
-                if self.DBservers['serverip']==ServerIP:
+                if self.DBservers[i]['serverip']==ServerIP:
                     return i
             return -1
         else:
@@ -89,7 +89,7 @@ class DBConnection(object):
     
     def ExecuteNoQuerySQLStatment(self,SQLStatment,DatabaseIndex=0,SQLParamsDict=None):
         try:
-            logging.info(SQLStatment)            
+            #logging.info(SQLStatment)            
             self.AutoRestartDBConnections()
             SQLStatment=string.lower(SQLStatment)  
             if SQLParamsDict==None:
@@ -97,6 +97,7 @@ class DBConnection(object):
             else:
                 self.ActiveCursors[DatabaseIndex].execute(SQLStatment,SQLParamsDict)              
         except Exception as Exp:
+            logging.info(SQLStatment)  
             logging.info(">>>>>Error While Executing NoQuery Statement On Server ("+str(DatabaseIndex)+")")
             logging.info(type(Exp))
             logging.info(Exp.args)
@@ -107,14 +108,16 @@ class DBConnection(object):
     def ExecuteQuerySQLStatment(self,SQLStatment,DatabaseIndex=0,SQLParamsDict={}):
         
         try:
-            logging.info(SQLStatment)
-            logging.info(SQLParamsDict)
+            #logging.info(SQLStatment)
+            #logging.info(SQLParamsDict)
             
             self.AutoRestartDBConnections()           
             self.ActiveCursors[DatabaseIndex].execute(SQLStatment,SQLParamsDict)
             resultsList= self.ActiveCursors[DatabaseIndex].fetchall()           
             return resultsList
         except Exception as Exp:
+            logging.info(SQLStatment)
+            logging.info(SQLParamsDict)
             logging.info(">>>>>Error While Executing Query Statement On Server ("+str(DatabaseIndex)+")")
             logging.info(type(Exp))
             logging.info(Exp.args)

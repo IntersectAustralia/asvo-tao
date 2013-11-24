@@ -811,6 +811,10 @@ color: #888;
 div.breadcrumbs { position: absolute; top: 40px; left: 0; right: 0; padding: 50px 60px 0 60px; }
 ul.messagelist { position: fixed; top: 48px; left: 0; right: 0; }
 
+#survey_presets {
+	margin-left: 50%;
+}
+
 #survey_presets_select {
   width: auto;
 }

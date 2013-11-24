@@ -92,13 +92,16 @@ catalogue.module_defs.record_filter = function ($) {
     		}
     	}
 
-        if (catalogue.modules.sed.vm.apply_sed()) {
-            // Get the selected bandpass filters
-            bandpass_filters = catalogue.modules.sed.vm.bandpass_filters();
-            for (var i=0; i<bandpass_filters.length; i++) {
-                add_to_result(to_option(bandpass_filters[i]));
-            }
-        }
+    	// ASVO-670: Disable filtering on magnitudes.
+    	// This may be re-enabled in the future (once performance issues have been resolved),
+    	// so for now, just comment it out
+//        if (catalogue.modules.sed.vm.apply_sed()) {
+//            // Get the selected bandpass filters
+//            bandpass_filters = catalogue.modules.sed.vm.bandpass_filters();
+//            for (var i=0; i<bandpass_filters.length; i++) {
+//                add_to_result(to_option(bandpass_filters[i]));
+//            }
+//        }
 
     	return result;
     }

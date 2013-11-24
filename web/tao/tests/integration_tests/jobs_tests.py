@@ -204,7 +204,7 @@ class JobTest(LiveServerTest):
         self.assert_page_has_content('summary.txt')
 
         self.visit('view_job', self.job.id)
-        self.assert_page_has_content('This job has not completed')
+        self.assert_page_has_content('Viewing Job {0}'.format(self.job.id))
 
     def test_summary_txt_downloads_correctly(self):
         self.login(self.username, self.password)

@@ -88,30 +88,23 @@ the forms being hidden and all.
            </div>
             <div>
                 <strong>Download</strong>
-
+            	<ul id='id_completed_jobs'>
+                <li><a id='id_download_summary_txt' href="{% url 'get_summary_txt_file' job.id %}">summary.txt</a></li>
+                {% for file in job.files %}
+                    {% if job.is_completed or file.file_name == "params.xml" %}
+                        <li><a href="{% url 'get_file' job.id file.file_name %}">
+                            {{ file.file_name }}
+                        </a> ({{ file.get_file_size }})</li>
+                    {% endif %}
+                {% endfor %}
+                </ul>
                 {% if job.is_completed %}
-                	<ul id='id_completed_jobs'>
-                    <li><a id='id_download_summary_txt' href="{% url 'get_summary_txt_file' job.id %}">summary.txt</a></li>
-                    {% for file in job.files %}
-                        <li>
-                        {% if file.can_be_downloaded %}
-                            <a href="{% url 'get_file' job.id file.file_name %}">
-                                {{ file.file_name }}
-                            </a> ({{ file.get_file_size }})
-                        {% else %}
-                            {{ file.file_name }} ({{file.get_file_size }}. File size exceeds download limit.)
-                        {% endif %}
-                        </li>
-                    {% endfor %}
-                    </ul>
                    	<p>Download catalogue as a single file: 
                     	<a id='id_download_as_tar' href="{% url 'get_tar_file' job.id %}">.tar (recommended)</a>
                     	{% if job.can_download_zip_file %}
                             or <a id='id_download_as_zip' href="{% url 'get_zip_file' job.id %}">.zip</a>
                         {% endif %}
                     </p>
-                {% else %}
-                    <p>This job has not completed (and hence has no output).</p>
                 {% endif %}
             </div>
             <div class="disk-usage-field">
