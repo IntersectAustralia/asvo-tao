@@ -16,9 +16,10 @@ class Node(object):
         self.children.append(obj)    
 class ManageTreeIndex(object):
     
-    def __init__(self):
+    def __init__(self,Options):
         logging.info("Processing Tree Traversal")      
-    
+        #self.FieldsList=['gobal galaxy index','descendant','snapshot']
+        self.FieldsList=[Options['TreeMapping_0'],Options['TreeMapping_1'],Options['TreeMapping_1']]
         
     def BuildTree(self,TreeData):
          
@@ -27,37 +28,28 @@ class ManageTreeIndex(object):
         
         
         self.ParentNode=None
-        NodesList=[]
-        ParentsList=[]
-        for i  in range(0,len(TreeData)):
-            CurrentValue=[TreeData['gobal galaxy index'][i],TreeData['descendant'][i],TreeData['snapshot'][i]]            
-            NodesList.append([i,CurrentValue])
-            ParentsList.append([])          
-                
-        
-        CurrentIndex=0
+        ParentsList=[None]*len(TreeData)      
         
         TopLevelList=[]
-        
-      
-        
+                
         for i  in range(0,len(TreeData)):
-            ParentID=TreeData['descendant'][i]
+            ParentID=TreeData[self.FieldsList[1]][i]
             
             if ParentID>=0:      
+                if ParentsList[ParentID]==None:
+                    ParentsList[ParentID]=[]
                 ParentsList[ParentID].append(i)
             else:
                 
                 LocalIndex=i
-                GlobalIndex=TreeData['gobal galaxy index'][i]
-                Descendant=TreeData['descendant'][i]
-                SnapNum=TreeData['snapshot'][i]
-                
+                GlobalIndex=TreeData[self.FieldsList[0]][i]
+                Descendant=TreeData[self.FieldsList[1]][i]
+                SnapNum=TreeData[self.FieldsList[2]][i]              
                 
                 TopLevelList.append(Node(LocalIndex,GlobalIndex,Descendant,SnapNum))
                 
-      
-        i=0
+        
+        
         stack=[]
         self.ParentNode=Node()
         self.ParentNode.children=TopLevelList
@@ -69,20 +61,18 @@ class ManageTreeIndex(object):
         while(len(stack)>0):                
             CurrentNode=stack.pop()        
             
-            
-            for Child in ParentsList[CurrentNode.data['LocalIndex']]:
-                
-                
-                LocalIndex=NodesList[Child][0]
-                GlobalIndex=NodesList[Child][1][0]
-                Descendant=NodesList[Child][1][1]
-                SnapNum=NodesList[Child][1][2]
-                
-                
-                
-                ChildNode=Node(LocalIndex,GlobalIndex,Descendant,SnapNum)
-                stack.append(ChildNode)
-                CurrentNode.children.append(ChildNode)
+            if ParentsList[CurrentNode.data['LocalIndex']]!=None:
+                for Child in ParentsList[CurrentNode.data['LocalIndex']]:
+                                        
+                    LocalIndex=Child
+                    GlobalIndex=TreeData[self.FieldsList[0]][Child]
+                    Descendant=TreeData[self.FieldsList[1]][Child]
+                    SnapNum=TreeData[self.FieldsList[2]][Child]                  
+                    
+                    
+                    ChildNode=Node(LocalIndex,GlobalIndex,Descendant,SnapNum)
+                    stack.append(ChildNode)
+                    CurrentNode.children.append(ChildNode)
         
                  
 

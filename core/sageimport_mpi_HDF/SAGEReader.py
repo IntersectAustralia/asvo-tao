@@ -198,7 +198,7 @@ class SAGEDataReader:
         
         
         
-        ManageTreeIndexObj=ProcessTreeTraversal.ManageTreeIndex()
+        ManageTreeIndexObj=ProcessTreeTraversal.ManageTreeIndex(self.Options)
         
         
         ManageTreeIndexObj.BuildTree(TreeData)
