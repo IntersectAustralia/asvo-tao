@@ -4,6 +4,24 @@ What's New
 .. contents::
    :depth: 2
 
+25 Nov 2013: 1.0.13
+-------------------
+
+Improvements:
+
+* Indent Survey Presets in the UI to better distinguish between Start choices and Survey Preset choices (ASVO-663).
+* Disable Selection (record filter) on magnitudes (until performance can be optimised) (ASVO-670).
+* Enable access to params.xml & summary.txt during catalogue generation (ASVO-661).
+* Registration rejection email is now optional (ASVO-657)
+
+
+Bug Fixes:
+
+* Correct URL in README (was pointing to the old demo site)
+* summary.txt now displays the SSP label instead of the internal id (ASVO-658)
+* Clear selected Output Properties when changing datasets (ASVO-662)
+
+
 11 Nov 2013: 1.0.12
 -------------------
 
