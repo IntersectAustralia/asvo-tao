@@ -7,7 +7,9 @@ import logging
 import logging.config
 from getpass import getpass
 from os.path import abspath, join
+from time import sleep
 
+import common_settings
 from django.conf import settings
 from ithelper import DeploymentTester, interact
 
@@ -144,32 +146,46 @@ if __name__ == "__main__":
         import pdb
         pdb.set_trace()
 
-    job_params = __import__(args.name)
-    name_parts = args.name.split('.')
-    for name_part in name_parts[1:]:
-        job_params = getattr(job_params, name_part)
-    job_params.BASE_URL = args.base_url
-
-    logging.config.dictConfig(job_params.LOGGING)
+    logging.config.dictConfig(common_settings.LOGGING)
     logger = logging.getLogger('detest')
     logger.info("Starting...")
 
     if args.username:
-        job_params.USERNAME = args.username
+        common_settings.USERNAME = args.username
     if args.password:
-        job_params.PASSWORD = args.password
-    if job_params.USERNAME is None:
-        job_params.USERNAME = raw_input("Username: ")
-    if job_params.PASSWORD is None:
-        job_params.PASSWORD = getpass("Password: ")
+        common_settings.PASSWORD = args.password
+    if common_settings.USERNAME is None:
+        common_settings.USERNAME = raw_input("Username: ")
+    if common_settings.PASSWORD is None:
+        common_settings.PASSWORD = getpass("Password: ")
 
-    if args.cmd.lower() == 'submit':
-        ctrl = SubmitJob()
-        ctrl.submit(args, job_params)
-    elif args.cmd.lower() == 'validate':
-        for validator in job_params.VALIDATORS:
-            ctrl = validator()
-            ctrl = ctrl.validate(args, job_params)
+    if args.name == "all":
+        all_jobs = []
+        for root, dirs, files in os.walk('jobs'):
+            for file in files:
+                fname, ftype = os.path.splitext(file)
+                if ftype == ".py" and fname != "__init__":
+                    all_jobs.append("jobs."+fname)
+    else:
+        all_jobs = [args.name]
+
+    for job in all_jobs:
+        job_params = __import__(job)
+        name_parts = job.split('.')
+        for name_part in name_parts[1:]:
+            job_params = getattr(job_params, name_part)
+        job_params.BASE_URL = args.base_url
+
+        if args.cmd.lower() == 'submit':
+            ctrl = SubmitJob()
+            ctrl.submit(args, job_params)
+            sleep(5.0)
+            ctrl.tearDown()
+        elif args.cmd.lower() == 'validate':
+            for validator in job_params.VALIDATORS:
+                ctrl = validator()
+                ctrl = ctrl.validate(args, job_params)
+        sleep(1.0)
 
     logger.info("Finished.")
     exit(0)
