@@ -5,7 +5,11 @@ from django.core import mail
 from tao.tests.support.factories import GlobalParameterFactory
 
 class RegisterUserTestCase(TestCase):
-
+    """These tests are partly the reverse of how a real system is set up.
+    TAO doesn't send an email if the txt template is empty.
+    The tests here have an empty template for approval, and a populated template for rejection.
+    In a typical production system the opposite will be true.
+    However the functionality is still being tested correctly."""
     def setUp(self):
         self.client = Client()
         super_user = TaoUser(username='superman', email='email@super.com', first_name='super', last_name='man', is_active=True, is_staff=True)
@@ -34,7 +38,7 @@ class RegisterUserTestCase(TestCase):
 
         response = self.client.post("/administration/approve_user/%d" % new_user.id)
 
-        self.assertEqual(1, len(outbox))
+        self.assertEqual(0, len(outbox))
         
         self.assertEqual(302, response.status_code)
         self.assertTrue(TaoUser.objects.get(pk=new_user.id).is_active)
