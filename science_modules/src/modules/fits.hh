@@ -228,6 +228,37 @@ namespace tao {
             }
          }
 
+         string
+		  _encode( string _toencode_string )
+		  {
+			 std::map<char, std::string> transformations;
+			 transformations['&']  = std::string("_");
+			 transformations[' ']  = std::string("_");
+			 transformations['\''] = std::string("_");
+			 transformations['"']  = std::string("_");
+			 transformations['>']  = std::string("_");
+			 transformations['<']  = std::string("_");
+			 transformations['/']  = std::string("_");
+			 transformations['(']  = std::string("");
+			 transformations[')']  = std::string("");
+
+
+			 std::string reserved_chars;
+			 for (auto ti = transformations.begin(); ti != transformations.end(); ti++)
+			 {
+				reserved_chars += ti->first;
+			 }
+
+			 size_t pos = 0;
+			 while (std::string::npos != (pos = _toencode_string.find_first_of(reserved_chars, pos)))
+			 {
+				_toencode_string.replace(pos, 1, transformations[_toencode_string[pos]]);
+				pos++;
+			 }
+
+			 return _toencode_string;
+		  }
+
          void
          _write_table_header( const tao::batch<real_type>& bat )
          {
@@ -246,7 +277,8 @@ namespace tao {
             {
                string FieldName=*lblit;
 
-               replace_all(FieldName," ","_");
+               FieldName=_encode(FieldName);
+
 
                ttype[index]=new char[80];
                tunit[index]=new char[80];
