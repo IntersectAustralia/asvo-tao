@@ -62,12 +62,12 @@ namespace tao {
       }
 
       void
-      set_origin( const array<real_type,3>& orig )
+      set_origin( std::array<real_type,3> const& orig )
       {
          _orig = orig;
       }
 
-      const array<real_type,3>&
+      std::array<real_type,3> const&
       origin() const
       {
          return _orig;
@@ -225,7 +225,7 @@ namespace tao {
       engine_type* _eng;
       array<unsigned,3> _rot;
       array<real_type,3> _trans;
-      array<real_type,3> _orig;
+      std::array<real_type,3> _orig;
       unsigned _snap;
    };
 

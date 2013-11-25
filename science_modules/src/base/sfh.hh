@@ -177,17 +177,17 @@ namespace tao {
 	    "sfr, sfrbulge, snapnum FROM " + table_name +
 	    " WHERE globaltreeid = :treeid"
 	    " AND depthfirst_traversalorder >= :first AND depthfirst_traversalorder < :last";
-	 hpc::profile::timer local_db_time;
+	 // hpc::profile::timer local_db_time;
 	 {
 	    auto ANON = db_timer_start();
-	    auto ANON = local_db_time.start();
+	    // auto ANON = local_db_time.start();
 	    sql << query,
 	       soci::into( (std::vector<double>&)_metals ), soci::into( (std::vector<double>&)_cold_gas ),
 	       soci::into( (std::vector<double>&)_sfrs ), soci::into( (std::vector<double>&)_bulge_sfrs ),
 	       soci::into( (std::vector<int>&)_snaps ),
 	       soci::use( tree_id ), soci::use( dfo_first ), soci::use( dfo_last );
 	 }
-	 LOGILN( "Tree query took: ", local_db_time.total(), " s" );
+	 // LOGILN( "Tree query took: ", local_db_time.total(), " s" );
 	 LOGTLN( "Star formation rates: ", _sfrs );
 	 LOGTLN( "Bulge star formation rates: ", _bulge_sfrs );
 	 LOGTLN( "Metals cold gas: ", _metals );

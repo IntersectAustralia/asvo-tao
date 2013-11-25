@@ -92,5 +92,5 @@
   <subjobindex>0</subjobindex>
   <logdir>log</logdir>
   <outputdir>output</outputdir>
-  <database>millennium_mini_hdf5_test2</database>
+  <database>millennium_full_dist_v2</database>
 </tao>

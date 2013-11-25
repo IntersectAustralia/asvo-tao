@@ -465,7 +465,7 @@ namespace tao {
 		    " is outside the maximum range of ", max_subcones );
 
 	    // Calculate subcone origin.
-	    std::array<real_type,3> ori = tao::calc_subcone_origin<real_type>( lc, sub_idx );
+	    std::array<real_type,3> ori = tao::calc_subcone_origin<real_type>( _lc, sub_idx );
 
 	    // Set origin.
             _lc.set_origin( ori );
