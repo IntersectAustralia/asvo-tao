@@ -361,16 +361,24 @@ class Job(models.Model):
 
     def files(self):
         """Answer the sorted list of files for the receiver.
-        It is up to the caller to check that the job is in the appropriate state."""
+        If the output_path hasn't been set return an empty list.
+        If an error occurs during file retrieval, log the error and answer the existing list."""
+        all_files = []
+        if self.output_path is None:
+            # No access to the files yet
+            return all_files
+        op = self.output_path.strip()
+        if len(op) == 0:
+            # No access to the files yet
+            return all_files
         try:
-            all_files = []
-            job_base_dir = os.path.join(settings.FILES_BASE, self.output_path)
+            job_base_dir = os.path.join(settings.FILES_BASE, op)
             for root, dirs, files in os.walk(job_base_dir):
                 all_files += [JobFile(job_base_dir, os.path.join(root, filename)) for filename in files]
-        except:
-            logger.error("Unable to get job files for {0}".format(self.id))
-            raise
-
+        except e:
+            logger.error("Unable to get job files for id {0}, msg={1}".format(
+                self.id, str(e)))
+            # Continue on, the rest of the page should display OK.
         return sorted(all_files, key=lambda job_file: job_file.file_name)
 
     def files_tree(self):
