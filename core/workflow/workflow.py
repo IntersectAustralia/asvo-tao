@@ -424,7 +424,8 @@ class WorkFlow(object):
                 if pbsreferenceid in CurrentJobs:
                     logging.info("Checking Job Status : JobID="+pbsreferenceid+"\tStatus="+str(CurrentJobs[pbsreferenceid]))
                 
-                ## Parse the Job Log File and Extract Current Job Status            
+                ## Parse the Job Log File and Extract Current Job Status
+                            
                 JobDetails=self.LogReaderObj.ParseFile(CurrentJobRecord)
                  
                 
@@ -615,12 +616,17 @@ class WorkFlow(object):
         OldStatus=CurrentJobRecord['jobstatus']
         UIReference_ID=CurrentJobRecord['uireferenceid']
         JobID=CurrentJobRecord['jobid']
-        
+        UserName=CurrentJobRecord['username']
         
         
         
         JobStartTime = datetime.datetime.now().timetuple()
         data = {}  
+        
+        
+        path = os.path.join(self.JobBaseDir, UserName, str(UIReference_ID), 'output')
+        data['output_path'] = path
+        
         try:
             JobStartTime = self.GetProcessStartTime(PID)
         except Exception as Exp:
@@ -637,6 +643,8 @@ class WorkFlow(object):
     def UpdateJob_Queued(self,CurrentJobRecord):
         
         
+        
+        UserName=CurrentJobRecord['username']
         PID=CurrentJobRecord['pbsreferenceid']
         SubJobIndex=CurrentJobRecord['subjobindex']
         JobType=CurrentJobRecord['jobtype']
@@ -650,6 +658,9 @@ class WorkFlow(object):
         if EnumerationLookup.JobState.Queued!=OldStatus: 
             self.dbaseobj.SetJobQueued(JobID, "Job Queued- PBSID" + PID)
         data['status'] = 'QUEUED' 
+        path = os.path.join(self.JobBaseDir, UserName, str(UIReference_ID), 'output')
+        data['output_path'] = path
+        
         
         
         self.UpdateTAOUI(UIReference_ID, JobType, data)
