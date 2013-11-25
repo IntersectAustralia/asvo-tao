@@ -121,6 +121,8 @@ namespace tao {
 			 transformations['>']  = std::string("_");
 			 transformations['<']  = std::string("_");
 			 transformations['/']  = std::string("_");
+			 transformations['(']  = std::string("");
+			 transformations[')']  = std::string("");
 
 
 			 std::string reserved_chars;
