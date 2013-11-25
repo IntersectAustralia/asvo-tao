@@ -147,7 +147,7 @@ namespace tao {
          string
          make_drop_snap_rng_query_string() const
          {
-            return "DROP TABLE redshift_ranges";
+            return "DROP TABLE IF EXISTS redshift_ranges";
          }
 
          list<string>
@@ -162,7 +162,7 @@ namespace tao {
             list<string> queries;
 
             // Create a temporary table to hold values.
-            queries.emplace_back( "CREATE TEMPORARY TABLE redshift_ranges "
+            queries.emplace_back( "CREATE TEMPORARY TABLE IF NOT EXISTS redshift_ranges "
                                   "(snapshot INTEGER, redshift DOUBLE PRECISION, min DOUBLE PRECISION, max DOUBLE PRECISION);" );
 
             // Insert all ranges.
