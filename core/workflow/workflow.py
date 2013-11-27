@@ -333,6 +333,14 @@ class WorkFlow(object):
         IsSequential=RestartJobRecrod['issequential']
         SubJobID=RestartJobRecrod['subjobindex']
         
+        BasedPath=os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  JobUserName, str(UIJobReference))
+        outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  JobUserName, str(UIJobReference),'output')
+        logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  JobUserName, str(UIJobReference),'log')
+        AudDataPath=os.path.join(self.Options['Torque:AuxInputData'])
+              
+        ## Parse the XML file to extract job Information and get if the job is complex or single lightcone
+        ParseXMLParametersObj=ParseXML.ParseXMLParameters(outputpath+'/params.xml',self.Options)
+        SimulationName=ParseXMLParametersObj.GetSimulationName()    
         
         
         
@@ -345,7 +353,8 @@ class WorkFlow(object):
         
         
         
-        PBSJobID=self.TorqueObj.Submit(UIJobReference,JobUserName,JobID,SubJobID,IsSequential=='t')
+        
+        PBSJobID=self.TorqueObj.Submit(UIJobReference,JobUserName,JobID,SimulationName,SubJobID,IsSequential=='t')
         ## Store the Job PBS ID  
         if self.dbaseobj.UpdateJob_PBSID(JobID,PBSJobID)!=True:
             raise  Exception('Error in Process New Job','Update PBSID failed')
