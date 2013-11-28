@@ -1,0 +1,233 @@
+<?xml version='1.0' encoding='utf-8'?>
+<tao xmlns="http://tao.asvo.org.au/schema/module-parameters-v1" timestamp="2013-11-15T16:32:51+11:00">
+  <username>darrencroton</username>
+  <workflow name="alpha-light-cone-image">
+    <schema-version>2.0</schema-version>
+    <light-cone id="1">
+      <module-version>1</module-version>
+      <geometry>light-cone</geometry>
+      <simulation>Millennium</simulation>
+      <galaxy-model>SAGE</galaxy-model>
+      <box-repetition>random</box-repetition>
+      <num-cones>1</num-cones>
+      <redshift-min>0</redshift-min>
+      <redshift-max>0.05</redshift-max>
+      <ra-min units="deg">0.0</ra-min>
+      <ra-max units="deg">60</ra-max>
+      <dec-min units="deg">0.0</dec-min>
+      <dec-max units="deg">60</dec-max>
+      <rng-seeds>
+        <rng-seed-0>-1848149927</rng-seed-0>
+      </rng-seeds>
+      <output-fields>
+        <item description="" label="Galaxy Index">globalgalaxyid</item>
+        <item description="Total galaxy stellar mass" label="Total Stellar Mass" units="10+10solMass/h">stellarmass</item>
+        <item description="Bulge stellar mass only" label="Bulge Stellar Mass" units="10+10solMass/h">bulgemass</item>
+        <item description="Supermassive black hole mass" label="Black Hole Mass" units="10+10solMass/h">blackholemass</item>
+        <item description="Mass of cold gas in the galaxy" label="Cold Gas Mass" units="10+10solMass/h">coldgas</item>
+        <item description="Mass of hot halo gas" label="Hot Gas Mass" units="10+10solMass/h">hotgas</item>
+        <item description="Gas mass ejected from the halo" label="Ejected Gas Mass" units="10+10solMass/h">ejectedmass</item>
+        <item description="Stellar mass in the intracluster stars" label="Intracluster Stars Mass" units="10+10solMass/h">ics</item>
+        <item description="Mass of metals in the total stellar mass" label="Metals Total Stellar Mass" units="10+10solMass/h">metalsstellarmass</item>
+        <item description="Mass of metals in the bulge" label="Metals Bulge Mass" units="10+10solMass/h">metalsbulgemass</item>
+        <item description="Mass of metals in the cold gas" label="Metals Cold Gas Mass" units="10+10solMass/h">metalscoldgas</item>
+        <item description="Mass of metals in the hot gas" label="Metals Hot Gas Mass" units="10+10solMass/h">metalshotgas</item>
+        <item description="Mass of metals in the ejected gas" label="Metals Ejected Gas Mass" units="10+10solMass/h">metalsejectedmass</item>
+        <item description="Mass of metals in the intracluster stars" label="Metals Intracluster Stars Mass" units="10+10solMass/h">metalsics</item>
+        <item description="Galaxy classification: 0=central, 1=Satellite" label="Galaxy Classification">objecttype</item>
+        <item description="Stellar disk scale radius" label="Disk Scale Radius" units="10+6pc/h">diskscaleradius</item>
+        <item description="Total star formation rate in the galaxy" label="Total Star Formation Rate" units="solMass/yr">sfr</item>
+        <item description="Star formation rate in the bulge only" label="Bulge Star Formation Rate" units="solMass/yr">sfrbulge</item>
+        <item description="Star formation rate in the intracluster stars" label="Intracluster Stars Star Formation Rate" units="solMass/yr">sfrics</item>
+        <item description="Cooling rate of hot halo gas" label="Hot Gas Cooling Rate" units="log(10-7J/s)">cooling</item>
+        <item description="AGN radio-mode heating rate" label="AGN Heating Rate" units="log(10-7J/s)">heating</item>
+        <item description="Dark matter (sub)halo virial mass" label="Mvir" units="10+10solMass/h">mvir</item>
+        <item description="Dark matter (sub)halo virial radius" label="Rvir" units="10+6pc/h">rvir</item>
+        <item description="Dark matter (sub)halo virial velocity" label="Vvir" units="km/s">vvir</item>
+        <item description="Dark matter (sub)halo maximum circular velocity" label="Vmax" units="km/s">vmax</item>
+        <item description="Dark matter halo velocity dispersion" label="Velocity Dispersion" units="km/s">veldisp</item>
+        <item description="X component of the (sub)halo spin" label="x Spin">spinx</item>
+        <item description="Y component of the (sub)halo spin" label="y Spin">spiny</item>
+        <item description="Z component of the (sub)halo spin" label="z Spin">spinz</item>
+        <item description="Total simulation particles in the dark matter halo" label="Total particles">len</item>
+        <item description="Dark matter FOF halo (central galaxy) virial mass" label="Central Galaxy Mvir" units="10+10solMass/h">centralmvir</item>
+        <item description="X coordinate in the selected box/cone" label="x" units="10+6pc/h">posx</item>
+        <item description="Y coordinate in the selected box/cone" label="y" units="10+6pc/h">posy</item>
+        <item description="Z coordinate in the selected box/cone" label="z" units="10+6pc/h">posz</item>
+        <item description="X component of the galaxy/halo velocity" label="x Velocity" units="km/s">velx</item>
+        <item description="Y component of the galaxy/halo velocity" label="y Velocity" units="km/s">vely</item>
+        <item description="Z component of the galaxy/halo velocity" label="z Velocity" units="km/s">velz</item>
+        <item description="Simulation snapshot number" label="Snapshot Number">snapnum</item>
+        <item description="Galaxy ID" label="Galaxy ID">globalindex</item>
+        <item description="(sub)Halo ID" label="Halo ID">haloindex</item>
+        <item description="Central galaxy ID" label="Central Galaxy ID">centralgal</item>
+      </output-fields>
+    </light-cone>
+    <csv id="5">
+      <fields>
+        <item label="Galaxy Index">globalgalaxyid</item>
+        <item label="Total Stellar Mass" units="10+10solMass/h">stellarmass</item>
+        <item label="Bulge Stellar Mass" units="10+10solMass/h">bulgemass</item>
+        <item label="Black Hole Mass" units="10+10solMass/h">blackholemass</item>
+        <item label="Cold Gas Mass" units="10+10solMass/h">coldgas</item>
+        <item label="Hot Gas Mass" units="10+10solMass/h">hotgas</item>
+        <item label="Ejected Gas Mass" units="10+10solMass/h">ejectedmass</item>
+        <item label="Intracluster Stars Mass" units="10+10solMass/h">ics</item>
+        <item label="Metals Total Stellar Mass" units="10+10solMass/h">metalsstellarmass</item>
+        <item label="Metals Bulge Mass" units="10+10solMass/h">metalsbulgemass</item>
+        <item label="Metals Cold Gas Mass" units="10+10solMass/h">metalscoldgas</item>
+        <item label="Metals Hot Gas Mass" units="10+10solMass/h">metalshotgas</item>
+        <item label="Metals Ejected Gas Mass" units="10+10solMass/h">metalsejectedmass</item>
+        <item label="Metals Intracluster Stars Mass" units="10+10solMass/h">metalsics</item>
+        <item label="Galaxy Classification">objecttype</item>
+        <item label="Disk Scale Radius" units="10+6pc/h">diskscaleradius</item>
+        <item label="Total Star Formation Rate" units="solMass/yr">sfr</item>
+        <item label="Bulge Star Formation Rate" units="solMass/yr">sfrbulge</item>
+        <item label="Intracluster Stars Star Formation Rate" units="solMass/yr">sfrics</item>
+        <item label="Hot Gas Cooling Rate" units="log(10-7J/s)">cooling</item>
+        <item label="AGN Heating Rate" units="log(10-7J/s)">heating</item>
+        <item label="Mvir" units="10+10solMass/h">mvir</item>
+        <item label="Rvir" units="10+6pc/h">rvir</item>
+        <item label="Vvir" units="km/s">vvir</item>
+        <item label="Vmax" units="km/s">vmax</item>
+        <item label="Velocity Dispersion" units="km/s">veldisp</item>
+        <item label="x Spin">spinx</item>
+        <item label="y Spin">spiny</item>
+        <item label="z Spin">spinz</item>
+        <item label="Total particles">len</item>
+        <item label="Central Galaxy Mvir" units="10+10solMass/h">centralmvir</item>
+        <item label="Right Ascension" units="degrees">ra</item>
+        <item label="Declination" units="degrees">dec</item>
+        <item label="Redshift (Cosmological)">redshift_cosmological</item>
+        <item label="Redshift (Observed)">redshift_observed</item>
+        <item label="Distance" units="Mpc">distance</item>
+        <item label="x" units="10+6pc/h">posx</item>
+        <item label="y" units="10+6pc/h">posy</item>
+        <item label="z" units="10+6pc/h">posz</item>
+        <item label="x Velocity" units="km/s">velx</item>
+        <item label="y Velocity" units="km/s">vely</item>
+        <item label="z Velocity" units="km/s">velz</item>
+        <item label="Snapshot Number">snapnum</item>
+        <item label="Galaxy ID">globalindex</item>
+        <item label="Halo ID">haloindex</item>
+        <item label="Central Galaxy ID">centralgal</item>
+        <item label="SDSS g (Absolute)">SDSS/sdss_g.dati_absolute</item>
+        <item label="SDSS g (Apparent)">SDSS/sdss_g.dati_apparent</item>
+        <item label="SDSS i (Absolute)">SDSS/sdss_i.dati_absolute</item>
+        <item label="SDSS i (Apparent)">SDSS/sdss_i.dati_apparent</item>
+        <item label="SDSS r (Absolute)">SDSS/sdss_r.dati_absolute</item>
+        <item label="SDSS r (Apparent)">SDSS/sdss_r.dati_apparent</item>
+        <item label="SDSS u (Absolute)">SDSS/sdss_u.dati_absolute</item>
+        <item label="SDSS u (Apparent)">SDSS/sdss_u.dati_apparent</item>
+        <item label="SDSS z (Absolute)">SDSS/sdss_z.dati_absolute</item>
+        <item label="SDSS z (Apparent)">SDSS/sdss_z.dati_apparent</item>
+        <item label="Keck/DEIMOS/DEEP B (Absolute)">DEEP/deep_B.dati_absolute</item>
+        <item label="Keck/DEIMOS/DEEP B (Apparent)">DEEP/deep_B.dati_apparent</item>
+        <item label="Keck/DEIMOS/DEEP I (Absolute)">DEEP/deep_I.dati_absolute</item>
+        <item label="Keck/DEIMOS/DEEP I (Apparent)">DEEP/deep_I.dati_apparent</item>
+        <item label="Keck/DEIMOS/DEEP R (Absolute)">DEEP/deep_R.dati_absolute</item>
+        <item label="Keck/DEIMOS/DEEP R (Apparent)">DEEP/deep_R.dati_apparent</item>
+      </fields>
+      <parents>
+        <item>4</item>
+      </parents>
+      <module-version>1</module-version>
+      <filename>tao.output.csv</filename>
+    </csv>
+    <sed id="2">
+      <module-version>1</module-version>
+      <parents>
+        <item>1</item>
+      </parents>
+      <single-stellar-population-model>bc03_half/ssp_chabrier.dat</single-stellar-population-model>
+      <wavelengths-file>bc03_half/wavelengths.dat</wavelengths-file>
+      <ages-file>bc03_half/ages.dat</ages-file>
+      <metallicities-file>bc03_half/metallicities.dat</metallicities-file>
+    </sed>
+    <filter id="4">
+      <module-version>1</module-version>
+      <parents>
+        <item>3</item>
+      </parents>
+      <bandpass-filters>
+        <item description="Sloan Digital Sky Survey (SDSS) g&#10;&lt;p&gt;Additional Details: &lt;a href=&quot;../static/docs/bpfilters/SDSS_sdss_g.dati.html&quot;&gt;SDSS g&lt;/a&gt;.&lt;/p&gt;" label="SDSS g" selected="absolute,apparent">SDSS/sdss_g.dati</item>
+        <item description="Sloan Digital Sky Survey (SDSS) i&#10;&lt;p&gt;Additional Details: &lt;a href=&quot;../static/docs/bpfilters/SDSS_sdss_i.dati.html&quot;&gt;SDSS i&lt;/a&gt;.&lt;/p&gt;" label="SDSS i" selected="absolute,apparent">SDSS/sdss_i.dati</item>
+        <item description="Sloan Digital Sky Survey (SDSS) r&#10;&lt;p&gt;Additional Details: &lt;a href=&quot;../static/docs/bpfilters/SDSS_sdss_r.dati.html&quot;&gt;SDSS r&lt;/a&gt;.&lt;/p&gt;" label="SDSS r" selected="absolute,apparent">SDSS/sdss_r.dati</item>
+        <item description="Sloan Digital Sky Survey (SDSS) u&#10;&lt;p&gt;Additional Details: &lt;a href=&quot;../static/docs/bpfilters/SDSS_sdss_u.dati.html&quot;&gt;SDSS u&lt;/a&gt;.&lt;/p&gt;" label="SDSS u" selected="absolute,apparent">SDSS/sdss_u.dati</item>
+        <item description="Sloan Digital Sky Survey (SDSS) z&#10;&lt;p&gt;Additional Details: &lt;a href=&quot;../static/docs/bpfilters/SDSS_sdss_z.dati.html&quot;&gt;SDSS z&lt;/a&gt;.&lt;/p&gt;" label="SDSS z" selected="absolute,apparent">SDSS/sdss_z.dati</item>
+        <item description="Keck/DEIMOS/DEEP, B band&#10;&lt;p&gt;Additional Details: &lt;a href=&quot;../static/docs/bpfilters/DEEP_deep_B.dati.html&quot;&gt;Keck/DEIMOS/DEEP B&lt;/a&gt;.&lt;/p&gt;" label="Keck/DEIMOS/DEEP B" selected="absolute,apparent">DEEP/deep_B.dati</item>
+        <item description="Keck/DEIMOS/DEEP, I band&#10;&lt;p&gt;Additional Details: &lt;a href=&quot;../static/docs/bpfilters/DEEP_deep_I.dati.html&quot;&gt;Keck/DEIMOS/DEEP I&lt;/a&gt;.&lt;/p&gt;" label="Keck/DEIMOS/DEEP I" selected="absolute,apparent">DEEP/deep_I.dati</item>
+        <item description="Keck/DEIMOS/DEEP, R band&#10;&lt;p&gt;Additional Details: &lt;a href=&quot;../static/docs/bpfilters/DEEP_deep_R.dati.html&quot;&gt;Keck/DEIMOS/DEEP R&lt;/a&gt;.&lt;/p&gt;" label="Keck/DEIMOS/DEEP R" selected="absolute,apparent">DEEP/deep_R.dati</item>
+      </bandpass-filters>
+    </filter>
+    <dust id="3">
+      <module-version>1</module-version>
+      <parents>
+        <item>2</item>
+      </parents>
+      <model>Tonini et al. 2012</model>
+    </dust>
+    <skymaker id="6">
+      <module-version>1</module-version>
+      <parents>
+        <item>4</item>
+      </parents>
+      <images>
+        <item>
+          <max_mag>17.77</max_mag>
+          <format>FITS</format>
+          <origin_ra>50</origin_ra>
+          <z_max>0.03</z_max>
+          <origin_dec>28</origin_dec>
+          <height>1024</height>
+          <width>1024</width>
+          <z_min>0.02</z_min>
+          <fov_ra>5</fov_ra>
+          <min_mag>10</min_mag>
+          <sub_cone>0</sub_cone>
+          <fov_dec>5</fov_dec>
+          <mag_field>SDSS/sdss_r.dati_apparent</mag_field>
+        </item>
+        <item>
+          <max_mag>10.0</max_mag>
+          <format>FITS</format>
+          <origin_ra>50</origin_ra>
+          <z_max>0.03</z_max>
+          <origin_dec>28</origin_dec>
+          <height>1024</height>
+          <width>1024</width>
+          <z_min>0.02</z_min>
+          <fov_ra>5</fov_ra>
+          <min_mag>5.0</min_mag>
+          <sub_cone>0</sub_cone>
+          <fov_dec>5</fov_dec>
+          <mag_field>SDSS/sdss_r.dati_apparent</mag_field>
+        </item>
+        <item>
+          <max_mag>5.0</max_mag>
+          <format>FITS</format>
+          <origin_ra>50</origin_ra>
+          <z_max>0.03</z_max>
+          <origin_dec>28</origin_dec>
+          <height>1024</height>
+          <width>1024</width>
+          <z_min>0.02</z_min>
+          <fov_ra>5</fov_ra>
+          <min_mag>None</min_mag>
+          <sub_cone>0</sub_cone>
+          <fov_dec>5</fov_dec>
+          <mag_field>SDSS/sdss_r.dati_apparent</mag_field>
+        </item>
+      </images>
+    </skymaker>
+    <record-filter>
+      <module-version>1</module-version>
+      <filter>
+        <filter-attribute>stellarmass</filter-attribute>
+        <filter-min units="10+10solMass/h">0.01</filter-min>
+        <filter-max units="10+10solMass/h">None</filter-max>
+      </filter>
+    </record-filter>
+  </workflow>
+  <signature>base64encodedsignature</signature>
+</tao>

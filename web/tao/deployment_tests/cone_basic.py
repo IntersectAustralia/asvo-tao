@@ -25,7 +25,7 @@ class Validator(ValidateJob):
         for i in range(self.job_params.NUMBER_OF_CONES):
             self.catalogues.append(self.load_csv(i,
                 usecols=['Galaxy_ID', 'Right_Ascension', 'Declination',
-                         'Redshift_(Cosmological)']))
+                         'Redshift_Cosmological']))
             self.check_geometry(self.catalogues[i])
 
         self.check_galaxy_count(self.catalogues[0])
@@ -83,7 +83,7 @@ class Validator(ValidateJob):
                          "Negative Dec: {0}".format(
                                 stats['min']))
         
-        stats = cat['Redshift_(Cosmological)'].describe()
+        stats = cat['Redshift_Cosmological'].describe()
         self.assert_true(stats['max'] <= self.job_params.REDSHIFT_MAX,
                          "Expected max Redshift of {0}, got {1}".format(
                                 self.job_params.REDSHIFT_MAX, stats['max']))

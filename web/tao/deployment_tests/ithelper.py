@@ -458,3 +458,6 @@ class DeploymentTester(LiveServerTest):
         div_container = self.get_closest_by_class(field_elem, 'control-group')
         label = div_container.find_element_by_css_selector('label')
         self.assertTrue(label.get_attribute('class').find('error') != -1, '%s label is not in error' % (field_id,))
+
+    def upload_params_file(self, fname):
+        self.find_element_by_id('id_job_type-params_file').send_keys(fname)
