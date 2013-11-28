@@ -110,6 +110,9 @@ class SubmitJob(DeploymentTester):
     def configure_sed(self):
         self.click('tao-tabs-sed')
         self.click(self.sed('apply_sed'))
+        ssp = getattr(self.job_params, 'SED_SSP', None)
+        if ssp is not None:
+            self.select(self.sed_id('single_stellar_population_model'), ssp)
         filters = getattr(self.job_params, 'BP_FILTERS', None)
         if filters == 'All':
             self.click(self.sed_2select('op_add_all'))
