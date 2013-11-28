@@ -9,7 +9,7 @@ import h5py
 import shutil
 import numpy
 
-ExtensionLocation=-1
+ExtensionLocation=-2
 
 
 def ValidateAllSameExtension(FilesList,SubJobIndexLocation):
@@ -204,7 +204,7 @@ if __name__ == '__main__':
     map={}
     for fname in dirList:
         FileDetailsList=fname.split('.')
-        if len(FileDetailsList)==5 and FileDetailsList[-1]!='gz':            
+        if len(FileDetailsList)>=5 and FileDetailsList[-1]!='gz':            
             fullPathArray.append([CurrentFolderPath+'/'+fname,FileDetailsList])
             logging.info('File Added to List '+CurrentFolderPath+'/'+fname)
             if FileDetailsList[SubJobIndexLocation] in map:
