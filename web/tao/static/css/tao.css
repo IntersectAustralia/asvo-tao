@@ -474,7 +474,6 @@ span.see-form-errors:hover { text-decoration: underline; cursor: pointer;}
 }
 
 #id_sed-band_pass_filters-table.ui-resizable {
-    height: 300px;
 }
 
 /*Left light cone output properties table*/
