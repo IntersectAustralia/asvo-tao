@@ -6,7 +6,7 @@ import argparse
 import logging
 import logging.config
 from getpass import getpass
-from os.path import abspath, join
+from os.path import abspath, join, split
 from time import sleep
 
 import common_settings
@@ -26,15 +26,31 @@ class SubmitJob(DeploymentTester):
 
         self.login(self.username, password)
         self.visit('mock_galaxy_factory')
-        self.click('tao-tabs-' + 'light_cone')
 
     def tearDown(self):
         super(SubmitJob, self).tearDown()
 
     def submit(self, args, job_params):
         self.job_params = job_params
+        
+        if self.job_params.PARAMS_FILE is not None:
+            self.submit_params(args, job_params)
+        else:
+            self.submit_browser(args, job_params)
+        return
 
+    def submit_params(self, args, job_params):
         self.setUp()
+        fpath = join(abspath(split(__file__)[0]), self.job_params.PARAMS_FILE)
+        self.upload_params_file(fpath)
+        self.submit_mgf_form(job_params.DESCRIPTION)
+        self.assert_on_page('jobs/')
+        return
+
+
+    def submit_browser(self, args, job_params):
+        self.setUp()
+        self.click('tao-tabs-' + 'light_cone')
         self.fill_in_fields({
             'dark_matter_simulation' : self.job_params.SIMULATION,
             'galaxy_model' : self.job_params.GALAXY_MODEL},
