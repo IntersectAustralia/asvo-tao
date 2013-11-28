@@ -249,7 +249,8 @@ input.tao-prev {
   }
 
 fieldset legend {
-  margin: 20px 0;
+    margin: 1em 0 0 0;
+    padding: 1.5em 0 0 0;
     font-size: 24px;
     line-height: 30px;
     clear: both;
@@ -474,7 +475,6 @@ span.see-form-errors:hover { text-decoration: underline; cursor: pointer;}
 }
 
 #id_sed-band_pass_filters-table.ui-resizable {
-    height: 300px;
 }
 
 /*Left light cone output properties table*/

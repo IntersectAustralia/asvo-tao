@@ -333,6 +333,14 @@ class WorkFlow(object):
         IsSequential=RestartJobRecrod['issequential']
         SubJobID=RestartJobRecrod['subjobindex']
         
+        BasedPath=os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  JobUserName, str(UIJobReference))
+        outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  JobUserName, str(UIJobReference),'output')
+        logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  JobUserName, str(UIJobReference),'log')
+        AudDataPath=os.path.join(self.Options['Torque:AuxInputData'])
+              
+        ## Parse the XML file to extract job Information and get if the job is complex or single lightcone
+        ParseXMLParametersObj=ParseXML.ParseXMLParameters(outputpath+'/params.xml',self.Options)
+        SimulationName=ParseXMLParametersObj.GetSimulationName()    
         
         
         
@@ -345,7 +353,8 @@ class WorkFlow(object):
         
         
         
-        PBSJobID=self.TorqueObj.Submit(UIJobReference,JobUserName,JobID,SubJobID,IsSequential=='t')
+        
+        PBSJobID=self.TorqueObj.Submit(UIJobReference,JobUserName,JobID,SimulationName,SubJobID,IsSequential=='t')
         ## Store the Job PBS ID  
         if self.dbaseobj.UpdateJob_PBSID(JobID,PBSJobID)!=True:
             raise  Exception('Error in Process New Job','Update PBSID failed')
@@ -424,7 +433,8 @@ class WorkFlow(object):
                 if pbsreferenceid in CurrentJobs:
                     logging.info("Checking Job Status : JobID="+pbsreferenceid+"\tStatus="+str(CurrentJobs[pbsreferenceid]))
                 
-                ## Parse the Job Log File and Extract Current Job Status            
+                ## Parse the Job Log File and Extract Current Job Status
+                            
                 JobDetails=self.LogReaderObj.ParseFile(CurrentJobRecord)
                  
                 
@@ -615,12 +625,17 @@ class WorkFlow(object):
         OldStatus=CurrentJobRecord['jobstatus']
         UIReference_ID=CurrentJobRecord['uireferenceid']
         JobID=CurrentJobRecord['jobid']
-        
+        UserName=CurrentJobRecord['username']
         
         
         
         JobStartTime = datetime.datetime.now().timetuple()
         data = {}  
+        
+        
+        path = os.path.join(self.JobBaseDir, UserName, str(UIReference_ID), 'output')
+        data['output_path'] = path
+        
         try:
             JobStartTime = self.GetProcessStartTime(PID)
         except Exception as Exp:
@@ -637,6 +652,8 @@ class WorkFlow(object):
     def UpdateJob_Queued(self,CurrentJobRecord):
         
         
+        
+        UserName=CurrentJobRecord['username']
         PID=CurrentJobRecord['pbsreferenceid']
         SubJobIndex=CurrentJobRecord['subjobindex']
         JobType=CurrentJobRecord['jobtype']
@@ -650,6 +667,9 @@ class WorkFlow(object):
         if EnumerationLookup.JobState.Queued!=OldStatus: 
             self.dbaseobj.SetJobQueued(JobID, "Job Queued- PBSID" + PID)
         data['status'] = 'QUEUED' 
+        path = os.path.join(self.JobBaseDir, UserName, str(UIReference_ID), 'output')
+        data['output_path'] = path
+        
         
         
         self.UpdateTAOUI(UIReference_ID, JobType, data)

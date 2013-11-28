@@ -15,7 +15,7 @@ from tao_validate import ValidateJob
 logger = logging.getLogger('detest.'+__name__)
 
 def apply_kcor(s):
-    return calc_kcor('B', s['Redshift_(Cosmological)'], 'B - Rc', s['colour'])
+    return calc_kcor('B', s['Redshift_Cosmological'], 'B - Rc', s['colour'])
 
 def calc_diff(s):
     return 100.0 * s['D_M'] / s['Distance'] - 100.0
@@ -42,10 +42,10 @@ class Validator(ValidateJob):
 
     def check_distance(self):
         cat = self.cat0
-        cat['D_Z'] = cat['Redshift_(Cosmological)'].map(lambda x: z2d(x, h=1.0, wm=self.wm))
-        cat['colour'] = cat['Johnson_B_(Apparent)'] - cat['Johnson_R_(Apparent)']
+        cat['D_Z'] = cat['Redshift_Cosmological'].map(lambda x: z2d(x, h=1.0, wm=self.wm))
+        cat['colour'] = cat['Johnson_B_Apparent'] - cat['Johnson_R_Apparent']
         cat['K Correction'] = cat.apply(apply_kcor, axis=1)
-        cat['DM'] = cat['Johnson_B_(Apparent)'] - cat['Johnson_B_(Absolute)'] - cat['K Correction']
+        cat['DM'] = cat['Johnson_B_Apparent'] - cat['Johnson_B_Absolute'] - cat['K Correction']
         cat['D Lum'] = cat['DM'].map(lambda x: math.pow(10, 0.2*x + 1)/1.0e6)
         cat['D_M'] = cat.apply(self.make_d_m(), axis=1)
         cat['Diff'] = cat.apply(calc_diff, axis=1)
@@ -68,5 +68,5 @@ class Validator(ValidateJob):
 
     def make_d_m(self):
         def d_m(s):
-            return self.h * s['D Lum'] / (1 + s['Redshift_(Cosmological)'])
+            return self.h * s['D Lum'] / (1 + s['Redshift_Cosmological'])
         return d_m

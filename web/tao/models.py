@@ -12,6 +12,10 @@ from tao.mail import send_mail
 from datetime import datetime
 
 import os
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 
 def format_human_readable_file_size(file_size):
@@ -344,12 +348,11 @@ class Job(models.Model):
         return self.disk_usage
 
     def disk_size(self):
-        """Answer the receiver's disk usage.
-        This originally returned 0 for non-completed jobs.
-        It now returns the actual usage.
-        Neither are ideal since for ASVO-661 params.xml is displayed during execution.
-        We could test the state and display params.xml, however that is starting to make the code brittle."""
-        return self.recalculate_disk_usage()
+        """Answer the receiver's disk usage (if job is complete)."""
+        if not self.is_completed():
+            return 0
+        else:
+            return self.recalculate_disk_usage()
 
 
     def display_disk_size(self):
@@ -358,12 +361,24 @@ class Job(models.Model):
 
     def files(self):
         """Answer the sorted list of files for the receiver.
-        It is up to the caller to check that the job is in the appropriate state."""
+        If the output_path hasn't been set return an empty list.
+        If an error occurs during file retrieval, log the error and answer the existing list."""
         all_files = []
-        job_base_dir = os.path.join(settings.FILES_BASE, self.output_path)
-        for root, dirs, files in os.walk(job_base_dir):
-            all_files += [JobFile(job_base_dir, os.path.join(root, filename)) for filename in files]
-
+        if self.output_path is None:
+            # No access to the files yet
+            return all_files
+        op = self.output_path.strip()
+        if len(op) == 0:
+            # No access to the files yet
+            return all_files
+        try:
+            job_base_dir = os.path.join(settings.FILES_BASE, op)
+            for root, dirs, files in os.walk(job_base_dir):
+                all_files += [JobFile(job_base_dir, os.path.join(root, filename)) for filename in files]
+        except e:
+            logger.error("Unable to get job files for id {0}, msg={1}".format(
+                self.id, str(e)))
+            # Continue on, the rest of the page should display OK.
         return sorted(all_files, key=lambda job_file: job_file.file_name)
 
     def files_tree(self):
