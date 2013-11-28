@@ -141,6 +141,8 @@ class ListJobsTests(LiveServerMGFTest):
         helper.create_file(os.path.join(settings.FILES_BASE, output_path), 'file_name', file_name_to_content)
         self.user.disk_quota = 10
         self.user.save()
+        self.completed_job.output_path = output_path
+        self.completed_job.save()
         self.visit('job_index')
         usage_text = "%s  of  %s" % ('6MB', '10MB')
         self.assert_page_has_content(usage_text)
