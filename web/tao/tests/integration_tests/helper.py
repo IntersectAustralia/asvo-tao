@@ -426,6 +426,10 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
         self.select(self.lc_id('galaxy_model'), galaxy_model.name)
         self.wait(0.5)
 
+    def select_output_property(self, output_property, side):
+        self.select(self.lc_id('output_properties-%s' % side), output_property.name)
+        self.wait(0.5)
+
     def select_stellar_model(self, stellar_model):
         self.select(self.sed_id('single_stellar_population_model'), stellar_model.label)
         self.wait(0.5)

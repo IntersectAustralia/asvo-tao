@@ -51,11 +51,11 @@ catalogue.module_defs.sed = function ($) {
     	// Answer the selected bpf record from the supplied encoded id
     	// bpfid = <bpf primary key>_(apparent|absolute)
         idx = bpfid.toString().indexOf("_");
-        id = bpfid.toString().slice(0,idx);
         if (idx < 0) {
             console.log("bandpass_filter_from_id: couldn't find _ in " + bpfid + ", idx=" + idx);
             return undefined;
         }
+        id = bpfid.toString().slice(0,idx);
         return $.grep(TaoMetadata.BandPassFilter, function(elem, idx) {
             return elem.pk == id
         })[0] || null;

@@ -1,8 +1,9 @@
 import HTMLParser
 
 from django.utils.html import strip_tags
+from selenium.webdriver.common.keys import Keys
 
-from tao.models import Simulation, StellarModel, DustModel, BandPassFilter
+from tao.models import Simulation, StellarModel, DustModel, BandPassFilter, DataSetProperty
 from tao.settings import MODULE_INDICES
 from tao.tests.integration_tests.helper import LiveServerTest
 from tao.tests.support.factories import UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, JobFactory, DataSetPropertyFactory, DustModelFactory, StellarModelFactory, BandPassFilterFactory, GlobalParameterFactory, SurveyPresetFactory, SnapshotFactory
@@ -19,8 +20,8 @@ class MockGalaxyFactoryTest(LiveServerTest):
         for unused in range(3):
             g = GalaxyModelFactory.create()
             ds = DataSetFactory.create(simulation=simulation, galaxy_model=g)
-            DataSetPropertyFactory.create(dataset=ds)
-            DataSetPropertyFactory.create(dataset=ds)
+            for unused in range(5):
+                DataSetPropertyFactory.create(dataset=ds)
             SnapshotFactory.create(dataset=ds)
 
         for unused in range(4):
@@ -126,6 +127,39 @@ class MockGalaxyFactoryTest(LiveServerTest):
 
         self.assert_galaxy_model_info_shown(second_galaxy_model)
 
+    # ASVO-464
+    def test_sidebar_text_on_output_property_change(self):
+        properties = list(DataSetProperty.objects.all())
+        op_left = self.selenium.find_element_by_css_selector(self.lc_id('output_properties-left select'))
+        # check mouse click updates the sidebar text
+        self.click_by_css(self.lc_id('output_properties-left') + " option[value='"+str(properties[0].id)+"']")
+        self.assert_output_property_info_shown(properties[0])
+        # check arrow up and down keys update the sidebar text
+        op_left.send_keys(Keys.ARROW_DOWN)
+        self.assert_output_property_info_shown(properties[1])
+        for i in range(2, 5):
+            op_left.send_keys(Keys.ARROW_DOWN)
+            self.assert_output_property_info_shown(properties[i])
+        for i in range(2, 5):
+            op_left.send_keys(Keys.ARROW_UP)
+            self.assert_output_property_info_shown(properties[5-i])
+        op_left.send_keys(Keys.ARROW_UP)
+        self.assert_output_property_info_shown(properties[0])
+        # select multiple options by clicking shift and arrow keys
+        for i in range(1, 4):
+            op_left.send_keys(Keys.SHIFT + Keys.ARROW_DOWN)
+            self.assert_output_property_info_shown(properties[i])
+        op_left.send_keys(Keys.META + Keys.ARROW_UP)
+        self.assert_output_property_info_shown(properties[3])
+        # select multiple options by holding down command key and click different options
+        op_left.send_keys(Keys.DOWN + Keys.META)
+        self.click_by_css(self.lc_id('output_properties-left') + " option[value='"+str(properties[4].id)+"']")
+        self.assert_output_property_info_shown(properties[4])
+        self.click_by_css(self.lc_id('output_properties-left') + " option[value='"+str(properties[0].id)+"']")
+        self.assert_output_property_info_shown(properties[0])
+        self.click_by_css(self.lc_id('output_properties-left') + " option[value='"+str(properties[2].id)+"']")
+        self.assert_output_property_info_shown(properties[2])
+
     def _test_sed_sidebar_text_on_apply_sed(self):
         self.click('tao-tabs-' + 'sed')
         self.click(self.sed('apply_sed'))
@@ -137,6 +171,50 @@ class MockGalaxyFactoryTest(LiveServerTest):
         self.assert_sidebar_info_not_shown('stellar-model')
         self.assert_sidebar_info_not_shown('band-pass')
         self.assert_sidebar_info_not_shown('dust-model')
+
+    # ASVO-464
+    def test_sed_sidebar_text_on_band_pass_filter_change(self):
+        filters = list(BandPassFilter.objects.all())
+        self.click('tao-tabs-sed')
+        self.click(self.sed('apply_sed'))
+        bp_left = self.selenium.find_element_by_css_selector(self.sed_id('band_pass_filters-left select'))
+        # check mouse click updates the sidebar text
+        self.click_by_css(self.sed_id('band_pass_filters-left') + " option[value='"+str(filters[0].id)+"_absolute']")
+        self.assert_band_pass_filter_info_shown(filters[0])
+        # check arrow up and down keys update the sidebar text
+        bp_left.send_keys(Keys.ARROW_DOWN)
+        self.assert_band_pass_filter_info_shown(filters[0])  # Band pass filter 000 apparent
+        bp_left.send_keys(Keys.ARROW_DOWN)
+        self.assert_band_pass_filter_info_shown(filters[1])  # Band pass filter 001 absolute
+        bp_left.send_keys(Keys.ARROW_DOWN)
+        self.assert_band_pass_filter_info_shown(filters[1])  # Band pass filter 001 apparent
+        bp_left.send_keys(Keys.ARROW_DOWN)
+        self.assert_band_pass_filter_info_shown(filters[2])  # Band pass filter 002 absolute
+        bp_left.send_keys(Keys.ARROW_UP)
+        self.assert_band_pass_filter_info_shown(filters[1])  # Band pass filter 001 apparent
+        bp_left.send_keys(Keys.ARROW_UP)
+        self.assert_band_pass_filter_info_shown(filters[1])  # Band pass filter 001 absolute
+        bp_left.send_keys(Keys.ARROW_UP)
+        self.assert_band_pass_filter_info_shown(filters[0])  # Band pass filter 000 apparent
+        bp_left.send_keys(Keys.ARROW_UP)
+        self.assert_band_pass_filter_info_shown(filters[0])  # Band pass filter 000 absolute
+        # select multiple options by clicking shift and arrow keys
+        bp_left.send_keys(Keys.SHIFT + Keys.ARROW_DOWN)
+        self.assert_band_pass_filter_info_shown(filters[0])  # Band pass filter 000 apparent
+        bp_left.send_keys(Keys.SHIFT + Keys.ARROW_DOWN)
+        self.assert_band_pass_filter_info_shown(filters[1])  # Band pass filter 001 absolute
+        bp_left.send_keys(Keys.SHIFT + Keys.ARROW_DOWN)
+        self.assert_band_pass_filter_info_shown(filters[1])  # Band pass filter 001 apparent
+        bp_left.send_keys(Keys.META + Keys.ARROW_UP)
+        self.assert_band_pass_filter_info_shown(filters[1])  # Band pass filter 001 absolute
+        # # select multiple options by holding down command key and click different options
+        bp_left.send_keys(Keys.DOWN + Keys.META)
+        self.click_by_css(self.sed_id('band_pass_filters-left') + " option[value='"+str(filters[2].id)+"_apparent']")
+        self.assert_band_pass_filter_info_shown(filters[2])
+        self.click_by_css(self.sed_id('band_pass_filters-left') + " option[value='"+str(filters[0].id)+"_absolute']")
+        self.assert_band_pass_filter_info_shown(filters[0])
+        self.click_by_css(self.sed_id('band_pass_filters-left') + " option[value='"+str(filters[2].id)+"_absolute']")
+        self.assert_band_pass_filter_info_shown(filters[2])
 
     def _test_sed_sidebar_text_on_apply_dust(self):
         self.click('tao-tabs-' + 'sed')
@@ -433,12 +511,27 @@ class MockGalaxyFactoryTest(LiveServerTest):
         
         self.assertEqual(expected_galaxy_model_names, actual_galaxy_model_names)
 
+    def assert_output_property_info_shown(self, output_property):
+        output_property_selector_value = {
+                            '.output-property-info .name': output_property.label,
+                            '.output-property-info .details': strip_tags(output_property.description),
+                            }
+        self.wait(0.5)
+        self.assert_selector_texts_equals_expected_values(output_property_selector_value)
+
     def assert_stellar_model_info_shown(self, stellar_model):
         stellar_model_selector_value = {
                             '.stellar-model-info .name': stellar_model.label,
                             '.stellar-model-info .details': strip_tags(stellar_model.description),
                             }
         self.assert_selector_texts_equals_expected_values(stellar_model_selector_value)
+
+    def assert_band_pass_filter_info_shown(self, band_pass_filter):
+        band_pass_filter_selector_value = {
+                            '.band-pass-info .name': band_pass_filter.label,
+                            # '.band-pass-info .details': strip_tags(band_pass_filter.description),
+        }
+        self.assert_selector_texts_equals_expected_values(band_pass_filter_selector_value)
 
     def assert_dust_model_info_shown(self, dust_model):
         dust_model_selector_value = {
