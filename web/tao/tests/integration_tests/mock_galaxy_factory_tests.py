@@ -31,11 +31,10 @@ class MockGalaxyFactoryTest(LiveServerTest):
             ds.default_filter_field = dsp
             ds.save()
 
-        for unused in range(3):
+        for i in range(3):
             StellarModelFactory.create()
-            BandPassFilterFactory.create()
+            BandPassFilterFactory.create(description='<p>BPF Description %s</p>' % i)
             DustModelFactory.create()
-
 
         self.survey_preset = SurveyPresetFactory.create(name='Preset 1', parameters='<xml></xml>')
         
@@ -516,7 +515,6 @@ class MockGalaxyFactoryTest(LiveServerTest):
                             '.output-property-info .name': output_property.label,
                             '.output-property-info .details': strip_tags(output_property.description),
                             }
-        self.wait(0.5)
         self.assert_selector_texts_equals_expected_values(output_property_selector_value)
 
     def assert_stellar_model_info_shown(self, stellar_model):
@@ -529,7 +527,7 @@ class MockGalaxyFactoryTest(LiveServerTest):
     def assert_band_pass_filter_info_shown(self, band_pass_filter):
         band_pass_filter_selector_value = {
                             '.band-pass-info .name': band_pass_filter.label,
-                            # '.band-pass-info .details': strip_tags(band_pass_filter.description),
+                            '.band-pass-info .details': strip_tags(band_pass_filter.description),
         }
         self.assert_selector_texts_equals_expected_values(band_pass_filter_selector_value)
 
