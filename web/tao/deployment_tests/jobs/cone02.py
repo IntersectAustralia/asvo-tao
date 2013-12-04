@@ -50,7 +50,7 @@ FILTER_MAX = ''
 #
 # Specify the results validator
 #
-GALAXY_COUNT = 60063
+GALAXY_COUNT = 52264
 CHECK_UNIQUE = True
 from cone_basic import Validator as v1
 VALIDATORS = [v1]

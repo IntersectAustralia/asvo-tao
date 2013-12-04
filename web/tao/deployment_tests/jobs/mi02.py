@@ -28,6 +28,15 @@ DESCRIPTION = "Deployment Test: " + __name__
 # Params File - must be a relative path
 #
 PARAMS_FILE = 'jobs/mi02.xml'
+#
+# The following must match the params xml file above
+#
+NUMBER_OF_CONES = 1
+RA = 60
+DEC = 60
+REDSHIFT_MIN = 0.0
+REDSHIFT_MAX = 0.05
+
 
 #
 # Specify the results validator
