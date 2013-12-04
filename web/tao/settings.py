@@ -168,10 +168,19 @@ INSTALLED_APPS = (
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(asctime)s %(levelname)s %(name)s %(process)d %(thread)d %(message)s'
+            },
+        'simple': {
+            'format': '%(levelname)s: %(message)s'
+            },
+        },
     'handlers': {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
+            'formatter': 'verbose',
             'filename': os.path.join(os.path.dirname(__file__), 'django.log'),
         },
         'console': {
@@ -261,7 +270,7 @@ MODULE_INDICES = {
                   'telescope': '8'
                   }
 
-TAO_VERSION = '1.0.12'
+TAO_VERSION = '1.0.14'
 
 AAF_DS_URL = 'https://ds.test.aaf.edu.au/discovery/DS'
 AAF_APP_ID = 'https://example.intersect.org.au/shibboleth'

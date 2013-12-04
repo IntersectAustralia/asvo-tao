@@ -46,6 +46,7 @@ OUTPUT_PROPERTIES = ['Stellar Mass', 'Right Ascension', 'Declination', 'Redshift
 # SED
 #
 APPLY_SED = True
+SED_SSP = 'Maraston (2005), Salpeter IMF'
 BP_FILTERS = ['Johnson']
 
 #

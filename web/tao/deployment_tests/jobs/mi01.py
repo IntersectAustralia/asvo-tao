@@ -3,7 +3,7 @@ Test: MI01
 
 Description:
 
-* Ensure that Mock Image can run on box geometry and doesn't crash
+* Ensure that Mock Image can run on light-cone geometry and doesn't crash
 
 Typical execution: 
 """

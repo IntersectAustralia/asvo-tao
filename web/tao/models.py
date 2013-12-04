@@ -12,6 +12,10 @@ from tao.mail import send_mail
 from datetime import datetime
 
 import os
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 
 def format_human_readable_file_size(file_size):
@@ -337,8 +341,6 @@ class Job(models.Model):
         return self.error_message[:80]
 
     def recalculate_disk_usage(self):
-        if not self.is_completed():
-            return 0
         sum_file_sizes = 0
         for f in self.files():
             sum_file_sizes += f.get_file_size_in_MB()
@@ -346,6 +348,7 @@ class Job(models.Model):
         return self.disk_usage
 
     def disk_size(self):
+        """Answer the receiver's disk usage (if job is complete)."""
         if not self.is_completed():
             return 0
         else:
@@ -357,14 +360,25 @@ class Job(models.Model):
     
 
     def files(self):
-        if not self.is_completed():
-            raise Exception("can't look at files of job that is not completed")
-
+        """Answer the sorted list of files for the receiver.
+        If the output_path hasn't been set return an empty list.
+        If an error occurs during file retrieval, log the error and answer the existing list."""
         all_files = []
-        job_base_dir = os.path.join(settings.FILES_BASE, self.output_path)
-        for root, dirs, files in os.walk(job_base_dir):
-            all_files += [JobFile(job_base_dir, os.path.join(root, filename)) for filename in files]
-
+        if self.output_path is None:
+            # No access to the files yet
+            return all_files
+        op = self.output_path.strip()
+        if len(op) == 0:
+            # No access to the files yet
+            return all_files
+        try:
+            job_base_dir = os.path.join(settings.FILES_BASE, op)
+            for root, dirs, files in os.walk(job_base_dir):
+                all_files += [JobFile(job_base_dir, os.path.join(root, filename)) for filename in files]
+        except e:
+            logger.error("Unable to get job files for id {0}, msg={1}".format(
+                self.id, str(e)))
+            # Continue on, the rest of the page should display OK.
         return sorted(all_files, key=lambda job_file: job_file.file_name)
 
     def files_tree(self):
@@ -433,6 +447,7 @@ class JobFile(object):
         self.file_size = os.path.getsize(self.file_path)
     
     def can_be_downloaded(self):
+        """Deprecated.  This was originally used to limit download file size"""
         return True
 
     def get_file_size(self):

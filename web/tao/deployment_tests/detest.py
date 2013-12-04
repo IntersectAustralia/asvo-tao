@@ -6,8 +6,10 @@ import argparse
 import logging
 import logging.config
 from getpass import getpass
-from os.path import abspath, join
+from os.path import abspath, join, split
+from time import sleep
 
+import common_settings
 from django.conf import settings
 from ithelper import DeploymentTester, interact
 
@@ -24,15 +26,31 @@ class SubmitJob(DeploymentTester):
 
         self.login(self.username, password)
         self.visit('mock_galaxy_factory')
-        self.click('tao-tabs-' + 'light_cone')
 
     def tearDown(self):
         super(SubmitJob, self).tearDown()
 
     def submit(self, args, job_params):
         self.job_params = job_params
+        
+        if self.job_params.PARAMS_FILE is not None:
+            self.submit_params(args, job_params)
+        else:
+            self.submit_browser(args, job_params)
+        return
 
+    def submit_params(self, args, job_params):
         self.setUp()
+        fpath = join(abspath(split(__file__)[0]), self.job_params.PARAMS_FILE)
+        self.upload_params_file(fpath)
+        self.submit_mgf_form(job_params.DESCRIPTION)
+        self.assert_on_page('jobs/')
+        return
+
+
+    def submit_browser(self, args, job_params):
+        self.setUp()
+        self.click('tao-tabs-' + 'light_cone')
         self.fill_in_fields({
             'dark_matter_simulation' : self.job_params.SIMULATION,
             'galaxy_model' : self.job_params.GALAXY_MODEL},
@@ -92,6 +110,9 @@ class SubmitJob(DeploymentTester):
     def configure_sed(self):
         self.click('tao-tabs-sed')
         self.click(self.sed('apply_sed'))
+        ssp = getattr(self.job_params, 'SED_SSP', None)
+        if ssp is not None:
+            self.select(self.sed_id('single_stellar_population_model'), ssp)
         filters = getattr(self.job_params, 'BP_FILTERS', None)
         if filters == 'All':
             self.click(self.sed_2select('op_add_all'))
@@ -144,32 +165,46 @@ if __name__ == "__main__":
         import pdb
         pdb.set_trace()
 
-    job_params = __import__(args.name)
-    name_parts = args.name.split('.')
-    for name_part in name_parts[1:]:
-        job_params = getattr(job_params, name_part)
-    job_params.BASE_URL = args.base_url
-
-    logging.config.dictConfig(job_params.LOGGING)
+    logging.config.dictConfig(common_settings.LOGGING)
     logger = logging.getLogger('detest')
     logger.info("Starting...")
 
     if args.username:
-        job_params.USERNAME = args.username
+        common_settings.USERNAME = args.username
     if args.password:
-        job_params.PASSWORD = args.password
-    if job_params.USERNAME is None:
-        job_params.USERNAME = raw_input("Username: ")
-    if job_params.PASSWORD is None:
-        job_params.PASSWORD = getpass("Password: ")
+        common_settings.PASSWORD = args.password
+    if common_settings.USERNAME is None:
+        common_settings.USERNAME = raw_input("Username: ")
+    if common_settings.PASSWORD is None:
+        common_settings.PASSWORD = getpass("Password: ")
 
-    if args.cmd.lower() == 'submit':
-        ctrl = SubmitJob()
-        ctrl.submit(args, job_params)
-    elif args.cmd.lower() == 'validate':
-        for validator in job_params.VALIDATORS:
-            ctrl = validator()
-            ctrl = ctrl.validate(args, job_params)
+    if args.name == "all":
+        all_jobs = []
+        for root, dirs, files in os.walk('jobs'):
+            for file in files:
+                fname, ftype = os.path.splitext(file)
+                if ftype == ".py" and fname != "__init__":
+                    all_jobs.append("jobs."+fname)
+    else:
+        all_jobs = [args.name]
+
+    for job in all_jobs:
+        job_params = __import__(job)
+        name_parts = job.split('.')
+        for name_part in name_parts[1:]:
+            job_params = getattr(job_params, name_part)
+        job_params.BASE_URL = args.base_url
+
+        if args.cmd.lower() == 'submit':
+            ctrl = SubmitJob()
+            ctrl.submit(args, job_params)
+            sleep(5.0)
+            ctrl.tearDown()
+        elif args.cmd.lower() == 'validate':
+            for validator in job_params.VALIDATORS:
+                ctrl = validator()
+                ctrl = ctrl.validate(args, job_params)
+        sleep(1.0)
 
     logger.info("Finished.")
     exit(0)

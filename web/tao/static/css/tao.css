@@ -249,7 +249,8 @@ input.tao-prev {
   }
 
 fieldset legend {
-  margin: 20px 0;
+    margin: 1em 0 0 0;
+    padding: 1.5em 0 0 0;
     font-size: 24px;
     line-height: 30px;
     clear: both;
@@ -474,7 +475,6 @@ span.see-form-errors:hover { text-decoration: underline; cursor: pointer;}
 }
 
 #id_sed-band_pass_filters-table.ui-resizable {
-    height: 300px;
 }
 
 /*Left light cone output properties table*/
@@ -810,6 +810,10 @@ color: #888;
 /* #body.flex { padding-top: 20px; } */
 div.breadcrumbs { position: absolute; top: 40px; left: 0; right: 0; padding: 50px 60px 0 60px; }
 ul.messagelist { position: fixed; top: 48px; left: 0; right: 0; }
+
+#survey_presets {
+	margin-left: 50%;
+}
 
 #survey_presets_select {
   width: auto;

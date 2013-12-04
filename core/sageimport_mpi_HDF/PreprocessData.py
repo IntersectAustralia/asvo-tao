@@ -228,10 +228,12 @@ class PreprocessData(object):
             ###########################################################
             CreateIndexStatment="Create Index breadthfirst_traversalorder_Index_"+NewTableName+" on  "+NewTableName+" (breadthfirst_traversalorder);"
             self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
-            CreateIndexStatment="Create Index depthfirst_traversalorder_Index_"+NewTableName+" on  "+NewTableName+" (depthfirst_traversalorder);"
+            #CreateIndexStatment="Create Index depthfirst_traversalorder_Index_"+NewTableName+" on  "+NewTableName+" (depthfirst_traversalorder);"
+            #self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
+            CreateIndexStatment="Create Index Combined_Index_GlobalTree_DepthFirst_"+NewTableName+" on  "+NewTableName+" (globaltreeid, depthfirst_traversalorder);"
             self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
-            CreateIndexStatment="Create Index subtree_count_Index_"+NewTableName+" on  "+NewTableName+" (subtree_count);"
-            self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
+            #CreateIndexStatment="Create Index subtree_count_Index_"+NewTableName+" on  "+NewTableName+" (subtree_count);"
+            #self.DBConnection.ExecuteNoQuerySQLStatment(CreateIndexStatment,HostIndex)
             
             
             
