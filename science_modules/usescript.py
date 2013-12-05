@@ -126,3 +126,4 @@ rule(r'apps/(?:tao|application)\.cc$', tao_bin & tao_bin_inst, libraries=['tao']
 # rule(r'apps/ssp_restrict/.+\.cc$', bin, target='bin/ssp_restrict', libraries=['tao'])
 # rule(r'apps/analytic/.+\.cc$', bin, target='bin/analytic', libraries=['tao'])
 rule(r'apps/subcones/.+\.cc$', bin, target='bin/subcones', libraries=['tao'])
+rule(r'apps/dbcheck/.+\.cc$', bin, target='bin/dbcheck', libraries=['tao'])
