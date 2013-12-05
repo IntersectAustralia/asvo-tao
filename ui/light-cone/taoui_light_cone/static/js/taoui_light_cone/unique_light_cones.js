@@ -57,24 +57,36 @@
         vm.redshift_min();
         vm.redshift_max();
         vm.dec_opening_angle();
-
-        var alpha1 = parseFloat(vm.ra_opening_angle());
-        var box_side = vm.dark_matter_simulation().fields.box_size;
-        var d1 = redshift_to_distance(parseFloat(vm.redshift_min()));
-        var d2 = redshift_to_distance(parseFloat(vm.redshift_max()));
-        var beta1;
-        for (beta1 = alpha1; beta1 < 90; beta1 = beta1 + 0.01) {
-            if ((d2 - box_side) * Math.sin((Math.PI / 180) * (beta1 + alpha1)) <= d2 * Math.sin((Math.PI / 180) * beta1)) {
-                break;
+        
+		var ra  = parseFloat(vm.ra_opening_angle());
+		var dec = parseFloat(vm.dec_opening_angle());
+		var b   = vm.dark_matter_simulation().fields.box_size;
+		var d   = redshift_to_distance(parseFloat(vm.redshift_max())) + 1;
+        
+        if (isNaN(ra) || isNaN(dec) || isNaN(d) || isNaN(b)) {
+        	return NaN;
+        }
+        if (d < b) {
+            width  = d*Math.sin(dec*Math.PI/180);
+            height = d*Math.sin(ra*Math.PI/180);
+            n_vert = Math.floor(b/height);
+            n_horz = Math.floor(b/width);
+            return n_vert*n_horz;
+        }
+        if (d >= b && d*Math.sin(dec*Math.PI/180) > b) {
+            return NaN;
+        }
+        for (ra_min = 0; ra_min < 90; ra_min += 0.01) {
+            if ((d - b/Math.cos((ra_min + ra)*Math.PI/180))*Math.sin((ra_min + ra)*Math.PI/180)
+                <= d*Math.sin(ra_min*Math.PI/180)) {
+                width  = d*Math.sin(dec*Math.PI/180);
+                height = d*Math.sin((ra_min + ra)*Math.PI/180);
+                n_vert = Math.floor(b/height);
+                n_horz = Math.floor(b/width);
+                return n_vert*n_horz;
             }
         }
-        var hv = Math.floor(d2 * Math.sin((Math.PI / 180) * (alpha1 + beta1)) - d1 * Math.sin((Math.PI / 180) * (alpha1 + beta1)));
-
-        var hh = 2 * d2 * Math.sin((Math.PI / 180) * (parseFloat(vm.dec_opening_angle())) / 2);
-
-        var nv = Math.floor(box_side / hv);
-        var nh = Math.floor(box_side / hh);
-        return nv * nh;
+        return NaN;
     }
 
 
