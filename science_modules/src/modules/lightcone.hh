@@ -362,8 +362,8 @@ namespace tao {
                LOGILN( "Redshift range: [", min_z, ", ", max_z, ")" );
 
                // Right ascension.
-               real_type min_ra = std::min<real_type>( std::max<real_type>( dict.get<real_type>( "ra-min", 0.0 ), 0.0 ), 90.0 );
-               real_type max_ra = std::min<real_type>( std::max<real_type>( dict.get<real_type>( "ra-max", 10.0 ), 0.0 ), 90.0 );
+               real_type min_ra = std::min<real_type>( std::max<real_type>( dict.get<real_type>( "ra-min", 0.0 ), 0.0 ), 89.99 );
+               real_type max_ra = std::min<real_type>( std::max<real_type>( dict.get<real_type>( "ra-max", 10.0 ), 0.0 ), 89.99 );
                min_ra = std::min<real_type>( min_ra, max_ra );
                LOGILN( "Right ascension range: [", min_ra, ", ", max_ra, ")" );
 
