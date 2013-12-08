@@ -61,7 +61,9 @@ FILTER_MAX = ''
 #
 LITTLE_H = 0.70
 WM = 0.27
+MIN_MEAN_DIFFERENCE = 2.7 # %
 MAX_MEAN_DIFFERENCE = 2.8 # %
+MIN_MAX_DIFFERENCE = 1.4 # %
 MAX_MAX_DIFFERENCE = 1.5 # %
 from sed_distance import Validator as v1
 VALIDATORS = [v1,]

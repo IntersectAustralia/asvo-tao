@@ -62,7 +62,14 @@ class Validator(ValidateJob):
         if abs(stats['max']) > self.job_params.MAX_MAX_DIFFERENCE:
             logger.error("Max difference {0} exceeds {1}".format(
                 stats['max'], self.job_params.MAX_MAX_DIFFERENCE))
-        #import pdb; pdb.set_trace()
+
+        if abs(stats['mean']) < self.job_params.MIN_MEAN_DIFFERENCE:
+            logger.error("Mean difference {0} is less than {1}".format(
+                stats['mean'], self.job_params.MIN_MEAN_DIFFERENCE))
+
+        if abs(stats['max']) < self.job_params.MIN_MAX_DIFFERENCE:
+            logger.error("Max difference {0} is less than {1}".format(
+                stats['max'], self.job_params.MIN_MAX_DIFFERENCE))
 
         return
 

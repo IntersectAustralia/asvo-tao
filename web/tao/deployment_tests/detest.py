@@ -188,6 +188,7 @@ if __name__ == "__main__":
     else:
         all_jobs = [args.name]
 
+    i = 1
     for job in all_jobs:
         job_params = __import__(job)
         name_parts = job.split('.')
@@ -196,6 +197,8 @@ if __name__ == "__main__":
         job_params.BASE_URL = args.base_url
 
         if args.cmd.lower() == 'submit':
+            logger.info("Submitting {0} of {1}".format(
+                i, len(all_jobs)))
             ctrl = SubmitJob()
             ctrl.submit(args, job_params)
             sleep(5.0)
@@ -205,6 +208,7 @@ if __name__ == "__main__":
                 ctrl = validator()
                 ctrl = ctrl.validate(args, job_params)
         sleep(1.0)
+        i += 1
 
     logger.info("Finished.")
     exit(0)
