@@ -6,6 +6,11 @@
 body { padding-top: 0px; }
 #body { padding-top: 120px; }
 
+.welcome_logos {
+	float: right;
+	width: 25%;
+}
+
 a.ui-tabs-anchor:focus {
     outline: 0px none black;
     outline: 0px none -webkit-focus-ring-color;

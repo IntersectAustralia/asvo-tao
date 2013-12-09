@@ -1,4 +1,5 @@
 {% extends '_base.html' %}
+{% load static %}
 
 {% load url from future %}
 
@@ -6,57 +7,38 @@
     Home
 {% endblock %}
 {% block content %}
-    <h1>Welcome!</h1>
-	<p>The Theoretical Astrophysical Observatory (TAO) houses queryable 
-	data from multiple popular cosmological simulations and galaxy formation 
-	models. Your results can be funnelled through higher-level modules for 
-	additional enhancements and manipulation. TAO is accessible from anywhere 
-	you can access the internet.</p>
-
-	<p>If you haven't done so already, please register to use TAO. Under the 
-	hood, TAO is driven by the gSTAR supercomputer at the Swinburne University 
-	of Technology. Registering allows us to most efficiently manage the 
-	resources that TAO relies on.</p>
-
-	<p>If you are new to the world of Theoretical Astrophysical Observatories, 
-	please read our <a href="static/docs/project/index.html">Introduction</a>. 
-	In particular, you might want to browse our 
-	<a href="static/docs/user-manual/index.html">User's Guide</a> and 
-	<a href="static/docs/user-manual/overview.html">System Overview</a> 
-	to learn about TAO's capabilities and how to get the best value from the system.</p>
-
-	<p>If you're ready to build a mock universe, go ahead and generate a new 
-	catalogue.</p> 
-
-	<p>You can always access your past catalogues from the history tab.</p>
-
-	<p>BETA ALERT! TAO is currently in public beta and is undergoing rapid 
-	development. Right now not everything is stable or finished. 
-	Please report any unexpected behaviour or bugs so we can fix them. 
-	And always check that the data you downloaded is the data you expected 
-	before using it. All feedback and comments should be sent through our 
-	support form for the quickest possible response.</p>
-
+    <div class="welcome_logos">
+        <img src={% static "images/aal_logo_hi_res.jpg" %} />
+        <img src={% static "images/NeCTAR_logo.jpg" %} />
+        <img src={% static "images/Swinburne.gif" %} />
+    </div>
     <div>
-        <ul>
-            <li>
-                Generate a <a href="{% url 'mock_galaxy_factory' %}">New Catalogue</a>
-            </li>
-        </ul>
-    </div>
-    <div class="acknowledgements">
-		<p>The Theoretical Astrophysical Observatory is a component of the 
-		<a href="http://www.asvo.org.au/" target="_blank">All-Sky Virtual Observatory</a>, 
-		which is a partnership between <a href="http://astronomyaustralia.org.au/" target="_blank">Astronomy Australia Ltd</a>, 
-		<a href="http://www.swinburne.edu.au/" target="_blank">Swinburne University of Technology</a>, 
-		<a href="http://www.anu.edu.au/" target="_blank">The Australian National University</a>, 
-		the <a href="http://nci.org.au/" target="_blank">National Computational Infrastructure</a>, 
-		and <a href="http://www.intersect.org.au/" target="_blank">Intersect Australia Ltd</a>.</p>
+    <h1>Welcome!</h1>
 
-		<p>The following organisations have assisted in funding TAO: 
-		<a href="http://www.nectar.org.au/" target="_blank">The NeCTAR project</a>; 
-		<a href="http://www.innovation.gov.au/Pages/default.aspx" target="_blank">The Department of Industry, Innovation, Science, Research and Tertiary Education</a> 
-		through AAL-managed Education Investment Fund (EIF) and National Collaborative Research Infrastructure Strategy (NCRIS) grants. 
-		For additional details, please see the <a href="http://www.asvo.org.au/" target="_blank">ASVO Web Site</a>.</p>
-    </div>
+	<p>The Theoretical Astrophysical Observatory (TAO) houses queryable data
+	from multiple popular cosmological simulations and galaxy formation
+	models.</p>
+
+	<p>Results can be funnelled through higher-level modules to build custom
+	mock galaxy catalogues and images. TAO is accessible from anywhere you can
+	access the internet.</p>
+
+	<p>TAO is part of the All-Sky Virtual Obserbatory (ASVO) and is funded and
+	supported by Astronomy Australia Limited, NeCTAR, and the Swinburne
+	University of Technology.</p>
+
+	<ul>
+	<li><a href="{% url 'login' %}">Login</a> / 
+		<a href="{% url 'register' %}">Register</a></li>
+	<li><a href="{% url 'mock_galaxy_factory' %}">New Catalogue</a></li>
+	<li><a href="static/docs/index.html">Documentation</a></li>
+	<li><a href="{% url 'support_page' %}">Feedback & Support</a></li>
+	</ul>
+
+	<p>BETA ALERT! TAO is currently in public beta and is undergoing rapid
+	development. Not everything is stable or finished. Please report any 
+	unexpected behaviour or bugs so we can fix them. And always check that the
+	data you download is the data you expected before using it.</p>
+	</div>
+
 {% endblock %}
