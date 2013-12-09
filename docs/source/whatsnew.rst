@@ -4,6 +4,19 @@ What's New
 .. contents::
    :depth: 2
 
+9 Dec 2013: 1.0.15
+------------------
+
+Improvements:
+
+* Updated welcome page text
+* Additional deployment tests
+
+Bug Fixes:
+
+* Update details tab when using keyboard navigation within two-list widgets (ASVO-464)
+
+
 25 Nov 2013: 1.0.13
 -------------------
 
