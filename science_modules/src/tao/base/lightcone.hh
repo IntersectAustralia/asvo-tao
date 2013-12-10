@@ -30,6 +30,7 @@ namespace tao {
       lightcone( const tao::simulation<real_type>* sim = NULL )
          : _sim( NULL ),
            _rand( false ),
+           _view_angle( 0.0 ),
            _orig{ { 0.0, 0.0, 0.0 } },
            _eng( &hpc::engine )
       {
@@ -86,6 +87,18 @@ namespace tao {
       {
 	 _rand = rand;
 	 _eng = engine;
+      }
+
+      void
+      set_viewing_angle( real_type angle )
+      {
+         _view_angle = angle;
+      }
+
+      real_type
+      viewing_angle() const
+      {
+         return _view_angle;
       }
 
       void
@@ -360,6 +373,7 @@ namespace tao {
       vector<unsigned> _snap_bins;
       numerics::interp<real_type> _dist_to_z;
       bool _rand;
+      real_type _view_angle;
       std::array<real_type,3> _orig;
       engine_type* _eng;
    };

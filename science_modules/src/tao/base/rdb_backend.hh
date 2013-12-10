@@ -108,6 +108,8 @@ namespace tao {
 	    using boost::io::group;
 	    using std::setprecision;
 
+            tao::lightcone<real_type> const& lc = *tile.lightcone();
+
             boost::format fmt(
                "SELECT %1% FROM -table- "
                "INNER JOIN redshift_ranges ON (-table-.%2% = redshift_ranges.snapshot) "
@@ -132,11 +134,9 @@ namespace tao {
             fmt % make_output_field_query_string( query, map );
             fmt % _field_map.at( "snapnum" );
             fmt % map.at( "posx" ) % map.at( "posy" ) % map.at( "posz" );
-            fmt % group( setprecision( 12 ), tile.lightcone()->min_ra() ) % group( setprecision( 12 ), tile.lightcone()->max_ra() );
-	    fmt % group( setprecision( 12 ), tile.lightcone()->min_dec() ) % group( setprecision( 12 ), tile.lightcone()->max_dec() );
-            // fmt % cos( tile.lightcone()->max_ra() ) % cos( tile.lightcone()->min_ra() );
-            // fmt % cos( tile.lightcone()->max_dec() ) % cos( tile.lightcone()->min_dec() );
-            fmt % group( setprecision( 12 ), pow( tile.lightcone()->min_dist(), 2 ) ) % group( setprecision( 12 ), pow( tile.lightcone()->max_dist(), 2 ) );
+            fmt % group( setprecision( 12 ), lc.min_ra() + lc.viewing_angle() ) % group( setprecision( 12 ), lc.max_ra() + lc.viewing_angle() );
+	    fmt % group( setprecision( 12 ), lc.min_dec() ) % group( setprecision( 12 ), lc.max_dec() );
+            fmt % group( setprecision( 12 ), pow( lc.min_dist(), 2 ) ) % group( setprecision( 12 ), pow( lc.max_dist(), 2 ) );
             string filt_str = make_filter_query_string( filt );
             if( !filt_str.empty() )
                filt_str = " AND " + filt_str; 
