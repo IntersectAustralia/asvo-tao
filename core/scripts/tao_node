@@ -1,0 +1,48 @@
+#!/bin/bash
+#
+# chkconfig: 35 90 12
+# description: TAO node
+#
+# Get function from functions library
+. /etc/init.d/functions
+USER = 
+POSTGRES_DIR = 
+TAO_DB_DIR = 
+TAO_DB_LOGFILE = 
+# Start the service
+start() {
+        initlog -c "echo -n Starting TAO node: "
+        /bin/su $USER $POSTGRES_DIR/bin/pg_ctl start -D $TAO_DB_DIR -l $TAO_DB_LOGFILE
+        ### Create the lock file ###
+        touch /var/lock/subsys/tao_node
+        success $"TAO node startup"
+        echo
+}
+# Restart the service
+stop() {
+        initlog -c "echo -n Stopping TAO node: "
+        /bin/su $USER $POSTGRES_DIR/bin/pg_ctl stop -D $TAO_DB_DIR
+        ### Now, delete the lock file ###
+        rm -f /var/lock/subsys/tao_node
+        echo
+}
+### main logic ###
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  status)
+        status tao_node
+        ;;
+  restart|reload|condrestart)
+        stop
+        start
+        ;;
+  *)
+        echo $"Usage: $0 {start|stop|restart|reload|status}"
+        exit 1
+esac
+exit 0

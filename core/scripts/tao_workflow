@@ -1,0 +1,47 @@
+#!/bin/bash
+#
+# chkconfig: 35 90 12
+# description: TAO workflow
+#
+# Get function from functions library
+. /etc/init.d/functions
+USER = 
+PYTHON = 
+WORKFLOW_DIR = 
+# Start the service
+start() {
+        initlog -c "echo -n Starting TAO workflow: "
+        /bin/su $USER $PYTHON $WORKFLOW_DIR/main.py start
+        ### Create the lock file ###
+        touch /var/lock/subsys/tao_workflow
+        success $"TAO workflow startup"
+        echo
+}
+# Restart the service
+stop() {
+        initlog -c "echo -n Stopping TAO workflow: "
+        /bin/su $USER $PYTHON $WORKFLOW_DIR/main.py
+        ### Now, delete the lock file ###
+        rm -f /var/lock/subsys/tao_workflow
+        echo
+}
+### main logic ###
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  status)
+        status tao_workflow
+        ;;
+  restart|reload|condrestart)
+        stop
+        start
+        ;;
+  *)
+        echo $"Usage: $0 {start|stop|restart|reload|status}"
+        exit 1
+esac
+exit 0

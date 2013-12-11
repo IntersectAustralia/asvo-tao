@@ -88,6 +88,11 @@ namespace tao {
          _scale_x = 0.5*_width/tan( 0.5*_fov_ra );
          _scale_y = 0.5*_height/tan( 0.5*_fov_dec );
 
+	 LOGILN( "Magnitude field: ", _mag_field );
+	 LOGILN( "Minimum magnitude: ", (_min_mag ? boost::lexical_cast<std::string>( *_min_mag ) : "none") );
+	 LOGILN( "Maximum magnitude: ", (_max_mag ? boost::lexical_cast<std::string>( *_max_mag ) : "none") );
+	 LOGILN( "Minimum redshift: ", _z_min );
+	 LOGILN( "Maximum redshift: ", _z_max );
          LOGILN( "Magnitude field: ", _mag_field );
          LOGILN( "Background magnitude: ", _back_mag );
          LOGILN( "Exposure time: ", _exp_time );
@@ -109,8 +114,8 @@ namespace tao {
          {
             // Convert the cartesian coordiantes to right-ascension and
             // declination.
-            real_type ra = bat.scalar<real_type>( "ra" )[idx];
-            real_type dec = bat.scalar<real_type>( "dec" )[idx];
+	    real_type ra = to_radians( bat.scalar<real_type>( "ra" )[idx] );
+            real_type dec = to_radians( bat.scalar<real_type>( "dec" )[idx] );
 
             // Filter out any RA or DEC outside our FoV.
             if( fabs( ra - _origin_ra ) <= 0.5*_fov_ra && fabs( dec - _origin_dec ) <= 0.5*_fov_dec )
