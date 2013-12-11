@@ -464,11 +464,14 @@ namespace tao {
 	    EXCEPT( sub_idx < max_subcones, "Subcone with index ", sub_idx,
 		    " is outside the maximum range of ", max_subcones );
 
-	    // Calculate subcone origin.
+	    // Calculate subcone viewing angle and origin.
+            real_type view_angle = *tao::calc_subcone_angle( _lc );
 	    std::array<real_type,3> ori = tao::calc_subcone_origin<real_type>( _lc, sub_idx );
 
-	    // Set origin.
+	    // Set angle and origin.
+            _lc.set_viewing_angle( view_angle );
             _lc.set_origin( ori );
+            LOGILN( "Viewing angle set to: ", view_angle );
             LOGILN( "Origin set to: (", ori[0], ", ", ori[1], ", ", ori[2], ")" );
          }
 

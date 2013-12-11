@@ -32,5 +32,5 @@
   <subjobindex>0</subjobindex>
   <logdir>log</logdir>
   <outputdir>output</outputdir>
-  <database>millennium_mini_hdf5_dist</database>
+  <database>millennium_mini_balanced_v3</database>
 </tao>

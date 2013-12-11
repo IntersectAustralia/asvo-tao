@@ -9,6 +9,7 @@ namespace tao {
 
       application::application( int argc,
 				char* argv[] )
+         : hpc::application( argc, argv )
       {
 	 EXCEPT( argc >= 2, "Insufficient arguments." );
 	 _inp_dir = std::string( argv[1] );

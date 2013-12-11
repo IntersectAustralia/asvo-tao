@@ -686,8 +686,18 @@ namespace tao {
                  numerics::cartesian_to_ecs( pos_x[ii], pos_y[ii], pos_z[ii], ra[ii], dec[ii] );
                  ra[ii] = to_degrees( ra[ii] );
                  dec[ii] = to_degrees( dec[ii] );
-                 ASSERT( ra[ii] >= 0.0 && ra[ii] <= 90.0, "Calculated RA exceeds limits: ", ra[ii] );
-                 ASSERT( dec[ii] >= 0.0 && dec[ii] <= 90.0, "Calculated RA exceeds limits: ", dec[ii] );
+
+                 // If the lightcone is being generated with unique cones, we may need
+                 // to offset the RA and DEC, then recalculate the positions.
+                 if( _lc->viewing_angle() > 0.0 )
+                 {
+                    ra[ii] -= _lc->viewing_angle();
+                    numerics::ecs_to_cartesian( ra[ii], dec[ii], pos_x[ii], pos_y[ii], pos_z[ii] );
+                 }
+
+                 // Check angles.
+                 ASSERT( ra[ii] >= _lc->min_ra() && ra[ii] <= _lc->max_ra(), "Calculated RA exceeds limits: ", ra[ii] );
+                 ASSERT( dec[ii] >= _lc->min_dec() && dec[ii] <= _lc->max_dec(), "Calculated RA exceeds limits: ", dec[ii] );
 
                  // Calculate observed redshift.
                  if( dist[ii] > 0.0 )

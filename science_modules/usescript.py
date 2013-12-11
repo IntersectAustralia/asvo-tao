@@ -1,6 +1,6 @@
 # Grab a default version hash.
 import subprocess
-default_version = subprocess.check_output(['git', 'rev-parse', 'HEAD'])
+default_version = subprocess.check_output(['git', 'rev-parse', 'HEAD']).strip()
 
 # Define some arguments.
 args = (arguments()
@@ -58,9 +58,9 @@ cc_opts = (
 )
 cp_opts = (
     options(args.debug == True,
-            prefix='build/debug/include/tao') +
+            prefix='build/debug/include') +
     options(args.debug == False,
-            prefix='build/optimised/include/tao')
+            prefix='build/optimised/include')
 )
 tao_bin_opts = (
     options(args.preprocess == True, target='bin/tao_preprocess') +
@@ -84,14 +84,13 @@ gsl     = use('gsl')
 pq      = use('postgresql')
 pugixml = use('pugixml')
 cfitsio = use('cfitsio')
-libhpc = use('libhpc')
 cp_hdr  = files.feature('copy', cp_opts)
-hdr_inst = files.feature('copy', None, targets.contains('install'), prefix=args.prefix + '/include/tao')
+hdr_inst = files.feature('copy', None, targets.contains('install'), prefix=args.prefix + '/include')
 lib_inst = files.feature('copy', None, targets.contains('install'), prefix=args.prefix)
 run_tests = files.feature('run', None, targets.contains('check'))
 
 # Setup flows.
-pkgs  = libhpc + boost + mpi + hdf5 + gsl + soci + pq + pugixml + cfitsio
+pkgs  = boost + mpi + hdf5 + gsl + soci + pq + pugixml + cfitsio
 pkgs += (glut | identity) + (sqlite3 | identity)
 cc  = cc  + pkgs
 sl  = sl  + pkgs
@@ -100,7 +99,7 @@ tao_bin = tao_bin + pkgs
 tao_bin_inst = tao_bin_inst + pkgs
 
 # Copy all headers.
-hdrs = rule(r'src/.+\.hh$', cp_hdr & hdr_inst, target_strip_dirs=1)
+hdrs = rule(r'src/.+\.(?:hh|hpp|tcc)$', cp_hdr & hdr_inst, target_strip_dirs=1)
 tccs = rule(r'src/.+\.tcc$', cp_hdr & hdr_inst, target_strip_dirs=1)
 
 # Build all sources.
@@ -123,7 +122,8 @@ rule(tests, run_tests, sqlite3.have == True, target=dummies.always)
 rule(r'apps/(?:tao|application)\.cc$', tao_bin & tao_bin_inst, libraries=['tao'])
 # rule(r'apps/zen/.+\.cc$', bin, glut.have == True, target='bin/zen', libraries=['tao'])
 # rule(r'apps/rebin/.+\.cc$', bin, target='bin/rebin', libraries=['tao'])
-# rule(r'apps/ssp_restrict/.+\.cc$', bin, target='bin/ssp_restrict', libraries=['tao'])
-# rule(r'apps/analytic/.+\.cc$', bin, target='bin/analytic', libraries=['tao'])
+rule(r'apps/ssp_restrict/.+\.cc$', bin, target='bin/ssp_restrict', libraries=['tao'])
+rule(r'apps/analytic/.+\.cc$', bin, target='bin/analytic', libraries=['tao'])
 rule(r'apps/subcones/.+\.cc$', bin, target='bin/subcones', libraries=['tao'])
 rule(r'apps/dbcheck/.+\.cc$', bin, target='bin/dbcheck', libraries=['tao'])
+rule(r'apps/subfind_to_hdf5.cc$', bin, target='bin/subfind_to_hdf5', libraries=['tao'])
