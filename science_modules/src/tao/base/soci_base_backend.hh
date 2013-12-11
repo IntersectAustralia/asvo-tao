@@ -66,7 +66,7 @@ namespace tao {
             return size;
          }
 
-	 void
+	 simulation<real_type> const*
 	 load_simulation()
 	 {
 	    // Extract cosmology.
@@ -86,6 +86,7 @@ namespace tao {
 	    snapshot_redshifts( snap_zs );
 
 	    this->set_simulation( new simulation<real_type>( box_size, hubble, omega_m, omega_l, snap_zs ) );
+	    return this->_sim;
 	 }
 
          void
@@ -684,8 +685,6 @@ namespace tao {
 
                  // Compute RA and DEC.
                  numerics::cartesian_to_ecs( pos_x[ii], pos_y[ii], pos_z[ii], ra[ii], dec[ii] );
-                 ra[ii] = to_degrees( ra[ii] );
-                 dec[ii] = to_degrees( dec[ii] );
 
                  // If the lightcone is being generated with unique cones, we may need
                  // to offset the RA and DEC, then recalculate the positions.
@@ -698,6 +697,10 @@ namespace tao {
                  // Check angles.
                  ASSERT( ra[ii] >= _lc->min_ra() && ra[ii] <= _lc->max_ra(), "Calculated RA exceeds limits: ", ra[ii] );
                  ASSERT( dec[ii] >= _lc->min_dec() && dec[ii] <= _lc->max_dec(), "Calculated RA exceeds limits: ", dec[ii] );
+
+		 // Return the angles in degrees.
+                 ra[ii] = to_degrees( ra[ii] );
+                 dec[ii] = to_degrees( dec[ii] );
 
                  // Calculate observed redshift.
                  if( dist[ii] > 0.0 )

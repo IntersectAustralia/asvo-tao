@@ -28,7 +28,7 @@ namespace tao {
       }
 
       virtual
-      void
+      simulation<real_type> const*
       load_simulation() = 0;
 
       profile::timer&
