@@ -1,11 +1,21 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/format.hpp>
-#include <soci/soci.h>
-#include <soci/postgresql/soci-postgresql.h>
 #include <libhpc/logging/logging.hh>
 #include <libhpc/h5/h5.hh>
 #include <libhpc/containers/num.hh>
+#include <tao/base/multidb_backend.hh>
 #include "application.hh"
+
+template< class T >
+T
+perc_diff( T x,
+	   T y )
+{
+   T div = x;
+   if( div == 0.0 )
+      div = std::numeric_limits<T>::epsilon();
+   return fabs( y - x )/div;
+}
 
 namespace sage {
 
@@ -180,14 +190,9 @@ namespace tao {
 				char* argv[] )
 	 : hpc::mpi::application( argc, argv )
       {
-         LOG_PUSH( new hpc::logging::stdout( 0 ) );
-         EXCEPT( argc >= 7, "Insufficient arguments." );
-         _host = argv[1];
-         _port = boost::lexical_cast<uint16_t>( argv[2] );
-         _dbname = argv[3];
-         _user = argv[4];
-         _passwd = argv[5];
-         _sage_fn = argv[6];
+         LOG_PUSH( new hpc::mpi::logger( "dbcheck.log.", hpc::logging::info ) );
+         EXCEPT( argc >= 2, "Insufficient arguments." );
+         _sage_fn = argv[1];
       }
 
       void
@@ -196,64 +201,70 @@ namespace tao {
          // Declare some values.
          unsigned batch_size = 10000;
 
-         // Connect to the database.
-         soci::session sql(
-	    soci::postgresql,
-            boost::str(
-               boost::format( "host=%1% port=%2% dbname=%3% user=%4% password=%5%")
-               % _host % _port % _dbname % _user % _passwd
-               )
-            );
+	 // Connect the backend.
+	 tao::backends::multidb<real_type> be;
+	 {
+#include "credentials.hh"
+	    vector<backends::multidb<real_type>::server_type> servers( 2 );
+	    servers[0].dbname = "millennium_full_dist_v2";
+	    servers[0].user = username;
+	    servers[0].passwd = password;
+	    servers[0].host = string( "tao01.hpc.swin.edu.au" );
+	    servers[0].port = 3306;
+	    servers[1].dbname = "millennium_full_dist_v2";
+	    servers[1].user = username;
+	    servers[1].passwd = password;
+	    servers[1].host = string( "tao02.hpc.swin.edu.au" );
+	    servers[1].port = 3306;
+	    be.connect( servers.begin(), servers.end() );
+	 }
+
+	 // Setup simulation.
+	 be.load_simulation();
 
          // Get a list of all tables.
-         std::vector<std::string> tables;
-         {
-            unsigned size;
-            sql << "SELECT COUNT(*) FROM table_db_mapping WHERE nodename=:1",
-	       soci::use( _host ), soci::into( size );
-            tables.resize( size );
-            sql << "SELECT tablename FROM table_db_mapping WHERE nodename=:1",
-	       soci::use( _host ), soci::into( tables );
-         }
-         LOGILN( "Tables: ", tables );
+	 unsigned num_tables = be.num_tables();
 
-         // Open the HDF5 file.
-         hpc::h5::file file( _sage_fn, H5F_ACC_RDONLY );
-         hpc::h5::dataset gal_dset( file, "galaxies" );
+	 // Open the HDF5 file.
+	 hpc::h5::file file( _sage_fn, H5F_ACC_RDONLY );
+	 hpc::h5::dataset gal_dset( file, "galaxies" );
 	 hpc::h5::datatype mem_type, file_type;
 	 sage::make_hdf5_types( mem_type, file_type );
 
-         // Need storage for all values.
-         std::vector<unsigned long long> gids( batch_size );
-         std::vector<double> posx( batch_size ), posy( batch_size ), posz( batch_size ), mass( batch_size );
-         std::vector<sage::galaxy> gals( batch_size );
+	 // Need storage for all values.
+	 std::vector<unsigned long long> gids( batch_size );
+	 std::vector<double> posx( batch_size ), posy( batch_size ), posz( batch_size ), mass( batch_size );
+	 std::vector<sage::galaxy> gals( batch_size );
 
-         // Process each table.
-         for( auto const& tbl : tables )
-         {
-            LOGBLOCKI( "Processing table: ", tbl );
+	 // Begin iterating over tables.
+	 unsigned start = (rank()*num_tables)/this->size();
+	 unsigned finish = ((rank() + 1)*num_tables)/this->size();
+	 for( unsigned ii = start; ii < finish; ++ii )
+	 {
+	    auto tbl = be.table( ii );
+	    LOGBLOCKI( "Processing table: ", tbl.name() );
 
 	    // Repeat until we're out of galaxies in the table.
 	    unsigned long long offs = 0;
 	    do
 	    {
 	       // Process batches of galaxies at a time.
-	       LOGILN( "Querying database." );
+	       LOGDLN( "Querying database." );
 	       gids.resize( batch_size );
 	       posx.resize( batch_size );
 	       posy.resize( batch_size );
 	       posz.resize( batch_size );
 	       mass.resize( batch_size );
-	       std::string query = "SELECT globalindex, posx, posy, posz, stellarmass FROM " + tbl + " LIMIT :1 OFFSET :2";
-	       sql << query,
+	       std::string query = "SELECT globalindex, posx, posy, posz, stellarmass FROM " + tbl.name() + " LIMIT :1 OFFSET :2";
+	       be.session( tbl.name() ) << query,
 		  soci::use( batch_size ), soci::use( offs ),
 		  soci::into( gids ),
 		  soci::into( posx ), soci::into( posy ), soci::into( posz ),
 		  soci::into( mass );
-	       LOGILN( "Number of galaxies in batch: ", gids.size() );
+	       LOGDLN( "Number of galaxies in batch: ", gids.size() );
 
 	       // Load elements from the galaxy dataset.
-	       LOGILN( "Loading from HDF5." );
+	       LOGDLN( "Loading from HDF5." );
 	       hpc::h5::dataspace mem_space, file_space;
 	       mem_space.create( gids.size() );
 	       gal_dset.space( file_space );
@@ -263,22 +274,27 @@ namespace tao {
 	       // Compare each entry.
 	       for( unsigned ii = 0; ii < gids.size(); ++ii )
 	       {
-		  EXCEPT( hpc::num::approx<double>( posx[ii], gals[ii].pos[0], 1e-3 ),
+		  EXCEPT( perc_diff<double>( posx[ii], gals[ii].pos[0] ) < 1e-4,
 			  "X positions don't match: ", posx[ii], " != ", gals[ii].pos[0] );
-		  EXCEPT( hpc::num::approx<double>( posy[ii], gals[ii].pos[1], 1e-3 ),
+		  EXCEPT( perc_diff<double>( posy[ii], gals[ii].pos[1] ) < 1e-4,
 			  "Y positions don't match: ", posy[ii], " != ", gals[ii].pos[1] );
-		  EXCEPT( hpc::num::approx<double>( posz[ii], gals[ii].pos[2], 1e-3 ),
+		  EXCEPT( perc_diff<double>( posz[ii], gals[ii].pos[2] ) < 1e-4,
 			  "Z positions don't match: ", posz[ii], " != ", gals[ii].pos[2] );
 
-		  EXCEPT( hpc::num::approx<double>( mass[ii], gals[ii].stellar_mass, 1e-3 ),
+		  EXCEPT( perc_diff<double>( mass[ii], gals[ii].stellar_mass ) < 1e-4,
 			  "Stellar masses don't match: ", mass[ii], " != ", gals[ii].stellar_mass );
+
+		  EXCEPT( posx[ii] >= tbl.min()[0] && posx[ii] <= tbl.max()[0] &&
+			  posy[ii] >= tbl.min()[1] && posy[ii] <= tbl.max()[1] &&
+			  posz[ii] >= tbl.min()[2] && posz[ii] <= tbl.max()[2],
+			  "Galaxy outside table boundary." );
 	       }
 
 	       // Move to the next offset.
 	       offs += gids.size();
 	    }
 	    while( gids.size() == batch_size );
-         }
+	 }
       }
 
    }

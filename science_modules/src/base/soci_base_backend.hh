@@ -30,6 +30,7 @@ namespace tao {
 
          typedef T real_type;
          typedef rdb<real_type> super_type;
+	 typedef typename super_type::table_type table_type;
          typedef tao::query<real_type> query_type;
          typedef soci_table_iterator<real_type> table_iterator;
          typedef backends::tile_table_iterator<soci_base> tile_table_iterator;
@@ -65,6 +66,28 @@ namespace tao {
             return size;
          }
 
+	 void
+	 load_simulation()
+	 {
+	    // Extract cosmology.
+	    real_type box_size, hubble, omega_m, omega_l;
+	    session() << "SELECT metavalue FROM metadata WHERE metakey='boxsize'",
+	       soci::into( box_size );
+	    session() << "SELECT metavalue FROM metadata WHERE metakey='hubble'",
+	       soci::into( hubble );
+	    session() << "SELECT metavalue FROM metadata WHERE metakey='omega_m'",
+	       soci::into( omega_m );
+	    session() << "SELECT metavalue FROM metadata WHERE metakey='omega_l'",
+	       soci::into( omega_l );
+
+            // Extract the list of redshift snapshots from the backend to
+            // be set on the simulation.
+	    vector<real_type> snap_zs;
+	    snapshot_redshifts( snap_zs );
+
+	    this->set_simulation( new simulation<real_type>( box_size, hubble, omega_m, omega_l, snap_zs ) );
+	 }
+
          void
          snapshot_redshifts( vector<real_type>& snap_zs )
          {
@@ -86,6 +109,21 @@ namespace tao {
          {
             return _tbls.size();
          }
+
+	 std::vector<std::string> const&
+	 table_names() const
+	 {
+	    return _tbls;
+	 }
+
+	 table_type
+	 table( unsigned idx ) const
+	 {
+	    return table_type( _tbls[idx],
+			       _minx[idx], _miny[idx], _minz[idx],
+			       _maxx[idx], _maxy[idx], _maxz[idx],
+			       _tbl_sizes[idx] );
+	 }
 
          tile_galaxy_iterator
          galaxy_begin( query_type& query,
