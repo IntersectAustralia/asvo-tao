@@ -276,9 +276,7 @@ def stream_job_results(request, job):
     return response
 
 def createTAPjob(request):
-    parameters = make_parameters_xml(request)
-    
-    job = models.Job(user=request.user, parameters=parameters)
+    job = models.Job(user=request.user)
     
     errors = check_query(request.POST['QUERY'])
     if errors != '':
@@ -287,6 +285,7 @@ def createTAPjob(request):
     else:
         dataset = parse_dataset_name(request.POST['QUERY'])
         job.database = dataset['name']
+        job.parameters = make_parameters_xml(request)
         
     job.save()
     
