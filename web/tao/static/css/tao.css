@@ -8,7 +8,12 @@ body { padding-top: 0px; }
 
 .welcome_logos {
 	float: right;
-	width: 25%;
+	width: 15%;
+	margin-left: 1em;
+}
+
+.welcome_logos img {
+	padding-bottom: 20px;
 }
 
 a.ui-tabs-anchor:focus {

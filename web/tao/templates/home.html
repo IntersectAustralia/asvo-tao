@@ -9,8 +9,8 @@
 {% block content %}
     <div class="welcome_logos">
         <img src={% static "images/aal_logo_hi_res.jpg" %} />
-        <img src={% static "images/NeCTAR_logo.jpg" %} />
         <img src={% static "images/Swinburne.gif" %} />
+        <img src={% static "images/Intersect.gif" %} />
     </div>
     <div>
     <h1>Welcome!</h1>
@@ -22,10 +22,6 @@
 	<p>Results can be funnelled through higher-level modules to build custom
 	mock galaxy catalogues and images. TAO is accessible from anywhere you can
 	access the internet.</p>
-
-	<p>TAO is part of the All-Sky Virtual Obserbatory (ASVO) and is funded and
-	supported by Astronomy Australia Limited, NeCTAR, and the Swinburne
-	University of Technology.</p>
 
 	<ul>
 	<li><a href="{% url 'login' %}">Login</a> / 
@@ -39,6 +35,35 @@
 	development. Not everything is stable or finished. Please report any 
 	unexpected behaviour or bugs so we can fix them. And always check that the
 	data you download is the data you expected before using it.</p>
+
+	<p>The All-Sky Virtual Observatory is a partnership between
+	<a href="http://astronomyaustralia.org.au/">Astronomy Australia Ltd</a>,
+	<a href="http://www.swinburne.edu.au/">Swinburne University of Technology</a>,
+	<a href="http://www.anu.edu.au/">The Australian National University</a>,
+	the <a href="http://nci.org.au/">National Computational Infrastructure</a>,
+	and <a href="http://www.intersect.org.au/">Intersect Australia Ltd</a>.</p>
+
+	<p>FUNDING: The following organisations have assisted in funding the
+	All-Sky Virtual Observatory:</p>
+
+	<ul>
+	<li><a href="http://www.nectar.org.au">The NeCTAR project</a>. 
+	NeCTAR is an Australian Government project conducted as part of the Super
+	Science initiative and financed by the Education Investment Fund.</li>
+	<li>The <a href="http://www.innovation.gov.au/Pages/default.aspx">Department
+	of Industry, Innovation, Science, Research and Tertiary Education</a>
+	through AAL-managed Education Investment Fund (EIF) and National
+	Collaborative Research Infrastructure Strategy (NCRIS) grants.</li>
+	</ul>
+
+	<p style="text-align: center;">
+	<a href="http://www.innovation.gov.au/Pages/default.aspx">
+		<img style="margin: 0px;" title="DIISRTE" src="http://www.asvo.org.au/wp-content/uploads/2012/10/DIISRTE_inline.png" alt="" width="382" />
+	</a>
+	<a href="http://www.nectar.org.au">
+		<img src="http://www.asvo.org.au/wp-content/uploads/2012/09/NeCTARbox.jpg" alt="" width="200" height="150" />
+	</a>
+	</p>
 	</div>
 
 {% endblock %}
