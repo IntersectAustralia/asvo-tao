@@ -22,6 +22,10 @@ TAP_CAPABILITIES = ({'id':'tables', 'url':'tables', 'use':'full'},
                     {'id':'capabilities', 'url':'capabilities', 'use':'full'},
                     {'id':'availability', 'url':'availability', 'use':'full'})
 
+FORBIDDEN = ('delete', 'update', 'replace', 'drop', 'alter')
+
+NOT_SUPPORTED = ('group', 'join', 'min', 'max', 'avg', 'std', 'sum')
+
 TAP_WORKFLOW = 'sql-job'
 TAP_OUTPUT_PREFIX = 'tao.output'
 TAP_OUTPUT_EXT = 'xml'
@@ -51,5 +55,4 @@ class JOB_STATUS(dict):
             return dict.__getitem__(self,key)
             
 UWS_JOB_STATUS = JOB_STATUS(uws_statuses)
-
 

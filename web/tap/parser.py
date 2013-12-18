@@ -1,18 +1,26 @@
 import re
 from tao import models
+from tap.settings import FORBIDDEN, NOT_SUPPORTED
 
 def prepare_query(query):
     return query.replace('"', '').replace("'",'').replace("`",'').replace("\n",' ')
 
 def check_query(query):
-    errors = ''
+    for word in FORBIDDEN:
+        regex = re.compile('%s' % word, re.I|re.M)
+        found = regex.findall(query)
+        if found:
+            return "%s is forbidden." % word
+    for word in NOT_SUPPORTED:
+        regex = re.compile('%s' % word, re.I|re.M)
+        found = regex.findall(query)
+        if found:
+            return "%s is not supported." % word
     if not parse_dataset_name(query):
-        errors += "Dataset is not found.\n"
+        return "Dataset not found."
     if len(parse_fields(query)) == 0:
-        errors += "Nothing to select.\n"
-    if len(parse_joins(query)) > 0:
-        errors += "Joins are not supported.\n"
-    return errors
+        return "Nothing to select."
+    return ''
 
 def parse_dataset_name(sql):
     regex = re.compile('\s+FROM\s+(.*?)\s*?($|WHERE|ORDER|LIMIT|;)', re.I|re.M)
