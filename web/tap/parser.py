@@ -7,12 +7,12 @@ def prepare_query(query):
 
 def check_query(query):
     for word in FORBIDDEN:
-        regex = re.compile('\s+%s\s+' % word, re.I|re.M)
+        regex = re.compile('%s' % word, re.I|re.M)
         found = regex.findall(query)
         if found:
             return "%s is forbidden." % word
     for word in NOT_SUPPORTED:
-        regex = re.compile('\s+%s(\s+|\()' % word, re.I|re.M)
+        regex = re.compile('%s' % word, re.I|re.M)
         found = regex.findall(query)
         if found:
             return "%s is not supported." % word

@@ -22,9 +22,9 @@ TAP_CAPABILITIES = ({'id':'tables', 'url':'tables', 'use':'full'},
                     {'id':'capabilities', 'url':'capabilities', 'use':'full'},
                     {'id':'availability', 'url':'availability', 'use':'full'})
 
-FORBIDDEN = {'delete', 'update', 'replace', 'drop', 'alter'}
+FORBIDDEN = ('delete', 'update', 'replace', 'drop', 'alter')
 
-NOT_SUPPORTED = {'group', 'join', 'min', 'max', 'avg', 'std'}
+NOT_SUPPORTED = ('group', 'join', 'min', 'max', 'avg', 'std', 'sum')
 
 TAP_WORKFLOW = 'sql-job'
 TAP_OUTPUT_PREFIX = 'tao.output'
