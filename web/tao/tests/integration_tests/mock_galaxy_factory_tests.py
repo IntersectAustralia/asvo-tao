@@ -148,8 +148,8 @@ class MockGalaxyFactoryTest(LiveServerTest):
         for i in range(1, 4):
             op_left.send_keys(Keys.SHIFT + Keys.ARROW_DOWN)
             self.assert_output_property_info_shown(properties[i])
-        op_left.send_keys(Keys.META + Keys.ARROW_UP)
-        self.assert_output_property_info_shown(properties[3])
+        op_left.send_keys(Keys.ARROW_UP)
+        self.assert_output_property_info_shown(properties[2])
         # select multiple options by holding down command key and click different options
         op_left.send_keys(Keys.DOWN + Keys.META)
         self.click_by_css(self.lc_id('output_properties-left') + " option[value='"+str(properties[4].id)+"']")

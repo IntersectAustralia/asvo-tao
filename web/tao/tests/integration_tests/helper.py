@@ -209,7 +209,10 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
         
     def assert_element_text_equals(self, selector, expected_value):
         text = self.find_visible_element(selector).text.strip()
-        self.assertEqual(expected_value.strip(), text.strip())
+        if self.halt_on_exception and expected_value.strip() != text:
+            print("FAILURE: {0} != {1}".format(expected_value.strip(), text))
+            import pdb; pdb.set_trace()
+        self.assertEqual(expected_value.strip(), text)
 
     def assert_element_value_equals(self, selector, expected_value):
         text = self.find_visible_element(selector).get_attribute('value')
