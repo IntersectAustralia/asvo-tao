@@ -14,6 +14,7 @@ class PasswordResetTests(helper.LiveServerTest):
 
     def setUp(self):
         super(PasswordResetTests, self).setUp()
+        self.selenium.maximize_window()
         self.username = "username"
         self.first_name = "Bob"
         self.userpass = "password"

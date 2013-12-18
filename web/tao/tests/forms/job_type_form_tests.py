@@ -179,6 +179,9 @@ class JobTypeFormTests(LiveServerTest):
     def test_load_preset(self):
         self.click('presets_button')
         self.click('load_survey_preset_button')
+        # Check we're on the correct page
+        # This has the side effect of waiting for the browser to completely load
+        self.assert_on_page('mock_galaxy_factory')
         self.assert_page_has_content("Survey Preset 'Preset 0' loaded successfully.")
     
     def test_handles_malformed_xml(self):

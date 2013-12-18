@@ -2,6 +2,8 @@ from django.conf import settings
 from django.template import Context, loader
 from django.test.utils import override_settings
 
+from selenium.webdriver.common.keys import Keys
+
 from tao.forms import FormsGraph
 from tao.models import Job, BandPassFilter, WorkflowCommand
 from tao.tests import helper
@@ -178,25 +180,30 @@ class JobTest(LiveServerTest):
         self.login(self.username, self.password)
         self.visit('view_job', self.completed_job.id)
 
-        li_elements = self.selenium.find_elements_by_css_selector('#id_completed_jobs li')
         filenames_with_sizes = ['summary.txt']
         for file_name in self.file_names_to_contents:
             file_size = helper.get_file_size(self.dir_paths[0],file_name)
             file_size = re.sub('\s+', ' ', file_size)
             filenames_with_sizes.append(u"%s (%s)" % (file_name, file_size))
+        li_elements = self.selenium.find_elements_by_css_selector('#id_completed_jobs li')
         self.assertEqual(sorted(filenames_with_sizes), sorted([li.text for li in li_elements]))
 
         self.wait(1)
         # test files download
         for li in li_elements:
             li.find_element_by_css_selector('a').click()
-        self.wait(1)
+            self.wait(1.0)
+            # Close any download pop-up that firefox may use
+            li.send_keys(Keys.ESCAPE)
+            self.wait(1.0)
 
         for job_file in self.completed_job.files():
             download_path = os.path.join(self.DOWNLOAD_DIRECTORY, job_file.file_name.replace('/','_'))
-            self.assertTrue(os.path.exists(download_path))
+            self.assertTrue(os.path.exists(download_path),
+                            u"path {0} exists fails".format(download_path))
             with codecs.open(download_path, encoding='utf-8') as f:
                 self.assertEqual(self.file_names_to_contents[job_file.file_name], f.read())
+        return
 
     def test_summary_txt_displayed(self):
         self.login(self.username, self.password)
@@ -210,8 +217,10 @@ class JobTest(LiveServerTest):
         self.login(self.username, self.password)
         self.visit('view_job', self.completed_job.id)
 
-        self.wait(1)
+        # Side effect: wait for the page to load successfully
+        self.find_element_by_id('id_download_summary_txt')
         self.click('id_download_summary_txt')
+        self.wait(1)
         summary_txt_path = os.path.join(self.DOWNLOAD_DIRECTORY, 'summary.txt')
         with codecs.open(summary_txt_path, encoding='utf-8') as f:
             f_contents = f.read()
