@@ -55,6 +55,7 @@
                         {% endif %}
                         <li><a href="{% static 'docs/index.html' %}"{% if tab == 'mgf' %} target="_blank"{% endif %}>Documentation</a></li>
                         <li class="{% if tab == 'support' %}active{% endif %}"><a id="id-support" href="{%  url 'support_page' %}"{% if tab == 'mgf' %} target="_blank"{% endif %}>Support</a></li>
+                        <li><a href="{% url 'acknowledgements' %}"{% if tab == 'mgf' %} target="_blank"{% endif %}>Acknowledgements</a></li>
                     </ul>
                     <div class="dropdown navbar-text pull-right">
                         {% if user.is_authenticated %}
