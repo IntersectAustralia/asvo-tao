@@ -191,8 +191,11 @@ namespace tao {
 	 : hpc::mpi::application( argc, argv )
       {
          LOG_PUSH( new hpc::mpi::logger( "dbcheck.log.", hpc::logging::info ) );
-         EXCEPT( argc >= 2, "Insufficient arguments." );
+         EXCEPT( argc >= 3, "Insufficient arguments." );
          _sage_fn = argv[1];
+	 _db_name = argv[2];
+	 LOGILN( "Using SAGE filename: ", _sage_fn );
+	 LOGILN( "Using DB name: ", _db_name );
       }
 
       void
@@ -206,12 +209,12 @@ namespace tao {
 	 {
 #include "credentials.hh"
 	    vector<backends::multidb<real_type>::server_type> servers( 2 );
-	    servers[0].dbname = "millennium_full_dist_v2";
+	    servers[0].dbname = _db_name;
 	    servers[0].user = username;
 	    servers[0].passwd = password;
 	    servers[0].host = string( "tao01.hpc.swin.edu.au" );
 	    servers[0].port = 3306;
-	    servers[1].dbname = "millennium_full_dist_v2";
+	    servers[1].dbname = _db_name;
 	    servers[1].user = username;
 	    servers[1].passwd = password;
 	    servers[1].host = string( "tao02.hpc.swin.edu.au" );

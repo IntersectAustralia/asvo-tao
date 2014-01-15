@@ -21,6 +21,7 @@ namespace tao {
       protected:
 
          std::string _sage_fn;
+	 std::string _db_name;
       };
 
    }
