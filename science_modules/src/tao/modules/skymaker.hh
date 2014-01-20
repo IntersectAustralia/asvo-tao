@@ -191,12 +191,20 @@ namespace tao {
 		  okay = false;
 	    }
 
-	    // Check for any failures and write a report to output.
+	    // Check for any failures and write a report to output, but only
+            // if I'm the root process.
 	    if( !okay )
 	    {
-	       std::ofstream outf( (_output_dir/"image_errors.txt").string() );
-	       outf << "There were errors generating one or more images, ";
-	       outf << "some images may be missing or corrupted.\n";
+               if( mpi::comm::world.rank() == 0 )
+               {
+                  std::ofstream outf( (_output_dir/"image_errors.txt").string() );
+                  outf << "There were errors generating one or more images, \n";
+                  outf << "some images may be missing or corrupted. This can often \n";
+                  outf << "occur as a result of there being too many very bright \n";
+                  outf << "objects in the field of view of an image. Trying to \n";
+                  outf << "generate an image from an absolute magnitude can be \n";
+                  outf << "a direct cause.\n";
+               }
 	    }
 
             LOGILN( "Done.", setindent( -2 ) );

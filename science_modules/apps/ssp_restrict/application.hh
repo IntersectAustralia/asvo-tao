@@ -2,12 +2,14 @@
 #define tao_ssp_restrict_application_hh
 
 #include <boost/filesystem.hpp>
+#include <libhpc/main/application.hh>
 
 namespace tao {
    namespace ssp_restrict {
       namespace fs = boost::filesystem;
 
       class application
+         : public hpc::application
       {
       public:
 

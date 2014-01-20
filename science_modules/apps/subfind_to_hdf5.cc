@@ -7,7 +7,6 @@
 
 using namespace hpc;
 using namespace tao;
-namespace fs = boost::filesystem;
 
 unsigned long long max_chunk_size = 100000;
 
@@ -121,10 +120,10 @@ main( int argc,
    mpi::initialise( argc, argv );
    LOG_PUSH( new mpi::logger( "log." ) );
 
-   // Fire up some timers to track things.
-   profile::timer halo_read_timer, halo_write_timer, tree_write_timer, all_timer;
+   // // Fire up some timers to track things.
+   // profile::timer halo_read_timer, halo_write_timer, tree_write_timer, all_timer;
 
-   all_timer.start();
+   // all_timer.start();
 
    {
       shared_ptr<mpi::comm> comm_ptr = new mpi::comm( mpi::comm::world );
@@ -216,9 +215,9 @@ main( int argc,
 
          // Read tree sizes.
          vector<unsigned> num_tree_halos( num_trees );
-	 halo_read_timer.start();
+	 // halo_read_timer.start();
          file.read( (char*)num_tree_halos.data(), sizeof(unsigned)*num_trees );
-	 halo_read_timer.stop();
+	 // halo_read_timer.stop();
          EXCEPT( file );
 
 	 // Prepare the tree range.
@@ -246,10 +245,10 @@ main( int argc,
 	    while( first_tree != last_tree )
 	    {
 	       tree_file_space.select_one( tree_displ++ );
-	       tree_write_timer.start();
+	       // tree_write_timer.start();
 	       tree_count_dset.write( &num_tree_halos[first_tree], h5::datatype::native_int, tree_mem_space, tree_file_space );
 	       tree_displ_dset.write( &cur_halo_displ, h5::datatype::native_llong, tree_mem_space, tree_file_space );
-	       tree_write_timer.stop();
+	       // tree_write_timer.stop();
 
 	       // Advance tree iterator.
 	       cur_halo_displ += num_tree_halos[first_tree];
@@ -258,9 +257,9 @@ main( int argc,
 	    }
 
 	    // Load the current tree range.
-	    halo_read_timer.start();
+	    // halo_read_timer.start();
             file.read( (char*)halos.data(), halos.size()*sizeof(subfind::halo) );
-	    halo_read_timer.stop();
+	    // halo_read_timer.stop();
             EXCEPT( file );
 
             // Write out to HDF5.
@@ -270,9 +269,9 @@ main( int argc,
                halo_mem_space.create( halos.size() );
                ASSERT( halo_displ + halos.size() <= tot_halos );
                halo_file_space.select_range( halo_displ, halo_displ + halos.size() );
-	       halo_write_timer.start();
+	       // halo_write_timer.start();
                halo_dset.write( halos.data(), mem_type, halo_mem_space, halo_file_space );
-	       halo_write_timer.stop();
+	       // halo_write_timer.stop();
             }
 
 	    // Accumulate displacement and trees written.
@@ -280,23 +279,23 @@ main( int argc,
 	    halos_written += chunk_size;
 
 	    // Write out some timings.
-	    all_timer.stop();
+	    // all_timer.stop();
 	    // LOGILN( "Time spent in writing trees: ", tree_write_timer.total() );
 	    // LOGILN( "Time spent in writing halos: ", halo_write_timer.total() );
 	    // LOGILN( "Total time spent: ", all_timer.total() );
 	    // LOGILN( "Tree write bandwidth: ", trees_written*sizeof(subfind::halo)/all_timer.total(), " b/s" );
-	    LOGILN( "Halo read bandwidth: ", halos_written*sizeof(subfind::halo)/halo_read_timer.total(), " b/s" );
-	    LOGILN( "Halo read rate: ", halo_read_timer.total()/halos_written, " s/halo" );
-	    LOGILN( "Halo write bandwidth: ", halos_written*sizeof(subfind::halo)/halo_write_timer.total(), " b/s" );
-	    LOGILN( "Halo write rate: ", halo_write_timer.total()/halos_written, " s/halo" );
-	    all_timer.start();
+	    // LOGILN( "Halo read bandwidth: ", halos_written*sizeof(subfind::halo)/halo_read_timer.total(), " b/s" );
+	    // LOGILN( "Halo read rate: ", halo_read_timer.total()/halos_written, " s/halo" );
+	    // LOGILN( "Halo write bandwidth: ", halos_written*sizeof(subfind::halo)/halo_write_timer.total(), " b/s" );
+	    // LOGILN( "Halo write rate: ", halo_write_timer.total()/halos_written, " s/halo" );
+	    // all_timer.start();
 
             LOGI( setindent( -2 ) );
          }
       }
    }
 
-   all_timer.stop();
+   // all_timer.stop();
    mpi::finalise();
    return EXIT_SUCCESS;
 }

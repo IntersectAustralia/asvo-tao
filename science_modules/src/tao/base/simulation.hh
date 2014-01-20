@@ -27,6 +27,17 @@ namespace tao {
                   real_type hubble,
                   real_type omega_m,
                   real_type omega_l,
+		  vector<real_type> const& snap_zs )
+	 : _box_size( box_size ),
+	   _zs( snap_zs )
+      {
+         set_cosmology( hubble, omega_m, omega_l );
+      }
+
+      simulation( real_type box_size,
+                  real_type hubble,
+                  real_type omega_m,
+                  real_type omega_l,
                   unsigned num_snaps,
                   ... )
          : _box_size( box_size ),

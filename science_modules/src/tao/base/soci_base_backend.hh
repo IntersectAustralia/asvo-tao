@@ -30,6 +30,7 @@ namespace tao {
 
          typedef T real_type;
          typedef rdb<real_type> super_type;
+	 typedef typename super_type::table_type table_type;
          typedef tao::query<real_type> query_type;
          typedef soci_table_iterator<real_type> table_iterator;
          typedef backends::tile_table_iterator<soci_base> tile_table_iterator;
@@ -65,6 +66,29 @@ namespace tao {
             return size;
          }
 
+	 simulation<real_type> const*
+	 load_simulation()
+	 {
+	    // Extract cosmology.
+	    real_type box_size, hubble, omega_m, omega_l;
+	    session() << "SELECT metavalue FROM metadata WHERE metakey='boxsize'",
+	       soci::into( box_size );
+	    session() << "SELECT metavalue FROM metadata WHERE metakey='hubble'",
+	       soci::into( hubble );
+	    session() << "SELECT metavalue FROM metadata WHERE metakey='omega_m'",
+	       soci::into( omega_m );
+	    session() << "SELECT metavalue FROM metadata WHERE metakey='omega_l'",
+	       soci::into( omega_l );
+
+            // Extract the list of redshift snapshots from the backend to
+            // be set on the simulation.
+	    vector<real_type> snap_zs;
+	    snapshot_redshifts( snap_zs );
+
+	    this->set_simulation( new simulation<real_type>( box_size, hubble, omega_m, omega_l, snap_zs ) );
+	    return this->_sim;
+	 }
+
          void
          snapshot_redshifts( vector<real_type>& snap_zs )
          {
@@ -86,6 +110,21 @@ namespace tao {
          {
             return _tbls.size();
          }
+
+	 std::vector<std::string> const&
+	 table_names() const
+	 {
+	    return _tbls;
+	 }
+
+	 table_type
+	 table( unsigned idx ) const
+	 {
+	    return table_type( _tbls[idx],
+			       _minx[idx], _miny[idx], _minz[idx],
+			       _maxx[idx], _maxy[idx], _maxz[idx],
+			       _tbl_sizes[idx] );
+	 }
 
          tile_galaxy_iterator
          galaxy_begin( query_type& query,
@@ -646,10 +685,22 @@ namespace tao {
 
                  // Compute RA and DEC.
                  numerics::cartesian_to_ecs( pos_x[ii], pos_y[ii], pos_z[ii], ra[ii], dec[ii] );
+
+                 // If the lightcone is being generated with unique cones, we may need
+                 // to offset the RA and DEC, then recalculate the positions.
+                 if( _lc->viewing_angle() > 0.0 )
+                 {
+                    ra[ii] -= _lc->viewing_angle();
+                    numerics::ecs_to_cartesian( ra[ii], dec[ii], pos_x[ii], pos_y[ii], pos_z[ii] );
+                 }
+
+                 // Check angles.
+                 ASSERT( ra[ii] >= _lc->min_ra() && ra[ii] <= _lc->max_ra(), "Calculated RA exceeds limits: ", ra[ii] );
+                 ASSERT( dec[ii] >= _lc->min_dec() && dec[ii] <= _lc->max_dec(), "Calculated RA exceeds limits: ", dec[ii] );
+
+		 // Return the angles in degrees.
                  ra[ii] = to_degrees( ra[ii] );
                  dec[ii] = to_degrees( dec[ii] );
-                 ASSERT( ra[ii] >= 0.0 && ra[ii] <= 90.0, "Calculated RA exceeds limits: ", ra[ii] );
-                 ASSERT( dec[ii] >= 0.0 && dec[ii] <= 90.0, "Calculated RA exceeds limits: ", dec[ii] );
 
                  // Calculate observed redshift.
                  if( dist[ii] > 0.0 )

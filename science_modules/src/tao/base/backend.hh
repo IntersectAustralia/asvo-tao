@@ -1,6 +1,7 @@
 #ifndef tao_base_backend_hh
 #define tao_base_backend_hh
 
+#include <libhpc/profile/timer.hh>
 #include "simulation.hh"
 
 namespace tao {
@@ -25,6 +26,10 @@ namespace tao {
       {
          _sim = sim;
       }
+
+      virtual
+      simulation<real_type> const*
+      load_simulation() = 0;
 
       profile::timer&
       timer()

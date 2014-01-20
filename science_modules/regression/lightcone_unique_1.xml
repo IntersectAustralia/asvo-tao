@@ -4,20 +4,36 @@
 
     <light-cone id="light-cone">
       <geometry>light-cone</geometry>
-      <box-repetition>random</box-repetition>
+      <box-repetition>unique</box-repetition>
       <rng-seed>0</rng-seed>
       <redshift-min>0.01</redshift-min>
       <redshift-max>0.06</redshift-max>
       <ra-min>0</ra-min>
-      <ra-max>10</ra-max>
+      <ra-max>5</ra-max>
       <dec-min>0</dec-min>
-      <dec-max>10</dec-max>
+      <dec-max>5</dec-max>
       <output-fields>
-        <item>pos_x</item>
-        <item>pos_y</item>
-        <item>pos_z</item>
+        <item>globalindex</item>
+	<item>posx</item>
+	<item>posy</item>
+	<item>posz</item>
       </output-fields>
     </light-cone>
+
+    <csv id="csv">
+      <filename>result.1.csv</filename>
+      <fields>
+	<item>globalindex</item>
+	<item>posx</item>
+	<item>posy</item>
+	<item>posz</item>
+        <item>ra</item>
+        <item>dec</item>
+      </fields>
+      <parents>
+        <item>light-cone</item>
+      </parents>
+    </csv>
 
     <record-filter>
       <filter>
@@ -29,7 +45,7 @@
 
   </workflow>
 
-  <subjobindex>0</subjobindex>
+  <subjobindex>1</subjobindex>
   <logdir>log</logdir>
   <outputdir>output</outputdir>
   <database>millennium_mini_balanced_v3</database>

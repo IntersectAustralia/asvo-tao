@@ -16,6 +16,7 @@ namespace tao {
       double const skymaker_image::default_exposure_time = 300.0;
 
       skymaker_image::skymaker_image()
+         : _okay( true )
       {
       }
 
@@ -35,6 +36,7 @@ namespace tao {
                                       unsigned height,
                                       double back_mag,
                                       double exposure_time )
+         : _okay( true )
       {
          setup( index, sub_cone, format, mag_field, min_mag, max_mag, z_min, z_max,
                 origin_ra, origin_dec, fov_ra, fov_dec, width, height,
@@ -86,6 +88,11 @@ namespace tao {
          _scale_x = 0.5*_width/tan( 0.5*_fov_ra );
          _scale_y = 0.5*_height/tan( 0.5*_fov_dec );
 
+	 LOGILN( "Magnitude field: ", _mag_field );
+	 LOGILN( "Minimum magnitude: ", (_min_mag ? boost::lexical_cast<std::string>( *_min_mag ) : "none") );
+	 LOGILN( "Maximum magnitude: ", (_max_mag ? boost::lexical_cast<std::string>( *_max_mag ) : "none") );
+	 LOGILN( "Minimum redshift: ", _z_min );
+	 LOGILN( "Maximum redshift: ", _z_max );
          LOGILN( "Magnitude field: ", _mag_field );
          LOGILN( "Background magnitude: ", _back_mag );
          LOGILN( "Exposure time: ", _exp_time );
@@ -107,13 +114,8 @@ namespace tao {
          {
             // Convert the cartesian coordiantes to right-ascension and
             // declination.
-            real_type ra, dec;
-            numerics::cartesian_to_ecs( bat.scalar<real_type>( "posx" )[idx],
-                                        bat.scalar<real_type>( "posy" )[idx],
-                                        bat.scalar<real_type>( "posz" )[idx],
-                                        ra,
-                                        dec );
-            LOGDLN( "Converted to (", ra, ", ", dec, ")" );
+	    real_type ra = to_radians( bat.scalar<real_type>( "ra" )[idx] );
+            real_type dec = to_radians( bat.scalar<real_type>( "dec" )[idx] );
 
             // Filter out any RA or DEC outside our FoV.
             if( fabs( ra - _origin_ra ) <= 0.5*_fov_ra && fabs( dec - _origin_dec ) <= 0.5*_fov_dec )
@@ -216,12 +218,12 @@ namespace tao {
 	    }
 	    else
 	    {
-	       LOGILN( "There was an error running Skymaker on this system. Please \n"
-		       "make sure the 'sky' binary is available in your path." );
+	       LOGILN( "There was an error running Skymaker." );
 	       _okay = false;
 	    }
          }
          mpi::comm::world.barrier();
+         mpi::comm::world.bcast( _okay, 0 );
 
          // Delete the files we used.
          if( !keep_files )

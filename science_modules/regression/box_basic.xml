@@ -7,11 +7,12 @@
       <box-repetition>unique</box-repetition>
       <rng-seed>0</rng-seed>
       <query-box-size>10</query-box-size>
-      <redshift>2.0700273232</redshift>
+      <redshift>0</redshift>
       <output-fields>
         <item>pos_x</item>
         <item>pos_y</item>
         <item>pos_z</item>
+        <item>stellarmass</item>
       </output-fields>
 
       <record-filter>
@@ -29,6 +30,7 @@
         <item>posx</item>
         <item>posy</item>
         <item>posz</item>
+        <item>stellarmass</item>
       </fields>
       <parents>
         <item>light-cone</item>
@@ -40,5 +42,5 @@
   <subjobindex>0</subjobindex>
   <logdir>log</logdir>
   <outputdir>output</outputdir>
-  <database>millennium_mini_hdf5_dist</database>
+  <database>millennium_mini_balanced_v3</database>
 </tao>
