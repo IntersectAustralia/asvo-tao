@@ -472,95 +472,102 @@ namespace tao {
 	 // Iterate over all objects.
 	 for( unsigned ii = 0; ii < _sfrs.size(); ++ii )
 	 {
-	    // Cache some stuff.
+	    // Don't try to calculate anything if the SFR is zero. I do
+	    // this not only for efficiency but also because some simulations
+	    // don't always supply a snapshot - 1. Also, don't try this
+	    // at snapshot 0 for the same reason.
 	    real_type sfr = _sfrs[ii];
 	    real_type bulge_sfr = _bulge_sfrs[ii];
 	    int snap = _snaps[ii];
-	    real_type metal = _metals[ii];
-	    real_type cold_gas = _cold_gas[ii];
-
-	    // Calculate the age of material created at the beginning of
-	    // this timestep and at the end. Be careful! This age I speak
-	    // of is how old the material will be when we get to the
-	    // time of the final galaxy.
-	    ASSERT( snap > 0, "Must have a previous snapshot." );
-	    LOGDLN( "Oldest age in tree: ", oldest_age );
-	    LOGDLN( "Age of current galaxy: ", (*_snap_ages)[snap] );
-	    LOGDLN( "Age of previous snapshot: ", (*_snap_ages)[snap - 1] );
-	    real_type first_age = oldest_age - (*_snap_ages)[snap - 1];
-	    real_type last_age = oldest_age - (*_snap_ages)[snap];
-	    real_type age_size = first_age - last_age;
-	    LOGDLN( "Age range: [", first_age, "-", last_age, ")" );
-	    LOGDLN( "Age size: ", age_size );
-
-	    // Use the star formation rates to compute the new mass
-	    // produced. Bear in mind the rates we expect from the
-	    // database will be solar masses per year.
-	    real_type new_mass = sfr*age_size*1e9;
-	    real_type new_bulge_mass = bulge_sfr*age_size*1e9;
-	    LOGDLN( "New mass: ", new_mass );
-	    LOGDLN( "New bulge mass: ", new_bulge_mass );
-	    ASSERT( new_mass >= 0.0 && new_bulge_mass >= 0.0, "Mass has been lost during rebinning." );
-	    ASSERT( new_mass == new_mass, "Have NaN for new total mass during rebinning." );
-	    ASSERT( new_bulge_mass == new_bulge_mass, "Have NaN for new bulge mass during rebinning." );
-
-	    // Add the new mass to the appropriate bins. Find the first bin
-	    // that has overlap with this age range.
-	    unsigned first_bin = _bin_ages->find_bin( last_age );
-	    unsigned last_bin = _bin_ages->find_bin( first_age ) + 1;
-	    while( first_bin != last_bin )
+	    if( snap > 0 && (sfr > 0.0 || bulge_sfr > 0.0) )
 	    {
-	       // Find the fraction we will use to contribute to this
-	       // bin.
-	       real_type upp;
-	       if( first_bin < last_bin - 1 )
-		  upp = std::min( _bin_ages->dual( first_bin ), first_age );
-	       else
-		  upp = first_age;
-	       real_type frac = (upp - last_age)/age_size;
-	       LOGDLN( "Have sub-range: [", last_age, "-", upp, ")" );
-	       LOGDLN( "Updating bin ", first_bin, " with fraction of ", frac, "." );
+	       // Cache some stuff.
+	       real_type metal = _metals[ii];
+	       real_type cold_gas = _cold_gas[ii];
 
-	       // Cache the current bin mass for later.
-	       real_type cur_bin_mass = age_masses[first_bin];
+	       // Calculate the age of material created at the beginning of
+	       // this timestep and at the end. Be careful! This age I speak
+	       // of is how old the material will be when we get to the
+	       // time of the final galaxy.
+	       ASSERT( snap > 0, "Must have a previous snapshot." );
+	       LOGDLN( "Oldest age in tree: ", oldest_age );
+	       LOGDLN( "Age of current galaxy: ", (*_snap_ages)[snap] );
+	       LOGDLN( "Age of previous snapshot: ", (*_snap_ages)[snap - 1] );
+	       real_type first_age = oldest_age - (*_snap_ages)[snap - 1];
+	       real_type last_age = oldest_age - (*_snap_ages)[snap];
+	       real_type age_size = first_age - last_age;
+	       LOGDLN( "Age range: [", first_age, "-", last_age, ")" );
+	       LOGDLN( "Age size: ", age_size );
 
-	       // Update the mass bins.
-	       LOGD( "Mass from ", age_masses[first_bin], " to " );
-	       age_masses[first_bin] += frac*new_mass;
-	       LOGDLN( age_masses[first_bin], "." );
-	       LOGD( "Bulge mass from ", bulge_age_masses[first_bin], " to " );
-	       bulge_age_masses[first_bin] += frac*new_bulge_mass;
-	       LOGDLN( bulge_age_masses[first_bin], "." );
-	       ASSERT( age_masses[first_bin] == age_masses[first_bin],
-		       "Have NaN for rebinned total masses for bin: ", first_bin );
-	       ASSERT( bulge_age_masses[first_bin] == bulge_age_masses[first_bin],
-		       "Have NaN for rebinned bulge masses for bin: ", first_bin );
-	       ASSERT( age_masses[first_bin] >= 0.0,
-		       "Produced negative value for rebinned total masses for bin: ", first_bin );
-	       ASSERT( bulge_age_masses[first_bin] >= 0.0,
-		       "Produced negative value for rebinned bulge masses for bin: ", first_bin );
+	       // Use the star formation rates to compute the new mass
+	       // produced. Bear in mind the rates we expect from the
+	       // database will be solar masses per year.
+	       real_type new_mass = sfr*age_size*1e9;
+	       real_type new_bulge_mass = bulge_sfr*age_size*1e9;
+	       LOGDLN( "New mass: ", new_mass );
+	       LOGDLN( "New bulge mass: ", new_bulge_mass );
+	       ASSERT( new_mass >= 0.0 && new_bulge_mass >= 0.0, "Mass has been lost during rebinning." );
+	       ASSERT( new_mass == new_mass, "Have NaN for new total mass during rebinning." );
+	       ASSERT( new_bulge_mass == new_bulge_mass, "Have NaN for new bulge mass during rebinning." );
 
-	       // Update the metal bins. This is impossible when no masses
-	       // have been added to the bin at all.
-	       if( age_masses[first_bin] > 0.0 && cold_gas > 0.0 )
+	       // Add the new mass to the appropriate bins. Find the first bin
+	       // that has overlap with this age range.
+	       unsigned first_bin = _bin_ages->find_bin( last_age );
+	       unsigned last_bin = _bin_ages->find_bin( first_age ) + 1;
+	       while( first_bin != last_bin )
 	       {
-		  LOGD( "Metals from ", age_metals[first_bin], " to " );
-		  // ASSERT( cold_gas > 0.0, "Cannot have zero cold gas for metallicity rebinning." );
-		  age_metals[first_bin] =
-		     (cur_bin_mass*age_metals[first_bin] +
-		      frac*new_mass*(metal/cold_gas))/
-		     age_masses[first_bin];
-		  LOGDLN( age_metals[first_bin], "." );
-		  ASSERT( age_metals[first_bin] == age_metals[first_bin],
-			  "Have NaN for rebinned metallicities for bin: ", first_bin );
-		  ASSERT( age_metals[first_bin] >= 0.0,
-			  "Produced negative value for rebinned metallicities for bin: ", first_bin );
-	       }
+		  // Find the fraction we will use to contribute to this
+		  // bin.
+		  real_type upp;
+		  if( first_bin < last_bin - 1 )
+		     upp = std::min( _bin_ages->dual( first_bin ), first_age );
+		  else
+		     upp = first_age;
+		  real_type frac = (upp - last_age)/age_size;
+		  LOGDLN( "Have sub-range: [", last_age, "-", upp, ")" );
+		  LOGDLN( "Updating bin ", first_bin, " with fraction of ", frac, "." );
 
-	       // Move to the next bin.
-	       if( first_bin < _bin_ages->size() - 1 )
-		  last_age = _bin_ages->dual( first_bin );
-	       ++first_bin;
+		  // Cache the current bin mass for later.
+		  real_type cur_bin_mass = age_masses[first_bin];
+
+		  // Update the mass bins.
+		  LOGD( "Mass from ", age_masses[first_bin], " to " );
+		  age_masses[first_bin] += frac*new_mass;
+		  LOGDLN( age_masses[first_bin], "." );
+		  LOGD( "Bulge mass from ", bulge_age_masses[first_bin], " to " );
+		  bulge_age_masses[first_bin] += frac*new_bulge_mass;
+		  LOGDLN( bulge_age_masses[first_bin], "." );
+		  ASSERT( age_masses[first_bin] == age_masses[first_bin],
+			  "Have NaN for rebinned total masses for bin: ", first_bin );
+		  ASSERT( bulge_age_masses[first_bin] == bulge_age_masses[first_bin],
+			  "Have NaN for rebinned bulge masses for bin: ", first_bin );
+		  ASSERT( age_masses[first_bin] >= 0.0,
+			  "Produced negative value for rebinned total masses for bin: ", first_bin );
+		  ASSERT( bulge_age_masses[first_bin] >= 0.0,
+			  "Produced negative value for rebinned bulge masses for bin: ", first_bin );
+
+		  // Update the metal bins. This is impossible when no masses
+		  // have been added to the bin at all.
+		  if( age_masses[first_bin] > 0.0 && cold_gas > 0.0 )
+		  {
+		     LOGD( "Metals from ", age_metals[first_bin], " to " );
+		     // ASSERT( cold_gas > 0.0, "Cannot have zero cold gas for metallicity rebinning." );
+		     age_metals[first_bin] =
+			(cur_bin_mass*age_metals[first_bin] +
+			 frac*new_mass*(metal/cold_gas))/
+			age_masses[first_bin];
+		     LOGDLN( age_metals[first_bin], "." );
+		     ASSERT( age_metals[first_bin] == age_metals[first_bin],
+			     "Have NaN for rebinned metallicities for bin: ", first_bin );
+		     ASSERT( age_metals[first_bin] >= 0.0,
+			     "Produced negative value for rebinned metallicities for bin: ", first_bin );
+		  }
+
+		  // Move to the next bin.
+		  if( first_bin < _bin_ages->size() - 1 )
+		     last_age = _bin_ages->dual( first_bin );
+		  ++first_bin;
+	       }
 	    }
 	 }
       }
