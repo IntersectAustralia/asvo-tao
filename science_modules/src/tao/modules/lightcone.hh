@@ -218,6 +218,8 @@ namespace tao {
             {
                this->_complete = true;
             }
+#else
+            this->_complete = true;
 #endif
          }
 
