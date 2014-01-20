@@ -914,19 +914,20 @@ calc_mags( void* data )
             std::fill( mags.begin(), mags.end(), 100.0 );
             for( unsigned ii = 0; ii < bat->size(); ++ii )
             {
+               // TODO: Get this back.
                // Rebin star-formation history.
-               cur_sfh.load_tree_data( sfh_backend.session(), bat->attribute<string>( "table" ), bat->scalar<long long>( "global_tree_id" )[ii] );
+               // cur_sfh.load_tree_data( sfh_backend.session(), bat->attribute<string>( "table" ), bat->scalar<long long>( "global_tree_id" )[ii] );
                std::fill( age_masses.begin(), age_masses.end(), 0 );
                std::fill( age_bulge_masses.begin(), age_bulge_masses.end(), 0 );
                std::fill( age_metals.begin(), age_metals.end(), 0 );
-               cur_sfh.rebin<real_type>( sfh_backend.session(), bat->scalar<int>( "local_galaxy_id" )[ii], age_masses, age_bulge_masses, age_metals );
+               // cur_sfh.rebin<real_type>( sfh_backend.session(), bat->scalar<int>( "local_galaxy_id" )[ii], age_masses, age_bulge_masses, age_metals );
 
                // Sum the spectrum.
                ssp.sum( age_masses.begin(), age_metals.begin(), sed.spectrum().values().begin() );
                sed.spectrum().update(); // rebuild spline
 
                // Calculate the magnitude of this object.
-               mags[ii] = apparent_magnitude( sed, vbp, calc_area( bat->scalar<real_type>( "redshift" )[ii] ) );
+               // mags[ii] = apparent_magnitude( sed, vbp, calc_area( bat->scalar<real_type>( "redshift" )[ii] ) );
             }
             glutPostRedisplay();
          }
@@ -1314,7 +1315,7 @@ set_origin( const re::match& match )
    auto z_val = to_double( match[3] );
    if( x_val && y_val && z_val )
    {
-      lc->set_origin( array<real_type,3>{ *x_val, *y_val, *z_val } );
+      lc->set_origin( std::array<real_type,3>{ *x_val, *y_val, *z_val } );
       calc_bounds();
       reshape( win_width, win_height );
       update_tao();
@@ -1347,11 +1348,11 @@ load_sfh( const re::match& match )
       }
 
       // Load SFH.
-      cur_sfh.load_tree_data( backend.session( cur_table ), cur_table, cur_tree );
+      // cur_sfh.load_tree_data( backend.session( cur_table ), cur_table, cur_tree );
       std::fill( age_masses.begin(), age_masses.end(), 0 );
       std::fill( age_bulge_masses.begin(), age_bulge_masses.end(), 0 );
       std::fill( age_metals.begin(), age_metals.end(), 0 );
-      cur_sfh.rebin<real_type>( backend.session( cur_table ), cur_gal_id, age_masses, age_bulge_masses, age_metals );
+      // cur_sfh.rebin<real_type>( backend.session( cur_table ), cur_gal_id, age_masses, age_bulge_masses, age_metals );
 
       // Also transfer the stellar mass for each tree.
       stellar_mass.resize( cur_sfh.size() );
