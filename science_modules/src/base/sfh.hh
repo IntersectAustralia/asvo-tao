@@ -278,12 +278,13 @@ namespace tao {
          return _sfrs.size();
       }
 
-      // std::pair< multimap<unsigned,unsigned>::const_iterator,
-      //            multimap<unsigned,unsigned>::const_iterator >
-      // parents( unsigned gal_id ) const
-      // {
-      // 	 return _parents.equal_range( gal_id );
-      // }
+      // TODO: Get parents back.
+      std::pair< multimap<unsigned,unsigned>::const_iterator,
+                 multimap<unsigned,unsigned>::const_iterator >
+      parents( unsigned gal_id ) const
+      {
+      	 // return _parents.equal_range( gal_id );
+      }
 
       unsigned
       snapshot( unsigned gal_id ) const
