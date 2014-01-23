@@ -177,7 +177,7 @@ def run_jobs(gen_cmd, repetitions):
     avg_denom = Decimal(0.0)
     for ii in range(repetitions):
         subprocess.check_call(shlex.split(gen_cmd))
-        stdout = subprocess.check_output('../../../build/debug/bin/analytic')
+        stdout = subprocess.check_output('../../build/debug/bin/analytic')
         enum, denom = parse(stdout)
         avg_enum += enum
         avg_denom += denom

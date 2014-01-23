@@ -163,7 +163,7 @@ namespace tao {
 
          lightcone_galaxy_iterator
          galaxy_begin( query_type& query,
-                       const lightcone<real_type>& lc,
+                       const lightcone& lc,
                        tao::batch<real_type>* bat = 0,
                        filter const* filt = 0 )
          {
@@ -172,7 +172,7 @@ namespace tao {
 
          lightcone_galaxy_iterator
          galaxy_end( query_type& query,
-                     const lightcone<real_type>& lc )
+                     const lightcone& lc )
          {
             return lightcone_galaxy_iterator();
          }
@@ -407,7 +407,7 @@ namespace tao {
                                const string& query_str,
                                const table_iterator& table_start,
                                const table_iterator& table_finish,
-                               const lightcone<real_type>* lc = 0,
+                               const lightcone* lc = 0,
                                tao::batch<real_type>* bat = 0 )
             : _be( &be ),
               _query( &query ),
@@ -718,7 +718,7 @@ namespace tao {
       protected:
 
          soci_base<real_type>* _be;
-         const lightcone<real_type>* _lc;
+         const lightcone* _lc;
          query_type* _query;
          string _query_str;
          table_iterator _table_pos, _table_end;

@@ -405,7 +405,7 @@ draw_lightcone( const lightcone<real_type>& lc,
                 float alpha )
 {
    // Get the distance bins from the lightcone.
-   auto bins = lc.snapshot_bins();
+   auto bins = lc.distance_bins();
 
    // Each bin will be given a different color.
    for( unsigned ii = 0; ii < bins.size() - 1; ++ii )

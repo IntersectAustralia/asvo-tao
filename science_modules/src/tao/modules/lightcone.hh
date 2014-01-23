@@ -270,7 +270,7 @@ namespace tao {
             return !_unique;
          }
 
-         const tao::lightcone<real_type>&
+         const tao::lightcone&
          base_lightcone() const
          {
             return _lc;
@@ -467,7 +467,7 @@ namespace tao {
          simulation<real_type> const* _sim;
          query<real_type> _qry;
          filter _filt;
-         tao::lightcone<real_type> _lc;
+         tao::lightcone _lc;
          box<real_type> _box;
          bool _my_be;
          backend_type* _be;

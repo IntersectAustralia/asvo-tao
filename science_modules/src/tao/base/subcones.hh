@@ -9,14 +9,14 @@
 namespace tao {
 
    boost::optional<double>
-   calc_subcone_angle( tao::lightcone<real_type> const& lc );
+   calc_subcone_angle( tao::lightcone const& lc );
 
    unsigned
-   calc_max_subcones( tao::lightcone<real_type> const& lc );
+   calc_max_subcones( tao::lightcone const& lc );
 
    template< class T >
    std::array<T,3>
-   calc_subcone_origin( tao::lightcone<real_type> const& lc,
+   calc_subcone_origin( tao::lightcone const& lc,
 			unsigned sub_idx )
    {
       // Cache certain values.

@@ -12,7 +12,7 @@ namespace {
       "",
       []()
       {
-	 tao::lightcone<tao::real_type> lc( &tao::mini_millennium );
+	 tao::lightcone lc( &tao::mini_millennium );
 	 lc.set_max_redshift( 0.03 );
 	 double theta = *tao::calc_subcone_angle( lc );
       }
@@ -23,11 +23,11 @@ namespace {
       "",
       []()
       {
-	 tao::lightcone<tao::real_type> lc( &tao::mini_millennium );
+	 tao::lightcone lc( &tao::mini_millennium );
 	 lc.set_max_redshift( 0.03 );
-	 std::cout << "\n";
+	 // std::cout << "\n";
 	 auto ori = tao::calc_subcone_origin<double>( lc, 1 );
-	 std::cout << ori[0] << ", " << ori[1] << ", " << ori[2] << "\n";
+	 // std::cout << ori[0] << ", " << ori[1] << ", " << ori[2] << "\n";
       }
       );
 

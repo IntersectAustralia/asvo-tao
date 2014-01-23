@@ -108,7 +108,7 @@ namespace tao {
 	    using boost::io::group;
 	    using std::setprecision;
 
-            tao::lightcone<real_type> const& lc = *tile.lightcone();
+            tao::lightcone const& lc = *tile.lightcone();
 
             boost::format fmt(
                "SELECT %1% FROM -table- "

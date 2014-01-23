@@ -37,7 +37,7 @@ namespace tao {
       {
       }
 
-      lightcone_tile_iterator( const lightcone<real_type>& lc )
+      lightcone_tile_iterator( const lightcone& lc )
          : _lc( &lc ),
            _done( false )
       {
@@ -178,7 +178,7 @@ namespace tao {
 
    protected:
 
-      const lightcone<real_type>* _lc;
+      const lightcone* _lc;
       array<real_type,3> _cur;
       bool _done;
       unsigned _idx;
