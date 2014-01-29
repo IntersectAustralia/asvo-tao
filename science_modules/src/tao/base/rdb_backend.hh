@@ -20,17 +20,17 @@ namespace tao {
 
       template< class T >
       class rdb
-         : public backend<T>
+         : public backend
       {
       public:
 
          typedef T real_type;
-         typedef backend<real_type> super_type;
+         typedef backend super_type;
          typedef rdb_table<real_type> table_type;
 
       public:
 
-         rdb( const simulation<real_type>* sim )
+         rdb( const tao::simulation<real_type>* sim )
             : super_type( sim ),
               _con( false )
          {
@@ -43,7 +43,7 @@ namespace tao {
          ///
          virtual
          void
-         set_simulation( const simulation<real_type>* sim )
+         set_simulation( const tao::simulation<real_type>* sim )
          {
             super_type::set_simulation( sim );
             if( sim && _con )
@@ -151,7 +151,7 @@ namespace tao {
          }
 
          list<string>
-         make_snap_rng_query_string( const simulation<real_type>& sim ) const
+         make_snap_rng_query_string( const tao::simulation<real_type>& sim ) const
          {
 	    using boost::io::group;
 	    using std::setprecision;

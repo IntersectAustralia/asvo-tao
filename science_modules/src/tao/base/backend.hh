@@ -3,44 +3,34 @@
 
 #include <libhpc/profile/timer.hh>
 #include "simulation.hh"
+#include "types.hh"
 
 namespace tao {
 
-   template< class T >
    class backend
    {
    public:
 
-      typedef T real_type;
-
-   public:
-
-      backend( const simulation<real_type>* sim = NULL )
-         : _sim( sim )
-      {
-      }
+      backend( tao::simulation<real_type> const* sim = nullptr );
 
       virtual
       void
-      set_simulation( const simulation<real_type>* sim )
-      {
-         _sim = sim;
-      }
+      set_simulation( tao::simulation<real_type> const* sim );
+
+      tao::simulation<real_type> const*
+      simulation() const;
 
       virtual
-      simulation<real_type> const*
+      tao::simulation<real_type> const*
       load_simulation() = 0;
 
-      profile::timer&
-      timer()
-      {
-         return _timer;
-      }
+      hpc::profile::timer&
+      timer();
 
    protected:
 
-      const simulation<real_type>* _sim;
-      profile::timer _timer;
+      tao::simulation<real_type> const* _sim;
+      hpc::profile::timer _timer;
    };
 
 }
