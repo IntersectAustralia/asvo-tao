@@ -22,7 +22,7 @@ namespace tao {
 	 tao::simulation<real_type> sim( _box, 0.73, 0.25, 0.75, 2, 0.1, 0.2 );
 
 	 // Create a lightcone.
-	 tao::lightcone<real_type> lc( &sim );
+	 tao::lightcone lc( &sim );
 	 lc.set_geometry( 0.0, _ra, 0.0, _dec, _z );
 	 std::cout << "Cone distance    = " << lc.max_dist() << "\n";
 

@@ -226,22 +226,42 @@ namespace {
          TEST( lc.snapshot_bins().size() == 0 );
          TEST( lc.distance_bins().size() == 0 );
 
-         // With simulation.
+         // Normal case.
          tao::real_type h = tao::mini_millennium.h();
          lc.set_simulation( &tao::mini_millennium );
          lc.set_geometry( 0, 5, 0, 5, 2, 1 );
          DELTA( lc.min_dist(), 3267.8*h, 1.0 );
          DELTA( lc.max_dist(), 5198.7*h, 1.0 );
-         tao::real_type bin_vals[] = {
-            3794.88, 3697.33, 3524.91, 3353.44, 3183.26, 3014.77, 2848.29, 2684.2, 2522.84, 2385.02
-         };
-         unsigned snap_vals[] = { 33, 34, 35, 36, 37, 38, 39, 40, 41 };
-         TEST( lc.distance_bins().size() > 0 );
-         for( unsigned ii = 0; ii < lc.distance_bins().size(); ++ii )
-            DELTA( lc.distance_bins()[ii], bin_vals[ii], 1e-1 );
-         TEST( lc.snapshot_bins().size() > 0 );
-         for( unsigned ii = 0; ii < lc.snapshot_bins().size(); ++ii )
-            TEST( lc.snapshot_bins()[ii] == snap_vals[ii] );
+         {
+            tao::real_type bin_vals[] = {
+               3794.88, 3697.33, 3524.91, 3353.44, 3183.26, 3014.77, 2848.29, 2684.2, 2522.84, 2385.02
+            };
+            unsigned snap_vals[] = { 33, 34, 35, 36, 37, 38, 39, 40, 41 };
+            TEST( lc.distance_bins().size() > 0 );
+            for( unsigned ii = 0; ii < lc.distance_bins().size(); ++ii )
+               DELTA( lc.distance_bins()[ii], bin_vals[ii], 1e-1 );
+            TEST( lc.snapshot_bins().size() > 0 );
+            for( unsigned ii = 0; ii < lc.snapshot_bins().size(); ++ii )
+               TEST( lc.snapshot_bins()[ii] == snap_vals[ii] );
+         }
+
+         // Short lightcone.
+         lc.set_geometry( 0, 5, 0, 5, 0.1, 0.0999 );
+         DELTA( lc.min_dist(), 402.8*h, 1.0 );
+         DELTA( lc.max_dist(), 402.8*h, 1.0 );
+         TEST( lc.distance_bins().size() == 2 );
+         DELTA( lc.distance_bins()[0], 293.9, 1e-1 );
+         DELTA( lc.distance_bins()[1], 293.6, 1e-1 );
+         TEST( lc.snapshot_bins().size() == 1 );
+
+         // Beyond simulation limit.
+         tao::simulation<tao::real_type> sim( 500.0, 73.0, 0.25, 0.75, 2, 0.9, 1.0 );
+         lc.set_simulation( &sim );
+         lc.set_geometry( 0, 5, 0, 5, 1.0 );
+         DELTA( lc.min_dist(), 0.0, 1.0 );
+         DELTA( lc.max_dist(), 3267.8*h, 1.0 );
+         TEST( lc.distance_bins().size() == 3 );
+         TEST( lc.snapshot_bins().size() == 2 );
       }
       );
 

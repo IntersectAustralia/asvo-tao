@@ -25,7 +25,7 @@ DATABASES = {
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
         'OPTIONS': {
-            'init_command': 'SET storage_engine=INNODB'
+            'init_command': 'SET storage_engine=INNODB, SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED'
         }
     }
 }
@@ -35,3 +35,5 @@ AAF_APP_ID = 'https://localhost:8000/shibboleth'
 AAF_SESSION_URL = 'https://localhost:8000/Shibboleth.sso/Login'
 AAF_LOGOUT_URL = 'https://localhost:8000/Shibboleth.sso/Logout'
 USE_CAPTCHA=True
+
+from taosecrets import *

@@ -38,7 +38,7 @@ float zoom = 1;
 float gal_size = 0.5;
 GLuint gal_tex_id;
 
-lightcone<real_type>* lc;
+lightcone* lc;
 list<tile<real_type>> tiles;
 simulation<real_type>* cur_sim = &millennium;
 int cur_tile_idx = -1;
@@ -85,7 +85,7 @@ const unsigned char colors[11][3] = {
 };
 
 void
-draw_lightcone( const lightcone<real_type>& lc,
+draw_lightcone( const lightcone& lc,
                 float alpha = 1 );
 
 // void
@@ -244,7 +244,7 @@ draw_tile( const Tile& tile,
 }
 
 void
-draw_cap( const lightcone<real_type>& lc,
+draw_cap( const lightcone& lc,
           float dist,
           bool out )
 {
@@ -296,7 +296,7 @@ draw_cap( const lightcone<real_type>& lc,
 }
 
 void
-draw_edges( const lightcone<real_type>& lc,
+draw_edges( const lightcone& lc,
             float start,
             float finish )
 {
@@ -387,7 +387,7 @@ draw_edges( const lightcone<real_type>& lc,
 }
 
 void
-draw_shell( const lightcone<real_type>& lc,
+draw_shell( const lightcone& lc,
             float start,
             float finish,
             unsigned idx,
@@ -401,7 +401,7 @@ draw_shell( const lightcone<real_type>& lc,
 }
 
 void
-draw_lightcone( const lightcone<real_type>& lc,
+draw_lightcone( const lightcone& lc,
                 float alpha )
 {
    // Get the distance bins from the lightcone.
@@ -416,7 +416,7 @@ draw_lightcone( const lightcone<real_type>& lc,
 }
 
 // void
-// draw_redshift_scale( const lightcone<real_type>& lc )
+// draw_redshift_scale( const lightcone& lc )
 // {
 //    float len = 0.8;
 //    int num_cols = 11;
@@ -1081,7 +1081,7 @@ init_tao()
    sfh_backend.connect( servers.begin(), servers.end() );
 
    // Setup initial simulation.
-   lc = new lightcone<real_type>( cur_sim );
+   lc = new lightcone( cur_sim );
    lc->set_geometry( 20, 70, 20, 70, 0.06 );
    update_tao();
 
