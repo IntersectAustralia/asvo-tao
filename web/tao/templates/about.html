@@ -1,0 +1,42 @@
+{% extends '_base.html' %}
+{% load static %}
+
+{% load url from future %}
+
+{% block subtitle %}
+    About TAO
+{% endblock %}
+{% block content %}
+    
+    <div>
+    <h1>ABOUT</h1>
+
+    <p align="justify">The Theoretical Astrophysical Observatory (TAO) houses queryable data from multiple cosmological dark matter numerical simulations and galaxy formation models, in a database that is optimised for rapid access. 
+        TAO is accessible via the "cloud" through a browser for access anywhere in the world by the astronomical community.
+        It boasts a clean and intuitive web interface. 
+        We avoid the need to have the user program SQL queries by providing a custom point-and-click interface to select galaxies and their properties, which auto-generates the query code in the background.
+         Query results can be funnelled through additional "modules" and sent to the Swinburne gSTAR supercomputer for further processing and manipulation. These include the ability to: 
+ </p>
+ <ul>
+     <li>Construct observer light cones from the simulated data cube; </li>
+     <li>Generate complete spectral energy distributions for model galaxies to provide multi-wavelength coverage; </li>
+     <li>Produce mock images of the sky in each simulated universe; </li>
+     <li>Select from preset "virtual telescopes" that make reconstructing existing surveys easy. </li>
+ </ul>
+    TAO is configured in such a way that additional modules can be built and easily inserted into the data chain as needs require in the future.
+    <div class="push"><!--//--></div>
+    <h1> ACKNOWLEDGEMENTS</h1>
+    
+    <p align="justify">
+        TAO is part of the <a href="www.asvo.org.au" target="_blank">All-Sky Virtual Observatory (ASVO)</a> and is funded and supported by <a href="http://astronomyaustralia.org.au/">Astronomy Australia Limited</a>, <a href="http://www.swinburne.edu.au/">Swinburne University of Technology</a> and the <a href="http://www.innovation.gov.au/Pages/default.aspx">Australian Government</a>. 
+        The latter is provided though the Commonwealth's Education Investment Fund and National Collaborative Research Infrastructure Strategy, particularly <a href="http://www.nectar.org.au">the National eResearch Collaboration Tools and Resources (NeCTAR)</a> Project. 
+    </p>
+    
+    
+
+    
+
+    
+    </div>
+
+{% endblock %}
