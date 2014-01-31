@@ -15,7 +15,7 @@ namespace tao {
    /// Simulations.
    ///
 
-   simulation<real_type> millennium(
+   simulation millennium(
       500,
       73, 0.25, 0.75,
       64,
@@ -85,7 +85,7 @@ namespace tao {
       1.000000
       );
 
-   simulation<real_type> mini_millennium(
+   simulation mini_millennium(
       62.5,
       73, 0.25, 0.75,
       64,

@@ -50,7 +50,7 @@ namespace tao {
       }
 
       age_line( soci::session& sql,
-		const simulation<real_type>& sim )
+		const simulation& sim )
       {
          load_ages( sql, sim.hubble(), sim.omega_m(), sim.omega_l() );
       }

@@ -16,7 +16,7 @@ namespace tao {
       application::operator()()
       {
 	 // Pick a simulation for cosmological constants.
-	 tao::simulation<tao::real_type>* sim = &mini_millennium;
+	 tao::simulation* sim = &mini_millennium;
 
 	 // Load the stellar population model.
 	 tao::stellar_population ssp;

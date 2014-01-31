@@ -23,7 +23,7 @@ namespace tao {
       ///
       /// @param[in] sim The simulation this backend refers to.
       ///
-      backend( tao::simulation<real_type> const* sim = nullptr );
+      backend( tao::simulation const* sim = nullptr );
 
       ///
       /// Set the simulation. Each backend is constructed to
@@ -34,14 +34,14 @@ namespace tao {
       ///
       virtual
       void
-      set_simulation( tao::simulation<real_type> const* sim );
+      set_simulation( tao::simulation const* sim );
 
       ///
       /// Get the simulation.
       ///
       /// @returns The simulation this backend refers to.
       ///
-      tao::simulation<real_type> const*
+      tao::simulation const*
       simulation() const;
 
       ///
@@ -52,7 +52,7 @@ namespace tao {
       /// @returns The loaded simulation.
       ///
       virtual
-      tao::simulation<real_type> const*
+      tao::simulation const*
       load_simulation() = 0;
 
       hpc::profile::timer&
@@ -60,7 +60,7 @@ namespace tao {
 
    protected:
 
-      tao::simulation<real_type> const* _sim;
+      tao::simulation const* _sim;
       hpc::profile::timer _timer;
    };
 

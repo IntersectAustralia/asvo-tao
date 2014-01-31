@@ -2,18 +2,18 @@
 
 namespace tao {
 
-   backend::backend( tao::simulation<real_type> const* sim )
+   backend::backend( tao::simulation const* sim )
       : _sim( sim )
    {
    }
 
    void
-   backend::set_simulation( tao::simulation<real_type> const* sim )
+   backend::set_simulation( tao::simulation const* sim )
    {
       _sim = sim;
    }
 
-   tao::simulation<real_type> const*
+   tao::simulation const*
    backend::simulation() const
    {
       return _sim;

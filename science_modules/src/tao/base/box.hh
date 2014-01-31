@@ -10,7 +10,6 @@
 namespace tao {
    using namespace hpc;
 
-   template< class T >
    class simulation;
 
    template< class T >
@@ -22,7 +21,7 @@ namespace tao {
 
    public:
 
-      box( const tao::simulation<real_type>* sim = 0 )
+      box( const tao::simulation* sim = 0 )
          : _sim( sim ),
            _snap( 0 ),
            _rand( false ),
@@ -33,7 +32,7 @@ namespace tao {
       }
 
       void
-      set_simulation( const tao::simulation<real_type>* sim )
+      set_simulation( const tao::simulation* sim )
       {
          _sim = sim;
          _update();
@@ -73,7 +72,7 @@ namespace tao {
          return _orig;
       }
 
-      const tao::simulation<real_type>*
+      const tao::simulation*
       simulation() const
       {
          return _sim;
@@ -219,7 +218,7 @@ namespace tao {
 
    protected:
 
-      const tao::simulation<real_type>* _sim;
+      const tao::simulation* _sim;
       array<real_type,3> _min, _max;
       bool _rand;
       engine_type* _eng;

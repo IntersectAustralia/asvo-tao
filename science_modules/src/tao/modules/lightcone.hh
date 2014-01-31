@@ -245,7 +245,7 @@ namespace tao {
          find_attribute( const string& name )
          {
             if( name == "simulation" )
-               return boost::any( (const simulation<real_type>*)_sim );
+               return boost::any( (const simulation*)_sim );
             else if( name == "filter" )
                return boost::any( &((filter const&)_filt) );
             else
@@ -464,7 +464,7 @@ namespace tao {
          engine_type _eng;
          bool _unique;
 
-         simulation<real_type> const* _sim;
+         simulation const* _sim;
          query<real_type> _qry;
          filter _filt;
          tao::lightcone _lc;

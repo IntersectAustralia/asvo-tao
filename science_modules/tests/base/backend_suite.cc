@@ -10,13 +10,13 @@ namespace {
    {
    public:
 
-      dummy( tao::simulation<tao::real_type> const* sim = nullptr )
+      dummy( tao::simulation const* sim = nullptr )
          : tao::backend( sim )
       {
       }
 
       virtual
-      tao::simulation<tao::real_type> const*
+      tao::simulation const*
       load_simulation()
       {
          return nullptr;
@@ -38,7 +38,7 @@ namespace {
       "",
       []()
       {
-         tao::simulation<tao::real_type> sim;
+         tao::simulation sim;
          dummy be( &sim );
          TEST( be.simulation() == &sim );
       }
@@ -49,7 +49,7 @@ namespace {
       "",
       []()
       {
-         tao::simulation<tao::real_type> sim;
+         tao::simulation sim;
          dummy be;
          be.set_simulation( &sim );
          TEST( be.simulation() == &sim );

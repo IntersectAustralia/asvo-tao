@@ -41,7 +41,7 @@ namespace tao {
 
       public:
 
-         soci_base( const simulation<real_type>* sim )
+         soci_base( const simulation* sim )
             : super_type( sim )
          {
          }
@@ -66,7 +66,7 @@ namespace tao {
             return size;
          }
 
-	 simulation<real_type> const*
+	 simulation const*
 	 load_simulation()
 	 {
 	    // Extract cosmology.
@@ -85,7 +85,7 @@ namespace tao {
 	    vector<real_type> snap_zs;
 	    snapshot_redshifts( snap_zs );
 
-	    this->set_simulation( new simulation<real_type>( box_size, hubble, omega_m, omega_l, snap_zs ) );
+	    this->set_simulation( new simulation( box_size, hubble, omega_m, omega_l, snap_zs ) );
 	    return this->_sim;
 	 }
 

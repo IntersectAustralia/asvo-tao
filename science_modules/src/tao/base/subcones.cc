@@ -10,7 +10,7 @@ namespace tao {
       EXCEPT( lc.min_ra() == 0.0, "Subcones must have mininum RA of 0." );
       EXCEPT( lc.min_dec() == 0.0, "Subcones must have mininum DEC of 0." );
 
-      tao::simulation<real_type> const* sim = lc.simulation();
+      tao::simulation const* sim = lc.simulation();
       double b = sim->box_size();
       double ra = lc.max_ra() - lc.min_ra();
       double d = lc.max_dist();

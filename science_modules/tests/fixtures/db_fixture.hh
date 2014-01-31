@@ -154,7 +154,7 @@ struct db_fixture
 
    soci::session sql;
    tao::backends::soci<real_type> be;
-   tao::simulation<real_type> sim;
+   tao::simulation sim;
    tao::lightcone lc;
    tao::tile<real_type> tile;
 };

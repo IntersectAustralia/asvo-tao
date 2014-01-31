@@ -54,7 +54,7 @@ namespace tao {
 
             // Find the wavelengths and simulation from my parents.
             _waves = this->template attribute<const vector<real_type>::view>( "wavelengths" );
-            _sim = this->template attribute<tao::simulation<real_type> const*>( "simulation" );
+            _sim = this->template attribute<tao::simulation const*>( "simulation" );
 
             _read_options( global_dict );
 
@@ -307,7 +307,7 @@ namespace tao {
 
       protected:
 
-	 tao::simulation<real_type> const* _sim;
+	 tao::simulation const* _sim;
          vector<real_type>::view _waves;
 
          vector<real_type>::view _spec;

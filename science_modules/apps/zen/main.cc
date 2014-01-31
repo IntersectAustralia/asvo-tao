@@ -40,7 +40,7 @@ GLuint gal_tex_id;
 
 lightcone* lc;
 list<tile<real_type>> tiles;
-simulation<real_type>* cur_sim = &millennium;
+simulation* cur_sim = &millennium;
 int cur_tile_idx = -1;
 tile<real_type>* cur_box;
 string cur_table;

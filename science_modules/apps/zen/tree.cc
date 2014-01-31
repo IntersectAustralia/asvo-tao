@@ -8,7 +8,7 @@
 using namespace hpc;
 
 extern unsigned win_width, win_height;
-extern tao::simulation<tao::real_type>* cur_sim;
+extern tao::simulation* cur_sim;
 extern tao::sfh<tao::real_type> cur_sfh;
 extern unsigned cur_gal_id;
 extern gl::colour_map<float> col_map;
@@ -129,7 +129,7 @@ namespace tao {
    }
 
    void
-   draw_snapshot_range( const simulation<real_type>& sim,
+   draw_snapshot_range( const simulation& sim,
                         const age_line<real_type>& ages,
                         const age_line<real_type>& bin_ages,
                         const array<real_type,2>& snap_rng )
@@ -183,7 +183,7 @@ namespace tao {
    }
 
    void
-   draw_bin_masses( const simulation<real_type>& sim,
+   draw_bin_masses( const simulation& sim,
                     const age_line<real_type>& ages,
                     const age_line<real_type>& bin_ages,
                     const vector<real_type>& masses,
@@ -292,7 +292,7 @@ namespace tao {
    }
 
    void
-   draw_sfh_tree( const simulation<real_type>& sim,
+   draw_sfh_tree( const simulation& sim,
                   const tao::sfh<real_type>& sfh,
                   unsigned gal_id )
    {

@@ -27,7 +27,7 @@ namespace tao {
 
       public:
 
-         multidb( const simulation<real_type>* sim = NULL )
+         multidb( const simulation* sim = NULL )
             : super_type( sim )
          {
          }

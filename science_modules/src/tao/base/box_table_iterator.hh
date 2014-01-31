@@ -4,7 +4,7 @@
 #include <boost/iterator/iterator_facade.hpp>
 #include <libhpc/libhpc.hh>
 #include <libhpc/containers/combination.hpp>
-#include "clip.hh"
+#include <libhpc/numerics/clip.hh>
 #include "rdb_backend.hh"
 #include "box.hh"
 

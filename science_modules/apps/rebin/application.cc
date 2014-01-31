@@ -32,7 +32,7 @@ namespace tao {
       application::operator()()
       {
 	 // Pick a simulation.
-	 tao::simulation<tao::real_type>* sim = &mini_millennium;
+	 tao::simulation* sim = &mini_millennium;
 
 	 // Connect the backend.
 	 backends::multidb<real_type> be;

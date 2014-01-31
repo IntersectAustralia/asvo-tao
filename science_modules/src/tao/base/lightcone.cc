@@ -3,7 +3,7 @@
 
 namespace tao {
 
-   lightcone::lightcone( const tao::simulation<real_type>* sim )
+   lightcone::lightcone( const tao::simulation* sim )
       : _sim( NULL ),
         _rand( false ),
         _view_angle( 0.0 ),
@@ -15,7 +15,7 @@ namespace tao {
         }
 
    void
-   lightcone::set_simulation( const tao::simulation<real_type>* sim )
+   lightcone::set_simulation( const tao::simulation* sim )
    {
       _sim = sim;
       _recalc();
@@ -89,7 +89,7 @@ namespace tao {
       return _orig;
    }
 
-   const tao::simulation<real_type>*
+   const tao::simulation*
    lightcone::simulation() const
    {
       return _sim;

@@ -30,7 +30,7 @@ namespace tao {
 
       public:
 
-         rdb( const tao::simulation<real_type>* sim )
+         rdb( const tao::simulation* sim )
             : super_type( sim ),
               _con( false )
          {
@@ -43,7 +43,7 @@ namespace tao {
          ///
          virtual
          void
-         set_simulation( const tao::simulation<real_type>* sim )
+         set_simulation( const tao::simulation* sim )
          {
             super_type::set_simulation( sim );
             if( sim && _con )
@@ -151,7 +151,7 @@ namespace tao {
          }
 
          list<string>
-         make_snap_rng_query_string( const tao::simulation<real_type>& sim ) const
+         make_snap_rng_query_string( const tao::simulation& sim ) const
          {
 	    using boost::io::group;
 	    using std::setprecision;

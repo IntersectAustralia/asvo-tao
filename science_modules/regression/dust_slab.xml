@@ -3,11 +3,15 @@
     <schema-version>2</schema-version>
 
     <light-cone id="light-cone">
-      <geometry>box</geometry>
-      <box-repetition>unique</box-repetition>
+      <geometry>light-cone</geometry>
+      <box-repetition>random</box-repetition>
       <rng-seed>0</rng-seed>
-      <query-box-size>10</query-box-size>
-      <redshift>0</redshift>
+      <redshift-min>0.01</redshift-min>
+      <redshift-max>0.06</redshift-max>
+      <ra-min>0</ra-min>
+      <ra-max>10</ra-max>
+      <dec-min>0</dec-min>
+      <dec-max>10</dec-max>
       <output-fields>
         <item>pos_x</item>
         <item>pos_y</item>
@@ -45,17 +49,27 @@
     </filter>
 
     <csv id="csv">
+      <parents>
+        <item>filter</item>
+      </parents>
       <filename>result</filename>
       <fields>
         <item>posx</item>
         <item>posy</item>
         <item>posz</item>
+	<item>redshift_cosmological</item>
         <item>Johnson/Johnson_V.dati_apparent</item>
+        <item>Johnson/Johnson_V.dati_absolute</item>
       </fields>
-      <parents>
-        <item>light-cone</item>
-      </parents>
     </csv>
+
+    <record-filter>
+      <filter>
+        <filter-attribute>None</filter-attribute>
+        <filter-min>0</filter-min>
+        <filter-max>0</filter-max>
+       </filter>
+    </record-filter>
 
   </workflow>
 

@@ -29,20 +29,20 @@ namespace tao {
       /// Constructor.
       /// @param[in] sim  Simulation for the lightcone.
       ///
-      lightcone( tao::simulation<real_type> const* sim = nullptr );
+      lightcone( tao::simulation const* sim = nullptr );
 
       ///
       /// Set lightcone simulation.
       /// @param[in] sim  Simulation for the lightcone.
       ///
       void
-      set_simulation( tao::simulation<real_type> const* sim );
+      set_simulation( tao::simulation const* sim );
 
       ///
       /// Get lightcone simulation.
       /// @returns Simulation.
       ///
-      tao::simulation<real_type> const*
+      tao::simulation const*
       simulation() const;
 
       ///
@@ -194,7 +194,7 @@ namespace tao {
 
    protected:
 
-      const tao::simulation<real_type>* _sim;
+      tao::simulation const* _sim;
       array<real_type,2> _ra;
       array<real_type,2> _dec;
       array<real_type,2> _z;

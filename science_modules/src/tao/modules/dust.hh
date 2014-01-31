@@ -85,7 +85,7 @@ namespace tao {
             else if( mod == "slab" )
             {
                _mod = SLAB;
-               _sim = this->template attribute<simulation<real_type> const*>( "simulation" );
+               _sim = this->template attribute<simulation const*>( "simulation" );
                _cold_gas = bat.scalar<real_type>( "coldgas" );
                _cold_gas_metal = bat.scalar<real_type>( "metalscoldgas" );
                _redshifts = bat.scalar<real_type>( "redshift_cosmological" );
@@ -162,7 +162,7 @@ namespace tao {
 
          model_type _mod;
          tao::dust::slab _slab;
-         simulation<real_type> const* _sim;
+         simulation const* _sim;
          fibre<real_type>* _total_spectra;
          fibre<real_type>* _disk_spectra;
          fibre<real_type>* _bulge_spectra;

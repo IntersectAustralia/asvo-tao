@@ -15,8 +15,8 @@ namespace tao {
    runtime();
 
    // Simulations.
-   extern simulation<real_type> millennium;
-   extern simulation<real_type> mini_millennium;
+   extern simulation millennium;
+   extern simulation mini_millennium;
 
 }
 

@@ -255,7 +255,7 @@ namespace {
          TEST( lc.snapshot_bins().size() == 1 );
 
          // Beyond simulation limit.
-         tao::simulation<tao::real_type> sim( 500.0, 73.0, 0.25, 0.75, 2, 0.9, 1.0 );
+         tao::simulation sim( 500.0, 73.0, 0.25, 0.75, 2, 0.9, 1.0 );
          lc.set_simulation( &sim );
          lc.set_geometry( 0, 5, 0, 5, 1.0 );
          DELTA( lc.min_dist(), 0.0, 1.0 );

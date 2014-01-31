@@ -19,7 +19,7 @@ namespace tao {
       application::operator()()
       {
 	 // Create a simulation.
-	 tao::simulation<real_type> sim( _box, 0.73, 0.25, 0.75, 2, 0.1, 0.2 );
+	 tao::simulation sim( _box, 0.73, 0.25, 0.75, 2, 0.1, 0.2 );
 
 	 // Create a lightcone.
 	 tao::lightcone lc( &sim );
