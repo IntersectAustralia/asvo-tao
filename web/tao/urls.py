@@ -106,6 +106,8 @@ urlpatterns = patterns('',
     ('^tap/', include('tap.urls')),
     url('^acknowledgements/', simple_view, {'template_name': 'acknowledgements.html'},
         name='acknowledgements'),
+    url('^about/', simple_view, {'template_name': 'about.html'},
+        name='about'),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
