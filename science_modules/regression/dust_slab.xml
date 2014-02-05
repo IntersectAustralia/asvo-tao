@@ -45,6 +45,8 @@
       </parents>
       <bandpass-filters>
         <item>Johnson/Johnson_V.dati</item>
+        <item>Johnson/Johnson_U.dati</item>
+        <item>Johnson/Johnson_B.dati</item>
       </bandpass-filters>
     </filter>
 
@@ -52,24 +54,18 @@
       <parents>
         <item>filter</item>
       </parents>
-      <filename>result</filename>
+      <filename>result.dust_slab.csv</filename>
       <fields>
+	<item>globalindex</item>
         <item>posx</item>
         <item>posy</item>
         <item>posz</item>
 	<item>redshift_cosmological</item>
         <item>Johnson/Johnson_V.dati_apparent</item>
-        <item>Johnson/Johnson_V.dati_absolute</item>
+        <item>Johnson/Johnson_U.dati_apparent</item>
+        <item>Johnson/Johnson_B.dati_apparent</item>
       </fields>
     </csv>
-
-    <record-filter>
-      <filter>
-        <filter-attribute>None</filter-attribute>
-        <filter-min>0</filter-min>
-        <filter-max>0</filter-max>
-       </filter>
-    </record-filter>
 
   </workflow>
 

@@ -8,7 +8,9 @@ namespace tao {
         _rand( false ),
         _view_angle( 0.0 ),
         _orig{ { 0.0, 0.0, 0.0 } },
-      _eng( &hpc::engine )
+        _sng_snap( false ),
+        _snap( 0 ),
+        _eng( &hpc::engine )
         {
            set_geometry( 0, 10, 0, 10, 0.06 );
            set_simulation( sim );
@@ -87,6 +89,30 @@ namespace tao {
    lightcone::origin() const
    {
       return _orig;
+   }
+
+   void
+   lightcone::set_single_snapshot( bool state )
+   {
+      _sng_snap = state;
+   }
+
+   bool
+   lightcone::single_snapshot() const
+   {
+      return _sng_snap;
+   }
+
+   void
+   lightcone::set_snapshot( unsigned snap )
+   {
+      _snap = snap;
+   }
+
+   unsigned
+   lightcone::snapshot() const
+   {
+      return _snap;
    }
 
    const tao::simulation*

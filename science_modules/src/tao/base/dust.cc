@@ -36,6 +36,10 @@ namespace tao {
             strm >> ext_waves[ii] >> ext[ii] >> alb[ii] >> exp[ii];
          EXCEPT( strm.good(), "Failure reading extinction file: ", ext_fn );
 
+         // Extinction wavelength scale needs to be altered.
+         std::transform( ext_waves.begin(), ext_waves.end(), ext_waves.begin(),
+                         []( real_type x ) { return 1e4*x; } );
+
          hpc::numerics::spline< real_type,
                                 hpc::view<std::vector<real_type>>::type,
                                 hpc::view<std::vector<real_type>>::type > spline;
@@ -86,8 +90,11 @@ namespace tao {
                _exp[ii] = exp[size - 1];
             else
                _exp[ii] = spline( waves[ii] );
-            _exp[ii] += 1.6; // TODO: Explain this.
          }
+
+         // Need to add 1.6 to the exponent.
+         std::transform( _exp.begin(), _exp.end(), _exp.begin(),
+                         []( real_type x ) { return x + 1.6; } );
       }
 
       hpc::view<std::vector<real_type>>::type

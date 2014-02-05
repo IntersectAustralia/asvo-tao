@@ -151,6 +151,18 @@ namespace tao {
       std::array<real_type,3> const&
       origin() const;
 
+      void
+      set_single_snapshot( bool state );
+
+      bool
+      single_snapshot() const;
+
+      void
+      set_snapshot( unsigned snap );
+
+      unsigned
+      snapshot() const;
+
       tile_iterator
       tile_begin() const;
 
@@ -205,6 +217,8 @@ namespace tao {
       bool _rand;
       real_type _view_angle;
       std::array<real_type,3> _orig;
+      bool _sng_snap;
+      unsigned _snap;
       engine_type* _eng;
    };
 

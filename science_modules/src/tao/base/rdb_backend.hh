@@ -11,6 +11,7 @@
 #include "tile.hh"
 #include "batch.hh"
 #include "filter.hh"
+#include "types.hh"
 
 namespace tao {
    namespace backends {
@@ -36,6 +37,13 @@ namespace tao {
          {
          }
 
+         void
+         add_field( hpc::string const& name,
+                    hpc::string const& mapped = hpc::string() )
+         {
+            _field_map[name] = mapped.empty() ? name : mapped;
+         }
+
          ///
          /// Set the simulation. Overloaded to allow for loading table
          /// information from the database when we have both a connection
@@ -50,11 +58,18 @@ namespace tao {
                _initialise();
          }
 
+         bool
+         connected() const
+         {
+            return _con;
+         }
+
          void
          init_batch( batch<real_type>& bat,
-                     tao::query<real_type>& query ) const
+                     query<real_type>& qry ) const
          {
-            for( const auto& field : query.output_fields() )
+            // Add fields from the query object.
+            for( auto const& field : qry.output_fields() )
             {
                // Check that the field actually exists. Due to calculated fields
                // it may not actually be on the database.
@@ -71,8 +86,8 @@ namespace tao {
          }
 
          string
-         make_box_query_string( const box<real_type>& box,
-                                tao::query<real_type>& qry,
+         make_box_query_string( box<real_type> const& box,
+                                query<real_type>& qry,
                                 filter const* filt = 0 ) const
          {
 	    using boost::io::group;
@@ -110,38 +125,66 @@ namespace tao {
 
             tao::lightcone const& lc = *tile.lightcone();
 
-            boost::format fmt(
-               "SELECT %1% FROM -table- "
-               "INNER JOIN redshift_ranges ON (-table-.%2% = redshift_ranges.snapshot) "
-               "WHERE "
-               "(POW(%3%,2) + POW(%4%,2) + POW(%5%,2)) >= redshift_ranges.min AND "
-               "(POW(%3%,2) + POW(%4%,2) + POW(%5%,2)) < redshift_ranges.max AND "
-               "ATAN2(%4%,%3%) >= %6% AND "
-               "ATAN2(%4%,%3%) < %7% AND "
-               "(0.5*PI() - ACOS(%5%/(SQRT(POW(%3%,2) + POW(%4%,2) + POW(%5%,2))))) >= %8% AND "
-               "(0.5*PI() - ACOS(%5%/(SQRT(POW(%3%,2) + POW(%4%,2) + POW(%5%,2))))) < %9% AND "
-               // "(%3%)/(SQRT(POW(%3%,2) + POW(%4%,2))) >= %6% AND "
-               // "(%3%)/(SQRT(POW(%3%,2) + POW(%4%,2))) < %7% AND "
-               // "SQRT(POW(%3%,2) + POW(%4%,2))/(SQRT(POW(%3%,2) + POW(%4%,2) + POW(%5%,2))) >= %8% AND "
-               // "SQRT(POW(%3%,2) + POW(%4%,2))/(SQRT(POW(%3%,2) + POW(%4%,2) + POW(%5%,2))) < %9% AND "
-               "(POW(%3%,2) + POW(%4%,2) + POW(%5%,2)) >= %10% AND "
-               "(POW(%3%,2) + POW(%4%,2) + POW(%5%,2)) < %11%"
-               "%12%" // filter
-               );
-            std::unordered_map<string,string> map;
-            make_field_map( map, query, tile );
-            map["redshift"] = "redshift_ranges.redshift";
-            fmt % make_output_field_query_string( query, map );
-            fmt % _field_map.at( "snapnum" );
-            fmt % map.at( "posx" ) % map.at( "posy" ) % map.at( "posz" );
-            fmt % group( setprecision( 12 ), lc.min_ra() + lc.viewing_angle() ) % group( setprecision( 12 ), lc.max_ra() + lc.viewing_angle() );
-	    fmt % group( setprecision( 12 ), lc.min_dec() ) % group( setprecision( 12 ), lc.max_dec() );
-            fmt % group( setprecision( 12 ), pow( lc.min_dist(), 2 ) ) % group( setprecision( 12 ), pow( lc.max_dist(), 2 ) );
-            string filt_str = make_filter_query_string( filt );
-            if( !filt_str.empty() )
-               filt_str = " AND " + filt_str; 
-            fmt % filt_str;
-            return fmt.str();
+            if( !lc.single_snapshot() )
+            {
+               boost::format fmt(
+                  "SELECT %1% FROM -table- "
+                  "INNER JOIN redshift_ranges ON (-table-.%2% = redshift_ranges.snapshot) "
+                  "WHERE "
+                  "(POW(%3%,2) + POW(%4%,2) + POW(%5%,2)) >= redshift_ranges.min AND "
+                  "(POW(%3%,2) + POW(%4%,2) + POW(%5%,2)) < redshift_ranges.max AND "
+                  "ATAN2(%4%,%3%) >= %6% AND "
+                  "ATAN2(%4%,%3%) < %7% AND "
+                  "(0.5*PI() - ACOS(%5%/(SQRT(POW(%3%,2) + POW(%4%,2) + POW(%5%,2))))) >= %8% AND "
+                  "(0.5*PI() - ACOS(%5%/(SQRT(POW(%3%,2) + POW(%4%,2) + POW(%5%,2))))) < %9% AND "
+                  "(POW(%3%,2) + POW(%4%,2) + POW(%5%,2)) >= %10% AND "
+                  "(POW(%3%,2) + POW(%4%,2) + POW(%5%,2)) < %11%"
+                  "%12%" // filter
+                  );
+               std::unordered_map<string,string> map;
+               make_field_map( map, query, tile );
+               map["redshift"] = "redshift_ranges.redshift";
+               fmt % make_output_field_query_string( query, map );
+               fmt % _field_map.at( "snapnum" );
+               fmt % map.at( "posx" ) % map.at( "posy" ) % map.at( "posz" );
+               fmt % group( setprecision( 12 ), lc.min_ra() + lc.viewing_angle() ) % group( setprecision( 12 ), lc.max_ra() + lc.viewing_angle() );
+               fmt % group( setprecision( 12 ), lc.min_dec() ) % group( setprecision( 12 ), lc.max_dec() );
+               fmt % group( setprecision( 12 ), pow( lc.min_dist(), 2 ) ) % group( setprecision( 12 ), pow( lc.max_dist(), 2 ) );
+               string filt_str = make_filter_query_string( filt );
+               if( !filt_str.empty() )
+                  filt_str = " AND " + filt_str; 
+               fmt % filt_str;
+               return fmt.str();
+            }
+            else
+            {
+               boost::format fmt(
+                  "SELECT %1% FROM -table- "
+                  "WHERE "
+                  "-table-.%2% = %3% AND "
+                  "ATAN2(%5%,%4%) >= %7% AND "
+                  "ATAN2(%5%,%4%) < %8% AND "
+                  "(0.5*PI() - ACOS(%6%/(SQRT(POW(%4%,2) + POW(%5%,2) + POW(%6%,2))))) >= %9% AND "
+                  "(0.5*PI() - ACOS(%6%/(SQRT(POW(%4%,2) + POW(%5%,2) + POW(%6%,2))))) < %10% AND "
+                  "(POW(%4%,2) + POW(%5%,2) + POW(%6%,2)) >= %11% AND "
+                  "(POW(%4%,2) + POW(%5%,2) + POW(%6%,2)) < %12%"
+                  "%13%" // filter
+                  );
+               std::unordered_map<string,string> map;
+               make_field_map( map, query, tile );
+               // map["redshift"] = "redshift_ranges.redshift";
+               fmt % make_output_field_query_string( query, map );
+               fmt % _field_map.at( "snapnum" ) % lc.snapshot();
+               fmt % map.at( "posx" ) % map.at( "posy" ) % map.at( "posz" );
+               fmt % group( setprecision( 12 ), lc.min_ra() + lc.viewing_angle() ) % group( setprecision( 12 ), lc.max_ra() + lc.viewing_angle() );
+               fmt % group( setprecision( 12 ), lc.min_dec() ) % group( setprecision( 12 ), lc.max_dec() );
+               fmt % group( setprecision( 12 ), pow( lc.min_dist(), 2 ) ) % group( setprecision( 12 ), pow( lc.max_dist(), 2 ) );
+               string filt_str = make_filter_query_string( filt );
+               if( !filt_str.empty() )
+                  filt_str = " AND " + filt_str; 
+               fmt % filt_str;
+               return fmt.str();
+            }
          }
 
          string

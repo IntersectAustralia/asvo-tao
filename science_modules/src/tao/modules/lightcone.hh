@@ -352,10 +352,28 @@ namespace tao {
                min_dec = std::min<real_type>( min_dec, max_dec );
                LOGILN( "Declination range: [", min_dec, ", ", max_dec, ")" );
 
+               // Check for single snapshot.
+               // TODO: Remove this username bit.
+               auto uname = global_dict.opt<string>( "username" );
+               boost::optional<unsigned> sng_snap;
+               if( uname && *uname == "max" )
+               {
+                  sng_snap = 180;
+                  LOGILN( "Single snapshot: ", *sng_snap );
+               }
+               // auto sng_snap = dict.opt<unsigned>( "single-snapshot" );
+               // if( *sng_snap )
+               //    LOGILN( "Single snapshot: ", *sng_snap );
+
                // Prepare the lightcone object.
                _lc.set_simulation( _sim );
                _lc.set_geometry( min_ra, max_ra, min_dec, max_dec, max_z, min_z );
 	       _lc.set_random( !_unique, &_eng );
+               if( sng_snap )
+               {
+                  _lc.set_single_snapshot( true );
+                  _lc.set_snapshot( *sng_snap );
+               }
 
 	       // Prepare the origin if we're running a unique cone.
 	       if( _unique )

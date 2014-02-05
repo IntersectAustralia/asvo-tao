@@ -176,7 +176,7 @@ namespace tao {
                   real_type tau_dust = _calc_tau( nh, metal, *ext_it++, *alb_it++, *exp_it++ );
                   tau_dust = tau_dust/cos_inc*1.0/(1.0 + redshift);
                   ASSERT( tau_dust > 0.0 );
-                  real_type fesc = (1.0 - exp(-tau_dust))/tau_dust;
+                  real_type fesc = (1.0 - exp( -tau_dust ))/tau_dust;
                   *result_start++ = (*spec_start++)*fesc;
                }
             }
