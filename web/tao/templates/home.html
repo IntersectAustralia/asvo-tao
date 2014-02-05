@@ -25,8 +25,9 @@
             <a href="http://astronomyaustralia.org.au/">Astronomy Australia Limited</a>, <a href="http://www.nectar.org.au">the National eResearch Collaboration Tools and Resources (NeCTAR)</a> , and <a href="http://www.swinburne.edu.au/">Swinburne University of Technology</a>.  
         </p>
         </div>
+        <div class="push"><!--//--></div>
     <div align="center">
-        <img width="35%" height="35%" src="static/images/TAO_illust.png"/>
+        <img  class="main-img" src="{% static 'images/TAO_illust.png'%}"/>
 	</div>
         
         </div>
@@ -37,9 +38,9 @@
 {% block footertxt %}	
 	
 	
-<a href="{% url 'acknowledgements' %}"{% if tab == 'mgf' %} target="_blank"{% endif %}>	
- <img src="static/images/sponsers.jpg"/>
-</a>
+
+ <img src="{% static 'images/sponsers.jpg'%}"/>
+
 	
 
         
