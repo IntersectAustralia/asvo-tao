@@ -124,6 +124,7 @@ rule(r'apps/zen/.+\.cc$', bin, glut.have == True, target='bin/zen', libraries=['
 rule(r'apps/rebin/.+\.cc$', bin, target='bin/rebin', libraries=['tao'])
 rule(r'apps/ssp_restrict/.+\.cc$', bin, target='bin/ssp_restrict', libraries=['tao'])
 rule(r'apps/analytic/.+\.cc$', bin, target='bin/analytic', libraries=['tao'])
+rule(r'apps/dust_plots/.+\.cc$', bin, target='bin/dust_plots', libraries=['tao'])
 rule(r'apps/subcones/.+\.cc$', bin, target='bin/subcones', libraries=['tao'])
 rule(r'apps/dbcheck/.+\.cc$', bin, target='bin/dbcheck', libraries=['tao'])
 rule(r'apps/subfind_to_hdf5.cc$', bin, target='bin/subfind_to_hdf5', libraries=['tao'])

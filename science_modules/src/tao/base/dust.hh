@@ -162,7 +162,7 @@ namespace tao {
                      ResultIter result_start )
          {
             static real_type const nh_factor = 0.00059475488;
-            real_type nh = 0.75*cold_gas_metal/(M_PI*pow( 3.0*disk_radius, 2.0 ));
+            real_type nh = 0.75*cold_gas_mass/(M_PI*pow( 3.0*disk_radius, 2.0 ));
             real_type metal = (cold_gas_mass > 0.0) ? cold_gas_metal/cold_gas_mass : -100.0;
             real_type cos_inc = 1.0;
             if( nh > 0.0 && metal > 0.0 )
@@ -173,6 +173,9 @@ namespace tao {
                auto exp_it = _exp.cbegin();
                while( spec_start != spec_finish )
                {
+                  ASSERT( ext_it != _ext.cend() );
+                  ASSERT( alb_it != _alb.cend() );
+                  ASSERT( exp_it != _exp.cend() );
                   real_type tau_dust = _calc_tau( nh, metal, *ext_it++, *alb_it++, *exp_it++ );
                   tau_dust = tau_dust/cos_inc*1.0/(1.0 + redshift);
                   ASSERT( tau_dust > 0.0 );
@@ -182,6 +185,41 @@ namespace tao {
             }
             else
                std::copy( spec_start, spec_finish, result_start );
+         }
+
+         template< class ResultIter >
+         void
+         calc_transmission( real_type h,
+                            real_type redshift,
+                            real_type cold_gas_mass,
+                            real_type cold_gas_metal,
+                            real_type disk_radius,
+                            ResultIter result_start,
+                            ResultIter const& result_finish )
+         {
+            static real_type const nh_factor = 0.00059475488;
+            real_type nh = 0.75*cold_gas_mass/(M_PI*pow( 3.0*disk_radius, 2.0 ));
+            real_type metal = (cold_gas_mass > 0.0) ? cold_gas_metal/cold_gas_mass : -100.0;
+            real_type cos_inc = 1.0;
+            if( nh > 0.0 && metal > 0.0 )
+            {
+               nh *= nh_factor*h;
+               auto ext_it = _ext.cbegin();
+               auto alb_it = _alb.cbegin();
+               auto exp_it = _exp.cbegin();
+               while( result_start != result_finish )
+               {
+                  ASSERT( ext_it != _ext.cend() );
+                  ASSERT( alb_it != _alb.cend() );
+                  ASSERT( exp_it != _exp.cend() );
+                  real_type tau_dust = _calc_tau( nh, metal, *ext_it++, *alb_it++, *exp_it++ );
+                  tau_dust = tau_dust/cos_inc*1.0/(1.0 + redshift);
+                  ASSERT( tau_dust > 0.0 );
+                  *result_start++ = (1.0 - exp( -tau_dust ))/tau_dust;
+               }
+            }
+            else
+               std::fill( result_start, result_finish, 1.0 );
          }
 
       protected:
