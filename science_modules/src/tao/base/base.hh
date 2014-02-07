@@ -19,5 +19,6 @@
 #include "module.hh"
 #include "globals.hh"
 #include "subcones.hh"
+#include "dust.hh"
 
 #endif
