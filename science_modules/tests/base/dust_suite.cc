@@ -50,7 +50,7 @@ namespace {
                "5 1 1e-1 -1e-1\n";
          }
          std::vector<tao::real_type> waves( 5 );
-         std::iota( waves.begin(), waves.end(), 1.0 );
+	 hpc::numerics::linear( waves.begin(), 5, 1e4, 5e4 );
          tao::dust::slab dust( tmp.filename(), waves );
          DELTA( dust.extinction()[0], 3.0, 1e-1 );
          DELTA( dust.extinction()[1], 2.5, 1e-1 );

@@ -207,7 +207,7 @@ namespace {
       []()
       {
          tao::lightcone lc( &tao::mini_millennium );
-         lc.set_origin( { 1.0, 1.0, 1.0 } );
+         lc.set_origin( std::array<tao::real_type,3>{ 1.0, 1.0, 1.0 } );
          DELTA( lc.origin()[0], 1.0, 1e-4 );
          DELTA( lc.origin()[1], 1.0, 1e-4 );
          DELTA( lc.origin()[2], 1.0, 1e-4 );
