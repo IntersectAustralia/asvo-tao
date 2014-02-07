@@ -347,8 +347,8 @@ namespace tao {
                LOGILN( "Right ascension range: [", min_ra, ", ", max_ra, ")" );
 
                // Declination.
-               real_type min_dec = std::min<real_type>( std::max<real_type>( dict.get<real_type>( "dec-min", 0.0 ), 0.0 ), 90.0 );
-               real_type max_dec = std::min<real_type>( std::max<real_type>( dict.get<real_type>( "dec-max", 10.0 ), 0.0 ), 90.0 );
+               real_type min_dec = std::min<real_type>( std::max<real_type>( dict.get<real_type>( "dec-min", 0.0 ), 0.0 ), 89.99 );
+               real_type max_dec = std::min<real_type>( std::max<real_type>( dict.get<real_type>( "dec-max", 10.0 ), 0.0 ), 89.99 );
                min_dec = std::min<real_type>( min_dec, max_dec );
                LOGILN( "Declination range: [", min_dec, ", ", max_dec, ")" );
 
