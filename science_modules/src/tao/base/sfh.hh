@@ -502,8 +502,8 @@ namespace tao {
 	       // Use the star formation rates to compute the new mass
 	       // produced. Bear in mind the rates we expect from the
 	       // database will be solar masses per year.
-	       real_type new_mass = sfr*age_size*1e9;
-	       real_type new_bulge_mass = bulge_sfr*age_size*1e9;
+	       real_type new_mass = sfr*age_size*1e9; //*(1.0 - 0.43);
+	       real_type new_bulge_mass = bulge_sfr*age_size*1e9; //*(1.0 - 0.43);
 	       LOGDLN( "New mass: ", new_mass );
 	       LOGDLN( "New bulge mass: ", new_bulge_mass );
 	       ASSERT( new_mass >= 0.0 && new_bulge_mass >= 0.0, "Mass has been lost during rebinning." );

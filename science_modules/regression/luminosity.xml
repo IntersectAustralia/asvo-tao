@@ -7,11 +7,11 @@
       <box-repetition>random</box-repetition>
       <rng-seed>0</rng-seed>
       <redshift-min>0</redshift-min>
-      <redshift-max>0.06</redshift-max>
+      <redshift-max>0.15</redshift-max>
       <ra-min>0</ra-min>
-      <ra-max>10</ra-max>
+      <ra-max>60</ra-max>
       <dec-min>0</dec-min>
-      <dec-max>10</dec-max>
+      <dec-max>60</dec-max>
       <output-fields>
         <item>pos_x</item>
         <item>pos_y</item>
