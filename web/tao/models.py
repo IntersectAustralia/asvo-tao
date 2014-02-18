@@ -219,7 +219,7 @@ class DataSetProperty(models.Model):
                   (TYPE_LONG, 'long'),
                   )
     name = models.CharField(max_length=200)
-    units = models.CharField(max_length=20, default='', blank=True)
+    units = models.CharField(max_length=30, default='', blank=True)
     label = models.CharField(max_length=40)
     dataset = models.ForeignKey(DataSet)
     data_type = models.IntegerField(choices=DATA_TYPES)
