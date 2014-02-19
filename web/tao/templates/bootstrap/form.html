@@ -1,7 +1,7 @@
 {% if form.non_field_errors %}
-  <div class="alert-message block-message error">
+  <div class="alert alert-error">
     <p>
-      <strong>{{ form_error_title }}</strong>
+      <h4 class="alert-heading">{{ form_error_title }}</h4>
         <ul>
 	  {{ form.non_field_errors|unordered_list }}
 	</ul>
