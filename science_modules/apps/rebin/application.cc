@@ -25,7 +25,7 @@ namespace tao {
 	 }
 
 	 // Setup logging.
-	 LOG_PUSH( new logging::stdout( logging::debug ) );
+	 LOG_PUSH( new logging::stdout( logging::info ) );
       }
 
       void
@@ -38,17 +38,22 @@ namespace tao {
 	 backends::multidb<real_type> be;
 	 {
 #include "credentials.hh"
-	    vector<backends::multidb<real_type>::server_type> servers( 2 );
-	    servers[0].dbname = "millennium_mini_hdf5_test";
+	    vector<backends::multidb<real_type>::server_type> servers( 3 );
+	    servers[0].dbname = "millennium_mini_3servers_v1";
 	    servers[0].user = username;
 	    servers[0].passwd = password;
 	    servers[0].host = string( "tao01.hpc.swin.edu.au" );
 	    servers[0].port = 3306;
-	    servers[1].dbname = "millennium_mini_hdf5_test";
+	    servers[1].dbname = "millennium_mini_3servers_v1";
 	    servers[1].user = username;
 	    servers[1].passwd = password;
 	    servers[1].host = string( "tao02.hpc.swin.edu.au" );
 	    servers[1].port = 3306;
+	    servers[2].dbname = "millennium_mini_3servers_v1";
+	    servers[2].user = username;
+	    servers[2].passwd = password;
+	    servers[2].host = string( "tao03.hpc.swin.edu.au" );
+	    servers[2].port = 3306;
 	    be.connect( servers.begin(), servers.end() );
 	    be.set_simulation( sim );
 	 }
