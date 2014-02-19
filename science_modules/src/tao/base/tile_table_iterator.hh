@@ -38,7 +38,7 @@ namespace tao {
 
          tile_table_iterator( const tao::tile<real_type>& tile,
                               const backend_type& backend,
-                              optional<view<std::vector<std::pair<unsigned long long,int>>>::type> work = optional<view<std::vector<std::pair<unsigned long long,int>>>::type>() )
+                              boost::optional<hpc::view<std::vector<std::pair<unsigned long long,int> > >::type> work = boost::optional<hpc::view<std::vector<std::pair<unsigned long long,int> > >::type>() )
             : _tile( &tile ),
               _be( &backend ),
               _work( work ),
