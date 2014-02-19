@@ -5,12 +5,12 @@
 namespace tao {
 
    boost::optional<double>
-   calc_subcone_angle( tao::lightcone<real_type> const& lc )
+   calc_subcone_angle( tao::lightcone const& lc )
    {
       EXCEPT( lc.min_ra() == 0.0, "Subcones must have mininum RA of 0." );
       EXCEPT( lc.min_dec() == 0.0, "Subcones must have mininum DEC of 0." );
 
-      tao::simulation<real_type> const* sim = lc.simulation();
+      tao::simulation const* sim = lc.simulation();
       double b = sim->box_size();
       double ra = lc.max_ra() - lc.min_ra();
       double d = lc.max_dist();
@@ -34,7 +34,7 @@ namespace tao {
    }
 
    unsigned
-   calc_max_subcones( tao::lightcone<real_type> const& lc )
+   calc_max_subcones( tao::lightcone const& lc )
    {
       auto theta = calc_subcone_angle( lc );
       if( !theta )

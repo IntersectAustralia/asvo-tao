@@ -13,11 +13,25 @@
       <dec-min>0</dec-min>
       <dec-max>10</dec-max>
       <output-fields>
+        <item>snapnum</item>
         <item>pos_x</item>
         <item>pos_y</item>
         <item>pos_z</item>
       </output-fields>
     </light-cone>
+
+    <csv id="csv">
+      <parents>
+        <item>light-cone</item>
+      </parents>
+      <filename>result.lightcone.csv</filename>
+      <fields>
+        <item>snapnum</item>
+        <item>posx</item>
+        <item>posy</item>
+        <item>posz</item>
+      </fields>
+    </csv>
 
     <record-filter>
       <filter>

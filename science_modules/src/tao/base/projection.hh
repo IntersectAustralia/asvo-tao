@@ -27,7 +27,7 @@ namespace tao {
 
       projection();
 
-      projection( const lightcone<real_type>& lc,
+      projection( lightcone const& lc,
                   unsigned width,
                   unsigned height );
 

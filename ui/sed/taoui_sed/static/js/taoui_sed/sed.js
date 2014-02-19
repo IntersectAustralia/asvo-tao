@@ -67,6 +67,10 @@ catalogue.modules.sed = function ($) {
     	var job = init_params.job;
     	var param; // Temporary variable for observable initialisation
 
+        //
+        // Prepare apply SED and SSP.
+        //
+
     	param = job['sed-apply_sed'];
         vm.apply_sed = ko.observable(param ? param : false);
     	vm.stellar_models = ko.observableArray(TaoMetadata.StellarModel);
@@ -75,6 +79,10 @@ catalogue.modules.sed = function ($) {
     		param = catalogue.util.stellar_model(param);
     	}
     	vm.stellar_model = ko.observable(param ? param : vm.stellar_models()[0]);
+
+        //
+        // Prepare bandpass filters.
+        //
 
     	param = job['sed-band_pass_filters'];
         if (param) {
@@ -104,14 +112,21 @@ catalogue.modules.sed = function ($) {
         	vm.current_bandpass_filter(bpf);
         });
 
+        //
+        // Prepare the SED dust model.
+        //
+
+        // Apply dust?
         param = job['sed-apply_dust'];
         vm.apply_dust = ko.observable(param ? param : false);
+
+        // Prepare the models to select from.
     	vm.dust_models = ko.observableArray(TaoMetadata.DustModel);
     	param = job['sed-select_dust_model'];
     	if (param) {
     		param = catalogue.util.dust_model(param);
     	}
-    	vm.dust_model = ko.observable(vm.dust_models()[0]);
+    	vm.dust_model = ko.observable(param ? param : vm.dust_models()[0]);
 
         return vm;
 

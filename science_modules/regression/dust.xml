@@ -3,11 +3,15 @@
     <schema-version>2</schema-version>
 
     <light-cone id="light-cone">
-      <geometry>box</geometry>
-      <box-repetition>unique</box-repetition>
+      <geometry>light-cone</geometry>
+      <box-repetition>random</box-repetition>
       <rng-seed>0</rng-seed>
-      <query-box-size>10</query-box-size>
-      <redshift>0</redshift>
+      <redshift-min>0.01</redshift-min>
+      <redshift-max>0.06</redshift-max>
+      <ra-min>0</ra-min>
+      <ra-max>10</ra-max>
+      <dec-min>0</dec-min>
+      <dec-max>10</dec-max>
       <output-fields>
         <item>pos_x</item>
         <item>pos_y</item>
@@ -29,6 +33,7 @@
       <parents>
 	<item>sed</item>
       </parents>
+      <model>Tonini et al. 2012</model>
     </dust>
 
     <filter id="filter">
@@ -36,20 +41,26 @@
         <item>dust</item>
       </parents>
       <bandpass-filters>
-        <item>v.dat</item>
+        <item>Johnson/Johnson_V.dati</item>
+        <item>Johnson/Johnson_U.dati</item>
+        <item>Johnson/Johnson_B.dati</item>
       </bandpass-filters>
     </filter>
 
     <csv id="csv">
-      <filename>result</filename>
+      <parents>
+        <item>filter</item>
+      </parents>
+      <filename>result.dust.csv</filename>
       <fields>
         <item>posx</item>
         <item>posy</item>
         <item>posz</item>
+	<item>redshift_cosmological</item>
+        <item>Johnson/Johnson_V.dati_apparent</item>
+        <item>Johnson/Johnson_U.dati_apparent</item>
+        <item>Johnson/Johnson_B.dati_apparent</item>
       </fields>
-      <parents>
-        <item>light-cone</item>
-      </parents>
     </csv>
 
   </workflow>
@@ -57,5 +68,5 @@
   <subjobindex>0</subjobindex>
   <logdir>log</logdir>
   <outputdir>output</outputdir>
-  <database>millennium_mini_hdf5_dist</database>
+  <database>millennium_mini_balanced_v3</database>
 </tao>

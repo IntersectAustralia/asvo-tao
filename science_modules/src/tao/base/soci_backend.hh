@@ -36,7 +36,7 @@ namespace tao {
 
       public:
 
-         soci( const simulation<real_type>* sim = NULL )
+         soci( const simulation* sim = NULL )
             : super_type( sim ),
               _my_sql( false ),
               _sql( 0 )

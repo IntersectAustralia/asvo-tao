@@ -38,9 +38,9 @@ float zoom = 1;
 float gal_size = 0.5;
 GLuint gal_tex_id;
 
-lightcone<real_type>* lc;
+lightcone* lc;
 list<tile<real_type>> tiles;
-simulation<real_type>* cur_sim = &millennium;
+simulation* cur_sim = &millennium;
 int cur_tile_idx = -1;
 tile<real_type>* cur_box;
 string cur_table;
@@ -85,7 +85,7 @@ const unsigned char colors[11][3] = {
 };
 
 void
-draw_lightcone( const lightcone<real_type>& lc,
+draw_lightcone( const lightcone& lc,
                 float alpha = 1 );
 
 // void
@@ -244,7 +244,7 @@ draw_tile( const Tile& tile,
 }
 
 void
-draw_cap( const lightcone<real_type>& lc,
+draw_cap( const lightcone& lc,
           float dist,
           bool out )
 {
@@ -296,7 +296,7 @@ draw_cap( const lightcone<real_type>& lc,
 }
 
 void
-draw_edges( const lightcone<real_type>& lc,
+draw_edges( const lightcone& lc,
             float start,
             float finish )
 {
@@ -387,7 +387,7 @@ draw_edges( const lightcone<real_type>& lc,
 }
 
 void
-draw_shell( const lightcone<real_type>& lc,
+draw_shell( const lightcone& lc,
             float start,
             float finish,
             unsigned idx,
@@ -401,11 +401,11 @@ draw_shell( const lightcone<real_type>& lc,
 }
 
 void
-draw_lightcone( const lightcone<real_type>& lc,
+draw_lightcone( const lightcone& lc,
                 float alpha )
 {
    // Get the distance bins from the lightcone.
-   auto bins = lc.snapshot_bins();
+   auto bins = lc.distance_bins();
 
    // Each bin will be given a different color.
    for( unsigned ii = 0; ii < bins.size() - 1; ++ii )
@@ -416,7 +416,7 @@ draw_lightcone( const lightcone<real_type>& lc,
 }
 
 // void
-// draw_redshift_scale( const lightcone<real_type>& lc )
+// draw_redshift_scale( const lightcone& lc )
 // {
 //    float len = 0.8;
 //    int num_cols = 11;
@@ -914,19 +914,20 @@ calc_mags( void* data )
             std::fill( mags.begin(), mags.end(), 100.0 );
             for( unsigned ii = 0; ii < bat->size(); ++ii )
             {
+               // TODO: Get this back.
                // Rebin star-formation history.
-               cur_sfh.load_tree_data( sfh_backend.session(), bat->attribute<string>( "table" ), bat->scalar<long long>( "global_tree_id" )[ii] );
+               // cur_sfh.load_tree_data( sfh_backend.session(), bat->attribute<string>( "table" ), bat->scalar<long long>( "global_tree_id" )[ii] );
                std::fill( age_masses.begin(), age_masses.end(), 0 );
                std::fill( age_bulge_masses.begin(), age_bulge_masses.end(), 0 );
                std::fill( age_metals.begin(), age_metals.end(), 0 );
-               cur_sfh.rebin<real_type>( sfh_backend.session(), bat->scalar<int>( "local_galaxy_id" )[ii], age_masses, age_bulge_masses, age_metals );
+               // cur_sfh.rebin<real_type>( sfh_backend.session(), bat->scalar<int>( "local_galaxy_id" )[ii], age_masses, age_bulge_masses, age_metals );
 
                // Sum the spectrum.
                ssp.sum( age_masses.begin(), age_metals.begin(), sed.spectrum().values().begin() );
                sed.spectrum().update(); // rebuild spline
 
                // Calculate the magnitude of this object.
-               mags[ii] = apparent_magnitude( sed, vbp, calc_area( bat->scalar<real_type>( "redshift" )[ii] ) );
+               // mags[ii] = apparent_magnitude( sed, vbp, calc_area( bat->scalar<real_type>( "redshift" )[ii] ) );
             }
             glutPostRedisplay();
          }
@@ -1080,7 +1081,7 @@ init_tao()
    sfh_backend.connect( servers.begin(), servers.end() );
 
    // Setup initial simulation.
-   lc = new lightcone<real_type>( cur_sim );
+   lc = new lightcone( cur_sim );
    lc->set_geometry( 20, 70, 20, 70, 0.06 );
    update_tao();
 
@@ -1314,7 +1315,7 @@ set_origin( const re::match& match )
    auto z_val = to_double( match[3] );
    if( x_val && y_val && z_val )
    {
-      lc->set_origin( array<real_type,3>{ *x_val, *y_val, *z_val } );
+      lc->set_origin( std::array<real_type,3>{ *x_val, *y_val, *z_val } );
       calc_bounds();
       reshape( win_width, win_height );
       update_tao();
@@ -1347,11 +1348,11 @@ load_sfh( const re::match& match )
       }
 
       // Load SFH.
-      cur_sfh.load_tree_data( backend.session( cur_table ), cur_table, cur_tree );
+      // cur_sfh.load_tree_data( backend.session( cur_table ), cur_table, cur_tree );
       std::fill( age_masses.begin(), age_masses.end(), 0 );
       std::fill( age_bulge_masses.begin(), age_bulge_masses.end(), 0 );
       std::fill( age_metals.begin(), age_metals.end(), 0 );
-      cur_sfh.rebin<real_type>( backend.session( cur_table ), cur_gal_id, age_masses, age_bulge_masses, age_metals );
+      // cur_sfh.rebin<real_type>( backend.session( cur_table ), cur_gal_id, age_masses, age_bulge_masses, age_metals );
 
       // Also transfer the stellar mass for each tree.
       stellar_mass.resize( cur_sfh.size() );

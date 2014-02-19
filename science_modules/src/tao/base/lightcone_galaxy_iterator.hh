@@ -21,7 +21,7 @@ namespace tao {
 
       typedef Backend backend_type;
       typedef typename backend_type::real_type real_type;
-      typedef typename lightcone<real_type>::tile_iterator tile_iterator;
+      typedef typename lightcone::tile_iterator tile_iterator;
       typedef typename backend_type::tile_galaxy_iterator tile_galaxy_iterator;
       typedef batch<real_type>& value_type;
       typedef value_type reference_type;
@@ -33,7 +33,7 @@ namespace tao {
       {
       }
 
-      lightcone_galaxy_iterator( const lightcone<real_type>& lc,
+      lightcone_galaxy_iterator( const lightcone& lc,
                                  backend_type& be,
                                  query<real_type>& qry,
                                  tao::batch<real_type>* bat = 0,
@@ -143,7 +143,7 @@ namespace tao {
 
    protected:
 
-      const lightcone<real_type>* _lc;
+      const lightcone* _lc;
       backend_type* _be;
       query<real_type>* _qry;
       tao::batch<real_type>* _bat;

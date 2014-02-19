@@ -2,6 +2,7 @@
 #define tao_dust_dust_hh
 
 #include "tao/base/module.hh"
+#include "tao/base/dust.hh"
 
 namespace tao {
    namespace modules {
@@ -18,6 +19,12 @@ namespace tao {
 
          typedef Backend backend_type;
          typedef module<backend_type> module_type;
+
+         enum model_type
+         {
+            CALZETTI,
+            SLAB
+         };
 
          static
          module_type*
@@ -64,10 +71,32 @@ namespace tao {
             _total_spectra = &bat.vector<real_type>( "total_spectra" );
             _disk_spectra = &bat.vector<real_type>( "disk_spectra" );
             _bulge_spectra = &bat.vector<real_type>( "bulge_spectra" );
-            _sfrs = bat.scalar<real_type>( "sfr" );
 
             // Find the wavelengths from my parents.
             _waves = this->template attribute<const vector<real_type>::view>( "wavelengths" );
+
+            // What kind of dust are we using?
+            std::string mod = boost::algorithm::to_lower_copy( dict.get<std::string>( "model" ) );
+            if( mod == "tonini et al. 2012" )
+            {
+               _mod = CALZETTI;
+               _sfrs = bat.scalar<real_type>( "sfr" );
+            }
+            else if( mod == "slab" )
+            {
+               _mod = SLAB;
+               _sim = this->template attribute<simulation const*>( "simulation" );
+               _cold_gas = bat.scalar<real_type>( "coldgas" );
+               _cold_gas_metal = bat.scalar<real_type>( "metalscoldgas" );
+               _redshifts = bat.scalar<real_type>( "redshift_cosmological" );
+               _disk_radius = bat.scalar<real_type>( "diskscaleradius" );
+               std::vector<real_type> waves( _waves.size() );
+               std::copy( _waves.begin(), _waves.end(), waves.begin() );
+               _slab.load_extinction( data_prefix()/"dust/nebform.dat", waves );
+            }
+            else
+               EXCEPT( 0, "Unknown dust model: ", mod );
+            LOGILN( "Dust model: ", dict.get<std::string>( "model" ) );
 
 	    LOGILN( "Done.", setindent( -2 ) );
          }
@@ -80,75 +109,69 @@ namespace tao {
          execute()
          {
             tao::batch<real_type>& bat = this->parents().front()->batch();
-            for( unsigned ii = 0; ii < bat.size(); ++ii )
+            switch( _mod )
             {
-               process_spectra( _sfrs[ii], (*_total_spectra)[ii] );
-               process_spectra( _sfrs[ii], (*_disk_spectra)[ii] );
-               process_spectra( _sfrs[ii], (*_bulge_spectra)[ii] );
+               case CALZETTI:
+                  for( unsigned ii = 0; ii < bat.size(); ++ii )
+                  {
+                     process_spectra_calzetti( _sfrs[ii], (*_total_spectra)[ii] );
+                     process_spectra_calzetti( _sfrs[ii], (*_disk_spectra)[ii] );
+                     process_spectra_calzetti( _sfrs[ii], (*_bulge_spectra)[ii] );
+                  }
+                  break;
+
+               case SLAB:
+                  for( unsigned ii = 0; ii < bat.size(); ++ii )
+                  {
+                     process_spectra_slab( _redshifts[ii], _cold_gas[ii], _cold_gas_metal[ii], _disk_radius[ii], (*_total_spectra)[ii] );
+                     process_spectra_slab( _redshifts[ii], _cold_gas[ii], _cold_gas_metal[ii], _disk_radius[ii], (*_disk_spectra)[ii] );
+                     process_spectra_slab( _redshifts[ii], _cold_gas[ii], _cold_gas_metal[ii], _disk_radius[ii], (*_bulge_spectra)[ii] );
+                  }
+                  break;
             }
          }
 
          void
-         process_spectra( real_type sfr,
-                          vector<real_type>::view spectra )
+         process_spectra_calzetti( real_type sfr,
+                                   vector<real_type>::view spectra )
          {
-            static const real_type M_E_CU = M_E*M_E*M_E;
-            static const real_type ALPHA  = M_E_CU - 1.0/M_E/M_E;
+            tao::dust::calzetti( sfr, spectra.begin(), spectra.end(), _waves.begin(), spectra.begin() );
+         }
 
-            // Calculate "adust", whatever that is...
-            real_type adust;
-            if( sfr > 0.05 )
-            {
-               // TODO: Explain the shit out of this.
-               // TODO: Needs thorough checking.
-               adust = 3.675*1.0/ALPHA*pow( sfr/1.479, 0.4 );
-               adust += -1.0/ALPHA/M_E/M_E + 0.06;
-            }
-            else
-               adust = 0.0;
-            // LOGDLN( "adust: ", adust );
-
-            // K-band unchanged by dust with this value (?).
-            real_type rdust = 3.675;
-            // LOGDLN( "rdust: ", rdust );
-            ASSERT( adust/rdust >= 0.0, "Some dust problem... ?" );
-
-            for( unsigned ii = 0; ii < spectra.size(); ++ii )
-            {
-               real_type wl = _waves[ii];
-
-               // Why 6300.0?
-               real_type kdust;
-               if( wl <= 6300.0 )
-               {
-                  kdust = 2.659*(-2.156 + 1.5098*1e4/wl - 0.198*1e8/wl/wl + 
-                                 0.011*1e12/wl/wl/wl) + rdust;
-               }
-               else
-               {
-                  kdust = 2.659*(-1.857 + 1.040*1e4/wl) + rdust;
-               }
-               // LOGDLN( "kdust: ", kdust );
-
-               real_type expdust;
-               if( adust >= 0.0 )
-                  expdust = kdust*adust/rdust;
-               else
-                  expdust = 0.0;
-               // LOGDLN( "expdust: ", expdust );
-
-               // Stomp on spectra.
-               spectra[ii] = spectra[ii]*pow( 10.0, -0.4*expdust );
-            }
+         void
+         process_spectra_slab( real_type redshift,
+                               real_type cold_gas_mass,
+                               real_type cold_gas_metal,
+                               real_type disk_radius,
+                               vector<real_type>::view spectra )
+         {
+            _slab(
+               _sim->h(),
+               redshift,
+               cold_gas_mass,
+               cold_gas_metal,
+               disk_radius,
+               spectra.begin(),
+               spectra.end(),
+               _waves.begin(),
+               spectra.begin()
+               );
          }
 
       protected:
 
+         model_type _mod;
+         tao::dust::slab _slab;
+         simulation const* _sim;
          fibre<real_type>* _total_spectra;
          fibre<real_type>* _disk_spectra;
          fibre<real_type>* _bulge_spectra;
          vector<real_type>::view _sfrs;
          vector<real_type>::view _waves;
+         vector<real_type>::view _cold_gas;
+         vector<real_type>::view _cold_gas_metal;
+         vector<real_type>::view _redshifts;
+         vector<real_type>::view _disk_radius;
       };
 
    }

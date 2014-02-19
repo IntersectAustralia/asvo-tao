@@ -69,7 +69,7 @@ namespace tao {
 
             // Locate the backend and the simulation.
             _be = this->parents().front()->backend();
-            _sim = this->template attribute<const simulation<real_type>*>( "simulation" );
+            _sim = this->template attribute<const simulation*>( "simulation" );
 
             // Handle optinos.
             _read_options( global_dict );
@@ -198,7 +198,7 @@ namespace tao {
       protected:
 
          backend_type* _be;
-         const simulation<real_type>* _sim;
+         const simulation* _sim;
          stellar_population _ssp;
          age_line<real_type> _snap_ages;
          sfh<real_type> _sfh;

@@ -1,0 +1,60 @@
+<tao>
+  <workflow>
+    <schema-version>2</schema-version>
+
+    <light-cone id="light-cone">
+      <geometry>light-cone</geometry>
+      <box-repetition>random</box-repetition>
+      <rng-seed>0</rng-seed>
+      <redshift-min>0</redshift-min>
+      <redshift-max>0.15</redshift-max>
+      <ra-min>0</ra-min>
+      <ra-max>60</ra-max>
+      <dec-min>0</dec-min>
+      <dec-max>60</dec-max>
+      <output-fields>
+        <item>pos_x</item>
+        <item>pos_y</item>
+        <item>pos_z</item>
+        <item>coldgas</item>
+        <item>metalscoldgas</item>
+        <item>diskscaleradius</item>
+      </output-fields>
+    </light-cone>
+
+    <sed id="sed">
+      <parents>
+        <item>light-cone</item>
+      </parents>
+      <ages-file>m05/ages.dat</ages-file>
+      <wavelengths-file>m05/wavelengths.dat</wavelengths-file>
+      <metallicities-file>m05/metallicities.dat</metallicities-file>
+      <single-stellar-population-model>m05/ssp.ssz</single-stellar-population-model>
+    </sed>
+
+    <filter id="filter">
+      <parents>
+        <item>sed</item>
+      </parents>
+      <bandpass-filters>
+        <item>Johnson/k.dat</item>
+      </bandpass-filters>
+    </filter>
+
+    <csv id="csv">
+      <parents>
+        <item>filter</item>
+      </parents>
+      <filename>result.filter.csv</filename>
+      <fields>
+        <item>Johnson/k.dat_absolute</item>
+      </fields>
+    </csv>
+
+  </workflow>
+
+  <subjobindex>0</subjobindex>
+  <logdir>log</logdir>
+  <outputdir>output</outputdir>
+  <database>millennium_full_v3</database>
+</tao>

@@ -1,41 +1,67 @@
 #ifndef tao_base_backend_hh
 #define tao_base_backend_hh
 
+#include <libhpc/profile/timer.hh>
 #include "simulation.hh"
+#include "types.hh"
 
 namespace tao {
 
-   template< class T >
+   ///
+   /// Base class for TAO backends. A backend defines access to
+   /// data sources for astronomical datasets. For example, the
+   /// datasets could be stored in a database (relational or
+   /// otherwise), in HDF5 files or even simple text files. The
+   /// backends abstract the storage from the processing.
+   ///
    class backend
    {
    public:
 
-      typedef T real_type;
+      ///
+      /// Construct with a simulation.
+      ///
+      /// @param[in] sim The simulation this backend refers to.
+      ///
+      backend( tao::simulation const* sim = nullptr );
 
-   public:
-
-      backend( const simulation<real_type>* sim = NULL )
-         : _sim( sim )
-      {
-      }
-
+      ///
+      /// Set the simulation. Each backend is constructed to
+      /// represent a particular dataset, which itself must refer
+      /// to a simulation.
+      ///
+      /// @param[in] sim The simulation this backend refers to.
+      ///
       virtual
       void
-      set_simulation( const simulation<real_type>* sim )
-      {
-         _sim = sim;
-      }
+      set_simulation( tao::simulation const* sim );
 
-      profile::timer&
-      timer()
-      {
-         return _timer;
-      }
+      ///
+      /// Get the simulation.
+      ///
+      /// @returns The simulation this backend refers to.
+      ///
+      tao::simulation const*
+      simulation() const;
+
+      ///
+      /// Load the simulation details from the dataset. In most
+      /// circumstances the simulation metadata will be stored
+      /// along with the simulation data.
+      ///
+      /// @returns The loaded simulation.
+      ///
+      virtual
+      tao::simulation const*
+      load_simulation() = 0;
+
+      hpc::profile::timer&
+      timer();
 
    protected:
 
-      const simulation<real_type>* _sim;
-      profile::timer _timer;
+      tao::simulation const* _sim;
+      hpc::profile::timer _timer;
    };
 
 }

@@ -4,12 +4,10 @@
 #include <libhpc/containers/array.hh>
 #include "box.hh"
 #include "query.hh"
+#include "lightcone.hh"
 
 namespace tao {
    using namespace hpc;
-
-   template< class T >
-   class lightcone;
 
    ///
    ///
@@ -24,7 +22,7 @@ namespace tao {
 
    public:
 
-      tile( const tao::lightcone<real_type>* lc = 0,
+      tile( const tao::lightcone* lc = 0,
             array<real_type,3> offs = { { 0, 0, 0 } } )
          : box<T>( 0 ),
            _lc( 0 )
@@ -33,7 +31,7 @@ namespace tao {
       }
 
       void
-      set_lightcone( const lightcone<real_type>* lc,
+      set_lightcone( const lightcone* lc,
                      array<real_type,3> offs = { { 0, 0, 0 } } )
       {
          if( lc )
@@ -56,7 +54,7 @@ namespace tao {
             this->_max[ii] = this->_min[ii] + _lc->simulation()->box_size();
       }
 
-      const tao::lightcone<real_type>*
+      const tao::lightcone*
       lightcone() const
       {
          return _lc;
@@ -80,7 +78,7 @@ namespace tao {
 
    protected:
 
-      const tao::lightcone<real_type>* _lc;
+      tao::lightcone const* _lc;
    };
 
 }

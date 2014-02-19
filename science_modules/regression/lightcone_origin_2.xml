@@ -29,8 +29,8 @@
 
   </workflow>
 
-  <subjobindex>2</subjobindex>
+  <subjobindex>1</subjobindex>
   <logdir>log</logdir>
   <outputdir>output</outputdir>
-  <database>millennium_full_hdf5_dist</database>
+  <database>millennium_mini_hdf5_dist</database>
 </tao>

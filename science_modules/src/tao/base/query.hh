@@ -6,6 +6,7 @@
 #include <libhpc/system/helpers.hh>
 
 namespace tao {
+   using namespace hpc;
 
    template< class T >
    class query

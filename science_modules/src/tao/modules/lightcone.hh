@@ -218,6 +218,8 @@ namespace tao {
             {
                this->_complete = true;
             }
+#else
+            this->_complete = true;
 #endif
          }
 
@@ -243,7 +245,7 @@ namespace tao {
          find_attribute( const string& name )
          {
             if( name == "simulation" )
-               return boost::any( &((const simulation<real_type>&)_sim) );
+               return boost::any( (const simulation*)_sim );
             else if( name == "filter" )
                return boost::any( &((filter const&)_filt) );
             else
@@ -268,7 +270,7 @@ namespace tao {
             return !_unique;
          }
 
-         const tao::lightcone<real_type>&
+         const tao::lightcone&
          base_lightcone() const
          {
             return _lc;
@@ -302,31 +304,8 @@ namespace tao {
             // Cache the local dictionary.
             const options::xml_dict& dict = this->_dict;
 
-            // Simulation box size comes from backend.
-            _sim.set_box_size( _be->box_size() );
-
-            // Cosmological values.
-            real_type hubble = dict.get<real_type>( "hubble", 73.0 );
-            real_type omega_m = dict.get<real_type>( "omega_m", 0.25 );
-            real_type omega_l = dict.get<real_type>( "omega_l", 0.75 );
-            _sim.set_cosmology( hubble, omega_m, omega_l );
-
-            // Extract the list of redshift snapshots from the backend to
-            // be set on the simulation.
-            {
-               vector<real_type> snap_zs;
-               {
-                  auto db_timer = this->db_timer_start();
-                  _be->snapshot_redshifts( snap_zs );
-               }
-               _sim.set_snapshot_redshifts( snap_zs );
-            }
-
-            // Now set the simulation on the backend.
-            {
-               auto db_timer = this->db_timer_start();
-               _be->set_simulation( &_sim );
-            }
+	    // Load simulation information from database.
+            _sim = _be->load_simulation();
 
             // Extract the random number generator seed and set it.
             optional<int> rng_seed = dict.opt<int>( "rng-seed" );
@@ -355,28 +334,46 @@ namespace tao {
                _geom = CONE;
 
                // Redshift ranges.
-               real_type snap_z_max = _sim.redshifts().front();
-               real_type snap_z_min = _sim.redshifts().back();
+               real_type snap_z_max = _sim->redshifts().front();
+               real_type snap_z_min = _sim->redshifts().back();
                real_type max_z = std::min( dict.get<real_type>( "redshift-max", snap_z_max ), snap_z_max );
                real_type min_z = std::max( dict.get<real_type>( "redshift-min", snap_z_min ), snap_z_min );
                LOGILN( "Redshift range: [", min_z, ", ", max_z, ")" );
 
                // Right ascension.
-               real_type min_ra = std::min<real_type>( std::max<real_type>( dict.get<real_type>( "ra-min", 0.0 ), 0.0 ), 90.0 );
-               real_type max_ra = std::min<real_type>( std::max<real_type>( dict.get<real_type>( "ra-max", 10.0 ), 0.0 ), 90.0 );
+               real_type min_ra = std::min<real_type>( std::max<real_type>( dict.get<real_type>( "ra-min", 0.0 ), 0.0 ), 89.99 );
+               real_type max_ra = std::min<real_type>( std::max<real_type>( dict.get<real_type>( "ra-max", 10.0 ), 0.0 ), 89.99 );
                min_ra = std::min<real_type>( min_ra, max_ra );
                LOGILN( "Right ascension range: [", min_ra, ", ", max_ra, ")" );
 
                // Declination.
-               real_type min_dec = std::min<real_type>( std::max<real_type>( dict.get<real_type>( "dec-min", 0.0 ), 0.0 ), 90.0 );
-               real_type max_dec = std::min<real_type>( std::max<real_type>( dict.get<real_type>( "dec-max", 10.0 ), 0.0 ), 90.0 );
+               real_type min_dec = std::min<real_type>( std::max<real_type>( dict.get<real_type>( "dec-min", 0.0 ), 0.0 ), 89.99 );
+               real_type max_dec = std::min<real_type>( std::max<real_type>( dict.get<real_type>( "dec-max", 10.0 ), 0.0 ), 89.99 );
                min_dec = std::min<real_type>( min_dec, max_dec );
                LOGILN( "Declination range: [", min_dec, ", ", max_dec, ")" );
 
+               // Check for single snapshot.
+               // TODO: Remove this username bit.
+               auto uname = global_dict.opt<string>( "username" );
+               boost::optional<unsigned> sng_snap;
+               if( uname && *uname == "max" )
+               {
+                  sng_snap = 180;
+                  LOGILN( "Single snapshot: ", *sng_snap );
+               }
+               // auto sng_snap = dict.opt<unsigned>( "single-snapshot" );
+               // if( *sng_snap )
+               //    LOGILN( "Single snapshot: ", *sng_snap );
+
                // Prepare the lightcone object.
-               _lc.set_simulation( &_sim );
+               _lc.set_simulation( _sim );
                _lc.set_geometry( min_ra, max_ra, min_dec, max_dec, max_z, min_z );
 	       _lc.set_random( !_unique, &_eng );
+               if( sng_snap )
+               {
+                  _lc.set_single_snapshot( true );
+                  _lc.set_snapshot( *sng_snap );
+               }
 
 	       // Prepare the origin if we're running a unique cone.
 	       if( _unique )
@@ -387,27 +384,27 @@ namespace tao {
                _geom = BOX;
 
                // Box size.
-               _box_size = dict.get<real_type>( "query-box-size", _sim.box_size() );
+               _box_size = dict.get<real_type>( "query-box-size", _sim->box_size() );
                LOGILN( "Box size: ", _box_size );
 
                // Snapshot.
-               _box_z = dict.get<real_type>( "redshift", _sim.redshifts().front() );
+               _box_z = dict.get<real_type>( "redshift", _sim->redshifts().front() );
                LOGILN( "Redshift: ", _box_z );
 
                // Try to coerce the redshift into a snapshot index.
                unsigned ii = 0;
-               for( ; ii < _sim.redshifts().size(); ++ii )
+               for( ; ii < _sim->redshifts().size(); ++ii )
                {
-                  if( num::approx( _box_z, _sim.redshifts()[ii], 1e-3 ) )
+                  if( num::approx( _box_z, _sim->redshifts()[ii], 1e-3 ) )
                      break;
                }
-               EXCEPT( ii < _sim.redshifts().size(),
+               EXCEPT( ii < _sim->redshifts().size(),
                        "Unable to match specified box redshift, ", _box_z, ", to snapshot.\n"
-                       "Available redshifts for selected simulation are: ", _sim.redshifts() );
+                       "Available redshifts for selected simulation are: ", _sim->redshifts() );
                LOGILN( "Matched redshift to snapshot: ", ii );
 
                // Prepare box object.
-               _box.set_simulation( &_sim );
+               _box.set_simulation( _sim );
                _box.set_size( _box_size );
                _box.set_snapshot( ii );
                _box.set_random( !_unique, &_eng );
@@ -458,6 +455,7 @@ namespace tao {
 
             // Get the subjobindex.
             unsigned sub_idx = global_dict.get<unsigned>( "subjobindex" );
+	    LOGILN( "Subcone inde: ", sub_idx );
 
 	    // Check this index is okay.
 	    unsigned max_subcones = tao::calc_max_subcones( _lc );
@@ -471,7 +469,7 @@ namespace tao {
 	    // Set angle and origin.
             _lc.set_viewing_angle( view_angle );
             _lc.set_origin( ori );
-            LOGILN( "Viewing angle set to: ", view_angle );
+            LOGILN( "Viewing angle set to: ", to_degrees( view_angle ) );
             LOGILN( "Origin set to: (", ori[0], ", ", ori[1], ", ", ori[2], ")" );
          }
 
@@ -484,10 +482,10 @@ namespace tao {
          engine_type _eng;
          bool _unique;
 
-         simulation<real_type> _sim;
+         simulation const* _sim;
          query<real_type> _qry;
          filter _filt;
-         tao::lightcone<real_type> _lc;
+         tao::lightcone _lc;
          box<real_type> _box;
          bool _my_be;
          backend_type* _be;

@@ -11,7 +11,7 @@ namespace tao {
 
    real_type
    calc_area( real_type redshift,
-              tao::simulation<real_type> const& sim );
+              tao::simulation const& sim );
 
    real_type
    calc_abs_area();
