@@ -491,8 +491,8 @@ color: #333; cursor: pointer; display: inline-block; font-family: inherit; font-
 .btn.disabled.secondary, .btn[disabled].secondary { background-color: #e9e9e9; }
 .btn.disabled.secondary:hover, .btn.disabled.secondary:focus, .btn[disabled].secondary:hover, .btn[disabled].secondary:focus { background-color: #e9e9e9; outline: none; }
 
-.btn-primary { background: #2ba6cb; color: #FFF; border: 1px solid #1e728c; }
-.btn-primary:hover { background-color: #2284a1; color: #FFF; border: 1px solid #1e728c; }
+.btn-primary { background: #4F81BD; color: #FFF; border: 1px solid #1e728c; }
+.btn-primary:hover { background-color: #4F81BD; color: #FFF; border: 1px solid #1e728c; }
 
 .btn-primary-errors { background: #b94a48; color: #FFF; border: 1px solid #803937; }
 .btn-primary-errors:hover { background-color: #803937; color: #FFF; border: 1px solid #803937; }
@@ -590,7 +590,8 @@ span.see-form-errors:hover { text-decoration: underline; cursor: pointer;}
 
 
 .verticalLine {
-border-left:thick solid #d0d0d0;
+border-right:thick solid #d0d0d0;
+
 }
 
 .brand.small { display: none; }
@@ -638,9 +639,9 @@ border-left:thick solid #d0d0d0;
 
 footer {
     color: #222;
-    background: #DDD;
+    
     padding: 0 0 0 0;
-    border-top: 1px solid #000;
+    
 }
 
 #footer {
@@ -885,4 +886,10 @@ ul.messagelist { position: fixed; top: 48px; left: 0; right: 0; }
 /* Acknowledgement Text on the home page */
 .acknowledgements {
 	opacity: 0.7;
+}
+
+.form-actions
+{
+background-color:white;
+border:0px	
 }
