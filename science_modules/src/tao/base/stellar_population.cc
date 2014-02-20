@@ -90,6 +90,12 @@ namespace tao {
       _age_bins.set_ages( new_ages );
    }
 
+   unsigned
+   stellar_population::num_metal_bins() const
+   {
+      return _metal_bins.size() + 1;
+   }
+
    real_type
    stellar_population::at( unsigned age_idx,
                            unsigned spec_idx,
@@ -114,7 +120,7 @@ namespace tao {
    }
 
    unsigned
-   stellar_population::_interp_metal( real_type metal ) const
+   stellar_population::find_metal_bin( real_type metal ) const
    {
       return algorithm::bin( _metal_bins.begin(), _metal_bins.end(), metal );
    }

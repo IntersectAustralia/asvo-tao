@@ -52,6 +52,9 @@ namespace tao {
       void
       restrict();
 
+      unsigned
+      num_metal_bins() const;
+
       real_type
       at( unsigned age_idx,
           unsigned spec_idx,
@@ -64,12 +67,66 @@ namespace tao {
       bin_ages() const;
 
       template< class MassIterator,
-                class MetalIterator,
                 class OutputIterator >
       void
       sum( MassIterator masses_start,
-           MetalIterator metals_start,
            const OutputIterator& sed_start ) const
+      {
+         sum_thibault( masses_start, sed_start );
+      }
+
+      template< class MassIterator,
+                class OutputIterator >
+      void
+      sum_thibault( MassIterator masses_start,
+                    const OutputIterator& sed_start ) const
+      {
+         // Erase sed values first.
+         {
+            OutputIterator sed_it = sed_start;
+            for( unsigned ii = 0; ii < _waves.size(); ++ii, ++sed_it )
+               *sed_it = 0;
+         }
+
+         // Now sum spectra.
+         for( unsigned ii = 0; ii < _age_bins.size(); ++ii )
+         {
+            // Calculate the base index for the ssp table. This skips forwards blocks
+            // of age information.
+            size_t base = ii*_waves.size()*(_metal_bins.size() + 1);
+
+            // Sum each spectra into the sed bin. We still have wavelengths and
+            // metallicities to sum.
+            for( unsigned jj = 0; jj <= _metal_bins.size(); ++jj ) // <= because bins are duals
+            {
+               // Cache the mass.
+               real_type mass = *masses_start++;
+               ASSERT( mass == mass, "Found NaN for mass during stellar population summation." );
+
+               // Update with the recycling fraction.
+               mass *= _com_rec_frac;
+
+               // New SSP offset based on metallicity.
+               unsigned met_base = base + jj;
+
+               // Update spectra.
+               OutputIterator sed_it = sed_start;
+               for( unsigned kk = 0; kk < _waves.size(); ++kk )
+               {
+                  *sed_it += _spec[met_base + kk*(_metal_bins.size() + 1)]*mass;
+                  ASSERT( *sed_it == *sed_it, "Produced NaN during stellar population summation." );
+               }
+            }
+         }
+      }
+
+      template< class MassIterator,
+                class MetalIterator,
+                class OutputIterator >
+      void
+      sum_chiara( MassIterator masses_start,
+                  MetalIterator metals_start,
+                  const OutputIterator& sed_start ) const
       {
          // Erase sed values first.
          {
@@ -89,7 +146,7 @@ namespace tao {
 	    mass *= _com_rec_frac;
 
             // Interpolate the metallicity to an index.
-            unsigned metal_idx = _interp_metal( *metals_start );
+            unsigned metal_idx = find_metal_bin( *metals_start );
 
             // Calculate the base index for the ssp table.
             size_t base = ii*_waves.size()*(_metal_bins.size() + 1) + metal_idx;
@@ -110,12 +167,11 @@ namespace tao {
             ++metals_start;
          }
       }
-           
-
-   protected:
 
       unsigned
-      _interp_metal( real_type metal ) const;
+      find_metal_bin( real_type metal ) const;
+
+   protected:
 
       void
       _load_metals( const fs::path& filename );

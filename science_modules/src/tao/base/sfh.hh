@@ -6,6 +6,7 @@
 #include <boost/lexical_cast.hpp>
 #include "timed.hh"
 #include "age_line.hh"
+#include "stellar_population.hh"
 
 namespace tao {
    using namespace hpc;
@@ -234,7 +235,39 @@ namespace tao {
       void
       rebin( typename vector<U>::view age_masses,
              typename vector<U>::view bulge_age_masses,
-             typename vector<U>::view age_metals )
+             stellar_population const& ssp )
+      {
+         rebin_thibault<U>( age_masses, bulge_age_masses, ssp );
+      }
+
+      template< class U >
+      void
+      rebin_thibault( typename vector<U>::view age_masses,
+                      typename vector<U>::view bulge_age_masses,
+                      stellar_population const& ssp )
+
+      {
+         // Must have ages available.
+         ASSERT( _snap_ages, "Snapshot ages have not been set." );
+         ASSERT( _bin_ages, "Bin ages have not been set." );
+
+         // Array sizes must match the number of bins.
+         ASSERT( _bin_ages->size() == age_masses.size()*ssp.num_metal_bins() &&
+                 _bin_ages->size() == bulge_age_masses.size(),
+                 "Rebinning arrays must have the same size as the age bins." );
+
+         // Clear out values.
+         std::fill( age_masses.begin(), age_masses.end(), 0.0 );
+         std::fill( bulge_age_masses.begin(), bulge_age_masses.end(), 0.0 );
+
+         _rebin_linear_thibault<U>( (*_snap_ages)[_old_snap], age_masses, bulge_age_masses, ssp );
+      }
+
+      template< class U >
+      void
+      rebin_chiara( typename vector<U>::view age_masses,
+                    typename vector<U>::view bulge_age_masses,
+                    typename vector<U>::view age_metals )
 
       {
          // LOGBLOCKD( "Rebinning galaxy with local ID ", galaxy_id, " in tree with ID ", _cur_tree_id, " in table ", _cur_table, "." );
@@ -265,7 +298,7 @@ namespace tao {
 	 // }
 	 // else
 	 // {
-	    _rebin_linear<U>( (*_snap_ages)[_old_snap], age_masses, bulge_age_masses, age_metals );
+	    _rebin_linear_chiara<U>( (*_snap_ages)[_old_snap], age_masses, bulge_age_masses, age_metals );
 	    // _rebin_reurse<U>( sql, galaxy_id, _sfrs[galaxy_id], _bulge_sfrs[galaxy_id], _cold_gas[galaxy_id],
 	    // 		       _metals[galaxy_id], _snaps[galaxy_id], (*_snap_ages)[_snaps[galaxy_id]],
 	    // 		       age_masses, bulge_age_masses, age_metals );
@@ -464,10 +497,104 @@ namespace tao {
 
       template< class U >
       void
-      _rebin_linear( real_type oldest_age,
-		     typename vector<U>::view age_masses,
-		     typename vector<U>::view bulge_age_masses,
-		     typename vector<U>::view age_metals )
+      _rebin_linear_thibault( real_type oldest_age,
+                              typename vector<U>::view age_masses,
+                              typename vector<U>::view bulge_age_masses,
+                              stellar_population const& ssp )
+      {
+	 // Iterate over all objects.
+	 for( unsigned ii = 0; ii < _sfrs.size(); ++ii )
+	 {
+	    // Don't try to calculate anything if the SFR is zero. I do
+	    // this not only for efficiency but also because some simulations
+	    // don't always supply a snapshot - 1. Also, don't try this
+	    // at snapshot 0 for the same reason.
+	    real_type sfr = _sfrs[ii];
+	    real_type bulge_sfr = _bulge_sfrs[ii];
+	    int snap = _snaps[ii];
+	    if( snap > 0 && (sfr > 0.0 || bulge_sfr > 0.0) )
+	    {
+	       // Cache some stuff.
+	       real_type metal = _metals[ii];
+               unsigned met_bin = ssp.find_metal_bin( metal );
+
+	       // Calculate the age of material created at the beginning of
+	       // this timestep and at the end. Be careful! This age I speak
+	       // of is how old the material will be when we get to the
+	       // time of the final galaxy.
+	       ASSERT( snap > 0, "Must have a previous snapshot." );
+	       LOGDLN( "Oldest age in tree: ", oldest_age );
+	       LOGDLN( "Age of current galaxy: ", (*_snap_ages)[snap] );
+	       LOGDLN( "Age of previous snapshot: ", (*_snap_ages)[snap - 1] );
+	       real_type first_age = oldest_age - (*_snap_ages)[snap - 1];
+	       real_type last_age = oldest_age - (*_snap_ages)[snap];
+	       real_type age_size = first_age - last_age;
+	       LOGDLN( "Age range: [", first_age, "-", last_age, ")" );
+	       LOGDLN( "Age size: ", age_size );
+
+	       // Use the star formation rates to compute the new mass
+	       // produced. Bear in mind the rates we expect from the
+	       // database will be solar masses per year.
+	       real_type new_mass = sfr*age_size*1e9;
+	       real_type new_bulge_mass = bulge_sfr*age_size*1e9;
+	       LOGDLN( "New mass: ", new_mass );
+	       LOGDLN( "New bulge mass: ", new_bulge_mass );
+	       ASSERT( new_mass >= 0.0 && new_bulge_mass >= 0.0, "Mass has been lost during rebinning." );
+	       ASSERT( new_mass == new_mass, "Have NaN for new total mass during rebinning." );
+	       ASSERT( new_bulge_mass == new_bulge_mass, "Have NaN for new bulge mass during rebinning." );
+
+	       // Add the new mass to the appropriate bins. Find the first bin
+	       // that has overlap with this age range.
+	       unsigned first_bin = _bin_ages->find_bin( last_age );
+	       unsigned last_bin = _bin_ages->find_bin( first_age ) + 1;
+	       while( first_bin != last_bin )
+	       {
+		  // Find the fraction we will use to contribute to this
+		  // bin.
+		  real_type upp;
+		  if( first_bin < last_bin - 1 )
+		     upp = std::min( _bin_ages->dual( first_bin ), first_age );
+		  else
+		     upp = first_age;
+		  real_type frac = (upp - last_age)/age_size;
+		  LOGDLN( "Have sub-range: [", last_age, "-", upp, ")" );
+		  LOGDLN( "Updating bin ", first_bin, " with fraction of ", frac, "." );
+
+		  // Cache the current bin mass for later.
+		  real_type cur_bin_mass = age_masses[first_bin];
+
+		  // Update the mass bins.
+                  unsigned bin_idx = first_bin*ssp.num_metal_bins() + met_bin;
+		  LOGD( "Mass from ", age_masses[first_bin], " to " );
+		  age_masses[bin_idx] += frac*new_mass;
+		  LOGDLN( age_masses[bin_idx], "." );
+		  LOGD( "Bulge mass from ", bulge_age_masses[bin_idx], " to " );
+		  bulge_age_masses[bin_idx] += frac*new_bulge_mass;
+		  LOGDLN( bulge_age_masses[bin_idx], "." );
+		  ASSERT( age_masses[bin_idx] == age_masses[bin_idx],
+			  "Have NaN for rebinned total masses for bin: ", bin_idx );
+		  ASSERT( bulge_age_masses[bin_idx] == bulge_age_masses[bin_idx],
+			  "Have NaN for rebinned bulge masses for bin: ", bin_idx );
+		  ASSERT( age_masses[bin_idx] >= 0.0,
+			  "Produced negative value for rebinned total masses for bin: ", bin_idx );
+		  ASSERT( bulge_age_masses[bin_idx] >= 0.0,
+			  "Produced negative value for rebinned bulge masses for bin: ", bin_idx );
+
+		  // Move to the next bin.
+		  if( first_bin < _bin_ages->size() - 1 )
+		     last_age = _bin_ages->dual( first_bin );
+		  ++first_bin;
+	       }
+	    }
+	 }
+      }
+
+      template< class U >
+      void
+      _rebin_linear_chiara( real_type oldest_age,
+                            typename vector<U>::view age_masses,
+                            typename vector<U>::view bulge_age_masses,
+                            typename vector<U>::view age_metals )
       {
 	 // Iterate over all objects.
 	 for( unsigned ii = 0; ii < _sfrs.size(); ++ii )

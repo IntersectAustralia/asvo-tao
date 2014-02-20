@@ -134,27 +134,23 @@ namespace tao {
                {
                   auto rebin_timer = _rebin_timer.start();
 		  // auto ANON = local_rebin_timer.start();
-                  _sfh.rebin<real_type>( _age_masses, _bulge_age_masses, _age_metals );
+                  // _sfh.rebin<real_type>( _age_masses, _bulge_age_masses, _age_metals );
+                  _sfh.rebin<real_type>( _age_masses, _bulge_age_masses, _ssp );
                }
 	       // LOGILN( "Rebinning took: ", local_rebin_timer.total(), " s" );
 
                // Sum contributions from the SSP.
                {
                   auto sum_timer = _sum_timer.start();
-                  _ssp.sum( _age_masses.begin(), _age_metals.begin(), total_spectra[ii].begin() );
-                  _ssp.sum( _bulge_age_masses.begin(), _age_metals.begin(), bulge_spectra[ii].begin() );
+                  // _ssp.sum( _age_masses.begin(), _age_metals.begin(), total_spectra[ii].begin() );
+                  // _ssp.sum( _bulge_age_masses.begin(), _age_metals.begin(), bulge_spectra[ii].begin() );
+                  _ssp.sum( _age_masses.begin(), total_spectra[ii].begin() );
+                  _ssp.sum( _bulge_age_masses.begin(), bulge_spectra[ii].begin() );
                }
 
                // Create disk spectra.
                for( unsigned jj = 0; jj < _ssp.wavelengths().size(); ++jj )
                   disk_spectra[ii][jj] = total_spectra[ii][jj] - bulge_spectra[ii][jj];
-
-#if 0
-	       // Dump stuff.
-	       std::ofstream outf( boost::lexical_cast<std::string>( gal_gids[ii] ) + ".dat" );
-	       outf << "MASSES: " << _age_masses << "\n";
-	       outf << "METALS: " << _age_metals << "\n";
-#endif
             }
 
 	    LOGDLN( "Done.", setindent( -2 ) );
