@@ -113,9 +113,7 @@ namespace tao {
             auto& disk_spectra = bat.vector<real_type>( "disk_spectra" );
             auto& bulge_spectra = bat.vector<real_type>( "bulge_spectra" );
             soci::session& sql = _be->session( table_name );
-#ifndef NLOG
 	    auto gal_gids = bat.scalar<long long>( "globalindex" );
-#endif
 
             // Perform the processing.
             for( unsigned ii = 0; ii < bat.size(); ++ii )

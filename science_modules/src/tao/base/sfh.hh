@@ -65,6 +65,17 @@ namespace tao {
       }
 
       void
+      load_snapshot_lookback_times( fs::path const& path )
+      {
+	 std::ifstream file( path.native() );
+	 EXCEPT( file, "Failed to open snapshot lookback times file: ", path );
+
+	 _snap_lbts.resize( _snap_ages->size() );
+	 for( unsigned ii = 0; ii < _snap_lbts.size(); ++ii )
+	    file >> _snap_lbts[ii];
+      }
+
+      void
       set_bin_ages( const age_line<real_type>* bin_ages )
       {
          _bin_ages = bin_ages;
@@ -252,8 +263,8 @@ namespace tao {
          ASSERT( _bin_ages, "Bin ages have not been set." );
 
          // Array sizes must match the number of bins.
-         ASSERT( _bin_ages->size() == age_masses.size()*ssp.num_metal_bins() &&
-                 _bin_ages->size() == bulge_age_masses.size(),
+         ASSERT( _bin_ages->size()*ssp.num_metal_bins() == age_masses.size() &&
+                 _bin_ages->size()*ssp.num_metal_bins() == bulge_age_masses.size(),
                  "Rebinning arrays must have the same size as the age bins." );
 
          // Clear out values.
@@ -526,8 +537,10 @@ namespace tao {
 	       LOGDLN( "Oldest age in tree: ", oldest_age );
 	       LOGDLN( "Age of current galaxy: ", (*_snap_ages)[snap] );
 	       LOGDLN( "Age of previous snapshot: ", (*_snap_ages)[snap - 1] );
-	       real_type first_age = oldest_age - (*_snap_ages)[snap - 1];
-	       real_type last_age = oldest_age - (*_snap_ages)[snap];
+	       // real_type first_age = oldest_age - (*_snap_ages)[snap - 1];
+	       // real_type last_age = oldest_age - (*_snap_ages)[snap];
+	       real_type first_age = _snap_lbts[snap - 1]*1e-3;
+	       real_type last_age = _snap_lbts[snap]*1e-3;
 	       real_type age_size = first_age - last_age;
 	       LOGDLN( "Age range: [", first_age, "-", last_age, ")" );
 	       LOGDLN( "Age size: ", age_size );
@@ -703,6 +716,7 @@ namespace tao {
 
       const age_line<real_type>* _snap_ages;
       const age_line<real_type>* _bin_ages;
+      std::vector<real_type> _snap_lbts;
       // unsigned _thresh;
       // bool _accum;
       int _old_snap;

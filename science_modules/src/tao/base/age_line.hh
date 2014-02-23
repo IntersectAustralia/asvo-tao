@@ -75,6 +75,12 @@ namespace tao {
       }
 
       typename view<vector<real_type>>::type const
+      dual() const
+      {
+	 return _dual;
+      }
+
+      typename view<vector<real_type>>::type const
       ages() const
       {
 	 return _ages;

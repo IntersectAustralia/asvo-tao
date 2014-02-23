@@ -55,6 +55,9 @@ namespace tao {
       unsigned
       num_metal_bins() const;
 
+      unsigned
+      age_masses_size() const;
+
       real_type
       at( unsigned age_idx,
           unsigned spec_idx,
@@ -111,7 +114,7 @@ namespace tao {
 
                // Update spectra.
                OutputIterator sed_it = sed_start;
-               for( unsigned kk = 0; kk < _waves.size(); ++kk )
+               for( unsigned kk = 0; kk < _waves.size(); ++kk, ++sed_it )
                {
                   *sed_it += _spec[met_base + kk*(_metal_bins.size() + 1)]*mass;
                   ASSERT( *sed_it == *sed_it, "Produced NaN during stellar population summation." );

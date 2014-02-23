@@ -96,6 +96,12 @@ namespace tao {
       return _metal_bins.size() + 1;
    }
 
+   unsigned
+   stellar_population::age_masses_size() const
+   {
+      return bin_ages().size()*num_metal_bins();
+   }
+
    real_type
    stellar_population::at( unsigned age_idx,
                            unsigned spec_idx,

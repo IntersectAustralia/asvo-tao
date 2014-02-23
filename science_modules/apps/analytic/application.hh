@@ -1,24 +1,18 @@
 #ifndef tao_analytic_application_hh
 #define tao_analytic_application_hh
 
-#include <libhpc/mpi/application.hh>
+#include <libhpc/main/application.hh>
 
-namespace tao {
-   namespace analytic {
+class application
+   : public hpc::main::application
+{
+public:
 
-      class application
-	 : public hpc::mpi::application
-      {
-      public:
+   application( int argc,
+		char* argv[] );
 
-	 application( int argc,
-		      char* argv[] );
-
-	 void
-	 operator()();
-      };
-
-   }
-}
+   void
+   operator()();
+};
 
 #endif

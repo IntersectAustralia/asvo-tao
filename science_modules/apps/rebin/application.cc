@@ -73,17 +73,22 @@ namespace tao {
 	 sfh.load_tree_data( be.session( _tbl ), _tbl, _tree, _lid );
 
 	 // Rebin.
-	 vector<real_type> age_masses( ssp.bin_ages().size() );
-	 vector<real_type> age_bulge_masses( ssp.bin_ages().size() );
-	 vector<real_type> age_metals( ssp.bin_ages().size() );
+	 vector<real_type> age_masses( ssp.age_masses_size() );
+	 vector<real_type> age_bulge_masses( ssp.age_masses_size() );
+	 // vector<real_type> age_metals( ssp.bin_ages().size() );
 	 std::fill( age_masses.begin(), age_masses.end(), 0 );
 	 std::fill( age_bulge_masses.begin(), age_bulge_masses.end(), 0 );
-	 std::fill( age_metals.begin(), age_metals.end(), 0 );
-	 sfh.rebin<real_type>( age_masses, age_bulge_masses, age_metals );
+	 // std::fill( age_metals.begin(), age_metals.end(), 0 );
+	 // sfh.rebin<real_type>( age_masses, age_bulge_masses, age_metals );
+	 sfh.rebin<real_type>( age_masses, age_bulge_masses, ssp );
 
          // Dump output to file.
-	 std::cout << "MASSES: " << age_masses << "\n";
-	 std::cout << "METALS: " << age_metals << "\n";
+	 for( unsigned ii = 0; ii < ssp.bin_ages().size(); ++ii )
+	 {
+	    for( unsigned jj = 0; jj < ssp.num_metal_bins(); ++jj )
+	       std::cout << age_masses[ii*ssp.num_metal_bins() + jj] << " ";
+	    std::cout << "\n";
+	 }
       }
 
    }
