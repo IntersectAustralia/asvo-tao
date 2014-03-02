@@ -80,9 +80,9 @@ namespace tao {
             _sfh.set_bin_ages( &_ssp.bin_ages() );
 
             // Allocate history bin arrays.
-            _age_masses.reallocate( _ssp.bin_ages().size() );
-            _bulge_age_masses.reallocate( _ssp.bin_ages().size() );
-            _age_metals.reallocate( _ssp.bin_ages().size() );
+            _age_masses.reallocate( _ssp.age_masses_size() );
+            _bulge_age_masses.reallocate( _ssp.age_masses_size() );
+            // _age_metals.reallocate( _ssp.bin_ages().size() );
 
             // Prepare the batch object.
             tao::batch<real_type>& bat = this->parents().front()->batch();
@@ -197,7 +197,7 @@ namespace tao {
          age_line<real_type> _snap_ages;
          sfh<real_type> _sfh;
          vector<real_type> _age_masses, _bulge_age_masses;
-         vector<real_type> _age_metals;
+         // vector<real_type> _age_metals;
 
          profile::timer _rebin_timer;
          profile::timer _sum_timer;

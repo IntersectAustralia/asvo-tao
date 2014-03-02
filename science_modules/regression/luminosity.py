@@ -1,15 +1,23 @@
 import sys
+import matplotlib as mpl
+mpl.use('Agg')
 import pylab as plt
 import numpy as np
 from cosmocalc import cosmocalc
 
 data = np.genfromtxt(sys.argv[1], delimiter=',', skip_header=1)
 
-oangle =  60.0 * 60.0
-Min_redshift = 0.0
-Max_redshift = 0.15
 Hubble_h = 0.73
-volume = (cosmocalc(Max_redshift, H0=Hubble_h*100.0)['VCM_Gpc3'] - cosmocalc(Min_redshift, H0=Hubble_h*100.0)['VCM_Gpc3']) * (1000.0**3.0) * (oangle/41252.96)
+
+# # Cone.
+# oangle =  60.0 * 60.0
+# Min_redshift = 0.0
+# Max_redshift = 0.15
+# volume = (cosmocalc(Max_redshift, H0=Hubble_h*100.0)['VCM_Gpc3'] - cosmocalc(Min_redshift, H0=Hubble_h*100.0)['VCM_Gpc3']) * (1000.0**3.0) * (oangle/41252.96)
+
+# Box.
+BoxSize = 62.5
+volume = (BoxSize/Hubble_h)**3.0
 
 # set up figure
 plt.figure()
