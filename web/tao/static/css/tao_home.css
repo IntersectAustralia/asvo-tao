@@ -10,7 +10,7 @@ html, body {
 
 
 
-#body { padding-top: 120px; padding-bottom: 130px; }
+#body { padding-top: 120px; padding-bottom: 10px; }
 
 hr {
 	border-color: grey;
@@ -236,7 +236,7 @@ legend {
   min-height: 100%;
   height: auto;
   /* Negative indent2 footer by its height */
-  margin: 0 auto -130px;
+  margin: 0 auto -10px;
 }
 
 #tabs.ui-tabs .ui-tabs-nav li a {
@@ -653,8 +653,8 @@ border-left:thick solid #d0d0d0;
 
 #footer {
     position: relative;
-    height: 130px;
-    margin-top: -130px;
+    height: 10px;
+    margin-top: -10px;
     clear:both;
     /*border-top:2px solid grey;*/
     
@@ -921,3 +921,18 @@ ul.messagelist { position: fixed; top: 48px; left: 0; right: 0; }
     border:0;
     -ms-interpolation-mode:bicubic
 }
+
+.hr_logos
+{
+ -moz-border-bottom-colors: none;
+  -moz-border-image: none;
+  -moz-border-left-colors: none;
+  -moz-border-right-colors: none;
+  -moz-border-top-colors: none;
+  border-color: #ff6700;
+   -moz-use-text-color #ff6700;
+  border-style: solid none;
+  border-width: 3px 0;
+  margin: 0px 0;
+  width: 100%;
+ }
