@@ -473,7 +473,10 @@ class DustModel(models.Model):
     name = models.CharField(max_length=100, unique=True)
     label = models.CharField(max_length=100)
     details = models.TextField(default='')
-
+    itemsorder = models.IntegerField(default=0)
+    class Meta:
+        ordering = ['itemsorder']
+        
     def __unicode__(self):
         return self.label
 
