@@ -31,9 +31,10 @@ namespace tao {
       {
       }
 
-      age_line( vector<real_type>& ages )
+      template< class Seq >
+      age_line( Seq&& ages )
       {
-         set_ages( ages );
+         set_ages( std::forward<Seq>( ages ) );
       }
 
       age_line( soci::session& sql,
@@ -90,8 +91,9 @@ namespace tao {
       /// Set age values. Ages must be given as giga-years from the beginning
       /// of the universe.
       ///
+      template< class Seq >
       void
-      set_ages( vector<real_type>& ages )
+      set_ages( Seq&& ages )
       {
          auto timer = timer_start();
          LOGTLN( "Setting ages on age line.", setindent( 2 ) );
@@ -102,9 +104,8 @@ namespace tao {
          // Don't do anything if we have no ages.
          if( ages.size() )
          {
-            // Take age values.
-            _ages.swap( ages );
-            LOGTLN( "Ages: ", _ages );
+            // Assign age values.
+            hpc::assign( _ages, std::forward<Seq>( ages ) );
 
             // Must be sure ages are sorted correctly.
 #ifndef NDEBUG
