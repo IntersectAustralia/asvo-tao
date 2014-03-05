@@ -64,15 +64,10 @@ namespace tao {
          _snap_ages = snap_ages;
       }
 
-      void
-      load_snapshot_lookback_times( fs::path const& path )
+      age_line<real_type> const*
+      snapshot_ages() const
       {
-	 std::ifstream file( path.native() );
-	 EXCEPT( file, "Failed to open snapshot lookback times file: ", path );
-
-	 _snap_lbts.resize( _snap_ages->size() );
-	 for( unsigned ii = 0; ii < _snap_lbts.size(); ++ii )
-	    file >> _snap_lbts[ii];
+         return _snap_ages;
       }
 
       void
@@ -81,36 +76,11 @@ namespace tao {
          _bin_ages = bin_ages;
       }
 
-      // void
-      // set_tree_data( vector<int>& descs,
-      //                vector<int>& snaps,
-      //                vector<real_type>& sfrs,
-      //                vector<real_type>& bulge_sfrs,
-      //                vector<real_type>& cold_gas,
-      //                vector<real_type>& metals )
-      // {
-      //    // All arrays must be of the same size.
-      //    ASSERT( descs.size() == snaps.size() &&
-      //            descs.size() == sfrs.size() &&
-      //            descs.size() == bulge_sfrs.size() &&
-      //            descs.size() == cold_gas.size() &&
-      //            descs.size() == metals.size(),
-      //            "Tree data sizes must match." );
-
-      //    // Clear all existing tree data.
-      //    clear_tree_data();
-
-      //    // Take array data.
-      //    // _descs.swap( descs );
-      //    _snaps.swap( snaps );
-      //    _sfrs.swap( sfrs );
-      //    _bulge_sfrs.swap( bulge_sfrs );
-      //    _cold_gas.swap( cold_gas );
-      //    _metals.swap( metals );
-
-      //    // // Calculate parents.
-      //    // _calc_parents();
-      // }
+      age_line<real_type> const*
+      bin_ages() const
+      {
+         return _bin_ages;
+      }
 
       void
       load( fs::path const& path )
@@ -330,16 +300,52 @@ namespace tao {
       	 // return _parents.equal_range( gal_id );
       }
 
+      vector<int> const&
+      snapshots() const
+      {
+         return _snaps;
+      }
+
       unsigned
       snapshot( unsigned gal_id ) const
       {
 	 return _snaps[gal_id];
       }
 
+      unsigned
+      closest_snapshot() const
+      {
+	 return _old_snap; // Why the shit did I call it "old_snap"?
+      }
+
+      vector<real_type> const&
+      sfrs() const
+      {
+         return _sfrs;
+      }
+
       real_type
       sfr( unsigned gal_id ) const
       {
 	 return _sfrs[gal_id];
+      }
+
+      vector<real_type> const&
+      bulge_sfrs() const
+      {
+         return _bulge_sfrs;
+      }
+
+      vector<real_type> const&
+      cold_gas_masses() const
+      {
+         return _cold_gas;
+      }
+
+      vector<real_type> const&
+      metallicities() const
+      {
+         return _metals;
       }
 
    protected:
@@ -537,10 +543,8 @@ namespace tao {
 	       LOGDLN( "Oldest age in tree: ", oldest_age );
 	       LOGDLN( "Age of current galaxy: ", (*_snap_ages)[snap] );
 	       LOGDLN( "Age of previous snapshot: ", (*_snap_ages)[snap - 1] );
-	       // real_type first_age = oldest_age - (*_snap_ages)[snap - 1];
-	       // real_type last_age = oldest_age - (*_snap_ages)[snap];
-	       real_type first_age = _snap_lbts[snap - 1]*1e-3;
-	       real_type last_age = _snap_lbts[snap]*1e-3;
+	       real_type first_age = oldest_age - (*_snap_ages)[snap - 1];
+	       real_type last_age = oldest_age - (*_snap_ages)[snap];
 	       real_type age_size = first_age - last_age;
 	       LOGDLN( "Age range: [", first_age, "-", last_age, ")" );
 	       LOGDLN( "Age size: ", age_size );
@@ -716,7 +720,6 @@ namespace tao {
 
       const age_line<real_type>* _snap_ages;
       const age_line<real_type>* _bin_ages;
-      std::vector<real_type> _snap_lbts;
       // unsigned _thresh;
       // bool _accum;
       int _old_snap;
