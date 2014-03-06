@@ -3,15 +3,11 @@
     <schema-version>2</schema-version>
 
     <light-cone id="light-cone">
-      <geometry>light-cone</geometry>
-      <box-repetition>random</box-repetition>
+      <geometry>box</geometry>
+      <box-repetition>unique</box-repetition>
       <rng-seed>0</rng-seed>
-      <redshift-min>0</redshift-min>
-      <redshift-max>0.15</redshift-max>
-      <ra-min>0</ra-min>
-      <ra-max>60</ra-max>
-      <dec-min>0</dec-min>
-      <dec-max>60</dec-max>
+      <query-box-size>62.5</query-box-size>
+      <redshift>0</redshift>
       <output-fields>
         <item>pos_x</item>
         <item>pos_y</item>
@@ -56,5 +52,5 @@
   <subjobindex>0</subjobindex>
   <logdir>log</logdir>
   <outputdir>output</outputdir>
-  <database>millennium_full_v3</database>
+  <database>millennium_mini_3servers_v2</database>
 </tao>

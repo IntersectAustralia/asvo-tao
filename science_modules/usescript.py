@@ -22,6 +22,7 @@ glut = use('glut')
 soci = use('soci')
 sqlite3 = use('sqlite3')
 hdf5 = use('hdf5')
+pugixml = use('pugixml')
 
 # Define some options.
 cc_opts = (
@@ -52,6 +53,7 @@ cc_opts = (
     options(args.memory_ops    == False, define=['NMEMOPS']) +
     options(args.memory_stats  == False, define=['NMEMSTATS']) +
     options(glut.have          == True,  define=['HAVE_GLUT']) +
+    options(pugixml.have       == True,  define=['HAVE_PUGIXML']) +
     options((soci.has_feature('sqlite3') == True) & (sqlite3.have == True), define=['HAVE_SQLITE3']) +
     options(soci.has_feature('postgresql') == True, define=['HAVE_POSTGRESQL']) +
     options(hdf5.has_feature('parallel') == True, define=['PARALLELHDF5'])
@@ -82,7 +84,6 @@ mpi     = use('mpi')
 hdf5    = use('hdf5')
 gsl     = use('gsl')
 pq      = use('postgresql')
-pugixml = use('pugixml')
 cfitsio = use('cfitsio')
 cp_hdr  = files.feature('copy', cp_opts)
 hdr_inst = files.feature('copy', None, targets.contains('install'), prefix=args.prefix + '/include')
@@ -120,9 +121,9 @@ rule(tests, run_tests, sqlite3.have == True, target=dummies.always)
 
 # Build all the applications.
 rule(r'apps/(?:tao|application)\.cc$', tao_bin & tao_bin_inst, libraries=['tao'])
-# rule(r'apps/zen/.+\.cc$', bin, glut.have == True, target='bin/zen', libraries=['tao', 'pthread'])
-rule(r'apps/rebin/.+\.cc$', bin, target='bin/rebin', libraries=['tao'])
-rule(r'apps/magnitudes/.+\.cc$', bin, target='bin/magnitudes', libraries=['tao'])
+rule(r'apps/zen/.+\.cc$', bin, glut.have == True, target='bin/zen', libraries=['tao', 'pthread'])
+# rule(r'apps/rebin/.+\.cc$', bin, target='bin/rebin', libraries=['tao'])
+# rule(r'apps/magnitudes/.+\.cc$', bin, target='bin/magnitudes', libraries=['tao'])
 # rule(r'apps/ssp_restrict/.+\.cc$', bin, target='bin/ssp_restrict', libraries=['tao'])
 # rule(r'apps/analytic/.+\.cc$', bin, target='bin/analytic', libraries=['tao'])
 # rule(r'apps/dust_plots/.+\.cc$', bin, target='bin/dust_plots', libraries=['tao'])

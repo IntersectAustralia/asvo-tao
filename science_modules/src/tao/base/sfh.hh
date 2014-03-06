@@ -2,6 +2,8 @@
 #define tao_base_sfh_hh
 
 #include <unordered_set>
+#include <unordered_map>
+#include <map>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/lexical_cast.hpp>
 #include "timed.hh"
@@ -52,9 +54,12 @@ namespace tao {
       {
          _descs.deallocate();
          _snaps.deallocate();
+	 _descs.deallocate();
+	 _lids.deallocate();
          _sfrs.deallocate();
          _bulge_sfrs.deallocate();
          _cold_gas.deallocate();
+         _masses.deallocate();
          _metals.deallocate();
       }
 
@@ -137,7 +142,6 @@ namespace tao {
 
 	 // Clear away any existing tree data.
 	 clear_tree_data();
-	 // _accum = false;
 
 	 // Load the basic object information.
 	 unsigned long long dfo, subsize;
@@ -149,14 +153,18 @@ namespace tao {
 	 _sfrs.resize( subsize );
 	 _bulge_sfrs.resize( subsize );
 	 _cold_gas.resize( subsize );
+	 _masses.resize( subsize );
 	 _metals.resize( subsize );
 	 _snaps.resize( subsize );
+	 _descs.resize( subsize );
+	 _lids.resize( subsize );
+         _inv_lids.clear();
 
 	 // Extract the sub tree.
 	 int dfo_first = dfo;
 	 int dfo_last = dfo + subsize;
 	 std::string query = "SELECT metalscoldgas, coldgas, "
-	    "sfr, sfrbulge, snapnum FROM " + table_name +
+	    "sfr, sfrbulge, snapnum, descendant, localgalaxyid, stellarmass FROM " + table_name +
 	    " WHERE globaltreeid = :treeid"
 	    " AND depthfirst_traversalorder >= :first AND depthfirst_traversalorder < :last";
 	 // hpc::profile::timer local_db_time;
@@ -166,7 +174,8 @@ namespace tao {
 	    sql << query,
 	       soci::into( (std::vector<double>&)_metals ), soci::into( (std::vector<double>&)_cold_gas ),
 	       soci::into( (std::vector<double>&)_sfrs ), soci::into( (std::vector<double>&)_bulge_sfrs ),
-	       soci::into( (std::vector<int>&)_snaps ),
+	       soci::into( (std::vector<int>&)_snaps ), soci::into( (std::vector<int>&)_descs ),
+	       soci::into( (std::vector<int>&)_lids ), soci::into( (std::vector<double>&)_masses ),
 	       soci::use( tree_id ), soci::use( dfo_first ), soci::use( dfo_last );
 	 }
 	 // LOGILN( "Tree query took: ", local_db_time.total(), " s" );
@@ -175,6 +184,10 @@ namespace tao {
 	 LOGTLN( "Metals cold gas: ", _metals );
 	 LOGTLN( "Cold gas: ", _cold_gas );
 	 LOGTLN( "Snapshots: ", _snaps );
+
+         // Build inverse mapping, from local ids to indices.
+         for( unsigned ii = 0; ii < _lids.size(); ++ii )
+            _inv_lids.emplace( _lids[ii], ii );
 
 #ifndef NDEBUG
 	 // Do a check to confirm the tree has been loaded correctly.
@@ -210,6 +223,10 @@ namespace tao {
 	 // Set the current table/tree information.
 	 _cur_table = table_name;
 	 _cur_tree_id = tree_id;
+	 _cur_gid = global_index;
+
+	 // Calculate parent maps.
+	 _calc_parents();
       }
 
       template< class U >
@@ -292,18 +309,23 @@ namespace tao {
          return _sfrs.size();
       }
 
-      // TODO: Get parents back.
-      std::pair< multimap<unsigned,unsigned>::const_iterator,
-                 multimap<unsigned,unsigned>::const_iterator >
+      std::pair<std::multimap<unsigned,unsigned>::const_iterator,
+                std::multimap<unsigned,unsigned>::const_iterator>
       parents( unsigned gal_id ) const
       {
-      	 // return _parents.equal_range( gal_id );
+      	 return _parents.equal_range( gal_id );
       }
 
-      vector<int> const&
+      unsigned
+      lid_to_index( unsigned lid ) const
+      {
+         return _inv_lids.at( lid );
+      }
+
+      hpc::vector<int> const&
       snapshots() const
       {
-         return _snaps;
+	 return _snaps;
       }
 
       unsigned
@@ -318,10 +340,10 @@ namespace tao {
 	 return _old_snap; // Why the shit did I call it "old_snap"?
       }
 
-      vector<real_type> const&
+      hpc::vector<real_type> const&
       sfrs() const
       {
-         return _sfrs;
+	 return _sfrs;
       }
 
       real_type
@@ -348,21 +370,83 @@ namespace tao {
          return _metals;
       }
 
+      std::vector<real_type>
+      ages() const
+      {
+	 std::vector<real_type> ages( _sfrs.size() );
+	 for( unsigned ii = 0; ii < _sfrs.size(); ++ii )
+	 {
+	    // Calculate the starting age based on the average age
+	    // of my parent galaxies.
+	    real_type parent_age = 0.0;
+	    {
+	       auto rng = _parents.equal_range( ii );
+	       unsigned cnt = 0;
+	       while( rng.first != rng.second )
+	       {
+		  parent_age += (*_snap_ages)[_snaps[rng.first->second]];
+		  ++rng.first;
+		  ++cnt;
+	       }
+	       if( cnt > 0 )
+		  parent_age /= (real_type)cnt;
+	       else
+	       {
+		  ASSERT( _snaps[ii] > 0, "Don't have a previous snapshot." );
+
+		  // Use the amount of stellar mass on the object to determine
+		  // the age.
+		  if( _sfrs[ii] > 0.0 )
+		  {
+		     parent_age = (*_snap_ages)[_snaps[ii]] - 10.0*(_masses[ii]/0.43)/_sfrs[ii];
+		     ASSERT( parent_age > 0.0, "Bad age calculation." );
+		  }
+		  else
+		     parent_age = (*_snap_ages)[_snaps[ii] - 1];
+	       }
+	    }
+	    real_type first_age = (*_snap_ages)[_old_snap] - parent_age;
+	    real_type last_age = (*_snap_ages)[_old_snap] - (*_snap_ages)[_snaps[ii]];
+	    ages[ii] = first_age - last_age;
+	 }
+	 return ages;
+      }
+
+      std::vector<real_type>
+      masses() const
+      {
+	 std::vector<real_type> ages = this->ages();
+	 std::vector<real_type> masses( _sfrs.size() );
+	 for( unsigned ii = 0; ii < _sfrs.size(); ++ii )
+	    masses[ii] = _sfrs[ii]*ages[ii]*1e9; //*(1.0 - 0.43);
+	 return masses;
+      }
+
    protected:
 
-      // void
-      // _calc_parents()
-      // {
-      // 	 // Clear existing parents.
-      // 	 _parents.clear();
+      void
+      _calc_parents()
+      {
+      	 // Clear existing parents.
+      	 _parents.clear();
 
-      // 	 // Build the parents for each galaxy.
-      // 	 for( unsigned ii = 0; ii < _descs.size(); ++ii )
-      // 	 {
-      // 	    if( _descs[ii] != -1 )
-      // 	       _parents.insert( _descs[ii], _locals[ii] );
-      // 	 }
-      // }
+	 // Invert the local index mapping.
+	 int max_lid = std::max(
+	    *std::max_element( _lids.begin(), _lids.end() ),
+	    *std::max_element( _descs.begin(), _descs.end() )
+	    );
+	 std::vector<int> inv_lids( max_lid + 1 );
+	 std::fill( inv_lids.begin(), inv_lids.end(), -1 );
+	 for( unsigned ii = 0; ii < _lids.size(); ++ii )
+	    inv_lids[_lids[ii]] = ii;
+
+      	 // Build the parents for each galaxy.
+      	 for( unsigned ii = 0; ii < _descs.size(); ++ii )
+      	 {
+      	    if( _descs[ii] != -1 && inv_lids[_descs[ii]] != -1 )
+      	       _parents.insert( std::make_pair( inv_lids[_descs[ii]], inv_lids[_lids[ii]] ) );
+      	 }
+      }
 
       // void
       // _load_chunk()
@@ -532,18 +616,54 @@ namespace tao {
 	    if( snap > 0 && (sfr > 0.0 || bulge_sfr > 0.0) )
 	    {
 	       // Cache some stuff.
-	       real_type metal = _metals[ii];
+	       real_type metal = (_cold_gas[ii] > 0.0) ? (_metals[ii]/_cold_gas[ii]) : 0.0;
                unsigned met_bin = ssp.find_metal_bin( metal );
+
+	       // Calculate the starting age based on the average age
+	       // of my parent galaxies.
+	       real_type parent_age = 0.0;
+	       {
+		  auto rng = _parents.equal_range( ii );
+		  unsigned cnt = 0;
+		  while( rng.first != rng.second )
+		  {
+                     int par_snap = _snaps[rng.first->second];
+                     if( par_snap < snap )
+                     {
+                        parent_age += (*_snap_ages)[par_snap];
+                        ++cnt;
+                     }
+                     else
+                        std::cout << "WARNING: Found badly connected parents.\n";
+                     ++rng.first;
+		  }
+		  if( cnt > 0 )
+		     parent_age /= (real_type)cnt;
+		  else
+		  {
+		     ASSERT( _snaps[ii] > 0, "Don't have a previous snapshot." );
+
+		     // Use the amount of stellar mass on the object to determine
+		     // the age.
+		     if( _sfrs[ii] > 0.0 )
+		     {
+			parent_age = (*_snap_ages)[_snaps[ii]] - 10.0*(_masses[ii]/0.43)/_sfrs[ii];
+			ASSERT( parent_age > 0.0, "Bad age calculation." );
+		     }
+		     else
+			parent_age = (*_snap_ages)[_snaps[ii] - 1];
+		  }
+	       }
 
 	       // Calculate the age of material created at the beginning of
 	       // this timestep and at the end. Be careful! This age I speak
 	       // of is how old the material will be when we get to the
 	       // time of the final galaxy.
-	       ASSERT( snap > 0, "Must have a previous snapshot." );
+	       // ASSERT( snap > 0, "Must have a previous snapshot." );
 	       LOGDLN( "Oldest age in tree: ", oldest_age );
 	       LOGDLN( "Age of current galaxy: ", (*_snap_ages)[snap] );
-	       LOGDLN( "Age of previous snapshot: ", (*_snap_ages)[snap - 1] );
-	       real_type first_age = oldest_age - (*_snap_ages)[snap - 1];
+	       LOGDLN( "Age of parents: ", parent_age );
+	       real_type first_age = oldest_age - parent_age;
 	       real_type last_age = oldest_age - (*_snap_ages)[snap];
 	       real_type age_size = first_age - last_age;
 	       LOGDLN( "Age range: [", first_age, "-", last_age, ")" );
@@ -720,14 +840,14 @@ namespace tao {
 
       const age_line<real_type>* _snap_ages;
       const age_line<real_type>* _bin_ages;
-      // unsigned _thresh;
-      // bool _accum;
       int _old_snap;
-      vector<int> _descs, _snaps;
-      vector<real_type> _sfrs, _bulge_sfrs, _cold_gas, _metals;
-      multimap<unsigned,unsigned> _parents;
+      vector<int> _descs, _snaps, _lids;
+      vector<real_type> _sfrs, _bulge_sfrs, _cold_gas, _metals, _masses;
+      std::unordered_map<unsigned,unsigned> _inv_lids;
+      std::multimap<unsigned,unsigned> _parents;
       string _cur_table;
       unsigned long long _cur_tree_id;
+      unsigned long long _cur_gid;
    };
 
 }

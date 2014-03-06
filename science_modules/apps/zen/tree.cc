@@ -85,18 +85,24 @@ namespace tao {
       }
    }
 
-   unsigned
-   calc_max_snapshot( const tao::sfh<real_type>& sfh,
+   std::array<unsigned,2>
+   calc_snapshot_rng( const tao::sfh<real_type>& sfh,
                       unsigned gal_id,
+                      unsigned min_snap,
                       unsigned max_snap )
    {
       auto rng = sfh.parents( gal_id );
       while( rng.first != rng.second )
       {
-         max_snap = calc_max_snapshot( sfh, rng.first->second, max_snap );
+         std::array<unsigned,2> snap_rng = calc_snapshot_rng( sfh, rng.first->second, min_snap, max_snap );
+         min_snap = snap_rng[0];
+         max_snap = snap_rng[1];
          ++rng.first;
       }
-      return std::min( max_snap, sfh.snapshot( gal_id ) );
+      return std::array<unsigned,2>{
+         std::max( min_snap, sfh.snapshot( gal_id ) ),
+         std::min( max_snap, sfh.snapshot( gal_id ) )
+         };
    }
 
    unsigned
@@ -261,7 +267,9 @@ namespace tao {
          unsigned par_snap = sfh.snapshot( par_id );
 
          new_x_offs += 0.5*(widths[par_id]*gal_size + (widths[par_id] - 1)*5);
-         unsigned new_line_pos = line_pos + my_snap - par_snap;
+         int new_line_pos = line_pos + my_snap - par_snap;
+         if( new_line_pos < 0 )
+            new_line_pos = 0;
          GLfloat new_y_offs = y_offs + 20*(line_map[new_line_pos] - line_map[line_pos]);
 
          if( my_snap - par_snap > 1 )
@@ -314,7 +322,8 @@ namespace tao {
       algorithms::tree_widths( sfh, gal_id, widths );
 
       // Get snapshot range.
-      array<real_type,2> snap_rng{ { (real_type)sfh.snapshot( gal_id ), (real_type)calc_max_snapshot( sfh, gal_id ) } };
+      std::array<unsigned,2> snap_rng_idxs = calc_snapshot_rng( sfh, gal_id );
+      array<real_type,2> snap_rng{ { (real_type)snap_rng_idxs[0], (real_type)snap_rng_idxs[1] } };
 
       // Calculate pane size.
       vector<unsigned> line_map;

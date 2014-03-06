@@ -45,6 +45,7 @@ int cur_tile_idx = -1;
 tile<real_type>* cur_box;
 string cur_table;
 unsigned long long cur_tree;
+unsigned long long cur_gal_gid;
 unsigned cur_gal_id;
 tao::sfh<real_type> cur_sfh;
 tao::age_line<real_type> sfh_ages;
@@ -919,11 +920,13 @@ calc_mags( void* data )
                // cur_sfh.load_tree_data( sfh_backend.session(), bat->attribute<string>( "table" ), bat->scalar<long long>( "global_tree_id" )[ii] );
                std::fill( age_masses.begin(), age_masses.end(), 0 );
                std::fill( age_bulge_masses.begin(), age_bulge_masses.end(), 0 );
-               std::fill( age_metals.begin(), age_metals.end(), 0 );
+               // std::fill( age_metals.begin(), age_metals.end(), 0 );
                // cur_sfh.rebin<real_type>( sfh_backend.session(), bat->scalar<int>( "local_galaxy_id" )[ii], age_masses, age_bulge_masses, age_metals );
+               cur_sfh.rebin<tao::real_type>( age_masses, age_bulge_masses, ssp );
 
                // Sum the spectrum.
-               ssp.sum( age_masses.begin(), age_metals.begin(), sed.spectrum().values().begin() );
+               ssp.sum( age_masses.begin(), sed.spectrum().values().begin() );
+               // ssp.sum( age_masses.begin(), age_metals.begin(), sed.spectrum().values().begin() );
                sed.spectrum().update(); // rebuild spline
 
                // Calculate the magnitude of this object.
@@ -1061,17 +1064,22 @@ init_tao()
 
    // Connect the backend.
 #include "credentials.hh"
-   vector<backends::multidb<real_type>::server_type> servers( 2 );
-   servers[0].dbname = "millennium_full_hdf5_dist";
+   vector<backends::multidb<real_type>::server_type> servers( 3 );
+   servers[0].dbname = "millennium_full_3servers_v2";
    servers[0].user = username;
    servers[0].passwd = password;
    servers[0].host = string( "tao01.hpc.swin.edu.au" );
    servers[0].port = 3306;
-   servers[1].dbname = "millennium_full_hdf5_dist";
+   servers[1].dbname = "millennium_full_3servers_v2";
    servers[1].user = username;
    servers[1].passwd = password;
    servers[1].host = string( "tao02.hpc.swin.edu.au" );
    servers[1].port = 3306;
+   servers[2].dbname = "millennium_full_3servers_v2";
+   servers[2].user = username;
+   servers[2].passwd = password;
+   servers[2].host = string( "tao03.hpc.swin.edu.au" );
+   servers[2].port = 3306;
    backend.connect( servers.begin(), servers.end() );
    backend.set_simulation( cur_sim );
    ::query.add_base_output_fields();
@@ -1090,8 +1098,8 @@ init_tao()
    ssp.load( "ages.dat", "wavelengths.dat", "metallicities.dat", "ssp.ssz" );
    cur_sfh.set_snapshot_ages( &sfh_ages );
    cur_sfh.set_bin_ages( &ssp.bin_ages() );
-   age_masses.resize( ssp.bin_ages().size() );
-   age_bulge_masses.resize( ssp.bin_ages().size() );
+   age_masses.resize( ssp.age_masses_size() );
+   age_bulge_masses.resize( ssp.age_masses_size() );
    age_metals.resize( ssp.bin_ages().size() );
 
    // Load the V bandpass filter.
@@ -1330,28 +1338,35 @@ load_sfh( const re::match& match )
    auto val = to_unsigned_long_long( match[1] );
    if( val )
    {
+      cur_gal_gid = *val;
       cur_view = TREE;
 
       // Must first find the table and tree first.
+      LOGBLOCKD( "Scanning tables for global index: ", cur_gal_gid );
       for( auto it = backend.table_begin(); it != backend.table_end(); ++it )
       {
+         LOGD( "Checking ", it->name(), ": " );
          int size = 0;
          backend.session( it->name() ) << "SELECT COUNT(globaltreeid) FROM " + it->name() + " WHERE globalindex = :gid",
             soci::into( size ), soci::use( *val );
          if( size )
          {
+            LOGDLN( "success." );
             backend.session( it->name() ) << "SELECT globaltreeid, localgalaxyid FROM " + it->name() + " WHERE globalindex = :gid",
                soci::into( cur_tree ), soci::into( cur_gal_id ), soci::use( *val );
             cur_table = it->name();
             break;
          }
+         LOGDLN( "failed." );
       }
 
       // Load SFH.
-      // cur_sfh.load_tree_data( backend.session( cur_table ), cur_table, cur_tree );
+      cur_sfh.load_tree_data( backend.session( cur_table ), cur_table, cur_tree, cur_gal_gid );
+      cur_gal_id = cur_sfh.lid_to_index( cur_gal_id );
       std::fill( age_masses.begin(), age_masses.end(), 0 );
       std::fill( age_bulge_masses.begin(), age_bulge_masses.end(), 0 );
-      std::fill( age_metals.begin(), age_metals.end(), 0 );
+      // std::fill( age_metals.begin(), age_metals.end(), 0 );
+      cur_sfh.rebin<tao::real_type>( age_masses, age_bulge_masses, ssp );
       // cur_sfh.rebin<real_type>( backend.session( cur_table ), cur_gal_id, age_masses, age_bulge_masses, age_metals );
 
       // Also transfer the stellar mass for each tree.

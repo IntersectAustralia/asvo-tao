@@ -6,9 +6,10 @@
 
 namespace tao {
 
-   unsigned
-   calc_max_snapshot( const tao::sfh<real_type>& sfh,
+   std::array<unsigned,2>
+   calc_snapshot_rng( const tao::sfh<real_type>& sfh,
                       unsigned gal_id,
+                      unsigned min_snap = std::numeric_limits<unsigned>::min(),
                       unsigned max_snap = std::numeric_limits<unsigned>::max() );
 
    void

@@ -12,5 +12,11 @@
       <user>tao_sciencemodules_user</user>
       <password>Tao_ReadOnly_Password_$$</password>
     </serverinfo>
+    <serverinfo>
+      <serverip>tao03.hpc.swin.edu.au</serverip>
+      <port>3306</port>
+      <user>tao_sciencemodules_user</user>
+      <password>Tao_ReadOnly_Password_$$</password>
+    </serverinfo>
   </database>
 </settings>

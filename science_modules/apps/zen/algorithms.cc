@@ -47,6 +47,7 @@ namespace tao {
                             unsigned gal_id,
                             vector<unsigned>::view widths )
       {
+         // LOGBLOCKD( "Recursing onto: ", gal_id );
          unsigned my_width = 0;
          auto rng = sfh.parents( gal_id );
          while( rng.first != rng.second )
@@ -65,6 +66,7 @@ namespace tao {
                    unsigned gal_id,
                    vector<unsigned>::view widths )
       {
+         // LOGBLOCKD( "Building tree widths for galaxy with local galaxy ID: ", gal_id );
          std::fill( widths.begin(), widths.end(), 0 );
          _tree_widths_recurse( sfh, gal_id, widths );
       }

@@ -353,17 +353,9 @@ namespace tao {
                LOGILN( "Declination range: [", min_dec, ", ", max_dec, ")" );
 
                // Check for single snapshot.
-               // TODO: Remove this username bit.
-               auto uname = global_dict.opt<string>( "username" );
-               boost::optional<unsigned> sng_snap;
-               if( uname && *uname == "max" )
-               {
-                  sng_snap = 180;
+               auto sng_snap = dict.opt<unsigned>( "single-snapshot" );
+               if( *sng_snap )
                   LOGILN( "Single snapshot: ", *sng_snap );
-               }
-               // auto sng_snap = dict.opt<unsigned>( "single-snapshot" );
-               // if( *sng_snap )
-               //    LOGILN( "Single snapshot: ", *sng_snap );
 
                // Prepare the lightcone object.
                _lc.set_simulation( _sim );
