@@ -16,7 +16,8 @@ Hubble_h = 0.73
 # volume = (cosmocalc(Max_redshift, H0=Hubble_h*100.0)['VCM_Gpc3'] - cosmocalc(Min_redshift, H0=Hubble_h*100.0)['VCM_Gpc3']) * (1000.0**3.0) * (oangle/41252.96)
 
 # Box.
-BoxSize = 62.5
+# BoxSize = 62.5
+BoxSize = 500.0
 volume = (BoxSize/Hubble_h)**3.0
 
 # set up figure

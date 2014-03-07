@@ -25,24 +25,24 @@ application::operator()()
    typedef hpc::numerics::spline<tao::real_type,view_type,view_type> spline_type;
 
    // Pick a simulation.
-   tao::simulation* sim = &tao::mini_millennium;
+   tao::simulation* sim = &tao::millennium;
 
    // Connect the backend.
    tao::backends::multidb<tao::real_type> be;
    {
 #include "credentials.hh"
       hpc::vector<tao::backends::multidb<tao::real_type>::server_type> servers( 3 );
-      servers[0].dbname = "millennium_mini_3servers_v2";
+      servers[0].dbname = "millennium_full_3servers_v2";
       servers[0].user = username;
       servers[0].passwd = password;
       servers[0].host = hpc::string( "tao01.hpc.swin.edu.au" );
       servers[0].port = 3306;
-      servers[1].dbname = "millennium_mini_3servers_v2";
+      servers[1].dbname = "millennium_full_3servers_v2";
       servers[1].user = username;
       servers[1].passwd = password;
       servers[1].host = hpc::string( "tao02.hpc.swin.edu.au" );
       servers[1].port = 3306;
-      servers[2].dbname = "millennium_mini_3servers_v2";
+      servers[2].dbname = "millennium_full_3servers_v2";
       servers[2].user = username;
       servers[2].passwd = password;
       servers[2].host = hpc::string( "tao03.hpc.swin.edu.au" );
@@ -147,21 +147,21 @@ application::operator()()
 	    auto abs_mag = tao::absolute_magnitude( sed, bpf );
 
 	    // std::cout << abs_mag << "\n";
-	    gids.push_back( gal_gids[ii] );
-	    results.push_back( abs_mag );
+	    // gids.push_back( gal_gids[ii] );
+	    // results.push_back( abs_mag );
 	 }
       }
 
-      // Order based on global indices.
-      std::sort(
-      	 hpc::make_sort_permute_iter( gids.begin(), results.begin() ),
-      	 hpc::make_sort_permute_iter( gids.end(), results.end() ),
-      	 hpc::sort_permute_iter_compare<std::vector<long long>::iterator,std::vector<tao::real_type>::iterator>()
-      	 );
+      // // Order based on global indices.
+      // std::sort(
+      // 	 hpc::make_sort_permute_iter( gids.begin(), results.begin() ),
+      // 	 hpc::make_sort_permute_iter( gids.end(), results.end() ),
+      // 	 hpc::sort_permute_iter_compare<std::vector<long long>::iterator,std::vector<tao::real_type>::iterator>()
+      // 	 );
 
-      // Dump results.
-      for( unsigned ii = 0; ii < results.size(); ++ii )
-      	 std::cout << gids[ii] << "   " << results[ii] << "\n";
+      // // Dump results.
+      // for( unsigned ii = 0; ii < results.size(); ++ii )
+      // 	 std::cout << gids[ii] << "   " << results[ii] << "\n";
    }
    else
    {

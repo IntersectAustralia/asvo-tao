@@ -77,7 +77,7 @@ namespace tao {
 
             // What kind of dust are we using?
             std::string mod = boost::algorithm::to_lower_copy( dict.get<std::string>( "model" ) );
-            if( mod == "tonini et al. 2012" )
+            if( mod == "calzetti" )
             {
                _mod = CALZETTI;
                _sfrs = bat.scalar<real_type>( "sfr" );
