@@ -49,13 +49,13 @@ the forms being hidden and all.
                 <button type="button" class="btn btn-primary" id='id-job_release' disabled>Release</button>
                 <button type="button" class="btn btn-primary" id="id-job_output_delete" disabled>Delete</button>
             {% else %}
-                {% if job.status == 'SUBMITTED' or job.status == 'QUEUED' or job.status == 'IN_PROGRESS' %}
+                {% if job.status == 'SUBMITTED' or job.status == 'QUEUED' or job.status == 'IN_PROGRESS'%}
                     <button type="button" class="btn btn-primary" id='id-job_stop'>Stop</button>
                 {% else %}
                     <button type="button" class="btn btn-primary" id='id-job_stop' disabled>Stop</button>
                 {% endif %}
                 {% if user.is_superuser %}
-                    {% if job.status == 'COMPLETED' or job.status == 'ERROR' %}
+                    {% if job.status == 'COMPLETED'  %}
                         <button type="button" class="btn btn-primary" id='id-job_rerun'>Re-Run</button>
                     {% else %}
                         <button type="button" class="btn btn-primary" id='id-job_rerun' disabled>Re-Run</button>
@@ -115,11 +115,11 @@ the forms being hidden and all.
             </div>
             <div>
                 <strong>Status</strong>
-                <p>{{ job.status }} {{ job.status_help_text }}
-                {% if job.is_error %}
-                	<span id="id-job_error_enquiry">
-                    (please use the <a id="id-job_error_support" href="../accounts/support_page/">Support</a> form if you would like to enquire about this error)
-                    </span>
+                <p>
+                {% if job.is_error and not user.is_staff  %}
+                	QUEUED
+                {% else%}
+                {{ job.status }} {{ job.status_help_text }}
                 {% endif %}
                 </p>
             </div>
