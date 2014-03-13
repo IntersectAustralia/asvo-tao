@@ -35,11 +35,15 @@
                         <td>
                             {{ job.created_time|date:"D d M Y H:i" }}
                         </td>
-                        <td>
+                        <td>    
                             {{ job.description|linebreaks }}
                         </td>
                         <td>
-                            {{ job.status }} {{ job.status_help_text }}
+                        	 {% if job.is_error and not user.is_staff %}
+                        	 	QUEUED
+                        	 {% else %}
+                            	{{ job.status }} {{ job.status_help_text }}
+                            {% endif %}
                         </td>
                         <td>
                             {{ job.display_disk_size }}
