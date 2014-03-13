@@ -8,6 +8,7 @@ Detailed information on using TAO is available in the sections listed below.
    :maxdepth: 2
 
    register
+   wizard
    overview
    telescope
    lightcone
