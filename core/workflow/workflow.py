@@ -22,7 +22,9 @@ import stat,sys
 import ParseProfileData
 import traceback
 import JobRestart
-import os
+import os,re
+import lxml.etree as ET
+
 
 class WorkFlow(object):
 
@@ -99,6 +101,32 @@ class WorkFlow(object):
         else:
             logging.info("There is no jobs actually running on PBS")
             return False
+    
+    def UserHasEnoughResources(self,JobUserName,JobParams):
+        ## Get the Number of SubCones in the current Request
+        ## This process is not very optimized at the moment.
+        logging.info("Start Checking user Resources ! ")
+        XMLtree = ET.fromstring(JobParams.encode('utf8'))
+        XMLNameSpace=re.findall('\{.*\}',XMLtree.xpath('.')[0].tag)[0]
+        XMLNameSpace=XMLNameSpace[1:-1]
+        NumofConesNode=XMLtree.xpath("ns:workflow/ns:light-cone/ns:num-cones",namespaces={'ns':XMLNameSpace})
+        SubJobsCount=0
+        if len(NumofConesNode)>0:            
+            SubJobsCount=int(NumofConesNode[0].text)
+        else:
+            SubJobsCount=1
+        
+        logging.info("Current user ("+JobUserName+") requests "+str(SubJobsCount)+" Jobs!")
+        ## Get Current Number of running jobs for this user
+        ListOfJobs=self.dbaseobj.GetCurrentUserActiveJobs(JobUserName)
+        
+        logging.info("Current user ("+JobUserName+") got "+str(len(ListOfJobs))+" Jobs Running!")
+        if(len(ListOfJobs)+SubJobsCount<=10):
+            logging.info("Job Will be executed!")
+            return True;
+        else:
+            logging.info("Job Will be ignored for the moment!")
+            return False;
         
     def ProcessNewJob(self,UIJobReference,JobParams,JobDatabase,JobUserName):       
         
@@ -108,6 +136,9 @@ class WorkFlow(object):
             ## Handling for a very special case. Job Status turned to submitted while it is already running or queued! 
             ## In this case the job Will be rejected and an email to the Admin will be sent to indicate this
             if(self.JobWithSameIDRunning(UIJobReference)==True):                         
+                return False
+            logging.info("I will start investigating if the user got more resources?!")
+            if(self.UserHasEnoughResources(JobUserName, JobParams)==False):
                 return False
             ## If a Job with the Same UI_ID exists ...ensure that it is out of the watch List (By Error State)
             self.dbaseobj.RemoveOldJobFromWatchList(UIJobReference)
@@ -414,8 +445,10 @@ class WorkFlow(object):
             
             
             logging.info("PBS Jobs:"+str(CurrentJobs))
+            logging.info("Database Jobs:")
             
-            logging.info("Database Jobs:"+str(CurrentJobs_PBSID))
+            for PJob in CurrentJobs_PBSID:
+                logging.info(PJob)
             
             JobsStatus=[]
             for CurrentJobRecord in CurrentJobs_PBSID:
@@ -429,10 +462,11 @@ class WorkFlow(object):
                 
                 
                 
-                logging.info("Checking Job Status : JobID="+pbsreferenceid+"\tInPBSList="+str(pbsreferenceid in CurrentJobs))
-                if pbsreferenceid in CurrentJobs:
-                    logging.info("Checking Job Status : JobID="+pbsreferenceid+"\tStatus="+str(CurrentJobs[pbsreferenceid]))
                 
+                if pbsreferenceid in CurrentJobs:
+                    logging.info("Checking Job Status : JobID="+pbsreferenceid+"\tStatus="+str(CurrentJobs[pbsreferenceid])+"\tInPBSList="+str(pbsreferenceid in CurrentJobs))
+                else:
+                    logging.info("Checking Job Status : JobID="+pbsreferenceid+"\tInPBSList="+str(pbsreferenceid in CurrentJobs))
                 ## Parse the Job Log File and Extract Current Job Status
                             
                 JobDetails=self.LogReaderObj.ParseFile(CurrentJobRecord)
