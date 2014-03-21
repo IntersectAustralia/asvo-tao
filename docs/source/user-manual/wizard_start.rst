@@ -1,7 +1,7 @@
 Start
 =====
 
-Mock Galaxy Factory enables you to create a *Mock Catalogue* using one of three options as shown in the following figure:
+The TAO Mock Galaxy Factory enables you to create a *Mock Catalogue* using one of three options as shown in the following figure:
 
 * Create a new catalogue
 * Create a catalouge based on an old TAO catalouge (Re-generate Catalogue)

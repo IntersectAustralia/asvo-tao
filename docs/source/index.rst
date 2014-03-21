@@ -11,12 +11,11 @@ Theoretical Astrophysical Observatory Documentation
 Contents:
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
-   project/index
+
    user-manual/index
-   knownissues
-   FAQ
+   roadmap
 
 
 
