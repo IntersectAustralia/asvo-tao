@@ -43,6 +43,9 @@ namespace tao {
          add_output_field( "localgalaxyid" );
 	 add_output_field( "globalindex" );
 	 add_output_field( "sfr" );
+	 add_output_field( "coldgas" );
+	 add_output_field( "metalscoldgas" );
+	 add_output_field( "diskscaleradius" );
       }
 
       void
