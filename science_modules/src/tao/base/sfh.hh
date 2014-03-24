@@ -396,13 +396,14 @@ namespace tao {
 
 		  // Use the amount of stellar mass on the object to determine
 		  // the age.
-		  if( _sfrs[ii] > 0.0 )
-		  {
-		     parent_age = (*_snap_ages)[_snaps[ii]] - 10.0*(_masses[ii]/0.43)/_sfrs[ii];
-		     ASSERT( parent_age > 0.0, "Bad age calculation." );
-		  }
-		  else
-		     parent_age = (*_snap_ages)[_snaps[ii] - 1];
+		  // TODO: Don't bother with this for now.
+		  // if( _sfrs[ii] > 0.0 )
+		  // {
+		  //    parent_age = (*_snap_ages)[_snaps[ii]] - 10.0*(_masses[ii]/0.43)/_sfrs[ii];
+		  //    ASSERT( parent_age > 0.0, "Bad age calculation." );
+		  // }
+		  // else
+		  parent_age = (*_snap_ages)[_snaps[ii] - 1];
 	       }
 	    }
 	    real_type first_age = (*_snap_ages)[_old_snap] - parent_age;
@@ -643,15 +644,15 @@ namespace tao {
 		  {
 		     ASSERT( _snaps[ii] > 0, "Don't have a previous snapshot." );
 
-		     // Use the amount of stellar mass on the object to determine
-		     // the age.
-		     if( _sfrs[ii] > 0.0 )
-		     {
-			parent_age = (*_snap_ages)[_snaps[ii]] - 10.0*(_masses[ii]/0.43)/_sfrs[ii];
-			ASSERT( parent_age > 0.0, "Bad age calculation." );
-		     }
-		     else
-			parent_age = (*_snap_ages)[_snaps[ii] - 1];
+		     // // Use the amount of stellar mass on the object to determine
+		     // // the age.
+		     // if( _sfrs[ii] > 0.0 )
+		     // {
+		     // 	parent_age = (*_snap_ages)[_snaps[ii]] - 10.0*(_masses[ii]/0.43)/_sfrs[ii];
+		     // 	ASSERT( parent_age > 0.0, "Bad age calculation." );
+		     // }
+		     // else
+		     parent_age = (*_snap_ages)[_snaps[ii] - 1];
 		  }
 	       }
 
