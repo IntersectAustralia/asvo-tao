@@ -2,17 +2,18 @@
 Mock Image
 ==========
 
-If the user enables the SED module, he can use the output of the SED module to general mock images using `SkyMaker <http://www.astromatic.net/software/skymaker>`_. The image generation module enable the user to use one (or more) cones to generate multiple images.He can also select the Magnitude field to be used to generate this image and the output format.     
-In case the user selected to generate more than one light-cone in the first module, he can generate images with different paramters for each of these cones by selecting the *sub-cone index*.
+Before the Mock Image module can be selected the user must have chosen a light-cone geometry in the General Properties tab and selected at least one filter in the SED module. The Mock Image module uses the `SkyMaker <http://www.astromatic.net/software/skymaker>`_ image generation package. If the user has selected more than one light-cone then images with different parameters for each selected cone can be made at the same time.
 
-The fields sub-cone index and Magnitude field are automatically populated based on the user selections in the previous modules.
+
+
+
 
 
 .. figure:: ../_static/screenshots/TAO-Mock_Galaxy_Factory11.png
 
 
+The fields "Sub-cone index" (1) and "Magnitude" (3) are automatically populated based on the user selections in the previous modules, but can be changed with a drop-down menu. The image output format can be specified by (2). To add an image click "Add", to remove one click "Remove" (4).
 
-.. figure:: ../_static/screenshots/TAO-Mock_Galaxy_Factory12.png
 
    
 .. figure:: ../_static/screenshots/TAO-Mock_Galaxy_Factory13.png
