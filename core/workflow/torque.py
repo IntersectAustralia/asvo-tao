@@ -42,8 +42,8 @@ class TorqueInterface(object):
     def InitDefaultparams(self):
         self.DefaultParams = {'nodes': 1,'ppn': 1,
                               'wt_hours': 168,'wt_minutes': 0,'wt_seconds': 0}
-        self.DB2PPNMapping={'bolshoi':2}
-        self.DB2MemMapping={'bolshoi':25}
+        self.DB2PPNMapping={'bolshoi':6}
+        self.DB2MemMapping={'bolshoi':12}
     ##
     ## Write a PBS script from a parameters dictionary.
     ##
@@ -84,7 +84,7 @@ class TorqueInterface(object):
             #PBS -S /bin/bash
             source /usr/local/modules/init/bash
             module load python fftw/x86_64/gnu/3.3.2-threaded gcc/4.7.1 cmake boost gsl hdf5/x86_64/gnu/1.8.9-openmpi-psm postgresql cfitsio/x86_64/gnu/3.290-threaded skymaker
-             echo Shared contexts: $PSM_SHAREDCONTEXTS_MAX
+            echo Shared contexts: $PSM_SHAREDCONTEXTS_MAX
             mpiexec %(executable)s %(path)s %(basicsettingpath)s
             %(MergeScriptName)s %(outputpath)s %(subjobindex)d %(UIJobReference)d
             cd %(outputpath)s

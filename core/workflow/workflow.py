@@ -592,7 +592,7 @@ class WorkFlow(object):
         self.UpdateTAOUI(UIReference_ID,JobType, data)
         self.dbaseobj.AddNewEvent(JobID, EnumerationLookup.EventType.Normal, 'Updating Job (UI ID:' + str(UIReference_ID) + ', Status:' + data['status'] + ')')
         
-        Message = "Job (" + str(UIReference_ID) +" ["+str(SubJobIndex)+"])  Finished With Error. The Error Message is:" + data['error_message']
+        Message = "Job (" + str(UIReference_ID) +" ["+str(SubJobIndex)+"])  Finished With Error.\nUserName:"+UserName+".\nThe Error Message is:" + data['error_message']
         if JobAddedForRestart!=True:
             emailreport.SendEmailToAdmin(self.Options, "Job Finished With Error", Message)
         else:
