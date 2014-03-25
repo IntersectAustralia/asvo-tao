@@ -57,6 +57,12 @@ class TaoUser(auth_models.AbstractUser):
             return self.first_name + ' (via AAF)'
         else:
             return self.username
+            
+    def display_institution(self):
+        if self.aaf_shared_token is not None and len(self.aaf_shared_token)>0:
+            return '(via AAF)'
+        else:
+            return self.institution
 
     def display_registration_status(self):
         messages = {
