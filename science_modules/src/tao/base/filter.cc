@@ -25,15 +25,17 @@ namespace tao {
    // }
 
    void
-   filter::set_field_name( const string& name )
+   filter::set_field( const string& name,
+		      batch<real_type>::field_value_type type )
    {
       _field_name = name;
+      _type = type;
 
       // Check if the field name has been set to none.
       string tmp = _field_name;
       to_lower( tmp );
       if( tmp == "none" )
-         _field_name.clear();
+	 _field_name.clear();
    }
 
    filter::iterator
@@ -72,7 +74,7 @@ namespace tao {
       {
          if( !filt->field_name().empty() )
          {
-            _vals = bat->scalar<real_type>( filt->field_name() );
+            // _vals = bat->scalar<real_type>( filt->field_name() );
             _settle();
          }
       }
@@ -103,7 +105,7 @@ namespace tao {
    void
    filter_iterator::_settle()
    {
-      while( _idx < _bat->size() && !(*_filt)( _vals[_idx] ) )
+      while( _idx < _bat->size() && !(*_filt)( *_bat, _idx ) )
          ++_idx;
    }
 

@@ -354,7 +354,7 @@ namespace tao {
 
                // Check for single snapshot.
                auto sng_snap = dict.opt<unsigned>( "single-snapshot" );
-               if( *sng_snap )
+               if( sng_snap )
                   LOGILN( "Single snapshot: ", *sng_snap );
 
                // Prepare the lightcone object.
@@ -416,9 +416,9 @@ namespace tao {
                // to_lower( filt_field );
                string filt_min = global_dict.get<string>( "workflow:record-filter:filter:filter-min", "" );
                string filt_max = global_dict.get<string>( "workflow:record-filter:filter:filter-max", "" );
-               if( !filt_field.empty() && filt_field != "" )
+               if( !filt_field.empty() && filt_field != "" && filt_field != "none" && filt_field != "NONE" )
                {
-                  _filt.set_field_name( filt_field );
+                  _filt.set_field( filt_field, _be->field_type( filt_field ) );
                   try
                   {
                      real_type val = boost::lexical_cast<real_type>( filt_min );

@@ -408,6 +408,12 @@ namespace tao {
             }
          }
 
+	 typename batch<real_type>::field_value_type
+	 field_type( std::string const& name )
+	 {
+	    return _field_types.at( name );
+	 }
+
          profile::timer&
          db_timer()
          {

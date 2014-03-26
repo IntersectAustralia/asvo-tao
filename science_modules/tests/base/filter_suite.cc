@@ -39,7 +39,7 @@ test_case<> ANON(
 
       // Setup the filter.
       filter filt;
-      filt.set_field_name( "test1" );
+      filt.set_field( "test1", tao::batch<tao::real_type>::DOUBLE );
       filt.set_minimum<real_type>( 3.5 );
       filt.set_maximum<real_type>( 6.5 );
 
@@ -66,7 +66,7 @@ test_case<> ANON(
 
       // Setup the filter.
       filter filt;
-      filt.set_field_name( "test1" );
+      filt.set_field( "test1", tao::batch<tao::real_type>::DOUBLE );
       filt.set_minimum<real_type>( 7.5 );
 
       // Check iteration values.
@@ -91,7 +91,7 @@ test_case<> ANON(
 
       // Setup the filter.
       filter filt;
-      filt.set_field_name( "test1" );
+      filt.set_field( "test1", tao::batch<tao::real_type>::DOUBLE );
       filt.set_maximum<real_type>( 3.5 );
 
       // Check iteration values.
