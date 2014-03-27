@@ -53,7 +53,7 @@
 
         var alpha1 = parseFloat(vm.ra_opening_angle());
         var box_side = vm.dark_matter_simulation().fields.box_size;
-        var d1 = redshift_to_distance(parseFloat(vm.redshift_min()));
+        var d1 = 0.0; //redshift_to_distance(parseFloat(vm.redshift_min()));
         var d2 = redshift_to_distance(parseFloat(vm.redshift_max()));
         var beta1;
         for (beta1 = alpha1; beta1 < 90; beta1 = beta1 + 0.01) {

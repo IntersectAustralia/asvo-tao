@@ -68,7 +68,7 @@ struct db_fixture
          "descendant INTEGER, snapnum INTEGER, sfr DOUBLE PRECISION, sfrbulge DOUBLE PRECISION, "
          "coldgas DOUBLE PRECISION, metalscoldgas DOUBLE PRECISION, "
          "posx DOUBLE PRECISION, posy DOUBLE PRECISION, posz DOUBLE PRECISION, "
-         "velx DOUBLE PRECISION, vely DOUBLE PRECISION, velz DOUBLE PRECISION, ";
+         "velx DOUBLE PRECISION, vely DOUBLE PRECISION, velz DOUBLE PRECISION, "
          "depthfirst_traversalorder INTEGER, subtree_count INTEGER)";
 
       //                                gid  l  tr  d sn  sfr sfrb cg mcg
@@ -104,9 +104,10 @@ struct db_fixture
    {
       sql << "CREATE TABLE summary (tablename VARCHAR, "
          "minx DOUBLE PRECISION, miny DOUBLE PRECISION, minz DOUBLE PRECISION, "
-         "maxx DOUBLE PRECISION, maxy DOUBLE PRECISION, maxz DOUBLE PRECISION)";
-      sql << "INSERT INTO summary VALUES('tree_1', 0, 0, 0, 1, 1, 1)";
-      sql << "INSERT INTO summary VALUES('tree_2', 0, 0, 0, 1, 1, 1)";
+         "maxx DOUBLE PRECISION, maxy DOUBLE PRECISION, maxz DOUBLE PRECISION, "
+	 "galaxycount INTEGER)";
+      sql << "INSERT INTO summary VALUES('tree_1', 0, 0, 0, 1, 1, 1, 10)";
+      sql << "INSERT INTO summary VALUES('tree_2', 0, 0, 0, 1, 1, 1, 10)";
    }
 
    void

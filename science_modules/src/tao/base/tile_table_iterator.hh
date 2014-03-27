@@ -321,8 +321,8 @@ namespace tao {
          _calc_polyhedron()
          {
             // Cache some information from the lightcone.
-            real_type ra_min = _tile->lightcone()->min_ra();
-            real_type ra_max = _tile->lightcone()->max_ra();
+            real_type ra_min = _tile->lightcone()->min_ra() + _tile->lightcone()->viewing_angle();
+            real_type ra_max = _tile->lightcone()->max_ra() + _tile->lightcone()->viewing_angle();
             real_type dec_min = _tile->lightcone()->min_dec();
             real_type dec_max = _tile->lightcone()->max_dec();
             real_type dist_max = _tile->lightcone()->max_dist();

@@ -6,12 +6,12 @@
       <geometry>light-cone</geometry>
       <box-repetition>unique</box-repetition>
       <rng-seed>0</rng-seed>
-      <redshift-min>0.01</redshift-min>
-      <redshift-max>0.06</redshift-max>
+      <redshift-min>1</redshift-min>
+      <redshift-max>3</redshift-max>
       <ra-min>0</ra-min>
-      <ra-max>5</ra-max>
+      <ra-max>1</ra-max>
       <dec-min>0</dec-min>
-      <dec-max>5</dec-max>
+      <dec-max>1</dec-max>
       <output-fields>
         <item>globalindex</item>
 	<item>posx</item>
@@ -27,6 +27,7 @@
 	<item>posx</item>
 	<item>posy</item>
 	<item>posz</item>
+	<item>distance</item>
         <item>ra</item>
         <item>dec</item>
       </fields>
@@ -48,5 +49,5 @@
   <subjobindex>0</subjobindex>
   <logdir>log</logdir>
   <outputdir>output</outputdir>
-  <database>millennium_mini_balanced_v3</database>
+  <database>millennium_full_3servers_v2</database>
 </tao>

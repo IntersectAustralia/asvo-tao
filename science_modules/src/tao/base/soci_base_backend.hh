@@ -679,6 +679,7 @@ namespace tao {
                  // Compute distance.
                  dist[ii] = sqrt( pos_x[ii]*pos_x[ii] + pos_y[ii]*pos_y[ii] + pos_z[ii]*pos_z[ii] );
                  ASSERT( dist[ii] <= _lc->max_dist(), "Calculated distance exceeds maximum: ", dist[ii] );
+                 ASSERT( dist[ii] >= _lc->min_dist(), "Calculated distance below minimum: ", dist[ii] );
 
                  // Compute cosmological redshift.
                  z_cos[ii] = _lc->distance_to_redshift( dist[ii] );
@@ -691,7 +692,7 @@ namespace tao {
                  if( _lc->viewing_angle() > 0.0 )
                  {
                     ra[ii] -= _lc->viewing_angle();
-                    numerics::ecs_to_cartesian( ra[ii], dec[ii], pos_x[ii], pos_y[ii], pos_z[ii] );
+                    numerics::ecs_to_cartesian<real_type>( ra[ii], dec[ii], pos_x[ii], pos_y[ii], pos_z[ii], dist[ii] );
                  }
 
                  // Check angles.

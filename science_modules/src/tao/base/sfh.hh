@@ -623,12 +623,14 @@ namespace tao {
 	       // Calculate the starting age based on the average age
 	       // of my parent galaxies.
 	       real_type parent_age = 0.0;
+	       real_type prev_mass = 0.0;
 	       {
 		  auto rng = _parents.equal_range( ii );
 		  unsigned cnt = 0;
 		  while( rng.first != rng.second )
 		  {
-                     int par_snap = _snaps[rng.first->second];
+		     auto par_idx = rng.first->second;
+                     int par_snap = _snaps[par_idx];
                      if( par_snap < snap )
                      {
                         parent_age += (*_snap_ages)[par_snap];
@@ -636,6 +638,7 @@ namespace tao {
                      }
                      else
                         std::cout << "WARNING: Found badly connected parents.\n";
+		     prev_mass += _masses[par_idx];
                      ++rng.first;
 		  }
 		  if( cnt > 0 )
@@ -680,6 +683,7 @@ namespace tao {
 	       ASSERT( new_mass >= 0.0 && new_bulge_mass >= 0.0, "Mass has been lost during rebinning." );
 	       ASSERT( new_mass == new_mass, "Have NaN for new total mass during rebinning." );
 	       ASSERT( new_bulge_mass == new_bulge_mass, "Have NaN for new bulge mass during rebinning." );
+	       // ASSERT( hpc::num::approx( new_mass, _masses[ii] - prev_mass, 1e4 ) );
 
 	       // Add the new mass to the appropriate bins. Find the first bin
 	       // that has overlap with this age range.

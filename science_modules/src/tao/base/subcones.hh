@@ -22,19 +22,20 @@ namespace tao {
       // Cache certain values.
       double theta = *calc_subcone_angle( lc );
       double b = lc.simulation()->box_size();
-      double d = lc.max_dist();
+      double d0 = lc.min_dist();
+      double d1 = lc.max_dist();
       double phi = theta + lc.max_ra();
 
       // Calculate the cone RA height and declination height.
-      double h = d*sin( phi );
-      double h_dec = d*sin( lc.max_dec() );
+      double h = d1*sin( phi ) - d0*sin( theta );
+      double h_dec = d1*sin( lc.max_dec() );
 
       // How many will fit in the domain?
       unsigned ny = floor( b/h );
       unsigned nz = floor( b/h_dec );
 
       // Calc origin of sub_idx.
-      return std::array<T,3>{ 0.0, (sub_idx%ny)*h, (sub_idx/ny)*h_dec };
+      return std::array<T,3>{ -d0*cos( phi ), (sub_idx%ny)*h - d0*sin( theta ), (sub_idx/ny)*h_dec };
    }
 
 }

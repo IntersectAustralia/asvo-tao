@@ -30,19 +30,21 @@ application::operator()()
    // Connect the backend.
    tao::backends::multidb<tao::real_type> be;
    {
+      // std::string db_name = "millennium_mini_galacticus_3servers_v1";
+      std::string db_name = "millennium_mini_3servers_v2";
 #include "credentials.hh"
       hpc::vector<tao::backends::multidb<tao::real_type>::server_type> servers( 3 );
-      servers[0].dbname = "millennium_full_3servers_v2";
+      servers[0].dbname = db_name;
       servers[0].user = username;
       servers[0].passwd = password;
       servers[0].host = hpc::string( "tao01.hpc.swin.edu.au" );
       servers[0].port = 3306;
-      servers[1].dbname = "millennium_full_3servers_v2";
+      servers[1].dbname = db_name;
       servers[1].user = username;
       servers[1].passwd = password;
       servers[1].host = hpc::string( "tao02.hpc.swin.edu.au" );
       servers[1].port = 3306;
-      servers[2].dbname = "millennium_full_3servers_v2";
+      servers[2].dbname = db_name;
       servers[2].user = username;
       servers[2].passwd = password;
       servers[2].host = hpc::string( "tao03.hpc.swin.edu.au" );
@@ -67,12 +69,6 @@ application::operator()()
    // Check if we should be loading a star formation history.
    if( _sfh_path.empty() )
    {
-      // Track results and global indices.
-      std::vector<long long> gids;
-      gids.reserve( 40000 );
-      std::vector<tao::real_type> results;
-      results.reserve( 40000 );
-
       // Do a silly iteration over all the galaxies.
       tao::box<tao::real_type> box( sim );
       box.set_snapshot( 63 );
@@ -82,10 +78,12 @@ application::operator()()
       {
 	 tao::batch<tao::real_type> bat = *gal_it;
 	 auto const snaps = bat.scalar<int>( "snapnum" );
+	 // auto const snaps = bat.scalar<long long>( "snapnum" );
 	 auto const& tbl = bat.attribute<hpc::string>( "table" );
 	 auto const tree_gids = bat.scalar<long long>( "globaltreeid" );
 	 auto gal_gids = bat.scalar<long long>( "globalindex" );
 	 auto stellar_mass = bat.scalar<tao::real_type>( "stellarmass" );
+	 auto sfrs = bat.scalar<tao::real_type>( "sfr" );
 
 	 for( unsigned ii = 0; ii < bat.size(); ++ii )
 	 {
@@ -102,49 +100,28 @@ application::operator()()
 	    // Rebin.
 	    hpc::vector<tao::real_type> age_masses( ssp.age_masses_size() );
 	    hpc::vector<tao::real_type> age_bulge_masses( ssp.age_masses_size() );
-	    // hpc::vector<tao::real_type> age_masses( ssp.bin_ages().size() );
-	    // hpc::vector<tao::real_type> age_bulge_masses( ssp.bin_ages().size() );
-	    // hpc::vector<tao::real_type> age_metals( ssp.bin_ages().size() );
 	    std::fill( age_masses.begin(), age_masses.end(), 0 );
 	    std::fill( age_bulge_masses.begin(), age_bulge_masses.end(), 0 );
-	    // std::fill( age_metals.begin(), age_metals.end(), 0 );
-	    // sfh.rebin_chiara<tao::real_type>( age_masses, age_bulge_masses, age_metals );
 	    sfh.rebin<tao::real_type>( age_masses, age_bulge_masses, ssp );
 
 	    // std::cout << sfh.size() << "\n";
-	    tao::real_type my_mass = std::accumulate( age_masses.begin(), age_masses.end(), 0.0 ); //*0.43;
-	    // tao::real_type sage_mass = stellar_mass[ii]*1e10;
-	    // if( sage_mass > 0.0 )
-	    //    std::cout << my_mass << ", " << sage_mass << ", " << (my_mass - sage_mass)/sage_mass << "\n";
+	    tao::real_type my_mass = std::accumulate( age_masses.begin(), age_masses.end(), 0.0 )*0.43;
+	    tao::real_type mod_mass = stellar_mass[ii]*1e10;
+	    // if( mod_mass > 0.0 )
+	    //    std::cout << my_mass << ", " << mod_mass << ", " << (my_mass - mod_mass)/mod_mass << "\n";
+	    std::cout << sfrs[ii] << "\n";
 
-	    // if( gal_gids[ii] == 554394 )
-	    // {
-	    //    for( unsigned jj = 0; jj < ssp.bin_ages().size(); ++jj )
-	    //    {
-	    //    	  std::cout << jj << "  :  ";
-	    //    	  for( unsigned kk = 0; kk < ssp.num_metal_bins(); ++kk )
-	    //    	     std::cout << age_masses[jj*ssp.num_metal_bins() + kk] << "  ";
-	    //    	  std::cout << "\n";
-	    //    }
-	    //    std::cout << sfh.snapshots() << "\n";
-	    //    std::cout << sfh.sfrs() << "\n";
-	    //    std::cout << sfh.masses() << "\n";
-	    //    std::cout << sfh.ages() << "\n";
-	    //    exit( 0 );
-	    // }
+	    // // Sum from SSP.
+	    // hpc::vector<tao::real_type> total_spectra( ssp.wavelengths().size() );
+	    // ssp.sum( age_masses.begin(), total_spectra.begin() );
 
-	    // Sum from SSP.
-	    hpc::vector<tao::real_type> total_spectra( ssp.wavelengths().size() );
-	    // ssp.sum_chiara( age_masses.begin(), age_metals.begin(), total_spectra.begin() );
-	    ssp.sum( age_masses.begin(), total_spectra.begin() );
-
-	    // Compute magnitudes.
-	    auto waves = ssp.wavelengths();
-	    tao::sed<spline_type> sed(
-	       (const hpc::view<std::vector<tao::real_type>>::type&)waves,
-	       (const hpc::vector_view<std::vector<tao::real_type>>&)total_spectra
-	       );
-	    auto abs_mag = tao::absolute_magnitude( sed, bpf );
+	    // // Compute magnitudes.
+	    // auto waves = ssp.wavelengths();
+	    // tao::sed<spline_type> sed(
+	    //    (const hpc::view<std::vector<tao::real_type>>::type&)waves,
+	    //    (const hpc::vector_view<std::vector<tao::real_type>>&)total_spectra
+	    //    );
+	    // auto abs_mag = tao::absolute_magnitude( sed, bpf );
 
 	    // std::cout << abs_mag << "\n";
 	    // gids.push_back( gal_gids[ii] );

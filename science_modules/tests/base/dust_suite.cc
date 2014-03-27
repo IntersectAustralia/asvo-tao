@@ -90,7 +90,7 @@ namespace {
          hpc::numerics::gaussian( spec.begin(), 10, 1e10 );
          hpc::numerics::linear( waves.begin(), 10, 5000.0, 1000000.0 );
          dust( 0.73, 1.0, 1e10, 1e8, 1.0, spec.begin(), spec.end(), waves.begin(), res.begin() );
-         tao::real_type vals[10] = { 806003, 1.31745e+06, 1.9866e+06, 2.77621e+06, 3.62184e+06, 4.46628e+06, 5.32989e+06, 6.4906e+06, 9.55588e+06, 2.79671e+09 };
+         tao::real_type vals[10] = { 8060.03, 1.31745e+04, 1.9866e+04, 2.77621e+04, 3.62184e+04, 4.46628e+04, 5.32989e+04, 6.4906e+04, 9.55588e+04, 6.3886e+07 };
          for( unsigned ii = 0; ii < 10; ++ii )
             DELTA( res[ii], vals[ii], pow( 10.0, int(log10( vals[ii] )) ) );
 

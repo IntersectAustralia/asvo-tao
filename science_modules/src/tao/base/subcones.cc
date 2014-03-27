@@ -13,20 +13,20 @@ namespace tao {
       tao::simulation const* sim = lc.simulation();
       double b = sim->box_size();
       double ra = lc.max_ra() - lc.min_ra();
-      double d = lc.max_dist();
+      double d0 = lc.min_dist();
+      double d1 = lc.max_dist();
 
       // If the cone fits in one box then return zero.
-      if( d <= b )
+      if( d1 - d0*cos( ra ) <= b )
 	 return 0.0;
 
       // Use Ridder's method to find the optimal angle for
       // unique cones.
       return hpc::algorithm::ridders(
-      	 [ra, d, b]( double x )
+      	 [ra, d0, d1, b]( double x )
 	 {
 	    double phi = ra + x;
-	    double y = b - d*(cos( x ) - sin( x )/tan( phi ));
-	    return y;
+	    return b - d1*(cos( x ) - sin( x )/tan( phi ));
       	 },
 	 0.5*M_PI,
 	 0.0
@@ -40,10 +40,11 @@ namespace tao {
       if( !theta )
 	 return 0;
       double b = lc.simulation()->box_size();
-      double d = lc.max_dist();
+      double d0 = lc.min_dist();
+      double d1 = lc.max_dist();
       double phi = *theta + lc.max_ra();
-      double h = d*sin( phi );
-      double h_dec = d*sin( lc.max_dec() );
+      double h = d1*sin( phi ) - d0*sin( *theta );
+      double h_dec = d1*sin( lc.max_dec() );
       return (unsigned)(floor( b/h )*floor( b/h_dec ));
    }
 

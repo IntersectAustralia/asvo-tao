@@ -41,7 +41,7 @@ namespace tao {
          : _lc( &lc ),
            _done( false )
       {
-         std::fill( _cur.begin(), _cur.end(), 0 );
+	 std::fill( _cur.begin(), _cur.end(), 0 );
          if( _check() != ON )
             increment();
 	 else
@@ -131,18 +131,18 @@ namespace tao {
 
          // Check that the farthest corner of the box is greater than the
          // minimum distance.
-         if( sqrt( pow( _cur[0] + bs, 2.0 ) + 
-                   pow( _cur[1] + bs, 2.0 ) + 
-                   pow( _cur[2] + bs, 2.0 ) ) < _lc->_dist[0] )
+         if( sqrt( pow( _cur[0] - _lc->origin()[0] + bs, 2.0 ) + 
+                   pow( _cur[1] - _lc->origin()[1] + bs, 2.0 ) + 
+                   pow( _cur[2] - _lc->origin()[2] + bs, 2.0 ) ) < _lc->_dist[0] )
          {
             return BELOW;
          }
 
          // Check that the closest corner of the box is less than the
          // maximum distance.
-         if( sqrt( pow( _cur[0], 2.0 ) + 
-                   pow( _cur[1], 2.0 ) + 
-                   pow( _cur[2], 2.0 ) ) > _lc->_dist[1] )
+         if( sqrt( pow( _cur[0] - _lc->origin()[0], 2.0 ) + 
+                   pow( _cur[1] - _lc->origin()[1], 2.0 ) + 
+                   pow( _cur[2] - _lc->origin()[2], 2.0 ) ) > _lc->_dist[1] )
          {
             return ABOVE;
          }
@@ -150,25 +150,37 @@ namespace tao {
          // We can check lower RA and DEC bounds by converting the (0, 1, 0)
          // vertex of the cube to ECS coordinates.
          real_type ra, dec;
-         numerics::cartesian_to_ecs( _cur[0], _cur[1] + bs, _cur[2], ra, dec );
-         if( ra < _lc->_ra[0] )
+         numerics::cartesian_to_ecs( _cur[0] - _lc->origin()[0],
+				     _cur[1] - _lc->origin()[1] + bs,
+				     _cur[2] - _lc->origin()[2],
+				     ra, dec );
+         if( ra < _lc->_ra[0] + _lc->_view_angle )
             return BELOW;
 
          // Similarly, we check the upper bounds by converting the (1, 0, 0)
          // vertex of the cube to ECS coordinates.
-         numerics::cartesian_to_ecs( _cur[0] + bs, _cur[1], _cur[2], ra, dec );
-         if( ra > _lc->_ra[1] )
+         numerics::cartesian_to_ecs( _cur[0] - _lc->origin()[0] + bs,
+				     _cur[1] - _lc->origin()[1],
+				     _cur[2] - _lc->origin()[2],
+				     ra, dec );
+         if( ra > _lc->_ra[1] + _lc->_view_angle )
             return ABOVE;
 
          // Similarly, we check the upper bounds by converting the (1, 0, 0)
          // vertex of the cube to ECS coordinates.
-         numerics::cartesian_to_ecs( _cur[0], _cur[1], _cur[2] + bs, ra, dec );
+         numerics::cartesian_to_ecs( _cur[0] - _lc->origin()[0],
+				     _cur[1] - _lc->origin()[1],
+				     _cur[2] - _lc->origin()[2] + bs,
+				     ra, dec );
          if( dec < _lc->_dec[0] )
             return BELOW;
 
          // We can check lower RA and DEC bounds by converting the (0, 1, 0)
          // vertex of the cube to ECS coordinates.
-         numerics::cartesian_to_ecs( _cur[0] + bs, _cur[1] + bs, _cur[2], ra, dec );
+         numerics::cartesian_to_ecs( _cur[0] - _lc->origin()[0] + bs,
+				     _cur[1] - _lc->origin()[1] + bs,
+				     _cur[2] - _lc->origin()[2],
+				     ra, dec );
          if( dec > _lc->_dec[1] )
             return ABOVE;
 

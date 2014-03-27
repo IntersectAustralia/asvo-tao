@@ -57,7 +57,9 @@ namespace tao {
             }
 
             // Pepare an iterator.
-            LOGILN( "Processing tile at: ", _tile_it->min(), setindent( 2 ) );
+            LOGILN( "Processing tile at: [", _tile_it->min()[0] - _tile_it->origin()[0],
+		    ", ", _tile_it->min()[1] - _tile_it->origin()[1],
+		    ", ", _tile_it->min()[2] - _tile_it->origin()[2], "]", setindent( 2 ) );
             _gal_it = _be->galaxy_begin( *_qry, *_tile_it, _bat, _filt, view<std::vector<std::pair<unsigned long long,int>>>::type( _work ) );
             _settle();
          }
@@ -134,7 +136,9 @@ namespace tao {
                   _done = true;
                   break;
                }
-               LOGILN( "Processing tile at: ", _tile_it->min(), setindent( 2 ) );
+	       LOGILN( "Processing tile at: [", _tile_it->min()[0] - _tile_it->origin()[0],
+		       ", ", _tile_it->min()[1] - _tile_it->origin()[1],
+		       ", ", _tile_it->min()[2] - _tile_it->origin()[2], "]", setindent( 2 ) );
                _gal_it = _be->galaxy_begin( *_qry, *_tile_it, _bat, _filt, view<std::vector<std::pair<unsigned long long,int>>>::type( _work ) );
             }
             while( _gal_it.done() );

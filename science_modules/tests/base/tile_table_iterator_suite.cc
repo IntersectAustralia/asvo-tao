@@ -1,4 +1,4 @@
-#include <libhpc/debug/unit_test_main.hh>
+#include <libhpc/mpi/unit_test_main.hh>
 #include "tao/base/tile_table_iterator.hh"
 #include "tao/base/soci_backend.hh"
 #include "../fixtures/db_fixture.hh"
