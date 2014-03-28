@@ -185,7 +185,6 @@ namespace tao {
 
                // Initialise the tile index.
                _tile_idx = std::numeric_limits<unsigned>::max();
-	       _tbl_idx = std::numeric_limits<unsigned>::max();
             }
             else
             {
@@ -200,23 +199,25 @@ namespace tao {
                   // TODO: This is only dumping for rank 0. We should
                   // probably come up with a better way of handling
                   // distributed progress.
-                  if( _c_it.tile_index() != _tile_idx )
-                     _tile_idx = _c_it.tile_index();
-		  if( _c_it.table_index() != _tbl_idx )
+		  if( _c_it.tile_index() != _tile_idx )
+		     _tile_idx = _c_it.tile_index();
+		  if( _c_it.table_index() != _num_tbls )
 		  {
-		     ++_tbl_idx;
-                     if( _tbl_idx != _num_tbls )
-                     {
-                        LOG_PUSH_TAG( "progress" );
-                        LOGILN( runtime(), ",", (float)_tbl_idx*100.0/(float)_num_tbls, "%" );
-                        LOG_POP_TAG( "progress" );
-                     }
-                  }
+		     LOG_PUSH_TAG( "progress" );
+		     LOGILN( runtime(), ",", (float)_c_it.table_index()*100.0/(float)_num_tbls, "%" );
+		     LOG_POP_TAG( "progress" );
+		  }
                }
                else
                {
                   auto db_timer = this->db_timer_start();
                   ++_b_it;
+		  if( _b_it.table_index() != _num_tbls )
+		  {
+		     LOG_PUSH_TAG( "progress" );
+		     LOGILN( runtime(), ",", (float)_b_it.table_index()*100.0/(float)_num_tbls, "%" );
+		     LOG_POP_TAG( "progress" );
+		  }
                }
             }
 
@@ -498,7 +499,6 @@ namespace tao {
          tao::batch<real_type> _bat;
 
          unsigned _tile_idx;
-	 unsigned _tbl_idx;
          unsigned _num_tiles;
 	 unsigned _num_tbls;
          // profile::progress _prog;

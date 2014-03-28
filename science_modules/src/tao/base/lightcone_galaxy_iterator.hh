@@ -42,6 +42,7 @@ namespace tao {
            _be( &be ),
            _qry( &qry ),
            _bat( bat ),
+	   _tbl_idx( 0 ),
            _filt( filt ),
            _done( false )
       {
@@ -62,6 +63,7 @@ namespace tao {
 		    ", ", _tile_it->min()[2] - _tile_it->origin()[2], "]", setindent( 2 ) );
             _gal_it = _be->galaxy_begin( *_qry, *_tile_it, _bat, _filt, view<std::vector<std::pair<unsigned long long,int>>>::type( _work ) );
             _settle();
+	    _tbl_idx += _gal_it.table_index();
          }
          else
             _done = true;
@@ -78,6 +80,7 @@ namespace tao {
          _done = op._done;
          _tile_it = op._tile_it;
          _gal_it = op._gal_it;
+	 _tbl_idx = op._tbl_idx;
          _work = op._work;
          _done = op._done;
          return *this;
@@ -104,7 +107,7 @@ namespace tao {
       unsigned
       table_index() const
       {
-	 return _gal_it.table_index();
+	 return _tbl_idx;
       }
 
    protected:
@@ -113,6 +116,7 @@ namespace tao {
       increment()
       {
          ++_gal_it;
+	 ++_tbl_idx;
          _settle();
       }
 
@@ -146,6 +150,7 @@ namespace tao {
 		       ", ", _tile_it->min()[1] - _tile_it->origin()[1],
 		       ", ", _tile_it->min()[2] - _tile_it->origin()[2], "]", setindent( 2 ) );
                _gal_it = _be->galaxy_begin( *_qry, *_tile_it, _bat, _filt, view<std::vector<std::pair<unsigned long long,int>>>::type( _work ) );
+	       _tbl_idx += _gal_it.table_index();
             }
             while( _gal_it.done() );
          }
@@ -160,6 +165,7 @@ namespace tao {
       filter const* _filt;
       tile_iterator _tile_it;
       tile_galaxy_iterator _gal_it;
+      unsigned _tbl_idx;
       std::vector<std::pair<unsigned long long,int>> _work;
       bool _done;
    };
