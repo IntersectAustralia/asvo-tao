@@ -91,12 +91,21 @@ namespace tao {
             // progress indicator (I say meaningful...).
             if( _geom == CONE )
             {
-               _num_tiles = 0;
+	       _num_tiles = 0;
+               _num_tbls = 0;
                for( auto it = _lc.tile_begin(); it != _lc.tile_end(); ++it )
-                  ++_num_tiles;
+	       {
+		  ++_num_tiles;
+		  for( auto tbl_it = _be->table_begin( *it ); tbl_it != _be->table_end( *it ); ++tbl_it )
+		     ++_num_tbls;
+	       }
             }
             else
-               _num_tiles = 1;
+	    {
+	       _num_tiles = 1;
+	       for( auto tbl_it = _be->table_begin( _box ); tbl_it != _be->table_end( _box ); ++tbl_it )
+		  ++_num_tbls;
+	    }
 
             // Make sure the local batch object is prepared. I need to
             // do this here because other modules will likely need
@@ -176,6 +185,7 @@ namespace tao {
 
                // Initialise the tile index.
                _tile_idx = std::numeric_limits<unsigned>::max();
+	       _tbl_idx = std::numeric_limits<unsigned>::max();
             }
             else
             {
@@ -191,12 +201,14 @@ namespace tao {
                   // probably come up with a better way of handling
                   // distributed progress.
                   if( _c_it.tile_index() != _tile_idx )
-                  {
                      _tile_idx = _c_it.tile_index();
-                     if( _tile_idx != _num_tiles )
+		  if( _c_it.table_index() != _tbl_idx )
+		  {
+		     ++_tbl_idx;
+                     if( _tbl_idx != _num_tbls )
                      {
                         LOG_PUSH_TAG( "progress" );
-                        LOGILN( runtime(), ",", (float)_tile_idx*100.0/(float)_num_tiles, "%" );
+                        LOGILN( runtime(), ",", (float)_tbl_idx*100.0/(float)_num_tbls, "%" );
                         LOG_POP_TAG( "progress" );
                      }
                   }
@@ -416,7 +428,7 @@ namespace tao {
                // to_lower( filt_field );
                string filt_min = global_dict.get<string>( "workflow:record-filter:filter:filter-min", "" );
                string filt_max = global_dict.get<string>( "workflow:record-filter:filter:filter-max", "" );
-               if( !filt_field.empty() && filt_field != "" && filt_field != "none" && filt_field != "NONE" )
+               if( !filt_field.empty() && filt_field != "" && filt_field != "none" && filt_field != "NONE" && filt_field != "None" )
                {
                   _filt.set_field( filt_field, _be->field_type( filt_field ) );
                   try
@@ -486,7 +498,9 @@ namespace tao {
          tao::batch<real_type> _bat;
 
          unsigned _tile_idx;
+	 unsigned _tbl_idx;
          unsigned _num_tiles;
+	 unsigned _num_tbls;
          // profile::progress _prog;
       };
 

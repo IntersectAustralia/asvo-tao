@@ -101,6 +101,12 @@ namespace tao {
          return _tile_it.index();
       }
 
+      unsigned
+      table_index() const
+      {
+	 return _gal_it.table_index();
+      }
+
    protected:
 
       void

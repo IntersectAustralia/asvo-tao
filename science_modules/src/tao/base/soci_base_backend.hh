@@ -414,6 +414,7 @@ namespace tao {
               _query_str( query_str ),
               _table_pos( table_start ),
               _table_end( table_finish ),
+	      _tbl_idx( 0 ),
               _lc( lc ),
               _st( NULL ),
               _done( false ),
@@ -444,6 +445,7 @@ namespace tao {
               _query_str( src._query_str ),
               _table_pos( src._table_pos ),
               _table_end( src._table_end ),
+	      _tbl_idx( src._tbl_idx ),
               _lc( src._lc ),
               _st( src._st ),
               _done( src._done )
@@ -466,6 +468,7 @@ namespace tao {
               _query_str( src._query_str ),
               _table_pos( src._table_pos ),
               _table_end( src._table_end ),
+	      _tbl_idx( src._tbl_idx ),
               _lc( src._lc ),
               _st( src._st ),
               _done( src._done ),
@@ -506,6 +509,7 @@ namespace tao {
             _query_str = op._query_str;
             _table_pos = op._table_pos;
             _table_end = op._table_end;
+	    _tbl_idx = op._tbl_idx;
             _lc = op._lc;
             _st = op._st;
             _done = op._done;
@@ -530,6 +534,7 @@ namespace tao {
             _query_str = op._query_str;
             _table_pos = op._table_pos;
             _table_end = op._table_end;
+	    _tbl_idx = op._tbl_idx;
             _lc = op._lc;
             _st = op._st;
             _done = op._done;
@@ -539,6 +544,12 @@ namespace tao {
             op._my_bat = false;
             op._bat = 0;
          }
+
+	 unsigned
+	 table_index() const
+	 {
+	    return _tbl_idx;
+	 }
 
       protected:
 
@@ -551,6 +562,7 @@ namespace tao {
             {
                // Move on to the next table unless we've exhausted them.
                ++_table_pos;
+	       ++_tbl_idx;
                if( _table_pos == _table_end )
                {
                   _done = true;
@@ -723,6 +735,7 @@ namespace tao {
          query_type* _query;
          string _query_str;
          table_iterator _table_pos, _table_end;
+	 unsigned _tbl_idx;
          soci::statement* _st;
          bool _my_bat;
          batch<real_type>* _bat;
