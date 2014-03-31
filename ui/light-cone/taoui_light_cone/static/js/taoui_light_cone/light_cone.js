@@ -237,7 +237,7 @@ catalogue.module_defs.light_cone = function ($) {
             .extend({required: function(){return vm.catalogue_geometry().id == 'light-cone'}})
             .extend({only_if: function(){return vm.catalogue_geometry().id == 'light-cone'}})
             .extend({validate: catalogue.validators.is_float})
-            .extend({validate: catalogue.validators.geq(0)})
+            .extend({validate: catalogue.validators.geq(0.01)})
             .extend({validate: catalogue.validators.leq(90)});
 
         param = job['light_cone-dec_opening_angle'];
@@ -245,7 +245,7 @@ catalogue.module_defs.light_cone = function ($) {
             .extend({required: function(){return vm.catalogue_geometry().id == 'light-cone'}})
             .extend({only_if: function(){return vm.catalogue_geometry().id == 'light-cone'}})
             .extend({validate: catalogue.validators.is_float})
-            .extend({validate: catalogue.validators.geq(0)})
+            .extend({validate: catalogue.validators.geq(0.01)})
             .extend({validate: catalogue.validators.leq(90)});
 
         param = job['light_cone-redshift_min'];
