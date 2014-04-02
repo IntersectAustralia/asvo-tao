@@ -102,10 +102,11 @@ urlpatterns = patterns('',
     url(r'^accounts/password/change/$', password_change, {'post_change_redirect': reverse_lazy('password_change_done')},
         name='password_change'),
     url(r'^accounts/password/change/done/$', password_change_done, name='password_change_done'),
+    url('^acknowledgements/', simple_view, {'template_name': 'acknowledgements.html'}, name='acknowledgements'),
+    url('^about/', simple_view, {'template_name': 'about.html'}, name='about'),
 
     ('^tap/', include('tap.urls')),
-    url('^acknowledgements/', simple_view, {'template_name': 'acknowledgements.html'},
-        name='acknowledgements'),
+    
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),

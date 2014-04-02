@@ -178,7 +178,7 @@ class DBInterface(object):
         return self.ExecuteQuerySQLStatment(SELECTActive)    
     
     def GetCurrentUserActiveJobs(self,UserName):
-        SELECTActive="SELECT * From Jobs where JobStatus<"+str(EnumerationLookup.JobState.Completed+" and latestjobversion=True and username='"+UserName+"';")
+        SELECTActive="SELECT * From Jobs where JobStatus<"+str(EnumerationLookup.JobState.Completed)+" and latestjobversion=True and username='"+UserName+"';"
         return self.ExecuteQuerySQLStatment(SELECTActive)    
     
     def GetRunningJobsWithTheSameUIReferenceID(self,UIReferenceID):

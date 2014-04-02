@@ -57,6 +57,12 @@ class TaoUser(auth_models.AbstractUser):
             return self.first_name + ' (via AAF)'
         else:
             return self.username
+            
+    def display_institution(self):
+        if self.aaf_shared_token is not None and len(self.aaf_shared_token)>0:
+            return '(via AAF)'
+        else:
+            return self.institution
 
     def display_registration_status(self):
         messages = {
@@ -219,7 +225,7 @@ class DataSetProperty(models.Model):
                   (TYPE_LONG, 'long'),
                   )
     name = models.CharField(max_length=200)
-    units = models.CharField(max_length=20, default='', blank=True)
+    units = models.CharField(max_length=30, default='', blank=True)
     label = models.CharField(max_length=40)
     dataset = models.ForeignKey(DataSet)
     data_type = models.IntegerField(choices=DATA_TYPES)
@@ -473,7 +479,10 @@ class DustModel(models.Model):
     name = models.CharField(max_length=100, unique=True)
     label = models.CharField(max_length=100)
     details = models.TextField(default='')
-
+    itemsorder = models.IntegerField(default=0)
+    class Meta:
+        ordering = ['itemsorder']
+        
     def __unicode__(self):
         return self.label
 

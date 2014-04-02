@@ -22,7 +22,7 @@ from tao.decorators import admin_required, set_tab, user_login_required
 from tao.mail import send_mail
 from tao.pagination import paginate
 from tao.models import TaoUser, GlobalParameter, STATUS_CHOICES
-
+from tao.decorators import researcher_required, set_tab
 import logging
 
 logger = logging.getLogger(__name__)
@@ -152,6 +152,7 @@ def reject_user(request, user_id):
     return redirect(access_requests)
 
 @set_tab('support')
+@researcher_required
 def support(request):
     if not hasattr(request,'user') or not hasattr(request.user,'is_aaf'):
         return redirect(login)
@@ -172,7 +173,7 @@ def support(request):
             logger.info('Support email from ' + username)
             logger.info('Subject: ' + subject)
             logger.info('Message: ' + message)
-            send_mail('support-template', context, 'TAO Support: ' + subject, [user_email], bcc=to_addrs)
+            send_mail('support-template', context, 'TAO Support: ' + subject, to_addrs)
             return render(request, 'email_sent.html')
         else:
             message = 'Please fill in required fields'

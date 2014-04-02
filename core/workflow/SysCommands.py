@@ -176,6 +176,8 @@ class SysCommands(object):
             logging.info("Job_Stop")
             return [True,'']
         else:
+            self.dbaseobj.RemoveAllJobsWithUIReferenceID(UIJobID)
+            self.UpdateTAOJobUI(UIJobID) 
             return [False,Message]
     def Job_Resume(self,UICommandID,UIJobID,CommandParams):
         logging.info("Job_Resume is not currently supported")

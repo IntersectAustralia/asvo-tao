@@ -22,7 +22,7 @@ import stat,sys
 import ParseProfileData
 import traceback
 import JobRestart
-import os
+import os,re
 import lxml.etree as ET
 
 
@@ -107,11 +107,11 @@ class WorkFlow(object):
         ## This process is not very optimized at the moment.
         logging.info("Start Checking user Resources ! ")
         XMLtree = ET.fromstring(JobParams.encode('utf8'))
-        XMLNameSpace=re.findall('\{.*\}',self.tree.xpath('.')[0].tag)[0]
+        XMLNameSpace=re.findall('\{.*\}',XMLtree.xpath('.')[0].tag)[0]
         XMLNameSpace=XMLNameSpace[1:-1]
         NumofConesNode=XMLtree.xpath("ns:workflow/ns:light-cone/ns:num-cones",namespaces={'ns':XMLNameSpace})
         SubJobsCount=0
-        if len(NumofConesNode)>0:
+        if len(NumofConesNode)>0:            
             SubJobsCount=int(NumofConesNode[0].text)
         else:
             SubJobsCount=1
@@ -119,6 +119,7 @@ class WorkFlow(object):
         logging.info("Current user ("+JobUserName+") requests "+str(SubJobsCount)+" Jobs!")
         ## Get Current Number of running jobs for this user
         ListOfJobs=self.dbaseobj.GetCurrentUserActiveJobs(JobUserName)
+        
         logging.info("Current user ("+JobUserName+") got "+str(len(ListOfJobs))+" Jobs Running!")
         if(len(ListOfJobs)+SubJobsCount<=10):
             logging.info("Job Will be executed!")
@@ -137,8 +138,8 @@ class WorkFlow(object):
             if(self.JobWithSameIDRunning(UIJobReference)==True):                         
                 return False
             logging.info("I will start investigating if the user got more resources?!")
-            #if(self.UserHasEnoughResources(JobUserName, JobParams)==False):
-            #    return False
+            if(self.UserHasEnoughResources(JobUserName, JobParams)==False):
+                return False
             ## If a Job with the Same UI_ID exists ...ensure that it is out of the watch List (By Error State)
             self.dbaseobj.RemoveOldJobFromWatchList(UIJobReference)
             self.dbaseobj.RemoveAllJobsWithUIReferenceID(UIJobReference)
@@ -444,8 +445,10 @@ class WorkFlow(object):
             
             
             logging.info("PBS Jobs:"+str(CurrentJobs))
+            logging.info("Database Jobs:")
             
-            logging.info("Database Jobs:"+str(CurrentJobs_PBSID))
+            for PJob in CurrentJobs_PBSID:
+                logging.info(PJob)
             
             JobsStatus=[]
             for CurrentJobRecord in CurrentJobs_PBSID:
@@ -459,10 +462,11 @@ class WorkFlow(object):
                 
                 
                 
-                logging.info("Checking Job Status : JobID="+pbsreferenceid+"\tInPBSList="+str(pbsreferenceid in CurrentJobs))
-                if pbsreferenceid in CurrentJobs:
-                    logging.info("Checking Job Status : JobID="+pbsreferenceid+"\tStatus="+str(CurrentJobs[pbsreferenceid]))
                 
+                if pbsreferenceid in CurrentJobs:
+                    logging.info("Checking Job Status : JobID="+pbsreferenceid+"\tStatus="+str(CurrentJobs[pbsreferenceid])+"\tInPBSList="+str(pbsreferenceid in CurrentJobs))
+                else:
+                    logging.info("Checking Job Status : JobID="+pbsreferenceid+"\tInPBSList="+str(pbsreferenceid in CurrentJobs))
                 ## Parse the Job Log File and Extract Current Job Status
                             
                 JobDetails=self.LogReaderObj.ParseFile(CurrentJobRecord)
@@ -588,7 +592,7 @@ class WorkFlow(object):
         self.UpdateTAOUI(UIReference_ID,JobType, data)
         self.dbaseobj.AddNewEvent(JobID, EnumerationLookup.EventType.Normal, 'Updating Job (UI ID:' + str(UIReference_ID) + ', Status:' + data['status'] + ')')
         
-        Message = "Job (" + str(UIReference_ID) +" ["+str(SubJobIndex)+"])  Finished With Error. The Error Message is:" + data['error_message']
+        Message = "Job (" + str(UIReference_ID) +" ["+str(SubJobIndex)+"])  Finished With Error.\nUserName:"+UserName+".\nThe Error Message is:" + data['error_message']
         if JobAddedForRestart!=True:
             emailreport.SendEmailToAdmin(self.Options, "Job Finished With Error", Message)
         else:

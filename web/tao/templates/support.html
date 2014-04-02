@@ -8,16 +8,10 @@
     <h1>
         Support Page
     </h1>
-    <p>NOTE: Before sending an e-mail to TAO Support please consider asking
-    your question in the
-    <a href="mailto:asvo-tao-users@googlegroups.com">ASVO TAO User Group</a>.
-    The e-mail list is monitored by the
-    ASVO support staff and is more likely to get a wider response, as well as
-    allowing other users to benefit from the answers to your question.
-    If you are not a member of the group, please 
-    <a href="https://groups.google.com/forum/?hl=en&fromgroups#!forum/asvo-tao-users" target="_blank">join here</a>.</p>
+    <div >
     <form action="" method="POST">
         {% csrf_token %}
         {% include 'bootstrap/form_with_errors.html' %}
     </form>
+    </div>
 {% endblock content %}
