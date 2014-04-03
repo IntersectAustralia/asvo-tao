@@ -310,7 +310,7 @@ namespace tao {
                }
             }
 
-            // Buld field types.
+            // Biuld field types.
             this->_field_types.clear();
             for( soci::rowset<soci::row>::const_iterator it = rs->begin(); it != rs->end(); ++it )
             {
@@ -354,6 +354,13 @@ namespace tao {
             // this->_field_map["global_index"] = "globalindex";
             // this->_field_map["global_tree_id"] = "globaltreeid";
             // this->_field_map["local_galaxy_id"] = "localgalaxyid";
+
+	    // Add calculated types.
+	    this->_field_types.insert( "redshift_cosmological", batch<real_type>::DOUBLE );
+	    this->_field_types.insert( "redshift_observed", batch<real_type>::DOUBLE );
+	    this->_field_types.insert( "ra", batch<real_type>::DOUBLE );
+	    this->_field_types.insert( "dec", batch<real_type>::DOUBLE );
+	    this->_field_types.insert( "distance", batch<real_type>::DOUBLE );
 
             // Make sure we have all the essential fields available. Do this by
             // checking that all the mapped fields exist in the field types.
