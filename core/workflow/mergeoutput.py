@@ -107,9 +107,12 @@ def HandleFITSFiles(ListofFiles,OutputFileName):
         
     TotalRowsCount=0;
     for i in range(0,len(ListofFiles)):
-        Reader = pyfits.open(ListofFiles[i])
-        logging.info(ListofFiles[i]+" :("+ str(i)+"): "+str(Reader[1].data.shape[0]))
-        TotalRowsCount=TotalRowsCount+Reader[1].data.shape[0]
+        try:
+            Reader = pyfits.open(ListofFiles[i])
+            logging.info("Reading FITS File Shape: "+ListofFiles[i]+" :("+ str(i)+"): "+str(Reader[1].data.shape[0]))
+            TotalRowsCount=TotalRowsCount+Reader[1].data.shape[0]
+        except Exception as Exp:
+            logging.info('Cannot Open File:'+ListofFiles[i])
         
     
     
@@ -119,11 +122,13 @@ def HandleFITSFiles(ListofFiles,OutputFileName):
     
     for i in range(1,len(ListofFiles)):
         logging.info('Merging File : '+ListofFiles[i])
-        
-        Reader = pyfits.open(ListofFiles[i])
-        for name in hdu.columns.names:            
-            hdu.data.field(name)[nrows:nrows+Reader[1].data.shape[0]]=Reader[1].data.field(name)
-        nrows=nrows+Reader[1].data.shape[0]
+        try:
+            Reader = pyfits.open(ListofFiles[i])
+            for name in hdu.columns.names:            
+                hdu.data.field(name)[nrows:nrows+Reader[1].data.shape[0]]=Reader[1].data.field(name)
+            nrows=nrows+Reader[1].data.shape[0]
+        except Exception as Exp:
+            logging.info('Cannot Open File:'+ListofFiles[i])
             
     
     hdu.writeto(OutputFileName)
@@ -220,8 +225,7 @@ if __name__ == '__main__':
     logging.info('Merging Output for sub-task ['+str(str(SubJobIndex))+']')
     FilesList=map[str(SubJobIndex)]
     FilesList.sort()  
-    FileNameParts=FilesList[0].split('.')[0:-1]
-    FileNameParts[1]=str(JobIndex)      
+    FileNameParts=FilesList[0].replace(".output.","."+str(JobIndex)+".").split('.')[0:-1]    
     OutputFileName=".".join(FileNameParts)
     
     if (ProcessFiles(FilesList,OutputFileName)==True):        
