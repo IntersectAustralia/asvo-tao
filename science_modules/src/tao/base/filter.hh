@@ -80,53 +80,13 @@ namespace tao {
          return true;
       }
 
-      // template< class T >
-      // bool
-      // operator()( T const& val ) const
-      // {
-      // 	 switch( _type )
-      // 	 {
-      // 	    case batch<real_type>::DOUBLE:
-      // 	       if( _min && boost::any_cast<double>( *_min ) > val )
-      // 		  return false;
-      // 	       if( _max && boost::any_cast<double>( *_max ) < val )
-      // 		  return false;
-      // 	       break;
-
-      // 	    case batch<real_type>::INTEGER:
-      // 	       if( _min && boost::any_cast<int>( *_min ) > val )
-      // 		  return false;
-      // 	       if( _max && boost::any_cast<int>( *_max ) < val )
-      // 		  return false;
-      // 	       break;
-
-      // 	    case batch<real_type>::UNSIGNED_LONG:
-      // 	       if( _min && boost::any_cast<unsigned long>( *_min ) > val )
-      // 		  return false;
-      // 	       if( _max && boost::any_cast<unsigned long>( *_max ) < val )
-      // 		  return false;
-      // 	       break;
-
-      // 	    case batch<real_type>::LONG_LONG:
-      // 	       if( _min && boost::any_cast<long long>( *_min ) > val )
-      // 		  return false;
-      // 	       if( _max && boost::any_cast<long long>( *_max ) < val )
-      // 		  return false;
-      // 	       break;
-
-      // 	    case batch<real_type>::UNSIGNED_LONG_LONG:
-      // 	       if( _min && boost::any_cast<unsigned long long>( *_min ) > val )
-      // 		  return false;
-      // 	       if( _max && boost::any_cast<unsigned long long>( *_max ) < val )
-      // 		  return false;
-      // 	       break;
-      // 	 }
-      //    return true;
-      // }
-
       void
       set_field( const string& name,
-		 batch<real_type>::field_value_type type );
+		 const string& min,
+		 const string& max );
+
+      void
+      set_type( batch<real_type>::field_value_type type );
 
       template< class T >
       void
@@ -266,6 +226,8 @@ namespace tao {
    protected:
 
       string _field_name;
+      string _min_str;
+      string _max_str;
       // batch<real_type>::field_value_type _field_type;
       optional<boost::any> _min;
       optional<boost::any> _max;

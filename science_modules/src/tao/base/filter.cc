@@ -1,3 +1,4 @@
+#include <boost/algorithm/string.hpp>
 #include "filter.hh"
 
 namespace tao {
@@ -26,16 +27,67 @@ namespace tao {
 
    void
    filter::set_field( const string& name,
-		      batch<real_type>::field_value_type type )
+		      const string& min,
+		      const string& max )
    {
       _field_name = name;
-      _type = type;
+      if( boost::algorithm::to_lower_copy( min ) != "none" )
+	 _min_str = min;
+      else
+	 _min_str = "";
+      if( boost::algorithm::to_lower_copy( max ) != "none" )
+	 _max_str = max;
+      else
+	 _max_str = "";
 
       // Check if the field name has been set to none.
       string tmp = _field_name;
       to_lower( tmp );
       if( tmp == "none" )
 	 _field_name.clear();
+   }
+
+   void
+   filter::set_type( batch<real_type>::field_value_type type )
+   {
+      _type = type;
+      switch( _type )
+      {
+	 case batch<real_type>::DOUBLE:
+	    if( !_max_str.empty() )
+	       set_maximum( boost::lexical_cast<double>( _max_str ) );
+	    if( !_min_str.empty() )
+	       set_minimum( boost::lexical_cast<double>( _min_str ) );
+	    break;
+
+	 case batch<real_type>::INTEGER:
+	    if( !_max_str.empty() )
+	       set_maximum( boost::lexical_cast<int>( _max_str ) );
+	    if( !_min_str.empty() )
+	       set_minimum( boost::lexical_cast<int>( _min_str ) );
+	    break;
+
+	 case batch<real_type>::UNSIGNED_LONG:
+	    if( !_max_str.empty() )
+	       set_maximum( boost::lexical_cast<unsigned long>( _max_str ) );
+	    if( !_min_str.empty() )
+	       set_minimum( boost::lexical_cast<unsigned long>( _min_str ) );
+	    break;
+
+	 case batch<real_type>::LONG_LONG:
+	    if( !_max_str.empty() )
+	       set_maximum( boost::lexical_cast<long long>( _max_str ) );
+	    if( !_min_str.empty() )
+	       set_minimum( boost::lexical_cast<long long>( _min_str ) );
+	    break;
+
+	 case batch<real_type>::UNSIGNED_LONG_LONG:
+	    if( !_max_str.empty() )
+	       set_maximum( boost::lexical_cast<unsigned long long>( _max_str ) );
+	    if( !_min_str.empty() )
+	       set_minimum( boost::lexical_cast<unsigned long long>( _min_str ) );
+	    break;
+      }
    }
 
    filter::iterator

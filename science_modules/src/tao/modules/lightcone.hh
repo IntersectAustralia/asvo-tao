@@ -175,6 +175,12 @@ namespace tao {
             // Is this my first time through? If so begin iterating.
             if( this->_it == 0 )
             {
+	       // First of all, fix up my filter. I need to postpone it until
+	       // here because the batch object is only full of all the possible
+	       // fields now.
+	       if( !_filt.field_name().empty() )
+		  _filt.set_type( _bat.get_field_type( _filt.field_name() ) );
+
                {
                   auto db_timer = this->db_timer_start();
                   if( _geom == CONE )
@@ -426,24 +432,11 @@ namespace tao {
             // Filter information.
             {
                string filt_field = global_dict.get<string>( "workflow:record-filter:filter:filter-attribute", "" );
-               // to_lower( filt_field );
                string filt_min = global_dict.get<string>( "workflow:record-filter:filter:filter-min", "" );
                string filt_max = global_dict.get<string>( "workflow:record-filter:filter:filter-max", "" );
                if( !filt_field.empty() && filt_field != "" && filt_field != "none" && filt_field != "NONE" && filt_field != "None" )
                {
-                  _filt.set_field( filt_field, _be->field_type( filt_field ) );
-                  try
-                  {
-                     real_type val = boost::lexical_cast<real_type>( filt_min );
-                     _filt.set_minimum( val );
-                  }
-                  catch( const boost::bad_lexical_cast& ex ) {}
-                  try
-                  {
-                     real_type val = boost::lexical_cast<real_type>( filt_max );
-                     _filt.set_maximum( val );
-                  }
-                  catch( const boost::bad_lexical_cast& ex ) {}
+		 _filt.set_field( filt_field, filt_min, filt_max );
                   LOGILN( "Filter name: ", filt_field );
                   LOGILN( "Filter range: [", filt_min, ", ", filt_max, ")" );
                }

@@ -270,6 +270,12 @@ namespace tao {
          return _fields.find( name ) != _fields.end();
       }
 
+      field_value_type
+      get_field_type( const string& name ) const
+      {
+	 return std::get<2>( _fields.at( name ) );
+      }
+
       template< class U >
       void
       set_attribute( const string& name,
