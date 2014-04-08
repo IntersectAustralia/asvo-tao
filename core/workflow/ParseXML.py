@@ -2,7 +2,6 @@ import re,os
 import lxml.etree as ET
 import settingReader # Read the XML settings
 import StringIO
-#from psycopg2.extras import logging
 import logging
 
 class ParseXMLParameters(object):
@@ -167,21 +166,22 @@ class ParseXMLParameters(object):
                 if Param.attrib.get('name') !=None:
                     print (Param.attrib['name']+":"+Param.text)
     
-    
+    def escapeUserName(self,UserName):
+        return ''.join(e for e in UserName if e.isalnum())
         
     def SetBasicInformation(self,JobID,Database,JobUserName):
         
-        
+        UserFolder=self.escapeUserName(JobUserName)
         DBElement=ET.Element("{"+self.NameSpace+"}database")        
         DBElement.text=Database        
         self.tree.xpath("/ns:tao",namespaces={'ns':self.NameSpace})[0].append(DBElement)
         
         DBElement=ET.Element("{"+self.NameSpace+"}outputdir")        
-        DBElement.text=self.WorkDirectory+JobUserName+"/"+str(JobID)+"/output/"        
+        DBElement.text=self.WorkDirectory+UserFolder+"/"+str(JobID)+"/output/"        
         self.tree.xpath("/ns:tao",namespaces={'ns':self.NameSpace})[0].append(DBElement)
         
         DBElement=ET.Element("{"+self.NameSpace+"}logdir")        
-        DBElement.text=self.WorkDirectory+JobUserName+"/"+str(JobID)+"/log/"        
+        DBElement.text=self.WorkDirectory+UserFolder+"/"+str(JobID)+"/log/"        
         self.tree.xpath("/ns:tao",namespaces={'ns':self.NameSpace})[0].append(DBElement)
         
         DBElement=ET.Element("{"+self.NameSpace+"}bandpassdatapath")        
