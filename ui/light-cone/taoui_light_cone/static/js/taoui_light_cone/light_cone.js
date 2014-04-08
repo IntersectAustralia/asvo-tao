@@ -33,8 +33,10 @@ catalogue.module_defs.light_cone = function ($) {
     		H0 = 73.0
     	}
     	// Get user input parameters
-    	var ra_max = parseFloat(vm.ra_opening_angle());
-    	var dec_max = parseFloat(vm.dec_opening_angle());
+    	var ra_min = parseFloat(vm.ra_min());
+    	var dec_min = parseFloat(vm.dec_min());
+    	var ra_max = parseFloat(vm.ra_max());
+    	var dec_max = parseFloat(vm.dec_max());
     	var z_min = parseFloat(vm.redshift_min());
     	var z_max = parseFloat(vm.redshift_max());
 
@@ -42,7 +44,7 @@ catalogue.module_defs.light_cone = function ($) {
     	if (isNaN(ra_max) || isNaN(dec_max) || isNaN(z_min) || isNaN(z_max)) {
     		return null;
     	}
-    	cjs = job_size.job_size(box_size, 0, ra_max, 0, dec_max, z_min, z_max, H0,
+    	cjs = job_size.job_size(box_size, ra_min, ra_max, dec_min, dec_max, z_min, z_max, H0,
     			max_job_box_count, job_size_p1, job_size_p2, job_size_p3);
     	return Math.round(cjs * 100);
     }
@@ -79,8 +81,10 @@ catalogue.module_defs.light_cone = function ($) {
             }
     		jQuery.extend(params, {
     			'light_cone-light_cone_type': [vm.light_cone_type()],
-    			'light_cone-ra_opening_angle': [vm.ra_opening_angle()],
-    			'light_cone-dec_opening_angle': [vm.dec_opening_angle()],
+    			'light_cone-ra_min': [vm.ra_min()],
+    			'light_cone-dec_min': [vm.dec_min()],
+    			'light_cone-ra_max': [vm.ra_max()],
+    			'light_cone-dec_max': [vm.dec_max()],
     			'light_cone-number_of_light_cones': [parseInt(vm.number_of_light_cones())],
     			'light_cone-redshift_min': [vm.redshift_min()],
     			'light_cone-redshift_max': [vm.redshift_max()],
@@ -232,24 +236,47 @@ catalogue.module_defs.light_cone = function ($) {
         param = job['light_cone-light_cone_type'];
         vm.light_cone_type = ko.observable(param ? param : 'unique');
 
-        param = job['light_cone-ra_opening_angle'];
-        vm.ra_opening_angle = ko.observable(param ? param : null)
+        param = job['light_cone-ra_min'];
+        vm.ra_min = ko.observable(param ? param : 0)
             .extend({required: function(){return vm.catalogue_geometry().id == 'light-cone'}})
             .extend({only_if: function(){return vm.catalogue_geometry().id == 'light-cone'}})
             .extend({validate: catalogue.validators.is_float})
-            .extend({validate: catalogue.validators.geq(0.01)})
+            .extend({validate: catalogue.validators.geq(0)})
             .extend({validate: catalogue.validators.leq(90)});
 
-        param = job['light_cone-dec_opening_angle'];
-        vm.dec_opening_angle = ko.observable(param ? param : null)
+        param = job['light_cone-ra_max'];
+        vm.ra_max = ko.observable(param ? param : null)
             .extend({required: function(){return vm.catalogue_geometry().id == 'light-cone'}})
             .extend({only_if: function(){return vm.catalogue_geometry().id == 'light-cone'}})
             .extend({validate: catalogue.validators.is_float})
-            .extend({validate: catalogue.validators.geq(0.01)})
+            .extend({validate: catalogue.validators.geq(0)})
+            .extend({validate: catalogue.validators.leq(90)})
+            .extend({validate: catalogue.validators.greater_than(vm.ra_min)});
+
+
+
+        param = job['light_cone-dec_min'];
+        vm.dec_min = ko.observable(param ? param : 0)
+            .extend({required: function(){return vm.catalogue_geometry().id == 'light-cone'}})
+            .extend({only_if: function(){return vm.catalogue_geometry().id == 'light-cone'}})
+            .extend({validate: catalogue.validators.is_float})
+            .extend({validate: catalogue.validators.geq(0)})
             .extend({validate: catalogue.validators.leq(90)});
 
+
+        param = job['light_cone-dec_max'];
+        vm.dec_max = ko.observable(param ? param : null)
+            .extend({required: function(){return vm.catalogue_geometry().id == 'light-cone'}})
+            .extend({only_if: function(){return vm.catalogue_geometry().id == 'light-cone'}})
+            .extend({validate: catalogue.validators.is_float})
+            .extend({validate: catalogue.validators.geq(0)})
+            .extend({validate: catalogue.validators.leq(90)})
+            .extend({validate: catalogue.validators.greater_than(vm.dec_min)});
+
+						  
+		  	
         param = job['light_cone-redshift_min'];
-        vm.redshift_min = ko.observable(param ? param : null)
+        vm.redshift_min = ko.observable(param ? param : 0)
             .extend({required: function(){return vm.catalogue_geometry().id == 'light-cone'}})
             .extend({only_if: function(){return vm.catalogue_geometry().id == 'light-cone'}})
             .extend({validate: catalogue.validators.is_float})
@@ -385,26 +412,37 @@ catalogue.module_defs.light_cone = function ($) {
         });
 
         vm.hr_ra_opening_angle = ko.computed(function(){
-            var result = '';
-            if (vm.ra_opening_angle() != undefined && /\S/.test(vm.ra_opening_angle())) {
-                result += 'RA: ' + vm.ra_opening_angle() + '&deg;'
-                if (vm.dec_opening_angle() != undefined && /\S/.test(vm.dec_opening_angle())) {
-                    result += ', '
-                } else {
-                    result += '<br>'
-                }
+            var result = '< RA <';
+            
+            if (vm.ra_max() != undefined && /\S/.test(vm.ra_max())) {
+                result +=  vm.ra_max()+'&deg;';
+                if (vm.ra_min() != undefined && /\S/.test(vm.ra_min())) 
+					 {
+                    result = vm.ra_min()+'&deg;'+ result; 
+                } 
             }
-            return result;
+            return result+= '<br>';
         });
 
 
-        vm.hr_dec_opening_angle = ko.computed(function() {
-            var result = '';
-            if (vm.dec_opening_angle() != undefined && /\S/.test(vm.dec_opening_angle())) {
-                result += 'Dec: ' + vm.dec_opening_angle() + '&deg;<br>'
+        vm.hr_dec_opening_angle = ko.computed(function(){
+            var result = '< Dec <';
+            
+            if (vm.dec_max() != undefined && /\S/.test(vm.dec_max())) {
+                result +=  vm.dec_max()+'&deg;';
+                if (vm.dec_min() != undefined && /\S/.test(vm.dec_min())) 
+					 {
+                    result = vm.dec_min()+'&deg;'+ result; 
+                } 
             }
-            return result;
+            
+            
+            return result+= '<br>';
         });
+        
+
+			        
+        
 
 
         vm.hr_redshift = ko.computed(function() {

@@ -323,7 +323,8 @@ fieldset legend {
 }
 
 .id_light_cone-dark_matter_simulation, .id_light_cone-galaxy_model,
-.id_light_cone-ra_opening_angle, .id_light_cone-dec_opening_angle,
+.id_light_cone-ra_min, .id_light_cone-dec_min,
+.id_light_cone-ra_max, .id_light_cone-dec_max,
 .id_light_cone-redshift_min, .id_light_cone-redshift_max,
 [class*="id_mock_image"][class*="sub_cone"],
 [class*="id_mock_image"][class*="format"],
@@ -893,6 +894,17 @@ ul.messagelist { position: fixed; top: 48px; left: 0; right: 0; }
 background-color:white;
 border:0px	
 }
-
+.connect_with_us
+ {
+ 	min-height: 20px;
+ 	padding: 2px; 
+ 	padding-left:19px;    
+	margin-bottom: 20px;
+	background-color: rgb(245, 245,245);
+	border: 1px solid rgb(227, 227, 227);
+	border-radius: 4px;
+	box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.05) inset; 
+ 	
+}
 
 

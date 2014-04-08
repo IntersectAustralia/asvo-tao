@@ -48,10 +48,10 @@ def to_xml_2(form, root):
         child_element(light_cone_elem, 'num-cones', text=form.cleaned_data['number_of_light_cones'])
         child_element(light_cone_elem, 'redshift-min', text=form.cleaned_data['redshift_min'])
         child_element(light_cone_elem, 'redshift-max', text=form.cleaned_data['redshift_max'])
-        child_element(light_cone_elem, 'ra-min', text='0.0', units='deg')
-        child_element(light_cone_elem, 'ra-max', text=form.cleaned_data['ra_opening_angle'], units='deg')
-        child_element(light_cone_elem, 'dec-min', text='0.0', units='deg')
-        child_element(light_cone_elem, 'dec-max', text=form.cleaned_data['dec_opening_angle'], units='deg')
+        child_element(light_cone_elem, 'ra-min', text=form.cleaned_data['ra_min'], units='deg')
+        child_element(light_cone_elem, 'ra-max', text=form.cleaned_data['ra_max'], units='deg')
+        child_element(light_cone_elem, 'dec-min', text=form.cleaned_data['dec_min'], units='deg')
+        child_element(light_cone_elem, 'dec-max', text=form.cleaned_data['dec_max'], units='deg')
         if form.cleaned_data['light_cone_type'] == 'random':
             rng_seeds_string = form.cleaned_data['rng_seeds']
             rng_seeds = re.sub(r"[\[\]\su']", '', rng_seeds_string).split(',')
@@ -121,7 +121,9 @@ def from_xml_2(cls, ui_holder, xml_root, prefix=None):
         num_cones = module_xpath(xml_root, '//light-cone/num-cones')
         redshift_min = module_xpath(xml_root, '//light-cone/redshift-min')
         redshift_max = module_xpath(xml_root, '//light-cone/redshift-max')
+        ra_min = module_xpath(xml_root, '//light-cone/ra-min')        
         ra_max = module_xpath(xml_root, '//light-cone/ra-max')
+        dec_min = module_xpath(xml_root, '//light-cone/dec-min')
         dec_max = module_xpath(xml_root, '//light-cone/dec-max')
         if light_cone_type == 'random':
             rng_seeds = []
@@ -135,8 +137,10 @@ def from_xml_2(cls, ui_holder, xml_root, prefix=None):
             prefix+'-number_of_light_cones': num_cones,
             prefix+'-redshift_min': redshift_min,
             prefix+'-redshift_max': redshift_max,
-            prefix+'-ra_opening_angle': ra_max,
-            prefix+'-dec_opening_angle': dec_max,
+            prefix+'-ra_min': ra_min,            
+            prefix+'-ra_max': ra_max,
+            prefix+'-dec_min': dec_min,
+            prefix+'-dec_max': dec_max,
             })
     params.update({prefix+'-output_properties': [dsp.id for dsp in Form._map_elems(xml_root, data_set)]})
     return cls(ui_holder, params, prefix=prefix)
@@ -161,22 +165,27 @@ class Form(BetterForm):
 
     box_size = forms.DecimalField(required=False, label=_('Box size (Mpc/h)'), widget=forms.TextInput(attrs={'class': 'light_box_field'}))
 
-    ra_opening_angle = forms.DecimalField(required=False, label=_('Right ascension opening angle (degrees)'), min_value=0, max_value=360, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
-    dec_opening_angle = forms.DecimalField(required=False, label=_('Declination opening angle (degrees)'), min_value=0, max_value=360, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
+    ra_min = forms.DecimalField(required=False, label=_('Right ascension min angle (degrees)'), min_value=0, max_value=360, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
+    ra_max = forms.DecimalField(required=False, label=_('Right ascension max angle (degrees)'), min_value=0, max_value=360, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))
+    
+    
+    dec_min = forms.DecimalField(required=False, label=_('Declination min angle (degrees)'), min_value=0, max_value=360, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))    
+    dec_max = forms.DecimalField(required=False, label=_('Declination max angle (degrees)'), min_value=0, max_value=360, max_digits=20, widget=forms.TextInput(attrs={'maxlength': '20', 'class': 'light_cone_field'}))    
+    
 
     light_cone_type = forms.ChoiceField(required=False, label='', choices=[('unique', 'Unique'), ('random', 'Random')], initial='unique', widget=forms.RadioSelect(attrs={'class': 'light_cone_field'}))
 
     rng_seeds = forms.CharField(required=False, widget=forms.SelectMultiple)
     rng_seed = forms.IntegerField(required=False)
 
-    LIGHT_CONE_REQUIRED_FIELDS = ('ra_opening_angle', 'dec_opening_angle', 'redshift_min', 'redshift_max', 'light_cone_type', 'number_of_light_cones')  # Ensure these fields have a class of 'light_cone_field'
+    LIGHT_CONE_REQUIRED_FIELDS = ('ra_min','ra_max', 'dec_min','dec_max', 'redshift_min', 'redshift_max', 'light_cone_type', 'number_of_light_cones')  # Ensure these fields have a class of 'light_cone_field'
     BOX_REQUIRED_FIELDS = ('box_size', 'snapshot',)
     SEMIREQUIRED_FIELDS = LIGHT_CONE_REQUIRED_FIELDS + BOX_REQUIRED_FIELDS
 
     class Meta:
         simple_fields = ['catalogue_geometry', 'dark_matter_simulation',
-                         'galaxy_model', 'ra_opening_angle',
-                         'dec_opening_angle', 'box_size', 'snapshot',
+                         'galaxy_model', 'ra_min','ra_max',
+                         'dec_min', 'dec_max', 'box_size', 'snapshot',
                          'redshift_min', 'redshift_max', 'light_cone_type',
                          'number_of_light_cones', 'rng_seeds', 'rng_seed']
         fieldsets = [
@@ -190,8 +199,10 @@ class Form(BetterForm):
             }),
             ]
         row_attrs = {
-            'ra_opening_angle' : {'data-bind':'visible: catalogue_geometry().id == "light-cone"'},
-            'dec_opening_angle' : {'data-bind':'visible: catalogue_geometry().id == "light-cone"'},
+            'ra_min' : {'data-bind':'visible: catalogue_geometry().id == "light-cone"'},            
+            'ra_max' : {'data-bind':'visible: catalogue_geometry().id == "light-cone"'},
+            'dec_min' : {'data-bind':'visible: catalogue_geometry().id == "light-cone"'},
+            'dec_max' : {'data-bind':'visible: catalogue_geometry().id == "light-cone"'},
             'redshift_min' : {'data-bind':'visible: catalogue_geometry().id == "light-cone"'},
             'redshift_max' : {'data-bind':'visible: catalogue_geometry().id == "light-cone"'},
             'light_cone_type' : {'data-bind':'visible: catalogue_geometry().id == "light-cone"'},
@@ -262,8 +273,10 @@ class Form(BetterForm):
         self.fields['catalogue_geometry'].widget.attrs['data-bind'] = 'options: catalogue_geometries, value: catalogue_geometry, optionsText: function(i) { return i.name }'
         self.fields['dark_matter_simulation'].widget.attrs['data-bind'] = 'options: dark_matter_simulations, value: dark_matter_simulation, optionsText: function(i) { return i.fields.name}, event: {change: function() { box_size(dark_matter_simulation().fields.box_size); }}'
         self.fields['galaxy_model'].widget.attrs['data-bind'] = 'options: galaxy_models, value: galaxy_model, optionsText: function(i) { return i.fields.name }'
-        self.fields['ra_opening_angle'].widget.attrs['data-bind'] = 'value: ra_opening_angle'
-        self.fields['dec_opening_angle'].widget.attrs['data-bind'] = 'value: dec_opening_angle'
+        self.fields['ra_min'].widget.attrs['data-bind'] = 'value: ra_min'        
+        self.fields['ra_max'].widget.attrs['data-bind'] = 'value: ra_max'
+        self.fields['dec_min'].widget.attrs['data-bind'] = 'value: dec_min'
+        self.fields['dec_max'].widget.attrs['data-bind'] = 'value: dec_max'
         self.fields['box_size'].widget.attrs['data-bind'] = 'value: box_size'
         self.fields['snapshot'].widget.attrs['data-bind'] = 'foreach: snapshots, value: snapshot'
         self.fields['redshift_min'].widget.attrs['data-bind'] = 'value: redshift_min'
@@ -310,6 +323,34 @@ class Form(BetterForm):
             msg = _('The minimum redshift must be less than or equal to the maximum redshift.')
             self._errors["redshift_min"] = self.error_class([msg])
 
+    def check_RA_min_less_than_RA_max(self):
+        catalogue_geometry = self.cleaned_data.get('catalogue_geometry')
+        if catalogue_geometry == self.BOX:
+            return
+        ra_min_field = self.cleaned_data.get('ra_min')
+        ra_max_field = self.cleaned_data.get('ra_max')
+        if ra_min_field is None or ra_max_field is None:
+            return
+        if ra_min_field > ra_max_field:
+            msg = _('The minimum Right ascension angle must be less than or equal to the maximum Right ascension angle.')
+            self._errors["ra_min"] = self.error_class([msg])
+
+
+    def check_Dec_min_less_than_Dec_max(self):
+        catalogue_geometry = self.cleaned_data.get('catalogue_geometry')
+        if catalogue_geometry == self.BOX:
+            return
+        dec_min_field = self.cleaned_data.get('dec_min')
+        dec_max_field = self.cleaned_data.get('dec_max')
+        if dec_min_field is None or dec_max_field is None:
+            return
+        if dec_min_field > dec_max_field:
+            msg = _('The minimum Declination must be less than or equal to the maximum Declination.')
+            self._errors["dec_min"] = self.error_class([msg])
+
+
+
+	
     def check_light_cone_required_fields(self):
         catalogue_geometry = self.cleaned_data.get('catalogue_geometry')
         if catalogue_geometry == self.CONE:
@@ -348,6 +389,8 @@ class Form(BetterForm):
         self.check_redshift_min_greater_than_zero()
         self.check_redshift_max_greater_than_zero()
         self.check_redshift_min_less_than_redshift_max()
+        self.check_Dec_min_less_than_Dec_max()
+        self.check_RA_min_less_than_RA_max()
         self.check_box_size_required_fields()
         self.check_light_cone_required_fields()
         self.check_dataset_id()
