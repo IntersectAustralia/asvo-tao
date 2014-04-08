@@ -237,7 +237,7 @@ catalogue.module_defs.light_cone = function ($) {
         vm.light_cone_type = ko.observable(param ? param : 'unique');
 
         param = job['light_cone-ra_min'];
-        vm.ra_min = ko.observable(param ? param : 0)
+        vm.ra_min = ko.observable(param ? param : null)
             .extend({required: function(){return vm.catalogue_geometry().id == 'light-cone'}})
             .extend({only_if: function(){return vm.catalogue_geometry().id == 'light-cone'}})
             .extend({validate: catalogue.validators.is_float})
@@ -256,7 +256,7 @@ catalogue.module_defs.light_cone = function ($) {
 
 
         param = job['light_cone-dec_min'];
-        vm.dec_min = ko.observable(param ? param : 0)
+        vm.dec_min = ko.observable(param ? param : null)
             .extend({required: function(){return vm.catalogue_geometry().id == 'light-cone'}})
             .extend({only_if: function(){return vm.catalogue_geometry().id == 'light-cone'}})
             .extend({validate: catalogue.validators.is_float})
@@ -276,7 +276,7 @@ catalogue.module_defs.light_cone = function ($) {
 						  
 		  	
         param = job['light_cone-redshift_min'];
-        vm.redshift_min = ko.observable(param ? param : 0)
+        vm.redshift_min = ko.observable(param ? param : null)
             .extend({required: function(){return vm.catalogue_geometry().id == 'light-cone'}})
             .extend({only_if: function(){return vm.catalogue_geometry().id == 'light-cone'}})
             .extend({validate: catalogue.validators.is_float})
