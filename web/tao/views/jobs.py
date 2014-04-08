@@ -179,10 +179,15 @@ def _get_summary_as_text(id):
             'output_format': output_format,
         })
         if geometry == 'light-cone':
-            ra_opening_angle = ui_holder.raw_data('light_cone', 'ra_opening_angle')
-            dec_opening_angle = ui_holder.raw_data('light_cone', 'dec_opening_angle')
-            context['ra_opening_angle'] = ra_opening_angle
-            context['dec_opening_angle'] = dec_opening_angle
+            ra_min_angle = ui_holder.raw_data('light_cone', 'ra_min')
+            dec_min_angle = ui_holder.raw_data('light_cone', 'dec_min')
+            ra_max_angle = ui_holder.raw_data('light_cone', 'ra_max')
+            dec_max_angle = ui_holder.raw_data('light_cone', 'dec_max')
+            context['ra_min_angle'] = ra_min_angle
+            context['dec_min_angle'] = dec_min_angle
+            context['ra_max_angle'] = ra_max_angle
+            context['dec_max_angle'] = dec_max_angle
+            
             context['redshift_min'] = ui_holder.raw_data('light_cone', 'redshift_min')
             context['redshift_max'] = ui_holder.raw_data('light_cone', 'redshift_max')
             context['number_of_light_cones'] = ui_holder.raw_data('light_cone', 'number_of_light_cones')

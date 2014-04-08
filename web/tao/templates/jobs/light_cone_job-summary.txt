@@ -13,7 +13,7 @@ Dataset: {{ dark_matter_simulation|safe }} / {{ galaxy_model|safe }}
 {% if catalogue_geometry == 'box' %}Box Size: {{ box_size }}
 Redshift: {{ snapshot }}
 {% else %}Dimensions
-RA: {{ ra_opening_angle }}°, Dec: {{ dec_opening_angle }}°
+{{ ra_min_angle }}° < RA < {{ ra_max_angle }}°, {{ dec_min_angle }}° < Dec <  {{ dec_max_angle }}°
 Redshift: {{ redshift_min }} ≤ z ≤ {{ redshift_max }}
 
 Count: {{ number_of_light_cones }} {{ light_cone_type }} light cones

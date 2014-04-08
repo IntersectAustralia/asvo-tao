@@ -59,6 +59,9 @@
         vm.redshift_max();
         vm.dec_min();
 		  vm.dec_max();
+		  
+		  if(vm.ra_min()>0 || vm.dec_min()>0)
+		  	return 0;
 
 
         var alpha1 = parseFloat(vm.ra_max())-parseFloat(vm.ra_min());

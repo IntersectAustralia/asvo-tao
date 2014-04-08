@@ -493,8 +493,11 @@ catalogue.module_defs.light_cone = function ($) {
             var lc = vm.maximum_number_of_light_cones();
             if (isNaN(lc)) {
                 result = '(waiting for valid cone parameters)';
+            } else if (vm.light_cone_type() == 'unique' && (vm.ra_min() >0 || vm.dec_min()>0)) {				 
+                result = 'You cannot select Unique Light-cone with RA min >0 or DEC Min >0 ';      
             } else if (lc < 1) {
                 result = 'The current light-cone dimension exceeds the available simulation space.<br/>Please reduce the light-cone dimensions or change to random light-cones.';
+				                 
             } else {
                 result = 'maximum is ' + lc;
             }
