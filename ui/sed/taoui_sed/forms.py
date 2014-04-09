@@ -157,7 +157,7 @@ class Form(BetterForm):
 
         self.fields['apply_sed'] = forms.BooleanField(required=False, widget=forms.CheckboxInput(), label='Apply Spectral Energy Distribution')
         self.fields['single_stellar_population_model'] = ChoiceFieldWithOtherAttrs(choices=sspm_choices, required=default_required)
-        self.fields['band_pass_filters'] = bf_fields.forms.MultipleChoiceField(required=default_required,
+        self.fields['band_pass_filters'] = bf_fields.forms.MultipleChoiceField(required=default_required,label='Band pass filters (maximum 10 filters)',
                                 choices=datasets.band_pass_filters_enriched(),
                                 widget=TwoSidedSelectWidget)
         self.fields['apply_dust'] = forms.BooleanField(required=default_required, widget=forms.CheckboxInput(attrs={'class': 'checkbox'}), label='Apply Dust')

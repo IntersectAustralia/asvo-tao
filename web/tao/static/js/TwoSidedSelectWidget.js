@@ -16,7 +16,7 @@ var TwoSidedSelectWidget = function(params) {
     var options = params['options'];
     var selectedOptions = params['selectedOptions'];
     var to_option = params['to_option'];
-
+	 var maximum_selection = params['maximum_selection']; // The control will ignore this number if it is zero or null
     var vm = {};
     vm.from_side = {};
     vm.to_side = {};
@@ -60,7 +60,10 @@ var TwoSidedSelectWidget = function(params) {
         });
         return aux.length > 0;
     }
-
+		vm.add_all_enabled=function ()
+		{
+			return !(maximum_selection!=null || maximum_selection==0);
+		}
     function has_tokens(text, tokens) {
         var token;
         if (typeof text != 'string') return false;
@@ -150,7 +153,13 @@ var TwoSidedSelectWidget = function(params) {
     vm.op_add = function() {
         var selection = ko.utils.arrayMap(vm.from_side.options_selected(), from_selected_option);
         if (selection.length == 0) return;
+        
         selection = selection.concat(selectedOptions());
+		  if(maximum_selection!=null && selection.length>maximum_selection) 
+		  {
+		  	alert('You cannot select more than '+maximum_selection+' items')
+		  	return;
+		  }        
         selectedOptions(selection);
     };
     vm.op_add_all = function() {

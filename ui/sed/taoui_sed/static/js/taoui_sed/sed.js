@@ -96,6 +96,7 @@ catalogue.module_defs.sed = function ($) {
             elem_id: sed_id('band_pass_filters'),
             options: vm.bandpass_filters_options,
             selectedOptions: vm.bandpass_filters,
+            maximum_selection:10,
             to_option: band_pass_filter_to_option
         });
         vm.current_bandpass_filter = ko.observable(undefined);

@@ -366,6 +366,7 @@ catalogue.module_defs.light_cone = function ($) {
             elem_id: lc_id('output_properties'),
             options: vm.output_properties_options,
             selectedOptions: vm.output_properties,
+            maximum_selection:null,
             to_option: dataset_property_to_option
         });
         vm.dataset.subscribe(function(v) {

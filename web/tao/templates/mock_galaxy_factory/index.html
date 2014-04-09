@@ -157,7 +157,7 @@
             </div>
           </div>
           <div class="one" data-bind="attr:{'id': id + '-buttons'}" vertical-align="middle">
-            <a href="#" data-bind="attr:{'id': id + '_op_add_all'}, click: op_add_all">&gt;&gt;</a>
+            <a href="#" data-bind="attr:{'id': id + '_op_add_all'}, visible: add_all_enabled(), click: op_add_all">&gt;&gt;</a>
             <a href="#" data-bind="attr:{'id': id + '_op_add'}, click: op_add">&gt;</a>
             <a href="#" data-bind="attr:{'id': id + '_op_remove'}, click: op_remove">&lt;</a>
             <a href="#" data-bind="attr:{'id': id + '_op_remove_all'}, click: op_remove_all">&lt;&lt;</a>
