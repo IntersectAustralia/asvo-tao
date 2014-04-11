@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from tao.datasets import dataset_get
 from tao.decorators import researcher_required, set_tab, \
     object_permission_required
-from tao.models import Job, Snapshot, DataSetProperty, StellarModel, BandPassFilter, DustModel, WorkflowCommand
+from tao.models import Job, Snapshot, DataSetProperty, StellarModel, BandPassFilter, DustModel, WorkflowCommand,GlobalParameter
 from tao.ui_modules import UIModulesHolder
 from tao.xml_util import xml_parse
 from tao.utils import output_formats
@@ -129,13 +129,14 @@ def _get_summary_as_text(id):
 
     job = Job.objects.get(pk=id)
     ui_holder = UIModulesHolder(UIModulesHolder.XML, xml_parse(job.parameters.encode('utf-8')))
-
+    TAO_acknowledgement= html2text.html2text(GlobalParameter.objects.get(parameter_name='tao_acknowledgement').parameter_value)
     if ui_holder.job_type == UIModulesHolder.SQL_JOB:
         txt_template = loader.get_template('jobs/sql_job-summary.txt')
         query = ui_holder.raw_data('sql_job', 'query')
         dataset = ui_holder.dataset
         simulation = dataset.simulation
         galaxy_model = dataset.galaxy_model
+        
         output_properties = []
         for output_property in ui_holder.raw_data('sql_job', 'output_properties'):
             output_properties = output_properties + [(output_property['label'], output_property['units'])]
@@ -144,12 +145,15 @@ def _get_summary_as_text(id):
             if x['value'] == (ui_holder.raw_data('output_format', 'supported_formats')):
                 output_format = x['text']
         context = Context({
+            'TAO_acknowledgement':html2text.html2text(TAO_acknowledgement),        
             'query': query,
             'dark_matter_simulation': simulation,
             'simulation_details': html2text.html2text(simulation.details),
             'galaxy_model': galaxy_model,
             'galaxy_model_details': html2text.html2text(galaxy_model.details),
             'output_properties': output_properties,
+            'simulation_acknowledgement': html2text.html2text(simulation.acknowledgement_txt),
+            'galaxy_model_acknowledgement': html2text.html2text(galaxy_model.acknowledgement_txt),
             'output_format': output_format,})
     else:
         geometry = ui_holder.raw_data('light_cone', 'catalogue_geometry')
@@ -169,11 +173,14 @@ def _get_summary_as_text(id):
 
         txt_template = loader.get_template('jobs/light_cone_job-summary.txt')
         context = Context({
+            'TAO_acknowledgement':html2text.html2text(TAO_acknowledgement),
             'catalogue_geometry': geometry,
             'dark_matter_simulation': simulation,
             'simulation_details': html2text.html2text(simulation.details),
+            'simulation_acknowledgement': html2text.html2text(simulation.acknowledgement_txt),
             'galaxy_model': galaxy_model,
             'galaxy_model_details': html2text.html2text(galaxy_model.details),
+            'galaxy_model_acknowledgement': html2text.html2text(galaxy_model.acknowledgement_txt),
             'output_properties': output_properties,
             'record_filter': display_selection(ui_holder.raw_data('record_filter', 'filter'), ui_holder.raw_data('record_filter', 'min'), ui_holder.raw_data('record_filter', 'max')),
             'output_format': output_format,

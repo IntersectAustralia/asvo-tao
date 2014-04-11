@@ -19,3 +19,13 @@ Output
 ======
 
 {{ output_format|safe }}
+
+
+Acknowledgement
+===============
+Theoretical Astrophysical Observatory (TAO):
+{{ TAO_acknowledgement|safe }}
+{{ dark_matter_simulation|safe }}:  
+{{ simulation_acknowledgement|safe }}
+{{ galaxy_model|safe }}:
+{{ galaxy_model_acknowledgement|safe }}

@@ -140,7 +140,8 @@ class Simulation(models.Model):
     box_size = models.DecimalField(max_digits=10, decimal_places=3)
     details = models.TextField(default='')
     order = models.IntegerField(default='0')
-
+    acknowledgement_txt = models.TextField(default='')
+    
     def __unicode__(self):
         return self.name
     
@@ -162,7 +163,8 @@ class GalaxyModel(models.Model):
     simulation_set = models.ManyToManyField(Simulation, through='DataSet')
     name = models.CharField(max_length=100, unique=True)
     details = models.TextField(default='')
-
+    acknowledgement_txt = models.TextField(default='')
+	 
     def __unicode__(self):
         return self.name
     
