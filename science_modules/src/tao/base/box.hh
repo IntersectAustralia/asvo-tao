@@ -51,6 +51,18 @@ namespace tao {
          _snap = snap;
       }
 
+      unsigned
+      snapshot() const
+      {
+         return _snap;
+      }
+
+      real_type
+      redshift() const
+      {
+	 return _sim->redshift( _snap );
+      }
+
       void
       set_random( bool rand,
 		  engine_type* engine = &hpc::engine )
@@ -88,12 +100,6 @@ namespace tao {
       max() const
       {
          return _max;
-      }
-
-      unsigned
-      snapshot() const
-      {
-         return _snap;
       }
 
       bool

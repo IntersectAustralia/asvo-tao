@@ -134,7 +134,7 @@ namespace tao {
                        optional<view<std::vector<std::pair<unsigned long long,int>>>::type> work = optional<view<std::vector<std::pair<unsigned long long,int>>>::type>() )
          {
             string qs = this->make_tile_query_string( tile, query, filt );
-            return tile_galaxy_iterator( *this, query, qs, table_begin( tile, work ), table_end( tile ), tile.lightcone(), bat );
+            return tile_galaxy_iterator( *this, query, qs, table_begin( tile, work ), table_end( tile ), tile.lightcone(), 0, bat );
          }
 
          tile_galaxy_iterator
@@ -151,7 +151,7 @@ namespace tao {
                        filter const* filt = 0 )
          {
             string qs = this->make_box_query_string( box, query, filt );
-            return box_galaxy_iterator( *this, query, qs, table_begin( box ), table_end( box ), 0, bat );
+            return box_galaxy_iterator( *this, query, qs, table_begin( box ), table_end( box ), 0, &box, bat );
          }
 
          box_galaxy_iterator
@@ -405,6 +405,8 @@ namespace tao {
             : _be( NULL ),
               _query( NULL ),
               _my_bat( false ),
+	      _lc( 0 ),
+	      _box( 0 ),
               _done( true )
          {
          }
@@ -415,6 +417,7 @@ namespace tao {
                                const table_iterator& table_start,
                                const table_iterator& table_finish,
                                const lightcone* lc = 0,
+			       const tao::box<real_type>* box = 0,
                                tao::batch<real_type>* bat = 0 )
             : _be( &be ),
               _query( &query ),
@@ -423,6 +426,7 @@ namespace tao {
               _table_end( table_finish ),
 	      _tbl_idx( 0 ),
               _lc( lc ),
+	      _box( box ),
               _st( NULL ),
               _done( false ),
               _my_bat( false ),
@@ -454,6 +458,7 @@ namespace tao {
               _table_end( src._table_end ),
 	      _tbl_idx( src._tbl_idx ),
               _lc( src._lc ),
+	      _box( src._box ),
               _st( src._st ),
               _done( src._done )
          {
@@ -477,6 +482,7 @@ namespace tao {
               _table_end( src._table_end ),
 	      _tbl_idx( src._tbl_idx ),
               _lc( src._lc ),
+	      _box( src._box ),
               _st( src._st ),
               _done( src._done ),
               _my_bat( src._my_bat ),
@@ -518,6 +524,7 @@ namespace tao {
             _table_end = op._table_end;
 	    _tbl_idx = op._tbl_idx;
             _lc = op._lc;
+	    _box = op._box;
             _st = op._st;
             _done = op._done;
 
@@ -543,6 +550,7 @@ namespace tao {
             _table_end = op._table_end;
 	    _tbl_idx = op._tbl_idx;
             _lc = op._lc;
+	    _box = op._box;
             _st = op._st;
             _done = op._done;
             _my_bat = op._my_bat;
@@ -732,6 +740,13 @@ namespace tao {
                  else
                     z_obs[ii] = 0.0;
               }
+	      else
+	      {
+		 ASSERT( _box, "Must have either lightcone or box selected." );
+
+		 z_cos[ii] = _box->redshift();
+		 z_obs[ii] = _box->redshift();
+	      }
            }
         }
 
@@ -739,6 +754,7 @@ namespace tao {
 
          soci_base<real_type>* _be;
          const lightcone* _lc;
+	 box<real_type> const* _box;
          query_type* _query;
          string _query_str;
          table_iterator _table_pos, _table_end;
