@@ -1,7 +1,10 @@
 #ifndef tao_base_soci_backend_hh
 #define tao_base_soci_backend_hh
 
-#include <libhpc/libhpc.hh>
+#include <stdint.h>
+#include <string>
+#include <boost/optional.hpp>
+#include <boost/lexical_cast.hpp>
 #include "soci_base_backend.hh"
 #ifdef HAVE_POSTGRESQL
 #include <soci/postgresql/soci-postgresql.h>
@@ -9,6 +12,7 @@
 #ifdef HAVE_SQLITE3
 #include <soci/sqlite3/soci-sqlite3.h>
 #endif
+#include "xml_dict.hh"
 
 namespace tao {
    namespace backends {
@@ -54,11 +58,11 @@ namespace tao {
          }
 
          void
-         connect( const string& dbname,
-                  optional<const string&> user = optional<const string&>(),
-                  optional<const string&> passwd = optional<const string&>(),
-                  optional<const string&> host = optional<const string&>(),
-                  optional<uint16> port = optional<uint16>() )
+         connect( const std::string& dbname,
+                  boost::optional<const std::string&> user = boost::optional<const std::string&>(),
+                  boost::optional<const std::string&> passwd = boost::optional<const std::string&>(),
+                  boost::optional<const std::string&> host = boost::optional<const std::string&>(),
+                  boost::optional<uint16_t> port = boost::optional<uint16_t>() )
          {
             disconnect();
 
@@ -71,7 +75,7 @@ namespace tao {
                LOGILN( "Port: ", *port );
 #endif
             LOGILN( "Database: ", dbname );
-            string conn = boost::str( boost::format( "dbname=%1%" ) % dbname );
+            std::string conn = boost::str( boost::format( "dbname=%1%" ) % dbname );
             if( user )
                conn += " user=" + *user;
             if( passwd )
@@ -79,7 +83,7 @@ namespace tao {
             if( host )
                conn += " host=" + *host;
             if( port )
-               conn += " port=" + to_string( *port );
+               conn += " port=" + boost::lexical_cast<std::string>( *port );
 
             // Create a session.
             _my_sql = true;
@@ -110,7 +114,7 @@ namespace tao {
          }
 
          void
-         connect( const options::xml_dict& global_dict )
+         connect( const xml_dict& global_dict )
          {
             ASSERT( 0, "Not implemented yet." );
          }
@@ -149,7 +153,7 @@ namespace tao {
 
          virtual
          ::soci::session&
-         session( const string& table )
+         session( const std::string& table )
          {
             return *_sql;
          }

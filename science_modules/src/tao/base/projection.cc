@@ -30,14 +30,14 @@ namespace tao {
       // Convert the cartesian coordiantes to right-ascension and
       // declination.
       real_type ra, dec;
-      numerics::cartesian_to_ecs( gal_x, gal_y, gal_z,
+      hpc::num::cartesian_to_ecs( gal_x, gal_y, gal_z,
                                   ra, dec );
 
       // Filter out any RA or DEC outside our FoV.
       if( fabs( ra - _org[0] ) <= 0.5*_fov[0] && fabs( dec - _org[1] ) <= 0.5*_fov[1] )
       {
          // Now convert to pixel coordinates.
-         numerics::gnomonic_projection<real_type>( ra, dec, _org[0], _org[1], img_x, img_y );
+         hpc::num::gnomonic_projection<real_type>( ra, dec, _org[0], _org[1], img_x, img_y );
 
          // To convert to pixel coordinates use the scaling factor
          // in each dimension and offset by half image size.
@@ -67,7 +67,7 @@ namespace tao {
    }
 
    projection_iterator::projection_iterator( const batch<real_type>& bat )
-      : _proj( NULL ),
+      : _proj( 0 ),
         _bat( &bat )
    {
    }

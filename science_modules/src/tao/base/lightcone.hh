@@ -1,6 +1,11 @@
 #ifndef tao_base_lightcone_hh
 #define tao_base_lightcone_hh
 
+#include <vector>
+#include <array>
+#include <libhpc/system/random.hh>
+#include <libhpc/system/view.hh>
+#include <libhpc/numerics/interp.hh>
 #include "simulation.hh"
 #include "filter.hh"
 #include "query.hh"
@@ -113,7 +118,7 @@ namespace tao {
       ///
       void
       set_random( bool rand,
-		  engine_type* engine = &hpc::engine );
+		  hpc::engine_type* engine = &hpc::engine );
 
       ///
       /// Get lightcone random state.
@@ -187,16 +192,16 @@ namespace tao {
          return be.galaxy_end( qry, *this );
       }
 
-      typename vector<unsigned>::view const
+      std::vector<unsigned> const&
       snapshot_bins() const;
 
-      typename vector<real_type>::view const
+      std::vector<real_type> const&
       distance_bins() const;
 
       real_type
       distance_to_redshift( real_type dist ) const;
 
-      engine_type*
+      hpc::engine_type*
       rng_engine() const;
 
    protected:
@@ -207,19 +212,19 @@ namespace tao {
    protected:
 
       tao::simulation const* _sim;
-      array<real_type,2> _ra;
-      array<real_type,2> _dec;
-      array<real_type,2> _z;
-      array<real_type,2> _dist;
-      vector<real_type> _dist_bins;
-      vector<unsigned> _snap_bins;
-      numerics::interp<real_type> _dist_to_z;
+      std::array<real_type,2> _ra;
+      std::array<real_type,2> _dec;
+      std::array<real_type,2> _z;
+      std::array<real_type,2> _dist;
+      std::vector<real_type> _dist_bins;
+      std::vector<unsigned> _snap_bins;
+      hpc::num::interp<real_type> _dist_to_z;
       bool _rand;
       real_type _view_angle;
       std::array<real_type,3> _orig;
       bool _sng_snap;
       unsigned _snap;
-      engine_type* _eng;
+      hpc::engine_type* _eng;
    };
 
 }

@@ -6,8 +6,8 @@
       <geometry>light-cone</geometry>
       <box-repetition>unique</box-repetition>
       <rng-seed>0</rng-seed>
-      <redshift-min>1</redshift-min>
-      <redshift-max>3</redshift-max>
+      <redshift-min>0.1</redshift-min>
+      <redshift-max>0.3</redshift-max>
       <ra-min>0</ra-min>
       <ra-max>1</ra-max>
       <dec-min>0</dec-min>

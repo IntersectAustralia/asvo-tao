@@ -1,3 +1,6 @@
+#include <libhpc/numerics/coords.hh>
+#include <libhpc/system/deallocate.hh>
+#include <libhpc/system/reallocate.hh>
 #include "lightcone.hh"
 #include "lightcone_tile_iterator.hh"
 
@@ -245,13 +248,13 @@ namespace tao {
       return _dist[1];
    }
 
-   const typename vector<unsigned>::view
+   std::vector<unsigned> const&
    lightcone::snapshot_bins() const
    {
       return _snap_bins;
    }
 
-   const typename vector<real_type>::view
+   std::vector<real_type> const&
    lightcone::distance_bins() const
    {
       return _dist_bins;
@@ -280,17 +283,17 @@ namespace tao {
    {
       if( _sim )
       {
-         LOGDLN( "Recalculating lightcone information.", setindent( 2 ) );
+         LOGBLOCKD( "Recalculating lightcone information." );
 
-         _dist[0] = numerics::redshift_to_comoving_distance( _z[0], 1000, _sim->hubble(), _sim->omega_l(), _sim->omega_m() )*_sim->h();
-         _dist[1] = numerics::redshift_to_comoving_distance( _z[1], 1000, _sim->hubble(), _sim->omega_l(), _sim->omega_m() )*_sim->h();
+         _dist[0] = hpc::num::redshift_to_comoving_distance( _z[0], 1000, _sim->hubble(), _sim->omega_l(), _sim->omega_m() )*_sim->h();
+         _dist[1] = hpc::num::redshift_to_comoving_distance( _z[1], 1000, _sim->hubble(), _sim->omega_l(), _sim->omega_m() )*_sim->h();
          LOGDLN( "Distance range: [", _dist[0], ", ", _dist[1], ")" );
 
          // Prepare the redshift distance bins. Note that I will incorporate the
          // minimum and maximum redshift here. First calculate the
          // number of bins in the redshift range.
-         _dist_bins.deallocate();
-         _snap_bins.deallocate();
+         hpc::deallocate( _dist_bins );
+         hpc::deallocate( _snap_bins );
          unsigned first, last;
          {
             unsigned ii = 0;
@@ -304,12 +307,12 @@ namespace tao {
          }
 
          // Store the distances.
-         _dist_bins.reallocate( last - first + 1 );
-         _snap_bins.reallocate( last - first );
-         _dist_bins.back() = numerics::redshift_to_comoving_distance( std::min( _sim->redshift( 0 ), _z[0] ), 1000, _sim->hubble(), _sim->omega_l(), _sim->omega_m() );
-         _dist_bins.front() = numerics::redshift_to_comoving_distance( std::max( _sim->redshift( _sim->num_snapshots() - 1 ), _z[1] ), 1000, _sim->hubble(), _sim->omega_l(), _sim->omega_m() );
+         hpc::reallocate( _dist_bins, last - first + 1 );
+         hpc::reallocate( _snap_bins, last - first );
+         _dist_bins.back() = hpc::num::redshift_to_comoving_distance( std::min( _sim->redshift( 0 ), _z[0] ), 1000, _sim->hubble(), _sim->omega_l(), _sim->omega_m() );
+         _dist_bins.front() = hpc::num::redshift_to_comoving_distance( std::max( _sim->redshift( _sim->num_snapshots() - 1 ), _z[1] ), 1000, _sim->hubble(), _sim->omega_l(), _sim->omega_m() );
          for( unsigned ii = 1; ii < _dist_bins.size() - 1; ++ii )
-            _dist_bins[ii] = numerics::redshift_to_comoving_distance( _sim->redshift( first + ii - 1 ), 1000, _sim->hubble(), _sim->omega_l(), _sim->omega_m() );
+            _dist_bins[ii] = hpc::num::redshift_to_comoving_distance( _sim->redshift( first + ii - 1 ), 1000, _sim->hubble(), _sim->omega_l(), _sim->omega_m() );
          for( unsigned ii = 0; ii < _snap_bins.size(); ++ii )
             _snap_bins[ii] = first + ii;
 
@@ -327,20 +330,18 @@ namespace tao {
             unsigned num_points = std::max<unsigned>( (unsigned)((_z[1] - _z[0])/0.001), 2 );
 
             // Setup arrays.
-            vector<real_type> dists( num_points );
-            vector<real_type> zs( num_points );
+            std::vector<real_type> dists( num_points );
+            std::vector<real_type> zs( num_points );
             for( unsigned ii = 0; ii < num_points; ++ii )
             {
                zs[ii] = _z[0] + (_z[1] - _z[0])*((real_type)ii/(real_type)(num_points - 1));
-               dists[ii] = numerics::redshift_to_comoving_distance( zs[ii], 1000, _sim->hubble(), _sim->omega_l(), _sim->omega_m() )*_sim->h(); // don't forget to put in Mpc/h
+               dists[ii] = hpc::num::redshift_to_comoving_distance( zs[ii], 1000, _sim->hubble(), _sim->omega_l(), _sim->omega_m() )*_sim->h(); // don't forget to put in Mpc/h
             }
 
             // Transfer to interpolator.
             _dist_to_z.set_abscissa( dists );
             _dist_to_z.set_values( zs );
          }
-
-         LOGD( setindent( -2 ) );
       }
    }
 

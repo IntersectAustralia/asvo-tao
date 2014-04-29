@@ -1,10 +1,12 @@
+#include <stdio.h>
 #include <soci/soci.h>
 #ifdef HAVE_POSTGRESQL
 #include <soci/postgresql/soci-postgresql.h>
 #endif
 #include <pugixml.hpp>
+#include <libhpc/logging.hh>
+#include <libhpc/debug/assert.hh>
 #include "multidb.hh"
-#include <stdio.h>
 
 using namespace hpc;
 using namespace pugi;
@@ -30,15 +32,11 @@ namespace tao
 
 	ServerInfo::~ServerInfo()
 	{
-		LOG_ENTER();
 		CloseConnection();
-		LOG_EXIT();
-
 	}
 
 	void ServerInfo::OpenConnection()
 	{
-		LOG_ENTER();
 		try
 		{
 
@@ -64,27 +62,20 @@ namespace tao
 			LOGDLN( "Error opening database connection: ", ex.what() );
 			ASSERT( 0 );
 		}
-
-		LOG_EXIT();
-
 	}
 
 	void ServerInfo::CloseConnection()
 	{
-		LOG_ENTER();
 		if( _connected )
 		{
 			LOGDLN( "Disconnecting from database." );
 			Connection.close();
 			_connected = false;
 		}
-		LOG_EXIT();
-
 	}
 
 	void ServerInfo::RestartConnection()
 	{
-		LOG_ENTER();
 		if(_connected)
 		{
 			CloseConnection();
@@ -94,16 +85,11 @@ namespace tao
 		{
 			OpenConnection();
 		}
-		LOG_EXIT();
-
 	}
 
 	void ServerInfo::IncrementConnectionUsage()
 	{
-		LOG_ENTER();
 		_QueriesCount++;
-		LOG_EXIT();
-
 	}
 
 	bool ServerInfo::Connected()
@@ -118,14 +104,12 @@ namespace tao
 		_IsTableLoaded=false;
 	}
 
-	multidb::multidb(const options::xml_dict& dict)
+	multidb::multidb(const xml_dict& dict)
 	{
-		LOG_ENTER();
 		_serverscount=0;
 		_IsTableLoaded=false;
 		_read_db_options(dict);
 		ReadTableMapping();
-		LOG_EXIT();
 
 	}
 	multidb::multidb(const string& dbname,const string& tree_pre)
@@ -143,7 +127,7 @@ namespace tao
 		CurrentServers.erase(CurrentServers.begin(),CurrentServers.end());
 	}
 
-        void multidb::Connect(const options::xml_dict& dict)
+        void multidb::Connect(const xml_dict& dict)
 	{
 		_serverscount=0;
 		_IsTableLoaded=false;
@@ -202,9 +186,8 @@ namespace tao
 		_serverscount++;
 	}
 
-	void multidb::_read_db_options(const options::xml_dict& dict)
+	void multidb::_read_db_options(const xml_dict& dict)
 	{
-		LOG_ENTER();
 		// Extract database details.
 		_dbtype = dict.get < string > ("settings:database:type", "postgresql");
 		_dbname = dict.get < string > ("database");
@@ -230,7 +213,6 @@ namespace tao
 			AddNewServer(ServerHost,UserName,Password,Port);
 
 		}
-		LOG_EXIT();
 	}
 
 	void multidb::ReadTableMapping()

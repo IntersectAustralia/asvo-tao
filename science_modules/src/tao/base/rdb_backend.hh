@@ -1,11 +1,13 @@
 #ifndef tao_base_rdb_backend_hh 
 #define tao_base_rdb_backend_hh
 
+#include <array>
 #include <iomanip>
-#include <boost/format.hpp>
+#include <string>
 #include <unordered_map>
-#include <libhpc/containers/set.hh>
-#include <libhpc/containers/string.hh>
+#include <boost/format.hpp>
+#include <boost/optional.hpp>
+#include <libhpc/numerics/coords.hh>
 #include "backend.hh"
 #include "query.hh"
 #include "tile.hh"
@@ -38,8 +40,8 @@ namespace tao {
          }
 
          void
-         add_field( hpc::string const& name,
-                    hpc::string const& mapped = hpc::string() )
+         add_field( std::string const& name,
+                    std::string const& mapped = std::string() )
          {
             _field_map[name] = mapped.empty() ? name : mapped;
          }
@@ -85,7 +87,7 @@ namespace tao {
             bat.template set_scalar<real_type>( "distance" );
          }
 
-         string
+         std::string
          make_box_query_string( box<real_type> const& box,
                                 query<real_type>& qry,
                                 filter const* filt = 0 ) const
@@ -101,21 +103,21 @@ namespace tao {
 	       "%10% > %11% AND %10% < %12%" // z position
 	       "%13%" // filter
 	       );
-            std::unordered_map<string,string> map;
+            std::unordered_map<std::string,std::string> map;
             make_field_map( map, qry, box );
             fmt % make_output_field_query_string( qry, map );
             fmt % _field_map.at( "snapnum" ) % box.snapshot();
             fmt % map.at( "posx" ) % group( setprecision( 12 ), box.min()[0] ) % group( setprecision( 12 ), box.max()[0] );
             fmt % map.at( "posy" ) % group( setprecision( 12 ), box.min()[1] ) % group( setprecision( 12 ), box.max()[1] );
             fmt % map.at( "posz" ) % group( setprecision( 12 ), box.min()[2] ) % group( setprecision( 12 ), box.max()[2] );
-            string filt_str = make_filter_query_string( filt );
+            std::string filt_str = make_filter_query_string( filt );
             if( !filt_str.empty() )
                filt_str = " AND " + filt_str; 
             fmt % filt_str;
             return fmt.str();
          }
 
-         string
+         std::string
          make_tile_query_string( const tile<real_type>& tile,
                                  tao::query<real_type>& query,
                                  filter const* filt = 0 ) const
@@ -141,7 +143,7 @@ namespace tao {
                   "(POW(%3%,2) + POW(%4%,2) + POW(%5%,2)) < %11%"
                   "%12%" // filter
                   );
-               std::unordered_map<string,string> map;
+               std::unordered_map<std::string,std::string> map;
                make_field_map( map, query, tile );
                map["redshift"] = "redshift_ranges.redshift";
                fmt % make_output_field_query_string( query, map );
@@ -150,7 +152,7 @@ namespace tao {
                fmt % group( setprecision( 12 ), lc.min_ra() + lc.viewing_angle() ) % group( setprecision( 12 ), lc.max_ra() + lc.viewing_angle() );
                fmt % group( setprecision( 12 ), lc.min_dec() ) % group( setprecision( 12 ), lc.max_dec() );
                fmt % group( setprecision( 12 ), pow( lc.min_dist(), 2 ) ) % group( setprecision( 12 ), pow( lc.max_dist(), 2 ) );
-               string filt_str = make_filter_query_string( filt );
+               std::string filt_str = make_filter_query_string( filt );
                if( !filt_str.empty() )
                   filt_str = " AND " + filt_str; 
                fmt % filt_str;
@@ -170,7 +172,7 @@ namespace tao {
                   "(POW(%4%,2) + POW(%5%,2) + POW(%6%,2)) < %12%"
                   "%13%" // filter
                   );
-               std::unordered_map<string,string> map;
+               std::unordered_map<std::string,std::string> map;
                make_field_map( map, query, tile );
                // map["redshift"] = "redshift_ranges.redshift";
                fmt % make_output_field_query_string( query, map );
@@ -179,7 +181,7 @@ namespace tao {
                fmt % group( setprecision( 12 ), lc.min_ra() + lc.viewing_angle() ) % group( setprecision( 12 ), lc.max_ra() + lc.viewing_angle() );
                fmt % group( setprecision( 12 ), lc.min_dec() ) % group( setprecision( 12 ), lc.max_dec() );
                fmt % group( setprecision( 12 ), pow( lc.min_dist(), 2 ) ) % group( setprecision( 12 ), pow( lc.max_dist(), 2 ) );
-               string filt_str = make_filter_query_string( filt );
+               std::string filt_str = make_filter_query_string( filt );
                if( !filt_str.empty() )
                   filt_str = " AND " + filt_str; 
                fmt % filt_str;
@@ -187,13 +189,13 @@ namespace tao {
             }
          }
 
-         string
+         std::string
          make_drop_snap_rng_query_string() const
          {
             return "DROP TABLE IF EXISTS redshift_ranges";
          }
 
-         list<string>
+         std::list<std::string>
          make_snap_rng_query_string( const tao::simulation& sim ) const
          {
 	    using boost::io::group;
@@ -202,7 +204,7 @@ namespace tao {
             ASSERT( sim.num_snapshots() >= 2, "Must be at least two snapshots." );
 
             // Store in a list each command.
-            list<string> queries;
+            std::list<std::string> queries;
 
             // Create a temporary table to hold values.
             queries.emplace_back( "CREATE TEMPORARY TABLE IF NOT EXISTS redshift_ranges "
@@ -212,8 +214,8 @@ namespace tao {
             for( unsigned ii = 0; ii < sim.num_snapshots() - 1; ++ii )
             {
                boost::format fmt( "\nINSERT INTO redshift_ranges VALUES(%1%, %2%, %3%, %4%);" );
-               real_type max = numerics::redshift_to_comoving_distance( sim.redshift( ii ), 1000, sim.hubble(), sim.omega_l(), sim.omega_m() )*sim.h();
-               real_type min = numerics::redshift_to_comoving_distance( sim.redshift( ii + 1 ), 1000, sim.hubble(), sim.omega_l(), sim.omega_m() )*sim.h();
+               real_type max = hpc::num::redshift_to_comoving_distance( sim.redshift( ii ), 1000, sim.hubble(), sim.omega_l(), sim.omega_m() )*sim.h();
+               real_type min = hpc::num::redshift_to_comoving_distance( sim.redshift( ii + 1 ), 1000, sim.hubble(), sim.omega_l(), sim.omega_m() )*sim.h();
                LOGDLN( "Inserting range for snapshot ", ii + 1, ": [", min*min, ", ", max*max, ")" );
                fmt % (ii + 1) % group( setprecision( 12 ), sim.redshift( ii + 1 ) ) % group( setprecision( 12 ), (min*min) ) % group( setprecision( 12 ), (max*max) );
                queries.emplace_back( fmt.str() );
@@ -222,12 +224,12 @@ namespace tao {
             return queries;
          }
 
-         string
+         std::string
          make_output_field_query_string( tao::query<real_type>& query,
-                                         const std::unordered_map<string,string>& map ) const
+                                         const std::unordered_map<std::string,std::string>& map ) const
          {
-            string qs;
-            for( string of : query.output_fields() )
+            std::string qs;
+            for( std::string of : query.output_fields() )
             {
                // // Skip anything which is thought to be calculated later.
                // if( query.calc_fields().find( of ) == query.calc_fields().end() )
@@ -249,25 +251,25 @@ namespace tao {
             return qs;
          }
 
-         string
+         std::string
          make_box_size_query_string() const
          {
             return "SELECT metavalue FROM metadata WHERE metakey='boxsize'";
          }
 
-         string
+         std::string
          make_filter_query_string( filter const* filt ) const
          {
 	    using boost::io::group;
 	    using std::setprecision;
 
-            string qry;
+            std::string qry;
             if( filt &&
                 !filt->field_name().empty() &&
                 _field_map.find( filt->field_name() ) != _field_map.end() && // must have this field in DB
                 (filt->minimum<real_type>() || filt->maximum<real_type>()) )
             {
-               string fn = _field_map.at( filt->field_name() );
+               std::string fn = _field_map.at( filt->field_name() );
                if( filt->minimum<real_type>() )
 		 qry += boost::str( boost::format( "%1% >= %2%" ) % fn % group( setprecision( 12 ), *filt->minimum<real_type>() ) );
                if( filt->maximum<real_type>() )
@@ -281,15 +283,15 @@ namespace tao {
          }
 
          void
-         make_field_map( std::unordered_map<string,string>& map,
+         make_field_map( std::unordered_map<std::string,std::string>& map,
                          tao::query<real_type>& query,
-                         optional<const tao::box<real_type>&> box = optional<const tao::box<real_type>&>() ) const
+                         boost::optional<const tao::box<real_type>&> box = boost::optional<const tao::box<real_type>&>() ) const
          {
 	    using boost::io::group;
 	    using std::setprecision;
 
             map.clear();
-            for( string of : query.output_fields() )
+            for( std::string of : query.output_fields() )
             {
                // Only proceed if the field exists on the database.
                if( _field_map.find( of ) != _field_map.end() )
@@ -298,10 +300,10 @@ namespace tao {
                   if( box && (of == "posx" || of == "posy" || of == "posz" ||
 			      of == "pos_x" || of == "pos_y" || of == "pos_z") )
                   {
-                     string mapped[3] = { "posx", "posy", "posz" };
+                     std::string mapped[3] = { "posx", "posy", "posz" };
                      real_type box_size = (*box).simulation()->box_size();
-                     string repl = "(CASE WHEN %1% + %2% < %3% THEN %1% + %2% ELSE %1% + %2% - %3% END + %4% - %5%)";
-                     string field;
+                     std::string repl = "(CASE WHEN %1% + %2% < %3% THEN %1% + %2% ELSE %1% + %2% - %3% END + %4% - %5%)";
+                     std::string field;
                      if( of == "posx" )
                      {
                         if( (*box).random() )
@@ -362,12 +364,12 @@ namespace tao {
                   }
                   else
                   {
-                     string field;
+                     std::string field;
 
                      // Velocity.
                      if( box && (of == "velx" || of == "vely" || of == "velz") )
                      {
-                        string mapped[3] = { "velx", "vely", "velz" };
+                        std::string mapped[3] = { "velx", "vely", "velz" };
                         if( of == "velx" )
                            field = mapped[(*box).rotation()[0]];
                         else if( of == "vely" )
@@ -379,7 +381,7 @@ namespace tao {
                      // Spin.
                      else if( box && (of == "spinx" || of == "spiny" || of == "spinz") )
                      {
-                        string mapped[3] = { "spinx", "spiny", "spinz" };
+                        std::string mapped[3] = { "spinx", "spiny", "spinz" };
                         if( of == "spinx" )
                            field = mapped[(*box).rotation()[0]];
                         else if( of == "spiny" )
@@ -414,12 +416,6 @@ namespace tao {
 	    return _field_types.at( name );
 	 }
 
-         profile::timer&
-         db_timer()
-         {
-            return _db_timer;
-         }
-
       protected:
 
          virtual
@@ -428,10 +424,9 @@ namespace tao {
 
       protected:
 
-         std::unordered_map<string,string> _field_map;
-         map<string,typename batch<real_type>::field_value_type> _field_types;
+         std::unordered_map<std::string,std::string> _field_map;
+         std::map<std::string,typename batch<real_type>::field_value_type> _field_types;
          bool _con;
-         profile::timer _db_timer;
       };
 
       template< class T >
@@ -479,13 +474,13 @@ namespace tao {
             return _name;
          }
 
-         const array<real_type,3>&
+         const std::array<real_type,3>&
          min() const
          {
             return _min;
          }
 
-         const array<real_type,3>&
+         const std::array<real_type,3>&
          max() const
          {
             return _max;
@@ -523,8 +518,8 @@ namespace tao {
 
       protected:
 
-         string _name;
-         array<real_type,3> _min, _max;
+         std::string _name;
+         std::array<real_type,3> _min, _max;
          unsigned long long _size;
       };
 

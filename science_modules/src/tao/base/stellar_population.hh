@@ -1,26 +1,18 @@
 #ifndef tao_base_stellar_population_hh
 #define tao_base_stellar_population_hh
 
-#include <boost/filesystem.hpp>
-#include "timed.hh"
+#include <vector>
+#include <libhpc/system/filesystem.hh>
 #include "age_line.hh"
 #include "types.hh"
 
-// Forward declaration of test suites to allow direct access.
-class stellar_population_suite;
-
 namespace tao {
-   namespace fs = boost::filesystem;
-   using namespace hpc;
 
    ///
    ///
    ///
    class stellar_population
-      : public timed
    {
-      friend class ::stellar_population_suite;
-
    public:
 
       stellar_population();
@@ -28,26 +20,34 @@ namespace tao {
       void
       set_num_metals( unsigned num_metals );
 
+      template< class Seq >
       void
-      set_wavelengths( vector<real_type>& waves );
+      set_wavelengths( Seq&& waves )
+      {
+         hpc::assign( _waves, std::forward<Seq>( waves ) );
+      }
 
+      template< class Seq >
       void
-      set_spectra( vector<real_type>& spectra );
+      set_spectra( Seq&& spectra )
+      {
+         hpc::assign( _spec, std::forward<Seq>( spectra ) );
+      }
 
       void
       set_recycle_fraction( real_type rec_frac );
 
       void
-      load( const fs::path& ages_filename,
-            const fs::path& waves_filename,
-            const fs::path& metals_filename,
-            const fs::path& ssp_filename );
+      load( hpc::fs::path const& ages_filename,
+            hpc::fs::path const& waves_filename,
+            hpc::fs::path const& metals_filename,
+            hpc::fs::path const& ssp_filename );
 
       void
-      save( const fs::path& ages_filename,
-	    const fs::path& waves_filename,
-	    const fs::path& metals_filename,
-	    const fs::path& ssp_filename );
+      save( hpc::fs::path const& ages_filename,
+	    hpc::fs::path const& waves_filename,
+	    hpc::fs::path const& metals_filename,
+	    hpc::fs::path const& ssp_filename );
 
       void
       restrict();
@@ -63,10 +63,10 @@ namespace tao {
           unsigned spec_idx,
           unsigned metal_idx ) const;
 
-      vector<real_type>::view const
+      std::vector<real_type> const&
       wavelengths() const;
 
-      const age_line<real_type>&
+      age_line<real_type> const&
       bin_ages() const;
 
       template< class MassIterator,
@@ -177,34 +177,34 @@ namespace tao {
    protected:
 
       void
-      _load_metals( const fs::path& filename );
+      _load_metals( hpc::fs::path const& filename );
 
       void
-      _load_ages( const fs::path& filename );
+      _load_ages( hpc::fs::path const& filename );
 
       void
-      _load_waves( const fs::path& filename );
+      _load_waves( hpc::fs::path const& filename );
 
       void
-      _load_ssp( const fs::path& filename );
+      _load_ssp( hpc::fs::path const& filename );
 
       void
-      _save_metals( const fs::path& filename );
+      _save_metals( hpc::fs::path const& filename );
 
       void
-      _save_ages( const fs::path& filename );
+      _save_ages( hpc::fs::path const& filename );
 
       void
-      _save_waves( const fs::path& filename );
+      _save_waves( hpc::fs::path const& filename );
 
       void
-      _save_ssp( const fs::path& filename );
+      _save_ssp( hpc::fs::path const& filename );
 
    protected:
 
-      vector<real_type> _waves;
-      vector<real_type> _spec;
-      vector<real_type> _metal_bins;
+      std::vector<real_type> _waves;
+      std::vector<real_type> _spec;
+      std::vector<real_type> _metal_bins;
       age_line<real_type> _age_bins;
       real_type _com_rec_frac;
    };

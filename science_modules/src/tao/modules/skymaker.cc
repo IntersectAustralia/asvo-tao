@@ -3,17 +3,17 @@
 #include <fstream>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/tokenizer.hpp>
-// #include <boost/process.hpp>
+#include <libhpc/mpi/helpers.hh>
+#include <libhpc/numerics/coords.hh>
 #include "skymaker.hh"
-
-using namespace hpc;
-namespace fs = boost::filesystem;
 
 namespace tao {
    namespace modules {
 
-      double const skymaker_image::default_back_magnitude = 20.0;
-      double const skymaker_image::default_exposure_time = 300.0;
+      namespace mpi = hpc::mpi;
+
+      const double skymaker_image::default_back_magnitude = 20.0;
+      const double skymaker_image::default_exposure_time = 300.0;
 
       skymaker_image::skymaker_image()
          : _okay( true )
@@ -22,8 +22,8 @@ namespace tao {
 
       skymaker_image::skymaker_image( unsigned index,
                                       int sub_cone,
-                                      const string& format,
-                                      const string& mag_field,
+                                      const std::string& format,
+                                      const std::string& mag_field,
                                       optional<real_type> min_mag,
                                       optional<real_type> max_mag,
                                       real_type z_min,
@@ -49,8 +49,8 @@ namespace tao {
       void
       skymaker_image::setup( unsigned index,
                              int sub_cone,
-                             const string& format,
-                             const string& mag_field,
+                             const std::string& format,
+                             const std::string& mag_field,
                              optional<real_type> min_mag,
                              optional<real_type> max_mag,
                              real_type z_min,
@@ -122,7 +122,7 @@ namespace tao {
             {
                // Now convert to pixel coordinates.
                real_type x, y;
-               numerics::gnomonic_projection( ra, dec,
+               hpc::num::gnomonic_projection( ra, dec,
                                               _origin_ra, _origin_dec,
                                               x, y );
                LOGDLN( "Now to (", x, ", ", y, ")" );
@@ -174,10 +174,10 @@ namespace tao {
          _list_file.close();
 
          // Merge list files.
-         string master_filename;
+         std::string master_filename;
          if( mpi::comm::world.rank() == 0 )
          {
-            master_filename = "tao_sky.master." + index_string( _sub_cone ) + "." + index_string( _idx ) + ".list";
+            master_filename = "tao_sky.master." + hpc::index_string( _sub_cone ) + "." + hpc::index_string( _idx ) + ".list";
 	    if( fs::exists( master_filename ) )
 	       fs::remove( master_filename );
          }
@@ -203,7 +203,7 @@ namespace tao {
 	       fs::remove( _sky_filename );
 
             // Run Skymaker.
-            string cmd = string( "sky " ) + master_filename + string( " -c " ) + _conf_filename;
+            std::string cmd = std::string( "sky " ) + master_filename + std::string( " -c " ) + _conf_filename;
             cmd += " > /dev/null";
             LOGDLN( "Running: ", cmd );
 	    ::system( cmd.c_str() );
@@ -211,7 +211,7 @@ namespace tao {
 	    if( fs::exists( _sky_filename ) )
 	    {
 	       // Rename the output file.
-	       fs::path target = "image." + index_string( _sub_cone ) + "." + index_string( _idx ) + ".fits";
+	       fs::path target = "image." + hpc::index_string( _sub_cone ) + "." + hpc::index_string( _idx ) + ".fits";
 	       target = output_dir/target;
 	       fs::rename( _sky_filename, target );
 	       _okay = true;
@@ -238,7 +238,7 @@ namespace tao {
          LOGILN( "Done.", setindent( -2 ) );
       }
 
-      const string&
+      const std::string&
       skymaker_image::mag_field() const
       {
          return _mag_field;
@@ -253,7 +253,7 @@ namespace tao {
       void
       skymaker_image::setup_list()
       {
-         _list_filename = "tao_sky." + index_string( _sub_cone ) + "." + index_string( _idx ) + "." + mpi::rank_string() + ".list";
+         _list_filename = "tao_sky." + hpc::index_string( _sub_cone ) + "." + hpc::index_string( _idx ) + "." + mpi::rank_string() + ".list";
          LOGDLN( "Opening parameter file: ", _list_filename );
          _list_file.open( _list_filename, std::ios::out );
       }
@@ -263,9 +263,9 @@ namespace tao {
       {
          if( mpi::comm::world.rank() == 0 )
          {
-            _conf_filename ="tao_sky." + index_string( _sub_cone ) + "." + index_string( _idx ) + ".conf";
-            _sky_filename = "tao_sky." + index_string( _sub_cone ) + "." + index_string( _idx ) + ".fits";
-            _sky_list_filename = "tao_sky." + index_string( _sub_cone ) + "." + index_string( _idx ) + ".list";
+            _conf_filename ="tao_sky." + hpc::index_string( _sub_cone ) + "." + hpc::index_string( _idx ) + ".conf";
+            _sky_filename = "tao_sky." + hpc::index_string( _sub_cone ) + "." + hpc::index_string( _idx ) + ".fits";
+            _sky_list_filename = "tao_sky." + hpc::index_string( _sub_cone ) + "." + hpc::index_string( _idx ) + ".list";
             LOGDLN( "Opening config file: ", _conf_filename );
             std::ofstream file( _conf_filename, std::ios::out );
             file << "IMAGE_NAME " << _sky_filename << "\n";

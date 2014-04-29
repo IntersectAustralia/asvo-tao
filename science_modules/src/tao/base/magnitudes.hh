@@ -1,13 +1,13 @@
 #ifndef tao_base_magnitudes_hh
 #define tao_base_magnitudes_hh
 
+#include <libhpc/debug/assert.hh>
 #include "types.hh"
 #include "sed.hh"
 #include "bandpass.hh"
 #include "simulation.hh"
 
 namespace tao {
-   using namespace hpc;
 
    real_type
    calc_area( real_type redshift,

@@ -1,11 +1,9 @@
 #ifndef tao_base_subfind_hh
 #define tao_base_subfind_hh
 
-#include <libhpc/libhpc.hh>
+#include <libhpc/h5.hh>
 
 namespace tao {
-   using namespace hpc;
-
    namespace subfind {
 
       struct halo
@@ -35,8 +33,8 @@ namespace tao {
       };
 
       void
-      make_hdf5_types( h5::datatype& mem_type,
-		       h5::datatype& file_type );
+      make_hdf5_types( hpc::h5::datatype& mem_type,
+		       hpc::h5::datatype& file_type );
 
    }
 }

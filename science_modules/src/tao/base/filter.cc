@@ -1,34 +1,18 @@
 #include <boost/algorithm/string.hpp>
+#include <boost/lexical_cast.hpp>
 #include "filter.hh"
 
 namespace tao {
    using namespace hpc;
 
    filter::filter()
-      // : _field_type( batch<real_type>::FIELD_VALUE_TERMINAL )
    {
    }
 
-   // void
-   // filter::bind( const tao::batch<real_type>& batch )
-   // {
-   //    _field_type = std::get<2>( batch.field( _field_name ) );
-   //    switch( _field_type )
-   //    {
-   //       case tao::batch<real_type>::DOUBLE:
-   //          _min = boost::lexical_cast<double>( _min_str );
-   //          _max = boost::lexical_cast<double>( _max_str );
-   //          break;
-
-   //       default:
-   //          ASSERT( "Unknown filter type." );
-   //    }
-   // }
-
    void
-   filter::set_field( const string& name,
-		      const string& min,
-		      const string& max )
+   filter::set_field( const std::string& name,
+		      const std::string& min,
+		      const std::string& max )
    {
       _field_name = name;
       if( boost::algorithm::to_lower_copy( min ) != "none" )
@@ -41,9 +25,7 @@ namespace tao {
 	 _max_str = "";
 
       // Check if the field name has been set to none.
-      string tmp = _field_name;
-      to_lower( tmp );
-      if( tmp == "none" )
+      if( boost::algorithm::to_lower_copy( _field_name ) == "none" )
 	 _field_name.clear();
    }
 
@@ -102,7 +84,7 @@ namespace tao {
       return iterator( this, &bat, true );
    }
 
-   const string&
+   const std::string&
    filter::field_name() const
    {
       return _field_name;

@@ -1,8 +1,13 @@
 #ifndef tao_base_multidb_backend_hh
 #define tao_base_multidb_backend_hh
 
+#include <stdint.h>
+#include <string>
+#include <boost/optional.hpp>
+#include <boost/lexical_cast.hpp>
 #include "soci_base_backend.hh"
 #include "multidb.hh"
+#include "xml_dict.hh"
 
 namespace tao {
    namespace backends {
@@ -15,11 +20,11 @@ namespace tao {
 
          struct server_type
          {
-            string dbname;
-            string user;
-            string passwd;
-            optional<string> host;
-            optional<uint16> port;
+            std::string dbname;
+            std::string user;
+            std::string passwd;
+            boost::optional<std::string> host;
+            boost::optional<uint16_t> port;
          };
 
          typedef T real_type;
@@ -33,7 +38,7 @@ namespace tao {
          }
 
          void
-         connect( const options::xml_dict& global_dict )
+         connect( const xml_dict& global_dict )
          {
             _mdb.Connect( global_dict );
             this->_con = true;
@@ -45,12 +50,12 @@ namespace tao {
          connect( Iterator start,
                   const Iterator& finish )
          {
-            LOGILN( "Connecting to database via multidb.", setindent( 2 ) );
+            LOGBLOCKI( "Connecting to database via multidb." );
 
             // Process each server.
             while( start != finish )
             {
-               LOGILN( "Adding server:", setindent( 2 ) );
+               LOGBLOCKI( "Adding server:" );
 #ifndef NLOG
                if( start->host )
                   LOGILN( "Host: ", *start->host );
@@ -58,29 +63,22 @@ namespace tao {
                   LOGILN( "Port: ", *start->port );
 #endif
                const auto& serv = *start++;
-               _mdb.AddNewServer( serv.dbname, *serv.host, serv.user, serv.passwd, to_string( *serv.port ) );
-               LOGILN( "Done.", setindent( -2 ) );
+               _mdb.AddNewServer( serv.dbname, *serv.host, serv.user, serv.passwd, boost::lexical_cast<std::string>( *serv.port ) );
             }
 
             // Open all the connections and mark as ready.
-            {
-               auto db_timer = this->db_timer().start();
-               _mdb.OpenAllConnections();
-            }
+            _mdb.OpenAllConnections();
             this->_con = true;
 
             // Check for update.
             _initialise();
-
-            LOGILN( "Done.", setindent( -2 ) );
          }
 
          void
          reconnect()
          {
-            LOGILN( "Reconnecting to database via multidb.", setindent( 2 ) );
+            LOGBLOCKI( "Reconnecting to database via multidb." );
             // _mdb.reconnect();
-            LOGILN( "Done.", setindent( -2 ) );
          }
 
          virtual
@@ -92,7 +90,7 @@ namespace tao {
 
          virtual
          ::soci::session&
-         session( const string& table )
+         session( const std::string& table )
          {
             return _mdb[table];
          }
@@ -114,9 +112,7 @@ namespace tao {
             // Create temporary snapshot range table.
             if( this->_sim )
             {
-               auto db_timer = this->db_timer().start();
-
-               LOGILN( "Making redshift range tables.", setindent( 2 ) );
+               LOGBLOCKI( "Making redshift range tables." );
                for( auto& pair : _mdb.CurrentServers )
                {
                   pair.second->OpenConnection();
@@ -134,7 +130,6 @@ namespace tao {
                   for( const auto& query : queries )
                      pair.second->Connection << query;
                }
-               LOGILN( "Done.", setindent( -2 ) );
             }
          }
 

@@ -1,13 +1,12 @@
 #ifndef tao_base_multidb_hh
 #define tao_base_multidb_hh
 
+#include <string>
 #include <soci/soci.h>
-#include <libhpc/libhpc.hh>
-#include <libhpc/options/xml_dict.hh>
-
+#include "xml_dict.hh"
 
 namespace tao {
-   using namespace hpc;
+   using namespace std;
 
    class ServerInfo
    {
@@ -39,10 +38,10 @@ namespace tao {
 
 	   public:
                    multidb();
-	   	   multidb(const options::xml_dict& dict);
+	   	   multidb(const xml_dict& dict);
 	   	   multidb(const string& dbname,const string& tree_pre);
            virtual ~multidb();
-           void Connect(const options::xml_dict& dict);
+           void Connect(const xml_dict& dict);
            void CloseAllConnections();
            void RestartAllConnections();
            void OpenAllConnections();
@@ -64,7 +63,7 @@ namespace tao {
            string _dbtype, _dbname;
            string _tree_pre;
 
-           void  _read_db_options( const options::xml_dict& dict );
+           void  _read_db_options( const xml_dict& dict );
 
 
    };

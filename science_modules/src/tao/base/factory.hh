@@ -1,13 +1,14 @@
 #ifndef tao_base_factory_hh
 #define tao_base_factory_hh
 
+#include <string>
+#include <map>
+#include <list>
 #include <boost/iterator/transform_iterator.hpp>
 #include <soci/soci.h>
-#include <libhpc/libhpc.hh>
 #include "module.hh"
 
 namespace tao {
-   using namespace hpc;
 
    template< class Backend >
    class factory
@@ -16,9 +17,9 @@ namespace tao {
 
       typedef Backend backend_type;
       typedef module<backend_type> module_type;
-      typedef module_type* (*factory_create_type)( const string& name, 
+      typedef module_type* (*factory_create_type)( const std::string& name, 
                                                    pugi::xml_node base );
-      typedef typename list<module_type*>::iterator iterator;
+      typedef typename std::list<module_type*>::iterator iterator;
 
    public:
 
@@ -33,7 +34,7 @@ namespace tao {
       }
 
       void
-      register_module( const string& name,
+      register_module( const std::string& name,
                        factory_create_type create )
       {
          EXCEPT( !_facs.has( name ), "Cannot add new science module factory, ID already exists: ", name );
@@ -41,11 +42,11 @@ namespace tao {
       }
 
       module_type&
-      create_module( const string& name,
-                     const string& inst_name = string(),
+      create_module( const std::string& name,
+                     const std::string& inst_name = std::string(),
 		     pugi::xml_node base = (pugi::xml_node)0 )
       {
-         string _in;
+         std::string _in;
          if( inst_name.empty() )
             _in = name;
          else
@@ -74,7 +75,7 @@ namespace tao {
       }
 
       module_type*
-      operator[]( const string& name )
+      operator[]( const std::string& name )
       {
          for( auto mod : _mods )
          {
@@ -86,8 +87,8 @@ namespace tao {
 
    protected:
 
-      map<string,factory_create_type> _facs;
-      list<module_type*> _mods;
+      std::map<std::string,factory_create_type> _facs;
+      std::list<module_type*> _mods;
    };
 
 }

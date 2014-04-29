@@ -1,6 +1,8 @@
 #ifndef tao_base_projection_hh
 #define tao_base_projection_hh
 
+#include <array>
+#include <string>
 #include "lightcone.hh"
 
 namespace tao {
@@ -53,13 +55,13 @@ namespace tao {
 
       int _sub_cone;
       format_type _fmt;
-      string _mag_field;
+      std::string _mag_field;
       real_type _min_mag;
-      array<real_type,2> _z;
-      array<real_type,2> _org;
-      array<real_type,2> _fov;
-      array<unsigned,2> _dim;
-      array<real_type,2> _scale;
+      std::array<real_type,2> _z;
+      std::array<real_type,2> _org;
+      std::array<real_type,2> _fov;
+      std::array<unsigned,2> _dim;
+      std::array<real_type,2> _scale;
    };
 
    ///
@@ -67,15 +69,15 @@ namespace tao {
    ///
    class projection_iterator
       : public boost::iterator_facade< projection_iterator,
-                                       const array<real_type,2>&,
+                                       const std::array<real_type,2>&,
 				       std::forward_iterator_tag,
-                                       const array<real_type,2>& >
+                                       const std::array<real_type,2>& >
    {
       friend class boost::iterator_core_access;
 
    public:
 
-      typedef const array<real_type,2>& value_type;
+      typedef const std::array<real_type,2>& value_type;
       typedef value_type reference_type;
 
    public:
@@ -111,8 +113,8 @@ namespace tao {
    protected:
 
       const projection* _proj;
-      vector<real_type>::view _x, _y, _z, _mag;
-      array<real_type,2> _pos;
+      hpc::view<std::vector<real_type>> _x, _y, _z, _mag;
+      std::array<real_type,2> _pos;
       const batch<real_type>* _bat;
       unsigned _gal_idx;
    };

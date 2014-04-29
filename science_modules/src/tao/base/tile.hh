@@ -1,7 +1,7 @@
 #ifndef tao_base_tile_hh
 #define tao_base_tile_hh
 
-#include <libhpc/containers/array.hh>
+#include <array>
 #include "box.hh"
 #include "query.hh"
 #include "lightcone.hh"
@@ -23,7 +23,7 @@ namespace tao {
    public:
 
       tile( const tao::lightcone* lc = 0,
-            array<real_type,3> offs = { { 0, 0, 0 } } )
+            std::array<real_type,3> offs = { { 0, 0, 0 } } )
          : box<T>( 0 ),
            _lc( 0 )
       {
@@ -32,7 +32,7 @@ namespace tao {
 
       void
       set_lightcone( const lightcone* lc,
-                     array<real_type,3> offs = { { 0, 0, 0 } } )
+                     std::array<real_type,3> offs = { { 0, 0, 0 } } )
       {
          if( lc )
          {
@@ -47,7 +47,7 @@ namespace tao {
       }
 
       void
-      set_offset( const array<real_type,3>& offs )
+      set_offset( const std::array<real_type,3>& offs )
       {
          this->_min = offs;
          for( unsigned ii = 0; ii < 3; ++ii )

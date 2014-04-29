@@ -1,24 +1,21 @@
 #ifndef tao_base_bandpass_hh
 #define tao_base_bandpass_hh
 
-#include <boost/filesystem.hpp>
-#include <libhpc/containers/string.hh>
+#include <libhpc/system/filesystem.hh>
 #include <libhpc/numerics/spline.hh>
 #include "integration.hh"
 #include "types.hh"
 
 namespace tao {
-   using namespace hpc;
-   namespace fs = boost::filesystem;
 
    template< class > class sed;
 
    template< class Spline >
    void
-   load_bandpass( const fs::path& filename,
+   load_bandpass( hpc::fs::path const& filename,
                   Spline& trans )
    {
-      LOGILN( "Loading bandpass filter at: ", filename, setindent( 2 ) );
+      LOGBLOCKI( "Loading bandpass filter at: ", filename );
 
       // Open the file and validate.
       std::ifstream file( filename.c_str(), std::ios::in );
@@ -45,8 +42,6 @@ namespace tao {
       trans.set_knot_points( pnts );
       trans.set_knot_values( vals );
       trans.update();
-
-      LOGILN( "Done.", setindent( -2 ) );
    }
 
    class bandpass
@@ -55,10 +50,10 @@ namespace tao {
 
       bandpass();
 
-      bandpass( const fs::path& filename );
+      bandpass( const hpc::fs::path& filename );
 
       void
-      load( const fs::path& filename );
+      load( const hpc::fs::path& filename );
 
       real_type
       integral() const;
@@ -77,12 +72,12 @@ namespace tao {
          return tao::integrate( op, _trans );
       }
 
-      const numerics::spline<real_type>&
+      const hpc::num::spline<real_type>&
       transmission() const;
 
    public:
 
-      numerics::spline<real_type> _trans;
+      hpc::num::spline<real_type> _trans;
       real_type _sum;
    };
 

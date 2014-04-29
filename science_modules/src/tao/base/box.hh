@@ -1,8 +1,9 @@
 #ifndef tao_base_box_hh
 #define tao_base_box_hh
 
-#include <libhpc/containers/array.hh>
-#include <libhpc/containers/random.hh>
+#include <array>
+#include <libhpc/system/random.hh>
+#include <libhpc/logging.hh>
 #include "query.hh"
 #include "batch.hh"
 #include "filter.hh"
@@ -90,13 +91,13 @@ namespace tao {
          return _sim;
       }
 
-      const array<real_type,3>&
+      const std::array<real_type,3>&
       min() const
       {
          return _min;
       }
 
-      const array<real_type,3>&
+      const std::array<real_type,3>&
       max() const
       {
          return _max;
@@ -108,13 +109,13 @@ namespace tao {
          return _rand;
       }
 
-      const array<unsigned,3>&
+      const std::array<unsigned,3>&
       rotation() const
       {
          return _rot;
       }
 
-      const array<real_type,3>&
+      const std::array<real_type,3>&
       translation() const
       {
          return _trans;
@@ -144,7 +145,7 @@ namespace tao {
          // Only do this if we have a simulation set.
          if( _sim )
          {
-            LOGDLN( "Randomising box.", setindent( 2 ) );
+            LOGBLOCKD( "Randomising box." );
 
             // Generate translation.
             for( unsigned ii = 0; ii < 3; ++ii )
@@ -187,8 +188,6 @@ namespace tao {
                   break;
             };
             LOGDLN( "Rotation: ", _rot );
-
-            LOGDLN( "Done.", setindent( -2 ) );
          }
       }
 
@@ -225,11 +224,11 @@ namespace tao {
    protected:
 
       const tao::simulation* _sim;
-      array<real_type,3> _min, _max;
+      std::array<real_type,3> _min, _max;
       bool _rand;
       engine_type* _eng;
-      array<unsigned,3> _rot;
-      array<real_type,3> _trans;
+      std::array<unsigned,3> _rot;
+      std::array<real_type,3> _trans;
       std::array<real_type,3> _orig;
       unsigned _snap;
    };

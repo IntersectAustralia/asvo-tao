@@ -1,6 +1,8 @@
 #ifndef tao_base_lightcone_tile_iterator_hh
 #define tao_base_lightcone_tile_iterator_hh
 
+#include <array>
+#include <libhpc/numerics/coords.hh>
 #include "simulation.hh"
 #include "tile.hh"
 
@@ -150,37 +152,37 @@ namespace tao {
          // We can check lower RA and DEC bounds by converting the (0, 1, 0)
          // vertex of the cube to ECS coordinates.
          real_type ra, dec;
-         numerics::cartesian_to_ecs( _cur[0] - _lc->origin()[0],
-				     _cur[1] - _lc->origin()[1] + bs,
-				     _cur[2] - _lc->origin()[2],
-				     ra, dec );
+         hpc::num::cartesian_to_ecs( _cur[0] - _lc->origin()[0],
+                                     _cur[1] - _lc->origin()[1] + bs,
+                                     _cur[2] - _lc->origin()[2],
+                                     ra, dec );
          if( ra < _lc->_ra[0] + _lc->_view_angle )
             return BELOW;
 
          // Similarly, we check the upper bounds by converting the (1, 0, 0)
          // vertex of the cube to ECS coordinates.
-         numerics::cartesian_to_ecs( _cur[0] - _lc->origin()[0] + bs,
-				     _cur[1] - _lc->origin()[1],
-				     _cur[2] - _lc->origin()[2],
-				     ra, dec );
+         hpc::num::cartesian_to_ecs( _cur[0] - _lc->origin()[0] + bs,
+                                     _cur[1] - _lc->origin()[1],
+                                     _cur[2] - _lc->origin()[2],
+                                     ra, dec );
          if( ra > _lc->_ra[1] + _lc->_view_angle )
             return ABOVE;
 
          // Similarly, we check the upper bounds by converting the (1, 0, 0)
          // vertex of the cube to ECS coordinates.
-         numerics::cartesian_to_ecs( _cur[0] - _lc->origin()[0],
-				     _cur[1] - _lc->origin()[1],
-				     _cur[2] - _lc->origin()[2] + bs,
-				     ra, dec );
+         hpc::num::cartesian_to_ecs( _cur[0] - _lc->origin()[0],
+                                     _cur[1] - _lc->origin()[1],
+                                     _cur[2] - _lc->origin()[2] + bs,
+                                     ra, dec );
          if( dec < _lc->_dec[0] )
             return BELOW;
 
          // We can check lower RA and DEC bounds by converting the (0, 1, 0)
          // vertex of the cube to ECS coordinates.
-         numerics::cartesian_to_ecs( _cur[0] - _lc->origin()[0] + bs,
-				     _cur[1] - _lc->origin()[1] + bs,
-				     _cur[2] - _lc->origin()[2],
-				     ra, dec );
+         hpc::num::cartesian_to_ecs( _cur[0] - _lc->origin()[0] + bs,
+                                     _cur[1] - _lc->origin()[1] + bs,
+                                     _cur[2] - _lc->origin()[2],
+                                     ra, dec );
          if( dec > _lc->_dec[1] )
             return ABOVE;
 
@@ -191,7 +193,7 @@ namespace tao {
    protected:
 
       const lightcone* _lc;
-      array<real_type,3> _cur;
+      std::array<real_type,3> _cur;
       bool _done;
       unsigned _idx;
       value_type _tile;

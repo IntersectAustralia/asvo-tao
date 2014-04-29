@@ -1,6 +1,7 @@
 #ifndef tao_base_lightcone_galaxy_iterator_hh
 #define tao_base_lightcone_galaxy_iterator_hh
 
+#include <libhpc/system/view.hh>
 #include "lightcone.hh"
 #include "lightcone_tile_iterator.hh"
 #include "batch.hh"
@@ -61,7 +62,7 @@ namespace tao {
             LOGILN( "Processing tile at: [", _tile_it->min()[0] - _tile_it->origin()[0],
 		    ", ", _tile_it->min()[1] - _tile_it->origin()[1],
 		    ", ", _tile_it->min()[2] - _tile_it->origin()[2], "]", setindent( 2 ) );
-            _gal_it = _be->galaxy_begin( *_qry, *_tile_it, _bat, _filt, view<std::vector<std::pair<unsigned long long,int>>>::type( _work ) );
+            _gal_it = _be->galaxy_begin( *_qry, *_tile_it, _bat, _filt, hpc::view<std::vector<std::pair<unsigned long long,int>>>( _work ) );
             _settle();
 	    _tbl_idx += _gal_it.table_index();
          }
@@ -149,7 +150,7 @@ namespace tao {
 	       LOGILN( "Processing tile at: [", _tile_it->min()[0] - _tile_it->origin()[0],
 		       ", ", _tile_it->min()[1] - _tile_it->origin()[1],
 		       ", ", _tile_it->min()[2] - _tile_it->origin()[2], "]", setindent( 2 ) );
-               _gal_it = _be->galaxy_begin( *_qry, *_tile_it, _bat, _filt, view<std::vector<std::pair<unsigned long long,int>>>::type( _work ) );
+               _gal_it = _be->galaxy_begin( *_qry, *_tile_it, _bat, _filt, hpc::view<std::vector<std::pair<unsigned long long,int>>>( _work ) );
 	       _tbl_idx += _gal_it.table_index();
             }
             while( _gal_it.done() );

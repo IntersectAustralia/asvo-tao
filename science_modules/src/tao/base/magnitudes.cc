@@ -1,3 +1,4 @@
+#include <libhpc/system/math.hh>
 #include <libhpc/numerics/coords.hh>
 #include "magnitudes.hh"
 
@@ -7,7 +8,7 @@ namespace tao {
    calc_area( real_type redshift,
               tao::simulation const& sim )
    {
-      real_type dist = numerics::redshift_to_luminosity_distance( redshift, 1000, sim.hubble(), sim.omega_l(), sim.omega_m() );
+      real_type dist = hpc::num::redshift_to_luminosity_distance( redshift, 1000, sim.hubble(), sim.omega_l(), sim.omega_m() );
       if( dist < 1e-5 )  // Be careful! If dist is zero (which it can be) then resort to absolute
          dist = 1e-5;    // magnitudes.
       real_type area = log10( 4.0*M_PI ) + 2.0*log10( dist*3.08568025e24 ); // result in cm^2
@@ -28,7 +29,7 @@ namespace tao {
                        real_type bp_int,
                        real_type area )
    {
-      if( num::approx( spec_int, 0.0 ) || num::approx( bp_int, 0.0 ) )
+      if( hpc::approx( spec_int, 0.0 ) || hpc::approx( bp_int, 0.0 ) )
          return 100.0;
       else
          return -2.5*(log10( spec_int ) - area - log10( bp_int )) - 48.6;

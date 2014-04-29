@@ -2,7 +2,7 @@
 #define tao_base_simulation_hh
 
 #include <stdarg.h>
-#include <libhpc/containers/vector.hh>
+#include <vector>
 #include "utils.hh"
 #include "types.hh"
 
@@ -42,7 +42,7 @@ namespace tao {
                   real_type hubble,
                   real_type omega_m,
                   real_type omega_l,
-		  hpc::vector<real_type> const& snap_zs );
+		  std::vector<real_type> const& snap_zs );
 
       ///
       /// Construct with cosmology and redshifts.
@@ -115,7 +115,7 @@ namespace tao {
       real_type
       redshift( unsigned snap ) const;
 
-      typename hpc::vector<real_type>::view const
+      std::vector<real_type> const&
       redshifts() const;
 
    protected:
@@ -127,7 +127,7 @@ namespace tao {
       real_type _omega_l;
       real_type _omega_r;
       real_type _omega_k;
-      hpc::vector<real_type> _zs;
+      std::vector<real_type> _zs;
    };
 
 }

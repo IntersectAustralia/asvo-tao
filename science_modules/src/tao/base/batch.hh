@@ -2,15 +2,18 @@
 #define tao_base_batch_hh
 
 #include <unordered_map>
+#include <string>
 #include <boost/any.hpp>
 #include <boost/mpl/map.hpp>
 #include <boost/mpl/int.hpp>
 #include <boost/mpl/assert.hpp>
 #include <boost/mpl/at.hpp>
-#include <libhpc/libhpc.hh>
+#include <libhpc/debug/assert.hh>
+#include <libhpc/debug/except.hh>
+#include <libhpc/system/matrix.hh>
+#include <libhpc/system/view.hh>
 
 namespace tao {
-   using namespace hpc;
 
    template< class T >
    class batch
@@ -38,12 +41,12 @@ namespace tao {
       typedef T real_type;
       typedef std::tuple<boost::any,field_rank_type,field_value_type> field_type;
 
-      typedef boost::mpl::map<mpl::pair<string,             mpl::int_<STRING>>,
-                              mpl::pair<double,             mpl::int_<DOUBLE>>,
-                              mpl::pair<int,                mpl::int_<INTEGER>>,
-                              mpl::pair<unsigned long,      mpl::int_<UNSIGNED_LONG> >,
-                              mpl::pair<long long,          mpl::int_<LONG_LONG> >,
-                              mpl::pair<unsigned long long, mpl::int_<UNSIGNED_LONG_LONG>>> type_map;
+      typedef boost::mpl::map<boost::mpl::pair<std::string,        boost::mpl::int_<STRING>>,
+                              boost::mpl::pair<double,             boost::mpl::int_<DOUBLE>>,
+                              boost::mpl::pair<int,                boost::mpl::int_<INTEGER>>,
+                              boost::mpl::pair<unsigned long,      boost::mpl::int_<UNSIGNED_LONG> >,
+                              boost::mpl::pair<long long,          boost::mpl::int_<LONG_LONG> >,
+                              boost::mpl::pair<unsigned long long, boost::mpl::int_<UNSIGNED_LONG_LONG>>> type_map;
 
    public:
 
@@ -70,7 +73,7 @@ namespace tao {
                switch( std::get<2>( field ) )
                {
                   case STRING:
-                     std::get<0>( field ) = boost::any_cast<string>( val );
+                     std::get<0>( field ) = boost::any_cast<std::string>( val );
                      break;
                   case DOUBLE:
                      std::get<0>( field ) = boost::any_cast<double>( val );
@@ -96,22 +99,22 @@ namespace tao {
                switch( std::get<2>( field ) )
                {
                   case STRING:
-                     std::get<0>( field ) = new hpc::vector<string>( *boost::any_cast<hpc::vector<string>*>( val ) );
+                     std::get<0>( field ) = new std::vector<std::string>( *boost::any_cast<std::vector<std::string>*>( val ) );
                      break;
                   case DOUBLE:
-                     std::get<0>( field ) = new hpc::vector<double>( *boost::any_cast<hpc::vector<double>*>( val ) );
+                     std::get<0>( field ) = new std::vector<double>( *boost::any_cast<std::vector<double>*>( val ) );
                      break;
                   case INTEGER:
-                     std::get<0>( field ) = new hpc::vector<int>( *boost::any_cast<hpc::vector<int>*>( val ) );
+                     std::get<0>( field ) = new std::vector<int>( *boost::any_cast<std::vector<int>*>( val ) );
                      break;
                   case UNSIGNED_LONG:
-                     std::get<0>( field ) = new hpc::vector<unsigned long>( *boost::any_cast<hpc::vector<unsigned long>*>( val ) );
+                     std::get<0>( field ) = new std::vector<unsigned long>( *boost::any_cast<std::vector<unsigned long>*>( val ) );
                      break;
                   case LONG_LONG:
-                     std::get<0>( field ) = new hpc::vector<long long>( *boost::any_cast<hpc::vector<long long>*>( val ) );
+                     std::get<0>( field ) = new std::vector<long long>( *boost::any_cast<std::vector<long long>*>( val ) );
                      break;
                   case UNSIGNED_LONG_LONG:
-                     std::get<0>( field ) = new hpc::vector<unsigned long long>( *boost::any_cast<hpc::vector<unsigned long long>*>( val ) );
+                     std::get<0>( field ) = new std::vector<unsigned long long>( *boost::any_cast<std::vector<unsigned long long>*>( val ) );
                      break;
                   case FIELD_VALUE_TERMINAL:
                      break;
@@ -122,22 +125,22 @@ namespace tao {
                switch( std::get<2>( field ) )
                {
                   case STRING:
-                     std::get<0>( field ) = new fibre<string>( *boost::any_cast<fibre<string>*>( val ) );
+                     std::get<0>( field ) = new hpc::matrix<std::string>( *boost::any_cast<hpc::matrix<std::string>*>( val ) );
                      break;
                   case DOUBLE:
-                     std::get<0>( field ) = new fibre<double>( *boost::any_cast<fibre<double>*>( val ) );
+                     std::get<0>( field ) = new hpc::matrix<double>( *boost::any_cast<hpc::matrix<double>*>( val ) );
                      break;
                   case INTEGER:
-                     std::get<0>( field ) = new fibre<int>( *boost::any_cast<fibre<int>*>( val ) );
+                     std::get<0>( field ) = new hpc::matrix<int>( *boost::any_cast<hpc::matrix<int>*>( val ) );
                      break;
                   case UNSIGNED_LONG:
-                     std::get<0>( field ) = new fibre<unsigned long>( *boost::any_cast<fibre<unsigned long>*>( val ) );
+                     std::get<0>( field ) = new hpc::matrix<unsigned long>( *boost::any_cast<hpc::matrix<unsigned long>*>( val ) );
                      break;
                   case LONG_LONG:
-                     std::get<0>( field ) = new fibre<long long>( *boost::any_cast<fibre<long long>*>( val ) );
+                     std::get<0>( field ) = new hpc::matrix<long long>( *boost::any_cast<hpc::matrix<long long>*>( val ) );
                      break;
                   case UNSIGNED_LONG_LONG:
-                     std::get<0>( field ) = new fibre<unsigned long long>( *boost::any_cast<fibre<unsigned long long>*>( val ) );
+                     std::get<0>( field ) = new hpc::matrix<unsigned long long>( *boost::any_cast<hpc::matrix<unsigned long long>*>( val ) );
                      break;
                   case FIELD_VALUE_TERMINAL:
                      break;
@@ -198,44 +201,44 @@ namespace tao {
             {
                case STRING:
                   if( std::get<1>( field ) == SCALAR )
-                     _size = std::min<unsigned>( _size, boost::any_cast<hpc::vector<string>*>( val )->size() );
+                     _size = std::min<unsigned>( _size, boost::any_cast<std::vector<std::string>*>( val )->size() );
                   else
-                     _size = std::min<unsigned>( _size, boost::any_cast<fibre<string>*>( val )->size() );
+                     _size = std::min<unsigned>( _size, boost::any_cast<hpc::matrix<std::string>*>( val )->size() );
                   done = true;
                   break;
                case DOUBLE:
                   if( std::get<1>( field ) == SCALAR )
-                     _size = std::min<unsigned>( _size, boost::any_cast<hpc::vector<double>*>( val )->size() );
+                     _size = std::min<unsigned>( _size, boost::any_cast<std::vector<double>*>( val )->size() );
                   else
-                     _size = std::min<unsigned>( _size, boost::any_cast<fibre<double>*>( val )->size() );
+                     _size = std::min<unsigned>( _size, boost::any_cast<hpc::matrix<double>*>( val )->size() );
                   done = true;
                   break;
                case INTEGER:
                   if( std::get<1>( field ) == SCALAR )
-                     _size = std::min<unsigned>( _size, boost::any_cast<hpc::vector<int>*>( val )->size() );
+                     _size = std::min<unsigned>( _size, boost::any_cast<std::vector<int>*>( val )->size() );
                   else
-                     _size = std::min<unsigned>( _size, boost::any_cast<fibre<int>*>( val )->size() );
+                     _size = std::min<unsigned>( _size, boost::any_cast<hpc::matrix<int>*>( val )->size() );
                   done = true;
                   break;
                case UNSIGNED_LONG:
                   if( std::get<1>( field ) == SCALAR )
-                     _size = std::min<unsigned>( _size, boost::any_cast<hpc::vector<unsigned long>*>( val )->size() );
+                     _size = std::min<unsigned>( _size, boost::any_cast<std::vector<unsigned long>*>( val )->size() );
                   else
-                     _size = std::min<unsigned>( _size, boost::any_cast<fibre<unsigned long>*>( val )->size() );
+                     _size = std::min<unsigned>( _size, boost::any_cast<hpc::matrix<unsigned long>*>( val )->size() );
                   done = true;
                   break;
                case LONG_LONG:
                   if( std::get<1>( field ) == SCALAR )
-                     _size = std::min<unsigned>( _size, boost::any_cast<hpc::vector<long long>*>( val )->size() );
+                     _size = std::min<unsigned>( _size, boost::any_cast<std::vector<long long>*>( val )->size() );
                   else
-                     _size = std::min<unsigned>( _size, boost::any_cast<fibre<long long>*>( val )->size() );
+                     _size = std::min<unsigned>( _size, boost::any_cast<hpc::matrix<long long>*>( val )->size() );
                   done = true;
                   break;
                case UNSIGNED_LONG_LONG:
                   if( std::get<1>( field ) == SCALAR )
-                     _size = std::min<unsigned>( _size, boost::any_cast<hpc::vector<unsigned long long>*>( val )->size() );
+                     _size = std::min<unsigned>( _size, boost::any_cast<std::vector<unsigned long long>*>( val )->size() );
                   else
-                     _size = std::min<unsigned>( _size, boost::any_cast<fibre<unsigned long long>*>( val )->size() );
+                     _size = std::min<unsigned>( _size, boost::any_cast<hpc::matrix<unsigned long long>*>( val )->size() );
                   done = true;
                   break;
                case FIELD_VALUE_TERMINAL:
@@ -265,20 +268,20 @@ namespace tao {
       }
 
       bool
-      has_field( const string& name ) const
+      has_field( const std::string& name ) const
       {
          return _fields.find( name ) != _fields.end();
       }
 
       field_value_type
-      get_field_type( const string& name ) const
+      get_field_type( const std::string& name ) const
       {
 	 return std::get<2>( _fields.at( name ) );
       }
 
       template< class U >
       void
-      set_attribute( const string& name,
+      set_attribute( const std::string& name,
                      const U& value )
       {
          field_type& field = _fields[name];
@@ -288,23 +291,23 @@ namespace tao {
       }
 
       template< class U >
-      typename hpc::vector<U>::view
-      set_scalar( const string& name )
+      typename hpc::view<std::vector<U> >
+      set_scalar( const std::string& name )
       {
          ASSERT( _max_size, "Cannot set fields on batches with zero maximum size." );
          field_type& field = _fields[name];
          boost::any& val = std::get<0>( field );
          if( val.empty() )
          {
-            val = new hpc::vector<U>( _max_size );
+            val = new std::vector<U>( _max_size );
             std::get<1>( field ) = (field_rank_type)SCALAR;
             std::get<2>( field ) = (field_value_type)boost::mpl::at<type_map,U>::type::value;
          }
-         return *boost::any_cast<hpc::vector<U>*>( val );
+         return *boost::any_cast<std::vector<U>*>( val );
       }
 
       void
-      set_scalar( const string& name,
+      set_scalar( const std::string& name,
                   field_value_type type )
       {
          ASSERT( _max_size, "Cannot set fields on batches with zero maximum size." );
@@ -315,22 +318,22 @@ namespace tao {
             switch( type )
             {
                case STRING:
-                  val = new hpc::vector<std::string>( _max_size );
+                  val = new std::vector<std::string>( _max_size );
                   break;
                case DOUBLE:
-                  val = new hpc::vector<double>( _max_size );
+                  val = new std::vector<double>( _max_size );
                   break;
                case INTEGER:
-                  val = new hpc::vector<int>( _max_size );
+                  val = new std::vector<int>( _max_size );
                   break;
                case UNSIGNED_LONG:
-                  val = new hpc::vector<unsigned long>( _max_size );
+                  val = new std::vector<unsigned long>( _max_size );
                   break;
                case LONG_LONG:
-                  val = new hpc::vector<long long>( _max_size );
+                  val = new std::vector<long long>( _max_size );
                   break;
                case UNSIGNED_LONG_LONG:
-                  val = new hpc::vector<unsigned long long>( _max_size );
+                  val = new std::vector<unsigned long long>( _max_size );
                   break;
                case FIELD_VALUE_TERMINAL:
                   break;
@@ -341,8 +344,8 @@ namespace tao {
       }
 
       template< class U >
-      fibre<U>&
-      set_vector( const string& name,
+      hpc::matrix<U>&
+      set_vector( const std::string& name,
                   size_t size )
       {
          ASSERT( _max_size, "Cannot set fields on batches with zero maximum size." );
@@ -350,59 +353,59 @@ namespace tao {
          boost::any& val = std::get<0>( field );
          if( val.empty() )
          {
-            val = new hpc::fibre<U>( size, _max_size );
+            val = new hpc::matrix<U>( size, _max_size );
             std::get<1>( field ) = (field_rank_type)VECTOR;
             std::get<2>( field ) = (field_value_type)boost::mpl::at<type_map,U>::type::value;
          }
-         return *boost::any_cast<fibre<U>*>( val );
+         return *boost::any_cast<hpc::matrix<U>*>( val );
       }
 
       template< class U >
       const U&
-      attribute( const string& name )
+      attribute( const std::string& name )
       {
          return boost::any_cast<U&>( std::get<0>( field( name ) ) );
       }
 
       template< class U >
-      typename hpc::vector<U>::view
-      scalar( const string& name )
+      typename hpc::view<std::vector<U> >
+      scalar( const std::string& name )
       {
          ASSERT( std::get<1>( field( name ) ) == SCALAR, "Assertion in batch object. Requesting "
                  "field \"", name, "\" as SCALAR, however field is ",
                  ((std::get<1>( field( name ) ) == 0) ? "ATTRIBUTE" : "VECTOR"), "." );
-         return *boost::any_cast<hpc::vector<U>*>( std::get<0>( field( name ) ) );
+         return *boost::any_cast<std::vector<U>*>( std::get<0>( field( name ) ) );
       }
 
       template< class U >
-      const typename hpc::vector<U>::view
-      scalar( const string& name ) const
+      const typename hpc::view<std::vector<U> >
+      scalar( const std::string& name ) const
       {
          ASSERT( std::get<1>( field( name ) ) == SCALAR, "Assertion in batch object. Requesting "
                  "field \"", name, "\" as SCALAR, however field is ",
                  ((std::get<1>( field( name ) ) == 0) ? "ATTRIBUTE" : "VECTOR"), "." );
-         return *boost::any_cast<hpc::vector<U>*>( std::get<0>( field( name ) ) );
+         return *boost::any_cast<std::vector<U>*>( std::get<0>( field( name ) ) );
       }
 
       template< class U >
-      fibre<U>&
-      vector( const string& name )
+      hpc::matrix<U>&
+      vector( const std::string& name )
       {
          ASSERT( std::get<1>( field( name ) ) == VECTOR, "Assertion in batch object. Requesting "
                  "field \"", name, "\" as VECTOR, however field is ",
                  ((std::get<1>( field( name ) ) == 0) ? "ATTRIBUTE" : "SCALAR"), "." );
-         return *boost::any_cast<fibre<U>*>( std::get<0>( field( name ) ) );
+         return *boost::any_cast<hpc::matrix<U>*>( std::get<0>( field( name ) ) );
       }
 
       template< class U >
-      const fibre<U>&
-      vector( const string& name ) const
+      const hpc::matrix<U>&
+      vector( const std::string& name ) const
       {
-         return *boost::any_cast<fibre<U>*>( std::get<0>( field( name ) ) );
+         return *boost::any_cast<hpc::matrix<U>*>( std::get<0>( field( name ) ) );
       }
 
       field_type&
-      field( const string& name )
+      field( const std::string& name )
       {
          auto it = _fields.find( name );
          EXCEPT( it != _fields.end(), "Field not found on batch object: ", name );
@@ -410,7 +413,7 @@ namespace tao {
       }
 
       const field_type&
-      field( const string& name ) const
+      field( const std::string& name ) const
       {
          auto it = _fields.find( name );
          EXCEPT( it != _fields.end(), "Field not found on batch object: ", name );
@@ -433,22 +436,22 @@ namespace tao {
          switch( type )
          {
             case STRING:
-               delete boost::any_cast<hpc::vector<string>*>( val );
+               delete boost::any_cast<std::vector<std::string>*>( val );
                break;
             case DOUBLE:
-               delete boost::any_cast<hpc::vector<double>*>( val );
+               delete boost::any_cast<std::vector<double>*>( val );
                break;
             case INTEGER:
-               delete boost::any_cast<hpc::vector<int>*>( val );
+               delete boost::any_cast<std::vector<int>*>( val );
                break;
             case UNSIGNED_LONG:
-               delete boost::any_cast<hpc::vector<unsigned long>*>( val );
+               delete boost::any_cast<std::vector<unsigned long>*>( val );
                break;
             case LONG_LONG:
-               delete boost::any_cast<hpc::vector<long long>*>( val );
+               delete boost::any_cast<std::vector<long long>*>( val );
                break;
             case UNSIGNED_LONG_LONG:
-               delete boost::any_cast<hpc::vector<unsigned long long>*>( val );
+               delete boost::any_cast<std::vector<unsigned long long>*>( val );
                break;
             case FIELD_VALUE_TERMINAL:
                break;
@@ -462,22 +465,22 @@ namespace tao {
          switch( type )
          {
             case STRING:
-               delete boost::any_cast<fibre<string>*>( val );
+               delete boost::any_cast<hpc::matrix<std::string>*>( val );
                break;
             case DOUBLE:
-               delete boost::any_cast<fibre<double>*>( val );
+               delete boost::any_cast<hpc::matrix<double>*>( val );
                break;
             case INTEGER:
-               delete boost::any_cast<fibre<int>*>( val );
+               delete boost::any_cast<hpc::matrix<int>*>( val );
                break;
             case UNSIGNED_LONG:
-               delete boost::any_cast<fibre<unsigned long>*>( val );
+               delete boost::any_cast<hpc::matrix<unsigned long>*>( val );
                break;
             case LONG_LONG:
-               delete boost::any_cast<fibre<long long>*>( val );
+               delete boost::any_cast<hpc::matrix<long long>*>( val );
                break;
             case UNSIGNED_LONG_LONG:
-               delete boost::any_cast<fibre<unsigned long long>*>( val );
+               delete boost::any_cast<hpc::matrix<unsigned long long>*>( val );
                break;
             case FIELD_VALUE_TERMINAL:
                break;
@@ -487,7 +490,7 @@ namespace tao {
    protected:
 
       unsigned _max_size, _size;
-      std::unordered_map<string,field_type> _fields;
+      std::unordered_map<std::string,field_type> _fields;
    };
 
 }

@@ -56,5 +56,5 @@
   <subjobindex>0</subjobindex>
   <logdir>log</logdir>
   <outputdir>output</outputdir>
-  <database>millennium_full_v3</database>
+  <database>millennium_full_3servers_v2</database>
 </tao>

@@ -3,12 +3,12 @@
 
 namespace tao {
 
-   time_type tao_start_time;
+   hpc::timer timer( true );
 
-   double
+   hpc::timer::time_type
    runtime()
    {
-      return seconds( timer() - tao::tao_start_time );
+      return timer.total();
    }
 
    ///

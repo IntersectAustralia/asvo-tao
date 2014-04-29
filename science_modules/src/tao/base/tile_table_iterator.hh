@@ -1,16 +1,24 @@
 #ifndef tao_base_tile_table_iterator_hh
 #define tao_base_tile_table_iterator_hh
 
+#include <vector>
+#include <array>
+#include <list>
+#include <set>
 #include <boost/iterator/iterator_facade.hpp>
-#include <libhpc/libhpc.hh>
-#include <libhpc/containers/combination.hpp>
+#include <boost/optional.hpp>
+#include <libhpc/system/view.hh>
+#include <libhpc/algorithm/combination.hpp>
 #include <libhpc/numerics/clip.hh>
+#include <libhpc/numerics/coords.hh>
+#include <libhpc/mpi.hh>
 #include "rdb_backend.hh"
 #include "tile.hh"
 
 namespace tao {
    namespace backends {
-      using namespace hpc;
+
+      namespace mpi = hpc::mpi;
 
       template< class Backend >
       class tile_table_iterator
@@ -38,7 +46,7 @@ namespace tao {
 
          tile_table_iterator( const tao::tile<real_type>& tile,
                               const backend_type& backend,
-                              boost::optional<hpc::view<std::vector<std::pair<unsigned long long,int> > >::type> work = boost::optional<hpc::view<std::vector<std::pair<unsigned long long,int> > >::type>() )
+                              boost::optional<hpc::view<std::vector<std::pair<unsigned long long,int>>>> work = boost::optional<hpc::view<std::vector<std::pair<unsigned long long,int>>>>() )
             : _tile( &tile ),
               _be( &backend ),
               _work( work ),
@@ -46,7 +54,7 @@ namespace tao {
          {
             // Construct the walls I'll be using to clip the lightcone
             // approximation.
-            vector<real_type> perms( 9 );
+            std::vector<real_type> perms( 9 );
             for( unsigned ii = 0; ii < 3; ++ii )
             {
                perms[ii] = -1;
@@ -55,7 +63,7 @@ namespace tao {
             }
             do
             {
-               _walls.emplace_back( array<real_type,3>{ { perms[0], perms[1], perms[2] } } );
+               _walls.emplace_back( std::array<real_type,3>{ { perms[0], perms[1], perms[2] } } );
             }
             while( boost::next_partial_permutation( perms.begin(), perms.begin() + 3, perms.end() ) );
 
@@ -95,13 +103,13 @@ namespace tao {
             return *this;
          }
 
-         const typename vector<array<real_type,3>>::view
+         const typename std::vector<std::array<real_type,3>>::view
          polyhedra() const
          {
             return _ph;
          }
 
-         const list<array<real_type,4>>&
+         const std::list<std::array<real_type,4>>&
          planes() const
          {
             return _planes;
@@ -119,19 +127,19 @@ namespace tao {
             return _tile;
          }
 
-         const vector<array<real_type,3>>&
+         const std::vector<std::array<real_type,3>>&
          walls() const
          {
             return _walls;
          }
 
-         const vector<table_type>&
+         const std::vector<table_type>&
          tables() const
          {
             return _tables;
          }
 
-         const typename vector<table_type>::const_iterator&
+         const typename std::vector<table_type>::const_iterator&
          table_iter() const
          {
             return _it;
@@ -161,7 +169,7 @@ namespace tao {
          void
          _begin()
          {
-            LOGDLN( "Calculating overlapping tables.", setindent( 2 ) );
+            LOGBLOCKD( "Calculating overlapping tables." );
 
             // Need the points of the polyhedron. Don't forget to
             // offset by the tile we're using.
@@ -179,18 +187,18 @@ namespace tao {
             _calc_polygon_planes();
 
             // Cache some information.
-            const array<unsigned,3>& axis = _tile->rotation();
-            const array<real_type,3>& offs = _tile->translation();
+            const std::array<unsigned,3>& axis = _tile->rotation();
+            const std::array<real_type,3>& offs = _tile->translation();
 
             // Shift each table bounding box along each wall direction to
             // see if there is any periodic overlap with the cone.
-            set<table_type> tables;
+            std::set<table_type> tables;
             for( auto it = _be->table_begin(); it != _be->table_end(); ++it )
             {
                // Apply each periodic side to the box and check.
                for( const auto& wall : _walls )
                {
-                  array<real_type,3> tmp_min, tmp_max;
+                  std::array<real_type,3> tmp_min, tmp_max;
                   for( unsigned jj = 0; jj < 3; ++jj )
                   {
                      real_type box_size = _tile->max()[axis[jj]] - _tile->min()[axis[jj]];
@@ -208,7 +216,7 @@ namespace tao {
             // If we've been given a work vector to use, then do so.
             if( _work )
             {
-               LOGDLN( "Using a work vector to balance tables.", setindent( 2 ) );
+               LOGBLOCKD( "Using a work vector to balance tables." );
                auto work = *_work;
 
                // Transfer to a vector and sort on size.
@@ -259,7 +267,6 @@ namespace tao {
                }
 
                LOGILN( "Parallel work vector: ", work );
-               LOGDLN( "Done.", setindent( -2 ) );
             }
             else
             {
@@ -281,19 +288,17 @@ namespace tao {
 
             // If there are no tables flag that we're done.
             _done = _tables.empty();
-
-            LOGDLN( "Done.", setindent( -2 ) );
          }
 
          bool
-         _check_overlap( const array<real_type,3>& min,
-                         const array<real_type,3>& max )
+         _check_overlap( const std::array<real_type,3>& min,
+                         const std::array<real_type,3>& max )
          {
             // Clip the box against the parent box.
-            array<real_type,3> par_min{ { 0, 0, 0 } }, par_max;
+            std::array<real_type,3> par_min{ { 0, 0, 0 } }, par_max;
             for( unsigned ii = 0; ii < 3; ++ii )
                par_max[ii] = _tile->max()[ii] - _tile->min()[ii];
-            array<real_type,3> clip_min, clip_max;
+            std::array<real_type,3> clip_min, clip_max;
             box_box_clip(
                min.begin(), min.end(),
                max.begin(),
@@ -304,7 +309,7 @@ namespace tao {
                );
 
             // If there is no volume left, return false.
-            if( num::approx( box_volume( clip_min.begin(), clip_min.end(), clip_max.begin() ), 0.0, 1e-8 ) )
+            if( hpc::approx( box_volume( clip_min.begin(), clip_min.end(), clip_max.begin() ), 0.0, 1e-8 ) )
                return false;
 
             // Check for overlap with cone.
@@ -329,8 +334,8 @@ namespace tao {
 
             // Use midpoints of the RA and DEC to find the center
             // point of the furthest plane.
-            array<real_type,4> end_plane;
-            numerics::ecs_to_cartesian(
+            std::array<real_type,4> end_plane;
+            hpc::num::ecs_to_cartesian(
                ra_min + 0.5*(ra_max - ra_min),
                dec_min + 0.5*(dec_max - dec_min),
                end_plane[0], end_plane[1], end_plane[2]
@@ -339,17 +344,17 @@ namespace tao {
 
             // Use the midpoint of the RA and the lowest DEC to
             // get the point at the bottom of the curvature.
-            array<real_type,4> low_plane;
+            std::array<real_type,4> low_plane;
             {
-               numerics::ecs_to_cartesian(
+               hpc::num::ecs_to_cartesian(
                   ra_min + 0.5*(ra_max - ra_min),
                   dec_min,
                   low_plane[0], low_plane[1], low_plane[2]
                   );
 
                // Cross products to get proper plane.
-               array<real_type,3> z_axis{ { 0, 0, 1 } };
-               array<real_type,3> left;
+               std::array<real_type,3> z_axis{ { 0, 0, 1 } };
+               std::array<real_type,3> left;
                cross_product_3( low_plane, z_axis, left );
                cross_product_3( low_plane, left, z_axis );
                real_type inv_mag = 1.0/magnitude( z_axis.begin(), z_axis.end() );
@@ -362,16 +367,16 @@ namespace tao {
             // Calculate the intersection of each of the four lines
             // coming from the edges of my light cone with the
             // plane.
-            array<real_type,3> zero{ { 0, 0, 0 } };
-            array<real_type,3> line;
-            array<real_type,3> pnt;
-            array<real_type,3> top0, top1, low0, low1;
+            std::array<real_type,3> zero{ { 0, 0, 0 } };
+            std::array<real_type,3> line;
+            std::array<real_type,3> pnt;
+            std::array<real_type,3> top0, top1, low0, low1;
 
             // Calculate temporary points.
-            numerics::ecs_to_cartesian( ra_min, dec_max, top0[0], top0[1], top0[2] );
-            numerics::ecs_to_cartesian( ra_max, dec_max, top1[0], top1[1], top1[2] );
-            numerics::ecs_to_cartesian( ra_min, dec_min, low0[0], low0[1], low0[2] );
-            numerics::ecs_to_cartesian( ra_max, dec_min, low1[0], low1[1], low1[2] );
+            hpc::num::ecs_to_cartesian( ra_min, dec_max, top0[0], top0[1], top0[2] );
+            hpc::num::ecs_to_cartesian( ra_max, dec_max, top1[0], top1[1], top1[2] );
+            hpc::num::ecs_to_cartesian( ra_min, dec_min, low0[0], low0[1], low0[2] );
+            hpc::num::ecs_to_cartesian( ra_max, dec_min, low1[0], low1[1], low1[2] );
 
             // Intersect with end plane to get new points.
             line_half_space_intersection(
@@ -422,7 +427,7 @@ namespace tao {
 
             // Push points into the list.
             _ph.clear();
-            _ph.push_back( array<real_type,3>{ { 0, 0, 0 } } );
+            _ph.push_back( std::array<real_type,3>{ { 0, 0, 0 } } );
             _ph.push_back( low0 );
             _ph.push_back( low1 );
             _ph.push_back( top0 );
@@ -433,7 +438,7 @@ namespace tao {
          _calc_polygon_planes()
          {
             _planes.clear();
-            array<real_type,4> plane;
+            std::array<real_type,4> plane;
             _calc_plane( _ph[0], _ph[1], _ph[3], plane );
             _planes.push_back( plane );
             _calc_plane( _ph[0], _ph[3], _ph[4], plane );
@@ -449,7 +454,7 @@ namespace tao {
 #ifndef NDEBUG
             // Do a quick sanity check. Pick two points, one inside
             // and one outside and check they work correctly.
-            array<real_type,3> in_pnt{ {
+            std::array<real_type,3> in_pnt{ {
                0.2*_ph[0][0],
                0.2*_ph[0][1],
                0.2*_ph[0][2]
@@ -460,7 +465,7 @@ namespace tao {
                in_pnt[1] += 0.2*_ph[ii][1];
                in_pnt[2] += 0.2*_ph[ii][2];
             }
-            array<real_type,3> out_pnt{ {
+            std::array<real_type,3> out_pnt{ {
                _ph[0][0] - 1.0,
                _ph[0][1] - 1.0,
                _ph[0][2] - 1.0
@@ -470,11 +475,10 @@ namespace tao {
             {
                if( !inside( in_pnt.begin(), in_pnt.end(), plane.begin() ) )
                {
-                  LOGDLN( "Not inside: ", setindent( 2 ) );
+                  LOGBLOCKD( "Not inside: " );
                   LOGDLN( "Plane: ", plane );
                   LOGDLN( "Point: ", in_pnt );
                   LOGDLN( "Evaluated: ", half_space_eval( in_pnt.begin(), in_pnt.end(), plane.begin() ) );
-                  LOGD( setindent( -2 ) );
                   in = false;
                   break;
                }
@@ -523,12 +527,12 @@ namespace tao {
 
          const backend_type* _be;
          const tao::tile<real_type>* _tile;
-         vector<array<real_type,3>> _ph;
-         list<array<real_type,4>> _planes;
-         vector<array<real_type,3>> _walls;
-         vector<table_type> _tables;
-         optional<view<std::vector<std::pair<unsigned long long,int>>>::type> _work;
-         typename vector<table_type>::const_iterator _it;
+         std::vector<std::array<real_type,3>> _ph;
+         std::list<std::array<real_type,4>> _planes;
+         std::vector<std::array<real_type,3>> _walls;
+         std::vector<table_type> _tables;
+         boost::optional<hpc::view<std::vector<std::pair<unsigned long long,int>>>> _work;
+         typename std::vector<table_type>::const_iterator _it;
          bool _done;
       };
 

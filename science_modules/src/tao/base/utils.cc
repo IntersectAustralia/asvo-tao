@@ -1,13 +1,12 @@
-#include <libhpc/system/exe.hh>
+#include <libhpc/system/filesystem.hh>
 #include "utils.hh"
 
 namespace tao {
-   using namespace hpc;
 
-   boost::filesystem::path
+   hpc::fs::path
    data_prefix()
    {
-      return nix::executable_path().parent_path().parent_path()/"data";
+      return hpc::executable_path().parent_path().parent_path()/"data";
    }
 
 }

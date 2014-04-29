@@ -1,3 +1,4 @@
+#include <vector>
 #include <soci/postgresql/soci-postgresql.h>
 #include "tao/base/types.hh"
 #include "tao/base/globals.hh"
@@ -42,7 +43,7 @@ struct db_fixture
       be.connect( sql );
       sim.set_box_size( 62.5 );
       sim.set_cosmology( 0.71, 0.25, 0.75 );
-      hpc::vector<tao::real_type> redshifts( 5 );
+      std::vector<tao::real_type> redshifts( 5 );
       redshifts[0] = 127;
       redshifts[1] = 80;
       redshifts[2] = 63;

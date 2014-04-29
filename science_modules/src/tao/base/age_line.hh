@@ -1,16 +1,19 @@
 #ifndef tao_base_age_line_hh
 #define tao_base_age_line_hh
 
-#include <boost/filesystem/path.hpp>
+#include <vector>
+#include <fstream>
 #include <soci.h>
-#include <libhpc/logging/logging.hh>
-#include "timed.hh"
+#include <libhpc/debug/except.hh>
+#include <libhpc/logging.hh>
+#include <libhpc/system/filesystem.hh>
+#include <libhpc/system/view.hh>
+#include <libhpc/system/assign.hh>
+#include <libhpc/system/deallocate.hh>
 #include "utils.hh"
 #include "simulation.hh"
 
 namespace tao {
-   namespace fs = boost::filesystem;
-   using namespace hpc;
 
    ///
    /// Star-formation History. Responsible for rebinning star-formation
@@ -18,7 +21,6 @@ namespace tao {
    ///
    template< class T >
    class age_line
-      : public timed
    {
    public:
 
@@ -27,7 +29,6 @@ namespace tao {
    public:
 
       age_line()
-         : timed()
       {
       }
 
@@ -45,7 +46,7 @@ namespace tao {
          load_ages( sql, hubble, omega_m, omega_l );
       }
 
-      age_line( fs::path const& path )
+      age_line( hpc::fs::path const& path )
       {
 	 load( path );
       }
@@ -59,8 +60,8 @@ namespace tao {
       void
       clear()
       {
-         _ages.deallocate();
-         _dual.deallocate();
+         hpc::deallocate( _ages );
+         hpc::deallocate( _dual );
       }
 
       unsigned
@@ -75,13 +76,13 @@ namespace tao {
          return _dual[idx];
       }
 
-      typename view<vector<real_type>>::type const
+      typename hpc::view<std::vector<real_type>> const
       dual() const
       {
 	 return _dual;
       }
 
-      typename view<vector<real_type>>::type const
+      typename hpc::view<std::vector<real_type>> const
       ages() const
       {
 	 return _ages;
@@ -95,8 +96,7 @@ namespace tao {
       void
       set_ages( Seq&& ages )
       {
-         auto timer = timer_start();
-         LOGTLN( "Setting ages on age line.", setindent( 2 ) );
+         LOGBLOCKT( "Setting ages on age line." );
 
          // Clear existing values.
          clear();
@@ -116,12 +116,10 @@ namespace tao {
             // Calculate dual.
             _calc_dual();
          }
-
-         LOGT( setindent( -2 ) );
       }
 
       void
-      load( fs::path const& path )
+      load( hpc::fs::path const& path )
       {
 	 LOGBLOCKI( "Loading ages from: ", path );
 
@@ -135,8 +133,8 @@ namespace tao {
 	 EXCEPT( file.good(), "Error reading ages file." );
 	 LOGILN( "Number of ages: ", num_ages );
 
-	 // Read the ages.
-	 vector<real_type> bin_ages( num_ages );
+         // Read the ages.
+         std::vector<real_type> bin_ages( num_ages );
 	 for( unsigned ii = 0; ii < num_ages; ++ii )
 	    file >> bin_ages[ii];
 	 EXCEPT( file.good(), "Error reading ages file." );
@@ -155,7 +153,6 @@ namespace tao {
                  real_type omega_m = 0.25,
                  real_type omega_l = 0.75 )
       {
-         auto timer = timer_start();
          LOGBLOCKD( "Loading ages from database." );
 
          // Clear existing values.
@@ -163,21 +160,15 @@ namespace tao {
 
          // Find number of snapshots and resize the containers.
          unsigned num_snaps;
-         {
-            auto db_timer = db_timer_start();
-            sql << "SELECT COUNT(*) FROM snap_redshift", soci::into( num_snaps );
-         }
+         sql << "SELECT COUNT(*) FROM snap_redshift", soci::into( num_snaps );
          LOGDLN( "Number of snapshots: ", num_snaps );
 
          // Need space to store the snapshots.
          _ages.reallocate( num_snaps );
 
          // Read meta data.
-         {
-            auto db_timer = db_timer_start();
-            sql << "SELECT redshift FROM snap_redshift ORDER BY snapnum",
-               soci::into( (std::vector<real_type>&)_ages );
-         }
+         sql << "SELECT redshift FROM snap_redshift ORDER BY snapnum",
+            soci::into( _ages );
          LOGTLN( "Redshifts: ", _ages );
 
          // Convert to ages.
@@ -192,7 +183,7 @@ namespace tao {
       unsigned
       find_bin( real_type age ) const
       {
-         LOGTLN( "Searching for bin using age: ", age, setindent( 2 ) );
+         LOGBLOCKT( "Searching for bin using age: ", age );
          unsigned bin;
          {
             // Use binary search to find first element greater.
@@ -202,7 +193,7 @@ namespace tao {
             else
                bin = it - _dual.begin();
          }
-         LOGTLN( "Found bin ", bin, " with age of ", _ages[bin], ".", setindent( -2 ) );
+         LOGTLN( "Found bin ", bin, " with age of ", _ages[bin], "." );
          return bin;
       }
 
@@ -224,13 +215,13 @@ namespace tao {
                _dual[ii - 1] = 0.5*(_ages[ii] + _ages[ii - 1]);
          }
          else
-            _dual.deallocate();
+            hpc::deallocate( _dual );
          LOGTLN( "Dual: ", _dual );
       }
 
    protected:
 
-      vector<real_type> _ages, _dual;
+      std::vector<real_type> _ages, _dual;
    };
 }
 

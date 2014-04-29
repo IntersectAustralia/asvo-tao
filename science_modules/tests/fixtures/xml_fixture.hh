@@ -1,4 +1,5 @@
-#include <libhpc/libhpc.hh>
+#include <string>
+#include <tao/base/xml_dict.hh>
 #include "db_fixture.hh"
 
 struct xml_fixture
@@ -6,8 +7,8 @@ struct xml_fixture
    static const char* lc_tmpl;
    static const char* box_tmpl;
 
-   hpc::options::xml_dict
-   make_lightcone_dict( const hpc::string& rep = "unique",
+   tao::xml_dict
+   make_lightcone_dict( const std::string& rep = "unique",
                         int seed = 0,
                         tao::real_type z_min = 0.0,
                         tao::real_type z_max = 0.06,
@@ -15,7 +16,7 @@ struct xml_fixture
                         tao::real_type ra_max = 10.0,
                         tao::real_type dec_min = 0.0,
                         tao::real_type dec_max = 10.0,
-                        const hpc::string& filt_field = "None",
+                        const std::string& filt_field = "None",
                         tao::real_type filt_min = 0.0,
                         tao::real_type filt_max = 0.0 )
    {
@@ -27,11 +28,11 @@ struct xml_fixture
       return hpc::options::xml_dict( iss );
    }
 
-   hpc::options::xml_dict
+   tao::xml_dict
    make_box_dict( int seed = 0,
                   tao::real_type box_size = 10.0,
                   tao::real_type redshift = 0.0,
-                  const hpc::string& filt_field = "None",
+                  const std::string& filt_field = "None",
                   tao::real_type filt_min = 0.0,
                   tao::real_type filt_max = 0.0 )
    {

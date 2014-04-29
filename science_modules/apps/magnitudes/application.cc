@@ -31,7 +31,7 @@ application::operator()()
    tao::backends::multidb<tao::real_type> be;
    {
       // std::string db_name = "millennium_mini_galacticus_3servers_v1";
-      std::string db_name = "millennium_mini_3servers_v2";
+      std::string db_name = "millennium_mini_3servers_v3";
 #include "credentials.hh"
       hpc::vector<tao::backends::multidb<tao::real_type>::server_type> servers( 3 );
       servers[0].dbname = db_name;
@@ -107,9 +107,9 @@ application::operator()()
 	    // std::cout << sfh.size() << "\n";
 	    tao::real_type my_mass = std::accumulate( age_masses.begin(), age_masses.end(), 0.0 )*0.43;
 	    tao::real_type mod_mass = stellar_mass[ii]*1e10;
-	    // if( mod_mass > 0.0 )
-	    //    std::cout << my_mass << ", " << mod_mass << ", " << (my_mass - mod_mass)/mod_mass << "\n";
-	    std::cout << sfrs[ii] << "\n";
+	    if( mod_mass > 0.0 )
+	       std::cout << my_mass << ", " << mod_mass << ", " << (my_mass - mod_mass)/mod_mass << "\n";
+	    // std::cout << sfrs[ii] << "\n";
 
 	    // // Sum from SSP.
 	    // hpc::vector<tao::real_type> total_spectra( ssp.wavelengths().size() );

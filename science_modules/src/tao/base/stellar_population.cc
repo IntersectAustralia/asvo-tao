@@ -1,30 +1,17 @@
 #include <boost/algorithm/string/trim.hpp>
+#include <boost/lexical_cast.hpp>
+#include <libhpc/system/reallocate.hh>
+#include <libhpc/system/deallocate.hh>
 #include <libhpc/algorithm/bin.hh>
 #include <libhpc/algorithm/dual.hh>
 #include <libhpc/logging/block.hh>
 #include "stellar_population.hh"
 
 namespace tao {
-   namespace fs = boost::filesystem;
-   using namespace hpc;
 
    stellar_population::stellar_population()
       : _com_rec_frac( 1.0 )
    {
-   }
-
-   void
-   stellar_population::set_wavelengths( vector<real_type>& waves )
-   {
-      _waves.deallocate();
-      _waves.swap( waves );
-   }
-
-   void
-   stellar_population::set_spectra( vector<real_type>& spectra )
-   {
-      _spec.deallocate();
-      _spec.swap( spectra );
    }
 
    void
@@ -36,10 +23,10 @@ namespace tao {
    }
 
    void
-   stellar_population::load( const fs::path& ages_filename,
-                             const fs::path& waves_filename,
-                             const fs::path& metals_filename,
-                             const fs::path& ssp_filename )
+   stellar_population::load( hpc::fs::path const& ages_filename,
+                             hpc::fs::path const& waves_filename,
+                             hpc::fs::path const& metals_filename,
+                             hpc::fs::path const& ssp_filename )
    {
       _load_ages( ages_filename );
       _load_waves( waves_filename );
@@ -48,10 +35,10 @@ namespace tao {
    }
 
    void
-   stellar_population::save( const fs::path& ages_filename,
-                             const fs::path& waves_filename,
-                             const fs::path& metals_filename,
-                             const fs::path& ssp_filename )
+   stellar_population::save( hpc::fs::path const& ages_filename,
+                             hpc::fs::path const& waves_filename,
+                             hpc::fs::path const& metals_filename,
+                             hpc::fs::path const& ssp_filename )
    {
       _save_ages( ages_filename );
       _save_waves( waves_filename );
@@ -63,9 +50,9 @@ namespace tao {
    stellar_population::restrict()
    {
       // Just use new vectors for simplicity.
-      vector<real_type> new_waves( _waves.size()/2 );
-      vector<real_type> new_ages( _age_bins.size()/2 );
-      vector<real_type> new_spec( new_waves.size()*new_ages.size()*(_metal_bins.size() + 1) );
+      std::vector<real_type> new_waves( _waves.size()/2 );
+      std::vector<real_type> new_ages( _age_bins.size()/2 );
+      std::vector<real_type> new_spec( new_waves.size()*new_ages.size()*(_metal_bins.size() + 1) );
 
       // Halve things.
       for( unsigned ii = 0; ii < new_waves.size(); ++ii )
@@ -113,13 +100,13 @@ namespace tao {
       return _spec[age_idx*_waves.size()*(_metal_bins.size() + 1) + spec_idx*(_metal_bins.size() + 1) + metal_idx];
    }
 
-   const vector<real_type>::view
+   std::vector<real_type> const&
    stellar_population::wavelengths() const
    {
       return _waves;
    }
 
-   const age_line<real_type>&
+   age_line<real_type> const&
    stellar_population::bin_ages() const
    {
       return _age_bins;
@@ -128,20 +115,20 @@ namespace tao {
    unsigned
    stellar_population::find_metal_bin( real_type metal ) const
    {
-      return algorithm::bin( _metal_bins.begin(), _metal_bins.end(), metal );
+      return hpc::algorithm::bin( _metal_bins.begin(), _metal_bins.end(), metal );
    }
 
    void
-   stellar_population::_load_metals( const fs::path& filename )
+   stellar_population::_load_metals( hpc::fs::path const& filename )
    {
-      LOGILN( "Loading metallicities from: ", filename, setindent( 2 ) );
+      LOGBLOCKI( "Loading metallicities from: ", filename );
 
       std::ifstream file( filename.c_str() );
       EXCEPT( file.is_open(), "Couldn't find metallicities file: ", filename );
 
       // The first line can be the word "dual", indicating
       // the dual has already been taken.
-      string dual;
+      std::string dual;
       file >> dual;
       ASSERT( file, "Error reading metallicity file." );
 
@@ -153,7 +140,7 @@ namespace tao {
       ASSERT( file, "Error reading metallicity file." );
       if( num_metals )
       {
-         vector<real_type> metals( num_metals );
+         std::vector<real_type> metals( num_metals );
          for( unsigned ii = 0; ii < num_metals; ++ii )
             file >> metals[ii];
          ASSERT( file, "Error reading metallicity file." );
@@ -169,17 +156,15 @@ namespace tao {
 	 else
 	 {
 	    _metal_bins.resize( num_metals - 1 );
-	    algorithm::dual( metals.begin(), metals.end(), _metal_bins.begin() );
+            hpc::algorithm::dual( metals.begin(), metals.end(), _metal_bins.begin() );
 	 }
       }
-
-      LOGILN( "Done.", setindent( -2 ) );
    }
 
    void
-   stellar_population::_load_waves( const fs::path& filename )
+   stellar_population::_load_waves( hpc::fs::path const& filename )
    {
-      LOGILN( "Loading wavelengths from: ", filename, setindent( 2 ) );
+      LOGBLOCKI( "Loading wavelengths from: ", filename );
 
       // Open the file.
       std::ifstream file( filename.c_str() );
@@ -188,7 +173,7 @@ namespace tao {
       // Need to get number of lines in file first.
       unsigned num_waves = 0;
       {
-         string line;
+         std::string line;
          while( !file.eof() )
          {
             std::getline( file, line );
@@ -199,27 +184,25 @@ namespace tao {
       LOGILN( "Number of wavelengths: ", num_waves );
 
       // Allocate. Note that the ordering goes time,spectra,metals.
-      _waves.reallocate( num_waves );
+      hpc::reallocate( _waves, num_waves );
 
       // Read in the file in one big go.
       file.clear();
       file.seekg( 0 );
       for( unsigned ii = 0; ii < _waves.size(); ++ii )
          file >> _waves[ii];
-
-      LOGILN( "Done.", setindent( -2 ) );
    }
 
    void
-   stellar_population::_load_ages( const fs::path& filename )
+   stellar_population::_load_ages( hpc::fs::path const& filename )
    {
       _age_bins.load( filename );
    }
 
    void
-   stellar_population::_load_ssp( const fs::path& filename )
+   stellar_population::_load_ssp( hpc::fs::path const& filename )
    {
-      LOGILN( "Loading stellar population from: ", filename, setindent( 2 ) );
+      LOGBLOCKI( "Loading stellar population from: ", filename );
 
       std::ifstream file( filename.c_str() );
       EXCEPT( file.is_open(), "Couldn't find SSP file: ", filename );
@@ -234,7 +217,7 @@ namespace tao {
 #endif
 
       // Allocate. Note that the ordering goes time,spectra,metals.
-      _spec.reallocate( _age_bins.size()*_waves.size()*(_metal_bins.size() + 1) );
+      hpc::reallocate( _spec, _age_bins.size()*_waves.size()*(_metal_bins.size() + 1) );
       LOGILN( "Number of spectra entries: ", _spec.size() );
 
       // Read in the file in one big go.
@@ -244,12 +227,10 @@ namespace tao {
          file >> _spec[ii];
       }
       EXCEPT( file.good(), "Error reading SSP file." );
-
-      LOGILN( "Done.", setindent( -2 ) );
    }
 
    void
-   stellar_population::_save_metals( const fs::path& filename )
+   stellar_population::_save_metals( hpc::fs::path const& filename )
    {
       LOGBLOCKI( "Saving metallicities to: ", filename );
 
@@ -266,7 +247,7 @@ namespace tao {
    }
 
    void
-   stellar_population::_save_waves( const fs::path& filename )
+   stellar_population::_save_waves( hpc::fs::path const& filename )
    {
       LOGBLOCKI( "Saving wavelengths to: ", filename );
 
@@ -280,7 +261,7 @@ namespace tao {
    }
 
    void
-   stellar_population::_save_ages( const fs::path& filename )
+   stellar_population::_save_ages( hpc::fs::path const& filename )
    {
       LOGBLOCKI( "Saving ages to: ", filename );
 
@@ -295,7 +276,7 @@ namespace tao {
    }
 
    void
-   stellar_population::_save_ssp( const fs::path& filename )
+   stellar_population::_save_ssp( hpc::fs::path const& filename )
    {
       LOGBLOCKI( "Saving stellar population to: ", filename );
 

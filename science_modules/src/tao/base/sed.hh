@@ -2,25 +2,22 @@
 #define tao_base_sed_hh
 
 #include <boost/algorithm/string/trim.hpp>
-#include <boost/filesystem.hpp>
-#include <libhpc/logging/logging.hh>
-#include <libhpc/containers/string.hh>
+#include <libhpc/system/filesystem.hh>
+#include <libhpc/logging.hh>
 #include <libhpc/numerics/spline.hh>
 #include "integration.hh"
 #include "types.hh"
 
 namespace tao {
-   using namespace hpc;
-   namespace fs = boost::filesystem;
 
    class bandpass;
 
    template< class Spline >
    void
-   load_sed( const fs::path& filename,
+   load_sed( hpc::fs::path const& filename,
              Spline& spec )
    {
-      LOGILN( "Loading SED at: ", filename, setindent( 2 ) );
+      LOGBLOCKI( "Loading SED at: ", filename );
 
       // Open the file and check it exists.
       std::ifstream file( filename.c_str() );
@@ -31,7 +28,7 @@ namespace tao {
       unsigned num_waves = 0;
       while( !file.eof() )
       {
-         string line;
+	 std::string line;
          std::getline( file, line );
          if( boost::trim_copy( line ).length() )
             ++num_waves;
@@ -59,11 +56,9 @@ namespace tao {
       spec.set_knot_points( pnts );
       spec.set_knot_values( vals );
       spec.update();
-
-      LOGILN( "Done.", setindent( -2 ) );
    }
 
-   template< class Spline = numerics::spline<real_type> >
+   template< class Spline = hpc::num::spline<real_type> >
    class sed
    {
    public:
@@ -84,13 +79,13 @@ namespace tao {
          _spec.update();
       }
 
-      sed( const fs::path& filename )
+      sed( const hpc::fs::path& filename )
       {
          load( filename );
       }
 
       void
-      load( const fs::path& filename )
+      load( const hpc::fs::path& filename )
       {
          load_sed( filename, _spec );
       }

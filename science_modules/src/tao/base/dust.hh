@@ -2,14 +2,16 @@
 #define tao_base_dust_hh
 
 #include <math.h>
+#include <fstream>
 #include <boost/filesystem.hpp>
-#include <libhpc/containers/view.hh>
-#include <libhpc/containers/assign.hh>
+#include <libhpc/debug/except.hh>
+#include <libhpc/system/view.hh>
+#include <libhpc/system/assign.hh>
+#include <libhpc/system/filesystem.hh>
 #include "types.hh"
 
 namespace tao {
    namespace dust {
-      namespace fs = boost::filesystem;
 
       ///
       /// Calculate dust according to Calzetti (?). TODO:
@@ -99,12 +101,91 @@ namespace tao {
 
          slab();
 
-         slab( fs::path const& ext_fn,
-               hpc::view<std::vector<real_type>>::type const& waves );
+         template< class Seq >
+         slab( hpc::fs::path const& ext_fn,
+               typename hpc::type_traits<Seq>::reference waves )
+         {
+            load_extinction( ext_fn, waves );
+         }
 
+         template< class Seq >
          void
-         load_extinction( fs::path const& ext_fn,
-                          hpc::view<std::vector<real_type>>::type const& waves );
+         load_extinction( hpc::fs::path const& ext_fn,
+                          typename hpc::type_traits<Seq>::reference waves )
+         {
+            std::ifstream strm( ext_fn.native() );
+            EXCEPT( strm.good(), "Failed to open extinction file: ", ext_fn );
+
+            unsigned size;
+            strm >> size;
+            std::vector<real_type> ext_waves( size );
+            std::vector<real_type> ext( size );
+            std::vector<real_type> alb( size );
+            std::vector<real_type> exp( size );
+            for( unsigned ii = 0; ii < size; ++ii )
+               strm >> ext_waves[ii] >> ext[ii] >> alb[ii] >> exp[ii];
+            EXCEPT( strm.good(), "Failure reading extinction file: ", ext_fn );
+
+            // Extinction wavelength scale needs to be altered.
+            std::transform( ext_waves.begin(), ext_waves.end(), ext_waves.begin(),
+                            []( real_type x ) { return 1e4*x; } );
+
+            hpc::num::spline< real_type,
+                              hpc::view<std::vector<real_type>>,
+                              hpc::view<std::vector<real_type>> > spline;
+
+            _ext.resize( waves.size() );
+            spline.set_knot_points( ext_waves );
+            spline.set_knot_values( ext );
+            spline.update();
+            for( unsigned ii = 0; ii < waves.size(); ++ii )
+            {
+               if( waves[ii] < ext_waves[0] )
+                  _ext[ii] = ext[0];
+               else if( waves[ii] > ext_waves[size - 1] )
+                  _ext[ii] = ext[size - 1];
+               else
+               {
+                  _ext[ii] = spline( waves[ii] );
+                  if( _ext[ii] <= 0.0 )
+                  {
+                     unsigned poly = spline.poly( waves[ii] );
+                     _ext[ii] = spline.values()[poly] + ((waves[ii] - spline.points()[poly])/(spline.points()[poly + 1] - spline.points()[poly]))*(spline.values()[poly + 1] - spline.values()[poly]);
+                  }
+               }
+               ASSERT( _ext[ii] > 0.0 );
+            }
+
+            _alb.resize( waves.size() );
+            spline.set_knot_values( alb );
+            spline.update();
+            for( unsigned ii = 0; ii < waves.size(); ++ii )
+            {
+               if( waves[ii] < ext_waves[0] )
+                  _alb[ii] = alb[0];
+               else if( waves[ii] > ext_waves[size - 1] )
+                  _alb[ii] = alb[size - 1];
+               else
+                  _alb[ii] = spline( waves[ii] );
+            }
+
+            _exp.resize( waves.size() );
+            spline.set_knot_values( exp );
+            spline.update();
+            for( unsigned ii = 0; ii < waves.size(); ++ii )
+            {
+               if( waves[ii] < ext_waves[0] )
+                  _exp[ii] = exp[0];
+               else if( waves[ii] > ext_waves[size - 1] )
+                  _exp[ii] = exp[size - 1];
+               else
+                  _exp[ii] = spline( waves[ii] );
+            }
+
+            // Need to add 1.6 to the exponent.
+            std::transform( _exp.begin(), _exp.end(), _exp.begin(),
+                            []( real_type x ) { return x + 1.6; } );
+         }
 
          template< class ExtSeq,
                    class AlbSeq,
@@ -119,13 +200,13 @@ namespace tao {
             hpc::assign( _exp, std::forward<ExpSeq>( exp ) );
          }
 
-         hpc::view<std::vector<real_type>>::type
+         hpc::view<std::vector<real_type>>
          extinction() const;
 
-         hpc::view<std::vector<real_type>>::type
+         hpc::view<std::vector<real_type>>
          albedo() const;
 
-         hpc::view<std::vector<real_type>>::type
+         hpc::view<std::vector<real_type>>
          exponents() const;
 
          ///

@@ -19,10 +19,4 @@ namespace tao {
       return _sim;
    }
 
-   hpc::profile::timer&
-   backend::timer()
-   {
-      return _timer;
-   }
-
 }

@@ -1,16 +1,16 @@
 #ifndef tao_base_box_table_iterator_hh
 #define tao_base_box_table_iterator_hh
 
+#include <vector>
+#include <set>
 #include <boost/iterator/iterator_facade.hpp>
-#include <libhpc/libhpc.hh>
-#include <libhpc/containers/combination.hpp>
+#include <libhpc/algorithm/combination.hpp>
 #include <libhpc/numerics/clip.hh>
 #include "rdb_backend.hh"
 #include "box.hh"
 
 namespace tao {
    namespace backends {
-      using namespace hpc;
 
       template< class Backend >
       class box_table_iterator
@@ -99,11 +99,11 @@ namespace tao {
          void
          _begin()
          {
-            LOGDLN( "Calculating overlapping tables.", setindent( 2 ) );
+            LOGBLOCKD( "Calculating overlapping tables." );
 
             // Shift each table bounding box along each wall direction to
             // see if there is any periodic overlap with the box.
-            set<table_type> tables;
+            std::set<table_type> tables;
             for( auto it = _be->table_begin(); it != _be->table_end(); ++it )
             {
 	       // Check if the table overlaps the box size.
@@ -137,16 +137,14 @@ namespace tao {
 
             // If there are no tables flag that we're done.
             _done = _tbls.empty();
-
-            LOGDLN( "Done.", setindent( -2 ) );
          }
 
       protected:
 
          const backend_type* _be;
          const box<real_type>* _box;
-         vector<table_type> _tbls;
-         typename vector<table_type>::const_iterator _it;
+         std::vector<table_type> _tbls;
+         typename std::vector<table_type>::const_iterator _it;
          bool _done;
       };
 

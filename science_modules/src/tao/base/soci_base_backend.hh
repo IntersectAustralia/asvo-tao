@@ -1,9 +1,14 @@
 #ifndef tao_base_soci_base_backend_hh
 #define tao_base_soci_base_backend_hh
 
+#include <array>
+#include <vector>
+#include <string>
 #include <boost/format.hpp>
+#include <boost/optional.hpp>
 #include <boost/algorithm/string.hpp>
 #include <soci/soci.h>
+#include <libhpc/numerics/coords.hh>
 #include "rdb_backend.hh"
 #include "tile_table_iterator.hh"
 #include "box_table_iterator.hh"
@@ -52,7 +57,7 @@ namespace tao {
 
          virtual
          ::soci::session&
-         session( const string& table ) = 0;
+         session( const std::string& table ) = 0;
 
          real_type
          box_size()
@@ -82,7 +87,7 @@ namespace tao {
 
             // Extract the list of redshift snapshots from the backend to
             // be set on the simulation.
-	    vector<real_type> snap_zs;
+	    std::vector<real_type> snap_zs;
 	    snapshot_redshifts( snap_zs );
 
 	    this->set_simulation( new simulation( box_size, hubble, omega_m, omega_l, snap_zs ) );
@@ -90,7 +95,7 @@ namespace tao {
 	 }
 
          void
-         snapshot_redshifts( vector<real_type>& snap_zs )
+         snapshot_redshifts( std::vector<real_type>& snap_zs )
          {
             unsigned size;
             {
@@ -131,9 +136,9 @@ namespace tao {
                        tile<real_type> const& tile,
                        tao::batch<real_type>* bat = 0,
                        filter const* filt = 0,
-                       optional<view<std::vector<std::pair<unsigned long long,int>>>::type> work = optional<view<std::vector<std::pair<unsigned long long,int>>>::type>() )
+                       boost::optional<view<std::vector<std::pair<unsigned long long,int>>>> work = boost::optional<view<std::vector<std::pair<unsigned long long,int>>>>() )
          {
-            string qs = this->make_tile_query_string( tile, query, filt );
+            std::string qs = this->make_tile_query_string( tile, query, filt );
             return tile_galaxy_iterator( *this, query, qs, table_begin( tile, work ), table_end( tile ), tile.lightcone(), 0, bat );
          }
 
@@ -150,7 +155,7 @@ namespace tao {
                        tao::batch<real_type>* bat = 0,
                        filter const* filt = 0 )
          {
-            string qs = this->make_box_query_string( box, query, filt );
+            std::string qs = this->make_box_query_string( box, query, filt );
             return box_galaxy_iterator( *this, query, qs, table_begin( box ), table_end( box ), 0, &box, bat );
          }
 
@@ -191,7 +196,7 @@ namespace tao {
 
          tile_table_iterator
          table_begin( const tile<real_type>& tile,
-                      optional<view<std::vector<std::pair<unsigned long long,int>>>::type> work = optional<view<std::vector<std::pair<unsigned long long,int>>>::type>() ) const
+                      boost::optional<view<std::vector<std::pair<unsigned long long,int>>>> work = boost::optional<view<std::vector<std::pair<unsigned long long,int>>>>() ) const
          {
             return tile_table_iterator( tile, *this, work );
          }
@@ -297,7 +302,7 @@ namespace tao {
 
             // Perform the correct query.
             auto& sql = session( _tbls[0] );
-            string be_name = sql.get_backend_name();
+            std::string be_name = sql.get_backend_name();
             soci::rowset<soci::row>* rs;
             {
                auto db_timer = this->db_timer().start();
@@ -315,9 +320,9 @@ namespace tao {
             for( soci::rowset<soci::row>::const_iterator it = rs->begin(); it != rs->end(); ++it )
             {
                typename batch<real_type>::field_value_type type;
-               string type_str = ((be_name == "sqlite3") ? it->get<std::string>( 2 ) : it->get<std::string>( 1 ));
+               std::string type_str = ((be_name == "sqlite3") ? it->get<std::string>( 2 ) : it->get<std::string>( 1 ));
                to_lower( type_str );
-               string field_str = ((be_name == "sqlite3") ? it->get<std::string>( 1 ) : it->get<std::string>( 0 ));
+               std::string field_str = ((be_name == "sqlite3") ? it->get<std::string>( 1 ) : it->get<std::string>( 0 ));
                LOGILN( field_str, ": ", type_str );
                if( type_str == "string" || type_str == "varchar" )
                   type = batch<real_type>::STRING;
@@ -413,7 +418,7 @@ namespace tao {
 
          soci_galaxy_iterator( soci_base<real_type>& be,
                                query_type& query,
-                               const string& query_str,
+                               const std::string& query_str,
                                const table_iterator& table_start,
                                const table_iterator& table_finish,
                                const lightcone* lc = 0,
@@ -602,7 +607,7 @@ namespace tao {
          }
 
          void
-         _prepare( const string& table )
+         _prepare( const std::string& table )
          {
             LOGILN( "Querying table: ", table );
             LOGDLN( "Preparing query for table: ", table, setindent( 2 ) );
@@ -611,7 +616,7 @@ namespace tao {
             if( _st )
                delete _st;
 
-            string qs = boost::algorithm::replace_all_copy( _query_str, "-table-", table );
+            std::string qs = boost::algorithm::replace_all_copy( _query_str, "-table-", table );
             LOGDLN( "Query string: ", qs );
             auto prep = _be->session( table ).prepare << qs;
             for( unsigned ii = 0; ii < _query->output_fields().size(); ++ii )
@@ -621,24 +626,24 @@ namespace tao {
                switch( type )
                {
                   case batch<real_type>::STRING:
-                     boost::any_cast<vector<string>*>( std::get<0>( field ) )->resize( _bat->max_size() );
-                     prep = prep, soci::into( *(std::vector<std::string>*)boost::any_cast<vector<string>*>( std::get<0>( field ) ) );
+                     boost::any_cast<std::vector<std::string>*>( std::get<0>( field ) )->resize( _bat->max_size() );
+                     prep = prep, soci::into( *(std::vector<std::string>*)boost::any_cast<std::vector<std::string>*>( std::get<0>( field ) ) );
                      break;
                   case batch<real_type>::DOUBLE:
-                     boost::any_cast<vector<double>*>( std::get<0>( field ) )->resize( _bat->max_size() );
-                     prep = prep, soci::into( *(std::vector<double>*)boost::any_cast<vector<double>*>( std::get<0>( field ) ) );
+                     boost::any_cast<std::vector<double>*>( std::get<0>( field ) )->resize( _bat->max_size() );
+                     prep = prep, soci::into( *(std::vector<double>*)boost::any_cast<std::vector<double>*>( std::get<0>( field ) ) );
                      break;
                   case batch<real_type>::INTEGER:
-                     boost::any_cast<vector<int>*>( std::get<0>( field ) )->resize( _bat->max_size() );
-                     prep = prep, soci::into( *(std::vector<int>*)boost::any_cast<vector<int>*>( std::get<0>( field ) ) );
+                     boost::any_cast<std::vector<int>*>( std::get<0>( field ) )->resize( _bat->max_size() );
+                     prep = prep, soci::into( *(std::vector<int>*)boost::any_cast<std::vector<int>*>( std::get<0>( field ) ) );
                      break;
                   case batch<real_type>::LONG_LONG:
-                     boost::any_cast<vector<long long>*>( std::get<0>( field ) )->resize( _bat->max_size() );
-                     prep = prep, soci::into( *(std::vector<long long>*)boost::any_cast<vector<long long>*>( std::get<0>( field ) ) );
+                     boost::any_cast<std::vector<long long>*>( std::get<0>( field ) )->resize( _bat->max_size() );
+                     prep = prep, soci::into( *(std::vector<long long>*)boost::any_cast<std::vector<long long>*>( std::get<0>( field ) ) );
                      break;
                   case batch<real_type>::UNSIGNED_LONG_LONG:
-                     boost::any_cast<vector<unsigned long long>*>( std::get<0>( field ) )->resize( _bat->max_size() );
-                     prep = prep, soci::into( *(std::vector<unsigned long long>*)boost::any_cast<vector<unsigned long long>*>( std::get<0>( field ) ) );
+                     boost::any_cast<std::vector<unsigned long long>*>( std::get<0>( field ) )->resize( _bat->max_size() );
+                     prep = prep, soci::into( *(std::vector<unsigned long long>*)boost::any_cast<std::vector<unsigned long long>*>( std::get<0>( field ) ) );
                      break;
                   default:
                      ASSERT( 0, "Unknown field type." );
@@ -712,14 +717,14 @@ namespace tao {
                  z_cos[ii] = _lc->distance_to_redshift( dist[ii] );
 
                  // Compute RA and DEC.
-                 numerics::cartesian_to_ecs( pos_x[ii], pos_y[ii], pos_z[ii], ra[ii], dec[ii] );
+                 hpc::num::cartesian_to_ecs( pos_x[ii], pos_y[ii], pos_z[ii], ra[ii], dec[ii] );
 
                  // If the lightcone is being generated with unique cones, we may need
                  // to offset the RA and DEC, then recalculate the positions.
                  if( _lc->viewing_angle() > 0.0 )
                  {
                     ra[ii] -= _lc->viewing_angle();
-                    numerics::ecs_to_cartesian<real_type>( ra[ii], dec[ii], pos_x[ii], pos_y[ii], pos_z[ii], dist[ii] );
+                    hpc::num::ecs_to_cartesian<real_type>( ra[ii], dec[ii], pos_x[ii], pos_y[ii], pos_z[ii], dist[ii] );
                  }
 
                  // Check angles.
@@ -733,7 +738,7 @@ namespace tao {
                  // Calculate observed redshift.
                  if( dist[ii] > 0.0 )
                  {
-                    array<real_type,3> rad_vec{ { pos_x[ii]/dist[ii], pos_y[ii]/dist[ii], pos_z[ii]/dist[ii] } };
+                    std::array<real_type,3> rad_vec{ { pos_x[ii]/dist[ii], pos_y[ii]/dist[ii], pos_z[ii]/dist[ii] } };
                     real_type dist_z = dist[ii] + ((rad_vec[0]*vel_x[ii] + rad_vec[1]*vel_y[ii] + rad_vec[2]*vel_z[ii])/h0)*(h0/100.0);
                     z_obs[ii] = _lc->distance_to_redshift( dist_z );
                  }
@@ -756,7 +761,7 @@ namespace tao {
          const lightcone* _lc;
 	 box<real_type> const* _box;
          query_type* _query;
-         string _query_str;
+         std::string _query_str;
          table_iterator _table_pos, _table_end;
 	 unsigned _tbl_idx;
          soci::statement* _st;

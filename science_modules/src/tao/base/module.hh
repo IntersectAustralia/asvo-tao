@@ -1,19 +1,19 @@
 #ifndef tao_base_module_hh
 #define tao_base_module_hh
 
+#include <list>
+#include <string>
+#include <boost/optional.hpp>
 #include <pugixml.hpp>
-#include <libhpc/options/xml_dict.hh>
+#include "xml_dict.hh"
 #include "batch.hh"
 #include "multidb.hh"
-#include "timed.hh"
 #include "types.hh"
 
 namespace tao {
-   using namespace hpc;
 
    template< class Backend >
    class module
-      : public timed
    {
    public:
 
@@ -21,10 +21,9 @@ namespace tao {
 
    public:
 
-      module( const string& name = string(),
+      module( const std::string& name = std::string(),
 	      pugi::xml_node base = pugi::xml_node() )
-         : timed(),
-           _name( name ),
+         : _name( name ),
            _init( false ),
            _base( base ),
            _dict( base ),
@@ -32,8 +31,6 @@ namespace tao {
            _it( 0 ),
            _complete( false )
       {
-         set_timer( &_my_timer );
-         set_db_timer( &_my_db_timer );
       }
 
       virtual
@@ -56,7 +53,7 @@ namespace tao {
          LOGILN( "Done.", setindent( -2 ) );
       }
 
-      list<module*>&
+      std::list<module*>&
       parents()
       {
          return _parents;
@@ -100,7 +97,7 @@ namespace tao {
 
       virtual
       void
-      initialise( const options::xml_dict& global_dict )
+      initialise( const xml_dict& global_dict )
       {
          // Don't initialise if we're already doing so.
          if( _init )
@@ -116,10 +113,6 @@ namespace tao {
 
          // Store global dictionary.
          _global_dict = &global_dict;
-
-         // Reset timers.
-         _my_timer.reset();
-         _my_db_timer.reset();
 
          // Reset the iteration.
          _it = 0;
@@ -152,8 +145,8 @@ namespace tao {
       }
 
       virtual
-      optional<boost::any>
-      find_attribute( const string& name )
+      boost::optional<boost::any>
+      find_attribute( const std::string& name )
       {
          // By default pass on to parents.
          for( auto par : _parents )
@@ -162,12 +155,12 @@ namespace tao {
             if( res )
                return res;
          }
-         return none;
+         return boost::none;
       }
 
       template< class T >
       T
-      attribute( const string& name )
+      attribute( const std::string& name )
       {
          auto res = find_attribute( name );
          EXCEPT( res, "Failed to locate attribute on module chain with name: ", name );
@@ -178,8 +171,8 @@ namespace tao {
       void
       log_metrics()
       {
-         LOGILN( _name, " runtime: ", time(), " (s)" );
-         LOGILN( _name, " db time: ", db_time(), " (s)" );
+         // LOGILN( _name, " runtime: ", time(), " (s)" );
+         // LOGILN( _name, " db time: ", db_time(), " (s)" );
       }
 
       bool
@@ -188,13 +181,13 @@ namespace tao {
          return _complete;
       }
 
-      const string&
+      const std::string&
       name() const
       {
          return _name;
       }
 
-      const options::xml_dict&
+      const xml_dict&
       local_dict() const
       {
          return _dict;
@@ -208,18 +201,15 @@ namespace tao {
 
    protected:
 
-      string _name;
+      std::string _name;
       unsigned long long _it;
       bool _init;
-      list<module*> _parents;
+      std::list<module*> _parents;
       bool _complete;
 
       pugi::xml_node _base;
-      const options::xml_dict _dict;
-      const options::xml_dict* _global_dict;
-
-      profile::timer _my_timer;
-      profile::timer _my_db_timer;
+      const xml_dict _dict;
+      const xml_dict* _global_dict;
    };
 
 }

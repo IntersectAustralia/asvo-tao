@@ -1,24 +1,22 @@
 #include <libhpc/numerics/integrate.hh>
-#include <libhpc/logging/logging.hh>
+#include <libhpc/logging.hh>
 #include "bandpass.hh"
 #include "sed.hh"
 
 namespace tao {
-   using namespace hpc;
-   namespace fs = boost::filesystem;
 
    bandpass::bandpass()
       : _sum( 0 )
    {
    }
 
-   bandpass::bandpass( const fs::path& filename )
+   bandpass::bandpass( const hpc::fs::path& filename )
    {
       load( filename );
    }
 
    void
-   bandpass::load( const fs::path& filename )
+   bandpass::load( const hpc::fs::path& filename )
    {
       load_bandpass( filename, _trans );
       _sum = tao::integrate( _trans );
@@ -31,7 +29,7 @@ namespace tao {
       return _sum;
    }
 
-   const numerics::spline<real_type>&
+  const hpc::num::spline<real_type>&
    bandpass::transmission() const
    {
       return _trans;

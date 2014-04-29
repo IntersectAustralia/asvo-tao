@@ -7,12 +7,11 @@
 #define M_C 2.99792458e18 // angstrom/s
 
 namespace tao {
-   using namespace hpc;
 
    template< class Spline >
    real_type
-   integrate( const numerics::spline_integrator<real_type>& integ,
-              const Spline& sp )
+   integrate( hpc::num::spline_integrator<real_type> const& integ,
+              Spline const& sp )
    {
       // Do it in reverse to sum smaller values first.
       return integ(
@@ -33,14 +32,14 @@ namespace tao {
    real_type
    integrate( const Spline& sp )
    {
-      numerics::spline_integrator<real_type> integ;
+      hpc::num::spline_integrator<real_type> integ;
       return -M_C*integrate( integ, sp );
    }
 
    template< class Spline0,
              class Spline1 >
    real_type
-   integrate( const numerics::spline_spline_integrator<real_type>& integ,
+   integrate( const hpc::num::spline_spline_integrator<real_type>& integ,
               const Spline0& sp0,
               const Spline1& sp1 )
    {
@@ -61,7 +60,7 @@ namespace tao {
    integrate( const Spline0& sp0,
               const Spline1& sp1 )
    {
-      numerics::spline_spline_integrator<real_type> integ;
+      hpc::num::spline_spline_integrator<real_type> integ;
       return integrate( integ, sp0, sp1 );
    }
 

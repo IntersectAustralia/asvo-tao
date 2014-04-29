@@ -1,8 +1,8 @@
 #ifndef tao_base_filter_hh
 #define tao_base_filter_hh
 
-#include <libhpc/containers/vector.hh>
-#include <libhpc/containers/view.hh>
+#include <string>
+#include <boost/optional.hpp>
 #include "types.hh"
 #include "batch.hh"
 
@@ -81,9 +81,9 @@ namespace tao {
       }
 
       void
-      set_field( const string& name,
-		 const string& min,
-		 const string& max );
+      set_field( const std::string& name,
+		 const std::string& min,
+		 const std::string& max );
 
       void
       set_type( batch<real_type>::field_value_type type );
@@ -144,11 +144,11 @@ namespace tao {
 	 }
       }
 
-      const string&
+      const std::string&
       field_name() const;
 
       template< class T >
-      optional<T>
+      boost::optional<T>
       minimum() const
       {
          if( _min )
@@ -176,14 +176,14 @@ namespace tao {
 		  val = boost::any_cast<unsigned long long>( *_min );
 		  break;
 	    }
-	    return optional<T>( val );
+	    return boost::optional<T>( val );
 	 }
          else
-            return none;
+	    return boost::none;
       }
 
       template< class T >
-      optional<T>
+      boost::optional<T>
       maximum() const
       {
          if( _max )
@@ -211,10 +211,10 @@ namespace tao {
 		  val = boost::any_cast<unsigned long long>( *_max );
 		  break;
 	    }
-	    return optional<T>( val );
+	    return boost::optional<T>( val );
 	 }
          else
-            return none;
+            return boost::none;
       }
 
       iterator
@@ -225,15 +225,12 @@ namespace tao {
 
    protected:
 
-      string _field_name;
-      string _min_str;
-      string _max_str;
-      // batch<real_type>::field_value_type _field_type;
-      optional<boost::any> _min;
-      optional<boost::any> _max;
+      std::string _field_name;
+      std::string _min_str;
+      std::string _max_str;
+      boost::optional<boost::any> _min;
+      boost::optional<boost::any> _max;
       batch<real_type>::field_value_type _type;
-      // string _min_str;
-      // string _max_str;
    };
 
    
@@ -271,7 +268,6 @@ namespace tao {
 
       const tao::filter* _filt;
       const tao::batch<real_type>* _bat;
-      // vector<real_type>::view _vals;
       unsigned _idx;
    };
 

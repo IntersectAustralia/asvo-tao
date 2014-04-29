@@ -1,5 +1,5 @@
 #include <libhpc/debug/assert.hh>
-#include <libhpc/logging/logging.hh>
+#include <libhpc/logging.hh>
 #include "simulation.hh"
 
 namespace tao {
@@ -19,7 +19,7 @@ namespace tao {
                            real_type hubble,
                            real_type omega_m,
                            real_type omega_l,
-                           hpc::vector<real_type> const& snap_zs )
+                           std::vector<real_type> const& snap_zs )
       : _box_size( box_size ),
         _zs( snap_zs )
    {
@@ -135,7 +135,7 @@ namespace tao {
       return _zs[snap];
    }
 
-   typename hpc::vector<real_type>::view const
+   std::vector<real_type> const&
    simulation::redshifts() const
    {
       return _zs;

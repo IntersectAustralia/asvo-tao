@@ -1,12 +1,13 @@
 #ifndef tao_base_query_hh
 #define tao_base_query_hh
 
-#include <libhpc/containers/string.hh>
-#include <libhpc/containers/set.hh>
-#include <libhpc/system/helpers.hh>
+#include <string>
+#include <set>
+#include <vector>
+#include <libhpc/system/string.hh>
+#include <libhpc/system/view.hh>
 
 namespace tao {
-   using namespace hpc;
 
    template< class T >
    class query
@@ -42,22 +43,23 @@ namespace tao {
          add_output_field( "globaltreeid" );
          add_output_field( "localgalaxyid" );
 	 add_output_field( "globalindex" );
-	 add_output_field( "sfr" );
+	 add_output_field( "sfrdisk" );
+	 add_output_field( "sfrbulge" );
+	 add_output_field( "sfrdiskz" );
+	 add_output_field( "sfrbulgez" );
 	 add_output_field( "coldgas" );
 	 add_output_field( "metalscoldgas" );
 	 add_output_field( "diskscaleradius" );
       }
 
       void
-      add_output_field( const string& field )
+      add_output_field( const std::string& field )
       {
-         string low = field;
-         to_lower( low );
          _out_fields.clear();
-         _of_set.insert( low );
+         _of_set.insert( hpc::to_lower_copy( field ) );
       }
 
-      const vector<string>::view
+      const hpc::view<std::vector<std::string>>
       output_fields()
       {
          if( _out_fields.empty() )
@@ -68,23 +70,10 @@ namespace tao {
          return _out_fields;
       }
 
-      // void
-      // add_calc_field( const string& field )
-      // {
-      //    _calc_fields.insert( field );
-      // }
-
-      // const set<string>&
-      // calc_fields() const
-      // {
-      //    return _calc_fields;
-      // }
-
    protected:
 
-      set<string> _of_set;
-      vector<string> _out_fields;
-      // set<string> _calc_fields;
+      std::set<std::string> _of_set;
+      std::vector<std::string> _out_fields;
    };
 
 }

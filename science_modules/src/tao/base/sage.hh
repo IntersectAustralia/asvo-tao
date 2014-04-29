@@ -2,11 +2,9 @@
 #define tao_base_sage_hh
 
 #include <ostream>
-#include <libhpc/libhpc.hh>
+#include <libhpc/h5.hh>
 
 namespace tao {
-   using namespace hpc;
-
    namespace sage {
 
       struct galaxy
@@ -64,8 +62,8 @@ namespace tao {
       };
 
       void
-      make_hdf5_types( h5::datatype& mem_type,
-		       h5::datatype& file_type );
+      make_hdf5_types( hpc::h5::datatype& mem_type,
+		       hpc::h5::datatype& file_type );
 
       std::ostream&
       operator<<( std::ostream& strm,

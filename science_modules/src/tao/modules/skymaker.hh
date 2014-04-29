@@ -1,20 +1,21 @@
 #ifndef tao_modules_skymaker_hh
 #define tao_modules_skymaker_hh
 
-#include <boost/filesystem.hpp>
+#include <string>
+#include <list>
+#include <boost/optional.hpp>
+#include <libhpc/system/filesystem.hh>
 #include "tao/base/base.hh"
 
 namespace tao {
    namespace modules {
-      using namespace hpc;
-      namespace fs = boost::filesystem;
 
       class skymaker_image
       {
       public:
 
-         static double const default_back_magnitude;
-         static double const default_exposure_time;
+         static const double default_back_magnitude;
+         static const double default_exposure_time;
 
       public:
 
@@ -22,10 +23,10 @@ namespace tao {
 
          skymaker_image( unsigned index,
                          int sub_cone,
-                         const string& format,
-                         const string& mag_field,
-                         optional<real_type> min_mag,
-                         optional<real_type> max_mag,
+                         const std::string& format,
+                         const std::string& mag_field,
+                         boost::optional<real_type> min_mag,
+                         boost::optional<real_type> max_mag,
                          real_type z_min,
                          real_type z_max,
                          real_type origin_ra,
@@ -40,10 +41,10 @@ namespace tao {
          void
          setup( unsigned index,
                 int sub_cone,
-                const string& format,
-                const string& mag_field,
-                optional<real_type> min_mag,
-                optional<real_type> max_mag,
+                const std::string& format,
+                const std::string& mag_field,
+                boost::optional<real_type> min_mag,
+                boost::optional<real_type> max_mag,
                 real_type z_min,
                 real_type z_max,
                 real_type origin_ra,
@@ -66,10 +67,10 @@ namespace tao {
                      unsigned idx );
 
          void
-         render( const fs::path& output_dir,
+         render( const hpc::fs::path& output_dir,
                  bool keep_files );
 
-         const string&
+         const std::string&
          mag_field() const;
 
 	 bool
@@ -78,16 +79,16 @@ namespace tao {
       protected:
 
          unsigned _idx;
-         string _list_filename;
-         string _conf_filename;
-         string _sky_filename;
-         string _sky_list_filename;
+         std::string _list_filename;
+         std::string _conf_filename;
+         std::string _sky_filename;
+         std::string _sky_list_filename;
          std::ofstream _list_file;
          unsigned _sub_cone;
-         string _format;
-         string _mag_field;
-         optional<real_type> _min_mag;
-         optional<real_type> _max_mag;
+         std::string _format;
+         std::string _mag_field;
+         boost::optional<real_type> _min_mag;
+         boost::optional<real_type> _max_mag;
          real_type _z_min, _z_max;
          real_type _origin_ra, _origin_dec;
          real_type _fov_ra, _fov_dec;
@@ -111,7 +112,7 @@ namespace tao {
 
          static
          module_type*
-         factory( const string& name,
+         factory( const std::string& name,
                   pugi::xml_node base )
          {
             return new skymaker( name, base );
@@ -119,7 +120,7 @@ namespace tao {
 
       public:
 
-         skymaker( const string& name = string(),
+         skymaker( const std::string& name = std::string(),
                    pugi::xml_node base = pugi::xml_node() )
             : module_type( name, base )
          {
@@ -135,7 +136,7 @@ namespace tao {
          ///
          virtual
          void
-         initialise( const options::xml_dict& global_dict )
+         initialise( const xml_dict& global_dict )
          {
             // Don't initialise if we're already doing so.
             if( this->_init )
@@ -222,13 +223,13 @@ namespace tao {
       protected:
 
          void
-         _read_options( const options::xml_dict& global_dict )
+         _read_options( const xml_dict& global_dict )
          {
             // Cache the dictionary.
-            const options::xml_dict& dict = this->_dict;
+            const xml_dict& dict = this->_dict;
 
             // Get the output path.
-            _output_dir = global_dict.get<string>( "outputdir" );
+            _output_dir = global_dict.get<std::string>( "outputdir" );
 
             // Get image list.
             auto imgs = dict.get_nodes( "images/item" );
@@ -236,10 +237,10 @@ namespace tao {
             for( const auto& img : imgs )
             {
                // Create a sub XML dict.
-               options::xml_dict sub( img.node() );
+               xml_dict sub( img.node() );
 
                // Sub-cone can be an integer or "ALL".
-               string sc = sub.get<string>( "sub_cone", "ALL" );
+               std::string sc = sub.get<std::string>( "sub_cone", "ALL" );
                bool exe = false;
                if( sc == "ALL" )
                   exe = true;
@@ -251,12 +252,12 @@ namespace tao {
                }
 
                // Minimum magnitude can be "none" or a real value.
-               optional<real_type> min_mag = none, max_mag = none;
+               boost::optional<real_type> min_mag = boost::none, max_mag = boost::none;
                {
-                  string val_str = sub.get<string>( "min_mag", "None" );
+                  std::string val_str = sub.get<std::string>( "min_mag", "None" );
                   if( val_str != "None" )
                      min_mag = boost::lexical_cast<real_type>( val_str );
-                  val_str = sub.get<string>( "max_mag", "None" );
+                  val_str = sub.get<std::string>( "max_mag", "None" );
                   if( val_str != "None" )
                      max_mag = boost::lexical_cast<real_type>( val_str );
                }
@@ -266,8 +267,8 @@ namespace tao {
                {
                   _imgs.emplace_back(
                      ii++,
-                     global_dict.get<int>( "subjobindex" ), sub.get<string>( "format", "FITS" ),
-                     sub.get<string>( "mag_field" ), min_mag, max_mag,
+                     global_dict.get<int>( "subjobindex" ), sub.get<std::string>( "format", "FITS" ),
+                     sub.get<std::string>( "mag_field" ), min_mag, max_mag,
                      sub.get<real_type>( "z_min", 0 ), sub.get<real_type>( "z_max", 127 ),
                      sub.get<real_type>( "origin_ra" ), sub.get<real_type>( "origin_dec" ),
                      sub.get<real_type>( "fov_ra" ), sub.get<real_type>( "fov_dec" ),
@@ -285,8 +286,8 @@ namespace tao {
 
       protected:
 
-         list<image_type> _imgs;
-         fs::path _output_dir;
+         std::list<image_type> _imgs;
+         hpc::fs::path _output_dir;
          bool _keep_files;
       };
 
