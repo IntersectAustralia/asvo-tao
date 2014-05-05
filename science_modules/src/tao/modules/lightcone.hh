@@ -1,11 +1,11 @@
 #ifndef tao_modules_lightcone_hh
 #define tao_modules_lightcone_hh
 
+#include <libhpc/system/math.hh>
 #include "tao/base/base.hh"
 
 namespace tao {
    namespace modules {
-      using namespace hpc;
 
       ///
       /// Lightcone science module.
@@ -64,7 +64,7 @@ namespace tao {
          ///
          virtual
          void
-         initialise( const options::xml_dict& global_dict )
+         initialise( xml_dict const& global_dict )
          {
             // Don't initialise if we're already doing so.
             if( this->_init )
@@ -318,10 +318,10 @@ namespace tao {
       protected:
 
          void
-         _read_options( const options::xml_dict& global_dict )
+         _read_options( xml_dict const& global_dict )
          {
             // Cache the local dictionary.
-            const options::xml_dict& dict = this->_dict;
+            const xml_dict& dict = this->_dict;
 
 	    // Load simulation information from database.
             _sim = _be->load_simulation();
@@ -406,7 +406,7 @@ namespace tao {
                unsigned ii = 0;
                for( ; ii < _sim->redshifts().size(); ++ii )
                {
-                  if( num::approx( _box_z, _sim->redshifts()[ii], 1e-3 ) )
+                  if( hpc::approx( _box_z, _sim->redshifts()[ii], 1e-3 ) )
                      break;
                }
                EXCEPT( ii < _sim->redshifts().size(),
@@ -444,7 +444,7 @@ namespace tao {
          }
 
          void
-         _calc_origin( const options::xml_dict& global_dict )
+         _calc_origin( const xml_dict& global_dict )
          {
             EXCEPT( _lc.min_ra() == 0.0, "Cannot compute multiple unique cones when "
                     "minimum RA is not 0." );

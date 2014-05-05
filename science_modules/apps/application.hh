@@ -3,8 +3,7 @@
 
 #include <libhpc/libhpc.hh>
 #include <libhpc/mpi/application.hh>
-#include <tao/base/factory.hh>
-#include <tao/base/multidb_backend.hh>
+#include <tao/base/base.hh>
 
 //#define PREPROCESSING
 namespace tao {
@@ -53,7 +52,7 @@ namespace tao {
       /// Read the XML file into a dictionary.
       ///
       void
-      _read_xml( options::xml_dict& xml ) const;
+      _read_xml( xml_dict& xml ) const;
 
       ///
       /// Prepare log file.

@@ -1,10 +1,9 @@
 #include <pugixml.hpp>
 #include "application.hh"
-#include "tao/base/base.hh"
 #include "tao/modules/modules.hh"
 
 #define STRINGIFY( x ) #x
-#define TOSTRING( x ) STRINGIFY( x )
+#define TOSTRING( x )  STRINGIFY( x )
 
 using namespace hpc;
 using namespace pugi;
@@ -79,7 +78,7 @@ namespace tao {
       _connect_parents();
 
       // Read the options dictionary.
-      options::xml_dict xml;
+      xml_dict xml;
       _read_xml( xml );
 
       // Prepare the logging.
@@ -315,7 +314,7 @@ namespace tao {
    /// Read the XML file into a dictionary.
    ///
    void
-   application::_read_xml( options::xml_dict& xml ) const
+   application::_read_xml( xml_dict& xml ) const
    {
       LOGDLN( "XML File:", _xml_file );
       LOGDLN( "Basic Config XML File:", _dbcfg_file );

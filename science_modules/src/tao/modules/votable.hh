@@ -49,7 +49,7 @@ namespace tao {
          ///
          virtual
          void
-         initialise( const options::xml_dict& global_dict )
+         initialise( const xml_dict& global_dict )
          {
             // Don't initialise if we're already doing so.
             if( this->_init )
@@ -60,7 +60,7 @@ namespace tao {
             LOGILN( "Initialising votable module.", setindent( 2 ) );
 
             // Cache dictionary.
-            const options::xml_dict& dict = this->_dict;
+            const xml_dict& dict = this->_dict;
 
             // Get our information.
             if(mpi::comm::world.size()==1)
@@ -315,7 +315,7 @@ namespace tao {
          }
 
          void
-         ReadFieldsInfo( const options::xml_dict& dict )
+         ReadFieldsInfo( const xml_dict& dict )
          {
             list<optional<hpc::string>> Templabels = dict.get_list_attributes<string>( "fields","label" );
             list<optional<hpc::string>> Tempunits = dict.get_list_attributes<string>( "fields","units" );

@@ -20,5 +20,6 @@
 #include "globals.hh"
 #include "subcones.hh"
 #include "dust.hh"
+#include "xml_dict.hh"
 
 #endif

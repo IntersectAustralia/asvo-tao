@@ -41,7 +41,7 @@ namespace tao {
       void
       add_parent( module& parent )
       {
-         LOGILN( "Adding ", parent.name(), " to ", _name, ".", setindent( 2 ) );
+         LOGBLOCKILN( "Adding ", parent.name(), " to ", _name, "." );
 
          // Check that we don't already have this guy.
          ASSERT( std::find( _parents.begin(), _parents.end(), &parent ) == _parents.end(),
@@ -49,8 +49,6 @@ namespace tao {
 
          // Add it to the list.
          _parents.push_back( &parent );
-
-         LOGILN( "Done.", setindent( -2 ) );
       }
 
       std::list<module*>&

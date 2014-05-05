@@ -25,7 +25,7 @@ struct xml_fixture
       fmt % ra_min % ra_max % dec_min % dec_max;
       fmt % filt_field % filt_min % filt_max;
       std::istringstream iss( fmt.str() );
-      return hpc::options::xml_dict( iss );
+      return tao::xml_dict( iss );
    }
 
    tao::xml_dict
@@ -40,7 +40,7 @@ struct xml_fixture
       fmt % seed % box_size % redshift;
       fmt % filt_field % filt_min % filt_max;
       std::istringstream iss( fmt.str() );
-      return hpc::options::xml_dict( iss );
+      return tao::xml_dict( iss );
    }
 
    db_fixture db;

@@ -10,6 +10,7 @@
 #include <libhpc/system/view.hh>
 #include <libhpc/system/assign.hh>
 #include <libhpc/system/deallocate.hh>
+#include <libhpc/system/reallocate.hh>
 #include "utils.hh"
 #include "simulation.hh"
 
@@ -164,7 +165,7 @@ namespace tao {
          LOGDLN( "Number of snapshots: ", num_snaps );
 
          // Need space to store the snapshots.
-         _ages.reallocate( num_snaps );
+         hpc::reallocate( _ages, num_snaps );
 
          // Read meta data.
          sql << "SELECT redshift FROM snap_redshift ORDER BY snapnum",

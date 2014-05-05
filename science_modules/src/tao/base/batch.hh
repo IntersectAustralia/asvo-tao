@@ -203,42 +203,42 @@ namespace tao {
                   if( std::get<1>( field ) == SCALAR )
                      _size = std::min<unsigned>( _size, boost::any_cast<std::vector<std::string>*>( val )->size() );
                   else
-                     _size = std::min<unsigned>( _size, boost::any_cast<hpc::matrix<std::string>*>( val )->size() );
+                     _size = std::min<unsigned>( _size, boost::any_cast<hpc::matrix<std::string>*>( val )->n_rows() );
                   done = true;
                   break;
                case DOUBLE:
                   if( std::get<1>( field ) == SCALAR )
                      _size = std::min<unsigned>( _size, boost::any_cast<std::vector<double>*>( val )->size() );
                   else
-                     _size = std::min<unsigned>( _size, boost::any_cast<hpc::matrix<double>*>( val )->size() );
+                     _size = std::min<unsigned>( _size, boost::any_cast<hpc::matrix<double>*>( val )->n_rows() );
                   done = true;
                   break;
                case INTEGER:
                   if( std::get<1>( field ) == SCALAR )
                      _size = std::min<unsigned>( _size, boost::any_cast<std::vector<int>*>( val )->size() );
                   else
-                     _size = std::min<unsigned>( _size, boost::any_cast<hpc::matrix<int>*>( val )->size() );
+                     _size = std::min<unsigned>( _size, boost::any_cast<hpc::matrix<int>*>( val )->n_rows() );
                   done = true;
                   break;
                case UNSIGNED_LONG:
                   if( std::get<1>( field ) == SCALAR )
                      _size = std::min<unsigned>( _size, boost::any_cast<std::vector<unsigned long>*>( val )->size() );
                   else
-                     _size = std::min<unsigned>( _size, boost::any_cast<hpc::matrix<unsigned long>*>( val )->size() );
+                     _size = std::min<unsigned>( _size, boost::any_cast<hpc::matrix<unsigned long>*>( val )->n_rows() );
                   done = true;
                   break;
                case LONG_LONG:
                   if( std::get<1>( field ) == SCALAR )
                      _size = std::min<unsigned>( _size, boost::any_cast<std::vector<long long>*>( val )->size() );
                   else
-                     _size = std::min<unsigned>( _size, boost::any_cast<hpc::matrix<long long>*>( val )->size() );
+                     _size = std::min<unsigned>( _size, boost::any_cast<hpc::matrix<long long>*>( val )->n_rows() );
                   done = true;
                   break;
                case UNSIGNED_LONG_LONG:
                   if( std::get<1>( field ) == SCALAR )
                      _size = std::min<unsigned>( _size, boost::any_cast<std::vector<unsigned long long>*>( val )->size() );
                   else
-                     _size = std::min<unsigned>( _size, boost::any_cast<hpc::matrix<unsigned long long>*>( val )->size() );
+                     _size = std::min<unsigned>( _size, boost::any_cast<hpc::matrix<unsigned long long>*>( val )->n_rows() );
                   done = true;
                   break;
                case FIELD_VALUE_TERMINAL:
@@ -353,7 +353,7 @@ namespace tao {
          boost::any& val = std::get<0>( field );
          if( val.empty() )
          {
-            val = new hpc::matrix<U>( size, _max_size );
+            val = new hpc::matrix<U>( _max_size, size );
             std::get<1>( field ) = (field_rank_type)VECTOR;
             std::get<2>( field ) = (field_value_type)boost::mpl::at<type_map,U>::type::value;
          }

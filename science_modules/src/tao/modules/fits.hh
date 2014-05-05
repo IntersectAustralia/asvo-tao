@@ -50,7 +50,7 @@ namespace tao {
          ///
          virtual
          void
-         initialise( const options::xml_dict& global_dict )
+         initialise( const xml_dict& global_dict )
          {
             // Don't initialise if we're already doing so.
             if( this->_init )
@@ -61,13 +61,13 @@ namespace tao {
             LOGILN( "Initialising fits module.", setindent( 2 ) );
 
             // Cache dictionary.
-            const options::xml_dict& dict = this->_dict;
+            const xml_dict& dict = this->_dict;
 
             // Get our information.
             if(mpi::comm::world.size()==1)
-                      _fn = global_dict.get<string>( "outputdir" ) + "/" + dict.get<hpc::string>( "filename" ) ;
+                      _fn = global_dict.get<string>( "outputdir" ) + "/" + dict.get<std::string>( "filename" ) ;
                   else
-                      _fn = global_dict.get<string>( "outputdir" ) + "/" + dict.get<hpc::string>( "filename" ) + "." + mpi::rank_string();
+                      _fn = global_dict.get<string>( "outputdir" ) + "/" + dict.get<std::string>( "filename" ) + "." + mpi::rank_string();
 
             _fields = dict.get_list<string>( "fields" );
             ReadFieldsInfo(dict );
@@ -340,11 +340,11 @@ namespace tao {
          }
 
          void
-         ReadFieldsInfo( const options::xml_dict& dict )
+         ReadFieldsInfo( const xml_dict& dict )
          {
-            list<optional<hpc::string>> Templabels = dict.get_list_attributes<hpc::string>( "fields","label" );
-            list<optional<hpc::string>> Tempunits = dict.get_list_attributes<hpc::string>( "fields","units" );
-            list<optional<hpc::string>> Tempdescription = dict.get_list_attributes<hpc::string>( "fields","description" );
+            list<optional<std::string>> Templabels = dict.get_list_attributes<std::string>( "fields","label" );
+            list<optional<std::string>> Tempunits = dict.get_list_attributes<std::string>( "fields","units" );
+            list<optional<std::string>> Tempdescription = dict.get_list_attributes<std::string>( "fields","description" );
 
             auto lblit = Templabels.cbegin();
             auto unitit = Tempunits.cbegin();

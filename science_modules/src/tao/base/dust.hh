@@ -8,6 +8,7 @@
 #include <libhpc/system/view.hh>
 #include <libhpc/system/assign.hh>
 #include <libhpc/system/filesystem.hh>
+#include <libhpc/numerics/spline.hh>
 #include "types.hh"
 
 namespace tao {
@@ -103,7 +104,7 @@ namespace tao {
 
          template< class Seq >
          slab( hpc::fs::path const& ext_fn,
-               typename hpc::type_traits<Seq>::reference waves )
+               Seq const& waves )
          {
             load_extinction( ext_fn, waves );
          }
@@ -111,7 +112,7 @@ namespace tao {
          template< class Seq >
          void
          load_extinction( hpc::fs::path const& ext_fn,
-                          typename hpc::type_traits<Seq>::reference waves )
+                          Seq const& waves )
          {
             std::ifstream strm( ext_fn.native() );
             EXCEPT( strm.good(), "Failed to open extinction file: ", ext_fn );

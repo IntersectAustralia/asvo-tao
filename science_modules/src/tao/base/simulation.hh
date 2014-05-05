@@ -3,6 +3,7 @@
 
 #include <stdarg.h>
 #include <vector>
+#include <libhpc/system/assign.hh>
 #include "utils.hh"
 #include "types.hh"
 
@@ -106,7 +107,7 @@ namespace tao {
       void
       set_snapshot_redshifts( Seq&& redshifts )
       {
-         assign( _zs, std::forward<Seq>( redshifts ) );
+         hpc::assign( _zs, std::forward<Seq>( redshifts ) );
       }
 
       unsigned

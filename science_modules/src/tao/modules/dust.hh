@@ -52,7 +52,7 @@ namespace tao {
          ///
          virtual
          void
-         initialise( const options::xml_dict& global_dict )
+         initialise( const xml_dict& global_dict )
          {
             // Don't initialise if we're already doing so.
             if( this->_init )
@@ -63,7 +63,7 @@ namespace tao {
             LOGILN( "Initialising dust module.", setindent( 2 ) );
 
             // Cache dictionary.
-            const options::xml_dict& dict = this->_dict;
+            const xml_dict& dict = this->_dict;
 
             // Extract things from the galaxy object.
             ASSERT( this->parents().size() == 1, "Must have at least one parent defined." );

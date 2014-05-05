@@ -42,14 +42,13 @@ namespace tao {
          ///
          virtual
          void
-         initialise( const options::xml_dict& global_dict )
+         initialise( const xml_dict& global_dict )
          {
             // Don't initialise if we're already doing so.
             if( this->_init )
                return;
             module_type::initialise( global_dict );
 
-            auto timer = this->timer_start();
             LOGILN( "Initialising filter module.", setindent( 2 ) );
 
             // Find the wavelengths and simulation from my parents.
@@ -98,8 +97,6 @@ namespace tao {
          void
          execute()
          {
-            auto timer = this->timer_start();
-
             // Grab the batch from the parent object.
             tao::batch<real_type>& bat = this->parents().front()->batch();
 
@@ -116,8 +113,7 @@ namespace tao {
                         const fibre<real_type>& disk_spectra,
                         const fibre<real_type>& bulge_spectra )
          {
-            auto timer = this->timer_start();
-	    LOGDLN( "Processing batch in filter module.", setindent( 2 ) );
+	    LOGBLOCKD( "Processing batch in filter module." );
 
 #ifndef NLOGDEBUG
 	    auto ids = bat.scalar<long long>( "globalindex" );
@@ -135,15 +131,18 @@ namespace tao {
 	       LOGDLN( "Calculated area: ", area );
 
                // Process total, disk and bulge.
-	       LOGDLN( "Processing total spectra.", setindent( 2 ) );
-               _process_spectra( total_spectra[ii], _redshift[ii], area, _total_lum[ii], _total_app_mags, _total_abs_mags, ii );
-	       LOGDLN( "Done.", setindent( -2 ) );
-	       LOGDLN( "Processing disk spectra.", setindent( 2 ) );
-               _process_spectra( disk_spectra[ii], _redshift[ii], area, _disk_lum[ii], _disk_app_mags, _bulge_abs_mags, ii );
-	       LOGDLN( "Done.", setindent( -2 ) );
-	       LOGDLN( "Processing bulge spectra.", setindent( 2 ) );
-               _process_spectra( bulge_spectra[ii], _redshift[ii], area, _bulge_lum[ii], _bulge_app_mags, _bulge_abs_mags, ii );
-	       LOGDLN( "Done.", setindent( -2 ) );
+               {
+                  LOGBLOCKD( "Processing total spectra:" );
+                  _process_spectra( total_spectra[ii], _redshift[ii], area, _total_lum[ii], _total_app_mags, _total_abs_mags, ii );
+               }
+               {
+                  LOGBLOCKD( "Processing disk spectra:" );
+                  _process_spectra( disk_spectra[ii], _redshift[ii], area, _disk_lum[ii], _disk_app_mags, _bulge_abs_mags, ii );
+               }
+               {
+                  LOGBLOCKD( "Processing bulge spectra:" );
+                  _process_spectra( bulge_spectra[ii], _redshift[ii], area, _bulge_lum[ii], _bulge_app_mags, _bulge_abs_mags, ii );
+               }
 
 #if 0
 	       // Dump some stuff.
@@ -243,10 +242,10 @@ namespace tao {
          }
 
          void
-         _read_options( const options::xml_dict& global_dict )
+         _read_options( const xml_dict& global_dict )
          {
             // Cache the dictionary.
-            const options::xml_dict& dict = this->_dict;
+            const xml_dict& dict = this->_dict;
 
             // Read the prefix of the bandpass filters.
             auto path = data_prefix()/"bandpass_filters";

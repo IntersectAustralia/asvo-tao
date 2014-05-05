@@ -57,14 +57,13 @@ namespace tao {
          ///
          virtual
          void
-         initialise( const options::xml_dict& global_dict )
+         initialise( const xml_dict& global_dict )
          {
             // Don't initialise if we're already doing so.
             if( this->_init )
                return;
             module_type::initialise( global_dict );
 
-            auto timer = this->timer_start();
             LOGILN( "Initialising SED module.", setindent( 2 ) );
 
             // Locate the backend and the simulation.
@@ -80,8 +79,8 @@ namespace tao {
             _sfh.set_bin_ages( &_ssp.bin_ages() );
 
             // Allocate history bin arrays.
-            _age_masses.reallocate( _ssp.age_masses_size() );
-            _bulge_age_masses.reallocate( _ssp.age_masses_size() );
+            hpc::reallocate( _age_masses, _ssp.age_masses_size() );
+            hpc::reallocate( _bulge_age_masses, _ssp.age_masses_size() );
             // _age_metals.reallocate( _ssp.bin_ages().size() );
 
             // Prepare the batch object.
@@ -100,7 +99,6 @@ namespace tao {
          void
          execute()
          {
-            auto timer = this->timer_start();
             ASSERT( this->parents().size() == 1 );
 	    LOGDLN( "Processing batch in SED module.", setindent( 2 ) );
 
@@ -121,30 +119,14 @@ namespace tao {
 	       LOGILN( "Calculating SED for galaxy with global index: ", gal_gids[ii] );
 
                // Be sure we're on the correct tree.
-               {
-                  auto db_timer = this->db_timer_start();
-                  _sfh.load_tree_data( sql, table_name, tree_gids[ii], gal_gids[ii] );
-               }
-	       // LOGILN( "Tree size: ", _sfh.size() );
+               _sfh.load_tree_data( sql, table_name, tree_gids[ii], gal_gids[ii] );
 
                // Rebin the star-formation history.
-	       // hpc::profile::timer local_rebin_timer;
-               {
-                  auto rebin_timer = _rebin_timer.start();
-		  // auto ANON = local_rebin_timer.start();
-                  // _sfh.rebin<real_type>( _age_masses, _bulge_age_masses, _age_metals );
-                  _sfh.rebin<real_type>( _age_masses, _bulge_age_masses, _ssp );
-               }
-	       // LOGILN( "Rebinning took: ", local_rebin_timer.total(), " s" );
+               _sfh.rebin<std::vector<real_type>,std::vector<real_type>>( _age_masses, _bulge_age_masses, _ssp );
 
                // Sum contributions from the SSP.
-               {
-                  auto sum_timer = _sum_timer.start();
-                  // _ssp.sum( _age_masses.begin(), _age_metals.begin(), total_spectra[ii].begin() );
-                  // _ssp.sum( _bulge_age_masses.begin(), _age_metals.begin(), bulge_spectra[ii].begin() );
-                  _ssp.sum( _age_masses.begin(), total_spectra[ii].begin() );
-                  _ssp.sum( _bulge_age_masses.begin(), bulge_spectra[ii].begin() );
-               }
+               _ssp.sum( _age_masses.begin(), total_spectra[ii].begin() );
+               _ssp.sum( _bulge_age_masses.begin(), bulge_spectra[ii].begin() );
 
                // Create disk spectra.
                for( unsigned jj = 0; jj < _ssp.wavelengths().size(); ++jj )
@@ -166,17 +148,17 @@ namespace tao {
          log_metrics()
          {
             module_type::log_metrics();
-            LOGILN( this->_name, " rebinning time: ", _rebin_timer.total(), " (s)" );
-            LOGILN( this->_name, " summation time: ", _sum_timer.total(), " (s)" );
+            // LOGILN( this->_name, " rebinning time: ", _rebin_timer.total(), " (s)" );
+            // LOGILN( this->_name, " summation time: ", _sum_timer.total(), " (s)" );
          }
 
       protected:
 
          void
-         _read_options( const options::xml_dict& global_dict )
+         _read_options( const xml_dict& global_dict )
          {
             // Cache dictionary.
-            const options::xml_dict& dict = this->_dict;
+            const xml_dict& dict = this->_dict;
 
             // Get the filenames for SSP information.
             auto path = data_prefix()/"stellar_populations";
@@ -198,9 +180,6 @@ namespace tao {
          sfh<real_type> _sfh;
          vector<real_type> _age_masses, _bulge_age_masses;
          // vector<real_type> _age_metals;
-
-         profile::timer _rebin_timer;
-         profile::timer _sum_timer;
       };
 
    }

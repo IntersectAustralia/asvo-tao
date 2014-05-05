@@ -1,19 +1,11 @@
-#include <libhpc/mpi/unit_test_main.hh>
+#include <libhpc/unit_test/main.hh>
 #include "tao/modules/sqldirect.hh"
 
-using namespace hpc;
-using namespace hpc::test;
-using namespace tao;
+typedef tao::modules::sqldirect<tao::backends::soci<tao::real_type>> sqldirect_type;
 
-typedef modules::sqldirect<backends::soci<real_type>> sqldirect_type;
-
-test_case<> ANON(
-   "/modules/sqldirect/default_constructor",
-   "",
-   []()
-   {
-      sqldirect_type lc;
-      // TEST( lc.num_boxes() == 0 );
-      // TEST( lc.output_fields().empty() == true );
-   }
-   );
+TEST_CASE( "/tao/modules/sqldirect/default_constructor" )
+{
+   sqldirect_type sd;
+   // TEST( lc.num_boxes() == 0 );
+   // TEST( lc.output_fields().empty() == true );
+}

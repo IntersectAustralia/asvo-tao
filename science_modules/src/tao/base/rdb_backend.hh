@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <string>
 #include <unordered_map>
+#include <map>
 #include <boost/format.hpp>
 #include <boost/optional.hpp>
 #include <libhpc/numerics/coords.hh>

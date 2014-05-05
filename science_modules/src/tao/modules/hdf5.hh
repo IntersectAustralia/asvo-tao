@@ -48,7 +48,7 @@ namespace tao {
          ///
          virtual
          void
-         initialise( const options::xml_dict& global_dict )
+         initialise( const xml_dict& global_dict )
          {
             // Don't initialise if we're already doing so.
             if( this->_init )
@@ -59,7 +59,7 @@ namespace tao {
             LOGILN( "Initialising HDF5 module.", setindent( 2 ) );
 
             // Cache dictionary.
-            const options::xml_dict& dict = this->_dict;
+            const xml_dict& dict = this->_dict;
 
             // Get our information.
             if(mpi::comm::world.size()==1)
@@ -86,60 +86,60 @@ namespace tao {
          }
 
          void
-		  ReadFieldsInfo( const options::xml_dict& dict )
-		  {
-			 list<optional<hpc::string>> Templabels = dict.get_list_attributes<string>( "fields","label" );
+         ReadFieldsInfo( const xml_dict& dict )
+         {
+            list<optional<hpc::string>> Templabels = dict.get_list_attributes<string>( "fields","label" );
 
 
 
-			 auto lblit = Templabels.cbegin();
+            auto lblit = Templabels.cbegin();
 
-			 auto fldsit = _fields.cbegin();
-			 while( lblit != Templabels.cend() )
-			 {
+            auto fldsit = _fields.cbegin();
+            while( lblit != Templabels.cend() )
+            {
 
-				if(!*lblit)
-				   _labels.push_back(*fldsit);
-				else
-				   _labels.push_back(**lblit);
+               if(!*lblit)
+                  _labels.push_back(*fldsit);
+               else
+                  _labels.push_back(**lblit);
 
-				// Increment all the iterators at the same time
-				lblit++;
-				fldsit++;
-			 }
-		  }
+               // Increment all the iterators at the same time
+               lblit++;
+               fldsit++;
+            }
+         }
 
 
          string
-		  _encode( string _toencode_string )
-		  {
-			 std::map<char, std::string> transformations;
-			 transformations['&']  = std::string("_");
-			 transformations[' ']  = std::string("_");
-			 transformations['\''] = std::string("_");
-			 transformations['"']  = std::string("_");
-			 transformations['>']  = std::string("_");
-			 transformations['<']  = std::string("_");
-			 transformations['/']  = std::string("_");
-			 transformations['(']  = std::string("");
-			 transformations[')']  = std::string("");
+         _encode( string _toencode_string )
+         {
+            std::map<char, std::string> transformations;
+            transformations['&']  = std::string("_");
+            transformations[' ']  = std::string("_");
+            transformations['\''] = std::string("_");
+            transformations['"']  = std::string("_");
+            transformations['>']  = std::string("_");
+            transformations['<']  = std::string("_");
+            transformations['/']  = std::string("_");
+            transformations['(']  = std::string("");
+            transformations[')']  = std::string("");
 
 
-			 std::string reserved_chars;
-			 for (auto ti = transformations.begin(); ti != transformations.end(); ti++)
-			 {
-				reserved_chars += ti->first;
-			 }
+            std::string reserved_chars;
+            for (auto ti = transformations.begin(); ti != transformations.end(); ti++)
+            {
+               reserved_chars += ti->first;
+            }
 
-			 size_t pos = 0;
-			 while (std::string::npos != (pos = _toencode_string.find_first_of(reserved_chars, pos)))
-			 {
-				_toencode_string.replace(pos, 1, transformations[_toencode_string[pos]]);
-				pos++;
-			 }
+            size_t pos = 0;
+            while (std::string::npos != (pos = _toencode_string.find_first_of(reserved_chars, pos)))
+            {
+               _toencode_string.replace(pos, 1, transformations[_toencode_string[pos]]);
+               pos++;
+            }
 
-			 return _toencode_string;
-		  }
+            return _toencode_string;
+         }
 
 
 

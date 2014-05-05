@@ -8,6 +8,7 @@
 #include <boost/optional.hpp>
 #include <boost/algorithm/string.hpp>
 #include <soci/soci.h>
+#include <libhpc/system/has.hh>
 #include <libhpc/numerics/coords.hh>
 #include "rdb_backend.hh"
 #include "tile_table_iterator.hh"
@@ -64,10 +65,7 @@ namespace tao {
          {
             real_type size;
             auto query = this->make_box_size_query_string();
-            {
-               auto db_timer = this->db_timer().start();
-               session() << query, soci::into( size );
-            }
+            session() << query, soci::into( size );
             return size;
          }
 
@@ -98,16 +96,10 @@ namespace tao {
          snapshot_redshifts( std::vector<real_type>& snap_zs )
          {
             unsigned size;
-            {
-               auto db_timer = this->db_timer().start();
-               session() << "SELECT COUNT(*) FROM snap_redshift", soci::into( size );
-            }
+            session() << "SELECT COUNT(*) FROM snap_redshift", soci::into( size );
             snap_zs.resize( size );
-            {
-               auto db_timer = this->db_timer().start();
-               session() << "SELECT redshift FROM snap_redshift ORDER BY " + this->_field_map.at( "snapnum" ),
-                  soci::into( (std::vector<real_type>&)snap_zs );
-            }
+            session() << "SELECT redshift FROM snap_redshift ORDER BY " + this->_field_map.at( "snapnum" ),
+               soci::into( (std::vector<real_type>&)snap_zs );
          }
 
          unsigned
@@ -239,12 +231,11 @@ namespace tao {
             // is set.
             if( this->_sim )
             {
-               LOGILN( "Making redshift range table.", setindent( 2 ) );
+               LOGBLOCKI( "Making redshift range table." );
 
                // Try and drop the redshift range table.
                try
                {
-                  auto db_timer = this->db_timer().start();
                   session() << this->make_drop_snap_rng_query_string();
                }
                catch( const ::soci::soci_error& ex )
@@ -252,27 +243,19 @@ namespace tao {
                }
 
                auto queries = this->make_snap_rng_query_string( *this->_sim );
-               {
-                  auto db_timer = this->db_timer().start();
-                  for( const auto& query : queries )
-                     session() << query;
-               }
-
-               LOGILN( "Done.", setindent( -2 ) );
+               for( const auto& query : queries )
+                  session() << query;
             }
          }
 
          void
          _load_table_info()
          {
-            LOGILN( "Loading tree table information.", setindent( 2 ) );
+            LOGBLOCKI( "Loading tree table information." );
 
             // Extract the size and allocate.
             int size;
-            {
-               auto db_timer = this->db_timer().start();
-               session() << "SELECT COUNT(*) FROM summary", soci::into( size );
-            }
+            session() << "SELECT COUNT(*) FROM summary", soci::into( size );
             _minx.resize( size );
             _miny.resize( size );
             _minz.resize( size );
@@ -284,35 +267,27 @@ namespace tao {
             LOGILN( "Number of tables: ", size );
 
             // Now extract table info.
-            {
-               auto db_timer = this->db_timer().start();
-               session() << "SELECT minx, miny, minz, maxx, maxy, maxz, galaxycount, tablename FROM summary",
-                  soci::into( _minx ), soci::into( _miny ), soci::into( _minz ),
-                  soci::into( _maxx ), soci::into( _maxy ), soci::into( _maxz ),
-                  soci::into( _tbl_sizes ), soci::into( _tbls );
-            }
-
-            LOGILN( "Done.", setindent( -2 ) );
+            session() << "SELECT minx, miny, minz, maxx, maxy, maxz, galaxycount, tablename FROM summary",
+               soci::into( _minx ), soci::into( _miny ), soci::into( _minz ),
+               soci::into( _maxx ), soci::into( _maxy ), soci::into( _maxz ),
+               soci::into( _tbl_sizes ), soci::into( _tbls );
          }
 
          void
          _load_field_types()
          {
-            LOGILN( "Extracting field types.", setindent( 2 ) );
+            LOGBLOCKI( "Extracting field types." );
 
             // Perform the correct query.
             auto& sql = session( _tbls[0] );
             std::string be_name = sql.get_backend_name();
             soci::rowset<soci::row>* rs;
+            if( be_name == "sqlite3" )
+               rs = new soci::rowset<soci::row>( sql.prepare << "PRAGMA TABLE_INFO(" + _tbls[0] + ")" );
+            else
             {
-               auto db_timer = this->db_timer().start();
-               if( be_name == "sqlite3" )
-                  rs = new soci::rowset<soci::row>( sql.prepare << "PRAGMA TABLE_INFO(" + _tbls[0] + ")" );
-               else
-               {
-                  rs = new soci::rowset<soci::row>( sql.prepare << "SELECT column_name, data_type FROM information_schema.columns"
-                                                    " WHERE table_name = '" + _tbls[0] + "'" );
-               }
+               rs = new soci::rowset<soci::row>( sql.prepare << "SELECT column_name, data_type FROM information_schema.columns"
+                                                 " WHERE table_name = '" + _tbls[0] + "'" );
             }
 
             // Biuld field types.
@@ -338,7 +313,7 @@ namespace tao {
                }
 
                // Insert into field types.
-               this->_field_types.insert( field_str, type );
+               this->_field_types.emplace( field_str, type );
 
                // Prepare default mapping.
                this->_field_map[field_str] = field_str;
@@ -361,18 +336,16 @@ namespace tao {
             // this->_field_map["local_galaxy_id"] = "localgalaxyid";
 
 	    // Add calculated types.
-	    this->_field_types.insert( "redshift_cosmological", batch<real_type>::DOUBLE );
-	    this->_field_types.insert( "redshift_observed", batch<real_type>::DOUBLE );
-	    this->_field_types.insert( "ra", batch<real_type>::DOUBLE );
-	    this->_field_types.insert( "dec", batch<real_type>::DOUBLE );
-	    this->_field_types.insert( "distance", batch<real_type>::DOUBLE );
+	    this->_field_types.emplace( "redshift_cosmological", batch<real_type>::DOUBLE );
+	    this->_field_types.emplace( "redshift_observed", batch<real_type>::DOUBLE );
+	    this->_field_types.emplace( "ra", batch<real_type>::DOUBLE );
+	    this->_field_types.emplace( "dec", batch<real_type>::DOUBLE );
+	    this->_field_types.emplace( "distance", batch<real_type>::DOUBLE );
 
             // Make sure we have all the essential fields available. Do this by
             // checking that all the mapped fields exist in the field types.
             for( const auto& item : this->_field_map )
-               EXCEPT( this->_field_types.has( item.second ), "Database is missing essential field: ", item.second );
-
-            LOGILN( "Done.", setindent( -2 ) );
+               EXCEPT( hpc::has( this->_field_types, item.second ), "Database is missing essential field: ", item.second );
          }
 
       protected:
@@ -610,7 +583,7 @@ namespace tao {
          _prepare( const std::string& table )
          {
             LOGILN( "Querying table: ", table );
-            LOGDLN( "Preparing query for table: ", table, setindent( 2 ) );
+            LOGBLOCKD( "Preparing query for table: ", table );
 
             // Delete any existing statement.
             if( _st )
@@ -652,30 +625,22 @@ namespace tao {
 
             // Prepare and execute the query without
             // fetching anything yet.
-            {
-               auto db_timer = _be->db_timer().start();
-               _st = new soci::statement( prep );
-               _st->execute();
-            }
+            _st = new soci::statement( prep );
+            _st->execute();
 
             // Store the current table on the object.
             _bat->set_attribute( "table", table );
-
-            LOGDLN( "Done.", setindent( -2 ) );
          }
 
          bool
          _fetch()
          {
-            LOGDLN( "Fetching rows.", setindent( 2 ) );
+            LOGBLOCKD( "Fetching rows." );
             ASSERT( _st, "No statement available on galaxy iterator." );
 
             // Actually perform the fetch.
             bool rows_exist;
-            {
-               auto db_timer = _be->db_timer().start();
-               rows_exist = _st->fetch();
-            }
+            rows_exist = _st->fetch();
             _bat->update_size();
             LOGDLN( "Fetched ", _bat->size(), " rows." );
 
@@ -684,7 +649,6 @@ namespace tao {
               _calc_fields();
 
             // Return whether we got any rows.
-            LOGDLN( "Done.", setindent( -2 ) );
             return rows_exist;
          }
 

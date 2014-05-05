@@ -1,9 +1,10 @@
 #ifndef tao_modules_sqldirect_sqldirect_hh
 #define tao_modules_sqldirect_sqldirect_hh
 
+#include <string>
+#include <vector>
 #include <boost/algorithm/string/replace.hpp>
 #include "tao/base/base.hh"
-
 
 namespace tao {
    namespace modules {
@@ -21,7 +22,7 @@ namespace tao {
 
 	 static
 	 module_type*
-	 factory( const string& name,
+	 factory( const std::string& name,
 		  pugi::xml_node base )
 	 {
 	    return new sqldirect( name, base );
@@ -29,7 +30,7 @@ namespace tao {
 
       public:
 
-	 sqldirect( const string& name = string(),
+	 sqldirect( const std::string& name = std::string(),
 		    pugi::xml_node base = pugi::xml_node() )
 	    : module_type( name, base ),
               _be( 0 )
@@ -51,14 +52,13 @@ namespace tao {
 
 	 virtual
 	 void
-	 initialise( const options::xml_dict& global_dict )
+	 initialise( const xml_dict& global_dict )
 	 {
             // Don't initialise if we're already doing so.
             if( this->_init )
                return;
             module_type::initialise( global_dict );
 
-            auto timer = this->timer_start();
             LOGILN( "Initialising sqldirect module.", setindent( 2 ) );
 
             // Create the backend.
@@ -92,7 +92,7 @@ namespace tao {
 
 	 virtual
 	 	  optional<boost::any>
-	 	  find_attribute( const string& name )
+	 	  find_attribute( const std::string& name )
 	 	  {
 
 	 		 if( name == "filter" )
@@ -117,14 +117,9 @@ namespace tao {
 	 {
 	    LOGDLN( "Start Begin: ", this->_it );
 
-	    string CurrentQuery=_sqlquery;
+	    std::string CurrentQuery=_sqlquery;
 
 	    _Tables_it=_be->table_begin();
-
-	    _prog.set_local_size( _be->num_tables() );
-	    LOG_PUSH_TAG( "progress" );
-	    LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
-	    LOG_POP_TAG( "progress" );
 
 	    replace_all( CurrentQuery, "-table-", _Tables_it->name() );
 	    LOGDLN( "Query: ", CurrentQuery );
@@ -161,20 +156,11 @@ namespace tao {
 	    if(_Tables_it!=_be->table_end())
 	    {
 
-	       string CurrentQuery=_sqlquery;
+	       std::string CurrentQuery=_sqlquery;
 
 	       replace_all( CurrentQuery, "-table-", _Tables_it->name() );
 	       LOGDLN( "++Query: ", CurrentQuery );
 	       FetchData(CurrentQuery);
-
-	       _prog.set_delta( 1 );
-	       _prog.update();
-
-	       LOG_PUSH_TAG( "progress" );
-	       LOGILN( runtime(), ",progress,", _prog.complete()*100.0, "%" );
-	       LOG_POP_TAG( "progress" );
-
-
 	    }
 
 
@@ -203,11 +189,11 @@ namespace tao {
 	 }
 
 	 void
-	 PrepareGalaxyObject(string query)
+	 PrepareGalaxyObject(std::string query)
 	 {
 
 	    std::size_t pos=query.find("where");
-	    string modquery=query;
+	    std::string modquery=query;
 	    if(pos!=std::string::npos)
 	       modquery=query.substr(0,pos);
 
@@ -232,7 +218,7 @@ namespace tao {
 			LOGDLN( "Field Name: ", props.get_name(), " String" );
 			_field_types[i] = tao::batch<real_type>::STRING;
 			_field_names[i]=props.get_name();
-			_bat.set_scalar<string>( props.get_name() );
+			_bat.set_scalar<std::string>( props.get_name() );
 			break;
 		     case soci::dt_double:
 			LOGDLN( "Field Name: ", props.get_name(), " Double" );
@@ -268,29 +254,29 @@ namespace tao {
 	 }
 
 	 void
-         FetchData(string query)
+         FetchData(std::string query)
 	 {
 	    for(int i = 0; i < _field_types.size(); i++)
 	    {
 	       switch( _field_types[i] )
 	       {
 	          case tao::batch<real_type>::STRING:
-                     boost::any_cast<vector<string>*>( std::get<0>( _bat.field( _field_names[i] ) ) )->clear();
+                     boost::any_cast<std::vector<std::string>*>( std::get<0>( _bat.field( _field_names[i] ) ) )->clear();
 	             // ((vector<string>*)_field_stor[i])->clear();
 	             break;
 	          case tao::batch<real_type>::DOUBLE:
-                     boost::any_cast<vector<double>*>( std::get<0>( _bat.field( _field_names[i] ) ) )->clear();
+                     boost::any_cast<std::vector<double>*>( std::get<0>( _bat.field( _field_names[i] ) ) )->clear();
 	             // ((vector<double>*)_field_stor[i])->clear();
 	             break;
 	          case tao::batch<real_type>::INTEGER:
-                     boost::any_cast<vector<int>*>( std::get<0>( _bat.field( _field_names[i] ) ) )->clear();
+                     boost::any_cast<std::vector<int>*>( std::get<0>( _bat.field( _field_names[i] ) ) )->clear();
 	             // ((vector<int>*)_field_stor[i])->clear();
 	             break;
 	          case tao::batch<real_type>::UNSIGNED_LONG_LONG:
-                     boost::any_cast<vector<unsigned long long>*>( std::get<0>( _bat.field( _field_names[i] ) ) )->clear();
+                     boost::any_cast<std::vector<unsigned long long>*>( std::get<0>( _bat.field( _field_names[i] ) ) )->clear();
 	             // ((vector<unsigned long long>*)_field_stor[i])->clear();
 	          case tao::batch<real_type>::LONG_LONG:
-                     boost::any_cast<vector<long long>*>( std::get<0>( _bat.field( _field_names[i] ) ) )->clear();
+                     boost::any_cast<std::vector<long long>*>( std::get<0>( _bat.field( _field_names[i] ) ) )->clear();
 	             // ((vector<long long>*)_field_stor[i])->clear();
 	             break;
 	          default:
@@ -338,27 +324,27 @@ namespace tao {
 		  switch(props.get_data_type())
 		  {
 		     case soci::dt_string:
-                        boost::any_cast<vector<string>*>( std::get<0>( _bat.field( _field_names[i] ) ) )->push_back( currentrow.get<string>(i) );
+                        boost::any_cast<std::vector<std::string>*>( std::get<0>( _bat.field( _field_names[i] ) ) )->push_back( currentrow.get<std::string>(i) );
 			// ((vector<string>*)_field_stor[i])->push_back(currentrow.get<string>(i));
 			//LOGD(currentrow.get<string>(i));
 			break;
 		     case soci::dt_double:
-                        boost::any_cast<vector<double>*>( std::get<0>( _bat.field( _field_names[i] ) ) )->push_back( currentrow.get<double>(i) );
+                        boost::any_cast<std::vector<double>*>( std::get<0>( _bat.field( _field_names[i] ) ) )->push_back( currentrow.get<double>(i) );
 			// ((vector<double>*)_field_stor[i])->push_back(currentrow.get<double>(i));
 			//LOGD(currentrow.get<double>(i));
 			break;
 		     case soci::dt_integer:
-                        boost::any_cast<vector<int>*>( std::get<0>( _bat.field( _field_names[i] ) ) )->push_back( currentrow.get<int>(i) );
+                        boost::any_cast<std::vector<int>*>( std::get<0>( _bat.field( _field_names[i] ) ) )->push_back( currentrow.get<int>(i) );
 			// ((vector<int>*)_field_stor[i])->push_back(currentrow.get<int>(i));
 			//LOGD(currentrow.get<int>(i));
 			break;
 		     case soci::dt_unsigned_long_long:
-                        boost::any_cast<vector<unsigned long long>*>( std::get<0>( _bat.field( _field_names[i] ) ) )->push_back( currentrow.get<unsigned long long>(i) );
+                        boost::any_cast<std::vector<unsigned long long>*>( std::get<0>( _bat.field( _field_names[i] ) ) )->push_back( currentrow.get<unsigned long long>(i) );
 			// ((vector<unsigned long long>*)_field_stor[i])->push_back(currentrow.get<unsigned long long>(i));
 			//LOGD(currentrow.get<unsigned long long>(i));
 			break;
 		     case soci::dt_long_long:
-                        boost::any_cast<vector<long long>*>( std::get<0>( _bat.field( _field_names[i] ) ) )->push_back( currentrow.get<long long>(i) );
+                        boost::any_cast<std::vector<long long>*>( std::get<0>( _bat.field( _field_names[i] ) ) )->push_back( currentrow.get<long long>(i) );
 			// ((vector<long long>*)_field_stor[i])->push_back(currentrow.get<long long>(i));
 			//LOGD(currentrow.get<long long>(i));
 			break;
@@ -416,9 +402,9 @@ namespace tao {
       protected:
 
 	 void
-	 _read_options( const options::xml_dict& global_dict )
+	 _read_options( const xml_dict& global_dict )
 	 {
-	    _sqlquery=this->_dict.template get<string>( "query" );
+	    _sqlquery=this->_dict.template get<std::string>( "query" );
 	    std::transform(_sqlquery.begin(), _sqlquery.end(), _sqlquery.begin(), ::tolower);
 	    _OutputLimit=this->_dict.template get<long>( "limit", -1 );
 	    LOGDLN( "sqlQuery: ", _sqlquery );
@@ -429,21 +415,20 @@ namespace tao {
 
          backend_type* _be;
 
-	 string _sqlquery;
-	 string _language;
+	 std::string _sqlquery;
+	 std::string _language;
 
 	 bool _pass_through;
 
 	 tao::batch<real_type> _bat;
-	 profile::progress _prog;
 
-	 string _database;
+	 std::string _database;
          typename backend_type::table_iterator _Tables_it;
 
 
 
-	 vector<typename tao::batch<real_type>::field_value_type> _field_types;
-	 vector<string> _field_names;
+	 std::vector<typename tao::batch<real_type>::field_value_type> _field_types;
+	 std::vector<std::string> _field_names;
 	 long _OutputLimit;
 	 long _RecordsCount;
 	 bool _IsRecordLimitReached;

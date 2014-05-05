@@ -48,7 +48,7 @@ namespace tao {
          ///
          virtual
          void
-         initialise( const options::xml_dict& global_dict )
+         initialise( const xml_dict& global_dict )
          {
             // Don't initialise if we're already doing so.
             if( this->_init )
@@ -59,12 +59,12 @@ namespace tao {
             LOGILN( "Initialising CSV module.", setindent( 2 ) );
 
             // Cache dictionary.
-            const options::xml_dict& dict = this->_dict;
+            const xml_dict& dict = this->_dict;
 
             if( mpi::comm::world.size() == 1 )
-	       _fn = global_dict.get<string>( "outputdir" ) + "/" + dict.get<hpc::string>( "filename" ) ;
+	       _fn = global_dict.get<string>( "outputdir" ) + "/" + dict.get<std::string>( "filename" ) ;
 	    else
-	       _fn = global_dict.get<string>( "outputdir" ) + "/" + dict.get<hpc::string>( "filename" ) + "." + mpi::rank_string();
+	       _fn = global_dict.get<string>( "outputdir" ) + "/" + dict.get<std::string>( "filename" ) + "." + mpi::rank_string();
             LOGILN( "File Name: ", _fn );
             _fields = dict.get_list<string>( "fields" );
             ReadFieldsInfo(dict );
@@ -82,9 +82,9 @@ namespace tao {
          }
 
          void
-	 ReadFieldsInfo( const options::xml_dict& dict )
+	 ReadFieldsInfo( const xml_dict& dict )
 	 {
-	    list<optional<hpc::string>> Templabels = dict.get_list_attributes<string>( "fields","label" );
+            std::list<boost::optional<std::string>> Templabels = dict.get_list_attributes<string>( "fields","label" );
 
 
 
@@ -271,8 +271,8 @@ namespace tao {
 
          std::ofstream _file;
          string _fn;
-         list<string> _fields;
-         list<hpc::string> _labels;
+         std::list<string> _fields;
+         std::list<std::string> _labels;
          unsigned long long _records;
          tao::filter const* _filt;
       };

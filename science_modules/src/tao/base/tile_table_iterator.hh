@@ -8,6 +8,7 @@
 #include <boost/iterator/iterator_facade.hpp>
 #include <boost/optional.hpp>
 #include <libhpc/system/view.hh>
+#include <libhpc/system/reallocate.hh>
 #include <libhpc/algorithm/combination.hpp>
 #include <libhpc/numerics/clip.hh>
 #include <libhpc/numerics/coords.hh>
@@ -103,7 +104,7 @@ namespace tao {
             return *this;
          }
 
-         const typename std::vector<std::array<real_type,3>>::view
+         const typename hpc::view<std::vector<std::array<real_type,3>>>
          polyhedra() const
          {
             return _ph;
@@ -272,7 +273,7 @@ namespace tao {
             {
                unsigned first_table = (mpi::comm::world.rank()*tables.size())/mpi::comm::world.size();
                unsigned last_table = ((mpi::comm::world.rank() + 1)*tables.size())/mpi::comm::world.size();
-               _tables.reallocate( last_table - first_table );
+               hpc::reallocate( _tables, last_table - first_table );
                {
                   auto it = tables.begin();
                   unsigned ii;
