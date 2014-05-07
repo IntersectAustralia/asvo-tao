@@ -33,8 +33,14 @@ def parse_dataset_name(sql):
         if len(dataset) > 1:
             label = dataset[1].encode('utf-8')
         try:
-            dataset = models.DataSet.objects.get(database=name, available=1)
-            return {'name': name, 'label': label, 'simulation': dataset.simulation.name, 'galaxy_model': dataset.galaxy_model.name}
+            NameParts=name.split('_')
+            qSimulationName= NameParts[0]
+            qGalaxyModel=NameParts[1]       	        	
+            #dataset = models.DataSet.objects.get(database=name, available=1)
+            simultationobj=models.Simulation.objects.get(name=qSimulationName)
+            galaxymodelobj=models.GalaxyModel.objects.get(name=qGalaxyModel)
+            dataset = models.DataSet.objects.get(simulation=simultationobj.id,galaxy_model=galaxymodelobj.id, available=1)            
+            return {'name':dataset.database , 'label': label, 'simulation': dataset.simulation.name, 'galaxy_model': dataset.galaxy_model.name}
         except models.DataSet.DoesNotExist:
             pass
 

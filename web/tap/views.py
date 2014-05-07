@@ -38,7 +38,8 @@ def tables(request):
     for dataset in available_datasets:
         properties = models.DataSetProperty.objects.filter(dataset_id = dataset.id, 
             is_output = True).order_by('group', 'order', 'label')
-        dataset_properties.append({"name": dataset.database, "properties": properties})
+        DatasetName= str(dataset.simulation) +'_'+ str(dataset.galaxy_model)  
+        dataset_properties.append({"name":DatasetName , "properties": properties})
         
     return render(request, 'tap/tables.xml', 
                   {'datasets': dataset_properties, 'data_types': data_types})
@@ -201,7 +202,7 @@ def make_parameters_xml(request):
     sql.set('id', '1')
     
     query_node = etree.SubElement(sql, 'query')
-    query_node.text = query.replace(dataset['name'], '-table-')
+    query_node.text = query.replace(dataset['label'], '-table-')
     
     simulation_node = etree.SubElement(sql, 'simulation')
     simulation_node.text = dataset['simulation']
