@@ -16,7 +16,7 @@ TAP_RETENTION_PERIOD = {'default': execution_duration, 'hard': execution_duratio
 
 TAP_EXECUTION_DURATION = {'default': execution_duration, 'hard': execution_duration}
 
-TAP_OUTPUT_LIMIT =  {'default': 1000, 'hard': 100000, 'units': 'rows'}
+TAP_OUTPUT_LIMIT =  {'default': 1000000, 'hard': 10000000, 'units': 'rows'}
 
 TAP_CAPABILITIES = ({'id':'tables', 'url':'tables', 'use':'full'},
                     {'id':'capabilities', 'url':'capabilities', 'use':'full'},
@@ -30,6 +30,7 @@ TAP_WORKFLOW = 'sql-job'
 TAP_OUTPUT_PREFIX = 'tao.output'
 TAP_OUTPUT_EXT = 'xml'
 TAP_SCHEMA_VERSION = '2.0'
+TAP_MAXIMUM_RECORDCOUNT=1000000
 
 TAP_PASS_THROUGH = True
 TAP_ALL_FIELDS = True 

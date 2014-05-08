@@ -213,6 +213,9 @@ def make_parameters_xml(request):
     if limit is not None:
         limit_node = etree.SubElement(sql, 'limit')
         limit_node.text = limit
+    else:# If the user didn't specify Maximum Records, We will retunr the first 1 Million Only!
+        limit_node = etree.SubElement(sql, 'limit')
+        limit_node.text = str(TAP_MAXIMUM_RECORDCOUNT)    	
     
     module_version_node = etree.SubElement(sql, 'module-version')
     module_version_node.text = str(TAP_MODULE_VERSION)
