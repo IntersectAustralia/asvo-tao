@@ -121,7 +121,7 @@ rule(tests, run_tests, sqlite3.have == True, target=dummies.always)
 
 # Build all the applications.
 rule(r'apps/(?:tao|application)\.cc$', tao_bin & tao_bin_inst, libraries=['tao'])
-rule(r'apps/zen/.+\.cc$', bin, glut.have == True, target='bin/zen', libraries=['tao', 'pthread'])
+# rule(r'apps/zen/.+\.cc$', bin, glut.have == True, target='bin/zen', libraries=['tao', 'pthread'])
 # rule(r'apps/rebin/.+\.cc$', bin, target='bin/rebin', libraries=['tao'])
 # rule(r'apps/magnitudes/.+\.cc$', bin, target='bin/magnitudes', libraries=['tao'])
 # rule(r'apps/ssp_restrict/.+\.cc$', bin, target='bin/ssp_restrict', libraries=['tao'])
