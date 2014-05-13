@@ -7,12 +7,12 @@ def prepare_query(query):
 
 def check_query(query):
     for word in FORBIDDEN:
-        regex = re.compile('%s' % word, re.I|re.M)
+        regex = re.compile(r'\b%s\b' % word, re.I|re.M)
         found = regex.findall(query)
         if found:
             return "%s is forbidden." % word
     for word in NOT_SUPPORTED:
-        regex = re.compile('%s' % word, re.I|re.M)
+        regex = re.compile(r'\b%s\b' % word, re.I|re.M)
         found = regex.findall(query)
         if found:
             return "%s is not supported." % word
@@ -33,11 +33,11 @@ def parse_dataset_name(sql):
         if len(dataset) > 1:
             label = dataset[1].encode('utf-8')
         try:
-            NameParts=name.split('_')
+            NameParts=name.split('__')
             qSimulationName= NameParts[0]
             qGalaxyModel=NameParts[1]       	        	
             #dataset = models.DataSet.objects.get(database=name, available=1)
-            simultationobj=models.Simulation.objects.get(name=qSimulationName)
+            simultationobj=models.Simulation.objects.get(name=qSimulationName.replace('_','-'))
             galaxymodelobj=models.GalaxyModel.objects.get(name=qGalaxyModel)
             dataset = models.DataSet.objects.get(simulation=simultationobj.id,galaxy_model=galaxymodelobj.id, available=1)            
             return {'name':dataset.database , 'label': label, 'simulation': dataset.simulation.name, 'galaxy_model': dataset.galaxy_model.name}
@@ -55,10 +55,14 @@ def parse_fields(sql, _dataset = None):
                 dataset_id = dataset.id
         except models.DataSet.DoesNotExist:
             pass
+
         
     fields = []
     regex = re.compile('^(SELECT\s+TOP\s+[0-9]+\s+|SELECT\s+)(.*?)\s+FROM', re.I|re.M)   
     found = regex.findall(sql)
+    
+    	    	
+    
     if found:
         split_fields = re.compile('\s?,\s?', re.I|re.M)
         field_labels = re.compile('\s*(.*?)(\s+AS\s+|\s+)(.*)', re.I|re.M)

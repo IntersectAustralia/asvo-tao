@@ -37,8 +37,8 @@ def tables(request):
     data_types = dict([(i,t) for i,t in models.DataSetProperty.DATA_TYPES])
     for dataset in available_datasets:
         properties = models.DataSetProperty.objects.filter(dataset_id = dataset.id, 
-            is_output = True).order_by('group', 'order', 'label')
-        DatasetName= str(dataset.simulation) +'_'+ str(dataset.galaxy_model)  
+            is_output = True,is_computed=False).order_by('group', 'order', 'label')
+        DatasetName= str(dataset.simulation.name).replace('-','_') +'__'+ str(dataset.galaxy_model.name)
         dataset_properties.append({"name":DatasetName , "properties": properties})
         
     return render(request, 'tap/tables.xml', 
@@ -173,8 +173,8 @@ def executionduration(request, id, job):
     
     return render(request, 'tap/http_response.html', {'message': EXECUTION_DURATION})
 
-def make_parameters_xml(request):
-    query = prepare_query(request.POST['QUERY'])
+def make_parameters_xml(request,query):
+    query = prepare_query(query)
     
     dataset    = parse_dataset_name(query)
     fields     = parse_fields(query, dataset)
@@ -213,7 +213,7 @@ def make_parameters_xml(request):
     if limit is not None:
         limit_node = etree.SubElement(sql, 'limit')
         limit_node.text = limit
-    else:# If the user didn't specify Maximum Records, We will retunr the first 1 Million Only!
+    else:# If the user didn't specify Maximum Records, We will return the first 1 Million Only!
         limit_node = etree.SubElement(sql, 'limit')
         limit_node.text = str(TAP_MAXIMUM_RECORDCOUNT)    	
     
@@ -282,14 +282,37 @@ def stream_job_results(request, job):
 def createTAPjob(request):
     job = models.Job(user=request.user)
     
+    
+    
+    
+    
     errors = check_query(request.POST['QUERY'])
     if errors != '':
         job.error_message = errors
         job.status = models.Job.ERROR
     else:
+        
         dataset = parse_dataset_name(request.POST['QUERY'])
         job.database = dataset['name']
-        job.parameters = make_parameters_xml(request)
+        #################################################################################################################
+		
+        Query=request.POST['QUERY']
+        
+        regex = re.compile('^(SELECT\s+TOP\s+[0-9]+\s+|SELECT\s+)(.*?)\s+FROM', re.I|re.M)   
+        found = regex.findall(Query)	    
+        # If the user used * - Replace it with all fields and continue parsing
+        if found and found[0][1]=='*':
+        	dataset = models.DataSet.objects.get(database=dataset['name'])
+        	properties = models.DataSetProperty.objects.filter(dataset_id = dataset.id,is_output = True,is_computed=False).order_by('group', 'order', 'label')
+        	FieldsListStr=""
+        	for prop in properties:
+        		FieldsListStr=FieldsListStr+prop.name+","
+        	FieldsListStr=FieldsListStr[:-1]
+        	Query=Query.replace(found[0][1],FieldsListStr)        
+        #################################################################################################################
+        
+        job.parameters = make_parameters_xml(request,Query)
+    
         
     job.save()
     
