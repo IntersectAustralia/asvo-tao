@@ -368,27 +368,27 @@ namespace tao {
 	    // {
 	    //    switch( _field_types[i] )
 	    //    {
-	    //       case batch<real_type>::STRING:
+	    //       case tao::batch<real_type>::STRING:
 	    //          LOGDLN( "Set Field Name: ", _field_names[i], " To Galaxy ... Size=",((vector<string>*)_field_stor[i])->size() );
 	    //          _bat.set_batch_size( ((vector<string>*)_field_stor[i])->size() );
 	    //          _bat.set_field<string>( _field_names[i], *(vector<string>*)_field_stor[i] );
 	    //          break;
-	    //       case batch<real_type>::DOUBLE:
+	    //       case tao::batch<real_type>::DOUBLE:
 	    //          LOGDLN( "Set Field Name: ", _field_names[i], " To Galaxy ... Size=",((vector<double>*)_field_stor[i])->size()  );
 	    //          _bat.set_batch_size( ((vector<double>*)_field_stor[i])->size() );
 	    //          _bat.set_field<double>( _field_names[i], *(vector<double>*)_field_stor[i] );
 	    //          break;
-	    //       case batch<real_type>::INTEGER:
+	    //       case tao::batch<real_type>::INTEGER:
 	    //          LOGDLN( "Set Field Name: ", _field_names[i], " To Galaxy ... Size=",((vector<int>*)_field_stor[i])->size()  );
 	    //          _bat.set_batch_size( ((vector<int>*)_field_stor[i])->size() );
 	    //          _bat.set_field<int>( _field_names[i], *(vector<int>*)_field_stor[i] );
 	    //          break;
-	    //       case batch<real_type>::UNSIGNED_LONG_LONG:
+	    //       case tao::batch<real_type>::UNSIGNED_LONG_LONG:
 	    //          LOGDLN( "Set Field Name: ", _field_names[i], " To Galaxy ... Size=",((vector<unsigned long long>*)_field_stor[i])->size()  );
 	    //          _bat.set_batch_size( ((vector<unsigned long long>*)_field_stor[i])->size() );
 	    //          _bat.set_field<unsigned long long>( _field_names[i], *(vector<unsigned long long>*)_field_stor[i] );
 	    //          break;
-	    //       case batch<real_type>::LONG_LONG:
+	    //       case tao::batch<real_type>::LONG_LONG:
 	    //          LOGDLN( "Set Field Name: ", _field_names[i], " To Galaxy ... Size=",((vector<long long>*)_field_stor[i])->size()  );
 	    //          _bat.set_batch_size( ((vector<long long>*)_field_stor[i])->size() );
 	    //          _bat.set_field<long long>( _field_names[i], *(vector<long long>*)_field_stor[i] );
