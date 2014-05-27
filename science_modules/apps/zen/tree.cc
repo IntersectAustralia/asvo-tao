@@ -5,18 +5,16 @@
 #include <tao/base/stellar_population.hh>
 #include "tree.hh"
 
-using namespace hpc;
-
 extern unsigned win_width, win_height;
 extern tao::simulation* cur_sim;
-extern tao::sfh<tao::real_type> cur_sfh;
+extern tao::sfh cur_sfh;
 extern unsigned cur_gal_id;
-extern gl::colour_map<float> col_map;
+extern hpc::gl::colour_map<float> col_map;
 extern float translate_x, translate_y;
-extern vector<tao::real_type> stellar_mass;
+extern std::vector<tao::real_type> stellar_mass;
 extern tao::age_line<tao::real_type> sfh_ages;
 extern tao::stellar_population ssp;
-extern vector<tao::real_type> age_masses;
+extern std::vector<tao::real_type> total_masses;
 float sfh_width, sfh_height;
 
 GLfloat norm;
@@ -62,12 +60,12 @@ namespace tao {
 
          std::stringstream ss;
          ss << std::fixed << std::setprecision( 1 ) << std::scientific << col_map.abscissa( ii );
-         gl::draw_text( ss.str(), x_pos + width + 10, pos - 5 );
+         hpc::gl::draw_text( ss.str(), x_pos + width + 10, pos - 5 );
       }
    }
 
    void
-   calc_colour_abscissa_recurse( const tao::sfh<real_type>& sfh,
+   calc_colour_abscissa_recurse( tao::sfh const& sfh,
                                  unsigned gal_id,
                                  real_type& min,
                                  real_type& max )
@@ -76,28 +74,26 @@ namespace tao {
         min = stellar_mass[gal_id];
       if( stellar_mass[gal_id] > max )
         max = stellar_mass[gal_id];
-      auto rng = sfh.parents( gal_id );
-      while( rng.first != rng.second )
+      auto pars = sfh.parents( gal_id );
+      for( size_t ii = 0; ii < pars.size(); ++ii )
       {
-         unsigned par_id = rng.first->second;
+         unsigned par_id = pars[ii];
          calc_colour_abscissa_recurse( sfh, par_id, min, max );
-         ++rng.first;
       }
    }
 
    std::array<unsigned,2>
-   calc_snapshot_rng( const tao::sfh<real_type>& sfh,
+   calc_snapshot_rng( tao::sfh const& sfh,
                       unsigned gal_id,
                       unsigned min_snap,
                       unsigned max_snap )
    {
-      auto rng = sfh.parents( gal_id );
-      while( rng.first != rng.second )
+      auto pars = sfh.parents( gal_id );
+      for( size_t ii = 0; ii < pars.size(); ++ii )
       {
-         std::array<unsigned,2> snap_rng = calc_snapshot_rng( sfh, rng.first->second, min_snap, max_snap );
+         std::array<unsigned,2> snap_rng = calc_snapshot_rng( sfh, pars[ii], min_snap, max_snap );
          min_snap = snap_rng[0];
          max_snap = snap_rng[1];
-         ++rng.first;
       }
       return std::array<unsigned,2>{
          std::max( min_snap, sfh.snapshot( gal_id ) ),
@@ -108,8 +104,8 @@ namespace tao {
    unsigned
    calc_num_lines( const age_line<real_type>& ages,
                    const age_line<real_type>& bin_ages,
-                   const array<real_type,2>& snap_rng,
-                   vector<unsigned>& line_map )
+                   const std::array<real_type,2>& snap_rng,
+                   std::vector<unsigned>& line_map )
    {
       float oldest_age = ages[snap_rng[0]];
       unsigned age_idx = 0;
@@ -138,7 +134,7 @@ namespace tao {
    draw_snapshot_range( const simulation& sim,
                         const age_line<real_type>& ages,
                         const age_line<real_type>& bin_ages,
-                        const array<real_type,2>& snap_rng )
+                        const std::array<real_type,2>& snap_rng )
    {
       glDisable( GL_DEPTH_TEST );
       glDisable( GL_LIGHTING );
@@ -167,7 +163,7 @@ namespace tao {
 
             std::stringstream ss;
             ss << std::fixed << std::setprecision( 1 ) << std::scientific << bin_ages[age_idx];
-            gl::draw_text( ss.str(), 505, pos - 5 );
+            hpc::gl::draw_text( ss.str(), 505, pos - 5 );
 
             ++age_idx;
          }
@@ -184,7 +180,7 @@ namespace tao {
 
          std::stringstream ss;
          ss << std::fixed << std::setprecision( 1 ) << std::scientific << sfh_age;
-         gl::draw_text( ss.str(), 505, pos - 5 );
+         hpc::gl::draw_text( ss.str(), 505, pos - 5 );
       }
    }
 
@@ -192,8 +188,8 @@ namespace tao {
    draw_bin_masses( const simulation& sim,
                     const age_line<real_type>& ages,
                     const age_line<real_type>& bin_ages,
-                    const vector<real_type>& masses,
-                    const array<real_type,2>& snap_rng )
+                    const std::vector<real_type>& masses,
+                    const std::array<real_type,2>& snap_rng )
    {
       glDisable( GL_DEPTH_TEST );
       glDisable( GL_LIGHTING );
@@ -223,7 +219,7 @@ namespace tao {
             std::stringstream ss;
             ss << std::fixed << std::setprecision( 1 ) << std::scientific << masses[age_idx]*1e-10;
             ss << " (" << age_idx << ")";
-            gl::draw_text( ss.str(), 665, pos - 5 );
+            hpc::gl::draw_text( ss.str(), 665, pos - 5 );
 
             ++age_idx;
          }
@@ -244,26 +240,26 @@ namespace tao {
       glColor3f( 0.7, 0.7, 0.7 );
       std::stringstream ss;
       ss << std::fixed << std::setprecision( 1 ) << std::scientific << sum*1e-10;
-      gl::draw_text( ss.str(), 665, 50 - 5 );
+      hpc::gl::draw_text( ss.str(), 665, 50 - 5 );
    }
 
    void
-   _draw_tree_recurse( const tao::sfh<real_type>& sfh,
+   _draw_tree_recurse( tao::sfh const& sfh,
                        unsigned gal_id,
-                       const vector<unsigned>::view widths,
+                       hpc::view<std::vector<unsigned>> const& widths,
                        GLfloat x_offs,
                        GLfloat y_offs,
-                       vector<unsigned>& line_map,
+                       std::vector<unsigned>& line_map,
                        unsigned line_pos = 0,
                        GLfloat gal_size = 10 )
    {
       unsigned my_snap = sfh.snapshot( gal_id );
       GLfloat new_x_offs = x_offs + -0.5*(GLfloat)(widths[gal_id]*gal_size + (widths[gal_id] - 1)*5);
 
-      auto rng = sfh.parents( gal_id );
-      while( rng.first != rng.second )
+      auto pars = sfh.parents( gal_id );
+      for( size_t ii = 0; ii < pars.size(); ++ii )
       {
-         unsigned par_id = rng.first->second;
+         unsigned par_id = pars[ii];
          unsigned par_snap = sfh.snapshot( par_id );
 
          new_x_offs += 0.5*(widths[par_id]*gal_size + (widths[par_id] - 1)*5);
@@ -286,7 +282,6 @@ namespace tao {
 
          _draw_tree_recurse( sfh, par_id, widths, new_x_offs, new_y_offs, line_map, new_line_pos, gal_size );
 
-         ++rng.first;
          new_x_offs += 0.5*(widths[par_id]*gal_size + (widths[par_id] - 1)*5) + 5;
       }
 
@@ -301,12 +296,12 @@ namespace tao {
 
    void
    draw_sfh_tree( const simulation& sim,
-                  const tao::sfh<real_type>& sfh,
+                  tao::sfh const& sfh,
                   unsigned gal_id )
    {
       // Put four additional clipping planes in place.
       glLoadIdentity();
-      array<GLdouble,4> plane{ { 1, 0, 0, -50 } };
+      std::array<GLdouble,4> plane{ { 1, 0, 0, -50 } };
       glClipPlane( GL_CLIP_PLANE0, plane.data() );
       plane[0] = -1; plane[3] = 710;
       glClipPlane( GL_CLIP_PLANE1, plane.data() );
@@ -318,15 +313,15 @@ namespace tao {
          glEnable( GL_CLIP_PLANE0 + ii );
 
       // Calculate sub-heights of each tree node.
-      vector<unsigned> widths( sfh.size() );
+      std::vector<unsigned> widths( sfh.size() );
       algorithms::tree_widths( sfh, gal_id, widths );
 
       // Get snapshot range.
       std::array<unsigned,2> snap_rng_idxs = calc_snapshot_rng( sfh, gal_id );
-      array<real_type,2> snap_rng{ { (real_type)snap_rng_idxs[0], (real_type)snap_rng_idxs[1] } };
+      std::array<real_type,2> snap_rng{ { (real_type)snap_rng_idxs[0], (real_type)snap_rng_idxs[1] } };
 
       // Calculate pane size.
-      vector<unsigned> line_map;
+      std::vector<unsigned> line_map;
       unsigned num_lines = calc_num_lines( sfh_ages, ssp.bin_ages(), snap_rng, line_map );
       sfh_width = std::max<float>( widths[gal_id]*10 + (widths[gal_id] - 1)*5, 500 );
       sfh_height = num_lines*20 + 10;
@@ -350,7 +345,7 @@ namespace tao {
       _draw_tree_recurse( sfh, gal_id, widths, 275, 50, line_map );
 
       // Plot bins.
-      draw_bin_masses( sim, sfh_ages, ssp.bin_ages(), age_masses, snap_rng );
+      draw_bin_masses( sim, sfh_ages, ssp.bin_ages(), total_masses, snap_rng );
 
       for( unsigned ii = 0; ii < 4; ++ii )
          glDisable( GL_CLIP_PLANE0 + ii );

@@ -71,14 +71,12 @@ namespace tao {
                return;
             module_type::initialise( global_dict );
 
-            auto timer = this->timer_start();
             LOGILN( "Initialising lightcone module.", setindent( 2 ) );
 
             // If we have been given an existing backend then use that.
             if( !_be )
             {
                _my_be = true;
-               auto db_timer = this->db_timer_start();
                _be = new backend_type;
                _be->connect( global_dict );
             }
@@ -170,8 +168,6 @@ namespace tao {
          execute()
          {
 #ifndef PREPROCESSING
-            auto timer = this->timer_start();
-
             // Is this my first time through? If so begin iterating.
             if( this->_it == 0 )
             {
@@ -182,7 +178,6 @@ namespace tao {
 		  _filt.set_type( _bat.get_field_type( _filt.field_name() ) );
 
                {
-                  auto db_timer = this->db_timer_start();
                   if( _geom == CONE )
                      _c_it = _lc.galaxy_begin( _qry, *_be, &_bat, &_filt );
                   else
@@ -196,10 +191,7 @@ namespace tao {
             {
                if( _geom == CONE )
                {
-                  {
-                     auto db_timer = this->db_timer_start();
-                     ++_c_it;
-                  }
+                  ++_c_it;
 
                   // Dump updates about how many tiles we've completed.
                   // TODO: This is only dumping for rank 0. We should
@@ -216,7 +208,6 @@ namespace tao {
                }
                else
                {
-                  auto db_timer = this->db_timer_start();
                   ++_b_it;
 		  if( _b_it.table_index() != _num_tbls )
 		  {

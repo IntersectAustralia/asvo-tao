@@ -1,11 +1,11 @@
 #ifndef tao_modules_filter_hh
 #define tao_modules_filter_hh
 
+#include <libhpc/system/assign.hh>
 #include "tao/base/base.hh"
 
 namespace tao {
    namespace modules {
-      using namespace hpc;
 
       template< class Backend >
       class filter
@@ -18,7 +18,7 @@ namespace tao {
 
          static
          module_type*
-         factory( const string& name,
+         factory( const std::string& name,
                   pugi::xml_node base )
          {
             return new filter( name, base );
@@ -26,7 +26,7 @@ namespace tao {
 
       public:
 
-         filter( const string& name = string(),
+         filter( const std::string& name = std::string(),
                  pugi::xml_node base = pugi::xml_node() )
             : module_type( name, base )
          {
@@ -52,7 +52,7 @@ namespace tao {
             LOGILN( "Initialising filter module.", setindent( 2 ) );
 
             // Find the wavelengths and simulation from my parents.
-            _waves = this->template attribute<const vector<real_type>::view>( "wavelengths" );
+            hpc::assign( _waves, this->template attribute<hpc::view<std::vector<real_type> const>>( "wavelengths" ) );
             _sim = this->template attribute<tao::simulation const*>( "simulation" );
 
             _read_options( global_dict );
@@ -82,7 +82,7 @@ namespace tao {
             _bulge_lum = bat.set_scalar<real_type>( "bulge_luminosity" );
 
             // Extract things from the batch object.
-            _redshift = bat.scalar<real_type>( "redshift_cosmological" );
+            hpc::assign( _redshift, bat.scalar<real_type>( "redshift_cosmological" ) );
             _total_spectra = &bat.vector<real_type>( "total_spectra" );
             _disk_spectra = &bat.vector<real_type>( "disk_spectra" );
             _bulge_spectra = &bat.vector<real_type>( "bulge_spectra" );
@@ -108,10 +108,10 @@ namespace tao {
          ///
          ///
          void
-         process_batch( const tao::batch<real_type>& bat,
-                        const fibre<real_type>& total_spectra,
-                        const fibre<real_type>& disk_spectra,
-                        const fibre<real_type>& bulge_spectra )
+         process_batch( tao::batch<real_type> const& bat,
+                        const hpc::matrix<real_type>& total_spectra,
+                        const hpc::matrix<real_type>& disk_spectra,
+                        const hpc::matrix<real_type>& bulge_spectra )
          {
 	    LOGBLOCKD( "Processing batch in filter module." );
 
@@ -157,24 +157,24 @@ namespace tao {
       protected:
 
          void
-         _process_spectra( const vector<real_type>::view& spectra,
+         _process_spectra( hpc::view<std::vector<real_type> const> const& spectra,
                            real_type redshift,
                            real_type area,
                            real_type& luminosity,
-                           vector<vector<real_type>::view>& apparent_mags,
-                           vector<vector<real_type>::view>& absolute_mags,
+                           std::vector<hpc::view<std::vector<real_type>>>& apparent_mags,
+                           std::vector<hpc::view<std::vector<real_type>>>& absolute_mags,
                            unsigned gal_idx )
          {
-            typedef hpc::view<std::vector<real_type>>::type view_type;
-            typedef numerics::spline<real_type,view_type,view_type> spline_type;
+            typedef hpc::view<std::vector<real_type>> view_type;
+            typedef hpc::num::spline<real_type,view_type,view_type> spline_type;
 
 	    LOGDLN( "Spectra: ", spectra );
 
             // Calculate absolute magnitudes.
             {
                // Prepare the normal SED.
-               tao::sed<spline_type> sed( (const view<std::vector<real_type>>::type&)_waves,
-                                          (const vector_view<std::vector<real_type>>&)spectra );
+               tao::sed<spline_type> sed( (const hpc::view<std::vector<real_type>>&)_waves,
+                                          (const hpc::view<std::vector<real_type>>&)spectra );
 
                // Calculate luminosity.
                luminosity = integrate( sed.spectrum() );
@@ -227,8 +227,8 @@ namespace tao {
             else
             {
                // Prepare the normal SED.
-               tao::sed<spline_type> sed( (const view<std::vector<real_type>>::type&)_waves,
-                                          (const vector_view<std::vector<real_type>>&)spectra );
+               tao::sed<spline_type> sed( (const hpc::view<std::vector<real_type>>&)_waves,
+                                          (const hpc::view<std::vector<real_type>>&)spectra );
 
                // Each bandpass filter.
                for( unsigned ii = 0; ii < _bpfs.size(); ++ii )
@@ -245,17 +245,17 @@ namespace tao {
          _read_options( const xml_dict& global_dict )
          {
             // Cache the dictionary.
-            const xml_dict& dict = this->_dict;
+            xml_dict const& dict = this->_dict;
 
             // Read the prefix of the bandpass filters.
             auto path = data_prefix()/"bandpass_filters";
 
             // Split out the filter filenames.
-            list<string> filenames = dict.get_list<string>( "bandpass-filters" );
+            std::list<std::string> filenames = dict.get_list<std::string>( "bandpass-filters" );
 
             // Allocate room for the filters.
-            _bpfs.reallocate( filenames.size() );
-            _bpf_names.reallocate( filenames.size() );
+            hpc::reallocate( _bpfs, filenames.size() );
+            hpc::reallocate( _bpf_names, filenames.size() );
 
             // Load each filter into memory.
             unsigned ii = 0;
@@ -271,7 +271,7 @@ namespace tao {
 
             // Get the Vega filename and perform processing.
             path = data_prefix()/"spectra";
-            _process_vega( path/dict.get<string>( "vega-spectrum", "A0V_KUR_BB.SED" ) );
+            _process_vega( path/dict.get<std::string>( "vega-spectrum", "A0V_KUR_BB.SED" ) );
 
             // Read k-correction.
             _k_cor = dict.get<bool>( "k-correction", true );
@@ -287,7 +287,7 @@ namespace tao {
             tao::sed<> vega( filename );
 
             // Integrate against each of the filters.
-            _vega_int.reallocate( _bpfs.size() );
+            hpc::reallocate( _vega_int, _bpfs.size() );
             for( unsigned ii = 0; ii < _bpfs.size(); ++ii )
                _vega_int[ii] = vega.integrate( _bpfs[ii] );
             LOGDLN( "Vega integrals: ", _vega_int );
@@ -296,7 +296,7 @@ namespace tao {
             // SED we read for Vega is already in erg.s^-1.cm^-2.Hz^-1,
             // it is already a flux density. So, we don't need any
             // distance information.
-            _vega_mag.reallocate( _bpfs.size() );
+            hpc::reallocate( _vega_mag, _bpfs.size() );
             for( unsigned ii = 0; ii < _bpfs.size(); ++ii )
                _vega_mag[ii] = -2.5*log10( _vega_int[ii]/_bpfs[ii].integral() ) - 48.6;
             LOGDLN( "Vega magnitudes: ", _vega_mag );
@@ -307,21 +307,21 @@ namespace tao {
       protected:
 
 	 tao::simulation const* _sim;
-         vector<real_type>::view _waves;
+         hpc::view<std::vector<real_type> const> _waves;
 
-         vector<real_type>::view _spec;
-         vector<bandpass> _bpfs;
-         vector<string> _bpf_names;
-         vector<real_type> _vega_int;
-         vector<real_type> _vega_mag;
+         hpc::view<std::vector<real_type> const> _spec;
+         std::vector<bandpass> _bpfs;
+         std::vector<std::string> _bpf_names;
+         std::vector<real_type> _vega_int;
+         std::vector<real_type> _vega_mag;
          bool _k_cor;
 
-         vector<vector<real_type>::view> _total_app_mags, _total_abs_mags;
-         vector<vector<real_type>::view> _disk_app_mags, _disk_abs_mags;
-         vector<vector<real_type>::view> _bulge_app_mags, _bulge_abs_mags;
-         vector<real_type>::view _total_lum, _disk_lum, _bulge_lum;
-         vector<real_type>::view _redshift;
-         fibre<real_type> *_total_spectra, *_disk_spectra, *_bulge_spectra;
+         std::vector<hpc::view<std::vector<real_type>>> _total_app_mags, _total_abs_mags;
+         std::vector<hpc::view<std::vector<real_type>>> _disk_app_mags, _disk_abs_mags;
+         std::vector<hpc::view<std::vector<real_type>>> _bulge_app_mags, _bulge_abs_mags;
+         hpc::view<std::vector<real_type>> _total_lum, _disk_lum, _bulge_lum;
+         hpc::view<std::vector<real_type> const> _redshift;
+         hpc::matrix<real_type> *_total_spectra, *_disk_spectra, *_bulge_spectra;
       };
 
    }

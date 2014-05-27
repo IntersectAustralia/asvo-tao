@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <libhpc/system/filesystem.hh>
+#include <libhpc/algorithm/dual.hh>
 #include "age_line.hh"
 #include "types.hh"
 
@@ -17,8 +18,31 @@ namespace tao {
 
       stellar_population();
 
+      template< class Seq >
       void
-      set_num_metals( unsigned num_metals );
+      set_metallicities( Seq const& mets )
+      {
+         if( mets.size() )
+         {
+            _metal_bins.resize( mets.size() - 1 );
+            hpc::algorithm::dual( mets.begin(), mets.end(), _metal_bins.begin() );
+         }
+         else
+            hpc::deallocate( _metal_bins );
+      }
+
+      template< class Seq >
+      void
+      set_ages( Seq&& ages )
+      {
+         _age_bins.set_ages( std::forward<Seq>( ages ) );
+      }
+
+      unsigned
+      n_metal_bins() const;
+
+      std::vector<real_type> const&
+      metal_bins() const;
 
       template< class Seq >
       void
@@ -51,9 +75,6 @@ namespace tao {
 
       void
       restrict();
-
-      unsigned
-      num_metal_bins() const;
 
       unsigned
       age_masses_size() const;

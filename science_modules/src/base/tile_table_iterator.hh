@@ -24,9 +24,9 @@ namespace tao {
       template< class Backend >
       class tile_table_iterator
          : public boost::iterator_facade< tile_table_iterator<Backend>,
-                                          const typename rdb<typename Backend::real_type>::table_type&,
+                                          typename rdb<typename Backend::real_type>::table_type const&,
                                           std::forward_iterator_tag,
-                                          const typename rdb<typename Backend::real_type>::table_type& >
+                                          typename rdb<typename Backend::real_type>::table_type const& >
       {
          friend class boost::iterator_core_access;
 
@@ -35,7 +35,7 @@ namespace tao {
          typedef Backend backend_type;
          typedef typename Backend::real_type real_type;
          typedef typename rdb<real_type>::table_type table_type;
-         typedef const table_type& value_type;
+         typedef table_type const& value_type;
          typedef value_type reference_type;
 
          tile_table_iterator()
@@ -45,8 +45,8 @@ namespace tao {
          {
          }
 
-         tile_table_iterator( const tao::tile<real_type>& tile,
-                              const backend_type& backend,
+         tile_table_iterator( tao::tile<real_type> const& tile,
+                              backend_type const& backend,
                               boost::optional<hpc::view<std::vector<std::pair<unsigned long long,int>>>> work = boost::optional<hpc::view<std::vector<std::pair<unsigned long long,int>>>>() )
             : _tile( &tile ),
               _be( &backend ),
@@ -83,7 +83,8 @@ namespace tao {
               _done( src._done )
          {
             // Iterator needs to be modified.
-            _it = _tables.begin() + (src._it - src._tables.begin());
+            if( !src._tables.empty() )
+               _it = _tables.begin() + (src._it - src._tables.begin());
          }
 
          tile_table_iterator&
@@ -99,7 +100,8 @@ namespace tao {
             _done = op._done;
 
             // Iterator needs to be modified.
-            _it = _tables.begin() + (op._it - op._tables.begin());
+            if( !op._tables.empty() )
+               _it = _tables.begin() + (op._it - op._tables.begin());
 
             return *this;
          }
@@ -172,46 +174,70 @@ namespace tao {
          {
             LOGBLOCKD( "Calculating overlapping tables." );
 
-            // Need the points of the polyhedron. Don't forget to
-            // offset by the tile we're using.
-            _calc_polyhedron();
-            for( auto& pnt : _ph )
+            // Use a set to cache tables to eliminate duplicates.
+            std::set<table_type> tables;
+
+            // Cache some information from the lightcone.
+            real_type ra_min = _tile->lightcone()->min_ra() + _tile->lightcone()->viewing_angle();
+            real_type ra_max = _tile->lightcone()->max_ra() + _tile->lightcone()->viewing_angle();
+            real_type dec_min = _tile->lightcone()->min_dec();
+            real_type dec_max = _tile->lightcone()->max_dec();
+            real_type dist_max = _tile->lightcone()->max_dist();
+
+            // There are some situations where trying to clip using
+            // an approximate cone bounding box won't work.
+            if( !(hpc::approx( dec_max, 90.0, 1e-3 ) ||
+                  hpc::approx( dec_min, 90.0, 1e-3 ) ||
+                  ra_max - ra_min >= 45.0 ||
+                  dec_max - dec_min >= 45.0) )
             {
-               for( unsigned ii = 0; ii < 3; ++ii )
+               // Need the points of the polyhedron. Don't forget to
+               // offset by the tile we're using.
+               _calc_polyhedron();
+               for( auto& pnt : _ph )
                {
-                  pnt[ii] -= _tile->min()[ii];
-                  pnt[ii] += _tile->origin()[ii];
+                  for( unsigned ii = 0; ii < 3; ++ii )
+                  {
+                     pnt[ii] -= _tile->min()[ii];
+                     pnt[ii] += _tile->origin()[ii];
+                  }
+               }
+
+               // Now convert to planes.
+               _calc_polygon_planes();
+
+               // Cache some information.
+               std::array<unsigned,3> const& axis = _tile->rotation();
+               std::array<real_type,3> const& offs = _tile->translation();
+
+               // Shift each table bounding box along each wall direction to
+               // see if there is any periodic overlap with the cone.
+               for( auto it = _be->table_begin(); it != _be->table_end(); ++it )
+               {
+                  // Apply each periodic side to the box and check.
+                  for( const auto& wall : _walls )
+                  {
+                     std::array<real_type,3> tmp_min, tmp_max;
+                     for( unsigned jj = 0; jj < 3; ++jj )
+                     {
+                        real_type box_size = _tile->max()[axis[jj]] - _tile->min()[axis[jj]];
+                        tmp_min[jj] = it->min()[axis[jj]] + wall[axis[jj]]*box_size + offs[axis[jj]];
+                        tmp_max[jj] = it->max()[axis[jj]] + wall[axis[jj]]*box_size + offs[axis[jj]];
+                     }
+                     if( _check_overlap( tmp_min, tmp_max ) )
+                     {
+                        tables.insert( *it );
+                        break;
+                     }
+                  }
                }
             }
 
-            // Now convert to planes.
-            _calc_polygon_planes();
-
-            // Cache some information.
-            const std::array<unsigned,3>& axis = _tile->rotation();
-            const std::array<real_type,3>& offs = _tile->translation();
-
-            // Shift each table bounding box along each wall direction to
-            // see if there is any periodic overlap with the cone.
-            std::set<table_type> tables;
-            for( auto it = _be->table_begin(); it != _be->table_end(); ++it )
+            // When we can't use the geometry, just process all tables.
+            else
             {
-               // Apply each periodic side to the box and check.
-               for( const auto& wall : _walls )
-               {
-                  std::array<real_type,3> tmp_min, tmp_max;
-                  for( unsigned jj = 0; jj < 3; ++jj )
-                  {
-                     real_type box_size = _tile->max()[axis[jj]] - _tile->min()[axis[jj]];
-                     tmp_min[jj] = it->min()[axis[jj]] + wall[axis[jj]]*box_size + offs[axis[jj]];
-                     tmp_max[jj] = it->max()[axis[jj]] + wall[axis[jj]]*box_size + offs[axis[jj]];
-                  }
-                  if( _check_overlap( tmp_min, tmp_max ) )
-                  {
-                     tables.insert( *it );
-                     break;
-                  }
-               }
+               for( auto it = _be->table_begin(); it != _be->table_end(); ++it )
+                  tables.insert( *it );
             }
 
             // If we've been given a work vector to use, then do so.
@@ -526,8 +552,8 @@ namespace tao {
 
       protected:
 
-         const backend_type* _be;
-         const tao::tile<real_type>* _tile;
+         backend_type const* _be;
+         tao::tile<real_type> const* _tile;
          std::vector<std::array<real_type,3>> _ph;
          std::list<std::array<real_type,4>> _planes;
          std::vector<std::array<real_type,3>> _walls;

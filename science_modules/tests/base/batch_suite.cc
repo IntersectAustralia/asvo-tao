@@ -6,7 +6,7 @@
 using tao::real_type;
 using tao::batch;
 
-TEST_CASE( "/base/batch/set_fields" )
+TEST_CASE( "/tao/base/batch/set_fields" )
 {
    batch<real_type> bat;
    bat.set_size( 1 );

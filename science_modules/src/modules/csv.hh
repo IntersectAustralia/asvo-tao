@@ -55,7 +55,6 @@ namespace tao {
                return;
             module_type::initialise( global_dict );
 
-            auto timer = this->timer_start();
             LOGILN( "Initialising CSV module.", setindent( 2 ) );
 
             // Cache dictionary.
@@ -117,7 +116,6 @@ namespace tao {
          void
          execute()
          {
-            auto timer = this->timer_start();
             ASSERT( this->parents().size() == 1 );
 
             // Grab the batch from the parent object.

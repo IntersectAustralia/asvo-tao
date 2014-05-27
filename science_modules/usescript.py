@@ -33,14 +33,15 @@ cc_opts = (
             prefix='build/debug',
             library_dirs=['build/debug/lib'],
             rpath_dirs=['build/debug/lib'],
-            header_dirs=['build/debug/include'],
+            header_dirs=['build/debug/include', 'build/debug/include/tao'],
             optimise=0,
-            symbols=True) +
+            symbols=True,
+            define=['_GLIBCXX_DEBUG']) +
     options(args.debug == False,
             prefix='build/optimised',
             library_dirs=['build/optimised/lib'],
             rpath_dirs=['build/optimised/lib'],
-            header_dirs=['build/optimised/include'],
+            header_dirs=['build/optimised/include', 'build/optimised/include/tao'],
             optimise=3,
             symbols=False,
             define=['NDEBUG', 'NLOGTRIVIAL', 'NLOGDEBUG']) +
@@ -60,9 +61,9 @@ cc_opts = (
 )
 cp_opts = (
     options(args.debug == True,
-            prefix='build/debug/include') +
+            prefix='build/debug/include/tao') +
     options(args.debug == False,
-            prefix='build/optimised/include')
+            prefix='build/optimised/include/tao')
 )
 tao_bin_opts = (
     options(args.preprocess == True, target='bin/tao_preprocess') +
@@ -86,7 +87,7 @@ gsl     = use('gsl')
 pq      = use('postgresql')
 cfitsio = use('cfitsio')
 cp_hdr  = files.feature('copy', cp_opts)
-hdr_inst = files.feature('copy', None, targets.contains('install'), prefix=args.prefix + '/include')
+hdr_inst = files.feature('copy', None, targets.contains('install'), prefix=args.prefix + '/include/tao')
 lib_inst = files.feature('copy', None, targets.contains('install'), prefix=args.prefix)
 run_tests = files.feature('run', None, targets.contains('check'))
 
@@ -121,9 +122,10 @@ rule(tests, run_tests, sqlite3.have == True, target=dummies.always)
 
 # Build all the applications.
 rule(r'apps/(?:tao|application)\.cc$', tao_bin & tao_bin_inst, libraries=['tao'])
+rule(r'apps/validate/.+\.cc$', bin, target='bin/validate', libraries=['tao'])
 rule(r'apps/zen/.+\.cc$', bin, glut.have == True, target='bin/zen', libraries=['tao', 'pthread'])
 # rule(r'apps/rebin/.+\.cc$', bin, target='bin/rebin', libraries=['tao'])
-rule(r'apps/magnitudes/.+\.cc$', bin, target='bin/magnitudes', libraries=['tao'])
+# rule(r'apps/magnitudes/.+\.cc$', bin, target='bin/magnitudes', libraries=['tao'])
 # rule(r'apps/ssp_restrict/.+\.cc$', bin, target='bin/ssp_restrict', libraries=['tao'])
 # rule(r'apps/analytic/.+\.cc$', bin, target='bin/analytic', libraries=['tao'])
 # rule(r'apps/dust_plots/.+\.cc$', bin, target='bin/dust_plots', libraries=['tao'])

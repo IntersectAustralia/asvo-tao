@@ -11,9 +11,7 @@
 #include "query.hh"
 
 namespace tao {
-   using namespace hpc;
 
-   template< class T >
    class lightcone_tile_iterator;
 
    ///
@@ -22,11 +20,11 @@ namespace tao {
    ///
    class lightcone
    {
-      friend lightcone_tile_iterator<real_type>;
+      // friend lightcone_tile_iterator;
 
    public:
 
-      typedef lightcone_tile_iterator<real_type> tile_iterator;
+      typedef lightcone_tile_iterator tile_iterator;
 
    public:
 
@@ -203,6 +201,10 @@ namespace tao {
 
       hpc::engine_type*
       rng_engine() const;
+
+      bool
+      overlap( std::array<real_type,3> const& min,
+               std::array<real_type,3> const& max ) const;
 
    protected:
 

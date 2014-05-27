@@ -7,13 +7,15 @@
 #include <libhpc/numerics/coords.hh>
 #include "skymaker.hh"
 
+#define AUTO_BACK_MAG std::numeric_limits<double>::infinity()
+
 namespace tao {
    namespace modules {
 
       namespace mpi = hpc::mpi;
 
-      const double skymaker_image::default_back_magnitude = 20.0;
-      const double skymaker_image::default_exposure_time = 300.0;
+      double const skymaker_image::default_back_magnitude = AUTO_BACK_MAG;
+      double const skymaker_image::default_exposure_time = 300.0;
 
       skymaker_image::skymaker_image()
          : _okay( true )
@@ -80,7 +82,16 @@ namespace tao {
          _fov_dec = to_radians( fov_dec );
          _width = width;
          _height = height;
-         _back_mag = back_mag;
+         if( back_mag == AUTO_BACK_MAG )
+         {
+            _auto_back_mag = true;
+            _back_mag = 0.0;
+         }
+         else
+         {
+            _auto_back_mag = false;
+            _back_mag = back_mag;
+         }
          _exp_time = exposure_time;
          _cnt = 0;
 
@@ -94,7 +105,13 @@ namespace tao {
 	 LOGILN( "Minimum redshift: ", _z_min );
 	 LOGILN( "Maximum redshift: ", _z_max );
          LOGILN( "Magnitude field: ", _mag_field );
-         LOGILN( "Background magnitude: ", _back_mag );
+#ifndef NLOG
+         LOGI( "Background magnitude: " );
+         if( _auto_back_mag )
+            LOGILN( "auto" );
+         else
+            LOGILN( _back_mag );
+#endif
          LOGILN( "Exposure time: ", _exp_time );
          LOGILN( "Done.", setindent( -2 ) );
       }
@@ -159,6 +176,10 @@ namespace tao {
                // _list_file << " " << generate_uniform<real_type>( 0, 360 );
                _list_file << "\n";
 
+               // Update the back magnitude if requested.
+               if( _auto_back_mag && mag < 50.0 )
+                  _back_mag = std::min( std::max( _back_mag, mag + 1.0 ), 49.0 );
+
                ++_cnt;
             }
          }
@@ -172,6 +193,10 @@ namespace tao {
 
          // Close the list file.
          _list_file.close();
+
+         // If automatic, combine average magnitudes.
+         if( _auto_back_mag )
+            _back_mag = mpi::comm::world.all_reduce( _back_mag, MPI_MAX );
 
          // Merge list files.
          std::string master_filename;
@@ -201,6 +226,9 @@ namespace tao {
             // Be sure the destination filename does not already exist.
 	    if( fs::exists( _sky_filename ) )
 	       fs::remove( _sky_filename );
+
+            // Prepare the configuration file.
+            setup_conf();
 
             // Run Skymaker.
             std::string cmd = std::string( "sky " ) + master_filename + std::string( " -c " ) + _conf_filename;
@@ -270,9 +298,11 @@ namespace tao {
             std::ofstream file( _conf_filename, std::ios::out );
             file << "IMAGE_NAME " << _sky_filename << "\n";
             file << "IMAGE_SIZE " << _width << "," << _height << "\n";
+            file << "SEEING_TYPE NONE\n";
+            file << "AUREOLE_RADIUS 0\n";
             file << "STARCOUNT_ZP 0.0\n";  // no auto stars
             file << "MAG_LIMITS 0.1 49.0\n"; // wider magnitude limits
-            file << "ARM_COUNT 4\n";
+            file << "ARM_COUNT 0\n";
             file << "ARM_THICKNESS 40\n";
             file << "ARM_POSANGLE 30\n";
             file << "BACK_MAG " << _back_mag << "\n";

@@ -1,14 +1,16 @@
 #include <vector>
-#include <soci/postgresql/soci-postgresql.h>
+#include <boost/lexical_cast.hpp>
+#include <soci/soci.h>
+#include <soci/sqlite3/soci-sqlite3.h>
 #include "tao/base/types.hh"
 #include "tao/base/globals.hh"
 #include "tao/base/soci_backend.hh"
 
 ///
-/// Prepare a tree table. There are two trees to test proper
-/// tree selection.
+/// Prepare a tree table. Setup a variety of trees
+/// to test fringe cases.
 ///
-/// Tree 1 setup:
+/// Tree 1 setup (normal):
 ///
 ///           z   snap
 ///           4    0
@@ -20,13 +22,28 @@
 ///   |
 ///   0       0.2  4
 ///
-/// Tree 2 setup:
+/// Tree 2 setup (normal/small):
 ///
 ///           z   snap
 ///           4    0
 ///   1 2     1    3
 ///   |/
 ///   0       0.2  4
+///
+/// Tree 3 setup (forest):
+///
+///             z   snap
+///             4    0
+///   1 2 4 5   1    3
+///   |/  |/
+///   0   3     0.2  4
+///
+/// Tree 4 setup (unit):
+///
+///       z   snap
+///       4    0
+///   0   0.2  4
+///
 ///
 struct db_fixture
 {
@@ -59,44 +76,77 @@ struct db_fixture
    void
    setup_tree_table( ::soci::session& sql )
    {
-      this->sql << "CREATE TABLE tree_1 (globalindex BIGINT, localgalaxyid INTEGER, globaltreeid BIGINT, "
-         "descendant INTEGER, snapnum INTEGER, sfr DOUBLE PRECISION, sfrbulge DOUBLE PRECISION, "
-         "coldgas DOUBLE PRECISION, metalscoldgas DOUBLE PRECISION, "
-         "posx DOUBLE PRECISION, posy DOUBLE PRECISION, posz DOUBLE PRECISION, "
-         "velx DOUBLE PRECISION, vely DOUBLE PRECISION, velz DOUBLE PRECISION, "
-         "depthfirst_traversalorder INTEGER, subtree_count INTEGER)";
-      this->sql << "CREATE TABLE tree_2 (globalindex BIGINT, localgalaxyid INTEGER, globaltreeid BIGINT, "
-         "descendant INTEGER, snapnum INTEGER, sfr DOUBLE PRECISION, sfrbulge DOUBLE PRECISION, "
-         "coldgas DOUBLE PRECISION, metalscoldgas DOUBLE PRECISION, "
-         "posx DOUBLE PRECISION, posy DOUBLE PRECISION, posz DOUBLE PRECISION, "
-         "velx DOUBLE PRECISION, vely DOUBLE PRECISION, velz DOUBLE PRECISION, "
-         "depthfirst_traversalorder INTEGER, subtree_count INTEGER)";
+      for( int ii = 1; ii <= 5; ++ii )
+      {
+         std::string sql_str = std::string( "CREATE TABLE tree_" ) + boost::lexical_cast<std::string>( ii ) +
+            " (globalindex BIGINT, localgalaxyid INTEGER, globaltreeid BIGINT, "
+            "descendant INTEGER, snapnum INTEGER, sfrdisk DOUBLE PRECISION, sfrbulge DOUBLE PRECISION, "
+            "coldgas DOUBLE PRECISION, metalscoldgas DOUBLE PRECISION, "
+            "posx DOUBLE PRECISION, posy DOUBLE PRECISION, posz DOUBLE PRECISION, "
+            "velx DOUBLE PRECISION, vely DOUBLE PRECISION, velz DOUBLE PRECISION, "
+            "depthfirst_traversalorder INTEGER, subtree_count INTEGER, "
+            "sfrdiskz DOUBLE PRECISION, sfrbulgez DOUBLE PRECISION, "
+            "stellarmass DOUBLE PRECISION, mergetype INTEGER)";
+         this->sql << sql_str;
+      }
 
-      //                                gid  l  tr  d sn  sfr sfrb cg mcg
+      //                                gid  l  tr  d sn  sfr sfrb cg mcg  x  y  z vx vy vz df sc   dz   bz
 
       // Tree 1.
-      sql << "INSERT INTO tree_1 VALUES(100, 0, 1, -1, 4, 0.1, 0.8, 1,  8, 1, 1, 1, 0, 0, 0, 0, 7)";
-      sql << "INSERT INTO tree_1 VALUES(101, 1, 1,  0, 3, 0.2, 0.9, 2,  9, 1, 0, 0, 0, 0, 0, 1, 6)";
-      sql << "INSERT INTO tree_1 VALUES(102, 2, 1,  1, 2, 0.3, 1.0, 3, 10, 2, 0, 0, 0, 0, 0, 2, 2)";
-      sql << "INSERT INTO tree_1 VALUES(103, 3, 1,  1, 2, 0.4, 1.1, 4, 11, 0, 1, 0, 0, 0, 0, 4, 3)";
-      sql << "INSERT INTO tree_1 VALUES(104, 4, 1,  2, 1, 0.5, 1.2, 5, 12, 0, 2, 0, 0, 0, 0, 3, 1)";
-      sql << "INSERT INTO tree_1 VALUES(105, 5, 1,  3, 1, 0.6, 1.3, 6, 13, 0, 3, 0, 0, 0, 0, 5, 1)";
-      sql << "INSERT INTO tree_1 VALUES(106, 6, 1,  3, 1, 0.7, 1.4, 7, 14, 0, 0, 1, 0, 0, 0, 6, 1)";
+      sql << "INSERT INTO tree_1 VALUES(100, 0, 1, -1, 4, 0.1, 0.8, 1,  8, 1, 1, 1, 0, 0, 0, 0, 7, 1.1, 1.8, 4.1, 0)";
+      sql << "INSERT INTO tree_1 VALUES(101, 1, 1,  0, 3, 0.2, 0.9, 2,  9, 1, 0, 0, 0, 0, 0, 1, 6, 1.2, 1.9, 4.2, 0)";
+      sql << "INSERT INTO tree_1 VALUES(102, 2, 1,  1, 2, 0.3, 1.0, 3, 10, 2, 0, 0, 0, 0, 0, 2, 2, 1.3, 2.0, 4.3, 0)";
+      sql << "INSERT INTO tree_1 VALUES(103, 3, 1,  1, 2, 0.4, 1.1, 4, 11, 0, 1, 0, 0, 0, 0, 4, 3, 1.4, 2.1, 4.4, 0)";
+      sql << "INSERT INTO tree_1 VALUES(104, 4, 1,  2, 1, 0.5, 1.2, 5, 12, 0, 2, 0, 0, 0, 0, 3, 1, 1.5, 2.2, 4.5, 0)";
+      sql << "INSERT INTO tree_1 VALUES(105, 5, 1,  3, 1, 0.6, 1.3, 6, 13, 0, 3, 0, 0, 0, 0, 5, 1, 1.6, 2.3, 4.6, 0)";
+      sql << "INSERT INTO tree_1 VALUES(106, 6, 1,  3, 1, 0.7, 1.4, 7, 14, 0, 0, 1, 0, 0, 0, 6, 1, 1.7, 2.4, 4.7, 0)";
 
       // Tree 2.
-      sql << "INSERT INTO tree_1 VALUES(200, 0, 2, -1, 4, 1, 1, 1, 1, 0, 0, 2, 0, 0, 0, 0, 3)";
-      sql << "INSERT INTO tree_1 VALUES(201, 1, 2,  0, 3, 1, 1, 1, 1, 0, 0, 3, 0, 0, 0, 1, 1)";
-      sql << "INSERT INTO tree_1 VALUES(202, 2, 2,  0, 3, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 2, 1)";
+      sql << "INSERT INTO tree_2 VALUES(200, 0, 2, -1, 4, 1, 1, 1, 1, 0, 0, 2, 0, 0, 0, 0, 3, 0, 0, 0, 0)";
+      sql << "INSERT INTO tree_2 VALUES(201, 1, 2,  0, 3, 1, 1, 1, 1, 0, 0, 3, 0, 0, 0, 1, 1, 0, 0, 0, 0)";
+      sql << "INSERT INTO tree_2 VALUES(202, 2, 2,  0, 3, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 2, 1, 0, 0, 0, 0)";
+
+      // Tree 5 setup:
+      //
+      //            z   snap
+      //            21   0
+      //   2  3 4   10   1
+      //   |  | |
+      //   1  1 2   3    2
+      //   |  |/
+      //   0  0     0    3
+      //                                gid  l  tr  d sn sfr sfrb cg mcg  x  y  z vx vy vz df sc  dz bz
+      sql << "INSERT INTO tree_5 VALUES(500, 0, 5, -1, 3, 1, 10, 1, 1, 0, 0, 2, 0, 0, 0, 0, 3, 0, 0, 0, 0)";
+      sql << "INSERT INTO tree_5 VALUES(501, 1, 5,  0, 2, 2, 20, 1, 1, 0, 0, 3, 0, 0, 0, 1, 2, 0, 0, 0, 0)";
+      sql << "INSERT INTO tree_5 VALUES(502, 2, 5,  1, 1, 3, 30, 1, 1, 1, 1, 1, 0, 0, 0, 2, 1, 0, 0, 0, 0)";
+      // ICS
+      sql << "INSERT INTO tree_5 VALUES(503, 0, 6, -1, 3, 1, 10, 1, 1, 0, 0, 2, 0, 0, 0, 0, 5, 0, 0, 0, 0)";
+      sql << "INSERT INTO tree_5 VALUES(504, 1, 6,  0, 2, 2, 20, 1, 1, 0, 0, 3, 0, 0, 0, 1, 2, 0, 0, 0, 0)";
+      sql << "INSERT INTO tree_5 VALUES(505, 2, 6,  0, 2, 2, 20, 1, 1, 0, 0, 3, 0, 0, 0, 3, 2, 0, 0, 0, 4)";
+      sql << "INSERT INTO tree_5 VALUES(506, 3, 6,  1, 1, 3, 30, 1, 1, 1, 1, 1, 0, 0, 0, 2, 1, 0, 0, 0, 0)";
+      sql << "INSERT INTO tree_5 VALUES(507, 4, 6,  2, 1, 3, 30, 1, 1, 1, 1, 1, 0, 0, 0, 4, 1, 0, 0, 0, 0)";
+      // Minor
+      sql << "INSERT INTO tree_5 VALUES(508, 0, 7, -1, 3, 1, 10, 1, 1, 0, 0, 2, 0, 0, 0, 0, 5, 0, 0, 0, 0)";
+      sql << "INSERT INTO tree_5 VALUES(509, 1, 7,  0, 2, 2, 20, 1, 1, 0, 0, 3, 0, 0, 0, 1, 2, 0, 0, 0, 0)";
+      sql << "INSERT INTO tree_5 VALUES(510, 2, 7,  0, 2, 2, 20, 1, 1, 0, 0, 3, 0, 0, 0, 3, 2, 0, 0, 0, 1)";
+      sql << "INSERT INTO tree_5 VALUES(511, 3, 7,  1, 1, 3, 30, 1, 1, 1, 1, 1, 0, 0, 0, 2, 1, 0, 0, 0, 0)";
+      sql << "INSERT INTO tree_5 VALUES(512, 4, 7,  2, 1, 3, 30, 1, 1, 1, 1, 1, 0, 0, 0, 4, 1, 0, 0, 0, 0)";
+      // Major
+      sql << "INSERT INTO tree_5 VALUES(513, 0, 8, -1, 3, 1, 10, 1, 1, 0, 0, 2, 0, 0, 0, 0, 5, 0, 0, 0, 0)";
+      sql << "INSERT INTO tree_5 VALUES(514, 1, 8,  0, 2, 2, 20, 1, 1, 0, 0, 3, 0, 0, 0, 1, 2, 0, 0, 0, 0)";
+      sql << "INSERT INTO tree_5 VALUES(515, 2, 8,  0, 2, 2, 20, 1, 1, 0, 0, 3, 0, 0, 0, 3, 2, 0, 0, 0, 2)";
+      sql << "INSERT INTO tree_5 VALUES(516, 3, 8,  1, 1, 3, 30, 1, 1, 1, 1, 1, 0, 0, 0, 2, 1, 0, 0, 0, 0)";
+      sql << "INSERT INTO tree_5 VALUES(517, 4, 8,  2, 1, 3, 30, 1, 1, 1, 1, 1, 0, 0, 0, 4, 1, 0, 0, 0, 0)";
    }
 
    void
    setup_snapshot_table( soci::session& sql )
    {
       sql << "CREATE TABLE snap_redshift (snapnum INTEGER, redshift DOUBLE PRECISION)";
-      sql << "INSERT INTO snap_redshift VALUES(0, 127)";
-      sql << "INSERT INTO snap_redshift VALUES(1, 80)";
-      sql << "INSERT INTO snap_redshift VALUES(2, 63)";
-      sql << "INSERT INTO snap_redshift VALUES(3, 20)";
+      sql << "INSERT INTO snap_redshift VALUES(0, 34)";
+      sql << "INSERT INTO snap_redshift VALUES(1, 21)";
+      sql << "INSERT INTO snap_redshift VALUES(2, 10)";
+      sql << "INSERT INTO snap_redshift VALUES(3, 3)";
       sql << "INSERT INTO snap_redshift VALUES(4, 0)";
    }
 

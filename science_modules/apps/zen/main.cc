@@ -1,6 +1,7 @@
 #include <iostream>
 #include <GL/glut.h>
 #include <boost/lexical_cast.hpp>
+#include <boost/optional.hpp>
 #include <libhpc/libhpc.hh>
 #include "tao/base/types.hh"
 #include "tao/base/globals.hh"
@@ -14,7 +15,6 @@
 #include "tao/base/magnitudes.hh"
 #include "tree.hh"
 
-using namespace hpc;
 using namespace tao;
 
 enum view_type
@@ -39,18 +39,18 @@ float gal_size = 0.5;
 GLuint gal_tex_id;
 
 lightcone* lc;
-list<tile<real_type>> tiles;
-simulation* cur_sim = &millennium;
+std::list<tile<real_type>> tiles;
+simulation const* cur_sim;
 int cur_tile_idx = -1;
 tile<real_type>* cur_box;
 string cur_table;
 unsigned long long cur_tree;
 unsigned long long cur_gal_gid;
 unsigned cur_gal_id;
-tao::sfh<real_type> cur_sfh;
+tao::sfh cur_sfh;
 tao::age_line<real_type> sfh_ages;
 tao::stellar_population ssp;
-vector<real_type> age_masses, age_bulge_masses, age_metals;
+std::vector<real_type> disk_masses, bulge_masses, total_masses, age_metals;
 tao::bandpass vbp;
 
 gl::colour_map<float> col_map;
@@ -59,15 +59,15 @@ backends::multidb<real_type> backend;
 backends::multidb<real_type> sfh_backend;
 tao::query<real_type> query;
 
-vector<real_type> stellar_mass;
+std::vector<real_type> stellar_mass;
 
-list<scoped_ptr<batch<real_type>>> gals;
+std::list<std::unique_ptr<batch<real_type>>> gals;
 bool load_gals_done = true;
 pthread_t load_gals_handle;
 bool calc_mags_done = true;
 pthread_t calc_mags_handle;
 
-gl::console cons;
+hpc::gl::console cons;
 command::chain cmd_chain;
 command::context lc_ctx;
 
@@ -263,31 +263,31 @@ draw_cap( const lightcone& lc,
          glBegin( GL_POLYGON );
          if( out )
          {
-            numerics::ecs_to_cartesian<float>( ra[0], dec[0], x, y, z, dist );
+            hpc::num::ecs_to_cartesian<float>( ra[0], dec[0], x, y, z, dist );
             glNormal3f( x, z, -y );
             glVertex3f( x, z, -y );
-            numerics::ecs_to_cartesian<float>( ra[1], dec[0], x, y, z, dist );
+            hpc::num::ecs_to_cartesian<float>( ra[1], dec[0], x, y, z, dist );
             glNormal3f( x, z, -y );
             glVertex3f( x, z, -y );
-            numerics::ecs_to_cartesian<float>( ra[1], dec[1], x, y, z, dist );
+            hpc::num::ecs_to_cartesian<float>( ra[1], dec[1], x, y, z, dist );
             glNormal3f( x, z, -y );
             glVertex3f( x, z, -y );
-            numerics::ecs_to_cartesian<float>( ra[0], dec[1], x, y, z, dist );
+            hpc::num::ecs_to_cartesian<float>( ra[0], dec[1], x, y, z, dist );
             glNormal3f( x, z, -y );
             glVertex3f( x, z, -y );
          }
          else
          {
-            numerics::ecs_to_cartesian<float>( ra[1], dec[0], x, y, z, dist );
+            hpc::num::ecs_to_cartesian<float>( ra[1], dec[0], x, y, z, dist );
             glNormal3f( -x, -z, y );
             glVertex3f( x, z, -y );
-            numerics::ecs_to_cartesian<float>( ra[0], dec[0], x, y, z, dist );
+            hpc::num::ecs_to_cartesian<float>( ra[0], dec[0], x, y, z, dist );
             glNormal3f( -x, -z, y );
             glVertex3f( x, z, -y );
-            numerics::ecs_to_cartesian<float>( ra[0], dec[1], x, y, z, dist );
+            hpc::num::ecs_to_cartesian<float>( ra[0], dec[1], x, y, z, dist );
             glNormal3f( -x, -z, y );
             glVertex3f( x, z, -y );
-            numerics::ecs_to_cartesian<float>( ra[1], dec[1], x, y, z, dist );
+            hpc::num::ecs_to_cartesian<float>( ra[1], dec[1], x, y, z, dist );
             glNormal3f( -x, -z, y );
             glVertex3f( x, z, -y );
          }
@@ -305,13 +305,13 @@ draw_edges( const lightcone& lc,
    float x, y, z;
    float a, b, c;
    array<GLfloat,3> low_norm, upp_norm;
-   numerics::ecs_to_cartesian<float>( lc.min_ra(), lc.min_dec(), x, y, z, start );
-   numerics::ecs_to_cartesian<float>( lc.max_ra(), lc.min_dec(), a, b, c, start );
+   hpc::num::ecs_to_cartesian<float>( lc.min_ra(), lc.min_dec(), x, y, z, start );
+   hpc::num::ecs_to_cartesian<float>( lc.max_ra(), lc.min_dec(), a, b, c, start );
    low_norm[0] = -(y*c - z*b);
    low_norm[1] = -(z*a - x*c);
    low_norm[2] = -(x*b - y*a);
-   numerics::ecs_to_cartesian<float>( lc.min_ra(), lc.max_dec(), x, y, z, start );
-   numerics::ecs_to_cartesian<float>( lc.max_ra(), lc.max_dec(), a, b, c, start );
+   hpc::num::ecs_to_cartesian<float>( lc.min_ra(), lc.max_dec(), x, y, z, start );
+   hpc::num::ecs_to_cartesian<float>( lc.max_ra(), lc.max_dec(), a, b, c, start );
    upp_norm[0] = y*c - z*b;
    upp_norm[1] = z*a - x*c;
    upp_norm[2] = x*b - y*a;
@@ -323,36 +323,36 @@ draw_edges( const lightcone& lc,
       ra[1] = lc.min_ra() + ((float)(ii + 1)/(float)num_segs)*(lc.max_ra() - lc.min_ra());
       glBegin( GL_POLYGON );
       glNormal3f( low_norm[0], low_norm[2], -low_norm[1] );
-      numerics::ecs_to_cartesian<float>( ra[0], lc.min_dec(), x, y, z, finish );
+      hpc::num::ecs_to_cartesian<float>( ra[0], lc.min_dec(), x, y, z, finish );
       glVertex3f( x, z, -y );
-      numerics::ecs_to_cartesian<float>( ra[1], lc.min_dec(), x, y, z, finish );
+      hpc::num::ecs_to_cartesian<float>( ra[1], lc.min_dec(), x, y, z, finish );
       glVertex3f( x, z, -y );
-      numerics::ecs_to_cartesian<float>( ra[1], lc.min_dec(), x, y, z, start );
+      hpc::num::ecs_to_cartesian<float>( ra[1], lc.min_dec(), x, y, z, start );
       glVertex3f( x, z, -y );
-      numerics::ecs_to_cartesian<float>( ra[0], lc.min_dec(), x, y, z, start );
+      hpc::num::ecs_to_cartesian<float>( ra[0], lc.min_dec(), x, y, z, start );
       glVertex3f( x, z, -y );
       glEnd();
       glBegin( GL_POLYGON );
       glNormal3f( upp_norm[0], upp_norm[2], -upp_norm[1] );
-      numerics::ecs_to_cartesian<float>( ra[1], lc.max_dec(), x, y, z, finish );
+      hpc::num::ecs_to_cartesian<float>( ra[1], lc.max_dec(), x, y, z, finish );
       glVertex3f( x, z, -y );
-      numerics::ecs_to_cartesian<float>( ra[0], lc.max_dec(), x, y, z, finish );
+      hpc::num::ecs_to_cartesian<float>( ra[0], lc.max_dec(), x, y, z, finish );
       glVertex3f( x, z, -y );
-      numerics::ecs_to_cartesian<float>( ra[0], lc.max_dec(), x, y, z, start );
+      hpc::num::ecs_to_cartesian<float>( ra[0], lc.max_dec(), x, y, z, start );
       glVertex3f( x, z, -y );
-      numerics::ecs_to_cartesian<float>( ra[1], lc.max_dec(), x, y, z, start );
+      hpc::num::ecs_to_cartesian<float>( ra[1], lc.max_dec(), x, y, z, start );
       glVertex3f( x, z, -y );
       glEnd();
    }
 
    // Second two normals.
-   numerics::ecs_to_cartesian<float>( lc.min_ra(), lc.min_dec(), x, y, z, start );
-   numerics::ecs_to_cartesian<float>( lc.min_ra(), lc.max_dec(), a, b, c, start );
+   hpc::num::ecs_to_cartesian<float>( lc.min_ra(), lc.min_dec(), x, y, z, start );
+   hpc::num::ecs_to_cartesian<float>( lc.min_ra(), lc.max_dec(), a, b, c, start );
    low_norm[0] = y*c - z*b;
    low_norm[1] = z*a - x*c;
    low_norm[2] = x*b - y*a;
-   numerics::ecs_to_cartesian<float>( lc.max_ra(), lc.min_dec(), x, y, z, start );
-   numerics::ecs_to_cartesian<float>( lc.max_ra(), lc.max_dec(), a, b, c, start );
+   hpc::num::ecs_to_cartesian<float>( lc.max_ra(), lc.min_dec(), x, y, z, start );
+   hpc::num::ecs_to_cartesian<float>( lc.max_ra(), lc.max_dec(), a, b, c, start );
    upp_norm[0] = -(y*c - z*b);
    upp_norm[1] = -(z*a - x*c);
    upp_norm[2] = -(x*b - y*a);
@@ -364,24 +364,24 @@ draw_edges( const lightcone& lc,
       dec[1] = lc.min_dec() + ((float)(ii + 1)/(float)num_segs)*(lc.max_dec() - lc.min_dec());
       glBegin( GL_POLYGON );
       glNormal3f( low_norm[0], low_norm[2], -low_norm[1] );
-      numerics::ecs_to_cartesian<float>( lc.min_ra(), dec[1], x, y, z, finish );
+      hpc::num::ecs_to_cartesian<float>( lc.min_ra(), dec[1], x, y, z, finish );
       glVertex3f( x, z, -y );
-      numerics::ecs_to_cartesian<float>( lc.min_ra(), dec[0], x, y, z, finish );
+      hpc::num::ecs_to_cartesian<float>( lc.min_ra(), dec[0], x, y, z, finish );
       glVertex3f( x, z, -y );
-      numerics::ecs_to_cartesian<float>( lc.min_ra(), dec[0], x, y, z, start );
+      hpc::num::ecs_to_cartesian<float>( lc.min_ra(), dec[0], x, y, z, start );
       glVertex3f( x, z, -y );
-      numerics::ecs_to_cartesian<float>( lc.min_ra(), dec[1], x, y, z, start );
+      hpc::num::ecs_to_cartesian<float>( lc.min_ra(), dec[1], x, y, z, start );
       glVertex3f( x, z, -y );
       glEnd();
       glBegin( GL_POLYGON );
       glNormal3f( upp_norm[0], upp_norm[2], -upp_norm[1] );
-      numerics::ecs_to_cartesian<float>( lc.max_ra(), dec[0], x, y, z, finish );
+      hpc::num::ecs_to_cartesian<float>( lc.max_ra(), dec[0], x, y, z, finish );
       glVertex3f( x, z, -y );
-      numerics::ecs_to_cartesian<float>( lc.max_ra(), dec[1], x, y, z, finish );
+      hpc::num::ecs_to_cartesian<float>( lc.max_ra(), dec[1], x, y, z, finish );
       glVertex3f( x, z, -y );
-      numerics::ecs_to_cartesian<float>( lc.max_ra(), dec[1], x, y, z, start );
+      hpc::num::ecs_to_cartesian<float>( lc.max_ra(), dec[1], x, y, z, start );
       glVertex3f( x, z, -y );
-      numerics::ecs_to_cartesian<float>( lc.max_ra(), dec[0], x, y, z, start );
+      hpc::num::ecs_to_cartesian<float>( lc.max_ra(), dec[0], x, y, z, start );
       glVertex3f( x, z, -y );
       glEnd();
    }
@@ -517,10 +517,10 @@ draw_galaxies()
 
    for( const auto& bat : gals )
    {
-      const vector<real_type>::view pos_x = bat->scalar<real_type>( "posx" );
-      const vector<real_type>::view pos_y = bat->scalar<real_type>( "posy" );
-      const vector<real_type>::view pos_z = bat->scalar<real_type>( "posz" );
-      const vector<real_type>::view mass = bat->scalar<real_type>( "stellarmass" );
+      const hpc::view<std::vector<real_type>> pos_x = bat->scalar<real_type>( "posx" );
+      const hpc::view<std::vector<real_type>> pos_y = bat->scalar<real_type>( "posy" );
+      const hpc::view<std::vector<real_type>> pos_z = bat->scalar<real_type>( "posz" );
+      const hpc::view<std::vector<real_type>> mass = bat->scalar<real_type>( "stellarmass" );
 
       for( unsigned ii = 0; ii < bat->size(); ++ii )
       {
@@ -874,7 +874,7 @@ load_galaxies( void* data )
            ++it )
       {
          const batch<real_type>& bat = *it;
-         gals.push_back( new batch<real_type>( bat ) );
+         gals.emplace_back( new batch<real_type>( bat ) );
          glutPostRedisplay();
          if( load_gals_done )
             break;
@@ -887,7 +887,7 @@ load_galaxies( void* data )
            ++it )
       {
          const batch<real_type>& bat = *it;
-         gals.push_back( new batch<real_type>( bat ) );
+         gals.emplace_back( new batch<real_type>( bat ) );
          glutPostRedisplay();
          if( load_gals_done )
             break;
@@ -918,14 +918,16 @@ calc_mags( void* data )
                // TODO: Get this back.
                // Rebin star-formation history.
                // cur_sfh.load_tree_data( sfh_backend.session(), bat->attribute<string>( "table" ), bat->scalar<long long>( "global_tree_id" )[ii] );
-               std::fill( age_masses.begin(), age_masses.end(), 0 );
-               std::fill( age_bulge_masses.begin(), age_bulge_masses.end(), 0 );
+               std::fill( disk_masses.begin(), disk_masses.end(), 0 );
+               std::fill( bulge_masses.begin(), bulge_masses.end(), 0 );
                // std::fill( age_metals.begin(), age_metals.end(), 0 );
                // cur_sfh.rebin<real_type>( sfh_backend.session(), bat->scalar<int>( "local_galaxy_id" )[ii], age_masses, age_bulge_masses, age_metals );
-               cur_sfh.rebin<tao::real_type>( age_masses, age_bulge_masses, ssp );
+               cur_sfh.rebin<decltype(disk_masses)>( disk_masses, bulge_masses, ssp );
+               std::transform( disk_masses.begin(), disk_masses.end(), bulge_masses.begin(), 
+                               total_masses.begin(), std::plus<tao::real_type>() );
 
                // Sum the spectrum.
-               ssp.sum( age_masses.begin(), sed.spectrum().values().begin() );
+               ssp.sum( total_masses.begin(), sed.spectrum().values().begin() );
                // ssp.sum( age_masses.begin(), age_metals.begin(), sed.spectrum().values().begin() );
                sed.spectrum().update(); // rebuild spline
 
@@ -1064,24 +1066,24 @@ init_tao()
 
    // Connect the backend.
 #include "credentials.hh"
-   vector<backends::multidb<real_type>::server_type> servers( 3 );
-   servers[0].dbname = "millennium_full_3servers_v2";
+   std::vector<backends::multidb<real_type>::server_type> servers( 3 );
+   servers[0].dbname = "millennium_mini_3servers_v3";
    servers[0].user = username;
    servers[0].passwd = password;
    servers[0].host = string( "tao01.hpc.swin.edu.au" );
    servers[0].port = 3306;
-   servers[1].dbname = "millennium_full_3servers_v2";
+   servers[1].dbname = "millennium_mini_3servers_v3";
    servers[1].user = username;
    servers[1].passwd = password;
    servers[1].host = string( "tao02.hpc.swin.edu.au" );
    servers[1].port = 3306;
-   servers[2].dbname = "millennium_full_3servers_v2";
+   servers[2].dbname = "millennium_mini_3servers_v3";
    servers[2].user = username;
    servers[2].passwd = password;
    servers[2].host = string( "tao03.hpc.swin.edu.au" );
    servers[2].port = 3306;
    backend.connect( servers.begin(), servers.end() );
-   backend.set_simulation( cur_sim );
+   cur_sim = backend.load_simulation();
    ::query.add_base_output_fields();
    ::query.add_output_field( "stellarmass" );
 
@@ -1090,27 +1092,30 @@ init_tao()
 
    // Setup initial simulation.
    lc = new lightcone( cur_sim );
-   lc->set_geometry( 20, 70, 20, 70, 0.06 );
+   lc->set_geometry( 20, 270, -35, 70, 0.2, 0.09 );
    update_tao();
 
    // Load ages and SSP.
    sfh_ages.load_ages( backend.session(), lc->simulation()->hubble(), lc->simulation()->omega_m(), lc->simulation()->omega_l() );
-   ssp.load( "ages.dat", "wavelengths.dat", "metallicities.dat", "ssp.ssz" );
+   ssp.load( "data/stellar_populations/m05/ages.dat",
+             "data/stellar_populations/m05/wavelengths.dat",
+             "data/stellar_populations/m05/metallicities.dat",
+             "data/stellar_populations/m05/ssp.ssz" );
    cur_sfh.set_snapshot_ages( &sfh_ages );
-   cur_sfh.set_bin_ages( &ssp.bin_ages() );
-   age_masses.resize( ssp.age_masses_size() );
-   age_bulge_masses.resize( ssp.age_masses_size() );
+   disk_masses.resize( ssp.age_masses_size() );
+   bulge_masses.resize( ssp.age_masses_size() );
+   total_masses.resize( ssp.age_masses_size() );
    age_metals.resize( ssp.bin_ages().size() );
 
    // Load the V bandpass filter.
-   vbp.load( "v.dat" );
+   vbp.load( "data/bandpass_filters/v.dat" );
 
    // Setup the colour map.
    col_map.set_colours_diverging_blue_to_red_12();
    col_map.set_abscissa_linear( 0, 1 );
 }
 
-optional<double>
+boost::optional<double>
 to_double( const string& str )
 {
    double val;
@@ -1121,12 +1126,12 @@ to_double( const string& str )
    catch( boost::bad_lexical_cast ex )
    {
       cons.write( "Failed to convert to double." );
-      return none;
+      return boost::none;
    }
    return val;
 }
 
-optional<int>
+boost::optional<int>
 to_int( const string& str )
 {
    int val;
@@ -1137,12 +1142,12 @@ to_int( const string& str )
    catch( boost::bad_lexical_cast ex )
    {
       cons.write( "Failed to convert to integer." );
-      return none;
+      return boost::none;
    }
    return val;
 }
 
-optional<unsigned>
+boost::optional<unsigned>
 to_unsigned( const string& str )
 {
    unsigned val;
@@ -1153,12 +1158,12 @@ to_unsigned( const string& str )
    catch( boost::bad_lexical_cast ex )
    {
       cons.write( "Failed to convert to unsigned integer." );
-      return none;
+      return boost::none;
    }
    return val;
 }
 
-optional<unsigned>
+boost::optional<unsigned>
 to_unsigned_long_long( const string& str )
 {
    unsigned val;
@@ -1169,13 +1174,13 @@ to_unsigned_long_long( const string& str )
    catch( boost::bad_lexical_cast ex )
    {
       cons.write( "Failed to convert to unsigned long long integer." );
-      return none;
+      return boost::none;
    }
    return val;
 }
 
 void
-set_min_ra( const re::match& match )
+set_min_ra( boost::smatch const& match )
 {
    auto val = to_double( match[1] );
    if( val )
@@ -1186,7 +1191,7 @@ set_min_ra( const re::match& match )
 }
 
 void
-set_max_ra( const re::match& match )
+set_max_ra( boost::smatch const& match )
 {
    auto val = to_double( match[1] );
    if( val )
@@ -1197,7 +1202,7 @@ set_max_ra( const re::match& match )
 }
 
 void
-set_min_dec( const re::match& match )
+set_min_dec( boost::smatch const& match )
 {
    auto val = to_double( match[1] );
    if( val )
@@ -1208,7 +1213,7 @@ set_min_dec( const re::match& match )
 }
 
 void
-set_max_dec( const re::match& match )
+set_max_dec( boost::smatch const& match )
 {
    auto val = to_double( match[1] );
    if( val )
@@ -1219,7 +1224,7 @@ set_max_dec( const re::match& match )
 }
 
 void
-set_min_z( const re::match& match )
+set_min_z( boost::smatch const& match )
 {
    auto val = to_double( match[1] );
    if( val )
@@ -1230,7 +1235,7 @@ set_min_z( const re::match& match )
 }
 
 void
-set_max_z( const re::match& match )
+set_max_z( boost::smatch const& match )
 {
    auto val = to_double( match[1] );
    if( val )
@@ -1241,7 +1246,7 @@ set_max_z( const re::match& match )
 }
 
 void
-set_tile( const re::match& match )
+set_tile( boost::smatch const& match )
 {
    auto val = to_int( match[1] );
    if( val )
@@ -1258,7 +1263,7 @@ set_tile( const re::match& match )
 }
 
 void
-set_tile_view( const re::match& match )
+set_tile_view( boost::smatch const& match )
 {
    if( cur_tile_idx >= 0 )
    {
@@ -1281,7 +1286,7 @@ set_tile_view( const re::match& match )
 }
 
 void
-set_image_view( const re::match& match )
+set_image_view( boost::smatch const& match )
 {
    cur_view = IMAGE;
    calc_mags_done = false;
@@ -1290,7 +1295,7 @@ set_image_view( const re::match& match )
 }
 
 void
-set_load_gals( const re::match& match )
+set_load_gals( boost::smatch const& match )
 {
    if( cur_view == MAIN )
    {
@@ -1307,7 +1312,7 @@ set_load_gals( const re::match& match )
 }
 
 void
-set_pencil_lc( const re::match& match )
+set_pencil_lc( boost::smatch const& match )
 {
    lc->set_geometry( 0, 10, 0, 10, 0.06 );
    calc_bounds();
@@ -1316,7 +1321,7 @@ set_pencil_lc( const re::match& match )
 }
 
 void
-set_origin( const re::match& match )
+set_origin( boost::smatch const& match )
 {
    auto x_val = to_double( match[1] );
    auto y_val = to_double( match[2] );
@@ -1331,7 +1336,7 @@ set_origin( const re::match& match )
 }
 
 void
-load_sfh( const re::match& match )
+load_sfh( boost::smatch const& match )
 {
    using ::backend;
 
@@ -1363,11 +1368,13 @@ load_sfh( const re::match& match )
       // Load SFH.
       cur_sfh.load_tree_data( backend.session( cur_table ), cur_table, cur_tree, cur_gal_gid );
       cur_gal_id = cur_sfh.lid_to_index( cur_gal_id );
-      std::fill( age_masses.begin(), age_masses.end(), 0 );
-      std::fill( age_bulge_masses.begin(), age_bulge_masses.end(), 0 );
+      std::fill( disk_masses.begin(), disk_masses.end(), 0 );
+      std::fill( bulge_masses.begin(), bulge_masses.end(), 0 );
       // std::fill( age_metals.begin(), age_metals.end(), 0 );
-      cur_sfh.rebin<tao::real_type>( age_masses, age_bulge_masses, ssp );
+      cur_sfh.rebin<decltype(disk_masses)>( disk_masses, bulge_masses, ssp );
       // cur_sfh.rebin<real_type>( backend.session( cur_table ), cur_gal_id, age_masses, age_bulge_masses, age_metals );
+      std::transform( disk_masses.begin(), disk_masses.end(), bulge_masses.begin(), 
+                      total_masses.begin(), std::plus<tao::real_type>() );
 
       // Also transfer the stellar mass for each tree.
       stellar_mass.resize( cur_sfh.size() );
@@ -1432,7 +1439,7 @@ int
 main( int argc, char** argv )
 {
    mpi::initialise( argc, argv );
-   LOG_PUSH( new logging::stdout( logging::info ) );
+   LOG_PUSH( new hpc::log::stdout( hpc::log::info ) );
    glutInit( &argc, argv );
 
    try

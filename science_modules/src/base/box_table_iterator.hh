@@ -51,14 +51,15 @@ namespace tao {
             }
          }
 
-         box_table_iterator( const box_table_iterator& src )
+         box_table_iterator( box_table_iterator const& src )
             : _be( src._be ),
               _box( src._box ),
               _tbls( src._tbls ),
               _done( src._done )
          {
             // Iterator needs to be modified.
-            _it = _tbls.begin() + (src._it - src._tbls.begin());
+            if( !src._tbls.empty() )
+               _it = _tbls.begin() + (src._it - src._tbls.begin());
          }
 
          box_table_iterator&
@@ -70,7 +71,8 @@ namespace tao {
             _done = op._done;
 
             // Iterator needs to be modified.
-            _it = _tbls.begin() + (op._it - op._tbls.begin());
+            if( !op._tbls.empty() )
+               _it = _tbls.begin() + (op._it - op._tbls.begin());
 
             return *this;
          }
@@ -124,7 +126,7 @@ namespace tao {
 	    // parallel set.
 	    unsigned first_table = (mpi::comm::world.rank()*tables.size())/mpi::comm::world.size();
 	    unsigned last_table = ((mpi::comm::world.rank() + 1)*tables.size())/mpi::comm::world.size();
-            _tbls.reallocate( last_table - first_table );
+            hpc::reallocate( _tbls, last_table - first_table );
 	    {
 	       auto it = tables.begin();
 	       unsigned ii;
@@ -141,8 +143,8 @@ namespace tao {
 
       protected:
 
-         const backend_type* _be;
-         const box<real_type>* _box;
+         backend_type const* _be;
+         box<real_type> const* _box;
          std::vector<table_type> _tbls;
          typename std::vector<table_type>::const_iterator _it;
          bool _done;

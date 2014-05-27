@@ -47,8 +47,6 @@ namespace tao {
 	 add_output_field( "sfrbulge" );
 	 add_output_field( "sfrdiskz" );
 	 add_output_field( "sfrbulgez" );
-	 add_output_field( "coldgas" );
-	 add_output_field( "metalscoldgas" );
 	 add_output_field( "diskscaleradius" );
       }
 

@@ -8,7 +8,6 @@
 
 namespace tao {
    namespace modules {
-      using namespace hpc;
 
       template< class Backend >
       class hdf5
@@ -21,7 +20,7 @@ namespace tao {
 
          static
          module_type*
-         factory( const string& name,
+         factory( const std::string& name,
                   pugi::xml_node base )
          {
             return new hdf5( name, base );
@@ -29,7 +28,7 @@ namespace tao {
 
       public:
 
-         hdf5( const string& name = string(),
+         hdf5( const std::string& name = std::string(),
                pugi::xml_node base = pugi::xml_node() )
             : module_type( name, base ),
               _chunk_size( 100 ),
@@ -55,7 +54,6 @@ namespace tao {
                return;
             module_type::initialise( global_dict );
 
-            auto timer = this->timer_start();
             LOGILN( "Initialising HDF5 module.", setindent( 2 ) );
 
             // Cache dictionary.
@@ -63,11 +61,11 @@ namespace tao {
 
             // Get our information.
             if(mpi::comm::world.size()==1)
-                      _fn = global_dict.get<string>( "outputdir" ) + "/" + dict.get<hpc::string>( "filename" ) ;
+                      _fn = global_dict.get<std::string>( "outputdir" ) + "/" + dict.get<std::string>( "filename" ) ;
                   else
-                      _fn = global_dict.get<string>( "outputdir" ) + "/" + dict.get<hpc::string>( "filename" ) + "." + mpi::rank_string();
+                      _fn = global_dict.get<std::string>( "outputdir" ) + "/" + dict.get<std::string>( "filename" ) + "." + mpi::rank_string();
 
-            _fields = dict.get_list<string>( "fields" );
+            _fields = dict.get_list<std::string>( "fields" );
             ReadFieldsInfo(dict );
 
             // Open the file.
@@ -88,7 +86,7 @@ namespace tao {
          void
          ReadFieldsInfo( const xml_dict& dict )
          {
-            list<optional<hpc::string>> Templabels = dict.get_list_attributes<string>( "fields","label" );
+            std::list<boost::optional<std::string>> Templabels = dict.get_list_attributes<std::string>( "fields","label" );
 
 
 
@@ -110,8 +108,8 @@ namespace tao {
          }
 
 
-         string
-         _encode( string _toencode_string )
+         std::string
+         _encode( std::string _toencode_string )
          {
             std::map<char, std::string> transformations;
             transformations['&']  = std::string("_");
@@ -154,7 +152,6 @@ namespace tao {
          void
          execute()
          {
-            auto timer = this->timer_start();
             ASSERT( this->parents().size() == 1 );
 
             // Grab the batch from the parent object.
@@ -169,7 +166,7 @@ namespace tao {
 
                for( const auto& field : _fields )
                {
-            	  string FieldName=_encode(*lblit);
+            	  std::string FieldName=_encode(*lblit);
                   h5::datatype dtype = _field_type( bat, field );
                   h5::dataspace dspace;
                   dspace.create( 1, true );
@@ -177,15 +174,15 @@ namespace tao {
                   props.set_chunk_size( _chunk_size );
                   props.set_deflate();
                   //h5::dataset* dset = new h5::dataset( _file, field, dtype, dspace, none, false, props );
-                  h5::dataset* dset = new h5::dataset( _file, FieldName, dtype, dspace, none, false, props );
-                  _dsets.push_back( dset );
+                  h5::dataset* dset = new hpc::h5::dataset( _file, FieldName, dtype, dspace, props );
+                  _dsets.push_back( std::unique_ptr<hpc::h5::dataset>( dset ) );
 
                   // Dump first chunk.
                   unsigned ii = 0;
                   for( auto it = _filt->begin( bat ); it != _filt->end( bat ); ++it, ++ii )
                   {
                      dset->set_extent( ii + 1 );
-                     dset->space( dspace );
+                     dspace = dset->dataspace();
                      dspace.select_one( ii );
                      _write_field( bat, *it, field, *dset, dspace );
                   }
@@ -237,7 +234,7 @@ namespace tao {
 
          h5::datatype
          _field_type( const tao::batch<real_type>& bat,
-                      const string& field )
+                      const std::string& field )
          {
             auto val = bat.field( field );
             switch( std::get<2>( val ) )
@@ -270,7 +267,7 @@ namespace tao {
          void
          _write_field( const tao::batch<real_type>& bat,
                        unsigned idx,
-                       const string& field,
+                       const std::string& field,
                        h5::dataset& dset,
                        h5::dataspace& dspace )
          {
@@ -282,7 +279,7 @@ namespace tao {
             {
                case tao::batch<real_type>::STRING:
                {
-                  string data = bat.scalar<string>( field )[idx];
+                  std::string data = bat.scalar<std::string>( field )[idx];
                   dset.write( data.c_str(), h5::datatype::string, mem_space, dspace );
                   break;
                }
@@ -323,11 +320,11 @@ namespace tao {
       protected:
 
          h5::file _file;
-         string _fn;
-         list<string> _fields;
+         std::string _fn;
+         std::list<std::string> _fields;
          unsigned long long _records;
-         list<hpc::string> _labels;
-         list<scoped_ptr<h5::dataset>> _dsets;
+         std::list<std::string> _labels;
+         std::list<std::unique_ptr<h5::dataset>> _dsets;
          hsize_t _chunk_size;
          bool _ready;
          tao::filter const* _filt;

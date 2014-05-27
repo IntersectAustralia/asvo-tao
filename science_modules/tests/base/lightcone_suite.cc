@@ -1,5 +1,6 @@
 #include <libhpc/unit_test/main.hh>
 #include <libhpc/system/math.hh>
+#include <libhpc/numerics/coords.hh>
 #include "tao/base/lightcone.hh"
 #include "tao/base/globals.hh"
 
@@ -45,8 +46,8 @@ TEST_CASE( "/tao/base/lightcone/set_geometry" )
 
    // Catch errors.
    THROWS_ANY( lc.set_geometry( -1, 20, 10, 20, 2, 1 ), "RA >= 0" );
-   THROWS_ANY( lc.set_geometry( 10, 91, 10, 20, 2, 1 ), "RA <= 90" );
-   THROWS_ANY( lc.set_geometry( 10, 20, -1, 20, 2, 1 ), "DEC >= 0" );
+   THROWS_ANY( lc.set_geometry( 10, 361, 10, 20, 2, 1 ), "RA <= 360" );
+   THROWS_ANY( lc.set_geometry( 10, 20, -91, 20, 2, 1 ), "DEC >= -90" );
    THROWS_ANY( lc.set_geometry( 10, 20, 10, 91, 2, 1 ), "DEC <= 90" );
    THROWS_ANY( lc.set_geometry( 20, 10, 10, 20, 2, 1 ), "RA_max >= RA_min" );
    THROWS_ANY( lc.set_geometry( 10, 20, 20, 10, 2, 1 ), "DEC_max >= DEC_min" );
@@ -76,7 +77,7 @@ TEST_CASE( "/tao/base/lightcone/set_min_ra" )
    tao::lightcone lc( &tao::mini_millennium );
    lc.set_max_ra( 40 );
    THROWS_ANY( lc.set_min_ra( -1 ) );
-   THROWS_ANY( lc.set_min_ra( 91 ) );
+   THROWS_ANY( lc.set_min_ra( 361 ) );
    lc.set_min_ra( 20 );
    DELTA( lc.min_ra(), hpc::to_radians( 20.0 ), 1e-4 );
 }
@@ -87,7 +88,7 @@ TEST_CASE( "/tao/base/lightcone/set_max_ra" )
    lc.set_max_ra( 40 );
    lc.set_min_ra( 20 );
    THROWS_ANY( lc.set_max_ra( -1 ) );
-   THROWS_ANY( lc.set_max_ra( 91 ) );
+   THROWS_ANY( lc.set_max_ra( 361 ) );
    lc.set_max_ra( 40 );
    DELTA( lc.max_ra(), hpc::to_radians( 40.0 ), 1e-4 );
 }
@@ -96,7 +97,7 @@ TEST_CASE( "/tao/base/lightcone/set_min_dec" )
 {
    tao::lightcone lc( &tao::mini_millennium );
    lc.set_max_dec( 40 );
-   THROWS_ANY( lc.set_min_dec( -1 ) );
+   THROWS_ANY( lc.set_min_dec( -91 ) );
    THROWS_ANY( lc.set_min_dec( 91 ) );
    lc.set_min_dec( 20 );
    DELTA( lc.min_dec(), hpc::to_radians( 20.0 ), 1e-4 );
@@ -107,7 +108,7 @@ TEST_CASE( "/tao/base/lightcone/set_max_dec" )
    tao::lightcone lc( &tao::mini_millennium );
    lc.set_max_dec( 40 );
    lc.set_min_dec( 20 );
-   THROWS_ANY( lc.set_max_dec( -1 ) );
+   THROWS_ANY( lc.set_max_dec( -91 ) );
    THROWS_ANY( lc.set_max_dec( 91 ) );
    lc.set_max_dec( 40 );
    DELTA( lc.max_dec(), hpc::to_radians( 40.0 ), 1e-4 );
@@ -204,4 +205,19 @@ TEST_CASE( "/tao/base/lightcone/recalculate" )
    DELTA( lc.max_dist(), 3267.8*h, 1.0 );
    TEST( lc.distance_bins().size() == 3 );
    TEST( lc.snapshot_bins().size() == 2 );
+}
+
+TEST_CASE( "/tao/base/lightcone/overlap" )
+{
+   tao::lightcone lc( &tao::mini_millennium );
+   lc.set_geometry( 0.0, 45.0, 0.0, 45.0, 1.0 );
+   std::array<tao::real_type,3> min = { -1.0, -1.0, -1.0 };
+   std::array<tao::real_type,3> max = { 0.0, 0.0, 0.0 };
+   TEST( lc.overlap( min, max ) == false );
+   max[0] = 1.0;
+   TEST( lc.overlap( min, max ) == false );
+   max[2] = 1.0;
+   TEST( lc.overlap( min, max ) == false );
+   max[1] = 1.0;
+   TEST( lc.overlap( min, max ) == true );
 }

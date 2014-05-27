@@ -59,7 +59,6 @@ namespace tao {
                return;
             module_type::initialise( global_dict );
 
-            auto timer = this->timer_start();
             LOGILN( "Initialising dust module.", setindent( 2 ) );
 
             // Cache dictionary.
@@ -73,7 +72,7 @@ namespace tao {
             _bulge_spectra = &bat.vector<real_type>( "bulge_spectra" );
 
             // Find the wavelengths from my parents.
-            _waves = this->template attribute<const vector<real_type>::view>( "wavelengths" );
+            _waves = this->template attribute<hpc::view<std::vector<real_type>> const>( "wavelengths" );
 
             // What kind of dust are we using?
             std::string mod = boost::algorithm::to_lower_copy( dict.get<std::string>( "model" ) );
@@ -133,7 +132,7 @@ namespace tao {
 
          void
          process_spectra_calzetti( real_type sfr,
-                                   vector<real_type>::view spectra )
+                                   hpc::view<std::vector<real_type>> spectra )
          {
             tao::dust::calzetti( sfr, spectra.begin(), spectra.end(), _waves.begin(), spectra.begin() );
          }
@@ -143,7 +142,7 @@ namespace tao {
                                real_type cold_gas_mass,
                                real_type cold_gas_metal,
                                real_type disk_radius,
-                               vector<real_type>::view spectra )
+                               hpc::view<std::vector<real_type>> spectra )
          {
             _slab(
                _sim->h(),
@@ -163,15 +162,15 @@ namespace tao {
          model_type _mod;
          tao::dust::slab _slab;
          simulation const* _sim;
-         fibre<real_type>* _total_spectra;
-         fibre<real_type>* _disk_spectra;
-         fibre<real_type>* _bulge_spectra;
-         vector<real_type>::view _sfrs;
-         vector<real_type>::view _waves;
-         vector<real_type>::view _cold_gas;
-         vector<real_type>::view _cold_gas_metal;
-         vector<real_type>::view _redshifts;
-         vector<real_type>::view _disk_radius;
+         hpc::matrix<real_type>* _total_spectra;
+         hpc::matrix<real_type>* _disk_spectra;
+         hpc::matrix<real_type>* _bulge_spectra;
+         hpc::view<std::vector<real_type>> _sfrs;
+         hpc::view<std::vector<real_type>> _waves;
+         hpc::view<std::vector<real_type>> _cold_gas;
+         hpc::view<std::vector<real_type>> _cold_gas_metal;
+         hpc::view<std::vector<real_type>> _redshifts;
+         hpc::view<std::vector<real_type>> _disk_radius;
       };
 
    }

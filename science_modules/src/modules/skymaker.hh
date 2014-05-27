@@ -94,6 +94,7 @@ namespace tao {
          real_type _fov_ra, _fov_dec;
          unsigned _width, _height;
          real_type _scale_x, _scale_y;
+         bool _auto_back_mag;
          double _back_mag; // background magnitude
          double _exp_time; // exposure time in seconds
          unsigned _cnt;
@@ -143,7 +144,6 @@ namespace tao {
                return;
             module_type::initialise( global_dict );
 
-            auto timer = this->timer_start();
             LOGILN( "Initialising skymaker module.", setindent( 2 ) );
 
             // Read options and create images.
@@ -151,10 +151,7 @@ namespace tao {
 
             // Prepare each image.
             for( auto& img : _imgs )
-            {
                img.setup_list();
-               img.setup_conf();
-            }
 	    LOGILN( "Found ", _imgs.size(), " images." );
 
             LOGILN( "Done.", setindent( -2 ) );
@@ -167,8 +164,6 @@ namespace tao {
          void
          execute()
          {
-            auto timer = this->timer_start();
-
             // Grab the batch from the parent object.
             tao::batch<real_type>& bat = this->parents().front()->batch();
 
@@ -181,7 +176,6 @@ namespace tao {
          void
          finalise()
          {
-            auto timer = this->timer_start();
             LOGILN( "Rendering skymaker images.", setindent( 2 ) );
 
 	    bool okay = true;
@@ -215,7 +209,6 @@ namespace tao {
          process_galaxy( const tao::batch<real_type>& bat,
                          unsigned idx )
          {
-            auto timer = this->timer_start();
             for( auto& img : _imgs )
                img.add_galaxy( bat, idx );
          }

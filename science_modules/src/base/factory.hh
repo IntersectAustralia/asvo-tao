@@ -37,8 +37,9 @@ namespace tao {
       register_module( const std::string& name,
                        factory_create_type create )
       {
-         EXCEPT( !_facs.has( name ), "Cannot add new science module factory, ID already exists: ", name );
-         _facs.insert( name, create );
+         EXCEPT( !hpc::has( _facs, name ), "Cannot add new science module factory, "
+                 "ID already exists: ", name );
+         _facs.emplace( name, create );
       }
 
       module_type&
@@ -55,8 +56,8 @@ namespace tao {
          for( auto mod : _mods )
             EXCEPT( mod->name() != _in, "Science module with name already exists: ", _in );
 #endif
-         EXCEPT( _facs.has( name ), "No science module exists with ID: ", name );
-         module_type* mod = _facs.get( name )( _in, base );
+         EXCEPT( hpc::has( _facs, name ), "No science module exists with ID: ", name );
+         module_type* mod = _facs.at( name )( _in, base );
          _mods.push_back( mod );
          LOGDLN( "Created module ", name, " with name ", _in );
          return *mod;

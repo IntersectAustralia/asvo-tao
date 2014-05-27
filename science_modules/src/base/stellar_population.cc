@@ -3,7 +3,6 @@
 #include <libhpc/system/reallocate.hh>
 #include <libhpc/system/deallocate.hh>
 #include <libhpc/algorithm/bin.hh>
-#include <libhpc/algorithm/dual.hh>
 #include <libhpc/logging/block.hh>
 #include "stellar_population.hh"
 
@@ -12,6 +11,18 @@ namespace tao {
    stellar_population::stellar_population()
       : _com_rec_frac( 1.0 )
    {
+   }
+
+   unsigned
+   stellar_population::n_metal_bins() const
+   {
+      return _metal_bins.size() + 1;
+   }
+
+   std::vector<real_type> const&
+   stellar_population::metal_bins() const
+   {
+      return _metal_bins;
    }
 
    void
@@ -78,15 +89,9 @@ namespace tao {
    }
 
    unsigned
-   stellar_population::num_metal_bins() const
-   {
-      return _metal_bins.size() + 1;
-   }
-
-   unsigned
    stellar_population::age_masses_size() const
    {
-      return bin_ages().size()*num_metal_bins();
+      return bin_ages().size()*n_metal_bins();
    }
 
    real_type
@@ -191,6 +196,8 @@ namespace tao {
       file.seekg( 0 );
       for( unsigned ii = 0; ii < _waves.size(); ++ii )
          file >> _waves[ii];
+
+      LOGDLN( "Wavelengths: ", _waves );
    }
 
    void

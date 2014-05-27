@@ -3,9 +3,9 @@
 
 namespace tao {
 
-   hpc::timer timer( true );
+   hpc::real_timer timer( true );
 
-   hpc::timer::time_type
+   hpc::real_timer::time_type
    runtime()
    {
       return timer.total();

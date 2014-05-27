@@ -290,7 +290,7 @@ namespace tao {
                                                  " WHERE table_name = '" + _tbls[0] + "'" );
             }
 
-            // Biuld field types.
+            // Build field types.
             this->_field_types.clear();
             for( soci::rowset<soci::row>::const_iterator it = rs->begin(); it != rs->end(); ++it )
             {

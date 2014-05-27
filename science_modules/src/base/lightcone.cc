@@ -1,6 +1,8 @@
 #include <libhpc/numerics/coords.hh>
 #include <libhpc/system/deallocate.hh>
 #include <libhpc/system/reallocate.hh>
+#include <libhpc/numerics/coords.hh>
+#include <libhpc/numerics/clip.hh>
 #include "lightcone.hh"
 #include "lightcone_tile_iterator.hh"
 
@@ -35,16 +37,16 @@ namespace tao {
                             real_type z_min )
    {
       // Check values make sense.
-      ASSERT( ra_min >= 0.0 && ra_min <= 90.0,
-              "Minimum RA cannot be less than zero or greater than 90 degrees." );
-      ASSERT( ra_max >= 0.0 && ra_max <= 90.0,
-              "Maximum RA cannot be less than zero or greater than 90 degrees." );
+      ASSERT( ra_min >= 0.0 && ra_min <= 360.0,
+              "Minimum RA cannot be less than zero or greater than 360 degrees." );
+      ASSERT( ra_max >= 0.0 && ra_max <= 360.0,
+              "Maximum RA cannot be less than zero or greater than 360 degrees." );
       ASSERT( ra_min < ra_max,
               "Minimum RA must be less than maximum RA." );
-      ASSERT( dec_min >= 0.0 && dec_min <= 90.0,
-              "Minimum DEC cannot be less than zero or greater than 90 degrees." );
-      ASSERT( dec_max >= 0.0 && dec_max <= 90.0,
-              "Maximum DEC cannot be less than zero or greater than 90 degrees." );
+      ASSERT( dec_min >= -90 && dec_min <= 90.0,
+              "Minimum DEC cannot be less than -90 or greater than 90 degrees." );
+      ASSERT( dec_max >= -90.0 && dec_max <= 90.0,
+              "Maximum DEC cannot be less than -90 or greater than 90 degrees." );
       ASSERT( dec_min < dec_max,
               "Minimum DEC must be less than maximum DEC." );
       ASSERT( z_min >= 0.0,
@@ -127,8 +129,8 @@ namespace tao {
    void
    lightcone::set_min_ra( real_type ra_min )
    {
-      ASSERT( ra_min >= 0.0 && ra_min <= 90.0,
-              "Minimum RA cannot be less than zero or greater than 90 degrees." );
+      ASSERT( ra_min >= 0.0 && ra_min <= 360.0,
+              "Minimum RA cannot be less than zero or greater than 360 degrees." );
       ASSERT( to_radians( ra_min ) < _ra[1],
               "Minimum RA must be less than maximum RA." );
       _ra[0] = to_radians( ra_min );
@@ -138,8 +140,8 @@ namespace tao {
    void
    lightcone::set_max_ra( real_type ra_max )
    {
-      ASSERT( ra_max >= 0.0 && ra_max <= 90.0,
-              "Maximum RA cannot be less than zero or greater than 90 degrees." );
+      ASSERT( ra_max >= 0.0 && ra_max <= 360.0,
+              "Maximum RA cannot be less than zero or greater than 360 degrees." );
       ASSERT( to_radians( ra_max ) > _ra[0],
               "Minimum RA must be less than maximum RA." );
       _ra[1] = to_radians( ra_max );
@@ -149,8 +151,8 @@ namespace tao {
    void
    lightcone::set_min_dec( real_type dec_min )
    {
-      ASSERT( dec_min >= 0.0 && dec_min <= 90.0,
-              "Minimum DEC cannot be less than zero or greater than 90 degrees." );
+      ASSERT( dec_min >= -90.0 && dec_min <= 90.0,
+              "Minimum DEC cannot be less than -90 or greater than 90 degrees." );
       ASSERT( to_radians( dec_min ) < _dec[1],
               "Minimum DEC must be less than maximum DEC." );
       _dec[0] = to_radians( dec_min );
@@ -160,8 +162,8 @@ namespace tao {
    void
    lightcone::set_max_dec( real_type dec_max )
    {
-      ASSERT( dec_max >= 0.0 && dec_max <= 90.0,
-              "Maximum DEC cannot be less than zero or greater than 90 degrees." );
+      ASSERT( dec_max >= -90.0 && dec_max <= 90.0,
+              "Maximum DEC cannot be less than -90 or greater than 90 degrees." );
       ASSERT( to_radians( dec_max ) > _dec[0],
               "Minimum DEC must be less than maximum DEC." );
       _dec[1] = to_radians( dec_max );
@@ -276,6 +278,30 @@ namespace tao {
    lightcone::rng_engine() const
    {
       return _eng;
+   }
+
+   bool
+   lightcone::overlap( std::array<real_type,3> const& min,
+                       std::array<real_type,3> const& max ) const
+   {
+      LOGBLOCKT( "Checking overlap in box and lightcone: ", min, " - ", max );
+
+      // Precalculate some things for distance evaluations.
+      std::array<real_type,3> l, u, ecs_min, ecs_max;
+      ecs_min[0] = _ra[0] + _view_angle;
+      ecs_max[0] = _ra[1] + _view_angle;
+      ecs_min[1] = _dec[0];
+      ecs_max[1] = _dec[1];
+      ecs_min[2] = _dist[0];
+      ecs_max[2] = _dist[1];
+      for( unsigned ii = 0; ii < 3; ++ii )
+      {
+         l[ii] = min[ii] - _orig[ii];
+         u[ii] = max[ii] - _orig[ii];
+      }
+
+      // Call out to the collision routine.
+      return hpc::ecs_box_collision( ecs_min, ecs_max, l, u );
    }
 
    void

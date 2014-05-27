@@ -41,7 +41,7 @@ namespace tao {
       void
       add_parent( module& parent )
       {
-         LOGBLOCKILN( "Adding ", parent.name(), " to ", _name, "." );
+         LOGBLOCKI( "Adding ", parent.name(), " to ", _name, "." );
 
          // Check that we don't already have this guy.
          ASSERT( std::find( _parents.begin(), _parents.end(), &parent ) == _parents.end(),

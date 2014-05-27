@@ -8,7 +8,7 @@ namespace tao {
 
    typedef double real_type;
 
-   hpc::timer::time_type
+   hpc::real_timer::time_type
    runtime();
 
    // Simulations.

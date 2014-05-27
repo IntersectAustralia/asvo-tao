@@ -47,7 +47,7 @@ namespace tao {
          find_attribute( const string& name )
          {
             if( name == "wavelengths" )
-               return boost::any( _ssp.wavelengths() );
+               return boost::any( hpc::view<std::vector<double> const>( _ssp.wavelengths() ) );
             else
                return module_type::find_attribute( name );
          }
@@ -76,7 +76,6 @@ namespace tao {
             // Setup my SFH age line.
             _snap_ages.load_ages( _be->session(), _sim->hubble(), _sim->omega_m(), _sim->omega_l() );
             _sfh.set_snapshot_ages( &_snap_ages );
-            _sfh.set_bin_ages( &_ssp.bin_ages() );
 
             // Allocate history bin arrays.
             hpc::reallocate( _age_masses, _ssp.age_masses_size() );
@@ -177,7 +176,7 @@ namespace tao {
          const simulation* _sim;
          stellar_population _ssp;
          age_line<real_type> _snap_ages;
-         sfh<real_type> _sfh;
+         sfh _sfh;
          vector<real_type> _age_masses, _bulge_age_masses;
          // vector<real_type> _age_metals;
       };

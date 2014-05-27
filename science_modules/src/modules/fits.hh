@@ -11,7 +11,6 @@
 
 namespace tao {
    namespace modules {
-      using namespace hpc;
       using boost::algorithm::replace_all;
 
       template< class Backend >
@@ -24,7 +23,7 @@ namespace tao {
          typedef module<backend_type> module_type;
 
          static module_type*
-         factory( const string& name,
+         factory( const std::string& name,
                   pugi::xml_node base )
          {
             return new fits( name, base );
@@ -32,7 +31,7 @@ namespace tao {
 
       public:
 
-         fits( const string& name = string(),
+         fits( const std::string& name = std::string(),
                pugi::xml_node base = pugi::xml_node() )
             : module_type( name, base )
          {
@@ -57,7 +56,6 @@ namespace tao {
                return;
             module_type::initialise( global_dict );
 
-            auto timer = this->timer_start();
             LOGILN( "Initialising fits module.", setindent( 2 ) );
 
             // Cache dictionary.
@@ -65,11 +63,11 @@ namespace tao {
 
             // Get our information.
             if(mpi::comm::world.size()==1)
-                      _fn = global_dict.get<string>( "outputdir" ) + "/" + dict.get<std::string>( "filename" ) ;
+                      _fn = global_dict.get<std::string>( "outputdir" ) + "/" + dict.get<std::string>( "filename" ) ;
                   else
-                      _fn = global_dict.get<string>( "outputdir" ) + "/" + dict.get<std::string>( "filename" ) + "." + mpi::rank_string();
+                      _fn = global_dict.get<std::string>( "outputdir" ) + "/" + dict.get<std::string>( "filename" ) + "." + mpi::rank_string();
 
-            _fields = dict.get_list<string>( "fields" );
+            _fields = dict.get_list<std::string>( "fields" );
             ReadFieldsInfo(dict );
 
             // Open the file.
@@ -91,7 +89,6 @@ namespace tao {
          void
          execute()
          {
-            auto timer = this->timer_start();
             ASSERT( this->parents().size() == 1 );
 
             // Grab the batch from the parent object.
@@ -172,7 +169,7 @@ namespace tao {
 
          void
          _write_field( const tao::batch<real_type>& bat,
-                       const string& field,
+                       const std::string& field,
                        unsigned idx,
                        int ColIndex )
          {
@@ -182,7 +179,7 @@ namespace tao {
             switch( std::get<2>( val ) )
             {
                case tao::batch<real_type>::STRING:
-                  fits_write_col(_file,TSTRING,ColIndex,_records+1,1,1,(void*)bat.scalar<string>(field)[idx].c_str(),&status);
+                  fits_write_col(_file,TSTRING,ColIndex,_records+1,1,1,(void*)bat.scalar<std::string>(field)[idx].c_str(),&status);
                   LOGDLN(status);
                   ASSERT(status==0);
                   break;
@@ -228,8 +225,8 @@ namespace tao {
             }
          }
 
-         string
-		  _encode( string _toencode_string )
+         std::string
+		  _encode( std::string _toencode_string )
 		  {
 			 std::map<char, std::string> transformations;
 			 transformations['&']  = std::string("_");
@@ -275,7 +272,7 @@ namespace tao {
             auto lblit = _labels.cbegin();
             while( it != _fields.cend() )
             {
-               string FieldName=*lblit;
+               std::string FieldName=*lblit;
 
                FieldName=_encode(FieldName);
 
@@ -293,9 +290,9 @@ namespace tao {
                tform[index]=new char[3];
 
 
-               string Displayttype;
+               std::string Displayttype;
                Displayttype=ttype[index];
-               string Displayttunit;
+               std::string Displayttunit;
                Displayttunit=tunit[index];
 
                auto val = bat.field( *it );
@@ -331,7 +328,7 @@ namespace tao {
                index++;
             }
 
-            string TableName="New Table";
+            std::string TableName="New Table";
             if(fits_create_tbl(_file,BINARY_TBL,0,tfields,ttype,tform,tunit,TableName.c_str(),&status))
             {
                LOGDLN(status);
@@ -342,9 +339,9 @@ namespace tao {
          void
          ReadFieldsInfo( const xml_dict& dict )
          {
-            list<optional<std::string>> Templabels = dict.get_list_attributes<std::string>( "fields","label" );
-            list<optional<std::string>> Tempunits = dict.get_list_attributes<std::string>( "fields","units" );
-            list<optional<std::string>> Tempdescription = dict.get_list_attributes<std::string>( "fields","description" );
+            std::list<boost::optional<std::string>> Templabels = dict.get_list_attributes<std::string>( "fields","label" );
+            std::list<boost::optional<std::string>> Tempunits = dict.get_list_attributes<std::string>( "fields","units" );
+            std::list<boost::optional<std::string>> Tempdescription = dict.get_list_attributes<std::string>( "fields","description" );
 
             auto lblit = Templabels.cbegin();
             auto unitit = Tempunits.cbegin();
@@ -389,11 +386,11 @@ namespace tao {
          bool _isfirstgalaxy;
          bool _istableopened;
          fitsfile* _file;
-         string _fn;
-         list<string> _fields;
-         list<string> _labels;
-         list<string> _units;
-         list<string> _desc;
+         std::string _fn;
+         std::list<std::string> _fields;
+         std::list<std::string> _labels;
+         std::list<std::string> _units;
+         std::list<std::string> _desc;
          unsigned long long _records;
          tao::filter const* _filt;
       };

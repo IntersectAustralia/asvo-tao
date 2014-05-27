@@ -14,8 +14,8 @@ namespace tao {
                              char* argv[] )
       : mpi::application( argc, argv )
    {
-      // Start the timer straight away.
-      tao_start_time = timer();
+      // // Start the timer straight away.
+      // tao_start_time = timer();
 
       // Check for missing arguments.
       EXCEPT( argc >= 3, "Insufficient arguments. "
@@ -41,7 +41,7 @@ namespace tao {
       // one rank.
 #ifndef NLOG
       if( mpi::comm::world.size() == 1 )
-	 LOG_PUSH( new hpc::logging::stdout( hpc::logging::info ) );
+	 LOG_PUSH( new hpc::log::stdout( hpc::log::info ) );
 #endif
 
       // Check that the files exists.
@@ -86,7 +86,7 @@ namespace tao {
       LOGDLN("LOG DIRECTORY:"+xml.get<string>( "logdir" ) );
       LOGDLN("SubJobIndex:"+xml.get<string>( "subjobindex" ) );
       _setup_log( xml.get<string>( "logdir" ) + "/tao.log."+ subjobindex);
-      LOG_PUSH( new mpi::logger( xml.get<string>( "logdir" ) + "/debug.log." + subjobindex, logging::debug ) );
+      LOG_PUSH( new mpi::logger( xml.get<string>( "logdir" ) + "/debug.log." + subjobindex, log::debug ) );
 
       // Initialise all the modules.
       for( auto module : _fact )
@@ -335,7 +335,7 @@ namespace tao {
       {
 #ifndef NLOG
          LOGDLN( "Setting logging file to: ", filename );
-         logging::file* Logf=new logging::file( filename, logging::info );
+         log::file* Logf=new log::file( filename, log::info );
          Logf->add_tag("progress");
          LOG_PUSH(Logf);
 #endif
