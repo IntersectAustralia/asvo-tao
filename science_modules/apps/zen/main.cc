@@ -1092,7 +1092,7 @@ init_tao()
 
    // Setup initial simulation.
    lc = new lightcone( cur_sim );
-   lc->set_geometry( 20, 270, -35, 70, 0.2, 0.09 );
+   lc->set_geometry( 40, 50, 40, 50, 0.06 );
    update_tao();
 
    // Load ages and SSP.

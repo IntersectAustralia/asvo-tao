@@ -6,6 +6,7 @@ default_version = subprocess.check_output(['git', 'rev-parse', 'HEAD']).strip()
 args = (arguments()
         ('--prefix', default='/usr/local', help='Installation path.')
         ('--enable-debug', dest='debug', action='boolean', default=False, help='Enable/disable debugging mode.')
+        ('--enable-libc-debug', dest='libc_debug', action='boolean', default=False, help='Enable/disable libc debugging mode.')
         ('--enable-preprocess', dest='preprocess', action='boolean', default=False, help='Build in special preprocessing mode.')
         ('--enable-instrument', dest='instrument', action='boolean', default=False, help='Enable/disable instrumentation.')
         ('--enable-stacktrace', dest='stacktrace', action='boolean', default=False, help='Enable/disable debugging stacktrace.')
@@ -35,8 +36,7 @@ cc_opts = (
             rpath_dirs=['build/debug/lib'],
             header_dirs=['build/debug/include', 'build/debug/include/tao'],
             optimise=0,
-            symbols=True,
-            define=['_GLIBCXX_DEBUG']) +
+            symbols=True) +
     options(args.debug == False,
             prefix='build/optimised',
             library_dirs=['build/optimised/lib'],
@@ -45,7 +45,8 @@ cc_opts = (
             optimise=3,
             symbols=False,
             define=['NDEBUG', 'NLOGTRIVIAL', 'NLOGDEBUG']) +
-    options(args.preprocess    == True, define=['PREPROCESSING']) +
+    options(args.libc_debug    == True,  define=['_GLIBCXX_DEBUG']) +
+    options(args.preprocess    == True,  define=['PREPROCESSING']) +
     options(args.instrument    == False, define=['NINSTRUMENT']) +
     options(args.logging       == False, define=['NLOG', 'NLOGDEBUG']) +
     options(args.debug_logging == False, define=['NLOGDEBUG']) +
