@@ -264,30 +264,38 @@ draw_cap( const lightcone& lc,
          if( out )
          {
             hpc::num::ecs_to_cartesian<float>( ra[0], dec[0], x, y, z, dist );
+            x += lc.origin()[0]; y += lc.origin()[1]; z += lc.origin()[2];
             glNormal3f( x, z, -y );
             glVertex3f( x, z, -y );
             hpc::num::ecs_to_cartesian<float>( ra[1], dec[0], x, y, z, dist );
+            x += lc.origin()[0]; y += lc.origin()[1]; z += lc.origin()[2];
             glNormal3f( x, z, -y );
             glVertex3f( x, z, -y );
             hpc::num::ecs_to_cartesian<float>( ra[1], dec[1], x, y, z, dist );
+            x += lc.origin()[0]; y += lc.origin()[1]; z += lc.origin()[2];
             glNormal3f( x, z, -y );
             glVertex3f( x, z, -y );
             hpc::num::ecs_to_cartesian<float>( ra[0], dec[1], x, y, z, dist );
+            x += lc.origin()[0]; y += lc.origin()[1]; z += lc.origin()[2];
             glNormal3f( x, z, -y );
             glVertex3f( x, z, -y );
          }
          else
          {
             hpc::num::ecs_to_cartesian<float>( ra[1], dec[0], x, y, z, dist );
+            x += lc.origin()[0]; y += lc.origin()[1]; z += lc.origin()[2];
             glNormal3f( -x, -z, y );
             glVertex3f( x, z, -y );
             hpc::num::ecs_to_cartesian<float>( ra[0], dec[0], x, y, z, dist );
+            x += lc.origin()[0]; y += lc.origin()[1]; z += lc.origin()[2];
             glNormal3f( -x, -z, y );
             glVertex3f( x, z, -y );
             hpc::num::ecs_to_cartesian<float>( ra[0], dec[1], x, y, z, dist );
+            x += lc.origin()[0]; y += lc.origin()[1]; z += lc.origin()[2];
             glNormal3f( -x, -z, y );
             glVertex3f( x, z, -y );
             hpc::num::ecs_to_cartesian<float>( ra[1], dec[1], x, y, z, dist );
+            x += lc.origin()[0]; y += lc.origin()[1]; z += lc.origin()[2];
             glNormal3f( -x, -z, y );
             glVertex3f( x, z, -y );
          }
@@ -307,11 +315,15 @@ draw_edges( const lightcone& lc,
    array<GLfloat,3> low_norm, upp_norm;
    hpc::num::ecs_to_cartesian<float>( lc.min_ra(), lc.min_dec(), x, y, z, start );
    hpc::num::ecs_to_cartesian<float>( lc.max_ra(), lc.min_dec(), a, b, c, start );
+   x += lc.origin()[0]; y += lc.origin()[1]; z += lc.origin()[2];
+   a += lc.origin()[0]; b += lc.origin()[1]; c += lc.origin()[2];
    low_norm[0] = -(y*c - z*b);
    low_norm[1] = -(z*a - x*c);
    low_norm[2] = -(x*b - y*a);
    hpc::num::ecs_to_cartesian<float>( lc.min_ra(), lc.max_dec(), x, y, z, start );
    hpc::num::ecs_to_cartesian<float>( lc.max_ra(), lc.max_dec(), a, b, c, start );
+   x += lc.origin()[0]; y += lc.origin()[1]; z += lc.origin()[2];
+   a += lc.origin()[0]; b += lc.origin()[1]; c += lc.origin()[2];
    upp_norm[0] = y*c - z*b;
    upp_norm[1] = z*a - x*c;
    upp_norm[2] = x*b - y*a;
@@ -324,23 +336,31 @@ draw_edges( const lightcone& lc,
       glBegin( GL_POLYGON );
       glNormal3f( low_norm[0], low_norm[2], -low_norm[1] );
       hpc::num::ecs_to_cartesian<float>( ra[0], lc.min_dec(), x, y, z, finish );
+      x += lc.origin()[0]; y += lc.origin()[1]; z += lc.origin()[2];
       glVertex3f( x, z, -y );
       hpc::num::ecs_to_cartesian<float>( ra[1], lc.min_dec(), x, y, z, finish );
+      x += lc.origin()[0]; y += lc.origin()[1]; z += lc.origin()[2];
       glVertex3f( x, z, -y );
       hpc::num::ecs_to_cartesian<float>( ra[1], lc.min_dec(), x, y, z, start );
+      x += lc.origin()[0]; y += lc.origin()[1]; z += lc.origin()[2];
       glVertex3f( x, z, -y );
       hpc::num::ecs_to_cartesian<float>( ra[0], lc.min_dec(), x, y, z, start );
+      x += lc.origin()[0]; y += lc.origin()[1]; z += lc.origin()[2];
       glVertex3f( x, z, -y );
       glEnd();
       glBegin( GL_POLYGON );
       glNormal3f( upp_norm[0], upp_norm[2], -upp_norm[1] );
       hpc::num::ecs_to_cartesian<float>( ra[1], lc.max_dec(), x, y, z, finish );
+      x += lc.origin()[0]; y += lc.origin()[1]; z += lc.origin()[2];
       glVertex3f( x, z, -y );
       hpc::num::ecs_to_cartesian<float>( ra[0], lc.max_dec(), x, y, z, finish );
+      x += lc.origin()[0]; y += lc.origin()[1]; z += lc.origin()[2];
       glVertex3f( x, z, -y );
       hpc::num::ecs_to_cartesian<float>( ra[0], lc.max_dec(), x, y, z, start );
+      x += lc.origin()[0]; y += lc.origin()[1]; z += lc.origin()[2];
       glVertex3f( x, z, -y );
       hpc::num::ecs_to_cartesian<float>( ra[1], lc.max_dec(), x, y, z, start );
+      x += lc.origin()[0]; y += lc.origin()[1]; z += lc.origin()[2];
       glVertex3f( x, z, -y );
       glEnd();
    }
@@ -348,11 +368,15 @@ draw_edges( const lightcone& lc,
    // Second two normals.
    hpc::num::ecs_to_cartesian<float>( lc.min_ra(), lc.min_dec(), x, y, z, start );
    hpc::num::ecs_to_cartesian<float>( lc.min_ra(), lc.max_dec(), a, b, c, start );
+   x += lc.origin()[0]; y += lc.origin()[1]; z += lc.origin()[2];
+   a += lc.origin()[0]; b += lc.origin()[1]; c += lc.origin()[2];
    low_norm[0] = y*c - z*b;
    low_norm[1] = z*a - x*c;
    low_norm[2] = x*b - y*a;
    hpc::num::ecs_to_cartesian<float>( lc.max_ra(), lc.min_dec(), x, y, z, start );
    hpc::num::ecs_to_cartesian<float>( lc.max_ra(), lc.max_dec(), a, b, c, start );
+   x += lc.origin()[0]; y += lc.origin()[1]; z += lc.origin()[2];
+   a += lc.origin()[0]; b += lc.origin()[1]; c += lc.origin()[2];
    upp_norm[0] = -(y*c - z*b);
    upp_norm[1] = -(z*a - x*c);
    upp_norm[2] = -(x*b - y*a);
@@ -365,23 +389,31 @@ draw_edges( const lightcone& lc,
       glBegin( GL_POLYGON );
       glNormal3f( low_norm[0], low_norm[2], -low_norm[1] );
       hpc::num::ecs_to_cartesian<float>( lc.min_ra(), dec[1], x, y, z, finish );
+      x += lc.origin()[0]; y += lc.origin()[1]; z += lc.origin()[2];
       glVertex3f( x, z, -y );
       hpc::num::ecs_to_cartesian<float>( lc.min_ra(), dec[0], x, y, z, finish );
+      x += lc.origin()[0]; y += lc.origin()[1]; z += lc.origin()[2];
       glVertex3f( x, z, -y );
       hpc::num::ecs_to_cartesian<float>( lc.min_ra(), dec[0], x, y, z, start );
+      x += lc.origin()[0]; y += lc.origin()[1]; z += lc.origin()[2];
       glVertex3f( x, z, -y );
       hpc::num::ecs_to_cartesian<float>( lc.min_ra(), dec[1], x, y, z, start );
+      x += lc.origin()[0]; y += lc.origin()[1]; z += lc.origin()[2];
       glVertex3f( x, z, -y );
       glEnd();
       glBegin( GL_POLYGON );
       glNormal3f( upp_norm[0], upp_norm[2], -upp_norm[1] );
       hpc::num::ecs_to_cartesian<float>( lc.max_ra(), dec[0], x, y, z, finish );
+      x += lc.origin()[0]; y += lc.origin()[1]; z += lc.origin()[2];
       glVertex3f( x, z, -y );
       hpc::num::ecs_to_cartesian<float>( lc.max_ra(), dec[1], x, y, z, finish );
+      x += lc.origin()[0]; y += lc.origin()[1]; z += lc.origin()[2];
       glVertex3f( x, z, -y );
       hpc::num::ecs_to_cartesian<float>( lc.max_ra(), dec[1], x, y, z, start );
+      x += lc.origin()[0]; y += lc.origin()[1]; z += lc.origin()[2];
       glVertex3f( x, z, -y );
       hpc::num::ecs_to_cartesian<float>( lc.max_ra(), dec[0], x, y, z, start );
+      x += lc.origin()[0]; y += lc.origin()[1]; z += lc.origin()[2];
       glVertex3f( x, z, -y );
       glEnd();
    }
@@ -530,7 +562,7 @@ draw_galaxies()
          // glRotatef( -rotate_x, 1, 0, 0 );
          glColor3fv( col_map[mass[ii]].data() );
          glBegin( GL_POINTS );
-         glVertex3f( pos_x[ii], pos_z[ii], -pos_y[ii] );
+         glVertex3f( pos_x[ii] + lc->origin()[0], pos_z[ii] + lc->origin()[2], -(pos_y[ii] + lc->origin()[1]) );
          glEnd();
          // glBegin( GL_POLYGON );
          // // glTexCoord2f( 0, 0 );
@@ -568,6 +600,25 @@ draw_tables()
       }
       draw_box( min, max );
    }
+}
+
+void
+draw_origin()
+{
+   glDisable( GL_DEPTH_TEST );
+   glDisable( GL_CULL_FACE );
+   glDisable( GL_LIGHTING );
+   glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+   glColor3ub( 0xa0, 0x00, 0x27 );
+   glBegin( GL_LINES );
+   glVertex3f( 0.0, 0.0, 0.0 );
+   glVertex3f( lc->simulation()->box_size(), 0.0, 0.0 );
+   glVertex3f( 0.0, 0.0, 0.0 );
+   glVertex3f( 0.0, lc->simulation()->box_size(), 0.0 );
+   glVertex3f( 0.0, 0.0, 0.0 );
+   glVertex3f( 0.0, 0.0, -lc->simulation()->box_size() );
+   glEnd();
+   glEnable( GL_DEPTH_TEST );
 }
 
 float
@@ -634,6 +685,8 @@ render_main()
          ++ii;
       }
    }
+
+   draw_origin();
 
    // glLoadIdentity();
    // glDisable( GL_LIGHTING );
@@ -1180,6 +1233,22 @@ to_unsigned_long_long( const string& str )
 }
 
 void
+set_geom( boost::smatch const& match )
+{
+   auto min_ra = to_double( match[1] );
+   auto max_ra = to_double( match[2] );
+   auto min_dec = to_double( match[3] );
+   auto max_dec = to_double( match[4] );
+   auto min_z = to_double( match[5] );
+   auto max_z = to_double( match[6] );
+   if( min_ra && max_ra && min_dec && max_dec && min_z && max_z )
+   {
+      lc->set_geometry( *min_ra, *max_ra, *min_dec, *max_dec, *max_z, *min_z );
+      update_tao();
+   }
+}
+
+void
 set_min_ra( boost::smatch const& match )
 {
    auto val = to_double( match[1] );
@@ -1416,6 +1485,7 @@ start()
    init_tao();
 
    // Setup commands.
+   lc_ctx.add( R"(\s*set\s+geom\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s*)", set_geom );
    lc_ctx.add( R"(\s*set\s+min_ra\s+([^\s]+)\s*)", set_min_ra );
    lc_ctx.add( R"(\s*set\s+max_ra\s+([^\s]+)\s*)", set_max_ra );
    lc_ctx.add( R"(\s*set\s+min_dec\s+([^\s]+)\s*)", set_min_dec );
@@ -1428,7 +1498,7 @@ start()
    lc_ctx.add( R"(\s*view\s+tile\s*)", set_tile_view );
    lc_ctx.add( R"(\s*view\s+image\s*)", set_image_view );
    lc_ctx.add( R"(\s*set\s+pencil\s*)", set_pencil_lc );
-   lc_ctx.add( R"(\s*set\s+origin\s+(\d+)\s+(\d+)\s+(\d+)\s*)", set_origin );
+   lc_ctx.add( R"(\s*set\s+origin\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s*)", set_origin );
    cmd_chain.add( lc_ctx );
 
    // Hand over to GLUT.
@@ -1439,7 +1509,7 @@ int
 main( int argc, char** argv )
 {
    mpi::initialise( argc, argv );
-   LOG_PUSH( new hpc::log::stdout( hpc::log::info ) );
+   LOG_PUSH( new hpc::log::stdout( hpc::log::debug ) );
    glutInit( &argc, argv );
 
    try

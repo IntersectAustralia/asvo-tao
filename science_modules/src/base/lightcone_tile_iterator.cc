@@ -19,6 +19,8 @@ namespace tao {
       std::array<real_type,3> crd;
       hpc::num::ecs_to_cartesian<real_type>( lc.min_ra() + lc.viewing_angle(), lc.min_dec(),
 					     crd[0], crd[1], crd[2], lc.min_dist() );
+      for( int ii = 0; ii < 3; ++ii )
+         crd[ii] += lc.origin()[ii];
 
       // Make the box corner line up.
       std::array<int,3> first;
@@ -36,8 +38,52 @@ namespace tao {
 	    crd[ii] = first[ii]*bs;
 	 }
       }
-      ASSERT( lc.overlap( crd, std::array<real_type,3>{ crd[0] + bs, crd[1] + bs, crd[2] + bs } ),
-              "There should always be overlap between first tile and lightcone." );
+
+      // Check all adjacent boxes, one will be in overlap.
+      bool ok = lc.overlap( crd, std::array<real_type,3>{ crd[0] + bs, crd[1] + bs, crd[2] + bs } );
+      if( !ok )
+      {
+         first[0]--;
+         crd[0] -= bs;
+         ok = lc.overlap( crd, std::array<real_type,3>{ crd[0] + bs, crd[1] + bs, crd[2] + bs } );
+      }
+      if( !ok )
+      {
+         first[1]--;
+         crd[1] -= bs;
+         ok = lc.overlap( crd, std::array<real_type,3>{ crd[0] + bs, crd[1] + bs, crd[2] + bs } );
+      }
+      if( !ok )
+      {
+         first[0]++;
+         crd[0] += bs;
+         ok = lc.overlap( crd, std::array<real_type,3>{ crd[0] + bs, crd[1] + bs, crd[2] + bs } );
+      }
+      if( !ok )
+      {
+         first[2]--;
+         crd[2] -= bs;
+         ok = lc.overlap( crd, std::array<real_type,3>{ crd[0] + bs, crd[1] + bs, crd[2] + bs } );
+      }
+      if( !ok )
+      {
+         first[1]++;
+         crd[1] += bs;
+         ok = lc.overlap( crd, std::array<real_type,3>{ crd[0] + bs, crd[1] + bs, crd[2] + bs } );
+      }
+      if( !ok )
+      {
+         first[0]--;
+         crd[0] -= bs;
+         ok = lc.overlap( crd, std::array<real_type,3>{ crd[0] + bs, crd[1] + bs, crd[2] + bs } );
+      }
+      if( !ok )
+      {
+         first[1]--;
+         crd[1] -= bs;
+         ok = lc.overlap( crd, std::array<real_type,3>{ crd[0] + bs, crd[1] + bs, crd[2] + bs } );
+      }
+      ASSERT( ok, "Failed to locate initial overlap." );
 
       // Push it onto the stack to be processed, then set it
       // up to be returned.

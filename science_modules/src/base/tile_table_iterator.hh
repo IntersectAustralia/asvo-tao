@@ -72,11 +72,9 @@ namespace tao {
             _begin();
          }
 
-         tile_table_iterator( const tile_table_iterator& src )
+         tile_table_iterator( tile_table_iterator const& src )
             : _be( src._be ),
               _tile( src._tile ),
-              _ph( src._ph ),
-              _planes( src._planes ),
               _walls( src._walls ),
               _tables( src._tables ),
               _work( src._work ),
@@ -88,12 +86,10 @@ namespace tao {
          }
 
          tile_table_iterator&
-         operator=( const tile_table_iterator& op )
+         operator=( tile_table_iterator const& op )
          {
             _be = op._be;
             _tile = op._tile;
-            _ph = op._ph;
-            _planes = op._planes;
             _walls = op._walls;
             _tables = op._tables;
             _work = op._work;
@@ -106,43 +102,31 @@ namespace tao {
             return *this;
          }
 
-         const typename hpc::view<std::vector<std::array<real_type,3>>>
-         polyhedra() const
-         {
-            return _ph;
-         }
-
-         const std::list<std::array<real_type,4>>&
-         planes() const
-         {
-            return _planes;
-         }
-
-         const backend_type*
+         backend_type const*
          backend() const
          {
             return _be;
          }
 
-         const tao::tile<real_type>*
+         tao::tile<real_type> const*
          tile() const
          {
             return _tile;
          }
 
-         const std::vector<std::array<real_type,3>>&
+         std::vector<std::array<real_type,3>> const&
          walls() const
          {
             return _walls;
          }
 
-         const std::vector<table_type>&
+         std::vector<table_type> const&
          tables() const
          {
             return _tables;
          }
 
-         const typename std::vector<table_type>::const_iterator&
+         typename std::vector<table_type>::const_iterator const&
          table_iter() const
          {
             return _it;
@@ -158,7 +142,7 @@ namespace tao {
          }
 
          bool
-         equal( const tile_table_iterator& op ) const
+         equal( tile_table_iterator const& op ) const
          {
             return _done == op._done;
          }
@@ -182,62 +166,51 @@ namespace tao {
             real_type ra_max = _tile->lightcone()->max_ra() + _tile->lightcone()->viewing_angle();
             real_type dec_min = _tile->lightcone()->min_dec();
             real_type dec_max = _tile->lightcone()->max_dec();
+            real_type dist_min = _tile->lightcone()->min_dist();
             real_type dist_max = _tile->lightcone()->max_dist();
 
-            // There are some situations where trying to clip using
-            // an approximate cone bounding box won't work.
-            if( !(hpc::approx( dec_max, 90.0, 1e-3 ) ||
-                  hpc::approx( dec_min, 90.0, 1e-3 ) ||
-                  ra_max - ra_min >= 45.0 ||
-                  dec_max - dec_min >= 45.0) )
+            // Need the info in array format.
+            std::array<real_type,3> ecs_min = { ra_min, dec_min, dist_min };
+            std::array<real_type,3> ecs_max = { ra_max, dec_max, dist_max };
+            LOGDLN( "Have minimum ECS coordinates: ", ecs_min );
+            LOGDLN( "Have maximum ECS coordinates: ", ecs_max );
+
+            // Cache some information.
+            std::array<unsigned,3> const& axis = _tile->rotation();
+            std::array<real_type,3> const& offs = _tile->translation();
+            LOGDLN( "Using rotation: ", axis );
+            LOGDLN( "Using translation: ", offs );
+
+            // Shift each table bounding box along each wall direction to
+            // see if there is any periodic overlap with the cone.
+            for( auto it = _be->table_begin(); it != _be->table_end(); ++it )
             {
-               // Need the points of the polyhedron. Don't forget to
-               // offset by the tile we're using.
-               _calc_polyhedron();
-               for( auto& pnt : _ph )
+               LOGBLOCKD( "Current table box (sans origin): ", it->min(), ", ", it->max() );
+
+               // Apply each periodic side to the box and check.
+               for( auto const& wall : _walls )
                {
-                  for( unsigned ii = 0; ii < 3; ++ii )
+                  LOGBLOCKD( "Using wall: ", wall );
+
+                  std::array<real_type,3> tmp_min, tmp_max;
+                  for( unsigned jj = 0; jj < 3; ++jj )
                   {
-                     pnt[ii] -= _tile->min()[ii];
-                     pnt[ii] += _tile->origin()[ii];
+                     real_type box_size = _tile->max()[axis[jj]] - _tile->min()[axis[jj]];
+                     tmp_min[jj] = _tile->min()[jj] +
+                                   it->min()[axis[jj]] + 
+                                   wall[axis[jj]]*box_size + 
+                                   offs[axis[jj]];
+                     tmp_max[jj] = _tile->min()[jj] +
+                                   it->max()[axis[jj]] + 
+                                   wall[axis[jj]]*box_size + 
+                                   offs[axis[jj]];
+                  }
+                  if( _check_overlap( ecs_min, ecs_max, tmp_min, tmp_max ) )
+                  {
+                     tables.insert( *it );
+                     break;
                   }
                }
-
-               // Now convert to planes.
-               _calc_polygon_planes();
-
-               // Cache some information.
-               std::array<unsigned,3> const& axis = _tile->rotation();
-               std::array<real_type,3> const& offs = _tile->translation();
-
-               // Shift each table bounding box along each wall direction to
-               // see if there is any periodic overlap with the cone.
-               for( auto it = _be->table_begin(); it != _be->table_end(); ++it )
-               {
-                  // Apply each periodic side to the box and check.
-                  for( const auto& wall : _walls )
-                  {
-                     std::array<real_type,3> tmp_min, tmp_max;
-                     for( unsigned jj = 0; jj < 3; ++jj )
-                     {
-                        real_type box_size = _tile->max()[axis[jj]] - _tile->min()[axis[jj]];
-                        tmp_min[jj] = it->min()[axis[jj]] + wall[axis[jj]]*box_size + offs[axis[jj]];
-                        tmp_max[jj] = it->max()[axis[jj]] + wall[axis[jj]]*box_size + offs[axis[jj]];
-                     }
-                     if( _check_overlap( tmp_min, tmp_max ) )
-                     {
-                        tables.insert( *it );
-                        break;
-                     }
-                  }
-               }
-            }
-
-            // When we can't use the geometry, just process all tables.
-            else
-            {
-               for( auto it = _be->table_begin(); it != _be->table_end(); ++it )
-                  tables.insert( *it );
             }
 
             // If we've been given a work vector to use, then do so.
@@ -250,21 +223,21 @@ namespace tao {
                std::vector<table_type> tbl_vec( tables.size() );
                std::copy( tables.begin(), tables.end(), tbl_vec.begin() );
                std::sort( tbl_vec.begin(), tbl_vec.end(),
-                          []( const table_type& x, const table_type& y )
+                          []( table_type const& x, table_type const& y )
                           {
                              return y.size() < x.size();
                           } );
 #ifndef NLOGDEBUG
                LOGD( "Ordered table vector: " );
-               for( const auto& tbl : tbl_vec )
+               for( auto const& tbl : tbl_vec )
                   LOGD( "(", tbl.name(), ", ", tbl.size(), "), " );
                LOGDLN( "" );
 #endif
 
                // Sort the work vector based on lowest amount of work done.
                std::sort( work.begin(), work.end(),
-                          []( const std::pair<unsigned long long,int>& x,
-                              const std::pair<unsigned long long,int>& y )
+                          []( std::pair<unsigned long long,int> const& x,
+                              std::pair<unsigned long long,int> const& y )
                           {
                              return x.first < y.first;
                           } );
@@ -318,244 +291,53 @@ namespace tao {
          }
 
          bool
-         _check_overlap( const std::array<real_type,3>& min,
-                         const std::array<real_type,3>& max )
+         _check_overlap( std::array<real_type,3> const& ecs_min,
+                         std::array<real_type,3> const& ecs_max,
+                         std::array<real_type,3> const& min,
+                         std::array<real_type,3> const& max )
          {
+            LOGBLOCKD( "Checking overlap with box: ", min, ", ", max );
+
             // Clip the box against the parent box.
-            std::array<real_type,3> par_min{ { 0, 0, 0 } }, par_max;
-            for( unsigned ii = 0; ii < 3; ++ii )
-               par_max[ii] = _tile->max()[ii] - _tile->min()[ii];
             std::array<real_type,3> clip_min, clip_max;
             box_box_clip(
                min.begin(), min.end(),
                max.begin(),
-               par_min.begin(),
-               par_max.begin(),
+               _tile->min().begin(),
+               _tile->max().begin(),
                clip_min.begin(),
                clip_max.begin()
                );
 
             // If there is no volume left, return false.
             if( hpc::approx( box_volume( clip_min.begin(), clip_min.end(), clip_max.begin() ), 0.0, 1e-8 ) )
+            {
+               LOGDLN( "Outside tile." );
                return false;
+            }
+
+            // Move it as a result of the cone origin.
+            for( int ii = 0; ii < 3; ++ii )
+            {
+               clip_min[ii] -= _tile->origin()[ii];
+               clip_max[ii] -= _tile->origin()[ii];
+            }
 
             // Check for overlap with cone.
-            for( const auto& plane : _planes )
-            {
-               if( !box_half_space_overlap( clip_min.begin(), clip_min.end(), clip_max.begin(), plane.begin() ) )
-                  return false;
-            }
-
-            return true;
-         }
-
-         void
-         _calc_polyhedron()
-         {
-            // Cache some information from the lightcone.
-            real_type ra_min = _tile->lightcone()->min_ra() + _tile->lightcone()->viewing_angle();
-            real_type ra_max = _tile->lightcone()->max_ra() + _tile->lightcone()->viewing_angle();
-            real_type dec_min = _tile->lightcone()->min_dec();
-            real_type dec_max = _tile->lightcone()->max_dec();
-            real_type dist_max = _tile->lightcone()->max_dist();
-
-            // Use midpoints of the RA and DEC to find the center
-            // point of the furthest plane.
-            std::array<real_type,4> end_plane;
-            hpc::num::ecs_to_cartesian(
-               ra_min + 0.5*(ra_max - ra_min),
-               dec_min + 0.5*(dec_max - dec_min),
-               end_plane[0], end_plane[1], end_plane[2]
-               );
-            end_plane[3] = dist_max;
-
-            // Use the midpoint of the RA and the lowest DEC to
-            // get the point at the bottom of the curvature.
-            std::array<real_type,4> low_plane;
-            {
-               hpc::num::ecs_to_cartesian(
-                  ra_min + 0.5*(ra_max - ra_min),
-                  dec_min,
-                  low_plane[0], low_plane[1], low_plane[2]
-                  );
-
-               // Cross products to get proper plane.
-               std::array<real_type,3> z_axis{ { 0, 0, 1 } };
-               std::array<real_type,3> left;
-               cross_product_3( low_plane, z_axis, left );
-               cross_product_3( low_plane, left, z_axis );
-               real_type inv_mag = 1.0/magnitude( z_axis.begin(), z_axis.end() );
-               low_plane[0] = inv_mag*z_axis[0];
-               low_plane[1] = inv_mag*z_axis[1];
-               low_plane[2] = inv_mag*z_axis[2];
-               low_plane[3] = 0;
-            }
-
-            // Calculate the intersection of each of the four lines
-            // coming from the edges of my light cone with the
-            // plane.
-            std::array<real_type,3> zero{ { 0, 0, 0 } };
-            std::array<real_type,3> line;
-            std::array<real_type,3> pnt;
-            std::array<real_type,3> top0, top1, low0, low1;
-
-            // Calculate temporary points.
-            hpc::num::ecs_to_cartesian( ra_min, dec_max, top0[0], top0[1], top0[2] );
-            hpc::num::ecs_to_cartesian( ra_max, dec_max, top1[0], top1[1], top1[2] );
-            hpc::num::ecs_to_cartesian( ra_min, dec_min, low0[0], low0[1], low0[2] );
-            hpc::num::ecs_to_cartesian( ra_max, dec_min, low1[0], low1[1], low1[2] );
-
-            // Intersect with end plane to get new points.
-            line_half_space_intersection(
-               zero.begin(), zero.end(),
-               top0.begin(), top0.end(),
-               end_plane.begin(),
-               pnt.begin()
-               );
-            top0 = pnt;
-            line_half_space_intersection(
-               zero.begin(), zero.end(),
-               top1.begin(), top1.end(),
-               end_plane.begin(),
-               pnt.begin()
-               );
-            top1 = pnt;
-            line_half_space_intersection(
-               zero.begin(), zero.end(),
-               low0.begin(), low0.end(),
-               end_plane.begin(),
-               pnt.begin()
-               );
-            low0 = pnt;
-            line_half_space_intersection(
-               zero.begin(), zero.end(),
-               low1.begin(), low1.end(),
-               end_plane.begin(),
-               pnt.begin()
-               );
-            low1 = pnt;
-
-            // Use the points to calculate the intersection with the low plane,
-            // thus providing the bottom end points.
-            line_half_space_intersection(
-               top0.begin(), top0.end(),
-               low0.begin(), low0.end(),
-               low_plane.begin(),
-               pnt.begin()
-               );
-            low0 = pnt;
-            line_half_space_intersection(
-               top1.begin(), top1.end(),
-               low1.begin(), low1.end(),
-               low_plane.begin(),
-               pnt.begin()
-               );
-            low1 = pnt;
-
-            // Push points into the list.
-            _ph.clear();
-            _ph.push_back( std::array<real_type,3>{ { 0, 0, 0 } } );
-            _ph.push_back( low0 );
-            _ph.push_back( low1 );
-            _ph.push_back( top0 );
-            _ph.push_back( top1 );
-         }
-
-         void
-         _calc_polygon_planes()
-         {
-            _planes.clear();
-            std::array<real_type,4> plane;
-            _calc_plane( _ph[0], _ph[1], _ph[3], plane );
-            _planes.push_back( plane );
-            _calc_plane( _ph[0], _ph[3], _ph[4], plane );
-            _planes.push_back( plane );
-            _calc_plane( _ph[0], _ph[4], _ph[2], plane );
-            _planes.push_back( plane );
-            _calc_plane( _ph[0], _ph[2], _ph[1], plane );
-            _planes.push_back( plane );
-            _calc_plane( _ph[1], _ph[2], _ph[3], plane );
-            _planes.push_back( plane );
-            LOGDLN( "Table iterator planes: ", _planes );
-
-#ifndef NDEBUG
-            // Do a quick sanity check. Pick two points, one inside
-            // and one outside and check they work correctly.
-            std::array<real_type,3> in_pnt{ {
-               0.2*_ph[0][0],
-               0.2*_ph[0][1],
-               0.2*_ph[0][2]
-               } };
-            for( unsigned ii = 1; ii < 5; ++ii )
-            {
-               in_pnt[0] += 0.2*_ph[ii][0];
-               in_pnt[1] += 0.2*_ph[ii][1];
-               in_pnt[2] += 0.2*_ph[ii][2];
-            }
-            std::array<real_type,3> out_pnt{ {
-               _ph[0][0] - 1.0,
-               _ph[0][1] - 1.0,
-               _ph[0][2] - 1.0
-               } };
-            bool in = true;
-            for( const auto& plane : _planes )
-            {
-               if( !inside( in_pnt.begin(), in_pnt.end(), plane.begin() ) )
-               {
-                  LOGBLOCKD( "Not inside: " );
-                  LOGDLN( "Plane: ", plane );
-                  LOGDLN( "Point: ", in_pnt );
-                  LOGDLN( "Evaluated: ", half_space_eval( in_pnt.begin(), in_pnt.end(), plane.begin() ) );
-                  in = false;
-                  break;
-               }
-            }
-            ASSERT( in );
-            in = true;
-            for( const auto& plane : _planes )
-            {
-               if( !inside( out_pnt.begin(), out_pnt.end(), plane.begin() ) )
-               {
-                  in = false;
-                  break;
-               }
-            }
-            ASSERT( !in );
+            auto res = hpc::ecs_box_collision( ecs_min, ecs_max, clip_min, clip_max );
+#ifndef NLOG
+            if( res )
+               LOGDLN( "Overlap with cone." );
+            else
+               LOGDLN( "No overlap." );
 #endif
-         }
-
-         template< class Point,
-                   class Plane >
-         void
-         _calc_plane( const Point& point_a,
-                      const Point& point_b,
-                      const Point& point_c,
-                      Plane& plane )
-         {
-            Point ab;
-            ab[0] = point_b[0] - point_a[0];
-            ab[1] = point_b[1] - point_a[1];
-            ab[2] = point_b[2] - point_a[2];
-            Point ac;
-            ac[0] = point_c[0] - point_a[0];
-            ac[1] = point_c[1] - point_a[1];
-            ac[2] = point_c[2] - point_a[2];
-            plane[0] = -(ab[1]*ac[2] - ab[2]*ac[1]);
-            plane[1] = -(-ab[0]*ac[2] + ab[2]*ac[0]);
-            plane[2] = -(ab[0]*ac[1] - ab[1]*ac[0]);
-            typename Point::value_type inv_mag = 1.0/sqrt( plane[0]*plane[0] + plane[1]*plane[1] + plane[2]*plane[2] );
-            plane[0] *= inv_mag;
-            plane[1] *= inv_mag;
-            plane[2] *= inv_mag;
-            plane[3] = (plane[0]*point_a[0] + plane[1]*point_a[1] + plane[2]*point_a[2]);
+            return res;
          }
 
       protected:
 
          backend_type const* _be;
          tao::tile<real_type> const* _tile;
-         std::vector<std::array<real_type,3>> _ph;
-         std::list<std::array<real_type,4>> _planes;
          std::vector<std::array<real_type,3>> _walls;
          std::vector<table_type> _tables;
          boost::optional<hpc::view<std::vector<std::pair<unsigned long long,int>>>> _work;

@@ -324,11 +324,8 @@ namespace tao {
 	    // of my parent galaxies.
 	    real_type parent_age = 0.0;
 	    real_type prev_mass = 0.0;
-            bool has_mergers = false;
 	    {
 	       auto pars = parents( idx );
-               if( pars.size() > 1 )
-                  has_mergers = true;
 
 #ifndef NDEBUG
                // Update merger stats.
@@ -336,18 +333,9 @@ namespace tao {
                   stats.n_mergers += pars.size() - 1;
 #endif
 
-	       unsigned cnt = 0;
 	       for( unsigned jj = 0; jj < pars.size(); ++jj )
 	       {
 		  auto par_idx = pars[jj];
-		  int par_snap = _snaps[par_idx];
-		  if( par_snap < snap )
-		  {
-		     parent_age += (*_snap_ages)[par_snap];
-		     ++cnt;
-		  }
-		  else
-		     std::cout << "WARNING: Found badly connected parents.\n";
 		  prev_mass += _masses[par_idx];
 
 		  // So long as I'm here, recurse into the parents and
@@ -382,24 +370,14 @@ namespace tao {
 						       ssp );
 		  }
 	       }
-	       if( cnt > 0 )
-               {
-		  parent_age /= (real_type)cnt;
-               }
-	       else
-	       {
-		  ASSERT( _snaps[idx] > 0, "Don't have a previous snapshot." );
 
-		  // // Use the amount of stellar mass on the object to determine
-		  // // the age.
-		  // if( _sfrs[idx] > 0.0 )
-		  // {
-		  // 	parent_age = (*_snap_ages)[_snaps[idx]] - 10.0*(_masses[idx]/0.43)/_sfrs[idx];
-		  // 	ASSERT( parent_age > 0.0, "Bad age calculation." );
-		  // }
-		  // else
-		  parent_age = (*_snap_ages)[_snaps[idx] - 1];
-	       }
+               // Grab the parent's age. It is assumed that all parents
+               // will be from the previous snapshot only.
+               parent_age = (*_snap_ages)[_snaps[idx] - 1];
+
+               // If we are the first value, offset the parent age ever so
+               // slightly to account for some shit from SAGE.
+               parent_age *= 1.0045;
 	    }
 
 	    // Don't do this unless we have values to use.
@@ -429,16 +407,6 @@ namespace tao {
 	       // database will be solar masses per year.
 	       real_type new_disk_mass = disk_sfr*age_size*1e9;
 	       real_type new_bulge_mass = bulge_sfr*age_size*1e9;
-
-               // If a merger occurred we will be overestimating the
-               // mass to some extent. Without knowing the specific
-               // physics we can't really correct properly, so to try
-               // to go some way to helping, halve the age.
-               if( has_mergers )
-               {
-                  new_disk_mass *= 0.5;
-                  new_bulge_mass *= 0.5;
-               }
 
 	       LOGDLN( "New mass: ", new_disk_mass );
 	       LOGDLN( "New bulge mass: ", new_bulge_mass );

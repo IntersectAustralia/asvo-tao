@@ -127,6 +127,16 @@ namespace tao {
 	    using std::setprecision;
 
             tao::lightcone const& lc = *tile.lightcone();
+            real_type eff_ra_min = lc.min_ra() + lc.viewing_angle();
+            // if( eff_ra_min > M_PI )
+            //    eff_ra_min = M_PI - eff_ra_min;
+            real_type eff_ra_max = lc.max_ra() + lc.viewing_angle();
+            // if( eff_ra_max > M_PI )
+            //    eff_ra_max = M_PI - eff_ra_max;
+            // if( eff_ra_max < eff_ra_min )
+            // {
+            //    std::swap( eff_ra_min, eff_ra_max );
+            // }
 
             if( !lc.single_snapshot() )
             {
@@ -136,8 +146,8 @@ namespace tao {
                   "WHERE "
                   "(POW(%3%,2) + POW(%4%,2) + POW(%5%,2)) >= redshift_ranges.min AND "
                   "(POW(%3%,2) + POW(%4%,2) + POW(%5%,2)) < redshift_ranges.max AND "
-                  "ATAN2(%4%,%3%) >= %6% AND "
-                  "ATAN2(%4%,%3%) < %7% AND "
+                  "((ATAN2(%4%,%3%) >= 0 AND ATAN2(%4%,%3%) >= %6%) OR (ATAN2(%4%,%3%) < 0 AND (2*PI() + ATAN2(%4%,%3%)) >= %6%)) AND "
+                  "((ATAN2(%4%,%3%) >= 0 AND ATAN2(%4%,%3%) <  %7%) OR (ATAN2(%4%,%3%) < 0 AND (2*PI() + ATAN2(%4%,%3%)) <  %7%)) AND "
                   "(0.5*PI() - ACOS(%5%/(SQRT(POW(%3%,2) + POW(%4%,2) + POW(%5%,2))))) >= %8% AND "
                   "(0.5*PI() - ACOS(%5%/(SQRT(POW(%3%,2) + POW(%4%,2) + POW(%5%,2))))) < %9% AND "
                   "(POW(%3%,2) + POW(%4%,2) + POW(%5%,2)) >= %10% AND "
@@ -150,7 +160,7 @@ namespace tao {
                fmt % make_output_field_query_string( query, map );
                fmt % _field_map.at( "snapnum" );
                fmt % map.at( "posx" ) % map.at( "posy" ) % map.at( "posz" );
-               fmt % group( setprecision( 12 ), lc.min_ra() + lc.viewing_angle() ) % group( setprecision( 12 ), lc.max_ra() + lc.viewing_angle() );
+               fmt % group( setprecision( 12 ), eff_ra_min ) % group( setprecision( 12 ), eff_ra_max );
                fmt % group( setprecision( 12 ), lc.min_dec() ) % group( setprecision( 12 ), lc.max_dec() );
                fmt % group( setprecision( 12 ), pow( lc.min_dist(), 2 ) ) % group( setprecision( 12 ), pow( lc.max_dist(), 2 ) );
                std::string filt_str = make_filter_query_string( filt );
@@ -165,8 +175,8 @@ namespace tao {
                   "SELECT %1% FROM -table- "
                   "WHERE "
                   "-table-.%2% = %3% AND "
-                  "ATAN2(%5%,%4%) >= %7% AND "
-                  "ATAN2(%5%,%4%) < %8% AND "
+                  "((ATAN2(%5%,%4%) >= 0 AND ATAN2(%5%,%4%) >= %7%) OR (ATAN2(%5%,%4%) < 0 AND (2*PI() + ATAN2(%5%,%4%)) >= %7%)) AND "
+                  "((ATAN2(%5%,%4%) >= 0 AND ATAN2(%5%,%4%) <  %8%) OR (ATAN2(%5%,%4%) < 0 AND (2*PI() + ATAN2(%5%,%4%)) <  %8%)) AND "
                   "(0.5*PI() - ACOS(%6%/(SQRT(POW(%4%,2) + POW(%5%,2) + POW(%6%,2))))) >= %9% AND "
                   "(0.5*PI() - ACOS(%6%/(SQRT(POW(%4%,2) + POW(%5%,2) + POW(%6%,2))))) < %10% AND "
                   "(POW(%4%,2) + POW(%5%,2) + POW(%6%,2)) >= %11% AND "
@@ -179,7 +189,7 @@ namespace tao {
                fmt % make_output_field_query_string( query, map );
                fmt % _field_map.at( "snapnum" ) % lc.snapshot();
                fmt % map.at( "posx" ) % map.at( "posy" ) % map.at( "posz" );
-               fmt % group( setprecision( 12 ), lc.min_ra() + lc.viewing_angle() ) % group( setprecision( 12 ), lc.max_ra() + lc.viewing_angle() );
+               fmt % group( setprecision( 12 ), eff_ra_min ) % group( setprecision( 12 ), eff_ra_max );
                fmt % group( setprecision( 12 ), lc.min_dec() ) % group( setprecision( 12 ), lc.max_dec() );
                fmt % group( setprecision( 12 ), pow( lc.min_dist(), 2 ) ) % group( setprecision( 12 ), pow( lc.max_dist(), 2 ) );
                std::string filt_str = make_filter_query_string( filt );
