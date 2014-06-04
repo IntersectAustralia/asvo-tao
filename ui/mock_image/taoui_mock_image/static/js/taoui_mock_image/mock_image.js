@@ -278,7 +278,7 @@ catalogue.module_defs.mock_image = function ($) {
 
         vm.can_have_images = ko.computed(function(){
             return catalogue.modules.sed.vm.apply_sed() &&
-                catalogue.modules.light_cone.vm.catalogue_geometry().id == 'light-cone'
+                catalogue.modules.light_cone.vm.catalogue_geometry().id == 'light-cone' && catalogue.modules.light_cone.vm.dataset().fields.enableImage;
         });
 
         param = job['mock_image-apply_mock_image']

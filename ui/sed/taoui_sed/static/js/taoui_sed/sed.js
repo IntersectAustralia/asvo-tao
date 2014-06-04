@@ -20,9 +20,9 @@ catalogue.module_defs.sed = function ($) {
     	var selected_bpfs;
     	var bpf_ids;
     	var params = {
-    		'sed-apply_sed': [apply_sed]
+    		'sed-apply_sed': [apply_sed && vm.can_have_sed()]
     	};
-    	if (apply_sed) {
+    	if (apply_sed && vm.can_have_sed()) {
     		selected_bpfs = catalogue.modules.sed.vm.bandpass_filters();
     		bpf_ids = []
     		for (var i=0; i<selected_bpfs.length; i++) {
@@ -99,6 +99,19 @@ catalogue.module_defs.sed = function ($) {
             maximum_selection:25,
             to_option: band_pass_filter_to_option
         });
+        
+        
+        vm.can_have_sed = ko.computed(function(){        	
+            return catalogue.modules.light_cone.vm.dataset().fields.enableSED;
+        });
+        
+        vm.enabled = ko.computed(function(){
+            return vm.can_have_sed() && vm.apply_sed();
+        });
+
+        
+        
+        
         vm.current_bandpass_filter = ko.observable(undefined);
         vm.bandpass_filters_widget.clicked_option.subscribe(function(v) {
         	var bpf = bandpass_filter_from_id(v);

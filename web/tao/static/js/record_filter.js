@@ -94,7 +94,7 @@ catalogue.module_defs.record_filter = function ($) {
 
 
     	// Re-enabled by A Hassan V 1.01  Release
-        if (catalogue.modules.sed.vm.apply_sed()) {
+        if (catalogue.modules.sed.vm.apply_sed() && catalogue.modules.sed.vm.can_have_sed()) {
             // Get the selected bandpass filters
             bandpass_filters = catalogue.modules.sed.vm.bandpass_filters();
             for (var i=0; i<bandpass_filters.length; i++) {

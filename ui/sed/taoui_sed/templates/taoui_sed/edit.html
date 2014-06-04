@@ -9,13 +9,13 @@
         <div>
             {{ form.get_apply_sed|as_bootstrap_field }}
         </div>
-        <div id="sed_params" data-bind="visible: apply_sed()">
+        <div id="sed_params" data-bind="visible: apply_sed() && can_have_sed()">
 	{% for fieldset in form.fieldsets %}
 	    {{ fieldset|as_bootstrap_fieldset }}
 	{% endfor %}
         </div>
     </div>
-    <div class="aside span4" id="sed_info" data-bind="visible: apply_sed()">
+    <div class="aside span4" id="sed_info" data-bind="visible: apply_sed() && can_have_sed()">
         <div class="boxed">
             <div class="stellar-model-info" data-bind="if: stellar_model">
                 <div> Selected stellar model details </div>
