@@ -201,7 +201,8 @@ class DataSet(models.Model):
     job_size_p1 = models.FloatField(default=0.06555053)
     job_size_p2 = models.FloatField(default=-0.10355211)
     job_size_p3 = models.FloatField(default=0.37135452)
-    
+    enableSED = models.BooleanField(default=True)
+    enableImage = models.BooleanField(default=True)
     class Meta:
         unique_together = ('simulation', 'galaxy_model')
         ordering = ['id']
