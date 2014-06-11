@@ -2,7 +2,7 @@
     <table>
         <tr>
             <td><h4>Spectral Energy Distribution</h4></td>
-            <td><span class="select_mock_image" data-bind="text: apply_sed() ? '' : 'Not selected'"><!-- --></span></td>
+            <td><span class="select_mock_image" data-bind="text: apply_sed() && can_have_sed() ? '' : 'Not selected'"><!-- --></span></td>
         </tr>
         <!-- ko if: apply_sed && can_have_sed() -->
         <tr class="apply_sed">

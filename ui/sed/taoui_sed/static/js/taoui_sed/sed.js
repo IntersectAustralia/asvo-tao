@@ -20,7 +20,7 @@ catalogue.module_defs.sed = function ($) {
     	var selected_bpfs;
     	var bpf_ids;
     	var params = {
-    		'sed-apply_sed': [apply_sed && vm.can_have_sed()]
+    		'sed-apply_sed': [vm.apply_sed() && vm.can_have_sed()]
     	};
     	if (apply_sed && vm.can_have_sed()) {
     		selected_bpfs = catalogue.modules.sed.vm.bandpass_filters();

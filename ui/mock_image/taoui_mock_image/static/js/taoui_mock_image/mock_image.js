@@ -280,6 +280,13 @@ catalogue.module_defs.mock_image = function ($) {
             return catalogue.modules.sed.vm.apply_sed() &&
                 catalogue.modules.light_cone.vm.catalogue_geometry().id == 'light-cone' && catalogue.modules.light_cone.vm.dataset().fields.enableImage;
         });
+        
+        vm.image_module_enabled=ko.computed(function(){
+        	return catalogue.modules.light_cone.vm.dataset().fields.enableImage;
+        });
+        vm.sed_module_enabled=ko.computed(function(){
+        	return catalogue.modules.light_cone.vm.dataset().fields.enableSED;
+        });
 
         param = job['mock_image-apply_mock_image']
         vm.apply_mock_image = ko.observable(param ? param : false);
