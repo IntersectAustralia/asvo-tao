@@ -17,7 +17,7 @@
                 name="mock_image-apply_mock_image" type="checkbox"
                 data-bind="checked: apply_mock_image, enable: can_have_images" /> 
             </div>
-            <div data-bind="visible: can_have_images && (!image_module_enabled() && sed_module_enabled())" style="color:red;font-weight: bold;">(Image Module is not enabled for your current selection of Dark matter simulation and Galaxy model)</div>
+            <div data-bind="visible: can_have_images && (!image_module_enabled() && sed_module_enabled())" style="color:red;">(Image Module is not enabled for your current selection of Dark matter simulation and Galaxy model)</div>
           </div>
         </div>
         <div id="mock_image_params" data-bind="template: {name: 'single_form_template', foreach: image_settings}, visible: can_have_images() && apply_mock_image()"

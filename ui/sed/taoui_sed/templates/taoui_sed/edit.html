@@ -9,7 +9,7 @@
         <div>
             {{ form.get_apply_sed|as_bootstrap_field }}
         </div>
-        <div data-bind="visible: !can_have_sed()" style="color:red;font-weight: bold;">(SED Module is not enabled for your current selection of Dark matter simulation and Galaxy model)</div>
+        <div data-bind="visible: !can_have_sed()" style="color:red;">(SED Module is not enabled for your current selection of Dark matter simulation and Galaxy model)</div>
         <div id="sed_params"  data-bind="visible: apply_sed() && can_have_sed()">
 	{% for fieldset in form.fieldsets %}
 	    {{ fieldset|as_bootstrap_fieldset }}
