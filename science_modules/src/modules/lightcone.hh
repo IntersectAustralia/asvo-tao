@@ -2,6 +2,7 @@
 #define tao_modules_lightcone_hh
 
 #include <libhpc/system/math.hh>
+#include <boost/optional.hpp>
 #include "tao/base/base.hh"
 
 namespace tao {
@@ -251,7 +252,7 @@ namespace tao {
          }
 
          virtual
-         optional<boost::any>
+         boost::optional<boost::any>
          find_attribute( const string& name )
          {
             if( name == "simulation" )
@@ -318,7 +319,7 @@ namespace tao {
             _sim = _be->load_simulation();
 
             // Extract the random number generator seed and set it.
-            optional<int> rng_seed = dict.opt<int>( "rng-seed" );
+            boost::optional<int> rng_seed = dict.opt<int>( "rng-seed" );
             if( rng_seed )
                _rng_seed = *rng_seed;
             else

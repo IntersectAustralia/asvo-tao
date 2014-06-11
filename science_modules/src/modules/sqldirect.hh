@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <boost/optional.hpp>
 #include <boost/algorithm/string/replace.hpp>
 #include "tao/base/base.hh"
 
@@ -91,15 +92,15 @@ namespace tao {
 	 }
 
 	 virtual
-	 	  optional<boost::any>
-	 	  find_attribute( const std::string& name )
-	 	  {
+         boost::optional<boost::any>
+         find_attribute( const std::string& name )
+         {
 
-	 		 if( name == "filter" )
-	 			 return boost::any( &((tao::filter const&)_filt) );
-	 		 else
-	 			return module_type::find_attribute( name );
-	 	  }
+            if( name == "filter" )
+               return boost::any( &((tao::filter const&)_filt) );
+            else
+               return module_type::find_attribute( name );
+         }
 
 
 	 virtual

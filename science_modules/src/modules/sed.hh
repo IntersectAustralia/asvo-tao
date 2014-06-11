@@ -2,6 +2,7 @@
 #define tao_modules_sed_hh
 
 #include <libhpc/libhpc.hh>
+#include <boost/optional.hpp>
 #include "tao/base/base.hh"
 
 namespace tao {
@@ -43,7 +44,7 @@ namespace tao {
          }
 
          virtual
-         optional<boost::any>
+         boost::optional<boost::any>
          find_attribute( const string& name )
          {
             if( name == "wavelengths" )

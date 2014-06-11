@@ -31,12 +31,53 @@ public:
    void
    operator()()
    {
-      hpc::mpi::managed<manager,worker> mgd;
-      mgd.run();
+      // Prepare the event handler.
+      hpc::mpi::async async;
+      async.add_event_handler( &_chkr );
+      async.add_event_handler( &_idxr );
+
+      // Launch the event handler.
+      if( !async.run() )
+      {
+         // Run a worker.
+         worker();
+      }
+   }
+
+   void
+   worker()
+   {
+      // Use the filename as the finished flag.
+      std::string sage_fn;
+
+      do
+      {
+         // Get the next chunk to work on.
+         std::array<size_t,2> chunk;
+         _comm->send( 0, 0, _chkr.tag() );
+         _comm->recv( sage_fn, 0, _chkr.tag() );
+         _comm->recv( chunk, 0, _chkr.tag() );
+
+         // Process this chunk.
+         process( sage_fn, chunk );
+      }
+      while( !sage_fn.empty() );
+
+      // Flag the event handler we're finished.
+      _comm->send( 0, 0, 0 );
+   }
+
+   void
+   process( std::string const& sage_fn,
+            std::array<size_t,2> const& chunk )
+   {
+      
    }
 
 protected:
 
+   file_chunker _chkr;
+   hpc::mpi::indexer _idxr;
    hpc::fs::path _sage;
    hpc::fs::path _out;
    bool _verb;
