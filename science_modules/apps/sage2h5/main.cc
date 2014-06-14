@@ -201,7 +201,12 @@ public:
             process_tree_redshift( files[jj], file_tree_sizes( jj, ii ), h5_gals, displ, desc_map );
          }
 
+	 // Write galaxy data.
          _gals_buf.write( h5_gals );
+
+	 // Update galaxy global index base to the beginning of the
+	 // next tree.
+	 _goffs[1] += h5_gals.size();
       }
 
       // Write out tree details here, after galaxies, because I need
@@ -215,7 +220,6 @@ public:
 
       // Update the global offset values with this index.
       _goffs[0] += n_trees;
-      _goffs[1] = tree_displs[n_trees];
    }
 
    void
