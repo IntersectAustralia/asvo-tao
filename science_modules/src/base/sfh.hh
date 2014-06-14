@@ -158,142 +158,142 @@ namespace tao {
       void
       _calc_parents();
 
-      template< class DiskVec,
-		class BulgeVec >
-      void
-      _rebin_linear_thibault( real_type oldest_age,
-			      typename hpc::type_traits<DiskVec>::reference disk_age_masses,
-			      typename hpc::type_traits<BulgeVec>::reference bulge_age_masses,
-                              stellar_population const& ssp )
-      {
-	 // Iterate over all objects.
-	 for( unsigned ii = 0; ii < _disk_sfrs.size(); ++ii )
-	 {
-	    // Don't try to calculate anything if the SFR is zero. I do
-	    // this not only for efficiency but also because some simulations
-	    // don't always supply a snapshot - 1. Also, don't try this
-	    // at snapshot 0 for the same reason.
-	    real_type disk_sfr = _disk_sfrs[ii];
-	    real_type bulge_sfr = _bulge_sfrs[ii];
-            LOGDLN( "Disk SFR: ", disk_sfr );
-            LOGDLN( "Bulge SFR: ", bulge_sfr );
-	    int snap = _snaps[ii];
-	    if( snap > 0 && (disk_sfr > 0.0 || bulge_sfr > 0.0) )
-	    {
-	       // Calculate the starting age based on the average age
-	       // of my parent galaxies.
-	       real_type parent_age = 0.0;
-	       real_type prev_mass = 0.0;
-	       {
-                  auto pars = parents( ii );
-		  unsigned cnt = 0;
-                  for( unsigned jj = 0; jj < pars.size(); ++jj )
-		  {
-		     auto par_idx = pars[jj];
-                     int par_snap = _snaps[par_idx];
-                     if( par_snap < snap )
-                     {
-                        parent_age += (*_snap_ages)[par_snap];
-                        ++cnt;
-                     }
-                     else
-                        std::cout << "WARNING: Found badly connected parents.\n";
-		     prev_mass += _masses[par_idx];
-		  }
-		  if( cnt > 0 )
-		     parent_age /= (real_type)cnt;
-		  else
-		  {
-		     ASSERT( _snaps[ii] > 0, "Don't have a previous snapshot." );
+      // template< class DiskVec,
+      // 		class BulgeVec >
+      // void
+      // _rebin_linear_thibault( real_type oldest_age,
+      // 			      typename hpc::type_traits<DiskVec>::reference disk_age_masses,
+      // 			      typename hpc::type_traits<BulgeVec>::reference bulge_age_masses,
+      //                         stellar_population const& ssp )
+      // {
+      // 	 // Iterate over all objects.
+      // 	 for( unsigned ii = 0; ii < _disk_sfrs.size(); ++ii )
+      // 	 {
+      // 	    // Don't try to calculate anything if the SFR is zero. I do
+      // 	    // this not only for efficiency but also because some simulations
+      // 	    // don't always supply a snapshot - 1. Also, don't try this
+      // 	    // at snapshot 0 for the same reason.
+      // 	    real_type disk_sfr = _disk_sfrs[ii];
+      // 	    real_type bulge_sfr = _bulge_sfrs[ii];
+      //       LOGDLN( "Disk SFR: ", disk_sfr );
+      //       LOGDLN( "Bulge SFR: ", bulge_sfr );
+      // 	    int snap = _snaps[ii];
+      // 	    if( snap > 0 && (disk_sfr > 0.0 || bulge_sfr > 0.0) )
+      // 	    {
+      // 	       // Calculate the starting age based on the average age
+      // 	       // of my parent galaxies.
+      // 	       real_type parent_age = 0.0;
+      // 	       real_type prev_mass = 0.0;
+      // 	       {
+      //             auto pars = parents( ii );
+      // 		  unsigned cnt = 0;
+      //             for( unsigned jj = 0; jj < pars.size(); ++jj )
+      // 		  {
+      // 		     auto par_idx = pars[jj];
+      //                int par_snap = _snaps[par_idx];
+      //                if( par_snap < snap )
+      //                {
+      //                   parent_age += (*_snap_ages)[par_snap];
+      //                   ++cnt;
+      //                }
+      //                else
+      //                   std::cout << "WARNING: Found badly connected parents.\n";
+      // 		     prev_mass += _masses[par_idx];
+      // 		  }
+      // 		  if( cnt > 0 )
+      // 		     parent_age /= (real_type)cnt;
+      // 		  else
+      // 		  {
+      // 		     ASSERT( _snaps[ii] > 0, "Don't have a previous snapshot." );
 
-		     // // Use the amount of stellar mass on the object to determine
-		     // // the age.
-		     // if( _sfrs[ii] > 0.0 )
-		     // {
-		     // 	parent_age = (*_snap_ages)[_snaps[ii]] - 10.0*(_masses[ii]/0.43)/_sfrs[ii];
-		     // 	ASSERT( parent_age > 0.0, "Bad age calculation." );
-		     // }
-		     // else
-		     parent_age = (*_snap_ages)[_snaps[ii] - 1];
-		  }
-	       }
+      // 		     // // Use the amount of stellar mass on the object to determine
+      // 		     // // the age.
+      // 		     // if( _sfrs[ii] > 0.0 )
+      // 		     // {
+      // 		     // 	parent_age = (*_snap_ages)[_snaps[ii]] - 10.0*(_masses[ii]/0.43)/_sfrs[ii];
+      // 		     // 	ASSERT( parent_age > 0.0, "Bad age calculation." );
+      // 		     // }
+      // 		     // else
+      // 		     parent_age = (*_snap_ages)[_snaps[ii] - 1];
+      // 		  }
+      // 	       }
 
-	       // Calculate the age of material created at the beginning of
-	       // this timestep and at the end. Be careful! This age I speak
-	       // of is how old the material will be when we get to the
-	       // time of the final galaxy.
-	       // ASSERT( snap > 0, "Must have a previous snapshot." );
-               LOGDLN( "Current snapsnot: ", snap );
-	       LOGDLN( "Oldest snapshot age: ", oldest_age );
-	       LOGDLN( "Current snapshot age (from start of time): ", (*_snap_ages)[snap] );
-	       LOGDLN( "Parent snapshot age (from start of time): ", parent_age );
-	       real_type first_age = oldest_age - parent_age;
-	       real_type last_age = oldest_age - (*_snap_ages)[snap];
-	       real_type age_size = first_age - last_age;
-               LOGDLN( "Material start age: ", first_age );
-               LOGDLN( "Material finish age: ", last_age );
+      // 	       // Calculate the age of material created at the beginning of
+      // 	       // this timestep and at the end. Be careful! This age I speak
+      // 	       // of is how old the material will be when we get to the
+      // 	       // time of the final galaxy.
+      // 	       // ASSERT( snap > 0, "Must have a previous snapshot." );
+      //          LOGDLN( "Current snapsnot: ", snap );
+      // 	       LOGDLN( "Oldest snapshot age: ", oldest_age );
+      // 	       LOGDLN( "Current snapshot age (from start of time): ", (*_snap_ages)[snap] );
+      // 	       LOGDLN( "Parent snapshot age (from start of time): ", parent_age );
+      // 	       real_type first_age = oldest_age - parent_age;
+      // 	       real_type last_age = oldest_age - (*_snap_ages)[snap];
+      // 	       real_type age_size = first_age - last_age;
+      //          LOGDLN( "Material start age: ", first_age );
+      //          LOGDLN( "Material finish age: ", last_age );
 
-	       // Use the star formation rates to compute the new mass
-	       // produced. Bear in mind the rates we expect from the
-	       // database will be solar masses per year.
-	       real_type new_disk_mass = disk_sfr*age_size*1e9;
-	       real_type new_bulge_mass = bulge_sfr*age_size*1e9;
-	       LOGDLN( "New mass: ", new_disk_mass );
-	       LOGDLN( "New bulge mass: ", new_bulge_mass );
-	       ASSERT( new_disk_mass >= 0.0 && new_bulge_mass >= 0.0, "Mass has been lost during rebinning." );
-	       ASSERT( new_disk_mass == new_disk_mass, "Have NaN for new total mass during rebinning." );
-	       ASSERT( new_bulge_mass == new_bulge_mass, "Have NaN for new bulge mass during rebinning." );
-	       // ASSERT( hpc::num::approx( new_mass, _masses[ii] - prev_mass, 1e4 ) );
+      // 	       // Use the star formation rates to compute the new mass
+      // 	       // produced. Bear in mind the rates we expect from the
+      // 	       // database will be solar masses per year.
+      // 	       real_type new_disk_mass = disk_sfr*age_size*1e9;
+      // 	       real_type new_bulge_mass = bulge_sfr*age_size*1e9;
+      // 	       LOGDLN( "New mass: ", new_disk_mass );
+      // 	       LOGDLN( "New bulge mass: ", new_bulge_mass );
+      // 	       ASSERT( new_disk_mass >= 0.0 && new_bulge_mass >= 0.0, "Mass has been lost during rebinning." );
+      // 	       ASSERT( new_disk_mass == new_disk_mass, "Have NaN for new total mass during rebinning." );
+      // 	       ASSERT( new_bulge_mass == new_bulge_mass, "Have NaN for new bulge mass during rebinning." );
+      // 	       // ASSERT( hpc::num::approx( new_mass, _masses[ii] - prev_mass, 1e4 ) );
 
-	       // Cache metallicity bin indices.
-	       unsigned disk_met_bin = ssp.find_metal_bin( _disk_sfr_z[ii] );
-	       unsigned bulge_met_bin = ssp.find_metal_bin( _bulge_sfr_z[ii] );
+      // 	       // Cache metallicity bin indices.
+      // 	       unsigned disk_met_bin = ssp.find_metal_bin( _disk_sfr_z[ii] );
+      // 	       unsigned bulge_met_bin = ssp.find_metal_bin( _bulge_sfr_z[ii] );
 
-	       // Add the new mass to the appropriate bins. Find the first bin
-	       // that has overlap with this age range.
-	       unsigned first_age_bin = ssp.bin_ages().find_bin( last_age );
-	       unsigned last_age_bin = ssp.bin_ages().find_bin( first_age ) + 1;
-	       while( first_age_bin != last_age_bin )
-	       {
-		  // Find the fraction we will use to contribute to this
-		  // bin.
-		  real_type upp;
-		  if( first_age_bin < last_age_bin - 1 )
-		     upp = std::min( ssp.bin_ages().dual( first_age_bin ), first_age );
-		  else
-		     upp = first_age;
-		  real_type frac = (upp - last_age)/age_size;
-		  LOGDLN( "Have sub-range: [", last_age, "-", upp, ")" );
-		  LOGDLN( "Updating bin ", first_age_bin, " with fraction of ", frac, "." );
+      // 	       // Add the new mass to the appropriate bins. Find the first bin
+      // 	       // that has overlap with this age range.
+      // 	       unsigned first_age_bin = ssp.bin_ages().find_bin( last_age );
+      // 	       unsigned last_age_bin = ssp.bin_ages().find_bin( first_age ) + 1;
+      // 	       while( first_age_bin != last_age_bin )
+      // 	       {
+      // 		  // Find the fraction we will use to contribute to this
+      // 		  // bin.
+      // 		  real_type upp;
+      // 		  if( first_age_bin < last_age_bin - 1 )
+      // 		     upp = std::min( ssp.bin_ages().dual( first_age_bin ), first_age );
+      // 		  else
+      // 		     upp = first_age;
+      // 		  real_type frac = (upp - last_age)/age_size;
+      // 		  LOGDLN( "Have sub-range: [", last_age, "-", upp, ")" );
+      // 		  LOGDLN( "Updating bin ", first_age_bin, " with fraction of ", frac, "." );
 
-                  // Calcualte bin indices.
-                  unsigned disk_bin_idx = first_age_bin*ssp.n_metal_bins() + disk_met_bin;
-                  unsigned bulge_bin_idx = first_age_bin*ssp.n_metal_bins() + bulge_met_bin;
+      //             // Calcualte bin indices.
+      //             unsigned disk_bin_idx = first_age_bin*ssp.n_metal_bins() + disk_met_bin;
+      //             unsigned bulge_bin_idx = first_age_bin*ssp.n_metal_bins() + bulge_met_bin;
 
-		  // Cache the current bin mass for later.
-		  real_type cur_disk_bin_mass = disk_age_masses[disk_bin_idx];
-		  real_type cur_bugle_bin_mass = bulge_age_masses[bulge_bin_idx];
+      // 		  // Cache the current bin mass for later.
+      // 		  real_type cur_disk_bin_mass = disk_age_masses[disk_bin_idx];
+      // 		  real_type cur_bugle_bin_mass = bulge_age_masses[bulge_bin_idx];
 
-		  // Update the mass bins.
-		  disk_age_masses[disk_bin_idx] += frac*new_disk_mass;
-		  bulge_age_masses[bulge_bin_idx] += frac*new_bulge_mass;
-		  ASSERT( disk_age_masses[disk_bin_idx] == disk_age_masses[disk_bin_idx],
-			  "Have NaN for rebinned total masses for bin: ", disk_bin_idx );
-		  ASSERT( bulge_age_masses[bulge_bin_idx] == bulge_age_masses[bulge_bin_idx],
-			  "Have NaN for rebinned bulge masses for bin: ", bulge_bin_idx );
-		  ASSERT( disk_age_masses[disk_bin_idx] >= 0.0,
-			  "Produced negative value for rebinned total masses for bin: ", disk_bin_idx );
-		  ASSERT( bulge_age_masses[bulge_bin_idx] >= 0.0,
-			  "Produced negative value for rebinned bulge masses for bin: ", bulge_bin_idx );
+      // 		  // Update the mass bins.
+      // 		  disk_age_masses[disk_bin_idx] += frac*new_disk_mass;
+      // 		  bulge_age_masses[bulge_bin_idx] += frac*new_bulge_mass;
+      // 		  ASSERT( disk_age_masses[disk_bin_idx] == disk_age_masses[disk_bin_idx],
+      // 			  "Have NaN for rebinned total masses for bin: ", disk_bin_idx );
+      // 		  ASSERT( bulge_age_masses[bulge_bin_idx] == bulge_age_masses[bulge_bin_idx],
+      // 			  "Have NaN for rebinned bulge masses for bin: ", bulge_bin_idx );
+      // 		  ASSERT( disk_age_masses[disk_bin_idx] >= 0.0,
+      // 			  "Produced negative value for rebinned total masses for bin: ", disk_bin_idx );
+      // 		  ASSERT( bulge_age_masses[bulge_bin_idx] >= 0.0,
+      // 			  "Produced negative value for rebinned bulge masses for bin: ", bulge_bin_idx );
 
-		  // Move to the next bin.
-		  if( first_age_bin < ssp.bin_ages().size() - 1 )
-		     last_age = ssp.bin_ages().dual( first_age_bin );
-		  ++first_age_bin;
-	       }
-	    }
-	 }
-      }
+      // 		  // Move to the next bin.
+      // 		  if( first_age_bin < ssp.bin_ages().size() - 1 )
+      // 		     last_age = ssp.bin_ages().dual( first_age_bin );
+      // 		  ++first_age_bin;
+      // 	       }
+      // 	    }
+      // 	 }
+      // }
 
       template< class DiskVec,
 		class BulgeVec >
@@ -374,10 +374,6 @@ namespace tao {
                // Grab the parent's age. It is assumed that all parents
                // will be from the previous snapshot only.
                parent_age = (*_snap_ages)[_snaps[idx] - 1];
-
-               // If we are the first value, offset the parent age ever so
-               // slightly to account for some shit from SAGE.
-               parent_age *= 1.0045;
 	    }
 
 	    // Don't do this unless we have values to use.
@@ -402,11 +398,26 @@ namespace tao {
 	       LOGDLN( "Material start age: ", first_age );
 	       LOGDLN( "Material finish age: ", last_age );
 
+	       // Use the stored age. I've totally got the wrong units
+	       // on this, and have thus far corrected it by calculating
+	       // the factor from known values. I need to do this properly
+	       // at some point TODO
+	       real_type alpha = 978.025;
+	       age_size = _dts[idx]*alpha;
+	       // real_type alpha = 0.0495435;
+	       // age_size *= alpha;
+	       first_age = last_age + age_size;
+
 	       // Use the star formation rates to compute the new mass
 	       // produced. Bear in mind the rates we expect from the
 	       // database will be solar masses per year.
 	       real_type new_disk_mass = disk_sfr*age_size*1e9;
 	       real_type new_bulge_mass = bulge_sfr*age_size*1e9;
+
+	       // real_type stars = (_masses[idx]*1e10)/(1.0 - 0.43);
+	       // real_type dt = stars/(disk_sfr*1e9);
+	       // std::cout << dt << ", " << age_size << ", " << _dts[idx] << ", ";
+	       // printf( "%.12lf\n", dt/age_size );
 
 	       LOGDLN( "New mass: ", new_disk_mass );
 	       LOGDLN( "New bulge mass: ", new_bulge_mass );
@@ -489,6 +500,7 @@ namespace tao {
       age_line<real_type> const* _snap_ages;
       int _old_snap;
       std::vector<int> _descs, _snaps, _lids, _merge_types;
+      std::vector<real_type> _dts;
       std::vector<real_type> _disk_sfr_z, _bulge_sfr_z;
       std::vector<real_type> _disk_sfrs, _bulge_sfrs, _masses;
       std::unordered_map<unsigned,unsigned> _inv_lids;

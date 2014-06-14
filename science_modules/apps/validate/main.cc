@@ -52,7 +52,7 @@ protected:
       if( _sim == "mill" )
          db_name = "";
       else
-         db_name = "millennium_mini_3servers_v3";
+         db_name = "millennium_mini_3servers_v4";
 
       // Connect the backend.
       tao::backends::multidb<tao::real_type> be;
@@ -125,7 +125,7 @@ protected:
                             total_masses.begin(), std::plus<tao::real_type>() );
 
             // Display mass comparisons.
-            tao::real_type my_mass  = std::accumulate( total_masses.begin(), total_masses.end(), 0.0 )*0.43;
+            tao::real_type my_mass  = std::accumulate( total_masses.begin(), total_masses.end(), 0.0 )*(1.0 - 0.43);
             tao::real_type mod_mass = stellar_mass[ii]*1e10;
             tao::real_type error = (mod_mass > 0.0) ? (my_mass - mod_mass)/mod_mass : 0.0;
             if( mod_mass > 0.0 )

@@ -20,10 +20,10 @@ public:
    {
       // Setup some options.
       options().add_options()
-         ( "sage,s", hpc::po::value<hpc::fs::path>( &_sage_dir ), "SAGE output directory" )
-         ( "param,p", hpc::po::value<hpc::fs::path>( &_param_fn ), "SAGE parameter file" )
-         ( "alist,a", hpc::po::value<hpc::fs::path>( &_alist_fn ), "SAGE expansion list file" )
-         ( "output,o", hpc::po::value<hpc::fs::path>( &_out_fn ), "output file" )
+	 ( "sage,s", hpc::po::value<hpc::fs::path>( &_sage_dir )->required(), "SAGE output directory" )
+         ( "param,p", hpc::po::value<hpc::fs::path>( &_param_fn )->required(), "SAGE parameter file" )
+         ( "alist,a", hpc::po::value<hpc::fs::path>( &_alist_fn )->required(), "SAGE expansion list file" )
+         ( "output,o", hpc::po::value<hpc::fs::path>( &_out_fn )->required(), "output file" )
          ( "verbose,v", hpc::po::value<int>( &_verb )->default_value( 0 ), "verbosity" );
       positional_options().add( "sage", 1 );
       positional_options().add( "param", 2 );

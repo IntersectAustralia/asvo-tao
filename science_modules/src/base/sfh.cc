@@ -114,17 +114,18 @@ namespace tao {
       _lids.resize( subsize );
       _merge_types.resize( subsize );
       _masses.resize( subsize );
+      _dts.resize( subsize );
 
       // Extract the sub tree.
       int dfo_first = dfo;
       int dfo_last = dfo + subsize;
-      std::string query = "SELECT sfrdiskz, sfrbulgez, mergetype, "
+      std::string query = "SELECT sfrdiskz, sfrbulgez, mergetype, dt,"
          "sfrdisk, sfrbulge, snapnum, descendant, localgalaxyid, stellarmass FROM " + table_name +
          " WHERE globaltreeid = :treeid"
          " AND depthfirst_traversalorder >= :first AND depthfirst_traversalorder < :last";
       sql << query,
 	 soci::into( _disk_sfr_z ), soci::into( _bulge_sfr_z ), soci::into( _merge_types ),
-         soci::into( _disk_sfrs ), soci::into( _bulge_sfrs ),
+         soci::into( _dts ), soci::into( _disk_sfrs ), soci::into( _bulge_sfrs ),
          soci::into( _snaps ), soci::into( _descs ),
          soci::into( _lids ), soci::into( _masses ),
          soci::use( tree_id ), soci::use( dfo_first ), soci::use( dfo_last );
