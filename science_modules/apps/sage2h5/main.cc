@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <unordered_map>
 #include <boost/regex.hpp>
 #include <libhpc/libhpc.hh>
 #include <tao/base/utils.hh>
@@ -148,14 +149,14 @@ public:
       _out_file.write<double>( "cosmology/omega_l", _omega_l );
       _out_file.write<double>( "cosmology/omega_m", _omega_m );
 
-      // sage::make_hdf5_types( _mem_type, _file_type );
-      // _out_file.open( _out_fn.native(), H5F_ACC_RDONLY, *_comm );
-      // _gals_dset.open( _out_file, "galaxies" );
-      // _tree_displs_dset.open( _out_file, "tree_displs" );
-      // _tree_cnts_dset.open( _out_file, "tree_counts" );
+      // Close everything down.
+      _gals_dset.close();
+      _tree_displs_dset.close();
+      _tree_cnts_dset.close();
+      _out_file.close();
 
-      // // Do some final checks.
-      // check_file();
+      // Do some final checks.
+      check_file();
    }
 
    void
@@ -206,6 +207,7 @@ public:
 	 // Keep a mapping to build descendants. This maps from
 	 // galaxy index to snapshot.
 	 std::unordered_map<long long,int> desc_map;
+	 std::unordered_multimap<hpc::varray<unsigned,2>,unsigned> merge_map;
 
          std::vector<sage::galaxy> h5_gals( tree_sizes[ii] );
          unsigned displ = 0;
@@ -213,7 +215,7 @@ public:
          {
             LOGBLOCKT( "Processing file: ", jj );
 
-            process_tree_redshift( files[jj], file_tree_sizes( jj, ii ), h5_gals, displ, desc_map );
+            process_tree_redshift( files[jj], file_tree_sizes( jj, ii ), h5_gals, displ, desc_map, merge_map );
          }
 
 	 // Write galaxy data.
@@ -249,7 +251,8 @@ public:
                           unsigned n_file_gals,
                           std::vector<sage::galaxy>& h5_gals,
                           unsigned& displ,
-			  std::unordered_map<long long,int>& desc_map )
+			  std::unordered_map<long long,int>& desc_map,
+			  std::unordered_multimap<hpc::varray<unsigned,2>,unsigned>& merge_map )
    {
       LOGTLN( "Reading ", n_file_gals, " galaxies." );
 
@@ -260,7 +263,7 @@ public:
       file.read( (char*)sage_gals.data(), sage_gals.size()*sizeof(OUTPUT_GALAXY) );
       ASSERT( file.good(), "Error reading SAGE file." );
       for( unsigned ii = 0; ii < sage_gals.size(); ++ii )
-	 _convert( sage_gals[ii], h5_gals, displ + ii, _goffs[1] + displ + ii, desc_map );
+	 _convert( sage_gals[ii], h5_gals, displ + ii, ii, _goffs[1] + displ + ii, desc_map, merge_map );
 
       // Update the displacement.
       displ += n_file_gals;
@@ -270,6 +273,12 @@ public:
    check_file()
    {
       LOGBLOCKI( "Checking file." );
+
+      sage::make_hdf5_types( _mem_type, _file_type );
+      _out_file.open( _out_fn.native(), H5F_ACC_RDONLY, *_comm );
+      _gals_dset.open( _out_file, "galaxies" );
+      _tree_displs_dset.open( _out_file, "tree_displs" );
+      _tree_cnts_dset.open( _out_file, "tree_counts" );
 
       unsigned n_trees = _tree_cnts_dset.extent();
       std::array<unsigned,2> tree_rng = hpc::mpi::modulo( n_trees );
@@ -304,6 +313,13 @@ public:
 		 "Invalid global descendant: ", gals[jj].global_descendant );
 	 ASSERT( gals[jj].descendant == -1 || gals[jj].descendant < gals.size(),
 		 "Invalid descendant: ", gals[jj].descendant );
+	 ASSERT( (gals[jj].descendant == -1 && gals[jj].global_descendant == -1) ||
+		 (gals[jj].descendant != -1 && gals[jj].global_descendant != -1),
+		 "Inconsistent descendant and global descendant indices." );
+	 ASSERT( gals[jj].merge_into_id == -1 ||
+		 (gals[jj].descendant != -1 &&
+		  gals[gals[jj].descendant].snapshot == gals[jj].merge_into_snapshot),
+		 "Incorrect merger." );
       }
       ASSERT( gids.size() == gals.size(), "Duplicate global indices: ", gids.size(),
 	      ", ", gals.size() );
@@ -325,8 +341,10 @@ protected:
    _convert( OUTPUT_GALAXY const& sage_gal,
 	     std::vector<sage::galaxy>& h5_gals,
 	     unsigned gal_idx,
+	     unsigned file_gal_idx,
              unsigned long long gidx,
-	     std::unordered_map<long long,int>& desc_map )
+	     std::unordered_map<long long,int>& desc_map,
+	     std::unordered_multimap<hpc::varray<unsigned,2>,unsigned>& merge_map )
    {
       LOGBLOCKT( "Converting galaxy: ", gal_idx );
 
@@ -339,8 +357,16 @@ protected:
       h5_gals[gal_idx].tree_idx     = sage_gal.TreeIndex;
 
       h5_gals[gal_idx].global_index      = gidx;
-      h5_gals[gal_idx].descendant        = sage_gal.mergeIntoID;
+      h5_gals[gal_idx].descendant        = -1;
       h5_gals[gal_idx].global_descendant = -1;
+
+      // Add to the merge map, if needed.
+      if( sage_gal.mergeIntoID != -1 )
+      {
+	 hpc::varray<unsigned,2> id{ sage_gal.mergeIntoID, sage_gal.mergeIntoSnapNum };
+	 LOGDLN( "Adding merge to map: ", id );
+	 merge_map.emplace( id, gal_idx );
+      }
 
       ASSERT( h5_gals[gal_idx].global_index >= _goffs[1] &&
 	      h5_gals[gal_idx].global_index < _goffs[1] + h5_gals.size(),
@@ -368,6 +394,37 @@ protected:
 		 "Out of order snapshot indices." );
 
 	 LOGTLN( "Parent: ", par );
+      }
+
+      // Check for a merge.
+      hpc::varray<unsigned,2> merge_id{ file_gal_idx, sage_gal.SnapNum };
+      if( hpc::has( merge_map, merge_id ) )
+      {
+	 auto rng = merge_map.equal_range( merge_id );
+	 while( rng.first != rng.second )
+	 {
+	    int par = rng.first->second;
+	    ++rng.first;
+
+	    ASSERT( par != -1 && h5_gals[par].descendant == -1,
+		    "Found a galaxy with a parent that has merged." );
+
+	    h5_gals[par].descendant = gal_idx;
+	    h5_gals[par].global_descendant = h5_gals[gal_idx].global_index;
+
+	    ASSERT( h5_gals[par].global_descendant == -1 ||
+		    (h5_gals[par].global_descendant >= _goffs[1] &&
+		     h5_gals[par].global_descendant < _goffs[1] + h5_gals.size()),
+		    "Invalid global descendant." );
+
+	    ASSERT( h5_gals[par].snapshot < sage_gal.SnapNum,
+		    "Out of order snapshot indices." );
+
+	    LOGTLN( "Parent: ", par );
+	 }
+
+	 LOGDLN( "Erasing merge from map: ", merge_id );
+	 merge_map.erase( merge_id );
       }
 
       h5_gals[gal_idx].snapshot     = sage_gal.SnapNum;
