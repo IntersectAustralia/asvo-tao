@@ -83,7 +83,6 @@ ar  = use('ar', cc_opts, add=True)
 # Which packages will we be using?
 boost   = use('boost')
 mpi     = use('mpi')
-hdf5    = use('hdf5')
 gsl     = use('gsl')
 pq      = use('postgresql')
 cfitsio = use('cfitsio')

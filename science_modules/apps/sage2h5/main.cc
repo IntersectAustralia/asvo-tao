@@ -1,7 +1,11 @@
+#include <iostream>
 #include <string>
 #include <vector>
-#include <libhpc/system/filesystem.hh>
-#include <libhpc/mpi/application.hh>
+#include <boost/regex.hpp>
+#include <libhpc/libhpc.hh>
+#include <tao/base/utils.hh>
+#include "sage.hh"
+#include "hdf5_types.hh"
 
 class application
    : public hpc::mpi::application
@@ -10,77 +14,480 @@ public:
 
    application( int argc,
                 char* argv[] )
-      : hpc::mpi::application( argc, argv )
+      : hpc::mpi::application( argc, argv ),
+	_comm( &hpc::mpi::comm::world )
    {
       // Setup some options.
       options().add_options()
-         ( "sage,s", hpc::po::value<hpc::fs::path>( &_sage ), "SAGE path" )
-         ( "output,o", hpc::po::value<hpc::fs::path>( &_out ), "output file" );
-         ( "verbose,v", hpc::po::value<bool>( &_verb )->default_value( false ), "verbosity" );
+         ( "sage,s", hpc::po::value<hpc::fs::path>( &_sage_dir ), "SAGE output directory" )
+         ( "param,p", hpc::po::value<hpc::fs::path>( &_param_fn ), "SAGE parameter file" )
+         ( "alist,a", hpc::po::value<hpc::fs::path>( &_alist_fn ), "SAGE expansion list file" )
+         ( "output,o", hpc::po::value<hpc::fs::path>( &_out_fn ), "output file" )
+         ( "verbose,v", hpc::po::value<int>( &_verb )->default_value( 0 ), "verbosity" );
       positional_options().add( "sage", 1 );
-      positional_options().add( "output", 1 );
+      positional_options().add( "param", 2 );
+      positional_options().add( "alist", 3 );
+      positional_options().add( "output", 4 );
 
       // Parse options.
       parse_options( argc, argv );
+      EXCEPT( !_sage_dir.empty(), "No SAGE output directory given." );
+      EXCEPT( !_param_fn.empty(), "No SAGE parameter file given." );
+      EXCEPT( !_alist_fn.empty(), "No SAGE expansion file given." );
+      EXCEPT( !_out_fn.empty(), "No output file given." );
 
       // Setup logging.
+      hpc::log::levels_type lvl;
+      if( _verb == 1 )
+	 lvl = hpc::log::info;
+      else if( _verb == 2 )
+	 lvl = hpc::log::debug;
+      else if( _verb == 3 )
+	 lvl = hpc::log::trivial;
       if( _verb )
-         LOG_PUSH( new hpc::log::stdout( hpc::log::info ) );
+      {
+	 if( _comm->size() > 1 )
+	    LOG_PUSH( new hpc::mpi::logger( "sage2h5.log.", lvl ) );
+	 else
+	    LOG_PUSH( new hpc::log::stdout( lvl ) );
+      }
    }
 
    void
    operator()()
    {
-      // Prepare the event handler.
-      hpc::mpi::async async;
-      async.add_event_handler( &_chkr );
-      async.add_event_handler( &_idxr );
+      _load_param( _param_fn );
+      _load_redshifts( _alist_fn );
 
-      // Launch the event handler.
-      if( !async.run() )
+      // Decide on my index range.
+      std::array<size_t,2> idx_rng;
+      idx_rng = hpc::mpi::modulo( _idx_rng[1] - _idx_rng[0] );
+      idx_rng[0] += _idx_rng[0];
+      idx_rng[1] += _idx_rng[0];
+      LOGILN( "Processing range: ", idx_rng );
+
+      // Sum total trees and galaxies.
+      unsigned long long tot_trees = 0, tot_gals = 0;
       {
-         // Run a worker.
-         worker();
+         LOGBLOCKD( "Summing total trees/galaxies." );
+         for( size_t ii = idx_rng[0]; ii < idx_rng[1]; ++ii )
+         {
+            int n_trees;
+            std::vector<std::ifstream> files = _open_files( ii );
+#ifndef NDEBUG
+            int n_c_trees = -1;
+#endif
+            for( unsigned jj = 0; jj < files.size(); ++jj )
+            {
+               int n_gals;
+               files[jj].read( (char*)&n_trees, sizeof(n_trees) );
+               files[jj].read( (char*)&n_gals, sizeof(n_gals) );
+               LOGDLN( "File ", jj, " has ", n_gals, " galaxies and ", n_trees, " trees." );
+#ifndef NDEBUG
+               if( n_c_trees == -1 )
+                  n_c_trees = n_trees;
+#endif
+               ASSERT( n_trees == n_c_trees, "Number of trees don't match." );
+
+               // Sum galaxies here.
+               tot_gals += n_gals;
+            }
+
+            // Trees go here.
+            tot_trees += n_trees;
+         }
+
+         // Scan to get my global offsets.
+         _goffs[0] = _comm->scan( tot_trees );
+         _goffs[1] = _comm->scan( tot_gals );
+
+         // Reduce to get global sizes.
+         tot_trees = _comm->all_reduce( tot_trees );
+         tot_gals = _comm->all_reduce( tot_gals );
+
+         LOGILN( "Trees:         ", tot_trees );
+         LOGILN( "Tree offset:   ", _goffs[0] );
+         LOGILN( "Galaxies:      ", tot_gals );
+         LOGILN( "Galaxy offset: ", _goffs[1] );
       }
+
+      // Open output file for writing.
+      sage::make_hdf5_types( _mem_type, _file_type );
+      _out_file.open( _out_fn.native(), H5F_ACC_TRUNC, *_comm );
+      _gals_dset.create( _out_file, "galaxies", _file_type, tot_gals );
+      _tree_displs_dset.create( _out_file, "tree_displs", hpc::h5::datatype::native_ullong, tot_trees );
+      _tree_cnts_dset.create( _out_file, "tree_counts", hpc::h5::datatype::native_uint, tot_trees );
+
+      // Prepare my buffered output objects.
+      _tree_displs_buf.create( _tree_displs_dset, hpc::h5::datatype::native_ullong,
+                               hpc::h5::buffer_default_size, _goffs[0] );
+      _tree_cnts_buf.create( _tree_cnts_dset, hpc::h5::datatype::native_ullong,
+                              hpc::h5::buffer_default_size, _goffs[0] );
+      _gals_buf.create( _gals_dset, _mem_type, hpc::h5::buffer_default_size, _goffs[1] );
+
+      // Process my index range.
+      for( size_t ii = idx_rng[0]; ii < idx_rng[1]; ++ii )
+         process_index( ii );
+
+      // Be sure to close the buffers to flush them.
+      _tree_displs_buf.close();
+      _tree_cnts_buf.close();
+      _gals_buf.close();
+
+      // Write out the final information.
+      LOGILN( "Writing parameter information." );
+      std::vector<double> zs( _redshifts.size() );
+      std::copy( _redshifts.begin(), _redshifts.end(), zs.begin() );
+      std::reverse( zs.begin(), zs.end() );
+      _out_file.write_serial( "snapshot_redshifts", zs );
+      _out_file.write<double>( "cosmology/hubble", _hubble );
+      _out_file.write<double>( "cosmology/omega_l", _omega_l );
+      _out_file.write<double>( "cosmology/omega_m", _omega_m );
    }
 
    void
-   worker()
+   process_index( size_t idx )
    {
-      // Use the filename as the finished flag.
-      std::string sage_fn;
+      LOGBLOCKI( "Processing index: ", idx );
 
-      do
+      std::vector<std::ifstream> files = _open_files( idx );
+
+      // Skip the number of trees and galaxies, and calculate the
+      // counts of galaxies in each tree in this index.
+      std::vector<unsigned long long> tree_sizes;
+      hpc::matrix<int> file_tree_sizes;
+      int n_trees;
       {
-         // Get the next chunk to work on.
-         std::array<size_t,2> chunk;
-         _comm->send( 0, 0, _chkr.tag() );
-         _comm->recv( sage_fn, 0, _chkr.tag() );
-         _comm->recv( chunk, 0, _chkr.tag() );
+	 for( unsigned ii = 0; ii < files.size(); ++ii )
+	 {
+	    int n_gals;
+	    files[ii].read( (char*)&n_trees, sizeof(n_trees) );
+	    files[ii].read( (char*)&n_gals, sizeof(n_gals) );
+	    LOGDLN( "File ", ii, " has ", n_gals, " galaxies and ", n_trees, " trees." );
 
-         // Process this chunk.
-         process( sage_fn, chunk );
+	    // Allocate tree displacements on the first pass.
+	    if( tree_sizes.empty() )
+	    {
+	       tree_sizes.resize( n_trees );
+	       file_tree_sizes.resize( _redshifts.size(), n_trees );
+	       std::fill( tree_sizes.begin(), tree_sizes.end(), 0 );
+	    }
+
+	    // Load the sizes and add to displacements.
+	    files[ii].read( (char*)file_tree_sizes[ii].data(), n_trees*sizeof(int) );
+	    for( unsigned jj = 0; jj < n_trees; ++jj )
+	       tree_sizes[jj] += file_tree_sizes( ii, jj );
+	 }
       }
-      while( !sage_fn.empty() );
 
-      // Flag the event handler we're finished.
-      _comm->send( 0, 0, 0 );
+      // Finish calculating displacements.
+      std::vector<unsigned long long> tree_displs = hpc::counts_to_displs( tree_sizes );
+
+      // Process in tree major order.
+      for( unsigned ii = 0; ii < n_trees; ++ii )
+      {
+         LOGBLOCKT( "Processing tree: ", ii );
+
+	 // Keep a mapping to build descendants. This maps from
+	 // galaxy index to snapshot.
+	 std::unordered_map<long long,int> desc_map;
+
+         std::vector<sage::galaxy> h5_gals( tree_sizes[ii] );
+         unsigned displ = 0;
+         for( unsigned jj = 0; jj < files.size(); ++jj )
+         {
+            LOGBLOCKT( "Processing file: ", jj );
+
+            process_tree_redshift( files[jj], file_tree_sizes( jj, ii ), h5_gals, displ, desc_map );
+         }
+
+         _gals_buf.write( h5_gals );
+      }
+
+      // Write out tree details here, after galaxies, because I need
+      // to add the global offset to the displacements.
+      std::transform( tree_displs.begin(), tree_displs.end(), tree_displs.begin(),
+                      [this]( unsigned long long x ) { return x + _goffs[1]; } );
+      _tree_displs_buf.write<hpc::view<std::vector<unsigned long long> > >(
+         hpc::view<std::vector<unsigned long long> >( tree_displs, n_trees )
+         );
+      _tree_cnts_buf.write( tree_sizes );
+
+      // Update the global offset values with this index.
+      _goffs[0] += n_trees;
+      _goffs[1] = tree_displs[n_trees];
    }
 
    void
-   process( std::string const& sage_fn,
-            std::array<size_t,2> const& chunk )
+   process_tree_redshift( std::ifstream& file,
+                          unsigned n_file_gals,
+                          std::vector<sage::galaxy>& h5_gals,
+                          unsigned& displ,
+			  std::unordered_map<long long,int>& desc_map )
    {
-      
+      LOGTLN( "Reading ", n_file_gals, " galaxies." );
+
+      // Prepare memory.
+      std::vector<OUTPUT_GALAXY> sage_gals( n_file_gals );
+
+      // Load data and convert.
+      file.read( (char*)sage_gals.data(), sage_gals.size()*sizeof(OUTPUT_GALAXY) );
+      ASSERT( file.good(), "Error reading SAGE file." );
+      for( unsigned ii = 0; ii < sage_gals.size(); ++ii )
+	 _convert( sage_gals[ii], h5_gals, displ + ii, _goffs[1] + displ + ii, desc_map );
+
+      // Update the displacement.
+      displ += n_file_gals;
    }
 
 protected:
 
-   file_chunker _chkr;
-   hpc::mpi::indexer _idxr;
-   hpc::fs::path _sage;
-   hpc::fs::path _out;
-   bool _verb;
+   void
+   _convert( OUTPUT_GALAXY const& sage_gal,
+	     std::vector<sage::galaxy>& h5_gals,
+	     unsigned gal_idx,
+             unsigned long long gidx,
+	     std::unordered_map<long long,int>& desc_map )
+   {
+      LOGBLOCKT( "Converting galaxy: ", gal_idx );
+
+      ASSERT( sage_gal.Type < 2, "Found an invalid SAGE galaxy type: ", sage_gal.Type );
+
+      h5_gals[gal_idx].type         = sage_gal.Type;
+      h5_gals[gal_idx].galaxy_idx   = sage_gal.GalaxyIndex;
+      h5_gals[gal_idx].halo_idx     = sage_gal.HaloIndex;
+      h5_gals[gal_idx].fof_halo_idx = sage_gal.FOFHaloIndex;
+      h5_gals[gal_idx].tree_idx     = sage_gal.TreeIndex;
+
+      h5_gals[gal_idx].global_index      = gidx;
+      h5_gals[gal_idx].descendant        = sage_gal.mergeIntoID;
+      h5_gals[gal_idx].global_descendant = -1;
+
+      ASSERT( h5_gals[gal_idx].global_index >= _goffs[1] &&
+	      h5_gals[gal_idx].global_index < _goffs[1] + h5_gals.size(),
+	      "Invalid global index." );
+
+      LOGTLN( "Galaxy index: ", h5_gals[gal_idx].galaxy_idx );
+
+      // Check for a parent.
+      if( hpc::has( desc_map, h5_gals[gal_idx].galaxy_idx ) )
+      {
+	 int par = desc_map[h5_gals[gal_idx].galaxy_idx];
+
+	 ASSERT( par != -1 && h5_gals[par].descendant == -1,
+		 "Found a galaxy with a parent that has merged." );
+
+	 h5_gals[par].descendant = gal_idx;
+	 h5_gals[par].global_descendant = h5_gals[gal_idx].global_index;
+
+	 ASSERT( h5_gals[gal_idx].global_descendant == -1 ||
+		 (h5_gals[gal_idx].global_descendant >= _goffs[1] &&
+		  h5_gals[gal_idx].global_descendant < _goffs[1] + h5_gals.size()),
+		 "Invalid global descendant." );
+
+	 LOGTLN( "Parent: ", par );
+      }
+
+      h5_gals[gal_idx].snapshot     = sage_gal.SnapNum;
+      h5_gals[gal_idx].dt           = sage_gal.dt;
+      h5_gals[gal_idx].central_gal  = sage_gal.CentralGal;
+      h5_gals[gal_idx].central_mvir = sage_gal.CentralMvir;
+
+      h5_gals[gal_idx].merge_type          = sage_gal.mergeType;
+      h5_gals[gal_idx].merge_into_id       = sage_gal.mergeIntoID;
+      h5_gals[gal_idx].merge_into_snapshot = sage_gal.mergeIntoSnapNum;
+
+      ASSERT( h5_gals[gal_idx].merge_into_id == -1 ||
+              h5_gals[gal_idx].merge_into_id < h5_gals.size(), "Invalid merged-into ID: ",
+              h5_gals[gal_idx].merge_into_id );
+
+      // If we merged indicate so in the map.
+      if( h5_gals[gal_idx].merge_into_id != -1 )
+      {
+	 desc_map[h5_gals[gal_idx].galaxy_idx] = -1;
+
+	 LOGTLN( "Merged into: ", h5_gals[gal_idx].merge_into_id );
+      }
+      else
+	 desc_map[h5_gals[gal_idx].galaxy_idx] = gal_idx;
+
+      for( unsigned kk = 0; kk < 3; ++kk )
+      {
+	 h5_gals[gal_idx].pos[kk]    = sage_gal.Pos[kk];
+	 h5_gals[gal_idx].vel[kk]    = sage_gal.Vel[kk];
+	 h5_gals[gal_idx].spin[kk]   = sage_gal.Spin[kk];
+
+	 ASSERT( h5_gals[gal_idx].pos[kk] == h5_gals[gal_idx].pos[kk], "NaN" );
+	 ASSERT( h5_gals[gal_idx].vel[kk] == h5_gals[gal_idx].vel[kk], "NaN" );
+	 ASSERT( h5_gals[gal_idx].spin[kk] == h5_gals[gal_idx].spin[kk], "NaN" );
+      }
+      h5_gals[gal_idx].num_particles = sage_gal.Len;
+      h5_gals[gal_idx].mvir          = sage_gal.Mvir;
+      h5_gals[gal_idx].rvir          = sage_gal.Rvir;
+      h5_gals[gal_idx].vvir          = sage_gal.Vvir;
+      h5_gals[gal_idx].vmax          = sage_gal.Vmax;
+      h5_gals[gal_idx].vel_disp      = sage_gal.VelDisp;
+
+      h5_gals[gal_idx].cold_gas       = sage_gal.ColdGas;
+      h5_gals[gal_idx].stellar_mass   = sage_gal.StellarMass;
+      h5_gals[gal_idx].bulge_mass     = sage_gal.BulgeMass;
+      h5_gals[gal_idx].hot_gas        = sage_gal.HotGas;
+      h5_gals[gal_idx].ejected_mass   = sage_gal.EjectedMass;
+      h5_gals[gal_idx].blackhole_mass = sage_gal.BlackHoleMass;
+      h5_gals[gal_idx].ics            = sage_gal.ICS;
+
+      h5_gals[gal_idx].metals_cold_gas     = sage_gal.MetalsColdGas;
+      h5_gals[gal_idx].metals_stellar_mass = sage_gal.MetalsStellarMass;
+      h5_gals[gal_idx].metals_bulge_mass   = sage_gal.MetalsBulgeMass;
+      h5_gals[gal_idx].metals_hot_gas      = sage_gal.MetalsHotGas;
+      h5_gals[gal_idx].metals_ejected_mass = sage_gal.MetalsEjectedMass;
+      h5_gals[gal_idx].metals_ics          = sage_gal.MetalsICS;
+
+      h5_gals[gal_idx].sfr_disk          = sage_gal.SfrDisk;
+      h5_gals[gal_idx].sfr_bulge         = sage_gal.SfrBulge;
+      h5_gals[gal_idx].sfr_disk_z        = sage_gal.SfrDiskZ;
+      h5_gals[gal_idx].sfr_bulge_z       = sage_gal.SfrBulgeZ;
+
+      h5_gals[gal_idx].disk_scale_radius = sage_gal.DiskScaleRadius;
+      h5_gals[gal_idx].cooling           = sage_gal.Cooling;
+      h5_gals[gal_idx].heating           = sage_gal.Heating;
+      h5_gals[gal_idx].last_major_merger = sage_gal.LastMajorMerger;
+      h5_gals[gal_idx].outflow_rate      = sage_gal.OutflowRate;
+
+      h5_gals[gal_idx].infall_mvir       = sage_gal.infallMvir;
+      h5_gals[gal_idx].infall_vvir       = sage_gal.infallVvir;
+      h5_gals[gal_idx].infall_vmax       = sage_gal.infallVmax;
+   }
+
+   std::vector<std::ifstream>
+   _open_files( size_t idx )
+   {
+      std::vector<std::ifstream> files( _redshifts.size() );
+      size_t ii = files.size() - 1;
+      for( auto z : _redshifts )
+      {
+	 hpc::fs::path fn = _make_filename( idx, z );
+	 LOGDLN( "Opening file: ", fn );
+	 files[ii].open( fn.native(), std::ios::binary );
+	 EXCEPT( files[ii].good(), "Failed to open file: ", fn );
+	 --ii;
+      }
+      return files;
+   }
+
+   void
+   _load_param( hpc::fs::path const& fn )
+   {
+      LOGBLOCKD( "Reading parameter file: ", fn );
+
+      std::ifstream file( fn.native() );
+      EXCEPT( file.good(), "Failed to find parameter file: ", fn );
+
+      boost::regex first_prog( "\\s*FirstFile\\s+(\\d+)\\s*" );
+      boost::regex last_prog( "\\s*LastFile\\s+(\\d+)\\s*" );
+      boost::regex hubble_prog( "\\s*Hubble_h\\s+(\\d+[.]?\\d*)\\s*" );
+      boost::regex omega_m_prog( "\\s*Omega\\s+(\\d+[.]?\\d*)\\s*" );
+      boost::regex omega_l_prog( "\\s*OmegaLambda\\s+(\\d+[.]?\\d*)\\s*" );
+      boost::cmatch match;
+
+      std::string line;
+      int both = 0;
+      while( file.good() )
+      {
+	 std::getline( file, line );
+	 if( boost::regex_match( line.c_str(), match, first_prog ) )
+	 {
+	    _idx_rng[0] = boost::lexical_cast<size_t>(
+	       match[1].first, match[1].second - match[1].first
+	       );
+	    ++both;
+	 }
+	 if( boost::regex_match( line.c_str(), match, last_prog ) )
+	 {
+	    _idx_rng[1] = boost::lexical_cast<size_t>(
+	       match[1].first, match[1].second - match[1].first
+	       ) + 1;
+	    ++both;
+	 }
+	 if( boost::regex_match( line.c_str(), match, hubble_prog ) )
+	 {
+	    _hubble = boost::lexical_cast<double>(
+	       match[1].first, match[1].second - match[1].first
+	       );
+	 }
+	 if( boost::regex_match( line.c_str(), match, omega_m_prog ) )
+	 {
+	    _omega_m = boost::lexical_cast<double>(
+	       match[1].first, match[1].second - match[1].first
+	       );
+	 }
+	 if( boost::regex_match( line.c_str(), match, omega_l_prog ) )
+	 {
+	    _omega_l = boost::lexical_cast<double>(
+	       match[1].first, match[1].second - match[1].first
+	       );
+	 }
+      }
+
+      EXCEPT( both == 2, "Failed to find FirstFile and LastFile in parameters." );
+      EXCEPT( _idx_rng[1] > _idx_rng[0], "Invalid index range." );
+
+      LOGDLN( "Have index range: ", _idx_rng );
+   }
+
+   void
+   _load_redshifts( hpc::fs::path const& fn )
+   {
+      LOGBLOCKD( "Reading alist file: ", fn );
+
+      std::ifstream file( fn.native() );
+      EXCEPT( file.good(), "Failed to open expansion file: ", fn );
+
+      double exp;
+      while( file.good() )
+      {
+	 file >> exp;
+	 _redshifts.insert( tao::expansion_to_redshift( exp ) );
+      }
+
+      LOGDLN( "Have redshifts: ", _redshifts );
+   }
+
+   hpc::fs::path
+   _make_filename( size_t idx,
+		   double z ) const
+   {
+      std::stringstream ss;
+      ss << std::fixed << std::setprecision( 3 ) << "model_z" << z << "_" << idx;
+      return _sage_dir/ss.str();
+   }
+
+protected:
+
+   std::set<double> _redshifts;
+   double _hubble;
+   double _omega_l;
+   double _omega_m;
+   std::array<size_t,2> _idx_rng;
+   std::array<unsigned long long,2> _goffs;
+
+   hpc::h5::file _out_file;
+   hpc::h5::datatype _mem_type;
+   hpc::h5::datatype _file_type;
+   hpc::h5::dataset _gals_dset;
+   hpc::h5::dataset _tree_displs_dset;
+   hpc::h5::dataset _tree_cnts_dset;
+   hpc::h5::buffer<sage::galaxy> _gals_buf;
+   hpc::h5::buffer<unsigned long long> _tree_displs_buf;
+   hpc::h5::buffer<unsigned long long> _tree_cnts_buf;
+
+   hpc::fs::path _sage_dir;
+   hpc::fs::path _param_fn;
+   hpc::fs::path _alist_fn;
+   hpc::fs::path _out_fn;
+   int _verb;
+
+   hpc::mpi::comm const* _comm;
 };
 
 #define HPC_APP_CLASS application
