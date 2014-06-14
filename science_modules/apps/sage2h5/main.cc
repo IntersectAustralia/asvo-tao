@@ -115,7 +115,7 @@ public:
       sage::make_hdf5_types( _mem_type, _file_type );
       _out_file.open( _out_fn.native(), H5F_ACC_TRUNC, *_comm );
       _gals_dset.create( _out_file, "galaxies", _file_type, tot_gals );
-      _tree_displs_dset.create( _out_file, "tree_displs", hpc::h5::datatype::native_ullong, tot_trees );
+      _tree_displs_dset.create( _out_file, "tree_displs", hpc::h5::datatype::native_ullong, tot_trees + 1 );
       _tree_cnts_dset.create( _out_file, "tree_counts", hpc::h5::datatype::native_uint, tot_trees );
 
       // Prepare my buffered output objects.
@@ -134,6 +134,10 @@ public:
       _tree_cnts_buf.close();
       _gals_buf.close();
 
+      // Write the final displacement last.
+      if( _comm->rank() == 0 )
+	 _tree_displs_dset.write<unsigned long long>( tot_gals, tot_trees );
+
       // Write out the final information.
       LOGILN( "Writing parameter information." );
       std::vector<double> zs( _redshifts.size() );
@@ -143,6 +147,15 @@ public:
       _out_file.write<double>( "cosmology/hubble", _hubble );
       _out_file.write<double>( "cosmology/omega_l", _omega_l );
       _out_file.write<double>( "cosmology/omega_m", _omega_m );
+
+      // sage::make_hdf5_types( _mem_type, _file_type );
+      // _out_file.open( _out_fn.native(), H5F_ACC_RDONLY, *_comm );
+      // _gals_dset.open( _out_file, "galaxies" );
+      // _tree_displs_dset.open( _out_file, "tree_displs" );
+      // _tree_cnts_dset.open( _out_file, "tree_counts" );
+
+      // // Do some final checks.
+      // check_file();
    }
 
    void
@@ -182,6 +195,8 @@ public:
 
       // Finish calculating displacements.
       std::vector<unsigned long long> tree_displs = hpc::counts_to_displs( tree_sizes );
+      std::transform( tree_displs.begin(), tree_displs.end(), tree_displs.begin(),
+                      [this]( unsigned long long x ) { return x + _goffs[1]; } );
 
       // Process in tree major order.
       for( unsigned ii = 0; ii < n_trees; ++ii )
@@ -209,10 +224,17 @@ public:
 	 _goffs[1] += h5_gals.size();
       }
 
+      // Check the counts and displacements.
+#ifndef NDEBUG
+      for( unsigned ii = 0; ii < tree_sizes.size(); ++ii )
+      {
+	 ASSERT( tree_displs[ii + 1] - tree_displs[ii] == tree_sizes[ii],
+		 "Sizes and displacements don't match." );
+      }
+#endif
+
       // Write out tree details here, after galaxies, because I need
       // to add the global offset to the displacements.
-      std::transform( tree_displs.begin(), tree_displs.end(), tree_displs.begin(),
-                      [this]( unsigned long long x ) { return x + _goffs[1]; } );
       _tree_displs_buf.write<hpc::view<std::vector<unsigned long long> > >(
          hpc::view<std::vector<unsigned long long> >( tree_displs, n_trees )
          );
@@ -242,6 +264,59 @@ public:
 
       // Update the displacement.
       displ += n_file_gals;
+   }
+
+   void
+   check_file()
+   {
+      LOGBLOCKI( "Checking file." );
+
+      unsigned n_trees = _tree_cnts_dset.extent();
+      std::array<unsigned,2> tree_rng = hpc::mpi::modulo( n_trees );
+
+      LOGILN( "Tree range: ", tree_rng );
+
+      for( unsigned ii = tree_rng[0]; ii < tree_rng[1]; ++ii )
+      {
+	 unsigned size = _tree_cnts_dset.read<unsigned>( ii );
+	 unsigned long long displ = _tree_displs_dset.read<unsigned long long>( ii );
+	 unsigned long long displ2 = _tree_displs_dset.read<unsigned long long>( ii + 1 );
+	 ASSERT( displ2 - displ == size, "Sizes and displacements don't match." );
+
+	 std::vector<sage::galaxy> gals( size );
+	 _gals_dset.read( gals.data(), _mem_type, size, displ );
+	 check_tree( gals, displ );
+      }
+   }
+
+   void
+   check_tree( std::vector<sage::galaxy> const& gals,
+	       unsigned long long displ )
+   {
+      std::set<unsigned long long> gids;
+      for( unsigned jj = 0; jj < gals.size(); ++jj )
+      {
+	 gids.insert( gals[jj].global_index );
+	 ASSERT( gals[jj].global_index >= displ && gals[jj].global_index < displ + gals.size(),
+		 "Invalid global index: ", gals[jj].global_index );
+	 ASSERT( gals[jj].global_descendant == -1 ||
+		 (gals[jj].global_index >= displ && gals[jj].global_index < displ + gals.size()),
+		 "Invalid global descendant: ", gals[jj].global_descendant );
+	 ASSERT( gals[jj].descendant == -1 || gals[jj].descendant < gals.size(),
+		 "Invalid descendant: ", gals[jj].descendant );
+      }
+      ASSERT( gids.size() == gals.size(), "Duplicate global indices: ", gids.size(),
+	      ", ", gals.size() );
+      ASSERT( *gids.begin() == displ, "Global indices begin at wrong index." );
+      ASSERT( *gids.rbegin() == displ + gals.size() - 1, "Global indices end at wrong index." );
+      for( unsigned jj = 0; jj < gals.size(); ++jj )
+      {
+	 if( gals[jj].global_descendant != -1 )
+	 {
+	    ASSERT( hpc::has( gids, gals[jj].global_descendant ), "Invalid global descendant: ",
+		    gals[jj].global_descendant, " from global index: ", gals[jj].global_index );
+	 }
+      }
    }
 
 protected:
@@ -284,10 +359,13 @@ protected:
 	 h5_gals[par].descendant = gal_idx;
 	 h5_gals[par].global_descendant = h5_gals[gal_idx].global_index;
 
-	 ASSERT( h5_gals[gal_idx].global_descendant == -1 ||
-		 (h5_gals[gal_idx].global_descendant >= _goffs[1] &&
-		  h5_gals[gal_idx].global_descendant < _goffs[1] + h5_gals.size()),
+	 ASSERT( h5_gals[par].global_descendant == -1 ||
+		 (h5_gals[par].global_descendant >= _goffs[1] &&
+		  h5_gals[par].global_descendant < _goffs[1] + h5_gals.size()),
 		 "Invalid global descendant." );
+
+	 ASSERT( h5_gals[par].snapshot < sage_gal.SnapNum,
+		 "Out of order snapshot indices." );
 
 	 LOGTLN( "Parent: ", par );
       }
