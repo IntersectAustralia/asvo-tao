@@ -20,6 +20,7 @@ public:
    {
       // Setup some options.
       options().add_options()
+	 ( "mode,m", hpc::po::value<std::string>( &_mode )->default_value( "convert" ), "mode of operation" )
 	 ( "sage,s", hpc::po::value<hpc::fs::path>( &_sage_dir )->required(), "SAGE output directory" )
          ( "param,p", hpc::po::value<hpc::fs::path>( &_param_fn )->required(), "SAGE parameter file" )
          ( "alist,a", hpc::po::value<hpc::fs::path>( &_alist_fn )->required(), "SAGE expansion list file" )
@@ -32,6 +33,7 @@ public:
 
       // Parse options.
       parse_options( argc, argv );
+      EXCEPT( _mode == "convert" || _mode == "check", "Invalid mode." );
       EXCEPT( !_sage_dir.empty(), "No SAGE output directory given." );
       EXCEPT( !_param_fn.empty(), "No SAGE parameter file given." );
       EXCEPT( !_alist_fn.empty(), "No SAGE expansion file given." );
@@ -56,6 +58,15 @@ public:
 
    void
    operator()()
+   {
+      if( _mode == "convert" )
+	 convert();
+      else if( _mode == "check" )
+	 check();
+   }
+
+   void
+   convert()
    {
       _load_param( _param_fn );
       _load_redshifts( _alist_fn );
@@ -156,7 +167,7 @@ public:
       _out_file.close();
 
       // Do some final checks.
-      check_file();
+      check();
    }
 
    void
@@ -270,7 +281,7 @@ public:
    }
 
    void
-   check_file()
+   check()
    {
       LOGBLOCKI( "Checking file." );
 
@@ -620,6 +631,7 @@ protected:
    hpc::h5::buffer<unsigned long long> _tree_displs_buf;
    hpc::h5::buffer<unsigned long long> _tree_cnts_buf;
 
+   std::string _mode;
    hpc::fs::path _sage_dir;
    hpc::fs::path _param_fn;
    hpc::fs::path _alist_fn;
