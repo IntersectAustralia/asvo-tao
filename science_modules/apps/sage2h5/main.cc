@@ -428,7 +428,7 @@ protected:
       }
 
       h5_gals[gal_idx].snapshot     = sage_gal.SnapNum;
-      h5_gals[gal_idx].dt           = sage_gal.dt;
+      h5_gals[gal_idx].dt           = sage_gal.dt*978.025; // Convert to Gyrs: Note, I use a slightly different factor (should really fix this)
       h5_gals[gal_idx].central_gal  = sage_gal.CentralGal;
       h5_gals[gal_idx].central_mvir = sage_gal.CentralMvir;
 

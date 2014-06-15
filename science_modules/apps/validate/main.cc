@@ -24,7 +24,7 @@ public:
       parse_options( argc, argv );
 
       // Check options.
-      EXCEPT( _mode == "mass", "Invalid mode." );
+      EXCEPT( _mode == "mass" || _mode == "ages", "Invalid mode." );
       EXCEPT( _sim == "minimill" || _sim == "mill", "Invalid simulation." );
 
       // Setup logging.
@@ -37,6 +37,8 @@ public:
    {
       if( _mode == "mass" )
          _mass();
+      else if( _mode == "ages" )
+	 _ages();
    }
 
 protected:
@@ -47,37 +49,9 @@ protected:
       typedef hpc::view<std::vector<tao::real_type>> view_type;
       typedef hpc::num::spline<tao::real_type,view_type,view_type> spline_type;
 
-      // Pick a simulation.
-      std::string db_name;
-      if( _sim == "mill" )
-         db_name = "";
-      else
-         db_name = "millennium_mini_3servers_v4";
-
-      // Connect the backend.
       tao::backends::multidb<tao::real_type> be;
       tao::simulation const* sim;
-      {
-#include "credentials.hh"
-         std::vector<tao::backends::multidb<tao::real_type>::server_type> servers( 3 );
-         servers[0].dbname = db_name;
-         servers[0].user = username;
-         servers[0].passwd = password;
-         servers[0].host = std::string( "tao01.hpc.swin.edu.au" );
-         servers[0].port = 3306;
-         servers[1].dbname = db_name;
-         servers[1].user = username;
-         servers[1].passwd = password;
-         servers[1].host = std::string( "tao02.hpc.swin.edu.au" );
-         servers[1].port = 3306;
-         servers[2].dbname = db_name;
-         servers[2].user = username;
-         servers[2].passwd = password;
-         servers[2].host = std::string( "tao03.hpc.swin.edu.au" );
-         servers[2].port = 3306;
-         be.connect( servers.begin(), servers.end() );
-         sim = be.load_simulation();
-      }
+      _connect( be, sim );
 
       // Load the stellar population model.
       tao::stellar_population ssp;
@@ -139,6 +113,61 @@ protected:
             }
          }
       }
+   }
+
+   void
+   _ages()
+   {
+      tao::backends::multidb<tao::real_type> be;
+      tao::simulation const* sim;
+      _connect( be, sim );
+
+      for( unsigned ii = 0; ii < sim->redshifts().size(); ++ii )
+      {
+	 tao::real_type z = sim->redshifts()[ii];
+	 tao::real_type age = tao::redshift_to_age<tao::real_type>( z );
+	 printf( "Age[%02d]\t (z=%e)\t = %e", ii, z, age );
+	 if( ii > 0 )
+	 {
+	    tao::real_type zp = sim->redshifts()[ii - 1];
+	    tao::real_type agep = tao::redshift_to_age<tao::real_type>( zp );
+	    printf( "\t %e", fabs( age - agep ) );
+	 }
+	 printf( "\n" );
+      }
+   }
+
+   void
+   _connect( tao::backends::multidb<tao::real_type>& be,
+	     tao::simulation const*& sim )
+   {
+      // Pick a simulation.
+      std::string db_name;
+      if( _sim == "mill" )
+         db_name = "";
+      else
+         db_name = "millennium_mini_3servers_v4";
+
+      // Connect the backend.
+#include "credentials.hh"
+      std::vector<tao::backends::multidb<tao::real_type>::server_type> servers( 3 );
+      servers[0].dbname = db_name;
+      servers[0].user = username;
+      servers[0].passwd = password;
+      servers[0].host = std::string( "tao01.hpc.swin.edu.au" );
+      servers[0].port = 3306;
+      servers[1].dbname = db_name;
+      servers[1].user = username;
+      servers[1].passwd = password;
+      servers[1].host = std::string( "tao02.hpc.swin.edu.au" );
+      servers[1].port = 3306;
+      servers[2].dbname = db_name;
+      servers[2].user = username;
+      servers[2].passwd = password;
+      servers[2].host = std::string( "tao03.hpc.swin.edu.au" );
+      servers[2].port = 3306;
+      be.connect( servers.begin(), servers.end() );
+      sim = be.load_simulation();
    }
 
 protected:

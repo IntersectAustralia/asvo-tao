@@ -398,16 +398,6 @@ namespace tao {
 	       LOGDLN( "Material start age: ", first_age );
 	       LOGDLN( "Material finish age: ", last_age );
 
-	       // Use the stored age. I've totally got the wrong units
-	       // on this, and have thus far corrected it by calculating
-	       // the factor from known values. I need to do this properly
-	       // at some point TODO
-	       real_type alpha = 978.025;
-	       age_size = _dts[idx]*alpha;
-	       // real_type alpha = 0.0495435;
-	       // age_size *= alpha;
-	       first_age = last_age + age_size;
-
 	       // Use the star formation rates to compute the new mass
 	       // produced. Bear in mind the rates we expect from the
 	       // database will be solar masses per year.
