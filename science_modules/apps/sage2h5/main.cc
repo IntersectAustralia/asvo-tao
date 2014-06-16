@@ -25,6 +25,10 @@ public:
          ( "param,p", hpc::po::value<hpc::fs::path>( &_param_fn )->required(), "SAGE parameter file" )
          ( "alist,a", hpc::po::value<hpc::fs::path>( &_alist_fn )->required(), "SAGE expansion list file" )
          ( "output,o", hpc::po::value<hpc::fs::path>( &_out_fn )->required(), "output file" )
+         ( "treeidx", hpc::po::value<unsigned>( &_treeidx ), "" )
+         ( "lidx", hpc::po::value<unsigned>( &_lidx ), "" )
+         ( "fileidx", hpc::po::value<unsigned>( &_fileidx ), "" )
+         ( "filez", hpc::po::value<unsigned>( &_filez ), "" )
          ( "verbose,v", hpc::po::value<int>( &_verb )->default_value( 0 ), "verbosity" );
       positional_options().add( "sage", 1 );
       positional_options().add( "param", 2 );
@@ -33,7 +37,8 @@ public:
 
       // Parse options.
       parse_options( argc, argv );
-      EXCEPT( _mode == "convert" || _mode == "check", "Invalid mode." );
+      EXCEPT( _mode == "convert" || _mode == "check" ||
+              _mode == "find" || _mode == "show", "Invalid mode." );
       EXCEPT( !_sage_dir.empty(), "No SAGE output directory given." );
       EXCEPT( !_param_fn.empty(), "No SAGE parameter file given." );
       EXCEPT( !_alist_fn.empty(), "No SAGE expansion file given." );
@@ -63,6 +68,10 @@ public:
 	 convert();
       else if( _mode == "check" )
 	 check();
+      else if( _mode == "find" )
+	 find();
+      else if( _mode == "show" )
+	 show();
    }
 
    void
@@ -70,12 +79,7 @@ public:
    {
       _load_param( _param_fn );
       _load_redshifts( _alist_fn );
-
-      // Decide on my index range.
-      std::array<size_t,2> idx_rng;
-      idx_rng = hpc::mpi::modulo( _idx_rng[1] - _idx_rng[0] );
-      idx_rng[0] += _idx_rng[0];
-      idx_rng[1] += _idx_rng[0];
+      std::array<size_t,2> idx_rng = _sage_idx_rng();
       LOGILN( "Processing range: ", idx_rng );
 
       // Sum total trees and galaxies.
@@ -298,6 +302,8 @@ public:
 
       for( unsigned ii = tree_rng[0]; ii < tree_rng[1]; ++ii )
       {
+	 LOGDLN( "Checking tree: ", ii );
+
 	 unsigned size = _tree_cnts_dset.read<unsigned>( ii );
 	 unsigned long long displ = _tree_displs_dset.read<unsigned long long>( ii );
 	 unsigned long long displ2 = _tree_displs_dset.read<unsigned long long>( ii + 1 );
@@ -305,13 +311,104 @@ public:
 
 	 std::vector<sage::galaxy> gals( size );
 	 _gals_dset.read( gals.data(), _mem_type, size, displ );
-	 check_tree( gals, displ );
+	 check_tree( gals, displ, ii );
+      }
+   }
+
+   void
+   find()
+   {
+      if( _comm->rank() == 0 )
+      {
+         _load_param( _param_fn );
+         _load_redshifts( _alist_fn );
+
+         unsigned long long cur_tree = 0;
+         unsigned idx = _idx_rng[0];
+         int n_idx_trees;
+         for( ; idx < _idx_rng[1]; ++idx )
+         {
+            std::ifstream file( _make_filename( idx, *_redshifts.rbegin() ).native(), std::ios::binary );
+            EXCEPT( file.good() );
+            file.read( (char*)&n_idx_trees, sizeof(int) );
+            cur_tree += n_idx_trees;
+            if( _treeidx < cur_tree )
+            {
+               cur_tree = _treeidx - (cur_tree - n_idx_trees);
+               break;
+            }
+         }
+
+         std::vector<std::ifstream> files = _open_files( idx );
+         unsigned cur_gal = 0;
+         unsigned z = 0;
+         for( ; z < files.size(); ++z )
+         {
+            int n_idx_gals;
+            files[z].read( (char*)&n_idx_trees, sizeof(int) );
+            files[z].read( (char*)&n_idx_gals, sizeof(int) );
+            std::vector<unsigned> tree_sizes( n_idx_trees );
+            files[z].read( (char*)tree_sizes.data(), tree_sizes.size()*sizeof(unsigned) );
+            cur_gal += tree_sizes[cur_tree];
+            if( _lidx < cur_gal )
+            {
+               cur_gal = _lidx - (cur_gal - tree_sizes[cur_tree]);
+               break;
+            }
+         }
+
+         std::cout << "File index:        " << idx << "\n";
+         std::cout << "File z index:      " << z << "\n";
+         std::cout << "File tree index:   " << cur_tree << "\n";
+         std::cout << "File galaxy index: " << cur_gal << "\n";
+      }
+   }
+
+   void
+   show()
+   {
+      if( _comm->rank() == 0 )
+      {
+         _load_param( _param_fn );
+         _load_redshifts( _alist_fn );
+
+         std::ifstream file;
+         {
+            auto it = _redshifts.rbegin();
+            for( unsigned ii = 0; ii < _filez; ++ii, ++it );
+            auto fn = _make_filename( _fileidx, *it );
+            std::cout << "Opening file: " << fn << "\n";
+            file.open( fn.native(), std::ios::binary );
+            EXCEPT( file.good() );
+         }
+
+         int n_file_trees, n_file_gals;
+         file.read( (char*)&n_file_trees, sizeof(int) );
+         file.read( (char*)&n_file_gals, sizeof(int) );
+         std::vector<unsigned> tree_sizes( n_file_trees );
+         file.read( (char*)tree_sizes.data(), n_file_trees*sizeof(int) );
+         OUTPUT_GALAXY gal;
+
+         EXCEPT( _treeidx < n_file_trees, "Invalid tree index." );
+         EXCEPT( _lidx < tree_sizes[_treeidx], "Invalid file local galaxy index." );
+
+         for( unsigned ii = 0; ii < _treeidx; ++ii )
+         {
+            for( unsigned jj = 0; jj < tree_sizes[ii]; ++jj )
+               file.read( (char*)&gal, sizeof(gal) );
+         }
+         for( unsigned ii = 0; ii <= _lidx; ++ii )
+            file.read( (char*)&gal, sizeof(gal) );
+
+         std::cout << "Merge into ID:       " << gal.mergeIntoID << "\n";
+         std::cout << "Merge into snapshot: " << gal.mergeIntoSnapNum << "\n";
       }
    }
 
    void
    check_tree( std::vector<sage::galaxy> const& gals,
-	       unsigned long long displ )
+	       unsigned long long displ,
+	       unsigned tree_idx )
    {
       std::set<unsigned long long> gids;
       for( unsigned jj = 0; jj < gals.size(); ++jj )
@@ -328,9 +425,12 @@ public:
 		 (gals[jj].descendant != -1 && gals[jj].global_descendant != -1),
 		 "Inconsistent descendant and global descendant indices." );
 	 ASSERT( gals[jj].merge_into_id == -1 ||
-		 (gals[jj].descendant != -1 &&
-		  gals[gals[jj].descendant].snapshot == gals[jj].merge_into_snapshot),
-		 "Incorrect merger." );
+	 	 (gals[jj].descendant != -1 &&
+	 	  gals[gals[jj].descendant].snapshot == gals[jj].merge_into_snapshot),
+	 	 "Incorrect merger: merge into ID=", gals[jj].merge_into_id,
+                 ", merge into snapshot=", gals[jj].merge_into_snapshot,
+                 ", global galaxy index=", gals[jj].global_index,
+	 	 ", tree index=", tree_idx, ", local galaxy index=", jj );
       }
       ASSERT( gids.size() == gals.size(), "Duplicate global indices: ", gids.size(),
 	      ", ", gals.size() );
@@ -612,6 +712,16 @@ protected:
       return _sage_dir/ss.str();
    }
 
+   std::array<size_t,2>
+   _sage_idx_rng()
+   {
+      // Decide on my index range.
+      std::array<size_t,2> idx_rng = hpc::mpi::modulo( _idx_rng[1] - _idx_rng[0] );
+      idx_rng[0] += _idx_rng[0];
+      idx_rng[1] += _idx_rng[0];
+      return idx_rng;
+   }
+
 protected:
 
    std::set<double> _redshifts;
@@ -636,6 +746,10 @@ protected:
    hpc::fs::path _param_fn;
    hpc::fs::path _alist_fn;
    hpc::fs::path _out_fn;
+   unsigned _treeidx;
+   unsigned _lidx;
+   unsigned _fileidx;
+   unsigned _filez;
    int _verb;
 
    hpc::mpi::comm const* _comm;

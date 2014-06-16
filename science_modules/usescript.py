@@ -101,11 +101,11 @@ tao_bin = tao_bin + pkgs
 tao_bin_inst = tao_bin_inst + pkgs
 
 # Copy all headers.
-hdrs = rule(r'src/.+\.(?:hh|hpp|tcc)$', cp_hdr & hdr_inst, target_strip_dirs=1)
-tccs = rule(r'src/.+\.tcc$', cp_hdr & hdr_inst, target_strip_dirs=1)
+hdrs = rule(('src', r'.+\.(?:hh|hpp|tcc)$'), cp_hdr & hdr_inst, target_strip_dirs=1)
+tccs = rule(('src', r'.+\.tcc$'), cp_hdr & hdr_inst, target_strip_dirs=1)
 
 # Build all sources.
-objs = rule(r'src/.+\.cc$', cc)
+objs = rule(('src', r'.+\.cc$'), cc)
 
 # Link into static/shared library.
 static_lib = rule(objs, ar, target=platform.make_static_library('lib/tao'))
@@ -113,19 +113,19 @@ shared_lib = rule(objs, sl & sl_inst, target=platform.make_shared_library('lib/t
 rule(static_lib, lib_inst, target_strip_dirs=2)
 
 # Build unit test fixtures.
-fix_objs = rule(r'tests/fixtures/.+\.cc$', cc, sqlite3.have == True)
+fix_objs = rule(('tests', r'fixtures/.+\.cc$'), cc, sqlite3.have == True)
 fix_lib = rule(fix_objs, ar, sqlite3.have == True, target=platform.make_static_library('lib/tao_fixtures'))
 
 # Build invdividual unit tests.
-tests = rule(r'tests/(?!fixtures).+\.cc$', bin, sqlite3.have == True, libraries=['tao', 'tao_fixtures'], single=False, suffix='')
+tests = rule(('tests', r'(?!fixtures).+\.cc$'), bin, sqlite3.have == True, libraries=['tao', 'tao_fixtures'], single=False, suffix='')
 rule(tests, run_tests, sqlite3.have == True, target=dummies.always)
 
 # Build all the applications.
-rule(r'apps/(?:tao|application)\.cc$', tao_bin & tao_bin_inst, libraries=['tao'])
-rule(r'apps/validate/.+\.cc$', bin, target='bin/validate', libraries=['tao'])
-rule(r'apps/zen/.+\.cc$', bin, glut.have == True, target='bin/zen', libraries=['tao', 'pthread'])
-rule(r'apps/sage2h5/.+\.cc$', bin, target='bin/sage2h5', libraries=['tao'])
-rule(r'apps/infoh5/.+\.cc$', bin, target='bin/infoh5', libraries=['tao'])
+rule(('apps', r'(?:tao|application)\.cc$'), tao_bin & tao_bin_inst, libraries=['tao'])
+rule(('apps', r'validate/.+\.cc$'), bin, target='bin/validate', libraries=['tao'])
+rule(('apps', r'zen/.+\.cc$'), bin, glut.have == True, target='bin/zen', libraries=['tao', 'pthread'])
+rule(('apps', r'sage2h5/.+\.cc$'), bin, target='bin/sage2h5', libraries=['tao'])
+rule(('apps', r'infoh5/.+\.cc$'), bin, target='bin/infoh5', libraries=['tao'])
 # rule(r'apps/rebin/.+\.cc$', bin, target='bin/rebin', libraries=['tao'])
 # rule(r'apps/magnitudes/.+\.cc$', bin, target='bin/magnitudes', libraries=['tao'])
 # rule(r'apps/ssp_restrict/.+\.cc$', bin, target='bin/ssp_restrict', libraries=['tao'])
