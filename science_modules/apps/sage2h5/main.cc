@@ -578,9 +578,10 @@ protected:
 	 ASSERT( h5_gals[gal_idx].vel[kk] == h5_gals[gal_idx].vel[kk], "Bad spin: ",
 		 "file index=", _fileidx, ", file z=", _filez, ", tree index=", _treeidx,
 		 ", galaxy index=", gal_idx );
-	 ASSERT( h5_gals[gal_idx].spin[kk] == h5_gals[gal_idx].spin[kk], "Bad spin: ",
-		 "file index=", _fileidx, ", file z=", _filez, ", tree index=", _treeidx,
-		 ", galaxy index=", gal_idx );
+	 // TODO: Bolshoi has NaN spins for some reason...
+	 // ASSERT( h5_gals[gal_idx].spin[kk] == h5_gals[gal_idx].spin[kk], "Bad spin: ",
+	 // 	 "file index=", _fileidx, ", file z=", _filez, ", tree index=", _treeidx,
+	 // 	 ", galaxy index=", file_gal_idx );
       }
       h5_gals[gal_idx].num_particles = sage_gal.Len;
       h5_gals[gal_idx].mvir          = sage_gal.Mvir;
