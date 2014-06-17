@@ -407,6 +407,7 @@ public:
 
          std::cout << "Merge into ID:       " << gal.mergeIntoID << "\n";
          std::cout << "Merge into snapshot: " << gal.mergeIntoSnapNum << "\n";
+	 std::cout << "Spin:                (" << gal.Spin[0] << ", " << gal.Spin[1] << ", " << gal.Spin[2] << ")\n";
       }
    }
 
