@@ -44,7 +44,6 @@
       <parents>
         <item>filter</item>
       </parents>
-      <keep-files>1</keep-files>
       <images>
         <item>
           <mag_field>Johnson/Johnson_V.dati_apparent</mag_field>
