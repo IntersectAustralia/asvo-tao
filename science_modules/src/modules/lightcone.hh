@@ -30,7 +30,7 @@ namespace tao {
          // Factory function used to create a new module.
          static
          module_type*
-         factory( const string& name,
+         factory( std::string const& name,
                   pugi::xml_node base )
          {
             return new lightcone( name, base );
@@ -38,7 +38,7 @@ namespace tao {
 
       public:
 
-         lightcone( const string& name = string(),
+         lightcone( std::string const& name = std::string(),
                     pugi::xml_node base = pugi::xml_node() )
             : module_type( name, base ),
               _my_be( false ),
@@ -58,6 +58,19 @@ namespace tao {
          {
             _my_be = (be == 0);
             _be = be;
+         }
+
+         virtual
+         backend_type*
+         backend()
+         {
+            return _be;
+         }
+
+         tao::simulation const*
+         simulation() const
+         {
+            return _sim;
          }
 
          ///
@@ -245,18 +258,11 @@ namespace tao {
          }
 
          virtual
-         backend_type*
-         backend()
-         {
-            return _be;
-         }
-
-         virtual
          boost::optional<boost::any>
-         find_attribute( const string& name )
+         find_attribute( std::string const& name )
          {
             if( name == "simulation" )
-               return boost::any( (const simulation*)_sim );
+               return boost::any( (tao::simulation const*)_sim );
             else if( name == "filter" )
                return boost::any( &((filter const&)_filt) );
             else
@@ -281,7 +287,7 @@ namespace tao {
             return !_unique;
          }
 
-         const tao::lightcone&
+         tao::lightcone const&
          base_lightcone() const
          {
             return _lc;
@@ -313,7 +319,7 @@ namespace tao {
          _read_options( xml_dict const& global_dict )
          {
             // Cache the local dictionary.
-            const xml_dict& dict = this->_dict;
+            xml_dict const& dict = this->_dict;
 
 	    // Load simulation information from database.
             _sim = _be->load_simulation();
@@ -331,13 +337,13 @@ namespace tao {
             LOGILN( "Random seed: ", _rng_seed );
 
 	    // Get tile repetition type.
-	    string tile_repeat = dict.get<string>( "box-repetition", "unique" );
+	    std::string tile_repeat = dict.get<std::string>( "box-repetition", "unique" );
 	    to_lower( tile_repeat );
 	    LOGILN( "Tile/box repetition type: ", tile_repeat );
 	    _unique = (tile_repeat == "unique");
 
             // Get box type.
-            string box_type = dict.get<string>( "geometry", "light-cone" );
+            std::string box_type = dict.get<std::string>( "geometry", "light-cone" );
             to_lower( box_type );
             LOGILN( "Box type: ", box_type );
             if( box_type == "light-cone" )
@@ -415,17 +421,17 @@ namespace tao {
 
             // Output field information.
             {
-               list<string> _fields = dict.get_list<string>( "output-fields" );
-               for( const auto& field : _fields )
+               std::list<std::string> _fields = dict.get_list<std::string>( "output-fields" );
+               for( auto const& field : _fields )
                   _qry.add_output_field( field );
             }
             LOGILN( "Extracting fields: ", _qry.output_fields() );
 
             // Filter information.
             {
-               string filt_field = global_dict.get<string>( "workflow:record-filter:filter:filter-attribute", "" );
-               string filt_min = global_dict.get<string>( "workflow:record-filter:filter:filter-min", "" );
-               string filt_max = global_dict.get<string>( "workflow:record-filter:filter:filter-max", "" );
+               std::string filt_field = global_dict.get<std::string>( "workflow:record-filter:filter:filter-attribute", "" );
+               std::string filt_min = global_dict.get<std::string>( "workflow:record-filter:filter:filter-min", "" );
+               std::string filt_max = global_dict.get<std::string>( "workflow:record-filter:filter:filter-max", "" );
                if( !filt_field.empty() && filt_field != "" && filt_field != "none" && filt_field != "NONE" && filt_field != "None" )
                {
 		 _filt.set_field( filt_field, filt_min, filt_max );
@@ -436,7 +442,7 @@ namespace tao {
          }
 
          void
-         _calc_origin( const xml_dict& global_dict )
+         _calc_origin( xml_dict const& global_dict )
          {
             EXCEPT( _lc.min_ra() == 0.0, "Cannot compute multiple unique cones when "
                     "minimum RA is not 0." );
@@ -472,7 +478,7 @@ namespace tao {
          engine_type _eng;
          bool _unique;
 
-         simulation const* _sim;
+         tao::simulation const* _sim;
          query<real_type> _qry;
          filter _filt;
          tao::lightcone _lc;
