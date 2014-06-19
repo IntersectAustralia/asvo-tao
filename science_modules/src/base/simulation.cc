@@ -41,7 +41,10 @@ namespace tao {
       va_list vl;
       va_start( vl, num_snaps );
       for( unsigned ii = 0; ii < num_snaps; ++ii )
-         _zs[ii] = expansion_to_redshift( va_arg( vl, real_type ) );
+      {
+         real_type v = va_arg( vl, real_type );
+         _zs[ii] = expansion_to_redshift( v );
+      }
 
       // We really want these to be ordered by snapshots, and that
       // usually means oldest (largest redshifts) first.

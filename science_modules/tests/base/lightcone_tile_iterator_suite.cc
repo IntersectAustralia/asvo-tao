@@ -23,7 +23,7 @@ TEST_CASE( "/tao/base/lightcone_tile_iterator/constructor/lightcone" )
    TEST( lti.done() == false );
    TEST( lti.index() == 0 );
    TEST( lti.remaining_tiles().empty() == false );
-   TEST( lti.done_tiles().size() == 1 );
+   TEST( lti.done_tiles().size() == 2 );
    auto tile = *lti;
    TEST( tile.lightcone() == &lc );
    DELTA( tile.min()[0], 0.0, 1e-8 );

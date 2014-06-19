@@ -399,8 +399,11 @@ namespace tao {
 	       LOGDLN( "Material finish age: ", last_age );
 
 	       // Use the stored dt value instead of the age I calculate.
-	       age_size = _dts[idx];
-	       first_age = last_age + age_size;
+               if( _dts[idx] > 0.0 )
+               {
+                  age_size = _dts[idx];
+                  first_age = last_age + age_size;
+               }
 
 	       // Use the star formation rates to compute the new mass
 	       // produced. Bear in mind the rates we expect from the
