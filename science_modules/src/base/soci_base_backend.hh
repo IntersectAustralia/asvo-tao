@@ -74,6 +74,12 @@ namespace tao {
 	 {
 	    // Extract cosmology.
 	    real_type box_size, hubble, omega_m, omega_l;
+#ifndef NDEBUG
+	    box_size = -1.0;
+	    hubble = -1.0;
+	    omega_m = -1.0;
+	    omega_l = -1.0;
+#endif
 	    session() << "SELECT metavalue FROM metadata WHERE metakey='boxsize'",
 	       soci::into( box_size );
 	    session() << "SELECT metavalue FROM metadata WHERE metakey='hubble'",
@@ -82,6 +88,10 @@ namespace tao {
 	       soci::into( omega_m );
 	    session() << "SELECT metavalue FROM metadata WHERE metakey='omega_l'",
 	       soci::into( omega_l );
+	    ASSERT( box_size > 0.0, "Invalid box size." );
+	    ASSERT( hubble > 0.0, "Invalid Huble constant." );
+	    ASSERT( omega_m > 0.0, "Invalid OmegaM constant." );
+	    ASSERT( omega_l > 0.0, "Invalid OmegaL constant." );
 
             // Extract the list of redshift snapshots from the backend to
             // be set on the simulation.
@@ -97,6 +107,7 @@ namespace tao {
          {
             unsigned size;
             session() << "SELECT COUNT(*) FROM snap_redshift", soci::into( size );
+	    ASSERT( size > 0, "Unable to locate redshift information." );
             snap_zs.resize( size );
             session() << "SELECT redshift FROM snap_redshift ORDER BY " + this->_field_map.at( "snapnum" ),
                soci::into( (std::vector<real_type>&)snap_zs );

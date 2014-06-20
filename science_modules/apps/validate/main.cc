@@ -25,7 +25,7 @@ public:
 
       // Check options.
       EXCEPT( _mode == "mass" || _mode == "ages", "Invalid mode." );
-      EXCEPT( _sim == "minimill" || _sim == "mill", "Invalid simulation." );
+      EXCEPT( _sim == "minimill" || _sim == "mill" || _sim == "bolshoi", "Invalid simulation." );
 
       // Setup logging.
       if( _verb )
@@ -143,8 +143,10 @@ protected:
    {
       // Pick a simulation.
       std::string db_name;
-      if( _sim == "mill" )
-         db_name = "";
+      if( _sim == "bolshoi" )
+         db_name = "bolshoi_full_3servers_v4";
+      else if( _sim == "mill" )
+         db_name = "millennium_full_3servers_v4";
       else
          db_name = "millennium_mini_3servers_v4";
 

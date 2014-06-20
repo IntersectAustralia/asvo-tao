@@ -1,7 +1,7 @@
 #include "xml_fixture.hh"
 
 const char* xml_fixture::lc_tmpl = R"(
-<tao>
+  <subjobindex>0</subjobindex>
   <workflow>
     <light-cone id="light-cone">
       <geometry>light-cone</geometry>
@@ -27,11 +27,10 @@ const char* xml_fixture::lc_tmpl = R"(
       </filter>
     </record-filter>
   </workflow>
-</tao>
 )";
 
 const char* xml_fixture::box_tmpl = R"(
-<tao>
+  <subjobindex>0</subjobindex>
   <workflow>
     <light-cone id="light-cone">
       <geometry>box</geometry>
@@ -52,5 +51,4 @@ const char* xml_fixture::box_tmpl = R"(
       </filter>
     </record-filter>
   </workflow>
-</tao>
 )";

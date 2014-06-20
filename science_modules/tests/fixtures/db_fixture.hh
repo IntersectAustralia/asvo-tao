@@ -58,8 +58,8 @@ struct db_fixture
 
       // Setup backend.
       be.connect( sql );
-      sim.set_box_size( 62.5 );
-      sim.set_cosmology( 0.71, 0.25, 0.75 );
+      sim.set_box_size( 500 );
+      sim.set_cosmology( 71.0, 0.25, 0.75 );
       std::vector<tao::real_type> redshifts( 5 );
       redshifts[0] = 127;
       redshifts[1] = 80;
@@ -166,7 +166,10 @@ struct db_fixture
    {
       // Add a metadata table and insert a value.
       sql << "CREATE TABLE metadata (metakey CHARACTER VARYING, metavalue CHARACTER VARYING)";
-      sql << "INSERT INTO metadata VALUES('boxsize', '62.5')";
+      sql << "INSERT INTO metadata VALUES('boxsize', '500')";
+      sql << "INSERT INTO metadata VALUES('hubble', '71.0')";
+      sql << "INSERT INTO metadata VALUES('omega_m', '0.25')";
+      sql << "INSERT INTO metadata VALUES('omega_l', '0.75')";
    }
 
    // ///

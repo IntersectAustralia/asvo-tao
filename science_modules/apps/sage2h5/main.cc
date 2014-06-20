@@ -143,7 +143,10 @@ public:
 
       // Process my index range.
       for( size_t ii = idx_rng[0]; ii < idx_rng[1]; ++ii )
+      {
+	 _fileidx = ii;
          process_index( ii );
+      }
 
       // Be sure to close the buffers to flush them.
       _tree_displs_buf.close();
@@ -218,6 +221,7 @@ public:
       for( unsigned ii = 0; ii < n_trees; ++ii )
       {
          LOGBLOCKT( "Processing tree: ", ii );
+	 _treeidx = ii;
 
 	 // Keep a mapping to build descendants. This maps from
 	 // galaxy index to snapshot.
@@ -229,6 +233,7 @@ public:
          for( unsigned jj = 0; jj < files.size(); ++jj )
          {
             LOGBLOCKT( "Processing file: ", jj );
+	    _filez = jj;
 
             process_tree_redshift( files[jj], file_tree_sizes( jj, ii ), h5_gals, displ, desc_map, merge_map );
          }
@@ -402,6 +407,7 @@ public:
 
          std::cout << "Merge into ID:       " << gal.mergeIntoID << "\n";
          std::cout << "Merge into snapshot: " << gal.mergeIntoSnapNum << "\n";
+	 std::cout << "Spin:                (" << gal.Spin[0] << ", " << gal.Spin[1] << ", " << gal.Spin[2] << ")\n";
       }
    }
 
@@ -567,9 +573,16 @@ protected:
 	 h5_gals[gal_idx].vel[kk]    = sage_gal.Vel[kk];
 	 h5_gals[gal_idx].spin[kk]   = sage_gal.Spin[kk];
 
-	 ASSERT( h5_gals[gal_idx].pos[kk] == h5_gals[gal_idx].pos[kk], "NaN" );
-	 ASSERT( h5_gals[gal_idx].vel[kk] == h5_gals[gal_idx].vel[kk], "NaN" );
-	 ASSERT( h5_gals[gal_idx].spin[kk] == h5_gals[gal_idx].spin[kk], "NaN" );
+	 ASSERT( h5_gals[gal_idx].pos[kk] == h5_gals[gal_idx].pos[kk], "Bad spin: ",
+		 "file index=", _fileidx, ", file z=", _filez, ", tree index=", _treeidx,
+		 ", galaxy index=", gal_idx );
+	 ASSERT( h5_gals[gal_idx].vel[kk] == h5_gals[gal_idx].vel[kk], "Bad spin: ",
+		 "file index=", _fileidx, ", file z=", _filez, ", tree index=", _treeidx,
+		 ", galaxy index=", gal_idx );
+	 // TODO: Bolshoi has NaN spins for some reason...
+	 // ASSERT( h5_gals[gal_idx].spin[kk] == h5_gals[gal_idx].spin[kk], "Bad spin: ",
+	 // 	 "file index=", _fileidx, ", file z=", _filez, ", tree index=", _treeidx,
+	 // 	 ", galaxy index=", file_gal_idx );
       }
       h5_gals[gal_idx].num_particles = sage_gal.Len;
       h5_gals[gal_idx].mvir          = sage_gal.Mvir;

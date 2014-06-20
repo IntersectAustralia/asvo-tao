@@ -13,6 +13,7 @@
 #include <soci/sqlite3/soci-sqlite3.h>
 #endif
 #include "xml_dict.hh"
+#include "types.hh"
 
 namespace tao {
    namespace backends {
