@@ -14,6 +14,8 @@ namespace tao {
 	_done( false ),
         _idx( 0 )
    {
+      LOGBLOCKD( "Beginning lightcone tile iterator." );
+
       // Locate the first box to use. Start by finding a close corner
       // of the lightcone.
       std::array<real_type,3> crd;
@@ -21,6 +23,8 @@ namespace tao {
 					     crd[0], crd[1], crd[2], lc.min_dist() );
       for( int ii = 0; ii < 3; ++ii )
          crd[ii] += lc.origin()[ii];
+
+      LOGDLN( "First lightcone corner: ", crd );
 
       // Make the box corner line up.
       std::array<int,3> first;
@@ -38,6 +42,9 @@ namespace tao {
 	    crd[ii] = first[ii]*bs;
 	 }
       }
+
+      LOGDLN( "Line up corner: ", crd );
+      LOGDLN( "First index guess: ", first );
 
       // Check all adjacent boxes, one will be in overlap.
       bool ok = lc.overlap( crd, std::array<real_type,3>{ crd[0] + bs, crd[1] + bs, crd[2] + bs } );
@@ -85,6 +92,9 @@ namespace tao {
       }
       ASSERT( ok, "Failed to locate initial overlap." );
 
+      LOGDLN( "First corner: ", crd );
+      LOGDLN( "First index: ", first );
+
       // Push it onto the stack to be processed, then set it
       // up to be returned.
       _rem_tiles.push_back( first );
@@ -125,6 +135,8 @@ namespace tao {
    void
    lightcone_tile_iterator::increment()
    {
+      LOGBLOCKD( "Incrementing lightcone tile iterator." );
+
       // Grab the next tile or finish up.
       if( !_rem_tiles.empty() )
       {
