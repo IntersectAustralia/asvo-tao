@@ -14,8 +14,9 @@ TEST_CASE( "/tao/modules/lightcone/constructor/default" )
 
 TEST_CASE( "/tao/modules/lightcone/initialise/simulation" )
 {
-   lightcone_type lc;
+   auto dict = xml->make_lightcone_dict();
+   lightcone_type lc( "lc", dict.get_node( "/workflow/light-cone" ).node() );
    lc.set_backend( &xml->db.be );
-   lc.initialise( xml->make_lightcone_dict() );
+   lc.initialise( dict );
    TEST( lc.simulation() != (void*)0 );
 }

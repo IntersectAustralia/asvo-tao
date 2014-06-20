@@ -451,7 +451,7 @@ namespace tao {
 
             // Get the subjobindex.
             unsigned sub_idx = global_dict.get<unsigned>( "subjobindex" );
-	    LOGILN( "Subcone inde: ", sub_idx );
+	    LOGILN( "Subcone index: ", sub_idx );
 
 	    // Check this index is okay.
 	    unsigned max_subcones = tao::calc_max_subcones( _lc );
