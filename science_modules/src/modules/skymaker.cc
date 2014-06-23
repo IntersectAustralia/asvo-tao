@@ -92,6 +92,7 @@ namespace tao {
             _auto_back_mag = false;
             _back_mag = back_mag;
          }
+	 _back_mag_cnt = 0.0;
          _exp_time = exposure_time;
          _cnt = 0;
 
@@ -178,7 +179,10 @@ namespace tao {
 
                // Update the back magnitude if requested.
                if( _auto_back_mag && mag < 50.0 )
-                  _back_mag = std::min( std::max( _back_mag, mag + 1.0 ), 49.0 );
+	       {
+		  _back_mag += mag;
+		  _back_mag_cnt += 1.0;
+	       }
 
                ++_cnt;
             }
@@ -196,7 +200,12 @@ namespace tao {
 
          // If automatic, combine average magnitudes.
          if( _auto_back_mag )
+	 {
             _back_mag = mpi::comm::world.all_reduce( _back_mag, MPI_MAX );
+	    _back_mag_cnt = mpi::comm::world.all_reduce( _back_mag_cnt );
+	    _back_mag /= (double)_back_mag_cnt;
+	    LOGILN( "Average background magnitdue: ", _back_mag );
+	 }
 
          // Merge list files.
          std::string master_filename;

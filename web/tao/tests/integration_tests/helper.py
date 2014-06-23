@@ -1,3 +1,6 @@
+import pdb
+import os
+
 from django.core.urlresolvers import reverse
 from django.utils.html import strip_tags
 
@@ -9,7 +12,6 @@ import django.test
 import re, os, time
 import tao.datasets as datasets
 from tao.models import DataSetProperty, BandPassFilter, Simulation
-from tao.forms import NO_FILTER
 from tao.settings import MODULE_INDICES
 from tao.tests.helper import TaoModelsCleanUpMixin
 from tao.tests.support.factories import GlobalParameterFactory
@@ -26,7 +28,13 @@ def visit(client, view_name, *args, **kwargs):
     return client.get(reverse(view_name, args=args), follow=True)
 
 class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
+<<<<<<< HEAD
+=======
+    fixtures = ['rules.json']
+
+>>>>>>> work
     DOWNLOAD_DIRECTORY = '/tmp/work/downloads'
+
 
     ## List all ajax enabled pages that have initialization code and must wait
     AJAX_WAIT = ['mock_galaxy_factory', 'view_job']
@@ -48,7 +56,11 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
         fp = FirefoxProfile()
         fp.set_preference("browser.download.folderList", 2)
         fp.set_preference("browser.download.dir", self.DOWNLOAD_DIRECTORY)
+<<<<<<< HEAD
         fp.set_preference("browser.helperApps.neverAsk.saveToDisk", "text/html, application/zip, text/plain, application/force-download")
+=======
+        fp.set_preference("browser.helperApps.neverAsk.saveToDisk", "text/html, application/zip, text/plain, application/force-download, application/x-tar")
+>>>>>>> work
         
         self.selenium = WebDriver(firefox_profile=fp)
         self.selenium.implicitly_wait(1) # wait one second before failing to find
@@ -56,6 +68,14 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
         # create the download dir
         if not os.path.exists(self.DOWNLOAD_DIRECTORY):
             os.makedirs(self.DOWNLOAD_DIRECTORY)
+        # ensure that it is empty
+        for root, dirs, files in os.walk(self.DOWNLOAD_DIRECTORY):
+            for file in files:
+                os.remove(os.path.join(root, file))
+
+        self.halt_on_exception = os.environ.get('TAO_HALT_ON_EXCEPTION', False) == 'True'
+
+        return
 
     def tearDown(self):
         self.selenium.quit()
@@ -79,6 +99,9 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
     def sed(self, bare_field):
         return 'id_sed-%s' % bare_field
 
+    def mi_id(self, bare_field):
+        return 'id_mock_image-%s' % bare_field
+
     def sed_id(self, bare_field):
         return '#%s' % self.sed(bare_field)
 
@@ -91,9 +114,12 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
     def job_id(self, bare_field):
         return '#%s' % self.job_select(bare_field)
 
+<<<<<<< HEAD
     def mi_id(self, prefix, bare_field):
         return 'id_mock_image-%s-%s' % (prefix, bare_field)
 
+=======
+>>>>>>> work
     def get_parent_element(self, element):
         return self.selenium.execute_script('return arguments[0].parentNode;', element)
 
@@ -113,17 +139,21 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
 
     def get_summary_field(self, form_name, field_name):
         summary_selector = self.get_summary_selector(form_name, field_name)
-        return self.selenium.find_element_by_css_selector(summary_selector)
+        return self.find_element_by_css_selector(summary_selector)
 
     def get_summary_field_text(self, form_name, field_name):
         return self.get_summary_field(form_name, field_name).text
 
     def get_info_field(self, section, field):
-        elem = self.selenium.find_element_by_css_selector("div.%(section)s-info .%(field)s" % {'section': section, 'field': field})
+        elem = self.find_element_by_css_selector("div.%(section)s-info .%(field)s" % {'section': section, 'field': field})
         return elem.text
 
     def find_element_by_css_selector(self, selector):
+<<<<<<< HEAD
         retries = 3
+=======
+        retries = 30
+>>>>>>> work
         while retries > 0:
             try:
                 elem = self.selenium.find_element_by_css_selector(selector)
@@ -131,11 +161,37 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
             except NoSuchElementException:
                 retries -= 1
                 self.wait(1)
+<<<<<<< HEAD
         # If it hasn't been found by now, try one more time and let the exception through
         return self.selenium.find_element_by_css_selector(selector)
 
     def find_element_by_id(self, elem_id):
         retries = 3
+=======
+        # If it hasn't been found by now, we must have had an exception, halt if flagged
+        if self.halt_on_exception:
+            pdb.set_trace()
+        # If it hasn't been found by now, try one more time and let the exception through
+        return self.selenium.find_element_by_css_selector(selector)
+
+    def find_elements_by_css_selector(self, selector):
+        retries = 30
+        while retries > 0:
+            try:
+                elems = self.selenium.find_elements_by_css_selector(selector)
+                return elems
+            except NoSuchElementException:
+                retries -= 1
+                self.wait(1)
+        # If it hasn't been found by now, we must have had an exception, halt if flagged
+        if self.halt_on_exception:
+            pdb.set_trace()
+        # If it hasn't been found by now, try one more time and let the exception through
+        return self.selenium.find_elements_by_css_selector(selector)
+
+    def find_element_by_id(self, elem_id):
+        retries = 30
+>>>>>>> work
         while retries > 0:
             try:
                 elem = self.selenium.find_element_by_id(elem_id)
@@ -143,6 +199,12 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
             except NoSuchElementException:
                 retries -= 1
                 self.wait(1)
+<<<<<<< HEAD
+=======
+        # If it hasn't been found by now, we must have had an exception, halt if flagged
+        if self.halt_on_exception:
+            pdb.set_trace()
+>>>>>>> work
         # If it hasn't been found by now, try one more time and let the exception through
         return self.selenium.find_element_by_id(elem_id)
 
@@ -175,6 +237,16 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
         
     def assert_element_text_equals(self, selector, expected_value):
         text = self.find_visible_element(selector).text.strip()
+<<<<<<< HEAD
+=======
+        if self.halt_on_exception and expected_value.strip() != text:
+            print("FAILURE: {0} != {1}".format(expected_value.strip(), text))
+            import pdb; pdb.set_trace()
+        self.assertEqual(expected_value.strip(), text)
+
+    def assert_element_value_equals(self, selector, expected_value):
+        text = self.find_visible_element(selector).get_attribute('value')
+>>>>>>> work
         self.assertEqual(expected_value.strip(), text.strip())
 
     def assert_selector_texts_equals_expected_values(self, selector_value):
@@ -190,19 +262,19 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
             self.assertEqual(expected_value, actual_value)
 
     def assert_is_checked(self, selector):
-        field = self.selenium.find_element_by_css_selector(selector)
+        field = self.find_element_by_css_selector(selector)
         self.assertEqual('true', field.get_attribute('checked'))
 
     def assert_is_unchecked(self, selector):
-        field = self.selenium.find_element_by_css_selector(selector)
+        field = self.find_element_by_css_selector(selector)
         self.assertIsNone(field.get_attribute('checked'))
 
     def assert_is_enabled(self, selector):
-        field = self.selenium.find_element_by_css_selector(selector)
+        field = self.find_element_by_css_selector(selector)
         self.assertIsNone(field.get_attribute('disabled'))
         
     def assert_is_disabled(self, selector):
-        field = self.selenium.find_element_by_css_selector(selector)
+        field = self.find_element_by_css_selector(selector)
         self.assertEqual('true', field.get_attribute('disabled'))
 
     def assert_are_displayed(self, name):
@@ -218,20 +290,28 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
         self.assertFalse(all([field.is_displayed() for field in fields]))
 
     def assert_is_displayed(self, selector):
-        field = self.selenium.find_element_by_css_selector(selector)
+        field = self.find_element_by_css_selector(selector)
         self.assertTrue(field.is_displayed())
         
     def assert_not_displayed(self, selector):
-        field = self.selenium.find_element_by_css_selector(selector)
+        field = self.find_element_by_css_selector(selector)
         self.assertFalse(field.is_displayed())
 
     def assert_not_in_page(self, selector):
         "Assert that the supplied selector is not part of the page content"
+<<<<<<< HEAD
         elements = self.selenium.find_elements_by_css_selector(selector)
         self.assertTrue(len(elements) == 0)
 
     def assert_on_page(self, url_name, ignore_query_string=False):
         retries = 3
+=======
+        elements = self.find_elements_by_css_selector(selector)
+        self.assertTrue(len(elements) == 0)
+
+    def assert_on_page(self, url_name, ignore_query_string=False):
+        retries = 30
+>>>>>>> work
         while retries > 0:
             try:
                 self._assert_on_page(url_name, ignore_query_string)
@@ -240,6 +320,12 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
                 retries -= 1
                 print "assert_on_page: retry"
                 self.wait(1)
+<<<<<<< HEAD
+=======
+        # If it hasn't been found by now, we must have had an exception, halt if flagged
+        if self.halt_on_exception:
+            pdb.set_trace()
+>>>>>>> work
         self._assert_on_page(url_name, ignore_query_string)
 
     def _assert_on_page(self, url_name, ignore_query_string=False):
@@ -264,19 +350,22 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
         value_displayed = self.get_summary_field_text(form_name, field_name)
         self.assertEqual(expected_value, strip_tags(value_displayed))
 
-    def fill_in_fields(self, field_data, id_wrap=None):
+    def fill_in_fields(self, field_data, id_wrap=None, clear=False):
+        from code import interact
         for selector, text_to_input in field_data.items():
             if id_wrap:
                 selector = id_wrap(selector)
-            elem = self.selenium.find_element_by_css_selector(selector)
+            elem = self.find_element_by_css_selector(selector)
             if elem.tag_name == 'select':
                 self.select(selector, str(text_to_input))
             else:
+                if clear:
+                    elem.clear()
                 elem.send_keys(str(text_to_input))
-        self.wait(2.5)
+        self.wait(0.5)
 
     def clear(self, selector):
-        elem = self.selenium.find_element_by_css_selector(selector)
+        elem = self.find_element_by_css_selector(selector)
         elem.clear()
 
     def click(self, elem_id):
@@ -285,7 +374,7 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
         self.wait(0.5)
 
     def click_by_css(self, element_css):
-        elem = self.selenium.find_element_by_css_selector(element_css)
+        elem = self.find_element_by_css_selector(element_css)
         elem.click()
         self.wait(0.5)
 
@@ -316,7 +405,7 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
 
     def get_actual_filter_options(self):
         option_selector = '%s option' % self.rf_id('filter')
-        return [x.get_attribute('value').encode('ascii') for x in self.selenium.find_elements_by_css_selector(option_selector)]
+        return [x.get_attribute('value').encode('ascii') for x in self.find_elements_by_css_selector(option_selector)]
     
     def get_expected_filter_options(self, data_set):
         def gen_bp_pairs(objs):
@@ -329,7 +418,7 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
 
     def get_actual_snapshot_options(self):
         option_selector = '%s option' % self.lc_id('snapshot')
-        return [x.get_attribute("innerHTML") for x in self.selenium.find_elements_by_css_selector(option_selector)]
+        return [x.get_attribute("innerHTML") for x in self.find_elements_by_css_selector(option_selector)]
 
     def get_expected_snapshot_options(self, snapshots):
         return [str("%.5g" % snapshot.redshift) for snapshot in snapshots]
@@ -338,7 +427,7 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
         return "%s%s" % (self.live_server_url, reverse(url_name, args=args, kwargs=kwargs))
     
     def get_selected_option_text(self, id_of_select):
-        select = self.selenium.find_element_by_css_selector(id_of_select)
+        select = self.find_element_by_css_selector(id_of_select)
         options = select.find_elements_by_css_selector('option')
         selected_option = None
         for option in options:
@@ -347,24 +436,28 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
         return selected_option.text
 
     def get_multi_selected_option_text(self, id_of_select):
+<<<<<<< HEAD
         select = self.selenium.find_element_by_css_selector(id_of_select)
+=======
+        select = self.find_element_by_css_selector(id_of_select)
+>>>>>>> work
         options = select.find_elements_by_css_selector('option')
         return [option.text for option in options]
 
         
     def get_selector_value(self, selector): 
-        return self.selenium.find_element_by_css_selector(selector).get_attribute('value')
+        return self.find_element_by_css_selector(selector).get_attribute('value')
     
     def select(self, selector, value):
         from selenium.webdriver.support.ui import Select
 
-        elem = self.selenium.find_element_by_css_selector(selector)
+        elem = self.find_element_by_css_selector(selector)
         select = Select(elem)
 
         select.select_by_visible_text(value)
         
     def find_visible_elements(self, css_selector):
-        elements = self.selenium.find_elements_by_css_selector(css_selector)
+        elements = self.find_elements_by_css_selector(css_selector)
         return [elem for elem in elements if elem.is_displayed()]
     
     def find_visible_element(self, css_selector):
@@ -380,6 +473,10 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
         
     def select_galaxy_model(self, galaxy_model):
         self.select(self.lc_id('galaxy_model'), galaxy_model.name)
+        self.wait(0.5)
+
+    def select_output_property(self, output_property, side):
+        self.select(self.lc_id('output_properties-%s' % side), output_property.name)
         self.wait(0.5)
 
     def select_stellar_model(self, stellar_model):
@@ -403,28 +500,47 @@ class LiveServerTest(django.test.LiveServerTestCase, TaoModelsCleanUpMixin):
         
     #a function to make a list of list of text inside the table
     def table_as_text_rows(self, selector):
-        table = self.selenium.find_element_by_css_selector(selector)
+        table = self.find_element_by_css_selector(selector)
         rows = table.find_elements_by_css_selector('tr')
         cells = [[cell.text for cell in row.find_elements_by_css_selector('th, td')] for row in rows]
         return cells
 
     def submit_support_form(self):
-        submit_button = self.selenium.find_element_by_css_selector('button[type="submit"]')
+        submit_button = self.find_element_by_css_selector('button[type="submit"]')
         submit_button.submit()
 
 class LiveServerMGFTest(LiveServerTest):
     def submit_mgf_form(self):
+<<<<<<< HEAD
         submit_button = self.selenium.find_element_by_css_selector('#mgf-form #form_submit')
         submit_button.submit()
+=======
+        self.click('tao-tabs-summary_submit')
+        submit_button = self.find_element_by_css_selector('#mgf-form #form_submit')
+        submit_button.click()
+>>>>>>> work
         self.wait(1.5)
 
+    def assert_cant_submit_mgf_form(self):
+        self.click('tao-tabs-summary_submit')
+        try:
+            submit_button = self.selenium.find_element_by_css_selector('#mgf-form #form_submit')
+            self.fail('Submit button present')
+        except NoSuchElementException:
+            pass
+        self.find_element_by_css_selector('#mgf-form #form_errors')
+
     def assert_errors_on_field(self, what, field_id):
-        field_elem = self.selenium.find_element_by_css_selector(field_id)
+        field_elem = self.find_element_by_css_selector(field_id)
         div_container = self.get_closest_by_class(field_elem, 'control-group')
         self.assertEquals(what, 'error' in self.get_element_css_classes(div_container))
 
     def assert_required_on_field(self, what, field_id):
+<<<<<<< HEAD
         field_elem = self.selenium.find_element_by_css_selector(field_id)
+=======
+        field_elem = self.find_element_by_css_selector(field_id)
+>>>>>>> work
         div_container = self.get_closest_by_class(field_elem, 'control-group')
         label = div_container.find_element_by_css_selector('label')
         self.assertTrue(label.get_attribute('class').find('error') != -1, '%s label is not in error' % (field_id,))

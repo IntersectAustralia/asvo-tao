@@ -4,15 +4,33 @@ from django.test.utils import override_settings
 from tao.forms import UserCreationForm
 from tao.tests.support.factories import UserFactory
 from tao.tests.helper import TaoModelsCleanUpMixin
+<<<<<<< HEAD
 
 
 
 class UserCreationFormTest(TransactionTestCase, TaoModelsCleanUpMixin):
+=======
+from django.contrib.auth.models import AnonymousUser
 
-    def testCreateUser(self):
-        print "TODO add tests to %s " % __name__
 
-    @override_settings(DEBUG=True)
+>>>>>>> work
+
+class UserCreationFormTest(TransactionTestCase, TaoModelsCleanUpMixin):
+
+    @override_settings(USE_CAPTCHA=False, MIN_PASSWORD_LENGTH=6)
+    def test_create_user(self):
+        user_form = UserCreationForm({'title': 'a',
+            'first_name': 'b',
+            'last_name': 'c',
+            'institution': 'd',
+            'email': 'u123@intersect.org.au',
+            'recaptcha_response_field': 'PASSED',
+            'username': 'e',
+            'password1': '123456',
+            'password2': '123456'}, user=AnonymousUser())
+        self.assertTrue(user_form.is_valid())
+
+    @override_settings(USE_CAPTCHA=False)
     def test_cannot_create_duplicate_email(self):
         # setup initial data or something
         # execute the behaviour you want to test
@@ -29,8 +47,7 @@ class UserCreationFormTest(TransactionTestCase, TaoModelsCleanUpMixin):
         
         from tao.models import TaoUser
         self.assertEqual(1, TaoUser.objects.count())
-        from django.contrib.auth.models import AnonymousUser
-        user_form = UserCreationForm({'title': 'a', 
+        user_form = UserCreationForm({'title': 'a',
             'first_name': 'b', 
             'last_name': 'c', 
             'institution': 'd', 
@@ -40,5 +57,4 @@ class UserCreationFormTest(TransactionTestCase, TaoModelsCleanUpMixin):
             'password1': 'funnyfish',
             'password2': 'funnyfish'}, user=AnonymousUser())
         self.assertFalse(user_form.is_valid())
-
         self.assertEqual(['That email is already taken.'], user_form.errors['email'])

@@ -13,6 +13,7 @@ class SubmitLightConeTests(LiveServerMGFTest):
 
         GlobalParameterFactory.create(parameter_name='maximum-random-light-cones', parameter_value='10')
         GlobalParameterFactory(parameter_name='INITIAL_JOB_STATUS', parameter_value='HELD')
+        GlobalParameterFactory(parameter_name='job_too_large_warning', parameter_value='JOB_WARNING')
         simulation = SimulationFactory.create(box_size=500)
         galaxy_model = GalaxyModelFactory.create()
         dataset = DataSetFactory.create(simulation=simulation, galaxy_model=galaxy_model, max_job_box_count=15)
@@ -48,18 +49,27 @@ class SubmitLightConeTests(LiveServerMGFTest):
     def test_display_job_estimate_on_cone_only(self):
         self.assert_not_displayed('#max_job_size') # box is selected on initial load
 
+<<<<<<< HEAD
         self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
         self.assert_is_displayed('#max_job_size')
 
     def _test_job_estimate_displayed_correctly(self):
         self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
+=======
+        self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
+        self.assert_is_displayed('#max_job_size')
+
+    def test_job_estimate_displayed_correctly(self):
+        self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
+>>>>>>> work
         # the box count calculated from these parameters is 15, within the max_job_box_count set for this dataset, 15
         self.fill_in_fields({
-            'ra_opening_angle': '1',
-            'dec_opening_angle': '2',
-            'redshift_min': '3',
-            'redshift_max': '4',
+            'ra_opening_angle': '1\n',
+            'dec_opening_angle': '2\n',
+            'redshift_min': '3\n',
+            'redshift_max': '4\n',
         }, id_wrap=self.lc_id)
+<<<<<<< HEAD
         self.click(self.lc_2select('op_add_all'))
         self.assert_page_has_content('Estimated job size: 100%')
         self.assert_page_does_not_contain("Note this exceeds the maximum allowed size, please reduce the light-cone size (RA, Dec, Redshift range).")
@@ -97,6 +107,31 @@ class SubmitLightConeTests(LiveServerMGFTest):
 
         self.assert_on_page('mock_galaxy_factory')
         self.assert_page_has_content("invalid parameters, please adjust RA, Dec, redshift min or max")
+=======
+        self.assert_page_has_content('Estimated job size: 3%')
+        self.assert_page_does_not_contain("job tool argue earning")
+
+    def test_job_estimated_too_large(self):
+        self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
+        # the box count calculated from these parameters is 16, exceeding the max_job_box_count set for this dataset, 15
+        self.fill_in_fields({
+            'ra_opening_angle': '1\n',
+            'dec_opening_angle': '2\n',
+            'redshift_min': '3\n',
+            'redshift_max': '5\n',
+        }, id_wrap=self.lc_id)
+        self.assert_page_has_content("JOB_WARNING")
+
+    def test_job_estimate_with_invalid_parameters(self):
+        self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
+        self.fill_in_fields({
+            'ra_opening_angle': 'zero\n',
+            'dec_opening_angle': '0\n',
+            'redshift_min': '0\n',
+            'redshift_max': '5\n',
+        }, id_wrap=self.lc_id)
+        self.assert_page_has_content("waiting for valid cone parameters")
+>>>>>>> work
 
     def test_submit_invalid_output_properties(self):
         ## fill in form (correctly)
@@ -111,7 +146,11 @@ class SubmitLightConeTests(LiveServerMGFTest):
         #self.submit_mgf_form()
         #self.assert_required_on_field(True, self.lc_id('output_properties'))
 
+<<<<<<< HEAD
     def _test_submit_valid_unique_cone_job(self):
+=======
+    def test_submit_valid_unique_cone_job(self):
+>>>>>>> work
         ## fill in form (correctly)
         self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
         self.fill_in_fields({
@@ -121,16 +160,61 @@ class SubmitLightConeTests(LiveServerMGFTest):
             'redshift_max': '2',
         }, id_wrap=self.lc_id)
         self.click(self.lc_2select('op_add_all'))
+<<<<<<< HEAD
         # TODO: uncomment once multiple unique light-cones point-of-view is fixed in the science module
         # self.clear(self.lc_id('number_of_light_cones'))
         # self.fill_in_fields({
         #     'number_of_light_cones': '3', # this is actually the calculated maximum for parameters above
         # }, id_wrap=self.lc_id)
+=======
+        self.click('tao-tabs-record_filter')
+        self.fill_in_fields({
+            'min': '1\n',
+            'max': '10\n',
+        }, id_wrap=self.rf_id)
+>>>>>>> work
         self.submit_mgf_form()
-
         self.assert_on_page('job_index')
 
+<<<<<<< HEAD
     def _test_submit_valid_random_cone_job(self):
+=======
+    def test_submit_min_max_redshift_equal(self):
+        ## fill in form (correctly)
+        self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
+        self.fill_in_fields({
+            'ra_opening_angle': '2',
+            'dec_opening_angle': '2',
+            'redshift_min': '1',
+            'redshift_max': '1',
+        }, id_wrap=self.lc_id)
+        self.click(self.lc_2select('op_add_all'))
+        self.click('tao-tabs-record_filter')
+        self.fill_in_fields({
+            'min': '1\n',
+            'max': '10\n',
+        }, id_wrap=self.rf_id)
+        self.assert_cant_submit_mgf_form()
+
+    def test_invalid_min_max_redshift(self):
+        ## fill in form (correctly)
+        self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
+        self.fill_in_fields({
+            'ra_opening_angle': '2',
+            'dec_opening_angle': '2',
+            'redshift_min': '2',
+            'redshift_max': '1',
+        }, id_wrap=self.lc_id)
+        self.click(self.lc_2select('op_add_all'))
+        self.click('tao-tabs-record_filter')
+        self.fill_in_fields({
+            'min': '1\n',
+            'max': '10\n',
+        }, id_wrap=self.rf_id)
+        self.assert_cant_submit_mgf_form()
+
+    def test_submit_valid_random_cone_job(self):
+>>>>>>> work
         self.select(self.lc_id('catalogue_geometry'), 'Light-Cone')
         self.click_by_css(self.lc_id('light_cone_type_1')) # select "random"
         self.fill_in_fields({
@@ -144,7 +228,15 @@ class SubmitLightConeTests(LiveServerMGFTest):
         self.fill_in_fields({
             'number_of_light_cones': '10', # this is greater than the maximum for "unique" for the parameters above
         }, id_wrap=self.lc_id)
+<<<<<<< HEAD
 
+=======
+        self.click('tao-tabs-record_filter')
+        self.fill_in_fields({
+            'min': '1\n',
+            'max': '10\n',
+        }, id_wrap=self.rf_id)
+>>>>>>> work
         self.submit_mgf_form()
         self.assert_on_page('job_index')
 
@@ -165,13 +257,20 @@ class SubmitLightConeTests(LiveServerMGFTest):
             'number_of_light_cones': '11', # this exceeds the maximum in db, 10
         }, id_wrap=self.lc_id)
         self.click(self.lc_2select('op_add_all')) # click somewhere else to shift focus out of the number of cones field (this shouldn't affect the current selection, as they are already all selected)
+<<<<<<< HEAD
         self.wait(1.5)
+=======
+>>>>>>> work
         self.assertEqual('10', self.get_selector_value(self.lc_id('number_of_light_cones'))) # resets to the maximum valid value
         self.submit_mgf_form()
 
         self.assert_on_page('job_index') # used to return to the mock_galaxy_factory page, as previously used to keep the invalid input and fail validation
 
+<<<<<<< HEAD
     def _test_submit_valid_box_job(self):
+=======
+    def test_submit_valid_box_job(self):
+>>>>>>> work
         from tao import models
         ## fill in form (correctly)
         self.select(self.lc_id('catalogue_geometry'), 'Box')
@@ -181,8 +280,12 @@ class SubmitLightConeTests(LiveServerMGFTest):
             'snapshot': "%.5g" % float(self.redshifts[0]),
         }, id_wrap=self.lc_id)
         self.click(self.lc_2select('op_add_all'))
+        self.click('tao-tabs-record_filter')
+        self.fill_in_fields({
+            'min': '1\n',
+            'max': '10\n',
+        }, id_wrap=self.rf_id)
         self.submit_mgf_form()
-
         self.assert_on_page('job_index')
         self.assert_page_has_content(settings.INITIAL_JOB_MESSAGE % models.initial_job_status().lower())
 
@@ -202,7 +305,11 @@ class SubmitLightConeTests(LiveServerMGFTest):
             'redshift_max': '2',
         }, id_wrap=self.lc_id)
         self.click(self.lc_2select('op_add_all'))
-
+        self.click('tao-tabs-record_filter')
+        self.fill_in_fields({
+            'min': '1\n',
+            'max': '10\n',
+        }, id_wrap=self.rf_id)
         self.submit_mgf_form()
         self.assert_on_page('job_index') # The form is valid because the invalid box size field is hidden
 
@@ -224,7 +331,11 @@ class SubmitLightConeTests(LiveServerMGFTest):
             'snapshot': "%.5g" % float(self.redshifts[0]),
         }, id_wrap=self.lc_id)
         self.click(self.lc_2select('op_add_all'))
-
+        self.click('tao-tabs-record_filter')
+        self.fill_in_fields({
+            'min': '1\n',
+            'max': '10\n',
+        }, id_wrap=self.rf_id)
         self.submit_mgf_form()
         self.assert_on_page('job_index') # The form is valid because the invalid light cone fields hidden
 

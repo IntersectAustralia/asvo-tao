@@ -11,8 +11,14 @@ class Migration(DataMigration):
         if len(obj) == 0:
             description = 'This contains the id (pk) of the default dataset. ' \
                           'The selected Simulation and GalaxyModel are taken from the default dataset.'
+<<<<<<< HEAD
             first_dataset = orm.DataSet.objects.all()[0]
             if first_dataset:
+=======
+            datasets = orm.DataSet.objects.all()
+            if datasets.count() > 0:
+                first_dataset = datasets[0]
+>>>>>>> work
                 obj = orm.GlobalParameter(parameter_name='default_dataset', parameter_value=str(first_dataset.id), description=description)
             else:
                 obj = orm.GlobalParameter(parameter_name='default_dataset', parameter_value='0', description=description)

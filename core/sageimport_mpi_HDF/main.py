@@ -134,7 +134,8 @@ if __name__ == '__main__':
             ## 2) Open Database connection
             PreprocessDataObj.InitDBConnection(False)
             ## 3) Create All tables required for the importing of the current dataset using the information in "DataFiles" table
-            PreprocessDataObj.CreateIndexOnTreeSummaryTable()
+            if CommRank==0:
+                PreprocessDataObj.CreateIndexOnTreeSummaryTable()
             PreprocessDataObj.GenerateTablesIndex(CommSize,CommRank)
             ## 4) Close the DB connection
             PreprocessDataObj.DBConnection.CloseConnections()
@@ -154,6 +155,7 @@ if __name__ == '__main__':
         MasterTablesUpdateObj.FillRedshiftData()
         MasterTablesUpdateObj.CreateMetadataTable()
         MasterTablesUpdateObj.FillMetadataTable()
+        MasterTablesUpdateObj.SetupSecurity()
         
     ProcessTablesObj.CloseConnections()
     logging.info("Reaching Fourth Barrier")

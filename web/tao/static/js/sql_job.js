@@ -1,8 +1,14 @@
 
 var catalogue = catalogue || {};
+<<<<<<< HEAD
 catalogue.modules = catalogue.modules || {};
 
 catalogue.modules.sql_job = function ($) {
+=======
+catalogue.module_defs = catalogue.module_defs || {};
+
+catalogue.module_defs.sql_job = function ($) {
+>>>>>>> work
 
     function get_widget() {
     	return catalogue.modules.sql_job.sql_output_props_widget;

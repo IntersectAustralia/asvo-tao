@@ -2,7 +2,6 @@ import re,os
 import lxml.etree as ET
 import settingReader # Read the XML settings
 import StringIO
-#from psycopg2.extras import logging
 import logging
 
 class ParseXMLParameters(object):
@@ -25,8 +24,27 @@ class ParseXMLParameters(object):
         self.ModifyOutputPath()
         self.ReadRNGSeeds()
         self.SetBasicInformation(JobID,DatabaseName,JobUserName)
-        return self.SubJobsCount
+        SimulationName=self.GetSimulationName()
+        return [self.SubJobsCount,SimulationName.lower()]
     
+    def GetSimulationName(self):
+        SimulationNode=None
+        if self.IsSquentialJob()==False:
+            logging.info("Parallel Job - Getting Simulation name from the Lightcone")
+            SimulationNode=self.tree.xpath("ns:workflow/ns:light-cone/ns:simulation",namespaces={'ns':self.NameSpace})
+        else:
+            logging.info("Sequential Job - Getting Simulation name from the SQL")
+            SimulationNode=self.tree.xpath("ns:workflow/ns:sql/ns:simulation",namespaces={'ns':self.NameSpace})
+            logging.info(SimulationNode)
+        
+        SimulationName=""
+        if len(SimulationNode)>0:
+            SimulationName=SimulationNode[0].text
+            return SimulationName
+        else:            
+            raise  Exception('Cannot Retrieved the simulation Name!')
+            
+
     def ReadRNGSeeds(self):
         self.RNGSeedsArr=[]
         RNGSeedFields=self.tree.xpath("ns:workflow/ns:light-cone/ns:rng-seeds/ns:*",namespaces={'ns':self.NameSpace})
@@ -147,21 +165,22 @@ class ParseXMLParameters(object):
                 if Param.attrib.get('name') !=None:
                     print (Param.attrib['name']+":"+Param.text)
     
-    
+    def escapeUserName(self,UserName):
+        return ''.join(e for e in UserName if e.isalnum())
         
     def SetBasicInformation(self,JobID,Database,JobUserName):
         
-        
+        UserFolder=self.escapeUserName(JobUserName)
         DBElement=ET.Element("{"+self.NameSpace+"}database")        
         DBElement.text=Database        
         self.tree.xpath("/ns:tao",namespaces={'ns':self.NameSpace})[0].append(DBElement)
         
         DBElement=ET.Element("{"+self.NameSpace+"}outputdir")        
-        DBElement.text=self.WorkDirectory+JobUserName+"/"+str(JobID)+"/output/"        
+        DBElement.text=self.WorkDirectory+UserFolder+"/"+str(JobID)+"/output/"        
         self.tree.xpath("/ns:tao",namespaces={'ns':self.NameSpace})[0].append(DBElement)
         
         DBElement=ET.Element("{"+self.NameSpace+"}logdir")        
-        DBElement.text=self.WorkDirectory+JobUserName+"/"+str(JobID)+"/log/"        
+        DBElement.text=self.WorkDirectory+UserFolder+"/"+str(JobID)+"/log/"        
         self.tree.xpath("/ns:tao",namespaces={'ns':self.NameSpace})[0].append(DBElement)
         
         DBElement=ET.Element("{"+self.NameSpace+"}bandpassdatapath")        

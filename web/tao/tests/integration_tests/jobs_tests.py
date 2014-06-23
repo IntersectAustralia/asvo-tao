@@ -2,6 +2,8 @@ from django.conf import settings
 from django.template import Context, loader
 from django.test.utils import override_settings
 
+from selenium.webdriver.common.keys import Keys
+
 from tao.forms import FormsGraph
 from tao.models import Job, BandPassFilter, WorkflowCommand
 from tao.tests import helper
@@ -9,7 +11,12 @@ from tao.tests.integration_tests.helper import LiveServerTest
 from tao.tests.support.factories import GlobalParameterFactory, JobFactory, UserFactory, SimulationFactory, GalaxyModelFactory, DataSetFactory, DataSetPropertyFactory, StellarModelFactory, DustModelFactory, BandPassFilterFactory, SnapshotFactory
 from tao.tests.support.xml import light_cone_xml
 
+<<<<<<< HEAD
 import os, zipfile, html2text, codecs
+=======
+import os, zipfile, html2text, codecs, fnmatch, re
+from lxml import etree
+>>>>>>> work
 
 
 class JobTest(LiveServerTest):
@@ -119,7 +126,11 @@ class JobTest(LiveServerTest):
             })
         parameters.update({
             'ssp_encoding': self.sed.encoding,
+<<<<<<< HEAD
             'ssp_name': self.sed.name,
+=======
+            'ssp_name': self.sed,
+>>>>>>> work
             'band_pass_filters': [self.band_pass_filters[0].label + ' (Apparent)'],
             'band_pass_filter_label': self.band_pass_filters[0].label + ' (Apparent)',
             'band_pass_filter_id': self.band_pass_filters[0].filter_id,
@@ -148,6 +159,7 @@ class JobTest(LiveServerTest):
             'output_format': 'CSV (Text)',
         })
         return parameters
+<<<<<<< HEAD
 
     def make_xml_parameters(self):
         return light_cone_xml(self.make_parameters())
@@ -157,45 +169,77 @@ class JobTest(LiveServerTest):
         self.visit('view_job', self.completed_job.id)
         self.wait(2)
         self.assert_element_text_equals('#id-job_description', self.completed_job.description)
+=======
+
+    def make_xml_parameters(self):
+        return light_cone_xml(self.make_parameters())
+
+    def test_view_job_summary(self):
+        self.login(self.username, self.password)
+        self.visit('view_job', self.completed_job.id)
+        self.wait(2)
+        self.assert_element_value_equals('#id-job_description', self.completed_job.description)
+>>>>>>> work
         self.assert_page_has_content('Download')
         self.assert_page_has_content('Status')
         self.assert_page_has_content('Summary')
         self.assert_summary_field_correctly_shown(self.simulation.name, 'light_cone', 'simulation')
         self.assert_summary_field_correctly_shown(self.galaxy.name, 'light_cone', 'galaxy_model')
-        self.assert_summary_field_correctly_shown('1 random light cones', 'light_cone', 'number_of_light_cones')
+        self.assert_summary_field_correctly_shown('1 random light-cone', 'light_cone', 'number_of_light_cones')
         self.assert_summary_field_correctly_shown(self.sed.label, 'sed', 'single_stellar_population_model')
         self.assert_summary_field_correctly_shown(self.dust.name, 'sed', 'dust_model')
         self.assert_summary_field_correctly_shown(u"1000000 \u2264 %s (%s)" % (self.filter.label, self.filter.units), 'record_filter', 'record_filter')
 
         band_pass_filters = BandPassFilter.objects.all()
         self.wait(2)
+<<<<<<< HEAD
         self.assert_summary_field_correctly_shown('1 filter selected', 'sed', 'band_pass_filters')
         self.click('expand_band_pass_filters')  # this click doesn't work, it just grabs the focus
         self.click('expand_band_pass_filters')  # need a second call to actually do the click
+=======
+        self.assert_summary_field_correctly_shown('1 properties selected', 'sed', 'band_pass_filters')
+        self.click('expand_band_pass_filters')
+>>>>>>> work
         self.assert_summary_field_correctly_shown(band_pass_filters[0].label + ' (Apparent)', 'sed', 'band_pass_filters_list')
 
     def _test_job_with_files_downloads(self):
         self.login(self.username, self.password)
         self.visit('view_job', self.completed_job.id)
 
+<<<<<<< HEAD
         li_elements = self.selenium.find_elements_by_css_selector('#id_completed_jobs li')
+=======
+>>>>>>> work
         filenames_with_sizes = ['summary.txt']
         for file_name in self.file_names_to_contents:
             file_size = helper.get_file_size(self.dir_paths[0],file_name)
-            filenames_with_sizes.append(file_name + " (" + file_size + ")")
+            file_size = re.sub('\s+', ' ', file_size)
+            filenames_with_sizes.append(u"%s (%s)" % (file_name, file_size))
+        li_elements = self.selenium.find_elements_by_css_selector('#id_completed_jobs li')
         self.assertEqual(sorted(filenames_with_sizes), sorted([li.text for li in li_elements]))
 
         self.wait(1)
         # test files download
         for li in li_elements:
             li.find_element_by_css_selector('a').click()
-        self.wait(1)
+            self.wait(1.0)
+            # Close any download pop-up that firefox may use
+            li.send_keys(Keys.ESCAPE)
+            self.wait(1.0)
 
         for job_file in self.completed_job.files():
             download_path = os.path.join(self.DOWNLOAD_DIRECTORY, job_file.file_name.replace('/','_'))
+<<<<<<< HEAD
             self.assertTrue(os.path.exists(download_path))
             with codecs.open(download_path, encoding='utf-8') as f:
                 self.assertEqual(self.file_names_to_contents[job_file.file_name], f.read())
+=======
+            self.assertTrue(os.path.exists(download_path),
+                            u"path {0} exists fails".format(download_path))
+            with codecs.open(download_path, encoding='utf-8') as f:
+                self.assertEqual(self.file_names_to_contents[job_file.file_name], f.read())
+        return
+>>>>>>> work
 
     def test_summary_txt_displayed(self):
         self.login(self.username, self.password)
@@ -203,6 +247,7 @@ class JobTest(LiveServerTest):
         self.assert_page_has_content('summary.txt')
 
         self.visit('view_job', self.job.id)
+<<<<<<< HEAD
         self.assert_page_has_content('summary.txt')
 
     def _test_summary_txt_downloads_correctly(self):
@@ -214,6 +259,22 @@ class JobTest(LiveServerTest):
         summary_txt_path = os.path.join(self.DOWNLOAD_DIRECTORY, 'summary.txt')
         with codecs.open(summary_txt_path, encoding='utf-8') as f:
             self.assertEqual(self.summary_text, f.read())
+=======
+        self.assert_page_has_content('Viewing Job {0}'.format(self.job.id))
+
+    def test_summary_txt_downloads_correctly(self):
+        self.login(self.username, self.password)
+        self.visit('view_job', self.completed_job.id)
+
+        # Side effect: wait for the page to load successfully
+        self.find_element_by_id('id_download_summary_txt')
+        self.click('id_download_summary_txt')
+        self.wait(1)
+        summary_txt_path = os.path.join(self.DOWNLOAD_DIRECTORY, 'summary.txt')
+        with codecs.open(summary_txt_path, encoding='utf-8') as f:
+            f_contents = f.read()
+            self.assertEqual(self.summary_text, f_contents)
+>>>>>>> work
 
     # test that anonymous user cannot view job or download files
     def test_anonymous_user_cannot_view_or_download(self):
@@ -273,7 +334,7 @@ class JobTest(LiveServerTest):
         self.assertTrue(os.path.exists(download_path), "%s not found" % (download_path,))
         
         # extract the files
-        extract_path = os.path.join(self.DOWNLOAD_DIRECTORY, 'tao_output')
+        extract_path = os.path.join(self.DOWNLOAD_DIRECTORY, 'tao_output_zip')
         self._extract_zipfile_to_dir(download_path, extract_path)
         
         self._assert_directories_match(self.dir_paths[0], extract_path)
@@ -281,8 +342,135 @@ class JobTest(LiveServerTest):
     def test_zip_file_displayed(self):
         self.login(self.username, self.password)
         self.visit('view_job', self.completed_job.id)
+<<<<<<< HEAD
+=======
 
-        self.assert_page_has_content('Download zip file')
+        self.assert_page_has_content('Download catalogue')
+        self.assert_page_has_content('.zip')
+
+    def test_tar_file_download(self):
+        self.login(self.username, self.password)
+        self.visit('view_job', self.completed_job.id)
+            
+        download_link = self.selenium.find_element_by_id('id_download_as_tar')
+        download_link.click()
+        
+        filename = 'tao_%s_catalogue_%d.tar' % (self.user.username, self.completed_job.id)
+        download_path = os.path.join(self.DOWNLOAD_DIRECTORY, filename)
+        
+        self.wait()
+        self.assertTrue(os.path.exists(download_path))
+        
+        extract_path = os.path.join(self.DOWNLOAD_DIRECTORY, 'tao_output_tar')
+        self._extract_tarfile_to_dir(download_path, extract_path)
+        dir_list = self._list_all_files(extract_path)
+        
+        expected_dir_list = [f.file_name for f in self.completed_job.files()]
+        
+        self.assertEqual(sorted(dir_list), sorted(expected_dir_list))
+        
+    def test_tar_file_displayed(self):
+        self.login(self.username, self.password)
+        self.visit('view_job', self.completed_job.id)
+
+        self.assert_page_has_content('.tar (recommended)')
+
+    def test_save_job_description_edit(self):
+        self.login(self.username, self.password)
+        self.visit('view_job', self.job.id)
+        self.assert_element_value_equals('#id-job_description', self.job.description)
+        new_description = 'This is an updated job description; '
+        old_description = self.job.description
+        self.click('id-job_description')
+        self.fill_in_fields({'#id-job_description': new_description})# fill_in_fields sends text to the start of input field, without overriding the original input
+        self.click('id-save_edit')
+        self.assert_element_value_equals('#id-job_description', old_description + new_description)
+        self.selenium.refresh()
+        self.assert_element_value_equals('#id-job_description',  old_description + new_description)
+
+    def test_cancel_job_description_edit(self):
+        self.login(self.username, self.password)
+        self.visit('view_job', self.job.id)
+        temp_description = "Here's some text that will be removed faweirhiclzklhrehure "
+        original_description = self.job.description
+        self.click('id-job_description')
+        self.fill_in_fields({'#id-job_description': temp_description})
+        self.assert_element_value_equals('#id-job_description', original_description + temp_description)
+        self.click('id-cancel_edit')
+        self.assert_element_value_equals('#id-job_description', original_description)
+
+        self.selenium.refresh()
+        self.assert_element_value_equals('#id-job_description', original_description)
+
+    def test_stop_rerun_release_buttons_enabled_with_status(self):
+        self.login(self.username, self.password)
+>>>>>>> work
+
+        self.visit('view_job', self.submitted_job.id)
+        self._check_job_buttons_enabled_or_disabled({'enabled': ['stop'], 'disabled': ['rerun', 'release']})
+
+        self.visit('view_job', self.queued_job.id)
+        self._check_job_buttons_enabled_or_disabled({'enabled': ['stop'], 'disabled': ['rerun', 'release']})
+
+        self.visit('view_job', self.in_progress_job.id)
+        self._check_job_buttons_enabled_or_disabled({'enabled': ['stop'], 'disabled': ['rerun', 'release']})
+
+        self.visit('view_job', self.completed_job.id)
+        self._check_job_buttons_enabled_or_disabled({'enabled': ['rerun'], 'disabled': ['stop', 'release']})
+
+        self.visit('view_job', self.error_job.id)
+        self._check_job_buttons_enabled_or_disabled({'enabled': ['rerun'], 'disabled': ['stop', 'release']})
+
+        self.visit('view_job', self.held_job.id)
+        self._check_job_buttons_enabled_or_disabled({'enabled': ['release'], 'disabled': ['stop', 'rerun']})
+
+    def test_stop_job_button(self):
+        self.login(self.username, self.password)
+        self.visit('view_job', self.in_progress_job.id)
+        self.assertEqual(0, len(WorkflowCommand.objects.all()))
+
+        self.click(self.job_select('stop'))
+        self.click('id_confirm_stop')
+        self.assertEqual(1, len(WorkflowCommand.objects.all()))
+        stop_job_command = WorkflowCommand.objects.get(pk=1)
+        self.assertEqual(self.in_progress_job, stop_job_command.job_id)
+        self.assertEqual(self.user, stop_job_command.submitted_by)
+        self.assertEqual('Job_Stop', stop_job_command.command)
+        self.assertEqual('SUBMITTED', stop_job_command.execution_status)
+
+    def test_rerun_job_button(self):
+        self.login(self.username, self.password)
+        self.visit('view_job', self.completed_job.id)
+        self.click(self.job_select('rerun'))
+        self.click('id_confirm_rerun')
+        self._check_job_buttons_enabled_or_disabled({'enabled': ['stop'], 'disabled': ['rerun', 'release']})
+
+        updated_job = Job.objects.get(id=self.completed_job.id)
+        self.assertEqual('SUBMITTED', updated_job.status)
+
+    def test_delete_job_output_button(self):
+        self.login(self.username, self.password)
+        self.visit('view_job', self.completed_job.id)
+        self.assertEqual(0, len(WorkflowCommand.objects.all()))
+
+        self.click(self.job_select('output_delete'))
+        self.click('id_confirm_delete_output')
+        self.assertEqual(1, len(WorkflowCommand.objects.all()))
+        delete_job_output_command = WorkflowCommand.objects.get(pk=1)
+        self.assertEqual(self.completed_job, delete_job_output_command.job_id)
+        self.assertEqual(self.user, delete_job_output_command.submitted_by)
+        self.assertEqual('Job_Output_Delete', delete_job_output_command.command)
+        self.assertEqual('SUBMITTED', delete_job_output_command.execution_status)
+
+    def test_release_job_button(self):
+        self.login(self.username, self.password)
+        self.visit('view_job', self.held_job.id)
+        self.click(self.job_select('release'))
+        self.click('id_confirm_release')
+        self._check_job_buttons_enabled_or_disabled({'enabled': ['stop'], 'disabled': ['rerun', 'release']})
+
+        updated_job = Job.objects.get(id=self.held_job.id)
+        self.assertEqual('SUBMITTED', updated_job.status)
 
     def _test_save_job_description_edit(self):
         self.login(self.username, self.password)
@@ -386,7 +574,15 @@ class JobTest(LiveServerTest):
             fullpath = os.path.join(dirname, filename)
             helper.mkdir_p(os.path.dirname(fullpath))
             helper.write_file_from_zip(zipfile_obj, filename, fullpath)
+          
+    def _extract_tarfile_to_dir(self, download_path, dirname):
+        helper.mkdir_p(os.path.dirname(dirname))
+        if not os.path.isdir(dirname):
+            os.mkdir(dirname)
+            os.chmod(dirname, 0700)
             
+        os.system(" ".join(["cd", dirname, "&&", "tar", "-xf", download_path]))
+              
     def _assert_directories_match(self, expected_dir_path, actual_dir_path):
         expected_dir_list = self._list_all_files(expected_dir_path)
         actual_dir_list = self._list_all_files(actual_dir_path)
@@ -436,15 +632,37 @@ class JobTest(LiveServerTest):
         self.click('id-job_error_support')
         self.assert_on_page('support_page')
 
+<<<<<<< HEAD
     def test_refresh_disk_usage(self):
         self.login(self.username, self.password)
         self.visit('view_job', self.completed_job.id)
         # self.assert_page_has_content('<strong>Disk Usage:</strong> 854.0B')
         self.assert_element_text_equals('#id_disk_usage', self.completed_job.display_disk_size())
 
+=======
+
+    def test_refresh_disk_usage(self):
+        self.login(self.username, self.password)
+        self.visit('view_job', self.completed_job.id)
+        self.assert_element_text_equals('#id_disk_usage', self.completed_job.display_disk_size())
+>>>>>>> work
         file_content = 'abc' * 2000000
         helper.create_file(os.path.join(settings.FILES_BASE, self.output_paths[0]), 'file_name', {'file_name': file_content})
         self.completed_job.save()
         self.click('id_refresh_disk_usage')
         self.wait()
         self.assert_element_text_equals('#id_disk_usage', self.completed_job.display_disk_size())
+<<<<<<< HEAD
+=======
+
+    def test_handle_bad_xml(self):
+        bad_params = str.replace(self.job.parameters, '</record-filter>','</record-filter><skymaker id="6"><images><item><format>PNG</format></item></images></skymaker>')
+        self.completed_job = JobFactory.create(user=self.user, status=Job.COMPLETED, output_path=self.output_paths[0], parameters=bad_params)
+        self.login(self.username, self.password)
+        self.visit('view_job', id=self.completed_job.id)
+        self.assert_page_has_content('mock_image missing parameter')
+        self.click('id_error_report_ok')
+        self.click('id-job_output_delete')
+        self.click('id_confirm_delete_output')
+        self.assert_on_page('job_index')
+>>>>>>> work

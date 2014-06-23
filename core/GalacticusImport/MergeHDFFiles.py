@@ -98,6 +98,8 @@ if __name__ == '__main__':
     Datadict['MetalsColdGas']=numpy.add(Datadict['diskAbundancesGasMetals'],Datadict['spheroidAbundancesGasMetals'])
     Datadict['sfr']=numpy.add(Datadict['interOutputDiskStarFormationRate'],Datadict['interOutputSpheroidStarFormationRate'])
     
+    Datadict['sfr']=Datadict['sfr']/(10**9)
+    Datadict['interOutputSpheroidStarFormationRate']=Datadict['interOutputSpheroidStarFormationRate']/(10**9)
    
     
         

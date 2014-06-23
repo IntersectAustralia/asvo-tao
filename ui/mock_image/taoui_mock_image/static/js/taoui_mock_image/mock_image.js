@@ -1,8 +1,14 @@
 
 var catalogue = catalogue || {};
+<<<<<<< HEAD
 catalogue.modules = catalogue.modules || {};
 
 catalogue.modules.mock_image = function ($) {
+=======
+catalogue.module_defs = catalogue.module_defs || {};
+
+catalogue.module_defs.mock_image = function ($) {
+>>>>>>> work
 
     var vm = {}
     this.vm = vm;
@@ -38,6 +44,20 @@ catalogue.modules.mock_image = function ($) {
             $('#mock_image_info').slideUp();
         }
     }
+<<<<<<< HEAD
+=======
+    
+    function get_mag_field_options() {
+    	// Absolute filters aren't allowed for image generation
+    	var all_filters = catalogue.vm.sed.bandpass_filters();
+    	var app_filters;
+
+    	app_filters = $.grep(all_filters, function(elem, idx) { 
+            return elem.fields.label.indexOf("(Absolute)") == -1;
+        });
+    	return app_filters;
+    }
+>>>>>>> work
 
     this.cleanup_fields = function () {}
 
@@ -114,11 +134,16 @@ catalogue.modules.mock_image = function ($) {
             image_params.format = ko.observable(param ? param : vm.format_options[0]);
 
             image_params.mag_field_options = ko.computed(function(){
+<<<<<<< HEAD
                 return catalogue.vm.sed.bandpass_filters();
+=======
+                return get_mag_field_options();
+>>>>>>> work
             });
             param = get_param(prefix, '-mag_field');
             // NOTE: should the mag_field_options be recreated for each mock image?
             param = catalogue.util.get_observable_by_attribute('pk', param, image_params.mag_field_options);
+<<<<<<< HEAD
             image_params.mag_field = ko.observable(param ? param : image_params.mag_field_options[0]);
 
             param = get_param(prefix, '-fov_ra');
@@ -130,12 +155,36 @@ catalogue.modules.mock_image = function ($) {
                 .extend({required: true})
                 .extend({validate: catalogue.validators.is_float})
                 .extend({validate: catalogue.validators.geq(1)})
+=======
+            image_params.mag_field = ko.observable(param ? param : image_params.mag_field_options[0])
+                .extend({required: true});
+
+            param = get_param(prefix, '-fov_ra');
+            image_params.fov_ra = ko.observable(param ? param : catalogue.modules.light_cone.vm.ra_max()-catalogue.modules.light_cone.vm.ra_min())
+                .extend({required: true})
+                .extend({validate: catalogue.validators.positive});
+            param = get_param(prefix, '-fov_dec');
+            image_params.fov_dec = ko.observable(param ? param : catalogue.modules.light_cone.vm.dec_max()-catalogue.modules.light_cone.vm.dec_min())
+                .extend({required: true})
+                .extend({validate: catalogue.validators.positive});
+            param = get_param(prefix, '-width');
+            min_mock_image_pixels = catalogue.util.global_parameter_or_null('min_mock_image_pixels');
+            min_mock_image_pixels = min_mock_image_pixels ? min_mock_image_pixels.fields.parameter_value : 512;
+            image_params.width = ko.observable(param ? param : 1024)
+                .extend({required: true})
+                .extend({validate: catalogue.validators.is_float})
+                .extend({validate: catalogue.validators.geq(min_mock_image_pixels)})
+>>>>>>> work
                 .extend({validate: catalogue.validators.leq(4096)});
             param = get_param(prefix, '-height');
             image_params.height = ko.observable(param ? param : 1024)
                 .extend({required: true})
                 .extend({validate: catalogue.validators.is_float})
+<<<<<<< HEAD
                 .extend({validate: catalogue.validators.geq(1)})
+=======
+                .extend({validate: catalogue.validators.geq(min_mock_image_pixels)})
+>>>>>>> work
                 .extend({validate: catalogue.validators.leq(4096)});
             param = get_param(prefix, '-min_mag');
             image_params.min_mag = ko.observable(param ? param : '')
@@ -148,6 +197,10 @@ catalogue.modules.mock_image = function ($) {
                 )});
             param = get_param(prefix, '-z_min');
             image_params.z_min = ko.observable(param ? param : catalogue.modules.light_cone.vm.redshift_min())
+<<<<<<< HEAD
+=======
+                .extend({required: true})
+>>>>>>> work
                 .extend({validate: catalogue.validators.is_float})
                 .extend({validate: catalogue.validators.geq(
                     catalogue.modules.light_cone.vm.redshift_min
@@ -157,6 +210,10 @@ catalogue.modules.mock_image = function ($) {
                     )});
             param = get_param(prefix, '-z_max');
             image_params.z_max = ko.observable(param ? param : catalogue.modules.light_cone.vm.redshift_max())
+<<<<<<< HEAD
+=======
+                .extend({required: true})
+>>>>>>> work
                 .extend({validate: catalogue.validators.is_float})
                 .extend({validate: catalogue.validators.geq(
                     catalogue.modules.light_cone.vm.redshift_min
@@ -164,22 +221,41 @@ catalogue.modules.mock_image = function ($) {
                 .extend({validate: catalogue.validators.leq(
                     catalogue.modules.light_cone.vm.redshift_max
                     )})
+<<<<<<< HEAD
                 .extend({validate: catalogue.validators.greater_than(
+=======
+                .extend({validate: catalogue.validators.geq(
+>>>>>>> work
                     image_params.z_min
                 )});
             param = get_param(prefix, '-origin_ra');
             image_params.origin_ra = ko.observable(param ? param :
+<<<<<<< HEAD
                     (def(catalogue.modules.light_cone.vm.ra_opening_angle()) ?
                     catalogue.modules.light_cone.vm.ra_opening_angle()/2 : ''));
             image_params.origin_ra
+=======
+                    (def(catalogue.modules.light_cone.vm.ra_max()-catalogue.modules.light_cone.vm.ra_min()) ?
+                    parseFloat(catalogue.modules.light_cone.vm.ra_min())+parseFloat((catalogue.modules.light_cone.vm.ra_max()-catalogue.modules.light_cone.vm.ra_min())/2) : ''));
+            image_params.origin_ra
+                .extend({required: true})
+                .extend({validate: catalogue.validators.positive})
+>>>>>>> work
                 .extend({validate: catalogue.validators.is_float})
                 .extend({validate: catalogue.validators.test(
                     ko.computed(function(){
                         if (!def(image_params.fov_ra())
+<<<<<<< HEAD
                             || !def(catalogue.modules.light_cone.vm.ra_opening_angle()))
                             return true;
                         return parseFloat(image_params.origin_ra()) + 0.5 * parseFloat(image_params.fov_ra())
                             <= parseFloat(catalogue.modules.light_cone.vm.ra_opening_angle());
+=======
+                            || !def(catalogue.modules.light_cone.vm.ra_max()-catalogue.modules.light_cone.vm.ra_min()))
+                            return true;
+                        return parseFloat(image_params.origin_ra()) + 0.5 * parseFloat(image_params.fov_ra())
+                            <= parseFloat(catalogue.modules.light_cone.vm.ra_max());
+>>>>>>> work
                     }),
                     "Origin and field-of-view RAs exceed cone maximum."
                 )})
@@ -187,30 +263,57 @@ catalogue.modules.mock_image = function ($) {
                     ko.computed(function(){
                         if (!def(image_params.fov_ra()))
                             return true;
+<<<<<<< HEAD
                         return parseFloat(image_params.origin_ra()) - 0.5 * parseFloat(image_params.fov_ra()) >= 0.0;
+=======
+                        return parseFloat(image_params.origin_ra()) - 0.5 * parseFloat(image_params.fov_ra())
+                            >= parseFloat(catalogue.modules.light_cone.vm.ra_min());
+>>>>>>> work
                     }),
                     "Origin and field-of-view RAs are below cone minimum."
                 )});
             param = get_param(prefix, '-origin_dec');
             image_params.origin_dec = ko.observable(param ? param :
+<<<<<<< HEAD
                     (def(catalogue.modules.light_cone.vm.dec_opening_angle()) ?
                         catalogue.modules.light_cone.vm.dec_opening_angle()/2 : ''));
             image_params.origin_dec
+=======
+                    (def(catalogue.modules.light_cone.vm.dec_max()-catalogue.modules.light_cone.vm.dec_min()) ?
+                        parseFloat(catalogue.modules.light_cone.vm.dec_min())+parseFloat((catalogue.modules.light_cone.vm.dec_max()-catalogue.modules.light_cone.vm.dec_min())/2) : ''));
+            image_params.origin_dec
+                .extend({required: true})
+                .extend({validate: catalogue.validators.positive})
+>>>>>>> work
                 .extend({validate: catalogue.validators.is_float})
                 .extend({validate: catalogue.validators.test(
                     ko.computed(function(){
                         if (!def(image_params.fov_dec())
+<<<<<<< HEAD
                             || !def(catalogue.modules.light_cone.vm.dec_opening_angle()))
                             return true;
                         return parseFloat(image_params.origin_dec()) + 0.5 * parseFloat(image_params.fov_dec())
                             <= parseFloat(catalogue.modules.light_cone.vm.dec_opening_angle());
                     }),
                     "Origin and field-of-view DECs exceed cone maximum.")})
+=======
+                            || !def(catalogue.modules.light_cone.vm.dec_max()-catalogue.modules.light_cone.vm.dec_min()))
+                            return true;
+                        return parseFloat(image_params.origin_dec()) + 0.5 * parseFloat(image_params.fov_dec())
+                            <= parseFloat(catalogue.modules.light_cone.vm.dec_max()) ;
+                    }),
+                    "Origin and field-of-view DECs outside cone maximum.")})
+>>>>>>> work
                 .extend({validate: catalogue.validators.test(
                     ko.computed(function(){
                         if (!def(image_params.fov_dec()))
                             return true;
+<<<<<<< HEAD
                         return parseFloat(image_params.origin_dec()) - 0.5 * parseFloat(image_params.fov_dec()) >= 0.0;
+=======
+                        return parseFloat(image_params.origin_dec()) - 0.5 * parseFloat(image_params.fov_dec())
+                            >= parseFloat(catalogue.modules.light_cone.vm.dec_min());
+>>>>>>> work
                     }),
                     "Origin and field-of-view DECs are below cone minimum."
                 )});
@@ -252,8 +355,19 @@ catalogue.modules.mock_image = function ($) {
 
         vm.can_have_images = ko.computed(function(){
             return catalogue.modules.sed.vm.apply_sed() &&
+<<<<<<< HEAD
                 catalogue.modules.light_cone.vm.catalogue_geometry().id == 'light-cone' &&
                 catalogue.vm.sed.bandpass_filters().length > 0;
+=======
+                catalogue.modules.light_cone.vm.catalogue_geometry().id == 'light-cone' && catalogue.modules.light_cone.vm.dataset().fields.enableImage;
+        });
+        
+        vm.image_module_enabled=ko.computed(function(){
+        	return catalogue.modules.light_cone.vm.dataset().fields.enableImage;
+        });
+        vm.sed_module_enabled=ko.computed(function(){
+        	return catalogue.modules.light_cone.vm.dataset().fields.enableSED;
+>>>>>>> work
         });
 
         param = job['mock_image-apply_mock_image']
@@ -275,7 +389,11 @@ catalogue.modules.mock_image = function ($) {
                 return [];
             var n = catalogue.modules.light_cone.vm.number_of_light_cones();
             var resp = [{value: 'ALL', text:'All'}]
+<<<<<<< HEAD
             for(var i = 1; i<=n; i++)
+=======
+            for(var i = 0; i<n; i++)
+>>>>>>> work
                 resp.push({value:i, text:i});
             return resp;
         });

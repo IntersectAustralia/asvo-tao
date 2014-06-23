@@ -3,7 +3,7 @@
 {% load url from future %}
 {% load staticfiles %}
 
-{% block subtitle %}Jobs{% endblock subtitle %}
+{% block subtitle %}Catalogues{% endblock subtitle %}
 
 {% block extrajs %}
     <link rel="stylesheet" href="{% static 'css/jquery-ui/themes/base/jquery-ui.css' %}" />
@@ -14,7 +14,11 @@
 
 {% block content %}
     <h1>History</h1>
+<<<<<<< HEAD
     <p><strong>Total disk usage:</strong> <span id="id_current_disk_usage">{{ user.display_current_disk_usage }}</span></p>
+=======
+    <p><strong>Total disk usage:</strong> <span id="id_current_disk_usage">{{ user.display_current_disk_usage }} {% if user.user_disk_quota > 0 %} of {{ user.display_user_disk_quota }} {% endif %}</span></p>
+>>>>>>> work
     <div>
         <table id="jobs_table" class="table table-bordered table-striped">
             <thead>
@@ -35,11 +39,22 @@
                         <td>
                             {{ job.created_time|date:"D d M Y H:i" }}
                         </td>
-                        <td>
+                        <td>    
                             {{ job.description|linebreaks }}
                         </td>
                         <td>
+<<<<<<< HEAD
                             {{ job.status }} {{ job.status_help_text }}
+                        </td>
+                        <td>
+                            {{ job.display_disk_size }}
+=======
+                        	 {% if job.is_error and not user.is_staff %}
+                        	 	QUEUED
+                        	 {% else %}
+                            	{{ job.status }} {{ job.status_help_text }}
+                            {% endif %}
+>>>>>>> work
                         </td>
                         <td>
                             {{ job.display_disk_size }}

@@ -1,9 +1,16 @@
 
 var catalogue = catalogue || {};
+<<<<<<< HEAD
 catalogue.modules = catalogue.modules || {};
 
 
 catalogue.modules.light_cone = function ($) {
+=======
+catalogue.module_defs = catalogue.module_defs || {};
+
+
+catalogue.module_defs.light_cone = function ($) {
+>>>>>>> work
 
 
     function get_widget() {
@@ -33,8 +40,15 @@ catalogue.modules.light_cone = function ($) {
     		H0 = 73.0
     	}
     	// Get user input parameters
+<<<<<<< HEAD
     	var ra_max = parseFloat(vm.ra_opening_angle());
     	var dec_max = parseFloat(vm.dec_opening_angle());
+=======
+    	var ra_min = parseFloat(vm.ra_min());
+    	var dec_min = parseFloat(vm.dec_min());
+    	var ra_max = parseFloat(vm.ra_max());
+    	var dec_max = parseFloat(vm.dec_max());
+>>>>>>> work
     	var z_min = parseFloat(vm.redshift_min());
     	var z_max = parseFloat(vm.redshift_max());
 
@@ -42,7 +56,11 @@ catalogue.modules.light_cone = function ($) {
     	if (isNaN(ra_max) || isNaN(dec_max) || isNaN(z_min) || isNaN(z_max)) {
     		return null;
     	}
+<<<<<<< HEAD
     	cjs = job_size.job_size(box_size, 0, ra_max, 0, dec_max, z_min, z_max, H0,
+=======
+    	cjs = job_size.job_size(box_size, ra_min, ra_max, dec_min, dec_max, z_min, z_max, H0,
+>>>>>>> work
     			max_job_box_count, job_size_p1, job_size_p2, job_size_p3);
     	return Math.round(cjs * 100);
     }
@@ -79,8 +97,15 @@ catalogue.modules.light_cone = function ($) {
             }
     		jQuery.extend(params, {
     			'light_cone-light_cone_type': [vm.light_cone_type()],
+<<<<<<< HEAD
     			'light_cone-ra_opening_angle': [vm.ra_opening_angle()],
     			'light_cone-dec_opening_angle': [vm.dec_opening_angle()],
+=======
+    			'light_cone-ra_min': [vm.ra_min()],
+    			'light_cone-dec_min': [vm.dec_min()],
+    			'light_cone-ra_max': [vm.ra_max()],
+    			'light_cone-dec_max': [vm.dec_max()],
+>>>>>>> work
     			'light_cone-number_of_light_cones': [parseInt(vm.number_of_light_cones())],
     			'light_cone-redshift_min': [vm.redshift_min()],
     			'light_cone-redshift_max': [vm.redshift_max()],
@@ -217,6 +242,7 @@ catalogue.modules.light_cone = function ($) {
         						  vm.galaxy_model().pk);
         }).extend({logger: 'dataset'});
 
+<<<<<<< HEAD
         param = job['light_cone-light_cone_type'];
         vm.light_cone_type = ko.observable(param ? param : 'unique');
         param = job['light_cone-number_of_light_cones'];
@@ -235,28 +261,94 @@ catalogue.modules.light_cone = function ($) {
         param = job['light_cone-ra_opening_angle'];
         vm.ra_opening_angle = ko.observable(param ? param : null)
             .extend({required: function(){return vm.catalogue_geometry().id == 'light-cone'}})
+=======
+        vm.snapshots = ko.computed(function (){
+            return catalogue.util.snapshots(vm.dataset().pk)
+        });
+        param = catalogue.util.snapshot(job['light_cone-snapshot']);
+        vm.snapshot = ko.observable(param ? param : vm.snapshots()[0]);
+        vm.simulation_redshift_max = ko.observable(vm.snapshots()[vm.snapshots().length-1].fields.redshift);
+        vm.snapshots.subscribe(function(arr){
+            vm.snapshot(arr[0]);
+            vm.simulation_redshift_max(arr[arr.length-1].fields.redshift);
+        });
+        
+
+        param = job['light_cone-light_cone_type'];
+        vm.light_cone_type = ko.observable(param ? param : 'unique');
+
+        param = job['light_cone-ra_min'];
+        vm.ra_min = ko.observable(param ? param : null)
+            .extend({required: function(){return vm.catalogue_geometry().id == 'light-cone'}})
+            .extend({only_if: function(){return vm.catalogue_geometry().id == 'light-cone'}})
+>>>>>>> work
             .extend({validate: catalogue.validators.is_float})
             .extend({validate: catalogue.validators.geq(0)})
             .extend({validate: catalogue.validators.leq(90)});
 
+<<<<<<< HEAD
         param = job['light_cone-dec_opening_angle'];
         vm.dec_opening_angle = ko.observable(param ? param : null)
             .extend({required: function(){return vm.catalogue_geometry().id == 'light-cone'}})
+=======
+        param = job['light_cone-ra_max'];
+        vm.ra_max = ko.observable(param ? param : null)
+            .extend({required: function(){return vm.catalogue_geometry().id == 'light-cone'}})
+            .extend({only_if: function(){return vm.catalogue_geometry().id == 'light-cone'}})
+            .extend({validate: catalogue.validators.is_float})
+            .extend({validate: catalogue.validators.geq(0)})
+            .extend({validate: catalogue.validators.leq(90)})
+            .extend({validate: catalogue.validators.greater_than(vm.ra_min)});
+
+
+
+        param = job['light_cone-dec_min'];
+        vm.dec_min = ko.observable(param ? param : null)
+            .extend({required: function(){return vm.catalogue_geometry().id == 'light-cone'}})
+            .extend({only_if: function(){return vm.catalogue_geometry().id == 'light-cone'}})
+>>>>>>> work
             .extend({validate: catalogue.validators.is_float})
             .extend({validate: catalogue.validators.geq(0)})
             .extend({validate: catalogue.validators.leq(90)});
 
+<<<<<<< HEAD
         param = job['light_cone-redshift_min'];
         vm.redshift_min = ko.observable(param ? param : null)
             .extend({required: function(){return vm.catalogue_geometry().id == 'light-cone'}})
+=======
+
+        param = job['light_cone-dec_max'];
+        vm.dec_max = ko.observable(param ? param : null)
+            .extend({required: function(){return vm.catalogue_geometry().id == 'light-cone'}})
+            .extend({only_if: function(){return vm.catalogue_geometry().id == 'light-cone'}})
+            .extend({validate: catalogue.validators.is_float})
+            .extend({validate: catalogue.validators.geq(0)})
+            .extend({validate: catalogue.validators.leq(90)})
+            .extend({validate: catalogue.validators.greater_than(vm.dec_min)});
+
+						  
+		  	
+        param = job['light_cone-redshift_min'];
+        vm.redshift_min = ko.observable(param ? param : null)
+            .extend({required: function(){return vm.catalogue_geometry().id == 'light-cone'}})
+            .extend({only_if: function(){return vm.catalogue_geometry().id == 'light-cone'}})
+>>>>>>> work
             .extend({validate: catalogue.validators.is_float})
             .extend({validate: catalogue.validators.geq(0)});
 
         param = job['light_cone-redshift_max'];
         vm.redshift_max = ko.observable(param ? param : null)
             .extend({required: function(){return vm.catalogue_geometry().id == 'light-cone'}})
+<<<<<<< HEAD
             .extend({validate: catalogue.validators.is_float})
             .extend({validate: catalogue.validators.geq(vm.redshift_min)});
+=======
+            .extend({only_if: function(){return vm.catalogue_geometry().id == 'light-cone'}})
+            .extend({validate: catalogue.validators.is_float})
+            .extend({validate: catalogue.validators.greater_than(vm.redshift_min)})
+            .extend({validate: catalogue.validators.greater_than(0)})
+            .extend({validate: catalogue.validators.leq(vm.simulation_redshift_max)});
+>>>>>>> work
 
         vm.max_box_size = ko.computed(function() {
             return vm.dark_matter_simulation().fields.box_size
@@ -265,10 +357,15 @@ catalogue.modules.light_cone = function ($) {
         param = job['light_cone-box_size'];
         vm.box_size = ko.observable(param ? param : vm.max_box_size())
             .extend({required: function(){return vm.catalogue_geometry().id == 'box'}})
+<<<<<<< HEAD
+=======
+            .extend({only_if: function(){return vm.catalogue_geometry().id == 'box'}})
+>>>>>>> work
             .extend({validate: catalogue.validators.is_float})
             .extend({validate: catalogue.validators.geq(0)})
             .extend({validate: catalogue.validators.leq(vm.max_box_size)});
 
+<<<<<<< HEAD
         vm.maximum_number_of_light_cones = ko.computed(function() {
             if (vm.light_cone_type() == 'random') {
                 return get_global_maximum_light_cones();
@@ -285,6 +382,52 @@ catalogue.modules.light_cone = function ($) {
                 vm.snapshot(arr[0]);
         });
 
+=======
+        // Note: these KO observables rely on observables defined above
+        // so keep them here
+        vm.maximum_number_of_light_cones = ko.computed(function() {
+            if (vm.catalogue_geometry().id == 'box') return NaN;
+            try {
+            	__max = get_global_maximum_light_cones();
+                var resp = vm.light_cone_type() == 'random' ? __max
+                    : get_number_of_unique_light_cones();
+                if (resp == null || resp === undefined || isNaN(resp)) {
+                	return NaN;
+                } else if (resp > __max) {
+                	return __max;
+                } else {
+                	return resp;
+                }
+            } catch (e) {
+                return NaN;
+            }
+        });
+
+        param = job['light_cone-number_of_light_cones'];
+        vm.number_of_light_cones = ko.observable(param ? param : 1)
+            .extend({required: function(){return vm.catalogue_geometry().id == 'light-cone'}})
+            .extend({only_if: function(){return vm.catalogue_geometry().id == 'light-cone'}})
+            .extend({validate: catalogue.validators.test(ko.computed(
+                function(){
+                    var max = vm.maximum_number_of_light_cones();
+                    return max != null && !isNaN(max) && max >= 1;
+                }
+            ),
+            "Cannot validate number of light cones.")})
+            .extend({validate: catalogue.validators.is_int})
+            .extend({validate: catalogue.validators.geq(1)})
+            .extend({validate: catalogue.validators.leq(vm.maximum_number_of_light_cones)})
+            .extend({logger: 'number_of_light_cones'});
+
+        vm.light_cones_msg = ko.computed( function() {
+            result = vm.number_of_light_cones() + ' ' + vm.light_cone_type() + ' light-cone';
+            result += vm.number_of_light_cones() > 1 ? 's' : '';
+            return result;
+        });
+
+
+
+>>>>>>> work
         param = job['light_cone-output_properties'];
         if (param) {
         	// If output properties have been provided, assume that we are only displaying
@@ -304,8 +447,18 @@ catalogue.modules.light_cone = function ($) {
             elem_id: lc_id('output_properties'),
             options: vm.output_properties_options,
             selectedOptions: vm.output_properties,
+<<<<<<< HEAD
             to_option: dataset_property_to_option
         });
+=======
+            maximum_selection:null,
+            to_option: dataset_property_to_option
+        });
+        vm.dataset.subscribe(function(v) {
+        	// Any change in the dataset clears the selected output properties
+        	vm.output_properties([]);
+        })
+>>>>>>> work
 
         vm.current_output_property = ko.observable(undefined);
         vm.output_properties_widget.clicked_option.subscribe(function(v) {
@@ -316,11 +469,19 @@ catalogue.modules.light_cone = function ($) {
         // Computed Human-Readable Summary Fields
         vm.estimated_cone_size = ko.computed(function(){
             try {
+<<<<<<< HEAD
                 return calculate_job_size();
+=======
+                var resp = calculate_job_size();
+                if (resp == null)
+                    return NaN;
+                return resp;
+>>>>>>> work
             } catch(e) {
                 return NaN;
             }
         });
+<<<<<<< HEAD
         vm.estimated_cone_size
             .extend({validate: catalogue.validators.test(function(){
                 if (vm.catalogue_geometry().id == 'box') return true;
@@ -343,22 +504,40 @@ catalogue.modules.light_cone = function ($) {
             return job_too_large() ? 'job_too_large_error' : '';
         });
 
+=======
+>>>>>>> work
 
         vm.estimated_cone_size_msg = ko.computed(function () {
         	var ecs = vm.estimated_cone_size();
         	var msg = 'Estimated job size: ';
         	if (isNaN(ecs)) {
         		msg += "(waiting for valid cone parameters)";
+<<<<<<< HEAD
         	} else {
 	            msg = msg + ecs + "%";
 	            if (job_too_large()) {
 	                msg += '. Note this exceeds the maximum allowed size, please reduce the light-cone size (RA, Dec, Redshift range).';
 	            }
         	}
+=======
+                return msg;
+        	}
+            msg = msg + ecs + "%";
+            if (ecs > 100) {
+                var warning = catalogue.util.global_parameter_or_null('job_too_large_warning');
+                if (warning == null) {
+                    warning = '<i><em>NOTE:</em> This job may not complete within the allowed time.</i>';
+                } else {
+                    warning = warning.fields.parameter_value;
+                }
+                msg += ' ' + warning;
+            }
+>>>>>>> work
             return msg;
         });
 
         vm.hr_ra_opening_angle = ko.computed(function(){
+<<<<<<< HEAD
             var result = '';
             if (vm.ra_opening_angle() != undefined && /\S/.test(vm.ra_opening_angle())) {
                 result += 'RA: ' + vm.ra_opening_angle() + '&deg;'
@@ -379,6 +558,39 @@ catalogue.modules.light_cone = function ($) {
             }
             return result;
         });
+=======
+            var result = '< RA <';
+            
+            if (vm.ra_max() != undefined && /\S/.test(vm.ra_max())) {
+                result +=  vm.ra_max()+'&deg;';
+                if (vm.ra_min() != undefined && /\S/.test(vm.ra_min())) 
+					 {
+                    result = vm.ra_min()+'&deg;'+ result; 
+                } 
+            }
+            return result+= '<br>';
+        });
+
+
+        vm.hr_dec_opening_angle = ko.computed(function(){
+            var result = '< Dec <';
+            
+            if (vm.dec_max() != undefined && /\S/.test(vm.dec_max())) {
+                result +=  vm.dec_max()+'&deg;';
+                if (vm.dec_min() != undefined && /\S/.test(vm.dec_min())) 
+					 {
+                    result = vm.dec_min()+'&deg;'+ result; 
+                } 
+            }
+            
+            
+            return result+= '<br>';
+        });
+        
+
+			        
+        
+>>>>>>> work
 
 
         vm.hr_redshift = ko.computed(function() {
@@ -404,7 +616,13 @@ catalogue.modules.light_cone = function ($) {
         var int_width = Math.pow(2, 32);
 
         var random_seed = function() {
+<<<<<<< HEAD
             return Math.floor(Math.random() * int_width);
+=======
+            // signed 32 bit integer
+            return Math.floor((Math.random() * int_width) -
+			(int_width / 2));
+>>>>>>> work
         }
 
         vm.rng_seed = TaoJob['light_cone-rng_seed'] ? TaoJob['light_cone-rng_seed'] : random_seed();
@@ -424,8 +642,21 @@ catalogue.modules.light_cone = function ($) {
 
         vm.number_of_light_cones_msg = ko.computed(function() {
             var result = '';
+<<<<<<< HEAD
             if (!isNaN(vm.maximum_number_of_light_cones())) {
                 result = 'maximum is ' + vm.maximum_number_of_light_cones();
+=======
+            var lc = vm.maximum_number_of_light_cones();
+            if (isNaN(lc)) {
+                result = '(waiting for valid cone parameters)';
+            } else if (vm.light_cone_type() == 'unique' && (vm.ra_min() >0 || vm.dec_min()>0)) {				 
+                result = 'You cannot select Unique Light-cone with RA min >0 or DEC Min >0 ';      
+            } else if (lc < 1) {
+                result = 'The current light-cone dimension exceeds the available simulation space.<br/>Please reduce the light-cone dimensions or change to random light-cones.';
+				                 
+            } else {
+                result = 'maximum is ' + lc;
+>>>>>>> work
             }
             return result;
         });

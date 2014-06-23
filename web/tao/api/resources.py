@@ -1,5 +1,5 @@
 from tastypie import fields
-from tastypie.authentication import Authentication
+from tastypie.authentication import Authentication, BasicAuthentication
 from tastypie.authorization import Authorization
 from tastypie.resources import ModelResource
 from tastypie.validation import Validation
@@ -52,6 +52,23 @@ class JobResource(ModelResource):
         limit = 0
         filtering = {
             "status": 'exact',
+        }
+
+class PowerJobResource(ModelResource):
+    user_id = fields.ToOneField(TaoUserResource, 'user', full=True)
+
+    class Meta:
+        queryset = Job.objects.all()
+        resource_name = 'pjob'
+        fields = ['id', 'username', 'description', 'database', 'status',
+                  'parameters', 'error_message', 'output_path']
+        authorization = Authorization()
+        authentication = BasicAuthentication()
+        validation = ExecutionStatusValidation()
+        limit = 0
+        filtering = {
+            "status": 'exact',
+            "id": 'exact'
         }
 
 class WFJobResource(ModelResource):

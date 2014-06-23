@@ -1,11 +1,18 @@
+<<<<<<< HEAD
 General Properties
 ==================
+=======
+{% load dict_filter %}
+Summary
+=======
+>>>>>>> work
 
 Catalogue Geometry:	{{ catalogue_geometry.title|safe }}
 Dataset: {{ dark_matter_simulation|safe }} / {{ galaxy_model|safe }}
 
 {{ dark_matter_simulation|safe }}
 {{ simulation_details|safe }}
+<<<<<<< HEAD
 {{ galaxy_model|safe }}
 {{ galaxy_model_details|safe }}
 
@@ -13,6 +20,28 @@ Dataset: {{ dark_matter_simulation|safe }} / {{ galaxy_model|safe }}
 Redshift: {{ snapshot }}
 {% else %}Dimensions
 RA: {{ ra_opening_angle }}°, Dec: {{ dec_opening_angle }}°
+=======
+
+{{ galaxy_model|safe }}
+{{ galaxy_model_details|safe }}
+
+Acknowledgements
+================
+Theoretical Astrophysical Observatory (TAO):
+{{ TAO_acknowledgement|safe }}
+{{ dark_matter_simulation|safe }}:  
+{{ simulation_acknowledgement|safe }}
+{{ galaxy_model|safe }}:
+{{ galaxy_model_acknowledgement|safe }}
+
+Details
+========
+
+{% if catalogue_geometry == 'box' %}Box Size: {{ box_size }}
+Redshift: {{ snapshot }}
+{% else %}Dimensions
+{{ ra_min_angle }}° < RA < {{ ra_max_angle }}°, {{ dec_min_angle }}° < Dec <  {{ dec_max_angle }}°
+>>>>>>> work
 Redshift: {{ redshift_min }} ≤ z ≤ {{ redshift_max }}
 
 Count: {{ number_of_light_cones }} {{ light_cone_type }} light cones
@@ -26,7 +55,11 @@ Output Properties: {{ output_properties|length }} properties selected
 Spectral Energy Distribution
 ============================
 {% if apply_sed %}
+<<<<<<< HEAD
 Model: {{ ssp_name|safe }}
+=======
+Model: {{ ssp_name.label|safe }}
+>>>>>>> work
 {{ ssp_description|safe }}
 
 Bandpass Filters: {{ band_pass_filters|length }} filters selected
@@ -45,6 +78,25 @@ Mock Image
 Not selected
 {% else %}
 Number of Images: {{ number_of_images }}
+<<<<<<< HEAD
+=======
+{% for image in images %}
+Image {{ forloop.counter }}
+-------
+Format: {{ image|get_item:'format' }}
+Sub-cone: {{ image|get_item:'sub_cone' }}
+Magnitude field: {{ image|get_item:'mag_field'|safe }}
+Min. magnitude: {{ image|get_item:'min_mag' }}
+Max. magnitude: {{ image|get_item:'max_mag' }}
+Redshift min: {{ image|get_item:'z_min' }}
+Redshift max: {{ image|get_item:'z_max' }}
+Center on RA: {{ image|get_item:'origin_ra' }}
+Center on DEC: {{ image|get_item:'origin_dec' }}
+FOV range RA: {{ image|get_item:'fov_ra' }}
+FOV range DEC: {{ image|get_item:'fov_dec' }}
+Image size: {{ image|get_item:'width' }}W x {{ image|get_item:'height' }}H
+{% endfor %}
+>>>>>>> work
 {% endif %}
 
 Selection
@@ -56,4 +108,10 @@ Selection
 Output
 ======
 
+<<<<<<< HEAD
 {{ output_format|safe }}
+=======
+{{ output_format|safe }}
+
+
+>>>>>>> work

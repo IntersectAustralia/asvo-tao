@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to the Theoretical Astrophysical Observatory
+Theoretical Astrophysical Observatory Documentation
 ====================================================
 
 .. image:: _static/asvo-logo.jpg
@@ -11,20 +11,11 @@ Welcome to the Theoretical Astrophysical Observatory
 Contents:
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
-   project/index
+
    user-manual/index
-   admin/index
-   developers/index
-   project/glossary
-   whatsnew
-   knownissues
+   roadmap
 
 
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`search`
 

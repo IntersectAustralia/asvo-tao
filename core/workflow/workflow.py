@@ -22,6 +22,8 @@ import stat,sys
 import ParseProfileData
 import traceback
 import JobRestart
+import os,re
+import lxml.etree as ET
 
 class WorkFlow(object):
 
@@ -79,8 +81,8 @@ class WorkFlow(object):
         
         logging.info("Current PBS Jobs:"+str(CurrentJobs))
         JobRunning=False
-        for JobRecord in ListOfJobs:
-            if JobRecord['pbsreferenceid'].split('.')[0] in CurrentJobs:
+        for JobRecord in ListOfJobs:            
+            if JobRecord['pbsreferenceid']!= None and  (JobRecord['pbsreferenceid'].split('.')[0] in CurrentJobs):
                 JobRunning=True
         
         
@@ -98,28 +100,58 @@ class WorkFlow(object):
         else:
             logging.info("There is no jobs actually running on PBS")
             return False
+    
+    def UserHasEnoughResources(self,JobUserName,JobParams):
+        ## Get the Number of SubCones in the current Request
+        ## This process is not very optimized at the moment.
+        logging.info("Start Checking user Resources ! ")
+        XMLtree = ET.fromstring(JobParams.encode('utf8'))
+        XMLNameSpace=re.findall('\{.*\}',XMLtree.xpath('.')[0].tag)[0]
+        XMLNameSpace=XMLNameSpace[1:-1]
+        NumofConesNode=XMLtree.xpath("ns:workflow/ns:light-cone/ns:num-cones",namespaces={'ns':XMLNameSpace})
+        SubJobsCount=0
+        if len(NumofConesNode)>0:            
+            SubJobsCount=int(NumofConesNode[0].text)
+        else:
+            SubJobsCount=1
+        
+        logging.info("Current user ("+JobUserName+") requests "+str(SubJobsCount)+" Jobs!")
+        ## Get Current Number of running jobs for this user
+        ListOfJobs=self.dbaseobj.GetCurrentUserActiveJobs(JobUserName)
+        
+        logging.info("Current user ("+JobUserName+") got "+str(len(ListOfJobs))+" Jobs Running!")
+        if(len(ListOfJobs)+SubJobsCount<=10):
+            logging.info("Job Will be executed!")
+            return True;
+        else:
+            logging.info("Job Will be ignored for the moment!")
+            return False;
         
     def ProcessNewJob(self,UIJobReference,JobParams,JobDatabase,JobUserName):       
         
         IsSequential=False
+        SimulationName=''
         try:
             ## Handling for a very special case. Job Status turned to submitted while it is already running or queued! 
             ## In this case the job Will be rejected and an email to the Admin will be sent to indicate this
             if(self.JobWithSameIDRunning(UIJobReference)==True):                         
+                return False
+            logging.info("I will start investigating if the user got more resources?!")
+            if(self.UserHasEnoughResources(JobUserName, JobParams)==False):
                 return False
             ## If a Job with the Same UI_ID exists ...ensure that it is out of the watch List (By Error State)
             self.dbaseobj.RemoveOldJobFromWatchList(UIJobReference)
             self.dbaseobj.RemoveAllJobsWithUIReferenceID(UIJobReference)
         
             ## 1- Prepare the Job Directory
-            [SubJobsCount,IsSequential]=self.PrepareJobFolder(JobParams,JobUserName,UIJobReference,JobDatabase)
+            [SubJobsCount,IsSequential,SimulationName]=self.PrepareJobFolder(JobParams,JobUserName,UIJobReference,JobDatabase)
             CurrentJobType=EnumerationLookup.JobType.Simple
             if SubJobsCount>1:
                CurrentJobType=EnumerationLookup.JobType.Complex     
             
-            
-            logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], JobUserName, str(UIJobReference),'log')                
-            outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], JobUserName, str(UIJobReference),'output')
+            UserFolder=self.escapeUserName(JobUserName)
+            logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserFolder, str(UIJobReference),'log')                
+            outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserFolder, str(UIJobReference),'output')
             old_dir = os.getcwd()
             os.chdir(logpath)
         except Exception as Exp:             
@@ -134,7 +166,7 @@ class WorkFlow(object):
         
         ###################Profiling####################################################
         try:                 
-            self.ParseProfileDataObj=ParseProfileData.ParseProfileData(logpath,0,self.Options) 
+            self.ParseProfileDataObj=ParseProfileData.ParseProfileData(logpath,0,self.Options,JobDatabase) 
             [Boxes,Tables,Galaxies,Trees]=self.ParseProfileDataObj.ParseFile()       
             logging.info('Number of Boxes='+str(Boxes))
             logging.info('Total Queries='+str(Tables))
@@ -142,6 +174,9 @@ class WorkFlow(object):
             logging.info('Maximum Trees='+str(Trees))
         except Exception as Exp:
              logging.error("Error In Profiling")
+             exc_type, exc_value, exc_traceback = sys.exc_info()
+             lines = traceback.format_exception(exc_type, exc_value, exc_traceback)
+             logging.error(''.join('!! ' + line for line in lines))
              
         #############################################################################
         
@@ -161,7 +196,7 @@ class WorkFlow(object):
             ### Submit the Job to the PBS Queue
             
             
-            PBSJobID=self.TorqueObj.Submit(UIJobReference,JobUserName,JobID,i,IsSequential)
+            PBSJobID=self.TorqueObj.Submit(UIJobReference,JobUserName,JobID,SimulationName,i,IsSequential)
             ## Store the Job PBS ID  
             if self.dbaseobj.UpdateJob_PBSID(JobID,PBSJobID)!=True:
                 raise  Exception('Error in Process New Job','Update PBSID failed')
@@ -172,13 +207,18 @@ class WorkFlow(object):
         self.UpdateTAOUI(UIJobReference, CurrentJobType, data={'status': 'QUEUED'})        
         
         return True
+    
+    def escapeUserName(self,UserName):
+        return ''.join(e for e in UserName if e.isalnum())
         
+             
         
     def PrepareJobFolder(self,JobParams,JobUserName,UIJobReference,JobDatabase):
         ## Read User Settings 
-        BasedPath=os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  JobUserName, str(UIJobReference))
-        outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  JobUserName, str(UIJobReference),'output')
-        logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  JobUserName, str(UIJobReference),'log')
+        UserFolder=self.escapeUserName(JobUserName)
+        BasedPath=os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  UserFolder, str(UIJobReference))
+        outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  UserFolder, str(UIJobReference),'output')
+        logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  UserFolder, str(UIJobReference),'log')
         AudDataPath=os.path.join(self.Options['Torque:AuxInputData'])
         
         
@@ -201,16 +241,16 @@ class WorkFlow(object):
         
         ## Parse the XML file to extract job Information and get if the job is complex or single lightcone
         ParseXMLParametersObj=ParseXML.ParseXMLParameters(outputpath+'/params.xml',self.Options)
-        SubJobsCount=ParseXMLParametersObj.ParseFile(UIJobReference,JobDatabase,JobUserName)    
+        [SubJobsCount,SimulationName]=ParseXMLParametersObj.ParseFile(UIJobReference,JobDatabase,JobUserName)    
         
         ## Generate params?.xml files based on the requested jobscounts
         ParseXMLParametersObj.ExportTrees(logpath+"/params<index>.xml")    
         
         #self.CopyDirectoryContents(AudDataPath+"/stellar_populations",logpath)     
-        self.CopyDirectoryContents(AudDataPath+"/bandpass_filters",logpath,True)
-        self.CopyDirectoryContents(AudDataPath,logpath,False)
+        #self.CopyDirectoryContents(AudDataPath+"/bandpass_filters",logpath,True)
+        #self.CopyDirectoryContents(AudDataPath,logpath,False)
             
-        return [SubJobsCount,ParseXMLParametersObj.IsSquentialJob()]   
+        return [SubJobsCount,ParseXMLParametersObj.IsSquentialJob(),SimulationName]   
         
     
     def CopyDirectoryContents(self,SrcPath,DstPath,CopySubDirs):
@@ -227,7 +267,7 @@ class WorkFlow(object):
                 DstSubFolder=os.path.join(DstPath,file_name)
                 logging.info("Content is a directory - Dest Path:"+DstSubFolder)
                 os.makedirs(DstSubFolder)
-                self.CopyDirectoryContents(full_file_name, DstSubFolder)    
+                self.CopyDirectoryContents(full_file_name, DstSubFolder,CopySubDirs)    
         
                 
     def UpdateTAOUI(self,UIJobID,JobType,data):
@@ -302,9 +342,10 @@ class WorkFlow(object):
         JobID=CurrentJobRecord['uireferenceid']
         LocalJobID=CurrentJobRecord['jobid']
         
-        JobName=self.Options['Torque:jobprefix']+UserName[:4]+'_'+str(LocalJobID)
+        UserFolder=self.escapeUserName(UserName)
+        JobName=self.Options['Torque:jobprefix']+UserFolder[:4]+'_'+str(LocalJobID)
         
-        path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserName, str(JobID),'log')
+        path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserFolder, str(JobID),'log')
         old_dir = os.getcwd()
         os.chdir(path)
         
@@ -328,8 +369,30 @@ class WorkFlow(object):
         IsSequential=RestartJobRecrod['issequential']
         SubJobID=RestartJobRecrod['subjobindex']
         
+        UserFolder=self.escapeUserName(JobUserName)
         
-        PBSJobID=self.TorqueObj.Submit(UIJobReference,JobUserName,JobID,SubJobID,IsSequential)
+        BasedPath=os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  UserFolder, str(UIJobReference))
+        outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  UserFolder, str(UIJobReference),'output')
+        logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  UserFolder, str(UIJobReference),'log')
+        AudDataPath=os.path.join(self.Options['Torque:AuxInputData'])
+              
+        ## Parse the XML file to extract job Information and get if the job is complex or single lightcone
+        ParseXMLParametersObj=ParseXML.ParseXMLParameters(outputpath+'/params.xml',self.Options)
+        SimulationName=ParseXMLParametersObj.GetSimulationName()    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        PBSJobID=self.TorqueObj.Submit(UIJobReference,JobUserName,JobID,SimulationName,SubJobID,IsSequential=='t')
         ## Store the Job PBS ID  
         if self.dbaseobj.UpdateJob_PBSID(JobID,PBSJobID)!=True:
             raise  Exception('Error in Process New Job','Update PBSID failed')
@@ -342,9 +405,10 @@ class WorkFlow(object):
     
     def GetJobstderrcontents(self,UserName,JobID,LocalJobID):
         
-        JobName=self.Options['Torque:jobprefix']+UserName[:4]+'_'+str(LocalJobID)
+        UserFolder=self.escapeUserName(UserName)
+        JobName=self.Options['Torque:jobprefix']+UserFolder[:4]+'_'+str(LocalJobID)
         
-        path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserName, str(JobID),'log')
+        path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserFolder, str(JobID),'log')
         old_dir = os.getcwd()
         os.chdir(path)
         stderrstring=''
@@ -389,8 +453,10 @@ class WorkFlow(object):
             
             
             logging.info("PBS Jobs:"+str(CurrentJobs))
+            logging.info("Database Jobs:")
             
-            logging.info("Database Jobs:"+str(CurrentJobs_PBSID))
+            for PJob in CurrentJobs_PBSID:
+                logging.info(PJob)
             
             JobsStatus=[]
             for CurrentJobRecord in CurrentJobs_PBSID:
@@ -404,18 +470,21 @@ class WorkFlow(object):
                 
                 
                 
-                logging.info("Checking Job Status : JobID="+pbsreferenceid+"\tInPBSList="+str(pbsreferenceid in CurrentJobs))
-                if pbsreferenceid in CurrentJobs:
-                    logging.info("Checking Job Status : JobID="+pbsreferenceid+"\tStatus="+str(CurrentJobs[pbsreferenceid]))
                 
-                ## Parse the Job Log File and Extract Current Job Status            
-                JobDetails=self.LogReaderObj.ParseFile(CurrentJobRecord)
+                if pbsreferenceid in CurrentJobs:
+                    logging.info("Checking Job Status : JobID="+pbsreferenceid+"\tStatus="+str(CurrentJobs[pbsreferenceid])+"\tInPBSList="+str(pbsreferenceid in CurrentJobs))
+                else:
+                    logging.info("Checking Job Status : JobID="+pbsreferenceid+"\tInPBSList="+str(pbsreferenceid in CurrentJobs))
+                ## Parse the Job Log File and Extract Current Job Status
+                            
+                JobDetails=None
                  
                 
                 
                 
                 ## 1- Change In Job Status to Running 
                 if  pbsreferenceid in CurrentJobs and CurrentJobs[pbsreferenceid]=='R': 
+                    JobDetails=self.LogReaderObj.ParseFile(CurrentJobRecord)
                     if jobstatus!=EnumerationLookup.JobState.Running:
                         self.UpdateJob_Running(CurrentJobRecord)
                     elif JobDetails!=None:
@@ -435,7 +504,7 @@ class WorkFlow(object):
                 
                 ## 4- Job Cannot Be Found in the queue ... In this case the Log File Status determine how its termination status    
                 elif (pbsreferenceid not in CurrentJobs):
-                    
+                    JobDetails=self.LogReaderObj.ParseFile(CurrentJobRecord)
                     ###### If The log file does not exist, Please put a dummy JobDetails
                     if JobDetails==None:
                         JobDetails={'start':-1,'progress':'0%','end':0,'error':'','endstate':''}
@@ -467,13 +536,14 @@ class WorkFlow(object):
         
         
         data = {}  
-        
-        path = os.path.join(self.JobBaseDir, UserName, str(UIReference_ID))
+        UserFolder=self.escapeUserName(UserName)
+        path = os.path.join(self.JobBaseDir, UserFolder, str(UIReference_ID))
         self.dbaseobj.SetJobComplete(JobID, path, JobDetails['end'])
         data['status'] = 'COMPLETED'
         
-        path = os.path.join(self.JobBaseDir, UserName, str(UIReference_ID), 'output')
+        path = os.path.join(self.JobBaseDir, UserFolder, str(UIReference_ID), 'output')
         data['output_path'] = path
+        data['error_message']=''
         
         self.UpdateTAOUI(UIReference_ID,JobType, data)
         self.dbaseobj.AddNewEvent(JobID, EnumerationLookup.EventType.Normal, 'Updating Job (UI ID:' + str(UIReference_ID) + ', Status:' + data['status'] + ')')
@@ -523,15 +593,70 @@ class WorkFlow(object):
         if TerminateAllOnError==True and JobType==EnumerationLookup.JobType.Complex:
            data['error_message']=data['error_message']+" Please note that all other subjobs will be deleted also" 
            if JobAddedForRestart==True:
-               data['error_message']=data['error_message']+"  \n\r Please note that this job will be restarted Automatically after 30 Minutes"
+               data['error_message']=data['error_message']+"  \n\r Please note that this job will be restarted Automatically after "+str(self.Options['WorkFlowSettings:RestartWaitTime'])+" Minutes"
+               data['status'] = 'IN_PROGRESS'
+               
         
         
         self.UpdateTAOUI(UIReference_ID,JobType, data)
         self.dbaseobj.AddNewEvent(JobID, EnumerationLookup.EventType.Normal, 'Updating Job (UI ID:' + str(UIReference_ID) + ', Status:' + data['status'] + ')')
         
-        Message = "Job (" + str(UIReference_ID) +" ["+str(SubJobIndex)+"])  Finished With Error. The Error Message is:" + data['error_message']
-        
-        emailreport.SendEmailToAdmin(self.Options, "Job Finished With Error", Message)
+        Message = "Job (" + str(UIReference_ID) +" ["+str(SubJobIndex)+"])  Finished With Error.\nUserName:"+UserName+".\nThe Error Message is:" + data['error_message']
+        if JobAddedForRestart!=True:
+            emailreport.SendEmailToAdmin(self.Options, "Job Finished With Error", Message)
+        else:
+            
+            
+            old_dir = os.getcwd()
+            UserFolder=self.escapeUserName(UserName)
+            logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserFolder, str(UIReference_ID),'log')  
+            outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserFolder, str(UIReference_ID),'output')
+            
+            
+            logging.info("Adding Job to Restarting List")
+            logging.info("logPath:"+logpath)
+            logging.info("outputpath:"+outputpath)
+            
+            
+            
+            
+            os.chdir(outputpath)
+            
+            filelist = [ f for f in os.listdir(".") if f!="params.xml" ]
+            for f in filelist:
+                logging.info("Removing File:"+f)
+                os.remove(f)
+            
+            os.chdir(logpath)
+            filelist = [ f for f in os.listdir(".") ]
+            for f in filelist:
+                if (not(f.endswith(".xml")) and not(f.startswith("pbs_script"))):
+                    logging.info("Removing File:"+f)
+                    os.remove(f)
+            
+            
+            
+            os.chdir(old_dir)  
+            
+            
+                
+            
+            
+            
+            
+            
+            emailreport.SendEmailToAdmin(self.Options, "Job Finished With Error (To be restarted)", Message)
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
 
     ## Update the Back-end DB and the UI that the job is running. There is no need for special handling in case of complex Jobs
     ## In this case one job is enough to turn the sate to running
@@ -543,12 +668,17 @@ class WorkFlow(object):
         OldStatus=CurrentJobRecord['jobstatus']
         UIReference_ID=CurrentJobRecord['uireferenceid']
         JobID=CurrentJobRecord['jobid']
-        
+        UserName=CurrentJobRecord['username']
         
         
         
         JobStartTime = datetime.datetime.now().timetuple()
         data = {}  
+        
+        UserFolder=self.escapeUserName(UserName)
+        path = os.path.join(self.JobBaseDir, UserFolder, str(UIReference_ID), 'output')
+        data['output_path'] = path
+        
         try:
             JobStartTime = self.GetProcessStartTime(PID)
         except Exception as Exp:
@@ -565,6 +695,8 @@ class WorkFlow(object):
     def UpdateJob_Queued(self,CurrentJobRecord):
         
         
+        
+        UserName=CurrentJobRecord['username']
         PID=CurrentJobRecord['pbsreferenceid']
         SubJobIndex=CurrentJobRecord['subjobindex']
         JobType=CurrentJobRecord['jobtype']
@@ -578,6 +710,10 @@ class WorkFlow(object):
         if EnumerationLookup.JobState.Queued!=OldStatus: 
             self.dbaseobj.SetJobQueued(JobID, "Job Queued- PBSID" + PID)
         data['status'] = 'QUEUED' 
+        UserFolder=self.escapeUserName(UserName)
+        path = os.path.join(self.JobBaseDir, UserFolder, str(UIReference_ID), 'output')
+        data['output_path'] = path
+        
         
         
         self.UpdateTAOUI(UIReference_ID, JobType, data)

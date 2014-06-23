@@ -1,0 +1,15 @@
+posx
+posy
+posz
+velx
+vely
+velz
+snapnum
+treeindex
+coldgas
+metalscoldgas
+sfr
+sfrbulge
+descendant
+stellarmass
+globalgalaxyid

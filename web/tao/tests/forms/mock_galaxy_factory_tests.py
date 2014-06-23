@@ -251,6 +251,13 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
         self.assertEqual({}, light_cone_form.errors)
         self.assertTrue(light_cone_form.is_valid())
 
+    def test_redshift_max_less_than_zero_but_larger_than_redshift_min_fails(self):
+        light_cone_form = make_form(self.default_form_values,LightConeForm,{'redshift_min': '-2', 'redshift_max': '-1'},prefix='light_cone')
+        
+        self.assertFalse(light_cone_form.is_valid())
+        self.assertEqual(['The minimum redshift must be greater or equal to zero.'], light_cone_form.errors['redshift_min'])
+        self.assertEqual(['The maximum redshift must be greater or equal to zero.'], light_cone_form.errors['redshift_max'])
+        
     def test_min_equal_max_fails(self):
         mock_ui_holder = MockUIHolder()
         light_cone_form = make_form(self.default_form_values,LightConeForm,{},prefix='light_cone')
@@ -260,12 +267,6 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
 
         self.assertFalse(record_filter_form.is_valid())
         self.assertEqual(['The "min" field must be less than the "max" field.'], record_filter_form.errors['min'])
-
-    def test_redshift_min_equal_redshift_max_fails(self):
-        light_cone_form = make_form(self.default_form_values,LightConeForm,{'redshift_max': '3', 'redshift_min': '3'},prefix='light_cone')
-
-        self.assertFalse(light_cone_form.is_valid())
-        self.assertEqual(['The minimum redshift must be less than the maximum redshift.'], light_cone_form.errors['redshift_min'])
 
     def test_min_greater_than_max_fails(self):
         mock_ui_holder = MockUIHolder()
@@ -279,9 +280,10 @@ class MockGalaxyFactoryTests(TransactionTestCase, XmlDiffMixin):
 
     def test_redshift_min_greater_than_redshift_max_fails(self):
         light_cone_form = make_form(self.default_form_values,LightConeForm,{'redshift_max': '3', 'redshift_min': '9'},prefix='light_cone')
-
+        light_cone_form.is_valid()
+        
         self.assertFalse(light_cone_form.is_valid())
-        self.assertEqual(['The minimum redshift must be less than the maximum redshift.'], light_cone_form.errors['redshift_min'])
+        self.assertEqual(['The minimum redshift must be less than or equal to the maximum redshift.'], light_cone_form.errors['redshift_min'])
 
     def test_max_or_min_empty_passes(self):
         mock_ui_holder = MockUIHolder()

@@ -27,13 +27,22 @@
             <td>Dimensions</td>
             <td>
                 <span class="ra_opening_angle" data-bind='html: hr_ra_opening_angle'><!-- --></span>
+<<<<<<< HEAD
                 <span class="dec_opening_angle" data-bind='html: hr_dec_opening_angle'><!-- --></span>
+=======
+                <span class="dec_opening_angle" data-bind='html: hr_dec_opening_angle'><!-- --></span>                
+>>>>>>> work
                 <span class="redshift" data-bind='html: hr_redshift'><!-- --></span>
             </td>
         </tr>
         <tr class="light_cone_fields" data-bind="visible: catalogue_geometry().id == 'light-cone'">
+<<<<<<< HEAD
             <td>Number of light cones</td>
             <td><span class="number_of_light_cones" data-bind="text: number_of_light_cones"><!-- --></span></td>
+=======
+            <td>Number of Light-Cones</td>
+            <td><span class="number_of_light_cones" data-bind="text: light_cones_msg"><!-- --></span></td>
+>>>>>>> work
         </tr>
         <tr class="box_fields" data-bind="visible: catalogue_geometry().id == 'box'">
             <td>Box Size</td>

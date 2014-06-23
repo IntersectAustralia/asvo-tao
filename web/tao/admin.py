@@ -14,7 +14,11 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.utils.translation import ugettext_lazy as _
 from tao.models import TaoUser
 
+<<<<<<< HEAD
 from tao.models import Job, Simulation, GalaxyModel, DataSet, DataSetProperty, StellarModel, Snapshot, BandPassFilter, DustModel, GlobalParameter, WorkflowCommand, SurveyPreset
+=======
+from tao.models import Job, Simulation, GalaxyModel, DataSet, DataSetProperty, StellarModel, Snapshot, BandPassFilter, DustModel, GlobalParameter, WorkflowCommand, SurveyPreset, format_human_readable_file_size
+>>>>>>> work
 
 for model in (GalaxyModel, StellarModel, BandPassFilter, DustModel, GlobalParameter, SurveyPreset):
     admin.site.register(model)
@@ -46,13 +50,24 @@ class DataSetAdmin(admin.ModelAdmin):
 class DataSetPropertyAdmin(admin.ModelAdmin):
     list_display = ('dataset', 'label', 'is_filter', 'is_output', 'is_computed')
     ordering = ('dataset', 'group', 'order', 'label')
+<<<<<<< HEAD
+=======
+    search_fields = ['id', 'name', 'label']
+>>>>>>> work
 
 admin.site.register(DataSet, DataSetAdmin)
 admin.site.register(DataSetProperty, DataSetPropertyAdmin)
 
 
 class UserChangeForm(forms.ModelForm):
+<<<<<<< HEAD
     password = ReadOnlyPasswordHashField()
+=======
+    password = ReadOnlyPasswordHashField(label=_("Password"),
+        help_text=_("Raw passwords are not stored, so there is no way to see "
+                    "this user's password, but you can change the password "
+                    "using <a href=\"password/\">this form</a>."))
+>>>>>>> work
 
     class Meta:
         model = TaoUser
@@ -75,9 +90,21 @@ class UserAdmin(AuthUserAdmin):
     fieldsets = AuthUserAdmin.fieldsets + ((_('Disk quota'), {'fields': ('disk_quota',)}),)
     readonly_fields = AuthUserAdmin.readonly_fields + ('username',)
 
+<<<<<<< HEAD
 
 class JobAdmin(admin.ModelAdmin):
     search_fields = ['id', 'user__username', 'status', 'description']
+=======
+class JobAdmin(admin.ModelAdmin):
+    readonly_fields = ('display_disk_usage',)
+
+    def display_disk_usage(self, instance):
+        return instance.display_disk_size()
+    display_disk_usage.short_description = 'Disk usage'
+    exclude = ('disk_usage',)
+    search_fields = ['id', 'user__username', 'status', 'description']
+    
+>>>>>>> work
 
 admin.site.register(Job, JobAdmin)
 

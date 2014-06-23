@@ -17,7 +17,7 @@ def get_file_size(dir_path, file_name):
     units = ['B', 'kB', 'MB']
     for x in units:
         if size < 1000:
-            return '%3.1f%s' % (size, x)
+            return '%3d%s' % (round(size), x)
         size /= 1000
     return '%3.1f%s' % (size, 'GB')
 

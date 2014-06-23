@@ -84,11 +84,9 @@ class WorkflowDaemon(Daemon):
                     
                 logging.info("Sleeping for "+str(self.SleepTime)+" Seconds")
                 logging.info('-----------------------------------------------------------------')
-                
                 ErrorCounter=0
             except Exception as Exp:
-                if ErrorCounter<=5:
-                    emailreport.SendEmailToAdmin(self.Options,"Error In WorkFlow",str(Exp.args))
+                
                 logging.error("Error In Main")
                 logging.error(type(Exp))
                 logging.error(Exp.args)
@@ -97,6 +95,11 @@ class WorkflowDaemon(Daemon):
                 lines = traceback.format_exception(exc_type, exc_value, exc_traceback)
                 logging.error(''.join('!! ' + line for line in lines))
                 ErrorCounter=ErrorCounter+1
+                
+                if ErrorCounter<=5:
+                    emailreport.SendEmailToAdmin(self.Options,"Error In WorkFlow",str(Exp.args)+''.join('!! ' + line for line in lines))
+                
+                
                 # Restart All Objects
                 self.dbaseObj=dbase.DBInterface(self.Options)
                 self.TorqueObj=torque.TorqueInterface(self.Options,self.dbaseObj)
@@ -123,7 +126,7 @@ if __name__ == '__main__':
     [Options]=settingReader.ParseParams("settings.xml")    
     ProcessIDFile=Options['WorkFlowSettings:ProcessID']
        
-    daemonobj = WorkflowDaemon('/tmp/'+ProcessIDFile,'/dev/null','log/out.log','log/err.log')
+    daemonobj = WorkflowDaemon(ProcessIDFile,'/dev/null','log/out.log','log/err.log')
     signal.signal(signal.SIGTERM, daemonobj.HandleExit)
     if len(sys.argv) == 2:
             if 'start' == sys.argv[1]:

@@ -140,12 +140,16 @@ class SysCommands(object):
         if (JobStatus <= EnumerationLookup.JobState.Running and JobStatus > EnumerationLookup.JobState.NewJob):
             logging.info("COMMAND Job_Stop: JobID=" + str(JobID) + " , Terminating Job From Queue")
             self.TorqueObj.TerminateJob(PBSID) ##If its status is running or before set it to pause
+            self.dbaseobj.SetJobPaused(JobID, UICommandID)
+            logging.info('Pause Job Finished (Case 1)')
             return [True,'']
         if (JobStatus <= EnumerationLookup.JobState.Running):
             logging.info("COMMAND Job_Stop: JobID=" + str(JobID) + " , SetJob to Pause")
             self.dbaseobj.SetJobPaused(JobID, UICommandID)
+            logging.info('Pause Job Finished (Case 2)')
             return [True,'']
         else:
+            logging.info('Pause Job Fail')
             return [False,'Job Is Not Running!']
         
     def Job_Stop(self,UICommandID,UIJobID,CommandParams):
@@ -167,11 +171,13 @@ class SysCommands(object):
             
             [ExecutionResult,Message]=self.PauseJob(UICommandID, JobID, PBSID, JobStatus)
         if ExecutionResult==True:
-            self.UpdateTAOJobUI(UIJobID)
-                    
+            self.dbaseobj.RemoveAllJobsWithUIReferenceID(UIJobID)
+            self.UpdateTAOJobUI(UIJobID)                    
             logging.info("Job_Stop")
             return [True,'']
         else:
+            self.dbaseobj.RemoveAllJobsWithUIReferenceID(UIJobID)
+            self.UpdateTAOJobUI(UIJobID) 
             return [False,Message]
     def Job_Resume(self,UICommandID,UIJobID,CommandParams):
         logging.info("Job_Resume is not currently supported")

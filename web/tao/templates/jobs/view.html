@@ -27,6 +27,10 @@
     <script type="text/javascript" src="{% static 'js/catalogue_helper.js' %}"></script>
 	<script type="text/javascript" src="{% static 'js/view_job.js' %}"></script>
     <script type="text/javascript" >
+<<<<<<< HEAD
+=======
+    var TaoJobView = true;
+>>>>>>> work
     var TaoMetadata = {% metadata_json %}
     var TaoJob = {% current_job_json %}
     </script>
@@ -40,6 +44,7 @@ the forms being hidden and all.
 {% block content %}
     <div>
         <h1>Viewing Job {{ job.id }} {% if job.user.username != user.username %}(owned by {{ job.user.display_name }}){% endif %}</h1>
+<<<<<<< HEAD
         <div>
             <p>
             {% if job.has_wf_commands_in_progress %}
@@ -109,12 +114,77 @@ the forms being hidden and all.
                                 Download zip file
                             </a>
                         </p>
-                    {% else %}
-                        (Zip file exceeds maximum download size.)
-                    {% endif %}
+=======
+        <div>
+            <p>
+            {% if job.has_wf_commands_in_progress %}
+                <button type="button" class="btn btn-primary" id='id-job_stop' disabled>Stop</button>
+                <button type="button" class="btn btn-primary" id='id-job_rerun' disabled>Re-Run</button>
+                <button type="button" class="btn btn-primary" id='id-job_release' disabled>Release</button>
+                <button type="button" class="btn btn-primary" id="id-job_output_delete" disabled>Delete</button>
+            {% else %}
+                {% if job.status == 'SUBMITTED' or job.status == 'QUEUED' or job.status == 'IN_PROGRESS'%}
+                    <button type="button" class="btn btn-primary" id='id-job_stop'>Stop</button>
                 {% else %}
+                    <button type="button" class="btn btn-primary" id='id-job_stop' disabled>Stop</button>
+                {% endif %}
+                {% if user.is_superuser %}
+                    {% if job.status == 'COMPLETED' or job.status == 'ERROR' %}
+                        <button type="button" class="btn btn-primary" id='id-job_rerun'>Re-Run</button>
+>>>>>>> work
+                    {% else %}
+                        <button type="button" class="btn btn-primary" id='id-job_rerun' disabled>Re-Run</button>
+                    {% endif %}
+                    {% if job.status == 'HELD' %}
+                        <button type="button" class="btn btn-primary" id='id-job_release'>Release</button>
+                    {% else %}
+                        <button type="button" class="btn btn-primary" id='id-job_release' disabled>Release</button>
+                    {% endif %}
+                {% endif %}{% comment %}if user.is_superuser{% endcomment %}
+                {% if job.status == 'COMPLETED' or job.status == 'HELD' or job.status == 'ERROR' %}
+                    <button type="button" class="btn btn-primary" id="id-job_output_delete">Delete</button>
+                {% else %}
+<<<<<<< HEAD
                     <p>This job has not completed (and hence has no output).</p>
                     </ul>
+=======
+                    <button type="button" class="btn btn-primary" id="id-job_output_delete" disabled>Delete</button>
+                {% endif %}
+            {% endif %}
+            </p>
+        </div>
+        <div>
+            <strong>Optional Description:</strong>
+            <div id="inlineedit" class="editable-field inactive">
+                <textarea contenteditable id="id-job_description" data-bind="value: description" style="width: 580px; margin:0px; height:4em;">
+                </textarea>
+                <span class="overlay-text overlay-item">click to edit</span>
+                <span class="overlay-icon icon icon-edit-sml overlay-item"></span>
+                <div id="savecancel">
+                  <div id="id-save_edit" class="btn" type="button" onClick="catalogue.modules.view_job.save_description()">&#10003;</div>
+                  <div id="id-cancel_edit" class="btn" type="button" onClick="catalogue.modules.view_job.cancel_description()">X</div>
+                </div>
+           </div>
+            <div>
+                <strong>Download</strong>
+            	<ul id='id_completed_jobs'>
+                <li><a id='id_download_summary_txt' href="{% url 'get_summary_txt_file' job.id %}">summary.txt</a></li>
+                {% for file in job.files %}
+                    {% if job.is_completed or file.file_name == "params.xml" %}
+                        <li><a href="{% url 'get_file' job.id file.file_name %}">
+                            {{ file.file_name }}
+                        </a> ({{ file.get_file_size }})</li>
+                    {% endif %}
+                {% endfor %}
+                </ul>
+                {% if job.is_completed %}
+                   	<p>Download catalogue as a single file: 
+                    	<a id='id_download_as_tar' href="{% url 'get_tar_file' job.id %}">.tar (recommended)</a>
+                    	{% if job.can_download_zip_file %}
+                            or <a id='id_download_as_zip' href="{% url 'get_zip_file' job.id %}">.zip</a>
+                        {% endif %}
+                    </p>
+>>>>>>> work
                 {% endif %}
             </div>
             <div class="disk-usage-field">
@@ -125,11 +195,19 @@ the forms being hidden and all.
             </div>
             <div>
                 <strong>Status</strong>
+<<<<<<< HEAD
                 <p>{{ job.status }} {{ job.status_help_text }}
                 {% if job.is_error %}
                 	<span id="id-job_error_enquiry">
                     (please use the <a id="id-job_error_support" href="../accounts/support_page/">Support</a> form if you would like to enquire about this error)
                     </span>
+=======
+                <p>
+                {% if job.is_error and not user.is_staff  %}
+                	QUEUED
+                {% else%}
+                {{ job.status }} {{ job.status_help_text }}
+>>>>>>> work
                 {% endif %}
                 </p>
             </div>
@@ -167,5 +245,23 @@ the forms being hidden and all.
             The current {{ job.status }} job will be released. Are you sure?
         </p>
     </div>
+<<<<<<< HEAD
+=======
+
+    <div id="error_report" title="Errors" style="display: none;">
+        <p>
+            <span>There were errors loading job parameters. <br>
+                Use the Support page to report this issue. <br><br>
+                Defaults were loaded for modules with errors.</span>
+        </p>
+        <p><span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>
+            <ul data-bind="foreach: $root.param_errors">
+                <ul data-bind="foreach: errors">
+                    <li data-bind="text: $data"></li>
+                </ul>
+            </ul>
+        </p>
+    </div>
+>>>>>>> work
 {% endblock content %}
 

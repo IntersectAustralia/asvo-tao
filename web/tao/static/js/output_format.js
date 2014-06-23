@@ -1,9 +1,16 @@
 // create the namespace if it doesn't exist
 var catalogue = catalogue || {};
+<<<<<<< HEAD
 catalogue.modules = catalogue.modules || {};
 
 // jQuery is passed as a parameter to ensure jQuery plugins work correctly
 catalogue.modules.output_format = function ($) {
+=======
+catalogue.module_defs = catalogue.module_defs || {};
+
+// jQuery is passed as a parameter to ensure jQuery plugins work correctly
+catalogue.module_defs.output_format = function ($) {
+>>>>>>> work
 
     // KO ViewModel
 	var vm = {};

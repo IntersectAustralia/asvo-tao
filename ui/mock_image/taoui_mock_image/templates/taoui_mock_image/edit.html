@@ -10,18 +10,28 @@
     <div class="boxed span8">
         <div>
           <div class="control-group id_mock_image-apply_mock_image">
-            <label class="control-label" for="id_mock_image-apply_mock_image">Generate Mock Image</label>
+            <label class="control-label" for="id_mock_image-apply_mock_image">Generate Mock Image (requires Light-Cone geometry and SED enabled)</label>
+            
             <div class="controls">
               <input id="id_mock_image-apply_mock_image"
                 name="mock_image-apply_mock_image" type="checkbox"
+<<<<<<< HEAD
                 data-bind="checked: apply_mock_image, enable: can_have_images" />
+=======
+                data-bind="checked: apply_mock_image, enable: can_have_images" /> 
+>>>>>>> work
             </div>
+            <div data-bind="visible: can_have_images && (!image_module_enabled())" style="color:red;"><br/>(Image Module is not enabled for your current selection of Dark matter simulation and Galaxy model)</div>
           </div>
         </div>
         <div id="mock_image_params" data-bind="template: {name: 'single_form_template', foreach: image_settings}, visible: can_have_images() && apply_mock_image()"
                 style="display: block;">
         </div>
+<<<<<<< HEAD
         <button data-bind="click: add_image_settings, visible: can_have_images() && apply_mock_image()">Add</button>
+=======
+        <input type="button" id="id_mock_image-add_image_button" class="btn" value="Add" data-bind="click: add_image_settings, visible: can_have_images() && apply_mock_image()"/>
+>>>>>>> work
     </div>
     <div class="aside span4" id="sed_info">
     </div>
@@ -32,6 +42,10 @@
             {% for field in form.empty_form %}
             {{ field|as_bootstrap_field }}
             {% endfor %}
+<<<<<<< HEAD
             <button data-bind="click: function(){$parent.remove_image_settings($data)}">Remove</button>
+=======
+            <input type="button" class="btn" value="Remove" data-bind="click: function(){$parent.remove_image_settings($data)}"/>
+>>>>>>> work
           </div>
 </script>

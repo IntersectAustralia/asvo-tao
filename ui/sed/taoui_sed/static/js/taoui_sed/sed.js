@@ -1,9 +1,16 @@
 
 var catalogue = catalogue || {}
+<<<<<<< HEAD
 catalogue.modules = catalogue.modules || {}
 
 
 catalogue.modules.sed = function ($) {
+=======
+catalogue.module_defs = catalogue.module_defs || {}
+
+
+catalogue.module_defs.sed = function ($) {
+>>>>>>> work
 
     // KO ViewModel
     var vm = {}
@@ -20,9 +27,15 @@ catalogue.modules.sed = function ($) {
     	var selected_bpfs;
     	var bpf_ids;
     	var params = {
+<<<<<<< HEAD
     		'sed-apply_sed': [apply_sed]
     	};
     	if (apply_sed) {
+=======
+    		'sed-apply_sed': [vm.apply_sed() && vm.can_have_sed()]
+    	};
+    	if (apply_sed && vm.can_have_sed()) {
+>>>>>>> work
     		selected_bpfs = catalogue.modules.sed.vm.bandpass_filters();
     		bpf_ids = []
     		for (var i=0; i<selected_bpfs.length; i++) {
@@ -50,6 +63,7 @@ catalogue.modules.sed = function ($) {
     function bandpass_filter_from_id(bpfid) {
     	// Answer the selected bpf record from the supplied encoded id
     	// bpfid = <bpf primary key>_(apparent|absolute)
+<<<<<<< HEAD
     	idx = bpfid.indexOf("_");
     	if (idx < 0) {
     		console.log("bandpass_filter_from_id: couldn't find _");
@@ -57,6 +71,15 @@ catalogue.modules.sed = function ($) {
     	}
     	id = bpfid.slice(0,idx);
         return $.grep(TaoMetadata.BandPassFilter, function(elem, idx) { 
+=======
+        idx = bpfid.toString().indexOf("_");
+        if (idx < 0) {
+            console.log("bandpass_filter_from_id: couldn't find _ in " + bpfid + ", idx=" + idx);
+            return undefined;
+        }
+        id = bpfid.toString().slice(0,idx);
+        return $.grep(TaoMetadata.BandPassFilter, function(elem, idx) {
+>>>>>>> work
             return elem.pk == id
         })[0] || null;
 
@@ -67,10 +90,13 @@ catalogue.modules.sed = function ($) {
     	var job = init_params.job;
     	var param; // Temporary variable for observable initialisation
 
+<<<<<<< HEAD
         //
         // Prepare apply SED and SSP.
         //
 
+=======
+>>>>>>> work
     	param = job['sed-apply_sed'];
         vm.apply_sed = ko.observable(param ? param : false);
     	vm.stellar_models = ko.observableArray(TaoMetadata.StellarModel);
@@ -80,10 +106,13 @@ catalogue.modules.sed = function ($) {
     	}
     	vm.stellar_model = ko.observable(param ? param : vm.stellar_models()[0]);
 
+<<<<<<< HEAD
         //
         // Prepare bandpass filters.
         //
 
+=======
+>>>>>>> work
     	param = job['sed-band_pass_filters'];
         if (param) {
         	// If bandpass filters have been provided, assume that we are only displaying
@@ -104,14 +133,34 @@ catalogue.modules.sed = function ($) {
             elem_id: sed_id('band_pass_filters'),
             options: vm.bandpass_filters_options,
             selectedOptions: vm.bandpass_filters,
+<<<<<<< HEAD
             to_option: band_pass_filter_to_option
         });
+=======
+            maximum_selection:25,
+            to_option: band_pass_filter_to_option
+        });
+        
+        
+        vm.can_have_sed = ko.computed(function(){        	
+            return catalogue.modules.light_cone.vm.dataset().fields.enableSED;
+        });
+        
+        vm.enabled = ko.computed(function(){
+            return vm.can_have_sed() && vm.apply_sed();
+        });
+
+        
+        
+        
+>>>>>>> work
         vm.current_bandpass_filter = ko.observable(undefined);
         vm.bandpass_filters_widget.clicked_option.subscribe(function(v) {
         	var bpf = bandpass_filter_from_id(v);
         	vm.current_bandpass_filter(bpf);
         });
 
+<<<<<<< HEAD
         //
         // Prepare the SED dust model.
         //
@@ -121,15 +170,27 @@ catalogue.modules.sed = function ($) {
         vm.apply_dust = ko.observable(param ? param : false);
 
         // Prepare the models to select from.
+=======
+        param = job['sed-apply_dust'];
+        vm.apply_dust = ko.observable(param ? param : false);
+>>>>>>> work
     	vm.dust_models = ko.observableArray(TaoMetadata.DustModel);
     	param = job['sed-select_dust_model'];
     	if (param) {
     		param = catalogue.util.dust_model(param);
     	}
+<<<<<<< HEAD
     	vm.dust_model = ko.observable(param ? param : vm.dust_models()[0]);
+=======
+    	vm.dust_model = ko.observable(vm.dust_models()[0]);
+>>>>>>> work
 
         return vm;
 
     }
 
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> work

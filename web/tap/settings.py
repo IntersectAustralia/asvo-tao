@@ -16,16 +16,31 @@ TAP_RETENTION_PERIOD = {'default': execution_duration, 'hard': execution_duratio
 
 TAP_EXECUTION_DURATION = {'default': execution_duration, 'hard': execution_duration}
 
+<<<<<<< HEAD
 TAP_OUTPUT_LIMIT =  {'default': 1000, 'hard': 100000, 'units': 'rows'}
+=======
+TAP_OUTPUT_LIMIT =  {'default': 1000000, 'hard': 10000000, 'units': 'rows'}
+>>>>>>> work
 
 TAP_CAPABILITIES = ({'id':'tables', 'url':'tables', 'use':'full'},
                     {'id':'capabilities', 'url':'capabilities', 'use':'full'},
                     {'id':'availability', 'url':'availability', 'use':'full'})
 
+<<<<<<< HEAD
+=======
+FORBIDDEN = ('delete', 'update', 'replace', 'drop', 'alter')
+
+NOT_SUPPORTED = ('group', 'join', 'min', 'max', 'avg', 'std', 'sum')
+
+>>>>>>> work
 TAP_WORKFLOW = 'sql-job'
 TAP_OUTPUT_PREFIX = 'tao.output'
 TAP_OUTPUT_EXT = 'xml'
 TAP_SCHEMA_VERSION = '2.0'
+<<<<<<< HEAD
+=======
+TAP_MAXIMUM_RECORDCOUNT=1000000
+>>>>>>> work
 
 TAP_PASS_THROUGH = True
 TAP_ALL_FIELDS = True 
@@ -52,4 +67,7 @@ class JOB_STATUS(dict):
             
 UWS_JOB_STATUS = JOB_STATUS(uws_statuses)
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> work

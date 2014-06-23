@@ -96,6 +96,7 @@ namespace tao {
          real_type _scale_x, _scale_y;
          bool _auto_back_mag;
          double _back_mag; // background magnitude
+	 double _back_mag_cnt;
          double _exp_time; // exposure time in seconds
          unsigned _cnt;
 	 bool _okay;

@@ -2,8 +2,11 @@ import re
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import views as auth_views
+<<<<<<< HEAD
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.forms import PasswordChangeForm
+=======
+>>>>>>> work
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
@@ -19,11 +22,20 @@ from django.views.decorators.http import require_POST
 from django.utils.http import urlencode as django_urlencode
 
 from tao import models
+<<<<<<< HEAD
 from tao.decorators import researcher_required, admin_required, set_tab, user_login_required
 from tao.mail import send_mail
 from tao.pagination import paginate
 from tao.models import TaoUser, GlobalParameter, STATUS_CHOICES
 
+=======
+from tao.forms import TaoPasswordChangeForm
+from tao.decorators import admin_required, set_tab, user_login_required
+from tao.mail import send_mail
+from tao.pagination import paginate
+from tao.models import TaoUser, GlobalParameter, STATUS_CHOICES
+from tao.decorators import researcher_required, set_tab
+>>>>>>> work
 import logging
 
 logger = logging.getLogger(__name__)
@@ -153,6 +165,7 @@ def reject_user(request, user_id):
     return redirect(access_requests)
 
 @set_tab('support')
+@researcher_required
 def support(request):
     if not hasattr(request,'user') or not hasattr(request.user,'is_aaf'):
         return redirect(login)
@@ -173,7 +186,7 @@ def support(request):
             logger.info('Support email from ' + username)
             logger.info('Subject: ' + subject)
             logger.info('Message: ' + message)
-            send_mail('support-template', context, 'TAO Support: ' + subject, [user_email], bcc=to_addrs)
+            send_mail('support-template', context, 'TAO Support: ' + subject, to_addrs)
             return render(request, 'email_sent.html')
         else:
             message = 'Please fill in required fields'
@@ -185,13 +198,22 @@ def support(request):
         'form': form,
     })
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> work
 @user_login_required
 @sensitive_post_parameters()
 @csrf_protect
 def password_change(request,
                     template_name='registration/password_change_form.html',
                     post_change_redirect=None,
+<<<<<<< HEAD
                     password_change_form=PasswordChangeForm,
+=======
+                    password_change_form=TaoPasswordChangeForm,
+>>>>>>> work
                     current_app=None, extra_context=None):
     if post_change_redirect is None:
         post_change_redirect = reverse('django.contrib.auth.views.password_change_done')

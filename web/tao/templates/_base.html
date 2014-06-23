@@ -19,7 +19,11 @@
     {% endblock %}
 
     <script src="{% static "js/jquery-1.8.0.min.js" %}" type="text/javascript"></script>
+<<<<<<< HEAD
     <script src="{% static "bootstrap/js/bootstrap.min.js" %}" type="text/javascript"></script>
+=======
+    <script src="{% static "bootstrap/js/bootstrap.js" %}" type="text/javascript"></script>
+>>>>>>> work
     <script type="text/javascript">
     var TAO_JSON_CTX = '{% json_ctx %}';
     var TAO_JOB_CTX = '{%  job_ctx %}';
@@ -37,24 +41,27 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </a>
-                <a id='asvologo' class="brand" href="{% url 'home' %}"><img src={% static "images/ASVO_Logo_REV.png" %} style="height: 30px;"></img></a>
+                <a id='asvologo' class="brand" href="{% url 'home' %}"{% if tab == 'mgf' %} target="_blank"{% endif %}><img src={% static "images/ASVO_Logo_REV.png" %} style="height: 30px;"></img></a>
                 <div class="brand">
-                    <a style="color:#999;text-shadow: 0 -1px 0 rgba(0,0,0,0.25);font-size:18px;font-weight:200; text-decoration: none" href="{% url 'home' %}">Theoretical Astrophysical Observatory</a>
-                    <span style="color:rgb(43, 166, 203);font-style:italic;font-size:16px;position:relative;top:-6px;">(Beta)</span>
+                    <a style="color:#999;text-shadow: 0 -1px 0 rgba(0,0,0,0.25);font-size:18px;font-weight:200; text-decoration: none" href="{% url 'home' %}"{% if tab == 'mgf' %} target="_blank"{% endif %}>Theoretical Astrophysical Observatory</a>
+                    
                 </div>
                 <div class="brand small">
-                  <a style="color:#999;text-shadow: 0 -1px 0 rgba(0,0,0,0.25);font-size:18px;font-weight:200; text-decoration: none" href="{% url 'home' %}">TAO</a>
-                  <span style="color:rgb(43, 166, 203);font-style:italic;font-size:16px;position:relative;top:-6px;">(Beta)</span>
+                  <a style="color:#999;text-shadow: 0 -1px 0 rgba(0,0,0,0.25);font-size:18px;font-weight:200; text-decoration: none" href="{% url 'home' %}{% if tab == 'mgf' %} target="_blank"{% endif %}">TAO</a>
+                  
                 </div>
                 <div class="nav-collapse collapse">
                     <ul class="nav">
-                        <li class="{% if tab == 'mgf' %}active{% endif %}"><a href="{% url 'mock_galaxy_factory' %}">New Catalogue</a></li>
-                        <li class="{% if tab == 'jobs' %}active{% endif %}"><a href="{% url 'job_index' %}">History</a></li>
-                        {% if user.is_staff %}
-                            <li><a href="{% url 'admin_index' %}">Admin</a></li>
+                        <li class="{% if tab == 'mgf' %}active{% endif %}"><a href="{% url 'mock_galaxy_factory' %}"{% if tab == 'mgf' %} target="_blank"{% endif %}>New Catalogue</a></li>
+                        {% if user.is_authenticated %}
+                        <li class="{% if tab == 'jobs' %}active{% endif %}"><a href="{% url 'job_index' %}"{% if tab == 'mgf' %} target="_blank"{% endif %}>History</a></li>
                         {% endif %}
-                        <li><a href="{% static 'docs/index.html' %}">Documentation</a></li>
-                        <li class="{% if tab == 'support' %}active{% endif %}"><a id="id-support" href="{%  url 'support_page' %}">Support</a></li>
+                        {% if user.is_staff %}
+                            <li><a href="{% url 'admin_index' %}"{% if tab == 'mgf' %} target="_blank"{% endif %}>Admin</a></li>
+                        {% endif %}
+                        <li><a href="{% static 'docs/index.html' %}"{% if tab == 'mgf' %} target="_blank"{% endif %}>Documentation</a></li>
+                        <li class="{% if tab == 'support' %}active{% endif %}"><a id="id-support" href="{%  url 'support_page' %}"{% if tab == 'mgf' %} target="_blank"{% endif %}>Support</a></li>
+                        <li><a href="{% url 'about' %}"{% if tab == 'mgf' %} target="_blank"{% endif %}>About</a></li>
                     </ul>
                     <div class="dropdown navbar-text pull-right">
                         {% if user.is_authenticated %}
@@ -66,8 +73,8 @@
                            </ul>
                            {% endif %}
                         {% else %}
-                            <a href="{% url 'login' %}">Login</a>
-                            <a href="{% url 'register' %}">Register</a>
+                            <a href="{% url 'login' %}"><img src="{% static "images/login.png" %}"/></a>
+                            <a href="{% url 'register' %}"><img src="{% static "images/register.png" %}"/></a>
                         {% endif %}
                     </div>
                 </div><!--/.nav-collapse -->
@@ -92,7 +99,8 @@
     <div class="push"><!--//--></div>
   </div>
   <footer>
-        <span style="margin-left: 10px; font-size: 0.75em;">{% setting 'TAO_VERSION' %}</span>
+        <span style="margin-left: 10px; font-size: 0.75em;">TAO Version {% setting 'TAO_VERSION' %}</span>
   </footer>
+  {% google_analytics %}
 </body>
 </html>
