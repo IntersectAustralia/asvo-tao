@@ -72,7 +72,7 @@ namespace tao {
             _bulge_spectra = &bat.vector<real_type>( "bulge_spectra" );
 
             // Find the wavelengths from my parents.
-            _waves = this->template attribute<hpc::view<std::vector<real_type>> const>( "wavelengths" );
+            hpc::assign( _waves, this->template attribute<hpc::view<std::vector<real_type> const>>( "wavelengths" ) );
 
             // What kind of dust are we using?
             std::string mod = boost::algorithm::to_lower_copy( dict.get<std::string>( "model" ) );
@@ -166,7 +166,7 @@ namespace tao {
          hpc::matrix<real_type>* _disk_spectra;
          hpc::matrix<real_type>* _bulge_spectra;
          hpc::view<std::vector<real_type>> _sfrs;
-         hpc::view<std::vector<real_type>> _waves;
+         hpc::view<std::vector<real_type> const> _waves;
          hpc::view<std::vector<real_type>> _cold_gas;
          hpc::view<std::vector<real_type>> _cold_gas_metal;
          hpc::view<std::vector<real_type>> _redshifts;
