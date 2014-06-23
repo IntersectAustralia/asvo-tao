@@ -79,7 +79,8 @@ namespace tao {
             if( mod == "calzetti" )
             {
                _mod = CALZETTI;
-               _sfrs = bat.scalar<real_type>( "sfr" );
+               _dsfrs = bat.scalar<real_type>( "sfrdisk" );
+               _bsfrs = bat.scalar<real_type>( "sfrbulge" );
             }
             else if( mod == "slab" )
             {
@@ -113,9 +114,9 @@ namespace tao {
                case CALZETTI:
                   for( unsigned ii = 0; ii < bat.size(); ++ii )
                   {
-                     process_spectra_calzetti( _sfrs[ii], (*_total_spectra)[ii] );
-                     process_spectra_calzetti( _sfrs[ii], (*_disk_spectra)[ii] );
-                     process_spectra_calzetti( _sfrs[ii], (*_bulge_spectra)[ii] );
+		     process_spectra_calzetti( _dsfrs[ii] + _bsfrs[ii], (*_total_spectra)[ii] );
+                     process_spectra_calzetti( _dsfrs[ii] + _bsfrs[ii], (*_disk_spectra)[ii] );
+                     process_spectra_calzetti( _dsfrs[ii] + _bsfrs[ii], (*_bulge_spectra)[ii] );
                   }
                   break;
 
@@ -165,7 +166,8 @@ namespace tao {
          hpc::matrix<real_type>* _total_spectra;
          hpc::matrix<real_type>* _disk_spectra;
          hpc::matrix<real_type>* _bulge_spectra;
-         hpc::view<std::vector<real_type>> _sfrs;
+         hpc::view<std::vector<real_type>> _dsfrs;
+         hpc::view<std::vector<real_type>> _bsfrs;
          hpc::view<std::vector<real_type> const> _waves;
          hpc::view<std::vector<real_type>> _cold_gas;
          hpc::view<std::vector<real_type>> _cold_gas_metal;
