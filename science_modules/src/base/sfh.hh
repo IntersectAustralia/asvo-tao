@@ -398,7 +398,8 @@ namespace tao {
 	       LOGDLN( "Material start age: ", first_age );
 	       LOGDLN( "Material finish age: ", last_age );
 
-	       // Use the stored dt value instead of the age I calculate.
+	       // Use the stored dt value instead of the age I calculate, but
+               // only if we have a value of dt.
                if( _dts[idx] > 0.0 )
                {
                   age_size = _dts[idx];

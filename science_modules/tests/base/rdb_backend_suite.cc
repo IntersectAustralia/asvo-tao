@@ -174,7 +174,10 @@ TEST_CASE( "/tao/base/rdb_backend/make_tile_query_string/ra_dec" )
    {
       tao::tile<tao::real_type> tile( &lc );
       auto res = be.make_tile_query_string( tile, qry );
-      // TEST( res == "SELECT diskscaleradius AS diskscaleradius, globalindex AS globalindex, globaltreeid AS globaltreeid, localgalaxyid AS localgalaxyid, (posx + 0 - 0) AS posx, (posy + 0 - 0) AS posy, (posz + 0 - 0) AS posz, sfrbulge AS sfrbulge, sfrbulgez AS sfrbulgez, sfrdisk AS sfrdisk, sfrdiskz AS sfrdiskz, snapnum AS snapnum, velx AS velx, vely AS vely, velz AS velz FROM -table- INNER JOIN redshift_ranges ON (-table-.snapnum = redshift_ranges.snapshot) WHERE (POW((posx + 0 - 0),2) + POW((posy + 0 - 0),2) + POW((posz + 0 - 0),2)) >= redshift_ranges.min AND (POW((posx + 0 - 0),2) + POW((posy + 0 - 0),2) + POW((posz + 0 - 0),2)) < redshift_ranges.max AND "
+<<<<<<< HEAD
+      // TODO
+/*
+      TEST( res == "SELECT diskscaleradius AS diskscaleradius, globalindex AS globalindex, globaltreeid AS globaltreeid, localgalaxyid AS localgalaxyid, (posx + 0 - 0) AS posx, (posy + 0 - 0) AS posy, (posz + 0 - 0) AS posz, sfrbulge AS sfrbulge, sfrbulgez AS sfrbulgez, sfrdisk AS sfrdisk, sfrdiskz AS sfrdiskz, snapnum AS snapnum, velx AS velx, vely AS vely, velz AS velz FROM -table- INNER JOIN redshift_ranges ON (-table-.snapnum = redshift_ranges.snapshot) WHERE (POW((posx + 0 - 0),2) + POW((posy + 0 - 0),2) + POW((posz + 0 - 0),2)) >= redshift_ranges.min AND (POW((posx + 0 - 0),2) + POW((posy + 0 - 0),2) + POW((posz + 0 - 0),2)) < redshift_ranges.max AND "
 
       //       // Greater than RAmin.
       //       "ATAN2((posy + 0 - 0),(posx + 0 - 0)) >= 0 AND "

@@ -7,8 +7,8 @@ namespace tao {
    boost::optional<double>
    calc_subcone_angle( tao::lightcone const& lc )
    {
-      EXCEPT( lc.min_ra() == 0.0, "Subcones must have mininum RA of 0." );
-      EXCEPT( lc.min_dec() == 0.0, "Subcones must have mininum DEC of 0." );
+      EXCEPT( lc.max_ra() - lc.min_ra() <= 90.0, "Subcone RA above 90 degrees." );
+      EXCEPT( lc.max_dec() - lc.min_dec() <= 90.0, "Subcone DEC above 90 degrees." );
 
       tao::simulation const* sim = lc.simulation();
       double b = sim->box_size();
@@ -18,19 +18,22 @@ namespace tao {
 
       // If the cone fits in one box then return zero.
       if( d1 - d0*cos( ra ) <= b )
-	 return 0.0;
+	 return 0.0 - lc.min_ra();
 
       // Use Ridder's method to find the optimal angle for
       // unique cones.
-      return hpc::algorithm::ridders(
-      	 [ra, d0, d1, b]( double x )
-	 {
-	    double phi = ra + x;
-	    return b - d1*(cos( x ) - sin( x )/tan( phi ));
-      	 },
-	 0.5*M_PI,
-	 0.0
-      	 );
+      auto res = hpc::algorithm::ridders(
+         [ra, d0, d1, b]( double x )
+         {
+            double phi = ra + x;
+            return b - d1*(cos( x ) - sin( x )/tan( phi ));
+         },
+         0.5*M_PI,
+         0.0
+         );
+      if( res )
+         *res -= lc.min_ra();
+      return res;
    }
 
    unsigned
@@ -42,7 +45,7 @@ namespace tao {
       double b = lc.simulation()->box_size();
       double d0 = lc.min_dist();
       double d1 = lc.max_dist();
-      double phi = *theta + lc.max_ra();
+      double phi = *theta + (lc.max_ra() - lc.min_ra());
       double h = d1*sin( phi ) - d0*sin( *theta );
       double h_dec = d1*sin( lc.max_dec() );
       return (unsigned)(floor( b/h )*floor( b/h_dec ));
