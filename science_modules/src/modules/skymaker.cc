@@ -201,7 +201,7 @@ namespace tao {
          // If automatic, combine average magnitudes.
          if( _auto_back_mag )
 	 {
-            _back_mag = mpi::comm::world.all_reduce( _back_mag, MPI_MAX );
+            _back_mag = mpi::comm::world.all_reduce( _back_mag );
 	    _back_mag_cnt = mpi::comm::world.all_reduce( _back_mag_cnt );
 	    _back_mag /= (double)_back_mag_cnt;
 	    LOGILN( "Average background magnitdue: ", _back_mag );

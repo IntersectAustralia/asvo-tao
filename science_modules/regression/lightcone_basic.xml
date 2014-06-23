@@ -46,5 +46,5 @@
   <subjobindex>0</subjobindex>
   <logdir>log</logdir>
   <outputdir>output</outputdir>
-  <database>millennium_full_3servers_v2</database>
+  <database>bolshoi_full_3servers_v4</database>
 </tao>
