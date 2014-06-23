@@ -134,7 +134,7 @@ namespace tao {
 	    // If we have been built to be a preprocessing version,
 	    // dump each tile/box to be used and the tables in each.
 #ifdef PREPROCESSING
-	    LOG( logging::pushlevel( 100 ) );
+	    LOG( hpc::log::pushlevel( 100 ) );
 	    if( _geom == CONE )
             {
 	       LOG( "Boxes:[" );
@@ -168,7 +168,7 @@ namespace tao {
 	       LOGLN( "Boxes:[(0, 0, 0)]" );
 	       LOGLN( "Using box:[(0, 0, 0)]" );
 	    }
-	    LOG( logging::poplevel );
+	    LOG( hpc::log::poplevel );
 #endif
 
             LOGILN( "Done.", setindent( -2 ) );
