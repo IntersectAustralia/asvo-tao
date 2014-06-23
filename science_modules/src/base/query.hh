@@ -51,7 +51,7 @@ namespace tao {
       }
 
       void
-      add_output_field( const std::string& field )
+      add_output_field( std::string const& field )
       {
          _out_fields.clear();
          _of_set.insert( hpc::to_lower_copy( field ) );

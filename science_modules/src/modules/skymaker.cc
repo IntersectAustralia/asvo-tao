@@ -72,6 +72,7 @@ namespace tao {
          _sub_cone = sub_cone;
          _format = format;
          _mag_field = mag_field;
+	 hpc::to_lower( (std::string&)_mag_field );
          _min_mag = min_mag;
          _max_mag = max_mag;
          _z_min = z_min;
