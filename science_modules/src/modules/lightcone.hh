@@ -434,7 +434,7 @@ namespace tao {
                std::string filt_max = global_dict.get<std::string>( "workflow:record-filter:filter:filter-max", "" );
                if( !filt_field.empty() && filt_field != "" && filt_field != "none" && filt_field != "NONE" && filt_field != "None" )
                {
-		 _filt.set_field( filt_field, filt_min, filt_max );
+		  _filt.set_field( filt_field, filt_min, filt_max );
                   LOGILN( "Filter name: ", filt_field );
                   LOGILN( "Filter range: [", filt_min, ", ", filt_max, ")" );
                }

@@ -1,5 +1,6 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
+#include <libhpc/system/string.hh>
 #include "filter.hh"
 
 namespace tao {
@@ -14,7 +15,7 @@ namespace tao {
 		      const std::string& min,
 		      const std::string& max )
    {
-      _field_name = name;
+      _field_name = hpc::to_lower_copy( name );
       if( boost::algorithm::to_lower_copy( min ) != "none" )
 	 _min_str = min;
       else
