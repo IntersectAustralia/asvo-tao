@@ -125,7 +125,8 @@ catalogue.module_defs.sed = function ($) {
     	if (param) {
     		param = catalogue.util.dust_model(param);
     	}
-    	vm.dust_model = ko.observable(vm.dust_models()[0]);
+    	//vm.dust_model = ko.observable(vm.dust_models()[0]);
+    	vm.dust_model = ko.observable(param ? param : vm.dust_models()[0]);
 
         return vm;
 
