@@ -253,7 +253,18 @@ class DataSetProperty(models.Model):
             return "%s (%s)" % (self.label, self.units)
         else:
             return self.label
-
+    
+    ## This method added to ensure that the dataset properties will be returned into a sorted order based on the group, order, and label 
+    ## Added by AHassan 
+    @classmethod
+    def getSortedList(this,PropArr):
+        SortedProp=DataSetProperty.objects.raw("SELECT id FROM tao_datasetproperty where id in ("+','.join(PropArr)+")order by `group`,`order`,`label`;")    	
+        SortedList=[]			        
+        for DataSetPropertyObj in SortedProp:        	
+        	SortedList.append(DataSetPropertyObj.id)
+         
+        return SortedList
+        
     @classmethod
     def data_type_enum(cls, val):
         for dtype in cls.DATA_TYPES:

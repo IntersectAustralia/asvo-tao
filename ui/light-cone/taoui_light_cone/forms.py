@@ -74,8 +74,10 @@ def to_xml_2(form, root):
         fields_elem = find_or_create(find_or_create(root, output_format, id=FormsGraph.OUTPUT_ID), 'fields')
 
         # Insert entries.
+        output_properties=datasets.SortProperties(output_properties)
         for item in output_properties:
             op = datasets.output_property(item)
+            
             attrs = {'label': op.label}
             if op.units is not None and len(op.units) > 0: attrs['units'] = op.units
             child_element(fields_elem, 'item', text=op.name, **attrs)
