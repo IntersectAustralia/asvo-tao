@@ -140,7 +140,8 @@ class Simulation(models.Model):
     box_size = models.DecimalField(max_digits=10, decimal_places=3)
     details = models.TextField(default='')
     order = models.IntegerField(default='0')
-
+    acknowledgement_txt = models.TextField(default='')
+    
     def __unicode__(self):
         return self.name
     
@@ -162,7 +163,8 @@ class GalaxyModel(models.Model):
     simulation_set = models.ManyToManyField(Simulation, through='DataSet')
     name = models.CharField(max_length=100, unique=True)
     details = models.TextField(default='')
-
+    acknowledgement_txt = models.TextField(default='')
+	 
     def __unicode__(self):
         return self.name
     
@@ -199,7 +201,8 @@ class DataSet(models.Model):
     job_size_p1 = models.FloatField(default=0.06555053)
     job_size_p2 = models.FloatField(default=-0.10355211)
     job_size_p3 = models.FloatField(default=0.37135452)
-    
+    enableSED = models.BooleanField(default=True)
+    enableImage = models.BooleanField(default=True)
     class Meta:
         unique_together = ('simulation', 'galaxy_model')
         ordering = ['id']
@@ -250,7 +253,18 @@ class DataSetProperty(models.Model):
             return "%s (%s)" % (self.label, self.units)
         else:
             return self.label
-
+    
+    ## This method added to ensure that the dataset properties will be returned into a sorted order based on the group, order, and label 
+    ## Added by AHassan 
+    @classmethod
+    def getSortedList(this,PropArr):
+        SortedProp=DataSetProperty.objects.raw("SELECT id FROM tao_datasetproperty where id in ("+','.join(PropArr)+")order by `group`,`order`,`label`;")    	
+        SortedList=[]			        
+        for DataSetPropertyObj in SortedProp:        	
+        	SortedList.append(DataSetPropertyObj.id)
+         
+        return SortedList
+        
     @classmethod
     def data_type_enum(cls, val):
         for dtype in cls.DATA_TYPES:

@@ -22,7 +22,6 @@ PBSQueue varchar(20) DEFAULT NULL,
 UserName varchar(50) DEFAULT NULL,
 database varchar(100) ,
 startdate TIMESTAMP,
-subjobindex INTEGER DEFAULT 0,
 latestjobversion boolean DEFAULT true,
 Issequential boolean DEFAULT false,
 CONSTRAINT Jobs_UIReference UNIQUE (UIReferenceID)

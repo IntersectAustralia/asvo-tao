@@ -79,7 +79,9 @@ def output_choices(data_set_id):
     except models.DataSet.DoesNotExist:
         dataset_id = None
     return models.DataSetProperty.objects.filter(dataset_id = dataset_id, is_output = True).order_by('group', 'order', 'label')
-
+def SortProperties(PropArr):
+    return models.DataSetProperty.getSortedList(PropArr)	
+    
 def output_property(id):
     return models.DataSetProperty.objects.get(pk=id, is_output=True)
 
@@ -148,7 +150,7 @@ def band_pass_filter_find_from_xml(filter_id):
 
 def dust_model_find_from_xml(name):
     try:
-        obj = models.DustModel.objects.get(name=name)
+        obj = models.DustModel.objects.get(name=name)       
         return obj
     except models.DustModel.DoesNotExist:
         return None

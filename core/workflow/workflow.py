@@ -151,9 +151,15 @@ class WorkFlow(object):
             if SubJobsCount>1:
                CurrentJobType=EnumerationLookup.JobType.Complex     
             
+<<<<<<< HEAD
             UserNameFolder=self.FixUserName(JobUserName)
             logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserNameFolder, str(UIJobReference),'log')                
             outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserNameFolder, str(UIJobReference),'output')
+=======
+            UserFolder=self.escapeUserName(JobUserName)
+            logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserFolder, str(UIJobReference),'log')                
+            outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserFolder, str(UIJobReference),'output')
+>>>>>>> b3b8c98714932a4f6b1a06ed55e830cbaff4831d
             old_dir = os.getcwd()
             os.chdir(logpath)
         except Exception as Exp:             
@@ -209,6 +215,7 @@ class WorkFlow(object):
         self.UpdateTAOUI(UIJobReference, CurrentJobType, data={'status': 'QUEUED'})        
         
         return True
+<<<<<<< HEAD
     def FixUserName(self,JobUserName):
         return JobUserName    
         
@@ -218,6 +225,20 @@ class WorkFlow(object):
         BasedPath=os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  UserNameFolder, str(UIJobReference))
         outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  UserNameFolder, str(UIJobReference),'output')
         logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  UserNameFolder, str(UIJobReference),'log')
+=======
+    
+    def escapeUserName(self,UserName):
+        return ''.join(e for e in UserName if e.isalnum())
+        
+             
+        
+    def PrepareJobFolder(self,JobParams,JobUserName,UIJobReference,JobDatabase):
+        ## Read User Settings 
+        UserFolder=self.escapeUserName(JobUserName)
+        BasedPath=os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  UserFolder, str(UIJobReference))
+        outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  UserFolder, str(UIJobReference),'output')
+        logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  UserFolder, str(UIJobReference),'log')
+>>>>>>> b3b8c98714932a4f6b1a06ed55e830cbaff4831d
         AudDataPath=os.path.join(self.Options['Torque:AuxInputData'])
         
         
@@ -341,9 +362,16 @@ class WorkFlow(object):
         JobID=CurrentJobRecord['uireferenceid']
         LocalJobID=CurrentJobRecord['jobid']
         
+<<<<<<< HEAD
         JobName=self.Options['Torque:jobprefix']+UserName[:4]+'_'+str(LocalJobID)
         UserNameFolder=self.FixUserName(UserName)
         path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserNameFolder, str(JobID),'log')
+=======
+        UserFolder=self.escapeUserName(UserName)
+        JobName=self.Options['Torque:jobprefix']+UserFolder[:4]+'_'+str(LocalJobID)
+        
+        path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserFolder, str(JobID),'log')
+>>>>>>> b3b8c98714932a4f6b1a06ed55e830cbaff4831d
         old_dir = os.getcwd()
         os.chdir(path)
         
@@ -367,10 +395,18 @@ class WorkFlow(object):
         IsSequential=RestartJobRecrod['issequential']
         SubJobID=RestartJobRecrod['subjobindex']
         
+<<<<<<< HEAD
         UserNameFolder=self.FixUserName(JobUserName)
         BasedPath=os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  UserNameFolder, str(UIJobReference))
         outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  UserNameFolder, str(UIJobReference),'output')
         logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  UserNameFolder, str(UIJobReference),'log')
+=======
+        UserFolder=self.escapeUserName(JobUserName)
+        
+        BasedPath=os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  UserFolder, str(UIJobReference))
+        outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  UserFolder, str(UIJobReference),'output')
+        logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  UserFolder, str(UIJobReference),'log')
+>>>>>>> b3b8c98714932a4f6b1a06ed55e830cbaff4831d
         AudDataPath=os.path.join(self.Options['Torque:AuxInputData'])
               
         ## Parse the XML file to extract job Information and get if the job is complex or single lightcone
@@ -402,9 +438,16 @@ class WorkFlow(object):
     
     def GetJobstderrcontents(self,UserName,JobID,LocalJobID):
         
+<<<<<<< HEAD
         JobName=self.Options['Torque:jobprefix']+UserName[:4]+'_'+str(LocalJobID)
         UserNameFolder=self.FixUserName(UserName)
         path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserNameFolder, str(JobID),'log')
+=======
+        UserFolder=self.escapeUserName(UserName)
+        JobName=self.Options['Torque:jobprefix']+UserFolder[:4]+'_'+str(LocalJobID)
+        
+        path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserFolder, str(JobID),'log')
+>>>>>>> b3b8c98714932a4f6b1a06ed55e830cbaff4831d
         old_dir = os.getcwd()
         os.chdir(path)
         stderrstring=''
@@ -473,13 +516,14 @@ class WorkFlow(object):
                     logging.info("Checking Job Status : JobID="+pbsreferenceid+"\tInPBSList="+str(pbsreferenceid in CurrentJobs))
                 ## Parse the Job Log File and Extract Current Job Status
                             
-                JobDetails=self.LogReaderObj.ParseFile(CurrentJobRecord)
+                JobDetails=None
                  
                 
                 
                 
                 ## 1- Change In Job Status to Running 
                 if  pbsreferenceid in CurrentJobs and CurrentJobs[pbsreferenceid]=='R': 
+                    JobDetails=self.LogReaderObj.ParseFile(CurrentJobRecord)
                     if jobstatus!=EnumerationLookup.JobState.Running:
                         self.UpdateJob_Running(CurrentJobRecord)
                     elif JobDetails!=None:
@@ -499,7 +543,7 @@ class WorkFlow(object):
                 
                 ## 4- Job Cannot Be Found in the queue ... In this case the Log File Status determine how its termination status    
                 elif (pbsreferenceid not in CurrentJobs):
-                    
+                    JobDetails=self.LogReaderObj.ParseFile(CurrentJobRecord)
                     ###### If The log file does not exist, Please put a dummy JobDetails
                     if JobDetails==None:
                         JobDetails={'start':-1,'progress':'0%','end':0,'error':'','endstate':''}
@@ -531,12 +575,12 @@ class WorkFlow(object):
         
         
         data = {}  
-        
-        path = os.path.join(self.JobBaseDir, UserName, str(UIReference_ID))
+        UserFolder=self.escapeUserName(UserName)
+        path = os.path.join(self.JobBaseDir, UserFolder, str(UIReference_ID))
         self.dbaseobj.SetJobComplete(JobID, path, JobDetails['end'])
         data['status'] = 'COMPLETED'
         
-        path = os.path.join(self.JobBaseDir, UserName, str(UIReference_ID), 'output')
+        path = os.path.join(self.JobBaseDir, UserFolder, str(UIReference_ID), 'output')
         data['output_path'] = path
         data['error_message']=''
         
@@ -603,9 +647,15 @@ class WorkFlow(object):
             
             
             old_dir = os.getcwd()
+<<<<<<< HEAD
             UserNameFolder=self.FixUserName(UserName)
             logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserNameFolder, str(UIReference_ID),'log')  
             outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserNameFolder, str(UIReference_ID),'output')
+=======
+            UserFolder=self.escapeUserName(UserName)
+            logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserFolder, str(UIReference_ID),'log')  
+            outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserFolder, str(UIReference_ID),'output')
+>>>>>>> b3b8c98714932a4f6b1a06ed55e830cbaff4831d
             
             
             logging.info("Adding Job to Restarting List")
@@ -670,8 +720,8 @@ class WorkFlow(object):
         JobStartTime = datetime.datetime.now().timetuple()
         data = {}  
         
-        
-        path = os.path.join(self.JobBaseDir, UserName, str(UIReference_ID), 'output')
+        UserFolder=self.escapeUserName(UserName)
+        path = os.path.join(self.JobBaseDir, UserFolder, str(UIReference_ID), 'output')
         data['output_path'] = path
         
         try:
@@ -705,7 +755,8 @@ class WorkFlow(object):
         if EnumerationLookup.JobState.Queued!=OldStatus: 
             self.dbaseobj.SetJobQueued(JobID, "Job Queued- PBSID" + PID)
         data['status'] = 'QUEUED' 
-        path = os.path.join(self.JobBaseDir, UserName, str(UIReference_ID), 'output')
+        UserFolder=self.escapeUserName(UserName)
+        path = os.path.join(self.JobBaseDir, UserFolder, str(UIReference_ID), 'output')
         data['output_path'] = path
         
         

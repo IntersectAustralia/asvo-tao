@@ -6,8 +6,10 @@
 <head>
     <title>
         TAO - {% block subtitle %}subtitle goes here{% endblock %}
+           
     </title>
-
+	 <meta name="description" content="Theoretical Astrophysical Observatory houses queryable data from multiple popular cosmological simulations and galaxy formation models."/>
+    <meta name="keywords" content="TAO, Theoretical Astrophysical Observatory, cosmological simulations, galaxy formation models" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="shortcut icon" href="{% static "favicon.ico" %}" />
@@ -41,11 +43,11 @@
                 <a id='asvologo' class="brand" href="{% url 'home' %}"{% if tab == 'mgf' %} target="_blank"{% endif %}><img src={% static "images/ASVO_Logo_REV.png" %} style="height: 30px;"></img></a>
                 <div class="brand">
                     <a style="color:#999;text-shadow: 0 -1px 0 rgba(0,0,0,0.25);font-size:18px;font-weight:200; text-decoration: none" href="{% url 'home' %}"{% if tab == 'mgf' %} target="_blank"{% endif %}>Theoretical Astrophysical Observatory</a>
-                    <span style="color:rgb(43, 166, 203);font-style:italic;font-size:16px;position:relative;top:-6px;">(Beta)</span>
+                    
                 </div>
                 <div class="brand small">
                   <a style="color:#999;text-shadow: 0 -1px 0 rgba(0,0,0,0.25);font-size:18px;font-weight:200; text-decoration: none" href="{% url 'home' %}{% if tab == 'mgf' %} target="_blank"{% endif %}">TAO</a>
-                  <span style="color:rgb(43, 166, 203);font-style:italic;font-size:16px;position:relative;top:-6px;">(Beta)</span>
+                  
                 </div>
                 <div class="nav-collapse collapse">
                     <ul class="nav">

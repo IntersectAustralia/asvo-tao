@@ -245,5 +245,5 @@ class RejectForm(forms.Form):
 
 
 class SupportForm(forms.Form):
-    subject = forms.CharField(max_length=80, validators=[RegexValidator(regex='[^ \t\n\r\f\v,]', message="This field cannot be blank")], required=True)
-    message = forms.CharField(widget=forms.Textarea(), validators=[RegexValidator(regex='[^ \t\n\r\f\v,]', message="This field cannot be blank")], required=True)
+    subject = forms.CharField(widget=forms.TextInput(attrs={'cols':30, 'style':'width:50%;'}),max_length=100, validators=[RegexValidator(regex='[^ \t\n\r\f\v,]', message="This field cannot be blank")], required=True)
+    message = forms.CharField(widget=forms.Textarea(attrs={'rows':15, 'cols':50, 'style':'width:75%;'}), validators=[RegexValidator(regex='[^ \t\n\r\f\v,]', message="This field cannot be blank")], required=True)

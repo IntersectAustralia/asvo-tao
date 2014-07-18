@@ -42,8 +42,11 @@ class TorqueInterface(object):
     def InitDefaultparams(self):
         self.DefaultParams = {'nodes': 1,'ppn': 1,
                               'wt_hours': 168,'wt_minutes': 0,'wt_seconds': 0}
-        self.DB2PPNMapping={'bolshoi':6}
-        self.DB2MemMapping={'bolshoi':12}
+        self.DB2PPNMapping={'bolshoi':4}
+        self.DB2MemMapping={'bolshoi':6}
+    
+    def escapeUserName(self,UserName):
+        return ''.join(e for e in UserName if e.isalnum())
     ##
     ## Write a PBS script from a parameters dictionary.
     ##
@@ -51,13 +54,13 @@ class TorqueInterface(object):
     ## @param[IN]  path    Where to write PBS script.
     ##
     def WritePBSScriptFile(self,UIJobReference,UserName,JobID, ppn,MemoryReq,SubJobIndex):
-                
-        logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserName, str(UIJobReference),'log')  
-        outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserName, str(UIJobReference),'output')
+        UserFolder=self.escapeUserName(UserName)        
+        logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserFolder, str(UIJobReference),'log')  
+        outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserFolder, str(UIJobReference),'output')
         
         
         self.DefaultParams['executable'] = self.Options['Torque:ExecutableName']
-        self.DefaultParams['name']=self.Options['Torque:jobprefix']+UserName[:4]+'_'+str(JobID)
+        self.DefaultParams['name']=self.Options['Torque:jobprefix']+UserFolder[:4]+'_'+str(JobID)
         self.DefaultParams['nodes'] = int(self.Options['Torque:Nodes'])        
         self.DefaultParams['ppn'] = ppn
         self.DefaultParams['mem'] = MemoryReq
@@ -124,9 +127,9 @@ class TorqueInterface(object):
             [ppn,MemoryReq]=self.GetPBSRequirement(SimulationName)
         queuename=self.Options['Torque:JobsQueue']        
         
-        
-        ScriptFileName = self.WritePBSScriptFile(UIJobReference,UserName,JobID, ppn,MemoryReq,SubJobIndex)        
-        logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserName, str(UIJobReference),'log')  
+        UserFolder=self.escapeUserName(UserName)
+        ScriptFileName = self.WritePBSScriptFile(UIJobReference,UserFolder,JobID, ppn,MemoryReq,SubJobIndex)        
+        logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserFolder, str(UIJobReference),'log')  
                
         
         stdout = subprocess.check_output(shlex.split('ssh g2 \"cd %s; qsub -q %s %s\"'%(logpath.encode(locale.getpreferredencoding()), queuename.encode(locale.getpreferredencoding()), ScriptFileName.encode(locale.getpreferredencoding()))))

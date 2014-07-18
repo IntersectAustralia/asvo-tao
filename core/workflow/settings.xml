@@ -3,7 +3,7 @@
 		<serverip>tao02.hpc.swin.edu.au</serverip>
 		<port>3306</port>
 		<user>taoadmin</user>
-		<password></password>
+		<password>tao_admin_password_##</password>
 		<NewDBName>masterstaging</NewDBName>					
 	</PGDB>
 	

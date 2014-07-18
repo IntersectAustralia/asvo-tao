@@ -20,9 +20,9 @@ catalogue.module_defs.sed = function ($) {
     	var selected_bpfs;
     	var bpf_ids;
     	var params = {
-    		'sed-apply_sed': [apply_sed]
+    		'sed-apply_sed': [vm.apply_sed() && vm.can_have_sed()]
     	};
-    	if (apply_sed) {
+    	if (apply_sed && vm.can_have_sed()) {
     		selected_bpfs = catalogue.modules.sed.vm.bandpass_filters();
     		bpf_ids = []
     		for (var i=0; i<selected_bpfs.length; i++) {
@@ -96,8 +96,22 @@ catalogue.module_defs.sed = function ($) {
             elem_id: sed_id('band_pass_filters'),
             options: vm.bandpass_filters_options,
             selectedOptions: vm.bandpass_filters,
+            maximum_selection:25,
             to_option: band_pass_filter_to_option
         });
+        
+        
+        vm.can_have_sed = ko.computed(function(){        	
+            return catalogue.modules.light_cone.vm.dataset().fields.enableSED;
+        });
+        
+        vm.enabled = ko.computed(function(){
+            return vm.can_have_sed() && vm.apply_sed();
+        });
+
+        
+        
+        
         vm.current_bandpass_filter = ko.observable(undefined);
         vm.bandpass_filters_widget.clicked_option.subscribe(function(v) {
         	var bpf = bandpass_filter_from_id(v);
@@ -111,7 +125,8 @@ catalogue.module_defs.sed = function ($) {
     	if (param) {
     		param = catalogue.util.dust_model(param);
     	}
-    	vm.dust_model = ko.observable(vm.dust_models()[0]);
+    	//vm.dust_model = ko.observable(vm.dust_models()[0]);
+    	vm.dust_model = ko.observable(param ? param : vm.dust_models()[0]);
 
         return vm;
 

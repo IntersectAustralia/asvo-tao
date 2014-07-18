@@ -157,7 +157,7 @@ class Form(BetterForm):
 
         self.fields['apply_sed'] = forms.BooleanField(required=False, widget=forms.CheckboxInput(), label='Apply Spectral Energy Distribution')
         self.fields['single_stellar_population_model'] = ChoiceFieldWithOtherAttrs(choices=sspm_choices, required=default_required)
-        self.fields['band_pass_filters'] = bf_fields.forms.MultipleChoiceField(required=default_required,
+        self.fields['band_pass_filters'] = bf_fields.forms.MultipleChoiceField(required=default_required,label='Band pass filters (maximum 25 filters)',
                                 choices=datasets.band_pass_filters_enriched(),
                                 widget=TwoSidedSelectWidget)
         self.fields['apply_dust'] = forms.BooleanField(required=default_required, widget=forms.CheckboxInput(attrs={'class': 'checkbox'}), label='Apply Dust')
@@ -166,7 +166,7 @@ class Form(BetterForm):
         for field_name in Form.SED_REQUIRED_FIELDS:
             self.fields[field_name].semirequired = True
 
-        self.fields['apply_sed'].widget.attrs['data-bind'] = 'checked: apply_sed'
+        self.fields['apply_sed'].widget.attrs['data-bind'] = 'checked: apply_sed  ,enable: can_have_sed'
         self.fields['single_stellar_population_model'].widget.attrs['data-bind'] = 'options: stellar_models, value: stellar_model, optionsText: function(i) { return i.fields.label }'
         self.fields['band_pass_filters'].widget.attrs['ko_data'] = {'widget':'bandpass_filters_widget','value':'bandpass_filters'}
         self.fields['apply_dust'].widget.attrs['data-bind'] = 'checked: apply_dust'
