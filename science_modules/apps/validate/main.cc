@@ -24,7 +24,7 @@ public:
       parse_options( argc, argv );
 
       // Check options.
-      EXCEPT( _mode == "mass" || _mode == "ages", "Invalid mode." );
+      EXCEPT( _mode == "mass" || _mode == "ages" || _mode == "count", "Invalid mode." );
       EXCEPT( _sim == "minimill" || _sim == "mill" || _sim == "bolshoi", "Invalid simulation." );
 
       // Setup logging.
@@ -37,6 +37,8 @@ public:
    {
       if( _mode == "mass" )
          _mass();
+      else if( _mode == "count" )
+         _count();
       else if( _mode == "ages" )
 	 _ages();
    }
@@ -116,6 +118,38 @@ protected:
    }
 
    void
+   _count()
+   {
+      typedef hpc::view<std::vector<tao::real_type>> view_type;
+      typedef hpc::num::spline<tao::real_type,view_type,view_type> spline_type;
+
+      tao::backends::multidb<tao::real_type> be;
+      tao::simulation const* sim;
+      _connect( be, sim );
+
+      // Keep count.
+      unsigned long long cnt = 0;
+
+      // Find all galaxies at redshift.
+      tao::box<tao::real_type> box( sim );
+      box.set_snapshot( _snap );
+      tao::query<tao::real_type> qry;
+      qry.add_output_field( "stellarmass" );
+      for( auto gal_it = be.galaxy_begin( qry, box ); gal_it != be.galaxy_end( qry, box ); ++gal_it )
+      {
+         tao::batch<tao::real_type> bat = *gal_it;
+	 auto const masses = bat.scalar<tao::real_type>( "stellarmass" );
+
+	 // Check masses.
+         for( unsigned ii = 0; ii < bat.size(); ++ii )
+            ++cnt;
+      }
+
+      // Print results.
+      std::cout << "Number of galaxies found: " << cnt << "\n";
+   }
+
+   void
    _ages()
    {
       tao::backends::multidb<tao::real_type> be;
@@ -148,7 +182,7 @@ protected:
       else if( _sim == "mill" )
          db_name = "millennium_full_3servers_v4";
       else
-         db_name = "millennium_mini_3servers_v4";
+         db_name = "millennium_mini_3servers_v2";
 
       // Connect the backend.
 #include "credentials.hh"
