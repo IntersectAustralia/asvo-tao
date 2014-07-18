@@ -2,7 +2,7 @@ import os, shlex, subprocess,string,time
 import EnumerationLookup
 import settingReader # Read the XML settings
 import logging
-
+import re
 
 
 class LogReader(object):
@@ -48,15 +48,17 @@ class LogReader(object):
     def ParseLine(self,Line,JobDetails):  
         Line=Line.lower().strip('\n')    
         LineParts=Line.split(',')
+        
         if len(LineParts)>=2:
+            TimeItem=float(re.match(r"\D*(\d*[.]?\d*)",LineParts[0]).group(0))        	
             if LineParts[1]=='start':
-                JobDetails['start']=float(LineParts[0])
+                JobDetails['start']=TimeItem
             elif LineParts[1]=='end':
-                JobDetails['end']=float(LineParts[0])
+                JobDetails['end']=TimeItem
                 JobDetails['endstate']=LineParts[2]                
             elif LineParts[1]=='progress':
                 JobDetails['progress']=LineParts[2]
-                JobDetails['end']=float(LineParts[0])
+                JobDetails['end']=TimeItem
             elif LineParts[1]=='error':
                 JobDetails['error']=LineParts[2]    
             

@@ -151,15 +151,9 @@ class WorkFlow(object):
             if SubJobsCount>1:
                CurrentJobType=EnumerationLookup.JobType.Complex     
             
-<<<<<<< HEAD
-            UserNameFolder=self.FixUserName(JobUserName)
-            logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserNameFolder, str(UIJobReference),'log')                
-            outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserNameFolder, str(UIJobReference),'output')
-=======
             UserFolder=self.escapeUserName(JobUserName)
             logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserFolder, str(UIJobReference),'log')                
             outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserFolder, str(UIJobReference),'output')
->>>>>>> b3b8c98714932a4f6b1a06ed55e830cbaff4831d
             old_dir = os.getcwd()
             os.chdir(logpath)
         except Exception as Exp:             
@@ -215,17 +209,8 @@ class WorkFlow(object):
         self.UpdateTAOUI(UIJobReference, CurrentJobType, data={'status': 'QUEUED'})        
         
         return True
-<<<<<<< HEAD
-    def FixUserName(self,JobUserName):
-        return JobUserName    
-        
-    def PrepareJobFolder(self,JobParams,JobUserName,UIJobReference,JobDatabase):
-        ## Read User Settings 
-        UserNameFolder=self.FixUserName(JobUserName)
-        BasedPath=os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  UserNameFolder, str(UIJobReference))
-        outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  UserNameFolder, str(UIJobReference),'output')
-        logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  UserNameFolder, str(UIJobReference),'log')
-=======
+
+
     
     def escapeUserName(self,UserName):
         return ''.join(e for e in UserName if e.isalnum())
@@ -238,7 +223,6 @@ class WorkFlow(object):
         BasedPath=os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  UserFolder, str(UIJobReference))
         outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  UserFolder, str(UIJobReference),'output')
         logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  UserFolder, str(UIJobReference),'log')
->>>>>>> b3b8c98714932a4f6b1a06ed55e830cbaff4831d
         AudDataPath=os.path.join(self.Options['Torque:AuxInputData'])
         
         
@@ -362,16 +346,11 @@ class WorkFlow(object):
         JobID=CurrentJobRecord['uireferenceid']
         LocalJobID=CurrentJobRecord['jobid']
         
-<<<<<<< HEAD
-        JobName=self.Options['Torque:jobprefix']+UserName[:4]+'_'+str(LocalJobID)
-        UserNameFolder=self.FixUserName(UserName)
-        path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserNameFolder, str(JobID),'log')
-=======
+
         UserFolder=self.escapeUserName(UserName)
         JobName=self.Options['Torque:jobprefix']+UserFolder[:4]+'_'+str(LocalJobID)
         
         path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserFolder, str(JobID),'log')
->>>>>>> b3b8c98714932a4f6b1a06ed55e830cbaff4831d
         old_dir = os.getcwd()
         os.chdir(path)
         
@@ -395,18 +374,12 @@ class WorkFlow(object):
         IsSequential=RestartJobRecrod['issequential']
         SubJobID=RestartJobRecrod['subjobindex']
         
-<<<<<<< HEAD
-        UserNameFolder=self.FixUserName(JobUserName)
-        BasedPath=os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  UserNameFolder, str(UIJobReference))
-        outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  UserNameFolder, str(UIJobReference),'output')
-        logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  UserNameFolder, str(UIJobReference),'log')
-=======
+
         UserFolder=self.escapeUserName(JobUserName)
         
         BasedPath=os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  UserFolder, str(UIJobReference))
         outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  UserFolder, str(UIJobReference),'output')
         logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  UserFolder, str(UIJobReference),'log')
->>>>>>> b3b8c98714932a4f6b1a06ed55e830cbaff4831d
         AudDataPath=os.path.join(self.Options['Torque:AuxInputData'])
               
         ## Parse the XML file to extract job Information and get if the job is complex or single lightcone
@@ -438,16 +411,11 @@ class WorkFlow(object):
     
     def GetJobstderrcontents(self,UserName,JobID,LocalJobID):
         
-<<<<<<< HEAD
-        JobName=self.Options['Torque:jobprefix']+UserName[:4]+'_'+str(LocalJobID)
-        UserNameFolder=self.FixUserName(UserName)
-        path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserNameFolder, str(JobID),'log')
-=======
+
         UserFolder=self.escapeUserName(UserName)
         JobName=self.Options['Torque:jobprefix']+UserFolder[:4]+'_'+str(LocalJobID)
         
         path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserFolder, str(JobID),'log')
->>>>>>> b3b8c98714932a4f6b1a06ed55e830cbaff4831d
         old_dir = os.getcwd()
         os.chdir(path)
         stderrstring=''
@@ -647,15 +615,11 @@ class WorkFlow(object):
             
             
             old_dir = os.getcwd()
-<<<<<<< HEAD
-            UserNameFolder=self.FixUserName(UserName)
-            logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserNameFolder, str(UIReference_ID),'log')  
-            outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserNameFolder, str(UIReference_ID),'output')
-=======
+
             UserFolder=self.escapeUserName(UserName)
             logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserFolder, str(UIReference_ID),'log')  
             outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserFolder, str(UIReference_ID),'output')
->>>>>>> b3b8c98714932a4f6b1a06ed55e830cbaff4831d
+
             
             
             logging.info("Adding Job to Restarting List")
