@@ -16,9 +16,6 @@
         <item>pos_x</item>
         <item>pos_y</item>
         <item>pos_z</item>
-        <item>coldgas</item>
-        <item>metalscoldgas</item>
-        <item>diskscaleradius</item>
       </output-fields>
     </light-cone>
 
@@ -48,6 +45,9 @@
       <filename>result.filter.csv</filename>
       <fields>
         <item>Johnson/k.dat_absolute</item>
+	<item>sfrdisk</item>
+	<item>sfrbulge</item>
+	<item>sfr</item>
       </fields>
     </csv>
 
@@ -56,5 +56,5 @@
   <subjobindex>0</subjobindex>
   <logdir>log</logdir>
   <outputdir>output</outputdir>
-  <database>millennium_full_3servers_v2</database>
+  <database>millennium_full_3servers_v4</database>
 </tao>

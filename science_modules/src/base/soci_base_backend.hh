@@ -352,6 +352,7 @@ namespace tao {
 	    this->_field_types.emplace( "ra", batch<real_type>::DOUBLE );
 	    this->_field_types.emplace( "dec", batch<real_type>::DOUBLE );
 	    this->_field_types.emplace( "distance", batch<real_type>::DOUBLE );
+	    this->_field_types.emplace( "sfr", batch<real_type>::DOUBLE );
 
             // Make sure we have all the essential fields available. Do this by
             // checking that all the mapped fields exist in the field types.
@@ -657,7 +658,7 @@ namespace tao {
 
             // If we found some rows perform any calculated field updates.
             if( rows_exist )
-              _calc_fields();
+	       _calc_fields();
 
             // Return whether we got any rows.
             return rows_exist;
@@ -677,6 +678,9 @@ namespace tao {
            auto ra = _bat->template scalar<real_type>( "ra" );
            auto dec = _bat->template scalar<real_type>( "dec" );
            auto dist = _bat->template scalar<real_type>( "distance" );
+	   auto disk_sfr = _bat->template scalar<real_type>( "sfrdisk" );
+	   auto bulge_sfr = _bat->template scalar<real_type>( "sfrbulge" );
+	   auto sfr = _bat->template scalar<real_type>( "sfr" );
            for( unsigned ii = 0; ii < _bat->size(); ++ii )
            {
               if( _lc )
@@ -727,6 +731,9 @@ namespace tao {
 		 z_cos[ii] = _box->redshift();
 		 z_obs[ii] = _box->redshift();
 	      }
+
+	      // Combine disk and bulge SFRs.
+	      sfr[ii] = disk_sfr[ii] + bulge_sfr[ii];
            }
         }
 

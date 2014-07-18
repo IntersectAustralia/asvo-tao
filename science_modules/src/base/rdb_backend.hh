@@ -86,6 +86,7 @@ namespace tao {
             bat.template set_scalar<real_type>( "ra" );
             bat.template set_scalar<real_type>( "dec" );
             bat.template set_scalar<real_type>( "distance" );
+            bat.template set_scalar<real_type>( "sfr" );
          }
 
          std::string
