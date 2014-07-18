@@ -145,14 +145,15 @@ class WorkFlow(object):
             self.dbaseobj.RemoveAllJobsWithUIReferenceID(UIJobReference)
         
             ## 1- Prepare the Job Directory
+            
             [SubJobsCount,IsSequential,SimulationName]=self.PrepareJobFolder(JobParams,JobUserName,UIJobReference,JobDatabase)
             CurrentJobType=EnumerationLookup.JobType.Simple
             if SubJobsCount>1:
                CurrentJobType=EnumerationLookup.JobType.Complex     
             
-            
-            logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], JobUserName, str(UIJobReference),'log')                
-            outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], JobUserName, str(UIJobReference),'output')
+            UserNameFolder=self.FixUserName(JobUserName)
+            logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserNameFolder, str(UIJobReference),'log')                
+            outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserNameFolder, str(UIJobReference),'output')
             old_dir = os.getcwd()
             os.chdir(logpath)
         except Exception as Exp:             
@@ -208,13 +209,15 @@ class WorkFlow(object):
         self.UpdateTAOUI(UIJobReference, CurrentJobType, data={'status': 'QUEUED'})        
         
         return True
-        
+    def FixUserName(self,JobUserName):
+        return JobUserName    
         
     def PrepareJobFolder(self,JobParams,JobUserName,UIJobReference,JobDatabase):
         ## Read User Settings 
-        BasedPath=os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  JobUserName, str(UIJobReference))
-        outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  JobUserName, str(UIJobReference),'output')
-        logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  JobUserName, str(UIJobReference),'log')
+        UserNameFolder=self.FixUserName(JobUserName)
+        BasedPath=os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  UserNameFolder, str(UIJobReference))
+        outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  UserNameFolder, str(UIJobReference),'output')
+        logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  UserNameFolder, str(UIJobReference),'log')
         AudDataPath=os.path.join(self.Options['Torque:AuxInputData'])
         
         
@@ -339,8 +342,8 @@ class WorkFlow(object):
         LocalJobID=CurrentJobRecord['jobid']
         
         JobName=self.Options['Torque:jobprefix']+UserName[:4]+'_'+str(LocalJobID)
-        
-        path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserName, str(JobID),'log')
+        UserNameFolder=self.FixUserName(UserName)
+        path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserNameFolder, str(JobID),'log')
         old_dir = os.getcwd()
         os.chdir(path)
         
@@ -364,9 +367,10 @@ class WorkFlow(object):
         IsSequential=RestartJobRecrod['issequential']
         SubJobID=RestartJobRecrod['subjobindex']
         
-        BasedPath=os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  JobUserName, str(UIJobReference))
-        outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  JobUserName, str(UIJobReference),'output')
-        logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  JobUserName, str(UIJobReference),'log')
+        UserNameFolder=self.FixUserName(JobUserName)
+        BasedPath=os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  UserNameFolder, str(UIJobReference))
+        outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  UserNameFolder, str(UIJobReference),'output')
+        logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  UserNameFolder, str(UIJobReference),'log')
         AudDataPath=os.path.join(self.Options['Torque:AuxInputData'])
               
         ## Parse the XML file to extract job Information and get if the job is complex or single lightcone
@@ -399,8 +403,8 @@ class WorkFlow(object):
     def GetJobstderrcontents(self,UserName,JobID,LocalJobID):
         
         JobName=self.Options['Torque:jobprefix']+UserName[:4]+'_'+str(LocalJobID)
-        
-        path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserName, str(JobID),'log')
+        UserNameFolder=self.FixUserName(UserName)
+        path = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserNameFolder, str(JobID),'log')
         old_dir = os.getcwd()
         os.chdir(path)
         stderrstring=''
@@ -599,9 +603,9 @@ class WorkFlow(object):
             
             
             old_dir = os.getcwd()
-        
-            logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserName, str(UIReference_ID),'log')  
-            outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserName, str(UIReference_ID),'output')
+            UserNameFolder=self.FixUserName(UserName)
+            logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserNameFolder, str(UIReference_ID),'log')  
+            outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserNameFolder, str(UIReference_ID),'output')
             
             
             logging.info("Adding Job to Restarting List")
