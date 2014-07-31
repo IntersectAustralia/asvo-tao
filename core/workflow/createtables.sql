@@ -24,6 +24,8 @@ database varchar(100) ,
 startdate TIMESTAMP,
 latestjobversion boolean DEFAULT true,
 Issequential boolean DEFAULT false,
+filesize decimal default 0,
+recordscount decimal default 0
 CONSTRAINT Jobs_UIReference UNIQUE (UIReferenceID)
 );
 

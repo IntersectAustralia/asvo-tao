@@ -9,6 +9,8 @@ import h5py
 import shutil
 import numpy
 import File_Stats
+import dbase
+
 ExtensionLocation=-2
 
 
@@ -199,12 +201,19 @@ def CompressFile(CurrentFolderPath,OutputFileName,JobIndex):
     #os.remove(InputFileName)    
                
 if __name__ == '__main__':
+    
+    
     if len(sys.argv) != 4:
         exit(-100);
     CurrentFolderPath=sys.argv[1]
     CurrentLogPath=sys.argv[1].replace("/output","/log")
     SubJobIndex=sys.argv[2]
     JobIndex=sys.argv[3]
+    
+    [Options]=settingReader.ParseParams("settings.xml")   
+    dbaseObj=dbase.DBInterface(Options)
+    
+    
     TAOLoger=PrepareLog(CurrentLogPath,SubJobIndex) 
     logging.info('Merging Files in '+CurrentFolderPath)   
     dirList=os.listdir(CurrentFolderPath)    
@@ -235,8 +244,11 @@ if __name__ == '__main__':
     OutputFileName=".".join(FileNameParts)
     
     if (ProcessFiles(FilesList,OutputFileName)==True): 
-        logging.info('*** File Size='+str(File_Stats.TAOGetFileSize(OutputFileName))) 
-        logging.info('*** Total Records=='+str(File_Stats.TAOGetTotalRecords(OutputFileName)))      
+        FileSize=File_Stats.TAOGetFileSize(OutputFileName)
+        RecordsCount=File_Stats.TAOGetTotalRecords(OutputFileName)
+        logging.info('*** File Size='+str(FileSize)) 
+        logging.info('*** Total Records=='+str(RecordsCount))
+        dbaseObj.UpdateJobStats(JobIndex,SubJobIndex,FileSize,RecordsCount)      
         CompressFile(CurrentFolderPath,OutputFileName,JobIndex)
         
         RemoveFiles(FilesList)

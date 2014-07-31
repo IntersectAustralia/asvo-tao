@@ -220,12 +220,16 @@ class DBInterface(object):
         
         return CommandID
 
-    def UpdateCommandStatus(self,CommandID,NewStatus):
+    def UpdateCommandStatus(self,FileSize,RecordsCount):
         
         Updatest="UPDATE Commands set ExecStatus="+str(NewStatus)+",COMPELETEDATE=CURRENT_TIMESTAMP where CommandID="+str(CommandID)+";"
             
         return self.ExecuteNoQuerySQLStatment(Updatest)
-
+    
+    def UpdateJobStats(self,JobID,SubJobID,FileSize,RecordsCount):        
+        
+        Updatest="UPDATE jobs set filesize="+str(FileSize)+",recordscount="+str(RecordsCount)+" where uireferenceid="+str(JobID)+" and subjobindex="+str(SubJobID)+" and latestjobversion=true;"    
+        return self.ExecuteNoQuerySQLStatment(Updatest)
     #########################################################################################################################
     ########## Job Restart  #######################################################
     def SetJobAsRestarted(self,RestartJobID):
