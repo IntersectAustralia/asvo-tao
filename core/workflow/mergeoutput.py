@@ -8,7 +8,7 @@ import pyfits
 import h5py
 import shutil
 import numpy
-
+import File_Stats
 ExtensionLocation=-2
 
 
@@ -61,11 +61,17 @@ def HandleVOFiles(ListofFiles,OutputFileName):
     f.close()
     logging.info('Merging Done >> '+OutputFileName)
     return True
-def HandleHDF5Dataset(InputDataset,OutputDataset):
-    
-    StartPos= OutputDataset.shape
-    OutputDataset.resize( numpy.add(InputDataset.shape,OutputDataset.shape))
-    OutputDataset[StartPos[0]:]=InputDataset[:]
+def HandleHDF5Dataset(InputFile,OutputFile,Dset):
+    if(InputFile[Dset].len()>0):
+        if Dset not in OutputFile:
+            OutputFile.create_dataset(Dset,InputFile[Dset].shape,InputFile[Dset].dtype)
+            OutputFile[Dset][0:]=InputFile[Dset][:]
+        else:
+            StartPos= OutputFile[Dset].shape
+            OutputFile[Dset].resize( numpy.add(InputFile[Dset].shape,OutputFile[Dset].shape))
+            OutputFile[Dset][StartPos[0]:]=InputFile[Dset][:]
+    else:
+        logging.info('Empty Dataset '+Dset) 
     
     
 def HandleHDF5Files(ListofFiles,OutputFileName):
@@ -88,9 +94,9 @@ def HandleHDF5Files(ListofFiles,OutputFileName):
             
             if type(Reader[Dset])==h5py._hl.group.Group:
                 for SubDataset in Reader[Dset]:                    
-                    HandleHDF5Dataset(Reader[Dset+"/"+SubDataset],OutputFile[Dset+"/"+SubDataset])
+                    HandleHDF5Dataset(Reader,OutputFile,Dset+"/"+SubDataset)
             else:
-                HandleHDF5Dataset(Reader[Dset],OutputFile[Dset])
+                HandleHDF5Dataset(Reader,OutputFile,Dset)
         Reader.close()        
            
             
@@ -228,7 +234,9 @@ if __name__ == '__main__':
     FileNameParts=FilesList[0].replace(".output.","."+str(JobIndex)+".").split('.')[0:-1]    
     OutputFileName=".".join(FileNameParts)
     
-    if (ProcessFiles(FilesList,OutputFileName)==True):        
+    if (ProcessFiles(FilesList,OutputFileName)==True): 
+        logging.info('*** File Size='+str(File_Stats.TAOGetFileSize(OutputFileName))) 
+        logging.info('*** Total Records=='+str(File_Stats.TAOGetTotalRecords(OutputFileName)))      
         CompressFile(CurrentFolderPath,OutputFileName,JobIndex)
         
         RemoveFiles(FilesList)
