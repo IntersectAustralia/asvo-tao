@@ -66,6 +66,8 @@ namespace tao {
                       _fn = global_dict.get<std::string>( "outputdir" ) + "/" + dict.get<std::string>( "filename" ) + "." + mpi::rank_string();
 
             _fields = dict.get_list<std::string>( "fields" );
+	    for( auto& str : _fields )
+	       hpc::to_lower( (std::string&)str );
             ReadFieldsInfo(dict );
 
             // Open the file.

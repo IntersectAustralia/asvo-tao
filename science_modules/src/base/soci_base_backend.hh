@@ -338,13 +338,13 @@ namespace tao {
             this->_field_map["pos_x"] = "posx";
             this->_field_map["pos_y"] = "posy";
             this->_field_map["pos_z"] = "posz";
-            // this->_field_map["vel_x"] = "velx";
-            // this->_field_map["vel_y"] = "vely";
-            // this->_field_map["vel_z"] = "velz";
-            // this->_field_map["snapshot"] = "snapnum";
-            // this->_field_map["global_index"] = "globalindex";
-            // this->_field_map["global_tree_id"] = "globaltreeid";
-            // this->_field_map["local_galaxy_id"] = "localgalaxyid";
+            this->_field_map["vel_x"] = "velx";
+            this->_field_map["vel_y"] = "vely";
+            this->_field_map["vel_z"] = "velz";
+            this->_field_map["snapshot"] = "snapnum";
+            this->_field_map["global_index"] = "globalindex";
+            this->_field_map["global_tree_id"] = "globaltreeid";
+            this->_field_map["local_galaxy_id"] = "localgalaxyid";
 
 	    // Add calculated types.
 	    this->_field_types.emplace( "redshift_cosmological", batch<real_type>::DOUBLE );
