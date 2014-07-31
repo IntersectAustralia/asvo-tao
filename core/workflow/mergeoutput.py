@@ -10,7 +10,7 @@ import shutil
 import numpy
 import File_Stats
 import dbase
-
+import settingReader
 ExtensionLocation=-2
 
 
@@ -113,7 +113,10 @@ def HandleFITSFiles(ListofFiles,OutputFileName):
     logging.info('Merging Output for sub-task - FITS Files List')
     logging.info('Output File Name : '+OutputFileName)
         
-    TotalRowsCount=0;
+    TotalRowsCount=0
+    
+    
+    
     for i in range(0,len(ListofFiles)):
         try:
             Reader = pyfits.open(ListofFiles[i])
@@ -124,23 +127,32 @@ def HandleFITSFiles(ListofFiles,OutputFileName):
         
     
     
-    Reader = pyfits.open(ListofFiles[0])       
-    hdu = pyfits.new_table(Reader[1].data, nrows=TotalRowsCount)
-    nrows=Reader[1].data.shape[0]
     
-    for i in range(1,len(ListofFiles)):
+    
+    IsFirstFile=True
+    hdu=None
+    
+    for i in range(0,len(ListofFiles)):
         logging.info('Merging File : '+ListofFiles[i])
         try:
-            Reader = pyfits.open(ListofFiles[i])
-            for name in hdu.columns.names:            
-                hdu.data.field(name)[nrows:nrows+Reader[1].data.shape[0]]=Reader[1].data.field(name)
-            nrows=nrows+Reader[1].data.shape[0]
+            if IsFirstFile==True:
+                Reader = pyfits.open(ListofFiles[i])       
+                hdu = pyfits.new_table(Reader[1].data, nrows=TotalRowsCount)
+                nrows=Reader[1].data.shape[0]
+                IsFirstFile=False
+            else:
+                Reader = pyfits.open(ListofFiles[i])
+                for name in hdu.columns.names:            
+                    hdu.data.field(name)[nrows:nrows+Reader[1].data.shape[0]]=Reader[1].data.field(name)
+                nrows=nrows+Reader[1].data.shape[0]
         except Exception as Exp:
             logging.info('Cannot Open File:'+ListofFiles[i])
             
-    
-    hdu.writeto(OutputFileName)
-    logging.info('Merging Done >> '+OutputFileName)
+    if hdu!=None:
+        hdu.writeto(OutputFileName)
+        logging.info('Merging Done >> '+OutputFileName)
+    else:
+        logging.info('Merging Failed >> '+OutputFileName)
     return True
 
 
@@ -209,8 +221,8 @@ if __name__ == '__main__':
     CurrentLogPath=sys.argv[1].replace("/output","/log")
     SubJobIndex=sys.argv[2]
     JobIndex=sys.argv[3]
-    
-    [Options]=settingReader.ParseParams("settings.xml")   
+    pyFilePath=os.path.dirname(os.path.realpath(__file__))
+    [Options]=settingReader.ParseParams(pyFilePath+"/settings.xml")   
     dbaseObj=dbase.DBInterface(Options)
     
     
@@ -248,6 +260,11 @@ if __name__ == '__main__':
         RecordsCount=File_Stats.TAOGetTotalRecords(OutputFileName)
         logging.info('*** File Size='+str(FileSize)) 
         logging.info('*** Total Records=='+str(RecordsCount))
+        if RecordsCount==None:
+            RecordsCount=0
+        if FileSize==None:
+            FileSize=0
+                
         dbaseObj.UpdateJobStats(JobIndex,SubJobIndex,FileSize,RecordsCount)      
         CompressFile(CurrentFolderPath,OutputFileName,JobIndex)
         

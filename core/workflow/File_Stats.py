@@ -55,6 +55,7 @@ def TAOGetTotalRecords(FullFilePath):
             return RowsCount
         else:
             logging.info( '**********'+FullFilePath)
+            return 0
         #print 'End: '+CurrentPath+'/'+f
     except Exception as Exp:
         logging.info( "Error: " + FullFilePath)
@@ -62,6 +63,7 @@ def TAOGetTotalRecords(FullFilePath):
         exc_type, exc_value, exc_traceback = sys.exc_info()
         lines = traceback.format_exception(exc_type, exc_value, exc_traceback)
         #logging.info(''.join('!' + line for line in lines))
+        return 0
 
     
 
