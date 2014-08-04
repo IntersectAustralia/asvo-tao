@@ -20,8 +20,6 @@ namespace tao {
    ///
    class lightcone
    {
-      // friend lightcone_tile_iterator;
-
    public:
 
       typedef lightcone_tile_iterator tile_iterator;

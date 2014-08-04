@@ -4,8 +4,13 @@
 #include <boost/filesystem.hpp>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_integration.h>
+#include <libhpc/system/varray.hh>
+#include <libhpc/numerics/constants.hh>
+#include "types.hh"
 
 namespace tao {
+
+   class lightcone;
 
    template< class T >
    struct cosmology
@@ -68,6 +73,18 @@ namespace tao {
 
       return res;
    }
+
+   real_type
+   observed_redshift( real_type z,
+                      hpc::varray<real_type,3> const& pos,
+                      hpc::varray<real_type,3> const& vel,
+                      real_type h0,
+                      real_type c = hpc::constant::c );
+
+   real_type
+   approx_observed_redshift( lightcone const& lc,
+                             hpc::varray<real_type,3> const& pos,
+                             hpc::varray<real_type,3> const& vel );
 
    boost::filesystem::path
    data_prefix();
