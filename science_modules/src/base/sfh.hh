@@ -455,9 +455,9 @@ namespace tao {
 		  unsigned disk_bin_idx = first_age_bin*ssp.n_metal_bins() + disk_met_bin;
 		  unsigned bulge_bin_idx = first_age_bin*ssp.n_metal_bins() + bulge_met_bin;
 
-		  // Cache the current bin mass for later.
-		  real_type cur_disk_bin_mass = disk_age_masses[disk_bin_idx];
-		  real_type cur_bugle_bin_mass = bulge_age_masses[bulge_bin_idx];
+		  // // Cache the current bin mass for later.
+		  // real_type cur_disk_bin_mass = disk_age_masses[disk_bin_idx];
+		  // real_type cur_bugle_bin_mass = bulge_age_masses[bulge_bin_idx];
 
 		  // Update the mass bins.
 		  if( add_to_bulge )

@@ -2,9 +2,10 @@
 #include "tao/base/sfh.hh"
 #include "../fixtures/db_fixture.hh"
 
+SUITE_PREFIX( "/tao/base/sfh/" );
 SUITE_FIXTURE( db_fixture ) db;
 
-TEST_CASE( "/tao/base/sfh/constructor/default" )
+TEST_CASE( "constructor/default" )
 {
    tao::sfh sfh;
    TEST( sfh.snapshot_ages() == (void*)0 );
@@ -14,7 +15,7 @@ TEST_CASE( "/tao/base/sfh/constructor/default" )
    TEST( sfh.root_galaxy_index() == std::numeric_limits<unsigned>::max() );
 }
 
-TEST_CASE( "/tao/base/sfh/clear_tree_data" )
+TEST_CASE( "clear_tree_data" )
 {
    tao::sfh sfh;
    sfh.load_tree_data( db->sql, "tree_1", 1, 101 );
@@ -33,7 +34,7 @@ TEST_CASE( "/tao/base/sfh/clear_tree_data" )
    TEST( sfh.masses().empty() == true );
 }
 
-TEST_CASE( "/tao/base/sfh/load_tree_data" )
+TEST_CASE( "load_tree_data" )
 {
    tao::sfh sfh;
    sfh.load_tree_data( db->sql, "tree_1", 1, 100 );
@@ -118,7 +119,7 @@ TEST_CASE( "/tao/base/sfh/load_tree_data" )
 /// Check that _root is set correctly. I noticed
 /// that subtrees can generate bad root values.
 ///
-TEST_CASE( "/tao/base/sfh/load_tree_data/subtree" )
+TEST_CASE( "load_tree_data/subtree" )
 {
    tao::sfh sfh;
    sfh.load_tree_data( db->sql, "tree_1", 1, 103 );
@@ -141,18 +142,18 @@ TEST_CASE( "/tao/base/sfh/load_tree_data/subtree" )
    TEST( sfh.root_galaxy_index() == 0 );
 }
 
-TEST_CASE( "/tao/base/sfh/load_tree_data/invalid_gid" )
+TEST_CASE( "load_tree_data/invalid_gid" )
 {
    tao::sfh sfh;
    THROWS_ANY( sfh.load_tree_data( db->sql, "tree_1", 1, 300 ) );
 }
 
-TEST_CASE( "/tao/base/sfh/load_tree_data/depth_first_order" )
+TEST_CASE( "load_tree_data/depth_first_order" )
 {
    // TODO
 }
 
-TEST_CASE( "/tao/base/sfh/rebin/1-1" )
+TEST_CASE( "rebin/1-1" )
 {
    tao::age_line<tao::real_type> snap_ages;
    {
@@ -223,7 +224,7 @@ TEST_CASE( "/tao/base/sfh/rebin/1-1" )
    TEST( bulge_age_masses[11] == 0 );
 }
 
-TEST_CASE( "/tao/base/sfh/rebin/1-many" )
+TEST_CASE( "rebin/1-many" )
 {
    tao::age_line<tao::real_type> snap_ages;
    {
@@ -315,7 +316,7 @@ TEST_CASE( "/tao/base/sfh/rebin/1-many" )
    TEST( bulge_age_masses[20] == 0 );
 }
 
-TEST_CASE( "/tao/base/sfh/rebin/many-1" )
+TEST_CASE( "rebin/many-1" )
 {
    tao::age_line<tao::real_type> snap_ages;
    {
@@ -372,7 +373,7 @@ TEST_CASE( "/tao/base/sfh/rebin/many-1" )
    TEST( bulge_age_masses[5] == 0 );
 }
 
-TEST_CASE( "/tao/base/sfh/rebin/mergers/minor" )
+TEST_CASE( "rebin/mergers/minor" )
 {
    tao::age_line<tao::real_type> snap_ages;
    {
@@ -429,7 +430,7 @@ TEST_CASE( "/tao/base/sfh/rebin/mergers/minor" )
    TEST( bulge_age_masses[5] == 0 );
 }
 
-TEST_CASE( "/tao/base/sfh/rebin/mergers/major" )
+TEST_CASE( "rebin/mergers/major" )
 {
    tao::age_line<tao::real_type> snap_ages;
    {
@@ -486,7 +487,7 @@ TEST_CASE( "/tao/base/sfh/rebin/mergers/major" )
    TEST( bulge_age_masses[5] == 0 );
 }
 
-TEST_CASE( "/tao/base/sfh/rebin/mergers/ics" )
+TEST_CASE( "rebin/mergers/ics" )
 {
    tao::age_line<tao::real_type> snap_ages;
    {
@@ -543,7 +544,59 @@ TEST_CASE( "/tao/base/sfh/rebin/mergers/ics" )
    TEST( bulge_age_masses[5] == 0 );
 }
 
-TEST_CASE( "/tao/base/sfh/rebin/metallicity" )
+TEST_CASE( "rebin/metallicity" )
 {
-   // TODO
+   tao::age_line<tao::real_type> snap_ages;
+   {
+      std::vector<tao::real_type> ages( 4 );
+      ages[0] = 0.0;
+      ages[1] = 3.0;
+      ages[2] = 10.0;
+      ages[3] = 21.0;
+      snap_ages.set_ages( ages );
+   }
+
+   tao::stellar_population ssp;
+   {
+      std::vector<tao::real_type> mets( 3 );
+      mets[0] = 0.1;
+      mets[1] = 0.5;
+      mets[2] = 0.9;
+      ssp.set_metallicities( mets );
+
+      std::vector<tao::real_type> ages( 2 );
+      ages[0] = 0.0;
+      ages[1] = 10.0;
+      ssp.set_ages( ages );
+
+      std::vector<tao::real_type> waves( 5 );
+      std::iota( waves.begin(), waves.end(), 1.0 );
+      ssp.set_wavelengths( waves );
+
+      std::vector<tao::real_type> spec( 3*5 );
+      std::fill( spec.begin(), spec.end(), 1.0 );
+      ssp.set_spectra( spec );
+   }
+
+   std::vector<tao::real_type> disk_age_masses( ssp.age_masses_size() );
+   std::vector<tao::real_type> bulge_age_masses( ssp.age_masses_size() );
+   tao::sfh sfh;
+   sfh.set_snapshot_ages( &snap_ages );
+
+   sfh.load_tree_data( db->sql, "tree_6", 10, 603 );
+   sfh.rebin<std::vector<tao::real_type>>( disk_age_masses, bulge_age_masses, ssp );
+
+   TEST( disk_age_masses[0] == 0 );
+   TEST( disk_age_masses[1] == 5e9 );
+   TEST( disk_age_masses[2] == 0 );
+   TEST( disk_age_masses[3] == 0 );
+   TEST( disk_age_masses[4] == 2.9e10 );
+   TEST( disk_age_masses[5] == 0 );
+
+   TEST( bulge_age_masses[0] == 0 );
+   TEST( bulge_age_masses[1] == 5e10 );
+   TEST( bulge_age_masses[2] == 0 );
+   TEST( bulge_age_masses[3] == 0 );
+   TEST( bulge_age_masses[4] == 2.9e11 );
+   TEST( bulge_age_masses[5] == 0 );
 }

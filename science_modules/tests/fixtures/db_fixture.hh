@@ -76,7 +76,7 @@ struct db_fixture
    void
    setup_tree_table( ::soci::session& sql )
    {
-      for( int ii = 1; ii <= 5; ++ii )
+      for( int ii = 1; ii <= 6; ++ii )
       {
          std::string sql_str = std::string( "CREATE TABLE tree_" ) + boost::lexical_cast<std::string>( ii ) +
             " (globalindex BIGINT, localgalaxyid INTEGER, globaltreeid BIGINT, "
@@ -137,6 +137,38 @@ struct db_fixture
       sql << "INSERT INTO tree_5 VALUES(515, 2, 8,  0, 2, 2, 20, 1, 1, 0, 0, 3, 0, 0, 0, 3, 2, 0, 0, 0, 2, 0)";
       sql << "INSERT INTO tree_5 VALUES(516, 3, 8,  1, 1, 3, 30, 1, 1, 1, 1, 1, 0, 0, 0, 2, 1, 0, 0, 0, 0, 0)";
       sql << "INSERT INTO tree_5 VALUES(517, 4, 8,  2, 1, 3, 30, 1, 1, 1, 1, 1, 0, 0, 0, 4, 1, 0, 0, 0, 0, 0)";
+
+      // Tree 6 setup (varying metallicities):
+      //
+      //            z   snap
+      //            21   0
+      //   2  3 4   10   1
+      //   |  | |
+      //   1  1 2   3    2
+      //   |  |/
+      //   0  0     0    3
+      //                                gid  l  tr  d sn sfr sfrb cg mcg  x  y  z vx vy vz df sc  dz bz
+      sql << "INSERT INTO tree_6 VALUES(600, 0, 9, -1, 3, 1, 10, 1, 1, 0, 0, 2, 0, 0, 0, 0, 3, 0.31, 0.31, 0, 0, 0)";
+      sql << "INSERT INTO tree_6 VALUES(601, 1, 9,  0, 2, 2, 20, 1, 1, 0, 0, 3, 0, 0, 0, 1, 2, 0.31, 0.31, 0, 0, 0)";
+      sql << "INSERT INTO tree_6 VALUES(602, 2, 9,  1, 1, 3, 30, 1, 1, 1, 1, 1, 0, 0, 0, 2, 1, 0.31, 0.31, 0, 0, 0)";
+      // ICS
+      sql << "INSERT INTO tree_6 VALUES(603, 0, 10, -1, 3, 1, 10, 1, 1, 0, 0, 2, 0, 0, 0, 0, 5, 0.31, 0.31, 0, 0, 0)";
+      sql << "INSERT INTO tree_6 VALUES(604, 1, 10,  0, 2, 2, 20, 1, 1, 0, 0, 3, 0, 0, 0, 1, 2, 0.31, 0.31, 0, 0, 0)";
+      sql << "INSERT INTO tree_6 VALUES(605, 2, 10,  0, 2, 2, 20, 1, 1, 0, 0, 3, 0, 0, 0, 3, 2, 0.31, 0.31, 0, 4, 0)";
+      sql << "INSERT INTO tree_6 VALUES(606, 3, 10,  1, 1, 3, 30, 1, 1, 1, 1, 1, 0, 0, 0, 2, 1, 0.31, 0.31, 0, 0, 0)";
+      sql << "INSERT INTO tree_6 VALUES(607, 4, 10,  2, 1, 3, 30, 1, 1, 1, 1, 1, 0, 0, 0, 4, 1, 0.31, 0.31, 0, 0, 0)";
+      // Minor
+      sql << "INSERT INTO tree_6 VALUES(608, 0, 11, -1, 3, 1, 10, 1, 1, 0, 0, 2, 0, 0, 0, 0, 5, 0, 0.31, 0, 0, 0)";
+      sql << "INSERT INTO tree_6 VALUES(609, 1, 11,  0, 2, 2, 20, 1, 1, 0, 0, 3, 0, 0, 0, 1, 2, 0, 0.31, 0, 0, 0)";
+      sql << "INSERT INTO tree_6 VALUES(610, 2, 11,  0, 2, 2, 20, 1, 1, 0, 0, 3, 0, 0, 0, 3, 2, 0, 0.31, 0, 1, 0)";
+      sql << "INSERT INTO tree_6 VALUES(611, 3, 11,  1, 1, 3, 30, 1, 1, 1, 1, 1, 0, 0, 0, 2, 1, 0, 0.31, 0, 0, 0)";
+      sql << "INSERT INTO tree_6 VALUES(612, 4, 11,  2, 1, 3, 30, 1, 1, 1, 1, 1, 0, 0, 0, 4, 1, 0, 0.31, 0, 0, 0)";
+      // Major
+      sql << "INSERT INTO tree_6 VALUES(613, 0, 12, -1, 3, 1, 10, 1, 1, 0, 0, 2, 0, 0, 0, 0, 5, 0, 0.31, 0, 0, 0)";
+      sql << "INSERT INTO tree_6 VALUES(614, 1, 12,  0, 2, 2, 20, 1, 1, 0, 0, 3, 0, 0, 0, 1, 2, 0, 0.31, 0, 0, 0)";
+      sql << "INSERT INTO tree_6 VALUES(615, 2, 12,  0, 2, 2, 20, 1, 1, 0, 0, 3, 0, 0, 0, 3, 2, 0, 0.31, 0, 2, 0)";
+      sql << "INSERT INTO tree_6 VALUES(616, 3, 12,  1, 1, 3, 30, 1, 1, 1, 1, 1, 0, 0, 0, 2, 1, 0, 0.31, 0, 0, 0)";
+      sql << "INSERT INTO tree_6 VALUES(617, 4, 12,  2, 1, 3, 30, 1, 1, 1, 1, 1, 0, 0, 0, 4, 1, 0, 0.31, 0, 0, 0)";
    }
 
    void
