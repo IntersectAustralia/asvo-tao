@@ -30,6 +30,8 @@
         <item>posx</item>
         <item>posy</item>
         <item>posz</item>
+        <item>redshift_cosmological</item>
+        <item>redshift_observed</item>
       </fields>
     </csv>
 
@@ -46,5 +48,5 @@
   <subjobindex>0</subjobindex>
   <logdir>log</logdir>
   <outputdir>output</outputdir>
-  <database>bolshoi_full_3servers_v4</database>
+  <database>millennium_mini_3servers_v4</database>
 </tao>

@@ -195,7 +195,7 @@ namespace tao {
       unsigned
       find_metal_bin( real_type metal ) const;
 
-   protected:
+   public:
 
       void
       _load_metals( hpc::fs::path const& filename );
