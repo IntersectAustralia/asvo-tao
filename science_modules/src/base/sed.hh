@@ -71,11 +71,13 @@ namespace tao {
       {
       }
 
-      sed( const typename spline_type::knot_points_type& pnts,
-           const typename spline_type::knot_values_type& vals )
+      template< class PntsSeq,
+                class ValsSeq >
+      sed( PntsSeq&& pnts,
+           ValsSeq&& vals )
       {
-         _spec.set_knot_points( pnts );
-         _spec.set_knot_values( vals );
+         _spec.set_knot_points( std::forward<PntsSeq>( pnts ) );
+         _spec.set_knot_values( std::forward<ValsSeq>( vals ) );
          _spec.update();
       }
 
