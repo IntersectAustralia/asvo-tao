@@ -11,6 +11,8 @@ import numpy
 import File_Stats
 import dbase
 import settingReader
+import emailreport
+import traceback
 ExtensionLocation=-2
 
 
@@ -37,26 +39,28 @@ def HandleVOFiles(ListofFiles,OutputFileName):
     logging.info('Merging Output for sub-task - VOTable Files List')
     logging.info('Output File Name : '+OutputFileName)
     f=open(OutputFileName,'wt')
-    Reader=open(ListofFiles[0],'rt')
-    logging.info('Merging First File : '+ListofFiles[0])
-    AllText=Reader.read()
-    HeaderPos=AllText.find("<TR>")
-    ClosingPos=AllText.find("</TABLEDATA>")
     
-    Header=AllText[0:HeaderPos]
-    Closing=AllText[ClosingPos:]
     
-    f.write(Header)
-    f.writelines(AllText[HeaderPos:ClosingPos])
-    Reader.close()
-    for i in range(1,len(ListofFiles)):
+    Header=""
+    Closing=""
+       
+    
+    HeaderAdded=False
+    
+    for i in range(0,len(ListofFiles)):
         logging.info('Merging File : '+ListofFiles[i])
         Reader=open(ListofFiles[i],'rt')
         AllText=Reader.read()
         HeaderPos=AllText.find("<TR>")
         ClosingPos=AllText.find("</TABLEDATA>")
-        
-        f.writelines(AllText[HeaderPos:ClosingPos])
+        if HeaderAdded==False:
+            if HeaderPos!=-1:
+                Header=AllText[0:HeaderPos]
+                Closing=AllText[ClosingPos:]
+                f.write(Header)
+                HeaderAdded=True
+        elif HeaderPos!=-1 and ClosingPos!=-1:      
+            f.writelines(AllText[HeaderPos:ClosingPos])
         
         Reader.close()
     f.write(Closing)    
@@ -64,14 +68,11 @@ def HandleVOFiles(ListofFiles,OutputFileName):
     logging.info('Merging Done >> '+OutputFileName)
     return True
 def HandleHDF5Dataset(InputFile,OutputFile,Dset):
-    if(InputFile[Dset].len()>0):
-        if Dset not in OutputFile:
-            OutputFile.create_dataset(Dset,InputFile[Dset].shape,InputFile[Dset].dtype)
-            OutputFile[Dset][0:]=InputFile[Dset][:]
-        else:
-            StartPos= OutputFile[Dset].shape
-            OutputFile[Dset].resize( numpy.add(InputFile[Dset].shape,OutputFile[Dset].shape))
-            OutputFile[Dset][StartPos[0]:]=InputFile[Dset][:]
+    if(InputFile[Dset].len()>0):        
+        StartPos= OutputFile[Dset].shape  
+        
+        OutputFile[Dset].resize( numpy.add(InputFile[Dset].shape,OutputFile[Dset].shape))
+        OutputFile[Dset][StartPos[0]:]=InputFile[Dset][:]
     else:
         logging.info('Empty Dataset '+Dset) 
     
@@ -84,10 +85,32 @@ def HandleHDF5Files(ListofFiles,OutputFileName):
         
       
     
-    shutil.copy(ListofFiles[0],OutputFileName)  
-    logging.info('First File Copied to  : '+OutputFileName)     
-    OutputFile=h5py.File(OutputFileName,'r+')
+         
     
+    
+    ## merge Non-Empty Files only
+    
+    NoneEmptyFiles=[]
+    for i in range(0,len(ListofFiles)):                
+        Reader = h5py.File(ListofFiles[i],'r')
+        MaxDim=None
+        for Dset in Reader:
+            if MaxDim==None:
+                MaxDim=Reader[Dset].shape
+            else:
+                MaxDim=numpy.maximum(MaxDim,Reader[Dset].shape[0])
+        if MaxDim!=None:
+            NoneEmptyFiles.append(ListofFiles[i])
+            
+        Reader.close()
+    
+    ListofFiles=NoneEmptyFiles
+    
+    ## Start Merging
+    
+    shutil.copy(ListofFiles[0],OutputFileName)  
+    logging.info('First File Copied to  : '+OutputFileName)
+    OutputFile = h5py.File(OutputFileName,'r+')
     for i in range(1,len(ListofFiles)):
         logging.info('Merging File : '+ListofFiles[i])
         
@@ -214,61 +237,71 @@ def CompressFile(CurrentFolderPath,OutputFileName,JobIndex):
                
 if __name__ == '__main__':
     
-    
-    if len(sys.argv) != 4:
-        exit(-100);
-    CurrentFolderPath=sys.argv[1]
-    CurrentLogPath=sys.argv[1].replace("/output","/log")
-    SubJobIndex=sys.argv[2]
-    JobIndex=sys.argv[3]
-    pyFilePath=os.path.dirname(os.path.realpath(__file__))
-    [Options]=settingReader.ParseParams(pyFilePath+"/settings.xml")   
-    dbaseObj=dbase.DBInterface(Options)
-    
-    
-    TAOLoger=PrepareLog(CurrentLogPath,SubJobIndex) 
-    logging.info('Merging Files in '+CurrentFolderPath)   
-    dirList=os.listdir(CurrentFolderPath)    
-    fullPathArray=[]
-    
-    SubJobIndexLocation=2
-    
-    map={}
-    for fname in dirList:
-        FileDetailsList=fname.split('.')
-        if len(FileDetailsList)>=5 and FileDetailsList[-1]!='gz':            
-            fullPathArray.append([CurrentFolderPath+'/'+fname,FileDetailsList])
-            logging.info('File Added to List '+CurrentFolderPath+'/'+fname)
-            if FileDetailsList[SubJobIndexLocation] in map:
-                map[FileDetailsList[SubJobIndexLocation]].append(CurrentFolderPath+'/'+fname)
-            else:
-                map[FileDetailsList[SubJobIndexLocation]]=[CurrentFolderPath+'/'+fname]
-                
-    if ValidateAllSameExtension(fullPathArray,SubJobIndexLocation)!=True:  
-        logging.info('Validating File List Failed')      
-        exit(-100)
-    
-    
-    logging.info('Merging Output for sub-task ['+str(str(SubJobIndex))+']')
-    FilesList=map[str(SubJobIndex)]
-    FilesList.sort()  
-    FileNameParts=FilesList[0].replace(".output.","."+str(JobIndex)+".").split('.')[0:-1]    
-    OutputFileName=".".join(FileNameParts)
-    
-    if (ProcessFiles(FilesList,OutputFileName)==True): 
-        FileSize=File_Stats.TAOGetFileSize(OutputFileName)
-        RecordsCount=File_Stats.TAOGetTotalRecords(OutputFileName)
-        logging.info('*** File Size='+str(FileSize)) 
-        logging.info('*** Total Records=='+str(RecordsCount))
-        if RecordsCount==None:
-            RecordsCount=0
-        if FileSize==None:
-            FileSize=0
-                
-        dbaseObj.UpdateJobStats(JobIndex,SubJobIndex,FileSize,RecordsCount)      
-        CompressFile(CurrentFolderPath,OutputFileName,JobIndex)
+    try: 
+        if len(sys.argv) != 4:
+            exit(-100);
+        CurrentFolderPath=sys.argv[1]
+        CurrentLogPath=sys.argv[1].replace("/output","/log")
+        SubJobIndex=sys.argv[2]
+        JobIndex=sys.argv[3]
+        pyFilePath=os.path.dirname(os.path.realpath(__file__))
+        [Options]=settingReader.ParseParams(pyFilePath+"/settings.xml")   
+        dbaseObj=dbase.DBInterface(Options)
         
-        RemoveFiles(FilesList)
+        
+        TAOLoger=PrepareLog(CurrentLogPath,SubJobIndex) 
+        logging.info('Merging Files in '+CurrentFolderPath)   
+        dirList=os.listdir(CurrentFolderPath)    
+        fullPathArray=[]
+        
+        SubJobIndexLocation=2
+        
+        map={}
+        for fname in dirList:
+            FileDetailsList=fname.split('.')
+            if len(FileDetailsList)>=5 and FileDetailsList[-1]!='gz':            
+                fullPathArray.append([CurrentFolderPath+'/'+fname,FileDetailsList])
+                logging.info('File Added to List '+CurrentFolderPath+'/'+fname)
+                if FileDetailsList[SubJobIndexLocation] in map:
+                    map[FileDetailsList[SubJobIndexLocation]].append(CurrentFolderPath+'/'+fname)
+                else:
+                    map[FileDetailsList[SubJobIndexLocation]]=[CurrentFolderPath+'/'+fname]
+                    
+        if ValidateAllSameExtension(fullPathArray,SubJobIndexLocation)!=True:  
+            logging.info('Validating File List Failed')      
+            exit(-100)
+        
+        
+        logging.info('Merging Output for sub-task ['+str(str(SubJobIndex))+']')
+        FilesList=map[str(SubJobIndex)]
+        FilesList.sort()  
+        FileNameParts=FilesList[0].replace(".output.","."+str(JobIndex)+".").split('.')[0:-1]    
+        OutputFileName=".".join(FileNameParts)
+        
+        if (ProcessFiles(FilesList,OutputFileName)==True): 
+            FileSize=File_Stats.TAOGetFileSize(OutputFileName)
+            RecordsCount=File_Stats.TAOGetTotalRecords(OutputFileName)
+            logging.info('*** File Size='+str(FileSize)) 
+            logging.info('*** Total Records='+str(RecordsCount))
+            if RecordsCount==None:
+                RecordsCount=0
+            if FileSize==None:
+                FileSize=0
+                    
+            dbaseObj.UpdateJobStats(JobIndex,SubJobIndex,FileSize,RecordsCount)      
+            CompressFile(CurrentFolderPath,OutputFileName,JobIndex)
+            
+            RemoveFiles(FilesList)
+    except Exception as Exp:
+                
+        logging.error("Error In Merging Output")
+        logging.error(type(Exp))
+        logging.error(Exp.args)
+        logging.error(Exp)
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        lines = traceback.format_exception(exc_type, exc_value, exc_traceback)
+        logging.error(''.join('!! ' + line for line in lines))
+        emailreport.SendEmailToAdmin(Options,"Error In Merging File",str(Exp.args)+''.join('!! ' + line for line in lines))
         
        
     

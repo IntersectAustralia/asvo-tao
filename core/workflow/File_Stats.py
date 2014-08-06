@@ -13,6 +13,7 @@ import shutil
 import numpy
 import lxml.etree as ET
 import traceback
+import re
 
 
 
@@ -44,12 +45,12 @@ def TAOGetTotalRecords(FullFilePath):
                 if type(Reader[Dset])==h5py._hl.group.Group:
                     for SubDataset in Reader[Dset]:
                         #print Dset+"/"+SubDataset
-                        RowsCount=RowsCount+Reader[Dset+"/"+SubDataset].shape[0]
-                        break
-                    else:
-                        #print Dset
-                        RowsCount=RowsCount+Reader[Dset].shape[0]
-                        break
+                        RowsCount=max(RowsCount,Reader[Dset+"/"+SubDataset].shape[0])
+                        
+                else:
+                    #print Dset
+                    RowsCount=max(RowsCount,Reader[Dset].shape[0])
+                    
     
             Reader.close()
             return RowsCount
