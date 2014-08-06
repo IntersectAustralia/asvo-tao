@@ -84,6 +84,7 @@ def to_xml_2(form, root):
         child_element(child_element(find_or_create(root, output_format, id=FormsGraph.OUTPUT_ID), 'parents'), 'item', text=FormsGraph.LIGHT_CONE_ID)
 
 def from_xml_2(cls, ui_holder, xml_root, prefix=None):
+    	
     sed = module_xpath(xml_root, '//workflow/sed', text=False)
     apply_sed = sed is not None
     params = {prefix+'-apply_sed': apply_sed}
@@ -105,7 +106,7 @@ def from_xml_2(cls, ui_holder, xml_root, prefix=None):
         dust = module_xpath(xml_root, '//dust/model')
         apply_dust = dust is not None
         if apply_dust:
-            dust_model = datasets.dust_model_find_from_xml(dust)
+            dust_model = datasets.dust_model_find_from_xml(dust)                            
             if dust_model is not None:
                 params.update({prefix+'-apply_dust': True})
                 params.update({prefix+'-select_dust_model': dust_model.id})
@@ -212,7 +213,8 @@ class Form(BetterForm):
                 ffn = self.prefix + '-' + fn
                 val = self.data.get(ffn)
                 if val is not None:
-                    json_dict[ffn] = val
+                    json_dict[ffn] = val                
+        
         return json_dict
 
 
