@@ -715,21 +715,17 @@ namespace tao {
                  dec[ii] = to_degrees( dec[ii] );
 
                  // Calculate observed redshift.
-                 z_obs[ii] = approx_observed_redshift(
-                    *_lc,
+                 z_obs[ii] = observed_redshift(
+		    z_cos[ii],
                     { pos_x[ii], pos_y[ii], pos_z[ii] },
-                    { vel_x[ii], vel_y[ii], vel_z[ii] }
+                    { vel_x[ii], vel_y[ii], vel_z[ii] },
+		    _lc->simulation()->hubble()
                     );
-
-                 // TODO: Remove when satisfied the above works.
-                 // if( dist[ii] > 0.0 )
-                 // {
-                 //    std::array<real_type,3> rad_vec{ { pos_x[ii]/dist[ii], pos_y[ii]/dist[ii], pos_z[ii]/dist[ii] } };
-                 //    real_type dist_z = dist[ii] + ((rad_vec[0]*vel_x[ii] + rad_vec[1]*vel_y[ii] + rad_vec[2]*vel_z[ii])/h0)*(h0/100.0);
-                 //    z_obs[ii] = _lc->distance_to_redshift( dist_z );
-                 // }
-                 // else
-                 //    z_obs[ii] = 0.0;
+                 // z_obs[ii] = approx_observed_redshift(
+                 //    *_lc,
+                 //    { pos_x[ii], pos_y[ii], pos_z[ii] },
+                 //    { vel_x[ii], vel_y[ii], vel_z[ii] }
+                 //    );
               }
 	      else
 	      {

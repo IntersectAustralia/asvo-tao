@@ -78,7 +78,7 @@ namespace tao {
       // LOGILN( "Setting simulation cosmology:", setindent( 2 ) );
       _hubble = hubble;
       // LOGILN( "Hubble: ", hubble );
-      _h = _hubble/100;
+      _h = _hubble/100.0;
       _omega_m = omega_m;
       // LOGILN( "Omega M: ", omega_m );
       _omega_l = omega_l;

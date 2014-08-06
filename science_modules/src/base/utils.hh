@@ -79,7 +79,7 @@ namespace tao {
                       hpc::varray<real_type,3> const& pos,
                       hpc::varray<real_type,3> const& vel,
                       real_type h0,
-                      real_type c = hpc::constant::c );
+                      real_type c = hpc::constant::c_km_s );
 
    real_type
    approx_observed_redshift( lightcone const& lc,
