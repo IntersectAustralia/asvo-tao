@@ -217,6 +217,7 @@ class SAGEDataReader:
             
             GlobalIndex=TreeField['GlobalIndex']  
             
+            
             TreeField['breadthfirst_traversalorder']=NodesList[GlobalIndex]['BreadthFirstIndex']
             TreeField['depthfirst_traversalorder']=NodesList[GlobalIndex]['DepthFirstIndex']
             TreeField['subtree_count']=NodesList[GlobalIndex]['SubTreeSize']           

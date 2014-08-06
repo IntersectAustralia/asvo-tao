@@ -60,6 +60,7 @@ class TorqueInterface(object):
         
         
         self.DefaultParams['executable'] = self.Options['Torque:ExecutableName']
+        self.DefaultParams['enviromentscript'] = self.Options['Torque:EnvScriptName']
         self.DefaultParams['name']=self.Options['Torque:jobprefix']+UserFolder[:4]+'_'+str(JobID)
         self.DefaultParams['nodes'] = int(self.Options['Torque:Nodes'])        
         self.DefaultParams['ppn'] = ppn
@@ -85,8 +86,7 @@ class TorqueInterface(object):
             #PBS -l walltime=%(wt_hours)02d:%(wt_minutes)02d:%(wt_seconds)02d
             #PBS -d .
             #PBS -S /bin/bash
-            source /usr/local/modules/init/bash
-            module load python fftw/x86_64/gnu/3.3.2-threaded gcc/4.7.1 cmake boost gsl hdf5/x86_64/gnu/1.8.9-openmpi-psm postgresql cfitsio/x86_64/gnu/3.290-threaded skymaker
+            source %(enviromentscript)s
             echo Shared contexts: $PSM_SHAREDCONTEXTS_MAX
             mpiexec %(executable)s %(path)s %(basicsettingpath)s
             %(MergeScriptName)s %(outputpath)s %(subjobindex)d %(UIJobReference)d

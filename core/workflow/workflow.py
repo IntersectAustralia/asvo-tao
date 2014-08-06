@@ -145,6 +145,7 @@ class WorkFlow(object):
             self.dbaseobj.RemoveAllJobsWithUIReferenceID(UIJobReference)
         
             ## 1- Prepare the Job Directory
+            
             [SubJobsCount,IsSequential,SimulationName]=self.PrepareJobFolder(JobParams,JobUserName,UIJobReference,JobDatabase)
             CurrentJobType=EnumerationLookup.JobType.Simple
             if SubJobsCount>1:
@@ -208,6 +209,8 @@ class WorkFlow(object):
         self.UpdateTAOUI(UIJobReference, CurrentJobType, data={'status': 'QUEUED'})        
         
         return True
+
+
     
     def escapeUserName(self,UserName):
         return ''.join(e for e in UserName if e.isalnum())
@@ -343,6 +346,7 @@ class WorkFlow(object):
         JobID=CurrentJobRecord['uireferenceid']
         LocalJobID=CurrentJobRecord['jobid']
         
+
         UserFolder=self.escapeUserName(UserName)
         JobName=self.Options['Torque:jobprefix']+UserFolder[:4]+'_'+str(LocalJobID)
         
@@ -370,6 +374,7 @@ class WorkFlow(object):
         IsSequential=RestartJobRecrod['issequential']
         SubJobID=RestartJobRecrod['subjobindex']
         
+
         UserFolder=self.escapeUserName(JobUserName)
         
         BasedPath=os.path.join(self.Options['WorkFlowSettings:WorkingDir'],  UserFolder, str(UIJobReference))
@@ -406,6 +411,7 @@ class WorkFlow(object):
     
     def GetJobstderrcontents(self,UserName,JobID,LocalJobID):
         
+
         UserFolder=self.escapeUserName(UserName)
         JobName=self.Options['Torque:jobprefix']+UserFolder[:4]+'_'+str(LocalJobID)
         
@@ -609,9 +615,11 @@ class WorkFlow(object):
             
             
             old_dir = os.getcwd()
+
             UserFolder=self.escapeUserName(UserName)
             logpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserFolder, str(UIReference_ID),'log')  
             outputpath = os.path.join(self.Options['WorkFlowSettings:WorkingDir'], UserFolder, str(UIReference_ID),'output')
+
             
             
             logging.info("Adding Job to Restarting List")

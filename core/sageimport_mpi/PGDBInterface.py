@@ -126,7 +126,7 @@ class DBInterface(object):
                 
     def StartTransaction(self):
         self.ExecuteNoQuerySQLStatment("BEGIN;")
-    def CommintTransaction(self):
+    def CommitTransaction(self):
         self.ExecuteNoQuerySQLStatment("COMMIT;")
     def CreateNewTree(self,TableID,TreeData):
         

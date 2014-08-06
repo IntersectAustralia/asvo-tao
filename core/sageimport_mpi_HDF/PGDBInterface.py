@@ -12,6 +12,7 @@ import logging
 from io import BytesIO
 import numpy
 import struct
+import traceback
 
 class DBInterface(object):
     '''
@@ -77,7 +78,10 @@ class DBInterface(object):
             logging.info(">>>>>Error While Processing Tree")
             logging.info(type(Exp))
             logging.info(Exp.args)
-            logging.info(Exp)            
+            logging.info(Exp)  
+            exc_type, exc_value, exc_traceback = sys.exc_info()
+            lines = traceback.format_exception(exc_type, exc_value, exc_traceback)
+            logging.error(''.join('!! ' + line for line in lines))          
             raw_input("PLease press enter to continue.....")
             
                 
